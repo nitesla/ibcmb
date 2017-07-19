@@ -1,6 +1,78 @@
     var customerId = "null";
 
+    //steps with form
+    var map = {};
+    var form = $("#reg-form");
+    form.validate({
+        errorPlacement: function errorPlacement(error, element) {
+            element.before(error);
+        },
+        rules: {
+            confirm: {
+                equalTo: "#password"
+            }
+        }
+    });
+
+    var SECURITY_QUESTION_STEP = 0;
+    var VALIDATE_GEN_PASS = 1;
+    var VALIDATE_PASSWORD_STEP = 2;
+    var TOKEN_AUTH = 3;
+    var CHANGE_PASSWORD_STEP = 4;
+
+    //var condition = [[${success}]];
+
+    //    $("#wizard-t-2").get(0).click();
+    form.children("div").steps({
+        headerTag: "h3",
+        bodyTag: "section",
+        transitionEffect: "slideLeft",
+        onStepChanging: function (event, currentIndex, newIndex)
+        {
+
+            form.validate().settings.ignore = ":disabled,:hidden";
+            console.log(currentIndex);
+            var isValid = form.valid();
+
+            if(SECURITY_QUESTION_STEP === currentIndex){
+                console.log("Current step is the account details step");
+                var secAnswer = $('input[name="securityAnswer"]').val();
+                return isValid && validateSecAnswer(secAnswer);
+            }
+            if(VALIDATE_GEN_PASS === currentIndex){
+                console.log("Current step is the account details step");
+                return isValid && validateGenPassword();
+            }
+            if(VALIDATE_PASSWORD_STEP === currentIndex){
+                console.log("Current step is the change password step");
+                //form.submit();
+                var confirm = $('input[name="confirm"]').val();
+                return isValid && validatePassword(confirm);
+            }
+            if(TOKEN_AUTH === currentIndex){
+                console.log("Current step is the account details step");
+                return isValid && validateToken() && changePassword();
+            }
+
+            form.validate().settings.ignore = ":disabled,:hidden";
+            return form.valid();
+        },
+        onFinishing: function (event, currentIndex)
+        {
+            //form.validate().settings.ignore = ":disabled";
+            return form.valid();
+        },
+        onFinished: function (event, currentIndex)
+        {
+            //alert("Submitted!");
+            window.location.href = "/login/retail";
+//             $("#reg-form").submit();
+        }
+    });
+
+
     function validateSecAnswer(secAnswer){
+        var sent = "";
         var result;
         $.ajax({
             type:'GET',
@@ -8,22 +80,82 @@
             async:false,
             success:function(data1){
                 result = ''+String(data1);
-                if(result == "" || result === null){
+                if(result == "true"){
+                    //$('input[name=username]').val(result);
+                }else{
                     //invalid account number
                     //alert("Account number not found");
-                    document.getElementById("errorMess").textContent="Wrong Answer to Security Question Provided.";
+                    $('#errorMess').text(result);
                     $('#myModalError').modal('show');
-                }else{
-                    //valid account number
-                    $('input[name=username]').val(result);
                 }
             }
         });
 
-        if(result == "" || result === null){
-            return false;
+        if(result == "true"){
+            sent = sendGenPassword();
+            if(String(sent) == "true"){
+                return true;
+            }else {
+                return false;
+            }
         }else{
+            return false;
+        }
+    }
+
+    function sendGenPassword() {
+        var username = $('input[name="username"]').val();
+        var result;
+        $.ajax({
+            type:'GET',
+            url:"/rest/sendGenPass/"+username,
+            async:false,
+            success:function(data1){
+                result = ''+String(data1);
+                if(result == "true"){
+                    $('#successMess').text("A temporary password has been sent to your email address.");
+                    $('#myModalSuccess').modal('show');
+                }else{
+                    //invalid account number
+                    //alert("Account number not found");
+                    $('#errorMess').text(result);
+                    $('#myModalError').modal('show');
+                }
+            }
+        });
+
+        if(result == "true"){
             return true;
+        }else{
+            return false;
+        }
+    }
+
+    function validateGenPassword() {
+        var result;
+        var username = $('input[name="username"]').val();
+        var genpassword = $('input[name="genpassword"]').val();
+        $.ajax({
+            type:'GET',
+            url:"/rest/verGenPass/"+username+"/"+genpassword,
+            async:false,
+            success:function(data1){
+                result = ''+String(data1);
+                if(result == "true"){
+
+                }else{
+                    //invalid account number
+                    //alert("Account number not found");
+                    $('#errorMess').text(result);
+                    $('#myModalError').modal('show');
+                }
+            }
+        });
+
+        if(result == "true"){
+            return true;
+        }else{
+            return false;
         }
     }
 
@@ -39,14 +171,43 @@
                     //success
                 }else{
 
-                    document.getElementById("errorMess").textContent="The entered password might not meet the set password policy.";
+                    $('#errorMess').text(res);
                     $('#myModalError').modal('show');
+
                 }
             }
         });
 
         if(res === 'true'){
             //username is valid and available
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+    function validateToken(){
+        var username = $('input[name="username"]').val();
+        var token = $('input[name="token"]').val();
+        var result;
+        $.ajax({
+            type:'GET',
+            url:"/rest/tokenAuth/"+username+"/"+token,
+            async:false,
+            success:function(data1){
+                result = ''+String(data1);
+                if(result == "true"){
+
+                }else{
+                    //invalid account number
+                    //alert("Account number not found");
+                    $('#errorMess').text(result);
+                    $('#myModalError').modal('show');
+                }
+            }
+        });
+
+        if(result == "true"){
             return true;
         }else{
             return false;
@@ -84,75 +245,5 @@
     }
 	
 
-    //steps with form
-    var map = {};
-    var form = $("#reg-form");
-    form.validate({
-        errorPlacement: function errorPlacement(error, element) {
-            element.before(error);
-        },
-        rules: {
-            confirm: {
-                equalTo: "#password"
-            }
-        }
-    });
-    
-    var SECURITY_QUESTION_STEP = 0;
-    var CHANGE_PASSWORD_STEP = 1;
 
-    //var condition = [[${success}]];
-    
-//    $("#wizard-t-2").get(0).click();
-    form.children("div").steps({
-        headerTag: "h3",
-        bodyTag: "section",
-        transitionEffect: "slideLeft",
-        onStepChanging: function (event, currentIndex, newIndex)
-        {
-
-            form.validate().settings.ignore = ":disabled,:hidden";
-            console.log(currentIndex);
-            var isValid = form.valid();
-            // Allways allow previous action even if the current form is not valid!
-            if (currentIndex > newIndex)
-            {
-                return true;
-            }
-
-            // Needed in some cases if the user went back (clean up)
-            if (currentIndex < newIndex)
-            {
-                // To remove error styles
-                form.find(".body:eq(" + newIndex + ") label.error").remove();
-                form.find(".body:eq(" + newIndex + ") .error").removeClass("error");
-            }
-
-            if(SECURITY_QUESTION_STEP === currentIndex){
-                console.log("Current step is the account details step");
-                var secAnswer = $('input[name="securityAnswer"]').val();
-                return isValid && validateSecAnswer(secAnswer);
-            }
-            if(CHANGE_PASSWORD_STEP === currentIndex){
-                console.log("Current step is the change password step");
-                //form.submit();
-                var confirm = $('input[name="confirm"]').val();
-               return isValid && validatePassword(confirm) && changePassword();
-            }
-
-            form.validate().settings.ignore = ":disabled,:hidden";
-            return form.valid();
-        },
-        onFinishing: function (event, currentIndex)
-        {
-            //form.validate().settings.ignore = ":disabled";
-            return form.valid();
-        },
-        onFinished: function (event, currentIndex)
-        {
-           //alert("Submitted!");
-           window.location.href = "/login/retail";
-//             $("#reg-form").submit();
-        }
-    });
 

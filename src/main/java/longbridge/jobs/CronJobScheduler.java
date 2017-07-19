@@ -1,19 +1,17 @@
 package longbridge.jobs;
 
-import javax.servlet.ServletContext;
-import javax.servlet.ServletContextEvent;
-import javax.servlet.annotation.WebListener;
-
 import org.quartz.*;
-import org.quartz.ee.servlet.QuartzInitializerListener;
 import org.quartz.impl.StdSchedulerFactory;
+import org.springframework.stereotype.Service;
+
 /**
  * Created by Longbridge on 6/25/2017.
  */
+@Service
 public class CronJobScheduler {
     public static void startJobs() {
         JobKey OneTimeKey = new JobKey("OneTime", "ibtest");
-        JobDetail OneTimeJobs = JobBuilder.newJob(TestClass.class)
+        JobDetail OneTimeJobs = JobBuilder.newJob(RunningJob.class)
                 .withIdentity(OneTimeKey).build();
 
 //        JobKey FiveMinsKey = new JobKey("FiveMins", "ibtest");
@@ -51,9 +49,6 @@ public class CronJobScheduler {
 //        JobDetail SevenDaysKeyJobs = JobBuilder.newJob(SevenDays.class)
 //                .withIdentity(SevenDaysKey).build();
 
-//        JobKey LetterUpdateKey = new JobKey("SevenDays", "ibtest");
-//        JobDetail LetterUpdateKeyJobs = JobBuilder.newJob(LetterUpdates.class)
-//                .withIdentity(LetterUpdateKey).build();
 
 
         /**
@@ -62,9 +57,9 @@ public class CronJobScheduler {
          */
         Trigger oneTime = TriggerBuilder
                 .newTrigger()
-                .withIdentity("oneTime", "bcons3")
+                .withIdentity("oneTime", "ibtest")
                 .withSchedule(
-                        CronScheduleBuilder.cronSchedule("0 0/1 * 1/1 * ? *"))
+                        CronScheduleBuilder.cronSchedule("0/10 0/1 * 1/1 * ? *"))
                 .build();
 //        Trigger fiveMins = TriggerBuilder
 //                .newTrigger()

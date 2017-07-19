@@ -342,7 +342,7 @@ function registerUser(){
                 if(data==="true"){
                     $('#returnValue').val(true);
                 }else {
-                    $('#errorMess').text("Self registration could not be completed due to service unavailability.");
+                    $('#errorMess').text(result);
                     $('#myModalError').modal('show');
                 }
             }

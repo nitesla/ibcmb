@@ -163,6 +163,10 @@ public class MainController {
         // return "";
     }
 
+    @GetMapping("/login/u/retail")
+    public String login1(){
+        return "redirect:/login/retail";
+    }
     @PostMapping("/login/u/retail")
     public String userExists(WebRequest webRequest, Model model, RedirectAttributes redirectAttributes) {
         String username = webRequest.getParameter("username");
@@ -176,6 +180,7 @@ public class MainController {
         }
 
         try{
+            logger.info("the username");
             Map<String, List<String>> mutualAuth =  securityService.getMutualAuth(user.getEntrustId(), user.getEntrustGroup());
             if (mutualAuth != null){
                 String image = mutualAuth.get("imageSecret")
@@ -196,6 +201,10 @@ public class MainController {
         return "retpage2";
     }
 
+    @GetMapping("/login/p/retail")
+    public String login2(){
+        return "redirect:/login/retail";
+    }
     @PostMapping("/login/p/retail")
     public String step2(WebRequest webRequest, Model model, HttpSession session, RedirectAttributes redirectAttributes) {
         String username = webRequest.getParameter("username");
@@ -204,7 +213,7 @@ public class MainController {
         RetailUser user =  retailUserService.getUserByName(username);
         if (user != null && phishing != null) {
             model.addAttribute("username", user.getUserName());
-            session.setAttribute("username", UserType.RETAIL+"_"+user.getUserName());
+            session.setAttribute("username", user.getUserName());
             return "retaillogin";
         }
 
@@ -433,7 +442,7 @@ public class MainController {
         SettingDTO setting = configurationService.getSettingByName("SESSION_TIMEOUT");
         try{
             if (setting != null && setting.isEnabled()){
-                Long timeOuts = Long.parseLong(setting.getValue())* 60000;
+                Long timeOuts = (Long.parseLong(setting.getValue())* 60000)-25000;
                 logger.info("SESSION TIME OUT PERIOD" + timeOuts);
                 model.addAttribute("timeOut", timeOuts);
             }

@@ -7,54 +7,52 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Test</title>
 </head>
-    <body>
-        <div class="container">
+<body>
+    <div class="container">
 
-             <div class="row">
-                <div class="top-bar col-xs-12">
-                        <ul class="top-link">
-                            
-                            <li class="no-bd"><a href="https://www.coronationmb.com/" target="_blank"> Coronation merchant bank</a>&nbsp;</li>
-                            
-                        </ul>
-                </div>
+         <div class="row">
+            <div class="top-bar col-xs-12">
+                    <ul class="top-link">
+                        <li class="no-bd"><a href="https://www.coronationmb.com/" target="_blank"> Coronation merchant bank</a>&nbsp;</li>
+                    </ul>
             </div>
+        </div>
 
-            <div  class="row  margin-bottom">
+        <div  class="row  margin-bottom">
 
                 <div class="col-sm-9">
 
-                    <nav class="navbar navbar-default bg-success" >
-                        <div class="">
-                            <div class="navbar-header navbar-left ">
-                                <button type="button" class="navbar-toggle collapsed " data-toggle="collapse" data-target="#navbar-collapse-1" aria-expanded="false">
-                                    <span class="sr-only">MENU</span>
-                                    <span class="icon-bar"></span>
-                                    <span class="icon-bar"></span>
-                                    <span class="icon-bar"></span>
-                                </button>
-                                <a class="navbar-brand" href="#" data-toggle="collapse" data-target="#navbar-collapse-1">Menu</a>
-                            </div>
-                            <div class="collapse navbar-collapse no-pad-left" id="navbar-collapse-1">
-                                <ul class="nav navbar-nav ">
-                                    <li><a href="/"> HOME</a></li>
-                                    <li class="dropdown">
-                                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"> LOGIN</a>
-                                        <ul class="dropdown-menu">
-                                            <li><a th:href="@{/login/retail}"> INDIVIDUAL </a></li>
-                                            <li><a th:href="@{/login/corporate}"> CORPORATE </a></li>
-                                        </ul>
-                                    </li>
-                                    <li><a href="/register"> REGISTER</a></li>
-                                    <li><a href="#contact_us"> CONTACT US</a></li>
-                                    <li><a href="/faqs"> FAQ</a></li>
-                                </ul>
-
-                            </div>
+                <nav class="navbar navbar-default bg-success" >
+                    <div class="">
+                        <div class="navbar-header navbar-left ">
+                            <button type="button" class="navbar-toggle collapsed " data-toggle="collapse" data-target="#navbar-collapse-1" aria-expanded="false">
+                                <span class="sr-only">MENU</span>
+                                <span class="icon-bar"></span>
+                                <span class="icon-bar"></span>
+                                <span class="icon-bar"></span>
+                            </button>
+                            <a class="navbar-brand" href="#" data-toggle="collapse" data-target="#navbar-collapse-1">Menu</a>
                         </div>
-                    </nav>
+                        <div class="collapse navbar-collapse no-pad-left" id="navbar-collapse-1">
+                            <ul class="nav navbar-nav ">
+                                <li><a href="/"> HOME</a></li>
+                                <li class="dropdown">
+                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"> LOGIN</a>
+                                    <ul class="dropdown-menu">
+                                        <li><a th:href="@{/login/retail}"> INDIVIDUAL </a></li>
+                                        <li><a th:href="@{/login/corporate}"> CORPORATE </a></li>
+                                    </ul>
+                                </li>
+                                <li><a href="/register"> REGISTER</a></li>
+                                <li><a href="#contact_us"> CONTACT US</a></li>
+                                <li><a href="/faqs"> FAQ</a></li>
+                            </ul>
 
-                </div>
+                        </div>
+                    </div>
+                </nav>
+
+            </div>
 
                 <div class="col-sm-3 no-pad-right">
                      <div class="center" style="margin:0px auto;">
@@ -63,227 +61,332 @@
                         </a>
                     </div>
                 </div>
-               
-               
-
             </div>
 
 
-            <div class="row margin-bottom">
-                <div class="slider">
-                    <div id="myCarousel" class="carousel slide" data-ride="carousel">
-                        <!-- Indicators -->
-                        <ol class="carousel-indicators">
-                            <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
-                            <li data-target="#myCarousel" data-slide-to="1"></li>
-                            <li data-target="#myCarousel" data-slide-to="2"></li>
-                        </ol>
 
-                        <!-- Wrapper for slides -->
-                        <div class="carousel-inner">
+        </div>
 
-                            <div class="item active">
-                                <img class="sliding" th:src="@{~/customer/img/sliderpic.jpg}" alt="Los Angeles" style="width:100%;"/>
-                                <div class="carousel-caption">
-                                    <h3>Los Angeles</h3>
-                                    <p>LA is always so much fun!</p>
-                                </div>
+
+        <div class="row margin-bottom">
+            <div class="slider">
+                <div id="myCarousel" class="carousel slide" data-ride="carousel">
+                    <!-- Indicators -->
+                    <ol class="carousel-indicators">
+                        <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
+                        <li data-target="#myCarousel" data-slide-to="1"></li>
+                        <li data-target="#myCarousel" data-slide-to="2"></li>
+                    </ol>
+
+                    <!-- Wrapper for slides -->
+                    <div class="carousel-inner">
+
+                        <div class="item active">
+                            <img class="sliding" th:src="@{~/customer/img/sliderpic.jpg}" alt="Los Angeles" style="width:100%;"/>
+                            <div class="carousel-caption">
+                                <h3>Los Angeles</h3>
+                                <p>LA is always so much fun!</p>
                             </div>
-
-                            <div class="item">
-                                <img class="sliding" th:src="@{~/customer/img/sliderpic.jpg}" alt="Chicago" style="width:100%;"/>
-                                <div class="carousel-caption">
-                                    <h3>Chicago</h3>
-                                    <p>Thank you, Chicago! Thank you, Chicago!Thank you, Chicago!</p>
-                                </div>
-                            </div>
-
-                            <div class="item">
-                                <img class="sliding" th:src="@{~/customer/img/sliderpic.jpg}" alt="New York" style="width:100%;"/>
-                                <div class="carousel-caption">
-                                    <h3>New York</h3>
-                                    <p>We love the Big Apple!</p>
-                                </div>
-                            </div>
-
                         </div>
 
-                        <!-- Left and right controls -->
-                        <a class="left carousel-control" href="#myCarousel" data-slide="prev">
-                            <span class="glyphicon glyphicon-chevron-left"></span>
-                            <span class="sr-only">Previous</span>
-                        </a>
-                        <a class="right carousel-control" href="#myCarousel" data-slide="next">
-                            <span class="glyphicon glyphicon-chevron-right"></span>
-                            <span class="sr-only">Next</span>
-                        </a>
-                </div>
-               
-            </div>
-
-
-            <div class='row' style="margin-top:50px;">
-                <div class="text-center">
-
-                    <div>
-                        <h3 class="home-heading">Welcome to Internet Banking</h3>
-                        <p class="home-para">Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat. Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit</p>
-                        <br/><br/>
-
-
-
-                        <div class="dropdown margin-bottom">
-                        <button class="dropbtn">LOGIN</button>
-                        <div class="dropdown-content">
-                            <a th:href="@{/login/retail}"> INDIVIDUAL </a>
-                            <a th:href="@{/login/corporate}"> CORPORATE </a>
+                        <div class="item">
+                            <img class="sliding" th:src="@{~/customer/img/sliderpic.jpg}" alt="Chicago" style="width:100%;"/>
+                            <div class="carousel-caption">
+                                <h3>Chicago</h3>
+                                <p>Thank you, Chicago! Thank you, Chicago!Thank you, Chicago!</p>
+                            </div>
                         </div>
+
+                        <div class="item">
+                            <img class="sliding" th:src="@{~/customer/img/sliderpic.jpg}" alt="New York" style="width:100%;"/>
+                            <div class="carousel-caption">
+                                <h3>New York</h3>
+                                <p>We love the Big Apple!</p>
+                            </div>
+                        </div>
+
                     </div>
+
+                    <!-- Left and right controls -->
+                    <a class="left carousel-control" href="#myCarousel" data-slide="prev">
+                        <span class="glyphicon glyphicon-chevron-left"></span>
+                        <span class="sr-only">Previous</span>
+                    </a>
+                    <a class="right carousel-control" href="#myCarousel" data-slide="next">
+                        <span class="glyphicon glyphicon-chevron-right"></span>
+                        <span class="sr-only">Next</span>
+                    </a>
+            </div>
+
+        </div>
+
+
+        <div class='row' style="margin-top:50px;">
+            <div class="text-center">
+
+                <div>
+                    <h3 class="home-heading">Welcome to Internet Banking</h3>
+                    <p class="home-para">Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat. Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit</p>
+                    <br/><br/>
+
+
+
                     <div class="dropdown margin-bottom">
-                        <form action="/register">
-                            <button class="dropbtn" data-toggle="tooltip" data-placement="bottom" title="Join our internet banking platform">REGISTER NOW</button>
-                        </form>
+                    <button class="dropbtn">LOGIN</button>
+                    <div class="dropdown-content">
+                        <a th:href="@{/login/retail}"> INDIVIDUAL </a>
+                        <a th:href="@{/login/corporate}"> CORPORATE </a>
                     </div>
+                </div>
+                <div class="dropdown margin-bottom">
+                    <form action="/register">
+                        <button class="dropbtn" data-toggle="tooltip" data-placement="bottom" title="Join our internet banking platform">REGISTER NOW</button>
+                    </form>
+                </div>
 
-                       
-                    </div>
 
                 </div>
-            </div>
-
-
-            <div class="row text-center margin-bottom">
-
-                <h6 class=" home-heading coronation-blue " style="font-size:15px;padding-bottom:0px">Manage your money anywhere, anytime</h6>
-                    <p class=" home-para ">Fast and easy to use.
-                   Our Internet Banking lets you access your account 24 hours a day!</p>
-                    <div class="biglit  col-md-offse col-md-12 col-xs-12" style="magin:0px auto">
-                        <div class="lists col-md-6 col-sm-6  text-cente" >
-                            <ul id='accordion' class='col-md-offset-4 col-md-8 col-sm-offset-2 col-sm-10'>
-                                <li data-parent="#accordion" data-toggle="collapse" data-target="#list1" onclick="serviceToggle('#li1')" id='li1'><i class="fa fa-plus-square"></i>&nbsp; View account statements</li>
-                                <div id="list1" class="collapse info-acc service" style="background:#ebecef;padding:10px;">
-                                    Lorem ipsum dolor sit amet, consectetur adipisicing elit,
-                                    sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-                                </div>
-                                <li data-parent="#accordion"  data-toggle="collapse" data-target="#list2" onclick="serviceToggle('#li2')" id='li2'><i class="fa fa-plus-square"></i>&nbsp; Transfer money</li>
-                                <div id="list2" class="collapse info-acc service" style="background:#ebecef;padding:10px;">
-                                    Lorem ipsum dolor sit amet, consectetur adipisicing elit,
-                                    sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-                                </div>
-                                <li data-parent="#accordion"  data-toggle="collapse" data-target="#list3" onclick="serviceToggle('#li3')" id='li3'>
-                                    <i class="fa fa-plus-square"></i>&nbsp; Make payment</li>
-                                <div id="list3" class="collapse info-acc service" style="background:#ebecef;padding:10px;">
-                                    Lorem ipsum dolor sit amet, consectetur adipisicing elit,
-                                    sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-                                </div>
-                            </ul>
-                        </div>
-                        <div class="lists col-sm-6 col-md-6">
-                            <ul class='col-md-offs col-md-8 col-sm-offset-2 col-sm-10'>
-                                <li data-parent="#accordion" data-toggle="collapse" data-target="#list4" onclick="serviceToggle('#li4')" id='li4'><i class="fa fa-plus-square"></i>&nbsp; Pay bills</li>
-                                <div id="list4" class="collapse info-acc service" style="background:#ebecef;padding:10px;">
-                                    Lorem ipsum dolor sit amet, consectetur adipisicing elit,
-                                    sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-                                </div>
-                                <li data-parent="#accordion"  data-toggle="collapse" data-target="#list5" onclick="serviceToggle('#li5')" id='li5'><i class="fa fa-plus-square"></i>&nbsp; Manage your payments</li>
-                                <div id="list5" class="collapse info-acc service" style="background:#ebecef;padding:10px;">
-                                    Lorem ipsum dolor sit amet, consectetur adipisicing elit,
-                                    sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-                                </div>
-                                <li data-parent="#accordion"  data-toggle="collapse" data-target="#list6" onclick="serviceToggle('#li6')" id='li6'><i class="fa fa-plus-square"></i>&nbsp; Credit card management</li>
-                                <div id="list6" class="collapse info-acc service" style="background:#ebecef;padding:10px;">
-                                    Lorem ipsum dolor sit amet, consectetur adipisicing elit,
-                                    sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-                                </div>
-                            </ul>
-                            <ul>
-                            </ul>
-                        </div>
-                    </div>
 
             </div>
+        </div>
 
 
-            <div class="row text-center margin-bottom">
-                <div id="contact_us">
-                     <h4 class="coronation-brown" style='font-size:20px;'>Contact Us</h4>
-                    <p class="home-para">Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. Ut wisi e</p>
-                    <div class="dropdown  dropdn-margin">
-                        <button class="btn btn-primary dropdown-toggle bg-btn" type="button" data-toggle="dropdown"><i class="fa fa-phone text-white"></i>
-                        </button>
-                        <ul class="dropdown-menu contact-details">
-                            <li>T +234 (0)818 831 4939</li>
-                            <li>T +234 (0)802 891 3262</li>
-                            <li class="icontext pull-right " data-toggle="modal" data-target="#myModal"><button class="btn btn-link coronation-blue">Call back</button></li>
-                            
+        <div class="row text-center margin-bottom">
+
+            <h6 class=" home-heading coronation-blue " style="font-size:15px;padding-bottom:0px">Manage your money anywhere, anytime</h6>
+                <p class=" home-para ">Fast and easy to use.
+               Our Internet Banking lets you access your account 24 hours a day!</p>
+                <div class="biglit  col-md-offse col-md-12 col-xs-12" style="magin:0px auto">
+                    <div class="lists col-md-6 col-sm-6  text-cente" >
+                        <ul id='accordion' class='col-md-offset-4 col-md-8 col-sm-offset-2 col-sm-10'>
+                            <li data-parent="#accordion" data-toggle="collapse" data-target="#list1" onclick="serviceToggle('#li1')" id='li1'><i class="fa fa-plus-square"></i>&nbsp; View account statements</li>
+                            <div id="list1" class="collapse info-acc service" style="background:#ebecef;padding:10px;">
+                                Lorem ipsum dolor sit amet, consectetur adipisicing elit,
+                                sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+                            </div>
+                            <li data-parent="#accordion"  data-toggle="collapse" data-target="#list2" onclick="serviceToggle('#li2')" id='li2'><i class="fa fa-plus-square"></i>&nbsp; Transfer money</li>
+                            <div id="list2" class="collapse info-acc service" style="background:#ebecef;padding:10px;">
+                                Lorem ipsum dolor sit amet, consectetur adipisicing elit,
+                                sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+                            </div>
+                            <li data-parent="#accordion"  data-toggle="collapse" data-target="#list3" onclick="serviceToggle('#li3')" id='li3'>
+                                <i class="fa fa-plus-square"></i>&nbsp; Make payment</li>
+                            <div id="list3" class="collapse info-acc service" style="background:#ebecef;padding:10px;">
+                                Lorem ipsum dolor sit amet, consectetur adipisicing elit,
+                                sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+                            </div>
                         </ul>
                     </div>
-                    <div class="dropdown dropdn-margin">
-                        <button class="btn btn-primary dropdown-toggle bg-btn" type="button" data-toggle="dropdown"><i class="fa fa-envelope text-white"></i>
-                        </button>
-                        <ul class="dropdown-menu contact-details">
-                            <li>Send us an email</li>
-                            <li>enquiries@coronationmb.com</li>
-                            <li class="icontext pull-right">Copy email</li>
+                    <div class="lists col-sm-6 col-md-6">
+                        <ul class='col-md-offs col-md-8 col-sm-offset-2 col-sm-10'>
+                            <li data-parent="#accordion" data-toggle="collapse" data-target="#list4" onclick="serviceToggle('#li4')" id='li4'><i class="fa fa-plus-square"></i>&nbsp; Pay bills</li>
+                            <div id="list4" class="collapse info-acc service" style="background:#ebecef;padding:10px;">
+                                Lorem ipsum dolor sit amet, consectetur adipisicing elit,
+                                sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+                            </div>
+                            <li data-parent="#accordion"  data-toggle="collapse" data-target="#list5" onclick="serviceToggle('#li5')" id='li5'><i class="fa fa-plus-square"></i>&nbsp; Manage your payments</li>
+                            <div id="list5" class="collapse info-acc service" style="background:#ebecef;padding:10px;">
+                                Lorem ipsum dolor sit amet, consectetur adipisicing elit,
+                                sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+                            </div>
+                            <li data-parent="#accordion"  data-toggle="collapse" data-target="#list6" onclick="serviceToggle('#li6')" id='li6'><i class="fa fa-plus-square"></i>&nbsp; Credit card management</li>
+                            <div id="list6" class="collapse info-acc service" style="background:#ebecef;padding:10px;">
+                                Lorem ipsum dolor sit amet, consectetur adipisicing elit,
+                                sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+                            </div>
                         </ul>
-                    </div>
-                    <div class="dropdown  dropdn-margin">
-                        <button class="btn btn-primary dropdown-toggle bg-btn" type="button" data-toggle="dropdown"><i class="fa fa-comments-o text-white"></i>
-                        </button>
-                        <ul class="dropdown-menu contact-details">
-                           
-                            <li>Need instant help?</li>
-                            <li>Chat with us</li>
-                            <li class="icontext pull-right"><button class="btn btn-link"><i class="fa fa-comments-o"></i> Live chat</button></li>
-                        
+                        <ul>
                         </ul>
                     </div>
                 </div>
 
+        </div>
+
+
+        <div class="row text-center margin-bottom">
+            <div id="contact_us">
+                 <h4 class="coronation-brown" style='font-size:20px;'>Contact Us</h4>
+                <p class="home-para">Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. Ut wisi e</p>
+                <div class="dropdown  dropdn-margin">
+                    <button class="btn btn-primary dropdown-toggle bg-btn" type="button" data-toggle="dropdown"><i class="fa fa-phone text-white"></i>
+                    </button>
+                    <ul class="dropdown-menu contact-details">
+                        <li>T +234 (0)818 831 4939</li>
+                        <li>T +234 (0)802 891 3262</li>
+                        <li class="icontext pull-right " data-toggle="modal" data-target="#myModal"><button class="btn btn-link coronation-blue">Call back</button></li>
+
+                    </ul>
+                </div>
+                <div class="dropdown dropdn-margin">
+                    <button class="btn btn-primary dropdown-toggle bg-btn" type="button" data-toggle="dropdown"><i class="fa fa-envelope text-white"></i>
+                    </button>
+                    <ul class="dropdown-menu contact-details">
+                        <li>Send us an email</li>
+                        <li>enquiries@coronationmb.com</li>
+                        <li class="icontext pull-right">Copy email</li>
+                    </ul>
+                </div>
+                <div class="dropdown  dropdn-margin">
+                    <button class="btn btn-primary dropdown-toggle bg-btn" type="button" data-toggle="dropdown"><i class="fa fa-comments-o text-white"></i>
+                    </button>
+                    <ul class="dropdown-menu contact-details">
+
+                        <li>Need instant help?</li>
+                        <li>Chat with us</li>
+                        <li class="icontext pull-right"><button class="btn btn-link"><i class="fa fa-comments-o"></i> Live chat</button></li>
+
+                    </ul>
+                </div>
             </div>
+
+        </div>
 
 
             <div class="row ">
-                <div>
-                    <p class="text-center">Enter in details below</p>
+            <div>
+                <p class="text-center">Enter in details below</p>
 
-                    <form action="/contact" method="post" class="contact-form">
-                            <div class="form-group">
-                                <input type="text" name="name" class="my-select" placeholder="Name" required="required"/>
-                            </div>
-                            <div class="form-group">
-                                <input type="email" name="email" class="my-select" placeholder="Email" required="required"/>
-                            </div>
-                            <div class="form-group">
-                                <textarea name="message" value="Message" class="my-select" style="height: 200px;" required="required"></textarea>
-                            </div>
-                        <input type="submit" value="Submit" class="btn btn-primary btn-md my-select bg-coronation-blue" />
-                    </form>
+                <form action="/contact" method="post" class="contact-form">
+                        <div class="form-group">
+                            <input type="text" name="name" class="my-select" placeholder="Name" required="required"/>
+                        </div>
+                        <div class="form-group">
+                            <input type="email" name="email" class="my-select" placeholder="Email" required="required"/>
+                        </div>
+                        <div class="form-group">
+                            <textarea name="message" value="Message" class="my-select" style="height: 200px;" required="required"></textarea>
+                        </div>
+                    <input type="submit" value="Submit" class="btn btn-primary btn-md my-select bg-coronation-blue" />
+                </form>
+                </div>
+        </div>
 
+        </div>
+    </div>
+
+    <footer>
+        <div class="container">
+            <div class="footer_bar">
+                <div class="col-md-6">
+                    <ul class="list_group">
+                        <li><a href="#" target="_blank">Privacy policy</a></li>
+                        <li><a href="#" target="_blank">Disclaimer</a></li>
+                        <li><a href="#" target="_blank">Terms &amp; Conditions</a></li>
+                    </ul>
+                </div>
+
+                <div class="col-md-6"><p> &copy; 2017 - All rights reserved</p></div>
+            </div>
+        </div>
+    </footer>
+
+    <div th:if="${message}">
+        <div hidden="hidden">
+            <ul class="actionMessage">
+                <li th:each="msg : ${message}" th:text="${msg}" >Message</li>
+            </ul>
+        </div>
+    </div>
+
+    <div th:if="${failure}">
+        <div hidden="hidden">
+            <ul class="actionError">
+                <li th:each="msg : ${failure}" th:text="${msg}" id="error">Message</li>
+            </ul>
+        </div>
+    </div>
+
+
+    <div id="myModal" class="modal fade" role="dialog">
+            <div class="modal-dialog">
+
+                <!-- Modal content-->
+                <div class="modal-content">
+                    <div class="modal-body">
+                        <h1 style="font-size: 20px" class="text-center">Request Callback</h1>
+                        <br/>
+
+                        <form method="post" action="/request/callback" class="form-horizontal">
+                            <div class="row">
+                                <div class="col-sm-3 control-label"><label>Full Name:</label></div>
+                                <div class="col-sm-9 form-group">
+                                    <input type="text" class="form-control" name="name" required="required"/>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-3 control-label"><label>Preferred Phone Number:</label></div>
+                                <div class="col-sm-9 form-group">
+                                    <input type="text" class="form-control" name="phone" required="required"/>
+                                </div>
+                            </div>
+                            <div class="row text-center">
+                                <button class="btn btn-link ">Make Request</button>
+                            </div>
+                        </form>
+
+                    </div>
+                    <!--<div class="modal-footer">-->
+                    <!--<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>-->
+                    <!--</div>-->
                 </div>
             </div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-            </div>
-        
-        
         </div>
 
 
 
 
+    <div id="myModalError" class="modal fade " role="dialog">
+        <div class="modal-dialog" >
 
+            <!-- Modal content-->
+
+            <div class="modal-content no-bd-rad content ">
+
+                <div class="modal-body">
+
+
+                    <p id='errorMess' class='mess text-danger'>Put something here iff need be.</p>
+
+
+
+                </div>
+
+
+                <div class="modal-footer no-bd-top" >
+                    <button type="button" class="btn btn-link" data-dismiss="modal">OK</button>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+
+    <div id="myModalSuccess" class="modal fade " role="dialog">
+        <div class="modal-dialog" >
+
+            <!-- Modal content-->
+
+            <div class="modal-content no-bd-rad content ">
+
+                <div class="modal-body">
+
+
+                    <p id='successMess' class='mess text-primary'>Put something here iff need be.</p>
+
+
+
+                </div>
+
+
+                <div class="modal-footer no-bd-top" >
+                    <button type="button" class="btn btn-link" data-dismiss="modal">OK</button>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
 
 
 

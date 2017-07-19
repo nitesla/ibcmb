@@ -107,7 +107,7 @@ public class CorporateUserServiceImpl implements CorporateUserService {
 
     @Override
     public CorporateUser getUserByNameAndCorpCif(String username, String cif){
-        return corporateUserRepo.findByUserNameAndCorporate_CustomerId(username, cif);
+        return corporateUserRepo.findFirstByUserNameIgnoreCaseAndCorporate_CustomerIdIgnoreCase(username, cif);
     }
 
     @Override
@@ -194,15 +194,12 @@ public class CorporateUserServiceImpl implements CorporateUserService {
             corporateUser.setPhoneNumber(user.getPhoneNumber());
             corporateUser.setAdmin(user.isAdmin());
             corporateUser.setCreatedOnDate(new Date());
-            String password = passwordPolicyService.generatePassword();
             Role role = roleRepo.findOne(Long.parseLong(user.getRoleId()));
             corporateUser.setRole(role);
             Corporate corp = corporateRepo.findOne(Long.parseLong(user.getCorporateId()));
             corporateUser.setCorporate(corp);
             CorporateUser corpUser = corporateUserRepo.save(corporateUser);
-            createUserOnEntrust(corpUser);
-            String fullName = corporateUser.getFirstName() + " " + corporateUser.getLastName();
-            sendPostCreationMessage(corporateUser, fullName, user.getUserName(), password, corp.getCustomerId());
+            createUserOnEntrustAndSendCredentials(corpUser);
 
             logger.info("New corporate user {} created", corporateUser.getUserName());
             return messageSource.getMessage("user.add.success", null, locale);
@@ -218,7 +215,7 @@ public class CorporateUserServiceImpl implements CorporateUserService {
         }
     }
 
-    public void createUserOnEntrust(CorporateUser corporateUser) {
+    public void createUserOnEntrustAndSendCredentials(CorporateUser corporateUser) {
         CorporateUser user = corporateUserRepo.findFirstByUserName(corporateUser.getUserName());
         if (user != null) {
 
@@ -242,10 +239,27 @@ public class CorporateUserServiceImpl implements CorporateUserService {
                             throw new EntrustException(messageSource.getMessage("entrust.contact.failure", null, locale));
                         }
                     }
+
                     user.setEntrustId(entrustId);
                     user.setEntrustGroup(group);
+                    Corporate corporate = user.getCorporate();
+                    String password = passwordPolicyService.generatePassword();
+                    user.setPassword(passwordEncoder.encode(password));
+                    user.setExpiryDate(new Date());
+                    passwordPolicyService.saveCorporatePassword(user);
                     corporateUserRepo.save(user);
 
+
+                    try {
+                        Email email = new Email.Builder()
+                                .setRecipient(user.getEmail())
+                                .setSubject(messageSource.getMessage("corporate.customer.create.subject", null, locale))
+                                .setBody(String.format(messageSource.getMessage("corporate.customer.create.message", null, locale), fullName, user.getUserName(), password, corporate.getCustomerId()))
+                                .build();
+                        mailService.send(email);
+                    } catch (MailException me) {
+                        logger.error("Failed to send creation mail to {}", user.getEmail(), me);
+                    }
                 }
             }
         }
@@ -283,7 +297,7 @@ public class CorporateUserServiceImpl implements CorporateUserService {
             corporateUserRepo.save(corporateUser);
             String password = passwordPolicyService.generatePassword();
             String fullName = user.getFirstName() + " " + user.getLastName();
-            createUserOnEntrust(corporateUser);
+            createUserOnEntrustAndSendCredentials(corporateUser);
             sendPostCreationMessage(corporateUser, fullName, user.getUserName(), password, corporateUser.getCorporate().getCustomerId());
 
             logger.info("New corporate user {} created", corporateUser.getUserName());
