@@ -18,8 +18,6 @@ import longbridge.utils.DateFormatter;
 import longbridge.utils.statement.AccountStatement;
 import longbridge.utils.statement.TransactionDetails;
 import longbridge.utils.statement.TransactionHistory;
-import net.sf.jasperreports.engine.JasperFillManager;
-import net.sf.jasperreports.repo.Resource;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -251,10 +249,10 @@ public class AccountController {
 			RetailUser retailUser = retailUserService.getUserByName(principal.getName());
 
 			Account account=accountService.getAccountByCustomerId(retailUser.getCustomerId());
+
 			logger.info("Retail account {}",account);
 		String LAST_TEN_TRANSACTION = "10";
-		List<TransactionHistory> transRequestList = integrationService.getLastNTransactions(account.getAccountNumber(),
-				LAST_TEN_TRANSACTION);
+		List<TransactionHistory> transRequestList = integrationService.getLastNTransactions(account.getAccountNumber(), LAST_TEN_TRANSACTION);
 		JasperReportsPdfView view = new JasperReportsPdfView();
 		view.setUrl("classpath:jasperreports/rpt_tran-hist.jrxml");
 		view.setApplicationContext(appContext);

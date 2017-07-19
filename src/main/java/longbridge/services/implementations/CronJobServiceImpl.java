@@ -65,20 +65,10 @@ public class CronJobServiceImpl implements CronJobService {
     }
 
     @Override
-    public void keepJobDetials(String username,String cronExpression) throws InternetBankingException {
-            CronJob cronJob = new CronJob();
-            cronJob.setUsername(username);
-            cronJob.setCreatedOn(new Date());
-            cronJob.setFlag("Y");
-            cronJob.setCronExpression(cronExpression);
-            cronJobRepo.save(cronJob);
-    }
-
-    @Override
     public void deleteRunningJob() throws InternetBankingException {
         CronJob cronJob = cronJobRepo.findByFlag("Y");
         if (cronJob != null){
-//            logger.info("about deleting");
+            logger.info("about deleting");
             cronJob.setFlag("N");
             cronJobRepo.save(cronJob);
         }
@@ -89,7 +79,7 @@ public class CronJobServiceImpl implements CronJobService {
 //        logger.info("The account size {}",allAccounts.size());
             if ((account.getCurrencyCode()==null)||(!account.getCurrencyCode().equalsIgnoreCase(""))||(!accountDetails.getAcctCrncyCode().equalsIgnoreCase(account.getCurrencyCode()))) {
             account.setCurrencyCode(accountDetails.getAcctCrncyCode());
-//                logger.info("the new account currency {} and {}" , account.getCurrencyCode(),accountDetails.getAcctCrncyCode());
+                logger.info("the new account currency {} and {}" , account.getCurrencyCode(),accountDetails.getAcctCrncyCode());
             accountRepo.save(account);
     }
     }
@@ -98,25 +88,26 @@ public class CronJobServiceImpl implements CronJobService {
     public void updateAccountStatus(Account account, AccountDetails accountDetails) throws InternetBankingException {
             if ((account.getStatus()==null)||(!account.getStatus().equalsIgnoreCase(""))||(!account.getStatus().equalsIgnoreCase(accountDetails.getAcctStatus()))) {
                 account.setStatus(accountDetails.getAcctStatus());
-//                System.out.println("the account status after setting is" + account.getStatus());
+                System.out.println("the account status after setting is" + account.getStatus());
             accountRepo.save(account);}
     }
 
 
     @Override
     public boolean updateAccountDetials() throws InternetBankingException {
+        logger.info("updating status");
 
         List<Account> allAccounts = accountRepo.findAll();
-//        logger.info("The account size {}",allAccounts.size());
+        logger.info("The account size {}",allAccounts.size());
         if(allAccounts.size()>0){
         for (Account account : allAccounts) {
             AccountDetails accountDetails = integrationService.viewAccountDetails(account.getAccountNumber());
-//            logger.info("account details {}",accountDetails.getAcctStatus());
+            logger.info("account details {}",accountDetails.getAcctStatus());
 
             try {
 //                updateAllAccountName(account,accountDetails);
-                updateAllAccountCurrency(account,accountDetails);
-                updateAccountStatus(account,accountDetails);
+//                updateAllAccountCurrency(account,accountDetails);
+//                updateAccountStatus(account,accountDetails);
                 return true;
             } catch (Exception e) {
                 e.printStackTrace();
@@ -126,5 +117,13 @@ public class CronJobServiceImpl implements CronJobService {
         }
         return false;
     }
-
+    @Override
+    public void keepJobDetials(String username,String cronExpression) throws InternetBankingException {
+        CronJob cronJob = new CronJob();
+        cronJob.setUsername(username);
+        cronJob.setCreatedOn(new Date());
+        cronJob.setFlag("Y");
+        cronJob.setCronExpression(cronExpression);
+        cronJobRepo.save(cronJob);
+    }
 }

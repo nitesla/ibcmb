@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{corp-layout}">
 
-<body onload="currentBar('account')">
+<body onload="currentBar('Transaction History')">
 
 <div layout:fragment="content">
     <div class="col-md-5 col-sm-5 ">
@@ -13,7 +13,7 @@
     </div>
 
     <div class="col-xs-12 ml-15 no-pad-left no-mt" >
-        <div class="col-xs-11 no-pad-lef table-responsive no-mt bg-white alert">
+        <div class="col-xs-11 no-pad-lef table-responsive no-mt">
             
             <form method="post" th:action="@{/corporate/account/viewstatement/display}">
 
@@ -130,10 +130,11 @@
         $('#tranDetails').DataTable({
             responsive: true,
 
-            "lengthMenu": [[5, 10,20], [5, 10,20]],
-            "pagingType": "simple_numbers",
-            "searching" : false,
-            "processing" : true,
+            "lengthMenu" : [ [ 5, 10, 20],	[ 5, 10, 20 ] ],
+            "pagingType" : "simple_numbers",
+            "searching": false,
+            "paging": true,
+            "processing": true,
             "serverSide" : false,
             "ordering" : false,
             "dom": 'T<"clear">frtlp',
