@@ -118,7 +118,7 @@
         };
 
         $(document).ready(function() {
-
+        $('#btn-print').hide();
             $('.datepicker').datepicker({ dateFormat: 'dd-mm-yy' });//
 
             $('#tranDetails').DataTable({
@@ -199,6 +199,7 @@
 
                 e.preventDefault();
                 dt = $('#tranDetails').DataTable();
+                    $('#btn-print').show();
                 dt.ajax.reload(null, true);
 
             });

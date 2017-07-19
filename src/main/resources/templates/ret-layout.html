@@ -41,10 +41,10 @@
                 <div class="col-xs-12 col-sm-9 no-pad-left ">
                     <div class='bvn-tab col-md-5 col-sm-5 '>
                         <div class=" header_inf bv"><small style="font-size:10px">Your Bank verification number</small>
-                            <h2 style="" th:if="${bvn=='Not available'}">
+                            <h2 style="" th:if="${bvn=='NO BVN'}">
                                 <a style='color:#003056;font-size:16px' th:href="@{/retail/bvn}"
                                    th:text="'BVN: ' + ${bvn}"></a></h2>
-                            <h5 th:unless="${bvn=='Not available'}">
+                            <h5 th:unless="${bvn=='NO BVN'}">
                                 <span style='color:#003056;font-size:16px;font-weight:bold' th:text="'BVN: ' + ${bvn}"></span><span class="bvn-add-info"> Lorem ipsum</span>
                             </h5>
 

@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{corp-layout}">
 <link th:href="@{~/bank/vendors/sweetalert/sweetalert.css}" rel="stylesheet"/>
-<body onload="currentBar('Beneficiaries')">
+<body onload="currentBar('Transfer Requests')">
 
 <div layout:fragment="content">
     <div class="col-md-5 col-sm-5 ">
@@ -65,7 +65,7 @@
         var table = $('#requests').DataTable({
             select: true,
             responsive: true,
-            "lengthMenu": [[5, 10, 20], [5, 10, 20]],
+            "lengthMenu": [ [5, 10, 20], [5, 10, 20] ],
             "pagingType": "simple_numbers",
             "searching": false,
             "paging": true,
