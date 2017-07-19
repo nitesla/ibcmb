@@ -1,19 +1,23 @@
 package longbridge.services.implementations;
 
 import longbridge.dtos.CorpLocalBeneficiaryDTO;
+import longbridge.exception.DuplicateObjectException;
+import longbridge.exception.InternetBankingException;
 import longbridge.models.CorpLocalBeneficiary;
 import longbridge.models.Corporate;
-import longbridge.models.CorporateUser;
 import longbridge.repositories.CorpLocalBeneficiaryRepo;
+import longbridge.repositories.CorporateRepo;
+import longbridge.security.userdetails.CustomUserPrincipal;
 import longbridge.services.CorpLocalBeneficiaryService;
-import longbridge.utils.Verifiable;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -27,6 +31,7 @@ import java.util.Locale;
 public class CorpLocalBeneficiaryServiceImpl implements CorpLocalBeneficiaryService {
 
     private CorpLocalBeneficiaryRepo corpLocalBeneficiaryRepo;
+    private CorporateRepo corporateRepo;
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
 
@@ -39,18 +44,30 @@ public class CorpLocalBeneficiaryServiceImpl implements CorpLocalBeneficiaryServ
     Locale locale = LocaleContextHolder.getLocale();
 
     @Autowired
-    public CorpLocalBeneficiaryServiceImpl(CorpLocalBeneficiaryRepo corpLocalBeneficiaryRepo) {
+    public CorpLocalBeneficiaryServiceImpl(CorpLocalBeneficiaryRepo corpLocalBeneficiaryRepo,CorporateRepo corporateRepo) {
         this.corpLocalBeneficiaryRepo = corpLocalBeneficiaryRepo;
+        this.corporateRepo=corporateRepo;
     }
 
 
     @Override
-    public String addCorpLocalBeneficiary(Corporate corporate, CorpLocalBeneficiaryDTO beneficiary) {
-        CorpLocalBeneficiary corpLocalBeneficiary=convertDTOToEntity(beneficiary);
-        corpLocalBeneficiary.setCorporate(corporate);
-        this.corpLocalBeneficiaryRepo.save(corpLocalBeneficiary);
-        logger.trace("Beneficiary {} has been added");
-        return messageSource.getMessage("beneficiary.add.success",null,locale);
+    public String addCorpLocalBeneficiary(CorpLocalBeneficiaryDTO beneficiary) {
+
+
+       try{
+           validateBeneficiary(beneficiary);
+           CorpLocalBeneficiary corpLocalBeneficiary=convertDTOToEntity(beneficiary);
+
+           Corporate corporate= corporateRepo.findOne(getCurrentUser().getCorpId());
+           corpLocalBeneficiary.setCorporate(corporate);
+           this.corpLocalBeneficiaryRepo.save(corpLocalBeneficiary);
+           logger.trace("Beneficiary {} has been added");
+           return messageSource.getMessage("beneficiary.add.success",null,locale);
+
+
+       }catch (Exception e){
+           throw new InternetBankingException(e.getMessage());
+       }
 
     }
 
@@ -105,4 +122,32 @@ public class CorpLocalBeneficiaryServiceImpl implements CorpLocalBeneficiaryServ
         return  corpLocalBeneficiary;
 
     }
+    private void validateBeneficiary(CorpLocalBeneficiaryDTO beneficiary) {
+
+        if (corpLocalBeneficiaryRepo.existsByCorporate_IdAndAccountNumber(getCurrentUser().getCorpId(),beneficiary.getAccountNumber()))
+            throw new DuplicateObjectException("beneficiary.exist");
+/*
+        if (financialInstitutionRepo.findByInstitutionCode(beneficiary.getBeneficiaryBank())==null)
+            throw new InternetBankingException("transfer.beneficiary.invalid");
+
+        if (integrationService.doNameEnquiry(localBeneficiary.getBeneficiaryBank(), localBeneficiary.getAccountNumber()).getAccountName()==null)
+            throw new InternetBankingException("transfer.beneficiary.invalid");
+
+    */
+    }
+
+   private CustomUserPrincipal getCurrentUser(){
+
+
+       Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+       if (!(authentication instanceof AnonymousAuthenticationToken)) {
+           CustomUserPrincipal userPrincipal =(CustomUserPrincipal) authentication.getPrincipal();
+           return userPrincipal;
+       }
+
+       return (null) ;
+
+
+   }
+
 }

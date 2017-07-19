@@ -107,6 +107,10 @@ public class CorporateUserAdvisor {
             ObjectMapper objectMapper = new ObjectMapper();
             CorporateUser corpUser = objectMapper.readValue(verification.getOriginalObject(),CorporateUser.class);
             corporateUserService.createUserOnEntrust(corpUser);
+            String fullName = corpUser.getFirstName()+" "+corpUser.getLastName();
+            String password = passwordPolicyService.generatePassword();
+            corporateUserService.sendPostCreationMessage(corpUser, fullName, corpUser.getUserName(), password, corpUser.getCorporate().getCustomerId());
+
         }
 
 

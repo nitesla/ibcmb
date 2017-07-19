@@ -22,6 +22,7 @@ import longbridge.utils.DateFormatter;
 import longbridge.utils.statement.AccountStatement;
 import longbridge.utils.statement.TransactionDetails;
 import longbridge.utils.statement.TransactionHistory;
+import net.sf.jasperreports.engine.JRException;
 import org.joda.time.DateTime;
 import org.joda.time.Duration;
 import org.slf4j.Logger;
@@ -283,8 +284,8 @@ catch(InternetBankingException e){
 //        Duration diffInDays= new Duration(new DateTime(fromDate),new DateTime(toDate));
    //     logger.info("Day difference {}",diffInDays.getStandardDays());
 
-        Date from =null;
-        Date to =null;
+        Date from ;
+        Date to ;
         DataTablesOutput<TransactionDetails> out = new DataTablesOutput<TransactionDetails>();
         try {
             from = dateFormat.parse(fromDate);
@@ -312,7 +313,7 @@ catch(InternetBankingException e){
     @GetMapping("/downloadstatement")
     public ModelAndView downloadStatementData(ModelMap modelMap, DataTablesInput input, String acctNumber,
 
-                                              String fromDate, String toDate, String tranType, Principal principal) {
+                                              String fromDate, String toDate, String tranType, Principal principal,RedirectAttributes redirectAttributes)  {
         // Pageable pageable = DataTablesUtils.getPageable(input);
 
         Date from;
@@ -328,7 +329,7 @@ catch(InternetBankingException e){
             List<TransactionDetails> list = accountStatement.getTransactionDetails();
             CorporateUser corporateUser=corporateUserService.getUserByName(principal.getName());
             DecimalFormat formatter = new DecimalFormat("#,###.00");
-            System.out.println("list = " + list);
+            logger.info("list {}", list);
             modelMap.put("datasource", list);
             modelMap.put("format", "pdf");
               modelMap.put("summary.accountNum", acctNumber);

@@ -34,13 +34,11 @@
                                 <select name="source" class="form-control" id="source"
 
                                         th:field="*{customerAccountNumber}" required="required" onchange="getBalance()">
-<<<<<<< HEAD
 
                                     <option value=""> select an account</option>
                                     <option th:each="s: ${accounts}" th:value="${s}" th:text="${s}"></option>
-=======
-                                    <option th:each="s: ${accounts}" th:value="${s.accountNumber}" th:text="${s.accountNumber}" th:selected="${s.primaryFlag=='Y'}"></option>
->>>>>>> f04b28e0080937776e50e0efdbd8f12b23545d4f
+
+                                    <option th:each="s: ${accountList}" th:value="${s.accountNumber}" th:text="${s.accountNumber}" th:selected="${s.primaryFlag=='Y'}"></option>
                                 </select>
                                 <p class="errors" th:if="${#fields.hasErrors('customerAccountNumber')}" th:errors="*{customerAccountNumber}">&times;</p>
                             </div>
@@ -86,30 +84,7 @@
 </div>
 
 
-<<<<<<< HEAD
-<!-- CONTENT-WRAPPER SECTION END-->
-<footer th:replace="corp_layout ::corp-footer">
-</footer>
-<!--<script th:src="@{~/customer/js/accountdetails.js}"></script>-->
 
-<script th:inline="javascript">
-    /*<![CDATA[*/
-    function getBalance(){
-        var accountNumber = $('#source').val();
-        $.ajax({
-            url: "/retail/transfer/local/balance/"+accountNumber,
-            type: 'GET',
-            async: false,
-            success:function(availBal){
-                bal = ''+String(availBal);
-                if(bal == "" ){
-                    document.getElementById("myspan").textContent="Could not get balance from server, please try again.";
-                    $("#myspan").show();
-                }else{
-//                    $('input[name=availBal]').val(bal);
-
-                    $('#availBal').text("Available Balance: "+bal);
-=======
 <th:block layout:fragment="scripts">
 
 
@@ -133,34 +108,26 @@
                 async: false,
                 success: function (jd) {
                     var message = jd.message;
-                    var success =  jd.success;
+                    var success = jd.success;
                     console.log(message);
                     console.log(success);
-                    if (success==false){
+                    if (success == false) {
                         document.getElementById("myspan").textContent = "Could not get balance from server, please try again.";
                         $("#myspan").show();
                     } else {
 //                    $('input[name=availBal]').val(bal);
 
-                        var  bal=message;
-                        $('#availBal').text("Available Balance: "+bal);
->>>>>>> f04b28e0080937776e50e0efdbd8f12b23545d4f
+                        var bal = message;
+                        $('#availBal').text("Available Balance: " + bal);
+
+
+                    }
 
                 }
-<<<<<<< HEAD
-            }
-        })
-    }
-
-    /*]]>*/
-
-
-</script>
-
-</div>
-=======
             })
+
         }
+        
         function getDestCurrency(){
             var accountNumber = $('#source').val();
             $.ajax({
@@ -187,7 +154,7 @@
     </script>
    
 </th:block>
->>>>>>> f04b28e0080937776e50e0efdbd8f12b23545d4f
+
 
 </body>
 </html>

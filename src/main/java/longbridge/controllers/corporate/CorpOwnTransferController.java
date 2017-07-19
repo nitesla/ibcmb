@@ -159,12 +159,11 @@ public class CorpOwnTransferController {
     }
 
 
-
     @PostMapping("/edit")
-    public String editTransfer(@ModelAttribute("corpTransferRequest")  TransferRequestDTO transferRequestDTO,Model model,HttpServletRequest request){
+    public String editTransfer(@ModelAttribute("corpTransferRequest") TransferRequestDTO transferRequestDTO, Model model, HttpServletRequest request) {
         transferRequestDTO.setTransferType(TransferType.OWN_ACCOUNT_TRANSFER);
         transferRequestDTO.setFinancialInstitution(financialInstitutionService.getFinancialInstitutionByCode(bankCode));
-        model.addAttribute("corpTransferRequest",transferRequestDTO);
+        model.addAttribute("corpTransferRequest", transferRequestDTO);
         return page + "pagei";
     }
 

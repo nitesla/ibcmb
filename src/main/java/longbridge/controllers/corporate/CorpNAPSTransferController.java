@@ -236,7 +236,9 @@ public class CorpNAPSTransferController {
                 CreditRequestDTO creditRequest = new CreditRequestDTO();
                 Long id = Long.valueOf(rowIndex);
                 System.out.println(id);
+
                 creditRequest.setId(id);
+
                 creditRequest.setSerial((cellData.get(0).toString()));
                 creditRequest.setRefCode(cellData.get(1).toString());
                 creditRequest.setAccountNumber(cellData.get(2).toString());
