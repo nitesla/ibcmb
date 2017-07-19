@@ -148,12 +148,14 @@ public class RoleServiceImpl implements RoleService {
     }
 
     public String addPermission(PermissionDTO permissionDTO) throws InternetBankingException {
-        try {
+        try
+        {
             Permission permission = convertDTOToEntity(permissionDTO);
             permissionRepo.save(permission);
             logger.info("Added permission {}", permission.toString());
             return messageSource.getMessage("permission.add.success", null, locale);
-        } catch (Exception e) {
+        } catch (Exception e)
+        {
             throw new InternetBankingException(messageSource.getMessage("permission.add.failure", null, locale), e);
         }
     }

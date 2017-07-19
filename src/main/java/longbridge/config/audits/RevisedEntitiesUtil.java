@@ -2,6 +2,7 @@ package longbridge.config.audits;
 
 import longbridge.config.SpringContext;
 import org.codehaus.jettison.json.JSONObject;
+//import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
@@ -11,6 +12,7 @@ import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.sql.DataSource;
+import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -32,22 +34,24 @@ public class RevisedEntitiesUtil {
         List<Integer> revIds = new ArrayList<>();
         entityName = getOracleEntity(entityName);
 
-            String auditEntity = entityName + "_AUD";
-            ApplicationContext context = SpringContext.getApplicationContext();
-            DataSource dataSource = context.getBean(DataSource.class);
-            NamedParameterJdbcTemplate namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
-            String sql = "select a.rev from "+ auditEntity +" a where a.id in (select ar.id from " + auditEntity + " ar where ar.rev = :revisionid)";
-            SqlParameterSource namedParameters = new MapSqlParameterSource("revisionid", revId);
-            mapList= namedParameterJdbcTemplate.queryForList(sql, namedParameters);
-            if(!mapList.isEmpty()) {
-                for (Map map : mapList) {
-                    revIds.add(Integer.parseInt(map.get("REV").toString()));
+        String auditEntity = entityName + "_AUD";
+        ApplicationContext context = SpringContext.getApplicationContext();
+        DataSource dataSource = context.getBean(DataSource.class);
+        NamedParameterJdbcTemplate namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
+        String sql = "select a.rev from "+ auditEntity +" a where a.id in (select ar.id from " + auditEntity + " ar where ar.rev = :revisionid)";
+        SqlParameterSource namedParameters = new MapSqlParameterSource("revisionid", revId);
+        mapList= namedParameterJdbcTemplate.queryForList(sql, namedParameters);
+        if(!mapList.isEmpty()) {
+            for (Map map : mapList) {
+                revIds.add(Integer.parseInt(map.get("REV").toString()));
 
-                }
             }
+        }
+        logger.info("the rev id {}",revId);
 
         return revIds;
     }
+    @NotNull
     private static String getOracleEntity(String enttyname){
         StringBuilder builder = new StringBuilder();
         for(int y = 0; y < enttyname.length(); y++){
@@ -61,7 +65,42 @@ public class RevisedEntitiesUtil {
         return builder.toString();
     }
     @Transactional
-    public static  Map<String, List<String>> getEntityPastDetails(String entityName,String[] revId)
+    public static  Map<String, JSONObject> getEntityPastDetails(String entityName,String[] revId)
+    {
+        List<Integer> refIds = new ArrayList<>();
+        for (String rev:revId) {
+            refIds.add(Integer.parseInt(rev));
+        }
+        Map<String,JSONObject> mergedDetails =  new HashMap<>();
+        JSONObject jsonObject = null;
+        entityName = getOracleEntity(entityName);
+        String auditEntity = entityName + "_AUD";
+        ApplicationContext context = SpringContext.getApplicationContext();
+        DataSource dataSource = context.getBean(DataSource.class);
+        NamedParameterJdbcTemplate namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
+        String sql = "select * from "+ auditEntity +" a where a.REV in (:revIdList)";
+        SqlParameterSource namedParameters = new MapSqlParameterSource("revIdList", refIds);
+        List<Map<String ,Object>> entityDetails = namedParameterJdbcTemplate.queryForList(sql, namedParameters);
+        if(!entityDetails.isEmpty()) {
+            entityDetails = removeIrrelevantDetails(entityDetails);
+            if(entityDetails.size()>1)
+            {
+                jsonObject =  new JSONObject(entityDetails.get(0));
+                mergedDetails.put("pastDetails",jsonObject);
+                mergedDetails.put("currentDetails", new JSONObject(entityDetails.get(1)));
+
+            }
+            else{
+                jsonObject =  new JSONObject(entityDetails.get(0));
+                mergedDetails.put("pastDetails",jsonObject);
+            }
+
+        }
+
+        return mergedDetails;
+    }
+    @Transactional
+    public static  Map<String, List<String>> getEntityPastDetailsBkp(String entityName,String[] revId)
     {
         List<Integer> refIds = new ArrayList<>();
         for (String rev:revId) {
@@ -80,40 +119,28 @@ public class RevisedEntitiesUtil {
         String sql = "select * from "+ auditEntity +" a where a.REV in (:revIdList)";
         SqlParameterSource namedParameters = new MapSqlParameterSource("revIdList", refIds);
         List<Map<String ,Object>> entityDetails = namedParameterJdbcTemplate.queryForList(sql, namedParameters);
+        if(!entityDetails.isEmpty()) {
+            entityDetails = removeIrrelevantDetails(entityDetails);
+            if(entityDetails.size()>1)
+            {
+                logger.info("entity details {}",entityDetails);
+                for (String item:entityDetails.get(0).keySet()) {
+                    itemList.add(entityDetails.get(0).get(item).toString());
+                }
 
-        if(!entityDetails.isEmpty())
-        {
-           entityDetails = removeIrrelevantDetails(entityDetails);
-           logger.info("this is the entity details {}",entityDetails);
-
-           if(entityDetails.size()>1)
-           {
-               for (String item:entityDetails.get(0).keySet())
-               {
-                   itemList.add(entityDetails.get(0).get(item).toString());
-
-                   logger.info("this is the itemList{}",itemList);
-               }
-
-               mergedDetails.put("pastDetails",itemList);
-               for (String item:entityDetails.get(1).keySet())
-               {
-                   itemList2.add(entityDetails.get(1).get(item).toString());
-
-                   logger.info("this is the itemList{}",itemList2);
-               }
-               mergedDetails.put("currentDetails",itemList2);
-               mergedDetails.put("keys",new ArrayList<>(entityDetails.get(0).keySet()));
-           }
-           else
-               {
-               for (String item:entityDetails.get(0).keySet())
-               {
-                   itemList.add(entityDetails.get(0).get(item).toString());
-               }
-               mergedDetails.put("currentDetails",itemList);
-               mergedDetails.put("keys",new ArrayList<>(entityDetails.get(0).keySet()));
-              }
+                mergedDetails.put("pastDetails",itemList);
+                for (String item:entityDetails.get(1).keySet()) {
+                    itemList2.add(entityDetails.get(1).get(item).toString());
+                }
+                mergedDetails.put("currentDetails",itemList2);
+                mergedDetails.put("keys",new ArrayList<>(entityDetails.get(0).keySet()));
+            }
+            else{
+                for (String item:entityDetails.get(0).keySet()) {
+                    itemList.add(entityDetails.get(0).get(item).toString());
+                }
+                mergedDetails.put("currentDetails",itemList);
+            }
 
         }
 

@@ -48,15 +48,18 @@ public class AdmPermissionController {
     //org.springframework.web.context.request.WebRequest
     @PostMapping
     public String createPermission(@ModelAttribute("permission") PermissionDTO permission, BindingResult result, RedirectAttributes redirectAttributes, Locale locale) {
-        if (result.hasErrors()) {
+        if (result.hasErrors())
+        {
             result.addError(new ObjectError("invalid", messageSource.getMessage("form.fields.required", null, locale)));
             return "adm/permission/add";
         }
-        try {
+        try
+        {
             String message = roleService.addPermission(permission);
             redirectAttributes.addFlashAttribute("message", message);
             return "redirect:/admin/permissions";
-        } catch (InternetBankingException ibe) {
+        } catch (InternetBankingException ibe)
+        {
             result.addError(new ObjectError("error", messageSource.getMessage(ibe.getMessage(),null, locale)));
             logger.error("Error creating permission", ibe);
             return "adm/permission/add";
@@ -64,7 +67,8 @@ public class AdmPermissionController {
     }
 
     @GetMapping("/{permissionId}")
-    public PermissionDTO getPermission(@PathVariable Long permissionId, Model model) {
+    public PermissionDTO getPermission(@PathVariable Long permissionId, Model model)
+    {
         PermissionDTO permission = roleService.getPermission(permissionId);
         model.addAttribute("permission", permission);
         return permission;
