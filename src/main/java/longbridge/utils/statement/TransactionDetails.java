@@ -16,6 +16,7 @@ public class TransactionDetails {
     private String accountBalance;
     private String tranType;
     private String tranAmount;
+    private String tranId;
 
 
     public String getCurrencyCode() {
@@ -74,6 +75,14 @@ public class TransactionDetails {
         this.tranAmount = tranAmount;
     }
 
+    public String getTranId() {
+        return tranId;
+    }
+
+    public void setTranId(String tranId) {
+        this.tranId = tranId;
+    }
+
     @Override
     public String toString() {
         return "TransactionDetails{" +
@@ -83,6 +92,8 @@ public class TransactionDetails {
                 ", narration='" + narration + '\'' +
                 ", accountBalance='" + accountBalance + '\'' +
                 ", tranType='" + tranType + '\'' +
+                ", tranAmount='" + tranAmount + '\'' +
+                ", tranId='" + tranId + '\'' +
                 '}';
     }
 }
