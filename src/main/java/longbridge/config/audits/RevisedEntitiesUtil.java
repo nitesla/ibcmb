@@ -91,12 +91,16 @@ public class RevisedEntitiesUtil {
                for (String item:entityDetails.get(0).keySet())
                {
                    itemList.add(entityDetails.get(0).get(item).toString());
+
+                   logger.info("this is the itemList{}",itemList);
                }
 
                mergedDetails.put("pastDetails",itemList);
                for (String item:entityDetails.get(1).keySet())
                {
                    itemList2.add(entityDetails.get(1).get(item).toString());
+
+                   logger.info("this is the itemList{}",itemList2);
                }
                mergedDetails.put("currentDetails",itemList2);
                mergedDetails.put("keys",new ArrayList<>(entityDetails.get(0).keySet()));

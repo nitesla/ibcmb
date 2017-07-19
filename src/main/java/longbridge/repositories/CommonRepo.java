@@ -12,7 +12,8 @@ import java.io.Serializable;
  * Created by Fortune on 4/5/2017.
  */
 @NoRepositoryBean
-public interface CommonRepo<T, ID extends Serializable> extends JpaRepository<T, ID> {
-
+public interface CommonRepo<T, ID extends Serializable> extends JpaRepository<T, ID>
+{
 	public Page<T> findUsingPattern(String pattern, Pageable details);
+
 }

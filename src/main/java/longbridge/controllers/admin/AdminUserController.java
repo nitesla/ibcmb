@@ -69,7 +69,8 @@ public class AdminUserController {
     ObjectMapper mapper = new ObjectMapper();
 
     @GetMapping("/new")
-    public String addUser(Model model) {
+    public String addUser(Model model)
+    {
         Iterable<RoleDTO> roles = roleService.getRoles();
         model.addAttribute("adminUser", new AdminUserDTO());
         model.addAttribute("roles", roles);
@@ -87,7 +88,7 @@ public class AdminUserController {
             String message = adminUserService.addUser(adminUser);
             redirectAttributes.addFlashAttribute("message", message);
             return "redirect:/admin/users";
-        }
+            }
         catch (DuplicateObjectException doe) {
             result.addError(new ObjectError("error", doe.getMessage()));
             logger.error("Error creating admin user {}", adminUser.getUserName(), doe);

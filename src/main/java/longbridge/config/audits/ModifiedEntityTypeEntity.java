@@ -22,7 +22,8 @@ public class ModifiedEntityTypeEntity  implements Serializable{
 
     private String entityClassName;
 
-    public ModifiedEntityTypeEntity() {
+    public ModifiedEntityTypeEntity()
+    {
     }
 
     public ModifiedEntityTypeEntity(CustomRevisionEntity revision, String entityClassName)

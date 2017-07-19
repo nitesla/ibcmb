@@ -75,7 +75,8 @@ public class RoleServiceImpl implements RoleService {
 
         Role role = roleRepo.findByName(roleDTO.getName());
 
-        if(role!=null){
+        if(role!=null)
+        {
             throw new DuplicateObjectException(messageSource.getMessage("role.exist", null, locale));
 
         }
@@ -85,7 +86,8 @@ public class RoleServiceImpl implements RoleService {
             roleRepo.save(role);
             logger.info("Added role {}", role.toString());
             return messageSource.getMessage("role.add.success", null, locale);
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             throw new InternetBankingException(messageSource.getMessage("role.add.failure", null, locale), e);
         }
     }
@@ -288,7 +290,8 @@ public class RoleServiceImpl implements RoleService {
     public Page<User> getUsers(RoleDTO roledto, Pageable pageDetails) {
         Role role = roleRepo.findOne(roledto.getId());
         Page<User> pageImpl = null;
-        switch (role.getUserType()) {
+        switch (role.getUserType())
+        {
             case ADMIN: {
                 Page<AdminUser> users = adminRepo.findByRole(role, pageDetails);
                 long elements = users.getTotalElements();

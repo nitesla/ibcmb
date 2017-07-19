@@ -3,6 +3,7 @@ package longbridge.services.implementations;
 import longbridge.config.audits.CustomRevisionEntity;
 import longbridge.config.audits.ModifiedEntityTypeEntity;
 import longbridge.config.audits.RevisedEntitiesUtil;
+import longbridge.dtos.AdminUserDTO;
 import longbridge.dtos.CodeDTO;
 //import longbridge.dtos.RevisionInfo;
 import longbridge.dtos.VerificationDTO;
@@ -83,10 +84,18 @@ public class AuditConfigImpl implements AuditConfigService {
 
 
 	@Override
+	public Page<ModifiedEntityTypeEntity> audit(String pattern, Pageable pageDetails)
+	{
+		Page<ModifiedEntityTypeEntity> page = modifiedEntityTypeEntityRepo.findUsingPattern(pattern, pageDetails);
+		//Page<ModifiedEntityTypeEntity> pageImpl = new PageImpl<AdminUserDTO>(dtOs,pageDetails,t);
+		return page;
+	}
+
+	@Override
 	public Page<ModifiedEntityTypeEntity> getRevisionEntities(String pattern, Pageable pageDetails)
 	{
 		Page<ModifiedEntityTypeEntity> page=modifiedEntityTypeEntityRepo.findUsingPattern(pattern,pageDetails);
-		return  page;
+		return page;
 	}
 
 	public Page<ModifiedEntityTypeEntity> getRevisionEntities(Pageable pageable)
@@ -201,6 +210,7 @@ public class AuditConfigImpl implements AuditConfigService {
 	public Page<AuditConfig> findEntities(String pattern, Pageable pageDetails)
 	{
 		return configRepo.findUsingPattern(pattern,pageDetails);
+
 	}
 
 

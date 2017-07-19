@@ -3,6 +3,7 @@ package longbridge.controllers.admin;
 import longbridge.config.audits.CustomRevisionEntity;
 import longbridge.config.audits.ModifiedEntityTypeEntity;
 import longbridge.config.audits.RevisedEntitiesUtil;
+import longbridge.dtos.AdminUserDTO;
 import longbridge.dtos.CodeDTO;
 //import longbridge.dtos.RevisionInfo;
 import longbridge.dtos.VerificationDTO;
@@ -90,16 +91,40 @@ public class AdmAuditController {
     @GetMapping("/revised/entity/all")
     public @ResponseBody DataTablesOutput<ModifiedEntityTypeEntity> getAllRevisedEntity(DataTablesInput input)
     {
-        Pageable pageable = DataTablesUtils.getPageable(input);
-        Page<ModifiedEntityTypeEntity> auditConf=null;
-        auditConf = auditCfgService.getRevisionEntitiesByDate(pageable);
+        //  Pageable pageable = DataTablesUtils.getPageable(input);
+        Pageable pageables = DataTablesUtils.getPageable(input);
+        Page<ModifiedEntityTypeEntity> audit = null;
+        audit=auditCfgService.getRevisionEntitiesByDate(pageables);
         DataTablesOutput<ModifiedEntityTypeEntity> out = new DataTablesOutput<ModifiedEntityTypeEntity>();
         out.setDraw(input.getDraw());
-        out.setData(auditConf.getContent());
-        out.setRecordsFiltered(auditConf.getTotalElements());
-        out.setRecordsTotal(auditConf.getTotalElements());
+        out.setData(audit.getContent());
+        out.setRecordsFiltered(audit.getTotalElements());
+        out.setRecordsTotal(audit.getTotalElements());
         return out;
     }
+
+
+//    @GetMapping("/revised/entity/all")
+//    public @ResponseBody DataTablesOutput<ModifiedEntityTypeEntity> getAllRevisedEntity(DataTablesInput input,@RequestParam("csearch") String search)
+//    {
+//      //  Pageable pageable = DataTablesUtils.getPageable(input);
+//        Pageable pageables = DataTablesUtils.getPageable(input);
+//        Page<ModifiedEntityTypeEntity> audit = null;
+//        if(StringUtils.isNoneBlank(search))
+//        {
+//            audit=auditCfgService.getRevisionEntities(search,pageables);
+//        }
+//        else
+//        {
+//            audit=auditCfgService.getRevisionEntitiesByDate(pageables);
+//        }
+//        DataTablesOutput<ModifiedEntityTypeEntity> out = new DataTablesOutput<ModifiedEntityTypeEntity>();
+//        out.setDraw(input.getDraw());
+//        out.setData(audit.getContent());
+//        out.setRecordsFiltered(audit.getTotalElements());
+//        out.setRecordsTotal(audit.getTotalElements());
+//        return out;
+//    }
 
 
     @GetMapping("/{id}/{classname}/view")

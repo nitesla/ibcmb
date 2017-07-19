@@ -88,17 +88,18 @@ public class AdmRoleController {
     }
 
     @GetMapping("/{reqId}/edit")
-    public String editRole(@PathVariable Long reqId, Model model) {
+    public String editRole(@PathVariable Long reqId, Model model)
+    {
         RoleDTO role = roleService.getRole(reqId);
         Iterable<PermissionDTO> permissionDTOs = roleService.getRole(reqId).getPermissions();
         model.addAttribute("role", role);
 //        model.addAttribute("permissions",role);
-
         return "/adm/role/edit";
     }
 
     @GetMapping("/{reqId}/view")
-    public String viewRole(@PathVariable Long reqId, Model model) {
+    public String viewRole(@PathVariable Long reqId, Model model)
+    {
         RoleDTO role = roleService.getRole(reqId);
         model.addAttribute("role", role);
         return "/adm/role/details";
@@ -107,7 +108,8 @@ public class AdmRoleController {
     @GetMapping(path = "/{roleId}/users")
     public
     @ResponseBody
-    DataTablesOutput<User> getUsers(@PathVariable Long roleId, DataTablesInput input) {
+    DataTablesOutput<User> getUsers(@PathVariable Long roleId, DataTablesInput input)
+    {
         RoleDTO role = roleService.getRole(roleId);
         Pageable pageable = DataTablesUtils.getPageable(input);
         Page<User> users = roleService.getUsers(role, pageable);
@@ -141,7 +143,8 @@ public class AdmRoleController {
 
     @PostMapping
     public String createRole(@ModelAttribute("role") @Valid RoleDTO roleDTO, BindingResult result, WebRequest request, RedirectAttributes redirectAttributes, Locale locale) {
-        if (result.hasErrors()) {
+        if (result.hasErrors())
+        {
             result.addError(new ObjectError("invalid", messageSource.getMessage("form.fields.required", null, locale)));
             return "adm/role/add";
         }
@@ -149,25 +152,30 @@ public class AdmRoleController {
         List<PermissionDTO> permissionList = new ArrayList<>();
 
         String[] permissions = request.getParameterValues("permissionsList");
-        if (permissions != null) {
-            for (String perm : permissions) {
+        if (permissions !=null)
+        {
+            for (String perm : permissions)
+            {
                 PermissionDTO pdto = new PermissionDTO();
                 pdto.setId(NumberUtils.toLong(perm));
                 permissionList.add(pdto);
             }
         }
         roleDTO.setPermissions(permissionList);
-        try {
+        try
+        {
             String message = roleService.addRole(roleDTO);
             redirectAttributes.addFlashAttribute("message", message);
             return "redirect:/admin/roles";
         }
-        catch (DuplicateObjectException ibe) {
+        catch (DuplicateObjectException ibe)
+        {
             result.addError(new ObjectError("error", ibe.getMessage()));
             logger.error("Error creating role", ibe);
             return "adm/role/add";
         }
-        catch (InternetBankingException ibe) {
+        catch (InternetBankingException ibe)
+        {
             result.addError(new ObjectError("error", messageSource.getMessage("role.add.failure", null, locale)));
             logger.error("Error creating role", ibe);
             return "adm/role/add";

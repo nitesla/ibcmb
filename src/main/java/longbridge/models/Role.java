@@ -47,6 +47,7 @@ public class Role extends AbstractEntity implements PrettySerializer{
     }
 
     public void setUserType(UserType userType) {
+
         this.userType = userType;
     }
 
