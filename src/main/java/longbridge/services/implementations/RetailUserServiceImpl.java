@@ -399,6 +399,7 @@ public class RetailUserServiceImpl implements RetailUserService {
             RetailUser retailUser = retailUserRepo.findOne(user.getId());
             retailUser.setPassword(this.passwordEncoder.encode(custResetPassword.getNewPassword()));
             retailUser.setExpiryDate(passwordPolicyService.getPasswordExpiryDate());
+            retailUser.setTempPassword(null);
             passwordPolicyService.saveRetailPassword(retailUser);
             this.retailUserRepo.save(retailUser);
             logger.info("User {} password has been updated", user.getId());

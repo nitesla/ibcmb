@@ -97,7 +97,7 @@
                                         </div>
 
                                         <div class="form-group">
-                                            <label>Select Email or Date of birth to complete registration</label>
+                                            <label>Select Email or Date of birth</label>
                                             <select name="userdet" id="userdet" class="my-select">
                                                 <option th:value="email">Use Email</option>
                                                 <option th:value="dob">Use Date of Birth</option>
@@ -128,7 +128,7 @@
                                         <br/>
 
                                         <div id='regcodebox' class="form-group clearfix">
-                                            <label>Registration Code</label>
+                                            <label>Please enter the registration code sent to your mobile device</label>
                                             <span class='req'></span><input type="number" min="0" id="code" name="regCode" class="col-md-8 my-select required" autocomplete="off" placeholder="Registration Code"/>
                                             <a id="send" href="javascript:void(0)" onclick="sendRegCode();" data-toggle="tooltip" data-placement="right" title="Resend verification code">Resend Verification Code</a>
                                         </div>
