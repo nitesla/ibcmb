@@ -197,13 +197,12 @@ public class CorporateUserServiceImpl implements CorporateUserService {
             String password = passwordPolicyService.generatePassword();
             Role role = roleRepo.findOne(Long.parseLong(user.getRoleId()));
             corporateUser.setRole(role);
-            Corporate corp = new Corporate();
-            corp.setId(Long.parseLong(user.getCorporateId()));
+            Corporate corp = corporateRepo.findOne(Long.parseLong(user.getCorporateId()));
             corporateUser.setCorporate(corp);
             CorporateUser corpUser = corporateUserRepo.save(corporateUser);
             createUserOnEntrust(corpUser);
             String fullName = corporateUser.getFirstName() + " " + corporateUser.getLastName();
-            sendPostCreationMessage(corporateUser, fullName, user.getUserName(), password, corporateUser.getCorporate().getCustomerId());
+            sendPostCreationMessage(corporateUser, fullName, user.getUserName(), password, corp.getCustomerId());
 
             logger.info("New corporate user {} created", corporateUser.getUserName());
             return messageSource.getMessage("user.add.success", null, locale);
@@ -241,8 +240,6 @@ public class CorporateUserServiceImpl implements CorporateUserService {
                             logger.error("Failed to add user contacts on Entrust");
                             securityService.deleteEntrustUser(entrustId, group);
                             throw new EntrustException(messageSource.getMessage("entrust.contact.failure", null, locale));
-
-
                         }
                     }
                     user.setEntrustId(entrustId);
@@ -344,11 +341,12 @@ public class CorporateUserServiceImpl implements CorporateUserService {
         }
     }
 
-    @Async
+
     public void sendPostCreationMessage(User user, String fullName, String username, String password, String corporateId) {
         CorporateUser corporateUser = corporateUserRepo.findFirstByUserName(user.getUserName());
         if (corporateUser != null) {
 
+            Corporate corporate = corporateUser.getCorporate();
             corporateUser.setPassword(passwordEncoder.encode(password));
             corporateUser.setExpiryDate(new Date());
             passwordPolicyService.saveCorporatePassword(corporateUser);
@@ -356,7 +354,7 @@ public class CorporateUserServiceImpl implements CorporateUserService {
                 Email email = new Email.Builder()
                         .setRecipient(user.getEmail())
                         .setSubject(messageSource.getMessage("corporate.customer.create.subject", null, locale))
-                        .setBody(String.format(messageSource.getMessage("corporate.customer.create.message", null, locale), fullName, username, password, corporateId))
+                        .setBody(String.format(messageSource.getMessage("corporate.customer.create.message", null, locale), fullName, username, password, corporate.getCustomerId()))
                         .build();
                 mailService.send(email);
             } catch (MailException me) {
