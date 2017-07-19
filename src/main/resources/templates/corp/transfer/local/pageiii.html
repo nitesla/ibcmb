@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{corp-layout}">
 
-<body onload="currentBar('Beneficiaries')">
+<body onload="currentBar('transaction summary')">
 
 <div layout:fragment="content">
     <div class="col-md-5 col-sm-5 ">
@@ -66,13 +66,13 @@
                                 <input  type="checkbox" id="add" name="add"/>Add Beneficiary
                             </label>
                         </span>
-                        <div class="form-group col-xs-12">
+                        <div class="form-group col-xs-12 text-center">
                             <!--<a style="cursor: pointer;" onclick="goBack()" >Modify</a>-->
-                            <button type="submit" class="btn btn-link required-step">Proceed</button>
+                            <button type="submit" class="btn btn-link required-step my-buttons">Proceed</button>
 
-                            <button onclick="cancel();" class='btn btn-link less-required'>Cancel</button>
+                            <button onclick="cancel();" class='btn btn-link less-required my-buttons'>Cancel</button>
 
-                             <button type='button' class='btn btn-link less-required' onclick="edit();">Modify</button>
+                             <button type='button' class='btn btn-link less-required my-buttons' onclick="edit();">Modify</button>
 
                             </div>
                         </form>

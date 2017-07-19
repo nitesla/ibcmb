@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{corp-layout}">
 <link th:href="@{~/bank/vendors/sweetalert/sweetalert.css}" rel="stylesheet"/>
-<body onload="currentBar('Beneficiaries')">
+<body onload="currentBar('bulk transfer')">
 
 <div layout:fragment="content">
     <div class="col-md-5 col-sm-5 ">
@@ -13,7 +13,7 @@
     </div>
 
     <div class="col-xs-12 ml-15 " >
-        <div class="col-xs-11 no-pad-lef  no-mt no-bd  alert">
+        <div class="col-xs-12 no-pad-lef  no-mt no-bd  alert">
             <div class="">
                             <h4 class="sub_header"></h4>
                             <div class="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
@@ -24,27 +24,27 @@
                             </div>
                             <br/>
                             <div class="table-responsive">
-                            <table class="table table-striped table-bordered bg-white table-hover" id="bulk">
-                                <thead>
-                                <tr>
-                                    <th>Debit Account</th>
-                                    <th>Request Date</th>
-                                    <th>Status</th>
-                                </tr>
-                                </thead>
-                                <tbody>
+                                <table class="table table-striped table-bordered bg-white table-hover" id="bulk">
+                                    <thead>
+                                    <tr>
+                                        <th>Debit Account</th>
+                                        <th>Request Date</th>
+                                        <th>Status</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
 
 
-                                </tbody>
-                                <!--<tfoot>-->
-                                <!--<tr>-->
-                                    <!--<th>Batch ID</th>-->
-                                    <!--<th>Debit Account</th>-->
-                                    <!--<th>Request Date</th>-->
-                                    <!--<th>Status</th>-->
-                                <!--</tr>-->
-                                <!--</tfoot>-->
-                            </table>
+                                    </tbody>
+                                    <!--<tfoot>-->
+                                    <!--<tr>-->
+                                        <!--<th>Batch ID</th>-->
+                                        <!--<th>Debit Account</th>-->
+                                        <!--<th>Request Date</th>-->
+                                        <!--<th>Status</th>-->
+                                    <!--</tr>-->
+                                    <!--</tfoot>-->
+                                </table>
                             </div>
                 </div>
         </div>
