@@ -36,7 +36,19 @@
 
             if(SECURITY_QUESTION_STEP === currentIndex){
                 console.log("Current step is the account details step");
-                var secAnswer = $('input[name="securityAnswer"]').val();
+                var noOfQs = $('#noOfQuestion').val();
+                var i = 0;
+                var secAnswer ="";
+                for(var i = 0;i<parseInt(noOfQs);i++){
+                    // console.log("answer "+$('#securityAnswer'+i).val());
+                    if(i ===0){
+                        secAnswer+=$('#securityAnswer'+i).val();
+                    }else{
+                        secAnswer +=','+$('#securityAnswer'+i).val();
+
+                    }
+                }
+                console.log("answer 2 "+secAnswer);
                 return isValid && validateSecAnswer(secAnswer);
             }
             if(VALIDATE_GEN_PASS === currentIndex){
@@ -71,15 +83,20 @@
     });
 
 
-    function validateSecAnswer(secAnswer){
+    function validateSecAnswer(secAnswers){
+        var secAnswer = secAnswers;
         var sent = "";
         var result;
+        var username = $('input[name="username"]').val();
+        console.log("validating "+secAnswer);
         $.ajax({
             type:'GET',
-            url:"/rest/secAns/"+secAnswer,
+            url:"/rest/secAns",
+            data: {username : username,secAnswers:secAnswer},
             async:false,
-            success:function(data1){
-                result = ''+String(data1);
+
+            success:function(data){
+                result = ''+String(data);
                 if(result == "true"){
                     //$('input[name=username]').val(result);
                 }else{
