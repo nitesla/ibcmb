@@ -13,6 +13,7 @@ import longbridge.services.MailService;
 import longbridge.services.PasswordPolicyService;
 import longbridge.services.RetailUserService;
 import longbridge.services.SecurityService;
+import longbridge.utils.StringUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -80,13 +81,14 @@ public class RetrieveCredentialController {
                 List<String> questions= qa.get("questions");
                 List<String> answers= qa.get("answers");
                 String secQuestion = questions.get(0);
-
-                if (secQuestion == null || secQuestion.equals("")){
+                if (questions == null){
                     redirectAttributes.addFlashAttribute("failure", "Invalid Credentials");
                     return "redirect:/login/retail";
                 }else{
+                    logger.info("the question size {} and values {} ",questions.size(),questions);
                     session.setAttribute("secretAnswer", answers);
-                    model.addAttribute("secQuestion", secQuestion);
+                    model.addAttribute("secQuestion", questions);
+                    model.addAttribute("noOfQuestion", questions.size());
                 }
 
             }else {
@@ -161,34 +163,42 @@ public class RetrieveCredentialController {
         }
     }
 
-    @GetMapping("/rest/secAns/{answer}")
-    public @ResponseBody String getSecAns(@PathVariable String answer, HttpSession session){
+    @GetMapping("/rest/secAns")
+    public @ResponseBody String getSecAns(WebRequest webRequest, HttpSession session){
         try{
             //confirm security question is correct
-            String secAnswer="";
-            RetailUser retailUser = retailUserService.getUserByName((String) session.getAttribute("username"));
+            int noOfMismatch = 0;
+            String username=webRequest.getParameter("username");
+            logger.info("answer 1 {}",webRequest.getParameter("secAnswers"));
+            logger.info("user {}",webRequest.getParameter("username"));
+            List<String> answers = StringUtil.splitByComma(webRequest.getParameter("secAnswers"));
+            RetailUser retailUser = retailUserService.getUserByName(username);
             Map<String, List<String>> qa = securityService.getUserQA(retailUser.getEntrustId(), retailUser.getEntrustGroup());
             //List<String> sec = null;
+            logger.info("sec questions {}",qa);
             if (qa != null){
-                List<String> question = qa.get("answers");
-                secAnswer = question.stream().filter(Objects::nonNull).findFirst().orElse("");
-                logger.info("user answer {}", answer);
-                logger.info("answer {}", secAnswer);
+                List<String> entAnswers = qa.get("answers");
+//                secAnswer = question.stream().filter(Objects::nonNull).findFirst().orElse("");
 
-                if (!secAnswer.equalsIgnoreCase(answer)){
-                    return "";
-                }else {
-                    return "true";
+                logger.info("user answer {}", answers);
+                if((answers.size()>0)&&(entAnswers.size()>0)) {
+                    for(int i =0; i<answers.size();i++){
+                        if(!answers.get(i).equalsIgnoreCase(entAnswers.get(i))){
+                            noOfMismatch++;
+                        }
+                    }
+                    logger.info("no of mis match is {}",noOfMismatch);
+                    if(noOfMismatch==0){
+                        return "true";
+                    }
                 }
-
-            }else {
-                return "";
             }
             //return (String) session.getAttribute("username");
         }catch (Exception e){
             logger.info(e.getMessage());
-            return "";
+            return messageSource.getMessage("sec.ans.failed", null, locale);
         }
+        return messageSource.getMessage("sec.ans.failed", null, locale);
     }
 
     @GetMapping("/rest/sendGenPass/{username}")
