@@ -1,10 +1,11 @@
 package longbridge.utils;
 
 
-import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.context.request.WebRequest;
+
+import javax.validation.constraints.NotNull;
 
 /**
  * Created by Longbridge on 7/1/2017.

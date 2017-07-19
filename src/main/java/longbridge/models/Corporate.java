@@ -27,7 +27,6 @@ import java.util.*;
 @Where(clause ="del_Flag='N'" )
 public class Corporate extends AbstractEntity implements PrettySerializer{
 
-
     private String rcNumber;
     private String customerId;
     private String corporateType;
@@ -64,7 +63,6 @@ public class Corporate extends AbstractEntity implements PrettySerializer{
     public void setCorpLimits(Collection<CorpLimit> corpLimits) {
         this.corpLimits = corpLimits;
     }
-
 
     public Set<CorporateRole> getCorporateRoles() {
         return corporateRoles;

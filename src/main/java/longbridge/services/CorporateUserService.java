@@ -15,7 +15,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
 
 import javax.transaction.Transactional;
-import java.util.Date;
 import java.util.List;
 
 
@@ -138,7 +137,7 @@ public interface CorporateUserService{
     @PreAuthorize("hasAuthority('UNLOCK_CORP_USER')")
     String unlockUser(Long id) throws InternetBankingException;
 
-    void createUserOnEntrust(CorporateUser user);
+    void createUserOnEntrustAndSendCredentials(CorporateUser user);
 
 
 }
