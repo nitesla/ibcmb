@@ -106,21 +106,28 @@ public class TokenAuthController {
                 }
             } catch (InternetBankingSecurityException e) {
                 logger.info(e.getMessage());
+                if(e.getMessage() !=null) {
+                    stringBuilder.append(e.getMessage());
+                }else {
+                    stringBuilder.append("Service not available");
+                }
             } catch (NoSuchMessageException e) {
 //                e.printStackTrace();
                 logger.info(e.getMessage());
+                stringBuilder.append(e.getMessage());
 
             }catch (Exception e){
                 e.printStackTrace();
                 logger.info(e.getMessage());
+                stringBuilder.append(e.getMessage());
             }
         }else {
             stringBuilder.append("empty");
         }
 
-        if(stringBuilder.toString().equalsIgnoreCase("")){
-            stringBuilder.append("failed");
-        }
+//        if(stringBuilder.toString().equalsIgnoreCase("")){
+//            stringBuilder.append("failed");
+//        }
         return stringBuilder.toString();
     }
     @GetMapping("/otp/send/corporate")
@@ -145,21 +152,29 @@ public class TokenAuthController {
                 }
             } catch (InternetBankingSecurityException e) {
                 logger.info(e.getMessage());
+                if(e.getMessage() !=null) {
+                    stringBuilder.append(e.getMessage());
+                }else {
+                    stringBuilder.append("Service not available");
+                }
+
             } catch (NoSuchMessageException e) {
 //                e.printStackTrace();
                 logger.info(e.getMessage());
+                stringBuilder.append(e.getMessage());
 
             }catch (Exception e){
                 e.printStackTrace();
                 logger.info(e.getMessage());
+                stringBuilder.append(e.getMessage());
             }
         }else {
             stringBuilder.append("empty");
         }
 
-        if(stringBuilder.toString().equalsIgnoreCase("")){
-            stringBuilder.append("failed");
-        }
+//        if(stringBuilder.toString().equalsIgnoreCase("")){
+//            stringBuilder.append("failed");
+//        }
         return stringBuilder.toString();
     }
     @PostMapping("/otp/retail/login")

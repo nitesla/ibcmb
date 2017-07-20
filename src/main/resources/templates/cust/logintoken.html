@@ -113,11 +113,11 @@
                     <div class="margin-bottom">
                         <p style="margin-bottom:20px">Kindly enter the OTP from your token device</p>
                          <div id="username_div" class="form-group">
-                                <input  type="text" id="token" name="token" class='my-select tokenInput' placeholder="Token Code" autocomplete="off"/>
+                                <input  type="text" id="token" required name="token" class='my-select tokenInput' placeholder="Token Code" autocomplete="off"/>
                                 <p id='loading-icon' style="display:none"><i class='fa fa-spinner fa-spin' style="font-size:10px;color:#003056"></i> Sending OTP. Please Wait...</p>
 
                          </div>
-                         <!--<div id='errorMess' class=" text-danger "></div>-->
+                         <div id='errorMess' class=" text-danger "></div>
                          <!--<div id='successMess' class=" text-success "></div>-->
                     </div>
                     <div >
@@ -145,7 +145,6 @@
                       <div id="username_div1" class="form-group">
                           <input  type="text" id="otp" name="otp" class='my-select tokenInput' required placeholder="Otp " autocomplete="off"/>
                       </div>
-                      <div id='errorMess' class=" text-danger "></div>
                       <div id='successMess' class=" text-success "></div>
                   </div>
                   <!--<div >-->
@@ -215,10 +214,10 @@
         $("#otpmodal").hide();
 
     });
-        $("#getOtp").click(function() {
-            $("#tokenmodal").hide();
-            $("#otpmodal").show();
-        });
+//        $("#getOtp").click(function() {
+//            $("#tokenmodal").hide();
+//            $("#otpmodal").show();
+//        });
     $("#usetoken").click(function() {
         $("#tokenmodal").show();
         $("#otpmodal").hide();
@@ -243,15 +242,15 @@
             },
             success: function (reponse) {
                 if (reponse === 'success') {
-                    $("#tokenmodal").hide();
+//                    $("#tokenmodal").hide();
 //                    $("#otpmodal").show();
 //                    $('#loading-icon').hide();
                     $('#successMess').show();
                     document.getElementById("successMess").textContent = "Successfully sent";
 
                 }else{
-//                    $("#tokenModalCorp").show();
-//                    $("#otpmodalCorp").hide();
+                    $("#tokenModalCorp").show();
+                    $("#otpmodalCorp").hide();
                     if(reponse==="empty"){
                         $('#loading-icon').hide();
                         $('#errorMess').show();
@@ -259,7 +258,7 @@
                     }else{
                         $('#loading-icon').hide();
                         $('#errorMess').show();
-                        document.getElementById("errorMess").textContent = "Sending OTP failed!";
+                        document.getElementById("errorMess").textContent = reponse;
                     }
                 }
             }

@@ -191,7 +191,15 @@ public class MainController {
 
 //                logger.info("SECIMAGE"+ image);
 
+                String caption = mutualAuth.get("captionSecret")
+                        .stream()
+                        .filter(Objects::nonNull)
+                        .findFirst()
+                        .orElse("");
+
                 model.addAttribute("secImage", image);
+                //logger.info("SECCAPTION "+ caption);
+                model.addAttribute("secCaption", caption);
             }
         }catch (InternetBankingException e){
             model.addAttribute("imageException", "You are yet to set your antiphishing image");
@@ -245,9 +253,16 @@ public class MainController {
                                 .findFirst()
                                 .orElse("");
 
-//                logger.info("SECIMAGE"+ image);
+//                      logger.info("SECIMAGE"+ image);
+                        String caption = mutualAuth.get("captionSecret")
+                                .stream()
+                                .filter(Objects::nonNull)
+                                .findFirst()
+                                .orElse("");
 
                         model.addAttribute("secImage", image);
+                        //logger.info("SECCAPTION "+ caption);
+                        model.addAttribute("secCaption", caption);
                     }
                 }catch (InternetBankingException e){
                     model.addAttribute("imageException", "You are yet to set your antiphishing image");

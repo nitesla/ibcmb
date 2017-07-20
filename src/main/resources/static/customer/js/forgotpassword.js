@@ -16,7 +16,9 @@
 
     var SECURITY_QUESTION_STEP = 0;
     var VALIDATE_GEN_PASS = 1;
-    var CHANGE_PASSWORD_STEP = 2;
+    var VALIDATE_PASSWORD_STEP = 2;
+    var TOKEN_AUTH = 3;
+    var CHANGE_PASSWORD_STEP = 4;
 
     //var condition = [[${success}]];
 
@@ -34,18 +36,34 @@
 
             if(SECURITY_QUESTION_STEP === currentIndex){
                 console.log("Current step is the account details step");
-                var secAnswer = $('input[name="securityAnswer"]').val();
+                var noOfQs = $('#noOfQuestion').val();
+                var i = 0;
+                var secAnswer ="";
+                for(var i = 0;i<parseInt(noOfQs);i++){
+                    // console.log("answer "+$('#securityAnswer'+i).val());
+                    if(i ===0){
+                        secAnswer+=$('#securityAnswer'+i).val();
+                    }else{
+                        secAnswer +=','+$('#securityAnswer'+i).val();
+
+                    }
+                }
+                console.log("answer 2 "+secAnswer);
                 return isValid && validateSecAnswer(secAnswer);
             }
             if(VALIDATE_GEN_PASS === currentIndex){
                 console.log("Current step is the account details step");
                 return isValid && validateGenPassword();
             }
-            if(CHANGE_PASSWORD_STEP === currentIndex){
+            if(VALIDATE_PASSWORD_STEP === currentIndex){
                 console.log("Current step is the change password step");
                 //form.submit();
                 var confirm = $('input[name="confirm"]').val();
-                return isValid && validatePassword(confirm) && changePassword();
+                return isValid && validatePassword(confirm);
+            }
+            if(TOKEN_AUTH === currentIndex){
+                console.log("Current step is the account details step");
+                return isValid && validateToken() && changePassword();
             }
 
             form.validate().settings.ignore = ":disabled,:hidden";
@@ -65,15 +83,20 @@
     });
 
 
-    function validateSecAnswer(secAnswer){
+    function validateSecAnswer(secAnswers){
+        var secAnswer = secAnswers;
         var sent = "";
         var result;
+        var username = $('input[name="username"]').val();
+        console.log("validating "+secAnswer);
         $.ajax({
             type:'GET',
-            url:"/rest/secAns/"+secAnswer,
+            url:"/rest/secAns",
+            data: {username : username,secAnswers:secAnswer},
             async:false,
-            success:function(data1){
-                result = ''+String(data1);
+
+            success:function(data){
+                result = ''+String(data);
                 if(result == "true"){
                     //$('input[name=username]').val(result);
                 }else{
@@ -174,6 +197,34 @@
 
         if(res === 'true'){
             //username is valid and available
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+    function validateToken(){
+        var username = $('input[name="username"]').val();
+        var token = $('input[name="token"]').val();
+        var result;
+        $.ajax({
+            type:'GET',
+            url:"/rest/tokenAuth/"+username+"/"+token,
+            async:false,
+            success:function(data1){
+                result = ''+String(data1);
+                if(result == "true"){
+
+                }else{
+                    //invalid account number
+                    //alert("Account number not found");
+                    $('#errorMess').text(result);
+                    $('#myModalError').modal('show');
+                }
+            }
+        });
+
+        if(result == "true"){
             return true;
         }else{
             return false;

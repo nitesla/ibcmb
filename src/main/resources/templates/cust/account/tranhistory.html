@@ -73,7 +73,7 @@
                                     <thead>
                                     <tr>
                                         <th>Account Balance</th>
-                                        <th>Currency Code</th>
+                                        <th>Transaction ReferenceID</th>
                                         <th>Post Date</th>
                                         <th>Transaction Narration</th>
                                         <th>Debit/Credit</th>
@@ -84,7 +84,7 @@
                                     <tfoot>
                                     <tr>
                                         <th>Account Balance</th>
-                                        <th>Currency Code</th>
+                                        <th>Transaction ReferenceID</th>
                                         <th>Post Date</th>
                                         <th>Transaction Narration</th>
                                         <th>Debit/Credit</th>
@@ -137,16 +137,16 @@
         $('#tranDetails').DataTable({
             responsive: true,
 
-            "lengthMenu": [[5, 10,20], [5, 10,20]],
-            "pagingType": "simple_numbers",
-            "searching" : false,
-            "processing" : true,
+            "lengthMenu" : [ [ 5, 10, 20],	[ 5, 10, 20 ] ],
+            "pagingType" : "simple_numbers",
+            "searching": false,
+            "paging": true,
+            "processing": true,
             "serverSide" : false,
             "ordering" : false,
-            "dom": 'T<"clear">frtlp',
             "columns" : [
                 {"data" : "accountBalance"},
-                {"data" : "currencyCode"},
+                {"data" : "tranId"},
                 {"data" : "postDate"} ,
                 {"data" : "narration"},
                 {"data" : "tranType"},
