@@ -148,14 +148,12 @@ public class RoleServiceImpl implements RoleService {
     }
 
     public String addPermission(PermissionDTO permissionDTO) throws InternetBankingException {
-        try
-        {
+        try {
             Permission permission = convertDTOToEntity(permissionDTO);
             permissionRepo.save(permission);
             logger.info("Added permission {}", permission.toString());
             return messageSource.getMessage("permission.add.success", null, locale);
-        } catch (Exception e)
-        {
+        } catch (Exception e) {
             throw new InternetBankingException(messageSource.getMessage("permission.add.failure", null, locale), e);
         }
     }
@@ -292,8 +290,7 @@ public class RoleServiceImpl implements RoleService {
     public Page<User> getUsers(RoleDTO roledto, Pageable pageDetails) {
         Role role = roleRepo.findOne(roledto.getId());
         Page<User> pageImpl = null;
-        switch (role.getUserType())
-        {
+        switch (role.getUserType()) {
             case ADMIN: {
                 Page<AdminUser> users = adminRepo.findByRole(role, pageDetails);
                 long elements = users.getTotalElements();

@@ -83,6 +83,7 @@ public class AdmAuditController {
 
     @GetMapping("/revised/entity")
     public String ListRevisedEnties()
+
     {
         return "adm/audit/revisedview";
     }
@@ -160,7 +161,7 @@ public class AdmAuditController {
         model.addAttribute("classname",classname);
         model.addAttribute("itemId",revisionId[0]);
         Map entityPastDetails = RevisedEntitiesUtil.getEntityPastDetails(classname, revisionId);
-        logger.info("entity details is {}",entityPastDetails);
+        logger.info("entity details is {} @@@@@ ",entityPastDetails.get("keys"));
         Map<String,Object> m =null;
         model.addAttribute("pastDetails", entityPastDetails.get("pastDetails"));
         model.addAttribute("currentDetails",(entityPastDetails.get("currentDetails")));

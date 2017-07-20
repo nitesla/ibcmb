@@ -3,8 +3,7 @@ package longbridge.models;
 /**
  * Created by chigozirim on 3/31/17.
  */
-public enum UserType
-{
+public enum UserType {
     ADMIN("ADM"),
     OPERATIONS("OPS"),
     RETAIL("RET"),

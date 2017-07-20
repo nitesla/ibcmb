@@ -1,6 +1,7 @@
 package longbridge.models;
 
 import org.hibernate.annotations.Where;
+import org.hibernate.envers.AuditOverride;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.Entity;
@@ -13,6 +14,7 @@ import javax.persistence.UniqueConstraint;
  */
 @Entity
 @Audited(withModifiedFlag=true)
+@AuditOverride(forClass = User.class)
 @Where(clause ="del_Flag='N'" )
 @Table(uniqueConstraints=@UniqueConstraint(columnNames={"userName","deletedOn"}))
 

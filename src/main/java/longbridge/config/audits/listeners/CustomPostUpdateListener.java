@@ -15,7 +15,8 @@ public class CustomPostUpdateListener extends EnversPostUpdateEventListenerImpl 
 	}
 
 	@Override
-	public void onPostUpdate(PostUpdateEvent event) {
+	public void onPostUpdate(PostUpdateEvent event)
+	{
 		String s = event.getEntity().getClass().getSimpleName();
 
 		if (CustomJdbcUtil.auditEntity(s)) {
