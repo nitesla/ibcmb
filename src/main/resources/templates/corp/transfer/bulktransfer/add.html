@@ -102,6 +102,9 @@
     <script th:src="@{~/bank/vendors/sweetalert/sweetalert.min.js}"></script>
     <script th:src="@{~/bank/vendors/bootstrap-dialog/js/bootstrap-dialog.js}"></script>
     <script th:src="@{~/bank/js/jquery.spring-friendly.min.js}"></script>
+    <script th:src="@{~/customer/js/dataTables.bootstrap.js}"></script>
+    <script th:src="@{~/customer/js/dataTables.select.js}"></script>
+    <script th:src="@{~/customer/editor/js/dataTables.editor.js}"></script>
 
 <script th:inline="javascript">
     /*<![CDATA[*/
@@ -154,7 +157,13 @@
             "columnDefs": [ {
                 "targets": '_all',
                 "render": function ( data, type, full, meta ) {
-                    return '<input type="text" value="'+data+'"/>';
+                    if(data == "ERROR HERE"){
+                        return '<input type="text" value="'+data+'" style = "color: red"/>';
+
+                }
+                return '<input type="text" value="'+data+'" />';
+
+                  //  return '<input type="text" value="'+data+'"/>';
                 }
 
             } ]
