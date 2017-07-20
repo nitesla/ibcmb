@@ -54,7 +54,7 @@ public class CronJobServiceImpl implements CronJobService {
 
     @Override
     public void deleteRunningJob() throws InternetBankingException {
-        CronJobExpression cronJobExpression = cronJobExpressionRepo.findByFlag("Y");
+        CronJobExpression cronJobExpression = cronJobExpressionRepo.findLastByFlag("Y");
         if (cronJobExpression != null){
             logger.info("about deleting");
             cronJobExpression.setFlag("N");
@@ -203,7 +203,7 @@ public class CronJobServiceImpl implements CronJobService {
 
     @Override
     public String getCurrentExpression() throws InternetBankingException {
-        CronJobExpression cronJobExpression = cronJobExpressionRepo.findByFlag("Y");
+        CronJobExpression cronJobExpression = cronJobExpressionRepo.findLastByFlag("Y");
 
         return cronJobExpression.getCronExpression();
     }
