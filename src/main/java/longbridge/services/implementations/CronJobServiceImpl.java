@@ -187,7 +187,11 @@ public class CronJobServiceImpl implements CronJobService {
         if((corporateBvn == null)||corporateBvn.equalsIgnoreCase("")||(!corporateBvn.equalsIgnoreCase(details.getBvn()))){
             corporate.setBvn(details.getBvn());
 //            logger.info("new corp bvn is {}",corporate.getBvn());
-            corporateRepo.save(corporate);
+            try {
+                corporateRepo.save(corporate);
+            } catch (Exception e) {
+//                e.printStackTrace();
+            }
         }
     }
 
@@ -197,7 +201,11 @@ public class CronJobServiceImpl implements CronJobService {
         if((corporateUserPhoneNumber == null)||corporateUserPhoneNumber.equalsIgnoreCase("")||(!details.getPhone().equalsIgnoreCase(corporateUserPhoneNumber))){
             corporateUser.setPhoneNumber(details.getPhone());
             logger.info("new corp phone is {}",details.getPhone());
-            corporateUserRepo.save(corporateUser);
+            try {
+                corporateUserRepo.save(corporateUser);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -207,7 +215,11 @@ public class CronJobServiceImpl implements CronJobService {
         if((corporateUserEmail == null)||corporateUserEmail.equalsIgnoreCase("")||(!corporateUserEmail.equalsIgnoreCase(details.getEmail()))){
             corporateUser.setEmail(details.getEmail());
 //            logger.info("new corp email is {}",details.getEmail());
-            corporateUserRepo.save(corporateUser);
+            try {
+                corporateUserRepo.save(corporateUser);
+            } catch (Exception e) {
+//                e.printStackTrace();
+            }
         }
     }
 
