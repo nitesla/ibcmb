@@ -196,9 +196,9 @@ public class RetrieveCredentialController {
             //return (String) session.getAttribute("username");
         }catch (Exception e){
             logger.info(e.getMessage());
-            return "";
+            return messageSource.getMessage("sec.ans.failed", null, locale);
         }
-        return "";
+        return messageSource.getMessage("sec.ans.failed", null, locale);
     }
 
     @GetMapping("/rest/sendGenPass/{username}")

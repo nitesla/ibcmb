@@ -22,7 +22,7 @@ import java.util.List;
 @Entity
 @Audited(withModifiedFlag=true)
 @Where(clause ="del_Flag='N'" )
-@Table(uniqueConstraints=@UniqueConstraint(columnNames={"name","deletedOn"}))
+@Table(uniqueConstraints=@UniqueConstraint(columnNames={"name"}))
 
 public class Setting extends AbstractEntity implements PrettySerializer{
 

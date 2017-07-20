@@ -191,7 +191,15 @@ public class MainController {
 
 //                logger.info("SECIMAGE"+ image);
 
+                String caption = mutualAuth.get("captionSecret")
+                        .stream()
+                        .filter(Objects::nonNull)
+                        .findFirst()
+                        .orElse("");
+
                 model.addAttribute("secImage", image);
+                //logger.info("SECCAPTION "+ caption);
+                model.addAttribute("secCaption", caption);
             }
         }catch (InternetBankingException e){
             model.addAttribute("imageException", "You are yet to set your antiphishing image");
@@ -222,6 +230,10 @@ public class MainController {
 
     }
 
+    @GetMapping("/login/u/corporate")
+    public String loginCorporate1(){
+        return "redirect:/login/corporate";
+    }
 
     @PostMapping("/login/u/corporate")
     public String userExist(WebRequest webRequest, Model model, RedirectAttributes redirectAttributes) {
@@ -245,9 +257,16 @@ public class MainController {
                                 .findFirst()
                                 .orElse("");
 
-//                logger.info("SECIMAGE"+ image);
+//                      logger.info("SECIMAGE"+ image);
+                        String caption = mutualAuth.get("captionSecret")
+                                .stream()
+                                .filter(Objects::nonNull)
+                                .findFirst()
+                                .orElse("");
 
                         model.addAttribute("secImage", image);
+                        //logger.info("SECCAPTION "+ caption);
+                        model.addAttribute("secCaption", caption);
                     }
                 }catch (InternetBankingException e){
                     model.addAttribute("imageException", "You are yet to set your antiphishing image");
@@ -266,14 +285,21 @@ public class MainController {
 
     }
 
+    @GetMapping("/login/p/corporate")
+    public String loginCorporate2(){
+        return "redirect:/login/corporate";
+    }
+
     @PostMapping("/login/p/corporate")
     public String corpstep2(WebRequest webRequest, Model model, RedirectAttributes redirectAttributes) {
         String username = webRequest.getParameter("username");
         String phishing = webRequest.getParameter("phishing");
         String corpKey = webRequest.getParameter("corpKey");
-        CorporateUser user = corporateUserService.getUserByName(username);
-        Corporate corporate = corporateService.getCorporateByCustomerId(corpKey);
-        if (corporate != null && user != null && phishing != null) {
+//        CorporateUser user = corporateUserService.getUserByName(username);
+//        Corporate corporate = corporateService.getCorporateByCustomerId(corpKey);
+
+        CorporateUser user = corporateUserService.getUserByNameAndCorpCif(username, corpKey);
+        if (user != null && phishing != null) {
             model.addAttribute("username", user.getUserName());
             model.addAttribute("corpKey", corpKey);
             return "corplogin";
