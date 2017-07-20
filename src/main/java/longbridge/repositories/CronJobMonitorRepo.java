@@ -10,5 +10,5 @@ import java.util.List;
  */
 @Repository
 public interface CronJobMonitorRepo  extends CommonRepo<CronJobMonitor,Long> {
-    List<CronJobMonitor> findLastByStillRunning(boolean status);
+    CronJobMonitor findLastByStillRunning(boolean status);
 }
