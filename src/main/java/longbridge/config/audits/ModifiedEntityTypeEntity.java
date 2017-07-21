@@ -1,5 +1,7 @@
 package longbridge.config.audits;
 
+import longbridge.models.AbstractEntity;
+
 import java.io.Serializable;
 
 import javax.persistence.*;
@@ -8,7 +10,7 @@ import javax.persistence.*;
  * Created by ayoade_farooq@yahoo.com on 4/7/2017.
  */
 @Entity
-public class ModifiedEntityTypeEntity implements Serializable{
+public class ModifiedEntityTypeEntity  implements Serializable{
 
     @Id
     @GeneratedValue
@@ -17,10 +19,15 @@ public class ModifiedEntityTypeEntity implements Serializable{
     @ManyToOne
     private CustomRevisionEntity revision;
 
+
     private String entityClassName;
 
+    public ModifiedEntityTypeEntity()
+    {
+    }
 
-    public ModifiedEntityTypeEntity(CustomRevisionEntity revision, String entityClassName) {
+    public ModifiedEntityTypeEntity(CustomRevisionEntity revision, String entityClassName)
+    {
         this.revision = revision;
         this.entityClassName = entityClassName;
     }
@@ -41,11 +48,21 @@ public class ModifiedEntityTypeEntity implements Serializable{
         this.revision = revision;
     }
 
-    public String getEntityClassName() {
+    public String getEntityClassName()
+    {
         return entityClassName;
     }
 
     public void setEntityClassName(String entityClassName) {
         this.entityClassName = entityClassName;
+    }
+
+    @Override
+    public String toString() {
+        return "ModifiedEntityTypeEntity{" +
+                "id=" + id +
+                ", revision=" + revision +
+                ", entityClassName='" + entityClassName + '\'' +
+                '}';
     }
 }
