@@ -22,5 +22,59 @@ public class CorporateRequestDTO {
     private List<CorpTransferRuleDTO> corpTransferRules = new ArrayList<>();
 
 
+    public Long getId() {
+        return id;
+    }
 
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public int getVersion() {
+        return version;
+    }
+
+    public void setVersion(int version) {
+        this.version = version;
+    }
+
+    public String getCorporateType() {
+        return corporateType;
+    }
+
+    public void setCorporateType(String corporateType) {
+        this.corporateType = corporateType;
+    }
+
+    public String getCustomerId() {
+        return customerId;
+    }
+
+    public void setCustomerId(String customerId) {
+        this.customerId = customerId;
+    }
+
+    public String getCreatedOn() {
+        return createdOn;
+    }
+
+    public void setCreatedOn(String createdOn) {
+        this.createdOn = createdOn;
+    }
+
+    public List<CorporateUserDTO> getCorporateUsers() {
+        return corporateUsers;
+    }
+
+    public void setCorporateUsers(List<CorporateUserDTO> corporateUsers) {
+        this.corporateUsers = corporateUsers;
+    }
+
+    public List<CorpTransferRuleDTO> getCorpTransferRules() {
+        return corpTransferRules;
+    }
+
+    public void setCorpTransferRules(List<CorpTransferRuleDTO> corpTransferRules) {
+        this.corpTransferRules = corpTransferRules;
+    }
 }
