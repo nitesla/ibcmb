@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head th:replace="corp_layout :: site-head">
-
-    <link rel="stylesheet" type="text/css" href="css/jquery.dataTables.css"/>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{corp-layout}">
+<!--<head>
+  <link rel="stylesheet" type="text/css" href="css/jquery.dataTables.css"/>
     <link rel="stylesheet" type="text/css" href="css/select.bootstrap.css"/>
     <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css"/>
     <link rel="stylesheet" type="text/css" href="css/dataTables.bootstrap.css"/>
-</head>
+</head>-->
 
 <style>
     .hstyle{
@@ -26,22 +26,19 @@
         background-color: #d7bdb3;
     }
 </style>
+<body onload="currentBar('Beneficiaries')">
 
-<body>
-<div class="container">
-<header th:replace="corp_layout ::corp-header">
-</header>
+<div layout:fragment="content">
+    <div class="col-md-5 col-sm-5 ">
 
-<section class="content-wrapper">
-    <div class="container">
-        <div class="row">
-            <div class="col-md-4 col-sm-4">
-                <h5 class="page_header"> Bulk Transfer </h5>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-12 content-bg">
-                <form method="post" th:action="@{/corporate/transfer/save}" id="" class="form-horizontal">
+        <select class="form-control full-width coronation-form-control hide-content-only" id="view">
+            <option value="account">Overview</option>
+        </select>
+    </div>
+
+    <div class="col-xs-12 ml-15 " >
+        <div class="col-xs-11 no-pad-lef  no-mt no-bd  alert">
+             <form method="post" th:action="@{/corporate/transfer/save}" id="" class="form-horizontal">
                 <div class="row spacing">
                     <div>
                         <p>To make a bulk transfer, Enter the request fields below</p>
@@ -68,7 +65,8 @@
                     <br/>
 
                         <br/>
-                        <table id="mytab" class="table table-striped table-bordered table-hover" cellspacing="0"  >
+                 <div class="table-responsive">
+                        <table id="mytab" class="table table-striped table-bordered  table-hover" cellspacing="0"  >
                             <thead>
 
                                 <th>Serial</th>
@@ -91,27 +89,27 @@
                             <!--</tr>-->
                             </tbody>
                         </table>
+                     </div>
 
                     <br/>
                     <button class="btn btn-link" type="submit" id="button_submit">Submit</button>
                 </form>
-                    </div>
-
-
-
-            <!--<div th:replace="corp_layout :: corp-sidebar" class="col-md-3 sidebar">-->
-            <!--</div>-->
-            </div>
         </div>
+    </div>
 
-</section>
+</div>
 
 
-<!-- CONTENT-WRAPPER SECTION END-->
-<footer th:replace="corp_layout ::corp-footer">
-</footer>
+<th:block layout:fragment="scripts">
+    <script th:src="@{~/customer/js/dataTables.bootstrap.js}"></script>
+    <script th:src="@{~/bank/vendors/sweetalert/sweetalert.min.js}"></script>
+    <script th:src="@{~/bank/vendors/bootstrap-dialog/js/bootstrap-dialog.js}"></script>
+    <script th:src="@{~/bank/js/jquery.spring-friendly.min.js}"></script>
+
 <script th:inline="javascript">
-    //<![CDATA[
+    /*<![CDATA[*/
+
+
     //datepicker
 //    $( function() {
 //        $( "#datepicker" ).datepicker(
@@ -135,12 +133,14 @@
 //        })
 
 
+
+
     $(document).ready(function() {
         var table = $('#mytab').DataTable({
             select:true,
             "lengthMenu" : [ [ 5, 10, 20],	[ 5, 10, 20 ] ],
             "pagingType" : "simple_numbers",
-            "searching": false,
+            "searching": true,
             "paging": true,
             "serverSide" : false,
             "ajax": "/corporate/transfer/all",
@@ -153,7 +153,20 @@
                 { "data": "accountName" },
                 { "data": "amount" },
                 { "data": "narration" }
-            ] });
+            ],
+            "columnDefs": [ {
+                "targets": '_all',
+                "render": function ( data, type, full, meta ) {
+                    if(data == "ERROR HERE"){
+                        return '<input type="text" value="'+data+'" style = "color: red"/>';
+
+                    }
+                    return '<input type="text" value="'+data+'" />';
+
+                    //  return '<input type="text" value="'+data+'"/>';
+                }
+            } ]
+        });
 
 
 
@@ -171,8 +184,10 @@
     //});
 
 
+    /*]]>*/
 
 </script>
-</div>
+</th:block>
+
 </body>
 </html>

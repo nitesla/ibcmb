@@ -42,9 +42,9 @@ public interface SecurityService {
      * @param username    The username of the user
      * @param tokenString the inputted token string
      */
-    boolean performTokenValidation(String username, String tokenString) throws InternetBankingTransferException;
+    boolean performTokenValidation(String username,String group, String tokenString) throws InternetBankingTransferException;
 
-    boolean performOtpValidation(String username, String otp) throws InternetBankingTransferException;
+    boolean performOtpValidation(String username ,String group, String otp) throws InternetBankingTransferException;
 
 
     /**
@@ -53,43 +53,44 @@ public interface SecurityService {
      *
      * @param username the username of the required user
      */
-    boolean synchronizeToken(String username, String sNo, String tokenResp1, String tokenResp2) throws InternetBankingTransferException;
+    boolean synchronizeToken(String username,String group, String sNo, String tokenResp1, String tokenResp2) throws InternetBankingTransferException;
 
-    boolean sendOtp(String username) throws InternetBankingTransferException;
+    boolean sendOtp(String username,String group) throws InternetBankingTransferException;
 
-    boolean createEntrustUser(String username, String fullName, boolean enableOtp) throws InternetBankingTransferException;
+    boolean createEntrustUser(String username,String group, String fullName, boolean enableOtp) throws InternetBankingTransferException;
 
-    void deleteEntrustUser(String username) throws InternetBankingTransferException;
+    void deleteEntrustUser(String username,String group) throws InternetBankingTransferException;
 
-    boolean assignToken(String username, String serialNumber) throws InternetBankingTransferException;
+    boolean assignToken(String username,String group, String serialNumber) throws InternetBankingTransferException;
 
-    boolean activateToken(String username, String serialNumber) throws InternetBankingTransferException;
+    boolean activateToken(String username,String group, String serialNumber) throws InternetBankingTransferException;
 
-    boolean deActivateToken(String username, String serialNumber) throws InternetBankingTransferException;
+    boolean deActivateToken(String username,String group, String serialNumber) throws InternetBankingTransferException;
 
-    void setUserQA(String username, String question, String answer) throws InternetBankingTransferException;
+    void setUserQA(String username,String group, String question, String answer) throws InternetBankingTransferException;
+    void setUserQA(String username,String group, List<String> questions, List<String> answers) throws InternetBankingTransferException;
 
-    Map<String, List<String>> getUserQA(String username) throws InternetBankingTransferException;
-     Integer getMinUserQA(String username);
+    Map<String, List<String>> getUserQA(String username,String group) throws InternetBankingTransferException;
+     Integer getMinUserQA(String username,String group);
      Integer getMinUserQA();
-     Integer geUserQASize(String username);
+     Integer geUserQASize(String username,String group);
 
-    Map<String, List<String>> getMutualAuth(String username) throws InternetBankingTransferException;
+    Map<String, List<String>> getMutualAuth(String username,String group) throws InternetBankingTransferException;
 
 
-    void setMutualAuth(String username, List<String> mutualCaption, List<String> mutualImage);
+    void setMutualAuth(String username,String group, List<String> mutualCaption, List<String> mutualImage);
 
-    void setMutualAuth(String username, String mutualCaption, String mutualImagePath);
+    void setMutualAuth(String username,String group, String mutualCaption, String mutualImagePath);
 
-    void setMutualAuth(String username, List<String> mutualCaption, List<String> mutualImage, String token);
+    void setMutualAuth(String username,String group, List<String> mutualCaption, List<String> mutualImage, String token);
 
-    String getTokenSerials(String username);
+    String getTokenSerials(String username,String group);
 
-    boolean unLockUser(String username);
+    boolean unLockUser(String username,String group);
 
-    boolean updateUser(String username, String fullName, boolean enableOtp);
+    boolean updateUser(String username,String group, String fullName, boolean enableOtp);
 
-    boolean addUserContacts(String email, String phone, boolean phoneDefault, String userName);
+    boolean addUserContacts(String email, String phone, boolean phoneDefault, String userName,String group);
 
 
 }

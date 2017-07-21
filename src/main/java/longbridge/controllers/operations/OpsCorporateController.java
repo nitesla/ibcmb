@@ -1,6 +1,7 @@
 package longbridge.controllers.operations;
 
 import longbridge.api.AccountInfo;
+import longbridge.api.CustomerDetails;
 import longbridge.dtos.*;
 import longbridge.exception.InternetBankingException;
 import longbridge.exception.TransferRuleException;
@@ -50,15 +51,21 @@ public class OpsCorporateController {
     private MessageSource messageSource;
 
     @Autowired
-    CodeService codeService;
+    private CodeService codeService;
 
     @Autowired
-    RoleService roleService;
+    private RoleService roleService;
 
     @Autowired
-    IntegrationService integrationService;
+    private IntegrationService integrationService;
 
-    Logger logger = LoggerFactory.getLogger(this.getClass());
+    @Autowired
+    private ConfigurationService configService;
+
+    @Autowired
+    private MakerCheckerService makerCheckerService;
+
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
 
 
     @ModelAttribute
@@ -66,11 +73,11 @@ public class OpsCorporateController {
         List<CodeDTO> corporateTypes = codeService.getCodesByType("CORPORATE_TYPE");
         model.addAttribute("corporateTypes", corporateTypes);
 
-        Iterable<RoleDTO> roles = roleService.getRoles();
+        Iterable<RoleDTO> roles = roleService.getRolesByUserType(UserType.CORPORATE);
         Iterator<RoleDTO> roleDTOIterator = roles.iterator();
         while (roleDTOIterator.hasNext()) {
             RoleDTO roleDTO = roleDTOIterator.next();
-            if (roleDTO.getName().equals("Sole Admin")) {
+            if (roleDTO.getName().equals("SOLE")) {
                 roleDTOIterator.remove();
             }
         }
@@ -92,35 +99,43 @@ public class OpsCorporateController {
         }
 
         boolean exists = corporateService.corporateExists(corporate.getCustomerId());
-        if(exists){
+        if (exists) {
             result.addError(new ObjectError("invalid", messageSource.getMessage("corporate.exist", null, locale)));
             return "/ops/corporate/add";
         }
 
-       List<AccountInfo> accountInfos = integrationService.fetchAccounts(corporate.getCustomerId());
+        List<AccountInfo> accountInfos = integrationService.fetchAccounts(corporate.getCustomerId());
 
         if (accountInfos == null || accountInfos.isEmpty()) {
-            result.addError(new ObjectError("invalid", messageSource.getMessage("cifid.invalid", null, locale)));
+            result.addError(new ObjectError("invalid", messageSource.getMessage("corp.cifid.invalid", null, locale)));
             return "/ops/corporate/add";
         } else {
-            String accountName = integrationService.viewCustomerDetails(accountInfos.get(0).getAccountNumber()).getCustomerName();
-            corporate.setName(accountName);
-            session.setAttribute("corporate", corporate);
-            return "redirect:/ops/corporates/user/first";
+//                String accountName = integrationService.viewCustomerDetails(accountInfos.get(0).getAccountNumber()).getCustomerName();
+            CustomerDetails customerDetails = integrationService.viewCustomerDetailsByCif(corporate.getCustomerId());
+            if (!customerDetails.isCorp()) {
+                result.addError(new ObjectError("invalid", messageSource.getMessage("corp.cifid.invalid", null, locale)));
+                return "/ops/corporate/add";
+            }
+            corporate.setName(customerDetails.getCustomerName());
+            if (!makerCheckerService.isEnabled("ADD_CORPORATE")) {
+
+                session.setAttribute("corporate", corporate);
+                return "redirect:/ops/corporates/user/first";
+            } else {
+                try {
+                    String message = corporateService.addCorporate(corporate);
+                    redirectAttributes.addFlashAttribute("message", message);
+                } catch (InternetBankingException e) {
+                    logger.error("Error creating corporate entity", e);
+                    redirectAttributes.addFlashAttribute("message", e.getMessage());
+
+                }
+                return "redirect:/ops/corporates";
+            }
         }
 
-//        try{
-//
-//            String message = corporateService.addCorporate(corporate);
-//            redirectAttributes.addFlashAttribute("message", message);
-//            return "redirect:/ops/corporates";
-//        } catch (InternetBankingException ibe) {
-//            logger.error("Failed to create corporate entity", ibe);
-//            result.addError(new ObjectError("invalid", ibe.getMessage()));
-//            return "adm/corporate/add";
-//
-//        }
     }
+
 
     @GetMapping("/user/first")
     public String addFirstCorporateUser(Model model, HttpSession session) {
@@ -131,13 +146,9 @@ public class OpsCorporateController {
         return "/ops/corporate/addUser";
     }
 
-    /**
-     * Edit an existing user
-     *
-     * @return
-     */
+
     @GetMapping("/{id}/edit")
-    public String editUser(@PathVariable Long id, Model model) {
+    public String editCorporate(@PathVariable Long id, Model model) {
         CorporateDTO corporate = corporateService.getCorporate(id);
         model.addAttribute("corporate", corporate);
         return "/ops/corporate/edit";
@@ -156,15 +167,9 @@ public class OpsCorporateController {
         return "/ops/corporate/view";
     }
 
-//    @GetMapping("/{reqId}/view")
-//    public String  viewRole(@PathVariable Long reqId, Model model){
-//        CorporateDTO corporate = corporateService.getCorporate(reqId);
-//        model.addAttribute("corporate",corporate);
-//        return "/ops/corporate/details";
-//    }
 
     @GetMapping("/{reqId}/view")
-    public String viewRole(@PathVariable Long reqId, Model model) {
+    public String viewCorporate(@PathVariable Long reqId, Model model) {
         CorporateDTO corporate = corporateService.getCorporate(reqId);
         model.addAttribute("corporate", corporate);
         return "/ops/corporate/viewdetails";
@@ -216,15 +221,15 @@ public class OpsCorporateController {
     @GetMapping(path = "/all")
     public
     @ResponseBody
-    DataTablesOutput<CorporateDTO> getCorporates(DataTablesInput input,@RequestParam("csearch") String search) {
+    DataTablesOutput<CorporateDTO> getCorporates(DataTablesInput input, @RequestParam("csearch") String search) {
 
         Pageable pageable = DataTablesUtils.getPageable(input);
         Page<CorporateDTO> corps = corporateService.getCorporates(pageable);
         if (StringUtils.isNoneBlank(search)) {
-        	corps = corporateService.findCorporates(search,pageable);
-		}else{
-			corps = corporateService.getCorporates(pageable);
-		}
+            corps = corporateService.findCorporates(search, pageable);
+        } else {
+            corps = corporateService.getCorporates(pageable);
+        }
         DataTablesOutput<CorporateDTO> out = new DataTablesOutput<CorporateDTO>();
         out.setDraw(input.getDraw());
         out.setData(corps.getContent());
@@ -325,23 +330,28 @@ public class OpsCorporateController {
         return "/ops/corporate/addrule";
     }
 
+    private void reInitializeModel(Model model, String corpId) {
+        CorporateDTO corporate = corporateService.getCorporate(NumberUtils.toLong(corpId));
+        List<CorporateRoleDTO> corporateRoles = corporateService.getRoles(NumberUtils.toLong(corpId));
+        Iterable<CodeDTO> currencies = codeService.getCodesByType("CURRENCY");
+
+        model.addAttribute("corporate", corporate);
+        model.addAttribute("roleList", corporateRoles);
+        model.addAttribute("currencies", currencies);
+    }
+
+
     @PostMapping("/rules")
-    public String createCorporateRule(@ModelAttribute("corporateRule") CorpTransferRuleDTO transferRuleDTO, BindingResult bindingResult, Principal principal, WebRequest webRequest, RedirectAttributes redirectAttributes, Model model, Locale locale) {
+    public String createCorporateRule(@ModelAttribute("corporateRule") CorpTransferRuleDTO transferRuleDTO, BindingResult bindingResult, WebRequest request, Principal principal, WebRequest webRequest, RedirectAttributes redirectAttributes, Model model, Locale locale) {
 
+        String corporateId = transferRuleDTO.getCorporateId();
         try {
-            BigDecimal lowerAmount = new BigDecimal(transferRuleDTO.getLowerLimitAmount());
+            new BigDecimal(transferRuleDTO.getLowerLimitAmount());
             if (!transferRuleDTO.isUnlimited()) {
-                BigDecimal upperAmount = new BigDecimal(transferRuleDTO.getUpperLimitAmount());
-
+                new BigDecimal(transferRuleDTO.getUpperLimitAmount());
             }
         } catch (NumberFormatException nfe) {
-            CorporateDTO corporate = corporateService.getCorporate(NumberUtils.toLong(transferRuleDTO.getCorporateId()));
-            List<CorporateRoleDTO> corporateRoles = corporateService.getRoles(NumberUtils.toLong(transferRuleDTO.getCorporateId()));
-            Iterable<CodeDTO> currencies = codeService.getCodesByType("CURRENCY");
-
-            model.addAttribute("corporate", corporate);
-            model.addAttribute("roleList", corporateRoles);
-            model.addAttribute("currencies", currencies);
+            reInitializeModel(model, corporateId);
             bindingResult.addError(new ObjectError("exception", messageSource.getMessage("rule.amount.invalid", null, locale)));
 
             return "/ops/corporate/addrule";
@@ -352,21 +362,35 @@ public class OpsCorporateController {
         roleIds = webRequest.getParameterValues("roles");
         List<CorporateRoleDTO> roleDTOs = new ArrayList<CorporateRoleDTO>();
         CorporateRoleDTO corporateRole;
+        int num = 2;
+        SettingDTO setting = configService.getSettingByName("MIN_CORPORATE_APPROVERS");
+        if (setting != null && setting.isEnabled()) {
+            num = NumberUtils.toInt(setting.getValue());
+        }
 
         if (roleIds != null) {
-            for (String roleId : roleIds) {
-                corporateRole = new CorporateRoleDTO();
-                corporateRole.setId(NumberUtils.toLong(roleId));
-                roleDTOs.add(corporateRole);
+            if (roleIds.length >= num) {
+                for (String roleId : roleIds) {
+                    corporateRole = new CorporateRoleDTO();
+                    corporateRole.setId(NumberUtils.toLong(roleId));
+                    roleDTOs.add(corporateRole);
+                }
+            } else {
+                reInitializeModel(model, corporateId);
+                bindingResult.addError(new ObjectError("exception", String.format(messageSource.getMessage("role.required", null, locale), num)));
+                return "/ops/corporate/addrule";
             }
-        } else if (roleIds == null && transferRuleDTO.isAnyCanAuthorize()) {
-            roleDTOs = corporateService.getRoles(Long.parseLong(transferRuleDTO.getCorporateId()));
+        } else {
+            reInitializeModel(model, corporateId);
+            bindingResult.addError(new ObjectError("exception", String.format(messageSource.getMessage("role.required", null, locale), num)));
+            return "/ops/corporate/addrule";
         }
         if (transferRuleDTO.isUnlimited()) {
-            transferRuleDTO.setUpperLimitAmount(new BigDecimal(transferRuleDTO.getLowerLimitAmount()).multiply(new BigDecimal("5")).toString());
+            transferRuleDTO.setUpperLimitAmount(new BigDecimal(Integer.MAX_VALUE).toString());
         }
-        transferRuleDTO.setRoles(roleDTOs);
 
+        transferRuleDTO.setRoles(roleDTOs);
+        transferRuleDTO.setAnyCanAuthorize("Y".equals(request.getParameter("anyCanAuthorize")));
         try {
             String message = corporateService.addCorporateRule(transferRuleDTO);
             redirectAttributes.addFlashAttribute("message", message);
@@ -374,30 +398,29 @@ public class OpsCorporateController {
         } catch (TransferRuleException tre) {
             logger.error("Failed to create transfer rule", tre);
             bindingResult.addError(new ObjectError("exception", tre.getMessage()));
-            CorporateDTO corporate = corporateService.getCorporate(NumberUtils.toLong(transferRuleDTO.getCorporateId()));
-            List<CorporateRoleDTO> roles = corporateService.getRoles(NumberUtils.toLong(transferRuleDTO.getCorporateId()));
-            Iterable<CodeDTO> currencies = codeService.getCodesByType("CURRENCY");
-            model.addAttribute("corporate", corporate);
-            model.addAttribute("roleList", roles);
-            model.addAttribute("currencies", currencies);
+            reInitializeModel(model, corporateId);
             return "/ops/corporate/addrule";
 
         } catch (InternetBankingException ibe) {
             logger.error("Failed to create transfer rule", ibe);
             bindingResult.addError(new ObjectError("exception", ibe.getMessage()));
-            CorporateDTO corporate = corporateService.getCorporate(NumberUtils.toLong(transferRuleDTO.getCorporateId()));
-            List<CorporateRoleDTO> roles = corporateService.getRoles(NumberUtils.toLong(transferRuleDTO.getCorporateId()));
-            Iterable<CodeDTO> currencies = codeService.getCodesByType("CURRENCY");
-            model.addAttribute("corporate", corporate);
-            model.addAttribute("roleList", roles);
-            model.addAttribute("currencies", currencies);
+            reInitializeModel(model, corporateId);
             return "/ops/corporate/addrule";
         }
     }
 
     @GetMapping("/rules/{id}/edit")
     public String editCorporateRule(@PathVariable Long id, Model model) {
+        CorpTransferRuleDTO corpTransferRuleDTO = corporateService.getCorporateRule(id);
+        model.addAttribute("corporateRule", corpTransferRuleDTO);
+        reloadModel(model, id);
+
+        return "/ops/corporate/editrule";
+    }
+
+    private void reloadModel(Model model, Long id) {
         CorpTransferRuleDTO transferRuleDTO = corporateService.getCorporateRule(id);
+        CorporateDTO corporate = corporateService.getCorporate(NumberUtils.toLong(transferRuleDTO.getCorporateId()));
         List<CorporateRoleDTO> roles = corporateService.getRoles(NumberUtils.toLong(transferRuleDTO.getCorporateId()));
         Iterable<CodeDTO> currencies = codeService.getCodesByType("CURRENCY");
 
@@ -406,35 +429,28 @@ public class OpsCorporateController {
                 if (roleDTO.getId().equals(role.getId())) {
                     role.setRuleMember(true);
                 }
-                logger.info("Roles are "+roleDTO.toString());
 
             }
         }
+
+        model.addAttribute("corporate", corporate);
         model.addAttribute("roleList", roles);
-        model.addAttribute("corporateRule", transferRuleDTO);
         model.addAttribute("currencies", currencies);
 
-        return "/ops/corporate/editrule";
     }
 
     @PostMapping("/rules/update")
-    public String updateCorporateRule(@ModelAttribute("corporateRule") CorpTransferRuleDTO transferRuleDTO, BindingResult bindingResult, Principal principal, Model model, WebRequest webRequest, RedirectAttributes redirectAttributes, Locale locale) {
+    public String updateCorporateRule(@ModelAttribute("corporateRule") CorpTransferRuleDTO transferRuleDTO, BindingResult bindingResult, WebRequest request, Principal principal, Model model, WebRequest webRequest, RedirectAttributes redirectAttributes, Locale locale) {
 
         try {
-            BigDecimal lowerAmount = new BigDecimal(transferRuleDTO.getLowerLimitAmount());
+            new BigDecimal(transferRuleDTO.getLowerLimitAmount());
             if (!transferRuleDTO.isUnlimited()) {
-                BigDecimal upperAmount = new BigDecimal(transferRuleDTO.getUpperLimitAmount());
+                new BigDecimal(transferRuleDTO.getUpperLimitAmount());
 
             }
         } catch (NumberFormatException nfe) {
-            CorporateDTO corporate = corporateService.getCorporate(NumberUtils.toLong(transferRuleDTO.getCorporateId()));
-            List<CorporateRoleDTO> roles = corporateService.getRoles(NumberUtils.toLong(transferRuleDTO.getCorporateId()));
-            Iterable<CodeDTO> currencies = codeService.getCodesByType("CURRENCY");
-
-            model.addAttribute("corporate", corporate);
-            model.addAttribute("roleList", roles);
-            model.addAttribute("currencies", currencies);
             bindingResult.addError(new ObjectError("exception", messageSource.getMessage("rule.amount.invalid", null, locale)));
+            reloadModel(model, transferRuleDTO.getId());
 
             return "/ops/corporate/editrule";
 
@@ -444,19 +460,36 @@ public class OpsCorporateController {
         List<CorporateRoleDTO> roleDTOs = new ArrayList<>();
         CorporateRoleDTO corporateRole;
 
+        int num = 2;
+        SettingDTO setting = configService.getSettingByName("MIN_CORPORATE_APPROVERS");
+        if (setting != null && setting.isEnabled()) {
+
+            num = Integer.parseInt(setting.getValue());
+        }
+
         if (roleIds != null) {
-            for (String roleId : roleIds) {
-                corporateRole = new CorporateRoleDTO();
-                corporateRole.setId(NumberUtils.toLong(roleId));
-                roleDTOs.add(corporateRole);
+            if (roleIds.length >= num) {
+                for (String roleId : roleIds) {
+                    corporateRole = new CorporateRoleDTO();
+                    corporateRole.setId(NumberUtils.toLong(roleId));
+                    roleDTOs.add(corporateRole);
+                }
+            } else {
+                bindingResult.addError(new ObjectError("exception", String.format(messageSource.getMessage("role.required", null, locale), num)));
+                reloadModel(model, transferRuleDTO.getId());
+
+                return "/ops/corporate/editrule";
             }
-        } else if (roleIds == null && transferRuleDTO.isAnyCanAuthorize()) {
-            roleDTOs = corporateService.getRoles(Long.parseLong(transferRuleDTO.getCorporateId()));
+        } else {
+            bindingResult.addError(new ObjectError("exception", String.format(messageSource.getMessage("role.required", null, locale), num)));
+            reloadModel(model, transferRuleDTO.getId());
+            return "/ops/corporate/editrule";
         }
         if (transferRuleDTO.isUnlimited()) {
-            transferRuleDTO.setUpperLimitAmount(new BigDecimal(transferRuleDTO.getLowerLimitAmount()).multiply(new BigDecimal("5")).toString());
+            transferRuleDTO.setUpperLimitAmount(new BigDecimal(Integer.MAX_VALUE).toString());
         }
         transferRuleDTO.setRoles(roleDTOs);
+        transferRuleDTO.setAnyCanAuthorize("Y".equals(request.getParameter("anyCanAuthorize")));
 
 
         try {
@@ -466,23 +499,14 @@ public class OpsCorporateController {
         } catch (TransferRuleException tre) {
             logger.error("Failed to update transfer rule", tre);
             bindingResult.addError(new ObjectError("exception", tre.getMessage()));
-            CorporateDTO corporate = corporateService.getCorporate(NumberUtils.toLong(transferRuleDTO.getCorporateId()));
-            List<CorporateRoleDTO> roles = corporateService.getRoles(NumberUtils.toLong(transferRuleDTO.getCorporateId()));
-            Iterable<CodeDTO> currencies = codeService.getCodesByType("CURRENCY");
-            model.addAttribute("corporate", corporate);
-            model.addAttribute("roleList", roles);
-            model.addAttribute("currencies", currencies);
+            reloadModel(model, transferRuleDTO.getId());
             return "/ops/corporate/editrule";
 
         } catch (InternetBankingException ibe) {
             logger.error("Failed to update transfer rule", ibe);
             bindingResult.addError(new ObjectError("exception", ibe.getMessage()));
-            CorporateDTO corporate = corporateService.getCorporate(NumberUtils.toLong(transferRuleDTO.getCorporateId()));
-            List<CorporateRoleDTO> roles = corporateService.getRoles(NumberUtils.toLong(transferRuleDTO.getCorporateId()));
-            Iterable<CodeDTO> currencies = codeService.getCodesByType("CURRENCY");
-            model.addAttribute("corporate", corporate);
-            model.addAttribute("roleList", roles);
-            model.addAttribute("currencies", currencies);
+            reloadModel(model, transferRuleDTO.getId());
+
             return "/ops/corporate/editrule";
         }
     }
@@ -494,26 +518,28 @@ public class OpsCorporateController {
     DataTablesOutput<CorpTransferRuleDTO> getCorporateRules(@PathVariable Long id, DataTablesInput input) {
 
         Pageable pageable = DataTablesUtils.getPageable(input);
-        List<CorpTransferRuleDTO> transferRules = corporateService.getCorporateRules(id);
+        Page<CorpTransferRuleDTO> transferRules = corporateService.getCorporateRules(id, pageable);
         DataTablesOutput<CorpTransferRuleDTO> out = new DataTablesOutput<CorpTransferRuleDTO>();
         out.setDraw(input.getDraw());
-        out.setData(transferRules);
-        out.setRecordsFiltered(transferRules.size());
-        out.setRecordsTotal(transferRules.size());
+        out.setData(transferRules.getContent());
+        out.setRecordsFiltered(transferRules.getTotalElements());
+        out.setRecordsTotal(transferRules.getTotalElements());
         return out;
     }
 
     @GetMapping("/rules/{id}/delete")
     public String deleteCorporateRule(@PathVariable Long id, RedirectAttributes redirectAttributes) {
 
+        CorpTransferRuleDTO transferRuleDTO = corporateService.getCorporateRule(id);
         try {
+
             String message = corporateService.deleteCorporateRule(id);
             redirectAttributes.addFlashAttribute("message", message);
         } catch (InternetBankingException ibe) {
             logger.error("Failed to delete transfer rule", ibe);
             redirectAttributes.addFlashAttribute("failure", ibe.getMessage());
         }
-        return "redirect:/ops/corporates/";
+        return "redirect:/ops/corporates/" + transferRuleDTO.getCorporateId() + "/view";
 
     }
 

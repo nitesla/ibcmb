@@ -15,7 +15,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
 
 import javax.transaction.Transactional;
-import java.util.Date;
 import java.util.List;
 
 
@@ -40,6 +39,8 @@ public interface CorporateUserService{
     CorporateUser getUserByName(String username);
 
     /*CorporateUser getUserByCustomerId(String custId);*/
+
+    CorporateUser getUserByNameAndCorpCif(String username, String cif);
 
     /**
      * Returns all the corporate users for the corporate customer
@@ -96,18 +97,17 @@ public interface CorporateUserService{
     @PreAuthorize("hasAuthority('UPDATE_CORPORATE_USER')")
     String resetPassword(Long userId) throws PasswordException;
 
+
+    String resetCorpPassword(Long userId) throws PasswordException;
+
     /**
      * Deletes the specified corporate user
      * @param userId the corporate user's id
      */
     @PreAuthorize("hasAuthority('DELETE_CORPORATE_USER')")
     String deleteUser(Long userId) throws InternetBankingException;
-    
-    /**
-     * Temporarily Locks the corporate user
-     * @param user the corporate user
-     */
-    void lockUser(CorporateUser user, Date unlocked);
+
+    void sendPostCreationMessage(User user, String fullName, String username, String password, String corporateId);
 
     /**
      * Replaces the old password with the new password for the specified corporate user.
@@ -119,11 +119,6 @@ public interface CorporateUserService{
     @PreAuthorize("hasAuthority('UPDATE_CORPORATE_USER')")
     String changePassword(CorporateUser user, CustChangePassword changePassword) throws PasswordException;
 
-    /**
-     * Generates and sends a password to the specified user
-     * @param user the corporate user
-     */
-    void generateAndSendPassword(CorporateUser user);
 
     /** This sets the Alert preference of the specified user. Alert preference may
      * be SMS, EMAIL or BOTH
@@ -131,7 +126,7 @@ public interface CorporateUserService{
      * @param alertPreference
      * @return
      */
-    boolean changeAlertPreference(CorporateUserDTO corporateUser, AlertPref alertPreference);
+    boolean changeAlertPreference(CorporateUser corporateUser, AlertPref alertPreference);
 
     public String addUserFromCorporateAdmin(CorpCorporateUserDTO user) throws InternetBankingException;
 
@@ -141,6 +136,8 @@ public interface CorporateUserService{
 
     @PreAuthorize("hasAuthority('UNLOCK_CORP_USER')")
     String unlockUser(Long id) throws InternetBankingException;
+
+    void createUserOnEntrustAndSendCredentials(CorporateUser user);
 
 
 }

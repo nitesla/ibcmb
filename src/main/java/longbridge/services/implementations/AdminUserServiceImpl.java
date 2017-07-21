@@ -14,7 +14,6 @@ import longbridge.services.*;
 import java.util.*;
 
 import longbridge.utils.DateFormatter;
-import longbridge.utils.HostMaster;
 import longbridge.utils.Verifiable;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
@@ -25,6 +24,7 @@ import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.mail.MailException;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -76,8 +76,7 @@ public class AdminUserServiceImpl implements AdminUserService {
 
     @Autowired
     private RoleRepo roleRepo;
-    @Autowired
-    HostMaster hostMaster;
+
 
     @Autowired
     EntityManager entityManager;
@@ -150,39 +149,48 @@ public class AdminUserServiceImpl implements AdminUserService {
             logger.info("New admin user {} created", adminUser.getUserName());
             return messageSource.getMessage("user.add.success", null, locale);
 
+        } catch (VerificationInterruptedException e) {
+            return e.getMessage();
         } catch (InternetBankingSecurityException se) {
             throw new InternetBankingSecurityException(messageSource.getMessage("entrust.create.failure", null, locale), se);
         } catch (Exception e) {
             if (e instanceof EntrustException) {
-                throw new EntrustException(e.getMessage());
-            } else {
-                throw new InternetBankingException(messageSource.getMessage("user.add.failure", null, locale), e);
+                throw e;
             }
+            throw new InternetBankingException(messageSource.getMessage("user.add.failure", null, locale), e);
+
         }
     }
 
 
-    public void createUserOnEntrust(AdminUser adminUser) {
+    public void createUserOnEntrust(AdminUser adminUser) throws EntrustException {
         AdminUser user = adminUserRepo.findFirstByUserName(adminUser.getUserName());
-        if(user!=null) {
-            if ("".equals(user.getEntrustId())||user.getEntrustId()==null){
-            String fullName = adminUser.getFirstName() + " " + adminUser.getLastName();
-            SettingDTO setting = configService.getSettingByName("ENABLE_ENTRUST_CREATION");
-            if (setting != null && setting.isEnabled()) {
-                if ("YES".equalsIgnoreCase(setting.getValue())) {
-                    boolean creatResult = securityService.createEntrustUser(adminUser.getUserName(), fullName, true);
-                    if (!creatResult) {
-                        throw new EntrustException(messageSource.getMessage("entrust.create.failure", null, locale));
-                    }
+        if (user != null) {
+            if ("".equals(user.getEntrustId()) || user.getEntrustId() == null) {
+                String fullName = adminUser.getFirstName() + " " + adminUser.getLastName();
+                SettingDTO setting = configService.getSettingByName("ENABLE_ENTRUST_CREATION");
+                String entrustId = user.getUserName();
+                String group = configService.getSettingByName("DEF_ENTRUST_ADM_GRP").getValue();
 
-                    boolean contactResult = securityService.addUserContacts(adminUser.getEmail(), adminUser.getPhoneNumber(), true, adminUser.getUserName());
-                    if (!contactResult) {
-                        logger.error("Failed to add user contacts on Entrust");
+                if (setting != null && setting.isEnabled()) {
+                    if ("YES".equalsIgnoreCase(setting.getValue())) {
+                        boolean creatResult = securityService.createEntrustUser(entrustId, group, fullName, true);
+                        if (!creatResult) {
+                            throw new EntrustException(messageSource.getMessage("entrust.create.failure", null, locale));
+                        }
+
+                        boolean contactResult = securityService.addUserContacts(adminUser.getEmail(), adminUser.getPhoneNumber(), true, entrustId, group);
+                        if (!contactResult) {
+                            logger.error("Failed to add user contacts on Entrust");
+                            securityService.deleteEntrustUser(entrustId, group);
+                            throw new EntrustException(messageSource.getMessage("entrust.contact.failure", null, locale));
+
+                        }
                     }
+                    user.setEntrustId(entrustId);
+                    user.setEntrustGroup(group);
+                    adminUserRepo.save(user);
                 }
-                user.setEntrustId(user.getUserName());
-                adminUserRepo.save(user);
-            }
             }
         }
     }
@@ -193,6 +201,10 @@ public class AdminUserServiceImpl implements AdminUserService {
     public String changeActivationStatus(Long userId) throws InternetBankingException {
         try {
             AdminUser user = adminUserRepo.findOne(userId);
+//         //   AdminUser users = user.getCorporate();
+//            if ("I".equals(user.getStatus())) {
+//                throw new InternetBankingException(messageSource.getMessage("admin.deactivated", null, locale));
+//            }
             entityManager.detach(user);
             String oldStatus = user.getStatus();
             String newStatus = "A".equals(oldStatus) ? "I" : "A";
@@ -203,16 +215,23 @@ public class AdminUserServiceImpl implements AdminUserService {
                 user.setPassword(passwordEncoder.encode(password));
                 user.setExpiryDate(new Date());
                 passwordPolicyService.saveAdminPassword(user);
+                AdminUser admin = adminUserRepo.save(user);
+                sendActivateMessage(admin, fullName, user.getUserName(), password);
+
+            } else {
+                user.setStatus(newStatus);
                 adminUserRepo.save(user);
-                sendPostActivateMessage(user, fullName,user.getUserName(),password);
-            } else{
-            	 user.setStatus(newStatus);
-                 adminUserRepo.save(user);
             }
 
             logger.info("Admin user {} status changed from {} to {}", user.getUserName(), oldStatus, newStatus);
             return messageSource.getMessage("user.status.success", null, locale);
 
+        } catch (VerificationInterruptedException e) {
+            return e.getMessage();
+        } catch (MailException me) {
+            throw new InternetBankingException(messageSource.getMessage("mail.failure", null, locale), me);
+        } catch (InternetBankingException ibe) {
+            throw ibe;
         } catch (Exception e) {
             throw new InternetBankingException(messageSource.getMessage("user.status.failure", null, locale), e);
 
@@ -221,9 +240,19 @@ public class AdminUserServiceImpl implements AdminUserService {
 
 
     @Async
-    public void sendPostActivateMessage(User user,String ... args ){
-    	//check if records exist send else return
-        if("A".equals(user.getStatus())) {
+    public void sendPostActivateMessage(User user, String... args) {
+        Email email = new Email.Builder()
+                .setRecipient(user.getEmail())
+                .setSubject(messageSource.getMessage("admin.activation.subject", null, locale))
+                .setBody(String.format(messageSource.getMessage("admin.activation.message", null, locale), args))
+                .build();
+        mailService.send(email);
+    }
+
+    @Async
+    private void sendActivateMessage(User user, String... args) {
+        AdminUser adminUser = getUserByName(user.getUserName());
+        if ("A".equals(adminUser.getStatus())) {
             Email email = new Email.Builder()
                     .setRecipient(user.getEmail())
                     .setSubject(messageSource.getMessage("admin.activation.subject", null, locale))
@@ -232,8 +261,8 @@ public class AdminUserServiceImpl implements AdminUserService {
             mailService.send(email);
         }
     }
-    
-    
+
+
     @Override
     @Transactional
     public String deleteUser(Long id) throws InternetBankingException {
@@ -243,7 +272,7 @@ public class AdminUserServiceImpl implements AdminUserService {
             SettingDTO setting = configService.getSettingByName("ENABLE_ENTRUST_DELETION");
             if (setting != null && setting.isEnabled()) {
                 if ("YES".equalsIgnoreCase(setting.getValue())) {
-                    securityService.deleteEntrustUser(user.getUserName());
+                    securityService.deleteEntrustUser(user.getEntrustId(), user.getEntrustGroup());
                 }
             }
             logger.warn("Admin user {} deleted", user.getUserName());
@@ -261,9 +290,14 @@ public class AdminUserServiceImpl implements AdminUserService {
     @Verifiable(operation = "UPDATE_ADMIN_USER", description = "Updating an Admin User")
     public String updateUser(AdminUserDTO user) throws InternetBankingException {
 
+        AdminUser adminUser = adminUserRepo.findById(user.getId());
+
+        if ("I".equals(adminUser.getStatus()))
+        {
+            throw new InternetBankingException(messageSource.getMessage("user.deactivated", null, locale));
+        }
         try {
-            AdminUser adminUser = adminUserRepo.findById(user.getId());
-            entityManager.detach(adminUser);
+            //entityManager.detach(adminUser);
             adminUser.setId(user.getId());
             adminUser.setVersion(user.getVersion());
             adminUser.setFirstName(user.getFirstName());
@@ -276,8 +310,12 @@ public class AdminUserServiceImpl implements AdminUserService {
             adminUserRepo.save(adminUser);
             logger.info("Admin user {} updated", adminUser.getUserName());
             return messageSource.getMessage("user.update.success", null, locale);
-        } catch (DuplicateObjectException e) {
-            throw new DuplicateObjectException(e.getMessage());
+        }
+        catch (VerificationInterruptedException e) {
+            return e.getMessage();
+        }
+        catch (InternetBankingException ibe) {
+            throw ibe;
         } catch (Exception e) {
             throw new InternetBankingException(messageSource.getMessage("user.update.failure", null, locale), e);
         }
@@ -288,8 +326,14 @@ public class AdminUserServiceImpl implements AdminUserService {
     @Transactional
     public String resetPassword(Long userId) throws PasswordException {
 
-        try {
+
             AdminUser user = adminUserRepo.findOne(userId);
+            logger.info("this is the admin user"+user.getStatus());
+            if("I".equals(user.getStatus()))
+            {
+                throw new InternetBankingException(messageSource.getMessage("users.deactivated", null, locale));
+            }
+        try {
             String newPassword = passwordPolicyService.generatePassword();
             user.setPassword(passwordEncoder.encode(newPassword));
             passwordPolicyService.saveAdminPassword(user);
@@ -304,6 +348,8 @@ public class AdminUserServiceImpl implements AdminUserService {
             mailService.send(email);
             logger.info("Admin user {} password reset successfully", user.getUserName());
             return messageSource.getMessage("password.reset.success", null, locale);
+        } catch (MailException me) {
+            throw new PasswordException(messageSource.getMessage("mail.failure", null, locale), me);
         } catch (Exception e) {
             throw new PasswordException(messageSource.getMessage("password.reset.failure", null, locale), e);
         }
@@ -328,6 +374,8 @@ public class AdminUserServiceImpl implements AdminUserService {
             mailService.send(email);
             logger.info("Admin user {} password reset successfully", user.getUserName());
             return messageSource.getMessage("password.reset.success", null, locale);
+        } catch (MailException me) {
+            throw new PasswordException(messageSource.getMessage("mail.failure", null, locale), me);
         } catch (Exception e) {
             throw new PasswordException(messageSource.getMessage("password.reset.failure", null, locale), e);
         }
@@ -394,14 +442,7 @@ public class AdminUserServiceImpl implements AdminUserService {
     }
 
 
-    public boolean sendPassword(AdminUser user) {
-        //TODO use an smtp server to send new password to user via mail
-        return false;
-    }
-
-
-    private List<AdminUserDTO> convertEntitiesToDTOs(Iterable<AdminUser> adminUsers)
-    {
+    private List<AdminUserDTO> convertEntitiesToDTOs(Iterable<AdminUser> adminUsers) {
         List<AdminUserDTO> adminUserDTOList = new ArrayList<>();
         for (AdminUser adminUser : adminUsers) {
             AdminUserDTO userDTO = convertEntityToDTO(adminUser);
@@ -411,8 +452,7 @@ public class AdminUserServiceImpl implements AdminUserService {
         return adminUserDTOList;
     }
 
-    private AdminUserDTO convertEntityToDTO(AdminUser adminUser)
-    {
+    private AdminUserDTO convertEntityToDTO(AdminUser adminUser) {
         AdminUserDTO adminUserDTO = modelMapper.map(adminUser, AdminUserDTO.class);
         adminUserDTO.setRoleId(adminUser.getRole().getId().toString());
         if (adminUser.getCreatedOnDate() != null) {
@@ -425,14 +465,12 @@ public class AdminUserServiceImpl implements AdminUserService {
         return adminUserDTO;
     }
 
-    private AdminUser convertDTOToEntity(AdminUserDTO adminUserDTO)
-    {
+    private AdminUser convertDTOToEntity(AdminUserDTO adminUserDTO) {
         return modelMapper.map(adminUserDTO, AdminUser.class);
     }
 
     @Override
-    public Page<AdminUserDTO> getUsers(Pageable pageDetails)
-    {
+    public Page<AdminUserDTO> getUsers(Pageable pageDetails) {
         Page<AdminUser> page = adminUserRepo.findAll(pageDetails);
         List<AdminUserDTO> dtOs = convertEntitiesToDTOs(page.getContent());
         long t = page.getTotalElements();
@@ -440,15 +478,14 @@ public class AdminUserServiceImpl implements AdminUserService {
         return pageImpl;
     }
 
-	@Override
-	public Page<AdminUserDTO> findUsers(String pattern, Pageable pageDetails)
-    {
-		Page<AdminUser> page = adminUserRepo.findUsingPattern(pattern, pageDetails);
-		List<AdminUserDTO> dtOs = convertEntitiesToDTOs(page.getContent());
+    @Override
+    public Page<AdminUserDTO> findUsers(String pattern, Pageable pageDetails) {
+        Page<AdminUser> page = adminUserRepo.findUsingPattern(pattern, pageDetails);
+        List<AdminUserDTO> dtOs = convertEntitiesToDTOs(page.getContent());
         long t = page.getTotalElements();
-        Page<AdminUserDTO> pageImpl = new PageImpl<AdminUserDTO>(dtOs,pageDetails,t);
+        Page<AdminUserDTO> pageImpl = new PageImpl<AdminUserDTO>(dtOs, pageDetails, t);
         return pageImpl;
-	}
+    }
 
 
 }

@@ -1,35 +1,40 @@
 package longbridge.utils;
 
 
-//import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.context.request.WebRequest;
+
+import javax.validation.constraints.NotNull;
 
 /**
  * Created by Longbridge on 7/1/2017.
  */
 public class CronJobUtils {
     private static Logger logger = LoggerFactory.getLogger(new CronJobUtils().getClass());
+    @NotNull
     public static String getSecondExpression(String second){
         if(second!=null && !second.equalsIgnoreCase("")) {
-            String exrInit = "0/";
+            String exrInit = "*/";
             StringBuilder stringBuilder = new StringBuilder(exrInit);
             stringBuilder.append(second);
-            stringBuilder.append(" 0/1 * 1/1 * ? *");
+            stringBuilder.append(" * * * * *");
             logger.info("seconds expression {}", stringBuilder);
             return stringBuilder.toString();
         }
         return "";
     }
+    @NotNull
     public static String getMinuteExpression(String minute){
         String exrInit = "0 0/";
         StringBuilder stringBuilder = new StringBuilder(exrInit);
         stringBuilder.append(minute);
         stringBuilder.append(" * 1/1 * ? *");
         logger.info("minute expression {}",stringBuilder);
+
         return stringBuilder.toString();
     }
+    @NotNull
     public static String getHourExpression(String hourChecker, String exactHour, String hour, String minute){
 
         String exrInit = "0 ";
@@ -67,6 +72,7 @@ public class CronJobUtils {
         return stringBuilder.toString();
     }
 
+    @NotNull
     public static String getWeeklyExpression(String hour, String minute, String[] days){
 
         String exrInit = "0 ";
@@ -89,6 +95,7 @@ Sample Cron expression expected
 */
         return stringBuilder.toString();
     }
+    @NotNull
     public static String getMonthlyExpression(String monthChecker, String monthDay, String monthNum, String monthCategory, String monthWeek, String monthNumDesp, String monthHour, String monthMinute){
 
         String exrInit = "0 ";
@@ -115,6 +122,7 @@ Sample Cron expression expected
         return stringBuilder.toString();
     }
 
+    @NotNull
     public static String getYearlyExpression(String yearChecker, String yearMonth1, String yearMonthNum, String yearCategory, String yearMonthWeek, String yearMonth2, String yearHour, String yearMinute){
 
         String exrInit = "0 ";

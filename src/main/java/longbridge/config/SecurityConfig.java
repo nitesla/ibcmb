@@ -27,6 +27,9 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.session.HttpSessionEventPublisher;
 
+import java.util.Arrays;
+import java.util.Objects;
+
 /**
  * Created by ayoade_farooq@yahoo.com on 4/10/2017.
  */
@@ -92,17 +95,31 @@ public class SecurityConfig {
             if (dto != null && dto.isEnabled()) {
                 ipRestricted = true;
                 String temp = dto.getValue();
-                ipRange.append(String.format(" or hasIpAddress('%s')", temp));
+                try{
+                String [] whitelisted = temp.split(",");
+                    Arrays.asList(whitelisted)
+                            .stream()
+                            .filter(Objects::nonNull)
+                            .forEach(i -> ipRange.append(String.format(" or hasIpAddress('%s')", i)) );
+
+
+                }catch (Exception e){
+               e.printStackTrace();
+                }
+
+//                ipRange.append(String.format(" or hasIpAddress('%s')", temp));
+
+
                 logger.info("IP address whitelist " + ipRange.toString());
             }
 
 
             http.antMatcher("/admin/**").authorizeRequests().anyRequest().
-                    hasAuthority(UserType.ADMIN.toString())
+                   // hasAuthority(UserType.ADMIN.toString())
 
 
-                    .and().authorizeRequests().and()
-                    // .access("hasAuthority('" + UserType.ADMIN.toString() + "') and " + ipRange.toString()) .and()
+                   // .and().authorizeRequests().and()
+                     access("hasAuthority('" + UserType.ADMIN.toString() + "') and " + ipRange.toString()) .and()
 
                     // log in
                     .formLogin().loginPage("/login/admin").loginProcessingUrl("/admin/login")

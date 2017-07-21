@@ -1,14 +1,13 @@
 package longbridge.services.implementations;
 
 import longbridge.dtos.SettingDTO;
-import longbridge.exception.DuplicateObjectException;
 import longbridge.exception.InternetBankingException;
+import longbridge.exception.VerificationInterruptedException;
 import longbridge.models.Setting;
 import longbridge.repositories.SettingRepo;
 import longbridge.services.ConfigurationService;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -55,6 +54,9 @@ public class ConfigurationServiceImpl implements ConfigurationService {
 			Setting setting = mapper.map(dto, Setting.class);
 			settingRepo.save(setting);
 			return messageSource.getMessage("setting.add.success", null, locale);
+		}
+		catch (VerificationInterruptedException e){
+			return e.getMessage();
 		}
 		catch (Exception e){
 			throw new InternetBankingException(messageSource.getMessage("setting.add.failure",null,locale),e);
@@ -112,8 +114,11 @@ public class ConfigurationServiceImpl implements ConfigurationService {
 			settingRepo.save(setting);
 			return messageSource.getMessage("setting.update.success", null, locale);
 		}
-		catch (DuplicateObjectException e) {
-			throw new DuplicateObjectException(e.getMessage());
+		catch (VerificationInterruptedException e){
+			return e.getMessage();
+		}
+		catch (InternetBankingException e) {
+			throw e;
 		}
 		catch (Exception e) {
 			throw new InternetBankingException(messageSource.getMessage("setting.update.failure",null,locale),e);
@@ -124,8 +129,15 @@ public class ConfigurationServiceImpl implements ConfigurationService {
 	@Verifiable(operation="DELETE_SETTING",description="Delete Settings")
 	public String deleteSetting(Long id) throws InternetBankingException {
 		try {
-			settingRepo.delete(id);
+			Setting setting = settingRepo.findOne(id);
+			settingRepo.delete(setting);
 			return messageSource.getMessage("setting.delete.success", null, locale);
+		}
+		catch (VerificationInterruptedException e){
+			return e.getMessage();
+		}
+		catch (InternetBankingException e){
+			throw e;
 		}
 		catch (Exception e){
 			throw new InternetBankingException(messageSource.getMessage("setting.delete.failure", null, locale),e);

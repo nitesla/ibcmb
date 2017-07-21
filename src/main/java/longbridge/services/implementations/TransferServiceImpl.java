@@ -86,7 +86,7 @@ public class TransferServiceImpl implements TransferService {
                 if (transRequest.getStatus().equalsIgnoreCase("000") || transRequest.getStatus().equalsIgnoreCase("00"))
                     return transferRequestDTO;
 
-                throw new InternetBankingTransferException(transRequest.getStatusDescription());
+                throw new InternetBankingTransferException(transRequest.getStatus());
             }
 
 
@@ -102,10 +102,9 @@ public class TransferServiceImpl implements TransferService {
 
     @Override
     public Iterable<TransRequest> getTransfers(User user) {
-        return transferRequestRepo.findAll()
-                .stream()
-                .filter(i -> i.getUserReferenceNumber().equalsIgnoreCase("RET_" + user.getId()))
-                .collect(Collectors.toList());
+        return transferRequestRepo.findByUserReferenceNumber("RET_" + user.getId());
+
+
 
     }
 

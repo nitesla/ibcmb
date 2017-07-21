@@ -46,6 +46,16 @@
                                 <div class="ibox-content">
                                     <form method="post" class="form-horizontal" th:action="@{/admin/token/synchronize/}" th:object="${token}">
                                         <div class="form-group">
+                                            <label class="col-sm-2 control-label">User Type</label>
+
+                                            <div class="col-sm-4">
+                                                <select class="form-control" name="userType">
+                                                    <option th:each="type: ${userTypes}" th:value="${type}" th:text="${type}"></option>
+
+                                                </select>
+                                            </div> </div>
+
+                                        <div class="form-group">
                                             <label class="col-sm-2 control-label">Username</label>
 
                                             <div class="col-sm-4">

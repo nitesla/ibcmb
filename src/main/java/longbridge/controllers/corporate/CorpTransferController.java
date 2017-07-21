@@ -3,27 +3,37 @@ package longbridge.controllers.corporate;
 
 import longbridge.dtos.CorpLocalBeneficiaryDTO;
 import longbridge.dtos.CorpTransferRequestDTO;
-import longbridge.exception.*;
+import longbridge.exception.InternetBankingException;
+import longbridge.exception.InternetBankingTransferException;
+import longbridge.exception.TransferErrorService;
+import longbridge.exception.TransferRuleException;
 import longbridge.models.*;
-
-
 import longbridge.repositories.CorpTransferRequestRepo;
 import longbridge.repositories.CorporateRepo;
 import longbridge.services.*;
+import longbridge.utils.DateFormatter;
 import longbridge.utils.TransferType;
+import longbridge.utils.TransferUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.MessageSource;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
+import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
+import org.springframework.data.jpa.datatables.repository.DataTablesUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.LocaleResolver;
+import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.servlet.view.jasperreports.JasperReportsPdfView;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-
-import java.math.BigDecimal;
 import java.security.Principal;
 import java.util.*;
 import java.util.stream.StreamSupport;
@@ -36,11 +46,13 @@ import java.util.stream.StreamSupport;
 @RequestMapping("/corporate/transfer")
 public class CorpTransferController {
 
+    @Autowired
+    CorpTransferRequestRepo transferRequestRepo;
     private CorporateService corporateService;
     private CorporateRepo corporateRepo;
     private CorporateUserService corporateUserService;
     private IntegrationService integrationService;
-    private TransferService transferService;
+    private CorpTransferService transferService;
     private AccountService accountService;
     private MessageSource messages;
     private LocaleResolver localeResolver;
@@ -48,9 +60,15 @@ public class CorpTransferController {
     private FinancialInstitutionService financialInstitutionService;
     private TransferErrorService transferErrorService;
     private SecurityService securityService;
+    private ApplicationContext appContext;
+    private TransferUtils transferUtils;
+
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
+    @Autowired
+    private CorpTransferService corpTransferService;
 
     @Autowired
-    public CorpTransferController(CorporateService corporateService, CorporateRepo corporateRepo, CorporateUserService corporateUserService, IntegrationService integrationService, TransferService transferService, AccountService accountService, MessageSource messages, LocaleResolver localeResolver, CorpLocalBeneficiaryService corpLocalBeneficiaryService, FinancialInstitutionService financialInstitutionService, TransferErrorService transferErrorService, SecurityService securityService) {
+    public CorpTransferController(CorporateService corporateService, CorporateRepo corporateRepo, CorporateUserService corporateUserService, IntegrationService integrationService, CorpTransferService transferService, AccountService accountService, MessageSource messages, LocaleResolver localeResolver, CorpLocalBeneficiaryService corpLocalBeneficiaryService, FinancialInstitutionService financialInstitutionService, TransferErrorService transferErrorService, SecurityService securityService, TransferUtils transferUtils) {
         this.corporateService = corporateService;
         this.corporateRepo = corporateRepo;
         this.corporateUserService = corporateUserService;
@@ -63,63 +81,47 @@ public class CorpTransferController {
         this.financialInstitutionService = financialInstitutionService;
         this.transferErrorService = transferErrorService;
         this.securityService = securityService;
+        this.transferUtils=transferUtils;
     }
 
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
 
 
 
-    @Autowired
-    CorpTransferRequestRepo transferRequestRepo;
-    @Autowired private CorpTransferService corpTransferService;
-
-    @GetMapping("/{corpId}/{amount}")
-    public void getQualifiedRoles(@PathVariable Long corpId, @PathVariable String amount) {
-
-        CorpTransRequest transferRequest = new CorpTransRequest();
-        transferRequest.setAmount(new BigDecimal(amount));
-        Corporate corporate = corporateRepo.findOne(corpId);
-        transferRequest.setCorporate(corporate);
-        List<CorporateRole> roles = corporateService.getQualifiedRoles(transferRequest);
-        PendAuth pendAuth = new PendAuth();
-        List<PendAuth> pendAuths = new ArrayList<>();
-        for (CorporateRole role : roles) {
-            pendAuth.setRole(role);
-            pendAuths.add(pendAuth);
-        }
-        transferRequest.setPendAuths(pendAuths);
-        transferRequestRepo.save(transferRequest);
-
-    }
 
     @GetMapping(value = "")
-    public String index(TransferType tranType) {
+    public String index(HttpServletRequest request) {
 
-        switch (tranType) {
-            case CORONATION_BANK_TRANSFER:
+        CorpTransferRequestDTO dto = (CorpTransferRequestDTO) request.getSession().getAttribute("corpTransferRequest");
+        if (dto != null) {
+            request.getSession().removeAttribute("corpTransferRequest");
+            TransferType tranType = dto.getTransferType();
+            switch (tranType) {
+                case CORONATION_BANK_TRANSFER:
 
-            {
-                return "redirect:/corporate/transfer/local";
-            }
-            case INTER_BANK_TRANSFER: {
-                return "redirect:/corporate/transfer/interbank";
-            }
-            case INTERNATIONAL_TRANSFER: {
+                {
+                    return "redirect:/corporate/transfer/local";
+                }
+                case INTER_BANK_TRANSFER: {
+                    return "redirect:/corporate/transfer/interbank";
+                }
+                case INTERNATIONAL_TRANSFER: {
 
-            }
-            case NAPS: {
+                }
+                case NAPS: {
 
-            }
-            case OWN_ACCOUNT_TRANSFER: {
+                }
+                case OWN_ACCOUNT_TRANSFER: {
 
-                return "redirect:/corporate/transfer/ownaccount";
-            }
+                    return "redirect:/corporate/transfer/ownaccount";
+                }
 
-            case RTGS: {
-                return "redirect:/corporate/transfer/interbank";
+                case RTGS: {
+                    return "redirect:/corporate/transfer/interbank";
+                }
             }
+            return "redirect:/corporate/transfer/ownaccount";
         }
-        return "redirect:/corporate/transfer/ownaccount";
+        return "redirect:/corporate/dashboard";
     }
 
 
@@ -157,8 +159,8 @@ public class CorpTransferController {
     public
     @ResponseBody
     String getBankAccountName(@PathVariable String accountNo) {
-        return integrationService.viewAccountDetails(accountNo).getAcctName();
 
+        return transferUtils.doIntraBankkNameLookup(accountNo);
     }
 
 
@@ -166,9 +168,8 @@ public class CorpTransferController {
     public
     @ResponseBody
     String getInterBankAccountName(@PathVariable String accountNo, @PathVariable String bank) {
-        return (integrationService.doNameEnquiry(bank, accountNo)).getAccountName();
-        // return (integrationService.doNameEnquiry("000005",accountNo)).getAccountName();
 
+       return transferUtils.doInterBankNameLookup(bank,accountNo);
 
     }
 
@@ -180,7 +181,8 @@ public class CorpTransferController {
 
             if (request.getSession().getAttribute("AUTH") != null) {
                 String token = request.getParameter("token");
-                boolean ok = securityService.performTokenValidation(principal.getName(), token);
+                CorporateUser corporateUser = corporateUserService.getUserByName(principal.getName());
+                boolean ok = securityService.performTokenValidation(corporateUser.getEntrustId(), corporateUser.getEntrustGroup(), token);
 
                 if (!ok) {
                     model.addAttribute("failure", messages.getMessage("auth.token.failure", null, locale));
@@ -191,92 +193,183 @@ public class CorpTransferController {
 
 
             }
-            corpTransferRequestDTO = (CorpTransferRequestDTO) request.getSession().getAttribute("corpTransferRequest");
 
-            corpTransferRequestDTO = (CorpTransferRequestDTO) transferService.makeTransfer(corpTransferRequestDTO);
-            request.getSession().removeAttribute("corpTransferRequest");
+            // request.getSession().removeAttribute("corpTransferRequest");
 
 
-            if (request.getSession().getAttribute("Lbeneficiary") != null) {
+            if (request.getParameter("add") != null) {
+                //checkbox  checked
+                if (request.getSession().getAttribute("Lbeneficiary") != null) {
+                    CorpLocalBeneficiaryDTO l = (CorpLocalBeneficiaryDTO) request.getSession().getAttribute("Lbeneficiary");
+                    CorporateUser user = corporateUserService.getUserByName(principal.getName());
+                    try {
+                        Corporate corporate = corporateService.getCorporateByCustomerId(user.getCorporate().getCustomerId());
+                        corpLocalBeneficiaryService.addCorpLocalBeneficiary(l);
+                        request.getSession().removeAttribute("Lbeneficiary");
+                        // model.addAttribute("beneficiary", l);
+                    } catch (InternetBankingException de) {
+                        logger.error("Error occurred processing transfer");
 
-                CorpLocalBeneficiaryDTO l = (CorpLocalBeneficiaryDTO) request.getSession().getAttribute("Lbeneficiary");
-                model.addAttribute("beneficiary", l);
-                return "/corp/transfer/corptransferbeneficiary";
+                    }
+                }
             }
 
-            redirectAttributes.addFlashAttribute("message", messages.getMessage("transaction.success", null, locale));
-            return index(corpTransferRequestDTO.getTransferType());
 
-        } catch (InternetBankingTransferException e) {
+            corpTransferRequestDTO = (CorpTransferRequestDTO) request.getSession().getAttribute("corpTransferRequest");
+            String corporateId = "" + corporateUserService.getUserByName(principal.getName()).getCorporate().getId();
+            corpTransferRequestDTO.setCorporateId(corporateId);
+            String response = transferService.addTransferRequest(corpTransferRequestDTO);
+
+
+            model.addAttribute("transRequest", corpTransferRequestDTO);
+            model.addAttribute("message", response);
+            return "corp/transfer/transferdetails";
+
+        } catch (InternetBankingTransferException ex) {
+            ex.printStackTrace();
+
+            String errorMessage = transferErrorService.getMessage(ex);
+            redirectAttributes.addFlashAttribute("failure", errorMessage);
+            return index(request);
+        }
+        catch ( TransferRuleException e) {
             e.printStackTrace();
+            String errorMessage = e.getMessage();
+            redirectAttributes.addFlashAttribute("failure", errorMessage);
+            return index(request);
+        }
+        finally {
             if (request.getSession().getAttribute("Lbeneficiary") != null)
                 request.getSession().removeAttribute("Lbeneficiary");
-            String errorMessage = transferErrorService.getMessage(e, request);
-            redirectAttributes.addFlashAttribute("failure", errorMessage);
-            return "redirect:/corporate/dashboard";
-
-
         }
     }
 
     @GetMapping("/newbeneficiaary")
-    public String newbeneficiaary(HttpServletRequest request, Model model, Principal principal, RedirectAttributes attributes) throws Exception {
+    public String newbeneficiaary(HttpServletRequest request, Principal principal, RedirectAttributes attributes) throws Exception {
         if (request.getSession().getAttribute("Lbeneficiary") != null) {
             CorporateUser user = corporateUserService.getUserByName(principal.getName());
             CorpLocalBeneficiaryDTO l = (CorpLocalBeneficiaryDTO) request.getSession().getAttribute("Lbeneficiary");
-            corpLocalBeneficiaryService.addCorpLocalBeneficiary(user.getCorporate(), l);
+            corpLocalBeneficiaryService.addCorpLocalBeneficiary(l);
         }
-
 
         attributes.addFlashAttribute("message", "New Beneficiary Added");
         return "redirect:/corporate/dashboard";
 
     }
-    @GetMapping("/pending")
-    public String getPendingTransfer(Principal principal,Model model){
 
-        CorporateUser corporateUser = corporateUserService.getUserByName(principal.getName());
 
-        Corporate corporate = corporateUser.getCorporate();
-        Set<CorporateRole> roles = corporate.getCorporateRoles();
-        List<PendAuth> pendAuths = new ArrayList<>();
-        for(CorporateRole role: roles){
-            if(!role.getPendAuths().isEmpty()){
-                Set<CorporateUser> users = role.getUsers();
-                if(users.contains(corporateUser)) {
-                    pendAuths = role.getPendAuths();
+    @GetMapping("/{id}/authorizations")
+    public String getAuthorizations(@PathVariable Long id, Model model) {
 
-                }
+        CorpTransRequest corpTransRequest = corpTransferService.getTransfer(id);
+        CorpTransferAuth corpTransferAuth = corpTransferService.getAuthorizations(corpTransRequest);
+        CorpTransRule corpTransRule = corporateService.getApplicableTransferRule(corpTransRequest);
+        boolean userCanAuthorize = corpTransferService.userCanAuthorize(corpTransRequest);
+        model.addAttribute("authorizationMap", corpTransferAuth);
+        model.addAttribute("corpTransRequest", corpTransRequest);
+        model.addAttribute("corpTransReqEntry", new CorpTransReqEntry());
+        model.addAttribute("corpTransRule", corpTransRule);
+        model.addAttribute("userCanAuthorize", userCanAuthorize);
+
+        List<CorporateRole> rolesNotInAuthList = new ArrayList<>();
+        List<CorporateRole> rolesInAuth = new ArrayList<>();
+
+        if(corpTransferAuth.getAuths()!=null) {
+            for (CorpTransReqEntry transReqEntry : corpTransferAuth.getAuths()) {
+                rolesInAuth.add(transReqEntry.getRole());
             }
         }
 
-//        List<PendAuth> pendAuths =corporateUser.getCorporate().getCorporateRole().getPendAuths();
-        model.addAttribute("pendAuths", pendAuths);
-        return "corp/transfer/pendingtransfer/view";
+            if(corpTransRule!=null) {
+                for (CorporateRole role : corpTransRule.getRoles()) {
+                    if (!rolesInAuth.contains(role)) {
+                        rolesNotInAuthList.add(role);
+                    }
+                }
+            }
+        logger.info("Roles not In Auth List..{}", rolesNotInAuthList.toString());
+        model.addAttribute("rolesNotAuth", rolesNotInAuthList);
+
+        return "corp/transfer/request/summary";
     }
-    @GetMapping("/{id}/authorize")
-    public String authorizeTransfer(@PathVariable Long id, Principal principal, Model model, RedirectAttributes redirectAttributes){
-try {
-    CorporateUser corporateUser = corporateUserService.getUserByName(principal.getName());
-    String message = corpTransferService.authorizeTransfer(corporateUser, id);
-    redirectAttributes.addFlashAttribute("message", message);
-}
-catch (InvalidAuthorizationException iae){
-    logger.error("Failed to authorize transfer",iae);
-    redirectAttributes.addFlashAttribute("failure", iae.getMessage());
 
-}
-catch (TransferRuleException tre){
-    logger.error("Failed to authorize transfer",tre);
-    redirectAttributes.addFlashAttribute("failure", tre.getMessage());
+    @GetMapping("/requests")
+    public String getTransfers() {
+        return "corp/transfer/request/view";
+    }
 
-}
-catch (InternetBankingException e){
-    logger.error("Failed to authorize transfer",e);
-    redirectAttributes.addFlashAttribute("failure", e.getMessage());
 
-}
-        return "redirect:/corporate/pending";
+    @GetMapping("/requests/all")
+    public
+    @ResponseBody
+    DataTablesOutput<CorpTransRequest> getTransferRequests(DataTablesInput input) {
+        Pageable pageable = DataTablesUtils.getPageable(input);
+        Page<CorpTransRequest> requests = corpTransferService.getTransfers(pageable);
+
+//        logger.info("Transfer requests ", requests.toString());
+        DataTablesOutput<CorpTransRequest> out = new DataTablesOutput<CorpTransRequest>();
+        out.setDraw(input.getDraw());
+        out.setData(requests.getContent());
+        out.setRecordsFiltered(requests.getTotalElements());
+        out.setRecordsTotal(requests.getTotalElements());
+        return out;
+    }
+
+
+    @PostMapping("/authorize")
+    public String addAuthorization(@ModelAttribute("corpTransReqEntry") CorpTransReqEntry corpTransReqEntry, RedirectAttributes redirectAttributes) {
+
+        try {
+            String message = corpTransferService.addAuthorization(corpTransReqEntry);
+            redirectAttributes.addFlashAttribute("message", message);
+
+        } catch (InternetBankingException ibe) {
+            logger.error("Failed to authorize transfer", ibe);
+            redirectAttributes.addFlashAttribute("failure", ibe.getMessage());
+
+        }
+        return "redirect:/corporate/transfer/requests";
+
+    }
+
+
+    @RequestMapping(value = "/balance/{accountNumber}", method = RequestMethod.GET, produces = "application/json")
+    @ResponseBody
+    public String getBalance(@PathVariable String accountNumber) throws Exception {
+
+        return transferUtils.getBalance(accountNumber);
+    }
+    @RequestMapping(value = "/limit/{accountNumber}", method = RequestMethod.GET, produces = "application/json")
+    @ResponseBody
+    public String getLimit(@PathVariable String accountNumber) throws Exception {
+
+        return transferUtils.getLimit(accountNumber);
+    }
+
+
+    @RequestMapping(path = "{id}/receipt", method = RequestMethod.GET)
+    public ModelAndView report(@PathVariable Long id, HttpServletRequest servletRequest, Principal principal) throws Exception {
+        CorporateUser corporateUser = corporateUserService.getUserByName(principal.getName());
+        JasperReportsPdfView view = new JasperReportsPdfView();
+        view.setUrl("classpath:jasperreports/rpt_receipt.jrxml");
+        view.setApplicationContext(appContext);
+        Map<String, Object> modelMap = new HashMap<>();
+        modelMap.put("datasource", new ArrayList<>());
+        modelMap.put("amount", transferService.getTransfer(id).getAmount());
+        modelMap.put("recipient", transferService.getTransfer(id).getBeneficiaryAccountName());
+        modelMap.put("recipient",transferService.getTransfer(id).getBeneficiaryAccountName());
+        modelMap.put("AccountNum", transferService.getTransfer(id).getCustomerAccountNumber());
+        modelMap.put("sender", corporateUser.getFirstName() + " " + corporateUser.getLastName());
+        modelMap.put("remarks", transferService.getTransfer(id).getRemarks());
+        modelMap.put("remarks",transferService.getTransfer(id));
+        modelMap.put("recipientBank", transferService.getTransfer(id).getFinancialInstitution().getInstitutionName());
+        modelMap.put("acctNo2", transferService.getTransfer(id).getBeneficiaryAccountNumber());
+        modelMap.put("acctNo1", transferService.getTransfer(id).getCustomerAccountNumber());
+        modelMap.put("refNUm", transferService.getTransfer(id).getReferenceNumber());
+        modelMap.put("date",DateFormatter.format(new Date()));
+        modelMap.put("tranDate", DateFormatter.format(new Date()));
+        ModelAndView modelAndView = new ModelAndView(view, modelMap);
+        return modelAndView;
     }
 
 }

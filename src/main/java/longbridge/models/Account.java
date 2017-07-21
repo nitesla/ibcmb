@@ -15,7 +15,7 @@ import javax.persistence.Entity;
 @Entity
 @Audited(withModifiedFlag=true)
 @Where(clause ="del_flag='N'")
-public class Account extends AbstractEntity{
+public class Account extends AbstractEntity {
 
     private String accountId;
     private String accountNumber;

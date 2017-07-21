@@ -14,6 +14,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.http.HttpMethod;
 import org.springframework.scheduling.annotation.EnableAsync;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.security.core.session.SessionRegistryImpl;
@@ -34,9 +35,9 @@ import org.springframework.web.servlet.mvc.WebContentInterceptor;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Locale;
+import java.util.concurrent.Executor;
 
 @Configuration
-//@EnableAsync
 public class WebMvcConfig extends WebMvcConfigurerAdapter {
 
     @Bean
@@ -75,8 +76,9 @@ public class WebMvcConfig extends WebMvcConfigurerAdapter {
         registry.addInterceptor(OpUserLoginInterceptor()).addPathPatterns("/ops/**");
         registry.addInterceptor(retailUserLoginInterceptor()).addPathPatterns("/retail/**");
         registry.addInterceptor(corporateUserLoginInterceptor()).addPathPatterns("/corporate/**");
-        registry.addInterceptor(retailTransferAuthInterceptor()).addPathPatterns("/retail/transfer/process");
-        registry.addInterceptor(webContentInterceptor()).addPathPatterns("/retail/**");
+     registry.addInterceptor(retailTransferAuthInterceptor()).addPathPatterns("/retail/transfer/process");
+     registry.addInterceptor(corpTransferAuthInterceptor()).addPathPatterns("/corporate/transfer/process");
+     registry.addInterceptor(webContentInterceptor()).addPathPatterns("/retail/**");
       //  registry.addInterceptor(webContentInterceptor()).addPathPatterns("/retail/**");
        // registry.addInterceptor(webContentInterceptor()).addPathPatterns("/retail/**");
     }
@@ -104,7 +106,7 @@ public class WebMvcConfig extends WebMvcConfigurerAdapter {
     @Bean
     public ResourceBundleMessageSource messageSource() {
         ResourceBundleMessageSource source = new ResourceBundleMessageSource();
-        String[] baseNames = new String[]{"i18n/messages", "i18n/menu"};
+        String[] baseNames = new String[]{"i18n/messages", "i18n/menu" ,"i18n/integration"};
         source.setBasenames(baseNames);  // name of the resource bundle
         source.setCacheSeconds(1000);
         source.setUseCodeAsDefaultMessage(true);
@@ -123,7 +125,10 @@ public class WebMvcConfig extends WebMvcConfigurerAdapter {
     public RetailTransferAuthInterceptor retailTransferAuthInterceptor() {
         return new RetailTransferAuthInterceptor();
     }
-
+    @Bean
+    public CorporateTransferAuthInterceptor corpTransferAuthInterceptor() {
+        return new CorporateTransferAuthInterceptor();
+    }
     @Bean
     public OpUserLoginInterceptor OpUserLoginInterceptor()
     {

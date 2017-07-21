@@ -1,32 +1,26 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head th:replace="corp_layout :: site-head">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{corp-layout}">
 
-</head>
-<body>
-<div class="container">
-<header th:replace="corp_layout :: corp-header">
-</header>
+<body onload="currentBar('add new user')">
 
-<section class="content-wrapper">
-    <div class="container">
-        <div class="row">
-            <div class="col-md-4 col-sm-4">
-                <div class="page_header">
-                    <h5 class="page_header"> Add New User</h5></div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-8 content-bg">
-                <div class="row form-spacing">
-                    <div class="col-md-6 col-sm-6">
-                        <form method="post" class="form-horizontal" th:action="@{/corporate/users}" th:object="${corporateUser}">
+<div layout:fragment="content">
+    <div class="col-md-5 col-sm-5 ">
 
-                            <div th:replace="corp_layout::form-validation"></div>
+        <select class="form-control full-width coronation-form-control hide-content-only" id="view">
+            <option value="account">Overview</option>
+        </select>
+    </div>
+
+    <div class="col-xs-12 ml-15 no-pad-left" >
+        <div class="col-xs-12 col-sm-6 no-pad-lef no-mt no-bd  alert" >
+           <form method="post" class="form-horizonta" th:action="@{/corporate/users}" th:object="${corporateUser}">
+
+                            <!--<div th:replace="corp_layout::form-validation"></div>-->
 
                             <div class="form-group">
                                 <label>Username</label>
-                                <input type="text" class="form-control" th:field="*{userName}"/>
+                                <input type="text" class="form-control" th:field="*{userName}"/><span class='req-inner'></span>
                                 <p class="errors" th:if="${#fields.hasErrors('userName')}" th:errors="*{userName}">&times;</p>
                             </div>
 
@@ -34,44 +28,45 @@
 
                             <div class="form-group">
                                 <label>First Name</label>
-                                <input type="text" class="form-control" th:field="*{firstName}"/>
+                                <input type="text" class="form-control" th:field="*{firstName}"/><span class='req-inner'></span>
                                 <p class="errors" th:if="${#fields.hasErrors('firstName')}" th:errors="*{firstName}">&times;</p>
                             </div>
                             <div class="form-group">
                                 <label>Last Name</label>
-                                <input type="text" class="form-control" th:field="*{lastName}" />
+                                <input type="text" class="form-control" th:field="*{lastName}" /><span class='req-inner'></span>
                                 <p class="errors" th:if="${#fields.hasErrors('lastName')}" th:errors="*{lastName}">&times;</p>
                             </div>
                             <div class="form-group">
                                 <label>Email</label>
-                                <input type="text" class="form-control" th:field="*{email}"/>
+                                <input type="text" class="form-control" th:field="*{email}"/><span class='req-inner'></span>
                                 <p class="errors" th:if="${#fields.hasErrors('email')}" th:errors="*{email}">&times;</p>
+                            </div>
+                            <div class="form-group">
+                                <label>Phone</label>
+                                <input type="text" class="form-control" th:field="*{phoneNumber}"/><span class='req-inner'></span>
+                                <p class="errors" th:if="${#fields.hasErrors('phoneNumber')}" th:errors="*{phoneNumber}">&times;</p>
                             </div>
 
                             <div class="form-group">
                                 <label>Role</label>
                                 <select class="form-control" th:field="*{roleId}">
                                     <option th:each="role : ${roles.?[#strings.equalsIgnoreCase(userType, 'corporate')]}" th:value="${role.id}" th:text="${role.name}"></option>
-                                </select>
+                                </select><span class='req-inner'></span>
                             </div>
 
                             <div class="form-group">
-                                    <button class="btn btn-primary btn-sm" type="submit">Submit</button>
+                                    <button class="btn btn-link required-step" type="submit">Create User</button>
                             </div>
 
                         </form>
-                    </div>
-                </div>
-            </div>
-            <div th:replace="corp_layout :: corp-sidebar" class="col-md-3 sidebar">
-            </div>
+                   
         </div>
     </div>
-</section>
 
-<!-- CONTENT-WRAPPER SECTION END-->
-<footer th:replace="corp_layout :: corp-footer">
-</footer>
+</div>
+
+
+<th:block layout:fragment="scripts">
 <script>
     $( function() {
         $( "#datepicker" ).datepicker(
@@ -79,6 +74,8 @@
         );
     } );
 </script>
-</div>
+   
+</th:block>
+
 </body>
 </html>

@@ -205,7 +205,7 @@ public class AdmRoleController {
             redirectAttributes.addFlashAttribute("message", message);
             return "redirect:/admin/roles";
         } catch (InternetBankingException ibe) {
-            result.addError(new ObjectError("error", messageSource.getMessage("role.update.failure", null, locale)));
+            result.addError(new ObjectError("error", ibe.getMessage()));
             logger.error("Error updating role", ibe);
             return "adm/role/edit";
         }

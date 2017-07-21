@@ -1,31 +1,21 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head th:replace="cust_layout :: site-head">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{ret-layout}">
 
-</head>
-<body>
-<div class="container">
-    <header th:replace="cust_layout :: header">
-    </header>
+<body onload="currentBar('CMB new benficiary')">
 
-<section class="content-wrapper">
-    <div class="containe">
-        <div class="row">
-            <div class="col-md-4 col-sm-4">
-                <h5 class="page_header"> New Beneficiary</h5>
-                <select class="form-control invisible">
-                        <option value="account">Account Overview</option>
-                </select>
-            </div>
+<div layout:fragment="content">
+    <div class="col-md-5 col-sm-5 ">
 
-             <p class="col-xs-12 invisible">
-                    Fields marked <span style="color:red">*</span> are compulsory
-            </p>
-        </div>
-        <div class="row">
-            <div class="col-md-9 content-bg">
-                <div class="form-spacin">
-                    <div class="col-sm-8">
+        <select class="form-control full-width coronation-form-control hide-content-only" id="view">
+            <option value="account">Overview</option>
+        </select>
+    </div>
+
+    <div class="col-xs-12 ml-15 " >
+        <div class="col-xs-11 no-pad-left alert no-bd">
+           <div class="">
+                    <div class="col-sm-8 no-pad-left ">
                         <form id="local" method="post" th:action="@{/retail/transfer/local/new}"
                               th:object="${localBeneficiaryDTO}">
                             <div class="form-group">
@@ -47,7 +37,7 @@
                             <div class="form-group">
                                 <label>Account Name</label>
                                 <input type="text" class="form-control" name="accountNumber" th:field="*{accountName}"
-                                       id="acct_name" onblur="clearFields()" readonly="readonly" required="required"/>
+                                       id="acct_name" onblur="cleaFields()" readonly="readonly" required="required"/>
                                 <label
                                         th:if="${#fields.hasErrors('accountName')}" th:errors="*{accountName}"
                                         class="validation-message"></label>
@@ -66,22 +56,18 @@
 
 
                     </div>
-                </div>
-            </div>
-            <div class="col-md-3 pull-right " >
-                <div th:replace="cust_layout :: sidebar" class="" >
-                </div>
-            </div>
+
+                    
+                               
+           </div>
         </div>
     </div>
-</section>
+
+</div>
 
 
-<!-- CONTENT-WRAPPER SECTION END-->
-<footer th:replace="cust_layout ::footer">
-</footer>
-
-<script th:inline="javascript">
+<th:block layout:fragment="scripts">
+  <script th:inline="javascript">
     /*<![CDATA[*/
     $(document).ready(function () {
 //        $('#acct_num').keypress(function () {
@@ -93,7 +79,7 @@
 
 
     function getAccountName() {
-        $('.acctError').hide();
+        //clearFields();
          $('#loading-icon').show();
         //make sure alert message is not empty
         var acct = $('#acct_num').val();
@@ -104,52 +90,44 @@
             return false;
         }
 
-
-
-
-        var options = {
-            type: 'GET',
-            url: '/retail/transfer/local/' + acct + '/nameEnquiry',
-//					dataType: 'jsonp',
-            error: function (xhr, textStatus, errorThrown) {
-                 $('#loading-icon').hide();
+        $.getJSON('/retail/transfer/' + acct +'/nameEnquiry', function(jd) {
+            var message = jd.message;
+            var success =  jd.success;
+            console.log(message);
+            console.log(success);
+            if (success==false){
+                $('.acctError').text(message);
                 $('.acctError').show().css("color", "red");
-            },
-            success: function (data, textStatus) {
-                console.log(data);
-                console.log(textStatus);
-                var result = data;
-                //var result = (new Function("return " + result))();
-                // $('#acct_name').val(result.message);
-                $('#acct_name').val(result);
-                $('.acctError').hide();
-
-                if( result!=null && result!='' ) {
-
-                    $('#localsave').show();
-                    $('#neq').hide();
-                     $('#loading-icon').hide();
-                }else{
-
-                    $('.acctError').show().css("color", "red");
-                     $('#loading-icon').hide();
-                }
-
+                $('#loading-icon').hide();
+            }else{
+                $('#acct_name').val(message);
+                $('#localsave').show();
+                $('.acctError').hide()
+                document.getElementById('loading-icon').style.display = 'none';
+                $('#loading-icon').hide();
             }
-        };
-        $.ajax(options);
-    }
+
+
+
+
+
+        });
+
+
+
+    };
 
 
 
     function clearFields() {
         $('#localsave').hide();
         $('.acctError').hide();
-        $('#neq').show();
-        $('#acct_name').val();
+        $('#acct_name').val("");
+        $('#loading-icon').show();
     }
     /*]]>*/
 </script>
-</div>
+</th:block>
+
 </body>
 </html>

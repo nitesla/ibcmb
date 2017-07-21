@@ -1,6 +1,8 @@
 package longbridge.models;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonSerializer;
@@ -10,9 +12,7 @@ import longbridge.utils.PrettySerializer;
 import org.hibernate.annotations.Where;
 import org.hibernate.envers.Audited;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.OneToMany;
+import javax.persistence.*;
 import java.io.IOException;
 import java.util.*;
 
@@ -22,8 +22,9 @@ import java.util.*;
 @Entity
 @Audited(withModifiedFlag=true)
 @Where(clause ="del_Flag='N'" )
-public class Corporate extends AbstractEntity implements PrettySerializer{
+@Table(uniqueConstraints=@UniqueConstraint(columnNames={"customerId"}))
 
+public class Corporate extends AbstractEntity implements PrettySerializer{
 
     private String rcNumber;
     private String customerId;
@@ -38,23 +39,20 @@ public class Corporate extends AbstractEntity implements PrettySerializer{
 
 
     @OneToMany
-    Set<CorporateRole> corporateRoles = new HashSet<CorporateRole>();
-
-
-    @OneToMany(mappedBy = "corporate",cascade = CascadeType.ALL)
-    private List<CorporateUser> users =  new ArrayList<CorporateUser>();
-
-//    @OneToMany
-//    private Collection<Beneficiary> beneficiaries;
-
-    @OneToMany @JsonIgnore
-    private Collection<CorpLimit> corpLimits;
+    @JsonIgnore
+    Set<CorporateRole> corporateRoles;
 
     @OneToMany(mappedBy = "corporate")
     @JsonIgnore
-    List<CorpTransRequest> corpTransferRequests;
+    private List<CorporateUser> users;
 
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany
+    @JsonIgnore
+    private Collection<CorpLimit> corpLimits;
+
+
+    @OneToMany
+    @JsonIgnore
     List<CorpTransRule> corpTransRules;
 
     public Collection<CorpLimit> getCorpLimits() {
@@ -63,14 +61,6 @@ public class Corporate extends AbstractEntity implements PrettySerializer{
 
     public void setCorpLimits(Collection<CorpLimit> corpLimits) {
         this.corpLimits = corpLimits;
-    }
-
-    public List<CorpTransRequest> getCorpTransferRequests() {
-        return corpTransferRequests;
-    }
-
-    public void setCorpTransferRequests(List<CorpTransRequest> corpTransferRequests) {
-        this.corpTransferRequests = corpTransferRequests;
     }
 
     public Set<CorporateRole> getCorporateRoles() {
@@ -144,8 +134,6 @@ public class Corporate extends AbstractEntity implements PrettySerializer{
     public void setAddress(String address) {
         this.address = address;
     }
-    
-    
 
 	public List<CorporateUser> getUsers() {
 		return users;
@@ -154,15 +142,6 @@ public class Corporate extends AbstractEntity implements PrettySerializer{
 	public void setUsers(List<CorporateUser> users) {
 		this.users = users;
 	}
-
-//	public Collection<Beneficiary> getBeneficiaries() {
-//		return beneficiaries;
-//	}
-//
-//	public void setBeneficiaries(Collection<Beneficiary> beneficiaries) {
-//		this.beneficiaries = beneficiaries;
-//	}
-
 
     public String getBvn() {
         return bvn;
@@ -204,10 +183,23 @@ public class Corporate extends AbstractEntity implements PrettySerializer{
                 gen.writeStartObject();
                 gen.writeStringField("Name",value.name);
                 gen.writeStringField("Customer Id",value.customerId);
+                gen.writeStringField("Type",value.corporateType);
                 gen.writeStringField("RC Number",value.rcNumber);
+                gen.writeStringField("Status",getStatusDescription(value.status));
+
                 gen.writeEndObject();
             }
         };
     }
 
+    private  String getStatusDescription(String status){
+        String description =null;
+        if ("A".equals(status))
+            description = "Active";
+        else if ("I".equals(status))
+            description = "Inactive";
+        else if ("L".equals(status))
+            description = "Locked";
+        return description;
+    }
 }

@@ -12,7 +12,7 @@ import longbridge.security.userdetails.CustomUserPrincipal;
 import longbridge.services.MailService;
 import longbridge.services.VerificationService;
 import longbridge.utils.DateFormatter;
-import longbridge.utils.verificationStatus;
+import longbridge.utils.VerificationStatus;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,7 +29,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 @Service
@@ -69,7 +68,7 @@ public class VerificationServiceImpl implements VerificationService {
             throw new VerificationException("You cannot verify what you initiated");
         }
 
-        if (!verificationStatus.PENDING.equals(verification.getStatus())) {
+        if (!VerificationStatus.PENDING.equals(verification.getStatus())) {
             throw new VerificationException("Verification is not pending for the operation");
         }
 
@@ -78,7 +77,7 @@ public class VerificationServiceImpl implements VerificationService {
             verification.setVerifiedBy(getCurrentUserName());
             verification.setComments(dto.getComments());
             verification.setVerifiedOn(new Date());
-            verification.setStatus(verificationStatus.DECLINED);
+            verification.setStatus(VerificationStatus.DECLINED);
             verificationRepo.save(verification);
             notifyInitiator(verification);
         }
@@ -104,7 +103,7 @@ public class VerificationServiceImpl implements VerificationService {
             throw new VerificationException("You cannot verify what you initiated");
         }
 
-        if (!verificationStatus.PENDING.equals(verification.getStatus())) {
+        if (!VerificationStatus.PENDING.equals(verification.getStatus())) {
             throw new VerificationException("Verification is not pending for the operation");
         }
 
@@ -120,7 +119,7 @@ public class VerificationServiceImpl implements VerificationService {
             verification.setVerifiedBy(getCurrentUserName());
             verification.setVerifiedOn(new Date());
             verification.setComments(dto.getComments());
-            verification.setStatus(verificationStatus.APPROVED);
+            verification.setStatus(VerificationStatus.APPROVED);
             verificationRepo.save(verification);
             notifyInitiator(verification);
 
@@ -142,8 +141,7 @@ public class VerificationServiceImpl implements VerificationService {
 
         User initiatedBy = null;
 
-        switch (verification.getUserType())
-        {
+        switch (verification.getUserType()){
             case ADMIN:
                 initiatedBy = adminUserRepo.findFirstByUserName(initiator);
                 break;
@@ -151,10 +149,8 @@ public class VerificationServiceImpl implements VerificationService {
                 initiatedBy = operationsUserRepo.findFirstByUserName(initiator);
                 break;
         }
-        if(initiatedBy!=null)
-        {
-            if (initiatedBy.getEmail() != null)
-            {
+        if(initiatedBy!=null) {
+            if (initiatedBy.getEmail() != null) {
                 String initiatorName = initiatedBy.getFirstName()+" "+initiatedBy.getLastName();
                 String verifierName = verifiedBy.getFirstName()+" "+verifiedBy.getLastName();
                 Date date = verification.getVerifiedOn();
@@ -166,14 +162,9 @@ public class VerificationServiceImpl implements VerificationService {
                         .setSubject(messageSource.getMessage("verification.subject", null, locale))
                         .setBody(String.format(messageSource.getMessage("verification.message", null, locale),initiatorName, verifierName, operation, status, DateFormatter.format(date),comment))
                         .build();
-                try
-                {
+                new Thread(() -> {
                     mailService.send(email);
-                }
-                catch (MailException me)
-                {
-                    logger.error("Failed to send email to the initiator",me);
-                }
+                }).start();
             }
         }
     }
@@ -203,7 +194,7 @@ public class VerificationServiceImpl implements VerificationService {
         CustomUserPrincipal principal = (CustomUserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         User doneBy = principal.getUser();
 
-        Page<Verification> page = verificationRepo.findByStatusAndInitiatedBy(verificationStatus.PENDING, doneBy.getUserName(), pageDetails);
+        Page<Verification> page = verificationRepo.findByStatusAndInitiatedBy(VerificationStatus.PENDING, doneBy.getUserName(), pageDetails);
         List<VerificationDTO> dtOs = convertEntitiesToDTOs(page.getContent());
         long t = page.getTotalElements();
         Page<VerificationDTO> pageImpl = new PageImpl<VerificationDTO>(dtOs, pageDetails, t);
@@ -215,7 +206,7 @@ public class VerificationServiceImpl implements VerificationService {
     public Page<VerificationDTO> getPendingOperations(String operation,Pageable pageable) {
         CustomUserPrincipal principal = (CustomUserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         User doneBy = principal.getUser();
-        Page<Verification> page = verificationRepo.findByOperationAndInitiatedByAndUserTypeAndStatus(operation,doneBy.getUserName(),doneBy.getUserType(),verificationStatus.PENDING,pageable);
+        Page<Verification> page = verificationRepo.findByOperationAndInitiatedByAndUserTypeAndStatus(operation,doneBy.getUserName(),doneBy.getUserType(), VerificationStatus.PENDING,pageable);
         List<VerificationDTO> dtOs = convertEntitiesToDTOs(page.getContent());
         long t = page.getTotalElements();
         Page<VerificationDTO> pageImpl = new PageImpl<VerificationDTO>(dtOs, pageable, t);
@@ -227,7 +218,7 @@ public class VerificationServiceImpl implements VerificationService {
     public long getTotalNumberPending() {
         CustomUserPrincipal principal = (CustomUserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         User doneBy = principal.getUser();
-        long totalNumberPending = verificationRepo.countByInitiatedByAndUserTypeAndStatus(doneBy.getUserName(),doneBy.getUserType(), verificationStatus.PENDING);
+        long totalNumberPending = verificationRepo.countByInitiatedByAndUserTypeAndStatus(doneBy.getUserName(),doneBy.getUserType(), VerificationStatus.PENDING);
         return totalNumberPending;
     }
 
@@ -273,8 +264,7 @@ public class VerificationServiceImpl implements VerificationService {
     public Page<VerificationDTO> getPendingForUser(Pageable pageable) {
         CustomUserPrincipal principal = (CustomUserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         User doneBy = principal.getUser();
-        Page<Verification> page = verificationRepo.findByInitiatedByAndUserType(doneBy.getUserName(), doneBy.getUserType(),pageable);
-        List<Verification> ver=verificationRepo.findByInitiatedByAndUserType(doneBy.getUserName(), doneBy.getUserType());
+        Page<Verification> page = verificationRepo.findByInitiatedByAndUserTypeAndStatus(doneBy.getUserName(), doneBy.getUserType(),VerificationStatus.PENDING,pageable);
         List<VerificationDTO> dtOs = convertEntitiesToDTOs(page.getContent());
         long t = page.getTotalElements();
         Page<VerificationDTO> pageImpl = new PageImpl<VerificationDTO>(dtOs, pageable, t);

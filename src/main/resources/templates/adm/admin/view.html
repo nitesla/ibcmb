@@ -163,7 +163,7 @@
       var table = $('#admin').DataTable({
             select:true,
             responsive: true,
-          "lengthMenu" : [ [ 5, 10, 20],	[ 5, 10, 20 ] ],
+          "lengthMenu" : [ [ 10, 20, 30, -1],	[ 10 ,20, 30, "All"] ],
             "pagingType" : "simple_numbers",
             "searching": false,
             "paging": true,
@@ -205,29 +205,24 @@
                   return data;
               }
 
-          } ,{
-              "targets" : 5,
-              "data" : "status",
-              "render" : function(data, type,full, meta) {
-                  if (type === 'display') {
-                  	var dtStart = new Date(parseInt(data));
-                   	var dtStartWrapper = moment(dtStart);
-                   	return dtStartWrapper.format('DD/MM/YYYY HH:mm');
-                  }
-                  return data;
-              }
-          } ]
+          }  ]
 
       });
 
 
 
-            table.on('select', function() {
+//        $("#admin").on("click", "tr", function()
+//            {
+        table.on('select', function() {
             if (table.rows({
                     selected : true
                 }).indexes().length === 0) {
                 $('.bt-select').attr("disabled", true);
             } else {
+              //  var  className =$(this).find(':eq(2)').text();
+                // console.log(this.data()[3]);
+                   //  var className= $(this).children()[5];
+             // var className = $(this).children(":first").text();console.log(className);
                 $('.bt-select').removeAttr("disabled");
             }
 

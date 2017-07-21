@@ -91,7 +91,7 @@
 
 <script th:src="@{~/bank/vendors/datatables.net/js/jquery.dataTables.js}"></script>
 <script th:src="@{~/bank/js/dataTables.select.js}"></script>
-<script th:src="@{~/bank/js/dataTables.bootstrap.js}"></script>
+<script th:src="@{~/bank/js/dataTables.bootstrap.js}"></script>a
 <script th:src="@{~/bank/js/jquery.spring-friendly.min.js}"></script>
 <script th:src="@{~/bank/vendors/bootstrap-dialog/js/bootstrap-dialog.js}"></script>
 
@@ -103,7 +103,7 @@
         var table = $('#audit').DataTable({
             select:true,
             responsive: true,
-            "lengthMenu" : [ [ 5, 10, 20],	[ 5, 10, 20 ] ],
+            "lengthMenu" : [ [ 20,40,60, -1],	[ 20,40,60,"All" ] ],
             "pagingType" : "simple_numbers",
             "searching": false,
             rowId: 'id',
@@ -126,7 +126,8 @@
 
         });
 
-        table.on('deselect', function() {
+        table.on('deselect', function()
+        {
             if (table.rows({
                     selected : true
                 }).indexes().length === 0) {

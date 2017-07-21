@@ -1,6 +1,8 @@
 package longbridge.security;
 
+import longbridge.api.CustomerDetails;
 import longbridge.dtos.SettingDTO;
+import longbridge.models.RetailUser;
 import longbridge.models.User;
 import longbridge.services.ConfigurationService;
 import longbridge.services.IntegrationService;
@@ -9,9 +11,13 @@ import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpSession;
+import java.util.Locale;
 
 /**
  * Created by ayoade_farooq@yahoo.com on 6/2/2017.
@@ -23,6 +29,11 @@ public class SessionUtils {
     IntegrationService integrationService;
     @Autowired
     MailService mailService;
+    @Autowired
+    private MessageSource messageSource;
+
+    private Locale locale = LocaleContextHolder.getLocale();
+
 
     @Autowired
     private ConfigurationService configService;
@@ -40,25 +51,37 @@ public class SessionUtils {
 
     }
 
-    public void sendAlert(User user) {
+    @Async
+    public  void sendAlert(User user) {
         try {
             SettingDTO settingDTO = configService.getSettingByName("LOGIN_ALERT");
             if (settingDTO.isEnabled()) {
                 String preference = user.getAlertPreference().getCode();
+                String firstName= user.getFirstName();
+                String  lastName = user.getLastName();
+                if (firstName==null)firstName="";
+                if (lastName==null)lastName="";
+                String name = firstName + " "+ lastName;
+                if (name.isEmpty()) name=user.getUserName();
+
+                String alertMessage = String.format(messageSource.getMessage("login.alert.message", null, locale),name);
+
+                String alertSubject = String.format(messageSource.getMessage("login.alert.subject", null, locale));
                 if (preference.equalsIgnoreCase("SMS")) {
 
-                    // integrationService.sendSMS(user.getPhoneNumber())
+                    integrationService.sendSMS(alertMessage,user.getPhoneNumber(),  alertSubject);
+
                 } else if (preference.equalsIgnoreCase("EMAIL")) {
-                    //   mailService.send();
-                	;
+                    mailService.send(user.getEmail(),alertSubject,alertMessage);
 
                 } else if (preference.equalsIgnoreCase("BOTH")) {
-                		;
+                    integrationService.sendSMS(alertMessage,user.getPhoneNumber(),  alertSubject);
+                    mailService.send(user.getEmail(),alertSubject,alertMessage);
                 }
 
             }
         } catch (Exception e) {
-            logger.error("EXCEPTION OCCURRED {}", e.getMessage());
+            logger.error("EXCEPTION OCCURRED {}", e);
         }
 
     }

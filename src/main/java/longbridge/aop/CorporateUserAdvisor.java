@@ -1,23 +1,21 @@
 package longbridge.aop;
 
-import com.querydsl.core.types.Template;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import longbridge.dtos.VerificationDTO;
 import longbridge.models.*;
 import longbridge.repositories.*;
 import longbridge.services.*;
 import org.aspectj.lang.JoinPoint;
-import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.After;
-import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import sun.rmi.runtime.Log;
 
 import javax.persistence.EntityManager;
+import java.io.IOException;
 import java.util.Date;
 
 /**
@@ -75,23 +73,40 @@ public class CorporateUserAdvisor {
 
     // this runs after execution
     @After("isVerification() && verified() && args(verificationDto)")
-    public void postCorporateUserCreation(JoinPoint p, VerificationDTO verificationDto)
-    {
+    public void postCorporateUserActivation(JoinPoint p, VerificationDTO verificationDto) throws IOException {
 
         Verification verification  = verificationRepo.findOne(verificationDto.getId());
-        if(verification.getOperation().equals("CORP_USER_STATUS")){
+        if(verification.getOperation().equals("UPDATE_CORP_USER_STATUS")){
+
+            log.info("Inside Advisor for Post Corporate user activation...");
 
             CorporateUser user = corporateUserRepo.findOne(verification.getEntityId());
-            String fullName = user.getFirstName()+" "+user.getLastName();
-            String password = passwordPolicyService.generatePassword();
-            user.setPassword(passwordEncoder.encode(password));
-            user.setExpiryDate(new Date());
-            passwordPolicyService.saveCorporatePassword(user);
-            corporateUserRepo.save(user);
-            corporateUserService.sendPostActivateMessage(user, fullName,user.getUserName(),password);
+            entityManager.detach(user);
+            ObjectMapper objectMapper = new ObjectMapper();
+            CorporateUser corpUser = objectMapper.readValue(verification.getOriginalObject(),CorporateUser.class);
+            if("A".equals(corpUser.getStatus())){
+                log.info("Corp user status is A");
+                String fullName = user.getFirstName()+" "+user.getLastName();
+                String password = passwordPolicyService.generatePassword();
+                user.setPassword(passwordEncoder.encode(password));
+                user.setExpiryDate(new Date());
+                passwordPolicyService.saveCorporatePassword(user);
+                corporateUserRepo.save(user);
+                corporateUserService.sendPostActivateMessage(corpUser, fullName,user.getUserName(),password,user.getCorporate().getCustomerId());
+            }
+            else{
+                corporateUserRepo.save(user);
+            }
         }
 
-    }
+        if(verification.getOperation().equals("ADD_CORPORATE_USER")) {
+            ObjectMapper objectMapper = new ObjectMapper();
+            CorporateUser corpUser = objectMapper.readValue(verification.getOriginalObject(),CorporateUser.class);
+            corporateUserService.createUserOnEntrustAndSendCredentials(corpUser);
+        }
+
+
+        }
 
 
 

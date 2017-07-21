@@ -25,7 +25,7 @@ function validateAccountNo(accountNumber){
                 $('input[name=customerId]').val(customerId);
             }
         }
-    })
+    });
 
     console.log(customerId);
 

@@ -60,11 +60,9 @@
                 <ul class="nav child_menu">
                     <li sec:authorize="hasAuthority('MANAGE_ROLES')"><a href="/admin/roles/">Role</a></li>
                     <li sec:authorize="hasAuthority('MANAGE_PERMISSIONS')"><a href="/admin/permissions/">Permission</a></li>
-                    <li><a href="/admin/secquestions/">Security Questions</a></li>
-                    <li><a href="/admin/phishing/">Phishing Image</a></li>
                 </ul>
             </li>
-            <li><a><i class="fa fa-bar-chart-o"></i> Content Management <span class="fa fa-chevron-down"></span></a>
+            <li><a><i class="fa fa-table"></i> Content Management <span class="fa fa-chevron-down"></span></a>
                 <ul class="nav child_menu">
                     <li><a href="/admin/faq">FAQ</a></li>
                     <li><a href="/admin/notification">System Notifications</a></li>
@@ -134,12 +132,12 @@
 
             <li sec:authorize="hasAuthority('MANAGE_TRANSACTION')"><a><i class="fa fa-tasks"></i> Transactions <span class="fa fa-chevron-down"></span></a>
                 <ul class="nav child_menu">
-                    <li sec:authorize="hasAuthority('ACCOUNT_RESTRICTION')"><a> Account Restrictions <span class="fa fa-chevron-down"></span></a>
-                        <ul class="nav child_menu">
-                            <li sec:authorize="hasAuthority('ACCOUNT_CLASS_RESTRICTION')" class="sub_menu"><a href="/ops/accounts/restriction/class">Global</a></li>
-                            <li sec:authorize="hasAuthority('SINGLE_ACCOUNT_RESTRICTION')" class="sub_menu"><a href="/ops/accounts/restriction/account">Individual</a></li>
+                    <li sec:authorize="hasAuthority('ACCOUNT_RESTRICTION')"><a href="/ops/accounts/restriction/account"> Account Restriction</a>
+                        <!--<ul class="nav child_menu">-->
+                            <!--<li sec:authorize="hasAuthority('ACCOUNT_CLASS_RESTRICTION')" class="sub_menu"><a href="/ops/accounts/restriction/class">Global</a></li>-->
+                            <!--<li sec:authorize="hasAuthority('SINGLE_ACCOUNT_RESTRICTION')" class="sub_menu"><a href="/ops/accounts/restriction/account">Individual</a></li>-->
 
-                        </ul>
+                        <!--</ul>-->
                     </li>
                     <!--<li sec:authorize="hasAuthority('MANAGE_FEES')"><a href="/ops/fees">Fees</a></li>-->
 
@@ -215,7 +213,7 @@
                 <li class="">
                     <a href="javascript:" class="user-profile dropdown-toggle" data-toggle="dropdown"
                        aria-expanded="false">
-                        <span sec:authentication="name">Bob</span>
+                        <span sec:authentication="name"></span>
                         <span class=" fa fa-angle-down"></span>
                     </a>
                     <ul class="dropdown-menu dropdown-usermenu pull-right">

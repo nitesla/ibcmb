@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{corp-layout}">
+
+<body onload="currentBar('Add beneficiary')">
+
+<div layout:fragment="content">
+    <div class="col-md-5 col-sm-5 ">
+
+        <select class="form-control full-width coronation-form-control hide-content-only" id="view">
+            <option value="account">Overview</option>
+        </select>
+    </div>
+
+    <div class="col-xs-12 ml-15 " >
+        <div class="col-xs-12 col-sm-offset-3  col-sm-6 no-pad-lef no-mt no-bd  alert" >
+           <div  class="table-responsive">
+            <table class="table table-hover bg-white">
+                        <tr>
+
+                            <th>Beneficiary Bank</th>
+                            <td th:text="${bank}"></td>
+
+                        </tr>
+                        <tr>
+
+                            <th>Beneficiary account</th>
+                            <td th:text="${beneficiary.accountNumber}"></td>
+
+                        </tr>
+                        <tr>
+
+                            <th>Beneficiary name</th>
+                            <td th:text="${beneficiary.accountName}"></td>
+
+                        </tr>
+                        <tr>
+
+                            <th>Beneficiary Alias</th>
+                            <td th:text="${beneficiary.preferredName}"></td>
+
+                        </tr>
+
+                    </table>
+        </div>
+                    <form method="post" th:action="@{/corporate/beneficiary/local}" th:object="${beneficiary}">
+
+                        <input type="hidden" th:field="*{beneficiaryBank}"/>
+                        <input type="hidden" th:field="*{accountNumber}"/>
+                        <input type="hidden" th:field="*{accountName}"/>
+                        <input type="hidden" th:field="*{preferredName}"/>
+
+
+                    <div class="form-group">
+                        <div th:if="${auth}!=null">
+                            <label >Token *</label>
+                            <input type="text" name="token" placeholder="" class="form-control full-width"/>
+                        </div>
+
+                        <br/>
+                        <button type="submit" class="btn btn-link required-step">Save</button>
+
+                        <button onclick="redirectToNew()" class="btn btn-link less-required"  >Cancel</button>
+                    </div>
+                    </form>
+        </div>
+    </div>
+
+</div>
+
+
+<th:block layout:fragment="scripts">
+<script th:inline="javascript">
+    /*<![CDATA[*/
+
+
+
+    function redirectToNew()
+    {
+        window.location.href = '/corporate/beneficiary/new';
+    }
+
+    $(document).ready(function() {
+        var url = "/corporate/requests/track/all";
+        var table = $('#track').DataTable({
+            select: true,
+            responsive : false,
+            "lengthMenu" : [ [ 5, 10 ], [ 5, 10 ] ],
+            "pagingType" : "simple_numbers",
+            "searching" : false,
+            "paging" : true,
+            "serverSide" : true,
+            "ajax" : url,
+            "dom" : 'T<"clear">flrtp',
+            "columns" : [
+                { "data": "requestName" },
+                { "data": "date" },
+                { "data": "requestStatus" }
+            ]
+        });
+    });
+
+    /*]]>*/
+</script>
+   
+</th:block>
+
+</body>
+</html>

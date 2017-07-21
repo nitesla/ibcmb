@@ -5,6 +5,8 @@ import longbridge.models.Code;
 import org.hibernate.validator.constraints.NotEmpty;
 
 import java.util.Date;
+import java.util.List;
+
 /**
  * Created by Fortune on 4/5/2017.
  */
@@ -12,18 +14,24 @@ public class CorporateUserDTO {
 
     @JsonProperty("DT_RowId")
     private Long id;
+    private int version;
     private String corporateId;
     private String corporateType;
     private String corporateName;
     @NotEmpty(message = "userName")
     private String userName;
+    private String entrustId;
+    private String entrustGroup;
     @NotEmpty(message = "firstName")
     private String firstName;
     @NotEmpty(message = "lastName")
     private String lastName;
     @NotEmpty(message = "email")
     private String email;
+    @NotEmpty(message = "phoneNumber")
     private String  phoneNumber;
+    private boolean admin;
+    private String designation;
     private String roleId;
     private String role;
     private boolean ruleMember;
@@ -37,11 +45,24 @@ public class CorporateUserDTO {
     private Code alertPreference;
     private String createdOn;
     private String corporateRole;
+    private List<String> securityQuestion;
+    private List<String> securityAnswer;
+    private String phishingSec;
+    private String captionSec;
+    private String isFirstTimeLogon;
 
     public Long getId() {return id;}
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public int getVersion() {
+        return version;
+    }
+
+    public void setVersion(int version) {
+        this.version = version;
     }
 
     public String getCorporateId() {
@@ -50,6 +71,22 @@ public class CorporateUserDTO {
 
     public void setCorporateId(String corporateId) {
         this.corporateId = corporateId;
+    }
+
+    public String getEntrustId() {
+        return entrustId;
+    }
+
+    public void setEntrustId(String entrustId) {
+        this.entrustId = entrustId;
+    }
+
+    public String getEntrustGroup() {
+        return entrustGroup;
+    }
+
+    public void setEntrustGroup(String entrustGroup) {
+        this.entrustGroup = entrustGroup;
     }
 
     public String getUserName() {
@@ -213,6 +250,63 @@ public class CorporateUserDTO {
         this.corporateRole = corporateRole;
     }
 
+    public List<String> getSecurityQuestion() {
+        return securityQuestion;
+    }
+
+    public void setSecurityQuestion(List<String> securityQuestion) {
+        this.securityQuestion = securityQuestion;
+    }
+
+    public List<String> getSecurityAnswer() {
+        return securityAnswer;
+    }
+
+    public void setSecurityAnswer(List<String> securityAnswer) {
+        this.securityAnswer = securityAnswer;
+    }
+
+    public String getPhishingSec() {
+        return phishingSec;
+    }
+
+    public void setPhishingSec(String phishingSec) {
+        this.phishingSec = phishingSec;
+    }
+
+    public String getCaptionSec() {
+        return captionSec;
+    }
+
+    public void setCaptionSec(String captionSec) {
+        this.captionSec = captionSec;
+    }
+
+    public String getIsFirstTimeLogon() {
+        return isFirstTimeLogon;
+    }
+
+    public void setIsFirstTimeLogon(String isFirstTimeLogon) {
+        this.isFirstTimeLogon = isFirstTimeLogon;
+    }
+
+    public boolean isAdmin() {
+        return admin;
+    }
+
+    public void setAdmin(boolean admin) {
+        this.admin = admin;
+    }
+
+
+    public String getDesignation() {
+        return designation;
+    }
+
+    public void setDesignation(String designation) {
+        this.designation = designation;
+    }
+
     @Override
     public String toString() {
         return "CorporateUserDTO{" +
@@ -224,6 +318,7 @@ public class CorporateUserDTO {
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
                 ", email='" + email + '\'' +
+                ", phoneNumber='" + phoneNumber + '\'' +
                 ", roleId='" + roleId + '\'' +
                 ", role='" + role + '\'' +
                 ", ruleMember=" + ruleMember +
@@ -236,10 +331,16 @@ public class CorporateUserDTO {
                 ", noOfLoginAttempts=" + noOfLoginAttempts +
                 ", alertPreference=" + alertPreference +
                 ", createdOn='" + createdOn + '\'' +
+                ", corporateRole='" + corporateRole + '\'' +
+                ", securityQuestion=" + securityQuestion +
+                ", securityAnswer=" + securityAnswer +
+                ", phishingSec='" + phishingSec + '\'' +
+                ", captionSec='" + captionSec + '\'' +
+                ", isFirstTimeLogon='" + isFirstTimeLogon + '\'' +
                 '}';
     }
 
-	@Override
+    @Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;

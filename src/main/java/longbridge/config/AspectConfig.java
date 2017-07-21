@@ -1,6 +1,5 @@
 package longbridge.config;
 
-//import longbridge.aop.AdminUserAdvisor;
 import longbridge.aop.*;
 import org.aspectj.lang.Aspects;
 import org.springframework.context.annotation.Bean;
@@ -14,7 +13,6 @@ import org.springframework.stereotype.Component;
  * Created by Fortune on 6/28/2017.
  */
 @Configuration
-@EnableAsync
 @EnableAspectJAutoProxy(proxyTargetClass=true)
 @EnableLoadTimeWeaving(aspectjWeaving = EnableLoadTimeWeaving.AspectJWeaving.ENABLED)
 public class AspectConfig {
@@ -48,9 +46,16 @@ public class AspectConfig {
     }
 
     @Bean
-    public CorporateUserAdvisor postCorporateAspect(){
+    public CorporateUserAdvisor postCorporateUserAspect(){
 
         CorporateUserAdvisor aspect = Aspects.aspectOf(CorporateUserAdvisor.class);
+        return aspect;
+    }
+
+    @Bean
+    public CorporateAdvisor postCorporateAspect(){
+
+        CorporateAdvisor aspect = Aspects.aspectOf(CorporateAdvisor.class);
         return aspect;
     }
 }

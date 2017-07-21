@@ -3,6 +3,7 @@ package longbridge.services.implementations;
 import longbridge.dtos.ServiceReqConfigDTO;
 import longbridge.dtos.ServiceReqFormFieldDTO;
 import longbridge.exception.InternetBankingException;
+import longbridge.exception.VerificationInterruptedException;
 import longbridge.models.SRConfig;
 import longbridge.models.ServiceReqFormField;
 import longbridge.repositories.ServiceReqConfigRepo;
@@ -23,6 +24,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityManager;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -43,6 +45,10 @@ public class ServiceReqConfigServiceImpl implements ServiceReqConfigService {
 
 	@Autowired
 	private MessageSource messageSource;
+
+
+	@Autowired
+	private EntityManager entityManager;
 
 	public ServiceReqConfigServiceImpl(ServiceReqConfigRepo serviceReqConfigRepo,
 			ServiceReqFormFieldRepo serviceReqFormFieldRepo) {
@@ -71,6 +77,10 @@ public class ServiceReqConfigServiceImpl implements ServiceReqConfigService {
 			logger.info("Added service request configuration {}", serviceReqConfigDTO.toString());
 			return messageSource.getMessage("req.config.add.success", null, locale);
 		}
+		catch (VerificationInterruptedException e) {
+			return e.getMessage();
+		}
+
 		catch (Exception e){
 			throw new InternetBankingException(messageSource.getMessage("reg.config.add.failure",null,locale),e);
 		}
@@ -126,6 +136,7 @@ public class ServiceReqConfigServiceImpl implements ServiceReqConfigService {
 				fields.add(onefield);
 
 			}
+			entityManager.detach(SRConfig);
 			SRConfig.setId(serviceReqConfigDTO.getId());
 			SRConfig.setVersion(serviceReqConfigDTO.getVersion());
 			SRConfig.setRequestName(serviceReqConfigDTO.getRequestName());
@@ -137,6 +148,12 @@ public class ServiceReqConfigServiceImpl implements ServiceReqConfigService {
 			logger.info("Updated service request configuration {}", SRConfig.toString());
 			return messageSource.getMessage("req.config.update.success", null, locale);
 
+		}
+		catch (VerificationInterruptedException e) {
+			return e.getMessage();
+		}
+		catch (InternetBankingException e){
+			throw e;
 		}
 		catch (Exception e){
 			throw new InternetBankingException(messageSource.getMessage("req.config.update.failure",null,locale),e);
@@ -150,6 +167,12 @@ public class ServiceReqConfigServiceImpl implements ServiceReqConfigService {
 			serviceReqConfigRepo.delete(id);
 			logger.warn("Deleted service request configuration with Id {}", id);
 			return messageSource.getMessage("req.config.delete.success", null, locale);
+		}
+		catch (VerificationInterruptedException e) {
+			return e.getMessage();
+		}
+		catch (InternetBankingException e){
+			throw e;
 		}
 		catch (Exception e){
 			throw new InternetBankingException(messageSource.getMessage("req.config.delete.failure",null,locale),e);

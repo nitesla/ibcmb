@@ -2,6 +2,7 @@ package longbridge.services.implementations;
 
 import longbridge.dtos.FaqsDTO;
 import longbridge.exception.InternetBankingException;
+import longbridge.exception.VerificationInterruptedException;
 import longbridge.models.Faqs;
 import longbridge.repositories.FaqsRepo;
 import longbridge.services.FaqsService;
@@ -64,25 +65,36 @@ public class FaqsServiceImpl implements FaqsService {
 
     @Override
     @Verifiable(operation = "ADD_FAQ", description = "Adding FAQs")
-    public String addFaq(FaqsDTO faqsDTO) {
+    public String addFaq(FaqsDTO faqsDTO) throws InternetBankingException {
         try {
             Faqs faqs = convertDTOToEntity(faqsDTO);
             faqsRepo.save(faqs);
             logger.info("Added new Notification {} ", faqs.getQuestion());
             return messageSource.getMessage("faq.add.success", null, locale);
-        }catch (Exception e){
+        }
+
+        catch (VerificationInterruptedException e){
+            return e.getMessage();
+        }
+        catch (Exception e){
             throw new InternetBankingException(messageSource.getMessage("failure",null,locale));
         }
     }
 
     @Override
     @Verifiable(operation = "UPDATE_FAQ", description = "Updating an FAQs")
-    public String updateFaq(FaqsDTO faqsDTO) {
+    public String updateFaq(FaqsDTO faqsDTO) throws InternetBankingException {
         try {
             Faqs faqs = convertDTOToEntity(faqsDTO);
             faqsRepo.save(faqs);
             logger.info("Updated Notification with Id {}", faqs.getQuestion());
             return messageSource.getMessage("faq.update.success", null, locale);
+        }
+        catch (VerificationInterruptedException e){
+            return e.getMessage();
+        }
+        catch (InternetBankingException e){
+            throw e;
         }
         catch (Exception e){
             throw new InternetBankingException(messageSource.getMessage("failure",null,locale));
@@ -91,11 +103,18 @@ public class FaqsServiceImpl implements FaqsService {
 
     @Override
     @Verifiable(operation = "DELETE_FAQ", description = "Deleting FAQs")
-    public String deleteFaq(Long id) {
+    public String deleteFaq(Long id) throws InternetBankingException {
         try{
-            faqsRepo.delete(id);
+            Faqs faqs = faqsRepo.findOne(id);
+            faqsRepo.delete(faqs);
             logger.info("Notification {} has been deleted",id.toString());
             return messageSource.getMessage("faq.delete.success",null,locale);
+        }
+        catch (VerificationInterruptedException e){
+            return e.getMessage();
+        }
+        catch (InternetBankingException e){
+            throw e;
         }
         catch (Exception e){
             throw new InternetBankingException(messageSource.getMessage("failure",null,locale));

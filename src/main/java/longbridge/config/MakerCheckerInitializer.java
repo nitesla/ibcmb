@@ -4,6 +4,8 @@ import longbridge.models.MakerChecker;
 import longbridge.repositories.MakerCheckerRepo;
 import longbridge.utils.Verifiable;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -21,7 +23,7 @@ public class MakerCheckerInitializer implements InitializingBean{
     @Autowired
     MakerCheckerRepo makerCheckerRepo;
 
-    // private Logger logger = LoggerFactory.getLogger(this.getClass());
+     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private ClassPathScanningCandidateComponentProvider createComponentScanner() {
         ClassPathScanningCandidateComponentProvider provider
@@ -57,8 +59,8 @@ public class MakerCheckerInitializer implements InitializingBean{
                             makerChecker.setOperation(operation);
                             makerChecker.setDescription(description);
                             makerChecker.setEnabled("N");
-                            System.out.print(makerChecker.toString());
                             makerCheckerRepo.save(makerChecker);
+                            logger.info("Initialized {} ",makerChecker.toString());
                         }
                     }
                 }
@@ -67,26 +69,5 @@ public class MakerCheckerInitializer implements InitializingBean{
             }
         }
 	}
-
-
-//    public static List<Method> getMethodsAnnotatedWith(final Class<?> type, final Class<? extends Annotation> annotation) {
-//        final List<Method> methods = new ArrayList<Method>();
-//        Class<?> klass = type;
-//        while (klass != Object.class) { // need to iterated thought hierarchy in order to retrieve methods from above the current instance
-//            // iterate though the list of methods declared in the class represented by klass variable, and add those annotated with the specified annotation
-//            final List<Method> allMethods = new ArrayList<Method>(Arrays.asList(klass.getDeclaredMethods()));
-//            for (final Method method : allMethods) {
-//                if (method.isAnnotationPresent(annotation)) {
-//                    Annotation annotInstance = method.getAnnotation(annotation);
-//                    // TODO process annotInstance
-//                    methods.add(method);
-//                }
-//            }
-//            // move to the upper class in the hierarchy in search for more methods
-//            klass = klass.getSuperclass();
-//        }
-//        return methods;
-//    }
-
 
 }

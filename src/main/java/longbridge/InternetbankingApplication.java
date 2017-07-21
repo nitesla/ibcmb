@@ -1,7 +1,8 @@
 package longbridge;
 
-import longbridge.jobs.CronJobScheduler;
+
 import longbridge.repositories.CustomJpaRepositoryFactoryBean;
+import longbridge.services.SecurityService;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -12,13 +13,15 @@ import org.springframework.boot.web.support.SpringBootServletInitializer;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.scheduling.annotation.EnableAsync;
 
-
 @SpringBootApplication
 @EnableJpaRepositories(repositoryFactoryBeanClass = CustomJpaRepositoryFactoryBean.class)
 @EnableBatchProcessing
 @EnableAsync
 
 public class InternetbankingApplication extends SpringBootServletInitializer implements CommandLineRunner {
+
+    @Autowired
+    SecurityService securityService;
 
 
     public static void main(String[] args) {
@@ -33,8 +36,8 @@ public class InternetbankingApplication extends SpringBootServletInitializer imp
 
     @Override
     public void run(String... strings) throws Exception {
-//        CronJobScheduler.startJobs();
-    }
+
+   }
 }
 
 

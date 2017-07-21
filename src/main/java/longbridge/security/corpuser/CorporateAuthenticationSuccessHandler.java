@@ -6,6 +6,7 @@ import longbridge.models.UserType;
 import longbridge.repositories.CorporateUserRepo;
 import longbridge.security.FailedLoginService;
 import longbridge.security.SessionUtils;
+import longbridge.security.userdetails.CustomUserPrincipal;
 import longbridge.services.ConfigurationService;
 import org.joda.time.LocalDate;
 import org.slf4j.Logger;
@@ -13,7 +14,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.DefaultRedirectStrategy;
 import org.springframework.security.web.RedirectStrategy;
 import org.springframework.security.web.WebAttributes;
@@ -24,9 +25,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.util.Date;
 
 @Component("corporateAuthenticationSuccessHandler")
 public class CorporateAuthenticationSuccessHandler implements AuthenticationSuccessHandler {
+
     private final Logger logger = LoggerFactory.getLogger(getClass());
     @Autowired
     SessionUtils sessionUtils;
@@ -44,13 +47,15 @@ public class CorporateAuthenticationSuccessHandler implements AuthenticationSucc
     @Override
     public void onAuthenticationSuccess(final HttpServletRequest request, final HttpServletResponse response, final Authentication authentication) throws IOException {
         handle(request, response, authentication);
-        final HttpSession session = request.getSession(false);
+        HttpSession session = request.getSession(false);
         if (session != null) {
+            session.invalidate();
+            session = request.getSession();
             sessionUtils.setTimeout(session);
             String s = authentication.getName();
 
             String userName = "";
-            String corpId = "";
+            Long corpId ;
             if (s != null) {
                 try {
                     userName = s;
@@ -63,9 +68,14 @@ public class CorporateAuthenticationSuccessHandler implements AuthenticationSucc
                 }
             }
           //  CorporateUser user = corporateUserRepo.findFirstByUserNameIgnoreCaseAndCorporate_CustomerIdIgnoreCase(userName, corpId);
-            CorporateUser user = corporateUserRepo.findFirstByUserNameIgnoreCase(userName);
+
+//           CustomUserPrincipal userPrincipal=(CustomUserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+           CorporateUser user = corporateUserRepo.findFirstByUserNameIgnoreCase(userName);
+//            corpId= userPrincipal.getCorpId();
+//            CorporateUser user = corporateUserRepo.findFirstByUserNameIgnoreCaseAndCorporate_Id(userName,corpId);
             if (user != null)
                 sessionUtils.validateExpiredPassword(user, session);
+            user.setLastLoginDate(new Date());
                 failedLoginService.loginSucceeded(user);
 
         }
@@ -84,14 +94,20 @@ public class CorporateAuthenticationSuccessHandler implements AuthenticationSucc
     }
 
     protected String determineTargetUrl(final Authentication authentication) {
-        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-      CorporateUser corporateUser = corporateUserRepo.findFirstByUserName(userDetails.getUsername());
+        CustomUserPrincipal userDetails = (CustomUserPrincipal) authentication.getPrincipal();
+//      CorporateUser corporateUser = corporateUserRepo.findFirstByUserName(userDetails.getUsername());
+
+      CorporateUser corporateUser = corporateUserRepo.findFirstByUserNameIgnoreCaseAndCorporate_Id(userDetails.getUsername(),userDetails.getCorpId());
+
         boolean isUser = corporateUser.getUserType().equals(UserType.CORPORATE);
 
-//        boolean isFirstLogon= corporateUser.isFirstTimeLogon();
-//        if (isFirstLogon){
-//            return "/corporate/setup";
-//        }
+        String isFirstLogon= corporateUser.getIsFirstTimeLogon();
+
+
+
+        if ("Y".equalsIgnoreCase(isFirstLogon)){
+            return "/corporate/setup";
+        }
 
         SettingDTO setting = configService.getSettingByName("ENABLE_CORPORATE_2FA");
         boolean tokenAuth = false;

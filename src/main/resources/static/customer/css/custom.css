@@ -20,9 +20,51 @@ start
 */
 
 
-.req:after { content:" * ";color:#ff6666;font-size: 13px;font-weight: bolder }
-.req-inner:before { content:" * ";color:#ff6666;font-size: 13px;font-weight: bolder }
+.req:after { content:" * ";color:#9F614B;font-size: 13px;font-weight: bolder }
+.req-inner:before { content:" * ";color:#9F614B;font-size: 13px;font-weight: bolder }
 
+.time-icon
+{
+    padding-left:5px !important;
+    color:#9F614B !important;
+}
+
+
+.no-mt
+{
+    margin-top: 0px !important;
+}
+
+
+.no-mb
+{
+    margin-bottom: 0px !important;
+}
+
+.no-ml
+{
+    margin-left: 0px !important;
+}
+
+.no-mr
+{
+    margin-right: 0px !important;
+}
+
+
+.no-bd-rad
+{
+    border-radius:0px !important;
+}
+.no-bd-top
+{
+    border-top:none !important;
+}
+
+.no-margin
+{
+    margin:0px !important;
+}
 .row
 {
     margin-right: 0px !important;
@@ -47,7 +89,13 @@ start
 }
 
 .active{
-    border-bottom: 2px solid #9F614B !important;
+    border-bottom: 3px solid #9F614B !important;
+    
+}
+
+.active 
+{
+    color: #9F614B !important;
 }
 
 .datepicker-switch
@@ -75,7 +123,7 @@ start
 
 .cal-icon
 {
-    background:  red !important;
+    background:  #9F614B !important;
 }
 
 .cal-icon:hover
@@ -126,6 +174,11 @@ start
 .coronation-blue
 {
     color:#003056;
+}
+
+.coronation-brown
+{
+    color: #9F614B;
 }
 
 .mail-active
@@ -194,7 +247,13 @@ start
 
 .bg-coronation-blue
 {
-    background-color: #003056;
+    background-color: #003056 !important;
+}
+
+
+.coronation-blue
+{
+    color: #003056;
 }
 
 .inbox-row
@@ -222,7 +281,12 @@ label
 }
 .text-white
 {
-    color:white;
+    color:white !important;
+}
+
+.dropdn-margin
+{
+    margin:0px 10px;
 }
 
 .bg-white
@@ -232,7 +296,8 @@ label
 
 .bg-grey
 {
-    background: #F3F3F4;
+    /*background: #F3F3F4;*/
+    background: #ebecef;
 }
 
 span.req
@@ -272,7 +337,7 @@ span.req-inner
 
 .alert
 {
-    padding: 7px !important;
+    padding: 5px !important;
 }
 
 .my-select {
@@ -311,6 +376,11 @@ select
 .no-pad-left
 {
     padding-left: 0px !important;
+}
+
+.no-pad-right
+{
+    padding-right: 0px !important;
 }
 
 .form-group
@@ -375,10 +445,17 @@ select
 
 }
 
+.power
+{
+    background: #9F614B;
+    padding:6px;
+}
+
 .time
 {
-    background: #ebecef;
+    /*background: #ebecef;*/
     margin-top: 0px !important;
+    padding: 7px !important;
 }
 
 /*#loa {*/
@@ -408,6 +485,47 @@ select
     /*100% { transform: rotate(360deg); }*/
 /*}*/
 
+
+
+
+.menu-link
+{
+    padding: 10px 10px !important;
+    font-size: 16px;
+    font-weight: bold;
+
+}
+
+
+
+.info-bar a:hover
+{
+    text-decoration: none;
+}
+
+.info-bar 
+{
+    text-transform: capitalize;
+}
+
+
+.info-bar a:after
+{
+    content: "/";
+    padding:5px;
+}
+
+
+.trans-but
+{
+    font-size: 12px !important;
+}
+
+.menu-link:hover
+{
+    color: #9F614B !important;
+}
+
 #loader {
     position: absolute;
     left: 50%;
@@ -425,6 +543,92 @@ select
     height: 80px;
     -webkit-animation: spin 2s linear infinite;
     animation: spin 2s linear infinite;
+}
+
+
+.top-bar
+{
+   
+     padding-left: 0px !important;
+}
+
+
+.top-link
+{
+    padding:3px;
+    
+    padding-left: 0px !important;
+}
+
+.top-link li
+{
+    display: inline;
+    padding:1px 2px;
+    border-right: 1px solid #868B8F;
+    font-size: 10px;
+}
+
+.top-link li a
+{
+    color: #777;
+}
+
+.top-link li a:hover
+{
+    text-decoration: none;
+    color:#9F614B;
+}
+
+.bvn-tab
+{
+    border:1px solid #777;
+    padding: 10px;
+    margin-top: 15px;
+    
+}
+
+.info-bar
+{
+    background: #ebecef;
+    padding:14px;
+    margin-top: -2px;
+}
+
+.header-bar
+{
+   
+    padding-top: 10px;
+    padding-bottom: 20px;
+    border-bottom: 2px solid #ebecef;
+}
+
+
+.bvn-add-info
+{
+    padding-left:5px;
+    font-size: 10px;
+     
+}
+
+.greeting
+{
+    font-size: 17px;
+    color: #9F614B;
+    
+}
+
+.greeting-user
+{
+    font-size: 17px;
+    color: #032A4F;
+      
+}
+
+.user-info
+{
+    padding: 10px;
+    padding-left: 40px;
+     margin-top: 15px;
 }
 
 
@@ -487,8 +691,18 @@ tokenInput
 
 .related-info
 {
-    border:1px solid #9F614B;
-    color:blue;
+  
+   
+    padding: 20px;
+    padding-bottom: 5px;
+    padding-top: 5px;
+   
+}
+
+.related-box
+{
+    min-height: 250px;
+     background: #ebecef;
 }
 
  .tab tr th
@@ -501,7 +715,7 @@ tokenInput
 
 .tokenBox
 {
-    width:65%;
+    width:85%;
     margin: 0px auto;
    
     margin-top: 180px;
@@ -511,6 +725,7 @@ tokenInput
 {
     color: black !important;
 }
+
 
 
 .modal-box
@@ -675,26 +890,26 @@ tokenInput
 .strength2
 {
     width:100px;
-    background:#ff5f5f;
+    background:#56e500;
 }
 
 .strength3
 {
     width:150px;
-    background:#56e500;
-}
-
-.strength4
-{
-    background:#4dcd00;
-    width:200px;
-}
-
-.strength5
-{
     background:#399800;
-    width:250px;
 }
+
+/*.strength4*/
+/*{*/
+    /*background:#4dcd00;*/
+    /*width:200px;*/
+/*}*/
+
+/*.strength5*/
+/*{*/
+    /*background:#399800;*/
+    /*width:250px;*/
+/*}*/
 
 
 
@@ -742,12 +957,12 @@ end
     text-decoration: none;
     display: block;
     position: relative;
-    padding: 10px 15px;
+    padding: 15px 25px;
     font-size: 14px;
 }
 
 /* Change color of dropdown links on hover */
-.dropdown-content a:hover {background-color: #f1f1f1}
+.dropdown-content a:hover {background-color: #f1f1f1;color: #9F614B;}
 
 /* Show the dropdown menu on hover */
 .dropdown:hover .dropdown-content {
@@ -838,7 +1053,7 @@ body {
     display: block;
     line-height: 1px;
     position: absolute;
-    right: 80px;
+    right: 50px;
     top: 30px;
     width: 200px;
 }
@@ -920,7 +1135,7 @@ body {
 }
 .lorem
 {
-    font-size: 14px;
+    font-size: 10px;
 }
 
 .page_header{
@@ -985,9 +1200,7 @@ body {
     border-radius: 0;
 }
 
-.navbar-nav>li:first-child>a {
-    padding-left: 0;
-}
+
 
 .navbar-nav li a{
     color: #777;
@@ -1134,11 +1347,30 @@ body {
     font-size: 14px;
 }
 
+.demo
+{
+    font-size: 12px;
+    margin-top: 5px;
+    padding: 15px;
+    text-align: left;
+    background-color: #f1f1f1;
+}
+
+
+.time
+{
+    padding: 15px;
+    width:100%;
+    /*background-color: #ebecef;*/
+    font-weight: bolder;
+    font-size:14px;
+}
+
 .biglist{
     margin: 0 auto;
-    padding: 20px 0;
-    min-height: 80px;
-    max-width: 500px;
+    /*padding: 20px 0;*/
+    /*min-height: 80px;*/
+    /*max-width: 500px;*/
 
 }
 
@@ -1158,6 +1390,7 @@ body {
 
 .lists li{
     list-style: none;
+    padding-top:12px !important;
 }
 .fa{
     color: #9F614B;
@@ -1402,10 +1635,7 @@ button, input, optgroup, select, textarea {
     padding-bottom: 7px !important;
 }
 
-.full-width
-{
-    width: 100% !important;
-}
+
 
 .bg{
     margin: 30px 0 0;
@@ -1444,7 +1674,7 @@ button, input, optgroup, select, textarea {
 .bod{
     margin-top: 50px;
     min-height: 400px;
-    border: 2px solid red;
+    border: 2px solid #9F614B;
 }
 .form-reg{
     max-width: 450px;
@@ -1464,8 +1694,8 @@ button, input, optgroup, select, textarea {
 
 
 .wizard > .content {
-    background: #ffffff;
-    min-height: 240px;
+    background: transparent !important;
+    min-height: 30em;
 }
 
 .wizard > .content > .body {
@@ -1547,11 +1777,48 @@ button, input, optgroup, select, textarea {
 /*****************************************************************
                     RESPONSIVE DESIGN
 *******************************************************************/
-@media screen and (min-width: 993px){
+@media screen and (max-width: 1200px) and (min-width: 993px){
     .logo {
         right: 120px;
     }
+
+
+       .menu-link
+    {
+        padding: 10px 5px !important;
+        font-size: 15px;
+        font-weight: bold;
+
+    }
+
+
+
 }
+
+
+@media screen and (max-width: 388px) and (min-width: 325px){
+   
+   .my-buttons
+   {
+       padding: 6px 2px !important;
+   }
+
+
+}
+
+
+@media screen and (max-width: 324px) and (min-width: 0px){
+   
+   .my-buttons
+   {
+       padding: 6px 1px !important;
+   }
+
+
+}
+
+
+
 
 
 @media screen and (max-width: 992px) and (min-width: 760px){
@@ -1561,6 +1828,20 @@ button, input, optgroup, select, textarea {
 
     .container {
         padding: 0 45px;
+    }
+
+        .menu-link
+    {
+        padding: 10px 5px !important;
+        font-size: 12px;
+        font-weight: bold;
+
+    }
+
+    .logout
+    {
+        font-size: 12px;
+        padding: 10px 1px !important; 
     }
 
     .top_bar {
@@ -1645,10 +1926,32 @@ button, input, optgroup, select, textarea {
     }
 }
 
+
+
+
 @media screen and (max-width: 759px) and (min-width: 0){
     .header {
         min-height: 1px;
         padding-bottom: 10px;
+    }
+
+    .img
+    {
+        float: none !important;
+        display: block !important;
+        text-align: center !important;
+        margin: 0px auto !important;
+
+    }
+
+    .ml-15
+    {
+        margin-left: 0px !important;
+    }
+
+    .coronation-form-control
+    {
+         margin-left: 0px !important;
     }
 
     .margin-xs{
@@ -1733,7 +2036,7 @@ button, input, optgroup, select, textarea {
     }
 
     .navbar-nav>li:first-child>a {
-        padding-left: 15px;
+        /* padding-left: 15px; */
     }
 
     .slider{
@@ -1787,22 +2090,176 @@ button, input, optgroup, select, textarea {
     /*}*/
 
     .carousel-caption {
-        display: none;
-        /*position: absolute;*/
-        /*top: 65%;*/
-        /*right: 0%;*/
-        /*bottom: -15px;*/
-        /*left: 0%;*/
-        /*z-index: 10;*/
-        /*padding: 5px 10px 0 10px;*/
-        /*color: #fff;*/
-        /*background-color: #9F614B;*/
-        /*opacity: 0.8;*/
-        /*text-align: center;*/
-        /*font-size: 10px;*/
-    }
+
+    position: relative;
+    width:100%;
+    bottom: 10%;
+    display: none;
+    z-index: 10;
+    padding: 40px 0 40px 0;
+    color: #fff;
+    background-color: #9F614B;
+    opacity: 0.8;
+    line-height: 20px;
+    text-align: center;
+    font-size: 18px;
+}
 }
 
 
+/*another css by Etoka francis to override any other css*/
+
+.current-bar
+{
+    padding:18px !important;
+    padding-left:35px !important;
+    margin-bottom: 5px !important;
+    text-transform: capitalize;
+    font-size:20px !important;
+    color:white !important;
+    font-weight: bold;
+    /*background-image: url('../img/currentbar.jpg');
+    background-size: cover;*/
+     /*background: rgb(154,106,79);*/
+      /* For browsers that do not support gradients */
+    background: linear-gradient(to top,rgb(154,106,79),rgb(166,124,98),rgb(187,154,132));
+
+    /*text-shadow: 2px 2px 2px black;*/
+}
+
+.current-body
+{
+    /*background-image: url('../img/content-image.jpg');*/
+    max-height: 430px;
+    height:430px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    margin-top:5px;
+    /*background-size: cover;*/
+    background: rgb(0,48,87);
+    background: linear-gradient(to top left,rgb(152,153,173),rgb(216,216,223),rgb(224,223,229),rgb(248,248,248),rgb(220,221,222));
+
+}
+
+.overlay
+{
+    background: rgba(0, 0, 0, 0.1);
+}
+
+.full-width
+{
+    width: 100% !important;
+}
+
+.coronation-form-control
+{
+    font-size: 12px;
+    margin-left: 15px;
+}
+
+.ml-15
+{
+     margin-left: 15px;
+}
+
+.table .thead
+{
+    border-bottom:2px solid #9F614B !important;
+    font-weight: 900;
+    font-size: 13px;
+    text-align:left;
+}
 
 
+.tt
+{
+    text-align: left !important;
+    font-weight: 900;
+    font-size: 12px;
+    padding:10px;
+
+}
+
+.left-side
+{
+    padding:0px !important;
+    padding-left:15px !important;
+    
+}
+
+.advert
+{
+    padding:20px !important;
+    max-height:120px;
+    overflow-y: scroll;
+    background: #ebecef !important;
+    /*background: linear-gradient(to top left,rgb(152,153,173),rgb(216,216,223),rgb(224,223,229),rgb(248,248,248),rgb(220,221,222));*/
+
+}
+.advert h1
+{
+    color:#9F614B;
+    font-size:16px;
+    font-weight:bold;
+}
+.related-bar
+{
+    background: white;
+    padding:20px;
+    font-size:16px;
+    font-weight: bold;
+}
+
+
+.home-heading
+{
+    font-size:25px;
+}
+
+.home-para
+{
+    padding:20px 50px;
+    font-size:14px;
+    
+}
+
+.contact-details
+{
+    background: #ebecef !important;
+    margin-top: 5px;
+    padding:10px;
+}
+
+.contact-details li
+{
+    padding-top:5px;
+}
+
+.bg-btn
+{
+    background: grey !important;
+}
+
+.bg-btn:focus
+{
+    background: #003056 !important;
+}
+.popover
+{
+    width:100% !important;
+    text-align: center !important;
+    border-radius: 0px !important;
+    border:0px !important;
+    box-shadow: none;
+}
+
+.popover-content
+{
+    background: #f0dbdb;
+    padding:5px 5px !important;
+}
+
+.popover.right > .arrow
+{
+    display: none !important;
+}

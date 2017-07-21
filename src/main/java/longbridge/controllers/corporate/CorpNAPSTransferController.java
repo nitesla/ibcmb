@@ -3,6 +3,7 @@ package longbridge.controllers.corporate;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 import longbridge.dtos.BulkTransferDTO;
 import longbridge.dtos.CreditRequestDTO;
 import longbridge.models.*;
@@ -10,7 +11,10 @@ import longbridge.services.AccountService;
 import longbridge.services.BulkTransferService;
 import longbridge.services.CorporateUserService;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.poifs.filesystem.POIFSFileSystem;
+import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,9 +56,16 @@ import java.util.stream.StreamSupport;
 @RequestMapping("/corporate/transfer")
 public class CorpNAPSTransferController {
 
+    /*
+        * Download a file from
+        *   - inside project, located in resources folder.
+        *   Added by Bimpe Ayoola
+     */
+    private static final String SERVER_FILE_PATH = "C:\\ibanking\\files\\Copy-of-NEFT-ECOB-ABC-old-mutual.xls";
+    private static final String FILENAME = "Copy-of-NEFT-ECOB-ABC-old-mutual.xls";
+    Logger logger = LoggerFactory.getLogger(this.getClass());
     @Autowired
     private MessageSource messageSource;
-
     private AccountService accountService;
     private CorporateUserService corporateUserService;
     private BulkTransferService bulkTransferService;
@@ -66,11 +77,6 @@ public class CorpNAPSTransferController {
         this.bulkTransferService = bulkTransferService;
     }
 
-    Logger logger = LoggerFactory.getLogger(this.getClass());
-
-    private static final String SERVER_FILE_PATH = "/Users/user/Documents/UPLOAD_FOLDER/Copy-of-NEFT-ECOB-ABC-old-mutual.xls";
-
-
     @GetMapping("/bulk")
     public String getBulkTransfers(Model model) {
         return "/corp/transfer/bulktransfer/list";
@@ -79,7 +85,7 @@ public class CorpNAPSTransferController {
     @GetMapping("/{id}/view")
     public String getBulkTransferCreditRequests(@PathVariable Long id, Model model) {
         BulkTransfer bulkTransfer = bulkTransferService.getBulkTransferRequest(id);
-        model.addAttribute("bulkTransfer",bulkTransfer);
+        model.addAttribute("bulkTransfer", bulkTransfer);
         return "/corp/transfer/bulktransfer/crlistview";
     }
 
@@ -92,20 +98,13 @@ public class CorpNAPSTransferController {
     public String addBulkTransfer(Model model) {
         return "/corp/transfer/bulktransfer/add";
     }
-    /*
-        * Download a file from
-        *   - inside project, located in resources folder.
-        *   Added by Bimpe Ayoola
-     */
-    //private static final String SERVER_FILE_PATH="C:\\ibanking\\files\\Copy-of-NEFT-ECOB-ABC-old-mutual.xls\\";
-    private static final String FILENAME = "Copy-of-NEFT-ECOB-ABC-old-mutual.xls";
 
     @GetMapping("/bulk/download")
     public void downloadFile(HttpServletResponse response) throws IOException {
         File file = null;
-        //file = new File(SERVER_FILE_PATH);
-        ClassLoader classloader = Thread.currentThread().getContextClassLoader();
-        file = new File(classloader.getResource(FILENAME).getFile());
+        file = new File(SERVER_FILE_PATH);
+//        ClassLoader classloader = Thread.currentThread().getContextClassLoader();
+//        file = new File(classloader.getResource(FILENAME).getFile());
         if (!file.exists()) {
             String errorMessage = "Sorry. The file you are looking for does not exist";
             System.out.println(errorMessage);
@@ -153,20 +152,30 @@ public class CorpNAPSTransferController {
 
         if (file.isEmpty()) {
             System.out.println("i got here");
-            model.addAttribute("failure", messageSource.getMessage("file.required", null, locale));
-            return "/corp/transfer/bulktransfer/add";
+            model.addAttribute("failure", messageSource.getMessage("file.require", null, locale));
+            return "/corp/transfer/bulktransfer/upload";
         }
+
 
         // Get the file and save it
         try {
             byte[] bytes = file.getBytes();
             InputStream inputStream = file.getInputStream();
-            httpSession.setAttribute("inputStream" , inputStream);
-            redirectAttributes.addFlashAttribute("message", messageSource.getMessage("file.upload.success", null, locale));
+            String filename = file.getOriginalFilename();
+            String extension = filename.substring(filename.lastIndexOf(".") + 1, filename.length());
+            if (!extension.equals("xls") && !extension.equals("xlsx")) {
+                model.addAttribute("failure", messageSource.getMessage("file.format.failure", null, locale));
+                return "/corp/transfer/bulktransfer/upload";
+            }
 
+            httpSession.setAttribute("inputStream", inputStream);
+            httpSession.setAttribute("fileExtension", extension);
+            redirectAttributes.addFlashAttribute("message", messageSource.getMessage("file.upload.success", null, locale));
         } catch (IOException e) {
             logger.error("Error uploading file", e);
+
             redirectAttributes.addFlashAttribute("failure", messageSource.getMessage("file.upload.failure", null, locale));
+            return "redirect:/corporate/transfer/upload";
         }
 
         return "/corp/transfer/bulktransfer/add";
@@ -175,25 +184,59 @@ public class CorpNAPSTransferController {
 
     @GetMapping("/all")
     @ResponseBody
-    public DataTablesOutput<CreditRequest> getCreditRequests(HttpSession session) throws IOException {
-        InputStream excelFile = (InputStream) session.getAttribute("inputStream");
-        List<CreditRequest> crLists = new ArrayList<>();
+    public DataTablesOutput<CreditRequestDTO> getCreditRequests(HttpSession session , Model model) throws IOException {
+        FileInputStream excelFile = (FileInputStream) session.getAttribute("inputStream");
+        String fileExtension = (String)session.getAttribute("fileExtension");
+        List<CreditRequestDTO> crLists = new ArrayList<>();
         try {
-            Workbook workbook = new HSSFWorkbook(excelFile);
+            System.out.println(excelFile);
+           // Workbook workbook = new HSSFWorkbook(new POIFSFileSystem(excelFile));
+           // Workbook[] workbook = new Workbook[] { new HSSFWorkbook(excelFile), new XSSFWorkbook(excelFile) };
+            Workbook workbook;
+             if (fileExtension.equalsIgnoreCase("xls")) {
+
+             workbook = new HSSFWorkbook(excelFile);
+
+             }
+             else if (fileExtension.equalsIgnoreCase("xlsx")) {
+               workbook = new XSSFWorkbook(excelFile);
+             }
+             else {
+                 throw new IllegalArgumentException(fileExtension+" File does not have a standard excel extension.");
+             }
+
             Sheet datatypeSheet = workbook.getSheetAt(0);
+
             Iterator<Row> iterator = datatypeSheet.iterator();
             if (iterator.hasNext()) iterator.next();
             while (iterator.hasNext()) {
                 Row currentRow = iterator.next();
-                Iterator<Cell> cellIterator = currentRow.iterator();
+                //Iterator<Cell> cellIterator = currentRow.iterator();
                 ArrayList cellData = new ArrayList();
-                while (cellIterator.hasNext()) {
-
-                    Cell currentCell = cellIterator.next();
-                    cellData.add(currentCell);
+                for (int i = 0; i < currentRow.getLastCellNum(); i++){
+                    Cell currentCell = currentRow.getCell(i);
+                    System.out.println(currentCell);
+                    if (currentCell == null || currentCell.getCellType() == Cell.CELL_TYPE_BLANK || currentCell.toString().isEmpty() || currentCell.toString() == null) {
+                        cellData.add("ERROR HERE");
+                    } else {
+                        cellData.add(currentCell);
+                    }
                 }
+//                while (cellIterator.hasNext()) {
+//                           Cell currentCell = cellIterator.next();
+//                           System.out.println(currentCell);
+//                           if (currentCell == null || currentCell.getCellType() == Cell.CELL_TYPE_BLANK || currentCell.toString().isEmpty() || currentCell.toString() == null) {
+//
+//                           } else {
+//                               cellData.add(currentCell);
+//                           }
+//                }
+                int rowIndex = currentRow.getRowNum();
                 System.out.println(cellData);
-                CreditRequest creditRequest = new CreditRequest();
+                CreditRequestDTO creditRequest = new CreditRequestDTO();
+                Long id = Long.valueOf(rowIndex);
+                System.out.println(id);
+                creditRequest.setId(id);
                 creditRequest.setSerial((cellData.get(0).toString()));
                 creditRequest.setRefCode(cellData.get(1).toString());
                 creditRequest.setAccountNumber(cellData.get(2).toString());
@@ -206,16 +249,16 @@ public class CorpNAPSTransferController {
             }
 
 
-        } catch (IOException e) {
+        } catch (IOException  | IllegalArgumentException e) {
             logger.error("Error uploading file", e);
         }
         System.out.println(crLists);
-        DataTablesOutput<CreditRequest> dto = new DataTablesOutput<>();
+        DataTablesOutput<CreditRequestDTO> dto = new DataTablesOutput<>();
         dto.setData(crLists);
         dto.setRecordsFiltered(crLists.size());
         dto.setRecordsTotal(crLists.size());
 
-        if(session.getAttribute("inputstream") != null){
+        if (session.getAttribute("inputstream") != null) {
             session.removeAttribute("inputstream");
         }
 
@@ -225,9 +268,8 @@ public class CorpNAPSTransferController {
     }
 
 
-
     @PostMapping("/save")
-    public String saveTransfer(WebRequest request, RedirectAttributes redirectAttributes, Model model, Locale locale, Principal principal, HttpServletRequest httpServletRequest){
+    public String saveTransfer(WebRequest request, RedirectAttributes redirectAttributes, Model model, Locale locale, Principal principal, HttpServletRequest httpServletRequest) {
 
         try {
 
@@ -254,7 +296,7 @@ public class CorpNAPSTransferController {
             bulkTransfer.setCrRequestList(requestList);
             bulkTransfer.setCorporate(corporate);
             bulkTransfer.setRequestDate(dateFormat.format(date));
-            for(CreditRequest creditRequest : requestList){
+            for (CreditRequest creditRequest : requestList) {
                 creditRequest.setBulkTransfer(bulkTransfer);
                 creditRequest.setStatus("S");
             }
@@ -264,14 +306,15 @@ public class CorpNAPSTransferController {
         } catch (Exception ibe) {
             logger.error("Error creating transfer", ibe);
             model.addAttribute("failure", messageSource.getMessage("bulk.transfer.failure", null, locale));
-            return "/corp/transfer/bulktransfer/add";
+            return "redirect:/corporate/transfer/add";
         }
     }
 
 
-
     @GetMapping(path = "/alltransfers")
-    public @ResponseBody DataTablesOutput<BulkTransferDTO> getAllTransfers(DataTablesInput input, Principal principal) {
+    public
+    @ResponseBody
+    DataTablesOutput<BulkTransferDTO> getAllTransfers(DataTablesInput input, Principal principal) {
 
         CorporateUser user = corporateUserService.getUserByName(principal.getName());
         Corporate corporate = user.getCorporate();
@@ -287,9 +330,11 @@ public class CorpNAPSTransferController {
 
 
     @GetMapping(path = "/{bulkTransfer}/allcreditrequests")
-    public @ResponseBody DataTablesOutput<CreditRequestDTO> getAllTransfers(DataTablesInput input,@PathVariable BulkTransfer bulkTransfer) {
+    public
+    @ResponseBody
+    DataTablesOutput<CreditRequestDTO> getAllTransfers(DataTablesInput input, @PathVariable BulkTransfer bulkTransfer) {
         Pageable pageable = DataTablesUtils.getPageable(input);
-        Page<CreditRequestDTO> creditRequests = bulkTransferService.getCreditRequests(bulkTransfer,pageable);
+        Page<CreditRequestDTO> creditRequests = bulkTransferService.getCreditRequests(bulkTransfer, pageable);
         DataTablesOutput<CreditRequestDTO> output = new DataTablesOutput<>();
         output.setDraw(input.getDraw());
         output.setData(creditRequests.getContent());
@@ -297,7 +342,6 @@ public class CorpNAPSTransferController {
         output.setRecordsTotal(creditRequests.getTotalElements());
         return output;
     }
-
 
 
 }

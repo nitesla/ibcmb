@@ -36,7 +36,10 @@ public class MailServiceImpl implements MailService {
             messageHelper.setSubject(subject);
             messageHelper.setText(message);
         };
-            mailSender.send(messagePreparator);
+
+        logger.info("...trying to send mail to {}", recipient);
+
+        mailSender.send(messagePreparator);
             logger.info("Email successfully sent to {}",recipient);
     }
 
@@ -49,7 +52,10 @@ public class MailServiceImpl implements MailService {
             messageHelper.setText(email.getMessageBody());
 
         };
+        logger.info("...trying to send mail to {}", email.getReceiverEmail());
+
         mailSender.send(messagePreparator);
+
         logger.info("Email successfully sent to {}", email.getReceiverEmail());
     }
 }

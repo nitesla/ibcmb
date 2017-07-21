@@ -17,6 +17,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -64,6 +65,8 @@ public class SettingController {
     @Autowired
     private IntegrationService integrationService;
 
+    private Locale locale = LocaleContextHolder.getLocale();
+
     @Autowired
     private FinancialInstitutionService financialInstitutionService;
     @Autowired
@@ -76,6 +79,13 @@ public class SettingController {
         RetailUser retailUser = retailUserService.getUserByName(principal.getName());
         List<AccountDTO> accountList = accountService.getAccountsAndBalances(retailUser.getCustomerId());
         model.addAttribute("accountList", accountList);
+
+        boolean exp = passwordPolicyService.displayPasswordExpiryDate(retailUser.getExpiryDate());
+        logger.info("EXPIRY RESULT {} ", exp);
+        if (exp){
+            model.addAttribute("message", messageSource.getMessage("password.reset.notice", null, locale));
+        }
+
         return "cust/dashboard";
     }
 
@@ -196,7 +206,7 @@ public class SettingController {
     public String AlertPreferencePage(AlertPref alertPref, Model model, Principal principal) {
         RetailUser user = retailUserService.getUserByName(principal.getName());
         Iterable<CodeDTO> pref = codeService.getCodesByType("ALERT_PREFERENCE");
-        model.addAttribute("alertP", user.getAlertPreference());
+        model.addAttribute("alertPref", user.getAlertPreference());
         model.addAttribute("prefs", pref);
         return "cust/settings/alertpref";
     }
@@ -212,10 +222,10 @@ public class SettingController {
         retailUserService.changeAlertPreference(user, alertPref);
 
         Iterable<CodeDTO> pref = codeService.getCodesByType("ALERT_PREFERENCE");
-        model.addAttribute("alertP", user.getAlertPreference());
+        model.addAttribute("alertPref", user.getAlertPreference());
         model.addAttribute("prefs", pref);
         model.addAttribute("message", "Preference Change Successful successful");
-        return "cust/settings/alertpref";
+        return "redirect:/retail/settings/alert_preference";
     }
 
 
@@ -242,26 +252,27 @@ public class SettingController {
 
 
 
-            SettingDTO setting = configService.getSettingByName("CUSTOMER_CARE_EMAIL");
-            if (setting != null && setting.isEnabled()) {
-                try {
+        SettingDTO setting = configService.getSettingByName("CUSTOMER_CARE_EMAIL");
+        if (setting != null && setting.isEnabled()) {
+            try {
                 Email email = new Email.Builder()
                         .setRecipient(setting.getValue())
                         .setSubject(messageSource.getMessage("customer.bvn.link.subject", null, locale))
                         .setBody(String.format(messageSource.getMessage("customer.bvn.link.message", null, locale),user.getUserName(),fullname, bvn,acctNumber,custId,custemail))
                         .build();
                 mailService.send(email);
-                    String message =  messageSource.getMessage("bvn.add.success", null, locale);
-                    redirectAttributes.addFlashAttribute("message", message);
+                String message =  messageSource.getMessage("bvn.add.success", null, locale);
+                logger.info("BVN request sent successfully");
+                redirectAttributes.addFlashAttribute("message", message);
 
-                } catch (Exception ex) {
-                    logger.error("Failed to send BVN request", ex);
-                    String message = messageSource.getMessage("bvn.add.failure", null, locale);
-                    redirectAttributes.addFlashAttribute("failure", message);
-                }
+            } catch (Exception ex) {
+                logger.error("Failed to send BVN request", ex);
+                String message = messageSource.getMessage("bvn.add.failure", null, locale);
+                redirectAttributes.addFlashAttribute("failure", message);
             }
+        }
 
-            return "redirect:/retail/dashboard";
+        return "redirect:/retail/dashboard";
     }
 
 
@@ -279,6 +290,7 @@ public class SettingController {
         }
 
         RetailUser user = retailUserService.getUserByName(principal.getName());
+
         try{
             messageService.sendRetailContact(message, user);
             redirectAttributes.addFlashAttribute("message", "message sent successfully");

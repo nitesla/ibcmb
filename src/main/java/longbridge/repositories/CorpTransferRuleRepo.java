@@ -2,6 +2,8 @@ package longbridge.repositories;
 
 import longbridge.models.CorpTransRule;
 import longbridge.models.Corporate;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -13,4 +15,7 @@ import java.util.List;
 public interface CorpTransferRuleRepo extends CommonRepo<CorpTransRule,Long> {
 
     List<CorpTransRule> findByCorporate(Corporate corporate);
+
+    Page<CorpTransRule> findByCorporate(Corporate corporate, Pageable pageable);
+
 }

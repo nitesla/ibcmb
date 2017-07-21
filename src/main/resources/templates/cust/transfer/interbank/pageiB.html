@@ -85,6 +85,14 @@
             $('#localsave').hide();
             $('#neq').show();
         });
+        $('#acct_num').focus(function(){
+
+//            var bank = $('#bank_code').val();
+//            if (( bank==null || bank=='' )){
+//                alert('Please select a Bank');
+//                return false;
+//            }
+        });
 
         $('#acct_num').blur(function () {
             $('#acct_name').val("");
@@ -112,7 +120,7 @@
             return false;
         }
 
-        $.getJSON('/retail/transfer/' + acct + '/'+bank+'/nameEnquiry', function(jd) {
+        $.getJSON('/retail/transfer/' +acct+ '/'+bank+'/nameEnquiry', function(jd) {
             var message = jd.message;
             var success =  jd.success;
             console.log(message);
@@ -124,7 +132,6 @@
            }else{
                $('#acct_name').val(message);
                $('#localsave').show();
-               $('#neq').hide();
                $('.acctError').hide()
                document.getElementById('loading-icon').style.display = 'none';
                $('#loading-icon').hide();

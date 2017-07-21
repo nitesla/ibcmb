@@ -9,6 +9,7 @@ import java.util.List;
  */
 public interface TransferRequestRepo extends CommonRepo<TransRequest, Long> {
     TransRequest findById(long id);
+    List<TransRequest> findByUserReferenceNumber(String s);
     List<TransRequest> findTop10ByCustomerAccountNumberOrderByTranDateDesc(String acc);
 
 

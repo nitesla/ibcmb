@@ -1,73 +1,78 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head th:replace="cust_layout :: site-head">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{ret-layout}">
 
-</head>
-<body>
-<div class="container">
-    <header th:replace="cust_layout :: header">
-    </header>
+<body onload="currentBar('Link BVN')">
 
-<section class="content-wrapper">
-    <div class="containe">
-        <div class="row">
-            <div class="col-md-4 col-sm-4">
-                <h5 class="page_header"> Link BVN</h5>
-                 <select class="form-control invisible">
-                        <option value="account">Account Overview</option>
-                </select>
-            </div>
-             <p class="col-xs-12 invisible">
-                    Fields marked <span style="color:red">*</span> are compulsory
-            </p>
-        </div>
-        <div class="row">
-            <div class="col-md-9 content-bg">
+<div layout:fragment="content">
+    <div class="col-md-5 col-sm-5 ">
 
-                    <div class="col-md-6 col-sm-6">
-                        <form method="post" th:action="@{/retail/bvn}" >
+        <select class="form-control full-width coronation-form-control hide-content-only" id="view">
+            <option value="account">Overview</option>
+        </select>
+    </div>
 
-                            <div class="form-group">
-                                <label>Account Number</label>
-                                <span class="req"></span>
-                                <select name="acctNumber" id="acctNumber" class="form-control"
-                                        required="required">
-                                    <option th:each="s: ${accounts}" th:value="${s}" th:text="${s}"></option></select>
-                            </div>
+    <div class="col-xs-12 ml-15 " >
+        <div class="col-xs-11 no-pad-lef table-responsive no-mt no-bd  alert">
+            <div class="form-spacig col-sm-8">
 
-                            <div class="form-group">
-                                <label>Select Bank</label>
-                                <span class="req"></span>
-                                <select name="beneficiaryBank" id="beneficiaryBank" class="form-control"
-                                        required="required">
-                                    <option th:each="bank : ${localBanks}" th:value="${bank.institutionCode}"
-                                            th:text="${bank.institutionName}"></option>
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <label>BVN</label>
-                                <span class="req"></span>
-                                <input type="number" placeholder="Enter BVN" class="form-control" min="0" step="1" id="bvn" name="bvn" required="required" onkeypress="phoneno()" maxlength="11"/>
-                            </div>
+                <form method="post" th:action="@{/retail/bvn}" >
 
-                            <button type="submit" class="btn btn-default">Submit</button>
-                        </form>
+                    <div class="form-group">
+                        <label>Account Number</label>
+                        <span class="req"></span>
+                        <select name="acctNumber" id="acctNumber" class="form-control"
+                                required="required">
+                            <option th:each="s: ${accounts}" th:value="${s.accountNumber}" th:text="${s.accountNumber}"></option></select>
                     </div>
 
+                    <div class="form-group">
+                        <label>Select Bank</label>
+                        <span class="req"></span>
+                        <select name="beneficiaryBank" id="beneficiaryBank" class="form-control"
+                                required="required">
+                            <option th:each="bank : ${localBanks}" th:value="${bank.institutionCode}"
+                                    th:text="${bank.institutionName}"></option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>BVN</label>
+                        <span class="req"></span>
+                        <input type="number" placeholder="Enter BVN" class="form-control" min="0" step="1" id="bvn" name="bvn" required="required" onblur="checkLength()" maxlength="11"/>
+                    </div>
+
+                    <button type="submit" class="btn btn-link required-step">Submit</button>
+                </form>
             </div>
-            <div class="col-md-3 pull-right " >
-                <div th:replace="cust_layout :: sidebar" class="" >
-                </div>
-            </div>
+
         </div>
     </div>
-</section>
 
-
-<!-- CONTENT-WRAPPER SECTION END-->
-<footer th:replace="cust_layout ::footer">
-</footer>
 </div>
-</body>
 
+
+<th:block layout:fragment="scripts">
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+
+        function checkLength()
+        {
+            var fieldLength = $('#bvn').val();
+
+            //Suppose the bvn is greater than 11 digits
+            if(fieldLength.length!=11){
+                var message = "Invalid number of digits";
+            $('#myModalError').modal('show');
+            var err = document.getElementById('errorMess');
+            err.textContent = message;
+            }
+
+        }
+        /*]]>*/
+    </script>
+
+
+</th:block>
+
+</body>
 </html>

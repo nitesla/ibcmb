@@ -1,21 +1,15 @@
 package longbridge.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
+import longbridge.utils.PrettySerializer;
 import org.hibernate.annotations.Where;
 import org.hibernate.envers.Audited;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import longbridge.dtos.RoleDTO;
-import longbridge.utils.PrettySerializer;
 
 import javax.persistence.*;
-
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collection;
@@ -112,12 +106,14 @@ public class Role extends AbstractEntity implements PrettySerializer{
                 // gen.writeArrayFieldStart("permissions");
                 gen.writeObjectFieldStart("Permissions");
                 for(Permission p : value.permissions){
-                    gen.writeObjectFieldStart(p.getId().toString());
-                    //gen.writeStartObject();
-                    gen.writeStringField("Name",p.getName());
-                    gen.writeStringField("Code",p.getCode());
-                    gen.writeStringField("Description",p.getDescription());
-                    gen.writeEndObject();
+                   if(p.getId()!=null) {
+                       gen.writeObjectFieldStart(p.getId().toString());
+                       //gen.writeStartObject();
+                       gen.writeStringField("Name", p.getName());
+                       gen.writeStringField("Code", p.getCode());
+                       gen.writeStringField("Description", p.getDescription());
+                       gen.writeEndObject();
+                   }
                 }
                 gen.writeEndObject();
                 //gen.writeEndArray();

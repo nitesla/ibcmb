@@ -25,6 +25,8 @@
         <aspect name="longbridge.aop.OpsUserAdvisor"/>
         <aspect name="longbridge.aop.RetailUserAdvisor"/>
         <aspect name="longbridge.aop.CorporateUserAdvisor"/>
+        <aspect name="longbridge.aop.CorporateAdvisor"/>
+
 
 
 

@@ -1,10 +1,8 @@
 package longbridge.models;
 
 
-import longbridge.utils.verificationStatus;
+import longbridge.utils.VerificationStatus;
 import org.hibernate.annotations.Where;
-
-import org.hibernate.envers.Audited;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -29,7 +27,7 @@ public class Verification extends AbstractEntity {
     @Lob
     private String originalObject; //json
     @Enumerated(value = EnumType.STRING)
-    private verificationStatus status;
+    private VerificationStatus status;
     private String description;
     private Long entityId;
     private String entityName;
@@ -64,11 +62,11 @@ public class Verification extends AbstractEntity {
     }
 
 
-    public verificationStatus getStatus() {
+    public VerificationStatus getStatus() {
         return status;
     }
 
-    public void setStatus(verificationStatus status) {
+    public void setStatus(VerificationStatus status) {
         this.status = status;
     }
 

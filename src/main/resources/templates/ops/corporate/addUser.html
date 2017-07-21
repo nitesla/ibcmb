@@ -92,7 +92,7 @@
 
                                         </div>
 
-                                        <div th:if ="${corporate.corporateType=='MULTI'}" class="form-group">
+                                        <div class="form-group">
                                             <label class="col-sm-2 control-label">Role</label>
                                             <div class="col-sm-6">
 
@@ -102,6 +102,17 @@
 
 
                                             </div>
+                                        </div>
+
+                                        <div  th:if ="${corporate.corporateType=='MULTI'}" class="form-group">
+                                            <label class="col-sm-2 control-label"></label>
+
+                                            <p><label class="checkbox-inline">
+                                                        <input type="checkbox" class="checkbox-inline"
+                                                               th:field="*{admin}"/>
+                                                        <span>Make Corporate Admin</span>
+                                                    </label>
+                                                </p>
                                         </div>
 
                                         <div class="form-group">

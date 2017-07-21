@@ -5,6 +5,7 @@ import longbridge.dtos.TransferRequestDTO;
 import longbridge.exception.InternetBankingTransferException;
 import longbridge.exception.TransferErrorService;
 import longbridge.models.Account;
+import longbridge.models.RetailUser;
 import longbridge.services.*;
 import longbridge.utils.ResultType;
 import longbridge.utils.TransferType;
@@ -29,10 +30,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.math.BigDecimal;
 import java.security.Principal;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.StreamSupport;
 
 /**
  * Created by ayoade_farooq@yahoo.com on 5/4/2017.
@@ -50,6 +49,7 @@ public class OwnTransferController {
     private FinancialInstitutionService financialInstitutionService;
     private ApplicationContext appContext;
     private TransferErrorService errorService;
+    private RetailUserService retailUserService;
 
     private String page = "cust/transfer/ownaccount/";
     @Value("${bank.code}")
@@ -57,7 +57,8 @@ public class OwnTransferController {
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
-    public OwnTransferController(TransferService transferService, AccountService accountService, MessageSource messages, LocaleResolver localeResolver, LocalBeneficiaryService localBeneficiaryService, TransferValidator validator, FinancialInstitutionService financialInstitutionService, ApplicationContext appContext, TransferErrorService errorService) {
+    public OwnTransferController(TransferService transferService, AccountService accountService, MessageSource messages, LocaleResolver localeResolver, LocalBeneficiaryService localBeneficiaryService, TransferValidator validator, FinancialInstitutionService financialInstitutionService, ApplicationContext appContext,
+                                 TransferErrorService errorService,RetailUserService retailUserService) {
         this.transferService = transferService;
         this.accountService = accountService;
         this.messages = messages;
@@ -67,6 +68,7 @@ public class OwnTransferController {
         this.financialInstitutionService = financialInstitutionService;
         this.appContext = appContext;
         this.errorService = errorService;
+        this.retailUserService=retailUserService;
     }
 
 
@@ -101,7 +103,7 @@ public class OwnTransferController {
         } catch (InternetBankingTransferException exception)
 
         {
-            String errorMessage = errorService.getMessage(exception, servletRequest);
+            String errorMessage = errorService.getMessage(exception);
             model.addAttribute("failure", errorMessage);
             return page + "pagei";
 
@@ -109,14 +111,7 @@ public class OwnTransferController {
 
     }
 
-    @RequestMapping(value="/balance/{accountNumber}", method=RequestMethod.GET , produces="application/json")
-    @ResponseBody
-    public BigDecimal getBalance(@PathVariable String accountNumber) throws Exception {
-        Account account = accountService.getAccountByAccountNumber(accountNumber);
-        Map<String, BigDecimal> balance = accountService.getBalance(account);
-        BigDecimal availBal = balance.get("AvailableBalance");
-        return availBal;
-    }
+
 
     @PostMapping("/edit")
     public String editTransfer(@ModelAttribute("transferRequest")  TransferRequestDTO transferRequestDTO,Model model,HttpServletRequest request){
@@ -124,6 +119,37 @@ public class OwnTransferController {
         transferRequestDTO.setFinancialInstitution(financialInstitutionService.getFinancialInstitutionByCode(bankCode));
         model.addAttribute("transferRequest",transferRequestDTO);
         return page + "pagei";
+    }
+
+
+    @ModelAttribute
+    public void getDestAccounts(Model model, Principal principal) {
+
+        if (principal != null && principal.getName() != null) {
+
+            RetailUser user = retailUserService.getUserByName(principal.getName());
+            if (user != null) {
+                List<String> accountList = new ArrayList<>();
+
+                Iterable<Account> accounts = accountService.getAccountsForCredit(user.getCustomerId());
+
+                StreamSupport.stream(accounts.spliterator(), false)
+                        .filter(Objects::nonNull)
+
+                        .forEach(i -> accountList.add(i.getAccountNumber()));
+
+
+                model.addAttribute("destAccounts", accountList);
+            }
+
+
+
+        }
+
+
+
+
+
     }
 
 }

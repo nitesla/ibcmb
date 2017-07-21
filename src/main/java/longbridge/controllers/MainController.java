@@ -5,10 +5,7 @@ import longbridge.dtos.SettingDTO;
 import longbridge.exception.InternetBankingException;
 import longbridge.exception.PasswordException;
 import longbridge.exception.UnknownResourceException;
-import longbridge.models.Corporate;
-import longbridge.models.CorporateUser;
-import longbridge.models.Email;
-import longbridge.models.RetailUser;
+import longbridge.models.*;
 import longbridge.services.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,6 +14,8 @@ import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -56,6 +55,11 @@ public class MainController {
     @Autowired
     private  FaqsService faqsService;
 
+    @GetMapping("/testing")
+    public String testing(){
+        return "abcd";
+    }
+
 
     @RequestMapping(value = {"/", "/home"})
     public String getHomePage(@RequestParam Optional<HttpServletRequest> request) {
@@ -66,7 +70,7 @@ public class MainController {
     }
 
     @RequestMapping(value = "/login/retail", method = RequestMethod.GET)
-    public ModelAndView getLoginPage(@RequestParam Optional<String> error, @RequestParam Optional<HttpServletRequest> request) {
+    public ModelAndView getLoginPage(@RequestParam Optional<String> error, @RequestParam Optional<HttpServletRequest> request, Model model) {
 
         if (request.isPresent()) request.get().getSession().invalidate();
         //clearSession();
@@ -85,7 +89,6 @@ public class MainController {
 
     @GetMapping(value = "/login/admin")
     public ModelAndView adminLogin() {
-        //clearSession();
 
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("admlogin");
@@ -161,6 +164,10 @@ public class MainController {
         // return "";
     }
 
+    @GetMapping("/login/u/retail")
+    public String login1(){
+        return "redirect:/login/retail";
+    }
     @PostMapping("/login/u/retail")
     public String userExists(WebRequest webRequest, Model model, RedirectAttributes redirectAttributes) {
         String username = webRequest.getParameter("username");
@@ -174,7 +181,8 @@ public class MainController {
         }
 
         try{
-            Map<String, List<String>> mutualAuth =  securityService.getMutualAuth(username);
+            logger.info("the username");
+            Map<String, List<String>> mutualAuth =  securityService.getMutualAuth(user.getEntrustId(), user.getEntrustGroup());
             if (mutualAuth != null){
                 String image = mutualAuth.get("imageSecret")
                         .stream()
@@ -184,7 +192,15 @@ public class MainController {
 
 //                logger.info("SECIMAGE"+ image);
 
+                String caption = mutualAuth.get("captionSecret")
+                        .stream()
+                        .filter(Objects::nonNull)
+                        .findFirst()
+                        .orElse("");
+
                 model.addAttribute("secImage", image);
+                //logger.info("SECCAPTION "+ caption);
+                model.addAttribute("secCaption", caption);
             }
         }catch (InternetBankingException e){
             model.addAttribute("imageException", "You are yet to set your antiphishing image");
@@ -194,6 +210,10 @@ public class MainController {
         return "retpage2";
     }
 
+    @GetMapping("/login/p/retail")
+    public String login2(){
+        return "redirect:/login/retail";
+    }
     @PostMapping("/login/p/retail")
     public String step2(WebRequest webRequest, Model model, HttpSession session, RedirectAttributes redirectAttributes) {
         String username = webRequest.getParameter("username");
@@ -211,23 +231,53 @@ public class MainController {
 
     }
 
+    @GetMapping("/login/u/corporate")
+    public String loginCorporate1(){
+        return "redirect:/login/corporate";
+    }
 
     @PostMapping("/login/u/corporate")
     public String userExist(WebRequest webRequest, Model model, RedirectAttributes redirectAttributes) {
         String username = webRequest.getParameter("username");
         String corpKey = webRequest.getParameter("corporateId");
-        CorporateUser user = corporateUserService.getUserByName(username);
-        Corporate corporate = corporateService.getCorporateByCustomerId(corpKey);
-//        Map<List<String>, List<String>> mutualAuth = securityService.getMutualAuth(user.getUserName());
+//        CorporateUser user = corporateUserService.getUserByName(username);
+//        Corporate corporate = corporateService.getCorporateByCustomerId(corpKey);
 
-        //get map
+        CorporateUser user = corporateUserService.getUserByNameAndCorpCif(username, corpKey);
 
-        if (corporate != null && user != null) {
+        //if (corporate != null && user != null) {
+        if (user != null) {
 //            model.addAttribute("images", mutualAuth.get("imageSecret"));
 //            model.addAttribute("captions", mutualAuth.get("captionSecret"));
-            model.addAttribute("username", user.getUserName());
-            model.addAttribute("corpKey", corpKey);
-            return "corppage2";
+                try{
+                    Map<String, List<String>> mutualAuth =  securityService.getMutualAuth(user.getEntrustId(), user.getEntrustGroup());
+                    if (mutualAuth != null){
+                        String image = mutualAuth.get("imageSecret")
+                                .stream()
+                                .filter(Objects::nonNull)
+                                .findFirst()
+                                .orElse("");
+
+//                      logger.info("SECIMAGE"+ image);
+                        String caption = mutualAuth.get("captionSecret")
+                                .stream()
+                                .filter(Objects::nonNull)
+                                .findFirst()
+                                .orElse("");
+
+                        model.addAttribute("secImage", image);
+                        //logger.info("SECCAPTION "+ caption);
+                        model.addAttribute("secCaption", caption);
+                    }
+                }catch (InternetBankingException e){
+                    model.addAttribute("imageException", "You are yet to set your antiphishing image");
+                }
+
+
+                model.addAttribute("username", user.getUserName());
+                model.addAttribute("corpKey", corpKey);
+                return "corppage2";
+
         }
 
 
@@ -236,14 +286,21 @@ public class MainController {
 
     }
 
+    @GetMapping("/login/p/corporate")
+    public String loginCorporate2(){
+        return "redirect:/login/corporate";
+    }
+
     @PostMapping("/login/p/corporate")
     public String corpstep2(WebRequest webRequest, Model model, RedirectAttributes redirectAttributes) {
         String username = webRequest.getParameter("username");
         String phishing = webRequest.getParameter("phishing");
         String corpKey = webRequest.getParameter("corpKey");
-        CorporateUser user = corporateUserService.getUserByName(username);
-        Corporate corporate = corporateService.getCorporateByCustomerId(corpKey);
-        if (corporate != null && user != null && phishing != null) {
+//        CorporateUser user = corporateUserService.getUserByName(username);
+//        Corporate corporate = corporateService.getCorporateByCustomerId(corpKey);
+
+        CorporateUser user = corporateUserService.getUserByNameAndCorpCif(username, corpKey);
+        if (user != null && phishing != null) {
             model.addAttribute("username", user.getUserName());
             model.addAttribute("corpKey", corpKey);
             return "corplogin";
@@ -395,12 +452,30 @@ public class MainController {
         return "redirect:/#contact_us";
     }
 
-  /*  private void clearSession(){
+   private void clearSession(){
         ServletRequestAttributes attr = (ServletRequestAttributes)
                 RequestContextHolder.currentRequestAttributes();
         HttpSession session = attr.getRequest().getSession(false);
         if (session!=null)
         session.invalidate();
-    }*/
+    }
 
+
+
+
+
+    @ModelAttribute
+    public void sessionTimeout(Model model){
+        SettingDTO setting = configurationService.getSettingByName("SESSION_TIMEOUT");
+        try{
+            if (setting != null && setting.isEnabled()){
+                Long timeOuts = (Long.parseLong(setting.getValue())* 60000)-25000;
+                logger.info("SESSION TIME OUT PERIOD" + timeOuts);
+                model.addAttribute("timeOut", timeOuts);
+            }
+
+        }catch(Exception ex){
+        }
+
+    }
 }

@@ -1,6 +1,9 @@
 package longbridge.controllers.corporate;
 
-import longbridge.dtos.*;
+import longbridge.dtos.AccountDTO;
+import longbridge.dtos.CodeDTO;
+import longbridge.dtos.CorporateDTO;
+import longbridge.dtos.SettingDTO;
 import longbridge.exception.*;
 import longbridge.forms.AlertPref;
 import longbridge.forms.CustChangePassword;
@@ -10,6 +13,8 @@ import longbridge.services.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -27,11 +32,12 @@ import java.security.Principal;
 import java.util.List;
 import java.util.Locale;
 
-
 @Controller
 @RequestMapping("/corporate")
 public class CorpSettingController {
     private Logger logger= LoggerFactory.getLogger(this.getClass());
+
+    private Locale locale = LocaleContextHolder.getLocale();
 
     @Autowired
     private CodeService codeService;
@@ -54,11 +60,22 @@ public class CorpSettingController {
     @Autowired
     private MessageService messageService;
 
+    @Autowired
+    private MessageSource messageSource;
+
     @RequestMapping("/dashboard")
     public String getCorporateDashboard(Model model, Principal principal) {
         CorporateUser corporateUser = corporateUserService.getUserByName(principal.getName());
-        List<AccountDTO> accountList = accountService.getAccountsForDebitAndCredit(corporateUser.getCorporate().getCustomerId());
+        //List<AccountDTO> accountList = accountService.getAccountsForDebitAndCredit(corporateUser.getCorporate().getCustomerId());
+        List<AccountDTO> accountList = accountService.getAccountsAndBalances(corporateUser.getCorporate().getCustomerId());
         model.addAttribute("accountList", accountList);
+
+        boolean exp = passwordPolicyService.displayPasswordExpiryDate(corporateUser.getExpiryDate());
+        logger.info("EXPIRY RESULT {} ", exp);
+        if (exp){
+            model.addAttribute("message", messageSource.getMessage("password.reset.notice", null, locale));
+        }
+
         return "corp/dashboard";
     }
 
@@ -73,7 +90,7 @@ public class CorpSettingController {
 
     }
 
-   @PostMapping("/settings/change_password")
+    @PostMapping("/settings/change_password")
     public String ChangePassword(@ModelAttribute("custChangePassword") @Valid CustChangePassword custChangePassword, BindingResult result,Principal principal,  Model model, RedirectAttributes redirectAttributes) throws Exception{
         if(result.hasErrors()){
             List<String> passwordPolicy = passwordPolicyService.getPasswordRules();
@@ -85,37 +102,37 @@ public class CorpSettingController {
 
         CorporateUser user = corporateUserService.getUserByName(principal.getName());
 
-       try {
-           String message =corporateUserService.changePassword(user,custChangePassword);
-           redirectAttributes.addFlashAttribute("message", message);
-           return "redirect:/corporate/logout";
-       } catch (WrongPasswordException wpe) {
-           model.addAttribute("failure",wpe.getMessage());
-           logger.error("Wrong password from corporate user {}", user.getUserName(), wpe.toString());
-           List<String> passwordPolicy = passwordPolicyService.getPasswordRules();
-           model.addAttribute("passwordRules", passwordPolicy);
-           return "corp/settings/pword";
-       } catch (PasswordPolicyViolationException pve) {
-           model.addAttribute("failure",pve.getMessage());
-           logger.error("Password policy violation from corporate user {} error {}", user.getUserName(), pve.toString());
-           List<String> passwordPolicy = passwordPolicyService.getPasswordRules();
-           logger.info("PASSWORD RULES {}", passwordPolicy);
-           model.addAttribute("passwordRules", passwordPolicy);
-           return "corp/settings/pword";
-       } catch (PasswordMismatchException pme) {
-           model.addAttribute("failure",pme.getMessage());
-           List<String> passwordPolicy = passwordPolicyService.getPasswordRules();
-           model.addAttribute("passwordRules", passwordPolicy);
-           logger.error("New password mismatch from corporate user {}", user.getUserName(), pme.toString());
-           return "corp/settings/pword";
-       } catch (PasswordException pe) {
-           result.addError(new ObjectError("error", pe.getMessage()));
-           logger.error("Error changing password for corporate user {}", user.getUserName(), pe);
-           List<String> passwordPolicy = passwordPolicyService.getPasswordRules();
-           logger.info("PASSWORD RULES {}", passwordPolicy);
-           model.addAttribute("passwordRules", passwordPolicy);
-           return "corp/settings/pword";
-       }
+        try {
+            String message =corporateUserService.changePassword(user,custChangePassword);
+            redirectAttributes.addFlashAttribute("message", message);
+            return "redirect:/corporate/logout";
+        } catch (WrongPasswordException wpe) {
+            model.addAttribute("failure",wpe.getMessage());
+            logger.error("Wrong password from corporate user {}", user.getUserName(), wpe.toString());
+            List<String> passwordPolicy = passwordPolicyService.getPasswordRules();
+            model.addAttribute("passwordRules", passwordPolicy);
+            return "corp/settings/pword";
+        } catch (PasswordPolicyViolationException pve) {
+            model.addAttribute("failure",pve.getMessage());
+            logger.error("Password policy violation from corporate user {} error {}", user.getUserName(), pve.toString());
+            List<String> passwordPolicy = passwordPolicyService.getPasswordRules();
+            logger.info("PASSWORD RULES {}", passwordPolicy);
+            model.addAttribute("passwordRules", passwordPolicy);
+            return "corp/settings/pword";
+        } catch (PasswordMismatchException pme) {
+            model.addAttribute("failure",pme.getMessage());
+            List<String> passwordPolicy = passwordPolicyService.getPasswordRules();
+            model.addAttribute("passwordRules", passwordPolicy);
+            logger.error("New password mismatch from corporate user {}", user.getUserName(), pme.toString());
+            return "corp/settings/pword";
+        } catch (PasswordException pe) {
+            result.addError(new ObjectError("error", pe.getMessage()));
+            logger.error("Error changing password for corporate user {}", user.getUserName(), pe);
+            List<String> passwordPolicy = passwordPolicyService.getPasswordRules();
+            logger.info("PASSWORD RULES {}", passwordPolicy);
+            model.addAttribute("passwordRules", passwordPolicy);
+            return "corp/settings/pword";
+        }
     }
 
     @GetMapping("/reset_password")
@@ -155,7 +172,12 @@ public class CorpSettingController {
             if (tokenAuth) {
                 return "redirect:/corporate/token";
             }
-            return "redirect:/corporate/dashboard";
+
+            if ("Y".equals(user.getIsFirstTimeLogon())){
+                return "redirect:/corporate/setup";
+            }
+
+            return "redirect:/corporate/logout";
 
         }
         catch (PasswordPolicyViolationException pve) {
@@ -183,7 +205,7 @@ public class CorpSettingController {
     public String AlertPreferencePage(AlertPref alertPref, Model model, Principal principal){
         CorporateUser user=corporateUserService.getUserByName(principal.getName());
         Iterable<CodeDTO> pref = codeService.getCodesByType("ALERT_PREFERENCE");
-        model.addAttribute("alertP",user.getAlertPreference());
+        model.addAttribute("alertPref", user.getAlertPreference());
         model.addAttribute("prefs", pref);
         return "corp/settings/alertpref";
     }
@@ -195,15 +217,17 @@ public class CorpSettingController {
             return "corp/settings/alertpref";
         }
 
-        CorporateUserDTO user = corporateUserService.getUserDTOByName(principal.getName());
+        CorporateUser user = corporateUserService.getUserByName(principal.getName());
+        System.out.println(alertPref);
 
         corporateUserService.changeAlertPreference(user, alertPref);
 
         Iterable<CodeDTO> pref = codeService.getCodesByType("ALERT_PREFERENCE");
-        model.addAttribute("alertP", user.getAlertPreference());
+
+        model.addAttribute("alertPref", user.getAlertPreference());
         model.addAttribute("prefs", pref);
         model.addAttribute("message","Preference Change Successful");
-        return "corp/settings/alertpref";
+        return "redirect:/corporate/settings/alert_preference";
     }
 
     @GetMapping("/contact")

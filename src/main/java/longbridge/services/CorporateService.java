@@ -20,6 +20,14 @@ public interface CorporateService{
     /**
      * Adds a new corporate customer to the system
      *
+     * @param corporateDTO the corporate customer
+     *
+     */
+    String addCorporate(CorporateDTO corporateDTO) throws InternetBankingException;
+
+    /**
+     * Adds a new corporate customer to the system
+     *
      * @param corporate the corporate customer
      */
     @PreAuthorize("hasAuthority('ADD_CORPORATE')")
@@ -166,15 +174,15 @@ public interface CorporateService{
      * @return a list of rules
      */
     @PreAuthorize("hasAuthority('GET_CORPORATE_RULE')")
-   List<CorpTransferRuleDTO> getCorporateRules();
+    List<CorpTransferRuleDTO> getCorporateRules(Long corpId);
 
     /**
      * Returns a list of corporate transfer rules for the corporate specified by the corpId
      * @param corpId the Id of the corporate entity
      * @return a list of corporate rules
      */
-    @PreAuthorize("hasAuthority('GET_CORPORATE_RULE')")
-   List<CorpTransferRuleDTO> getCorporateRules(Long corpId);
+//    @PreAuthorize("hasAuthority('GET_CORPORATE_RULE')")
+//   Page<CorpTransferRuleDTO> getCorporateRules(Long corpId, Pageable pageable);
 
     /**
      * Deletes the corporate transfer rule
@@ -189,8 +197,6 @@ public interface CorporateService{
 
     Page<CorporateRoleDTO> getRoles(Long corpId, Pageable pageable);
 
-    @PreAuthorize("hasAuthority('GET_CORPORATE_USER')")
-    List<CorporateRole> getQualifiedRoles(CorpTransRequest transferRequest);
 
     @PreAuthorize("hasAuthority('GET_TRANSFER_RULE')")
     CorpTransRule getApplicableTransferRule(CorpTransRequest transferRequest);
@@ -210,6 +216,12 @@ public interface CorporateService{
 
     @PreAuthorize("hasAuthority('DELETE_CORPORATE_ROLE')")
     String deleteCorporateRole(Long id) throws InternetBankingException;
+
+    void addAccounts(Corporate corporate);
+
+    void createUserOnEntrustAndSendCredentials(CorporateUser corporateUser);
+
+    Page<CorpTransferRuleDTO> getCorporateRules(Long corpId, Pageable pageable);
 
 
 }

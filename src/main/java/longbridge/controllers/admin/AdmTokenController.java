@@ -3,6 +3,10 @@ package longbridge.controllers.admin;
 import longbridge.exception.InternetBankingSecurityException;
 import longbridge.forms.SyncTokenForm;
 import longbridge.forms.TokenForm;
+import longbridge.models.AdminUser;
+import longbridge.models.UserType;
+import longbridge.services.AdminUserService;
+import longbridge.services.ConfigurationService;
 import longbridge.services.SecurityService;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -38,7 +42,19 @@ public class AdmTokenController {
 	@Autowired
 	private SecurityService securityService;
 
+	@Autowired
+	private AdminUserService adminUserService;
+
+	@Autowired
+	private ConfigurationService configService;
+
 	private Logger logger = LoggerFactory.getLogger(this.getClass());
+
+
+	@ModelAttribute
+	public void init(Model model){
+		model.addAttribute("userTypes", UserType.getUseryTypes());
+	}
 
 	@GetMapping
 	public String getAdminToken(HttpServletRequest httpServletRequest) {
@@ -51,10 +67,11 @@ public class AdmTokenController {
 	public String performTokenAuthentication(HttpServletRequest request, Principal principal,
 			RedirectAttributes redirectAttributes, Locale locale) {
 
-		String username = principal.getName();
+		AdminUser user  = adminUserService.getUserByName(principal.getName());
+
 		String tokenCode = request.getParameter("token");
 		try {
-			boolean result = securityService.performTokenValidation(username, tokenCode);
+			boolean result = securityService.performTokenValidation(user.getEntrustId(), user.getEntrustGroup(), tokenCode);
 			if (result) {
 				if (request.getSession().getAttribute("2FA") != null) {
 					request.getSession().removeAttribute("2FA");
@@ -88,7 +105,9 @@ public class AdmTokenController {
 		}
 
 		try {
-			boolean result = securityService.assignToken(tokenForm.getUsername(), tokenForm.getSerialNumber());
+			String username = tokenForm.getUsername();
+			String group = getUserGroup(tokenForm.getUserType());
+			boolean result = securityService.assignToken(username, group, tokenForm.getSerialNumber());
 			if (result) {
 				redirectAttributes.addFlashAttribute("message",
 						messageSource.getMessage("token.assign.success", null, locale));
@@ -108,7 +127,7 @@ public class AdmTokenController {
 	}
 
 	@PostMapping("/activate/username")
-	public String getTokenSerialsForActivation(@RequestParam("username") String username, Model model, Locale locale,
+	public String getTokenSerialsForActivation(@RequestParam("username") String username,@RequestParam("userType") String userType, Model model, Locale locale,
 			RedirectAttributes redirectAttributes) {
 		if (username == null || "".equals(username)) {
 			model.addAttribute("failure", messageSource.getMessage("form.fields.required", null, locale));
@@ -116,7 +135,8 @@ public class AdmTokenController {
 		}
 
 		try {
-			String serials = securityService.getTokenSerials(username);
+			String group = getUserGroup(userType);
+			String serials = securityService.getTokenSerials(username, group);
 			logger.info("Serials recieved are " + serials);
 			if (serials != null && !"".equals(serials)) {
 				String serialNums = StringUtils.trim(serials);
@@ -149,7 +169,10 @@ public class AdmTokenController {
 		}
 
 		try {
-			boolean result = securityService.activateToken(tokenForm.getUsername(), tokenForm.getSerialNumber());
+			String entrustId = tokenForm.getUsername();
+			String group = getUserGroup(tokenForm.getUserType());
+
+			boolean result = securityService.activateToken(entrustId, group, tokenForm.getSerialNumber());
 			if (result) {
 				redirectAttributes.addFlashAttribute("message",
 						messageSource.getMessage("token.activate.success", null, locale));
@@ -179,11 +202,13 @@ public class AdmTokenController {
 		}
 
 		try {
-			boolean result1 = securityService.assignToken(tokenForm.getUsername(), tokenForm.getSerialNumber());
+			String entrustId = tokenForm.getUsername();
+			String group = getUserGroup(tokenForm.getUserType());
+			boolean result1 = securityService.assignToken(entrustId, group, tokenForm.getSerialNumber());
 			if (result1) {
 				redirectAttributes.addFlashAttribute("message",
 						messageSource.getMessage("token.assign.success", null, locale));
-				boolean result2 = securityService.activateToken(tokenForm.getUsername(), tokenForm.getSerialNumber());
+				boolean result2 = securityService.activateToken(entrustId, group, tokenForm.getSerialNumber());
 				if (result2) {
 					redirectAttributes.addFlashAttribute("message",
 							messageSource.getMessage("token.activate.success", null, locale));
@@ -204,7 +229,7 @@ public class AdmTokenController {
 	}
 
 	@PostMapping("/deactivate/username")
-	public String getTokenSerialsForDeactivation(@RequestParam("username") String username, Model model, Locale locale,
+	public String getTokenSerialsForDeactivation(@RequestParam("username") String username,@RequestParam("userType") String userType, Model model, Locale locale,
 			RedirectAttributes redirectAttributes) {
 		if (username == null || "".equals(username)) {
 			model.addAttribute("failure", messageSource.getMessage("form.fields.required", null, locale));
@@ -212,7 +237,9 @@ public class AdmTokenController {
 		}
 
 		try {
-			String serials = securityService.getTokenSerials(username);
+			String entrustId = username;
+			String group = getUserGroup(userType);
+			String serials = securityService.getTokenSerials(entrustId, group);
 			if (serials != null && !"".equals(serials)) {
 				String serialNums = StringUtils.trim(serials);
 				List<String> serialNos = Arrays.asList(StringUtils.split(serialNums, ","));
@@ -250,7 +277,9 @@ public class AdmTokenController {
 			return "/adm/token/deactivate2";
 		}
 		try {
-			boolean result = securityService.deActivateToken(tokenForm.getUsername(), tokenForm.getSerialNumber());
+			String entrustId = tokenForm.getUsername();
+			String group = getUserGroup(tokenForm.getUserType());
+			boolean result = securityService.deActivateToken(entrustId, group, tokenForm.getSerialNumber());
 			if (result) {
 				redirectAttributes.addFlashAttribute("message",
 						messageSource.getMessage("token.deactivate.success", null, locale));
@@ -272,14 +301,17 @@ public class AdmTokenController {
 	}
 
 	@PostMapping("/unlock")
-	public String UnlockToken(@RequestParam("username") String username, RedirectAttributes redirectAttributes,
+	public String UnlockToken(@ModelAttribute("token") @Valid TokenForm tokenForm, BindingResult bindingResult, RedirectAttributes redirectAttributes,
 			Locale locale, Model model) {
-		if (username == null || "".equals(username)) {
+		if (bindingResult.hasErrors()) {
 			model.addAttribute("failure", messageSource.getMessage("form.fields.required", null, locale));
 			return "/adm/token/unlock";
 		}
 		try {
-			boolean result = securityService.unLockUser(username);
+
+			String entrustId = tokenForm.getUsername();
+			String group = getUserGroup(tokenForm.getUserType());
+			boolean result = securityService.unLockUser(entrustId, group);
 			if (result) {
 				redirectAttributes.addFlashAttribute("message",
 						messageSource.getMessage("token.unlock.success", null, locale));
@@ -308,7 +340,9 @@ public class AdmTokenController {
 			return "/adm/token/synchronize";
 		}
 		try {
-			boolean result = securityService.synchronizeToken(tokenForm.getUsername(), tokenForm.getSerialNumber(),
+			String entrustId = tokenForm.getUsername();
+			String group = getUserGroup(tokenForm.getUserType());
+			boolean result = securityService.synchronizeToken(entrustId, group, tokenForm.getSerialNumber(),
 					tokenForm.getTokenCode1(), tokenForm.getTokenCode2());
 			if (result) {
 				redirectAttributes.addFlashAttribute("message",
@@ -323,10 +357,13 @@ public class AdmTokenController {
 	}
 
 	@GetMapping("/serials")
-	public List<String> getTokenSerials(@RequestParam("username") String username) {
+	public List<String> getTokenSerials(@RequestParam("username") String username,@RequestParam("userType") String userType) {
 		List<String> serials = new ArrayList<>();
 		try {
-			String serial = securityService.getTokenSerials(username);
+			String entrustId = username;
+			String group = getUserGroup(userType);
+
+			String serial = securityService.getTokenSerials(entrustId, group);
 			if (serials != null && !serials.isEmpty()) {
 				String serialNums = StringUtils.trim(serial);
 				serials = Arrays.asList(StringUtils.split(serialNums, ","));
@@ -335,5 +372,28 @@ public class AdmTokenController {
 			logger.error("Error getting token serials", ibe);
 		}
 		return serials;
+	}
+
+	private String getUserGroup(String userType){
+	String group = "";
+
+		if("ADMIN".equals(userType)) {
+			group = configService.getSettingByName("DEF_ENTRUST_ADM_GRP").getValue();
+
+		}
+		else if("OPERATIONS".equals(userType)) {
+			group = configService.getSettingByName("DEF_ENTRUST_OPS_GRP").getValue();
+
+		}
+		else if("RETAIL".equals(userType)) {
+			group = configService.getSettingByName("DEF_ENTRUST_RET_GRP").getValue();
+
+		}
+		else if("CORPORATE".equals(userType)) {
+			group = configService.getSettingByName("DEF_ENTRUST_CORP_GRP").getValue();
+
+		}
+
+		return group;
 	}
 }

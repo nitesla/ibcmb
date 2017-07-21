@@ -4,7 +4,6 @@
 </head>
 
 
-
 <body class="nav-md">
 <div class="container body">
     <div class="main_container">
@@ -28,38 +27,11 @@
             <div class="">
                 <div class="page-title">
                     <div class="title_left">
-                        <h3>Pending Operations</h3>
+                        <h3>My Requests</h3>
                     </div>
                 </div>
 
 
-
-                <!--<ul class="nav navbar-right panel_toolbox">-->
-
-                    <!--<li>-->
-                        <!--<div class="col-lg-4">-->
-                            <!--<div class="title-action" >-->
-                                <!--<a class="btn btn-app" href="#"  disabled="disabled" >-->
-                                    <!--<button class="badge bg-orange bt-select" disabled="disabled" th:text="${totalPending}" >count</button>-->
-                                    <!--<i class="fa fa-check"></i>My approvals-->
-                                <!--</a>-->
-                            <!--</div>-->
-                        <!--</div>-->
-
-                    <!--</li>-->
-
-                    <!--<li>-->
-                        <!--<div class="col-lg-4">-->
-                            <!--<div class="title-action">-->
-                                <!--<a  class=" btn btn-app btn bt-select btn-sm  bt-link-act" href="/ops/verifications/operations">-->
-                                    <!--<button class="badge bg-orange"  th:text="${verificationNumber}"></button>-->
-                                    <!--<i class="fa fa-check"></i>Approval Queue-->
-                                <!--</a>-->
-                            <!--</div>-->
-                        <!--</div>-->
-                    <!--</li>-->
-
-                <!--</ul>-->
                 <div class="clearfix"></div>
             </div>
 
@@ -73,10 +45,12 @@
                         <div class="x_title">
 
                             <ul class="nav navbar-left panel_toolbox">
-                                <li >
+                                <li>
                                     <div class="col-lg-4">
                                         <div class="title-action">
-                                            <a id="operation" class="btn btn-primary btn-sm bt-select" href="/ops/verifications/operation/pendingviews" disabled="disabled" ><i class="fa fa-eye"></i> View</a>
+                                            <a id="operation" class="btn btn-primary btn-sm bt-select"
+                                               href="/ops/verifications/operation/pendingviews" disabled="disabled"><i
+                                                    class="fa fa-eye"></i> View</a>
                                         </div>
                                     </div>
                                 </li>
@@ -117,7 +91,7 @@
                                     <th>Initiated By</th>
                                     <th>Date</th>
                                     <th>Verified By</th>
-                                    <th>Date </th>
+                                    <th>Date</th>
                                     <th>Status</th>
                                 </tr>
                                 </tfoot>
@@ -138,7 +112,6 @@
 </div>
 
 
-
 <script th:src="@{~/bank/vendors/datatables.net/js/jquery.dataTables.js}"></script>
 <script th:src="@{~/bank/js/dataTables.bootstrap.js}"></script>
 <script th:src="@{~/bank/js/dataTables.select.js}"></script>
@@ -149,31 +122,31 @@
 <!-- Page-Level Scripts -->
 <script>
     /*<![CDATA[*/
-    $(document).ready(function() {
+    $(document).ready(function () {
         var table = $('#verification').DataTable({
-            select:true,
+            select: true,
             responsive: true,
-            "lengthMenu" : [ [ 5, 10, 20],	[ 5, 10, 20 ] ],
-            "pagingType" : "simple_numbers",
+            "lengthMenu": [ [20, 40, 60, -1], [20, 40, 60, "All"] ],
+            "pagingType": "simple_numbers",
             "searching": false,
             "paging": true,
-            "serverSide" : true,
+            "serverSide": true,
             "ajax": "/ops/verifications/all",
             "dom": 'T<"clear">frtlp',
             "columns": [
-                {"data":"description"},
-                { "data": "initiatedBy"},
-                { "data": "initiatedOn"},
-                { "data": "verifiedBy" ,"defaultContent": "<i>Not Verified</i>"},
-                { "data": "verifiedOn", "defaultContent": "<i>Not Verified</i>" },
-                { "data": "status" }
+                {"data": "description"},
+                {"data": "initiatedBy"},
+                {"data": "initiatedOn"},
+                {"data": "verifiedBy", "defaultContent": "<i>Not Verified</i>"},
+                {"data": "verifiedOn", "defaultContent": "<i>Not Verified</i>"},
+                {"data": "status"}
 
-            ] ,"columnDefs" : [ {
-                "targets" : 2,
-                "data" : "status",
-                "render" : function(data, type,full, meta) {
+            ], "columnDefs": [{
+                "targets": 2,
+                "data": "initiatedOn",
+                "render": function (data, type, full, meta) {
                     if (type === 'display') {
-                        if(data == null)
+                        if (data == null)
                             return data;
                         var dtStart = new Date(parseInt(data));
                         var dtStartWrapper = moment(dtStart);
@@ -182,58 +155,58 @@
                     }
                     return data;
                 }
-            } ,{
-                "targets" : 4,
-                "data" : "status",
-                "render" : function(data, type,full, meta) {
-                    if (type === 'display') {
-                        if(data == null)
-                            return data;
-                        var dtStart = new Date(parseInt(data));
-                        var dtStartWrapper = moment(dtStart);
-                        return dtStartWrapper.format('LLLL');
-                    }
-                    return data;
-                }
-            } , {
-                "targets" : 5,
-                "data" : "status",
-                "render" : function(data, type,full, meta) {
-                    if (type === 'display') {
-                        if (data == "PENDING") {
-                            return "<i class='fa fa-question dt-body-center' style='color:green;display:block; text-align:center; margin:0 auto;' ></i>";
-                        } else if (data == "APPROVED") {
-                            return "<i class='fa fa-check  dt-body-center' style='color:green;display:block; text-align:center; margin:0 auto;'></i>";
+            },
+                {
+                    "targets": 4,
+                    "data": "verifiedOn",
+                    "render": function (data, type, full, meta) {
+                        if (type === 'display') {
+                            if (data == null)
+                                return data;
+                            var dtStart = new Date(parseInt(data));
+                            var dtStartWrapper = moment(dtStart);
+                            return dtStartWrapper.format('LLLL');
                         }
-                        else{
-                            return "<i class='fa fa-times  dt-body-center' style='color:red;display:block; text-align:center; margin:0 auto;'></i>"
-                        }
+                        return data;
                     }
-                    return data;
-                }
+                }, {
+                    "targets": 5,
+                    "data": "status",
+                    "render": function (data, type, full, meta) {
+                        if (type === 'display') {
+                            if (data == "PENDING") {
+                                return "<i class='fa fa-question dt-body-center' style='color:green;display:block; text-align:center; margin:0 auto;' ></i>";
+                            } else if (data == "APPROVED") {
+                                return "<i class='fa fa-check  dt-body-center' style='color:green;display:block; text-align:center; margin:0 auto;'></i>";
+                            }
+                            else {
+                                return "<i class='fa fa-times  dt-body-center' style='color:red;display:block; text-align:center; margin:0 auto;'></i>"
+                            }
+                        }
+                        return data;
+                    }
 
-            } ]});
+                }]
+        });
 
-        table.on('select', function() {
+        table.on('select', function () {
 
             if (table.rows({
 
-                    selected : true
+                    selected: true
                 }).indexes().length === 0) {
                 $('.bt-select').attr("disabled", true);
             } else {
                 $('.bt-select').removeAttr("disabled");
             }
-            var d = table.rows( this ).data();
-
+            var d = table.rows(this).data();
 
 
         });
 
-        table.on('deselect', function()
-        {
+        table.on('deselect', function () {
             if (table.rows({
-                    selected : true
+                    selected: true
                 }).indexes().length === 0) {
                 $('.bt-select').attr("disabled", true);
             } else {
@@ -243,14 +216,14 @@
 
     });
 
-    $("a.bt-link-act").on("click", function(e) {
+    $("a.bt-link-act").on("click", function (e) {
         e.preventDefault();
         var link = $(e.currentTarget);
-        if($(link).attr("disabled")){
+        if ($(link).attr("disabled")) {
             return;
         }
         var dt = $('#verification').DataTable();
-        var data = dt.rows({selected:  true}).data();
+        var data = dt.rows({selected: true}).data();
 
         // alert (data[dt.row][1]);
 
@@ -261,16 +234,16 @@
 //            alert(data[i][0]);
 //            console.log(data[i][0]);
 //        }
-        var ooo = link.attr("href").replace("index",data);
+        var ooo = link.attr("href").replace("index", data);
         window.location.assign(ooo);
 
-    } );
+    });
 
 
-    $("#operation").on("click", function(e) {
+    $("#operation").on("click", function (e) {
         e.preventDefault();
         var link = $(e.currentTarget);
-        if($(link).attr("disabled")){
+        if ($(link).attr("disabled")) {
             return;
         }
 
@@ -279,15 +252,15 @@
             selected: true
         }).node()).attr("id");
 
-        var ooo = link.attr("href").replace("operation",id);
+        var ooo = link.attr("href").replace("operation", id);
         window.location.assign(ooo);
 
-    } );
+    });
 
-    $("#delete-btn").on("click", function(e) {
+    $("#delete-btn").on("click", function (e) {
         e.preventDefault();
         var link = $(e.currentTarget);
-        if($(link).attr("disabled")){
+        if ($(link).attr("disabled")) {
             return;
         }
         var dt = $('#verification').DataTable();
@@ -295,10 +268,10 @@
             selected: true
         }).node()).attr("id");
         alert(id);
-        var ooo = link.attr("href").replace("index",id);
+        var ooo = link.attr("href").replace("index", id);
         warnBeforeRedirect(ooo);
 
-    } );
+    });
 
 
     function warnBeforeRedirect(ooo) {
@@ -310,7 +283,7 @@
             confirmButtonColor: "#DD6B55",
             confirmButtonText: "Yes, delete code!",
             closeOnConfirm: false
-        }, function() {
+        }, function () {
             // Redirect the user
             window.location.assign(ooo);
         });

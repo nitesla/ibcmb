@@ -2,7 +2,6 @@ package longbridge.controllers.admin;
 
 import longbridge.services.implementations.CronJobServiceImpl;
 import longbridge.utils.CronJobUtils;
-//import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,9 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.context.request.WebRequest;
-import org.springframework.web.context.support.HttpRequestHandlerServlet;
 
-import javax.servlet.http.HttpServletRequest;
 import java.security.Principal;
 
 /**
@@ -43,7 +40,7 @@ public class AdmJobController {
             String cronExpression = CronJobUtils.getCronExpression(schedule, webRequest);
             if(!cronExpression.equalsIgnoreCase("")) {
                 cronJobService.deleteRunningJob();
-                cronJobService.saveRunningJob(username, cronExpression);
+                cronJobService.keepCronJobEprsDetials(username, cronExpression);
             }
         }
 
