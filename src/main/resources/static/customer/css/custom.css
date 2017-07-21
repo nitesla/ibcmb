@@ -511,7 +511,7 @@ select
 
 .info-bar a:after
 {
-    content: "/";
+    content: ">";
     padding:5px;
 }
 

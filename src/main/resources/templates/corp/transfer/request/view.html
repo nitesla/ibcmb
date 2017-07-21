@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{corp-layout}">
 <link th:href="@{~/bank/vendors/sweetalert/sweetalert.css}" rel="stylesheet"/>
-<body onload="currentBar('Transfer Requests')">
+<body onload="javascript:var bread = [['Home', '/corporate/dashboard'],['transfer request','']];currentBar('transfer request');breadCrumb(bread)">
 
 <div layout:fragment="content">
     <div class="col-md-5 col-sm-5 ">
@@ -55,6 +55,8 @@
 
 
 <th:block layout:fragment="scripts">
+    <script th:src="@{~/customer/js/dataTables.bootstrap.js}"></script>
+    <script th:src="@{~/customer/js/dataTables.select.js}"></script>
     <script th:src="@{~/bank/vendors/sweetalert/sweetalert.min.js}"></script>
     <script th:src="@{~/bank/vendors/bootstrap-dialog/js/bootstrap-dialog.js}"></script>
     <script th:src="@{~/bank/js/jquery.spring-friendly.min.js}"></script>

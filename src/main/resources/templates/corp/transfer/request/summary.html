@@ -1,8 +1,7 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org"
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{corp-layout}">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{corp-layout}">
 <link th:href="@{~/bank/vendors/sweetalert/sweetalert.css}" rel="stylesheet"/>
-<body onload="currentBar('Beneficiaries')">
+<body onload="javascript:var bread = [['Home', '/corporate/dashboard'],['view transfer request',''], ['summary']];currentBar('transfer request');breadCrumb(bread)">
 
 <div layout:fragment="content">
     <div class="col-md-5 col-sm-5 ">
@@ -55,13 +54,13 @@
                         <table class="table-condensed">
                             <tr>
                                 <th>Lower Amount:</th>
-                                <td th:text="${corpTransRule.currency+''+corpTransRule.lowerLimitAmount}"></td>
+                                 <td th:text="${corpTransRule.currency+''+corpTransRule.lowerLimitAmount}"></td> 
 
                             </tr>
                             <tr>
 
                                 <th>Upper Amount:</th>
-                                <td th:unless="${corpTransRule.unlimited}" th:text="${corpTransRule.currency+''+corpTransRule.upperLimitAmount}"></td>
+                                 <td th:unless="${corpTransRule.unlimited}" th:text="${corpTransRule.currency+''+corpTransRule.upperLimitAmount}"></td> 
                                 <td th:if="${corpTransRule.unlimited}">Unlimited</td>
 
                             </tr>
