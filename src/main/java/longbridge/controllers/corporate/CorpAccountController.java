@@ -15,6 +15,7 @@ import longbridge.utils.DateFormatter;
 import longbridge.utils.statement.AccountStatement;
 import longbridge.utils.statement.TransactionDetails;
 import longbridge.utils.statement.TransactionHistory;
+import net.sf.jasperreports.engine.JRException;
 import org.joda.time.DateTime;
 import org.joda.time.Duration;
 import org.slf4j.Logger;
@@ -34,6 +35,7 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.jasperreports.JasperReportsPdfView;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.security.Principal;
 import java.text.DecimalFormat;
@@ -193,12 +195,13 @@ catch(InternetBankingException e){
     }
 
     @GetMapping("/{id}/statement")
-    public String getTransactionHistory(@PathVariable Long id, Model model, Principal principal) {
+    public String getTransactionHistory(@PathVariable Long id, Model model, Principal principal, HttpServletRequest request) {
         CorporateUser corporateUser = corporateUserService.getUserByName(principal.getName());
 
         Account account = accountRepo.findOne(id);
         String LAST_TEN_TRANSACTION = "10";
         List<AccountDTO> accountList = accountService.getAccountsAndBalances(corporateUser.getCorporate().getCustomerId());
+        request.getSession().setAttribute("tranAccountNo",account.getAccountNumber());
         List<TransactionHistory> transRequestList = integrationService.getLastNTransactions(account.getAccountNumber(), LAST_TEN_TRANSACTION);
         if (transRequestList != null && !transRequestList.isEmpty()) {
             model.addAttribute("transRequestList", transRequestList);
@@ -210,13 +213,15 @@ catch(InternetBankingException e){
     }
 
     @RequestMapping(path = "{id}/downloadhistory", method = RequestMethod.GET)
-    public ModelAndView getTransPDF(@PathVariable String id, Model model, Principal principal) {
+    public ModelAndView getTransPDF(@PathVariable String id, Model model, Principal principal,HttpServletRequest request) {
         CorporateUser corporateUser = corporateUserService.getUserByName(principal.getName());
 
         Account account=accountService.getAccountByCustomerId(corporateUser.getCorporate().getCustomerId());
-        logger.info("Retail account {}",account);
+        logger.info("Corporate account {}",account);
         String LAST_TEN_TRANSACTION = "10";
-        List<TransactionHistory> transRequestList = integrationService.getLastNTransactions(account.getAccountNumber(),
+        String acct=request.getSession().getAttribute("tranAccountNo").toString();
+        logger.info("Getting the session account no {} ",acct);
+        List<TransactionHistory> transRequestList = integrationService.getLastNTransactions(acct,
                 LAST_TEN_TRANSACTION);
         JasperReportsPdfView view = new JasperReportsPdfView();
         view.setUrl("classpath:jasperreports/rpt_tran-hist.jrxml");
@@ -267,8 +272,8 @@ catch(InternetBankingException e){
 //        Duration diffInDays= new Duration(new DateTime(fromDate),new DateTime(toDate));
    //     logger.info("Day difference {}",diffInDays.getStandardDays());
 
-        Date from =null;
-        Date to =null;
+        Date from ;
+        Date to ;
         DataTablesOutput<TransactionDetails> out = new DataTablesOutput<TransactionDetails>();
         try {
             from = dateFormat.parse(fromDate);
@@ -294,7 +299,7 @@ catch(InternetBankingException e){
 
     @GetMapping("/downloadstatement")
     public ModelAndView downloadStatementData(ModelMap modelMap, DataTablesInput input, String acctNumber,
-                                              String fromDate, String toDate, String tranType, Principal principal) {
+                                              String fromDate, String toDate, String tranType, Principal principal,RedirectAttributes redirectAttributes)  {
         // Pageable pageable = DataTablesUtils.getPageable(input);
 
         Date from;
@@ -308,7 +313,7 @@ catch(InternetBankingException e){
             List<TransactionDetails> list = accountStatement.getTransactionDetails();
             CorporateUser corporateUser=corporateUserService.getUserByName(principal.getName());
             DecimalFormat formatter = new DecimalFormat("#,###.00");
-            System.out.println("list = " + list);
+            logger.info("list {}", list);
             modelMap.put("datasource", list);
             modelMap.put("format", "pdf");
               modelMap.put("summary.accountNum", acctNumber);

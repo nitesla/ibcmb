@@ -11,6 +11,7 @@ import longbridge.models.LocalBeneficiary;
 import longbridge.models.RetailUser;
 import longbridge.services.*;
 import longbridge.utils.TransferType;
+import longbridge.utils.TransferUtils;
 import longbridge.validator.transfer.TransferValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -26,9 +27,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.math.BigDecimal;
 import java.security.Principal;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -47,12 +46,14 @@ public class LocalTransferController {
     private TransferValidator validator;
     private TransferErrorService transferErrorService;
     private AccountService accountService;
+    private TransferUtils transferUtils;
     private String page = "cust/transfer/local/";
     @Value("${bank.code}")
     private String bankCode;
 
     @Autowired
-    public LocalTransferController(RetailUserService retailUserService, TransferValidator validator, TransferService transferService, AccountService accountService, MessageSource messages, LocaleResolver localeResolver, LocalBeneficiaryService localBeneficiaryService, FinancialInstitutionService financialInstitutionService, TransferErrorService transferErrorService) {
+    public LocalTransferController(RetailUserService retailUserService, TransferValidator validator, TransferService transferService, AccountService accountService, MessageSource messages, LocaleResolver localeResolver, LocalBeneficiaryService localBeneficiaryService, FinancialInstitutionService financialInstitutionService, TransferErrorService transferErrorService
+    ,TransferUtils transferUtils) {
         this.retailUserService = retailUserService;
         this.transferService = transferService;
         this.messages = messages;
@@ -61,6 +62,7 @@ public class LocalTransferController {
         this.validator = validator;
         this.transferErrorService = transferErrorService;
         this.accountService = accountService;
+        this.transferUtils=transferUtils;
     }
 
     @GetMapping("")
@@ -193,6 +195,12 @@ public class LocalTransferController {
 
         return page + "pageii";
     }
+    @ModelAttribute
+    public void setNairaSourceAccount(Model model) {
+        model.addAttribute("accountList", transferUtils.getNairaAccounts());
 
+
+
+        }
 
 }

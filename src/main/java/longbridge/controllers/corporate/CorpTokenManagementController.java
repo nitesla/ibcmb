@@ -48,9 +48,9 @@ public class CorpTokenManagementController {
 
 
     @GetMapping
-    public String getCorporateToken(HttpServletRequest httpServletRequest) {
+    public String getCorporateToken(HttpServletRequest httpServletRequest, Principal principal, Model model) {
         httpServletRequest.getSession().setAttribute("2FA", "2FA");
-
+        model.addAttribute("username", principal.getName());
         return "/corp/logintoken";
     }
 
@@ -66,6 +66,11 @@ public class CorpTokenManagementController {
                 if (request.getSession().getAttribute("2FA") != null) {
                     request.getSession().removeAttribute("2FA");
                 }
+
+                if ("Y".equals(user.getIsFirstTimeLogon())){
+                    return "redirect:/corporate/setup";
+                }
+
                 redirectAttributes.addFlashAttribute("message", messageSource.getMessage("token.auth.success", null, locale));
                 return "redirect:/corporate/dashboard";
             }

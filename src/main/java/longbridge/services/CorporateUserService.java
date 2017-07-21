@@ -15,7 +15,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
 
 import javax.transaction.Transactional;
-import java.util.Date;
 import java.util.List;
 
 
@@ -40,6 +39,8 @@ public interface CorporateUserService{
     CorporateUser getUserByName(String username);
 
     /*CorporateUser getUserByCustomerId(String custId);*/
+
+    CorporateUser getUserByNameAndCorpCif(String username, String cif);
 
     /**
      * Returns all the corporate users for the corporate customer
@@ -106,6 +107,7 @@ public interface CorporateUserService{
     @PreAuthorize("hasAuthority('DELETE_CORPORATE_USER')")
     String deleteUser(Long userId) throws InternetBankingException;
 
+    void sendPostCreationMessage(User user, String fullName, String username, String password, String corporateId);
 
     /**
      * Replaces the old password with the new password for the specified corporate user.
@@ -135,7 +137,7 @@ public interface CorporateUserService{
     @PreAuthorize("hasAuthority('UNLOCK_CORP_USER')")
     String unlockUser(Long id) throws InternetBankingException;
 
-    void createUserOnEntrust(CorporateUser user);
+    void createUserOnEntrustAndSendCredentials(CorporateUser user);
 
 
 }

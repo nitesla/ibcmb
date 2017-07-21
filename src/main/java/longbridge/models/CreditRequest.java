@@ -1,5 +1,6 @@
 package longbridge.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.hibernate.annotations.Where;
 import org.hibernate.envers.Audited;
 
@@ -12,6 +13,7 @@ import javax.persistence.ManyToOne;
 @Entity
 @Audited(withModifiedFlag=true)
 @Where(clause ="del_Flag='N'" )
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class CreditRequest extends AbstractEntity{
 
     private String serial;

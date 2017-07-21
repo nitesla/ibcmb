@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{corp-layout}">
 
-<body onload="currentBar('account')">
+<body onload="currentBar('Transaction History')">
 
 <div layout:fragment="content">
     <div class="col-md-5 col-sm-5 ">
@@ -13,7 +13,7 @@
     </div>
 
     <div class="col-xs-12 ml-15 no-pad-left no-mt" >
-        <div class="col-xs-11 no-pad-lef table-responsive no-mt bg-white alert">
+        <div class="col-xs-11 no-pad-lef table-responsive no-mt">
             
             <form method="post" th:action="@{/corporate/account/viewstatement/display}">
 
@@ -43,7 +43,7 @@
                                     <span class="req"></span>
                                     <select name="acctNumber" id="acctNumber" class="form-control"
                                             required="required">
-                                        <option th:each="s: ${accounts}" th:value="${s}" th:text="${s}"></option></select>
+                                        <option th:each="s: ${accounts}" th:value="${s.accountNumber}" th:text="${s.accountNumber}"></option></select>
                                 </div>
 
                                 <div class="form-group col-md-6">
@@ -65,23 +65,22 @@
                                 <table class="table" id="tranDetails">
                                     <thead>
                                     <tr>
-                                        <th>Account Balance</th>
-                                        <th>Currency Code</th>
-                                        <th>Post Date</th>
                                         <th>Transaction Narration</th>
-                                        <th>Debit/Credit</th>
+                                        <th>Post Date</th>
                                         <th>Value Date</th>
-
+                                        <th>Debit/Credit</th>
+                                        <th>Transaction ReferenceID</th>
+                                        <th>Account Balance</th>
                                     </tr>
                                     </thead>
                                     <tfoot>
                                     <tr>
-                                        <th>Account Balance</th>
-                                        <th>Currency Code</th>
-                                        <th>Post Date</th>
                                         <th>Transaction Narration</th>
-                                        <th>Debit/Credit</th>
+                                        <th>Post Date</th>
                                         <th>Value Date</th>
+                                        <th>Debit/Credit</th>
+                                        <th>Transaction ReferenceID</th>
+                                        <th>Account Balance</th>
 
                                     </tr>
                                     </tfoot>
@@ -130,23 +129,24 @@
         $('#tranDetails').DataTable({
             responsive: true,
 
-            "lengthMenu": [[5, 10,20], [5, 10,20]],
-            "pagingType": "simple_numbers",
-            "searching" : false,
-            "processing" : true,
+            "lengthMenu" : [ [ 5, 10, 20],	[ 5, 10, 20 ] ],
+            "pagingType" : "simple_numbers",
+            "searching": false,
+            "paging": true,
+            "processing": true,
             "serverSide" : false,
             "ordering" : false,
             "dom": 'T<"clear">frtlp',
             "columns" : [
-                {"data" : "accountBalance"},
-                {"data" : "currencyCode"},
-                {"data" : "postDate"} ,
                 {"data" : "narration"},
+                {"data" : "postDate"} ,
+                {"data" : "valueDate"},
                 {"data" : "tranType"},
-                {"data" : "valueDate"}
+                {"data" : "tranId"},
+                {"data" : "accountBalance"}
             ],
             "columnDefs" : [ {
-                "targets" : 2,
+                "targets" : 1,
                 "data" : "postDate",
                 "render" : function(data, type,full, meta) {
                     if (type === 'display') {
@@ -160,7 +160,7 @@
                     return data;
                 }
             },{
-                "targets" : 0,
+                "targets" : 5,
                 "data" : "accountBalance",
                 "render" : function(data, type,full, meta) {
                     if (type === 'display') {
@@ -173,7 +173,7 @@
                 }
             }
                 , {
-                    "targets": 5,
+                    "targets": 2,
                     "data": "valueDate",
                     "render": function (data, type, full, meta) {
                         if (type === 'display') {

@@ -21,7 +21,7 @@ public interface CorpLocalBeneficiaryService {
      * @param  beneficiary  the beneficiary
      */
     @PreAuthorize("hasAuthority('ADD_BENEFICIARY')")
-    String addCorpLocalBeneficiary(Corporate corporate, CorpLocalBeneficiaryDTO beneficiary);
+    String addCorpLocalBeneficiary( CorpLocalBeneficiaryDTO beneficiary);
 
     /**
      * Deletes a beneficiary that has been created by the user

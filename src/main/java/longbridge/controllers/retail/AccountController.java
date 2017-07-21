@@ -18,8 +18,6 @@ import longbridge.utils.DateFormatter;
 import longbridge.utils.statement.AccountStatement;
 import longbridge.utils.statement.TransactionDetails;
 import longbridge.utils.statement.TransactionHistory;
-import net.sf.jasperreports.engine.JasperFillManager;
-import net.sf.jasperreports.repo.Resource;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -229,12 +227,13 @@ public class AccountController {
 	}
 
 	@GetMapping("/{id}/statement")
-	public String getTransactionHistory(@PathVariable Long id, Model model, Principal principal) {
+	public String getTransactionHistory(@PathVariable Long id, Model model, Principal principal,HttpServletRequest request) {
 		RetailUser retailUser = retailUserService.getUserByName(principal.getName());
 
 		Account account = accountRepo.findOne(id);
 		String LAST_TEN_TRANSACTION = "10";
 		List<AccountDTO> accountList = accountService.getAccountsAndBalances(retailUser.getCustomerId());
+		request.getSession().setAttribute("tranAccountNo",account.getAccountNumber());
 		List<TransactionHistory> transRequestList = integrationService.getLastNTransactions(account.getAccountNumber(),
 				LAST_TEN_TRANSACTION);
 		if (transRequestList != null && !transRequestList.isEmpty()) {
@@ -247,14 +246,16 @@ public class AccountController {
 	}
 
 		@RequestMapping(path = "{id}/downloadhistory", method = RequestMethod.GET)
-		public ModelAndView getTransPDF(@PathVariable String id, Model model, Principal principal) {
+		public ModelAndView getTransPDF(@PathVariable String id, Model model, Principal principal,HttpServletRequest request) {
 			RetailUser retailUser = retailUserService.getUserByName(principal.getName());
 
 			Account account=accountService.getAccountByCustomerId(retailUser.getCustomerId());
+
 			logger.info("Retail account {}",account);
 		String LAST_TEN_TRANSACTION = "10";
-		List<TransactionHistory> transRequestList = integrationService.getLastNTransactions(account.getAccountNumber(),
-				LAST_TEN_TRANSACTION);
+			String acct=request.getSession().getAttribute("tranAccountNo").toString();
+			logger.info("Getting the session account no {}",acct);
+		List<TransactionHistory> transRequestList = integrationService.getLastNTransactions(acct, LAST_TEN_TRANSACTION);
 		JasperReportsPdfView view = new JasperReportsPdfView();
 		view.setUrl("classpath:jasperreports/rpt_tran-hist.jrxml");
 		view.setApplicationContext(appContext);
@@ -345,9 +346,6 @@ public class AccountController {
 			AccountStatement accountStatement = integrationService.getAccountStatements(acctNumber, from, to, tranType);
 			out.setDraw(input.getDraw());
 			List<TransactionDetails> list = accountStatement.getTransactionDetails();
-			for(TransactionDetails transactionDetails:list){
-				logger.info("What is the transactionDetails {}",transactionDetails.getPostDate());
-			}
 			RetailUser retailUser = retailUserService.getUserByName(principal.getName());
 			DecimalFormat formatter = new DecimalFormat("#,###.00");
 			modelMap.put("datasource", list);

@@ -15,6 +15,7 @@ import java.util.List;
 public interface CorpTransferRequestRepo extends CommonRepo<CorpTransRequest,Long> {
 
     Page<CorpTransRequest> findByCorporate(Corporate corporate, Pageable pageable);
+
     CorpTransRequest findById(long id);
 
 }

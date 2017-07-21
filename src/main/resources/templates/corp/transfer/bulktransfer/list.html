@@ -2,6 +2,12 @@
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{corp-layout}">
 <link th:href="@{~/bank/vendors/sweetalert/sweetalert.css}" rel="stylesheet"/>
+<!--<head>
+    <link rel="stylesheet" type="text/css" href="css/jquery.dataTables.css"/>
+    <link rel="stylesheet" type="text/css" href="css/select.bootstrap.css"/>
+    <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css"/>
+    <link rel="stylesheet" type="text/css" href="css/dataTables.bootstrap.css"/>
+</head>-->
 <body onload="currentBar('Beneficiaries')">
 
 <div layout:fragment="content">
@@ -13,7 +19,7 @@
     </div>
 
     <div class="col-xs-12 ml-15 " >
-        <div class="col-xs-11 no-pad-lef  no-mt no-bd  alert">
+        <div class="col-xs-12 no-pad-lef  no-mt no-bd  alert">
             <div class="">
                             <h4 class="sub_header"></h4>
                             <div class="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
@@ -54,6 +60,8 @@
 
 
 <th:block layout:fragment="scripts">
+    <script th:src="@{~/customer/js/dataTables.bootstrap.js}"></script>
+    <script th:src="@{~/customer/js/dataTables.select.js}"></script>
     <script th:src="@{~/bank/vendors/sweetalert/sweetalert.min.js}"></script>
     <script th:src="@{~/bank/vendors/bootstrap-dialog/js/bootstrap-dialog.js}"></script>
     <script th:src="@{~/bank/js/jquery.spring-friendly.min.js}"></script>

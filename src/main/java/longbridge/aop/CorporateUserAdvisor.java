@@ -1,22 +1,18 @@
 package longbridge.aop;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.querydsl.core.types.Template;
 import longbridge.dtos.VerificationDTO;
 import longbridge.models.*;
 import longbridge.repositories.*;
 import longbridge.services.*;
 import org.aspectj.lang.JoinPoint;
-import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.After;
-import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import sun.rmi.runtime.Log;
 
 import javax.persistence.EntityManager;
 import java.io.IOException;
@@ -106,7 +102,7 @@ public class CorporateUserAdvisor {
         if(verification.getOperation().equals("ADD_CORPORATE_USER")) {
             ObjectMapper objectMapper = new ObjectMapper();
             CorporateUser corpUser = objectMapper.readValue(verification.getOriginalObject(),CorporateUser.class);
-            corporateUserService.createUserOnEntrust(corpUser);
+            corporateUserService.createUserOnEntrustAndSendCredentials(corpUser);
         }
 
 

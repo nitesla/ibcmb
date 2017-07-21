@@ -12,10 +12,7 @@ import longbridge.utils.PrettySerializer;
 import org.hibernate.annotations.Where;
 import org.hibernate.envers.Audited;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.OneToMany;
+import javax.persistence.*;
 import java.io.IOException;
 import java.util.*;
 
@@ -25,8 +22,9 @@ import java.util.*;
 @Entity
 @Audited(withModifiedFlag=true)
 @Where(clause ="del_Flag='N'" )
-public class Corporate extends AbstractEntity implements PrettySerializer{
+@Table(uniqueConstraints=@UniqueConstraint(columnNames={"customerId"}))
 
+public class Corporate extends AbstractEntity implements PrettySerializer{
 
     private String rcNumber;
     private String customerId;
@@ -64,7 +62,6 @@ public class Corporate extends AbstractEntity implements PrettySerializer{
     public void setCorpLimits(Collection<CorpLimit> corpLimits) {
         this.corpLimits = corpLimits;
     }
-
 
     public Set<CorporateRole> getCorporateRoles() {
         return corporateRoles;
