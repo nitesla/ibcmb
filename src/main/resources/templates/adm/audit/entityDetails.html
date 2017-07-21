@@ -43,25 +43,25 @@
                                     <li >
                                         <div class="col-lg-4">
                                             <div class="title-action">
-                                                <a  class="btn btn-primary btn-sm bt-select bt-link-act" href="/admin/audit/ids/classname/view/compare" ><i class="fa fa-pencil"></i>  View</a>
+                                                <a  class="btn btn-primary btn-sm bt-select bt-link-act" href="/admin/audit/ids/classname/view/compare" disabled="disabled"><i class="fa fa-pencil"></i>  View</a>
                                             </div>
                                         </div>
                                     </li>
 
                                 </ul>
 
-                                <ul class="nav navbar-right panel_toolbox col-lg-4 pull-right">
+                                <!--<ul class="nav navbar-right panel_toolbox col-lg-4 pull-right">-->
 
-                                    <li class="pull-right" >
-                                        <div class="input-group col-lg-12">
-                                            <input type="text" class="form-control" id="pattern" placeholder="Search for..."/> <span
-                                                class="input-group-btn">
+                                    <!--<li class="pull-right" >-->
+                                        <!--<div class="input-group col-lg-12">-->
+                                            <!--<input type="text" class="form-control" id="pattern" placeholder="Search for..."/> <span-->
+                                                <!--class="input-group-btn">-->
 										     <!--<button class="btn btn-success" id="search" type="button">Go!</button>-->
-									       </span>
-                                        </div>
-                                    </li>
+									       <!--</span>-->
+                                        <!--</div>-->
+                                    <!--</li>-->
 
-                                </ul>
+                                <!--</ul>-->
 
                                 <div class="clearfix"></div>
                             </div>
@@ -151,9 +151,58 @@
 
 <!-- Page-Level Scripts -->
 <script th:inline="javascript">
-
-
+    
     /*<![CDATA[*/
+
+    var id;
+    var className = [[${classname}]];
+    var ids=[];
+
+    $('#auditview tbody').on('change', 'input[type="checkbox"]', function ()
+    {
+        Array.prototype.remove = function () {
+            var what, a = arguments, L = a.length, ax;
+            while (L && this.length) {
+                what = a[--L];
+                while ((ax = this.indexOf(what)) !== -1) {
+                    this.splice(ax, 1);
+                }
+            }
+            return this;
+        };
+        var row = $(this).closest('tr');
+        if(this.checked) {
+//            alert(ids.length);
+            if (ids.length >= 2) {
+                $(row).find('input[type="checkbox"]').prop('checked', false);
+                bootbox.alert("<div style='text-align: center'>You cannot not more than two items</div>");
+            }else
+                {
+                $(this).toggleClass('selected');
+                var id = this.value;
+                console.log("id is " + id);
+                console.log("gate " + ids.indexOf(id));
+                if ((ids.indexOf(this.value)) === -1)
+                {
+
+                    ids.push(this.value);
+                }
+                console.log("the array size " + ids.length + " " + ids);
+            }
+        }else{
+            $(this).toggleClass('deselected');
+            if ((ids.indexOf(this.value) != -1)) {
+                ids.remove(this.value);
+                console.log("the new array " + ids);
+
+            }
+        }
+        if(ids.length != 2){
+            $('.bt-select').attr("disabled", true);
+        } else {
+            $('.bt-select').removeAttr("disabled");
+        }
+    } );
     $(document).ready(function()
     {
         var itemid = [[${itemId}]];
@@ -218,7 +267,6 @@
                         return '<input type="checkbox" class="check-box" name="id[]" value="' + $('<div/>').text(data).html() + '">';
                     }
                 }
-
             ]});
 
 //        table.on('select', function() {
@@ -233,66 +281,67 @@
 
         $("#search").on("click", function(e)
         {
+
             e.preventDefault();
             dt = $('#auditview').DataTable();
             dt.ajax.reload(null, true);
+
         });
+
 
 
     });
 
-    var id;
-    var className = [[${classname}]];
-    var ids=[];
 
 
-    $('#auditview tbody').on('change', 'input[type="checkbox"]', function ()
-    {
-        Array.prototype.remove = function () {
-            var what, a = arguments, L = a.length, ax;
-            while (L && this.length) {
-                what = a[--L];
-                while ((ax = this.indexOf(what)) !== -1) {
-                    this.splice(ax, 1);
-                }
-            }
-            return this;
-        };
-        var row = $(this).closest('tr');
-        if(this.checked) {
-            if (ids.length >= 2) {
-                $(row).find('input[type="checkbox"]').prop('checked', false);
-                bootbox.alert("<div style='text-align: center'>You cannot not more than two items</div>");
-            }else {
 
-
-            $(this).toggleClass('selected');
-               var id = this.value;
-                if ((ids.indexOf(this.value)) === -1)
-                {
-                    ids.push(this.value);
-                }
-//                if(ids.length != 2)
-//                {
-//                    $('.bt-select').attr("disabled", true);
+//    $('#auditview tbody').on('change', 'input[type="checkbox"]', function ()
+//    {
+//        Array.prototype.remove = function () {
+//            var what, a = arguments, L = a.length, ax;
+//            while (L && this.length) {
+//                what = a[--L];
+//                while ((ax = this.indexOf(what)) !== -1) {
+//                    this.splice(ax, 1);
 //                }
-//                else
-//                    {
-//                    $('.bt-select').removeAttr("disabled");
-//                    }
-
-            console.log("the array size " + ids.length + " " + ids);
-        }
-        }else{
-            $(this).toggleClass('deselected');
-            if ((ids.indexOf(this.value) != -1))
-            {
-                ids.remove(this.value);
-                console.log("the new array " + ids);
-
-            }
-        }
-    } );
+//            }
+//            return this;
+//        };
+//        var row = $(this).closest('tr');
+//        if(this.checked) {
+//            if (ids.length >= 2) {
+//                $(row).find('input[type="checkbox"]').prop('checked', false);
+//                bootbox.alert("<div style='text-align: center'>You cannot not more than two items</div>");
+//            }else {
+//
+//
+//            $(this).toggleClass('selected');
+//               var id = this.value;
+//                if ((ids.indexOf(this.value)) === -1)
+//                {
+//                    ids.push(this.value);
+//                }
+////                if(ids.length != 2)
+////                {
+////                    $('.bt-select').attr("disabled", true);
+////                }
+////                else
+////                    {
+////                    $('.bt-select').removeAttr("disabled");
+////                    }
+//
+//            console.log("the array size " + ids.length + " " + ids);
+//        }
+//        }else{
+//            $(this).toggleClass('deselected');
+//            if ((ids.indexOf(this.value) != -1))
+//            {
+//                ids.remove(this.value);
+//                console.log("the new array " + ids);
+//
+//            }
+//        }
+//    } );
 
 
     $("a.bt-link-act").on("click", function(e) {
