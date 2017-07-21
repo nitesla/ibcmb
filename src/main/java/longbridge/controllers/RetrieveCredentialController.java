@@ -87,7 +87,7 @@ public class RetrieveCredentialController {
                     redirectAttributes.addFlashAttribute("failure", "Invalid Credentials");
                     return "redirect:/login/retail";
                 }else{
-                    logger.info("the question size {} and values {} ",questions.size(),questions);
+//                    logger.info("the question size {} and values {} ",questions.size(),questions);
                     session.setAttribute("secretAnswer", answers);
                     model.addAttribute("secQuestion", questions);
                     model.addAttribute("noOfQuestion", questions.size());
