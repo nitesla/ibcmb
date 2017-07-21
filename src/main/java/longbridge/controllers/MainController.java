@@ -14,6 +14,8 @@ import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -87,7 +89,6 @@ public class MainController {
 
     @GetMapping(value = "/login/admin")
     public ModelAndView adminLogin() {
-        //clearSession();
 
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("admlogin");
@@ -425,13 +426,13 @@ public class MainController {
         return "redirect:/#contact_us";
     }
 
-  /*  private void clearSession(){
+   private void clearSession(){
         ServletRequestAttributes attr = (ServletRequestAttributes)
                 RequestContextHolder.currentRequestAttributes();
         HttpSession session = attr.getRequest().getSession(false);
         if (session!=null)
         session.invalidate();
-    }*/
+    }
 
 
 
