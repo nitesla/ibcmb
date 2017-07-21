@@ -134,7 +134,6 @@ public class AdmAuditController {
 //        return out;
 //    }
 
-
     @GetMapping("/{id}/{classname}/view")
     public String revisionEntites(@PathVariable String id,@PathVariable String classname,Model model)
     {
