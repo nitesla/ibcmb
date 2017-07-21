@@ -64,6 +64,21 @@
                                              <h2>Admin Management</h2>
                                          </div>
                                      </li>-->
+                                    <!--<div th:if="${message}">-->
+                                        <!--<div hidden="hidden">-->
+                                            <!--<ul class="actionMessage">-->
+                                                <!--<li th:each="msg : ${message}" th:text="${msg}">Message</li>-->
+                                            <!--</ul>-->
+                                        <!--</div>-->
+                                    <!--</div>-->
+
+                                    <!--<div th:if="${failure}">-->
+                                        <!--<div hidden="hidden">-->
+                                            <!--<ul class="actionError">-->
+                                                <!--<li th:each="msg : ${failure}" th:text="${msg}">Message</li>-->
+                                            <!--</ul>-->
+                                        <!--</div>-->
+                                    <!--</div>-->
                                     <li >
                                         <div class="col-lg-4">
                                             <div class="title-action">
@@ -129,7 +144,7 @@
 
                                                 <div class="form-group">
                                                     <div class="col-md-12">
-                                                        <label class="col-sm-2 control-label"><input type="radio" th:name="hourChecker" value="everyHour"/>Every</label>
+                                                        <label class="col-sm-2 control-label"><input type="radio" checked="checked" th:name="hourChecker" value="everyHour"/>Every</label>
                                                         <div class="col-sm-2">
                                                             <input type="number" th:id="everyHour" th:name="exactHour" min="1" value="1" class="form-control"/>
                                                         </div>
@@ -143,7 +158,6 @@
                                                         <div class="col-sm-2">
                                                             <select class="form-control left-selector" th:name="hour" th:id="hour">
                                                                 <option th:each="idx :${#numbers.sequence(0,23)}" th:value="${idx}" th:text="${idx}"></option>
-
                                                             </select>
                                                         </div>
                                                         <div class="col-sm-2">
@@ -159,10 +173,10 @@
                                             <div id="dailyDiv" class="schedulingSection" style="display:none;">
                                                 <div class="form-group">
                                                     <div class="col-md-12">
-                                                        <label class="col-sm-2 control-label"><input type="radio" name="dailyChecker" value="everyDay"/>Every</label>
+                                                        <label class="col-sm-2 control-label"><input type="radio" checked="checked" name="dailyChecker" value="everyDay"/>Every</label>
 
                                                         <div class="col-sm-2">
-                                                            <input type="number" th:id="dailyDay" th:name="dayInterval" min="1" class="form-control"/>
+                                                            <input type="number" th:id="dailyDay" th:name="dayInterval" min="1" value="1" class="form-control"/>
 
                                                         </div>
                                                         <label class="col-sm-1 control-label">day(s)</label>
@@ -227,14 +241,14 @@
                                             <div id="monthDiv" class="schedulingSection " style="display:none;">
                                                 <div class="form-group">
                                                     <div class="col-sm-12" >
-                                                        <label class="control-label col-sm-2"><input type="radio" name="monthChecker" th:value="eachMonthDay"/>Day</label>
+                                                        <label class="control-label col-sm-2"><input type="radio" checked="checked" name="monthChecker" th:value="eachMonthDay"/>Day</label>
                                                         <div class="col-sm-2">
-                                                            <input type="number" th:id="monthDay" th:name="monthDay" min="1" class="form-control"/>
+                                                            <input type="number" th:id="monthDay" th:name="monthDay" min="1" value="1" class="form-control"/>
                                                         </div>
 
                                                         <label class="control-label col-sm-1"> of every </label>
                                                         <div class="col-sm-2">
-                                                            <input type="number" th:id="monthNum" th:name="monthNum" min="1" class="form-control"/>
+                                                            <input type="number" th:id="monthNum" th:name="monthNum" min="1" value="2" class="form-control"/>
                                                         </div>
                                                         <label class="control-label col-sm-2">month(s) </label>
 
@@ -295,7 +309,7 @@
                                                 <div class="form-group">
                                                     <div class="col-md-12">
 
-                                                        <label class="col-sm-2 control-label"><input name="yearChecker" type="radio" th:value="perMonth" class=""/>Every</label>
+                                                        <label class="col-sm-2 control-label"><input name="yearChecker" checked="checked" type="radio" th:value="perMonth" class=""/>Every</label>
                                                         <div class="col-sm-2">
                                                             <select class="form-control left-selector" th:id="yearMonth1" th:name="yearMonth1">
                                                                 <option value="1">January</option>
