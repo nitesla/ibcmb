@@ -1,5 +1,4 @@
 var customerId = "null";
-
 /** This validates the input account number.
  *
  * @param accountNumber the account number to check
@@ -23,9 +22,9 @@ function validateAccountNo(accountNumber){
                 //valid account number
                 //alert("Customer Id: " + customerId);
                 $('input[name=customerId]').val(customerId);
-            }
+            }       
         }
-    })
+    });
 
     console.log(customerId);
 
@@ -38,18 +37,31 @@ function validateAccountNo(accountNumber){
             async: false,
             success:function(data2){
                 secQues = ''+String(data2);
-                if(secQues == "" ){
+                // console.log(secQues);
+                if(data2 == null ){
                     document.getElementById("errorMess").textContent="Could not get Security Question from server, please try again.";
                     $('#myModalError').modal('show');
 
                 }else{
-                    $('input[name=securityQuestion]').val(secQues);
+                    // $('input[name=securityQuestion]').val(secQues);
+                    // console.log(data2);
+                    var container = document.getElementById("secQuestionsDiv");
+                    for (i=0;i<data2.length;i++){
+                        container.innerHTML += "<div class='form-group'>";
+                        container.innerHTML += "<label>"+data2[i]+"</label>";
+                        container.innerHTML += "</div>";
+                        container.innerHTML += "<div class='form-group'>";
+                        container.innerHTML += "<input type='text' required name='securityAnswer"+i+"' id='securityAnswer"+i +"' class='my-select required' placeholder='Security Answer'/>";
+                        container.innerHTML += "</div>";
+                        
+                    }
+                    container.innerHTML += "<input type='hidden' id='noOfSecQn' name='noOfSecQn' value='"+data2.length+"'/>"
                 }
-            }
+            },
         })
     }
 
-    console.log(customerId);
+    // console.log(customerId);
 
     if(customerId == "" || customerId === null || secQues == "" || secQues === null){
         return false;
@@ -59,30 +71,36 @@ function validateAccountNo(accountNumber){
 }
 
 function validateSecAnswer(secAnswer){
+    var customerId = $('#customerId').val();
+    // console.log('customer id {}'+customerId);
     var result;
     $.ajax({
         type:'GET',
-        url:"/rest/secAns/"+secAnswer,
+        url:"/rest/secAns/cifId",
+        data: {customerId : customerId,secAnswers:secAnswer},
         async:false,
         success:function(data1){
             result = ''+String(data1);
-            if(result == "" || result === null){
+            if(result === "true"){
                 //invalid account number
+                // console.log("whether "+data1);
+                $('input[name=username]').val(result);
 
-                document.getElementById("errorMess").textContent="Wrong answer provided for security question.";
-                $('#myModalError').modal('show');
+               
             }else{
                 //valid account number
-                $('input[name=username]').val(result);
+                // console.log("whether ERROR"+data1);
+                document.getElementById("errorMess").textContent=data1;
+                $('#myModalError').modal('show');
             }
         }
     });
 
-    if(result == "" || result === null){
-        return false;
-    }else{
+    if(result == "true"){
         result = sendUsername();
         return result;
+    }else{
+        return false;
     }
 }
 
@@ -178,7 +196,19 @@ form.children("div").steps({
         if(SEND_USERNAME_STEP === currentIndex){
             console.log("Current step is the change password step");
             //form.submit();
-            var secAnswer = $('input[name="securityAnswer"]').val();
+            var noOfQs = $('#noOfSecQn').val();
+            var i = 0;
+            var secAnswer ="";
+            for(var i = 0;i<parseInt(noOfQs);i++){
+                // console.log("answer "+$('#securityAnswer'+i).val());
+                if(i ===0){
+                    secAnswer+=$('#securityAnswer'+i).val();
+                }else{
+                    secAnswer +=','+$('#securityAnswer'+i).val();
+
+                }
+            }
+            // console.log("sec answers are "+secAnswer);
             return isValid && validateSecAnswer(secAnswer);
         }
         return form.valid();

@@ -1,5 +1,6 @@
 package longbridge;
 
+import longbridge.jobs.CronJobScheduler;
 import longbridge.models.Permission;
 import longbridge.models.Role;
 import longbridge.models.UserType;
@@ -46,7 +47,7 @@ public class InternetbankingApplication extends SpringBootServletInitializer imp
 
     @Override
     public void run(String... strings) throws Exception {
-
+//        CronJobScheduler.startJobs();
 //        securityService.unLockUser("RETAIL_ronke","default");
    }
 }

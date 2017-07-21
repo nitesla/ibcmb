@@ -53,13 +53,15 @@ public class OpAuthenticationSuccessHandler extends SavedRequestAwareAuthenticat
     @Override
     @Transactional
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws ServletException, IOException {
-        HttpSession session = request.getSession();
+        HttpSession session = request.getSession(false);
         if (session != null) {
+            session.invalidate();
+            session=request.getSession();
             setUseReferer(true);
             sessionUtils.setTimeout(session);
             OperationsUser user = operationsUserRepo.findFirstByUserNameIgnoreCase(authentication.getName());
             sessionUtils.setTimeout(session);
-            sessionUtils.validateExpiredPassword(user, session);
+            sessionUtils.validateExpiredPassword(user,session);
             failedLoginService.loginSucceeded(user);
         }
         operationsUserRepo.updateUserAfterLogin(authentication.getName());

@@ -1,21 +1,15 @@
 package longbridge.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
+import longbridge.utils.PrettySerializer;
 import org.hibernate.annotations.Where;
 import org.hibernate.envers.Audited;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import longbridge.dtos.RoleDTO;
-import longbridge.utils.PrettySerializer;
 
 import javax.persistence.*;
-
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collection;
@@ -47,6 +41,7 @@ public class Role extends AbstractEntity implements PrettySerializer{
     }
 
     public void setUserType(UserType userType) {
+
         this.userType = userType;
     }
 

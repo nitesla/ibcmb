@@ -178,6 +178,7 @@
 
                 b = jsonPath(beforeData,current_path)[0] ;
                 a = jsonPath(afterData,current_path)[0];
+
                 if(true ){
 
                     result += '<li class="list-group-item">'+ node +':<ul class="list-group">' + parseJsonAsList(jsn[node],current_path+'[') + '</ul></li>';
@@ -211,13 +212,18 @@
 
                 a = jsonPath(afterData,current_path) ? jsonPath(afterData,current_path)[0] : 'undefined' ;
 
-                if(a == b && typeof a != 'undefined' && typeof b != 'undefined' ){
+//                console.log(a);
+//                console.log(b);
+
+               // alert(jsn[node]);
+                if(a == b && typeof a != 'undefined' && typeof b != 'undefined' )
+                {
 
                     result += '<li class="list-group-item">' + node + ':'+jsn[node] +'</li>'
-                }else{
-
+                }else
+                {
                     result += '<li class="list-group-item list-group-item-danger">' + node + ':'+jsn[node] +'</li>'
-                }
+                  }
             }
 
         }
@@ -225,7 +231,6 @@
     }
     var beforeData = JSON.parse([[${verify.beforeObject}]]);
     var afterData =JSON.parse([[${verify.afterObject}]]);
-    console.log(beforeData);
     $(document).ready(function() {
 
         $("#table").DataTable({

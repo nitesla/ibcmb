@@ -36,11 +36,10 @@ public class CronJobUtils {
     }
     @NotNull
     public static String getHourExpression(String hourChecker, String exactHour, String hour, String minute){
-
         String exrInit = "0 ";
         StringBuilder stringBuilder = new StringBuilder(exrInit);
         if(hourChecker.equalsIgnoreCase("everyHour")){
-            stringBuilder.append("0 0/"+minute);
+            stringBuilder.append("0 0/"+exactHour);
         }else {
             stringBuilder.append(minute);
             stringBuilder.append(" "+hour);
@@ -52,20 +51,20 @@ public class CronJobUtils {
         return stringBuilder.toString();
     }
     public static String getDailyExpression(String dailyChecker,String dayInterval, String dailyHour,String dailyMin){
-
+        logger.info("dailyChecker {} dayInterval {} and dailyHour {} dailyMin {}",dailyChecker,dayInterval,dailyHour,dailyMin);
         String exrInit = "0 ";
         StringBuilder stringBuilder = new StringBuilder(exrInit);
         if(dailyChecker.equalsIgnoreCase("everyDay")){
             stringBuilder.append(dailyMin);
             stringBuilder.append(" "+dailyHour);
-            stringBuilder.append("1/"+dayInterval);
+            stringBuilder.append(" 1/"+dayInterval);
             stringBuilder.append(" * ? *");
         }else {
             stringBuilder.append(dailyMin);
             stringBuilder.append(" "+dailyHour);
             stringBuilder.append(" ? * MON-FRI *");
         }
-        logger.info("minute expression {}",stringBuilder);
+        logger.info("Daily expression {}",stringBuilder);
         //Sample Cron expression expected
 //        	0 9 12 1/4 * ? *
 //        	0 9 12 ? * MON-FRI *
@@ -157,7 +156,7 @@ Sample Cron expression expected
                 return getMinuteExpression(webRequest.getParameter("minute"));
             case "hourDiv":
                 return getHourExpression(webRequest.getParameter("hourChecker"), webRequest.getParameter("exactHour"), webRequest.getParameter("hour"), webRequest.getParameter("hourMin"));
-            case "DailyDiv":
+            case "dailyDiv":
                 return getDailyExpression(webRequest.getParameter("dailyChecker"), webRequest.getParameter("dayInterval"), webRequest.getParameter("dailyHour"), webRequest.getParameter("dailyMin"));
             case "weekDiv":
                 return getWeeklyExpression(webRequest.getParameter("weekHour"), webRequest.getParameter("weekSecond"), webRequest.getParameterValues("weekDay"));

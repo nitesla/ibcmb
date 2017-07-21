@@ -106,7 +106,7 @@ public class CorporateUserServiceImpl implements CorporateUserService {
     }
 
     @Override
-    public CorporateUser getUserByNameAndCorpCif(String username, String cif){
+    public CorporateUser getUserByNameAndCorpCif(String username, String cif) {
         return corporateUserRepo.findFirstByUserNameIgnoreCaseAndCorporate_CustomerIdIgnoreCase(username, cif);
     }
 
@@ -139,8 +139,8 @@ public class CorporateUserServiceImpl implements CorporateUserService {
             throw new InternetBankingException(messageSource.getMessage("corporate.deactivated", null, locale));
         }
 
-        corporateUser = corporateUserRepo.findFirstByCorporateAndEmailIgnoreCase(corporate,user.getEmail());
-        if (corporateUser != null && user.getId()!=corporateUser.getId()) {
+        corporateUser = corporateUserRepo.findFirstByCorporateAndEmailIgnoreCase(corporate, user.getEmail());
+        if (corporateUser != null && user.getId() != corporateUser.getId()) {
             throw new DuplicateObjectException(messageSource.getMessage("email.exists", null, locale));
         }
 
@@ -179,8 +179,8 @@ public class CorporateUserServiceImpl implements CorporateUserService {
         if (corporateUser != null) {
             throw new DuplicateObjectException(messageSource.getMessage("user.exists", null, locale));
         }
-      Corporate corporate =  corporateRepo.findOne(Long.parseLong(user.getCorporateId()));
-        corporateUser = corporateUserRepo.findFirstByCorporateAndEmailIgnoreCase(corporate,user.getEmail());
+        Corporate corporate = corporateRepo.findOne(Long.parseLong(user.getCorporateId()));
+        corporateUser = corporateUserRepo.findFirstByCorporateAndEmailIgnoreCase(corporate, user.getEmail());
         if (corporateUser != null) {
             throw new DuplicateObjectException(messageSource.getMessage("email.exists", null, locale));
         }
@@ -275,8 +275,8 @@ public class CorporateUserServiceImpl implements CorporateUserService {
             throw new DuplicateObjectException(messageSource.getMessage("user.exists", null, locale));
         }
 
-        Corporate corporate =  corporateRepo.findOne(Long.parseLong(user.getCorporateId()));
-        corporateUser = corporateUserRepo.findFirstByCorporateAndEmailIgnoreCase(corporate,user.getEmail());
+        Corporate corporate = corporateRepo.findOne(Long.parseLong(user.getCorporateId()));
+        corporateUser = corporateUserRepo.findFirstByCorporateAndEmailIgnoreCase(corporate, user.getEmail());
         if (corporateUser != null) {
             throw new DuplicateObjectException(messageSource.getMessage("email.exists", null, locale));
         }
@@ -289,16 +289,13 @@ public class CorporateUserServiceImpl implements CorporateUserService {
             corporateUser.setEmail(user.getEmail());
             corporateUser.setPhoneNumber(user.getPhoneNumber());
             corporateUser.setCreatedOnDate(new Date());
-             corporateUser.setStatus("A");
+            corporateUser.setStatus("A");
             Role role = roleRepo.findOne(Long.parseLong(user.getRoleId()));
             corporateUser.setRole(role);
             Corporate corp = corporateRepo.findOne(Long.parseLong(user.getCorporateId()));
             corporateUser.setCorporate(corp);
             corporateUserRepo.save(corporateUser);
-            String password = passwordPolicyService.generatePassword();
-            String fullName = user.getFirstName() + " " + user.getLastName();
             createUserOnEntrustAndSendCredentials(corporateUser);
-            sendPostCreationMessage(corporateUser, fullName, user.getUserName(), password, corporateUser.getCorporate().getCustomerId());
 
             logger.info("New corporate user {} created", corporateUser.getUserName());
             return messageSource.getMessage("user.add.success", null, locale);
