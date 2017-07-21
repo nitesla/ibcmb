@@ -17,7 +17,8 @@ public class Email {
 
     public Email(){}
 
-    public Email(Builder builder){
+    public Email(Builder builder)
+    {
         this.setSenderEmail(builder.senderEmail);
         this.setReceiverEmail(builder.receiverEmail);
         this.setMessageSubject(builder.messageSubject);
@@ -25,7 +26,8 @@ public class Email {
         this.setEmailAttachments(builder.emailAttachments);
     }
 
-    public static class Builder {
+    public static class Builder
+    {
 
         private String senderEmail;
         private String receiverEmail;
@@ -34,16 +36,20 @@ public class Email {
         private String ccList; //comma separated list of email addresses, null if empty
         private List<EmailAlertAttachment> emailAttachments;
 
-        public Builder setSender(String sender){
+        public Builder setSender(String sender)
+        {
             this.senderEmail=sender;
             return this;
         }
-        public Builder setRecipient(String recipient){
+        public Builder setRecipient(String recipient)
+        {
+
             this.receiverEmail=recipient;
             return this;
         }
 
-        public Builder setSubject(String subject) {
+        public Builder setSubject(String subject)
+        {
             this.messageSubject = subject;
             return this;
         }
@@ -65,7 +71,7 @@ public class Email {
     }
 
 
-        public String getSenderEmail() {
+    public String getSenderEmail() {
         return senderEmail;
     }
 
@@ -81,11 +87,13 @@ public class Email {
         this.receiverEmail = receiverEmail;
     }
 
-    public String getMessageSubject() {
+    public String getMessageSubject()
+    {
         return messageSubject;
     }
 
-    public void setMessageSubject(String messageSubject) {
+    public void setMessageSubject(String messageSubject)
+    {
         this.messageSubject = messageSubject;
     }
 

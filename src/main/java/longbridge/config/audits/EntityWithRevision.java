@@ -9,7 +9,8 @@ public class EntityWithRevision <T> {
 
     private T entity;
 
-    public EntityWithRevision(CustomRevisionEntity revision, T entity) {
+    public EntityWithRevision(CustomRevisionEntity revision, T entity)
+    {
         this.revision = revision;
         this.entity = entity;
     }
