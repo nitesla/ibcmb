@@ -47,7 +47,7 @@ public class InternetbankingApplication extends SpringBootServletInitializer imp
 
     @Override
     public void run(String... strings) throws Exception {
-        CronJobScheduler.startJobs();
+//        CronJobScheduler.startJobs();
 //        securityService.unLockUser("RETAIL_ronke","default");
    }
 }

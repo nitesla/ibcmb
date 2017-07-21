@@ -1,5 +1,7 @@
 package longbridge.utils;
 
+import org.springframework.web.context.request.WebRequest;
+
 import java.util.Arrays;
 import java.util.List;
 
@@ -9,5 +11,33 @@ import java.util.List;
 public class StringUtil {
     public static List<String> splitByComma(String word){
        return Arrays.asList(word.split(","));
+    }
+    public static String compareAnswers(List<String>answers,List<String>entAnswers ){
+        int noOfMismatch = 0;
+        if((answers.size()>0)&&(entAnswers.size()>0)) {
+            for(int i =0; i<answers.size();i++){
+                if(!answers.get(i).equalsIgnoreCase(entAnswers.get(i))){
+                    noOfMismatch++;
+                }
+            }
+            System.out.println("no of mis match is "+noOfMismatch);
+            if(noOfMismatch==0){
+                return "true";
+            }
+        }
+        return "false";
+    }
+    public static String compareAnswers(WebRequest webRequest, List<String>entAnswers ){
+        int noOfMismatch = 0;
+        int noOfSecQn = Integer.parseInt(webRequest.getParameter("noOfSecQn"));
+        for (int i=0;i<noOfSecQn;i++){
+            if(!entAnswers.get(i).equalsIgnoreCase(webRequest.getParameter("securityAnswer"+i))){
+                noOfMismatch++;
+            }
+        }
+            if(noOfMismatch==0){
+                return "true";
+            }
+        return "false";
     }
 }

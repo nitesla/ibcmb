@@ -18,6 +18,10 @@ public class CustomPostInsertListener extends EnversPostInsertEventListenerImpl 
 	 */
 	private static final long serialVersionUID = 9002213873196744995L;
 
+	/**
+	 *
+	 */
+
 	public CustomPostInsertListener(EnversService enversService)
 	{
 		super(enversService);
@@ -26,8 +30,7 @@ public class CustomPostInsertListener extends EnversPostInsertEventListenerImpl 
 	@Override
 	public void onPostInsert(PostInsertEvent event) {
 		String s = event.getEntity().getClass().getSimpleName();
-		if (CustomJdbcUtil.auditEntity(s))
-		{
+		if (CustomJdbcUtil.auditEntity(s)) {
 			super.onPostInsert(event);
 		}
 	}

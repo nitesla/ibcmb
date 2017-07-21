@@ -95,7 +95,14 @@ public class AdmAuditController {
         //  Pageable pageable = DataTablesUtils.getPageable(input);
         Pageable pageables = DataTablesUtils.getPageable(input);
         Page<ModifiedEntityTypeEntity> audit = null;
-        audit=auditCfgService.getRevisionEntitiesByDate(pageables);
+//        if(StringUtils.isNoneBlank(search))
+//        {
+//            audit=auditCfgService.getRevisionEntities(search,pageables);
+//        }
+//        else {
+            audit=auditCfgService.getRevisionEntitiesByDate(pageables);
+      //  }
+
         DataTablesOutput<ModifiedEntityTypeEntity> out = new DataTablesOutput<ModifiedEntityTypeEntity>();
         out.setDraw(input.getDraw());
         out.setData(audit.getContent());
@@ -126,7 +133,6 @@ public class AdmAuditController {
 //        out.setRecordsTotal(audit.getTotalElements());
 //        return out;
 //    }
-
 
     @GetMapping("/{id}/{classname}/view")
     public String revisionEntites(@PathVariable String id,@PathVariable String classname,Model model)

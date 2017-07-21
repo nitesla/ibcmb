@@ -30,8 +30,8 @@ public interface ModifiedEntityTypeEntityRepo extends CommonRepo<ModifiedEntityT
     @Query("select r from ModifiedEntityTypeEntity r  order by r.revision.timestamp desc")
     Page<ModifiedEntityTypeEntity> findAllEnityByRevision(Pageable pageable);
 
-
-
+    @Query("select r from ModifiedEntityTypeEntity r where r.entityClassName like %:entityClassName%")
+    Page<ModifiedEntityTypeEntity> findUsingPatterns(Pageable pageable,@Param("entityClassName")String entityClassName);
 
 
 }

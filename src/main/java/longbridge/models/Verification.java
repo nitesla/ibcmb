@@ -20,8 +20,6 @@ import java.util.List;
 @Entity
 @Where(clause = "del_Flag='N'")
 public class Verification extends AbstractEntity {
-
-
     @Lob
     private String beforeObject; //json
     @Lob

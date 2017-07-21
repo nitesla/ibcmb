@@ -16,4 +16,5 @@ public interface CommonRepo<T, ID extends Serializable> extends JpaRepository<T,
 {
 	public Page<T> findUsingPattern(String pattern, Pageable details);
 
+
 }
