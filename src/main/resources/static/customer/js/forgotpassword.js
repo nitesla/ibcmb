@@ -48,7 +48,7 @@
 
                     }
                 }
-                console.log("answer 2 "+secAnswer);
+                // console.log("answer 2 "+secAnswer);
                 return isValid && validateSecAnswer(secAnswer);
             }
             if(VALIDATE_GEN_PASS === currentIndex){
@@ -88,7 +88,7 @@
         var sent = "";
         var result;
         var username = $('input[name="username"]').val();
-        console.log("validating "+secAnswer);
+        // console.log("validating "+secAnswer);
         $.ajax({
             type:'GET',
             url:"/rest/secAns",

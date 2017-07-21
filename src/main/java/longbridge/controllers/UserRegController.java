@@ -14,6 +14,7 @@ import longbridge.models.Email;
 import longbridge.models.RetailUser;
 import longbridge.models.UserType;
 import longbridge.services.*;
+import longbridge.utils.StringUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -432,7 +433,6 @@ public class UserRegController {
         String securityQuestion = webRequest.getParameter("securityQuestion");
         String securityAnswer = webRequest.getParameter("securityAnswer");
         String customerId = webRequest.getParameter("customerId");
-
         try {
             if ("".equals(customerId) || customerId == null) {
                 logger.error("Account Number not valid");
@@ -448,13 +448,10 @@ public class UserRegController {
             if (qa != null){
                 List<String> questions= qa.get("questions");
                 List<String> answers= qa.get("answers");
-
-
+                String result = StringUtil.compareAnswers(webRequest,answers);
                     secAnswer = answers.stream().filter(Objects::nonNull).findFirst().orElse("");
-                    logger.info("answerSec {}", secAnswer);
 
-
-                if (secAnswer.equalsIgnoreCase(securityAnswer)){
+                if (result.equalsIgnoreCase("true")){
                     logger.debug("User Info {}:", user.getUserName());
                     //Send Username to Email
                     Email email = new Email.Builder()
