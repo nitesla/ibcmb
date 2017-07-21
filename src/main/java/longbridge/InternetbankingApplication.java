@@ -1,5 +1,6 @@
 package longbridge;
 
+
 import longbridge.repositories.CustomJpaRepositoryFactoryBean;
 import longbridge.services.SecurityService;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
@@ -36,7 +37,6 @@ public class InternetbankingApplication extends SpringBootServletInitializer imp
     @Override
     public void run(String... strings) throws Exception {
 
-       securityService.unLockUser("RETAIL_marto1","default");
    }
 }
 

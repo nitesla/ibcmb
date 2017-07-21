@@ -1,29 +1,21 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head th:replace="corp_layout :: site-head">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{corp-layout}">
 
-</head>
-<body>
-<div class="container">
-<header th:replace="corp_layout :: corp-header">
-</header>
+<body onload="currentBar('user management');breadCrumb('Home')">
 
-<section class="content-wrapper">
-    <div class="">
-        <div class="row">
-            <div class="col-md-4 col-sm-4">
-                    <h5 class="page_header"> User Management</h5>
-                <select class="form-control invisible" id="view">
-                    <option value="account">Account Overview</option>
-                </select>
-            </div>
-            <p class="col-xs-12 invisible">
-                Fields marked <span style="color:red">*</span> are compulsory
-            </p>
-        </div>
-        <div class="row">
-            <div class="col-md-9 content-bg"><br/>
-                <div class="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
+<div layout:fragment="content">
+    <div class="col-md-5 col-sm-5 ">
+
+        <select class="form-control full-width coronation-form-control hide-content-only" id="view">
+            <option value="account">Overview</option>
+        </select>
+    </div>
+
+    <div class="col-xs-12 ml-15 no-pad-left" >
+        <div class="col-xs-12  no-pad-lef no-mt no-bd  alert" >
+           
+                   <div class="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
                     <div class="btn-group" role="group" aria-label="First group">
                         <a type="button" th:href="@{/corporate/users/add}" class="btn btn-default"><i class="fa fa-plus" style="color: white"></i>&nbsp; Add New User</a>
                         <a type="button" th:href="@{/corporate/users/index/status}" class="btn btn-default bt-select bt-link-act" disabled="disabled">Activate/Deactivate</a>
@@ -32,7 +24,7 @@
                 </div>
                 <br/>
                 <div class="row">
-                    <div class="col-md-12">
+                    <div class="col-sm-12 table-responsive">
                         <table class="table" id="users">
                             <thead>
                             <tr>
@@ -47,20 +39,14 @@
                         </table>
                     </div>
                 </div>
-            </div>
-            <div class="col-md-3 pull-right">
-                <div th:replace="corp_layout :: corp-sidebar" class="" >
-                </div>
-            </div>
         </div>
     </div>
-</section>
 
-<!-- CONTENT-WRAPPER SECTION END-->
-<footer th:replace="corp_layout :: corp-footer">
-</footer>
+</div>
 
 
+<th:block layout:fragment="scripts">
+    
 <script th:inline="javascript">
     /*<![CDATA[*/
     $(document).ready(function() {
@@ -144,6 +130,7 @@
 
     /*]]>*/
 </script>
-</div>
+</th:block>
+
 </body>
 </html>

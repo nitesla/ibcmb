@@ -236,7 +236,7 @@ public class CorpNAPSTransferController {
                 CreditRequestDTO creditRequest = new CreditRequestDTO();
                 Long id = Long.valueOf(rowIndex);
                 System.out.println(id);
-//                creditRequest.setId(id);
+                creditRequest.setId(id);
                 creditRequest.setSerial((cellData.get(0).toString()));
                 creditRequest.setRefCode(cellData.get(1).toString());
                 creditRequest.setAccountNumber(cellData.get(2).toString());
@@ -306,7 +306,7 @@ public class CorpNAPSTransferController {
         } catch (Exception ibe) {
             logger.error("Error creating transfer", ibe);
             model.addAttribute("failure", messageSource.getMessage("bulk.transfer.failure", null, locale));
-            return "/corp/transfer/bulktransfer/add";
+            return "redirect:/corporate/transfer/add";
         }
     }
 

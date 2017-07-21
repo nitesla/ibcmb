@@ -388,7 +388,6 @@ public class UserRegController {
                 logger.error("No username found");
                 return "false";
             }
-
             if ("".equals(token) ||token == null) {
                 logger.error("No token selected");
                 return "false";

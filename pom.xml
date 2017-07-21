@@ -269,11 +269,11 @@
             <artifactId>jasperreports</artifactId>
             <version>6.4.0</version>
         </dependency>
-        <dependency>
+        <!--<dependency>
             <groupId>org.apache.poi</groupId>
             <artifactId>poi</artifactId>
             <version>3.16</version>
-        </dependency>
+        </dependency>-->
         <dependency>
             <groupId>com.itextpdf</groupId>
             <artifactId>itextpdf</artifactId>

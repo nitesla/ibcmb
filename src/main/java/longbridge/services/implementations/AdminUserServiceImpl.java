@@ -294,7 +294,7 @@ public class AdminUserServiceImpl implements AdminUserService {
             throw new InternetBankingException(messageSource.getMessage("user.deactivated", null, locale));
         }
         try {
-            entityManager.detach(adminUser);
+            //entityManager.detach(adminUser);
             adminUser.setId(user.getId());
             adminUser.setVersion(user.getVersion());
             adminUser.setFirstName(user.getFirstName());

@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{corp-layout}">
-<head>
+<!--<head>
   <link rel="stylesheet" type="text/css" href="css/jquery.dataTables.css"/>
     <link rel="stylesheet" type="text/css" href="css/select.bootstrap.css"/>
     <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css"/>
     <link rel="stylesheet" type="text/css" href="css/dataTables.bootstrap.css"/>
-</head>
+</head>-->
 
 <style>
     .hstyle{
@@ -65,7 +65,8 @@
                     <br/>
 
                         <br/>
-                        <table id="mytab" class="table table-striped table-bordered table-hover" cellspacing="0"  >
+                 <div class="table-responsive">
+                        <table id="mytab" class="table table-striped table-bordered  table-hover" cellspacing="0"  >
                             <thead>
 
                                 <th>Serial</th>
@@ -88,6 +89,7 @@
                             <!--</tr>-->
                             </tbody>
                         </table>
+                     </div>
 
                     <br/>
                     <button class="btn btn-link" type="submit" id="button_submit">Submit</button>
@@ -99,6 +101,7 @@
 
 
 <th:block layout:fragment="scripts">
+    <script th:src="@{~/customer/js/dataTables.bootstrap.js}"></script>
     <script th:src="@{~/bank/vendors/sweetalert/sweetalert.min.js}"></script>
     <script th:src="@{~/bank/vendors/bootstrap-dialog/js/bootstrap-dialog.js}"></script>
     <script th:src="@{~/bank/js/jquery.spring-friendly.min.js}"></script>
@@ -137,7 +140,7 @@
             select:true,
             "lengthMenu" : [ [ 5, 10, 20],	[ 5, 10, 20 ] ],
             "pagingType" : "simple_numbers",
-            "searching": false,
+            "searching": true,
             "paging": true,
             "serverSide" : false,
             "ajax": "/corporate/transfer/all",
@@ -150,7 +153,20 @@
                 { "data": "accountName" },
                 { "data": "amount" },
                 { "data": "narration" }
-            ] });
+            ],
+            "columnDefs": [ {
+                "targets": '_all',
+                "render": function ( data, type, full, meta ) {
+                    if(data == "ERROR HERE"){
+                        return '<input type="text" value="'+data+'" style = "color: red"/>';
+
+                    }
+                    return '<input type="text" value="'+data+'" />';
+
+                    //  return '<input type="text" value="'+data+'"/>';
+                }
+            } ]
+        });
 
 
 
