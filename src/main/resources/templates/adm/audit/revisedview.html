@@ -50,7 +50,7 @@
 
                                 </ul>
 
-                                <!--<ul class="nav navbar-right panel_toolbox col-lg-4 pull-right">-->
+                                <ul class="nav navbar-right panel_toolbox col-lg-4 pull-right">
 
                                     <!--<li class="pull-right" >-->
                                         <!--<div class="input-group col-lg-12">-->
@@ -61,7 +61,7 @@
                                         <!--</div>-->
                                     <!--</li>-->
 
-                                <!--</ul>-->
+                                </ul>
 
                                 <div class="clearfix"></div>
                             </div>
@@ -134,9 +134,9 @@
             "ajax" : {
                 url : "/admin/audit/revised/entity/all",
                 "type" : "GET",
-//                "data" : function(d) {
-//                    d.csearch = $('#pattern').val();
-//                }
+                "data" : function(d) {
+                    d.csearch = $('#pattern').val();
+                }
             },
             "dom": 'T<"clear">frtlp',
             "columns": [
@@ -183,17 +183,20 @@
             }
         });
 
-//        $("#search").on("click", function(e)
-//        {
-//            e.preventDefault();
-//            dt = $('#auditview').DataTable();
-//            dt.ajax.reload(null, true);
-//        });
+        $("#search").on("click", function(e)
+        {
+            e.preventDefault();
+            dt = $('#auditview').DataTable();
+            dt.ajax.reload(null, true);
+        });
     });
 
 
     var id;
     var className;
+
+    
+
 
     $("#auditview").on("click", "tr", function()
     {
