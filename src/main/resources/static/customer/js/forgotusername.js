@@ -1,5 +1,4 @@
 var customerId = "null";
-
 /** This validates the input account number.
  *
  * @param accountNumber the account number to check
@@ -38,14 +37,14 @@ function validateAccountNo(accountNumber){
             async: false,
             success:function(data2){
                 secQues = ''+String(data2);
-                console.log(secQues);
+                // console.log(secQues);
                 if(data2 == null ){
                     document.getElementById("errorMess").textContent="Could not get Security Question from server, please try again.";
                     $('#myModalError').modal('show');
 
                 }else{
                     // $('input[name=securityQuestion]').val(secQues);
-                    console.log(data2);
+                    // console.log(data2);
                     var container = document.getElementById("secQuestionsDiv");
                     for (i=0;i<data2.length;i++){
                         container.innerHTML += "<div class='form-group'>";
@@ -56,13 +55,13 @@ function validateAccountNo(accountNumber){
                         container.innerHTML += "</div>";
                         
                     }
-                    container.innerHTML += "<input type='hidden' id='noOfSecQn'  value='"+data2.length+"'/>"
+                    container.innerHTML += "<input type='hidden' id='noOfSecQn' name='noOfSecQn' value='"+data2.length+"'/>"
                 }
             },
         })
     }
 
-    console.log(customerId);
+    // console.log(customerId);
 
     if(customerId == "" || customerId === null || secQues == "" || secQues === null){
         return false;
@@ -73,7 +72,7 @@ function validateAccountNo(accountNumber){
 
 function validateSecAnswer(secAnswer){
     var customerId = $('#customerId').val();
-    console.log('customer id {}'+customerId);
+    // console.log('customer id {}'+customerId);
     var result;
     $.ajax({
         type:'GET',
@@ -82,24 +81,26 @@ function validateSecAnswer(secAnswer){
         async:false,
         success:function(data1){
             result = ''+String(data1);
-            if(result == "true"){
+            if(result === "true"){
                 //invalid account number
+                // console.log("whether "+data1);
                 $('input[name=username]').val(result);
 
                
             }else{
                 //valid account number
+                // console.log("whether ERROR"+data1);
                 document.getElementById("errorMess").textContent=data1;
                 $('#myModalError').modal('show');
             }
         }
     });
 
-    if(result == "" || result === null){
-        return false;
-    }else{
+    if(result == "true"){
         result = sendUsername();
         return result;
+    }else{
+        return false;
     }
 }
 
@@ -207,7 +208,7 @@ form.children("div").steps({
 
                 }
             }
-            console.log("sec answers are "+secAnswer);
+            // console.log("sec answers are "+secAnswer);
             return isValid && validateSecAnswer(secAnswer);
         }
         return form.valid();

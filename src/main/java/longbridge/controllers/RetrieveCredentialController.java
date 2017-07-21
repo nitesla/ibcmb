@@ -214,13 +214,15 @@ public class RetrieveCredentialController {
             RetailUser retailUser = retailUserService.getUserByCustomerId(customerId);
             Map<String, List<String>> qa = securityService.getUserQA(retailUser.getEntrustId(), retailUser.getEntrustGroup());
             //List<String> sec = null;
-            logger.info("sec questions {}",qa);
+//            logger.info("sec questions {}",qa);
             if (qa != null){
                 List<String> answer = qa.get("answers");
 //                secAnswer = question.stream().filter(Objects::nonNull).findFirst().orElse("");
 
-                logger.info("user answer {}", answers);
-                compareAnswers(answers,answer);
+                logger.info("user answer {}", answer);
+                if(compareAnswers(answers,answer).equalsIgnoreCase("true")){
+                    return "true";
+                };
             }
             //return (String) session.getAttribute("username");
         }catch (Exception e){

@@ -18,7 +18,7 @@ public class StringUtil {
                     noOfMismatch++;
                 }
             }
-//            logger.info("no of mis match is {}",noOfMismatch);
+            System.out.println("no of mis match is "+noOfMismatch);
             if(noOfMismatch==0){
                 return "true";
             }
