@@ -50,18 +50,18 @@
 
                                 </ul>
 
-                                <ul class="nav navbar-right panel_toolbox col-lg-4 pull-right">
+                                <!--<ul class="nav navbar-right panel_toolbox col-lg-4 pull-right">-->
 
-                                    <li class="pull-right" >
-                                        <div class="input-group col-lg-12">
-                                            <input type="text" class="form-control" id="pattern" placeholder="Search for..."/> <span
-                                                class="input-group-btn">
-										     <button class="btn btn-success" id="search" type="button">Go!</button>
-									       </span>
-                                        </div>
-                                    </li>
+                                    <!--<li class="pull-right" >-->
+                                        <!--<div class="input-group col-lg-12">-->
+                                            <!--<input type="text" class="form-control" id="pattern" placeholder="Search for..."/> <span-->
+                                                <!--class="input-group-btn">-->
+										     <!--<button class="btn btn-success" id="search" type="button">Go!</button>-->
+									       <!--</span>-->
+                                        <!--</div>-->
+                                    <!--</li>-->
 
-                                </ul>
+                                <!--</ul>-->
 
                                 <div class="clearfix"></div>
                             </div>
@@ -134,9 +134,9 @@
             "ajax" : {
                 url : "/admin/audit/revised/entity/all",
                 "type" : "GET",
-                "data" : function(d) {
-                    d.csearch = $('#pattern').val();
-                }
+//                "data" : function(d) {
+//                    d.csearch = $('#pattern').val();
+//                }
             },
             "dom": 'T<"clear">frtlp',
             "columns": [
@@ -183,12 +183,12 @@
             }
         });
 
-        $("#search").on("click", function(e)
-        {
-            e.preventDefault();
-            dt = $('#auditview').DataTable();
-            dt.ajax.reload(null, true);
-        });
+//        $("#search").on("click", function(e)
+//        {
+//            e.preventDefault();
+//            dt = $('#auditview').DataTable();
+//            dt.ajax.reload(null, true);
+//        });
     });
 
 
