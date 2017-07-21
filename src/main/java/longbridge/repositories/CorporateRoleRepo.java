@@ -11,13 +11,10 @@ import java.util.List;
 /**
  * Created by Fortune on 6/7/2017.
  */
-public interface CorporateRoleRepo extends CommonRepo<CorporateRole,Long> {
-
-
+public interface CorporateRoleRepo extends CommonRepo<CorporateRole,Long>
+{
     Page<CorporateRole> findByCorporate(Corporate corporate, Pageable pageable);
 
     List<CorporateRole> findByCorporate(Corporate corporate);
-
-
 
 }

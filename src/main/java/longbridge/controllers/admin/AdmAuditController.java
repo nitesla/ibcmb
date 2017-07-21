@@ -90,12 +90,19 @@ public class AdmAuditController {
 
 
     @GetMapping("/revised/entity/all")
-    public @ResponseBody DataTablesOutput<ModifiedEntityTypeEntity> getAllRevisedEntity(DataTablesInput input)
+    public @ResponseBody DataTablesOutput<ModifiedEntityTypeEntity> getAllRevisedEntity(DataTablesInput input,@RequestParam("csearch") String search)
     {
         //  Pageable pageable = DataTablesUtils.getPageable(input);
         Pageable pageables = DataTablesUtils.getPageable(input);
         Page<ModifiedEntityTypeEntity> audit = null;
-        audit=auditCfgService.getRevisionEntitiesByDate(pageables);
+        if(StringUtils.isNoneBlank(search))
+        {
+            audit=auditCfgService.getRevisionEntities(search,pageables);
+        }
+        else {
+            audit=auditCfgService.getRevisionEntitiesByDate(pageables);
+        }
+
         DataTablesOutput<ModifiedEntityTypeEntity> out = new DataTablesOutput<ModifiedEntityTypeEntity>();
         out.setDraw(input.getDraw());
         out.setData(audit.getContent());

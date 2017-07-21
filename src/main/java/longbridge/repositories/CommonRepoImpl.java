@@ -102,7 +102,8 @@ public class CommonRepoImpl<T extends AbstractEntity, ID extends Serializable> e
     }
     
     @Override
-	public Page<T> findUsingPattern(String pattern, Pageable details) {
+	public Page<T> findUsingPattern(String pattern, Pageable details)
+    {
 		String lpattern = pattern.toLowerCase();
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<T> q = cb.createQuery(entityInformation.getJavaType());
@@ -116,7 +117,9 @@ public class CommonRepoImpl<T extends AbstractEntity, ID extends Serializable> e
 				predicates[cnt] = predicate;
 				cnt++;
 			}
-		} catch (InstantiationException | IllegalAccessException e) {
+		}
+		catch (InstantiationException | IllegalAccessException e)
+        {
 			return new PageImpl<>(new ArrayList<>());
 		}
 
@@ -129,10 +132,11 @@ public class CommonRepoImpl<T extends AbstractEntity, ID extends Serializable> e
 			 baseQuery = q.select(c).where(or);
 			 countQuery = qc.select(cb.count(qc.from(entityInformation.getJavaType()))).where(or);
 		}
-		else{
+		else
+		    {
 			baseQuery = q.select(c);
 			countQuery = qc.select(cb.count(qc.from(entityInformation.getJavaType())));
-		}
+            }
 		
 		TypedQuery<T> query = em.createQuery(baseQuery);
 		Long count = em.createQuery(countQuery).getSingleResult();
