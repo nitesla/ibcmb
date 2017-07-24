@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{corp-layout}">
 
-<body onload="currentBar('transaction successful')">
+<body onload="currentBar('transaction summary')">
 
 <div layout:fragment="content">
     <div class="col-md-5 col-sm-5 ">
@@ -17,6 +17,7 @@
 
                         <table class="table table-hover ">
                             <tr>
+
 
                                 <th>Source account</th>
                                 <td th:text="${transRequest.customerAccountNumber}"></td>

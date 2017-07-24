@@ -186,11 +186,10 @@ public class CorpTransferController {
 
                 if (!ok) {
                     model.addAttribute("failure", messages.getMessage("auth.token.failure", null, locale));
-                    return "/corp/transfer/corptransferauth";
+                    return "/corp/transfer/transferauth";
                 } else {
                     request.getSession().removeAttribute("AUTH");
                 }
-
 
             }
 
@@ -214,17 +213,16 @@ public class CorpTransferController {
                 }
             }
 
-
             corpTransferRequestDTO = (CorpTransferRequestDTO) request.getSession().getAttribute("corpTransferRequest");
             String corporateId = "" + corporateUserService.getUserByName(principal.getName()).getCorporate().getId();
             corpTransferRequestDTO.setCorporateId(corporateId);
             String response = transferService.addTransferRequest(corpTransferRequestDTO);
 
-
             model.addAttribute("transRequest", corpTransferRequestDTO);
             logger.info("transRequest {}",corpTransferRequestDTO);
             model.addAttribute("message", response);
-            return "corp/account/transferdetails";
+
+            return "corp/transfer/transferdetails";
 
         } catch (InternetBankingTransferException ex) {
 
