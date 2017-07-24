@@ -3,7 +3,7 @@ package longbridge.controllers.corporate;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.ibm.icu.impl.InvalidFormatException;
+
 import longbridge.dtos.BulkTransferDTO;
 import longbridge.dtos.CreditRequestDTO;
 import longbridge.models.*;
@@ -238,7 +238,6 @@ public class CorpNAPSTransferController {
                 System.out.println(id);
 
                 creditRequest.setId(id);
-
                 creditRequest.setSerial((cellData.get(0).toString()));
                 creditRequest.setRefCode(cellData.get(1).toString());
                 creditRequest.setAccountNumber(cellData.get(2).toString());
@@ -308,7 +307,7 @@ public class CorpNAPSTransferController {
         } catch (Exception ibe) {
             logger.error("Error creating transfer", ibe);
             model.addAttribute("failure", messageSource.getMessage("bulk.transfer.failure", null, locale));
-            return "/corp/transfer/bulktransfer/add";
+            return "redirect:/corporate/transfer/bulk";
         }
     }
 

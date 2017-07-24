@@ -65,23 +65,22 @@
                                 <table class="table" id="tranDetails">
                                     <thead>
                                     <tr>
-                                        <th>Account Balance</th>
-                                        <th>Currency Code</th>
-                                        <th>Post Date</th>
                                         <th>Transaction Narration</th>
-                                        <th>Debit/Credit</th>
+                                        <th>Post Date</th>
                                         <th>Value Date</th>
-
+                                        <th>Debit/Credit</th>
+                                        <th>Transaction ReferenceID</th>
+                                        <th>Account Balance</th>
                                     </tr>
                                     </thead>
                                     <tfoot>
                                     <tr>
-                                        <th>Account Balance</th>
-                                        <th>Currency Code</th>
-                                        <th>Post Date</th>
                                         <th>Transaction Narration</th>
-                                        <th>Debit/Credit</th>
+                                        <th>Post Date</th>
                                         <th>Value Date</th>
+                                        <th>Debit/Credit</th>
+                                        <th>Transaction ReferenceID</th>
+                                        <th>Account Balance</th>
 
                                     </tr>
                                     </tfoot>
@@ -139,15 +138,15 @@
             "ordering" : false,
             "dom": 'T<"clear">frtlp',
             "columns" : [
-                {"data" : "accountBalance"},
-                {"data" : "currencyCode"},
-                {"data" : "postDate"} ,
                 {"data" : "narration"},
+                {"data" : "postDate"} ,
+                {"data" : "valueDate"},
                 {"data" : "tranType"},
-                {"data" : "valueDate"}
+                {"data" : "tranId"},
+                {"data" : "accountBalance"}
             ],
             "columnDefs" : [ {
-                "targets" : 2,
+                "targets" : 1,
                 "data" : "postDate",
                 "render" : function(data, type,full, meta) {
                     if (type === 'display') {
@@ -161,7 +160,7 @@
                     return data;
                 }
             },{
-                "targets" : 0,
+                "targets" : 5,
                 "data" : "accountBalance",
                 "render" : function(data, type,full, meta) {
                     if (type === 'display') {
@@ -174,7 +173,7 @@
                 }
             }
                 , {
-                    "targets": 5,
+                    "targets": 2,
                     "data": "valueDate",
                     "render": function (data, type, full, meta) {
                         if (type === 'display') {

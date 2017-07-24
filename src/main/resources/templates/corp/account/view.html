@@ -1,38 +1,9 @@
 <!DOCTYPE html>
-<<<<<<< HEAD
-<html xmlns:th="http://www.thymeleaf.org">
-<head th:replace="corp_layout :: site-head">
-</head>
-<body>
-<div class="container">
 
-    <header th:replace="corp_layout :: corp-header">
-    </header>
-
-    <section class="content-wrapper">
-        <div>
-            <div class="row">
-                <div class="col-md-4 col-sm-4">
-                    <h5 class="page_header"> Account Statement</h5>
-                    <select class="form-control invisible">
-                        <option value="account">Account Overview</option>
-                    </select>
-                </div>
-                <p class="col-xs-12 invisible">
-                    Fields marked <span style="color:red">*</span> are compulsory
-                </p>
-
-            </div>
-            <div class="row">
-                <div class="col-md-9 content-bg">
-                    <form method="post" th:action="@{/corporate/account/viewstatement/display}">
-
-                        <div class="col-md">
-=======
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{corp-layout}">
 
-<body onload="currentBar('account statement')">
+<body onload="javascript:var bread = [['Home', '/corporate/dashboard'],['Accounts','/corporate/account/customize'],['Account Statement', '#']];currentBar('account statement');breadCrumb(bread)">
 
 <div layout:fragment="content">
     <div class="col-md-5 col-sm-5 ">
@@ -43,12 +14,11 @@
     </div>
 
     <div class="col-xs-12 ml-15  no-mt" >
-        <div class="col-xs-11  table-responsive no-mt no-bd alert">
+        <div class="col-xs-12 no-pad-left no-pad-right   no-mt no-bd alert">
             <form method="post" th:action="@{/corporate/account/viewstatement/display}">
 
-<<<<<<< HEAD
                         <div class="">
->>>>>>> f04b28e0080937776e50e0efdbd8f12b23545d4f
+
                             <br/>
                             <div class="form-group col-md-12 no-pad-left col-sm-12">
                                 <div class="form-group col-md-6 no-pad-left col-sm-6">
@@ -79,15 +49,9 @@
 
                                 <div class="form-group col-md-6">
                                     <label>&nbsp;</label>
-<<<<<<< HEAD
 
-
-
-                                    <button type="submit" class="btn btn-link " id="btn-find"><i class="fa fa-search" style="color: white" ></i>&nbsp; view</button>
-
-=======
                                     <button type="submit" class="btn btn-link " id="btn-find"><i class="fa fa-search"  ></i>&nbsp; view</button>
->>>>>>> f04b28e0080937776e50e0efdbd8f12b23545d4f
+
                                 </div>
                             </div>
 
@@ -134,49 +98,38 @@
 
                         </div>
                     </form>
-<<<<<<< HEAD
 
-                </div>
-                <div class="col-md-3 pull-right " >
+                <div>
+                    <div class="form-group col-md-6 no-pad-left col-sm-6">
 
-                    <div th:replace="corp_layout :: corp-sidebar" class="" >
-
-                    </div>
-                </div>
-            </div>
-=======
->>>>>>> f04b28e0080937776e50e0efdbd8f12b23545d4f
-=======
-                <div class="">
-                    <br/>
-                    <div class="form-group col-md-12 no-pad-left col-sm-12">
-                        <div class="form-group col-md-6 no-pad-left col-sm-6">
                             <label>Date Range</label>
                             <div class="input-daterange input-group" id="date-range">
                                 <input type="text" data-date-format="dd-mm-yyyy" class="form-control datepicker" id="start" name="fromDate" placeholder="Start date" required="required" />
                                 <span class="input-group-addon no-border">to</span>
                                 <input type="text"  data-date-format="dd-mm-yyyy" class="form-control datepicker" name="toDate" id="endDate" placeholder="End date" required="required" />
                             </div>
-                        </div>
-                        <div class="form-group col-md-6 no-pad-left col-sm-6">
+                    </div>
+
+                    <div class="form-group col-md-6 no-pad-left col-sm-6">
                             <label>Transaction Type</label>
-                            <select name="tranType"  class="form-control">
+                            <select name="tranType"  class="form-control full-width">
                                 <option value="B">All</option>
                                 <option value="C">Credit</option>
                                 <option value="D">Debit</option>
                             </select>
-                        </div>
                     </div>
-                    <div class="form-group col-md-12 no-pad-left col-sm-12">
+
+
+                    <div class="">
                         <div class="form-group col-md-6 no-pad-left col-sm-6">
                             <label>Account Number</label>
                             <span class="req"></span>
-                            <select name="acctNumber" id="acctNumber" class="form-control"
+                            <select name="acctNumber" id="acctNumber" class="form-control full-width"
                                     required="required">
                                 <option th:each="s: ${accounts}" th:value="${s.accountNumber}" th:text="${s.accountNumber}"></option></select>
                         </div>
 
-                        <div class="form-group col-md-6">
+                        <div class="form-group col-md-6 no-pad-left">
                             <label>&nbsp;</label>
                             <button type="submit" class="btn btn-link " id="btn-find"><i class="fa fa-search"  ></i>&nbsp; view</button>
                         </div>
@@ -195,23 +148,22 @@
                         <table class="table" id="tranDetails">
                             <thead>
                             <tr>
-                                <th>Account Balance</th>
-                                <th>Currency Code</th>
-                                <th>Post Date</th>
                                 <th>Transaction Narration</th>
-                                <th>Debit/Credit</th>
+                                <th>Post Date</th>
                                 <th>Value Date</th>
-
+                                <th>Debit/Credit</th>
+                                <th>Transaction ReferenceID</th>
+                                <th>Account Balance</th>
                             </tr>
                             </thead>
                             <tfoot>
                             <tr>
-                                <th>Account Balance</th>
-                                <th>Currency Code</th>
-                                <th>Post Date</th>
                                 <th>Transaction Narration</th>
-                                <th>Debit/Credit</th>
+                                <th>Post Date</th>
                                 <th>Value Date</th>
+                                <th>Debit/Credit</th>
+                                <th>Transaction ReferenceID</th>
+                                <th>Account Balance</th>
 
                             </tr>
                             </tfoot>
@@ -221,108 +173,17 @@
 
                 </div>
             </form>
->>>>>>> 3cac5935c45fc4f141433d4a7e36dbef25be4082
+
         </div>
     </div>
 
 </div>
-<<<<<<< HEAD
-<!-- CONTENT-WRAPPER SECTION END-->
-<footer th:replace="corp_layout ::footer">
-</footer>
-=======
+
 
 
 <th:block layout:fragment="scripts">
 
-<<<<<<< HEAD
->>>>>>> f04b28e0080937776e50e0efdbd8f12b23545d4f
-<script th:inline="javascript">
-    /*<![CDATA[*/
-    jQuery.download = function(url, key, data) {
-        // Build a form
-        var form = $('<form></form>').attr('action', url).attr('target', '_blank')
 
-                .attr('method', 'get');
-        // Add the one key/value
-        form.append($("<input></input>").attr('type', 'hidden').attr('name',
-                key).attr('value', data));
-
-        $.each( data, function( propertyName, valueOfProperty ){
-            form.append($("<input></input>").attr('type', 'hidden').attr('name',
-                    propertyName).attr('value', valueOfProperty));
-
-        });
-
-        //send request
-        form.appendTo('body').submit().remove();
-    };
-
-    $(document).ready(function() {
-
-        $('.datepicker').datepicker({ dateFormat: 'dd-mm-yy' });//
-
-        $('#tranDetails').DataTable({
-
-            responsive: true,
-
-            "lengthMenu": [[5, 10,20], [5, 10,20]],
-            "pagingType": "simple_numbers",
-            "searching" : false,
-<<<<<<< HEAD
-            "fields": [  {
-                name:      'valueDate',
-                type:      'datetime',
-                def:       function () { return new Date(); },
-                format:    'dd-MM-yyyy '  }
-            ],
-
-=======
->>>>>>> da52dbbfcf007ea3ea440b494a8df8b5a4347309
-            "processing" : true,
-            "serverSide" : false,
-            "ordering" : false,
-            "dom": 'T<"clear">frtlp',
-            "columns" : [
-                {"data" : "accountBalance"},
-                {"data" : "currencyCode"},
-                {"data" : "postDate"} ,
-                {"data" : "narration"},
-                {"data" : "tranType"},
-                {"data" : "valueDate"}
-            ],
-            "columnDefs" : [ {
-                "targets" : 2,
-                "data" : "postDate",
-                "render" : function(data, type,full, meta) {
-                    if (type === 'display') {
-                        if(data == null)
-                            return data;
-
-                        var pattern = /(\d{2})\.(\d{2})\.(\d{4})/;
-                        var dt = new Date(data.replace(pattern,'$3-$2-$1'));
-                        return dt.toDateString();
-                    }
-                    return data;
-                }
-            },{
-                "targets" : 0,
-                "data" : "accountBalance",
-                "render" : function(data, type,full, meta) {
-                    if (type === 'display') {
-                        if(data == null)
-                            return data;
-                        var twoPlacedFloat = parseFloat(data).toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,');
-                        return twoPlacedFloat;
-                    }
-                    return data;
-                }
-            }
-                , {
-                    "targets": 5,
-                    "data": "valueDate",
-                    "render": function (data, type, full, meta) {
-=======
     <script th:inline="javascript">
         /*<![CDATA[*/
         jQuery.download = function(url, key, data) {
@@ -358,18 +219,18 @@
                 "ordering" : false,
                 "dom": 'T<"clear">frtlp',
                 "columns" : [
-                    {"data" : "accountBalance"},
-                    {"data" : "currencyCode"},
-                    {"data" : "postDate"} ,
                     {"data" : "narration"},
+                    {"data" : "postDate"} ,
+                    {"data" : "valueDate"},
                     {"data" : "tranType"},
-                    {"data" : "valueDate"}
+                    {"data" : "tranId"},
+                    {"data" : "accountBalance"}
                 ],
                 "columnDefs" : [ {
-                    "targets" : 2,
+                    "targets" : 1,
                     "data" : "postDate",
                     "render" : function(data, type,full, meta) {
->>>>>>> 3cac5935c45fc4f141433d4a7e36dbef25be4082
+
                         if (type === 'display') {
                             if(data == null)
                                 return data;
@@ -381,7 +242,7 @@
                         return data;
                     }
                 },{
-                    "targets" : 0,
+                    "targets" : 5,
                     "data" : "accountBalance",
                     "render" : function(data, type,full, meta) {
                         if (type === 'display') {
@@ -394,7 +255,7 @@
                     }
                 }
                     , {
-                        "targets": 5,
+                        "targets": 2,
                         "data": "valueDate",
                         "render": function (data, type, full, meta) {
                             if (type === 'display') {

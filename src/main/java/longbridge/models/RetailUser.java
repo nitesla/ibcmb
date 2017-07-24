@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import longbridge.utils.PrettySerializer;
 import org.hibernate.annotations.Where;
+import org.hibernate.envers.AuditOverride;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.Entity;
@@ -25,6 +26,7 @@ import java.util.Date;
 
 @Entity
 @Audited(withModifiedFlag=true)
+@AuditOverride(forClass=User.class)
 @Where(clause ="del_Flag='N'" )
 @Table(uniqueConstraints=@UniqueConstraint(columnNames={"userName","deletedOn"}))
 public class RetailUser extends User implements PrettySerializer{
@@ -40,6 +42,8 @@ public class RetailUser extends User implements PrettySerializer{
 	@OneToMany(mappedBy= "user")
 	@JsonIgnore
     private Collection<LocalBeneficiary> beneficiaries;
+
+	private String tempPassword;
 
 
 //	private Collection<Beneficiary> beneficiaries;
@@ -80,6 +84,14 @@ public class RetailUser extends User implements PrettySerializer{
 
 	public void setBirthDate(Date birthDate) {
 		this.birthDate = birthDate;
+	}
+
+	public String getTempPassword() {
+		return tempPassword;
+	}
+
+	public void setTempPassword(String tempPassword) {
+		this.tempPassword = tempPassword;
 	}
 
 	public Collection<RetailCustLimit> getRtlCustLmt() {

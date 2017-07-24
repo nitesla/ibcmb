@@ -106,6 +106,26 @@
                         </table>
 =======
 <div layout:fragment="content">
+
+    
+
+<div class="modal fade" id="delete">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h4 class="modal-title">Confirm delete</h4>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure that you want to delete this beneficiary?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="del btn btn-danger">Yes</button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal">No</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
     <div class="col-md-12 col-sm-12 ">
         <a th:href="@{/corporate/beneficiary/new}" class="pull-right">Add New Beneficiary</a>
 
@@ -133,8 +153,7 @@
                             <td th:text="${loc.accountName}"></td>
                             <td th:text="${loc.accountNumber}"></td>
                             <td th:text="${loc.beneficiaryBank}"></td>
-                            <td><a th:href="@{'/corporate/beneficiary/' + ${loc.id} + '/loc/delete'}"><i class="fa fa-trash"></i></a></td>
-                        </tr>
+                            <td><a href='javascript:void()' th:id="${loc.id}" onclick="validateDelete(this.id)"><i class="fa fa-trash"></i></a></td>                        </tr>
                         </tbody>
                     </table>
 >>>>>>> f04b28e0080937776e50e0efdbd8f12b23545d4f
@@ -209,18 +228,16 @@
 
 
 <th:block layout:fragment="scripts">
-    <script th:src="@{~/bank/vendors/sweetalert/sweetalert.min.js}"></script>
-    <script th:src="@{~/bank/js/jquery.spring-friendly.min.js}"></script>
-    <script th:src="@{~/bank/vendors/bootstrap-dialog/js/bootstrap-dialog.js}"></script>
 
 
-    <!-- Page-Level Scripts -->
+ <!-- Page-Level Scripts -->
     <script>
         /*<![CDATA[*/
 
         function validateDelete(id) {
             var ooo = "/retail/beneficiary/"+id+ "/loc/delete";
             //goto url
+           
             warnBeforeRedirect(ooo);
         }
 
@@ -230,39 +247,35 @@
             warnBeforeRedirect(ooo);
         }
 
-
-        function warnBeforeRedirect(ooo) {
-
-            $ ("#myModal").modal('show');
+        
+                 function warnBeforeRedirect(ooo) {
+                   
+            $("#delete").modal('show');
             $('.del').on('click', function(){
                 window.location.assign(ooo);
             });
+                 }
 
-        }
+       
+            
+
+
+       
 
         /*]]>*/
-    </script>
+</script>
+    <script th:src="@{~/bank/vendors/sweetalert/sweetalert.min.js}"></script>
+    <script th:src="@{~/bank/js/jquery.spring-friendly.min.js}"></script>
+    <script th:src="@{~/bank/vendors/bootstrap-dialog/js/bootstrap-dialog.js}"></script>
+
+
+   
+
+
+
 
 </th:block>
 
-
-<div class="modal fade" id="myModal">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                <h4 class="modal-title">Confirm delete</h4>
-            </div>
-            <div class="modal-body">
-                <p>Are you sure that you want to delete this beneficiary?</p>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="del btn btn-danger">Yes</button>
-                <button type="button" class="btn btn-primary" data-dismiss="modal">No</button>
-            </div>
-        </div><!-- /.modal-content -->
-    </div><!-- /.modal-dialog -->
-</div><!-- /.modal -->
 
 </body>
 </html>

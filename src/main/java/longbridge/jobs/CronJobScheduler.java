@@ -1,66 +1,86 @@
-//package longbridge.jobs;
+
+package longbridge.jobs;
+
+import org.quartz.*;
+import org.quartz.impl.StdSchedulerFactory;
+import org.springframework.stereotype.Service;
+
+/**
+ * Created by Longbridge on 6/25/2017.
+ */
+@Service
+public class CronJobScheduler {
+    public static void startJobs() {
+        JobKey OneTimeKey = new JobKey("OneTime", "ibtest");
+        JobDetail OneTimeJobs = JobBuilder.newJob(RunningJob.class)
+                .withIdentity(OneTimeKey).build();
+
+//        JobKey FiveMinsKey = new JobKey("FiveMins", "ibtest");
+//        JobDetail FiveMinsJobs = JobBuilder.newJob(FiveMins.class)
+//                .withIdentity(FiveMinsKey).build();
+//        JobKey OneHourKey = new JobKey("OneHour", "ibtest");
+//        JobDetail OneHourJobs = JobBuilder.newJob(OneHour.class)
+//                .withIdentity(OneHourKey).build();
+//        JobKey ThreeSecsKey = new JobKey("ThreeSecs", "ibtest");
+//        JobDetail ThreeSecsJobs = JobBuilder.newJob(ThreeSecs.class)
+//                .withIdentity(ThreeSecsKey).build();
 //
-//import javax.servlet.ServletContext;
-//import javax.servlet.ServletContextEvent;
-//import javax.servlet.annotation.WebListener;
+//        JobKey TwentySecsKey = new JobKey("TwentySecs", "ibtest2");
+//        JobDetail TwentySecsJobs = JobBuilder.newJob(TwentySecs.class)
+//                .withIdentity(TwentySecsKey).build();
 //
-//import org.quartz.*;
-//import org.quartz.ee.servlet.QuartzInitializerListener;
-//import org.quartz.impl.StdSchedulerFactory;
-///**
-// * Created by Longbridge on 6/25/2017.
-// */
-//public class CronJobScheduler {
-//    public static void startJobs() {
-//        JobKey OneTimeKey = new JobKey("OneTime", "ibtest");
-//        JobDetail OneTimeJobs = JobBuilder.newJob(TestClass.class)
-//                .withIdentity(OneTimeKey).build();
-//
-////        JobKey FiveMinsKey = new JobKey("FiveMins", "ibtest");
-////        JobDetail FiveMinsJobs = JobBuilder.newJob(FiveMins.class)
-////                .withIdentity(FiveMinsKey).build();
-////        JobKey OneHourKey = new JobKey("OneHour", "ibtest");
-////        JobDetail OneHourJobs = JobBuilder.newJob(OneHour.class)
-////                .withIdentity(OneHourKey).build();
-////        JobKey ThreeSecsKey = new JobKey("ThreeSecs", "ibtest");
-////        JobDetail ThreeSecsJobs = JobBuilder.newJob(ThreeSecs.class)
-////                .withIdentity(ThreeSecsKey).build();
-////
-////        JobKey TwentySecsKey = new JobKey("TwentySecs", "ibtest2");
-////        JobDetail TwentySecsJobs = JobBuilder.newJob(TwentySecs.class)
-////                .withIdentity(TwentySecsKey).build();
-////
-////        JobKey Daily0030Key = new JobKey("Daily0030", "ibtest");
-////        JobDetail Daily0030Jobs = JobBuilder.newJob(Daily0030.class)
-////                .withIdentity(Daily0030Key).build();
-////
-////
-////        JobKey EveryMinuteKey = new JobKey("EveryMinute", "ibtest");
-////        JobDetail EveryMinuteJobs = JobBuilder.newJob(EveryMinute.class)
-////                .withIdentity(EveryMinuteKey).build();
-////
-////        JobKey TwentyFourHoursKey = new JobKey("TwentyFourHours", "ibtest");
-////        JobDetail TwentyFourHoursJobs = JobBuilder.newJob(TwentyFourHours.class)
-////                .withIdentity(TwentyFourHoursKey).build();
-////
-////        JobKey FortyEightHoursKey = new JobKey("FourtyEightHours", "ibtest");
-////        JobDetail FortyEightHoursJobs = JobBuilder.newJob(FortyEightHours.class)
-////                .withIdentity(FortyEightHoursKey).build();
-////
-////        JobKey SevenDaysKey = new JobKey("SevenDays", "ibtest");
-////        JobDetail SevenDaysKeyJobs = JobBuilder.newJob(SevenDays.class)
-////                .withIdentity(SevenDaysKey).build();
-//
-////        JobKey LetterUpdateKey = new JobKey("SevenDays", "ibtest");
-////        JobDetail LetterUpdateKeyJobs = JobBuilder.newJob(LetterUpdates.class)
-////                .withIdentity(LetterUpdateKey).build();
+//        JobKey Daily0030Key = new JobKey("Daily0030", "ibtest");
+//        JobDetail Daily0030Jobs = JobBuilder.newJob(Daily0030.class)
+//                .withIdentity(Daily0030Key).build();
 //
 //
-//        /**
-//         * JOB Triggers
-//         * @Shedules
-//         */
-//        Trigger oneTime = TriggerBuilder
+//        JobKey EveryMinuteKey = new JobKey("EveryMinute", "ibtest");
+//        JobDetail EveryMinuteJobs = JobBuilder.newJob(EveryMinute.class)
+//                .withIdentity(EveryMinuteKey).build();
+//
+//        JobKey TwentyFourHoursKey = new JobKey("TwentyFourHours", "ibtest");
+//        JobDetail TwentyFourHoursJobs = JobBuilder.newJob(TwentyFourHours.class)
+//                .withIdentity(TwentyFourHoursKey).build();
+//
+//        JobKey FortyEightHoursKey = new JobKey("FourtyEightHours", "ibtest");
+//        JobDetail FortyEightHoursJobs = JobBuilder.newJob(FortyEightHours.class)
+//                .withIdentity(FortyEightHoursKey).build();
+//
+//        JobKey SevenDaysKey = new JobKey("SevenDays", "ibtest");
+//        JobDetail SevenDaysKeyJobs = JobBuilder.newJob(SevenDays.class)
+//                .withIdentity(SevenDaysKey).build();
+
+
+        /**
+         * JOB Triggers
+         * @Shedules
+         */
+        Trigger oneTime = TriggerBuilder
+                .newTrigger()
+                .withIdentity("oneTime", "ibtest")
+                .withSchedule(
+                        CronScheduleBuilder.cronSchedule("0/10 0/1 * 1/1 * ? *"))
+                .build();
+//        Trigger fiveMins = TriggerBuilder
+//                .newTrigger()
+//                .withIdentity("fiveMins", "bcons")
+//                .withSchedule(
+//                        CronScheduleBuilder.cronSchedule("0 0/5 * 1/1 * ? *"))
+//                .build();
+//        Trigger oneHour = TriggerBuilder
+//                .newTrigger()
+//                .withIdentity("oneHour", "bcons")
+//                .withSchedule(
+//                        CronScheduleBuilder.cronSchedule("0 0/59 * 1/1 * ? *"))
+//                .build();
+//        Trigger threeMins = TriggerBuilder
+//                .newTrigger()
+//                .withIdentity("threeSecs", "bcons")
+//                .withSchedule(
+//                        CronScheduleBuilder.cronSchedule("0/3 * * * * ?"))
+//                .build();
+//        Trigger everyMinute = TriggerBuilder
+
 //                .newTrigger()
 //                .withIdentity("oneTime", "bcons3")
 //                .withSchedule(
@@ -165,3 +185,5 @@
 //    }
 //
 //}
+    }
+}

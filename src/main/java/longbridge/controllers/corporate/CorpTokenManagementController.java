@@ -48,9 +48,9 @@ public class CorpTokenManagementController {
 
 
     @GetMapping
-    public String getCorporateToken(HttpServletRequest httpServletRequest) {
+    public String getCorporateToken(HttpServletRequest httpServletRequest, Principal principal, Model model) {
         httpServletRequest.getSession().setAttribute("2FA", "2FA");
-
+        model.addAttribute("username", principal.getName());
         return "/corp/logintoken";
     }
 

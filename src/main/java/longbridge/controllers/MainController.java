@@ -163,6 +163,10 @@ public class MainController {
         // return "";
     }
 
+    @GetMapping("/login/u/retail")
+    public String login1(){
+        return "redirect:/login/retail";
+    }
     @PostMapping("/login/u/retail")
     public String userExists(WebRequest webRequest, Model model, RedirectAttributes redirectAttributes) {
         String username = webRequest.getParameter("username");
@@ -176,6 +180,7 @@ public class MainController {
         }
 
         try{
+            logger.info("the username");
             Map<String, List<String>> mutualAuth =  securityService.getMutualAuth(user.getEntrustId(), user.getEntrustGroup());
             if (mutualAuth != null){
                 String image = mutualAuth.get("imageSecret")
@@ -186,7 +191,15 @@ public class MainController {
 
 //                logger.info("SECIMAGE"+ image);
 
+                String caption = mutualAuth.get("captionSecret")
+                        .stream()
+                        .filter(Objects::nonNull)
+                        .findFirst()
+                        .orElse("");
+
                 model.addAttribute("secImage", image);
+                //logger.info("SECCAPTION "+ caption);
+                model.addAttribute("secCaption", caption);
             }
         }catch (InternetBankingException e){
             model.addAttribute("imageException", "You are yet to set your antiphishing image");
@@ -196,6 +209,10 @@ public class MainController {
         return "retpage2";
     }
 
+    @GetMapping("/login/p/retail")
+    public String login2(){
+        return "redirect:/login/retail";
+    }
     @PostMapping("/login/p/retail")
     public String step2(WebRequest webRequest, Model model, HttpSession session, RedirectAttributes redirectAttributes) {
         String username = webRequest.getParameter("username");
@@ -204,7 +221,7 @@ public class MainController {
         RetailUser user =  retailUserService.getUserByName(username);
         if (user != null && phishing != null) {
             model.addAttribute("username", user.getUserName());
-            session.setAttribute("username", UserType.RETAIL+"_"+user.getUserName());
+            session.setAttribute("username", user.getUserName());
             return "retaillogin";
         }
 
@@ -213,6 +230,10 @@ public class MainController {
 
     }
 
+    @GetMapping("/login/u/corporate")
+    public String loginCorporate1(){
+        return "redirect:/login/corporate";
+    }
 
     @PostMapping("/login/u/corporate")
     public String userExist(WebRequest webRequest, Model model, RedirectAttributes redirectAttributes) {
@@ -236,9 +257,16 @@ public class MainController {
                                 .findFirst()
                                 .orElse("");
 
-//                logger.info("SECIMAGE"+ image);
+//                      logger.info("SECIMAGE"+ image);
+                        String caption = mutualAuth.get("captionSecret")
+                                .stream()
+                                .filter(Objects::nonNull)
+                                .findFirst()
+                                .orElse("");
 
                         model.addAttribute("secImage", image);
+                        //logger.info("SECCAPTION "+ caption);
+                        model.addAttribute("secCaption", caption);
                     }
                 }catch (InternetBankingException e){
                     model.addAttribute("imageException", "You are yet to set your antiphishing image");
@@ -257,14 +285,21 @@ public class MainController {
 
     }
 
+    @GetMapping("/login/p/corporate")
+    public String loginCorporate2(){
+        return "redirect:/login/corporate";
+    }
+
     @PostMapping("/login/p/corporate")
     public String corpstep2(WebRequest webRequest, Model model, RedirectAttributes redirectAttributes) {
         String username = webRequest.getParameter("username");
         String phishing = webRequest.getParameter("phishing");
         String corpKey = webRequest.getParameter("corpKey");
-        CorporateUser user = corporateUserService.getUserByName(username);
-        Corporate corporate = corporateService.getCorporateByCustomerId(corpKey);
-        if (corporate != null && user != null && phishing != null) {
+//        CorporateUser user = corporateUserService.getUserByName(username);
+//        Corporate corporate = corporateService.getCorporateByCustomerId(corpKey);
+
+        CorporateUser user = corporateUserService.getUserByNameAndCorpCif(username, corpKey);
+        if (user != null && phishing != null) {
             model.addAttribute("username", user.getUserName());
             model.addAttribute("corpKey", corpKey);
             return "corplogin";
@@ -433,7 +468,7 @@ public class MainController {
         SettingDTO setting = configurationService.getSettingByName("SESSION_TIMEOUT");
         try{
             if (setting != null && setting.isEnabled()){
-                Long timeOuts = Long.parseLong(setting.getValue())* 60000;
+                Long timeOuts = (Long.parseLong(setting.getValue())* 60000)-25000;
                 logger.info("SESSION TIME OUT PERIOD" + timeOuts);
                 model.addAttribute("timeOut", timeOuts);
             }

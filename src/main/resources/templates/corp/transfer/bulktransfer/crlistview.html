@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{corp-layout}">
-      <head>
-  <link rel="stylesheet" type="text/css" href="css/jquery.dataTables.css"/>
-    <link rel="stylesheet" type="text/css" href="css/select.bootstrap.css"/>
-    <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css"/>
-    <link rel="stylesheet" type="text/css" href="css/dataTables.bootstrap.css"/>
-</head>
+<!--<head>-->
+    <!--<link rel="stylesheet" type="text/css" href="css/jquery.dataTables.css"/>-->
+    <!--<link rel="stylesheet" type="text/css" href="css/select.bootstrap.css"/>-->
+    <!--<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css"/>-->
+    <!--<link rel="stylesheet" type="text/css" href="css/dataTables.bootstrap.css"/>-->
+<!--</head>-->
 
 <style>
     .hstyle{
@@ -26,7 +26,7 @@
         background-color: #d7bdb3;
     }
 </style>
-<body onload="currentBar('Beneficiaries')">
+<body onload="currentBar('Bulk transfer')">
 
 <div layout:fragment="content">
     <div class="col-md-5 col-sm-5 ">
@@ -36,8 +36,8 @@
         </select>
     </div>
 
-    <div class="col-xs-12 ml-15 " >
-        <div class="col-xs-11 no-pad-lef  no-mt no-bd  alert">
+    <div class="col-xs-12 ml-15 no-pad-left " >
+        <div class="col-xs-12 no-pad-lef  no-mt no-bd  alert">
             <form method="post" id="" class="form-horizontal">
                     <div class="row spacing">
                         <div>
@@ -48,7 +48,7 @@
 
 
                         <br/>
-                        <div class="form-group col-md-6">
+                        <div class="form-group ">
                             <label>Source account</label>
                             <input type="text" class="form-control" th:field="*{bulkTransfer.debitAccount}" />
                             </div>
@@ -58,6 +58,7 @@
                         <input type="hidden" class="form-control" th:value="${bulkTransfer.id}" th:field="*{bulkTransfer.id}" th:id="bk" id="bk" />
 
                         <br/>
+                        <div class="table-responsive">
                     <table id="mytab" class="table table-striped table-bordered table-hover" cellspacing="0"  >
                         <thead>
 
@@ -84,7 +85,7 @@
                         <!--</tr>-->
                         <!--</tbody>-->
                     </table>
-
+</div>
                     <br/>
                     <a class="btn btn-link" th:href="@{/corporate/transfer/bulk}">Back</a>
                     </div>
@@ -99,6 +100,10 @@
     <script th:src="@{~/bank/vendors/sweetalert/sweetalert.min.js}"></script>
     <script th:src="@{~/bank/vendors/bootstrap-dialog/js/bootstrap-dialog.js}"></script>
     <script th:src="@{~/bank/js/jquery.spring-friendly.min.js}"></script>
+    <script th:src="@{~/customer/js/dataTables.bootstrap.js}"></script>
+    <script th:src="@{~/customer/js/dataTables.select.js}"></script>
+    <script th:src="@{~/customer/editor/js/dataTables.editor.js}"></script>
+
 
 
     <script th:inline="javascript">

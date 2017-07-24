@@ -63,6 +63,7 @@
                             <div  class="bg-danger"  style="max-height:auto;width:200px;margin:0px auto">
                                 <img th:if="${secImage}" class='bg-danger img-responsive center'  style="height:100px;display: block;margin: 0px auto; margin-bottom: 5px;" th:src="@{'data:image/jpeg;base64,' + ${secImage}}" />
                                 <img th:unless="${secImage}" class='bg-danger img-responsive center' style="height:100px;display: block;margin: 0px auto; margin-bottom: 5px;" th:src="@{/customer/img/cmb_logo.png}" />
+                                <p class="text-center" th:text="${secCaption}"></p>
                                 <input type="checkbox" style='display:block;margin:0px auto;' name="phishing"/>
                             </div>
                         </div>
@@ -103,6 +104,7 @@
                             <div style="max-height:auto">
                                 <img th:if="${secImage}" class='bg-danger img-responsive center'  style="height:100px;display: block;margin: 0px auto; margin-bottom: 5px;" th:src="@{'data:image/jpeg;base64,' + ${secImage}}" />
                                 <img th:unless="${secImage}" class='bg-danger img-responsive center' style="height:100px;display: block;margin: 0px auto; margin-bottom: 5px;" th:src="@{/customer/img/cmb_logo.png}" />
+                                <p class="text-center" th:text="${secCaption}"></p>
                                 <input type="checkbox" style='display:block;margin:0px auto;' name="phishing"/>
                             </div>
                         </div>

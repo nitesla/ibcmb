@@ -1,11 +1,13 @@
 package longbridge.dtos;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSetter;
 
 /**
  * Created by Longbridge on 14/06/2017.
  */
+
 public class CreditRequestDTO {
     @JsonProperty("DT_RowId")
     private Long id;
