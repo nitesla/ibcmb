@@ -1,114 +1,119 @@
-//package longbridge.controllers;
-//
-//import longbridge.exception.InternetBankingException;
-//import longbridge.exception.PasswordException;
-//import longbridge.exception.PasswordMismatchException;
-//import longbridge.exception.PasswordPolicyViolationException;
-//import longbridge.forms.CustResetPassword;
-//import longbridge.forms.ResetPasswordForm;
-//import longbridge.models.Email;
-//import longbridge.models.RetailUser;
-//import longbridge.repositories.RetailUserRepo;
-//import longbridge.services.*;
-//import longbridge.utils.StringUtil;
-//import org.apache.commons.lang3.StringUtils;
-//import org.slf4j.Logger;
-//import org.slf4j.LoggerFactory;
-//import org.springframework.beans.factory.annotation.Autowired;
-//import org.springframework.context.MessageSource;
-//import org.springframework.context.i18n.LocaleContextHolder;
-//import org.springframework.mail.MailException;
-//import org.springframework.security.crypto.password.PasswordEncoder;
-//import org.springframework.stereotype.Controller;
-//import org.springframework.ui.Model;
-//import org.springframework.web.bind.annotation.GetMapping;
-//import org.springframework.web.bind.annotation.PathVariable;
-//import org.springframework.web.bind.annotation.PostMapping;
-//import org.springframework.web.bind.annotation.ResponseBody;
-//import org.springframework.web.context.request.WebRequest;
-//import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-//
-//import javax.servlet.http.HttpSession;
-//import java.util.Iterator;
-//import java.util.List;
-//import java.util.Locale;
-//import java.util.Map;
-//
-///**
-// * Created by Showboy on 20/07/2017.
-// */
-//@Controller
-//public class RetrieveCorpCredentialController {
-//    private Locale locale = LocaleContextHolder.getLocale();
-//
-//    private Logger logger= LoggerFactory.getLogger(this.getClass());
-//
-//    @Autowired
-//    private CorporateUserService corporateUserService;
-//
-//    @Autowired
-//    private CorporateService corporateService;
-//
-//    @Autowired
-//    private SecurityService securityService;
-//
-//    @Autowired
-//    private PasswordPolicyService passwordPolicyService;
-//
-//    @Autowired
-//    private MessageSource messageSource;
-//
-//    @Autowired
-//    private PasswordEncoder passwordEncoder;
-//
-//    @Autowired
-//    private RetailUserRepo retailUserRepo;
-//
-//    @Autowired
-//    private MailService mailService;
-//
-//    @GetMapping("/forgot/password")
-//    public String showResetPassword(Model model, HttpSession session, RedirectAttributes redirectAttributes){
-//
-//        ResetPasswordForm resetPasswordForm = new ResetPasswordForm();
-//        resetPasswordForm.step = "1";
-//        resetPasswordForm.username = (String) session.getAttribute("username");
-//        if ((String) session.getAttribute("username") == null){
-//            return "redirect:/login/retail";
-//        }
-//
-//        try{
-//            RetailUser retailUser = retailUserService.getUserByName((String) session.getAttribute("username"));
-//            Map<String, List<String>> qa = securityService.getUserQA(retailUser.getEntrustId(), retailUser.getEntrustGroup());
-//            if (qa != null && !qa.isEmpty()){
-//                List<String> questions= qa.get("questions");
-//                List<String> answers= qa.get("answers");
-//                String secQuestion = questions.get(0);
-//                if (questions == null){
-//                    redirectAttributes.addFlashAttribute("failure", "Invalid Credentials");
-//                    return "redirect:/login/retail";
-//                }else{
+package longbridge.controllers;
+
+import longbridge.exception.InternetBankingException;
+import longbridge.exception.PasswordException;
+import longbridge.exception.PasswordMismatchException;
+import longbridge.exception.PasswordPolicyViolationException;
+import longbridge.forms.CustResetPassword;
+import longbridge.forms.ResetPasswordForm;
+import longbridge.models.CorporateUser;
+import longbridge.models.Email;
+import longbridge.models.RetailUser;
+import longbridge.repositories.RetailUserRepo;
+import longbridge.services.*;
+import longbridge.utils.StringUtil;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.mail.MailException;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import javax.servlet.http.HttpSession;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+
+/**
+ * Created by Showboy on 20/07/2017.
+ */
+@Controller
+public class RetrieveCorpCredentialController {
+    private Locale locale = LocaleContextHolder.getLocale();
+
+    private Logger logger= LoggerFactory.getLogger(this.getClass());
+
+    @Autowired
+    private CorporateUserService corporateUserService;
+
+    @Autowired
+    private CorporateService corporateService;
+
+    @Autowired
+    private SecurityService securityService;
+
+    @Autowired
+    private PasswordPolicyService passwordPolicyService;
+
+    @Autowired
+    private MessageSource messageSource;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private RetailUserRepo retailUserRepo;
+
+    @Autowired
+    private MailService mailService;
+
+    @GetMapping("/corporate/forgot/password")
+    public String showResetPassword(WebRequest webRequest,Model model, HttpSession session, RedirectAttributes redirectAttributes){
+        String username = webRequest.getParameter("username");
+        String corpKey = webRequest.getParameter("corporateId");
+//        CorporateUser user = corporateUserService.getUserByName(username);
+//        Corporate corporate = corporateService.getCorporateByCustomerId(corpKey);
+        ResetPasswordForm resetPasswordForm = new ResetPasswordForm();
+        logger.info("the username and corpKey is {} and {}",username,corpKey);
+        resetPasswordForm.step = "1";
+        resetPasswordForm.username = (String) session.getAttribute("username");
+        if (username == null){
+            return "redirect:/login/corporate";
+        }
+        logger.info("the username and corpKey is {} and {}",username,corpKey);
+
+        try{
+            CorporateUser corporateUser = corporateUserService.getUserByNameAndCorpCif(username, corpKey);
+            Map<String, List<String>> qa = securityService.getUserQA(corporateUser.getEntrustId(), corporateUser.getEntrustGroup());
+            if (qa != null && !qa.isEmpty()){
+                List<String> questions= qa.get("questions");
+                List<String> answers= qa.get("answers");
+                String secQuestion = questions.get(0);
+                if (questions == null){
+                    redirectAttributes.addFlashAttribute("failure", "Invalid Credentials");
+                    return "redirect:/login/corporate";
+                }else{
 //                    logger.info("the question size {} and values {} ",questions.size(),questions);
-//                    session.setAttribute("secretAnswer", answers);
-//                    model.addAttribute("secQuestion", questions);
-//                    model.addAttribute("noOfQuestion", questions.size());
-//                }
-//
-//            }else {
-//                redirectAttributes.addFlashAttribute("failure", "Invalid Credentials");
-//                return "redirect:/login/retail";
-//            }
-//
-//
-//            model.addAttribute("forgotPasswordForm", resetPasswordForm);
-//            List<String> policies = passwordPolicyService.getPasswordRules();
-//            model.addAttribute("policies", policies);
-//            return "cust/passwordreset";
-//        }catch (InternetBankingException e){
-//            return "redirect:/login/retail";
-//        }
-//    }
-//
+                    session.setAttribute("secretAnswer", answers);
+                    model.addAttribute("secQuestion", questions);
+                    model.addAttribute("noOfQuestion", questions.size());
+                }
+
+            }else {
+                redirectAttributes.addFlashAttribute("failure", "Invalid Credentials");
+                return "redirect:/login/corporate";
+            }
+
+
+            model.addAttribute("forgotPasswordForm", resetPasswordForm);
+            List<String> policies = passwordPolicyService.getPasswordRules();
+            model.addAttribute("policies", policies);
+            return "corp/passwordreset";
+        }catch (InternetBankingException e){
+            return "redirect:/login/corporate";
+        }
+    }
 //    @PostMapping("/forgot/password")
 //    public @ResponseBody
 //    String resetPassword(WebRequest webRequest, RedirectAttributes redirectAttributes, HttpSession session){
@@ -256,4 +261,4 @@
 //            return e.getMessage();
 //        }
 //    }
-//}
+}

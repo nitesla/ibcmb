@@ -49,17 +49,17 @@ function validateAccountNo(accountNumber){
                 }else{
                     // $('input[name=securityQuestion]').val(secQues);
                     // console.log(data2);
-                    var container = document.getElementById("secQuestionsDiv");
-                    for (i=0;i<data2.length;i++){
-                        container.innerHTML += "<div class='form-group'>";
-                        container.innerHTML += "<label>"+data2[i]+"</label>";
-                        container.innerHTML += "</div>";
-                        container.innerHTML += "<div class='form-group'>";
-                        container.innerHTML += "<input type='text' required name='securityAnswer"+i+"' id='securityAnswer"+i +"' class='my-select required' placeholder='Security Answer'/>";
-                        container.innerHTML += "</div>";
-                        
-                    }
-                    container.innerHTML += "<input type='hidden' id='noOfSecQn' name='noOfSecQn' value='"+data2.length+"'/>"
+                        var container = document.getElementById("secQuestionsDiv");
+                    container.innerHTML = "";
+                        for (i = 0; i < data2.length; i++) {
+                            container.innerHTML += "<div class='form-group'>";
+                            container.innerHTML += "<label>" + data2[i] + "</label>";
+                            container.innerHTML += "</div>";
+                            container.innerHTML += "<div class='form-group'>";
+                            container.innerHTML += "<input type='text' required name='securityAnswer" + i + "' id='securityAnswer" + i + "' class='my-select required' placeholder='Security Answer'/>";
+                            container.innerHTML += "</div>";
+                        }
+                        $('input[name=noOfSecQn]').val(data2.length);
                 }
             },
         })

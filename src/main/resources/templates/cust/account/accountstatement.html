@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{ret-layout}">
    
-    <body onload="currentBar('Transaction History')">
+    <body onload="currentBar('Last 10 Transactions')">
 
         <div layout:fragment="content">
             <div class="col-md-5 col-sm-5 ">
@@ -15,8 +15,15 @@
             <div class="col-xs-12 ml-15 " >
                 <div class="col-xs-11 no-pad-lef table-responsive bg-white alert">
                    <form method="post">
-                            <h2 class="page_header">Last 10 transaction</h2>
 
+                       <div class="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
+                           <div class="btn-group" role="group" aria-label="First group">
+                               <a type="button" th:href="@{/retail/account/viewonlyhistory}" class="btn btn-default ">Transaction History</a>
+                               <a  type="button" class="btn bt-select btn-default " th:href="@{/retail/account/viewstatement}" > Account Statement</a>
+                           </div>
+                       </div>
+                       <br/>
+                       <div class="table-responsive">
                             <table class="table table-responsive" id="users">
                                 <thead>
                                 <tr>
@@ -48,7 +55,7 @@
                                 </tbody>
 
                             </table>
-
+                        </div>
                         </form>
                 </div>
             </div>
