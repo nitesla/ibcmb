@@ -67,6 +67,7 @@ public class AccountServiceImpl implements AccountService {
         account.setStatus(acct.getAccountStatus());
         account.setCustomerId(acct.getCustomerId());
         account.setAccountName(acct.getAccountName());
+        account.setPreferredName(acct.getAccountName());
         account.setAccountNumber(acct.getAccountNumber());
         account.setCurrencyCode(acct.getAccountCurrency());
         account.setSolId(acct.getSolId());

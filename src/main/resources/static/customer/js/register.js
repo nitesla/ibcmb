@@ -342,8 +342,7 @@ function registerUser(){
                 if(data==="true"){
                     $('#returnValue').val(true);
                 }else {
-                    var result = "Failed to complete registration. Please try again";
-                    $('#errorMess').text(result);
+                    $('#errorMess').text(data);
                     $('#myModalError').modal('show');
                 }
             }
