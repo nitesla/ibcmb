@@ -84,40 +84,57 @@
 
 
     function validateSecAnswer(secAnswers){
+       
+       
+        
         var secAnswer = secAnswers;
         var sent = "";
         var result;
         var username = $('input[name="username"]').val();
         // console.log("validating "+secAnswer);
+
+        $('#myLoader').modal('show');
         $.ajax({
             type:'GET',
             url:"/rest/secAns",
+            cache: false,
             data: {username : username,secAnswers:secAnswer},
-            async:false,
+            async:true,
 
             success:function(data){
                 result = ''+String(data);
                 if(result == "true"){
+                    sent = sendGenPassword();
+            if(String(sent) == "true"){
+                //  $('#myLoader').modal('close');
+                  $('#myLoader').modal('hide');
+                return true;
+            }else {
+                // $('#myLoader').modal('close');
+                 $('#myLoader').modal('hide');
+                return false;
+            }
+                    
                     //$('input[name=username]').val(result);
                 }else{
                     //invalid account number
                     //alert("Account number not found");
+                     // $('#myLoader').modal('close');
+             $('#myLoader').modal('hide');
+            return false;
                     $('#errorMess').text(result);
+                  
+
                     $('#myModalError').modal('show');
                 }
             }
         });
 
-        if(result == "true"){
-            sent = sendGenPassword();
-            if(String(sent) == "true"){
-                return true;
-            }else {
-                return false;
-            }
-        }else{
-            return false;
-        }
+        // if(result == "true"){
+            
+        // }else{
+           
+        // }
     }
 
     function sendGenPassword() {
