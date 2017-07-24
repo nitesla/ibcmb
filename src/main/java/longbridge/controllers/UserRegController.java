@@ -427,11 +427,11 @@ public class UserRegController {
         while(iterator.hasNext()){
             logger.info(iterator.next());
         }
-
-
-        String accountNumber = webRequest.getParameter("acct");
-        String securityQuestion = webRequest.getParameter("securityQuestion");
-        String securityAnswer = webRequest.getParameter("securityAnswer");
+//
+//
+//        String accountNumber = webRequest.getParameter("acct");
+//        String securityQuestion = webRequest.getParameter("securityQuestion");
+//        String securityAnswer = webRequest.getParameter("securityAnswer");
         String customerId = webRequest.getParameter("customerId");
         try {
             if ("".equals(customerId) || customerId == null) {
@@ -446,10 +446,10 @@ public class UserRegController {
             Map<String, List<String>> qa = securityService.getUserQA(user.getEntrustId(), user.getEntrustGroup());
             //List<String> sec = null;
             if (qa != null){
-                List<String> questions= qa.get("questions");
+//                List<String> questions= qa.get("questions");
                 List<String> answers= qa.get("answers");
                 String result = StringUtil.compareAnswers(webRequest,answers);
-                    secAnswer = answers.stream().filter(Objects::nonNull).findFirst().orElse("");
+//                    secAnswer = answers.stream().filter(Objects::nonNull).findFirst().orElse("");
 
                 if (result.equalsIgnoreCase("true")){
                     logger.debug("User Info {}:", user.getUserName());

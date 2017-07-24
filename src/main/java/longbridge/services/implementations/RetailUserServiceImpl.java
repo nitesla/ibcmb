@@ -558,5 +558,19 @@ public class RetailUserServiceImpl implements RetailUserService {
         Page<RetailUserDTO> pageImpl = new PageImpl<RetailUserDTO>(dtOs, pageDetails, t);
         return pageImpl;
     }
+    @Override
+    public void increaseNoOfTokenAttempt(RetailUser retailUser) {
+        if(retailUser.getNoOfTokenAttempts() ==null){
+            retailUser.setNoOfTokenAttempts(0) ;
+        }else {
+        retailUser.setNoOfTokenAttempts(retailUser.getNoOfTokenAttempts()+1);
+        }
+        retailUserRepo.save(retailUser);
+    }
+    @Override
+    public void resetNoOfTokenAttempt(RetailUser retailUser) {
+            retailUser.setNoOfTokenAttempts(0) ;
+        retailUserRepo.save(retailUser);
+    }
 
 }
