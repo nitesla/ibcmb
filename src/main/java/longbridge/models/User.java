@@ -3,11 +3,9 @@ package longbridge.models;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.springframework.beans.factory.annotation.Value;
 
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.ManyToOne;
-import javax.persistence.MappedSuperclass;
+import javax.persistence.*;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -29,7 +27,8 @@ public class User extends AbstractEntity{
     protected Date lockedUntilDate;
     protected Date lastLoginDate;
     protected int noOfLoginAttempts;
-    protected int noOfTokenAttempts;
+    @Column(nullable=true)
+    protected Integer noOfTokenAttempts =0;
 
 
     //@Enumerated(value = EnumType.STRING)
@@ -185,7 +184,7 @@ public class User extends AbstractEntity{
         this.userType = userType;
     }
 
-    public int getNoOfTokenAttempts() {
+    public Integer getNoOfTokenAttempts() {
         return noOfTokenAttempts;
     }
 

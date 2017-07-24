@@ -49,9 +49,14 @@ public class TokenManagementController {
 
     @GetMapping
     public String getRetailToken( HttpServletRequest httpServletRequest, Principal principal, Model model){
+        Integer noOfAttempts = 0;
         httpServletRequest.getSession().setAttribute("2FA", "2FA");
         model.addAttribute("username", principal.getName());
-        model.addAttribute("noOfAttempts",0);
+        RetailUser user = retailUserService.getUserByName(principal.getName());
+        if (user.getNoOfTokenAttempts() != null){
+            noOfAttempts = user.getNoOfTokenAttempts();
+        }
+        model.addAttribute("noOfAttempts",noOfAttempts);
         return "/cust/logintoken";
     }
 
@@ -59,7 +64,7 @@ public class TokenManagementController {
     public String performTokenAuthentication(HttpServletRequest request, Principal principal, RedirectAttributes redirectAttributes, Locale locale,Model model){
 
         String tokenCode = request.getParameter("token");
-        int noOfAttempts = 0;
+        Integer noOfAttempts = 0;
         RetailUser user = retailUserService.getUserByName(principal.getName());
         try{
             boolean result = securityService.performTokenValidation(user.getEntrustId(),user.getEntrustGroup(),tokenCode);
@@ -67,6 +72,7 @@ public class TokenManagementController {
                 if( request.getSession().getAttribute("2FA") !=null) {
                     request.getSession().removeAttribute("2FA");
                 }
+                retailUserService.resetNoOfTokenAttempt(user);
                 redirectAttributes.addFlashAttribute("message",messageSource.getMessage("token.auth.success",null,locale)) ;
                 return "redirect:/retail/dashboard";
             }

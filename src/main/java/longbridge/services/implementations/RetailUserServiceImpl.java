@@ -560,7 +560,16 @@ public class RetailUserServiceImpl implements RetailUserService {
     }
     @Override
     public void increaseNoOfTokenAttempt(RetailUser retailUser) {
-        retailUser.setNoOfTokenAttempts(retailUser.getNoOfTokenAttempts() +1);
+        if(retailUser.getNoOfTokenAttempts() ==null){
+            retailUser.setNoOfTokenAttempts(0) ;
+        }else {
+        retailUser.setNoOfTokenAttempts(retailUser.getNoOfTokenAttempts()+1);
+        }
+        retailUserRepo.save(retailUser);
+    }
+    @Override
+    public void resetNoOfTokenAttempt(RetailUser retailUser) {
+            retailUser.setNoOfTokenAttempts(0) ;
         retailUserRepo.save(retailUser);
     }
 

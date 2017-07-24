@@ -122,9 +122,11 @@
                     </div>
                     <div >
                        <!--< th:if="$(noOfAttempts >=3)"-->
-                        <input type="text" th:value="${noOfAttempts}"/>
+                        <!--<input type="text" th:value="${noOfAttempts}"/>-->
+                        <div th:if="${noOfAttempts >=3}">
                     <p>Don't have a token?</p>
                         <a href='javascript:sendOtp()' class="btn btn-link token-btn required-step" id="getOtp">Send Otp</a>
+                        </div>
                     </div>
 
             </div>
