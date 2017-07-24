@@ -641,6 +641,12 @@ public class CorporateServiceImpl implements CorporateService {
             createUserOnEntrustAndSendCredentials(corpUser);
         }
 
+        for(CorpTransferRuleDTO transferRuleDTO: corporateRequestDTO.getCorpTransferRules()){
+            CorpTransRule corpTransRule = new CorpTransRule();
+            corpTransRule.setLowerLimitAmount(new BigDecimal(transferRuleDTO.getLowerLimitAmount()));
+            corpTransRule.setUpperLimitAmount(new BigDecimal(transferRuleDTO.getUpperLimitAmount()));
+        }
+
         return  null;
     }
 
