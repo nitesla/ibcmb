@@ -14,7 +14,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.DefaultRedirectStrategy;
 import org.springframework.security.web.RedirectStrategy;
 import org.springframework.security.web.WebAttributes;
@@ -45,15 +44,15 @@ public class CorporateAuthenticationSuccessHandler implements AuthenticationSucc
     @Override
     public void onAuthenticationSuccess(final HttpServletRequest request, final HttpServletResponse response, final Authentication authentication) throws IOException {
         handle(request, response, authentication);
-        HttpSession session = request.getSession(false);
+        final HttpSession session = request.getSession(false);
         if (session != null) {
-//            session.invalidate();
-//            session = request.getSession();
+
+
             sessionUtils.setTimeout(session);
             String s = authentication.getName();
 
             String userName = "";
-            Long corpId ;
+            String corpId = "";
             if (s != null) {
                 try {
                     userName = s;
@@ -67,13 +66,11 @@ public class CorporateAuthenticationSuccessHandler implements AuthenticationSucc
             }
           //  CorporateUser user = corporateUserRepo.findFirstByUserNameIgnoreCaseAndCorporate_CustomerIdIgnoreCase(userName, corpId);
 
-//           CustomUserPrincipal userPrincipal=(CustomUserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-           CorporateUser user = corporateUserRepo.findFirstByUserNameIgnoreCase(userName);
-//            corpId= userPrincipal.getCorpId();
-//            CorporateUser user = corporateUserRepo.findFirstByUserNameIgnoreCaseAndCorporate_Id(userName,corpId);
-            if (user != null) {
+            CorporateUser user = corporateUserRepo.findFirstByUserNameIgnoreCase(userName);
+            if (user != null)
+
                 sessionUtils.validateExpiredPassword(user, session);
-            }
+
             user.setLastLoginDate(new Date());
             failedLoginService.loginSucceeded(user);
 

@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{corp-layout}">
 
-<body onload="currentBar('Last 10 Transaction')">
+<body onload="currentBar('Last 10 Transactions')">
 
 <div layout:fragment="content">
     <div class="col-md-5 col-sm-5 ">
@@ -16,7 +16,14 @@
         <div class="col-xs-11  table-responsive no-mt no-bd alert">
             <form method="post">
 
-
+                <div class="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
+                    <div class="btn-group" role="group" aria-label="First group">
+                        <a type="button" th:href="@{/corporate/account/viewonlyhistory}" class="btn btn-default ">Transaction History</a>
+                        <a  type="button" class="btn bt-select btn-default " th:href="@{/corporate/account/viewstatement}" > Account Statement</a>
+                    </div>
+                </div>
+                <br/>
+                <div class="table-responsive">
                 <table class="table" id="users">
                     <thead>
                     <tr>
@@ -39,13 +46,13 @@
                         <td th:text="${list.tranId}"></td>
                         <td th:text="${#numbers.formatDecimal(list.balance, 0, 'COMMA', 2, 'POINT')}"></td>
 
-                        <td><a target="_blank"  th:href="@{'/corporate/account/' + ${list.tranId} + '/downloadhistory'}">Print</a></td>
+                        <td><a target="_blank"  th:href="@{'/corporate/account/' + ${list.tranId} + '/downloadhistory'}"><i class="fa fa-print" style="font-size:16px;"></i></a></td>
 
                     </tr>
                     </tbody>
 
                 </table>
-
+</div>
             </form>
 
         </div>
@@ -55,6 +62,9 @@
 
 
 <th:block layout:fragment="scripts">
+    <script th:src="@{~/customer/js/dataTables.bootstrap.js}"></script>
+    <script th:src="@{~/customer/js/dataTables.select.js}"></script>
+
 
     <script th:inline="javascript">
 

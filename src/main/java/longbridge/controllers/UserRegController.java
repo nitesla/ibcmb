@@ -14,6 +14,7 @@ import longbridge.models.Email;
 import longbridge.models.RetailUser;
 import longbridge.models.UserType;
 import longbridge.services.*;
+import longbridge.utils.StringUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -148,20 +149,22 @@ public class UserRegController {
     }
 
     @GetMapping("/rest/secQues/{cifId}")
-    public @ResponseBody String getSecQuestionFromNumber(@PathVariable String cifId, HttpSession session){
+    public @ResponseBody List<String> getSecQuestionFromNumber(@PathVariable String cifId, HttpSession session){
         String secQuestion = "";
         logger.info("cifId : " + cifId);
 
         RetailUser user = retailUserService.getUserByCustomerId(cifId);
         logger.info("USER NAME {}", user);
-
+        List<String> question = null;
         if (user != null){
             logger.info("USER NAME {}", user.getUserName());
             session.setAttribute("username", user.getUserName());
             Map<String, List<String>> qa = securityService.getUserQA(user.getEntrustId(), user.getEntrustGroup());
             //List<String> sec = null;
+
             if (qa != null && !qa.isEmpty()){
-                List<String> question = qa.get("questions");
+//                logger.info("qs {}",qa);
+                question = qa.get("questions");
                 secQuestion = question.stream().filter(Objects::nonNull).findFirst().orElse("");
                 logger.info("question {}", secQuestion);
 
@@ -173,7 +176,7 @@ public class UserRegController {
             secQuestion = "";
         }
 
-        return secQuestion;
+        return question;
     }
 
     @GetMapping("/rest/getSecQues/{username}")
@@ -424,13 +427,12 @@ public class UserRegController {
         while(iterator.hasNext()){
             logger.info(iterator.next());
         }
-
-
-        String accountNumber = webRequest.getParameter("acct");
-        String securityQuestion = webRequest.getParameter("securityQuestion");
-        String securityAnswer = webRequest.getParameter("securityAnswer");
+//
+//
+//        String accountNumber = webRequest.getParameter("acct");
+//        String securityQuestion = webRequest.getParameter("securityQuestion");
+//        String securityAnswer = webRequest.getParameter("securityAnswer");
         String customerId = webRequest.getParameter("customerId");
-
         try {
             if ("".equals(customerId) || customerId == null) {
                 logger.error("Account Number not valid");
@@ -444,15 +446,12 @@ public class UserRegController {
             Map<String, List<String>> qa = securityService.getUserQA(user.getEntrustId(), user.getEntrustGroup());
             //List<String> sec = null;
             if (qa != null){
-                List<String> questions= qa.get("questions");
+//                List<String> questions= qa.get("questions");
                 List<String> answers= qa.get("answers");
+                String result = StringUtil.compareAnswers(webRequest,answers);
+//                    secAnswer = answers.stream().filter(Objects::nonNull).findFirst().orElse("");
 
-
-                    secAnswer = answers.stream().filter(Objects::nonNull).findFirst().orElse("");
-                    logger.info("answerSec {}", secAnswer);
-
-
-                if (secAnswer.equalsIgnoreCase(securityAnswer)){
+                if (result.equalsIgnoreCase("true")){
                     logger.debug("User Info {}:", user.getUserName());
                     //Send Username to Email
                     Email email = new Email.Builder()

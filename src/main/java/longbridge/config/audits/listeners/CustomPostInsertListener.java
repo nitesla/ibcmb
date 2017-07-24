@@ -22,12 +22,12 @@ public class CustomPostInsertListener extends EnversPostInsertEventListenerImpl 
 	 *
 	 */
 
-	public CustomPostInsertListener(EnversService enversService) {
+	public CustomPostInsertListener(EnversService enversService)
+	{
 		super(enversService);
 	}
 
 	@Override
-
 	public void onPostInsert(PostInsertEvent event) {
 		String s = event.getEntity().getClass().getSimpleName();
 		if (CustomJdbcUtil.auditEntity(s)) {

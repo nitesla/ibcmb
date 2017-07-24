@@ -214,10 +214,10 @@
         $("#otpmodal").hide();
 
     });
-//        $("#getOtp").click(function() {
-//            $("#tokenmodal").hide();
-//            $("#otpmodal").show();
-//        });
+        $("#getOtp").click(function() {
+            $("#tokenmodal").hide();
+            $("#otpmodal").show();
+        });
     $("#usetoken").click(function() {
         $("#tokenmodal").show();
         $("#otpmodal").hide();
@@ -249,8 +249,8 @@
                     document.getElementById("successMess").textContent = "Successfully sent";
 
                 }else{
-                    $("#tokenModalCorp").show();
-                    $("#otpmodalCorp").hide();
+//                    $("#tokenModalCorp").show();
+//                    $("#otpmodalCorp").hide();
                     if(reponse==="empty"){
                         $('#loading-icon').hide();
                         $('#errorMess').show();

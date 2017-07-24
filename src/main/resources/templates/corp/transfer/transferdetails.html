@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{corp-layout}">
 
-<body onload="currentBar('transaction successful')">
+<body onload="currentBar('transaction summary')">
 
 <div layout:fragment="content">
     <div class="col-md-5 col-sm-5 ">
@@ -14,43 +14,52 @@
 
     <div class="col-xs-12 ml-15 " >
         <div class="col-xs-12 text-center col-sm-offset-3 col-sm-6 no-pad-lef  no-mt no-bd alert">
-            
+
                         <table class="table table-hover ">
                             <tr>
 
+
                                 <th>Source account</th>
-                                <td th:text="${corpTransferRequest.customerAccountNumber}"></td>
+                                <td th:text="${transRequest.customerAccountNumber}"></td>
 
                             </tr>
                             <tr>
 
                                 <th>Destination account</th>
-                                <td th:text="${corpTransferRequest.beneficiaryAccountNumber}"></td>
+                                <td th:text="${transRequest.beneficiaryAccountNumber}"></td>
 
                             </tr>
                             <tr>
 
                                 <th>Amount</th>
-                                <td th:text="${corpTransferRequest.amount}"></td>
+                                <td th:text="${transRequest.amount}"></td>
 
                             </tr>
                             <tr>
 
                                 <th>Remarks</th>
-                                <td th:text="${corpTransferRequest.remarks}"></td>
+                                <td th:text="${transRequest.remarks}"></td>
+
 
                             </tr>
                         </table>
 
+            <form method="post" th:action="@{/corporate/transfer/receipt}"
+                  th:object="${corpTransferRequest}">
+                <input type="hidden" th:field="*{customerAccountNumber}"/>
+                <input type="hidden" th:field="*{beneficiaryAccountNumber}"/>
+                <input type="hidden" th:field="*{beneficiaryAccountName}"/>
+                <input type="hidden" th:field="*{amount}"/>
+                <input type="hidden" th:field="*{remarks}"/>
 
                                 <div class="form-group">
 
 
-                                    <a style="font-size: 13px !important;"  class="btn btn-link required-step trans-but my-buttons" target="_blank" th:href="@{'/corporate/transfer/' + ${corpTransferRequest.id} +'/receipt'}" >Receipt</a>
-
+                                <span th:if="${corporateType=='SOLE'}" ><button type="submit" style="font-size: 13px !important;"  class="btn btn-link required-step trans-but my-buttons" target="_blank">Receipt</button></span>
                                     <a style="font-size: 13px !important;" class="btn btn-link less-required trans-but my-buttons" th:href="@{/corporate/dashboard}" >Home</a>
                                     <a style="font-size: 13px !important;" class="btn btn-link less-required trans-but my-buttons" th:href="@{/corporate/transfer/}" >Make another transfer</a>
                                 </div>
+                </form>
 
         </div>
     </div>
@@ -62,7 +71,7 @@
 
 
 
-   
+
 </th:block>
 
 </body>

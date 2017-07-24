@@ -699,4 +699,18 @@ public class CorporateUserServiceImpl implements CorporateUserService {
         Page<CorporateUserDTO> pageImpl = new PageImpl<CorporateUserDTO>(dtOs, pageDetails, t);
         return pageImpl;
     }
+    @Override
+    public void increaseNoOfTokenAttempt(CorporateUser corporateUser) {
+        if(corporateUser.getNoOfTokenAttempts() ==null){
+            corporateUser.setNoOfTokenAttempts(0) ;
+        }else {
+            corporateUser.setNoOfTokenAttempts(corporateUser.getNoOfTokenAttempts()+1);
+        }
+        corporateUserRepo.save(corporateUser);
+    }
+    @Override
+    public void resetNoOfTokenAttempt(CorporateUser corporateUser) {
+        corporateUser.setNoOfTokenAttempts(0) ;
+        corporateUserRepo.save(corporateUser);
+    }
 }
