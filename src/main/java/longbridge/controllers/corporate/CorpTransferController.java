@@ -3,6 +3,7 @@ package longbridge.controllers.corporate;
 
 import longbridge.dtos.CorpLocalBeneficiaryDTO;
 import longbridge.dtos.CorpTransferRequestDTO;
+import longbridge.dtos.TransferRequestDTO;
 import longbridge.exception.InternetBankingException;
 import longbridge.exception.InternetBankingTransferException;
 import longbridge.exception.TransferErrorService;
@@ -220,7 +221,7 @@ public class CorpTransferController {
             corpTransferRequestDTO.setCorporateId(corporateId);
             String response = transferService.addTransferRequest(corpTransferRequestDTO);
 
-
+            System.out.println("response >>>>>>> "+response);
             model.addAttribute("transRequest", corpTransferRequestDTO);
             model.addAttribute("message", response);
             return "corp/transfer/transferdetails";
@@ -370,6 +371,14 @@ public class CorpTransferController {
         modelMap.put("tranDate", DateFormatter.format(new Date()));
         ModelAndView modelAndView = new ModelAndView(view, modelMap);
         return modelAndView;
+    }
+
+
+    @GetMapping("/auth")
+    public String authenticate(HttpServletRequest httpServletRequest,Model model) throws Exception {
+        CorpTransferRequestDTO dto = (CorpTransferRequestDTO) httpServletRequest.getSession().getAttribute("corpTransferRequest");
+        if (dto != null) model.addAttribute("corpTransferRequest", dto);
+        return "/corp/transfer/transferauth";
     }
 
 }

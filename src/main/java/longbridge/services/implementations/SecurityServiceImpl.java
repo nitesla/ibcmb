@@ -8,6 +8,7 @@ import longbridge.models.RetailUser;
 import longbridge.security.IpAddressUtils;
 import longbridge.services.IntegrationService;
 import longbridge.services.SecurityService;
+import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
@@ -88,7 +89,7 @@ public class SecurityServiceImpl implements SecurityService {
 
 	@Override
 	public boolean performTokenValidation(String username, String group, String tokenString) {
-		boolean result = false;
+		boolean result ;
 
 		try {
 			StringWriter writer = new StringWriter();
@@ -139,7 +140,7 @@ public class SecurityServiceImpl implements SecurityService {
 			this.context.put("appDesc", appDesc);
 			this.context.put("otp", otp);
 			this.context.put("appGroup", group);
-			this.context.put("userName", username);
+			this.context.put("userName", escapeField(username));
 
 			this.t.merge(this.context, writer);
 			String payload = writer.toString();
@@ -259,9 +260,9 @@ public class SecurityServiceImpl implements SecurityService {
 			this.context.put("appCode", appCode);
 			this.context.put("appDesc", appDesc);
 			this.context.put("otp", enableOtp);
-			this.context.put("fullname", fullName);
+			this.context.put("fullname", escapeField(fullName));
 			this.context.put("appGroup", group);
-			this.context.put("userName", username);
+			this.context.put("userName", escapeField(username));
 			this.t.merge(this.context, writer);
 			String payload = writer.toString();
 			EntrustServiceResponse webServiceResponse = httpClient.sendHttpRequest(payload);
@@ -801,6 +802,7 @@ public class SecurityServiceImpl implements SecurityService {
 	public boolean unLockUser(String username, String group) {
 
 		boolean result = false;
+		username= StringEscapeUtils.escapeXml(username);
 
 		try {
 			StringWriter writer = new StringWriter();
@@ -921,4 +923,9 @@ public class SecurityServiceImpl implements SecurityService {
 		}
 		return result;
 	}
+
+
+	private String escapeField(String s){
+	    return StringEscapeUtils.escapeHtml(s);
+    }
 }

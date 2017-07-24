@@ -33,54 +33,24 @@ public class RetailTransferAuthInterceptor extends HandlerInterceptorAdapter {
                 (setting != null && setting.isEnabled())
                         &&
                         httpServletRequest.getSession().getAttribute("auth-needed") == null
-
-                )
-        {
+                ) {
 
             if (httpServletRequest.getParameter("add") != null)
                 httpServletRequest.getSession().setAttribute("add", "add");
 
 
-        httpServletRequest.getSession().setAttribute("auth-needed", "auth-needed");
-
-        ModelAndView view = new ModelAndView("forwarded-view");
-        TransferRequestDTO dto = (TransferRequestDTO) httpServletRequest.getSession().getAttribute("transferRequest");
-
-        if (dto != null) view.addObject("transferRequest", dto);
-
-        view.setViewName("/cust/transfer/transferauth");
-
-//                 httpServletResponse.sendRedirect(httpServletRequest.getContextPath()+"/retail/transfer/interbank/auth");
-
-        throw new ModelAndViewDefiningException(view);
-
-    }
+            httpServletRequest.getSession().setAttribute("auth-needed", "auth-needed");
+            httpServletResponse.sendRedirect(httpServletRequest.getContextPath() + "/retail/transfer/auth");
+            return false;
+        }
 
 
         return true;
-}
+    }
 
     @Override
     public void postHandle(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Object o, ModelAndView modelAndView) throws Exception {
 
-        // String uri=httpServletRequest.getRequestURI();
-
-
-        // if (httpServletRequest.getSession().getAttribute("auth-needed")!=null)
-
-//          if ( httpServletRequest.getSession().getAttribute("AUTH") !=null){
-//
-//
-//
-//              TransferRequestDTO dto= (TransferRequestDTO) httpServletRequest.getSession().getAttribute("transferRequest");
-//
-//              if (dto!=null) modelAndView.addObject("transferRequest", dto);
-//
-//
-//              //modelAndView.addObject("passwordRules", passwordPolicyService.getPasswordRules());
-//
-//              modelAndView.setViewName("/transfer/transferauth");
-//          }
 
 
     }
