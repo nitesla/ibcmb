@@ -219,6 +219,8 @@ public interface CorporateService{
 
     void addAccounts(Corporate corporate);
 
+    String addCorporateRequest(CorporateRequestDTO requestDTO);
+
     void createUserOnEntrustAndSendCredentials(CorporateUser corporateUser);
 
     Page<CorpTransferRuleDTO> getCorporateRules(Long corpId, Pageable pageable);

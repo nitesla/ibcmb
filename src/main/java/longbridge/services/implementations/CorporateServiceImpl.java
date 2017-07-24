@@ -613,6 +613,11 @@ public class CorporateServiceImpl implements CorporateService {
         return applicableTransferRule;
     }
 
+    @Override
+    public String addCorporateRequest(CorporateRequestDTO requestDTO) {
+        return null;
+    }
+
 
 //    public CorporateRole getNextRoleForAuthorization(PendAuth pendAuth){
 //        pendAuth.

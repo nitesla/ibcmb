@@ -15,6 +15,10 @@ public class CorporateRequestDTO {
     private Long id;
     private int version;
     private String corporateType;
+    private String corporateName;
+    private String bvn;
+    private  String status;
+    private String rcNumber;
     @NotEmpty(message = "customerId")
     private String customerId;
     private String createdOn;
@@ -46,6 +50,14 @@ public class CorporateRequestDTO {
         this.corporateType = corporateType;
     }
 
+    public String getCorporateName() {
+        return corporateName;
+    }
+
+    public void setCorporateName(String corporateName) {
+        this.corporateName = corporateName;
+    }
+
     public String getCustomerId() {
         return customerId;
     }
@@ -60,6 +72,30 @@ public class CorporateRequestDTO {
 
     public void setCreatedOn(String createdOn) {
         this.createdOn = createdOn;
+    }
+
+    public String getBvn() {
+        return bvn;
+    }
+
+    public void setBvn(String bvn) {
+        this.bvn = bvn;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public String getRcNumber() {
+        return rcNumber;
+    }
+
+    public void setRcNumber(String rcNumber) {
+        this.rcNumber = rcNumber;
     }
 
     public List<CorporateUserDTO> getCorporateUsers() {
