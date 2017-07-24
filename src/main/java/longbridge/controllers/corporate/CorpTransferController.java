@@ -223,11 +223,11 @@ public class CorpTransferController {
 
             model.addAttribute("transRequest", corpTransferRequestDTO);
             logger.info("transRequest {}",corpTransferRequestDTO);
-            request.getSession().setAttribute("ctransRequest",corpTransferRequestDTO);
             model.addAttribute("message", response);
-            return "corp/transfer/transferdetails";
+            return "corp/account/transferdetails";
 
         } catch (InternetBankingTransferException ex) {
+
             ex.printStackTrace();
 
             String errorMessage = transferErrorService.getMessage(ex);
@@ -351,6 +351,7 @@ public class CorpTransferController {
     //The receipt for multi corporate user
     @RequestMapping(path = "{id}/receipt", method = RequestMethod.GET)
     public ModelAndView report(@PathVariable Long id, HttpServletRequest servletRequest, Principal principal) throws Exception {
+        servletRequest.getSession().setAttribute("newId",id);
         CorporateUser corporateUser = corporateUserService.getUserByName(principal.getName());
         JasperReportsPdfView view = new JasperReportsPdfView();
         view.setUrl("classpath:jasperreports/rpt_receipt.jrxml");
