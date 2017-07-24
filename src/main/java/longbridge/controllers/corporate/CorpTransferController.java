@@ -222,6 +222,8 @@ public class CorpTransferController {
 
 
             model.addAttribute("transRequest", corpTransferRequestDTO);
+            logger.info("transRequest {}",corpTransferRequestDTO);
+            request.getSession().setAttribute("ctransRequest",corpTransferRequestDTO);
             model.addAttribute("message", response);
             return "corp/transfer/transferdetails";
 
@@ -346,7 +348,7 @@ public class CorpTransferController {
         return transferUtils.getLimit(accountNumber);
     }
 
-
+    //The receipt for multi corporate user
     @RequestMapping(path = "{id}/receipt", method = RequestMethod.GET)
     public ModelAndView report(@PathVariable Long id, HttpServletRequest servletRequest, Principal principal) throws Exception {
         CorporateUser corporateUser = corporateUserService.getUserByName(principal.getName());
@@ -366,6 +368,31 @@ public class CorpTransferController {
         modelMap.put("acctNo2", transferService.getTransfer(id).getBeneficiaryAccountNumber());
         modelMap.put("acctNo1", transferService.getTransfer(id).getCustomerAccountNumber());
         modelMap.put("refNUm", transferService.getTransfer(id).getReferenceNumber());
+        modelMap.put("date",DateFormatter.format(new Date()));
+        modelMap.put("tranDate", DateFormatter.format(new Date()));
+        ModelAndView modelAndView = new ModelAndView(view, modelMap);
+        return modelAndView;
+    }
+
+    //Receipt for sole corporate user
+    @RequestMapping(path = "/receipt", method = RequestMethod.GET)
+    public ModelAndView getreport(@ModelAttribute("corpTransferRequest") @Valid CorpTransferRequestDTO corpTransferRequestDTO, Model model, HttpServletRequest servletRequest, Principal principal) throws Exception {
+        CorporateUser corporateUser = corporateUserService.getUserByName(principal.getName());
+         JasperReportsPdfView view = new JasperReportsPdfView();
+        view.setUrl("classpath:jasperreports/rpt_receipt.jrxml");
+        view.setApplicationContext(appContext);
+        Map<String, Object> modelMap = new HashMap<>();
+        modelMap.put("datasource", new ArrayList<>());
+        modelMap.put("amount", corpTransferRequestDTO.getAmount());
+        modelMap.put("recipient", corpTransferRequestDTO.getBeneficiaryAccountName());
+        modelMap.put("recipient",corpTransferRequestDTO.getBeneficiaryAccountName());
+        modelMap.put("AccountNum", corpTransferRequestDTO.getCustomerAccountNumber());
+        modelMap.put("sender", corporateUser.getFirstName() + " " + corporateUser.getLastName());
+        modelMap.put("remarks", corpTransferRequestDTO.getRemarks());
+        modelMap.put("recipientBank", corpTransferRequestDTO.getFinancialInstitution().getInstitutionName());
+        modelMap.put("acctNo2", corpTransferRequestDTO.getBeneficiaryAccountNumber());
+        modelMap.put("acctNo1", corpTransferRequestDTO.getCustomerAccountNumber());
+        modelMap.put("refNUm", corpTransferRequestDTO.getReferenceNumber());
         modelMap.put("date",DateFormatter.format(new Date()));
         modelMap.put("tranDate", DateFormatter.format(new Date()));
         ModelAndView modelAndView = new ModelAndView(view, modelMap);
