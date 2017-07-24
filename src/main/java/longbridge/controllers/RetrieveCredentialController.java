@@ -34,6 +34,8 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import javax.servlet.http.HttpSession;
 import java.util.*;
 
+import static longbridge.utils.StringUtil.compareAnswers;
+
 /**
  * Created by Showboy on 17/07/2017.
  */
@@ -85,7 +87,7 @@ public class RetrieveCredentialController {
                     redirectAttributes.addFlashAttribute("failure", "Invalid Credentials");
                     return "redirect:/login/retail";
                 }else{
-                    logger.info("the question size {} and values {} ",questions.size(),questions);
+//                    logger.info("the question size {} and values {} ",questions.size(),questions);
                     session.setAttribute("secretAnswer", answers);
                     model.addAttribute("secQuestion", questions);
                     model.addAttribute("noOfQuestion", questions.size());
@@ -192,6 +194,35 @@ public class RetrieveCredentialController {
                         return "true";
                     }
                 }
+            }
+            //return (String) session.getAttribute("username");
+        }catch (Exception e){
+            logger.info(e.getMessage());
+            return messageSource.getMessage("sec.ans.failed", null, locale);
+        }
+        return messageSource.getMessage("sec.ans.failed", null, locale);
+    }
+    @GetMapping("/rest/secAns/cifId")
+    public @ResponseBody String getSecAnsByCustomerId(WebRequest webRequest, HttpSession session){
+        try{
+            //confirm security question is correct
+            int noOfMismatch = 0;
+            String customerId = webRequest.getParameter("customerId");
+            logger.info("answer 1 {}",webRequest.getParameter("secAnswers"));
+            logger.info("cid id {}",webRequest.getParameter("customerId"));
+            List<String> answers = StringUtil.splitByComma(webRequest.getParameter("secAnswers"));
+            RetailUser retailUser = retailUserService.getUserByCustomerId(customerId);
+            Map<String, List<String>> qa = securityService.getUserQA(retailUser.getEntrustId(), retailUser.getEntrustGroup());
+            //List<String> sec = null;
+//            logger.info("sec questions {}",qa);
+            if (qa != null){
+                List<String> answer = qa.get("answers");
+//                secAnswer = question.stream().filter(Objects::nonNull).findFirst().orElse("");
+
+                logger.info("user answer {}", answer);
+                if(compareAnswers(answers,answer).equalsIgnoreCase("true")){
+                    return "true";
+                };
             }
             //return (String) session.getAttribute("username");
         }catch (Exception e){

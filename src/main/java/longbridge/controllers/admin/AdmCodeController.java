@@ -92,7 +92,7 @@ public class AdmCodeController {
 	@GetMapping("/{codeId}")
 	public CodeDTO getCode(@PathVariable Long codeId, Model model) {
 		CodeDTO code = codeService.getCode(codeId);
-		model.addAttribute("code", code);
+		model.addAttribute("code",code);
 		return code;
 	}
 

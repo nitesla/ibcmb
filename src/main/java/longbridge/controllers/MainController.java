@@ -14,6 +14,8 @@ import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -87,7 +89,6 @@ public class MainController {
 
     @GetMapping(value = "/login/admin")
     public ModelAndView adminLogin() {
-        //clearSession();
 
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("admlogin");
@@ -230,6 +231,10 @@ public class MainController {
 
     }
 
+    @GetMapping("/login/u/corporate")
+    public String loginCorporate1(){
+        return "redirect:/login/corporate";
+    }
 
     @PostMapping("/login/u/corporate")
     public String userExist(WebRequest webRequest, Model model, RedirectAttributes redirectAttributes) {
@@ -281,14 +286,21 @@ public class MainController {
 
     }
 
+    @GetMapping("/login/p/corporate")
+    public String loginCorporate2(){
+        return "redirect:/login/corporate";
+    }
+
     @PostMapping("/login/p/corporate")
     public String corpstep2(WebRequest webRequest, Model model, RedirectAttributes redirectAttributes) {
         String username = webRequest.getParameter("username");
         String phishing = webRequest.getParameter("phishing");
         String corpKey = webRequest.getParameter("corpKey");
-        CorporateUser user = corporateUserService.getUserByName(username);
-        Corporate corporate = corporateService.getCorporateByCustomerId(corpKey);
-        if (corporate != null && user != null && phishing != null) {
+//        CorporateUser user = corporateUserService.getUserByName(username);
+//        Corporate corporate = corporateService.getCorporateByCustomerId(corpKey);
+
+        CorporateUser user = corporateUserService.getUserByNameAndCorpCif(username, corpKey);
+        if (user != null && phishing != null) {
             model.addAttribute("username", user.getUserName());
             model.addAttribute("corpKey", corpKey);
             return "corplogin";
@@ -440,13 +452,13 @@ public class MainController {
         return "redirect:/#contact_us";
     }
 
-  /*  private void clearSession(){
+   private void clearSession(){
         ServletRequestAttributes attr = (ServletRequestAttributes)
                 RequestContextHolder.currentRequestAttributes();
         HttpSession session = attr.getRequest().getSession(false);
         if (session!=null)
         session.invalidate();
-    }*/
+    }
 
 
 
