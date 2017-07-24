@@ -29,6 +29,7 @@ public class User extends AbstractEntity{
     protected Date lockedUntilDate;
     protected Date lastLoginDate;
     protected int noOfLoginAttempts;
+    protected int noOfTokenAttempts;
 
 
     //@Enumerated(value = EnumType.STRING)
@@ -182,6 +183,14 @@ public class User extends AbstractEntity{
 
     public void setUserType(UserType userType) {
         this.userType = userType;
+    }
+
+    public int getNoOfTokenAttempts() {
+        return noOfTokenAttempts;
+    }
+
+    public void setNoOfTokenAttempts(int noOfTokenAttempts) {
+        this.noOfTokenAttempts = noOfTokenAttempts;
     }
 
     @Override

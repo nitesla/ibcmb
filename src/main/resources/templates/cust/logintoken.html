@@ -121,6 +121,8 @@
                          <!--<div id='successMess' class=" text-success "></div>-->
                     </div>
                     <div >
+                       <!--< th:if="$(noOfAttempts >=3)"-->
+                        <input type="text" th:value="${noOfAttempts}"/>
                     <p>Don't have a token?</p>
                         <a href='javascript:sendOtp()' class="btn btn-link token-btn required-step" id="getOtp">Send Otp</a>
                     </div>

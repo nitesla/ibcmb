@@ -51,17 +51,18 @@ public class TokenManagementController {
     public String getRetailToken( HttpServletRequest httpServletRequest, Principal principal, Model model){
         httpServletRequest.getSession().setAttribute("2FA", "2FA");
         model.addAttribute("username", principal.getName());
+        model.addAttribute("noOfAttempts",0);
         return "/cust/logintoken";
     }
 
     @PostMapping
-    public String performTokenAuthentication(HttpServletRequest request, Principal principal, RedirectAttributes redirectAttributes, Locale locale){
+    public String performTokenAuthentication(HttpServletRequest request, Principal principal, RedirectAttributes redirectAttributes, Locale locale,Model model){
 
         String tokenCode = request.getParameter("token");
+        int noOfAttempts = 0;
+        RetailUser user = retailUserService.getUserByName(principal.getName());
         try{
-            RetailUser user = retailUserService.getUserByName(principal.getName());
             boolean result = securityService.performTokenValidation(user.getEntrustId(),user.getEntrustGroup(),tokenCode);
-
             if(result){
                 if( request.getSession().getAttribute("2FA") !=null) {
                     request.getSession().removeAttribute("2FA");
@@ -69,6 +70,7 @@ public class TokenManagementController {
                 redirectAttributes.addFlashAttribute("message",messageSource.getMessage("token.auth.success",null,locale)) ;
                 return "redirect:/retail/dashboard";
             }
+
         }
         catch (InternetBankingSecurityException ibe){
             logger.error("Error authenticating token",ibe);
@@ -78,6 +80,12 @@ public class TokenManagementController {
             logger.error("Error authenticating token",e);
             redirectAttributes.addFlashAttribute("failure",e.getMessage());
         }
+        if(user != null){
+            retailUserService.increaseNoOfTokenAttempt(user);
+            noOfAttempts = user.getNoOfTokenAttempts();
+            logger.info("no of attempts {}",noOfAttempts);
+        }
+        model.addAttribute("noOfAttempts",noOfAttempts);
         return "redirect:/retail/token";
 
     }
