@@ -614,9 +614,38 @@ public class CorporateServiceImpl implements CorporateService {
     }
 
     @Override
-    public String addCorporateRequest(CorporateRequestDTO requestDTO) {
-        return null;
+    public String addCorporateRequest(CorporateRequestDTO corporateRequestDTO) {
+        Corporate corporate = new Corporate();
+        corporate.setName(corporateRequestDTO.getCorporateName());
+        corporate.setCustomerId(corporateRequestDTO.getCustomerId());
+        corporate.setRcNumber(corporateRequestDTO.getRcNumber());
+        corporate.setCorporateType(corporateRequestDTO.getCorporateType());
+        corporate.setStatus("A");
+        corporate.setCreatedOnDate(new Date());
+        Corporate newCorporate = corporateRepo.save(corporate);
+        for(CorporateUserDTO userDTO: corporateRequestDTO.getCorporateUsers()){
+
+            CorporateUser corporateUser = new CorporateUser();
+            corporateUser.setFirstName(userDTO.getFirstName());
+            corporateUser.setLastName(userDTO.getLastName());
+            corporateUser.setUserName(userDTO.getUserName());
+            corporateUser.setEmail(userDTO.getEmail());
+            corporateUser.setStatus("A");
+            corporateUser.setPhoneNumber(userDTO.getPhoneNumber());
+            corporateUser.setAdmin(userDTO.isAdmin());
+            corporateUser.setCreatedOnDate(new Date());
+            Role role = roleRepo.findOne(Long.parseLong(userDTO.getRoleId()));
+            corporateUser.setRole(role);
+            corporateUser.setCorporate(newCorporate);
+            CorporateUser corpUser = corporateUserRepo.save(corporateUser);
+            createUserOnEntrustAndSendCredentials(corpUser);
+        }
+
+        return  null;
     }
+
+
+
 
 
 //    public CorporateRole getNextRoleForAuthorization(PendAuth pendAuth){
