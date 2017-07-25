@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <link rel="stylesheet" type="text/css" th:href="@{~/customer/css/bootstrap.css}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{~/customer/css/custom.css}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{~/customer/font-awesome/font-awesome.min.css}"/>
+    <title>Log in | Coronation Merchant Bank
+    </title>
+</head>
+<body onload="token()">
+<div class="container">
+    <div class="top_bar">
+        <ul class="list_group">
+            <li><a href="https://www.coronationmb.com/" target="_blank"> CORONATION MERCHANT BANK</a></li>
+        </ul>
+    </div>
+    <nav class="navbar navbar-default">
+        <div class="container-fluid">
+            <div class="navbar-header navbar-left">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse-1" aria-expanded="false">
+                    <span class="sr-only">MENU</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="#" data-toggle="collapse" data-target="#navbar-collapse-1">Menu</a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar-collapse-1">
+                <ul class="nav navbar-nav">
+                    <li><a href="/">HOME</a></li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"> LOG IN </a>
+                        <ul class="dropdown-menu">
+                            <li><a th:href="@{/login/retail}">INDIVIDUAL</a></li>
+                            <li><a th:href="@{/login/corporate}">CORPORATE</a></li>
+                        </ul>
+                    </li>
+                    <li><a th:href="@{/register}">REGISTER</a></li>
+                    <li><a href="/">CONTACT US</a></li>
+                    <li><a href="/">HELP</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <a href="#" class="logo">
+        <img th:src="@{/customer/img/cmb_logo.png}" alt="Coronation Merchant Bank" />
+    </a>
+</div>
+
+<section class="content-wrapper">
+    <div class="container">
+        <div class="bg">
+            <!--<form id="loginform" th:action="@{/retail/token}" method="POST" class="form-signin">-->
+            <!--<h1>Token Authentication</h1>-->
+            <!--<br/>-->
+
+
+            <!--<div id="username_div" class="form-group">-->
+            <!--<input type="text" id="token" name="token" class="form-control"  placeholder="Token Code" />-->
+            <!--</div>-->
+            <!--<div class="form-group">-->
+            <!--<button class="btn btn-primary form-control" type="submit"> Next </button>-->
+            <!--</div>-->
+            <!--</form>-->
+        </div>
+    </div>
+</section>
+
+<footer>
+    <div class="container">
+        <div class="footer_bar">
+            <div class="col-md-6 col-xs-12">
+                <ul class="list_group">
+                    <li><a href="#" target="_blank">Privacy policy</a></li>
+                    <li><a href="#" target="_blank">Disclaimer</a></li>
+                    <li><a href="#" target="_blank">Terms &amp; Conditions</a></li>
+                </ul>
+
+            </div>
+            <div class="col-md-6 col-xs-12"><p> &copy; 2017 - All rights reserved</p></div>
+
+        </div>
+    </div>
+</footer>
+<!-- CORE JQUERY SCRIPTS -->
+
+<div th:if="${message}">
+    <div hidden="hidden">
+        <ul class="actionMessage">
+            <li th:each="msg : ${message}" th:text="${msg}">Message</li>
+        </ul>
+    </div>
+</div>
+
+<div th:if="${failure}">
+    <div hidden="hidden">
+        <ul class="actionError">
+            <li th:each="msg : ${failure}" th:text="${msg}">Message</li>
+        </ul>
+    </div>
+</div>
+
+<div id="myModal" class="modal fade" role="dialog">
+    <div class="modal-dialog" >
+
+        <!-- Modal content-->
+        <div class="modal-content no-bd-rad tokenBox" id="tokenModalCorp">
+            <form id="loginform" th:action="@{/corporate/token}" method="POST" >
+                <div class="modal-body no-bd-rad">
+
+                    <h3 class="tokenHeader"><span class='text-danger'>Hello</span>, <span th:text="*{username}" style="text-transform: capitalize">Tolu</span></h3>
+
+                    <div class="margin-bottom">
+                        <p style="margin-bottom:20px">Kindly enter the OTP from your token device</p>
+                        <div id="username_div" class="form-group">
+                            <input  type="text" id="token" name="token" required class='my-select tokenInput' placeholder="Token Code" autocomplete="off"/>
+                            <p id='loading-icon' style="display:none"><i class='fa fa-spinner fa-spin' style="font-size:10px;color:#003056"></i> Sending OTP. Please Wait...</p>
+
+                        </div>
+                        <div id='errorMess' class=" text-danger "></div>
+                        <!--<div id='successMess' class=" text-success "></div>-->
+                    </div>
+                    <div th:if="${noOfAttempts >=3}">
+                        <p>Don't have a token?</p>
+                        <p><a href='javascript:sendOtp()' id="getOtp">Send me an OTP </a><i class='fa fa-angle-down'  style="font-size:18px;"></i></p>
+                    </div>
+
+                </div>
+                <div class="modal-footer no-bd-top ">
+                    <input type='button' onclick='redirect()' class="btn btn-link less-required token-btn " value='Back'/>
+
+                    <input type='submit' class="btn btn-link token-btn required-step" value='Continue'/>
+                </div>
+
+            </form>
+        </div>
+        <div class="modal-content no-bd-rad tokenBox" id="otpmodalCorp">
+            <form id="otpform" th:action="@{/otp/corporate/login}" method="POST" >
+                <div class="modal-body no-bd-rad">
+
+                    <h3 class="tokenHeader"><span class='text-danger'>Hello</span>, <span th:text="*{username}" style="text-transform: capitalize">Tolu</span></h3>
+                    <input type="hidden" name="username" id="username" th:value="${username}"/>
+                    <div class="margin-bottom">
+                        <p style="margin-bottom:20px">Kindly enter the OTP from your email/sms</p>
+                        <div id="username_div1" class="form-group">
+                            <input  type="text" id="otp" name="otp" required class='my-select tokenInput' placeholder="Otp " autocomplete="off"/>
+                        </div>
+                        <!--<div id='errorMess' class=" text-danger "></div>-->
+                        <div id='successMess' class=" text-success "></div>
+                    </div>
+                    <!--<div >-->
+                    <!--<p>Don't have a token?</p>-->
+                    <!--<p><a class="btn" id="usetoken">Send me an OTP </a><i class='fa fa-angle-down'  style="font-size:18px;"></i></p>-->
+                    <!--</div>-->
+
+                </div>
+                <div class="modal-footer no-bd-top ">
+                    <input type='button' class="btn btn-link less-required token-btn" id="usetoken" value='Back'/>
+
+                    <input type='submit' class="btn btn-link token-btn required-step" value='Continue'/>
+                </div>
+
+            </form>
+        </div>
+    </div>
+
+</div>
+
+
+<script>
+    function token()
+    {
+        $("#otpmodalCorp").hide();
+        $('#myModal').modal({
+            backdrop: 'static',
+            keyboard: false,
+            show: true
+
+        })
+    }
+
+
+    function redirect()
+    {
+
+        location.href = '/corporate/logout';
+    }
+</script>
+
+<!-- jQuery -->
+<!-- Bootstrap -->
+<!-- FastClick -->
+<script th:src="@{~/bank/vendors/fastclick/lib/fastclick.js}"></script>
+<!-- NProgress -->
+<script th:src="@{~/bank/vendors/nprogress/nprogress.js}"></script>
+
+<script th:src="@{~/bank/js/bootstrap-editable-custom.js}"></script>
+<script th:src="@{~/bank/vendors/bootstrap-dialog/js/bootstrap-dialog.js}"></script>
+
+<!-- CORE JQUERY SCRIPTS -->
+<script th:src="@{~/customer/js/jquery-1.11.1.js}"></script>
+<script th:src="@{~/customer/js/jquery-ui.js}"></script>
+<script th:src="@{~/customer/js/jquery.dataTables.js}"></script>
+<script th:src="@{~/customer/js/momentMin.js}"></script>
+<script th:src="@{~/customer/js/calendar.js}"></script>
+<script th:src="@{~/customer/js/jquery.spring-friendly.min.js}"></script>
+<script th:src="@{~/customer/plugins/bootstrap-notify/bootstrap-notify.js}"></script>
+<script th:src="@{~/customer/js/coronation.js}"></script>
+<!-- BOOTSTRAP SCRIPTS  -->
+<script th:src="@{~/customer/js/bootstrap.js}"></script>
+<script>
+    $(document).ready(function () {
+        $("#otpmodalCorp").hide();
+    });
+//    $("#getOtp").click(function() {
+//        $("#tokenModalCorp").hide();
+//        $("#otpmodalCorp").show();
+//    });
+    $("#usetoken").click(function() {
+        $("#tokenModalCorp").show();
+        $("#otpmodalCorp").hide();
+    });
+    function sendOtp() {
+//        console.log([[${username}]]);
+        $('#loading-icon').show();
+        $('#errorMess').hide();
+        //make sure alert message is not empty
+//        alert("send otp");
+//        console.log(acct);
+        $.ajax({
+            type: 'GET',
+            url: '/otp/send/corporate',
+            asyn:false,
+//					dataType: 'String',
+            data: {username:$('#username').val()},
+            error: function (data) {
+                $('#loading-icon').hide();
+                // alert("failure");
+//                $('#sub').disabled();
+            },
+            success: function (reponse) {
+                if (reponse === 'success') {
+//                    $("#tokenmodal").hide();
+//                    $("#otpmodal").show();
+//                    $('#loading-icon').hide();
+                    $('#successMess').show();
+                    document.getElementById("successMess").textContent = "Successfully sent";
+
+                }else{
+                    $("#tokenModalCorp").show();
+                    $("#otpmodalCorp").hide();
+                    if(reponse==="empty"){
+
+                        $('#loading-icon').hide();
+                        $('#errorMess').show();
+                        document.getElementById("errorMess").textContent = "Invalid username";
+                    }else{
+                        $('#loading-icon').hide();
+                        $('#errorMess').show();
+                        document.getElementById("errorMess").textContent = reponse;
+                    }
+                }
+            }
+
+        });
+//        $.ajax({options});
+    }
+</script>
+</body>
+</html>
