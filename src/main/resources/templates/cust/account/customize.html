@@ -18,8 +18,8 @@
                             <form method="post" th:action="@{/retail/account/customize}" th:object="${customizeAccount}">
                                 <div class="form-group">
                                     <label>Preferred Name</label>
-                                    <input class="form-control"  placeholder="Preferred name" name="accountName" th:value="${account}" /><span class='req-inner'></span>
-                                    <p class="errors" th:if="${#fields.hasErrors('accountName')}" th:errors="*{accountName}">&times;</p>
+                                    <input class="form-control"  placeholder="Preferred name" name="preferredName" th:value="${account}" /><span class='req-inner'></span>
+                                    <p class="errors" th:if="${#fields.hasErrors('preferredName')}" th:errors="*{preferredName}">&times;</p>
                                 </div>
 
                                 <button type="submit" class="btn btn-link required-step">Save</button>

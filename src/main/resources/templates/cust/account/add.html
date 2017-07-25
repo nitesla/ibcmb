@@ -29,8 +29,8 @@
                                 <p class="errors close" data-dismiss="alert" aria-label="close" th:if="${#fields.hasErrors('accountNumber')}" th:errors="*{accountNumber}">&times;</p>
                             </div>
                             <div class="form-group">
-                                <input type="text" class="form-control" th:field="*{accountName}" placeholder="Beneficiary Name"/>
-                                <p class="errors close" data-dismiss="alert" aria-label="close" th:if="${#fields.hasErrors('accountName')}" th:errors="*{accountName}">&times;</p>
+                                <input type="text" class="form-control" th:field="*{preferredName}" placeholder="Beneficiary Name"/>
+                                <p class="errors close" data-dismiss="alert" aria-label="close" th:if="${#fields.hasErrors('preferredName')}" th:errors="*{preferredName}">&times;</p>
                             </div>
                             <div class="form-group">
                                 <input type="text" class="form-control" name="preferredName" placeholder="Preferred Name"/>
@@ -53,7 +53,7 @@
                                 <input type="text" class="form-control" name="sortCode" placeholder="Bank Sort Code"/>
                             </div>
                             <div class="form-group">
-                                <input type="text" class="form-control" name="accountName" placeholder="Beneficiary Name"/>
+                                <input type="text" class="form-control" name="preferredName" placeholder="Beneficiary Name"/>
                             </div>
 
                             <div class="form-group">

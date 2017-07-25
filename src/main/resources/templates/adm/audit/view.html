@@ -44,7 +44,7 @@
                                     <li >
                                         <div class="col-lg-4">
                                             <div class="title-action">
-                                                <a  class="btn btn-primary btn-sm bt-select bt-link-act" href="/admin/codes/index/edit" disabled="disabled" ><i class="fa fa-pencil"></i> View</a>
+                                                <a  class="btn btn-primary btn-sm bt-select bt-link-act" href="/admin/audit/index/edit" disabled="disabled" ><i class="fa fa-pencil"></i>  View</a>
                                             </div>
                                         </div>
                                     </li>
@@ -106,6 +106,7 @@
             "lengthMenu" : [ [ 20,40,60, -1],	[ 20,40,60,"All" ] ],
             "pagingType" : "simple_numbers",
             "searching": false,
+            rowId: 'id',
             "paging": true,
             "serverSide" : true,
             "ajax": "/admin/audit/all/entityname",
@@ -125,7 +126,8 @@
 
         });
 
-        table.on('deselect', function() {
+        table.on('deselect', function()
+        {
             if (table.rows({
                     selected : true
                 }).indexes().length === 0) {
@@ -143,7 +145,7 @@
         if($(link).attr("disabled")){
             return;
         }
-        var dt = $('#codes').DataTable();
+        var dt = $('#audit').DataTable();
         var id = $(dt.row({
             selected: true
         }).node()).attr("id");
@@ -158,14 +160,14 @@
         if($(link).attr("disabled")){
             return;
         }
-        var dt = $('#codes').DataTable();
+        var dt = $('#audit').DataTable();
         var id = $(dt.row({
             selected: true
         }).node()).attr("id");
         //window.location.href = link.attr("formaction") + '?id=' + id;
         //replace {id} with id
-        var ooo = link.attr("href").replace("index",id);
-        warnBeforeRedirect(ooo);
+//        var ooo = link.attr("href").replace("index",id);
+//        warnBeforeRedirect(ooo);
 
     } );
 
@@ -183,6 +185,32 @@
             // Redirect the user
             window.location.assign(ooo);
         });
+    }
+    function fetchEntityName() {
+        //make sure alert message is not empty
+//        alert("send otp");
+//        console.log(acct);
+        var dt = $('#audit').DataTable()
+        var id = $(dt.row({
+            selected: true
+        }).node()).attr("id");
+        alert(id);
+        $.ajax({
+            type: 'GET',
+            url: '/admin/audit/edit',
+            asyn:false,
+					data: {id:id},
+//					dataType: 'String',
+            error: function (data) {
+                alert("failure");
+//                $('#sub').disabled();
+            },
+            success: function (reponse) {
+               alert(reponse);
+            }
+
+        });
+//        $.ajax({options});
     }
 
     /*]]>*/

@@ -5,13 +5,17 @@ import longbridge.utils.CronJobUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.security.Principal;
+import java.util.Locale;
 
 /**
  * Created by Longbridge on 6/28/2017.
@@ -21,6 +25,9 @@ import java.security.Principal;
 public class AdmJobController {
     @Autowired
     CronJobServiceImpl cronJobService;
+    @Autowired
+    private MessageSource messageSource;
+    private Locale locale = LocaleContextHolder.getLocale();
     private Logger logger = LoggerFactory.getLogger(this.getClass());
     @GetMapping
     public String manage() {
@@ -28,7 +35,7 @@ public class AdmJobController {
     }
 
     @PostMapping
-    public String getCronExpression(WebRequest webRequest, Principal principal) {
+    public String getCronExpression(WebRequest webRequest, Principal principal,RedirectAttributes redirectAttributes) {
         String cronExpr = "";
         String username= "";
         String schedule  = webRequest.getParameter("scheduler");
@@ -40,19 +47,12 @@ public class AdmJobController {
             String cronExpression = CronJobUtils.getCronExpression(schedule, webRequest);
             if(!cronExpression.equalsIgnoreCase("")) {
                 cronJobService.deleteRunningJob();
-                cronJobService.keepJobDetials(username, cronExpression);
+                cronJobService.keepCronJobEprsDetials(username, cronExpression);
+                redirectAttributes.addFlashAttribute("message", messageSource.getMessage("job.update.success", null, locale));
+                return "redirect:/admin/job";
             }
         }
-
-
-//        String second = webRequest.getParameter("second");
-//        String minute = webRequest.getParameter("minute");
-//        String[] hour = webRequest.getParameterValues("hour");
-//        String[] week = webRequest.getParameterValues("week");
-//        String[] month = webRequest.getParameterValues("month");
-//        logger.info("second {} minute{} hour {} week {} month{}",second,minute,hour,week,month);
-        return "adm/job/manage-job";
+        redirectAttributes.addFlashAttribute("message", messageSource.getMessage("job.update.failed", null, locale));
+        return "redirect:/admin/job";
     }
-
-
 }

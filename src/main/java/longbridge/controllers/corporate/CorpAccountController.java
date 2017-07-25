@@ -5,30 +5,20 @@ import longbridge.dtos.AccountDTO;
 import longbridge.exception.InternetBankingException;
 import longbridge.forms.CustomizeAccount;
 import longbridge.models.Account;
-import longbridge.models.Corporate;
 import longbridge.models.CorporateUser;
-
-import longbridge.models.RetailUser;
 
 import longbridge.services.AccountService;
 import longbridge.services.CorporateUserService;
 import longbridge.services.IntegrationService;
-import longbridge.services.RetailUserService;
 import longbridge.utils.statement.AccountStatement;
 import longbridge.utils.statement.TransactionDetails;
 import longbridge.repositories.AccountRepo;
 import longbridge.services.*;
 import longbridge.utils.DateFormatter;
-import longbridge.utils.statement.AccountStatement;
-import longbridge.utils.statement.TransactionDetails;
 import longbridge.utils.statement.TransactionHistory;
-import net.sf.jasperreports.engine.JRException;
-import org.joda.time.DateTime;
-import org.joda.time.Duration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cglib.core.Local;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.MessageSource;
 import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
@@ -126,7 +116,7 @@ public class CorpAccountController {
         }
 
         this.customizeAccountId = accountDTO.getId();
-        model.addAttribute("account", accountDTO.getAccountName());
+        model.addAttribute("account", accountDTO.getPreferredName());
         return "corp/account/customize";
     }
 
@@ -138,7 +128,7 @@ public class CorpAccountController {
             return "corp/account/customize";
         }
 try {
-    String message = accountService.customizeAccount(this.customizeAccountId, customizeAccount.getAccountName());
+    String message = accountService.customizeAccount(this.customizeAccountId, customizeAccount.getPreferredName());
     redirectAttributes.addFlashAttribute("message", message);
 }catch(InternetBankingException e) {
     logger.error("Customization Error",e);

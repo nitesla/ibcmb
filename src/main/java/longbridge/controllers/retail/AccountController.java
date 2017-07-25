@@ -130,7 +130,7 @@
 //        }
 //
 //        this.customizeAccountId = accountDTO.getId();
-//        model.addAttribute("account", accountDTO.getAccountName());
+//        model.addAttribute("account", accountDTO.getPreferredName());
 //        return "cust/account/customize";
 //    }
 //
@@ -142,7 +142,7 @@
 //        }
 //
 //        try{
-//            String message = accountService.customizeAccount(this.customizeAccountId, customizeAccount.getAccountName());
+//            String message = accountService.customizeAccount(this.customizeAccountId, customizeAccount.getPreferredName());
 //            redirectAttributes.addFlashAttribute("message", message);
 //        }catch (InternetBankingException e){
 //            logger.error("Customization Error", e);
@@ -201,14 +201,11 @@
 package longbridge.controllers.retail;
 
 import longbridge.api.AccountDetails;
-import longbridge.api.PaginationDetails;
 import longbridge.dtos.AccountDTO;
-import longbridge.dtos.TransferRequestDTO;
 import longbridge.exception.InternetBankingException;
 import longbridge.forms.CustomizeAccount;
 import longbridge.models.Account;
 import longbridge.models.RetailUser;
-import longbridge.models.TransRequest;
 import longbridge.repositories.AccountRepo;
 import longbridge.services.AccountService;
 import longbridge.services.IntegrationService;
@@ -218,19 +215,15 @@ import longbridge.utils.DateFormatter;
 import longbridge.utils.statement.AccountStatement;
 import longbridge.utils.statement.TransactionDetails;
 import longbridge.utils.statement.TransactionHistory;
-import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.MessageSource;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
 import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
-import org.springframework.data.jpa.datatables.repository.DataTablesUtils;
 import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
@@ -241,15 +234,12 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.jasperreports.JasperReportsPdfView;
 
 import javax.mail.MessagingException;
-import javax.mail.internet.MimeMessage;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-import java.io.ByteArrayOutputStream;
 import java.security.Principal;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
- import org.joda.time.Duration;
 import java.util.*;
 
 /**
@@ -344,7 +334,7 @@ public class AccountController {
 		}
 
 		this.customizeAccountId = accountDTO.getId();
-		model.addAttribute("account", accountDTO.getAccountName());
+		model.addAttribute("account", accountDTO.getPreferredName());
 		return "cust/account/customize";
 	}
 
@@ -358,7 +348,7 @@ public class AccountController {
 
 		try {
 			String message = accountService.customizeAccount(this.customizeAccountId,
-					customizeAccount.getAccountName());
+					customizeAccount.getPreferredName());
 			redirectAttributes.addFlashAttribute("message", message);
 		} catch (InternetBankingException e) {
 			logger.error("Customization Error", e);

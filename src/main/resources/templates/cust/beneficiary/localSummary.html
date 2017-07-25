@@ -37,7 +37,7 @@
                         <tr>
 
                             <th>Beneficiary name</th>
-                            <td th:text="${beneficiary.accountName}"></td>
+                            <td th:text="${beneficiary.preferredName}"></td>
 
                         </tr>
                         <tr>
@@ -52,7 +52,7 @@
 
                         <input type="hidden" th:field="*{beneficiaryBank}"/>
                         <input type="hidden" th:field="*{accountNumber}"/>
-                        <input type="hidden" th:field="*{accountName}"/>
+                        <input type="hidden" th:field="*{preferredName}"/>
                         <input type="hidden" th:field="*{preferredName}"/>
 
 

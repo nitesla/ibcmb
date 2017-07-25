@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{corp-layout}">
-<!--<head>-->
-    <!--<link rel="stylesheet" type="text/css" href="css/jquery.dataTables.css"/>-->
-    <!--<link rel="stylesheet" type="text/css" href="css/select.bootstrap.css"/>-->
-    <!--<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css"/>-->
-    <!--<link rel="stylesheet" type="text/css" href="css/dataTables.bootstrap.css"/>-->
-<!--</head>-->
+<head>
+    <link rel="stylesheet" type="text/css" href="css/jquery.dataTables.css"/>
+    <link rel="stylesheet" type="text/css" href="css/select.bootstrap.css"/>
+    <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css"/>
+    <link rel="stylesheet" type="text/css" href="css/dataTables.bootstrap.css"/>
+</head>
 
 <style>
     .hstyle{
@@ -78,7 +78,7 @@
                         <!--<td th:text="${cr.refCode}"></td>-->
                         <!--<td th:text="${cr.accountNumber}"></td>-->
                         <!--<td th:text="${cr.sortCode}"></td>-->
-                        <!--<td th:text="${cr.accountName}"></td>-->
+                        <!--<td th:text="$preferredNameName}"></td>-->
                         <!--<td th:text="${cr.amount}"></td>-->
                         <!--<td th:text="${cr.narration}"></td>-->
                         <!--<td th:text="${cr.status}"></td>-->
@@ -100,10 +100,6 @@
     <script th:src="@{~/bank/vendors/sweetalert/sweetalert.min.js}"></script>
     <script th:src="@{~/bank/vendors/bootstrap-dialog/js/bootstrap-dialog.js}"></script>
     <script th:src="@{~/bank/js/jquery.spring-friendly.min.js}"></script>
-    <script th:src="@{~/customer/js/dataTables.bootstrap.js}"></script>
-    <script th:src="@{~/customer/js/dataTables.select.js}"></script>
-    <script th:src="@{~/customer/editor/js/dataTables.editor.js}"></script>
-
 
 
     <script th:inline="javascript">

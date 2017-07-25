@@ -36,7 +36,8 @@ public class CommonRepoImpl<T extends AbstractEntity, ID extends Serializable> e
     private final Class<T> domainClass;
 
 
-    public CommonRepoImpl(Class<T> domainClass, EntityManager em) {
+    public CommonRepoImpl(Class<T> domainClass, EntityManager em)
+    {
         super(domainClass, em);
         this.em = em;
         this.domainClass = domainClass;
@@ -44,10 +45,10 @@ public class CommonRepoImpl<T extends AbstractEntity, ID extends Serializable> e
     }
 
 
-
     @Override
     @Transactional
-    public void delete(ID id) {
+    public void delete(ID id)
+    {
         T t = findOne(id);
         t.setDelFlag("Y");
         t.setDeletedOn(new Date());
@@ -67,7 +68,7 @@ public class CommonRepoImpl<T extends AbstractEntity, ID extends Serializable> e
     @Override
     @Transactional
     public void delete(Iterable<? extends T> entities) {
-        Assert.notNull(entities, "The given Iterable of entities can  not be null!");
+        Assert.notNull(entities, "The given Iterable of entities can not be null!");
         Iterator<? extends T> var2 = entities.iterator();
 
         while (var2.hasNext()) {
@@ -82,7 +83,8 @@ public class CommonRepoImpl<T extends AbstractEntity, ID extends Serializable> e
 
     @Override
     @Transactional
-    public void deleteAll() {
+    public void deleteAll()
+    {
         Iterator<T> var1 = this.findAll().iterator();
 
         while (var1.hasNext()) {
@@ -100,7 +102,8 @@ public class CommonRepoImpl<T extends AbstractEntity, ID extends Serializable> e
     }
     
     @Override
-	public Page<T> findUsingPattern(String pattern, Pageable details) {
+	public Page<T> findUsingPattern(String pattern, Pageable details)
+    {
 		String lpattern = pattern.toLowerCase();
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<T> q = cb.createQuery(entityInformation.getJavaType());
@@ -114,35 +117,39 @@ public class CommonRepoImpl<T extends AbstractEntity, ID extends Serializable> e
 				predicates[cnt] = predicate;
 				cnt++;
 			}
-		} catch (InstantiationException | IllegalAccessException e) {
+		}
+		catch (InstantiationException | IllegalAccessException e)
+        {
 			return new PageImpl<>(new ArrayList<>());
 		}
 
 		CriteriaQuery<T> baseQuery = null;
 		CriteriaQuery<Long> qc = cb.createQuery(Long.class);
 		CriteriaQuery<Long> countQuery = null;
-		if(predicates.length > 0){
-			Predicate or = cb.or(predicates);
+		if(predicates.length > 0)
+		{
+			Predicate or = cb.or (predicates);
 			 baseQuery = q.select(c).where(or);
 			 countQuery = qc.select(cb.count(qc.from(entityInformation.getJavaType()))).where(or);
-		}else{
+		}
+		else
+		    {
 			baseQuery = q.select(c);
 			countQuery = qc.select(cb.count(qc.from(entityInformation.getJavaType())));
-		}
+            }
 		
 		TypedQuery<T> query = em.createQuery(baseQuery);
-
-		
 		Long count = em.createQuery(countQuery).getSingleResult();
-
 		query.setFirstResult(details.getOffset());
 		query.setMaxResults(details.getPageSize());
 		List<T> list = query.getResultList();
-
 		return new PageImpl<T>(list, details, count);
 	}
 
-	private List<String> getFields() throws InstantiationException, IllegalAccessException {
+
+
+	private List<String> getFields() throws InstantiationException, IllegalAccessException
+    {
 		Class<T> type = entityInformation.getJavaType();
 		AbstractEntity en = (AbstractEntity) type.newInstance();
 		return en.getDefaultSearchFields();

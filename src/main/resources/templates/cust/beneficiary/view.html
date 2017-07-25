@@ -45,7 +45,7 @@
                             </thead>
                             <tbody>
                                 <tr th:each="loc : ${localBen}">
-                                    <td th:text="${loc.accountName}"></td>
+                                    <td th:text="${loc.preferredName}"></td>
                                     <td th:text="${loc.accountNumber}"></td>
                                     <td th:text="${loc.beneficiaryBank}"></td>
                                     <td><a th:id="${loc.id}" onclick="validateDelete(this.id)"><i class="fa fa-trash"></i></a></td>
@@ -64,7 +64,7 @@
                             <!--</thead>-->
                             <!--<tbody>-->
                                 <!--<tr th:each="int : ${intBen}">-->
-                                    <!--<td th:text="${int.accountName}"></td>-->
+                                    <!--<td th:text="${preferredNameName}"></td>-->
                                     <!--<td th:text="${int.accountNumber}"></td>-->
                                     <!--<td th:text="${int.beneficiaryBank}"></td>-->
                                     <!--<td ><a th:id="${int.id}" onclick="validateIntDelete(this.id)"><i class="fa fa-trash"></i></a></td>-->

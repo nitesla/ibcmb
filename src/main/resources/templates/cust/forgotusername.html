@@ -81,17 +81,20 @@
                             <h3>Security Information</h3>
                             <section>
                                 <div class="row">
-                                    <div class="col-md-offset-4 col-md-4">
-                                        <br/>
-                                        <div class="form-group">
-                                            <label>Security Question</label>
-                                            <input th:value="${retUsernameForm.securityQuestion}" name="securityQuestion" readonly="readonly" class="my-select"/>
-                                        </div>
-                                        <div class="form-group">
-                                            <label>Security Answer</label>
-                                            <span class="required"></span><input th:value="${retUsernameForm.securityAnswer}" type="text" name="securityAnswer" class="my-select required" placeholder="Security Answer"/>
-                                        </div>
-                                        <input name="customerId" type="hidden"/>
+                                    <!--<div class="col-md-offset-4 col-md-4">-->
+                                        <!--<br/>-->
+                                        <!--<div class="form-group">-->
+                                            <!--<label>Security Question</label>-->
+                                            <!--<input th:value="${retUsernameForm.securityQuestion}" name="securityQuestion" readonly="readonly" class="my-select"/>-->
+                                        <!--</div>-->
+                                        <!--<div class="form-group">-->
+                                            <!--<label>Security Answer</label>-->
+                                            <!--<span class="required"></span><input th:value="${retUsernameForm.securityAnswer}" type="text" name="securityAnswer" class="my-select required" placeholder="Security Answer"/>-->
+                                        <!--</div>-->
+
+                                    <!--</div>-->
+                                    <div id="secQuestionsDiv"  class="col-md-offset-4 col-md-4">
+                                        <input name="customerId" id="customerId" type="hidden"/>
                                         <input id="returnValue" type="hidden"/>
                                     </div>
                                 </div>

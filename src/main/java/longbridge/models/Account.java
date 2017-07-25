@@ -20,6 +20,7 @@ public class Account extends AbstractEntity {
     private String accountId;
     private String accountNumber;
     private String accountName;
+    private String preferredName;
     private String customerId;
     private String schemeType;
     private String schemeCode;
@@ -67,6 +68,14 @@ public class Account extends AbstractEntity {
 
     public void setAccountName(String accountName) {
         this.accountName = accountName;
+    }
+
+    public String getPreferredName() {
+        return preferredName;
+    }
+
+    public void setPreferredName(String preferredName) {
+        this.preferredName = preferredName;
     }
 
     public String getCustomerId() {

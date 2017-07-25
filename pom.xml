@@ -118,6 +118,12 @@
             <systemPath>${project.basedir}/ojdbc7.jar</systemPath>
         </dependency>
         <dependency>
+            <groupId>com.jaspersoft</groupId>
+            <artifactId>jasperreports-functions</artifactId>
+            <version>6.4.0</version>
+        </dependency>
+
+        <dependency>
             <groupId>com.entrust</groupId>
             <artifactId>entrust</artifactId>
             <version>1.0</version>
@@ -313,19 +319,12 @@
             <artifactId>jasperreports</artifactId>
             <version>6.4.0</version>
         </dependency>
-<<<<<<< HEAD
-        <!--<dependency>-->
-            <!--<groupId>org.apache.poi</groupId>-->
-            <!--<artifactId>poi</artifactId>-->
-            <!--<version>3.16</version>-->
-        <!--</dependency>-->
-=======
+
         <!--<dependency>
             <groupId>org.apache.poi</groupId>
             <artifactId>poi</artifactId>
             <version>3.16</version>
         </dependency>-->
->>>>>>> dc4b4ebf04c6dfa420cc82374dd7529e06dade17
         <dependency>
             <groupId>com.itextpdf</groupId>
             <artifactId>itextpdf</artifactId>

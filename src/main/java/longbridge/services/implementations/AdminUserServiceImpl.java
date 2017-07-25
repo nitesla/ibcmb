@@ -14,7 +14,6 @@ import longbridge.services.*;
 import java.util.*;
 
 import longbridge.utils.DateFormatter;
-import longbridge.utils.HostMaster;
 import longbridge.utils.Verifiable;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
@@ -202,6 +201,10 @@ public class AdminUserServiceImpl implements AdminUserService {
     public String changeActivationStatus(Long userId) throws InternetBankingException {
         try {
             AdminUser user = adminUserRepo.findOne(userId);
+//         //   AdminUser users = user.getCorporate();
+//            if ("I".equals(user.getStatus())) {
+//                throw new InternetBankingException(messageSource.getMessage("admin.deactivated", null, locale));
+//            }
             entityManager.detach(user);
             String oldStatus = user.getStatus();
             String newStatus = "A".equals(oldStatus) ? "I" : "A";
@@ -287,10 +290,10 @@ public class AdminUserServiceImpl implements AdminUserService {
     @Verifiable(operation = "UPDATE_ADMIN_USER", description = "Updating an Admin User")
     public String updateUser(AdminUserDTO user) throws InternetBankingException {
 
-
         AdminUser adminUser = adminUserRepo.findById(user.getId());
 
-        if ("I".equals(adminUser.getStatus())) {
+        if ("I".equals(adminUser.getStatus()))
+        {
             throw new InternetBankingException(messageSource.getMessage("user.deactivated", null, locale));
         }
         try {
@@ -323,8 +326,14 @@ public class AdminUserServiceImpl implements AdminUserService {
     @Transactional
     public String resetPassword(Long userId) throws PasswordException {
 
-        try {
+
             AdminUser user = adminUserRepo.findOne(userId);
+            logger.info("this is the admin user"+user.getStatus());
+            if("I".equals(user.getStatus()))
+            {
+                throw new InternetBankingException(messageSource.getMessage("users.deactivated", null, locale));
+            }
+        try {
             String newPassword = passwordPolicyService.generatePassword();
             user.setPassword(passwordEncoder.encode(newPassword));
             passwordPolicyService.saveAdminPassword(user);

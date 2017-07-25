@@ -163,10 +163,36 @@ public class CorpNAPSTransferController {
             InputStream inputStream = file.getInputStream();
             String filename = file.getOriginalFilename();
             String extension = filename.substring(filename.lastIndexOf(".") + 1, filename.length());
-            if (!extension.equals("xls") && !extension.equals("xlsx")) {
+
+            Workbook workbook;
+            if (extension.equalsIgnoreCase("xls")) {
+
+                workbook = new HSSFWorkbook(inputStream);
+
+            }
+            else if(extension.equalsIgnoreCase("xlsx")) {
+                workbook = new XSSFWorkbook(inputStream);
+            }
+            else {
                 model.addAttribute("failure", messageSource.getMessage("file.format.failure", null, locale));
                 return "/corp/transfer/bulktransfer/upload";
             }
+
+            Sheet datatypeSheet = workbook.getSheetAt(0);
+            Iterator<Row> iterator = datatypeSheet.iterator();
+            if (iterator.hasNext()){
+                Row headerRow = iterator.next();
+                System.out.println(headerRow.getLastCellNum());
+                if(headerRow.getLastCellNum() > 7){
+                    model.addAttribute("failure", messageSource.getMessage("file.format.failure", null, locale));
+                    return "/corp/transfer/bulktransfer/upload";
+                }
+            }
+
+//            if (!extension.equals("xls") && !extension.equals("xlsx")) {
+//                model.addAttribute("failure", messageSource.getMessage("file.format.failure", null, locale));
+//                return "/corp/transfer/bulktransfer/upload";
+//            }
 
             httpSession.setAttribute("inputStream", inputStream);
             httpSession.setAttribute("fileExtension", extension);
@@ -207,7 +233,10 @@ public class CorpNAPSTransferController {
 
             Sheet datatypeSheet = workbook.getSheetAt(0);
 
+
+
             Iterator<Row> iterator = datatypeSheet.iterator();
+
             if (iterator.hasNext()) iterator.next();
             while (iterator.hasNext()) {
                 Row currentRow = iterator.next();
@@ -222,15 +251,7 @@ public class CorpNAPSTransferController {
                         cellData.add(currentCell);
                     }
                 }
-//                while (cellIterator.hasNext()) {
-//                           Cell currentCell = cellIterator.next();
-//                           System.out.println(currentCell);
-//                           if (currentCell == null || currentCell.getCellType() == Cell.CELL_TYPE_BLANK || currentCell.toString().isEmpty() || currentCell.toString() == null) {
-//
-//                           } else {
-//                               cellData.add(currentCell);
-//                           }
-//                }
+
                 int rowIndex = currentRow.getRowNum();
                 System.out.println(cellData);
                 CreditRequestDTO creditRequest = new CreditRequestDTO();

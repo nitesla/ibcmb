@@ -17,7 +17,9 @@
             <table class="table table-hover no-pad-lef" id="users">
                 <thead class='thead'>
                 <!--<tr>-->
-                <strong><th class="text-cente">Account Number</th></strong>
+
+                <strong><th class="text-cente">Account Name</th></strong>
+                <th class="text-cente">Account Number</th>
                 <th class="text-cente">Account type</th>
                 <th class="text-cente">Currency</th>
                 <th class="text-cente">Available Balance</th>
@@ -27,6 +29,7 @@
                 </thead>
                 <tbody>
                 <tr th:each="list : ${accountList}" class="tt">
+                    <td th:align="cente" th:text="${list.preferredName}"></td>
                     <td th:align="cente" th:text="${list.accountNumber}"></td>
                     <td th:align="cente" th:text="${list.schemeType}"></td>
                     <td th:align="cente" th:text="${list.currencyCode}"></td>

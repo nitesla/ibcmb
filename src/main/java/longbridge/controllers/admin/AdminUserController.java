@@ -69,7 +69,8 @@ public class AdminUserController {
     ObjectMapper mapper = new ObjectMapper();
 
     @GetMapping("/new")
-    public String addUser(Model model) {
+    public String addUser(Model model)
+    {
         Iterable<RoleDTO> roles = roleService.getRoles();
         model.addAttribute("adminUser", new AdminUserDTO());
         model.addAttribute("roles", roles);
@@ -87,7 +88,7 @@ public class AdminUserController {
             String message = adminUserService.addUser(adminUser);
             redirectAttributes.addFlashAttribute("message", message);
             return "redirect:/admin/users";
-        }
+            }
         catch (DuplicateObjectException doe) {
             result.addError(new ObjectError("error", doe.getMessage()));
             logger.error("Error creating admin user {}", adminUser.getUserName(), doe);
@@ -118,11 +119,12 @@ public class AdminUserController {
     @ResponseBody
     DataTablesOutput<AdminUserDTO> getUsers(DataTablesInput input,@RequestParam("csearch") String search) {
         Pageable pageable = DataTablesUtils.getPageable(input);
-        
         Page<AdminUserDTO> adminUsers = null;
-        if (StringUtils.isNoneBlank(search)) {
+        if (StringUtils.isNoneBlank(search))
+        {
         	adminUsers = adminUserService.findUsers(search,pageable);
-		}else{
+		}else
+        {
 			adminUsers = adminUserService.getUsers(pageable);
 		}
         DataTablesOutput<AdminUserDTO> out = new DataTablesOutput<AdminUserDTO>();
@@ -146,13 +148,7 @@ public class AdminUserController {
         return "adm/admin/view";
     }
 
-    /**
-     * Returns user
-     *
-     * @param userId
-     * @param model
-     * @return
-     */
+
     @GetMapping("/{userId}/details")
     public String getAdminUser(@PathVariable String userId, Model model) {
         AdminUser adminUser = adminUserService.getUser(Long.parseLong(userId));
@@ -160,11 +156,6 @@ public class AdminUserController {
         return "admin/details";
     }
 
-    /**
-     * Edit an existing user
-     *
-     * @return
-     */
     @GetMapping("/{userId}/edit")
     public String editUser(@PathVariable Long userId, Model model) {
         AdminUserDTO user = adminUserService.getAdminUser(userId);
@@ -177,21 +168,25 @@ public class AdminUserController {
 
     @PostMapping("/update")
     public String updateUser(@ModelAttribute("adminUser") @Valid AdminUserDTO adminUser, BindingResult result, RedirectAttributes redirectAttributes, Locale locale,Principal principal) {
-        if (result.hasErrors()) {
+        if (result.hasErrors())
+        {
             result.addError(new ObjectError("invalid", messageSource.getMessage("form.fields.required", null, locale)));
             return "adm/admin/edit";
         }
-        try {
+        try
+        {
             String message = adminUserService.updateUser(adminUser);
             redirectAttributes.addFlashAttribute("message", message);
             return "redirect:/admin/users";
         }
-        catch (DuplicateObjectException ibe) {
+        catch (DuplicateObjectException ibe)
+        {
             result.addError(new ObjectError("error", ibe.getMessage()));
             logger.error("Existing user found", ibe);
             return "adm/admin/edit";
         }
-        catch (InternetBankingException ibe) {
+        catch (InternetBankingException ibe)
+        {
             result.addError(new ObjectError("error", ibe.getMessage()));
             logger.error("Error updating admin user", ibe);
             return "adm/admin/edit";
@@ -241,10 +236,20 @@ public class AdminUserController {
         try {
             String message = adminUserService.resetPassword(id);
             redirectAttributes.addFlashAttribute("message", message);
-        } catch (PasswordException pe) {
+        }
+
+
+        catch (PasswordException pe)
+        {
             redirectAttributes.addFlashAttribute("failure", pe.getMessage());
             logger.error("Error resetting password for admin user", pe);
         }
+
+        catch (InternetBankingException e)
+        {
+            redirectAttributes.addFlashAttribute("failure",e.getMessage());
+        }
+
         return "redirect:/admin/users";
     }
 

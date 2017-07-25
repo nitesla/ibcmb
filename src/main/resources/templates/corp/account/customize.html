@@ -19,8 +19,8 @@
                             <div class="form-group">
                                 <label>Preferred Name</label>
 
-                                <input name="accountName" th:value="${account}" class="form-control"/><span class='req-inner'></span>
-                                <p class="errors" th:if="${#fields.hasErrors('accountName')}" th:errors="*{accountName}">&times;</p>
+                                <input name="preferredName" th:value="${account}" class="form-control"/><span class='req-inner'></span>
+                                <p class="errors" th:if="${#fields.hasErrors('preferredName')}" th:errors="*{preferredName}">&times;</p>
                             </div>
 
                             <button type="submit" class="btn btn-link required-step">Save</button>
