@@ -183,7 +183,7 @@ public class CorpNAPSTransferController {
             if (iterator.hasNext()){
                 Row headerRow = iterator.next();
                 System.out.println(headerRow.getLastCellNum());
-                if(headerRow.getLastCellNum() > 8){
+                if(headerRow.getLastCellNum() > 7){
                     model.addAttribute("failure", messageSource.getMessage("file.format.failure", null, locale));
                     return "/corp/transfer/bulktransfer/upload";
                 }
