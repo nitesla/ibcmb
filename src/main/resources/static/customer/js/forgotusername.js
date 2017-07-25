@@ -4,7 +4,7 @@ var customerId = "null";
  * @param accountNumber the account number to check
  */
 function validateAccountNo(accountNumber){
-     $('#myLoader').modal('show');
+     $('#myLoader').show();
     var customerId;
     var secQues;
     $.ajax({
@@ -17,10 +17,10 @@ function validateAccountNo(accountNumber){
                 //invalid account number
                 document.getElementById("errorMess").textContent="Ensure you put in a valid account number.";
                 $('#myModalError').modal('show');
-                 $('#myLoader').modal('hide');
+                 $('#myLoader').hide();
                 //alert("Account number not found");
             }else{
-                 $('#myLoader').modal('hide');
+                 $('#myLoader').hide();
                 //valid account number
                 //alert("Customer Id: " + customerId);
                 $('input[name=customerId]').val(customerId);
@@ -32,9 +32,9 @@ function validateAccountNo(accountNumber){
 
     if(customerId == "" || customerId === null){
         return false;
-         $('#myLoader').modal('hide');
+         $('#myLoader').hide();
     }else{
-         $('#myLoader').modal('hide');
+         $('#myLoader').hide();
         $.ajax({
             url: "/rest/secQues/"+customerId,
             type: 'GET',
@@ -76,7 +76,7 @@ function validateAccountNo(accountNumber){
 
 function validateSecAnswer(secAnswer){
     var customerId = $('#customerId').val();
-    $('#myLoader').modal('show');
+    $('#myLoader').show();
     // console.log('customer id {}'+customerId);
     var result;
     $.ajax({
@@ -105,10 +105,10 @@ function validateSecAnswer(secAnswer){
 
     if(result == "true"){
         result = sendUsername();
-           $('#myLoader').modal('hide');
+           $('#myLoader').hide();
         return result;
     }else{
-           $('#myLoader').modal('hide');
+           $('#myLoader').hide();
         return false;
     }
 

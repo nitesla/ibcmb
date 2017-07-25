@@ -1,26 +1,25 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head th:replace="cust_layout :: site-head">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{ret-layout}">
 
-</head>
-<body>
-<div class="container">
-    <header th:replace="cust_layout :: header">
-    </header>
+<body onload="javascript:var bread = [['Home', '/retail/dashboard'],['contact', '']];currentBar('contact us');breadCrumb(bread)">
 
-<section class="content-wrapper">
-    <div class="containe">
-        <div class="row">
-            <div class="col-md-4 col-sm-4">
-                <h5 class="page_header"> Contact Us</h5>
-            </div>
+<div layout:fragment="content">
+    
+
+    <div class="col-xs-12 ml-15 " >
+        <div class="col-md-5">
+        <select class="form-control full-width coronation-form-control "  name="beneficiaryType" id="benType" >
+            <option th:value="local">Local</option>
+            <option th:value="foreign">Foreign</option>
+        </select>
         </div>
-        <div class="row">
-
-            <div class="col-md-9  col-xs-12 content-bg">
-                    <div class="col-md-3 aler no-bd">
+        <div class="col-xs-11 no-pad-lef  alert no-bd">
+            <div class=" col-xs-12">
+                           
+                 <div class="col-md-3 alert no-bd">
                         <h3>Contact Address</h3>
-                        <hr class="related-info"/>
+                        <hr class="related-nfo"/>
                         <address class='bg-white alert'>
                             Lorem ipsum dolor sit amet, consectetuer adipiscing elit,
                              sed diam nonummy nibh euismod tincidunt ut laoreet dolore
@@ -30,7 +29,7 @@
                        
                     </div>
 
-                    <div class="col-md-9 col-xs-12">
+                    <div class="col-md-9 alert no-bd col-xs-12">
 
                         <form action="/retail/contact" method="post">
                             <div class="form-group">
@@ -38,23 +37,23 @@
                                 <span class="required"></span><textarea  name="message" required="required" class=" full-width form-control" rows="10"></textarea>
                             </div>
                             <div class="form-group">
-                                <button class=" btn btn-primary form-control full-width">Send Message</button>
+                                <button class=" btn btn-link required-step form-control full-width">Send Message</button>
                             </div>
                         </form>
                     </div>
-
-            </div>
-            <div class="col-md-3 pull-right " >
-                <div th:replace="cust_layout :: sidebar" class="" >
-                </div>
+                       
             </div>
         </div>
     </div>
-</section>
 
-<!-- CONTENT-WRAPPER SECTION END-->
-<footer th:replace="cust_layout ::footer">
-</footer>
 </div>
+
+
+<th:block layout:fragment="scripts">
+
+      
+            
+</th:block>
+
 </body>
 </html>

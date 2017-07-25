@@ -96,6 +96,7 @@ public class CorpTransferServiceImpl implements CorpTransferService {
             transferRequest.setTransferAuth(transferAuth);
             corpTransferRequestRepo.save(transferRequest);
         } catch (Exception e) {
+            e.printStackTrace();
             throw new InternetBankingTransferException();
         }
         return messageSource.getMessage("transfer.add.success", null, locale);

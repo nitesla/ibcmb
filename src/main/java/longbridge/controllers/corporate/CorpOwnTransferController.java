@@ -72,8 +72,9 @@ public class CorpOwnTransferController {
     }
 
     @GetMapping("")
-    public ModelAndView index() throws Exception {
-
+    public ModelAndView index(HttpServletRequest request) throws Exception {
+        if (request.getSession().getAttribute("auth-needed") != null)
+            request.getSession().removeAttribute("auth-needed");
         ModelAndView view = new ModelAndView();
 
         CorpTransferRequestDTO corptransferRequestDTO = new CorpTransferRequestDTO();

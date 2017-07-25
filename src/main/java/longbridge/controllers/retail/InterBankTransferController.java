@@ -67,8 +67,9 @@ public class InterBankTransferController {
 
 
     @GetMapping(value = "")
-    public String index() {
-
+    public String index(HttpServletRequest request) {
+        if (request.getSession().getAttribute("auth-needed") != null)
+            request.getSession().removeAttribute("auth-needed");
         return page + "pagei";
     }
 

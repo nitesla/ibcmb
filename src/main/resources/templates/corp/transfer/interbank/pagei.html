@@ -43,7 +43,7 @@
                     </div>
 
                     <!--<div class="col-md-4 col-sm-4">-->
-                            <!--<p id="nip" style="padding: 5%">Fee applicable: <span th:text="'N'+${nip.feeValue}"></span></p>-->
+                            <p id="nip" style="padding: 5%">Fee applicable: <span th:if="${nip.feeValue}!=null" th:text="'N'+${nip.feeValue}"></span></p>
                             <!--<p id="rtgs" style="display: none; padding: 5%">Fee applicable: <span th:text="'N'+${rtgs.feeValue}"></span></p>-->
                     <!--</div>-->
 
