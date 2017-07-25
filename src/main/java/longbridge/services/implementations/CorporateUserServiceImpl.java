@@ -133,16 +133,20 @@ public class CorporateUserServiceImpl implements CorporateUserService {
     @Verifiable(operation = "UPDATE_CORPORATE_USER", description = "Updating Corporate User")
     public String updateUser(CorporateUserDTO user) throws InternetBankingException {
 
+
         CorporateUser corporateUser = corporateUserRepo.findOne(user.getId());
+
         Corporate corporate = corporateUser.getCorporate();
         if ("I".equals(corporate.getStatus())) {
             throw new InternetBankingException(messageSource.getMessage("corporate.deactivated", null, locale));
         }
 
         corporateUser = corporateUserRepo.findFirstByCorporateAndEmailIgnoreCase(corporate, user.getEmail());
-        if (corporateUser != null && user.getId() != corporateUser.getId()) {
+        if (corporateUser != null && !user.getId().equals(corporateUser.getId())) {
             throw new DuplicateObjectException(messageSource.getMessage("email.exists", null, locale));
         }
+
+        corporateUser = corporateUserRepo.findOne(user.getId());
 
         try {
             entityManager.detach(corporateUser);

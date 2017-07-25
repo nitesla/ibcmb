@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{ret-layout}">
 
-<body onload="javascript:var bread = [['Home', '/retail/dashboard'],['Accounts','account/customize']];currentBar('Customize account');breadCrumb(bread)">
+<body onload="currentBar('account')">
 
 <div layout:fragment="content">
     <div class="col-md-5 col-sm-5 ">
@@ -26,7 +26,7 @@
                             </thead>
                             <tbody>
                             <tr th:each="acct : ${accounts}">
-                                <td th:text="${acct.accountName}"></td>
+                                <td th:text="${acct.preferredName}"></td>
                                 <td th:text="${acct.accountNumber}"></td>
                                 <td th:text="${acct.currencyCode}"></td>
                                 <td th:text="${acct.schemeType}"></td>
