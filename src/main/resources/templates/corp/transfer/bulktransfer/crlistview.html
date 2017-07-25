@@ -26,7 +26,7 @@
         background-color: #d7bdb3;
     }
 </style>
-<body onload="javascript:var bread = [['Home', '/corporate/dashboard'],['Bulk transfer', '/corporate/transfer/bulk'], ['list view']];currentBar('bulk transfer');breadCrumb(bread)">
+<body onload="currentBar('Bulk transfer')">
 
 <div layout:fragment="content">
     <div class="col-md-5 col-sm-5 ">
@@ -38,8 +38,8 @@
 
     <div class="col-xs-12 ml-15 no-pad-left " >
         <div class="col-xs-12 no-pad-lef  no-mt no-bd  alert">
-            <form method="post" id="" class="form-horizonta">
-                    <div class="">
+            <form method="post" id="" class="form-horizontal">
+                    <div class="row spacing">
                         <div>
                             <p>Request Date: <span th:text="${bulkTransfer.requestDate}"></span></p>
 
@@ -78,7 +78,7 @@
                         <!--<td th:text="${cr.refCode}"></td>-->
                         <!--<td th:text="${cr.accountNumber}"></td>-->
                         <!--<td th:text="${cr.sortCode}"></td>-->
-                        <!--<td th:text="${cr.accountName}"></td>-->
+                        <!--<td th:text="$preferredNameName}"></td>-->
                         <!--<td th:text="${cr.amount}"></td>-->
                         <!--<td th:text="${cr.narration}"></td>-->
                         <!--<td th:text="${cr.status}"></td>-->

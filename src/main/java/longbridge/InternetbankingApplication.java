@@ -1,5 +1,7 @@
 package longbridge;
 
+import longbridge.models.Account;
+import longbridge.repositories.AccountRepo;
 import longbridge.repositories.CustomJpaRepositoryFactoryBean;
 import longbridge.services.SecurityService;
 import org.apache.commons.lang3.math.NumberUtils;
@@ -13,6 +15,8 @@ import org.springframework.boot.web.support.SpringBootServletInitializer;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.scheduling.annotation.EnableAsync;
 
+import java.util.List;
+
 @SpringBootApplication
 @EnableJpaRepositories(repositoryFactoryBeanClass = CustomJpaRepositoryFactoryBean.class)
 @EnableBatchProcessing
@@ -21,6 +25,9 @@ public class InternetbankingApplication extends SpringBootServletInitializer imp
 
     @Autowired
     SecurityService securityService;
+
+    @Autowired
+    AccountRepo accountRepo;
 
 
     public static void main(String[] args) {
