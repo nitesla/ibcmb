@@ -63,7 +63,9 @@ public class CorpLocalTransferController {
 
 
     @GetMapping("")
-    public String index(Model model, Principal principal) throws Exception {
+    public String index(Model model, Principal principal,HttpServletRequest request) throws Exception {
+        if (request.getSession().getAttribute("auth-needed") != null)
+            request.getSession().removeAttribute("auth-needed");
         CorporateUser corporateUser = corporateUserService.getUserByName(principal.getName());
 
 

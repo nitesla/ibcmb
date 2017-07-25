@@ -39,8 +39,6 @@ public class CorporateAuthenticationSuccessHandler implements AuthenticationSucc
     @Autowired
     private CorporateUserRepo corporateUserRepo;
     @Autowired
-    private MessageSource messageSource;
-    @Autowired
     private ConfigurationService configService;
 
     @Override
@@ -48,6 +46,8 @@ public class CorporateAuthenticationSuccessHandler implements AuthenticationSucc
         handle(request, response, authentication);
         final HttpSession session = request.getSession(false);
         if (session != null) {
+
+
             sessionUtils.setTimeout(session);
             String s = authentication.getName();
 
@@ -65,11 +65,14 @@ public class CorporateAuthenticationSuccessHandler implements AuthenticationSucc
                 }
             }
           //  CorporateUser user = corporateUserRepo.findFirstByUserNameIgnoreCaseAndCorporate_CustomerIdIgnoreCase(userName, corpId);
+
             CorporateUser user = corporateUserRepo.findFirstByUserNameIgnoreCase(userName);
             if (user != null)
+
                 sessionUtils.validateExpiredPassword(user, session);
+
             user.setLastLoginDate(new Date());
-                failedLoginService.loginSucceeded(user);
+            failedLoginService.loginSucceeded(user);
 
         }
         clearAuthenticationAttributes(request);

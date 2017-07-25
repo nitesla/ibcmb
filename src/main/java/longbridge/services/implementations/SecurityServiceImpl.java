@@ -8,6 +8,7 @@ import longbridge.models.RetailUser;
 import longbridge.security.IpAddressUtils;
 import longbridge.services.IntegrationService;
 import longbridge.services.SecurityService;
+import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
@@ -88,7 +89,7 @@ public class SecurityServiceImpl implements SecurityService {
 
 	@Override
 	public boolean performTokenValidation(String username, String group, String tokenString) {
-		boolean result = false;
+		boolean result ;
 
 		try {
 			StringWriter writer = new StringWriter();
@@ -96,7 +97,7 @@ public class SecurityServiceImpl implements SecurityService {
 			this.context.put("appCode", appCode);
 			this.context.put("appDesc", appDesc);
 			this.context.put("appGroup", group);
-			this.context.put("userName", username);
+			this.context.put("userName", escapeField(username));
 			this.context.put("token", tokenString);
 
 			this.t.merge(this.context, writer);
@@ -139,7 +140,7 @@ public class SecurityServiceImpl implements SecurityService {
 			this.context.put("appDesc", appDesc);
 			this.context.put("otp", otp);
 			this.context.put("appGroup", group);
-			this.context.put("userName", username);
+			this.context.put("userName", escapeField(username));
 
 			this.t.merge(this.context, writer);
 			String payload = writer.toString();
@@ -181,7 +182,7 @@ public class SecurityServiceImpl implements SecurityService {
 			this.context.put("token1", tokenResp1);
 			this.context.put("token2", tokenResp2);
 			this.context.put("appGroup", group);
-			this.context.put("userName", username);
+			this.context.put("userName", escapeField(username));
 			this.context.put("sn", sNo);
 
 			this.t.merge(this.context, writer);
@@ -222,7 +223,7 @@ public class SecurityServiceImpl implements SecurityService {
 			this.context.put("appCode", appCode);
 			this.context.put("appDesc", appDesc);
 			this.context.put("appGroup", group);
-			this.context.put("userName", username);
+			this.context.put("userName",escapeField(username) );
 			this.t.merge(this.context, writer);
 			String payload = writer.toString();
 			EntrustServiceResponse webServiceResponse = httpClient.sendHttpRequest(payload);
@@ -259,9 +260,9 @@ public class SecurityServiceImpl implements SecurityService {
 			this.context.put("appCode", appCode);
 			this.context.put("appDesc", appDesc);
 			this.context.put("otp", enableOtp);
-			this.context.put("fullname", fullName);
+			this.context.put("fullname", escapeField(fullName));
 			this.context.put("appGroup", group);
-			this.context.put("userName", username);
+			this.context.put("userName", escapeField(username));
 			this.t.merge(this.context, writer);
 			String payload = writer.toString();
 			EntrustServiceResponse webServiceResponse = httpClient.sendHttpRequest(payload);
@@ -294,7 +295,7 @@ public class SecurityServiceImpl implements SecurityService {
 			this.t = this.ve.getTemplate("entrust/performDeleteEntrustUser.vm");
 			this.context.put("appCode", appCode);
 			this.context.put("appDesc", appDesc);
-			this.context.put("userName", username);
+			this.context.put("userName", escapeField(username));
 			this.context.put("appGroup", group);
 			this.t.merge(this.context, writer);
 			String payload = writer.toString();
@@ -333,7 +334,7 @@ public class SecurityServiceImpl implements SecurityService {
 			this.context.put("appDesc", appDesc);
 			this.context.put("sn", serialNumber);
 			this.context.put("appGroup", group);
-			this.context.put("userName", username);
+			this.context.put("userName", escapeField(username));
 			this.t.merge(this.context, writer);
 			String payload = writer.toString();
 			EntrustServiceResponse webServiceResponse = httpClient.sendHttpRequest(payload);
@@ -373,7 +374,7 @@ public class SecurityServiceImpl implements SecurityService {
 			this.context.put("appDesc", appDesc);
 			this.context.put("sn", serialNumber);
 			this.context.put("appGroup", group);
-			this.context.put("userName", username);
+			this.context.put("userName", escapeField(username));
 
 			this.t.merge(this.context, writer);
 			String payload = writer.toString();
@@ -406,7 +407,7 @@ public class SecurityServiceImpl implements SecurityService {
 	@Override
 	public boolean deActivateToken(String username, String group, String serialNumber) {
 
-		boolean result = false;
+		boolean result ;
 
 		try {
 			StringWriter writer = new StringWriter();
@@ -415,7 +416,7 @@ public class SecurityServiceImpl implements SecurityService {
 			this.context.put("appDesc", appDesc);
 			this.context.put("sn", serialNumber);
 			this.context.put("appGroup", group);
-			this.context.put("userName", username);
+			this.context.put("userName", escapeField(username));
 			this.t.merge(this.context, writer);
 			String payload = writer.toString();
 			EntrustServiceResponse webServiceResponse = httpClient.sendHttpRequest(payload);
@@ -450,7 +451,7 @@ public class SecurityServiceImpl implements SecurityService {
 			List<String> answers = new ArrayList<>();
 			questions.add(question);
 			answers.add(answer);
-			setUserQA(username, group, questions, answers);
+			setUserQA(escapeField(username), group, questions, answers);
 
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
@@ -473,7 +474,7 @@ public class SecurityServiceImpl implements SecurityService {
 			this.t = this.ve.getTemplate("entrust/performSetQA.vm");
 			this.context.put("appCode", appCode);
 			this.context.put("appDesc", appDesc);
-			this.context.put("userName", username);
+			this.context.put("userName", escapeField(username));
 			this.context.put("appGroup", group);
 			this.context.put("questions", questions);
 			this.context.put("answers", answers);
@@ -512,7 +513,7 @@ public class SecurityServiceImpl implements SecurityService {
 			this.context.put("appCode", appCode);
 			this.context.put("appDesc", appDesc);
 			this.context.put("appGroup", group);
-			this.context.put("userName", username);
+			this.context.put("userName", escapeField(username));
 			this.t.merge(this.context, writer);
 			String payload = writer.toString();
 			EntrustServiceResponse webServiceResponse = httpClient.sendHttpRequest(payload);
@@ -557,7 +558,7 @@ public class SecurityServiceImpl implements SecurityService {
 			this.context.put("appCode", appCode);
 			this.context.put("appDesc", appDesc);
 			this.context.put("appGroup", group);
-			this.context.put("userName", username);
+			this.context.put("userName",escapeField(username) );
 			this.t.merge(this.context, writer);
 			String payload = writer.toString();
 			EntrustServiceResponse webServiceResponse = httpClient.sendHttpRequest(payload);
@@ -633,7 +634,7 @@ public class SecurityServiceImpl implements SecurityService {
 			this.context.put("appCode", appCode);
 			this.context.put("appDesc", appDesc);
 			this.context.put("appGroup", group);
-			this.context.put("userName", username);
+			this.context.put("userName",escapeField(username) );
 			this.t.merge(this.context, writer);
 			String payload = writer.toString();
 			EntrustServiceResponse webServiceResponse = httpClient.sendHttpRequest(payload);
@@ -675,7 +676,7 @@ public class SecurityServiceImpl implements SecurityService {
 			this.context.put("appCode", appCode);
 			this.context.put("appDesc", appDesc);
 			this.context.put("appGroup", group);
-			this.context.put("userName", username);
+			this.context.put("userName",escapeField(username) );
 			this.t.merge(this.context, writer);
 			String payload = writer.toString();
 			EntrustServiceResponse webServiceResponse = httpClient.sendHttpRequest(payload);
@@ -760,7 +761,7 @@ public class SecurityServiceImpl implements SecurityService {
 
 	@Override
 	public String getTokenSerials(String username, String group) {
-		String result = "";
+		String result ;
 
 		try {
 			StringWriter writer = new StringWriter();
@@ -768,7 +769,7 @@ public class SecurityServiceImpl implements SecurityService {
 			this.context.put("appCode", appCode);
 			this.context.put("appDesc", appDesc);
 			this.context.put("appGroup", group);
-			this.context.put("userName", username);
+			this.context.put("userName", escapeField(username));
 
 			this.t.merge(this.context, writer);
 			String payload = writer.toString();
@@ -801,6 +802,7 @@ public class SecurityServiceImpl implements SecurityService {
 	public boolean unLockUser(String username, String group) {
 
 		boolean result = false;
+		username= StringEscapeUtils.escapeXml(username);
 
 		try {
 			StringWriter writer = new StringWriter();
@@ -808,7 +810,7 @@ public class SecurityServiceImpl implements SecurityService {
 			this.context.put("appCode", appCode);
 			this.context.put("appDesc", appDesc);
 			this.context.put("appGroup", group);
-			this.context.put("userName", username);
+			this.context.put("userName", escapeField(username));
 			this.t.merge(this.context, writer);
 			String payload = writer.toString();
 			EntrustServiceResponse webServiceResponse = httpClient.sendHttpRequest(payload);
@@ -845,10 +847,10 @@ public class SecurityServiceImpl implements SecurityService {
 			this.t = this.ve.getTemplate("entrust/performUpdateEntrustUser.vm");
 			this.context.put("appCode", appCode);
 			this.context.put("appDesc", appDesc);
-			this.context.put("fullName", fullName);
+			this.context.put("fullName", escapeField(fullName));
 			this.context.put("otp", enableOtp);
 			this.context.put("appGroup", group);
-			this.context.put("userName", username);
+			this.context.put("userName", escapeField(username));
 			this.t.merge(this.context, writer);
 			String payload = writer.toString();
 			EntrustServiceResponse webServiceResponse = httpClient.sendHttpRequest(payload);
@@ -880,17 +882,18 @@ public class SecurityServiceImpl implements SecurityService {
 	public boolean addUserContacts(String email, String phone, boolean phoneDefault, String userName, String group) {
 		boolean result = false;
 
+		boolean emailDefault = !phoneDefault;
 		try {
 			StringWriter writer = new StringWriter();
 			this.t = this.ve.getTemplate("entrust/performAddContactDetail.vm");
 			this.context.put("appCode", appCode);
 			this.context.put("appDesc", appDesc);
-			this.context.put("phoneDefault", false);
+			this.context.put("phoneDefault", phoneDefault);
 			this.context.put("email", email);
 			this.context.put("appGroup", group);
-			this.context.put("userName", userName);
+			this.context.put("userName",escapeField(userName) );
 			this.context.put("emailDevLabel", "CmbEmailOtp");
-			this.context.put("emailDefault", true);
+			this.context.put("emailDefault", emailDefault);
 			this.context.put("PhoneDevLabel", "Vanso");
 			this.context.put("phone", phone);
 
@@ -921,4 +924,9 @@ public class SecurityServiceImpl implements SecurityService {
 		}
 		return result;
 	}
+
+
+	private String escapeField(String s){
+	    return StringEscapeUtils.escapeHtml(s);
+    }
 }

@@ -73,8 +73,9 @@ public class OwnTransferController {
 
 
     @GetMapping("")
-    public ModelAndView index(ModelAndView view) throws Exception {
-
+    public ModelAndView index(ModelAndView view,HttpServletRequest request) throws Exception {
+        if (request.getSession().getAttribute("auth-needed") != null)
+            request.getSession().removeAttribute("auth-needed");
         TransferRequestDTO requestDTO = new TransferRequestDTO();
         requestDTO.setFinancialInstitution(financialInstitutionService.getFinancialInstitutionByCode(bankCode));
         view.addObject("transferRequest", requestDTO);
