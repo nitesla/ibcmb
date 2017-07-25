@@ -83,11 +83,7 @@
     });
 
 
-    function validateSecAnswer(secAnswers){
-       
-       
-        
-        var secAnswer = secAnswers;
+    function validateSecAnswer(secAnswer){
         var sent = "";
         var result;
         var username = $('input[name="username"]').val();
@@ -96,45 +92,31 @@
         $('#myLoader').modal('show');
         $.ajax({
             type:'GET',
-            url:"/rest/secAns",
-            cache: false,
-            data: {username : username,secAnswers:secAnswer},
-            async:true,
-
-            success:function(data){
-                result = ''+String(data);
+            url:"/rest/secAns/"+secAnswer,
+            async:false,
+            success:function(data1){
+                result = ''+String(data1);
                 if(result == "true"){
-                    sent = sendGenPassword();
-            if(String(sent) == "true"){
-                //  $('#myLoader').modal('close');
-                  $('#myLoader').modal('hide');
-                return true;
-            }else {
-                // $('#myLoader').modal('close');
-                 $('#myLoader').modal('hide');
-                return false;
-            }
-                    
                     //$('input[name=username]').val(result);
                 }else{
                     //invalid account number
                     //alert("Account number not found");
-                     // $('#myLoader').modal('close');
-             $('#myLoader').modal('hide');
-            return false;
                     $('#errorMess').text(result);
-                  
-
                     $('#myModalError').modal('show');
                 }
             }
         });
 
-        // if(result == "true"){
-            
-        // }else{
-           
-        // }
+        if(result == "true"){
+            sent = sendGenPassword();
+            if(String(sent) == "true"){
+                return true;
+            }else {
+                return false;
+            }
+        }else{
+            return false;
+        }
     }
 
     function sendGenPassword() {
