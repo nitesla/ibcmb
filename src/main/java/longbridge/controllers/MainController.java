@@ -295,10 +295,15 @@ public class MainController {
     }
 
     @PostMapping("/login/p/corporate")
-    public String corpstep2(WebRequest webRequest, Model model, RedirectAttributes redirectAttributes) {
+    public String corpstep2(WebRequest webRequest, Model model, RedirectAttributes redirectAttributes,HttpSession session) {
         String username = webRequest.getParameter("username");
         String phishing = webRequest.getParameter("phishing");
         String corpKey = webRequest.getParameter("corpKey");
+        logger.info("the corpkey {} and username {}",corpKey,username);
+        if( (username != null)&& (corpKey !=null)){
+            session.setAttribute("corpUsername", username);
+            session.setAttribute("corpKey", corpKey);
+        }
 //        CorporateUser user = corporateUserService.getUserByName(username);
 //        Corporate corporate = corporateService.getCorporateByCustomerId(corpKey);
 

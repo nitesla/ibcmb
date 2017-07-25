@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{corp-layout}">
 <link th:href="@{~/bank/vendors/sweetalert/sweetalert.css}" rel="stylesheet"/>
-<body onload="currentBar('Upload Bulk Transfer File')">
+<body onload="javascript:var bread = [['Home', '/corporate/dashboard'],['Bulk transfer', '/corporate/transfer/bulk'], ['upload']];currentBar('upload');breadCrumb(bread)">
 
     
 <style>

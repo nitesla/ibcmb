@@ -66,8 +66,10 @@ form.children("div").steps({
             return isValid && validateUsername(username) && validatePassword(confirm) && validateRegCode(regCode);
         }
         if(SECURITY_QUESTION_STEP === currentIndex){
+            
             console.log("Current Step is the security question step");
             //$("#reg-form").submit();
+
             return isValid;
         }
         if(PHISHING_IMAGE_STEP === currentIndex){
@@ -125,6 +127,8 @@ var customerId = "null";
  * @param accountNumber the account number to check
  */
 function validateAccountDetails(accountNumber, email, birthDate){
+
+     $('#myLoader').modal('show');
     if(email == ""){
         email = "ib@coronationmb.com"
     }
@@ -156,11 +160,18 @@ function validateAccountDetails(accountNumber, email, birthDate){
         }
     });
 
+     
+
     if(customerId == "true"){
         return true;
     }else{
+         $('#myLoader').modal('hide');
         return false;
     }
+
+   
+
+    
 }
 
 function validateExists(accountNumber, email, birthDate){
@@ -188,20 +199,25 @@ function validateExists(accountNumber, email, birthDate){
                 //alert("Account number not found");
             }else{
                 $('input[name=customerId]').val(cif);
-                sendRegCode();
+                // sendRegCode();
             }
         }
     });
 
     if(cif == "" || cif == null ){
+         $('#myLoader').modal('hide');
         return false;
+
     }else{
+        sendRegCode();
+         $('#myLoader').modal('hide');
         return true;
     }
 }
 
 function validateUsername(username){
     var result;
+     $('#myLoader').modal('show');
     $.ajax({
         type:'GET',
         url:"/rest/username/check/"+username,
@@ -222,10 +238,13 @@ function validateUsername(username){
 
     if(result === 'true'){
         //username is valid and available
+        
         return true;
     }else{
+         $('#myLoader').modal('hide');
         return false;
     }
+    
 }
 
 function validatePassword(password){
@@ -238,6 +257,7 @@ function validatePassword(password){
             result = ''+String(data1);
             if(result === 'true'){
                 //success
+
             }else{
                 $('#errorMess').text(result);
                 $('#myModalError').modal('show');
@@ -247,9 +267,11 @@ function validatePassword(password){
     });
 
     if(result === 'true'){
+        
         //username is valid and available
         return true;
     }else{
+        
         return false;
     }
 }
@@ -276,8 +298,10 @@ function validateRegCode(code){
 
     if(result === 'true'){
         //username is valid and available
+         $('#myLoader').modal('hide');
         return true;
     }else{
+         $('#myLoader').modal('hide');
         return false;
     }
 }
@@ -306,6 +330,7 @@ function sendRegCode(){
                 //invalid account number
                 $("#errorMess").text("Failed to send registration code. Please try again.");
                 $('#myModalError').modal('show');
+                
 
             }else{
 
@@ -325,7 +350,7 @@ function sendRegCode(){
 }
 
 function registerUser(){
-
+ $('#myLoader').modal('show');
     var returnValue = false;
     $('#reg-form').submit(function(e){
         e.preventDefault();
@@ -342,14 +367,14 @@ function registerUser(){
                 if(data==="true"){
                     $('#returnValue').val(true);
                 }else {
-                    var result = "Failed to complete registration. Please try again";
-                    $('#errorMess').text(result);
+                    $('#errorMess').text(data);
                     $('#myModalError').modal('show');
                 }
             }
         });
     });
     $('#reg-form').submit();
+     $('#myLoader').modal('hide');
     returnValue = $('#returnValue').val();
     //alert(returnValue);
     return Boolean(returnValue);

@@ -8,6 +8,7 @@ public class AccountDTO{
     private String accountId;
     @NotEmpty(message = "accountNumber")
     private String accountNumber;
+    private String preferredName;
     private String accountName;
     private String customerId;
     private String schemeType;
@@ -16,8 +17,6 @@ public class AccountDTO{
     private String primaryFlag;
     private String hiddenFlag;
     private String currencyCode;
-
-
     private String accountType;
     private String accountBalance;
     private String ledgerBalance;
@@ -55,7 +54,13 @@ public class AccountDTO{
 		this.accountBalance = accountBalance;
 	}
 
+    public String getPreferredName() {
+        return preferredName;
+    }
 
+    public void setPreferredName(String preferredName) {
+        this.preferredName = preferredName;
+    }
 
     public Long getId() {
         return id;

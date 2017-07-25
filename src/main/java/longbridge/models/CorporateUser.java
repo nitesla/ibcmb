@@ -34,6 +34,7 @@ public class CorporateUser extends User implements PrettySerializer{
 
 	@ManyToOne
 	private Corporate corporate;
+	private String tempPassword;
 
     public String getIsFirstTimeLogon() {
         return isFirstTimeLogon;
@@ -73,6 +74,13 @@ public class CorporateUser extends User implements PrettySerializer{
 		return super.equals(o);
 	}
 
+	public String getTempPassword() {
+		return tempPassword;
+	}
+
+	public void setTempPassword(String tempPassword) {
+		this.tempPassword = tempPassword;
+	}
 
 	@Override
 	@JsonIgnore

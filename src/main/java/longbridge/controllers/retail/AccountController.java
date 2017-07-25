@@ -270,8 +270,8 @@ public class AccountController {
 	modelMap.put("remarks", transactionHistory.getNarration());
 	modelMap.put("recipientBank", "");
 	modelMap.put("refNUm", transactionHistory.getTranType());
-	modelMap.put("date",DateFormatter.format(transactionHistory.getValueDate()));
-	modelMap.put("tranDate", DateFormatter.format(transactionHistory.getPostedDate()));
+	modelMap.put("date",DateFormatter.format(new Date()));
+	modelMap.put("tranDate", DateFormatter.format(new Date()));
 }
 
 	ModelAndView modelAndView=new ModelAndView(view, modelMap);
