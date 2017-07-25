@@ -85,22 +85,22 @@ public class TokenAuthController {
     }
     @GetMapping("/otp/send")
     @ResponseBody
-    public String sendOTP(Principal principal, RedirectAttributes redirectAttributes,Locale locale,HttpServletRequest request){
+    public String sendOTP(HttpServletRequest request){
         String username = "";
         String message = "";
         StringBuilder stringBuilder = new StringBuilder(message);
         if (request.getParameter("username") != null) {
             username = request.getParameter("username");
         }
-        logger.info("The username {}",username);
+//        logger.info("The username {}",username);
         if(!username.equalsIgnoreCase("")) {
             boolean sendOtp;
             try {
                 RetailUser user  = retailUserService.getUserByName(username);
-                logger.info("the user is {}",user);
+//                logger.info("the user is {}",user);
                 if (securityService.sendOtp(user.getEntrustId(),user.getEntrustGroup())) sendOtp = true;
                 else sendOtp = false;
-                logger.info("otp sent {}",sendOtp);
+//                logger.info("otp sent {}",sendOtp);
                 if (sendOtp){
                     stringBuilder.append("success");
                 }
@@ -132,14 +132,14 @@ public class TokenAuthController {
     }
     @GetMapping("/otp/send/corporate")
     @ResponseBody
-    public String sendOTPForCorporate(Principal principal, RedirectAttributes redirectAttributes,Locale locale,HttpServletRequest request){
+    public String sendOTPForCorporate(HttpServletRequest request){
         String username = "";
         String message = "";
         StringBuilder stringBuilder = new StringBuilder(message);
         if (request.getParameter("username") != null) {
             username = request.getParameter("username");
         }
-        logger.info("The username {}",username);
+//        logger.info("The username {}",username);
         if(!username.equalsIgnoreCase("")) {
             boolean sendOtp;
             try {
@@ -183,7 +183,7 @@ public class TokenAuthController {
         String otpUrl = "";
         String otp=request.getParameter("otp");
         String username = request.getParameter("username");
-        logger.info("the otp {} username{} redirect {}",otp,username,redirectUrl);
+//        logger.info("the otp {} username{} redirect {}",otp,username,redirectUrl);
         if (request.getSession().getAttribute("otpUrl") != null) {
             otpUrl = (String) request.getSession().getAttribute("otpUrl");
         }

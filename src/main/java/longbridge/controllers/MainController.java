@@ -252,34 +252,34 @@ public class MainController {
         if (user != null) {
 //            model.addAttribute("images", mutualAuth.get("imageSecret"));
 //            model.addAttribute("captions", mutualAuth.get("captionSecret"));
-                try{
-                    Map<String, List<String>> mutualAuth =  securityService.getMutualAuth(user.getEntrustId(), user.getEntrustGroup());
-                    if (mutualAuth != null){
-                        String image = mutualAuth.get("imageSecret")
-                                .stream()
-                                .filter(Objects::nonNull)
-                                .findFirst()
-                                .orElse("");
+            try{
+                Map<String, List<String>> mutualAuth =  securityService.getMutualAuth(user.getEntrustId(), user.getEntrustGroup());
+                if (mutualAuth != null){
+                    String image = mutualAuth.get("imageSecret")
+                            .stream()
+                            .filter(Objects::nonNull)
+                            .findFirst()
+                            .orElse("");
 
 //                      logger.info("SECIMAGE"+ image);
-                        String caption = mutualAuth.get("captionSecret")
-                                .stream()
-                                .filter(Objects::nonNull)
-                                .findFirst()
-                                .orElse("");
+                    String caption = mutualAuth.get("captionSecret")
+                            .stream()
+                            .filter(Objects::nonNull)
+                            .findFirst()
+                            .orElse("");
 
-                        model.addAttribute("secImage", image);
-                        //logger.info("SECCAPTION "+ caption);
-                        model.addAttribute("secCaption", caption);
-                    }
-                }catch (InternetBankingException e){
-                    model.addAttribute("imageException", "You are yet to set your antiphishing image");
+                    model.addAttribute("secImage", image);
+                    //logger.info("SECCAPTION "+ caption);
+                    model.addAttribute("secCaption", caption);
                 }
+            }catch (InternetBankingException e){
+                model.addAttribute("imageException", "You are yet to set your antiphishing image");
+            }
 
 
-                model.addAttribute("username", user.getUserName());
-                model.addAttribute("corpKey", corpKey);
-                return "corppage2";
+            model.addAttribute("username", user.getUserName());
+            model.addAttribute("corpKey", corpKey);
+            return "corppage2";
 
         }
 
@@ -455,12 +455,12 @@ public class MainController {
         return "redirect:/#contact_us";
     }
 
-   private void clearSession(){
+    private void clearSession(){
         ServletRequestAttributes attr = (ServletRequestAttributes)
                 RequestContextHolder.currentRequestAttributes();
         HttpSession session = attr.getRequest().getSession(false);
         if (session!=null)
-        session.invalidate();
+            session.invalidate();
     }
 
 

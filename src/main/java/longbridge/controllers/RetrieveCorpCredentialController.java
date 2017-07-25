@@ -22,10 +22,7 @@ import org.springframework.mail.MailException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -68,16 +65,15 @@ public class RetrieveCorpCredentialController {
     @Autowired
     private MailService mailService;
 
-    @GetMapping("/corporate/forgot/password")
+    @GetMapping("/forgot/password/corporate")
+//    @RequestMapping(value = "/forgot/password/corporate", method = RequestMethod.GET)
     public String showResetPassword(WebRequest webRequest,Model model, HttpSession session, RedirectAttributes redirectAttributes){
         String username = webRequest.getParameter("username");
         String corpKey = webRequest.getParameter("corporateId");
-//        CorporateUser user = corporateUserService.getUserByName(username);
-//        Corporate corporate = corporateService.getCorporateByCustomerId(corpKey);
         ResetPasswordForm resetPasswordForm = new ResetPasswordForm();
         logger.info("the username and corpKey is {} and {}",username,corpKey);
         resetPasswordForm.step = "1";
-        resetPasswordForm.username = (String) session.getAttribute("username");
+        resetPasswordForm.username = username;
         if (username == null){
             return "redirect:/login/corporate";
         }
@@ -113,6 +109,7 @@ public class RetrieveCorpCredentialController {
         }catch (InternetBankingException e){
             return "redirect:/login/corporate";
         }
+//        return "corp/passwordreset";
     }
 //    @PostMapping("/forgot/password")
 //    public @ResponseBody
