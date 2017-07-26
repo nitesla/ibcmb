@@ -8,13 +8,13 @@ import org.hibernate.validator.constraints.NotEmpty;
 public class CustomizeAccount {
 
     @NotEmpty (message = "Please enter an Account Name")
-    private String accountName;
+    private String preferredName;
 
-    public String getAccountName() {
-        return accountName;
+    public String getPreferredName() {
+        return preferredName;
     }
 
-    public void setAccountName(String accountName) {
-        this.accountName = accountName;
+    public void setPreferredName(String preferredName) {
+        this.preferredName = preferredName;
     }
 }

@@ -8,8 +8,8 @@ public class AccountDTO{
     private String accountId;
     @NotEmpty(message = "accountNumber")
     private String accountNumber;
-    private String preferredName;
     private String accountName;
+    private String preferredName;
     private String customerId;
     private String schemeType;
     private String schemeCode;
@@ -17,6 +17,8 @@ public class AccountDTO{
     private String primaryFlag;
     private String hiddenFlag;
     private String currencyCode;
+
+
     private String accountType;
     private String accountBalance;
     private String ledgerBalance;
