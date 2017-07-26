@@ -145,7 +145,7 @@ public class UserRegController {
             //nothing
             customerId = "";
         }
-
+        logger.info("cif i {}",customerId);
         return customerId;
     }
 
@@ -167,7 +167,7 @@ public class UserRegController {
 //                logger.info("qs {}",qa);
                 question = qa.get("questions");
                 secQuestion = question.stream().filter(Objects::nonNull).findFirst().orElse("");
-                logger.info("question {}", secQuestion);
+                logger.info("question {}", question);
 
             }else {
                 secQuestion = "";
@@ -413,6 +413,7 @@ public class UserRegController {
 
     @GetMapping("/forgot/username")
     public String showForgotUsername(Model model) {
+        logger.info("forget username 2");
         RetrieveUsernameForm retrieveUsernameForm= new RetrieveUsernameForm();
         retrieveUsernameForm.step = "1";
         model.addAttribute("retUsernameForm", retrieveUsernameForm);
@@ -424,7 +425,7 @@ public class UserRegController {
     @ResponseBody
     String forgotUsername(WebRequest webRequest) {
         Iterator<String> iterator = webRequest.getParameterNames();
-
+logger.info("forget username");
         while(iterator.hasNext()){
             logger.info(iterator.next());
         }
