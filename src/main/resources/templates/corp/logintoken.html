@@ -121,6 +121,9 @@
                          <!--<div id='successMess' class=" text-success "></div>-->
                     </div>
                     <div >
+                       <!--< th:if="$(noOfAttempts >=3)"-->
+                        <!--<input type="text" th:value="${noOfAttempts}"/>-->
+                        <div th:if="${noOfAttempts}"></div>
                     <p>Don't have a token?</p>
                         <a href='javascript:sendOtp()' class="btn btn-link token-btn required-step" id="getOtp">Send Otp</a>
                     </div>
@@ -222,50 +225,6 @@
         $("#tokenmodal").show();
         $("#otpmodal").hide();
     });
-    function sendOtp(){
-//        console.log([[${username}]]);
-        $('#loading-icon').show();
-        $('#errorMess').hide();
-        //make sure alert message is not empty
-//        alert("send otp");
-//        console.log(acct);
-        $.ajax({
-            type: 'GET',
-            url: '/otp/send',
-            asyn:false,
-//					dataType: 'String',
-            data: {username:$('#username').val()},
-            error: function (data) {
-                $('#loading-icon').hide();
-                // alert("failure");
-//                $('#sub').disabled();
-            },
-            success: function (reponse) {
-                if (reponse === 'success') {
-//                    $("#tokenmodal").hide();
-//                    $("#otpmodal").show();
-//                    $('#loading-icon').hide();
-                    $('#successMess').show();
-                    document.getElementById("successMess").textContent = "Successfully sent";
-
-                }else{
-//                    $("#tokenModalCorp").show();
-//                    $("#otpmodalCorp").hide();
-                    if(reponse==="empty"){
-                        $('#loading-icon').hide();
-                        $('#errorMess').show();
-                        document.getElementById("errorMess").textContent = "Invalid username";
-                    }else{
-                        $('#loading-icon').hide();
-                        $('#errorMess').show();
-                        document.getElementById("errorMess").textContent = reponse;
-                    }
-                }
-            }
-
-        });
-//        $.ajax({options});
-    }
 </script>
 </body>
 </html>

@@ -5,23 +5,20 @@ import longbridge.dtos.AccountDTO;
 import longbridge.exception.InternetBankingException;
 import longbridge.forms.CustomizeAccount;
 import longbridge.models.Account;
-import longbridge.models.Corporate;
 import longbridge.models.CorporateUser;
 
-import longbridge.models.RetailUser;
+import longbridge.services.AccountService;
+import longbridge.services.CorporateUserService;
+import longbridge.services.IntegrationService;
+import longbridge.utils.statement.AccountStatement;
+import longbridge.utils.statement.TransactionDetails;
 import longbridge.repositories.AccountRepo;
 import longbridge.services.*;
 import longbridge.utils.DateFormatter;
-import longbridge.utils.statement.AccountStatement;
-import longbridge.utils.statement.TransactionDetails;
 import longbridge.utils.statement.TransactionHistory;
-import net.sf.jasperreports.engine.JRException;
-import org.joda.time.DateTime;
-import org.joda.time.Duration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cglib.core.Local;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.MessageSource;
 import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
@@ -73,12 +70,14 @@ public class CorpAccountController {
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private Long customizeAccountId;
-    private SimpleDateFormat dateFormat = new SimpleDateFormat("dd-mm-yyyy");
+
 
     @GetMapping
     public String listAccounts(){
         return "corp/account/index";
     }
+
+    private SimpleDateFormat dateFormat = new SimpleDateFormat("dd-mm-yyyy");
 
     @GetMapping("{id}/view")
     public String viewAccount(@PathVariable Long id, Model model) {
@@ -117,18 +116,19 @@ public class CorpAccountController {
         }
 
         this.customizeAccountId = accountDTO.getId();
-        model.addAttribute("account", accountDTO.getAccountName());
+        model.addAttribute("account", accountDTO.getPreferredName());
         return "corp/account/customize";
     }
 
     @PostMapping("/customize")
     public String updateCustom(@Valid CustomizeAccount customizeAccount, BindingResult result,RedirectAttributes redirectAttributes, Model model)throws Exception{
         if (result.hasErrors()){
+
             model.addAttribute("message","Name field cannot be empty");
             return "corp/account/customize";
         }
 try {
-    String message = accountService.customizeAccount(this.customizeAccountId, customizeAccount.getAccountName());
+    String message = accountService.customizeAccount(this.customizeAccountId, customizeAccount.getPreferredName());
     redirectAttributes.addFlashAttribute("message", message);
 }catch(InternetBankingException e) {
     logger.error("Customization Error",e);
@@ -194,6 +194,7 @@ catch(InternetBankingException e){
         return "corp/account/officer";
     }
 
+
     @GetMapping("/{id}/statement")
     public String getTransactionHistory(@PathVariable Long id, Model model, Principal principal, HttpServletRequest request) {
         CorporateUser corporateUser = corporateUserService.getUserByName(principal.getName());
@@ -251,6 +252,7 @@ catch(InternetBankingException e){
         return "cust/account/history";
     }
 
+
     @GetMapping("/viewstatement")
     public String getViewOnly(Model model, Principal principal) throws ParseException {
 
@@ -265,7 +267,11 @@ catch(InternetBankingException e){
     @GetMapping("/viewstatement/display/data")
     public @ResponseBody
     DataTablesOutput<TransactionDetails> getStatementData(DataTablesInput input, String acctNumber,
+
+
+
                                                           String fromDate, String toDate, String tranType) {
+
         // Pageable pageable = DataTablesUtils.getPageable(input);
         logger.info("fromDate {}",fromDate);
         logger.info("toDate {}",toDate);
@@ -283,6 +289,7 @@ catch(InternetBankingException e){
             AccountStatement accountStatement = integrationService.getAccountStatements(acctNumber, from, to,tranType);
             logger.info("TransactionType {}",tranType);
             out.setDraw(input.getDraw());
+
             List<TransactionDetails> list = accountStatement.getTransactionDetails();
             logger.info("Transaction Details {}",list);
             out.setData(list);
@@ -299,6 +306,7 @@ catch(InternetBankingException e){
 
     @GetMapping("/downloadstatement")
     public ModelAndView downloadStatementData(ModelMap modelMap, DataTablesInput input, String acctNumber,
+
                                               String fromDate, String toDate, String tranType, Principal principal,RedirectAttributes redirectAttributes)  {
         // Pageable pageable = DataTablesUtils.getPageable(input);
 
@@ -308,7 +316,9 @@ catch(InternetBankingException e){
         try {
             from = dateFormat.parse(fromDate);
             to = dateFormat.parse(toDate);
-            AccountStatement accountStatement = integrationService.getAccountStatements(acctNumber, from, to,tranType);
+
+            AccountStatement accountStatement = integrationService.getAccountStatements(acctNumber, from, to, tranType);
+
             out.setDraw(input.getDraw());
             List<TransactionDetails> list = accountStatement.getTransactionDetails();
             CorporateUser corporateUser=corporateUserService.getUserByName(principal.getName());
@@ -362,6 +372,6 @@ catch(InternetBankingException e){
         ModelAndView modelAndView = new ModelAndView("rpt_account-statement", modelMap);
         return modelAndView;
 
-    }
 
+    }
 }

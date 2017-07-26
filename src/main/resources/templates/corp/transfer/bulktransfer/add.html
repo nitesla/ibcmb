@@ -1,12 +1,6 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{corp-layout}">
-<!--<head>
-  <link rel="stylesheet" type="text/css" href="css/jquery.dataTables.css"/>
-    <link rel="stylesheet" type="text/css" href="css/select.bootstrap.css"/>
-    <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css"/>
-    <link rel="stylesheet" type="text/css" href="css/dataTables.bootstrap.css"/>
-</head>-->
 
 <style>
     .hstyle{
@@ -26,7 +20,7 @@
         background-color: #d7bdb3;
     }
 </style>
-<body onload="currentBar('Beneficiaries')">
+<body onload="currentBar('Bulk Transfer')">
 
 <div layout:fragment="content">
     <div class="col-md-5 col-sm-5 ">
@@ -57,11 +51,6 @@
                         <input type="hidden" name="requests"/>
                     </div></div>
 
-
-                    <!--<div class="col-md-6 col-sm-6 col-xs-12">-->
-                        <!--<button type="submit" id="button_add" class="btn-xs btn-success btn">Add Field</button>-->
-                        <!--<button type="submit" id="button_del" class="btn-xs btn-warning btn">Remove</button>-->
-                    <!--</div>-->
                     <br/>
 
                         <br/>
@@ -78,21 +67,15 @@
                                 <th>Narration</th>
                             </thead>
                             <tbody>
-                            <!--<tr th:each="tr : ${transferRequests}">-->
-                                <!--<td th:text="${tr.serial}"></td>-->
-                                <!--<td th:text="${tr.refCode}"></td>-->
-                                <!--<td th:text="${tr.accountNumber}"></td>-->
-                                <!--<td th:text="${tr.sortCode}"></td>-->
-                                <!--<td th:text="${tr.accountName}"></td>-->
-                                <!--<td th:text="${tr.amount}"></td>-->
-                                <!--<td th:text="${tr.narration}"></td>-->
-                            <!--</tr>-->
+
                             </tbody>
                         </table>
                      </div>
 
                     <br/>
+                 <a class="btn btn-link" th:href="@{/corporate/transfer/bulk}">Back</a>
                     <button class="btn btn-link" type="submit" id="button_submit">Submit</button>
+
                 </form>
         </div>
     </div>
@@ -110,31 +93,8 @@
     /*<![CDATA[*/
 
 
-    //datepicker
-//    $( function() {
-//        $( "#datepicker" ).datepicker(
-//            { dateformat : 'dd/mm/yy'}
-//        );
-//    } );
 
-//    $(document).ready(function() {
-//        $.ajax({
-//            url: "/corporate/transfer/all",
-//            type: 'GET',
-//            async: false,
-//            success:function(crLists){
-//
-//
-//                var table = $('#mytab').DataTable({
-//
-//                     });
-//
-//            }
-//        })
-
-
-
-
+    var errorCount=0;
     $(document).ready(function() {
         var table = $('#mytab').DataTable({
             select:true,
@@ -158,12 +118,12 @@
                 "targets": '_all',
                 "render": function ( data, type, full, meta ) {
                     if(data == "ERROR HERE"){
-                        return '<input type="text" value="'+data+'" style = "color: red"/>';
+                       errorCount = errorCount + 1;
+                        return '<input type="text" value="'+data+'" style = "color: red" readonly/>';
 
                     }
-                    return '<input type="text" value="'+data+'" />';
+                    return '<input type="text" value="'+data+'" readonly />';
 
-                    //  return '<input type="text" value="'+data+'"/>';
                 }
             } ]
         });
@@ -175,10 +135,23 @@
 
     $('#button_submit').click(function(e) {
         e.preventDefault()
+
         bulkTab = $('#mytab').DataTable();
-        data = JSON.stringify(bulkTab.data().toArray());
-        $("input[name='requests']").val(data);
-        $('form').submit();
+
+        if(errorCount > 0){
+
+            var message = "Unable to submit.. Uploaded file has columns with empty values (See columns highlighted in RED).. " +
+                "Kindly reupload corrected file";
+            document.getElementById("successMess").innerHTML = message;
+            $('#myModalSuccess').modal('show');
+
+        }
+        else {
+            data = JSON.stringify(bulkTab.data().toArray());
+            $("input[name='requests']").val(data);
+            $('form').submit();
+        }
+
     });
 
     //});

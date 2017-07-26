@@ -56,10 +56,10 @@
                                 <span class='greeting' th:text="*{greeting}"></span>
                                 <br class="break"/>
                                 <b class="greeting-user" th:text="*{name}"></b> &nbsp;
-                                <a th:href="@{/retail/mailbox/inbox}">
-                                    <i class="fa fa-envelope" style="color:#003056;font-size:16px"></i>
-                                    <span th:if="${numOfUnreadMessages}" class="badge bg-green" th:text="${numOfUnreadMessages}">count</span>
-                                </a>
+                                <!--<a th:href="@{/retail/mailbox/inbox}">-->
+                                    <!--<i class="fa fa-envelope" style="color:#003056;font-size:16px"></i>-->
+                                    <!--<span th:if="${numOfUnreadMessages}" class="badge bg-green" th:text="${numOfUnreadMessages}">count</span>-->
+                                <!--</a>-->
                             </h5>
 
 
@@ -213,8 +213,8 @@
 
         <!--<div class=' alert alert-info text-white  no-bd-rad' style="margin:1px 15px 1px 1px!important;background-color:#003056;color:white;"><marquee class='marquee'>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</marquee></div>-->
 
-        <div class="info-bar">
-            Lorem Ipsum Dorem er uu
+        <div class="info-bar" id='bread-crumb'>
+           
         </div>
     </div>
 
@@ -242,7 +242,7 @@
                     <div class="sideba" style=" adding-top:20px;">
 
                         <div class="bg-danger alert no-mt advert no-bd-rad ">
-                            <h1>Did You Know?</h1>
+                            <h1 style="margin-bottom:10px">Did You Know?</h1>
                             <p>Lorem ipsum dolor sit amet,
                                 consectetuer adipiscing elit, sed diam
                                 nonummy nibh euismod tincidunt ut
@@ -316,7 +316,7 @@
 
     <!-- CONTENT-WRAPPER SECTION END-->
     <footer>
-        <div class="containe bg-danger bg-grey">
+        <div class="containe  bg-grey" style="padding:1px;">
 
             <div class="footer_bar row">
                 <div class="col-md-6 col-xs-12">

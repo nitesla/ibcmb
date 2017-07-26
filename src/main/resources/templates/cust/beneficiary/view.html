@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{ret-layout}">
 
-<body onload="currentBar('Beneficiaries list')">
+<body onload="javascript:var bread = [['Home', '/retail/dashboard'],['Beneficiary Management', '/retail/beneficiary'],['beneficiary list']];currentBar('Beneficiary list');breadCrumb(bread)">
 
 <div layout:fragment="content">
     <div class="modal fade" id="myModal">
@@ -16,8 +16,8 @@
                     <p>Are you sure that you want to delete this beneficiary?</p>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="del btn btn-danger">Yes</button>
-                    <button type="button" class="btn btn-primary" data-dismiss="modal">No</button>
+                    <button type="button" class="del btn btn-link required-step">Yes</button>
+                    <button type="button" class="btn btn-link less-required" data-dismiss="modal">No</button>
                 </div>
             </div><!-- /.modal-content -->
         </div><!-- /.modal-dialog -->
@@ -34,7 +34,7 @@
         <div class="col-xs-11 no-pad-lef no-mt alert no-bd">
            <div class="">
                  <div class="">
-                        <div class="bg-white">
+                        <div class="bg-white table-responsive">
                         <table class="table" id="mytab">
                             <thead class='thead'>
                                 <th >Name</th>
