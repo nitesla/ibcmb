@@ -1,11 +1,13 @@
 package longbridge.controllers;
 
+import longbridge.api.CustomerDetails;
 import longbridge.exception.InternetBankingException;
 import longbridge.exception.PasswordException;
 import longbridge.exception.PasswordMismatchException;
 import longbridge.exception.PasswordPolicyViolationException;
 import longbridge.forms.CustResetPassword;
 import longbridge.forms.ResetPasswordForm;
+import longbridge.forms.RetrieveUsernameForm;
 import longbridge.models.CorporateUser;
 import longbridge.models.Email;
 import longbridge.models.RetailUser;
@@ -65,6 +67,9 @@ public class RetrieveCorpCredentialController {
 
     @Autowired
     private MailService mailService;
+
+    @Autowired
+    private IntegrationService integrationService;
 
     @GetMapping("/forgot/password/corporate")
     public String showResetPassword(Model model, HttpSession session, RedirectAttributes redirectAttributes){
@@ -268,5 +273,72 @@ public @ResponseBody String getSecAns(WebRequest webRequest, HttpSession session
             e.printStackTrace();
             return e.getMessage();
         }
+    }
+
+    @GetMapping("/forgot/corporate/username")
+    public String showForgotUsername(Model model) {
+        RetrieveUsernameForm retrieveUsernameForm= new RetrieveUsernameForm();
+        retrieveUsernameForm.step = "1";
+        model.addAttribute("retUsernameForm", retrieveUsernameForm);
+        return "cust/forgotusername";
+    }
+
+    @PostMapping("/forgot/corporate/username")
+    public
+    @ResponseBody
+    String forgotUsername(WebRequest webRequest) {
+        Iterator<String> iterator = webRequest.getParameterNames();
+
+        while(iterator.hasNext()){
+            logger.info(iterator.next());
+        }
+//
+//
+//        String accountNumber = webRequest.getParameter("acct");
+//        String securityQuestion = webRequest.getParameter("securityQuestion");
+//        String securityAnswer = webRequest.getParameter("securityAnswer");
+        String accountId = webRequest.getParameter("acct");
+        try {
+            if ("".equals(accountId) || accountId == null) {
+                logger.error("Account Number not valid");
+                return "false";
+            }
+
+            CustomerDetails details =  integrationService.viewCustomerDetails(accountId);
+
+//            details.
+            //confirm security question is correct
+//            String secAnswer="";
+//            Map<String, List<String>> qa = securityService.getUserQA(user.getEntrustId(), user.getEntrustGroup());
+//            //List<String> sec = null;
+//            if (qa != null){
+////                List<String> questions= qa.get("questions");
+//                List<String> answers= qa.get("answers");
+//                String result = StringUtil.compareAnswers(webRequest,answers);
+////                    secAnswer = answers.stream().filter(Objects::nonNull).findFirst().orElse("");
+//
+//                if (result.equalsIgnoreCase("true")){
+//                    logger.debug("User Info {}:", user.getUserName());
+//                    //Send Username to Email
+//                    Email email = new Email.Builder()
+//                            .setRecipient(user.getEmail())
+//                            .setSubject(messageSource.getMessage("retrieve.username.subject",null,locale))
+//                            .setBody(String.format(messageSource.getMessage("retrieve.username.message",null,locale),user.getFirstName(), user.getUserName()))
+//                            .build();
+//                    mailService.send(email);
+//                    return "true";
+//                }
+//
+//            }else {
+//                return "false";
+//            }
+
+
+
+        }catch (InternetBankingException e){
+            return "false";
+        }
+
+        return "false";
     }
 }
