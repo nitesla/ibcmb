@@ -151,6 +151,7 @@ public class CorpLocalTransferController {
     @ModelAttribute
     public void getBankCode(Model model) {
         model.addAttribute("bankCode", bankCode);
+        model.addAttribute("fee",transferUtils.getFee("CMB"));
     }
 
     @PostMapping("/edit")

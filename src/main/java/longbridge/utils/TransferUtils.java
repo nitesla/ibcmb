@@ -149,7 +149,7 @@ public class TransferUtils {
     }
 
 
-    public List<Account> getNairaAccounts(String custId ) {
+    public List<Account> getNairaAccounts(String custId) {
 
         List<Account> accountList = new ArrayList<>();
         if (custId != null && !custId.isEmpty()) {
@@ -165,5 +165,14 @@ public class TransferUtils {
 
         }
         return accountList;
+    }
+
+    public String getFee(String channel) {
+        try {
+            return integrationService.getFee(channel).getFeeValue();
+        } catch (Exception e) {
+            return null;
+        }
+
     }
 }
