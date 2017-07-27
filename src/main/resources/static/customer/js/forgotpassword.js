@@ -94,7 +94,7 @@ function validateSecAnswer(secAnswers){
         url:"/rest/secAns",
         data: {username : username,secAnswers:secAnswer},
         async:false,
-
+cache:false,
         success:function(data){
             result = ''+String(data);
             if(result == "true"){
@@ -127,6 +127,7 @@ function sendGenPassword() {
         type:'GET',
         url:"/rest/sendGenPass/"+username,
         async:false,
+        cache:false,
         success:function(data1){
             result = ''+String(data1);
             if(result == "true"){
@@ -156,6 +157,7 @@ function validateGenPassword() {
         type:'GET',
         url:"/rest/verGenPass/"+username+"/"+genpassword,
         async:false,
+        cache:false,
         success:function(data1){
             result = ''+String(data1);
             if(result == "true"){
@@ -180,6 +182,7 @@ function validatePassword(password){
     var res;
     $.ajax({
         type:'GET',
+        cache:false,
         url:"/rest/password/check/"+password,
         async:false,
         success:function(data1){
@@ -211,6 +214,7 @@ function validateToken(){
         type:'GET',
         url:"/rest/tokenAuth/"+username+"/"+token,
         async:false,
+        
         success:function(data1){
             result = ''+String(data1);
             if(result == "true"){

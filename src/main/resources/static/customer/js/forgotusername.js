@@ -12,6 +12,7 @@ function validateAccountNo(accountNumber){
         type:'GET',
         url:"/rest/retail/accountname/"+accountNumber,
         async:false,
+        cache:false,
         success:function(data1){
             customerId = ''+String(data1);
             if(customerId == ""){
@@ -36,6 +37,7 @@ function validateAccountNo(accountNumber){
             url: "/rest/secQues/"+customerId,
             type: 'GET',
             async: false,
+            cache:false,
             success:function(data2){
                 secQues = ''+String(data2);
                 // console.log(secQues);
@@ -82,6 +84,7 @@ function validateSecAnswer(secAnswer){
     $.ajax({
         type:'GET',
         url:"/rest/secAns/cifId",
+        cache:false,
         data: {customerId : customerId,secAnswers:secAnswer},
         async:false,
         success:function(data1){
