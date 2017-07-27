@@ -184,6 +184,7 @@ public class LocalTransferController {
     @ModelAttribute
     public void getBankCode(Model model) {
         model.addAttribute("bankCode", bankCode);
+        model.addAttribute("fee",transferUtils.getFee("CMB"));
     }
 
 
