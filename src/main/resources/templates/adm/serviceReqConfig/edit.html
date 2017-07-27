@@ -73,14 +73,7 @@
                                             </div>
                                         </div>
 
-                                        <div class="form-group">
-                                            <label class="col-sm-2 control-label">
-                                                Check if <span class="required"></span>
-                                            </label>
-                                            <div class="col-md-4 col-sm-6 col-xs-12">
-                                                <label><input type="checkbox" th:field="*{authenticate}" /> &nbsp; Requires Authentication</label>
-                                            </div>
-                                        </div>
+
 
                                         <div class="form-group">
                                             <label class="col-sm-2 control-label">Group<span class="required"></span></label>
@@ -91,6 +84,15 @@
                                                     <option th:each="requestGroup : ${requestGroups}" th:value="${requestGroup.id}" th:text="${requestGroup.name}" th:selected="${requestGroup.id==serviceReqConfig.groupId}"></option>
                                                 </select>
 
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label">
+                                                Check if <span class="required"></span>
+                                            </label>
+                                            <div class="col-md-4 col-sm-6 col-xs-12">
+                                                <label><input type="checkbox" th:field="*{authenticate}" /> &nbsp; Requires Authentication</label>
                                             </div>
                                         </div>
 
