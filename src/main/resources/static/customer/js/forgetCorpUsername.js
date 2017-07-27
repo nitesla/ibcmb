@@ -245,9 +245,9 @@ form.children("div").steps({
                     secAnswer +=','+$('#corpSecurityAnswer'+i).val();
 
                 }
-                alert(secAnswer);
+                // alert(secAnswer);
             }
-            console.log("sec answers are "+secAnswer);
+            // console.log("sec answers are "+secAnswer);
             return isValid && validateSecAnswer(secAnswer);
         }
         return form.valid();

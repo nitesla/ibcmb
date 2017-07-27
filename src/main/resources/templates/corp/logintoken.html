@@ -120,7 +120,7 @@
                         <div id='errorMess' class=" text-danger "></div>
                         <!--<div id='successMess' class=" text-success "></div>-->
                     </div>
-                    <div th:if="${noOfAttempts}">
+                    <div th:if="${noOfAttempts >=3}">
                         <p>Don't have a token?</p>
                         <p><a href='javascript:sendOtp()' id="getOtp">Send me an OTP </a><i class='fa fa-angle-down'  style="font-size:18px;"></i></p>
                     </div>
