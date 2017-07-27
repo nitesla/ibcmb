@@ -84,7 +84,7 @@
                                 <tr th:each="faq : ${faqList}">
                                     <div class="bg-coronation alert" style="margin-bottom:0px !important;">
                                         <span th:text="${faq.question}">Can i use the platform to transfer money abroad?</span>
-                                        <i data-toggle="collapse" th:attr="data-target='#'+${faq.id}" class='pull-right fa fa-plus faq-icon' style="font-sizepx"></i>
+                                        <i data-toggle="collapse" th:id="'_'+${faq.id}" th:attr="data-target='#'+${faq.id}" class='pull-right fa fa-plus faq-icon'   ></i>
                                     </div>
                                     <div th:id="${faq.id}" class="collapse alert bg-danger" style="margin-top:5px !important;" th:text="${faq.answer}">
                                         Lorem ipsum dolor text....
@@ -225,9 +225,40 @@
             "lengthMenu": [5, 10, 20]
         });
 
+
+        $('.faq-icon').click(function() {
+    // var id = $(this).attr('id');
+    alert(id);
+});
+
     });
 
     /*]]>*/
 </script>
+
+
+ <script>
+
+
+
+
+
+        // function serviceToggle()
+        // {
+        //     id = $(this).attr('id');
+
+        //     alert(id);
+            
+        //     // $(id).toggleClass('fa fa-plus-square  fa fa-minus-square ');
+        //     // $('.service').collapse('hide');
+        //     // $(id).next('div').show('show');
+        
+
+
+
+
+
+        // }
+    </script>
 </body>
 </html>
