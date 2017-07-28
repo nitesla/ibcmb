@@ -46,7 +46,7 @@ function breadCrumb (arg)
 
   if (arg.constructor == Array)
 {
-    for (let i = 0; i < arg.length; i++)
+    for (var i = 0; i < arg.length; i++)
     {
         var link = document.createElement('a');
 
@@ -54,7 +54,7 @@ function breadCrumb (arg)
         {
             var link = document.createElement('span');
         }
-        for (let j = 0; j < arg[i].length; j++)
+        for (var j = 0; j < arg[i].length; j++)
         {                 
             if (j == 0)
             {
