@@ -7,203 +7,216 @@
     <link rel="stylesheet" type="text/css" th:href="@{~/customer/font-awesome/font-awesome.min.css}"/>
     <link rel="stylesheet" type="text/css" th:href="@{~/customer/css/bootstrap.css}"/>
     <link rel="stylesheet" type="text/css" th:href="@{~/customer/css/custom.css}"/>
+    <link rel="shortcut icon" th:href="@{~/customer/img/favicon.ico}" type="image/x-icon">
+<link rel="icon" th:href="@{~/customer/img/favico.ico}" type="image/x-icon">
 
-    <title>Retrieve Username</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Test</title>
 </head>
 <body>
-
-<header class="header">
     <div class="container">
-        <div class="top_bar">
-            <ul class="list_group">
-                <li><a href="https://www.coronationmb.com/" target="_blank"> CORONATION MERCHANT BANK</a></li>
-            </ul>
-        </div>
-        <nav class="navbar navbar-default">
-            <div class="container-fluid">
-                <div class="navbar-header navbar-left">
-                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse-1" aria-expanded="false">
-                        <span class="sr-only">MENU</span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                    </button>
-                    <a class="navbar-brand" href="#" data-toggle="collapse" data-target="#navbar-collapse-1">Menu</a>
-                </div>
-                <div class="collapse navbar-collapse" id="navbar-collapse-1">
-                    <ul class="nav navbar-nav">
-                        <li><a href="/">HOME</a></li>
-                        <li class="dropdown">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"> LOGIN</a>
-                            <ul class="dropdown-menu">
-                                <li><a th:href="@{/login/retail}"> INDIVIDUAL </a></li>
-                                <li><a th:href="@{/login/corporate}"> CORPORATE </a></li>
-                            </ul>
-                        </li>
-                        <li><a th:href="@{/register}">REGISTER</a></li>
-                        <li><a href="/">CONTACT US</a></li>
-                        <li><a href="/">HELP</a></li>
+
+         <div class="row">
+            <div class="top-bar col-xs-12">
+                    <ul class="top-link">
+                        <li class="no-bd"><a href="https://www.coronationmb.com/" target="_blank"> Coronation merchant bank</a>&nbsp;</li>
                     </ul>
-                </div>
             </div>
-        </nav>
-        <a href="#" class="logo">
-            <img th:src="@{~/customer/img/cmb_logo.png}" alt="Coronation Merchant Bank" />
-        </a>
-    </div>
-</header>
-<br/>
-<br/>
-<br/>
-<section class="content-wrapper">
-    <div class="container">
-        <div class="row">
-            <div class="col-md-12 col-sm-12">
-                <div class="row">
-                    <h5 class="page_header">Retrieve Username</h5>
+        </div>
 
-                    <form id="reg-form" action="/forgot/username" method="post">
+        <div  class="row">
 
-                        <div>
-                            <h3>Account Number</h3>
-                            <section>
-                                <div class="row">
+                <div class="col-sm-9">
 
-                                    <div class="col-md-offset-4 col-md-4">
-                                        <br/>
-                                        <div class="form-group">
-                                            <label>Account Number</label>
-                                            <span class='req'></span><input style="width:100% !important" type="text" name="acct" class="my-select required" placeholder="Account Number"/>
-                                        </div>
-                                    </div>
-                                </div>
-                            </section>
-                            <h3>Security Information</h3>
-                            <section>
-                                <div class="row">
-                                    <!--<div class="col-md-offset-4 col-md-4">-->
-                                    <!--<br/>-->
-                                    <!--<div class="form-group">-->
-                                    <!--<label>Security Question</label>-->
-                                    <!--<input th:value="${retUsernameForm.securityQuestion}" name="securityQuestion" readonly="readonly" class="my-select"/>-->
-                                    <!--</div>-->
-                                    <!--<div class="form-group">-->
-                                    <!--<label>Security Answer</label>-->
-                                    <!--<span class="required"></span><input th:value="${retUsernameForm.securityAnswer}" type="text" name="securityAnswer" class="my-select required" placeholder="Security Answer"/>-->
-                                    <!--</div>-->
-
-                                    <!--</div>-->
-                                    <div id="secQuestionsDiv"  class="col-md-offset-4 col-md-4">
-                                        <input name="customerId" id="customerId" type="hidden"/>
-                                        <input id="returnValue" type="hidden"/>
-                                        <input type='hidden' id='noOfSecQn' name='noOfSecQn' value='0'/>
-                                    </div>
-                                </div>
-                            </section>
-                            <h3>Summary</h3>
-                            <section>
-                                <div class="row">
-                                    <div class="col-md-7">
-                                        <br/>
-                                        <h4 style="font-size: 16px;">Operation successful</h4>
-                                        <br/>
-                                        Your username has been sent to your registered email
-                                        <br/>
-                                    </div>
-                                </div>
-                            </section>
+                <nav class="navbar navbar-default bg-success" >
+                    <div class="">
+                        <div class="navbar-header navbar-left ">
+                            <button type="button" class="navbar-toggle collapsed " data-toggle="collapse" data-target="#navbar-collapse-1" aria-expanded="false">
+                                <span class="sr-only">MENU</span>
+                                <span class="icon-bar"></span>
+                                <span class="icon-bar"></span>
+                                <span class="icon-bar"></span>
+                            </button>
+                            <a class="navbar-brand" href="#" data-toggle="collapse" data-target="#navbar-collapse-1">Menu</a>
                         </div>
-                    </form>
+                        <div class="collapse navbar-collapse no-pad-left" id="navbar-collapse-1">
+                            <ul class="nav navbar-nav ">
+                                <li><a href="/"> HOME</a></li>
+                                <li class="dropdown">
+                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"> LOGIN</a>
+                                    <ul class="dropdown-menu">
+                                        <li><a th:href="@{/login/retail}"> INDIVIDUAL </a></li>
+                                        <li><a th:href="@{/login/corporate}"> CORPORATE </a></li>
+                                    </ul>
+                                </li>
+                                <li><a href="/register"> REGISTER</a></li>
+                                <li><a href="/#contact_us"> CONTACT US</a></li>
+                                <li><a href="/faqs"> FAQ</a></li>
+                            </ul>
+
+                        </div>
+                    </div>
+                </nav>
+
+                </div>
+
+                <div class="col-sm-3 no-pad-right">
+                     <div class="center" style="margin:0px auto;">
+                        <a href="/" class="log" data-toggle="tooltip" data-placement="bottom" title="Coronation Merchant Bank">
+                            <img class="img img-responsive pull-right" style="display:block;margin:0px auto;" th:src="@{~/customer/img/cmb_logo.png}" alt="Coronation Merchant Bank" />
+                        </a>
+                    </div>
+                </div>
+        </div>
+        <section class="content-wrapper">
+            <div class="containe">
+                <div class="row">
+                    <div class="col-md-12 col-sm-12">
+                        <div class="row">
+                            <h5 class="page_header">Retrieve Username</h5>
+
+                            <form id="reg-form" action="/forgot/username" method="post">
+
+                                <div>
+                                    <h3>Account Number</h3>
+                                    <section>
+                                        <div class="row">
+
+                                            <div class="col-md-offset-4 col-md-4">
+                                                <br/>
+                                                <div class="form-group">
+                                                    <label>Account Number</label>
+                                                    <span class='req'></span><input style="width:100% !important" type="text" name="acct" class="my-select required" placeholder="Account Number"/>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </section>
+                                    <h3>Security Information</h3>
+                                    <section>
+                                        <div class="row">
+                                            <!--<div class="col-md-offset-4 col-md-4">-->
+                                            <!--<br/>-->
+                                            <!--<div class="form-group">-->
+                                            <!--<label>Security Question</label>-->
+                                            <!--<input th:value="${retUsernameForm.securityQuestion}" name="securityQuestion" readonly="readonly" class="my-select"/>-->
+                                            <!--</div>-->
+                                            <!--<div class="form-group">-->
+                                            <!--<label>Security Answer</label>-->
+                                            <!--<span class="required"></span><input th:value="${retUsernameForm.securityAnswer}" type="text" name="securityAnswer" class="my-select required" placeholder="Security Answer"/>-->
+                                            <!--</div>-->
+
+                                            <!--</div>-->
+                                            <div id="secQuestionsDiv"  class="col-md-offset-4 col-md-4">
+                                                <input name="customerId" id="customerId" type="hidden"/>
+                                                <input id="returnValue" type="hidden"/>
+                                                <input type='hidden' id='noOfSecQn' name='noOfSecQn' value='0'/>
+                                            </div>
+                                        </div>
+                                    </section>
+                                    <h3>Summary</h3>
+                                    <section>
+                                        <div class="row">
+                                            <div class="col-md-7">
+                                                <br/>
+                                                <h4 style="font-size: 16px;">Operation successful</h4>
+                                                <br/>
+                                                Your username has been sent to your registered email
+                                                <br/>
+                                            </div>
+                                        </div>
+                                    </section>
+                                </div>
+                            </form>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <div id="myModalError" class="modal fade " role="dialog">
+            <div class="modal-dialog">
+
+                <!-- Modal content-->
+
+                <div class="modal-content no-bd-rad content ">
+
+                    <div class="modal-body">
+
+
+                        <p id='errorMess' class='mess text-danger'>Put something here iff need be.</p>
+
+
+                    </div>
+
+
+                    <div class="modal-footer no-bd-top">
+                        <button type="button" class="btn btn-link" data-dismiss="modal">OK</button>
+                    </div>
+
                 </div>
 
             </div>
         </div>
-    </div>
-</section>
-
-<div id="myModalError" class="modal fade " role="dialog">
-    <div class="modal-dialog">
-
-        <!-- Modal content-->
-
-        <div class="modal-content no-bd-rad content ">
-
-            <div class="modal-body">
 
 
-                <p id='errorMess' class='mess text-danger'>Put something here iff need be.</p>
+        <div id="myModalSuccess" class="modal fade " role="dialog">
+            <div class="modal-dialog">
+
+                <!-- Modal content-->
+
+                <div class="modal-content no-bd-rad content ">
+
+                    <div class="modal-body">
 
 
-            </div>
+                        <p id='successMess' class='mess text-primary'>Put something here iff need be.</p>
 
 
-            <div class="modal-footer no-bd-top">
-                <button type="button" class="btn btn-link" data-dismiss="modal">OK</button>
-            </div>
-
-        </div>
-
-    </div>
-</div>
+                    </div>
 
 
-<div id="myModalSuccess" class="modal fade " role="dialog">
-    <div class="modal-dialog">
+                    <div class="modal-footer no-bd-top">
+                        <button type="button" class="btn btn-link" data-dismiss="modal">OK</button>
+                    </div>
 
-        <!-- Modal content-->
+                </div>
 
-        <div class="modal-content no-bd-rad content ">
-
-            <div class="modal-body">
-
-
-                <p id='successMess' class='mess text-primary'>Put something here iff need be.</p>
-
-
-            </div>
-
-
-            <div class="modal-footer no-bd-top">
-                <button type="button" class="btn btn-link" data-dismiss="modal">OK</button>
-            </div>
-
-        </div>
-
-    </div>
-</div>
-
-
-<div id="myLoader" class="modal fade " role="dialog">
-    <div class="modal-dialog">
-
-        <!-- Modal content-->
-
-        <div class=" no-bd-rad no-bd content text-center " style=" background: transparent !important;">
-            <div class="bg-white center" style="width:40%">
-            <img class="img-responsive block center  loader-img" style='padding:7px;' th:src="@{~/customer/img/loader.png}" alt="Coronation Merchant Bank" />
-                        <div id='loading-icon bg-white text-center'><i class='fa fa-spinner block center fa-spin' style="font-size:18px;color:#003056"></i> Loading. Please Wait</div>
             </div>
         </div>
 
-    </div>
-</div>
 
-<footer>
-    <div class="container">
-        <div class="footer_bar">
-            <div class="col-md-6 col-xs-12">
-                <ul class="list_group">
-                    <li><a href="#" target="_blank">Privacy policy</a></li>
-                    <li><a href="#" target="_blank">Disclaimer</a></li>
-                    <li><a href="#" target="_blank">Terms &amp; Conditions</a></li>
-                </ul>
+        <div id="myLoader" class="modal fade " role="dialog">
+            <div class="modal-dialog">
+
+                <!-- Modal content-->
+
+                <div class=" no-bd-rad no-bd content text-center " style=" background: transparent !important;">
+                    <div class="bg-white center" style="width:40%">
+                    <img class="img-responsive block center  loader-img" style='padding:7px;' th:src="@{~/customer/img/loader.png}" alt="Coronation Merchant Bank" />
+                                <div id='loading-icon bg-white text-center'><i class='fa fa-spinner block center fa-spin' style="font-size:18px;color:#003056"></i> Loading. Please Wait</div>
+                    </div>
+                </div>
 
             </div>
-            <div class="col-md-6 col-xs-12"><p> &copy; 2017 Coronation Merchant Bank. - All rights reserved</p></div>
-
         </div>
-    </div>
-</footer>
+
+        <footer>
+            <div class="containe">
+                <div class="footer_bar">
+                    <div class="col-md-6 col-xs-12">
+                        <ul class="list_group">
+                            <li><a href="#" target="_blank">Privacy policy</a></li>
+                            <li><a href="#" target="_blank">Disclaimer</a></li>
+                            <li><a href="#" target="_blank">Terms &amp; Conditions</a></li>
+                        </ul>
+
+                    </div>
+                    <div class="col-md-6 col-xs-12"><p> &copy; 2017 Coronation Merchant Bank. - All rights reserved</p></div>
+
+                </div>
+            </div>
+        </footer>
 <!-- CORE JQUERY SCRIPTS -->
 <script th:src="@{/customer/js/jquery-1.11.1.js}"></script>
 <!-- BOOTSTRAP SCRIPTS  -->
