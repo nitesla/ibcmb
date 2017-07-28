@@ -261,7 +261,7 @@ form.children("div").steps({
     onFinished: function (event, currentIndex)
     {
         //alert("Submitted!");
-        window.location.href = "/login/retail";
+        window.location.href = "/login/corporate";
 //             $("#reg-form").submit();
     }
 });
