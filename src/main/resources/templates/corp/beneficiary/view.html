@@ -4,7 +4,7 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{corp-layout}">
 
 
-<body onload="currentBar('Beneficiaries list')">
+<body onload="javascript:var bread = [['Home', '/corporate/dashboard'],['Beneficiary Management', '/corporate/beneficiary']];currentBar('beneficiary list');breadCrumb(bread)">
 
 <div layout:fragment="content">
 

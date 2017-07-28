@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{ret-layout}">
 
-<body onload="currentBar('Add new beneficiary')">
+<body onload="javascript:var bread = [['Home', '/retail/dashboard'],['Beneficiary Management', '/retail/beneficiary'],['Add new beneficiary']];currentBar('add new beneficiary');breadCrumb(bread)">
 
 <div layout:fragment="content">
     <div class="col-md-5 col-sm-5 ">
@@ -250,7 +250,7 @@
                 $('#loading-icon').hide();
                 return false;
             }
-
+l
             $.getJSON('/retail/transfer/' + acct + '/' + bank + '/nameEnquiry', function (jd) {
                 var message = jd.message;
                 var success = jd.success;

@@ -7,6 +7,7 @@ import longbridge.dtos.CodeDTO;
 import longbridge.dtos.PasswordStrengthDTO;
 import longbridge.dtos.RetailUserDTO;
 import longbridge.exception.InternetBankingException;
+import longbridge.exception.InternetBankingSecurityException;
 import longbridge.forms.RegistrationForm;
 import longbridge.forms.RetrieveUsernameForm;
 import longbridge.models.Account;
@@ -427,11 +428,11 @@ public class UserRegController {
         while(iterator.hasNext()){
             logger.info(iterator.next());
         }
-
-
-        String accountNumber = webRequest.getParameter("acct");
-        String securityQuestion = webRequest.getParameter("securityQuestion");
-        String securityAnswer = webRequest.getParameter("securityAnswer");
+//
+//
+//        String accountNumber = webRequest.getParameter("acct");
+//        String securityQuestion = webRequest.getParameter("securityQuestion");
+//        String securityAnswer = webRequest.getParameter("securityAnswer");
         String customerId = webRequest.getParameter("customerId");
         try {
             if ("".equals(customerId) || customerId == null) {
@@ -446,10 +447,10 @@ public class UserRegController {
             Map<String, List<String>> qa = securityService.getUserQA(user.getEntrustId(), user.getEntrustGroup());
             //List<String> sec = null;
             if (qa != null){
-                List<String> questions= qa.get("questions");
+//                List<String> questions= qa.get("questions");
                 List<String> answers= qa.get("answers");
                 String result = StringUtil.compareAnswers(webRequest,answers);
-                    secAnswer = answers.stream().filter(Objects::nonNull).findFirst().orElse("");
+//                    secAnswer = answers.stream().filter(Objects::nonNull).findFirst().orElse("");
 
                 if (result.equalsIgnoreCase("true")){
                     logger.debug("User Info {}:", user.getUserName());
@@ -589,6 +590,7 @@ public class UserRegController {
         }
     };
 
+
     @PostMapping("/register")
     public @ResponseBody String addUser(WebRequest webRequest, RedirectAttributes redirectAttributes){
         Iterator<String> iterator = webRequest.getParameterNames();
@@ -614,6 +616,12 @@ public class UserRegController {
         List<String> secQuestions = new ArrayList<>();
         List<String> securityAnswers = new ArrayList<>();
         logger.info("Customer Id {}:", customerId);
+
+
+        if (phishing == null || "".equals(phishing)){
+            return messageSource.getMessage("phishing.empty", null, locale);
+        }
+
         if(noOfQuestions != null){
             for(int i =0; i < Integer.parseInt(noOfQuestions); i++){
                 secQuestions.add(webRequest.getParameter("securityQuestion"+i));
@@ -697,15 +705,19 @@ public class UserRegController {
         try {
             String message = retailUserService.addUser(retailUserDTO, details);
             logger.info("MESSAGE", message);
-            redirectAttributes.addAttribute("success", "true");
+//            redirectAttributes.addAttribute("success", "true");
             return "true";
         }
-        catch (InternetBankingException e){
+        catch (InternetBankingSecurityException e){
             logger.error("Error creating retail user", e);
-            redirectAttributes.addFlashAttribute(messageSource.getMessage("user.add.failure", null, locale));
+            //redirectAttributes.addFlashAttribute(messageSource.getMessage("user.add.failure", null, locale));
+            return e.getMessage();
+        }catch (InternetBankingException e){
+            logger.error("Error creating retail user", e);
+            //redirectAttributes.addFlashAttribute(messageSource.getMessage("user.add.failure", null, locale));
+            return e.getMessage();
         }
 
-        return messageSource.getMessage("user.add.failure", null, locale);
     }
 
     private void doesUserExist(String customerId){

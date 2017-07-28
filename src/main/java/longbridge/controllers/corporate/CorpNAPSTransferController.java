@@ -174,9 +174,11 @@ public class CorpNAPSTransferController {
                 workbook = new XSSFWorkbook(inputStream);
             }
             else {
+
                 model.addAttribute("failure", messageSource.getMessage("file.format.failure", null, locale));
                 return "/corp/transfer/bulktransfer/upload";
             }
+
 
             Sheet datatypeSheet = workbook.getSheetAt(0);
             Iterator<Row> iterator = datatypeSheet.iterator();
@@ -189,12 +191,7 @@ public class CorpNAPSTransferController {
                 }
             }
 
-//            if (!extension.equals("xls") && !extension.equals("xlsx")) {
-//                model.addAttribute("failure", messageSource.getMessage("file.format.failure", null, locale));
-//                return "/corp/transfer/bulktransfer/upload";
-//            }
-
-            httpSession.setAttribute("inputStream", inputStream);
+            httpSession.setAttribute("workbook", workbook);
             httpSession.setAttribute("fileExtension", extension);
             redirectAttributes.addFlashAttribute("message", messageSource.getMessage("file.upload.success", null, locale));
         } catch (IOException e) {
@@ -211,29 +208,14 @@ public class CorpNAPSTransferController {
     @GetMapping("/all")
     @ResponseBody
     public DataTablesOutput<CreditRequestDTO> getCreditRequests(HttpSession session , Model model) throws IOException {
-        FileInputStream excelFile = (FileInputStream) session.getAttribute("inputStream");
+//        FileInputStream excelFile = (FileInputStream) session.getAttribute("inputStream");
+        Workbook workbook = (Workbook) session.getAttribute("workbook");
         String fileExtension = (String)session.getAttribute("fileExtension");
         List<CreditRequestDTO> crLists = new ArrayList<>();
         try {
-            System.out.println(excelFile);
-           // Workbook workbook = new HSSFWorkbook(new POIFSFileSystem(excelFile));
-           // Workbook[] workbook = new Workbook[] { new HSSFWorkbook(excelFile), new XSSFWorkbook(excelFile) };
-            Workbook workbook;
-             if (fileExtension.equalsIgnoreCase("xls")) {
-
-             workbook = new HSSFWorkbook(excelFile);
-
-             }
-             else if (fileExtension.equalsIgnoreCase("xlsx")) {
-               workbook = new XSSFWorkbook(excelFile);
-             }
-             else {
-                 throw new IllegalArgumentException(fileExtension+" File does not have a standard excel extension.");
-             }
+            System.out.println(workbook);
 
             Sheet datatypeSheet = workbook.getSheetAt(0);
-
-
 
             Iterator<Row> iterator = datatypeSheet.iterator();
 
@@ -271,7 +253,7 @@ public class CorpNAPSTransferController {
             }
 
 
-        } catch (IOException  | IllegalArgumentException e) {
+        } catch (IllegalArgumentException e) {
             logger.error("Error uploading file", e);
         }
         System.out.println(crLists);

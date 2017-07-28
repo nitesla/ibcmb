@@ -138,6 +138,7 @@ public interface CorporateUserService{
     String unlockUser(Long id) throws InternetBankingException;
 
     void createUserOnEntrustAndSendCredentials(CorporateUser user);
-
+    void increaseNoOfTokenAttempt(CorporateUser user);
+    void resetNoOfTokenAttempt(CorporateUser user);
 
 }

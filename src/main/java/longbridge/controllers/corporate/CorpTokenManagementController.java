@@ -49,16 +49,21 @@ public class CorpTokenManagementController {
 
     @GetMapping
     public String getCorporateToken(HttpServletRequest httpServletRequest, Principal principal, Model model) {
+        Integer noOfAttempts = 0;
         httpServletRequest.getSession().setAttribute("2FA", "2FA");
         model.addAttribute("username", principal.getName());
+        CorporateUser user  = corporateUserService.getUserByName(principal.getName());
+        if (user.getNoOfTokenAttempts() != null){
+            noOfAttempts = user.getNoOfTokenAttempts();
+        }
+        model.addAttribute("noOfAttempts",noOfAttempts);
         return "/corp/logintoken";
     }
 
     @PostMapping
-    public String performTokenAuthentication(HttpServletRequest request, Principal principal, RedirectAttributes redirectAttributes, Locale locale) {
-
+    public String performTokenAuthentication(HttpServletRequest request, Principal principal, RedirectAttributes redirectAttributes, Locale locale,Model model) {
+        Integer noOfAttempts = 0;
         CorporateUser user  = corporateUserService.getUserByName(principal.getName());
-
         String tokenCode = request.getParameter("token");
         try {
             boolean result = securityService.performTokenValidation(user.getEntrustId(), user.getEntrustGroup(), tokenCode);
@@ -70,13 +75,18 @@ public class CorpTokenManagementController {
                 if ("Y".equals(user.getIsFirstTimeLogon())){
                     return "redirect:/corporate/setup";
                 }
-
+                corporateUserService.resetNoOfTokenAttempt(user);
                 redirectAttributes.addFlashAttribute("message", messageSource.getMessage("token.auth.success", null, locale));
                 return "redirect:/corporate/dashboard";
             }
         } catch (InternetBankingSecurityException ibe) {
             logger.error("Error authenticating token {} ", ibe);
         }
+        if (user.getNoOfTokenAttempts() != null){
+            corporateUserService.increaseNoOfTokenAttempt(user);
+            noOfAttempts = user.getNoOfTokenAttempts();
+        }
+        model.addAttribute("noOfAttempts",noOfAttempts);
         redirectAttributes.addFlashAttribute("failure", messageSource.getMessage("token.auth.failure", null, locale));
         return "redirect:/corporate/token";
 

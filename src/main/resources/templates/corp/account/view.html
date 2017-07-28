@@ -138,10 +138,9 @@
 
 
                     <p>
-                        <a id="btn-print" th:href="@{'~/viewstatement/display/data'}"  class="btn bt-link-act pull-right"> <i class="fa fa-print"  ></i>&nbsp; print</a>
+                        <a id="btn-print" th:href="@{'~/viewstatement/display/data'}"  class="btn bt-link-act pull-right"> <i class="fa fa-print"  ></i>&nbsp; Download PDF</a>
                         <!--<a th:href="@{'#'}" class="btn "> <i class="fa fa-envelope" style="color: white" ></i>&nbsp; send mail</a>-->
                     </p>
-
                     <h2>TRANSACTION DETAILS</h2>
 
                     <div class="" >
@@ -183,7 +182,8 @@
 
 <th:block layout:fragment="scripts">
 
-
+    <script th:src="@{~/customer/js/dataTables.bootstrap.js}"></script>
+    <script th:src="@{~/customer/js/dataTables.select.js}"></script>
     <script th:inline="javascript">
         /*<![CDATA[*/
         jQuery.download = function(url, key, data) {
@@ -214,7 +214,7 @@
                 "pagingType" : "simple_numbers",
                 "searching": false,
                 "paging": true,
-                "processing": true,
+                "processing": false,
                 "serverSide" : false,
                 "ordering" : false,
                 "dom": 'T<"clear">frtlp',

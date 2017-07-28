@@ -5,6 +5,8 @@ import longbridge.dtos.SettingDTO;
 import longbridge.exception.InternetBankingException;
 import longbridge.exception.PasswordException;
 import longbridge.exception.UnknownResourceException;
+import longbridge.forms.ResetPasswordForm;
+import longbridge.forms.RetrieveUsernameForm;
 import longbridge.models.*;
 import longbridge.services.*;
 import org.slf4j.Logger;
@@ -54,6 +56,8 @@ public class MainController {
     private MailService mailService;
     @Autowired
     private  FaqsService faqsService;
+    @Autowired
+    private PasswordPolicyService passwordPolicyService;
 
     @GetMapping("/testing")
     public String testing(){
@@ -86,7 +90,6 @@ public class MainController {
         return new ModelAndView("corppage1", "error", error);
 
     }
-
     @GetMapping(value = "/login/admin")
     public ModelAndView adminLogin() {
 
@@ -478,4 +481,6 @@ public class MainController {
         }
 
     }
+
+
 }

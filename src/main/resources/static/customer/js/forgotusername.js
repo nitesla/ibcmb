@@ -4,7 +4,7 @@ var customerId = "null";
  * @param accountNumber the account number to check
  */
 function validateAccountNo(accountNumber){
-    
+     $('#myLoader').modal('show');
     var customerId;
     var secQues;
     $.ajax({
@@ -17,8 +17,10 @@ function validateAccountNo(accountNumber){
                 //invalid account number
                 document.getElementById("errorMess").textContent="Ensure you put in a valid account number.";
                 $('#myModalError').modal('show');
+                 $('#myLoader').modal('hide');
                 //alert("Account number not found");
             }else{
+                 $('#myLoader').modal('hide');
                 //valid account number
                 //alert("Customer Id: " + customerId);
                 $('input[name=customerId]').val(customerId);
@@ -30,7 +32,9 @@ function validateAccountNo(accountNumber){
 
     if(customerId == "" || customerId === null){
         return false;
+         $('#myLoader').modal('hide');
     }else{
+         $('#myLoader').modal('hide');
         $.ajax({
             url: "/rest/secQues/"+customerId,
             type: 'GET',
@@ -45,17 +49,17 @@ function validateAccountNo(accountNumber){
                 }else{
                     // $('input[name=securityQuestion]').val(secQues);
                     // console.log(data2);
-                    var container = document.getElementById("secQuestionsDiv");
-                    for (i=0;i<data2.length;i++){
-                        container.innerHTML += "<div class='form-group'>";
-                        container.innerHTML += "<label>"+data2[i]+"</label>";
-                        container.innerHTML += "</div>";
-                        container.innerHTML += "<div class='form-group'>";
-                        container.innerHTML += "<input type='text' required name='securityAnswer"+i+"' id='securityAnswer"+i +"' class='my-select required' placeholder='Security Answer'/>";
-                        container.innerHTML += "</div>";
-                        
-                    }
-                    container.innerHTML += "<input type='hidden' id='noOfSecQn' name='noOfSecQn' value='"+data2.length+"'/>"
+                        var container = document.getElementById("secQuestionsDiv");
+                    container.innerHTML = "";
+                        for (i = 0; i < data2.length; i++) {
+                            container.innerHTML += "<div class='form-group'>";
+                            container.innerHTML += "<label>" + data2[i] + "</label>";
+                            container.innerHTML += "</div>";
+                            container.innerHTML += "<div class='form-group'>";
+                            container.innerHTML += "<input type='text' required name='securityAnswer" + i + "' id='securityAnswer" + i + "' class='my-select required' placeholder='Security Answer'/>";
+                            container.innerHTML += "</div>";
+                        }
+                        $('input[name=noOfSecQn]').val(data2.length);
                 }
             },
         })
@@ -72,6 +76,7 @@ function validateAccountNo(accountNumber){
 
 function validateSecAnswer(secAnswer){
     var customerId = $('#customerId').val();
+    $('#myLoader').modal('show');
     // console.log('customer id {}'+customerId);
     var result;
     $.ajax({
@@ -82,6 +87,7 @@ function validateSecAnswer(secAnswer){
         success:function(data1){
             result = ''+String(data1);
             if(result === "true"){
+              
                 //invalid account number
                 // console.log("whether "+data1);
                 $('input[name=username]').val(result);
@@ -95,16 +101,22 @@ function validateSecAnswer(secAnswer){
             }
         }
     });
+    
 
     if(result == "true"){
         result = sendUsername();
+           $('#myLoader').modal('hide');
         return result;
     }else{
+           $('#myLoader').modal('hide');
         return false;
     }
+
+
 }
 
 function sendUsername(){
+   
     var returnValue;
     $('#reg-form').submit(function(e){
         e.preventDefault();
@@ -131,10 +143,14 @@ function sendUsername(){
             }
         });
     });
+   
     $('#reg-form').submit();
     //returnValue = $('#returnValue').val();
     //alert(returnValue);
     //return Boolean(returnValue);
+
+  
+  
     if(returnValue == "" || returnValue === null || returnValue == false){
         return false;
     }else{
