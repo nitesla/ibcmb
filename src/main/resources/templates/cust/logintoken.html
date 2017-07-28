@@ -3,7 +3,7 @@
 <head>
     <link rel="stylesheet" type="text/css" th:href="@{~/customer/css/bootstrap.css}"/>
     <link rel="stylesheet" type="text/css" th:href="@{~/customer/css/custom.css}"/>
-    <link rel="stylesheet" type="text/css" th:href="@{~/customer/font-awesome/font-awesome.min.css}"/>
+     <link rel="stylesheet" type="text/css" th:href="@{~/customer/font-awesome/font-awesome.min.css}"/>
     <title>Log in | Coronation Merchant Bank
     </title>
 </head>
@@ -51,16 +51,16 @@
     <div class="container">
         <div class="bg">
             <!--<form id="loginform" th:action="@{/retail/token}" method="POST" class="form-signin">-->
-            <!--<h1>Token Authentication</h1>-->
-            <!--<br/>-->
+                <!--<h1>Token Authentication</h1>-->
+                <!--<br/>-->
 
 
-            <!--<div id="username_div" class="form-group">-->
-            <!--<input type="text" id="token" name="token" class="form-control"  placeholder="Token Code" />-->
-            <!--</div>-->
-            <!--<div class="form-group">-->
-            <!--<button class="btn btn-primary form-control" type="submit"> Next </button>-->
-            <!--</div>-->
+                <!--<div id="username_div" class="form-group">-->
+                    <!--<input type="text" id="token" name="token" class="form-control"  placeholder="Token Code" />-->
+                <!--</div>-->
+                <!--<div class="form-group">-->
+                    <!--<button class="btn btn-primary form-control" type="submit"> Next </button>-->
+                <!--</div>-->
             <!--</form>-->
         </div>
     </div>
@@ -101,68 +101,68 @@
 </div>
 
 <div id="myModal" class="modal fade" role="dialog">
-    <div class="modal-dialog">
+  <div class="modal-dialog">
 
-        <!-- Modal content-->
-        <div class="modal-content no-bd-rad tokenBox" id="tokenmodal">
-            <form id="loginform" th:action="@{/retail/token}" method="POST" >
-                <div class="modal-body no-bd-rad">
+    <!-- Modal content-->
+    <div class="modal-content no-bd-rad tokenBox" id="tokenmodal">
+        <form id="loginform" th:action="@{/retail/token}" method="POST" >
+            <div class="modal-body no-bd-rad">
 
                     <h3 class="tokenHeader"><span class='text-danger'>Hello</span>, <span th:text="*{username}" style="text-transform: capitalize">Tolu</span></h3>
 
                     <div class="margin-bottom">
                         <p style="margin-bottom:20px">Kindly enter the OTP from your token device</p>
-                        <div id="username_div" class="form-group">
-                            <input  type="text" id="token" required name="token" class='my-select tokenInput' placeholder="Token Code" autocomplete="off"/>
-                            <p id='loading-icon' style="display:none"><i class='fa fa-spinner fa-spin' style="font-size:10px;color:#003056"></i> Sending OTP. Please Wait...</p>
+                         <div id="username_div" class="form-group">
+                                <input  type="text" id="token" required name="token" class='my-select tokenInput' placeholder="Token Code" autocomplete="off"/>
+                                <p id='loading-icon' style="display:none"><i class='fa fa-spinner fa-spin' style="font-size:10px;color:#003056"></i> Sending OTP. Please Wait...</p>
 
-                        </div>
-                        <div id='errorMess' class=" text-danger "></div>
-                        <!--<div id='successMess' class=" text-success "></div>-->
+                         </div>
+                         <div id='errorMess' class=" text-danger "></div>
+                         <!--<div id='successMess' class=" text-success "></div>-->
                     </div>
-                    <div th:if="${noOfAttempts >=3}">
-                        <p>Don't have a token?</p>
+                    <div >
+                    <p>Don't have a token?</p>
                         <a href='javascript:sendOtp()' class="btn btn-link token-btn required-step" id="getOtp">Send Otp</a>
                     </div>
 
-                </div>
-                <div class="modal-footer no-bd-top ">
-                    <input type='button' onclick='redirect()' class="btn btn-link less-required token-btn " value='Back'/>
+            </div>
+            <div class="modal-footer no-bd-top ">
+                <input type='button' onclick='redirect()' class="btn btn-link less-required token-btn " value='Back'/>
 
-                    <input type='submit' class="btn btn-link token-btn required-step" value='Continue'/>
-                </div>
+                <input type='submit' class="btn btn-link token-btn required-step" value='Continue'/>
+            </div>
 
-            </form>
-        </div>
-        <div class="modal-content no-bd-rad tokenBox" id="otpmodal">
-            <form id="otpform" th:action="@{/otp/retail/login}" method="POST" >
-                <div class="modal-body no-bd-rad">
-
-                    <h3 class="tokenHeader"><span class='text-danger'>Hello</span>, <span th:text="*{username}" style="text-transform: capitalize">Tolu</span></h3>
-                    <input type="hidden" name="username" id="username" th:value="${username}"/>
-                    <div class="margin-bottom">
-                        <p style="margin-bottom:20px">Kindly enter the OTP from your email/sms</p>
-                        <div id="username_div1" class="form-group">
-                            <input  type="text" id="otp" name="otp" class='my-select tokenInput' required placeholder="Otp " autocomplete="off"/>
-                        </div>
-                        <div id='successMess' class=" text-success "></div>
-                    </div>
-                    <!--<div >-->
-                    <!--<p>Don't have a token?</p>-->
-                    <!--<p><a class="btn" id="usetoken">Send me an OTP </a><i class='fa fa-angle-down'  style="font-size:18px;"></i></p>-->
-                    <!--</div>-->
-
-                </div>
-                <div class="modal-footer no-bd-top ">
-                    <input type='button' class="btn btn-link less-required token-btn" id="usetoken" value='Back'/>
-
-                    <input type='submit' class="btn btn-link token-btn required-step" value='Continue'/>
-                </div>
-
-            </form>
-        </div>
-
+        </form>
     </div>
+      <div class="modal-content no-bd-rad tokenBox" id="otpmodal">
+          <form id="otpform" th:action="@{/otp/retail/login}" method="POST" >
+              <div class="modal-body no-bd-rad">
+
+                  <h3 class="tokenHeader"><span class='text-danger'>Hello</span>, <span th:text="*{username}" style="text-transform: capitalize">Tolu</span></h3>
+                  <input type="hidden" name="username" id="username" th:value="${username}"/>
+                  <div class="margin-bottom">
+                      <p style="margin-bottom:20px">Kindly enter the OTP from your email/sms</p>
+                      <div id="username_div1" class="form-group">
+                          <input  type="text" id="otp" name="otp" class='my-select tokenInput' required placeholder="Otp " autocomplete="off"/>
+                      </div>
+                      <div id='successMess' class=" text-success "></div>
+                  </div>
+                  <!--<div >-->
+                  <!--<p>Don't have a token?</p>-->
+                  <!--<p><a class="btn" id="usetoken">Send me an OTP </a><i class='fa fa-angle-down'  style="font-size:18px;"></i></p>-->
+                  <!--</div>-->
+
+              </div>
+              <div class="modal-footer no-bd-top ">
+                  <input type='button' class="btn btn-link less-required token-btn" id="usetoken" value='Back'/>
+
+                  <input type='submit' class="btn btn-link token-btn required-step" value='Continue'/>
+              </div>
+
+          </form>
+      </div>
+
+  </div>
 
 </div>
 
@@ -184,7 +184,7 @@
     function redirect()
     {
 
-        location.href = '/retail/logout';
+       location.href = '/retail/logout';
     }
 </script>
 
@@ -214,10 +214,10 @@
         $("#otpmodal").hide();
 
     });
-    //        $("#getOtp").click(function() {
-    //            $("#tokenmodal").hide();
-    //            $("#otpmodal").show();
-    //        });
+//        $("#getOtp").click(function() {
+//            $("#tokenmodal").hide();
+//            $("#otpmodal").show();
+//        });
     $("#usetoken").click(function() {
         $("#tokenmodal").show();
         $("#otpmodal").hide();
