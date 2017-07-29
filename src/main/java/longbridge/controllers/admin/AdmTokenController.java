@@ -326,7 +326,6 @@ public class AdmTokenController {
             model.addAttribute("failure", messageSource.getMessage("form.fields.required", null, locale));
             return "/adm/token/unlock";
         }
-        logger.info("the group is {}",getUserGroup(tokenForm.getUserType()));
         try {
 
             String username = tokenForm.getUsername();
