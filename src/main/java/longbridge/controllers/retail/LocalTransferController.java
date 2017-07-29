@@ -66,7 +66,9 @@ public class LocalTransferController {
     }
 
     @GetMapping("")
-    public String index(Model model, Principal principal) throws Exception {
+    public String index(Model model, Principal principal,HttpServletRequest request) throws Exception {
+        if (request.getSession().getAttribute("auth-needed") != null)
+            request.getSession().removeAttribute("auth-needed");
         RetailUser retailUser = retailUserService.getUserByName(principal.getName());
         Iterable<LocalBeneficiary> cmbBeneficiaries = localBeneficiaryService.getBankBeneficiaries(retailUser);
 
@@ -182,6 +184,7 @@ public class LocalTransferController {
     @ModelAttribute
     public void getBankCode(Model model) {
         model.addAttribute("bankCode", bankCode);
+        model.addAttribute("fee",transferUtils.getFee("CMB"));
     }
 
 

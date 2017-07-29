@@ -363,8 +363,14 @@ public class RetailUserServiceImpl implements RetailUserService {
     @Transactional
     public String resetPassword(Long userId) throws PasswordException {
 
-        try {
+
             RetailUser user = retailUserRepo.findOne(userId);
+            logger.info("this is the user status{}",user.getStatus());
+            if("I".equals(user.getStatus()))
+            {
+                throw new InternetBankingException(messageSource.getMessage("users.deactivated", null, locale));
+            }
+        try {
             String newPassword = passwordPolicyService.generatePassword();
             user.setPassword(passwordEncoder.encode(newPassword));
             user.setExpiryDate(new Date());
@@ -374,7 +380,9 @@ public class RetailUserServiceImpl implements RetailUserService {
             sendPostPasswordResetMessage(user, fullName, user.getUserName(), newPassword);
             logger.info("Retail user {} password reset successfully", user.getUserName());
             return messageSource.getMessage("password.reset.success", null, locale);
-        } catch (MailException me) {
+           }
+        catch (MailException me)
+        {
             throw new InternetBankingException(messageSource.getMessage("mail.failure", null, locale), me);
         } catch (Exception e) {
             throw new PasswordException(messageSource.getMessage("password.reset.failure", null, locale), e);
@@ -549,6 +557,20 @@ public class RetailUserServiceImpl implements RetailUserService {
         long t = page.getTotalElements();
         Page<RetailUserDTO> pageImpl = new PageImpl<RetailUserDTO>(dtOs, pageDetails, t);
         return pageImpl;
+    }
+    @Override
+    public void increaseNoOfTokenAttempt(RetailUser retailUser) {
+        if(retailUser.getNoOfTokenAttempts() ==null){
+            retailUser.setNoOfTokenAttempts(0) ;
+        }else {
+        retailUser.setNoOfTokenAttempts(retailUser.getNoOfTokenAttempts()+1);
+        }
+        retailUserRepo.save(retailUser);
+    }
+    @Override
+    public void resetNoOfTokenAttempt(RetailUser retailUser) {
+            retailUser.setNoOfTokenAttempts(0) ;
+        retailUserRepo.save(retailUser);
     }
 
 }

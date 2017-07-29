@@ -57,7 +57,14 @@ public class SessionUtils {
             SettingDTO settingDTO = configService.getSettingByName("LOGIN_ALERT");
             if (settingDTO.isEnabled()) {
                 String preference = user.getAlertPreference().getCode();
-                String alertMessage = String.format(messageSource.getMessage("login.alert.message", null, locale),user.getFirstName() + " "+ user.getLastName());
+                String firstName= user.getFirstName();
+                String  lastName = user.getLastName();
+                if (firstName==null)firstName="";
+                if (lastName==null)lastName="";
+                String name = firstName + " "+ lastName;
+                if (name.isEmpty()) name=user.getUserName();
+
+                String alertMessage = String.format(messageSource.getMessage("login.alert.message", null, locale),name);
 
                 String alertSubject = String.format(messageSource.getMessage("login.alert.subject", null, locale));
                 if (preference.equalsIgnoreCase("SMS")) {

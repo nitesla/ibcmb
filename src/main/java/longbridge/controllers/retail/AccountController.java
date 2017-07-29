@@ -1,14 +1,11 @@
 package longbridge.controllers.retail;
 
 import longbridge.api.AccountDetails;
-import longbridge.api.PaginationDetails;
 import longbridge.dtos.AccountDTO;
-import longbridge.dtos.TransferRequestDTO;
 import longbridge.exception.InternetBankingException;
 import longbridge.forms.CustomizeAccount;
 import longbridge.models.Account;
 import longbridge.models.RetailUser;
-import longbridge.models.TransRequest;
 import longbridge.repositories.AccountRepo;
 import longbridge.services.AccountService;
 import longbridge.services.IntegrationService;
@@ -18,19 +15,15 @@ import longbridge.utils.DateFormatter;
 import longbridge.utils.statement.AccountStatement;
 import longbridge.utils.statement.TransactionDetails;
 import longbridge.utils.statement.TransactionHistory;
-import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.MessageSource;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
 import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
-import org.springframework.data.jpa.datatables.repository.DataTablesUtils;
 import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
@@ -41,15 +34,12 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.jasperreports.JasperReportsPdfView;
 
 import javax.mail.MessagingException;
-import javax.mail.internet.MimeMessage;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-import java.io.ByteArrayOutputStream;
 import java.security.Principal;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
- import org.joda.time.Duration;
 import java.util.*;
 
 /**
@@ -133,7 +123,7 @@ public class AccountController {
 
 	@GetMapping("/{id}/customize")
 	public String CustomizeAccount(@PathVariable Long id, CustomizeAccount customizeAccount, Principal principal,
-			Model model, RedirectAttributes redirectAttributes) {
+								   Model model, RedirectAttributes redirectAttributes) {
 
 		RetailUser retailUser = retailUserService.getUserByName(principal.getName());
 
@@ -144,13 +134,13 @@ public class AccountController {
 		}
 
 		this.customizeAccountId = accountDTO.getId();
-		model.addAttribute("account", accountDTO.getAccountName());
+		model.addAttribute("account", accountDTO.getPreferredName());
 		return "cust/account/customize";
 	}
 
 	@PostMapping("/customize")
 	public String updateCustom(@Valid CustomizeAccount customizeAccount, BindingResult result, Model model,
-			RedirectAttributes redirectAttributes, Locale locale) throws Exception {
+							   RedirectAttributes redirectAttributes, Locale locale) throws Exception {
 		if (result.hasErrors()) {
 			model.addAttribute("failure", "Name cannot be empty");
 			return "cust/account/customize";
@@ -158,7 +148,7 @@ public class AccountController {
 
 		try {
 			String message = accountService.customizeAccount(this.customizeAccountId,
-					customizeAccount.getAccountName());
+					customizeAccount.getPreferredName());
 			redirectAttributes.addFlashAttribute("message", message);
 		} catch (InternetBankingException e) {
 			logger.error("Customization Error", e);
@@ -178,7 +168,7 @@ public class AccountController {
 
 	@GetMapping("/{id}/hide")
 	public String hide(@PathVariable Long id, Model model, Principal principal, RedirectAttributes redirectAttributes,
-			Locale locale) {
+					   Locale locale) {
 
 		try {
 			String message = accountService.hideAccount(id);
@@ -193,7 +183,7 @@ public class AccountController {
 
 	@GetMapping("/{id}/unhide")
 	public String unhide(@PathVariable Long id, Model model, Principal principal, RedirectAttributes redirectAttributes,
-			Locale locale) {
+						 Locale locale) {
 
 		try {
 			String message = accountService.unhideAccount(id);
@@ -207,7 +197,7 @@ public class AccountController {
 
 	@GetMapping("/{id}/primary")
 	public String makePrimary(@PathVariable Long id, Model model, Principal principal,
-			RedirectAttributes redirectAttributes, Locale locale) {
+							  RedirectAttributes redirectAttributes, Locale locale) {
 
 		try {
 			RetailUser user = retailUserService.getUserByName(principal.getName());
@@ -245,16 +235,16 @@ public class AccountController {
 		return "redirect:/retail/dashboard";
 	}
 
-		@RequestMapping(path = "{id}/downloadhistory", method = RequestMethod.GET)
-		public ModelAndView getTransPDF(@PathVariable String id, Model model, Principal principal,HttpServletRequest request) {
-			RetailUser retailUser = retailUserService.getUserByName(principal.getName());
+	@RequestMapping(path = "{id}/downloadhistory", method = RequestMethod.GET)
+	public ModelAndView getTransPDF(@PathVariable String id, Model model, Principal principal,HttpServletRequest request) {
+		RetailUser retailUser = retailUserService.getUserByName(principal.getName());
 
-			Account account=accountService.getAccountByCustomerId(retailUser.getCustomerId());
+		Account account=accountService.getAccountByCustomerId(retailUser.getCustomerId());
 
-			logger.info("Retail account {}",account);
+		logger.info("Retail account {}",account);
 		String LAST_TEN_TRANSACTION = "10";
-			String acct=request.getSession().getAttribute("tranAccountNo").toString();
-			logger.info("Getting the session account no {}",acct);
+		String acct=request.getSession().getAttribute("tranAccountNo").toString();
+		logger.info("Getting the session account no {}",acct);
 		List<TransactionHistory> transRequestList = integrationService.getLastNTransactions(acct, LAST_TEN_TRANSACTION);
 		JasperReportsPdfView view = new JasperReportsPdfView();
 		view.setUrl("classpath:jasperreports/rpt_tran-hist.jrxml");
@@ -264,18 +254,18 @@ public class AccountController {
 		for(TransactionHistory transactionHistory:transRequestList) {
 			double amount = Double.parseDouble(transactionHistory.getBalance());
 			DecimalFormat formatter = new DecimalFormat("#,###.00");
-		modelMap.put("datasource", new ArrayList<>());
-	modelMap.put("amount", formatter.format(amount));
-	modelMap.put("sender",retailUser.getFirstName()+" "+retailUser.getLastName() );
-	modelMap.put("remarks", transactionHistory.getNarration());
-	modelMap.put("recipientBank", "");
-	modelMap.put("refNUm", transactionHistory.getTranType());
-	modelMap.put("date",DateFormatter.format(transactionHistory.getValueDate()));
-	modelMap.put("tranDate", DateFormatter.format(transactionHistory.getPostedDate()));
-}
+			modelMap.put("datasource", new ArrayList<>());
+			modelMap.put("amount", formatter.format(amount));
+			modelMap.put("sender",retailUser.getFirstName()+" "+retailUser.getLastName() );
+			modelMap.put("remarks", transactionHistory.getNarration());
+			modelMap.put("recipientBank", "");
+			modelMap.put("refNUm", transactionHistory.getTranType());
+			modelMap.put("date",DateFormatter.format(transactionHistory.getValueDate()));
+			modelMap.put("tranDate", DateFormatter.format(transactionHistory.getPostedDate()));
+		}
 
-	ModelAndView modelAndView=new ModelAndView(view, modelMap);
-	  return modelAndView;
+		ModelAndView modelAndView=new ModelAndView(view, modelMap);
+		return modelAndView;
 	}
 
 	@PostMapping("/history")
@@ -334,7 +324,7 @@ public class AccountController {
 
 	@GetMapping("/downloadstatement")
 	public ModelAndView downloadStatementData(ModelMap modelMap, DataTablesInput input, String acctNumber,
-			String fromDate, String toDate, String tranType, Principal principal) {
+											  String fromDate, String toDate, String tranType, Principal principal) {
 		// Pageable pageable = DataTablesUtils.getPageable(input);
 
 		Date from;
@@ -399,13 +389,13 @@ public class AccountController {
 
 	@PostMapping("sendEmail")
 	public String sendEmail(ModelMap modelMap, DataTablesInput input, String acctNumber, String fromDate, String toDate,
-			String tranType, Principal principal) throws MessagingException {
+							String tranType, Principal principal) throws MessagingException {
 		/*
 		 * JRDataSource ds = new JRBeanCollectionDataSource(reportList);
-		 * 
+		 *
 		 * Resource report = new
 		 * ClassPathResource("static/jasper/rpt_report.jasper");
-		 * 
+		 *
 		 * JasperPrint jasperPrint =
 		 * JasperFillManager.fillReport(report.getInputStream(),
 		 * Collections.EMPTY_MAP,ds); ByteArrayOutputStream baos = new
@@ -413,23 +403,24 @@ public class AccountController {
 		 * JasperExportManager.exportReportToPdfStream(jasperPrint, baos);
 		 * DataSource aAttachment = new ByteArrayDataSource(baos.toByteArray(),
 		 * "application/pdf");
-		 * 
+		 *
 		 * MimeMessage message = mailSender.createMimeMessage();
 		 * MimeMessageHelper helper = new MimeMessageHelper(message);
-		 * 
+		 *
 		 * helper.setTo("xxxxxx");
-		 * 
+		 *
 		 * helper.setFrom("xxxxx"); helper.setSubject("Testing Email");
-		 * 
+		 *
 		 * String text = "Testing Email";
-		 * 
+		 *
 		 * helper.setText(text, false);
-		 * 
+		 *
 		 * helper.addAttachment("report.pdf",aAttachment);
-		 * 
+		 *
 		 * mailSender.send(message);
 		 */
 		return null;
 	}
 
 }
+

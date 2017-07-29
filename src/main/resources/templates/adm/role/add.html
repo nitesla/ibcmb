@@ -44,14 +44,14 @@
                             </div>
 
                             <div class="x_content">
-                                <form method="post" th:action="@{/admin/roles}" class="form-horizontal"
-                                      th:object="${role}" id="form-save">
+                                <form method="post" th:action="@{/admin/roles}" class="form-horizontal" th:object="${role}" id="form-save">
+
                                     <div class="panel panel-default">
                                         <div class="panel-body">
                                             <fieldset>
                                                 <div class="form-group col-lg-6">
-                                                    <label>Name</label> <input class="form-control" type="text"
-                                                                               th:field="*{name}"/>
+                                                    <label>Name</label> <input class="form-control" type="text" th:field="*{name}"/>
+
                                                 </div>
                                                 <div class="form-group col-lg-6">
                                                     <label>Type</label>
@@ -64,16 +64,13 @@
                                                     </select>
                                                 </div>
                                                 <div class="form-group col-lg-6">
-                                                    <label>Email</label> <input class="form-control" type="text"
-                                                                                th:field="*{email}"/>
+                                                    <label>Email</label> <input class="form-control" type="text" th:field="*{email}"/>
+
                                                 </div>
 
                                                 <div class="form-group col-lg-6">
-                                                    <label>Description</label> <textarea class="form-control" rows="2"
-                                                                                         th:field="*{description}"></textarea>
+                                                    <label>Description</label> <textarea class="form-control" rows="2"    th:field="*{description}"></textarea>
                                                 </div>
-
-
                                             </fieldset>
 
 
@@ -161,7 +158,8 @@
                     .appendTo('.right-selector');
             });
     });
-    $("#btn-save").on("click", function (e) {
+    $("#btn-save").on("click", function (e)
+    {
         $('.right-selector option').prop("selected", true);
         $("#form-save").submit();
     });

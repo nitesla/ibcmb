@@ -1,0 +1,874 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="layout :: site-head">
+</head>
+
+
+
+<body class="nav-md">
+<div class="container body">
+    <div class="main_container">
+        <div class="col-md-3 left_col">
+            <div class="left_col scroll-view">
+                <div class="navbar nav_title" style="border: 0;">
+                    <!--<a href="index.html"><img th:src="@{~/images/cmb_logo.png}"/></a>-->
+                </div>
+
+                <div class="clearfix"></div>
+                <div class="clearfix"></div>
+
+                <div th:replace="layout :: admin-menu"></div>
+                <div th:replace="layout :: menu-footer-adm"></div>
+
+            </div>
+        </div>
+        <div th:replace="layout :: top-nav"></div>
+
+        <!-- page content -->
+        <div class="right_col" role="main">
+            <div class="">
+                <div class="page-title">
+                    <div class="title_left">
+                        <h3>Job Jar Management</h3>
+                    </div>
+
+                </div>
+
+                <div class="clearfix"></div>
+
+                <div class="row">
+                    <div class="col-md-12 col-sm-12 col-xs-12">
+                        <div class="x_panel">
+                            <div class="x_title">
+                                <ul class="nav navbar-left panel_toolbox">
+                                    <li >
+                                        <div class="col-lg-4">
+                                            <div class="title-action">
+                                                <!--<a  class="btn btn-primary btn-sm bt-select bt-link-act" href="/admin/codes/index/edit" disabled="disabled" ><i class="fa fa-pencil"></i> Edit</a>-->
+                                            </div>
+                                        </div>
+                                    </li>
+                                    <li >
+                                        <div class="col-lg-4">
+                                            <div class="title-action">
+                                                <!--<a id="delete-btn" class="btn btn-danger btn-sm bt-select" href="/admin/codes/index/delete" disabled="disabled" ><i class="fa fa-trash"></i> Delete</a>-->
+                                            </div>
+                                        </div>
+                                    </li>
+
+                                </ul>
+                                <ul class="nav navbar-right panel_toolbox">
+
+                                    <!-- <li>
+                                         <div class="col-lg-8">
+                                             <h2>Admin Management</h2>
+                                         </div>
+                                     </li>-->
+                                    <li >
+                                        <div class="col-lg-4">
+                                            <div class="title-action">
+                                                <!--<a th:href="@{/admin/job/jar}" class="btn btn-sm btn-primary bt-link-add"><i class="fa fa-plus"></i> Add</a>-->
+                                            </div>
+                                        </div>
+                                    </li>
+
+
+                                    <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                                    </li>
+
+                                </ul>
+                                <div class="clearfix"></div>
+                            </div>
+                            <div class="x_content">
+                                <br/><br/> <fieldset>
+                                <div class="form-group">
+                                    <div class="col-md-12 col-sm-6 col-xs-12">
+
+                                        <form method="post" class="form-horizontal">
+                                            <div class="form-group">
+                                                <div class="col-md-12">
+                                                    <label class="control-label col-sm-2">Reschedule job</label>
+                                                    <div class="col-sm-6">
+                                                        <select class="form-control" th:name="scheduler" th:id="scheduler">
+                                                            <option value="secondsDiv">Second(s)</option>
+                                                            <option value="minuteDiv">Miinute(s)</option>
+                                                            <option value="hourDiv">Hourly</option>
+                                                            <option value="dailyDiv">Daily</option>
+                                                            <option value="weekDiv">Weekly</option>
+                                                            <option value="monthDiv">Month</option>
+                                                            <option value="yearDiv">Yearly</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div id="secondsDiv" class="schedulingSection">
+                                                <div class="form-group">
+                                                    <div class="col-md-12">
+                                                        <label class="col-sm-2 control-label">Every</label>
+
+                                                        <div class="col-sm-2">
+                                                            <input th:type="number" th:id="second" th:name="second" min="1" value="5" class="form-control"/>
+                                                        </div>
+                                                        <label class="col-sm-1 control-label">Second</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div id="minuteDiv" class="schedulingSection" style="display: none">
+                                                <div class="form-group">
+                                                    <div class="col-md-12">
+                                                        <label class="col-sm-2 control-label">Every</label>
+                                                        <div class="col-sm-2">
+                                                            <input type="number" th:id="minute" th:name="minute" min="1" value="1" class="form-control"/>
+                                                        </div>
+                                                        <label class="col-sm-1 control-label">Minute</label>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                            <div id="hourDiv" class="schedulingSection" style="display:none;">
+
+                                                <div class="form-group">
+                                                    <div class="col-md-12">
+                                                        <label class="col-sm-2 control-label"><input type="radio" th:name="hourChecker" value="everyHour"/>Every</label>
+                                                        <div class="col-sm-2">
+                                                            <input type="number" th:id="everyHour" th:name="exactHour" min="1" value="1" class="form-control"/>
+                                                        </div>
+                                                        <label class="col-sm-1 control-label">Hour</label>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <div class="col-md-12">
+                                                        <label class="col-sm-2 control-label"><input type="radio" th:name="hourChecker" value="startHour"/>Start at</label>
+
+                                                        <div class="col-sm-2">
+                                                            <select class="form-control left-selector" th:name="hour" th:id="hour">
+                                                                <option value="0">00</option>
+                                                                <option value="1">01</option>
+                                                                <option value="2">02</option>
+                                                                <option value="3">03</option>
+                                                                <option value="4">04</option>
+                                                                <option value="5">05</option>
+                                                                <option value="6">06</option>
+                                                                <option value="7">07</option>
+                                                                <option value="8">08</option>
+                                                                <option value="9">09</option>
+                                                                <option value="10">10</option>
+                                                                <option value="11">11</option>
+                                                                <option value="12">12</option>
+                                                                <option value="13">13</option>
+                                                                <option value="14">14</option>
+                                                                <option value="15">15</option>
+                                                                <option value="16">16</option>
+                                                                <option value="17">17</option>
+                                                                <option value="18">18</option>
+                                                                <option value="19">19</option>
+                                                                <option value="20">20</option>
+                                                                <option value="21">21</option>
+                                                                <option value="22">22</option>
+                                                                <option value="23">23</option>
+                                                            </select>
+                                                        </div>
+                                                        <div class="col-sm-2">
+                                                            <select type="text" th:id="minSecond" th:name="hourMin" class="form-control">
+                                                                <option value="0">00</option>
+                                                                <option value="1">01</option>
+                                                                <option value="2">02</option>
+                                                                <option value="3">03</option>
+                                                                <option value="4">04</option>
+                                                                <option value="5">05</option>
+                                                                <option value="6">06</option>
+                                                                <option value="7">07</option>
+                                                                <option value="8">08</option>
+                                                                <option value="9">09</option>
+                                                                <option value="10">10</option>
+                                                                <option value="11">11</option>
+                                                                <option value="12">12</option>
+                                                                <option value="13">13</option>
+                                                                <option value="14">14</option>
+                                                                <option value="15">15</option>
+                                                                <option value="16">16</option>
+                                                                <option value="17">17</option>
+                                                                <option value="18">18</option>
+                                                                <option value="19">19</option>
+                                                                <option value="20">20</option>
+                                                                <option value="21">21</option>
+                                                                <option value="22">22</option>
+                                                                <option value="23">23</option>
+                                                                <option value="24">24</option>
+                                                                <option value="25">25</option>
+                                                                <option value="26">26</option>
+                                                                <option value="27">27</option>
+                                                                <option value="28">28</option>
+                                                                <option value="29">29</option>
+                                                                <option value="30">30</option>
+                                                                <option value="31">31</option>
+                                                                <option value="32">32</option>
+                                                                <option value="33">33</option>
+                                                                <option value="34">34</option>
+                                                                <option value="35">35</option>
+                                                                <option value="36">36</option>
+                                                                <option value="37">37</option>
+                                                                <option value="38">38</option>
+                                                                <option value="39">39</option>
+                                                                <option value="40">40</option>
+                                                                <option value="41">41</option>
+                                                                <option value="42">42</option>
+                                                                <option value="43">43</option>
+                                                                <option value="44">44</option>
+                                                                <option value="45">45</option>
+                                                                <option value="46">46</option>
+                                                                <option value="47">47</option>
+                                                                <option value="48">48</option>
+                                                                <option value="49">49</option>
+                                                                <option value="50">50</option>
+                                                                <option value="51">51</option>
+                                                                <option value="52">52</option>
+                                                                <option value="53">53</option>
+                                                                <option value="54">54</option>
+                                                                <option value="55">55</option>
+                                                                <option value="56">56</option>
+                                                                <option value="57">57</option>
+                                                                <option value="58">58</option>
+                                                                <option value="59">59</option>
+                                                            </select>
+                                                        </div>
+                                                        <label class="col-sm-1 control-label">Seconds</label>
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div id="dailyDiv" class="schedulingSection" style="display:none;">
+                                                <div class="form-group">
+                                                    <div class="col-md-12">
+                                                        <label class="col-sm-2 control-label"><input type="radio" name="dailyChecker" value="everyDay"/>Every</label>
+
+                                                        <div class="col-sm-2">
+                                                            <input type="number" th:id="dailyDay" th:name="dayInterval" min="1" class="form-control"/>
+
+                                                        </div>
+                                                        <label class="col-sm-1 control-label">day(s)</label>
+
+                                                    </div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <div class="col-md-12">
+                                                        <label class="col-sm-2 control-label"><input type="radio" name="dailyChecker" value="weekDay"/>Every week day</label>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <div class="col-md-12">
+                                                        <label class="col-sm-2 control-label">Start at</label>
+                                                        <div class="col-sm-2">
+                                                            <select class="form-control left-selector" th:name="dailyHour" th:id="hour">
+                                                                <option value="0">00</option>
+                                                                <option value="1">01</option>
+                                                                <option value="2">02</option>
+                                                                <option value="3">03</option>
+                                                                <option value="4">04</option>
+                                                                <option value="5">05</option>
+                                                                <option value="6">06</option>
+                                                                <option value="7">07</option>
+                                                                <option value="8">08</option>
+                                                                <option value="9">09</option>
+                                                                <option value="10">10</option>
+                                                                <option value="11">11</option>
+                                                                <option value="12">12</option>
+                                                                <option value="13">13</option>
+                                                                <option value="14">14</option>
+                                                                <option value="15">15</option>
+                                                                <option value="16">16</option>
+                                                                <option value="17">17</option>
+                                                                <option value="18">18</option>
+                                                                <option value="19">19</option>
+                                                                <option value="20">20</option>
+                                                                <option value="21">21</option>
+                                                                <option value="22">22</option>
+                                                                <option value="23">23</option>
+                                                            </select>
+                                                        </div>
+                                                        <div class="col-sm-2">
+                                                            <select type="text" th:id="minSecond" th:name="dailyMin" class="form-control">
+                                                                <option value="1">01</option>
+                                                                <option value="2">02</option>
+                                                                <option value="3">03</option>
+                                                                <option value="4">04</option>
+                                                                <option value="5">05</option>
+                                                                <option value="6">06</option>
+                                                                <option value="7">07</option>
+                                                                <option value="8">08</option>
+                                                                <option value="9">09</option>
+                                                                <option value="10">10</option>
+                                                                <option value="11">11</option>
+                                                                <option value="12">12</option>
+                                                                <option value="13">13</option>
+                                                                <option value="14">14</option>
+                                                                <option value="15">15</option>
+                                                                <option value="16">16</option>
+                                                                <option value="17">17</option>
+                                                                <option value="18">18</option>
+                                                                <option value="19">19</option>
+                                                                <option value="20">20</option>
+                                                                <option value="21">21</option>
+                                                                <option value="22">22</option>
+                                                                <option value="23">23</option>
+                                                                <option value="24">24</option>
+                                                                <option value="25">25</option>
+                                                                <option value="26">26</option>
+                                                                <option value="27">27</option>
+                                                                <option value="28">28</option>
+                                                                <option value="29">29</option>
+                                                                <option value="30">30</option>
+                                                                <option value="31">31</option>
+                                                                <option value="32">32</option>
+                                                                <option value="33">33</option>
+                                                                <option value="34">34</option>
+                                                                <option value="35">35</option>
+                                                                <option value="36">36</option>
+                                                                <option value="37">37</option>
+                                                                <option value="38">38</option>
+                                                                <option value="39">39</option>
+                                                                <option value="40">40</option>
+                                                                <option value="41">41</option>
+                                                                <option value="42">42</option>
+                                                                <option value="43">43</option>
+                                                                <option value="44">44</option>
+                                                                <option value="45">45</option>
+                                                                <option value="46">46</option>
+                                                                <option value="47">47</option>
+                                                                <option value="48">48</option>
+                                                                <option value="49">49</option>
+                                                                <option value="50">50</option>
+                                                                <option value="51">51</option>
+                                                                <option value="52">52</option>
+                                                                <option value="53">53</option>
+                                                                <option value="54">54</option>
+                                                                <option value="55">55</option>
+                                                                <option value="56">56</option>
+                                                                <option value="57">57</option>
+                                                                <option value="58">58</option>
+                                                                <option value="59">59</option>
+                                                            </select>
+                                                        </div>
+                                                        <label class="col-sm-1 control-label">Seconds</label>
+
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div id="weekDiv" class="schedulingSection" style="display:none;">
+                                                <div class="form-group">
+                                                    <label class="col-sm-2 control-label">Specify day of the Week</label>
+                                                    <div class="col-sm-4">
+                                                        <select multiple="multiple" class="form-control left-selector" th:id="weekDay" th:name="weekDay">
+                                                            <option value="SUN">Sunday</option>
+                                                            <option value="MON">Monday</option>
+                                                            <option value="TUE">Tuesday</option>
+                                                            <option value="WED">Wednessday</option>
+                                                            <option value="THU">Thurday</option>
+                                                            <option value="FRI">Friday</option>
+                                                            <option value="SAT">Saturday</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label class="col-sm-2 control-label">Start time</label>
+
+                                                    <div class="col-sm-4">
+                                                        <select class="form-control left-selector" th:name="weekHour"  th:class="col-sm-4" th:id="weekHour">
+                                                            <option value="0">00</option>
+                                                            <option value="1">01</option>
+                                                            <option value="2">02</option>
+                                                            <option value="3">03</option>
+                                                            <option value="4">04</option>
+                                                            <option value="5">05</option>
+                                                            <option value="6">06</option>
+                                                            <option value="7">07</option>
+                                                            <option value="8">08</option>
+                                                            <option value="9">09</option>
+                                                            <option value="10">10</option>
+                                                            <option value="11">11</option>
+                                                            <option value="12">12</option>
+                                                            <option value="13">13</option>
+                                                            <option value="14">14</option>
+                                                            <option value="15">15</option>
+                                                            <option value="16">16</option>
+                                                            <option value="17">17</option>
+                                                            <option value="18">18</option>
+                                                            <option value="19">19</option>
+                                                            <option value="20">20</option>
+                                                            <option value="21">21</option>
+                                                            <option value="22">22</option>
+                                                            <option value="23">23</option>
+                                                        </select>
+                                                        <select type="text" th:id="weekSecond" th:class="col-sm-3" th:name="weekSecond" class="form-control">
+                                                            <option value="0">00</option>
+                                                            <option value="1">01</option>
+                                                            <option value="2">02</option>
+                                                            <option value="3">03</option>
+                                                            <option value="4">04</option>
+                                                            <option value="5">05</option>
+                                                            <option value="6">06</option>
+                                                            <option value="7">07</option>
+                                                            <option value="8">08</option>
+                                                            <option value="9">09</option>
+                                                            <option value="10">10</option>
+                                                            <option value="11">11</option>
+                                                            <option value="12">12</option>
+                                                            <option value="13">13</option>
+                                                            <option value="14">14</option>
+                                                            <option value="15">15</option>
+                                                            <option value="16">16</option>
+                                                            <option value="17">17</option>
+                                                            <option value="18">18</option>
+                                                            <option value="19">19</option>
+                                                            <option value="20">20</option>
+                                                            <option value="21">21</option>
+                                                            <option value="22">22</option>
+                                                            <option value="23">23</option>
+                                                            <option value="24">24</option>
+                                                            <option value="25">25</option>
+                                                            <option value="26">26</option>
+                                                            <option value="27">27</option>
+                                                            <option value="28">28</option>
+                                                            <option value="29">29</option>
+                                                            <option value="30">30</option>
+                                                            <option value="31">31</option>
+                                                            <option value="32">32</option>
+                                                            <option value="33">33</option>
+                                                            <option value="34">34</option>
+                                                            <option value="35">35</option>
+                                                            <option value="36">36</option>
+                                                            <option value="37">37</option>
+                                                            <option value="38">38</option>
+                                                            <option value="39">39</option>
+                                                            <option value="40">40</option>
+                                                            <option value="41">41</option>
+                                                            <option value="42">42</option>
+                                                            <option value="43">43</option>
+                                                            <option value="44">44</option>
+                                                            <option value="45">45</option>
+                                                            <option value="46">46</option>
+                                                            <option value="47">47</option>
+                                                            <option value="48">48</option>
+                                                            <option value="49">49</option>
+                                                            <option value="50">50</option>
+                                                            <option value="51">51</option>
+                                                            <option value="52">52</option>
+                                                            <option value="53">53</option>
+                                                            <option value="54">54</option>
+                                                            <option value="55">55</option>
+                                                            <option value="56">56</option>
+                                                            <option value="57">57</option>
+                                                            <option value="58">58</option>
+                                                            <option value="59">59</option>
+                                                        </select>Seconds
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div id="monthDiv" class="schedulingSection " style="display:none;">
+                                                <div class="form-group">
+                                                    <div class="col-sm-12" >
+                                                        <label class="control-label col-sm-2"><input type="radio" name="monthChecker" th:value="eachMonthDay"/>Day</label>
+                                                        <div class="col-sm-2">
+                                                            <input type="number" th:id="monthDay" th:name="monthDay" min="1" class="form-control"/>
+                                                        </div>
+
+                                                        <label class="control-label col-sm-1"> of every </label>
+                                                        <div class="col-sm-2">
+                                                            <input type="number" th:id="monthNum" th:name="monthNum" min="1" class="form-control"/>
+                                                        </div>
+                                                        <label class="control-label col-sm-2">month(s) </label>
+
+
+                                                    </div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <div class="col-md-12">
+                                                        <div class="form-group">
+                                                            <label class="control-label col-sm-2"><input type="radio" name="monthChecker" value="monthDayCart"/>The</label>
+                                                            <div class="col-sm-2">
+                                                                <select class="form-control  " name="monthCategory">
+                                                                    <option value="1">First</option>
+                                                                    <option value="2">Second</option>
+                                                                    <option value="3">Third</option>
+                                                                    <option value="4">Fourth</option>
+                                                                </select>
+                                                            </div>
+                                                            <div class="col-sm-2">
+                                                                <select class="form-control" th:id="monthWeek" th:name="monthWeek">
+                                                                    <option value="SUN">Sunday</option>
+                                                                    <option value="MON">Monday</option>
+                                                                    <option value="TUE">Tuesday</option>
+                                                                    <option value="WED">Wednessday</option>
+                                                                    <option value="THU">Thurday</option>
+                                                                    <option value="FRI">Friday</option>
+                                                                    <option value="SAT">Saturday</option>
+                                                                </select>
+                                                            </div>
+                                                            <label class="control-label col-sm-2">of every</label>
+                                                            <div class="col-sm-2">
+                                                                <input type="number" th:id="monthNumDesp" th:name="monthNumDesp" min="1" value="1" class="form-control"/>
+                                                            </div>
+                                                            <label class="control-label col-sm-2">month(s)</label>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="form-group">
+                                                        <div class="col-md-12">
+                                                            <label class="control-label col-sm-2">Start time</label>
+
+                                                            <div class="col-sm-2">
+                                                                <select class="form-control left-selector" th:name="monthHour" th:id="monthHour">
+                                                                    <option value="0">12</option>
+                                                                    <option value="1">01</option>
+                                                                    <option value="2">02</option>
+                                                                    <option value="3">03</option>
+                                                                    <option value="4">04</option>
+                                                                    <option value="5">05</option>
+                                                                    <option value="6">06</option>
+                                                                    <option value="7">07</option>
+                                                                    <option value="8">08</option>
+                                                                    <option value="9">09</option>
+                                                                    <option value="10">10</option>
+                                                                    <option value="11">11</option>
+                                                                    <option value="12">12</option>
+                                                                    <option value="13">13</option>
+                                                                    <option value="14">14</option>
+                                                                    <option value="15">15</option>
+                                                                    <option value="16">16</option>
+                                                                    <option value="17">17</option>
+                                                                    <option value="18">18</option>
+                                                                    <option value="19">19</option>
+                                                                    <option value="20">20</option>
+                                                                    <option value="21">21</option>
+                                                                    <option value="22">22</option>
+                                                                    <option value="23">23</option>
+                                                                </select>
+                                                            </div>
+                                                            <div class="col-sm-2">
+                                                                <select type="text" th:id="weekSecond" th:name="monthMinute" class="form-control">
+                                                                    <option value="0">00</option>
+                                                                    <option value="1">01</option>
+                                                                    <option value="2">02</option>
+                                                                    <option value="3">03</option>
+                                                                    <option value="4">04</option>
+                                                                    <option value="5">05</option>
+                                                                    <option value="6">06</option>
+                                                                    <option value="7">07</option>
+                                                                    <option value="8">08</option>
+                                                                    <option value="9">09</option>
+                                                                    <option value="10">10</option>
+                                                                    <option value="11">11</option>
+                                                                    <option value="12">12</option>
+                                                                    <option value="13">13</option>
+                                                                    <option value="14">14</option>
+                                                                    <option value="15">15</option>
+                                                                    <option value="16">16</option>
+                                                                    <option value="17">17</option>
+                                                                    <option value="18">18</option>
+                                                                    <option value="19">19</option>
+                                                                    <option value="20">20</option>
+                                                                    <option value="21">21</option>
+                                                                    <option value="22">22</option>
+                                                                    <option value="23">23</option>
+                                                                    <option value="24">24</option>
+                                                                    <option value="25">25</option>
+                                                                    <option value="26">26</option>
+                                                                    <option value="27">27</option>
+                                                                    <option value="28">28</option>
+                                                                    <option value="29">29</option>
+                                                                    <option value="30">30</option>
+                                                                    <option value="31">31</option>
+                                                                    <option value="32">32</option>
+                                                                    <option value="33">33</option>
+                                                                    <option value="34">34</option>
+                                                                    <option value="35">35</option>
+                                                                    <option value="36">36</option>
+                                                                    <option value="37">37</option>
+                                                                    <option value="38">38</option>
+                                                                    <option value="39">39</option>
+                                                                    <option value="40">40</option>
+                                                                    <option value="41">41</option>
+                                                                    <option value="42">42</option>
+                                                                    <option value="43">43</option>
+                                                                    <option value="44">44</option>
+                                                                    <option value="45">45</option>
+                                                                    <option value="46">46</option>
+                                                                    <option value="47">47</option>
+                                                                    <option value="48">48</option>
+                                                                    <option value="49">49</option>
+                                                                    <option value="50">50</option>
+                                                                    <option value="51">51</option>
+                                                                    <option value="52">52</option>
+                                                                    <option value="53">53</option>
+                                                                    <option value="54">54</option>
+                                                                    <option value="55">55</option>
+                                                                    <option value="56">56</option>
+                                                                    <option value="57">57</option>
+                                                                    <option value="58">58</option>
+                                                                    <option value="59">59</option>
+                                                                </select>Seconds
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div id="yearDiv" class="schedulingSection" style="display:none;">
+                                                <div class="form-group">
+                                                    <div class="col-md-12">
+
+                                                        <label class="col-sm-2 control-label"><input name="yearChecker" type="radio" th:value="perMonth" class=""/>Every</label>
+                                                        <div class="col-sm-2">
+                                                            <select class="form-control left-selector" th:id="yearMonth1" th:name="yearMonth1">
+                                                                <option value="1">January</option>
+                                                                <option value="2">February</option>
+                                                                <option value="3">March</option>
+                                                                <option value="4">April</option>
+                                                                <option value="5">May</option>
+                                                                <option value="6">June</option>
+                                                                <option value="7">July</option>
+                                                                <option value="8">August</option>
+                                                                <option value="9">September</option>
+                                                                <option value="10">October</option>
+                                                                <option value="11">November</option>
+                                                                <option value="12">December</option>
+                                                            </select>
+                                                        </div>
+                                                        <div class="col-sm-2">
+                                                            <input type="number" th:id="yearMonthNum" th:name="yearMonthNum" value="1" min="1" class="form-control"/>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <div class="col-md-12">
+                                                        <label class="col-sm-2 control-label"><input type="radio"  name="yearChecker" th:value="yearSection"/>The</label>
+                                                        <div class="col-sm-2">
+                                                            <select class="form-control" name="yearCategory">
+                                                                <option value="1">First</option>
+                                                                <option value="2">Second</option>
+                                                                <option value="3">Third</option>
+                                                                <option value="4">Fourth</option>
+                                                            </select>
+                                                        </div>
+                                                        <div class="col-sm-2">
+                                                            <select class="form-control left-selector" th:id="yearMonthWeek" th:name="yearMonthWeek">
+                                                                <option value="SUN">Sunday</option>
+                                                                <option value="MON">Monday</option>
+                                                                <option value="TUE">Tuesday</option>
+                                                                <option value="WED">Wednessday</option>
+                                                                <option value="THU">Thurday</option>
+                                                                <option value="FRI">Friday</option>
+                                                                <option value="SAT">Saturday</option>
+                                                            </select>
+                                                        </div>
+
+                                                        <label class="control-label col-sm-1">of</label>
+                                                        <div class="col-sm-2">
+                                                            <select class="form-control left-selector" th:id="yearMonth2" th:name="yearMonth2">
+                                                                <option value="1">January</option>
+                                                                <option value="2">February</option>
+                                                                <option value="3">March</option>
+                                                                <option value="4">April</option>
+                                                                <option value="5">May</option>
+                                                                <option value="6">June</option>
+                                                                <option value="7">July</option>
+                                                                <option value="8">August</option>
+                                                                <option value="9">September</option>
+                                                                <option value="10">October</option>
+                                                                <option value="11">November</option>
+                                                                <option value="12">December</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <div class="col-md-12">
+                                                        <label class="col-sm-2 control-label">Start time</label>
+
+                                                        <div class="col-sm-2">
+                                                            <select class="form-control left-selector" th:name="yearHour" th:id="yearHour">
+                                                                <option value="0">00</option>
+                                                                <option value="1">01</option>
+                                                                <option value="2">02</option>
+                                                                <option value="3">03</option>
+                                                                <option value="4">04</option>
+                                                                <option value="5">05</option>
+                                                                <option value="6">06</option>
+                                                                <option value="7">07</option>
+                                                                <option value="8">08</option>
+                                                                <option value="9">09</option>
+                                                                <option value="10">10</option>
+                                                                <option value="11">11</option>
+                                                                <option value="12">12</option>
+                                                                <option value="13">13</option>
+                                                                <option value="14">14</option>
+                                                                <option value="15">15</option>
+                                                                <option value="16">16</option>
+                                                                <option value="17">17</option>
+                                                                <option value="18">18</option>
+                                                                <option value="19">19</option>
+                                                                <option value="20">20</option>
+                                                                <option value="21">21</option>
+                                                                <option value="22">22</option>
+                                                                <option value="23">23</option>
+                                                            </select>
+                                                        </div>
+                                                        <div class="col-sm-2">
+                                                            <select type="text" th:id="yearMinute" th:name="yearMinute" class="form-control">
+                                                                <option value="0">00</option>
+                                                                <option value="1">01</option>
+                                                                <option value="2">02</option>
+                                                                <option value="3">03</option>
+                                                                <option value="4">04</option>
+                                                                <option value="5">05</option>
+                                                                <option value="6">06</option>
+                                                                <option value="7">07</option>
+                                                                <option value="8">08</option>
+                                                                <option value="9">09</option>
+                                                                <option value="10">10</option>
+                                                                <option value="11">11</option>
+                                                                <option value="12">12</option>
+                                                                <option value="13">13</option>
+                                                                <option value="14">14</option>
+                                                                <option value="15">15</option>
+                                                                <option value="16">16</option>
+                                                                <option value="17">17</option>
+                                                                <option value="18">18</option>
+                                                                <option value="19">19</option>
+                                                                <option value="20">20</option>
+                                                                <option value="21">21</option>
+                                                                <option value="22">22</option>
+                                                                <option value="23">23</option>
+                                                                <option value="24">24</option>
+                                                                <option value="25">25</option>
+                                                                <option value="26">26</option>
+                                                                <option value="27">27</option>
+                                                                <option value="28">28</option>
+                                                                <option value="29">29</option>
+                                                                <option value="30">30</option>
+                                                                <option value="31">31</option>
+                                                                <option value="32">32</option>
+                                                                <option value="33">33</option>
+                                                                <option value="34">34</option>
+                                                                <option value="35">35</option>
+                                                                <option value="36">36</option>
+                                                                <option value="37">37</option>
+                                                                <option value="38">38</option>
+                                                                <option value="39">39</option>
+                                                                <option value="40">40</option>
+                                                                <option value="41">41</option>
+                                                                <option value="42">42</option>
+                                                                <option value="43">43</option>
+                                                                <option value="44">44</option>
+                                                                <option value="45">45</option>
+                                                                <option value="46">46</option>
+                                                                <option value="47">47</option>
+                                                                <option value="48">48</option>
+                                                                <option value="49">49</option>
+                                                                <option value="50">50</option>
+                                                                <option value="51">51</option>
+                                                                <option value="52">52</option>
+                                                                <option value="53">53</option>
+                                                                <option value="54">54</option>
+                                                                <option value="55">55</option>
+                                                                <option value="56">56</option>
+                                                                <option value="57">57</option>
+                                                                <option value="58">58</option>
+                                                                <option value="59">59</option>
+                                                            </select>
+                                                        </div>
+                                                        <label class="col-sm-1 control-label">Seconds</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div id="buttonDiv" class="schedulingSection" style="display:none;">
+                                                <div class="form-group">
+                                                    <div class="col-sm-8 col-sm-offset-2">
+                                                        <!--<button class="btn btn-white" type="reset" id="cancel">Cancel</button>-->
+                                                        <button class="btn btn-primary" type="submit">Update</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div ></div>
+
+                                        </form>
+                                    </div>
+                                </div>
+                            </fieldset>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+        <!-- footer content -->
+        <footer th:replace="layout :: footer">
+        </footer>
+        <!-- /footer content -->
+    </div>
+</div>
+
+
+<script th:src="@{~/bank/vendors/datatables.net/js/jquery.dataTables.js}"></script>
+<script th:src="@{~/bank/js/dataTables.select.js}"></script>
+<script th:src="@{~/bank/js/dataTables.bootstrap.js}"></script>
+<script th:src="@{~/bank/js/jquery.spring-friendly.min.js}"></script>
+
+<!-- Page-Level Scripts -->
+<script>
+    /*<![CDATA[*/
+    /*]]>*/
+
+    $(document).ready(
+            function () {
+
+                $('option').mousedown(function(e) {
+                    e.preventDefault();
+                    $(this).prop('selected', $(this).prop('selected') ? false : true);
+                    return false;
+                });
+                $('#buttonDiv').show();
+//                if($('#everySecond').is(':checked') == false){
+////                    $('#second').prop('disabled',true);
+//                }
+
+
+//                function disableCategory(category) {
+//                    if(category ==="second"){
+//                        alert($('#everySecond').is(':checked');
+//                    }
+//                }
+            }
+
+
+    );
+//    $(function() {
+//        // Makes sure the code contained doesn't run until
+//        //     all the DOM elements have loaded
+//        $('#scheduler').change(function(){
+//            $('.schedulingSection').hide();
+//            $('#' + $(this).val()).show();
+//            if($(this).val() != '*'){
+//                $('#buttonDiv').show();
+//            }
+//            if($(this).val()=="weekDiv"){
+//                $('#weekDiv').prop("required",true);
+//            }
+//        });
+//
+//    });
+    //    function disableCom(category) {
+    //        if($('#everySecond').is(':checked') == true){
+    ////            alert("checked");
+    //                    $('#second').prop('disabled',true);
+    //        }
+    //    }
+</script>
+
+
+
+</body>
+</html>

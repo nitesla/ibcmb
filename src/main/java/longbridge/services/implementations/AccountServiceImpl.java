@@ -67,6 +67,7 @@ public class AccountServiceImpl implements AccountService {
         account.setStatus(acct.getAccountStatus());
         account.setCustomerId(acct.getCustomerId());
         account.setAccountName(acct.getAccountName());
+        account.setPreferredName(acct.getAccountName());
         account.setAccountNumber(acct.getAccountNumber());
         account.setCurrencyCode(acct.getAccountCurrency());
         account.setSolId(acct.getSolId());
@@ -87,6 +88,7 @@ public class AccountServiceImpl implements AccountService {
         account.setHiddenFlag("N");
         account.setCustomerId(acct.getCustId());
         account.setAccountName(acct.getAcctName());
+        account.setPreferredName(acct.getAcctName());
         account.setAccountNumber(acct.getAcctNumber());
         account.setCurrencyCode(acct.getAcctCrncyCode());
         account.setSolId(acct.getSolId());
@@ -101,7 +103,7 @@ public class AccountServiceImpl implements AccountService {
     public String customizeAccount(Long id, String name) throws InternetBankingException{
         try {
             Account account = accountRepo.findFirstById(id);
-            account.setAccountName(name);
+            account.setPreferredName(name);
             this.accountRepo.save(account);
             return messageSource.getMessage("account.customize.success", null, locale);
         } catch (Exception e) {
@@ -346,7 +348,7 @@ public class AccountServiceImpl implements AccountService {
             System.out.println("the account name on finacle is" + accountDetails.getAcctName());
             if (account.getCurrencyCode() != null) {
                 if (account.getAccountName().equalsIgnoreCase("ADEDOKUN  OLUTOPE") && account.getCurrencyCode().equalsIgnoreCase("NGN")) {
-//            account.setAccountName(accountDetails.getAcctName());
+//            account.setPreferredName(accountDetails.getAcctName());
                     account.setAccountName("MARTINS");
                     System.out.println("the account name after setting is" + account.getAccountName());
 //            accountRepo.save(account);
@@ -368,7 +370,7 @@ public class AccountServiceImpl implements AccountService {
 //    private Account mockAccount(){
 //        if(mockAccount==null){
 //            mockAccount = new Account();
-//            mockAccount.setAccountName("null");
+//            mockAccount.setPreferredName("null");
 //        }
 //        return mockAccount;
 //    }

@@ -1,27 +1,21 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head th:replace="cust_layout :: site-head">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{ret-layout}">
 
-</head>
-<body>
-<div class="container">
-    <header th:replace="cust_layout :: header">
-    </header>
+<body onload="javascript:var bread = [['Home', '/retail/dashboard'],['Beneficiary Management', '/retail/beneficiary'],['Add new beneficiary']];currentBar('add new beneficiary');breadCrumb(bread)">
 
-<section class="content-wrapper">
-    <div class="containe">
-        <div class="row">
-            <div class="col-md-4 col-sm-4">
-                <h5 class="page_header"> New  Beneficiary</h5>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-9 content-bg">
+<div layout:fragment="content">
+    <div class="col-md-5 col-sm-5 ">
 
-                <div class="spacing">
+        <select class="form-control full-width coronation-form-control hide-content-only" id="view">
+            <option value="account">Overview</option>
+        </select>
+    </div>
 
-
-                    <table>
+    <div class="col-xs-12 ml-15 " >
+        <div class="col-xs-12 col-sm-offset-3  col-sm-6 no-pad-lef no-mt no-bd  alert" >
+           <div  class="table-responsive">
+            <table class="table table-hover bg-white">
                         <tr>
 
                             <th>Beneficiary Bank</th>
@@ -48,6 +42,7 @@
                         </tr>
 
                     </table>
+        </div>
                     <form method="post" th:action="@{/retail/beneficiary/local}" th:object="${beneficiary}">
 
                         <input type="hidden" th:field="*{beneficiaryBank}"/>
@@ -59,31 +54,56 @@
                     <div class="form-group">
                         <div th:if="${auth}!=null">
                             <label >Token *</label>
-                            <input type="text" name="token" placeholder="" class="form-control"/>
+                            <input type="text" name="token" placeholder="" class="form-control full-width"/>
                         </div>
 
                         <br/>
-                        <button type="submit" class="btn btn-default">Save</button>
+                        <button type="submit" class="btn btn-link required-step">Save</button>
 
-                        <a th:href="@{/retail/beneficiary/new}" class="btn btn-link"  >Cancel</a>
+                        <button onclick="redirectToNew()" class="btn btn-link less-required"  >Cancel</button>
                     </div>
                     </form>
-                </div>
-
-
-            </div>
-            <div class="col-md-3 pull-right " >
-                <div th:replace="cust_layout :: sidebar" class="" >
-                </div>
-            </div>
         </div>
     </div>
-</section>
 
-
-<!-- CONTENT-WRAPPER SECTION END-->
-<footer th:replace="cust_layout ::footer">
-</footer>
 </div>
+
+
+<th:block layout:fragment="scripts">
+<script th:inline="javascript">
+    /*<![CDATA[*/
+
+
+
+    function redirectToNew()
+    {
+        window.location.href = '/retaail/beneficiary/new';
+    }
+
+    $(document).ready(function() {
+        var url = "/retail/requests/track/all";
+        var table = $('#track').DataTable({
+            select: true,
+            responsive : false,
+            "lengthMenu" : [ [ 5, 10 ], [ 5, 10 ] ],
+            "pagingType" : "simple_numbers",
+            "searching" : false,
+            "paging" : true,
+            "serverSide" : true,
+            "ajax" : url,
+            "dom" : 'T<"clear">flrtp',
+            "columns" : [
+                { "data": "requestName" },
+                { "data": "date" },
+                { "data": "requestStatus" }
+            ]
+        });
+    });
+
+    /*]]>*/
+</script>
+   
+</th:block>
+
 </body>
 </html>

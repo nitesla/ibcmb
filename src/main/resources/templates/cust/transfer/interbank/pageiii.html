@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{ret-layout}">
 
-<body onload="currentBar('transaction summary')">
+<body onload="javascript:var bread = [['Home', '/retail/dashboard'],['inter bank transfer','/retail/transfer/interbank'],['transfer summary']];currentBar('inter bank transfer');breadCrumb(bread)">
 
 <div layout:fragment="content">
     <div class="col-md-5 col-sm-5 ">
@@ -12,8 +12,8 @@
         </select>
     </div>
 
-    <div class="col-xs-12 ml-15 " >
-        <div class="col-xs-11 no-pad-lef alert no-bd">
+    <div class="col-xs-12 ml-15  no-pad-right" >
+        <div class="col-xs-12 no-pad-lef alert no-bd">
            <div class="">
                 <div class="col-sm-offset-3  col-sm-6">
 
@@ -90,11 +90,11 @@
                                 <input  type="checkbox" id="add" name="add"/>Add Beneficiary
                             </label>
                         </span>
-                        <div class="form-group col-xs-12">
+                        <div class="form-group col-xs-12 text-center">
                             <!--<input value="Modify" style="cursor: pointer;" type="button" onclick="history.go(-1);" />-->
-                            <button type="submit" class="btn btn-link required-step">Proceed</button>
-                            <button type="button" class="btn btn-link less-required" onclick="cancel();">Cancel</button>
-                            <button type='button' class='btn btn-link less-required' onclick="edit();">Modify</button>
+                            <button type="submit" class="btn btn-link required-step my-buttons">Proceed</button>
+                            <button type="button" class="btn btn-link less-required my-buttons" onclick="cancel();">Cancel</button>
+                            <button type='button' class='btn btn-link less-required my-buttons' onclick="edit();">Modify</button>
 
                         </div>
                     </form>

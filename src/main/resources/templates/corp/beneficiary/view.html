@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{corp-layout}">
 
-<body onload="currentBar('Beneficiaries list')">
+<body onload="javascript:var bread = [['Home', '/corporate/dashboard'],['Beneficiary Management', '/corporate/beneficiary']];currentBar('beneficiary list');breadCrumb(bread)">
 
 <div layout:fragment="content">
 
@@ -89,14 +89,14 @@
         /*<![CDATA[*/
 
         function validateDelete(id) {
-            var ooo = "/retail/beneficiary/"+id+ "/loc/delete";
+            var ooo = "/corporate/beneficiary/"+id+ "/loc/delete";
             //goto url
            
             warnBeforeRedirect(ooo);
         }
 
         function validateIntDelete(id) {
-            var ooo = "/retail/beneficiary/"+id+ "/int/delete";
+            var ooo = "/corporate/beneficiary/"+id+ "/int/delete";
             //goto url
             warnBeforeRedirect(ooo);
         }

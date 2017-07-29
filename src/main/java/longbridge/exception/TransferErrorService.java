@@ -1,5 +1,6 @@
 package longbridge.exception;
 
+import longbridge.models.TransferCodeTransalator;
 import longbridge.repositories.TransferCodeRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
@@ -31,12 +32,16 @@ public class TransferErrorService {
      String errorMessage ;
 
         try{
-            String error = transferCodeRepo.findFirstByResponseCode(exception.getMessage()).getResponseMessage() ;
-            if (error!=null && !error.isEmpty())return messages.getMessage(error, null, locale);
+            TransferCodeTransalator codeTransalator=transferCodeRepo.findFirstByResponseCode(exception.getMessage());
+           if (codeTransalator!=null)
+            { String error = codeTransalator.getResponseMessage() ;
+                return messages.getMessage(error, null, locale);
+            }
 
             errorMessage = messages.getMessage(exception.getMessage(), null, locale);
 
        }catch (Exception e){
+            e.printStackTrace();
            errorMessage=exception.getMessage();
 
        }

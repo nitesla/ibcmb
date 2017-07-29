@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 public class CronJobsbkp {
 @Autowired
 private BatchJobController jobController;
-    @Scheduled(cron = "${cronJob.value}")
+//    @Scheduled(cron = "${cronJob.value}")
     public void startJob(){
 //        jobController.updatAllAccounts();
 //    System.out.println("cron job running");

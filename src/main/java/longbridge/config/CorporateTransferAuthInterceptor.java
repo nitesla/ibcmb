@@ -33,45 +33,19 @@ public class CorporateTransferAuthInterceptor extends HandlerInterceptorAdapter 
                         &&
                         httpServletRequest.getSession().getAttribute("auth-needed") == null
 
-                )
-        {httpServletRequest.getSession().setAttribute("auth-needed", "auth-needed");
+                ) {
+            httpServletRequest.getSession().setAttribute("auth-needed", "auth-needed");
+            httpServletResponse.sendRedirect(httpServletRequest.getContextPath() + "/corporate/transfer/auth");
+            return false;
 
-        ModelAndView view = new ModelAndView("forwarded-view");
-        CorpTransferRequestDTO dto = (CorpTransferRequestDTO) httpServletRequest.getSession().getAttribute("corpTransferRequest");
-
-        if (dto != null) view.addObject("corpTransferRequest", dto);
-
-        view.setViewName("/corp/transfer/transferauth");
-
-        throw new ModelAndViewDefiningException(view);
-
-    }
+        }
 
 
         return true;
-}
+    }
 
     @Override
     public void postHandle(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Object o, ModelAndView modelAndView) throws Exception {
-
-        // String uri=httpServletRequest.getRequestURI();
-
-
-        // if (httpServletRequest.getSession().getAttribute("auth-needed")!=null)
-
-//          if ( httpServletRequest.getSession().getAttribute("AUTH") !=null){
-//
-//
-//
-//              TransferRequestDTO dto= (TransferRequestDTO) httpServletRequest.getSession().getAttribute("transferRequest");
-//
-//              if (dto!=null) modelAndView.addObject("transferRequest", dto);
-//
-//
-//              //modelAndView.addObject("passwordRules", passwordPolicyService.getPasswordRules());
-//
-//              modelAndView.setViewName("/transfer/transferauth");
-//          }
 
 
     }

@@ -9,6 +9,7 @@ public class AccountDTO{
     @NotEmpty(message = "accountNumber")
     private String accountNumber;
     private String accountName;
+    private String preferredName;
     private String customerId;
     private String schemeType;
     private String schemeCode;
@@ -55,7 +56,13 @@ public class AccountDTO{
 		this.accountBalance = accountBalance;
 	}
 
+    public String getPreferredName() {
+        return preferredName;
+    }
 
+    public void setPreferredName(String preferredName) {
+        this.preferredName = preferredName;
+    }
 
     public Long getId() {
         return id;

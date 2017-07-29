@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{corp-layout}">
 
-<body onload="currentBar('inter bank transfer')">
+<body onload="javascript:var bread = [['Home', '/corporate/dashboard'],['inter bank transfer']];currentBar('inter bank transfer');breadCrumb(bread)">
 
 <div layout:fragment="content">
     <div class="col-md-5 col-sm-5 ">
@@ -43,7 +43,7 @@
                     </div>
 
                     <!--<div class="col-md-4 col-sm-4">-->
-                            <!--<p id="nip" style="padding: 5%">Fee applicable: <span th:text="'N'+${nip.feeValue}"></span></p>-->
+                            <p id="nip" style="padding: 5%">Fee applicable: <span th:if="${nip.feeValue}!=null" th:text="'N'+${nip.feeValue}"></span></p>
                             <!--<p id="rtgs" style="display: none; padding: 5%">Fee applicable: <span th:text="'N'+${rtgs.feeValue}"></span></p>-->
                     <!--</div>-->
 
