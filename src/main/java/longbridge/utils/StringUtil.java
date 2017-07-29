@@ -18,6 +18,7 @@ public class StringUtil {
             for(int i =0; i<answers.size();i++){
                 if(!answers.get(i).equalsIgnoreCase(entAnswers.get(i))){
                     noOfMismatch++;
+                    System.out.println("my answer "+answers.get(i)+" entrust "+entAnswers.get(i));
                 }
             }
             System.out.println("no of mis match is "+noOfMismatch);
@@ -29,9 +30,10 @@ public class StringUtil {
     }
     public static String compareAnswers(WebRequest webRequest, List<String>entAnswers ){
         int noOfMismatch = 0;
+        List<String> providedAnswers = Arrays.asList(webRequest.getParameter("secAnswer").split(","));
         int noOfSecQn = Integer.parseInt(webRequest.getParameter("noOfSecQn"));
         for (int i=0;i<noOfSecQn;i++){
-            if(!entAnswers.get(i).equalsIgnoreCase(webRequest.getParameter("securityAnswer"+i))){
+            if(!entAnswers.get(i).equalsIgnoreCase(providedAnswers.get(i))){
                 noOfMismatch++;
             }
         }
