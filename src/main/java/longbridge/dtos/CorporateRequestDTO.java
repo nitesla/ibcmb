@@ -16,6 +16,7 @@ public class CorporateRequestDTO {
     private int version;
     private String corporateType;
     private String corporateName;
+    private String corporateId;
     private String bvn;
     private  String status;
     private String rcNumber;
@@ -24,6 +25,7 @@ public class CorporateRequestDTO {
     private String createdOn;
     private List<CorporateUserDTO> corporateUsers = new ArrayList<>();
     private List<CorpTransferRuleDTO> corpTransferRules = new ArrayList<>();
+    private List<AccountDTO> accounts = new ArrayList<>();
 
 
     public Long getId() {
@@ -98,6 +100,14 @@ public class CorporateRequestDTO {
         this.rcNumber = rcNumber;
     }
 
+    public List<AccountDTO> getAccounts() {
+        return accounts;
+    }
+
+    public void setAccounts(List<AccountDTO> accounts) {
+        this.accounts = accounts;
+    }
+
     public List<CorporateUserDTO> getCorporateUsers() {
         return corporateUsers;
     }
@@ -112,5 +122,13 @@ public class CorporateRequestDTO {
 
     public void setCorpTransferRules(List<CorpTransferRuleDTO> corpTransferRules) {
         this.corpTransferRules = corpTransferRules;
+    }
+
+    public String getCorporateId() {
+        return corporateId;
+    }
+
+    public void setCorporateId(String corporateId) {
+        this.corporateId = corporateId;
     }
 }

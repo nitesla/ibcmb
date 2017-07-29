@@ -18,6 +18,7 @@ public class CorporateDTO implements Serializable{
     private int version;
     private String rcNumber;
     private String corporateType;
+    private String corporateId;
     @NotEmpty(message = "customerId")
     private String customerId;
     private String name;
@@ -95,6 +96,14 @@ public class CorporateDTO implements Serializable{
 
     public void setCreatedOn(String createdOn) {
         this.createdOn = createdOn;
+    }
+
+    public String getCorporateId() {
+        return corporateId;
+    }
+
+    public void setCorporateId(String corporateId) {
+        this.corporateId = corporateId;
     }
 
     public String getStatus() {
