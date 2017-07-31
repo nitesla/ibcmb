@@ -506,8 +506,13 @@ select
 .info-bar 
 {
     text-transform: capitalize;
+
 }
 
+.info-bar a
+{
+    color: #032A4F !important;
+}
 
 .info-bar a:after
 {
@@ -555,8 +560,8 @@ select
 
 .top-link
 {
+    margin-top: 5px;
     padding:3px;
-    
     padding-left: 0px !important;
 }
 
