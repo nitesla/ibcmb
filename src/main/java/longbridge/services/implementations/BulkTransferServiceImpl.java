@@ -2,11 +2,13 @@ package longbridge.services.implementations;
 
 import longbridge.dtos.BulkTransferDTO;
 import longbridge.dtos.CreditRequestDTO;
+import longbridge.exception.TransferRuleException;
 import longbridge.models.BulkTransfer;
 import longbridge.models.Corporate;
 import longbridge.models.CreditRequest;
 import longbridge.repositories.BulkTransferRepo;
 import longbridge.services.BulkTransferService;
+import longbridge.services.CorporateService;
 import longbridge.services.bulkTransfers.BulkTransferJobLauncher;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
@@ -17,13 +19,18 @@ import org.springframework.batch.core.repository.JobInstanceAlreadyCompleteExcep
 import org.springframework.batch.core.repository.JobRestartException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Created by Longbridge on 14/06/2017.
@@ -40,6 +47,10 @@ public class BulkTransferServiceImpl implements BulkTransferService {
     private BulkTransferJobLauncher jobLauncher;
 
     private ModelMapper modelMapper;
+    private Locale locale = LocaleContextHolder.getLocale();
+
+    @Autowired
+    private CorporateService corporateService;
 
     @Autowired
     public BulkTransferServiceImpl(BulkTransferRepo bulkTransferRepo, ModelMapper modelMapper
@@ -57,6 +68,11 @@ public class BulkTransferServiceImpl implements BulkTransferService {
     public String makeBulkTransferRequest(BulkTransfer bulkTransfer) {
         logger.trace("Transfer details valid {}", bulkTransfer);
         //validate bulk transfer
+
+        if (corporateService.getApplicableBulkTransferRule(bulkTransfer) == null) {
+            throw new TransferRuleException(messageSource.getMessage("rule.unapplicable", null, locale));
+        }
+
         BulkTransfer transfer = bulkTransferRepo.save(bulkTransfer);
         try {
             jobLauncher.launchBulkTransferJob(""+transfer.getId());
@@ -70,6 +86,20 @@ public class BulkTransferServiceImpl implements BulkTransferService {
         return messageSource.getMessage("bulk.transfer.success", null, null);
     }
 
+    @Override
+    public String saveBulkTransferRequestForAuthorization(BulkTransfer bulkTransfer) {
+        logger.trace("Transfer details valid {}", bulkTransfer);
+        //validate bulk transfer
+
+        try {
+            BulkTransfer transfer = bulkTransferRepo.save(bulkTransfer);
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error("Exception occurred {}",e);
+            return messageSource.getMessage("bulk.save.failure", null, null);
+        }
+        return messageSource.getMessage("bulk.save.success", null, null);
+    }
 
     @Override
     public Page<BulkTransfer> getAllBulkTransferRequests(Corporate corporate, Pageable details) {
@@ -89,9 +119,11 @@ public class BulkTransferServiceImpl implements BulkTransferService {
     public BulkTransferDTO convertEntityToDTO(BulkTransfer bulkTransfer) {
         BulkTransferDTO bulkTransferDTO = new BulkTransferDTO();
         bulkTransferDTO.setId(bulkTransfer.getId());
-        bulkTransferDTO.setDebitAccount(bulkTransfer.getDebitAccount());
+        bulkTransferDTO.setCustomerAccountNumber(bulkTransfer.getCustomerAccountNumber());
         bulkTransferDTO.setRefCode(bulkTransfer.getRefCode());
-        bulkTransferDTO.setRequestDate(bulkTransfer.getRequestDate());
+        DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
+        //Date dt = bulkTransfer.getTranDate();
+        bulkTransferDTO.setTranDate(bulkTransfer.getTranDate());
         bulkTransferDTO.setStatus(bulkTransfer.getStatus());
         return bulkTransferDTO;
     }
@@ -152,13 +184,11 @@ public class BulkTransferServiceImpl implements BulkTransferService {
 
     public CreditRequestDTO convertEntityToDTO(CreditRequest creditRequest) {
         CreditRequestDTO creditRequestDTO = new CreditRequestDTO();
-        creditRequestDTO.setRefCode(creditRequest.getRefCode());
         creditRequestDTO.setNarration(creditRequest.getNarration());
         creditRequestDTO.setAmount(creditRequest.getAmount());
         creditRequestDTO.setAccountName(creditRequest.getAccountName());
         creditRequestDTO.setSortCode(creditRequest.getSortCode());
         creditRequestDTO.setAccountNumber(creditRequest.getAccountNumber());
-        creditRequestDTO.setSerial(creditRequest.getSerial());
         creditRequestDTO.setStatus(creditRequest.getStatus());
         return creditRequestDTO;
     }

@@ -15,7 +15,7 @@ import javax.persistence.Entity;
 public class Authorizer extends AbstractEntity {
 
     private String name;
-    private int level;
+    private int authLevel;
 
     public String getName() {
         return name;
@@ -25,11 +25,12 @@ public class Authorizer extends AbstractEntity {
         this.name = name;
     }
 
-    public int getLevel() {
-        return level;
+
+    public int getAuthLevel() {
+        return authLevel;
     }
 
-    public void setLevel(int level) {
-        this.level = level;
+    public void setAuthLevel(int authLevel) {
+        this.authLevel = authLevel;
     }
 }

@@ -435,6 +435,10 @@ public class CorporateServiceImpl implements CorporateService {
         return pageImpl;
     }
 
+    @Override
+    public boolean corporateIdExists(String corporateId) {
+        return corporateRepo.existsByCorporateIdIgnoreCase(corporateId);
+    }
 
     @Override
     @Transactional
@@ -614,47 +618,30 @@ public class CorporateServiceImpl implements CorporateService {
     }
 
     @Override
-    public String addCorporateRequest(CorporateRequestDTO corporateRequestDTO) {
-        Corporate corporate = new Corporate();
-        corporate.setName(corporateRequestDTO.getCorporateName());
-        corporate.setCustomerId(corporateRequestDTO.getCustomerId());
-        corporate.setRcNumber(corporateRequestDTO.getRcNumber());
-        corporate.setCorporateType(corporateRequestDTO.getCorporateType());
-        corporate.setStatus("A");
-        corporate.setCreatedOnDate(new Date());
-        Corporate newCorporate = corporateRepo.save(corporate);
-        for(CorporateUserDTO userDTO: corporateRequestDTO.getCorporateUsers()){
+    @Transactional
+    public CorpTransRule getApplicableBulkTransferRule(BulkTransfer bulkTransfer) {
 
-            CorporateUser corporateUser = new CorporateUser();
-            corporateUser.setFirstName(userDTO.getFirstName());
-            corporateUser.setLastName(userDTO.getLastName());
-            corporateUser.setUserName(userDTO.getUserName());
-            corporateUser.setEmail(userDTO.getEmail());
-            corporateUser.setStatus("A");
-            corporateUser.setPhoneNumber(userDTO.getPhoneNumber());
-            corporateUser.setAdmin(userDTO.isAdmin());
-            corporateUser.setCreatedOnDate(new Date());
-            Role role = roleRepo.findOne(Long.parseLong(userDTO.getRoleId()));
-            corporateUser.setRole(role);
-            corporateUser.setCorporate(newCorporate);
-            CorporateUser corpUser = corporateUserRepo.save(corporateUser);
-            createUserOnEntrustAndSendCredentials(corpUser);
+        Corporate corporate = bulkTransfer.getCorporate();
+        List<CorpTransRule> transferRules = corpTransferRuleRepo.findByCorporate(corporate);
+        Collections.sort(transferRules, new TransferRuleComparator());
+        BigDecimal transferAmount = bulkTransfer.getAmount();
+        CorpTransRule applicableTransferRule = null;
+        for (CorpTransRule transferRule : transferRules) {
+
+            BigDecimal lowerLimit = transferRule.getLowerLimitAmount();
+            BigDecimal upperLimit = transferRule.getUpperLimitAmount();
+
+            if (transferAmount.compareTo(lowerLimit) >= 0 && (transferAmount.compareTo(upperLimit) <= 0)) {
+                applicableTransferRule = transferRule;
+                break;
+            } else if (transferAmount.compareTo(lowerLimit) >= 0 && transferRule.isUnlimited()) {
+                applicableTransferRule = transferRule;
+            }
         }
-
-        for(CorpTransferRuleDTO transferRuleDTO: corporateRequestDTO.getCorpTransferRules()){
-            CorpTransRule corpTransRule = new CorpTransRule();
-            corpTransRule.setLowerLimitAmount(new BigDecimal(transferRuleDTO.getLowerLimitAmount()));
-            corpTransRule.setUpperLimitAmount(new BigDecimal(transferRuleDTO.getUpperLimitAmount()));
-        }
-
-        return  null;
+        return applicableTransferRule;
     }
 
-
-
-
-
-//    public CorporateRole getNextRoleForAuthorization(PendAuth pendAuth){
+    //    public CorporateRole getNextRoleForAuthorization(PendAuth pendAuth){
 //        pendAuth.
 //        List<CorporateRole> corporateRoles = rule.getRoles();
 //        sortRolesByRank(corporateRoles);

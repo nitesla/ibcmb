@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="layout :: site-head">
+</head>
+
+<body class="nav-md">
+<div class="container body">
+    <div class="main_container">
+        <div class="col-md-3 left_col">
+            <div class="left_col scroll-view">
+                <div class="navbar nav_title" style="border: 0;">
+                    <!--<a href="index.html"><img th:src="@{~/images/cmb_logo.png}"/></a>-->
+                </div>
+
+                <div class="clearfix"></div>
+                <div class="clearfix"></div>
+
+                <div th:replace="layout :: ops-menu"></div>
+                <div th:replace="layout :: menu-footer-ops"></div>
+
+            </div>
+        </div>
+        <div th:replace="layout :: ops-top-nav"></div>
+
+        <!-- page content -->
+        <div class="right_col" role="main">
+            <div class="">
+                <div class="page-title">
+                    <div class="title_left">
+                        <h3>Create Corporate</h3>
+                    </div>
+
+                </div>
+
+                <div class="clearfix"></div>
+
+                <div class="row">
+                    <div class="col-md-12 col-sm-12 col-xs-12">
+                        <div class="x_panel">
+                            <div class="x_title">
+
+                                <div class="clearfix"></div>
+                            </div>
+                            <div class="x_content">
+                                <div class="ibox-content">
+                                    <form method="post" class="form-horizontal" th:action="@{/ops/corporates/new}"
+                                          th:object="${corporate}">
+
+                                        <!--<div class="form-group">-->
+                                        <!--<label class="col-sm-2 control-label">Corporate Type</label>-->
+
+                                        <!--<div class="col-sm-6">-->
+                                        <!--<select class="form-control" name="corporateType">-->
+                                        <!--<option th:each="type: ${corporateTypes}" th:value="${type.code}"-->
+                                        <!--th:text="${type.description}"></option>-->
+
+                                        <!--</select>-->
+                                        <!--</div>-->
+                                        <!--</div>-->
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label">Customer ID</label>
+                                        <div class="col-md-6">
+                                            <div class="input-group">
+
+                                                    <input type="text" class="form-control" th:field="*{customerId}"
+                                                           placeholder="Enter CIFID here" required="required"/>
+                                                <span class="input-group-btn">
+                                                    <button id="search" class="btn btn-primary"
+                                                    type="submit">Validate</button>
+                                            </span>
+                                                </div>
+
+                                            </div>
+
+                                        </div>
+
+
+                                        <div id="custError" style="display: none;">
+                                            <label class="col-sm-2 control-label"></label>
+
+                                            <p style="color:red;">Invalid Corporate Customer ID</p>
+                                        </div>
+
+
+                                        <div id="custName" class="form-group" style="display: none">
+                                            <label class="col-sm-2 control-label">Customer Name</label>
+
+                                            <div class="col-sm-6">
+                                                <input type="text" class="form-control" th:field="*{customerName}"
+                                                       readonly="readonly"/>
+                                            </div>
+
+                                        </div>
+
+                                        <input type="hidden" class="form-control" th:field="*{corporateType}"/>
+
+                                        <!--<div class="form-group">-->
+                                        <!--<label class="col-sm-2 control-label">Email</label>-->
+
+                                        <!--<div class="col-sm-6">-->
+                                        <!--<input type="text" class="form-control" th:field="*{email}" />-->
+                                        <!--</div>-->
+
+                                        <!--</div>-->
+
+                                        <!--<div class="form-group">-->
+                                        <!--<label class="col-sm-2 control-label">Address</label>-->
+
+                                        <!--<div class="col-sm-6">-->
+                                        <!--<input type="text" class="form-control" th:field="*{address}" />-->
+                                        <!--</div>-->
+
+                                        <!--</div>-->
+
+
+                                        <div class="form-group">
+                                            <div class="col-sm-4 col-sm-offset-2">
+                                                <!--<button class="btn btn-white" type="reset" id="cancel">Cancel</button>-->
+                                                <button class="btn btn-primary" type="submit">Next</button>
+                                            </div>
+                                        </div>
+                                        <div th:replace="layout::form-validation"></div>
+                                    </form>
+                                </div>
+                                `
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- /page content -->
+
+        <!-- footer content -->
+        <footer th:replace="layout :: footer">
+        </footer>
+        <!-- /footer content -->
+    </div>
+</div>
+<script>
+
+    $("#search").click(function (e) {
+
+        e.preventDefault();
+
+        var custId = $("#customerId").val();
+        console.log("customer Id: " + custId)
+
+        $.ajax({
+            url: "/ops/corporates/" + custId + "/name",
+            success: function (result) {
+                if (result != "false") {
+                    $("#customerName").val(result);
+                    $("#custName").show();
+                    $("#custError").hide();
+
+                }
+                else {
+                    $("#custName").hide();
+                    $("#custError").show();
+                }
+            }
+        });
+    });
+
+    document.getElementById("cancel").onclick = function () {
+        location.href = "/ops/corporates";
+    }
+
+
+</script>
+</body>
+</html>
