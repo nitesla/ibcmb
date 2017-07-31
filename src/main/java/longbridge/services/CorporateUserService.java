@@ -140,5 +140,5 @@ public interface CorporateUserService{
     void createUserOnEntrustAndSendCredentials(CorporateUser user);
     void increaseNoOfTokenAttempt(CorporateUser user);
     void resetNoOfTokenAttempt(CorporateUser user);
-
+    public CorporateUser getUserByCifAndEmailIgnoreCase(Corporate corporate,String email);
 }

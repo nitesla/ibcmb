@@ -220,6 +220,7 @@ public class RetrieveCredentialController {
 //                secAnswer = question.stream().filter(Objects::nonNull).findFirst().orElse("");
 
                 logger.info("user answer {}", answer);
+                logger.info("compared answer {}", compareAnswers(answers,answer));
                 if(compareAnswers(answers,answer).equalsIgnoreCase("true")){
                     return "true";
                 };
