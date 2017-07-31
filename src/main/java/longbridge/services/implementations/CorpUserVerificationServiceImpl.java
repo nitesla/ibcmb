@@ -89,7 +89,7 @@ public class CorpUserVerificationServiceImpl implements CorpUserVerificationServ
             corpUserVerification.setEntityName(entityName);
             corpUserVerification.setInitiatedOn(new Date());
             corpUserVerification.setInitiatedBy(doneBy.getUserName());
-            corpUserVerification.setCorpUserType(CorpUserType.ADMIN);
+            corpUserVerification.setCorpUserType(CorpUserType.AUTHORIZER);
             corpUserVerification.setOperation(operation);
             corpUserVerification.setDescription(description);
             ObjectMapper mapper = new ObjectMapper();
