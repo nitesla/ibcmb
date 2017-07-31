@@ -7,6 +7,7 @@ import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -15,9 +16,7 @@ import java.util.List;
 @Entity
 @Audited(withModifiedFlag=true)
 @Where(clause ="del_Flag='N'" )
-public class BulkTransfer extends AbstractEntity{
-    private String debitAccount;
-    private String requestDate;
+public class BulkTransfer extends TransRequest{
     private String refCode;
     private  String status;
 
@@ -27,6 +26,8 @@ public class BulkTransfer extends AbstractEntity{
     @ManyToOne
     private Corporate corporate;
 
+
+
     public Corporate getCorporate() {
         return corporate;
     }
@@ -35,42 +36,35 @@ public class BulkTransfer extends AbstractEntity{
         this.corporate = corporate;
     }
 
-    public String getDebitAccount() {
-        return debitAccount;
+
+
+
+	public List<CreditRequest> getCrRequestList() {
+		return crRequestList;
+	}
+
+	public void setCrRequestList(List<CreditRequest> crRequestList) {
+		this.crRequestList = crRequestList;
+	}
+
+	public String getRefCode() {
+		return refCode;
+	}
+
+	public void setRefCode(String refCode) {
+		this.refCode = refCode;
+	}
+
+    public String getStatus() {
+        return status;
     }
 
-    public void setDebitAccount(String debitAccount) {
-        this.debitAccount = debitAccount;
+    public void setStatus(String status) {
+        this.status = status;
     }
 
+	public BulkTransfer(String reference, String status, List<CreditRequest> creditRequestList, Corporate corporate) {
 
-    public String getRequestDate() {
-        return requestDate;
-    }
-
-    public void setRequestDate(String requestDate) {
-        this.requestDate = requestDate;
-    }
-
-    public List<CreditRequest> getCrRequestList() {
-        return crRequestList;
-    }
-
-    public void setCrRequestList(List<CreditRequest> crRequestList) {
-        this.crRequestList = crRequestList;
-    }
-
-    public String getRefCode() {
-        return refCode;
-    }
-
-    public void setRefCode(String refCode) {
-        this.refCode = refCode;
-    }
-
-    public BulkTransfer(String debitAccount, String date, String reference, String status, List<CreditRequest> creditRequestList, Corporate corporate) {
-        this.debitAccount = debitAccount;
-        this.requestDate = date;
         this.refCode = reference;
         this.status = status;
         this.crRequestList = creditRequestList;
@@ -81,12 +75,5 @@ public class BulkTransfer extends AbstractEntity{
     public BulkTransfer() {
     }
 
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
 
 }

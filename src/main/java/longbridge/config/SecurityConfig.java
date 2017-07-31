@@ -40,6 +40,7 @@ import java.util.Objects;
 //@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig {
 
+
     public void customConfig(WebSecurity web) throws Exception {
         web.ignoring().antMatchers("/resources *", "/static *", "/css ", "/js *", "/images *", "/customer");
     }
@@ -96,7 +97,7 @@ public class SecurityConfig {
                 ipRestricted = true;
                 String temp = dto.getValue();
                 try{
-                String [] whitelisted = temp.split(",");
+                    String [] whitelisted = temp.split(",");
                     Arrays.asList(whitelisted)
                             .stream()
                             .filter(Objects::nonNull)
@@ -104,7 +105,7 @@ public class SecurityConfig {
 
 
                 }catch (Exception e){
-               e.printStackTrace();
+                    e.printStackTrace();
                 }
 
 //                ipRange.append(String.format(" or hasIpAddress('%s')", temp));
@@ -115,11 +116,11 @@ public class SecurityConfig {
 
 
             http.antMatcher("/admin/**").authorizeRequests().anyRequest().
-                   // hasAuthority(UserType.ADMIN.toString())
+                    // hasAuthority(UserType.ADMIN.toString())
 
 
-                   // .and().authorizeRequests().and()
-                     access("hasAuthority('" + UserType.ADMIN.toString() + "') and " + ipRange.toString()) .and()
+                    // .and().authorizeRequests().and()
+                            access("hasAuthority('" + UserType.ADMIN.toString() + "') and " + ipRange.toString()) .and()
 
                     // log in
                     .formLogin().loginPage("/login/admin").loginProcessingUrl("/admin/login")

@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{corp-layout}">
 
-<body onload="currentBar('Add new beneficiary')">
+<body onload="javascript:var bread = [['Home', '/corporate/dashboard'],['Beneficiary Management', '/corporate/beneficiary'],['Add new beneficiary']];currentBar('add new beneficiary');breadCrumb(bread)">
 
 <div layout:fragment="content">
     <div class="col-md-5 col-sm-5 ">
@@ -70,11 +70,11 @@
                                 <input type="text" class="form-control full-width" name="preferredName"
                                        placeholder="Preferred Name"/>
                             </div>
-                            <button id="localsave" style="display: none;" class="btn btn-link">Save</button>
+                            <button id="localsave" style="display: none;" class="btn btn-link required-step">Save</button>
                             <!--<button id="neq" type="button" class="btn btn-link" onclick="getAccountName();">Name-->
                             <!--Enquiry-->
                             <!--</button>-->
-                            <a th:href="@{/corporate/benficiary}" class="btn btn-link">Cancel</a>
+                            <button onclick='redirect()' class="btn btn-link less-required">Cancel</button>
                         </form>
 
                         <form id="foreign" method="post" th:action="@{/corporate/beneficiary/foreign}"
@@ -183,9 +183,9 @@
                                        placeholder="Beneficiary Alias" th:field="*{preferredName}"
                                        required="required"/>
                             </div>
-                            <button id="ilocalsave" style="display: none;" class="btn btn-link">Save</button>
+                            <button id="ilocalsave" style="display: none;" class="btn btn-link required-step">Save</button>
 
-                            <a th:href="@{/corporate/benficiary}" class="btn btn-link">Cancel</a>
+                            <button onclick='redirect()' class="btn btn-link less-required">Cancel</button>
                         </form>
 
                     </div>
@@ -273,6 +273,11 @@
 
         }
         ;
+
+        function redirect ()
+        {
+            window.location.href = '/corporate/beneficiary';
+        }
 
 
         function getIntraBankAccountName() {

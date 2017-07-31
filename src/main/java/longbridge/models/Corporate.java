@@ -22,13 +22,14 @@ import java.util.*;
 @Entity
 @Audited(withModifiedFlag=true)
 @Where(clause ="del_Flag='N'" )
-@Table(uniqueConstraints=@UniqueConstraint(columnNames={"customerId"}))
+@Table(uniqueConstraints=@UniqueConstraint(columnNames={"corporateId"}))
 
 public class Corporate extends AbstractEntity implements PrettySerializer{
 
     private String rcNumber;
     private String customerId;
     private String corporateType;
+    private String corporateId;
     private String name;
     private String email;
     private String address;
@@ -50,10 +51,24 @@ public class Corporate extends AbstractEntity implements PrettySerializer{
     @JsonIgnore
     private Collection<CorpLimit> corpLimits;
 
-
     @OneToMany
     @JsonIgnore
     List<CorpTransRule> corpTransRules;
+
+
+    @ManyToMany
+    @JoinTable(name = "corporate_account", joinColumns =
+    @JoinColumn(name = "corporate_id", referencedColumnName = "id"), inverseJoinColumns =
+    @JoinColumn(name = "account_id", referencedColumnName = "id") )
+    private List<Account> accounts;
+
+    public List<Account> getAccounts() {
+        return accounts;
+    }
+
+    public void setAccounts(List<Account> accounts) {
+        this.accounts = accounts;
+    }
 
     public Collection<CorpLimit> getCorpLimits() {
         return corpLimits;
@@ -159,7 +174,13 @@ public class Corporate extends AbstractEntity implements PrettySerializer{
         this.createdOnDate = createdOnDate;
     }
 
+    public String getCorporateId() {
+        return corporateId;
+    }
 
+    public void setCorporateId(String corporateId) {
+        this.corporateId = corporateId;
+    }
 
     @Override
 	public String toString() {

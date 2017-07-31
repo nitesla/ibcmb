@@ -14,6 +14,7 @@ import java.util.List;
 
 public interface BulkTransferService {
     String makeBulkTransferRequest(BulkTransfer bulkTransfer);
+    String saveBulkTransferRequestForAuthorization(BulkTransfer bulkTransfer);
     Page<BulkTransfer> getAllBulkTransferRequests(Corporate corporate, Pageable details);
     Page<BulkTransferDTO> getBulkTransferRequests(Corporate corporate, Pageable details);
     String cancelBulkTransferRequest(Long id);

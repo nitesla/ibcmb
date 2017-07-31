@@ -1,27 +1,25 @@
+
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head th:replace="cust_layout :: site-head">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{ret-layout}">
 
-</head>
-<body>
-<div class="container">
-    <header th:replace="cust_layout :: header">
-    </header>
+<body onload="javascript:var bread = [['Home', '/retail/dashboard'],['Transfer','/retail/transfer/ownaccount'],['transfer summary']];currentBar('transfer summary');breadCrumb(bread)">
 
-<section class="content-wrapper">
-    <div class="containe">
-        <div class="row">
-            <div class="col-md-4 col-sm-4">
-                <h5 class="page_header"> Transaction Summary</h5>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-8 content-bg">
+<div layout:fragment="content">
+    <div class="col-md-5 col-sm-5 ">
 
-                    <!--<div class="col-md-6 col-sm-6">-->
+        <select class="form-control full-width coronation-form-control hide-content-only" id="view">
+            <option value="account">Overview</option>
+        </select>
+    </div>
+
+    <div class="col-xs-12 ml-15 " >
+        <div class="col-xs-12 no-pad-lef alert  no-bd">
+           <div class="col-sm-offset-3  col-sm-6 table-responsive">
 
 
-                    <table class="table table-responsive">
+               
+                    <table class="table">
                         <tr>
 
                             <th>Source account</th>
@@ -64,28 +62,48 @@
                         <input type="hidden" th:field="*{remarks}"/>
                         <div class="form-group">
                             <label>Token *</label>
-                            <input type="text" name="token" placeholder="" class="form-control"/>
+                            <input type="text" name="token" placeholder="" class="form-control full-width"/>
                             <br/>
-                            <div class="form-group">
-                                <button type="submit" class="btn btn-default">Proceed</button>
-                                <a th:href="@{/retail/transfer/local}" >Cancel</a>
+                            <div class="form-group text-center">
+                                <button type="submit" class="btn btn-link required-step">Proceed</button>
+                                <button type="button" onclick="redirectFunc('/retail/transfer/local')" class="btn btn-link less-required">Cancel</button>
                             </div>
 
 
                         </div>
                     </form>
                     <!--</div>-->
-
-            </div>
-
+                      
+                 
+           
+           </div>
         </div>
     </div>
-</section>
 
-
-<!-- CONTENT-WRAPPER SECTION END-->
-<footer th:replace="cust_layout ::footer">
-</footer>
 </div>
+
+</div>
+
+
+<th:block layout:fragment="scripts">
+ <script th:src="@{~/customer/js/accountdetails.js}"></script>
+    <script>
+         function edit(){
+             $("#form_edit").submit();
+         }
+         function cancel(){
+           window.location.href="/retail/transfer/local";
+         }
+
+
+         function redirectFunc(arg)
+{
+    window.location.href = arg;
+}
+
+    </script>
+</th:block>
+
 </body>
 </html>
+

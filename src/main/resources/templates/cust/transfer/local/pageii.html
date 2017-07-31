@@ -2,13 +2,13 @@
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{ret-layout}">
 
-<body onload="currentBar('CMB new benficiary')">
+<body onload="javascript:var bread = [['Home', '/retail/dashboard'],['CMB transfer','/retail/transfer/local'],['transfer']];currentBar('CMB transfer');breadCrumb(bread)">
 
 <div layout:fragment="content">
     <div class="col-md-5 col-sm-5 ">
 
-        <span th:if="${beneficiary.preferredName} !=''" th:text="${beneficiary.preferredName}"></span>
-                <span th:if="${beneficiary.preferredName} ==''" th:text="${beneficiary.accountName}"></span>
+        <span th:if="${beneficiary.preferredName} !=''" th:text="${beneficiary.preferredName}"> Transfer to</span>
+                 <span th:if="${beneficiary.preferredName} ==''" th:text="${beneficiary.accountName}"> Transfer to</span>
 
         <select class="form-control full-width coronation-form-control hide-content-only" id="view">
             <option value="account">Overview</option>
@@ -78,6 +78,7 @@
 
                                             <!--<input type="availBal" name="availBal"/>-->
                                             <p class="related-info coronation-blue" id="availBal"><b></b></p>
+                                            <p class="related-info coronation-blue" th:if="${fee}!=null">Charge:&nbsp;&nbsp; <b th:text="${fee}"></b></p>
 
                                         </div>
                    

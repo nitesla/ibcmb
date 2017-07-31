@@ -209,7 +209,7 @@
                                 <div class="">
                                     <div class="col-md-7 col-sm-7">
                                         <h5 class="sub_header" th:text="${requestConfig.requestName}"></h5>
-                                        <form method="post" th:action="@{/retail/requests}" th:object="${requestDTO}" id="reqForm">
+                                        <form method="post" th:action="@{/corporate/requests}" th:object="${requestDTO}" id="reqForm">
                                             <input class="form-control" type="hidden" id="requestName" name="requestName" th:value="${requestConfig.requestName}"/>
                                             <input type="hidden" name="serviceReqConfigId" th:value="${requestConfig.id}"/>
                                             <div th:each="field : ${requestConfig.formFields}">

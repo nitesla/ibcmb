@@ -65,6 +65,9 @@ public class OpsCorporateController {
     @Autowired
     private MakerCheckerService makerCheckerService;
 
+    @Autowired
+    private AccountService accountService;
+
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
 
@@ -88,8 +91,9 @@ public class OpsCorporateController {
     @GetMapping("/new")
     public String addCorporate(Model model) {
         model.addAttribute("corporate", new CorporateDTO());
-        return "/ops/corporate/add";
+        return "/ops/corporate/setup/new";
     }
+
 
     @PostMapping
     public String createCorporate(@ModelAttribute("corporate") @Valid CorporateDTO corporate, BindingResult result, RedirectAttributes redirectAttributes, HttpSession session, Locale locale) {
@@ -110,7 +114,6 @@ public class OpsCorporateController {
             result.addError(new ObjectError("invalid", messageSource.getMessage("corp.cifid.invalid", null, locale)));
             return "/ops/corporate/add";
         } else {
-//                String accountName = integrationService.viewCustomerDetails(accountInfos.get(0).getAccountNumber()).getCustomerName();
             CustomerDetails customerDetails = integrationService.viewCustomerDetailsByCif(corporate.getCustomerId());
             if (!customerDetails.isCorp()) {
                 result.addError(new ObjectError("invalid", messageSource.getMessage("corp.cifid.invalid", null, locale)));
@@ -433,6 +436,7 @@ public class OpsCorporateController {
             }
         }
 
+
         model.addAttribute("corporate", corporate);
         model.addAttribute("roleList", roles);
         model.addAttribute("currencies", currencies);
@@ -543,5 +547,87 @@ public class OpsCorporateController {
 
     }
 
+
+    @GetMapping("/{cifid}/name")
+    @ResponseBody
+    public String getCustomerName(@PathVariable String cifid) {
+        CustomerDetails customerDetails = integrationService.viewCustomerDetailsByCif(cifid);
+
+        if (customerDetails.getCustomerName() == null) {
+            return "false";
+        }
+        if (!customerDetails.isCorp()) {
+            return "false";
+        }
+        return customerDetails.getCustomerName();
+    }
+
+
+    @PostMapping("/new")
+    public String addCorporateEntity(@ModelAttribute("corporate") @Valid CorporateDTO corporate, BindingResult result, Model model, HttpSession session, Locale locale) {
+        if (result.hasErrors()) {
+            result.addError(new ObjectError("invalid", messageSource.getMessage("form.fields.required", null, locale)));
+            return "/ops/corporate/setup/new";
+        }
+        CustomerDetails customerDetails = integrationService.viewCustomerDetailsByCif(corporate.getCustomerId());
+
+        if (customerDetails.getCustomerName() == null || !customerDetails.isCorp()) {
+            result.addError(new ObjectError("invalid", messageSource.getMessage("corp.cifid.invalid", null, locale)));
+            return "/ops/corporate/setup/new";
+
+        }
+
+
+        CorporateRequestDTO corporateRequestDTO = new CorporateRequestDTO();
+        corporateRequestDTO.setCustomerId(corporate.getCustomerId());
+        corporateRequestDTO.setCorporateType(corporate.getCorporateType());
+        corporateRequestDTO.setCustomerName(customerDetails.getCustomerName());
+        session.setAttribute("corporateRequest", corporateRequestDTO);
+
+        List<AccountInfo> accountInfos = integrationService.fetchAccounts(corporate.getCustomerId().toUpperCase());
+        model.addAttribute("accounts", accountInfos);
+        model.addAttribute("corporate", corporate);
+
+        return "/ops/corporate/setup/account";
+
+    }
+
+
+    @PostMapping("/accounts")
+    public String addCorporateAccounts(@ModelAttribute("corporate") @Valid CorporateDTO corporate, BindingResult result, RedirectAttributes redirectAttributes, WebRequest request, HttpSession session, Locale locale, Model model) {
+        if (result.hasErrors()) {
+            result.addError(new ObjectError("invalid", messageSource.getMessage("form.fields.required", null, locale)));
+            List<AccountInfo> accountInfos = integrationService.fetchAccounts(corporate.getCustomerId().toUpperCase());
+            model.addAttribute("accounts", accountInfos);
+
+            return "/ops/corporate/setup/account";
+        }
+
+        if(corporateService.corporateIdExists(corporate.getCorporateId())){
+            result.addError(new ObjectError("invalid", messageSource.getMessage("corp.id.exists", null, locale)));
+            List<AccountInfo> accountInfos = integrationService.fetchAccounts(corporate.getCustomerId().toUpperCase());
+            model.addAttribute("accounts", accountInfos);
+            return "/ops/corporate/setup/account";
+
+        }
+
+        String[] accounts = request.getParameterValues("accounts");
+
+        logger.info("Customer accounts "+accounts);
+
+        if(session.getAttribute("corporateRequest")!=null){
+            CorporateRequestDTO corporateRequestDTO = (CorporateRequestDTO)session.getAttribute("corporateRequest");
+            corporateRequestDTO.setCorporateName(corporate.getCorporateName());
+            corporateRequestDTO.setCorporateId(corporate.getCorporateId());
+
+            model.addAttribute("corporate",corporateRequestDTO);
+            logger.info("Corporate Request DTO",corporateRequestDTO);
+            return "/ops/corporate/setup/authorizer";
+
+        }
+
+        return "/ops/corporate/setup/account";
+
+    }
 }
 

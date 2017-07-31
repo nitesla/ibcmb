@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{corp-layout}">
 
-<body onload="currentBar('inter bank transfer')">
+<body onload="javascript:var bread = [['Home', '/corporate/dashboard'],['inter bank transfer','/corporate/transfer/interbank'],['transfer']];currentBar('inter bank transfer');breadCrumb(bread)">
 
 <div layout:fragment="content">
     <div class="col-md-5 col-sm-5 ">
@@ -36,7 +36,6 @@
 
                                 <select name="source" class="form-control" id="source"
                                         th:field="*{customerAccountNumber}" onchange="getBalance()">
-                                    <option value=""> select an account</option>
                                     <option th:each="s: ${accountList}" th:value="${s.accountNumber}" th:text="${s.accountNumber}" th:selected="${s.primaryFlag=='Y'}"></option>
 
 
@@ -81,6 +80,7 @@
 
                                             <!--<input type="availBal" name="availBal"/>-->
                                             <p class="related-info coronation-blue" id="availBal"><b></b></p>
+                                            <p  class="related-info coronation-blue" id="limit"><b></b></p>
 
                                         </div>
                                     </div>

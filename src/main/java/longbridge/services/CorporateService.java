@@ -73,7 +73,7 @@ public interface CorporateService{
     Page<CorporateDTO> getCorporates(Pageable pageDetails);
 
     @PreAuthorize("hasAuthority('GET_CORPORATE')")
-    Page<CorporateDTO> findCorporates(String pattern,Pageable pageDetails);
+    Page<CorporateDTO> findCorporates(String pattern, Pageable pageDetails);
     /**
      * Sets the limit of transaction amount for the corporate customer
      *
@@ -94,7 +94,7 @@ public interface CorporateService{
      * @param limit        the corporate limit
      */
     @PreAuthorize("hasAuthority('UPDATE_CORPORATE_LIMIT')")
-    void updateLimit(Corporate corporate,  CorpLimit limit) throws InternetBankingException;
+    void updateLimit(Corporate corporate, CorpLimit limit) throws InternetBankingException;
 
 
     /**
@@ -201,6 +201,9 @@ public interface CorporateService{
     @PreAuthorize("hasAuthority('GET_TRANSFER_RULE')")
     CorpTransRule getApplicableTransferRule(CorpTransRequest transferRequest);
 
+    @PreAuthorize("hasAuthority('GET_BULKTRANSFER_RULE')")
+    CorpTransRule getApplicableBulkTransferRule(BulkTransfer bulkTransfer);
+
 
     @PreAuthorize("hasAuthority('ADD_CORPORATE_ROLE')")
     String addCorporateRole(CorporateRoleDTO roleDTO) throws InternetBankingException;
@@ -219,11 +222,10 @@ public interface CorporateService{
 
     void addAccounts(Corporate corporate);
 
-    String addCorporateRequest(CorporateRequestDTO requestDTO);
-
     void createUserOnEntrustAndSendCredentials(CorporateUser corporateUser);
 
     Page<CorpTransferRuleDTO> getCorporateRules(Long corpId, Pageable pageable);
 
+    boolean corporateIdExists(String corporateId);
 
 }

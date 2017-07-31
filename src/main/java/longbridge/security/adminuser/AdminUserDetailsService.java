@@ -27,47 +27,44 @@ public class AdminUserDetailsService implements UserDetailsService {
     private AdminUserRepo adminUserRepo;
     private CustomBruteForceService bruteForceService;
     private IpAddressUtils addressUtils;
-    private Logger logger= LoggerFactory.getLogger(this.getClass());
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
     private FailedLoginService failedLoginService;
 
     @Autowired
-    public AdminUserDetailsService(AdminUserRepo adminUserRepo,CustomBruteForceService bruteForceService,IpAddressUtils addressUtils
-    ,FailedLoginService failedLoginService
-    ) {
+    public AdminUserDetailsService(AdminUserRepo adminUserRepo, CustomBruteForceService bruteForceService, IpAddressUtils addressUtils
+            , FailedLoginService failedLoginService) {
         this.adminUserRepo = adminUserRepo;
-       this.addressUtils=addressUtils;
-        this.bruteForceService=bruteForceService;
-        this.failedLoginService=failedLoginService;
+        this.addressUtils = addressUtils;
+        this.bruteForceService = bruteForceService;
+        this.failedLoginService = failedLoginService;
     }
 
     @Override
     @Transactional(readOnly = true)
     public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
         final String ip = addressUtils.getClientIP();
-        logger.trace("User with IP Address {} trying to login",ip);
-
+        logger.trace("User with IP Address {} trying to login", ip);
         //CHECK IF THE IP HAS BEEN BLOCKED BY THE CUSTOM BRUTE FORCE SERVICE
         if (bruteForceService.isBlocked(ip)) {
-            logger.trace("IP -> {} has been blocked" ,ip);
+            logger.trace("IP -> {} has been blocked", ip);
             throw new RuntimeException("blocked");
         }
-        AdminUser user= adminUserRepo.findFirstByUserNameIgnoreCase(s);
-        if (user!=null  ) {
+        AdminUser user = adminUserRepo.findFirstByUserNameIgnoreCase(s);
+        if (user != null) {
             if (failedLoginService.isBlocked(user)) throw new RuntimeException("user_blocked");
-            try{
+            try {
 
-                if(user.getUserType()== UserType.ADMIN) {
-                    if (user.getRole().getUserType()!=null ){
-                        if (user.getRole().getUserType()!= UserType.ADMIN) throw new UsernameNotFoundException(s);
+                if (user.getUserType() == UserType.ADMIN) {
+                    if (user.getRole().getUserType() != null) {
+                        if (user.getRole().getUserType() != UserType.ADMIN) throw new UsernameNotFoundException(s);
                     }
                     CustomUserPrincipal userPrincipal = new CustomUserPrincipal(user);
                     userPrincipal.setIpAddress(ip);
                     return userPrincipal;
                 }
                 throw new UsernameNotFoundException(s);
-            }
-            catch (Exception e){
-                logger.error("An exception occurred {}",e.getMessage());
+            } catch (Exception e) {
+                logger.error("An exception occurred {}", e.getMessage());
                 throw new RuntimeException(e);
             }
         }

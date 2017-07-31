@@ -96,3 +96,10 @@ else
    
     // bcHolder.innerHTML = arg;
 }
+
+
+
+function redirectFunc(arg)
+{
+    window.location.href = arg;
+}
