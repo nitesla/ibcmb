@@ -131,7 +131,7 @@ public class CorpUserVerificationServiceImpl implements CorpUserVerificationServ
             throw new VerificationInterruptedException(description + " has gone for verification");
 
         }catch (JsonProcessingException e){
-            throw new InternetBankingException("Failed to add operation to verification table");
+            logger.error(e.getMessage(), e);
         }
 
     }

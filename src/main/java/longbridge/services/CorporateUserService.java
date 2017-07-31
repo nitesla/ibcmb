@@ -153,7 +153,7 @@ public interface CorporateUserService{
     /**
      * USER ADMIN OPERATIONS WITH VERIFICATION
      */
-//    String addUserFromCorporateAdmin(CorporateUserDTO user) throws InternetBankingException;
-//
-//    String updateUserFromCorporateAdmin(CorporateUserDTO user) throws InternetBankingException;
+    String addUserFromCorporateAdmin(CorporateUserDTO user) throws InternetBankingException;
+
+    String updateUserFromCorporateAdmin(CorporateUserDTO user) throws InternetBankingException;
 }
