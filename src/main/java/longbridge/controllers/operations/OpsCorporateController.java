@@ -582,6 +582,7 @@ public class OpsCorporateController {
         corporateRequestDTO.setCustomerId(corporate.getCustomerId());
         corporateRequestDTO.setCorporateType(corporate.getCorporateType());
         corporateRequestDTO.setCustomerName(customerDetails.getCustomerName());
+        corporate.setCustomerName(customerDetails.getCustomerName());
         session.setAttribute("corporateRequest", corporateRequestDTO);
 
         List<AccountInfo> accountInfos = integrationService.fetchAccounts(corporate.getCustomerId().toUpperCase());
@@ -613,7 +614,7 @@ public class OpsCorporateController {
 
         String[] accounts = request.getParameterValues("accounts");
 
-        logger.info("Customer accounts "+accounts);
+        logger.info("Customer accounts {}", accounts.toString());
 
         if(session.getAttribute("corporateRequest")!=null){
             CorporateRequestDTO corporateRequestDTO = (CorporateRequestDTO)session.getAttribute("corporateRequest");
@@ -621,7 +622,9 @@ public class OpsCorporateController {
             corporateRequestDTO.setCorporateId(corporate.getCorporateId());
 
             model.addAttribute("corporate",corporateRequestDTO);
-            logger.info("Corporate Request DTO",corporateRequestDTO);
+            logger.info("Corporate Request DTO " +
+                    "{}", corporateRequestDTO.toString());
+
             return "/ops/corporate/setup/authorizer";
 
         }
