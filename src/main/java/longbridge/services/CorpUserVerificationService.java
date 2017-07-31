@@ -1,9 +1,9 @@
 package longbridge.services;
 
-import longbridge.dtos.CorporateUserDTO;
 import longbridge.dtos.VerificationDTO;
 import longbridge.exception.VerificationException;
 import longbridge.models.CorpUserVerification;
+import longbridge.models.CorporateUser;
 import longbridge.models.Role;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -15,7 +15,7 @@ import java.util.List;
  */
 public interface CorpUserVerificationService {
 
-    String addOperation(CorporateUserDTO dto) throws VerificationException;
+    void save(CorporateUser user, String operation, String description) throws VerificationException;
 
     String decline(VerificationDTO dto) throws VerificationException;
 

@@ -61,6 +61,8 @@ public class CorporateUserServiceImpl implements CorporateUserService {
     @Autowired
     private ConfigurationService configService;
 
+    @Autowired
+    private CorpUserVerificationService corpUserVerificationService;
 
     @Autowired
     private CodeService codeService;
@@ -219,6 +221,8 @@ public class CorporateUserServiceImpl implements CorporateUserService {
         }
     }
 
+
+
     public void createUserOnEntrustAndSendCredentials(CorporateUser corporateUser) {
         CorporateUser user = corporateUserRepo.findFirstByUserName(corporateUser.getUserName());
         if (user != null) {
@@ -272,7 +276,7 @@ public class CorporateUserServiceImpl implements CorporateUserService {
 
     @Override
     @Transactional
-    public String addUserFromCorporateAdmin(CorpCorporateUserDTO user) throws InternetBankingException {
+    public String addCorpUserFromCorporateAdmin(CorpCorporateUserDTO user) throws InternetBankingException {
 
         CorporateUser corporateUser = corporateUserRepo.findFirstByUserNameIgnoreCase(user.getUserName());
         if (corporateUser != null) {
@@ -723,4 +727,28 @@ public class CorporateUserServiceImpl implements CorporateUserService {
         CorporateUser corporateUser = corporateUserRepo.findFirstByCorporateAndEmailIgnoreCase(corporate, email);
         return corporateUser;
     }
+
+
+
+//    @Override
+//    public String addUserFromCorporateAdmin(CorporateUserDTO user) throws InternetBankingException {
+//        CorporateUser corporateUser = new CorporateUser();//TODO
+//        try {
+//            corpUserVerificationService.save(corporateUser, "ADD_CORPORATE_USER", "Operation to add user" );
+//            return messageSource.getMessage("user.add.success", null, locale);
+//        }catch (VerificationException e){
+//            throw new InternetBankingException(messageSource.getMessage("failed.user.add", null, locale));
+//        }
+//    }
+//
+//    @Override
+//    public String updateUserFromCorporateAdmin(CorporateUserDTO user) throws InternetBankingException {
+//        CorporateUser corporateUser = new CorporateUser();//TODO
+//        try {
+//            corpUserVerificationService.save(corporateUser, "UPDATE_CORPORATE_USER", "Operation to update user" );
+//            return messageSource.getMessage("user.update.success", null, locale);
+//        }catch (VerificationException e){
+//            throw new InternetBankingException(messageSource.getMessage("failed.user.update", null, locale));
+//        }
+//    }
 }
