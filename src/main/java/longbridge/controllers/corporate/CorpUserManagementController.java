@@ -109,7 +109,7 @@ public class CorpUserManagementController {
     public String addUser(Principal principal, Model model){
         CorporateUser corporateUser = corporateUserService.getUserByName(principal.getName());
         CorporateDTO corporate = corporateService.getCorporate(corporateUser.getCorporate().getId());
-        CorpCorporateUserDTO corporateUserDTO = new CorpCorporateUserDTO();
+        CorporateUserDTO corporateUserDTO = new CorporateUserDTO();
         model.addAttribute("corporateUser", corporateUserDTO);
         model.addAttribute("corporate", corporate);
         return "corp/user/add";
@@ -123,7 +123,7 @@ public class CorpUserManagementController {
         }
 
         try {
-            String message = corporateUserService.addUserFromCorporateAdmin(corporateUserDTO);
+            String message = corporateUserService.addCorpUserFromCorporateAdmin(corporateUserDTO);
             redirectAttributes.addFlashAttribute("message", message);
             return "redirect:/corporate/users/";
 
