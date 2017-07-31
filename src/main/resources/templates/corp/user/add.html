@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{corp-layout}">
 
-<body onload="currentBar('add new user')">
+<body onload="javascript:var bread = [['Home', '/corporate/dashboard'],['add user']];currentBar('add user');breadCrumb(bread)">
 
 <div layout:fragment="content">
     <div class="col-md-5 col-sm-5 ">
