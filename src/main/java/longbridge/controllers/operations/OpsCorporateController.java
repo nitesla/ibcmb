@@ -586,6 +586,8 @@ public class OpsCorporateController {
         session.setAttribute("corporateRequest", corporateRequestDTO);
 
         List<AccountInfo> accountInfos = integrationService.fetchAccounts(corporate.getCustomerId().toUpperCase());
+
+
         model.addAttribute("accounts", accountInfos);
         model.addAttribute("corporate", corporate);
 
@@ -625,12 +627,17 @@ public class OpsCorporateController {
             logger.info("Corporate Request DTO " +
                     "{}", corporateRequestDTO.toString());
 
-            return "/ops/corporate/setup/authorizer";
+            return "/ops/corporate/setup/addauthorizer";
 
         }
 
         return "/ops/corporate/setup/account";
 
+    }
+
+    @GetMapping("/authorizer")
+    public String getAuthorizerPage(){
+        return "/ops/corporate/setup/authorizer";
     }
 }
 
