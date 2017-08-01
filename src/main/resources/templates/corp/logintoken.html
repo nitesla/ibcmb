@@ -4,6 +4,8 @@
     <link rel="stylesheet" type="text/css" th:href="@{~/customer/css/bootstrap.css}"/>
     <link rel="stylesheet" type="text/css" th:href="@{~/customer/css/custom.css}"/>
     <link rel="stylesheet" type="text/css" th:href="@{~/customer/font-awesome/font-awesome.min.css}"/>
+    <link rel="shortcut icon" th:href="@{~/customer/img/favicon.ico}" type="image/x-icon">
+<link rel="icon" th:href="@{~/customer/img/favico.ico}" type="image/x-icon">
     <title>Log in | Coronation Merchant Bank
     </title>
 </head>
@@ -120,7 +122,7 @@
                         <div id='errorMess' class=" text-danger "></div>
                         <!--<div id='successMess' class=" text-success "></div>-->
                     </div>
-                    <div th:if="${noOfAttempts >=3}">
+                    <div >
                         <p>Don't have a token?</p>
                         <p><a href='javascript:sendOtp()' id="getOtp">Send me an OTP </a><i class='fa fa-angle-down'  style="font-size:18px;"></i></p>
                     </div>
@@ -212,10 +214,10 @@
     $(document).ready(function () {
         $("#otpmodalCorp").hide();
     });
-    //    $("#getOtp").click(function() {
-    //        $("#tokenModalCorp").hide();
-    //        $("#otpmodalCorp").show();
-    //    });
+//    $("#getOtp").click(function() {
+//        $("#tokenModalCorp").hide();
+//        $("#otpmodalCorp").show();
+//    });
     $("#usetoken").click(function() {
         $("#tokenModalCorp").show();
         $("#otpmodalCorp").hide();

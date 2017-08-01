@@ -5,14 +5,15 @@ import longbridge.dtos.SettingDTO;
 import longbridge.exception.InternetBankingException;
 import longbridge.exception.PasswordException;
 import longbridge.exception.UnknownResourceException;
-import longbridge.forms.ResetPasswordForm;
-import longbridge.forms.RetrieveUsernameForm;
-import longbridge.models.*;
+import longbridge.models.CorporateUser;
+import longbridge.models.Email;
+import longbridge.models.RetailUser;
 import longbridge.services.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -34,7 +35,7 @@ import java.util.*;
 public class MainController {
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
-    private Locale locale;
+    private Locale locale = LocaleContextHolder.getLocale();
 
     @Autowired
     private RetailUserService retailUserService;

@@ -506,8 +506,13 @@ select
 .info-bar 
 {
     text-transform: capitalize;
+
 }
 
+.info-bar a
+{
+    color: #032A4F !important;
+}
 
 .info-bar a:after
 {
@@ -555,8 +560,8 @@ select
 
 .top-link
 {
+    margin-top: 5px;
     padding:3px;
-    
     padding-left: 0px !important;
 }
 
@@ -2193,9 +2198,9 @@ button, input, optgroup, select, textarea {
 {
     background: white;
     border: 4px solid  white;
-    position: fixed;
+    /* position: fixed;
     top:100px;
-    left:30%;
+    left:30%; */
     /* border-radius: 50%; */
     
     /* -webkit-animation-name: example;  Safari 4.0 - 8.0  */

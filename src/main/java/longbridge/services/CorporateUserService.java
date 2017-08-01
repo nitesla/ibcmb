@@ -80,6 +80,8 @@ public interface CorporateUserService{
     @PreAuthorize("hasAuthority('ADD_CORPORATE_USER')")
     String addUser(CorporateUserDTO user);
 
+
+
     @PreAuthorize("hasAuthority('CORP_USER_STATUS')")
     @Transactional
     String changeActivationStatus(Long userId) throws InternetBankingException;
@@ -128,7 +130,7 @@ public interface CorporateUserService{
      */
     boolean changeAlertPreference(CorporateUser corporateUser, AlertPref alertPreference);
 
-    public String addUserFromCorporateAdmin(CorpCorporateUserDTO user) throws InternetBankingException;
+    public String addCorpUserFromCorporateAdmin(CorpCorporateUserDTO user) throws InternetBankingException;
 
     public String resetPassword(CorporateUser user, CustResetPassword changePassword);
 
@@ -137,8 +139,21 @@ public interface CorporateUserService{
     @PreAuthorize("hasAuthority('UNLOCK_CORP_USER')")
     String unlockUser(Long id) throws InternetBankingException;
 
+
+
     void createUserOnEntrustAndSendCredentials(CorporateUser user);
     void increaseNoOfTokenAttempt(CorporateUser user);
     void resetNoOfTokenAttempt(CorporateUser user);
     public CorporateUser getUserByCifAndEmailIgnoreCase(Corporate corporate,String email);
+
+
+
+
+
+    /**
+     * USER ADMIN OPERATIONS WITH VERIFICATION
+     */
+    String addUserFromCorporateAdmin(CorporateUserDTO user) throws InternetBankingException;
+
+    String updateUserFromCorporateAdmin(CorporateUserDTO user) throws InternetBankingException;
 }

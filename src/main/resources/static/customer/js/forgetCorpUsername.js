@@ -214,16 +214,16 @@ form.children("div").steps({
         // Allways allow previous action even if the current form is not valid!
         if (currentIndex > newIndex)
         {
-            return true;
+            return false;
         }
 
         // Needed in some cases if the user went back (clean up)
-        if (currentIndex < newIndex)
-        {
-            // To remove error styles
-            form.find(".body:eq(" + newIndex + ") label.error").remove();
-            form.find(".body:eq(" + newIndex + ") .error").removeClass("error");
-        }
+        // if (currentIndex < newIndex)
+        // {
+        //     // To remove error styles
+        //     form.find(".body:eq(" + newIndex + ") label.error").remove();
+        //     form.find(".body:eq(" + newIndex + ") .error").removeClass("error");
+        // }
 
         if(ACCOUNT_DETAILS_STEP === currentIndex){
             console.log("Current step is the account details step");
@@ -236,6 +236,7 @@ form.children("div").steps({
             console.log("Current step is the change password step");
             //form.submit();
             var i = 0;
+            secAnswer = "";
             console.log("noOfQuestion "+noOfQs);
             for(var i = 0;i<parseInt(noOfQs);i++){
                 console.log("answer are"+$('#corpSecurityAnswer'+i).val());
@@ -260,7 +261,7 @@ form.children("div").steps({
     onFinished: function (event, currentIndex)
     {
         //alert("Submitted!");
-        window.location.href = "/login/retail";
+        window.location.href = "/login/corporate";
 //             $("#reg-form").submit();
     }
 });

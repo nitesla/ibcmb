@@ -26,7 +26,7 @@
         background-color: #d7bdb3;
     }
 </style>
-<body onload="currentBar('Bulk transfer')">
+<body onload="javascript:var bread = [['Home', '/corporate/dashboard'],['Bulk transfer','/corporate/transfer/bulk'], ['view']];currentBar('bulk transfer');breadCrumb(bread)">
 
 <div layout:fragment="content">
     <div class="col-md-5 col-sm-5 ">
@@ -38,8 +38,8 @@
 
     <div class="col-xs-12 ml-15 no-pad-left " >
         <div class="col-xs-12 no-pad-lef  no-mt no-bd  alert">
-            <form method="post" id="" class="form-horizontal">
-                    <div class="row spacing">
+            <form method="post" id="" class="form-horizonta">
+                    <div class="ro spacin">
                         <div>
                             <p>Request Date: <span th:text="${bulkTransfer.requestDate}"></span></p>
 
@@ -48,7 +48,7 @@
 
 
                         <br/>
-                        <div class="form-group ">
+                        <div class="form-group col-md-6">
                             <label>Source account</label>
                             <input type="text" class="form-control" th:field="*{bulkTransfer.debitAccount}" />
                             </div>
@@ -58,7 +58,7 @@
                         <input type="hidden" class="form-control" th:value="${bulkTransfer.id}" th:field="*{bulkTransfer.id}" th:id="bk" id="bk" />
 
                         <br/>
-                        <div class="table-responsive">
+                        <div class="table-responsive col-xs-12">
                     <table id="mytab" class="table table-striped table-bordered table-hover" cellspacing="0"  >
                         <thead>
 

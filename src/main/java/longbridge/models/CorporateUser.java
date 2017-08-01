@@ -1,6 +1,5 @@
 package longbridge.models;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -28,6 +27,9 @@ import java.io.IOException;
 public class CorporateUser extends User implements PrettySerializer{
 
 	protected String isFirstTimeLogon = "Y";
+
+	@Enumerated(EnumType.ORDINAL)
+	protected CorpUserType corpUserType;
 
 	@Nullable
 	private boolean admin ;
@@ -62,6 +64,14 @@ public class CorporateUser extends User implements PrettySerializer{
 
 	public void setAdmin(boolean admin) {
 		this.admin = admin;
+	}
+
+	public CorpUserType getCorpUserType() {
+		return corpUserType;
+	}
+
+	public void setCorpUserType(CorpUserType corpUserType) {
+		this.corpUserType = corpUserType;
 	}
 
 	@Override
