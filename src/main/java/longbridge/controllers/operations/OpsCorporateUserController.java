@@ -266,5 +266,8 @@ public class OpsCorporateUserController {
         logger.info("PASSWORD CHANGED SUCCESSFULLY");
         return "changePassword";
     }
-
+    @GetMapping("new/entity")
+    public String newCorporate() {
+        return "/ops/corporate/newCorporate";
+    }
 }
