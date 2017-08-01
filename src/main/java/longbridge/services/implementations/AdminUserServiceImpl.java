@@ -79,7 +79,7 @@ public class AdminUserServiceImpl implements AdminUserService {
 
 
     @Autowired
-    EntityManager entityManager;
+    private EntityManager entityManager;
 
     private Locale locale = LocaleContextHolder.getLocale();
 

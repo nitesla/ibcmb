@@ -40,6 +40,7 @@ import java.util.Objects;
 //@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig {
 
+
     public void customConfig(WebSecurity web) throws Exception {
         web.ignoring().antMatchers("/resources *", "/static *", "/css ", "/js *", "/images *", "/customer");
     }

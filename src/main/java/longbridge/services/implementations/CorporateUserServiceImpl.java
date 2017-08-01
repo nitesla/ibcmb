@@ -717,4 +717,10 @@ public class CorporateUserServiceImpl implements CorporateUserService {
         corporateUser.setNoOfTokenAttempts(0) ;
         corporateUserRepo.save(corporateUser);
     }
+
+    @Override
+    public CorporateUser getUserByCifAndEmailIgnoreCase(Corporate corporate, String email) {
+        CorporateUser corporateUser = corporateUserRepo.findFirstByCorporateAndEmailIgnoreCase(corporate, email);
+        return corporateUser;
+    }
 }

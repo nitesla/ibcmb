@@ -316,10 +316,10 @@ public class CorpNAPSTransferController {
             System.out.println(requestList);
 
             BulkTransfer bulkTransfer = new BulkTransfer();
-            bulkTransfer.setDebitAccount(debitAccount);
+            bulkTransfer.setCustomerAccountNumber(debitAccount);
             bulkTransfer.setCrRequestList(requestList);
             bulkTransfer.setCorporate(corporate);
-            bulkTransfer.setRequestDate(dateFormat.format(date));
+            bulkTransfer.setTranDate(date);
             for (CreditRequest creditRequest : requestList) {
                 creditRequest.setBulkTransfer(bulkTransfer);
                 creditRequest.setStatus("S");

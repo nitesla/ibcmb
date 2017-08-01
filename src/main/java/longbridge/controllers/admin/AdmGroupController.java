@@ -56,7 +56,6 @@ public class AdmGroupController {
     @Autowired
     MessageSource messageSource;
 
-
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
 

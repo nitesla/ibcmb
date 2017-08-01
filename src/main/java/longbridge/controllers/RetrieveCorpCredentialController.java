@@ -1,14 +1,14 @@
 package longbridge.controllers;
 
+import longbridge.api.CustomerDetails;
 import longbridge.exception.InternetBankingException;
 import longbridge.exception.PasswordException;
 import longbridge.exception.PasswordMismatchException;
 import longbridge.exception.PasswordPolicyViolationException;
 import longbridge.forms.CustResetPassword;
 import longbridge.forms.ResetPasswordForm;
-import longbridge.models.CorporateUser;
-import longbridge.models.Email;
-import longbridge.models.RetailUser;
+import longbridge.forms.RetrieveUsernameForm;
+import longbridge.models.*;
 import longbridge.repositories.CorporateUserRepo;
 import longbridge.repositories.RetailUserRepo;
 import longbridge.services.*;
@@ -28,10 +28,9 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpSession;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
+
+import static longbridge.utils.StringUtil.compareAnswers;
 
 /**
  * Created by Showboy on 20/07/2017.
@@ -65,6 +64,11 @@ public class RetrieveCorpCredentialController {
 
     @Autowired
     private MailService mailService;
+
+    @Autowired
+    private IntegrationService integrationService;
+    @Autowired
+    private AccountService accountService;
 
     @GetMapping("/forgot/password/corporate")
     public String showResetPassword(Model model, HttpSession session, RedirectAttributes redirectAttributes){
@@ -218,10 +222,10 @@ public @ResponseBody String getSecAns(WebRequest webRequest, HttpSession session
         while(iterator.hasNext()){
             logger.info(iterator.next());
         }
-
-        String accountNumber = webRequest.getParameter("acct");
-        String securityQuestion = webRequest.getParameter("securityQuestion");
-        String securityAnswer = webRequest.getParameter("securityAnswer");
+//
+//        String accountNumber = webRequest.getParameter("acct");
+//        String securityQuestion = webRequest.getParameter("securityQuestion");
+//        String securityAnswer = webRequest.getParameter("securityAnswer");
         String password= webRequest.getParameter("password");
         String confirmPassword = webRequest.getParameter("confirm");
         String username =(String) session.getAttribute("corpUsername");
@@ -252,8 +256,9 @@ public @ResponseBody String getSecAns(WebRequest webRequest, HttpSession session
         CustResetPassword custResetPassword = new CustResetPassword();
         custResetPassword.setNewPassword(password);
         custResetPassword.setConfirmPassword(confirmPassword);
+        session.removeAttribute("corpUsername");
+        session.removeAttribute("corpKey");
         try{
-
             String message = corporateUserService.resetPassword(corporateUser,custResetPassword);
             logger.info("password {}",message);
             redirectAttributes.addAttribute("success", message);
@@ -268,5 +273,159 @@ public @ResponseBody String getSecAns(WebRequest webRequest, HttpSession session
             e.printStackTrace();
             return e.getMessage();
         }
+    }
+
+    @GetMapping("/forgot/corporate/username")
+    public String showForgotUsername(Model model) {
+        RetrieveUsernameForm retrieveUsernameForm= new RetrieveUsernameForm();
+        retrieveUsernameForm.step = "1";
+        model.addAttribute("retUsernameForm", retrieveUsernameForm);
+        return "corp/forgetusername";
+    }
+
+    @PostMapping("/forgot/corporate/username")
+    public
+    @ResponseBody
+    String forgotUsername(WebRequest webRequest) {
+        Iterator<String> iterator = webRequest.getParameterNames();
+        logger.info("forget username");
+        String userEmail = webRequest.getParameter("email");
+        String entityId = webRequest.getParameter("entityId");
+        String entityGroup = webRequest.getParameter("entityGroup");
+        String firstName = webRequest.getParameter("firstName");
+        String userName = webRequest.getParameter("userName");
+        while(iterator.hasNext()){
+            logger.info(iterator.next());
+        }
+//
+//
+//        String accountNumber = webRequest.getParameter("acct");
+//        String securityQuestion = webRequest.getParameter("securityQuestion");
+
+        try {
+            if (entityId ==null || entityGroup == null) {
+                logger.error("Account Number not valid");
+                return "false";
+            }
+
+//            RetailUser user = retailUserService.getUserByCustomerId(customerId);
+
+            //confirm security question is correct
+            String secAnswer="";
+            Map<String, List<String>> qa = securityService.getUserQA(entityId, entityGroup);
+            //List<String> sec = null;
+            if (qa != null){
+//                List<String> questions= qa.get("questions");
+                List<String> answers= qa.get("answers");
+                String result = StringUtil.compareAnswers(webRequest,answers);
+//                    secAnswer = answers.stream().filter(Objects::nonNull).findFirst().orElse("");
+
+                if (result.equalsIgnoreCase("true")){
+                    logger.debug("User Info {}:",userEmail );
+                    //Send Username to Email
+                    Email email = new Email.Builder()
+                            .setRecipient(userEmail)
+                            .setSubject(messageSource.getMessage("retrieve.username.subject",null,locale))
+                            .setBody(String.format(messageSource.getMessage("retrieve.username.message",null,locale),firstName, userName))
+                            .build();
+                    mailService.send(email);
+                    return "true";
+                }
+
+            }else {
+                return "false";
+            }
+
+
+
+        }catch (InternetBankingException e){
+            return "false";
+        }
+
+        return "false";
+    }
+    @GetMapping("/rest/corporate/{email}/{accountNumber}")
+    public @ResponseBody String[] getAccountNameFromNumber(@PathVariable String email,@PathVariable String accountNumber){
+        logger.info("Account nUmber {} email {}",accountNumber,email);
+        String customerId = "";
+        String[] userDetails =  new String[4];
+        userDetails[0] = "";
+        userDetails[1] = "";
+        Account account = accountService.getAccountByAccountNumber(accountNumber);
+        if (account != null){
+            customerId = account.getCustomerId();
+            Corporate corporate = corporateService.getCorporateByCustomerId(customerId);
+            if(corporate != null) {
+                CorporateUser corporateUser = corporateUserService.getUserByCifAndEmailIgnoreCase(corporate, email);
+                if(corporateUser != null){
+                if (corporateUser.getEntrustGroup() != null && corporateUser.getEntrustId() != null) {
+                    userDetails[0] = corporateUser.getEntrustId();
+                    userDetails[1] = corporateUser.getEntrustGroup();
+                    userDetails[2] = corporateUser.getFirstName();
+                    userDetails[3] = corporateUser.getUserName();
+
+                }
+                logger.info("Cid id : " + customerId);
+                logger.info("entrust id {} entrust group {} ", corporateUser.getEntrustId(), corporateUser.getEntrustGroup());
+                }
+            }
+        }else {
+            //nothing
+            customerId = "";
+        }
+
+        return userDetails;
+    }
+    @GetMapping("/rest/corporate/secQues/{userDetails}")
+    public @ResponseBody List<String> getSecQuestionFromNumber(@PathVariable String[] userDetails, HttpSession session){
+        String secQuestion = "";
+        logger.info("user details : {} ", userDetails);
+        logger.info(userDetails[0]);
+        List<String> question = null;
+        if (!("".equalsIgnoreCase(userDetails[0]))&&!("".equalsIgnoreCase(userDetails[1]))){
+            Map<String, List<String>> qa = securityService.getUserQA(userDetails[0], userDetails[1]);
+            //List<String> sec = null;
+
+            if (qa != null && !qa.isEmpty()){
+//                logger.info("qs {}",qa);
+                question = qa.get("questions");
+                logger.info("questions {}", question);
+
+            }else {
+                secQuestion = "";
+            }
+        }
+        else {
+            secQuestion = "";
+        }
+
+        return question;
+    }
+    @GetMapping("/rest/corporate/validate/secAns/{acctDetails}")
+    public @ResponseBody String getSecAnsByCustomerId(@PathVariable String[] acctDetails, WebRequest webRequest, HttpSession session){
+        try{
+            //confirm security question is correct
+            int noOfMismatch = 0;
+            logger.info("answer 1 {}",webRequest.getParameter("secAnswers"));
+            logger.info("acctDetails {}",acctDetails);
+            List<String> answers = StringUtil.splitByComma(webRequest.getParameter("secAnswers"));
+            Map<String, List<String>> qa = securityService.getUserQA(acctDetails[0], acctDetails[1]);
+            //List<String> sec = null;
+            logger.info("sec questions {}",answers);
+            if (qa != null){
+                List<String> answer = qa.get("answers");
+//                secAnswer = question.stream().filter(Objects::nonNull).findFirst().orElse("");
+
+                logger.info("user answer {}", answer);
+                if(compareAnswers(answers,answer).equalsIgnoreCase("true")){
+                    return "true";
+                };
+            }
+            //return (String) session.getAttribute("username");
+        }catch (Exception e){
+            logger.info(e.getMessage());
+            return messageSource.getMessage("sec.ans.failed", null, locale);
+        }
+        return messageSource.getMessage("sec.ans.failed", null, locale);
     }
 }

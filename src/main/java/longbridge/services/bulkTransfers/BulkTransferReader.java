@@ -80,10 +80,10 @@ class BulkTransferReader implements ItemReader<TransferDTO>, InitializingBean {
 
     TransferDTO map(CreditRequest request) {
         String payRef = "CORONATION/NAPS/" + (new SimpleDateFormat("yyMMddHHmmss").format(new Date()));
-        CustomerDetails details = integrationService.viewCustomerDetails(request.getBulkTransfer().getDebitAccount());
+        CustomerDetails details = integrationService.viewCustomerDetails(request.getBulkTransfer().getCustomerAccountNumber());
         TransferDTO dto = new TransferDTO();
         dto.setAccountName(details.getCustomerName());
-        dto.setAccountNumber(request.getBulkTransfer().getDebitAccount());
+        dto.setAccountNumber(request.getBulkTransfer().getCustomerAccountNumber());
         dto.setBeneficiaryName(request.getAccountName());
         dto.setBeneficiaryAccountNumber(request.getAccountNumber());
         dto.setBatchId("" + request.getBulkTransfer().getId());
@@ -92,7 +92,7 @@ class BulkTransferReader implements ItemReader<TransferDTO>, InitializingBean {
         dto.setPaymentReference(payRef);
         dto.setBeneficiaryBankCode(request.getSortCode());
         dto.setAmount(request.getAmount());
-        dto.setPayerAccountNumber(request.getBulkTransfer().getDebitAccount());
+        dto.setPayerAccountNumber(request.getBulkTransfer().getCustomerAccountNumber());
         dto.setPayerName(details.getCustomerName());
 
 
