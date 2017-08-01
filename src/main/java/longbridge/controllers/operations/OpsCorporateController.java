@@ -1,5 +1,8 @@
 package longbridge.controllers.operations;
 
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import longbridge.api.AccountInfo;
 import longbridge.api.CustomerDetails;
 import longbridge.dtos.*;
@@ -639,5 +642,32 @@ public class OpsCorporateController {
     public String getAuthorizerPage(){
         return "/ops/corporate/setup/authorizer";
     }
+
+
+    @PostMapping("/authorizer")
+    public String createGroup(WebRequest request, RedirectAttributes redirectAttributes, HttpSession session, Model model, Locale locale) {
+
+        try {
+            String authorizers = request.getParameter("authorizers");
+
+            ObjectMapper mapper = new ObjectMapper();
+            mapper.configure(JsonParser.Feature.ALLOW_UNQUOTED_FIELD_NAMES, true);
+            List<AuthorizerDTO> authorizerList = mapper.readValue(authorizers, new TypeReference<List<AuthorizerDTO>>() {
+            });
+
+            logger.info("Authorizers: {}", authorizerList.toString());
+            session.setAttribute("authorizerLevels", authorizerList);
+
+
+            return "";
+        } catch (Exception ibe) {
+            logger.error("Error creating group", ibe);
+            model.addAttribute("failure", messageSource.getMessage("group.add.failure", null, locale));
+            return "adm/group/add";
+        }
+
+
+    }
+
 }
 
