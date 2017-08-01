@@ -77,7 +77,7 @@ form.children("div").steps({
     onFinished: function (event, currentIndex)
     {
         //alert("Submitted!");
-        window.location.href = "/login/corporate";
+        window.location.href = "/login/retail";
 //             $("#reg-form").submit();
     }
 });
@@ -91,7 +91,7 @@ function validateSecAnswer(secAnswers){
     // console.log("validating "+secAnswer);
     $.ajax({
         type:'GET',
-        url:"/rest/corp/secAns",
+        url:"/rest/secAns",
         data: {username : username,secAnswers:secAnswer},
         async:false,
 
@@ -125,7 +125,7 @@ function sendGenPassword() {
     var result;
     $.ajax({
         type:'GET',
-        url:"/rest/corp/sendGenPass/"+username,
+        url:"/rest/sendGenPass/"+username,
         async:false,
         success:function(data1){
             result = ''+String(data1);
@@ -154,7 +154,7 @@ function validateGenPassword() {
     var genpassword = $('input[name="genpassword"]').val();
     $.ajax({
         type:'GET',
-        url:"/rest/corporate/verGenPass/"+username+"/"+genpassword,
+        url:"/rest/verGenPass/"+username+"/"+genpassword,
         async:false,
         success:function(data1){
             result = ''+String(data1);
@@ -180,7 +180,7 @@ function validatePassword(password){
     var res;
     $.ajax({
         type:'GET',
-        url:"/rest/corporate/password/check/"+password,
+        url:"/rest/password/check/"+password,
         async:false,
         success:function(data1){
             res = ''+String(data1);
@@ -209,11 +209,10 @@ function validateToken(){
     var result;
     $.ajax({
         type:'GET',
-        url:"/rest/corporate/tokenAuth/"+username+"/"+token,
+        url:"/rest/tokenAuth/"+username+"/"+token,
         async:false,
         success:function(data1){
             result = ''+String(data1);
-            console.log("token response "+result)
             if(result == "true"){
 
             }else{
