@@ -1,9 +1,7 @@
-
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head th:replace="layout :: site-head">
 </head>
-
 
 
 <body class="nav-md">
@@ -54,9 +52,10 @@
                             </div>
 
                             <div class="x_content">
-                                <form method="post" th:action="@{/ops/corporates/authorizer}" id="" class="form-horizontal">
+                                <form method="post" th:action="@{/ops/corporates/authorizer}" id=""
+                                      class="form-horizontal">
 
-                                    <input hidden="hidden" name="authorizers" />
+                                    <input hidden="hidden" name="authorizers"/>
 
                                     <div class="x_content">
 
@@ -64,18 +63,21 @@
                                             <legend></legend>
 
                                             <div class="col-md-6 col-sm-6 col-xs-12">
-                                                <button type="button" id="button_add" class="btn-xs btn-default btn" data-toggle="modal" data-target="#myModal">
+                                                <button type="button" id="button_add" class="btn-xs btn-default btn"
+                                                        data-toggle="modal" data-target="#myModal">
                                                     <i class="fa fa-user"></i> Add
 
                                                 </button>
 
 
                                                 <button type="submit" id="button_del" class="btn-xs btn-default btn">
-                                                    Remove</button>
+                                                    Remove
+                                                </button>
                                             </div>
                                             <div class="form-group">
                                                 <div class="col-md-12 col-sm-6 col-xs-12">
-                                                    <table id="mytab" class="table table-striped table-bordered table-hover"
+                                                    <table id="mytab"
+                                                           class="table table-striped table-bordered table-hover"
                                                            cellspacing="0" width="100%">
                                                         <thead>
                                                         <tr>
@@ -93,7 +95,8 @@
 
                                         <div class="form-group">
                                             <div class="class=col-sm-4 col-sm-offset-2" align="left">
-                                                <button type="submit" id="button_submit" class="btn btn-primary">Next</button>
+                                                <button type="submit" id="button_submit" class="btn btn-primary">Next
+                                                </button>
                                             </div>
                                         </div>
                                     </div>
@@ -107,20 +110,18 @@
         </div>
 
 
-
         <!-- Modal -->
-        <form method="post"  class="form-horizontal">
-        <div id="myModal" class="modal fade" role="dialog">
-            <div class="modal-dialog">
+        <form method="post" class="form-horizontal" id="aform">
+            <div id="myModal" class="modal fade" role="dialog">
+                <div class="modal-dialog">
 
-                <!-- Modal content-->
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal">&times;</button>
-                        <h4 class="modal-title">Authorizer Level</h4>
-                    </div>
-                    <div class="modal-body">
-                        <form method="post"   class="form-horizontal" id="aform">
+                    <!-- Modal content-->
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                            <h4 class="modal-title">Authorizer Level</h4>
+                        </div>
+                        <div class="modal-body">
                             <div class="panel panel-default">
                                 <div class="panel-body">
                                     <div class="col-sm-12">
@@ -128,9 +129,11 @@
                                             <label class="col-sm-2 control-label">Name</label>
 
                                             <div class="col-sm-7">
-                                                <label for="aname">Name is required</label>
 
-                                                <input id="aname" type="text" class="form-control" name="name"  required/>
+                                                <input id="aname" type="text" class="form-control" name="name"/>
+
+                                                <p id="nameError" style="color: red;display:none">Name is required</p>
+
                                             </div>
 
                                         </div>
@@ -142,13 +145,14 @@
                                             <label class="col-sm-2 control-label">Level</label>
 
                                             <div class="col-sm-7">
-                                                <label for="alevel">Level is required</label>
+                                                <!--<label for="alevel">Level is required</label>-->
 
-                                                <input id="alevel" type="text" class="form-control" name="level" required/>
+                                                <input id="alevel" type="number" class="form-control" name="level"/>
+                                                <p id="levelError" style="color: red;display:none">Level is required</p>
+
                                             </div>
 
                                         </div>
-
 
 
                                     </div>
@@ -156,19 +160,17 @@
 
 
                             </div>
-                        </form>
+
+                        </div>
+                        <div class="modal-footer">
+                            <button id="add_authorizer" type="submit" class="btn btn-primary">Add</button>
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                        </div>
                     </div>
-                    <div class="modal-footer">
-                        <button id="add_authorizer"  type="submit" class="btn btn-primary" >Add</button>
-                        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-                    </div>
+
                 </div>
-
             </div>
-        </div>
         </form>
-
-
 
 
         <!-- footer content -->
@@ -180,15 +182,18 @@
 <script th:src="@{~/bank/vendors/datatables.net/js/jquery.dataTables.js}"></script>
 <script th:src="@{~/bank/js/dataTables.bootstrap.js}"></script>
 <script th:src="@{~/bank/js/dataTables.select.js}"></script>
+<!--<script th:src="@{~/bank/js/jquery.min.js}"></script>-->
+<script th:src="@{~/bank/js/jquery.validate.min.js}"></script>
 <script th:src="@{~/bank/js/jquery.spring-friendly.min.js}"></script>
 <script th:src="@{~/bank/vendors/emodal/eModal.js}"></script>
-<script th:src="@{~/bank/js/jquery.validate.min.js}"></script>
 
 
+<script type="text/javascript" class="init">
 
-<script type="text/javascript"  class="init">
+    $("#aform").validate();
+
     /*<![CDATA[*/
-    $(document).ready(function() {
+    $(document).ready(function () {
         var counter = 0;
         var t = $('#mytab').DataTable({
             dom: 'rt',
@@ -207,7 +212,7 @@
 
         });
 
-        $('#button_submit').click(function(e) {
+        $('#button_submit').click(function (e) {
             e.preventDefault()
             contactsTab = $('#mytab').DataTable();
             data = JSON.stringify(contactsTab.data().toArray());
@@ -215,7 +220,7 @@
             $('form').submit();
         });
 
-        $('#button_addyhg').on('click', function(e) {
+        $('#button_addyhg').on('click', function (e) {
             e.preventDefault()
             var options = {
                 url: "/ops/corporates/authorizer",
@@ -226,7 +231,7 @@
                     text: 'Add',
                     style: 'info',
                     close: true,
-                    click: function() {
+                    click: function () {
                         contactsTab = $('#mytab').DataTable();
                         name = $("input[name='name']").val();
                         level = $("input[name='level']").val();
@@ -250,38 +255,63 @@
         });
 
 
-        $('#add_authorizer').on('click', function(e) {
+        $('#add_authorizer').on('click', function (e) {
             e.preventDefault()
 
-            $("#aform").validate();
 
-                        contactsTab = $('#mytab').DataTable();
-                        name = $("input[name='name']").val();
-                        level = $("input[name='level']").val();
+            contactsTab = $('#mytab').DataTable();
+            name = $("input[name='name']").val();
+            level = $("input[name='level']").val();
 
-                        od = {
-                            'DT_RowId': null,
-                            'name': name,
-                            'level': level,
+            if (name == "" && level == "") {
+                $("#nameError").show();
+                $("#levelError").show();
+                $("#aname").focus();
+                return;
+            }
+            else if (name == "") {
+                $("#nameError").show();
+                $("#levelError").hide();
 
-                        };
-                        contactsTab.row.add(od);
-                        contactsTab.draw();
+                $("#aname").focus();
+                return;
+            }
+
+            else if (level == "") {
+                $("#levelError").show();
+                $("#nameError").hide();
+                $("#alevel").focus();
+                return;
+            }
+
+
+            od = {
+                'DT_RowId': null,
+                'name': name,
+                'level': level,
+
+            };
+            contactsTab.row.add(od);
+            contactsTab.draw();
+            $('#myModal').modal('toggle');
+            $("#alevel").val("");
+            $("#nameError").hide();
+            $("#levelError").hide();
+
+
         });
 
 
-
-        $('#button_del').click(function(e) {
+        $('#button_del').click(function (e) {
             e.preventDefault()
             var dt = $('#mytab').DataTable();
             dt.row('.selected').remove().draw(false);
         });
 
 
-
-    $(document).on('hidden.bs.modal', function(e) {
-        $(e.target).removeData('bs.modal');
-    });
+        $(document).on('hidden.bs.modal', function (e) {
+            $(e.target).removeData('bs.modal');
+        });
 
     });
 
