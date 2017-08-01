@@ -1,55 +1,72 @@
 var customerId = "null";
+var entityDetails =[4];
+entityDetails[0] = "";
+entityDetails[1] = "";
+entityDetails[2] = "";
+entityDetails[3] = "";
 var noOfQs = 0;
 var secAnswer ="";
+var email = "";
+
 /** This validates the input account number.
  *
  * @param accountNumber the account number to check
  */
-function validateAccountNo(accountNumber){
- $('#myLoader').modal('show');
+function validateAccountNo(accountNumber,email){
+    $('#myLoader').modal('show');
     var secQues;
+    var email1 = email;
+    console.log("the email "+email1)
     $.ajax({
         type:'GET',
-        url:"/rest/retail/accountname/"+accountNumber,
+        url:"/rest/corporate/"+email1+"/"+accountNumber,
         async:false,
-        cache:false,
         success:function(data1){
-            customerId = ''+String(data1);
-            if(customerId == ""){
+            entityDetails[0] = data1[0];
+            entityDetails[1] = data1[1];
+            entityDetails[2] = data1[2];
+            entityDetails[3] = data1[3];
+            console.log("the data "+data1);
+            console.log("the entityDetails "+entityDetails);
+            if(data1[0] == '' && data1[1] == ''){
                 //invalid account number
-                document.getElementById("errorMess").textContent="Ensure you put in a valid account number.";
+                document.getElementById("errorMess").textContent="Ensure you put in a valid account number. and email";
                 $('#myModalError').modal('show');
+                $('#myLoader').modal('hide');
                 //alert("Account number not found");
             }else{
+                $('#myLoader').modal('hide');
                 //valid account number
                 //alert("Customer Id: " + customerId);
-                $('input[name=customerId]').val(customerId);
+                // $('input[name=customerId]').val(customerId);
             }
         }
     });
-    
 
-    console.log(customerId);
-
-    if(customerId == "" || customerId === null){
+    // console.log("available "+entityDetails[0]);
+var fetchQuestion = "";
+    if(entityDetails[0] == '' && entityDetails[1] == ''){
         return false;
+        $('#myLoader').modal('hide');
     }else{
+        $('#myLoader').modal('hide');
         $.ajax({
-            url: "/rest/secQues/"+customerId,
+            url: "/rest/corporate/secQues/"+entityDetails,
             type: 'GET',
             async: false,
-            cache:false,
             success:function(data2){
                 secQues = ''+String(data2);
-                // console.log(secQues);
+                console.log("sec question ",secQues);
                 if(data2 == null ){
                     document.getElementById("errorMess").textContent="Could not get Security Question from server, please try again.";
                     $('#myModalError').modal('show');
-                     $('#myLoader').modal('hide');
 
                 }else{
-                    console.log('security questn 1 ' +$('#noOfSecQn').val());
-
+                    fetchQuestion = "true";
+                    // $('input[name=securityQuestion]').val(secQues);
+                    console.log(data2.length);
+                    noOfQs = data2.length;
+                    console.log("the noOfQs "+noOfQs);
                     var container = document.getElementById("secQuestionsDiv");
                     container.innerHTML = "";
                     for (i = 0; i < data2.length; i++) {
@@ -57,43 +74,41 @@ function validateAccountNo(accountNumber){
                         container.innerHTML += "<label>" + data2[i] + "</label>";
                         container.innerHTML += "</div>";
                         container.innerHTML += "<div class='form-group'>";
-                        container.innerHTML += "<input type='text' required name='securityAnswer" + i + "' id='securityAnswer" + i + "' class='my-select required' placeholder='Security Answer'/>";
+                        container.innerHTML += "<input type='text' required name='corpSecurityAnswer" + i + "' id='corpSecurityAnswer" + i + "' class='my-select required' placeholder='Security Answer'/>";
                         container.innerHTML += "</div>";
                     }
-                    console.log('no of questn ' +data2.length);
-                    noOfQs = data2.length;
                     $('input[name=noOfSecQn]').val(data2.length);
-                    console.log('security questn ' +$('#noOfSecQn').val());
-                     $('#myLoader').modal('hide');
                 }
             }
         })
     }
 
-    console.log(customerId);
+    console.log("fetchQuestion "+fetchQuestion);
 
-    if(customerId == "" || customerId === null || secQues == "" || secQues === null){
-        return false;
+    if(fetchQuestion === "true"){
+        return true ;
     }else{
-        return true;
+        return false;
     }
 }
 
 function validateSecAnswer(secAnswer){
+    console.log("the sec details "+entityDetails);
+    console.log("the sec answer "+secAnswer);
     // var customerId = $('#customerId').val();
- $('#myLoader').modal('show');
-    console.log('customer id '+customerId);
-    var result = '';
+    $('#myLoader').modal('show');
+    // console.log('customer id {}'+customerId);
+    var result;
     $.ajax({
         type:'GET',
-        url:"/rest/secAns/cifId",
-        cache:false,
-        data: {customerId : customerId,secAnswers:secAnswer},
+        url: "/rest/corporate/validate/secAns/"+entityDetails,
+        data: {secAnswers:secAnswer},
         async:false,
         success:function(data1){
             result = ''+String(data1);
-            // console.log("the result after comparism "+result);
+            console.log("the outcome "+result);
             if(result === "true"){
+
                 //invalid account number
                 // console.log("whether "+data1);
                 $('input[name=username]').val(result);
@@ -103,44 +118,44 @@ function validateSecAnswer(secAnswer){
                 //valid account number
                 // console.log("whether ERROR"+data1);
                 document.getElementById("errorMess").textContent=data1;
-                 $('#myLoader').modal('hide');
                 $('#myModalError').modal('show');
             }
         }
     });
 
-    
-    console.log("the result after comparism 2"+result);
 
     if(result == "true"){
         result = sendUsername();
+        $('#myLoader').modal('hide');
         return result;
     }else{
+        $('#myLoader').modal('hide');
         return false;
     }
+
+
 }
 
 function sendUsername(){
+
     var returnValue;
     $('#reg-form').submit(function(e){
         e.preventDefault();
-console.log("send  usernammec "+customerId);
+
         $.ajax({
             url: '',
             async:false,
             type: "POST",
-            data: {customerId:customerId,noOfSecQn:noOfQs,secAnswer:secAnswer},
+            data: {entityId:entityDetails[0],entityGroup:entityDetails[1],secAnswer:secAnswer,email:email,firstName:entityDetails[2],userName:entityDetails[3],noOfSecQn:noOfQs},
             success: function(data)
             {
                 returnValue = ''+String(data);
                 //alert(data+" return ");
                 //callback methods go right here
                 if(data==="true"){
-                     $('#myLoader').modal('hide');
                     $('#returnValue').val(returnValue);
                     returnValue = true;
                 }else {
-                     $('#myLoader').modal('hide');
                     document.getElementById("errorMess").textContent="Failed to send username, please try again later.";
                     $('#myModalError').modal('show');
                     $('#returnValue').val(returnValue);
@@ -149,12 +164,14 @@ console.log("send  usernammec "+customerId);
             }
         });
     });
-    
+
     $('#reg-form').submit();
-    $('#myLoader').modal('hide');
     //returnValue = $('#returnValue').val();
     //alert(returnValue);
     //return Boolean(returnValue);
+
+
+
     if(returnValue == "" || returnValue === null || returnValue == false){
         return false;
     }else{
@@ -197,35 +214,39 @@ form.children("div").steps({
         // Allways allow previous action even if the current form is not valid!
         if (currentIndex > newIndex)
         {
-            return true;
+            return false;
         }
 
         // Needed in some cases if the user went back (clean up)
-        if (currentIndex < newIndex)
-        {
-            // To remove error styles
-            form.find(".body:eq(" + newIndex + ") label.error").remove();
-            form.find(".body:eq(" + newIndex + ") .error").removeClass("error");
-        }
+        // if (currentIndex < newIndex)
+        // {
+        //     // To remove error styles
+        //     form.find(".body:eq(" + newIndex + ") label.error").remove();
+        //     form.find(".body:eq(" + newIndex + ") .error").removeClass("error");
+        // }
 
         if(ACCOUNT_DETAILS_STEP === currentIndex){
             console.log("Current step is the account details step");
             var accountNumber = $('input[name="acct"]').val();
-            return isValid && validateAccountNo(accountNumber);
+            email = $('input[name="email"]').val();
+            console.log("email "+email);
+            return isValid && validateAccountNo(accountNumber,email);
         }
         if(SEND_USERNAME_STEP === currentIndex){
             console.log("Current step is the change password step");
             //form.submit();
             var i = 0;
             secAnswer = "";
+            console.log("noOfQuestion "+noOfQs);
             for(var i = 0;i<parseInt(noOfQs);i++){
-                // console.log("answer "+$('#securityAnswer'+i).val());
+                console.log("answer are"+$('#corpSecurityAnswer'+i).val());
                 if(i ===0){
-                    secAnswer+=$('#securityAnswer'+i).val();
+                    secAnswer+=$('#corpSecurityAnswer'+i).val();
                 }else{
-                    secAnswer +=','+$('#securityAnswer'+i).val();
+                    secAnswer +=','+$('#corpSecurityAnswer'+i).val();
 
                 }
+                // alert(secAnswer);
             }
             // console.log("sec answers are "+secAnswer);
             return isValid && validateSecAnswer(secAnswer);
@@ -240,7 +261,7 @@ form.children("div").steps({
     onFinished: function (event, currentIndex)
     {
         //alert("Submitted!");
-        window.location.href = "/login/retail";
+        window.location.href = "/login/corporate";
 //             $("#reg-form").submit();
     }
 });

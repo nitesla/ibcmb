@@ -4,6 +4,8 @@
     <link rel="stylesheet" type="text/css" th:href="@{~/customer/css/bootstrap.css}" />
     <link rel="stylesheet" type="text/css" th:href="@{~/customer/css/custom.css}"/>
     <link rel="stylesheet" type="text/css" th:href="@{~/customer/font-awesome/font-awesome.min.css}"/>
+    <link rel="shortcut icon" th:href="@{~/customer/img/favicon.ico}" type="image/x-icon">
+<link rel="icon" th:href="@{~/customer/img/favico.ico}" type="image/x-icon">
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Test</title>
 </head>
@@ -158,17 +160,17 @@
                 <div class="biglit  col-md-offse col-md-12 col-xs-12" style="magin:0px auto">
                     <div class="lists col-md-6 col-sm-6  text-cente" >
                         <ul id='accordion' class='col-md-offset-4 col-md-8 col-sm-offset-2 col-sm-10'>
-                            <li data-parent="#accordion" data-toggle="collapse" data-target="#list1" onclick="serviceToggle('#li1')" id='li1'><i class="fa fa-plus-square"></i>&nbsp; View account statements</li>
+                            <li class='service' data-toggle="collapse" data-target="#list1" onclick="serviceToggle('li1')" id='li1'><i class="fa fa-plus-square"></i>&nbsp; View account statements</li>
                             <div id="list1" class="collapse info-acc service" style="background:#ebecef;padding:10px;">
                                 Lorem ipsum dolor sit amet, consectetur adipisicing elit,
                                 sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
                             </div>
-                            <li data-parent="#accordion"  data-toggle="collapse" data-target="#list2" onclick="serviceToggle('#li2')" id='li2'><i class="fa fa-plus-square"></i>&nbsp; Transfer money</li>
+                            <li class='service'  data-toggle="collapse" data-target="#list2" onclick="serviceToggle('li2')" id='li2'><i class="fa fa-plus-square"></i>&nbsp; Transfer money</li>
                             <div id="list2" class="collapse info-acc service" style="background:#ebecef;padding:10px;">
                                 Lorem ipsum dolor sit amet, consectetur adipisicing elit,
                                 sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
                             </div>
-                            <li data-parent="#accordion"  data-toggle="collapse" data-target="#list3" onclick="serviceToggle('#li3')" id='li3'>
+                            <li class='service'  data-toggle="collapse" data-target="#list3" onclick="serviceToggle('li3')" id='li3'>
                                 <i class="fa fa-plus-square"></i>&nbsp; Make payment</li>
                             <div id="list3" class="collapse info-acc service" style="background:#ebecef;padding:10px;">
                                 Lorem ipsum dolor sit amet, consectetur adipisicing elit,
@@ -178,17 +180,17 @@
                     </div>
                     <div class="lists col-sm-6 col-md-6">
                         <ul class='col-md-offs col-md-8 col-sm-offset-2 col-sm-10'>
-                            <li data-parent="#accordion" data-toggle="collapse" data-target="#list4" onclick="serviceToggle('#li4')" id='li4'><i class="fa fa-plus-square"></i>&nbsp; Pay bills</li>
+                            <li class='service' data-toggle="collapse" data-target="#list4" onclick="serviceToggle('li4')" id='li4'><i class="fa fa-plus-square"></i>&nbsp; Pay bills</li>
                             <div id="list4" class="collapse info-acc service" style="background:#ebecef;padding:10px;">
                                 Lorem ipsum dolor sit amet, consectetur adipisicing elit,
                                 sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
                             </div>
-                            <li data-parent="#accordion"  data-toggle="collapse" data-target="#list5" onclick="serviceToggle('#li5')" id='li5'><i class="fa fa-plus-square"></i>&nbsp; Manage your payments</li>
+                            <li class='service'  data-toggle="collapse" data-target="#list5" onclick="serviceToggle('li5')" id='li5'><i class="fa fa-plus-square"></i>&nbsp; Manage your payments</li>
                             <div id="list5" class="collapse info-acc service" style="background:#ebecef;padding:10px;">
                                 Lorem ipsum dolor sit amet, consectetur adipisicing elit,
                                 sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
                             </div>
-                            <li data-parent="#accordion"  data-toggle="collapse" data-target="#list6" onclick="serviceToggle('#li6')" id='li6'><i class="fa fa-plus-square"></i>&nbsp; Credit card management</li>
+                            <li class='service'  data-toggle="collapse" data-target="#list6" onclick="serviceToggle('li6')" id='li6'><i class="fa fa-plus-square"></i>&nbsp; Credit card management</li>
                             <div id="list6" class="collapse info-acc service" style="background:#ebecef;padding:10px;">
                                 Lorem ipsum dolor sit amet, consectetur adipisicing elit,
                                 sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
@@ -222,7 +224,7 @@
                     <ul class="dropdown-menu contact-details">
                         <li>Send us an email</li>
                         <li>enquiries@coronationmb.com</li>
-                        <li class="icontext pull-right">Copy email</li>
+                        <li id='copy' class="icontext pull-right" onclick='copy()'>Copy email</li>
                     </ul>
                 </div>
                 <div class="dropdown  dropdn-margin">
@@ -397,19 +399,27 @@
 
     <script>
 
-        function serviceToggle(id)
+        // function serviceToggle(id)
+        // {            
+        //     $(id).find('i').toggleClass('fa fa-plus-square fa fa-minus-square');
+        //     // $('.service').collapse('hide');
+        //     // $(id).next('div').show('show');
+        // }
+
+
+         function serviceToggle(id)
         {
-            
-            $(id).find('i').toggleClass('fa fa-plus-square fa fa-minus-square');
-            // $('.service').collapse('hide');
-            // $(id).next('div').show('show');
-        
-
-
-
-
+             $('.collapse').collapse('hide'); // collaspe every open collapsible div
+             $('.service').not('#'+id).find('i').removeClass('fa-minus-square').addClass('fa-plus-square');
+            //remove fa-minus icon and add fa-plus-icon.. do not do this for the clicked item
+            $('#'+id).find('i').toggleClass('fa-plus-square fa-minus-square');
+            //toggle the class icon on the clicked item
 
         }
+
+
+
+        
     </script>
 
     </body>

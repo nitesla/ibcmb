@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{ret-layout}">
 
-<body onload="currentBar('account settings')">
+<body onload="javascript:var bread = [['Home', '/corporate/dashboard'],['Accounts','/retail/account/customize'],['Account Settings', '#']];currentBar('account settings');breadCrumb(bread)">
 
 <div layout:fragment="content">
     <div class="col-md-5 col-sm-5 ">

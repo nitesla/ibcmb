@@ -31,6 +31,7 @@ public class CorporateUserDTO {
     @NotEmpty(message = "phoneNumber")
     private String  phoneNumber;
     private boolean admin;
+    private boolean authorizer;
     private String designation;
     private String roleId;
     private String role;
@@ -298,6 +299,13 @@ public class CorporateUserDTO {
         this.admin = admin;
     }
 
+    public boolean isAuthorizer() {
+        return authorizer;
+    }
+
+    public void setAuthorizer(boolean authorizer) {
+        this.authorizer = authorizer;
+    }
 
     public String getDesignation() {
         return designation;

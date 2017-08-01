@@ -681,12 +681,12 @@ public class SecurityServiceImpl implements SecurityService {
 			String payload = writer.toString();
 			EntrustServiceResponse webServiceResponse = httpClient.sendHttpRequest(payload);
 			String responseMessage = webServiceResponse.getResponseMessage();
-			logger.trace("response {}", responseMessage);
+			//logger.trace("response {}", responseMessage);
 			CharSequence charSequence = "<respCode>1</respCode>";
 			boolean isSuccessful = responseMessage.contains(charSequence);
 			String msg = StringUtils.substringBetween(responseMessage, "<respMessageCode>", "</respMessageCode>");
 
-			logger.trace("response message code : {}", msg);
+			//logger.trace("response message code : {}", msg);
 			if (!isSuccessful) {
 				String erroMessg = StringUtils.substringBetween(responseMessage, "<respMessage>", "</respMessage>");
 				throw new InternetBankingSecurityException(erroMessg);

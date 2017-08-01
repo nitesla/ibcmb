@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{corp-layout}">
 
-<body onload="javascript:var bread = [['Home', '/corporate/dashboard'],['Accounts','/corporate/account/customize'],['Customize', '#']];currentBar('dashboard');breadCrumb(bread)">
+<body onload="javascript:var bread = [['Home', '/corporate/dashboard'],['Accounts','/corporate/account/customize'],['Customize', '#']];currentBar('customize account');breadCrumb(bread)">
 
 <div layout:fragment="content">
     <div class="col-md-5 col-sm-5 ">
@@ -18,8 +18,8 @@
                         <form method="post" th:action="@{/corporate/account/customize}" th:object="${customizeAccount}">
                             <div class="form-group">
                                 <label>Preferred Name</label>
-                                <input name="accountName" th:value="${account}" class="form-control"/><span class='req-inner'></span>
-                                <p class="errors" th:if="${#fields.hasErrors('accountName')}" th:errors="*{accountName}">&times;</p>
+                                <input name="preferredName" th:value="${account}" class="form-control"/><span class='req-inner'></span>
+                                <p class="errors" th:if="${#fields.hasErrors('preferredName')}" th:errors="*{preferredName}">&times;</p>
                             </div>
 
                             <button type="submit" class="btn btn-link required-step">Save</button>

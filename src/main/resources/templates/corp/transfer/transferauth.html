@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{corp-layout}">
 
-<body onload="currentBar('Transaction Authentication')">
+<body onload="javascript:var bread = [['Home', '/corporate/dashboard'],['transfer authentication','']];currentBar('transfer authentication');breadCrumb(bread)">
 
 <div layout:fragment="content">
     <div class="col-md-5 col-sm-5 ">
@@ -52,11 +52,11 @@
                 <!--<input type="hidden" th:field="*{remarks}"/>-->
                 <div class="form-group">
                     <label>Token *</label>
-                    <input type="text" name="token" placeholder="" class="form-control"/>
+                    <input type="text" name="token" placeholder="" class="form-control full-width"/>
                     <br/>
-                    <div class="form-group">
-                        <button type="submit" class="btn btn-default">Proceed</button>
-                        <a th:href="@{/corporate/transfer}">Cancel</a>
+                    <div class="form-group text-center">
+                        <button type="submit" class="btn btn-link required-step">Proceed</button>
+                        <button onclick='redirect()' class="btn btn-link less-required">Cancel</button>
                     </div>
 
 
@@ -71,7 +71,14 @@
 
 <th:block layout:fragment="scripts">
 
+    <script>
+        function redirect()
+        {
+            windows.location.href = "/corporate/transfer";
+        }
 
+
+    </script>
 </th:block>
 
 </body>
