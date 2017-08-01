@@ -54,7 +54,7 @@
                             </div>
 
                             <div class="x_content">
-                                <form method="post" th:action="@{/ops/corporates}" id="" class="form-horizontal">
+                                <form method="post" th:action="@{/ops/corporates/authorizer}" id="" class="form-horizontal">
 
                                     <input hidden="hidden" name="authorizers" />
 
@@ -64,7 +64,7 @@
                                             <legend></legend>
 
                                             <div class="col-md-6 col-sm-6 col-xs-12">
-                                                <button type="submit" id="button_add" class="btn-xs btn-default btn">
+                                                <button type="button" id="button_add" class="btn-xs btn-default btn" data-toggle="modal" data-target="#myModal">
                                                     <i class="fa fa-user"></i> Add
 
                                                 </button>
@@ -108,6 +108,69 @@
 
 
 
+        <!-- Modal -->
+        <form method="post"  class="form-horizontal">
+        <div id="myModal" class="modal fade" role="dialog">
+            <div class="modal-dialog">
+
+                <!-- Modal content-->
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title">Authorizer Level</h4>
+                    </div>
+                    <div class="modal-body">
+                        <form method="post"   class="form-horizontal" id="aform">
+                            <div class="panel panel-default">
+                                <div class="panel-body">
+                                    <div class="col-sm-12">
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label">Name</label>
+
+                                            <div class="col-sm-7">
+                                                <label for="aname">Name is required</label>
+
+                                                <input id="aname" type="text" class="form-control" name="name"  required/>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-12">
+
+                                        <div class="form-group">
+
+                                            <label class="col-sm-2 control-label">Level</label>
+
+                                            <div class="col-sm-7">
+                                                <label for="alevel">Level is required</label>
+
+                                                <input id="alevel" type="text" class="form-control" name="level" required/>
+                                            </div>
+
+                                        </div>
+
+
+
+                                    </div>
+                                </div>
+
+
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button id="add_authorizer"  type="submit" class="btn btn-primary" >Add</button>
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        </form>
+
+
+
+
         <!-- footer content -->
         <footer th:replace="layout :: footer">
         </footer>
@@ -119,6 +182,9 @@
 <script th:src="@{~/bank/js/dataTables.select.js}"></script>
 <script th:src="@{~/bank/js/jquery.spring-friendly.min.js}"></script>
 <script th:src="@{~/bank/vendors/emodal/eModal.js}"></script>
+<script th:src="@{~/bank/js/jquery.validate.min.js}"></script>
+
+
 
 <script type="text/javascript"  class="init">
     /*<![CDATA[*/
@@ -149,7 +215,7 @@
             $('form').submit();
         });
 
-        $('#button_add').on('click', function(e) {
+        $('#button_addyhg').on('click', function(e) {
             e.preventDefault()
             var options = {
                 url: "/ops/corporates/authorizer",
@@ -164,6 +230,7 @@
                         contactsTab = $('#mytab').DataTable();
                         name = $("input[name='name']").val();
                         level = $("input[name='level']").val();
+
                         od = {
                             'DT_RowId': null,
                             'name': name,
@@ -181,6 +248,28 @@
             };
             eModal.ajax(options);
         });
+
+
+        $('#add_authorizer').on('click', function(e) {
+            e.preventDefault()
+
+            $("#aform").validate();
+
+                        contactsTab = $('#mytab').DataTable();
+                        name = $("input[name='name']").val();
+                        level = $("input[name='level']").val();
+
+                        od = {
+                            'DT_RowId': null,
+                            'name': name,
+                            'level': level,
+
+                        };
+                        contactsTab.row.add(od);
+                        contactsTab.draw();
+        });
+
+
 
         $('#button_del').click(function(e) {
             e.preventDefault()

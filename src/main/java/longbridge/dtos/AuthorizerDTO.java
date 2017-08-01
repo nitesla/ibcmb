@@ -1,10 +1,13 @@
 package longbridge.dtos;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 /**
  * Created by Fortune on 7/29/2017.
  */
 public class AuthorizerDTO {
 
+    @JsonProperty("DT_RowId")
     private Long id;
     private int version;
     private String name;
@@ -40,5 +43,15 @@ public class AuthorizerDTO {
 
     public void setLevel(int level) {
         this.level = level;
+    }
+
+    @Override
+    public String toString() {
+        return "AuthorizerDTO{" +
+                "id=" + id +
+                ", version=" + version +
+                ", name='" + name + '\'' +
+                ", level=" + level +
+                '}';
     }
 }
