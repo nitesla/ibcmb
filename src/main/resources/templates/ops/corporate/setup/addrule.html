@@ -28,7 +28,7 @@
             <div class="">
                 <div class="page-title">
                     <div class="title_left">
-                        <h3>Authorizer Levels</h3>
+                        <h3>Transaction Rules</h3>
                     </div>
 
                 </div>
@@ -52,10 +52,10 @@
                             </div>
 
                             <div class="x_content">
-                                <form id="authorizerForm" method="post" th:action="@{/ops/corporates/authorizer}"
+                                <form method="post" th:action="@{/ops/corporates/rules}" id=""
                                       class="form-horizontal">
 
-                                    <input hidden="hidden" name="authorizers"/>
+                                    <input hidden="hidden" name="rules"/>
 
                                     <div class="x_content">
 
@@ -81,8 +81,11 @@
                                                            cellspacing="0" width="100%">
                                                         <thead>
                                                         <tr>
-                                                            <th>Name</th>
-                                                            <th>Level</th>
+                                                            <th>Lower Limit</th>
+                                                            <th>Upper Limit</th>
+                                                            <th>Currency</th>
+                                                            <th>Authorizers</th>
+                                                            <th>Any Role</th>
 
                                                         </tr>
                                                         </thead>
@@ -112,54 +115,88 @@
 
         <!-- Modal -->
         <form method="post" class="form-horizontal" id="aform">
+
+            <input type="hidden" name="rules"/>
             <div id="myModal" class="modal fade" role="dialog">
-                <div class="modal-dialog">
+                <div class="modal-dialog modal-lg">
 
                     <!-- Modal content-->
                     <div class="modal-content">
                         <div class="modal-header">
                             <button type="button" class="close" data-dismiss="modal">&times;</button>
-                            <h4 class="modal-title">Authorizer Level</h4>
+                            <h4 class="modal-title">New Transaction Rule</h4>
                         </div>
                         <div class="modal-body">
-                            <div class="panel panel-default">
-                                <div class="panel-body">
-                                    <div class="col-sm-12">
-                                        <div class="form-group">
-                                            <label class="col-sm-2 control-label">Name</label>
-
-                                            <div class="col-sm-7">
-
-                                                <input id="aname" type="text" class="form-control" name="name"/>
-
-                                                <p id="nameError" style="color: red;display:none">Name is required</p>
-
-                                            </div>
-
-                                        </div>
-                                    </div>
-                                    <div class="col-sm-12">
-
-                                        <div class="form-group">
-
-                                            <label class="col-sm-2 control-label">Level</label>
-
-                                            <div class="col-sm-7">
-                                                <!--<label for="alevel">Level is required</label>-->
-
-                                                <input id="alevel" type="number" class="form-control" name="level"/>
-                                                <p id="levelError" style="color: red;display:none">Level is required</p>
-
-                                            </div>
-
-                                        </div>
-
-
-                                    </div>
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label">Lower Amount<span
+                                        style="color: red">*</span></label>
+                                <div class="col-sm-6">
+                                    <input type="number" class="form-control" name="lowerLimitAmount"/>
                                 </div>
+                            </div>
 
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label">Upper Amount <span
+                                        style="color: red">*</span></label>
+                                <div class="col-sm-6">
+                                    <input id="upperLimit" type="number" class="form-control" name="upperLimitAmount"/>
+
+                                </div>
+                                <input id="unlimited" type="checkbox" class="checkbox-inline"
+                                       name="unlimited"/>
+                                <label><strong>No Upper Limit</strong></label>
 
                             </div>
+
+
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label">Currency</label>
+                                <div class="col-sm-6">
+                                    <select class="form-control" name="currency">
+                                        <option th:each="currency: ${currencies}"
+                                                th:value="${currency.code}"
+                                                th:text="${currency.description}"></option>
+
+                                    </select>
+                                </div>
+                            </div>
+                            <hr/>
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label">Authorizer Levels <span
+                                        style="color: red">*</span></label>
+                                <div class="col-sm-6">
+
+                                    <p th:each="authorizer: ${authorizerList}">
+                                        <!--<input type="number" name="numRole" value="1"/>-->
+                                        <label class="checkbox-inline">
+                                            <input type="checkbox" name="authorizers"
+                                                   th:value="${authorizer.name}+' '+${authorizer.level}"/>
+                                            <span th:text="${authorizer.name}+' '+${authorizer.level}"></span>
+
+                                        </label>
+                                    </p>
+                                </div>
+                            </div>
+                            <hr/>
+                            <div class="form-group">
+                                <div>
+                                    <div class="radio">
+                                        <label class="col-sm-2 control-label"></label>
+
+                                        <label><input type="radio" name="anyCanAuthorize" value="N" checked="checked"/>All
+                                            the
+                                            roles selected above must authorize transaction</label>
+                                    </div>
+                                    <div class="radio">
+                                        <label class="col-sm-2 control-label"></label>
+
+                                        <label><input type="radio" name="anyCanAuthorize" value="Y"/>Any of
+                                            the roles selected above can authorize transaction</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <br/>
+
 
                         </div>
                         <div class="modal-footer">
@@ -190,6 +227,8 @@
 
 <script type="text/javascript" class="init">
 
+    $("#aform").validate();
+
     /*<![CDATA[*/
     $(document).ready(function () {
         var counter = 0;
@@ -200,12 +239,22 @@
             },
             ordering: false,
             "columns": [{
-                "data": "name"
+                "data": "lowerLimitAmount"
             }, {
-                "data": "level"
-            }],
+                "data": "upperLimitAmount"
+            }, {
+                "data": "currency"
+            },
+                {
+                    "data": "authorizer"
+                },
+
+                {
+                    "data": "any"
+                }
+            ],
             "language": {
-                "emptyTable": "No Level added. Click Add"
+                "emptyTable": "No Rule added. Click Add"
             }
 
         });
@@ -214,39 +263,22 @@
             e.preventDefault()
             contactsTab = $('#mytab').DataTable();
             data = JSON.stringify(contactsTab.data().toArray());
-            $("input[name='authorizers']").val(data);
-            $('#authorizerForm').submit();
+            $("input[name='rules']").val(data);
+            $('form').submit();
         });
 
 
-        $('#add_authorizer').on('click', function (e) {
+        $('#add_rule').on('click', function (e) {
             e.preventDefault()
 
 
             contactsTab = $('#mytab').DataTable();
-            name = $("input[name='name']").val();
-            level = $("input[name='level']").val();
+            lowerLimitAmount = $("input[name='lowerLimitAmount']").val();
+            upperLimitAmount = $("input[name='upperLimitAmount']").val();
+            currency = $("input[name='currency']").val();
+            authorizers = $("input[name='authorizers']").val();
+            any = $("input[name='any']").val();
 
-            if (name == "" && level == "") {
-                $("#nameError").show();
-                $("#levelError").show();
-                $("#aname").focus();
-                return;
-            }
-            else if (name == "") {
-                $("#nameError").show();
-                $("#levelError").hide();
-
-                $("#aname").focus();
-                return;
-            }
-
-            else if (level == "") {
-                $("#levelError").show();
-                $("#nameError").hide();
-                $("#alevel").focus();
-                return;
-            }
 
 
             od = {
@@ -258,9 +290,7 @@
             contactsTab.row.add(od);
             contactsTab.draw();
             $('#myModal').modal('toggle');
-            $("#alevel").val("");
-            $("#nameError").hide();
-            $("#levelError").hide();
+
 
 
         });

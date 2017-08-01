@@ -658,12 +658,17 @@ public class OpsCorporateController {
             logger.info("Authorizers: {}", authorizerList.toString());
             session.setAttribute("authorizerLevels", authorizerList);
 
+            Iterable<CodeDTO> currencies = codeService.getCodesByType("CURRENCY");
 
-            return "";
+            model.addAttribute("currencies",currencies);
+            model.addAttribute("authorizerList",authorizerList);
+
+            return "/ops/corporate/setup/addrule";
+
         } catch (Exception ibe) {
             logger.error("Error creating group", ibe);
-            model.addAttribute("failure", messageSource.getMessage("group.add.failure", null, locale));
-            return "adm/group/add";
+            redirectAttributes.addFlashAttribute("failure", "Error has occurred");
+            return "redirect:/ops/corporates/new";
         }
 
 
