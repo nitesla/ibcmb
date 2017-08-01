@@ -54,7 +54,7 @@
                                             <label class="col-sm-2 control-label">Corporate ID</label>
 
                                             <div class="col-sm-6">
-                                                <input type="text" class="form-control" th:field="*{corporateId}" placeholder="Unique ID for the corporate"/>
+                                                <input type="text" class="form-control" required th:field="*{corporateId}" placeholder="Unique ID for the corporate"/>
                                             </div>
 
                                         </div>
@@ -63,7 +63,7 @@
                                         <label class="col-sm-2 control-label">Corporate Name</label>
 
                                         <div class="col-sm-6">
-                                        <input type="text" class="form-control" th:field="*{corporateName}" placeholder="Name for the corporate"/>
+                                        <input type="text" class="form-control" required th:field="*{corporateName}" placeholder="Name for the corporate"/>
                                         </div>
                                         </div>
 
@@ -79,9 +79,9 @@
                                                 <div class="col-sm-6" style="max-height: 250px; overflow-y: scroll;">
 
 
-                                                <p th:each="account: ${accounts}">
+                                                <p th:each="account,index: ${accounts}">
                                                     <label class="checkbox-inline">
-                                                        <input type="checkbox" name="accounts"
+                                                        <input type="checkbox" th:name="accounts"
                                                                th:value="${account.accountNumber}"/>
                                                         <span  th:text="${account.accountNumber}+' - '+${account.accountName}"></span>
                                                     </label>

@@ -659,15 +659,27 @@ public class OpsCorporateController {
             session.setAttribute("authorizerLevels", authorizerList);
 
 
-            return "";
+            return "/ops/corporate/setup/addRule";
         } catch (Exception ibe) {
             logger.error("Error creating group", ibe);
             model.addAttribute("failure", messageSource.getMessage("group.add.failure", null, locale));
             return "adm/group/add";
         }
-
-
     }
+
+    @GetMapping("rules/new")
+    public String addCorporateRules(@ModelAttribute("corporate") @Valid CorporateDTO corporate,@PathVariable Long corpId, Model model) {
+//        CorporateDTO corporate = corporateService.getCorporate(corpId);
+        List<CorporateRoleDTO> roles = corporateService.getRoles(corpId);
+        Iterable<CodeDTO> currencies = codeService.getCodesByType("CURRENCY");
+        model.addAttribute("corporate", corporate);
+        model.addAttribute("roleList", roles);
+        model.addAttribute("currencies", currencies);
+        model.addAttribute("corporateRule", new CorpTransferRuleDTO());
+        return "/ops/corporate/addrule";
+    }
+
+
 
 }
 

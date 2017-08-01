@@ -62,12 +62,7 @@
                                         <div class="col-md-6">
                                             <div class="input-group">
 
-                                                    <input type="text" class="form-control" th:field="*{customerId}"
-                                                           placeholder="Enter CIFID here" required="required"/>
-                                                <span class="input-group-btn">
-                                                    <button id="search" class="btn btn-primary"
-                                                    type="submit">Validate</button>
-                                            </span>
+                                                    <input type="text" class="form-control" th:field="*{customerId}" placeholder="Enter CIFID here"  onkeyup="validateCorpId()" required="required"/>
                                                 </div>
 
                                             </div>
@@ -93,26 +88,6 @@
                                         </div>
 
                                         <input type="hidden" class="form-control" th:field="*{corporateType}"/>
-
-                                        <!--<div class="form-group">-->
-                                        <!--<label class="col-sm-2 control-label">Email</label>-->
-
-                                        <!--<div class="col-sm-6">-->
-                                        <!--<input type="text" class="form-control" th:field="*{email}" />-->
-                                        <!--</div>-->
-
-                                        <!--</div>-->
-
-                                        <!--<div class="form-group">-->
-                                        <!--<label class="col-sm-2 control-label">Address</label>-->
-
-                                        <!--<div class="col-sm-6">-->
-                                        <!--<input type="text" class="form-control" th:field="*{address}" />-->
-                                        <!--</div>-->
-
-                                        <!--</div>-->
-
-
                                         <div class="form-group">
                                             <div class="col-sm-4 col-sm-offset-2">
                                                 <!--<button class="btn btn-white" type="reset" id="cancel">Cancel</button>-->
@@ -139,30 +114,33 @@
 </div>
 <script>
 
-    $("#search").click(function (e) {
+//    $("#search").click(function (e) {
+//
+//        e.preventDefault();
+//
+//
+//    });
 
-        e.preventDefault();
+function validateCorpId() {
+    var custId = $("#customerId").val();
+    console.log("customer Id: " + custId)
 
-        var custId = $("#customerId").val();
-        console.log("customer Id: " + custId)
+    $.ajax({
+        url: "/ops/corporates/" + custId + "/name",
+        success: function (result) {
+            if (result != "false") {
+                $("#customerName").val(result);
+                $("#custName").show();
+                $("#custError").hide();
 
-        $.ajax({
-            url: "/ops/corporates/" + custId + "/name",
-            success: function (result) {
-                if (result != "false") {
-                    $("#customerName").val(result);
-                    $("#custName").show();
-                    $("#custError").hide();
-
-                }
-                else {
-                    $("#custName").hide();
-                    $("#custError").show();
-                }
             }
-        });
+            else {
+                $("#custName").hide();
+                $("#custError").show();
+            }
+        }
     });
-
+}
     document.getElementById("cancel").onclick = function () {
         location.href = "/ops/corporates";
     }

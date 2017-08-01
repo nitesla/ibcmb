@@ -213,7 +213,7 @@
         });
 
         $('#button_submit').click(function (e) {
-            e.preventDefault()
+            e.preventDefault();
             contactsTab = $('#mytab').DataTable();
             data = JSON.stringify(contactsTab.data().toArray());
             $("input[name='authorizers']").val(data);
@@ -221,7 +221,7 @@
         });
 
         $('#button_addyhg').on('click', function (e) {
-            e.preventDefault()
+            e.preventDefault();
             var options = {
                 url: "/ops/corporates/authorizer",
                 title: 'Add ',
