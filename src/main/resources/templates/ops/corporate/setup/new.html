@@ -46,7 +46,17 @@
                                     <form method="post" class="form-horizontal" th:action="@{/ops/corporates/new}"
                                           th:object="${corporate}">
 
+                                        <!--<div class="form-group">-->
+                                        <!--<label class="col-sm-2 control-label">Corporate Type</label>-->
 
+                                        <!--<div class="col-sm-6">-->
+                                        <!--<select class="form-control" name="corporateType">-->
+                                        <!--<option th:each="type: ${corporateTypes}" th:value="${type.code}"-->
+                                        <!--th:text="${type.description}"></option>-->
+
+                                        <!--</select>-->
+                                        <!--</div>-->
+                                        <!--</div>-->
                                         <div class="form-group">
                                             <label class="col-sm-2 control-label">Customer ID</label>
                                         <div class="col-md-6">
@@ -75,9 +85,6 @@
                                         </div>
 
                                         <input type="hidden" class="form-control" th:field="*{corporateType}"/>
-
-
-
                                         <div class="form-group">
                                             <div class="col-sm-4 col-sm-offset-2">
                                                 <!--<button class="btn btn-white" type="reset" id="cancel">Cancel</button>-->
@@ -103,14 +110,9 @@
     </div>
 </div>
 <script>
-
-    $("#search").click(function (e) {
-
-        e.preventDefault();
-
-        var custId = $("#customerId").val();
-        console.log("customer Id: " + custId)
-
+$(document).ready(function () {
+    var custId = $("#customerId").val();;
+    if (custId != '') {
         $.ajax({
             url: "/ops/corporates/" + custId + "/name",
             success: function (result) {
@@ -126,11 +128,33 @@
                 }
             }
         });
-    });
-
-    document.getElementById("cancel").onclick = function () {
-        location.href = "/ops/corporates";
     }
+//    var value = '@Request.RequestContext.HttpContext.Session["corporateRequest"]';
+//    console.log("")
+});
+function validateCorpId() {
+    var custId = $("#customerId").val();
+    console.log("customer Id: " + custId)
+
+    $.ajax({
+        url: "/ops/corporates/" + custId + "/name",
+        success: function (result) {
+            if (result != "false") {
+                $("#customerName").val(result);
+                $("#custName").show();
+                $("#custError").hide();
+
+            }
+            else {
+                $("#custName").hide();
+                $("#custError").show();
+            }
+        }
+    });
+}
+//    document.getElementById("cancel").onclick = function () {
+//        location.href = "/ops/corporates";
+//    }
 
 
 </script>

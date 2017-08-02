@@ -579,8 +579,7 @@ public class OpsCorporateController {
             return "/ops/corporate/setup/new";
 
         }
-
-
+        CorporateRequestDTO corporateExistingData = (CorporateRequestDTO) session.getAttribute("corporateRequest");
         CorporateRequestDTO corporateRequestDTO = new CorporateRequestDTO();
         corporateRequestDTO.setCustomerId(corporate.getCustomerId());
         corporateRequestDTO.setCorporateType(corporate.getCorporateType());
@@ -589,10 +588,14 @@ public class OpsCorporateController {
         session.setAttribute("corporateRequest", corporateRequestDTO);
 
         List<AccountInfo> accountInfos = integrationService.fetchAccounts(corporate.getCustomerId().toUpperCase());
-
-
         model.addAttribute("accounts", accountInfos);
-        model.addAttribute("corporate", corporate);
+        if(corporateExistingData != null){
+
+            model.addAttribute("corporate", corporateExistingData);
+        }else {
+            model.addAttribute("corporate", corporate);
+        }
+        model.addAttribute("selectedAccounts", "null");
 
         return "/ops/corporate/setup/account";
 
@@ -609,7 +612,7 @@ public class OpsCorporateController {
             return "/ops/corporate/setup/account";
         }
 
-        if (corporateService.corporateIdExists(corporate.getCorporateId())) {
+        if(corporateService.corporateIdExists(corporate.getCorporateId())){
             result.addError(new ObjectError("invalid", messageSource.getMessage("corp.id.exists", null, locale)));
             List<AccountInfo> accountInfos = integrationService.fetchAccounts(corporate.getCustomerId().toUpperCase());
             model.addAttribute("accounts", accountInfos);
@@ -621,18 +624,26 @@ public class OpsCorporateController {
 
         logger.info("Customer accounts {}", accounts.toString());
 
-        if (session.getAttribute("corporateRequest") != null) {
-            CorporateRequestDTO corporateRequestDTO = (CorporateRequestDTO) session.getAttribute("corporateRequest");
+        if(session.getAttribute("corporateRequest")!=null){
+            List<AccountInfo> accountInfos = integrationService.fetchAccounts(corporate.getCustomerId().toUpperCase());
+            session.setAttribute("accountInfos",accountInfos);
+            session.setAttribute("selectedAccounts",accounts);
+            CorporateRequestDTO corporateRequestDTO = (CorporateRequestDTO)session.getAttribute("corporateRequest");
             corporateRequestDTO.setCorporateName(corporate.getCorporateName());
             corporateRequestDTO.setCorporateId(corporate.getCorporateId());
-
-
-            for(String account: accounts){
-                AccountDTO accountDTO = new AccountDTO();
-                accountDTO.setAccountNumber(account);
+            if(accounts.length >0) {
+                List<AccountDTO> accountDTOs = new ArrayList<>();
+                for (String account : accounts) {
+                    AccountDTO accountDTO = new AccountDTO();
+                    accountDTO.setAccountNumber(account);
+                    accountDTOs.add(accountDTO);
+                }
+                corporateRequestDTO.setAccounts(accountDTOs);
             }
+            session.setAttribute("corporateRequest",corporateRequestDTO);
 
-            model.addAttribute("corporate", corporateRequestDTO);
+            model.addAttribute("selectedAccounts",accounts);
+            model.addAttribute("corporate",corporateRequestDTO);
             logger.info("Corporate Request DTO " +
                     "{}", corporateRequestDTO.toString());
 
@@ -657,7 +668,8 @@ public class OpsCorporateController {
         return "false";
     }
     @GetMapping("/authorizer")
-    public String getAuthorizerPage(){
+    public String getAuthorizerPage(Model model){
+        model.addAttribute("authorizerList","null");
         return "/ops/corporate/setup/authorizer";
     }
 
@@ -695,6 +707,29 @@ public class OpsCorporateController {
 
 
     }
+    @GetMapping("/back/new")
+    public String addCorporateUsingBack(Model model,HttpSession session) {
+        CorporateRequestDTO corporate = (CorporateRequestDTO) session.getAttribute("corporateRequest");
+        model.addAttribute("corporate", corporate);
+        return "/ops/corporate/setup/new";
+    }
+    @GetMapping("/back/account")
+    public String addAccountUsingBack(Model model,HttpSession session) {
+        String accounts[] = (String[]) session.getAttribute("selectedAccounts");
+        CorporateRequestDTO corporate = (CorporateRequestDTO) session.getAttribute("corporateRequest");
+        List<AccountInfo> accountInfos = (List<AccountInfo>) session.getAttribute("accountInfos");
+        model.addAttribute("accounts", accountInfos);
+        model.addAttribute("corporate", corporate);
+        model.addAttribute("selectedAccounts",Arrays.asList(accounts));
+        return "/ops/corporate/setup/account";
+    }
+    @GetMapping("/back/authorizer")
+    public String getAuthorizerBackPage(Model model, HttpSession session){
+        List<AuthorizerDTO> authorizerList = (List<AuthorizerDTO>) session.getAttribute("authorizerLevels");
+        model.addAttribute("authorizerList",authorizerList);
+        return "/ops/corporate/setup/addauthorizer";
+    }
+
 
 
     @PostMapping("/rules/new")

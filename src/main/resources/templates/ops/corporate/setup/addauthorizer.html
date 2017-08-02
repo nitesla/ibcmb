@@ -28,7 +28,7 @@
             <div class="">
                 <div class="page-title">
                     <div class="title_left">
-                        <h3 th:text="${corporate.corporateName}"></h3>
+                        <h3>Authorizer Levels</h3>
                     </div>
 
                 </div>
@@ -83,6 +83,14 @@
 
                                                             </tr>
                                                             </thead>
+                                                        <span th:if="${authorizerList} != 'null'">
+                                                        <tr th:each="list : ${authorizerList}">
+                                                            <td th:text="${list.name}"></td>
+                                                            <td th:text="${list.level}"></td>
+
+                                                        </tr>
+                                                            </span>
+
 
                                                         </table>
                                                     </div>
@@ -92,6 +100,7 @@
 
                                             <div class="form-group">
                                                 <div class="class=col-sm-4 col-sm-offset-2" align="left">
+                                                    <a type="submit" th:href="@{/ops/corporates/back/account}" class="btn btn-primary">Previous</a>
                                                     <button type="submit" id="button_submit" class="btn btn-primary">
                                                         Next
                                                     </button>
