@@ -13,7 +13,6 @@ import longbridge.services.*;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
-import org.json.simple.JSONArray;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -97,6 +96,8 @@ public class OpsCorporateController {
         model.addAttribute("corporate", new CorporateDTO());
         return "/ops/corporate/setup/new";
     }
+
+
     @PostMapping
     public String createCorporate(@ModelAttribute("corporate") @Valid CorporateDTO corporate, BindingResult result, RedirectAttributes redirectAttributes, HttpSession session, Locale locale) {
         if (result.hasErrors()) {
@@ -621,7 +622,7 @@ public class OpsCorporateController {
 
         String[] accounts = request.getParameterValues("accounts");
 
-        logger.info("Customer accounts {}", accounts);
+        logger.info("Customer accounts {}", accounts.toString());
 
         if(session.getAttribute("corporateRequest")!=null){
             List<AccountInfo> accountInfos = integrationService.fetchAccounts(corporate.getCustomerId().toUpperCase());
@@ -689,8 +690,12 @@ public class OpsCorporateController {
 
             Iterable<CodeDTO> currencies = codeService.getCodesByType("CURRENCY");
 
-            model.addAttribute("currencies",currencies);
-            model.addAttribute("authorizerList",authorizerList);
+            if (session.getAttribute("corporateRequest") != null) {
+                CorporateRequestDTO corporateRequestDTO = (CorporateRequestDTO) session.getAttribute("corporateRequest");
+                model.addAttribute("corporate", corporateRequestDTO);
+            }
+            model.addAttribute("currencies", currencies);
+            model.addAttribute("authorizerList", authorizerList);
 
             return "/ops/corporate/setup/addrule";
 
@@ -699,6 +704,8 @@ public class OpsCorporateController {
             redirectAttributes.addFlashAttribute("failure", "Error has occurred");
             return "redirect:/ops/corporates/new";
         }
+
+
     }
     @GetMapping("/back/new")
     public String addCorporateUsingBack(Model model,HttpSession session) {
@@ -722,5 +729,39 @@ public class OpsCorporateController {
         model.addAttribute("authorizerList",authorizerList);
         return "/ops/corporate/setup/addauthorizer";
     }
-}
 
+
+
+    @PostMapping("/rules/new")
+    public String createTransactionRule(WebRequest request, RedirectAttributes redirectAttributes, HttpSession session, Model model, Locale locale) {
+
+        String rules= request.getParameter("rules");
+
+        logger.info("Transaction rules are: {}",rules);
+
+        if(session.getAttribute("corporateRequest")!=null) {
+            CorporateRequestDTO corporateRequestDTO = (CorporateRequestDTO) session.getAttribute("corporateRequest");
+            model.addAttribute("corporate",corporateRequestDTO);
+        }
+        if(session.getAttribute("authorizerLevels")!=null) {
+            List<AuthorizerDTO>  authorizerLevels= (ArrayList) session.getAttribute("authorizerLevels");
+            model.addAttribute("authorizerLevels",authorizerLevels);
+        }
+
+        return "/ops/corporate/setup/adduser";
+
+
+    }
+
+    @GetMapping("/{username}/exists")
+    @ResponseBody
+    public String checkUsername(@PathVariable String username){
+        if(corporateUserService.userExists(username)){
+            return "true";
+        }
+        else {
+            return "false";
+        }
+
+    }
+}

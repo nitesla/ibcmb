@@ -28,7 +28,7 @@
             <div class="">
                 <div class="page-title">
                     <div class="title_left">
-                        <h3>Transaction Rules</h3>
+                        <h3 th:text="${corporate.corporateName}"></h3>
                     </div>
 
                 </div>
@@ -39,20 +39,13 @@
                     <div class="col-md-12 col-sm-12 col-xs-12">
                         <div class="x_panel">
                             <div class="x_title">
-                                <ul class="nav navbar-left panel_toolbox">
 
-                                </ul>
-                                <ul class="nav navbar-right panel_toolbox">
-
-                                    <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
-                                    </li>
-
-                                </ul>
+                                <h2>Transaction Rules</h2>
                                 <div class="clearfix"></div>
                             </div>
 
                             <div class="x_content">
-                                <form method="post" th:action="@{/ops/corporates/rules}" id=""
+                                <form method="post" th:action="@{/ops/corporates/rules/new}" id="ruleForm"
                                       class="form-horizontal">
 
                                     <input hidden="hidden" name="rules"/>
@@ -60,15 +53,12 @@
                                     <div class="x_content">
 
                                         <fieldset>
-                                            <legend></legend>
 
                                             <div class="col-md-6 col-sm-6 col-xs-12">
                                                 <button type="button" id="button_add" class="btn-xs btn-default btn"
                                                         data-toggle="modal" data-target="#myModal">
-                                                    <i class="fa fa-user"></i> Add
-
+                                                    <i class="fa fa-money"></i> Add
                                                 </button>
-
 
                                                 <button type="submit" id="button_del" class="btn-xs btn-default btn">
                                                     Remove
@@ -81,11 +71,11 @@
                                                            cellspacing="0" width="100%">
                                                         <thead>
                                                         <tr>
-                                                            <th>Lower Limit</th>
-                                                            <th>Upper Limit</th>
+                                                            <th>Lower Amount</th>
+                                                            <th>Upper Amount</th>
                                                             <th>Currency</th>
                                                             <th>Authorizers</th>
-                                                            <th>Any Role</th>
+                                                            <th>Required Authorizers</th>
 
                                                         </tr>
                                                         </thead>
@@ -153,7 +143,7 @@
                             <div class="form-group">
                                 <label class="col-sm-2 control-label">Currency</label>
                                 <div class="col-sm-6">
-                                    <select class="form-control" name="currency">
+                                    <select id="currency" class="form-control" name="currency">
                                         <option th:each="currency: ${currencies}"
                                                 th:value="${currency.code}"
                                                 th:text="${currency.description}"></option>
@@ -184,15 +174,14 @@
                                     <div class="radio">
                                         <label class="col-sm-2 control-label"></label>
 
-                                        <label><input type="radio" name="anyCanAuthorize" value="N" checked="checked"/>All
-                                            the
-                                            roles selected above must authorize transaction</label>
+                                        <label><input type="radio" name="any" value="All" checked="checked"/>
+                                            All the authorizers selected above must approve transaction</label>
                                     </div>
                                     <div class="radio">
                                         <label class="col-sm-2 control-label"></label>
 
-                                        <label><input type="radio" name="anyCanAuthorize" value="Y"/>Any of
-                                            the roles selected above can authorize transaction</label>
+                                        <label><input type="radio" name="any" value="Any"/>
+                                            Any of the 2 authorizers selected above can approve transaction</label>
                                     </div>
                                 </div>
                             </div>
@@ -201,7 +190,7 @@
 
                         </div>
                         <div class="modal-footer">
-                            <button id="add_authorizer" type="submit" class="btn btn-primary">Add</button>
+                            <button id="add_rule" type="submit" class="btn btn-primary">Add</button>
                             <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
                         </div>
                     </div>
@@ -243,11 +232,12 @@
                 "data": "lowerLimitAmount"
             }, {
                 "data": "upperLimitAmount"
-            }, {
+            },
+                {
                 "data": "currency"
             },
                 {
-                    "data": "authorizer"
+                    "data": "authorizers"
                 },
 
                 {
@@ -265,33 +255,37 @@
             contactsTab = $('#mytab').DataTable();
             data = JSON.stringify(contactsTab.data().toArray());
             $("input[name='rules']").val(data);
-            $('form').submit();
+            $('#ruleForm').submit();
         });
 
 
         $('#add_rule').on('click', function (e) {
             e.preventDefault()
 
-
             contactsTab = $('#mytab').DataTable();
             lowerLimitAmount = $("input[name='lowerLimitAmount']").val();
             upperLimitAmount = $("input[name='upperLimitAmount']").val();
-            currency = $("input[name='currency']").val();
-            authorizers = $("input[name='authorizers']").val();
-            any = $("input[name='any']").val();
+            currency = $("select#currency").val();
+            authorizers = $("input[type=checkbox][name='authorizers']:checked").map(function(){
 
+                return $(this).val()}).get();
+
+            console.log(authorizers)
+            any = $("input[type=radio][name='any']:checked" ).val();
 
 
             od = {
                 'DT_RowId': null,
-                'name': name,
-                'level': level,
+                'lowerLimitAmount' : lowerLimitAmount,
+                'upperLimitAmount' : upperLimitAmount,
+                'currency' : currency,
+                'authorizers' : authorizers,
+                'any' : any
 
             };
             contactsTab.row.add(od);
             contactsTab.draw();
             $('#myModal').modal('toggle');
-
 
 
         });
