@@ -643,6 +643,23 @@ public class OpsCorporateController {
         return "/ops/corporate/setup/account";
 
     }
+    @GetMapping("/validate/{id}")
+    @ResponseBody
+    public String valiidateCorporateId(@PathVariable String id){
+        try {
+            boolean isExisting = corporateService.corporateIdExists(id);
+            if(!isExisting){
+                return "true";
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return "false";
+    }
+    @GetMapping("/authorizer")
+    public String getAuthorizerPage(){
+        return "/ops/corporate/setup/authorizer";
+    }
 
 
     @PostMapping("/authorizer")

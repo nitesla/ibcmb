@@ -73,7 +73,7 @@
 //     }
 // }
 //
-// function validateSecAnswer(secAnswer){
+// function fetchCorpId(secAnswer){
 //     var customerId = $('#customerId').val();
 //     // console.log('customer id {}'+customerId);
 //     var result;
@@ -212,7 +212,7 @@
 //                 }
 //             }
 //             // console.log("sec answers are "+secAnswer);
-//             return isValid && validateSecAnswer(secAnswer);
+//             return isValid && fetchCorpId(secAnswer);
 //         }
 //         return form.valid();
 //     },
