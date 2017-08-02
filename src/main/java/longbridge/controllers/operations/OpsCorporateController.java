@@ -638,11 +638,6 @@ public class OpsCorporateController {
 
     }
 
-    @GetMapping("/authorizer")
-    public String getAuthorizerPage(){
-        return "/ops/corporate/setup/authorizer";
-    }
-
 
     @PostMapping("/authorizer")
     public String createGroup(WebRequest request, RedirectAttributes redirectAttributes, HttpSession session, Model model, Locale locale) {
@@ -660,7 +655,11 @@ public class OpsCorporateController {
 
             Iterable<CodeDTO> currencies = codeService.getCodesByType("CURRENCY");
 
-            model.addAttribute("currencies",currencies);
+            if(session.getAttribute("corporateRequest")!=null) {
+                CorporateRequestDTO corporateRequestDTO = (CorporateRequestDTO) session.getAttribute("corporateRequest");
+                model.addAttribute("corporate",corporateRequestDTO);
+            }
+                model.addAttribute("currencies",currencies);
             model.addAttribute("authorizerList",authorizerList);
 
             return "/ops/corporate/setup/addrule";

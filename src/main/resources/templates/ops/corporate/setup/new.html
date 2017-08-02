@@ -27,7 +27,7 @@
             <div class="">
                 <div class="page-title">
                     <div class="title_left">
-                        <h3>Create Corporate</h3>
+                        <h3>New Corporate Entity</h3>
                     </div>
 
                 </div>
@@ -46,17 +46,7 @@
                                     <form method="post" class="form-horizontal" th:action="@{/ops/corporates/new}"
                                           th:object="${corporate}">
 
-                                        <!--<div class="form-group">-->
-                                        <!--<label class="col-sm-2 control-label">Corporate Type</label>-->
 
-                                        <!--<div class="col-sm-6">-->
-                                        <!--<select class="form-control" name="corporateType">-->
-                                        <!--<option th:each="type: ${corporateTypes}" th:value="${type.code}"-->
-                                        <!--th:text="${type.description}"></option>-->
-
-                                        <!--</select>-->
-                                        <!--</div>-->
-                                        <!--</div>-->
                                         <div class="form-group">
                                             <label class="col-sm-2 control-label">Customer ID</label>
                                         <div class="col-md-6">
@@ -94,23 +84,6 @@
 
                                         <input type="hidden" class="form-control" th:field="*{corporateType}"/>
 
-                                        <!--<div class="form-group">-->
-                                        <!--<label class="col-sm-2 control-label">Email</label>-->
-
-                                        <!--<div class="col-sm-6">-->
-                                        <!--<input type="text" class="form-control" th:field="*{email}" />-->
-                                        <!--</div>-->
-
-                                        <!--</div>-->
-
-                                        <!--<div class="form-group">-->
-                                        <!--<label class="col-sm-2 control-label">Address</label>-->
-
-                                        <!--<div class="col-sm-6">-->
-                                        <!--<input type="text" class="form-control" th:field="*{address}" />-->
-                                        <!--</div>-->
-
-                                        <!--</div>-->
 
 
                                         <div class="form-group">
