@@ -54,7 +54,15 @@
                                             <label class="col-sm-2 control-label">Corporate ID</label>
 
                                             <div class="col-sm-6">
-                                                <input type="text" class="form-control" required th:field="*{corporateId}" placeholder="Unique ID for the corporate"/>
+                                                <input type="text" id="corpUniqueId" class="form-control" onkeyup="validateCorpId()" required th:field="*{corporateId}" placeholder="Unique ID for the corporate"/>
+                                                <div id="custError" style="display: none;">
+
+                                                    <p style="color:red;">Corporate ID already existing</p>
+                                                </div>
+                                                <div id="custiDError" style="display: none;">
+
+                                                    <p style="color:red;">Corporate ID is mandatory</p>
+                                                </div>
                                             </div>
 
                                         </div>
@@ -63,7 +71,11 @@
                                         <label class="col-sm-2 control-label">Corporate Name</label>
 
                                         <div class="col-sm-6">
-                                        <input type="text" class="form-control" required th:field="*{corporateName}" placeholder="Name for the corporate"/>
+                                        <input type="text" class="form-control" id="corporateName" onkeyup="emptyCorpName()" required th:field="*{corporateName}" placeholder="Name for the corporate"/>
+                                            <div id="custNameError" style="display: none;">
+
+                                                <p style="color:red;">Corporate name is mandatory</p>
+                                            </div>
                                         </div>
                                         </div>
 
@@ -80,19 +92,25 @@
 
 
                                                 <p th:each="account,index: ${accounts}">
+                                                    <input type="hidden" id="accountSize" th:value="${index.size}"/>
                                                     <label class="checkbox-inline">
-                                                        <input type="checkbox" th:name="accounts"
+                                                        <input type="checkbox" class="accountAttached" onclick="noCorpAccountSelected()" th:id="account+${index.index}" th:name="accounts"
                                                                th:value="${account.accountNumber}"/>
                                                         <span  th:text="${account.accountNumber}+' - '+${account.accountName}"></span>
                                                     </label>
                                                 </p>
+                                            </div>
+                                            <div id="custAccountError" style="display: none;">
+
+                                                <p style="color:red;">You must select at least one account</p>
                                             </div>
                                         </div>
 
                                         <div class="form-group">
                                             <div class="col-sm-4 col-sm-offset-2">
                                                 <!--<button class="btn btn-white" type="reset" id="cancel">Cancel</button>-->
-                                                <button class="btn btn-primary" type="submit">Next</button>
+                                                <button onclick="isCheckboxCheck()" class="btn btn-primary" type="button">Next</button>
+                                                <button id="submit" style="display: none" class="btn btn-primary" type="submit">Next</button>
                                             </div>
                                         </div>
                                         <div th:replace="layout::form-validation"></div>
@@ -119,7 +137,7 @@
         e.preventDefault();
 
         var custId = $("#customerId").val();
-        console.log("customer Id: " + custId)
+        console.log("customer Id: " + custId);
 
         $.ajax({
             url: "/ops/corporates/" + custId + "/name",
@@ -138,10 +156,81 @@
         });
     });
 
-    document.getElementById("cancel").onclick = function () {
-        location.href = "/ops/corporates";
-    }
+    function validateCorpId() {
+        var custId = $("#corpUniqueId").val();
+        $.ajax({
+            url: "/ops/corporates/validate/" + custId,
+            success: function (result) {
+                if (result != "false") {
+                    $("#custError").hide();
+                    $('#custiDError').hide();
+                }
+                else {
+                    $('#custiDError').hide();
 
+                    $("#custError").show();
+
+                }
+            }
+        });
+    }
+    function emptyCorpName() {
+        if($('#corporateName').val() ==''){
+            $('#custNameError').show()
+        }else{
+            $('#custNameError').hide()
+        }
+    }
+    function noCorpAccountSelected() {
+        var selectedItem = 0;
+        var noOfAccounts = $('#accountSize').val();
+        console.log("the accounts size "+$('#corpUniqueId').val());
+        for(var i=0; i<noOfAccounts;i++){
+            var anyAccountSelected = document.getElementById('account'+i).checked;
+            if(anyAccountSelected){
+                selectedItem +=1;
+            }
+        }
+        if(selectedItem == 0){
+            $('#custAccountError').show()
+        }else{
+            $('#custAccountError').hide()
+        }
+    }
+function isCheckboxCheck() {
+    var selectedItem = 0;
+    var noOfAccounts = $('#accountSize').val();
+    console.log("the accounts size "+$('#corpUniqueId').val());
+    for(var i=0; i<noOfAccounts;i++){
+        var anyAccountSelected = document.getElementById('account'+i).checked;
+        if(anyAccountSelected){
+            selectedItem +=1;
+        }
+    }
+    if($('#corpUniqueId').val() == ''){
+        $('#custiDError').show()
+    }else{
+        $('#custiDError').hide()
+    }
+    if($('#corporateName').val() ==''){
+        $('#custNameError').show()
+    }else{
+        $('#custNameError').hide()
+    }
+//    if($('#corpUniqueId').val().isEmpty()){
+//        $('#custError').show()
+//    }else{
+//        $('#custError').hide()
+//    }
+    console.log("the no of accounts selected "+selectedItem);
+    if(selectedItem > 0) {
+        $('#custAccountError').hide();
+        $('#submit').trigger('click');
+    }else{
+        $('#custAccountError').show();
+        return false;
+    }
+}
 
 </script>
 </body>

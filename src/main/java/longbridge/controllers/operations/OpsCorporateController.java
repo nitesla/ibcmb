@@ -637,7 +637,19 @@ public class OpsCorporateController {
         return "/ops/corporate/setup/account";
 
     }
-
+    @GetMapping("/validate/{id}")
+    @ResponseBody
+    public String valiidateCorporateId(@PathVariable String id){
+        try {
+            boolean isExisting = corporateService.corporateIdExists(id);
+            if(!isExisting){
+                return "true";
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return "false";
+    }
     @GetMapping("/authorizer")
     public String getAuthorizerPage(){
         return "/ops/corporate/setup/authorizer";
@@ -658,28 +670,21 @@ public class OpsCorporateController {
             logger.info("Authorizers: {}", authorizerList.toString());
             session.setAttribute("authorizerLevels", authorizerList);
 
+            Iterable<CodeDTO> currencies = codeService.getCodesByType("CURRENCY");
 
-            return "/ops/corporate/setup/addRule";
+            model.addAttribute("currencies",currencies);
+            model.addAttribute("authorizerList",authorizerList);
+
+            return "/ops/corporate/setup/addrule";
+
         } catch (Exception ibe) {
             logger.error("Error creating group", ibe);
-            model.addAttribute("failure", messageSource.getMessage("group.add.failure", null, locale));
-            return "adm/group/add";
+            redirectAttributes.addFlashAttribute("failure", "Error has occurred");
+            return "redirect:/ops/corporates/new";
         }
+
+
     }
-
-    @GetMapping("rules/new")
-    public String addCorporateRules(@ModelAttribute("corporate") @Valid CorporateDTO corporate,@PathVariable Long corpId, Model model) {
-//        CorporateDTO corporate = corporateService.getCorporate(corpId);
-        List<CorporateRoleDTO> roles = corporateService.getRoles(corpId);
-        Iterable<CodeDTO> currencies = codeService.getCodesByType("CURRENCY");
-        model.addAttribute("corporate", corporate);
-        model.addAttribute("roleList", roles);
-        model.addAttribute("currencies", currencies);
-        model.addAttribute("corporateRule", new CorpTransferRuleDTO());
-        return "/ops/corporate/addrule";
-    }
-
-
 
 }
 

@@ -60,10 +60,7 @@
                                         <div class="form-group">
                                             <label class="col-sm-2 control-label">Customer ID</label>
                                         <div class="col-md-6">
-                                            <div class="input-group">
-
                                                     <input type="text" class="form-control" th:field="*{customerId}" placeholder="Enter CIFID here"  onkeyup="validateCorpId()" required="required"/>
-                                                </div>
 
                                             </div>
 
@@ -141,9 +138,9 @@ function validateCorpId() {
         }
     });
 }
-    document.getElementById("cancel").onclick = function () {
-        location.href = "/ops/corporates";
-    }
+//    document.getElementById("cancel").onclick = function () {
+//        location.href = "/ops/corporates";
+//    }
 
 
 </script>
