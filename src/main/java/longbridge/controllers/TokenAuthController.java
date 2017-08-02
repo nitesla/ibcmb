@@ -52,7 +52,7 @@ public class TokenAuthController {
     public String authenticate(HttpServletRequest request, RedirectAttributes redirectAttributes, Locale locale, Principal principal) {
         String redirectUrl = "";
         String otpUrl="";
-        logger.info("the otp sent is {}",request.getParameter("otp"));
+//        logger.info("the otp sent is {}",request.getParameter("otp"));
         String username = "";
         if (request.getSession().getAttribute("redirectUrl") != null) {
             redirectUrl = (String) request.getSession().getAttribute("redirectUrl");
@@ -194,6 +194,7 @@ public class TokenAuthController {
             if (result) {
                 if( request.getSession().getAttribute("2FA") !=null) {
                     request.getSession().removeAttribute("2FA");
+                    retailUserService.resetNoOfTokenAttempt(user);
                 }
                 redirectAttributes.addFlashAttribute("message", messageSource.getMessage("otp.auth.success", null, locale));
                 return "redirect:/retail/dashboard";
@@ -221,6 +222,7 @@ public class TokenAuthController {
             if (result) {
                 if( request.getSession().getAttribute("2FA") !=null) {
                     request.getSession().removeAttribute("2FA");
+                    corporateUserService.resetNoOfTokenAttempt(user);
                 }
                 redirectAttributes.addFlashAttribute("message", messageSource.getMessage("otp.auth.success", null, locale));
                 return "redirect:/corporate/dashboard";
