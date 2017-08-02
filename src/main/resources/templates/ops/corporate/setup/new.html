@@ -60,7 +60,7 @@
                                         <div class="form-group">
                                             <label class="col-sm-2 control-label">Customer ID</label>
                                         <div class="col-md-6">
-                                                    <input type="text" class="form-control" th:field="*{customerId}" placeholder="Enter CIFID here"  onkeyup="validateCorpId()" required="required"/>
+                                                    <input type="text" class="form-control" id="customerId" th:field="*{customerId}" placeholder="Enter CIFID here"  onkeyup="validateCorpId()" required="required"/>
 
                                             </div>
 
@@ -110,14 +110,28 @@
     </div>
 </div>
 <script>
+$(document).ready(function () {
+    var custId = $("#customerId").val();;
+    if (custId != '') {
+        $.ajax({
+            url: "/ops/corporates/" + custId + "/name",
+            success: function (result) {
+                if (result != "false") {
+                    $("#customerName").val(result);
+                    $("#custName").show();
+                    $("#custError").hide();
 
-//    $("#search").click(function (e) {
-//
-//        e.preventDefault();
-//
-//
-//    });
-
+                }
+                else {
+                    $("#custName").hide();
+                    $("#custError").show();
+                }
+            }
+        });
+    }
+//    var value = '@Request.RequestContext.HttpContext.Session["corporateRequest"]';
+//    console.log("")
+});
 function validateCorpId() {
     var custId = $("#customerId").val();
     console.log("customer Id: " + custId)

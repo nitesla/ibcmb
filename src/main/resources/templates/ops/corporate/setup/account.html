@@ -82,7 +82,7 @@
 
 
                                         <input type="hidden" class="form-control" th:field="*{customerId}" />
-
+                                        <input type="hidden" id="selectedAccounts" value=""/>
 
 
                                         <hr/>
@@ -94,9 +94,23 @@
                                                 <p th:each="account,index: ${accounts}">
                                                     <input type="hidden" id="accountSize" th:value="${index.size}"/>
                                                     <label class="checkbox-inline">
-                                                        <input type="checkbox" class="accountAttached" onclick="noCorpAccountSelected()" th:id="account+${index.index}" th:name="accounts"
+                                                        <span th:if="${selectedAccounts} =='null'">
+                                                        <input type="checkbox" class="accountAttached" onclick="noCorpAccountSelected()" th:class="account+${index.index}" th:id="acct+${account.accountNumber}" th:name="accounts"
                                                                th:value="${account.accountNumber}"/>
                                                         <span  th:text="${account.accountNumber}+' - '+${account.accountName}"></span>
+                                                        </span>
+                                                        <span th:if="${selectedAccounts} != 'null'">
+                                                        <span th:if="${#lists.contains(selectedAccounts,account.accountNumber)}">
+                                                        <input type="checkbox" checked class="accountAttached" onclick="noCorpAccountSelected()" th:class="account+${index.index}" th:id="acct+${account.accountNumber}" th:name="accounts"
+                                                               th:value="${account.accountNumber}"/>
+                                                        <span  th:text="${account.accountNumber}+' - '+${account.accountName}"></span>
+                                                        </span>
+                                                        <span th:if="${#lists.contains(selectedAccounts,account.accountNumber)} == false">
+                                                        <input type="checkbox" class="accountAttached" onclick="noCorpAccountSelected()" th:class="account+${index.index}" th:id="acct+${account.accountNumber}" th:name="accounts"
+                                                               th:value="${account.accountNumber}"/>
+                                                        <span  th:text="${account.accountNumber}+' - '+${account.accountName}"></span>
+                                                        </span>
+                                                            </span>
                                                     </label>
                                                 </p>
                                             </div>
@@ -108,7 +122,7 @@
 
                                         <div class="form-group">
                                             <div class="col-sm-4 col-sm-offset-2">
-                                                <!--<button class="btn btn-white" type="reset" id="cancel">Cancel</button>-->
+                                                <a class="btn btn-primary" th:href="@{/ops/corporates/back/new}" id="back">Previous</a>
                                                 <button onclick="isCheckboxCheck()" class="btn btn-primary" type="button">Next</button>
                                                 <button id="submit" style="display: none" class="btn btn-primary" type="submit">Next</button>
                                             </div>
@@ -132,7 +146,23 @@
     </div>
 </div>
 <script>
-
+    $(document).ready(function() {
+//        var selectedAcct =  $('#selectedAccounts').val();
+//
+//        if(selectedAcct != ''){
+//            selectedAcct =  selectedAcct.replace('[','');
+//            selectedAcct =  selectedAcct.replace(']','');
+//            console.log("selectedAcct "+selectedAcct);
+//            var selectedAccts = selectedAcct.split(",");
+//            console.log("selectedAccts "+selectedAccts.length);
+//
+////            $('acct'+selectedAccts[1]).prop('checked', true);
+//            for(var i=0; i<selectedAccts.length;i++){
+//                console.log("selectedAccts "+selectedAccts[i]);
+//                $('#acct'+selectedAccts[i]).prop('checked', true);
+//            }
+//        }
+    });
     $("#search").click(function (e) {
         e.preventDefault();
 
@@ -184,12 +214,11 @@
     function noCorpAccountSelected() {
         var selectedItem = 0;
         var noOfAccounts = $('#accountSize').val();
-        console.log("the accounts size "+$('#corpUniqueId').val());
-        for(var i=0; i<noOfAccounts;i++){
-            var anyAccountSelected = document.getElementById('account'+i).checked;
-            if(anyAccountSelected){
-                selectedItem +=1;
-            }
+//        console.log("the accounts size "+$('#corpUniqueId').val());
+        var anyAccountSelected = $('input[name="accounts"]:checked').length > 0;
+//        console.log("no checked "+$('input[name="accounts"]:checked').length);
+        if(anyAccountSelected){
+            selectedItem +=1;
         }
         if(selectedItem == 0){
             $('#custAccountError').show()
@@ -201,11 +230,10 @@ function isCheckboxCheck() {
     var selectedItem = 0;
     var noOfAccounts = $('#accountSize').val();
     console.log("the accounts size "+$('#corpUniqueId').val());
-    for(var i=0; i<noOfAccounts;i++){
-        var anyAccountSelected = document.getElementById('account'+i).checked;
-        if(anyAccountSelected){
-            selectedItem +=1;
-        }
+    var anyAccountSelected = $('input[name="accounts"]:checked').length > 0;
+//    console.log("no checked "+$('input[name="accounts"]:checked').length);
+    if(anyAccountSelected){
+        selectedItem +=1;
     }
     if($('#corpUniqueId').val() == ''){
         $('#custiDError').show()
