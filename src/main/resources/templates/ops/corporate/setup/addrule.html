@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="layout :: site-head">
+</head>
+
+
+<body class="nav-md">
+<div class="container body">
+    <div class="main_container">
+        <div class="col-md-3 left_col">
+            <div class="left_col scroll-view">
+                <div class="navbar nav_title" style="border: 0;">
+                    <!--<a href="index.html"><img th:src="@{~/images/cmb_logo.png}"/></a>-->
+                </div>
+
+                <div class="clearfix"></div>
+                <div class="clearfix"></div>
+
+                <div th:replace="layout :: ops-menu"></div>
+                <div th:replace="layout :: menu-footer-ops"></div>
+
+            </div>
+        </div>
+        <div th:replace="layout :: ops-top-nav"></div>
+
+        <!-- page content -->
+        <div class="right_col" role="main">
+            <div class="">
+                <div class="page-title">
+                    <div class="title_left">
+                        <h3 th:text="${corporate.corporateName}"></h3>
+                    </div>
+
+                </div>
+
+                <div class="clearfix"></div>
+
+                <div class="row">
+                    <div class="col-md-12 col-sm-12 col-xs-12">
+                        <div class="x_panel">
+                            <div class="x_title">
+
+                                <h2>Transaction Rules</h2>
+                                <div class="clearfix"></div>
+                            </div>
+
+                            <div class="x_content">
+                                <form method="post" th:action="@{/ops/corporates/rules/new}" id="ruleForm"
+                                      class="form-horizontal">
+
+                                    <input hidden="hidden" name="rules"/>
+
+                                    <div class="x_content">
+
+                                        <fieldset>
+
+                                            <div class="col-md-6 col-sm-6 col-xs-12">
+                                                <button type="button" id="button_add" class="btn-xs btn-default btn"
+                                                        data-toggle="modal" data-target="#myModal">
+                                                    <i class="fa fa-money"></i> Add
+                                                </button>
+
+                                                <button type="submit" id="button_del" class="btn-xs btn-default btn">
+                                                    Remove
+                                                </button>
+                                            </div>
+                                            <div class="form-group">
+                                                <div class="col-md-12 col-sm-6 col-xs-12">
+                                                    <table id="mytab"
+                                                           class="table table-striped table-bordered table-hover"
+                                                           cellspacing="0" width="100%">
+                                                        <thead>
+                                                        <tr>
+                                                            <th>Lower Amount</th>
+                                                            <th>Upper Amount</th>
+                                                            <th>Currency</th>
+                                                            <th>Authorizers</th>
+                                                            <th>Required Authorizers</th>
+
+                                                        </tr>
+                                                        </thead>
+
+                                                    </table>
+                                                </div>
+                                            </div>
+
+                                        </fieldset>
+
+                                        <div class="form-group">
+                                            <div class="class=col-sm-4 col-sm-offset-2" align="left">
+                                                <a class="btn btn-primary" th:href="@{/ops/corporates/back/authorizer}" id="back">Previous</a>
+                                                <button type="submit" id="button_submit" class="btn btn-primary">Next
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- Modal -->
+        <form method="post" class="form-horizontal" id="aform">
+
+            <input type="hidden" name="rules"/>
+            <div id="myModal" class="modal fade" role="dialog">
+                <div class="modal-dialog modal-lg">
+
+                    <!-- Modal content-->
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                            <h4 class="modal-title">New Transaction Rule</h4>
+                        </div>
+                        <div class="modal-body">
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label">Lower Amount<span
+                                        style="color: red">*</span></label>
+                                <div class="col-sm-6">
+                                    <input type="number" class="form-control" name="lowerLimitAmount"/>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label">Upper Amount <span
+                                        style="color: red">*</span></label>
+                                <div class="col-sm-6">
+                                    <input id="upperLimit" type="number" class="form-control" name="upperLimitAmount"/>
+
+                                </div>
+                                <input id="unlimited" type="checkbox" class="checkbox-inline"
+                                       name="unlimited"/>
+                                <label><strong>No Upper Limit</strong></label>
+
+                            </div>
+
+
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label">Currency</label>
+                                <div class="col-sm-6">
+                                    <select id="currency" class="form-control" name="currency">
+                                        <option th:each="currency: ${currencies}"
+                                                th:value="${currency.code}"
+                                                th:text="${currency.description}"></option>
+
+                                    </select>
+                                </div>
+                            </div>
+                            <hr/>
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label">Authorizer Levels <span
+                                        style="color: red">*</span></label>
+                                <div class="col-sm-6">
+
+                                    <p th:each="authorizer: ${authorizerList}">
+                                        <!--<input type="number" name="numRole" value="1"/>-->
+                                        <label class="checkbox-inline">
+                                            <input type="checkbox" name="authorizers"
+                                                   th:value="${authorizer.name}+' '+${authorizer.level}"/>
+                                            <span th:text="${authorizer.name}+' '+${authorizer.level}"></span>
+
+                                        </label>
+                                    </p>
+                                </div>
+                            </div>
+                            <hr/>
+                            <div class="form-group">
+                                <div>
+                                    <div class="radio">
+                                        <label class="col-sm-2 control-label"></label>
+
+                                        <label><input type="radio" name="any" value="All" checked="checked"/>
+                                            All the authorizers selected above must approve transaction</label>
+                                    </div>
+                                    <div class="radio">
+                                        <label class="col-sm-2 control-label"></label>
+
+                                        <label><input type="radio" name="any" value="Any"/>
+                                            Any of the 2 authorizers selected above can approve transaction</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <br/>
+
+
+                        </div>
+                        <div class="modal-footer">
+                            <button id="add_rule" type="submit" class="btn btn-primary">Add</button>
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </form>
+
+
+        <!-- footer content -->
+        <footer th:replace="layout :: footer">
+        </footer>
+        <!-- /footer content -->
+    </div>
+</div>
+<script th:src="@{~/bank/vendors/datatables.net/js/jquery.dataTables.js}"></script>
+<script th:src="@{~/bank/js/dataTables.bootstrap.js}"></script>
+<script th:src="@{~/bank/js/dataTables.select.js}"></script>
+<!--<script th:src="@{~/bank/js/jquery.min.js}"></script>-->
+<script th:src="@{~/bank/js/jquery.validate.min.js}"></script>
+<script th:src="@{~/bank/js/jquery.spring-friendly.min.js}"></script>
+<script th:src="@{~/bank/vendors/emodal/eModal.js}"></script>
+
+
+<script type="text/javascript" class="init">
+
+    $("#aform").validate();
+
+    /*<![CDATA[*/
+    $(document).ready(function () {
+        var counter = 0;
+        var t = $('#mytab').DataTable({
+            dom: 'rt',
+            select: {
+                style: 'single'
+            },
+            ordering: false,
+            "columns": [{
+                "data": "lowerLimitAmount"
+            }, {
+                "data": "upperLimitAmount"
+            },
+                {
+                "data": "currency"
+            },
+                {
+                    "data": "authorizers"
+                },
+
+                {
+                    "data": "any"
+                }
+            ],
+            "language": {
+                "emptyTable": "No Rule added. Click Add"
+            }
+
+        });
+
+        $('#button_submit').click(function (e) {
+            e.preventDefault()
+            contactsTab = $('#mytab').DataTable();
+            data = JSON.stringify(contactsTab.data().toArray());
+            $("input[name='rules']").val(data);
+            $('#ruleForm').submit();
+        });
+
+
+        $('#add_rule').on('click', function (e) {
+            e.preventDefault()
+
+            contactsTab = $('#mytab').DataTable();
+            lowerLimitAmount = $("input[name='lowerLimitAmount']").val();
+            upperLimitAmount = $("input[name='upperLimitAmount']").val();
+            currency = $("select#currency").val();
+            authorizers = $("input[type=checkbox][name='authorizers']:checked").map(function(){
+
+                return $(this).val()}).get();
+
+            console.log(authorizers)
+            any = $("input[type=radio][name='any']:checked" ).val();
+
+
+            od = {
+                'DT_RowId': null,
+                'lowerLimitAmount' : lowerLimitAmount,
+                'upperLimitAmount' : upperLimitAmount,
+                'currency' : currency,
+                'authorizers' : authorizers,
+                'any' : any
+
+            };
+            contactsTab.row.add(od);
+            contactsTab.draw();
+            $('#myModal').modal('toggle');
+
+
+        });
+
+
+        $('#button_del').click(function (e) {
+            e.preventDefault()
+            var dt = $('#mytab').DataTable();
+            dt.row('.selected').remove().draw(false);
+        });
+
+
+        $(document).on('hidden.bs.modal', function (e) {
+            $(e.target).removeData('bs.modal');
+        });
+
+    });
+
+    /*]]>*/
+</script>
+</body>
+</html>

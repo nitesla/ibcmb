@@ -151,4 +151,26 @@ public class CorporateRequestDTO {
     public void setCorporateId(String corporateId) {
         this.corporateId = corporateId;
     }
+
+
+    @Override
+    public String toString() {
+        return "CorporateRequestDTO{" +
+                "id=" + id +
+                ", version=" + version +
+                ", corporateType='" + corporateType + '\'' +
+                ", corporateName='" + corporateName + '\'' +
+                ", corporateId='" + corporateId + '\'' +
+                ", bvn='" + bvn + '\'' +
+                ", status='" + status + '\'' +
+                ", rcNumber='" + rcNumber + '\'' +
+                ", customerId='" + customerId + '\'' +
+                ", customerName='" + customerName + '\'' +
+                ", createdOn='" + createdOn + '\'' +
+                ", authorizers=" + authorizers +
+                ", corporateUsers=" + corporateUsers +
+                ", corpTransferRules=" + corpTransferRules +
+                ", accounts=" + accounts +
+                '}';
+    }
 }

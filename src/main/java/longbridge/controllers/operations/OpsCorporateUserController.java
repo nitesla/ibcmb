@@ -1,6 +1,9 @@
 package longbridge.controllers.operations;
 
+import longbridge.api.AccountInfo;
+import longbridge.api.CustomerDetails;
 import longbridge.dtos.CorporateDTO;
+import longbridge.dtos.CorporateRequestDTO;
 import longbridge.dtos.CorporateUserDTO;
 import longbridge.dtos.RoleDTO;
 import longbridge.exception.DuplicateObjectException;
@@ -12,6 +15,7 @@ import longbridge.models.UserType;
 import longbridge.security.FailedLoginService;
 import longbridge.services.CorporateService;
 import longbridge.services.CorporateUserService;
+import longbridge.services.IntegrationService;
 import longbridge.services.RoleService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,12 +27,12 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
-import java.util.Iterator;
-import java.util.Locale;
+import java.util.*;
 
 /**
  * Created by Fortune on 4/3/2017.
@@ -50,6 +54,8 @@ public class OpsCorporateUserController {
 
     @Autowired
     private MessageSource messageSource;
+    @Autowired
+    private IntegrationService integrationService;
 
 
     @ModelAttribute
@@ -266,5 +272,51 @@ public class OpsCorporateUserController {
         logger.info("PASSWORD CHANGED SUCCESSFULLY");
         return "changePassword";
     }
+    @GetMapping("new/entity")
+    public String newCorporate() {
+        return "/ops/corporate/newCorporate";
+    }
+    @GetMapping("corp/new")
+    public Map<String,List<String>> addCorporateEntity(WebRequest webRequest, HttpSession session, Locale locale) {
+        logger.info("ggg");
+        String custId =  webRequest.getParameter("customerId");
+        Map<String,List<String>> accountDetails = new HashMap<>();
+        List<String> accountNum = new ArrayList<>();
+        List<String> accountName = new ArrayList<>();
+        if (custId == null) {
+//            result.addError(new ObjectError("invalid", messageSource.getMessage("form.fields.required", null, locale)));
+            return null;
+        }
+        CustomerDetails customerDetails = integrationService.viewCustomerDetailsByCif(custId);
 
+        if (customerDetails.getCustomerName() == null || !customerDetails.isCorp()) {
+//            result.addError(new ObjectError("invalid", messageSource.getMessage("corp.cifid.invalid", null, locale)));
+            return null;
+
+        }
+
+
+        CorporateRequestDTO corporateRequestDTO = new CorporateRequestDTO();
+        corporateRequestDTO.setCustomerId(custId);
+//        corporateRequestDTO.setCorporateType(customerDetails.get);
+//        corporateRequestDTO.setCustomerName(customerDetails.getCustomerName());
+//        corporate.setCustomerName(customerDetails.getCustomerName());
+        session.setAttribute("corporateRequest", corporateRequestDTO);
+
+        List<AccountInfo> accountInfos = integrationService.fetchAccounts(custId.toUpperCase());
+        if(accountInfos.size() >0) {
+            for (AccountInfo acctInfo : accountInfos) {
+                logger.info("the acount number {}",acctInfo.getAccountNumber());
+                accountNum.add(acctInfo.getAccountNumber());
+                accountName.add(acctInfo.getAccountName());
+            }
+            accountDetails.put("accountNum", accountNum);
+            accountDetails.put("accountName", accountName);
+        }
+//        model.addAttribute("accounts", accountInfos);
+//        model.addAttribute("corporate", corporate);
+
+        return accountDetails;
+
+    }
 }

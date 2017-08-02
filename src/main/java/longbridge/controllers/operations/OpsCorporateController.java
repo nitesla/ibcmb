@@ -1,5 +1,8 @@
 package longbridge.controllers.operations;
 
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import longbridge.api.AccountInfo;
 import longbridge.api.CustomerDetails;
 import longbridge.dtos.*;
@@ -576,17 +579,23 @@ public class OpsCorporateController {
             return "/ops/corporate/setup/new";
 
         }
-
-
+        CorporateRequestDTO corporateExistingData = (CorporateRequestDTO) session.getAttribute("corporateRequest");
         CorporateRequestDTO corporateRequestDTO = new CorporateRequestDTO();
         corporateRequestDTO.setCustomerId(corporate.getCustomerId());
         corporateRequestDTO.setCorporateType(corporate.getCorporateType());
         corporateRequestDTO.setCustomerName(customerDetails.getCustomerName());
+        corporate.setCustomerName(customerDetails.getCustomerName());
         session.setAttribute("corporateRequest", corporateRequestDTO);
 
         List<AccountInfo> accountInfos = integrationService.fetchAccounts(corporate.getCustomerId().toUpperCase());
         model.addAttribute("accounts", accountInfos);
-        model.addAttribute("corporate", corporate);
+        if(corporateExistingData != null){
+
+            model.addAttribute("corporate", corporateExistingData);
+        }else {
+            model.addAttribute("corporate", corporate);
+        }
+        model.addAttribute("selectedAccounts", "null");
 
         return "/ops/corporate/setup/account";
 
@@ -613,21 +622,146 @@ public class OpsCorporateController {
 
         String[] accounts = request.getParameterValues("accounts");
 
-        logger.info("Customer accounts "+accounts);
+        logger.info("Customer accounts {}", accounts.toString());
 
         if(session.getAttribute("corporateRequest")!=null){
+            List<AccountInfo> accountInfos = integrationService.fetchAccounts(corporate.getCustomerId().toUpperCase());
+            session.setAttribute("accountInfos",accountInfos);
+            session.setAttribute("selectedAccounts",accounts);
             CorporateRequestDTO corporateRequestDTO = (CorporateRequestDTO)session.getAttribute("corporateRequest");
             corporateRequestDTO.setCorporateName(corporate.getCorporateName());
             corporateRequestDTO.setCorporateId(corporate.getCorporateId());
+            if(accounts.length >0) {
+                List<AccountDTO> accountDTOs = new ArrayList<>();
+                for (String account : accounts) {
+                    AccountDTO accountDTO = new AccountDTO();
+                    accountDTO.setAccountNumber(account);
+                    accountDTOs.add(accountDTO);
+                }
+                corporateRequestDTO.setAccounts(accountDTOs);
+            }
+            session.setAttribute("corporateRequest",corporateRequestDTO);
 
+            model.addAttribute("selectedAccounts",accounts);
             model.addAttribute("corporate",corporateRequestDTO);
-            logger.info("Corporate Request DTO",corporateRequestDTO);
-            return "/ops/corporate/setup/authorizer";
+            logger.info("Corporate Request DTO " +
+                    "{}", corporateRequestDTO.toString());
+
+            return "/ops/corporate/setup/addauthorizer";
 
         }
 
         return "/ops/corporate/setup/account";
 
     }
-}
+    @GetMapping("/validate/{id}")
+    @ResponseBody
+    public String valiidateCorporateId(@PathVariable String id){
+        try {
+            boolean isExisting = corporateService.corporateIdExists(id);
+            if(!isExisting){
+                return "true";
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return "false";
+    }
+    @GetMapping("/authorizer")
+    public String getAuthorizerPage(Model model){
+        model.addAttribute("authorizerList","null");
+        return "/ops/corporate/setup/authorizer";
+    }
 
+
+    @PostMapping("/authorizer")
+    public String createGroup(WebRequest request, RedirectAttributes redirectAttributes, HttpSession session, Model model, Locale locale) {
+
+        try {
+            String authorizers = request.getParameter("authorizers");
+
+            ObjectMapper mapper = new ObjectMapper();
+            mapper.configure(JsonParser.Feature.ALLOW_UNQUOTED_FIELD_NAMES, true);
+            List<AuthorizerDTO> authorizerList = mapper.readValue(authorizers, new TypeReference<List<AuthorizerDTO>>() {
+            });
+
+            logger.info("Authorizers: {}", authorizerList.toString());
+            session.setAttribute("authorizerLevels", authorizerList);
+
+            Iterable<CodeDTO> currencies = codeService.getCodesByType("CURRENCY");
+
+            if (session.getAttribute("corporateRequest") != null) {
+                CorporateRequestDTO corporateRequestDTO = (CorporateRequestDTO) session.getAttribute("corporateRequest");
+                model.addAttribute("corporate", corporateRequestDTO);
+            }
+            model.addAttribute("currencies", currencies);
+            model.addAttribute("authorizerList", authorizerList);
+
+            return "/ops/corporate/setup/addrule";
+
+        } catch (Exception ibe) {
+            logger.error("Error creating group", ibe);
+            redirectAttributes.addFlashAttribute("failure", "Error has occurred");
+            return "redirect:/ops/corporates/new";
+        }
+
+
+    }
+    @GetMapping("/back/new")
+    public String addCorporateUsingBack(Model model,HttpSession session) {
+        CorporateRequestDTO corporate = (CorporateRequestDTO) session.getAttribute("corporateRequest");
+        model.addAttribute("corporate", corporate);
+        return "/ops/corporate/setup/new";
+    }
+    @GetMapping("/back/account")
+    public String addAccountUsingBack(Model model,HttpSession session) {
+        String accounts[] = (String[]) session.getAttribute("selectedAccounts");
+        CorporateRequestDTO corporate = (CorporateRequestDTO) session.getAttribute("corporateRequest");
+        List<AccountInfo> accountInfos = (List<AccountInfo>) session.getAttribute("accountInfos");
+        model.addAttribute("accounts", accountInfos);
+        model.addAttribute("corporate", corporate);
+        model.addAttribute("selectedAccounts",Arrays.asList(accounts));
+        return "/ops/corporate/setup/account";
+    }
+    @GetMapping("/back/authorizer")
+    public String getAuthorizerBackPage(Model model, HttpSession session){
+        List<AuthorizerDTO> authorizerList = (List<AuthorizerDTO>) session.getAttribute("authorizerLevels");
+        model.addAttribute("authorizerList",authorizerList);
+        return "/ops/corporate/setup/addauthorizer";
+    }
+
+
+
+    @PostMapping("/rules/new")
+    public String createTransactionRule(WebRequest request, RedirectAttributes redirectAttributes, HttpSession session, Model model, Locale locale) {
+
+        String rules= request.getParameter("rules");
+
+        logger.info("Transaction rules are: {}",rules);
+
+        if(session.getAttribute("corporateRequest")!=null) {
+            CorporateRequestDTO corporateRequestDTO = (CorporateRequestDTO) session.getAttribute("corporateRequest");
+            model.addAttribute("corporate",corporateRequestDTO);
+        }
+        if(session.getAttribute("authorizerLevels")!=null) {
+            List<AuthorizerDTO>  authorizerLevels= (ArrayList) session.getAttribute("authorizerLevels");
+            model.addAttribute("authorizerLevels",authorizerLevels);
+        }
+
+        return "/ops/corporate/setup/adduser";
+
+
+    }
+
+    @GetMapping("/{username}/exists")
+    @ResponseBody
+    public String checkUsername(@PathVariable String username){
+        if(corporateUserService.userExists(username)){
+            return "true";
+        }
+        else {
+            return "false";
+        }
+
+    }
+}
