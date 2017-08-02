@@ -101,6 +101,7 @@ public class CorporateUser extends User implements PrettySerializer{
 					throws IOException, JsonProcessingException {
 
 				gen.writeStartObject();
+				gen.writeStringField("Corporate Name", value.corporate.getName());
 				gen.writeStringField("Username", value.userName);
 				gen.writeStringField("First Name", value.firstName);
 				gen.writeStringField("Last Name", value.lastName);

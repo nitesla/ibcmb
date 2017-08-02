@@ -4,7 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
-import longbridge.dtos.CorporateUserDTO;
+import longbridge.dtos.CorpUserVerificationDTO;
 import longbridge.dtos.VerificationDTO;
 import longbridge.exception.InternetBankingException;
 import longbridge.exception.VerificationException;
@@ -12,10 +12,9 @@ import longbridge.exception.VerificationInterruptedException;
 import longbridge.models.*;
 import longbridge.repositories.CorpUserVerificationRepo;
 import longbridge.repositories.CorporateUserRepo;
+import longbridge.repositories.VerificationRepo;
 import longbridge.security.userdetails.CustomUserPrincipal;
 import longbridge.services.CorpUserVerificationService;
-import longbridge.services.CorporateService;
-import longbridge.services.CorporateUserService;
 import longbridge.services.MailService;
 import longbridge.utils.DateFormatter;
 import longbridge.utils.PrettySerializer;
@@ -32,7 +31,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import java.util.*;
@@ -52,6 +50,9 @@ public class CorpUserVerificationServiceImpl implements CorpUserVerificationServ
     private CorporateUserRepo corporateUserRepo;
 
     @Autowired
+    private VerificationRepo verificationRepo;
+
+    @Autowired
     private EntityManager entityManager;
     @Autowired
     private MessageSource messageSource;
@@ -65,7 +66,7 @@ public class CorpUserVerificationServiceImpl implements CorpUserVerificationServ
     Locale locale = LocaleContextHolder.getLocale();
 
     @Override
-    public void save(CorporateUser user, String operation, String description) throws VerificationException {
+    public void saveInitiator(CorporateUser user, String operation, String description) throws VerificationException {
         try {
             String entityName = user.getClass().getSimpleName();
             if (user.getId() != null) {
@@ -89,7 +90,7 @@ public class CorpUserVerificationServiceImpl implements CorpUserVerificationServ
             corpUserVerification.setEntityName(entityName);
             corpUserVerification.setInitiatedOn(new Date());
             corpUserVerification.setInitiatedBy(doneBy.getUserName());
-            corpUserVerification.setCorpUserType(CorpUserType.ADMIN);
+            corpUserVerification.setCorpUserType(CorpUserType.AUTHORIZER);
             corpUserVerification.setOperation(operation);
             corpUserVerification.setDescription(description);
             ObjectMapper mapper = new ObjectMapper();
@@ -137,6 +138,83 @@ public class CorpUserVerificationServiceImpl implements CorpUserVerificationServ
     }
 
     @Override
+    public void saveAuthorizer(CorporateUser user, String operation, String description) throws VerificationException {
+        try {
+            String entityName = user.getClass().getSimpleName();
+            if (user.getId() != null) {
+                Long id = user.getId();
+
+                Verification pendingVerification = verificationRepo.findFirstByEntityNameAndEntityIdAndStatus(entityName,
+                        id, VerificationStatus.PENDING);
+                if (pendingVerification != null) {
+                    logger.info("Found entity with pending verification");
+                    throw new InternetBankingException(entityName + " has changes pending for verification. Approve or " +
+                            "decline the changes before making another one.");
+                }
+            }
+
+            CustomUserPrincipal principal = (CustomUserPrincipal) SecurityContextHolder.getContext().getAuthentication()
+                    .getPrincipal();
+            CorporateUser doneBy = corporateUserRepo.findByUserName(principal.getUsername());
+
+
+            Verification verification = new Verification();
+            verification.setEntityName(entityName);
+            verification.setInitiatedOn(new Date());
+            verification.setInitiatedBy(doneBy.getUserName());
+            verification.setUserType(UserType.OPERATIONS);
+            verification.setOperation(operation);
+            verification.setDescription(description);
+            ObjectMapper mapper = new ObjectMapper();
+            verification.setOriginalObject(mapper.writeValueAsString(user));
+
+
+            ObjectMapper prettyMapper = new ObjectMapper();
+
+            if (user instanceof PrettySerializer) {
+                JsonSerializer<Object> serializer = ((PrettySerializer) (user)).getSerializer();
+
+                SimpleModule module = new SimpleModule();
+                module.addSerializer(user.getClass(), serializer);
+                prettyMapper.registerModule(module);
+                logger.debug("Registering Pretty serializer for " + user.getClass().getName());
+            }
+
+            if (user.getId() != null) {
+                Long id = user.getId();
+                AbstractEntity originalEntity = entityManager.find(user.getClass(), id);
+
+                Verification pendingVerification = verificationRepo.findFirstByEntityNameAndEntityIdAndStatus(entityName,
+                        id, VerificationStatus.PENDING);
+                if (pendingVerification != null) {
+                    // found pending verification
+                    throw new InternetBankingException(entityName + " has pending verification");
+                }
+
+                verification.setBeforeObject(prettyMapper.writeValueAsString(originalEntity));
+                verification.setEntityId(user.getId());
+            }
+            verification.setAfterObject(prettyMapper.writeValueAsString(user));
+
+
+            verification.setStatus(VerificationStatus.PENDING);
+
+            logger.info("verification >>>>  " + verification);
+            verificationRepo.save(verification);
+
+            logger.info(entityName + " has been saved for verification with the bank");
+
+            System.out.println("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
+            throw new VerificationInterruptedException(description + " has gone for verification with the bank");
+
+        }catch (JsonProcessingException e){
+            logger.error(e.getMessage(), e);
+            throw new VerificationException(e.getMessage());
+        }
+
+    }
+
+    @Override
     public String decline(VerificationDTO dto) throws VerificationException {
 
         CorpUserVerification corpUserVerification = corpUserVerificationRepo.findOne(dto.getId());
@@ -168,12 +246,12 @@ public class CorpUserVerificationServiceImpl implements CorpUserVerificationServ
 
     @Override
     public String verify(Long id) throws VerificationException{
-        VerificationDTO verificationDTO = getVerification(id);
-        return verify(verificationDTO);
+        CorpUserVerificationDTO corpUserVerificationDTO = getVerification(id);
+        return verify(corpUserVerificationDTO);
     }
 
     @Override
-    public String verify(VerificationDTO dto) throws VerificationException {
+    public String verify(CorpUserVerificationDTO dto) throws VerificationException {
 
         CorpUserVerification corpUserVerification = corpUserVerificationRepo.findOne(dto.getId());
         String verifiedBy = getCurrentUserName();
@@ -240,50 +318,25 @@ public class CorpUserVerificationServiceImpl implements CorpUserVerificationServ
     }
 
     @Override
-    public VerificationDTO getVerification(Long id) {
+    public CorpUserVerificationDTO getVerification(Long id) {
         return convertEntityToDTO(corpUserVerificationRepo.findOne(id));
     }
 
 
     @Override
-    public VerificationDTO convertEntityToDTO(CorpUserVerification corpUserVerification) {
-        return modelMapper.map(corpUserVerification, VerificationDTO.class);
+    public CorpUserVerificationDTO convertEntityToDTO(CorpUserVerification corpUserVerification) {
+        CorpUserVerificationDTO corpUserVerificationDTO = modelMapper.map(corpUserVerification, CorpUserVerificationDTO.class);
+        return corpUserVerificationDTO;
     }
 
     @Override
-    public List<VerificationDTO> convertEntitiesToDTOs(Iterable<CorpUserVerification> corpUserVerifications) {
-        List<VerificationDTO> verificationDTOArrayList = new ArrayList<>();
+    public List<CorpUserVerificationDTO> convertEntitiesToDTOs(Iterable<CorpUserVerification> corpUserVerifications) {
+        List<CorpUserVerificationDTO> corpUserVerificationDTOList = new ArrayList<>();
         for (CorpUserVerification corpUserVerification : corpUserVerifications) {
-            VerificationDTO verificationDTO = convertEntityToDTO(corpUserVerification);
-            verificationDTOArrayList.add(verificationDTO);
+            CorpUserVerificationDTO corpUserVerificationDTO = convertEntityToDTO(corpUserVerification);
+            corpUserVerificationDTOList.add(corpUserVerificationDTO);
         }
-        return verificationDTOArrayList;
-    }
-
-
-    @Override
-    public Page<VerificationDTO> getMakerCheckerPending(Pageable pageDetails) {
-        CustomUserPrincipal principal = (CustomUserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        User doneBy = principal.getUser();
-
-        Page<CorpUserVerification> page = corpUserVerificationRepo.findByStatusAndInitiatedBy(VerificationStatus.PENDING, doneBy.getUserName(), pageDetails);
-        List<VerificationDTO> dtOs = convertEntitiesToDTOs(page.getContent());
-        long t = page.getTotalElements();
-        Page<VerificationDTO> pageImpl = new PageImpl<VerificationDTO>(dtOs, pageDetails, t);
-        return pageImpl;
-
-    }
-
-    @Override
-    public Page<VerificationDTO> getPendingOperations(String operation, Pageable pageable) {
-        CustomUserPrincipal principal = (CustomUserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        CorporateUser doneBy = (CorporateUser) principal.getUser();
-        Page<CorpUserVerification> page = corpUserVerificationRepo.findByOperationAndInitiatedByAndCorpUserTypeAndStatus(operation,doneBy.getUserName(),doneBy.getCorpUserType(), VerificationStatus.PENDING,pageable);
-        List<VerificationDTO> dtOs = convertEntitiesToDTOs(page.getContent());
-        long t = page.getTotalElements();
-        Page<VerificationDTO> pageImpl = new PageImpl<VerificationDTO>(dtOs, pageable, t);
-        return pageImpl;
-
+        return corpUserVerificationDTOList;
     }
 
     @Override
@@ -312,52 +365,22 @@ public class CorpUserVerificationServiceImpl implements CorpUserVerificationServ
     }
 
 
-
-
     @Override
-    public Page<CorpUserVerification> getVerificationsForUser(Pageable pageable) {
-        CustomUserPrincipal principal = (CustomUserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        CorporateUser doneBy = (CorporateUser) principal.getUser();
-        List<String> permissions = getPermissionCodes(doneBy.getRole());
-        Page<CorpUserVerification> corpUserVerifications = corpUserVerificationRepo.findVerificationForUsers(doneBy.getUserName(), doneBy.getCorpUserType(),permissions,pageable);
-        return corpUserVerifications;
-
+    public Page<CorpUserVerificationDTO> getAllRequests(Pageable pageable) {
+        Page<CorpUserVerification> page = corpUserVerificationRepo.findAll(pageable);
+        List<CorpUserVerificationDTO> dtOs = convertEntitiesToDTOs(page.getContent());
+        long t =page.getTotalElements();
+        Page<CorpUserVerificationDTO> pageImpl = new PageImpl<CorpUserVerificationDTO>(dtOs,pageable,t);
+        return pageImpl;
     }
 
-    @Override
     public List<String> getPermissionCodes(Role role) {
         Collection<Permission> permissions = role.getPermissions();
         List<String> permCodes = new ArrayList<>();
-        for (Permission permission: permissions){
+        for (Permission permission : permissions) {
             permCodes.add(permission.getCode());
         }
         return permCodes;
-    }
-
-
-    @Override
-    public Page<VerificationDTO> getPendingForUser(Pageable pageable) {
-        CustomUserPrincipal principal = (CustomUserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        CorporateUser doneBy = (CorporateUser) principal.getUser();
-        Page<CorpUserVerification> page = corpUserVerificationRepo.findByInitiatedByAndCorpUserTypeAndStatus(doneBy.getUserName(), doneBy.getCorpUserType(),VerificationStatus.PENDING,pageable);
-        List<VerificationDTO> dtOs = convertEntitiesToDTOs(page.getContent());
-        long t = page.getTotalElements();
-        Page<VerificationDTO> pageImpl = new PageImpl<VerificationDTO>(dtOs, pageable, t);
-        return pageImpl;
-
-    }
-
-
-    @Override
-    public Page<VerificationDTO> getVerifiedOPerations(Pageable pageable)
-    {
-        CustomUserPrincipal principal = (CustomUserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        CorporateUser verifiedBy = corporateUserRepo.findFirstByUserName(principal.getUsername());
-        Page<CorpUserVerification> page = corpUserVerificationRepo.findVerifiedOperationsForUser(verifiedBy.getUserName(),verifiedBy.getCorpUserType(),pageable);
-        List<VerificationDTO> dtOs = convertEntitiesToDTOs(page.getContent());
-        long t =page.getTotalElements();
-        Page<VerificationDTO> pageImpl = new PageImpl<VerificationDTO>(dtOs,pageable,t);
-        return pageImpl;
     }
 
     private String getCurrentUserName(){

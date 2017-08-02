@@ -1,18 +1,12 @@
 package longbridge.controllers.corporate;
 
-import longbridge.dtos.CodeDTO;
-import longbridge.dtos.CorporateDTO;
-import longbridge.dtos.CorporateUserDTO;
-import longbridge.dtos.RoleDTO;
+import longbridge.dtos.*;
 import longbridge.exception.DuplicateObjectException;
 import longbridge.exception.InternetBankingException;
 import longbridge.exception.PasswordException;
 import longbridge.models.CorporateUser;
 import longbridge.models.UserType;
-import longbridge.services.CodeService;
-import longbridge.services.CorporateService;
-import longbridge.services.CorporateUserService;
-import longbridge.services.RoleService;
+import longbridge.services.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,6 +41,9 @@ public class CorpUserManagementController {
     private CorporateUserService corporateUserService;
     @Autowired
     private CorporateService corporateService;
+
+    @Autowired
+    private CorpUserVerificationService corpUserVerificationService;
 
     @Autowired
     CodeService codeService;
@@ -126,13 +123,7 @@ public class CorpUserManagementController {
         }
 
         try {
-            String message="";
-            String corpUserRole = webRequest.getParameter("authorizer");
-            if (corpUserRole == "authorizer"){
-
-            }else{
-                message = corporateUserService.addUserFromCorporateAdmin(corporateUserDTO);
-            }
+            String message = corporateUserService.addUserFromCorporateAdmin(corporateUserDTO);
             redirectAttributes.addFlashAttribute("message", message);
             return "redirect:/corporate/users/";
         } catch (DuplicateObjectException doe) {
@@ -152,7 +143,7 @@ public class CorpUserManagementController {
     public String activationStatus(@PathVariable Long id, RedirectAttributes redirectAttributes){
 
         try {
-            String message = corporateUserService.changeCorpActivationStatus(id);
+            String message = corporateUserService.changeStatusFromCorporateAdmin(id);
             redirectAttributes.addFlashAttribute("message", message);
         }catch (InternetBankingException ibe){
             logger.error("Error changing corporate user activation status", ibe);
@@ -180,5 +171,35 @@ public class CorpUserManagementController {
         return "redirect:/corporate/users";
     }
 
+    @GetMapping("/approvals")
+    public String approvals(Principal principal, Model model){
+        return "/corp/user/approval";
+    }
+
+    @GetMapping(path = "/approvals/all")
+    public
+    @ResponseBody
+    DataTablesOutput<CorpUserVerificationDTO> getAllVerification(DataTablesInput input)
+    {
+        Pageable pageable = DataTablesUtils.getPageable(input);
+        Page<CorpUserVerificationDTO> page = corpUserVerificationService.getAllRequests(pageable);
+        DataTablesOutput<CorpUserVerificationDTO> out = new DataTablesOutput<CorpUserVerificationDTO>();
+        out.setDraw(input.getDraw());
+        out.setData(page.getContent());
+        out.setRecordsFiltered(page.getTotalElements());
+        out.setRecordsTotal(page.getTotalElements());
+        return out;
+    }
+
+    @GetMapping("/{id}/approvals")
+    public String getObjectsForVerification(@PathVariable Long id, Model model, Principal principal)
+    {
+        CorpUserVerificationDTO verification = corpUserVerificationService.getVerification(id);
+        model.addAttribute("verification",new CorpUserVerificationDTO());
+        model.addAttribute("verify", verification);
+
+
+        return "corp/user/details";
+    }
 
 }

@@ -156,4 +156,6 @@ public interface CorporateUserService{
     String addUserFromCorporateAdmin(CorporateUserDTO user) throws InternetBankingException;
 
     String updateUserFromCorporateAdmin(CorporateUserDTO user) throws InternetBankingException;
+
+    String changeStatusFromCorporateAdmin(Long id) throws InternetBankingException;
 }

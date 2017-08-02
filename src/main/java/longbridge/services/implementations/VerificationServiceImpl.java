@@ -1,17 +1,23 @@
 package longbridge.services.implementations;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.module.SimpleModule;
 import longbridge.dtos.VerificationDTO;
 import longbridge.exception.InternetBankingException;
 import longbridge.exception.VerificationException;
+import longbridge.exception.VerificationInterruptedException;
 import longbridge.models.*;
 import longbridge.repositories.AdminUserRepo;
+import longbridge.repositories.CorporateUserRepo;
 import longbridge.repositories.OperationsUserRepo;
 import longbridge.repositories.VerificationRepo;
 import longbridge.security.userdetails.CustomUserPrincipal;
 import longbridge.services.MailService;
 import longbridge.services.VerificationService;
 import longbridge.utils.DateFormatter;
+import longbridge.utils.PrettySerializer;
 import longbridge.utils.VerificationStatus;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
@@ -46,6 +52,9 @@ public class VerificationServiceImpl implements VerificationService {
 
     @Autowired
     private AdminUserRepo adminUserRepo;
+
+    @Autowired
+    private CorporateUserRepo corporateUserRepo;
 
     @Autowired
     private OperationsUserRepo operationsUserRepo;
@@ -86,6 +95,7 @@ public class VerificationServiceImpl implements VerificationService {
         }
         return messageSource.getMessage("verification.decline", null, locale);
     }
+
 
 
     @Override
