@@ -5,6 +5,16 @@
 
 
 <body class="nav-md">
+
+<style>
+
+    .error {
+        color: red;
+        display: none;
+    }
+
+</style>
+
 <div class="container body">
     <div class="main_container">
         <div class="col-md-3 left_col">
@@ -28,7 +38,7 @@
             <div class="">
                 <div class="page-title">
                     <div class="title_left">
-                        <h3>Corporate Users</h3>
+                        <h3 th:text="${corporate.corporateName}"></h3>
                     </div>
 
                 </div>
@@ -39,33 +49,24 @@
                     <div class="col-md-12 col-sm-12 col-xs-12">
                         <div class="x_panel">
                             <div class="x_title">
-                                <ul class="nav navbar-left panel_toolbox">
-
-                                </ul>
-                                <ul class="nav navbar-right panel_toolbox">
-
-                                    <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
-                                    </li>
-
-                                </ul>
+                                <h2>Corporate Users</h2>
                                 <div class="clearfix"></div>
                             </div>
 
                             <div class="x_content">
-                                <form method="post" th:action="@{/ops/corporates/rules}" id="ruleForm"
+                                <form method="post" th:action="@{/ops/corporates/users/new}" id="userForm"
                                       class="form-horizontal">
 
-                                    <input hidden="hidden" name="rules"/>
+                                    <input hidden="hidden" name="users"/>
 
                                     <div class="x_content">
 
                                         <fieldset>
-                                            <legend></legend>
 
                                             <div class="col-md-6 col-sm-6 col-xs-12">
                                                 <button type="button" id="button_add" class="btn-xs btn-default btn"
                                                         data-toggle="modal" data-target="#myModal">
-                                                    <i class="fa fa-money"></i> Add
+                                                    <i class="fa fa-user"></i> Add
                                                 </button>
 
                                                 <button type="submit" id="button_del" class="btn-xs btn-default btn">
@@ -79,11 +80,14 @@
                                                            cellspacing="0" width="100%">
                                                         <thead>
                                                         <tr>
-                                                            <th>Lower Amount</th>
-                                                            <th>Upper Amount</th>
-                                                            <th>Currency</th>
-                                                            <th>Authorizers</th>
-                                                            <th>Required Authorizers</th>
+                                                            <th>Username</th>
+                                                            <th>First Name</th>
+                                                            <th>Last Name</th>
+                                                            <th>Email Address</th>
+                                                            <th>Phone Number</th>
+                                                            <th>User Type</th>
+                                                            <th>Authorizer Level</th>
+                                                            <th>Role</th>
 
                                                         </tr>
                                                         </thead>
@@ -96,7 +100,7 @@
 
                                         <div class="form-group">
                                             <div class="class=col-sm-4 col-sm-offset-2" align="left">
-                                                <button type="submit" id="button_submit" class="btn btn-primary">Next
+                                                <button type="submit" id="button_submit" class="btn btn-primary">Submit
                                                 </button>
                                             </div>
                                         </div>
@@ -114,7 +118,6 @@
         <!-- Modal -->
         <form method="post" class="form-horizontal" id="aform">
 
-            <input type="hidden" name="rules"/>
             <div id="myModal" class="modal fade" role="dialog">
                 <div class="modal-dialog modal-lg">
 
@@ -122,82 +125,133 @@
                     <div class="modal-content">
                         <div class="modal-header">
                             <button type="button" class="close" data-dismiss="modal">&times;</button>
-                            <h4 class="modal-title">New Transaction Rule</h4>
+                            <h4 class="modal-title">New Corporate User</h4>
                         </div>
                         <div class="modal-body">
+
                             <div class="form-group">
-                                <label class="col-sm-2 control-label">Lower Amount<span
-                                        style="color: red">*</span></label>
+                                <label class="col-sm-2 control-label">Username</label>
+
                                 <div class="col-sm-6">
-                                    <input type="number" class="form-control" name="lowerLimitAmount"/>
+                                    <input id="userName" type="text" class="form-control" name="userName"/>
+                                    <span id="userNameError" class="error">Username is required</span>
+                                    <span id="userExistError" class="error">Username already exists</span>
+                                    <span id="duplicateUsernameError"
+                                          class="error">User with username already added</span>
+
+
                                 </div>
                             </div>
 
+
                             <div class="form-group">
-                                <label class="col-sm-2 control-label">Upper Amount <span
-                                        style="color: red">*</span></label>
+                                <label class="col-sm-2 control-label">First Name</label>
+
                                 <div class="col-sm-6">
-                                    <input id="upperLimit" type="number" class="form-control" name="upperLimitAmount"/>
+                                    <input id="firstName" type="text" class="form-control" name="firstName"/>
+                                    <span id="firstNameError" class="error">First name is required</span>
 
                                 </div>
-                                <input id="unlimited" type="checkbox" class="checkbox-inline"
-                                       name="unlimited"/>
-                                <label><strong>No Upper Limit</strong></label>
+
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label">Last Name</label>
+
+                                <div class="col-sm-6">
+                                    <input id="lastName" type="text" class="form-control" name="lastName"/>
+                                    <span id="lastNameError" class="error">Last name is required</span>
+
+                                </div>
+
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label">Email Address</label>
+
+                                <div class="col-sm-6">
+                                    <input id="email" type="email" class="form-control" name="email"/>
+                                    <span id="emailError" class="error">Email address is required</span>
+                                    <span id="duplicateEmailError"
+                                          class="error">User with email address already added</span>
+
+
+                                </div>
+
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label">Phone Number</label>
+
+                                <div class="col-sm-6">
+                                    <input id="phoneNumber" type="number" class="form-control" name="phoneNumber"/>
+                                    <span id="phoneNumberError" class="error">Phone number is required</span>
+                                    <span id="duplicatePhoneError"
+                                          class="error">User with phone number already added</span>
+
+
+                                </div>
 
                             </div>
 
 
                             <div class="form-group">
-                                <label class="col-sm-2 control-label">Currency</label>
+                                <label class="col-sm-2 control-label">User Type</label>
                                 <div class="col-sm-6">
-                                    <select id="currency" class="form-control" name="currency">
-                                        <option th:each="currency: ${currencies}"
-                                                th:value="${currency.code}"
-                                                th:text="${currency.description}"></option>
 
+                                    <select id="userType" class="form-control" name="userType">
+                                        <option value="">Select..</option>
+                                        <option value="ADMIN">Administrator</option>
+                                        <option value="INITIATOR">Initiator</option>
+                                        <option value="AUTHORIZER">Authorizer</option>
                                     </select>
+                                    <span id="userTypeError" class="error">User type is required</span>
+
                                 </div>
                             </div>
-                            <hr/>
-                            <div class="form-group">
-                                <label class="col-sm-2 control-label">Authorizer Levels <span
-                                        style="color: red">*</span></label>
+
+                            <div id="authorizer" class="form-group" style="display: none">
+                                <label class="col-sm-2 control-label">Authorizer Level</label>
                                 <div class="col-sm-6">
 
-                                    <p th:each="authorizer: ${authorizerList}">
-                                        <!--<input type="number" name="numRole" value="1"/>-->
-                                        <label class="checkbox-inline">
-                                            <input type="checkbox" name="authorizers"
-                                                   th:value="${authorizer.name}+' '+${authorizer.level}"/>
-                                            <span th:text="${authorizer.name}+' '+${authorizer.level}"></span>
+                                    <select id="authorizerLevel" class="form-control" name="authorizerLevel">
+                                        <option value="">Select..</option>
+                                        <option th:each="authorizer : ${authorizerLevels}"
+                                                th:value="${authorizer.name+' '+authorizer.level}"
+                                                th:text="${authorizer.name+' '+authorizer.level}"></option>
+                                    </select>
+                                    <span id="authorizerError" class="error">Authorizer level is required</span>
 
-                                        </label>
-                                    </p>
                                 </div>
                             </div>
-                            <hr/>
+
                             <div class="form-group">
-                                <div>
-                                    <div class="radio">
-                                        <label class="col-sm-2 control-label"></label>
+                                <label class="col-sm-2 control-label">Role</label>
+                                <div class="col-sm-6">
 
-                                        <label><input type="radio" name="any" value="All" checked="checked"/>
-                                            All the authorizers selected above must approve transaction</label>
-                                    </div>
-                                    <div class="radio">
-                                        <label class="col-sm-2 control-label"></label>
+                                    <select id="role" class="form-control" name="role">
+                                        <option value="">Select..</option>
+                                        <option th:each="role : ${roles.?[#strings.equalsIgnoreCase(userType, 'corporate')]}"
+                                                th:value="${role.id}" th:text="${role.name}"></option>
+                                    </select>
+                                    <span id="roleError" class="error">Role is required</span>
 
-                                        <label><input type="radio" name="any" value="Any"/>
-                                            Any of the 2 authorizers selected above can approve transaction</label>
-                                    </div>
+
                                 </div>
                             </div>
-                            <br/>
+
+                            <!--<div  th:if ="${corporate.corporateType=='MULTI'}" class="form-group">-->
+                            <!--<label class="col-sm-2 control-label"></label>-->
+
+                            <!--<p><label class="checkbox-inline">-->
+                            <!--<input type="checkbox" class="checkbox-inline"-->
+                            <!--th:field="*{admin}"/>-->
+                            <!--<span>Make Corporate Admin</span>-->
+                            <!--</label>-->
+                            <!--</p>-->
+                            <!--</div>-->
 
 
                         </div>
                         <div class="modal-footer">
-                            <button id="add_rule" type="submit" class="btn btn-primary">Add</button>
+                            <button id="add_user" type="submit" class="btn btn-primary">Add</button>
                             <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
                         </div>
                     </div>
@@ -224,10 +278,18 @@
 
 <script type="text/javascript" class="init">
 
-    $("#aform").validate();
+
+    var userExist = false;
+    var duplicateUsername = false;
+    var duplicateEmail = false;
+    var invalidEmail = false;
+    var duplicatePhone = false;
 
     /*<![CDATA[*/
     $(document).ready(function () {
+
+        validateForm();
+
         var counter = 0;
         var t = $('#mytab').DataTable({
             dom: 'rt',
@@ -236,62 +298,152 @@
             },
             ordering: false,
             "columns": [{
-                "data": "lowerLimitAmount"
+                "data": "userName"
             }, {
-                "data": "upperLimitAmount"
+                "data": "firstName"
+            }, {
+                "data": "lastName"
+            }, {
+                "data": "email"
             },
-                {
-                    "data": "currency"
-                },
-                {
-                    "data": "authorizers"
-                },
 
                 {
-                    "data": "any"
+                    "data": "phoneNumber"
+                },
+                {
+                    "data": "userType"
+                },
+                {
+                    "data": "authorizerLevel"
+                },
+                {
+                    "data": "role"
                 }
             ],
             "language": {
-                "emptyTable": "No Rule added. Click Add"
+                "emptyTable": "No User added. Click Add"
             }
 
         });
+
 
         $('#button_submit').click(function (e) {
             e.preventDefault()
             contactsTab = $('#mytab').DataTable();
             data = JSON.stringify(contactsTab.data().toArray());
-            $("input[name='rules']").val(data);
+            $("input[name='users']").val(data);
             $('form').submit();
         });
 
 
-        $('#add_rule').on('click', function (e) {
+        $('#add_user').on('click', function (e) {
             e.preventDefault()
 
             contactsTab = $('#mytab').DataTable();
-            lowerLimitAmount = $("input[name='lowerLimitAmount']").val();
-            upperLimitAmount = $("input[name='upperLimitAmount']").val();
-            currency = $("select#currency").val();
-            authorizers = $("input[type=checkbox][name='authorizers']:checked").map(function(){
 
-                return $(this).val()}).get();
+            userName = $("input[name='userName']").val();
+            firstName = $("input[name='firstName']").val();
+            lastName = $("input[name='lastName']").val();
+            email = $("input[name='email']").val();
+            phoneNumber = $("input[name='phoneNumber']").val();
+            userType = $("select#userType").val();
+            authorizerLevel = $("select#authorizerLevel").val();
+            role = $("select#role").val();
 
-            console.log(authorizers)
-            any = $("input[type=radio][name='any']:checked" ).val();
+
+            if (userName == "") {
+                $("#userNameError").show();
+            }
+            if (firstName == "") {
+                $("#firstNameError").show();
+
+            }
+            if (lastName == "") {
+                $("#lastNameError").show();
+
+            }
+            if (email == "") {
+                $("#emailError").show();
+
+            }
+            if (phoneNumber == "") {
+                $("#phoneNumberError").show();
+
+            }
+            if (userType == "") {
+                $("#userTypeError").show();
+            }
+
+
+            if (userType == "AUTHORIZER" && authorizerLevel == "") {
+                $("#authorizerError").show();
+            }
+
+            if (role == "") {
+                $("#roleError").show();
+            }
+
+
+            if (userName == "" || firstName == "" || lastName == "" || email == "" || phoneNumber == "" || userType == "" || role == "") {
+                return;
+            }
+
+            if (userType == "AUTHORIZER" && authorizerLevel == "") {
+                return;
+            }
+
+
+
+
+            var arr = contactsTab.data().toArray();
+
+
+
+
+            $.each(arr, function (i, obj) {
+
+                $.each(obj, function (key, value) {
+                    if (key == "userName"&& value==userName) {
+                        duplicateUsername = true;
+                    }
+
+                    if (key == "email"&& value==email) {
+                        duplicateEmail = true;
+                    }
+
+                    if (key == "phoneNumber"&& value==phoneNumber) {
+                        duplicatePhone = true;
+                    }
+
+                })
+
+            })
+
+
 
 
             od = {
                 'DT_RowId': null,
-                'lowerLimitAmount' : lowerLimitAmount,
-                'upperLimitAmount' : upperLimitAmount,
-                'currency' : currency,
-                'authorizers' : authorizers,
-                'any' : any
+                'userName': userName,
+                'firstName': firstName,
+                'lastName': lastName,
+                'email': email,
+                'phoneNumber': phoneNumber,
+                'userType': userType,
+                'authorizerLevel': authorizerLevel,
+                'role': role
+
 
             };
             contactsTab.row.add(od);
             contactsTab.draw();
+
+            userExist = false;
+            duplicateUsername = false;
+            duplicateEmail = false;
+            invalidEmail = false;
+            duplicatePhone = false;
+
             $('#myModal').modal('toggle');
 
 
@@ -310,6 +462,142 @@
         });
 
     });
+
+
+    function validateForm() {
+
+
+        $("#userName").keyup(function () {
+            userName = $("input[name='userName']").val();
+            if (userName != "") {
+                $("#userNameError").hide();
+            }
+            else {
+                $("#userNameError").show();
+
+            }
+        })
+
+
+        $("#userName").blur(function () {
+
+            userName = $("input[name='userName']").val();
+
+            $.ajax({
+                url: "/ops/corporates/" + userName + "/exists",
+                success: function (result) {
+                    if (result == "true") {
+                        $("#userExistError").show()
+                        userExist = true;
+                    }
+                    else {
+                        userExist = false;
+                        $("#userExistError").hide()
+                    }
+                }
+            });
+        })
+
+        $("#firstName").keyup(function () {
+            firstName = $("input[name='firstName']").val();
+            if (firstName != "") {
+                $("#firstNameError").hide();
+            }
+            else {
+                $("#firstNameError").show();
+
+            }
+        })
+
+        $("#lastName").keyup(function () {
+            lastName = $("input[name='lastName']").val();
+            if (lastName != "") {
+                $("#lastNameError").hide();
+            }
+            else {
+                $("#lastNameError").show();
+
+            }
+        })
+
+
+        $("#email").keyup(function () {
+            email = $("input[name='email']").val();
+            if (email != "") {
+                $("#emailError").hide();
+            }
+            else {
+                $("#emailError").show();
+
+            }
+        })
+
+
+        $("#phoneNumber").keyup(function () {
+            phoneNumber = $("input[name='phoneNumber']").val();
+            if (phoneNumber != "") {
+                $("#phoneNumberError").hide();
+            }
+            else {
+                $("#phoneNumberError").show();
+
+            }
+        })
+
+
+        $("#userType").change(function () {
+            userType = $("select#userType").val();
+            if (userType != "") {
+                $("#userTypeError").hide();
+            }
+            else {
+                $("#userTypeError").show();
+
+            }
+
+            if (userType == "AUTHORIZER") {
+                $("#authorizer").show();
+            }
+            else {
+                $("#authorizer").hide();
+            }
+
+        })
+
+
+        $("#authorizerLevel").change(function () {
+            authorizerLevel = $("select#authorizerLevel").val();
+            if (authorizerLevel != "") {
+                $("#authorizerError").hide();
+            }
+            else {
+                $("#authorizerError").show();
+
+            }
+        })
+
+        $("#role").change(function () {
+            role = $("select#role").val();
+            if (role != "") {
+                $("#roleError").hide();
+            }
+            else {
+                $("#roleError").show();
+            }
+        })
+
+
+    }
+
+
+
+
+
+    function isValidEmailAddress(emailAddress) {
+        var pattern = /^([a-z\d!#$%&'*+\-\/=?^_`{|}~\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]+(\.[a-z\d!#$%&'*+\-\/=?^_`{|}~\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]+)*|"((([ \t]*\r\n)?[ \t]+)?([\x01-\x08\x0b\x0c\x0e-\x1f\x7f\x21\x23-\x5b\x5d-\x7e\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]|\\[\x01-\x09\x0b\x0c\x0d-\x7f\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]))*(([ \t]*\r\n)?[ \t]+)?")@(([a-z\d\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]|[a-z\d\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF][a-z\d\-._~\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]*[a-z\d\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])\.)+([a-z\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]|[a-z\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF][a-z\d\-._~\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]*[a-z\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])\.?$/i;
+        return pattern.test(emailAddress);
+    }
+    ;
 
     /*]]>*/
 </script>

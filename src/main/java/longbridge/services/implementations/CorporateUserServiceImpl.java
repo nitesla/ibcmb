@@ -609,6 +609,11 @@ public class CorporateUserServiceImpl implements CorporateUserService {
 
 
     @Override
+    public boolean userExists(String username) {
+        return corporateUserRepo.existsByUserNameIgnoreCase(username);
+    }
+
+    @Override
     public List<CorporateUserDTO> getUsersWithoutRole(Long corpId) {
         Corporate corporate = corporateRepo.findOne(corpId);
         List<CorporateUser> userNotInRole = corporateUserRepo.findUsersWithoutRole(corporate);

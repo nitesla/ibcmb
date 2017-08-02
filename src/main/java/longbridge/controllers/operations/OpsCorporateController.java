@@ -609,7 +609,7 @@ public class OpsCorporateController {
             return "/ops/corporate/setup/account";
         }
 
-        if(corporateService.corporateIdExists(corporate.getCorporateId())){
+        if (corporateService.corporateIdExists(corporate.getCorporateId())) {
             result.addError(new ObjectError("invalid", messageSource.getMessage("corp.id.exists", null, locale)));
             List<AccountInfo> accountInfos = integrationService.fetchAccounts(corporate.getCustomerId().toUpperCase());
             model.addAttribute("accounts", accountInfos);
@@ -621,12 +621,18 @@ public class OpsCorporateController {
 
         logger.info("Customer accounts {}", accounts.toString());
 
-        if(session.getAttribute("corporateRequest")!=null){
-            CorporateRequestDTO corporateRequestDTO = (CorporateRequestDTO)session.getAttribute("corporateRequest");
+        if (session.getAttribute("corporateRequest") != null) {
+            CorporateRequestDTO corporateRequestDTO = (CorporateRequestDTO) session.getAttribute("corporateRequest");
             corporateRequestDTO.setCorporateName(corporate.getCorporateName());
             corporateRequestDTO.setCorporateId(corporate.getCorporateId());
 
-            model.addAttribute("corporate",corporateRequestDTO);
+
+            for(String account: accounts){
+                AccountDTO accountDTO = new AccountDTO();
+                accountDTO.setAccountNumber(account);
+            }
+
+            model.addAttribute("corporate", corporateRequestDTO);
             logger.info("Corporate Request DTO " +
                     "{}", corporateRequestDTO.toString());
 
@@ -655,12 +661,12 @@ public class OpsCorporateController {
 
             Iterable<CodeDTO> currencies = codeService.getCodesByType("CURRENCY");
 
-            if(session.getAttribute("corporateRequest")!=null) {
+            if (session.getAttribute("corporateRequest") != null) {
                 CorporateRequestDTO corporateRequestDTO = (CorporateRequestDTO) session.getAttribute("corporateRequest");
-                model.addAttribute("corporate",corporateRequestDTO);
+                model.addAttribute("corporate", corporateRequestDTO);
             }
-                model.addAttribute("currencies",currencies);
-            model.addAttribute("authorizerList",authorizerList);
+            model.addAttribute("currencies", currencies);
+            model.addAttribute("authorizerList", authorizerList);
 
             return "/ops/corporate/setup/addrule";
 
@@ -673,5 +679,37 @@ public class OpsCorporateController {
 
     }
 
-}
 
+    @PostMapping("/rules/new")
+    public String createTransactionRule(WebRequest request, RedirectAttributes redirectAttributes, HttpSession session, Model model, Locale locale) {
+
+        String rules= request.getParameter("rules");
+
+        logger.info("Transaction rules are: {}",rules);
+
+        if(session.getAttribute("corporateRequest")!=null) {
+            CorporateRequestDTO corporateRequestDTO = (CorporateRequestDTO) session.getAttribute("corporateRequest");
+            model.addAttribute("corporate",corporateRequestDTO);
+        }
+        if(session.getAttribute("authorizerLevels")!=null) {
+            List<AuthorizerDTO>  authorizerLevels= (ArrayList) session.getAttribute("authorizerLevels");
+            model.addAttribute("authorizerLevels",authorizerLevels);
+        }
+
+        return "/ops/corporate/setup/adduser";
+
+
+    }
+
+    @GetMapping("/{username}/exists")
+    @ResponseBody
+    public String checkUsername(@PathVariable String username){
+        if(corporateUserService.userExists(username)){
+            return "true";
+        }
+        else {
+            return "false";
+        }
+
+    }
+}

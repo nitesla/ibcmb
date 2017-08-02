@@ -45,7 +45,7 @@
                             </div>
 
                             <div class="x_content">
-                                <form method="post" th:action="@{/ops/corporates/rules}" id="ruleForm"
+                                <form method="post" th:action="@{/ops/corporates/rules/new}" id="ruleForm"
                                       class="form-horizontal">
 
                                     <input hidden="hidden" name="rules"/>
@@ -254,7 +254,7 @@
             contactsTab = $('#mytab').DataTable();
             data = JSON.stringify(contactsTab.data().toArray());
             $("input[name='rules']").val(data);
-            $('form').submit();
+            $('#ruleForm').submit();
         });
 
 

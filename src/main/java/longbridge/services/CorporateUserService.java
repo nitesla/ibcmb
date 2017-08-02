@@ -120,6 +120,8 @@ public interface CorporateUserService{
     String changePassword(CorporateUser user, CustChangePassword changePassword) throws PasswordException;
 
 
+    boolean userExists(String username);
+
     /** This sets the Alert preference of the specified user. Alert preference may
      * be SMS, EMAIL or BOTH
      * @param
