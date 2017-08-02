@@ -1,11 +1,15 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <link rel="stylesheet" type="text/css" th:href="@{~/customer/css/bootstrap.css}" />
-    <link rel="stylesheet" type="text/css" th:href="@{~/customer/css/custom.css}"/>
+    <!-- BEGIN PAGE LEVEL STYLES -->
+    <link rel="stylesheet" type="text/css" th:href="@{~/customer/plugins/jquery-steps/css/jquery.steps.css}" />
+    <link rel="stylesheet" type="text/css" th:href="@{~/customer/css/jquery-ui.css}" />
     <link rel="stylesheet" type="text/css" th:href="@{~/customer/font-awesome/font-awesome.min.css}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{~/customer/css/bootstrap.css}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{~/customer/css/custom.css}"/>
     <link rel="shortcut icon" th:href="@{~/customer/img/favicon.ico}" type="image/x-icon">
 <link rel="icon" th:href="@{~/customer/img/favico.ico}" type="image/x-icon">
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Test</title>
 </head>
@@ -46,7 +50,7 @@
                                     </ul>
                                 </li>
                                 <li><a href="/register"> REGISTER</a></li>
-                                <li><a href="#contact_us"> CONTACT US</a></li>
+                                <li><a href="/#contact_us"> CONTACT US</a></li>
                                 <li><a href="/faqs"> FAQ</a></li>
                             </ul>
 
@@ -66,46 +70,32 @@
         </div>
 
 
-
 <section class="content-wrapper">
     <div class="containe">
         <div class="bg">
-           
-                <form id="loginform" th:action="@{/retail/login}" method="POST" class="" autocomplete="off">
-                     <div class='col-sm-4 col-sm-offset-4 form-signi'  style="padding:100px 15px 30px">
-                    <h5 class="form-signin-heading text-white">Enter Login Details</h5>
+            <form  th:action="@{/login/u/corporate}" method="POST" class="form-signin" autocomplete="off">
+                <h5 class="form-signin-heading">Enter Login Details</h5>
+                <br/>
+                <div th:if="${param.message != null}" class="alert alert-info" th:text="${param.message[0]}">message</div>
 
-
-                    <div th:if="${param.message != null}" class="alert alert-info" th:text="${param.message[0]}">message</div>
-                    <div th:if="${param.error != null}" class="alert alert-danger" th:text="${session[SPRING_SECURITY_LAST_EXCEPTION]}">error</div>
-                    <div th:if="${param.expired != null}" class="alert alert-danger" th:text="#{session.expired}">error</div>
-                    <br/>
-                     <div id="username_div" class="form-group">
-                        <input type="text" name="username" th:value="*{username}" class="my-select"  placeholder="Username" readonly="readonly" autocomplete="off"/>
-                        <p><a class="text-white" href="/forgot/username">Forgot Username?</a></p>
-                     </div>
-
-
-                     <div id="password_div" class="form-group">
-                        <input id="password" type="password" name="password" class="my-select"  placeholder="Password" required="required" autocomplete="off" />
-                        <p><a class="text-white" href="/forgot/password">forgot password?</a></p>
-                    </div>
-
-
-
-
-                    <div class="form-group">
-                        <button class="btn btn-primary my-select"> Continue </button>
-                    </div>
-
-                     </div>
-                </form>
+                <div th:if="${param.error != null}" class="alert alert-danger" th:text="${session[SPRING_SECURITY_LAST_EXCEPTION]}">error</div>
+                <div class="form-group">
+                    <input type="text" name="username" class="my-select"  placeholder="Username" autocomplete="off" />
+                    <p><a class="text-white" href="/forgot/corporate/username">Forgot Username?</a></p>
+                </div>
+                <div class="form-group">
+                    <input type="text" name="corporateId" class="my-select"  placeholder="Corporate Key" autocomplete="off"/>
+                </div>
+                <div class="form-group">
+                    <button class="btn btn-primary my-select">Submit</button>
+                </div>
+            </form>
         </div>
     </div>
 </section>
 
 <footer>
-    <div class="containe">
+    <div class="">
         <div class="footer_bar">
             <div class="col-md-6 col-xs-12">
                 <ul class="list_group">
@@ -135,39 +125,84 @@
             </ul>
         </div>
     </div>
+
+    <div id="myModalError" class="modal fade " role="dialog">
+        <div class="modal-dialog">
+
+            <!-- Modal content-->
+
+            <div class="modal-content no-bd-rad content ">
+
+                <div class="modal-body">
+
+
+                    <p id='errorMess' class='mess text-danger'>Put something here iff need be.</p>
+
+
+                </div>
+
+
+                <div class="modal-footer no-bd-top">
+                    <button type="button" class="btn btn-link" data-dismiss="modal">OK</button>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+
+    <div id="myModalSuccess" class="modal fade " role="dialog">
+        <div class="modal-dialog">
+
+            <!-- Modal content-->
+
+            <div class="modal-content no-bd-rad content ">
+
+                <div class="modal-body">
+
+
+                    <p id='successMess' class='mess text-primary'>Put something here iff need be.</p>
+
+
+                </div>
+
+
+                <div class="modal-footer no-bd-top">
+                    <button type="button" class="btn btn-link" data-dismiss="modal">OK</button>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
 </footer>
-
-
-</div>
 <!-- CORE JQUERY SCRIPTS -->
-<script th:src="@{~/customer/js/jquery-1.11.1.js}"></script>
+<script th:src="@{/customer/js/jquery-1.11.1.js}"></script>
 <!-- BOOTSTRAP SCRIPTS  -->
-<script th:src="@{~/customer/js/bootstrap.js}"></script>
-    <script th:src="@{~/customer/plugins/bootstrap-notify/bootstrap-notify.js}"></script>
+<script th:src="@{/customer/js/bootstrap.js}"></script>
+<script th:src="@{~/customer/js/coronation.js}"></script>
+<script th:src="@{~/customer/plugins/bootstrap-notify/bootstrap-notify.js}"></script>
 
-    <!--<script>-->
-        <!--$(document).ready(function(){-->
-            <!--$(".dropdown").hover(-->
-                <!--function() {-->
-                    <!--$('.dropdown-menu', this).not('.in .dropdown-menu').stop(true,true).slideDown(800);-->
-                    <!--$(this).toggleClass('open');-->
-                <!--},-->
-                <!--function() {-->
-                    <!--$('.dropdown-menu', this).not('.in .dropdown-menu').stop(true,true).slideUp(800);-->
-                    <!--$(this).toggleClass('open');-->
-                <!--}-->
-            <!--);-->
-        <!--});-->
-    <!--</script>-->
-    <script>
-        $(document).ready(function(){
-            $('[data-toggle="tooltip"]').tooltip();
-
-            $('#password').bind("cut copy paste",function(e) {
-                e.preventDefault();
-            });
-        });
-
-    </script>
+<!--<script>-->
+    <!--$(document).ready(function(){-->
+        <!--$(".dropdown").hover(-->
+            <!--function() {-->
+                <!--$('.dropdown-menu', this).not('.in .dropdown-menu').stop(true,true).slideDown(800);-->
+                <!--$(this).toggleClass('open');-->
+            <!--},-->
+            <!--function() {-->
+                <!--$('.dropdown-menu', this).not('.in .dropdown-menu').stop(true,true).slideUp(800);-->
+                <!--$(this).toggleClass('open');-->
+            <!--}-->
+        <!--);-->
+    <!--});-->
+<!--</script>-->
+<script>
+    $(document).ready(function(){
+        $('[data-toggle="tooltip"]').tooltip();
+    });
+</script>
+    </div>
 </body>
 </html>

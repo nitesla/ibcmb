@@ -14,14 +14,14 @@
 
     <div class="col-xs-12 ml-15 " >
         <div class="col-xs-11 no-pad-lef table-responsive no-mt no-bd  alert">
-          <div class="col-md-12 col-sm-12 col-xs-12 no-pad-left ">
+          <div class="col-md-6 col-sm-6 col-xs-12 no-pad-left ">
                         <h6 class="sub_header">Interbank Transfer</h6>
                         <form method="post" th:action="@{/corporate/transfer/interbank/index}" style="">
-                            <div class="form-group col-md-6 no-pad-left">
+                            <div class="form-group  no-pad-left">
                                 <label>Transfer Type</label>
 
                                 <span id="tran"></span>
-                                <select name="tranType" class="form-control" id="tranType">
+                                <select name="tranType" class="form-control full-width" id="tranType">
                                     <option value="nip">NIP</option>
                                     <!--<option value="rtgs">RTGS</option>-->
                                 </select>
@@ -43,7 +43,7 @@
                     </div>
 
                     <!--<div class="col-md-4 col-sm-4">-->
-                            <p id="nip" style="padding: 5%">Fee applicable: <span th:if="${nip.feeValue}!=null" th:text="'N'+${nip.feeValue}"></span></p>
+                            <p id="nip" class='col-sm-6' style="padding: 5%">Fee applicable: <span th:if="${nip.feeValue}!=null" th:text="'N'+${nip.feeValue}"></span></p>
                             <!--<p id="rtgs" style="display: none; padding: 5%">Fee applicable: <span th:text="'N'+${rtgs.feeValue}"></span></p>-->
                     <!--</div>-->
 

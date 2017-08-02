@@ -2,12 +2,11 @@ package longbridge.forms;
 
 import org.hibernate.validator.constraints.NotEmpty;
 
-import javax.validation.constraints.Size;
-
 /**
  * Created by Fortune on 4/3/2017.
  */
 public class ChangePassword {
+
     @NotEmpty(message = "oldPassword")
     private String oldPassword;
     @NotEmpty(message = "newPassword")
@@ -38,4 +37,5 @@ public class ChangePassword {
     public void setConfirmPassword(String confirmPassword) {
         this.confirmPassword = confirmPassword;
     }
+
 }

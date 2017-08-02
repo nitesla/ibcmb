@@ -1,6 +1,7 @@
 package longbridge.controllers.corporate;
 
 import longbridge.models.Account;
+import longbridge.models.CorpUserType;
 import longbridge.models.CorporateUser;
 import longbridge.models.SRConfig;
 import longbridge.services.*;
@@ -110,6 +111,11 @@ public class CorporateControllerAdvice {
 
         boolean isUserAdmin = corporateUser.isAdmin();
         model.addAttribute("isUserAdmin",isUserAdmin);
+
+        if (CorpUserType.AUTHORIZER.equals(corporateUser.getCorpUserType())){
+            boolean isAuthorizer = true;
+            model.addAttribute("isAuthorizer", isAuthorizer);
+        }
 
         model.addAttribute("corporateType",corporateUser.getCorporate().getCorporateType());
 

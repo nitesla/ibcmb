@@ -1,18 +1,14 @@
 package longbridge.services;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import longbridge.dtos.PendingVerification;
 import longbridge.dtos.VerificationDTO;
 import longbridge.exception.VerificationException;
-import longbridge.models.*;
+import longbridge.models.Verification;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Set;
-
 public interface VerificationService {
+
+
 
     /**
      * This will decline a Verification request.
@@ -26,8 +22,6 @@ public interface VerificationService {
      *
      * @param
      */
-
-
     int getTotalNumberForVerification();
 
 

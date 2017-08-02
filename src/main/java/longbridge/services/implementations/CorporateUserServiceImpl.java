@@ -61,6 +61,11 @@ public class CorporateUserServiceImpl implements CorporateUserService {
     @Autowired
     private ConfigurationService configService;
 
+    @Autowired
+    private CorpUserVerificationService corpUserVerificationService;
+
+    @Autowired
+    private VerificationService verificationService;
 
     @Autowired
     private CodeService codeService;
@@ -219,6 +224,8 @@ public class CorporateUserServiceImpl implements CorporateUserService {
         }
     }
 
+
+
     public void createUserOnEntrustAndSendCredentials(CorporateUser corporateUser) {
         CorporateUser user = corporateUserRepo.findFirstByUserName(corporateUser.getUserName());
         if (user != null) {
@@ -272,7 +279,7 @@ public class CorporateUserServiceImpl implements CorporateUserService {
 
     @Override
     @Transactional
-    public String addUserFromCorporateAdmin(CorpCorporateUserDTO user) throws InternetBankingException {
+    public String addCorpUserFromCorporateAdmin(CorpCorporateUserDTO user) throws InternetBankingException {
 
         CorporateUser corporateUser = corporateUserRepo.findFirstByUserNameIgnoreCase(user.getUserName());
         if (corporateUser != null) {
@@ -670,12 +677,22 @@ public class CorporateUserServiceImpl implements CorporateUserService {
 
     private CorporateUserDTO convertEntityToDTO(CorporateUser corporateUser) {
 
-        CorporateUserDTO corporateUserDTO = modelMapper.map(corporateUser, CorporateUserDTO.class);
+        CorporateUserDTO corporateUserDTO = new CorporateUserDTO();
+        corporateUserDTO.setCorporateId(corporateUser.getCorporate().getCorporateId());
+        corporateUserDTO.setCorporateName(corporateUser.getCorporate().getName());
+        corporateUserDTO.setCorporateType(corporateUser.getCorporate().getCorporateType());
+        corporateUserDTO.setId(corporateUser.getId());
+        corporateUserDTO.setUserName(corporateUser.getUserName());
+        corporateUserDTO.setFirstName(corporateUser.getFirstName());
+        corporateUserDTO.setLastName(corporateUser.getLastName());
+        corporateUserDTO.setPhoneNumber(corporateUser.getPhoneNumber());
+        corporateUserDTO.setStatus(corporateUser.getStatus());
+        corporateUserDTO.setEmail(corporateUser.getEmail());
+        corporateUserDTO.setEntrustId(corporateUser.getEntrustId());
+        corporateUserDTO.setEntrustGroup(corporateUser.getEntrustGroup());
+        corporateUserDTO.setIsFirstTimeLogon(corporateUser.getIsFirstTimeLogon());
         corporateUserDTO.setRoleId(corporateUser.getRole().getId().toString());
         corporateUserDTO.setRole(corporateUser.getRole().getName());
-        corporateUserDTO.setCorporateType(corporateUser.getCorporate().getCorporateType());
-        corporateUserDTO.setCorporateName(corporateUser.getCorporate().getName());
-        corporateUserDTO.setCorporateId(corporateUser.getCorporate().getId().toString());
 
         if (corporateUser.getCreatedOnDate() != null) {
             corporateUserDTO.setCreatedOn(DateFormatter.format(corporateUser.getCreatedOnDate()));
@@ -685,6 +702,27 @@ public class CorporateUserServiceImpl implements CorporateUserService {
         }
 
         return corporateUserDTO;
+    }
+
+    public CorporateUser convertDTOToEntity(CorporateUserDTO corporateUserDTO) {
+        //CorporateUser corporateUser = modelMapper.map(corporateUserDTO, CorporateUser.class);
+        CorporateUser corporateUser = new CorporateUser();
+        corporateUser.setId(corporateUserDTO.getId());
+        corporateUser.setUserName(corporateUserDTO.getUserName());
+        corporateUser.setFirstName(corporateUserDTO.getFirstName());
+        corporateUser.setLastName(corporateUserDTO.getLastName());
+        corporateUser.setPhoneNumber(corporateUserDTO.getPhoneNumber());
+        corporateUser.setStatus(corporateUserDTO.getStatus());
+        corporateUser.setEmail(corporateUserDTO.getEmail());
+        corporateUser.setEntrustId(corporateUserDTO.getEntrustId());
+        corporateUser.setEntrustGroup(corporateUserDTO.getEntrustGroup());
+        corporateUser.setIsFirstTimeLogon(corporateUserDTO.getIsFirstTimeLogon());
+        Role role = roleRepo.findOne(Long.parseLong(corporateUserDTO.getRoleId()));
+        corporateUser.setRole(role);
+        corporateUser.setCorpUserType(corporateUserDTO.getCorpUserType());
+        Corporate corporate = corporateRepo.findOne(Long.parseLong(corporateUserDTO.getCorporateId()));
+        corporateUser.setCorporate(corporate);
+        return corporateUser;
     }
 
     @Override
@@ -727,5 +765,69 @@ public class CorporateUserServiceImpl implements CorporateUserService {
     public CorporateUser getUserByCifAndEmailIgnoreCase(Corporate corporate, String email) {
         CorporateUser corporateUser = corporateUserRepo.findFirstByCorporateAndEmailIgnoreCase(corporate, email);
         return corporateUser;
+    }
+
+
+    @Override
+    public String addUserFromCorporateAdmin(CorporateUserDTO user) throws InternetBankingException {
+        logger.info("Corporate USER DTO >>>>>>>>>> "+user);
+        CorporateUser corporateUser = convertDTOToEntity(user);
+        logger.info("Corporate USER>>>>>>>>>> "+ corporateUser);
+        try {
+            corporateUser.setCreatedOnDate(new Date());
+            corporateUser.setStatus("A");
+            corporateUser.setRole(roleRepo.findOne(Long.parseLong(user.getRoleId())));
+            if (user.isAuthorizer()){
+                corporateUser.setCorpUserType(CorpUserType.AUTHORIZER);
+
+                corpUserVerificationService.saveAuthorizer(corporateUser, "ADD_CORPORATE_USER", "Operation to add Corporate Authorizer" );
+            }else {
+                corporateUser.setCorpUserType(CorpUserType.INITIATOR);
+                corpUserVerificationService.saveInitiator(corporateUser, "ADD_CORPORATE_USER", "Operation to add user" );
+            }
+            return messageSource.getMessage("user.add.success", null, locale);
+        }catch (VerificationInterruptedException ib){
+            return ib.getMessage();
+        }catch (VerificationException e){
+            throw new InternetBankingException(messageSource.getMessage("failed.user.add", null, locale));
+        }catch (InternetBankingException ibe){
+            throw ibe;
+        }
+    }
+
+    @Override
+    public String updateUserFromCorporateAdmin(CorporateUserDTO user) throws InternetBankingException {
+        CorporateUser corporateUser = new CorporateUser();//TODO
+        try {
+            corpUserVerificationService.saveInitiator(corporateUser, "UPDATE_CORPORATE_USER", "Operation to update user" );
+            return messageSource.getMessage("user.update.success", null, locale);
+        }catch (VerificationException e){
+            throw new InternetBankingException(messageSource.getMessage("failed.user.update", null, locale));
+        }
+    }
+
+    @Override
+    public String changeStatusFromCorporateAdmin(Long id) throws InternetBankingException {
+        CorporateUser corporateUser =corporateUserRepo.findOne(id);
+        logger.info("Corporate USER>>>>>>>>>> "+ corporateUser);
+
+        if ("I".equals(corporateUser.getCorporate().getStatus())) {
+            throw new InternetBankingException(messageSource.getMessage("corporate.deactivated", null, locale));
+        }
+
+        try {
+            entityManager.detach(corporateUser);
+            String oldStatus = corporateUser.getStatus();
+            String newStatus = "A".equals(oldStatus) ? "I" : "A";
+            corporateUser.setStatus(newStatus);
+            corpUserVerificationService.saveInitiator(corporateUser, "CORP_USER_STATUS", "Operation to activate or deactivate user" );
+            return messageSource.getMessage("user.add.success", null, locale);
+        }catch (VerificationInterruptedException ib){
+            return ib.getMessage();
+        }catch (VerificationException e){
+            throw new InternetBankingException(messageSource.getMessage("failed.user.add", null, locale));
+        }catch (InternetBankingException ibe){
+            throw ibe;
+        }
     }
 }
