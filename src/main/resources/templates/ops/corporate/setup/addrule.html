@@ -143,7 +143,7 @@
                                     <input id="upperLimit" type="number" class="form-control" name="upperLimitAmount"/>
                                     <span id="upperAmountError" class="error">Upper Amount is required</span>
 
-                                    <p id="amountDiffError" class="error">Upper amount must be greater that lower
+                                    <p id="amountDiffError" class="error">Upper Amount must be greater that lower
                                         amount</p>
 
                                 </div>
@@ -280,6 +280,8 @@
                 $("#upperLimit").val("");
                 $("#upperLimit").prop("disabled", true);
                 $("#upperAmountError").hide();
+                $("#amountDiffError").hide();
+
                 unlimited = true;
             }
             else {
@@ -312,6 +314,7 @@
 
         $("#lowerLimit").keyup(function () {
             lowerLimitAmount = $("input[name='lowerLimitAmount']").val();
+
             if(lowerLimitAmount==""){
                 $("#lowerAmountError").show()
             }
@@ -319,17 +322,20 @@
                 $("#lowerAmountError").hide()
             }
 
+
         })
 
 
         $("#upperLimit").keyup(function () {
             upperLimitAmount = $("input[name='upperLimitAmount']").val();
+
             if(upperLimitAmount==""){
                 $("#upperAmountError").show()
             }
             else {
                 $("#upperAmountError").hide()
             }
+
 
         })
 
@@ -370,7 +376,7 @@
                 $("#upperAmountError").hide()
             }
 
-            if (lowerLimitAmount == "" || (upperLimitAmount == "" && unlimited==false) || authorizers.length<numAuth) {
+            if (lowerLimitAmount == "" || (upperLimitAmount == "" && unlimited==false)) {
                 return;
             }
 
@@ -386,6 +392,11 @@
             }
             else {
                 upperLimitAmount = "Unlimited";
+
+            }
+
+            if(authorizers.length<numAuth){
+                return;
             }
 
             od = {
@@ -405,6 +416,9 @@
             $("#upperLimit").prop("disabled", false);
             $("input[type=checkbox][name='authorizers']").removeAttr('checked');
             $("input[type=checkbox][name='unlimited']").removeAttr('checked');
+            unlimited = false;
+            $("#amountDiffError").hide();
+
 
 
             $('#myModal').modal('toggle');

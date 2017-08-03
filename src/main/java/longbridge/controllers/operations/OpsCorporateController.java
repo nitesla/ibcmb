@@ -762,6 +762,27 @@ public class OpsCorporateController {
 
     }
 
+    @PostMapping("/users/create")
+    public String createCorporateUsers(WebRequest request, RedirectAttributes redirectAttributes, HttpSession session, Model model, Locale locale) {
+
+        String rules= request.getParameter("users");
+
+        logger.info("Corporate Users are: {}",rules);
+
+        if(session.getAttribute("corporateRequest")!=null) {
+            CorporateRequestDTO corporateRequestDTO = (CorporateRequestDTO) session.getAttribute("corporateRequest");
+            model.addAttribute("corporate",corporateRequestDTO);
+        }
+        if(session.getAttribute("authorizerLevels")!=null) {
+            List<AuthorizerDTO>  authorizerLevels= (ArrayList) session.getAttribute("authorizerLevels");
+            model.addAttribute("authorizerLevels",authorizerLevels);
+        }
+
+        redirectAttributes.addFlashAttribute("message", "Corporate Entity created successfully");
+        return "redirect:/ops/corporates/new";
+
+    }
+
     @GetMapping("/{username}/exists")
     @ResponseBody
     public String checkUsername(@PathVariable String username){
