@@ -1,6 +1,5 @@
 package longbridge.services.implementations;
 
-import longbridge.aop.MakerCheckerAdvisor;
 import longbridge.api.AccountInfo;
 import longbridge.dtos.*;
 import longbridge.exception.*;
@@ -124,7 +123,7 @@ public class CorporateServiceImpl implements CorporateService {
 
         CorporateUser corporateUser = corporateUserRepo.findFirstByUserName(user.getUserName());
         if (corporateUser != null) {
-            throw new DuplicateObjectException(messageSource.getMessage("user.exist", null, locale));
+            throw new DuplicateObjectException(messageSource.getMessage("user.exists", null, locale));
         }
 
         try {
