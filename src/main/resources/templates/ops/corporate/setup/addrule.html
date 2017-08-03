@@ -5,6 +5,15 @@
 
 
 <body class="nav-md">
+
+<style>
+
+    .error {
+        color: red;
+        display: none;
+    }
+
+</style>
 <div class="container body">
     <div class="main_container">
         <div class="col-md-3 left_col">
@@ -122,7 +131,8 @@
                                 <label class="col-sm-2 control-label">Lower Amount<span
                                         style="color: red">*</span></label>
                                 <div class="col-sm-6">
-                                    <input type="number" class="form-control" name="lowerLimitAmount"/>
+                                    <input id="lowerLimit" type="number" class="form-control" name="lowerLimitAmount"/>
+                                    <span id="lowerAmountError" class="error">Lower Amount is required</span>
                                 </div>
                             </div>
 
@@ -131,6 +141,10 @@
                                         style="color: red">*</span></label>
                                 <div class="col-sm-6">
                                     <input id="upperLimit" type="number" class="form-control" name="upperLimitAmount"/>
+                                    <span id="upperAmountError" class="error">Upper Amount is required</span>
+
+                                    <p id="amountDiffError" class="error">Upper Amount must be greater that lower
+                                        amount</p>
 
                                 </div>
                                 <input id="unlimited" type="checkbox" class="checkbox-inline"
@@ -160,12 +174,14 @@
                                     <p th:each="authorizer: ${authorizerList}">
                                         <!--<input type="number" name="numRole" value="1"/>-->
                                         <label class="checkbox-inline">
-                                            <input type="checkbox" name="authorizers"
+                                            <input id="authorizers" type="checkbox" name="authorizers"
                                                    th:value="${authorizer.name}+' '+${authorizer.level}"/>
                                             <span th:text="${authorizer.name}+' '+${authorizer.level}"></span>
 
                                         </label>
                                     </p>
+
+                                    <p id="authorizerError" class="error">At least <span th:text="${numAuthorizers}"></span> authorizer levels are required</p>
                                 </div>
                             </div>
                             <hr/>
@@ -181,7 +197,7 @@
                                         <label class="col-sm-2 control-label"></label>
 
                                         <label><input type="radio" name="any" value="Any"/>
-                                            Any of the 2 authorizers selected above can approve transaction</label>
+                                            Any <span th:text="${numAuthorizers}"></span> authorizers selected above can approve transaction</label>
                                     </div>
                                 </div>
                             </div>
@@ -215,9 +231,8 @@
 <script th:src="@{~/bank/vendors/emodal/eModal.js}"></script>
 
 
-<script type="text/javascript" class="init">
+<script type="text/javascript" class="init" th:inline="javascript">
 
-    $("#aform").validate();
 
     /*<![CDATA[*/
     $(document).ready(function () {
@@ -234,8 +249,8 @@
                 "data": "upperLimitAmount"
             },
                 {
-                "data": "currency"
-            },
+                    "data": "currency"
+                },
                 {
                     "data": "authorizers"
                 },
@@ -258,6 +273,72 @@
             $('#ruleForm').submit();
         });
 
+        var unlimited = false;
+
+        $("#unlimited").change(function () {
+            if ($(this).is(":checked")) {
+                $("#upperLimit").val("");
+                $("#upperLimit").prop("disabled", true);
+                $("#upperAmountError").hide();
+                $("#amountDiffError").hide();
+
+                unlimited = true;
+            }
+            else {
+                $("#upperLimit").prop("disabled", false);
+                $("#upperAmountError").show();
+
+                unlimited = false;
+
+            }
+        });
+
+        var numAuth = [[${numAuthorizers}]];
+
+        $("input[type=checkbox][name='authorizers']").change(function () {
+
+                 var authorizers = $("input[type=checkbox][name='authorizers']:checked").map(function () {
+                    return $(this).val()
+                }).get();
+
+                if (authorizers.length >= numAuth) {
+                    $("#authorizerError").hide();
+                }
+                else {
+                    $("#authorizerError").show();
+
+                }
+
+        });
+
+
+        $("#lowerLimit").keyup(function () {
+            lowerLimitAmount = $("input[name='lowerLimitAmount']").val();
+
+            if(lowerLimitAmount==""){
+                $("#lowerAmountError").show()
+            }
+            else {
+                $("#lowerAmountError").hide()
+            }
+
+
+        })
+
+
+        $("#upperLimit").keyup(function () {
+            upperLimitAmount = $("input[name='upperLimitAmount']").val();
+
+            if(upperLimitAmount==""){
+                $("#upperAmountError").show()
+            }
+            else {
+                $("#upperAmountError").hide()
+            }
+
+
+        })
+
 
         $('#add_rule').on('click', function (e) {
             e.preventDefault()
@@ -266,25 +347,80 @@
             lowerLimitAmount = $("input[name='lowerLimitAmount']").val();
             upperLimitAmount = $("input[name='upperLimitAmount']").val();
             currency = $("select#currency").val();
-            authorizers = $("input[type=checkbox][name='authorizers']:checked").map(function(){
+            authorizers = $("input[type=checkbox][name='authorizers']:checked").map(function () {
+                return $(this).val()
+            }).get();
 
-                return $(this).val()}).get();
+            any = $("input[type=radio][name='any']:checked").val();
 
             console.log(authorizers)
-            any = $("input[type=radio][name='any']:checked" ).val();
+            console.log("Length of authorizers: " + authorizers.length)
 
+            if(authorizers.length<numAuth){
+                $("#authorizerError").show();
+            }
+            else {
+                $("#authorizerError").hide();
+            }
+
+            if (lowerLimitAmount == "") {
+                $("#lowerAmountError").show()
+            } else {
+                $("#lowerAmountError").hide()
+
+            }
+
+            if (upperLimitAmount == "" && unlimited==false) {
+                $("#upperAmountError").show()
+            } else {
+                $("#upperAmountError").hide()
+            }
+
+            if (lowerLimitAmount == "" || (upperLimitAmount == "" && unlimited==false)) {
+                return;
+            }
+
+
+            if(unlimited!=true) {
+                if (lowerLimitAmount > upperLimitAmount) {
+                    $("#amountDiffError").show();
+                    return;
+                }
+                else {
+                    $("#amountDiffError").hide();
+                }
+            }
+            else {
+                upperLimitAmount = "Unlimited";
+
+            }
+
+            if(authorizers.length<numAuth){
+                return;
+            }
 
             od = {
                 'DT_RowId': null,
-                'lowerLimitAmount' : lowerLimitAmount,
-                'upperLimitAmount' : upperLimitAmount,
-                'currency' : currency,
-                'authorizers' : authorizers,
-                'any' : any
+                'lowerLimitAmount': lowerLimitAmount,
+                'upperLimitAmount': upperLimitAmount,
+                'currency': currency,
+                'authorizers': authorizers,
+                'any': any
 
             };
             contactsTab.row.add(od);
             contactsTab.draw();
+
+            $("input[name='lowerLimitAmount']").val("");
+            $("input[name='upperLimitAmount']").val("");
+            $("#upperLimit").prop("disabled", false);
+            $("input[type=checkbox][name='authorizers']").removeAttr('checked');
+            $("input[type=checkbox][name='unlimited']").removeAttr('checked');
+            unlimited = false;
+            $("#amountDiffError").hide();
+
+
+
             $('#myModal').modal('toggle');
 
 

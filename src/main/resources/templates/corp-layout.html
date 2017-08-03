@@ -19,6 +19,9 @@
     <link rel="stylesheet" type="text/css" th:href="@{~/customer/plugins/datatables/css/jquery.dataTables.min.css}"/>
     <link rel="stylesheet" type="text/css" th:href="@{~/customer/plugins/datatables/css/dataTables.bootstrap.css}"/>
     <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.7.0/css/bootstrap-datepicker.min.css"/>
+    <link rel="shortcut icon" th:href="@{~/customer/img/favicon.ico}" type="image/x-icon">
+<link rel="icon" th:href="@{~/customer/img/favico.ico}" type="image/x-icon">
+    
     <title>Coronation Merchant Bank</title>
 
 </head>
@@ -155,6 +158,7 @@
                                     <li sec:authorize="hasAuthority('MANAGE_BEN')"><a th:href="@{/corporate/beneficiary}" th:text="#{menu.beneficiary}">Beneficiaries</a></li>
                                     <li sec:authorize="hasAuthority('CORP_MAILBOX')"><a th:href="@{/corporate/mailbox/inbox}" th:text="#{menu.mail}"> Mailbox</a></li>
                                     <li th:if="${isUserAdmin}"><a th:href="@{/corporate/users}" th:text="#{menu.usermanagement}">User Management</a></li>
+                                    <li th:if="${isAuthorizer}"><a th:href="@{/corporate/users/approvals}" th:text="#{menu.usermanagement.approval}">User Management Approval</a></li>
                                 </ul>
                             </li>
 

@@ -6,10 +6,7 @@ import longbridge.exception.InternetBankingException;
 import longbridge.exception.PasswordException;
 import longbridge.models.CorporateUser;
 import longbridge.models.UserType;
-import longbridge.services.CodeService;
-import longbridge.services.CorporateService;
-import longbridge.services.CorporateUserService;
-import longbridge.services.RoleService;
+import longbridge.services.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,9 +21,9 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.security.Principal;
 import java.util.Iterator;
@@ -44,6 +41,9 @@ public class CorpUserManagementController {
     private CorporateUserService corporateUserService;
     @Autowired
     private CorporateService corporateService;
+
+    @Autowired
+    private CorpUserVerificationService corpUserVerificationService;
 
     @Autowired
     CodeService codeService;
@@ -109,14 +109,14 @@ public class CorpUserManagementController {
     public String addUser(Principal principal, Model model){
         CorporateUser corporateUser = corporateUserService.getUserByName(principal.getName());
         CorporateDTO corporate = corporateService.getCorporate(corporateUser.getCorporate().getId());
-        CorpCorporateUserDTO corporateUserDTO = new CorpCorporateUserDTO();
+        CorporateUserDTO corporateUserDTO = new CorporateUserDTO();
         model.addAttribute("corporateUser", corporateUserDTO);
         model.addAttribute("corporate", corporate);
         return "corp/user/add";
     }
 
     @PostMapping
-    public String createUser(@ModelAttribute("corporateUser") @Valid CorpCorporateUserDTO corporateUserDTO, BindingResult result, HttpSession session, Model model, RedirectAttributes redirectAttributes, Locale locale) throws Exception {
+    public String createUser(@ModelAttribute("corporateUser") @Valid CorporateUserDTO corporateUserDTO, BindingResult result, WebRequest webRequest, Model model, RedirectAttributes redirectAttributes, Locale locale) throws Exception {
 
         if (result.hasErrors()) {
             return "corp/user/add";
@@ -126,7 +126,6 @@ public class CorpUserManagementController {
             String message = corporateUserService.addUserFromCorporateAdmin(corporateUserDTO);
             redirectAttributes.addFlashAttribute("message", message);
             return "redirect:/corporate/users/";
-
         } catch (DuplicateObjectException doe) {
             result.addError(new ObjectError("error", doe.getMessage()));
             logger.error("Error creating corporate user {}", corporateUserDTO.getUserName(), doe);
@@ -144,7 +143,7 @@ public class CorpUserManagementController {
     public String activationStatus(@PathVariable Long id, RedirectAttributes redirectAttributes){
 
         try {
-            String message = corporateUserService.changeCorpActivationStatus(id);
+            String message = corporateUserService.changeStatusFromCorporateAdmin(id);
             redirectAttributes.addFlashAttribute("message", message);
         }catch (InternetBankingException ibe){
             logger.error("Error changing corporate user activation status", ibe);
@@ -172,5 +171,35 @@ public class CorpUserManagementController {
         return "redirect:/corporate/users";
     }
 
+    @GetMapping("/approvals")
+    public String approvals(Principal principal, Model model){
+        return "/corp/user/approval";
+    }
+
+    @GetMapping(path = "/approvals/all")
+    public
+    @ResponseBody
+    DataTablesOutput<CorpUserVerificationDTO> getAllVerification(DataTablesInput input)
+    {
+        Pageable pageable = DataTablesUtils.getPageable(input);
+        Page<CorpUserVerificationDTO> page = corpUserVerificationService.getAllRequests(pageable);
+        DataTablesOutput<CorpUserVerificationDTO> out = new DataTablesOutput<CorpUserVerificationDTO>();
+        out.setDraw(input.getDraw());
+        out.setData(page.getContent());
+        out.setRecordsFiltered(page.getTotalElements());
+        out.setRecordsTotal(page.getTotalElements());
+        return out;
+    }
+
+    @GetMapping("/{id}/approvals")
+    public String getObjectsForVerification(@PathVariable Long id, Model model, Principal principal)
+    {
+        CorpUserVerificationDTO verification = corpUserVerificationService.getVerification(id);
+        model.addAttribute("verification",new CorpUserVerificationDTO());
+        model.addAttribute("verify", verification);
+
+
+        return "corp/user/details";
+    }
 
 }

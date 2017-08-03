@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{ret-layout}">
 
-<body onload="currentBar('Link BVN')">
+<body onload="javascript:var bread = [['Home', '/retail/dashboard'],['Link BVN','account/customize']];currentBar('Link BVN');breadCrumb(bread)">
 
 <div layout:fragment="content">
     <div class="col-md-5 col-sm-5 ">
@@ -38,7 +38,7 @@
                     <div class="form-group">
                         <label>BVN</label>
                         <span class="req"></span>
-                        <input type="number" placeholder="Enter BVN" class="form-control" min="0" step="1" id="bvn" name="bvn" required="required" onblur="checkLength()" maxlength="11"/>
+                        <input type="number" placeholder="Enter BVN" style="width:80% !important" class="form-control" min="0" step="1" id="bvn" name="bvn" required="required" onblur="checkLength()" maxlength="11"/>
                     </div>
 
                     <button type="submit" class="btn btn-link required-step">Submit</button>

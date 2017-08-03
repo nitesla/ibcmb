@@ -54,7 +54,7 @@
                             </div>
 
                             <div class="x_content">
-                                <form method="post" th:action="@{/ops/corporates/users/new}" id="userForm"
+                                <form method="post" th:action="@{/ops/corporates/users/create}" id="userForm"
                                       class="form-horizontal">
 
                                     <input hidden="hidden" name="users"/>
@@ -170,9 +170,8 @@
                                 <div class="col-sm-6">
                                     <input id="email" type="email" class="form-control" name="email"/>
                                     <span id="emailError" class="error">Email address is required</span>
-                                    <span id="duplicateEmailError"
-                                          class="error">User with email address already added</span>
-
+                                    <span id="invalidEmailError" class="error">Invalid Email address</span>
+                                    <span id="duplicateEmailError" class="error">User with email address already added</span>
 
                                 </div>
 
@@ -291,6 +290,8 @@
         validateForm();
 
         var counter = 0;
+        var roleName = "";
+
         var t = $('#mytab').DataTable({
             dom: 'rt',
             select: {
@@ -321,8 +322,16 @@
                 }
             ],
             "language": {
-                "emptyTable": "No User added. Click Add"
-            }
+                "emptyTable": "No user added. Click Add"
+            },
+            "columnDefs": [{
+                "targets": 7,
+                "data": "role",
+                "render": function(data, type, full, meta) {
+
+                    return roleName;
+                }
+            }]
 
         });
 
@@ -332,13 +341,14 @@
             contactsTab = $('#mytab').DataTable();
             data = JSON.stringify(contactsTab.data().toArray());
             $("input[name='users']").val(data);
-            $('form').submit();
+            $('#userForm').submit();
         });
 
 
         $('#add_user').on('click', function (e) {
-            e.preventDefault()
 
+
+            e.preventDefault()
             contactsTab = $('#mytab').DataTable();
 
             userName = $("input[name='userName']").val();
@@ -349,6 +359,10 @@
             userType = $("select#userType").val();
             authorizerLevel = $("select#authorizerLevel").val();
             role = $("select#role").val();
+            roleName = $("#role option:selected").text();
+
+
+
 
 
             if (userName == "") {
@@ -392,13 +406,18 @@
                 return;
             }
 
+            if(userExist == true){
+                return;
+            }
 
 
+
+
+            duplicateUsername = false;
+            duplicateEmail = false;
+            duplicatePhone = false;
 
             var arr = contactsTab.data().toArray();
-
-
-
 
             $.each(arr, function (i, obj) {
 
@@ -417,9 +436,41 @@
 
                 })
 
+                if(duplicateUsername==true||duplicateEmail==true||duplicatePhone==true){
+                    return false;
+                }
+
             })
 
 
+            if(duplicateUsername==true){
+                $("#duplicateUsernameError").show();
+            }
+            else {
+                $("#duplicateUsernameError").hide();
+
+            }
+
+            if(duplicateEmail==true){
+                $("#duplicateEmailError").show();
+            }
+
+            else {
+                $("#duplicateEmailError").hide();
+            }
+
+            if(duplicatePhone==true){
+                $("#duplicatePhoneError").show();
+            }
+
+            else {
+                $("#duplicatePhoneError").hide();
+            }
+
+
+            if(duplicateUsername==true||duplicateEmail==true||duplicatePhone==true){
+                return ;
+            }
 
 
             od = {
@@ -433,16 +484,30 @@
                 'authorizerLevel': authorizerLevel,
                 'role': role
 
-
             };
             contactsTab.row.add(od);
+
             contactsTab.draw();
+
+            console.log(contactsTab.data().toArray());
+
 
             userExist = false;
             duplicateUsername = false;
             duplicateEmail = false;
             invalidEmail = false;
             duplicatePhone = false;
+
+
+
+            $("input[name='userName']").val("");
+            $("input[name='firstName']").val("");
+            $("input[name='lastName']").val("");
+            $("input[name='email']").val("");
+            $("input[name='phoneNumber']").val("");
+            $("select#userType").val("");
+            $("select#authorizerLevel").val("");
+            $("select#role").val("");
 
             $('#myModal').modal('toggle');
 
@@ -457,15 +522,14 @@
         });
 
 
-        $(document).on('hidden.bs.modal', function (e) {
-            $(e.target).removeData('bs.modal');
+        $("#myModal").on('hidden', function () {
+            $(this).data('modal',null);
         });
 
     });
 
 
     function validateForm() {
-
 
         $("#userName").keyup(function () {
             userName = $("input[name='userName']").val();
@@ -474,7 +538,6 @@
             }
             else {
                 $("#userNameError").show();
-
             }
         })
 
@@ -488,6 +551,7 @@
                 success: function (result) {
                     if (result == "true") {
                         $("#userExistError").show()
+                        $("#duplicateUsernameError").hide()
                         userExist = true;
                     }
                     else {
@@ -525,13 +589,28 @@
             email = $("input[name='email']").val();
             if (email != "") {
                 $("#emailError").hide();
+
             }
             else {
                 $("#emailError").show();
+                $("#invalidEmailError").hide()
+
 
             }
         })
 
+        $("#email").blur(function () {
+            email = $("input[name='email']").val();
+
+            if (email != "") {
+                if (!isValidEmailAddress(email)) {
+                    $("#invalidEmailError").show()
+                }
+                else {
+                    $("#invalidEmailError").hide()
+                }
+            }
+        })
 
         $("#phoneNumber").keyup(function () {
             phoneNumber = $("input[name='phoneNumber']").val();
@@ -552,7 +631,6 @@
             }
             else {
                 $("#userTypeError").show();
-
             }
 
             if (userType == "AUTHORIZER") {
@@ -585,12 +663,7 @@
                 $("#roleError").show();
             }
         })
-
-
     }
-
-
-
 
 
     function isValidEmailAddress(emailAddress) {

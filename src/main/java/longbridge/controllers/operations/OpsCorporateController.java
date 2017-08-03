@@ -703,6 +703,15 @@ public class OpsCorporateController {
             model.addAttribute("currencies", currencies);
             model.addAttribute("authorizerList", authorizerList);
 
+            int num = 2;
+            SettingDTO setting = configService.getSettingByName("MIN_CORPORATE_APPROVERS");
+            if (setting != null && setting.isEnabled()) {
+
+                num = Integer.parseInt(setting.getValue());
+            }
+
+            model.addAttribute("numAuthorizers",num);
+
             return "/ops/corporate/setup/addrule";
 
         } catch (Exception ibe) {
@@ -759,6 +768,27 @@ public class OpsCorporateController {
 
         return "/ops/corporate/setup/adduser";
 
+
+    }
+
+    @PostMapping("/users/create")
+    public String createCorporateUsers(WebRequest request, RedirectAttributes redirectAttributes, HttpSession session, Model model, Locale locale) {
+
+        String rules= request.getParameter("users");
+
+        logger.info("Corporate Users are: {}",rules);
+
+        if(session.getAttribute("corporateRequest")!=null) {
+            CorporateRequestDTO corporateRequestDTO = (CorporateRequestDTO) session.getAttribute("corporateRequest");
+            model.addAttribute("corporate",corporateRequestDTO);
+        }
+        if(session.getAttribute("authorizerLevels")!=null) {
+            List<AuthorizerDTO>  authorizerLevels= (ArrayList) session.getAttribute("authorizerLevels");
+            model.addAttribute("authorizerLevels",authorizerLevels);
+        }
+
+        redirectAttributes.addFlashAttribute("message", "Corporate Entity created successfully");
+        return "redirect:/ops/corporates/new";
 
     }
 
