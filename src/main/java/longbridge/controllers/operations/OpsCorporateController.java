@@ -573,6 +573,7 @@ public class OpsCorporateController {
             result.addError(new ObjectError("invalid", messageSource.getMessage("form.fields.required", null, locale)));
             return "/ops/corporate/setup/new";
         }
+//        logger.info("the cif id {}",corporate.getCustomerId());
         CustomerDetails customerDetails = integrationService.viewCustomerDetailsByCif(corporate.getCustomerId());
 
         if (customerDetails.getCustomerName() == null || !customerDetails.isCorp()) {
@@ -595,7 +596,8 @@ public class OpsCorporateController {
 
         List<AccountInfo> accountInfos = integrationService.fetchAccounts(corporate.getCustomerId().toUpperCase());
         model.addAttribute("accounts", accountInfos);
-        if((corporateExistingData != null)&&(accounts != null)){
+        if(((corporateExistingData != null)&&(accounts != null))&&(corporate.getCustomerId().equalsIgnoreCase(corporateExistingData.getCustomerId()))){
+
             model.addAttribute("selectedAccounts", Arrays.asList(accounts));
             model.addAttribute("corporate", corporateExistingData);
         }else {
