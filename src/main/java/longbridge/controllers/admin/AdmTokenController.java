@@ -4,10 +4,10 @@ import longbridge.exception.InternetBankingSecurityException;
 import longbridge.forms.SyncTokenForm;
 import longbridge.forms.TokenForm;
 import longbridge.models.AdminUser;
-import longbridge.models.OperationsUser;
 import longbridge.models.User;
 import longbridge.models.UserType;
 import longbridge.services.*;
+import longbridge.utils.TokenUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -56,6 +56,8 @@ public class AdmTokenController {
 
     @Autowired
     private ConfigurationService configService;
+@Autowired
+    TokenUtils tokenUtils;
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -334,6 +336,7 @@ public class AdmTokenController {
 
             boolean result = securityService.unLockUser(entrustId, group);
             if (result) {
+                tokenUtils.resetTokenAttemptsForUser(tokenForm.getUserType(),username);
                 redirectAttributes.addFlashAttribute("message",
                         messageSource.getMessage("token.unlock.success", null, locale));
                 return "redirect:/admin/token/unlock";

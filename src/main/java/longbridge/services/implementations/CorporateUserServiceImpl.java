@@ -65,6 +65,9 @@ public class CorporateUserServiceImpl implements CorporateUserService {
     private CorpUserVerificationService corpUserVerificationService;
 
     @Autowired
+    private VerificationService verificationService;
+
+    @Autowired
     private CodeService codeService;
 
     @Autowired
@@ -687,7 +690,9 @@ public class CorporateUserServiceImpl implements CorporateUserService {
     }
 
     public CorporateUser convertDTOToEntity(CorporateUserDTO corporateUserDTO) {
-        CorporateUser corporateUser = modelMapper.map(corporateUserDTO, CorporateUser.class);
+        //CorporateUser corporateUser = modelMapper.map(corporateUserDTO, CorporateUser.class);
+        CorporateUser corporateUser = new CorporateUser();
+        corporateUser.setCorpUserType(corporateUserDTO.getCorpUserType());
         return corporateUser;
     }
 
@@ -736,13 +741,20 @@ public class CorporateUserServiceImpl implements CorporateUserService {
 
     @Override
     public String addUserFromCorporateAdmin(CorporateUserDTO user) throws InternetBankingException {
+        logger.info("Corporate USER>>>>>>>>>> "+user);
         CorporateUser corporateUser = convertDTOToEntity(user);
+        logger.info("Corporate USER>>>>>>>>>> "+corporateUser);
         try {
-            corporateUser.setCorpUserType(CorpUserType.INITIATOR);
             corporateUser.setCreatedOnDate(new Date());
-            SettingDTO settingDTO = configService.getSettingByName("DEFAULT_CORPORATE_ROLE");
-            corporateUser.setRole(roleRepo.findByName(settingDTO.getValue()));
-            corpUserVerificationService.save(corporateUser, "ADD_CORPORATE_USER", "Operation to add user" );
+            corporateUser.setRole(roleRepo.findOne(Long.parseLong(user.getRoleId())));
+            if (user.isAuthorizer()){
+                corporateUser.setCorpUserType(CorpUserType.AUTHORIZER);
+
+                verificationService.save(corporateUser, "ADD_CORPORATE_USER", "Operation to add Corporate Authorizer" );
+            }else {
+                corporateUser.setCorpUserType(CorpUserType.INITIATOR);
+                corpUserVerificationService.save(corporateUser, "ADD_CORPORATE_USER", "Operation to add user" );
+            }
             return messageSource.getMessage("user.add.success", null, locale);
         }catch (VerificationInterruptedException ib){
             return ib.getMessage();
