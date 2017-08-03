@@ -181,7 +181,7 @@
                                         </label>
                                     </p>
 
-                                    <p id="authorizerError" class="error">At least 2 authorizer levels are required</p>
+                                    <p id="authorizerError" class="error">At least <span th:text="${numAuthorizers}"></span> authorizer levels are required</p>
                                 </div>
                             </div>
                             <hr/>
@@ -197,7 +197,7 @@
                                         <label class="col-sm-2 control-label"></label>
 
                                         <label><input type="radio" name="any" value="Any"/>
-                                            Any of the 2 authorizers selected above can approve transaction</label>
+                                            Any <span th:text="${numAuthorizers}"></span> authorizers selected above can approve transaction</label>
                                     </div>
                                 </div>
                             </div>
@@ -231,7 +231,7 @@
 <script th:src="@{~/bank/vendors/emodal/eModal.js}"></script>
 
 
-<script type="text/javascript" class="init">
+<script type="text/javascript" class="init" th:inline="javascript">
 
 
     /*<![CDATA[*/
@@ -291,18 +291,23 @@
             }
         });
 
+        var numAuth = [[${numAuthorizers}]];
 
-//        $("#authorizers").change(function () {
-//
-//                 var authorizers = $("input[type=checkbox][name='authorizers']:checked").map(function () {
-//                    return $(this).val()
-//                }).get();
-//
-//                if (authorizers.length = 2) {
-//                    $("#authorizerError").hide();
-//                }
-//
-//        });
+        $("input[type=checkbox][name='authorizers']").change(function () {
+
+                 var authorizers = $("input[type=checkbox][name='authorizers']:checked").map(function () {
+                    return $(this).val()
+                }).get();
+
+                if (authorizers.length >= numAuth) {
+                    $("#authorizerError").hide();
+                }
+                else {
+                    $("#authorizerError").show();
+
+                }
+
+        });
 
 
         $("#lowerLimit").keyup(function () {
@@ -345,11 +350,11 @@
             console.log(authorizers)
             console.log("Length of authorizers: " + authorizers.length)
 
-            if(authorizers.length<2){
+            if(authorizers.length<numAuth){
                 $("#authorizerError").show();
             }
             else {
-                $("#authorizerError").show();
+                $("#authorizerError").hide();
             }
 
             if (lowerLimitAmount == "") {
@@ -365,7 +370,7 @@
                 $("#upperAmountError").hide()
             }
 
-            if (lowerLimitAmount == "" || (upperLimitAmount == "" && unlimited==false) || authorizers.length<2) {
+            if (lowerLimitAmount == "" || (upperLimitAmount == "" && unlimited==false) || authorizers.length<numAuth) {
                 return;
             }
 
@@ -394,6 +399,14 @@
             };
             contactsTab.row.add(od);
             contactsTab.draw();
+
+            $("input[name='lowerLimitAmount']").val("");
+            $("input[name='upperLimitAmount']").val("");
+            $("#upperLimit").prop("disabled", false);
+            $("input[type=checkbox][name='authorizers']").removeAttr('checked');
+            $("input[type=checkbox][name='unlimited']").removeAttr('checked');
+
+
             $('#myModal').modal('toggle');
 
 

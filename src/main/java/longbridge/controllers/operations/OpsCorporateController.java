@@ -697,6 +697,15 @@ public class OpsCorporateController {
             model.addAttribute("currencies", currencies);
             model.addAttribute("authorizerList", authorizerList);
 
+            int num = 2;
+            SettingDTO setting = configService.getSettingByName("MIN_CORPORATE_APPROVERS");
+            if (setting != null && setting.isEnabled()) {
+
+                num = Integer.parseInt(setting.getValue());
+            }
+
+            model.addAttribute("numAuthorizers",num);
+
             return "/ops/corporate/setup/addrule";
 
         } catch (Exception ibe) {
