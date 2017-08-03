@@ -1,5 +1,6 @@
 package longbridge.services;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import longbridge.dtos.VerificationDTO;
 import longbridge.exception.VerificationException;
 import longbridge.models.Verification;
@@ -38,6 +39,8 @@ public interface VerificationService {
     String verify(VerificationDTO verification) throws VerificationException;
 
     String verify(Long id) throws VerificationException;
+
+    String save(Object o, String operation, String description) throws JsonProcessingException;
 
     /**
      * This fetches the {@link Verification} object with the id {@code id}

@@ -33,6 +33,9 @@ public interface CorporateService{
     @PreAuthorize("hasAuthority('ADD_CORPORATE')")
     String  addCorporate(CorporateDTO corporate, CorporateUserDTO corporateUser) throws InternetBankingException;
 
+
+    String addCorporate(CorporateRequestDTO corporateRequestDTO) throws InternetBankingException;
+
     /**
      * Deletes the given corporate customer
      *

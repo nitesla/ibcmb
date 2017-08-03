@@ -141,6 +141,46 @@ public class VerificationServiceImpl implements VerificationService {
         return messageSource.getMessage("verification.verify", null, locale);
     }
 
+    @Override
+    public String save(Object object, String operation, String description) throws JsonProcessingException {
+        CustomUserPrincipal principal = (CustomUserPrincipal) SecurityContextHolder.getContext().getAuthentication()
+                .getPrincipal();
+        User doneBy = principal.getUser();
+        String entityName = object.getClass().getSimpleName();
+
+        Verification verification = new Verification();
+        verification.setEntityName(entityName);
+        verification.setInitiatedOn(new Date());
+        verification.setInitiatedBy(doneBy.getUserName());
+        verification.setUserType(doneBy.getUserType());
+        verification.setOperation(operation);
+        verification.setDescription(description);
+        ObjectMapper mapper = new ObjectMapper();
+        verification.setOriginalObject(mapper.writeValueAsString(object));
+
+
+        ObjectMapper prettyMapper = new ObjectMapper();
+
+        if (object instanceof PrettySerializer) {
+            JsonSerializer<Object> serializer = ((PrettySerializer) (object)).getSerializer();
+
+            SimpleModule module = new SimpleModule();
+            module.addSerializer(object.getClass(), serializer);
+            prettyMapper.registerModule(module);
+            logger.debug("Registering Pretty serializer for " + object.getClass().getName());
+        }
+
+
+        verification.setAfterObject(prettyMapper.writeValueAsString(object));
+        verification.setStatus(VerificationStatus.PENDING);
+        verificationRepo.save(verification);
+
+        logger.info(entityName + " has been saved for verification");
+
+        return description+ "has gone for verification";
+
+    }
+
     @Async
     private void notifyInitiator(Verification verification){
 

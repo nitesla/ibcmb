@@ -131,6 +131,11 @@ $(document).ready(function () {
     }
 //    var value = '@Request.RequestContext.HttpContext.Session["corporateRequest"]';
 //    console.log("")
+
+
+    $("#customerId").blur(function () {
+        validateCorpId();
+    })
 });
 function validateCorpId() {
     var custId = $("#customerId").val();

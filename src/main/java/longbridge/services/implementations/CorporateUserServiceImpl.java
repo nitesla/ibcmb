@@ -716,11 +716,12 @@ public class CorporateUserServiceImpl implements CorporateUserService {
         corporateUser.setEmail(corporateUserDTO.getEmail());
         corporateUser.setEntrustId(corporateUserDTO.getEntrustId());
         corporateUser.setEntrustGroup(corporateUserDTO.getEntrustGroup());
+        corporateUser.setUserType(UserType.CORPORATE);
         corporateUser.setIsFirstTimeLogon(corporateUserDTO.getIsFirstTimeLogon());
         Role role = roleRepo.findOne(Long.parseLong(corporateUserDTO.getRoleId()));
         corporateUser.setRole(role);
         corporateUser.setCorpUserType(corporateUserDTO.getCorpUserType());
-        Corporate corporate = corporateRepo.findOne(Long.parseLong(corporateUserDTO.getCorporateId()));
+        Corporate corporate = corporateRepo.getOne(Long.parseLong(corporateUserDTO.getCorporateId()));
         corporateUser.setCorporate(corporate);
         return corporateUser;
     }
@@ -773,10 +774,30 @@ public class CorporateUserServiceImpl implements CorporateUserService {
         logger.info("Corporate USER DTO >>>>>>>>>> "+user);
         CorporateUser corporateUser = convertDTOToEntity(user);
         logger.info("Corporate USER>>>>>>>>>> "+ corporateUser);
+
+        CorporateUser corpUser = corporateUserRepo.findFirstByUserNameIgnoreCase(user.getUserName());
+        if (corpUser != null) {
+            throw new DuplicateObjectException(messageSource.getMessage("user.exists", null, locale));
+        }
+        Corporate corporate = corporateRepo.findOne(Long.parseLong(user.getCorporateId()));
+        corporateUser = corporateUserRepo.findFirstByCorporateAndEmailIgnoreCase(corporate, user.getEmail());
+        if (corporateUser != null) {
+            throw new DuplicateObjectException(messageSource.getMessage("email.exists", null, locale));
+        }
+
         try {
             corporateUser.setCreatedOnDate(new Date());
             corporateUser.setStatus("A");
+
             corporateUser.setRole(roleRepo.findOne(Long.parseLong(user.getRoleId())));
+            corporateUser.setEntrustId(user.getUserName());
+
+            SettingDTO settingDTO = configService.getSettingByName("DEF_ENTRUST_CORP_GRP");
+            corporateUser.setEntrustGroup(settingDTO.getValue());
+
+            corporateUser.setIsFirstTimeLogon("Y");
+            corporateUser.setUserType(UserType.CORPORATE);
+
             if (user.isAuthorizer()){
                 corporateUser.setCorpUserType(CorpUserType.AUTHORIZER);
 

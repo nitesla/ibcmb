@@ -11,6 +11,7 @@ import java.util.List;
 /**
  * Created by Fortune on 4/5/2017.
  */
+
 public class CorporateUserDTO {
 
     @JsonProperty("DT_RowId")
@@ -33,6 +34,8 @@ public class CorporateUserDTO {
     private String  phoneNumber;
     private boolean admin;
     private boolean authorizer;
+    private String authorizerLevel;
+    private String userType;
     private CorpUserType corpUserType;
     private String designation;
     private String roleId;
@@ -325,18 +328,43 @@ public class CorporateUserDTO {
         this.designation = designation;
     }
 
+    public String getAuthorizerLevel() {
+        return authorizerLevel;
+    }
+
+    public void setAuthorizerLevel(String authorizerLevel) {
+        this.authorizerLevel = authorizerLevel;
+    }
+
+    public String getUserType() {
+        return userType;
+    }
+
+    public void setUserType(String userType) {
+        this.userType = userType;
+    }
+
     @Override
     public String toString() {
         return "CorporateUserDTO{" +
                 "id=" + id +
+                ", version=" + version +
                 ", corporateId='" + corporateId + '\'' +
                 ", corporateType='" + corporateType + '\'' +
                 ", corporateName='" + corporateName + '\'' +
                 ", userName='" + userName + '\'' +
+                ", entrustId='" + entrustId + '\'' +
+                ", entrustGroup='" + entrustGroup + '\'' +
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
                 ", email='" + email + '\'' +
                 ", phoneNumber='" + phoneNumber + '\'' +
+                ", admin=" + admin +
+                ", authorizer=" + authorizer +
+                ", authorizerLevel='" + authorizerLevel + '\'' +
+                ", userType='" + userType + '\'' +
+                ", corpUserType=" + corpUserType +
+                ", designation='" + designation + '\'' +
                 ", roleId='" + roleId + '\'' +
                 ", role='" + role + '\'' +
                 ", ruleMember=" + ruleMember +
@@ -382,8 +410,4 @@ public class CorporateUserDTO {
 			return false;
 		return true;
 	}
-
-	
-    
-    
 }
