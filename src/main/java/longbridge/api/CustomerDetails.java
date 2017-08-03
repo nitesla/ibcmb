@@ -12,17 +12,19 @@ public class CustomerDetails {
     private String phone;
     private String bvn;
     private boolean isCorp;
-    public String lastName;
-    public String firstName;
-    public String middleName;
-    public String preferredName;
+    private String lastName;
+    private String firstName;
+    private String middleName;
+    private String preferredName;
+    private String rcNo;
+
 
 
     public CustomerDetails() {
     }
 
 
-    public CustomerDetails(String cifId, String customerName, String dateOfBirth, String email, String phone, String bvn, String lastName, String firstName, String middleName, String preferredName, boolean isCorp) {
+    public CustomerDetails(String cifId, String customerName, String dateOfBirth, String email, String phone, String bvn, String lastName, String firstName, String middleName, String preferredName, boolean isCorp, String rcNo) {
         this.cifId = cifId;
         this.customerName = customerName;
         this.dateOfBirth = dateOfBirth;
@@ -34,6 +36,7 @@ public class CustomerDetails {
         this.firstName = firstName;
         this.middleName = middleName;
         this.preferredName = preferredName;
+        this.rcNo=rcNo;
     }
 
 
@@ -126,6 +129,14 @@ public class CustomerDetails {
         this.preferredName = preferredName;
     }
 
+    public String getRcNo() {
+        return rcNo;
+    }
+
+    public void setRcNo(String rcNo) {
+        this.rcNo = rcNo;
+    }
+
     @Override
     public String toString() {
         return "CustomerDetails{" +
@@ -140,6 +151,7 @@ public class CustomerDetails {
                 ", firstName='" + firstName + '\'' +
                 ", middleName='" + middleName + '\'' +
                 ", preferredName='" + preferredName + '\'' +
+                ", rcNo='" + rcNo + '\'' +
                 '}';
     }
 }
