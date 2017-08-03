@@ -580,6 +580,7 @@ public class OpsCorporateController {
 
         }
         CorporateRequestDTO corporateExistingData = (CorporateRequestDTO) session.getAttribute("corporateRequest");
+        String accounts[] = (String[]) session.getAttribute("selectedAccounts");
         CorporateRequestDTO corporateRequestDTO = new CorporateRequestDTO();
         corporateRequestDTO.setCustomerId(corporate.getCustomerId());
         corporateRequestDTO.setCorporateType(corporate.getCorporateType());
@@ -589,13 +590,14 @@ public class OpsCorporateController {
 
         List<AccountInfo> accountInfos = integrationService.fetchAccounts(corporate.getCustomerId().toUpperCase());
         model.addAttribute("accounts", accountInfos);
-        if(corporateExistingData != null){
-
+        if((corporateExistingData != null)&&(accounts != null)){
+            model.addAttribute("selectedAccounts", Arrays.asList(accounts));
             model.addAttribute("corporate", corporateExistingData);
         }else {
             model.addAttribute("corporate", corporate);
+            model.addAttribute("selectedAccounts", "null");
         }
-        model.addAttribute("selectedAccounts", "null");
+
 
         return "/ops/corporate/setup/account";
 
@@ -608,7 +610,7 @@ public class OpsCorporateController {
             result.addError(new ObjectError("invalid", messageSource.getMessage("form.fields.required", null, locale)));
             List<AccountInfo> accountInfos = integrationService.fetchAccounts(corporate.getCustomerId().toUpperCase());
             model.addAttribute("accounts", accountInfos);
-
+            session.removeAttribute("corporateRequest");
             return "/ops/corporate/setup/account";
         }
 
@@ -622,13 +624,17 @@ public class OpsCorporateController {
 
         String[] accounts = request.getParameterValues("accounts");
 
-        logger.info("Customer accounts {}", accounts.toString());
+        logger.info("Customer accounts {}", Arrays.asList(accounts));
 
         if(session.getAttribute("corporateRequest")!=null){
             List<AccountInfo> accountInfos = integrationService.fetchAccounts(corporate.getCustomerId().toUpperCase());
+            session.removeAttribute("accountInfos");
+            session.removeAttribute("selectedAccounts");
+
             session.setAttribute("accountInfos",accountInfos);
             session.setAttribute("selectedAccounts",accounts);
             CorporateRequestDTO corporateRequestDTO = (CorporateRequestDTO)session.getAttribute("corporateRequest");
+            session.removeAttribute("corporateRequest");
             corporateRequestDTO.setCorporateName(corporate.getCorporateName());
             corporateRequestDTO.setCorporateId(corporate.getCorporateId());
             if(accounts.length >0) {
@@ -702,6 +708,7 @@ public class OpsCorporateController {
         } catch (Exception ibe) {
             logger.error("Error creating group", ibe);
             redirectAttributes.addFlashAttribute("failure", "Error has occurred");
+            session.removeAttribute("corporateRequest");
             return "redirect:/ops/corporates/new";
         }
 
@@ -717,6 +724,8 @@ public class OpsCorporateController {
     public String addAccountUsingBack(Model model,HttpSession session) {
         String accounts[] = (String[]) session.getAttribute("selectedAccounts");
         CorporateRequestDTO corporate = (CorporateRequestDTO) session.getAttribute("corporateRequest");
+        logger.info("the session corp request {}",corporate);
+        logger.info("the session accounts {}",Arrays.asList(accounts));
         List<AccountInfo> accountInfos = (List<AccountInfo>) session.getAttribute("accountInfos");
         model.addAttribute("accounts", accountInfos);
         model.addAttribute("corporate", corporate);

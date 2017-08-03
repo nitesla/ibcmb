@@ -54,7 +54,7 @@
                                             <label class="col-sm-2 control-label">Corporate ID</label>
 
                                             <div class="col-sm-6">
-                                                <input type="text" id="corpUniqueId" class="form-control" onkeyup="validateCorpId()" required th:field="*{corporateId}" placeholder="Unique ID for the corporate"/>
+                                                <input type="text" id="corpUniqueId" class="form-control" onkeyup="validateCorpId()" onblur="validateCorpId()" on required th:field="*{corporateId}" placeholder="Unique ID for the corporate"/>
                                                 <div id="custError" style="display: none;">
 
                                                     <p style="color:red;">Corporate ID already existing</p>
