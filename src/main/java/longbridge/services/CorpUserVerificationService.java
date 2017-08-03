@@ -1,7 +1,6 @@
 package longbridge.services;
 
 import longbridge.dtos.CorpUserVerificationDTO;
-import longbridge.dtos.VerificationDTO;
 import longbridge.exception.VerificationException;
 import longbridge.models.CorpUserVerification;
 import longbridge.models.CorporateUser;
@@ -20,7 +19,7 @@ public interface CorpUserVerificationService {
 
     void saveAuthorizer(CorporateUser user, String operation, String description) throws VerificationException;
 
-    String decline(VerificationDTO dto) throws VerificationException;
+    String decline(CorpUserVerificationDTO dto) throws VerificationException;
 
     String verify(Long id) throws VerificationException;
 
@@ -37,6 +36,8 @@ public interface CorpUserVerificationService {
     int getTotalNumberForVerification();
 
     Page<CorpUserVerificationDTO> getAllRequests(Pageable pageable);
+
+    Page<CorpUserVerificationDTO> getRequestsByCorpId(Long corpId, Pageable pageable);
 
     List<String> getPermissionCodes(Role role);
 
