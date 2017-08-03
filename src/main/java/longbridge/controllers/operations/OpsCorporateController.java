@@ -665,6 +665,7 @@ public class OpsCorporateController {
         return "/ops/corporate/setup/account";
 
     }
+
     @GetMapping("/validate/{id}")
     @ResponseBody
     public String valiidateCorporateId(@PathVariable String id){
@@ -686,7 +687,7 @@ public class OpsCorporateController {
 
 
     @PostMapping("/authorizer")
-    public String createGroup(WebRequest request, RedirectAttributes redirectAttributes, HttpSession session, Model model, Locale locale) {
+    public String createAuthorizerLevels(WebRequest request, RedirectAttributes redirectAttributes, HttpSession session, Model model, Locale locale) {
 
         try {
             String authorizers = request.getParameter("authorizers");
@@ -830,15 +831,12 @@ public class OpsCorporateController {
             model.addAttribute("corporate",corporateRequestDTO);
 
             logger.debug("Corporate Request: {}",corporateRequestDTO);
-
+            String message  = corporateService.addCorporate(corporateRequestDTO);
+            redirectAttributes.addFlashAttribute("message", message);
+            session.removeAttribute("corporateRequest");
         }
-        if(session.getAttribute("authorizerLevels")!=null) {
-            List<AuthorizerDTO>  authorizerLevels= (ArrayList) session.getAttribute("authorizerLevels");
-            model.addAttribute("authorizerLevels",authorizerLevels);
-        }
-
-        redirectAttributes.addFlashAttribute("message", "Corporate Entity created successfully");
         return "redirect:/ops/corporates/new";
+
 
     }
 

@@ -75,6 +75,9 @@ public class CorporateServiceImpl implements CorporateService {
     private MakerCheckerService makerCheckerService;
 
     @Autowired
+    private VerificationService verificationService;
+
+    @Autowired
     private EntityManager entityManager;
 
     private Locale locale = LocaleContextHolder.getLocale();
@@ -166,10 +169,21 @@ public class CorporateServiceImpl implements CorporateService {
     @Verifiable(operation = "ADD_CORPORATE", description = "Adding Corporate Entity")
     public String addCorporate(CorporateRequestDTO corporateRequestDTO) throws InternetBankingException {
 
-        return "";
+        try {
+            if (makerCheckerService.isEnabled("ADD_CORPORATE")) {
+                String message = verificationService.add(corporateRequestDTO, "ADD_CORPORATE", "Adding Corporate Entity");
+                return message;
+            } else {
+                saveCorporateRequest(corporateRequestDTO);
+                return messageSource.getMessage("corporate.add.success", null, locale);
+            }
+
+        } catch (Exception e) {
+            throw new InternetBankingException(messageSource.getMessage("corporate.add.failure", null, locale), e);
+        }
     }
 
-    private void saveCorporateRequest(CorporateRequestDTO corporateRequestDTO) throws InternetBankingException{
+    public void saveCorporateRequest(CorporateRequestDTO corporateRequestDTO) throws InternetBankingException {
         Corporate corporate = new Corporate();
         corporate.setCorporateType(corporateRequestDTO.getCorporateType());
         corporate.setName(corporateRequestDTO.getCorporateName());
@@ -177,9 +191,31 @@ public class CorporateServiceImpl implements CorporateService {
         corporate.setCorporateId(corporateRequestDTO.getCorporateId());
         corporate.setCreatedOnDate(new Date());
         corporate.setStatus("A");
-        Corporate newCorporate =  corporateRepo.save(corporate);
+        Corporate newCorporate = corporateRepo.save(corporate);
+
+        for (CorporateUserDTO user : corporateRequestDTO.getCorporateUsers()) {
+            CorporateUser corporateUser = new CorporateUser();
+            corporateUser.setUserName(user.getUserName());
+            corporateUser.setFirstName(user.getFirstName());
+            corporateUser.setLastName(user.getLastName());
+            corporateUser.setEmail(user.getEmail());
+            corporateUser.setPhoneNumber(user.getPhoneNumber());
+            corporateUser.setAlertPreference(codeService.getByTypeAndCode("ALERT_PREFERENCE", "BOTH"));
+            corporateUser.setCreatedOnDate(new Date());
+            corporateUser.setStatus("A");
+            Role role = roleRepo.findOne(Long.parseLong(user.getRole()));
+            corporateUser.setRole(role);
+            corporateUser.setCorporate(newCorporate);
+            createUserOnEntrustAndSendCredentials(corporateUser);
+
+        }
 
     }
+
+//    private CorpUserType getUserType(String userType){
+//
+//        ""
+//    }
 
     public void addAccounts(Corporate corporate) {
         String customerId = corporate.getCustomerId();
@@ -191,11 +227,6 @@ public class CorporateServiceImpl implements CorporateService {
             }
 
         }
-    }
-
-    private List<Account> getAccounts(List<AccountDTO> accountDTOs){
-        List<Account> accounts = new ArrayList<>();
-        return accounts;
     }
 
 
