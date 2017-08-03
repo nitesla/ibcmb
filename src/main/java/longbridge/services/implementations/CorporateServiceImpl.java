@@ -1,5 +1,6 @@
 package longbridge.services.implementations;
 
+import longbridge.aop.MakerCheckerAdvisor;
 import longbridge.api.AccountInfo;
 import longbridge.dtos.*;
 import longbridge.exception.*;
@@ -71,6 +72,9 @@ public class CorporateServiceImpl implements CorporateService {
     private CorporateRoleRepo corporateRoleRepo;
 
     @Autowired
+    private MakerCheckerService makerCheckerService;
+
+    @Autowired
     private EntityManager entityManager;
 
     private Locale locale = LocaleContextHolder.getLocale();
@@ -83,7 +87,6 @@ public class CorporateServiceImpl implements CorporateService {
         this.corpTransferRuleRepo = corpTransferRuleRepo;
     }
 
-    @Verifiable(operation = "ADD_CORPORATE", description = "Adding Corporate Entity")
     public String addCorporate(CorporateDTO corporateDTO) throws InternetBankingException {
 
         Corporate corporate = corporateRepo.findByCustomerId(corporateDTO.getCustomerId());
@@ -159,6 +162,25 @@ public class CorporateServiceImpl implements CorporateService {
     }
 
 
+    @Override
+    @Verifiable(operation = "ADD_CORPORATE", description = "Adding Corporate Entity")
+    public String addCorporate(CorporateRequestDTO corporateRequestDTO) throws InternetBankingException {
+
+        return "";
+    }
+
+    private void saveCorporateRequest(CorporateRequestDTO corporateRequestDTO) throws InternetBankingException{
+        Corporate corporate = new Corporate();
+        corporate.setCorporateType(corporateRequestDTO.getCorporateType());
+        corporate.setName(corporateRequestDTO.getCorporateName());
+        corporate.setCustomerId(corporateRequestDTO.getCustomerId());
+        corporate.setCorporateId(corporateRequestDTO.getCorporateId());
+        corporate.setCreatedOnDate(new Date());
+        corporate.setStatus("A");
+        Corporate newCorporate =  corporateRepo.save(corporate);
+
+    }
+
     public void addAccounts(Corporate corporate) {
         String customerId = corporate.getCustomerId();
         Corporate corp = corporateRepo.findByCustomerId(customerId);
@@ -169,6 +191,11 @@ public class CorporateServiceImpl implements CorporateService {
             }
 
         }
+    }
+
+    private List<Account> getAccounts(List<AccountDTO> accountDTOs){
+        List<Account> accounts = new ArrayList<>();
+        return accounts;
     }
 
 
@@ -301,11 +328,9 @@ public class CorporateServiceImpl implements CorporateService {
             logger.info("Corporate {} status changed from {} to {}", corporate.getName(), oldStatus, newStatus);
             return messageSource.getMessage("corporate.status.success", null, locale);
 
-        }
-        catch (VerificationInterruptedException e) {
+        } catch (VerificationInterruptedException e) {
             return e.getMessage();
-        }
-        catch (InternetBankingException ibe) {
+        } catch (InternetBankingException ibe) {
             throw ibe;
         } catch (Exception e) {
             throw new InternetBankingException(messageSource.getMessage("corporate.status.failure", null, locale), e);
@@ -380,11 +405,9 @@ public class CorporateServiceImpl implements CorporateService {
 
             logger.info("Added transfer rule for corporate with Id {}", transferRuleDTO.getCorporateId());
             return messageSource.getMessage("rule.add.success", null, locale);
-        }
-        catch (VerificationInterruptedException e) {
+        } catch (VerificationInterruptedException e) {
             return e.getMessage();
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             throw new InternetBankingException(messageSource.getMessage("rule.add.failure", null, locale), e);
         }
     }
@@ -414,11 +437,9 @@ public class CorporateServiceImpl implements CorporateService {
             corpTransferRuleRepo.save(corpTransRule);
             logger.info("Updated transfer rule for corporate with Id {}", transferRuleDTO.getCorporateId());
             return messageSource.getMessage("rule.update.success", null, locale);
-        }
-        catch (VerificationInterruptedException e) {
+        } catch (VerificationInterruptedException e) {
             return e.getMessage();
-        }
-        catch (InternetBankingException ibe) {
+        } catch (InternetBankingException ibe) {
             throw ibe;
         } catch (Exception e) {
             throw new InternetBankingException(messageSource.getMessage("rule.update.failure", null, locale), e);
@@ -472,14 +493,11 @@ public class CorporateServiceImpl implements CorporateService {
 
             logger.info("Updated transfer rule  with Id {}", id);
             return messageSource.getMessage("rule.delete.success", null, locale);
-        }
-        catch (VerificationInterruptedException e) {
+        } catch (VerificationInterruptedException e) {
             return e.getMessage();
-        }
-        catch (InternetBankingException e){
+        } catch (InternetBankingException e) {
             throw e;
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             throw new InternetBankingException(messageSource.getMessage("rule.delete.failure", null, locale), e);
         }
     }
@@ -501,11 +519,9 @@ public class CorporateServiceImpl implements CorporateService {
             corporateRoleRepo.save(role);
             return messageSource.getMessage("role.add.success", null, locale);
 
-        }
-        catch (VerificationInterruptedException e) {
+        } catch (VerificationInterruptedException e) {
             return e.getMessage();
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             throw new InternetBankingException(messageSource.getMessage("role.add.failure", null, locale), e);
 
         }
@@ -531,14 +547,11 @@ public class CorporateServiceImpl implements CorporateService {
             corporateRoleRepo.save(role);
             return messageSource.getMessage("role.update.success", null, locale);
 
-        }
-        catch (VerificationInterruptedException e) {
+        } catch (VerificationInterruptedException e) {
             return e.getMessage();
-        }
-        catch (InternetBankingException e){
+        } catch (InternetBankingException e) {
             throw e;
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             throw new InternetBankingException(messageSource.getMessage("role.update.failure", null, locale));
 
         }
@@ -570,14 +583,11 @@ public class CorporateServiceImpl implements CorporateService {
         try {
             corporateRoleRepo.delete(role);
             return messageSource.getMessage("role.delete.success", null, locale);
-        }
-        catch (VerificationInterruptedException e) {
+        } catch (VerificationInterruptedException e) {
             return e.getMessage();
-        }
-        catch (InternetBankingException e){
+        } catch (InternetBankingException e) {
             throw e;
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             throw new InternetBankingException(messageSource.getMessage("role.delete.failure", null, locale));
         }
     }

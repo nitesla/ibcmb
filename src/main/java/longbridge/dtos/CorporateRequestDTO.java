@@ -1,15 +1,23 @@
 package longbridge.dtos;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonSerializer;
+import com.fasterxml.jackson.databind.SerializerProvider;
+import longbridge.models.Corporate;
+import longbridge.utils.PrettySerializer;
 import org.hibernate.validator.constraints.NotEmpty;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by Fortune on 7/20/2017.
  */
-public class CorporateRequestDTO {
+public class CorporateRequestDTO implements PrettySerializer {
 
     @JsonProperty("DT_RowId")
     private Long id;
@@ -172,5 +180,106 @@ public class CorporateRequestDTO {
                 ", corpTransferRules=" + corpTransferRules +
                 ", accounts=" + accounts +
                 '}';
+    }
+
+
+    @Override @JsonIgnore
+    public JsonSerializer<CorporateRequestDTO> getSerializer() {
+        return new JsonSerializer<CorporateRequestDTO>() {
+            @Override
+            public void serialize(CorporateRequestDTO value, JsonGenerator gen, SerializerProvider serializers)
+                    throws IOException, JsonProcessingException
+            {
+                gen.writeStartObject();
+                gen.writeStringField("CIFID",value.customerId);
+                gen.writeStringField("Corporate Type",value.corporateType);
+                gen.writeStringField("Corporate Name",value.corporateName);
+                gen.writeStringField("Unique Corporate ID",value.corporateId);
+
+
+                gen.writeObjectFieldStart("Accounts");
+                for(AccountDTO accountDTO : value.accounts) {
+                    gen.writeStringField("Account Number", accountDTO.getAccountNumber());
+
+                }
+                gen.writeEndObject();
+
+
+                gen.writeObjectFieldStart("Users");
+                for(CorporateUserDTO user : value.corporateUsers){
+
+                        gen.writeObjectFieldStart("------");
+                        //gen.writeStartObject();
+                        gen.writeStringField("Username", user.getUserName());
+                        gen.writeStringField("First Name", user.getFirstName());
+                        gen.writeStringField("Last Name", user.getLastName());
+                        gen.writeStringField("Email", user.getEmail());
+                        gen.writeStringField("Phone", user.getPhoneNumber());
+                        gen.writeStringField("User Type", user.getUserType());
+                        if("AUTHORIZER".equals(user.getUserType())){
+                            gen.writeStringField("Authorizer Level", user.getAuthorizerLevel());
+
+                        }
+                        gen.writeStringField("Role", user.getRole());
+                        gen.writeEndObject();
+                }
+                gen.writeEndObject();
+
+                gen.writeObjectFieldStart("Authorizer Levels");
+
+                for(AuthorizerDTO authorizer : value.authorizers){
+
+                    gen.writeObjectFieldStart("------");
+                    gen.writeStringField("Name", authorizer.getName());
+                    gen.writeNumberField("Level",authorizer.getLevel());
+
+                    gen.writeEndObject();
+                }
+                gen.writeEndObject();
+
+
+                gen.writeObjectFieldStart("Transaction Rules");
+                for(CorpTransferRuleDTO transferRule : value.corpTransferRules){
+
+                    gen.writeObjectFieldStart("------");
+
+                    gen.writeStringField("Lower Amount", transferRule.getLowerLimitAmount());
+                    if("Unlimited".equals(transferRule.getUpperLimitAmount())){
+                        gen.writeStringField("Upper Amount","Unlimited");
+                    }
+                    else {
+                        gen.writeStringField("Upper Amount",transferRule.getUpperLimitAmount());
+
+                    }
+                    gen.writeStringField("Currency", transferRule.getCurrency());
+                    gen.writeStringField("Authorizers Required", transferRule.getAny());
+
+                    gen.writeObjectFieldStart("Authorizer Levels");
+                    for(String authorizer : transferRule.getAuthorizers()){
+                        gen.writeObjectFieldStart("---------");
+                        //gen.writeStartObject();
+                        gen.writeStringField("Name",authorizer);
+                        gen.writeEndObject();
+                    }
+                    gen.writeEndObject();
+                    gen.writeEndObject();
+                }
+                gen.writeEndObject();
+
+
+                gen.writeEndObject();
+            }
+        };
+    }
+
+    private  String getStatusDescription(String status){
+        String description =null;
+        if ("A".equals(status))
+            description = "Active";
+        else if ("I".equals(status))
+            description = "Inactive";
+        else if ("L".equals(status))
+            description = "Locked";
+        return description;
     }
 }

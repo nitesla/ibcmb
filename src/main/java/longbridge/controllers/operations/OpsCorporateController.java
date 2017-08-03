@@ -32,6 +32,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.security.Principal;
 import java.util.*;
@@ -588,6 +589,10 @@ public class OpsCorporateController {
         corporate.setCustomerName(customerDetails.getCustomerName());
         session.setAttribute("corporateRequest", corporateRequestDTO);
 
+        logger.info("Corporate Request DTO " +
+                "{}", corporateRequestDTO.toString());
+
+
         List<AccountInfo> accountInfos = integrationService.fetchAccounts(corporate.getCustomerId().toUpperCase());
         model.addAttribute("accounts", accountInfos);
         if((corporateExistingData != null)&&(accounts != null)){
@@ -699,9 +704,16 @@ public class OpsCorporateController {
             if (session.getAttribute("corporateRequest") != null) {
                 CorporateRequestDTO corporateRequestDTO = (CorporateRequestDTO) session.getAttribute("corporateRequest");
                 model.addAttribute("corporate", corporateRequestDTO);
+                corporateRequestDTO.setAuthorizers(authorizerList);
+
+                logger.info("Corporate Request DTO " +
+                        "{}", corporateRequestDTO.toString());
+
             }
             model.addAttribute("currencies", currencies);
             model.addAttribute("authorizerList", authorizerList);
+
+
 
             int num = 2;
             SettingDTO setting = configService.getSettingByName("MIN_CORPORATE_APPROVERS");
@@ -744,7 +756,11 @@ public class OpsCorporateController {
     @GetMapping("/back/authorizer")
     public String getAuthorizerBackPage(Model model, HttpSession session){
         List<AuthorizerDTO> authorizerList = (List<AuthorizerDTO>) session.getAttribute("authorizerLevels");
+        CorporateRequestDTO corporate = (CorporateRequestDTO) session.getAttribute("corporateRequest");
+
         model.addAttribute("authorizerList",authorizerList);
+        model.addAttribute("corporate",corporate);
+
         return "/ops/corporate/setup/addauthorizer";
     }
 
@@ -757,9 +773,26 @@ public class OpsCorporateController {
 
         logger.info("Transaction rules are: {}",rules);
 
+
+        List<CorpTransferRuleDTO> transferRules = null;
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.configure(JsonParser.Feature.ALLOW_UNQUOTED_FIELD_NAMES, true);
+        try {
+          transferRules = mapper.readValue(rules, new TypeReference<List<CorpTransferRuleDTO>>() {
+            });
+
+            logger.debug("Corp Transfer Rules: {}", transferRules.toString());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
         if(session.getAttribute("corporateRequest")!=null) {
             CorporateRequestDTO corporateRequestDTO = (CorporateRequestDTO) session.getAttribute("corporateRequest");
             model.addAttribute("corporate",corporateRequestDTO);
+            corporateRequestDTO.setCorpTransferRules(transferRules);
+
+            logger.debug("Corporate Reequest: {}",corporateRequestDTO);
         }
         if(session.getAttribute("authorizerLevels")!=null) {
             List<AuthorizerDTO>  authorizerLevels= (ArrayList) session.getAttribute("authorizerLevels");
@@ -774,13 +807,30 @@ public class OpsCorporateController {
     @PostMapping("/users/create")
     public String createCorporateUsers(WebRequest request, RedirectAttributes redirectAttributes, HttpSession session, Model model, Locale locale) {
 
-        String rules= request.getParameter("users");
+        String users= request.getParameter("users");
 
-        logger.info("Corporate Users are: {}",rules);
+        logger.info("Corporate Users are: {}",users);
+
+
+        List<CorporateUserDTO> corporateUsers = null;
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.configure(JsonParser.Feature.ALLOW_UNQUOTED_FIELD_NAMES, true);
+        try {
+            corporateUsers = mapper.readValue(users, new TypeReference<List<CorporateUserDTO>>() {
+            });
+
+            logger.debug("Corporate users: {}", corporateUsers.toString());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         if(session.getAttribute("corporateRequest")!=null) {
             CorporateRequestDTO corporateRequestDTO = (CorporateRequestDTO) session.getAttribute("corporateRequest");
+            corporateRequestDTO.setCorporateUsers(corporateUsers);
             model.addAttribute("corporate",corporateRequestDTO);
+
+            logger.debug("Corporate Request: {}",corporateRequestDTO);
+
         }
         if(session.getAttribute("authorizerLevels")!=null) {
             List<AuthorizerDTO>  authorizerLevels= (ArrayList) session.getAttribute("authorizerLevels");

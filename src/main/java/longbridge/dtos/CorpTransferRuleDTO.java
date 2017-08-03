@@ -21,11 +21,13 @@ public class CorpTransferRuleDTO {
     private String currency;
     private boolean unlimited;
     private boolean anyCanAuthorize;
+    private String any;
     private String corporateId;
     private int numOfRoles;
     private String roleNames;
     private String corporateName;
     private boolean rank;
+    private List<String> authorizers;
     private List<CorporateRoleDTO> roles;
 
 
@@ -136,5 +138,40 @@ public class CorpTransferRuleDTO {
     }
 
 
+    public String getAny() {
+        return any;
+    }
 
+    public void setAny(String any) {
+        this.any = any;
+    }
+
+    public List<String> getAuthorizers() {
+        return authorizers;
+    }
+
+    public void setAuthorizers(List<String> authorizers) {
+        this.authorizers = authorizers;
+    }
+
+    @Override
+    public String toString() {
+        return "CorpTransferRuleDTO{" +
+                "id=" + id +
+                ", version=" + version +
+                ", lowerLimitAmount='" + lowerLimitAmount + '\'' +
+                ", upperLimitAmount='" + upperLimitAmount + '\'' +
+                ", currency='" + currency + '\'' +
+                ", unlimited=" + unlimited +
+                ", anyCanAuthorize=" + anyCanAuthorize +
+                ", any='" + any + '\'' +
+                ", corporateId='" + corporateId + '\'' +
+                ", numOfRoles=" + numOfRoles +
+                ", roleNames='" + roleNames + '\'' +
+                ", corporateName='" + corporateName + '\'' +
+                ", rank=" + rank +
+                ", authorizers=" + authorizers +
+                ", roles=" + roles +
+                '}';
+    }
 }

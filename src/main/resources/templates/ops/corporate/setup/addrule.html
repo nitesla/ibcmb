@@ -234,6 +234,8 @@
 <script type="text/javascript" class="init" th:inline="javascript">
 
 
+
+
     /*<![CDATA[*/
     $(document).ready(function () {
         var counter = 0;
@@ -260,10 +262,12 @@
                 }
             ],
             "language": {
-                "emptyTable": "No Rule added. Click Add"
+                "emptyTable": "No rule added. Click Add"
             }
 
         });
+
+        unlimited = false;
 
         $('#button_submit').click(function (e) {
             e.preventDefault()
@@ -273,7 +277,6 @@
             $('#ruleForm').submit();
         });
 
-        var unlimited = false;
 
         $("#unlimited").change(function () {
             if ($(this).is(":checked")) {
@@ -381,9 +384,16 @@
             }
 
 
-            if(unlimited!=true) {
-                if (lowerLimitAmount > upperLimitAmount) {
+
+
+            if(unlimited == false) {
+                var lowerAmount = parseFloat(lowerLimitAmount);
+                var upperAmount = parseFloat(upperLimitAmount);
+
+                if (upperAmount < lowerAmount) {
                     $("#amountDiffError").show();
+                    console.log("Lower Amount: "+lowerAmount)
+                    console.log("Upper Amount: "+upperAmount)
                     return;
                 }
                 else {
@@ -392,12 +402,13 @@
             }
             else {
                 upperLimitAmount = "Unlimited";
-
             }
 
             if(authorizers.length<numAuth){
                 return;
             }
+
+
 
             od = {
                 'DT_RowId': null,
@@ -411,17 +422,15 @@
             contactsTab.row.add(od);
             contactsTab.draw();
 
+
+            $('#myModal').modal('toggle');
+
             $("input[name='lowerLimitAmount']").val("");
             $("input[name='upperLimitAmount']").val("");
             $("#upperLimit").prop("disabled", false);
             $("input[type=checkbox][name='authorizers']").removeAttr('checked');
             $("input[type=checkbox][name='unlimited']").removeAttr('checked');
             unlimited = false;
-            $("#amountDiffError").hide();
-
-
-
-            $('#myModal').modal('toggle');
 
 
         });
