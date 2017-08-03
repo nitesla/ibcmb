@@ -30,7 +30,7 @@ public class CorpUserVerificationDTO {
 
     private Date initiatedOn;
 
-    @NotEmpty(message = "comments")
+    @NotEmpty(message = "comment is required")
     private String comments;
 
     private String verifiedBy;

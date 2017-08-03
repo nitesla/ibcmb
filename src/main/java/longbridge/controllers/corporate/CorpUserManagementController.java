@@ -4,9 +4,11 @@ import longbridge.dtos.*;
 import longbridge.exception.DuplicateObjectException;
 import longbridge.exception.InternetBankingException;
 import longbridge.exception.PasswordException;
+import longbridge.exception.VerificationException;
 import longbridge.models.CorporateUser;
 import longbridge.models.UserType;
 import longbridge.services.*;
+import longbridge.utils.VerificationStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -179,10 +181,11 @@ public class CorpUserManagementController {
     @GetMapping(path = "/approvals/all")
     public
     @ResponseBody
-    DataTablesOutput<CorpUserVerificationDTO> getAllVerification(DataTablesInput input)
+    DataTablesOutput<CorpUserVerificationDTO> getAllVerification(Principal principal, DataTablesInput input)
     {
+        CorporateUser corporateUser = corporateUserService.getUserByName(principal.getName());
         Pageable pageable = DataTablesUtils.getPageable(input);
-        Page<CorpUserVerificationDTO> page = corpUserVerificationService.getAllRequests(pageable);
+        Page<CorpUserVerificationDTO> page = corpUserVerificationService.getRequestsByCorpId(corporateUser.getCorporate().getId(), pageable);
         DataTablesOutput<CorpUserVerificationDTO> out = new DataTablesOutput<CorpUserVerificationDTO>();
         out.setDraw(input.getDraw());
         out.setData(page.getContent());
@@ -198,8 +201,51 @@ public class CorpUserManagementController {
         model.addAttribute("verification",new CorpUserVerificationDTO());
         model.addAttribute("verify", verification);
 
+        if (VerificationStatus.PENDING.equals(verification.getStatus())) {
+            boolean status = true;
+            model.addAttribute("status", status);
+        }
 
         return "corp/user/details";
+    }
+
+    @PostMapping("/verify")
+    public String verify(@ModelAttribute("verification") @Valid CorpUserVerificationDTO corpUserVerification, BindingResult result, WebRequest request, Model model, RedirectAttributes redirectAttributes,  Locale locale) {
+
+        String approval = request.getParameter("approve");
+
+        try {
+            if ("true".equals(approval))
+            {
+                corpUserVerificationService.verify(corpUserVerification);
+                redirectAttributes.addFlashAttribute("message", "Operation approved successfully");
+
+            } else if ("false".equals(approval))
+            {
+                if (result.hasErrors())
+                {
+                    CorpUserVerificationDTO corpUserVerification2=corpUserVerificationService.getVerification(corpUserVerification.getId());
+                    model.addAttribute("verify", corpUserVerification2);
+                    if (VerificationStatus.PENDING.equals(corpUserVerification2.getStatus())) {
+                        boolean status = true;
+                        model.addAttribute("status", status);
+                    }
+                    return "corp/user/details";
+                }
+                corpUserVerificationService.decline(corpUserVerification);
+                redirectAttributes.addFlashAttribute("message", "Operation declined successfully");
+
+            }
+        }
+        catch (VerificationException ve){
+            logger.error("Error verifying the operation",ve);
+            redirectAttributes.addFlashAttribute("failure", ve.getMessage());
+        }
+        catch (InternetBankingException ibe){
+            logger.error("Error verifying the operation",ibe);
+            redirectAttributes.addFlashAttribute("failure", ibe.getMessage());
+        }
+        return "redirect:/corporate/users/approvals";
     }
 
 }

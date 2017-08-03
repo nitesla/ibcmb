@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import longbridge.dtos.CorpUserVerificationDTO;
-import longbridge.dtos.VerificationDTO;
 import longbridge.exception.InternetBankingException;
 import longbridge.exception.VerificationException;
 import longbridge.exception.VerificationInterruptedException;
@@ -31,6 +30,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import java.util.*;
@@ -39,7 +39,7 @@ import java.util.*;
  * Created by Showboy on 28/07/2017.
  */
 @Service
-//@Transactional
+
 public class CorpUserVerificationServiceImpl implements CorpUserVerificationService {
 
     private static final String PACKAGE_NAME = "longbridge.models.";
@@ -90,6 +90,7 @@ public class CorpUserVerificationServiceImpl implements CorpUserVerificationServ
             corpUserVerification.setEntityName(entityName);
             corpUserVerification.setInitiatedOn(new Date());
             corpUserVerification.setInitiatedBy(doneBy.getUserName());
+            corpUserVerification.setCorpId(user.getCorporate().getId());
             corpUserVerification.setCorpUserType(CorpUserType.AUTHORIZER);
             corpUserVerification.setOperation(operation);
             corpUserVerification.setDescription(description);
@@ -215,7 +216,8 @@ public class CorpUserVerificationServiceImpl implements CorpUserVerificationServ
     }
 
     @Override
-    public String decline(VerificationDTO dto) throws VerificationException {
+    @Transactional
+    public String decline(CorpUserVerificationDTO dto) throws VerificationException {
 
         CorpUserVerification corpUserVerification = corpUserVerificationRepo.findOne(dto.getId());
         String verifiedBy = getCurrentUserName();
@@ -251,6 +253,7 @@ public class CorpUserVerificationServiceImpl implements CorpUserVerificationServ
     }
 
     @Override
+    @Transactional
     public String verify(CorpUserVerificationDTO dto) throws VerificationException {
 
         CorpUserVerification corpUserVerification = corpUserVerificationRepo.findOne(dto.getId());
@@ -368,6 +371,15 @@ public class CorpUserVerificationServiceImpl implements CorpUserVerificationServ
     @Override
     public Page<CorpUserVerificationDTO> getAllRequests(Pageable pageable) {
         Page<CorpUserVerification> page = corpUserVerificationRepo.findAll(pageable);
+        List<CorpUserVerificationDTO> dtOs = convertEntitiesToDTOs(page.getContent());
+        long t =page.getTotalElements();
+        Page<CorpUserVerificationDTO> pageImpl = new PageImpl<CorpUserVerificationDTO>(dtOs,pageable,t);
+        return pageImpl;
+    }
+
+    @Override
+    public Page<CorpUserVerificationDTO> getRequestsByCorpId(Long corpId, Pageable pageable) {
+        Page<CorpUserVerification> page = corpUserVerificationRepo.findByCorpId(corpId, pageable);
         List<CorpUserVerificationDTO> dtOs = convertEntitiesToDTOs(page.getContent());
         long t =page.getTotalElements();
         Page<CorpUserVerificationDTO> pageImpl = new PageImpl<CorpUserVerificationDTO>(dtOs,pageable,t);

@@ -13,7 +13,7 @@
     </div>
     <div class="col-xs-12 ml-15 no-pad-left" >
         <div class="col-xs-12  no-pad-lef no-mt no-bd  alert" >
-            <form method="post" class="form-horizontal" >
+            <form method="post" th:action="@{/corporate/users/verify}" class="form-horizontal" th:object="${verification}" >
 
                 <label style="font-size:large" th:text="${verify.description}"></label>
 
@@ -38,15 +38,33 @@
                     </tbody>
                 </table>
 
+
                 <div>
-                    <!--<input  th:hidden="hidden" th:field="*{version}"/>-->
-                    <!--<input  th:hidden="hidden" th:field="*{id}"/>-->
+                    <input  th:hidden="hidden" th:field="${verify.version}"/>
+                    <input  th:hidden="hidden" th:field="${verify.id}"/>
                 </div>
 
-                <div class="form-group">
-                    <label for="comments" class="col-sm-2 control-label" style="text-align: left">Comments</label>
-                    <div class="col-sm-10">
-                        <input type="text"  th:field="${verify.comments}" class="form-control" id="comments"/>
+                <br/>
+                <label for="comments" class="col-sm-2">Comments</label>
+                <div class="form-group" >
+
+                    <div class="col-sm-6">
+                        <textarea  th:field="${verify.comments}" class="form-control" id="comments" th:readonly="${status}? 'readonly':''"></textarea>
+                        <p class="errors" th:if="${#fields.hasErrors('comments')}" th:errors="*{comments}">&times;</p>
+                    </div>
+                </div>
+
+                <div th:if="${isAuthorizer}">
+                    <div th:if="${status}">
+                        <div class="form-group">
+                            <button type="submit" name="approve"  value="true" class="btn btn-link required-step my-buttons">
+                                Approve
+                            </button>
+
+                            <button type="submit" name="approve" value="false" class="btn btn-link less-required my-buttons">
+                                Decline
+                            </button>
+                        </div>
                     </div>
                 </div>
             </form>

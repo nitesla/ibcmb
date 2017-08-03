@@ -109,8 +109,12 @@ public class CorporateControllerAdvice {
             return "redirect:/corporate/setup";
         }
 
-        boolean isUserAdmin = corporateUser.isAdmin();
-        model.addAttribute("isUserAdmin",isUserAdmin);
+//        boolean isUserAdmin = corporateUser.isAdmin();
+//        model.addAttribute("isUserAdmin",isUserAdmin);
+        if (CorpUserType.ADMIN.equals(corporateUser.getCorpUserType())){
+            boolean isUserAdmin = true;
+            model.addAttribute("isUserAdmin", isUserAdmin);
+        }
 
         if (CorpUserType.AUTHORIZER.equals(corporateUser.getCorpUserType())){
             boolean isAuthorizer = true;
