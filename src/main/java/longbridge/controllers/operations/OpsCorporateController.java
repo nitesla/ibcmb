@@ -95,13 +95,6 @@ public class OpsCorporateController {
 
     }
 
-    @GetMapping("/new")
-    public String addCorporate(Model model) {
-        model.addAttribute("corporate", new CorporateDTO());
-        return "/ops/corporate/setup/new";
-    }
-
-
     @PostMapping
     public String createCorporate(@ModelAttribute("corporate") @Valid CorporateDTO corporate, BindingResult result, RedirectAttributes redirectAttributes, HttpSession session, Locale locale) {
         if (result.hasErrors()) {
@@ -568,7 +561,23 @@ public class OpsCorporateController {
         }
         return customerDetails.getCustomerName();
     }
-
+    @GetMapping("/new/{corpTYpe}")
+    public String addCorporate(@PathVariable String corpTYpe, Model model) {
+//        logger.info("the corp category {}",corpTYpe);
+        CorporateDTO corporateDTO = new CorporateDTO();
+        if(corpTYpe == null){
+            return "/ops/dashboard";
+        }else if(corpTYpe.equalsIgnoreCase("1")){
+            corporateDTO.setCorporateType("SOLE");
+        }
+        else if(corpTYpe.equalsIgnoreCase("2")){
+            corporateDTO.setCorporateType("MULTI");
+        }else {
+            return "/ops/dashboard";
+        }
+        model.addAttribute("corporate", corporateDTO);
+        return "/ops/corporate/setup/new";
+    }
 
     @PostMapping("/new")
     public String addCorporateEntity(@ModelAttribute("corporate") @Valid CorporateDTO corporate, BindingResult result, Model model, HttpSession session, Locale locale) {
@@ -665,7 +674,20 @@ public class OpsCorporateController {
             model.addAttribute("selectedAccounts",accounts);
             model.addAttribute("corporate",corporateRequestDTO);
             logger.info("Corporate Request DTO {}", corporateRequestDTO.toString());
-            return "/ops/corporate/setup/addauthorizer";
+            if((session.getAttribute("inputedUsers") != null)){
+                String users = session.getAttribute("inputedUsers").toString();
+//            logger.info("The inputed users are {}",users);
+                model.addAttribute("inputedUsers",users);
+            }else{
+                model.addAttribute("inputedUsers","");
+            }
+
+            if(corporateRequestDTO.getCorporateType().equalsIgnoreCase("SOLE")){
+                return "/ops/corporate/setup/addSoleUser";
+            }else{
+                return "/ops/corporate/setup/addauthorizer";
+            }
+
         }
         return "/ops/corporate/setup/account";
 
@@ -696,7 +718,6 @@ public class OpsCorporateController {
 
         try {
             String authorizers = request.getParameter("authorizers");
-
             ObjectMapper mapper = new ObjectMapper();
             mapper.configure(JsonParser.Feature.ALLOW_UNQUOTED_FIELD_NAMES, true);
             List<AuthorizerLevelDTO> authorizerList = mapper.readValue(authorizers, new TypeReference<List<AuthorizerLevelDTO>>() {
@@ -916,9 +937,54 @@ public class OpsCorporateController {
     public String keepUsers(WebRequest request,HttpSession session) {
         String users = request.getParameter("users");
 
-//        logger.info("Corporate Users back are: {}", users);
+        logger.info("Corporate Users back are: {}", users);
         session.removeAttribute("inputedUsers");
         session.setAttribute("inputedUsers", users);
         return "success";
+    }
+
+    @PostMapping("/users/sole/create")
+    public String createSoleCorporateUsers(WebRequest request, RedirectAttributes redirectAttributes, HttpSession session, Model model, Locale locale) {
+
+        String users= request.getParameter("users");
+
+        logger.info("Corporate Users are: {}",users);
+        session.removeAttribute("users");
+        session.setAttribute("users",users);
+
+        List<CorporateUserDTO> corporateUsers = null;
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.configure(JsonParser.Feature.ALLOW_UNQUOTED_FIELD_NAMES, true);
+        try {
+            corporateUsers = mapper.readValue(users, new TypeReference<List<CorporateUserDTO>>() {
+            });
+
+            logger.debug("Corporate users: {}", corporateUsers.toString());
+
+
+            if (session.getAttribute("corporateRequest") != null) {
+                CorporateRequestDTO corporateRequestDTO = (CorporateRequestDTO) session.getAttribute("corporateRequest");
+                corporateRequestDTO.setCorporateUsers(corporateUsers);
+                model.addAttribute("corporate", corporateRequestDTO);
+
+                logger.debug("Corporate Request: {}", corporateRequestDTO);
+                if (makerCheckerService.isEnabled("ADD_CORPORATE")) {
+                    String message = verificationService.add(corporateRequestDTO, "ADD_CORPORATE", "Adding Corporate Entity");
+                    redirectAttributes.addFlashAttribute("message", message);
+                } else {
+                    String message = corporateService.addCorporate(corporateRequestDTO);
+                    redirectAttributes.addFlashAttribute("message", message);
+                }
+                session.removeAttribute("corporateRequest");
+            }
+        }
+        catch (Exception e){
+            logger.error("Error creating corporate entity", e);
+            redirectAttributes.addFlashAttribute("failure", "Failed to create corporate entity");
+
+        }
+        return "redirect:/ops/corporates/new";
+
+
     }
 }
