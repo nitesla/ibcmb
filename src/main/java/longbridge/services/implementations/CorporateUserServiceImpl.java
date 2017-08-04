@@ -721,8 +721,14 @@ public class CorporateUserServiceImpl implements CorporateUserService {
         Role role = roleRepo.findOne(Long.parseLong(corporateUserDTO.getRoleId()));
         corporateUser.setRole(role);
         corporateUser.setCorpUserType(corporateUserDTO.getCorpUserType());
+        if (corporateUserDTO.getCreatedOn() == null) {
+            corporateUser.setCreatedOnDate(new Date());
+        }
         Corporate corporate = corporateRepo.getOne(Long.parseLong(corporateUserDTO.getCorporateId()));
         corporateUser.setCorporate(corporate);
+//        if (corporateUserDTO.getCorporateRoleId() != null){
+//            corporateUser.set
+//        }
         return corporateUser;
     }
 
@@ -775,25 +781,11 @@ public class CorporateUserServiceImpl implements CorporateUserService {
         CorporateUser corporateUser = convertDTOToEntity(user);
         logger.info("Corporate USER>>>>>>>>>> "+ corporateUser);
 
-        CorporateUser corpUser = corporateUserRepo.findFirstByUserNameIgnoreCase(user.getUserName());
-        if (corpUser != null) {
-            throw new DuplicateObjectException(messageSource.getMessage("user.exists", null, locale));
-        }
-        Corporate corporate = corporateRepo.findOne(Long.parseLong(user.getCorporateId()));
-        corporateUser = corporateUserRepo.findFirstByCorporateAndEmailIgnoreCase(corporate, user.getEmail());
-        if (corporateUser != null) {
-            throw new DuplicateObjectException(messageSource.getMessage("email.exists", null, locale));
-        }
 
         try {
-            corporateUser.setCreatedOnDate(new Date());
             corporateUser.setStatus("A");
 
             corporateUser.setRole(roleRepo.findOne(Long.parseLong(user.getRoleId())));
-            corporateUser.setEntrustId(user.getUserName());
-
-            SettingDTO settingDTO = configService.getSettingByName("DEF_ENTRUST_CORP_GRP");
-            corporateUser.setEntrustGroup(settingDTO.getValue());
 
             corporateUser.setIsFirstTimeLogon("Y");
             corporateUser.setUserType(UserType.CORPORATE);
@@ -841,7 +833,7 @@ public class CorporateUserServiceImpl implements CorporateUserService {
             String oldStatus = corporateUser.getStatus();
             String newStatus = "A".equals(oldStatus) ? "I" : "A";
             corporateUser.setStatus(newStatus);
-            corpUserVerificationService.saveInitiator(corporateUser, "CORP_USER_STATUS", "Operation to activate or deactivate user" );
+            corpUserVerificationService.saveInitiator(corporateUser, "UPDATE_CORP_USER_STATUS", "Operation to activate or deactivate user" );
             return messageSource.getMessage("user.add.success", null, locale);
         }catch (VerificationInterruptedException ib){
             return ib.getMessage();
