@@ -240,6 +240,7 @@
 
     /*<![CDATA[*/
     $(document).ready(function () {
+        var rule = [[${rules}]];
         var counter = 0;
         var t = $('#mytab').DataTable({
             dom: 'rt',
@@ -316,17 +317,17 @@
 
         $("input[type=checkbox][name='authorizers']").change(function () {
 
-                 var authorizers = $("input[type=checkbox][name='authorizers']:checked").map(function () {
-                    return $(this).val()
-                }).get();
+            var authorizers = $("input[type=checkbox][name='authorizers']:checked").map(function () {
+                return $(this).val()
+            }).get();
 
-                if (authorizers.length >= numAuth) {
-                    $("#authorizerError").hide();
-                }
-                else {
-                    $("#authorizerError").show();
+            if (authorizers.length >= numAuth) {
+                $("#authorizerError").hide();
+            }
+            else {
+                $("#authorizerError").show();
 
-                }
+            }
 
         });
 
@@ -476,6 +477,21 @@
             $(e.target).removeData('bs.modal');
         });
 
+        if (rule != '') {
+
+            var rules = JSON.parse([[${rules}]]);
+            var contactsTab2 = $('#mytab').DataTable();
+            for (var key in rules) {
+                if (rules.hasOwnProperty(key)) {
+                    var od = rules[key];
+                    contactsTab2.row.add(od);
+                }
+                console.log("the existing data "+key);
+                contactsTab2.draw();
+
+            }
+
+        }
     });
 
     /*]]>*/

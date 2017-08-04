@@ -379,8 +379,8 @@ public @ResponseBody String getSecAns(WebRequest webRequest, HttpSession session
     @GetMapping("/rest/corporate/secQues/{userDetails}")
     public @ResponseBody List<String> getSecQuestionFromNumber(@PathVariable String[] userDetails, HttpSession session){
         String secQuestion = "";
-        logger.info("user details : {} ", userDetails);
-        logger.info(userDetails[0]);
+//        logger.info("user details : {} ", userDetails);
+//        logger.info(userDetails[0]);
         List<String> question = null;
         if (!("".equalsIgnoreCase(userDetails[0]))&&!("".equalsIgnoreCase(userDetails[1]))){
             Map<String, List<String>> qa = securityService.getUserQA(userDetails[0], userDetails[1]);

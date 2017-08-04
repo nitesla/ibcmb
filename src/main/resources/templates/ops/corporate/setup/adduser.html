@@ -56,7 +56,6 @@
                             <div class="x_content">
                                 <form method="post" th:action="@{/ops/corporates/users/create}" id="userForm"
                                       class="form-horizontal">
-
                                     <input hidden="hidden" name="users"/>
 
                                     <div class="x_content">
@@ -102,6 +101,9 @@
 
                                         <div class="form-group">
                                             <div class="class=col-sm-4 col-sm-offset-2" align="left">
+                                                <a class="btn btn-primary" th:href="@{/ops/corporates/back/rule}"
+                                                   id="back">Previous1</a>
+                                                <button class="btn btn-primary" type="button" onclick="goBackToRule()" id="getData">Previous</button>
                                                 <button type="submit" id="button_submit" class="btn btn-primary">Submit
                                                 </button>
                                             </div>
@@ -279,7 +281,7 @@
 <script th:src="@{~/bank/vendors/emodal/eModal.js}"></script>
 
 
-<script type="text/javascript" class="init">
+<script type="text/javascript" class="init" th:inline="javascript">
 
 
     var userExist = false;
@@ -290,9 +292,8 @@
 
     /*<![CDATA[*/
     $(document).ready(function () {
-
         validateForm();
-
+        $('#back').hide();
         var counter = 0;
         var roleName = "";
 
@@ -514,6 +515,21 @@
 
             $('#myModal').modal('toggle');
 
+//            if (user != '') {
+//
+//                var users = JSON.parse([[${users}]]);
+//                var contactsTab2 = $('#mytab').DataTable();
+//                for (var key in users) {
+//                    if (rules.hasOwnProperty(key)) {
+//                        var od = users[key];
+//                        contactsTab2.row.add(od);
+//                    }
+//                    console.log("the existing data "+key);
+//                    contactsTab2.draw();
+//
+//                }
+//
+//            }
 
         });
 
@@ -528,7 +544,23 @@
         $("#myModal").on('hidden', function () {
             $(this).data('modal',null);
         });
+//        var users = [[${users}]];
+        var inputedUser = [[${inputedUsers}]];
+        if (inputedUser != '') {
 
+            var inputedUsers = JSON.parse([[${inputedUsers}]]);
+            var contactsTab2 = $('#mytab').DataTable();
+            for (var key in inputedUsers) {
+                if (inputedUsers.hasOwnProperty(key)) {
+                    var od = inputedUsers[key];
+                    contactsTab2.row.add(od);
+                }
+//                console.log("the existing data "+key);
+                contactsTab2.draw();
+
+            }
+
+        }
     });
 
 
@@ -673,8 +705,28 @@
         var pattern = /^([a-z\d!#$%&'*+\-\/=?^_`{|}~\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]+(\.[a-z\d!#$%&'*+\-\/=?^_`{|}~\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]+)*|"((([ \t]*\r\n)?[ \t]+)?([\x01-\x08\x0b\x0c\x0e-\x1f\x7f\x21\x23-\x5b\x5d-\x7e\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]|\\[\x01-\x09\x0b\x0c\x0d-\x7f\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]))*(([ \t]*\r\n)?[ \t]+)?")@(([a-z\d\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]|[a-z\d\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF][a-z\d\-._~\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]*[a-z\d\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])\.)+([a-z\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]|[a-z\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF][a-z\d\-._~\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]*[a-z\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])\.?$/i;
         return pattern.test(emailAddress);
     }
-    ;
 
+    function goBackToRule() {
+        var contactsTab = $('#mytab').DataTable();
+        var data = JSON.stringify(contactsTab.data().toArray());
+//        $("input[name='users']").val(data);
+        $.ajax({
+            type: 'GET',
+            url: '/ops/corporates/back/users/keep',
+            asyn:false,
+//					dataType: 'String',
+            data: {users:data},
+            error: function (data) {
+//                $('#loading-icon').hide();
+                // alert("failure");
+//                $('#sub').disabled();
+            },success: function (data) {
+                console.log("success "+data);
+                $('#back')[0].click();
+            }
+
+        });
+    }
     /*]]>*/
 </script>
 </body>

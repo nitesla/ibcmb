@@ -611,6 +611,7 @@ public class OpsCorporateController {
             }
         }
 
+        logger.info("the schemeTYpe is {}",accountInfos.get(0).getSchemeType());
         model.addAttribute("accounts", accountInfos);
         if (((corporateExistingData != null) && (accounts != null)) && (corporate.getCustomerId().equalsIgnoreCase(corporateExistingData.getCustomerId()))) {
 
@@ -620,8 +621,6 @@ public class OpsCorporateController {
             model.addAttribute("corporate", corporate);
             model.addAttribute("selectedAccounts", "null");
         }
-
-
         return "/ops/corporate/setup/account";
 
     }
@@ -693,17 +692,20 @@ public class OpsCorporateController {
                 }
                 corporateRequestDTO.setAccounts(accountDTOs);
             }
-            session.setAttribute("corporateRequest", corporateRequestDTO);
+            if((session.getAttribute("authorizerLevels") !=null)&&(!session.getAttribute("authorizerLevels").toString().equalsIgnoreCase("null"))) {
+                List<AuthorizerLevelDTO> authorizerList = (List<AuthorizerLevelDTO>) session.getAttribute("authorizerLevels");
+                model.addAttribute("authorizerList",authorizerList);
+            }else{
+                model.addAttribute("authorizerList","null");
+            }
+            session.setAttribute("corporateRequest",corporateRequestDTO);
 
-            model.addAttribute("selectedAccounts", accounts);
-            model.addAttribute("corporate", corporateRequestDTO);
-            logger.info("Corporate Request DTO " +
-                    "{}", corporateRequestDTO.toString());
-
+            model.addAttribute("selectedAccounts",accounts);
+            model.addAttribute("corporate",corporateRequestDTO);
+            logger.info("Corporate Request DTO {}", corporateRequestDTO.toString());
             return "/ops/corporate/setup/addauthorizer";
 
         }
-
         return "/ops/corporate/setup/account";
 
     }
@@ -742,12 +744,15 @@ public class OpsCorporateController {
             });
 
             logger.info("Authorizers: {}", authorizerList.toString());
+            session.removeAttribute("authorizerLevels");
             session.setAttribute("authorizerLevels", authorizerList);
 
             Iterable<CodeDTO> currencies = codeService.getCodesByType("CURRENCY");
 
             if (session.getAttribute("corporateRequest") != null) {
                 CorporateRequestDTO corporateRequestDTO = (CorporateRequestDTO) session.getAttribute("corporateRequest");
+                session.removeAttribute("corporateRequest");
+                session.setAttribute("corporateRequest", corporateRequestDTO);
                 model.addAttribute("corporate", corporateRequestDTO);
                 corporateRequestDTO.setAuthorizers(authorizerList);
 
@@ -766,7 +771,13 @@ public class OpsCorporateController {
                 num = Integer.parseInt(setting.getValue());
             }
 
-            model.addAttribute("numAuthorizers", num);
+            model.addAttribute("numAuthorizers",num);
+            if(session.getAttribute("rules")!= null) {
+                String rules = (String) session.getAttribute("rules");
+                model.addAttribute("rules",rules);
+            }else{
+                model.addAttribute("rules","");
+            }
 
             return "/ops/corporate/setup/addrule";
 
@@ -774,6 +785,7 @@ public class OpsCorporateController {
             logger.error("Error creating group", ibe);
             redirectAttributes.addFlashAttribute("failure", "Error has occurred");
             session.removeAttribute("corporateRequest");
+            session.removeAttribute("authorizerLevels");
             return "redirect:/ops/corporates/new";
         }
 
@@ -791,12 +803,12 @@ public class OpsCorporateController {
     public String addAccountUsingBack(Model model, HttpSession session) {
         String accounts[] = (String[]) session.getAttribute("selectedAccounts");
         CorporateRequestDTO corporate = (CorporateRequestDTO) session.getAttribute("corporateRequest");
-        logger.info("the session corp request {}", corporate);
-        logger.info("the session accounts {}", Arrays.asList(accounts));
+//        logger.info("the session corp request {}",corporate);
+//        logger.info("the session accounts {}",Arrays.asList(accounts));
         List<AccountInfo> accountInfos = (List<AccountInfo>) session.getAttribute("accountInfos");
         model.addAttribute("accounts", accountInfos);
         model.addAttribute("corporate", corporate);
-        model.addAttribute("selectedAccounts", Arrays.asList(accounts));
+        model.addAttribute("selectedAccounts",Arrays.asList(accounts));
         return "/ops/corporate/setup/account";
     }
 
@@ -804,11 +816,38 @@ public class OpsCorporateController {
     public String getAuthorizerBackPage(Model model, HttpSession session) {
         List<AuthorizerLevelDTO> authorizerList = (List<AuthorizerLevelDTO>) session.getAttribute("authorizerLevels");
         CorporateRequestDTO corporate = (CorporateRequestDTO) session.getAttribute("corporateRequest");
-
-        model.addAttribute("authorizerList", authorizerList);
-        model.addAttribute("corporate", corporate);
+        model.addAttribute("authorizerList",authorizerList);
+        model.addAttribute("corporate",corporate);
 
         return "/ops/corporate/setup/addauthorizer";
+    }
+    @GetMapping("/back/rule")
+    public String getRuleBackPage(WebRequest request, Model model, HttpSession session){
+        String users= request.getParameter("users");
+
+        logger.info("Corporate Users are: {}",users);
+        session.removeAttribute("users");
+        session.setAttribute("users",users);
+        List<AuthorizerLevelDTO> authorizerList = (List<AuthorizerLevelDTO>) session.getAttribute("authorizerLevels");
+        Iterable<CodeDTO> currencies = codeService.getCodesByType("CURRENCY");
+        CorporateRequestDTO corporateRequestDTO = (CorporateRequestDTO) session.getAttribute("corporateRequest");
+        String rules = (String) session.getAttribute("rules");
+        model.addAttribute("corporate", corporateRequestDTO);
+        corporateRequestDTO.setAuthorizers(authorizerList);
+//        logger.info("Corporate Request DTO {}", corporateRequestDTO.toString());
+        model.addAttribute("currencies", currencies);
+        model.addAttribute("authorizerList", authorizerList);
+//        logger.info("the authorizer is {}",corporateRequestDTO);
+        int num = 2;
+        SettingDTO setting = configService.getSettingByName("MIN_CORPORATE_APPROVERS");
+        if (setting != null && setting.isEnabled()) {
+            num = Integer.parseInt(setting.getValue());
+        }
+
+        model.addAttribute("numAuthorizers",num);
+        model.addAttribute("rules",rules);
+
+        return "/ops/corporate/setup/addrule";
     }
 
 
@@ -827,23 +866,31 @@ public class OpsCorporateController {
         try {
             transferRules = mapper.readValue(rules, new TypeReference<List<CorpTransferRuleDTO>>() {
             });
-
+            session.removeAttribute("rules");
+            session.setAttribute("rules",rules);
             logger.debug("Corp Transfer Rules: {}", transferRules.toString());
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-
-        if (session.getAttribute("corporateRequest") != null) {
+        if(session.getAttribute("corporateRequest")!=null) {
             CorporateRequestDTO corporateRequestDTO = (CorporateRequestDTO) session.getAttribute("corporateRequest");
-            model.addAttribute("corporate", corporateRequestDTO);
             corporateRequestDTO.setCorpTransferRules(transferRules);
-
-            logger.debug("Corporate Reequest: {}", corporateRequestDTO);
+            model.addAttribute("corporate",corporateRequestDTO);
+            session.removeAttribute("corporateRequest");
+            session.setAttribute("corporateRequest",corporateRequestDTO);
+            logger.debug("Corporate Reequest: {}",corporateRequestDTO);
         }
-        if (session.getAttribute("authorizerLevels") != null) {
-            List<AuthorizerLevelDTO> authorizerLevels = (ArrayList) session.getAttribute("authorizerLevels");
-            model.addAttribute("authorizerLevels", authorizerLevels);
+
+        if((session.getAttribute("inputedUsers") != null)){
+            String users = session.getAttribute("inputedUsers").toString();
+//            logger.info("The inputed users are {}",users);
+            model.addAttribute("inputedUsers",users);
+        }else{
+            model.addAttribute("inputedUsers","");
+        }
+        if(session.getAttribute("authorizerLevels")!=null) {
+            List<AuthorizerLevelDTO>  authorizerLevels= (ArrayList) session.getAttribute("authorizerLevels");
+            model.addAttribute("authorizerLevels",authorizerLevels);
         }
 
         return "/ops/corporate/setup/adduser";
@@ -852,13 +899,13 @@ public class OpsCorporateController {
     }
 
     @PostMapping("/users/create")
-    public String createCorporateUsers(WebRequest request, RedirectAttributes redirectAttributes, HttpSession
-            session, Model model, Locale locale) {
+    public String createCorporateUsers(WebRequest request, RedirectAttributes redirectAttributes, HttpSession session, Model model, Locale locale) {
 
-        String users = request.getParameter("users");
+        String users= request.getParameter("users");
 
-        logger.info("Corporate Users are: {}", users);
-
+        logger.info("Corporate Users are: {}",users);
+        session.removeAttribute("users");
+        session.setAttribute("users",users);
 
         List<CorporateUserDTO> corporateUsers = null;
         ObjectMapper mapper = new ObjectMapper();
@@ -904,5 +951,15 @@ public class OpsCorporateController {
             return "false";
         }
 
+    }
+    @GetMapping("/back/users/keep")
+    @ResponseBody
+    public String keepUsers(WebRequest request,HttpSession session) {
+        String users = request.getParameter("users");
+
+//        logger.info("Corporate Users back are: {}", users);
+        session.removeAttribute("inputedUsers");
+        session.setAttribute("inputedUsers", users);
+        return "success";
     }
 }
