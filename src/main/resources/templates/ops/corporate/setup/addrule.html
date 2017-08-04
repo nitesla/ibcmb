@@ -70,7 +70,7 @@
                                                 </button>
 
                                                 <button type="submit" id="button_del" class="btn-xs btn-default btn">
-                                                    Remove
+                                                    <i class="fa fa-money"></i>  Remove
                                                 </button>
                                             </div>
                                             <div class="form-group">
@@ -85,6 +85,8 @@
                                                             <th>Currency</th>
                                                             <th>Authorizers</th>
                                                             <th>Required Authorizers</th>
+                                                            <th>Any Can Authorize</th>
+                                                            <th>Unlimited</th>
 
                                                         </tr>
                                                         </thead>
@@ -190,13 +192,13 @@
                                     <div class="radio">
                                         <label class="col-sm-2 control-label"></label>
 
-                                        <label><input type="radio" name="any" value="All" checked="checked"/>
+                                        <label><input type="radio" name="anyCanAuthorize" value="N" checked="checked"/>
                                             All the authorizers selected above must approve transaction</label>
                                     </div>
                                     <div class="radio">
                                         <label class="col-sm-2 control-label"></label>
 
-                                        <label><input type="radio" name="any" value="Any"/>
+                                        <label><input type="radio" name="anyCanAuthorize" value="Y"/>
                                             Any <span th:text="${numAuthorizers}"></span> authorizers selected above can approve transaction</label>
                                     </div>
                                 </div>
@@ -258,12 +260,27 @@
                 },
 
                 {
-                    "data": "any"
+                    "data": "requiredAuthorizers"
+                },
+                {
+                    "data": "anyCanAuthorize"
+                },
+                {
+                    "data": "unlimited"
                 }
             ],
             "language": {
                 "emptyTable": "No rule added. Click Add"
-            }
+            },
+            "columnDefs": [{
+                "targets": 5,
+                "visible":  false
+            },
+                {
+                    "targets": 6,
+                    "visible":  false
+                }
+            ]
 
         });
 
@@ -284,7 +301,6 @@
                 $("#upperLimit").prop("disabled", true);
                 $("#upperAmountError").hide();
                 $("#amountDiffError").hide();
-
                 unlimited = true;
             }
             else {
@@ -354,7 +370,7 @@
                 return $(this).val()
             }).get();
 
-            any = $("input[type=radio][name='any']:checked").val();
+            anyCanAuthorize = $("input[type=radio][name='anyCanAuthorize']:checked").val();
 
             console.log(authorizers)
             console.log("Length of authorizers: " + authorizers.length)
@@ -401,13 +417,22 @@
                 }
             }
             else {
-                upperLimitAmount = "Unlimited";
+                upperLimitAmount = "UNLIMITED";
             }
 
             if(authorizers.length<numAuth){
                 return;
             }
 
+
+            if(anyCanAuthorize=="Y"){
+                requiredAuthorizers = "ANY";
+                anyCanAuthorize = true;
+            }
+            else {
+                requiredAuthorizers = "ALL";
+                anyCanAuthorize = false;
+            }
 
 
             od = {
@@ -416,9 +441,13 @@
                 'upperLimitAmount': upperLimitAmount,
                 'currency': currency,
                 'authorizers': authorizers,
-                'any': any
+                'requiredAuthorizers': requiredAuthorizers,
+                'anyCanAuthorize': anyCanAuthorize,
+                'unlimited':unlimited
 
             };
+
+            console.log(od);
             contactsTab.row.add(od);
             contactsTab.draw();
 

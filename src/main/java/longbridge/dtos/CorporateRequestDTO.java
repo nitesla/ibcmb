@@ -6,7 +6,6 @@ import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
-import longbridge.models.Corporate;
 import longbridge.utils.PrettySerializer;
 import org.hibernate.validator.constraints.NotEmpty;
 
@@ -34,7 +33,7 @@ public class CorporateRequestDTO implements PrettySerializer {
     private String customerId;
     private String customerName;
     private String createdOn;
-    private List<AuthorizerDTO> authorizers = new ArrayList<>();
+    private List<AuthorizerLevelDTO> authorizers = new ArrayList<>();
     private List<CorporateUserDTO> corporateUsers = new ArrayList<>();
     private List<CorpTransferRuleDTO> corpTransferRules = new ArrayList<>();
     private List<AccountDTO> accounts = new ArrayList<>();
@@ -112,11 +111,11 @@ public class CorporateRequestDTO implements PrettySerializer {
         this.rcNumber = rcNumber;
     }
 
-    public List<AuthorizerDTO> getAuthorizers() {
+    public List<AuthorizerLevelDTO> getAuthorizers() {
         return authorizers;
     }
 
-    public void setAuthorizers(List<AuthorizerDTO> authorizers) {
+    public void setAuthorizers(List<AuthorizerLevelDTO> authorizers) {
         this.authorizers = authorizers;
     }
 
@@ -227,7 +226,7 @@ public class CorporateRequestDTO implements PrettySerializer {
 
                 gen.writeObjectFieldStart("Authorizer Levels");
                 count = 0;
-                for(AuthorizerDTO authorizer : value.authorizers){
+                for(AuthorizerLevelDTO authorizer : value.authorizers){
 
                     gen.writeObjectFieldStart((++count).toString());
                     gen.writeStringField("Name", authorizer.getName());

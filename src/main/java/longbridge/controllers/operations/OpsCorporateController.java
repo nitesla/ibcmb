@@ -696,7 +696,7 @@ public class OpsCorporateController {
 
             ObjectMapper mapper = new ObjectMapper();
             mapper.configure(JsonParser.Feature.ALLOW_UNQUOTED_FIELD_NAMES, true);
-            List<AuthorizerDTO> authorizerList = mapper.readValue(authorizers, new TypeReference<List<AuthorizerDTO>>() {
+            List<AuthorizerLevelDTO> authorizerList = mapper.readValue(authorizers, new TypeReference<List<AuthorizerLevelDTO>>() {
             });
 
             logger.info("Authorizers: {}", authorizerList.toString());
@@ -758,7 +758,7 @@ public class OpsCorporateController {
     }
     @GetMapping("/back/authorizer")
     public String getAuthorizerBackPage(Model model, HttpSession session){
-        List<AuthorizerDTO> authorizerList = (List<AuthorizerDTO>) session.getAttribute("authorizerLevels");
+        List<AuthorizerLevelDTO> authorizerList = (List<AuthorizerLevelDTO>) session.getAttribute("authorizerLevels");
         CorporateRequestDTO corporate = (CorporateRequestDTO) session.getAttribute("corporateRequest");
 
         model.addAttribute("authorizerList",authorizerList);
@@ -798,7 +798,7 @@ public class OpsCorporateController {
             logger.debug("Corporate Reequest: {}",corporateRequestDTO);
         }
         if(session.getAttribute("authorizerLevels")!=null) {
-            List<AuthorizerDTO>  authorizerLevels= (ArrayList) session.getAttribute("authorizerLevels");
+            List<AuthorizerLevelDTO>  authorizerLevels= (ArrayList) session.getAttribute("authorizerLevels");
             model.addAttribute("authorizerLevels",authorizerLevels);
         }
 

@@ -12,7 +12,7 @@ import javax.persistence.Entity;
 @Entity
 @Audited(withModifiedFlag=true)
 @Where(clause ="del_Flag='N'" )
-public class Authorizer extends AbstractEntity {
+public class AuthorizerLevel extends AbstractEntity {
 
     private String name;
     private int authLevel;
