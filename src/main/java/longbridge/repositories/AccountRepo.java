@@ -30,6 +30,8 @@ public interface AccountRepo extends CommonRepo<Account,Long> {
 
     boolean existsByCustomerId(String customerId);
 
+    boolean existsByAccountNumber(String accountNumber);
+
     Page<Account> findAccountByCustomerId(String customerId, Pageable pageable);
 
     List<Account> findByCustomerId(String customerId);

@@ -35,8 +35,6 @@ public class RoleServiceImpl implements RoleService {
 
     private RoleRepo roleRepo;
 
-    private VerificationService verificationService;
-
     private PermissionRepo permissionRepo;
 
     private MessageSource messageSource;
@@ -59,9 +57,8 @@ public class RoleServiceImpl implements RoleService {
 
 
     @Autowired
-    public RoleServiceImpl(RoleRepo roleRepo, VerificationService verificationService, PermissionRepo permissionRepo, MessageSource messageSource, AdminUserRepo adminRepo, RetailUserRepo retailRepo, OperationsUserRepo opRepo, EntityManager entityManager, CorporateUserRepo corpRepo) {
+    public RoleServiceImpl(RoleRepo roleRepo, PermissionRepo permissionRepo, MessageSource messageSource, AdminUserRepo adminRepo, RetailUserRepo retailRepo, OperationsUserRepo opRepo, EntityManager entityManager, CorporateUserRepo corpRepo) {
         this.roleRepo = roleRepo;
-        this.verificationService = verificationService;
         this.permissionRepo = permissionRepo;
         this.messageSource = messageSource;
         this.adminRepo = adminRepo;

@@ -196,15 +196,17 @@ public class CorporateRequestDTO implements PrettySerializer {
                 gen.writeStringField("Unique Corporate ID",value.corporateId);
 
                 gen.writeObjectFieldStart("Accounts");
+                Integer count = 0;
                 for(AccountDTO accountDTO : value.accounts) {
+                    gen.writeObjectFieldStart((++count).toString());
                     gen.writeStringField("Account Number", accountDTO.getAccountNumber());
-
+                    gen.writeEndObject();
                 }
                 gen.writeEndObject();
 
 
                 gen.writeObjectFieldStart("Users");
-                Integer count = 0;
+                count = 0;
                 for(CorporateUserDTO user : value.corporateUsers){
 
                         gen.writeObjectFieldStart((++count).toString());
@@ -252,7 +254,14 @@ public class CorporateRequestDTO implements PrettySerializer {
 
                     }
                     gen.writeStringField("Currency", transferRule.getCurrency());
-                    gen.writeStringField("Authorizers Required", transferRule.getAny());
+
+                    if(transferRule.isAnyCanAuthorize()) {
+                        gen.writeStringField("Authorizers Required", "ANY");
+                    }
+                    else {
+                        gen.writeStringField("Authorizers Required", "ALL");
+
+                    }
 
                     gen.writeObjectFieldStart("Authorizer Levels");
                     Integer countAuth = 0;
