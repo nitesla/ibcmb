@@ -221,7 +221,7 @@ public class CorporateServiceImpl implements CorporateService {
             CorporateRole role = new CorporateRole();
             role.setName(authorizerLevelDTO.getName());
             role.setRank(authorizerLevelDTO.getLevel());
-            role.setCorporate(corporate);
+            role.setCorporate(newCorporate);
 
             HashSet<CorporateUser> corpUsers = new HashSet<>();
             for (CorporateUserDTO user : authorizers) {
