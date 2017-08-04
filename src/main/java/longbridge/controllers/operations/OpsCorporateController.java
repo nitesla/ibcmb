@@ -651,6 +651,12 @@ public class OpsCorporateController {
                 }
                 corporateRequestDTO.setAccounts(accountDTOs);
             }
+            if((session.getAttribute("authorizerLevels") !=null)&&(!session.getAttribute("authorizerLevels").toString().equalsIgnoreCase("null"))) {
+                List<AuthorizerLevelDTO> authorizerList = (List<AuthorizerLevelDTO>) session.getAttribute("authorizerLevels");
+                model.addAttribute("authorizerList",authorizerList);
+            }else{
+                model.addAttribute("authorizerList","null");
+            }
             session.setAttribute("corporateRequest",corporateRequestDTO);
 
             model.addAttribute("selectedAccounts",accounts);
@@ -770,7 +776,12 @@ public class OpsCorporateController {
         return "/ops/corporate/setup/addauthorizer";
     }
     @GetMapping("/back/rule")
-    public String getRuleBackPage(Model model, HttpSession session){
+    public String getRuleBackPage(WebRequest request, Model model, HttpSession session){
+        String users= request.getParameter("users");
+
+        logger.info("Corporate Users are: {}",users);
+        session.removeAttribute("users");
+        session.setAttribute("users",users);
         List<AuthorizerLevelDTO> authorizerList = (List<AuthorizerLevelDTO>) session.getAttribute("authorizerLevels");
         Iterable<CodeDTO> currencies = codeService.getCodesByType("CURRENCY");
         CorporateRequestDTO corporateRequestDTO = (CorporateRequestDTO) session.getAttribute("corporateRequest");
@@ -823,6 +834,14 @@ public class OpsCorporateController {
             session.setAttribute("corporateRequest",corporateRequestDTO);
             logger.debug("Corporate Reequest: {}",corporateRequestDTO);
         }
+
+        if((session.getAttribute("inputedUsers") != null)){
+            String users = session.getAttribute("inputedUsers").toString();
+            logger.info("The inputed users are {}",users);
+            model.addAttribute("inputedUsers",users);
+        }else{
+            model.addAttribute("inputedUsers","");
+        }
         if(session.getAttribute("authorizerLevels")!=null) {
             List<AuthorizerLevelDTO>  authorizerLevels= (ArrayList) session.getAttribute("authorizerLevels");
             model.addAttribute("authorizerLevels",authorizerLevels);
@@ -839,7 +858,8 @@ public class OpsCorporateController {
         String users= request.getParameter("users");
 
         logger.info("Corporate Users are: {}",users);
-
+        session.removeAttribute("users");
+        session.setAttribute("users",users);
 
         List<CorporateUserDTO> corporateUsers = null;
         ObjectMapper mapper = new ObjectMapper();
@@ -878,5 +898,15 @@ public class OpsCorporateController {
             return "false";
         }
 
+    }
+    @GetMapping("/back/users/keep")
+    @ResponseBody
+    public String keepUsers(WebRequest request, Model model, HttpSession session) {
+        String users = request.getParameter("users");
+
+        logger.info("Corporate Users back are: {}", users);
+        session.removeAttribute("inputedUsers");
+        session.setAttribute("inputedUsers", users);
+        return "success";
     }
 }

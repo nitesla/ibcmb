@@ -70,7 +70,7 @@
                                                 </button>
 
                                                 <button type="submit" id="button_del" class="btn-xs btn-default btn">
-                                                    Remove
+                                                    <i class="fa fa-money"></i>  Remove
                                                 </button>
                                             </div>
                                             <div class="form-group">
@@ -85,6 +85,8 @@
                                                             <th>Currency</th>
                                                             <th>Authorizers</th>
                                                             <th>Required Authorizers</th>
+                                                            <th>Any Can Authorize</th>
+                                                            <th>Unlimited</th>
 
                                                         </tr>
                                                         </thead>
@@ -239,8 +241,6 @@
     /*<![CDATA[*/
     $(document).ready(function () {
         var rule = [[${rules}]];
-
-//        var existingData =  JSON.parse();
         var counter = 0;
         var t = $('#mytab').DataTable({
             dom: 'rt',
@@ -272,7 +272,16 @@
             ],
             "language": {
                 "emptyTable": "No rule added. Click Add"
-            }
+            },
+            "columnDefs": [{
+                "targets": 5,
+                "visible":  false
+            },
+                {
+                    "targets": 6,
+                    "visible":  false
+                }
+            ]
 
         });
 
@@ -293,7 +302,6 @@
                 $("#upperLimit").prop("disabled", true);
                 $("#upperAmountError").hide();
                 $("#amountDiffError").hide();
-
                 unlimited = true;
             }
             else {
@@ -309,17 +317,17 @@
 
         $("input[type=checkbox][name='authorizers']").change(function () {
 
-                 var authorizers = $("input[type=checkbox][name='authorizers']:checked").map(function () {
-                    return $(this).val()
-                }).get();
+            var authorizers = $("input[type=checkbox][name='authorizers']:checked").map(function () {
+                return $(this).val()
+            }).get();
 
-                if (authorizers.length >= numAuth) {
-                    $("#authorizerError").hide();
-                }
-                else {
-                    $("#authorizerError").show();
+            if (authorizers.length >= numAuth) {
+                $("#authorizerError").hide();
+            }
+            else {
+                $("#authorizerError").show();
 
-                }
+            }
 
         });
 
@@ -349,11 +357,11 @@
             }
 
 
-        });
+        })
 
 
         $('#add_rule').on('click', function (e) {
-            e.preventDefault();
+            e.preventDefault()
 
             contactsTab = $('#mytab').DataTable();
             lowerLimitAmount = $("input[name='lowerLimitAmount']").val();
@@ -363,10 +371,10 @@
                 return $(this).val()
             }).get();
 
-            any = $("input[type=radio][name='any']:checked").val();
+            anyCanAuthorize = $("input[type=radio][name='anyCanAuthorize']:checked").val();
 
-            console.log(authorizers);
-            console.log("Length of authorizers: " + authorizers.length);
+            console.log(authorizers)
+            console.log("Length of authorizers: " + authorizers.length)
 
             if(authorizers.length<numAuth){
                 $("#authorizerError").show();
@@ -401,8 +409,8 @@
 
                 if (upperAmount < lowerAmount) {
                     $("#amountDiffError").show();
-                    console.log("Lower Amount: "+lowerAmount);
-                    console.log("Upper Amount: "+upperAmount);
+                    console.log("Lower Amount: "+lowerAmount)
+                    console.log("Upper Amount: "+upperAmount)
                     return;
                 }
                 else {
@@ -459,9 +467,14 @@
 
 
         $('#button_del').click(function (e) {
-            e.preventDefault();
+            e.preventDefault()
             var dt = $('#mytab').DataTable();
             dt.row('.selected').remove().draw(false);
+        });
+
+
+        $(document).on('hidden.bs.modal', function (e) {
+            $(e.target).removeData('bs.modal');
         });
 
         if (rule != '') {
@@ -479,10 +492,6 @@
             }
 
         }
-        $(document).on('hidden.bs.modal', function (e) {
-            $(e.target).removeData('bs.modal');
-        });
-
     });
 
     /*]]>*/
