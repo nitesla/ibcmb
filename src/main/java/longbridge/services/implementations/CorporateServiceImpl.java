@@ -5,6 +5,7 @@ import longbridge.dtos.*;
 import longbridge.exception.*;
 import longbridge.models.*;
 import longbridge.repositories.*;
+import longbridge.security.userdetails.CustomUserPrincipal;
 import longbridge.services.*;
 import longbridge.utils.DateFormatter;
 import longbridge.utils.Verifiable;
@@ -19,6 +20,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.scheduling.annotation.Async;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -591,9 +593,9 @@ public class CorporateServiceImpl implements CorporateService {
 
     @Override
     @Transactional
-    public CorpTransRule getApplicableTransferRule(CorpTransRequest transferRequest) {
+    public CorpTransRule getApplicableTransferRule(TransRequest transferRequest) {
 
-        Corporate corporate = transferRequest.getCorporate();
+        Corporate corporate = getCurrentUser().getCorporate();
         List<CorpTransRule> transferRules = corpTransferRuleRepo.findByCorporate(corporate);
         Collections.sort(transferRules, new TransferRuleComparator());
         BigDecimal transferAmount = transferRequest.getAmount();
@@ -614,7 +616,8 @@ public class CorporateServiceImpl implements CorporateService {
     }
 
 
-//    public CorporateRole getNextRoleForAuthorization(PendAuth pendAuth){
+
+    //    public CorporateRole getNextRoleForAuthorization(PendAuth pendAuth){
 //        pendAuth.
 //        List<CorporateRole> corporateRoles = rule.getRoles();
 //        sortRolesByRank(corporateRoles);
@@ -784,5 +787,12 @@ public class CorporateServiceImpl implements CorporateService {
 
         Page<CorporateDTO> pageImpl = new PageImpl<CorporateDTO>(dtOs, pageDetails, t);
         return pageImpl;
+    }
+
+
+    private CorporateUser getCurrentUser(){
+        CustomUserPrincipal principal = (CustomUserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User user = principal.getUser();
+        return (CorporateUser) user;
     }
 }

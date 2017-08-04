@@ -175,47 +175,50 @@ public class NAPSTransferController {
 
     @GetMapping("/all")
     @ResponseBody
-    public DataTablesOutput<CreditRequest> getCreditRequests(HttpSession session) throws IOException {
-        InputStream excelFile = (InputStream) session.getAttribute("inputStream");
-        List<CreditRequest> crLists = new ArrayList<>();
+    public DataTablesOutput<CreditRequestDTO> getCreditRequests(HttpSession session , Model model) throws IOException {
+        Workbook workbook = (Workbook) session.getAttribute("workbook");
+        String fileExtension = (String)session.getAttribute("fileExtension");
+        List<CreditRequestDTO> crLists = new ArrayList<>();
         try {
-            Workbook workbook = new HSSFWorkbook(excelFile);
             Sheet datatypeSheet = workbook.getSheetAt(0);
             Iterator<Row> iterator = datatypeSheet.iterator();
             if (iterator.hasNext()) iterator.next();
             while (iterator.hasNext()) {
                 Row currentRow = iterator.next();
-                Iterator<Cell> cellIterator = currentRow.iterator();
                 ArrayList cellData = new ArrayList();
-                while (cellIterator.hasNext()) {
-
-                    Cell currentCell = cellIterator.next();
-                    cellData.add(currentCell);
+                for (int i = 0; i < currentRow.getLastCellNum(); i++){
+                    Cell currentCell = currentRow.getCell(i);
+                    System.out.println(currentCell);
+                    if (currentCell == null || currentCell.getCellType() == Cell.CELL_TYPE_BLANK || currentCell.toString().isEmpty() || currentCell.toString() == null) {
+                        cellData.add("ERROR HERE");
+                    } else {
+                        cellData.add(currentCell);
+                    }
                 }
-                System.out.println(cellData);
-                CreditRequest creditRequest = new CreditRequest();
-                creditRequest.setSerial((cellData.get(0).toString()));
-                creditRequest.setRefCode(cellData.get(1).toString());
-                creditRequest.setAccountNumber(cellData.get(2).toString());
-                creditRequest.setSortCode(cellData.get(3).toString());
-                creditRequest.setAccountName(cellData.get(4).toString());
-                creditRequest.setAmount(cellData.get(5).toString());
-                creditRequest.setNarration(cellData.get(6).toString());
+
+                int rowIndex = currentRow.getRowNum();
+                CreditRequestDTO creditRequest = new CreditRequestDTO();
+                Long id = Long.valueOf(rowIndex);
+                creditRequest.setId(id);
+                creditRequest.setAccountNumber(cellData.get(0).toString());
+                creditRequest.setAccountName(cellData.get(1).toString());
+                creditRequest.setAmount(cellData.get(2).toString());
+                creditRequest.setNarration(cellData.get(3).toString());
                 crLists.add(creditRequest);
 
             }
 
 
-        } catch (IOException e) {
+        } catch (IllegalArgumentException e) {
             logger.error("Error uploading file", e);
         }
         System.out.println(crLists);
-        DataTablesOutput<CreditRequest> dto = new DataTablesOutput<>();
+        DataTablesOutput<CreditRequestDTO> dto = new DataTablesOutput<>();
         dto.setData(crLists);
         dto.setRecordsFiltered(crLists.size());
         dto.setRecordsTotal(crLists.size());
 
-        if(session.getAttribute("inputstream") != null){
+        if (session.getAttribute("inputstream") != null) {
             session.removeAttribute("inputstream");
         }
 
@@ -223,7 +226,6 @@ public class NAPSTransferController {
 
 
     }
-
 
 
     @PostMapping("/save")
@@ -250,10 +252,10 @@ public class NAPSTransferController {
             System.out.println(requestList);
 
             BulkTransfer bulkTransfer = new BulkTransfer();
-            bulkTransfer.setDebitAccount(debitAccount);
+            bulkTransfer.setCustomerAccountNumber(debitAccount);
             bulkTransfer.setCrRequestList(requestList);
             //bulkTransfer.setCorporate(corporate);
-            bulkTransfer.setRequestDate(dateFormat.format(date));
+            bulkTransfer.setTranDate(date);
             for(CreditRequest creditRequest : requestList){
                 creditRequest.setBulkTransfer(bulkTransfer);
                 creditRequest.setStatus("S");

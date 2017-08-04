@@ -31,12 +31,21 @@ import javax.persistence.UniqueConstraint;
 public class FinancialInstitution extends AbstractEntity implements PrettySerializer{
 
 
+    private String sortCode;
 
     private String institutionCode;
 
     private FinancialInstitutionType institutionType;
 
     private String institutionName;
+
+    public String getSortCode() {
+        return sortCode;
+    }
+
+    public void setSortCode(String sortCode) {
+        this.sortCode = sortCode;
+    }
 
     public String getInstitutionCode() {
         return institutionCode;
@@ -65,12 +74,12 @@ public class FinancialInstitution extends AbstractEntity implements PrettySerial
     @Override
     public String toString() {
         return "FinancialInstitution{" +
-                "institutionCode='" + institutionCode + '\'' +
-                ", institutionType='" + institutionType + '\'' +
+                "sortCode='" + sortCode + '\'' +
+                ", institutionCode='" + institutionCode + '\'' +
+                ", institutionType=" + institutionType +
                 ", institutionName='" + institutionName + '\'' +
                 '}';
     }
-
 
     @Override
    	public List<String> getDefaultSearchFields() {

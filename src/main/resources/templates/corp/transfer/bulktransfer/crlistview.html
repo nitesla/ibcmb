@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{corp-layout}">
@@ -41,8 +40,8 @@
         <div class="col-xs-12 no-pad-lef  no-mt no-bd  alert">
             <form method="post" id="" class="form-horizontal">
                     <div class="row spacing">
-                        <div>
-                            <p>Request Date: <span th:text="${bulkTransfer.requestDate}"></span></p>
+                        <div class="form-group ">
+                            <p>Request Date: <span th:text="${bulkTransfer.tranDate}"></span></p>
 
                         </div>
 
@@ -51,7 +50,7 @@
                         <br/>
                         <div class="form-group ">
                             <label>Source account</label>
-                            <input type="text" class="form-control" th:field="*{bulkTransfer.debitAccount}" />
+                            <input type="text" class="form-control" th:field="*{bulkTransfer.customerAccountNumber}" />
                             </div>
 
 
@@ -62,9 +61,6 @@
                         <div class="table-responsive">
                     <table id="mytab" class="table table-striped table-bordered table-hover" cellspacing="0"  >
                         <thead>
-
-                        <th>Serial</th>
-                        <th>Ref</th>
                         <th>Account Number</th>
                         <th>Sort Code</th>
                         <th>Beneficiary Name</th>
@@ -73,18 +69,9 @@
                         <th>Status</th>
 
                         </thead>
-                        <!--<tbody>-->
-                        <!--<tr th:each="cr : ${creditRequests}">-->
-                        <!--<td th:text="${cr.serial}"></td>-->
-                        <!--<td th:text="${cr.refCode}"></td>-->
-                        <!--<td th:text="${cr.accountNumber}"></td>-->
-                        <!--<td th:text="${cr.sortCode}"></td>-->
-                        <!--<td th:text="$preferredNameName}"></td>-->
-                        <!--<td th:text="${cr.amount}"></td>-->
-                        <!--<td th:text="${cr.narration}"></td>-->
-                        <!--<td th:text="${cr.status}"></td>-->
-                        <!--</tr>-->
-                        <!--</tbody>-->
+                        <tbody>
+
+                        </tbody>
                     </table>
 </div>
                     <br/>
@@ -118,8 +105,6 @@
             "ajax": "/corporate/transfer/" +id+ "/allcreditrequests",
             "dom": 'T<"clear">frtlp',
             "columns": [
-                { "data": "serial" },
-                { "data": "refCode" },
                 { "data": "accountNumber" },
                 { "data": "sortCode" },
                 { "data": "accountName" },
@@ -150,157 +135,4 @@
 </th:block>
 
 </body>
-=======
-<!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org"
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{corp-layout}">
-<head>
-    <link rel="stylesheet" type="text/css" href="css/jquery.dataTables.css"/>
-    <link rel="stylesheet" type="text/css" href="css/select.bootstrap.css"/>
-    <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css"/>
-    <link rel="stylesheet" type="text/css" href="css/dataTables.bootstrap.css"/>
-</head>
-
-<style>
-    .hstyle{
-        width: 100%;
-        text-align: center;
-        border-bottom: 1px solid #000;
-        line-height: 0.1em;
-        margin: 10px 0 20px;
-    }
-
-    .hstyle span {
-        background:#fff;
-        padding:0 10px;
-    }
-    table.dataTable tbody > tr.selected{
-        color: black;
-        background-color: #d7bdb3;
-    }
-</style>
-<body onload="currentBar('Bulk transfer')">
-
-<div layout:fragment="content">
-    <div class="col-md-5 col-sm-5 ">
-
-        <select class="form-control full-width coronation-form-control hide-content-only" id="view">
-            <option value="account">Overview</option>
-        </select>
-    </div>
-
-    <div class="col-xs-12 ml-15 no-pad-left " >
-        <div class="col-xs-12 no-pad-lef  no-mt no-bd  alert">
-            <form method="post" id="" class="form-horizontal">
-                    <div class="row spacing">
-                        <div>
-                            <p>Request Date: <span th:text="${bulkTransfer.requestDate}"></span></p>
-
-                        </div>
-
-
-
-                        <br/>
-                        <div class="form-group ">
-                            <label>Source account</label>
-                            <input type="text" class="form-control" th:field="*{bulkTransfer.debitAccount}" />
-                            </div>
-
-
-                    <br/>
-                        <input type="hidden" class="form-control" th:value="${bulkTransfer.id}" th:field="*{bulkTransfer.id}" th:id="bk" id="bk" />
-
-                        <br/>
-                        <div class="table-responsive">
-                    <table id="mytab" class="table table-striped table-bordered table-hover" cellspacing="0"  >
-                        <thead>
-
-                        <th>Serial</th>
-                        <th>Ref</th>
-                        <th>Account Number</th>
-                        <th>Sort Code</th>
-                        <th>Beneficiary Name</th>
-                        <th>Amount (N)</th>
-                        <th>Narration</th>
-                        <th>Status</th>
-
-                        </thead>
-                        <!--<tbody>-->
-                        <!--<tr th:each="cr : ${creditRequests}">-->
-                        <!--<td th:text="${cr.serial}"></td>-->
-                        <!--<td th:text="${cr.refCode}"></td>-->
-                        <!--<td th:text="${cr.accountNumber}"></td>-->
-                        <!--<td th:text="${cr.sortCode}"></td>-->
-                        <!--<td th:text="$preferredNameName}"></td>-->
-                        <!--<td th:text="${cr.amount}"></td>-->
-                        <!--<td th:text="${cr.narration}"></td>-->
-                        <!--<td th:text="${cr.status}"></td>-->
-                        <!--</tr>-->
-                        <!--</tbody>-->
-                    </table>
-</div>
-                    <br/>
-                    <a class="btn btn-link" th:href="@{/corporate/transfer/bulk}">Back</a>
-                    </div>
-                </form>
-        </div>
-    </div>
-
-</div>
-
-
-<th:block layout:fragment="scripts">
-    <script th:src="@{~/bank/vendors/sweetalert/sweetalert.min.js}"></script>
-    <script th:src="@{~/bank/vendors/bootstrap-dialog/js/bootstrap-dialog.js}"></script>
-    <script th:src="@{~/bank/js/jquery.spring-friendly.min.js}"></script>
-
-
-    <script th:inline="javascript">
-    //<![CDATA[
-
-    $(document).ready(function() {
-        var id = document.getElementById("bk").value;
-        var table = $('#mytab').DataTable({
-            select:true,
-            "lengthMenu" : [ [ 5, 10, 20],	[ 5, 10, 20 ] ],
-            "pagingType" : "simple_numbers",
-            "searching": false,
-            "paging": true,
-            "serverSide" : false,
-            "ajax": "/corporate/transfer/" +id+ "/allcreditrequests",
-            "dom": 'T<"clear">frtlp',
-            "columns": [
-                { "data": "serial" },
-                { "data": "refCode" },
-                { "data": "accountNumber" },
-                { "data": "sortCode" },
-                { "data": "accountName" },
-                { "data": "amount" },
-                { "data": "narration" },
-                { "data": "status" }
-            ] });
-
-
-
-    });
-
-
-    $('#button_submit').click(function(e) {
-        e.preventDefault()
-        bulkTab = $('#mytab').DataTable();
-        data = JSON.stringify(bulkTab.data().toArray());
-        $("input[name='requests']").val(data);
-        $('form').submit();
-    });
-
-    //});
-
-    /*]]>*/
-
-</script>
-
-</th:block>
-
-</body>
->>>>>>> f5bff8b57fe0f502a92b6f08c36863704f6e5b13
 </html>

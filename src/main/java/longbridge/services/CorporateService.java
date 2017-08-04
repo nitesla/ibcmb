@@ -198,8 +198,15 @@ public interface CorporateService{
     Page<CorporateRoleDTO> getRoles(Long corpId, Pageable pageable);
 
 
+//    @PreAuthorize("hasAuthority('GET_TRANSFER_RULE')")
+//    CorpTransRule getApplicableTransferRule(CorpTransRequest transferRequest);
+//
+//    @PreAuthorize("hasAuthority('GET_BULKTRANSFER_RULE')")
+//    CorpTransRule getApplicableBulkTransferRule(BulkTransfer bulkTransfer);
+
+
     @PreAuthorize("hasAuthority('GET_TRANSFER_RULE')")
-    CorpTransRule getApplicableTransferRule(CorpTransRequest transferRequest);
+    CorpTransRule getApplicableTransferRule(TransRequest transferRequest);
 
 
     @PreAuthorize("hasAuthority('ADD_CORPORATE_ROLE')")

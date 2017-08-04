@@ -5,11 +5,14 @@ package longbridge.dtos;
  */
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSetter;
+
+import java.util.Date;
+
 public class BulkTransferDTO {
     @JsonProperty("DT_RowId")
     private Long id;
-    private String debitAccount;
-    private String requestDate;
+    private String customerAccountNumber;
+    private Date tranDate;
     private String refCode;
     private  String status;
     private Long batchId;
@@ -18,9 +21,9 @@ public class BulkTransferDTO {
     public BulkTransferDTO() {
     }
 
-    public BulkTransferDTO(String debitAccount, String requestDate, String refCode, String status, Long batchId) {
-        this.debitAccount = debitAccount;
-        this.requestDate = requestDate;
+    public BulkTransferDTO(String customerAccountNumber, Date tranDate, String refCode, String status, Long batchId) {
+        this.customerAccountNumber = customerAccountNumber;
+        this.tranDate = tranDate;
         this.refCode = refCode;
         this.status = status;
         this.batchId = batchId;
@@ -42,20 +45,20 @@ public class BulkTransferDTO {
         this.id = id;
     }
 
-    public String getDebitAccount() {
-        return debitAccount;
+    public String getCustomerAccountNumber() {
+        return customerAccountNumber;
     }
 
-    public void setDebitAccount(String debitAccount) {
-        this.debitAccount = debitAccount;
+    public void setCustomerAccountNumber(String customerAccountNumber) {
+        this.customerAccountNumber = customerAccountNumber;
     }
 
-    public String getRequestDate() {
-        return requestDate;
+    public Date getTranDate() {
+        return tranDate;
     }
 
-    public void setRequestDate(String requestDate) {
-        this.requestDate = requestDate;
+    public void setTranDate(Date tranDate) {
+        this.tranDate = tranDate;
     }
 
     public String getRefCode() {
