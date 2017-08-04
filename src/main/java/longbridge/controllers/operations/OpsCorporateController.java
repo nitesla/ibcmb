@@ -837,7 +837,7 @@ public class OpsCorporateController {
 
         if((session.getAttribute("inputedUsers") != null)){
             String users = session.getAttribute("inputedUsers").toString();
-            logger.info("The inputed users are {}",users);
+//            logger.info("The inputed users are {}",users);
             model.addAttribute("inputedUsers",users);
         }else{
             model.addAttribute("inputedUsers","");
@@ -901,10 +901,10 @@ public class OpsCorporateController {
     }
     @GetMapping("/back/users/keep")
     @ResponseBody
-    public String keepUsers(WebRequest request, Model model, HttpSession session) {
+    public String keepUsers(WebRequest request,HttpSession session) {
         String users = request.getParameter("users");
 
-        logger.info("Corporate Users back are: {}", users);
+//        logger.info("Corporate Users back are: {}", users);
         session.removeAttribute("inputedUsers");
         session.setAttribute("inputedUsers", users);
         return "success";
