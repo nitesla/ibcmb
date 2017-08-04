@@ -131,7 +131,7 @@ public class CorpUserManagementController {
         } catch (DuplicateObjectException doe) {
             result.addError(new ObjectError("error", doe.getMessage()));
             logger.error("Error creating corporate user {}", corporateUserDTO.getUserName(), doe);
-            model.addAttribute("failure", messageSource.getMessage("corp.user.creation.duplicate",null,locale));
+            model.addAttribute("failure", doe.getMessage());
             return "corp/user/add";
         } catch (InternetBankingException ibe) {
             result.addError(new ObjectError("error", ibe.getMessage()));

@@ -40,7 +40,7 @@ public interface VerificationService {
 
     String verify(Long id) throws VerificationException;
 
-    String save(Object o, String operation, String description) throws JsonProcessingException;
+    String add(Object o, String operation, String description) throws JsonProcessingException;
 
     /**
      * This fetches the {@link Verification} object with the id {@code id}

@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 /**
  * Created by Fortune on 7/29/2017.
  */
-public class AuthorizerDTO {
+public class AuthorizerLevelDTO {
 
     @JsonProperty("DT_RowId")
     private Long id;

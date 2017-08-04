@@ -142,7 +142,7 @@ public class VerificationServiceImpl implements VerificationService {
     }
 
     @Override
-    public String save(Object object, String operation, String description) throws JsonProcessingException {
+    public String add(Object object, String operation, String description) throws JsonProcessingException {
         CustomUserPrincipal principal = (CustomUserPrincipal) SecurityContextHolder.getContext().getAuthentication()
                 .getPrincipal();
         User doneBy = principal.getUser();
@@ -177,7 +177,7 @@ public class VerificationServiceImpl implements VerificationService {
 
         logger.info(entityName + " has been saved for verification");
 
-        return description+ "has gone for verification";
+        return description+ " has gone for verification";
 
     }
 

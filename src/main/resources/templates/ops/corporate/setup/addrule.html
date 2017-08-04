@@ -88,18 +88,7 @@
 
                                                         </tr>
                                                         </thead>
-                                                        <tbody>
-                                                    <!--<span th:if="${corporate.corpTransferRules} != null">-->
-                                                        <!--<tr th:each="list : ${corporate.corpTransferRules}">-->
-                                                            <!--<td th:text="${list.lowerLimitAmount}"></td>-->
-                                                            <!--<td th:text="${list.upperLimitAmount}"></td>-->
-                                                            <!--<td th:text="${list.currency}"></td>-->
-                                                            <!--<td th:text="${#strings.replace(#strings.replace(list.authorizers,']',''),'[','')}"></td>-->
-                                                            <!--<td th:text="${list.any}"></td>-->
 
-                                                        <!--</tr>-->
-                                                            <!--</span>-->
-                                                        </tbody>
                                                     </table>
                                                 </div>
                                             </div>
@@ -201,13 +190,13 @@
                                     <div class="radio">
                                         <label class="col-sm-2 control-label"></label>
 
-                                        <label><input type="radio" name="any" value="All" checked="checked"/>
+                                        <label><input type="radio" name="anyCanAuthorize" value="N" checked="checked"/>
                                             All the authorizers selected above must approve transaction</label>
                                     </div>
                                     <div class="radio">
                                         <label class="col-sm-2 control-label"></label>
 
-                                        <label><input type="radio" name="any" value="Any"/>
+                                        <label><input type="radio" name="anyCanAuthorize" value="Y"/>
                                             Any <span th:text="${numAuthorizers}"></span> authorizers selected above can approve transaction</label>
                                     </div>
                                 </div>
@@ -272,32 +261,15 @@
                 },
 
                 {
-                    "data": "any"
+                    "data": "requiredAuthorizers"
+                },
+                {
+                    "data": "anyCanAuthorize"
+                },
+                {
+                    "data": "unlimited"
                 }
-            ]
-//            "columnDefs" : [
-//                {
-//                    "targets" : 3,
-//                    "data" : "authorizers",
-//                    "render" : function(data, type,full, meta) {
-//                        if(type ==='display')
-//                        {
-//                            if(data[0] =="["){
-//                                data= data.replace("[","");
-//                                data= data.replace("]","");
-////                                console.log("the data"+data);
-//                            }
-//
-//
-////                            console.log("the data"+data[0]);
-//                            return data
-//                        }
-//
-//                        return data;
-//                    }
-//                }
-//            ]
-            ,
+            ],
             "language": {
                 "emptyTable": "No rule added. Click Add"
             }
@@ -363,7 +335,7 @@
             }
 
 
-        });
+        })
 
 
         $("#upperLimit").keyup(function () {
@@ -438,28 +410,37 @@
                 }
             }
             else {
-                upperLimitAmount = "Unlimited";
+                upperLimitAmount = "UNLIMITED";
             }
 
             if(authorizers.length<numAuth){
                 return;
             }
 
-//            if(authorizers[0] =="["){
-////                data= data.replace("[","");
-////                data= data.replace("]","");
-//                                console.log("the authorizers"+authorizers);
-//            }
-//            console.log("the authorizers"+authorizers);
+
+            if(anyCanAuthorize=="Y"){
+                requiredAuthorizers = "ANY";
+                anyCanAuthorize = true;
+            }
+            else {
+                requiredAuthorizers = "ALL";
+                anyCanAuthorize = false;
+            }
+
+
             od = {
                 'DT_RowId': null,
                 'lowerLimitAmount': lowerLimitAmount,
                 'upperLimitAmount': upperLimitAmount,
                 'currency': currency,
                 'authorizers': authorizers,
-                'any': any
+                'requiredAuthorizers': requiredAuthorizers,
+                'anyCanAuthorize': anyCanAuthorize,
+                'unlimited':unlimited
 
             };
+
+            console.log(od);
             contactsTab.row.add(od);
             contactsTab.draw();
 
@@ -478,7 +459,7 @@
 
 
         $('#button_del').click(function (e) {
-            e.preventDefault()
+            e.preventDefault();
             var dt = $('#mytab').DataTable();
             dt.row('.selected').remove().draw(false);
         });
@@ -501,21 +482,6 @@
         $(document).on('hidden.bs.modal', function (e) {
             $(e.target).removeData('bs.modal');
         });
-//        var arr = contactsTab.data().toArray();
-//
-//        $.each(arr, function (i, obj) {
-//
-//            $.each(obj, function (key, value) {
-//                if (key == "authorizers") {
-//                    if(value[0] =="["){
-//                        value= value.replace("[","");
-//                        value= value.replace("]","");
-////                                console.log("the data"+data);
-//                    }
-//                }
-//            });
-//        });
-//        arr.draw();
 
     });
 

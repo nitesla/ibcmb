@@ -1,6 +1,5 @@
 package longbridge.services.implementations;
 
-import longbridge.aop.MakerCheckerAdvisor;
 import longbridge.api.AccountInfo;
 import longbridge.dtos.*;
 import longbridge.exception.*;
@@ -75,6 +74,9 @@ public class CorporateServiceImpl implements CorporateService {
     private MakerCheckerService makerCheckerService;
 
     @Autowired
+    private VerificationService verificationService;
+
+    @Autowired
     private EntityManager entityManager;
 
     private Locale locale = LocaleContextHolder.getLocale();
@@ -124,7 +126,7 @@ public class CorporateServiceImpl implements CorporateService {
 
         CorporateUser corporateUser = corporateUserRepo.findFirstByUserName(user.getUserName());
         if (corporateUser != null) {
-            throw new DuplicateObjectException(messageSource.getMessage("user.exist", null, locale));
+            throw new DuplicateObjectException(messageSource.getMessage("user.exists", null, locale));
         }
 
         try {
@@ -166,10 +168,21 @@ public class CorporateServiceImpl implements CorporateService {
     @Verifiable(operation = "ADD_CORPORATE", description = "Adding Corporate Entity")
     public String addCorporate(CorporateRequestDTO corporateRequestDTO) throws InternetBankingException {
 
-        return "";
+        try {
+            if (makerCheckerService.isEnabled("ADD_CORPORATE")) {
+                String message = verificationService.add(corporateRequestDTO, "ADD_CORPORATE", "Adding Corporate Entity");
+                return message;
+            } else {
+                saveCorporateRequest(corporateRequestDTO);
+                return messageSource.getMessage("corporate.add.success", null, locale);
+            }
+
+        } catch (Exception e) {
+            throw new InternetBankingException(messageSource.getMessage("corporate.add.failure", null, locale), e);
+        }
     }
 
-    private void saveCorporateRequest(CorporateRequestDTO corporateRequestDTO) throws InternetBankingException{
+    public void saveCorporateRequest(CorporateRequestDTO corporateRequestDTO) throws InternetBankingException {
         Corporate corporate = new Corporate();
         corporate.setCorporateType(corporateRequestDTO.getCorporateType());
         corporate.setName(corporateRequestDTO.getCorporateName());
@@ -177,8 +190,91 @@ public class CorporateServiceImpl implements CorporateService {
         corporate.setCorporateId(corporateRequestDTO.getCorporateId());
         corporate.setCreatedOnDate(new Date());
         corporate.setStatus("A");
-        Corporate newCorporate =  corporateRepo.save(corporate);
+        Corporate newCorporate = corporateRepo.save(corporate);
 
+        List<CorporateUserDTO> authorizers = new ArrayList<>();
+
+        for (CorporateUserDTO user : corporateRequestDTO.getCorporateUsers()) {
+            CorporateUser corporateUser = new CorporateUser();
+            corporateUser.setUserName(user.getUserName());
+            corporateUser.setFirstName(user.getFirstName());
+            corporateUser.setLastName(user.getLastName());
+            corporateUser.setEmail(user.getEmail());
+            corporateUser.setPhoneNumber(user.getPhoneNumber());
+            corporateUser.setAlertPreference(codeService.getByTypeAndCode("ALERT_PREFERENCE", "BOTH"));
+            corporateUser.setCreatedOnDate(new Date());
+            corporateUser.setStatus("A");
+            Role role = roleRepo.findOne(Long.parseLong(user.getRoleId()));
+            corporateUser.setRole(role);
+            corporateUser.setCorpUserType(getUserType(user.getUserType()));
+            corporateUser.setCorporate(newCorporate);
+            createUserOnEntrustAndSendCredentials(corporateUser);
+            if("AUTHORIZER".equals(user.getUserType())){
+                authorizers.add(user);
+            }
+
+        }
+
+        List<CorporateRole> corporateRoles = new ArrayList<>();
+
+        for(AuthorizerLevelDTO authorizerLevelDTO : corporateRequestDTO.getAuthorizers()){
+            CorporateRole role = new CorporateRole();
+            role.setName(authorizerLevelDTO.getName());
+            role.setRank(authorizerLevelDTO.getLevel());
+            role.setCorporate(corporate);
+
+            HashSet<CorporateUser> corpUsers = new HashSet<>();
+            for (CorporateUserDTO user : authorizers) {
+                if(user.getAuthorizerLevel().equals(authorizerLevelDTO.getName()+" "+authorizerLevelDTO.getLevel())) {
+                    CorporateUser corporateUser = corporateUserRepo.findFirstByUserNameIgnoreCase(user.getUserName());
+                    corpUsers.add(corporateUser);
+                }
+            }
+            role.setUsers(corpUsers);
+            CorporateRole corporateRole = corporateRoleRepo.save(role);
+            corporateRoles.add(corporateRole);
+        }
+
+        for(CorpTransferRuleDTO transferRuleDTO: corporateRequestDTO.getCorpTransferRules()){
+            CorpTransRule corpTransRule = new CorpTransRule();
+            corpTransRule.setLowerLimitAmount(new BigDecimal(transferRuleDTO.getLowerLimitAmount()));
+            if(transferRuleDTO.isUnlimited()) {
+                corpTransRule.setUpperLimitAmount(new BigDecimal(Integer.MAX_VALUE));
+            }
+            else {
+                corpTransRule.setUpperLimitAmount(new BigDecimal(transferRuleDTO.getUpperLimitAmount()));
+            }
+            corpTransRule.setUnlimited(transferRuleDTO.isUnlimited());
+            corpTransRule.setCurrency(transferRuleDTO.getCurrency());
+            corpTransRule.setAnyCanAuthorize(transferRuleDTO.isAnyCanAuthorize());
+            corpTransRule.setCorporate(newCorporate);
+
+            List<CorporateRole> roleList = new ArrayList<CorporateRole>();
+            for (CorporateRole role : corporateRoles) {
+                for(String authorizerLevel: transferRuleDTO.getAuthorizers()) {
+                    if(authorizerLevel.equals(role.getName()+" "+role.getRank())) {
+                        roleList.add(role);
+                    }
+                }
+            }
+            corpTransRule.setRoles(roleList);
+            corpTransferRuleRepo.save(corpTransRule);
+        }
+
+    }
+
+    private CorpUserType getUserType(String userType){
+
+        if("ADMIN".equals(userType)){
+            return CorpUserType.ADMIN;
+        }
+        else if("INITIATOR".equals(userType)){
+            return  CorpUserType.INITIATOR;
+        }
+        else if ("AUTHORIZER".equals(userType)){
+            return CorpUserType.AUTHORIZER;
+        }
+        return null;
     }
 
     public void addAccounts(Corporate corporate) {
@@ -191,11 +287,6 @@ public class CorporateServiceImpl implements CorporateService {
             }
 
         }
-    }
-
-    private List<Account> getAccounts(List<AccountDTO> accountDTOs){
-        List<Account> accounts = new ArrayList<>();
-        return accounts;
     }
 
 
@@ -252,7 +343,7 @@ public class CorporateServiceImpl implements CorporateService {
         Email email = new Email.Builder()
                 .setRecipient(user.getEmail())
                 .setSubject(messageSource.getMessage("corporate.customer.create.subject", null, locale))
-                .setBody(String.format(messageSource.getMessage("corporate.customer.create.message", null, locale), fullName, user.getUserName(), password, corporate.getCustomerId()))
+                .setBody(String.format(messageSource.getMessage("corporate.customer.create.message", null, locale), fullName, user.getUserName(), password, corporate.getCorporateId()))
                 .build();
         new Thread(() -> {
             mailService.send(email);
@@ -490,7 +581,6 @@ public class CorporateServiceImpl implements CorporateService {
         try {
             CorpTransRule transferRule = corpTransferRuleRepo.findOne(id);
             corpTransferRuleRepo.delete(transferRule);
-
             logger.info("Updated transfer rule  with Id {}", id);
             return messageSource.getMessage("rule.delete.success", null, locale);
         } catch (VerificationInterruptedException e) {

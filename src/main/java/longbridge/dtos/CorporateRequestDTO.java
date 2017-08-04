@@ -6,7 +6,6 @@ import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
-import longbridge.models.Corporate;
 import longbridge.utils.PrettySerializer;
 import org.hibernate.validator.constraints.NotEmpty;
 
@@ -34,7 +33,7 @@ public class CorporateRequestDTO implements PrettySerializer {
     private String customerId;
     private String customerName;
     private String createdOn;
-    private List<AuthorizerDTO> authorizers = new ArrayList<>();
+    private List<AuthorizerLevelDTO> authorizers = new ArrayList<>();
     private List<CorporateUserDTO> corporateUsers = new ArrayList<>();
     private List<CorpTransferRuleDTO> corpTransferRules = new ArrayList<>();
     private List<AccountDTO> accounts = new ArrayList<>();
@@ -112,11 +111,11 @@ public class CorporateRequestDTO implements PrettySerializer {
         this.rcNumber = rcNumber;
     }
 
-    public List<AuthorizerDTO> getAuthorizers() {
+    public List<AuthorizerLevelDTO> getAuthorizers() {
         return authorizers;
     }
 
-    public void setAuthorizers(List<AuthorizerDTO> authorizers) {
+    public void setAuthorizers(List<AuthorizerLevelDTO> authorizers) {
         this.authorizers = authorizers;
     }
 
@@ -196,7 +195,6 @@ public class CorporateRequestDTO implements PrettySerializer {
                 gen.writeStringField("Corporate Name",value.corporateName);
                 gen.writeStringField("Unique Corporate ID",value.corporateId);
 
-
                 gen.writeObjectFieldStart("Accounts");
                 for(AccountDTO accountDTO : value.accounts) {
                     gen.writeStringField("Account Number", accountDTO.getAccountNumber());
@@ -206,15 +204,16 @@ public class CorporateRequestDTO implements PrettySerializer {
 
 
                 gen.writeObjectFieldStart("Users");
+                Integer count = 0;
                 for(CorporateUserDTO user : value.corporateUsers){
 
-                        gen.writeObjectFieldStart("------");
+                        gen.writeObjectFieldStart((++count).toString());
                         //gen.writeStartObject();
                         gen.writeStringField("Username", user.getUserName());
                         gen.writeStringField("First Name", user.getFirstName());
                         gen.writeStringField("Last Name", user.getLastName());
                         gen.writeStringField("Email", user.getEmail());
-                        gen.writeStringField("Phone", user.getPhoneNumber());
+                        gen.writeStringField("Phone Number", user.getPhoneNumber());
                         gen.writeStringField("User Type", user.getUserType());
                         if("AUTHORIZER".equals(user.getUserType())){
                             gen.writeStringField("Authorizer Level", user.getAuthorizerLevel());
@@ -226,10 +225,10 @@ public class CorporateRequestDTO implements PrettySerializer {
                 gen.writeEndObject();
 
                 gen.writeObjectFieldStart("Authorizer Levels");
+                count = 0;
+                for(AuthorizerLevelDTO authorizer : value.authorizers){
 
-                for(AuthorizerDTO authorizer : value.authorizers){
-
-                    gen.writeObjectFieldStart("------");
+                    gen.writeObjectFieldStart((++count).toString());
                     gen.writeStringField("Name", authorizer.getName());
                     gen.writeNumberField("Level",authorizer.getLevel());
 
@@ -239,9 +238,10 @@ public class CorporateRequestDTO implements PrettySerializer {
 
 
                 gen.writeObjectFieldStart("Transaction Rules");
+                count = 0;
                 for(CorpTransferRuleDTO transferRule : value.corpTransferRules){
 
-                    gen.writeObjectFieldStart("------");
+                    gen.writeObjectFieldStart((++count).toString());
 
                     gen.writeStringField("Lower Amount", transferRule.getLowerLimitAmount());
                     if("Unlimited".equals(transferRule.getUpperLimitAmount())){
@@ -255,9 +255,9 @@ public class CorporateRequestDTO implements PrettySerializer {
                     gen.writeStringField("Authorizers Required", transferRule.getAny());
 
                     gen.writeObjectFieldStart("Authorizer Levels");
+                    Integer countAuth = 0;
                     for(String authorizer : transferRule.getAuthorizers()){
-                        gen.writeObjectFieldStart("---------");
-                        //gen.writeStartObject();
+                        gen.writeObjectFieldStart((++countAuth).toString());
                         gen.writeStringField("Name",authorizer);
                         gen.writeEndObject();
                     }

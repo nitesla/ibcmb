@@ -70,7 +70,7 @@
                                                 </button>
 
                                                 <button type="submit" id="button_del" class="btn-xs btn-default btn">
-                                                    Remove
+                                                    <i class="fa fa-user"></i> Remove
                                                 </button>
                                             </div>
                                             <div class="form-group">
@@ -87,7 +87,9 @@
                                                             <th>Phone Number</th>
                                                             <th>User Type</th>
                                                             <th>Authorizer Level</th>
+                                                            <th>RoleId</th>
                                                             <th>Role</th>
+
 
                                                         </tr>
                                                         </thead>
@@ -192,6 +194,21 @@
 
                             </div>
 
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label">Role</label>
+                                <div class="col-sm-6">
+
+                                    <select id="role" class="form-control" name="role">
+                                        <option value="">Select..</option>
+                                        <option th:each="role : ${roles.?[#strings.equalsIgnoreCase(userType, 'corporate')]}"
+                                                th:value="${role.id}" th:text="${role.name}"></option>
+                                    </select>
+                                    <span id="roleError" class="error">Role is required</span>
+
+
+                                </div>
+                            </div>
+
 
                             <div class="form-group">
                                 <label class="col-sm-2 control-label">User Type</label>
@@ -223,20 +240,7 @@
                                 </div>
                             </div>
 
-                            <div class="form-group">
-                                <label class="col-sm-2 control-label">Role</label>
-                                <div class="col-sm-6">
 
-                                    <select id="role" class="form-control" name="role">
-                                        <option value="">Select..</option>
-                                        <option th:each="role : ${roles.?[#strings.equalsIgnoreCase(userType, 'corporate')]}"
-                                                th:value="${role.id}" th:text="${role.name}"></option>
-                                    </select>
-                                    <span id="roleError" class="error">Role is required</span>
-
-
-                                </div>
-                            </div>
 
                             <!--<div  th:if ="${corporate.corporateType=='MULTI'}" class="form-group">-->
                             <!--<label class="col-sm-2 control-label"></label>-->
@@ -320,6 +324,9 @@
                     "data": "authorizerLevel"
                 },
                 {
+                    "data": "roleId"
+                },
+                {
                     "data": "role"
                 }
             ],
@@ -328,11 +335,7 @@
             },
             "columnDefs": [{
                 "targets": 7,
-                "data": "role",
-                "render": function(data, type, full, meta) {
-
-                    return roleName;
-                }
+                "visible":  false
             }]
 
         });
@@ -360,8 +363,8 @@
             phoneNumber = $("input[name='phoneNumber']").val();
             userType = $("select#userType").val();
             authorizerLevel = $("select#authorizerLevel").val();
-            role = $("select#role").val();
-            roleName = $("#role option:selected").text();
+            roleId = $("select#role").val();
+            role = $("#role option:selected").text();
 
 
 
@@ -417,7 +420,6 @@
 
             duplicateUsername = false;
             duplicateEmail = false;
-            duplicatePhone = false;
 
             var arr = contactsTab.data().toArray();
 
@@ -432,13 +434,13 @@
                         duplicateEmail = true;
                     }
 
-                    if (key == "phoneNumber"&& value==phoneNumber) {
-                        duplicatePhone = true;
-                    }
+//                    if (key == "phoneNumber"&& value==phoneNumber) {
+//                        duplicatePhone = true;
+//                    }
 
                 })
 
-                if(duplicateUsername==true||duplicateEmail==true||duplicatePhone==true){
+                if(duplicateUsername==true||duplicateEmail==true){
                     return false;
                 }
 
@@ -484,6 +486,7 @@
                 'phoneNumber': phoneNumber,
                 'userType': userType,
                 'authorizerLevel': authorizerLevel,
+                'roleId': roleId,
                 'role': role
 
             };
@@ -498,7 +501,7 @@
             duplicateUsername = false;
             duplicateEmail = false;
             invalidEmail = false;
-            duplicatePhone = false;
+//            duplicatePhone = false;
 
 
 

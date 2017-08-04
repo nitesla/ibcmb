@@ -76,8 +76,7 @@ public class CorpUserVerificationServiceImpl implements CorpUserVerificationServ
                         id, VerificationStatus.PENDING);
                 if (pendingVerification != null) {
                     logger.info("Found entity with pending verification");
-                    throw new InternetBankingException(entityName + " has changes pending for verification. Approve or " +
-                            "decline the changes before making another one.");
+                    throw new InternetBankingException(entityName + " " + messageSource.getMessage("corp.admin.approval.pending", null, locale));
                 }
             }
 
@@ -117,7 +116,7 @@ public class CorpUserVerificationServiceImpl implements CorpUserVerificationServ
                         id, VerificationStatus.PENDING);
                 if (pendingVerification != null) {
                     // found pending verification
-                    throw new InternetBankingException(entityName + " has pending verification");
+                    throw new InternetBankingException(entityName + " " + messageSource.getMessage("corp.admin.approval.pending", null, locale));
                 }
 
                 corpUserVerification.setBeforeObject(prettyMapper.writeValueAsString(originalEntity));
@@ -130,7 +129,7 @@ public class CorpUserVerificationServiceImpl implements CorpUserVerificationServ
             logger.info(entityName + " has been saved for verification");
 
             System.out.println("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
-            throw new VerificationInterruptedException(description + " has gone for verification");
+            throw new VerificationInterruptedException(description + " " + messageSource.getMessage("corp.admin.approval.verification", null, locale));
 
         }catch (JsonProcessingException e){
             logger.error(e.getMessage(), e);

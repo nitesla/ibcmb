@@ -17,8 +17,6 @@ public class AccountDTO{
     private String primaryFlag;
     private String hiddenFlag;
     private String currencyCode;
-
-
     private String accountType;
     private String accountBalance;
     private String ledgerBalance;
