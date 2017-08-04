@@ -72,6 +72,9 @@ public class OpsCorporateController {
     @Autowired
     private AccountService accountService;
 
+    @Autowired
+    private VerificationService verificationService;
+
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
 
@@ -667,6 +670,7 @@ public class OpsCorporateController {
         return "/ops/corporate/setup/account";
 
     }
+
     @GetMapping("/validate/{id}")
     @ResponseBody
     public String valiidateCorporateId(@PathVariable String id){
@@ -688,14 +692,14 @@ public class OpsCorporateController {
 
 
     @PostMapping("/authorizer")
-    public String createGroup(WebRequest request, RedirectAttributes redirectAttributes, HttpSession session, Model model, Locale locale) {
+    public String createAuthorizerLevels(WebRequest request, RedirectAttributes redirectAttributes, HttpSession session, Model model, Locale locale) {
 
         try {
             String authorizers = request.getParameter("authorizers");
 
             ObjectMapper mapper = new ObjectMapper();
             mapper.configure(JsonParser.Feature.ALLOW_UNQUOTED_FIELD_NAMES, true);
-            List<AuthorizerDTO> authorizerList = mapper.readValue(authorizers, new TypeReference<List<AuthorizerDTO>>() {
+            List<AuthorizerLevelDTO> authorizerList = mapper.readValue(authorizers, new TypeReference<List<AuthorizerLevelDTO>>() {
             });
 
             logger.info("Authorizers: {}", authorizerList.toString());
@@ -757,7 +761,7 @@ public class OpsCorporateController {
     }
     @GetMapping("/back/authorizer")
     public String getAuthorizerBackPage(Model model, HttpSession session){
-        List<AuthorizerDTO> authorizerList = (List<AuthorizerDTO>) session.getAttribute("authorizerLevels");
+        List<AuthorizerLevelDTO> authorizerList = (List<AuthorizerLevelDTO>) session.getAttribute("authorizerLevels");
         CorporateRequestDTO corporate = (CorporateRequestDTO) session.getAttribute("corporateRequest");
 
         model.addAttribute("authorizerList",authorizerList);
@@ -797,7 +801,7 @@ public class OpsCorporateController {
             logger.debug("Corporate Reequest: {}",corporateRequestDTO);
         }
         if(session.getAttribute("authorizerLevels")!=null) {
-            List<AuthorizerDTO>  authorizerLevels= (ArrayList) session.getAttribute("authorizerLevels");
+            List<AuthorizerLevelDTO>  authorizerLevels= (ArrayList) session.getAttribute("authorizerLevels");
             model.addAttribute("authorizerLevels",authorizerLevels);
         }
 
@@ -822,25 +826,31 @@ public class OpsCorporateController {
             });
 
             logger.debug("Corporate users: {}", corporateUsers.toString());
-        } catch (IOException e) {
-            e.printStackTrace();
+
+
+            if (session.getAttribute("corporateRequest") != null) {
+                CorporateRequestDTO corporateRequestDTO = (CorporateRequestDTO) session.getAttribute("corporateRequest");
+                corporateRequestDTO.setCorporateUsers(corporateUsers);
+                model.addAttribute("corporate", corporateRequestDTO);
+
+                logger.debug("Corporate Request: {}", corporateRequestDTO);
+                if (makerCheckerService.isEnabled("ADD_CORPORATE")) {
+                    String message = verificationService.add(corporateRequestDTO, "ADD_CORPORATE", "Adding Corporate Entity");
+                    redirectAttributes.addFlashAttribute("message", message);
+                } else {
+                    String message = corporateService.addCorporate(corporateRequestDTO);
+                    redirectAttributes.addFlashAttribute("message", message);
+                }
+                session.removeAttribute("corporateRequest");
+            }
         }
-
-        if(session.getAttribute("corporateRequest")!=null) {
-            CorporateRequestDTO corporateRequestDTO = (CorporateRequestDTO) session.getAttribute("corporateRequest");
-            corporateRequestDTO.setCorporateUsers(corporateUsers);
-            model.addAttribute("corporate",corporateRequestDTO);
-
-            logger.debug("Corporate Request: {}",corporateRequestDTO);
+        catch (Exception e){
+            logger.error("Error creating corporate entity", e);
+            redirectAttributes.addFlashAttribute("failure", "Failed to create corporate entity");
 
         }
-        if(session.getAttribute("authorizerLevels")!=null) {
-            List<AuthorizerDTO>  authorizerLevels= (ArrayList) session.getAttribute("authorizerLevels");
-            model.addAttribute("authorizerLevels",authorizerLevels);
-        }
-
-        redirectAttributes.addFlashAttribute("message", "Corporate Entity created successfully");
         return "redirect:/ops/corporates/new";
+
 
     }
 

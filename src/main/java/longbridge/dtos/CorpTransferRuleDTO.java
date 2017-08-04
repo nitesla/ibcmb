@@ -1,5 +1,6 @@
 package longbridge.dtos;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.hibernate.validator.constraints.NotEmpty;
 
@@ -11,6 +12,8 @@ import java.util.Set;
 /**
  * Created by Fortune on 5/18/2017.
  */
+
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class CorpTransferRuleDTO {
 
     @JsonProperty("DT_RowId")
