@@ -5,6 +5,7 @@ import longbridge.exception.DuplicateObjectException;
 import longbridge.exception.InternetBankingException;
 import longbridge.exception.PasswordException;
 import longbridge.exception.VerificationException;
+import longbridge.models.Corporate;
 import longbridge.models.CorporateUser;
 import longbridge.models.UserType;
 import longbridge.services.*;
@@ -111,9 +112,13 @@ public class CorpUserManagementController {
     public String addUser(Principal principal, Model model){
         CorporateUser corporateUser = corporateUserService.getUserByName(principal.getName());
         CorporateDTO corporate = corporateService.getCorporate(corporateUser.getCorporate().getId());
+        List<CorporateRoleDTO> corporateRoleDTO = corporateService.getRoles(corporateUser.getCorporate().getId());
+        logger.info("CORP RULES >>>> " + corporateRoleDTO);
         CorporateUserDTO corporateUserDTO = new CorporateUserDTO();
         model.addAttribute("corporateUser", corporateUserDTO);
         model.addAttribute("corporate", corporate);
+
+        model.addAttribute("corporateRoles", corporateRoleDTO);
         return "corp/user/add";
     }
 
@@ -121,6 +126,18 @@ public class CorpUserManagementController {
     public String createUser(@ModelAttribute("corporateUser") @Valid CorporateUserDTO corporateUserDTO, BindingResult result, WebRequest webRequest, Model model, RedirectAttributes redirectAttributes, Locale locale) throws Exception {
 
         if (result.hasErrors()) {
+            return "corp/user/add";
+        }
+
+        CorporateUser corpUser = corporateUserService.getUserByName(corporateUserDTO.getUserName());
+        if (corpUser != null) {
+            model.addAttribute("failure", messageSource.getMessage("user.exists", null, locale));
+            return "corp/user/add";
+        }
+        Corporate corporate = corporateService.getCorp(Long.parseLong(corporateUserDTO.getCorporateId()));
+        CorporateUser corporateUser = corporateUserService.getUserByCifAndEmailIgnoreCase(corporate, corporateUserDTO.getEmail());
+        if (corporateUser != null) {
+            model.addAttribute("failure", messageSource.getMessage("email.exists", null, locale));
             return "corp/user/add";
         }
 
@@ -139,6 +156,19 @@ public class CorpUserManagementController {
             model.addAttribute("failure", messageSource.getMessage("failure",null,locale));
             return "corp/user/add";
         }
+    }
+
+    @GetMapping("{id}/edit")
+    public String editUser(@PathVariable Long id, Model model){
+        CorporateUserDTO corporateUser = corporateUserService.getUser(id);
+        CorporateDTO corporate = corporateService.getCorporate(Long.parseLong(corporateUser.getCorporateId()));
+        List<CorporateRoleDTO> corporateRoleDTO = corporateService.getRoles(Long.parseLong(corporateUser.getCorporateId()));
+        logger.info("CORP RULES >>>> " + corporateRoleDTO);
+        model.addAttribute("corporateUser", corporateUser);
+        model.addAttribute("corporate", corporate);
+
+        model.addAttribute("corporateRoles", corporateRoleDTO);
+        return "corp/user/add";
     }
 
     @GetMapping("/{id}/status")
@@ -169,6 +199,23 @@ public class CorpUserManagementController {
         catch (InternetBankingException ibe) {
             redirectAttributes.addFlashAttribute("failure", ibe.getMessage());
             logger.error("Error resetting password for corporate user", ibe);
+        }
+        return "redirect:/corporate/users";
+    }
+
+    @GetMapping("/{id}/unblock")
+    public String unblock(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+
+        try {
+            String message = corporateUserService.unlockUser(id);
+            redirectAttributes.addFlashAttribute("message", message);
+        } catch (PasswordException pe) {
+            redirectAttributes.addFlashAttribute("failure", pe.getMessage());
+            logger.error("Error unblocking corporate user", pe);
+        }
+        catch (InternetBankingException ibe) {
+            redirectAttributes.addFlashAttribute("failure", ibe.getMessage());
+            logger.error("Error unblocking corporate user", ibe);
         }
         return "redirect:/corporate/users";
     }

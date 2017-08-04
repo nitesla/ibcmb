@@ -61,8 +61,8 @@
                </div>
 
                <div id="level" class="form-group">
-                   <select>
-                       <option></option>
+                   <select class="form-control" th:field="*{corporateRoleId}">
+                       <option th:each="role : ${corporateRoles}" th:value="${role.id}" th:text="${role.name + ' ' + role.rank}"></option>
                    </select>
                </div>
 

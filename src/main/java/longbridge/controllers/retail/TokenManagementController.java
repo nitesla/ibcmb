@@ -73,7 +73,7 @@ public class TokenManagementController {
                     request.getSession().removeAttribute("2FA");
                 }
                 retailUserService.resetNoOfTokenAttempt(user);
-                redirectAttributes.addFlashAttribute("message",messageSource.getMessage("token.auth.success",null,locale)) ;
+                //redirectAttributes.addFlashAttribute("message",messageSource.getMessage("token.auth.success",null,locale)) ;
                 return "redirect:/retail/dashboard";
             }
 

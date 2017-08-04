@@ -5,6 +5,9 @@ import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import longbridge.dtos.CorpUserVerificationDTO;
+import longbridge.dtos.SettingDTO;
+import longbridge.dtos.VerificationDTO;
+import longbridge.exception.EntrustException;
 import longbridge.exception.InternetBankingException;
 import longbridge.exception.VerificationException;
 import longbridge.exception.VerificationInterruptedException;
@@ -13,11 +16,11 @@ import longbridge.repositories.CorpUserVerificationRepo;
 import longbridge.repositories.CorporateUserRepo;
 import longbridge.repositories.VerificationRepo;
 import longbridge.security.userdetails.CustomUserPrincipal;
-import longbridge.services.CorpUserVerificationService;
-import longbridge.services.MailService;
+import longbridge.services.*;
 import longbridge.utils.DateFormatter;
 import longbridge.utils.PrettySerializer;
 import longbridge.utils.VerificationStatus;
+import org.aspectj.lang.JoinPoint;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,12 +30,15 @@ import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.mail.MailException;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
+import java.io.IOException;
 import java.util.*;
 
 /**
@@ -48,6 +54,18 @@ public class CorpUserVerificationServiceImpl implements CorpUserVerificationServ
     private CorpUserVerificationRepo corpUserVerificationRepo;
     @Autowired
     private CorporateUserRepo corporateUserRepo;
+
+    @Autowired
+    PasswordPolicyService passwordPolicyService;
+
+    @Autowired
+    private BCryptPasswordEncoder passwordEncoder;
+
+    @Autowired
+    SecurityService securityService;
+
+    @Autowired
+    ConfigurationService configService;
 
     @Autowired
     private VerificationRepo verificationRepo;
@@ -255,6 +273,7 @@ public class CorpUserVerificationServiceImpl implements CorpUserVerificationServ
     @Transactional
     public String verify(CorpUserVerificationDTO dto) throws VerificationException {
 
+        logger.info(">>>>>>" + dto);
         CorpUserVerification corpUserVerification = corpUserVerificationRepo.findOne(dto.getId());
         String verifiedBy = getCurrentUserName();
         if(verifiedBy.equals(corpUserVerification.getInitiatedBy())){
@@ -279,8 +298,8 @@ public class CorpUserVerificationServiceImpl implements CorpUserVerificationServ
             corpUserVerification.setComments(dto.getComments());
             corpUserVerification.setStatus(VerificationStatus.APPROVED);
             corpUserVerificationRepo.save(corpUserVerification);
+            postCorporateUserActivation(dto);
             notifyInitiator(corpUserVerification);
-
         }
         catch (Exception e) {
             logger.error("Error verifying operation");
@@ -399,4 +418,109 @@ public class CorpUserVerificationServiceImpl implements CorpUserVerificationServ
         User user = principal.getUser();
         return user.getUserName();
     }
+
+    private void postCorporateUserActivation(CorpUserVerificationDTO corpUserVerificationDTO) throws IOException {
+
+        CorpUserVerification corpUserVerification  =corpUserVerificationRepo.findOne(corpUserVerificationDTO.getId());
+        logger.info(">>>>>>>>>>" + corpUserVerification.getOperation());
+        if(corpUserVerification.getOperation().equals("UPDATE_CORP_USER_STATUS")){
+
+            logger.info("Inside Advisor for Post Corporate user activation...");
+
+            CorporateUser user = corporateUserRepo.findOne(corpUserVerification.getEntityId());
+            entityManager.detach(user);
+            ObjectMapper objectMapper = new ObjectMapper();
+            CorporateUser corpUser = objectMapper.readValue(corpUserVerification.getOriginalObject(),CorporateUser.class);
+            if("A".equals(corpUser.getStatus())){
+                logger.info("Corp user status is A");
+                String fullName = user.getFirstName()+" "+user.getLastName();
+                String password = passwordPolicyService.generatePassword();
+                user.setPassword(passwordEncoder.encode(password));
+                user.setExpiryDate(new Date());
+                passwordPolicyService.saveCorporatePassword(user);
+                corporateUserRepo.save(user);
+                sendPostActivateMessage(corpUser, fullName,user.getUserName(),password,user.getCorporate().getCustomerId());
+            }
+            else{
+                corporateUserRepo.save(user);
+            }
+        }
+
+        if(corpUserVerification.getOperation().equals("ADD_CORPORATE_USER")) {
+            logger.info("Adding Corporate User");
+            ObjectMapper objectMapper = new ObjectMapper();
+            CorporateUser corpUser = objectMapper.readValue(corpUserVerification.getOriginalObject(),CorporateUser.class);
+            logger.info("Corporate User >>"+ corpUser);
+            createUserOnEntrustAndSendCredentials(corpUser);
+        }
+
+
+    }
+
+    public void createUserOnEntrustAndSendCredentials(CorporateUser corporateUser) {
+        CorporateUser user = corporateUserRepo.findFirstByUserName(corporateUser.getUserName());
+        logger.info("Corporate User >>"+ user);
+        if (user != null) {
+
+            if ("".equals(user.getEntrustId()) || user.getEntrustId() == null) {
+                String fullName = user.getFirstName() + " " + user.getLastName();
+                SettingDTO setting = configService.getSettingByName("ENABLE_ENTRUST_CREATION");
+                String entrustId = user.getUserName();
+                String group = configService.getSettingByName("DEF_ENTRUST_CORP_GRP").getValue();
+
+                if (setting != null && setting.isEnabled()) {
+                    if ("YES".equalsIgnoreCase(setting.getValue())) {
+                        boolean result = securityService.createEntrustUser(entrustId, group, fullName, true);
+                        if (!result) {
+                            throw new EntrustException(messageSource.getMessage("entrust.create.failure", null, locale));
+
+                        }
+                        boolean contactResult = securityService.addUserContacts(user.getEmail(), user.getPhoneNumber(), true, entrustId, group);
+                        if (!contactResult) {
+                            logger.error("Failed to add user contacts on Entrust");
+                            securityService.deleteEntrustUser(entrustId, group);
+                            throw new EntrustException(messageSource.getMessage("entrust.contact.failure", null, locale));
+                        }
+                    }
+
+                    user.setEntrustId(entrustId);
+                    user.setEntrustGroup(group);
+                    Corporate corporate = user.getCorporate();
+                    String password = passwordPolicyService.generatePassword();
+                    user.setPassword(passwordEncoder.encode(password));
+                    user.setExpiryDate(new Date());
+                    passwordPolicyService.saveCorporatePassword(user);
+                    corporateUserRepo.save(user);
+
+
+                    try {
+                        Email email = new Email.Builder()
+                                .setRecipient(user.getEmail())
+                                .setSubject(messageSource.getMessage("corporate.customer.create.subject", null, locale))
+                                .setBody(String.format(messageSource.getMessage("corporate.customer.create.message", null, locale), fullName, user.getUserName(), password, corporate.getCustomerId()))
+                                .build();
+                        mailService.send(email);
+                    } catch (MailException me) {
+                        logger.error("Failed to send creation mail to {}", user.getEmail(), me);
+                    }
+                }
+            }
+        }
+    }
+
+
+    @Async
+    public void sendPostActivateMessage(User user, String... args) {
+        try {
+            Email email = new Email.Builder()
+                    .setRecipient(user.getEmail())
+                    .setSubject(messageSource.getMessage("corporate.customer.reactivation.subject", null, locale))
+                    .setBody(String.format(messageSource.getMessage("corporate.customer.reactivation.message", null, locale), args))
+                    .build();
+            mailService.send(email);
+        } catch (MailException me) {
+            logger.error("Failed to send activation mail to {}", user.getEmail(), me);
+        }
+    }
+
 }

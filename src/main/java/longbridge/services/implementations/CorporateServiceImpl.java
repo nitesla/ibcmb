@@ -372,6 +372,12 @@ public class CorporateServiceImpl implements CorporateService {
     }
 
     @Override
+    public Corporate getCorp(Long id) {
+        Corporate corporate = corporateRepo.findOne(id);
+        return corporate;
+    }
+
+    @Override
     public Corporate getCorporateByCustomerId(String customerId) {
         Corporate corporate = corporateRepo.findByCustomerId(customerId);
         return corporate;

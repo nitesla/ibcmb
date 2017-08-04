@@ -63,6 +63,9 @@ public interface CorporateService{
     @PreAuthorize("hasAuthority('GET_CORPORATE')")
     CorporateDTO getCorporate(Long id);
 
+    @PreAuthorize("hasAuthority('GET_CORPORATE')")
+    Corporate getCorp(Long id);
+
 
     @PreAuthorize("hasAuthority('GET_CORPORATE')")
     Corporate getCorporateByCustomerId(String customerId);

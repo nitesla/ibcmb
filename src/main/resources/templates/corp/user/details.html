@@ -46,10 +46,12 @@
 
                 <br/>
                 <label for="comments" class="col-sm-2">Comments</label>
-                <div class="form-group" >
-
-                    <div class="col-sm-6">
-                        <textarea  th:field="${verify.comments}" class="form-control" id="comments" th:readonly="${status}? 'readonly':''"></textarea>
+                <div th:unless="${status}">
+                    <p  th:text="${verify.comments}"></p>
+                </div>
+                <div th:if="${isAuthorizer}"class="form-group" >
+                    <div th:if="${status}"  class="col-sm-6">
+                        <textarea  th:field="${verify.comments}" class="form-control" id="comments"></textarea>
                         <p class="errors" th:if="${#fields.hasErrors('comments')}" th:errors="*{comments}">&times;</p>
                     </div>
                 </div>
