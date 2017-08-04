@@ -1,6 +1,7 @@
 package longbridge.repositories;
 
 import longbridge.models.Account;
+import longbridge.models.Corporate;
 import org.springframework.data.domain.Page;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -45,5 +46,9 @@ public interface AccountRepo extends CommonRepo<Account,Long> {
     @Modifying
     @Query("update Account a set a.primaryFlag = 'N' where a.primaryFlag = 'Y' and a.customerId = :customer")
     void unsetPrimaryAccount(@Param("customer") String customerId);
+//    @Query("select r from Account r inner join r.account  where r.customerId = :cifId")
+//    Page<Account> findEnityByRevisions(Pageable pageable, @Param("class") String cifId);
+
+
 
 }
