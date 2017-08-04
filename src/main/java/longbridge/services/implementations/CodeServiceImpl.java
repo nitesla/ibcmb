@@ -36,8 +36,6 @@ public class CodeServiceImpl implements CodeService {
 
     private CodeRepo codeRepo;
 
-    private VerificationService verificationService;
-
     private ModelMapper modelMapper;
 
     private Locale locale = LocaleContextHolder.getLocale();
@@ -46,9 +44,8 @@ public class CodeServiceImpl implements CodeService {
     private MessageSource messageSource;
 
     @Autowired
-    public CodeServiceImpl(CodeRepo codeRepository, VerificationService verificationService, ModelMapper modelMapper) {
+    public CodeServiceImpl(CodeRepo codeRepository,  ModelMapper modelMapper) {
         codeRepo = codeRepository;
-        this.verificationService = verificationService;
         this.modelMapper = modelMapper;
     }
 

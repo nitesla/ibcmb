@@ -70,11 +70,6 @@ public class CorporateServiceImpl implements CorporateService {
     @Autowired
     private CorporateRoleRepo corporateRoleRepo;
 
-    @Autowired
-    private MakerCheckerService makerCheckerService;
-
-    @Autowired
-    private VerificationService verificationService;
 
     @Autowired
     private EntityManager entityManager;
@@ -169,13 +164,8 @@ public class CorporateServiceImpl implements CorporateService {
     public String addCorporate(CorporateRequestDTO corporateRequestDTO) throws InternetBankingException {
 
         try {
-            if (makerCheckerService.isEnabled("ADD_CORPORATE")) {
-                String message = verificationService.add(corporateRequestDTO, "ADD_CORPORATE", "Adding Corporate Entity");
-                return message;
-            } else {
                 saveCorporateRequest(corporateRequestDTO);
                 return messageSource.getMessage("corporate.add.success", null, locale);
-            }
 
         } catch (Exception e) {
             throw new InternetBankingException(messageSource.getMessage("corporate.add.failure", null, locale), e);
@@ -190,7 +180,10 @@ public class CorporateServiceImpl implements CorporateService {
         corporate.setCorporateId(corporateRequestDTO.getCorporateId());
         corporate.setCreatedOnDate(new Date());
         corporate.setStatus("A");
+        List<Account> accounts = accountService.addAccounts(corporateRequestDTO.getAccounts());
+        corporate.setAccounts(accounts);
         Corporate newCorporate = corporateRepo.save(corporate);
+
 
         List<CorporateUserDTO> authorizers = new ArrayList<>();
 
@@ -261,7 +254,11 @@ public class CorporateServiceImpl implements CorporateService {
             corpTransferRuleRepo.save(corpTransRule);
         }
 
+
+
     }
+
+
 
     private CorpUserType getUserType(String userType){
 
