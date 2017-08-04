@@ -593,7 +593,7 @@ public class OpsCorporateController {
         corporate.setCustomerName(customerDetails.getCustomerName());
         session.setAttribute("corporateRequest", corporateRequestDTO);
 
-        logger.info("Corporate Request DTO " +
+        logger.debug("Corporate Request DTO " +
                 "{}", corporateRequestDTO.toString());
 
 
