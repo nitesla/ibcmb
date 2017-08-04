@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{ret-layout}">
 
-<body onload="javascript:var bread = [['Home', '/retail/dashboard'],['Accounts','/retail/account/customize'],['Customize', '#']];currentBar('Customize');breadCrumb(bread)">
+<body onload="javascript:var bread = [['Home', '/retail/dashboard'],['Accounts','/retail/account/customize'],['Customize', '#']];currentBar('Customize');breadCrumb(bread);">
 
 <div layout:fragment="content">
     <div class="col-md-5 col-sm-5 ">
@@ -33,7 +33,26 @@
 
 <th:block layout:fragment="scripts">
 
-   
+   <script>
+    
+    
+         $(document).ready(function(){
+        // $('[data-toggle="tooltip"]').tooltip();
+        
+
+       
+
+
+        
+     });
+
+
+
+
+    
+
+
+    </script>
 </th:block>
 
 </body>

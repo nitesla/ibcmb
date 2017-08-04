@@ -45,39 +45,49 @@ function breadCrumb (arg)
 
 
   if (arg.constructor == Array)
-{
-    for (var i = 0; i < arg.length; i++)
     {
-        var link = document.createElement('a');
+        for (var i = 0; i < arg.length; i++)
+        {
+            var link = document.createElement('a');
 
-        if (i == (arg.length-1))
+            if (i == (arg.length-1))
+            {
+                var link = document.createElement('span');
+            }
+            for (var j = 0; j < arg[i].length; j++)
+            {                 
+                if (j == 0)
+                {
+                    link.innerHTML =" " + arg[i][j];
+                }
+                else if (j == 1 && i != (arg.length-1))
+                {
+                    link.setAttribute('href',arg[i][j]);
+                }
+                bcHolder.appendChild(link);                        
+            }
+
+            bcHolder.appendChild(link);
+        }
+    }
+
+    else
         {
             var link = document.createElement('span');
-        }
-        for (var j = 0; j < arg[i].length; j++)
-        {                 
-            if (j == 0)
-            {
-                link.innerHTML =" " + arg[i][j];
-            }
-            else if (j == 1 && i != (arg.length-1))
-            {
-                link.setAttribute('href',arg[i][j]);
-            }
-            bcHolder.appendChild(link);                        
-        }
+            link.innerHTML = arg;
+            bcHolder.appendChild(link);
 
-        bcHolder.appendChild(link);
-    }
 }
 
-else
-    {
-        var link = document.createElement('span');
-        link.innerHTML = arg;
-        bcHolder.appendChild(link);
 
-    }
+function naso ()
+{
+    alert();
+}
+
+
+
+
 
   
    
