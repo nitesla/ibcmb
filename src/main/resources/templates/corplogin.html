@@ -59,22 +59,25 @@
                 <div th:if="${param.error != null}" class="alert alert-danger" th:text="${session[SPRING_SECURITY_LAST_EXCEPTION]}">error</div>
 
                 <div class="form-group">
-                    <input type="text" name="username" th:value="*{username}" class="my-select" readonly="readonly" autocomplete="off"/>
-                    <!--<p><a class="text-white" href="/corporate/forgot/username">Forgot Username?</a></p>-->
+                    <input type="text" name="username" id="username" th:value="*{username}" class="my-select" readonly="readonly" autocomplete="off"/>
+                    <p><a class="text-white" href="/corporate/forgot/username">Forgot Username?</a></p>
                 </div>
 
                 <div class="form-group">
-                    <input type="text" name="corporateId" th:value="*{corpKey}" class="my-select" readonly="readonly" autocomplete="off"/>
+                    <input type="text" id="corporateId" name="corporateId" th:value="*{corpKey}" class="my-select" readonly="readonly" autocomplete="off"/>
                 </div>
 
                 <div class="form-group">
                     <input id="password" type="password" name="password" class="my-select" required="required" placeholder="Password" autocomplete="off"/>
-                    <p><a class="text-white" href="/corporate/forgot/password">forgot password?</a></p>
                 </div>
+                <div class="form-group">
+                    <p><a  class="text-white btn" th:href="@{/forgot/password/corporate}">forgot password?</a></p>
 
+                </div>
                 <div class="form-group">
                     <!--<input name="submit" type="submit" value="submit" />-->
-                    <button class="btn btn-primary my-select">Submit</button>
+                    <button class="btn btn-primary
+                    ]">Submit</button>
                 </div>
             </form>
         </div>
@@ -117,6 +120,7 @@
 <script th:src="@{/customer/js/jquery-1.11.1.js}"></script>
 <!-- BOOTSTRAP SCRIPTS  -->
 <script th:src="@{/customer/js/bootstrap.js}"></script>
+<!--<script th:src="@{~/customer/js/corpForgetPassword.js}"></script>-->
 <script th:src="@{~/customer/plugins/bootstrap-notify/bootstrap-notify.js}"></script>
 
 <!--<script>-->
@@ -140,6 +144,58 @@
     $('#password').bind("cut copy paste",function(e) {
         e.preventDefault();
     });
+//    $("a.get-details").on("click", function(e) {
+//        e.preventDefault();
+//        var link = $(e.currentTarget);
+//        var username = $('#username').val();
+//        var corporateId = $('#corporateId').val();
+//        console.log('username '+username+' corporate '+corporateId);
+//        var userCorp = username+'/'+corporateId;
+//        var ooo = link.attr("href").replace("username/corpKey",userCorp);
+//        window.location.assign(ooo);
+//
+//    } );
+    function loadPasswordPage(){
+        console.log("username "+$('#username').val());
+        var username = $('#username').val();
+        var corporateId = $('#corporateId').val();
+        console.log("corporateId "+$('#corporateId').val());
+        $.ajax({
+            type: 'GET',
+            url: '/forgot/password/corporate',
+            asyn:false,
+//					dataType: 'String',
+            data: {username:username,corporateId:corporateId},
+            success: function (reponse) {
+                console.log(reponse);
+//             if (reponse === 'success') {
+// //                    $("#tokenmodal").hide();
+// //                    $("#otpmodal").show();
+// //                    $('#loading-icon').hide();
+//                 $('#successMess').show();
+//                 document.getElementById("successMess").textContent = "Successfully sent";
+//
+//             }else{
+// //                    $("#tokenModalCorp").show();
+// //                    $("#otpmodalCorp").hide();
+//                 if(reponse==="empty"){
+//                     $('#loading-icon').hide();
+//                     $('#errorMess').show();
+//                     document.getElementById("errorMess").textContent = "Invalid username";
+//                 }else{
+//                     $('#loading-icon').hide();
+//                     $('#errorMess').show();
+//                     document.getElementById("errorMess").textContent = reponse;
+//                 }
+//             }
+            },error: function (data) {
+                // $('#loading-icon').hide();
+                // alert("failure");
+//                $('#sub').disabled();
+                console.log("error")
+            }
+        });
+    }
 </script>
 </body>
 </html>

@@ -78,7 +78,8 @@
                                             <h3 class="related-bar">Related Information</h3>
 
                                             <!--<input type="availBal" name="availBal"/>-->
-                                            <p class="related-info coronation-blue" id="availBal"><b></b></p>
+                        <p class="related-info coronation-blue" id="availBal"><b></b></p>
+                        <p class="related-info coronation-blue" th:if="${fee}!=null">Charge:&nbsp;&nbsp; <b th:text="${fee}"></b></p>
 
                      </div>
             </div>

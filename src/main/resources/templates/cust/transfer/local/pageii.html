@@ -7,8 +7,8 @@
 <div layout:fragment="content">
     <div class="col-md-5 col-sm-5 ">
 
-        <span th:if="${beneficiary.preferredName} !=''" th:text="${beneficiary.preferredName}"></span>
-                <span th:if="${beneficiary.preferredName} ==''" th:text="${beneficiary.preferredName}"></span>
+        <span th:if="${beneficiary.preferredName} !=''" th:text="${beneficiary.preferredName}"> Transfer to</span>
+                 <span th:if="${beneficiary.preferredName} ==''" th:text="${beneficiary.accountName}"> Transfer to</span>
 
         <select class="form-control full-width coronation-form-control hide-content-only" id="view">
             <option value="account">Overview</option>
@@ -68,13 +68,6 @@
                         </form>
                         <!--</div>-->
                     </div>
-
-                </div>
-                <div class="col-md-6 col-sm-6">
-                    <!--<p class="related" style="padding-top: 5%">Related Information</p>-->
-                    <hr/>
-                    <!--<input type="availBal" name="availBal"/>-->
-                    <p id="availBal"><b></b></p>
                 </div>
                 <div class="col-md-5 col-sm-5 col-xs-12">
                     <!--<p class="related" style="padding-top: 5%">Related Information</p>-->
@@ -85,6 +78,7 @@
 
                                             <!--<input type="availBal" name="availBal"/>-->
                                             <p class="related-info coronation-blue" id="availBal"><b></b></p>
+                                            <p class="related-info coronation-blue" th:if="${fee}!=null">Charge:&nbsp;&nbsp; <b th:text="${fee}"></b></p>
 
                                         </div>
                    
@@ -99,7 +93,6 @@
 
 <th:block layout:fragment="scripts">
   <script th:inline="javascript">
-
         /*<![CDATA[*/
         $(document).ready(function(){
             getBalance();
@@ -126,17 +119,13 @@
                     } else {
 //                    $('input[name=availBal]').val(bal);
 
-
                         var  bal=message;
                         $('#availBal').text("Available Balance: "+bal);
 
-
+                    }
                 }
-
-            }
-        })
-    }
-
+            })
+        }
         function getDestCurrency(){
             var accountNumber = $('#source').val();
             $.ajax({
@@ -158,6 +147,7 @@
             })
         }
         /*]]>*/
+
 
     </script>
 </th:block>

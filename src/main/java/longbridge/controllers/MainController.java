@@ -55,12 +55,12 @@ public class MainController {
     @Autowired
     private MailService mailService;
     @Autowired
-    private  FaqsService faqsService;
+    private FaqsService faqsService;
     @Autowired
     private PasswordPolicyService passwordPolicyService;
 
     @GetMapping("/testing")
-    public String testing(){
+    public String testing() {
         return "abcd";
     }
 
@@ -90,6 +90,7 @@ public class MainController {
         return new ModelAndView("corppage1", "error", error);
 
     }
+
     @GetMapping(value = "/login/admin")
     public ModelAndView adminLogin() {
 
@@ -105,7 +106,6 @@ public class MainController {
         modelAndView.setViewName("opslogin");
         return modelAndView;
     }
-
 
 
     @GetMapping("/faqs")
@@ -130,9 +130,9 @@ public class MainController {
     }
 
 
-    @GetMapping(value = {"/retail/{path:(?!static).*$}","/retail/{path:(?!static).*$}/**" })
-    public String retailUnknown(Principal principal){
-        if (principal!=null){
+    @GetMapping(value = {"/retail/{path:(?!static).*$}", "/retail/{path:(?!static).*$}/**"})
+    public String retailUnknown(Principal principal) {
+        if (principal != null) {
 
             return "redirect:/retail/dashboard";
 
@@ -168,25 +168,26 @@ public class MainController {
     }
 
     @GetMapping("/login/u/retail")
-    public String login1(){
+    public String login1() {
         return "redirect:/login/retail";
     }
+
     @PostMapping("/login/u/retail")
     public String userExists(WebRequest webRequest, Model model, RedirectAttributes redirectAttributes) {
         String username = webRequest.getParameter("username");
-        if (username== null){
+        if (username == null) {
             return "retpage1";
         }
 
-        RetailUser user =  retailUserService.getUserByName(username);
-        if (user == null){
+        RetailUser user = retailUserService.getUserByName(username);
+        if (user == null) {
             return "redirect:/login/retail/failure";
         }
 
-        try{
+        try {
             logger.info("the username");
-            Map<String, List<String>> mutualAuth =  securityService.getMutualAuth(user.getEntrustId(), user.getEntrustGroup());
-            if (mutualAuth != null){
+            Map<String, List<String>> mutualAuth = securityService.getMutualAuth(user.getEntrustId(), user.getEntrustGroup());
+            if (mutualAuth != null) {
                 String image = mutualAuth.get("imageSecret")
                         .stream()
                         .filter(Objects::nonNull)
@@ -205,7 +206,7 @@ public class MainController {
                 //logger.info("SECCAPTION "+ caption);
                 model.addAttribute("secCaption", caption);
             }
-        }catch (InternetBankingException e){
+        } catch (InternetBankingException e) {
             model.addAttribute("imageException", "You are yet to set your antiphishing image");
         }
 
@@ -214,15 +215,16 @@ public class MainController {
     }
 
     @GetMapping("/login/p/retail")
-    public String login2(){
+    public String login2() {
         return "redirect:/login/retail";
     }
+
     @PostMapping("/login/p/retail")
     public String step2(WebRequest webRequest, Model model, HttpSession session, RedirectAttributes redirectAttributes) {
         String username = webRequest.getParameter("username");
         String phishing = webRequest.getParameter("phishing");
 
-        RetailUser user =  retailUserService.getUserByName(username);
+        RetailUser user = retailUserService.getUserByName(username);
         if (user != null && phishing != null) {
             model.addAttribute("username", user.getUserName());
             session.setAttribute("username", user.getUserName());
@@ -235,7 +237,7 @@ public class MainController {
     }
 
     @GetMapping("/login/u/corporate")
-    public String loginCorporate1(){
+    public String loginCorporate1() {
         return "redirect:/login/corporate";
     }
 
@@ -252,34 +254,34 @@ public class MainController {
         if (user != null) {
 //            model.addAttribute("images", mutualAuth.get("imageSecret"));
 //            model.addAttribute("captions", mutualAuth.get("captionSecret"));
-                try{
-                    Map<String, List<String>> mutualAuth =  securityService.getMutualAuth(user.getEntrustId(), user.getEntrustGroup());
-                    if (mutualAuth != null){
-                        String image = mutualAuth.get("imageSecret")
-                                .stream()
-                                .filter(Objects::nonNull)
-                                .findFirst()
-                                .orElse("");
+            try {
+                Map<String, List<String>> mutualAuth = securityService.getMutualAuth(user.getEntrustId(), user.getEntrustGroup());
+                if (mutualAuth != null) {
+                    String image = mutualAuth.get("imageSecret")
+                            .stream()
+                            .filter(Objects::nonNull)
+                            .findFirst()
+                            .orElse("");
 
 //                      logger.info("SECIMAGE"+ image);
-                        String caption = mutualAuth.get("captionSecret")
-                                .stream()
-                                .filter(Objects::nonNull)
-                                .findFirst()
-                                .orElse("");
+                    String caption = mutualAuth.get("captionSecret")
+                            .stream()
+                            .filter(Objects::nonNull)
+                            .findFirst()
+                            .orElse("");
 
-                        model.addAttribute("secImage", image);
-                        //logger.info("SECCAPTION "+ caption);
-                        model.addAttribute("secCaption", caption);
-                    }
-                }catch (InternetBankingException e){
-                    model.addAttribute("imageException", "You are yet to set your antiphishing image");
+                    model.addAttribute("secImage", image);
+                    //logger.info("SECCAPTION "+ caption);
+                    model.addAttribute("secCaption", caption);
                 }
+            } catch (InternetBankingException e) {
+                model.addAttribute("imageException", "You are yet to set your antiphishing image");
+            }
 
 
-                model.addAttribute("username", user.getUserName());
-                model.addAttribute("corpKey", corpKey);
-                return "corppage2";
+            model.addAttribute("username", user.getUserName());
+            model.addAttribute("corpKey", corpKey);
+            return "corppage2";
 
         }
 
@@ -290,15 +292,20 @@ public class MainController {
     }
 
     @GetMapping("/login/p/corporate")
-    public String loginCorporate2(){
+    public String loginCorporate2() {
         return "redirect:/login/corporate";
     }
 
     @PostMapping("/login/p/corporate")
-    public String corpstep2(WebRequest webRequest, Model model, RedirectAttributes redirectAttributes) {
+    public String corpstep2(WebRequest webRequest, Model model, RedirectAttributes redirectAttributes, HttpSession session) {
         String username = webRequest.getParameter("username");
         String phishing = webRequest.getParameter("phishing");
         String corpKey = webRequest.getParameter("corpKey");
+        logger.info("the corpkey {} and username {}", corpKey, username);
+        if ((username != null) && (corpKey != null)) {
+            session.setAttribute("corpUsername", username);
+            session.setAttribute("corpKey", corpKey);
+        }
 //        CorporateUser user = corporateUserService.getUserByName(username);
 //        Corporate corporate = corporateService.getCorporateByCustomerId(corpKey);
 
@@ -392,16 +399,16 @@ public class MainController {
     }
 
     @GetMapping("/contact")
-    public String contactUs(){
+    public String contactUs() {
         return "index";
     }
 
     @PostMapping("/contact")
-    public String sendContactForm(WebRequest webRequest, Model model,RedirectAttributes redirectAttributes){
+    public String sendContactForm(WebRequest webRequest, Model model, RedirectAttributes redirectAttributes) {
         String name = webRequest.getParameter("name");
         String email = webRequest.getParameter("email");
         String message = webRequest.getParameter("message");
-        if (message == null){
+        if (message == null) {
             model.addAttribute("failure", "Field is required");
             return "index";
         }
@@ -411,7 +418,7 @@ public class MainController {
             try {
                 Email mail = new Email.Builder()
                         .setRecipient(setting.getValue())
-                        .setSubject("Message from "+name+" ("+email+")")
+                        .setSubject("Message from " + name + " (" + email + ")")
                         .setBody(message)
                         .build();
                 mailService.send(mail);
@@ -428,10 +435,10 @@ public class MainController {
     }
 
     @PostMapping("/request/callback")
-    public String requestCallback(WebRequest webRequest, Model model,RedirectAttributes redirectAttributes){
+    public String requestCallback(WebRequest webRequest, Model model, RedirectAttributes redirectAttributes) {
         String name = webRequest.getParameter("name");
         String phone = webRequest.getParameter("phone");
-        if (phone == null){
+        if (phone == null) {
             model.addAttribute("failure", "Field is required");
             return "index";
         }
@@ -441,7 +448,7 @@ public class MainController {
             try {
                 Email mail = new Email.Builder()
                         .setRecipient(setting.getValue())
-                        .setSubject("Call back Request from "+name )
+                        .setSubject("Call back Request from " + name)
                         .setBody("Preferred phone number for call back is " + phone)
                         .build();
                 mailService.send(mail);
@@ -455,29 +462,27 @@ public class MainController {
         return "redirect:/#contact_us";
     }
 
-   private void clearSession(){
+    private void clearSession() {
         ServletRequestAttributes attr = (ServletRequestAttributes)
                 RequestContextHolder.currentRequestAttributes();
         HttpSession session = attr.getRequest().getSession(false);
-        if (session!=null)
-        session.invalidate();
+        if (session != null)
+            session.invalidate();
     }
 
 
-
-
-
     @ModelAttribute
-    public void sessionTimeout(Model model){
+    public void sessionTimeout(Model model) {
         SettingDTO setting = configurationService.getSettingByName("SESSION_TIMEOUT");
-        try{
-            if (setting != null && setting.isEnabled()){
-                Long timeOuts = (Long.parseLong(setting.getValue())* 60000)-25000;
+        try {
+            if (setting != null && setting.isEnabled()) {
+                Long timeOuts = (Long.parseLong(setting.getValue()) * 60000) - 25000;
                 logger.info("SESSION TIME OUT PERIOD" + timeOuts);
                 model.addAttribute("timeOut", timeOuts);
             }
 
-        }catch(Exception ex){
+        }
+        catch (Exception ex) {
         }
 
     }
