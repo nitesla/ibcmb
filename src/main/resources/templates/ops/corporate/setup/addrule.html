@@ -88,7 +88,18 @@
 
                                                         </tr>
                                                         </thead>
+                                                        <tbody>
+                                                    <!--<span th:if="${corporate.corpTransferRules} != null">-->
+                                                        <!--<tr th:each="list : ${corporate.corpTransferRules}">-->
+                                                            <!--<td th:text="${list.lowerLimitAmount}"></td>-->
+                                                            <!--<td th:text="${list.upperLimitAmount}"></td>-->
+                                                            <!--<td th:text="${list.currency}"></td>-->
+                                                            <!--<td th:text="${#strings.replace(#strings.replace(list.authorizers,']',''),'[','')}"></td>-->
+                                                            <!--<td th:text="${list.any}"></td>-->
 
+                                                        <!--</tr>-->
+                                                            <!--</span>-->
+                                                        </tbody>
                                                     </table>
                                                 </div>
                                             </div>
@@ -238,6 +249,9 @@
 
     /*<![CDATA[*/
     $(document).ready(function () {
+        var rule = [[${rules}]];
+
+//        var existingData =  JSON.parse();
         var counter = 0;
         var t = $('#mytab').DataTable({
             dom: 'rt',
@@ -260,7 +274,30 @@
                 {
                     "data": "any"
                 }
-            ],
+            ]
+//            "columnDefs" : [
+//                {
+//                    "targets" : 3,
+//                    "data" : "authorizers",
+//                    "render" : function(data, type,full, meta) {
+//                        if(type ==='display')
+//                        {
+//                            if(data[0] =="["){
+//                                data= data.replace("[","");
+//                                data= data.replace("]","");
+////                                console.log("the data"+data);
+//                            }
+//
+//
+////                            console.log("the data"+data[0]);
+//                            return data
+//                        }
+//
+//                        return data;
+//                    }
+//                }
+//            ]
+            ,
             "language": {
                 "emptyTable": "No rule added. Click Add"
             }
@@ -326,7 +363,7 @@
             }
 
 
-        })
+        });
 
 
         $("#upperLimit").keyup(function () {
@@ -340,11 +377,11 @@
             }
 
 
-        })
+        });
 
 
         $('#add_rule').on('click', function (e) {
-            e.preventDefault()
+            e.preventDefault();
 
             contactsTab = $('#mytab').DataTable();
             lowerLimitAmount = $("input[name='lowerLimitAmount']").val();
@@ -356,8 +393,8 @@
 
             any = $("input[type=radio][name='any']:checked").val();
 
-            console.log(authorizers)
-            console.log("Length of authorizers: " + authorizers.length)
+            console.log(authorizers);
+            console.log("Length of authorizers: " + authorizers.length);
 
             if(authorizers.length<numAuth){
                 $("#authorizerError").show();
@@ -392,8 +429,8 @@
 
                 if (upperAmount < lowerAmount) {
                     $("#amountDiffError").show();
-                    console.log("Lower Amount: "+lowerAmount)
-                    console.log("Upper Amount: "+upperAmount)
+                    console.log("Lower Amount: "+lowerAmount);
+                    console.log("Upper Amount: "+upperAmount);
                     return;
                 }
                 else {
@@ -408,8 +445,12 @@
                 return;
             }
 
-
-
+//            if(authorizers[0] =="["){
+////                data= data.replace("[","");
+////                data= data.replace("]","");
+//                                console.log("the authorizers"+authorizers);
+//            }
+//            console.log("the authorizers"+authorizers);
             od = {
                 'DT_RowId': null,
                 'lowerLimitAmount': lowerLimitAmount,
@@ -442,10 +483,39 @@
             dt.row('.selected').remove().draw(false);
         });
 
+        if (rule != '') {
 
+            var rules = JSON.parse([[${rules}]]);
+            var contactsTab2 = $('#mytab').DataTable();
+            for (var key in rules) {
+                if (rules.hasOwnProperty(key)) {
+                    var od = rules[key];
+                    contactsTab2.row.add(od);
+                }
+                console.log("the existing data "+key);
+                contactsTab2.draw();
+
+            }
+
+        }
         $(document).on('hidden.bs.modal', function (e) {
             $(e.target).removeData('bs.modal');
         });
+//        var arr = contactsTab.data().toArray();
+//
+//        $.each(arr, function (i, obj) {
+//
+//            $.each(obj, function (key, value) {
+//                if (key == "authorizers") {
+//                    if(value[0] =="["){
+//                        value= value.replace("[","");
+//                        value= value.replace("]","");
+////                                console.log("the data"+data);
+//                    }
+//                }
+//            });
+//        });
+//        arr.draw();
 
     });
 

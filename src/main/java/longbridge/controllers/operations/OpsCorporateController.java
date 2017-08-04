@@ -595,6 +595,7 @@ public class OpsCorporateController {
 
 
         List<AccountInfo> accountInfos = integrationService.fetchAccounts(corporate.getCustomerId().toUpperCase());
+        logger.info("the schemeTYpe is {}",accountInfos.get(0).getSchemeType());
         model.addAttribute("accounts", accountInfos);
         if(((corporateExistingData != null)&&(accounts != null))&&(corporate.getCustomerId().equalsIgnoreCase(corporateExistingData.getCustomerId()))){
 
@@ -604,8 +605,6 @@ public class OpsCorporateController {
             model.addAttribute("corporate", corporate);
             model.addAttribute("selectedAccounts", "null");
         }
-
-
         return "/ops/corporate/setup/account";
 
     }
@@ -626,7 +625,6 @@ public class OpsCorporateController {
             List<AccountInfo> accountInfos = integrationService.fetchAccounts(corporate.getCustomerId().toUpperCase());
             model.addAttribute("accounts", accountInfos);
             return "/ops/corporate/setup/account";
-
         }
 
         String[] accounts = request.getParameterValues("accounts");
@@ -657,13 +655,9 @@ public class OpsCorporateController {
 
             model.addAttribute("selectedAccounts",accounts);
             model.addAttribute("corporate",corporateRequestDTO);
-            logger.info("Corporate Request DTO " +
-                    "{}", corporateRequestDTO.toString());
-
+            logger.info("Corporate Request DTO {}", corporateRequestDTO.toString());
             return "/ops/corporate/setup/addauthorizer";
-
         }
-
         return "/ops/corporate/setup/account";
 
     }
@@ -699,12 +693,15 @@ public class OpsCorporateController {
             });
 
             logger.info("Authorizers: {}", authorizerList.toString());
+            session.removeAttribute("authorizerLevels");
             session.setAttribute("authorizerLevels", authorizerList);
 
             Iterable<CodeDTO> currencies = codeService.getCodesByType("CURRENCY");
 
             if (session.getAttribute("corporateRequest") != null) {
                 CorporateRequestDTO corporateRequestDTO = (CorporateRequestDTO) session.getAttribute("corporateRequest");
+                session.removeAttribute("corporateRequest");
+                session.setAttribute("corporateRequest", corporateRequestDTO);
                 model.addAttribute("corporate", corporateRequestDTO);
                 corporateRequestDTO.setAuthorizers(authorizerList);
 
@@ -725,6 +722,12 @@ public class OpsCorporateController {
             }
 
             model.addAttribute("numAuthorizers",num);
+            if(session.getAttribute("rules")!= null) {
+                String rules = (String) session.getAttribute("rules");
+                model.addAttribute("rules",rules);
+            }else{
+                model.addAttribute("rules","");
+            }
 
             return "/ops/corporate/setup/addrule";
 
@@ -732,6 +735,7 @@ public class OpsCorporateController {
             logger.error("Error creating group", ibe);
             redirectAttributes.addFlashAttribute("failure", "Error has occurred");
             session.removeAttribute("corporateRequest");
+            session.removeAttribute("authorizerLevels");
             return "redirect:/ops/corporates/new";
         }
 
@@ -747,8 +751,8 @@ public class OpsCorporateController {
     public String addAccountUsingBack(Model model,HttpSession session) {
         String accounts[] = (String[]) session.getAttribute("selectedAccounts");
         CorporateRequestDTO corporate = (CorporateRequestDTO) session.getAttribute("corporateRequest");
-        logger.info("the session corp request {}",corporate);
-        logger.info("the session accounts {}",Arrays.asList(accounts));
+//        logger.info("the session corp request {}",corporate);
+//        logger.info("the session accounts {}",Arrays.asList(accounts));
         List<AccountInfo> accountInfos = (List<AccountInfo>) session.getAttribute("accountInfos");
         model.addAttribute("accounts", accountInfos);
         model.addAttribute("corporate", corporate);
@@ -759,11 +763,33 @@ public class OpsCorporateController {
     public String getAuthorizerBackPage(Model model, HttpSession session){
         List<AuthorizerDTO> authorizerList = (List<AuthorizerDTO>) session.getAttribute("authorizerLevels");
         CorporateRequestDTO corporate = (CorporateRequestDTO) session.getAttribute("corporateRequest");
-
         model.addAttribute("authorizerList",authorizerList);
         model.addAttribute("corporate",corporate);
 
         return "/ops/corporate/setup/addauthorizer";
+    }
+    @GetMapping("/back/rule")
+    public String getRuleBackPage(Model model, HttpSession session){
+        List<AuthorizerDTO> authorizerList = (List<AuthorizerDTO>) session.getAttribute("authorizerLevels");
+        Iterable<CodeDTO> currencies = codeService.getCodesByType("CURRENCY");
+        CorporateRequestDTO corporateRequestDTO = (CorporateRequestDTO) session.getAttribute("corporateRequest");
+        String rules = (String) session.getAttribute("rules");
+        model.addAttribute("corporate", corporateRequestDTO);
+        corporateRequestDTO.setAuthorizers(authorizerList);
+//        logger.info("Corporate Request DTO {}", corporateRequestDTO.toString());
+        model.addAttribute("currencies", currencies);
+        model.addAttribute("authorizerList", authorizerList);
+//        logger.info("the authorizer is {}",corporateRequestDTO);
+        int num = 2;
+        SettingDTO setting = configService.getSettingByName("MIN_CORPORATE_APPROVERS");
+        if (setting != null && setting.isEnabled()) {
+            num = Integer.parseInt(setting.getValue());
+        }
+
+        model.addAttribute("numAuthorizers",num);
+        model.addAttribute("rules",rules);
+
+        return "/ops/corporate/setup/addrule";
     }
 
 
@@ -780,20 +806,20 @@ public class OpsCorporateController {
         ObjectMapper mapper = new ObjectMapper();
         mapper.configure(JsonParser.Feature.ALLOW_UNQUOTED_FIELD_NAMES, true);
         try {
-          transferRules = mapper.readValue(rules, new TypeReference<List<CorpTransferRuleDTO>>() {
+            transferRules = mapper.readValue(rules, new TypeReference<List<CorpTransferRuleDTO>>() {
             });
-
+            session.removeAttribute("rules");
+            session.setAttribute("rules",rules);
             logger.debug("Corp Transfer Rules: {}", transferRules.toString());
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-
         if(session.getAttribute("corporateRequest")!=null) {
             CorporateRequestDTO corporateRequestDTO = (CorporateRequestDTO) session.getAttribute("corporateRequest");
-            model.addAttribute("corporate",corporateRequestDTO);
             corporateRequestDTO.setCorpTransferRules(transferRules);
-
+            model.addAttribute("corporate",corporateRequestDTO);
+            session.removeAttribute("corporateRequest");
+            session.setAttribute("corporateRequest",corporateRequestDTO);
             logger.debug("Corporate Reequest: {}",corporateRequestDTO);
         }
         if(session.getAttribute("authorizerLevels")!=null) {
