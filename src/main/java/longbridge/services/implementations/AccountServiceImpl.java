@@ -93,6 +93,7 @@ public class AccountServiceImpl implements AccountService {
         Account account = new Account();
         account.setPrimaryFlag("N");
         account.setHiddenFlag("N");
+        account.setStatus(acct.getAcctStatus());
         account.setCustomerId(acct.getCustId());
         account.setAccountName(acct.getAcctName());
         account.setPreferredName(acct.getAcctName());

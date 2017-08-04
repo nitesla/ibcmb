@@ -8,7 +8,6 @@ import longbridge.exception.VerificationInterruptedException;
 import longbridge.models.*;
 import longbridge.repositories.*;
 import longbridge.services.RoleService;
-import longbridge.services.VerificationService;
 import longbridge.utils.Verifiable;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
@@ -73,7 +72,7 @@ public class RoleServiceImpl implements RoleService {
     @Verifiable(operation = "ADD_ROLE", description = "Adding a Role")
     public String addRole(RoleDTO roleDTO) throws InternetBankingException {
 
-        Role role = roleRepo.findByName(roleDTO.getName());
+        Role role = roleRepo.findFirstByName(roleDTO.getName());
 
         if (role != null) {
             throw new DuplicateObjectException(messageSource.getMessage("role.exist", null, locale));
@@ -101,7 +100,7 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     public Role getTheRole(String roleName) {
-        Role role = roleRepo.findByName(roleName);
+        Role role = roleRepo.findFirstByName(roleName);
         return role;
     }
 
@@ -119,8 +118,16 @@ public class RoleServiceImpl implements RoleService {
     @Override
     @Verifiable(operation = "UPDATE_ROLE", description = "Updating a Role")
     public String updateRole(RoleDTO roleDTO) throws InternetBankingException {
+
+          Role role = roleRepo.findFirstByName(roleDTO.getName());
+
+        if (role != null && !roleDTO.getId().equals(role.getId())) {
+            throw new DuplicateObjectException(messageSource.getMessage("role.exist", null, locale));
+
+        }
+
         try {
-            Role role = convertDTOToEntity(roleDTO);
+             role = convertDTOToEntity(roleDTO);
             roleRepo.save(role);
             logger.info("Updated role {}", role.toString());
             return messageSource.getMessage("role.update.success", null, locale);

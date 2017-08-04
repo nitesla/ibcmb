@@ -604,10 +604,10 @@ public class OpsCorporateController {
         if (setting != null) {
             if (setting.isEnabled()) {
                 if ("NO".equalsIgnoreCase(setting.getValue())) {
-                    accountInfos = filterAccounts(accountInfos, accountService.getAccounts(corporate.getCustomerId()));
+                    accountInfos = filterAccounts(accountInfos, accountService.getAccounts(corporate.getCustomerId().toUpperCase()));
                 }
             } else {
-                accountInfos = filterAccounts(accountInfos, accountService.getAccounts(corporate.getCustomerId()));
+                accountInfos = filterAccounts(accountInfos, accountService.getAccounts(corporate.getCustomerId().toUpperCase()));
             }
         }
 

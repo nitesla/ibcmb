@@ -164,8 +164,8 @@ public class CorporateServiceImpl implements CorporateService {
     public String addCorporate(CorporateRequestDTO corporateRequestDTO) throws InternetBankingException {
 
         try {
-                saveCorporateRequest(corporateRequestDTO);
-                return messageSource.getMessage("corporate.add.success", null, locale);
+            saveCorporateRequest(corporateRequestDTO);
+            return messageSource.getMessage("corporate.add.success", null, locale);
 
         } catch (Exception e) {
             throw new InternetBankingException(messageSource.getMessage("corporate.add.failure", null, locale), e);
@@ -197,81 +197,97 @@ public class CorporateServiceImpl implements CorporateService {
             corporateUser.setAlertPreference(codeService.getByTypeAndCode("ALERT_PREFERENCE", "BOTH"));
             corporateUser.setCreatedOnDate(new Date());
             corporateUser.setStatus("A");
-            Role role = roleRepo.findOne(Long.parseLong(user.getRoleId()));
+            Role role;
+            if ("SOLE".equals(corporateRequestDTO.getCorporateType())) {
+                role = getSoleCoporateRole();
+            } else {
+                role = roleRepo.findOne(Long.parseLong(user.getRoleId()));
+            }
             corporateUser.setRole(role);
             corporateUser.setCorpUserType(getUserType(user.getUserType()));
             corporateUser.setCorporate(newCorporate);
             createUserOnEntrustAndSendCredentials(corporateUser);
-            if("AUTHORIZER".equals(user.getUserType())){
+            if ("AUTHORIZER".equals(user.getUserType())) {
                 authorizers.add(user);
             }
 
         }
 
-        List<CorporateRole> corporateRoles = new ArrayList<>();
 
-        for(AuthorizerLevelDTO authorizerLevelDTO : corporateRequestDTO.getAuthorizers()){
-            CorporateRole role = new CorporateRole();
-            role.setName(authorizerLevelDTO.getName());
-            role.setRank(authorizerLevelDTO.getLevel());
-            role.setCorporate(newCorporate);
+        if ("MULTI".equals(newCorporate.getCorporateType())) {
 
-            HashSet<CorporateUser> corpUsers = new HashSet<>();
-            for (CorporateUserDTO user : authorizers) {
-                if(user.getAuthorizerLevel().equals(authorizerLevelDTO.getName()+" "+authorizerLevelDTO.getLevel())) {
-                    CorporateUser corporateUser = corporateUserRepo.findFirstByUserNameIgnoreCase(user.getUserName());
-                    corpUsers.add(corporateUser);
-                }
-            }
-            role.setUsers(corpUsers);
-            CorporateRole corporateRole = corporateRoleRepo.save(role);
-            corporateRoles.add(corporateRole);
-        }
+            List<CorporateRole> corporateRoles = new ArrayList<>();
 
-        for(CorpTransferRuleDTO transferRuleDTO: corporateRequestDTO.getCorpTransferRules()){
-            CorpTransRule corpTransRule = new CorpTransRule();
-            corpTransRule.setLowerLimitAmount(new BigDecimal(transferRuleDTO.getLowerLimitAmount()));
-            if(transferRuleDTO.isUnlimited()) {
-                corpTransRule.setUpperLimitAmount(new BigDecimal(Integer.MAX_VALUE));
-            }
-            else {
-                corpTransRule.setUpperLimitAmount(new BigDecimal(transferRuleDTO.getUpperLimitAmount()));
-            }
-            corpTransRule.setUnlimited(transferRuleDTO.isUnlimited());
-            corpTransRule.setCurrency(transferRuleDTO.getCurrency());
-            corpTransRule.setAnyCanAuthorize(transferRuleDTO.isAnyCanAuthorize());
-            corpTransRule.setCorporate(newCorporate);
+            for (AuthorizerLevelDTO authorizerLevelDTO : corporateRequestDTO.getAuthorizers()) {
+                CorporateRole role = new CorporateRole();
+                role.setName(authorizerLevelDTO.getName());
+                role.setRank(authorizerLevelDTO.getLevel());
+                role.setCorporate(newCorporate);
 
-            List<CorporateRole> roleList = new ArrayList<CorporateRole>();
-            for (CorporateRole role : corporateRoles) {
-                for(String authorizerLevel: transferRuleDTO.getAuthorizers()) {
-                    if(authorizerLevel.equals(role.getName()+" "+role.getRank())) {
-                        roleList.add(role);
+                HashSet<CorporateUser> corpUsers = new HashSet<>();
+                for (CorporateUserDTO user : authorizers) {
+                    if (user.getAuthorizerLevel().equals(authorizerLevelDTO.getName() + " " + authorizerLevelDTO.getLevel())) {
+                        CorporateUser corporateUser = corporateUserRepo.findFirstByUserNameIgnoreCase(user.getUserName());
+                        corpUsers.add(corporateUser);
                     }
                 }
+                role.setUsers(corpUsers);
+                CorporateRole corporateRole = corporateRoleRepo.save(role);
+                corporateRoles.add(corporateRole);
             }
-            corpTransRule.setRoles(roleList);
-            corpTransferRuleRepo.save(corpTransRule);
-        }
 
+            for (CorpTransferRuleDTO transferRuleDTO : corporateRequestDTO.getCorpTransferRules()) {
+                CorpTransRule corpTransRule = new CorpTransRule();
+                corpTransRule.setLowerLimitAmount(new BigDecimal(transferRuleDTO.getLowerLimitAmount()));
+                if (transferRuleDTO.isUnlimited()) {
+                    corpTransRule.setUpperLimitAmount(new BigDecimal(Integer.MAX_VALUE));
+                } else {
+                    corpTransRule.setUpperLimitAmount(new BigDecimal(transferRuleDTO.getUpperLimitAmount()));
+                }
+                corpTransRule.setUnlimited(transferRuleDTO.isUnlimited());
+                corpTransRule.setCurrency(transferRuleDTO.getCurrency());
+                corpTransRule.setAnyCanAuthorize(transferRuleDTO.isAnyCanAuthorize());
+                corpTransRule.setCorporate(newCorporate);
+
+                List<CorporateRole> roleList = new ArrayList<CorporateRole>();
+                for (CorporateRole role : corporateRoles) {
+                    for (String authorizerLevel : transferRuleDTO.getAuthorizers()) {
+                        if (authorizerLevel.equals(role.getName() + " " + role.getRank())) {
+                            roleList.add(role);
+                        }
+                    }
+                }
+                corpTransRule.setRoles(roleList);
+                corpTransferRuleRepo.save(corpTransRule);
+            }
+
+        }
 
 
     }
 
 
+    private CorpUserType getUserType(String userType) {
 
-    private CorpUserType getUserType(String userType){
-
-        if("ADMIN".equals(userType)){
+        if ("ADMIN".equals(userType)) {
             return CorpUserType.ADMIN;
-        }
-        else if("INITIATOR".equals(userType)){
-            return  CorpUserType.INITIATOR;
-        }
-        else if ("AUTHORIZER".equals(userType)){
+        } else if ("INITIATOR".equals(userType)) {
+            return CorpUserType.INITIATOR;
+        } else if ("AUTHORIZER".equals(userType)) {
             return CorpUserType.AUTHORIZER;
         }
         return null;
+    }
+
+
+    private Role getSoleCoporateRole() {
+        Role role = null;
+        SettingDTO setting = configService.getSettingByName("SOLE_CORPORATE_ROLE");
+        if (setting != null && setting.isEnabled()) {
+            String roleName = setting.getValue();
+            role = roleRepo.findFirstByName(roleName);
+        }
+        return role;
     }
 
     public void addAccounts(Corporate corporate) {
