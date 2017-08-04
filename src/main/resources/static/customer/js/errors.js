@@ -1,45 +1,30 @@
- function showPop (item)
-    {
-         
-        $('input.form-control').attr('data-toggle', 'popover');
-        var err;
-        var arr_err = [];
-        $('.'+item).each(function(i, obj){
-            
-             err = $(this).text();
-            
-             if (err !== '')
-            {
-                
-                
-                $(this).hide();
-
-                arr_err.push(err);
-               
-            }
-        });
-
-        var disp_err;
-
-        $('input.form-control').each(function(i, obj)
-        {
-            disp_err = "<div style='text-align:left;padding:20px;font-size:12px'><i class='fa fa-exclamation text-danger' style='font-size:20px'></i> <span>"+arr_err[i]+"!!!</span></div>";
-            $(this).attr('data-content', disp_err);
-             $('[data-toggle="popover"]').popover({html:"true"}).popover('show');
-        });
-
-        
-
-
-        
-        
-        
-        
-      
+ function showPop ()
+    { 
+        //declare a font awesome tag to prepend to the existing error message
+       var tag = "<i class='fa fa-exclamation text-danger' style='font-size:20px'></i> <span>";
+       //add a new class to the existing element  and prepend the above variable to the class 
+        $('.errors').addClass('errors_div').prepend(tag);
+        autoComplete('off');
+       
+        hideSibling('input','.errors');
 
        
-        
-      
-       
-        
     }   
+
+
+function autoComplete(value)
+{
+     $('input').attr('autocomplete', value);
+}
+
+
+function hideSibling(first,second)
+{
+     $(first).on("click", function(){
+    	$(this).siblings(second).hide();
+        
+    });
+
+
+}
+

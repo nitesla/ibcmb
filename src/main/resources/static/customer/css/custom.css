@@ -571,6 +571,7 @@ select
     padding:1px 2px;
     border-right: 1px solid #868B8F;
     font-size: 10px;
+    text-transform: capitalize;
 }
 
 .top-link li a
@@ -1212,6 +1213,7 @@ body {
     color: #777;
     padding-top: 8px;
     padding-bottom: 0px;
+    padding-left: 5px;
 }
 
 .navbar-nav li.dropdown:hover > ul.dropdown-menu {
@@ -1453,10 +1455,10 @@ body {
     padding: 0 15px 0 15px;
 }
 .errors{
-    padding: 5px 0px 5px 0;
+    /* padding: 5px 0px 5px 0;
     color: #9F614B;
     font-size: 12px;
-    margin-left:45px
+    margin-left:45px */
 }
 .calender{
     position: inherit;
@@ -1998,6 +2000,19 @@ button, input, optgroup, select, textarea {
     }
 
 
+    .errors_div
+    {
+        
+
+
+
+        position:static !important;
+
+        margin-top:5px;
+       
+    }
+
+
     .carousel-caption {
      position: absolute !important; 
     top: 70% !important;
@@ -2188,6 +2203,13 @@ button, input, optgroup, select, textarea {
 
 /*another css by Etoka francis to override any other css*/
 
+.white-box p
+{
+    text-transform: capitalize;
+}
+
+
+
 .current-bar
 {
     padding:18px !important;
@@ -2375,6 +2397,25 @@ button, input, optgroup, select, textarea {
 .popover.right > .arrow
 {
     display: none !important;
+}
+
+.position_rel
+{
+    position: relative !important;
+}
+
+
+.errors_div
+{
+    position:absolute;
+    background: #ebdfdb;
+    top:20px;
+    right:-140px;
+    width:200px;
+    padding: 10px;
+    text-align: left;
+    z-index:1000;
+    
 }
 
 

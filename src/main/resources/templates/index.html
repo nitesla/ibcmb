@@ -22,7 +22,7 @@
 
         <div  class="row  margin-bottom">
 
-                <div class="col-sm-9">
+                <div class="col-sm-9 no-pad-left">
 
                 <nav class="navbar navbar-default bg-success" >
                     <div class="">
@@ -223,8 +223,8 @@
                     </button>
                     <ul class="dropdown-menu contact-details">
                         <li>Send us an email</li>
-                        <li>enquiries@coronationmb.com</li>
-                        <li id='copy' class="icontext pull-right" onclick='copy()'>Copy email</li>
+                        <li id='copy_email'>enquiries@coronationmb.com</li>
+                        <li id='copy' class="icontext pull-right" ><button class="btn copy-btn btn-link required" data-clipboard-action="copy" data-clipboard-target="#copy_email">Copy email</button></li>
                     </ul>
                 </div>
                 <div class="dropdown  dropdn-margin">
@@ -234,7 +234,7 @@
 
                         <li>Need instant help?</li>
                         <li>Chat with us</li>
-                        <li class="icontext pull-right"><button class="btn btn-link"><i class="fa fa-comments-o"></i> Live chat</button></li>
+                        <li class="icontext pull-right"><button disabled class="btn btn-link"><i class="fa fa-comments-o"></i> Live chat</button></li>
 
                     </ul>
                 </div>
@@ -396,6 +396,8 @@
     <!-- BOOTSTRAP SCRIPTS  -->
     <script th:src="@{~/customer/js/bootstrap.js}"></script>
     <script th:src="@{~/customer/js/coronation.js}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js"></script>
+
 
     <script>
 
@@ -420,6 +422,19 @@
 
 
         
+</script>
+
+
+<script>
+    
+    var clipboard = new Clipboard('.copy-btn');
+    clipboard.on('success', function(e) {
+       $('#myModalSuccess').modal();
+       $('#successMess').text('Email has been successfully copied!!!');
+    });
+    clipboard.on('error', function(e) {
+        console.log(e);
+    });
     </script>
 
     </body>
