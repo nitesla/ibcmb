@@ -126,13 +126,7 @@ public class CorpUserManagementController {
         }
 
         try {
-            String message="";
-            String corpUserRole = webRequest.getParameter("authorizer");
-            if (corpUserRole == "authorizer"){
-
-            }else{
-                message = corporateUserService.addUserFromCorporateAdmin(corporateUserDTO);
-            }
+            String message = corporateUserService.addUserFromCorporateAdmin(corporateUserDTO);
             redirectAttributes.addFlashAttribute("message", message);
             return "redirect:/corporate/users/";
         } catch (DuplicateObjectException doe) {

@@ -1,7 +1,9 @@
 package longbridge;
 
 import longbridge.models.Account;
+import longbridge.models.AccountRestriction;
 import longbridge.repositories.AccountRepo;
+import longbridge.repositories.AccountRestrictionRepo;
 import longbridge.repositories.CustomJpaRepositoryFactoryBean;
 import longbridge.services.SecurityService;
 import org.apache.commons.lang3.math.NumberUtils;
@@ -15,6 +17,8 @@ import org.springframework.boot.web.support.SpringBootServletInitializer;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.scheduling.annotation.EnableAsync;
 
+import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 @SpringBootApplication
@@ -27,7 +31,7 @@ public class InternetbankingApplication extends SpringBootServletInitializer imp
     SecurityService securityService;
 
     @Autowired
-    AccountRepo accountRepo;
+    AccountRestrictionRepo accountRepo;
 
 
     public static void main(String[] args) {
@@ -43,6 +47,20 @@ public class InternetbankingApplication extends SpringBootServletInitializer imp
     @Override
     public void run(String... strings) throws Exception {
 
+        Arrays.asList("SBA","CAA","ODA").stream()
+                .forEach(i ->{
+                    AccountRestriction restriction= new AccountRestriction();
+                    restriction.setDateCreated(new Date());
+                    restriction.setRestrictedFor("V");
+                    restriction.setRestrictionValue(i);
+                    restriction.setRestrictionType("ACC");
+                    accountRepo.save(restriction);
+
+
+                        }
+
+
+                );
 
    }
 
