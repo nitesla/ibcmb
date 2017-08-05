@@ -123,9 +123,7 @@ public class BulkTransferServiceImpl implements BulkTransferService {
             bulkTransferRepo.save(bulkTransfer);
 
         } catch (Exception e ) {
-            e.printStackTrace();
-            logger.error("Exception occurred {}",e);
-            return messageSource.getMessage("bulk.save.failure", null, null);
+            throw new InternetBankingException(messageSource.getMessage("bulk.save.failure", null, null),e);
         }
         return messageSource.getMessage("bulk.save.success", null, null);
     }

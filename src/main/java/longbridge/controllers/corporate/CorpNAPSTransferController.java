@@ -439,11 +439,16 @@ public class CorpNAPSTransferController {
             redirectAttributes.addFlashAttribute("message", message);
             return "redirect:/corporate/transfer/bulk";
         }catch (TransferRuleException t){
-            model.addAttribute("failure", t.getMessage());
+            redirectAttributes.addFlashAttribute("failure", t.getMessage());
             return "redirect:/corporate/transfer/bulk";
-        } catch (Exception ibe) {
+        } catch (InternetBankingException ibe) {
             logger.error("Error creating transfer", ibe);
-            model.addAttribute("failure", messageSource.getMessage("bulk.transfer.failure", null, locale));
+            redirectAttributes.addFlashAttribute("failure", ibe.getMessage());
+            return "redirect:/corporate/transfer/bulk";
+        }
+        catch (Exception e) {
+            logger.error("Error creating transfer", e);
+            redirectAttributes.addFlashAttribute("failure", messageSource.getMessage("bulk.save.success", null, null));
             return "redirect:/corporate/transfer/bulk";
         }
     }
