@@ -11,8 +11,6 @@ import com.fasterxml.jackson.annotation.JsonSetter;
 public class CreditRequestDTO {
     @JsonProperty("DT_RowId")
     private Long id;
-    private String serial;
-    private String refCode;
     private String accountNumber;
     private String sortCode;
     private String accountName;
@@ -29,18 +27,6 @@ public class CreditRequestDTO {
         this.id = id;
     }
 
-    public String getSerial() {
-        return serial;
-    }
-
-    public void setSerial(String serial) {
-        this.serial = serial;
-    }
-
-    public String getRefCode() {
-        return refCode;
-    }
-
     public String getStatus() {
         return status;
     }
@@ -49,9 +35,6 @@ public class CreditRequestDTO {
         this.status = status;
     }
 
-    public void setRefCode(String refCode) {
-        this.refCode = refCode;
-    }
 
     public String getAccountNumber() {
         return accountNumber;

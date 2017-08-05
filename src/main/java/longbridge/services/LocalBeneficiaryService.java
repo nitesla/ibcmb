@@ -42,6 +42,7 @@ public interface LocalBeneficiaryService {
     @PreAuthorize("hasAuthority('GET_BENEFICIARIES')")
     LocalBeneficiary getLocalBeneficiary(Long id);
 
+
     /**
      * Returns a list of the customer's beneficiaries
      * @param user the customer

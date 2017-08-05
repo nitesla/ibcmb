@@ -61,6 +61,7 @@ public class CorpBeneficiaryController {
         logger.info("local BEN {}", corpLocalBeneficiaryService.getCorpLocalBeneficiaries(corporateUser.getCorporate()));
         Iterable<CorpLocalBeneficiary> corpLocalBeneficiaries = corpLocalBeneficiaryService.getCorpLocalBeneficiaries(corporateUser.getCorporate());
 
+
         for (CorpLocalBeneficiary localBenef : corpLocalBeneficiaries) {
 
             String code = localBenef.getBeneficiaryBank();
@@ -69,6 +70,7 @@ public class CorpBeneficiaryController {
                 String beneficiaryBank = financialInstitution.getInstitutionName();
                 localBenef.setBeneficiaryBank(beneficiaryBank);
             }
+
         }
         model.addAttribute("localBen", corpLocalBeneficiaries);
 
@@ -89,11 +91,12 @@ public class CorpBeneficiaryController {
     }
 
     @PostMapping("/local")
+
     public String createCorpLocalBeneficiary(@Valid CorpLocalBeneficiaryDTO corpLocalBeneficiaryDTO, BindingResult result, Principal principal, Model model, HttpServletRequest request, RedirectAttributes redirectAttributes, Locale locale) {
+
 
         SettingDTO setting = configService.getSettingByName("ENABLE_CORPORATE_2FA");
         CorporateUser user = corporateUserService.getUserByName(principal.getName());
-
 
         if (/* service to check if token is enabled comes in here  */
                 (setting != null && setting.isEnabled())
@@ -119,15 +122,19 @@ public class CorpBeneficiaryController {
                 redirectAttributes.addFlashAttribute("failure", messages.getMessage("beneficiary.add.failure", null, locale));
             }
         }
+
         return "redirect:/corporate/beneficiary";
     }
 
     @PostMapping("/foreign")
+
     public String createForeignBeneficiary(@ModelAttribute("corpInternationalBeneficiary") @Valid CorpInternationalBeneficiaryDTO corpInternationalBeneficiaryDTO, Principal principal, BindingResult result, Model model) {
+
         if (result.hasErrors()) {
             return "corp/beneficiary/add";
         }
         CorporateUser user = corporateUserService.getUserByName(principal.getName());
+
         corpInternationalBeneficiaryService.addCorpInternationalBeneficiary(user, corpInternationalBeneficiaryDTO);
         model.addAttribute("success", "Beneficiary added successfully");
         return "redirect:/corporate/beneficiary";
@@ -186,13 +193,16 @@ public class CorpBeneficiaryController {
 //    }
 
     @GetMapping("/{beneficiaryId}/loc/delete")
+
     public String deleteLocBeneficiary(@PathVariable Long beneficiaryId, Model model) {
         corpLocalBeneficiaryService.deleteCorpLocalBeneficiary(beneficiaryId);
         model.addAttribute("success", "Beneficiary deleted successfully");
+
         return "redirect:/corporate/beneficiary";
     }
 
     @GetMapping("/{beneficiaryId}/int/delete")
+
     public String deleteIncBeneficiary(@PathVariable Long beneficiaryId, Model model) {
         corpInternationalBeneficiaryService.deleteCorpInternationalBeneficiary(beneficiaryId);
         model.addAttribute("success", "Beneficiary deleted successfully");
@@ -248,5 +258,7 @@ public class CorpBeneficiaryController {
     }
 
 
-
 }
+
+
+

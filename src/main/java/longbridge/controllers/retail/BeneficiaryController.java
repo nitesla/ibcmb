@@ -50,10 +50,17 @@ public class BeneficiaryController {
     private SecurityService securityService;
 
     private RetailUserService retailUserService;
-    private CodeService codeService;
+
+    private ConfigurationService configurationService;
+
+    @Autowired
+    private MailService mailService;
+
     @Value("${bank.code}")
     private String bankCode;
     private ConfigurationService configService;
+
+    private CodeService codeService;
 
 
     @Autowired
@@ -131,10 +138,12 @@ public class BeneficiaryController {
         try {
 
             RetailUser user = retailUserService.getUserByName(principal.getName());
-            String message = localBeneficiaryService.addLocalBeneficiary(user, localBeneficiaryDTO);
-            redirectAttributes.addFlashAttribute("message", message);
-        } catch (InternetBankingException e) {
+            String message2 = localBeneficiaryService.addLocalBeneficiary(user, localBeneficiaryDTO);
 
+
+            redirectAttributes.addFlashAttribute("message", message2);
+        } catch (InternetBankingException e) {
+              e.printStackTrace();
             try{
                 redirectAttributes.addFlashAttribute("failure", messages.getMessage(e.getMessage(), null, locale));
             }catch (Exception ex){

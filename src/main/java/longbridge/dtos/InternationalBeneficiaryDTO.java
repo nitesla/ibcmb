@@ -25,6 +25,7 @@ public class InternationalBeneficiaryDTO implements Serializable{
     private String beneficiaryAddress;
     private String intermediaryBankName;
     private String intermediaryBankAcctNo;
+
     private String currencyCode;
 
     public Long getId() {
@@ -98,7 +99,6 @@ public class InternationalBeneficiaryDTO implements Serializable{
     public void setIntermediaryBankAcctNo(String intermediaryBankAcctNo) {
         this.intermediaryBankAcctNo = intermediaryBankAcctNo;
     }
-
     public String getCurrencyCode() {
         return currencyCode;
     }
@@ -106,4 +106,5 @@ public class InternationalBeneficiaryDTO implements Serializable{
     public void setCurrencyCode(String currencyCode) {
         this.currencyCode = currencyCode;
     }
+
 }

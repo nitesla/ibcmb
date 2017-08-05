@@ -1,6 +1,8 @@
 <!DOCTYPE html>
+
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{corp-layout}">
+
 
 <body onload="javascript:var bread = [['Home', '/corporate/dashboard'],['Beneficiary Management', '/corporate/beneficiary']];currentBar('beneficiary list');breadCrumb(bread)">
 
@@ -59,7 +61,7 @@
                         </thead>
                         <tbody>
                         <tr th:each="loc : ${localBen}">
-                            <td th:text="${loc.accountName}"></td>
+                            <td th:text="${loc.preferredName}"></td>
                             <td th:text="${loc.accountNumber}"></td>
                             <td th:text="${loc.beneficiaryBank}"></td>
                             <td><a href='javascript:void()' th:id="${loc.id}" onclick="validateDel(this.id)"><i class="fa fa-trash"></i></a></td>                        </tr>
@@ -77,7 +79,7 @@
                         <!--</thead>-->
                         <!--<tbody>-->
                         <!--<tr th:each="int : ${intBen}">-->
-                            <!--<td th:text="${int.accountName}"></td>-->
+                            <!--<td th:text="${preferredNameName}"></td>-->
                             <!--<td th:text="${int.accountNumber}"></td>-->
                             <!--<td th:text="${int.beneficiaryBank}"></td>-->
                             <!--<td><a th:href="@{'/corporate/beneficiary/' + ${int.id} + '/int/delete'}"><i class="fa fa-trash"></i></a></td>-->
@@ -88,6 +90,7 @@
             </div>
         </div>
     </div>
+
 </div>
 
 
@@ -123,12 +126,6 @@
                 window.location.assign(ooo);
             });
                  }
-
-       
-            
-
-
-       
 
         /*]]>*/
 </script>

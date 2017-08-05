@@ -1,3 +1,4 @@
+
 package longbridge.jobs;
 
 import org.quartz.*;
@@ -13,7 +14,6 @@ public class CronJobScheduler {
         JobKey OneTimeKey = new JobKey("OneTime", "ibtest");
         JobDetail OneTimeJobs = JobBuilder.newJob(RunningJob.class)
                 .withIdentity(OneTimeKey).build();
-
         /**
          * JOB Triggers
          * @Shedules
@@ -24,6 +24,7 @@ public class CronJobScheduler {
                 .withSchedule(
                         CronScheduleBuilder.cronSchedule("0 0 0/1 1/1 * ? *"))
                 .build();
+
         /**
          * STart Schedules.............
          */
@@ -36,5 +37,4 @@ public class CronJobScheduler {
             e.printStackTrace();
         }
     }
-
 }

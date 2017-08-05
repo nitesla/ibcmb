@@ -36,9 +36,10 @@ public interface CorpTransferService {
 //    List<PendAuth> getPendingAuthorizations();
 
     CorpTransferAuth getAuthorizations(CorpTransRequest transRequest);
+    //CorpTransferAuth getAuthorizations(TransRequest transRequest);
 
     String addAuthorization(CorpTransReqEntry transReqEntry);
 
 
-    boolean userCanAuthorize(CorpTransRequest corpTransRequest);
+    boolean userCanAuthorize(TransRequest transRequest);
 }

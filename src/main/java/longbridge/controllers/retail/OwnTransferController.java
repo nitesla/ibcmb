@@ -84,6 +84,8 @@ public class OwnTransferController {
     }
 
 
+
+
     @PostMapping("/summary")
     public String transferSummary(@ModelAttribute("transferRequest") @Valid TransferRequestDTO request, Locale locale, BindingResult result, Model model, HttpServletRequest servletRequest) {
         try {

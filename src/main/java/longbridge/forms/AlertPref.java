@@ -17,4 +17,5 @@ public class AlertPref {
     public void setCode(String code) {
         this.code = code;
     }
+
 }
