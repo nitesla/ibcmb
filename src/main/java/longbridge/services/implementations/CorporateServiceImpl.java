@@ -328,6 +328,7 @@ public class CorporateServiceImpl implements CorporateService {
                     }
                 }
                 user.setEntrustId(entrustId);
+                user.setEntrustGroup(group);
                 String password = passwordPolicyService.generatePassword();
                 user.setPassword(passwordEncoder.encode(password));
                 user.setExpiryDate(new Date());
@@ -664,6 +665,12 @@ public class CorporateServiceImpl implements CorporateService {
             throw new InternetBankingException(messageSource.getMessage("role.update.failure", null, locale));
 
         }
+    }
+
+    public void addAuthorizer(CorporateUser user, Long corpRoleId){
+
+        Corporate corporate = user.getCorporate();
+        CorporateRole corporateRole =  corporateRoleRepo.findOne(corpRoleId);
     }
 
     @Override

@@ -146,9 +146,11 @@ public class CorporateUserServiceImpl implements CorporateUserService {
             throw new InternetBankingException(messageSource.getMessage("corporate.deactivated", null, locale));
         }
 
-        corporateUser = corporateUserRepo.findFirstByCorporateAndEmailIgnoreCase(corporate, user.getEmail());
-        if (corporateUser != null && !user.getId().equals(corporateUser.getId())) {
-            throw new DuplicateObjectException(messageSource.getMessage("email.exists", null, locale));
+        if(!user.getEmail().equals(corporateUser.getEmail())) {
+            corporateUser = corporateUserRepo.findFirstByCorporateAndEmailIgnoreCase(corporate, user.getEmail());
+            if (corporateUser != null && !user.getId().equals(corporateUser.getId())) {
+                throw new DuplicateObjectException(messageSource.getMessage("email.exists", null, locale));
+            }
         }
 
         corporateUser = corporateUserRepo.findOne(user.getId());

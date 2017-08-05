@@ -911,7 +911,7 @@ public class OpsCorporateController {
             model.addAttribute("corporate",corporateRequestDTO);
             session.removeAttribute("corporateRequest");
             session.setAttribute("corporateRequest",corporateRequestDTO);
-            logger.debug("Corporate Reequest: {}",corporateRequestDTO);
+            logger.debug("Corporate Request: {}",corporateRequestDTO);
         }
 
         if((session.getAttribute("inputedUsers") != null)){
@@ -971,8 +971,15 @@ public class OpsCorporateController {
 
         }
         session.removeAttribute("corporateRequest");
+        session.removeAttribute("selectedAccounts");
+        session.removeAttribute("accounts");
+        session.removeAttribute("inputedUsers");
+        session.removeAttribute(" rules");
+        session.removeAttribute(" authorizerLevels");
+        session.removeAttribute(" users");
+        session.removeAttribute(" accountInfos");
 
-        return "redirect:/ops/corporates/new";
+        return "redirect:/ops/corporates";
 
 
     }
