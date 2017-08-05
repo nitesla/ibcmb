@@ -148,7 +148,7 @@ public class BeneficiaryController {
 
             redirectAttributes.addFlashAttribute("message", message2);
         } catch (InternetBankingException e) {
-
+              e.printStackTrace();
             try{
                 redirectAttributes.addFlashAttribute("failure", messages.getMessage(e.getMessage(), null, locale));
             }catch (Exception ex){
