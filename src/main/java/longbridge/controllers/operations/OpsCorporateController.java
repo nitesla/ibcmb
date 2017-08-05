@@ -713,7 +713,19 @@ public class OpsCorporateController {
             model.addAttribute("selectedAccounts",accounts);
             model.addAttribute("corporate",corporateRequestDTO);
             logger.info("Corporate Request DTO {}", corporateRequestDTO.toString());
-            return "/ops/corporate/setup/addauthorizer";
+            if((session.getAttribute("inputedUsers") != null)){
+                String users = session.getAttribute("inputedUsers").toString();
+//            logger.info("The inputed users are {}",users);
+                model.addAttribute("inputedUsers",users);
+            }else{
+                model.addAttribute("inputedUsers","");
+            }
+
+            if(corporateRequestDTO.getCorporateType().equalsIgnoreCase("SOLE")){
+                return "/ops/corporate/setup/addSoleUser";
+            }else{
+                return "/ops/corporate/setup/addauthorizer";
+            }
         }
         return "/ops/corporate/setup/account";
 
