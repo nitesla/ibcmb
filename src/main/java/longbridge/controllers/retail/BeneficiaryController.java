@@ -139,7 +139,7 @@ public class BeneficiaryController {
             String message = localBeneficiaryService.addLocalBeneficiary(user, localBeneficiaryDTO);
             redirectAttributes.addFlashAttribute("message", message);
         } catch (InternetBankingException e) {
-
+              e.printStackTrace();
             try{
                 redirectAttributes.addFlashAttribute("failure", messages.getMessage(e.getMessage(), null, locale));
             }catch (Exception ex){
