@@ -562,8 +562,12 @@ public class OpsCorporateController {
         return customerDetails.getCustomerName();
     }
     @GetMapping("/new/{corpTYpe}")
-    public String addCorporate(@PathVariable String corpTYpe, Model model) {
-//        logger.info("the corp category {}",corpTYpe);
+    public String addCorporate(@PathVariable String corpTYpe, HttpSession session, Model model) {
+
+        if(session.getAttribute("corporateRequest")!=null){
+            session.removeAttribute("corporateRequest");
+        }
+
         CorporateDTO corporateDTO = new CorporateDTO();
 //        if(corpTYpe == ""){
 //            return "/ops/dashboard";
@@ -626,10 +630,10 @@ public class OpsCorporateController {
         if (setting != null) {
             if (setting.isEnabled()) {
                 if ("NO".equalsIgnoreCase(setting.getValue())) {
-                    accountInfos = filterAccounts(accountInfos, accountService.getAccounts(corporate.getCustomerId()));
+                    accountInfos = filterAccounts(accountInfos, accountService.getAccounts(corporate.getCustomerId().toUpperCase()));
                 }
             } else {
-                accountInfos = filterAccounts(accountInfos, accountService.getAccounts(corporate.getCustomerId()));
+                accountInfos = filterAccounts(accountInfos, accountService.getAccounts(corporate.getCustomerId().toUpperCase()));
             }
         }
 
@@ -959,7 +963,6 @@ public class OpsCorporateController {
                     String message = corporateService.addCorporate(corporateRequestDTO);
                     redirectAttributes.addFlashAttribute("message", message);
                 }
-                session.removeAttribute("corporateRequest");
             }
         }
         catch (Exception e){
@@ -967,6 +970,8 @@ public class OpsCorporateController {
             redirectAttributes.addFlashAttribute("failure", "Failed to create corporate entity");
 
         }
+        session.removeAttribute("corporateRequest");
+
         return "redirect:/ops/corporates/new";
 
 
