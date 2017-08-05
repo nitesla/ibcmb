@@ -63,15 +63,26 @@ public class TransferStatusJobLauncher {
                 .forEach(
 
                         i -> {
-//                      CreditRequest creditRequest = creditRequestRepo.findByAccountNumberAndBulkTransfer_Id(i)
 
-
+                            try {
+                                String batch = "" + i.getId();
+                                LOGGER.info("running update job for batch  {}", batch);
+                                jobLauncher.run(job, newExecution(batch));
+                            } catch (JobExecutionAlreadyRunningException e) {
+                                e.printStackTrace();
+                            } catch (JobRestartException e) {
+                                e.printStackTrace();
+                            } catch (JobInstanceAlreadyCompleteException e) {
+                                e.printStackTrace();
+                            } catch (JobParametersInvalidException e) {
+                                e.printStackTrace();
+                            }
                         }
 
                 );
 
 
-       // jobLauncher.run(job, newExecution(s));
+        // jobLauncher.run(job, newExecution(s));
 
         LOGGER.info("Stopping restJob job");
     }
@@ -79,11 +90,13 @@ public class TransferStatusJobLauncher {
     private JobParameters newExecution(String s) {
         Map<String, JobParameter> parameters = new HashMap<>();
 
-
+        JobParameter parameter = new JobParameter(new Date());
         JobParameter batch = new JobParameter(s);
+        parameters.put("time", parameter);
         parameters.put("batchId", batch);
 
         return new JobParameters(parameters);
     }
+
 
 }
