@@ -1,7 +1,5 @@
 package longbridge.services.bulkTransfers;
 
-import longbridge.models.BulkTransfer;
-import longbridge.repositories.BulkTransferRepo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.Job;
@@ -18,7 +16,9 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import java.util.*;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by ayoade_farooq@yahoo.com on 6/22/2017.
@@ -28,31 +28,18 @@ public class BulkTransferJobLauncher {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(BulkTransferJobLauncher.class);
 
-    private Job job;
+    private final Job job;
 
-    private Job updateJob;
-    private JobLauncher jobLauncher;
-    private BulkTransferRepo transferRepo;
 
-    @Autowired
-    public void setTransferRepo(BulkTransferRepo transferRepo) {
-        this.transferRepo = transferRepo;
-    }
+
+    private final JobLauncher jobLauncher;
 
     @Autowired
-    public void setJob(@Qualifier("customJob") Job job) {
+    public BulkTransferJobLauncher(@Qualifier("customJob") Job job, JobLauncher jobLauncher) {
         this.job = job;
-    }
-
-    @Autowired
-    public void setUpdateJob(@Qualifier("restJob") Job updateJob) {
-        this.updateJob = updateJob;
-    }
-
-    @Autowired
-    public void setJobLauncher(JobLauncher jobLauncher) {
         this.jobLauncher = jobLauncher;
     }
+
 
     @Async
     public void launchBulkTransferJob(String s) throws JobParametersInvalidException, JobExecutionAlreadyRunningException, JobRestartException, JobInstanceAlreadyCompleteException {
@@ -63,39 +50,7 @@ public class BulkTransferJobLauncher {
         LOGGER.info("Stopping Bulk transfer job");
     }
 
-    /**
-     * @throws JobParametersInvalidException
-     * @throws JobExecutionAlreadyRunningException
-     * @throws JobRestartException
-     * @throws JobInstanceAlreadyCompleteException
-     */
-    @Async
-    @Scheduled(cron = "${rest.api.to.database.job.cron}")
-    void launchTransferUpdateJob() throws JobParametersInvalidException, JobExecutionAlreadyRunningException, JobRestartException, JobInstanceAlreadyCompleteException {
-        LOGGER.info("Starting bulkUpdateJob job");
-        List<BulkTransfer> bulkTransfers = transferRepo.findByStatusNotInIgnoreCase(Arrays.asList("S"));
 
-
-        bulkTransfers.stream().filter(Objects::nonNull)
-                .forEach(i -> {
-                    String s = i.getId().toString();
-                    try {
-                        jobLauncher.run(updateJob, newExecution(s));
-                    } catch (JobExecutionAlreadyRunningException e) {
-                        e.printStackTrace();
-                    } catch (JobRestartException e) {
-                        e.printStackTrace();
-                    } catch (JobInstanceAlreadyCompleteException e) {
-                        e.printStackTrace();
-                    } catch (JobParametersInvalidException e) {
-                        e.printStackTrace();
-                    }
-
-                    LOGGER.info("Stopping bulk transfer update job");
-
-                });
-
-    }
 
     private JobParameters newExecution(String s) {
         Map<String, JobParameter> parameters = new HashMap<>();
