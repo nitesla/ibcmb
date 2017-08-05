@@ -722,7 +722,6 @@ public class OpsCorporateController {
             }else{
                 return "/ops/corporate/setup/addauthorizer";
             }
-            return "/ops/corporate/setup/addauthorizer";
         }
         return "/ops/corporate/setup/account";
 
