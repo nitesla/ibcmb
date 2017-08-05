@@ -14,6 +14,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
@@ -95,40 +96,30 @@ public class CorpBeneficiaryController {
 
 
         if (/* service to check if token is enabled comes in here  */
-
                 (setting != null && setting.isEnabled())
                 ){
-
 
             try {
                 String token =request.getParameter("token");
 
                 securityService.performTokenValidation(user.getEntrustId(), user.getEntrustGroup(), token);
             } catch (InternetBankingSecurityException ibse) {
-
                 model.addAttribute("failure", ibse.getMessage());
                 model.addAttribute("beneficiary",corpLocalBeneficiaryDTO);
                 return "corp/beneficiary/localSummary";
             }
-
-
         }
-
-
         try {
             String message = corpLocalBeneficiaryService.addCorpLocalBeneficiary(corpLocalBeneficiaryDTO);
             redirectAttributes.addFlashAttribute("message", message);
         } catch (InternetBankingException e) {
-
             try{
                 redirectAttributes.addFlashAttribute("failure", messages.getMessage(e.getMessage(), null, locale));
             }catch (Exception ex){
                 redirectAttributes.addFlashAttribute("failure", messages.getMessage("beneficiary.add.failure", null, locale));
-
             }
         }
         return "redirect:/corporate/beneficiary";
-
     }
 
     @PostMapping("/foreign")
@@ -136,7 +127,6 @@ public class CorpBeneficiaryController {
         if (result.hasErrors()) {
             return "corp/beneficiary/add";
         }
-
         CorporateUser user = corporateUserService.getUserByName(principal.getName());
         corpInternationalBeneficiaryService.addCorpInternationalBeneficiary(user, corpInternationalBeneficiaryDTO);
         model.addAttribute("success", "Beneficiary added successfully");
@@ -149,6 +139,42 @@ public class CorpBeneficiaryController {
         Beneficiary localBeneficiary = corpLocalBeneficiaryService.getCorpLocalBeneficiary(beneficiaryId);
         model.addAttribute("beneficiary", localBeneficiary);
         return localBeneficiary;
+    }
+
+    @PostMapping("/authenticate")
+    public String delLocBenToken(WebRequest webRequest, Principal principal, RedirectAttributes redirectAttributes){
+        String token = webRequest.getParameter("token");
+        logger.info("this is the ben tokeeen {}", token);
+        String beneficiaryId = webRequest.getParameter("id");
+        Long benefit = Long.parseLong(beneficiaryId);
+        logger.info("this is the benID {}", benefit);
+        if (token != "" && beneficiaryId != "") {
+            try {
+                CorporateUser corporateUser = corporateUserService.getUserByName(principal.getName());
+                boolean result = securityService.performTokenValidation(corporateUser.getEntrustId(), corporateUser.getEntrustGroup(), token);
+                if (result) {
+                    try {
+                        String message = corpLocalBeneficiaryService.deleteCorpLocalBeneficiary(benefit);
+                        redirectAttributes.addFlashAttribute("message", message);
+                        return "redirect:/corporate/beneficiary";
+                    } catch (InternetBankingException e) {
+                        logger.error("International Beneficiary Error", e);
+                        redirectAttributes.addFlashAttribute("failure", e.getMessage());
+                    }
+                    return "redirect:/corporate/beneficiary";
+                } else {
+                    redirectAttributes.addFlashAttribute("failure", "Token Authentication Failed");
+                    return "redirect:/corporate/beneficiary";
+                }
+            } catch (InternetBankingException e) {
+                logger.error("International Beneficiary Error", e);
+                redirectAttributes.addFlashAttribute("failure", e.getMessage());
+                return "redirect:/corporate/beneficiary";
+            }
+        }
+        else {
+            return "redirect:/corporate/beneficiary";
+        }
     }
 
 

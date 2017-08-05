@@ -5,23 +5,36 @@
 <body onload="javascript:var bread = [['Home', '/retail/dashboard'],['Beneficiary Management', '/retail/beneficiary'],['beneficiary list']];currentBar('Beneficiary list');breadCrumb(bread)">
 
 <div layout:fragment="content">
-    <div class="modal fade" id="myModal">
+    <div id="myModal" class="modal fade" role="dialog">
         <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                    <h4 class="modal-title">Confirm delete</h4>
+            <!-- Modal content-->
+            <div class="modal-content no-bd-rad tokenBox" id="tokenmodal">
+                <form id="loginform" th:action="@{/retail/beneficiary/authenticate}" method="POST" >
+                    <input type="hidden" id="myID" name="id"/>
+                <div class="modal-body no-bd-rad">
+                    <h3 class="tokenHeader"><span class='text-danger'>Delete Beneficiary</span>, <span th:text="*{username}" style="text-transform: capitalize">Tolu</span></h3>
+                    <div class="margin-bottom">
+                        <p style="margin-bottom:20px">Enter token to confirm beneficiary delete</p>
+                        <div id="username_div" class="form-group">
+                                <input  type="text" id="token" required name="token" class='my-select tokenInput' placeholder="Token Code" autocomplete="off"/>
+                        </div>
+                        <div id='errorMess' class=" text-danger "></div>
+                        <!--<div id='successMess' class=" text-success "></div>-->
+                    </div>
+                    <div >
+                        <p>Click YES to confirm and NO to abort.</p>
+                    </div>
+
                 </div>
-                <div class="modal-body">
-                    <p>Are you sure that you want to delete this beneficiary?</p>
+                <div class="modal-footer no-bd-top ">
+                    <input type='button' class="btn btn-link less-required token-btn " data-dismiss="modal" value='NO'/>
+                    <input type='submit' class="btn btn-link token-btn required-step" value='YES'/>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="del btn btn-link required-step">Yes</button>
-                    <button type="button" class="btn btn-link less-required" data-dismiss="modal">No</button>
-                </div>
-            </div><!-- /.modal-content -->
-        </div><!-- /.modal-dialog -->
-    </div><!-- /.modal -->
+                </form>
+            </div>
+        </div>
+    </div>
+
     <div class="col-md-12 col-sm-12 ">
                  <a th:href="@{/retail/beneficiary/new}" class="pull-right">Add New Beneficiary</a>
 
@@ -47,7 +60,7 @@
                                     <td th:text="${loc.accountName}"></td>
                                     <td th:text="${loc.accountNumber}"></td>
                                     <td th:text="${loc.beneficiaryBank}"></td>
-                                    <td><a th:id="${loc.id}" onclick="validateDelete(this.id)"><i class="fa fa-trash"></i></a></td>
+                                    <td><a th:id="${loc.id}" onclick="validateDel(this.id)"><i class="fa fa-trash"></i></a></td>
                                 </tr>
                             </tbody>
                         </table>
@@ -88,6 +101,11 @@
 <!-- Page-Level Scripts -->
 <script>
     /*<![CDATA[*/
+var token = "";
+    function validateDel(id) {
+        $("#myModal").modal('show');
+        $('#myID').val(id);
+    }
 
     function validateDelete(id) {
         var ooo = "/retail/beneficiary/"+id+ "/loc/delete";
@@ -101,15 +119,14 @@
         warnBeforeRedirect(ooo);
     }
 
-
-    function warnBeforeRedirect(ooo) {
-
-        $ ("#myModal").modal('show');
+    function warnBeforeRedirect(id) {
+        $("#myModal").modal('show');
         $('.del').on('click', function(){
             window.location.assign(ooo);
         });
 
     }
+
 
     /*]]>*/
 </script>

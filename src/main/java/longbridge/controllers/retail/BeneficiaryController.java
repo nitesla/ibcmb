@@ -17,6 +17,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
@@ -109,13 +110,10 @@ public class BeneficiaryController {
 
         SettingDTO setting = configService.getSettingByName("ENABLE_RETAIL_2FA");
 
-
-
         if (/* service to check if token is enabled comes in here  */
 
                 (setting != null && setting.isEnabled())
                 ){
-
 
             try {
                 String token =request.getParameter("token");
@@ -128,10 +126,7 @@ public class BeneficiaryController {
                 return "cust/beneficiary/localSummary";
             }
 
-
         }
-
-
 
         try {
 
@@ -149,6 +144,43 @@ public class BeneficiaryController {
         }
         return "redirect:/retail/beneficiary";
     }
+
+
+    @PostMapping("/authenticate")
+    public String delLocBenToken(WebRequest webRequest, Principal principal, RedirectAttributes redirectAttributes){
+        String token = webRequest.getParameter("token");
+        logger.info("this is the ben tokeeen {}", token);
+        String beneficiaryId = webRequest.getParameter("id");
+        Long benefit = Long.parseLong(beneficiaryId);
+        logger.info("this is the benID {}", benefit);
+        if (token != "" && beneficiaryId != "") {
+            try {
+                RetailUser retailUser = retailUserService.getUserByName(principal.getName());
+                boolean result = securityService.performTokenValidation(retailUser.getEntrustId(), retailUser.getEntrustGroup(), token);
+                if (result) {
+                    try {
+                        String message = localBeneficiaryService.deleteLocalBeneficiary(benefit);
+                        redirectAttributes.addFlashAttribute("message", message);
+                    } catch (InternetBankingException e) {
+                        logger.error("International Beneficiary Error", e);
+                        redirectAttributes.addFlashAttribute("failure", e.getMessage());
+                    }
+                    return "redirect:/retail/beneficiary";
+                } else {
+                    redirectAttributes.addFlashAttribute("failure", "Token Authentication Failed");
+                    return "redirect:/retail/beneficiary";
+                }
+            } catch (InternetBankingException e) {
+                logger.error("International Beneficiary Error", e);
+                redirectAttributes.addFlashAttribute("failure", e.getMessage());
+                return "redirect:/retail/beneficiary";
+            }
+        }
+        else {
+            return "redirect:/retail/beneficiary";
+        }
+    }
+
 
     @PostMapping("/foreign")
     public String createForeignBeneficiary(@ModelAttribute("internationalBeneficiaryDTO") @Valid InternationalBeneficiaryDTO internationalBeneficiaryDTO, BindingResult result, Model model, RedirectAttributes redirectAttributes, Principal principal) {
