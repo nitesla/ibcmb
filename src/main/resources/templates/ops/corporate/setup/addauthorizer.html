@@ -100,7 +100,8 @@
 
                                             <div class="form-group">
                                                 <div class="class=col-sm-4 col-sm-offset-2" align="left">
-                                                    <a type="submit" th:href="@{/ops/corporates/back/account}" class="btn btn-primary">Previous</a>
+                                                    <a type="submit" th:href="@{/ops/corporates/back/account}" id="back" class="btn btn-primary">Previous</a>
+                                                    <button class="btn btn-primary" type="button" onclick="goBackToAccount()" id="getData">Previous</button>
                                                     <button type="submit" id="button_submit" class="btn btn-primary">
                                                         Next
                                                     </button>
@@ -211,6 +212,7 @@
 
     /*<![CDATA[*/
     $(document).ready(function () {
+        $('#back').hide();
         var counter = 0;
         var t = $('#mytab').DataTable({
             dom: 'rt',
@@ -343,7 +345,27 @@
         });
 
     });
+    function goBackToAccount() {
+        var contactsTab = $('#mytab').DataTable();
+        var data = JSON.stringify(contactsTab.data().toArray());
+//        $("input[name='users']").val(data);
+        $.ajax({
+            type: 'GET',
+            url: '/ops/corporates/back/authorizer/keep',
+            asyn:false,
+//					dataType: 'String',
+            data: {authorizers:data},
+            error: function (data) {
+//                $('#loading-icon').hide();
+                // alert("failure");
+//                $('#sub').disabled();
+            },success: function (data) {
+                console.log("success "+data);
+                $('#back')[0].click();
+            }
 
+        });
+    }
     /*]]>*/
 </script>
 </body>

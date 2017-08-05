@@ -565,18 +565,31 @@ public class OpsCorporateController {
     public String addCorporate(@PathVariable String corpTYpe, Model model) {
 //        logger.info("the corp category {}",corpTYpe);
         CorporateDTO corporateDTO = new CorporateDTO();
+//        if(corpTYpe == ""){
+//            return "/ops/dashboard";
+//        }else
         if(corpTYpe == null){
-            return "/ops/dashboard";
+            return "redirect:/ops/dashboard";
         }else if(corpTYpe.equalsIgnoreCase("1")){
             corporateDTO.setCorporateType("SOLE");
         }
         else if(corpTYpe.equalsIgnoreCase("2")){
             corporateDTO.setCorporateType("MULTI");
         }else {
-            return "/ops/dashboard";
+            return "redirect:/ops/dashboard";
         }
         model.addAttribute("corporate", corporateDTO);
         return "/ops/corporate/setup/new";
+    }
+    @GetMapping("/new")
+    public String addCorporate(Model model) {
+//        logger.info("the corp category {}",corpTYpe);
+        CorporateDTO corporateDTO = new CorporateDTO();
+//        if(corpTYpe == ""){
+//            return "/ops/dashboard";
+//        }else
+//        model.addAttribute("corporate", corporateDTO);
+        return "redirect:/ops/dashboard";
     }
 
     @PostMapping("/new")
@@ -768,10 +781,11 @@ public class OpsCorporateController {
             if (session.getAttribute("corporateRequest") != null) {
                 CorporateRequestDTO corporateRequestDTO = (CorporateRequestDTO) session.getAttribute("corporateRequest");
                 session.removeAttribute("corporateRequest");
+
+
+                corporateRequestDTO.setAuthorizers(authorizerList);
                 session.setAttribute("corporateRequest", corporateRequestDTO);
                 model.addAttribute("corporate", corporateRequestDTO);
-                corporateRequestDTO.setAuthorizers(authorizerList);
-
                 logger.info("Corporate Request DTO " +
                         "{}", corporateRequestDTO.toString());
 
@@ -868,8 +882,7 @@ public class OpsCorporateController {
 
 
     @PostMapping("/rules/new")
-    public String createTransactionRule(WebRequest request, RedirectAttributes redirectAttributes, HttpSession
-            session, Model model, Locale locale) {
+    public String createTransactionRule(WebRequest request, RedirectAttributes redirectAttributes, HttpSession session, Model model, Locale locale) {
 
         String rules = request.getParameter("rules");
 
@@ -978,6 +991,65 @@ public class OpsCorporateController {
         session.removeAttribute("inputedUsers");
         session.setAttribute("inputedUsers", users);
         return "success";
+    }
+    @GetMapping("/back/authorizer/keep")
+    @ResponseBody
+    public String keepAuthorizer(WebRequest request,HttpSession session) {
+        String authorizers = request.getParameter("authorizers");
+        try {
+            ObjectMapper mapper = new ObjectMapper();
+            mapper.configure(JsonParser.Feature.ALLOW_UNQUOTED_FIELD_NAMES, true);
+            List<AuthorizerLevelDTO> authorizerList = mapper.readValue(authorizers, new TypeReference<List<AuthorizerLevelDTO>>() {
+            });
+
+            logger.info("Authorizers: {}", authorizerList.toString());
+            session.removeAttribute("authorizerLevels");
+            session.setAttribute("authorizerLevels", authorizerList);
+
+            if (session.getAttribute("corporateRequest") != null) {
+                CorporateRequestDTO corporateRequestDTO = (CorporateRequestDTO) session.getAttribute("corporateRequest");
+                session.removeAttribute("corporateRequest");
+
+                corporateRequestDTO.setAuthorizers(authorizerList);
+                session.setAttribute("corporateRequest", corporateRequestDTO);
+                logger.info("Corporate Request DTO " +
+                        "{}", corporateRequestDTO.toString());
+
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return "success";
+    }
+ @GetMapping("/back/rule/keep")
+    @ResponseBody
+    public String keepRule(WebRequest request,HttpSession session) {
+     String rules = request.getParameter("rules");
+
+     logger.info("Transaction rules are: {}", rules);
+
+
+     List<CorpTransferRuleDTO> transferRules = null;
+     ObjectMapper mapper = new ObjectMapper();
+     mapper.configure(JsonParser.Feature.ALLOW_UNQUOTED_FIELD_NAMES, true);
+     try {
+         transferRules = mapper.readValue(rules, new TypeReference<List<CorpTransferRuleDTO>>() {
+         });
+         session.removeAttribute("rules");
+         session.setAttribute("rules",rules);
+         logger.debug("Corp Transfer Rules: {}", transferRules.toString());
+     } catch (IOException e) {
+         e.printStackTrace();
+     }
+     if(session.getAttribute("corporateRequest")!=null) {
+         CorporateRequestDTO corporateRequestDTO = (CorporateRequestDTO) session.getAttribute("corporateRequest");
+         corporateRequestDTO.setCorpTransferRules(transferRules);
+         session.removeAttribute("corporateRequest");
+         session.setAttribute("corporateRequest",corporateRequestDTO);
+         logger.debug("Corporate Reequest: {}",corporateRequestDTO);
+     }
+
+     return "success";
     }
 
     @PostMapping("/users/sole/create")

@@ -100,6 +100,7 @@
                                         <div class="form-group">
                                             <div class="class=col-sm-4 col-sm-offset-2" align="left">
                                                 <a class="btn btn-primary" th:href="@{/ops/corporates/back/authorizer}" id="back">Previous</a>
+                                                <button class="btn btn-primary" type="button" onclick="goBackToRule()" id="getData">Previous</button>
                                                 <button type="submit" id="button_submit" class="btn btn-primary">Next
                                                 </button>
                                             </div>
@@ -240,6 +241,7 @@
 
     /*<![CDATA[*/
     $(document).ready(function () {
+        $('#back').hide();
         var rule = [[${rules}]];
         var counter = 0;
         var t = $('#mytab').DataTable({
@@ -493,7 +495,27 @@
 
         }
     });
+    function goBackToRule() {
+        var contactsTab = $('#mytab').DataTable();
+        var data = JSON.stringify(contactsTab.data().toArray());
+//        $("input[name='users']").val(data);
+        $.ajax({
+            type: 'GET',
+            url: '/ops/corporates/back/rule/keep',
+            asyn:false,
+//					dataType: 'String',
+            data: {rules:data},
+            error: function (data) {
+//                $('#loading-icon').hide();
+                // alert("failure");
+//                $('#sub').disabled();
+            },success: function (data) {
+                console.log("success "+data);
+                $('#back')[0].click();
+            }
 
+        });
+    }
     /*]]>*/
 </script>
 </body>

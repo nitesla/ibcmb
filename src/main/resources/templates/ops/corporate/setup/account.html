@@ -93,7 +93,7 @@
                                                     style="color: red"></span></label>
                                             <div class="col-sm-6" style="max-height: 250px; overflow-y: scroll;">
 
-                                                <!--<input type="checkbox" class="checkAll"/>-->
+                                                <input type="checkbox" id="checkAll"/> Check all
                                                 <p th:each="account,index: ${accounts}">
                                                     <input type="hidden" id="accountSize" th:value="${index.size}"/>
                                                     <label class="checkbox-inline">
@@ -101,17 +101,17 @@
                                                         <input type="checkbox" class="accountAttached"
                                                                onclick="noCorpAccountSelected()"
                                                                th:class="account+${index.index}"
-                                                               th:id="acct+${account.accountNumber}" th:name="accounts"
+                                                               th:id="acct+${account.accountNumber}" name="accounts"
                                                                th:value="${account.accountNumber}"/>
                                                         <span th:text="${account.accountNumber}+' - '+${account.accountName}"></span>
-                                                            <span th:text="' - '+${account.schemeType}" th:name="acctType"></span>
+                                                            <span th:text="' - '+${account.schemeType}" name="acctType"></span>
                                                         </span>
                                                         <span th:if="${selectedAccounts} != 'null'">
                                                         <span th:if="${#lists.contains(selectedAccounts,account.accountNumber)}">
                                                         <input type="checkbox" checked class="accountAttached"
                                                                onclick="noCorpAccountSelected()"
                                                                th:class="account+${index.index}"
-                                                               th:id="acct+${account.accountNumber}" th:name="accounts"
+                                                               th:id="acct+${account.accountNumber}" name="accounts"
                                                                th:value="${account.accountNumber}"/>
                                                         <span th:text="${account.accountNumber}+' - '+${account.accountName}"></span>
                                                             <span th:text="' - '+${account.schemeType}" th:name="acctType"></span>
@@ -120,7 +120,7 @@
                                                         <input type="checkbox" class="accountAttached"
                                                                onclick="noCorpAccountSelected()"
                                                                th:class="account+${index.index}"
-                                                               th:id="acct+${account.accountNumber}" th:name="accounts"
+                                                               th:id="acct+${account.accountNumber}" name="accounts"
                                                                th:value="${account.accountNumber}"/>
                                                         <span th:text="${account.accountNumber}+' - '+${account.accountName}"></span>
                                                             <span th:text="' - '+${account.schemeType}" th:name="acctType"></span>
@@ -165,16 +165,23 @@
         <!-- /footer content -->
     </div>
 </div>
-<script>
+<script type="text/javascript" class="init" th:inline="javascript">
     $(document).ready(function () {
 //        var selectedAcct =  $('#selectedAccounts').val();
-$('.checkAll:button').toggle(function(){
-        $('input:checkbox').attr('checked','checked');
-        $(this).val('uncheck all');
-    },function(){
-        $('input:checkbox').removeAttr('checked');
-        $(this).val('check all');
-    })
+        $("#checkAll").click(function () {
+            if ($(this).is(":checked")) {
+
+//                console.log(''+$("input[name='accounts']").is(":checked"));
+                if (!$("input[name='accounts']").is(":checked")) {
+                    $("input[name='accounts']").prop("checked", true);
+                }
+            }else{
+                $("input[name='accounts']").prop("checked", false);
+
+            }
+
+
+        });
 //        if(selectedAcct != ''){
 //            selectedAcct =  selectedAcct.replace('[','');
 //            selectedAcct =  selectedAcct.replace(']','');
