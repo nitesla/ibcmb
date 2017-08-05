@@ -58,3 +58,4 @@ public class BulkTransferWriter implements ItemWriter<TransferDTO> {
 
     }
 }
+

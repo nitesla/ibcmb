@@ -30,7 +30,7 @@
                             <div class="form-group">
                                 <label>Beneficiary</label>
                                 <select name="beneficiary" class="form-control">
-                                    <option th:each="beneficiary : ${beneficiaries}" th:value="${beneficiary.id}" th:text="${beneficiary.accountName}"></option>
+                                    <option th:each="beneficiary : ${beneficiaries}" th:value="${beneficiary.id}" th:text="${beneficiary.preferredName}"></option>
                                 </select>
                             </div>
                             <div class="form-group">

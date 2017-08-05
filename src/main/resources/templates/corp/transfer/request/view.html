@@ -16,9 +16,11 @@
         <div class="col-xs-12 no-pad-lef  no-mt no-bd  alert">
             <div class="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
                         <div class="btn-group" role="group" aria-label="First group">
+
                             <a type="button" class="btn bt-select btn-default bt-link-act"
                                th:href="@{/corporate/transfer/index/authorizations}" disabled="disabled"><i
                                     class="fa fa-eye"></i> View</a>
+
                         </div>
                     </div>
                     <br/>
@@ -31,8 +33,10 @@
                             <td>Beneficiary</td>
                             <td>Bank</td>
                             <td>Amount</td>
+
                             <td>Date</td>
                             <td>Status</td>
+
                             </thead>
                             <tbody>
 
@@ -76,6 +80,7 @@
             "ajax": "/corporate/transfer/requests/all",
             "dom": 'T<"clear">frtlp',
             "columns": [
+
                 {"data": "transferType"},
                 {"data": "beneficiaryAccountName"},
                 {"data": "financialInstitution.institutionName"},
@@ -99,6 +104,7 @@
                 }
             }]
         });
+
 
         table.on('select', function () {
             if (table.rows({

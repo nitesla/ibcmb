@@ -212,15 +212,9 @@ public class AdminUserServiceImpl implements AdminUserService {
             String oldStatus = user.getStatus();
             String newStatus = "A".equals(oldStatus) ? "I" : "A";
             user.setStatus(newStatus);
-            String fullName = user.getFirstName() + " " + user.getLastName();
-            if ((oldStatus == null) || ("I".equals(oldStatus)) && "A".equals(newStatus)) {
-                String password = passwordPolicyService.generatePassword();
-                user.setPassword(passwordEncoder.encode(password));
-                user.setExpiryDate(new Date());
-                passwordPolicyService.saveAdminPassword(user);
-                AdminUser admin = adminUserRepo.save(user);
-                sendActivateMessage(admin, fullName, user.getUserName(), password);
 
+            if ((oldStatus == null) || ("I".equals(oldStatus)) && "A".equals(newStatus)) {
+                sendCredentialNotification(user);
             } else {
                 user.setStatus(newStatus);
                 adminUserRepo.save(user);
@@ -489,6 +483,15 @@ public class AdminUserServiceImpl implements AdminUserService {
         Page<AdminUserDTO> pageImpl = new PageImpl<AdminUserDTO>(dtOs, pageDetails, t);
         return pageImpl;
     }
+    public void  sendCredentialNotification(AdminUser user){
+        String fullName = user.getFirstName() + " " + user.getLastName();
+        String password = passwordPolicyService.generatePassword();
+        user.setPassword(passwordEncoder.encode(password));
+        user.setExpiryDate(new Date());
+        passwordPolicyService.saveAdminPassword(user);
+        AdminUser admin = adminUserRepo.save(user);
+        sendActivateMessage(admin, fullName, user.getUserName(), password);
 
+    }
 
 }

@@ -9,13 +9,9 @@ import longbridge.dtos.RetailUserDTO;
 import longbridge.exception.InternetBankingException;
 import longbridge.exception.InternetBankingSecurityException;
 import longbridge.forms.RegistrationForm;
-import longbridge.forms.RetrieveUsernameForm;
-import longbridge.models.Account;
-import longbridge.models.Email;
 import longbridge.models.RetailUser;
 import longbridge.models.UserType;
 import longbridge.services.*;
-import longbridge.utils.StringUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -133,21 +129,22 @@ public class UserRegController {
         return customerId;
     }
 
-    @GetMapping("/rest/retail/accountname/{accountNumber}")
-    public @ResponseBody String getAccountNameFromNumber(@PathVariable String accountNumber){
-        String customerId = "";
-    	logger.info("Account nUmber : " + accountNumber);
-        Account account = accountService.getAccountByAccountNumber(accountNumber);
-        if (account != null){
-            customerId = account.getCustomerId();
-            logger.info("Account number : " + customerId);
-        }else {
-            //nothing
-            customerId = "";
-        }
-        logger.info("cif i {}",customerId);
-        return customerId;
-    }
+//    @GetMapping("/rest/retail/accountname/{accountNumber}")
+//    public @ResponseBody String getAccountNameFromNumber(@PathVariable String accountNumber){
+//        String customerId = "";
+//        String userEmail = "";
+//    	logger.info("Account nUmber : " + accountNumber);
+//        Account account = accountService.getAccountByAccountNumber(accountNumber);
+//        if (account != null){
+//            customerId = account.getCustomerId();
+//            logger.info("Account number : " + customerId);
+//        }else {
+//            //nothing
+//            customerId = "";
+//        }
+//        logger.info("cif i {}",customerId);
+//        return customerId;
+//    }
 
     @GetMapping("/rest/secQues/{cifId}")
     public @ResponseBody List<String> getSecQuestionFromNumber(@PathVariable String cifId, HttpSession session){
@@ -411,73 +408,73 @@ public class UserRegController {
     }
 
 
-    @GetMapping("/forgot/username")
-    public String showForgotUsername(Model model) {
-        logger.info("forget username 2");
-        RetrieveUsernameForm retrieveUsernameForm= new RetrieveUsernameForm();
-        retrieveUsernameForm.step = "1";
-        model.addAttribute("retUsernameForm", retrieveUsernameForm);
-        return "cust/forgotusername";
-    }
-
-    @PostMapping("/forgot/username")
-    public
-    @ResponseBody
-    String forgotUsername(WebRequest webRequest) {
-        Iterator<String> iterator = webRequest.getParameterNames();
-logger.info("forget username");
-        while(iterator.hasNext()){
-            logger.info(iterator.next());
-        }
+//    @GetMapping("/forgot/username")
+//    public String showForgotUsername(Model model) {
+//        logger.info("forget username 2");
+//        RetrieveUsernameForm retrieveUsernameForm= new RetrieveUsernameForm();
+//        retrieveUsernameForm.step = "1";
+//        model.addAttribute("retUsernameForm", retrieveUsernameForm);
+//        return "cust/forgotusername";
+//    }
+//
+//    @PostMapping("/forgot/username")
+//    public
+//    @ResponseBody
+//    String forgotUsername(WebRequest webRequest) {
+//        Iterator<String> iterator = webRequest.getParameterNames();
+//logger.info("forget username");
+//        while(iterator.hasNext()){
+//            logger.info(iterator.next());
+//        }
+////
+////
+////        String accountNumber = webRequest.getParameter("acct");
+////        String securityQuestion = webRequest.getParameter("securityQuestion");
+////        String securityAnswer = webRequest.getParameter("securityAnswer");
+//        String customerId = webRequest.getParameter("customerId");
+//        try {
+//            if ("".equals(customerId) || customerId == null) {
+//                logger.error("Account Number not valid");
+//                return "false";
+//            }
+//
+//            RetailUser user = retailUserService.getUserByCustomerId(customerId);
+//
+//            //confirm security question is correct
+//            String secAnswer="";
+//            Map<String, List<String>> qa = securityService.getUserQA(user.getEntrustId(), user.getEntrustGroup());
+//            //List<String> sec = null;
+//            if (qa != null){
+////                List<String> questions= qa.get("questions");
+//                List<String> answers= qa.get("answers");
+//                String result = StringUtil.compareAnswers(webRequest,answers);
+////                    secAnswer = answers.stream().filter(Objects::nonNull).findFirst().orElse("");
+//
+//                if (result.equalsIgnoreCase("true")){
+//                    logger.debug("User Info {}:", user.getUserName());
+//                    //Send Username to Email
+//                    Email email = new Email.Builder()
+//                            .setRecipient(user.getEmail())
+//                            .setSubject(messageSource.getMessage("retrieve.username.subject",null,locale))
+//                            .setBody(String.format(messageSource.getMessage("retrieve.username.message",null,locale),user.getFirstName(), user.getUserName()))
+//                            .build();
+//                    mailService.send(email);
+//                    return "true";
+//                }
+//
+//            }else {
+//                return "false";
+//            }
 //
 //
-//        String accountNumber = webRequest.getParameter("acct");
-//        String securityQuestion = webRequest.getParameter("securityQuestion");
-//        String securityAnswer = webRequest.getParameter("securityAnswer");
-        String customerId = webRequest.getParameter("customerId");
-        try {
-            if ("".equals(customerId) || customerId == null) {
-                logger.error("Account Number not valid");
-                return "false";
-            }
-
-            RetailUser user = retailUserService.getUserByCustomerId(customerId);
-
-            //confirm security question is correct
-            String secAnswer="";
-            Map<String, List<String>> qa = securityService.getUserQA(user.getEntrustId(), user.getEntrustGroup());
-            //List<String> sec = null;
-            if (qa != null){
-//                List<String> questions= qa.get("questions");
-                List<String> answers= qa.get("answers");
-                String result = StringUtil.compareAnswers(webRequest,answers);
-//                    secAnswer = answers.stream().filter(Objects::nonNull).findFirst().orElse("");
-
-                if (result.equalsIgnoreCase("true")){
-                    logger.debug("User Info {}:", user.getUserName());
-                    //Send Username to Email
-                    Email email = new Email.Builder()
-                            .setRecipient(user.getEmail())
-                            .setSubject(messageSource.getMessage("retrieve.username.subject",null,locale))
-                            .setBody(String.format(messageSource.getMessage("retrieve.username.message",null,locale),user.getFirstName(), user.getUserName()))
-                            .build();
-                    mailService.send(email);
-                    return "true";
-                }
-
-            }else {
-                return "false";
-            }
-
-
-
-        }catch (InternetBankingException e){
-            return "false";
-        }
-
-        return "false";
-    }
-
+//
+//        }catch (InternetBankingException e){
+//            return "false";
+//        }
+//
+//        return "false";
+//    }
+//
 
 //
 //    @PostMapping("/token/authenticate")

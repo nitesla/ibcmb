@@ -37,6 +37,8 @@ public class Corporate extends AbstractEntity implements PrettySerializer{
     private Date createdOnDate;
     private String bvn;
 
+    @OneToMany(mappedBy = "corporate")
+    private List<BulkTransfer> transfers;
 
 
     @OneToMany
@@ -68,6 +70,14 @@ public class Corporate extends AbstractEntity implements PrettySerializer{
 
     public void setAccounts(List<Account> accounts) {
         this.accounts = accounts;
+    }
+
+    public List<BulkTransfer> getTransfers() {
+        return transfers;
+    }
+
+    public void setTransfers(List<BulkTransfer> transfers) {
+        this.transfers = transfers;
     }
 
     public Collection<CorpLimit> getCorpLimits() {

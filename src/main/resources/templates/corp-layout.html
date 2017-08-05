@@ -408,14 +408,16 @@
             /*]]>*/
         </script>
         <script th:inline='javascript'>
+            /*<![CDATA[*/
             $.sessionTimeout({
                 keepAliveUrl: '',
                 logoutUrl: '/corporate/logout',
                 redirUrl: '/corporate/logout',
-                warnAfter: null,
-                redirAfter: 10000,
+                warnAfter: [[${timeOut}]],
+                redirAfter: 15000,
                 countdownBar: true
             });
+            /*]]>*/
         </script>
 
     </footer>
@@ -425,4 +427,5 @@
 </th:block>
 
 </body>
+
 </html>

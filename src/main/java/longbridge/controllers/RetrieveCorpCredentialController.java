@@ -1,6 +1,5 @@
 package longbridge.controllers;
 
-import longbridge.api.CustomerDetails;
 import longbridge.exception.InternetBankingException;
 import longbridge.exception.PasswordException;
 import longbridge.exception.PasswordMismatchException;
@@ -8,9 +7,11 @@ import longbridge.exception.PasswordPolicyViolationException;
 import longbridge.forms.CustResetPassword;
 import longbridge.forms.ResetPasswordForm;
 import longbridge.forms.RetrieveUsernameForm;
-import longbridge.models.*;
+import longbridge.models.Account;
+import longbridge.models.Corporate;
+import longbridge.models.CorporateUser;
+import longbridge.models.Email;
 import longbridge.repositories.CorporateUserRepo;
-import longbridge.repositories.RetailUserRepo;
 import longbridge.services.*;
 import longbridge.utils.StringUtil;
 import org.apache.commons.lang3.StringUtils;
@@ -23,12 +24,18 @@ import org.springframework.mail.MailException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpSession;
-import java.util.*;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 import static longbridge.utils.StringUtil.compareAnswers;
 
@@ -352,6 +359,7 @@ public @ResponseBody String getSecAns(WebRequest webRequest, HttpSession session
         userDetails[0] = "";
         userDetails[1] = "";
         Account account = accountService.getAccountByAccountNumber(accountNumber);
+        logger.info("this is the acc corpp ", account);
         if (account != null){
             customerId = account.getCustomerId();
             Corporate corporate = corporateService.getCorporateByCustomerId(customerId);

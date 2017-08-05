@@ -342,7 +342,7 @@
             function ok(html) {
                 $modal
                     .find('.' + MODAL_BODY)
-                    .html(data.success ? data.success(html) : html);
+                    .html(data.success ? data.success({data1: html}) : html);
 
                 return dfd.resolve($modal);
             }

@@ -8,7 +8,7 @@
     <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css"/>
     <link rel="stylesheet" type="text/css" href="css/dataTables.bootstrap.css"/>
 </head>-->
-<body onload="javascript:var bread = [['Home', '/corporate/dashboard'],['Bulk transfer','/corporate/transfer/interbank']];currentBar('bulk transfer');breadCrumb(bread)">
+<body onload="currentBar('Bulk Transfer')">
 
 <div layout:fragment="content">
     <div class="col-md-5 col-sm-5 ">
@@ -81,8 +81,16 @@
                 "ajax": "/corporate/transfer/alltransfers",
                 "dom": 'T<"clear">frtlp',
                 "columns": [
-                    { "data": "debitAccount" },
-                    { "data": "requestDate" },
+                    { "data": "customerAccountNumber" },
+                    { "data": "tranDate" ,
+                        type: "date",
+                        render: function(data) {
+                            function pad(s) { return (s < 10) ? '0' + s : s; }
+                            var d = new Date(data);
+                            return [pad(d.getDate()), pad(d.getMonth()+1), d.getFullYear()].join('/');
+                        }
+
+                    },
                     { "data": "status" }
                 ] });
 

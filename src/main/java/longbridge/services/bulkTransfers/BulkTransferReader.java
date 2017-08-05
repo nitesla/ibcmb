@@ -114,3 +114,4 @@ class BulkTransferReader implements ItemReader<TransferDTO>, InitializingBean {
 
     }
 }
+
