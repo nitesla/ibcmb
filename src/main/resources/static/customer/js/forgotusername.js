@@ -6,12 +6,13 @@ var secAnswer ="";
  * @param accountNumber the account number to check
  */
 function validateAccountNo(accountNumber){
-
+ $('#myLoader').modal('show');
     var secQues;
     $.ajax({
         type:'GET',
         url:"/rest/retail/accountname/"+accountNumber,
         async:false,
+        cache:false,
         success:function(data1){
             customerId = ''+String(data1);
             if(customerId == ""){
@@ -26,6 +27,7 @@ function validateAccountNo(accountNumber){
             }
         }
     });
+    
 
     console.log(customerId);
 
@@ -36,12 +38,14 @@ function validateAccountNo(accountNumber){
             url: "/rest/secQues/"+customerId,
             type: 'GET',
             async: false,
+            cache:false,
             success:function(data2){
                 secQues = ''+String(data2);
                 // console.log(secQues);
                 if(data2 == null ){
                     document.getElementById("errorMess").textContent="Could not get Security Question from server, please try again.";
                     $('#myModalError').modal('show');
+                     $('#myLoader').modal('hide');
 
                 }else{
                     console.log('security questn 1 ' +$('#noOfSecQn').val());
@@ -60,6 +64,7 @@ function validateAccountNo(accountNumber){
                     noOfQs = data2.length;
                     $('input[name=noOfSecQn]').val(data2.length);
                     console.log('security questn ' +$('#noOfSecQn').val());
+                     $('#myLoader').modal('hide');
                 }
             }
         })
@@ -76,12 +81,13 @@ function validateAccountNo(accountNumber){
 
 function validateSecAnswer(secAnswer){
     // var customerId = $('#customerId').val();
-
+ $('#myLoader').modal('show');
     console.log('customer id '+customerId);
     var result = '';
     $.ajax({
         type:'GET',
         url:"/rest/secAns/cifId",
+        cache:false,
         data: {customerId : customerId,secAnswers:secAnswer},
         async:false,
         success:function(data1){
@@ -97,10 +103,13 @@ function validateSecAnswer(secAnswer){
                 //valid account number
                 // console.log("whether ERROR"+data1);
                 document.getElementById("errorMess").textContent=data1;
+                 $('#myLoader').modal('hide');
                 $('#myModalError').modal('show');
             }
         }
     });
+
+    
     console.log("the result after comparism 2"+result);
 
     if(result == "true"){
@@ -127,9 +136,11 @@ console.log("send  usernammec "+customerId);
                 //alert(data+" return ");
                 //callback methods go right here
                 if(data==="true"){
+                     $('#myLoader').modal('hide');
                     $('#returnValue').val(returnValue);
                     returnValue = true;
                 }else {
+                     $('#myLoader').modal('hide');
                     document.getElementById("errorMess").textContent="Failed to send username, please try again later.";
                     $('#myModalError').modal('show');
                     $('#returnValue').val(returnValue);
@@ -138,7 +149,9 @@ console.log("send  usernammec "+customerId);
             }
         });
     });
+    
     $('#reg-form').submit();
+    $('#myLoader').modal('hide');
     //returnValue = $('#returnValue').val();
     //alert(returnValue);
     //return Boolean(returnValue);
@@ -204,6 +217,7 @@ form.children("div").steps({
             console.log("Current step is the change password step");
             //form.submit();
             var i = 0;
+            secAnswer = "";
             for(var i = 0;i<parseInt(noOfQs);i++){
                 // console.log("answer "+$('#securityAnswer'+i).val());
                 if(i ===0){

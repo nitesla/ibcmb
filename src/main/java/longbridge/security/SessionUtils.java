@@ -15,6 +15,8 @@ import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpSession;
 import java.util.Locale;
@@ -110,6 +112,18 @@ public class SessionUtils {
 
         }
 
+    }
+    public void clearSession() {
+        try {
+            ServletRequestAttributes attr = (ServletRequestAttributes)
+                    RequestContextHolder.currentRequestAttributes();
+
+            HttpSession session = attr.getRequest().getSession(false);
+            if (session != null)
+                session.invalidate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 }

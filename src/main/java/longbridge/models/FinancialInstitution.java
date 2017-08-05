@@ -9,13 +9,12 @@ import longbridge.utils.PrettySerializer;
 import org.hibernate.annotations.Where;
 import org.hibernate.envers.Audited;
 
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
-
 import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * The {@code FinancialInstitution} class model contains details of a bank or any
@@ -27,7 +26,6 @@ import javax.persistence.UniqueConstraint;
 @Audited(withModifiedFlag=true)
 @Where(clause ="del_Flag='N'" )
 @Table(uniqueConstraints=@UniqueConstraint(columnNames={"institutionCode","institutionType","deletedOn"}))
-
 public class FinancialInstitution extends AbstractEntity implements PrettySerializer{
 
 

@@ -1,6 +1,9 @@
 package longbridge.controllers.corporate;
 
-import longbridge.dtos.*;
+import longbridge.dtos.CodeDTO;
+import longbridge.dtos.CorporateDTO;
+import longbridge.dtos.CorporateUserDTO;
+import longbridge.dtos.RoleDTO;
 import longbridge.exception.DuplicateObjectException;
 import longbridge.exception.InternetBankingException;
 import longbridge.exception.PasswordException;
@@ -24,9 +27,9 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.security.Principal;
 import java.util.Iterator;
@@ -109,14 +112,14 @@ public class CorpUserManagementController {
     public String addUser(Principal principal, Model model){
         CorporateUser corporateUser = corporateUserService.getUserByName(principal.getName());
         CorporateDTO corporate = corporateService.getCorporate(corporateUser.getCorporate().getId());
-        CorpCorporateUserDTO corporateUserDTO = new CorpCorporateUserDTO();
+        CorporateUserDTO corporateUserDTO = new CorporateUserDTO();
         model.addAttribute("corporateUser", corporateUserDTO);
         model.addAttribute("corporate", corporate);
         return "corp/user/add";
     }
 
     @PostMapping
-    public String createUser(@ModelAttribute("corporateUser") @Valid CorpCorporateUserDTO corporateUserDTO, BindingResult result, HttpSession session, Model model, RedirectAttributes redirectAttributes, Locale locale) throws Exception {
+    public String createUser(@ModelAttribute("corporateUser") @Valid CorporateUserDTO corporateUserDTO, BindingResult result, WebRequest webRequest, Model model, RedirectAttributes redirectAttributes, Locale locale) throws Exception {
 
         if (result.hasErrors()) {
             return "corp/user/add";
@@ -126,7 +129,6 @@ public class CorpUserManagementController {
             String message = corporateUserService.addUserFromCorporateAdmin(corporateUserDTO);
             redirectAttributes.addFlashAttribute("message", message);
             return "redirect:/corporate/users/";
-
         } catch (DuplicateObjectException doe) {
             result.addError(new ObjectError("error", doe.getMessage()));
             logger.error("Error creating corporate user {}", corporateUserDTO.getUserName(), doe);
