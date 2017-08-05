@@ -617,6 +617,7 @@ public class OpsCorporateController {
         corporateRequestDTO.setCorporateType(corporate.getCorporateType());
         corporateRequestDTO.setCustomerName(customerDetails.getCustomerName());
         corporate.setCustomerName(customerDetails.getCustomerName());
+        corporate.setRcNumber(customerDetails.getRcNo());
         session.setAttribute("corporateRequest", corporateRequestDTO);
 
         logger.info("Corporate Request DTO " +
