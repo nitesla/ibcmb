@@ -8,6 +8,7 @@ import longbridge.forms.AlertPref;
 import longbridge.forms.CustChangePassword;
 import longbridge.forms.CustResetPassword;
 import longbridge.models.Corporate;
+import longbridge.models.CorporateRole;
 import longbridge.models.CorporateUser;
 import longbridge.models.User;
 import org.springframework.data.domain.Page;

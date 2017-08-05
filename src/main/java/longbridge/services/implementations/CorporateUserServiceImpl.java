@@ -1,6 +1,6 @@
 package longbridge.services.implementations;
 
-import longbridge.dtos.CorporateRoleDTO;
+import longbridge.dtos.CorpCorporateUserDTO;
 import longbridge.dtos.CorporateUserDTO;
 import longbridge.dtos.SettingDTO;
 import longbridge.exception.*;
@@ -831,37 +831,40 @@ public class CorporateUserServiceImpl implements CorporateUserService {
         return corporateUser;
     }
 
-
     @Override
-    public String addUserFromCorporateAdmin(CorporateUserDTO user) throws InternetBankingException {
-        logger.info("Corporate USER DTO >>>>>>>>>> "+user);
-        CorporateUser corporateUser = convertDTOToEntity(user);
-        logger.info("Corporate USER>>>>>>>>>> "+ corporateUser);
-
-
+    public String addAuthorizer(CorporateUserDTO user) throws InternetBankingException {
         try {
+            CorporateUser corporateUser = new CorporateUser();
+            corporateUser.setFirstName(user.getFirstName());
+            corporateUser.setLastName(user.getLastName());
+            corporateUser.setUserName(user.getUserName());
+            corporateUser.setEmail(user.getEmail());
             corporateUser.setStatus("A");
-
-            corporateUser.setRole(roleRepo.findOne(Long.parseLong(user.getRoleId())));
-
-            corporateUser.setIsFirstTimeLogon("Y");
-            corporateUser.setUserType(UserType.CORPORATE);
-
+            corporateUser.setPhoneNumber(user.getPhoneNumber());
+            corporateUser.setCreatedOnDate(new Date());
+            corporateUser.setCorpUserType(CorpUserType.AUTHORIZER);
+            corporateUser.setEntrustId(user.getUserName());
+            SettingDTO settingDTO = configService.getSettingByName("DEF_ENTRUST_CORP_GRP");
+            corporateUser.setEntrustGroup(settingDTO.getValue());
+            Role role = roleRepo.findOne(Long.parseLong(user.getRoleId()));
+            corporateUser.setRole(role);
+            Corporate corp = corporateRepo.findOne(Long.parseLong(user.getCorporateId()));
+            corporateUser.setCorporate(corp);
+            CorporateUser corpUser = corporateUserRepo.save(corporateUser);
             if (user.isAuthorizer()){
-                corporateUser.setCorpUserType(CorpUserType.AUTHORIZER);
-
-                corpUserVerificationService.saveAuthorizer(corporateUser, "ADD_CORPORATE_USER", "Operation to add Corporate Authorizer" );
-            }else {
-                corporateUser.setCorpUserType(CorpUserType.INITIATOR);
-                corpUserVerificationService.saveInitiator(corporateUser, "ADD_CORPORATE_USER", "Operation to add user" );
+                if (user.getCorporateRoleId() != null) {
+                    addCorporateUserToAuthorizerRole(corporateUser, user.getCorporateRoleId());
+                }
             }
+            createUserOnEntrustAndSendCredentials(corpUser);
+
+            logger.info("New corporate user {} created", corporateUser.getUserName());
             return messageSource.getMessage("user.add.success", null, locale);
-        }catch (VerificationInterruptedException ib){
-            return ib.getMessage();
-        }catch (VerificationException e){
-            throw new InternetBankingException(messageSource.getMessage("failed.user.add", null, locale));
         }catch (InternetBankingException ibe){
             throw ibe;
+        }catch (Exception e){
+            logger.error(e.getMessage());
+            throw new InternetBankingException(e.getMessage());
         }
     }
 
@@ -915,14 +918,15 @@ public class CorporateUserServiceImpl implements CorporateUserService {
             corporateUser.setCorporate(corp);
             CorporateUser corpUser = corporateUserRepo.save(corporateUser);
 
-//            if (user.isAuthorizer()){
-//                if (user.getCorporateRoleId() != null) {
-//                    CorporateRole corporateRole = getCorporateUserAuthorizerRole(corporateUser);
-//                    if(user.getCorporateRoleId().equals(corporateRole.getId())){
-//
-//                    }
-//                }
-//            }
+            if (user.isAuthorizer()){
+                if (user.getCorporateRoleId() != null) {
+                    CorporateRole corporateRole = getCorporateUserAuthorizerRole(corporateUser);
+                    if(!user.getCorporateRoleId().equals(corporateRole.getId())){
+                        changeCorporateUserAuthorizerRole(corporateUser, corporateRole, user.getCorporateRoleId());
+                        addCorporateUserToAuthorizerRole(corporateUser, user.getCorporateRoleId());
+                    }
+                }
+            }
 
             createUserOnEntrustAndSendCredentials(corpUser);
 
@@ -953,12 +957,9 @@ public class CorporateUserServiceImpl implements CorporateUserService {
             String oldStatus = corporateUserDTO.getStatus();
             String newStatus = "A".equals(oldStatus) ? "I" : "A";
             corporateUser.setStatus(newStatus);
-            corpUserVerificationService.saveInitiator(corporateUser, "UPDATE_CORP_USER_STATUS", "Operation to activate or deactivate user" );
-            return messageSource.getMessage("user.add.success", null, locale);
-        }catch (VerificationInterruptedException ib){
-            return ib.getMessage();
-        }catch (VerificationException e){
-            throw new InternetBankingException(messageSource.getMessage("failed.user.add", null, locale));
+            corporateUserRepo.save(corporateUser);
+            return messageSource.getMessage("user.update.success", null, locale);
+
         }catch (InternetBankingException ibe){
             throw ibe;
         }catch (Exception e){

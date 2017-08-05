@@ -530,7 +530,7 @@ public class CorpUserVerificationServiceImpl implements CorpUserVerificationServ
 
         CorpUserVerification corpUserVerification  =corpUserVerificationRepo.findOne(corpUserVerificationDTO.getId());
         logger.info(">>>>>>>>>>" + corpUserVerification.getOperation());
-        if(corpUserVerification.getOperation().equals("UPDATE_CORP_USER_STATUS")){
+        if(corpUserVerification.getOperation().equals("UPDATE_USER_FROM_CORPORATE_ADMIN")){
 
             logger.info("Inside Advisor for Post Corporate user activation...");
 
