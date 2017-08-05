@@ -1,17 +1,23 @@
 package longbridge.services.implementations;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.module.SimpleModule;
 import longbridge.dtos.VerificationDTO;
 import longbridge.exception.InternetBankingException;
 import longbridge.exception.VerificationException;
+import longbridge.exception.VerificationInterruptedException;
 import longbridge.models.*;
 import longbridge.repositories.AdminUserRepo;
+import longbridge.repositories.CorporateUserRepo;
 import longbridge.repositories.OperationsUserRepo;
 import longbridge.repositories.VerificationRepo;
 import longbridge.security.userdetails.CustomUserPrincipal;
 import longbridge.services.MailService;
 import longbridge.services.VerificationService;
 import longbridge.utils.DateFormatter;
+import longbridge.utils.PrettySerializer;
 import longbridge.utils.VerificationStatus;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
@@ -46,6 +52,9 @@ public class VerificationServiceImpl implements VerificationService {
 
     @Autowired
     private AdminUserRepo adminUserRepo;
+
+    @Autowired
+    private CorporateUserRepo corporateUserRepo;
 
     @Autowired
     private OperationsUserRepo operationsUserRepo;
@@ -87,6 +96,77 @@ public class VerificationServiceImpl implements VerificationService {
         return messageSource.getMessage("verification.decline", null, locale);
     }
 
+    @Override
+    public void save(CorporateUser user, String operation, String description) throws VerificationException {
+        try {
+            String entityName = user.getClass().getSimpleName();
+            if (user.getId() != null) {
+                Long id = user.getId();
+
+                Verification pendingVerification = verificationRepo.findFirstByEntityNameAndEntityIdAndStatus(entityName,
+                        id, VerificationStatus.PENDING);
+                if (pendingVerification != null) {
+                    logger.info("Found entity with pending verification");
+                    throw new InternetBankingException(entityName + " has changes pending for verification. Approve or " +
+                            "decline the changes before making another one.");
+                }
+            }
+
+            CustomUserPrincipal principal = (CustomUserPrincipal) SecurityContextHolder.getContext().getAuthentication()
+                    .getPrincipal();
+            CorporateUser doneBy = corporateUserRepo.findByUserName(principal.getUsername());
+
+
+            Verification verification = new Verification();
+            verification.setEntityName(entityName);
+            verification.setInitiatedOn(new Date());
+            verification.setInitiatedBy(doneBy.getUserName());
+            verification.setUserType(UserType.OPERATIONS);
+            verification.setOperation(operation);
+            verification.setDescription(description);
+            ObjectMapper mapper = new ObjectMapper();
+            verification.setOriginalObject(mapper.writeValueAsString(user));
+
+            ObjectMapper prettyMapper = new ObjectMapper();
+
+            if (user instanceof PrettySerializer) {
+                JsonSerializer<Object> serializer = ((PrettySerializer) (user)).getSerializer();
+
+                SimpleModule module = new SimpleModule();
+                module.addSerializer(user.getClass(), serializer);
+                prettyMapper.registerModule(module);
+                logger.debug("Registering Pretty serializer for " + user.getClass().getName());
+            }
+
+            if (user.getId() != null) {
+                Long id = user.getId();
+                AbstractEntity originalEntity = entityManager.find(user.getClass(), id);
+
+                Verification pendingVerification = verificationRepo.findFirstByEntityNameAndEntityIdAndStatus(entityName,
+                        id, VerificationStatus.PENDING);
+                if (pendingVerification != null) {
+                    // found pending verification
+                    throw new InternetBankingException(entityName + " has pending verification");
+                }
+
+                verification.setBeforeObject(prettyMapper.writeValueAsString(originalEntity));
+                verification.setEntityId(user.getId());
+            }
+            verification.setAfterObject(prettyMapper.writeValueAsString(user));
+            verification.setStatus(VerificationStatus.PENDING);
+            logger.info("verification >>>>  " + verification);
+            verificationRepo.save(verification);
+
+            logger.info(entityName + " has been saved for verification with the bank");
+
+            System.out.println("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
+            throw new VerificationInterruptedException(description + " has gone for verification with the bank");
+
+        }catch (JsonProcessingException e){
+            logger.error(e.getMessage(), e);
+        }
+
+    }
 
     @Override
     public String verify(Long id) throws VerificationException{

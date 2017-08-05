@@ -142,7 +142,6 @@ public class RetailControllerAdvice {
 
             StreamSupport.stream(accounts.spliterator(), false)
                     .filter(Objects::nonNull)
-
                     .forEach(i -> accountList.add(i));
 
 

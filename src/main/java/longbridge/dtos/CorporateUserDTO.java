@@ -2,6 +2,7 @@ package longbridge.dtos;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import longbridge.models.Code;
+import longbridge.models.CorpUserType;
 import org.hibernate.validator.constraints.NotEmpty;
 
 import java.util.Date;
@@ -31,7 +32,8 @@ public class CorporateUserDTO {
     @NotEmpty(message = "phoneNumber")
     private String  phoneNumber;
     private boolean admin;
-    private String authorizer;
+    private boolean authorizer;
+    private CorpUserType corpUserType;
     private String designation;
     private String roleId;
     private String role;
@@ -299,11 +301,19 @@ public class CorporateUserDTO {
         this.admin = admin;
     }
 
-    public String getAuthorizer() {
+    public boolean isAuthorizer() {
         return authorizer;
     }
 
-    public void setAuthorizer(String authorizer) {
+    public CorpUserType getCorpUserType() {
+        return corpUserType;
+    }
+
+    public void setCorpUserType(CorpUserType corpUserType) {
+        this.corpUserType = corpUserType;
+    }
+
+    public void setAuthorizer(boolean authorizer) {
         this.authorizer = authorizer;
     }
 
