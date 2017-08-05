@@ -571,6 +571,7 @@ select
     padding:1px 2px;
     border-right: 1px solid #868B8F;
     font-size: 10px;
+    text-transform: capitalize;
 }
 
 .top-link li a
@@ -1212,6 +1213,7 @@ body {
     color: #777;
     padding-top: 8px;
     padding-bottom: 0px;
+    padding-left: 5px;
 }
 
 .navbar-nav li.dropdown:hover > ul.dropdown-menu {
@@ -1318,7 +1320,8 @@ body {
     max-width: 500px;
 }
 .slider{
-    height: 450px;
+    /* height: 450px; */
+    height: 100%;
     /*margin: 0 15px 0 15px;*/
     overflow: hidden;
 }
@@ -1331,6 +1334,7 @@ body {
     position: absolute;
     top: 0%;
     right: 0%;
+    display: block;
     bottom: 0px;
     left: 70%;
     z-index: 10;
@@ -1451,10 +1455,10 @@ body {
     padding: 0 15px 0 15px;
 }
 .errors{
-    padding: 5px 0px 5px 0;
+    /* padding: 5px 0px 5px 0;
     color: #9F614B;
     font-size: 12px;
-    margin-left:45px
+    margin-left:45px */
 }
 .calender{
     position: inherit;
@@ -1613,7 +1617,7 @@ button, input, optgroup, select, textarea {
     margin-top: 6px !important;
     font: inherit;
     color: inherit;
-}
+ }
 
 .navbar-default .navbar-nav > .open > a, .navbar-default .navbar-nav > .open > a:hover, .navbar-default .navbar-nav > .open > a:focus {
     color: #555;
@@ -1798,6 +1802,27 @@ button, input, optgroup, select, textarea {
     }
 
 
+    .bg
+    {
+        min-height: 500px !important;
+    }
+
+
+
+}
+
+
+/*******************************************************************/
+@media screen and (min-width: 1200px){
+    
+
+
+    .bg
+    {
+        min-height: 500px !important;
+    }
+
+
 
 }
 
@@ -1820,6 +1845,15 @@ button, input, optgroup, select, textarea {
        padding: 6px 1px !important;
    }
 
+   .footer_bar 
+   {
+       text-align: center !important;
+   }
+
+
+
+  
+
 
 }
 
@@ -1830,6 +1864,12 @@ button, input, optgroup, select, textarea {
 @media screen and (max-width: 992px) and (min-width: 760px){
     .logo {
         right: 45px;
+    }
+
+
+    .bg
+    {
+        min-height: 500px !important;
     }
 
     .container {
@@ -1855,7 +1895,7 @@ button, input, optgroup, select, textarea {
     }
 
     .slider{
-        height: 250px;
+        height: 100%;
         margin: 0 15px 0 15px;
         overflow: hidden;
     }
@@ -1924,23 +1964,71 @@ button, input, optgroup, select, textarea {
     }
 
     .biglist{
-        margin: 10px auto;
+        /* margin: 10px auto;
         padding-bottom: 50px;
         height: 110px;
-        max-width: 700px;
+        max-width: 700px; */
 
     }
+}
+
+@media screen and (max-width: 991px) and (min-width: 450px){
+    /* .my-select
+    {
+        width: 60% !important;
+        margin: 0px auto;
+    } */
+
+
+   form#loginform
+   {
+       width: 60% !important;
+        margin: 0px auto;
+   }
+
+   
 }
 
 
 
 
-@media screen and (max-width: 759px) and (min-width: 0){
+
+@media screen and (max-width: 767px) and (min-width: 0){
     .header {
         min-height: 1px;
         padding-bottom: 10px;
     }
 
+
+    .errors_div
+    {
+        
+
+
+
+        position:static !important;
+
+        margin-top:5px;
+       
+    }
+
+
+    .carousel-caption {
+     position: absolute !important; 
+    top: 70% !important;
+    right: 0% !important;
+    bottom: 0% !important;
+    left: 0% !important;
+    z-index: 10 !important;
+    padding: 5px 0 10px 0 !important;
+    color: #fff !important;
+    display: block;
+    background-color: #9F614B !important;
+    opacity: 0.8 !important;
+    line-height: 20px !important;
+    text-align: center !important;
+    font-size: 16px !important;
+    }
     .img
     {
         float: none !important;
@@ -2041,9 +2129,9 @@ button, input, optgroup, select, textarea {
         text-align: center;
     }
 
-    .navbar-nav>li:first-child>a {
+    /* .navbar-nav>li:first-child>a {
         /* padding-left: 15px; */
-    }
+    } */
 
     .slider{
         height: 230px;
@@ -2073,10 +2161,10 @@ button, input, optgroup, select, textarea {
     }
 
     .biglist{
-        margin: 10px auto;
+        /* margin: 10px auto;
         padding-bottom: 50px;
         height: 110px;
-        max-width: 700px;
+        max-width: 700px; */
     }
 
     .fom-signin{
@@ -2095,7 +2183,7 @@ button, input, optgroup, select, textarea {
     /*margin: 0 0 10px 100px;*/
     /*}*/
 
-    .carousel-caption {
+    /* .carousel-caption {
 
     position: relative;
     width:100%;
@@ -2110,10 +2198,17 @@ button, input, optgroup, select, textarea {
     text-align: center;
     font-size: 18px;
 }
-}
+} */
 
 
 /*another css by Etoka francis to override any other css*/
+
+.white-box p
+{
+    text-transform: capitalize;
+}
+
+
 
 .current-bar
 {
@@ -2258,6 +2353,7 @@ button, input, optgroup, select, textarea {
 {
     padding:20px 50px;
     font-size:14px;
+    line-height: 30px;
     
 }
 
@@ -2289,6 +2385,7 @@ button, input, optgroup, select, textarea {
     border-radius: 0px !important;
     border:0px !important;
     box-shadow: none;
+    background: transparent !important
 }
 
 .popover-content
@@ -2301,3 +2398,35 @@ button, input, optgroup, select, textarea {
 {
     display: none !important;
 }
+
+.position_rel
+{
+    position: relative !important;
+}
+
+
+.errors_div
+{
+    position:absolute;
+    background: #ebdfdb;
+    top:20px;
+    right:-140px;
+    width:200px;
+    padding: 10px;
+    text-align: left;
+    z-index:1000;
+    
+}
+
+
+ @media screen and (max-width: 450px) and (min-width: 0px){
+
+    .carousel-caption
+    {
+       
+        line-height: 17px !important;
+       
+        font-size: 14px !important;
+
+    }
+} 

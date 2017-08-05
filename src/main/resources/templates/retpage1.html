@@ -22,7 +22,7 @@
 
         <div  class="row">
 
-                <div class="col-sm-9">
+                <div class="col-sm-9 no-pad-left">
 
                 <nav class="navbar navbar-default bg-success" >
                     <div class="">
@@ -72,16 +72,17 @@
         <div class="bg">
            
                 <form id="loginform" th:action="@{/login/u/retail}" method="POST" class="" autocomplete="off">
-                     <div class='col-sm-4 col-sm-offset-4 form-signi'  style="padding:100px 15px 30px">
+                     <div class='col-md-4 col-md-offset-4 form-signi'  style="padding:100px 15px 30px">
                     <h5 class="form-signin-heading text-white">Enter Login Details</h5>
 
 
                     <div th:if="${param.message != null}" class="alert alert-info" th:text="${param.message[0]}">message</div>
-                    <div th:if="${param.error != null}" class="alert alert-danger" th:text="${session[SPRING_SECURITY_LAST_EXCEPTION]}">error</div>
-                    <div th:if="${param.expired != null}" class="alert alert-danger" th:text="#{session.expired}">error</div>
+                    <div th:if="${param.error != null}" class="alert erro alert-danger" th:text="${session[SPRING_SECURITY_LAST_EXCEPTION]}">error</div>
+                    <div th:if="${param.expired != null}" class="alert erro alert-danger" th:text="#{session.expired}">error</div>
                     <br/>
                     <div class="form-group ">
-                        <span id='reqspan' class='required text-white' style='top:1px;'></span><input type="text" id="username" name="username" class="my-select"  required="required" placeholder="Username" autocomplete="off"/>
+                        <span id='reqspan' class='required text-white' style='top:1px;'></span>
+                        <input  type="text" id="username" name="username" class="my-select"  required="required" placeholder="Username" autocomplete="off"/>
                         <p><a href="/forgot/username" class='text-white' data-toggle="tooltip" data-placement="right" title="Forgot Username?" autocomplete="off">Forgot Username?</a></p>
                     </div>
                     <div class="form-group">
@@ -190,7 +191,25 @@
 <script>
     $(document).ready(function(){
         $('[data-toggle="tooltip"]').tooltip();
+        $('[data-toggle="popover"]').popover(
+            {
+                content:'',
+                html:'true'
+            }
+        );
+
+       
+
+       
+           
+
+
+        
+
     });
+
+
+   
 </script>
 </body>
 </html>

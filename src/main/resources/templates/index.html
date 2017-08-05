@@ -22,7 +22,7 @@
 
         <div  class="row  margin-bottom">
 
-                <div class="col-sm-9">
+                <div class="col-sm-9 no-pad-left">
 
                 <nav class="navbar navbar-default bg-success" >
                     <div class="">
@@ -157,8 +157,8 @@
             <h6 class=" home-heading coronation-blue " style="font-size:15px;padding-bottom:0px">Manage your money anywhere, anytime</h6>
                 <p class=" home-para ">Fast and easy to use.
                Our Internet Banking lets you access your account 24 hours a day!</p>
-                <div class="biglit  col-md-offse col-md-12 col-xs-12" style="magin:0px auto">
-                    <div class="lists col-md-6 col-sm-6  text-cente" >
+                <div class="biglit   col-md-offse col-md-12 col-xs-12" style="magin:0px auto">
+                    <div class="lists  col-md-6  col-sm-6  text-cente" >
                         <ul id='accordion' class='col-md-offset-4 col-md-8 col-sm-offset-2 col-sm-10'>
                             <li class='service' data-toggle="collapse" data-target="#list1" onclick="serviceToggle('li1')" id='li1'><i class="fa fa-plus-square"></i>&nbsp; View account statements</li>
                             <div id="list1" class="collapse info-acc service" style="background:#ebecef;padding:10px;">
@@ -178,7 +178,7 @@
                             </div>
                         </ul>
                     </div>
-                    <div class="lists col-sm-6 col-md-6">
+                    <div class="lists  col-sm-6 col-md-6">
                         <ul class='col-md-offs col-md-8 col-sm-offset-2 col-sm-10'>
                             <li class='service' data-toggle="collapse" data-target="#list4" onclick="serviceToggle('li4')" id='li4'><i class="fa fa-plus-square"></i>&nbsp; Pay bills</li>
                             <div id="list4" class="collapse info-acc service" style="background:#ebecef;padding:10px;">
@@ -223,8 +223,8 @@
                     </button>
                     <ul class="dropdown-menu contact-details">
                         <li>Send us an email</li>
-                        <li>enquiries@coronationmb.com</li>
-                        <li id='copy' class="icontext pull-right" onclick='copy()'>Copy email</li>
+                        <li id='copy_email'>enquiries@coronationmb.com</li>
+                        <li id='copy' class="icontext pull-right" ><button class="btn copy-btn btn-link required" data-clipboard-action="copy" data-clipboard-target="#copy_email">Copy email</button></li>
                     </ul>
                 </div>
                 <div class="dropdown  dropdn-margin">
@@ -234,7 +234,7 @@
 
                         <li>Need instant help?</li>
                         <li>Chat with us</li>
-                        <li class="icontext pull-right"><button class="btn btn-link"><i class="fa fa-comments-o"></i> Live chat</button></li>
+                        <li class="icontext pull-right"><button disabled class="btn btn-link"><i class="fa fa-comments-o"></i> Live chat</button></li>
 
                     </ul>
                 </div>
@@ -396,6 +396,8 @@
     <!-- BOOTSTRAP SCRIPTS  -->
     <script th:src="@{~/customer/js/bootstrap.js}"></script>
     <script th:src="@{~/customer/js/coronation.js}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js"></script>
+
 
     <script>
 
@@ -420,6 +422,19 @@
 
 
         
+</script>
+
+
+<script>
+    
+    var clipboard = new Clipboard('.copy-btn');
+    clipboard.on('success', function(e) {
+       $('#myModalSuccess').modal();
+       $('#successMess').text('Email has been successfully copied!!!');
+    });
+    clipboard.on('error', function(e) {
+        console.log(e);
+    });
     </script>
 
     </body>

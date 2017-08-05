@@ -22,7 +22,7 @@
 
         <div  class="row">
 
-                <div class="col-sm-9">
+                <div class="col-sm-9 no-pad-left">
 
                 <nav class="navbar navbar-default bg-success" >
                     <div class="">
@@ -72,7 +72,7 @@
         <div class="bg">
            
                 <form id="loginform" th:action="@{/retail/login}" method="POST" class="" autocomplete="off">
-                     <div class='col-sm-4 col-sm-offset-4 form-signi'  style="padding:100px 15px 30px">
+                     <div class='col-md-4 col-md-offset-4 form-signi'  style="padding:100px 15px 30px">
                     <h5 class="form-signin-heading text-white">Enter Login Details</h5>
 
 
@@ -88,7 +88,7 @@
 
                      <div id="password_div" class="form-group">
                         <input id="password" type="password" name="password" class="my-select"  placeholder="Password" required="required" autocomplete="off" />
-                        <p><a class="text-white" href="/forgot/password">forgot password?</a></p>
+                        <p><a class="text-white" href="/forgot/password">Forgot Password?</a></p>
                     </div>
 
 
@@ -106,8 +106,8 @@
 
 <footer>
     <div class="containe">
-        <div class="footer_bar">
-            <div class="col-md-6 col-xs-12">
+        <div class="footer_bar footie">
+            <div class="">
                 <ul class="list_group">
                     <li><a href="#" target="_blank">Privacy policy</a></li>
                     <li><a href="#" target="_blank">Disclaimer</a></li>
@@ -115,7 +115,7 @@
                 </ul>
 
             </div>
-            <div class="col-md-6 col-xs-12"><p> &copy; 2017 - All rights reserved</p></div>
+            <div class=" pull-right -xs-12"><p> &copy; 2017 - All rights reserved</p></div>
 
         </div>
     </div>
