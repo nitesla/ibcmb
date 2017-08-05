@@ -1,6 +1,6 @@
 package longbridge.services.implementations;
 
-import longbridge.dtos.CorpCorporateUserDTO;
+import longbridge.dtos.CorporateRoleDTO;
 import longbridge.dtos.CorporateUserDTO;
 import longbridge.dtos.SettingDTO;
 import longbridge.exception.*;
@@ -8,7 +8,10 @@ import longbridge.forms.AlertPref;
 import longbridge.forms.CustChangePassword;
 import longbridge.forms.CustResetPassword;
 import longbridge.models.*;
-import longbridge.repositories.*;
+import longbridge.repositories.CorporateRepo;
+import longbridge.repositories.CorporateRoleRepo;
+import longbridge.repositories.CorporateUserRepo;
+import longbridge.repositories.RoleRepo;
 import longbridge.security.FailedLoginService;
 import longbridge.services.*;
 import longbridge.utils.DateFormatter;
@@ -29,7 +32,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Locale;
 
 /**
  * Created by Fortune on 4/4/2017.
@@ -42,6 +48,9 @@ public class CorporateUserServiceImpl implements CorporateUserService {
     private BCryptPasswordEncoder passwordEncoder;
 
     private SecurityService securityService;
+
+    @Autowired
+    private  CorporateService corporateService;
 
     @Autowired
     private ModelMapper modelMapper;
@@ -225,6 +234,7 @@ public class CorporateUserServiceImpl implements CorporateUserService {
             throw new InternetBankingException(messageSource.getMessage("user.add.failure", null, locale), e);
         }
     }
+
 
 
     public void createUserOnEntrustAndSendCredentials(CorporateUser corporateUser) {
@@ -694,10 +704,26 @@ public class CorporateUserServiceImpl implements CorporateUserService {
         return null;
     }
 
-    private CorporateUserDTO convertEntityToDTO(CorporateUser corporateUser) {
+    public CorporateRole getCorporateUserAuthorizerRole(CorporateUser user){
+
+        Corporate corporate = user.getCorporate();
+
+
+        List<CorporateRole> roles = corporateRoleRepo.findByCorporate(corporate);
+
+        for (CorporateRole corporateRole : roles) {
+            if (corporateRoleRepo.countInRole(corporateRole, user) > 0) {
+                return corporateRole;
+            }
+        }
+        return  null;
+    }
+
+    @Override
+    public CorporateUserDTO convertEntityToDTO(CorporateUser corporateUser) {
 
         CorporateUserDTO corporateUserDTO = new CorporateUserDTO();
-        corporateUserDTO.setCorporateId(corporateUser.getCorporate().getCorporateId());
+        corporateUserDTO.setCorporateId(corporateUser.getCorporate().getId().toString());
         corporateUserDTO.setCorporateName(corporateUser.getCorporate().getName());
         corporateUserDTO.setCorporateType(corporateUser.getCorporate().getCorporateType());
         corporateUserDTO.setId(corporateUser.getId());
@@ -712,6 +738,17 @@ public class CorporateUserServiceImpl implements CorporateUserService {
         corporateUserDTO.setIsFirstTimeLogon(corporateUser.getIsFirstTimeLogon());
         corporateUserDTO.setRoleId(corporateUser.getRole().getId().toString());
         corporateUserDTO.setRole(corporateUser.getRole().getName());
+        corporateUserDTO.setCorpUserType(corporateUser.getCorpUserType());
+        if (corporateUser.getCorpUserType().equals(CorpUserType.AUTHORIZER)){
+            corporateUserDTO.isAuthorizer();
+        }
+        if (corporateUser.getCorpUserType().equals(CorpUserType.AUTHORIZER)){
+            CorporateRole corporateRole = getCorporateUserAuthorizerRole(corporateUser);
+            if (corporateRole != null) {
+                corporateUserDTO.setCorporateRoleId(corporateRole.getId());
+                corporateUserDTO.setCorporateRole(corporateRole.getName() + " " + corporateRole.getRank());
+            }
+        }
 
         if (corporateUser.getCreatedOnDate() != null) {
             corporateUserDTO.setCreatedOn(DateFormatter.format(corporateUser.getCreatedOnDate()));
@@ -723,6 +760,7 @@ public class CorporateUserServiceImpl implements CorporateUserService {
         return corporateUserDTO;
     }
 
+    @Override
     public CorporateUser convertDTOToEntity(CorporateUserDTO corporateUserDTO) {
         //CorporateUser corporateUser = modelMapper.map(corporateUserDTO, CorporateUser.class);
         CorporateUser corporateUser = new CorporateUser();
@@ -772,7 +810,6 @@ public class CorporateUserServiceImpl implements CorporateUserService {
         Page<CorporateUserDTO> pageImpl = new PageImpl<CorporateUserDTO>(dtOs, pageDetails, t);
         return pageImpl;
     }
-
     @Override
     public void increaseNoOfTokenAttempt(CorporateUser corporateUser) {
         if (corporateUser.getNoOfTokenAttempts() == null) {
@@ -782,7 +819,6 @@ public class CorporateUserServiceImpl implements CorporateUserService {
         }
         corporateUserRepo.save(corporateUser);
     }
-
     @Override
     public void resetNoOfTokenAttempt(CorporateUser corporateUser) {
         corporateUser.setNoOfTokenAttempts(0);
@@ -798,9 +834,9 @@ public class CorporateUserServiceImpl implements CorporateUserService {
 
     @Override
     public String addUserFromCorporateAdmin(CorporateUserDTO user) throws InternetBankingException {
-        logger.info("Corporate USER DTO >>>>>>>>>> " + user);
+        logger.info("Corporate USER DTO >>>>>>>>>> "+user);
         CorporateUser corporateUser = convertDTOToEntity(user);
-        logger.info("Corporate USER>>>>>>>>>> " + corporateUser);
+        logger.info("Corporate USER>>>>>>>>>> "+ corporateUser);
 
 
         try {
@@ -811,57 +847,123 @@ public class CorporateUserServiceImpl implements CorporateUserService {
             corporateUser.setIsFirstTimeLogon("Y");
             corporateUser.setUserType(UserType.CORPORATE);
 
-            if (user.isAuthorizer()) {
+            if (user.isAuthorizer()){
                 corporateUser.setCorpUserType(CorpUserType.AUTHORIZER);
 
-                corpUserVerificationService.saveAuthorizer(corporateUser, "ADD_CORPORATE_USER", "Operation to add Corporate Authorizer");
-            } else {
+                corpUserVerificationService.saveAuthorizer(corporateUser, "ADD_CORPORATE_USER", "Operation to add Corporate Authorizer" );
+            }else {
                 corporateUser.setCorpUserType(CorpUserType.INITIATOR);
-                corpUserVerificationService.saveInitiator(corporateUser, "ADD_CORPORATE_USER", "Operation to add user");
+                corpUserVerificationService.saveInitiator(corporateUser, "ADD_CORPORATE_USER", "Operation to add user" );
             }
             return messageSource.getMessage("user.add.success", null, locale);
-        } catch (VerificationInterruptedException ib) {
+        }catch (VerificationInterruptedException ib){
             return ib.getMessage();
-        } catch (VerificationException e) {
+        }catch (VerificationException e){
             throw new InternetBankingException(messageSource.getMessage("failed.user.add", null, locale));
-        } catch (InternetBankingException ibe) {
+        }catch (InternetBankingException ibe){
             throw ibe;
         }
     }
 
     @Override
-    public String updateUserFromCorporateAdmin(CorporateUserDTO user) throws InternetBankingException {
-        CorporateUser corporateUser = new CorporateUser();//TODO
+    public String addInitiator(CorporateUserDTO user) throws InternetBankingException {
         try {
-            corpUserVerificationService.saveInitiator(corporateUser, "UPDATE_CORPORATE_USER", "Operation to update user");
-            return messageSource.getMessage("user.update.success", null, locale);
-        } catch (VerificationException e) {
-            throw new InternetBankingException(messageSource.getMessage("failed.user.update", null, locale));
+            CorporateUser corporateUser = new CorporateUser();
+            corporateUser.setFirstName(user.getFirstName());
+            corporateUser.setLastName(user.getLastName());
+            corporateUser.setUserName(user.getUserName());
+            corporateUser.setEmail(user.getEmail());
+            corporateUser.setStatus("A");
+            corporateUser.setPhoneNumber(user.getPhoneNumber());
+            corporateUser.setCreatedOnDate(new Date());
+            corporateUser.setCorpUserType(CorpUserType.AUTHORIZER);
+            corporateUser.setEntrustId(user.getUserName());
+            SettingDTO settingDTO = configService.getSettingByName("DEF_ENTRUST_CORP_GRP");
+            corporateUser.setEntrustGroup(settingDTO.getValue());
+            Role role = roleRepo.findOne(Long.parseLong(user.getRoleId()));
+            corporateUser.setRole(role);
+            Corporate corp = corporateRepo.findOne(Long.parseLong(user.getCorporateId()));
+            corporateUser.setCorporate(corp);
+            CorporateUser corpUser = corporateUserRepo.save(corporateUser);
+
+            createUserOnEntrustAndSendCredentials(corpUser);
+
+            logger.info("New corporate user {} created", corporateUser.getUserName());
+            return messageSource.getMessage("user.add.success", null, locale);
+        }catch (InternetBankingException ibe){
+            throw ibe;
+        }catch (Exception e){
+            logger.error(e.getMessage());
+            throw new InternetBankingException(e.getMessage());
         }
     }
 
     @Override
-    public String changeStatusFromCorporateAdmin(Long id) throws InternetBankingException {
+    public String updateUserFromCorpAdmin(CorporateUserDTO user) throws InternetBankingException {
+        try {
+            CorporateUser corporateUser = corporateUserRepo.findOne(user.getId());
+            corporateUser.setFirstName(user.getFirstName());
+            corporateUser.setLastName(user.getLastName());
+            corporateUser.setUserName(user.getUserName());
+            corporateUser.setEmail(user.getEmail());
+            corporateUser.setStatus("A");
+            corporateUser.setPhoneNumber(user.getPhoneNumber());
+            corporateUser.setCreatedOnDate(new Date());
+            Role role = roleRepo.findOne(Long.parseLong(user.getRoleId()));
+            corporateUser.setRole(role);
+            Corporate corp = corporateRepo.findOne(Long.parseLong(user.getCorporateId()));
+            corporateUser.setCorporate(corp);
+            CorporateUser corpUser = corporateUserRepo.save(corporateUser);
+
+//            if (user.isAuthorizer()){
+//                if (user.getCorporateRoleId() != null) {
+//                    CorporateRole corporateRole = getCorporateUserAuthorizerRole(corporateUser);
+//                    if(user.getCorporateRoleId().equals(corporateRole.getId())){
+//
+//                    }
+//                }
+//            }
+
+            createUserOnEntrustAndSendCredentials(corpUser);
+
+            logger.info("New corporate user {} created", corporateUser.getUserName());
+            return messageSource.getMessage("user.add.success", null, locale);
+        } catch (VerificationInterruptedException e) {
+            return e.getMessage();
+        } catch (MailException me) {
+            throw new InternetBankingException(messageSource.getMessage("mail.failure", null, locale), me);
+        } catch (Exception e) {
+            if (e instanceof EntrustException) {
+                throw e;
+            }
+            throw new InternetBankingException(messageSource.getMessage("user.add.failure", null, locale), e);
+        }
+    }
+
+    @Override
+    public String changeActivationStatusFromCorpAdmin(Long id) throws InternetBankingException {
         CorporateUser corporateUser = corporateUserRepo.findOne(id);
-        logger.info("Corporate USER>>>>>>>>>> " + corporateUser);
 
         if ("I".equals(corporateUser.getCorporate().getStatus())) {
             throw new InternetBankingException(messageSource.getMessage("corporate.deactivated", null, locale));
         }
 
         try {
-            entityManager.detach(corporateUser);
-            String oldStatus = corporateUser.getStatus();
+            CorporateUserDTO corporateUserDTO = convertEntityToDTO(corporateUser);
+            String oldStatus = corporateUserDTO.getStatus();
             String newStatus = "A".equals(oldStatus) ? "I" : "A";
             corporateUser.setStatus(newStatus);
-            corpUserVerificationService.saveInitiator(corporateUser, "UPDATE_CORP_USER_STATUS", "Operation to activate or deactivate user");
+            corpUserVerificationService.saveInitiator(corporateUser, "UPDATE_CORP_USER_STATUS", "Operation to activate or deactivate user" );
             return messageSource.getMessage("user.add.success", null, locale);
-        } catch (VerificationInterruptedException ib) {
+        }catch (VerificationInterruptedException ib){
             return ib.getMessage();
-        } catch (VerificationException e) {
+        }catch (VerificationException e){
             throw new InternetBankingException(messageSource.getMessage("failed.user.add", null, locale));
-        } catch (InternetBankingException ibe) {
+        }catch (InternetBankingException ibe){
             throw ibe;
+        }catch (Exception e){
+            logger.error(e.getMessage());
+            throw new InternetBankingException(messageSource.getMessage("corporate.update.failure", null, locale), e);
         }
     }
 }

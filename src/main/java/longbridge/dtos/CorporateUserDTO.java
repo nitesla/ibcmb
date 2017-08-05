@@ -1,10 +1,17 @@
 package longbridge.dtos;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonSerializer;
+import com.fasterxml.jackson.databind.SerializerProvider;
 import longbridge.models.Code;
 import longbridge.models.CorpUserType;
+import longbridge.utils.PrettySerializer;
 import org.hibernate.validator.constraints.NotEmpty;
 
+import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 
@@ -12,7 +19,7 @@ import java.util.List;
  * Created by Fortune on 4/5/2017.
  */
 
-public class CorporateUserDTO {
+public class CorporateUserDTO  implements PrettySerializer{
 
     @JsonProperty("DT_RowId")
     private Long id;
@@ -354,6 +361,42 @@ public class CorporateUserDTO {
     }
 
     @Override
+    @JsonIgnore
+    public JsonSerializer<CorporateUserDTO> getSerializer() {
+        return new JsonSerializer<CorporateUserDTO>() {
+            @Override
+            public void serialize(CorporateUserDTO value, JsonGenerator gen, SerializerProvider serializers)
+                    throws IOException, JsonProcessingException {
+
+                gen.writeStartObject();
+                gen.writeStringField("Corporate Name", value.corporateName);
+                gen.writeStringField("Username", value.userName);
+                gen.writeStringField("First Name", value.firstName);
+                gen.writeStringField("Last Name", value.lastName);
+                gen.writeStringField("Email", value.email);
+                gen.writeStringField("Phone", value.phoneNumber);
+                String status =null;
+                if ("A".equals(value.status))
+                    status = "Active";
+                else if ("I".equals(value.status))
+                    status = "Inactive";
+                else if ("L".equals(value.status))
+                    status = "Locked";
+                gen.writeStringField("Status", status);
+                gen.writeStringField("Role", value.role);
+                gen.writeStringField("User Type", value.corpUserType.name());
+                if (CorpUserType.AUTHORIZER.equals(value.corpUserType)) {
+                    gen.writeStringField("Authorizer Level", value.corporateRole);
+                }
+//				if("MULTI".equals(corporate.getCorporateType())) {
+//					gen.writeBooleanField("Is Admin", value.admin);
+//				}
+                gen.writeEndObject();
+            }
+        };
+    }
+
+    @Override
     public String toString() {
         return "CorporateUserDTO{" +
                 "id=" + id +
@@ -386,6 +429,7 @@ public class CorporateUserDTO {
                 ", noOfLoginAttempts=" + noOfLoginAttempts +
                 ", alertPreference=" + alertPreference +
                 ", createdOn='" + createdOn + '\'' +
+                ", corporateRoleId=" + corporateRoleId +
                 ", corporateRole='" + corporateRole + '\'' +
                 ", securityQuestion=" + securityQuestion +
                 ", securityAnswer=" + securityAnswer +

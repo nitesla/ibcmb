@@ -1,9 +1,10 @@
 package longbridge.services;
 
 import longbridge.dtos.CorpUserVerificationDTO;
+import longbridge.dtos.CorporateUserDTO;
+import longbridge.exception.InternetBankingException;
 import longbridge.exception.VerificationException;
 import longbridge.models.CorpUserVerification;
-import longbridge.models.CorporateUser;
 import longbridge.models.Role;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -15,9 +16,13 @@ import java.util.List;
  */
 public interface CorpUserVerificationService {
 
-    void saveInitiator(CorporateUser user, String operation, String description) throws VerificationException;
+//    String addUserFromCorporateAdmin(CorporateUserDTO user) throws InternetBankingException;
 
-    void saveAuthorizer(CorporateUser user, String operation, String description) throws VerificationException;
+    String changeStatusFromCorporateAdmin(Long id) throws InternetBankingException;
+
+    void saveInitiator(CorporateUserDTO user, String operation, String description) throws VerificationException;
+
+    void saveAuthorizer(CorporateUserDTO user, String operation, String description) throws VerificationException;
 
     String decline(CorpUserVerificationDTO dto) throws VerificationException;
 

@@ -1,10 +1,7 @@
 package longbridge.controllers.corporate;
 
 import longbridge.dtos.*;
-import longbridge.exception.DuplicateObjectException;
-import longbridge.exception.InternetBankingException;
-import longbridge.exception.PasswordException;
-import longbridge.exception.VerificationException;
+import longbridge.exception.*;
 import longbridge.models.Corporate;
 import longbridge.models.CorporateUser;
 import longbridge.models.UserType;
@@ -47,6 +44,9 @@ public class CorpUserManagementController {
 
     @Autowired
     private CorpUserVerificationService corpUserVerificationService;
+
+    @Autowired
+    private MakerCheckerService makerCheckerService;
 
     @Autowired
     CodeService codeService;
@@ -142,15 +142,37 @@ public class CorpUserManagementController {
         }
 
         try {
-            String message = corporateUserService.addUserFromCorporateAdmin(corporateUserDTO);
-            redirectAttributes.addFlashAttribute("message", message);
+
+            if (corporateUserDTO.isAuthorizer()){
+                if (makerCheckerService.isEnabled("ADD_AUTHORIZER_FROM_CORPORATE_ADMIN")){
+                    corpUserVerificationService.saveAuthorizer(corporateUserDTO, "ADD_AUTHORIZER_FROM_CORPORATE_ADMIN", "Add an authorizer by corporate Admin");
+                }else {
+                    corporateUserService.addAuthorizer(corporateUserDTO);
+                }
+
+            }else{
+                if (makerCheckerService.isEnabled("ADD_INITIATOR_FROM_CORPORATE_ADMIN")){
+                    corpUserVerificationService.saveInitiator(corporateUserDTO, "ADD_INITIATOR_FROM_CORPORATE_ADMIN", "Add an initiator by corporate Admin");
+                }else {
+                    corporateUserService.addInitiator(corporateUserDTO);
+                }
+            }
+
             return "redirect:/corporate/users/";
         } catch (DuplicateObjectException doe) {
             result.addError(new ObjectError("error", doe.getMessage()));
             logger.error("Error creating corporate user {}", corporateUserDTO.getUserName(), doe);
             model.addAttribute("failure", doe.getMessage());
             return "corp/user/add";
-        } catch (InternetBankingException ibe) {
+        } catch (VerificationInterruptedException ib){
+            model.addAttribute("message", ib.getMessage());
+            return "redirect:/corporate/users/";
+        }catch (VerificationException e){
+            result.addError(new ObjectError("error", e.getMessage()));
+            logger.error("Error creating corporate user", e);
+            model.addAttribute("failure", messageSource.getMessage("user.add.failure", null, locale));
+            return "corp/user/add";
+        }catch (InternetBankingException ibe) {
             result.addError(new ObjectError("error", ibe.getMessage()));
             logger.error("Error creating corporate user", ibe);
             model.addAttribute("failure", messageSource.getMessage("failure",null,locale));
@@ -171,17 +193,78 @@ public class CorpUserManagementController {
         return "corp/user/add";
     }
 
+    @PostMapping("/edit")
+    public String updateUser(@ModelAttribute("corporateUser") @Valid CorporateUserDTO corporateUserDTO, BindingResult result, WebRequest webRequest, Model model, RedirectAttributes redirectAttributes, Locale locale) throws Exception {
+
+        if (result.hasErrors()) {
+            return "corp/user/add";
+        }
+
+        try {
+            CorporateUserDTO corporateUser = corporateUserService.getUser(corporateUserDTO.getId());
+            if (!corporateUserDTO.getEmail().equals(corporateUser.getEmail())) {
+                Corporate corporate = corporateService.getCorp(Long.parseLong(corporateUserDTO.getCorporateId()));
+                CorporateUser cp = corporateUserService.getUserByCifAndEmailIgnoreCase(corporate, corporateUserDTO.getEmail());
+                if (cp != null) {
+                    model.addAttribute("failure", messageSource.getMessage("email.exists", null, locale));
+                    return "corp/user/add";
+                }
+            }
+
+
+            if (corporateUserDTO.isAuthorizer() != corporateUser.isAuthorizer()){
+                if (makerCheckerService.isEnabled("UPDATE_USER_FROM_CORPORATE_ADMIN")){
+                    corpUserVerificationService.saveAuthorizer(corporateUserDTO, "UPDATE_USER_FROM_CORPORATE_ADMIN", "Edit an authorizer by corporate Admin");
+                }else {
+                    corporateUserService.updateUserFromCorpAdmin(corporateUserDTO);
+                }
+
+            }else{
+                if (makerCheckerService.isEnabled("UPDATE_USER_FROM_CORPORATE_ADMIN")){
+                    corpUserVerificationService.saveInitiator(corporateUserDTO, "UPDATE_USER_FROM_CORPORATE_ADMIN", "Edit an initiator by corporate Admin");
+                }else {
+                    corporateUserService.updateUserFromCorpAdmin(corporateUserDTO);
+                }
+            }
+
+            return "redirect:/corporate/users/";
+
+        } catch (DuplicateObjectException doe) {
+            result.addError(new ObjectError("error", doe.getMessage()));
+            logger.error("Error creating corporate user {}", corporateUserDTO.getUserName(), doe);
+            model.addAttribute("failure", doe.getMessage());
+            return "corp/user/add";
+        } catch (VerificationInterruptedException ib){
+            model.addAttribute("message", ib.getMessage());
+            return "redirect:/corporate/users/";
+        }catch (VerificationException e){
+            result.addError(new ObjectError("error", e.getMessage()));
+            logger.error("Error creating corporate user", e);
+            model.addAttribute("failure", messageSource.getMessage("user.add.failure", null, locale));
+            return "corp/user/add";
+        }catch (InternetBankingException ibe) {
+            result.addError(new ObjectError("error", ibe.getMessage()));
+            logger.error("Error creating corporate user", ibe);
+            model.addAttribute("failure", messageSource.getMessage("failure",null,locale));
+            return "corp/user/add";
+        }
+    }
+
     @GetMapping("/{id}/status")
     public String activationStatus(@PathVariable Long id, RedirectAttributes redirectAttributes){
 
         try {
-            String message = corporateUserService.changeStatusFromCorporateAdmin(id);
+            String message = "";
+            if (makerCheckerService.isEnabled("UPDATE_CORP_USER_STATUS")){
+                message = corpUserVerificationService.changeStatusFromCorporateAdmin(id);
+            }else {
+                message = corporateUserService.changeActivationStatusFromCorpAdmin(id);
+            }
             redirectAttributes.addFlashAttribute("message", message);
         }catch (InternetBankingException ibe){
             logger.error("Error changing corporate user activation status", ibe);
             redirectAttributes.addFlashAttribute("failure", ibe.getMessage());
         }
-
         return "redirect:/corporate/users";
     }
 
