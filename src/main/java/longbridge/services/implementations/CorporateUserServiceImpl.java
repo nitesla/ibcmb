@@ -50,12 +50,6 @@ public class CorporateUserServiceImpl implements CorporateUserService {
     private SecurityService securityService;
 
     @Autowired
-    private  CorporateService corporateService;
-
-    @Autowired
-    private ModelMapper modelMapper;
-
-    @Autowired
     private MessageSource messageSource;
 
     @Autowired
@@ -69,12 +63,6 @@ public class CorporateUserServiceImpl implements CorporateUserService {
 
     @Autowired
     private ConfigurationService configService;
-
-    @Autowired
-    private CorpUserVerificationService corpUserVerificationService;
-
-    @Autowired
-    private VerificationService verificationService;
 
     @Autowired
     private CodeService codeService;

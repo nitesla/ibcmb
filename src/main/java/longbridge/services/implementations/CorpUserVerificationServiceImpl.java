@@ -147,7 +147,7 @@ public class CorpUserVerificationServiceImpl implements CorpUserVerificationServ
             CorporateUser user = corporateUserService.convertDTOToEntity(userDTO);
 
 
-            String entityName = user.getClass().getSimpleName();
+            String entityName = userDTO.getClass().getSimpleName();
             if (user.getId() != null) {
                 Long id = user.getId();
 
@@ -260,7 +260,7 @@ public class CorpUserVerificationServiceImpl implements CorpUserVerificationServ
             CorporateUser user = corporateUserService.convertDTOToEntity(userDTO);
 
 
-            String entityName = user.getClass().getSimpleName();
+            String entityName = userDTO.getClass().getSimpleName();
             if (user.getId() != null) {
                 Long id = user.getId();
 
@@ -394,10 +394,11 @@ public class CorpUserVerificationServiceImpl implements CorpUserVerificationServ
         ObjectMapper mapper = new ObjectMapper();
 
         try {
-            Class<?> clazz  = Class.forName(PACKAGE_NAME + corpUserVerification.getEntityName());
+            Class<?> clazz  = Class.forName(CorporateUserDTO.class.getName());
             Object object = mapper.readValue(corpUserVerification.getOriginalObject(), clazz);
             logger.info("Trying to merge..{}",object.toString());
-            entityManager.merge(object);
+            CorporateUser corporateUser = corporateUserService.convertDTOToEntity((CorporateUserDTO) object);
+            entityManager.merge(corporateUser);
             corpUserVerification.setId(dto.getId());
             corpUserVerification.setVersion(dto.getVersion());
             corpUserVerification.setVerifiedBy(getCurrentUserName());
@@ -537,8 +538,9 @@ public class CorpUserVerificationServiceImpl implements CorpUserVerificationServ
             CorporateUser user = corporateUserRepo.findOne(corpUserVerification.getEntityId());
             entityManager.detach(user);
             ObjectMapper objectMapper = new ObjectMapper();
-            CorporateUser corpUser = objectMapper.readValue(corpUserVerification.getOriginalObject(),CorporateUser.class);
-            if("A".equals(corpUser.getStatus())){
+            CorporateUserDTO corpUserDTO = objectMapper.readValue(corpUserVerification.getOriginalObject(),CorporateUserDTO.class);
+            CorporateUser cUser = corporateUserService.convertDTOToEntity(corpUserDTO);
+            if("A".equals(cUser.getStatus())){
                 logger.info("Corp user status is A");
                 String fullName = user.getFirstName()+" "+user.getLastName();
                 String password = passwordPolicyService.generatePassword();
@@ -546,7 +548,7 @@ public class CorpUserVerificationServiceImpl implements CorpUserVerificationServ
                 user.setExpiryDate(new Date());
                 passwordPolicyService.saveCorporatePassword(user);
                 corporateUserRepo.save(user);
-                sendPostActivateMessage(corpUser, fullName,user.getUserName(),password,user.getCorporate().getCustomerId());
+                sendPostActivateMessage(cUser, fullName,user.getUserName(),password,user.getCorporate().getCustomerId());
             }
             else{
                 corporateUserRepo.save(user);
@@ -556,9 +558,10 @@ public class CorpUserVerificationServiceImpl implements CorpUserVerificationServ
         if(corpUserVerification.getOperation().equals("ADD_INITIATOR_FROM_CORPORATE_ADMIN")) {
             logger.info("Adding Corporate User");
             ObjectMapper objectMapper = new ObjectMapper();
-            CorporateUser corpUser = objectMapper.readValue(corpUserVerification.getOriginalObject(),CorporateUser.class);
-            logger.info("Corporate User >>"+ corpUser);
-            createUserOnEntrustAndSendCredentials(corpUser);
+            CorporateUserDTO corpUserDTO = objectMapper.readValue(corpUserVerification.getOriginalObject(),CorporateUserDTO.class);
+            CorporateUser cUser = corporateUserService.convertDTOToEntity(corpUserDTO);
+            logger.info("Corporate User >>"+ cUser);
+            createUserOnEntrustAndSendCredentials(cUser);
         }
 
 

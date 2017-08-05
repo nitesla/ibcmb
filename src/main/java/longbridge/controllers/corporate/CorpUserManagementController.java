@@ -165,7 +165,7 @@ public class CorpUserManagementController {
             model.addAttribute("failure", doe.getMessage());
             return "corp/user/add";
         } catch (VerificationInterruptedException ib){
-            model.addAttribute("message", ib.getMessage());
+            redirectAttributes.addFlashAttribute("message", ib.getMessage());
             return "redirect:/corporate/users/";
         }catch (VerificationException e){
             result.addError(new ObjectError("error", e.getMessage()));
