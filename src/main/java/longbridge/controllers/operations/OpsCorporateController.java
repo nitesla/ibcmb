@@ -561,7 +561,23 @@ public class OpsCorporateController {
         }
         return customerDetails.getCustomerName();
     }
-
+    @GetMapping("/new/{corpTYpe}")
+    public String addCorporate(@PathVariable String corpTYpe, Model model) {
+//        logger.info("the corp category {}",corpTYpe);
+        CorporateDTO corporateDTO = new CorporateDTO();
+        if(corpTYpe == null){
+            return "/ops/dashboard";
+        }else if(corpTYpe.equalsIgnoreCase("1")){
+            corporateDTO.setCorporateType("SOLE");
+        }
+        else if(corpTYpe.equalsIgnoreCase("2")){
+            corporateDTO.setCorporateType("MULTI");
+        }else {
+            return "/ops/dashboard";
+        }
+        model.addAttribute("corporate", corporateDTO);
+        return "/ops/corporate/setup/new";
+    }
 
     @PostMapping("/new")
     public String addCorporateEntity(@ModelAttribute("corporate") @Valid CorporateDTO corporate, BindingResult result, Model model, HttpSession session, Locale locale) {
