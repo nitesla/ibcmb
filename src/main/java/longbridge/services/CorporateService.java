@@ -33,6 +33,11 @@ public interface CorporateService{
     @PreAuthorize("hasAuthority('ADD_CORPORATE')")
     String  addCorporate(CorporateDTO corporate, CorporateUserDTO corporateUser) throws InternetBankingException;
 
+
+    String addCorporate(CorporateRequestDTO corporateRequestDTO) throws InternetBankingException;
+
+    void saveCorporateRequest(CorporateRequestDTO corporateRequestDTO) throws InternetBankingException;
+
     /**
      * Deletes the given corporate customer
      *
@@ -58,6 +63,9 @@ public interface CorporateService{
     @PreAuthorize("hasAuthority('GET_CORPORATE')")
     CorporateDTO getCorporate(Long id);
 
+    @PreAuthorize("hasAuthority('GET_CORPORATE')")
+    Corporate getCorp(Long id);
+
 
     @PreAuthorize("hasAuthority('GET_CORPORATE')")
     Corporate getCorporateByCustomerId(String customerId);
@@ -73,7 +81,7 @@ public interface CorporateService{
     Page<CorporateDTO> getCorporates(Pageable pageDetails);
 
     @PreAuthorize("hasAuthority('GET_CORPORATE')")
-    Page<CorporateDTO> findCorporates(String pattern,Pageable pageDetails);
+    Page<CorporateDTO> findCorporates(String pattern, Pageable pageDetails);
     /**
      * Sets the limit of transaction amount for the corporate customer
      *
@@ -94,7 +102,7 @@ public interface CorporateService{
      * @param limit        the corporate limit
      */
     @PreAuthorize("hasAuthority('UPDATE_CORPORATE_LIMIT')")
-    void updateLimit(Corporate corporate,  CorpLimit limit) throws InternetBankingException;
+    void updateLimit(Corporate corporate, CorpLimit limit) throws InternetBankingException;
 
 
     /**
@@ -198,8 +206,18 @@ public interface CorporateService{
     Page<CorporateRoleDTO> getRoles(Long corpId, Pageable pageable);
 
 
+//    @PreAuthorize("hasAuthority('GET_TRANSFER_RULE')")
+//    CorpTransRule getApplicableTransferRule(CorpTransRequest transferRequest);
+//
+//    @PreAuthorize("hasAuthority('GET_BULKTRANSFER_RULE')")
+//    CorpTransRule getApplicableBulkTransferRule(BulkTransfer bulkTransfer);
+
+
     @PreAuthorize("hasAuthority('GET_TRANSFER_RULE')")
-    CorpTransRule getApplicableTransferRule(CorpTransRequest transferRequest);
+    CorpTransRule getApplicableTransferRule(TransRequest transferRequest);
+
+    @PreAuthorize("hasAuthority('GET_BULKTRANSFER_RULE')")
+    CorpTransRule getApplicableBulkTransferRule(BulkTransfer bulkTransfer);
 
 
     @PreAuthorize("hasAuthority('ADD_CORPORATE_ROLE')")
@@ -223,5 +241,6 @@ public interface CorporateService{
 
     Page<CorpTransferRuleDTO> getCorporateRules(Long corpId, Pageable pageable);
 
+    boolean corporateIdExists(String corporateId);
 
 }

@@ -13,6 +13,8 @@ public class FinancialInstitutionDTO {
 
     @JsonProperty("DT_RowId")
     private Long id;
+
+    private String sortCode;
     @NotEmpty(message = "institutionCode")
     private String institutionCode;
     private FinancialInstitutionType institutionType;
@@ -26,6 +28,14 @@ public class FinancialInstitutionDTO {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getSortCode() {
+        return sortCode;
+    }
+
+    public void setSortCode(String sortCode) {
+        this.sortCode = sortCode;
     }
 
     public String getInstitutionCode() {

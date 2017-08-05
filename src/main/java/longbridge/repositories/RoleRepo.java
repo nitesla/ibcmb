@@ -19,7 +19,7 @@ import java.util.List;
 @Repository
 @Transactional
 public interface RoleRepo extends CommonRepo<Role, Long>{
-    Role findByName(String name);
+    Role findFirstByName(String name);
 
     Role findByUserTypeAndName( UserType userType, String name);
 

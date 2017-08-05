@@ -1,3 +1,4 @@
+
 package longbridge.services.bulkTransfers;
 
 
@@ -76,3 +77,4 @@ public class BulkTransferConfig
 
 
 }
+

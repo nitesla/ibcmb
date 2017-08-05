@@ -204,7 +204,14 @@ public class AdmRoleController {
             String message = roleService.updateRole(roleDTO);
             redirectAttributes.addFlashAttribute("message", message);
             return "redirect:/admin/roles";
-        } catch (InternetBankingException ibe) {
+        }
+        catch (DuplicateObjectException e){
+            result.addError(new ObjectError("error", e.getMessage()));
+            logger.error("Error updating role", e);
+            return "adm/role/edit";
+        }
+
+        catch (InternetBankingException ibe) {
             result.addError(new ObjectError("error", ibe.getMessage()));
             logger.error("Error updating role", ibe);
             return "adm/role/edit";

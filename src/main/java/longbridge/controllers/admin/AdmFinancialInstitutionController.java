@@ -83,6 +83,8 @@ public class AdmFinancialInstitutionController {
         return "/adm/financialinstitution/add";
     }
 
+
+
     @PostMapping
     public String createFinancialInstitution(@ModelAttribute("financialInstitution") @Valid FinancialInstitutionDTO financialInstitutionDTO, BindingResult result, RedirectAttributes redirectAttributes, Model model, Locale locale) {
         if (result.hasErrors()) {

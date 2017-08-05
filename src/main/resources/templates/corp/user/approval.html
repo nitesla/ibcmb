@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{corp-layout}">
+
+<body onload="javascript:var bread = [['Home', '/corporate/dashboard'],['User management']];currentBar('User management Approval');breadCrumb(bread)">
+
+<div layout:fragment="content">
+    <div class="col-md-5 col-sm-5 ">
+
+        <select class="form-control full-width coronation-form-control hide-content-only" id="view">
+            <option value="account">Overview</option>
+        </select>
+    </div>
+
+    <div class="col-xs-12 ml-15 no-pad-left" >
+        <div class="col-xs-12  no-pad-lef no-mt no-bd  alert" >
+
+            <div class="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
+                <div class="btn-group" role="group" aria-label="First group">
+                    <a type="button" th:href="@{/corporate/users/index/approvals}" class="btn btn-link bt-select bt-link-act" disabled="disabled">View Details</a>
+                </div>
+            </div>
+            <br/>
+            <div class="row">
+                <div class="col-sm-12 table-responsive">
+                    <table class="table" id="verification">
+                        <thead>
+                        <tr>
+                            <th>Operation</th>
+                            <th>Initiated By</th>
+                            <th>Initiated On</th>
+                            <th>Verified By</th>
+                            <th>Verified On</th>
+                            <th>Status</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+<th:block layout:fragment="scripts">
+    <script th:src="@{~/customer/js/dataTables.bootstrap.js}"></script>
+    <script th:src="@{~/customer/js/dataTables.select.js}"></script>
+    <script th:src="@{~/bank/js/jquery.spring-friendly.min.js}"></script>
+    <script th:src="@{~/bank/js/momentMin.js}"></script>
+
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        $(document).ready(function() {
+            var url = "/corporate/users/approvals/all";
+            var table = $('#verification').DataTable({
+                select: true,
+                responsive : false,
+                "lengthMenu" : [ [ 5, 10 ], [ 5, 10 ] ],
+                "pagingType" : "simple_numbers",
+                "searching" : false,
+                "paging" : true,
+                "serverSide" : true,
+                "ajax" : url,
+                "dom": 'T<"clear">frtlp',
+                "columns": [
+                    {"data": "description"},
+                    {"data": "initiatedBy"},
+                    {"data": "initiatedOn"},
+                    {"data": "verifiedBy", "defaultContent": "<i>Not Verified</i>"},
+                    {"data": "verifiedOn", "defaultContent": "<i>Not Verified</i>"},
+                    {"data": "status"}
+
+                ], "columnDefs": [{
+                    "targets": 2,
+                    "data": "initiatedOn",
+                    "render": function (data, type, full, meta) {
+                        if (type === 'display') {
+                            if (data == null)
+                                return data;
+                            var dtStart = new Date(parseInt(data));
+
+                            var dtStartWrapper = moment(dtStart);
+                            return dtStartWrapper.format('LLLL');
+                        }
+                        return data;
+                    }
+                }, {
+                    "targets": 4,
+                    "data": "verifiedOn",
+                    "render": function (data, type, full, meta) {
+                        if (type === 'display') {
+
+                            if (data == null)
+                                return data;
+                            var dtStart = new Date(parseInt(data));
+                            var dtStartWrapper = moment(dtStart);
+                            return dtStartWrapper.format('LLLL');
+                        }
+                        return data;
+                    }
+                },
+//                    {
+//                        "targets": 5,
+//                        "data": "status",
+//                        "render": function (data, type, full, meta) {
+//                            if (type === 'display') {
+//                                if (data == "PENDING") {
+//                                    return "<i class='fa fa-question dt-body-center' style='color:green;display:block; text-align:center; margin:0 auto;'></i>";
+//                                } else if (data == "APPROVED") {
+//                                    return "<i class='fa fa-check  dt-body-center' style='color:green;display:block; text-align:center; margin:0 auto;'></i>";
+//                                }
+//                                else {
+//                                    return "<i class='fa fa-times  dt-body-center' style='color:red;display:block; text-align:center; margin:0 auto;'></i>"
+//                                }
+//                            }
+//                            return data;
+//                        }
+//                    }
+                ]
+            });
+
+            table.on('select', function() {
+                if (table.rows({
+                        selected : true
+                    }).indexes().length === 0) {
+                    $('.bt-select').attr("disabled", true);
+                } else {
+                    $('.bt-select').removeAttr("disabled");
+                }
+
+            });
+
+            table.on('deselect', function() {
+                if (table.rows({
+                        selected : true
+                    }).indexes().length === 0) {
+                    $('.bt-select').attr("disabled", true);
+                } else {
+                    $('.bt-select').removeAttr("disabled");
+                }
+            });
+        });
+
+        $("a.bt-link-act").on("click", function(e) {
+            e.preventDefault();
+            var link = $(e.currentTarget);
+            if($(link).attr("disabled")){
+                return;
+            }
+
+            var dt = $('#verification').DataTable();
+            var id = $(dt.row({
+                selected: true
+            }).node()).attr("id");
+            var ooo = link.attr("href").replace("index",id);
+            window.location.assign(ooo);
+
+        } );
+
+        /*]]>*/
+    </script>
+</th:block>
+
+</body>
+</html>

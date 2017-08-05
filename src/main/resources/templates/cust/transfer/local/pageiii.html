@@ -62,7 +62,9 @@
                             <input type="hidden" th:field="*{amount}"/>
                             <input type="hidden" th:field="*{remarks}"/>
 
+
                             <input type="hidden" th:field="*{id}"/>
+
                             <div class="checkbo" th:if="${newBen}!=null">
                                 <input  type="checkbox" id="add" name="add" />
                                 <label for='add' style="font-weight: bold; color: black;display:inline !important">Add Beneficiary</label>
@@ -90,6 +92,7 @@
 
                                 </div>
                             <!--</div>-->
+
                         </form>
 
                         <form method="post" id="form_edit" th:action="@{/retail/transfer/local/edit}" th:object="${transferRequest}">

@@ -76,7 +76,7 @@ public class CorpTokenManagementController {
                     return "redirect:/corporate/setup";
                 }
                 corporateUserService.resetNoOfTokenAttempt(user);
-                redirectAttributes.addFlashAttribute("message", messageSource.getMessage("token.auth.success", null, locale));
+                //redirectAttributes.addFlashAttribute("message", messageSource.getMessage("token.auth.success", null, locale));
                 return "redirect:/corporate/dashboard";
             }
         } catch (InternetBankingSecurityException ibe) {

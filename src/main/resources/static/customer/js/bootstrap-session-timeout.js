@@ -23,8 +23,8 @@
             ajaxData: '',
             redirUrl: '/timed-out',
             logoutUrl: '/log-out',
-            warnAfter: 900000, // 15 minutes
-            redirAfter: 1200000, // 20 minutes
+            //warnAfter: 900000, // 15 minutes
+           // redirAfter: 1200000, // 20 minutes
             keepAliveInterval: 5000,
             keepAlive: true,
             ignoreUserActivity: false,
@@ -47,7 +47,7 @@
 
         // Some error handling if options are miss-configured
         if (opt.warnAfter < opt.redirAfter) {
-            console.error('Bootstrap-session-timeout plugin is miss-configured. Option "redirAfter" must be equal or greater than "warnAfter".');
+            console.error('Bootstrap-session-timeout plugin is miss-configured. Option "redirAfter" must be less than "warnAfter".');
             return false;
         }
 
@@ -88,6 +88,10 @@
             });
             // "Stay Connected" button click
             $('#session-timeout-dialog').on('hide.bs.modal', function() {
+                // Restart session timer
+                startSessionTimer();
+            });
+            $('#session-timeout-dialog-keepalive').on('click', function() {
                 // Restart session timer
                 startSessionTimer();
             });

@@ -62,7 +62,7 @@
                                         <div class="col-sm-6">
                                             <select class="form-control" th:field="*{restrictionType}">
                                                 <option value="">--Select--</option>
-                                                <option th:each="type: ${restrictionTypes}" th:value="${type.code}" th:text="${type.description}" th:selected="${type.code==accountRestriction.restrictionType}"></option>
+                                                <option th:each="type: ${restrictionType}" th:value="${type.code}" th:text="${type.description}" th:selected="${type.code==accountRestriction.restrictionType}"></option>
                                             </select>
                                         </div>
 

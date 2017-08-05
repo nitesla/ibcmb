@@ -50,8 +50,7 @@ public class AdmCodeController {
 	private Logger logger = LoggerFactory.getLogger(this.getClass());
 	@Autowired
 	private CodeService codeService;
-	@Autowired
-	private VerificationService verificationService;
+
 	@Autowired
 	ModelMapper modelMapper;
 

@@ -303,7 +303,7 @@ function enableMouseSelection ( dt )
 				return;
 			}
 
-			// Don't blur in Editor form
+			// Don't blur in editor form
 			if ( $(e.target).parents('div.DTE').length ) {
 				return;
 			}

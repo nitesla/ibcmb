@@ -26,6 +26,7 @@ public class CorpUserVerification extends AbstractEntity{
     private String description;
     private Long entityId;
     private String entityName;
+    private Long corpId;
     @Enumerated(value = EnumType.STRING)
     private CorpUserType corpUserType;
     private String operation;
@@ -167,6 +168,13 @@ public class CorpUserVerification extends AbstractEntity{
         this.verifiedBy = verifiedBy;
     }
 
+    public Long getCorpId() {
+        return corpId;
+    }
+
+    public void setCorpId(Long corpId) {
+        this.corpId = corpId;
+    }
 
     @Override @JsonIgnore
     public List<String> getDefaultSearchFields() {

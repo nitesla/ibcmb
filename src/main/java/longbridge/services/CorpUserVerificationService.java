@@ -1,6 +1,6 @@
 package longbridge.services;
 
-import longbridge.dtos.VerificationDTO;
+import longbridge.dtos.CorpUserVerificationDTO;
 import longbridge.exception.VerificationException;
 import longbridge.models.CorpUserVerification;
 import longbridge.models.CorporateUser;
@@ -15,33 +15,30 @@ import java.util.List;
  */
 public interface CorpUserVerificationService {
 
-    void save(CorporateUser user, String operation, String description) throws VerificationException;
+    void saveInitiator(CorporateUser user, String operation, String description) throws VerificationException;
 
-    String decline(VerificationDTO dto) throws VerificationException;
+    void saveAuthorizer(CorporateUser user, String operation, String description) throws VerificationException;
+
+    String decline(CorpUserVerificationDTO dto) throws VerificationException;
 
     String verify(Long id) throws VerificationException;
 
-    String verify(VerificationDTO dto) throws VerificationException;
+    String verify(CorpUserVerificationDTO dto) throws VerificationException;
 
-    VerificationDTO getVerification(Long id);
+    CorpUserVerificationDTO getVerification(Long id);
 
-    VerificationDTO convertEntityToDTO(CorpUserVerification corpUserVerification);
+    CorpUserVerificationDTO convertEntityToDTO(CorpUserVerification corpUserVerification);
 
-    List<VerificationDTO> convertEntitiesToDTOs(Iterable<CorpUserVerification> corpUserVerifications);
-
-    Page<VerificationDTO> getMakerCheckerPending(Pageable pageDetails);
-
-    Page<VerificationDTO> getPendingOperations(String operation, Pageable pageable);
+    List<CorpUserVerificationDTO> convertEntitiesToDTOs(Iterable<CorpUserVerification> corpUserVerifications);
 
     long getTotalNumberPending();
 
     int getTotalNumberForVerification();
 
-    Page<CorpUserVerification> getVerificationsForUser(Pageable pageable);
+    Page<CorpUserVerificationDTO> getAllRequests(Pageable pageable);
+
+    Page<CorpUserVerificationDTO> getRequestsByCorpId(Long corpId, Pageable pageable);
 
     List<String> getPermissionCodes(Role role);
 
-    Page<VerificationDTO> getPendingForUser(Pageable pageable);
-
-    Page<VerificationDTO> getVerifiedOPerations(Pageable pageable);
 }
