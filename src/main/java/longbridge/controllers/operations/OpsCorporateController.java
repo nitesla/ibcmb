@@ -607,6 +607,19 @@ public class OpsCorporateController {
 
 
         List<AccountInfo> accountInfos = integrationService.fetchAccounts(corporate.getCustomerId().toUpperCase());
+
+        SettingDTO setting = configService.getSettingByName("SHARE_CORPORATE_ACCOUNT");
+
+        if (setting != null) {
+            if (setting.isEnabled()) {
+                if ("NO".equalsIgnoreCase(setting.getValue())) {
+                    accountInfos = filterAccounts(accountInfos, accountService.getAccounts(corporate.getCustomerId()));
+                }
+            } else {
+                accountInfos = filterAccounts(accountInfos, accountService.getAccounts(corporate.getCustomerId()));
+            }
+        }
+
         logger.info("the schemeTYpe is {}",accountInfos.get(0).getSchemeType());
         model.addAttribute("accounts", accountInfos);
         if(((corporateExistingData != null)&&(accounts != null))&&(corporate.getCustomerId().equalsIgnoreCase(corporateExistingData.getCustomerId()))){
@@ -619,6 +632,28 @@ public class OpsCorporateController {
         }
         return "/ops/corporate/setup/account";
 
+    }
+
+    private List<AccountInfo> filterAccounts(List<AccountInfo> newAccs, List<AccountDTO> existingAccs) {
+
+        List<AccountInfo> accountInfos = new ArrayList<>();
+        logger.debug("Existing accounts: {}", existingAccs);
+        logger.debug("New Accounts: {}", newAccs);
+
+        for (AccountInfo accountInfo : newAccs) {
+            boolean existingAcc = false;
+            for (AccountDTO accountDTO : existingAccs) {
+                if (accountInfo.getAccountNumber().equals(accountDTO.getAccountNumber())) {
+                    existingAcc = true;
+                    break;
+                }
+            }
+            if (!existingAcc) {
+                accountInfos.add(accountInfo);
+            }
+        }
+        logger.debug("Filtered accounts: {}", accountInfos.toString());
+        return accountInfos;
     }
 
 
@@ -674,6 +709,19 @@ public class OpsCorporateController {
             model.addAttribute("selectedAccounts",accounts);
             model.addAttribute("corporate",corporateRequestDTO);
             logger.info("Corporate Request DTO {}", corporateRequestDTO.toString());
+            if((session.getAttribute("inputedUsers") != null)){
+                String users = session.getAttribute("inputedUsers").toString();
+//            logger.info("The inputed users are {}",users);
+                model.addAttribute("inputedUsers",users);
+            }else{
+                model.addAttribute("inputedUsers","");
+            }
+
+            if(corporateRequestDTO.getCorporateType().equalsIgnoreCase("SOLE")){
+                return "/ops/corporate/setup/addSoleUser";
+            }else{
+                return "/ops/corporate/setup/addauthorizer";
+            }
             return "/ops/corporate/setup/addauthorizer";
         }
         return "/ops/corporate/setup/account";
