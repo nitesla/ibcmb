@@ -11,6 +11,7 @@ public interface CreditRequestRepo extends CommonRepo<CreditRequest,Long>
 {
 
     List<CreditRequest> findByBulkTransfer_Id(Long id);
+  CreditRequest findByAccountNumberAndBulkTransfer_Id(String acctNo,Long id);
 
 
 
