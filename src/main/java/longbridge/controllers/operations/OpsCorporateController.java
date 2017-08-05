@@ -618,6 +618,28 @@ public class OpsCorporateController {
 
     }
 
+    private List<AccountInfo> filterAccounts(List<AccountInfo> newAccs, List<AccountDTO> existingAccs) {
+
+        List<AccountInfo> accountInfos = new ArrayList<>();
+        logger.debug("Existing accounts: {}", existingAccs);
+        logger.debug("New Accounts: {}", newAccs);
+
+        for (AccountInfo accountInfo : newAccs) {
+            boolean existingAcc = false;
+            for (AccountDTO accountDTO : existingAccs) {
+                if (accountInfo.getAccountNumber().equals(accountDTO.getAccountNumber())) {
+                    existingAcc = true;
+                    break;
+                }
+            }
+            if (!existingAcc) {
+                accountInfos.add(accountInfo);
+            }
+        }
+        logger.debug("Filtered accounts: {}", accountInfos.toString());
+        return accountInfos;
+    }
+
 
     @PostMapping("/accounts")
     public String addCorporateAccounts(@ModelAttribute("corporate") @Valid CorporateDTO corporate, BindingResult result, RedirectAttributes redirectAttributes, WebRequest request, HttpSession session, Locale locale, Model model) {
