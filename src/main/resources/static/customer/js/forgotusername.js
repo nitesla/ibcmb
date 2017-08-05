@@ -1,29 +1,41 @@
 var customerId = "null";
+var entityDetails = [4];
+entityDetails[0] = "";
+entityDetails[1] = "";
+var email = "";
 var noOfQs = 0;
 var secAnswer ="";
 /** This validates the input account number.
  *
  * @param accountNumber the account number to check
  */
-function validateAccountNo(accountNumber){
+function validateAccountNo(accountNumber, email){
  $('#myLoader').modal('show');
     var secQues;
+    var emaill = email;
+    console.log("the email "+emaill)
     $.ajax({
         type:'GET',
-        url:"/rest/retail/accountname/"+accountNumber,
+        url:"/rest/retail/"+emaill+"/"+accountNumber,
         async:false,
         cache:false,
         success:function(data1){
-            customerId = ''+String(data1);
-            if(customerId == ""){
+            entityDetails[0] = data1[0];
+            entityDetails[1] = data1[1];
+            customerId = entityDetails[0];
+            console.log("the userrrrrrr" + customerId)
+            email = entityDetails[1];
+            console.log("the email" + email)
+            if(customerId == "" && email == ""){
                 //invalid account number
-                document.getElementById("errorMess").textContent="Ensure you put in a valid account number.";
+                document.getElementById("errorMess").textContent="Ensure you put in a valid account number. and email";
                 $('#myModalError').modal('show');
+                $('#myLoader').modal('hide');
                 //alert("Account number not found");
             }else{
                 //valid account number
                 //alert("Customer Id: " + customerId);
-                $('input[name=customerId]').val(customerId);
+                //$('input[name=customerId]').val(customerId);
             }
         }
     });
@@ -211,7 +223,12 @@ form.children("div").steps({
         if(ACCOUNT_DETAILS_STEP === currentIndex){
             console.log("Current step is the account details step");
             var accountNumber = $('input[name="acct"]').val();
-            return isValid && validateAccountNo(accountNumber);
+            email = $('input[name="email"]').val();
+            console.log("email "+email);
+            return isValid && validateAccountNo(accountNumber,email);
+            // console.log("Current step is the account details step");
+            // var accountNumber = $('input[name="acct"]').val();
+            // return isValid && validateAccountNo(accountNumber);
         }
         if(SEND_USERNAME_STEP === currentIndex){
             console.log("Current step is the change password step");

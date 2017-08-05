@@ -1,6 +1,7 @@
 package longbridge.services.implementations;
 
 import longbridge.dtos.LocalBeneficiaryDTO;
+import longbridge.dtos.SettingDTO;
 import longbridge.exception.DuplicateObjectException;
 import longbridge.exception.InternetBankingException;
 import longbridge.exception.InternetBankingTransferException;
@@ -9,8 +10,10 @@ import longbridge.models.RetailUser;
 import longbridge.models.User;
 import longbridge.repositories.FinancialInstitutionRepo;
 import longbridge.repositories.LocalBeneficiaryRepo;
+import longbridge.services.ConfigurationService;
 import longbridge.services.IntegrationService;
 import longbridge.services.LocalBeneficiaryService;
+import longbridge.services.MailService;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -33,11 +37,16 @@ public class LocalBeneficiaryServiceImpl implements LocalBeneficiaryService {
     @Autowired
     ModelMapper modelMapper;
     @Autowired
-    MessageSource messageSource;
-    @Autowired
     FinancialInstitutionRepo financialInstitutionRepo;
     @Autowired
     IntegrationService integrationService;
+    @Autowired
+    MailService mailService;
+    @Autowired
+    private MessageSource messageSource;
+    @Autowired
+    private ConfigurationService configService;
+
     Locale locale = LocaleContextHolder.getLocale();
     private LocalBeneficiaryRepo localBeneficiaryRepo;
     private Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -58,6 +67,7 @@ public class LocalBeneficiaryServiceImpl implements LocalBeneficiaryService {
             validateBeneficiary(localBeneficiary, user);
             localBeneficiaryRepo.save(localBeneficiary);
             logger.trace("Beneficiary {} has been added", localBeneficiary.toString());
+            sendAlert(user,beneficiary.getAccountName());
             return messageSource.getMessage("beneficiary.add.success", null, locale);
         } catch (Exception e) {
             //throw new InternetBankingException(messageSource.getMessage("beneficiary.add.failure",null, locale), e);
@@ -127,10 +137,38 @@ public class LocalBeneficiaryServiceImpl implements LocalBeneficiaryService {
         if (financialInstitutionRepo.findByInstitutionCode(localBeneficiary.getBeneficiaryBank())==null)
             throw new InternetBankingException("transfer.beneficiary.invalid");
 
-       if (integrationService.doNameEnquiry(localBeneficiary.getBeneficiaryBank(), localBeneficiary.getAccountNumber()).getAccountName()==null)
-           throw new InternetBankingException("transfer.beneficiary.invalid");
+      if (!bankCode.equalsIgnoreCase(localBeneficiary.getBeneficiaryBank())){
+          if (integrationService.doNameEnquiry(localBeneficiary.getBeneficiaryBank(), localBeneficiary.getAccountNumber()).getAccountName()==null)
+              throw new InternetBankingException("transfer.beneficiary.invalid");
+      }
     }
 
+    @Async
+    private  void sendAlert(User user ,String beneficiary) {
+        try {
+             if (true) {
+                String preference = user.getAlertPreference().getCode();
 
+
+                String alertMessage = String.format(messageSource.getMessage("beneficiary.alert.message", null, locale),user.getUserName(),beneficiary);
+
+                String alertSubject = String.format(messageSource.getMessage("beneficiary.alert.subject", null, locale));
+                if ("SMS".equalsIgnoreCase(preference)) {
+                    integrationService.sendSMS(alertMessage,user.getPhoneNumber(),  alertSubject);
+
+                } else if ("EMAIL".equalsIgnoreCase(preference)) {
+                    mailService.send(user.getEmail(),alertSubject,alertMessage);
+
+                } else if ("BOTH".equalsIgnoreCase(preference)) {
+                    integrationService.sendSMS(alertMessage,user.getPhoneNumber(),  alertSubject);
+                    mailService.send(user.getEmail(),alertSubject,alertMessage);
+                }
+
+            }
+        } catch (Exception e) {
+            logger.error("EXCEPTION OCCURRED {}", e);
+        }
+
+    }
 
 }

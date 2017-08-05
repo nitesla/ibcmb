@@ -45,6 +45,9 @@ public interface AccountService {
      */
     AccountDTO getAccount(Long accId);
 
+
+    List<Account> addAccounts(List<AccountDTO> accountDTOs);
+
     Account getAccountByCustomerId(String customerId);
 
     /**

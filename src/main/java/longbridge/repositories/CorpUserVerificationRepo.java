@@ -17,15 +17,9 @@ import java.util.List;
 @Repository
 public interface CorpUserVerificationRepo extends CommonRepo<CorpUserVerification, Long>{
 
-    CorpUserVerification findFirstByEntityNameAndStatus(String name, VerificationStatus status);
-
     Page<CorpUserVerification> findByStatusAndInitiatedBy(VerificationStatus status, String initiatedBy, Pageable pageable);
 
-    Page<CorpUserVerification> findByOperationAndInitiatedByAndCorpUserTypeAndStatus(String operation, String initiatedBy, CorpUserType corpUserType, VerificationStatus status, Pageable pageable);
-
-    List<CorpUserVerification> findByStatusAndInitiatedBy(VerificationStatus status, String initiatedBy);
-
-    Page<CorpUserVerification> findByStatusAndInitiatedByAndCorpUserType(VerificationStatus status, String initiatedBy, CorpUserType corpUserType, Pageable pageable);
+    Page<CorpUserVerification>  findByCorpId(Long corpId, Pageable pageable);
 
     CorpUserVerification findFirstByEntityNameAndEntityIdAndStatus(String name, long id, VerificationStatus status);
 

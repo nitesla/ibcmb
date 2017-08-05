@@ -101,6 +101,7 @@ public class CorporateUser extends User implements PrettySerializer{
 					throws IOException, JsonProcessingException {
 
 				gen.writeStartObject();
+				gen.writeStringField("Corporate Name", value.corporate.getName());
 				gen.writeStringField("Username", value.userName);
 				gen.writeStringField("First Name", value.firstName);
 				gen.writeStringField("Last Name", value.lastName);
@@ -115,9 +116,10 @@ public class CorporateUser extends User implements PrettySerializer{
 					status = "Locked";
 				gen.writeStringField("Status", status);
 				gen.writeStringField("Role", value.role.getName());
-				if("MULTI".equals(corporate.getCorporateType())) {
-					gen.writeBooleanField("Is Admin", value.admin);
-				}
+				gen.writeStringField("User Type", value.corpUserType.name());
+//				if("MULTI".equals(corporate.getCorporateType())) {
+//					gen.writeBooleanField("Is Admin", value.admin);
+//				}
 				gen.writeEndObject();
 			}
 		};

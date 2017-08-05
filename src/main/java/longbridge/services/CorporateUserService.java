@@ -8,6 +8,7 @@ import longbridge.forms.AlertPref;
 import longbridge.forms.CustChangePassword;
 import longbridge.forms.CustResetPassword;
 import longbridge.models.Corporate;
+import longbridge.models.CorporateRole;
 import longbridge.models.CorporateUser;
 import longbridge.models.User;
 import org.springframework.data.domain.Page;
@@ -122,6 +123,8 @@ public interface CorporateUserService{
     String changePassword(CorporateUser user, CustChangePassword changePassword) throws PasswordException;
 
 
+    boolean userExists(String username);
+
     /** This sets the Alert preference of the specified user. Alert preference may
      * be SMS, EMAIL or BOTH
      * @param
@@ -129,6 +132,10 @@ public interface CorporateUserService{
      * @return
      */
     boolean changeAlertPreference(CorporateUser corporateUser, AlertPref alertPreference);
+
+    void addCorporateUserToAuthorizerRole(CorporateUser corporateUser, Long corpRoleId);
+
+    void changeCorporateUserAuthorizerRole(CorporateUser corporateUser, CorporateRole role, Long newRoleId);
 
     public String addCorpUserFromCorporateAdmin(CorpCorporateUserDTO user) throws InternetBankingException;
 
@@ -156,4 +163,6 @@ public interface CorporateUserService{
     String addUserFromCorporateAdmin(CorporateUserDTO user) throws InternetBankingException;
 
     String updateUserFromCorporateAdmin(CorporateUserDTO user) throws InternetBankingException;
+
+    String changeStatusFromCorporateAdmin(Long id) throws InternetBankingException;
 }

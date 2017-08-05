@@ -47,20 +47,7 @@ public class InternetbankingApplication extends SpringBootServletInitializer imp
     @Override
     public void run(String... strings) throws Exception {
 
-        Arrays.asList("SBA","CAA","ODA").stream()
-                .forEach(i ->{
-                    AccountRestriction restriction= new AccountRestriction();
-                    restriction.setDateCreated(new Date());
-                    restriction.setRestrictedFor("V");
-                    restriction.setRestrictionValue(i);
-                    restriction.setRestrictionType("ACC");
-                    accountRepo.save(restriction);
 
-
-                        }
-
-
-                );
 
    }
 

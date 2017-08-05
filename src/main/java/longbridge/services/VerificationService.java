@@ -1,8 +1,8 @@
 package longbridge.services;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import longbridge.dtos.VerificationDTO;
 import longbridge.exception.VerificationException;
-import longbridge.models.CorporateUser;
 import longbridge.models.Verification;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -18,15 +18,11 @@ public interface VerificationService {
      */
     String decline(VerificationDTO verification) throws VerificationException;
 
-    void save(CorporateUser user, String operation, String description) throws VerificationException;
-
     /**
      * This will verify/approve a Verification request.
      *
      * @param
      */
-
-
     int getTotalNumberForVerification();
 
 
@@ -43,6 +39,8 @@ public interface VerificationService {
     String verify(VerificationDTO verification) throws VerificationException;
 
     String verify(Long id) throws VerificationException;
+
+    String add(Object o, String operation, String description) throws JsonProcessingException;
 
     /**
      * This fetches the {@link Verification} object with the id {@code id}

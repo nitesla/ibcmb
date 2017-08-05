@@ -21,6 +21,8 @@
     <link th:href="@{~/bank/css/bootstrap-switch.min.css}" rel="stylesheet"/>
     <link th:href="@{~/bank/vendors/switchery/switchery.css}" rel="stylesheet" type="text/css"/>
     <link th:href="@{~/bank/vendors/bootstrap-dialog/css/bootstrap-dialog.css}" rel="stylesheet" type="text/css"/>
+
+    <link rel="stylesheet" type="text/css" th:href="@{~/bank/vendors/jquery-steps/css/jquery.steps.css}" />
     <title>Coronation Internet Banking</title>
 
 </head>
@@ -42,6 +44,8 @@
                     <li sec:authorize="hasAuthority('CODE_CONFIG')"><a href="/admin/codes/alltypes">Codes</a></li>
                     <li sec:authorize="hasAuthority('SETTING_CONFIG')"><a href="/admin/settings">System Settings</a></li>
                     <li sec:authorize="hasAuthority('AUDIT_CONFIG')"><a href="/admin/audit">Audit</a></li>
+                    <li><a href="/admin/secquestions/">Security Questions</a></li>
+                    <li><a href="/admin/phishing/">Phishing Image</a></li>
                     <li><a href="/admin/checker">Maker Checker</a></li>
                     <li><a href="/admin/job">Batch Job</a></li>
                 </ul>
@@ -60,6 +64,10 @@
                 <ul class="nav child_menu">
                     <li sec:authorize="hasAuthority('MANAGE_ROLES')"><a href="/admin/roles/">Role</a></li>
                     <li sec:authorize="hasAuthority('MANAGE_PERMISSIONS')"><a href="/admin/permissions/">Permission</a></li>
+
+                    <li><a href="/admin/secquestions/">Security Questions</a></li>
+                    <!--<li><a href="/admin/phishing/">Phishing Image</a></li>-->
+
                 </ul>
             </li>
             <li><a><i class="fa fa-table"></i> Content Management <span class="fa fa-chevron-down"></span></a>
@@ -142,6 +150,7 @@
 
             <li sec:authorize="hasAuthority('MANAGE_TRANSACTION')"><a><i class="fa fa-tasks"></i> Transactions <span class="fa fa-chevron-down"></span></a>
                 <ul class="nav child_menu">
+
                     <li sec:authorize="hasAuthority('ACCOUNT_RESTRICTION')"><a href="/ops/accounts/restriction/account"> Account Restriction</a>
                         <!--<ul class="nav child_menu">-->
                             <!--<li sec:authorize="hasAuthority('ACCOUNT_CLASS_RESTRICTION')" class="sub_menu"><a href="/ops/accounts/restriction/class">Global</a></li>-->

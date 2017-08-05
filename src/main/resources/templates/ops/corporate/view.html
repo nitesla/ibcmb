@@ -56,9 +56,22 @@
  									<li >
                                         <div class="col-lg-4">
                                             <div class="title-action">
-                                                <a href="/ops/corporates/new" class="btn btn-sm btn-primary"><i class="fa fa-plus"></i> Add Corporate</a>
+                                                <!--<a href="/ops/corporates/new" class="btn btn-sm btn-primary"><i class="fa fa-plus"></i> Add Corporate</a>-->
+
+                                                <!--<select name="corporateCategory" onchange="">-->
+                                                    <!--<option>Add Corporate</option>-->
+                                                    <!--<option value="sole">Sole</option>-->
+                                                    <!--<option value="multi">Multi</option>-->
+                                                <!--</select>-->
                                             </div>
                                         </div>
+                                    </li>
+                                    <li class=" btn-dropdown" >
+                                        <button href="#" class="btn btn-primary btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true"><i class="fa fa-plus"></i> Add Corporate</button>
+                                        <ul class="dropdown-menu">
+                                            <li><a th:href="@{/ops/corporates/new/1}"> <strong>SOLE</strong> </a></li>
+                                            <li><a th:href="@{/ops/corporates/new/2}"> <strong>MULTI</strong>  </a></li>
+                                        </ul>
                                     </li>
                                 </ul>
                                 <ul class="nav navbar-right panel_toolbox">

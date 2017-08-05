@@ -353,7 +353,7 @@
         <script th:src="@{~/customer/js/jquery.dataTables.js}"></script>
         <!--<script th:src="@{~/customer/js/date/js/bootstrap-datepicker.js}"></script>-->
         <script th:src="@{~/customer/js/momentMin.js}"></script>
-        <script th:src="@{~/customer/js/calendar.js}"></script>
+        <!--<script th:src="@{~/customer/js/calendar.js}"></script>-->
         <script th:src="@{~/customer/js/jquery.spring-friendly.min.js}"></script>
         <script th:src="@{~/customer/plugins/bootstrap-notify/bootstrap-notify.js}"></script>
         <script th:src="@{~/customer/plugins/bootstrap-daterangepicker/daterangepicker.js}"></script>
@@ -475,14 +475,16 @@
             /*]]>*/
         </script>
         <script th:inline='javascript'>
+            /*<![CDATA[*/
             $.sessionTimeout({
                 keepAliveUrl: '',
                 logoutUrl: '/retail/logout',
                 redirUrl: '/retail/logout',
-                warnAfter: null,
-                redirAfter: 10000,
+                warnAfter: [[${timeOut}]],
+                redirAfter: 15000,
                 countdownBar: true
             });
+            /*]]>*/
         </script>
 
 

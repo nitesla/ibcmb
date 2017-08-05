@@ -15,7 +15,9 @@
     <div class="col-xs-12 ml-15 " >
         <div class="col-xs-11 col-md-7 no-pad-lef  no-mt no-bd alert">
             <form id="local" method="post" th:action="@{/corporate/transfer/local/new}"
+
                               th:object="${corpLocalBeneficiaryDTO}">
+
                             <div class="form-group">
                                 <label>Beneficiary Bank</label>
                                 <select name="beneficiaryBank" class="form-control " th:field="*{beneficiaryBank}"
@@ -34,10 +36,10 @@
 
                             <div class="form-group">
                                 <label>Account Name</label>
-                                <input type="text" class="form-control" name="accountNumber" th:field="*{accountName}"
+                                <input type="text" class="form-control" name="accountNumber" th:field="*{preferredName}"
                                        id="acct_name" onblur="clearFields()" readonly="readonly" required="required"/>
                                 <label
-                                        th:if="${#fields.hasErrors('accountName')}" th:errors="*{accountName}"
+                                        th:if="${#fields.hasErrors('preferredName')}" th:errors="*{preferredName}"
                                         class="validation-message"></label>
                             </div>
                             <div class="form-group">
@@ -45,7 +47,7 @@
                                        placeholder="Beneficiary Alias" th:field="*{preferredName}"/>
                             </div>
                             <button id="localsave" style="display: none;" class="btn btn-link required-step">NEXT</button>
-                            <!--<button id="neq" type="button" class="btn btn-link required-step" onclick="getAccountName();">Name Enquiry</button>-->
+                            <!--<button id="neq" type="button" class="btn btn-link required-step" oncligetPreferredNameName();">Name Enquiry</button>-->
                             <form th:href="@{/corporate/benficiary}">
                                  <button  type='submit'  class="btn btn-link less-required"  >Cancel</button>
                             </form>

@@ -23,3 +23,4 @@ public class BulkTransferProcessor  implements ItemProcessor<TransferDTO,Transfe
         return item;
     }
 }
+

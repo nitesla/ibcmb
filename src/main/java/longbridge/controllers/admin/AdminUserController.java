@@ -46,13 +46,11 @@ import static org.springframework.data.repository.init.ResourceReader.Type.JSON;
 public class AdminUserController {
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
+
     @Autowired
     private AdminUserService adminUserService;
     @Autowired
     private RoleService roleService;
-
-    @Autowired
-    private BCryptPasswordEncoder passwordEncoder;
 
     @Autowired
     private PasswordPolicyService passwordPolicyService;
@@ -63,14 +61,9 @@ public class AdminUserController {
     @Autowired
     private ConfigurationService configService;
 
-    @Autowired
-    private VerificationService verificationService;
-
-    ObjectMapper mapper = new ObjectMapper();
 
     @GetMapping("/new")
-    public String addUser(Model model)
-    {
+    public String addUser(Model model) {
         Iterable<RoleDTO> roles = roleService.getRoles();
         model.addAttribute("adminUser", new AdminUserDTO());
         model.addAttribute("roles", roles);
@@ -78,34 +71,28 @@ public class AdminUserController {
     }
 
     @PostMapping
-    public String createUser(@ModelAttribute("adminUser") @Valid AdminUserDTO adminUser, BindingResult result, RedirectAttributes redirectAttributes, Locale locale,Principal principal) {
+    public String createUser(@ModelAttribute("adminUser") @Valid AdminUserDTO adminUser, BindingResult result, RedirectAttributes redirectAttributes, Locale locale, Principal principal) {
         if (result.hasErrors()) {
             result.addError(new ObjectError("invalid", messageSource.getMessage("form.fields.required", null, locale)));
             return "adm/admin/add";
         }
         try {
-             AdminUser userCreatedBy = adminUserService.getUserByName(principal.getName());
             String message = adminUserService.addUser(adminUser);
             redirectAttributes.addFlashAttribute("message", message);
             return "redirect:/admin/users";
-            }
-        catch (DuplicateObjectException doe) {
+        } catch (DuplicateObjectException doe) {
             result.addError(new ObjectError("error", doe.getMessage()));
             logger.error("Error creating admin user {}", adminUser.getUserName(), doe);
             return "adm/admin/add";
-        }
-
-        catch (EntrustException se) {
+        } catch (EntrustException se) {
             result.addError(new ObjectError("error", se.getMessage()));
             logger.error("Error creating admin user on Entrust", se);
             return "adm/admin/add";
-        }
-        catch (InternetBankingSecurityException se) {
+        } catch (InternetBankingSecurityException se) {
             result.addError(new ObjectError("error", se.getMessage()));
             logger.error("Error creating admin user", se);
             return "adm/admin/add";
-        }
-        catch (InternetBankingException ibe) {
+        } catch (InternetBankingException ibe) {
             result.addError(new ObjectError("error", ibe.getMessage()));
             logger.error("Error creating admin user", ibe);
             return "adm/admin/add";
@@ -117,16 +104,14 @@ public class AdminUserController {
     @GetMapping("/all")
     public
     @ResponseBody
-    DataTablesOutput<AdminUserDTO> getUsers(DataTablesInput input,@RequestParam("csearch") String search) {
+    DataTablesOutput<AdminUserDTO> getUsers(DataTablesInput input, @RequestParam("csearch") String search) {
         Pageable pageable = DataTablesUtils.getPageable(input);
         Page<AdminUserDTO> adminUsers = null;
-        if (StringUtils.isNoneBlank(search))
-        {
-        	adminUsers = adminUserService.findUsers(search,pageable);
-		}else
-        {
-			adminUsers = adminUserService.getUsers(pageable);
-		}
+        if (StringUtils.isNoneBlank(search)) {
+            adminUsers = adminUserService.findUsers(search, pageable);
+        } else {
+            adminUsers = adminUserService.getUsers(pageable);
+        }
         DataTablesOutput<AdminUserDTO> out = new DataTablesOutput<AdminUserDTO>();
         out.setDraw(input.getDraw());
         out.setData(adminUsers.getContent());
@@ -167,26 +152,20 @@ public class AdminUserController {
 
 
     @PostMapping("/update")
-    public String updateUser(@ModelAttribute("adminUser") @Valid AdminUserDTO adminUser, BindingResult result, RedirectAttributes redirectAttributes, Locale locale,Principal principal) {
-        if (result.hasErrors())
-        {
+    public String updateUser(@ModelAttribute("adminUser") @Valid AdminUserDTO adminUser, BindingResult result, RedirectAttributes redirectAttributes, Locale locale, Principal principal) {
+        if (result.hasErrors()) {
             result.addError(new ObjectError("invalid", messageSource.getMessage("form.fields.required", null, locale)));
             return "adm/admin/edit";
         }
-        try
-        {
+        try {
             String message = adminUserService.updateUser(adminUser);
             redirectAttributes.addFlashAttribute("message", message);
             return "redirect:/admin/users";
-        }
-        catch (DuplicateObjectException ibe)
-        {
+        } catch (DuplicateObjectException ibe) {
             result.addError(new ObjectError("error", ibe.getMessage()));
             logger.error("Existing user found", ibe);
             return "adm/admin/edit";
-        }
-        catch (InternetBankingException ibe)
-        {
+        } catch (InternetBankingException ibe) {
             result.addError(new ObjectError("error", ibe.getMessage()));
             logger.error("Error updating admin user", ibe);
             return "adm/admin/edit";
@@ -198,12 +177,10 @@ public class AdminUserController {
         try {
             String message = adminUserService.deleteUser(userId);
             redirectAttributes.addFlashAttribute("message", message);
-        }
-        catch (InternetBankingSecurityException se) {
+        } catch (InternetBankingSecurityException se) {
             redirectAttributes.addFlashAttribute("failure", se.getMessage());
             logger.error("Error deleting admin user", se);
-        }
-        catch (InternetBankingException ibe) {
+        } catch (InternetBankingException ibe) {
             redirectAttributes.addFlashAttribute("failure", ibe.getMessage());
             logger.error("Error deleting admin user", ibe);
         }
@@ -236,18 +213,11 @@ public class AdminUserController {
         try {
             String message = adminUserService.resetPassword(id);
             redirectAttributes.addFlashAttribute("message", message);
-        }
-
-
-        catch (PasswordException pe)
-        {
+        } catch (PasswordException pe) {
             redirectAttributes.addFlashAttribute("failure", pe.getMessage());
             logger.error("Error resetting password for admin user", pe);
-        }
-
-        catch (InternetBankingException e)
-        {
-            redirectAttributes.addFlashAttribute("failure",e.getMessage());
+        } catch (InternetBankingException e) {
+            redirectAttributes.addFlashAttribute("failure", e.getMessage());
         }
 
         return "redirect:/admin/users";

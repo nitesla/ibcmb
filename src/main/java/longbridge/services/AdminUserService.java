@@ -121,4 +121,5 @@ public interface AdminUserService {
     String changeDefaultPassword(AdminUser user, ChangeDefaultPassword changePassword) throws PasswordException;
 
     String resetPassword(String username) throws PasswordException;
+     void sendCredentialNotification(AdminUser user);
 }

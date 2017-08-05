@@ -1,12 +1,11 @@
 package longbridge.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.Where;
 import org.hibernate.envers.Audited;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
+import javax.persistence.*;
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -15,17 +14,20 @@ import java.util.List;
 @Entity
 @Audited(withModifiedFlag=true)
 @Where(clause ="del_Flag='N'" )
-public class BulkTransfer extends AbstractEntity{
-    private String debitAccount;
-    private String requestDate;
+public class BulkTransfer extends TransRequest{
     private String refCode;
     private  String status;
+    @OneToOne(cascade = CascadeType.ALL)
+    @JsonIgnore
+    private  CorpTransferAuth transferAuth;
 
     @OneToMany(mappedBy = "bulkTransfer",cascade = {CascadeType.ALL})
     private List<CreditRequest> crRequestList;
 
     @ManyToOne
     private Corporate corporate;
+
+
 
     public Corporate getCorporate() {
         return corporate;
@@ -35,42 +37,41 @@ public class BulkTransfer extends AbstractEntity{
         this.corporate = corporate;
     }
 
-    public String getDebitAccount() {
-        return debitAccount;
+
+    public CorpTransferAuth getTransferAuth() {
+        return transferAuth;
     }
 
-    public void setDebitAccount(String debitAccount) {
-        this.debitAccount = debitAccount;
-    }
-
-
-    public String getRequestDate() {
-        return requestDate;
-    }
-
-    public void setRequestDate(String requestDate) {
-        this.requestDate = requestDate;
+    public void setTransferAuth(CorpTransferAuth transferAuth) {
+        this.transferAuth = transferAuth;
     }
 
     public List<CreditRequest> getCrRequestList() {
-        return crRequestList;
+		return crRequestList;
+	}
+
+	public void setCrRequestList(List<CreditRequest> crRequestList) {
+		this.crRequestList = crRequestList;
+	}
+
+	public String getRefCode() {
+		return refCode;
+	}
+
+	public void setRefCode(String refCode) {
+		this.refCode = refCode;
+	}
+
+    public String getStatus() {
+        return status;
     }
 
-    public void setCrRequestList(List<CreditRequest> crRequestList) {
-        this.crRequestList = crRequestList;
+    public void setStatus(String status) {
+        this.status = status;
     }
 
-    public String getRefCode() {
-        return refCode;
-    }
+	public BulkTransfer(String reference, String status, List<CreditRequest> creditRequestList, Corporate corporate) {
 
-    public void setRefCode(String refCode) {
-        this.refCode = refCode;
-    }
-
-    public BulkTransfer(String debitAccount, String date, String reference, String status, List<CreditRequest> creditRequestList, Corporate corporate) {
-        this.debitAccount = debitAccount;
-        this.requestDate = date;
         this.refCode = reference;
         this.status = status;
         this.crRequestList = creditRequestList;
@@ -81,12 +82,5 @@ public class BulkTransfer extends AbstractEntity{
     public BulkTransfer() {
     }
 
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
 
 }

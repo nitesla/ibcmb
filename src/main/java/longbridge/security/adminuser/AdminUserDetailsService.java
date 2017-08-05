@@ -6,7 +6,6 @@ import longbridge.repositories.AdminUserRepo;
 import longbridge.security.CustomBruteForceService;
 import longbridge.security.FailedLoginService;
 import longbridge.security.IpAddressUtils;
-import longbridge.security.SessionUtils;
 import longbridge.security.userdetails.CustomUserPrincipal;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,10 +15,6 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
-
-import javax.servlet.http.HttpSession;
 
 /**
  * Created by ayoade_farooq@yahoo.com on 4/11/2017.
@@ -34,32 +29,19 @@ public class AdminUserDetailsService implements UserDetailsService {
     private IpAddressUtils addressUtils;
     private Logger logger = LoggerFactory.getLogger(this.getClass());
     private FailedLoginService failedLoginService;
-    private SessionUtils sessionUtils;
-@Autowired
-    public void setAdminUserRepo(AdminUserRepo adminUserRepo) {
+
+    @Autowired
+    public AdminUserDetailsService(AdminUserRepo adminUserRepo, CustomBruteForceService bruteForceService, IpAddressUtils addressUtils
+            , FailedLoginService failedLoginService) {
         this.adminUserRepo = adminUserRepo;
-    }
-    @Autowired
-    public void setBruteForceService(CustomBruteForceService bruteForceService) {
-        this.bruteForceService = bruteForceService;
-    }
-    @Autowired
-    public void setAddressUtils(IpAddressUtils addressUtils) {
         this.addressUtils = addressUtils;
-    }
-    @Autowired
-    public void setFailedLoginService(FailedLoginService failedLoginService) {
+        this.bruteForceService = bruteForceService;
         this.failedLoginService = failedLoginService;
-    }
-    @Autowired
-    public void setSessionUtils(SessionUtils sessionUtils) {
-        this.sessionUtils = sessionUtils;
     }
 
     @Override
     @Transactional(readOnly = true)
     public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
-       sessionUtils.clearSession();
         final String ip = addressUtils.getClientIP();
         logger.trace("User with IP Address {} trying to login", ip);
         //CHECK IF THE IP HAS BEEN BLOCKED BY THE CUSTOM BRUTE FORCE SERVICE
