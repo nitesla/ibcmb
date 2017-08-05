@@ -285,7 +285,7 @@ public class CorporateServiceImpl implements CorporateService {
         SettingDTO setting = configService.getSettingByName("SOLE_CORPORATE_ROLE");
         if (setting != null && setting.isEnabled()) {
             String roleName = setting.getValue();
-            role = roleRepo.findFirstByName(roleName);
+            role = roleRepo.findByUserTypeAndName(UserType.CORPORATE,roleName);
         }
         return role;
     }

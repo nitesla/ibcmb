@@ -27,7 +27,7 @@ public class CorporateRequestDTO implements PrettySerializer {
     @NotEmpty(message = "corporateId")
     private String corporateId;
     private String bvn;
-    private  String status;
+    private String status;
     private String rcNumber;
     @NotEmpty(message = "customerId")
     private String customerId;
@@ -182,22 +182,22 @@ public class CorporateRequestDTO implements PrettySerializer {
     }
 
 
-    @Override @JsonIgnore
+    @Override
+    @JsonIgnore
     public JsonSerializer<CorporateRequestDTO> getSerializer() {
         return new JsonSerializer<CorporateRequestDTO>() {
             @Override
             public void serialize(CorporateRequestDTO value, JsonGenerator gen, SerializerProvider serializers)
-                    throws IOException, JsonProcessingException
-            {
+                    throws IOException, JsonProcessingException {
                 gen.writeStartObject();
-                gen.writeStringField("CIFID",value.customerId);
-                gen.writeStringField("Corporate Type",value.corporateType);
-                gen.writeStringField("Corporate Name",value.corporateName);
-                gen.writeStringField("Unique Corporate ID",value.corporateId);
+                gen.writeStringField("CIFID", value.customerId);
+                gen.writeStringField("Corporate Type", value.corporateType);
+                gen.writeStringField("Corporate Name", value.corporateName);
+                gen.writeStringField("Unique Corporate ID", value.corporateId);
 
                 gen.writeObjectFieldStart("Accounts");
                 Integer count = 0;
-                for(AccountDTO accountDTO : value.accounts) {
+                for (AccountDTO accountDTO : value.accounts) {
                     gen.writeObjectFieldStart((++count).toString());
                     gen.writeStringField("Account Number", accountDTO.getAccountNumber());
                     gen.writeEndObject();
@@ -207,82 +207,82 @@ public class CorporateRequestDTO implements PrettySerializer {
 
                 gen.writeObjectFieldStart("Users");
                 count = 0;
-                for(CorporateUserDTO user : value.corporateUsers){
+                for (CorporateUserDTO user : value.corporateUsers) {
 
-                        gen.writeObjectFieldStart((++count).toString());
-                        //gen.writeStartObject();
-                        gen.writeStringField("Username", user.getUserName());
-                        gen.writeStringField("First Name", user.getFirstName());
-                        gen.writeStringField("Last Name", user.getLastName());
-                        gen.writeStringField("Email", user.getEmail());
-                        gen.writeStringField("Phone Number", user.getPhoneNumber());
+                    gen.writeObjectFieldStart((++count).toString());
+                    //gen.writeStartObject();
+                    gen.writeStringField("Username", user.getUserName());
+                    gen.writeStringField("First Name", user.getFirstName());
+                    gen.writeStringField("Last Name", user.getLastName());
+                    gen.writeStringField("Email", user.getEmail());
+                    gen.writeStringField("Phone Number", user.getPhoneNumber());
+
+                    if ("MULTI".equals(value.getCorporateType())) {
                         gen.writeStringField("User Type", user.getUserType());
-                        if("AUTHORIZER".equals(user.getUserType())){
+                        if ("AUTHORIZER".equals(user.getUserType())) {
                             gen.writeStringField("Authorizer Level", user.getAuthorizerLevel());
 
                         }
-                        gen.writeStringField("Role", user.getRole());
-                        gen.writeEndObject();
-                }
-                gen.writeEndObject();
-
-                gen.writeObjectFieldStart("Authorizer Levels");
-                count = 0;
-                for(AuthorizerLevelDTO authorizer : value.authorizers){
-
-                    gen.writeObjectFieldStart((++count).toString());
-                    gen.writeStringField("Name", authorizer.getName());
-                    gen.writeNumberField("Level",authorizer.getLevel());
-
+                    }
+                    gen.writeStringField("Role", user.getRole());
                     gen.writeEndObject();
                 }
                 gen.writeEndObject();
 
-
-                gen.writeObjectFieldStart("Transaction Rules");
-                count = 0;
-                for(CorpTransferRuleDTO transferRule : value.corpTransferRules){
-
-                    gen.writeObjectFieldStart((++count).toString());
-
-                    gen.writeStringField("Lower Amount", transferRule.getLowerLimitAmount());
-                    if("Unlimited".equals(transferRule.getUpperLimitAmount())){
-                        gen.writeStringField("Upper Amount","Unlimited");
-                    }
-                    else {
-                        gen.writeStringField("Upper Amount",transferRule.getUpperLimitAmount());
-
-                    }
-                    gen.writeStringField("Currency", transferRule.getCurrency());
-
-                    if(transferRule.isAnyCanAuthorize()) {
-                        gen.writeStringField("Authorizers Required", "ANY");
-                    }
-                    else {
-                        gen.writeStringField("Authorizers Required", "ALL");
-
-                    }
-
+                if ("MULTI".equals(value.getCorporateType())) {
                     gen.writeObjectFieldStart("Authorizer Levels");
-                    Integer countAuth = 0;
-                    for(String authorizer : transferRule.getAuthorizers()){
-                        gen.writeObjectFieldStart((++countAuth).toString());
-                        gen.writeStringField("Name",authorizer);
+                    count = 0;
+                    for (AuthorizerLevelDTO authorizer : value.authorizers) {
+
+                        gen.writeObjectFieldStart((++count).toString());
+                        gen.writeStringField("Name", authorizer.getName());
+                        gen.writeNumberField("Level", authorizer.getLevel());
+
                         gen.writeEndObject();
                     }
                     gen.writeEndObject();
-                    gen.writeEndObject();
+
+
+                    gen.writeObjectFieldStart("Transaction Rules");
+                    count = 0;
+                    for (CorpTransferRuleDTO transferRule : value.corpTransferRules) {
+
+                        gen.writeObjectFieldStart((++count).toString());
+
+                        gen.writeStringField("Lower Amount", transferRule.getLowerLimitAmount());
+                        if ("Unlimited".equals(transferRule.getUpperLimitAmount())) {
+                            gen.writeStringField("Upper Amount", "Unlimited");
+                        } else {
+                            gen.writeStringField("Upper Amount", transferRule.getUpperLimitAmount());
+
+                        }
+                        gen.writeStringField("Currency", transferRule.getCurrency());
+
+                        if (transferRule.isAnyCanAuthorize()) {
+                            gen.writeStringField("Authorizers Required", "ANY");
+                        } else {
+                            gen.writeStringField("Authorizers Required", "ALL");
+
+                        }
+
+                        gen.writeObjectFieldStart("Authorizer Levels");
+                        Integer countAuth = 0;
+                        for (String authorizer : transferRule.getAuthorizers()) {
+                            gen.writeObjectFieldStart((++countAuth).toString());
+                            gen.writeStringField("Name", authorizer);
+                            gen.writeEndObject();
+                        }
+                        gen.writeEndObject();
+                        gen.writeEndObject();
+                    }
                 }
-                gen.writeEndObject();
-
-
-                gen.writeEndObject();
             }
+
         };
     }
 
-    private  String getStatusDescription(String status){
-        String description =null;
+    private String getStatusDescription(String status) {
+        String description = null;
         if ("A".equals(status))
             description = "Active";
         else if ("I".equals(status))
