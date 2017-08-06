@@ -17,7 +17,7 @@ public class PasswordCreator {
     private String LOCASE_ALPHABETS = "abcdefghjkmnpqrstuvwxyz";
     private String UPCASE_ALPHABETS = "ABCDEFGHJKMNPQRSTUVWXYZ";
     private String ALL_ALPHABETS = "ABCDEFGHJKMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz";
-    private String SPECIAL_CHARS = "@#$%^)(&";
+    private String SPECIAL_CHARS = "@#$%&";
     private String ALL = DIGITS + LOCASE_ALPHABETS + UPCASE_ALPHABETS + SPECIAL_CHARS;
     private char[] upcaseArray = UPCASE_ALPHABETS.toCharArray();
     private char[] locaseArray = LOCASE_ALPHABETS.toCharArray();
@@ -38,9 +38,9 @@ public class PasswordCreator {
         numOfSpecial=noOfSpecial;
         int count = 0;
 
-        if(specialChars!=null) {
-            specialCharsArray = specialChars.toCharArray();
-        }
+//        if(specialChars!=null) {
+//            specialCharsArray = specialChars.toCharArray();
+//        }
         StringBuilder sb = new StringBuilder();
         // get at least one lowercase letter
         sb.append(locaseArray[random.nextInt(locaseArray.length)]);

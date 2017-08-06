@@ -56,7 +56,7 @@ public class TransferStatusJobLauncher {
 
     @Scheduled(cron = "${rest.api.to.database.job.cron}")
     void updateTransferStatusJob() throws JobParametersInvalidException, JobExecutionAlreadyRunningException, JobRestartException, JobInstanceAlreadyCompleteException {
-        LOGGER.info("Starting restJob job");
+//        LOGGER.info("Starting restJob job");
 
         List<BulkTransfer> transferList = bulkTransferRepo.findByStatusNotInIgnoreCase(Arrays.asList("S"));
         transferList.stream().filter(Objects::nonNull)
@@ -66,7 +66,7 @@ public class TransferStatusJobLauncher {
 
                             try {
                                 String batch = "" + i.getId();
-                                LOGGER.info("running update job for batch  {}", batch);
+//                                LOGGER.info("running update job for batch  {}", batch);
                                 jobLauncher.run(job, newExecution(batch));
                             } catch (JobExecutionAlreadyRunningException e) {
                                 e.printStackTrace();
@@ -84,7 +84,7 @@ public class TransferStatusJobLauncher {
 
         // jobLauncher.run(job, newExecution(s));
 
-        LOGGER.info("Stopping restJob job");
+//        LOGGER.info("Stopping restJob job");
     }
 
     private JobParameters newExecution(String s) {
