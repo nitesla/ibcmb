@@ -69,7 +69,7 @@
                                                     <button type="submit" id="button_del"
                                                             class="btn-xs btn-default btn">
                                                         <i class="fa fa-user"></i> Remove
-                                                        </button>
+                                                    </button>
                                                 </div>
                                                 <div class="form-group">
                                                     <div class="col-md-12 col-sm-6 col-xs-12">
@@ -83,7 +83,7 @@
 
                                                             </tr>
                                                             </thead>
-                                                        <span th:if="${authorizerList} != 'null'">
+                                                            <span th:if="${authorizerList} != 'null'">
                                                         <tr th:each="list : ${authorizerList}">
                                                             <td th:text="${list.name}"></td>
                                                             <td th:text="${list.level}"></td>
@@ -100,8 +100,11 @@
 
                                             <div class="form-group">
                                                 <div class="class=col-sm-4 col-sm-offset-2" align="left">
-                                                    <a type="submit" th:href="@{/ops/corporates/back/account}" id="back" class="btn btn-primary">Previous</a>
-                                                    <button class="btn btn-primary" type="button" onclick="goBackToAccount()" id="getData">Previous</button>
+                                                    <a type="submit" th:href="@{/ops/corporates/back/account}" id="back"
+                                                       class="btn btn-primary">Previous</a>
+                                                    <button class="btn btn-primary" type="button"
+                                                            onclick="goBackToAccount()" id="getData">Previous
+                                                    </button>
                                                     <button type="submit" id="button_submit" class="btn btn-primary">
                                                         Next
                                                     </button>
@@ -158,7 +161,8 @@
 
                                                 <input id="alevel" type="number" class="form-control" name="level"/>
                                                 <p id="levelError" style="color: red;display:none">Level is required</p>
-                                                <p id="invalidLevelError" style="color: red;display:none">Enter valid level</p>
+                                                <p id="invalidLevelError" style="color: red;display:none">Enter valid
+                                                    level</p>
 
 
                                             </div>
@@ -234,6 +238,12 @@
         $('#button_submit').click(function (e) {
             e.preventDefault()
             contactsTab = $('#mytab').DataTable();
+            var count = contactsTab.data().length;
+
+            if (count < 1) {
+                return;
+            }
+
             data = JSON.stringify(contactsTab.data().toArray());
             $("input[name='authorizers']").val(data);
             $('#authorizerForm').submit();
@@ -272,9 +282,9 @@
             }
 
             var lev = parseInt(level);
-            if(lev<1){
-              $("#invalidLevelError").show();
-              return;
+            if (lev < 1) {
+                $("#invalidLevelError").show();
+                return;
             }
 
             var arr = contactsTab.data().toArray();
@@ -352,15 +362,15 @@
         $.ajax({
             type: 'GET',
             url: '/ops/corporates/back/authorizer/keep',
-            asyn:false,
+            asyn: false,
 //					dataType: 'String',
-            data: {authorizers:data},
+            data: {authorizers: data},
             error: function (data) {
 //                $('#loading-icon').hide();
                 // alert("failure");
 //                $('#sub').disabled();
-            },success: function (data) {
-                console.log("success "+data);
+            }, success: function (data) {
+                console.log("success " + data);
                 $('#back')[0].click();
             }
 

@@ -61,9 +61,18 @@ public class MainController {
     private PasswordPolicyService passwordPolicyService;
 
     @GetMapping("/testing")
+    @ResponseBody
     public String testing() {
-        return "abcd";
+
+//        try {
+            throw new RuntimeException("I just threw this exception...Ndo");
+
+//        }
+//        catch (Exception e){
+//            return "I just caught the exception..that's cool";
+//        }
     }
+
 
 
     @RequestMapping(value = {"/", "/home"})

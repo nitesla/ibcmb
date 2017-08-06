@@ -344,6 +344,11 @@
         $('#button_submit').click(function (e) {
             e.preventDefault()
             contactsTab = $('#mytab').DataTable();
+            var count = contactsTab.data().length;
+
+            if (count < 1) {
+                return;
+            }
             data = JSON.stringify(contactsTab.data().toArray());
             $("input[name='users']").val(data);
             $('#userForm').submit();
