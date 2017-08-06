@@ -209,15 +209,15 @@ public class OpsCorporateController {
     @GetMapping(path = "/{corpId}/accounts")
     public
     @ResponseBody
-    DataTablesOutput<AccountDTO> getAccounts(@PathVariable Long corpId, DataTablesInput input) {
+    DataTablesOutput<Account> getAccounts(@PathVariable Long corpId, DataTablesInput input) {
 
-        Pageable pageable = DataTablesUtils.getPageable(input);
-        Page<AccountDTO> accounts = corporateService.getAccounts(corpId, pageable);
-        DataTablesOutput<AccountDTO> out = new DataTablesOutput<AccountDTO>();
+//        Pageable pageable = DataTablesUtils.getPageable(input);
+        List<Account> accounts = corporateService.getAccounts(corpId);
+        DataTablesOutput<Account> out = new DataTablesOutput<Account>();
         out.setDraw(input.getDraw());
-        out.setData(accounts.getContent());
-        out.setRecordsFiltered(accounts.getTotalElements());
-        out.setRecordsTotal(accounts.getTotalElements());
+        out.setData(accounts);
+        out.setRecordsFiltered(accounts.size());
+        out.setRecordsTotal(accounts.size());
         return out;
     }
 

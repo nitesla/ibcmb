@@ -52,11 +52,10 @@ public class CorporateUserDTO  implements PrettySerializer{
     private String status;
     private Date expiryDate;
     private Date lockedUntilDate;
-    private Date lastLoginDate;
-    private String lastLogin;
+    private String lastLoginDate;
     private int noOfLoginAttempts;
     private Code alertPreference;
-    private String createdOn;
+    private String createdOnDate;
     private Long corporateRoleId;
     private String corporateRole;
     private List<String> securityQuestion;
@@ -200,13 +199,6 @@ public class CorporateUserDTO  implements PrettySerializer{
         this.ruleMember = ruleMember;
     }
 
-    public String getLastLogin() {
-        return lastLogin;
-    }
-
-    public void setLastLogin(String lastLogin) {
-        this.lastLogin = lastLogin;
-    }
 
     public String getCorporateType() {
         return corporateType;
@@ -224,13 +216,6 @@ public class CorporateUserDTO  implements PrettySerializer{
         this.lockedUntilDate = lockedUntilDate;
     }
 
-    public Date getLastLoginDate() {
-        return lastLoginDate;
-    }
-
-    public void setLastLoginDate(Date lastLoginDate) {
-        this.lastLoginDate = lastLoginDate;
-    }
 
     public int getNoOfLoginAttempts() {
         return noOfLoginAttempts;
@@ -248,12 +233,20 @@ public class CorporateUserDTO  implements PrettySerializer{
         this.alertPreference = alertPreference;
     }
 
-    public String getCreatedOn() {
-        return createdOn;
+    public String getLastLoginDate() {
+        return lastLoginDate;
     }
 
-    public void setCreatedOn(String createdOn) {
-        this.createdOn = createdOn;
+    public void setLastLoginDate(String lastLoginDate) {
+        this.lastLoginDate = lastLoginDate;
+    }
+
+    public String getCreatedOnDate() {
+        return createdOnDate;
+    }
+
+    public void setCreatedOnDate(String createdOnDate) {
+        this.createdOnDate = createdOnDate;
     }
 
     public Long getCorporateRoleId() {
@@ -425,10 +418,10 @@ public class CorporateUserDTO  implements PrettySerializer{
                 ", expiryDate=" + expiryDate +
                 ", lockedUntilDate=" + lockedUntilDate +
                 ", lastLoginDate=" + lastLoginDate +
-                ", lastLogin='" + lastLogin + '\'' +
+                ", lastLogin='" + lastLoginDate + '\'' +
                 ", noOfLoginAttempts=" + noOfLoginAttempts +
                 ", alertPreference=" + alertPreference +
-                ", createdOn='" + createdOn + '\'' +
+                ", createdOn='" + createdOnDate + '\'' +
                 ", corporateRoleId=" + corporateRoleId +
                 ", corporateRole='" + corporateRole + '\'' +
                 ", securityQuestion=" + securityQuestion +

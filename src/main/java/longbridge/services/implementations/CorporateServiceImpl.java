@@ -175,6 +175,10 @@ public class CorporateServiceImpl implements CorporateService {
     }
 
     public void saveCorporateRequest(CorporateRequestDTO corporateRequestDTO) throws InternetBankingException {
+
+//        if()
+
+
         Corporate corporate = new Corporate();
         corporate.setCorporateType(corporateRequestDTO.getCorporateType());
         corporate.setName(corporateRequestDTO.getCorporateName());
@@ -501,6 +505,14 @@ public class CorporateServiceImpl implements CorporateService {
     }
 
     @Override
+    public List<Account> getAccounts(Long corpId) {
+        Corporate corporate = corporateRepo.findOne(corpId);
+        return corporate.getAccounts();
+    }
+
+
+
+    @Override
     @Verifiable(operation = "ADD_CORPORATE_RULE", description = "Add Corporate Transfer Rule")
     public String addCorporateRule(CorpTransferRuleDTO transferRuleDTO) throws InternetBankingException {
 
@@ -568,6 +580,8 @@ public class CorporateServiceImpl implements CorporateService {
         Page<CorporateRoleDTO> pageImpl = new PageImpl<CorporateRoleDTO>(dtOs, pageable, t);
         return pageImpl;
     }
+
+
 
     @Override
     public boolean corporateIdExists(String corporateId) {
@@ -908,7 +922,7 @@ public class CorporateServiceImpl implements CorporateService {
     private CorporateDTO convertEntityToDTO(Corporate corporate) {
         CorporateDTO corporateDTO = modelMapper.map(corporate, CorporateDTO.class);
         if (corporate.getCreatedOnDate() != null) {
-            corporateDTO.setCreatedOn(DateFormatter.format(corporate.getCreatedOnDate()));
+            corporateDTO.setCreatedOnDate(DateFormatter.format(corporate.getCreatedOnDate()));
         }
         corporateDTO.setStatus(corporate.getStatus());
         return corporateDTO;

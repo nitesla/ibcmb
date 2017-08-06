@@ -453,10 +453,10 @@ public class AdminUserServiceImpl implements AdminUserService {
         AdminUserDTO adminUserDTO = modelMapper.map(adminUser, AdminUserDTO.class);
         adminUserDTO.setRoleId(adminUser.getRole().getId().toString());
         if (adminUser.getCreatedOnDate() != null) {
-            adminUserDTO.setCreatedOn(DateFormatter.format(adminUser.getCreatedOnDate()));
+            adminUserDTO.setCreatedOnDate(DateFormatter.format(adminUser.getCreatedOnDate()));
         }
         if (adminUser.getLastLoginDate() != null) {
-            adminUserDTO.setLastLogin(DateFormatter.format(adminUser.getLastLoginDate()));
+            adminUserDTO.setLastLoginDate(DateFormatter.format(adminUser.getLastLoginDate()));
         }
 
         return adminUserDTO;

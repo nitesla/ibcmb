@@ -151,6 +151,8 @@ public interface CorporateService{
     @PreAuthorize("hasAuthority('GET_CORPORATE_ACCOUNT')")
    Page<AccountDTO> getAccounts(Long corpId, Pageable pageDetails);
 
+    List<Account> getAccounts(Long corpId);
+
     /**
      * Adds a corporate transfer rule
      * @param transferRuleDTO the transfer rule object

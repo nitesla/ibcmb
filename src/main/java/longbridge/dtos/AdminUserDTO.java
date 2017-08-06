@@ -30,9 +30,9 @@ public class AdminUserDTO {
     @NotEmpty(message = "phoneNumber")
     private String phoneNumber;
     private String password;
-    private String createdOn;
+    private String createdOnDate;
     private Date expiryDate;
-    private String lastLogin;
+    private String lastLoginDate;
     private String status;
     @NotEmpty(message = "roleId")
     private String roleId;
@@ -114,20 +114,20 @@ public class AdminUserDTO {
         this.password = password;
     }
 
-    public String getCreatedOn() {
-        return createdOn;
+    public String getCreatedOnDate() {
+        return createdOnDate;
     }
 
-    public void setCreatedOn(String createdOn) {
-        this.createdOn = createdOn;
+    public void setCreatedOnDate(String createdOnDate) {
+        this.createdOnDate = createdOnDate;
     }
 
-    public String getLastLogin() {
-        return lastLogin;
+    public String getLastLoginDate() {
+        return lastLoginDate;
     }
 
-    public void setLastLogin(String lastLogin) {
-        this.lastLogin = lastLogin;
+    public void setLastLoginDate(String lastLoginDate) {
+        this.lastLoginDate = lastLoginDate;
     }
 
     public String getStatus() {

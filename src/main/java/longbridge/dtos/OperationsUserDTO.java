@@ -39,11 +39,10 @@ public class OperationsUserDTO implements Person{
     @JsonIgnore
     private String password;
     private String status;
-    private String createdOn;
+    private String createdOnDate;
     private Date expiryDate;
     private Date lockedUntilDate;
-    private String lastLogin;
-    private Date lastLoginDate;
+    private String lastLoginDate;
     private int noOfLoginAttempts;
     private boolean external=false;
 
@@ -150,20 +149,20 @@ public class OperationsUserDTO implements Person{
         return expiryDate;
     }
 
-    public String getCreatedOn() {
-        return createdOn;
+    public String getCreatedOnDate() {
+        return createdOnDate;
     }
 
-    public void setCreatedOn(String createdOn) {
-        this.createdOn = createdOn;
+    public void setCreatedOnDate(String createdOnDate) {
+        this.createdOnDate = createdOnDate;
     }
 
-    public String getLastLogin() {
-        return lastLogin;
+    public String getLastLoginDate() {
+        return lastLoginDate;
     }
 
-    public void setLastLogin(String lastLogin) {
-        this.lastLogin = lastLogin;
+    public void setLastLoginDate(String lastLoginDate) {
+        this.lastLoginDate = lastLoginDate;
     }
 
     public void setExternal(boolean external) {
@@ -182,13 +181,6 @@ public class OperationsUserDTO implements Person{
         this.lockedUntilDate = lockedUntilDate;
     }
 
-    public Date getLastLoginDate() {
-        return lastLoginDate;
-    }
-
-    public void setLastLoginDate(Date lastLoginDate) {
-        this.lastLoginDate = lastLoginDate;
-    }
 
     public int getNoOfLoginAttempts() {
         return noOfLoginAttempts;

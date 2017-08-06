@@ -27,7 +27,7 @@ public class CorporateDTO implements Serializable{
     private String email;
     private String status;
     private String address;
-    private String createdOn;
+    private String createdOnDate;
     private String bvn;
 
 
@@ -91,15 +91,13 @@ public class CorporateDTO implements Serializable{
         this.address = address;
     }
 
-    public String getCreatedOn() {
-
-        return createdOn;
+    public String getCreatedOnDate() {
+        return createdOnDate;
     }
 
-    public void setCreatedOn(String createdOn) {
-        this.createdOn = createdOn;
+    public void setCreatedOnDate(String createdOnDate) {
+        this.createdOnDate = createdOnDate;
     }
-
 
     public String getCustomerName() {
         return customerName;

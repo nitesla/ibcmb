@@ -350,6 +350,8 @@ public class CorporateUserServiceImpl implements CorporateUserService {
             entityManager.detach(user);
             String oldStatus = user.getStatus();
             String newStatus = "A".equals(oldStatus) ? "I" : "A";
+
+
             user.setStatus(newStatus);
             String fullName = user.getFirstName() + " " + user.getLastName();
             if ((oldStatus == null) || ("I".equals(oldStatus)) && "A".equals(newStatus)) {
@@ -739,10 +741,10 @@ public class CorporateUserServiceImpl implements CorporateUserService {
         }
 
         if (corporateUser.getCreatedOnDate() != null) {
-            corporateUserDTO.setCreatedOn(DateFormatter.format(corporateUser.getCreatedOnDate()));
+            corporateUserDTO.setCreatedOnDate(DateFormatter.format(corporateUser.getCreatedOnDate()));
         }
         if (corporateUser.getLastLoginDate() != null) {
-            corporateUserDTO.setLastLogin(DateFormatter.format(corporateUser.getLastLoginDate()));
+            corporateUserDTO.setLastLoginDate(DateFormatter.format(corporateUser.getLastLoginDate()));
         }
 
         return corporateUserDTO;
@@ -766,7 +768,7 @@ public class CorporateUserServiceImpl implements CorporateUserService {
         Role role = roleRepo.findOne(Long.parseLong(corporateUserDTO.getRoleId()));
         corporateUser.setRole(role);
         corporateUser.setCorpUserType(corporateUserDTO.getCorpUserType());
-        if (corporateUserDTO.getCreatedOn() == null) {
+        if (corporateUserDTO.getCreatedOnDate() == null) {
             corporateUser.setCreatedOnDate(new Date());
         }
         Corporate corporate = corporateRepo.getOne(Long.parseLong(corporateUserDTO.getCorporateId()));
