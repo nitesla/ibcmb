@@ -4,12 +4,15 @@ import longbridge.api.Rate;
 import longbridge.dtos.FinancialInstitutionDTO;
 import longbridge.dtos.LocalBeneficiaryDTO;
 import longbridge.dtos.TransferRequestDTO;
+import longbridge.exception.InternetBankingTransferException;
+import longbridge.exception.TransferErrorService;
 import longbridge.models.Account;
 import longbridge.models.FinancialInstitution;
 import longbridge.models.LocalBeneficiary;
 import longbridge.models.RetailUser;
 import longbridge.services.*;
 import longbridge.utils.TransferType;
+import longbridge.utils.TransferUtils;
 import longbridge.validator.transfer.TransferValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -35,11 +38,10 @@ import java.util.stream.StreamSupport;
 @Controller
 @RequestMapping(value = "/retail/transfer/interbank")
 public class InterBankTransferController {
-
-
     private RetailUserService retailUserService;
     private TransferService transferService;
     private MessageSource messages;
+    private TransferUtils transferUtils;
     private LocalBeneficiaryService localBeneficiaryService;
     private FinancialInstitutionService financialInstitutionService;
     private TransferValidator validator;
@@ -48,11 +50,12 @@ public class InterBankTransferController {
     private String page = "cust/transfer/interbank/";
     @Value("${bank.code}")
     private String bankCode;
+    private TransferErrorService transferErrorService;
 
     @Autowired
     public InterBankTransferController(RetailUserService retailUserService, TransferService transferService, MessageSource messages, LocalBeneficiaryService localBeneficiaryService, FinancialInstitutionService financialInstitutionService, AccountService accountService, TransferValidator validator
 
-            , IntegrationService integrationService
+            , IntegrationService integrationService,TransferUtils transferUtils,TransferErrorService transferErrorService
     ) {
         this.retailUserService = retailUserService;
         this.transferService = transferService;
@@ -62,15 +65,26 @@ public class InterBankTransferController {
         this.validator = validator;
         this.integrationService = integrationService;
         this.accountService = accountService;
+        this.transferUtils=transferUtils;
+        this.transferErrorService=transferErrorService;
     }
 
 
 
     @GetMapping(value = "")
-    public String index(HttpServletRequest request) {
+    public String index(Model model,HttpServletRequest request,RedirectAttributes redirectAttributes) {
         if (request.getSession().getAttribute("auth-needed") != null)
             request.getSession().removeAttribute("auth-needed");
+    try{
+        transferUtils.validateBvn();
         return page + "pagei";
+    }catch (InternetBankingTransferException e) {
+        String errorMessage = transferErrorService.getMessage(e);
+        redirectAttributes.addFlashAttribute("failure", errorMessage);
+        return "redirect:/retail/dashboard";
+
+
+    }
     }
 
 

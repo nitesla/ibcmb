@@ -1,11 +1,15 @@
 package longbridge.utils;
 
 import longbridge.api.NEnquiryDetails;
+import longbridge.exception.InternetBankingTransferException;
+import longbridge.exception.TransferExceptions;
 import longbridge.models.Account;
+import longbridge.models.Corporate;
 import longbridge.models.RetailUser;
 import longbridge.models.User;
 import longbridge.security.userdetails.CustomUserPrincipal;
 import longbridge.services.AccountService;
+import longbridge.services.CorporateService;
 import longbridge.services.IntegrationService;
 import longbridge.services.RetailUserService;
 import org.codehaus.jettison.json.JSONException;
@@ -32,6 +36,12 @@ public class TransferUtils {
     private IntegrationService integrationService;
     private AccountService accountService;
     private RetailUserService retailUserService;
+    private CorporateService corporateService;
+
+    @Autowired
+    public void setCorporateService(CorporateService corporateService) {
+        this.corporateService = corporateService;
+    }
 
     @Autowired
     public void setRetailUserService(RetailUserService retailUserService) {
@@ -172,6 +182,32 @@ public class TransferUtils {
             return integrationService.getFee(channel).getFeeValue();
         } catch (Exception e) {
             return null;
+        }
+
+    }
+
+    public void validateBvn() {
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (!(authentication instanceof AnonymousAuthenticationToken)) {
+            CustomUserPrincipal currentUser = (CustomUserPrincipal) authentication.getPrincipal();
+            if (currentUser.getCorpId() == null) {
+                RetailUser retailUser = retailUserService.getUserByName(currentUser.getUsername());
+                if (retailUser.getBvn() == null || "NO BVN".equalsIgnoreCase(retailUser.getBvn()) || retailUser.getBvn().isEmpty()) {
+                  throw new InternetBankingTransferException(TransferExceptions.NO_BVN.toString());
+                }
+
+            } else {
+                Corporate corporate = corporateService.getCorp(currentUser.getCorpId());
+                if (corporate==null)  throw new InternetBankingTransferException(TransferExceptions.NO_BVN.toString());
+
+                if (corporate.getBvn()==null || corporate.getBvn().isEmpty() || "NO BVN".equalsIgnoreCase( corporate.getBvn()) ){
+                    throw new InternetBankingTransferException(TransferExceptions.NO_BVN.toString());
+                }
+
+            }
+
+            throw new InternetBankingTransferException(TransferExceptions.NO_BVN.toString());
         }
 
     }
