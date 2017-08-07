@@ -164,7 +164,10 @@ public class CorporateUserServiceImpl implements CorporateUserService {
             corporateUser.setUserName(user.getUserName());
             corporateUser.setFirstName(user.getFirstName());
             corporateUser.setPhoneNumber(user.getPhoneNumber());
-            corporateUser.setAdmin(user.isAdmin());
+            if(user.isAdmin()) {
+                corporateUser.setCorpUserType(CorpUserType.ADMIN);
+            }
+
 
             if (user.getRoleId() != null) {
                 Role role = roleRepo.findOne(Long.parseLong(user.getRoleId()));
@@ -205,10 +208,12 @@ public class CorporateUserServiceImpl implements CorporateUserService {
             corporateUser.setEmail(user.getEmail());
             corporateUser.setStatus("A");
             corporateUser.setPhoneNumber(user.getPhoneNumber());
-            corporateUser.setAdmin(user.isAdmin());
             corporateUser.setCreatedOnDate(new Date());
             Role role = roleRepo.findOne(Long.parseLong(user.getRoleId()));
             corporateUser.setRole(role);
+            if(user.isAdmin()) {
+                corporateUser.setCorpUserType(CorpUserType.ADMIN);
+            }
             Corporate corp = corporateRepo.findOne(Long.parseLong(user.getCorporateId()));
             corporateUser.setCorporate(corp);
             CorporateUser corpUser = corporateUserRepo.save(corporateUser);
@@ -285,6 +290,7 @@ public class CorporateUserServiceImpl implements CorporateUserService {
     public void addCorporateUserToAuthorizerRole(CorporateUser corporateUser, Long corpRoleId) {
 
         CorporateRole corporateRole = corporateRoleRepo.findOne(corpRoleId);
+        corporateUser.setCorpUserType(CorpUserType.AUTHORIZER);
         corporateRole.getUsers().add(corporateUser);
         corporateRoleRepo.save(corporateRole);
     }
@@ -293,6 +299,7 @@ public class CorporateUserServiceImpl implements CorporateUserService {
     public void changeCorporateUserAuthorizerRole(CorporateUser corporateUser, CorporateRole role, Long newRoleId) {
         CorporateRole oldRole = corporateRoleRepo.findOne(role.getId());
         CorporateRole newRole = corporateRoleRepo.findOne(newRoleId);
+        corporateUser.setCorpUserType(CorpUserType.AUTHORIZER);
         oldRole.getUsers().remove(corporateUser);
         corporateRoleRepo.save(oldRole);
         newRole.getUsers().add(corporateUser);
@@ -702,8 +709,6 @@ public class CorporateUserServiceImpl implements CorporateUserService {
     public CorporateRole getCorporateUserAuthorizerRole(CorporateUser user){
 
         Corporate corporate = user.getCorporate();
-
-
         List<CorporateRole> roles = corporateRoleRepo.findByCorporate(corporate);
 
         for (CorporateRole corporateRole : roles) {
@@ -760,7 +765,7 @@ public class CorporateUserServiceImpl implements CorporateUserService {
         //CorporateUser corporateUser = modelMapper.map(corporateUserDTO, CorporateUser.class);
         CorporateUser corporateUser = new CorporateUser();
         corporateUser.setId(corporateUserDTO.getId());
-        corporateUser.setUserName(corporateUserDTO.getUserName()); 
+        corporateUser.setUserName(corporateUserDTO.getUserName());
         corporateUser.setFirstName(corporateUserDTO.getFirstName());
         corporateUser.setLastName(corporateUserDTO.getLastName());
         corporateUser.setPhoneNumber(corporateUserDTO.getPhoneNumber());

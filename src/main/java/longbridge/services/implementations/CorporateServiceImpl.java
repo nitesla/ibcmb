@@ -689,6 +689,7 @@ public class CorporateServiceImpl implements CorporateService {
             HashSet<CorporateUser> corpUsers = new HashSet<>();
             for (CorporateUserDTO user : roleDTO.getUsers()) {
                 CorporateUser corporateUser = corporateUserRepo.findOne(user.getId());
+                corporateUser.setCorpUserType(CorpUserType.AUTHORIZER);
                 corpUsers.add(corporateUser);
             }
             role.setUsers(corpUsers);
@@ -718,6 +719,7 @@ public class CorporateServiceImpl implements CorporateService {
 
             for (CorporateUserDTO user : roleDTO.getUsers()) {
                 CorporateUser corporateUser = corporateUserRepo.findOne(user.getId());
+                corporateUser.setCorpUserType(CorpUserType.AUTHORIZER);
                 role.getUsers().add(corporateUser);
             }
             corporateRoleRepo.save(role);
