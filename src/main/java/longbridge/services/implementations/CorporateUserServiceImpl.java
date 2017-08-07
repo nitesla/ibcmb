@@ -729,10 +729,10 @@ public class CorporateUserServiceImpl implements CorporateUserService {
         corporateUserDTO.setRoleId(corporateUser.getRole().getId().toString());
         corporateUserDTO.setRole(corporateUser.getRole().getName());
         corporateUserDTO.setCorpUserType(corporateUser.getCorpUserType());
-        if (corporateUser.getCorpUserType().equals(CorpUserType.AUTHORIZER)){
+        if (CorpUserType.AUTHORIZER.equals(corporateUser.getCorpUserType())){
             corporateUserDTO.isAuthorizer();
         }
-        if (corporateUser.getCorpUserType().equals(CorpUserType.AUTHORIZER)){
+        if (CorpUserType.AUTHORIZER.equals(corporateUser.getCorpUserType())){
             CorporateRole corporateRole = getCorporateUserAuthorizerRole(corporateUser);
             if (corporateRole != null) {
                 corporateUserDTO.setCorporateRoleId(corporateRole.getId());
@@ -755,7 +755,7 @@ public class CorporateUserServiceImpl implements CorporateUserService {
         //CorporateUser corporateUser = modelMapper.map(corporateUserDTO, CorporateUser.class);
         CorporateUser corporateUser = new CorporateUser();
         corporateUser.setId(corporateUserDTO.getId());
-        corporateUser.setUserName(corporateUserDTO.getUserName());
+        corporateUser.setUserName(corporateUserDTO.getUserName()); 
         corporateUser.setFirstName(corporateUserDTO.getFirstName());
         corporateUser.setLastName(corporateUserDTO.getLastName());
         corporateUser.setPhoneNumber(corporateUserDTO.getPhoneNumber());

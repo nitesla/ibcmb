@@ -118,7 +118,7 @@ public class CorpUserVerificationServiceImpl implements CorpUserVerificationServ
     }
 
     @Override
-    @Verifiable(operation = "ADD_AUTHORIZER_FROM_CORPORATE_ADMIN", description = "Add an authorizer by corporate Admin")
+    @Verifiable(operation = "ADD_INITIATOR_FROM_CORPORATE_ADMIN", description = "Add an initiator by corporate Admin")
     public void saveInitiator(CorporateUserDTO userDTO, String operation, String description) throws VerificationException {
         saveInit(userDTO, operation, description);
     }
@@ -228,7 +228,7 @@ public class CorpUserVerificationServiceImpl implements CorpUserVerificationServ
 
     @Override
 
-    @Verifiable(operation = "ADD_INITIATOR_FROM_CORPORATE_ADMIN", description = "Add an initiator by corporate Admin")
+    @Verifiable(operation = "ADD_AUTHORIZER_FROM_CORPORATE_ADMIN", description = "Add an authorizer by corporate Admin")
     public void saveAuthorizer(CorporateUserDTO userDTO, String operation, String description) throws VerificationException {
         saveAuth(userDTO, operation, description);
     }
