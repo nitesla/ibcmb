@@ -274,7 +274,7 @@ public class CorporateUserServiceImpl implements CorporateUserService {
                         Email email = new Email.Builder()
                                 .setRecipient(user.getEmail())
                                 .setSubject(messageSource.getMessage("corporate.customer.create.subject", null, locale))
-                                .setBody(String.format(messageSource.getMessage("corporate.customer.create.message", null, locale), fullName, user.getUserName(), password, corporate.getCustomerId()))
+                                .setBody(String.format(messageSource.getMessage("corporate.customer.create.message", null, locale), fullName, user.getUserName(), password, corporate.getCorporateId()))
                                 .build();
                         mailService.send(email);
                     } catch (MailException me) {
@@ -832,6 +832,7 @@ public class CorporateUserServiceImpl implements CorporateUserService {
     }
 
     @Override
+    @Transactional
     public String addAuthorizer(CorporateUserDTO user) throws InternetBankingException {
         try {
             CorporateUser corporateUser = new CorporateUser();
@@ -843,9 +844,6 @@ public class CorporateUserServiceImpl implements CorporateUserService {
             corporateUser.setPhoneNumber(user.getPhoneNumber());
             corporateUser.setCreatedOnDate(new Date());
             corporateUser.setCorpUserType(CorpUserType.AUTHORIZER);
-            corporateUser.setEntrustId(user.getUserName());
-            SettingDTO settingDTO = configService.getSettingByName("DEF_ENTRUST_CORP_GRP");
-            corporateUser.setEntrustGroup(settingDTO.getValue());
             Role role = roleRepo.findOne(Long.parseLong(user.getRoleId()));
             corporateUser.setRole(role);
             Corporate corp = corporateRepo.findOne(Long.parseLong(user.getCorporateId()));
@@ -867,6 +865,9 @@ public class CorporateUserServiceImpl implements CorporateUserService {
             throw new InternetBankingException(e.getMessage());
         }
     }
+
+
+
 
     @Override
     public String addInitiator(CorporateUserDTO user) throws InternetBankingException {
