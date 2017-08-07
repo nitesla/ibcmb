@@ -143,9 +143,7 @@ public class MainController {
     @GetMapping(value = {"/retail/{path:(?!static).*$}", "/retail/{path:(?!static).*$}/**"})
     public String retailUnknown(Principal principal) {
         if (principal != null) {
-
             return "redirect:/retail/dashboard";
-
         }
 
         throw new UnknownResourceException();
