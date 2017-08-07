@@ -97,6 +97,8 @@
                                     <tr>
                                         <th>Code</th>
                                         <th>Description</th>
+                                        <th>Extra Information</th>
+
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -107,6 +109,7 @@
                                     <tr>
                                         <th>Code</th>
                                         <th>Description</th>
+                                        <th>Extra Information</th>
                                     </tr>
                                     </tfoot>
                                 </table>
@@ -159,7 +162,9 @@
             "dom": 'T<"clear">frtlp',
             "columns": [
                 { "data": "code" },
-                { "data": "description" }
+                { "data": "description" },
+                { "data": "extraInfo" }
+
             ] });
 
         table.on('select', function() {

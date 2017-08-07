@@ -135,6 +135,7 @@ public class Code extends AbstractEntity implements PrettySerializer{
 				gen.writeStringField("Code",value.code);
 				gen.writeStringField("Description",value.description);
 				gen.writeStringField("Type",value.type);
+				gen.writeStringField("Extra Information",value.extraInfo);
 				gen.writeEndObject();
 			}
 		};
