@@ -304,8 +304,7 @@ public @ResponseBody String getSecAns(WebRequest webRequest, HttpSession session
         while(iterator.hasNext()){
             logger.info(iterator.next());
         }
-//
-//
+
 //        String accountNumber = webRequest.getParameter("acct");
 //        String securityQuestion = webRequest.getParameter("securityQuestion");
 
@@ -316,8 +315,8 @@ public @ResponseBody String getSecAns(WebRequest webRequest, HttpSession session
             }
 
 //            RetailUser user = retailUserService.getUserByCustomerId(customerId);
-
             //confirm security question is correct
+
             String secAnswer="";
             Map<String, List<String>> qa = securityService.getUserQA(entityId, entityGroup);
             //List<String> sec = null;
