@@ -131,4 +131,6 @@ public interface OperationsUserService{
     String changeDefaultPassword(OperationsUser user, ChangeDefaultPassword changePassword) throws PasswordException;
 
     String resetPassword(String username) throws InternetBankingException;
+
+    void  sendCredentialNotification(OperationsUser user);
 }

@@ -205,6 +205,7 @@ public class OperationsUserServiceImpl implements OperationsUserService {
             opsUser.setUserName(user.getUserName());
             opsUser.setEmail(user.getEmail());
             opsUser.setPhoneNumber(user.getPhoneNumber());
+            opsUser.setStatus("A");
             opsUser.setCreatedOnDate(new Date());
             Role role = roleRepo.findOne(Long.parseLong(user.getRoleId()));
             opsUser.setRole(role);
@@ -469,5 +470,15 @@ public class OperationsUserServiceImpl implements OperationsUserService {
         return pageImpl;
     }
 
+    @Override
+    public void  sendCredentialNotification(OperationsUser user){
+        String fullName = user.getFirstName() + " " + user.getLastName();
+        String password = passwordPolicyService.generatePassword();
+        user.setPassword(passwordEncoder.encode(password));
+        user.setExpiryDate(new Date());
+        passwordPolicyService.saveOpsPassword(user);
+        OperationsUser opsUser = operationsUserRepo.save(user);
+        sendActivateMessage(opsUser, fullName, user.getUserName(), password);
 
+    }
 }
