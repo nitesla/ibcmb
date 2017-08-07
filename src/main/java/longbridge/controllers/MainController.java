@@ -317,7 +317,7 @@ public class MainController {
 //        CorporateUser user = corporateUserService.getUserByName(username);
 //        Corporate corporate = corporateService.getCorporateByCustomerId(corpKey);
 
-        CorporateUser user = corporateUserService.getUserByNameAndCorpCif(username, corporateId);
+        CorporateUser user = corporateUserService.getUserByNameAndCorporateId(username, corporateId);
         if (user != null && phishing != null) {
             model.addAttribute("username", user.getUserName());
             model.addAttribute("corporateId", corporateId);
