@@ -144,6 +144,9 @@ public class CorpUserManagementController {
         try {
 
             if (corporateUserDTO.isAuthorizer()){
+                CorporateRoleDTO corporateRole = corporateService.getCorporateRole(corporateUserDTO.getCorporateRoleId());
+                corporateUserDTO.setCorporateRole(corporateRole.getName() + " " + corporateRole.getRank());
+
                 if (makerCheckerService.isEnabled("ADD_AUTHORIZER_FROM_CORPORATE_ADMIN")){
                     corpUserVerificationService.saveAuthorizer(corporateUserDTO, "ADD_AUTHORIZER_FROM_CORPORATE_ADMIN", "Add an authorizer by corporate Admin");
                 }else {
