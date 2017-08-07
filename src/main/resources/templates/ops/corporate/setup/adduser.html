@@ -198,7 +198,7 @@
                                 <label class="col-sm-2 control-label">Role</label>
                                 <div class="col-sm-6">
 
-                                    <select id="role" class="form-control" name="role">
+                                    <select id="roleId" class="form-control" name="role">
                                         <option value="">Select..</option>
                                         <option th:each="role : ${roles.?[#strings.equalsIgnoreCase(userType, 'corporate')]}"
                                                 th:value="${role.id}" th:text="${role.name}"></option>
@@ -368,7 +368,7 @@
             phoneNumber = $("input[name='phoneNumber']").val();
             userType = $("select#userType").val();
             authorizerLevel = $("select#authorizerLevel").val();
-            roleId = $("select#role").val();
+            roleId = $("select#roleId").val();
             role = $("#role option:selected").text();
 
 
@@ -403,12 +403,12 @@
                 $("#authorizerError").show();
             }
 
-            if (role == "") {
+            if (roleId == "") {
                 $("#roleError").show();
             }
 
 
-            if (userName == "" || firstName == "" || lastName == "" || email == "" || phoneNumber == "" || userType == "" || role == "") {
+            if (userName == "" || firstName == "" || lastName == "" || email == "" || phoneNumber == "" || userType == "" || roleId == "") {
                 return;
             }
 
@@ -417,7 +417,7 @@
             }
 
             if(userExist == true){
-                return;
+                return;a
             }
 
 
@@ -517,7 +517,7 @@
             $("input[name='phoneNumber']").val("");
             $("select#userType").val("");
             $("select#authorizerLevel").val("");
-            $("select#role").val("");
+            $("select#roleId").val("");
 
             $('#myModal').modal('toggle');
 

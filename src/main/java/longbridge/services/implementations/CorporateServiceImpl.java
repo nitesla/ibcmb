@@ -176,8 +176,7 @@ public class CorporateServiceImpl implements CorporateService {
 
     public void saveCorporateRequest(CorporateRequestDTO corporateRequestDTO) throws InternetBankingException {
 
-//        if()
-
+        validateCorporateCreation(corporateRequestDTO);
 
         Corporate corporate = new Corporate();
         corporate.setCorporateType(corporateRequestDTO.getCorporateType());
@@ -194,6 +193,8 @@ public class CorporateServiceImpl implements CorporateService {
         List<CorporateUserDTO> authorizers = new ArrayList<>();
 
         for (CorporateUserDTO user : corporateRequestDTO.getCorporateUsers()) {
+
+            validateCorporateUser(user);
             CorporateUser corporateUser = new CorporateUser();
             corporateUser.setUserName(user.getUserName());
             corporateUser.setFirstName(user.getFirstName());
@@ -272,6 +273,50 @@ public class CorporateServiceImpl implements CorporateService {
 
     }
 
+    private void validateCorporateCreation(CorporateRequestDTO corporateRequestDTO) throws InternetBankingException{
+
+        if (corporateIdExists(corporateRequestDTO.getCorporateId())) {
+            throw new DuplicateObjectException(messageSource.getMessage("corp.id.exists", null, locale));
+        }
+
+        if (corporateRequestDTO.getAccounts().isEmpty()) {
+            logger.error("Corporate creation request found with no accounts");
+            throw new InternetBankingException(messageSource.getMessage("corporate.add.failure", null, locale));
+        }
+
+        if ("SOLE".equals(corporateRequestDTO.getCorporateType())) {
+
+            if (corporateRequestDTO.getCorporateUsers().size() != 1) {
+                logger.error("Sole Corporate creation request found with {} users", corporateRequestDTO.getCorporateUsers().size());
+                throw new InternetBankingException(messageSource.getMessage("corporate.add.failure", null, locale));
+
+            }
+
+        } else if ("MULTI".equals(corporateRequestDTO.getCorporateType())) {
+            if (corporateRequestDTO.getAuthorizers().isEmpty()) {
+                logger.error("Corporate creation request found with no authorizer levels");
+                throw new InternetBankingException(messageSource.getMessage("corporate.add.failure", null, locale));
+
+            }
+
+            if (corporateRequestDTO.getCorporateUsers().isEmpty()) {
+                logger.error("Sole Corporate creation request found with no users");
+                throw new InternetBankingException(messageSource.getMessage("corporate.add.failure", null, locale));
+
+            }
+        } else {
+            logger.error("Corporate creation request found with invalid corporate type");
+            throw new InternetBankingException(messageSource.getMessage("corporate.add.failure", null, locale));
+        }
+    }
+
+
+    private  void validateCorporateUser(CorporateUserDTO user) {
+        CorporateUser corporateUser = corporateUserRepo.findFirstByUserNameIgnoreCase(user.getUserName());
+        if (corporateUser != null) {
+            throw new DuplicateObjectException(messageSource.getMessage("user.exists", null, locale));
+        }
+    }
 
     private CorpUserType getUserType(String userType) {
 
@@ -291,7 +336,7 @@ public class CorporateServiceImpl implements CorporateService {
         SettingDTO setting = configService.getSettingByName("SOLE_CORPORATE_ROLE");
         if (setting != null && setting.isEnabled()) {
             String roleName = setting.getValue();
-            role = roleRepo.findByUserTypeAndName(UserType.CORPORATE,roleName);
+            role = roleRepo.findByUserTypeAndName(UserType.CORPORATE, roleName);
         }
         return role;
     }
@@ -511,7 +556,6 @@ public class CorporateServiceImpl implements CorporateService {
     }
 
 
-
     @Override
     @Verifiable(operation = "ADD_CORPORATE_RULE", description = "Add Corporate Transfer Rule")
     public String addCorporateRule(CorpTransferRuleDTO transferRuleDTO) throws InternetBankingException {
@@ -582,7 +626,6 @@ public class CorporateServiceImpl implements CorporateService {
     }
 
 
-
     @Override
     public boolean corporateIdExists(String corporateId) {
         return corporateRepo.existsByCorporateIdIgnoreCase(corporateId);
@@ -631,6 +674,13 @@ public class CorporateServiceImpl implements CorporateService {
     @Override
     @Verifiable(operation = "ADD_CORPORATE_ROLE", description = "Adding a Corporate Role")
     public String addCorporateRole(CorporateRoleDTO roleDTO) throws InternetBankingException {
+
+          CorporateRole corporateRole = corporateRoleRepo.findByNameAndRank(roleDTO.getName(),roleDTO.getRank());
+
+          if(corporateRole!=null){
+              throw new DuplicateObjectException(messageSource.getMessage("role.exist", null, locale));
+          }
+
         try {
             Corporate corporate = corporateRepo.findOne(NumberUtils.toLong(roleDTO.getCorporateId()));
             CorporateRole role = convertCorporateRoleDTOToEntity(roleDTO);
@@ -639,6 +689,7 @@ public class CorporateServiceImpl implements CorporateService {
             HashSet<CorporateUser> corpUsers = new HashSet<>();
             for (CorporateUserDTO user : roleDTO.getUsers()) {
                 CorporateUser corporateUser = corporateUserRepo.findOne(user.getId());
+                corporateUser.setCorpUserType(CorpUserType.AUTHORIZER);
                 corpUsers.add(corporateUser);
             }
             role.setUsers(corpUsers);
@@ -668,6 +719,7 @@ public class CorporateServiceImpl implements CorporateService {
 
             for (CorporateUserDTO user : roleDTO.getUsers()) {
                 CorporateUser corporateUser = corporateUserRepo.findOne(user.getId());
+                corporateUser.setCorpUserType(CorpUserType.AUTHORIZER);
                 role.getUsers().add(corporateUser);
             }
             corporateRoleRepo.save(role);
@@ -683,10 +735,10 @@ public class CorporateServiceImpl implements CorporateService {
         }
     }
 
-    public void addAuthorizer(CorporateUser user, Long corpRoleId){
+    public void addAuthorizer(CorporateUser user, Long corpRoleId) {
 
         Corporate corporate = user.getCorporate();
-        CorporateRole corporateRole =  corporateRoleRepo.findOne(corpRoleId);
+        CorporateRole corporateRole = corporateRoleRepo.findOne(corpRoleId);
     }
 
     @Override
@@ -956,7 +1008,7 @@ public class CorporateServiceImpl implements CorporateService {
     }
 
 
-    private CorporateUser getCurrentUser(){
+    private CorporateUser getCurrentUser() {
         CustomUserPrincipal principal = (CustomUserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         User user = principal.getUser();
         return (CorporateUser) user;

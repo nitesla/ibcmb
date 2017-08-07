@@ -1,6 +1,7 @@
 package longbridge.aop;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import longbridge.dtos.CorporateUserDTO;
 import longbridge.dtos.VerificationDTO;
 import longbridge.models.*;
 import longbridge.repositories.*;
@@ -105,8 +106,14 @@ public class CorporateUserAdvisor {
             corporateUserService.createUserOnEntrustAndSendCredentials(corpUser);
         }
 
-
+        if (verification.getOperation().equals("ADD_AUTHORIZER_FROM_CORPORATE_ADMIN")) {
+            ObjectMapper objectMapper = new ObjectMapper();
+            CorporateUserDTO corpUser = objectMapper.readValue(verification.getOriginalObject(),CorporateUserDTO.class);
+            corporateUserService.addAuthorizer(corpUser);
         }
+
+
+    }
 
 
 

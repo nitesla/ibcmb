@@ -143,9 +143,7 @@ public class MainController {
     @GetMapping(value = {"/retail/{path:(?!static).*$}", "/retail/{path:(?!static).*$}/**"})
     public String retailUnknown(Principal principal) {
         if (principal != null) {
-
             return "redirect:/retail/dashboard";
-
         }
 
         throw new UnknownResourceException();
@@ -254,11 +252,11 @@ public class MainController {
     @PostMapping("/login/u/corporate")
     public String userExist(WebRequest webRequest, Model model, RedirectAttributes redirectAttributes) {
         String username = webRequest.getParameter("username");
-        String corpKey = webRequest.getParameter("corporateId");
+        String corporateId = webRequest.getParameter("corporateId");
 //        CorporateUser user = corporateUserService.getUserByName(username);
 //        Corporate corporate = corporateService.getCorporateByCustomerId(corpKey);
 
-        CorporateUser user = corporateUserService.getUserByNameAndCorpCif(username, corpKey);
+        CorporateUser user = corporateUserService.getUserByNameAndCorporateId(username, corporateId);
 
         //if (corporate != null && user != null) {
         if (user != null) {
@@ -290,7 +288,7 @@ public class MainController {
 
 
             model.addAttribute("username", user.getUserName());
-            model.addAttribute("corpKey", corpKey);
+            model.addAttribute("corporateId", corporateId);
             return "corppage2";
 
         }
@@ -310,19 +308,19 @@ public class MainController {
     public String corpstep2(WebRequest webRequest, Model model, RedirectAttributes redirectAttributes, HttpSession session) {
         String username = webRequest.getParameter("username");
         String phishing = webRequest.getParameter("phishing");
-        String corpKey = webRequest.getParameter("corpKey");
-        logger.info("the corpkey {} and username {}", corpKey, username);
-        if ((username != null) && (corpKey != null)) {
+        String corporateId = webRequest.getParameter("corporateId");
+        logger.info("the corporateId {} and username {}", corporateId, username);
+        if ((username != null) && (corporateId != null)) {
             session.setAttribute("corpUsername", username);
-            session.setAttribute("corpKey", corpKey);
+            session.setAttribute("corporateId", corporateId);
         }
 //        CorporateUser user = corporateUserService.getUserByName(username);
 //        Corporate corporate = corporateService.getCorporateByCustomerId(corpKey);
 
-        CorporateUser user = corporateUserService.getUserByNameAndCorpCif(username, corpKey);
+        CorporateUser user = corporateUserService.getUserByNameAndCorporateId(username, corporateId);
         if (user != null && phishing != null) {
             model.addAttribute("username", user.getUserName());
-            model.addAttribute("corpKey", corpKey);
+            model.addAttribute("corporateId", corporateId);
             return "corplogin";
         }
 

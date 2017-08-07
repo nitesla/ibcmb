@@ -83,8 +83,7 @@ public class AdminUserAdvisor {
         logger.info("Executing ADD_ADMIN_USER operation");
         adminUserService.createUserOnEntrust(user);
         adminUserService.sendCredentialNotification(user);
-//        user.setEntrustId(user.getUserName());
-//        entityManager.merge(user);
+
         logger.info("After Executing first Post Admin Advice");
     }
 

@@ -21,6 +21,8 @@ public class CodeDTO {
     private String type;
     @NotEmpty(message = "description")
     private String description;
+
+    private String extraInfo;
     private int version;
 
     public Long getId() {
@@ -53,6 +55,14 @@ public class CodeDTO {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getExtraInfo() {
+        return extraInfo;
+    }
+
+    public void setExtraInfo(String extraInfo) {
+        this.extraInfo = extraInfo;
     }
 
     public int getVersion() {

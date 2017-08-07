@@ -63,6 +63,8 @@ public class AdminUserDetailsService implements UserDetailsService {
                     return userPrincipal;
                 }
                 throw new UsernameNotFoundException(s);
+
+
             } catch (Exception e) {
                 logger.error("An exception occurred {}", e.getMessage());
                 throw new RuntimeException(e);

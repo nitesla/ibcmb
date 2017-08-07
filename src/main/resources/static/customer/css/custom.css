@@ -14,12 +14,6 @@ html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockq
     vertical-align: baseline;
 }
 
-/*
-all css below were written by me Etoka Francis O. 09-06-17
-start
-*/
-
-
 .req:after { content:" * ";color:#9F614B;font-size: 13px;font-weight: bolder }
 .req-inner:before { content:" * ";color:#9F614B;font-size: 13px;font-weight: bolder }
 
@@ -2129,9 +2123,9 @@ button, input, optgroup, select, textarea {
         text-align: center;
     }
 
-    /* .navbar-nav>li:first-child>a {
+    .navbar-nav>li:first-child>a {
         /* padding-left: 15px; */
-    } */
+    }
 
     .slider{
         height: 230px;
@@ -2197,11 +2191,8 @@ button, input, optgroup, select, textarea {
     line-height: 20px;
     text-align: center;
     font-size: 18px;
+}*/
 }
-} */
-
-
-/*another css by Etoka francis to override any other css*/
 
 .white-box p
 {
@@ -2419,7 +2410,7 @@ button, input, optgroup, select, textarea {
 }
 
 
- @media screen and (max-width: 450px) and (min-width: 0px){
+@media screen and (max-width: 450px) and (min-width: 0px){
 
     .carousel-caption
     {

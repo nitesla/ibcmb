@@ -15,6 +15,7 @@ import longbridge.repositories.OperationsUserRepo;
 import longbridge.repositories.VerificationRepo;
 import longbridge.security.userdetails.CustomUserPrincipal;
 import longbridge.services.CorporateService;
+import longbridge.services.CorporateUserService;
 import longbridge.services.MailService;
 import longbridge.services.VerificationService;
 import longbridge.utils.DateFormatter;
@@ -62,12 +63,15 @@ public class VerificationServiceImpl implements VerificationService {
     private CorporateService corporateService;
 
     @Autowired
+    private CorporateUserService corporateUserService;
+
+    @Autowired
     MailService mailService;
 
     @Autowired
     private ModelMapper modelMapper;
 
-    Locale locale = LocaleContextHolder.getLocale();
+    private Locale locale = LocaleContextHolder.getLocale();
 
     @Override
     public String decline(VerificationDTO dto) throws VerificationException {
@@ -128,6 +132,11 @@ public class VerificationServiceImpl implements VerificationService {
             if ("ADD_CORPORATE".equals(verification.getOperation())) {
                 CorporateRequestDTO requestDTO = mapper.readValue(verification.getOriginalObject(), CorporateRequestDTO.class);
                 corporateService.saveCorporateRequest(requestDTO);
+            }
+            else if("ADD_AUTHORIZER_FROM_CORPORATE_ADMIN".equals(verification.getOperation())){
+
+                CorporateUserDTO corpUser = mapper.readValue(verification.getOriginalObject(),CorporateUserDTO.class);
+                corporateUserService.addAuthorizer(corpUser);
             }
             else {
                 clazz = Class.forName(PACKAGE_NAME + verification.getEntityName());
