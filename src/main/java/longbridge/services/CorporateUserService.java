@@ -43,6 +43,8 @@ public interface CorporateUserService{
 
     CorporateUser getUserByNameAndCorpCif(String username, String cif);
 
+    CorporateUser getUserByNameAndCorporateId(String username, String corporateId);
+
     /**
      * Returns all the corporate users for the corporate customer
      * @param Corporate  the corporate customer

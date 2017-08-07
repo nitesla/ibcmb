@@ -113,6 +113,11 @@ public class CorporateUserServiceImpl implements CorporateUserService {
     }
 
     @Override
+    public CorporateUser getUserByNameAndCorporateId(String username, String corporateId) {
+        return corporateUserRepo.findFirstByUserNameIgnoreCaseAndCorporate_CorporateIdIgnoreCase(username, corporateId);
+    }
+
+    @Override
     public Iterable<CorporateUserDTO> getUsers(Corporate corporate) {
 
         Iterable<CorporateUser> corporateUserDTOList = corporateUserRepo.findAll();
@@ -867,7 +872,7 @@ public class CorporateUserServiceImpl implements CorporateUserService {
             corporateUser.setStatus("A");
             corporateUser.setPhoneNumber(user.getPhoneNumber());
             corporateUser.setCreatedOnDate(new Date());
-            corporateUser.setCorpUserType(CorpUserType.AUTHORIZER);
+            corporateUser.setCorpUserType(CorpUserType.INITIATOR);
             corporateUser.setEntrustId(user.getUserName());
             SettingDTO settingDTO = configService.getSettingByName("DEF_ENTRUST_CORP_GRP");
             corporateUser.setEntrustGroup(settingDTO.getValue());

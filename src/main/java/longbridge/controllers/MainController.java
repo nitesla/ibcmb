@@ -245,11 +245,11 @@ public class MainController {
     @PostMapping("/login/u/corporate")
     public String userExist(WebRequest webRequest, Model model, RedirectAttributes redirectAttributes) {
         String username = webRequest.getParameter("username");
-        String corpKey = webRequest.getParameter("corporateId");
+        String corporateId = webRequest.getParameter("corporateId");
 //        CorporateUser user = corporateUserService.getUserByName(username);
 //        Corporate corporate = corporateService.getCorporateByCustomerId(corpKey);
 
-        CorporateUser user = corporateUserService.getUserByNameAndCorpCif(username, corpKey);
+        CorporateUser user = corporateUserService.getUserByNameAndCorporateId(username, corporateId);
 
         //if (corporate != null && user != null) {
         if (user != null) {
@@ -281,7 +281,7 @@ public class MainController {
 
 
             model.addAttribute("username", user.getUserName());
-            model.addAttribute("corpKey", corpKey);
+            model.addAttribute("corporateId", corporateId);
             return "corppage2";
 
         }
