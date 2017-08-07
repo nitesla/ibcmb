@@ -21,6 +21,7 @@ public class CorpInternationalBeneficiaryDTO {
     private String intermediaryBankName;
     private String intermediaryBankAccountNumber;
     private String intermediaryBankAcctNo;
+    private String preferredName;
 
     public Long getId() {
         return id;
@@ -100,5 +101,13 @@ public class CorpInternationalBeneficiaryDTO {
 
     public void setIntermediaryBankAcctNo(String intermediaryBankAcctNo) {
         this.intermediaryBankAcctNo = intermediaryBankAcctNo;
+    }
+
+    public String getPreferredName() {
+        return preferredName;
+    }
+
+    public void setPreferredName(String preferredName) {
+        this.preferredName = preferredName;
     }
 }
