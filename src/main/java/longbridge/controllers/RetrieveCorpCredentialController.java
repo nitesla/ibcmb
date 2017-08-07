@@ -80,17 +80,17 @@ public class RetrieveCorpCredentialController {
     @GetMapping("/forgot/password/corporate")
     public String showResetPassword(Model model, HttpSession session, RedirectAttributes redirectAttributes){
         String username =(String) session.getAttribute("corpUsername");
-        String corpKey = (String) session.getAttribute("corpKey");
+        String corporateId = (String) session.getAttribute("corporateId");
         ResetPasswordForm resetPasswordForm = new ResetPasswordForm();
         resetPasswordForm.step = "1";
         resetPasswordForm.username = username;
         if (username == null){
             return "redirect:/login/corporate";
         }
-        logger.info("the username and corpKey is {} and {}",username,corpKey);
+        logger.info("the username and corporateId is {} and {}",username,corporateId);
 
         try{
-            CorporateUser corporateUser = corporateUserService.getUserByNameAndCorpCif(username, corpKey);
+            CorporateUser corporateUser = corporateUserService.getUserByNameAndCorpCif(username, corporateId);
             logger.info("the corporateUsername group {} and id {}",corporateUser.getEntrustGroup(),corporateUser.getEntrustId());
             Map<String, List<String>> qa = securityService.getUserQA(corporateUser.getEntrustId(), corporateUser.getEntrustGroup());
             logger.info("the question and answer {}",qa.get("questions"));
@@ -304,8 +304,7 @@ public @ResponseBody String getSecAns(WebRequest webRequest, HttpSession session
         while(iterator.hasNext()){
             logger.info(iterator.next());
         }
-//
-//
+
 //        String accountNumber = webRequest.getParameter("acct");
 //        String securityQuestion = webRequest.getParameter("securityQuestion");
 
@@ -316,8 +315,8 @@ public @ResponseBody String getSecAns(WebRequest webRequest, HttpSession session
             }
 
 //            RetailUser user = retailUserService.getUserByCustomerId(customerId);
-
             //confirm security question is correct
+
             String secAnswer="";
             Map<String, List<String>> qa = securityService.getUserQA(entityId, entityGroup);
             //List<String> sec = null;
@@ -338,19 +337,16 @@ public @ResponseBody String getSecAns(WebRequest webRequest, HttpSession session
                     mailService.send(email);
                     return "true";
                 }
-
             }else {
                 return "false";
             }
 
-
-
         }catch (InternetBankingException e){
             return "false";
         }
-
         return "false";
     }
+
     @GetMapping("/rest/corporate/{email}/{accountNumber}")
     public @ResponseBody String[] getAccountNameFromNumber(@PathVariable String email,@PathVariable String accountNumber){
         logger.info("Account nUmber {} email {}",accountNumber,email);
@@ -371,7 +367,6 @@ public @ResponseBody String getSecAns(WebRequest webRequest, HttpSession session
                     userDetails[1] = corporateUser.getEntrustGroup();
                     userDetails[2] = corporateUser.getFirstName();
                     userDetails[3] = corporateUser.getUserName();
-
                 }
                 logger.info("Cid id : " + customerId);
                 logger.info("entrust id {} entrust group {} ", corporateUser.getEntrustId(), corporateUser.getEntrustGroup());
@@ -384,6 +379,7 @@ public @ResponseBody String getSecAns(WebRequest webRequest, HttpSession session
 
         return userDetails;
     }
+
     @GetMapping("/rest/corporate/secQues/{userDetails}")
     public @ResponseBody List<String> getSecQuestionFromNumber(@PathVariable String[] userDetails, HttpSession session){
         String secQuestion = "";

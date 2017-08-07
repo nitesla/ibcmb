@@ -42,7 +42,7 @@ class TransferStatusReader implements ItemReader<TransactionStatus> {
 
     @Override
     public TransactionStatus read() throws Exception {
-        LOGGER.info("Reading the information of the next transaction");
+//        LOGGER.info("Reading the information of the next transaction");
 
         if (dataIsNotInitialized()) {
             data = fetchDataFromAPI();
@@ -55,7 +55,7 @@ class TransferStatusReader implements ItemReader<TransactionStatus> {
             nextIndex++;
         }
 
-        LOGGER.info("Found transaction: {}", status);
+//        LOGGER.info("Found transaction: {}", status);
 
         return status;
     }
@@ -72,7 +72,7 @@ class TransferStatusReader implements ItemReader<TransactionStatus> {
 
         ResponseEntity<TransactionStatus[]> response = restTemplate.postForEntity(apiUrl,request, TransactionStatus[].class);
         TransactionStatus[] restData = response.getBody();
-        LOGGER.debug("Found {} data", restData.length);
+//        LOGGER.debug("Found {} data", restData.length);
 
         return Arrays.asList(restData);
     }

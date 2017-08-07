@@ -21,6 +21,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -54,8 +55,9 @@ import java.util.stream.StreamSupport;
 @RequestMapping("/corporate/transfer")
 public class CorpNAPSTransferController {
 
-    private static final String SERVER_FILE_PATH = "C:\\ibanking\\files\\Copy-of-NEFT-ECOB-ABC-old-mutual.xls";
-    private static final String FILENAME = "Copy-of-NEFT-ECOB-ABC-old-mutual.xls";
+    @Value("${napsfile.path}")
+    private static String SERVER_FILE_PATH;
+
     Logger logger = LoggerFactory.getLogger(this.getClass());
     @Autowired
     private MessageSource messageSource;

@@ -70,19 +70,19 @@ public class CorporateUserDetailsService implements UserDetailsService {
         }
 
 
-        CorporateUser user = corporateUserRepo.findFirstByUserNameIgnoreCaseAndCorporate_CustomerIdIgnoreCase(userName,corpId);
+        CorporateUser user = corporateUserRepo.findFirstByUserNameIgnoreCaseAndCorporate_CorporateIdIgnoreCase(userName,corpId);
         if (user!=null){
 
             if (failedLoginService.isBlocked(user)) throw new RuntimeException("user_blocked");
             try {
-                Corporate corporate = corporateRepo.findFirstByCustomerId(corpId);
+                Corporate corporate = corporateRepo.findFirstByCorporateId(corpId);
                 if (corporate != null && user != null) {
                     if(!"A".equalsIgnoreCase(corporate.getStatus())){
                         throw  new DisabledException("User is disabled");
                     }
 
 
-                    if ((user.getCorporate().getCustomerId().equalsIgnoreCase(corporate.getCustomerId())) && user.getUserType() == UserType.CORPORATE) {
+                    if ((user.getCorporate().getCorporateId().equalsIgnoreCase(corporate.getCorporateId())) && user.getUserType() == UserType.CORPORATE) {
                         return new CustomUserPrincipal(user);
                     }
                 }

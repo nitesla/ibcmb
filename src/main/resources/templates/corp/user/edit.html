@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{corp-layout}">
+
+<body onload="javascript:var bread = [['Home', '/corporate/dashboard'],['add user']];currentBar('add user');breadCrumb(bread)">
+
+<div layout:fragment="content">
+    <div class="col-md-5 col-sm-5 ">
+
+        <select class="form-control full-width coronation-form-control hide-content-only" id="view">
+            <option value="account">Overview</option>
+        </select>
+    </div>
+
+    <div class="col-xs-12 ml-15 no-pad-left" >
+        <div class="col-xs-12 col-sm-6 no-pad-lef no-mt no-bd  alert" >
+            <form method="post" class="form-horizonta" th:action="@{/corporate/users}" th:object="${corporateUser}">
+
+                <!--<div th:replace="corp_layout::form-validation"></div>-->
+
+                <div class="form-group">
+                    <label>Username</label>
+                    <input type="text" class="form-control" th:field="*{userName}"/><span class='req-inner'></span>
+                    <p class="errors" th:if="${#fields.hasErrors('userName')}" th:errors="*{userName}">&times;</p>
+                </div>
+
+                <input th:if="${corporate.id}" th:type="hidden" name="corporateId" th:value="${corporate.id}"/>
+
+                <div class="form-group">
+                    <label>First Name</label>
+                    <input type="text" class="form-control" th:field="*{firstName}"/><span class='req-inner'></span>
+                    <p class="errors" th:if="${#fields.hasErrors('firstName')}" th:errors="*{firstName}">&times;</p>
+                </div>
+                <div class="form-group">
+                    <label>Last Name</label>
+                    <input type="text" class="form-control" th:field="*{lastName}" /><span class='req-inner'></span>
+                    <p class="errors" th:if="${#fields.hasErrors('lastName')}" th:errors="*{lastName}">&times;</p>
+                </div>
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="text" class="form-control" th:field="*{email}"/><span class='req-inner'></span>
+                    <p class="errors" th:if="${#fields.hasErrors('email')}" th:errors="*{email}">&times;</p>
+                </div>
+                <div class="form-group">
+                    <label>Phone</label>
+                    <input type="text" class="form-control" th:field="*{phoneNumber}"/><span class='req-inner'></span>
+                    <p class="errors" th:if="${#fields.hasErrors('phoneNumber')}" th:errors="*{phoneNumber}">&times;</p>
+                </div>
+
+                <div class="form-group">
+                    <label>Role</label>
+                    <select class="form-control" th:field="*{roleId}">
+                        <option th:each="role : ${roles.?[#strings.equalsIgnoreCase(userType, 'corporate')]}" th:value="${role.id}" th:text="${role.name}"></option>
+                    </select><span class='req-inner'></span>
+                </div>
+
+                <div class="form-group">
+                    <input id="auth" type="checkbox" class="checkbox-inline"
+                           th:field="*{authorizer}"/>
+                    <span>Make an Authorizer</span>
+                </div>
+
+                <div id="level" class="form-group">
+                    <select class="form-control" th:field="*{corporateRoleId}">
+                        <option th:each="role : ${corporateRoles}" th:value="${role.id}" th:text="${role.name + ' ' + role.rank}"></option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <button class="btn btn-link required-step" type="submit">Create User</button>
+                </div>
+            </form>
+
+        </div>
+    </div>
+
+</div>
+
+
+<th:block layout:fragment="scripts">
+    <script>
+        $( function() {
+
+            $( "#datepicker" ).datepicker(
+                { dateformat : 'dd/mm/yy'}
+            );
+        } );
+    </script>
+
+    <script type="text/javascript">
+        $(document).ready(function(){
+            $("#level").hide();
+            $('input[type="checkbox"]').click(function(){
+                if($(this).is(":checked")){
+                    $("#level").show();
+                }
+                else if($(this).is(":not(:checked)")){
+                    $("#level").hide();
+                }
+            });
+        });
+    </script>
+
+</th:block>
+
+</body>
+</html>

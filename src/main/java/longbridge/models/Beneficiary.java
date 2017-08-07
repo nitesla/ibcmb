@@ -10,6 +10,7 @@ public class Beneficiary extends AbstractEntity{
 
     private String accountName;
     private String accountNumber;
+    private String preferredName;
     private String beneficiaryBank;
 
     public String getAccountName() {
@@ -34,6 +35,14 @@ public class Beneficiary extends AbstractEntity{
 
     public void setAccountNumber(String accountNo) {
         this.accountNumber = accountNo;
+    }
+
+    public String getPreferredName() {
+        return preferredName;
+    }
+
+    public void setPreferredName(String preferredName) {
+        this.preferredName = preferredName;
     }
 
     @Override

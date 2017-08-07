@@ -37,10 +37,7 @@ public class OpsUserAdvisor {
 
 
     @Autowired
-    EntityManager entityManager;
-    private Logger log = LoggerFactory.getLogger(this.getClass());
-    @Autowired
-    private VerificationService verificationService;
+    private EntityManager entityManager;
 
     @Autowired
     private OperationsUserService operationsUserService;
@@ -49,15 +46,15 @@ public class OpsUserAdvisor {
     private OperationsUserRepo operationsUserRepo;
 
     @Autowired
-    PasswordPolicyService passwordPolicyService;
+    private PasswordPolicyService passwordPolicyService;
 
     @Autowired
-    PasswordEncoder passwordEncoder;
+    private PasswordEncoder passwordEncoder;
 
     @Autowired
-    VerificationRepo verificationRepo;
+    private VerificationRepo verificationRepo;
 
-    Logger logger = LoggerFactory.getLogger(this.getClass());
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
 
 
     @Pointcut("within( longbridge.services.implementations.VerificationServiceImpl)")
@@ -79,52 +76,37 @@ public class OpsUserAdvisor {
     }
 
 
-
     //this is after merge of verification
     @After("isVerification() && isMerging() && isVerify() && args(user)")
     public void postOpsUserCreation(JoinPoint p, OperationsUser user) {
 
         logger.info("Executing ADD_OPS_USER operation");
         operationsUserService.createUserOnEntrust(user);
-        logger.info("Created User on entrust");
-//        user.setEntrustId(user.getUserName());
-//        entityManager.merge(user);
-        logger.info("After Executing first Post Ops Advice");
+        operationsUserService.sendCredentialNotification(user);
     }
 
     // this runs after execution
     @After("isVerification() && verified() && args(verificationDto)")
     public void postAdminUserCreation2(JoinPoint p, VerificationDTO verificationDto) throws IOException {
 
-         Verification verification  = verificationRepo.findOne(verificationDto.getId());
-        if(verification.getOperation().equals("UPDATE_OPS_STATUS")){
+        Verification verification = verificationRepo.findOne(verificationDto.getId());
+        if (verification.getOperation().equals("UPDATE_OPS_STATUS")) {
 
             OperationsUser user = operationsUserRepo.findOne(verification.getEntityId());
             entityManager.detach(user);
             ObjectMapper objectMapper = new ObjectMapper();
-            OperationsUser opsUser = objectMapper.readValue(verification.getOriginalObject(),OperationsUser.class);
-            if("A".equals(opsUser.getStatus())){
-                String fullName = user.getFirstName()+" "+user.getLastName();
+            OperationsUser opsUser = objectMapper.readValue(verification.getOriginalObject(), OperationsUser.class);
+            if ("A".equals(opsUser.getStatus())) {
+                String fullName = user.getFirstName() + " " + user.getLastName();
                 String password = passwordPolicyService.generatePassword();
                 user.setPassword(passwordEncoder.encode(password));
                 user.setExpiryDate(new Date());
                 passwordPolicyService.saveOpsPassword(user);
                 operationsUserRepo.save(user);
-                operationsUserService.sendPostActivateMessage(opsUser, fullName,user.getUserName(),password);
+                operationsUserService.sendPostActivateMessage(opsUser, fullName, user.getUserName(), password);
             }
         }
 
-
-
-
-        //general user creation
-
-
-        //activation
-
-
     }
-
-
 
 }

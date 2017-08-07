@@ -531,7 +531,7 @@ public class CorpUserVerificationServiceImpl implements CorpUserVerificationServ
 
         CorpUserVerification corpUserVerification  =corpUserVerificationRepo.findOne(corpUserVerificationDTO.getId());
         logger.info(">>>>>>>>>>" + corpUserVerification.getOperation());
-        if(corpUserVerification.getOperation().equals("UPDATE_USER_FROM_CORPORATE_ADMIN")){
+        if(corpUserVerification.getOperation().equals("UPDATE_CORP_USER_STATUS")){
 
             logger.info("Inside Advisor for Post Corporate user activation...");
 
@@ -564,6 +564,13 @@ public class CorpUserVerificationServiceImpl implements CorpUserVerificationServ
             createUserOnEntrustAndSendCredentials(cUser);
         }
 
+        if(corpUserVerification.getOperation().equals("UPDATE_USER_FROM_CORPORATE_ADMIN")) {
+            logger.info("Updating Corporate User");
+            ObjectMapper objectMapper = new ObjectMapper();
+            CorporateUserDTO corpUserDTO = objectMapper.readValue(corpUserVerification.getOriginalObject(),CorporateUserDTO.class);
+            CorporateUser cpUser = corporateUserService.convertDTOToEntity(corpUserDTO);
+            corporateUserRepo.save(cpUser);
+        }
 
     }
 
@@ -607,7 +614,7 @@ public class CorpUserVerificationServiceImpl implements CorpUserVerificationServ
                         Email email = new Email.Builder()
                                 .setRecipient(user.getEmail())
                                 .setSubject(messageSource.getMessage("corporate.customer.create.subject", null, locale))
-                                .setBody(String.format(messageSource.getMessage("corporate.customer.create.message", null, locale), fullName, user.getUserName(), password, corporate.getCustomerId()))
+                                .setBody(String.format(messageSource.getMessage("corporate.customer.create.message", null, locale), fullName, user.getUserName(), password, corporate.getCorporateId()))
                                 .build();
                         mailService.send(email);
                     } catch (MailException me) {

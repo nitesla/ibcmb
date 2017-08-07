@@ -15,7 +15,6 @@ import javax.persistence.ManyToOne;
 public class CorpLocalBeneficiary extends Beneficiary {
     @ManyToOne
     private Corporate corporate;
-    private String preferredName;
 
     public Corporate getCorporate() {
         return corporate;
@@ -23,14 +22,6 @@ public class CorpLocalBeneficiary extends Beneficiary {
 
     public void setCorporate(Corporate corporate) {
         this.corporate = corporate;
-    }
-
-    public String getPreferredName() {
-        return preferredName;
-    }
-
-    public void setPreferredName(String preferredName) {
-        this.preferredName = preferredName;
     }
 
 

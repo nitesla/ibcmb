@@ -113,6 +113,11 @@ public class CorporateUserServiceImpl implements CorporateUserService {
     }
 
     @Override
+    public CorporateUser getUserByNameAndCorporateId(String username, String corporateId) {
+        return corporateUserRepo.findFirstByUserNameIgnoreCaseAndCorporate_CorporateIdIgnoreCase(username, corporateId);
+    }
+
+    @Override
     public Iterable<CorporateUserDTO> getUsers(Corporate corporate) {
 
         Iterable<CorporateUser> corporateUserDTOList = corporateUserRepo.findAll();
@@ -159,7 +164,10 @@ public class CorporateUserServiceImpl implements CorporateUserService {
             corporateUser.setUserName(user.getUserName());
             corporateUser.setFirstName(user.getFirstName());
             corporateUser.setPhoneNumber(user.getPhoneNumber());
-            corporateUser.setAdmin(user.isAdmin());
+            if(user.isAdmin()) {
+                corporateUser.setCorpUserType(CorpUserType.ADMIN);
+            }
+
 
             if (user.getRoleId() != null) {
                 Role role = roleRepo.findOne(Long.parseLong(user.getRoleId()));
@@ -200,10 +208,12 @@ public class CorporateUserServiceImpl implements CorporateUserService {
             corporateUser.setEmail(user.getEmail());
             corporateUser.setStatus("A");
             corporateUser.setPhoneNumber(user.getPhoneNumber());
-            corporateUser.setAdmin(user.isAdmin());
             corporateUser.setCreatedOnDate(new Date());
             Role role = roleRepo.findOne(Long.parseLong(user.getRoleId()));
             corporateUser.setRole(role);
+            if(user.isAdmin()) {
+                corporateUser.setCorpUserType(CorpUserType.ADMIN);
+            }
             Corporate corp = corporateRepo.findOne(Long.parseLong(user.getCorporateId()));
             corporateUser.setCorporate(corp);
             CorporateUser corpUser = corporateUserRepo.save(corporateUser);
@@ -264,7 +274,7 @@ public class CorporateUserServiceImpl implements CorporateUserService {
                         Email email = new Email.Builder()
                                 .setRecipient(user.getEmail())
                                 .setSubject(messageSource.getMessage("corporate.customer.create.subject", null, locale))
-                                .setBody(String.format(messageSource.getMessage("corporate.customer.create.message", null, locale), fullName, user.getUserName(), password, corporate.getCustomerId()))
+                                .setBody(String.format(messageSource.getMessage("corporate.customer.create.message", null, locale), fullName, user.getUserName(), password, corporate.getCorporateId()))
                                 .build();
                         mailService.send(email);
                     } catch (MailException me) {
@@ -280,6 +290,7 @@ public class CorporateUserServiceImpl implements CorporateUserService {
     public void addCorporateUserToAuthorizerRole(CorporateUser corporateUser, Long corpRoleId) {
 
         CorporateRole corporateRole = corporateRoleRepo.findOne(corpRoleId);
+        corporateUser.setCorpUserType(CorpUserType.AUTHORIZER);
         corporateRole.getUsers().add(corporateUser);
         corporateRoleRepo.save(corporateRole);
     }
@@ -288,6 +299,7 @@ public class CorporateUserServiceImpl implements CorporateUserService {
     public void changeCorporateUserAuthorizerRole(CorporateUser corporateUser, CorporateRole role, Long newRoleId) {
         CorporateRole oldRole = corporateRoleRepo.findOne(role.getId());
         CorporateRole newRole = corporateRoleRepo.findOne(newRoleId);
+        corporateUser.setCorpUserType(CorpUserType.AUTHORIZER);
         oldRole.getUsers().remove(corporateUser);
         corporateRoleRepo.save(oldRole);
         newRole.getUsers().add(corporateUser);
@@ -697,8 +709,6 @@ public class CorporateUserServiceImpl implements CorporateUserService {
     public CorporateRole getCorporateUserAuthorizerRole(CorporateUser user){
 
         Corporate corporate = user.getCorporate();
-
-
         List<CorporateRole> roles = corporateRoleRepo.findByCorporate(corporate);
 
         for (CorporateRole corporateRole : roles) {
@@ -755,7 +765,7 @@ public class CorporateUserServiceImpl implements CorporateUserService {
         //CorporateUser corporateUser = modelMapper.map(corporateUserDTO, CorporateUser.class);
         CorporateUser corporateUser = new CorporateUser();
         corporateUser.setId(corporateUserDTO.getId());
-        corporateUser.setUserName(corporateUserDTO.getUserName()); 
+        corporateUser.setUserName(corporateUserDTO.getUserName());
         corporateUser.setFirstName(corporateUserDTO.getFirstName());
         corporateUser.setLastName(corporateUserDTO.getLastName());
         corporateUser.setPhoneNumber(corporateUserDTO.getPhoneNumber());
@@ -822,6 +832,7 @@ public class CorporateUserServiceImpl implements CorporateUserService {
     }
 
     @Override
+    @Transactional
     public String addAuthorizer(CorporateUserDTO user) throws InternetBankingException {
         try {
             CorporateUser corporateUser = new CorporateUser();
@@ -833,9 +844,6 @@ public class CorporateUserServiceImpl implements CorporateUserService {
             corporateUser.setPhoneNumber(user.getPhoneNumber());
             corporateUser.setCreatedOnDate(new Date());
             corporateUser.setCorpUserType(CorpUserType.AUTHORIZER);
-            corporateUser.setEntrustId(user.getUserName());
-            SettingDTO settingDTO = configService.getSettingByName("DEF_ENTRUST_CORP_GRP");
-            corporateUser.setEntrustGroup(settingDTO.getValue());
             Role role = roleRepo.findOne(Long.parseLong(user.getRoleId()));
             corporateUser.setRole(role);
             Corporate corp = corporateRepo.findOne(Long.parseLong(user.getCorporateId()));
@@ -858,6 +866,9 @@ public class CorporateUserServiceImpl implements CorporateUserService {
         }
     }
 
+
+
+
     @Override
     public String addInitiator(CorporateUserDTO user) throws InternetBankingException {
         try {
@@ -869,7 +880,7 @@ public class CorporateUserServiceImpl implements CorporateUserService {
             corporateUser.setStatus("A");
             corporateUser.setPhoneNumber(user.getPhoneNumber());
             corporateUser.setCreatedOnDate(new Date());
-            corporateUser.setCorpUserType(CorpUserType.AUTHORIZER);
+            corporateUser.setCorpUserType(CorpUserType.INITIATOR);
             corporateUser.setEntrustId(user.getUserName());
             SettingDTO settingDTO = configService.getSettingByName("DEF_ENTRUST_CORP_GRP");
             corporateUser.setEntrustGroup(settingDTO.getValue());
