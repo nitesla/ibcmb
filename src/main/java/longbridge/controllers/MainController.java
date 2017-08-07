@@ -308,19 +308,19 @@ public class MainController {
     public String corpstep2(WebRequest webRequest, Model model, RedirectAttributes redirectAttributes, HttpSession session) {
         String username = webRequest.getParameter("username");
         String phishing = webRequest.getParameter("phishing");
-        String corpKey = webRequest.getParameter("corpKey");
-        logger.info("the corpkey {} and username {}", corpKey, username);
-        if ((username != null) && (corpKey != null)) {
+        String corporateId = webRequest.getParameter("corporateId");
+        logger.info("the corporateId {} and username {}", corporateId, username);
+        if ((username != null) && (corporateId != null)) {
             session.setAttribute("corpUsername", username);
-            session.setAttribute("corpKey", corpKey);
+            session.setAttribute("corporateId", corporateId);
         }
 //        CorporateUser user = corporateUserService.getUserByName(username);
 //        Corporate corporate = corporateService.getCorporateByCustomerId(corpKey);
 
-        CorporateUser user = corporateUserService.getUserByNameAndCorpCif(username, corpKey);
+        CorporateUser user = corporateUserService.getUserByNameAndCorpCif(username, corporateId);
         if (user != null && phishing != null) {
             model.addAttribute("username", user.getUserName());
-            model.addAttribute("corpKey", corpKey);
+            model.addAttribute("corporateId", corporateId);
             return "corplogin";
         }
 
