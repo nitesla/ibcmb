@@ -28,11 +28,10 @@ public class RetailUserDTO {
     private String password;
     private String status;
     private String bvn;
-    private String createdOn;
+    private String createdOnDate;
     private Date expiryDate;
     private Date lockedUntilDate;
-    private String lastLogin;
-    private Date lastLoginDate;
+    private String lastLoginDate;
     private int noOfLoginAttempts;
     private List<String> securityQuestion;
     private List<String> securityAnswer;
@@ -81,13 +80,6 @@ public class RetailUserDTO {
         this.entrustId = entrustId;
     }
 
-    public String getLastLogin() {
-        return lastLogin;
-    }
-
-    public void setLastLogin(String lastLogin) {
-        this.lastLogin = lastLogin;
-    }
 
     public String getFirstName() {
         return firstName;
@@ -137,14 +129,6 @@ public class RetailUserDTO {
         this.status = status;
     }
 
-    public String getCreatedOn() {
-        return createdOn;
-    }
-
-    public void setCreatedOn(String createdOn) {
-        this.createdOn = createdOn;
-    }
-
     public Date getExpiryDate() {
         return expiryDate;
     }
@@ -161,11 +145,19 @@ public class RetailUserDTO {
         this.lockedUntilDate = lockedUntilDate;
     }
 
-    public Date getLastLoginDate() {
+    public String getCreatedOnDate() {
+        return createdOnDate;
+    }
+
+    public void setCreatedOnDate(String createdOnDate) {
+        this.createdOnDate = createdOnDate;
+    }
+
+    public String getLastLoginDate() {
         return lastLoginDate;
     }
 
-    public void setLastLoginDate(Date lastLoginDate) {
+    public void setLastLoginDate(String lastLoginDate) {
         this.lastLoginDate = lastLoginDate;
     }
 
@@ -246,7 +238,7 @@ public class RetailUserDTO {
                 ", birthDate=" + birthDate +
                 ", password='" + password + '\'' +
                 ", status='" + status + '\'' +
-                ", createdOnDate=" + createdOn +
+                ", createdOnDate=" + createdOnDate +
                 ", expiryDate=" + expiryDate +
                 ", lockedUntilDate=" + lockedUntilDate +
                 ", lastLoginDate=" + lastLoginDate +

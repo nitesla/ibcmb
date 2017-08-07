@@ -1,9 +1,8 @@
 package longbridge.services;
+import longbridge.dtos.BulkStatusDTO;
 import longbridge.dtos.BulkTransferDTO;
 import longbridge.dtos.CreditRequestDTO;
-import longbridge.models.BulkTransfer;
-import longbridge.models.Corporate;
-import longbridge.models.CreditRequest;
+import longbridge.models.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import java.util.List;
@@ -14,6 +13,10 @@ import java.util.List;
 
 public interface BulkTransferService {
     String makeBulkTransferRequest(BulkTransfer bulkTransfer);
+    String saveBulkTransferRequestForAuthorization(BulkTransfer bulkTransfer);
+    CorpTransferAuth getAuthorizations(BulkTransfer transRequest);
+    String addAuthorization(CorpTransReqEntry transReqEntry);
+    List<BulkStatusDTO> getStatus(BulkTransfer bulkTransfer);
     Page<BulkTransfer> getAllBulkTransferRequests(Corporate corporate, Pageable details);
     Page<BulkTransferDTO> getBulkTransferRequests(Corporate corporate, Pageable details);
     String cancelBulkTransferRequest(Long id);

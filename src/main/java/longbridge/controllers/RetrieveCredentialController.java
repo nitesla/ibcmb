@@ -6,13 +6,12 @@ import longbridge.exception.PasswordMismatchException;
 import longbridge.exception.PasswordPolicyViolationException;
 import longbridge.forms.CustResetPassword;
 import longbridge.forms.ResetPasswordForm;
+import longbridge.forms.RetrieveUsernameForm;
+import longbridge.models.Account;
 import longbridge.models.Email;
 import longbridge.models.RetailUser;
 import longbridge.repositories.RetailUserRepo;
-import longbridge.services.MailService;
-import longbridge.services.PasswordPolicyService;
-import longbridge.services.RetailUserService;
-import longbridge.services.SecurityService;
+import longbridge.services.*;
 import longbridge.utils.StringUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -53,6 +52,9 @@ public class RetrieveCredentialController {
 
     @Autowired
     private PasswordPolicyService passwordPolicyService;
+
+    @Autowired
+    private AccountService accountService;
 
     @Autowired
     private MessageSource messageSource;
@@ -284,6 +286,99 @@ public class RetrieveCredentialController {
             logger.error("ERROR AUTHENTICATING USER >>>>> ",e);
             return e.getMessage();
         }
+    }
+
+    @GetMapping("/forgot/username")
+    public String showForgotUsername(Model model) {
+        logger.info("forget username 2");
+        RetrieveUsernameForm retrieveUsernameForm= new RetrieveUsernameForm();
+        retrieveUsernameForm.step = "1";
+        model.addAttribute("retUsernameForm", retrieveUsernameForm);
+        return "cust/forgotusername";
+    }
+
+    @PostMapping("/forgot/username")
+    public
+    @ResponseBody
+    String forgotUsername(WebRequest webRequest) {
+        Iterator<String> iterator = webRequest.getParameterNames();
+        logger.info("forget username");
+        while(iterator.hasNext()){
+            logger.info(iterator.next());
+        }
+
+        String customerId = webRequest.getParameter("customerId");
+        String userEmail = webRequest.getParameter("email");
+        try {
+            if (customerId == null && userEmail == null) {
+                logger.error("Account Number not valid");
+                return "false";
+            }
+
+            RetailUser user = retailUserService.getUserByCustomerId(customerId);
+
+            //confirm security question is correct
+            String secAnswer="";
+            Map<String, List<String>> qa = securityService.getUserQA(user.getEntrustId(), user.getEntrustGroup());
+            //List<String> sec = null;
+            if (qa != null){
+//                List<String> questions= qa.get("questions");
+                List<String> answers= qa.get("answers");
+                String result = StringUtil.compareAnswers(webRequest,answers);
+//                    secAnswer = answers.stream().filter(Objects::nonNull).findFirst().orElse("");
+
+                if (result.equalsIgnoreCase("true")){
+                    logger.debug("User Info {}:", user.getUserName());
+                    //Send Username to Email
+                    Email email = new Email.Builder()
+                            .setRecipient(user.getEmail())
+                            .setSubject(messageSource.getMessage("retrieve.username.subject",null,locale))
+                            .setBody(String.format(messageSource.getMessage("retrieve.username.message",null,locale),user.getFirstName(), user.getUserName()))
+                            .build();
+                    mailService.send(email);
+                    return "true";
+                }
+
+            }else {
+                return "false";
+            }
+
+
+
+        }catch (InternetBankingException e){
+            return "false";
+        }
+
+        return "false";
+    }
+
+    @GetMapping("/rest/retail/{email}/{accountNumber}")
+    public @ResponseBody String[] getAccountNameFromNumber(@PathVariable String email, @PathVariable String accountNumber){
+        String customerId = "";
+        String userEmail = "";
+        String[] userDetails = new String[2];
+        userDetails[0] = "";
+        userDetails[1] = "";
+        logger.info("Account nUmber {} email {}",accountNumber,email);
+        Account account = accountService.getAccountByAccountNumber(accountNumber);
+        logger.info("this is the acc ", account);
+        if (account != null){
+            customerId = account.getCustomerId();
+            RetailUser retailUser = retailUserService.getUserByEmail(email);
+            if(retailUser != null){
+                userDetails[0] = customerId;
+                userDetails[1] = retailUser.getEmail();
+                //userEmail = retailUser.getEmail();
+                logger.info("Account number : " + userDetails[0]);
+                logger.info("this is the mail" + userDetails[1]);
+            }
+
+        }else {
+            //nothing
+            customerId = "";
+        }
+        logger.info("cif i {}",customerId);
+        return userDetails;
     }
 
 

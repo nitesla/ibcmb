@@ -5,7 +5,10 @@ import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Set;
+
+import static org.hibernate.envers.RelationTargetAuditMode.NOT_AUDITED;
 
 /**
  * Created by Fortune on 7/5/2017.
@@ -21,7 +24,7 @@ public class CorpTransferAuth extends  AbstractEntity {
     private Date lastEntry;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private Set<CorpTransReqEntry> auths;
+    private Set<CorpTransReqEntry> auths = new HashSet<>();
 
     @OneToOne
     private CorpTransRequest corpTransRequest;

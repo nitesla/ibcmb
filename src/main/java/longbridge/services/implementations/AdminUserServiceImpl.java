@@ -5,14 +5,14 @@ import longbridge.dtos.SettingDTO;
 import longbridge.exception.*;
 import longbridge.forms.ChangeDefaultPassword;
 import longbridge.forms.ChangePassword;
-import longbridge.models.*;
+import longbridge.models.AdminUser;
+import longbridge.models.Email;
+import longbridge.models.Role;
+import longbridge.models.User;
 import longbridge.repositories.AdminUserRepo;
 import longbridge.repositories.RoleRepo;
 import longbridge.repositories.VerificationRepo;
 import longbridge.services.*;
-//import longbridge.utils.Verifiable;
-import java.util.*;
-
 import longbridge.utils.DateFormatter;
 import longbridge.utils.Verifiable;
 import org.modelmapper.ModelMapper;
@@ -28,12 +28,15 @@ import org.springframework.mail.MailException;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-import longbridge.services.AdminUserService;
-import longbridge.services.RoleService;
-import longbridge.services.SecurityService;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Locale;
+
+//import longbridge.utils.Verifiable;
 
 
 /**
@@ -79,7 +82,7 @@ public class AdminUserServiceImpl implements AdminUserService {
 
 
     @Autowired
-    EntityManager entityManager;
+    private EntityManager entityManager;
 
     private Locale locale = LocaleContextHolder.getLocale();
 
@@ -131,7 +134,7 @@ public class AdminUserServiceImpl implements AdminUserService {
     public String addUser(AdminUserDTO user) throws InternetBankingException {
         AdminUser adminUser = adminUserRepo.findFirstByUserNameIgnoreCase(user.getUserName());
         if (adminUser != null) {
-            throw new DuplicateObjectException(messageSource.getMessage("user.exist", null, locale));
+            throw new DuplicateObjectException(messageSource.getMessage("user.exists", null, locale));
         }
         try {
             adminUser = new AdminUser();
@@ -209,15 +212,9 @@ public class AdminUserServiceImpl implements AdminUserService {
             String oldStatus = user.getStatus();
             String newStatus = "A".equals(oldStatus) ? "I" : "A";
             user.setStatus(newStatus);
-            String fullName = user.getFirstName() + " " + user.getLastName();
-            if ((oldStatus == null) || ("I".equals(oldStatus)) && "A".equals(newStatus)) {
-                String password = passwordPolicyService.generatePassword();
-                user.setPassword(passwordEncoder.encode(password));
-                user.setExpiryDate(new Date());
-                passwordPolicyService.saveAdminPassword(user);
-                AdminUser admin = adminUserRepo.save(user);
-                sendActivateMessage(admin, fullName, user.getUserName(), password);
 
+            if ((oldStatus == null) || ("I".equals(oldStatus)) && "A".equals(newStatus)) {
+                sendCredentialNotification(user);
             } else {
                 user.setStatus(newStatus);
                 adminUserRepo.save(user);
@@ -456,10 +453,10 @@ public class AdminUserServiceImpl implements AdminUserService {
         AdminUserDTO adminUserDTO = modelMapper.map(adminUser, AdminUserDTO.class);
         adminUserDTO.setRoleId(adminUser.getRole().getId().toString());
         if (adminUser.getCreatedOnDate() != null) {
-            adminUserDTO.setCreatedOn(DateFormatter.format(adminUser.getCreatedOnDate()));
+            adminUserDTO.setCreatedOnDate(DateFormatter.format(adminUser.getCreatedOnDate()));
         }
         if (adminUser.getLastLoginDate() != null) {
-            adminUserDTO.setLastLogin(DateFormatter.format(adminUser.getLastLoginDate()));
+            adminUserDTO.setLastLoginDate(DateFormatter.format(adminUser.getLastLoginDate()));
         }
 
         return adminUserDTO;
@@ -486,6 +483,15 @@ public class AdminUserServiceImpl implements AdminUserService {
         Page<AdminUserDTO> pageImpl = new PageImpl<AdminUserDTO>(dtOs, pageDetails, t);
         return pageImpl;
     }
+    public void  sendCredentialNotification(AdminUser user){
+        String fullName = user.getFirstName() + " " + user.getLastName();
+        String password = passwordPolicyService.generatePassword();
+        user.setPassword(passwordEncoder.encode(password));
+        user.setExpiryDate(new Date());
+        passwordPolicyService.saveAdminPassword(user);
+        AdminUser admin = adminUserRepo.save(user);
+        sendActivateMessage(admin, fullName, user.getUserName(), password);
 
+    }
 
 }

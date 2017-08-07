@@ -1,11 +1,15 @@
 package longbridge.controllers.corporate;
 
+import longbridge.dtos.SettingDTO;
 import longbridge.models.Account;
+import longbridge.models.CorpUserType;
 import longbridge.models.CorporateUser;
 import longbridge.models.SRConfig;
 import longbridge.services.*;
 import longbridge.utils.DateFormatter;
 import longbridge.utils.HostMaster;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -20,6 +24,9 @@ import java.util.stream.StreamSupport;
  */
 @ControllerAdvice(basePackages={"longbridge.controllers.corporate"})
 public class CorporateControllerAdvice {
+
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
+
     private CorporateUserService corporateUserService;
     private IntegrationService integrationService;
     private TransferService transferService;
@@ -29,6 +36,8 @@ public class CorporateControllerAdvice {
 
     @Autowired
     HostMaster hostMaster;
+    @Autowired
+    private ConfigurationService configurationService;
 
     @Autowired
     public CorporateControllerAdvice(CorporateUserService corporateUserService, IntegrationService integrationService, TransferService transferService, AccountService accountService, ServiceReqConfigService reqConfigService, MessageService messageService) {
@@ -108,8 +117,17 @@ public class CorporateControllerAdvice {
             return "redirect:/corporate/setup";
         }
 
-        boolean isUserAdmin = corporateUser.isAdmin();
-        model.addAttribute("isUserAdmin",isUserAdmin);
+//        boolean isUserAdmin = corporateUser.isAdmin();
+//        model.addAttribute("isUserAdmin",isUserAdmin);
+        if (CorpUserType.ADMIN.equals(corporateUser.getCorpUserType())){
+            boolean isUserAdmin = true;
+            model.addAttribute("isUserAdmin", isUserAdmin);
+        }
+
+        if (CorpUserType.AUTHORIZER.equals(corporateUser.getCorpUserType())){
+            boolean isAuthorizer = true;
+            model.addAttribute("isAuthorizer", isAuthorizer);
+        }
 
         model.addAttribute("corporateType",corporateUser.getCorporate().getCorporateType());
 
@@ -149,5 +167,22 @@ public class CorporateControllerAdvice {
 //        }
 //        return "";
 //    }
+
+    @ModelAttribute
+    public void sessionTimeout(Model model) {
+        SettingDTO setting = configurationService.getSettingByName("SESSION_TIMEOUT");
+        try {
+            if (setting != null && setting.isEnabled()) {
+                Long timeOut = (Long.parseLong(setting.getValue()) * 60000) - 25000;
+                logger.info("SESSION TIME OUT PERIOD CORP" + timeOut);
+                model.addAttribute("timeOut", timeOut);
+            }
+
+        }
+        catch (Exception ex) {
+        }
+
+    }
+
 
 }

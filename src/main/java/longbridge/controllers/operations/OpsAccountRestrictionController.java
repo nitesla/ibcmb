@@ -46,9 +46,9 @@ public class OpsAccountRestrictionController {
     @ModelAttribute
     public void init(Model model) {
         Iterable<CodeDTO> restrictedFor = codeService.getCodesByType("ACCOUNT_RESTRICTION");
-        Iterable<CodeDTO> restrictionTypes = codeService.getCodesByType("RESTRICTION_TYPE");
+        Iterable<CodeDTO> restrictionType = codeService.getCodesByType("RESTRICTION_TYPE");
         model.addAttribute("restrictedFor", restrictedFor);
-        model.addAttribute("restrictionTypes", restrictionTypes);
+        model.addAttribute("restrictionType", restrictionType);
 
     }
 

@@ -1,17 +1,25 @@
 package longbridge.dtos;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonSerializer;
+import com.fasterxml.jackson.databind.SerializerProvider;
 import longbridge.models.Code;
 import longbridge.models.CorpUserType;
+import longbridge.utils.PrettySerializer;
 import org.hibernate.validator.constraints.NotEmpty;
 
+import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 
 /**
  * Created by Fortune on 4/5/2017.
  */
-public class CorporateUserDTO {
+
+public class CorporateUserDTO  implements PrettySerializer{
 
     @JsonProperty("DT_RowId")
     private Long id;
@@ -33,6 +41,8 @@ public class CorporateUserDTO {
     private String  phoneNumber;
     private boolean admin;
     private boolean authorizer;
+    private String authorizerLevel;
+    private String userType;
     private CorpUserType corpUserType;
     private String designation;
     private String roleId;
@@ -42,11 +52,11 @@ public class CorporateUserDTO {
     private String status;
     private Date expiryDate;
     private Date lockedUntilDate;
-    private Date lastLoginDate;
-    private String lastLogin;
+    private String lastLoginDate;
     private int noOfLoginAttempts;
     private Code alertPreference;
-    private String createdOn;
+    private String createdOnDate;
+    private Long corporateRoleId;
     private String corporateRole;
     private List<String> securityQuestion;
     private List<String> securityAnswer;
@@ -189,13 +199,6 @@ public class CorporateUserDTO {
         this.ruleMember = ruleMember;
     }
 
-    public String getLastLogin() {
-        return lastLogin;
-    }
-
-    public void setLastLogin(String lastLogin) {
-        this.lastLogin = lastLogin;
-    }
 
     public String getCorporateType() {
         return corporateType;
@@ -213,13 +216,6 @@ public class CorporateUserDTO {
         this.lockedUntilDate = lockedUntilDate;
     }
 
-    public Date getLastLoginDate() {
-        return lastLoginDate;
-    }
-
-    public void setLastLoginDate(Date lastLoginDate) {
-        this.lastLoginDate = lastLoginDate;
-    }
 
     public int getNoOfLoginAttempts() {
         return noOfLoginAttempts;
@@ -237,12 +233,28 @@ public class CorporateUserDTO {
         this.alertPreference = alertPreference;
     }
 
-    public String getCreatedOn() {
-        return createdOn;
+    public String getLastLoginDate() {
+        return lastLoginDate;
     }
 
-    public void setCreatedOn(String createdOn) {
-        this.createdOn = createdOn;
+    public void setLastLoginDate(String lastLoginDate) {
+        this.lastLoginDate = lastLoginDate;
+    }
+
+    public String getCreatedOnDate() {
+        return createdOnDate;
+    }
+
+    public void setCreatedOnDate(String createdOnDate) {
+        this.createdOnDate = createdOnDate;
+    }
+
+    public Long getCorporateRoleId() {
+        return corporateRoleId;
+    }
+
+    public void setCorporateRoleId(Long corporateRoleId) {
+        this.corporateRoleId = corporateRoleId;
     }
 
     public String getCorporateRole() {
@@ -325,18 +337,79 @@ public class CorporateUserDTO {
         this.designation = designation;
     }
 
+    public String getAuthorizerLevel() {
+        return authorizerLevel;
+    }
+
+    public void setAuthorizerLevel(String authorizerLevel) {
+        this.authorizerLevel = authorizerLevel;
+    }
+
+    public String getUserType() {
+        return userType;
+    }
+
+    public void setUserType(String userType) {
+        this.userType = userType;
+    }
+
+    @Override
+    @JsonIgnore
+    public JsonSerializer<CorporateUserDTO> getSerializer() {
+        return new JsonSerializer<CorporateUserDTO>() {
+            @Override
+            public void serialize(CorporateUserDTO value, JsonGenerator gen, SerializerProvider serializers)
+                    throws IOException, JsonProcessingException {
+
+                gen.writeStartObject();
+                gen.writeStringField("Corporate Name", value.corporateName);
+                gen.writeStringField("Username", value.userName);
+                gen.writeStringField("First Name", value.firstName);
+                gen.writeStringField("Last Name", value.lastName);
+                gen.writeStringField("Email", value.email);
+                gen.writeStringField("Phone", value.phoneNumber);
+                String status =null;
+                if ("A".equals(value.status))
+                    status = "Active";
+                else if ("I".equals(value.status))
+                    status = "Inactive";
+                else if ("L".equals(value.status))
+                    status = "Locked";
+                gen.writeStringField("Status", status);
+                gen.writeStringField("Role", value.role);
+                gen.writeStringField("User Type", value.corpUserType.name());
+                if (CorpUserType.AUTHORIZER.equals(value.corpUserType)) {
+                    gen.writeStringField("Authorizer Level", value.corporateRole);
+                }
+//				if("MULTI".equals(corporate.getCorporateType())) {
+//					gen.writeBooleanField("Is Admin", value.admin);
+//				}
+                gen.writeEndObject();
+            }
+        };
+    }
+
     @Override
     public String toString() {
         return "CorporateUserDTO{" +
                 "id=" + id +
+                ", version=" + version +
                 ", corporateId='" + corporateId + '\'' +
                 ", corporateType='" + corporateType + '\'' +
                 ", corporateName='" + corporateName + '\'' +
                 ", userName='" + userName + '\'' +
+                ", entrustId='" + entrustId + '\'' +
+                ", entrustGroup='" + entrustGroup + '\'' +
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
                 ", email='" + email + '\'' +
                 ", phoneNumber='" + phoneNumber + '\'' +
+                ", admin=" + admin +
+                ", authorizer=" + authorizer +
+                ", authorizerLevel='" + authorizerLevel + '\'' +
+                ", userType='" + userType + '\'' +
+                ", corpUserType=" + corpUserType +
+                ", designation='" + designation + '\'' +
                 ", roleId='" + roleId + '\'' +
                 ", role='" + role + '\'' +
                 ", ruleMember=" + ruleMember +
@@ -345,10 +418,11 @@ public class CorporateUserDTO {
                 ", expiryDate=" + expiryDate +
                 ", lockedUntilDate=" + lockedUntilDate +
                 ", lastLoginDate=" + lastLoginDate +
-                ", lastLogin='" + lastLogin + '\'' +
+                ", lastLogin='" + lastLoginDate + '\'' +
                 ", noOfLoginAttempts=" + noOfLoginAttempts +
                 ", alertPreference=" + alertPreference +
-                ", createdOn='" + createdOn + '\'' +
+                ", createdOn='" + createdOnDate + '\'' +
+                ", corporateRoleId=" + corporateRoleId +
                 ", corporateRole='" + corporateRole + '\'' +
                 ", securityQuestion=" + securityQuestion +
                 ", securityAnswer=" + securityAnswer +
@@ -382,8 +456,4 @@ public class CorporateUserDTO {
 			return false;
 		return true;
 	}
-
-	
-    
-    
 }

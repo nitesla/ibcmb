@@ -43,7 +43,7 @@ public class AdmJobController {
             username = principal.getName();
         }
         logger.info("schedule {} and username {}",schedule,username);
-        if((schedule != null)||(schedule.equalsIgnoreCase(""))){
+        if((schedule != null)&&(!schedule.equalsIgnoreCase(""))){
             String cronExpression = CronJobUtils.getCronExpression(schedule, webRequest);
             if(!cronExpression.equalsIgnoreCase("")) {
                 cronJobService.deleteRunningJob();

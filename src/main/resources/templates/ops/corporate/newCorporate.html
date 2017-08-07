@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="layout :: site-head">
+    <link th:href="@{~/bank/css/bootstrap.min.css}" rel="stylesheet"/>
+    <link th:href="@{~/bank/font-awesome/font-awesome.min.css}" rel="stylesheet"/>
+</head>
+
+<body class="nav-md">
+<div class="container body">
+    <div class="main_container">
+        <div class="col-md-3 left_col">
+            <div class="left_col scroll-view">
+                <div class="navbar nav_title" style="border: 0;">
+                    <!--<a href="index.html"><img th:src="@{~/images/cmb_logo.png}"/></a>-->
+                </div>
+
+                <div class="clearfix"></div>
+                <div class="clearfix"></div>
+
+                <div th:replace="layout :: ops-menu"></div>
+                <div th:replace="layout :: menu-footer-ops"></div>
+
+            </div>
+        </div>
+        <div th:replace="layout :: ops-top-nav"></div>
+
+        <!-- page content -->
+        <div class="right_col" role="main">
+            <div class="">
+                <div class="page-title">
+                    <div class="title_left">
+                        <h3>Corporate Creation</h3>
+                    </div>
+
+                </div>
+
+                <div class="clearfix"></div>
+
+                <div class="row">
+                    <div class="col-md-12 col-sm-12 col-xs-12">
+                        <div class="x_panel">
+                            <div class="x_title">
+
+                                <div class="clearfix"></div>
+                            </div>
+                            <div class="x_content">
+                                <div class="ibox-content">
+                                    <form id="reg-form" action="/forgot/password" method="post">
+
+                                        <div>
+                                            <h3>Create Corporate</h3>
+                                            <section>
+                                                <div class="row">
+                                                    <div class="col-md-offset-4 col-md-4">
+                                                        <br/>
+                                                        <div class="form-group">
+                                                            <label class="control-label">Customer ID</label>
+
+                                                            <div >
+                                                                <input type="text" onkeyup="validateCorporate()" id="customerId" class="form-control" placeholder="Enter CIFID here" required="required"/>
+                                                            </div>
+
+                                                        </div>
+                                                        <div id="custError" style="display: none;">
+                                                            <label class="control-label"></label>
+
+                                                            <p style="color:red;">Invalid Corporate Customer ID</p>
+                                                        </div>
+
+
+                                                        <div id="custName" class="form-group" style="display: none">
+                                                            <label class="control-label">Customer Name</label>
+
+                                                            <div >
+                                                                <input type="text" id="customerName" class="form-control" readonly="readonly"/>
+                                                            </div>
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </section>
+                                            <h3>Corporate Identification</h3>
+                                            <section>
+                                                <div class="row">
+                                                    <div class="col-md-offset-4 col-md-4">
+                                                        <br/>
+
+                                                        <div class="form-group">
+                                                            <label class="col-sm-2 control-label">Accounts <span style="color: red"></span></label>
+                                                            <div class="col-sm-6" style="max-height: 250px; overflow-y: scroll;" id="acountDetails">
+
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </section>
+                                            <h3>Set New Password</h3>
+                                            <section>
+                                                <div class="row">
+                                                    <div class="col-md-offset-4 col-md-4">
+                                                        <br/>
+                                                        <!--<input type="hidden" id="noOfQuestion" name="noOfQuestion" th:value="${noOfQuestion}">-->
+                                                        <!--<input id="returnValue" type="hidden"/>-->
+                                                        <!--<div class="form-group">-->
+                                                            <!--<label>Password</label>-->
+                                                            <!--<span class="required"></span><input type="password" id="password" th:value="${forgotPasswordForm.password}" name="password" class="my-select required" placeholder="Password"/>-->
+                                                        <!--</div>-->
+                                                        <div class="form-group">
+                                                            <labetl>Confirm Password</labetl>
+                                                            <!--<span class="required"></span><input type="password" id="confirm" th:value="${forgotPasswordForm.confirmPassword}" name="confirm" class="my-select required" placeholder="Confirm Password"/>-->
+                                                        </div>
+                                                    </div>
+                                                    <!--<input id="username" name="username" th:value="${forgotPasswordForm.username}" type="hidden"/>-->
+                                                    <!--<div class="col-md-4">-->
+                                                        <!--<br/>-->
+                                                        <!--<h5 style="font-size: 16px; font-weight: bolder;">Password tips</h5>-->
+                                                        <!--<p th:each="rule : ${policies}" th:text="${rule}"></p>-->
+                                                    <!--</div>-->
+                                                </div>
+                                            </section>
+                                            <h3>Token Auth</h3>
+                                            <section>
+                                                <div class="row">
+                                                    <div class="col-md-offset-4 col-md-4">
+                                                        <br/>
+
+                                                        <div class="form-group">
+                                                            <label>Token Code</label>
+                                                            <input type="text" name="token" class="my-select" />
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </section>
+                                            <h3>Summary</h3>
+                                            <section>
+                                                <div class="row">
+                                                    <div class="col-md-offset-1 col-md-10">
+                                                        <br/>
+                                                        <h4 style="font-size: 16px;">Your password reset was successful</h4>
+                                                        <br/>
+
+                                                    </div>
+                                                </div>
+                                            </section>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            </div>
+            <!-- /page content -->
+
+            <!-- footer content -->
+            <footer th:replace="layout :: footer">
+            </footer>
+            <!-- /footer content -->
+        </div>
+    </div>
+<!-- CORE JQUERY SCRIPTS -->
+<script th:src="@{/customer/js/jquery-1.11.1.js}"></script>
+<!-- BOOTSTRAP SCRIPTS  -->
+<script th:src="@{/customer/js/bootstrap.js}"></script>
+
+<script th:src="@{~/customer/js/jquery.validate.min.js}"></script>
+<script th:src="@{~/customer/js/jquery-ui.js}"></script>
+<script th:src="@{~/customer/plugins/jquery-steps/js/jquery.steps.min.js}" ></script>
+<script th:src="@{~/customer/js/newCorp.js}"></script>
+<script th:src="@{~/customer/plugins/bootstrap-notify/bootstrap-notify.js}"></script>
+    <script>
+        $(document).ready(function() {
+            $('#steps-uid-0-p-0').removeClass('body');
+
+//            $('#wizard').smartWizard();
+////
+//            $('#wizard_verticle').smartWizard({
+//                transitionEffect: 'slide'
+//            });
+//
+//            $('.buttonNext').addClass('btn btn-success');
+//            $('.buttonPrevious').addClass('btn btn-primary');
+//            $('.buttonFinish').addClass('btn btn-default');
+        });
+        function validateCorporate() {
+            var custId = $("#customerId").val();
+//            console.log("customer Id: " + custId);
+
+            $.ajax({
+                url: "/ops/corporates/" + custId + "/name",
+                success: function (result) {
+                    if (result != "false") {
+                        $("#customerName").val(result);
+                        $("#custName").show();
+                        $("#custError").hide();
+
+                    }
+                    else {
+                        $("#custName").hide();
+                        $("#custError").show();
+                    }
+                }
+            });
+        }
+    </script>
+</body>
+</html>

@@ -196,7 +196,7 @@ public class OperationsUserServiceImpl implements OperationsUserService {
     public String addUser(OperationsUserDTO user) throws InternetBankingException {
         OperationsUser opsUser = operationsUserRepo.findFirstByUserNameIgnoreCase(user.getUserName());
         if (opsUser != null) {
-            throw new DuplicateObjectException(messageSource.getMessage("user.exist", null, locale));
+            throw new DuplicateObjectException(messageSource.getMessage("user.exists", null, locale));
         }
         try {
             opsUser = new OperationsUser();
@@ -423,10 +423,10 @@ public class OperationsUserServiceImpl implements OperationsUserService {
         OperationsUserDTO operationsUserDTO = modelMapper.map(operationsUser, OperationsUserDTO.class);
         operationsUserDTO.setRole(operationsUser.getRole().getName());
         if (operationsUser.getCreatedOnDate() != null) {
-            operationsUserDTO.setCreatedOn(DateFormatter.format(operationsUser.getCreatedOnDate()));
+            operationsUserDTO.setCreatedOnDate(DateFormatter.format(operationsUser.getCreatedOnDate()));
         }
         if (operationsUser.getLastLoginDate() != null) {
-            operationsUserDTO.setLastLogin(DateFormatter.format(operationsUser.getLastLoginDate()));
+            operationsUserDTO.setLastLoginDate(DateFormatter.format(operationsUser.getLastLoginDate()));
         }
         Code code = codeService.getByTypeAndCode("USER_STATUS", operationsUser.getStatus());
         if (code != null) {

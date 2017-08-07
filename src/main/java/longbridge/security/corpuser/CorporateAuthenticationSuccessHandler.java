@@ -73,6 +73,7 @@ public class CorporateAuthenticationSuccessHandler implements AuthenticationSucc
 
             user.setLastLoginDate(new Date());
             failedLoginService.loginSucceeded(user);
+            sessionUtils.sendAlert(user);
 
         }
         clearAuthenticationAttributes(request);

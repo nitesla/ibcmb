@@ -13,6 +13,7 @@ import org.springframework.batch.core.repository.JobRestartException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
@@ -29,16 +30,19 @@ public class BulkTransferJobLauncher {
 
     private final Job job;
 
+
+
     private final JobLauncher jobLauncher;
 
     @Autowired
-    BulkTransferJobLauncher(@Qualifier("customJob") Job job, JobLauncher jobLauncher) {
+    public BulkTransferJobLauncher(@Qualifier("customJob") Job job, JobLauncher jobLauncher) {
         this.job = job;
         this.jobLauncher = jobLauncher;
     }
 
+
     @Async
-  public   void launchBulkTransferJob(String s) throws JobParametersInvalidException, JobExecutionAlreadyRunningException, JobRestartException, JobInstanceAlreadyCompleteException {
+    public void launchBulkTransferJob(String s) throws JobParametersInvalidException, JobExecutionAlreadyRunningException, JobRestartException, JobInstanceAlreadyCompleteException {
         LOGGER.info("Starting Bulk transfer job");
 
         jobLauncher.run(job, newExecution(s));
@@ -46,16 +50,19 @@ public class BulkTransferJobLauncher {
         LOGGER.info("Stopping Bulk transfer job");
     }
 
+
+
     private JobParameters newExecution(String s) {
         Map<String, JobParameter> parameters = new HashMap<>();
 
         JobParameter parameter = new JobParameter(new Date());
         JobParameter batch = new JobParameter(s);
         parameters.put("currentTime", parameter);
-        parameters.put("batchId",batch);
+        parameters.put("batchId", batch);
 
         return new JobParameters(parameters);
     }
 
 
 }
+

@@ -149,11 +149,11 @@ public class RetailUserServiceImpl implements RetailUserService {
         try {
             RetailUser retailUser = getUserByName(user.getUserName());
             if (retailUser != null) {
-                throw new DuplicateObjectException(messageSource.getMessage("user.exist", null, locale));
+                throw new DuplicateObjectException(messageSource.getMessage("username.invalid", null, locale));
             }
             RetailUser retUser = getUserByCustomerId(user.getCustomerId());
             if (retUser != null) {
-                throw new DuplicateObjectException(messageSource.getMessage("user.exist", null, locale));
+                throw new DuplicateObjectException(messageSource.getMessage("user.reg.exists", null, locale));
             }
 
             retailUser = new RetailUser();
@@ -493,10 +493,10 @@ public class RetailUserServiceImpl implements RetailUserService {
     private RetailUserDTO convertEntityToDTO(RetailUser retailUser) {
         RetailUserDTO retailUserDTO = modelMapper.map(retailUser, RetailUserDTO.class);
         if (retailUser.getCreatedOnDate() != null) {
-            retailUserDTO.setCreatedOn(DateFormatter.format(retailUser.getCreatedOnDate()));
+            retailUserDTO.setCreatedOnDate(DateFormatter.format(retailUser.getCreatedOnDate()));
         }
         if (retailUser.getLastLoginDate() != null) {
-            retailUserDTO.setLastLogin(DateFormatter.format(retailUser.getLastLoginDate()));
+            retailUserDTO.setLastLoginDate(DateFormatter.format(retailUser.getLastLoginDate()));
         }
         return retailUserDTO;
     }

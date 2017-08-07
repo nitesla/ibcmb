@@ -16,33 +16,16 @@ import javax.persistence.ManyToOne;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class CreditRequest extends AbstractEntity{
 
-    private String serial;
-    private String refCode;
     private String accountNumber;
-    private String sortCode;
     private String accountName;
     private String amount;
     private String narration;
     private String status;
+    private String sortCode;
 
     @ManyToOne
     BulkTransfer bulkTransfer;
 
-    public String getSerial() {
-        return serial;
-    }
-
-    public void setSerial(String serial) {
-        this.serial = serial;
-    }
-
-    public String getRefCode() {
-        return refCode;
-    }
-
-    public void setRefCode(String refCode) {
-        this.refCode = refCode;
-    }
 
     public String getAccountNumber() {
         return accountNumber;
@@ -103,9 +86,7 @@ public class CreditRequest extends AbstractEntity{
     public CreditRequest() {
     }
 
-    public CreditRequest(String serial, String refCode, String accountNumber, String sortCode, String accountName, String amount, String narration, String status, BulkTransfer bulkTransfer) {
-        this.serial = serial;
-        this.refCode = refCode;
+    public CreditRequest(String accountNumber, String sortCode, String accountName, String amount, String narration, String status, BulkTransfer bulkTransfer) {
         this.accountNumber = accountNumber;
         this.sortCode = sortCode;
         this.accountName = accountName;

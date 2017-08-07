@@ -1,12 +1,15 @@
 package longbridge.services.implementations;
 
+import longbridge.dtos.BulkStatusDTO;
 import longbridge.dtos.BulkTransferDTO;
 import longbridge.dtos.CreditRequestDTO;
-import longbridge.models.BulkTransfer;
-import longbridge.models.Corporate;
-import longbridge.models.CreditRequest;
-import longbridge.repositories.BulkTransferRepo;
+import longbridge.exception.InternetBankingException;
+import longbridge.exception.TransferRuleException;
+import longbridge.models.*;
+import longbridge.repositories.*;
+import longbridge.security.userdetails.CustomUserPrincipal;
 import longbridge.services.BulkTransferService;
+import longbridge.services.CorporateService;
 import longbridge.services.bulkTransfers.BulkTransferJobLauncher;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
@@ -17,13 +20,16 @@ import org.springframework.batch.core.repository.JobInstanceAlreadyCompleteExcep
 import org.springframework.batch.core.repository.JobRestartException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 /**
  * Created by Longbridge on 14/06/2017.
@@ -40,6 +46,27 @@ public class BulkTransferServiceImpl implements BulkTransferService {
     private BulkTransferJobLauncher jobLauncher;
 
     private ModelMapper modelMapper;
+    private Locale locale = LocaleContextHolder.getLocale();
+
+    @Autowired
+    private CorporateService corporateService;
+
+    @Autowired
+    private CreditRequestRepo creditRequestRepo;
+
+    @Autowired
+    private CorporateRepo corporateRepo;
+
+    @Autowired
+    private CorporateRoleRepo corpRoleRepo;
+
+    @Autowired
+    CorpTransReqEntryRepo reqEntryRepo;
+
+    @Autowired
+    private CorpTransferAuthRepo transferAuthRepo;
+
+
 
     @Autowired
     public BulkTransferServiceImpl(BulkTransferRepo bulkTransferRepo, ModelMapper modelMapper
@@ -57,6 +84,9 @@ public class BulkTransferServiceImpl implements BulkTransferService {
     public String makeBulkTransferRequest(BulkTransfer bulkTransfer) {
         logger.trace("Transfer details valid {}", bulkTransfer);
         //validate bulk transfer
+
+
+
         BulkTransfer transfer = bulkTransferRepo.save(bulkTransfer);
         try {
             jobLauncher.launchBulkTransferJob(""+transfer.getId());
@@ -70,12 +100,94 @@ public class BulkTransferServiceImpl implements BulkTransferService {
         return messageSource.getMessage("bulk.transfer.success", null, null);
     }
 
+    @Override
+    public CorpTransferAuth getAuthorizations(BulkTransfer transRequest) {
+        BulkTransfer bulkTransfer = bulkTransferRepo.findOne(transRequest.getId());
+        return bulkTransfer.getTransferAuth();
+    }
+
+    @Override
+    public String saveBulkTransferRequestForAuthorization(BulkTransfer bulkTransfer) {
+        logger.trace("Transfer details valid {}", bulkTransfer);
+        //validate bulk transfer
+        if (corporateService.getApplicableTransferRule(bulkTransfer) == null) {
+            throw new TransferRuleException(messageSource.getMessage("rule.unapplicable", null, locale));
+        }
+        try {
+
+            bulkTransfer.setStatus("P");
+            bulkTransfer.setStatusDescription("Pending");
+            CorpTransferAuth transferAuth = new CorpTransferAuth();
+            transferAuth.setStatus("P");
+            bulkTransfer.setTransferAuth(transferAuth);
+            bulkTransferRepo.save(bulkTransfer);
+
+        } catch (Exception e ) {
+            throw new InternetBankingException(messageSource.getMessage("bulk.save.failure", null, null),e);
+        }
+        return messageSource.getMessage("bulk.save.success", null, null);
+    }
 
     @Override
     public Page<BulkTransfer> getAllBulkTransferRequests(Corporate corporate, Pageable details) {
         //return bulkTransferRepo.findByCorporate(corporate,details);
         return null;
     }
+
+
+    @Override
+    public List<BulkStatusDTO> getStatus(BulkTransfer bulkTransfer) {
+        return creditRequestRepo.getCreditRequestSummary(bulkTransfer);
+    }
+
+    @Override
+    public String addAuthorization(CorpTransReqEntry transReqEntry) {
+
+        CorporateUser corporateUser = getCurrentUser();
+        BulkTransfer bulkTransfer = bulkTransferRepo.findOne(transReqEntry.getTranReqId());
+        CorpTransRule transferRule = corporateService.getApplicableTransferRule(bulkTransfer);
+        List<CorporateRole> roles = getExistingRoles(transferRule.getRoles());
+        CorporateRole userRole = null;
+
+
+        for (CorporateRole corporateRole : roles) {
+            if (corpRoleRepo.countInRole(corporateRole, corporateUser) > 0) {
+                userRole = corporateRole;
+                break;
+            }
+        }
+
+        if (userRole == null) {
+            throw new InternetBankingException("User is not authorized to approve the transaction");
+        }
+
+        CorpTransferAuth transferAuth = bulkTransfer.getTransferAuth();
+
+        if (reqEntryRepo.existsByTranReqIdAndRole(bulkTransfer.getId(), userRole)) {
+            throw new InternetBankingException("User has already authorized the transaction");
+        }
+
+        if (!"P".equals(transferAuth.getStatus())) {
+            throw new InternetBankingException("Transaction is not pending");
+        }
+        transReqEntry.setEntryDate(new Date());
+        transReqEntry.setRole(userRole);
+        transReqEntry.setUser(corporateUser);
+        transReqEntry.setStatus("Approved");
+        transferAuth.getAuths().add(transReqEntry);
+        transferAuthRepo.save(transferAuth);
+        if (isAuthorizationComplete(bulkTransfer)) {
+
+            transferAuth.setStatus("C");
+            transferAuth.setLastEntry(new Date());
+            transferAuthRepo.save(transferAuth);
+            makeBulkTransferRequest(bulkTransfer);
+            return "Transaction completed successfully";
+        }
+
+        return "Authorization added successfully to the transaction request";
+    }
+
 
     @Override
     public Page<BulkTransferDTO> getBulkTransferRequests(Corporate corporate, Pageable details) {
@@ -89,9 +201,11 @@ public class BulkTransferServiceImpl implements BulkTransferService {
     public BulkTransferDTO convertEntityToDTO(BulkTransfer bulkTransfer) {
         BulkTransferDTO bulkTransferDTO = new BulkTransferDTO();
         bulkTransferDTO.setId(bulkTransfer.getId());
-        bulkTransferDTO.setDebitAccount(bulkTransfer.getDebitAccount());
+        bulkTransferDTO.setCustomerAccountNumber(bulkTransfer.getCustomerAccountNumber());
         bulkTransferDTO.setRefCode(bulkTransfer.getRefCode());
-        bulkTransferDTO.setRequestDate(bulkTransfer.getRequestDate());
+        DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
+        //Date dt = bulkTransfer.getTranDate();
+        bulkTransferDTO.setTranDate(bulkTransfer.getTranDate());
         bulkTransferDTO.setStatus(bulkTransfer.getStatus());
         return bulkTransferDTO;
     }
@@ -152,14 +266,55 @@ public class BulkTransferServiceImpl implements BulkTransferService {
 
     public CreditRequestDTO convertEntityToDTO(CreditRequest creditRequest) {
         CreditRequestDTO creditRequestDTO = new CreditRequestDTO();
-        creditRequestDTO.setRefCode(creditRequest.getRefCode());
         creditRequestDTO.setNarration(creditRequest.getNarration());
         creditRequestDTO.setAmount(creditRequest.getAmount());
         creditRequestDTO.setAccountName(creditRequest.getAccountName());
         creditRequestDTO.setSortCode(creditRequest.getSortCode());
         creditRequestDTO.setAccountNumber(creditRequest.getAccountNumber());
-        creditRequestDTO.setSerial(creditRequest.getSerial());
         creditRequestDTO.setStatus(creditRequest.getStatus());
         return creditRequestDTO;
     }
+
+
+    private CorporateUser getCurrentUser() {
+        CustomUserPrincipal principal = (CustomUserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        CorporateUser corporateUser = (CorporateUser) principal.getUser();
+        return corporateUser;
+    }
+
+    private List<CorporateRole> getExistingRoles(List<CorporateRole> roles) {
+        List<CorporateRole> existingRoles = new ArrayList<>();
+        for (CorporateRole role : roles) {
+            if ("N".equals(role.getDelFlag())) {
+                existingRoles.add(role);
+            }
+        }
+        return existingRoles;
+
+    }
+
+    private boolean isAuthorizationComplete(BulkTransfer transRequest) {
+        CorpTransferAuth transferAuth = transRequest.getTransferAuth();
+        Set<CorpTransReqEntry> transReqEntries = transferAuth.getAuths();
+        CorpTransRule corpTransRule = corporateService.getApplicableTransferRule(transRequest);
+        List<CorporateRole> roles = getExistingRoles(corpTransRule.getRoles());
+        boolean any = false;
+        int approvalCount = 0;
+
+        if (corpTransRule.isAnyCanAuthorize()) {
+            any = true;
+        }
+
+        for (CorporateRole role : roles) {
+            for (CorpTransReqEntry corpTransReqEntry : transReqEntries) {
+                if (corpTransReqEntry.getRole().equals(role)) {
+                    approvalCount++;
+                    if (any) return true;
+                }
+            }
+        }
+        return approvalCount >= roles.size();
+
+    }
+
 }

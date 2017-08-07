@@ -63,6 +63,7 @@ public class FinancialInstitutionServiceImpl implements FinancialInstitutionServ
         financialInstitutionDTO.setInstitutionCode(financialInstitution.getInstitutionCode());
         financialInstitutionDTO.setInstitutionType(financialInstitution.getInstitutionType());
         financialInstitutionDTO.setInstitutionName(financialInstitution.getInstitutionName());
+        financialInstitutionDTO.setSortCode(financialInstitution.getSortCode());
         return modelMapper.map(financialInstitution, FinancialInstitutionDTO.class);
     }
 
@@ -85,6 +86,7 @@ public class FinancialInstitutionServiceImpl implements FinancialInstitutionServ
             financialInstitution.setInstitutionCode(financialInstitutionDTO.getInstitutionCode());
             financialInstitution.setInstitutionType(financialInstitutionDTO.getInstitutionType());
             financialInstitution.setInstitutionName(financialInstitutionDTO.getInstitutionName());
+            financialInstitution.setSortCode(financialInstitutionDTO.getSortCode());
             this.financialInstitutionRepo.save(financialInstitution);
             logger.info("New financial institution: {} created", financialInstitution.getInstitutionName());
             return messageSource.getMessage("institution.add.success", null, locale);
@@ -109,6 +111,7 @@ public class FinancialInstitutionServiceImpl implements FinancialInstitutionServ
             financialInstitution.setInstitutionCode(financialInstitutionDTO.getInstitutionCode());
             financialInstitution.setInstitutionType(financialInstitutionDTO.getInstitutionType());
             financialInstitution.setInstitutionName(financialInstitutionDTO.getInstitutionName());
+            financialInstitution.setSortCode(financialInstitutionDTO.getSortCode());
             this.financialInstitutionRepo.save(financialInstitution);
             logger.info("Financial Institution {} updated", financialInstitution.getInstitutionName());
             return messageSource.getMessage("institution.update.success", null, locale);

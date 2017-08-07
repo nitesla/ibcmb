@@ -52,18 +52,18 @@
                         Transfer Rule
                         <hr class="related-info"/>
                         <table class="table-condensed">
-                            <tr>
-                                <th>Lower Amount:</th>
-                                 <td th:text="${corpTransRule.currency+''+corpTransRule.lowerLimitAmount}"></td> 
+                            <!--<tr>-->
+                                <!--<th>Lower Amount:</th>-->
+                                 <!--<td th:text="${corpTransRule.currency+''+corpTransRule.lowerLimitAmount}"></td> -->
 
-                            </tr>
-                            <tr>
+                            <!--</tr>-->
+                            <!--<tr>-->
 
-                                <th>Upper Amount:</th>
-                                 <td th:unless="${corpTransRule.unlimited}" th:text="${corpTransRule.currency+''+corpTransRule.upperLimitAmount}"></td> 
-                                <td th:if="${corpTransRule.unlimited}">Unlimited</td>
+                                <!--<th>Upper Amount:</th>-->
+                                 <!--<td th:unless="${corpTransRule.unlimited}" th:text="${corpTransRule.currency+''+corpTransRule.upperLimitAmount}"></td> -->
+                                <!--<td th:if="${corpTransRule.unlimited}">Unlimited</td>-->
 
-                            </tr>
+                            <!--</tr>-->
                         </table>
 
 
@@ -72,7 +72,7 @@
 
                     <hr width="100%" size="1"/>
                     <h6 class="hstyle"><span>Authorizations</span></h6>
-        <div class="table-responsive">
+                        <div class="table-responsive">
                     <table class="table table-striped table-bordered table-hover">
                         <thead>
                         <td>Role</td>

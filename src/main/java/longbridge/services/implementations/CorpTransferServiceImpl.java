@@ -277,9 +277,9 @@ public class CorpTransferServiceImpl implements CorpTransferService {
     }
 
 
-    public boolean userCanAuthorize(CorpTransRequest corpTransRequest) {
+    public boolean userCanAuthorize(TransRequest transRequest) {
         CorporateUser corporateUser = getCurrentUser();
-        CorpTransRule transferRule = corporateService.getApplicableTransferRule(corpTransRequest);
+        CorpTransRule transferRule = corporateService.getApplicableTransferRule(transRequest);
 
         if (transferRule == null) {
             return false;

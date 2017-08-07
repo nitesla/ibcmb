@@ -221,6 +221,7 @@ public class TransferController {
 
             }
 
+
             if (request.getSession().getAttribute("add") != null) {
                 //checkbox  checked
                 if (request.getSession().getAttribute("Lbeneficiary") != null) {
@@ -257,6 +258,7 @@ public class TransferController {
 
         }
     }
+
 
 
     @GetMapping("/auth")

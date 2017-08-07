@@ -61,9 +61,18 @@ public class MainController {
     private PasswordPolicyService passwordPolicyService;
 
     @GetMapping("/testing")
+    @ResponseBody
     public String testing() {
-        return "abcd";
+
+//        try {
+            throw new RuntimeException("I just threw this exception...Ndo");
+
+//        }
+//        catch (Exception e){
+//            return "I just caught the exception..that's cool";
+//        }
     }
+
 
 
     @RequestMapping(value = {"/", "/home"})
@@ -472,21 +481,21 @@ public class MainController {
     }
 
 
-    @ModelAttribute
-    public void sessionTimeout(Model model) {
-        SettingDTO setting = configurationService.getSettingByName("SESSION_TIMEOUT");
-        try {
-            if (setting != null && setting.isEnabled()) {
-                Long timeOuts = (Long.parseLong(setting.getValue()) * 60000) - 25000;
-                logger.info("SESSION TIME OUT PERIOD" + timeOuts);
-                model.addAttribute("timeOut", timeOuts);
-            }
-
-        }
-        catch (Exception ex) {
-        }
-
-    }
+//    @ModelAttribute
+//    public void sessionTimeout(Model model) {
+//        SettingDTO setting = configurationService.getSettingByName("SESSION_TIMEOUT");
+//        try {
+//            if (setting != null && setting.isEnabled()) {
+//                Long timeOut = (Long.parseLong(setting.getValue()) * 60000) - 25000;
+//                logger.info("SESSION TIME OUT PERIOD" + timeOut);
+//                model.addAttribute("timeOut", timeOut);
+//            }
+//
+//        }
+//        catch (Exception ex) {
+//        }
+//
+//    }
 
 
 }

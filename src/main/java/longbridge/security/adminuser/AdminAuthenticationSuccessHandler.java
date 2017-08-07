@@ -44,10 +44,10 @@ public class AdminAuthenticationSuccessHandler extends SavedRequestAwareAuthenti
     @Override
     @Transactional
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws ServletException, IOException {
-        HttpSession session = request.getSession(false);
-        if (session != null) {
-             session.invalidate();
-             session=request.getSession();
+        HttpSession session = request.getSession();
+
+
+
             sessionUtils.setTimeout(session);
 
             AdminUser user = adminUserRepo.findFirstByUserName(authentication.getName());
@@ -56,11 +56,11 @@ public class AdminAuthenticationSuccessHandler extends SavedRequestAwareAuthenti
             if (today.isAfter(date) || today.isEqual(date)) {
                 session.setAttribute("expired-password", "expired-password");
             }
-        }
+
         setUseReferer(true);
         adminUserRepo.updateUserAfterLogin(authentication.getName());
 
-
+       sessionUtils.sendAlert(user);
         super.onAuthenticationSuccess(request, response, authentication);
 
     }
