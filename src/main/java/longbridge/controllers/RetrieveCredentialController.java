@@ -7,7 +7,6 @@ import longbridge.exception.PasswordPolicyViolationException;
 import longbridge.forms.CustResetPassword;
 import longbridge.forms.ResetPasswordForm;
 import longbridge.forms.RetrieveUsernameForm;
-import longbridge.models.Account;
 import longbridge.models.Email;
 import longbridge.models.RetailUser;
 import longbridge.repositories.RetailUserRepo;
@@ -31,7 +30,10 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpSession;
-import java.util.*;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 import static longbridge.utils.StringUtil.compareAnswers;
 
@@ -352,34 +354,34 @@ public class RetrieveCredentialController {
         return "false";
     }
 
-    @GetMapping("/rest/retail/{email}/{accountNumber}")
-    public @ResponseBody String[] getAccountNameFromNumber(@PathVariable String email, @PathVariable String accountNumber){
-        String customerId = "";
-        String userEmail = "";
-        String[] userDetails = new String[2];
-        userDetails[0] = "";
-        userDetails[1] = "";
-        logger.info("Account nUmber {} email {}",accountNumber,email);
-        Account account = accountService.getAccountByAccountNumber(accountNumber);
-        logger.info("this is the acc ", account);
-        if (account != null){
-            customerId = account.getCustomerId();
-            RetailUser retailUser = retailUserService.getUserByEmail(email);
-            if(retailUser != null){
-                userDetails[0] = customerId;
-                userDetails[1] = retailUser.getEmail();
-                //userEmail = retailUser.getEmail();
-                logger.info("Account number : " + userDetails[0]);
-                logger.info("this is the mail" + userDetails[1]);
-            }
-
-        }else {
-            //nothing
-            customerId = "";
-        }
-        logger.info("cif i {}",customerId);
-        return userDetails;
-    }
+//    @GetMapping("/rest/retail/{email}/{accountNumber}")
+//    public @ResponseBody String[] getAccountNameFromNumber(@PathVariable String email, @PathVariable String accountNumber){
+//        String customerId = "";
+//        String userEmail = "";
+//        String[] userDetails = new String[2];
+//        userDetails[0] = "";
+//        userDetails[1] = "";
+//        logger.info("Account nUmber {} email {}",accountNumber,email);
+//        Account account = accountService.getAccountByAccountNumber(accountNumber);
+//        logger.info("this is the acc ", account);
+//        if (account != null){
+//            customerId = account.getCustomerId();
+//            RetailUser retailUser = retailUserService.getUserByEmail(email);
+//            if(retailUser != null){
+//                userDetails[0] = customerId;
+//                userDetails[1] = retailUser.getEmail();
+//                //userEmail = retailUser.getEmail();
+//                logger.info("Account number : " + userDetails[0]);
+//                logger.info("this is the mail" + userDetails[1]);
+//            }
+//
+//        }else {
+//            //nothing
+//            customerId = "";
+//        }
+//        logger.info("cif i {}",customerId);
+//        return userDetails;
+//    }
 
 
 }
