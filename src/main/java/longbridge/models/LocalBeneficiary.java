@@ -17,22 +17,12 @@ public class LocalBeneficiary extends Beneficiary {
     @ManyToOne
     private RetailUser user;
 
-    private String preferredName;
-
     public RetailUser getUser() {
         return user;
     }
 
     public void setUser(RetailUser user) {
         this.user = user;
-    }
-
-    public String getPreferredName() {
-        return preferredName;
-    }
-
-    public void setPreferredName(String preferredName) {
-        this.preferredName = preferredName;
     }
 
     @Override
