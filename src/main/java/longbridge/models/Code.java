@@ -45,6 +45,7 @@ public class Code extends AbstractEntity implements PrettySerializer{
 	private String code;
     private String type;
     private String description;
+    private String extraInfo;
 
     public String getCode() {
         return code;
@@ -69,6 +70,15 @@ public class Code extends AbstractEntity implements PrettySerializer{
     public void setDescription(String description) {
         this.description = description;
     }
+
+
+	public String getExtraInfo() {
+		return extraInfo;
+	}
+
+	public void setExtraInfo(String extraInfo) {
+		this.extraInfo = extraInfo;
+	}
 
 	@Override
 	public int hashCode() {
