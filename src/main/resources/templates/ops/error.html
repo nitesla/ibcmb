@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="layout :: site-head">
+</head>
+
+<body class="nav-md">
+<div class="container body">
+    <div class="main_container">
+        <div class="col-md-3 left_col">
+            <div class="left_col scroll-view">
+                <div class="navbar nav_title" style="border: 0;">
+                    <!--<a href="index.html"><img th:src="@{~/images/cmb_logo.png}"/></a>-->
+                </div>
+
+                <div class="clearfix"></div>
+                <div class="clearfix"></div>
+
+                <div th:replace="layout :: ops-menu"></div>
+                <div th:replace="layout :: menu-footer-ops"></div>
+
+            </div>
+        </div>
+        <div th:replace="layout :: ops-top-nav"></div>
+
+        <!-- page content -->
+        <div class="right_col" role="main">
+            <div class="">
+                <div class="page-title">
+                    <div class="title_left">
+                        <h3></h3>
+                    </div>
+                </div>
+
+
+
+                <div class="clearfix"></div>
+
+                <div class="row">
+                    <div class="col-md-12 col-sm-12 col-xs-12">
+                        <div class="x_panel">
+                            <div class="x_title">
+
+                                <div class="clearfix"></div>
+                            </div>
+
+                            <div class="x_content">
+                                <div class="ibox-content">
+
+                                    <div class="alert alert-danger">
+                                        <ul class="fa-ul">
+                                            <li>
+                                                <i class="fa fa-exclamation-triangle fa-lg fa-li" aria-hidden="true"></i>
+                                                An unexpected error has occured. Please contact the bank.
+                                            </li>
+                                        </ul>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- /page content -->
+
+        <!-- footer content -->
+        <footer th:replace="layout :: footer">
+        </footer>
+        <!-- /footer content -->
+    </div>
+</div>
+
+</body>
+</html>
