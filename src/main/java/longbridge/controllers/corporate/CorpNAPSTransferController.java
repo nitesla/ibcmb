@@ -55,9 +55,10 @@ import java.util.stream.StreamSupport;
 @RequestMapping("/corporate/transfer")
 public class CorpNAPSTransferController {
 
+    //private static final String SERVER_FILE_PATH = "C:\\ibanking\\files\\Copy-of-NEFT-ECOB-ABC-old-mutual.xls";
     @Value("${napsfile.path}")
-    private static String SERVER_FILE_PATH;
-
+    private String SERVER_FILE_PATH;
+    private static final String FILENAME = "Copy-of-NEFT-ECOB-ABC-old-mutual.xls";
     Logger logger = LoggerFactory.getLogger(this.getClass());
     @Autowired
     private MessageSource messageSource;
@@ -199,15 +200,12 @@ public class CorpNAPSTransferController {
 
 
     @GetMapping("/bulk/download")
-    public void downloadFile(HttpServletResponse response) throws IOException {
+    public String downloadFile(HttpServletResponse response, Model model, Locale locale) throws IOException {
         File file = null;
         file = new File(SERVER_FILE_PATH);
         if (!file.exists()) {
-            String errorMessage = "Sorry. The file you are looking for does not exist";
-            OutputStream outputStream = response.getOutputStream();
-            outputStream.write(errorMessage.getBytes(Charset.forName("UTF-8")));
-            outputStream.close();
-            return;
+            model.addAttribute("failure", messageSource.getMessage("file.not.found", null, locale));
+            return "/corp/transfer/bulktransfer/upload";
         }
         String mimeType = URLConnection.guessContentTypeFromName(file.getName());
         if (mimeType == null) {
@@ -219,6 +217,7 @@ public class CorpNAPSTransferController {
         InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
         //Copy bytes from source to destination(outputstream in this example), closes both streams.
         FileCopyUtils.copy(inputStream, response.getOutputStream());
+        return null;
     }
 
 
@@ -241,7 +240,6 @@ public class CorpNAPSTransferController {
         }
 
         if (file.isEmpty()) {
-            System.out.println("i got here");
             model.addAttribute("failure", messageSource.getMessage("file.require", null, locale));
             return "/corp/transfer/bulktransfer/upload";
         }
@@ -275,7 +273,7 @@ public class CorpNAPSTransferController {
             if (iterator.hasNext()){
                 Row headerRow = iterator.next();
                 if(headerRow.getLastCellNum() > 5){
-                    model.addAttribute("failure", messageSource.getMessage("file.format.failure", null, locale));
+                    model.addAttribute("failure", messageSource.getMessage("file.content.failure", null, locale));
                     return "/corp/transfer/bulktransfer/upload";
                 }
             }
