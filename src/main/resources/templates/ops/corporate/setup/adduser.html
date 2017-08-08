@@ -65,11 +65,11 @@
                                             <div class="col-md-6 col-sm-6 col-xs-12">
                                                 <button type="button" id="button_add" class="btn-xs btn-default btn"
                                                         data-toggle="modal" data-target="#myModal">
-                                                    <i class="fa fa-user"></i> Add
+                                                    <i class="fa fa-plus"></i> Add
                                                 </button>
 
                                                 <button type="submit" id="button_del" class="btn-xs btn-default btn">
-                                                    <i class="fa fa-user"></i> Remove
+                                                    <i class="fa fa-minus"></i> Remove
                                                 </button>
                                             </div>
                                             <div class="form-group">
@@ -198,7 +198,7 @@
                                 <label class="col-sm-2 control-label">Role</label>
                                 <div class="col-sm-6">
 
-                                    <select id="role" class="form-control" name="role">
+                                    <select id="roleId" class="form-control" name="role">
                                         <option value="">Select..</option>
                                         <option th:each="role : ${roles.?[#strings.equalsIgnoreCase(userType, 'corporate')]}"
                                                 th:value="${role.id}" th:text="${role.name}"></option>
@@ -368,8 +368,8 @@
             phoneNumber = $("input[name='phoneNumber']").val();
             userType = $("select#userType").val();
             authorizerLevel = $("select#authorizerLevel").val();
-            roleId = $("select#role").val();
-            role = $("#role option:selected").text();
+            roleId = $("select#roleId").val();
+            role = $("#roleId option:selected").text();
 
 
 
@@ -403,12 +403,12 @@
                 $("#authorizerError").show();
             }
 
-            if (role == "") {
+            if (roleId == "") {
                 $("#roleError").show();
             }
 
 
-            if (userName == "" || firstName == "" || lastName == "" || email == "" || phoneNumber == "" || userType == "" || role == "") {
+            if (userName == "" || firstName == "" || lastName == "" || email == "" || phoneNumber == "" || userType == "" || roleId == "") {
                 return;
             }
 
@@ -417,7 +417,7 @@
             }
 
             if(userExist == true){
-                return;
+                return;a
             }
 
 
@@ -517,7 +517,7 @@
             $("input[name='phoneNumber']").val("");
             $("select#userType").val("");
             $("select#authorizerLevel").val("");
-            $("select#role").val("");
+            $("select#roleId").val("");
 
             $('#myModal').modal('toggle');
 
@@ -695,8 +695,8 @@
             }
         })
 
-        $("#role").change(function () {
-            role = $("select#role").val();
+        $("#roleId").change(function () {
+            role = $("select#roleId").val();
             if (role != "") {
                 $("#roleError").hide();
             }

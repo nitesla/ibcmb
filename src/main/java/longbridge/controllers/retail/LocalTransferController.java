@@ -41,13 +41,10 @@ public class LocalTransferController {
 
     private RetailUserService retailUserService;
     private TransferService transferService;
-    private MessageSource messages;
     private LocalBeneficiaryService localBeneficiaryService;
-
     private FinancialInstitutionService financialInstitutionService;
     private TransferValidator validator;
     private TransferErrorService transferErrorService;
-    private AccountService accountService;
     private TransferUtils transferUtils;
     private String page = "cust/transfer/local/";
     @Value("${bank.code}")
@@ -58,33 +55,39 @@ public class LocalTransferController {
     ,TransferUtils transferUtils) {
         this.retailUserService = retailUserService;
         this.transferService = transferService;
-        this.messages = messages;
         this.localBeneficiaryService = localBeneficiaryService;
         this.financialInstitutionService = financialInstitutionService;
         this.validator = validator;
         this.transferErrorService = transferErrorService;
-        this.accountService = accountService;
         this.transferUtils=transferUtils;
     }
 
     @GetMapping("")
-    public String index(Model model, Principal principal,HttpServletRequest request) throws Exception {
+    public String index(Model model, Principal principal,HttpServletRequest request,RedirectAttributes redirectAttributes) throws Exception {
         if (request.getSession().getAttribute("auth-needed") != null)
             request.getSession().removeAttribute("auth-needed");
-        RetailUser retailUser = retailUserService.getUserByName(principal.getName());
-        Iterable<LocalBeneficiary> cmbBeneficiaries = localBeneficiaryService.getBankBeneficiaries(retailUser);
+        try {
+            transferUtils.validateBvn();
+            RetailUser retailUser = retailUserService.getUserByName(principal.getName());
+            Iterable<LocalBeneficiary> cmbBeneficiaries = localBeneficiaryService.getBankBeneficiaries(retailUser);
 
-        List<LocalBeneficiary> beneficiaries =StreamSupport.stream(cmbBeneficiaries.spliterator(), false)
-                .collect(Collectors.toList());
-        beneficiaries .forEach(i-> i.setBeneficiaryBank(financialInstitutionService.getFinancialInstitutionByCode(i.getBeneficiaryBank()).getInstitutionName()));
+            List<LocalBeneficiary> beneficiaries = StreamSupport.stream(cmbBeneficiaries.spliterator(), false)
+                    .collect(Collectors.toList());
+            beneficiaries.forEach(i -> i.setBeneficiaryBank(financialInstitutionService.getFinancialInstitutionByCode(i.getBeneficiaryBank()).getInstitutionName()));
 
-        model.addAttribute("localBen",beneficiaries
-                );
-
-
+            model.addAttribute("localBen", beneficiaries
+            );
 
 
-        return page + "pagei";
+            return page + "pagei";
+        }catch (InternetBankingTransferException e) {
+            String errorMessage = transferErrorService.getMessage(e);
+            model.addAttribute("failure", errorMessage);
+            redirectAttributes.addFlashAttribute("failure", errorMessage);
+            return "redirect:/retail/dashboard";
+
+
+        }
     }
 
 

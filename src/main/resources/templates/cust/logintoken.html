@@ -244,9 +244,9 @@
             },
             success: function (reponse) {
                 if (reponse === 'success') {
-//                    $("#tokenmodal").hide();
-//                    $("#otpmodal").show();
-//                    $('#loading-icon').hide();
+                    $('#loading-icon').hide();
+                    $("#tokenmodal").hide();
+                    $("#otpmodal").show();
                     $('#successMess').show();
                     document.getElementById("successMess").textContent = "Successfully sent";
 

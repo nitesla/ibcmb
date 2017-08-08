@@ -22,7 +22,7 @@ public interface CorpTransferService {
 
 
     @PreAuthorize("hasAuthority('GET_TRANSFER')")
-    Page<CorpTransRequest> getTransfers(Pageable pageDetails);
+    Page<CorpTransRequest> getTransferRequests(Pageable pageDetails);
 
     @PreAuthorize("hasAuthority('MAKE_TRANSFER')")
     CorpTransferRequestDTO saveTransfer(CorpTransferRequestDTO corpTransferRequestDTO) throws TransferException;

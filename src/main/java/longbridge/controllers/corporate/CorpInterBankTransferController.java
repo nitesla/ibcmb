@@ -2,9 +2,12 @@ package longbridge.controllers.corporate;
 
 import longbridge.api.Rate;
 import longbridge.dtos.*;
+import longbridge.exception.InternetBankingTransferException;
+import longbridge.exception.TransferErrorService;
 import longbridge.models.*;
 import longbridge.services.*;
 import longbridge.utils.TransferType;
+import longbridge.utils.TransferUtils;
 import longbridge.validator.transfer.TransferValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -13,6 +16,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
@@ -36,13 +40,14 @@ public class CorpInterBankTransferController {
     private CorporateService corporateService;
     private IntegrationService integrationService;
     private AccountService accountService;
+    private TransferUtils transferUtils;
+    private TransferErrorService transferErrorService;
     private String page = "corp/transfer/interbank/";
     @Value("${bank.code}")
     private String bankCode;
 
     @Autowired
-    public CorpInterBankTransferController(CorporateUserService corporateUserService, CorpTransferService corpTransferService, MessageSource messages, CorpLocalBeneficiaryService corpLocalBeneficiaryService, FinancialInstitutionService financialInstitutionService
-            , TransferValidator validator, CorporateService corporateService, IntegrationService integrationService, AccountService accountService) {
+    public CorpInterBankTransferController(CorporateUserService corporateUserService, CorpTransferService corpTransferService, MessageSource messages, CorpLocalBeneficiaryService corpLocalBeneficiaryService, FinancialInstitutionService financialInstitutionService, TransferValidator validator, CorporateService corporateService, IntegrationService integrationService, AccountService accountService, TransferUtils transferUtils, TransferErrorService transferErrorService) {
         this.corporateUserService = corporateUserService;
         this.corpTransferService = corpTransferService;
         this.messages = messages;
@@ -52,20 +57,30 @@ public class CorpInterBankTransferController {
         this.corporateService = corporateService;
         this.integrationService = integrationService;
         this.accountService = accountService;
-
+        this.transferUtils = transferUtils;
+        this.transferErrorService = transferErrorService;
     }
 
     @GetMapping(value = "")
-    public String index(HttpServletRequest request) {
+    public String index(Model model, HttpServletRequest request, RedirectAttributes rd) {
         if (request.getSession().getAttribute("auth-needed") != null)
             request.getSession().removeAttribute("auth-needed");
-        return page + "pagei";
+        try {
+            transferUtils.validateBvn();
+            return page + "pagei";
+        } catch (InternetBankingTransferException e) {
+            String errorMessage = transferErrorService.getMessage(e);
+            rd.addFlashAttribute("failure", errorMessage);
+            return "redirect:/corporate/dashboard";
+
+
+        }
     }
 
 
     @PostMapping(value = "/index")
 
-    public String startTransfer(HttpServletRequest request, Model model,Principal principal) {
+    public String startTransfer(HttpServletRequest request, Model model, Principal principal) {
         CorporateUser user = corporateUserService.getUserByName(principal.getName());
         Corporate corporate = corporateService.getCorporateByCustomerId(user.getCorporate().getCustomerId());
         List<CorpLocalBeneficiary> beneficiaries = StreamSupport.stream(corpLocalBeneficiaryService.getCorpLocalBeneficiaries(corporate).spliterator(), false)

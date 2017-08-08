@@ -9,6 +9,7 @@ import longbridge.models.RetailUser;
 import longbridge.services.*;
 import longbridge.utils.ResultType;
 import longbridge.utils.TransferType;
+import longbridge.utils.TransferUtils;
 import longbridge.validator.transfer.TransferValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,14 +43,12 @@ public class OwnTransferController {
 
     private TransferService transferService;
     private AccountService accountService;
-    private MessageSource messages;
-    private LocaleResolver localeResolver;
-    private LocalBeneficiaryService localBeneficiaryService;
     private TransferValidator validator;
     private FinancialInstitutionService financialInstitutionService;
     private ApplicationContext appContext;
     private TransferErrorService errorService;
     private RetailUserService retailUserService;
+    private TransferUtils transferUtils;
 
     private String page = "cust/transfer/ownaccount/";
     @Value("${bank.code}")
@@ -57,33 +56,40 @@ public class OwnTransferController {
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
-    public OwnTransferController(TransferService transferService, AccountService accountService, MessageSource messages, LocaleResolver localeResolver, LocalBeneficiaryService localBeneficiaryService, TransferValidator validator, FinancialInstitutionService financialInstitutionService, ApplicationContext appContext,
-                                 TransferErrorService errorService,RetailUserService retailUserService) {
+    public OwnTransferController(TransferService transferService, AccountService accountService, TransferValidator validator, FinancialInstitutionService financialInstitutionService, ApplicationContext appContext,
+                                 TransferErrorService errorService, RetailUserService retailUserService,TransferUtils transferUtils) {
         this.transferService = transferService;
         this.accountService = accountService;
-        this.messages = messages;
-        this.localeResolver = localeResolver;
-        this.localBeneficiaryService = localBeneficiaryService;
         this.validator = validator;
         this.financialInstitutionService = financialInstitutionService;
         this.appContext = appContext;
         this.errorService = errorService;
-        this.retailUserService=retailUserService;
+        this.retailUserService = retailUserService;
+        this.transferUtils=transferUtils;
     }
 
 
     @GetMapping("")
-    public ModelAndView index(ModelAndView view,HttpServletRequest request) throws Exception {
+    public String index(Model model, HttpServletRequest request,RedirectAttributes redirectAttributes) throws Exception {
+
         if (request.getSession().getAttribute("auth-needed") != null)
             request.getSession().removeAttribute("auth-needed");
-        TransferRequestDTO requestDTO = new TransferRequestDTO();
-        requestDTO.setFinancialInstitution(financialInstitutionService.getFinancialInstitutionByCode(bankCode));
-        view.addObject("transferRequest", requestDTO);
-        view.setViewName(page + "pagei");
-        return view;
+        try {
+            transferUtils.validateBvn();
+            TransferRequestDTO requestDTO = new TransferRequestDTO();
+            requestDTO.setFinancialInstitution(financialInstitutionService.getFinancialInstitutionByCode(bankCode));
+            model.addAttribute("transferRequest", requestDTO);
+
+            return (page + "pagei");
+        } catch (InternetBankingTransferException e) {
+            String errorMessage = errorService.getMessage(e);
+            redirectAttributes.addFlashAttribute("failure", errorMessage);
+
+          return "redirect:/retail/dashboard";
+
+        }
+
     }
-
-
 
 
     @PostMapping("/summary")
@@ -115,12 +121,11 @@ public class OwnTransferController {
     }
 
 
-
     @PostMapping("/edit")
-    public String editTransfer(@ModelAttribute("transferRequest")  TransferRequestDTO transferRequestDTO,Model model,HttpServletRequest request){
+    public String editTransfer(@ModelAttribute("transferRequest") TransferRequestDTO transferRequestDTO, Model model, HttpServletRequest request) {
         transferRequestDTO.setTransferType(TransferType.OWN_ACCOUNT_TRANSFER);
         transferRequestDTO.setFinancialInstitution(financialInstitutionService.getFinancialInstitutionByCode(bankCode));
-        model.addAttribute("transferRequest",transferRequestDTO);
+        model.addAttribute("transferRequest", transferRequestDTO);
         return page + "pagei";
     }
 
@@ -146,13 +151,10 @@ public class OwnTransferController {
             }
 
 
-
         }
 
 
-
-
-
     }
+
 
 }

@@ -3,7 +3,6 @@ package longbridge.controllers.corporate;
 
 import longbridge.dtos.CorpLocalBeneficiaryDTO;
 import longbridge.dtos.CorpTransferRequestDTO;
-import longbridge.dtos.TransferRequestDTO;
 import longbridge.exception.InternetBankingException;
 import longbridge.exception.InternetBankingTransferException;
 import longbridge.exception.TransferErrorService;
@@ -306,7 +305,7 @@ public class CorpTransferController {
     @ResponseBody
     DataTablesOutput<CorpTransRequest> getTransferRequests(DataTablesInput input) {
         Pageable pageable = DataTablesUtils.getPageable(input);
-        Page<CorpTransRequest> requests = corpTransferService.getTransfers(pageable);
+        Page<CorpTransRequest> requests = corpTransferService.getTransferRequests(pageable);
 
 //        logger.info("Transfer requests ", requests.toString());
         DataTablesOutput<CorpTransRequest> out = new DataTablesOutput<CorpTransRequest>();

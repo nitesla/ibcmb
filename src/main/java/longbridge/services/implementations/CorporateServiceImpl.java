@@ -169,7 +169,14 @@ public class CorporateServiceImpl implements CorporateService {
             saveCorporateRequest(corporateRequestDTO);
             return messageSource.getMessage("corporate.add.success", null, locale);
 
-        } catch (Exception e) {
+        }
+        catch (DuplicateObjectException doe){
+            throw doe;
+        }
+        catch (InternetBankingException ibe){
+            throw ibe;
+        }
+        catch (Exception e) {
             throw new InternetBankingException(messageSource.getMessage("corporate.add.failure", null, locale), e);
         }
     }
@@ -689,6 +696,7 @@ public class CorporateServiceImpl implements CorporateService {
             HashSet<CorporateUser> corpUsers = new HashSet<>();
             for (CorporateUserDTO user : roleDTO.getUsers()) {
                 CorporateUser corporateUser = corporateUserRepo.findOne(user.getId());
+                corporateUser.setCorpUserType(CorpUserType.AUTHORIZER);
                 corpUsers.add(corporateUser);
             }
             role.setUsers(corpUsers);
@@ -718,6 +726,7 @@ public class CorporateServiceImpl implements CorporateService {
 
             for (CorporateUserDTO user : roleDTO.getUsers()) {
                 CorporateUser corporateUser = corporateUserRepo.findOne(user.getId());
+                corporateUser.setCorpUserType(CorpUserType.AUTHORIZER);
                 role.getUsers().add(corporateUser);
             }
             corporateRoleRepo.save(role);

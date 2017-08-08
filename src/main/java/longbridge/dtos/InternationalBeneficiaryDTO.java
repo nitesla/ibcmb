@@ -1,8 +1,8 @@
 package longbridge.dtos;
 
-import java.io.Serializable;
-
 import org.hibernate.validator.constraints.NotEmpty;
+
+import java.io.Serializable;
 
 /**
  Created by Fortune on 4/5/2017.
@@ -25,6 +25,7 @@ public class InternationalBeneficiaryDTO implements Serializable{
     private String beneficiaryAddress;
     private String intermediaryBankName;
     private String intermediaryBankAcctNo;
+    private String preferredName;
 
     private String currencyCode;
 
@@ -107,4 +108,11 @@ public class InternationalBeneficiaryDTO implements Serializable{
         this.currencyCode = currencyCode;
     }
 
+    public String getPreferredName() {
+        return preferredName;
+    }
+
+    public void setPreferredName(String preferredName) {
+        this.preferredName = preferredName;
+    }
 }

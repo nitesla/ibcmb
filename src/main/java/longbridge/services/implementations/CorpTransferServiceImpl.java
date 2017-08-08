@@ -194,10 +194,10 @@ public class CorpTransferServiceImpl implements CorpTransferService {
     }
 
     @Override
-    public Page<CorpTransRequest> getTransfers(Pageable pageDetails) {
+    public Page<CorpTransRequest> getTransferRequests(Pageable pageDetails) {
         CorporateUser corporateUser = getCurrentUser();
         Corporate corporate = corporateUser.getCorporate();
-        Page<CorpTransRequest> corpTransRequests = corpTransferRequestRepo.findByCorporate(corporate, pageDetails);
+        Page<CorpTransRequest> corpTransRequests = corpTransferRequestRepo.findByCorporateAndStatus(corporate,"P", pageDetails);
         return corpTransRequests;
     }
 

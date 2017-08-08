@@ -43,6 +43,8 @@ public interface CorporateUserService{
 
     CorporateUser getUserByNameAndCorpCif(String username, String cif);
 
+    CorporateUser getUserByNameAndCorporateId(String username, String corporateId);
+
     /**
      * Returns all the corporate users for the corporate customer
      * @param Corporate  the corporate customer
@@ -141,9 +143,9 @@ public interface CorporateUserService{
 
     void changeCorporateUserAuthorizerRole(CorporateUser corporateUser, CorporateRole role, Long newRoleId);
 
-    public String addCorpUserFromCorporateAdmin(CorpCorporateUserDTO user) throws InternetBankingException;
+    String addCorpUserFromCorporateAdmin(CorpCorporateUserDTO user) throws InternetBankingException;
 
-    public String resetPassword(CorporateUser user, CustResetPassword changePassword);
+    String resetPassword(CorporateUser user, CustResetPassword changePassword);
 
     List<CorporateUserDTO> getUsersWithoutRole(Long corpId);
 
@@ -155,16 +157,14 @@ public interface CorporateUserService{
     void createUserOnEntrustAndSendCredentials(CorporateUser user);
     void increaseNoOfTokenAttempt(CorporateUser user);
     void resetNoOfTokenAttempt(CorporateUser user);
-    public CorporateUser getUserByCifAndEmailIgnoreCase(Corporate corporate,String email);
-
-
-
+    CorporateUser getUserByCifAndEmailIgnoreCase(Corporate corporate,String email);
 
 
     /**
      * USER ADMIN OPERATIONS WITH VERIFICATION
      */
     String addAuthorizer(CorporateUserDTO user)throws InternetBankingException;
+
     String addInitiator(CorporateUserDTO user)throws InternetBankingException;
     String updateUserFromCorpAdmin(CorporateUserDTO user) throws InternetBankingException;
     String changeActivationStatusFromCorpAdmin(Long id) throws InternetBankingException;

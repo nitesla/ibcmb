@@ -6,6 +6,7 @@ import longbridge.repositories.AdminUserRepo;
 import longbridge.security.CustomBruteForceService;
 import longbridge.security.FailedLoginService;
 import longbridge.security.IpAddressUtils;
+import longbridge.security.SessionUtils;
 import longbridge.security.userdetails.CustomUserPrincipal;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,6 +16,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 
 /**
  * Created by ayoade_farooq@yahoo.com on 4/11/2017.
@@ -29,14 +31,16 @@ public class AdminUserDetailsService implements UserDetailsService {
     private IpAddressUtils addressUtils;
     private Logger logger = LoggerFactory.getLogger(this.getClass());
     private FailedLoginService failedLoginService;
+     private SessionUtils sessionUtils;
 
     @Autowired
     public AdminUserDetailsService(AdminUserRepo adminUserRepo, CustomBruteForceService bruteForceService, IpAddressUtils addressUtils
-            , FailedLoginService failedLoginService) {
+            , FailedLoginService failedLoginService,SessionUtils sessionUtils) {
         this.adminUserRepo = adminUserRepo;
         this.addressUtils = addressUtils;
         this.bruteForceService = bruteForceService;
         this.failedLoginService = failedLoginService;
+        this.sessionUtils=sessionUtils;
     }
 
     @Override
@@ -49,6 +53,7 @@ public class AdminUserDetailsService implements UserDetailsService {
             logger.trace("IP -> {} has been blocked", ip);
             throw new RuntimeException("blocked");
         }
+        sessionUtils.clearSession();
         AdminUser user = adminUserRepo.findFirstByUserNameIgnoreCase(s);
         if (user != null) {
             if (failedLoginService.isBlocked(user)) throw new RuntimeException("user_blocked");
@@ -63,6 +68,8 @@ public class AdminUserDetailsService implements UserDetailsService {
                     return userPrincipal;
                 }
                 throw new UsernameNotFoundException(s);
+
+
             } catch (Exception e) {
                 logger.error("An exception occurred {}", e.getMessage());
                 throw new RuntimeException(e);
