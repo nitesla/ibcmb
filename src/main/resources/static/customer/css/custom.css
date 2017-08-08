@@ -352,12 +352,76 @@ span.req-inner
     transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
 }
 
-select
+
+
+/* select
 {
-    /*-webkit-appearance: none !important;
+    -webkit-appearance: none !important;
     -moz-appearance: none;
-    appearance:none;
-     background: url('../img/select.jpg') white no-repeat calc(100%);*/
+    position: relative;
+
+   
+    
+     /* background: url('../img/select.jpg') white no-repeat calc(100%); */
+
+/* }  */
+
+
+
+select {
+    /* box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box; */
+   
+   
+    
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-image: url('../img/select.jpg') !important;
+    background-repeat: no-repeat;
+    background-position: right center;
+    background-size: contain;
+    
+   
+}
+
+
+/* .select-wrapper {
+    position: relative;
+
+}
+
+.select-wrapper:after {
+    content: 'this';
+    font-family: FontAwesome;
+    color: #fff;
+    display: inline-block;
+    position: absolute;
+    right: 20px;
+    top: 15px;
+    pointer-events: none;
+} */
+
+select::-ms-expand {
+    display: none;
+}
+
+
+
+.coronation-select:before
+{
+    position:absolute;
+    right:15%;
+    width:20px;
+    
+    bottom:0%;
+    height:34px;
+
+    
+    background:red;
+    
+    content: ">";
+   
 }
 
 .my-input
@@ -485,10 +549,13 @@ select
 .menu-link
 {
     padding: 10px 10px !important;
-    font-size: 16px;
-    font-weight: bold;
+    font-size: 13px;
+    
 
 }
+
+
+
 
 
 
@@ -592,6 +659,8 @@ select
     background: #ebecef;
     padding:14px;
     margin-top: -2px;
+    padding-left: 24px;
+
 }
 
 .header-bar
@@ -695,7 +764,7 @@ tokenInput
    
     padding: 20px;
     padding-bottom: 5px;
-    padding-top: 5px;
+    padding-top: 9px;
    
 }
 
@@ -1152,7 +1221,7 @@ body {
     color: #003056;
     font-size: 14px;
     font-weight: 100;
-    margin-top: 10px;
+    /* margin-top: 10px; */
     margin-bottom: 5px;
     text-align: left;
 }
@@ -1207,7 +1276,7 @@ body {
     color: #777;
     padding-top: 8px;
     padding-bottom: 0px;
-    padding-left: 5px;
+    padding-left: 8px;
 }
 
 .navbar-nav li.dropdown:hover > ul.dropdown-menu {
@@ -1219,7 +1288,7 @@ body {
 }
 
 .navbar-nav>li>.dropdown-menu {
-    margin-top: 0;
+    margin-top: -2px;
     border-top-left-radius: 0;
     border-top-right-radius: 0;
 }
@@ -1691,6 +1760,15 @@ button, input, optgroup, select, textarea {
     border: none;
 }
 
+.btn-link
+{
+    padding-left: 0px !important;
+}
+.extra-link
+{
+    padding:10px !important;
+}
+
 .btn-link:hover, .btn-link:focus
 {
     text-decoration: none;
@@ -1781,6 +1859,16 @@ button, input, optgroup, select, textarea {
 /*****************************************************************
                     RESPONSIVE DESIGN
 *******************************************************************/
+@media screen and (min-width: 993px)
+{
+        .carousel-caption h3
+{
+   
+    margin-top:50% !important;
+}
+}
+
+
 @media screen and (max-width: 1200px) and (min-width: 993px){
     .logo {
         right: 120px;
@@ -1794,6 +1882,12 @@ button, input, optgroup, select, textarea {
         font-weight: bold;
 
     }
+
+    .carousel-caption h3
+{
+   
+    margin-top:50% !important;
+}
 
 
     .bg
@@ -1858,6 +1952,12 @@ button, input, optgroup, select, textarea {
 @media screen and (max-width: 992px) and (min-width: 760px){
     .logo {
         right: 45px;
+    }
+
+    .carousel-caption h3
+    {
+    
+        margin-top:50% !important;
     }
 
 
@@ -2329,7 +2429,7 @@ button, input, optgroup, select, textarea {
 .related-bar
 {
     background: white;
-    padding:20px;
+    padding:9px;
     font-size:16px;
     font-weight: bold;
 }
@@ -2342,8 +2442,8 @@ button, input, optgroup, select, textarea {
 
 .home-para
 {
-    padding:20px 50px;
-    font-size:14px;
+    padding:20px 20px;
+    font-size:20px;
     line-height: 30px;
     
 }
@@ -2400,13 +2500,18 @@ button, input, optgroup, select, textarea {
 {
     position:absolute;
     background: #ebdfdb;
-    top:20px;
-    right:-140px;
+    top:-5px;
+    right:50px;
     width:200px;
-    padding: 10px;
+    padding: 3px;
     text-align: left;
     z-index:1000;
     
+}
+
+.password ul li
+{
+    padding:5px;
 }
 
 

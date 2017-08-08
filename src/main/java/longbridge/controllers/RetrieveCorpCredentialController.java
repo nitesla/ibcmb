@@ -90,7 +90,7 @@ public class RetrieveCorpCredentialController {
         logger.info("the username and corporateId is {} and {}",username,corporateId);
 
         try{
-            CorporateUser corporateUser = corporateUserService.getUserByNameAndCorpCif(username, corporateId);
+            CorporateUser corporateUser = corporateUserService.getUserByNameAndCorporateId(username, corporateId);
             logger.info("the corporateUsername group {} and id {}",corporateUser.getEntrustGroup(),corporateUser.getEntrustId());
             Map<String, List<String>> qa = securityService.getUserQA(corporateUser.getEntrustId(), corporateUser.getEntrustGroup());
             logger.info("the question and answer {}",qa.get("questions"));

@@ -18,7 +18,7 @@
 
                        <div class="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
                            <div class="btn-group" role="group" aria-label="First group">
-                               <a type="button" th:href="@{/retail/account/viewonlyhistory}" class="btn btn-default ">Transaction History</a>
+                               <a type="button" th:href="@{/retail/account/{id}/viewonlyhistory(id=${acct})}"  class="btn btn-default ">Transaction History</a>
                                <a  type="button" class="btn bt-select btn-default " th:href="@{/retail/account/viewstatement}" > Account Statement</a>
                            </div>
                        </div>
