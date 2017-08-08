@@ -3,7 +3,6 @@ package longbridge.services;
 import longbridge.dtos.AdminUserDTO;
 import longbridge.exception.InternetBankingException;
 import longbridge.exception.PasswordException;
-import longbridge.exception.VerificationException;
 import longbridge.forms.ChangeDefaultPassword;
 import longbridge.forms.ChangePassword;
 import longbridge.models.AdminUser;
@@ -70,6 +69,8 @@ public interface AdminUserService {
     String addUser(AdminUserDTO user) throws InternetBankingException;
 
 
+    void sendActivationMessage(User user, String... args);
+
     /**
      * * Deletes the admin user identified by the id
      * @param id the user's id
@@ -82,7 +83,7 @@ public interface AdminUserService {
     String changeActivationStatus(Long userId) throws InternetBankingException;
 
 
-    public void createUserOnEntrust(AdminUser adminUser);
+    AdminUser createUserOnEntrustAndSendCredentials(AdminUser adminUser);
 
     /**
      * Updates the details of the specified Admin user
@@ -98,9 +99,6 @@ public interface AdminUserService {
     @PreAuthorize("hasAuthority('RESET_ADMIN_USER_PASSWD')")
     String resetPassword(Long userId) throws PasswordException;
 
-
-
-    void sendPostActivateMessage(User user,String ... args );
 
     /**
      * Replaces the old password of the admin user with the new password.

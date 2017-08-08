@@ -1,29 +1,21 @@
 package longbridge.aop;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.querydsl.core.types.Template;
 import longbridge.dtos.VerificationDTO;
-import longbridge.models.AdminUser;
 import longbridge.models.OperationsUser;
 import longbridge.models.Verification;
-import longbridge.repositories.AdminUserRepo;
 import longbridge.repositories.OperationsUserRepo;
 import longbridge.repositories.VerificationRepo;
-import longbridge.services.AdminUserService;
 import longbridge.services.OperationsUserService;
 import longbridge.services.PasswordPolicyService;
-import longbridge.services.VerificationService;
 import org.aspectj.lang.JoinPoint;
-import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.After;
-import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import sun.rmi.runtime.Log;
 
 import javax.persistence.EntityManager;
 import java.io.IOException;
@@ -81,8 +73,7 @@ public class OpsUserAdvisor {
     public void postOpsUserCreation(JoinPoint p, OperationsUser user) {
 
         logger.info("Executing ADD_OPS_USER operation");
-        operationsUserService.createUserOnEntrust(user);
-        operationsUserService.sendCredentialNotification(user);
+        operationsUserService.createUserOnEntrustAndSendCredentials(user);
     }
 
     // this runs after execution
@@ -103,7 +94,7 @@ public class OpsUserAdvisor {
                 user.setExpiryDate(new Date());
                 passwordPolicyService.saveOpsPassword(user);
                 operationsUserRepo.save(user);
-                operationsUserService.sendPostActivateMessage(opsUser, fullName, user.getUserName(), password);
+                operationsUserService.sendActivationMessage(opsUser, fullName, user.getUserName(), password);
             }
         }
 

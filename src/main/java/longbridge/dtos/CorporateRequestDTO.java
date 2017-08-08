@@ -223,8 +223,9 @@ public class CorporateRequestDTO implements PrettySerializer {
                             gen.writeStringField("Authorizer Level", user.getAuthorizerLevel());
 
                         }
+
+                        gen.writeStringField("Role", user.getRole());
                     }
-                    gen.writeStringField("Role", user.getRole());
                     gen.writeEndObject();
                 }
                 gen.writeEndObject();
