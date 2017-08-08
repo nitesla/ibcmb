@@ -191,23 +191,28 @@ public class TransferUtils {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (!(authentication instanceof AnonymousAuthenticationToken)) {
             CustomUserPrincipal currentUser = (CustomUserPrincipal) authentication.getPrincipal();
+
+
             if (currentUser.getCorpId() == null) {
+
                 RetailUser retailUser = retailUserService.getUserByName(currentUser.getUsername());
+
                 if (retailUser.getBvn() == null || "NO BVN".equalsIgnoreCase(retailUser.getBvn()) || retailUser.getBvn().isEmpty()) {
-                  throw new InternetBankingTransferException(TransferExceptions.NO_BVN.toString());
+
+                    throw new InternetBankingTransferException(TransferExceptions.NO_BVN.toString());
                 }
 
             } else {
                 Corporate corporate = corporateService.getCorp(currentUser.getCorpId());
-                if (corporate==null)  throw new InternetBankingTransferException(TransferExceptions.NO_BVN.toString());
+                if (corporate == null) throw new InternetBankingTransferException(TransferExceptions.NO_BVN.toString());
 
-                if (corporate.getBvn()==null || corporate.getBvn().isEmpty() || "NO BVN".equalsIgnoreCase( corporate.getBvn()) ){
+                if (corporate.getBvn() == null || corporate.getBvn().isEmpty() || "NO BVN".equalsIgnoreCase(corporate.getBvn())) {
                     throw new InternetBankingTransferException(TransferExceptions.NO_BVN.toString());
                 }
 
             }
 
-            throw new InternetBankingTransferException(TransferExceptions.NO_BVN.toString());
+
         }
 
     }

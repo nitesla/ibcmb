@@ -169,7 +169,14 @@ public class CorporateServiceImpl implements CorporateService {
             saveCorporateRequest(corporateRequestDTO);
             return messageSource.getMessage("corporate.add.success", null, locale);
 
-        } catch (Exception e) {
+        }
+        catch (DuplicateObjectException doe){
+            throw doe;
+        }
+        catch (InternetBankingException ibe){
+            throw ibe;
+        }
+        catch (Exception e) {
             throw new InternetBankingException(messageSource.getMessage("corporate.add.failure", null, locale), e);
         }
     }

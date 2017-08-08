@@ -57,7 +57,7 @@ public class OwnTransferController {
 
     @Autowired
     public OwnTransferController(TransferService transferService, AccountService accountService, TransferValidator validator, FinancialInstitutionService financialInstitutionService, ApplicationContext appContext,
-                                 TransferErrorService errorService, RetailUserService retailUserService) {
+                                 TransferErrorService errorService, RetailUserService retailUserService,TransferUtils transferUtils) {
         this.transferService = transferService;
         this.accountService = accountService;
         this.validator = validator;
@@ -65,6 +65,7 @@ public class OwnTransferController {
         this.appContext = appContext;
         this.errorService = errorService;
         this.retailUserService = retailUserService;
+        this.transferUtils=transferUtils;
     }
 
 

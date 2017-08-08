@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{ret-layout}">
+
+<body onload="javascript:var bread = 'home';currentBar('Error');breadCrumb(bread)">
+
+<div layout:fragment="content">
+
+    <div class="alert alert-danger">
+        <ul class="fa-ul">
+            <li>
+                <i class="fa fa-exclamation-triangle fa-lg fa-li" aria-hidden="true"></i>
+                An unexpected error has occured. Please contact the bank.
+            </li>
+        </ul>
+    </div>
+
+
+</div>
+
+
+<th:block layout:fragment="scripts">
+
+
+</th:block>
+
+</body>
+</html>
