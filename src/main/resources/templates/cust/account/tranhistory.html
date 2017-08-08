@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{ret-layout}">
-
 <body onload="javascript:var bread = [['Home', '/retail/dashboard'],['Accounts','/retail/account/customize'],['Transaction History', '#']];currentBar('transaction history');breadCrumb(bread)">
 
 <div layout:fragment="content">
@@ -55,7 +54,6 @@
                             </div>
 
 
-
         </div>
 
 
@@ -77,6 +75,7 @@
             "pagingType" : "simple_numbers",
             "dom": 'T<"clear">frtlp'
         });
+
         /*]]>*/
     </script>
 <!-- CONTENT-WRAPPER SECTION END-->
@@ -201,5 +200,6 @@
     <!--/*]]>*/-->
 <!--</script>-->
 </th:block>
+
 </body>
 </html>

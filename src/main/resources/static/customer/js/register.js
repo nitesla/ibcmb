@@ -72,7 +72,7 @@ form.children("div").steps({
         if(PHISHING_IMAGE_STEP === currentIndex){
             console.log("Current Step is the phishing image step");
             //$("#reg-form").submit();
-            return isValid && checkImage();
+            return isValid && registerUser();;
         }
 
 
@@ -99,7 +99,8 @@ form.children("div").steps({
     onFinishing: function (event, currentIndex)
     {
         //form.validate().settings.ignore = ":disabled";
-        return form.valid() && registerUser();
+        return form.valid();
+        //&& registerUser();
     },
     onFinished: function (event, currentIndex)
     {
