@@ -10,6 +10,7 @@ import longbridge.models.CorporateUser;
 import longbridge.models.RetailUser;
 import longbridge.services.*;
 import longbridge.utils.TransferType;
+import longbridge.utils.TransferUtils;
 import longbridge.validator.transfer.TransferValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -37,52 +38,52 @@ import java.util.stream.StreamSupport;
 public class CorpOwnTransferController {
 
     private CorporateUserService corporateUserService;
-    private IntegrationService integrationService;
     private CorpTransferService corpTransferService;
     private AccountService accountService;
-    private MessageSource messages;
-    private LocaleResolver localeResolver;
-    private CorpLocalBeneficiaryService corpLocalBeneficiaryService;
     private TransferValidator validator;
     private FinancialInstitutionService financialInstitutionService;
     private ApplicationContext appContext;
     private TransferErrorService errorService;
+    private TransferUtils transferUtils;
 
     private String page = "corp/transfer/ownaccount/";
     @Value("${bank.code}")
     private String bankCode;
 
     @Autowired
-    public CorpOwnTransferController(CorporateUserService corporateUserService, IntegrationService integrationService,
-                                     CorpTransferService corpTransferService, AccountService accountService, MessageSource messages,
-                                     LocaleResolver localeResolver, CorpLocalBeneficiaryService corpLocalBeneficiaryService,
+    public CorpOwnTransferController(CorporateUserService corporateUserService,
+                                     CorpTransferService corpTransferService, AccountService accountService,
                                      TransferValidator validator, FinancialInstitutionService financialInstitutionService,
-                                     ApplicationContext appContext, TransferErrorService errorService) {
+                                     ApplicationContext appContext, TransferErrorService errorService, TransferUtils transferUtils) {
         this.errorService = errorService;
         this.corporateUserService = corporateUserService;
-        this.integrationService = integrationService;
         this.corpTransferService = corpTransferService;
         this.accountService = accountService;
-        this.messages = messages;
-        this.localeResolver = localeResolver;
-        this.corpLocalBeneficiaryService = corpLocalBeneficiaryService;
         this.validator = validator;
         this.financialInstitutionService = financialInstitutionService;
         this.appContext = appContext;
+        this.transferUtils=transferUtils;
     }
 
     @GetMapping("")
-    public ModelAndView index(HttpServletRequest request) throws Exception {
+    public String index(Model model, HttpServletRequest request,RedirectAttributes redirectAttributes) throws Exception {
         if (request.getSession().getAttribute("auth-needed") != null)
             request.getSession().removeAttribute("auth-needed");
-        ModelAndView view = new ModelAndView();
+        try {
+            transferUtils.validateBvn();
+            CorpTransferRequestDTO corptransferRequestDTO = new CorpTransferRequestDTO();
+            corptransferRequestDTO
+                    .setFinancialInstitution(financialInstitutionService.getFinancialInstitutionByCode("bankCode"));
+            model.addAttribute("corpTransferRequest", corptransferRequestDTO);
+            return (page + "pagei");
+        }
+        catch (InternetBankingTransferException e) {
+            String errorMessage = errorService.getMessage(e);
+            redirectAttributes.addFlashAttribute("failure", errorMessage);
 
-        CorpTransferRequestDTO corptransferRequestDTO = new CorpTransferRequestDTO();
-        corptransferRequestDTO
-                .setFinancialInstitution(financialInstitutionService.getFinancialInstitutionByCode("bankCode"));
-        view.addObject("corpTransferRequest", corptransferRequestDTO);
-        view.setViewName(page + "pagei");
-        return view;
+            return "redirect:/corporate/dashboard";
+
+        }
 
     }
 

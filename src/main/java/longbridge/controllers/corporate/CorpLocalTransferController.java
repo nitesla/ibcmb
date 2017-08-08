@@ -63,13 +63,21 @@ public class CorpLocalTransferController {
 
 
     @GetMapping("")
-    public String index(Model model, Principal principal,HttpServletRequest request) throws Exception {
+    public String index(Model model, Principal principal,HttpServletRequest request,RedirectAttributes redirectAttributes) throws Exception {
         if (request.getSession().getAttribute("auth-needed") != null)
             request.getSession().removeAttribute("auth-needed");
-        CorporateUser corporateUser = corporateUserService.getUserByName(principal.getName());
-
-
+        try {
+            transferUtils.validateBvn();
+//        CorporateUser corporateUser = corporateUserService.getUserByName(principal.getName());
         return page + "pagei";
+        }catch (InternetBankingTransferException e) {
+            String errorMessage = transferErrorService.getMessage(e);
+            model.addAttribute("failure", errorMessage);
+            redirectAttributes.addFlashAttribute("failure", errorMessage);
+            return "redirect:/corporate/dashboard";
+
+
+        }
     }
 
 

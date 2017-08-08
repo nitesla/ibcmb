@@ -106,13 +106,6 @@ public class CorporateUserAdvisor {
             corporateUserService.createUserOnEntrustAndSendCredentials(corpUser);
         }
 
-        if (verification.getOperation().equals("ADD_AUTHORIZER_FROM_CORPORATE_ADMIN")) {
-            ObjectMapper objectMapper = new ObjectMapper();
-            CorporateUserDTO corpUser = objectMapper.readValue(verification.getOriginalObject(),CorporateUserDTO.class);
-            corporateUserService.addAuthorizer(corpUser);
-        }
-
-
     }
 
 

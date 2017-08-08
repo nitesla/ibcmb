@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -59,19 +60,6 @@ public class MainController {
     private FaqsService faqsService;
     @Autowired
     private PasswordPolicyService passwordPolicyService;
-
-    @GetMapping("/testing")
-    @ResponseBody
-    public String testing() {
-
-//        try {
-            throw new RuntimeException("I just threw this exception...Ndo");
-
-//        }
-//        catch (Exception e){
-//            return "I just caught the exception..that's cool";
-//        }
-    }
 
 
 
