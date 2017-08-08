@@ -57,7 +57,7 @@
             var countdownMessage = opt.countdownMessage ?
                 '<p>' + opt.countdownMessage.replace(/{timer}/g, '<span class="countdown-holder"></span>') + '</p>' : '';
             var coundownBarHtml = opt.countdownBar ?
-                '<div class="progress"> \
+                '<div class="progress" id="progressId"> \
                   <div class="progress-bar progress-bar-striped countdown-bar" role="progressbar" style="min-width: 15px; width: 100%;"> \
                     <span class="countdown-holder"></span> \
                   </div> \
@@ -101,26 +101,29 @@
         if (!opt.ignoreUserActivity) {
             var mousePosition = [-1, -1];
             $(document).on('keyup mouseup mousemove touchend touchmove', function(e) {
-                // if (e.type === 'mousemove') {
-                //     // Solves mousemove even when mouse not moving issue on Chrome:
-                //     // https://code.google.com/p/chromium/issues/detail?id=241476
-                //     if (e.clientX === mousePosition[0] && e.clientY === mousePosition[1]) {
-                //         return;
-                //     }
-                //     mousePosition[0] = e.clientX;
-                //     mousePosition[1] = e.clientY;
-                // }
-                startSessionTimer();
+                if (e.type === 'mousemove') {
+                    // Solves mousemove even when mouse not moving issue on Chrome:
+                    // https://code.google.com/p/chromium/issues/detail?id=241476
+                    // if (e.clientX === mousePosition[0] && e.clientY === mousePosition[1]) {
+                    //     return;
+                    // }
+                    // mousePosition[0] = e.clientX;
+                    // mousePosition[1] = e.clientY;
+                    //$('#progressId').keepAlive;
+                }
+                    startSessionTimer();
+
 
                 // If they moved the mouse not only reset the counter
                 // but remove the modal too!
                 if ($('#session-timeout-dialog').length > 0 &&
                     $('#session-timeout-dialog').data('bs.modal') &&
                     $('#session-timeout-dialog').data('bs.modal').isShown) {
-                    // http://stackoverflow.com/questions/11519660/twitter-bootstrap-modal-backdrop-doesnt-disappear
-                    // $('#session-timeout-dialog').modal('hide');
-                    // $('body').removeClass('modal-open');
-                    // $('div.modal-backdrop').remove();
+                    http://stackoverflow.com/questions/11519660/twitter-bootstrap-modal-backdrop-doesnt-disappear
+                    $('#session-timeout-dialog').modal('show');
+                    $('body').removeClass('active');
+                    //$('div.modal-backdrop').remove();
+
 
                 }
             });
