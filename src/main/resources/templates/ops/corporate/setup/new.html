@@ -140,8 +140,8 @@ $(document).ready(function () {
 });
 function validateCorpId() {
     var custId = $("#customerId").val();
-    console.log("customer Id: " + custId)
-
+    console.log("customer Id: " + custId);
+if(custId != ''){
     $.ajax({
         url: "/ops/corporates/" + custId + "/name",
         success: function (result) {
@@ -155,8 +155,13 @@ function validateCorpId() {
                 $("#custName").hide();
                 $("#custError").show();
             }
+        },error: function (data) {
+            console.log("error");
+//            $('#loading-icon').hide();
+            // alert("failure");
+//                $('#sub').disabled();
         }
-    });
+    });}
 }
 //    document.getElementById("cancel").onclick = function () {
 //        location.href = "/ops/corporates";
