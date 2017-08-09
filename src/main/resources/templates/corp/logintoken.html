@@ -241,11 +241,9 @@
 //                $('#sub').disabled();
             },
             success: function (reponse) {
-                console.log("the response "+reponse);
                 if (reponse === 'success') {
-                    $('#loading-icon').hide();
-                    $("#tokenModalCorp").hide();
-                    $("#otpmodalCorp").show();
+                    $("#tokenmodal").hide();
+                    $("#otpmodal").show();
 //                    $('#loading-icon').hide();
                     $('#successMess').show();
                     document.getElementById("successMess").textContent = "Successfully sent";

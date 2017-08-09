@@ -11,7 +11,6 @@ import longbridge.models.Role;
 import longbridge.models.User;
 import longbridge.repositories.AdminUserRepo;
 import longbridge.repositories.RoleRepo;
-import longbridge.repositories.VerificationRepo;
 import longbridge.services.*;
 import longbridge.utils.DateFormatter;
 import longbridge.utils.Verifiable;
@@ -25,7 +24,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.mail.MailException;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -54,13 +52,7 @@ public class AdminUserServiceImpl implements AdminUserService {
     private ModelMapper modelMapper;
 
     @Autowired
-    private VerificationRepo verificationRepo;
-
-    @Autowired
     private SecurityService securityService;
-
-    @Autowired
-    private RoleService roleService;
 
     @Autowired
     private MailService mailService;
@@ -70,9 +62,6 @@ public class AdminUserServiceImpl implements AdminUserService {
 
     @Autowired
     private MessageSource messageSource;
-
-    @Autowired
-    private CodeService codeService;
 
     @Autowired
     private ConfigurationService configService;
@@ -148,7 +137,7 @@ public class AdminUserServiceImpl implements AdminUserService {
             Role role = roleRepo.findOne(Long.parseLong(user.getRoleId()));
             adminUser.setRole(role);
             AdminUser newUser = adminUserRepo.save(adminUser);
-            createUserOnEntrust(newUser);
+            createUserOnEntrustAndSendCredentials(newUser);
 
             logger.info("New admin user {} created", adminUser.getUserName());
             return messageSource.getMessage("user.add.success", null, locale);
@@ -167,7 +156,7 @@ public class AdminUserServiceImpl implements AdminUserService {
     }
 
 
-    public void createUserOnEntrust(AdminUser adminUser) throws EntrustException {
+    public AdminUser createUserOnEntrustAndSendCredentials(AdminUser adminUser) throws EntrustException {
         AdminUser user = adminUserRepo.findFirstByUserName(adminUser.getUserName());
         if (user != null) {
             if ("".equals(user.getEntrustId()) || user.getEntrustId() == null) {
@@ -193,10 +182,12 @@ public class AdminUserServiceImpl implements AdminUserService {
                     }
                     user.setEntrustId(entrustId);
                     user.setEntrustGroup(group);
-                    adminUserRepo.save(user);
+                    user = adminUserRepo.save(user);
+                    sendCredentialNotification(user);
                 }
             }
         }
+        return user;
     }
 
     @Override
@@ -205,21 +196,12 @@ public class AdminUserServiceImpl implements AdminUserService {
     public String changeActivationStatus(Long userId) throws InternetBankingException {
         try {
             AdminUser user = adminUserRepo.findOne(userId);
-//         //   AdminUser users = user.getCorporate();
-//            if ("I".equals(user.getStatus())) {
-//                throw new InternetBankingException(messageSource.getMessage("admin.deactivated", null, locale));
-//            }
             entityManager.detach(user);
             String oldStatus = user.getStatus();
             String newStatus = "A".equals(oldStatus) ? "I" : "A";
             user.setStatus(newStatus);
-
-            if ((oldStatus == null) || ("I".equals(oldStatus)) && "A".equals(newStatus)) {
-                sendCredentialNotification(user);
-            } else {
-                user.setStatus(newStatus);
-                adminUserRepo.save(user);
-            }
+            adminUserRepo.save(user);
+            sendCredentialNotification(user);
 
             logger.info("Admin user {} status changed from {} to {}", user.getUserName(), oldStatus, newStatus);
             return messageSource.getMessage("user.status.success", null, locale);
@@ -237,26 +219,19 @@ public class AdminUserServiceImpl implements AdminUserService {
     }
 
 
-    @Async
-    public void sendPostActivateMessage(User user, String... args) {
-        Email email = new Email.Builder()
-                .setRecipient(user.getEmail())
-                .setSubject(messageSource.getMessage("admin.activation.subject", null, locale))
-                .setBody(String.format(messageSource.getMessage("admin.activation.message", null, locale), args))
-                .build();
-        mailService.send(email);
-    }
-
-    @Async
-    private void sendActivateMessage(User user, String... args) {
-        AdminUser adminUser = getUserByName(user.getUserName());
-        if ("A".equals(adminUser.getStatus())) {
+    @Override
+    public void sendActivationMessage(User user, String... args) {
+        try {
             Email email = new Email.Builder()
                     .setRecipient(user.getEmail())
                     .setSubject(messageSource.getMessage("admin.activation.subject", null, locale))
                     .setBody(String.format(messageSource.getMessage("admin.activation.message", null, locale), args))
                     .build();
+
             mailService.send(email);
+        }
+        catch (MailException me){
+            logger.error("Error sending mail to {}",user.getEmail(),me);
         }
     }
 
@@ -290,12 +265,11 @@ public class AdminUserServiceImpl implements AdminUserService {
 
         AdminUser adminUser = adminUserRepo.findById(user.getId());
 
-        if ("I".equals(adminUser.getStatus()))
-        {
+        if ("I".equals(adminUser.getStatus())) {
             throw new InternetBankingException(messageSource.getMessage("user.deactivated", null, locale));
         }
         try {
-            //entityManager.detach(adminUser);
+            entityManager.detach(adminUser);
             adminUser.setId(user.getId());
             adminUser.setVersion(user.getVersion());
             adminUser.setFirstName(user.getFirstName());
@@ -308,11 +282,9 @@ public class AdminUserServiceImpl implements AdminUserService {
             adminUserRepo.save(adminUser);
             logger.info("Admin user {} updated", adminUser.getUserName());
             return messageSource.getMessage("user.update.success", null, locale);
-        }
-        catch (VerificationInterruptedException e) {
+        } catch (VerificationInterruptedException e) {
             return e.getMessage();
-        }
-        catch (InternetBankingException ibe) {
+        } catch (InternetBankingException ibe) {
             throw ibe;
         } catch (Exception e) {
             throw new InternetBankingException(messageSource.getMessage("user.update.failure", null, locale), e);
@@ -325,12 +297,11 @@ public class AdminUserServiceImpl implements AdminUserService {
     public String resetPassword(Long userId) throws PasswordException {
 
 
-            AdminUser user = adminUserRepo.findOne(userId);
-            logger.info("this is the admin user"+user.getStatus());
-            if("I".equals(user.getStatus()))
-            {
-                throw new InternetBankingException(messageSource.getMessage("users.deactivated", null, locale));
-            }
+        AdminUser user = adminUserRepo.findOne(userId);
+        logger.info("this is the admin user" + user.getStatus());
+        if ("I".equals(user.getStatus())) {
+            throw new InternetBankingException(messageSource.getMessage("users.deactivated", null, locale));
+        }
         try {
             String newPassword = passwordPolicyService.generatePassword();
             user.setPassword(passwordEncoder.encode(newPassword));
@@ -484,14 +455,19 @@ public class AdminUserServiceImpl implements AdminUserService {
         Page<AdminUserDTO> pageImpl = new PageImpl<AdminUserDTO>(dtOs, pageDetails, t);
         return pageImpl;
     }
-    public void  sendCredentialNotification(AdminUser user){
-        String fullName = user.getFirstName() + " " + user.getLastName();
-        String password = passwordPolicyService.generatePassword();
-        user.setPassword(passwordEncoder.encode(password));
-        user.setExpiryDate(new Date());
-        passwordPolicyService.saveAdminPassword(user);
-        AdminUser admin = adminUserRepo.save(user);
-        sendActivateMessage(admin, fullName, user.getUserName(), password);
+
+    public void sendCredentialNotification(AdminUser user) {
+
+        if ("A".equals(user.getStatus())) {
+
+            String fullName = user.getFirstName() + " " + user.getLastName();
+            String password = passwordPolicyService.generatePassword();
+            user.setPassword(passwordEncoder.encode(password));
+            user.setExpiryDate(new Date());
+            passwordPolicyService.saveAdminPassword(user);
+            AdminUser admin = adminUserRepo.save(user);
+            sendActivationMessage(admin, fullName, user.getUserName(), password);
+        }
 
     }
 

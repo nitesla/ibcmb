@@ -181,6 +181,7 @@ public class CorporateServiceImpl implements CorporateService {
         }
     }
 
+    @Transactional
     public void saveCorporateRequest(CorporateRequestDTO corporateRequestDTO) throws InternetBankingException {
 
         validateCorporateCreation(corporateRequestDTO);
@@ -276,7 +277,6 @@ public class CorporateServiceImpl implements CorporateService {
             }
 
         }
-
 
     }
 
