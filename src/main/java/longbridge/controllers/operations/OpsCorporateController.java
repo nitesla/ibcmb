@@ -570,10 +570,10 @@ public class OpsCorporateController {
         session.removeAttribute("selectedAccounts");
         session.removeAttribute("accounts");
         session.removeAttribute("inputedUsers");
-        session.removeAttribute(" rules");
-        session.removeAttribute(" authorizerLevels");
-        session.removeAttribute(" users");
-        session.removeAttribute(" accountInfos");
+        session.removeAttribute("rules");
+        session.removeAttribute("authorizerLevels");
+        session.removeAttribute("users");
+        session.removeAttribute("accountInfos");
 
         CorporateDTO corporateDTO = new CorporateDTO();
 
