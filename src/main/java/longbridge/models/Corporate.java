@@ -38,6 +38,7 @@ public class Corporate extends AbstractEntity implements PrettySerializer{
     private String bvn;
 
     @OneToMany(mappedBy = "corporate")
+    @JsonIgnore
     private List<BulkTransfer> transfers;
 
 

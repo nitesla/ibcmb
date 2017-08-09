@@ -430,7 +430,7 @@
 <script th:src="@{~/bank/js/jquery.spring-friendly.min.js}"></script>
 
 <!-- Page-Level Scripts -->
-<script>
+<script class="init" th:inline="javascript">
     /*<![CDATA[*/
     /*]]>*/
 
@@ -467,7 +467,12 @@
                 $('#buttonDiv').show();
             }
             if($(this).val()=="weekDiv"){
-                $('#weekDiv').prop("required",true);
+//                $('#weekDiv').prop("required",true);
+                $('#weekDay').prop("required",true);
+
+            }else{
+                $('#weekDay').prop("required",false);
+
             }
         });
 

@@ -5,7 +5,8 @@
 <body onload="javascript:var bread = [['Home', '/corporate/dashboard'],['CMB transfer']];currentBar('CMB transfer');breadCrumb(bread)">
 
 <div layout:fragment="content">
-    <div class="col-md-5 col-sm-5 ">
+    <div class="col-md-12 col-sm-12 ">
+                 <a th:href="@{/retail/transfer/local/new}" class="pull-right extra-link">New Beneficiary</a>
 
         <select class="form-control full-width coronation-form-control hide-content-only" id="view">
             <option value="account">Overview</option>
@@ -20,7 +21,7 @@
                     <div class="col-md-12 col-sm-12  table-responsive">
                         <h6 class="sub_header">Beneficiaries</h6>
                         <form method="post" >
-                            <table class="table">
+                            <table class="table" id="mytab">
                                 <thead>
                                 <tr>
                                 <th>Beneficiary name</th>
@@ -63,7 +64,7 @@
                            <!-- <button type="submit" class="btn btn-default" style="float: right">Add beneficiary</button>
                        --> </form>
                     </div>
-                    <a th:href="@{/retail/transfer/local/new}" class="btn btn-link less-required">New Beneficiary</a>
+                    <!-- <a th:href="@{/retail/transfer/local/new}" class="btn btn-link less-required">New Beneficiary</a> -->
                                
            </div>
         </div>
@@ -73,6 +74,19 @@
 
 
 <th:block layout:fragment="scripts">
+
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        var table = $('#mytab').DataTable({
+            responsive: true,
+            "lengthMenu" : [ [ 5, 10, 20], [ 5, 10, 20 ] ],
+            "pagingType" : "simple_numbers",
+            "searching": false,
+            "dom": 'T<"clear">frtlp'
+        });
+        /*]]>*/
+    </script>
+
   <script>
     //datepicker
     $( function() {

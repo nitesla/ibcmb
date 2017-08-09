@@ -7,8 +7,8 @@
 <div layout:fragment="content">
     <div class="col-md-5 col-sm-5 ">
 
-        <span th:if="${beneficiary.preferredName} !=''" th:text="${beneficiary.preferredName}"> Transfer to</span>
-                 <span th:if="${beneficiary.preferredName} ==''" th:text="${beneficiary.accountName}"> Transfer to</span>
+        <span class='my-label extra-link' th:if="${beneficiary.preferredName} !=''" th:text="${beneficiary.preferredName}"> Transfer to</span>
+                 <span class='my-label extra-link' th:if="${beneficiary.preferredName} ==''" th:text="${beneficiary.accountName}"> Transfer to</span>
 
         <select class="form-control full-width coronation-form-control hide-content-only" id="view">
             <option value="account">Overview</option>
@@ -61,7 +61,7 @@
                             </div>
 
 
-                            <div class="col-md-6 col-sm-6">
+                            <div class="col-md-6 col-sm-6 no-pad-left">
                         <!--<p class="related" style="padding-top: 5%">Related Information</p>-->
                             <span class="alert no-bd-rad my-border bg-white invisible">NGN</span><button class="btn btn-link required-step" type="submit">Submit</button>
                             </div>

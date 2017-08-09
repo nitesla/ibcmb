@@ -8,8 +8,8 @@ var secAnswer ="";
  */
 
 function validateAccountNo(accountNumber){
-console.log("the account number "+accountNumber);
-    var customerId;
+console.log("the num "+accountNumber);
+    // var customerId;
     var secQues;
     $.ajax({
         type:'GET',
@@ -50,7 +50,7 @@ console.log("the account number "+accountNumber);
                      $('#myLoader').modal('hide');
 
                 }else{
-                    console.log('security questn 1 ' +$('#noOfSecQn').val());
+                    // console.log('security questn 1 ' +$('#noOfSecQn').val());
 
                     var container = document.getElementById("secQuestionsDiv");
                     container.innerHTML = "";
@@ -85,6 +85,7 @@ function validateSecAnswer(secAnswer){
     // var customerId = $('#customerId').val();
  $('#myLoader').modal('show');
     console.log('customer id '+customerId);
+    console.log('customer secAnswer '+secAnswer);
     var result = '';
     $.ajax({
         type:'GET',
@@ -213,9 +214,9 @@ form.children("div").steps({
         if(ACCOUNT_DETAILS_STEP === currentIndex){
             console.log("Current step is the account details step");
             var accountNumber = $('input[name="acct"]').val();
-            email = $('input[name="email"]').val();
-            console.log("email "+email);
-            return isValid && validateAccountNo(accountNumber,email);
+            // email = $('input[name="email"]').val();
+            // console.log("email "+email);
+            return isValid && validateAccountNo(accountNumber);
             // console.log("Current step is the account details step");
             // var accountNumber = $('input[name="acct"]').val();
             // return isValid && validateAccountNo(accountNumber);
@@ -253,6 +254,9 @@ form.children("div").steps({
 });
 
 
+//var entityDetails = [4];
+// entityDetails[0] = "";
+// entityDetails[1] = "";
 //function validateAccountNo(accountNumber, email){
 //  $('#myLoader').modal('show');
 //     var secQues;

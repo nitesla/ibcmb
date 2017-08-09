@@ -495,7 +495,7 @@ public class AccountController {
 		List<TransactionDetails> list = accountStatement.getTransactionDetails();
 
 		model.addAttribute("history", list);
-		return "corp/account/tranhistory";
+		return "cust/account/tranhistory";
 	}
 
 //	@GetMapping("/viewstatement/display/data")

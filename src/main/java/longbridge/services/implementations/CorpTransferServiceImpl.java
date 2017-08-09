@@ -57,7 +57,7 @@ public class CorpTransferServiceImpl implements CorpTransferService {
     private CorporateRoleRepo corpRoleRepo;
 
     @Autowired
-    CorpTransReqEntryRepo reqEntryRepo;
+    private CorpTransReqEntryRepo reqEntryRepo;
 
     @Autowired
     public CorpTransferServiceImpl(CorpTransferRequestRepo corpTransferRequestRepo, IntegrationService integrationService, TransactionLimitServiceImpl limitService, ModelMapper modelMapper, AccountService accountService, FinancialInstitutionService financialInstitutionService, ConfigurationService configService) {

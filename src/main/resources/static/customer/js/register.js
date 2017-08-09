@@ -351,7 +351,7 @@ function checkImage() {
     var phishing = "";
     phishing = $('input[name="phishing"]').val();
     console.log(phishing);
-    if(phishing == ""){
+    if(phishing === "" || phishing == null){
         $('#errorMess').text("Please select phishing image.");
         $('#myModalError').modal('show');
         return false;
