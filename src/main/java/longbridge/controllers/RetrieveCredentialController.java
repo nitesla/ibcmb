@@ -360,34 +360,34 @@ public class RetrieveCredentialController {
         return "false";
     }
 
-    @GetMapping("/rest/retail/{email}/{accountNumber}")
-    public @ResponseBody String[] getAccountNameFromNumber(@PathVariable String email, @PathVariable String accountNumber){
-        String customerId = "";
-        String userEmail = "";
-        String[] userDetails = new String[2];
-        userDetails[0] = "";
-        userDetails[1] = "";
-        logger.info("Account nUmber {} email {}",accountNumber,email);
-        Account account = accountService.getAccountByAccountNumber(accountNumber);
-        logger.info("this is the acc ", account);
-        if (account != null){
-            customerId = account.getCustomerId();
-            RetailUser retailUser = retailUserService.getUserByEmail(email);
-            if(retailUser != null){
-                userDetails[0] = customerId;
-                userDetails[1] = retailUser.getEmail();
-                //userEmail = retailUser.getEmail();
-                logger.info("Account number : " + userDetails[0]);
-                logger.info("this is the mail" + userDetails[1]);
-            }
-
-        }else {
-            //nothing
-            customerId = "";
-        }
-        logger.info("cif i {}",customerId);
-        return userDetails;
-    }
+//    @GetMapping("/rest/retail/{email}/{accountNumber}")
+//    public @ResponseBody String[] getAccountNameFromNumber(@PathVariable String email, @PathVariable String accountNumber){
+//        String customerId = "";
+//        String userEmail = "";
+//        String[] userDetails = new String[2];
+//        userDetails[0] = "";
+//        userDetails[1] = "";
+//        logger.info("Account nUmber {} email {}",accountNumber,email);
+//        Account account = accountService.getAccountByAccountNumber(accountNumber);
+//        logger.info("this is the acc ", account);
+//        if (account != null){
+//            customerId = account.getCustomerId();
+//            RetailUser retailUser = retailUserService.getUserByEmail(email);
+//            if(retailUser != null){
+//                userDetails[0] = customerId;
+//                userDetails[1] = retailUser.getEmail();
+//                //userEmail = retailUser.getEmail();
+//                logger.info("Account number : " + userDetails[0]);
+//                logger.info("this is the mail" + userDetails[1]);
+//            }
+//
+//        }else {
+//            //nothing
+//            customerId = "";
+//        }
+//        logger.info("cif i {}",customerId);
+//        return userDetails;
+//    }
 
 
 }

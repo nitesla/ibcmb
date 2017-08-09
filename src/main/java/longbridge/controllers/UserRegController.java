@@ -9,6 +9,7 @@ import longbridge.dtos.RetailUserDTO;
 import longbridge.exception.InternetBankingException;
 import longbridge.exception.InternetBankingSecurityException;
 import longbridge.forms.RegistrationForm;
+import longbridge.models.Account;
 import longbridge.models.RetailUser;
 import longbridge.models.UserType;
 import longbridge.services.*;
@@ -129,22 +130,22 @@ public class UserRegController {
         return customerId;
     }
 
-//    @GetMapping("/rest/retail/accountname/{accountNumber}")
-//    public @ResponseBody String getAccountNameFromNumber(@PathVariable String accountNumber){
-//        String customerId = "";
-//        String userEmail = "";
-//    	logger.info("Account nUmber : " + accountNumber);
-//        Account account = accountService.getAccountByAccountNumber(accountNumber);
-//        if (account != null){
-//            customerId = account.getCustomerId();
-//            logger.info("Account number : " + customerId);
-//        }else {
-//            //nothing
-//            customerId = "";
-//        }
-//        logger.info("cif i {}",customerId);
-//        return customerId;
-//    }
+    @GetMapping("/rest/retail/accountname/{accountNumber}")
+    public @ResponseBody String getAccountNameFromNumber(@PathVariable String accountNumber){
+        String customerId = "";
+        String userEmail = "";
+    	logger.info("Account nUmber : " + accountNumber);
+        Account account = accountService.getAccountByAccountNumber(accountNumber);
+        if (account != null){
+            customerId = account.getCustomerId();
+            logger.info("Account number : " + customerId);
+        }else {
+            //nothing
+            customerId = "";
+        }
+        logger.info("cif i {}",customerId);
+        return customerId;
+    }
 
     @GetMapping("/rest/secQues/{cifId}")
     public @ResponseBody List<String> getSecQuestionFromNumber(@PathVariable String cifId, HttpSession session){
