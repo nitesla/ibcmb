@@ -5,6 +5,14 @@
 
 
 <body class="nav-md">
+<style>
+
+    .error {
+        color: red;
+        display: none;
+    }
+
+</style>
 <div class="container body">
     <div class="main_container">
         <div class="col-md-3 left_col">
@@ -93,6 +101,7 @@
 
 
                                                         </table>
+                                                        <p id="noAuthorizerError"   class="error">Authorizer Level is required</p>
                                                     </div>
                                                 </div>
 
@@ -241,7 +250,11 @@
             var count = contactsTab.data().length;
 
             if (count < 1) {
+                $("#noAuthorizerError").show();
                 return;
+            }
+            else {
+                $("#noAuthorizerError").hide();
             }
 
             data = JSON.stringify(contactsTab.data().toArray());
@@ -337,6 +350,8 @@
             $("#levelError").hide();
             $("#duplicateError").hide();
             $("#invalidLevelError").hide();
+            $("#noAuthorizerError").hide();
+
             duplicate = false;
 
 

@@ -61,6 +61,7 @@
                                     <div class="x_content">
 
                                         <fieldset>
+                                            <p id="maxUserError"   class="error">Only one corporate user can be added</p>
 
                                             <div class="col-md-6 col-sm-6 col-xs-12">
                                                 <button type="button" id="button_add" class="btn-xs btn-default btn">
@@ -93,6 +94,8 @@
                                                         </thead>
 
                                                     </table>
+                                                    <p id="noUserError"   class="error">Corporate user is required</p>
+
                                                 </div>
                                             </div>
 
@@ -315,29 +318,11 @@
                 {
                     "data": "phoneNumber"
                 }
-//                ,
-//                {
-//                    "data": "userType"
-//                },
-//                {
-//                    "data": "authorizerLevel"
-//                },
-//                {
-//                    "data": "roleId"
-//                },
-//                {
-//                    "data": "role"
-//                }
+
             ],
             "language": {
                 "emptyTable": "No user added. Click Add"
             }
-//            ,
-//            "columnDefs": [{
-//                "targets": 7,
-//                "visible":  false
-//            }
-//            ]
 
         });
 
@@ -352,6 +337,9 @@
             if(count<1) {
                 $("#myModal").modal('show');
             }
+            else {
+                $("#maxUserError").show();
+            }
 
         });
 
@@ -362,7 +350,12 @@
             var count = contactsTab.data().length;
 
             if(count!=1) {
+                $("#noUserError").show();
                 return;
+            }
+            else {
+                $("#noUserError").hide();
+
             }
 
             data = JSON.stringify(contactsTab.data().toArray());
@@ -410,18 +403,7 @@
                 $("#phoneNumberError").show();
 
             }
-//            if (userType == "") {
-//                $("#userTypeError").show();
-//            }
 
-
-//            if (userType == "AUTHORIZER" && authorizerLevel == "") {
-//                $("#authorizerError").show();
-//            }
-
-//            if (role == "") {
-//                $("#roleError").show();
-//            }
 
 
             if (userName == "" || firstName == "" || lastName == "" || email == "" || phoneNumber == "") {
@@ -532,9 +514,8 @@
             $("input[name='lastName']").val("");
             $("input[name='email']").val("");
             $("input[name='phoneNumber']").val("");
-//            $("select#userType").val("");
-//            $("select#authorizerLevel").val("");
-//            $("select#role").val("");
+            $("#noUserError").hide();
+
 
             $('#myModal').modal('toggle');
 
@@ -561,6 +542,7 @@
             e.preventDefault()
             var dt = $('#mytab').DataTable();
             dt.row('.selected').remove().draw(false);
+            $("#maxUserError").hide();
         });
 
 
