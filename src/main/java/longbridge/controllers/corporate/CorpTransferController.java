@@ -23,6 +23,7 @@ import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
 import org.springframework.data.jpa.datatables.repository.DataTablesUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.ModelAndView;
@@ -263,17 +264,17 @@ public class CorpTransferController {
 
 
     @GetMapping("/{id}/authorizations")
-    public String getAuthorizations(@PathVariable Long id, Model model) {
+    public String getAuthorizations(@PathVariable Long id, ModelMap modelMap) {
 
         CorpTransRequest corpTransRequest = corpTransferService.getTransfer(id);
         CorpTransferAuth corpTransferAuth = corpTransferService.getAuthorizations(corpTransRequest);
         CorpTransRule corpTransRule = corporateService.getApplicableTransferRule(corpTransRequest);
         boolean userCanAuthorize = corpTransferService.userCanAuthorize(corpTransRequest);
-        model.addAttribute("authorizationMap", corpTransferAuth);
-        model.addAttribute("corpTransRequest", corpTransRequest);
-        model.addAttribute("corpTransReqEntry", new CorpTransReqEntry());
-        model.addAttribute("corpTransRule", corpTransRule);
-        model.addAttribute("userCanAuthorize", userCanAuthorize);
+        modelMap.addAttribute("authorizationMap", corpTransferAuth)
+                .addAttribute("corpTransRequest", corpTransRequest)
+                .addAttribute("corpTransReqEntry", new CorpTransReqEntry())
+                .addAttribute("corpTransRule", corpTransRule)
+                .addAttribute("userCanAuthorize", userCanAuthorize);
 
         List<CorporateRole> rolesNotInAuthList = new ArrayList<>();
         List<CorporateRole> rolesInAuth = new ArrayList<>();
@@ -292,7 +293,7 @@ public class CorpTransferController {
                 }
             }
         logger.info("Roles not In Auth List..{}", rolesNotInAuthList.toString());
-        model.addAttribute("rolesNotAuth", rolesNotInAuthList);
+        modelMap.addAttribute("rolesNotAuth", rolesNotInAuthList);
 
         return "corp/transfer/request/summary";
     }
