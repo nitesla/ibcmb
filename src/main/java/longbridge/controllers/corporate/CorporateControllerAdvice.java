@@ -22,20 +22,18 @@ import java.util.stream.StreamSupport;
 /**
  * Created by SYLVESTER on 5/22/2017.
  */
-@ControllerAdvice(basePackages={"longbridge.controllers.corporate"})
+@ControllerAdvice(basePackages = {"longbridge.controllers.corporate"})
 public class CorporateControllerAdvice {
 
+    @Autowired
+    HostMaster hostMaster;
     private Logger logger = LoggerFactory.getLogger(this.getClass());
-
     private CorporateUserService corporateUserService;
     private IntegrationService integrationService;
     private TransferService transferService;
     private AccountService accountService;
     private ServiceReqConfigService reqConfigService;
     private MessageService messageService;
-
-    @Autowired
-    HostMaster hostMaster;
     @Autowired
     private ConfigurationService configurationService;
 
@@ -50,40 +48,41 @@ public class CorporateControllerAdvice {
     }
 
     @ModelAttribute
-    public String globalAtrributes(Model model, Principal principal){
-        String greeting="";
-        if(principal.getName()==null){
+    public String globalAtrributes(Model model, Principal principal) {
+        String greeting = "";
+        if (principal.getName() == null) {
             return "redirect:/login/corporate";
         }
 
-        CorporateUser corporateUser=corporateUserService.getUserByName(principal.getName());
+        CorporateUser corporateUser = corporateUserService.getUserByName(principal.getName());
         String RCNumber;
-        if(corporateUser.getCorporate().getRcNumber()==null)
-        {RCNumber="Not registered";}
-        else
-        {RCNumber=corporateUser.getCorporate().getRcNumber();}
+        if (corporateUser.getCorporate().getRcNumber() == null) {
+            RCNumber = "Not registered";
+        } else {
+            RCNumber = corporateUser.getCorporate().getRcNumber();
+        }
 
-        model.addAttribute("RcNo",RCNumber);
+        model.addAttribute("RcNo", RCNumber);
 
         String corporateName;
-        if(corporateUser.getCorporate().getName()==null)
-        {corporateName="";}
-        else
-        {corporateName=corporateUser.getCorporate().getName();}
-
-        model.addAttribute("compName",corporateName);
-
-        if(corporateUser.getLastLoginDate()!=null) {
-            model.addAttribute("lastLogin", DateFormatter.format(corporateUser.getLastLoginDate()));
+        if (corporateUser.getCorporate().getName() == null) {
+            corporateName = "";
+        } else {
+            corporateName = corporateUser.getCorporate().getName();
         }
-        else{
+
+        model.addAttribute("compName", corporateName);
+
+        if (corporateUser.getLastLoginDate() != null) {
+            model.addAttribute("lastLogin", DateFormatter.format(corporateUser.getLastLoginDate()));
+        } else {
             model.addAttribute("lastLogin", corporateUser.getLastLoginDate());
         }
 
-        Calendar calendar=Calendar.getInstance();
-        int timeOfDay=calendar.get(Calendar.HOUR_OF_DAY);
-        if(timeOfDay>=0 && timeOfDay<12){
-            greeting="Good morning, ";
+        Calendar calendar = Calendar.getInstance();
+        int timeOfDay = calendar.get(Calendar.HOUR_OF_DAY);
+        if (timeOfDay >= 0 && timeOfDay < 12) {
+            greeting = "Good morning, ";
 
         } else if (timeOfDay >= 12 && timeOfDay < 16) {
             greeting = "Good afternoon, ";
@@ -109,27 +108,27 @@ public class CorporateControllerAdvice {
         model.addAttribute("serviceRequests", requestList);
 
         int numOfUnreadMessages = messageService.getNumOfUnreadMessages(corporateUser);
-        if(numOfUnreadMessages>0){
-            model.addAttribute("numOfUnreadMessages",numOfUnreadMessages);
+        if (numOfUnreadMessages > 0) {
+            model.addAttribute("numOfUnreadMessages", numOfUnreadMessages);
         }
 
-        if ("Y".equals(corporateUser.getIsFirstTimeLogon())){
+        if ("Y".equals(corporateUser.getIsFirstTimeLogon())) {
             return "redirect:/corporate/setup";
         }
 
 //        boolean isUserAdmin = corporateUser.isAdmin();
 //        model.addAttribute("isUserAdmin",isUserAdmin);
-        if (CorpUserType.ADMIN.equals(corporateUser.getCorpUserType())){
+        if (CorpUserType.ADMIN.equals(corporateUser.getCorpUserType())) {
             boolean isUserAdmin = true;
             model.addAttribute("isUserAdmin", isUserAdmin);
         }
 
-        if (CorpUserType.AUTHORIZER.equals(corporateUser.getCorpUserType())){
+        if (CorpUserType.AUTHORIZER.equals(corporateUser.getCorpUserType())) {
             boolean isAuthorizer = true;
             model.addAttribute("isAuthorizer", isAuthorizer);
         }
 
-        model.addAttribute("corporateType",corporateUser.getCorporate().getCorporateType());
+        model.addAttribute("corporateType", corporateUser.getCorporate().getCorporateType());
 
         return "";
     }
@@ -140,7 +139,6 @@ public class CorporateControllerAdvice {
         if (principal == null || principal.getName() == null) {
             return "redirect:/login/corporate";
         }
-
 
 
         CorporateUser corporateUser = corporateUserService.getUserByName(principal.getName());
@@ -169,7 +167,7 @@ public class CorporateControllerAdvice {
 //    }
 
     @ModelAttribute
-    public void sessionTimeout(Model model) {
+    public String sessionTimeout(Model model) {
         SettingDTO setting = configurationService.getSettingByName("SESSION_TIMEOUT");
         try {
             if (setting != null && setting.isEnabled()) {
@@ -178,10 +176,9 @@ public class CorporateControllerAdvice {
                 model.addAttribute("timeOut", timeOut);
             }
 
+        } catch (Exception ex) {
         }
-        catch (Exception ex) {
-        }
-
+        return "";
     }
 
 
