@@ -127,12 +127,17 @@ public @ResponseBody String getSecAns(WebRequest webRequest, HttpSession session
     try{
         //confirm security question is correct
         int noOfMismatch = 0;
+        Map<String, List<String>> qa = null;
         String username=webRequest.getParameter("username");
         logger.info("answer 1 {}",webRequest.getParameter("secAnswers"));
         logger.info("user {}",webRequest.getParameter("username"));
         List<String> answers = StringUtil.splitByComma(webRequest.getParameter("secAnswers"));
         CorporateUser corporateUser = corporateUserService.getUserByName(username);
-        Map<String, List<String>> qa = (Map<String, List<String>>) session.getAttribute("corpSecQestnAndAns");
+        if(session.getAttribute("corpSecQestnAndAns") != null) {
+            qa = (Map<String, List<String>>) session.getAttribute("corpSecQestnAndAns");
+        }else {
+            qa = securityService.getUserQA(corporateUser.getEntrustId(), corporateUser.getEntrustGroup());
+        }
         //List<String> sec = null;
         logger.info("sec questions {}",qa);
         if (qa != null){
