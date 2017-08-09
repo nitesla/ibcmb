@@ -79,6 +79,15 @@ public class CorpSettingController {
         return "corp/dashboard";
     }
 
+
+
+    @GetMapping("/corporate/error")
+    public String getCorporateErrorPage() {
+        return "/corp/error";
+
+    }
+
+
     @GetMapping("/settings/change_password")
     public String ChangePaswordPage( Model model)
     {

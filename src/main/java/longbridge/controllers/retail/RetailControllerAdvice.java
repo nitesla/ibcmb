@@ -129,6 +129,7 @@ public class RetailControllerAdvice {
     @ModelAttribute
     public String getCustmerAccounts(Model model, Principal principal) {
 
+
         if (principal == null || principal.getName() == null) {
             return "redirect:/login/retail";
         }

@@ -69,31 +69,6 @@ public class ApplicationErrorController implements ErrorController {
     }
 
 
-
-
-    @GetMapping("/admin/error")
-    public String getAdminErrorPage() {
-        return "/adm/error";
-
-    }
-
-    @GetMapping("/ops/error")
-    public String getOpsErrorPage() {
-        return "/ops/error";
-
-    }
-    @GetMapping("/corporate/error")
-    public String getCorporateErrorPage() {
-        return "/corp/error";
-
-    }
-    @GetMapping("/retail/error")
-    public String getRetailErrorPage() {
-        return "/cust/error";
-
-    }
-
-
     @Override
     public String getErrorPath() {
         return PATH;
