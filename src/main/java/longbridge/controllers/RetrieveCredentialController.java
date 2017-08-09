@@ -82,6 +82,8 @@ public class RetrieveCredentialController {
             RetailUser retailUser = retailUserService.getUserByName((String) session.getAttribute("username"));
             Map<String, List<String>> qa = securityService.getUserQA(retailUser.getEntrustId(), retailUser.getEntrustGroup());
             if (qa != null && !qa.isEmpty()){
+                session.removeAttribute("retSecQestnAndAns");
+                session.setAttribute("retSecQestnAndAns",qa);
                 List<String> questions= qa.get("questions");
                 List<String> answers= qa.get("answers");
                 String secQuestion = questions.get(0);
@@ -171,13 +173,19 @@ public class RetrieveCredentialController {
     public @ResponseBody String getSecAns(WebRequest webRequest, HttpSession session){
         try{
             //confirm security question is correct
+            Map<String, List<String>> qa = null;
             int noOfMismatch = 0;
             String username=webRequest.getParameter("username");
             logger.info("answer 1 {}",webRequest.getParameter("secAnswers"));
             logger.info("user {}",webRequest.getParameter("username"));
             List<String> answers = StringUtil.splitByComma(webRequest.getParameter("secAnswers"));
-            RetailUser retailUser = retailUserService.getUserByName(username);
-            Map<String, List<String>> qa = securityService.getUserQA(retailUser.getEntrustId(), retailUser.getEntrustGroup());
+            if(session.getAttribute("retSecQestnAndAns") == null) {
+                RetailUser retailUser = retailUserService.getUserByName(username);
+                qa = securityService.getUserQA(retailUser.getEntrustId(), retailUser.getEntrustGroup());
+            }else {
+
+                qa = (Map<String, List<String>>) session.getAttribute("retSecQestnAndAns");
+            }
             //List<String> sec = null;
             logger.info("sec questions {}",qa);
             if (qa != null){
