@@ -82,6 +82,7 @@ public class RetrieveCredentialController {
             RetailUser retailUser = retailUserService.getUserByName((String) session.getAttribute("username"));
             Map<String, List<String>> qa = securityService.getUserQA(retailUser.getEntrustId(), retailUser.getEntrustGroup());
             if (qa != null && !qa.isEmpty()){
+
                 List<String> questions= qa.get("questions");
                 List<String> answers= qa.get("answers");
                 String secQuestion = questions.get(0);
