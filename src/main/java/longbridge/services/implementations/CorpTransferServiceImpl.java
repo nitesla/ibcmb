@@ -44,9 +44,8 @@ public class CorpTransferServiceImpl implements CorpTransferService {
     private CorpTransferAuthRepo transferAuthRepo;
 
     @Autowired
-    private PendingAuthorizationRepo pendAuthRepo;
-    @Autowired
     private CorporateService corporateService;
+
     @Autowired
     private MessageSource messageSource;
 
@@ -94,10 +93,14 @@ public class CorpTransferServiceImpl implements CorpTransferService {
             CorpTransferAuth transferAuth = new CorpTransferAuth();
             transferAuth.setStatus("P");
             transferRequest.setTransferAuth(transferAuth);
-            corpTransferRequestRepo.save(transferRequest);
+            CorpTransRequest corpTransRequest = corpTransferRequestRepo.save(transferRequest);
+            if (userCanAuthorize(corpTransRequest)) {
+                CorpTransReqEntry transReqEntry = new CorpTransReqEntry();
+                transReqEntry.setTranReqId(corpTransRequest.getId());
+                addAuthorization(transReqEntry);
+            }
         } catch (Exception e) {
-            e.printStackTrace();
-            throw new InternetBankingTransferException();
+            throw new InternetBankingTransferException(messageSource.getMessage("transfer.add.failure", null, locale),e);
         }
         return messageSource.getMessage("transfer.add.success", null, locale);
     }
@@ -197,7 +200,7 @@ public class CorpTransferServiceImpl implements CorpTransferService {
     public Page<CorpTransRequest> getTransferRequests(Pageable pageDetails) {
         CorporateUser corporateUser = getCurrentUser();
         Corporate corporate = corporateUser.getCorporate();
-        Page<CorpTransRequest> corpTransRequests = corpTransferRequestRepo.findByCorporateAndStatus(corporate,"P", pageDetails);
+        Page<CorpTransRequest> corpTransRequests = corpTransferRequestRepo.findByCorporateAndStatus(corporate, "P", pageDetails);
         return corpTransRequests;
     }
 
@@ -285,7 +288,7 @@ public class CorpTransferServiceImpl implements CorpTransferService {
             return false;
         }
 
-        List<CorporateRole> roles = transferRule.getRoles();
+        List<CorporateRole> roles = getExistingRoles(transferRule.getRoles());
 
         for (CorporateRole corporateRole : roles) {
             if (corpRoleRepo.countInRole(corporateRole, corporateUser) > 0) {

@@ -227,14 +227,13 @@ public class CorpTransferController {
 
         } catch (InternetBankingTransferException ex) {
 
-            ex.printStackTrace();
-
+            logger.error("Error initiating a transfer ",ex);
             String errorMessage = transferErrorService.getMessage(ex);
             redirectAttributes.addFlashAttribute("failure", errorMessage);
             return index(request);
         }
         catch ( TransferRuleException e) {
-            e.printStackTrace();
+            logger.error("Error initiating a transfer ",e);
             String errorMessage = e.getMessage();
             redirectAttributes.addFlashAttribute("failure", errorMessage);
             return index(request);
