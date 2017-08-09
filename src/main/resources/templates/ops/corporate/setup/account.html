@@ -130,7 +130,7 @@
                                             </div>
                                             <div id="custAccountError" style="display: none;">
 
-                                                <p style="color:red;">You must select at least one account</p>
+                                                <p style="color:red;">&nbsp;&nbsp;At least one account is required</p>
                                             </div>
                                         </div>
 
@@ -173,13 +173,12 @@
         $("#corporateName").val(corpName);
 
 //        var selectedAcct =  $('#selectedAccounts').val();
-        $("#checkAll").click(function () {
+        $("#checkAll").change(function () {
             if ($(this).is(":checked")) {
 
-//                console.log(''+$("input[name='accounts']").is(":checked"));
-                if (!$("input[name='accounts']").is(":checked")) {
                     $("input[name='accounts']").prop("checked", true);
-                }
+                    $("#custAccountError").hide();
+
             }else{
                 $("input[name='accounts']").prop("checked", false);
 
@@ -187,6 +186,18 @@
 
 
         });
+
+        $("input[name='accounts']").change(function () {
+
+            if (!$(this).is(":checked")) {
+
+                $("#checkAll").prop("checked", false);
+            }
+
+
+        });
+
+
 //        if(selectedAcct != ''){
 //            selectedAcct =  selectedAcct.replace('[','');
 //            selectedAcct =  selectedAcct.replace(']','');
