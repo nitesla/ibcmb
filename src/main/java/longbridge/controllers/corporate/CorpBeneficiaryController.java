@@ -100,15 +100,15 @@ public class CorpBeneficiaryController {
 
         if (/* service to check if token is enabled comes in here  */
                 (setting != null && setting.isEnabled())
-                ){
+                ) {
 
             try {
-                String token =request.getParameter("token");
+                String token = request.getParameter("token");
 
                 securityService.performTokenValidation(user.getEntrustId(), user.getEntrustGroup(), token);
             } catch (InternetBankingSecurityException ibse) {
                 model.addAttribute("failure", ibse.getMessage());
-                model.addAttribute("beneficiary",corpLocalBeneficiaryDTO);
+                model.addAttribute("beneficiary", corpLocalBeneficiaryDTO);
                 return "corp/beneficiary/localSummary";
             }
         }
@@ -116,9 +116,9 @@ public class CorpBeneficiaryController {
             String message = corpLocalBeneficiaryService.addCorpLocalBeneficiary(corpLocalBeneficiaryDTO);
             redirectAttributes.addFlashAttribute("message", message);
         } catch (InternetBankingException e) {
-            try{
+            try {
                 redirectAttributes.addFlashAttribute("failure", messages.getMessage(e.getMessage(), null, locale));
-            }catch (Exception ex){
+            } catch (Exception ex) {
                 redirectAttributes.addFlashAttribute("failure", messages.getMessage("beneficiary.add.failure", null, locale));
             }
         }
@@ -149,7 +149,7 @@ public class CorpBeneficiaryController {
     }
 
     @PostMapping("/authenticate")
-    public String delLocBenToken(WebRequest webRequest, Principal principal, RedirectAttributes redirectAttributes){
+    public String delLocBenToken(WebRequest webRequest, Principal principal, RedirectAttributes redirectAttributes) {
         String token = webRequest.getParameter("token");
         logger.info("this is the ben tokeeen {}", token);
         String beneficiaryId = webRequest.getParameter("id");
@@ -178,8 +178,7 @@ public class CorpBeneficiaryController {
                 redirectAttributes.addFlashAttribute("failure", e.getMessage());
                 return "redirect:/corporate/beneficiary";
             }
-        }
-        else {
+        } else {
             return "redirect:/corporate/beneficiary";
         }
     }
@@ -212,10 +211,11 @@ public class CorpBeneficiaryController {
     @PostMapping("/local/summary")
     public String createLocalBeneficiary(@Valid CorpLocalBeneficiaryDTO localBeneficiaryDTO, BindingResult result, Model model) {
         if (result.hasErrors()) {
-            model.addAttribute("corpLocalBeneficiaryDTO", new CorpLocalBeneficiaryDTO());
-            model.addAttribute("corpInternationalBeneficiaryDTO", new CorpInternationalBeneficiaryDTO());
-            model.addAttribute("foreignBanks", financialInstitutionService.getFinancialInstitutionsByType(FinancialInstitutionType.FOREIGN));
+            System.out.println(result);
 
+            model.addAttribute("corpLocalBeneficiaryDTO", new CorpLocalBeneficiaryDTO());
+//            model.addAttribute("corpInternationalBeneficiaryDTO", new CorpInternationalBeneficiaryDTO());
+//            model.addAttribute("foreignBanks", financialInstitutionService.getFinancialInstitutionsByType(FinancialInstitutionType.FOREIGN));
 
 
             return "corp/beneficiary/add";
@@ -241,18 +241,17 @@ public class CorpBeneficiaryController {
     }
 
 
-      @ModelAttribute
-    public  void getOtherLocalBanks(Model model){
+    @ModelAttribute
+    public void getOtherLocalBanks(Model model) {
         List<FinancialInstitutionDTO> sortedBanks =
                 financialInstitutionService.getFinancialInstitutionsByType(FinancialInstitutionType.LOCAL)
-                .stream()
-                .filter(i ->!i.getInstitutionCode().equalsIgnoreCase(bankCode))
-                .collect(Collectors.toList());
+                        .stream()
+                        .filter(i -> !i.getInstitutionCode().equalsIgnoreCase(bankCode))
+                        .collect(Collectors.toList());
 
         sortedBanks.sort(Comparator.comparing(FinancialInstitutionDTO::getInstitutionName));
-        model.addAttribute("localBanks",sortedBanks);
-        model.addAttribute("bankCode",bankCode);
-
+        model.addAttribute("localBanks", sortedBanks);
+        model.addAttribute("bankCode", bankCode);
 
 
     }

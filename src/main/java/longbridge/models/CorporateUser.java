@@ -116,7 +116,12 @@ public class CorporateUser extends User implements PrettySerializer{
 					status = "Locked";
 				gen.writeStringField("Status", status);
 				gen.writeStringField("Role", value.role.getName());
-				gen.writeStringField("User Type", value.corpUserType.name());
+
+				if("MULTI".equals(corporate.getCorporateType())) {
+					if(value.corpUserType!=null) {
+						gen.writeStringField("User Type", value.corpUserType.name());
+					}
+				}
 //				if("MULTI".equals(corporate.getCorporateType())) {
 //					gen.writeBooleanField("Is Admin", value.admin);
 //				}
