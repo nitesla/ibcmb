@@ -240,12 +240,13 @@ public class CorporateUserServiceImpl implements CorporateUserService {
         if (user != null) {
 
             if ("".equals(user.getEntrustId()) || user.getEntrustId() == null) {
-                String fullName = user.getFirstName() + " " + user.getLastName();
                 SettingDTO setting = configService.getSettingByName("ENABLE_ENTRUST_CREATION");
                 String entrustId = user.getUserName();
                 String group = configService.getSettingByName("DEF_ENTRUST_CORP_GRP").getValue();
 
                 if (setting != null && setting.isEnabled()) {
+                    String fullName = user.getFirstName() + " " + user.getLastName();
+
                     if ("YES".equalsIgnoreCase(setting.getValue())) {
                         boolean result = securityService.createEntrustUser(entrustId, group, fullName, true);
                         if (!result) {
@@ -262,29 +263,36 @@ public class CorporateUserServiceImpl implements CorporateUserService {
 
                     user.setEntrustId(entrustId);
                     user.setEntrustGroup(group);
-                    Corporate corporate = user.getCorporate();
                     String password = passwordPolicyService.generatePassword();
                     user.setPassword(passwordEncoder.encode(password));
                     user.setExpiryDate(new Date());
                     passwordPolicyService.saveCorporatePassword(user);
                     corporateUserRepo.save(user);
+                    sendCredentials(user,password);
 
 
-                    try {
-                        Email email = new Email.Builder()
-                                .setRecipient(user.getEmail())
-                                .setSubject(messageSource.getMessage("corporate.customer.create.subject", null, locale))
-                                .setBody(String.format(messageSource.getMessage("corporate.customer.create.message", null, locale), fullName, user.getUserName(), password, corporate.getCorporateId()))
-                                .build();
-                        mailService.send(email);
-                    } catch (MailException me) {
-                        logger.error("Failed to send creation mail to {}", user.getEmail(), me);
-                    }
+
                 }
             }
         }
     }
 
+    private void sendCredentials(CorporateUser user, String password){
+        String fullName = user.getFirstName() + " " + user.getLastName();
+        Corporate corporate = user.getCorporate();
+
+
+        try {
+            Email email = new Email.Builder()
+                    .setRecipient(user.getEmail())
+                    .setSubject(messageSource.getMessage("corporate.customer.create.subject", null, locale))
+                    .setBody(String.format(messageSource.getMessage("corporate.customer.create.message", null, locale), fullName, user.getUserName(), password, corporate.getCorporateId()))
+                    .build();
+            mailService.send(email);
+        } catch (MailException me) {
+            logger.error("Failed to send creation mail to {}", user.getEmail(), me);
+        }
+    }
 
     @Override
     public void addCorporateUserToAuthorizerRole(CorporateUser corporateUser, Long corpRoleId) {
@@ -512,7 +520,7 @@ public class CorporateUserServiceImpl implements CorporateUserService {
             String fullName = user.getFirstName() + " " + user.getLastName();
             passwordPolicyService.saveCorporatePassword(user);
             corporateUserRepo.save(user);
-            sendPostPasswordResetMessage(user, fullName, user.getUserName(), newPassword, user.getCorporate().getCustomerId());
+            sendPostPasswordResetMessage(user, fullName, user.getUserName(), newPassword, user.getCorporate().getCorporateId());
             logger.info("Corporate user {} password reset successfully", user.getUserName());
             return messageSource.getMessage("password.reset.success", null, locale);
         } catch (MailException me) {
@@ -540,7 +548,7 @@ public class CorporateUserServiceImpl implements CorporateUserService {
             String fullName = user.getFirstName() + " " + user.getLastName();
             passwordPolicyService.saveCorporatePassword(user);
             corporateUserRepo.save(user);
-            sendPostPasswordResetMessage(user, fullName, user.getUserName(), newPassword, user.getCorporate().getCustomerId());
+            sendPostPasswordResetMessage(user, fullName, user.getUserName(), newPassword, user.getCorporate().getCorporateId());
             logger.info("Corporate user {} password reset successfully", user.getUserName());
             return messageSource.getMessage("password.reset.success", null, locale);
         } catch (MailException me) {
