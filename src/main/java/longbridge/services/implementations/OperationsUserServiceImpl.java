@@ -20,7 +20,6 @@ import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.*;
 import org.springframework.mail.MailException;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -129,19 +128,8 @@ public class OperationsUserServiceImpl implements OperationsUserService {
             String oldStatus = user.getStatus();
             String newStatus = "A".equals(oldStatus) ? "I" : "A";
             user.setStatus(newStatus);
-            String fullName = user.getFirstName() + " " + user.getLastName();
-            if ((oldStatus == null) || ("I".equals(oldStatus)) && "A".equals(newStatus)) {
-                String password = passwordPolicyService.generatePassword();
-                user.setPassword(passwordEncoder.encode(password));
-                user.setExpiryDate(new Date());
-                passwordPolicyService.saveOpsPassword(user);
-                operationsUserRepo.save(user);
-                sendActivateMessage(user, fullName, user.getUserName(), password);
-
-            } else {
-                user.setStatus(newStatus);
-                operationsUserRepo.save(user);
-            }
+            operationsUserRepo.save(user);
+            sendCredentialNotification(user);
 
             logger.info("Operations user {} status changed from {} to {}", user.getUserName(), oldStatus, newStatus);
             return messageSource.getMessage("user.status.success", null, locale);
@@ -159,28 +147,20 @@ public class OperationsUserServiceImpl implements OperationsUserService {
     }
 
 
-    @Async
-    public void sendPostActivateMessage(User user, String... args) {
-
-        Email email = new Email.Builder()
-                .setRecipient(user.getEmail())
-                .setSubject(messageSource.getMessage("ops.activation.subject", null, locale))
-                .setBody(String.format(messageSource.getMessage("ops.activation.message", null, locale), args))
-                .build();
-        mailService.send(email);
-    }
 
 
-    @Async
-    private void sendActivateMessage(User user, String... args) {
-        OperationsUser opsUser = getUserByName(user.getUserName());
-        if ("A".equals(opsUser.getStatus())) {
+    @Override
+    public void sendActivationMessage(User user, String... args) {
+       try{
             Email email = new Email.Builder()
                     .setRecipient(user.getEmail())
                     .setSubject(messageSource.getMessage("ops.activation.subject", null, locale))
                     .setBody(String.format(messageSource.getMessage("ops.activation.message", null, locale), args))
                     .build();
             mailService.send(email);
+        }
+        catch (MailException me){
+            logger.error("Error sending mail to {}",user.getEmail(),me);
         }
     }
 
@@ -210,7 +190,8 @@ public class OperationsUserServiceImpl implements OperationsUserService {
             Role role = roleRepo.findOne(Long.parseLong(user.getRoleId()));
             opsUser.setRole(role);
             OperationsUser newUser = operationsUserRepo.save(opsUser);
-            createUserOnEntrust(newUser);
+            createUserOnEntrustAndSendCredentials(newUser);
+
             logger.info("New Operation user  {} created", opsUser.getUserName());
             return messageSource.getMessage("user.add.success", null, LocaleContextHolder.getLocale());
         } catch (VerificationInterruptedException e) {
@@ -228,7 +209,7 @@ public class OperationsUserServiceImpl implements OperationsUserService {
     }
 
 
-    public void createUserOnEntrust(OperationsUser opsUser) {
+    public OperationsUser createUserOnEntrustAndSendCredentials(OperationsUser opsUser) {
         OperationsUser user = operationsUserRepo.findFirstByUserName(opsUser.getUserName());
         if (user != null) {
             if ("".equals(user.getEntrustId()) || user.getEntrustId() == null) {
@@ -253,10 +234,12 @@ public class OperationsUserServiceImpl implements OperationsUserService {
                     }
                     user.setEntrustId(entrustId);
                     user.setEntrustGroup(group);
-                    operationsUserRepo.save(user);
+                    OperationsUser ops = operationsUserRepo.save(user);
+                    sendCredentialNotification(ops);
                 }
             }
         }
+        return user;
     }
 
     @Override
@@ -470,15 +453,17 @@ public class OperationsUserServiceImpl implements OperationsUserService {
         return pageImpl;
     }
 
-    @Override
-    public void  sendCredentialNotification(OperationsUser user){
-        String fullName = user.getFirstName() + " " + user.getLastName();
-        String password = passwordPolicyService.generatePassword();
-        user.setPassword(passwordEncoder.encode(password));
-        user.setExpiryDate(new Date());
-        passwordPolicyService.saveOpsPassword(user);
-        OperationsUser opsUser = operationsUserRepo.save(user);
-        sendActivateMessage(opsUser, fullName, user.getUserName(), password);
+    public void sendCredentialNotification(OperationsUser user) {
+
+        if ("A".equals(user.getStatus())) {
+            String fullName = user.getFirstName() + " " + user.getLastName();
+            String password = passwordPolicyService.generatePassword();
+            user.setPassword(passwordEncoder.encode(password));
+            user.setExpiryDate(new Date());
+            passwordPolicyService.saveOpsPassword(user);
+            OperationsUser opsUser = operationsUserRepo.save(user);
+            sendActivationMessage(opsUser, fullName, user.getUserName(), password);
+        }
 
     }
 }

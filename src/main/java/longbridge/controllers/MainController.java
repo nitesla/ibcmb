@@ -223,6 +223,7 @@ public class MainController {
         RetailUser user = retailUserService.getUserByName(username);
         if (user != null && phishing != null) {
             model.addAttribute("username", user.getUserName());
+            session.removeAttribute("username");
             session.setAttribute("username", user.getUserName());
             return "retaillogin";
         }
@@ -299,6 +300,8 @@ public class MainController {
         String corporateId = webRequest.getParameter("corporateId");
         logger.info("the corporateId {} and username {}", corporateId, username);
         if ((username != null) && (corporateId != null)) {
+            session.removeAttribute("corporateId");
+            session.removeAttribute("corpUsername");
             session.setAttribute("corpUsername", username);
             session.setAttribute("corporateId", corporateId);
         }

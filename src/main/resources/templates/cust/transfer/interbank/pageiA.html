@@ -5,12 +5,17 @@
 <body onload="javascript:var bread = [['Home', '/retail/dashboard'],['inter bank transfer','/retail/transfer/interbank'],['beneficiary list']];currentBar('inter bank transfer');breadCrumb(bread)">
 
 <div layout:fragment="content">
-    <div class="col-md-5 col-sm-5 ">
-        <h5 class="page_header"> Transfers to other banks through NIP</h5>
+    <div class="col-md-12 col-sm-12 no-pad-left">
+        <div class="col-xs-12 ">
+            <h5 class="page_header ml-15 col-sm-5 no-pad-left"> Transfers to other banks through NIP</h5>
+            <a th:href="@{/retail/transfer/interbank/new}" class="pull-right extra-link">New Beneficiary</a>
+        </div>
 
+        <div class="col-xs-5">
                 <select class="form-control full-width coronation-form-control" name="beneficiaries">
                     <option value="Overveiw">Beneficiaries</option>
                 </select>
+        </div>
      
     </div>
 
@@ -57,7 +62,7 @@
                </div>
                             <br/>
                             <input  type="hidden" th:value="${transferRequest}"/>
-                            <a th:href="@{/retail/transfer/interbank/new}" class="btn btn-link required-step">New Beneficiary</a>
+                            <!-- <a th:href="@{/retail/transfer/interbank/new}" class="btn btn-link required-step">New Beneficiary</a> -->
 
                            <!-- <button type="submit" class="btn btn-default" style="float: right">Add beneficiary</button>
                        --> </form>

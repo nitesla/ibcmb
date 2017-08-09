@@ -1,9 +1,6 @@
 package longbridge.controllers;
 
-import longbridge.exception.InternetBankingException;
-import longbridge.exception.PasswordException;
-import longbridge.exception.PasswordMismatchException;
-import longbridge.exception.PasswordPolicyViolationException;
+import longbridge.exception.*;
 import longbridge.forms.CustResetPassword;
 import longbridge.forms.ResetPasswordForm;
 import longbridge.forms.RetrieveUsernameForm;
@@ -79,6 +76,7 @@ public class RetrieveCorpCredentialController {
 
     @GetMapping("/forgot/password/corporate")
     public String showResetPassword(Model model, HttpSession session, RedirectAttributes redirectAttributes){
+        session.removeAttribute("corpSecQestnAndAns");
         String username =(String) session.getAttribute("corpUsername");
         String corporateId = (String) session.getAttribute("corporateId");
         ResetPasswordForm resetPasswordForm = new ResetPasswordForm();
@@ -90,14 +88,14 @@ public class RetrieveCorpCredentialController {
         logger.info("the username and corporateId is {} and {}",username,corporateId);
 
         try{
-            CorporateUser corporateUser = corporateUserService.getUserByNameAndCorpCif(username, corporateId);
-            logger.info("the corporateUsername group {} and id {}",corporateUser.getEntrustGroup(),corporateUser.getEntrustId());
+            CorporateUser corporateUser = corporateUserService.getUserByNameAndCorporateId(username, corporateId);
+//            logger.info("the corporateUsername group {} and id {}",corporateUser.getEntrustGroup(),corporateUser.getEntrustId());
             Map<String, List<String>> qa = securityService.getUserQA(corporateUser.getEntrustId(), corporateUser.getEntrustGroup());
             logger.info("the question and answer {}",qa.get("questions"));
                 if (qa != null && !qa.isEmpty()){
+                    session.setAttribute("corpSecQestnAndAns",qa);
                 List<String> questions= qa.get("questions");
                 logger.info("questions {}",questions);
-                logger.info("answers {}",questions);
                 if (questions == null){
                     redirectAttributes.addFlashAttribute("failure", "Invalid Credentials");
                     return "redirect:/login/corporate";
@@ -134,7 +132,7 @@ public @ResponseBody String getSecAns(WebRequest webRequest, HttpSession session
         logger.info("user {}",webRequest.getParameter("username"));
         List<String> answers = StringUtil.splitByComma(webRequest.getParameter("secAnswers"));
         CorporateUser corporateUser = corporateUserService.getUserByName(username);
-        Map<String, List<String>> qa = securityService.getUserQA(corporateUser.getEntrustId(), corporateUser.getEntrustGroup());
+        Map<String, List<String>> qa = (Map<String, List<String>>) session.getAttribute("corpSecQestnAndAns");
         //List<String> sec = null;
         logger.info("sec questions {}",qa);
         if (qa != null){
@@ -240,10 +238,6 @@ public @ResponseBody String getSecAns(WebRequest webRequest, HttpSession session
             return "false";
         }
 
-        if ( StringUtils.isBlank(username) ){
-            return "false";
-        }
-
         //confirm passwords are the same
         boolean isValid = password.trim().equalsIgnoreCase(confirmPassword.trim());
         if(!isValid){
@@ -265,6 +259,7 @@ public @ResponseBody String getSecAns(WebRequest webRequest, HttpSession session
         custResetPassword.setConfirmPassword(confirmPassword);
         session.removeAttribute("corpUsername");
         session.removeAttribute("corpKey");
+        session.removeAttribute("corpSecQestnAndAns");
         try{
             String message = corporateUserService.resetPassword(corporateUser,custResetPassword);
             logger.info("password {}",message);
@@ -293,7 +288,7 @@ public @ResponseBody String getSecAns(WebRequest webRequest, HttpSession session
     @PostMapping("/forgot/corporate/username")
     public
     @ResponseBody
-    String forgotUsername(WebRequest webRequest) {
+    String forgotUsername(WebRequest webRequest,HttpSession session) {
         Iterator<String> iterator = webRequest.getParameterNames();
         logger.info("forget username");
         String userEmail = webRequest.getParameter("email");
@@ -316,9 +311,9 @@ public @ResponseBody String getSecAns(WebRequest webRequest, HttpSession session
 
 //            RetailUser user = retailUserService.getUserByCustomerId(customerId);
             //confirm security question is correct
-
-            String secAnswer="";
-            Map<String, List<String>> qa = securityService.getUserQA(entityId, entityGroup);
+            if(session.getAttribute("corpSecQestnAndAns") !=null) {
+                Map<String, List<String>> qa = (Map<String, List<String>>) session.getAttribute("corpSecQestnAndAns");
+//            Map<String, List<String>> qa = securityService.getUserQA(entityId, entityGroup);
             //List<String> sec = null;
             if (qa != null){
 //                List<String> questions= qa.get("questions");
@@ -328,6 +323,7 @@ public @ResponseBody String getSecAns(WebRequest webRequest, HttpSession session
 
                 if (result.equalsIgnoreCase("true")){
                     logger.debug("User Info {}:",userEmail );
+                    session.removeAttribute("corpSecQestnAndAns");
                     //Send Username to Email
                     Email email = new Email.Builder()
                             .setRecipient(userEmail)
@@ -337,6 +333,7 @@ public @ResponseBody String getSecAns(WebRequest webRequest, HttpSession session
                     mailService.send(email);
                     return "true";
                 }
+            }
             }else {
                 return "false";
             }
@@ -386,21 +383,28 @@ public @ResponseBody String getSecAns(WebRequest webRequest, HttpSession session
 //        logger.info("user details : {} ", userDetails);
 //        logger.info(userDetails[0]);
         List<String> question = null;
-        if (!("".equalsIgnoreCase(userDetails[0]))&&!("".equalsIgnoreCase(userDetails[1]))){
-            Map<String, List<String>> qa = securityService.getUserQA(userDetails[0], userDetails[1]);
-            //List<String> sec = null;
+        try {
+            if (!("".equalsIgnoreCase(userDetails[0]))&&!("".equalsIgnoreCase(userDetails[1]))){
+                Map<String, List<String>> qa = securityService.getUserQA(userDetails[0], userDetails[1]);
+                //List<String> sec = null;
+                session.removeAttribute("corpSecQestnAndAns");
+                session.setAttribute("corpSecQestnAndAns",qa);
+                if (qa != null && !qa.isEmpty()){
+    //                logger.info("qs {}",qa);
+                    question = qa.get("questions");
+                    logger.info("questions {}", question);
 
-            if (qa != null && !qa.isEmpty()){
-//                logger.info("qs {}",qa);
-                question = qa.get("questions");
-                logger.info("questions {}", question);
-
-            }else {
+                }else {
+                    secQuestion = "";
+                }
+            }
+            else {
                 secQuestion = "";
             }
-        }
-        else {
-            secQuestion = "";
+        } catch (ArrayIndexOutOfBoundsException e) {
+            e.printStackTrace();
+        }catch (InternetBankingException e){
+            e.printStackTrace();
         }
 
         return question;
@@ -413,17 +417,21 @@ public @ResponseBody String getSecAns(WebRequest webRequest, HttpSession session
             logger.info("answer 1 {}",webRequest.getParameter("secAnswers"));
             logger.info("acctDetails {}",acctDetails);
             List<String> answers = StringUtil.splitByComma(webRequest.getParameter("secAnswers"));
-            Map<String, List<String>> qa = securityService.getUserQA(acctDetails[0], acctDetails[1]);
-            //List<String> sec = null;
-            logger.info("sec questions {}",answers);
-            if (qa != null){
-                List<String> answer = qa.get("answers");
+//            Map<String, List<String>> qa = securityService.getUserQA(acctDetails[0], acctDetails[1]);
+            if(session.getAttribute("corpSecQestnAndAns") !=null) {
+                Map<String, List<String>> qa = (Map<String, List<String>>) session.getAttribute("corpSecQestnAndAns");
+                //List<String> sec = null;
+                logger.info("sec questions {}", answers);
+                if (qa != null) {
+                    List<String> answer = qa.get("answers");
 //                secAnswer = question.stream().filter(Objects::nonNull).findFirst().orElse("");
 
-                logger.info("user answer {}", answer);
-                if(compareAnswers(answers,answer).equalsIgnoreCase("true")){
-                    return "true";
-                };
+                    logger.info("user answer {}", answer);
+                    if (compareAnswers(answers, answer).equalsIgnoreCase("true")) {
+                        return "true";
+                    }
+                    ;
+                }
             }
             //return (String) session.getAttribute("username");
         }catch (Exception e){

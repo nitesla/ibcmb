@@ -124,7 +124,7 @@
                     </div>
                     <div >
                     <p>Don't have a token?</p>
-                        <a href='javascript:sendOtp()' class="btn btn-link token-btn required-step" id="getOtp">Send Otp</a>
+                        <a href='javascript:sendOtp()' class="btn btn-link token-btn required-step" id="getOtp" style='padding-left:0px !important'>Send OTP</a>
                     </div>
 
             </div>
@@ -145,7 +145,7 @@
                   <div class="margin-bottom">
                       <p style="margin-bottom:20px">Kindly enter the OTP from your email/sms</p>
                       <div id="username_div1" class="form-group">
-                          <input  type="text" id="otp" name="otp" class='my-select tokenInput' required placeholder="Otp " autocomplete="off"/>
+                          <input  type="text" id="otp" name="otp" class='my-select tokenInput' required placeholder="Otp" autofocus="autofocus" autocomplete="off"/>
                       </div>
                       <div id='successMess' class=" text-success "></div>
                   </div>
@@ -264,7 +264,6 @@
                     }
                 }
             }
-
         });
 //        $.ajax({options});
     }

@@ -89,6 +89,14 @@ public class SettingController {
         return "cust/dashboard";
     }
 
+
+    @GetMapping("/retail/error")
+    public String getRetailErrorPage() {
+        return "/cust/error";
+
+    }
+
+
     @GetMapping("/settings/change_password")
     public String ChangePaswordPage(Model model) {
         List<String> passwordPolicy = passwordPolicyService.getPasswordRules();

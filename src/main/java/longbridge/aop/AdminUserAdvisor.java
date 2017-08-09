@@ -10,16 +10,13 @@ import longbridge.services.AdminUserService;
 import longbridge.services.PasswordPolicyService;
 import longbridge.services.VerificationService;
 import org.aspectj.lang.JoinPoint;
-import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.After;
-import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import sun.rmi.runtime.Log;
 
 import javax.persistence.EntityManager;
 import java.io.IOException;
@@ -81,10 +78,8 @@ public class AdminUserAdvisor {
     public void postAdminUserCreation(JoinPoint p, AdminUser user) {
 
         logger.info("Executing ADD_ADMIN_USER operation");
-        adminUserService.createUserOnEntrust(user);
-        adminUserService.sendCredentialNotification(user);
+         adminUserService.createUserOnEntrustAndSendCredentials(user);
 
-        logger.info("After Executing first Post Admin Advice");
     }
 
    // this runs after execution
@@ -106,7 +101,7 @@ public class AdminUserAdvisor {
                 user.setExpiryDate(new Date());
                 passwordPolicyService.saveAdminPassword(user);
                 adminUserRepo.save(user);
-                adminUserService.sendPostActivateMessage(adminUser, fullName,user.getUserName(),password);
+                adminUserService.sendActivationMessage(adminUser, fullName,user.getUserName(),password);
             }
     	}
 

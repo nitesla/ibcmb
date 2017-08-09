@@ -2,20 +2,18 @@ package longbridge.controllers.corporate;
 
 import longbridge.api.AccountDetails;
 import longbridge.dtos.AccountDTO;
+import longbridge.dtos.SettingDTO;
 import longbridge.exception.InternetBankingException;
 import longbridge.forms.CustomizeAccount;
 import longbridge.models.Account;
 import longbridge.models.CorporateUser;
-
-import longbridge.services.AccountService;
-import longbridge.services.CorporateUserService;
-import longbridge.services.IntegrationService;
-import longbridge.utils.statement.AccountStatement;
-import longbridge.utils.statement.TransactionDetails;
 import longbridge.repositories.AccountRepo;
 import longbridge.services.*;
 import longbridge.utils.DateFormatter;
+import longbridge.utils.statement.AccountStatement;
+import longbridge.utils.statement.TransactionDetails;
 import longbridge.utils.statement.TransactionHistory;
+import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,6 +53,10 @@ public class CorpAccountController {
 
     @Autowired
     private IntegrationService integrationService;
+
+    @Autowired
+    private ConfigurationService configurationService;
+
     @Autowired
     private MessageSource messageSource;
 
@@ -205,6 +207,7 @@ catch(InternetBankingException e){
         request.getSession().setAttribute("tranAccountNo",account.getAccountNumber());
         List<TransactionHistory> transRequestList = integrationService.getLastNTransactions(account.getAccountNumber(), LAST_TEN_TRANSACTION);
         if (transRequestList != null && !transRequestList.isEmpty()) {
+            model.addAttribute("acct", id);
             model.addAttribute("transRequestList", transRequestList);
             model.addAttribute("accountList", accountList);
             logger.info("Last 10 Transaction {}", transRequestList);
@@ -259,50 +262,62 @@ catch(InternetBankingException e){
         return "corp/account/view";
     }
 
-    @GetMapping("/viewonlyhistory")
-    public String getViewOnlyHist(Model model, Principal principal) throws ParseException {
-       return "corp/account/tranhistory";
+    @GetMapping("/{acct}/viewonlyhistory")
+    public String getViewOnlyHist(@PathVariable String acct, Model model, Principal principal) throws ParseException {
+        model.addAttribute("accountNumber", acct);
+        SettingDTO setting = configurationService.getSettingByName("TRANS_HISTORY_RANGE");
+        Date date = new Date();
+        Date daysAgo = new DateTime(date).minusDays(Integer.parseInt(setting.getValue())).toDate();
+        logger.info("the from date {} and the to date {}",date,daysAgo);
+        AccountDTO account = accountService.getAccount(Long.parseLong(acct));
+        AccountStatement accountStatement = integrationService.getAccountStatements(account.getAccountNumber(), date, daysAgo, "B");
+        List<TransactionDetails> list = accountStatement.getTransactionDetails();
+
+        model.addAttribute("history", list);
+        return "corp/account/tranhistory";
     }
 
-    @GetMapping("/viewstatement/display/data")
-    public @ResponseBody
-    DataTablesOutput<TransactionDetails> getStatementData(DataTablesInput input, String acctNumber,
-
-
-
-                                                          String fromDate, String toDate, String tranType) {
-
-        // Pageable pageable = DataTablesUtils.getPageable(input);
-        logger.info("fromDate {}",fromDate);
-        logger.info("toDate {}",toDate);
-//        Duration diffInDays= new Duration(new DateTime(fromDate),new DateTime(toDate));
-   //     logger.info("Day difference {}",diffInDays.getStandardDays());
-
-        Date from ;
-        Date to ;
-        DataTablesOutput<TransactionDetails> out = new DataTablesOutput<TransactionDetails>();
-        try {
-            from = dateFormat.parse(fromDate);
-            to = dateFormat.parse(toDate);
-            logger.info("the from date {} and the to date {}",from,to);
-
-            AccountStatement accountStatement = integrationService.getAccountStatements(acctNumber, from, to,tranType);
-            logger.info("TransactionType {}",tranType);
-            out.setDraw(input.getDraw());
-
-            List<TransactionDetails> list = accountStatement.getTransactionDetails();
-            logger.info("Transaction Details {}",list);
-            out.setData(list);
-            int sz=list==null?0:list.size();
-            out.setRecordsFiltered(sz);
-            out.setRecordsTotal(sz);
-            }
-         catch (ParseException e) {
-            logger.warn("didn't parse date", e);
-        }
-        return out;
-
-    }
+//    @GetMapping("/viewstatement/{acct}/display/data")
+//    public @ResponseBody
+//    DataTablesOutput<TransactionDetails> getStatementData(@PathVariable String acct, DataTablesInput input) {
+//        Pageable pageable = DataTablesUtils.getPageable(input);
+//        Page<CodeDTO> codes = codeService.getCodes(pageable);
+//        DataTablesOutput<CodeDTO> out = new DataTablesOutput<CodeDTO>();
+//        out.setDraw(input.getDraw());
+//        out.setData(codes.getContent());
+//        out.setRecordsFiltered(codes.getTotalElements());
+//        out.setRecordsTotal(codes.getTotalElements());
+//
+//
+//        DataTablesOutput<TransactionDetails> out = new DataTablesOutput<TransactionDetails>();
+//        try {
+//            Date date = new Date();
+//            Date daysAgo = new DateTime(date).minusDays(300).toDate();
+//            logger.info("the from date {} and the to date {}",date,daysAgo);
+//
+//            AccountDTO account = accountService.getAccount(Long.parseLong(acct));
+//
+//            AccountStatement accountStatement = integrationService.getAccountStatements(account.getAccountNumber(), date, daysAgo, "B");
+//
+//            logger.info("TransactionType {}","B");
+//            out.setDraw(input.getDraw());
+//
+//            List<TransactionDetails> list = accountStatement.getTransactionDetails();
+//            out.setData(list);
+//            int sz = 0;
+//            if(list!=null){
+//                sz = list.size();
+//            }
+//            logger.info("Size = " + sz);
+//            out.setRecordsFiltered(sz);
+//            out.setRecordsTotal(sz);
+//        }
+//         catch (Exception e) {
+//            logger.warn("failed to get history", e);
+//        }
+//        return out;
+//
+//    }
 
     @GetMapping("/downloadstatement")
     public ModelAndView downloadStatementData(ModelMap modelMap, DataTablesInput input, String acctNumber,

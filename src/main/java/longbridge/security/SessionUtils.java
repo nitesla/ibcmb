@@ -29,8 +29,10 @@ public class SessionUtils {
     private final Logger logger = LoggerFactory.getLogger(getClass());
     @Autowired
     IntegrationService integrationService;
+
     @Autowired
     MailService mailService;
+
     @Autowired
     private MessageSource messageSource;
 

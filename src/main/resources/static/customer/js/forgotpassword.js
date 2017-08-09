@@ -97,7 +97,7 @@ function validateSecAnswer(secAnswers){
         url:"/rest/secAns",
         data: {username : username,secAnswers:secAnswer},
         async:false,
-cache:false,
+        cache:false,
         success:function(data){
             result = ''+String(data);
             if(result == "true"){

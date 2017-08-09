@@ -17,6 +17,7 @@ public interface CorporateRepo extends CommonRepo<Corporate, Long> {
 
     Corporate findByCustomerId(String customerId);
     Corporate findFirstByCorporateId(String corporateId);
+    Corporate findFirstByCorporateIdIgnoreCase(String corporateId);
     boolean existsByCorporateIdIgnoreCase(String corporateId);
     Corporate findFirstByCustomerId(String customerId);
     boolean existsByCustomerId(String customerId);

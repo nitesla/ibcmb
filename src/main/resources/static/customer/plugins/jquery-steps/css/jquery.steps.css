@@ -197,15 +197,53 @@
 
 .wizard > .content > .body label
 {
-    display: inline-block;
+   
     margin-bottom: 0.5em;
+
+   
+    
+    
+    
+    margin: 0px !important;
+    padding: 0px !important;
+
 }
+
+
+
+
+
 
 .wizard > .content > .body label.error
 {
-    color: #8a1f11;
-    display: inline-block;
-    margin-left: 1em;
+     color: #8a1f11;
+    /* display: inline-block; */
+    margin-left: 1em;  
+    padding: 5px 20px !important;
+    position:absolute;
+    top:0px;
+    
+    
+   
+   
+    width:20px;
+    text-align: right;
+    right:0px;
+    /* width: 100% !important; */
+
+}
+
+label.error
+{
+   
+    background: #ebdfdb;
+    width:60% !important;
+}
+
+label.error::before
+{
+    content: "\0021 ";
+    font-size: 22px;
 }
 
 .wizard > .actions

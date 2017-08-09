@@ -348,14 +348,16 @@ public class CorpNAPSTransferController {
 
 
                 if(!(NumberUtils.isDigits(cellData.get(4).toString())) && !(cellData.get(4).toString().equalsIgnoreCase("ERROR HERE")) ){
-                    creditRequest.setAccountNumber("ERROR HERE");
+                    creditRequest.setSortCode("ERROR HERE");
+                }
+                else if (cellData.get(4).toString().equalsIgnoreCase("ERROR HERE")){
+                    creditRequest.setSortCode("ERROR HERE");
                 }
                 else {
                     String bankCode = cellData.get(4).toString();
                     String sortCode = financialInstitutionService.getFinancialInstitutionByCode(bankCode).getSortCode();
                     creditRequest.setSortCode(sortCode);
                 }
-
                 crLists.add(creditRequest);
 
             }
