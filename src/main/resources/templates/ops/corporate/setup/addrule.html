@@ -92,6 +92,8 @@
                                                         </thead>
 
                                                     </table>
+                                                    <p id="noRuleError"   class="error">Transaction rule is required</p>
+
                                                 </div>
                                             </div>
 
@@ -295,8 +297,14 @@
             var count = contactsTab.data().length;
 
             if (count < 1) {
+                $("#noRuleError").show();
                 return;
             }
+            else {
+                $("#noRuleError").hide();
+
+            }
+
             data = JSON.stringify(contactsTab.data().toArray());
             $("input[name='rules']").val(data);
             $('#ruleForm').submit();
@@ -467,6 +475,7 @@
             $("#upperLimit").prop("disabled", false);
             $("input[type=checkbox][name='authorizers']").removeAttr('checked');
             $("input[type=checkbox][name='unlimited']").removeAttr('checked');
+            $("#noRuleError").hide();
             unlimited = false;
 
 

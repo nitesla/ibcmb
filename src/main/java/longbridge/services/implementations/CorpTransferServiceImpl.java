@@ -1,6 +1,7 @@
 package longbridge.services.implementations;
 
 import longbridge.dtos.CorpTransferRequestDTO;
+import longbridge.dtos.CorporateRequestDTO;
 import longbridge.dtos.SettingDTO;
 import longbridge.exception.*;
 import longbridge.models.*;
@@ -34,7 +35,6 @@ public class CorpTransferServiceImpl implements CorpTransferService {
     private CorpTransferRequestRepo corpTransferRequestRepo;
     private IntegrationService integrationService;
     private TransactionLimitServiceImpl limitService;
-    private ModelMapper modelMapper;
     private AccountService accountService;
     private FinancialInstitutionService financialInstitutionService;
     private ConfigurationService configService;
@@ -44,9 +44,8 @@ public class CorpTransferServiceImpl implements CorpTransferService {
     private CorpTransferAuthRepo transferAuthRepo;
 
     @Autowired
-    private PendingAuthorizationRepo pendAuthRepo;
-    @Autowired
     private CorporateService corporateService;
+
     @Autowired
     private MessageSource messageSource;
 
@@ -60,11 +59,10 @@ public class CorpTransferServiceImpl implements CorpTransferService {
     private CorpTransReqEntryRepo reqEntryRepo;
 
     @Autowired
-    public CorpTransferServiceImpl(CorpTransferRequestRepo corpTransferRequestRepo, IntegrationService integrationService, TransactionLimitServiceImpl limitService, ModelMapper modelMapper, AccountService accountService, FinancialInstitutionService financialInstitutionService, ConfigurationService configService) {
+    public CorpTransferServiceImpl(CorpTransferRequestRepo corpTransferRequestRepo, IntegrationService integrationService, TransactionLimitServiceImpl limitService, AccountService accountService, FinancialInstitutionService financialInstitutionService, ConfigurationService configService) {
         this.corpTransferRequestRepo = corpTransferRequestRepo;
         this.integrationService = integrationService;
         this.limitService = limitService;
-        this.modelMapper = modelMapper;
         this.accountService = accountService;
         this.financialInstitutionService = financialInstitutionService;
         this.configService = configService;
@@ -79,8 +77,8 @@ public class CorpTransferServiceImpl implements CorpTransferService {
 
 
         if ("SOLE".equals(transferRequest.getCorporate().getCorporateType())) {
-            makeTransfer(transferRequestDTO);
-            return messageSource.getMessage("transaction.success", null, locale);
+            CorpTransferRequestDTO requestDTO = makeTransfer(transferRequestDTO);
+            return requestDTO.getStatusDescription();
         }
 
         if (corporateService.getApplicableTransferRule(transferRequest) == null) {
@@ -94,10 +92,18 @@ public class CorpTransferServiceImpl implements CorpTransferService {
             CorpTransferAuth transferAuth = new CorpTransferAuth();
             transferAuth.setStatus("P");
             transferRequest.setTransferAuth(transferAuth);
-            corpTransferRequestRepo.save(transferRequest);
+            CorpTransRequest corpTransRequest = corpTransferRequestRepo.save(transferRequest);
+            if (userCanAuthorize(corpTransRequest)) {
+                CorpTransReqEntry transReqEntry = new CorpTransReqEntry();
+                transReqEntry.setTranReqId(corpTransRequest.getId());
+                addAuthorization(transReqEntry);
+            }
+        } catch (TransferAuthorizationException ex) {
+            throw ex;
+        } catch (InternetBankingTransferException te) {
+            throw te;
         } catch (Exception e) {
-            e.printStackTrace();
-            throw new InternetBankingTransferException();
+            throw new InternetBankingTransferException(messageSource.getMessage("transfer.add.failure", null, locale), e);
         }
         return messageSource.getMessage("transfer.add.success", null, locale);
     }
@@ -197,7 +203,7 @@ public class CorpTransferServiceImpl implements CorpTransferService {
     public Page<CorpTransRequest> getTransferRequests(Pageable pageDetails) {
         CorporateUser corporateUser = getCurrentUser();
         Corporate corporate = corporateUser.getCorporate();
-        Page<CorpTransRequest> corpTransRequests = corpTransferRequestRepo.findByCorporateAndStatus(corporate,"P", pageDetails);
+        Page<CorpTransRequest> corpTransRequests = corpTransferRequestRepo.findByCorporateAndStatus(corporate, "P", pageDetails);
         return corpTransRequests;
     }
 
@@ -285,7 +291,7 @@ public class CorpTransferServiceImpl implements CorpTransferService {
             return false;
         }
 
-        List<CorporateRole> roles = transferRule.getRoles();
+        List<CorporateRole> roles = getExistingRoles(transferRule.getRoles());
 
         for (CorporateRole corporateRole : roles) {
             if (corpRoleRepo.countInRole(corporateRole, corporateUser) > 0) {
@@ -298,48 +304,54 @@ public class CorpTransferServiceImpl implements CorpTransferService {
     @Override
     public String addAuthorization(CorpTransReqEntry transReqEntry) {
 
-        CorporateUser corporateUser = getCurrentUser();
-        CorpTransRequest corpTransRequest = corpTransferRequestRepo.findOne(transReqEntry.getTranReqId());
-        CorpTransRule transferRule = corporateService.getApplicableTransferRule(corpTransRequest);
-        List<CorporateRole> roles = getExistingRoles(transferRule.getRoles());
-        CorporateRole userRole = null;
+        try {
+            CorporateUser corporateUser = getCurrentUser();
+            CorpTransRequest corpTransRequest = corpTransferRequestRepo.findOne(transReqEntry.getTranReqId());
+            CorpTransRule transferRule = corporateService.getApplicableTransferRule(corpTransRequest);
+            List<CorporateRole> roles = getExistingRoles(transferRule.getRoles());
+            CorporateRole userRole = null;
 
 
-        for (CorporateRole corporateRole : roles) {
-            if (corpRoleRepo.countInRole(corporateRole, corporateUser) > 0) {
-                userRole = corporateRole;
-                break;
+            for (CorporateRole corporateRole : roles) {
+                if (corpRoleRepo.countInRole(corporateRole, corporateUser) > 0) {
+                    userRole = corporateRole;
+                    break;
+                }
             }
-        }
 
-        if (userRole == null) {
-            throw new InternetBankingException("User is not authorized to approve the transaction");
-        }
+            if (userRole == null) {
+                throw new TransferAuthorizationException("User is not authorized to approve the transaction");
+            }
 
-        CorpTransferAuth transferAuth = corpTransRequest.getTransferAuth();
+            CorpTransferAuth transferAuth = corpTransRequest.getTransferAuth();
 
-        if (reqEntryRepo.existsByTranReqIdAndRole(corpTransRequest.getId(), userRole)) {
-            throw new InternetBankingException("User has already authorized the transaction");
-        }
+            if (reqEntryRepo.existsByTranReqIdAndRole(corpTransRequest.getId(), userRole)) {
+                throw new TransferAuthorizationException(messageSource.getMessage("transfer.auth.failure", null, locale));
+            }
 
-        if (!"P".equals(transferAuth.getStatus())) {
-            throw new InternetBankingException("Transaction is not pending");
-        }
-        transReqEntry.setEntryDate(new Date());
-        transReqEntry.setRole(userRole);
-        transReqEntry.setUser(corporateUser);
-        transReqEntry.setStatus("Approved");
-        transferAuth.getAuths().add(transReqEntry);
-        transferAuthRepo.save(transferAuth);
-        if (isAuthorizationComplete(corpTransRequest)) {
-            transferAuth.setStatus("C");
-            transferAuth.setLastEntry(new Date());
+            if (!"P".equals(transferAuth.getStatus())) {
+                throw new TransferAuthorizationException("Transaction is not pending");
+            }
+            transReqEntry.setEntryDate(new Date());
+            transReqEntry.setRole(userRole);
+            transReqEntry.setUser(corporateUser);
+            transReqEntry.setStatus("Approved");
+            transferAuth.getAuths().add(transReqEntry);
             transferAuthRepo.save(transferAuth);
-            makeTransfer(convertEntityToDTO(corpTransRequest));
-            return "Transaction completed successfully";
-        }
+            if (isAuthorizationComplete(corpTransRequest)) {
+                transferAuth.setStatus("C");
+                transferAuth.setLastEntry(new Date());
+                transferAuthRepo.save(transferAuth);
+                CorpTransferRequestDTO requestDTO = makeTransfer(convertEntityToDTO(corpTransRequest));
+                return requestDTO.getStatusDescription();
+            }
 
-        return "Authorization added successfully to the transaction request";
+            return messageSource.getMessage("transfer.auth.failure", null, locale);
+        } catch (InternetBankingTransferException te) {
+            throw te;
+        } catch (Exception e) {
+            throw new InternetBankingException(messageSource.getMessage("transfer.auth.failure", null, locale), e);
+        }
     }
 
     private boolean isAuthorizationComplete(CorpTransRequest transRequest) {

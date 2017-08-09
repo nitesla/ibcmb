@@ -311,7 +311,7 @@ public class CorpNAPSTransferController {
                 Row currentRow = iterator.next();
                 //Iterator<Cell> cellIterator = currentRow.iterator();
                 ArrayList cellData = new ArrayList();
-                for (int i = 0; i < currentRow.getLastCellNum(); i++){
+                for (int i = 0; i < 5; i++){
                     Cell currentCell = currentRow.getCell(i);
                     System.out.println(currentCell);
                     if (currentCell == null || currentCell.getCellType() == Cell.CELL_TYPE_BLANK || currentCell.toString().isEmpty() || currentCell.toString() == null) {

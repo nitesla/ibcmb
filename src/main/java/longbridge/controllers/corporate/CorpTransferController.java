@@ -3,10 +3,7 @@ package longbridge.controllers.corporate;
 
 import longbridge.dtos.CorpLocalBeneficiaryDTO;
 import longbridge.dtos.CorpTransferRequestDTO;
-import longbridge.exception.InternetBankingException;
-import longbridge.exception.InternetBankingTransferException;
-import longbridge.exception.TransferErrorService;
-import longbridge.exception.TransferRuleException;
+import longbridge.exception.*;
 import longbridge.models.*;
 import longbridge.repositories.CorpTransferRequestRepo;
 import longbridge.repositories.CorporateRepo;
@@ -225,16 +222,22 @@ public class CorpTransferController {
 
             return "corp/transfer/transferdetails";
 
-        } catch (InternetBankingTransferException ex) {
+        }
+        catch (TransferAuthorizationException ae){
+            logger.error("Error initiating a transfer ",ae);
+            redirectAttributes.addFlashAttribute("failure", ae.getMessage());
+            return index(request);
+        }
 
-            ex.printStackTrace();
+        catch (InternetBankingTransferException ex) {
 
+            logger.error("Error initiating a transfer ",ex);
             String errorMessage = transferErrorService.getMessage(ex);
             redirectAttributes.addFlashAttribute("failure", errorMessage);
             return index(request);
         }
         catch ( TransferRuleException e) {
-            e.printStackTrace();
+            logger.error("Error initiating a transfer ",e);
             String errorMessage = e.getMessage();
             redirectAttributes.addFlashAttribute("failure", errorMessage);
             return index(request);
@@ -324,7 +327,17 @@ public class CorpTransferController {
             String message = corpTransferService.addAuthorization(corpTransReqEntry);
             redirectAttributes.addFlashAttribute("message", message);
 
-        } catch (InternetBankingException ibe) {
+        }
+        catch (TransferAuthorizationException te){
+            logger.error("Failed to authorize transfer", te);
+            redirectAttributes.addFlashAttribute("failure", te.getMessage());
+        }
+
+        catch (InternetBankingTransferException te){
+            logger.error("Error making transfer", te);
+            redirectAttributes.addFlashAttribute("failure", te.getMessage());
+        }
+        catch (InternetBankingException ibe) {
             logger.error("Failed to authorize transfer", ibe);
             redirectAttributes.addFlashAttribute("failure", ibe.getMessage());
 
