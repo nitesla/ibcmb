@@ -74,7 +74,7 @@ public class ServiceReqConfigServiceImpl implements ServiceReqConfigService {
 				}
 			}
 			serviceReqConfigRepo.save(SRConfig);
-			logger.info("Added service request configuration {}", serviceReqConfigDTO.toString());
+			logger.info("Added service request configuration");
 			return messageSource.getMessage("req.config.add.success", null, locale);
 		}
 		catch (VerificationInterruptedException e) {
