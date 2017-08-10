@@ -76,7 +76,7 @@ public class AdmGroupController {
     public String createGroup(@ModelAttribute("group") @Valid UserGroupDTO userGroup, BindingResult result, RedirectAttributes redirectAttributes, WebRequest request,Locale locale) {
 
         try {
-            String contacts = request.getParameter("contacts");
+            String contacts = request.getParameter("contactList");
             if (result.hasErrors()) {
                 result.addError(new ObjectError("invalid", messageSource.getMessage("form.fields.required", null, locale)));
                 return "adm/group/add";

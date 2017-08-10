@@ -412,10 +412,6 @@ public class OperationsUserServiceImpl implements OperationsUserService {
         if (operationsUser.getLastLoginDate() != null) {
             operationsUserDTO.setLastLoginDate(DateFormatter.format(operationsUser.getLastLoginDate()));
         }
-        Code code = codeService.getByTypeAndCode("USER_STATUS", operationsUser.getStatus());
-        if (code != null) {
-            operationsUserDTO.setStatus(code.getDescription());
-        }
         return operationsUserDTO;
     }
 

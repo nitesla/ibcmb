@@ -67,7 +67,7 @@
 													</label>
 													<div class="col-md-4 col-sm-6 col-xs-12">
 														<input class="form-control col-md-7 col-xs-12" th:field="*{name}"
-															required="required" /> <input hidden="hidden" name="contacts" />
+															required="required" /> <input hidden="hidden" name="contactList" />
 													</div>
 												</div>
 
@@ -180,7 +180,7 @@ $(document).ready(function() {
         e.preventDefault()
         contactsTab = $('#mytab').DataTable();
         data = JSON.stringify(contactsTab.data().toArray());
-        $("input[name='contacts']").val(data);
+        $("input[name='contactList']").val(data);
         $('form').submit();
     });
     
