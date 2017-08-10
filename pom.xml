@@ -117,11 +117,11 @@
             <type>jar</type>
             <systemPath>${project.basedir}/ojdbc7.jar</systemPath>
         </dependency>
-        <dependency>
-            <groupId>com.jaspersoft</groupId>
-            <artifactId>jasperreports-functions</artifactId>
-            <version>6.4.0</version>
-        </dependency>
+        <!--<dependency>-->
+            <!--<groupId>com.jaspersoft</groupId>-->
+            <!--<artifactId>jasperreports-functions</artifactId>-->
+            <!--<version>6.4.0</version>-->
+        <!--</dependency>-->
 
         <dependency>
             <groupId>com.entrust</groupId>
@@ -383,6 +383,11 @@
             <version>1.1.14</version>
             <scope>compile</scope>
 
+        </dependency>
+        <dependency>
+            <groupId>longbridge</groupId>
+            <artifactId>ROOT</artifactId>
+            <version>1.5.2.RELEASE</version>
         </dependency>
     </dependencies>
 
