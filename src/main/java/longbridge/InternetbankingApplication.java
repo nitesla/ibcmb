@@ -2,9 +2,12 @@ package longbridge;
 
 import longbridge.models.Account;
 import longbridge.models.AccountRestriction;
+import longbridge.models.OperationsUser;
 import longbridge.repositories.AccountRepo;
 import longbridge.repositories.AccountRestrictionRepo;
 import longbridge.repositories.CustomJpaRepositoryFactoryBean;
+import longbridge.repositories.OperationsUserRepo;
+import longbridge.services.OperationsUserService;
 import longbridge.services.SecurityService;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
@@ -32,6 +35,9 @@ public class InternetbankingApplication extends SpringBootServletInitializer imp
 
     @Autowired
     AccountRestrictionRepo accountRepo;
+
+    @Autowired
+    OperationsUserRepo operationsUserRepo;
 
 
     public static void main(String[] args) {

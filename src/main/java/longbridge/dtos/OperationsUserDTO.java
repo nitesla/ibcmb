@@ -194,5 +194,28 @@ public class OperationsUserDTO implements Person{
 	public boolean isExternal() {
 		return external;
 	}
-    
+
+    @Override
+    public String toString() {
+        return "OperationsUserDTO{" +
+                "id=" + id +
+                ", version=" + version +
+                ", userName='" + userName + '\'' +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", roleId='" + roleId + '\'' +
+                ", role='" + role + '\'' +
+                ", email='" + email + '\'' +
+                ", phoneNumber='" + phoneNumber + '\'' +
+                ", password='" + password + '\'' +
+                ", status='" + status + '\'' +
+                ", createdOnDate='" + createdOnDate + '\'' +
+                ", expiryDate=" + expiryDate +
+                ", lockedUntilDate=" + lockedUntilDate +
+                ", lastLoginDate='" + lastLoginDate + '\'' +
+                ", noOfLoginAttempts=" + noOfLoginAttempts +
+                ", external=" + external +
+                ", userType=" + userType +
+                '}';
+    }
 }

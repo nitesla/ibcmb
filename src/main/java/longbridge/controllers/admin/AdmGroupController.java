@@ -101,7 +101,13 @@ public class AdmGroupController {
             String message = userGroupService.addGroup(userGroup);
             redirectAttributes.addFlashAttribute("message", message);
             return "redirect:/admin/groups";
-        } catch (Exception ibe) {
+        }
+        catch (InternetBankingException ibe){
+            logger.error("Error creating group", ibe);
+            result.addError(new ObjectError("invalid", ibe.getMessage()));
+            return "adm/group/add";
+        }
+        catch (Exception ibe) {
             logger.error("Error creating group", ibe);
             result.addError(new ObjectError("invalid", messageSource.getMessage("group.add.failure", null, locale)));
             return "adm/group/add";
@@ -150,13 +156,15 @@ public class AdmGroupController {
 
     }
 
-
     @PostMapping("/update")
-    public String updateGroup(WebRequest request, RedirectAttributes redirectAttributes, Model model, Locale locale) {
+    public String updateGroup(@ModelAttribute("group") @Valid UserGroupDTO userGroup, BindingResult result, RedirectAttributes redirectAttributes, WebRequest request,Locale locale) {
 
         try {
-            String contacts = request.getParameter("contacts");
-            String name = request.getParameter("name");
+            String contacts = request.getParameter("contactList");
+            if (result.hasErrors()) {
+                result.addError(new ObjectError("invalid", messageSource.getMessage("form.fields.required", null, locale)));
+                return "adm/group/edit";
+            }
 
             Long id = Long.parseLong(request.getParameter("id"));
             int version = Integer.parseInt(request.getParameter("version"));
@@ -175,10 +183,8 @@ public class AdmGroupController {
                     iterator.remove();
                 }
             }
-            UserGroupDTO userGroup = new UserGroupDTO();
             userGroup.setId(id);
             userGroup.setVersion(version);
-            userGroup.setName(name);
             userGroup.setContacts(contactList);
             userGroup.setUsers(opList);
 
@@ -186,9 +192,15 @@ public class AdmGroupController {
             String message = userGroupService.updateGroup(userGroup);
             redirectAttributes.addFlashAttribute("message", message);
             return "redirect:/admin/groups";
-        } catch (Exception ibe) {
+        }
+        catch (InternetBankingException ibe){
             logger.error("Error creating group", ibe);
-            model.addAttribute("failure", messageSource.getMessage("group.update.failure", null, locale));
+            result.addError(new ObjectError("invalid", ibe.getMessage()));
+            return "adm/group/edit";
+        }
+        catch (Exception ibe) {
+            logger.error("Error creating group", ibe);
+            result.addError(new ObjectError("invalid", messageSource.getMessage("group.add.failure", null, locale)));
             return "adm/group/edit";
         }
 
