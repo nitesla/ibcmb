@@ -119,7 +119,7 @@ public class CorpTransferServiceImpl implements CorpTransferService {
             }
             throw new InternetBankingTransferException(TransferExceptions.ERROR.toString());
         }
-        throw new InternetBankingTransferException();
+        throw new InternetBankingTransferException(TransferExceptions.ERROR.toString());
     }
 
 
@@ -335,8 +335,9 @@ public class CorpTransferServiceImpl implements CorpTransferService {
             transferAuth.setStatus("C");
             transferAuth.setLastEntry(new Date());
             transferAuthRepo.save(transferAuth);
-            makeTransfer(convertEntityToDTO(corpTransRequest));
-            return "Transaction completed successfully";
+            CorpTransferRequestDTO dto=    makeTransfer(convertEntityToDTO(corpTransRequest));
+            return dto.getStatusDescription();
+
         }
 
         return "Authorization added successfully to the transaction request";
