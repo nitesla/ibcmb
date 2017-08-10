@@ -97,13 +97,15 @@
             });
         }
 
-        // Reset timer on any of these events
-            if (!opt.ignoreUserActivity) {
+
+        //Reset timer on any of these events
+        if (!opt.ignoreUserActivity) {
             var mousePosition = [-1, -1];
             $(document).on('keyup mouseup mousemove touchend touchmove', function(e) {
                 if (e.type === 'mousemove') {
                     // Solves mousemove even when mouse not moving issue on Chrome:
                     // https://code.google.com/p/chromium/issues/detail?id=241476
+
                     if (e.clientX === mousePosition[0] && e.clientY === mousePosition[1]) {
                         return;
                     }

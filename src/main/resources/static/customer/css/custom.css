@@ -2096,19 +2096,19 @@ button, input, optgroup, select, textarea {
 
     .errors_div
     {
-        
+
 
 
 
         position:static !important;
 
         margin-top:5px;
-       
+
     }
 
 
     .carousel-caption {
-     position: absolute !important; 
+     position: absolute !important;
     top: 70% !important;
     right: 0% !important;
     bottom: 0% !important;
@@ -2376,7 +2376,7 @@ button, input, optgroup, select, textarea {
 {
     padding:0px !important;
     padding-left:15px !important;
-    
+
 }
 
 
@@ -2388,7 +2388,7 @@ button, input, optgroup, select, textarea {
     top:100px;
     left:30%; */
     /* border-radius: 50%; */
-    
+
     /* -webkit-animation-name: example;  Safari 4.0 - 8.0  */
     /* -webkit-animation-duration: 4s;  Safari 4.0 - 8.0  */
     /* -webkit-animation-iteration-count: infinite;  Safari 4.0 - 8.0  */
@@ -2445,7 +2445,7 @@ button, input, optgroup, select, textarea {
     padding:20px 20px;
     font-size:20px;
     line-height: 30px;
-    
+
 }
 
 .contact-details
@@ -2506,7 +2506,7 @@ button, input, optgroup, select, textarea {
     padding: 3px;
     text-align: left;
     z-index:1000;
-    
+
 }
 
 .password ul li
@@ -2519,9 +2519,9 @@ button, input, optgroup, select, textarea {
 
     .carousel-caption
     {
-       
+
         line-height: 17px !important;
-       
+
         font-size: 14px !important;
 
     }

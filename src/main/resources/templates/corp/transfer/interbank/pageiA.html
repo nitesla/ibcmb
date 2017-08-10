@@ -20,7 +20,7 @@
            <div class="table-responsive">
                         
                         <form method="post" >
-                            <table class="table">
+                            <table class="table" id="mytab">
                                 <thead>
                                 <tr>
                                 <th>Beneficiary name</th>
@@ -57,15 +57,8 @@
                              </div>
                             <br/>
                             <input  type="hidden" th:value="${transferRequest}"/>
-<<<<<<< HEAD
-<<<<<<< HEAD:src/main/resources/templates/corp/transfer/interbanktransfer/pageiA.html
+
                             <a th:href="@{/corporate/transfer/interbank/new}" class="btn">New Beneficiary</a>
-=======
-                            <a th:href="@{/retail/transfer/interbank/new}" class="btn">New Beneficiary</a>
->>>>>>> 572f2f3322d06eb1fe39835340ae2c77dc32c916:src/main/resources/templates/corp/transfer/interbank/pageiA.html
-=======
-                            <a th:href="@{/corporate/transfer/interbank/new}" class="btn">New Beneficiary</a>
->>>>>>> 0b1e7ef362a6d42a0af3eef3b26d1025d5c816cb
 
                            <!-- <button type="submit" class="btn btn-default" style="float: right">Add beneficiary</button>
                        --> </form>
@@ -77,6 +70,19 @@
 
 
 <th:block layout:fragment="scripts">
+
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        var table = $('#mytab').DataTable({
+            responsive: true,
+            "lengthMenu" : [ [ 5, 10, 20], [ 5, 10, 20 ] ],
+            "pagingType" : "simple_numbers",
+            "searching": false,
+            "dom": 'T<"clear">frtlp'
+        });
+        /*]]>*/
+    </script>
+
 <script>
     //datepicker
     $( function() {

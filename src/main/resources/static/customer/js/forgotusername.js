@@ -6,6 +6,7 @@ var secAnswer ="";
  *
  * @param accountNumber the account number to check
  */
+
 function validateAccountNo(accountNumber){
 console.log("the num "+accountNumber);
     // var customerId;
@@ -29,7 +30,6 @@ console.log("the num "+accountNumber);
             }
         }
     });
-    
 
     console.log(customerId);
 

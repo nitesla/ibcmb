@@ -7,7 +7,6 @@ import longbridge.exception.PasswordPolicyViolationException;
 import longbridge.forms.CustResetPassword;
 import longbridge.forms.ResetPasswordForm;
 import longbridge.forms.RetrieveUsernameForm;
-import longbridge.models.Account;
 import longbridge.models.Email;
 import longbridge.models.RetailUser;
 import longbridge.repositories.RetailUserRepo;
@@ -31,7 +30,10 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpSession;
-import java.util.*;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 import static longbridge.utils.StringUtil.compareAnswers;
 

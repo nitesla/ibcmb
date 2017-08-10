@@ -21,7 +21,7 @@
                     <div class="col-md-12 col-sm-12  table-responsive">
                         <h6 class="sub_header">Beneficiaries</h6>
                         <form method="post" >
-                            <table class="table">
+                            <table class="table" id="mytab">
                                 <thead>
                                 <tr>
                                 <th>Beneficiary name</th>
@@ -74,6 +74,19 @@
 
 
 <th:block layout:fragment="scripts">
+
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        var table = $('#mytab').DataTable({
+            responsive: true,
+            "lengthMenu" : [ [ 5, 10, 20], [ 5, 10, 20 ] ],
+            "pagingType" : "simple_numbers",
+            "searching": false,
+            "dom": 'T<"clear">frtlp'
+        });
+        /*]]>*/
+    </script>
+
   <script>
     //datepicker
     $( function() {
