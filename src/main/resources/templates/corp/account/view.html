@@ -116,11 +116,11 @@
             var form = $('<form></form>').attr('action', url).attr('target', '_blank')
                     .attr('method', 'get');
             // Add the one key/value
-            form.append($("<input></input>").attr('type', 'hidden').attr('name',
+            form.append($("<input/>").attr('type', 'hidden').attr('name',
                     key).attr('value', data));
 
             $.each( data, function( propertyName, valueOfProperty ){
-                form.append($("<input></input>").attr('type', 'hidden').attr('name',
+                form.append($("<input/>").attr('type', 'hidden').attr('name',
                         propertyName).attr('value', valueOfProperty));
             });
 
@@ -196,20 +196,23 @@
                         }
                     } ],
                 "ajax" : {
-                    "url":"viewstatement/display/data",
+                    "url":"/corporate/account/viewstatement/display/data/new",
                     "type" : "GET",
                     "data" : function(d) {
                         d.acctNumber = $('[name=acctNumber]').val();
                         d.fromDate = $('[name=fromDate]').val();
                         d.toDate = $('[name=toDate]').val();
                         d.tranType = $('[name=tranType]').val();
+                        console.log("the data parsed is "+d.acctNumber+" fromDate "+d.fromDate+" toDate"+d.toDate+" tranType"+d.tranType);
                     }
+                }, "language": {
+                    "emptyTable": "No data available in table"
                 }
 
             });
 
             $("#btn-find").on("click", function(e) {
-
+//                console.log("find");
                 e.preventDefault();
                 dt = $('#tranDetails').DataTable();
                     $('#btn-print').show();
@@ -221,11 +224,11 @@
                 e.preventDefault();
                 var table = $('#tranDetails').DataTable();
                 var data = table.ajax.params();
-                $.download("downloadstatement", "data", data);
+                console.log("the data "+data);
+                $.download("/corporate/account/downloadstatement", "data", data);
 
             });
-
-
+//            $('.dataTables_empty').html('No data available');
         });
 
 
