@@ -3,10 +3,7 @@ package longbridge.controllers.corporate;
 
 import longbridge.dtos.CorpLocalBeneficiaryDTO;
 import longbridge.dtos.CorpTransferRequestDTO;
-import longbridge.exception.InternetBankingException;
-import longbridge.exception.InternetBankingTransferException;
-import longbridge.exception.TransferErrorService;
-import longbridge.exception.TransferRuleException;
+import longbridge.exception.*;
 import longbridge.models.*;
 import longbridge.repositories.CorpTransferRequestRepo;
 import longbridge.repositories.CorporateRepo;
@@ -26,6 +23,7 @@ import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
 import org.springframework.data.jpa.datatables.repository.DataTablesUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.ModelAndView;
@@ -225,16 +223,22 @@ public class CorpTransferController {
 
             return "corp/transfer/transferdetails";
 
-        } catch (InternetBankingTransferException ex) {
+        }
+        catch (TransferAuthorizationException ae){
+            logger.error("Error initiating a transfer ",ae);
+            redirectAttributes.addFlashAttribute("failure", ae.getMessage());
+            return index(request);
+        }
 
-            ex.printStackTrace();
+        catch (InternetBankingTransferException ex) {
 
+            logger.error("Error initiating a transfer ",ex);
             String errorMessage = transferErrorService.getMessage(ex);
             redirectAttributes.addFlashAttribute("failure", errorMessage);
             return index(request);
         }
         catch ( TransferRuleException e) {
-            e.printStackTrace();
+            logger.error("Error initiating a transfer ",e);
             String errorMessage = e.getMessage();
             redirectAttributes.addFlashAttribute("failure", errorMessage);
             return index(request);
@@ -260,17 +264,17 @@ public class CorpTransferController {
 
 
     @GetMapping("/{id}/authorizations")
-    public String getAuthorizations(@PathVariable Long id, Model model) {
+    public String getAuthorizations(@PathVariable Long id, ModelMap modelMap) {
 
         CorpTransRequest corpTransRequest = corpTransferService.getTransfer(id);
         CorpTransferAuth corpTransferAuth = corpTransferService.getAuthorizations(corpTransRequest);
         CorpTransRule corpTransRule = corporateService.getApplicableTransferRule(corpTransRequest);
         boolean userCanAuthorize = corpTransferService.userCanAuthorize(corpTransRequest);
-        model.addAttribute("authorizationMap", corpTransferAuth);
-        model.addAttribute("corpTransRequest", corpTransRequest);
-        model.addAttribute("corpTransReqEntry", new CorpTransReqEntry());
-        model.addAttribute("corpTransRule", corpTransRule);
-        model.addAttribute("userCanAuthorize", userCanAuthorize);
+        modelMap.addAttribute("authorizationMap", corpTransferAuth)
+                .addAttribute("corpTransRequest", corpTransRequest)
+                .addAttribute("corpTransReqEntry", new CorpTransReqEntry())
+                .addAttribute("corpTransRule", corpTransRule)
+                .addAttribute("userCanAuthorize", userCanAuthorize);
 
         List<CorporateRole> rolesNotInAuthList = new ArrayList<>();
         List<CorporateRole> rolesInAuth = new ArrayList<>();
@@ -289,7 +293,7 @@ public class CorpTransferController {
                 }
             }
         logger.info("Roles not In Auth List..{}", rolesNotInAuthList.toString());
-        model.addAttribute("rolesNotAuth", rolesNotInAuthList);
+        modelMap.addAttribute("rolesNotAuth", rolesNotInAuthList);
 
         return "corp/transfer/request/summary";
     }
@@ -324,7 +328,17 @@ public class CorpTransferController {
             String message = corpTransferService.addAuthorization(corpTransReqEntry);
             redirectAttributes.addFlashAttribute("message", message);
 
-        } catch (InternetBankingException ibe) {
+        }
+        catch (TransferAuthorizationException te){
+            logger.error("Failed to authorize transfer", te);
+            redirectAttributes.addFlashAttribute("failure", te.getMessage());
+        }
+
+        catch (InternetBankingTransferException te){
+            logger.error("Error making transfer", te);
+            redirectAttributes.addFlashAttribute("failure", te.getMessage());
+        }
+        catch (InternetBankingException ibe) {
             logger.error("Failed to authorize transfer", ibe);
             redirectAttributes.addFlashAttribute("failure", ibe.getMessage());
 

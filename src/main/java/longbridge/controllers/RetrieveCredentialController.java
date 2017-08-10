@@ -217,12 +217,17 @@ public class RetrieveCredentialController {
         try{
             //confirm security question is correct
             int noOfMismatch = 0;
+            Map<String, List<String>> qa = null;
             String customerId = webRequest.getParameter("customerId");
             logger.info("answer 1 {}",webRequest.getParameter("secAnswers"));
             logger.info("cid id {}",webRequest.getParameter("customerId"));
             List<String> answers = StringUtil.splitByComma(webRequest.getParameter("secAnswers"));
-            RetailUser retailUser = retailUserService.getUserByCustomerId(customerId);
-            Map<String, List<String>> qa = securityService.getUserQA(retailUser.getEntrustId(), retailUser.getEntrustGroup());
+            if(session.getAttribute("retSecQestnAndAnsFU") == null) {
+                RetailUser retailUser = retailUserService.getUserByCustomerId(customerId);
+                qa = securityService.getUserQA(retailUser.getEntrustId(), retailUser.getEntrustGroup());
+            }else{
+                qa = (Map<String, List<String>>) session.getAttribute("retSecQestnAndAnsFU");
+            }
             //List<String> sec = null;
 //            logger.info("sec questions {}",qa);
             if (qa != null){
@@ -308,17 +313,17 @@ public class RetrieveCredentialController {
     @PostMapping("/forgot/username")
     public
     @ResponseBody
-    String forgotUsername(WebRequest webRequest) {
+    String forgotUsername(WebRequest webRequest, HttpSession session) {
         Iterator<String> iterator = webRequest.getParameterNames();
         logger.info("forget username");
         while(iterator.hasNext()){
             logger.info(iterator.next());
         }
-
+        Map<String, List<String>> qa =  null;
         String customerId = webRequest.getParameter("customerId");
-        String userEmail = webRequest.getParameter("email");
+//        String userEmail = webRequest.getParameter("email");
         try {
-            if (customerId == null && userEmail == null) {
+            if (customerId == null) {
                 logger.error("Account Number not valid");
                 return "false";
             }
@@ -327,8 +332,11 @@ public class RetrieveCredentialController {
 
             //confirm security question is correct
             String secAnswer="";
-            Map<String, List<String>> qa = securityService.getUserQA(user.getEntrustId(), user.getEntrustGroup());
-            //List<String> sec = null;
+            if(session.getAttribute("retSecQestnAndAnsFU") == null) {
+                qa = securityService.getUserQA(user.getEntrustId(), user.getEntrustGroup());
+            }else{
+                qa = (Map<String, List<String>>) session.getAttribute("retSecQestnAndAnsFU");
+            }            //List<String> sec = null;Map<String, List<String>>
             if (qa != null){
 //                List<String> questions= qa.get("questions");
                 List<String> answers= qa.get("answers");
@@ -360,34 +368,34 @@ public class RetrieveCredentialController {
         return "false";
     }
 
-    @GetMapping("/rest/retail/{email}/{accountNumber}")
-    public @ResponseBody String[] getAccountNameFromNumber(@PathVariable String email, @PathVariable String accountNumber){
-        String customerId = "";
-        String userEmail = "";
-        String[] userDetails = new String[2];
-        userDetails[0] = "";
-        userDetails[1] = "";
-        logger.info("Account nUmber {} email {}",accountNumber,email);
-        Account account = accountService.getAccountByAccountNumber(accountNumber);
-        logger.info("this is the acc ", account);
-        if (account != null){
-            customerId = account.getCustomerId();
-            RetailUser retailUser = retailUserService.getUserByEmail(email);
-            if(retailUser != null){
-                userDetails[0] = customerId;
-                userDetails[1] = retailUser.getEmail();
-                //userEmail = retailUser.getEmail();
-                logger.info("Account number : " + userDetails[0]);
-                logger.info("this is the mail" + userDetails[1]);
-            }
-
-        }else {
-            //nothing
-            customerId = "";
-        }
-        logger.info("cif i {}",customerId);
-        return userDetails;
-    }
+//    @GetMapping("/rest/retail/{email}/{accountNumber}")
+//    public @ResponseBody String[] getAccountNameFromNumber(@PathVariable String email, @PathVariable String accountNumber){
+//        String customerId = "";
+//        String userEmail = "";
+//        String[] userDetails = new String[2];
+//        userDetails[0] = "";
+//        userDetails[1] = "";
+//        logger.info("Account nUmber {} email {}",accountNumber,email);
+//        Account account = accountService.getAccountByAccountNumber(accountNumber);
+//        logger.info("this is the acc ", account);
+//        if (account != null){
+//            customerId = account.getCustomerId();
+//            RetailUser retailUser = retailUserService.getUserByEmail(email);
+//            if(retailUser != null){
+//                userDetails[0] = customerId;
+//                userDetails[1] = retailUser.getEmail();
+//                //userEmail = retailUser.getEmail();
+//                logger.info("Account number : " + userDetails[0]);
+//                logger.info("this is the mail" + userDetails[1]);
+//            }
+//
+//        }else {
+//            //nothing
+//            customerId = "";
+//        }
+//        logger.info("cif i {}",customerId);
+//        return userDetails;
+//    }
 
 
 }

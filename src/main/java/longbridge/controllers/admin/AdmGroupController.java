@@ -29,12 +29,15 @@ import org.springframework.data.jpa.datatables.repository.DataTablesUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.fasterxml.jackson.core.JsonParser.Feature;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import javax.validation.Valid;
 
 
 /**
@@ -70,14 +73,12 @@ public class AdmGroupController {
     }
 
     @PostMapping
-    public String createGroup(WebRequest request, RedirectAttributes redirectAttributes, Model model, Locale locale) {
+    public String createGroup(@ModelAttribute("group") @Valid UserGroupDTO userGroup, BindingResult result, RedirectAttributes redirectAttributes, WebRequest request,Locale locale) {
 
         try {
             String contacts = request.getParameter("contacts");
-            String name = request.getParameter("name");
-            if("".equals(name)){
-                model.addAttribute("group", new UserGroupDTO());
-                model.addAttribute("failure","Group name is required");
+            if (result.hasErrors()) {
+                result.addError(new ObjectError("invalid", messageSource.getMessage("form.fields.required", null, locale)));
                 return "adm/group/add";
             }
             ObjectMapper mapper = new ObjectMapper();
@@ -95,18 +96,14 @@ public class AdmGroupController {
                     iterator.remove();
                 }
             }
-            UserGroupDTO userGroup = new UserGroupDTO();
-            userGroup.setName(name);
             userGroup.setContacts(contactList);
             userGroup.setUsers(opList);
-
-
             String message = userGroupService.addGroup(userGroup);
             redirectAttributes.addFlashAttribute("message", message);
             return "redirect:/admin/groups";
         } catch (Exception ibe) {
             logger.error("Error creating group", ibe);
-            model.addAttribute("failure", messageSource.getMessage("group.add.failure", null, locale));
+            result.addError(new ObjectError("invalid", messageSource.getMessage("group.add.failure", null, locale)));
             return "adm/group/add";
         }
 

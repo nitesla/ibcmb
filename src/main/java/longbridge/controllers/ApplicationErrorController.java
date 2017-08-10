@@ -2,6 +2,7 @@ package longbridge.controllers;
 
 import longbridge.models.User;
 import longbridge.security.userdetails.CustomUserPrincipal;
+import longbridge.services.MailService;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,8 +34,8 @@ public class ApplicationErrorController implements ErrorController {
 
     private static final String PATH = "/error";
 
-
-    Logger logger = LoggerFactory.getLogger(this.getClass());
+    @Autowired
+    private MailService mailService;
 
     @Autowired
     private ErrorAttributes errorAttributes;
@@ -66,31 +67,6 @@ public class ApplicationErrorController implements ErrorController {
 
 
         return "/error";
-    }
-
-
-
-
-    @GetMapping("/admin/error")
-    public String getAdminErrorPage() {
-        return "/adm/error";
-
-    }
-
-    @GetMapping("/ops/error")
-    public String getOpsErrorPage() {
-        return "/ops/error";
-
-    }
-    @GetMapping("/corporate/error")
-    public String getCorporateErrorPage() {
-        return "/corp/error";
-
-    }
-    @GetMapping("/retail/error")
-    public String getRetailErrorPage() {
-        return "/cust/error";
-
     }
 
 

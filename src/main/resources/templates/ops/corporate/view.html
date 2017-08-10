@@ -112,6 +112,7 @@
                                                         <tr>
                                                             <th>Type</th>
                                                             <th>Customer ID</th>
+                                                            <th>Corporate ID</th>
                                                             <th>Name</th>
                                                             <th>Status</th>
                                                             <th>Date Created</th>
@@ -126,7 +127,9 @@
                                                         <tr>
 
                                                             <th>Type</th>
-                                                            <th>Customer ID</th>                                                            <th>Name</th>
+                                                            <th>Customer ID</th>
+                                                            <th>Corporate ID</th>
+                                                            <th>Name</th>
                                                             <th>Status</th>
                                                             <th>Date Created</th>
 
@@ -207,13 +210,14 @@
             "columns": [
                 { "data": "corporateType" },
                 { "data": "customerId" },
+                { "data": "corporateId" },
                 { "data": "name" },
                 { "data": "status" },
                 { "data": "createdOnDate" }
 
             ] ,
             "columnDefs" : [ {
-                "targets" : 3,
+                "targets" : 4,
                 "data" : "status",
                 "render" : function(data, type,full, meta) {
                     if (type === 'display') {

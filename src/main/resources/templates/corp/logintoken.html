@@ -115,7 +115,7 @@
                     <div class="margin-bottom">
                         <p style="margin-bottom:20px">Kindly enter the OTP from your token device</p>
                         <div id="username_div" class="form-group">
-                            <input  type="text" id="token" name="token" required class='my-select tokenInput' placeholder="Token Code" autocomplete="off"/>
+                            <input  type="text" id="token" name="token" required class='my-select tokenInput' autofocus="autofocus" placeholder="Token Code" autocomplete="off"/>
                             <p id='loading-icon' style="display:none"><i class='fa fa-spinner fa-spin' style="font-size:10px;color:#003056"></i> Sending OTP. Please Wait...</p>
 
                         </div>
@@ -242,9 +242,9 @@
             },
             success: function (reponse) {
                 if (reponse === 'success') {
-                    $("#tokenmodal").hide();
-                    $("#otpmodal").show();
-//                    $('#loading-icon').hide();
+                                        $('#loading-icon').hide();
+                    $("#tokenModalCorp").hide();
+                    $("#otpmodalCorp").show();
                     $('#successMess').show();
                     document.getElementById("successMess").textContent = "Successfully sent";
 
