@@ -30,9 +30,22 @@
 
 <!-- admin menu -->
 <div th:fragment="admin-menu" id="sidebar-menu" class="main_menu_side hidden-print main_menu">
+    <!-- menu profile quick info -->
+    <div class="profile clearfix">
+        <div class="profile_pic">
+            <img th:src="@{~/bank/images/cmb_logo_fav.png}" alt="..." class="img-circle profile_img">
+        </div>
+        <div class="profile_info">
+            <span>Welcome,</span>
+            <h2 sec:authentication="name"></h2>
+        </div>
+    </div>
+
+    <br/>
     <div class="menu_section">
         <h3>Admin Console</h3>
         <ul class="nav side-menu">
+            <li><a th:href="@{/admin/dashborad}"><i class="fa fa-dashboard"></i> Dashboard</a></li>
             <li sec:authorize="hasAuthority('USER_MANAGEMENT')"><a><i class="fa fa-users"></i> User Management <span class="fa fa-chevron-down"></span></a>
                 <ul class="nav child_menu">
                     <li sec:authorize="hasAuthority('ADMIN_USER_MANAGEMENT')"><a href="/admin/users/">Administrators</a></li>
@@ -43,7 +56,6 @@
                 <ul class="nav child_menu">
                     <li sec:authorize="hasAuthority('CODE_CONFIG')"><a href="/admin/codes/alltypes">Codes</a></li>
                     <li sec:authorize="hasAuthority('SETTING_CONFIG')"><a href="/admin/settings">System Settings</a></li>
-                    <li sec:authorize="hasAuthority('AUDIT_CONFIG')"><a href="/admin/audit">Audit</a></li>
                     <li><a href="/admin/secquestions/">Security Questions</a></li>
                     <li><a href="/admin/phishing/">Phishing Image</a></li>
                     <li><a href="/admin/checker">Maker Checker</a></li>
@@ -86,21 +98,23 @@
                     <li><a href="/admin/token/unlock">Unlock Token</a></li>
                 </ul>
             </li>
+            <li><a><i class="fa fa-history"></i>Audit<span class="fa fa-chevron-down"></span></a>
+                <ul class="nav child_menu">
+                    <li sec:authorize="hasAuthority('AUDIT_CONFIG')"><a href="/admin/audit">Configuration</a></li>
+                    <li><a href="/admin/audit/revised/entity">Revision</a></li>
+                </ul>
+            </li>
 
             <li><a><i class="fa fa-check"></i> Verifications <span class="fa fa-chevron-down"></span></a>
                 <ul class="nav child_menu">
-                    <li><a href="/admin/verifications/verified"> My Approvals </a></li>
-                    <li><a href="/admin/verifications/operations"> Pending  <button class="badge bg-orange"  th:text="${verificationNumber}"></button> </a></li>
+                    <li><a href="/admin/verifications/verified">My Approvals </a></li>
+                    <li><a href="/admin/verifications/operations">Pending  <button class="badge bg-orange"  th:text="${verificationNumber}"></button> </a></li>
                     <li><a href="/admin/verifications/pendingops">My Requests <button class="badge bg-orange" disabled="disabled" th:text="${totalPending}" ></button>  </a></li>
 
                 </ul>
 
             </li>
-            <!--<li><a><i class="fa fa-history"></i>Audit<span class="fa fa-chevron-down"></span></a>-->
-                <!--<ul class="nav child_menu">-->
-                    <!--<li><a href="/admin/audit/revised/entity">Audits</a></li>-->
-                <!--</ul>-->
-            <!--</li>-->
+
 
 
 
@@ -113,6 +127,19 @@
 
 <!-- ops menu -->
 <div th:fragment="ops-menu" id="sidebar-menu" class="main_menu_side hidden-print main_menu">
+
+    <!-- menu profile quick info -->
+    <div class="profile clearfix">
+        <div class="profile_pic">
+            <img th:src="@{~/bank/images/cmb_logo_fav.png}" alt="..." class="img-circle profile_img">
+        </div>
+        <div class="profile_info">
+            <span>Welcome,</span>
+            <h2 sec:authentication="name"></h2>
+        </div>
+    </div>
+
+    <br/>
 
     <div class="menu_section">
         <h3>Operations Console</h3>
@@ -232,7 +259,7 @@
                 <li class="">
                     <a href="javascript:" class="user-profile dropdown-toggle" data-toggle="dropdown"
                        aria-expanded="false">
-                        <span sec:authentication="name"></span>
+                        <span class="fa fa-gears"></span>
                         <span class=" fa fa-angle-down"></span>
                     </a>
                     <ul class="dropdown-menu dropdown-usermenu pull-right">
