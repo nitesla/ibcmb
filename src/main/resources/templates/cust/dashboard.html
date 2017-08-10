@@ -81,7 +81,7 @@
         }
         if ($('#' + Id).val() === "Transaction History") {
             if (( Id != null || Id != '' )) {
-                window.location.href = "/retail/account/viewonlyhistory";
+                window.location.href = "/retail/account/" + Id + "/viewonlyhistory";
             }
         }
         if ($('#' + Id).val() === "Account Statement") {

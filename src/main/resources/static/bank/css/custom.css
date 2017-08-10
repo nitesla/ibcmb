@@ -238,6 +238,16 @@ html , body{
 .nav-sm .profile {
     display: none
 }
+
+.menu_user_section{
+    margin-bottom: 10px;
+}
+
+.menu_user_section h3{
+    font-size: 11px;
+    padding-left: 15px;
+}
+
 .menu_section {
     margin-bottom: 35px
 }
@@ -261,7 +271,6 @@ html , body{
 }
 .img-circle.profile_img {
     width: 70%;
-    background: #fff;
     margin-left: 15%;
     z-index: 1000;
     position: inherit;
