@@ -1,6 +1,7 @@
 package longbridge.dtos;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.hibernate.validator.constraints.NotEmpty;
 
 import java.beans.PersistenceDelegate;
 import java.util.Date;
@@ -14,6 +15,7 @@ public class UserGroupDTO {
     @JsonProperty("DT_RowId")
     private Long id;
     private int version;
+    @NotEmpty(message = "name")
     private String name;
     private String description;
     private Date dateCreated;

@@ -6,16 +6,17 @@
 
 
 <body class="nav-md">
+<style>
+
+    .error{
+        display: none;
+        color:red;
+    }
+</style>
 <div class="container body">
     <div class="main_container">
         <div class="col-md-3 left_col">
             <div class="left_col scroll-view">
-                <div class="navbar nav_title" style="border: 0;">
-                    <!--<a href="index.html"><img th:src="@{~/images/cmb_logo.png}"/></a>-->
-                </div>
-
-                <div class="clearfix"></div>
-                <div class="clearfix"></div>
 
                 <div th:replace="layout :: admin-menu"></div>
                 <div th:replace="layout :: menu-footer-adm"></div>
@@ -55,6 +56,7 @@
                             <div class="x_content">
                                 <form method="post" th:action="@{/admin/groups/update}" id="" th:object="${group}"
                                       class="form-horizontal">
+                                    <div th:replace="layout::form-validation"></div>
 
                                     <div class="x_content">
                                         <fieldset>
@@ -67,8 +69,10 @@
                                                            required="required" />
                                                     <input hidden="hidden" th:field="*{id}" />
                                                     <input hidden="hidden" th:field="*{version}" />
-                                                    <input hidden="hidden" name="contacts" />
+                                                    <input hidden="hidden" name="contactList" />
                                                 </div>
+                                                <p id="nameError" class="error">Contact group name is required</p>
+
                                             </div>
 
                                         </fieldset>
@@ -144,6 +148,8 @@
     var url ="/admin/groups/"+groupId+"/all";
 
     $(document).ready(function() {
+        var duplicateEmail = false;
+
         var counter = 0;
         var t = $('#mytab').DataTable({
             dom: 'rt',
@@ -183,9 +189,20 @@
 
         $('#button_submit').click(function(e) {
             e.preventDefault()
+
+            var name = $("#name").val();
+
+            if(name==""){
+                $("#nameError").show();
+                return;
+            }
+            else {
+                $("#nameError").hide();
+            }
+
             contactsTab = $('#mytab').DataTable();
             data = JSON.stringify(contactsTab.data().toArray());
-            $("input[name='contacts']").val(data);
+            $("input[name='contactList']").val(data);
             $('form').submit();
         });
 
@@ -212,8 +229,13 @@
                             'email': em,
                             'external': true
                         };
-                        contactsTab.row.add(od);
-                        contactsTab.draw();
+                        validateDuplicateEmail(em);
+                        if(duplicateEmail==false) {
+                            contactsTab.row.add(od);
+                            contactsTab.draw();
+                        }
+
+                        duplicateEmail = false;
                     }
                 }, {
                     text: 'Close',
@@ -223,6 +245,27 @@
             };
             eModal.ajax(options);
         });
+
+        function validateDuplicateEmail(emailAddress) {
+
+            var arr = contactsTab.data().toArray();
+
+            $.each(arr, function (i, obj) {
+
+                $.each(obj, function (key, value) {
+
+                    if (key == "email" && value == emailAddress) {
+                        duplicateEmail = true;
+                    }
+
+                })
+
+                if (duplicateEmail == true) {
+                    return false;
+                }
+
+            });
+        }
 
         $('#button_del').click(function(e) {
             e.preventDefault()

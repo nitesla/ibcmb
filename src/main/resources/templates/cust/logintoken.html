@@ -244,15 +244,15 @@
             },
             success: function (reponse) {
                 if (reponse === 'success') {
-                    $('#loading-icon').hide();
-                    $("#tokenmodal").hide();
-                    $("#otpmodal").show();
+//                    $("#tokenmodal").hide();
+//                    $("#otpmodal").show();
+//                    $('#loading-icon').hide();
                     $('#successMess').show();
                     document.getElementById("successMess").textContent = "Successfully sent";
 
                 }else{
-                    $("#tokenmodal").show();
-                    $("#otpmodal").hide();
+                    $("#tokenModalCorp").show();
+                    $("#otpmodalCorp").hide();
                     if(reponse==="empty"){
                         $('#loading-icon').hide();
                         $('#errorMess').show();

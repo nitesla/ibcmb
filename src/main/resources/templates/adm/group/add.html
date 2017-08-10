@@ -7,16 +7,19 @@
 
 
 <body class="nav-md">
+
+<style>
+
+	.error{
+		display: none;
+		color:red;
+	}
+</style>
+
 <div class="container body">
     <div class="main_container">
         <div class="col-md-3 left_col">
             <div class="left_col scroll-view">
-                <div class="navbar nav_title" style="border: 0;">
-                    <!--<a href="index.html"><img th:src="@{~/images/cmb_logo.png}"/></a>-->
-                </div>
-
-                <div class="clearfix"></div>
-                <div class="clearfix"></div>
 
                 <div th:replace="layout :: admin-menu"></div>
                 <div th:replace="layout :: menu-footer-adm"></div>
@@ -56,6 +59,8 @@
                             <div class="x_content">
 									<form method="post" th:action="@{/admin/groups}" id="" th:object="${group}"
 										class="form-horizontal">
+										<div th:replace="layout::form-validation"></div>
+
 
 										<div class="x_content">
 											<fieldset>
@@ -65,8 +70,9 @@
 													</label>
 													<div class="col-md-4 col-sm-6 col-xs-12">
 														<input class="form-control col-md-7 col-xs-12" th:field="*{name}"
-															required="required" /> <input hidden="hidden" name="contacts" />
+															required="required" /> <input hidden="hidden" name="contactList" />
 													</div>
+													<p id="nameError" class="error">Contact group name is required</p>
 												</div>
 
 											</fieldset>
@@ -139,6 +145,9 @@
 <script type="text/javascript"  class="init">
 	/*<![CDATA[*/
 $(document).ready(function() {
+
+    var duplicateEmail = false;
+
     var counter = 0;
     var t = $('#mytab').DataTable({
         dom: 'rt',
@@ -161,7 +170,7 @@ $(document).ready(function() {
         "columnDefs": [{
             "targets": 3,
             "data": "status",
-            "render": function(data, type, full, meta) {
+            "render": function (data, type, full, meta) {
                 if (type === 'display') {
                     if (data == false) {
                         return "<i class='fa fa-user dt-body-center' style='color:#2a3f54;display:block; text-align:center; margin:0 auto;'></i>";
@@ -173,16 +182,28 @@ $(document).ready(function() {
             }
         }]
     });
-    
-    $('#button_submit').click(function(e) {
+
+    $('#button_submit').click(function (e) {
         e.preventDefault()
+        var name = $("#name").val();
+
+        if (name == "") {
+            $("#nameError").show();
+            return;
+        }
+        else {
+            $("#nameError").hide();
+        }
+
+
         contactsTab = $('#mytab').DataTable();
         data = JSON.stringify(contactsTab.data().toArray());
-        $("input[name='contacts']").val(data);
+        $("input[name='contactList']").val(data);
         $('form').submit();
     });
-    
-    $('#button_add').on('click', function(e) {
+
+    $('#button_add').on('click', function (e) {
+
         e.preventDefault()
         var options = {
             url: "/admin/groups/contact/new",
@@ -193,7 +214,7 @@ $(document).ready(function() {
                 text: 'Add',
                 style: 'info',
                 close: true,
-                click: function() {
+                click: function () {
                     contactsTab = $('#mytab').DataTable();
                     fname = $("input[name='firstName']").val();
                     lname = $("input[name='lastName']").val();
@@ -205,8 +226,14 @@ $(document).ready(function() {
                         'email': em,
                         'external': true
                     };
-                    contactsTab.row.add(od);
-                    contactsTab.draw();
+                    validateDuplicateEmail(em);
+                    if(duplicateEmail==false) {
+                        contactsTab.row.add(od);
+                        contactsTab.draw();
+                    }
+
+                    duplicateEmail = false;
+
                 }
             }, {
                 text: 'Close',
@@ -216,6 +243,27 @@ $(document).ready(function() {
         };
         eModal.ajax(options);
     });
+
+    function validateDuplicateEmail(emailAddress) {
+
+    var arr = contactsTab.data().toArray();
+
+    $.each(arr, function (i, obj) {
+
+        $.each(obj, function (key, value) {
+
+            if (key == "email" && value == emailAddress) {
+                duplicateEmail = true;
+            }
+
+        })
+
+        if (duplicateEmail == true) {
+            return false;
+        }
+
+    });
+}
     
     $('#button_del').click(function(e) {
         e.preventDefault()

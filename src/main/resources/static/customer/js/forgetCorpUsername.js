@@ -55,9 +55,10 @@ var fetchQuestion = "";
             type: 'GET',
             async: false,
             success:function(data2){
+                console.log("kjhb "+data2);
                 secQues = ''+String(data2);
                 console.log("sec question ",secQues);
-                if(data2 == null ){
+                if(data2 == null || data2 ==''){
                     document.getElementById("errorMess").textContent="Could not get Security Question from server, please try again.";
                     $('#myModalError').modal('show');
 

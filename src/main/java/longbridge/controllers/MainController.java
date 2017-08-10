@@ -58,8 +58,6 @@ public class MainController {
     private MailService mailService;
     @Autowired
     private FaqsService faqsService;
-    @Autowired
-    private PasswordPolicyService passwordPolicyService;
 
 
 

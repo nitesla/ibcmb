@@ -128,6 +128,7 @@ $(document).ready(function() {
 				var x = $("#ops-search").serializeArray();
 				$.each(	x,function(i,field) {
 					d[field.name] = field.value;
+					console.log(d[field.name]+" = "+field.value);
 				});
 			}
 		},
@@ -144,12 +145,12 @@ $(document).ready(function() {
             "data" : "enabled",
             "render" : function(data, type,full, meta) {
             	if (type === 'display') {
-                    if (data == "ACTIVE") {
+                    if (data == "A") {
                         return "<i class='fa fa-check dt-body-center' style='color:green;display:block; text-align:center; margin:0 auto;'></i>";
-                    } else if (data == "INACTIVE") {
+                    } else if (data == "I") {
                         return "<i class='fa fa-ban  dt-body-center' style='color:red;display:block; text-align:center; margin:0 auto;'></i>";
                     }
-                    else if (data == "LOCKED") {
+                    else if (data == "L") {
                         return "<i class='fa fa-lock  dt-body-center' style='color:red;display:block; text-align:center; margin:0 auto;'></i>";
                     }else {
                         return "<i class='fa fa-question  dt-body-center' style='color:red;display:block; text-align:center; margin:0 auto;'></i>";
