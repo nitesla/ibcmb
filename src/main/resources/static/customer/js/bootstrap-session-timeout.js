@@ -101,19 +101,19 @@
         //Reset timer on any of these events
         if (!opt.ignoreUserActivity) {
             var mousePosition = [-1, -1];
-            $(document).on('keyup mouseup mousemove touchend touchmove', function(e) {
+            $(document).on('keyup mouseup touchend touchmove', function(e) {
                 if (e.type === 'mousemove') {
                     // Solves mousemove even when mouse not moving issue on Chrome:
                     // https://code.google.com/p/chromium/issues/detail?id=241476
 
-                    if (e.clientX === mousePosition[0] && e.clientY === mousePosition[1]) {
-                        return;
-                    }
-                    mousePosition[0] = e.clientX;
-                    mousePosition[1] = e.clientY;
+                    // if (e.clientX === mousePosition[0] && e.clientY === mousePosition[1]) {
+                    //     return;
+                    // }
+                    // mousePosition[0] = e.clientX;
+                    // mousePosition[1] = e.clientY;
                 }
                 startSessionTimer();
-
+                console.log('this is d time'+ timer);
                 // If they moved the mouse not only reset the counter
                 // but remove the modal too!
                 // if ($('#session-timeout-dialog').length > 0 &&
@@ -123,8 +123,14 @@
                 //     $('#session-timeout-dialog').modal('hide');
                 //     $('body').removeClass('modal-open');
                 //     $('div.modal-backdrop').remove();
-                //
                 // }
+            });
+        }
+
+        if (!opt.ignoreUserActivity) {
+            $(document).on('mousemove', function(e) {
+                restartSession();
+                console.log('this is d time'+ timer);
             });
         }
 
@@ -145,6 +151,30 @@
                     keepAlivePinged = false;
                 }, opt.keepAliveInterval);
             }
+        }
+
+        function restartSession(){
+            // Clear session timer
+            clearTimeout(timer);
+            if (typeof opt.onStart === 'function') {
+                opt.onStart(opt);
+            }
+
+            // If keepAlive option is set to "true", ping the "keepAliveUrl" url
+            if (opt.keepAlive) {
+                keepAlive();
+            }
+            // Set session timer
+            timer = setTimeout(function() {
+                // Check for onWarn callback function and if there is none, launch dialog
+                if (typeof opt.onWarn !== 'function') {
+                    $('#session-timeout-dialog').modal('hide');
+                } else {
+                    opt.onWarn(opt);
+                }
+                // Start dialog timer
+                startDialogTimer();
+            }, opt.warnAfter);
         }
 
         function startSessionTimer() {
