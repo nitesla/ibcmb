@@ -21,10 +21,6 @@ form.children("div").steps({
     transitionEffect: "slideLeft",
     onStepChanging: function (event, currentIndex, newIndex)
     {
-
-        
-       
-
         form.validate().settings.ignore = ":disabled,:hidden";
         console.log(currentIndex);
         var isValid = form.valid();
@@ -76,7 +72,7 @@ form.children("div").steps({
         if(PHISHING_IMAGE_STEP === currentIndex){
             console.log("Current Step is the phishing image step");
             //$("#reg-form").submit();
-            return isValid && registerUser();
+            return isValid && checkImage();
         }
 
 
@@ -103,7 +99,7 @@ form.children("div").steps({
     onFinishing: function (event, currentIndex)
     {
         //form.validate().settings.ignore = ":disabled";
-        return form.valid();
+        return form.valid() && registerUser();
     },
     onFinished: function (event, currentIndex)
     {
@@ -348,6 +344,20 @@ function sendRegCode(){
             }
         }
     });
+}
+
+
+function checkImage() {
+    var phishing = "";
+    phishing = $('input[name="phishing"]').val();
+    console.log(phishing);
+    if(phishing === "" || phishing == null){
+        $('#errorMess').text("Please select phishing image.");
+        $('#myModalError').modal('show');
+        return false;
+    }else{
+        return true;
+    }
 }
 
 function registerUser(){

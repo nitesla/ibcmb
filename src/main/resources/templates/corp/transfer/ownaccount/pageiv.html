@@ -12,8 +12,8 @@
         </select>
     </div>
 
-    <div class="col-xs-12 ml-15 no-pad-left no-pad-right " >
-        <div class="col-xs-12 no-pad-lef table-responsive no-mt no-bd alert">
+    <div class="col-xs-12" >
+        <div class="no-pad-lef table-responsive no-mt no-bd alert">
             <div class="col-sm-offset-3 col-sm-6 ">
                     <div class="table-responsive no-bd">
 
@@ -52,10 +52,10 @@
                             <input type="hidden" th:field="*{amount}"/>
                             <input type="hidden" th:field="*{remarks}"/>
                             <div class="form-group">
-                                <label>Token *</label>
+                                <label>Token <span style="color:#9F614B">*</span></label>
                                 <input type="text" name="token" placeholder="" class="form-control"/>
                                 <br/>
-                                <div class="form-group text-center">
+                                <div class="form-group">
 
                                     <a class="btn btn-link required-step" th:href="@{/retail/transfer/ownaccount}" >Receipt</a>
                                     <a class="btn btn-link less-required" th:href="@{/retail/dashboard}" >Home</a>

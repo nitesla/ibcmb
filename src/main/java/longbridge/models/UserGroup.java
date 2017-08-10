@@ -31,7 +31,6 @@ public class UserGroup extends AbstractEntity implements PrettySerializer{
     private Date dateCreated;
 
 
-    @JsonIgnore
     @ManyToMany(cascade = CascadeType.ALL)
     private List<OperationsUser> users;
 
@@ -86,6 +85,7 @@ public class UserGroup extends AbstractEntity implements PrettySerializer{
 
 
     @Override
+    @JsonIgnore
     public JsonSerializer<UserGroup> getSerializer()
     {
         return new JsonSerializer<UserGroup>() {

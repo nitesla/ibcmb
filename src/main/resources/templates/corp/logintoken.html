@@ -115,7 +115,7 @@
                     <div class="margin-bottom">
                         <p style="margin-bottom:20px">Kindly enter the OTP from your token device</p>
                         <div id="username_div" class="form-group">
-                            <input  type="text" id="token" name="token" required class='my-select tokenInput' placeholder="Token Code" autocomplete="off"/>
+                            <input  type="text" id="token" name="token" required class='my-select tokenInput' autofocus="autofocus" placeholder="Token Code" autocomplete="off"/>
                             <p id='loading-icon' style="display:none"><i class='fa fa-spinner fa-spin' style="font-size:10px;color:#003056"></i> Sending OTP. Please Wait...</p>
 
                         </div>
@@ -124,7 +124,7 @@
                     </div>
                     <div >
                         <p>Don't have a token?</p>
-                        <p><a href='javascript:sendOtp()' id="getOtp">Send me an OTP </a><i class='fa fa-angle-down'  style="font-size:18px;"></i></p>
+                        <a href='javascript:sendOtp()' id="getOtp" class="btn btn-link required-step token-btn">Send me an OTP </a>
                     </div>
 
                 </div>
@@ -241,12 +241,10 @@
 //                $('#sub').disabled();
             },
             success: function (reponse) {
-                console.log("the response "+reponse);
                 if (reponse === 'success') {
-                    $('#loading-icon').hide();
+                                        $('#loading-icon').hide();
                     $("#tokenModalCorp").hide();
                     $("#otpmodalCorp").show();
-//                    $('#loading-icon').hide();
                     $('#successMess').show();
                     document.getElementById("successMess").textContent = "Successfully sent";
 

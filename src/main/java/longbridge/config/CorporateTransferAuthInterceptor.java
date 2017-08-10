@@ -4,6 +4,7 @@ import longbridge.dtos.CorpTransferRequestDTO;
 import longbridge.dtos.SettingDTO;
 import longbridge.dtos.TransferRequestDTO;
 import longbridge.services.ConfigurationService;
+import longbridge.utils.TransferType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.ModelAndView;
@@ -32,6 +33,9 @@ public class CorporateTransferAuthInterceptor extends HandlerInterceptorAdapter 
                 (setting != null && setting.isEnabled())
                         &&
                         httpServletRequest.getSession().getAttribute("auth-needed") == null
+                        &&  httpServletRequest.getSession().getAttribute("corpTransferRequest")!=null
+                        && !((CorpTransferRequestDTO) httpServletRequest.getSession().getAttribute("corpTransferRequest")).getTransferType().equals(TransferType.OWN_ACCOUNT_TRANSFER)
+
 
                 ) {
             httpServletRequest.getSession().setAttribute("auth-needed", "auth-needed");

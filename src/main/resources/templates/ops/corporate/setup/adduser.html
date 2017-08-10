@@ -94,6 +94,8 @@
                                                         </thead>
 
                                                     </table>
+                                                    <p id="noUserError"   class="error">Corporate user is required</p>
+
                                                 </div>
                                             </div>
 
@@ -347,7 +349,12 @@
             var count = contactsTab.data().length;
 
             if (count < 1) {
+                $("#noUserError").show();
                 return;
+            }
+            else {
+                $("#noUserError").hide();
+
             }
             data = JSON.stringify(contactsTab.data().toArray());
             $("input[name='users']").val(data);
@@ -518,6 +525,7 @@
             $("select#userType").val("");
             $("select#authorizerLevel").val("");
             $("select#roleId").val("");
+            $("#noUserError").hide();
 
             $('#myModal').modal('toggle');
 
@@ -679,6 +687,8 @@
             }
             else {
                 $("#authorizer").hide();
+                $("select#authorizerLevel").val("");
+
             }
 
         })

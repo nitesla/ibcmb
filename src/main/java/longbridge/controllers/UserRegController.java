@@ -9,6 +9,7 @@ import longbridge.dtos.RetailUserDTO;
 import longbridge.exception.InternetBankingException;
 import longbridge.exception.InternetBankingSecurityException;
 import longbridge.forms.RegistrationForm;
+import longbridge.models.Account;
 import longbridge.models.RetailUser;
 import longbridge.models.UserType;
 import longbridge.services.*;
@@ -129,22 +130,22 @@ public class UserRegController {
         return customerId;
     }
 
-//    @GetMapping("/rest/retail/accountname/{accountNumber}")
-//    public @ResponseBody String getAccountNameFromNumber(@PathVariable String accountNumber){
-//        String customerId = "";
-//        String userEmail = "";
+    @GetMapping("/rest/retail/accountname/{accountNumber}")
+    public @ResponseBody String getAccountNameFromNumber(@PathVariable String accountNumber){
+        String customerId = "";
+        String userEmail = "";
 //    	logger.info("Account nUmber : " + accountNumber);
-//        Account account = accountService.getAccountByAccountNumber(accountNumber);
-//        if (account != null){
-//            customerId = account.getCustomerId();
+        Account account = accountService.getAccountByAccountNumber(accountNumber);
+        if (account != null){
+            customerId = account.getCustomerId();
 //            logger.info("Account number : " + customerId);
-//        }else {
-//            //nothing
-//            customerId = "";
-//        }
-//        logger.info("cif i {}",customerId);
-//        return customerId;
-//    }
+        }else {
+            //nothing
+            customerId = "";
+        }
+        logger.info("cif is {}",customerId);
+        return customerId;
+    }
 
     @GetMapping("/rest/secQues/{cifId}")
     public @ResponseBody List<String> getSecQuestionFromNumber(@PathVariable String cifId, HttpSession session){
@@ -152,15 +153,17 @@ public class UserRegController {
         logger.info("cifId : " + cifId);
 
         RetailUser user = retailUserService.getUserByCustomerId(cifId);
-        logger.info("USER NAME {}", user);
+//        logger.info("USER NAME {}", user);
         List<String> question = null;
         if (user != null){
             logger.info("USER NAME {}", user.getUserName());
+            session.removeAttribute("username");
             session.setAttribute("username", user.getUserName());
             Map<String, List<String>> qa = securityService.getUserQA(user.getEntrustId(), user.getEntrustGroup());
             //List<String> sec = null;
 
             if (qa != null && !qa.isEmpty()){
+                session.setAttribute("retSecQestnAndAnsFU",qa);
 //                logger.info("qs {}",qa);
                 question = qa.get("questions");
                 secQuestion = question.stream().filter(Objects::nonNull).findFirst().orElse("");
@@ -536,7 +539,7 @@ public class UserRegController {
 
         List<CodeDTO> secQues = codeService.getCodesByType("SECURITY_QUESTION");
         int noOfQuestions = securityService.getMinUserQA();
-        logger.info("num of qs on entrust {}",noOfQuestions);
+//        logger.info("num of qs on entrust {}",noOfQuestions);
         ArrayList[] masterList = new ArrayList[noOfQuestions];
         int questionsPerSection = (secQues.size()-(secQues.size()%noOfQuestions))/noOfQuestions;
         logger.info("question per section {}",questionsPerSection);
@@ -552,9 +555,9 @@ public class UserRegController {
         logger.info("master question length"+masterList.length);
 
         for (int i=0;i<masterList.length;i++  ) {
-            logger.info("master question "+i+" "+masterList[i]);
+//            logger.info("master question "+i+" "+masterList[i]);
         }
-        logger.trace("master question "+ Arrays.toString(masterList));
+//        logger.trace("master question "+ Arrays.toString(masterList));
 
 
         logger.info("MASTER LIST {}", masterList);

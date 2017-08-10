@@ -74,17 +74,17 @@
     <div class="containe">
         <div class="bg">
             <form  th:action="@{/login/u/corporate}" method="POST" class="form-signin" autocomplete="off">
-                <h5 class="form-signin-heading">Enter Login Details</h5>
+                <h5 class="form-signin-heading text-white">Enter Login Details</h5>
                 <br/>
-                <div th:if="${param.message != null}" class="alert alert-info" th:text="${param.message[0]}">message</div>
+                <div th:if="${param.message != null}" class="alert alert-info erro" th:text="${param.message[0]}"></div>
 
-                <div th:if="${param.error != null}" class="alert alert-danger" th:text="${session[SPRING_SECURITY_LAST_EXCEPTION]}">error</div>
+                <div th:if="${param.error != null}" class="alert alert-danger erro" th:text="${session[SPRING_SECURITY_LAST_EXCEPTION]}"></div>
                 <div class="form-group">
                     <input type="text" name="username" class="my-select"  placeholder="Username" autocomplete="off" />
                     <p><a class="text-white" href="/forgot/corporate/username">Forgot Username?</a></p>
                 </div>
                 <div class="form-group">
-                    <input type="text" name="corporateId" class="my-select"  placeholder="Corporate Key" autocomplete="off"/>
+                    <input type="text" name="corporateId" class="my-select"  placeholder="Corporate ID" autocomplete="off"/>
                 </div>
                 <div class="form-group">
                     <button class="btn btn-primary my-select">Submit</button>
@@ -93,6 +93,60 @@
         </div>
     </div>
 </section>
+
+
+<div id="myModalError" class="modal fade " role="dialog">
+        <div class="modal-dialog" >
+
+            <!-- Modal content-->
+
+            <div class="modal-content no-bd-rad content ">
+
+                <div class="modal-body">
+
+
+                    <p id='errorMess' class='mess text-danger'>Put something here iff need be.</p>
+
+
+
+                </div>
+
+
+                <div class="modal-footer no-bd-top" >
+                    <button type="button" class="btn btn-link" data-dismiss="modal">OK</button>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+
+    <div id="myModalSuccess" class="modal fade " role="dialog">
+        <div class="modal-dialog" >
+
+            <!-- Modal content-->
+
+            <div class="modal-content no-bd-rad content ">
+
+                <div class="modal-body">
+
+
+                    <p id='successMess' class='mess text-primary'>Put something here iff need be.</p>
+
+
+
+                </div>
+
+
+                <div class="modal-footer no-bd-top" >
+                    <button type="button" class="btn btn-link" data-dismiss="modal">OK</button>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
 
 <footer>
     <div class="">
@@ -182,6 +236,7 @@
 <!-- BOOTSTRAP SCRIPTS  -->
 <script th:src="@{/customer/js/bootstrap.js}"></script>
 <script th:src="@{~/customer/js/coronation.js}"></script>
+<script th:src="@{~/customer/js/errors.js}"></script>
 <script th:src="@{~/customer/plugins/bootstrap-notify/bootstrap-notify.js}"></script>
 
 <!--<script>-->
@@ -200,6 +255,8 @@
 <!--</script>-->
 <script>
     $(document).ready(function(){
+
+        errorLogin();
         $('[data-toggle="tooltip"]').tooltip();
     });
 </script>

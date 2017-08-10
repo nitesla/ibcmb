@@ -5,15 +5,15 @@
 <body onload="javascript:var bread = [['Home', '/retail/dashboard'],['Accounts','/retail/account/customize'],['Customize', '#']];currentBar('Customize');breadCrumb(bread);">
 
 <div layout:fragment="content">
-    <div class="col-md-5 col-sm-5 ">
+    <div class="col-md-5 col-sm-5 no-pad-left">
 
         <select class="form-control full-width coronation-form-control hide-content-only" id="view">
             <option value="account">Overview</option>
         </select>
     </div>
 
-    <div class="col-xs-12 ml-15 " >
-        <div class="col-xs-11 no-pad-lef  alert no-bd">
+    <div class="col-xs-12" >
+        <div class=" no-pad-left  alert no-bd">
             <div class="col-md-6 col-xs-12 no-pad-left">
                             <form method="post" th:action="@{/retail/account/customize}" th:object="${customizeAccount}">
                                 <div class="form-group">

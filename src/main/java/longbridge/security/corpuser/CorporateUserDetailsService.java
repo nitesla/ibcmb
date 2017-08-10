@@ -75,7 +75,7 @@ public class CorporateUserDetailsService implements UserDetailsService {
 
             if (failedLoginService.isBlocked(user)) throw new RuntimeException("user_blocked");
             try {
-                Corporate corporate = corporateRepo.findFirstByCorporateId(corpId);
+                Corporate corporate = corporateRepo.findFirstByCorporateIdIgnoreCase(corpId);
                 if (corporate != null && user != null) {
                     if(!"A".equalsIgnoreCase(corporate.getStatus())){
                         throw  new DisabledException("User is disabled");

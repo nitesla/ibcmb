@@ -29,7 +29,7 @@
         background-color: #d7bdb3;
     }
 </style>
-<body onload="currentBar('Bulk transfer')">
+<body onload="javascript:var bread = [['Home', '/corporate/dashboard'],['Bulk transfer','/corporate/transfer/bulk'],['approve','']];currentBar('approve multiple');breadCrumb(bread)">
 
 <div layout:fragment="content">
     <div class="col-md-5 col-sm-5 ">
@@ -39,8 +39,8 @@
         </select>
     </div>
 
-    <div class="col-xs-12 ml-15 no-pad-left " >
-        <div class="col-xs-12 no-pad-lef  no-mt no-bd  alert">
+    <div class="col-xs-12 " >
+        <div class="no-pad-lef  no-mt no-bd  alert">
                 <div class="row spacing">
 
                     <div class="col-xs-12 col-sm-6">

@@ -145,7 +145,7 @@
                   <div class="margin-bottom">
                       <p style="margin-bottom:20px">Kindly enter the OTP from your email/sms</p>
                       <div id="username_div1" class="form-group">
-                          <input  type="text" id="otp" name="otp" class='my-select tokenInput' required placeholder="Otp " autocomplete="off"/>
+                          <input  type="text" id="otp" name="otp" class='my-select tokenInput' required placeholder="Otp" autofocus="autofocus" autocomplete="off"/>
                       </div>
                       <div id='successMess' class=" text-success "></div>
                   </div>
@@ -251,8 +251,8 @@
                     document.getElementById("successMess").textContent = "Successfully sent";
 
                 }else{
-                    $("#tokenModalCorp").show();
-                    $("#otpmodalCorp").hide();
+                    $("#tokenmodal").show();
+                    $("#otpmodal").hide();
                     if(reponse==="empty"){
                         $('#loading-icon').hide();
                         $('#errorMess').show();
@@ -264,7 +264,6 @@
                     }
                 }
             }
-
         });
 //        $.ajax({options});
     }

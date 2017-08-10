@@ -28,7 +28,7 @@
             <div class="">
                 <div class="page-title">
                     <div class="title_left">
-                        <h3>Audits Revision</h3>
+                        <h3>Audit Revision</h3>
                     </div>
 
                 </div>
@@ -125,7 +125,7 @@
         var table = $('#auditview').DataTable({
             select:true,
             responsive: true,
-            "lengthMenu" : [ [ 5, 10, 20],	[ 5, 10, 20 ] ],
+            "lengthMenu" : [ [ 10, 20, 30, 40, -1],	[ 10, 20, 30, 40, "All" ] ],
             "pagingType" : "simple_numbers",
             "searching": false,
             rowId: 'revision.id',

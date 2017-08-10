@@ -202,19 +202,18 @@ package longbridge.controllers.retail;
 
 import longbridge.api.AccountDetails;
 import longbridge.dtos.AccountDTO;
+import longbridge.dtos.SettingDTO;
 import longbridge.exception.InternetBankingException;
 import longbridge.forms.CustomizeAccount;
 import longbridge.models.Account;
 import longbridge.models.RetailUser;
 import longbridge.repositories.AccountRepo;
-import longbridge.services.AccountService;
-import longbridge.services.IntegrationService;
-import longbridge.services.RetailUserService;
-import longbridge.services.TransferService;
+import longbridge.services.*;
 import longbridge.utils.DateFormatter;
 import longbridge.utils.statement.AccountStatement;
 import longbridge.utils.statement.TransactionDetails;
 import longbridge.utils.statement.TransactionHistory;
+import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -259,6 +258,9 @@ public class AccountController {
 
 	@Autowired
 	private IntegrationService integrationService;
+
+    @Autowired
+    private ConfigurationService configurationService;
 
 	@Autowired
 	private MessageSource messageSource;
@@ -417,7 +419,7 @@ public class AccountController {
 	}
 
 	@GetMapping("/{id}/statement")
-	public String getTransactionHistory(@PathVariable Long id, Model model, Principal principal,HttpServletRequest request) {
+	public String getAccountHistory(@PathVariable Long id, Model model, Principal principal,HttpServletRequest request) {
 		RetailUser retailUser = retailUserService.getUserByName(principal.getName());
 
 		Account account = accountRepo.findOne(id);
@@ -427,6 +429,7 @@ public class AccountController {
 		List<TransactionHistory> transRequestList = integrationService.getLastNTransactions(account.getAccountNumber(),
 				LAST_TEN_TRANSACTION);
 		if (transRequestList != null && !transRequestList.isEmpty()) {
+			model.addAttribute("acct", id);
 			model.addAttribute("transRequestList", transRequestList);
 			model.addAttribute("accountList", accountList);
 			logger.info("Last 10 Transaction {}", transRequestList);
@@ -480,47 +483,56 @@ public class AccountController {
 		return "cust/account/view";
 	}
 
-	@GetMapping("/viewonlyhistory")
-	public String getViewOnlyHist(Model model, Principal principal) throws ParseException {
+	@GetMapping("/{acct}/viewonlyhistory")
+	public String getViewOnlyHist(@PathVariable String acct, Model model, Principal principal) throws ParseException {
+		model.addAttribute("accountNumber", acct);
+		SettingDTO setting = configurationService.getSettingByName("TRANS_HISTORY_RANGE");
+		Date date = new Date();
+		Date daysAgo = new DateTime(date).minusDays(Integer.parseInt(setting.getValue())).toDate();
+		logger.info("the from date {} and the to date {}",date,daysAgo);
+		AccountDTO account = accountService.getAccount(Long.parseLong(acct));
+		AccountStatement accountStatement = integrationService.getAccountStatements(account.getAccountNumber(), date, daysAgo, "B");
+		List<TransactionDetails> list = accountStatement.getTransactionDetails();
+
+		model.addAttribute("history", list);
 		return "cust/account/tranhistory";
 	}
 
-	@GetMapping("/viewstatement/display/data")
-
-	public @ResponseBody
-	DataTablesOutput<TransactionDetails> getStatementData(DataTablesInput input, String acctNumber,
-														  String fromDate, String toDate, String tranType) {
-		// Pageable pageable = DataTablesUtils.getPageable(input);
-		logger.info("fromDate {}",fromDate);
-		logger.info("toDate {}",toDate);
-//		Duration diffInDays= new Duration(new DateTime(fromDate),new DateTime(toDate));
-//		logger.info("Day difference {}",diffInDays.getStandardDays());
-
-		Date from;
-		Date to;
-		DataTablesOutput<TransactionDetails> out = new DataTablesOutput<TransactionDetails>();
-		try {
-			from = dateFormat.parse(fromDate);
-			to = dateFormat.parse(toDate);
-			logger.info("fromDate {}",from);
-			logger.info("toDate {}",to);
-			//int diffInDays = (int) ((to.getTime() - from.getTime()) / (1000 * 60 * 60 * 24));
-
-			AccountStatement accountStatement = integrationService.getAccountStatements(acctNumber, from, to, tranType);
-			logger.info("TransactionType {}", tranType);
-			out.setDraw(input.getDraw());
-			List<TransactionDetails> list = accountStatement.getTransactionDetails();
-
-			out.setData(list);
-			int sz = list==null?0:list.size();
-			out.setRecordsFiltered(sz);
-			out.setRecordsTotal(sz);
-		} catch (ParseException e) {
-			logger.warn("didn't parse date", e);
-		}
-		return out;
-
-	}
+//	@GetMapping("/viewstatement/display/data")
+//	public @ResponseBody
+//	DataTablesOutput<TransactionDetails> getStatementData(DataTablesInput input, String acctNumber,
+//														  String fromDate, String toDate, String tranType) {
+//		// Pageable pageable = DataTablesUtils.getPageable(input);
+//		logger.info("fromDate {}",fromDate);
+//		logger.info("toDate {}",toDate);
+////		Duration diffInDays= new Duration(new DateTime(fromDate),new DateTime(toDate));
+////		logger.info("Day difference {}",diffInDays.getStandardDays());
+//
+//		Date from;
+//		Date to;
+//		DataTablesOutput<TransactionDetails> out = new DataTablesOutput<TransactionDetails>();
+//		try {
+//			from = dateFormat.parse(fromDate);
+//			to = dateFormat.parse(toDate);
+//			logger.info("fromDate {}",from);
+//			logger.info("toDate {}",to);
+//			//int diffInDays = (int) ((to.getTime() - from.getTime()) / (1000 * 60 * 60 * 24));
+//
+//			AccountStatement accountStatement = integrationService.getAccountStatements(acctNumber, from, to, tranType);
+//			logger.info("TransactionType {}", tranType);
+//			out.setDraw(input.getDraw());
+//			List<TransactionDetails> list = accountStatement.getTransactionDetails();
+//
+//			out.setData(list);
+//			int sz = list==null?0:list.size();
+//			out.setRecordsFiltered(sz);
+//			out.setRecordsTotal(sz);
+//		} catch (ParseException e) {
+//			logger.warn("didn't parse date", e);
+//		}
+//		return out;
+//
+//	}
 
 	@GetMapping("/downloadstatement")
 	public ModelAndView downloadStatementData(ModelMap modelMap, DataTablesInput input, String acctNumber,

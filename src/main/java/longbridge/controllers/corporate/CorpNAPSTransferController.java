@@ -311,7 +311,7 @@ public class CorpNAPSTransferController {
                 Row currentRow = iterator.next();
                 //Iterator<Cell> cellIterator = currentRow.iterator();
                 ArrayList cellData = new ArrayList();
-                for (int i = 0; i < currentRow.getLastCellNum(); i++){
+                for (int i = 0; i < 5; i++){
                     Cell currentCell = currentRow.getCell(i);
                     System.out.println(currentCell);
                     if (currentCell == null || currentCell.getCellType() == Cell.CELL_TYPE_BLANK || currentCell.toString().isEmpty() || currentCell.toString() == null) {
@@ -348,14 +348,16 @@ public class CorpNAPSTransferController {
 
 
                 if(!(NumberUtils.isDigits(cellData.get(4).toString())) && !(cellData.get(4).toString().equalsIgnoreCase("ERROR HERE")) ){
-                    creditRequest.setAccountNumber("ERROR HERE");
+                    creditRequest.setSortCode("ERROR HERE");
+                }
+                else if (cellData.get(4).toString().equalsIgnoreCase("ERROR HERE")){
+                    creditRequest.setSortCode("ERROR HERE");
                 }
                 else {
                     String bankCode = cellData.get(4).toString();
                     String sortCode = financialInstitutionService.getFinancialInstitutionByCode(bankCode).getSortCode();
                     creditRequest.setSortCode(sortCode);
                 }
-
                 crLists.add(creditRequest);
 
             }

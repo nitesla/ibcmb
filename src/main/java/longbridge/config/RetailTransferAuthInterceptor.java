@@ -5,6 +5,7 @@ import longbridge.dtos.TransferRequestDTO;
 import longbridge.forms.ChangeDefaultPassword;
 import longbridge.services.ConfigurationService;
 import longbridge.services.PasswordPolicyService;
+import longbridge.utils.TransferType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.ModelAndView;
@@ -33,6 +34,8 @@ public class RetailTransferAuthInterceptor extends HandlerInterceptorAdapter {
                 (setting != null && setting.isEnabled())
                         &&
                         httpServletRequest.getSession().getAttribute("auth-needed") == null
+                &&  httpServletRequest.getSession().getAttribute("transferRequest")!=null
+                && !((TransferRequestDTO) httpServletRequest.getSession().getAttribute("transferRequest")).getTransferType().equals(TransferType.OWN_ACCOUNT_TRANSFER)
                 ) {
 
             if (httpServletRequest.getParameter("add") != null)

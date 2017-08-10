@@ -144,7 +144,7 @@ public class RoleServiceImpl implements RoleService {
     @Verifiable(operation = "DELETE_ROLE", description = "Deleting a Role")
     public String deleteRole(Long id) throws InternetBankingException {
 
-        Role role = roleRepo.getOne(id);
+        Role role = roleRepo.findOne(id);
         Integer users = countUsers(role);
         if (users > 0) {
             throw new InternetBankingException(messageSource.getMessage("role.delete.users.exist", null, locale));

@@ -1,7 +1,4 @@
 var customerId = "null";
-var entityDetails = [4];
-entityDetails[0] = "";
-entityDetails[1] = "";
 var email = "";
 var noOfQs = 0;
 var secAnswer ="";
@@ -9,33 +6,26 @@ var secAnswer ="";
  *
  * @param accountNumber the account number to check
  */
-function validateAccountNo(accountNumber, email){
- $('#myLoader').modal('show');
+function validateAccountNo(accountNumber){
+console.log("the num "+accountNumber);
+    // var customerId;
     var secQues;
-    var emaill = email;
-    console.log("the email "+emaill)
     $.ajax({
         type:'GET',
-        url:"/rest/retail/"+emaill+"/"+accountNumber,
+        url:"/rest/retail/accountname/"+accountNumber,
         async:false,
-        cache:false,
         success:function(data1){
-            entityDetails[0] = data1[0];
-            entityDetails[1] = data1[1];
-            customerId = entityDetails[0];
-            console.log("the userrrrrrr" + customerId)
-            email = entityDetails[1];
-            console.log("the email" + email)
-            if(customerId == "" && email == ""){
+            customerId = ''+String(data1);
+            console.log("customerId "+data1);
+            if(customerId == ""){
                 //invalid account number
-                document.getElementById("errorMess").textContent="Ensure you put in a valid account number. and email";
+                document.getElementById("errorMess").textContent="Ensure you put in a valid account number.";
                 $('#myModalError').modal('show');
-                $('#myLoader').modal('hide');
                 //alert("Account number not found");
             }else{
                 //valid account number
                 //alert("Customer Id: " + customerId);
-                //$('input[name=customerId]').val(customerId);
+                $('input[name=customerId]').val(customerId);
             }
         }
     });
@@ -60,7 +50,7 @@ function validateAccountNo(accountNumber, email){
                      $('#myLoader').modal('hide');
 
                 }else{
-                    console.log('security questn 1 ' +$('#noOfSecQn').val());
+                    // console.log('security questn 1 ' +$('#noOfSecQn').val());
 
                     var container = document.getElementById("secQuestionsDiv");
                     container.innerHTML = "";
@@ -94,7 +84,8 @@ function validateAccountNo(accountNumber, email){
 function validateSecAnswer(secAnswer){
     // var customerId = $('#customerId').val();
  $('#myLoader').modal('show');
-    console.log('customer id '+customerId);
+    // console.log('customer id '+customerId);
+    // console.log('customer secAnswer '+secAnswer);
     var result = '';
     $.ajax({
         type:'GET',
@@ -136,7 +127,7 @@ function sendUsername(){
     var returnValue;
     $('#reg-form').submit(function(e){
         e.preventDefault();
-console.log("send  usernammec "+customerId);
+// console.log("send  usernammec "+customerId);
         $.ajax({
             url: '',
             async:false,
@@ -223,9 +214,9 @@ form.children("div").steps({
         if(ACCOUNT_DETAILS_STEP === currentIndex){
             console.log("Current step is the account details step");
             var accountNumber = $('input[name="acct"]').val();
-            email = $('input[name="email"]').val();
-            console.log("email "+email);
-            return isValid && validateAccountNo(accountNumber,email);
+            // email = $('input[name="email"]').val();
+            // console.log("email "+email);
+            return isValid && validateAccountNo(accountNumber);
             // console.log("Current step is the account details step");
             // var accountNumber = $('input[name="acct"]').val();
             // return isValid && validateAccountNo(accountNumber);
@@ -263,3 +254,36 @@ form.children("div").steps({
 });
 
 
+//var entityDetails = [4];
+// entityDetails[0] = "";
+// entityDetails[1] = "";
+//function validateAccountNo(accountNumber, email){
+//  $('#myLoader').modal('show');
+//     var secQues;
+//     var emaill = email;
+//     console.log("the email "+emaill)
+//     $.ajax({
+//         type:'GET',
+//         url:"/rest/retail/"+emaill+"/"+accountNumber,
+//         async:false,
+//         cache:false,
+//         success:function(data1){
+//             entityDetails[0] = data1[0];
+//             entityDetails[1] = data1[1];
+//             customerId = entityDetails[0];
+//             console.log("the userrrrrrr" + customerId)
+//             email = entityDetails[1];
+//             console.log("the email" + email)
+//             if(customerId == "" && email == ""){
+//                 //invalid account number
+//                 document.getElementById("errorMess").textContent="Ensure you put in a valid account number. and email";
+//                 $('#myModalError').modal('show');
+//                 $('#myLoader').modal('hide');
+//                 //alert("Account number not found");
+//             }else{
+//                 //valid account number
+//                 //alert("Customer Id: " + customerId);
+//                 //$('input[name=customerId]').val(customerId);
+//             }
+//         }
+//     });
