@@ -217,12 +217,17 @@ public class RetrieveCredentialController {
         try{
             //confirm security question is correct
             int noOfMismatch = 0;
+            Map<String, List<String>> qa = null;
             String customerId = webRequest.getParameter("customerId");
             logger.info("answer 1 {}",webRequest.getParameter("secAnswers"));
             logger.info("cid id {}",webRequest.getParameter("customerId"));
             List<String> answers = StringUtil.splitByComma(webRequest.getParameter("secAnswers"));
-            RetailUser retailUser = retailUserService.getUserByCustomerId(customerId);
-            Map<String, List<String>> qa = securityService.getUserQA(retailUser.getEntrustId(), retailUser.getEntrustGroup());
+            if(session.getAttribute("retSecQestnAndAnsFU") == null) {
+                RetailUser retailUser = retailUserService.getUserByCustomerId(customerId);
+                qa = securityService.getUserQA(retailUser.getEntrustId(), retailUser.getEntrustGroup());
+            }else{
+                qa = (Map<String, List<String>>) session.getAttribute("retSecQestnAndAnsFU");
+            }
             //List<String> sec = null;
 //            logger.info("sec questions {}",qa);
             if (qa != null){
@@ -308,17 +313,17 @@ public class RetrieveCredentialController {
     @PostMapping("/forgot/username")
     public
     @ResponseBody
-    String forgotUsername(WebRequest webRequest) {
+    String forgotUsername(WebRequest webRequest, HttpSession session) {
         Iterator<String> iterator = webRequest.getParameterNames();
         logger.info("forget username");
         while(iterator.hasNext()){
             logger.info(iterator.next());
         }
-
+        Map<String, List<String>> qa =  null;
         String customerId = webRequest.getParameter("customerId");
-        String userEmail = webRequest.getParameter("email");
+//        String userEmail = webRequest.getParameter("email");
         try {
-            if (customerId == null && userEmail == null) {
+            if (customerId == null) {
                 logger.error("Account Number not valid");
                 return "false";
             }
@@ -327,8 +332,11 @@ public class RetrieveCredentialController {
 
             //confirm security question is correct
             String secAnswer="";
-            Map<String, List<String>> qa = securityService.getUserQA(user.getEntrustId(), user.getEntrustGroup());
-            //List<String> sec = null;
+            if(session.getAttribute("retSecQestnAndAnsFU") == null) {
+                qa = securityService.getUserQA(user.getEntrustId(), user.getEntrustGroup());
+            }else{
+                qa = (Map<String, List<String>>) session.getAttribute("retSecQestnAndAnsFU");
+            }            //List<String> sec = null;Map<String, List<String>>
             if (qa != null){
 //                List<String> questions= qa.get("questions");
                 List<String> answers= qa.get("answers");
