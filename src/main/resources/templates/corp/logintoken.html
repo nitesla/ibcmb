@@ -242,9 +242,9 @@
             },
             success: function (reponse) {
                 if (reponse === 'success') {
-                                        $('#loading-icon').hide();
-                    $("#tokenModalCorp").hide();
-                    $("#otpmodalCorp").show();
+                    $("#tokenmodal").hide();
+                    $("#otpmodal").show();
+//                    $('#loading-icon').hide();
                     $('#successMess').show();
                     document.getElementById("successMess").textContent = "Successfully sent";
 
