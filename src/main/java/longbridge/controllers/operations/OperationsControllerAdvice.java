@@ -61,7 +61,7 @@ public class OperationsControllerAdvice {
             model.addAttribute("verificationNumber", verificationNumber);
         }
 
-        model.addAttribute("pendingApprovals", totalPending);
+        model.addAttribute("pendingApprovals", verificationNumber);
         model.addAttribute("pendingRequests", numOfSubmittedRequests);
 
         return "";

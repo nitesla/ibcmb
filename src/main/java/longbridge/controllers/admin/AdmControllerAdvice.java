@@ -40,7 +40,7 @@ public class AdmControllerAdvice {
             model.addAttribute("verificationNumber", verificationNumber);
         }
 
-        model.addAttribute("pendingApprovals", totalPending);
+        model.addAttribute("pendingApprovals", verificationNumber);
 
         return "";
     }

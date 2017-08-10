@@ -86,6 +86,11 @@ public class OperationsUserServiceImpl implements OperationsUserService {
     }
 
     @Override
+    public Long countOps() {
+        return operationsUserRepo.count();
+    }
+
+    @Override
     public OperationsUserDTO getUser(Long id) {
         OperationsUser user = operationsUserRepo.findOne(id);
         return convertEntityToDTO(user);

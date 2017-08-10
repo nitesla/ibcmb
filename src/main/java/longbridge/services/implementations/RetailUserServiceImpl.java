@@ -91,6 +91,10 @@ public class RetailUserServiceImpl implements RetailUserService {
     }
 
     @Override
+    public Long countUser(){
+        return retailUserRepo.count();
+    }
+    @Override
     public String unlockUser(Long id) throws InternetBankingException {
 
         RetailUser user = retailUserRepo.findOne(id);

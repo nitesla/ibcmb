@@ -17,6 +17,8 @@ import java.util.Set;
  */
 public interface CorporateService{
 
+    Long countCorporate();
+
     /**
      * Adds a new corporate customer to the system
      *

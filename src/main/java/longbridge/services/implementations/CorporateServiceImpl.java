@@ -86,6 +86,11 @@ public class CorporateServiceImpl implements CorporateService {
         this.corpTransferRuleRepo = corpTransferRuleRepo;
     }
 
+    @Override
+    public Long countCorporate(){
+        return corporateRepo.count();
+    }
+
     public String addCorporate(CorporateDTO corporateDTO) throws InternetBankingException {
 
         Corporate corporate = corporateRepo.findByCustomerId(corporateDTO.getCustomerId());

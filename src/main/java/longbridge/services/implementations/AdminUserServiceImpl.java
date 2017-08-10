@@ -87,6 +87,11 @@ public class AdminUserServiceImpl implements AdminUserService {
     }
 
     @Override
+    public Long countAdm() {
+        return adminUserRepo.count();
+    }
+
+    @Override
     public AdminUser getUser(Long id) {
         return this.adminUserRepo.findOne(id);
     }
