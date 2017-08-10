@@ -8,7 +8,7 @@
     <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css"/>
     <link rel="stylesheet" type="text/css" href="css/dataTables.bootstrap.css"/>
 </head>-->
-<body onload="currentBar('Bulk Transfer')">
+<body onload="javascript:var bread = [['Home', '/corporate/dashboard'],['Bulk transfer','']];currentBar('bulk transfer');breadCrumb(bread)">
 
 <div layout:fragment="content">
     <div class="col-md-5 col-sm-5 ">
@@ -18,39 +18,39 @@
         </select>
     </div>
 
-    <div class="col-xs-12 ml-15 " >
-        <div class="col-xs-12 no-pad-lef  no-mt no-bd  alert">
-            <div class="">
+    <div class="col-xs-12 " >
+        <div class="no-pad-lef  no-mt no-bd  alert">
+            <div class="col-xs-12">
                             <h4 class="sub_header"></h4>
                             <div class="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
                                 <div class="btn-group" role="group" aria-label="First group">
                                     <a type="button" th:href="@{/corporate/transfer/upload}" class="btn btn-default bt-link-act"><i class="fa fa-plus"></i>New</a>
-                                    <a  type="button" class="btn bt-select btn-default bt-link-act" th:href="@{/corporate/transfer/index/view}" disabled="disabled" ><i class="fa fa-eye"></i> View Details</a>
+                                    <a  type="button" class="btn bt-select btn-default bt-link-act" th:href="@{/corporate/transfer/index/view}" disabled="disabled" > View Details</a>
                                 </div>
                             </div>
                             <br/>
                             <div class="table-responsive">
-                            <table class="table table-striped table-bordered bg-white table-hover" id="bulk">
-                                <thead>
-                                <tr>
-                                    <th>Debit Account</th>
-                                    <th>Request Date</th>
-                                    <th>Status</th>
-                                </tr>
-                                </thead>
-                                <tbody>
+                                <table class="table table-striped table-hover" id="bulk">
+                                    <thead>
+                                    <tr>
+                                        <th class="text-left">Debit Account</th>
+                                        <th class="text-left">Request Date</th>
+                                        <th class="text-left">Status</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody class="text-left">
 
 
-                                </tbody>
-                                <!--<tfoot>-->
-                                <!--<tr>-->
-                                    <!--<th>Batch ID</th>-->
-                                    <!--<th>Debit Account</th>-->
-                                    <!--<th>Request Date</th>-->
-                                    <!--<th>Status</th>-->
-                                <!--</tr>-->
-                                <!--</tfoot>-->
-                            </table>
+                                    </tbody>
+                                    <!--<tfoot>-->
+                                    <!--<tr>-->
+                                        <!--<th>Batch ID</th>-->
+                                        <!--<th>Debit Account</th>-->
+                                        <!--<th>Request Date</th>-->
+                                        <!--<th>Status</th>-->
+                                    <!--</tr>-->
+                                    <!--</tfoot>-->
+                                </table>
                             </div>
                 </div>
         </div>

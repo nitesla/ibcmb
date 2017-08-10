@@ -73,13 +73,13 @@
     <div class="containe">
         <div class="bg">
 
-                <form th:action="@{/login/p/corporate}" id="login-form" class="" method="POST"  autocomplete="off">
-
+                <form th:action="@{/login/p/corporate}" id="loginform" class="" method="POST"  autocomplete="off">
+                   
                     <div class='col form-signi visible-xs visible-sm' style="padding:10px 15px 1px">
-                        <h5 class="form-signin-heading text-white" style='margin-top:20px'>Check the box to Confirm Security Image</h5>
+                        <h5 class="form-signin-heading text-white" style='margin:20px'>Check the box to Confirm Security Image</h5>
 
                         <div >
-                            <div  class="bg-danger"  style="max-height:auto;width:200px;margin:0px auto">
+                            <div  class="bg-danger"  style="max-height:auto;width:150px;margin:0px auto;padding:5px">
                                 <img th:if="${secImage}" class='bg-danger img-responsive center'  style="height:100px;display: block;margin: 0px auto; margin-bottom: 5px;" th:src="@{'data:image/jpeg;base64,' + ${secImage}}" />
                                 <img th:unless="${secImage}" class='bg-danger img-responsive center' style="height:100px;display: block;margin: 0px auto; margin-bottom: 5px;" th:src="@{/customer/img/cmb_logo.png}" />
                                 <p class="text-center" th:text="${secCaption}"></p>
@@ -119,7 +119,7 @@
                     </div>
 
                     <div class='col-md-4 form-signi hidden-xs hidden-sm' style="padding:100px 15px 30px">
-                        <div class="bg-danger"  style="padding: 10px;width:200px">
+                        <div class="bg-danger"  style="padding: 10px;width:150px">
                             <div style="max-height:auto">
                                 <img th:if="${secImage}" class='bg-danger img-responsive center'  style="height:100px;display: block;margin: 0px auto; margin-bottom: 5px;" th:src="@{'data:image/jpeg;base64,' + ${secImage}}" />
                                 <img th:unless="${secImage}" class='bg-danger img-responsive center' style="height:100px;display: block;margin: 0px auto; margin-bottom: 5px;" th:src="@{/customer/img/cmb_logo.png}" />
@@ -129,7 +129,6 @@
                         </div>
 
                     </div>
-
                 </form>
 
         </div>

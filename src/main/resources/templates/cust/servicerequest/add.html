@@ -12,10 +12,10 @@
         </select>
     </div>
 
-    <div class="col-xs-12 ml-15 no-pad-left no-pad-right" >
-        <div class="col-xs-11 no-pad-lef no-mt alert no-bd">
+    <div class="col-xs-12" >
+        <div class=" no-pad-lef no-mt alert no-bd">
            <div class="">
-                  <div class="col-md-6 table-responsive">
+                  <div class="col-md-6 no-pad-left table-responsive">
                        <h5 class="sub_header" th:text="${requestConfig.requestName}"></h5>
                                         <form method="post" th:action="@{/retail/requests}" th:object="${requestDTO}" id="reqForm">
                                             <input class="form-control" type="hidden" id="requestName" name="requestName" th:value="${requestConfig.requestName}"/>

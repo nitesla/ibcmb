@@ -76,9 +76,9 @@
                     <h5 class="form-signin-heading text-white">Enter Login Details</h5>
 
 
-                    <div th:if="${param.message != null}" class="alert alert-info" th:text="${param.message[0]}">message</div>
-                    <div th:if="${param.error != null}" class="alert erro alert-danger" th:text="${session[SPRING_SECURITY_LAST_EXCEPTION]}">error</div>
-                    <div th:if="${param.expired != null}" class="alert erro alert-danger" th:text="#{session.expired}">error</div>
+                    <div th:if="${param.message != null}" class="alert erro alert-info" th:text="${param.message[0]}"></div>
+                    <div th:if="${param.error != null}" class="alert erro alert-danger" th:text="${session[SPRING_SECURITY_LAST_EXCEPTION]}"></div>
+                    <div th:if="${param.expired != null}" class="alert erro alert-danger" th:text="#{session.expired}"></div>
                     <br/>
                     <div class="form-group ">
                         <span id='reqspan' class='required text-white' style='top:1px;'></span>
@@ -186,6 +186,7 @@
 <!-- BOOTSTRAP SCRIPTS  -->
 <script th:src="@{~/customer/js/bootstrap.js}"></script>
 <script th:src="@{~/customer/js/coronation.js}"></script>
+<script th:src="@{~/customer/js/errors.js}"></script>
 <script th:src="@{~/customer/plugins/bootstrap-notify/bootstrap-notify.js}"></script>
 
 <script>
@@ -197,6 +198,8 @@
                 html:'true'
             }
         );
+
+        errorLogin();
 
        
 

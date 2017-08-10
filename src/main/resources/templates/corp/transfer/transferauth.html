@@ -12,8 +12,8 @@
         </select>
     </div>
 
-    <div class="col-xs-12 ml-15 ">
-        <div class="col-xs-12 text-center col-sm-offset-3 col-sm-6 no-pad-lef  no-mt no-bd alert">
+    <div class="col-xs-12">
+        <div class="col-sm-offset-3 col-sm-6 no-pad-lef  no-mt no-bd alert">
 
             <table class="table table-hover ">
                 <tr>
@@ -54,9 +54,9 @@
                     <label>Token *</label>
                     <input type="text" name="token" placeholder="" class="form-control full-width"/>
                     <br/>
-                    <div class="form-group text-center">
+                    <div class="form-group">
                         <button type="submit" class="btn btn-link required-step">Proceed</button>
-                        <button onclick='redirect()' class="btn btn-link less-required">Cancel</button>
+                        <button type="button" onclick='redirect();' class="btn btn-link less-required">Cancel</button>
                     </div>
 
 
@@ -74,6 +74,7 @@
     <script>
         function redirect()
         {
+           
             windows.location.href = "/corporate/transfer";
         }
 

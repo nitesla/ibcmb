@@ -13,13 +13,14 @@
     
 
     <link rel="stylesheet" type="text/css" th:href="@{~/customer/css/bootstrap.css}"/>
-    <link rel="stylesheet" type="text/css" th:href="@{~/customer/css/custom.css}"/>
+    
     <link rel="stylesheet" type="text/css" th:href="@{~/customer/css/select.bootstrap.css}"/>
     <link rel="stylesheet" type="text/css" th:href="@{~/customer/font-awesome/font-awesome.min.css}"/>
     <link rel="stylesheet" type="text/css" th:href="@{~/customer/plugins/bootstrap-daterangepicker/daterangepicker.css}"/>
     <link rel="stylesheet" type="text/css" th:href="@{~/customer/plugins/datatables/css/jquery.dataTables.min.css}"/>
     <link rel="stylesheet" type="text/css" th:href="@{~/customer/plugins/datatables/css/dataTables.bootstrap.css}"/>
     <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.7.0/css/bootstrap-datepicker.min.css"/>
+    <link rel="stylesheet" type="text/css" th:href="@{~/customer/css/custom.css}"/>
     <link rel="shortcut icon" th:href="@{~/customer/img/favicon.ico}" type="image/x-icon">
 <link rel="icon" th:href="@{~/customer/img/favico.ico}" type="image/x-icon">
     <title>Coronation Merchant Bank</title>
@@ -179,7 +180,7 @@
                                         Password</a></li>
                                 </ul>
                             </li>
-                            <li class="dropdown">
+                            <li class="dropdown active-more">
                                 <a href="#" class="dropdown-toggle menu-link" data-toggle="dropdown" role="button"
                                    aria-haspopup="true" aria-expanded="false"> More </a>
                                 <ul class="dropdown-menu">
@@ -202,7 +203,7 @@
                             <li><a class="logout" th:href="@{/retail/logout}"> Log out
                                 <!--<span class="fa-stack fa-lg no-bd-rad">-->
                                 <!--<i class="fa fa-square fa-stack-1x fa-lg no-bd-rad"></i>-->
-                                <i class="fa fa-power-off fa-inverse no-bd-rad power" style="font-size:12px"></i>
+                                <i class="fa fa-power-off fa-inverse no-bd-rad power" style="font-size:12px;color:white"></i>
                                 <!--</span>-->
                             </a>
                             </li>
@@ -446,6 +447,8 @@
             $(document).ready(function ()
             {
                 showPop('.errors');
+
+                
 
                 $('select').addClass('select-wrapper');
 
