@@ -23,6 +23,11 @@ html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockq
     color:#9F614B !important;
 }
 
+.quickAccess
+{
+    font-size:10px;
+}
+
 
 .no-mt
 {
@@ -585,6 +590,11 @@ select::-ms-expand {
 {
     content: ">";
     padding:5px;
+}
+
+.active-more
+{
+    border-bottom: 3px solid white !important;
 }
 
 
@@ -2437,8 +2447,22 @@ button, input, optgroup, select, textarea {
 {
     background: white;
     padding:9px;
-    font-size:16px;
+    font-size:14px;
     font-weight: bold;
+}
+
+.text-left
+{
+    text-align: left !important;
+}
+
+
+
+
+
+.text-right
+{
+    text-align: right !important;
 }
 
 
@@ -2507,10 +2531,10 @@ button, input, optgroup, select, textarea {
 {
     position:absolute;
     background: #ebdfdb;
-    top:-5px;
+    top:-25px;
     right:50px;
     width:200px;
-    padding: 3px;
+    padding: 10px;
     text-align: left;
     z-index:1000;
     

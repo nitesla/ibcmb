@@ -150,7 +150,7 @@
                                     <li sec:authorize="hasAuthority('CORP_CHANGE_PASSWORD')"><a th:href="@{/corporate/settings/change_password}" th:text="#{menu.settings.password}">Change Password</a></li>
                                 </ul>
                             </li>
-                            <li class="dropdown">
+                            <li class="dropdown active-more">
                                 <a href="#" class="dropdown-toggle menu-link" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"> More </a>
                                 <ul class="dropdown-menu">
                                     <li sec:authorize="hasAuthority('CORP_SYNC_TOKEN')"><a th:href="@{/corporate/token/sync}" th:text="#{menu.token.sync}">Synchronize Token</a></li>
