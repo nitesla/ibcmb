@@ -441,6 +441,12 @@ select::-ms-expand {
     padding-right: 0px !important;
 }
 
+.no-pd
+{
+    padding: 0px !important;
+}
+
+
 .form-group
 {
     position: relative !important;
@@ -584,7 +590,7 @@ select::-ms-expand {
 
 .trans-but
 {
-    font-size: 12px !important;
+    /* font-size: 12px !important; */
 }
 
 .menu-link:hover
@@ -659,7 +665,7 @@ select::-ms-expand {
     background: #ebecef;
     padding:14px;
     margin-top: -2px;
-    padding-left: 24px;
+    padding-left: 10px;
 
 }
 
@@ -1413,6 +1419,7 @@ body {
 .form-signin-heading{
     text-align: center;
     font-size: 14px;
+    text-transform: capitalize;
 }
 
 #label{
@@ -2304,7 +2311,7 @@ button, input, optgroup, select, textarea {
 .current-bar
 {
     padding:18px !important;
-    padding-left:35px !important;
+    /* padding-left:35px !important; */
     margin-bottom: 5px !important;
     text-transform: capitalize;
     font-size:20px !important;
@@ -2346,7 +2353,7 @@ button, input, optgroup, select, textarea {
 .coronation-form-control
 {
     font-size: 12px;
-    margin-left: 15px;
+     margin-left: 15px; 
 }
 
 .ml-15

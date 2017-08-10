@@ -184,7 +184,7 @@
         <!--<div class=' alert alert-info text-white  no-bd-rad' style="margin:1px 15px 1px 1px!important;background-color:#003056;color:white;"><marquee class='marquee'>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</marquee></div>-->
 
         <div class="info-bar" id='bread-crumb'>
-            
+            &nbsp;&nbsp;
         </div>
     </div>
 
@@ -313,11 +313,13 @@
         <script th:src="@{~/customer/plugins/bootstrap-notify/bootstrap-notify.js}"></script>
         <script th:src="@{~/customer/plugins/bootstrap-daterangepicker/daterangepicker.js}"></script>
         <script th:src="@{~/customer/js/coronation.js}"></script>
+        <script th:src="@{~/customer/js/errors.js}"></script>
         <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/js/bootstrap-datepicker.min.js"></script>
 
         <!-- BOOTSTRAP SCRIPTS  -->
         <script th:src="@{~/customer/js/bootstrap.js}"></script>
         <script th:src="@{~/customer/js/bootstrap-session-timeout.js}"></script>
+        
 
 
 
@@ -397,6 +399,7 @@
 
             $(document).ready(function ()
             {
+                showPop('.errors');
                 $('[data-toggle="tooltip"]').tooltip();
                 $('.datepicker').datepicker({
                     autoclose: true,
