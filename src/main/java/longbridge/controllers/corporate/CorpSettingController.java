@@ -81,7 +81,7 @@ public class CorpSettingController {
 
 
 
-    @GetMapping("/corporate/error")
+    @GetMapping("/error")
     public String getCorporateErrorPage() {
         return "/corp/error";
 

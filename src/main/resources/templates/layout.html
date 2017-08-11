@@ -88,16 +88,16 @@
                     <li><a href="/admin/notification">System Notifications</a></li>
                 </ul>
             </li>
-            <li sec:authorize="hasAuthority('TOKEN_MANAGEMENT')"><a><i class="fa fa-key"></i> Token Management <span class="fa fa-chevron-down"></span></a>
-                <ul class="nav child_menu">
-                    <li><a href="/admin/token/assign">Assign Token</a></li>
-                    <li><a href="/admin/token/activate/username">Activate Token</a></li>
-                    <li><a href="/admin/token/assign/activate">Assign and Activate</a></li>
-                    <li><a href="/admin/token/deactivate/username">Deactivate Token</a></li>
-                    <li><a href="/admin/token/synchronize">Synchronize Token</a></li>
-                    <li><a href="/admin/token/unlock">Unlock Token</a></li>
-                </ul>
-            </li>
+            <!--<li sec:authorize="hasAuthority('TOKEN_MANAGEMENT')"><a><i class="fa fa-key"></i> Token Management <span class="fa fa-chevron-down"></span></a>-->
+                <!--<ul class="nav child_menu">-->
+                    <!--<li><a href="/admin/token/assign">Assign Token</a></li>-->
+                    <!--<li><a href="/admin/token/activate/username">Activate Token</a></li>-->
+                    <!--<li><a href="/admin/token/assign/activate">Assign and Activate</a></li>-->
+                    <!--<li><a href="/admin/token/deactivate/username">Deactivate Token</a></li>-->
+                    <!--<li><a href="/admin/token/synchronize">Synchronize Token</a></li>-->
+                    <!--<li><a href="/admin/token/unlock">Unlock Token</a></li>-->
+                <!--</ul>-->
+            <!--</li>-->
             <li><a><i class="fa fa-history"></i>Audit<span class="fa fa-chevron-down"></span></a>
                 <ul class="nav child_menu">
                     <li sec:authorize="hasAuthority('AUDIT_CONFIG')"><a href="/admin/audit">Configuration</a></li>
