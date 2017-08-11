@@ -33,12 +33,7 @@
                                 <span id="scurency"></span>
                                 <span class="alert no-bd-rad my-border bg-white invisible">NGN</span>
                                 <select name="source" class="form-control" id="source"
-
                                         th:field="*{customerAccountNumber}" required="required" onchange="getBalance()">
-
-                                    <option value=""> select an account</option>
-                                    <option th:each="s: ${accounts}" th:value="${s}" th:text="${s}"></option>
-
                                     <option th:each="s: ${accountList}" th:value="${s.accountNumber}" th:text="${s.accountNumber}" th:selected="${s.primaryFlag=='Y'}"></option>
                                 </select>
                                 <p class="errors" th:if="${#fields.hasErrors('customerAccountNumber')}" th:errors="*{customerAccountNumber}">&times;</p>
