@@ -491,7 +491,7 @@ public class AccountController {
 		Date daysAgo = new DateTime(date).minusDays(Integer.parseInt(setting.getValue())).toDate();
 		logger.info("the from date {} and the to date {}",date,daysAgo);
 		AccountDTO account = accountService.getAccount(Long.parseLong(acct));
-		AccountStatement accountStatement = integrationService.getAccountStatements(account.getAccountNumber(), date, daysAgo, "B");
+		AccountStatement accountStatement = integrationService.getAccountStatements(account.getAccountNumber(),daysAgo , date, "B");
 		List<TransactionDetails> list = accountStatement.getTransactionDetails();
 
 		model.addAttribute("history", list);
@@ -508,12 +508,13 @@ public class AccountController {
 //		Duration diffInDays= new Duration(new DateTime(fromDate),new DateTime(toDate));
 //		logger.info("Day difference {}",diffInDays.getStandardDays());
 
-		Date from;
-		Date to;
+		Date from = null;
+		Date to = null;
 		DataTablesOutput<TransactionDetails> out = new DataTablesOutput<TransactionDetails>();
+		SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy");
 		try {
-			from = dateFormat.parse(fromDate);
-			to = dateFormat.parse(toDate);
+			from = format.parse(fromDate);
+			to = format.parse(toDate);
 			logger.info("fromDate {}",from);
 			logger.info("toDate {}",to);
 			//int diffInDays = (int) ((to.getTime() - from.getTime()) / (1000 * 60 * 60 * 24));
@@ -539,12 +540,13 @@ public class AccountController {
 											  String fromDate, String toDate, String tranType, Principal principal) {
 		// Pageable pageable = DataTablesUtils.getPageable(input);
 
-		Date from;
-		Date to;
+		Date from = null;
+		Date to = null;
 		DataTablesOutput<TransactionDetails> out = new DataTablesOutput<TransactionDetails>();
+		SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy");
 		try {
-			from = dateFormat.parse(fromDate);
-			to = dateFormat.parse(toDate);
+			from = format.parse(fromDate);
+			to = format.parse(toDate);
 			AccountStatement accountStatement = integrationService.getAccountStatements(acctNumber, from, to, tranType);
 			out.setDraw(input.getDraw());
 			List<TransactionDetails> list = accountStatement.getTransactionDetails();

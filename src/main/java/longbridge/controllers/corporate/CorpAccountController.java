@@ -360,8 +360,8 @@ logger.info("viewstatement");
                                               String fromDate, String toDate, String tranType, Principal principal,RedirectAttributes redirectAttributes)  {
         // Pageable pageable = DataTablesUtils.getPageable(input);
         logger.info("the acctNumber{} fromDate {} toDate {} tranType {} ",acctNumber,fromDate,toDate,tranType);
-        Date from;
-        Date to;
+        Date from = null;
+        Date to = null;
         DataTablesOutput<TransactionDetails> out = new DataTablesOutput<TransactionDetails>();
         SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy");
 
