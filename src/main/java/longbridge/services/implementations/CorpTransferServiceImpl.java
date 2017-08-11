@@ -1,13 +1,17 @@
 package longbridge.services.implementations;
 
+import longbridge.api.AccountDetails;
+import longbridge.api.NEnquiryDetails;
 import longbridge.dtos.CorpTransferRequestDTO;
 import longbridge.dtos.SettingDTO;
+import longbridge.dtos.TransferRequestDTO;
 import longbridge.exception.*;
 import longbridge.models.*;
 import longbridge.repositories.*;
 import longbridge.security.userdetails.CustomUserPrincipal;
 import longbridge.services.*;
 import longbridge.utils.TransferType;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,6 +44,9 @@ public class CorpTransferServiceImpl implements CorpTransferService {
     private ConfigurationService configService;
     private Logger logger = LoggerFactory.getLogger(this.getClass());
     private Locale locale = LocaleContextHolder.getLocale();
+
+    @Autowired
+    TransferService transferService;
     @Autowired
     private CorpTransferAuthRepo transferAuthRepo;
 
@@ -259,14 +266,43 @@ public class CorpTransferServiceImpl implements CorpTransferService {
     }
 
     private void validateAccounts(CorpTransferRequestDTO dto) throws InternetBankingTransferException {
+        String bvn = integrationService.viewCustomerDetails(dto.getCustomerAccountNumber()).getBvn();
+        if (bvn == null || bvn.isEmpty() || bvn.equalsIgnoreCase(""))
+            throw new InternetBankingTransferException(TransferExceptions.NO_BVN.toString());
+
+
+        if (!integrationService.viewAccountDetails(dto.getCustomerAccountNumber()).getAcctStatus().equalsIgnoreCase("A"))
+            throw new InternetBankingTransferException(TransferExceptions.INVALID_ACCOUNT.toString());
+
+
+        if (!NumberUtils.isNumber(dto.getAmount().toString()) || dto.getAmount().compareTo(new BigDecimal(0)) == 0)
+            throw new InternetBankingTransferException(TransferExceptions.INVALID_AMOUNT.toString());
+
+
         if (dto.getTransferType().equals(TransferType.OWN_ACCOUNT_TRANSFER) || dto.getTransferType().equals(TransferType.CORONATION_BANK_TRANSFER)) {
-            if (integrationService.viewAccountDetails(dto.getBeneficiaryAccountNumber()) == null)
-                throw new InternetBankingTransferException(TransferExceptions.INVALID_BENEFICIARY.toString());
-            if (integrationService.viewAccountDetails(dto.getCustomerAccountNumber()) == null)
+            AccountDetails sourceAccount = integrationService.viewAccountDetails(dto.getCustomerAccountNumber());
+            AccountDetails destAccount = integrationService.viewAccountDetails(dto.getBeneficiaryAccountNumber());
+            if (sourceAccount == null)
                 throw new InternetBankingTransferException(TransferExceptions.INVALID_ACCOUNT.toString());
+            if (destAccount == null)
+                throw new InternetBankingTransferException(TransferExceptions.INVALID_BENEFICIARY.toString());
+            if ((("NGN").equalsIgnoreCase(sourceAccount.getAcctCrncyCode())) && !("NGN").equalsIgnoreCase(destAccount.getAcctCrncyCode()))
+
+                throw new InternetBankingTransferException(TransferExceptions.NOT_ALLOWED.toString());
 
         }
+        if (dto.getTransferType().equals(TransferType.INTER_BANK_TRANSFER)) {
+            NEnquiryDetails details = integrationService.doNameEnquiry(dto.getFinancialInstitution().getInstitutionCode(), dto.getBeneficiaryAccountNumber());
+          /*  if (details != null && details.getAccountName() == null)
+                throw new InternetBankingTransferException(TransferExceptions.INVALID_BENEFICIARY.toString());*/
+
+            if (integrationService.viewAccountDetails(dto.getCustomerAccountNumber()) == null)
+                throw new InternetBankingTransferException(TransferExceptions.INVALID_ACCOUNT.toString());
+        }
+
     }
+
+
 
 
     @Override
@@ -383,4 +419,6 @@ public class CorpTransferServiceImpl implements CorpTransferService {
         return existingRoles;
 
     }
+
+
 }
