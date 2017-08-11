@@ -11,12 +11,10 @@ import longbridge.exception.InternetBankingException;
 import longbridge.exception.InternetBankingSecurityException;
 import longbridge.exception.PasswordException;
 import longbridge.forms.ChangePassword;
+import longbridge.models.CorporateUser;
 import longbridge.models.UserType;
 import longbridge.security.FailedLoginService;
-import longbridge.services.CorporateService;
-import longbridge.services.CorporateUserService;
-import longbridge.services.IntegrationService;
-import longbridge.services.RoleService;
+import longbridge.services.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,6 +54,9 @@ public class OpsCorporateUserController {
     private MessageSource messageSource;
     @Autowired
     private IntegrationService integrationService;
+
+    @Autowired
+    private VerificationService verificationService;
 
 
     @ModelAttribute
@@ -231,6 +232,12 @@ public class OpsCorporateUserController {
     @GetMapping("/{id}/password/reset")
     public String resetPassword(@PathVariable Long id, RedirectAttributes redirectAttributes) {
         String corpId = corporateUserService.getUser(id).getCorporateId();
+
+        if(verificationService.isPendingVerification(id, CorporateUser.class.getSimpleName())){
+            redirectAttributes.addFlashAttribute("failure", "User has pending changes to be verified");
+            return "redirect:/ops/corporates/" + corpId + "/view";
+
+        }
 
         try {
             String message = corporateUserService.resetPassword(id);

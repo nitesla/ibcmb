@@ -79,7 +79,7 @@ public class CorporateUserServiceImpl implements CorporateUserService {
     private EntityManager entityManager;
 
     @Autowired
-    CorporateRoleRepo corporateRoleRepo;
+    private CorporateRoleRepo corporateRoleRepo;
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 

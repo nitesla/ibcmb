@@ -28,6 +28,8 @@ public interface CorpUserVerificationService {
 
     String verify(Long id) throws VerificationException;
 
+    boolean isPendingVerification(Long entityId, String entityName);
+
     String verify(CorpUserVerificationDTO dto) throws VerificationException;
 
     CorpUserVerificationDTO getVerification(Long id);

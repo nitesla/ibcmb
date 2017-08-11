@@ -243,6 +243,7 @@ public class AdminUserServiceImpl implements AdminUserService {
 
     @Override
     @Transactional
+    @Verifiable(operation = "DELETE_ADMIN_USER",description = "Deleting an Admin User")
     public String deleteUser(Long id) throws InternetBankingException {
         try {
             AdminUser user = adminUserRepo.findOne(id);
@@ -307,6 +308,8 @@ public class AdminUserServiceImpl implements AdminUserService {
         if ("I".equals(user.getStatus())) {
             throw new InternetBankingException(messageSource.getMessage("users.deactivated", null, locale));
         }
+
+
         try {
             String newPassword = passwordPolicyService.generatePassword();
             user.setPassword(passwordEncoder.encode(newPassword));
