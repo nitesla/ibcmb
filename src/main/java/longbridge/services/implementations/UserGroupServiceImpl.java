@@ -23,6 +23,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityManager;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -40,10 +41,10 @@ public class UserGroupServiceImpl implements UserGroupService {
 
 
     @Autowired
-    private ModelMapper modelMapper;
+    private OperationsUserRepo operationsUserRepo;
 
     @Autowired
-    private OperationsUserRepo operationsUserRepo;
+    private EntityManager entityManager;
 
     @Autowired
     private MessageSource messageSource;
@@ -95,7 +96,13 @@ public class UserGroupServiceImpl implements UserGroupService {
     public String deleteGroup(Long id) throws InternetBankingException{
         try {
            UserGroup group = userGroupRepo.findOne(id);
-           userGroupRepo.delete(group);
+           UserGroup userGroup = new UserGroup();
+           userGroup.setId(group.getId());
+           userGroup.setVersion(group.getVersion());
+           userGroup.setName(group.getName());
+           userGroup.setContacts(group.getContacts());
+           userGroup.setUsers(group.getUsers());
+           userGroupRepo.delete(userGroup);
             return messageSource.getMessage("group.delete.success",null,locale);
         }
         catch (VerificationInterruptedException e) {

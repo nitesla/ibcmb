@@ -385,7 +385,7 @@ public @ResponseBody String getSecAns(WebRequest webRequest, HttpSession session
     @GetMapping("/rest/corporate/secQues/{userDetails}")
     public @ResponseBody List<String> getSecQuestionFromNumber(@PathVariable String[] userDetails, HttpSession session){
         String secQuestion = "";
-//        logger.info("user details : {} ", userDetails);
+        logger.info("user details : {} and {} ", userDetails[0],userDetails[1]);
 //        logger.info(userDetails[0]);
         List<String> question = null;
         try {
@@ -406,12 +406,14 @@ public @ResponseBody String getSecAns(WebRequest webRequest, HttpSession session
             else {
                 secQuestion = "";
             }
-        } catch (ArrayIndexOutOfBoundsException e) {
+        }catch (ArrayIndexOutOfBoundsException e) {
             e.printStackTrace();
-        }catch (InternetBankingException e){
+        }catch (InternetBankingSecurityException e){
+            e.printStackTrace();
+        }catch (Exception e){
             e.printStackTrace();
         }
-
+logger.info("out of the try");
         return question;
     }
     @GetMapping("/rest/corporate/validate/secAns/{acctDetails}")

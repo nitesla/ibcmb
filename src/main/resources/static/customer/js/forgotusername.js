@@ -6,6 +6,7 @@ var secAnswer ="";
  *
  * @param accountNumber the account number to check
  */
+
 function validateAccountNo(accountNumber){
 console.log("the num "+accountNumber);
     // var customerId;
@@ -29,7 +30,6 @@ console.log("the num "+accountNumber);
             }
         }
     });
-    
 
     console.log(customerId);
 
@@ -84,8 +84,8 @@ console.log("the num "+accountNumber);
 function validateSecAnswer(secAnswer){
     // var customerId = $('#customerId').val();
  $('#myLoader').modal('show');
-    console.log('customer id '+customerId);
-    console.log('customer secAnswer '+secAnswer);
+    // console.log('customer id '+customerId);
+    // console.log('customer secAnswer '+secAnswer);
     var result = '';
     $.ajax({
         type:'GET',
@@ -127,7 +127,7 @@ function sendUsername(){
     var returnValue;
     $('#reg-form').submit(function(e){
         e.preventDefault();
-console.log("send  usernammec "+customerId);
+// console.log("send  usernammec "+customerId);
         $.ajax({
             url: '',
             async:false,

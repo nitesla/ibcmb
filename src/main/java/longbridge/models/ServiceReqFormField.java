@@ -1,8 +1,10 @@
 package longbridge.models;
 
+import com.fasterxml.jackson.annotation.*;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.codehaus.jackson.annotate.*;
 import org.hibernate.annotations.Where;
 import org.hibernate.envers.Audited;
-
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 
@@ -54,6 +56,7 @@ public class ServiceReqFormField extends AbstractEntity {
         this.typeData = typeData;
     }
 
+    @JsonIgnore
     public SRConfig getSRConfig() {
         return SRConfig;
     }
@@ -63,6 +66,7 @@ public class ServiceReqFormField extends AbstractEntity {
     }
 
     @Override
+    @JsonIgnore
 	public String toString() {
 		return "ServiceReqFormFields [fieldName=" + fieldName + ", fieldLabel=" + fieldLabel + ", fieldType="
 				+ fieldType + ", typeData=" + typeData + "]";

@@ -14,10 +14,7 @@ import java.util.stream.Collectors;
  * Created by ayoade_farooq@yahoo.com on 5/3/2017.
  */
 @RestController
-public class Transfer
-{
-
-
+public class Transfer {
     private IntegrationService integrationService;
 
      @Autowired

@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{corp-layout}">
 <link th:href="@{~/bank/vendors/sweetalert/sweetalert.css}" rel="stylesheet"/>
-<body onload="currentBar('Upload Bulk Transfer File')">
+<body onload="javascript:var bread = [['Home', '/corporate/dashboard'],['Bulk transfer','/corporate/transfer/bulk'],['upload','']];currentBar('upload bulk transfer');breadCrumb(bread)">
 
     
 <style>
@@ -29,9 +29,9 @@
         </select>
     </div>
 
-    <div class="col-xs-12 ml-15 " >
-        <div class="col-xs-11 no-pad-lef  no-mt no-bd  alert">
-             <div class="row">
+    <div class="col-xs-12" >
+        <div class="no-pad-lef  no-mt no-bd  alert">
+             <div class="">
                     <div class="form-spacig">
                         <p class="">To make a bulk transfer, You are required to download a pre-formatted file and fill
                             in the details of the beneficiaries...

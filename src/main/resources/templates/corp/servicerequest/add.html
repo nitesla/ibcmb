@@ -179,7 +179,7 @@
         <!--<div class=' alert alert-info text-white  no-bd-rad' style="margin:1px 15px 1px 1px!important;background-color:#003056;color:white;"><marquee class='marquee'>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</marquee></div>-->
 
         <div class="info-bar" id='bread-crumb'>
-            
+            &nbsp;&nbsp;
         </div>
     </div>
 
@@ -204,8 +204,8 @@
                                 <option value="account">Overview</option>
                             </select>
                         </div>
-                        <div class="col-xs-12 ml-15 no-pad-left no-pad-right" >
-                            <div class="col-xs-11 no-pad-lef no-mt alert no-bd">
+                        <div class="col-xs-12  no-pad-left no-pad-right" >
+                            <div class="no-pad-lef no-mt alert no-bd">
                                 <div class="">
                                     <div class="col-md-7 col-sm-7">
                                         <h5 class="sub_header" th:text="${requestConfig.requestName}"></h5>
@@ -222,7 +222,7 @@
                                                 </p>
 
                                                 <p th:if="${field.fieldType} == 'NUMBER'">
-                                                    <input class="form-control" type="number" min="0" th:name="${field.fieldName}" required="required"/><span class='req-inner'></span>
+                                                    <input class="form-control" type="text" min="0" th:name="${field.fieldName}" required="required"/><span class='req-inner'></span>
                                                 </p>
 
                                                 <p th:if="${field.fieldType} == 'TEXTAREA'" required="required">

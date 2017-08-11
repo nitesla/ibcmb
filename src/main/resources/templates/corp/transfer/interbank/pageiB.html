@@ -12,9 +12,9 @@
         </select>
     </div>
 
-    <div class="col-xs-12 ml-15 no-pad-left" >
-        <div class="col-xs-11 no-pad-lef table-responsive no-mt no-bd  alert">
-           <div class="form-spacig col-sm-8">
+    <div class="col-xs-12 " >
+        <div class=" no-pad-lef table-responsive no-mt no-bd  alert">
+           <div class="form-spacig col-sm-8 no-pad-left">
                         <form id="local" method="post" th:action="@{/corporate/transfer/interbank/new}"
                               th:object="${corpLocalBeneficiary}">
                             <div class="form-group">
@@ -45,7 +45,7 @@
                                 <input type="text" class="form-control" name="preferredName"
                                        placeholder="Beneficiary Alias" th:field="*{preferredName}"/>
                             </div>
-                            <button id="localsave" style="display: none;" class="btn btn-link required-step" >Next</button>
+                            <button id="localsave" style="display: none;" class="btn btn-link required-step" >NEXT</button>
                             <!--<button id="neq" type="button" class="btn btn-link required-step" oncligetPreferredNameName();">Name Enquiry</button>-->
                         </form>
 

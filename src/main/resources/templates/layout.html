@@ -30,9 +30,22 @@
 
 <!-- admin menu -->
 <div th:fragment="admin-menu" id="sidebar-menu" class="main_menu_side hidden-print main_menu">
+    <!-- menu profile quick info -->
+    <div class="profile clearfix">
+        <div class="profile_pic">
+            <img th:src="@{~/bank/images/cmb_logo_fav.png}" alt="..." class="img-circle profile_img">
+        </div>
+        <div class="profile_info">
+            <span>Welcome,</span>
+            <h2 sec:authentication="name"></h2>
+        </div>
+    </div>
+
+    <br/>
     <div class="menu_section">
         <h3>Admin Console</h3>
         <ul class="nav side-menu">
+            <li><a th:href="@{/admin/dashborad}"><i class="fa fa-dashboard"></i> Dashboard</a></li>
             <li sec:authorize="hasAuthority('USER_MANAGEMENT')"><a><i class="fa fa-users"></i> User Management <span class="fa fa-chevron-down"></span></a>
                 <ul class="nav child_menu">
                     <li sec:authorize="hasAuthority('ADMIN_USER_MANAGEMENT')"><a href="/admin/users/">Administrators</a></li>
@@ -43,7 +56,6 @@
                 <ul class="nav child_menu">
                     <li sec:authorize="hasAuthority('CODE_CONFIG')"><a href="/admin/codes/alltypes">Codes</a></li>
                     <li sec:authorize="hasAuthority('SETTING_CONFIG')"><a href="/admin/settings">System Settings</a></li>
-                    <li sec:authorize="hasAuthority('AUDIT_CONFIG')"><a href="/admin/audit">Audit</a></li>
                     <li><a href="/admin/secquestions/">Security Questions</a></li>
                     <li><a href="/admin/phishing/">Phishing Image</a></li>
                     <li><a href="/admin/checker">Maker Checker</a></li>
@@ -76,31 +88,33 @@
                     <li><a href="/admin/notification">System Notifications</a></li>
                 </ul>
             </li>
-            <li sec:authorize="hasAuthority('TOKEN_MANAGEMENT')"><a><i class="fa fa-key"></i> Token Management <span class="fa fa-chevron-down"></span></a>
+            <!--<li sec:authorize="hasAuthority('TOKEN_MANAGEMENT')"><a><i class="fa fa-key"></i> Token Management <span class="fa fa-chevron-down"></span></a>-->
+                <!--<ul class="nav child_menu">-->
+                    <!--<li><a href="/admin/token/assign">Assign Token</a></li>-->
+                    <!--<li><a href="/admin/token/activate/username">Activate Token</a></li>-->
+                    <!--<li><a href="/admin/token/assign/activate">Assign and Activate</a></li>-->
+                    <!--<li><a href="/admin/token/deactivate/username">Deactivate Token</a></li>-->
+                    <!--<li><a href="/admin/token/synchronize">Synchronize Token</a></li>-->
+                    <!--<li><a href="/admin/token/unlock">Unlock Token</a></li>-->
+                <!--</ul>-->
+            <!--</li>-->
+            <li><a><i class="fa fa-history"></i>Audit<span class="fa fa-chevron-down"></span></a>
                 <ul class="nav child_menu">
-                    <li><a href="/admin/token/assign">Assign Token</a></li>
-                    <li><a href="/admin/token/activate/username">Activate Token</a></li>
-                    <li><a href="/admin/token/assign/activate">Assign and Activate</a></li>
-                    <li><a href="/admin/token/deactivate/username">Deactivate Token</a></li>
-                    <li><a href="/admin/token/synchronize">Synchronize Token</a></li>
-                    <li><a href="/admin/token/unlock">Unlock Token</a></li>
+                    <li sec:authorize="hasAuthority('AUDIT_CONFIG')"><a href="/admin/audit">Configuration</a></li>
+                    <li><a href="/admin/audit/revised/entity">Revision</a></li>
                 </ul>
             </li>
 
             <li><a><i class="fa fa-check"></i> Verifications <span class="fa fa-chevron-down"></span></a>
                 <ul class="nav child_menu">
-                    <li><a href="/admin/verifications/verified"> My Approvals </a></li>
-                    <li><a href="/admin/verifications/operations"> Pending  <button class="badge bg-orange"  th:text="${verificationNumber}"></button> </a></li>
+                    <li><a href="/admin/verifications/verified">My Approvals </a></li>
+                    <li><a href="/admin/verifications/operations">Pending  <button class="badge bg-orange"  th:text="${verificationNumber}"></button> </a></li>
                     <li><a href="/admin/verifications/pendingops">My Requests <button class="badge bg-orange" disabled="disabled" th:text="${totalPending}" ></button>  </a></li>
 
                 </ul>
 
             </li>
-            <!--<li><a><i class="fa fa-history"></i>Audit<span class="fa fa-chevron-down"></span></a>-->
-                <!--<ul class="nav child_menu">-->
-                    <!--<li><a href="/admin/audit/revised/entity">Audits</a></li>-->
-                <!--</ul>-->
-            <!--</li>-->
+
 
 
 
@@ -113,10 +127,22 @@
 
 <!-- ops menu -->
 <div th:fragment="ops-menu" id="sidebar-menu" class="main_menu_side hidden-print main_menu">
+    <!-- menu profile quick info -->
+    <div class="profile clearfix">
+        <div class="profile_pic">
+            <img th:src="@{~/bank/images/cmb_logo_fav.png}" alt="..." class="img-circle profile_img">
+        </div>
+        <div class="profile_info">
+            <span>Welcome,</span>
+            <h2 sec:authentication="name"></h2>
+        </div>
+    </div>
 
+    <br/>
     <div class="menu_section">
         <h3>Operations Console</h3>
         <ul class="nav side-menu">
+            <li><a th:href="@{/ops/dashborad}"><i class="fa fa-dashboard"></i> Dashboard</a></li>
             <li sec:authorize="hasAuthority('USER_MANAGEMENT')"><a><i class="fa fa-users"></i> User Management <span class="fa fa-chevron-down"></span></a>
                 <ul class="nav child_menu">
                     <li><a href="/ops/corporates/">Corporate</a></li>
@@ -230,18 +256,22 @@
 
             <ul class="nav navbar-nav navbar-right">
                 <li class="">
+                    <a th:href="@{/admin/logout}" class="user-profile">
+                        <span class="glyphicon glyphicon-off"></span> Log out
+                    </a>
+                </li>
+                <li class="">
                     <a href="javascript:" class="user-profile dropdown-toggle" data-toggle="dropdown"
                        aria-expanded="false">
-                        <span sec:authentication="name"></span>
+                        <span class="fa fa-gears"></span> Settings
                         <span class=" fa fa-angle-down"></span>
                     </a>
                     <ul class="dropdown-menu dropdown-usermenu pull-right">
                         <!--<li><a href="javascript:;"> Profile</a></li>-->
                         <li><a th:href="@{/admin/users/password}"> Change Password</a></li>
-                        <!--<li><a href="javascript:;">Help</a></li>-->
-                        <li><a th:href="@{/admin/logout}"><i class="fa fa-sign-out pull-right"></i> Log Out</a></li>
                     </ul>
                 </li>
+
             </ul>
         </nav>
     </div>
@@ -274,27 +304,29 @@
 
             <ul class="nav navbar-nav navbar-right">
                 <li class="">
+                    <a th:href="@{/ops/logout}" class="user-profile">
+                        <span class="glyphicon glyphicon-off"></span> Log out
+                    </a>
+                </li>
+                <li class="">
                     <a href="javascript:" class="user-profile dropdown-toggle" data-toggle="dropdown"
                        aria-expanded="false">
-                        <span sec:authentication="name"></span>
+                        <span class="fa fa-gears"></span> Settings
                         <span class=" fa fa-angle-down"></span>
                     </a>
                     <ul class="dropdown-menu dropdown-usermenu pull-right">
-                        <!--<li><a href="javascript:"> Profile</a></li>-->
-                        <li><a href="/ops/users/password"> Change Password</a></li>
-
-                        <!--<li><a href="javascript:;">Help</a></li>-->
-                        <li><a th:href="@{/ops/logout}"><i class="fa fa-sign-out pull-right"></i> Log Out</a></li>
+                        <!--<li><a href="javascript:;"> Profile</a></li>-->
+                        <li><a th:href="@{/ops/users/password}"> Change Password</a></li>
                     </ul>
                 </li>
-                <li  th:if="${numOfUnreadMessages}">
+                <li>
                     <a th:href="@{/ops/mailbox/newinbox/}" class="info-number"  aria-expanded="false">
                         <i class="fa fa-envelope-o"></i>
                         <span class="badge bg-green"  th:text="${numOfUnreadMessages}">count</span>
                     </a>
 
                 </li>
-                <li  th:if="${numOfSubmittedRequests}">
+                <li >
                     <a th:href="@{/ops/requests}" class="info-number"  aria-expanded="false">
                         <i class="fa fa-bell-o"></i>
                         <span class="badge bg-green"  th:text="${numOfSubmittedRequests}">count</span>

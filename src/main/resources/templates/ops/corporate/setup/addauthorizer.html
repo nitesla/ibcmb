@@ -5,16 +5,18 @@
 
 
 <body class="nav-md">
+<style>
+
+    .error {
+        color: red;
+        display: none;
+    }
+
+</style>
 <div class="container body">
     <div class="main_container">
         <div class="col-md-3 left_col">
             <div class="left_col scroll-view">
-                <div class="navbar nav_title" style="border: 0;">
-                    <!--<a href="index.html"><img th:src="@{~/images/cmb_logo.png}"/></a>-->
-                </div>
-
-                <div class="clearfix"></div>
-                <div class="clearfix"></div>
 
                 <div th:replace="layout :: ops-menu"></div>
                 <div th:replace="layout :: menu-footer-ops"></div>
@@ -93,6 +95,7 @@
 
 
                                                         </table>
+                                                        <p id="noAuthorizerError"   class="error">Authorizer Level is required</p>
                                                     </div>
                                                 </div>
 
@@ -241,7 +244,11 @@
             var count = contactsTab.data().length;
 
             if (count < 1) {
+                $("#noAuthorizerError").show();
                 return;
+            }
+            else {
+                $("#noAuthorizerError").hide();
             }
 
             data = JSON.stringify(contactsTab.data().toArray());
@@ -337,6 +344,8 @@
             $("#levelError").hide();
             $("#duplicateError").hide();
             $("#invalidLevelError").hide();
+            $("#noAuthorizerError").hide();
+
             duplicate = false;
 
 

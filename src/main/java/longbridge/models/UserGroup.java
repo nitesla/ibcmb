@@ -31,7 +31,6 @@ public class UserGroup extends AbstractEntity implements PrettySerializer{
     private Date dateCreated;
 
 
-    @JsonIgnore
     @ManyToMany(cascade = CascadeType.ALL)
     private List<OperationsUser> users;
 
@@ -86,6 +85,7 @@ public class UserGroup extends AbstractEntity implements PrettySerializer{
 
 
     @Override
+    @JsonIgnore
     public JsonSerializer<UserGroup> getSerializer()
     {
         return new JsonSerializer<UserGroup>() {
@@ -95,13 +95,14 @@ public class UserGroup extends AbstractEntity implements PrettySerializer{
                     throws IOException, JsonProcessingException {
                 gen.writeStartObject();
                 gen.writeStringField("Group Name", value.name);
-                gen.writeStringField("Description",value.description);
+//                gen.writeStringField("Description",value.description);
 
 
 
                 gen.writeObjectFieldStart("Internal Users");
+                Integer count = 0;
                 for(OperationsUser user : value.users){
-                    gen.writeObjectFieldStart(user.getId().toString());
+                    gen.writeObjectFieldStart((++count).toString());
                     //gen.writeStartObject();
                     gen.writeStringField("First Name",user.firstName);
                     gen.writeStringField("Last Name",user.lastName);
@@ -112,7 +113,7 @@ public class UserGroup extends AbstractEntity implements PrettySerializer{
 
                 gen.writeObjectFieldStart("External Users");
                 for(Contact contact : value.contacts){
-                    gen.writeObjectFieldStart(contact.getId().toString());
+                    gen.writeObjectFieldStart((++count).toString());
                     //gen.writeStartObject();
                     gen.writeStringField("First Name",contact.firstName);
                     gen.writeStringField("Last Name",contact.lastName);

@@ -79,6 +79,7 @@ public class Role extends AbstractEntity implements PrettySerializer{
 
 
     @Override
+    @JsonIgnore
     public String toString() {
         return "Role{" +
                 "name='" + name + '\'' +
@@ -90,7 +91,8 @@ public class Role extends AbstractEntity implements PrettySerializer{
 
 
 
-	@Override @JsonIgnore
+	@Override
+    @JsonIgnore
     public JsonSerializer<Role> getSerializer() {
         return new JsonSerializer<Role>() {
             @Override
@@ -123,6 +125,7 @@ public class Role extends AbstractEntity implements PrettySerializer{
     }
 
 	@Override
+    @JsonIgnore
 	public List<String> getDefaultSearchFields() {
 		return Arrays.asList("name", "description","email");
 	}

@@ -8,12 +8,6 @@
     <div class="main_container">
         <div class="col-md-3 left_col">
             <div class="left_col scroll-view">
-                <div class="navbar nav_title" style="border: 0;">
-                    <!--<a href="index.html"><img th:src="@{~/images/cmb_logo.png}"/></a>-->
-                </div>
-
-                <div class="clearfix"></div>
-                <div class="clearfix"></div>
 
                 <div th:replace="layout :: admin-menu"></div>
                 <div th:replace="layout :: menu-footer-adm"></div>
@@ -41,13 +35,39 @@
                 <div class="row">
                     <div class="col-md-12 col-sm-12 col-xs-12">
                         <div class="x_panel">
-                            <div class="x_title">
-
-                                <div class="clearfix"></div>
-                            </div>
 
                             <div class="x_content">
                                 <div class="ibox-content">
+
+                                    <div class="row top_tiles" style="margin: 10px 0;">
+                                        <h3>Pending Actions</h3>
+                                        <div class="col-md-3 col-sm-3 col-xs-6 tile">
+                                            <h2 th:text="${pendingApprovals}">0</h2>
+                                            <span>Pending Approvals</span>
+                                        </div>
+                                    </div>
+
+                                    <br/>
+                                    <br/>
+                                    <div class="row top_tiles" style="margin: 10px 0;">
+                                        <h3>User Statistics</h3>
+                                        <div class="col-md-3 col-sm-3 col-xs-6 tile">
+                                            <h2 th:text="${noOfRetailCust}">0</h2>
+                                            <span>Individual Customers</span>
+                                        </div>
+                                        <div class="col-md-3 col-sm-3 col-xs-6 tile">
+                                            <h2 th:text="${noOfCorporateCust}">0</h2>
+                                            <span>Corporate Customers</span>
+                                        </div>
+                                        <div class="col-md-3 col-sm-3 col-xs-6 tile">
+                                            <h2 th:text="${noOfOpsUser}">0</h2>
+                                            <span>Operation Users</span>
+                                        </div>
+                                        <div class="col-md-3 col-sm-3 col-xs-6 tile">
+                                            <h2 th:text="${noOfAdmUser}">0</h2>
+                                            <span>Admin Users</span>
+                                        </div>
+                                    </div>
 
                                 </div>
                             </div>

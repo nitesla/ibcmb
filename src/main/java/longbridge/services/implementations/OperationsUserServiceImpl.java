@@ -53,9 +53,6 @@ public class OperationsUserServiceImpl implements OperationsUserService {
     private MessageSource messageSource;
 
     @Autowired
-    private CodeService codeService;
-
-    @Autowired
     private SecurityService securityService;
 
     @Autowired
@@ -89,6 +86,11 @@ public class OperationsUserServiceImpl implements OperationsUserService {
     }
 
     @Override
+    public Long countOps() {
+        return operationsUserRepo.count();
+    }
+
+    @Override
     public OperationsUserDTO getUser(Long id) {
         OperationsUser user = operationsUserRepo.findOne(id);
         return convertEntityToDTO(user);
@@ -97,8 +99,9 @@ public class OperationsUserServiceImpl implements OperationsUserService {
     @Override
     public Page<OperationsUserDTO> findUsers(OperationsUserDTO example, Pageable pageDetails) {
         ExampleMatcher matcher = ExampleMatcher.matchingAll().withStringMatcher(ExampleMatcher.StringMatcher.CONTAINING)
-                .withIgnoreCase().withIgnorePaths("version", "noOfAttempts").withIgnoreNullValues();
+                .withIgnoreCase().withIgnorePaths("version", "noOfLoginAttempts").withIgnoreNullValues();
         OperationsUser entity = convertDTOToEntity(example);
+        logger.info("Ops user: "+entity.toString());
         ReflectionUtils.nullifyStrings(entity, 1);
         Page<OperationsUser> page = operationsUserRepo.findAll(Example.of(entity, matcher), pageDetails);
         List<OperationsUserDTO> dtOs = convertEntitiesToDTOs(page.getContent());
@@ -411,10 +414,6 @@ public class OperationsUserServiceImpl implements OperationsUserService {
         }
         if (operationsUser.getLastLoginDate() != null) {
             operationsUserDTO.setLastLoginDate(DateFormatter.format(operationsUser.getLastLoginDate()));
-        }
-        Code code = codeService.getByTypeAndCode("USER_STATUS", operationsUser.getStatus());
-        if (code != null) {
-            operationsUserDTO.setStatus(code.getDescription());
         }
         return operationsUserDTO;
     }

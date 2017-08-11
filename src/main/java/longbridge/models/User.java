@@ -208,4 +208,25 @@ public class User extends AbstractEntity{
 	}
 
 
+    @Override
+    public String toString() {
+        return "User{" +
+                "userName='" + userName + '\'' +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", email='" + email + '\'' +
+                ", phoneNumber='" + phoneNumber + '\'' +
+                ", status='" + status + '\'' +
+                ", createdOnDate=" + createdOnDate +
+                ", expiryDate=" + expiryDate +
+                ", lockedUntilDate=" + lockedUntilDate +
+                ", lastLoginDate=" + lastLoginDate +
+                ", noOfLoginAttempts=" + noOfLoginAttempts +
+                ", noOfTokenAttempts=" + noOfTokenAttempts +
+                ", userType=" + userType +
+                ", role=" + ((role!=null)?role.getName():"null") +
+                ", entrustId='" + entrustId + '\'' +
+                ", entrustGroup='" + entrustGroup + '\'' +
+                '}';
+    }
 }

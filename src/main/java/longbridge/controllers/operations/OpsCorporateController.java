@@ -564,16 +564,16 @@ public class OpsCorporateController {
     }
 
     @GetMapping("/new/{corpTYpe}")
-    public String addCorporate(@PathVariable String corpTYpe, HttpSession session, Model model) {
+    public String addCorporate(@PathVariable String corpTYpe, Model model, HttpSession session) {
 
         session.removeAttribute("corporateRequest");
         session.removeAttribute("selectedAccounts");
         session.removeAttribute("accounts");
         session.removeAttribute("inputedUsers");
-        session.removeAttribute(" rules");
-        session.removeAttribute(" authorizerLevels");
-        session.removeAttribute(" users");
-        session.removeAttribute(" accountInfos");
+        session.removeAttribute("rules");
+        session.removeAttribute("authorizerLevels");
+        session.removeAttribute("users");
+        session.removeAttribute("accountInfos");
 
         CorporateDTO corporateDTO = new CorporateDTO();
 

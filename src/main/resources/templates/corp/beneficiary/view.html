@@ -45,14 +45,14 @@
         </select>
     </div>
 
-    <div class="col-xs-12 ml-15 no-pad-lef no-pad-right " >
-        <div class="col-xs-11 no-pad-lef no-mt alert no-bd">
+    <div class="col-xs-12" >
+        <div class=" no-pad-lef no-mt alert no-bd">
             <div class="">
                 <div class="">
                     <!--<h4 class="sub_header">Local Beneficiaries</h4>-->
-                    <div class="bg-white">
+                    <div class="">
 
-                    <table class="table">
+                    <table class="table" id="mytab">
                         <thead class='thead'>
                         <td>Name</td>
                         <td>Account Number</td>
@@ -96,8 +96,20 @@
 
 <th:block layout:fragment="scripts">
 
-
  <!-- Page-Level Scripts -->
+
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        var table = $('#mytab').DataTable({
+            responsive: true,
+            "lengthMenu" : [ [ 5, 10, 20], [ 5, 10, 20 ] ],
+            "pagingType" : "simple_numbers",
+            "searching": false,
+            "dom": 'T<"clear">frtlp'
+        });
+        /*]]>*/
+    </script>
+
     <script>
         /*<![CDATA[*/
         function validateDel(id) {

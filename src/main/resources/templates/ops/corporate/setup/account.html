@@ -8,12 +8,6 @@
     <div class="main_container">
         <div class="col-md-3 left_col">
             <div class="left_col scroll-view">
-                <div class="navbar nav_title" style="border: 0;">
-                    <!--<a href="index.html"><img th:src="@{~/images/cmb_logo.png}"/></a>-->
-                </div>
-
-                <div class="clearfix"></div>
-                <div class="clearfix"></div>
 
                 <div th:replace="layout :: ops-menu"></div>
                 <div th:replace="layout :: menu-footer-ops"></div>
@@ -130,7 +124,7 @@
                                             </div>
                                             <div id="custAccountError" style="display: none;">
 
-                                                <p style="color:red;">You must select at least one account</p>
+                                                <p style="color:red;">&nbsp;&nbsp;At least one account is required</p>
                                             </div>
                                         </div>
 
@@ -173,13 +167,12 @@
         $("#corporateName").val(corpName);
 
 //        var selectedAcct =  $('#selectedAccounts').val();
-        $("#checkAll").click(function () {
+        $("#checkAll").change(function () {
             if ($(this).is(":checked")) {
 
-//                console.log(''+$("input[name='accounts']").is(":checked"));
-                if (!$("input[name='accounts']").is(":checked")) {
                     $("input[name='accounts']").prop("checked", true);
-                }
+                    $("#custAccountError").hide();
+
             }else{
                 $("input[name='accounts']").prop("checked", false);
 
@@ -187,6 +180,18 @@
 
 
         });
+
+        $("input[name='accounts']").change(function () {
+
+            if (!$(this).is(":checked")) {
+
+                $("#checkAll").prop("checked", false);
+            }
+
+
+        });
+
+
 //        if(selectedAcct != ''){
 //            selectedAcct =  selectedAcct.replace('[','');
 //            selectedAcct =  selectedAcct.replace(']','');

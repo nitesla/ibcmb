@@ -43,10 +43,10 @@
         </select>
     </div>
 
-    <div class="col-xs-12 ml-15 no-pad-left  " >
-        <div class="col-xs-12 no-pad-left  alert no-bd">
+    <div class="col-xs-12 " >
+        <div class="no-pad-left no-mt  alert no-bd">
            
-                        <div class="col-md-12 col-sm-12  table-responsive">
+                        <div class="col-md-12 col-sm-12 no-pad-left no-pad-right  table-responsive">
                         <table class="table" id="mytab">
                             <thead class='thead'>
                                 <th >Name</th>
@@ -93,10 +93,24 @@
 <th:block layout:fragment="scripts">
    <script th:src="@{~/bank/vendors/sweetalert/sweetalert.min.js}"></script>
 <script th:src="@{~/bank/js/jquery.spring-friendly.min.js}"></script>
+    <script th:src="@{~/customer/js/jquery.dataTables.js}"></script>
 <script th:src="@{~/bank/vendors/bootstrap-dialog/js/bootstrap-dialog.js}"></script>
 
 
 <!-- Page-Level Scripts -->
+
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        var table = $('#mytab').DataTable({
+            responsive: true,
+            "lengthMenu" : [ [ 5, 10, 20], [ 5, 10, 20 ] ],
+            "pagingType" : "simple_numbers",
+            "searching": false,
+            "dom": 'T<"clear">frtlp'
+        });
+        /*]]>*/
+    </script>
+
 <script>
     /*<![CDATA[*/
 

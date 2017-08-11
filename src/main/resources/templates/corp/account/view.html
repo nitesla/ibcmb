@@ -13,8 +13,8 @@
         </select>
     </div>
 
-    <div class="col-xs-12 ml-15  no-mt" >
-        <div class="col-xs-12 no-pad-left no-pad-right   no-mt no-bd alert">
+    <div class="col-xs-12 no-mt" >
+        <div class=" no-pad-lef no-pad-righ   no-mt no-bd alert">
             <form method="post" th:action="@{/corporate/account/viewstatement/display}">
 
                         <div class="">
@@ -71,23 +71,23 @@
                                 <table class="table" id="tranDetails">
                                     <thead>
                                     <tr>
-                                        <th>Account Balance</th>
-                                        <th>Currency Code</th>
+                                        <th>Value Date</th>
                                         <th>Post Date</th>
                                         <th>Transaction Narration</th>
+                                        <th>Account Balance</th>
                                         <th>Debit/Credit</th>
-                                        <th>Value Date</th>
+                                        <th>Transaction ReferenceID</th>
 
                                     </tr>
                                     </thead>
                                     <tfoot>
                                     <tr>
-                                        <th>Account Balance</th>
-                                        <th>Currency Code</th>
+                                        <th>Value Date</th>
                                         <th>Post Date</th>
                                         <th>Transaction Narration</th>
+                                        <th>Account Balance</th>
                                         <th>Debit/Credit</th>
-                                        <th>Value Date</th>
+                                        <th>Transaction ReferenceID</th>
 
                                     </tr>
                                     </tfoot>
@@ -98,81 +98,6 @@
 
                         </div>
                     </form>
-
-                <div>
-                    <div class="form-group col-md-6 no-pad-left col-sm-6">
-
-                            <label>Date Range</label>
-                            <div class="input-daterange input-group" id="date-range">
-                                <input type="text" data-date-format="dd-mm-yyyy" class="form-control datepicker" id="start" name="fromDate" placeholder="Start date" required="required" />
-                                <span class="input-group-addon no-border">to</span>
-                                <input type="text"  data-date-format="dd-mm-yyyy" class="form-control datepicker" name="toDate" id="endDate" placeholder="End date" required="required" />
-                            </div>
-                    </div>
-
-                    <div class="form-group col-md-6 no-pad-left col-sm-6">
-                            <label>Transaction Type</label>
-                            <select name="tranType"  class="form-control full-width">
-                                <option value="B">All</option>
-                                <option value="C">Credit</option>
-                                <option value="D">Debit</option>
-                            </select>
-                    </div>
-
-
-                    <div class="">
-                        <div class="form-group col-md-6 no-pad-left col-sm-6">
-                            <label>Account Number</label>
-                            <span class="req"></span>
-                            <select name="acctNumber" id="acctNumber" class="form-control full-width"
-                                    required="required">
-                                <option th:each="s: ${accounts}" th:value="${s.accountNumber}" th:text="${s.accountNumber}"></option></select>
-                        </div>
-
-                        <div class="form-group col-md-6 no-pad-left">
-                            <label>&nbsp;</label>
-                            <button type="submit" class="btn btn-link " id="btn-find"><i class="fa fa-search"  ></i>&nbsp; view</button>
-                        </div>
-                    </div>
-
-
-
-                    <p>
-                        <a id="btn-print" th:href="@{'~/viewstatement/display/data'}"  class="btn bt-link-act pull-right"> <i class="fa fa-print"  ></i>&nbsp; Download PDF</a>
-                        <!--<a th:href="@{'#'}" class="btn "> <i class="fa fa-envelope" style="color: white" ></i>&nbsp; send mail</a>-->
-                    </p>
-                    <h2>TRANSACTION DETAILS</h2>
-
-                    <div class="" >
-                        <table class="table" id="tranDetails">
-                            <thead>
-                            <tr>
-                                <th>Transaction Narration</th>
-                                <th>Post Date</th>
-                                <th>Value Date</th>
-                                <th>Debit/Credit</th>
-                                <th>Transaction ReferenceID</th>
-                                <th>Account Balance</th>
-                            </tr>
-                            </thead>
-                            <tfoot>
-                            <tr>
-                                <th>Transaction Narration</th>
-                                <th>Post Date</th>
-                                <th>Value Date</th>
-                                <th>Debit/Credit</th>
-                                <th>Transaction ReferenceID</th>
-                                <th>Account Balance</th>
-
-                            </tr>
-                            </tfoot>
-                        </table>
-                    </div>
-
-
-                </div>
-            </form>
-
         </div>
     </div>
 
@@ -191,11 +116,11 @@
             var form = $('<form></form>').attr('action', url).attr('target', '_blank')
                     .attr('method', 'get');
             // Add the one key/value
-            form.append($("<input></input>").attr('type', 'hidden').attr('name',
+            form.append($("<input/>").attr('type', 'hidden').attr('name',
                     key).attr('value', data));
 
             $.each( data, function( propertyName, valueOfProperty ){
-                form.append($("<input></input>").attr('type', 'hidden').attr('name',
+                form.append($("<input/>").attr('type', 'hidden').attr('name',
                         propertyName).attr('value', valueOfProperty));
             });
 
@@ -219,12 +144,13 @@
                 "ordering" : false,
                 "dom": 'T<"clear">frtlp',
                 "columns" : [
-                    {"data" : "narration"},
-                    {"data" : "postDate"} ,
                     {"data" : "valueDate"},
+                    {"data" : "postDate"} ,
+                    {"data" : "narration"},
+                    {"data" : "accountBalance"},
                     {"data" : "tranType"},
-                    {"data" : "tranId"},
-                    {"data" : "accountBalance"}
+                    {"data" : "tranId"}
+
                 ],
                 "columnDefs" : [ {
                     "targets" : 1,
@@ -242,7 +168,7 @@
                         return data;
                     }
                 },{
-                    "targets" : 5,
+                    "targets" : 3,
                     "data" : "accountBalance",
                     "render" : function(data, type,full, meta) {
                         if (type === 'display') {
@@ -255,7 +181,7 @@
                     }
                 }
                     , {
-                        "targets": 2,
+                        "targets": 0,
                         "data": "valueDate",
                         "render": function (data, type, full, meta) {
                             if (type === 'display') {
@@ -270,20 +196,23 @@
                         }
                     } ],
                 "ajax" : {
-                    "url":"viewstatement/display/data",
+                    "url":"/corporate/account/viewstatement/display/data/new",
                     "type" : "GET",
                     "data" : function(d) {
                         d.acctNumber = $('[name=acctNumber]').val();
                         d.fromDate = $('[name=fromDate]').val();
                         d.toDate = $('[name=toDate]').val();
                         d.tranType = $('[name=tranType]').val();
+                        console.log("the data parsed is "+d.acctNumber+" fromDate "+d.fromDate+" toDate"+d.toDate+" tranType"+d.tranType);
                     }
+                }, "language": {
+                    "emptyTable": "No data available in table"
                 }
 
             });
 
             $("#btn-find").on("click", function(e) {
-
+//                console.log("find");
                 e.preventDefault();
                 dt = $('#tranDetails').DataTable();
                     $('#btn-print').show();
@@ -295,11 +224,11 @@
                 e.preventDefault();
                 var table = $('#tranDetails').DataTable();
                 var data = table.ajax.params();
-                $.download("downloadstatement", "data", data);
+                console.log("the data "+data);
+                $.download("/corporate/account/downloadstatement", "data", data);
 
             });
-
-
+//            $('.dataTables_empty').html('No data available');
         });
 
 

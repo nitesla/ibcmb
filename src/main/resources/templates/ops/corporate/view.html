@@ -8,12 +8,6 @@
     <div class="main_container">
         <div class="col-md-3 left_col">
             <div class="left_col scroll-view">
-                <div class="navbar nav_title" style="border: 0;">
-                    <!--<a href="index.html"><img th:src="@{~/images/cmb_logo.png}"/></a>-->
-                </div>
-
-                <div class="clearfix"></div>
-                <div class="clearfix"></div>
 
                 <div th:replace="layout :: ops-menu"></div>
                 <div th:replace="layout :: menu-footer-ops"></div>
@@ -112,6 +106,7 @@
                                                         <tr>
                                                             <th>Type</th>
                                                             <th>Customer ID</th>
+                                                            <th>Corporate ID</th>
                                                             <th>Name</th>
                                                             <th>Status</th>
                                                             <th>Date Created</th>
@@ -126,7 +121,9 @@
                                                         <tr>
 
                                                             <th>Type</th>
-                                                            <th>Customer ID</th>                                                            <th>Name</th>
+                                                            <th>Customer ID</th>
+                                                            <th>Corporate ID</th>
+                                                            <th>Name</th>
                                                             <th>Status</th>
                                                             <th>Date Created</th>
 
@@ -207,13 +204,14 @@
             "columns": [
                 { "data": "corporateType" },
                 { "data": "customerId" },
+                { "data": "corporateId" },
                 { "data": "name" },
                 { "data": "status" },
                 { "data": "createdOnDate" }
 
             ] ,
             "columnDefs" : [ {
-                "targets" : 3,
+                "targets" : 4,
                 "data" : "status",
                 "render" : function(data, type,full, meta) {
                     if (type === 'display') {
