@@ -165,6 +165,8 @@ public class LocalTransferController {
             model.addAttribute("localBeneficiaryDTO", localBeneficiaryDTO);
             return page + "pageiA";
         }
+        if (request.getSession().getAttribute("add") != null)
+            request.getSession().removeAttribute("add");
 
         TransferRequestDTO transferRequestDTO = new TransferRequestDTO();
         transferRequestDTO.setBeneficiaryAccountName(localBeneficiaryDTO.getAccountName());

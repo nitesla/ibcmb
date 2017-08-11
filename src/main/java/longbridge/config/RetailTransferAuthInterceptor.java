@@ -38,8 +38,8 @@ public class RetailTransferAuthInterceptor extends HandlerInterceptorAdapter {
                 && !((TransferRequestDTO) httpServletRequest.getSession().getAttribute("transferRequest")).getTransferType().equals(TransferType.OWN_ACCOUNT_TRANSFER)
                 ) {
 
-            if (httpServletRequest.getParameter("add") != null)
-                httpServletRequest.getSession().setAttribute("add", "add");
+//            if (httpServletRequest.getParameter("add") != null)
+//                httpServletRequest.getSession().setAttribute("add", "add");
 
 
             httpServletRequest.getSession().setAttribute("auth-needed", "auth-needed");
