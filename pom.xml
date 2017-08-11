@@ -384,11 +384,6 @@
             <scope>compile</scope>
 
         </dependency>
-        <dependency>
-            <groupId>longbridge</groupId>
-            <artifactId>ROOT</artifactId>
-            <version>1.5.2.RELEASE</version>
-        </dependency>
     </dependencies>
 
     <build>
