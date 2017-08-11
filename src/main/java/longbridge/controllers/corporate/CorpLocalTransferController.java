@@ -141,7 +141,8 @@ public class CorpLocalTransferController {
         if (result.hasErrors()) {
             return page + "pageiA";
         }
-
+        if (request.getSession().getAttribute("add") != null)
+            request.getSession().removeAttribute("add");
         CorpTransferRequestDTO corpTransferRequestDTO = new CorpTransferRequestDTO();
         corpTransferRequestDTO.setBeneficiaryAccountName(corpLocalBeneficiaryDTO.getAccountName());
         corpTransferRequestDTO.setBeneficiaryAccountNumber(corpLocalBeneficiaryDTO.getAccountNumber());
@@ -150,7 +151,8 @@ public class CorpLocalTransferController {
         model.addAttribute("corpTransferRequest", corpTransferRequestDTO);
         request.getSession().setAttribute("Lbeneficiary", corpLocalBeneficiaryDTO);
         model.addAttribute("beneficiary", corpLocalBeneficiaryDTO);
-
+        if (request.getParameter("add") != null)
+            request.getSession().setAttribute("add", "add");
 
         return page + "pageii";
     }

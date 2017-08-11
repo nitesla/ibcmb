@@ -87,7 +87,7 @@
 
 
         function getAccountName() {
-            //clearFields();
+            clearFields();
             $('#loading-icon').show();
             //make sure alert message is not empty
             var acct = $('#acct_num').val();
@@ -127,6 +127,7 @@
         function clearFields() {
             $('#localsave').hide();
             $('.acctError').hide();
+            $('#check').hide();
             $('#acct_name').val("");
             $('#loading-icon').show();
         }
