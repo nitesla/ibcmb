@@ -73,7 +73,7 @@
     <div class="containe">
         <div class="bg">
             <form  th:action="@{/corporate/login}" method="POST" class="form-signin" autocomplete="off">
-                <h5 class="form-signin-heading">Enter Login Details</h5>
+                <h5 class="form-signin-heading text-white">Enter Login Details</h5>
                 <br/>
                 <div th:if="${param.message != null}" class="alert alert-info" th:text="${param.message[0]}">message</div>
 
@@ -91,7 +91,7 @@
                 <div class="form-group">
                     <input id="password" type="password" name="password" class="my-select" required="required" placeholder="Password" autocomplete="off"/>
 
-                    <p><a  class="text-white" th:href="@{/forgot/password/corporate}">Forgot password?</a></p>
+                    <p><a  class="text-white" th:href="@{/forgot/password/corporate}">Forgot Password?</a></p>
 
                 </div>
                 <div class="form-group">

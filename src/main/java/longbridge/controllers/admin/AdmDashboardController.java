@@ -1,15 +1,13 @@
 package longbridge.controllers.admin;
 
 import longbridge.models.AdminUser;
-import longbridge.services.AdminUserService;
-import longbridge.services.PasswordPolicyService;
+import longbridge.services.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import javax.xml.ws.soap.Addressing;
 import java.security.Principal;
 import java.text.SimpleDateFormat;
 
@@ -26,12 +24,30 @@ public class AdmDashboardController {
     @Autowired
     private PasswordPolicyService passwordPolicyService;
 
+    @Autowired
+    RetailUserService retailUserService;
+
+    @Autowired
+    CorporateService corporateService;
+
+    @Autowired
+    OperationsUserService operationsUserService;
+
     @RequestMapping(value = {"/admin/dashboard", "/admin"})
     public String getAdminDashboard(Model model, Principal principal) {
 
         if (principal.getName() == null) {
             return "redirect://login/admin";
         }
+
+        int noOfRetailCust = retailUserService.countUser().intValue();
+        int noOfCorporateCust = corporateService.countCorporate().intValue();
+        int noOfOpsUser = operationsUserService.countOps().intValue();
+        int noOfAdmUser = adminUserService.countAdm().intValue();
+        model.addAttribute("noOfRetailCust", noOfRetailCust);
+        model.addAttribute("noOfCorporateCust", noOfCorporateCust);
+        model.addAttribute("noOfOpsUser", noOfOpsUser);
+        model.addAttribute("noOfAdmUser", noOfAdmUser);
 
     AdminUser adminUser = adminUserService.getUserByName(principal.getName());
 

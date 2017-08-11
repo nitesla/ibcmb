@@ -5,15 +5,17 @@
 <body onload="javascript:var bread = [['Home', '/corporate/dashboard'],['CMB transfer']];currentBar('CMB transfer');breadCrumb(bread)">
 
 <div layout:fragment="content">
-    <div class="col-md-5 col-sm-5 ">
+    <div class="col-md-12 col-sm-12 ">
+                 <a th:href="@{/corporate/transfer/local/new}" class="pull-right extra-link">New Beneficiary</a>
 
-        <select class="form-control full-width coronation-form-control hide-content-only" id="view">
+        <!-- <select class="form-control full-width coronation-form-control hide-content-only" id="view">
             <option value="account">Overview</option>
-        </select>
+        </select> -->
     </div>
 
-    <div class="col-xs-12 ml-15 " >
-        <div class="col-xs-11 no-pad-lef table-responsive no-mt no-bd  alert">
+
+    <div class="col-xs-12" >
+        <div class="no-pad-lef table-responsive no-mt no-bd  alert">
             <form method="post" >
                             <table class="table" id="mytab">
                                 <thead>
@@ -36,7 +38,7 @@
                                         <ul class="dropdown-menu">-->
 
 
-                                            <a class="btn btn-link required-step" th:href="@{'/corporate/transfer/local/' + ${loc.id} }">make a transfer</a>
+                                            <a style ='font-size:12px; ' class="btn btn-link required-step no-pd" th:href="@{'/corporate/transfer/local/' + ${loc.id} }">make a transfer</a>
 
 
                                             
@@ -52,7 +54,7 @@
                                 </tbody>
                             </table>
                             <br/>
-                            <a th:href="@{/corporate/transfer/local/new}" class="btn">New Beneficiary</a>
+                            <!-- <a th:href="@{/corporate/transfer/local/new}" class="btn">New Beneficiary</a> -->
 
                            <!-- <button type="submit" class="btn btn-default" style="float: right">Add beneficiary</button>
                        --> </form>

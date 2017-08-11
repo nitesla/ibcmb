@@ -21,6 +21,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
  */
 public interface OperationsUserService{
 
+    Long countOps();
     /**
      *Returns the specified operations user
      * @param id the user's id
