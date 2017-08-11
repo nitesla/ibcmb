@@ -23,7 +23,7 @@ import java.util.List;
  */
 @Entity
 @Audited(withModifiedFlag=true)
-
+@Where(clause ="del_Flag='N'" )
 public class SRConfig extends AbstractEntity implements PrettySerializer{
 
     private String requestName;
@@ -32,7 +32,6 @@ public class SRConfig extends AbstractEntity implements PrettySerializer{
     private Long groupId;
 
     @OneToMany(cascade = CascadeType.ALL)
-    @org.codehaus.jackson.annotate.JsonManagedReference
     private List<ServiceReqFormField> formFields;
 
     public String getRequestName() {

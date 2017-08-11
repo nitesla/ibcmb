@@ -41,7 +41,7 @@ public class ApplicationErrorController implements ErrorController {
     private ErrorAttributes errorAttributes;
 
     @RequestMapping(value = PATH)
-    public String handleError(HttpServletRequest request, Model model, Principal principal) {
+    public String handleError(HttpServletRequest request, Model model) {
 
         RequestAttributes requestAttributes = new ServletRequestAttributes(request);
         Map<String, Object> errorDetails = errorAttributes.getErrorAttributes(requestAttributes, true);

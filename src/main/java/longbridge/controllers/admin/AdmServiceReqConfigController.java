@@ -149,7 +149,7 @@ public class AdmServiceReqConfigController {
         }
         catch (InternetBankingException ibe){
             logger.error("Error deleting service request",ibe);
-            redirectAttributes.addFlashAttribute("message",messageSource.getMessage("req.delete.failure",null,locale));
+            redirectAttributes.addFlashAttribute("failure",messageSource.getMessage("req.delete.failure",null,locale));
 
         }
         return "redirect:/admin/srconfig";

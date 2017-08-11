@@ -32,6 +32,38 @@ function hideSibling(first,second)
 
 
 
+function errorLogin()
+{      
+    var err = [];
+    var showErr = '';
+    $('.erro').each(function(i,obj){
+    if ($(this).text() !== '')
+    {   
+        $(this).hide();
+        err.push($(this).text());
+    }
+    });
+    if(err.length > 0)
+    {    
+        for (i = 0; i < err.length; i++)
+        {
+            showErr += "- "+err[i]+"<br>";
+        }
+         $('#errorMess').html(showErr);
+         $('#myModalError').modal('show');
+    }
+    
+
+    
+        
+       
+       
+        
+    
+}
+
+
+
 
 
 

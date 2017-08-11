@@ -18,6 +18,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
  */
 public interface AdminUserService {
 
+    Long countAdm();
     /**
      * Returns an {@code AdminUser} having the specified userId
      * @param userId the user's Id

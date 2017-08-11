@@ -23,6 +23,11 @@ html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockq
     color:#9F614B !important;
 }
 
+.quickAccess
+{
+    font-size:10px;
+}
+
 
 .no-mt
 {
@@ -441,6 +446,12 @@ select::-ms-expand {
     padding-right: 0px !important;
 }
 
+.no-pd
+{
+    padding: 0px !important;
+}
+
+
 .form-group
 {
     position: relative !important;
@@ -581,10 +592,15 @@ select::-ms-expand {
     padding:5px;
 }
 
+.active-more
+{
+    border-bottom: 3px solid white !important;
+}
+
 
 .trans-but
 {
-    font-size: 12px !important;
+    /* font-size: 12px !important; */
 }
 
 .menu-link:hover
@@ -659,7 +675,7 @@ select::-ms-expand {
     background: #ebecef;
     padding:14px;
     margin-top: -2px;
-    padding-left: 24px;
+    padding-left: 10px;
 
 }
 
@@ -1413,6 +1429,7 @@ body {
 .form-signin-heading{
     text-align: center;
     font-size: 14px;
+    text-transform: capitalize;
 }
 
 #label{
@@ -1878,7 +1895,7 @@ button, input, optgroup, select, textarea {
        .menu-link
     {
         padding: 10px 5px !important;
-        font-size: 15px;
+        font-size: 13px;
         font-weight: bold;
 
     }
@@ -1908,6 +1925,19 @@ button, input, optgroup, select, textarea {
     .bg
     {
         min-height: 500px !important;
+    }
+
+
+
+}
+
+@media screen and (max-width: 1199px) and (min-width: 0px){
+    
+
+
+    .current-body
+    {
+        max-height: 383px !important;
     }
 
 
@@ -2304,7 +2334,7 @@ button, input, optgroup, select, textarea {
 .current-bar
 {
     padding:18px !important;
-    padding-left:35px !important;
+    /* padding-left:35px !important; */
     margin-bottom: 5px !important;
     text-transform: capitalize;
     font-size:20px !important;
@@ -2346,7 +2376,7 @@ button, input, optgroup, select, textarea {
 .coronation-form-control
 {
     font-size: 12px;
-    margin-left: 15px;
+     margin-left: 15px; 
 }
 
 .ml-15
@@ -2430,8 +2460,22 @@ button, input, optgroup, select, textarea {
 {
     background: white;
     padding:9px;
-    font-size:16px;
+    font-size:14px;
     font-weight: bold;
+}
+
+.text-left
+{
+    text-align: left !important;
+}
+
+
+
+
+
+.text-right
+{
+    text-align: right !important;
 }
 
 
@@ -2500,10 +2544,10 @@ button, input, optgroup, select, textarea {
 {
     position:absolute;
     background: #ebdfdb;
-    top:-5px;
+    top:-25px;
     right:50px;
     width:200px;
-    padding: 3px;
+    padding: 10px;
     text-align: left;
     z-index:1000;
 

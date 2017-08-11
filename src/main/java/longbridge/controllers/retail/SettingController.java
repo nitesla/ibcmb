@@ -90,7 +90,7 @@ public class SettingController {
     }
 
 
-    @GetMapping("/retail/error")
+    @GetMapping("/error")
     public String getRetailErrorPage() {
         return "/cust/error";
 

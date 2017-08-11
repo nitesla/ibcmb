@@ -8,15 +8,15 @@
     <div class="col-md-5 col-sm-5 ">
 
         <span class='my-label extra-link' th:if="${beneficiary.preferredName} !=''" th:text="${beneficiary.preferredName}"> Transfer to</span>
-                 <span class='my-label extra-link' th:if="${beneficiary.preferredName} ==''" th:text="${beneficiary.accountName}"> Transfer to</span>
+                 <span class='my-label extra-link' style="margin-top:10px;" th:if="${beneficiary.preferredName} ==''" th:text="${beneficiary.accountName}"> Transfer to</span>
 
         <select class="form-control full-width coronation-form-control hide-content-only" id="view">
             <option value="account">Overview</option>
         </select>
     </div>
 
-    <div class="col-xs-12 ml-15 no-pad-left no-pad-right " >
-        <div class="col-xs-11 no-pad-lef alert no-bd">
+    <div class="col-xs-12  " >
+        <div class=" no-pad-lef alert no-bd no-mt">
            <div class="">
                    <div class="col-md-7 col-sm-7 col-xs-12 no-pad-left no-pad-right">
                     <div class="r form-spacin">

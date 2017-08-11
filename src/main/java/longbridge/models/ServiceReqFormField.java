@@ -14,13 +14,9 @@ import javax.persistence.ManyToOne;
 @Entity
 @Audited(withModifiedFlag=true)
 @Where(clause ="del_Flag='N'" )
-@JsonIdentityInfo(
-        generator = ObjectIdGenerators.PropertyGenerator.class,
-        property = "id",scope = Long.class)
 public class ServiceReqFormField extends AbstractEntity {
 
     @ManyToOne
-    @org.codehaus.jackson.annotate.JsonBackReference
     private SRConfig SRConfig;
 
     private String fieldName;
@@ -60,6 +56,7 @@ public class ServiceReqFormField extends AbstractEntity {
         this.typeData = typeData;
     }
 
+    @JsonIgnore
     public SRConfig getSRConfig() {
         return SRConfig;
     }

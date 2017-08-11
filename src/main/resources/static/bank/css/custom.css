@@ -271,6 +271,7 @@ html , body{
 }
 .img-circle.profile_img {
     width: 70%;
+    background-color: #ffffff;
     margin-left: 15%;
     z-index: 1000;
     position: inherit;

@@ -70,7 +70,6 @@ public class ServiceReqConfigServiceImpl implements ServiceReqConfigService {
 					serviceReqFormFieldIterator.remove();
 				} else {
 					serviceReqFormField.setSRConfig(SRConfig);
-
 				}
 			}
 			serviceReqConfigRepo.save(SRConfig);
@@ -130,6 +129,7 @@ public class ServiceReqConfigServiceImpl implements ServiceReqConfigService {
 					onefield.setSRConfig(SRConfig);
 				} else {
 					onefield = serviceReqFormFieldRepo.findOne(f.getId());
+					entityManager.detach(onefield);
 
 				}
 				mapper.map(f, onefield);
@@ -164,7 +164,10 @@ public class ServiceReqConfigServiceImpl implements ServiceReqConfigService {
 	@Verifiable(operation="DELETE_SERV_REQ_CONFIG",description="Deleting a Service Request Configuration")
 	public String delServiceReqConfig(Long id) throws InternetBankingException {
 		try {
-			serviceReqConfigRepo.delete(id);
+			SRConfig srConfig = serviceReqConfigRepo.findOne(id);
+			SRConfig config = new SRConfig();
+			modelMapper.map(srConfig,config);
+			serviceReqConfigRepo.delete(config);
 			logger.warn("Deleted service request configuration with Id {}", id);
 			return messageSource.getMessage("req.config.delete.success", null, locale);
 		}

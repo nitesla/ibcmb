@@ -5,17 +5,23 @@
 <body onload="currentBar('Inter bank beneficiaries')">
 
 <div layout:fragment="content">
-    <div class="col-md-5 col-sm-5 ">
-        <h5 class="page_header"> Transfers to other banks through RTGS</h5>
+    <div class="col-xs-12 no-pad-left no-pad-right">
+        <div class="col-xs-12 ">
+            <h5 class="page_header  col-sm-5 no-pad-left"> Transfers to other banks through RTGS</h5>
+            <a th:href="@{/retail/transfer/interbank/new}" class="pull-right extra-link">New Beneficiary</a>
+        </div>
 
-                <select class="form-control full-width coronation-form-control" name="beneficiaries">
+        <div class="col-sm-5 col-xs-12 ">
+                <select class="form-control full-width coronation-form-contro" name="beneficiaries">
                     <option value="Overveiw">Beneficiaries</option>
                 </select>
+        </div>
      
     </div>
+   
 
-    <div class="col-xs-12 ml-15 " >
-        <div class="col-xs-12 no-pad-lef alert no-bd">
+    <div class="col-xs-12" >
+        <div class="no-mt no-pad-lef alert no-bd">
           
                <div class="table-responsive">
                            <form method="post" >
@@ -55,8 +61,7 @@
                                 </table>
                                 <br/>
                                 <input  type="hidden" th:value="${transferRequest}"/>
-                                <a th:href="@{/retail/transfer/interbank/new}" class="btn">Add Beneficiary</a>
-
+                                
                                 <!-- <button type="submit" class="btn btn-default" style="float: right">Add beneficiary</button>
                             --> </form>
 
