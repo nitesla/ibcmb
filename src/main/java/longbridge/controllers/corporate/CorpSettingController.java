@@ -114,7 +114,7 @@ public class CorpSettingController {
         try {
             String message =corporateUserService.changePassword(user,custChangePassword);
             redirectAttributes.addFlashAttribute("message", message);
-            return "redirect:/corporate/logout";
+            return "redirect:/corporate/dashboard";
         } catch (WrongPasswordException wpe) {
             model.addAttribute("failure",wpe.getMessage());
             logger.error("Wrong password from corporate user {}", user.getUserName(), wpe.toString());

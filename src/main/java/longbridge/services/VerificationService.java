@@ -3,6 +3,7 @@ package longbridge.services;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import longbridge.dtos.VerificationDTO;
 import longbridge.exception.VerificationException;
+import longbridge.models.AbstractEntity;
 import longbridge.models.Verification;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -41,6 +42,8 @@ public interface VerificationService {
     String verify(Long id) throws VerificationException;
 
     String add(Object o, String operation, String description) throws JsonProcessingException;
+
+    boolean isPendingVerification(Long entityId, String entityName);
 
     /**
      * This fetches the {@link Verification} object with the id {@code id}

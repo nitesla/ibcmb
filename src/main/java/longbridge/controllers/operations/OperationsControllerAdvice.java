@@ -61,6 +61,7 @@ public class OperationsControllerAdvice {
             model.addAttribute("verificationNumber", verificationNumber);
         }
 
+        model.addAttribute("pendingMessages",numOfUnreadMessages);
         model.addAttribute("pendingApprovals", verificationNumber);
         model.addAttribute("pendingRequests", numOfSubmittedRequests);
 

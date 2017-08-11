@@ -122,7 +122,7 @@ public class SettingController {
         try {
             String message = retailUserService.changePassword(user, custChangePassword);
             redirectAttributes.addFlashAttribute("message", message);
-            return "redirect:/retail/logout";
+            return "redirect:/retail/dashboard";
         } catch (WrongPasswordException wpe) {
             model.addAttribute("failure", wpe.getMessage());
             logger.error("Wrong password from retail user {}", user.getUserName(), wpe.toString());

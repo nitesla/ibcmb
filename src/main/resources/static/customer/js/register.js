@@ -348,10 +348,8 @@ function sendRegCode(){
 
 
 function checkImage() {
-    var phishing = "";
-    phishing = $('input[name="phishing"]').val();
-    console.log(phishing);
-    if(phishing === "" || phishing == null){
+    var anyImageSelected = $('input[name="phishing"]:checked').length > 0;
+    if(anyImageSelected != true){
         $('#errorMess').text("Please select phishing image.");
         $('#myModalError').modal('show');
         return false;
