@@ -78,6 +78,7 @@ public class SettingController {
     public String getRetailDashboard(Model model, Principal principal) {
         RetailUser retailUser = retailUserService.getUserByName(principal.getName());
         List<AccountDTO> accountList = accountService.getAccountsAndBalances(retailUser.getCustomerId());
+
         model.addAttribute("accountList", accountList);
 
         boolean exp = passwordPolicyService.displayPasswordExpiryDate(retailUser.getExpiryDate());

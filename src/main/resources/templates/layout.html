@@ -271,7 +271,12 @@
                         <li><a th:href="@{/admin/users/password}"> Change Password</a></li>
                     </ul>
                 </li>
-
+                <li >
+                    <a th:href="@{/admin/verifications/operations}" class="info-number"  aria-expanded="false">
+                        <i class="fa fa-check"></i>
+                        <span class="badge bg-green"  th:text="${pendingApprovals}">0</span>
+                    </a>
+                </li>
             </ul>
         </nav>
     </div>
@@ -323,17 +328,21 @@
                     <a th:href="@{/ops/mailbox/newinbox/}" class="info-number"  aria-expanded="false"
                        data-toggle="tooltip" data-placement="top" title="Mails">
                         <i class="fa fa-envelope-o"></i>
-                        <span class="badge bg-green"  th:text="${numOfUnreadMessages}">count</span>
+                        <span class="badge bg-green"  th:text="${numOfUnreadMessages}">0</span>
                     </a>
-
                 </li>
                 <li >
                     <a th:href="@{/ops/requests}" class="info-number"  aria-expanded="false" data-toggle="tooltip" data-placement="top" title="Service Requests"
                     >
                         <i class="fa fa-bell-o"></i>
-                        <span class="badge bg-green"  th:text="${numOfSubmittedRequests}">count</span>
+                        <span class="badge bg-green"  th:text="${numOfSubmittedRequests}">0</span>
                     </a>
-
+                </li>
+                <li >
+                    <a th:href="@{/ops/verifications/operations}" class="info-number"  aria-expanded="false">
+                        <i class="fa fa-check"></i>
+                        <span class="badge bg-green"  th:text="${pendingApprovals}">0</span>
+                    </a>
                 </li>
             </ul>
         </nav>

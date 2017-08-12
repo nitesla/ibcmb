@@ -32,48 +32,48 @@
                     <strong>Warning!</strong> Your password will expire on <span th:text="${expireDate}"></span>. <a href="/admin/users/password" class="alert-link">Click to change it now</a>  <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
                 </div>
 
-                <div class="row">
-                    <div class="col-md-12 col-sm-12 col-xs-12">
-                        <div class="x_panel">
+                <br/>
 
-                            <div class="x_content">
-                                <div class="ibox-content">
-
-                                    <div class="row top_tiles" style="margin: 10px 0;">
-                                        <h3>Pending Actions</h3>
-                                        <div class="col-md-3 col-sm-3 col-xs-6 tile">
-                                            <h2 th:text="${pendingApprovals}">0</h2>
-                                            <span>Pending Approvals</span>
-                                        </div>
-                                    </div>
-
-                                    <br/>
-                                    <br/>
-                                    <div class="row top_tiles" style="margin: 10px 0;">
-                                        <h3>User Statistics</h3>
-                                        <div class="col-md-3 col-sm-3 col-xs-6 tile">
-                                            <h2 th:text="${noOfRetailCust}">0</h2>
-                                            <span>Individual Customers</span>
-                                        </div>
-                                        <div class="col-md-3 col-sm-3 col-xs-6 tile">
-                                            <h2 th:text="${noOfCorporateCust}">0</h2>
-                                            <span>Corporate Customers</span>
-                                        </div>
-                                        <div class="col-md-3 col-sm-3 col-xs-6 tile">
-                                            <h2 th:text="${noOfOpsUser}">0</h2>
-                                            <span>Operation Users</span>
-                                        </div>
-                                        <div class="col-md-3 col-sm-3 col-xs-6 tile">
-                                            <h2 th:text="${noOfAdmUser}">0</h2>
-                                            <span>Admin Users</span>
-                                        </div>
-                                    </div>
-
-                                </div>
-                            </div>
+                <div class="row top_tiles">
+                    <div class="animated flipInY col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                        <div class="tile-stats">
+                            <div class="icon"><i class="fa fa-check"></i></div>
+                            <div class="count" th:text="${pendingApprovals}">0</div>
+                            <h3 >Pending <br/>Approvals</h3>
                         </div>
                     </div>
                 </div>
+                <div class="row top_tiles">
+                    <div class="animated flipInY col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                        <div class="tile-stats">
+                            <div class="icon"><i class="fa fa-user"></i></div>
+                            <div class="count" th:text="${noOfRetailCust}">0</div>
+                            <h3>Individual <br/>Customers</h3>
+                        </div>
+                    </div>
+                    <div class="animated flipInY col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                        <div class="tile-stats">
+                            <div class="icon"><i class="fa fa-building-o"></i></div>
+                            <div class="count" th:text="${noOfCorporateCust}">0</div>
+                            <h3>Corporate <br/>Customers</h3>
+                        </div>
+                    </div>
+                    <div class="animated flipInY col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                        <div class="tile-stats">
+                            <div class="icon"><i class="fa fa-users"></i></div>
+                            <div class="count" th:text="${noOfOpsUser}">0</div>
+                            <h3>Operation <br/>Users</h3>
+                        </div>
+                    </div>
+                    <div class="animated flipInY col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                        <div class="tile-stats">
+                            <div class="icon"><i class="fa fa-users"></i></div>
+                            <div class="count" th:text="${noOfAdmUser}">0</div>
+                            <h3>Admin <br/>Users</h3>
+                        </div>
+                    </div>
+                </div>
+
             </div>
         </div>
         <!-- /page content -->
