@@ -12,7 +12,6 @@ import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.MessageSource;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.DefaultRedirectStrategy;
 import org.springframework.security.web.RedirectStrategy;
@@ -67,9 +66,15 @@ public class CorporateAuthenticationSuccessHandler implements AuthenticationSucc
           //  CorporateUser user = corporateUserRepo.findFirstByUserNameIgnoreCaseAndCorporate_CustomerIdIgnoreCase(userName, corpId);
 
             CorporateUser user = corporateUserRepo.findFirstByUserNameIgnoreCase(userName);
-            if (user != null)
+            if (user != null) {
 
-                sessionUtils.validateExpiredPassword(user, session);
+                boolean firstTime = sessionUtils.checkFirstTimeLogin(user, session);
+
+                if (!firstTime){
+                  sessionUtils.validateExpiredPassword(user, session);
+                }
+                //sessionUtils.validateExpiredPassword(user, session);
+            }
 
             user.setLastLoginDate(new Date());
             failedLoginService.loginSucceeded(user);

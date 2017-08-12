@@ -1,8 +1,7 @@
 package longbridge.security;
 
-import longbridge.api.CustomerDetails;
 import longbridge.dtos.SettingDTO;
-import longbridge.models.RetailUser;
+import longbridge.models.CorporateUser;
 import longbridge.models.User;
 import longbridge.services.ConfigurationService;
 import longbridge.services.IntegrationService;
@@ -115,6 +114,24 @@ public class SessionUtils {
         }
 
     }
+
+    public boolean checkFirstTimeLogin(CorporateUser user, HttpSession session) {
+        try {
+
+            if (user.getIsFirstTimeLogon() != null && session != null) {
+
+                if ("Y".equals(user.getIsFirstTimeLogon())) {
+                    session.setAttribute("first-time-logon", "first-time-logon");
+                    return true;
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+
     public void clearSession() {
         try {
             ServletRequestAttributes attr = (ServletRequestAttributes)

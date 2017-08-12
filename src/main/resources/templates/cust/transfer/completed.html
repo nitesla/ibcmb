@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{ret-layout}">
+
+<body onload="javascript:var bread = [['Home', '/corporate/dashboard'],['Completed Transfers']];currentBar('completed transfers');breadCrumb(bread)">
+
+<div layout:fragment="content">
+    <div class="col-md-5 col-sm-5">
+
+        <select class="form-control full-width coronation-form-contro invisible" id="view">
+            <option value="account">Overview</option>
+        </select>
+    </div>
+
+    <div class="col-xs-12 " >
+
+        <table id="ct">
+            <thead>
+                    <td>Remarks</td>
+                    <td>Remarks</td>
+                    <td>Remarks</td>
+                    <td>Remarks</td>
+                    <td>Remarks</td>
+            </thead>
+            <tbody>
+
+            </tbody>
+            <tfoot>
+                <td>Remarks</td>
+                <td>Remarks</td>
+                <td>Remarks</td>
+                <td>Remarks</td>
+                <td>Remarks</td>
+            </tfoot>
+        </table>
+    </div>
+
+</div>
+
+
+<th:block layout:fragment="scripts">
+    <script>
+        $(document).ready(function() {
+            var url = "/retail/trans/history/all";
+            var table = $('#ct').DataTable({
+                select:true,
+                responsive: true,
+                "lengthMenu" : [ [ 10, 20, 30, -1],	[ 10 ,20, 30, "All"] ],
+                "pagingType" : "simple_numbers",
+                "searching": false,
+                "paging": true,
+                "serverSide" : true,
+                "ajax" : url,
+                "dom": 'T<"clear">frtlp',
+                "columns": [
+                    { "data": "remarks" },
+                    { "data": "transferType" },
+                    { "data": "amount" },
+                    { "data": "beneficiaryAccountName" },
+                    { "data": "tranDate" },
+
+                ] ,
+
+//                "columnDefs" : [ {
+//                    "targets" : 4,
+//                    "data" : "status",
+//                    "render" : function(data, type,full, meta) {
+//                        if (type === 'display') {
+//                            if (data == "A") {
+//                                return "<i class='fa fa-check dt-body-center' style='color:green;display:block; text-align:center; margin:0 auto;' ></i>";
+//                            } else if (data == "I") {
+//                                return "<i class='fa fa-ban  dt-body-center' style='color:red;display:block; text-align:center; margin:0 auto;'></i>";
+//                            }
+//                            else if (data == "L") {
+//                                return "<i class='fa fa-lock  dt-body-center' style='color:red;display:block; text-align:center; margin:0 auto;'></i>";
+//                            }else {
+//                                return "<i class='fa fa-question  dt-body-center' style='color:red;display:block; text-align:center; margin:0 auto;'></i>";
+//                            }
+//                        }
+//                        return data;
+//                    }
+//
+//                }  ]
+
+            });
+
+            $("#search").on("click", function(e) {
+                e.preventDefault();
+                dt = $('#ct').DataTable();
+                dt.ajax.reload(null, true);
+
+            });
+
+            $('.dataTables_empty').html('No data available');
+
+        });
+
+        /*]]>*/
+    </script>
+</th:block>
+
+</body>
+</html>

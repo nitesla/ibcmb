@@ -3,9 +3,7 @@ package longbridge.services.implementations;
 import longbridge.api.AccountDetails;
 import longbridge.api.NEnquiryDetails;
 import longbridge.dtos.CorpTransferRequestDTO;
-import longbridge.dtos.CorporateRequestDTO;
 import longbridge.dtos.SettingDTO;
-import longbridge.dtos.TransferRequestDTO;
 import longbridge.exception.*;
 import longbridge.models.*;
 import longbridge.repositories.*;
@@ -13,13 +11,13 @@ import longbridge.security.userdetails.CustomUserPrincipal;
 import longbridge.services.*;
 import longbridge.utils.TransferType;
 import org.apache.commons.lang3.math.NumberUtils;
-import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -135,6 +133,16 @@ public class CorpTransferServiceImpl implements CorpTransferService {
         throw new InternetBankingTransferException(TransferExceptions.ERROR.toString());
     }
 
+    @Override
+    public Page<CorpTransferRequestDTO> getCompletedTransfers(Pageable pageDetails) {
+        CorporateUser corporateUser = getCurrentUser();
+        Corporate corporate = corporateUser.getCorporate();
+        Page<CorpTransRequest> page = corpTransferRequestRepo.findByCorporateAndStatusDescription(corporate, "00", pageDetails);
+        List<CorpTransferRequestDTO> dtOs = convertEntitiesToDTOs(page.getContent());
+        long t = page.getTotalElements();
+        Page<CorpTransferRequestDTO> pageImpl = new PageImpl<CorpTransferRequestDTO>(dtOs, pageDetails, t);
+        return pageImpl;
+    }
 
     @Override
     public CorpTransRequest getTransfer(Long id) {

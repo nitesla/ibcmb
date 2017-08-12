@@ -6,8 +6,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
-
 /**
  * Created by Fortune on 5/18/2017.
  */
@@ -18,6 +16,7 @@ public interface CorpTransferRequestRepo extends CommonRepo<CorpTransRequest,Lon
 
     Page<CorpTransRequest> findByCorporateAndStatus(Corporate corporate, String status, Pageable pageable);
 
+    Page<CorpTransRequest> findByCorporateAndStatusDescription(Corporate corporate, String sd, Pageable pageable);
 
     CorpTransRequest findById(long id);
 

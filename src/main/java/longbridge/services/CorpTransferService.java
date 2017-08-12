@@ -17,6 +17,8 @@ import java.util.List;
 public interface CorpTransferService {
 
 
+    Page<CorpTransferRequestDTO> getCompletedTransfers(Pageable pageDetails);
+
     @PreAuthorize("hasAuthority('GET_TRANSFER')")
     CorpTransRequest getTransfer(Long id);
 

@@ -1,8 +1,6 @@
 package longbridge.services;
 
 import longbridge.dtos.TransferRequestDTO;
-
-import longbridge.exception.InternetBankingException;
 import longbridge.exception.InternetBankingTransferException;
 import longbridge.exception.TransferException;
 import longbridge.models.TransRequest;
@@ -42,6 +40,10 @@ public interface TransferService {
     TransferRequestDTO saveTransfer(TransferRequestDTO transferRequestDTO) throws TransferException;
     @PreAuthorize("hasAuthority('MAKE_TRANSFER')")
     void validateTransfer(TransferRequestDTO transferRequestDTO) throws InternetBankingTransferException;
+
+    Page<TransferRequestDTO> getCompletedTransfers(Pageable pageDetails);
+
+    Page<TransferRequestDTO> findCompletedTransfers(String pattern, Pageable pageDetails);
 
     List<TransRequest> getLastTenTransactionsForAccount(String s);
 
