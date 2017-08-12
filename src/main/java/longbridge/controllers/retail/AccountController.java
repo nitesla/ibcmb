@@ -228,12 +228,14 @@ import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.jasperreports.JasperReportsPdfView;
 
 import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.security.Principal;
 import java.text.DecimalFormat;
@@ -498,16 +500,56 @@ public class AccountController {
 		return "cust/account/tranhistory";
 	}
 
+//	@GetMapping("/viewstatement/display/data")
+//	public @ResponseBody
+//	DataTablesOutput<TransactionDetails> getStatementData(DataTablesInput input, String acctNumber,
+//														  String fromDate, String toDate, String tranType) {
+//		// Pageable pageable = DataTablesUtils.getPageable(input);
+//		logger.info("fromDate {}",fromDate);
+//		logger.info("toDate {}",toDate);
+////		Duration diffInDays= new Duration(new DateTime(fromDate),new DateTime(toDate));
+////		logger.info("Day difference {}",diffInDays.getStandardDays());
+//
+//		Date from = null;
+//		Date to = null;
+//		DataTablesOutput<TransactionDetails> out = new DataTablesOutput<TransactionDetails>();
+//		SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy");
+//		try {
+//			from = format.parse(fromDate);
+//			to = format.parse(toDate);
+//			logger.info("fromDate {}",from);
+//			logger.info("toDate {}",to);
+//			//int diffInDays = (int) ((to.getTime() - from.getTime()) / (1000 * 60 * 60 * 24));
+//
+//			AccountStatement accountStatement = integrationService.getAccountStatements(acctNumber, from, to, tranType);
+//			logger.info("TransactionType {}", tranType);
+//			out.setDraw(input.getDraw());
+//			List<TransactionDetails> list = accountStatement.getTransactionDetails();
+//
+//			out.setData(list);
+//			int sz = list==null?0:list.size();
+//			out.setRecordsFiltered(sz);
+//			out.setRecordsTotal(sz);
+//		} catch (ParseException e) {
+//			logger.warn("didn't parse date", e);
+//		}
+//		return out;
+//
+//	}
+
 	@GetMapping("/viewstatement/display/data")
-	public @ResponseBody
-	DataTablesOutput<TransactionDetails> getStatementData(DataTablesInput input, String acctNumber,
-														  String fromDate, String toDate, String tranType) {
+	@ResponseBody
+	public List<TransactionDetails> getStatementData(WebRequest webRequest, HttpSession session) {
 		// Pageable pageable = DataTablesUtils.getPageable(input);
+		String acctNumber = webRequest.getParameter("acctNumber");
+		String fromDate = webRequest.getParameter("fromDate");
+		String toDate = webRequest.getParameter("toDate");
+		String tranType = webRequest.getParameter("tranType");
 		logger.info("fromDate {}",fromDate);
 		logger.info("toDate {}",toDate);
 //		Duration diffInDays= new Duration(new DateTime(fromDate),new DateTime(toDate));
 //		logger.info("Day difference {}",diffInDays.getStandardDays());
-
+		List<TransactionDetails> list =  null;
 		Date from = null;
 		Date to = null;
 		DataTablesOutput<TransactionDetails> out = new DataTablesOutput<TransactionDetails>();
@@ -521,17 +563,18 @@ public class AccountController {
 
 			AccountStatement accountStatement = integrationService.getAccountStatements(acctNumber, from, to, tranType);
 			logger.info("TransactionType {}", tranType);
-			out.setDraw(input.getDraw());
-			List<TransactionDetails> list = accountStatement.getTransactionDetails();
+			list = accountStatement.getTransactionDetails();
+			session.removeAttribute("acctStmtLastDetails");
+			if(!list.isEmpty()){
+				session.setAttribute("acctStmtLastDetails",list.get(list.size()-1));
+			}
 
-			out.setData(list);
-			int sz = list==null?0:list.size();
-			out.setRecordsFiltered(sz);
-			out.setRecordsTotal(sz);
 		} catch (ParseException e) {
 			logger.warn("didn't parse date", e);
+		}catch (Exception e){
+			logger.warn("error cause by", e.getMessage());
 		}
-		return out;
+		return list;
 
 	}
 

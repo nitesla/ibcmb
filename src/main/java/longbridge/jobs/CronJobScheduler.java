@@ -22,7 +22,7 @@ public class CronJobScheduler {
                 .newTrigger()
                 .withIdentity("oneTime", "ibtest")
                 .withSchedule(
-                        CronScheduleBuilder.cronSchedule("0 0 0/1 1/1 * ? *"))
+                        CronScheduleBuilder.cronSchedule("0 0/1 * 1/1 * ? *"))
                 .build();
 
         /**

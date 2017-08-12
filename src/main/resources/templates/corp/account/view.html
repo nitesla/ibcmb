@@ -71,24 +71,23 @@
                                 <table class="table" id="tranDetails">
                                     <thead>
                                     <tr>
-                                        <th>Value Date</th>
                                         <th>Post Date</th>
+                                        <th>Value Date</th>
                                         <th>Transaction Narration</th>
-                                        <th>Account Balance</th>
                                         <th>Debit/Credit</th>
                                         <th>Transaction ReferenceID</th>
+                                        <th>Account Balance</th>
 
                                     </tr>
                                     </thead>
                                     <tfoot>
                                     <tr>
-                                        <th>Value Date</th>
                                         <th>Post Date</th>
+                                        <th>Value Date</th>
                                         <th>Transaction Narration</th>
-                                        <th>Account Balance</th>
                                         <th>Debit/Credit</th>
                                         <th>Transaction ReferenceID</th>
-
+                                        <th>Account Balance</th>
                                     </tr>
                                     </tfoot>
                                 </table>
@@ -144,16 +143,16 @@
                 "ordering" : false,
                 "dom": 'T<"clear">frtlp',
                 "columns" : [
-                    {"data" : "valueDate"},
                     {"data" : "postDate"} ,
+                    {"data" : "valueDate"},
                     {"data" : "narration"},
-                    {"data" : "accountBalance"},
                     {"data" : "tranType"},
-                    {"data" : "tranId"}
+                    {"data" : "tranId"},
+                    {"data" : "accountBalance"}
 
                 ],
                 "columnDefs" : [ {
-                    "targets" : 1,
+                    "targets" : 0,
                     "data" : "postDate",
                     "render" : function(data, type,full, meta) {
 
@@ -168,7 +167,7 @@
                         return data;
                     }
                 },{
-                    "targets" : 3,
+                    "targets" : 5,
                     "data" : "accountBalance",
                     "render" : function(data, type,full, meta) {
                         if (type === 'display') {
@@ -181,7 +180,7 @@
                     }
                 }
                     , {
-                        "targets": 0,
+                        "targets": 1,
                         "data": "valueDate",
                         "render": function (data, type, full, meta) {
                             if (type === 'display') {

@@ -1,4 +1,8 @@
 //steps with form
+var summaryEmail = "";
+var summaryUsername = "";
+var summaryConfirm = "";
+var summarySecQuestion = "";
 var map = {};
 var form = $("#reg-form");
 form.validate({
@@ -49,6 +53,7 @@ form.children("div").steps({
             var accountNumber = $('input[name="accountNumber"]').val();
 
             var email = $('input[name="email"]').val();
+            summaryEmail = email;
             console.log(email);
             var birthDate = $('input[name="birthDate"]').val();
             return isValid && validateAccountDetails(accountNumber, email, birthDate) && validateExists(accountNumber, email, birthDate);
@@ -58,7 +63,9 @@ form.children("div").steps({
 
             console.log("Current stp is the profile details step");
             var username = $('input[name="userName"]').val();
+            summaryUsername = username;
             var confirm = $('input[name="confirm"]').val();
+            summaryConfirm = confirm;
             var regCode = $('input[name="regCode"]').val();
             return isValid && validateUsername(username) && validatePassword(confirm) && validateRegCode(regCode);
         }
@@ -72,6 +79,7 @@ form.children("div").steps({
         if(PHISHING_IMAGE_STEP === currentIndex){
             console.log("Current Step is the phishing image step");
             //$("#reg-form").submit();
+            getSummary();
             return isValid && checkImage();
         }
 
@@ -107,7 +115,38 @@ form.children("div").steps({
         window.location.href = "/login/retail";
     }
 });
+function getSummary() {
+    var noOfQuestions = $('#noOfQuestions').val();
+    console.log("noOfQuestions "+noOfQuestions);
+    var imgPath =  $('#imgPaths').val();
 
+    var phishing = $("input[name='phishing']:checked"). val();
+    var container = document.getElementById("regSummary");
+console.log("phishing "+phishing);
+    container.innerHTML = "";
+    container.innerHTML += "<p><h1>Self Registration Summary</h1></p> <br/>";
+    container.innerHTML += "<p>Below are a summary of details entered to be used for registration</p>";
+    container.innerHTML += "<p>Email address: "+summaryEmail+"</p>";
+    container.innerHTML += "<p>Username: "+summaryUsername+"</p>";
+    container.innerHTML += "<p>Password: **********</p>";
+    for (i = 0; i < noOfQuestions; i++) {
+        container.innerHTML += "<p>Security Question: "+i+1+"  "+$('#securityQuestion'+i).val()+"</p>";
+    }
+    var imgP = imgPath+phishing;
+    container.innerHTML += "<p>Phishing Image: <img src='"+imgP +"' width='100px' height='100px' style='padding: 5px;'/></p>";
+    // container.innerHTML +="<table>" +
+    //         "<tbody>" +
+    //         "<tr><td>Email address:</td><td>"+summaryEmail+"</td></tr>"+
+    //         "<tr><td>Username:</td><td>"+summaryUsername+"</td></tr>"+
+    //         "<tr><td>Password:</td><td>**********</td></tr>";
+    //         "<tr><td>Phishing Image: </td><td><img src='"+imgP +"' width='100px' height='100px' style='padding: 5px;'/></td></tr>";
+    // for (i = 0; i < noOfQuestions; i++) {
+    //     container.innerHTML +="<tr><td>Security Question:</td> <td>"+$('#securityQuestion'+i).val()+"</td></tr>";
+    // }
+    // container.innerHTML +=  "</tbody>"+
+    //     "</table>"
+    
+}
 
 // function loadPhishingImages(){
 //     console.log("in load phishing imges");
