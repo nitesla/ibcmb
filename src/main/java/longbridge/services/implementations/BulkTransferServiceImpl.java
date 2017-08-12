@@ -180,7 +180,7 @@ public class BulkTransferServiceImpl implements BulkTransferService {
         CorpTransferAuth transferAuth = bulkTransfer.getTransferAuth();
 
         if (reqEntryRepo.existsByTranReqIdAndRole(bulkTransfer.getId(), userRole)) {
-            throw new TransferAuthorizationException(messageSource.getMessage("transfer.auth.failure", null, locale));
+            throw new TransferAuthorizationException(messageSource.getMessage("transfer.auth.exist", null, locale));
         }
 
         if (!"P".equals(transferAuth.getStatus())) {
@@ -205,7 +205,7 @@ public class BulkTransferServiceImpl implements BulkTransferService {
 
     @Override
     public Page<BulkTransferDTO> getBulkTransferRequests(Corporate corporate, Pageable details) {
-        Page<BulkTransfer> page = bulkTransferRepo.findByCorporate(corporate, details);
+        Page<BulkTransfer> page = bulkTransferRepo.findByCorporateOrderByTranDateDesc(corporate, details);
         List<BulkTransferDTO> dtOs = convertEntitiesToDTOs(page.getContent());
         long t = page.getTotalElements();
         Page<BulkTransferDTO> pageImpl = new PageImpl<BulkTransferDTO>(dtOs, details, t);

@@ -362,7 +362,7 @@ public class CorpTransferServiceImpl implements CorpTransferService {
             CorpTransferAuth transferAuth = corpTransRequest.getTransferAuth();
 
             if (reqEntryRepo.existsByTranReqIdAndRole(corpTransRequest.getId(), userRole)) {
-                throw new TransferAuthorizationException(messageSource.getMessage("transfer.auth.failure", null, locale));
+                throw new TransferAuthorizationException(messageSource.getMessage("transfer.auth.exist", null, locale));
             }
 
             if (!"P".equals(transferAuth.getStatus())) {
