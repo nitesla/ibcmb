@@ -76,7 +76,6 @@ public class OpsCorporateRoleController {
     public String addRole(@PathVariable Long corpId, Model model) {
         CorporateDTO corporate = corporateService.getCorporate(corpId);
         CorporateRoleDTO roleDTO = new CorporateRoleDTO();
-        roleDTO.setRank(1);
         List<CorporateUserDTO> users = corporateUserService.getUsersWithoutRole(corpId);
         model.addAttribute("users",users);
         model.addAttribute("corporate",corporate);
@@ -126,7 +125,7 @@ public class OpsCorporateRoleController {
             model.addAttribute("corporate",corporate);
             List<CorporateUserDTO> users = corporateUserService.getUsersWithoutRole(NumberUtils.toLong(roleDTO.getCorporateId()));
             model.addAttribute("users",users);
-            result.addError(new ObjectError("error", messageSource.getMessage("role.add.failure", null, locale)));
+            result.addError(new ObjectError("error", ibe.getMessage()));
             logger.error("Error creating role", ibe);
             return "ops/corporate/addrole";
         }
