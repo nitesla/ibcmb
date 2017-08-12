@@ -4,12 +4,13 @@ import longbridge.dtos.CorpTransferRequestDTO;
 import longbridge.exception.InternetBankingException;
 import longbridge.exception.InternetBankingTransferException;
 import longbridge.exception.TransferException;
-import longbridge.models.*;
+import longbridge.models.CorpTransReqEntry;
+import longbridge.models.CorpTransRequest;
+import longbridge.models.CorpTransferAuth;
+import longbridge.models.TransRequest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
-
-import java.util.List;
 
 /**
  * Created by Fortune on 5/19/2017.
@@ -17,7 +18,7 @@ import java.util.List;
 public interface CorpTransferService {
 
 
-    Page<CorpTransferRequestDTO> getCompletedTransfers(Pageable pageDetails);
+    //Page<CorpTransferRequestDTO> getCompletedTransfers(Pageable pageDetails);
 
     @PreAuthorize("hasAuthority('GET_TRANSFER')")
     CorpTransRequest getTransfer(Long id);
@@ -39,6 +40,10 @@ public interface CorpTransferService {
 
     CorpTransferAuth getAuthorizations(CorpTransRequest transRequest);
     //CorpTransferAuth getAuthorizations(TransRequest transRequest);
+
+    Page<CorpTransRequest> getCompletedTransfers(Pageable pageDetails);
+
+    Page<CorpTransRequest> findCompletedTransfers(String pattern, Pageable pageDetails);
 
     String addAuthorization(CorpTransReqEntry transReqEntry);
 

@@ -130,7 +130,7 @@
         if (!opt.ignoreUserActivity) {
             $(document).on('mousemove', function(e) {
                 restartSession();
-                console.log('this is d time'+ timer);
+                //console.log('this is d time'+ timer);
             });
         }
 

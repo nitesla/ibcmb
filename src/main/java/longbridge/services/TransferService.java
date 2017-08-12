@@ -41,7 +41,7 @@ public interface TransferService {
     @PreAuthorize("hasAuthority('MAKE_TRANSFER')")
     void validateTransfer(TransferRequestDTO transferRequestDTO) throws InternetBankingTransferException;
 
-    Page<TransferRequestDTO> getCompletedTransfers(Pageable pageDetails);
+    Page<TransRequest> getCompletedTransfers(Pageable pageDetails);
 
     Page<TransferRequestDTO> findCompletedTransfers(String pattern, Pageable pageDetails);
 

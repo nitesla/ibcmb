@@ -6,10 +6,7 @@ import longbridge.dtos.SettingDTO;
 import longbridge.dtos.TransferRequestDTO;
 import longbridge.exception.InternetBankingTransferException;
 import longbridge.exception.TransferExceptions;
-import longbridge.models.RetailUser;
-import longbridge.models.TransRequest;
-import longbridge.models.User;
-import longbridge.models.UserType;
+import longbridge.models.*;
 import longbridge.repositories.RetailUserRepo;
 import longbridge.repositories.TransferRequestRepo;
 import longbridge.security.userdetails.CustomUserPrincipal;
@@ -32,6 +29,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.stream.StreamSupport;
@@ -171,15 +169,20 @@ public class TransferServiceImpl implements TransferService {
     }
 
     @Override
-    public Page<TransferRequestDTO> getCompletedTransfers(Pageable pageDetails) {
+    public Page<TransRequest> getCompletedTransfers(Pageable pageDetails) {
         logger.info("GOT HERE");
         RetailUser user = getCurrentUser();
-        Page<TransRequest> page = transferRequestRepo.findByUserReferenceNumberAndStatusDescription("RET_" + user.getId(),"00",pageDetails);
-        List<TransferRequestDTO> dtOs = convertEntitiesToDTOs(page.getContent());
-        logger.info("TRans REQUEST {}", dtOs);
-        long t = page.getTotalElements();
-        Page<TransferRequestDTO> pageImpl = new PageImpl<TransferRequestDTO>(dtOs, pageDetails, t);
-        return pageImpl;
+//        List<TransRequest> test = transferRequestRepo.findByUserReferenceNumberAndStatus("RET_" + user.getId(),"000");
+//        logger.info("TEST {}" + test);
+
+        Page<TransRequest> page = transferRequestRepo.findByUserReferenceNumberAndStatusIn("RET_" + user.getId(), Arrays.asList("00","000"), pageDetails);
+        logger.info("PAGE CONTENT {}" + page.getContent());
+        //List<TransferRequestDTO> dtOs = convertEntitiesToDTOs(page.getContent());
+        //logger.info("TRans REQUEST {}" + dtOs);
+        //long t = page.getTotalElements();
+
+        return page;
+        //return pageImpl;
     }
 
     @Override

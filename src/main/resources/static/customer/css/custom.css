@@ -594,7 +594,7 @@ select::-ms-expand {
 
 .active-more
 {
-    border-bottom: 3px solid white !important;
+    border-bottom: 1px solid white !important;
 }
 
 

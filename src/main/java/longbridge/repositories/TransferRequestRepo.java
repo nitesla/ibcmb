@@ -13,6 +13,7 @@ public interface TransferRequestRepo extends CommonRepo<TransRequest, Long> {
     TransRequest findById(long id);
     List<TransRequest> findByUserReferenceNumber(String s);
     List<TransRequest> findTop10ByCustomerAccountNumberOrderByTranDateDesc(String acc);
+    List<TransRequest> findByUserReferenceNumberAndStatus(String rn, String s);
 
-    Page<TransRequest> findByUserReferenceNumberAndStatusDescription(String rn, String sd, Pageable pageDetail);
+    Page<TransRequest> findByUserReferenceNumberAndStatusIn(String rn, List<String> status, Pageable pageable);
 }

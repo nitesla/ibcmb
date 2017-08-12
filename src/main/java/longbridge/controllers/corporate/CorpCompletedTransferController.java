@@ -1,8 +1,11 @@
-package longbridge.controllers.retail;
+package longbridge.controllers.corporate;
 
-import longbridge.models.RetailUser;
+import longbridge.models.CorpTransRequest;
+import longbridge.models.Corporate;
+import longbridge.models.CorporateUser;
 import longbridge.models.TransRequest;
-import longbridge.services.RetailUserService;
+import longbridge.services.CorpTransferService;
+import longbridge.services.CorporateUserService;
 import longbridge.services.TransferService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,17 +34,15 @@ import java.util.Map;
  * Created by Showboy on 12/08/2017.
  */
 @Controller
-@RequestMapping("/retail/transfer")
-public class CompletedTransferController {
+@RequestMapping("/corporate/transfer")
+public class CorpCompletedTransferController {
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
-    TransferService transferService;
-
+    private CorporateUserService corporateUserService;
     @Autowired
-    RetailUserService retailUserService;
-
+    TransferService transferService;
     @Autowired
     private ApplicationContext appContext;
 
@@ -54,24 +55,27 @@ public class CompletedTransferController {
     @Value("${excel.path}")
     String PROPERTY_EXCEL_SOURCE_FILE_PATH;
 
+    @Autowired
+    CorpTransferService corpTransferService;
+
     @GetMapping("/history")
     public String completedTransfers(){
-        return "cust/transfer/completed";
+        return "corp/transfer/completed";
     }
 
     @GetMapping("/history/all")
     public @ResponseBody
-    DataTablesOutput<TransRequest> getTransfersCompleted(DataTablesInput input){
+    DataTablesOutput<CorpTransRequest> getTransfersCompleted(DataTablesInput input){
 
         Pageable pageable = DataTablesUtils.getPageable(input);
 
-        Page<TransRequest> transferRequests = transferService.getCompletedTransfers(pageable);
+        Page<CorpTransRequest> transferRequests = corpTransferService.getCompletedTransfers(pageable);
 //        if (StringUtils.isNoneBlank(search)) {
 //            transferRequests = transferService.findCompletedTransfers(search, pageable);
 //        }else{
 //            transferRequests = transferService.getCompletedTransfers(pageable);
 //        }
-        DataTablesOutput<TransRequest> out = new DataTablesOutput<TransRequest>();
+        DataTablesOutput<CorpTransRequest> out = new DataTablesOutput<CorpTransRequest>();
         out.setDraw(input.getDraw());
         out.setData(transferRequests.getContent());
         out.setRecordsFiltered(transferRequests.getTotalElements());
@@ -82,8 +86,9 @@ public class CompletedTransferController {
 
     @RequestMapping(path = "{id}/downloadreceipt", method = RequestMethod.GET)
     public ModelAndView getTransPDF(@PathVariable Long id, Model model, Principal principal, HttpServletRequest request) {
-        RetailUser retailUser = retailUserService.getUserByName(principal.getName());
+        CorporateUser corporateUser = corporateUserService.getUserByName(principal.getName());
 
+        Corporate corporate = corporateUser.getCorporate();
         TransRequest transRequest = transferService.getTransfer(id);
 
         logger.info("Trans Request {}", transRequest);
@@ -96,13 +101,14 @@ public class CompletedTransferController {
             DecimalFormat formatter = new DecimalFormat("#,###.00");
             modelMap.put("datasource", new ArrayList<>());
             modelMap.put("amount", formatter.format(amount));
-            modelMap.put("sender",retailUser.getFirstName()+" "+retailUser.getLastName() );
+            modelMap.put("sender",corporate.getName());
             modelMap.put("remarks", transRequest.getRemarks());
-            modelMap.put("beneficiary", transRequest.getBeneficiaryAccountName());
-            modelMap.put("beneficiaryBank", transRequest.getBeneficiaryAccountNumber());
             modelMap.put("recipientBank", transRequest.getFinancialInstitution().getInstitutionName());
+            modelMap.put("beneficiary", transRequest.getBeneficiaryAccountName());
+            modelMap.put("beneficiaryAccountNumber", transRequest.getBeneficiaryAccountNumber());
             modelMap.put("refNUm", transRequest.getReferenceNumber());
             //modelMap.put("tranDate", DateFormatter.format(transRequest.getTranDate()));
+
 
         ModelAndView modelAndView=new ModelAndView(view, modelMap);
         return modelAndView;

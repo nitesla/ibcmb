@@ -17,7 +17,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -134,14 +133,22 @@ public class CorpTransferServiceImpl implements CorpTransferService {
     }
 
     @Override
-    public Page<CorpTransferRequestDTO> getCompletedTransfers(Pageable pageDetails) {
+    public Page<CorpTransRequest> getCompletedTransfers(Pageable pageDetails) {
         CorporateUser corporateUser = getCurrentUser();
         Corporate corporate = corporateUser.getCorporate();
-        Page<CorpTransRequest> page = corpTransferRequestRepo.findByCorporateAndStatusDescription(corporate, "00", pageDetails);
-        List<CorpTransferRequestDTO> dtOs = convertEntitiesToDTOs(page.getContent());
-        long t = page.getTotalElements();
-        Page<CorpTransferRequestDTO> pageImpl = new PageImpl<CorpTransferRequestDTO>(dtOs, pageDetails, t);
-        return pageImpl;
+        Page<CorpTransRequest> page = corpTransferRequestRepo.findByCorporateAndStatusIn(corporate, Arrays.asList("00","000"), pageDetails);
+        //List<CorpTransferRequestDTO> dtOs = convertEntitiesToDTOs(page.getContent());
+//        long t = page.getTotalElements();
+//        Page<CorpTransferRequestDTO> pageImpl = new PageImpl<CorpTransferRequestDTO>(dtOs, pageDetails, t);
+        return page;
+    }
+
+    @Override
+    public Page<CorpTransRequest> findCompletedTransfers(String pattern, Pageable pageDetails) {
+        CorporateUser corporateUser = getCurrentUser();
+        Corporate corporate = corporateUser.getCorporate();
+        Page<CorpTransRequest> page = corpTransferRequestRepo.findByCorporateAndStatusIn(corporate, Arrays.asList("00","000"), pageDetails);
+        return page;
     }
 
     @Override
