@@ -46,6 +46,11 @@
                                         <input type="text" class="form-control" name="preferredName"
                                             placeholder="Beneficiary Alias" th:field="*{preferredName}"/>
                                     </div>
+                                    <div class="form-group" style="display: none" id="check">
+                                        <label style="font-weight: bold; color: black;margin-left:10px !important">
+                                            <input  type="checkbox" id="add" name="add"/>Add Beneficiary
+                                        </label>
+                                    </div>
                                     <button id="localsave" style="display: none;" class="btn btn-link required-step" >Next</button>
                                     <!--<button id="neq" type="button" class="btn btn-link required-step" onclick="getAccountName();">Name Enquiry</button>-->
                                 </form>
@@ -94,6 +99,7 @@
     function getAccountName() {
         $('#loading-icon').show();
         $('#localsave').hide();
+        $('#check').hide();
         //make sure alert message is not empty
         var acct = $('#acct_num').val();
         var bank = $('#bank_code').val();
@@ -118,6 +124,7 @@
            }else{
                $('#acct_name').val(message);
                $('#localsave').show();
+               $('#check').show();
                $('.acctError').hide()
                document.getElementById('loading-icon').style.display = 'none';
                $('#loading-icon').hide();

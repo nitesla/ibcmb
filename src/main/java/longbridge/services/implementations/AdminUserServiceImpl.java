@@ -99,7 +99,6 @@ public class AdminUserServiceImpl implements AdminUserService {
     @Override
     public AdminUser getUserByName(String name) {
         return this.adminUserRepo.findFirstByUserName(name);
-
     }
 
     @Override
@@ -243,10 +242,11 @@ public class AdminUserServiceImpl implements AdminUserService {
 
     @Override
     @Transactional
+    @Verifiable(operation = "DELETE_ADMIN_USER",description = "Deleting an Admin User")
     public String deleteUser(Long id) throws InternetBankingException {
         try {
             AdminUser user = adminUserRepo.findOne(id);
-            adminUserRepo.delete(id);
+            adminUserRepo.delete(user);
             SettingDTO setting = configService.getSettingByName("ENABLE_ENTRUST_DELETION");
             if (setting != null && setting.isEnabled()) {
                 if ("YES".equalsIgnoreCase(setting.getValue())) {
@@ -307,6 +307,8 @@ public class AdminUserServiceImpl implements AdminUserService {
         if ("I".equals(user.getStatus())) {
             throw new InternetBankingException(messageSource.getMessage("users.deactivated", null, locale));
         }
+
+
         try {
             String newPassword = passwordPolicyService.generatePassword();
             user.setPassword(passwordEncoder.encode(newPassword));

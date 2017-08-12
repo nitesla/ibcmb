@@ -37,10 +37,10 @@
                     <h4>OTP Authentication</h4>
 
                     <div>
-                        <input type="password" class="form-control" placeholder="OTP code" name="token" required="" />
+                        <input type="text" class="form-control" placeholder="Enter OTP code" name="otp" required="" />
                     </div>
                     <div>
-                        <input name="submit" type="submit" class="btn btn-primary" value="Next" />
+                        <input name="submit" type="submit" class="btn btn-primary" value="Submit" />
                         <!--<a class="reset_pass" href="#">Lost your password?</a>-->
                     </div>
                     <div th:if="${param.message != null}" class="alert alert-info" th:text="${param.message[0]}">message</div>

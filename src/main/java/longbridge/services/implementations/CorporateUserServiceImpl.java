@@ -79,7 +79,7 @@ public class CorporateUserServiceImpl implements CorporateUserService {
     private EntityManager entityManager;
 
     @Autowired
-    CorporateRoleRepo corporateRoleRepo;
+    private CorporateRoleRepo corporateRoleRepo;
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -560,10 +560,11 @@ public class CorporateUserServiceImpl implements CorporateUserService {
 
 
     @Override
+    @Verifiable(operation = "DELETE_CORPORATE_USER",description = "Deleting a Corporate User")
     public String deleteUser(Long userId) throws InternetBankingException {
         try {
             CorporateUser corporateUser = corporateUserRepo.findOne(userId);
-            corporateUserRepo.delete(userId);
+            corporateUserRepo.delete(corporateUser);
             SettingDTO setting = configService.getSettingByName("ENABLE_ENTRUST_DELETION");
 
             if (setting != null && setting.isEnabled()) {

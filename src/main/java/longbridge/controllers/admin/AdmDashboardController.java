@@ -25,13 +25,13 @@ public class AdmDashboardController {
     private PasswordPolicyService passwordPolicyService;
 
     @Autowired
-    RetailUserService retailUserService;
+    private RetailUserService retailUserService;
 
     @Autowired
-    CorporateService corporateService;
+    private CorporateService corporateService;
 
     @Autowired
-    OperationsUserService operationsUserService;
+    private OperationsUserService operationsUserService;
 
     @RequestMapping(value = {"/admin/dashboard", "/admin"})
     public String getAdminDashboard(Model model, Principal principal) {

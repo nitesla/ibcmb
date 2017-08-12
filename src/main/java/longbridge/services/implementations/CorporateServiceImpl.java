@@ -651,7 +651,6 @@ public class CorporateServiceImpl implements CorporateService {
         Collections.sort(transferRules, new TransferRuleComparator());
         return convertTransferRuleEntitiesToDTOs(transferRules);
 
-
     }
 
     @Override

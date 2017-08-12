@@ -28,8 +28,6 @@ public class OperationsControllerAdvice {
     @Autowired
     private VerificationService verificationService;
 
-    @Autowired
-    private PasswordPolicyService passwordPolicyService;
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -61,6 +59,7 @@ public class OperationsControllerAdvice {
             model.addAttribute("verificationNumber", verificationNumber);
         }
 
+        model.addAttribute("pendingMessages",numOfUnreadMessages);
         model.addAttribute("pendingApprovals", verificationNumber);
         model.addAttribute("pendingRequests", numOfSubmittedRequests);
 

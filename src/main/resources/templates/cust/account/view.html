@@ -295,6 +295,8 @@
 //            dt.ajax.reload(null, true);
 //
 //        });
+//        $('#tranDetails_paginate').hide();
+//        $('#tranDetails_length').hide();
         $("#btn-find").on("click", function(e) {
 
             e.preventDefault();
@@ -336,9 +338,9 @@
 
         $("#btn-print").on("click", function(e) {
             e.preventDefault();
-//            var table = $('#tranDetails').DataTable();
-//            var data = table.ajax.params();
-//            $.download("downloadstatement", "data", data);
+            var table = $('#tranDetails').DataTable();
+            var data = table.ajax.params();
+            $.download("downloadstatement", "data", data);
 
         });
 

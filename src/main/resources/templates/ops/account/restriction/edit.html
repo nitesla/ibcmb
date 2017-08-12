@@ -51,23 +51,40 @@
                                 <form method="post" class="form-horizontal" th:action="@{/ops/accounts/restriction/account/update}" th:object="${accountRestriction}">
 
                                     <div class="form-group">
+                                        <label class="col-sm-2 control-label">Restriction Type</label>
+
+                                        <div class="col-sm-6">
+                                            <select class="form-control" th:field="*{restrictionType}">
+                                                <option value="">--Select--</option>
+                                                <option th:each="type: ${restrictionType}" th:value="${type.code}" th:text="${type.description}" th:selected="${type.code==accountRestriction.restrictionType}"></option>
+                                            </select>
+                                        </div>
+
+                                    </div>
+
+                                    <div class="form-group">
                                         <label class="col-sm-2 control-label">Restriction Value</label>
 
                                         <div class="col-sm-6">
-                                            <input class="form-control" th:field="*{restrictionValue}"/>
+                                            <input class="form-control" type="text" th:field="*{restrictionValue}"/>
                                         </div>
+
                                     </div>
+
+
                                     <div class="form-group">
                                         <label class="col-sm-2 control-label">Restricted For</label>
 
                                         <div class="col-sm-6">
-                                            <select class="form-control" th:field="*{restrictionType}">
-                                                <option th:each="type: ${restrictionTypes}" th:value="${type.code}" th:text="${type.description}" th:selected="${type.code==accountRestriction.restrictionType}"></option>
+                                            <select class="form-control" th:field="*{restrictedFor}">
+                                                <option value="">--Select--</option>
+                                                <option th:each="type: ${restrictedFor}" th:value="${type.code}" th:text="${type.description}" th:selected="${type.code==accountRestriction.restrictedFor}"></option>
 
                                             </select>
                                         </div>
 
                                     </div>
+
 
                                     <input type="hidden" name="id" th:value="*{id}" />
                                     <input type="hidden" name="version" th:value="*{version}" />

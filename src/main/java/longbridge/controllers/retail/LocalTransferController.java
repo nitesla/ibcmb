@@ -108,8 +108,7 @@ public class LocalTransferController {
 
 
             model.addAttribute("beneficiary", beneficiary);
-            if (beneficiary.getId()==null)
-                model.addAttribute("newBen","newBen");
+
 
         }
         if (result.hasErrors()) {
@@ -166,6 +165,8 @@ public class LocalTransferController {
             model.addAttribute("localBeneficiaryDTO", localBeneficiaryDTO);
             return page + "pageiA";
         }
+        if (request.getSession().getAttribute("add") != null)
+            request.getSession().removeAttribute("add");
 
         TransferRequestDTO transferRequestDTO = new TransferRequestDTO();
         transferRequestDTO.setBeneficiaryAccountName(localBeneficiaryDTO.getAccountName());
@@ -175,7 +176,8 @@ public class LocalTransferController {
         model.addAttribute("transferRequest", transferRequestDTO);
         request.getSession().setAttribute("Lbeneficiary", localBeneficiaryDTO);
         model.addAttribute("beneficiary", localBeneficiaryDTO);
-
+        if (request.getParameter("add") != null)
+            request.getSession().setAttribute("add", "add");
 
         return page + "pageii";
     }

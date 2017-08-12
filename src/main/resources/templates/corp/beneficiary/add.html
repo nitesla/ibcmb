@@ -60,15 +60,15 @@
                                 <label>Account Name</label>
                                 <span class="req"></span><input type="text" id="acct_name" name="acct_name"
                                                                 class="form-control full-width"
-                                                                th:field="*{preferredName}"
-                                                                placeholder="Beneficiary Name" readonly="readonly"/>
-                                <p class="errors" th:if="${#fields.hasErrors('preferredName')}"
-                                   th:errors="*{preferredName}">&times;</p>
+                                                                th:field="*{accountName}"
+                                                                placeholder="Account Name" readonly="readonly"/>
+                                <p class="errors" th:if="${#fields.hasErrors('accountName')}"
+                                   th:errors="*{accountName}">&times;</p>
                             </div>
                             <div class="form-group">
                                 <label>Preferred Name</label>
                                 <input type="text" class="form-control full-width" name="preferredName"
-                                       placeholder="Preferred Name"/>
+                                       placeholder="Preferred Name"  th:field="*{preferredName}"/>
                             </div>
 
                             <button id="localsave" style="display: none;" class="btn btn-link required-step">Save</button>

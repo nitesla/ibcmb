@@ -53,6 +53,9 @@ public class CorpUserManagementController {
     @Autowired
     private RoleService roleService;
 
+    @Autowired
+    private VerificationService verificationService;
+
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
@@ -274,6 +277,20 @@ public class CorpUserManagementController {
 
     @GetMapping("/{id}/password/reset")
     public String resetPassword(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+
+
+        if(verificationService.isPendingVerification(id, CorporateUser.class.getSimpleName())){
+            redirectAttributes.addFlashAttribute("failure", "User has pending changes to be verified");
+            return "redirect:/corporate/users";
+
+        }
+
+        if(corpUserVerificationService.isPendingVerification(id, CorporateUser.class.getSimpleName())){
+            redirectAttributes.addFlashAttribute("failure", "User has pending changes to be verified");
+            return "redirect:/corporate/users";
+
+        }
+
 
         try {
             String message = corporateUserService.resetCorpPassword(id);

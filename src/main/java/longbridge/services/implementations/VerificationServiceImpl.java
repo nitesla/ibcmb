@@ -132,13 +132,11 @@ public class VerificationServiceImpl implements VerificationService {
             if ("ADD_CORPORATE".equals(verification.getOperation())) {
                 CorporateRequestDTO requestDTO = mapper.readValue(verification.getOriginalObject(), CorporateRequestDTO.class);
                 corporateService.saveCorporateRequest(requestDTO);
-            }
-            else if("ADD_AUTHORIZER_FROM_CORPORATE_ADMIN".equals(verification.getOperation())){
+            } else if ("ADD_AUTHORIZER_FROM_CORPORATE_ADMIN".equals(verification.getOperation())) {
 
-                CorporateUserDTO corpUser = mapper.readValue(verification.getOriginalObject(),CorporateUserDTO.class);
+                CorporateUserDTO corpUser = mapper.readValue(verification.getOriginalObject(), CorporateUserDTO.class);
                 corporateUserService.addAuthorizer(corpUser);
-            }
-            else {
+            } else {
                 clazz = Class.forName(PACKAGE_NAME + verification.getEntityName());
                 object = mapper.readValue(verification.getOriginalObject(), clazz);
                 entityManager.merge(object);
@@ -235,6 +233,18 @@ public class VerificationServiceImpl implements VerificationService {
                 }).start();
             }
         }
+    }
+
+    @Override
+    public boolean isPendingVerification(Long entityId, String entityName) {
+
+            Verification pendingVerification = verificationRepo.findFirstByEntityNameAndEntityIdAndStatus(entityName,
+                    entityId, VerificationStatus.PENDING);
+            if (pendingVerification != null) {
+                return true;
+            }
+
+        return false;
     }
 
     @Override

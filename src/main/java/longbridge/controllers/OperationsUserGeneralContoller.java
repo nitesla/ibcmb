@@ -32,30 +32,32 @@ import java.util.Locale;
 @Controller
 @RequestMapping("/general/operations/users")
 public class OperationsUserGeneralContoller {
-	
+
     @Autowired
-    private  OperationsUserService operationsUserService;
+    private OperationsUserService operationsUserService;
     @Autowired
     private MessageSource messageSource;
     @Autowired
     private SecurityService securityService;
 
-    Logger logger =  LoggerFactory.getLogger(this.getClass());
+    Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
     PasswordPolicyService passwordService;
 
-	@RequestMapping(path = "/find" )
-    public @ResponseBody DataTablesOutput<OperationsUserDTO> getUsers(DataTablesInput input, OperationsUserDTO user){
+    @RequestMapping(path = "/find")
+    public
+    @ResponseBody
+    DataTablesOutput<OperationsUserDTO> getUsers(DataTablesInput input, OperationsUserDTO user) {
 
-        logger.info("Users to search: {}",user.toString());
+        logger.info("Users to search: {}", user.toString());
 
         Pageable pageable = DataTablesUtils.getPageable(input);
         Page<OperationsUserDTO> operationsUsers = operationsUserService.findUsers(user, pageable);
         DataTablesOutput<OperationsUserDTO> out = new DataTablesOutput<OperationsUserDTO>();
         out.setDraw(input.getDraw());
         out.setData(operationsUsers.getContent());
-        logger.info("Users found: {}",operationsUsers.getContent().toString());
+        logger.info("Users found: {}", operationsUsers.getContent().toString());
         out.setRecordsFiltered(operationsUsers.getTotalElements());
         out.setRecordsTotal(operationsUsers.getTotalElements());
 
@@ -63,53 +65,67 @@ public class OperationsUserGeneralContoller {
     }
 
     @GetMapping("/password/reset/")
-    public String getOpsUsername(){
+    public String getOpsUsername() {
         return "/ops/username";
     }
 
 
     @PostMapping("/password/reset/")
-    public String validateOpsUsername(WebRequest request, Model model, Locale locale, HttpSession session) {
+    public String validateOpsUsername(WebRequest request, Model model, Locale locale, HttpSession session, RedirectAttributes redirectAttributes) {
         String username = request.getParameter("username");
         if (username == null || "".equals(username)) {
             model.addAttribute("failure", messageSource.getMessage("form.fields.required", null, locale));
             return "/ops/username";
         }
-        if (!operationsUserService.userExists(username)) {
+        OperationsUser operationsUser = operationsUserService.getUserByName(username);
+
+        if (operationsUser == null) {
             model.addAttribute("failure", messageSource.getMessage("username.invalid", null, locale));
             return "/ops/username";
         }
         try {
-            OperationsUser operationsUser = operationsUserService.getUserByName(username);
             boolean result = securityService.sendOtp(operationsUser.getEntrustId(), operationsUser.getEntrustGroup());
             if (result) {
                 session.setAttribute("username", username);
-                session.setAttribute("redirectUrl", "/password/reset");
-                session.setAttribute("otpUrl", "/ops/otp");
-                model.addAttribute("message", messageSource.getMessage("otp.send.failure", null, locale));
-                return "/ops/otp";
+                session.setAttribute("entrustId", operationsUser.getEntrustId());
+                session.setAttribute("entrustGrp", operationsUser.getEntrustGroup());
+                session.setAttribute("redirectUrl", "/general/operations/users/reset");
+                session.setAttribute("otpUrl", "/general/operations/users/otp");
+                redirectAttributes.addFlashAttribute("message", messageSource.getMessage("otp.send.success", null, locale));
+                return "redirect:/general/operations/users/otp";
             }
-        }
-        catch (InternetBankingSecurityException se){
-            logger.error("Error sending OTP to user",se);
+        } catch (InternetBankingSecurityException se) {
+            logger.error("Error sending OTP to user", se);
         }
         model.addAttribute("failure", messageSource.getMessage("otp.send.failure", null, locale));
         return "/ops/username";
     }
 
-    @GetMapping("/password/reset")
-    public String resetOpsPassword(HttpServletRequest request, RedirectAttributes redirectAttributes){
-        if(request.getSession().getAttribute("username")!=null){
-            String username =(String)request.getSession().getAttribute("username");
-            try {
-                String message = operationsUserService.resetPassword(username);
-                redirectAttributes.addFlashAttribute("message",message);
-                request.getSession().removeAttribute("username");
-                request.getSession().removeAttribute("url");
-                return "redirect:/login/ops";
-            }
-            catch (PasswordException pe){
-                redirectAttributes.addFlashAttribute("failure",pe.getMessage());
+    @GetMapping("/otp")
+    public String getOperatinsOTP(){
+        return "/ops/otp";
+
+    }
+
+    @GetMapping("/reset")
+    public String resetOpsPassword(HttpSession session, RedirectAttributes redirectAttributes) {
+        String username = (String) session.getAttribute("username");
+        String result = (String) session.getAttribute("result");
+        if (username != null) {
+            if (result != null && "Y".equals(result)) {
+                try {
+                    String message = operationsUserService.resetPassword(username);
+                    redirectAttributes.addFlashAttribute("message", message);
+                    session.removeAttribute("username");
+                    session.removeAttribute("entrustId");
+                    session.removeAttribute("entrustGrp");
+                    session.removeAttribute("otpUrl");
+                    session.removeAttribute("redirectUrl");
+                    session.removeAttribute("result");
+                    return "redirect:/login/ops";
+                } catch (PasswordException pe) {
+                    redirectAttributes.addFlashAttribute("failure", pe.getMessage());
+                }
             }
         }
         return "redirect:/password/reset/";

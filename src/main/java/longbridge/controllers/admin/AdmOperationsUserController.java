@@ -10,6 +10,7 @@ import longbridge.repositories.VerificationRepo;
 import longbridge.services.OperationsUserService;
 import longbridge.services.PasswordPolicyService;
 import longbridge.services.RoleService;
+import longbridge.services.VerificationService;
 import longbridge.utils.VerificationStatus;
 
 import org.apache.commons.lang3.StringUtils;
@@ -44,21 +45,18 @@ public class AdmOperationsUserController {
     private Logger logger= LoggerFactory.getLogger(this.getClass());
     @Autowired
     private  OperationsUserService operationsUserService;
-    @Autowired
-    private OperationsUserRepo operationsUserRepo;
-    @Autowired
-    private VerificationRepo verificationRepo;
+
     @Autowired
     private RoleService roleService;
 
     @Autowired
-    private BCryptPasswordEncoder passwordEncoder;
+    private PasswordPolicyService passwordPolicyService;
 
     @Autowired
-    PasswordPolicyService passwordPolicyService;
+    private MessageSource messageSource;
 
     @Autowired
-    MessageSource messageSource;
+    private VerificationService verificationService;
 
 
 
@@ -189,7 +187,7 @@ public class AdmOperationsUserController {
     @GetMapping("/{userId}/details")
     public String getOperationsUser(@PathVariable  Long userId, Model model){
         OperationsUserDTO operationsUser =operationsUserService.getUser(userId);
-        model.addAttribute("user",operationsUser);
+        model.addAttribute("operationsUser",operationsUser);
         return "operation/details";
     }
 
@@ -201,7 +199,7 @@ public class AdmOperationsUserController {
      * @throws Exception
      */
     @PostMapping("/update")
-    public String updateUser(@ModelAttribute("user") OperationsUserDTO operationsUser, BindingResult result, RedirectAttributes redirectAttributes,Locale locale) throws Exception{
+    public String updateUser(@ModelAttribute("operationsUser") @Valid OperationsUserDTO operationsUser, BindingResult result, RedirectAttributes redirectAttributes,Locale locale) throws Exception{
         if (result.hasErrors()) {
             result.addError(new ObjectError("invalid", messageSource.getMessage("form.fields.required", null, locale)));
             return "adm/operation/edit";
@@ -219,6 +217,13 @@ public class AdmOperationsUserController {
 
     @GetMapping("/{id}/password/reset")
     public String resetPassword(@PathVariable Long id, RedirectAttributes redirectAttributes){
+
+        if(verificationService.isPendingVerification(id,OperationsUser.class.getSimpleName())){
+            redirectAttributes.addFlashAttribute("failure", "User has pending changes to be verified");
+            return "redirect:/admin/operations/users";
+
+        }
+
         try {
             String message = operationsUserService.resetPassword(id);
             redirectAttributes.addFlashAttribute("message", message);
@@ -231,6 +236,12 @@ public class AdmOperationsUserController {
 
     @GetMapping("/{userId}/delete")
     public String deleteUser(@PathVariable Long userId, RedirectAttributes redirectAttributes){
+
+        if(verificationService.isPendingVerification(userId,OperationsUser.class.getSimpleName())){
+            redirectAttributes.addFlashAttribute("failure", "User has pending changes to be verified");
+            return "redirect:/admin/users";
+
+        }
         try {
             String message = operationsUserService.deleteUser(userId);
             redirectAttributes.addFlashAttribute("message", message);
@@ -241,41 +252,6 @@ public class AdmOperationsUserController {
         return "redirect:/admin/operations/users";
     }
 
-
-
-
-    @PostMapping("/{id}/verify")
-    public String verify(@PathVariable Long id){
-        logger.info("id {}", id);
-
-        //todo check verifier role
-        OperationsUser operationsUser = operationsUserRepo.findOne(1l);
-        Verification verification = verificationRepo.findOne(id);
-
-        if (verification == null || VerificationStatus.PENDING != verification.getStatus())
-            return "Verification not found";
-
-//        try {
-//            operationsUserService.verify(verification, operationsUser);
-//        } catch (IOException e) {
-//            logger.error("Error occurred", e);
-//        }
-        return "role/add";
-    }
-
-    @PostMapping("/{id}/decline")
-    public String decline(@PathVariable Long id){
-
-        //todo check verifier role
-        OperationsUser operationsUser = operationsUserRepo.findOne(1l);
-        Verification verification = verificationRepo.findOne(id);
-
-        if (verification == null || VerificationStatus.PENDING != verification.getStatus())
-            return "Verification not found";
-
-       // operationsUserService.decline(verification, operationsUser, "todo get the  reason from the frontend");
-        return "role/add";
-    }
 
 
 }

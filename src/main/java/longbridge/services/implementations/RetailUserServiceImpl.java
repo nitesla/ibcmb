@@ -257,11 +257,12 @@ public class RetailUserServiceImpl implements RetailUserService {
     }
 
     @Override
+    @Verifiable(operation = "DELETE_RETAIL_USER",description = "Deleting a Retail User")
     public String deleteUser(Long userId) throws InternetBankingException {
         try {
 
             RetailUser retailUser = retailUserRepo.findOne(userId);
-            retailUserRepo.delete(userId);
+            retailUserRepo.delete(retailUser);
             SettingDTO setting = configService.getSettingByName("ENABLE_ENTRUST_DELETION");
 
             if (setting != null && setting.isEnabled()) {

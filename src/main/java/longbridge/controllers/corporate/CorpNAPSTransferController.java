@@ -411,6 +411,10 @@ public class CorpNAPSTransferController {
 
             DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
             Date date = new Date();
+
+
+
+
             String requests = request.getParameter("requests");
             String debitAccount = request.getParameter("debitAccount");
             ObjectMapper mapper = new ObjectMapper();
@@ -423,6 +427,11 @@ public class CorpNAPSTransferController {
             bulkTransfer.setCrRequestList(requestList);
             bulkTransfer.setCorporate(corporate);
             bulkTransfer.setTranDate(date);
+
+            while (!bulkTransferService.refCodeExists(generateRefCode())){
+                bulkTransfer.setRefCode(generateRefCode());
+            }
+
             for (CreditRequest creditRequest : requestList) {
                 BigDecimal crAmount = new BigDecimal(creditRequest.getAmount());
                 totalTransferAmount = totalTransferAmount.add(crAmount);
@@ -455,6 +464,12 @@ public class CorpNAPSTransferController {
         }
     }
 
+    private String generateRefCode(){
+        Random r = new Random(System.currentTimeMillis() );
+        int random = 100000 + r.nextInt(999999);
+        String refCode = Integer.toString(random);
+        return refCode;
+    }
 
     @GetMapping(path = "/alltransfers")
     public

@@ -240,9 +240,9 @@ public class TransferController {
             }
 
 
+
+
             transferRequestDTO = transferService.makeTransfer(transferRequestDTO);
-
-
             model.addAttribute("transRequest", transferRequestDTO);
             model.addAttribute("message", messages.getMessage("transaction.success", null, locale));
             return "cust/transfer/transferdetails";

@@ -61,6 +61,9 @@ public class AdminUserController {
     @Autowired
     private ConfigurationService configService;
 
+    @Autowired
+    private VerificationService verificationService;
+
 
     @GetMapping("/new")
     public String addUser(Model model) {
@@ -210,6 +213,12 @@ public class AdminUserController {
 
     @GetMapping("/{id}/password/reset")
     public String resetPassword(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+
+        if(verificationService.isPendingVerification(id,AdminUser.class.getSimpleName())){
+            redirectAttributes.addFlashAttribute("failure", "User has pending changes to be verified");
+            return "redirect:/admin/users";
+
+        }
         try {
             String message = adminUserService.resetPassword(id);
             redirectAttributes.addFlashAttribute("message", message);

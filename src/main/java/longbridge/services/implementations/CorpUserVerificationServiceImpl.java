@@ -377,6 +377,18 @@ public class CorpUserVerificationServiceImpl implements CorpUserVerificationServ
     }
 
     @Override
+    public boolean isPendingVerification(Long entityId, String entityName) {
+
+        Verification pendingVerification = verificationRepo.findFirstByEntityNameAndEntityIdAndStatus(entityName,
+                entityId, VerificationStatus.PENDING);
+        if (pendingVerification != null) {
+            return true;
+        }
+
+        return false;
+    }
+
+    @Override
     @Transactional
     public String verify(CorpUserVerificationDTO dto) throws VerificationException {
 

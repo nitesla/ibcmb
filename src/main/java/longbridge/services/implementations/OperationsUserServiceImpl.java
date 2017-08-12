@@ -101,7 +101,7 @@ public class OperationsUserServiceImpl implements OperationsUserService {
         ExampleMatcher matcher = ExampleMatcher.matchingAll().withStringMatcher(ExampleMatcher.StringMatcher.CONTAINING)
                 .withIgnoreCase().withIgnorePaths("version", "noOfLoginAttempts").withIgnoreNullValues();
         OperationsUser entity = convertDTOToEntity(example);
-        logger.info("Ops user: "+entity.toString());
+        logger.info("Ops user: " + entity.toString());
         ReflectionUtils.nullifyStrings(entity, 1);
         Page<OperationsUser> page = operationsUserRepo.findAll(Example.of(entity, matcher), pageDetails);
         List<OperationsUserDTO> dtOs = convertEntitiesToDTOs(page.getContent());
@@ -150,20 +150,17 @@ public class OperationsUserServiceImpl implements OperationsUserService {
     }
 
 
-
-
     @Override
     public void sendActivationMessage(User user, String... args) {
-       try{
+        try {
             Email email = new Email.Builder()
                     .setRecipient(user.getEmail())
                     .setSubject(messageSource.getMessage("ops.activation.subject", null, locale))
                     .setBody(String.format(messageSource.getMessage("ops.activation.message", null, locale), args))
                     .build();
             mailService.send(email);
-        }
-        catch (MailException me){
-            logger.error("Error sending mail to {}",user.getEmail(),me);
+        } catch (MailException me) {
+            logger.error("Error sending mail to {}", user.getEmail(), me);
         }
     }
 
@@ -279,11 +276,11 @@ public class OperationsUserServiceImpl implements OperationsUserService {
 
 
     @Override
-
+    @Verifiable(operation = "DELETE_OPS_USER", description = "Deleting an Ops User")
     public String deleteUser(Long userId) throws InternetBankingException {
         try {
             OperationsUser opsUser = operationsUserRepo.findOne(userId);
-            operationsUserRepo.delete(userId);
+            operationsUserRepo.delete(opsUser);
             logger.warn("Operations user with Id {} deleted", userId);
             SettingDTO setting = configService.getSettingByName("ENABLE_ENTRUST_DELETION");
 

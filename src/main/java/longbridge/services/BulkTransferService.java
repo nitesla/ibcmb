@@ -17,6 +17,9 @@ public interface BulkTransferService {
     CorpTransferAuth getAuthorizations(BulkTransfer transRequest);
     String addAuthorization(CorpTransReqEntry transReqEntry);
     List<BulkStatusDTO> getStatus(BulkTransfer bulkTransfer);
+
+    Boolean refCodeExists(String refCode);
+
     Page<BulkTransfer> getAllBulkTransferRequests(Corporate corporate, Pageable details);
     Page<BulkTransferDTO> getBulkTransferRequests(Corporate corporate, Pageable details);
     String cancelBulkTransferRequest(Long id);
