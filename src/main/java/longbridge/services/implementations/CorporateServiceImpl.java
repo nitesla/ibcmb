@@ -686,7 +686,7 @@ public class CorporateServiceImpl implements CorporateService {
     @Verifiable(operation = "ADD_CORPORATE_ROLE", description = "Adding a Corporate Role")
     public String addCorporateRole(CorporateRoleDTO roleDTO) throws InternetBankingException {
 
-          CorporateRole corporateRole = corporateRoleRepo.findByNameAndRank(roleDTO.getName(),roleDTO.getRank());
+          CorporateRole corporateRole = corporateRoleRepo.findFirstByNameAndRank(roleDTO.getName(),roleDTO.getRank());
 
           if(corporateRole!=null){
               throw new DuplicateObjectException(messageSource.getMessage("role.exist", null, locale));
@@ -930,7 +930,7 @@ public class CorporateServiceImpl implements CorporateService {
         corpTransferRuleDTO.setId(transferRule.getId());
         corpTransferRuleDTO.setVersion(transferRule.getVersion());
         corpTransferRuleDTO.setLowerLimitAmount(transferRule.getLowerLimitAmount().toString());
-        corpTransferRuleDTO.setUpperLimitAmount(transferRule.isUnlimited() ? "Unlimited" : transferRule.getUpperLimitAmount().toString());
+        corpTransferRuleDTO.setUpperLimitAmount(transferRule.isUnlimited() ? "UNLIMITED" : transferRule.getUpperLimitAmount().toString());
         corpTransferRuleDTO.setUnlimited(transferRule.isUnlimited());
         corpTransferRuleDTO.setCurrency(transferRule.getCurrency());
         corpTransferRuleDTO.setAnyCanAuthorize(transferRule.isAnyCanAuthorize());

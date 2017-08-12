@@ -3,12 +3,14 @@ package longbridge.services.implementations;
 import longbridge.dtos.BulkStatusDTO;
 import longbridge.dtos.BulkTransferDTO;
 import longbridge.dtos.CreditRequestDTO;
+import longbridge.dtos.SettingDTO;
 import longbridge.exception.InternetBankingException;
 import longbridge.exception.TransferRuleException;
 import longbridge.models.*;
 import longbridge.repositories.*;
 import longbridge.security.userdetails.CustomUserPrincipal;
 import longbridge.services.BulkTransferService;
+import longbridge.services.ConfigurationService;
 import longbridge.services.CorporateService;
 import longbridge.services.bulkTransfers.BulkTransferJobLauncher;
 import org.modelmapper.ModelMapper;
@@ -56,6 +58,9 @@ public class BulkTransferServiceImpl implements BulkTransferService {
 
     @Autowired
     private CorporateRepo corporateRepo;
+
+    @Autowired
+    private ConfigurationService configService;
 
     @Autowired
     private CorporateRoleRepo corpRoleRepo;
@@ -311,11 +316,18 @@ public class BulkTransferServiceImpl implements BulkTransferService {
             any = true;
         }
 
+        int numAuthorizers = 0;
+        SettingDTO setting = configService.getSettingByName("MIN_AUTHORIZER_LEVEL");
+        if (setting != null && setting.isEnabled()) {
+
+            numAuthorizers = Integer.parseInt(setting.getValue());
+        }
+
         for (CorporateRole role : roles) {
             for (CorpTransReqEntry corpTransReqEntry : transReqEntries) {
                 if (corpTransReqEntry.getRole().equals(role)) {
                     approvalCount++;
-                    if (any) return true;
+                    if (any&&(approvalCount>=numAuthorizers)) return true;
                 }
             }
         }
