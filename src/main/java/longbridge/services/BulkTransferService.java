@@ -28,6 +28,5 @@ public interface BulkTransferService {
     Page<CreditRequest> getAllCreditRequests(BulkTransfer bulkTransfer, Pageable pageable);
 
 
-
-
+    boolean userCanAuthorize(TransRequest transRequest);
 }

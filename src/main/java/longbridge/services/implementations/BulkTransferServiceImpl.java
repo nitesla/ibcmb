@@ -5,6 +5,7 @@ import longbridge.dtos.BulkTransferDTO;
 import longbridge.dtos.CreditRequestDTO;
 import longbridge.dtos.SettingDTO;
 import longbridge.exception.InternetBankingException;
+import longbridge.exception.TransferAuthorizationException;
 import longbridge.exception.TransferRuleException;
 import longbridge.models.*;
 import longbridge.repositories.*;
@@ -72,16 +73,15 @@ public class BulkTransferServiceImpl implements BulkTransferService {
     private CorpTransferAuthRepo transferAuthRepo;
 
 
-
     @Autowired
     public BulkTransferServiceImpl(BulkTransferRepo bulkTransferRepo, ModelMapper modelMapper
-            , BulkTransferJobLauncher jobLauncher,MessageSource messageSource
+            , BulkTransferJobLauncher jobLauncher, MessageSource messageSource
 
     ) {
         this.bulkTransferRepo = bulkTransferRepo;
         this.modelMapper = modelMapper;
-        this.jobLauncher=jobLauncher;
-        this.messageSource=messageSource;
+        this.jobLauncher = jobLauncher;
+        this.messageSource = messageSource;
     }
 
 
@@ -91,13 +91,12 @@ public class BulkTransferServiceImpl implements BulkTransferService {
         //validate bulk transfer
 
 
-
         BulkTransfer transfer = bulkTransferRepo.save(bulkTransfer);
         try {
-            jobLauncher.launchBulkTransferJob(""+transfer.getId());
+            jobLauncher.launchBulkTransferJob("" + transfer.getId());
         } catch (Exception e) {
             e.printStackTrace();
-            logger.error("Exception occurred {}",e);
+            logger.error("Exception occurred {}", e);
             return messageSource.getMessage("bulk.transfer.failure", null, null);
         }
 
@@ -125,10 +124,16 @@ public class BulkTransferServiceImpl implements BulkTransferService {
             CorpTransferAuth transferAuth = new CorpTransferAuth();
             transferAuth.setStatus("P");
             bulkTransfer.setTransferAuth(transferAuth);
-            bulkTransferRepo.save(bulkTransfer);
-
-        } catch (Exception e ) {
-            throw new InternetBankingException(messageSource.getMessage("bulk.save.failure", null, null),e);
+            BulkTransfer transfer = bulkTransferRepo.save(bulkTransfer);
+            if (userCanAuthorize(transfer)) {
+                CorpTransReqEntry transReqEntry = new CorpTransReqEntry();
+                transReqEntry.setTranReqId(transfer.getId());
+                addAuthorization(transReqEntry);
+            }
+        } catch (TransferAuthorizationException ex) {
+            throw ex;
+        } catch (Exception e) {
+            throw new InternetBankingException(messageSource.getMessage("bulk.save.failure", null, null), e);
         }
         return messageSource.getMessage("bulk.save.success", null, null);
     }
@@ -169,17 +174,17 @@ public class BulkTransferServiceImpl implements BulkTransferService {
         }
 
         if (userRole == null) {
-            throw new InternetBankingException("User is not authorized to approve the transaction");
+            throw new TransferAuthorizationException("User is not authorized to approve the transaction");
         }
 
         CorpTransferAuth transferAuth = bulkTransfer.getTransferAuth();
 
         if (reqEntryRepo.existsByTranReqIdAndRole(bulkTransfer.getId(), userRole)) {
-            throw new InternetBankingException("User has already authorized the transaction");
+            throw new TransferAuthorizationException(messageSource.getMessage("transfer.auth.failure", null, locale));
         }
 
         if (!"P".equals(transferAuth.getStatus())) {
-            throw new InternetBankingException("Transaction is not pending");
+            throw new TransferAuthorizationException("Transaction is not pending");
         }
         transReqEntry.setEntryDate(new Date());
         transReqEntry.setRole(userRole);
@@ -188,15 +193,13 @@ public class BulkTransferServiceImpl implements BulkTransferService {
         transferAuth.getAuths().add(transReqEntry);
         transferAuthRepo.save(transferAuth);
         if (isAuthorizationComplete(bulkTransfer)) {
-
             transferAuth.setStatus("C");
             transferAuth.setLastEntry(new Date());
             transferAuthRepo.save(transferAuth);
-            makeBulkTransferRequest(bulkTransfer);
-            return "Transaction completed successfully";
+            return makeBulkTransferRequest(bulkTransfer);
         }
 
-        return "Authorization added successfully to the transaction request";
+        return messageSource.getMessage("transfer.auth.failure", null, locale);
     }
 
 
@@ -304,6 +307,25 @@ public class BulkTransferServiceImpl implements BulkTransferService {
 
     }
 
+    @Override
+    public boolean userCanAuthorize(TransRequest transRequest) {
+        CorporateUser corporateUser = getCurrentUser();
+        CorpTransRule transferRule = corporateService.getApplicableTransferRule(transRequest);
+
+        if (transferRule == null) {
+            return false;
+        }
+
+        List<CorporateRole> roles = getExistingRoles(transferRule.getRoles());
+
+        for (CorporateRole corporateRole : roles) {
+            if (corpRoleRepo.countInRole(corporateRole, corporateUser) > 0) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     private boolean isAuthorizationComplete(BulkTransfer transRequest) {
         CorpTransferAuth transferAuth = transRequest.getTransferAuth();
         Set<CorpTransReqEntry> transReqEntries = transferAuth.getAuths();
@@ -327,7 +349,7 @@ public class BulkTransferServiceImpl implements BulkTransferService {
             for (CorpTransReqEntry corpTransReqEntry : transReqEntries) {
                 if (corpTransReqEntry.getRole().equals(role)) {
                     approvalCount++;
-                    if (any&&(approvalCount>=numAuthorizers)) return true;
+                    if (any && (approvalCount >= numAuthorizers)) return true;
                 }
             }
         }
