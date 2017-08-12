@@ -32,7 +32,7 @@ public class TransferRequestDTO implements Serializable{
 
     private String status;
 
-    private Date tranDate;
+     private Date tranDate;
 
     private String referenceNumber;
 
