@@ -14,6 +14,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -45,26 +46,29 @@ public class AdminUserGeneralController {
     }
 
     @PostMapping("/password/reset")
-    public String validateAdminUsername(WebRequest request, Model model, Locale locale, HttpSession session){
+    public String validateAdminUsername(WebRequest request, Model model, Locale locale, HttpSession session, RedirectAttributes redirectAttributes){
         String username = request.getParameter("username");
         if(username==null||"".equals(username)){
             model.addAttribute("failure",messageSource.getMessage("form.fields.required",null,locale));
             return "/adm/admin/username";
         }
-        if(!adminUserService.userExists(username)){
+
+        AdminUser adminUser = adminUserService.getUserByName(username);
+        if(adminUser==null){
             model.addAttribute("failure",messageSource.getMessage("username.invalid",null,locale));
             return "/adm/admin/username";
         }
 
         try {
-            AdminUser adminUser = adminUserService.getUserByName(username);
             boolean result = securityService.sendOtp(adminUser.getEntrustId(), adminUser.getEntrustGroup());
             if (result) {
-                session.setAttribute("username", username);
-                session.setAttribute("redirectUrl", "/password/reset");
-                session.setAttribute("otpUrl", "/adm/admin/otp");
-                model.addAttribute("message", messageSource.getMessage("otp.send.failure", null, locale));
-                return "/adm/admin/otp";
+                session.setAttribute("username", adminUser.getUserName());
+                session.setAttribute("entrustId", adminUser.getEntrustId());
+                session.setAttribute("entrustGrp",adminUser.getEntrustGroup());
+                session.setAttribute("redirectUrl", "/general/admin/users/reset");
+                session.setAttribute("otpUrl", "/general/admin/users/otp");
+                redirectAttributes.addFlashAttribute("message", messageSource.getMessage("otp.send.success", null, locale));
+                return "redirect:/general/admin/users/otp";
             }
         }
         catch (InternetBankingSecurityException se){
@@ -74,22 +78,34 @@ public class AdminUserGeneralController {
         return "/adm/admin/username";
     }
 
-    @GetMapping("/password/admin/reset")
+    @GetMapping("/otp")
+    public String getAdminOTP(){
+        return "/adm/admin/otp";
+
+    }
+
+    @GetMapping("/reset")
     public String resetAdminPassword(HttpSession session, RedirectAttributes redirectAttributes){
-        if(session.getAttribute("username")!=null){
-            String username =(String)session.getAttribute("username");
-            try {
-                String message = adminUserService.resetPassword(username);
-                redirectAttributes.addFlashAttribute("message",message);
-                session.removeAttribute("username");
-                session.removeAttribute("url");
-                return "redirect:/login/admin";
-            }
-            catch (PasswordException pe){
-                redirectAttributes.addFlashAttribute("failure",pe.getMessage());
-            }
+        String username = (String)session.getAttribute("username");
+        String result =  (String)session.getAttribute("result");
+       if(username!=null){
+           if(result!=null&&"Y".equals(result)) {
+               try {
+                   String message = adminUserService.resetPassword(username);
+                   redirectAttributes.addFlashAttribute("message", message);
+                   session.removeAttribute("username");
+                   session.removeAttribute("entrustId");
+                   session.removeAttribute("entrustGrp");
+                   session.removeAttribute("otpUrl");
+                   session.removeAttribute("redirectUrl");
+                   session.removeAttribute("result");
+                   return "redirect:/login/admin";
+               } catch (PasswordException pe) {
+                   redirectAttributes.addFlashAttribute("failure", pe.getMessage());
+               }
+           }
         }
-        return "redirect:/password/reset";
+        return "redirect:/general/admin/users/password/reset";
     }
 
 }

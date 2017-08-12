@@ -280,7 +280,7 @@ public class OperationsUserServiceImpl implements OperationsUserService {
     public String deleteUser(Long userId) throws InternetBankingException {
         try {
             OperationsUser opsUser = operationsUserRepo.findOne(userId);
-            operationsUserRepo.delete(userId);
+            operationsUserRepo.delete(opsUser);
             logger.warn("Operations user with Id {} deleted", userId);
             SettingDTO setting = configService.getSettingByName("ENABLE_ENTRUST_DELETION");
 

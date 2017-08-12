@@ -33,6 +33,7 @@
                                 <table class="table table-striped table-hover" id="bulk">
                                     <thead>
                                     <tr>
+                                        <th class="text-left">Ref Code</th>
                                         <th class="text-left">Debit Account</th>
                                         <th class="text-left">Request Date</th>
                                         <th class="text-left">Status</th>
@@ -81,6 +82,7 @@
                 "ajax": "/corporate/transfer/alltransfers",
                 "dom": 'T<"clear">frtlp',
                 "columns": [
+                    { "data": "refCode" },
                     { "data": "customerAccountNumber" },
                     { "data": "tranDate" ,
                         type: "date",

@@ -39,53 +39,45 @@ public class TokenAuthController {
     private MessageSource messageSource;
 
     @Autowired
-    private  RetailUserService retailUserService;
+    private RetailUserService retailUserService;
 
     @Autowired
     private CorporateUserService corporateUserService;
 
-    @Autowired
-    HostMaster hostMaster;
-    Logger logger = LoggerFactory.getLogger(this.getClass());
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @PostMapping("/otp/authenticate")
     public String authenticate(HttpServletRequest request, RedirectAttributes redirectAttributes, Locale locale, Principal principal) {
-        String redirectUrl = "";
-        String otpUrl="";
-//        logger.info("the otp sent is {}",request.getParameter("otp"));
-        String username = "";
-        if (request.getSession().getAttribute("redirectUrl") != null) {
-            redirectUrl = (String) request.getSession().getAttribute("redirectUrl");
-        }
-        if (request.getSession().getAttribute("otpUrl") != null) {
-            otpUrl = (String) request.getSession().getAttribute("otpUrl");
-        }
+        String redirectUrl = (String) request.getSession().getAttribute("redirectUrl");
+        String otpUrl = (String) request.getSession().getAttribute("otpUrl");
+        logger.info("the otp sent is {}", request.getParameter("otp"));
+        String entrustId = (String) request.getSession().getAttribute("entrustId");
+        String entrustGrp = (String) request.getSession().getAttribute("entrustGrp");
 
-        if (request.getSession().getAttribute("username") != null) {
-            username = (String) request.getSession().getAttribute("username");
+
+        String otp = request.getParameter("otp");
+        if (otp == null || "".equals(otp)) {
+            redirectAttributes.addFlashAttribute("failure", messageSource.getMessage("otp.required", null, locale));
+            return "redirect:" + otpUrl;
         }
-            String otp = request.getParameter("otp");
-            if(otp==null||"".equals(otp)){
-                redirectAttributes.addFlashAttribute("failure",messageSource.getMessage("otp.required",null,locale));
-                return "redirect:/"+otpUrl;
-            }
 
         try {
-            RetailUser user  = retailUserService.getUserByName(principal.getName());
-            boolean result = securityService.performOtpValidation(user.getEntrustId(), user.getEntrustGroup(), otp);
+            boolean result = securityService.performOtpValidation(entrustId, entrustGrp, otp);
             if (result) {
                 redirectAttributes.addFlashAttribute("message", messageSource.getMessage("token.auth.success", null, locale));
-                return "redirect:/" + redirectUrl;
+                request.getSession().setAttribute("result", "Y");
+                return "redirect:" + redirectUrl;
             }
         } catch (InternetBankingSecurityException ibe) {
             logger.error("Error authenticating token");
         }
         redirectAttributes.addFlashAttribute("failure", messageSource.getMessage("token.auth.failure", null, locale));
-        return "redirect:" + redirectUrl;
+        return "redirect:" + otpUrl;
     }
+
     @GetMapping("/otp/send")
     @ResponseBody
-    public String sendOTP(HttpServletRequest request){
+    public String sendOTP(HttpServletRequest request) {
         String username = "";
         String message = "";
         StringBuilder stringBuilder = new StringBuilder(message);
@@ -93,22 +85,22 @@ public class TokenAuthController {
             username = request.getParameter("username");
         }
 //        logger.info("The username {}",username);
-        if(!username.equalsIgnoreCase("")) {
+        if (!username.equalsIgnoreCase("")) {
             boolean sendOtp;
             try {
-                RetailUser user  = retailUserService.getUserByName(username);
+                RetailUser user = retailUserService.getUserByName(username);
 //                logger.info("the user is {}",user);
-                if (securityService.sendOtp(user.getEntrustId(),user.getEntrustGroup())) sendOtp = true;
+                if (securityService.sendOtp(user.getEntrustId(), user.getEntrustGroup())) sendOtp = true;
                 else sendOtp = false;
 //                logger.info("otp sent {}",sendOtp);
-                if (sendOtp){
+                if (sendOtp) {
                     stringBuilder.append("success");
                 }
             } catch (InternetBankingSecurityException e) {
                 logger.info(e.getMessage());
-                if(e.getMessage() !=null) {
+                if (e.getMessage() != null) {
                     stringBuilder.append(e.getMessage());
-                }else {
+                } else {
                     stringBuilder.append("Service not available");
                 }
             } catch (NoSuchMessageException e) {
@@ -116,12 +108,12 @@ public class TokenAuthController {
                 logger.info(e.getMessage());
                 stringBuilder.append(e.getMessage());
 
-            }catch (Exception e){
+            } catch (Exception e) {
                 e.printStackTrace();
                 logger.info(e.getMessage());
                 stringBuilder.append(e.getMessage());
             }
-        }else {
+        } else {
             stringBuilder.append("empty");
         }
 
@@ -130,9 +122,10 @@ public class TokenAuthController {
 //        }
         return stringBuilder.toString();
     }
+
     @GetMapping("/otp/send/corporate")
     @ResponseBody
-    public String sendOTPForCorporate(HttpServletRequest request){
+    public String sendOTPForCorporate(HttpServletRequest request) {
         String username = "";
         String message = "";
         StringBuilder stringBuilder = new StringBuilder(message);
@@ -140,21 +133,21 @@ public class TokenAuthController {
             username = request.getParameter("username");
         }
 //        logger.info("The username {}",username);
-        if(!username.equalsIgnoreCase("")) {
+        if (!username.equalsIgnoreCase("")) {
             boolean sendOtp;
             try {
-                CorporateUser user  = corporateUserService.getUserByName(username);
-                if (securityService.sendOtp(user.getEntrustId(),user.getEntrustGroup())) sendOtp = true;
+                CorporateUser user = corporateUserService.getUserByName(username);
+                if (securityService.sendOtp(user.getEntrustId(), user.getEntrustGroup())) sendOtp = true;
                 else sendOtp = false;
-                logger.info("otp sent {}",sendOtp);
-                if (sendOtp){
+                logger.info("otp sent {}", sendOtp);
+                if (sendOtp) {
                     stringBuilder.append("success");
                 }
             } catch (InternetBankingSecurityException e) {
                 logger.info(e.getMessage());
-                if(e.getMessage() !=null) {
+                if (e.getMessage() != null) {
                     stringBuilder.append(e.getMessage());
-                }else {
+                } else {
                     stringBuilder.append("Service not available");
                 }
 
@@ -163,12 +156,12 @@ public class TokenAuthController {
                 logger.info(e.getMessage());
                 stringBuilder.append(e.getMessage());
 
-            }catch (Exception e){
+            } catch (Exception e) {
                 e.printStackTrace();
                 logger.info(e.getMessage());
                 stringBuilder.append(e.getMessage());
             }
-        }else {
+        } else {
             stringBuilder.append("empty");
         }
 
@@ -177,22 +170,23 @@ public class TokenAuthController {
 //        }
         return stringBuilder.toString();
     }
+
     @PostMapping("/otp/retail/login")
-    public String authenticateOTPforRetails(HttpServletRequest request, RedirectAttributes redirectAttributes, Locale locale,HttpSession session) {
+    public String authenticateOTPforRetails(HttpServletRequest request, RedirectAttributes redirectAttributes, Locale locale, HttpSession session) {
         String redirectUrl = "";
         String otpUrl = "";
-        String otp=request.getParameter("otp");
+        String otp = request.getParameter("otp");
         String username = request.getParameter("username");
 //        logger.info("the otp {} username{} redirect {}",otp,username,redirectUrl);
         if (request.getSession().getAttribute("otpUrl") != null) {
             otpUrl = (String) request.getSession().getAttribute("otpUrl");
         }
         try {
-            RetailUser user  = retailUserService.getUserByName(username);
+            RetailUser user = retailUserService.getUserByName(username);
             boolean result = securityService.performOtpValidation(user.getEntrustId(), user.getEntrustGroup(), otp);
-            logger.info("the result is {}",result);
+            logger.info("the result is {}", result);
             if (result) {
-                if( request.getSession().getAttribute("2FA") !=null) {
+                if (request.getSession().getAttribute("2FA") != null) {
                     request.getSession().removeAttribute("2FA");
                     retailUserService.resetNoOfTokenAttempt(user);
                 }
@@ -200,27 +194,28 @@ public class TokenAuthController {
                 return "redirect:/retail/dashboard";
             }
         } catch (InternetBankingSecurityException ibe) {
-            logger.error("Error authenticating token {}",ibe);
+            logger.error("Error authenticating token {}", ibe);
         }
         redirectAttributes.addFlashAttribute("failure", messageSource.getMessage("otp.auth.failure", null, locale));
         return "redirect:/retail/token";
     }
+
     @PostMapping("/otp/corporate/login")
-    public String authenticateOTPForCorp(HttpServletRequest request, RedirectAttributes redirectAttributes, Locale locale,HttpSession session) {
+    public String authenticateOTPForCorp(HttpServletRequest request, RedirectAttributes redirectAttributes, Locale locale, HttpSession session) {
         String redirectUrl = "";
         String otpUrl = "";
-        String otp=request.getParameter("otp");
+        String otp = request.getParameter("otp");
         String username = request.getParameter("username");
-        logger.info("the otp {} username{} redirect {}",otp,username,redirectUrl);
+        logger.info("the otp {} username{} redirect {}", otp, username, redirectUrl);
         if (request.getSession().getAttribute("otpUrl") != null) {
             otpUrl = (String) request.getSession().getAttribute("otpUrl");
         }
         try {
-            CorporateUser user  = corporateUserService.getUserByName(username);
+            CorporateUser user = corporateUserService.getUserByName(username);
             boolean result = securityService.performOtpValidation(user.getEntrustId(), user.getEntrustGroup(), otp);
-            logger.info("the result is {}",result);
+            logger.info("the result is {}", result);
             if (result) {
-                if( request.getSession().getAttribute("2FA") !=null) {
+                if (request.getSession().getAttribute("2FA") != null) {
                     request.getSession().removeAttribute("2FA");
                     corporateUserService.resetNoOfTokenAttempt(user);
                 }
@@ -228,7 +223,7 @@ public class TokenAuthController {
                 return "redirect:/corporate/dashboard";
             }
         } catch (InternetBankingSecurityException ibe) {
-            logger.error("Error authenticating token {}",ibe);
+            logger.error("Error authenticating token {}", ibe);
         }
         redirectAttributes.addFlashAttribute("failure", messageSource.getMessage("otp.auth.failure", null, locale));
         return "redirect:/corporate/token";

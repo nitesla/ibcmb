@@ -14,6 +14,8 @@ import java.util.List;
 @Entity
 @Audited(withModifiedFlag=true)
 @Where(clause ="del_Flag='N'" )
+@Table(uniqueConstraints=@UniqueConstraint(columnNames={"refCode"}))
+
 public class BulkTransfer extends TransRequest{
     private String refCode;
     private  String status;
