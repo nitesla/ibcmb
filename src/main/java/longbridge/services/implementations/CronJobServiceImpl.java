@@ -73,13 +73,13 @@ public class CronJobServiceImpl implements CronJobService {
             accountRepo.save(account);
         }
     }
-
     @Override
     public void updateAccountStatus(Account account, AccountDetails accountDetails) throws InternetBankingException {
         if ((account.getStatus()==null)||(!account.getStatus().equalsIgnoreCase(""))||(!account.getStatus().equalsIgnoreCase(accountDetails.getAcctStatus()))) {
             account.setStatus(accountDetails.getAcctStatus());
 //            System.out.println("the account status after setting is" + account.getStatus());
-            accountRepo.save(account);}
+            accountRepo.save(account);
+        }
     }
 
 
