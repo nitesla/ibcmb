@@ -403,11 +403,18 @@ public class CorpTransferServiceImpl implements CorpTransferService {
             any = true;
         }
 
+        int numAuthorizers = 0;
+        SettingDTO setting = configService.getSettingByName("MIN_AUTHORIZER_LEVEL");
+        if (setting != null && setting.isEnabled()) {
+
+            numAuthorizers = Integer.parseInt(setting.getValue());
+        }
+
         for (CorporateRole role : roles) {
             for (CorpTransReqEntry corpTransReqEntry : transReqEntries) {
                 if (corpTransReqEntry.getRole().equals(role)) {
                     approvalCount++;
-                    if (any) return true;
+                    if (any&&(approvalCount>=numAuthorizers)) return true;
                 }
             }
         }

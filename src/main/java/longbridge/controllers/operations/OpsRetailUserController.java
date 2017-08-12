@@ -4,9 +4,11 @@ import longbridge.dtos.RetailUserDTO;
 import longbridge.exception.InternetBankingException;
 import longbridge.exception.PasswordException;
 import longbridge.forms.ChangePassword;
+import longbridge.models.RetailUser;
 import longbridge.security.FailedLoginService;
 import longbridge.services.RetailUserService;
 
+import longbridge.services.VerificationService;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,24 +43,28 @@ public class OpsRetailUserController {
     private FailedLoginService failedLoginService;
 
     @Autowired
-    MessageSource messageSource;
+    private MessageSource messageSource;
 
-    private Logger logger= LoggerFactory.getLogger(this.getClass());
+    @Autowired
+    private VerificationService verificationService;
+
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
 
 
     @PostMapping
-    public String createUser(@ModelAttribute("retailUser") RetailUserDTO retailUser, BindingResult result, RedirectAttributes redirectAttributes) throws Exception{
-        if(result.hasErrors()){
+    public String createUser(@ModelAttribute("retailUser") RetailUserDTO retailUser, BindingResult result, RedirectAttributes redirectAttributes) throws Exception {
+        if (result.hasErrors()) {
             return "/ops/retail/add";
         }
-       // retailUserService.addUser(retailUser);
-        redirectAttributes.addFlashAttribute("message","Retail user created successfully");
+        // retailUserService.addUser(retailUser);
+        redirectAttributes.addFlashAttribute("message", "Retail user created successfully");
         return "redirect:/ops/retail/users";
     }
 
 
     /**
      * Edit an existing user
+     *
      * @return
      */
     @GetMapping("/{userId}/edit")
@@ -69,23 +75,23 @@ public class OpsRetailUserController {
     }
 
 
-
     @GetMapping
-    public String getAllRetailUsers(Model model){
+    public String getAllRetailUsers(Model model) {
         return "/ops/retail/view";
     }
 
     @GetMapping("/all")
-    public @ResponseBody
-    DataTablesOutput<RetailUserDTO> getRetailUsers(DataTablesInput input,@RequestParam("csearch") String search){
+    public
+    @ResponseBody
+    DataTablesOutput<RetailUserDTO> getRetailUsers(DataTablesInput input, @RequestParam("csearch") String search) {
 
         Pageable pageable = DataTablesUtils.getPageable(input);
         Page<RetailUserDTO> retailUsers = null;
         if (StringUtils.isNoneBlank(search)) {
-        	retailUsers = retailUserService.findUsers(search,pageable);
-		}else{
-			retailUsers = retailUserService.getUsers(pageable);
-		}
+            retailUsers = retailUserService.findUsers(search, pageable);
+        } else {
+            retailUsers = retailUserService.getUsers(pageable);
+        }
         DataTablesOutput<RetailUserDTO> out = new DataTablesOutput<RetailUserDTO>();
         out.setDraw(input.getDraw());
         out.setData(retailUsers.getContent());
@@ -95,8 +101,9 @@ public class OpsRetailUserController {
     }
 
     @GetMapping(path = "/list")
-    public @ResponseBody
-    Iterable<RetailUserDTO> getRetailUsers(){
+    public
+    @ResponseBody
+    Iterable<RetailUserDTO> getRetailUsers() {
 
         Iterable<RetailUserDTO> retailUsers = retailUserService.getUsers();
 
@@ -104,18 +111,18 @@ public class OpsRetailUserController {
     }
 
     @GetMapping("/{userId}")
-    public String getUser(@PathVariable  Long userId, Model model){
+    public String getUser(@PathVariable Long userId, Model model) {
         RetailUserDTO retailUser = retailUserService.getUser(userId);
-        model.addAttribute("user",retailUser);
+        model.addAttribute("user", retailUser);
         return "retailUserDetails";
     }
 
 
     @PostMapping("/update")
-    public String UpdateUser(@ModelAttribute("retailUser") RetailUserDTO retailUser, BindingResult result, RedirectAttributes redirectAttributes) throws Exception{
-       if(result.hasErrors()){
-           return "/ops/retail/add";
-       }
+    public String UpdateUser(@ModelAttribute("retailUser") RetailUserDTO retailUser, BindingResult result, RedirectAttributes redirectAttributes) throws Exception {
+        if (result.hasErrors()) {
+            return "/ops/retail/add";
+        }
         retailUserService.updateUser(retailUser);
         redirectAttributes.addFlashAttribute("message", "Retail user updated successfully");
         return "redirect:/ops/retail/users";
@@ -136,17 +143,16 @@ public class OpsRetailUserController {
 
 
     @GetMapping("/{userId}/unlock")
-    public String unlockUser(@PathVariable Long userId, RedirectAttributes redirectAttributes,Locale locale){
+    public String unlockUser(@PathVariable Long userId, RedirectAttributes redirectAttributes, Locale locale) {
 
-        try{
+        try {
             String message = retailUserService.unlockUser(userId);
 
-            redirectAttributes.addFlashAttribute("message",message);
+            redirectAttributes.addFlashAttribute("message", message);
 
-        }
-        catch (InternetBankingException e){
-            logger.error("Error unlocking user",e.getMessage());
-            redirectAttributes.addFlashAttribute("failure",e.getMessage());
+        } catch (InternetBankingException e) {
+            logger.error("Error unlocking user", e.getMessage());
+            redirectAttributes.addFlashAttribute("failure", e.getMessage());
 
         }
 
@@ -154,22 +160,23 @@ public class OpsRetailUserController {
     }
 
     @GetMapping("/{id}/password/reset")
-    public String resetPassword(@PathVariable Long id, RedirectAttributes redirectAttributes)
-    {
-        try
-        {
-            String message = retailUserService.resetPassword(id);
-            redirectAttributes.addFlashAttribute("message", message);
+    public String resetPassword(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+
+
+        if(verificationService.isPendingVerification(id, RetailUser.class.getSimpleName())){
+            redirectAttributes.addFlashAttribute("failure", "User has pending changes to be verified");
+            return "redirect:/ops/retail/users";
+
         }
 
-        catch (PasswordException pe)
-        {
+        try {
+            String message = retailUserService.resetPassword(id);
+            redirectAttributes.addFlashAttribute("message", message);
+        } catch (PasswordException pe) {
             redirectAttributes.addAttribute("failure", pe.getMessage());
             logger.error("Error resetting password for retail user", pe);
-        }
-        catch (InternetBankingException e)
-        {
-            redirectAttributes.addFlashAttribute("failure",e.getMessage());
+        } catch (InternetBankingException e) {
+            redirectAttributes.addFlashAttribute("failure", e.getMessage());
         }
 
         return "redirect:/ops/retail/users";
@@ -177,32 +184,39 @@ public class OpsRetailUserController {
 
     @GetMapping("/{userId}/delete")
     public String deleteUser(@PathVariable Long userId, RedirectAttributes redirectAttributes) {
-        retailUserService.deleteUser(userId);
-        redirectAttributes.addFlashAttribute("message", "Retail user deleted successfully");
+
+        try {
+            String message = retailUserService.deleteUser(userId);
+            redirectAttributes.addFlashAttribute("message", message);
+        } catch (InternetBankingException e) {
+            logger.error("Error deleting retail user", e);
+            redirectAttributes.addFlashAttribute("failure", e.getMessage());
+
+        }
 
         return "redirect:/ops/retail/users";
     }
 
     @GetMapping("/password")
-    public String changePassword(){
+    public String changePassword() {
         return "changePassword";
     }
 
     @PostMapping("/password")
-    public String changePassword(@Validated ChangePassword changePassword, Long userId, BindingResult result, HttpRequest request, Model model){
-         if(result.hasErrors()){
-             return "changePassword";
+    public String changePassword(@Validated ChangePassword changePassword, Long userId, BindingResult result, HttpRequest request, Model model) {
+        if (result.hasErrors()) {
+            return "changePassword";
         }
-        RetailUserDTO user= retailUserService.getUser(userId);
-        String oldPassword=changePassword.getOldPassword();
-        String newPassword=changePassword.getNewPassword();
-        String confirmPassword=changePassword.getConfirmPassword();
+        RetailUserDTO user = retailUserService.getUser(userId);
+        String oldPassword = changePassword.getOldPassword();
+        String newPassword = changePassword.getNewPassword();
+        String confirmPassword = changePassword.getConfirmPassword();
 
         //validate password according to the defined password policy
         //The validations can be done on the ChangePassword class
 
 
-        if(!newPassword.equals(confirmPassword)){
+        if (!newPassword.equals(confirmPassword)) {
             logger.info("PASSWORD MISMATCH");
         }
 

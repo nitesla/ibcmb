@@ -56,9 +56,9 @@
                 <ul class="nav child_menu">
                     <li sec:authorize="hasAuthority('CODE_CONFIG')"><a href="/admin/codes/alltypes">Codes</a></li>
                     <li sec:authorize="hasAuthority('SETTING_CONFIG')"><a href="/admin/settings">System Settings</a></li>
+                    <li><a href="/admin/checker">Maker Checker</a></li>
                     <li><a href="/admin/secquestions/">Security Questions</a></li>
                     <li><a href="/admin/phishing/">Phishing Image</a></li>
-                    <li><a href="/admin/checker">Maker Checker</a></li>
                     <li><a href="/admin/job">Batch Job</a></li>
                 </ul>
             </li>
@@ -76,9 +76,6 @@
                 <ul class="nav child_menu">
                     <li sec:authorize="hasAuthority('MANAGE_ROLES')"><a href="/admin/roles/">Role</a></li>
                     <li sec:authorize="hasAuthority('MANAGE_PERMISSIONS')"><a href="/admin/permissions/">Permission</a></li>
-
-                    <li><a href="/admin/secquestions/">Security Questions</a></li>
-                    <!--<li><a href="/admin/phishing/">Phishing Image</a></li>-->
 
                 </ul>
             </li>
@@ -274,7 +271,7 @@
                 <li >
                     <a th:href="@{/admin/verifications/operations}" class="info-number"  aria-expanded="false">
                         <i class="fa fa-check"></i>
-                        <span class="badge bg-green"  th:text="${pendingApprovals}">0</span>
+                        <span class="badge bg-green"  th:text="${verificationNumber}">0</span>
                     </a>
                 </li>
             </ul>
@@ -325,21 +322,22 @@
                     </ul>
                 </li>
                 <li>
-                    <a th:href="@{/ops/mailbox/newinbox/}" class="info-number"  aria-expanded="false">
+                    <a th:href="@{/ops/mailbox/newinbox/}" class="info-number"  aria-expanded="false"
+                       data-toggle="tooltip" data-placement="top" title="Mails">
                         <i class="fa fa-envelope-o"></i>
                         <span class="badge bg-green"  th:text="${numOfUnreadMessages}">0</span>
                     </a>
                 </li>
-                <li >
-                    <a th:href="@{/ops/requests}" class="info-number"  aria-expanded="false">
+                <li>
+                    <a th:href="@{/ops/requests}" class="info-number"  aria-hidden="true" data-toggle="tooltip" title="Service Requests">
                         <i class="fa fa-bell-o"></i>
                         <span class="badge bg-green"  th:text="${numOfSubmittedRequests}">0</span>
                     </a>
                 </li>
                 <li >
-                    <a th:href="@{/ops/verifications/operations}" class="info-number"  aria-expanded="false">
+                    <a th:href="@{/ops/verifications/operations}" class="info-number"  aria-hidden="true">
                         <i class="fa fa-check"></i>
-                        <span class="badge bg-green"  th:text="${pendingApprovals}">0</span>
+                        <span class="badge bg-green"  th:text="${verificationNumber}">0</span>
                     </a>
                 </li>
             </ul>

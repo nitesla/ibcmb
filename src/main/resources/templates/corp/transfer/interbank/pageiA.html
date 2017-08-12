@@ -5,15 +5,13 @@
 <body onload="javascript:var bread = [['Home', '/corporate/dashboard'],['inter bank transfer','/corporate/transfer/interbank'],['beneficiary list']];currentBar('inter bank transfer');breadCrumb(bread)">
 
 <div layout:fragment="content">
-    <div class="col-md-5 col-sm-5 ">
-         
-        <select class="form-control full-width coronation-form-control hide-content-only" id="view">
+    <div class="col-md-12 col-sm-12 ">
+        <a th:href="@{/corporate/transfer/interbank/new}" class="pull-right extra-link">New Beneficiary</a>
+
+        <!-- <select class="form-control full-width coronation-form-control hide-content-only" id="view">
             <option value="account">Overview</option>
-        </select>
-
-        
+        </select> -->
     </div>
-
     <div class="col-xs-12" >
         <div class=" no-pad-lef table-responsive no-mt no-bd  alert">
             <h6 class="sub_header">Beneficiaries</h6>
@@ -57,11 +55,6 @@
                              </div>
                             <br/>
                             <input  type="hidden" th:value="${transferRequest}"/>
-<<<<<<< HEAD
-=======
-
->>>>>>> ff7a7c6c2ddc2c8282a0ae8336f5e24c7c2d732e
-                            <a th:href="@{/corporate/transfer/interbank/new}" class="btn">New Beneficiary</a>
 
 
                            <!-- <button type="submit" class="btn btn-default" style="float: right">Add beneficiary</button>

@@ -33,10 +33,10 @@ public class AdmFaqController {
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
     @Autowired
-    ModelMapper modelMapper;
+    private ModelMapper modelMapper;
 
     @Autowired
-    MessageSource messageSource;
+    private MessageSource messageSource;
 
     @Autowired
     private FaqsService faqsService;

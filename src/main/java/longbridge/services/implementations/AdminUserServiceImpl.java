@@ -99,7 +99,6 @@ public class AdminUserServiceImpl implements AdminUserService {
     @Override
     public AdminUser getUserByName(String name) {
         return this.adminUserRepo.findFirstByUserName(name);
-
     }
 
     @Override
@@ -247,7 +246,7 @@ public class AdminUserServiceImpl implements AdminUserService {
     public String deleteUser(Long id) throws InternetBankingException {
         try {
             AdminUser user = adminUserRepo.findOne(id);
-            adminUserRepo.delete(id);
+            adminUserRepo.delete(user);
             SettingDTO setting = configService.getSettingByName("ENABLE_ENTRUST_DELETION");
             if (setting != null && setting.isEnabled()) {
                 if ("YES".equalsIgnoreCase(setting.getValue())) {
@@ -256,7 +255,11 @@ public class AdminUserServiceImpl implements AdminUserService {
             }
             logger.warn("Admin user {} deleted", user.getUserName());
             return messageSource.getMessage("user.delete.success", null, locale);
-        } catch (InternetBankingSecurityException se) {
+        }
+        catch (VerificationInterruptedException ve){
+            return ve.getMessage();
+        }
+        catch (InternetBankingSecurityException se) {
             throw new InternetBankingSecurityException(messageSource.getMessage("entrust.delete.failure", null, locale));
         } catch (Exception e) {
             throw new InternetBankingException(messageSource.getMessage("user.delete.failure", null, locale), e);

@@ -257,11 +257,12 @@ public class RetailUserServiceImpl implements RetailUserService {
     }
 
     @Override
+    @Verifiable(operation = "DELETE_RETAIL_USER",description = "Deleting a Retail User")
     public String deleteUser(Long userId) throws InternetBankingException {
         try {
 
             RetailUser retailUser = retailUserRepo.findOne(userId);
-            retailUserRepo.delete(userId);
+            retailUserRepo.delete(retailUser);
             SettingDTO setting = configService.getSettingByName("ENABLE_ENTRUST_DELETION");
 
             if (setting != null && setting.isEnabled()) {
@@ -270,7 +271,11 @@ public class RetailUserServiceImpl implements RetailUserService {
                 }
             }
             return messageSource.getMessage("user.delete.success", null, locale);
-        } catch (InternetBankingSecurityException se) {
+        }
+        catch (VerificationInterruptedException ve){
+            return ve.getMessage();
+        }
+        catch (InternetBankingSecurityException se) {
             throw new InternetBankingSecurityException(messageSource.getMessage("entrust.delete.failure", null, locale));
         } catch (Exception e) {
             throw new InternetBankingException(messageSource.getMessage("user.delete.failure", null, locale), e);

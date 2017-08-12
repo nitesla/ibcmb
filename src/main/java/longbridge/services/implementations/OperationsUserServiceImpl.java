@@ -280,7 +280,7 @@ public class OperationsUserServiceImpl implements OperationsUserService {
     public String deleteUser(Long userId) throws InternetBankingException {
         try {
             OperationsUser opsUser = operationsUserRepo.findOne(userId);
-            operationsUserRepo.delete(userId);
+            operationsUserRepo.delete(opsUser);
             logger.warn("Operations user with Id {} deleted", userId);
             SettingDTO setting = configService.getSettingByName("ENABLE_ENTRUST_DELETION");
 
@@ -290,7 +290,11 @@ public class OperationsUserServiceImpl implements OperationsUserService {
                 }
             }
             return messageSource.getMessage("user.delete.success", null, locale);
-        } catch (InternetBankingSecurityException se) {
+        }
+        catch (VerificationInterruptedException ve){
+            return ve.getMessage();
+        }
+        catch (InternetBankingSecurityException se) {
             throw new InternetBankingSecurityException(messageSource.getMessage("entrust.delete.failure", null, locale));
         } catch (Exception e) {
             throw new InternetBankingException(messageSource.getMessage("user.delete.failure", null, locale));

@@ -64,23 +64,23 @@
                        <table class="table" id="tranDetails">
                            <thead>
                            <tr>
-                               <th>Value Date</th>
+
                                <th>Post Date</th>
+                               <th>Value Date</th>
                                <th>Transaction Narration</th>
-                               <th>Account Balance</th>
                                <th>Debit/Credit</th>
                                <th>Transaction ReferenceID</th>
-
+                               <th>Account Balance</th>
                            </tr>
                            </thead>
                            <tfoot>
                            <tr>
-                               <th>Value Date</th>
                                <th>Post Date</th>
+                               <th>Value Date</th>
                                <th>Transaction Narration</th>
-                               <th>Account Balance</th>
                                <th>Debit/Credit</th>
                                <th>Transaction ReferenceID</th>
+                               <th>Account Balance</th>
 
                            </tr>
                            </tfoot>
@@ -104,11 +104,11 @@
         var form = $('<form></form>').attr('action', url).attr('target', '_blank')
                 .attr('method', 'get');
         // Add the one key/value
-        form.append($("<input></input>").attr('type', 'hidden').attr('name',
+        form.append($("<input/>").attr('type', 'hidden').attr('name',
                 key).attr('value', data));
 
         $.each( data, function( propertyName, valueOfProperty ){
-            form.append($("<input></input>").attr('type', 'hidden').attr('name',
+            form.append($("<input/>").attr('type', 'hidden').attr('name',
                     propertyName).attr('value', valueOfProperty));
         });
 
@@ -119,7 +119,92 @@
         $('#btn-print').hide();
         $('.datepicker').datepicker({ dateFormat: 'dd-mm-yy' });//
 
-        $('#tranDetails').DataTable({
+//        $('#tranDetails').DataTable({
+//            responsive: true,
+//
+//            "lengthMenu" : [ [ 5, 10, 20],	[ 5, 10, 20 ] ],
+//            "pagingType" : "simple_numbers",
+//            "searching": false,
+//            "paging": true,
+//            "processing": false,
+//            "serverSide" : false,
+//            "ordering" : false,
+//            "dom": 'T<"clear">frtlp',
+//            "columns" : [
+//                {"data" : "postDate"} ,
+//                {"data" : "valueDate"},
+//                {"data" : "narration"},
+//                {"data" : "tranType"},
+//                {"data" : "tranId"},
+//                {"data" : "accountBalance"}
+//            ],
+//            "columnDefs" : [ {
+//                "targets" : 3,
+//                "data" : "tranType",
+//                "render" : function(data, type,full, meta) {
+//                    if (type === 'display') {
+//                        if(data == null) return data;
+//
+//                       var spacedData = '         '+data;
+//                        return spacedData;
+//                    }
+//                    return data;
+//                }
+//            }, {
+//                "targets" : 0,
+//                "data" : "postDate",
+//                "render" : function(data, type,full, meta) {
+//                    if (type === 'display') {
+//                        if(data == null)
+//                            return data;
+//
+//                        var pattern = /(\d{2})\.(\d{2})\.(\d{4})/;
+//                        var dt = new Date(data.replace(pattern,'$3-$2-$1'));
+//                        return dt.toDateString();
+//                    }
+//                    return data;
+//                }
+//            },{
+//                "targets" : 5,
+//                "data" : "accountBalance",
+//                "render" : function(data, type,full, meta) {
+//                    if (type === 'display') {
+//                        if(data == null)
+//                            return data;
+//                        var twoPlacedFloat = parseFloat(data).toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,');
+//                        return twoPlacedFloat;
+//                    }
+//                    return data;
+//                }
+//            }
+//                , {
+//                    "targets": 1,
+//                    "data": "valueDate",
+//                    "render": function (data, type, full, meta) {
+//                        if (type === 'display') {
+//
+//                            if (data == null)
+//                                return data;
+//                            var pattern = /(\d{2})\.(\d{2})\.(\d{4})/;
+//                            var dt = new Date(data.replace(pattern,'$3-$2-$1'));
+//                            return dt.toDateString();
+//                        }
+//                        return data;
+//                    }
+//                } ],
+//            "ajax" : {
+//                "url":"viewstatement/display/data",
+//                "type" : "GET",
+//                "data" : function(d) {
+//                    d.acctNumber = $('[name=acctNumber]').val();
+//                    d.fromDate = $('[name=fromDate]').val();
+//                    d.toDate = $('[name=toDate]').val();
+//                    d.tranType = $('[name=tranType]').val();
+//                }
+//            }
+//
+//        });
+            $('#tranDetails').DataTable({
             responsive: true,
 
             "lengthMenu" : [ [ 5, 10, 20],	[ 5, 10, 20 ] ],
@@ -131,15 +216,27 @@
             "ordering" : false,
             "dom": 'T<"clear">frtlp',
             "columns" : [
-                {"data" : "valueDate"},
                 {"data" : "postDate"} ,
+                {"data" : "valueDate"},
                 {"data" : "narration"},
-                {"data" : "accountBalance"},
                 {"data" : "tranType"},
-                {"data" : "tranId"}
+                {"data" : "tranId"},
+                {"data" : "accountBalance"}
             ],
             "columnDefs" : [ {
-                "targets" : 1,
+                "targets" : 3,
+                "data" : "tranType",
+                "render" : function(data, type,full, meta) {
+                    if (type === 'display') {
+                        if(data == null) return data;
+
+                       var spacedData = '         '+data;
+                        return spacedData;
+                    }
+                    return data;
+                }
+            }, {
+                "targets" : 0,
                 "data" : "postDate",
                 "render" : function(data, type,full, meta) {
                     if (type === 'display') {
@@ -153,7 +250,7 @@
                     return data;
                 }
             },{
-                "targets" : 3,
+                "targets" : 5,
                 "data" : "accountBalance",
                 "render" : function(data, type,full, meta) {
                     if (type === 'display') {
@@ -166,7 +263,7 @@
                 }
             }
                 , {
-                    "targets": 0,
+                    "targets": 1,
                     "data": "valueDate",
                     "render": function (data, type, full, meta) {
                         if (type === 'display') {
@@ -180,25 +277,62 @@
                         return data;
                     }
                 } ],
-            "ajax" : {
-                "url":"viewstatement/display/data",
-                "type" : "GET",
-                "data" : function(d) {
-                    d.acctNumber = $('[name=acctNumber]').val();
-                    d.fromDate = $('[name=fromDate]').val();
-                    d.toDate = $('[name=toDate]').val();
-                    d.tranType = $('[name=tranType]').val();
-                }
-            }
 
         });
-
+//        var table = $('#tranDetails').DataTable({
+//            drawCallback: function(){
+//                $('.paginate_button.next', this.api().table().container())
+//                        .on('click', function(){
+//                            alert('next');
+//                        });
+//            }
+//        });
+//        $("#btn-find").on("click", function(e) {
+//
+//            e.preventDefault();
+//            dt = $('#tranDetails').DataTable();
+//            $('#btn-print').show();
+//            dt.ajax.reload(null, true);
+//
+//        });
+//        $('#tranDetails_paginate').hide();
+//        $('#tranDetails_length').hide();
         $("#btn-find").on("click", function(e) {
 
             e.preventDefault();
-            dt = $('#tranDetails').DataTable();
-            $('#btn-print').show();
-            dt.ajax.reload(null, true);
+            $.ajax({ 
+                "url":"viewstatement/display/data",
+                "type" : "GET",
+                "data" :  {
+                    acctNumber : $('[name=acctNumber]').val(),
+                    fromDate : $('[name=fromDate]').val(),
+                    toDate : $('[name=toDate]').val(),
+                    tranType : $('[name=tranType]').val()
+                },success: function (result) {
+                    if (result != null) {
+
+//                        var detialsList = JSON.parse(result);
+                        console.log("the result "+result);
+                        var contactsTab2 = $('#tranDetails').DataTable();
+                        for (var key in result) {
+                            if (result.hasOwnProperty(key)) {
+                                var od = result[key];
+                                console.log("the key "+key+" value "+result[key]);
+                                contactsTab2.row.add(od);
+                            }
+
+                            contactsTab2.draw();
+//
+                        }
+
+                    }
+                },
+                error:  function (dd) {
+                    console.log("error")
+                }
+            
+            });
+//
 
         });
 

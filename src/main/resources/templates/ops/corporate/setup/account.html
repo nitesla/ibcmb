@@ -38,7 +38,7 @@
                             </div>
                             <div class="x_content">
                                 <div class="ibox-content">
-                                    <form method="post" class="form-horizontal" th:action="@{/ops/corporates/accounts}"
+                                    <form method="post" class="form-horizontal" th:action="@{/ops/corporates/accounts/authorization}"
                                           th:object="${corporate}">
 
 
@@ -277,7 +277,7 @@
     function isCheckboxCheck() {
         var selectedItem = 0;
         var noOfAccounts = $('#accountSize').val();
-        console.log("the accounts size " + $('#corpUniqueId').val());
+//        console.log("the accounts size " + $('#corpUniqueId').val());
         var anyAccountSelected = $('input[name="accounts"]:checked').length > 0;
 //    console.log("no checked "+$('input[name="accounts"]:checked').length);
         if (anyAccountSelected) {

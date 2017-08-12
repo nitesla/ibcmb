@@ -367,7 +367,7 @@ public class OpsCorporateController {
         List<CorporateRoleDTO> roleDTOs = new ArrayList<CorporateRoleDTO>();
         CorporateRoleDTO corporateRole;
         int num = 2;
-        SettingDTO setting = configService.getSettingByName("MIN_CORPORATE_APPROVERS");
+        SettingDTO setting = configService.getSettingByName("MIN_AUTHORIZER_LEVEL");
         if (setting != null && setting.isEnabled()) {
             num = NumberUtils.toInt(setting.getValue());
         }
@@ -465,8 +465,8 @@ public class OpsCorporateController {
         List<CorporateRoleDTO> roleDTOs = new ArrayList<>();
         CorporateRoleDTO corporateRole;
 
-        int num = 2;
-        SettingDTO setting = configService.getSettingByName("MIN_CORPORATE_APPROVERS");
+        int num = 0;
+        SettingDTO setting = configService.getSettingByName("MIN_AUTHORIZER_LEVEL");
         if (setting != null && setting.isEnabled()) {
 
             num = Integer.parseInt(setting.getValue());
@@ -592,12 +592,8 @@ public class OpsCorporateController {
 
     @GetMapping("/new")
     public String addCorporate(Model model) {
-//        logger.info("the corp category {}",corpTYpe);
         CorporateDTO corporateDTO = new CorporateDTO();
-//        if(corpTYpe == ""){
-//            return "/ops/dashboard";
-//        }else
-//        model.addAttribute("corporate", corporateDTO);
+
         return "redirect:/ops/dashboard";
     }
 
@@ -680,7 +676,7 @@ public class OpsCorporateController {
     }
 
 
-    @PostMapping("/accounts")
+    @PostMapping("/accounts/authorization")
     public String addCorporateAccounts(@ModelAttribute("corporate") @Valid CorporateDTO corporate, BindingResult result, RedirectAttributes redirectAttributes, WebRequest request, HttpSession session, Locale locale, Model model) {
         if (result.hasErrors()) {
             result.addError(new ObjectError("invalid", messageSource.getMessage("form.fields.required", null, locale)));
@@ -743,6 +739,14 @@ public class OpsCorporateController {
             if (corporateRequestDTO.getCorporateType().equalsIgnoreCase("SOLE")) {
                 return "/ops/corporate/setup/addSoleUser";
             } else {
+                int num = 0;
+                SettingDTO setting = configService.getSettingByName("MIN_AUTHORIZER_LEVEL");
+                if (setting != null && setting.isEnabled()) {
+
+                    num = Integer.parseInt(setting.getValue());
+                }
+
+                model.addAttribute("numAuthorizers", num);
                 return "/ops/corporate/setup/addauthorizer";
             }
         }
@@ -771,7 +775,7 @@ public class OpsCorporateController {
     }
 
 
-    @PostMapping("/authorizer")
+    @PostMapping("/authorization/rules")
     public String createAuthorizerLevels(WebRequest request, RedirectAttributes redirectAttributes, HttpSession
             session, Model model, Locale locale) {
 
@@ -804,8 +808,8 @@ public class OpsCorporateController {
             model.addAttribute("authorizerList", authorizerList);
 
 
-            int num = 2;
-            SettingDTO setting = configService.getSettingByName("MIN_CORPORATE_APPROVERS");
+            int num = 0;
+            SettingDTO setting = configService.getSettingByName("MIN_AUTHORIZER_LEVEL");
             if (setting != null && setting.isEnabled()) {
 
                 num = Integer.parseInt(setting.getValue());
@@ -858,6 +862,14 @@ public class OpsCorporateController {
         CorporateRequestDTO corporate = (CorporateRequestDTO) session.getAttribute("corporateRequest");
         model.addAttribute("authorizerList", authorizerList);
         model.addAttribute("corporate", corporate);
+        int num = 0;
+        SettingDTO setting = configService.getSettingByName("MIN_AUTHORIZER_LEVEL");
+        if (setting != null && setting.isEnabled()) {
+
+            num = Integer.parseInt(setting.getValue());
+        }
+
+        model.addAttribute("numAuthorizers", num);
 
         return "/ops/corporate/setup/addauthorizer";
     }
@@ -880,7 +892,7 @@ public class OpsCorporateController {
         model.addAttribute("authorizerList", authorizerList);
 //        logger.info("the authorizer is {}",corporateRequestDTO);
         int num = 2;
-        SettingDTO setting = configService.getSettingByName("MIN_CORPORATE_APPROVERS");
+        SettingDTO setting = configService.getSettingByName("MIN_AUTHORIZER_LEVEL");
         if (setting != null && setting.isEnabled()) {
             num = Integer.parseInt(setting.getValue());
         }
@@ -892,7 +904,7 @@ public class OpsCorporateController {
     }
 
 
-    @PostMapping("/rules/new")
+    @PostMapping("/rules/users")
     public String createTransactionRule(WebRequest request, RedirectAttributes redirectAttributes, HttpSession session, Model model, Locale locale) {
 
         String rules = request.getParameter("rules");

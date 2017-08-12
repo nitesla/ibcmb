@@ -171,11 +171,11 @@
                                             <div class="col-md-offset-4 col-md-4">
                                                 <br/>
                                                 <input id="returnValue" type="hidden"/>
-                                                <input th:name="noOfQuestions" th:value="${noOfQuestions}" type="hidden"/>
+                                                <input id="noOfQuestions" th:name="noOfQuestions" th:value="${noOfQuestions}" type="hidden"/>
                                                 <div th:each="questionList,ind : ${secQuestions}">
                                                     <div class="form-group clearfix">
                                                         <label th:text="'Security Question '+${ind.index+1}" >Question</label>
-                                                        <select th:name="'securityQuestion'+${ind.index}" class="my-select">
+                                                        <select th:name="'securityQuestion'+${ind.index}" th:id="'securityQuestion'+${ind.index}" class="my-select">
                                                             <option th:each="question : ${questionList}" th:text="${question.code}" th:value="${question.code}"></option>
                                                         </select>
                                                     </div>
@@ -202,7 +202,7 @@
                                                             <input type="radio" name="phishing" th:value="${image}" id="check1" style="position: absolute; bottom: 20px; right: 20px;" />
                                                         </div>
                                                     </div>
-
+                                                    <input id="imgPaths" th:value="${imagePath}" style="display: none;"/>
                                                 </div>
                                             </div>
                                             <div class="col-md-offset-4 col-md-4">
@@ -215,13 +215,15 @@
                                         <br/>
                                         <div class="row">
                                             <div class="col-md-offset-4 col-md-4">
-                                                <b>Self Registration Summary</b>
-                                                <p>Below are a summary of details entered to be used for registration</p>
-                                                <p>Email address : <span id="email"></span></p>
-                                                <p>Username : <span id="username"></span></p>
-                                                <p>Password : <span id="password">****</span></p>
-                                                <p>Security Questions</p>
-                                                <p>Phishing Images : <span></span></p>
+                                                <div id="regSummary">
+                                                    </div>
+                                                <!--<b>Self Registration Summary</b>-->
+                                                <!--<p>Below are a summary of details entered to be used for registration</p>-->
+                                                <!--<p>Email address : <span id="email"></span></p>-->
+                                                <!--<p>Username : <span id="username"></span></p>-->
+                                                <!--<p>Password : <span id="password">****</span></p>-->
+                                                <!--<p>Security Questions</p>-->
+                                                <!--<p>Phishing Images : <span></span></p>-->
                                             </div>
                                         </div>
                                     </section>
@@ -320,8 +322,6 @@
 <script th:src="@{~/customer/js/errors.js}"></script>
 
 <script th:inline="javascript" type="text/javascript">
-
-    /*<![CDATA[*/
 
 
    $( document ).ready(function() {

@@ -48,14 +48,14 @@
                                         <input th:type="hidden" name="corporateId" th:value="${corporate.Id}"/>
 
                                         <div class="form-group">
-                                            <label class="col-sm-2 control-label">Lower Limit Amount <span style="color: red">*</span></label>
+                                            <label class="col-sm-2 control-label">Lower Amount <span style="color: red">*</span></label>
                                             <div class="col-sm-6">
                                                 <input type="number" class="form-control" th:field="*{lowerLimitAmount}"/>
                                             </div>
                                         </div>
 
                                         <div class="form-group">
-                                            <label class="col-sm-2 control-label">Upper Limit Amount <span style="color: red">*</span></label>
+                                            <label class="col-sm-2 control-label">Upper Amount <span style="color: red">*</span></label>
                                             <div class="col-sm-6">
                                                 <input th:if ="${!corporateRule.unlimited}" id="upperLimit" type="number" class="form-control" th:field="*{upperLimitAmount}"/>
                                                 <input th:if ="${corporateRule.unlimited}" id="upperLimit" type="number" class="form-control" th:field="*{upperLimitAmount}" disabled="disabled"/>
@@ -82,7 +82,7 @@
                                         </div>
                                         <hr/>
                                         <div class="form-group">
-                                            <label class="col-sm-2 control-label">Approval Roles <span style="color: red">*</span></label>
+                                            <label class="col-sm-2 control-label">Authorizer Levels <span style="color: red">*</span></label>
                                             <div class="col-sm-6">
 
                                                 <p th:each="role: ${roleList}">
@@ -105,13 +105,13 @@
                                                 <label class="col-sm-2 control-label"></label>
 
                                                 <label><input type="radio" name="anyCanAuthorize" value="N" checked="checked"/>All the
-                                                    roles selected above must authorize transaction</label>
+                                                    authorizers selected above must authorize transaction</label>
                                             </div>
                                             <div class="radio">
                                                 <label class="col-sm-2 control-label"></label>
 
-                                                <label><input type="radio" name="anyCanAuthorize" value="Y" />Any of
-                                                    the roles selected above can authorize transaction</label>
+                                                <label><input id="any" type="radio" name="anyCanAuthorize" value="Y" />Any of
+                                                    the authorizers selected above can authorize transaction</label>
                                             </div>
                                             </div>
                                         </div>
