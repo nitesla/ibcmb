@@ -32,7 +32,7 @@ public class TransferRequestDTO implements Serializable{
 
     private String status;
 
-    //private Date tranDate;
+     private Date tranDate;
 
     private String referenceNumber;
 
@@ -125,13 +125,13 @@ public class TransferRequestDTO implements Serializable{
     }
 
 
-//    public Date getTranDate() {
-//        return tranDate;
-//    }
-//
-//    public void setTranDate(Date tranDate) {
-//        this.tranDate = tranDate;
-//    }
+    public Date getTranDate() {
+        return tranDate;
+    }
+
+    public void setTranDate(Date tranDate) {
+        this.tranDate = tranDate;
+    }
 
     public String getRemarks() {
         return remarks;
