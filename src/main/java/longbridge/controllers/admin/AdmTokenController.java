@@ -56,7 +56,7 @@ public class AdmTokenController {
 
     @Autowired
     private ConfigurationService configService;
-@Autowired
+    @Autowired
     TokenUtils tokenUtils;
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -117,7 +117,7 @@ public class AdmTokenController {
 
         try {
             String username = tokenForm.getUsername();
-            String group = getUserGroup(tokenForm.getUserType());
+            String group = getUserGroup(username, tokenForm.getUserType());
             String entrustId = getEntrustId(username, tokenForm.getUserType());
 
             boolean result = securityService.assignToken(entrustId, group, tokenForm.getSerialNumber());
@@ -148,7 +148,7 @@ public class AdmTokenController {
         }
 
         try {
-            String group = getUserGroup(userType);
+            String group = getUserGroup(username, userType);
             String entrustId = getEntrustId(username, userType);
 
             String serials = securityService.getTokenSerials(entrustId, group);
@@ -185,7 +185,7 @@ public class AdmTokenController {
 
         try {
             String username = tokenForm.getUsername();
-            String group = getUserGroup(tokenForm.getUserType());
+            String group = getUserGroup(username, tokenForm.getUserType());
             String entrustId = getEntrustId(username, tokenForm.getUserType());
 
             boolean result = securityService.activateToken(entrustId, group, tokenForm.getSerialNumber());
@@ -219,7 +219,7 @@ public class AdmTokenController {
 
         try {
             String username = tokenForm.getUsername();
-            String group = getUserGroup(tokenForm.getUserType());
+            String group = getUserGroup(username, tokenForm.getUserType());
             String entrustId = getEntrustId(username, tokenForm.getUserType());
 
             boolean result1 = securityService.assignToken(entrustId, group, tokenForm.getSerialNumber());
@@ -255,7 +255,7 @@ public class AdmTokenController {
         }
 
         try {
-            String group = getUserGroup(userType);
+            String group = getUserGroup(username, userType);
             String entrustId = getEntrustId(username, userType);
 
             String serials = securityService.getTokenSerials(entrustId, group);
@@ -297,7 +297,7 @@ public class AdmTokenController {
         }
         try {
             String username = tokenForm.getUsername();
-            String group = getUserGroup(tokenForm.getUserType());
+            String group = getUserGroup(username, tokenForm.getUserType());
             String entrustId = getEntrustId(username, tokenForm.getUserType());
 
             boolean result = securityService.deActivateToken(entrustId, group, tokenForm.getSerialNumber());
@@ -328,15 +328,20 @@ public class AdmTokenController {
             model.addAttribute("failure", messageSource.getMessage("form.fields.required", null, locale));
             return "/adm/token/unlock";
         }
-        try {
 
+        logger.info("username: "+tokenForm.getUsername());
+
+        logger.info("user type: "+tokenForm.getUserType());
+
+
+        try {
             String username = tokenForm.getUsername();
-            String group = getUserGroup(tokenForm.getUserType());
+            String group = getUserGroup(username, tokenForm.getUserType());
             String entrustId = getEntrustId(username, tokenForm.getUserType());
 
             boolean result = securityService.unLockUser(entrustId, group);
             if (result) {
-                tokenUtils.resetTokenAttemptsForUser(tokenForm.getUserType(),username);
+                tokenUtils.resetTokenAttemptsForUser(tokenForm.getUserType(), username);
                 redirectAttributes.addFlashAttribute("message",
                         messageSource.getMessage("token.unlock.success", null, locale));
                 return "redirect:/admin/token/unlock";
@@ -365,7 +370,7 @@ public class AdmTokenController {
         }
         try {
             String username = tokenForm.getUsername();
-            String group = getUserGroup(tokenForm.getUserType());
+            String group = getUserGroup(username, tokenForm.getUserType());
             String entrustId = getEntrustId(username, tokenForm.getUserType());
 
             boolean result = securityService.synchronizeToken(entrustId, group, tokenForm.getSerialNumber(),
@@ -386,7 +391,7 @@ public class AdmTokenController {
     public List<String> getTokenSerials(@RequestParam("username") String username, @RequestParam("userType") String userType) {
         List<String> serials = new ArrayList<>();
         try {
-            String group = getUserGroup(userType);
+            String group = getUserGroup(username, userType);
             String entrustId = getEntrustId(username, userType);
 
             String serial = securityService.getTokenSerials(entrustId, group);
@@ -400,25 +405,36 @@ public class AdmTokenController {
         return serials;
     }
 
-    private String getUserGroup(String userType) {
-        String group = "";
+    private String getUserGroup(String username, String userType) {
+        String entrustGrp = "";
+
+        User user = null;
 
         if ("ADMIN".equals(userType)) {
-            group = configService.getSettingByName("DEF_ENTRUST_ADM_GRP").getValue();
+            user = adminUserService.getUserByName(username);
 
         } else if ("OPERATIONS".equals(userType)) {
-            group = configService.getSettingByName("DEF_ENTRUST_OPS_GRP").getValue();
+
+            user = operationsUserService.getUserByName(username);
+
 
         } else if ("RETAIL".equals(userType)) {
-            group = configService.getSettingByName("DEF_ENTRUST_RET_GRP").getValue();
+
+            user = retailUserService.getUserByName(username);
+
 
         } else if ("CORPORATE".equals(userType)) {
-            group = configService.getSettingByName("DEF_ENTRUST_CORP_GRP").getValue();
+
+            user = corporateUserService.getUserByName(username);
 
         }
+        if (user != null) {
+            entrustGrp = user.getEntrustGroup();
+        }
+        return entrustGrp;
 
-        return group;
     }
+
 
     private String getEntrustId(String username, String userType) {
 
