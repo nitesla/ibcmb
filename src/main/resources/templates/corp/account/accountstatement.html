@@ -34,7 +34,6 @@
                         <th>Debit/Credit</th>
                         <th>Transaction ReferenceID</th>
                         <th>Account Balance</th>
-                        <th>&nbsp;</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -45,8 +44,6 @@
                         <td th:text="${list.tranType}"></td>
                         <td th:text="${list.tranId}"></td>
                         <td th:text="${#numbers.formatDecimal(list.balance, 0, 'COMMA', 2, 'POINT')}"></td>
-
-                        <td><a target="_blank"  th:href="@{'/corporate/account/' + ${list.tranId} + '/downloadhistory'}"><i class="fa fa-print" style="font-size:16px;"></i></a></td>
 
                     </tr>
                     </tbody>
