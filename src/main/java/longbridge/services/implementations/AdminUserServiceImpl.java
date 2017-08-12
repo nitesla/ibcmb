@@ -98,7 +98,7 @@ public class AdminUserServiceImpl implements AdminUserService {
 
     @Override
     public AdminUser getUserByName(String name) {
-        return this.adminUserRepo.findFirstByUserName(name);
+        return this.adminUserRepo.findFirstByUserNameIgnoreCase(name);
     }
 
     @Override

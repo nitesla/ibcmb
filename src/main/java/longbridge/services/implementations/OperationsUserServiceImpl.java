@@ -166,7 +166,7 @@ public class OperationsUserServiceImpl implements OperationsUserService {
 
     @Override
     public OperationsUser getUserByName(String name) {
-        OperationsUser opsUser = this.operationsUserRepo.findFirstByUserName(name);
+        OperationsUser opsUser = this.operationsUserRepo.findFirstByUserNameIgnoreCase(name);
         return opsUser;
     }
 

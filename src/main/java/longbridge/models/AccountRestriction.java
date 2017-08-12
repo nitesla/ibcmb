@@ -83,8 +83,7 @@ public class AccountRestriction extends AbstractEntity implements PrettySerializ
                 gen.writeStartObject();
                 gen.writeStringField("Restriction Value",value.restrictionValue);
                 gen.writeStringField("Restriction Type",value.restrictionType);
-
-
+                gen.writeStringField("Restriction For",value.restrictedFor);
                 gen.writeEndObject();
             }
         };
