@@ -195,7 +195,7 @@
                                     <div class="radio">
                                         <label class="col-sm-2 control-label"></label>
 
-                                        <label><input type="radio" name="anyCanAuthorize" value="Y"/>
+                                        <label><input id="anyAuthorizer" type="radio" name="anyCanAuthorize" value="Y"/>
                                             Any <span th:text="${numAuthorizers}"></span> authorizers selected above can approve transaction</label>
                                     </div>
                                 </div>
@@ -302,6 +302,19 @@
                 $('.bt-select').attr("disabled", true);
             } else {
                 $('.bt-select').removeAttr("disabled");
+            }
+        });
+
+
+
+
+        $("#anyAuthorizer").change(function () {
+            if ($(this).is(":checked")) {
+                if (!$("input[name='authorizers']").is(":checked")) {
+                    $("input[name='authorizers']").prop("checked", true);
+                    $("#authorizerError").hide();
+
+                }
             }
         });
 

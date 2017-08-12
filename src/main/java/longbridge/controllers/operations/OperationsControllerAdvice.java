@@ -28,8 +28,6 @@ public class OperationsControllerAdvice {
     @Autowired
     private VerificationService verificationService;
 
-    @Autowired
-    private PasswordPolicyService passwordPolicyService;
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
