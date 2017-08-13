@@ -159,10 +159,11 @@ function sendGenPassword() {
 
 function validateGenPassword() {
      $('#myLoader').modal('show');
+    console.log("p** fff");
     var result;
-    var username = $('input[name="username"]').val();
-    var genpassword = $('input[name="genpassword"]').val();
-    
+    var username = $('#username').val();
+    var genpassword = $('#genpassword').val();
+    console.log("p** "+genpassword);
     genpassword =     genpassword.trim();
     
     $.ajax({
