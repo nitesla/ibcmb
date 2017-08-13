@@ -26,7 +26,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.jasperreports.JasperReportsPdfView;
 
 import javax.servlet.http.HttpServletRequest;
-import java.math.BigDecimal;
 import java.security.Principal;
 import java.util.*;
 import java.util.stream.StreamSupport;
@@ -51,12 +50,14 @@ public class TransferController {
     private ApplicationContext appContext;
     private TransferUtils transferUtils;
 
+//    @Autowired
+//    TransferRe
+
     @Value("${bank.code}")
     private String bankCode;
 
 
     @Autowired
-
     public TransferController(RetailUserService retailUserService, IntegrationService integrationService, TransferService transferService, AccountService accountService, MessageSource messages, LocaleResolver localeResolver, LocalBeneficiaryService localBeneficiaryService, FinancialInstitutionService financialInstitutionService, TransferErrorService transferErrorService, SecurityService securityService
             , ApplicationContext appContext, TransferUtils transferUtils) {
         this.retailUserService = retailUserService;
@@ -113,6 +114,7 @@ public class TransferController {
         return "redirect:/retail/dashboard";
 
     }
+
 
 
     @GetMapping("/dest/{accountId}/accounts")
@@ -359,6 +361,7 @@ public class TransferController {
         return transferUtils.getBalance(accountNumber);
 
     }
+
 
 
 }

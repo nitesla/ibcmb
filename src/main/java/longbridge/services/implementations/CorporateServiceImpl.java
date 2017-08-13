@@ -686,10 +686,15 @@ public class CorporateServiceImpl implements CorporateService {
     @Verifiable(operation = "ADD_CORPORATE_ROLE", description = "Adding a Corporate Role")
     public String addCorporateRole(CorporateRoleDTO roleDTO) throws InternetBankingException {
 
-          CorporateRole corporateRole = corporateRoleRepo.findByNameAndRank(roleDTO.getName(),roleDTO.getRank());
+
+        if(roleDTO.getRank()<1){
+            throw new InternetBankingException(messageSource.getMessage("auth.level.invalid", null, locale));
+        }
+
+          CorporateRole corporateRole = corporateRoleRepo.findFirstByNameAndRankAndCorporate_Id(roleDTO.getName(),roleDTO.getRank(),Long.parseLong(roleDTO.getCorporateId()));
 
           if(corporateRole!=null){
-              throw new DuplicateObjectException(messageSource.getMessage("role.exist", null, locale));
+              throw new DuplicateObjectException(messageSource.getMessage("auth.level.exist", null, locale));
           }
 
         try {
@@ -721,6 +726,18 @@ public class CorporateServiceImpl implements CorporateService {
     @Override
     @Verifiable(operation = "UPDATE_CORPORATE_ROLE", description = "Updating a Corporate Role")
     public String updateCorporateRole(CorporateRoleDTO roleDTO) throws InternetBankingException {
+
+        if(roleDTO.getRank()<1){
+            throw new InternetBankingException(messageSource.getMessage("auth.level.invalid", null, locale));
+        }
+
+        CorporateRole corporateRole = corporateRoleRepo.findFirstByNameAndRankAndCorporate_Id(roleDTO.getName(),roleDTO.getRank(),Long.parseLong(roleDTO.getCorporateId()));
+
+        if(corporateRole!=null&&roleDTO.getId()!=corporateRole.getId()){
+            throw new DuplicateObjectException(messageSource.getMessage("auth.level.exist", null, locale));
+        }
+
+
         try {
             CorporateRole role = corporateRoleRepo.findOne(roleDTO.getId());
             role.setVersion(roleDTO.getVersion());
@@ -930,7 +947,7 @@ public class CorporateServiceImpl implements CorporateService {
         corpTransferRuleDTO.setId(transferRule.getId());
         corpTransferRuleDTO.setVersion(transferRule.getVersion());
         corpTransferRuleDTO.setLowerLimitAmount(transferRule.getLowerLimitAmount().toString());
-        corpTransferRuleDTO.setUpperLimitAmount(transferRule.isUnlimited() ? "Unlimited" : transferRule.getUpperLimitAmount().toString());
+        corpTransferRuleDTO.setUpperLimitAmount(transferRule.isUnlimited() ? "UNLIMITED" : transferRule.getUpperLimitAmount().toString());
         corpTransferRuleDTO.setUnlimited(transferRule.isUnlimited());
         corpTransferRuleDTO.setCurrency(transferRule.getCurrency());
         corpTransferRuleDTO.setAnyCanAuthorize(transferRule.isAnyCanAuthorize());

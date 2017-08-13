@@ -5,27 +5,22 @@ import longbridge.api.NEnquiryDetails;
 import longbridge.dtos.SettingDTO;
 import longbridge.dtos.TransferRequestDTO;
 import longbridge.exception.InternetBankingTransferException;
-import longbridge.models.RetailUser;
-import longbridge.models.TransRequest;
-import longbridge.models.User;
-import longbridge.models.UserType;
+import longbridge.exception.TransferExceptions;
+import longbridge.models.*;
 import longbridge.repositories.RetailUserRepo;
 import longbridge.repositories.TransferRequestRepo;
+import longbridge.security.userdetails.CustomUserPrincipal;
 import longbridge.services.*;
-import longbridge.utils.ResultType;
-import longbridge.exception.TransferExceptions;
 import longbridge.utils.TransferType;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
-import org.springframework.context.i18n.LocaleContext;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -34,9 +29,9 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
-import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 /**
@@ -174,6 +169,34 @@ public class TransferServiceImpl implements TransferService {
     }
 
     @Override
+    public Page<TransRequest> getCompletedTransfers(Pageable pageDetails) {
+        logger.info("GOT HERE");
+        RetailUser user = getCurrentUser();
+//        List<TransRequest> test = transferRequestRepo.findByUserReferenceNumberAndStatus("RET_" + user.getId(),"000");
+//        logger.info("TEST {}" + test);
+
+        Page<TransRequest> page = transferRequestRepo.findByUserReferenceNumberAndStatusIn("RET_" + user.getId(), Arrays.asList("00","000"), pageDetails);
+        logger.info("PAGE CONTENT {}" + page.getContent());
+        //List<TransferRequestDTO> dtOs = convertEntitiesToDTOs(page.getContent());
+        //logger.info("TRans REQUEST {}" + dtOs);
+        //long t = page.getTotalElements();
+
+        return page;
+        //return pageImpl;
+    }
+
+    @Override
+    public Page<TransferRequestDTO> findCompletedTransfers(String pattern, Pageable pageDetails) {
+        logger.info("GOT HERE two");
+        Page<TransRequest> page = transferRequestRepo.findUsingPattern(pattern, pageDetails);
+        List<TransferRequestDTO> dtOs = convertEntitiesToDTOs(page.getContent());
+        logger.info("TRans REQ {}", dtOs);
+        long t = page.getTotalElements();
+        Page<TransferRequestDTO> pageImpl = new PageImpl<TransferRequestDTO>(dtOs, pageDetails, t);
+        return pageImpl;
+    }
+
+    @Override
     public List<TransRequest> getLastTenTransactionsForAccount(String s) {
         return transferRequestRepo.findTop10ByCustomerAccountNumberOrderByTranDateDesc(s);
     }
@@ -246,6 +269,12 @@ public class TransferServiceImpl implements TransferService {
                 throw new InternetBankingTransferException(TransferExceptions.INVALID_ACCOUNT.toString());
         }
 
+    }
+
+    private RetailUser getCurrentUser() {
+        CustomUserPrincipal principal = (CustomUserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        RetailUser retailUser = (RetailUser) principal.getUser();
+        return retailUser;
     }
 
 }

@@ -430,6 +430,7 @@ public class CorpNAPSTransferController {
 
             while (!bulkTransferService.refCodeExists(generateRefCode())){
                 bulkTransfer.setRefCode(generateRefCode());
+                break;
             }
 
             for (CreditRequest creditRequest : requestList) {

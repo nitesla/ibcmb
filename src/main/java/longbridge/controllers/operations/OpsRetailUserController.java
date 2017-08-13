@@ -186,11 +186,11 @@ public class OpsRetailUserController {
     public String deleteUser(@PathVariable Long userId, RedirectAttributes redirectAttributes) {
 
         try {
-            retailUserService.deleteUser(userId);
-            redirectAttributes.addFlashAttribute("message", "Retail user deleted successfully");
+            String message = retailUserService.deleteUser(userId);
+            redirectAttributes.addFlashAttribute("message", message);
         } catch (InternetBankingException e) {
             logger.error("Error deleting retail user", e);
-            redirectAttributes.addFlashAttribute("failure", "Failed to delete user");
+            redirectAttributes.addFlashAttribute("failure", e.getMessage());
 
         }
 

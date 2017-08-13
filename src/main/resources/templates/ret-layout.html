@@ -147,6 +147,8 @@
                                     <li sec:authorize="hasAuthority('STANDING_ORDER')"><a
                                             th:href="@{/retail/directdebit}" th:text="#{menu.transfer.order}">Standing
                                         order</a></li>
+                                    <li sec:authorize="hasAuthority('MANAGE_TRANSFERS')"><a
+                                            th:href="@{/retail/transfer/history}" th:text="#{menu.transfer.completed}">Completed Transfers</a></li>
                                 </ul>
                             </li>
                             <li sec:authorize="hasAuthority('MANAGE_BILL_PAYMENT')"><a class="menu-link" href="#" th:text="#{menu.bill}">Bill Payments</a></li>
@@ -361,7 +363,7 @@
         
         <script th:src="@{~/customer/js/coronation.js}"></script>
                 <script th:src="@{~/customer/js/errors.js}"></script>
-                 <script th:src="@{~/customer/js/jquery.easydropdown.js}"></script>
+                 <!--<script th:src="@{~/customer/js/jquery.easydropdown.js}"></script>-->
 
         <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/js/bootstrap-datepicker.min.js"></script>
 

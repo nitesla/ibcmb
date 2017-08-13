@@ -573,7 +573,11 @@ public class CorporateUserServiceImpl implements CorporateUserService {
                 }
             }
             return messageSource.getMessage("user.delete.success", null, locale);
-        } catch (InternetBankingSecurityException se) {
+        }
+        catch (VerificationInterruptedException ve){
+            return ve.getMessage();
+        }
+        catch (InternetBankingSecurityException se) {
             throw new InternetBankingSecurityException(messageSource.getMessage("entrust.delete.failure", null, locale));
         } catch (Exception ibe) {
             throw new InternetBankingException(messageSource.getMessage("user.delete.failure", null, locale));

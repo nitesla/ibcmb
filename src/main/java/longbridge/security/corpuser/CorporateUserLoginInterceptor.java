@@ -21,6 +21,15 @@ private PasswordPolicyService passwordPolicyService;
     @Override
     public boolean preHandle(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Object o) throws Exception {
         String uri=httpServletRequest.getRequestURI();
+
+        if (httpServletRequest.getSession().getAttribute("first-time-logon")!=null&& !(uri.equalsIgnoreCase("/corporate/setup"))){
+//            ModelAndView modelAndView = new ModelAndView("forwarded-view");
+//
+//            modelAndView.setViewName("/corp/setup");
+//            throw new ModelAndViewDefiningException(modelAndView);
+            httpServletResponse.sendRedirect(httpServletRequest.getContextPath() + "/corporate/setup");
+        }
+
         if (httpServletRequest.getSession().getAttribute("expired-password")!=null&& !(uri.equalsIgnoreCase("/corporate/reset_password")))
         {
 
@@ -48,15 +57,6 @@ private PasswordPolicyService passwordPolicyService;
 
     @Override
     public void postHandle(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Object o, ModelAndView modelAndView) throws Exception {
-
-
-
-
-
-
-
-
-
 
     }
 

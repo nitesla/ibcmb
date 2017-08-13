@@ -23,7 +23,7 @@ public interface CorporateRoleRepo extends CommonRepo<CorporateRole,Long> {
 
     List<CorporateRole> findByCorporate(Corporate corporate);
 
-    CorporateRole findByNameAndRank(String name, Integer rank);
+    CorporateRole findFirstByNameAndRankAndCorporate_Id(String name, Integer rank, Long corpId);
 
 //    @Query("select count(cr) > 0 from CorporateRole cr where :user member of cr.users and cr=:role")
 //    boolean existInRole(@Param("role") CorporateRole role, @Param("user") CorporateUser user);

@@ -166,7 +166,7 @@ public class OperationsUserServiceImpl implements OperationsUserService {
 
     @Override
     public OperationsUser getUserByName(String name) {
-        OperationsUser opsUser = this.operationsUserRepo.findFirstByUserName(name);
+        OperationsUser opsUser = this.operationsUserRepo.findFirstByUserNameIgnoreCase(name);
         return opsUser;
     }
 
@@ -290,7 +290,11 @@ public class OperationsUserServiceImpl implements OperationsUserService {
                 }
             }
             return messageSource.getMessage("user.delete.success", null, locale);
-        } catch (InternetBankingSecurityException se) {
+        }
+        catch (VerificationInterruptedException ve){
+            return ve.getMessage();
+        }
+        catch (InternetBankingSecurityException se) {
             throw new InternetBankingSecurityException(messageSource.getMessage("entrust.delete.failure", null, locale));
         } catch (Exception e) {
             throw new InternetBankingException(messageSource.getMessage("user.delete.failure", null, locale));
