@@ -202,7 +202,7 @@ public class CorpLocalTransferController {
         CorporateUser user = corporateUserService.getUserByName(principal.getName());
 
 
-            model.addAttribute("accountList", transferUtils.getNairaAccounts(user.getCorporate().getCustomerId()));
+            model.addAttribute("accountList", transferUtils.getNairaAccounts(user.getCorporate().getAccounts()));
 
 
 

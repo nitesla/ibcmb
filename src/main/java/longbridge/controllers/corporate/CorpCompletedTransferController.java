@@ -1,5 +1,6 @@
 package longbridge.controllers.corporate;
 
+import longbridge.exception.InternetBankingException;
 import longbridge.models.CorpTransRequest;
 import longbridge.models.Corporate;
 import longbridge.models.CorporateUser;
@@ -12,6 +13,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
@@ -21,6 +24,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.jasperreports.JasperReportsPdfView;
 
 import javax.servlet.http.HttpServletRequest;
@@ -28,6 +32,7 @@ import java.security.Principal;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 /**
@@ -38,6 +43,7 @@ import java.util.Map;
 public class CorpCompletedTransferController {
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
+    private Locale locale = LocaleContextHolder.getLocale();
 
     @Autowired
     private CorporateUserService corporateUserService;
@@ -45,6 +51,8 @@ public class CorpCompletedTransferController {
     TransferService transferService;
     @Autowired
     private ApplicationContext appContext;
+    @Autowired
+    private MessageSource messageSource;
 
     @Value("${jsonFile.path}")
     private String JOSNpath;
@@ -85,18 +93,19 @@ public class CorpCompletedTransferController {
     }
 
     @RequestMapping(path = "{id}/downloadreceipt", method = RequestMethod.GET)
-    public ModelAndView getTransPDF(@PathVariable Long id, Model model, Principal principal, HttpServletRequest request) {
-        CorporateUser corporateUser = corporateUserService.getUserByName(principal.getName());
+    public ModelAndView getTransPDF(@PathVariable Long id, Model model, Principal principal, HttpServletRequest request, RedirectAttributes redirectAttributes) {
+        try {
+            CorporateUser corporateUser = corporateUserService.getUserByName(principal.getName());
 
-        Corporate corporate = corporateUser.getCorporate();
-        TransRequest transRequest = transferService.getTransfer(id);
+            Corporate corporate = corporateUser.getCorporate();
+            TransRequest transRequest = transferService.getTransfer(id);
 
-        logger.info("Trans Request {}", transRequest);
-        JasperReportsPdfView view = new JasperReportsPdfView();
-        view.setUrl("classpath:jasperreports/rpt_tran-hist.jrxml");
-        view.setApplicationContext(appContext);
+            logger.info("Trans Request {}", transRequest);
+            JasperReportsPdfView view = new JasperReportsPdfView();
+            view.setUrl("classpath:jasperreports/rpt_tran-hist.jrxml");
+            view.setApplicationContext(appContext);
 
-        Map<String, Object> modelMap = new HashMap<>();
+            Map<String, Object> modelMap = new HashMap<>();
             double amount = Double.parseDouble(transRequest.getAmount().toString());
             DecimalFormat formatter = new DecimalFormat("#,###.00");
             modelMap.put("datasource", new ArrayList<>());
@@ -110,7 +119,16 @@ public class CorpCompletedTransferController {
             //modelMap.put("tranDate", DateFormatter.format(transRequest.getTranDate()));
 
 
-        ModelAndView modelAndView=new ModelAndView(view, modelMap);
-        return modelAndView;
+            ModelAndView modelAndView=new ModelAndView(view, modelMap);
+            return modelAndView;
+        }catch (InternetBankingException e){
+            logger.info(" RECEIPT DOWNLOAD {} ", e.getMessage());
+            ModelAndView modelAndView =  new ModelAndView("redirect:/corporate/transfer/history");
+            modelAndView.addObject("failure" , messageSource.getMessage("receipt.download.failed", null, locale));
+            //redirectAttributes.addFlashAttribute("failure", messageSource.getMessage("receipt.download.failed", null, locale));
+            return modelAndView;
+
+        }
+
     }
 }
