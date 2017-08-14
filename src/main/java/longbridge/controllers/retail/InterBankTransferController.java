@@ -178,12 +178,7 @@ public class InterBankTransferController {
         String charge = "NAN";
         String benName = (String) request.getSession().getAttribute("benName");
 
-        if (request.getSession().getAttribute("Lbeneficiary") != null) {
-            LocalBeneficiaryDTO beneficiary = (LocalBeneficiaryDTO) request.getSession().getAttribute("Lbeneficiary");
-            model.addAttribute("beneficiary", beneficiary);
-            if (beneficiary.getId() == null)
-                model.addAttribute("newBen", "newBen");
-        }
+
 
         model.addAttribute("benName", benName);
 

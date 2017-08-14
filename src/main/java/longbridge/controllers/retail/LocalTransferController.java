@@ -96,15 +96,9 @@ public class LocalTransferController {
         model.addAttribute("transferRequest", transferRequestDTO);
         validator.validate(transferRequestDTO, result);
 
-//        String exist = "false";
 
         if (servletRequest.getSession().getAttribute("Lbeneficiary") != null) {
-            System.out.println("ï am not null");
             LocalBeneficiaryDTO beneficiary = (LocalBeneficiaryDTO) servletRequest.getSession().getAttribute("Lbeneficiary");
-//            if (localBeneficiaryRepo.findByUser_IdAndAccountNumber(user.getId(), beneficiary.getAccountNumber()) != null){
-//                exist = "true";
-//                throw new DuplicateObjectException("beneficiary.exist");
-//            }
 
 
             model.addAttribute("beneficiary", beneficiary);
