@@ -150,7 +150,11 @@ public class VerificationServiceImpl implements VerificationService {
             verificationRepo.save(verification);
             notifyInitiator(verification);
 
-        } catch (Exception e) {
+        }
+        catch (InternetBankingException ibe){
+            throw ibe;
+        }
+        catch (Exception e) {
             logger.error("Error verifying operation");
             throw new InternetBankingException("Failed to verify the operation", e);
         }

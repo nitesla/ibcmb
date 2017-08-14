@@ -18,6 +18,10 @@ public interface CorpTransferRequestRepo extends CommonRepo<CorpTransRequest,Lon
 
     Page<CorpTransRequest> findByCorporateAndStatus(Corporate corporate, String status, Pageable pageable);
 
+    Page<CorpTransRequest> findByCorporateAndStatusIn(Corporate corporate, List<String> status, Pageable pageable);
+
+
+    Page<CorpTransRequest> findByCorporateAndStatusDescription(Corporate corporate, String sd, Pageable pageable);
 
     CorpTransRequest findById(long id);
 

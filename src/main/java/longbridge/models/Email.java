@@ -11,7 +11,7 @@ public class Email {
     private String receiverEmail;
     private String messageSubject;
     private String messageBody;
-    private String ccList; //comma separated list of email addresses, null if empty
+    private String[] ccList;
     private List<EmailAlertAttachment> emailAttachments;
 
 
@@ -23,6 +23,7 @@ public class Email {
         this.setReceiverEmail(builder.receiverEmail);
         this.setMessageSubject(builder.messageSubject);
         this.setMessageBody(builder.messageBody);
+        this.setCcList(builder.ccList);
         this.setEmailAttachments(builder.emailAttachments);
     }
 
@@ -33,7 +34,7 @@ public class Email {
         private String receiverEmail;
         private String messageSubject;
         private String messageBody;
-        private String ccList; //comma separated list of email addresses, null if empty
+        private String[] ccList;
         private List<EmailAlertAttachment> emailAttachments;
 
         public Builder setSender(String sender)
@@ -56,6 +57,11 @@ public class Email {
 
         public Builder setBody(String body) {
             this.messageBody = body;
+            return this;
+        }
+
+        public Builder setCCList(String[] ccList) {
+            this.ccList = ccList;
             return this;
         }
 
@@ -105,11 +111,11 @@ public class Email {
         this.messageBody = messageBody;
     }
 
-    public String getCcList() {
+    public String[] getCcList() {
         return ccList;
     }
 
-    public void setCcList(String ccList) {
+    public void setCcList(String[] ccList) {
         this.ccList = ccList;
     }
 

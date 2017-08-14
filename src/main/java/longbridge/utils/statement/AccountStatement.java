@@ -22,7 +22,7 @@ public class AccountStatement{
     private String currencyCode;
     private String creditCount;
     private String debitCount;
-
+    private String hasMoreData;
     public List<TransactionDetails> getTransactionDetails() {
         return transactionDetails;
     }
@@ -111,6 +111,14 @@ public class AccountStatement{
         this.debitCount = debitCount;
     }
 
+    public String getHasMoreData() {
+        return hasMoreData;
+    }
+
+    public void setHasMoreData(String hasMoreData) {
+        this.hasMoreData = hasMoreData;
+    }
+
     @Override
     public String toString() {
         return "AccountStatement{" +
@@ -125,6 +133,7 @@ public class AccountStatement{
                 ", currencyCode='" + currencyCode + '\'' +
                 ", creditCount='" + creditCount + '\'' +
                 ", debitCount='" + debitCount + '\'' +
+                ", hasMoreData='" + hasMoreData + '\'' +
                 '}';
     }
 }

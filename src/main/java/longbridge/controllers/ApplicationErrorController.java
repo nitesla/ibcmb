@@ -1,28 +1,20 @@
 package longbridge.controllers;
 
-import longbridge.models.User;
-import longbridge.security.userdetails.CustomUserPrincipal;
+import longbridge.models.Email;
 import longbridge.services.MailService;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.actuate.autoconfigure.ShellProperties;
 import org.springframework.boot.autoconfigure.web.ErrorAttributes;
 import org.springframework.boot.autoconfigure.web.ErrorController;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.mail.MailException;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
-import java.security.Principal;
 import java.util.Map;
 
 /**
@@ -40,29 +32,33 @@ public class ApplicationErrorController implements ErrorController {
     @Autowired
     private ErrorAttributes errorAttributes;
 
+    Logger logger = LoggerFactory.getLogger(this.getClass());
+
     @RequestMapping(value = PATH)
-    public String handleError(HttpServletRequest request, Model model) {
+    public String handleError(HttpServletRequest request) {
 
         RequestAttributes requestAttributes = new ServletRequestAttributes(request);
         Map<String, Object> errorDetails = errorAttributes.getErrorAttributes(requestAttributes, true);
-        model.addAttribute("errors", errorDetails);
+
+        Object exception = errorDetails.get("exception");
+        if (exception != null) {
+            sendNotification(errorDetails);
+        }
+
 
         String errorPath = (String) errorDetails.get("path");
-
         String subPath = StringUtils.substringAfter(errorPath, "/");
 
-
-        if (subPath.startsWith("admin")) {
-            return "redirect:/admin/error";
-        }
-        else if (subPath.startsWith("ops")) {
-            return "redirect:/ops/error";
-        }
-        else if (subPath.startsWith("retail")) {
-            return "redirect:/retail/error";
-        }
-        else if (subPath.startsWith("corporate")) {
-            return "redirect:/corporate/error";
+        if (subPath != null) {
+            if (subPath.startsWith("admin")) {
+                return "redirect:/admin/error";
+            } else if (subPath.startsWith("ops")) {
+                return "redirect:/ops/error";
+            } else if (subPath.startsWith("retail")) {
+                return "redirect:/retail/error";
+            } else if (subPath.startsWith("corporate")) {
+                return "redirect:/corporate/error";
+            }
         }
 
 
@@ -73,5 +69,39 @@ public class ApplicationErrorController implements ErrorController {
     @Override
     public String getErrorPath() {
         return PATH;
+    }
+
+
+    private void sendNotification(Map errorDetails) {
+        String time = errorDetails.get("timestamp").toString();
+        String status = errorDetails.get("status").toString();
+        String error = errorDetails.get("error").toString();
+        String exception = (String) errorDetails.get("exception");
+        String message = errorDetails.get("message").toString();
+        String trace = (String) errorDetails.get("trace");
+        String path = (String) errorDetails.get("path");
+
+
+        StringBuilder builder = new StringBuilder();
+        builder.append("Time: " + time + "\n")
+                .append("Path: " + path + "\n")
+                .append("Status Code: " + status + "\n")
+                .append("Error: " + error + "\n")
+                .append("Exception: " + exception + "\n")
+                .append("Message: " + message + "\n")
+                .append("Trace: " + trace + "\n");
+
+        try {
+            String[] ccList = {"farooq.ayoade@longbridgetech.com", "oluwawunmi.sowunmi@longbridgetech.com"};
+            Email email = new Email.Builder().setRecipient("fortunatus.ekenachi@longbridgetech.com")
+                    .setCCList(ccList)
+                    .setSubject(error)
+                    .setBody(builder.toString())
+                    .build();
+            mailService.send(email);
+        } catch (MailException e) {
+            logger.error("Failed to send error notification mail: {}", e.getMessage());
+        }
+
     }
 }

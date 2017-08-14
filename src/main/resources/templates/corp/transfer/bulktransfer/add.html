@@ -20,7 +20,7 @@
         background-color: #d7bdb3;
     }
 </style>
-<body onload="currentBar('Beneficiaries')">
+<body onload="currentBar('Bulk Transfer')">
 
 <div layout:fragment="content">
     <div class="col-md-5 col-sm-5 ">
@@ -78,7 +78,7 @@
                      </div>
 
                      <br/>
-                     <div class="form-group">
+                     <div class="form-group col-md-6">
                          <button class="btn btn-link" type="submit" id="button_submit">Submit</button>
                          <a class="btn btn-link" type="button" th:href="@{/corporate/transfer/upload}">Back</a>
                      </div>

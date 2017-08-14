@@ -5,7 +5,6 @@ import org.hibernate.annotations.Where;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.Entity;
-import javax.persistence.Enumerated;
 import javax.persistence.ManyToOne;
 import java.math.BigDecimal;
 import java.util.Date;
@@ -23,7 +22,7 @@ public class TransRequest extends AbstractEntity{
 
     private  String customerAccountNumber;
     private TransferType transferType;
-    private Date tranDate= new Date();
+    private Date tranDate = new Date();
 
     @ManyToOne
     private FinancialInstitution financialInstitution;

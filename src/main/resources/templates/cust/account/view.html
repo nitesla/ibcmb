@@ -85,6 +85,7 @@
                            </tr>
                            </tfoot>
                        </table>
+                       <div> <a class="btn-primary" type="button" id="next" onclick="nextData()">next</a>&nbsp;<a class="btn-primary" type="button" id="previous" onclick="previousData()">previous</a></div>
                    </div>
 
 
@@ -207,7 +208,7 @@
             $('#tranDetails').DataTable({
             responsive: true,
 
-            "lengthMenu" : [ [ 5, 10, 20],	[ 5, 10, 20 ] ],
+//            "lengthMenu" : [ [ 5, 10, 20],	[ 5, 10, 20 ] ],
             "pagingType" : "simple_numbers",
             "searching": false,
             "paging": true,
@@ -312,12 +313,12 @@
                     if (result != null) {
 
 //                        var detialsList = JSON.parse(result);
-                        console.log("the result "+result);
+//                        console.log("the result "+result);
                         var contactsTab2 = $('#tranDetails').DataTable();
                         for (var key in result) {
                             if (result.hasOwnProperty(key)) {
                                 var od = result[key];
-                                console.log("the key "+key+" value "+result[key]);
+//                                console.log("the key "+key+" value "+result[key]);
                                 contactsTab2.row.add(od);
                             }
 
@@ -335,7 +336,6 @@
 //
 
         });
-
         $("#btn-print").on("click", function(e) {
             e.preventDefault();
             var table = $('#tranDetails').DataTable();
@@ -347,7 +347,86 @@
         $('.dataTables_empty').html('No data available');
 
     });
+function nextData() {
+//    console.log("field value "+valu);
+    $.ajax({
+        "url":"viewstatement/display/data/state",
+        "type" : "GET",
+        "data" :  {
+            acctNumber : $('[name=acctNumber]').val(),
+            fromDate : $('[name=fromDate]').val(),
+            toDate : $('[name=toDate]').val(),
+            tranType : $('[name=tranType]').val(),
+            state : "forward"
+        },success: function (result) {
+            if (result != null) {
 
+//                        var detialsList = JSON.parse(result);
+                console.log("the result next"+result);
+//                $('#tranDetails').DataTable().fnClearTable();
+//                $('#tranDetails').dataTable().destroy();
+//                $('#tranDetails tbody').empty();
+
+                var contactsTab2 = $('#tranDetails').DataTable();
+                var row  = contactsTab2.rows().remove().draw();
+                for (var key in result) {
+                            if (result.hasOwnProperty(key)) {
+                                var od = result[key];
+//                                console.log("the key "+key+" value "+result[key]);
+                                contactsTab2.row.add(od);
+                            }
+
+                            contactsTab2.draw();
+//
+                }
+
+            }
+        },
+        error:  function (dd) {
+            console.log("error")
+        }
+
+    });
+}
+    function previousData() {
+//    console.log("field value "+valu);
+    $.ajax({
+        "url":"viewstatement/display/data/state",
+        "type" : "GET",
+        "data" :  {
+            acctNumber : $('[name=acctNumber]').val(),
+            fromDate : $('[name=fromDate]').val(),
+            toDate : $('[name=toDate]').val(),
+            tranType : $('[name=tranType]').val(),
+            state : "backward"
+        },success: function (result) {
+            if (result != null) {
+
+//                        var detialsList = JSON.parse(result);
+                console.log("the result next"+result);
+//                $('#tranDetails').DataTable().fnClearTable();
+//                $('#tranDetails').dataTable().destroy();
+                var contactsTab2 = $('#tranDetails').DataTable();
+                var row  = contactsTab2.rows().remove().draw();
+                                        for (var key in result) {
+                            if (result.hasOwnProperty(key)) {
+                                var od = result[key];
+//                                console.log("the key "+key+" value "+result[key]);
+                                contactsTab2.row.add(od);
+                            }
+
+                            contactsTab2.draw();
+//
+                        }
+
+            }
+        },
+        error:  function (dd) {
+            console.log("error")
+        }
+
+    });
+}
 
     /*]]>*/
 </script>

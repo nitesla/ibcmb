@@ -98,7 +98,7 @@ public class AdminUserServiceImpl implements AdminUserService {
 
     @Override
     public AdminUser getUserByName(String name) {
-        return this.adminUserRepo.findFirstByUserName(name);
+        return this.adminUserRepo.findFirstByUserNameIgnoreCase(name);
     }
 
     @Override
@@ -165,10 +165,10 @@ public class AdminUserServiceImpl implements AdminUserService {
         if (user != null) {
             if ("".equals(user.getEntrustId()) || user.getEntrustId() == null) {
                 String fullName = adminUser.getFirstName() + " " + adminUser.getLastName();
-                SettingDTO setting = configService.getSettingByName("ENABLE_ENTRUST_CREATION");
                 String entrustId = user.getUserName();
                 String group = configService.getSettingByName("DEF_ENTRUST_ADM_GRP").getValue();
 
+                SettingDTO setting = configService.getSettingByName("ENABLE_ENTRUST_CREATION");
                 if (setting != null && setting.isEnabled()) {
                     if ("YES".equalsIgnoreCase(setting.getValue())) {
                         boolean creatResult = securityService.createEntrustUser(entrustId, group, fullName, true);
@@ -193,6 +193,9 @@ public class AdminUserServiceImpl implements AdminUserService {
         }
         return user;
     }
+
+
+
 
     @Override
     @Transactional
@@ -307,11 +310,9 @@ public class AdminUserServiceImpl implements AdminUserService {
 
 
         AdminUser user = adminUserRepo.findOne(userId);
-        logger.info("this is the admin user" + user.getStatus());
         if ("I".equals(user.getStatus())) {
             throw new InternetBankingException(messageSource.getMessage("users.deactivated", null, locale));
         }
-
 
         try {
             String newPassword = passwordPolicyService.generatePassword();
@@ -319,7 +320,7 @@ public class AdminUserServiceImpl implements AdminUserService {
             passwordPolicyService.saveAdminPassword(user);
             user.setExpiryDate(new Date());
             String fullName = user.getFirstName() + " " + user.getLastName();
-            this.adminUserRepo.save(user);
+            adminUserRepo.save(user);
             Email email = new Email.Builder()
                     .setRecipient(user.getEmail())
                     .setSubject(messageSource.getMessage("admin.password.reset.subject", null, locale))
@@ -345,7 +346,7 @@ public class AdminUserServiceImpl implements AdminUserService {
             user.setExpiryDate(new Date());
             passwordPolicyService.saveAdminPassword(user);
             String fullName = user.getFirstName() + " " + user.getLastName();
-            this.adminUserRepo.save(user);
+            adminUserRepo.save(user);
             Email email = new Email.Builder()
                     .setRecipient(user.getEmail())
                     .setSubject(messageSource.getMessage("admin.password.reset.subject", null, locale))
@@ -365,12 +366,12 @@ public class AdminUserServiceImpl implements AdminUserService {
     @Transactional
     public String changePassword(AdminUser user, ChangePassword changePassword) throws PasswordException {
 
-        if (!this.passwordEncoder.matches(changePassword.getOldPassword(), user.getPassword())) {
+        if (!passwordEncoder.matches(changePassword.getOldPassword(), user.getPassword())) {
             throw new WrongPasswordException();
         }
 
         String errorMessage = passwordPolicyService.validate(changePassword.getNewPassword(), user);
-        if (!"".equals(errorMessage)) {
+        if (!errorMessage.isEmpty()) {
             throw new PasswordPolicyViolationException(errorMessage);
         }
         if (!changePassword.getNewPassword().equals(changePassword.getConfirmPassword())) {
@@ -396,7 +397,7 @@ public class AdminUserServiceImpl implements AdminUserService {
     public String changeDefaultPassword(AdminUser user, ChangeDefaultPassword changePassword) throws PasswordException {
 
         String errorMessage = passwordPolicyService.validate(changePassword.getNewPassword(), user);
-        if (!"".equals(errorMessage)) {
+        if (!errorMessage.isEmpty()) {
             throw new PasswordPolicyViolationException(errorMessage);
         }
         if (!changePassword.getNewPassword().equals(changePassword.getConfirmPassword())) {

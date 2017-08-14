@@ -82,7 +82,7 @@ public class CorpInterBankTransferController {
 
     public String startTransfer(HttpServletRequest request, Model model, Principal principal) {
         CorporateUser user = corporateUserService.getUserByName(principal.getName());
-        Corporate corporate = corporateService.getCorporateByCustomerId(user.getCorporate().getCustomerId());
+        Corporate corporate = user.getCorporate();
         List<CorpLocalBeneficiary> beneficiaries = StreamSupport.stream(corpLocalBeneficiaryService.getCorpLocalBeneficiaries(corporate).spliterator(), false)
                 .filter(i -> !i.getBeneficiaryBank().equalsIgnoreCase(financialInstitutionService.getFinancialInstitutionByCode(bankCode).getInstitutionCode()))
                 .collect(Collectors.toList());

@@ -164,11 +164,10 @@ public class CorporateUserServiceImpl implements CorporateUserService {
             corporateUser.setUserName(user.getUserName());
             corporateUser.setFirstName(user.getFirstName());
             corporateUser.setPhoneNumber(user.getPhoneNumber());
+            corporateUser.setAdmin(user.isAdmin());
             if(user.isAdmin()) {
                 corporateUser.setCorpUserType(CorpUserType.ADMIN);
             }
-
-
             if (user.getRoleId() != null) {
                 Role role = roleRepo.findOne(Long.parseLong(user.getRoleId()));
                 corporateUser.setRole(role);
@@ -211,6 +210,7 @@ public class CorporateUserServiceImpl implements CorporateUserService {
             corporateUser.setCreatedOnDate(new Date());
             Role role = roleRepo.findOne(Long.parseLong(user.getRoleId()));
             corporateUser.setRole(role);
+            corporateUser.setAdmin(user.isAdmin());
             if(user.isAdmin()) {
                 corporateUser.setCorpUserType(CorpUserType.ADMIN);
             }
@@ -502,6 +502,16 @@ public class CorporateUserServiceImpl implements CorporateUserService {
             throw new InternetBankingException(messageSource.getMessage("user.status.failure", null, locale), e);
 
         }
+    }
+
+    private String createAndSaveUserPassword(CorporateUser user){
+
+        String password = passwordPolicyService.generatePassword();
+        user.setPassword(passwordEncoder.encode(password));
+        user.setExpiryDate(new Date());
+        passwordPolicyService.saveCorporatePassword(user);
+        CorporateUser corpUser = corporateUserRepo.save(user);
+        return password;
     }
 
     @Override
