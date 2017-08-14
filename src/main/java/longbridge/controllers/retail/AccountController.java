@@ -614,13 +614,13 @@ public class AccountController {
 				transactionDetails = (TransactionDetails) session.getAttribute("acctStmtLastDetails");
 				logger.info("the transaction {}",transactionDetails);
 			}
-			if((session.getAttribute("acctStmtEntirePastDetails") != null)&&(state.equalsIgnoreCase("backward"))) {
-				 list = (List<TransactionDetails>) session.getAttribute("acctStmtEntirePastDetails");
-				session.removeAttribute("acctStmtLastDetails");
-				session.setAttribute("acctStmtLastDetails", list.get(list.size() - 1));
-				logger.info("acctStmtLastDetails previous {}", list.get(list.size() - 1));
-				return list;
-			}
+//			if((session.getAttribute("acctStmtEntirePastDetails") != null)&&(state.equalsIgnoreCase("backward"))) {
+//				 list = (List<TransactionDetails>) session.getAttribute("acctStmtEntirePastDetails");
+//				session.removeAttribute("acctStmtLastDetails");
+//				session.setAttribute("acctStmtLastDetails", list.get(list.size() - 1));
+//				logger.info("acctStmtLastDetails previous {}", list.get(list.size() - 1));
+//				return list;
+//			}
 
 			if(transactionDetails != null) {
 				PaginationDetails paginationDetails = new PaginationDetails();
@@ -632,7 +632,7 @@ public class AccountController {
 				paginationDetails.setLastTranSN(transactionDetails.getTranSN());
 				logger.info("paginationDetails {}", paginationDetails);
 				AccountStatement accountStatement = integrationService.getAccountStatements(acctNumber, from, to, tranType, paginationDetails);
-				logger.info("accountStatement {}", accountStatement);
+//				logger.info("accountStatement {}", accountStatement);
 				list = accountStatement.getTransactionDetails();
 				session.removeAttribute("acctStmtLastDetails");
 				session.removeAttribute("acctStmtEntirePastDetails");
@@ -657,12 +657,54 @@ public class AccountController {
 		return list;
 
 	}
+@GetMapping("/viewstatement/display/data/back")
+	@ResponseBody
+	public List<TransactionDetails> getStatementDataForBack(WebRequest webRequest, HttpSession session) {
+		String state = webRequest.getParameter("state");
+		List<TransactionDetails> list =  null;
+			if((session.getAttribute("acctStmtEntirePastDetails") != null)&&(state.equalsIgnoreCase("backward"))) {
+				 list = (List<TransactionDetails>) session.getAttribute("acctStmtEntirePastDetails");
+				session.removeAttribute("acctStmtLastDetails");
+				session.setAttribute("acctStmtLastDetails", list.get(list.size() - 1));
+				session.setAttribute("hasMoreTransaction", "Y");
+				logger.info("acctStmtLastDetails  last record previous {}", list.get(list.size() - 1));
+				return list;
+			}
+
+		return list;
+
+	}
+	@GetMapping("/viewstatement/display/data/reset/button")
+	@ResponseBody
+	public String resetButtonForStatement(HttpSession session) {
+		if((session.getAttribute("acctStmtEntirePastDetails") == null)&&(session.getAttribute("hasMoreTransaction") == null)){
+			return "both";
+		}
+		if((session.getAttribute("acctStmtEntirePastDetails") == null)){
+			String hasMoreTransaction = (String) session.getAttribute("hasMoreTransaction");
+			if(hasMoreTransaction.equalsIgnoreCase("")) {
+				return "both";
+			}
+		}
+		if((session.getAttribute("acctStmtEntirePastDetails") == null)){
+			String hasMoreTransaction = (String) session.getAttribute("hasMoreTransaction");
+			if(hasMoreTransaction.equalsIgnoreCase("Y")) {
+				return "previous";
+			}
+		}
+		if((session.getAttribute("acctStmtEntirePastDetails") != null)){
+			String hasMoreTransaction = (String) session.getAttribute("hasMoreTransaction");
+			if(hasMoreTransaction.equalsIgnoreCase("")) {
+				return "next";
+			}
+		}
+		return "none";
+
+	}
 
 	@GetMapping("/downloadstatement")
 	public ModelAndView downloadStatementData(ModelMap modelMap, DataTablesInput input, String acctNumber,
 											  String fromDate, String toDate, String tranType, Principal principal) {
-		// Pageable pageable = DataTablesUtils.getPageable(input);
-
 		Date from = null;
 		Date to = null;
 		DataTablesOutput<TransactionDetails> out = new DataTablesOutput<TransactionDetails>();

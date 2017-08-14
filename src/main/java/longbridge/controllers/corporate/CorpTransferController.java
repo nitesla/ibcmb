@@ -79,11 +79,8 @@ public class CorpTransferController {
         this.financialInstitutionService = financialInstitutionService;
         this.transferErrorService = transferErrorService;
         this.securityService = securityService;
-        this.transferUtils=transferUtils;
+        this.transferUtils = transferUtils;
     }
-
-
-
 
 
     @GetMapping(value = "")
@@ -167,7 +164,7 @@ public class CorpTransferController {
     @ResponseBody
     String getInterBankAccountName(@PathVariable String accountNo, @PathVariable String bank) {
 
-       return transferUtils.doInterBankNameLookup(bank,accountNo);
+        return transferUtils.doInterBankNameLookup(bank, accountNo);
 
     }
 
@@ -179,19 +176,26 @@ public class CorpTransferController {
 
             if (request.getSession().getAttribute("AUTH") != null) {
                 String token = request.getParameter("token");
-                CorporateUser corporateUser = corporateUserService.getUserByName(principal.getName());
-                boolean ok = securityService.performTokenValidation(corporateUser.getEntrustId(), corporateUser.getEntrustGroup(), token);
+                if (token == null || token.isEmpty()) {
 
-                if (!ok) {
-                    model.addAttribute("failure", messages.getMessage("auth.token.failure", null, locale));
-                    return "/corp/transfer/transferauth";
-                } else {
-                    request.getSession().removeAttribute("AUTH");
+                    return "/cust/transfer/transferauth";
                 }
+
+
+                try {
+                    CorporateUser corporateUser = corporateUserService.getUserByName(principal.getName());
+                    securityService.performTokenValidation(corporateUser.getEntrustId(), corporateUser.getEntrustGroup(), token);
+
+                } catch (InternetBankingSecurityException ibse) {
+                    ibse.printStackTrace();
+                    model.addAttribute("failure", ibse.getMessage());
+                    return "/cust/transfer/transferauth";
+                }
+                request.getSession().removeAttribute("auth-needed");
+
 
             }
 
-//           request.getSession().removeAttribute("corpTransferRequest");
 
 
             if (request.getParameter("add") != null) {
@@ -216,32 +220,27 @@ public class CorpTransferController {
 
 
             model.addAttribute("transRequest", corpTransferRequestDTO);
-            logger.info("transRequest {}",corpTransferRequestDTO);
+            logger.info("transRequest {}", corpTransferRequestDTO);
             model.addAttribute("message", response);
 
             return "corp/transfer/transferdetails";
 
-        }
-        catch (TransferAuthorizationException ae){
-            logger.error("Error initiating a transfer ",ae);
+        } catch (TransferAuthorizationException ae) {
+            logger.error("Error initiating a transfer ", ae);
             redirectAttributes.addFlashAttribute("failure", ae.getMessage());
             return index(request);
-        }
+        } catch (InternetBankingTransferException ex) {
 
-        catch (InternetBankingTransferException ex) {
-
-            logger.error("Error initiating a transfer ",ex);
+            logger.error("Error initiating a transfer ", ex);
             String errorMessage = transferErrorService.getMessage(ex);
             redirectAttributes.addFlashAttribute("failure", errorMessage);
             return index(request);
-        }
-        catch ( TransferRuleException e) {
-            logger.error("Error initiating a transfer ",e);
+        } catch (TransferRuleException e) {
+            logger.error("Error initiating a transfer ", e);
             String errorMessage = e.getMessage();
             redirectAttributes.addFlashAttribute("failure", errorMessage);
             return index(request);
-        }
-        finally {
+        } finally {
             if (request.getSession().getAttribute("Lbeneficiary") != null)
                 request.getSession().removeAttribute("Lbeneficiary");
         }
@@ -277,19 +276,19 @@ public class CorpTransferController {
         List<CorporateRole> rolesNotInAuthList = new ArrayList<>();
         List<CorporateRole> rolesInAuth = new ArrayList<>();
 
-        if(corpTransferAuth.getAuths()!=null) {
+        if (corpTransferAuth.getAuths() != null) {
             for (CorpTransReqEntry transReqEntry : corpTransferAuth.getAuths()) {
                 rolesInAuth.add(transReqEntry.getRole());
             }
         }
 
-            if(corpTransRule!=null) {
-                for (CorporateRole role : corpTransRule.getRoles()) {
-                    if (!rolesInAuth.contains(role)) {
-                        rolesNotInAuthList.add(role);
-                    }
+        if (corpTransRule != null) {
+            for (CorporateRole role : corpTransRule.getRoles()) {
+                if (!rolesInAuth.contains(role)) {
+                    rolesNotInAuthList.add(role);
                 }
             }
+        }
         logger.info("Roles not In Auth List..{}", rolesNotInAuthList.toString());
         modelMap.addAttribute("rolesNotAuth", rolesNotInAuthList);
 
@@ -326,17 +325,13 @@ public class CorpTransferController {
             String message = corpTransferService.addAuthorization(corpTransReqEntry);
             redirectAttributes.addFlashAttribute("message", message);
 
-        }
-        catch (TransferAuthorizationException te){
+        } catch (TransferAuthorizationException te) {
             logger.error("Failed to authorize transfer", te);
             redirectAttributes.addFlashAttribute("failure", te.getMessage());
-        }
-
-        catch (InternetBankingTransferException te){
+        } catch (InternetBankingTransferException te) {
             logger.error("Error making transfer", te);
             redirectAttributes.addFlashAttribute("failure", te.getMessage());
-        }
-        catch (InternetBankingException ibe) {
+        } catch (InternetBankingException ibe) {
             logger.error("Failed to authorize transfer", ibe);
             redirectAttributes.addFlashAttribute("failure", ibe.getMessage());
 
@@ -352,6 +347,7 @@ public class CorpTransferController {
 
         return transferUtils.getBalance(accountNumber);
     }
+
     @RequestMapping(value = "/limit/{accountNumber}", method = RequestMethod.GET, produces = "application/json")
     @ResponseBody
     public String getLimit(@PathVariable String accountNumber) throws Exception {
@@ -362,7 +358,7 @@ public class CorpTransferController {
     //The receipt for multi corporate user
     @RequestMapping(path = "{id}/receipt", method = RequestMethod.GET)
     public ModelAndView report(@PathVariable Long id, HttpServletRequest servletRequest, Principal principal) throws Exception {
-        servletRequest.getSession().setAttribute("newId",id);
+        servletRequest.getSession().setAttribute("newId", id);
         CorporateUser corporateUser = corporateUserService.getUserByName(principal.getName());
         JasperReportsPdfView view = new JasperReportsPdfView();
         view.setUrl("classpath:jasperreports/rpt_receipt.jrxml");
@@ -371,41 +367,41 @@ public class CorpTransferController {
         modelMap.put("datasource", new ArrayList<>());
         modelMap.put("amount", transferService.getTransfer(id).getAmount());
         modelMap.put("recipient", transferService.getTransfer(id).getBeneficiaryAccountName());
-        modelMap.put("recipient",transferService.getTransfer(id).getBeneficiaryAccountName());
+        modelMap.put("recipient", transferService.getTransfer(id).getBeneficiaryAccountName());
         modelMap.put("AccountNum", transferService.getTransfer(id).getCustomerAccountNumber());
         modelMap.put("sender", corporateUser.getFirstName() + " " + corporateUser.getLastName());
         modelMap.put("remarks", transferService.getTransfer(id).getRemarks());
-        modelMap.put("remarks",transferService.getTransfer(id));
+        modelMap.put("remarks", transferService.getTransfer(id));
         modelMap.put("recipientBank", transferService.getTransfer(id).getFinancialInstitution().getInstitutionName());
         modelMap.put("acctNo2", transferService.getTransfer(id).getBeneficiaryAccountNumber());
         modelMap.put("acctNo1", transferService.getTransfer(id).getCustomerAccountNumber());
         modelMap.put("refNUm", transferService.getTransfer(id).getReferenceNumber());
-        modelMap.put("date",DateFormatter.format(new Date()));
+        modelMap.put("date", DateFormatter.format(new Date()));
         modelMap.put("tranDate", DateFormatter.format(new Date()));
         ModelAndView modelAndView = new ModelAndView(view, modelMap);
         return modelAndView;
     }
 
 
-
     @GetMapping("/auth")
-    public String authenticate(HttpServletRequest httpServletRequest,Model model) throws Exception {
+    public String authenticate(HttpServletRequest httpServletRequest, Model model) throws Exception {
         CorpTransferRequestDTO dto = (CorpTransferRequestDTO) httpServletRequest.getSession().getAttribute("corpTransferRequest");
         if (dto != null) model.addAttribute("corpTransferRequest", dto);
-        return "/corp/transfer/transferauth";}
+        return "/corp/transfer/transferauth";
+    }
 
     //Receipt for sole corporate user
     @RequestMapping(path = "/receipt", method = RequestMethod.GET)
     public ModelAndView getreport(@ModelAttribute("corpTransferRequest") @Valid CorpTransferRequestDTO corpTransferRequestDTO, Model model, HttpServletRequest servletRequest, Principal principal) throws Exception {
         CorporateUser corporateUser = corporateUserService.getUserByName(principal.getName());
-         JasperReportsPdfView view = new JasperReportsPdfView();
+        JasperReportsPdfView view = new JasperReportsPdfView();
         view.setUrl("classpath:jasperreports/rpt_receipt.jrxml");
         view.setApplicationContext(appContext);
         Map<String, Object> modelMap = new HashMap<>();
         modelMap.put("datasource", new ArrayList<>());
         modelMap.put("amount", corpTransferRequestDTO.getAmount());
         modelMap.put("recipient", corpTransferRequestDTO.getBeneficiaryAccountName());
-        modelMap.put("recipient",corpTransferRequestDTO.getBeneficiaryAccountName());
+        modelMap.put("recipient", corpTransferRequestDTO.getBeneficiaryAccountName());
         modelMap.put("AccountNum", corpTransferRequestDTO.getCustomerAccountNumber());
         modelMap.put("sender", corporateUser.getFirstName() + " " + corporateUser.getLastName());
         modelMap.put("remarks", corpTransferRequestDTO.getRemarks());
@@ -413,7 +409,7 @@ public class CorpTransferController {
         modelMap.put("acctNo2", corpTransferRequestDTO.getBeneficiaryAccountNumber());
         modelMap.put("acctNo1", corpTransferRequestDTO.getCustomerAccountNumber());
         modelMap.put("refNUm", corpTransferRequestDTO.getReferenceNumber());
-        modelMap.put("date",DateFormatter.format(new Date()));
+        modelMap.put("date", DateFormatter.format(new Date()));
         modelMap.put("tranDate", DateFormatter.format(new Date()));
         ModelAndView modelAndView = new ModelAndView(view, modelMap);
         return modelAndView;
