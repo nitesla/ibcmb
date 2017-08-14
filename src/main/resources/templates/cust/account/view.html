@@ -391,13 +391,9 @@ function nextData() {
     function previousData() {
 //    console.log("field value "+valu);
     $.ajax({
-        "url":"viewstatement/display/data/state",
+        "url":"viewstatement/display/data/back",
         "type" : "GET",
         "data" :  {
-            acctNumber : $('[name=acctNumber]').val(),
-            fromDate : $('[name=fromDate]').val(),
-            toDate : $('[name=toDate]').val(),
-            tranType : $('[name=tranType]').val(),
             state : "backward"
         },success: function (result) {
             if (result != null) {
@@ -419,6 +415,24 @@ function nextData() {
 //
                         }
 
+            }
+        },
+        error:  function (dd) {
+            console.log("error")
+        }
+
+    });
+}
+    function resetButton() {
+//    console.log("field value "+valu);
+    $.ajax({
+        "url":"viewstatement/display/data/reset/button",
+        "type" : "GET",
+        "data" :  {
+            state : "backward"
+        },success: function (result) {
+            if (result != null) {
+                console.log("the result next"+result);
             }
         },
         error:  function (dd) {
