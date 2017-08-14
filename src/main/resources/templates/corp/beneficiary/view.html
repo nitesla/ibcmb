@@ -61,7 +61,7 @@
                         </thead>
                         <tbody>
                         <tr th:each="loc : ${localBen}">
-                            <td th:text="${loc.preferredName}"></td>
+                            <td th:text="${loc.accountName}"></td>
                             <td th:text="${loc.accountNumber}"></td>
                             <td th:text="${loc.beneficiaryBank}"></td>
                             <td><a href='javascript:void()' th:id="${loc.id}" onclick="validateDel(this.id)"><i class="fa fa-trash"></i></a></td>                        </tr>

@@ -173,7 +173,7 @@ public class CorpTransferController {
 
 
     @PostMapping("/process")
-    public String bankTransfer(@ModelAttribute("corpTransferRequest") @Valid CorpTransferRequestDTO corpTransferRequestDTO, Model model, RedirectAttributes redirectAttributes, Locale locale, HttpServletRequest request, Principal principal) throws Exception {
+    public String bankTransfer(@ModelAttribute("corpTransferRequest") @Valid CorpTransferRequestDTO corpTransferRequest, Model model, RedirectAttributes redirectAttributes, Locale locale, HttpServletRequest request, Principal principal) throws Exception {
 
         try {
 
@@ -209,7 +209,7 @@ public class CorpTransferController {
                 }
             }
 
-            corpTransferRequestDTO = (CorpTransferRequestDTO) request.getSession().getAttribute("corpTransferRequest");
+           CorpTransferRequestDTO corpTransferRequestDTO = (CorpTransferRequestDTO) request.getSession().getAttribute("corpTransferRequest");
             String corporateId = "" + corporateUserService.getUserByName(principal.getName()).getCorporate().getId();
             corpTransferRequestDTO.setCorporateId(corporateId);
             String response = transferService.addTransferRequest(corpTransferRequestDTO);

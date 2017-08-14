@@ -5,6 +5,7 @@ import longbridge.dtos.BulkTransferDTO;
 import longbridge.dtos.CreditRequestDTO;
 import longbridge.dtos.SettingDTO;
 import longbridge.exception.InternetBankingException;
+import longbridge.exception.InternetBankingTransferException;
 import longbridge.exception.TransferAuthorizationException;
 import longbridge.exception.TransferRuleException;
 import longbridge.models.*;
@@ -170,32 +171,40 @@ public class BulkTransferServiceImpl implements BulkTransferService {
         }
 
         if (userRole == null) {
-            throw new TransferAuthorizationException("User is not authorized to approve the transaction");
+            throw new TransferAuthorizationException(messageSource.getMessage("transfer.auth.invalid", null, locale));
         }
 
         CorpTransferAuth transferAuth = bulkTransfer.getTransferAuth();
+
+        if (!"P".equals(transferAuth.getStatus())) {
+            throw new TransferAuthorizationException(messageSource.getMessage("transfer.auth.complete", null, locale));
+        }
 
         if (reqEntryRepo.existsByTranReqIdAndRole(bulkTransfer.getId(), userRole)) {
             throw new TransferAuthorizationException(messageSource.getMessage("transfer.auth.exist", null, locale));
         }
 
-        if (!"P".equals(transferAuth.getStatus())) {
-            throw new TransferAuthorizationException("Transaction is not pending");
-        }
-        transReqEntry.setEntryDate(new Date());
-        transReqEntry.setRole(userRole);
-        transReqEntry.setUser(corporateUser);
-        transReqEntry.setStatus("Approved");
-        transferAuth.getAuths().add(transReqEntry);
-        transferAuthRepo.save(transferAuth);
-        if (isAuthorizationComplete(bulkTransfer)) {
-            transferAuth.setStatus("C");
-            transferAuth.setLastEntry(new Date());
-            transferAuthRepo.save(transferAuth);
-            return makeBulkTransferRequest(bulkTransfer);
-        }
 
-        return messageSource.getMessage("transfer.auth.failure", null, locale);
+        try {
+            transReqEntry.setEntryDate(new Date());
+            transReqEntry.setRole(userRole);
+            transReqEntry.setUser(corporateUser);
+            transReqEntry.setStatus("Approved");
+            transferAuth.getAuths().add(transReqEntry);
+            transferAuthRepo.save(transferAuth);
+            if (isAuthorizationComplete(bulkTransfer)) {
+                transferAuth.setStatus("C");
+                transferAuth.setLastEntry(new Date());
+                transferAuthRepo.save(transferAuth);
+                return makeBulkTransferRequest(bulkTransfer);
+            }
+
+            return messageSource.getMessage("transfer.auth.failure", null, locale);
+        } catch (InternetBankingTransferException te) {
+            throw te;
+        } catch (Exception e) {
+            throw new InternetBankingException(messageSource.getMessage("transfer.auth.failure", null, locale), e);
+        }
     }
 
 
