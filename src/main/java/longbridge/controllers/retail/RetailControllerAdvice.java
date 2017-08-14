@@ -154,7 +154,7 @@ public class RetailControllerAdvice {
     }
 
     @ModelAttribute
-    public void getSystemNotifications(Model model){
+    public String getSystemNotifications(Model model){
         try{
             List<NotificationsDTO> notifications = notificationsService.getNotifications();
 //            NotificationsDTO notificationsDTO = new NotificationsDTO();
@@ -166,11 +166,12 @@ public class RetailControllerAdvice {
         }
 
 
+        return "";
     }
 
 
     @ModelAttribute
-    public void sessionTimeout(Model model) {
+    public String sessionTimeout(Model model) {
         SettingDTO setting = configurationService.getSettingByName("SESSION_TIMEOUT");
         try {
             if (setting != null && setting.isEnabled()) {
@@ -182,6 +183,8 @@ public class RetailControllerAdvice {
         }
         catch (Exception ex) {
         }
+
+        return "";
 
     }
 

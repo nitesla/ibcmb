@@ -1,5 +1,6 @@
 package longbridge.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.Where;
 import org.hibernate.envers.Audited;
 
@@ -198,19 +199,11 @@ public class Account extends AbstractEntity {
      * This description is of the form: ACCOUNTNUMBER - ACCOUNT CLASS
      * @return
      */
+    @JsonIgnore
     public String getAccountDescription(){
     	return String.format("%s - %s", getAccountNumber(),getSchemeCode());
     }
 
-	public static OperationCode getAddCode() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public static OperationCode getModifyCode() {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
     
 }

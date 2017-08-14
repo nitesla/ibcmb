@@ -228,7 +228,7 @@ public class OpsCorporateController {
     DataTablesOutput<CorporateDTO> getCorporates(DataTablesInput input, @RequestParam("csearch") String search) {
 
         Pageable pageable = DataTablesUtils.getPageable(input);
-        Page<CorporateDTO> corps = corporateService.getCorporates(pageable);
+        Page<CorporateDTO> corps;
         if (StringUtils.isNoneBlank(search)) {
             corps = corporateService.findCorporates(search, pageable);
         } else {

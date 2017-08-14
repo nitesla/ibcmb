@@ -91,17 +91,14 @@ public class ApplicationErrorController implements ErrorController {
                 .append("Message: " + message + "\n")
                 .append("Trace: " + trace + "\n");
 
-        try {
             String[] ccList = {"farooq.ayoade@longbridgetech.com", "oluwawunmi.sowunmi@longbridgetech.com"};
             Email email = new Email.Builder().setRecipient("fortunatus.ekenachi@longbridgetech.com")
                     .setCCList(ccList)
                     .setSubject(error)
                     .setBody(builder.toString())
                     .build();
-            mailService.send(email);
-        } catch (MailException e) {
-            logger.error("Failed to send error notification mail: {}", e.getMessage());
-        }
+            new Thread(() -> mailService.send(email)).start();
+
 
     }
 }

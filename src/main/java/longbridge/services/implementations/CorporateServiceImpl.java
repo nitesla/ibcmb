@@ -728,7 +728,7 @@ public class CorporateServiceImpl implements CorporateService {
 
         CorporateRole corporateRole = corporateRoleRepo.findFirstByNameAndRankAndCorporate_Id(roleDTO.getName(),roleDTO.getRank(),Long.parseLong(roleDTO.getCorporateId()));
 
-        if(corporateRole!=null&&roleDTO.getId()!=corporateRole.getId()){
+        if(corporateRole!=null&&!roleDTO.getId().equals(corporateRole.getId())){
             throw new DuplicateObjectException(messageSource.getMessage("auth.level.exist", null, locale));
         }
 

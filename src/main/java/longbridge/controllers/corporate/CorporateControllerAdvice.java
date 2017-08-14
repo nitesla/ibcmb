@@ -154,13 +154,7 @@ public class CorporateControllerAdvice {
         return "";
     }
 
-//    @GetMapping
-//    public String passwordEx(){
-//        if (hostMaster.isPasswordExpired()){
-//            return "redirect:/corporate/reset_password";
-//        }
-//        return "";
-//    }
+
 
     @ModelAttribute
     public String sessionTimeout(Model model) {

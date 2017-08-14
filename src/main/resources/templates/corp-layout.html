@@ -156,7 +156,7 @@
                                     <li sec:authorize="hasAuthority('CORP_SYNC_TOKEN')"><a th:href="@{/corporate/token/sync}" th:text="#{menu.token.sync}">Synchronize Token</a></li>
                                     <li sec:authorize="hasAuthority('CORP_LOST_TOKEN')"><a th:href="@{/corporate/token/lost}" th:text="#{menu.token.report}">Report Lost Token</a></li>
                                     <li sec:authorize="hasAuthority('MANAGE_BEN')"><a th:href="@{/corporate/beneficiary}" th:text="#{menu.beneficiary}">Beneficiaries</a></li>
-                                    <li sec:authorize="hasAuthority('CORP_MAILBOX')"><a th:href="@{/corporate/mailbox/inbox}" th:text="#{menu.mail}"> Mailbox</a></li>
+                                    <!--<li sec:authorize="hasAuthority('CORP_MAILBOX')"><a th:href="@{/corporate/mailbox/inbox}" th:text="#{menu.mail}"> Mailbox</a></li>-->
                                     <li th:if="${isUserAdmin}"><a th:href="@{/corporate/users}" th:text="#{menu.usermanagement}">User Management</a></li>
                                     <li th:if="${isAuthorizer}"><a th:href="@{/corporate/users}" th:text="#{menu.usermanagement}">User Management</a></li>
                                 </ul>
