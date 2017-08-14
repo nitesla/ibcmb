@@ -43,7 +43,7 @@ public class CorpTransferServiceImpl implements CorpTransferService {
     private Locale locale = LocaleContextHolder.getLocale();
 
     @Autowired
-    TransferService transferService;
+    private TransferService transferService;
     @Autowired
     private CorpTransferAuthRepo transferAuthRepo;
 

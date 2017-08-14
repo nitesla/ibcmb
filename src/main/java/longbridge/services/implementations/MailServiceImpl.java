@@ -28,7 +28,8 @@ public class MailServiceImpl implements MailService {
     }
 
 
-    @Override public void send(String recipient, String subject, String message) throws MailException {
+    @Override
+    public void send(String recipient, String subject, String message) throws MailException {
         MimeMessagePreparator messagePreparator = mimeMessage -> {
             MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage);
             messageHelper.setFrom(sender);
@@ -40,14 +41,18 @@ public class MailServiceImpl implements MailService {
         logger.info("...trying to send mail to {}", recipient);
 
         mailSender.send(messagePreparator);
-            logger.info("Email successfully sent to {}",recipient);
+        logger.info("Email successfully sent to {}", recipient);
     }
 
-    @Override public void send(Email email) throws MailException {
+    @Override
+    public void send(Email email) throws MailException {
         MimeMessagePreparator messagePreparator = mimeMessage -> {
             MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage);
             messageHelper.setFrom(sender);
             messageHelper.setTo(email.getReceiverEmail());
+            if (email.getCcList() != null) {
+                messageHelper.setCc(email.getCcList());
+            }
             messageHelper.setSubject(email.getMessageSubject());
             messageHelper.setText(email.getMessageBody());
 

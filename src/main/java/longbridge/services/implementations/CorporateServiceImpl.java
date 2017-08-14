@@ -59,8 +59,6 @@ public class CorporateServiceImpl implements CorporateService {
     private PasswordPolicyService passwordPolicyService;
 
     @Autowired
-    private RoleService roleService;
-    @Autowired
     private RoleRepo roleRepo;
 
     @Autowired
@@ -173,7 +171,6 @@ public class CorporateServiceImpl implements CorporateService {
         try {
             saveCorporateRequest(corporateRequestDTO);
             return messageSource.getMessage("corporate.add.success", null, locale);
-
         }
         catch (DuplicateObjectException doe){
             throw doe;
@@ -368,8 +365,7 @@ public class CorporateServiceImpl implements CorporateService {
 
     @Transactional
     public void createUserOnEntrustAndSendCredentials(CorporateUser user) throws EntrustException {
-//        CorporateUser user = corporateUserRepo.findFirstByUserName(corporateUser.getUserName());
-//        if (user != null) {
+
         if ("".equals(user.getEntrustId()) || user.getEntrustId() == null) {
             String fullName = user.getFirstName() + " " + user.getLastName();
             SettingDTO setting = configService.getSettingByName("ENABLE_ENTRUST_CREATION");
@@ -546,7 +542,6 @@ public class CorporateServiceImpl implements CorporateService {
         List<CorporateDTO> dtOs = convertEntitiesToDTOs(page.getContent());
         long t = page.getTotalElements();
 
-        // return  new PageImpl<ServiceReqConfigDTO>(dtOs,pageDetails,page.getTotalElements());
         Page<CorporateDTO> pageImpl = new PageImpl<CorporateDTO>(dtOs, pageDetails, t);
         return pageImpl;
     }
@@ -763,11 +758,6 @@ public class CorporateServiceImpl implements CorporateService {
         }
     }
 
-    public void addAuthorizer(CorporateUser user, Long corpRoleId) {
-
-        Corporate corporate = user.getCorporate();
-        CorporateRole corporateRole = corporateRoleRepo.findOne(corpRoleId);
-    }
 
     @Override
     public CorporateRoleDTO getCorporateRole(Long id) {
@@ -810,7 +800,7 @@ public class CorporateServiceImpl implements CorporateService {
     public List<CorporateRoleDTO> getRoles(Long corpId) {
         Corporate corporate = corporateRepo.findOne(corpId);
         List<CorporateRole> corporateRoles = corporateRoleRepo.findByCorporate(corporate);
-//        sortRolesByRank(corporateRoles);
+        sortRolesByRank(corporateRoles);
         List<CorporateRoleDTO> roles = convertCorporateRoleEntitiesToDTOs(corporateRoles);
         return roles;
     }
@@ -823,19 +813,7 @@ public class CorporateServiceImpl implements CorporateService {
         List<CorpTransRule> transferRules = corpTransferRuleRepo.findByCorporate(corporate);
         Collections.sort(transferRules, new TransferRuleComparator());
         BigDecimal transferAmount = transferRequest.getAmount();
-        CorpTransRule applicableTransferRule = null;
-        for (CorpTransRule transferRule : transferRules) {
-
-            BigDecimal lowerLimit = transferRule.getLowerLimitAmount();
-            BigDecimal upperLimit = transferRule.getUpperLimitAmount();
-
-            if (transferAmount.compareTo(lowerLimit) >= 0 && (transferAmount.compareTo(upperLimit) <= 0)) {
-                applicableTransferRule = transferRule;
-                break;
-            } else if (transferAmount.compareTo(lowerLimit) >= 0 && transferRule.isUnlimited()) {
-                applicableTransferRule = transferRule;
-            }
-        }
+        CorpTransRule applicableTransferRule = findApplicableRule(transferRules,transferAmount);
         return applicableTransferRule;
     }
 
@@ -847,9 +825,16 @@ public class CorporateServiceImpl implements CorporateService {
         List<CorpTransRule> transferRules = corpTransferRuleRepo.findByCorporate(corporate);
         Collections.sort(transferRules, new TransferRuleComparator());
         BigDecimal transferAmount = bulkTransfer.getAmount();
+        CorpTransRule applicableTransferRule = findApplicableRule(transferRules,transferAmount);
+        return applicableTransferRule;
+    }
+
+
+
+    private CorpTransRule findApplicableRule(List<CorpTransRule> transferRules, BigDecimal transferAmount){
+
         CorpTransRule applicableTransferRule = null;
         for (CorpTransRule transferRule : transferRules) {
-
             BigDecimal lowerLimit = transferRule.getLowerLimitAmount();
             BigDecimal upperLimit = transferRule.getUpperLimitAmount();
 
@@ -863,26 +848,14 @@ public class CorporateServiceImpl implements CorporateService {
         return applicableTransferRule;
     }
 
-    //    public CorporateRole getNextRoleForAuthorization(PendAuth pendAuth){
-//        pendAuth.
-//        List<CorporateRole> corporateRoles = rule.getRoles();
-//        sortRolesByRank(corporateRoles);
-//        CorporateRole corporateRole = null;
-//        Iterator<CorporateRole> iterator = corporateRoles.iterator();
-//        while (iterator.hasNext()){
-//            return  iterator.next();
-//        }
-//        return corporateRole;
-//    }
-
-//    private void sortRolesByRank(List<CorporateRole> roles) {
-//        Collections.sort(roles, new Comparator<CorporateRole>() {
-//            @Override
-//            public int compare(CorporateRole o1, CorporateRole o2) {
-//                return o1.getRank().compareTo(o2.getRank());
-//            }
-//        });
-//    }
+    private void sortRolesByRank(List<CorporateRole> roles) {
+        Collections.sort(roles, new Comparator<CorporateRole>() {
+            @Override
+            public int compare(CorporateRole o1, CorporateRole o2) {
+                return o1.getRank().compareTo(o2.getRank());
+            }
+        });
+    }
 
     private CorporateRole convertCorporateRoleDTOToEntity(CorporateRoleDTO roleDTO) {
         CorporateRole corporateRole = new CorporateRole();

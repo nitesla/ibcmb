@@ -177,6 +177,24 @@ public class TransferUtils {
         return accountList;
     }
 
+
+    public List<Account> getNairaAccounts(List<Account> accounts) {
+
+        List<Account> accountList = new ArrayList<>();
+
+
+            StreamSupport.stream(accounts.spliterator(), false)
+                    .filter(Objects::nonNull)
+                    .filter(i -> "NGN".equalsIgnoreCase(i.getCurrencyCode()))
+
+                    .forEach(i -> accountList.add(i));
+
+
+        return accountList;
+    }
+
+
+
     public String getFee(String channel) {
         try {
             return integrationService.getFee(channel).getFeeValue();

@@ -137,7 +137,7 @@ public class CorpLocalTransferController {
     }
 
     @PostMapping("/new")
-    public String newBeneficiary(@ModelAttribute("corpLocalBeneficiary") @Valid CorpLocalBeneficiaryDTO corpLocalBeneficiaryDTO, BindingResult result, Model model, HttpServletRequest request) throws Exception {
+    public String newBeneficiary(@ModelAttribute("corpLocalBeneficiaryDTO") @Valid CorpLocalBeneficiaryDTO corpLocalBeneficiaryDTO, BindingResult result, Model model, HttpServletRequest request) throws Exception {
         if (result.hasErrors()) {
             return page + "pageiA";
         }
@@ -202,7 +202,7 @@ public class CorpLocalTransferController {
         CorporateUser user = corporateUserService.getUserByName(principal.getName());
 
 
-            model.addAttribute("accountList", transferUtils.getNairaAccounts(user.getCorporate().getCustomerId()));
+            model.addAttribute("accountList", transferUtils.getNairaAccounts(user.getCorporate().getAccounts()));
 
 
 
