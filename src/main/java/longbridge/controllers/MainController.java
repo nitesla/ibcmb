@@ -9,6 +9,7 @@ import longbridge.models.CorporateUser;
 import longbridge.models.Email;
 import longbridge.models.RetailUser;
 import longbridge.services.*;
+import net.sf.jasperreports.engine.util.JRStyledText;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

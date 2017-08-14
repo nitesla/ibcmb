@@ -132,7 +132,7 @@ public class PasswordPolicyService {
 
     public String generatePassword() {
         init();
-        return passwordCreator.generatePassword(minLength, numOfDigits, noOfSpecial, specialCharacters);
+        return passwordCreator.generatePassword(minLength, numOfDigits, specialCharacters);
     }
 
 

@@ -21,8 +21,6 @@ public interface CorpTransferService {
     CorpTransRequest getTransfer(Long id);
 
 
-    @PreAuthorize("hasAuthority('GET_TRANSFER')")
-    Page<CorpTransRequest> getTransferRequests(Pageable pageDetails);
 
     @PreAuthorize("hasAuthority('MAKE_TRANSFER')")
     CorpTransferRequestDTO saveTransfer(CorpTransferRequestDTO corpTransferRequestDTO) throws TransferException;
@@ -34,6 +32,8 @@ public interface CorpTransferService {
     String addTransferRequest(CorpTransferRequestDTO transferRequestDTO) throws InternetBankingException;
 
 //    List<PendAuth> getPendingAuthorizations();
+
+    Page<CorpTransRequest> getTransferRequests(Pageable pageDetails);
 
     CorpTransferAuth getAuthorizations(CorpTransRequest transRequest);
     //CorpTransferAuth getAuthorizations(TransRequest transRequest);

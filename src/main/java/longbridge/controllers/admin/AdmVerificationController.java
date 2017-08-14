@@ -46,7 +46,6 @@ public class AdmVerificationController {
     private MessageSource messageSource;
 
 
-
     @GetMapping("/")
     public String getVerifications(Model model) {
 
@@ -60,15 +59,11 @@ public class AdmVerificationController {
         try {
             verificationService.verify(id);
             redirectAttributes.addFlashAttribute("message", "Operation approved successfully");
-            }
-
-        catch (VerificationException ve)
-        {
-            logger.error("Error verifying the operation",ve);
+        } catch (VerificationException ve) {
+            logger.error("Error verifying the operation", ve);
             redirectAttributes.addFlashAttribute("failure", ve.getMessage());
-        }
-        catch (InternetBankingException ibe){
-            logger.error("Error verifying the operation",ibe);
+        } catch (InternetBankingException ibe) {
+            logger.error("Error verifying the operation", ibe);
             redirectAttributes.addFlashAttribute("failure", ibe.getMessage());
 
         }
@@ -77,22 +72,19 @@ public class AdmVerificationController {
 
 
     @PostMapping("/verify")
-    public String verify(@ModelAttribute("verification") @Valid VerificationDTO verification,BindingResult result, WebRequest request, Model model, RedirectAttributes redirectAttributes,  Locale locale) {
+    public String verify(@ModelAttribute("verification") @Valid VerificationDTO verification, BindingResult result, WebRequest request, Model model, RedirectAttributes redirectAttributes, Locale locale) {
 
         String approval = request.getParameter("approve");
 
         try {
-            if ("true".equals(approval))
-            {
+            if ("true".equals(approval)) {
                 verificationService.verify(verification);
                 redirectAttributes.addFlashAttribute("message", "Operation approved successfully");
 
-            } else if ("false".equals(approval))
-            {
-                if (result.hasErrors())
-                {
-                     VerificationDTO verification2=verificationService.getVerification(verification.getId());
-                    model.addAttribute("verify",verification2);
+            } else if ("false".equals(approval)) {
+                if (result.hasErrors()) {
+                    VerificationDTO verification2 = verificationService.getVerification(verification.getId());
+                    model.addAttribute("verify", verification2);
                     result.addError(new ObjectError("invalid", messageSource.getMessage("reason.required", null, locale)));
                     return "adm/makerchecker/details";
                 }
@@ -100,13 +92,11 @@ public class AdmVerificationController {
                 redirectAttributes.addFlashAttribute("message", "Operation declined successfully");
 
             }
-        }
-        catch (VerificationException ve){
-            logger.error("Error verifying the operation",ve);
+        } catch (VerificationException ve) {
+            logger.error("Error verifying the operation", ve);
             redirectAttributes.addFlashAttribute("failure", ve.getMessage());
-        }
-        catch (InternetBankingException ibe){
-            logger.error("Error verifying the operation",ibe);
+        } catch (InternetBankingException ibe) {
+            logger.error("Error verifying the operation", ibe);
             redirectAttributes.addFlashAttribute("failure", ibe.getMessage());
         }
         return "redirect:/admin/verifications/operations";
@@ -116,8 +106,7 @@ public class AdmVerificationController {
     @GetMapping(path = "/all")
     public
     @ResponseBody
-    DataTablesOutput<VerificationDTO> getAllPending(DataTablesInput input)
-    {
+    DataTablesOutput<VerificationDTO> getAllPending(DataTablesInput input) {
         Pageable pageable = DataTablesUtils.getPageable(input);
         Page<VerificationDTO> page = verificationService.getPendingForUser(pageable);
         DataTablesOutput<VerificationDTO> out = new DataTablesOutput<VerificationDTO>();
@@ -131,8 +120,7 @@ public class AdmVerificationController {
     @GetMapping(path = "/allverification")
     public
     @ResponseBody
-    DataTablesOutput<Verification> getAllVerification(DataTablesInput input)
-    {
+    DataTablesOutput<Verification> getAllVerification(DataTablesInput input) {
         Pageable pageable = DataTablesUtils.getPageable(input);
         Page<Verification> page = verificationService.getVerificationsForUser(pageable);
         DataTablesOutput<Verification> out = new DataTablesOutput<Verification>();
@@ -145,8 +133,7 @@ public class AdmVerificationController {
 
 
     @GetMapping("/{opId}/pending")
-    public String getPendingOperation(@PathVariable Long opId, Model model)
-    {
+    public String getPendingOperation(@PathVariable Long opId, Model model) {
 
         VerificationDTO verificationDTO = verificationService.getVerification(opId);
         model.addAttribute("operation", verificationDTO.getOperation());
@@ -169,16 +156,14 @@ public class AdmVerificationController {
 
 
     @GetMapping("/verified")
-    public String getVerifiedOperations()
-    {
+    public String getVerifiedOperations() {
         return "adm/makerchecker/verified";
     }
 
     @GetMapping(path = "/verified/all")
     public
     @ResponseBody
-    DataTablesOutput<VerificationDTO> getVerifiedOperations(DataTablesInput input)
-    {
+    DataTablesOutput<VerificationDTO> getVerifiedOperations(DataTablesInput input) {
         Pageable pageable = DataTablesUtils.getPageable(input);
         Page<VerificationDTO> page = verificationService.getVerifiedOPerations(pageable);
         DataTablesOutput<VerificationDTO> out = new DataTablesOutput<VerificationDTO>();
@@ -191,33 +176,29 @@ public class AdmVerificationController {
 
 
     @GetMapping("/pendingops")
-    public String getPendingVerification(Model model)
-    {
+    public String getPendingVerification(Model model) {
 
         return "adm/makerchecker/pending";
     }
 
 
     @GetMapping("/operations")
-    public String getVerification(Model model)
-    {
+    public String getVerification(Model model) {
 
         return "adm/makerchecker/checker";
     }
 
 
     @GetMapping("/{id}/view")
-    public String getObjectsForVerification(@PathVariable Long id, Model model)
-    {
+    public String getObjectsForVerification(@PathVariable Long id, Model model) {
         VerificationDTO verification = verificationService.getVerification(id);
-        model.addAttribute("verification",new VerificationDTO());
+        model.addAttribute("verification", new VerificationDTO());
         model.addAttribute("verify", verification);
         return "adm/makerchecker/details";
     }
 
     @GetMapping("/{id}/pendingviews")
-    public String getObjectsForPending(@PathVariable Long id, Model model)
-    {
+    public String getObjectsForPending(@PathVariable Long id, Model model) {
         VerificationDTO verification = verificationService.getVerification(id);
         model.addAttribute("verify", verification);
         return "adm/makerchecker/pendingdetails";

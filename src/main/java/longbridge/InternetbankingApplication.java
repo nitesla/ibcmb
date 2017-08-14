@@ -9,8 +9,10 @@ import longbridge.repositories.AccountRestrictionRepo;
 import longbridge.repositories.CustomJpaRepositoryFactoryBean;
 import longbridge.repositories.OperationsUserRepo;
 import longbridge.services.OperationsUserService;
+import longbridge.services.PasswordPolicyService;
 import longbridge.services.SecurityService;
 import org.apache.commons.lang3.math.NumberUtils;
+import org.codehaus.groovy.runtime.powerassert.SourceText;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -40,6 +42,9 @@ public class InternetbankingApplication extends SpringBootServletInitializer imp
     @Autowired
     OperationsUserRepo operationsUserRepo;
 
+    @Autowired
+    PasswordPolicyService passwordPolicyService;
+
 
     public static void main(String[] args) {
         SpringApplication.run(InternetbankingApplication.class, args);
@@ -54,6 +59,7 @@ public class InternetbankingApplication extends SpringBootServletInitializer imp
     @Override
     public void run(String... strings) throws Exception {
 //        CronJobScheduler.startJobs();
+
    }
 
 }
