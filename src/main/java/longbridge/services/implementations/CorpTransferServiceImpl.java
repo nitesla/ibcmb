@@ -3,9 +3,7 @@ package longbridge.services.implementations;
 import longbridge.api.AccountDetails;
 import longbridge.api.NEnquiryDetails;
 import longbridge.dtos.CorpTransferRequestDTO;
-import longbridge.dtos.CorporateRequestDTO;
 import longbridge.dtos.SettingDTO;
-import longbridge.dtos.TransferRequestDTO;
 import longbridge.exception.*;
 import longbridge.models.*;
 import longbridge.repositories.*;
@@ -13,7 +11,6 @@ import longbridge.security.userdetails.CustomUserPrincipal;
 import longbridge.services.*;
 import longbridge.utils.TransferType;
 import org.apache.commons.lang3.math.NumberUtils;
-import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -135,6 +132,24 @@ public class CorpTransferServiceImpl implements CorpTransferService {
         throw new InternetBankingTransferException(TransferExceptions.ERROR.toString());
     }
 
+    @Override
+    public Page<CorpTransRequest> getCompletedTransfers(Pageable pageDetails) {
+        CorporateUser corporateUser = getCurrentUser();
+        Corporate corporate = corporateUser.getCorporate();
+        Page<CorpTransRequest> page = corpTransferRequestRepo.findByCorporateAndStatusIn(corporate, Arrays.asList("00","000"), pageDetails);
+        //List<CorpTransferRequestDTO> dtOs = convertEntitiesToDTOs(page.getContent());
+//        long t = page.getTotalElements();
+//        Page<CorpTransferRequestDTO> pageImpl = new PageImpl<CorpTransferRequestDTO>(dtOs, pageDetails, t);
+        return page;
+    }
+
+    @Override
+    public Page<CorpTransRequest> findCompletedTransfers(String pattern, Pageable pageDetails) {
+        CorporateUser corporateUser = getCurrentUser();
+        Corporate corporate = corporateUser.getCorporate();
+        Page<CorpTransRequest> page = corpTransferRequestRepo.findByCorporateAndStatusIn(corporate, Arrays.asList("00","000"), pageDetails);
+        return page;
+    }
 
     @Override
     public CorpTransRequest getTransfer(Long id) {

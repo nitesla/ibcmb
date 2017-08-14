@@ -18,6 +18,24 @@ public class TransactionDetails {
     private String tranAmount;
     private String tranId;
 
+    private String tranDate;
+    private String tranSN;
+
+    public String getTranDate() {
+        return tranDate;
+    }
+
+    public void setTranDate(String tranDate) {
+        this.tranDate = tranDate;
+    }
+
+    public String getTranSN() {
+        return tranSN;
+    }
+
+    public void setTranSN(String tranSN) {
+        this.tranSN = tranSN;
+    }
 
     public String getCurrencyCode() {
         return currencyCode;
@@ -94,8 +112,12 @@ public class TransactionDetails {
                 ", tranType='" + tranType + '\'' +
                 ", tranAmount='" + tranAmount + '\'' +
                 ", tranId='" + tranId + '\'' +
+                ", tranDate='" + tranDate + '\'' +
+                ", tranSN='" + tranSN + '\'' +
                 '}';
     }
+
+
 }
 
 

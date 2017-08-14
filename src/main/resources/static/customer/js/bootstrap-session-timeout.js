@@ -113,7 +113,7 @@
                     // mousePosition[1] = e.clientY;
                 }
                 startSessionTimer();
-                console.log('this is d time'+ timer);
+                // console.log('this is d time'+ timer);
                 // If they moved the mouse not only reset the counter
                 // but remove the modal too!
                 // if ($('#session-timeout-dialog').length > 0 &&
@@ -130,7 +130,7 @@
         if (!opt.ignoreUserActivity) {
             $(document).on('mousemove', function(e) {
                 restartSession();
-                console.log('this is d time'+ timer);
+                // console.log('this is d time'+ timer);
             });
         }
 

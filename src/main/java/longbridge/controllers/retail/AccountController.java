@@ -201,6 +201,7 @@
 package longbridge.controllers.retail;
 
 import longbridge.api.AccountDetails;
+import longbridge.api.PaginationDetails;
 import longbridge.dtos.AccountDTO;
 import longbridge.dtos.SettingDTO;
 import longbridge.exception.InternetBankingException;
@@ -554,25 +555,104 @@ public class AccountController {
 		Date to = null;
 		DataTablesOutput<TransactionDetails> out = new DataTablesOutput<TransactionDetails>();
 		SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy");
+		SimpleDateFormat format2 = new SimpleDateFormat("dd-MMM-yyyy");
 		try {
 			from = format.parse(fromDate);
 			to = format.parse(toDate);
-			logger.info("fromDate {}",from);
-			logger.info("toDate {}",to);
+			logger.info("from Date after format{}",format2.format(from));
+			logger.info("to Date after format {}",format2.format(to));
 			//int diffInDays = (int) ((to.getTime() - from.getTime()) / (1000 * 60 * 60 * 24));
 
 			AccountStatement accountStatement = integrationService.getAccountStatements(acctNumber, from, to, tranType);
-			logger.info("TransactionType {}", tranType);
+			logger.info("accountStatement new {}", accountStatement);
 			list = accountStatement.getTransactionDetails();
+			session.removeAttribute("hasMoreTransaction");
+			session.removeAttribute("acctStmtEntirePastDetails");
+			if(accountStatement != null) {
+				session.setAttribute("hasMoreTransaction", accountStatement.getHasMoreData());
+			}
 			session.removeAttribute("acctStmtLastDetails");
 			if(!list.isEmpty()){
 				session.setAttribute("acctStmtLastDetails",list.get(list.size()-1));
+				session.setAttribute("acctStmtEntirePastDetails",list);
 			}
 
 		} catch (ParseException e) {
 			logger.warn("didn't parse date", e);
 		}catch (Exception e){
 			logger.warn("error cause by", e.getMessage());
+		}
+		return list;
+
+	}
+@GetMapping("/viewstatement/display/data/state")
+	@ResponseBody
+	public List<TransactionDetails> getStatementDataByState(WebRequest webRequest, HttpSession session) {
+		// Pageable pageable = DataTablesUtils.getPageable(input);
+		String acctNumber = webRequest.getParameter("acctNumber");
+		String fromDate = webRequest.getParameter("fromDate");
+		String toDate = webRequest.getParameter("toDate");
+		String tranType = webRequest.getParameter("tranType");
+		String state = webRequest.getParameter("state");
+		logger.info("fromDate {}",fromDate);
+		logger.info("toDate {}",toDate);
+//		Duration diffInDays= new Duration(new DateTime(fromDate),new DateTime(toDate));
+//		logger.info("Day difference {}",diffInDays.getStandardDays());
+		List<TransactionDetails> list =  null;
+		Date from = null;
+		Date to = null;
+		DataTablesOutput<TransactionDetails> out = new DataTablesOutput<TransactionDetails>();
+		SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy");
+		try {
+			from = format.parse(fromDate);
+			to = format.parse(toDate);
+			logger.info("fromDate {}",from);
+			logger.info("toDate {}",to);
+			//int diffInDays = (int) ((to.getTime() - from.getTime()) / (1000 * 60 * 60 * 24));
+			TransactionDetails transactionDetails = null;
+			if((session.getAttribute("acctStmtLastDetails") != null)&&(state.equalsIgnoreCase("forward"))) {
+				transactionDetails = (TransactionDetails) session.getAttribute("acctStmtLastDetails");
+				logger.info("the transaction {}",transactionDetails);
+			}
+			if((session.getAttribute("acctStmtEntirePastDetails") != null)&&(state.equalsIgnoreCase("backward"))) {
+				 list = (List<TransactionDetails>) session.getAttribute("acctStmtEntirePastDetails");
+				session.removeAttribute("acctStmtLastDetails");
+				session.setAttribute("acctStmtLastDetails", list.get(list.size() - 1));
+				logger.info("acctStmtLastDetails previous {}", list.get(list.size() - 1));
+				return list;
+			}
+
+			if(transactionDetails != null) {
+				PaginationDetails paginationDetails = new PaginationDetails();
+				paginationDetails.setLastAccountBalance(transactionDetails.getAccountBalance());
+				paginationDetails.setLastAccountCurrency(transactionDetails.getCurrencyCode());
+				paginationDetails.setLastPostDate(transactionDetails.getPostDate());
+				paginationDetails.setLastTranId(transactionDetails.getTranId());
+				paginationDetails.setLastTranDate(transactionDetails.getTranDate());
+				paginationDetails.setLastTranSN(transactionDetails.getTranSN());
+				logger.info("paginationDetails {}", paginationDetails);
+				AccountStatement accountStatement = integrationService.getAccountStatements(acctNumber, from, to, tranType, paginationDetails);
+				logger.info("accountStatement {}", accountStatement);
+				list = accountStatement.getTransactionDetails();
+				session.removeAttribute("acctStmtLastDetails");
+				session.removeAttribute("acctStmtEntirePastDetails");
+				session.removeAttribute("hasMoreTransaction");
+				if(accountStatement != null) {
+					session.setAttribute("hasMoreTransaction", accountStatement.getHasMoreData());
+				}
+				if (!list.isEmpty()) {
+					session.setAttribute("acctStmtLastDetails", list.get(list.size() - 1));
+
+					session.setAttribute("acctStmtEntirePastDetails", list);
+					logger.info("acctStmtLastDetails {}", list.get(list.size() - 1));
+//					logger.info("acctStmtFirstDetails {}", list.get(0));
+				}
+			}
+
+		} catch (ParseException e) {
+			logger.warn("didn't parse date {}", e);
+		}catch (Exception e){
+			logger.warn("error cause by {}", e.getMessage());
 		}
 		return list;
 
