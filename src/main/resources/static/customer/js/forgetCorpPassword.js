@@ -156,8 +156,8 @@ function sendGenPassword() {
 function validateGenPassword() {
      $('#myLoader').modal('show');
     var result;
-    var username = $('input[name="username"]').val();
-    var genpassword = $('input[name="genpassword"]').val();
+    var username = $('#username').val();
+    var genpassword = $('#genpassword').val();
     $.ajax({
         type:'GET',
         url:"/rest/corporate/verGenPass/"+username+"/"+genpassword,

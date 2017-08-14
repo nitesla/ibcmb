@@ -1,5 +1,6 @@
 package longbridge.controllers;
 
+import longbridge.dtos.PasswordStrengthDTO;
 import longbridge.exception.*;
 import longbridge.forms.CustResetPassword;
 import longbridge.forms.ResetPasswordForm;
@@ -110,7 +111,11 @@ public class RetrieveCorpCredentialController {
                 redirectAttributes.addFlashAttribute("failure", "Invalid Credentials");
                 return "redirect:/login/corporate";
             }
+            PasswordStrengthDTO passwordStrengthDTO = passwordPolicyService.getPasswordStrengthParams();
+            logger.info("Password Strength {}" + passwordStrengthDTO);
+            model.addAttribute("passwordStrength", passwordStrengthDTO);
 
+            model.addAttribute("forgotPasswordForm", resetPasswordForm);
 
             model.addAttribute("forgotPasswordForm", resetPasswordForm);
             List<String> policies = passwordPolicyService.getPasswordRules();
