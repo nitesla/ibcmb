@@ -137,7 +137,7 @@ public class CorpLocalTransferController {
     }
 
     @PostMapping("/new")
-    public String newBeneficiary(@ModelAttribute("corpLocalBeneficiary") @Valid CorpLocalBeneficiaryDTO corpLocalBeneficiaryDTO, BindingResult result, Model model, HttpServletRequest request) throws Exception {
+    public String newBeneficiary(@ModelAttribute("corpLocalBeneficiaryDTO") @Valid CorpLocalBeneficiaryDTO corpLocalBeneficiaryDTO, BindingResult result, Model model, HttpServletRequest request) throws Exception {
         if (result.hasErrors()) {
             return page + "pageiA";
         }

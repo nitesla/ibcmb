@@ -191,16 +191,14 @@ public class CorpTransferController {
 
             }
 
-            // request.getSession().removeAttribute("corpTransferRequest");
+//           request.getSession().removeAttribute("corpTransferRequest");
 
 
             if (request.getParameter("add") != null) {
                 //checkbox  checked
                 if (request.getSession().getAttribute("Lbeneficiary") != null) {
                     CorpLocalBeneficiaryDTO l = (CorpLocalBeneficiaryDTO) request.getSession().getAttribute("Lbeneficiary");
-                    CorporateUser user = corporateUserService.getUserByName(principal.getName());
                     try {
-                        Corporate corporate = corporateService.getCorporateByCustomerId(user.getCorporate().getCustomerId());
                         corpLocalBeneficiaryService.addCorpLocalBeneficiary(l);
                         request.getSession().removeAttribute("Lbeneficiary");
                         // model.addAttribute("beneficiary", l);
