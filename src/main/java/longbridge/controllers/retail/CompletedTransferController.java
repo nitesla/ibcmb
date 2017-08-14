@@ -1,5 +1,6 @@
 package longbridge.controllers.retail;
 
+import longbridge.exception.InternetBankingException;
 import longbridge.models.RetailUser;
 import longbridge.models.TransRequest;
 import longbridge.services.RetailUserService;
@@ -9,6 +10,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
@@ -25,6 +28,7 @@ import java.security.Principal;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 /**
@@ -35,6 +39,7 @@ import java.util.Map;
 public class CompletedTransferController {
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
+    private Locale locale = LocaleContextHolder.getLocale();
 
     @Autowired
     TransferService transferService;
@@ -44,6 +49,8 @@ public class CompletedTransferController {
 
     @Autowired
     private ApplicationContext appContext;
+    @Autowired
+    private MessageSource messageSource;
 
     @Value("${jsonFile.path}")
     private String JOSNpath;
@@ -82,16 +89,17 @@ public class CompletedTransferController {
 
     @RequestMapping(path = "{id}/downloadreceipt", method = RequestMethod.GET)
     public ModelAndView getTransPDF(@PathVariable Long id, Model model, Principal principal, HttpServletRequest request) {
-        RetailUser retailUser = retailUserService.getUserByName(principal.getName());
+        try {
+            RetailUser retailUser = retailUserService.getUserByName(principal.getName());
 
-        TransRequest transRequest = transferService.getTransfer(id);
+            TransRequest transRequest = transferService.getTransfer(id);
 
-        logger.info("Trans Request {}", transRequest);
-        JasperReportsPdfView view = new JasperReportsPdfView();
-        view.setUrl("classpath:jasperreports/rpt_tran-hist.jrxml");
-        view.setApplicationContext(appContext);
+            logger.info("Trans Request {}", transRequest);
+            JasperReportsPdfView view = new JasperReportsPdfView();
+            view.setUrl("classpath:jasperreports/rpt_tran-hist.jrxml");
+            view.setApplicationContext(appContext);
 
-        Map<String, Object> modelMap = new HashMap<>();
+            Map<String, Object> modelMap = new HashMap<>();
             double amount = Double.parseDouble(transRequest.getAmount().toString());
             DecimalFormat formatter = new DecimalFormat("#,###.00");
             modelMap.put("datasource", new ArrayList<>());
@@ -104,7 +112,16 @@ public class CompletedTransferController {
             modelMap.put("refNUm", transRequest.getReferenceNumber());
             //modelMap.put("tranDate", DateFormatter.format(transRequest.getTranDate()));
 
-        ModelAndView modelAndView=new ModelAndView(view, modelMap);
-        return modelAndView;
+            ModelAndView modelAndView=new ModelAndView(view, modelMap);
+            return modelAndView;
+        }catch (InternetBankingException e){
+            logger.info(" RECEIPT DOWNLOAD {} ", e.getMessage());
+            ModelAndView modelAndView =  new ModelAndView("redirect:/retail/transfer/history");
+            modelAndView.addObject("failure" , messageSource.getMessage("receipt.download.failed", null, locale));
+            //redirectAttributes.addFlashAttribute("failure", messageSource.getMessage("receipt.download.failed", null, locale));
+            return modelAndView;
+
+        }
+
     }
 }
