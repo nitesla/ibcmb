@@ -213,6 +213,7 @@
 
             $("#btn-find").on("click", function(e) {
 //                console.log("find");
+                resetButton();
                 e.preventDefault();
                 dt = $('#tranDetails').DataTable();
                     $('#btn-print').show();
@@ -246,7 +247,7 @@
                     state : "forward"
                 },success: function (result) {
                     if (result != null) {
-//                        resetButton();
+                        resetButton();
 //                        var detialsList = JSON.parse(result);
                         console.log("the result next"+result);
 //                $('#tranDetails').DataTable().fnClearTable();
@@ -284,7 +285,7 @@
                     state : "backward"
                 },success: function (result) {
                     if (result != null) {
-//                        resetButton();
+                        resetButton();
 //                        var detialsList = JSON.parse(result);
                         console.log("the result next"+result);
 //                $('#tranDetails').DataTable().fnClearTable();
@@ -310,7 +311,41 @@
 
             });
         }
+        function resetButton() {
+//    console.log("field value "+valu);
+            $.ajax({
+                "url":"viewstatement/display/data/reset/button",
+                "type" : "GET",
+                "data" :  {
+                    state : "backward"
+                },success: function (result) {
+                    if (result == "both") {
+//                console.log("the result next"+result);
+                        $('#previous').hide();
+                        $('#next').hide();
+                    }
+                    if (result == "previous") {
+//                console.log("the result next"+result);
+                        $('#previous').hide();
+                        $('#next').show();
+                    }
+                    if (result == "next") {
+//                console.log("the result next"+result);
+                        $('#previous').show();
+                        $('#next').hide();
+                    }
+                    if (result == "none") {
+//                console.log("the result next"+result);
+                        $('#previous').show();
+                        $('#next').show();
+                    }
+                },
+                error:  function (dd) {
+                    console.log("error")
+                }
 
+            });
+        }
         /*]]>*/
     </script>
 

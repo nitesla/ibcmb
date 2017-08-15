@@ -255,13 +255,17 @@ public class CorpUserManagementController {
             return "redirect:/corporate/users/";
         }catch (VerificationException e){
             result.addError(new ObjectError("error", e.getMessage()));
-            logger.error("Error creating corporate user", e);
+            logger.error("Error editing corporate user", e);
             model.addAttribute("failure", messageSource.getMessage("user.add.failure", null, locale));
             return "corp/user/edit";
         }catch (InternetBankingException ibe) {
             result.addError(new ObjectError("error", ibe.getMessage()));
             logger.error("Error creating corporate user", ibe);
-            model.addAttribute("failure", messageSource.getMessage("failure",null,locale));
+            model.addAttribute("failure", ibe.getMessage());
+            CorporateDTO corporate = corporateService.getCorporate(Long.parseLong(corporateUserDTO.getCorporateId()));
+            List<CorporateRoleDTO> corporateRoleDTO = corporateService.getRoles(Long.parseLong(corporateUserDTO.getCorporateId()));
+            model.addAttribute("corporate", corporate);
+            model.addAttribute("corporateRoles", corporateRoleDTO);
             return "corp/user/edit";
         }
     }

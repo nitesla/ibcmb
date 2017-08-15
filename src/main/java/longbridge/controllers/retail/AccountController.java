@@ -758,7 +758,7 @@ public class AccountController {
 		SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy");
 		try {
 			JasperReportsPdfView view = new JasperReportsPdfView();
-			view.setUrl("classpath:jasperreports/rpt_account-statement2.jrxml");
+			view.setUrl("classpath:jasperreports/rpt_account-statement3.jrxml");
 			view.setApplicationContext(appContext);
 			from = format.parse(fromDate);
 			to = format.parse(toDate);
