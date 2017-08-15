@@ -10,6 +10,7 @@ import longbridge.security.CustomBruteForceService;
 import longbridge.security.FailedLoginService;
 import longbridge.security.IpAddressUtils;
 
+import longbridge.security.SessionUtils;
 import longbridge.security.userdetails.CustomUserPrincipal;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,16 +35,18 @@ public class CorporateUserDetailsService implements UserDetailsService {
     private Logger logger = LoggerFactory.getLogger(this.getClass());
     private CorporateRepo corporateRepo;
     private FailedLoginService failedLoginService;
+    private SessionUtils sessionUtils;
 
     @Autowired
     public CorporateUserDetailsService(CorporateUserRepo corporateUserRepo, CustomBruteForceService bruteForceService, IpAddressUtils addressUtils, CorporateRepo corporateRepo
-    ,FailedLoginService failedLoginService
+    ,FailedLoginService failedLoginService,SessionUtils sessionUtils
     ) {
         this.corporateUserRepo = corporateUserRepo;
         this.bruteForceService = bruteForceService;
         this.addressUtils = addressUtils;
         this.corporateRepo = corporateRepo;
         this.failedLoginService=failedLoginService;
+        this.sessionUtils=sessionUtils;
     }
 
     @Override
@@ -69,7 +72,7 @@ public class CorporateUserDetailsService implements UserDetailsService {
            }
         }
 
-
+          sessionUtils.clearSession();
         CorporateUser user = corporateUserRepo.findFirstByUserNameIgnoreCaseAndCorporate_CorporateIdIgnoreCase(userName,corpId);
         if (user!=null){
 

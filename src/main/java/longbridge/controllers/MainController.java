@@ -68,9 +68,9 @@ public class MainController {
     }
 
     @RequestMapping(value = {"/", "/home"})
-    public String getHomePage(@RequestParam Optional<HttpServletRequest> request) {
+    public String getHomePage(HttpSession session) {
 
-        if (request.isPresent()) request.get().getSession().invalidate();
+        session.invalidate();
 
         return "index";
     }

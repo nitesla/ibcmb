@@ -6,6 +6,7 @@ import longbridge.repositories.*;
 import longbridge.security.CustomBruteForceService;
 import longbridge.security.FailedLoginService;
 import longbridge.security.IpAddressUtils;
+import longbridge.security.SessionUtils;
 import longbridge.security.userdetails.CustomUserPrincipal;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,17 +28,19 @@ public class RetailUserDetailsService implements UserDetailsService {
     private CustomBruteForceService bruteForceService;
     private IpAddressUtils addressUtils;
     private FailedLoginService failedLoginService;
+    private SessionUtils sessionUtils;
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
 
     @Autowired
     public RetailUserDetailsService(RetailUserRepo retailUserRepo, CustomBruteForceService bruteForceService, IpAddressUtils addressUtils
-            , FailedLoginService failedLoginService
+            , FailedLoginService failedLoginService,SessionUtils sessionUtils
     ) {
         this.retailUserRepo = retailUserRepo;
         this.bruteForceService = bruteForceService;
         this.addressUtils = addressUtils;
         this.failedLoginService = failedLoginService;
+        this.sessionUtils=sessionUtils;
     }
 
     @Override
@@ -50,6 +53,7 @@ public class RetailUserDetailsService implements UserDetailsService {
             logger.trace("IP -> {} has been blocked", ip);
             throw new RuntimeException("blocked");
         }
+        sessionUtils.clearSession();
         RetailUser user = retailUserRepo.findFirstByUserNameIgnoreCase(s);
 
         if (user != null && failedLoginService.isBlocked(user)) throw new RuntimeException("user_blocked");
