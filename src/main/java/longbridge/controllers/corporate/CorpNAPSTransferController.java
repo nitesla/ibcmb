@@ -153,7 +153,30 @@ public class CorpNAPSTransferController {
     }
 
     @PostMapping("/bulk/approve")
-    public String addBulkTransferAuthorization(@ModelAttribute("corpTransReqEntry") CorpTransReqEntry corpTransReqEntry, RedirectAttributes redirectAttributes) {
+    public String addBulkTransferAuthorization(@ModelAttribute("corpTransReqEntry") CorpTransReqEntry corpTransReqEntry,@RequestParam("token") String tokenCode, RedirectAttributes redirectAttributes, Principal principal, Locale locale) {
+
+
+        CorporateUser user  = corporateUserService.getUserByName(principal.getName());
+
+        if (tokenCode != null && !tokenCode.isEmpty()) {
+            try {
+                boolean result = securityService.performTokenValidation(user.getEntrustId(), user.getEntrustGroup(), tokenCode);
+                if (!result) {
+                    logger.error("Error authenticating token");
+                    redirectAttributes.addFlashAttribute("failure", messageSource.getMessage("token.auth.failure", null, locale));
+                    return "redirect:/corporate/transfer/" + corpTransReqEntry.getTranReqId() + "/view";
+                }
+            } catch (InternetBankingSecurityException se) {
+                logger.error("Error authenticating token");
+                redirectAttributes.addFlashAttribute("failure", se.getMessage());
+                return "redirect:/corporate/transfer/" + corpTransReqEntry.getTranReqId() + "/view";
+            }
+        } else {
+            redirectAttributes.addFlashAttribute("failure", "Token code is required");
+            return "redirect:/corporate/transfer/" + corpTransReqEntry.getTranReqId() + "/view";
+
+        }
+
 
         try {
             String message = bulkTransferService.addAuthorization(corpTransReqEntry);

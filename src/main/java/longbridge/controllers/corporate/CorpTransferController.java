@@ -206,7 +206,6 @@ public class CorpTransferController {
             }
 
 
-
             if (request.getParameter("add") != null) {
                 //checkbox  checked
                 if (request.getSession().getAttribute("Lbeneficiary") != null) {
@@ -222,7 +221,7 @@ public class CorpTransferController {
                 }
             }
 
-           CorpTransferRequestDTO corpTransferRequestDTO = (CorpTransferRequestDTO) request.getSession().getAttribute("corpTransferRequest");
+            CorpTransferRequestDTO corpTransferRequestDTO = (CorpTransferRequestDTO) request.getSession().getAttribute("corpTransferRequest");
             String corporateId = "" + corporateUserService.getUserByName(principal.getName()).getCorporate().getId();
             corpTransferRequestDTO.setCorporateId(corporateId);
             String response = transferService.addTransferRequest(corpTransferRequestDTO);
@@ -328,7 +327,29 @@ public class CorpTransferController {
 
 
     @PostMapping("/authorize")
-    public String addAuthorization(@ModelAttribute("corpTransReqEntry") CorpTransReqEntry corpTransReqEntry, RedirectAttributes redirectAttributes) {
+    public String addAuthorization(@ModelAttribute("corpTransReqEntry") CorpTransReqEntry corpTransReqEntry, @RequestParam("token") String tokenCode, RedirectAttributes redirectAttributes, Principal principal) {
+
+
+        CorporateUser user  = corporateUserService.getUserByName(principal.getName());
+
+        if (tokenCode != null && !tokenCode.isEmpty()) {
+            try {
+                boolean result = securityService.performTokenValidation(user.getEntrustId(), user.getEntrustGroup(), tokenCode);
+                if (!result) {
+                    logger.error("Error authenticating token");
+                    redirectAttributes.addFlashAttribute("failure", messageSource.getMessage("token.auth.failure", null, locale));
+                    return "redirect:/corporate/transfer/" + corpTransReqEntry.getTranReqId() + "/authorizations";
+                }
+            } catch (InternetBankingSecurityException se) {
+                logger.error("Error authenticating token");
+                redirectAttributes.addFlashAttribute("failure", se.getMessage());
+                return "redirect:/corporate/transfer/" + corpTransReqEntry.getTranReqId() + "/authorizations";
+            }
+        } else {
+            redirectAttributes.addFlashAttribute("failure", "Token code is required");
+            return "redirect:/corporate/transfer/" + corpTransReqEntry.getTranReqId() + "/authorizations";
+
+        }
 
         try {
             String message = corpTransferService.addAuthorization(corpTransReqEntry);
@@ -350,6 +371,11 @@ public class CorpTransferController {
     }
 
 
+
+
+
+
+
     @RequestMapping(value = "/balance/{accountNumber}", method = RequestMethod.GET, produces = "application/json")
     @ResponseBody
     public String getBalance(@PathVariable String accountNumber) throws Exception {
@@ -366,7 +392,8 @@ public class CorpTransferController {
 
     //The receipt for multi corporate user
     @RequestMapping(path = "{id}/receipt", method = RequestMethod.GET)
-    public ModelAndView report(@PathVariable Long id, HttpServletRequest servletRequest, Principal principal) throws Exception {
+    public ModelAndView report(@PathVariable Long id, HttpServletRequest servletRequest, Principal principal) throws
+            Exception {
         //servletRequest.getSession().setAttribute("newId",id);
         try {
             CorporateUser corporateUser = corporateUserService.getUserByName(principal.getName());
@@ -384,7 +411,7 @@ public class CorpTransferController {
             modelMap.put("datasource", new ArrayList<>());
             modelMap.put("imagePath", imagePath);
             modelMap.put("amount", formatter.format(amount));
-            modelMap.put("customer",corporate.getName());
+            modelMap.put("customer", corporate.getName());
             modelMap.put("customerAcctNumber", transRequest.getCustomerAccountNumber());
             modelMap.put("remarks", transRequest.getRemarks());
             modelMap.put("beneficiary", transRequest.getBeneficiaryAccountName());
@@ -395,12 +422,12 @@ public class CorpTransferController {
             modelMap.put("date", DateFormatter.format(new Date()));
 
 
-            ModelAndView modelAndView=new ModelAndView(view, modelMap);
+            ModelAndView modelAndView = new ModelAndView(view, modelMap);
             return modelAndView;
-        }catch (InternetBankingException e){
+        } catch (InternetBankingException e) {
             logger.info(" RECEIPT DOWNLOAD {} ", e.getMessage());
-            ModelAndView modelAndView =  new ModelAndView("redirect:/corporate/transfer/history");
-            modelAndView.addObject("failure" , messageSource.getMessage("receipt.download.failed", null, locale));
+            ModelAndView modelAndView = new ModelAndView("redirect:/corporate/transfer/history");
+            modelAndView.addObject("failure", messageSource.getMessage("receipt.download.failed", null, locale));
             //redirectAttributes.addFlashAttribute("failure", messageSource.getMessage("receipt.download.failed", null, locale));
             return modelAndView;
 
@@ -417,7 +444,9 @@ public class CorpTransferController {
 
     //Receipt for sole corporate user
     @RequestMapping(path = "/receipt", method = RequestMethod.GET)
-    public ModelAndView getreport(@ModelAttribute("corpTransferRequest") @Valid CorpTransferRequestDTO corpTransferRequestDTO, Model model, HttpServletRequest servletRequest, Principal principal) throws Exception {
+    public ModelAndView getreport(@ModelAttribute("corpTransferRequest") @Valid CorpTransferRequestDTO
+                                          corpTransferRequestDTO, Model model, HttpServletRequest servletRequest, Principal principal) throws
+            Exception {
         CorporateUser corporateUser = corporateUserService.getUserByName(principal.getName());
         JasperReportsPdfView view = new JasperReportsPdfView();
         view.setUrl("classpath:jasperreports/rpt_receipt.jrxml");

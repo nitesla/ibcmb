@@ -276,7 +276,7 @@ public class VerificationServiceImpl implements VerificationService {
         CustomUserPrincipal principal = (CustomUserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         User doneBy = principal.getUser();
 
-        Page<Verification> page = verificationRepo.findByStatusAndInitiatedBy(VerificationStatus.PENDING, doneBy.getUserName(), pageDetails);
+        Page<Verification> page = verificationRepo.findByStatusAndInitiatedByOrderByInitiatedOnDesc(VerificationStatus.PENDING, doneBy.getUserName(), pageDetails);
         List<VerificationDTO> dtOs = convertEntitiesToDTOs(page.getContent());
         long t = page.getTotalElements();
         Page<VerificationDTO> pageImpl = new PageImpl<VerificationDTO>(dtOs, pageDetails, t);
@@ -288,7 +288,7 @@ public class VerificationServiceImpl implements VerificationService {
     public Page<VerificationDTO> getPendingOperations(String operation, Pageable pageable) {
         CustomUserPrincipal principal = (CustomUserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         User doneBy = principal.getUser();
-        Page<Verification> page = verificationRepo.findByOperationAndInitiatedByAndUserTypeAndStatus(operation, doneBy.getUserName(), doneBy.getUserType(), VerificationStatus.PENDING, pageable);
+        Page<Verification> page = verificationRepo.findByOperationAndInitiatedByAndUserTypeAndStatusOrderByInitiatedOnDesc(operation, doneBy.getUserName(), doneBy.getUserType(), VerificationStatus.PENDING, pageable);
         List<VerificationDTO> dtOs = convertEntitiesToDTOs(page.getContent());
         long t = page.getTotalElements();
         Page<VerificationDTO> pageImpl = new PageImpl<VerificationDTO>(dtOs, pageable, t);
@@ -343,7 +343,7 @@ public class VerificationServiceImpl implements VerificationService {
     public Page<VerificationDTO> getPendingForUser(Pageable pageable) {
         CustomUserPrincipal principal = (CustomUserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         User doneBy = principal.getUser();
-        Page<Verification> page = verificationRepo.findByInitiatedByAndUserTypeAndStatus(doneBy.getUserName(), doneBy.getUserType(), VerificationStatus.PENDING, pageable);
+        Page<Verification> page = verificationRepo.findByInitiatedByAndUserTypeAndStatusOrderByInitiatedOnDesc(doneBy.getUserName(), doneBy.getUserType(), VerificationStatus.PENDING, pageable);
         List<VerificationDTO> dtOs = convertEntitiesToDTOs(page.getContent());
         long t = page.getTotalElements();
         Page<VerificationDTO> pageImpl = new PageImpl<VerificationDTO>(dtOs, pageable, t);
