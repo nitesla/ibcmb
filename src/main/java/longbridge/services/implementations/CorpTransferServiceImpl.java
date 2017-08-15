@@ -408,12 +408,11 @@ public class CorpTransferServiceImpl implements CorpTransferService {
                 CorpTransferRequestDTO requestDTO = makeTransfer(convertEntityToDTO(corpTransRequest));
                 return requestDTO.getStatusDescription();
             }
-
-            return messageSource.getMessage("transfer.auth.failure", null, locale);
+            return messageSource.getMessage("transfer.auth.success", null, locale);
         } catch (InternetBankingTransferException te) {
             throw te;
         } catch (Exception e) {
-            throw new InternetBankingException(messageSource.getMessage("transfer.auth.failure", null, locale), e);
+            throw new InternetBankingException(messageSource.getMessage("transfer.auth.success", null, locale), e);
         }
     }
 

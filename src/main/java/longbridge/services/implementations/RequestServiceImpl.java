@@ -252,7 +252,9 @@ public class RequestServiceImpl implements RequestService {
     private ServiceRequestDTO convertEntityToDTO(ServiceRequest serviceRequest) {
         ServiceRequestDTO requestDTO = modelMapper.map(serviceRequest, ServiceRequestDTO.class);
         if (serviceRequest.getUser() != null){
+            String fullName = serviceRequest.getUser().getFirstName()+" "+serviceRequest.getUser().getLastName();
             requestDTO.setUsername(serviceRequest.getUser().getUserName());
+            requestDTO.setFullName(fullName);
         }else if (serviceRequest.getCorporate() != null){
             requestDTO.setCorpName(serviceRequest.getCorporate().getName());
         }

@@ -93,6 +93,19 @@
 
 
 <th:block layout:fragment="scripts">
+
+    <script>
+        $(document).ready(function () {
+            $('#datepicker').datepicker({
+                autoclose: true,
+                todayBtn: true,
+                todayHighlight: true
+            });
+        });
+
+    </script>
+
+
  <script>
             $('#reqForm').submit(function(event) {
                 //        event.preventDefault();
