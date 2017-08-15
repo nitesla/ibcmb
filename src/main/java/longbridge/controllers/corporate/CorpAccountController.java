@@ -21,6 +21,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
@@ -81,7 +82,7 @@ public class CorpAccountController {
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private Long customizeAccountId;
-
+    private Locale locale = LocaleContextHolder.getLocale();
 
     @GetMapping
     public String listAccounts(){
@@ -267,7 +268,7 @@ catch(InternetBankingException e){
 
     @GetMapping("/viewstatement")
     public String getViewOnly(Model model, Principal principal) throws ParseException {
-logger.info("viewstatement");
+//logger.info("viewstatement");
         return "corp/account/view";
     }
 
@@ -394,7 +395,9 @@ logger.info("viewstatement");
         try {
             from = format.parse(fromDate);
             to = format.parse(toDate);
-
+            JasperReportsPdfView view = new JasperReportsPdfView();
+            view.setUrl("classpath:jasperreports/rpt_account-statement3.jrxml");
+            view.setApplicationContext(appContext);
             AccountStatement accountStatement = integrationService.getFullAccountStatement(acctNumber, from, to, tranType);
 
             out.setDraw(input.getDraw());
@@ -442,12 +445,23 @@ logger.info("viewstatement");
             modelMap.put("toDate", toDate);
             Date today=new Date();
             modelMap.put("today",today);
-
+            ModelAndView modelAndView = new ModelAndView(view, modelMap);
+            return modelAndView;
         } catch (ParseException e) {
-            logger.warn("didn't parse date 2", e);
+            logger.warn("didn't parse date", e);
+            ModelAndView modelAndView =  new ModelAndView("redirect:/corporate/account/viewstatement");
+            modelAndView.addObject("failure", messageSource.getMessage("receipt.download.failed", null, locale));
+            //redirectAttributes.addFlashAttribute("failure", messageSource.getMessage("receipt.download.failed", null, locale));
+            return modelAndView;
+        }catch (Exception e){
+            logger.info(" RECEIPT DOWNLOAD {} ", e.getMessage());
+            ModelAndView modelAndView =  new ModelAndView("redirect:/corporate/account/viewstatement");
+            modelAndView.addObject("failure", messageSource.getMessage("receipt.download.failed", null, locale));
+            //redirectAttributes.addFlashAttribute("failure", messageSource.getMessage("receipt.download.failed", null, locale));
+            return modelAndView;
         }
-        ModelAndView modelAndView = new ModelAndView("rpt_account-statement", modelMap);
-        return modelAndView;
+//        ModelAndView modelAndView = new ModelAndView("rpt_account-statement", modelMap);
+//        return modelAndView;
     }
     @GetMapping("/viewstatement/corp/display/data/next")
     @ResponseBody
