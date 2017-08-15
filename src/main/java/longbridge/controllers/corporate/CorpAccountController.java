@@ -1,6 +1,7 @@
 package longbridge.controllers.corporate;
 
 import longbridge.api.AccountDetails;
+import longbridge.api.PaginationDetails;
 import longbridge.dtos.AccountDTO;
 import longbridge.dtos.CodeDTO;
 import longbridge.dtos.SettingDTO;
@@ -30,11 +31,13 @@ import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.jasperreports.JasperReportsPdfView;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.security.Principal;
 import java.text.DateFormat;
@@ -319,7 +322,7 @@ logger.info("viewstatement");
     }@GetMapping("/viewstatement/display/data/new")
     public @ResponseBody
     DataTablesOutput<TransactionDetails> getStatementData( DataTablesInput input,String acctNumber,
-                                                          String fromDate, String toDate, String tranType) {
+                                                          String fromDate, String toDate, String tranType,HttpSession session) {
 
 // Pageable pageable = DataTablesUtils.getPageable(input);
         logger.info("fromDate {}",fromDate);
@@ -347,6 +350,27 @@ logger.info("viewstatement");
             int sz = list==null?0:list.size();
             out.setRecordsFiltered(sz);
             out.setRecordsTotal(sz);
+            session.removeAttribute("hasMoreTransaction");
+            if(session.getAttribute("retAcctStmtStateValue") !=null) {
+                Integer stateValue = (Integer) session.getAttribute("retAcctStmtStateValue");
+                for (int i = 0; i<=stateValue;i++) {
+                    session.removeAttribute("acctStmtEntirePastDetails"+stateValue);
+                }
+            }
+
+            session.removeAttribute("retAcctStmtStateValue");
+
+            if(accountStatement != null) {
+                list = accountStatement.getTransactionDetails();
+                session.setAttribute("hasMoreTransaction", accountStatement.getHasMoreData());
+
+            }
+            session.removeAttribute("acctStmtLastDetails");
+            if(!list.isEmpty()){
+                session.setAttribute("acctStmtLastDetails",list.get(list.size()-1));
+                session.setAttribute("retAcctStmtStateValue",0);
+                session.setAttribute("acctStmtEntirePastDetails0",list);
+            }
         } catch (ParseException e) {
             logger.warn("didn't parse date", e);
         }
@@ -369,7 +393,7 @@ logger.info("viewstatement");
             from = format.parse(fromDate);
             to = format.parse(toDate);
 
-            AccountStatement accountStatement = integrationService.getAccountStatements(acctNumber, from, to, tranType,"5");
+            AccountStatement accountStatement = integrationService.getFullAccountStatement(acctNumber, from, to, tranType);
 
             out.setDraw(input.getDraw());
             List<TransactionDetails> list = accountStatement.getTransactionDetails();
@@ -422,7 +446,108 @@ logger.info("viewstatement");
         }
         ModelAndView modelAndView = new ModelAndView("rpt_account-statement", modelMap);
         return modelAndView;
+    }
+    @GetMapping("/viewstatement/corp/display/data/next")
+    @ResponseBody
+    public List<TransactionDetails> getStatementDataByState(WebRequest webRequest, HttpSession session) {
+        // Pageable pageable = DataTablesUtils.getPageable(input);
+        String acctNumber = webRequest.getParameter("acctNumber");
+        String fromDate = webRequest.getParameter("fromDate");
+        String toDate = webRequest.getParameter("toDate");
+        String tranType = webRequest.getParameter("tranType");
+        String state = webRequest.getParameter("state");
+        logger.info("fromDate corp{}",fromDate);
+        logger.info("toDate {}",toDate);
+//		Duration diffInDays= new Duration(new DateTime(fromDate),new DateTime(toDate));
+//		logger.info("Day difference {}",diffInDays.getStandardDays());
+        List<TransactionDetails> list =  null;
+        Date from = null;
+        Date to = null;
+        DataTablesOutput<TransactionDetails> out = new DataTablesOutput<TransactionDetails>();
+        SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy");
+        try {
+            from = format.parse(fromDate);
+            to = format.parse(toDate);
+            logger.info("fromDate {}",from);
+            logger.info("toDate {}",to);
+            //int diffInDays = (int) ((to.getTime() - from.getTime()) / (1000 * 60 * 60 * 24));
+            TransactionDetails transactionDetails = null;
+            if((session.getAttribute("acctStmtLastDetails") != null)&&(state.equalsIgnoreCase("forward"))) {
+                transactionDetails = (TransactionDetails) session.getAttribute("acctStmtLastDetails");
+                logger.info("the transaction {}",transactionDetails);
+            }
+//			if((session.getAttribute("acctStmtEntirePastDetails") != null)&&(state.equalsIgnoreCase("backward"))) {
+//				 list = (List<TransactionDetails>) session.getAttribute("acctStmtEntirePastDetails");
+//				session.removeAttribute("acctStmtLastDetails");
+//				session.setAttribute("acctStmtLastDetails", list.get(list.size() - 1));
+//				logger.info("acctStmtLastDetails previous {}", list.get(list.size() - 1));
+//				return list;
+//			}
 
+            if(transactionDetails != null) {
+                PaginationDetails paginationDetails = new PaginationDetails();
+                paginationDetails.setLastAccountBalance(transactionDetails.getAccountBalance());
+                paginationDetails.setLastAccountCurrency(transactionDetails.getCurrencyCode());
+                paginationDetails.setLastPostDate(transactionDetails.getPostDate());
+                paginationDetails.setLastTranId(transactionDetails.getTranId());
+                paginationDetails.setLastTranDate(transactionDetails.getTranDate());
+                paginationDetails.setLastTranSN(transactionDetails.getTranSN());
+                logger.info("paginationDetails {}", paginationDetails);
+                AccountStatement accountStatement = integrationService.getAccountStatements(acctNumber, from, to, tranType, "5",paginationDetails);
+//				logger.info("accountStatement {}", accountStatement);
+                list = accountStatement.getTransactionDetails();
+                session.removeAttribute("acctStmtLastDetails");
+
+                session.removeAttribute("hasMoreTransaction");
+                if(accountStatement != null) {
+                    session.setAttribute("hasMoreTransaction", accountStatement.getHasMoreData());
+                }
+                if (!list.isEmpty()) {
+                    session.setAttribute("acctStmtLastDetails", list.get(list.size() - 1));
+                    Integer stateValue = (Integer) session.getAttribute("retAcctStmtStateValue");
+                    logger.info("acct statemnet state corp before{}", stateValue);
+                    stateValue= stateValue +1;
+                    session.removeAttribute("acctStmtEntirePastDetails"+stateValue);
+                    session.setAttribute("acctStmtEntirePastDetails"+stateValue, list);
+                    session.removeAttribute("retAcctStmtStateValue");
+                    session.setAttribute("retAcctStmtStateValue",stateValue);
+                    logger.info("acctStmtLastDetails corp{}", list.get(list.size() - 1));
+                    logger.info("acct statemnet state corp{}", stateValue);
+                }
+            }
+
+        } catch (ParseException e) {
+            logger.warn("didn't parse date {}", e);
+        }catch (Exception e){
+            logger.warn("error cause by {}", e.getMessage());
+        }
+        return list;
+
+    }
+    @GetMapping("/viewstatement/corp/display/data/back")
+    @ResponseBody
+    public List<TransactionDetails> getStatementDataForBack(WebRequest webRequest, HttpSession session) {
+
+        String state = webRequest.getParameter("state");
+        logger.info("the state corp {}",state);
+        List<TransactionDetails> list =  null;
+        if((state.equalsIgnoreCase("backward"))) {
+            Integer stateValue = (Integer) session.getAttribute("retAcctStmtStateValue");
+            stateValue -=1;
+            if(session.getAttribute("acctStmtEntirePastDetails"+stateValue) != null) {
+                session.removeAttribute("retAcctStmtStateValue");
+                session.setAttribute("retAcctStmtStateValue", stateValue);
+                logger.info("the state value {}",stateValue);
+                list = (List<TransactionDetails>) session.getAttribute("acctStmtEntirePastDetails" + stateValue);
+                session.removeAttribute("acctStmtLastDetails");
+                session.setAttribute("acctStmtLastDetails", list.get(list.size() - 1));
+                session.setAttribute("hasMoreTransaction", "Y");
+                logger.info("acctStmtLastDetails  last record previous corp {}", list.get(list.size() - 1));
+                return list;
+            }
+        }
+
+        return list;
 
     }
 }
