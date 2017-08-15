@@ -107,6 +107,12 @@ public class CorpBeneficiaryController {
 
                 securityService.performTokenValidation(user.getEntrustId(), user.getEntrustGroup(), token);
             } catch (InternetBankingSecurityException ibse) {
+
+                if (/* service to check if token is enabled comes in here  */
+
+                        (setting != null && setting.isEnabled())
+                        )
+                    model.addAttribute("auth", "auth");
                 model.addAttribute("failure", ibse.getMessage());
                 model.addAttribute("beneficiary", corpLocalBeneficiaryDTO);
                 return "corp/beneficiary/localSummary";
