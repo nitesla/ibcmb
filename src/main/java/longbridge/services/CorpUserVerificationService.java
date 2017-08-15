@@ -20,9 +20,13 @@ public interface CorpUserVerificationService {
 
     String changeStatusFromCorporateAdmin(Long id) throws InternetBankingException;
 
-    void saveInitiator(CorporateUserDTO user, String operation, String description) throws VerificationException;
+    void addInitiator(CorporateUserDTO user, String operation, String description) throws VerificationException;
 
-    void saveAuthorizer(CorporateUserDTO user, String operation, String description) throws VerificationException;
+    void saveInitiator(CorporateUserDTO userDTO, String operation, String description) throws VerificationException;
+
+    void addAuthorizer(CorporateUserDTO user, String operation, String description) throws VerificationException;
+
+    void saveAuthorizer(CorporateUserDTO userDTO, String operation, String description) throws VerificationException;
 
     String decline(CorpUserVerificationDTO dto) throws VerificationException;
 
