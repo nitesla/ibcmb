@@ -10,6 +10,8 @@ import longbridge.forms.CustChangePassword;
 import longbridge.forms.CustResetPassword;
 import longbridge.models.CorporateUser;
 import longbridge.services.*;
+import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +33,7 @@ import javax.validation.Valid;
 import java.security.Principal;
 import java.util.List;
 import java.util.Locale;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/corporate")
@@ -68,6 +71,18 @@ public class CorpSettingController {
         CorporateUser corporateUser = corporateUserService.getUserByName(principal.getName());
         //List<AccountDTO> accountList = accountService.getAccountsForDebitAndCredit(corporateUser.getCorporate().getCustomerId());
         List<AccountDTO> accountList = accountService.getAccountsAndBalances(corporateUser.getCorporate().getCustomerId());
+        SettingDTO dto= configService.getSettingByName("TRANSACTIONAL_ACCOUNTS");
+        if (dto!=null && dto.isEnabled()){
+            String []list= StringUtils.split(dto.getValue(),",");
+            accountList=  accountList
+                    .stream()
+                    .filter(
+                            i-> ArrayUtils.contains(list,i.getAccountType())
+                    ).collect(Collectors.toList());
+
+        }
+
+
         model.addAttribute("accountList", accountList);
 
         boolean exp = passwordPolicyService.displayPasswordExpiryDate(corporateUser.getExpiryDate());

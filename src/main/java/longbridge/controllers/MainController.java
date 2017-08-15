@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -71,6 +72,7 @@ public class MainController {
     public String getHomePage(HttpSession session) {
 
         session.invalidate();
+        SecurityContextHolder.clearContext();
 
         return "index";
     }
@@ -80,13 +82,13 @@ public class MainController {
 
         if (request.isPresent()) request.get().getSession().invalidate();
         //clearSession();
-
+        SecurityContextHolder.clearContext();
         return new ModelAndView("retpage1", "error", error);
     }
 
     @RequestMapping(value = "/login/corporate", method = RequestMethod.GET)
     public ModelAndView getCorpLoginPage(@RequestParam Optional<String> error, @RequestParam Optional<HttpServletRequest> request) {
-
+        SecurityContextHolder.clearContext();
         if (request.isPresent()) request.get().getSession().invalidate();
         //clearSession();
         return new ModelAndView("corppage1", "error", error);
@@ -104,8 +106,10 @@ public class MainController {
     @GetMapping(value = "/login/ops")
     public ModelAndView opsLogin() {
         //clearSession();
+        SecurityContextHolder.clearContext();
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("opslogin");
+
         return modelAndView;
     }
 
