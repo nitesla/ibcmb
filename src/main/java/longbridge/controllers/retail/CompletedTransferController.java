@@ -1,6 +1,5 @@
 package longbridge.controllers.retail;
 
-import longbridge.exception.InternetBankingException;
 import longbridge.models.RetailUser;
 import longbridge.models.TransRequest;
 import longbridge.services.RetailUserService;
@@ -50,6 +49,8 @@ public class CompletedTransferController {
     @Autowired
     private MessageSource messageSource;
 
+    @Value("${jrxmlImage.path}")
+    private String imagePath;
     @Value("${jsonFile.path}")
     private String JOSNpath;
     @Value("${jrxmlFile.path}")
@@ -101,6 +102,7 @@ public class CompletedTransferController {
             double amount = Double.parseDouble(transRequest.getAmount().toString());
             DecimalFormat formatter = new DecimalFormat("#,###.00");
             modelMap.put("datasource", new ArrayList<>());
+            modelMap.put("imagePath", imagePath);
             modelMap.put("amount", formatter.format(amount));
             modelMap.put("customer",retailUser.getFirstName()+" "+retailUser.getLastName() );
             modelMap.put("customerAcctNumber", transRequest.getCustomerAccountNumber());

@@ -14,6 +14,7 @@ import longbridge.utils.TransferUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
@@ -45,6 +46,9 @@ import java.util.stream.StreamSupport;
 @Controller
 @RequestMapping("/corporate/transfer")
 public class CorpTransferController {
+
+    @Value("${jrxmlImage.path}")
+    private String imagePath;
 
     @Autowired
     CorpTransferRequestRepo transferRequestRepo;
@@ -378,6 +382,7 @@ public class CorpTransferController {
             double amount = Double.parseDouble(transRequest.getAmount().toString());
             DecimalFormat formatter = new DecimalFormat("#,###.00");
             modelMap.put("datasource", new ArrayList<>());
+            modelMap.put("imagePath", imagePath);
             modelMap.put("amount", formatter.format(amount));
             modelMap.put("customer",corporate.getName());
             modelMap.put("customerAcctNumber", transRequest.getCustomerAccountNumber());

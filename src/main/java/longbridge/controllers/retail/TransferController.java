@@ -66,6 +66,8 @@ public class TransferController {
 
     @Value("${bank.code}")
     private String bankCode;
+    @Value("${jrxmlImage.path}")
+    private String imagePath;
 
 
     @Autowired
@@ -342,6 +344,7 @@ public class TransferController {
             double amount = Double.parseDouble(transRequest.getAmount().toString());
             DecimalFormat formatter = new DecimalFormat("#,###.00");
             modelMap.put("datasource", new ArrayList<>());
+            modelMap.put("imagePath", imagePath);
             modelMap.put("amount", formatter.format(amount));
             modelMap.put("customer",retailUser.getFirstName()+" "+retailUser.getLastName() );
             modelMap.put("customerAcctNumber", transRequest.getCustomerAccountNumber());
