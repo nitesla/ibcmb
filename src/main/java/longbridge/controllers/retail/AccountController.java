@@ -505,7 +505,7 @@ public class AccountController {
 		Date daysAgo = new DateTime(date).minusDays(Integer.parseInt(setting.getValue())).toDate();
 		logger.info("the from date {} and the to date {}",date,daysAgo);
 		AccountDTO account = accountService.getAccount(Long.parseLong(acct));
-		AccountStatement accountStatement = integrationService.getAccountStatements(account.getAccountNumber(),daysAgo , date, "B","5");
+		AccountStatement accountStatement = integrationService.getFullAccountStatement(account.getAccountNumber(), daysAgo , date, "B");
 		List<TransactionDetails> list = accountStatement.getTransactionDetails();
 
 		model.addAttribute("history", list);
