@@ -337,12 +337,14 @@ logger.info("viewstatement");
         try {
             from = format.parse(fromDate);
             to = format.parse(toDate);
-            logger.info("fromDate {}",from);
+            SimpleDateFormat formatter = new SimpleDateFormat("dd-MMM-yyyy");
+            logger.info("fromDate {}",formatter.format(from));
             logger.info("toDate {}",to);
             //int diffInDays = (int) ((to.getTime() - from.getTime()) / (1000 * 60 * 60 * 24));
 
             AccountStatement accountStatement = integrationService.getAccountStatements(acctNumber, from, to, tranType,"5");
             logger.info("TransactionType {}", tranType);
+//            logger.info("accountStatement {}", accountStatement.getAccountNumber());
             out.setDraw(input.getDraw());
             List<TransactionDetails> list = accountStatement.getTransactionDetails();
 
@@ -548,6 +550,45 @@ logger.info("viewstatement");
         }
 
         return list;
+
+    }
+    @GetMapping("/viewstatement/corp/display/data/reset/button")
+    @ResponseBody
+    public String resetButtonForStatement(HttpSession session) {
+        if((session.getAttribute("acctStmtEntirePastDetails0") == null)&&(session.getAttribute("hasMoreTransaction") == null)){
+            return "both";
+        }
+        if((session.getAttribute("retAcctStmtStateValue") != null)){
+            Integer stateValue = (Integer) session.getAttribute("retAcctStmtStateValue");
+            if(stateValue == 0) {
+                String hasMoreTransaction = (String) session.getAttribute("hasMoreTransaction");
+                if(hasMoreTransaction.equalsIgnoreCase("")) {
+                    return "both";
+                }
+            }
+        }
+        if((session.getAttribute("retAcctStmtStateValue") != null)){
+            Integer stateValue = (Integer) session.getAttribute("retAcctStmtStateValue");
+            if(stateValue > 0) {
+                String hasMoreTransaction = (String) session.getAttribute("hasMoreTransaction");
+                if(hasMoreTransaction.equalsIgnoreCase("")) {
+                    return "next";
+                }
+            }
+        }
+        if((session.getAttribute("retAcctStmtStateValue") != null)){
+            Integer stateValue = (Integer) session.getAttribute("retAcctStmtStateValue");
+            if(stateValue > 0) {
+                String hasMoreTransaction = (String) session.getAttribute("hasMoreTransaction");
+                if(hasMoreTransaction.equalsIgnoreCase("Y")) {
+                    return "none";
+                }
+            }
+        }
+
+
+
+        return "none";
 
     }
 }
