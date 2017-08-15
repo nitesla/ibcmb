@@ -58,7 +58,7 @@ form.children("div").steps({
         if(VALIDATE_PASSWORD_STEP === currentIndex){
             console.log("Current step is the change password step");
             //form.submit();
-            var confirm = $('input[name="confirm"]').val();
+            var confirm = $('#confirm').val();
             return isValid && validatePassword(confirm);
         }
         if(TOKEN_AUTH === currentIndex){

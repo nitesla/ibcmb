@@ -460,6 +460,12 @@ public class CorporateServiceImpl implements CorporateService {
     }
 
     @Override
+    public Corporate getCorporateByCorporateId(String corporateId) {
+        Corporate corporate = corporateRepo.findFirstByCorporateIdIgnoreCase(corporateId);
+        return corporate;
+    }
+
+    @Override
     public List<CorporateDTO> getCorporates() {
         Iterable<Corporate> corporateDTOS = corporateRepo.findAll();
         return convertEntitiesToDTOs(corporateDTOS);

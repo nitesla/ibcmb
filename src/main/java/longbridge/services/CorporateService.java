@@ -71,6 +71,9 @@ public interface CorporateService{
 
     @PreAuthorize("hasAuthority('GET_CORPORATE')")
     Corporate getCorporateByCustomerId(String customerId);
+
+    @PreAuthorize("hasAuthority('GET_CORPORATE')")
+    Corporate getCorporateByCorporateId(String corporateId);
     /**
      * Returns a list of all the corporate customers
      *

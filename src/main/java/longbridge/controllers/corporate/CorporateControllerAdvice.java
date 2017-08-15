@@ -36,6 +36,8 @@ public class CorporateControllerAdvice {
     private MessageService messageService;
     @Autowired
     private ConfigurationService configurationService;
+    @Autowired
+    private  CorpTransferService corpTransferService;
 
     @Autowired
     public CorporateControllerAdvice(CorporateUserService corporateUserService, IntegrationService integrationService, TransferService transferService, AccountService accountService, ServiceReqConfigService reqConfigService, MessageService messageService) {
@@ -122,6 +124,10 @@ public class CorporateControllerAdvice {
         if (CorpUserType.AUTHORIZER.equals(corporateUser.getCorpUserType())) {
             boolean isAuthorizer = true;
             model.addAttribute("isAuthorizer", isAuthorizer);
+        }
+
+        if ("MULTI".equals(corporateUser.getCorporate().getCorporateType())){
+            model.addAttribute("pendingRequests", corpTransferService.countPendingRequest());
         }
 
         model.addAttribute("corporateType", corporateUser.getCorporate().getCorporateType());
