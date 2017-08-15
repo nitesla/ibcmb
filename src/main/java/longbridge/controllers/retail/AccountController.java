@@ -223,6 +223,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
@@ -286,7 +287,7 @@ public class AccountController {
 
 	@Autowired
 	JavaMailSender mailSender;
-
+	private Locale locale = LocaleContextHolder.getLocale();
 	/*
 	 * @Autowired @Qualifier("accountReport2") private JasperReportsPdfView
 	 * helloReport;
@@ -575,16 +576,27 @@ public class AccountController {
 
 			AccountStatement accountStatement = integrationService.getAccountStatements(acctNumber, from, to, tranType,"5");
 			logger.info("accountStatement new {}", accountStatement);
-			list = accountStatement.getTransactionDetails();
+
 			session.removeAttribute("hasMoreTransaction");
-			session.removeAttribute("acctStmtEntirePastDetails");
+			if(session.getAttribute("retAcctStmtStateValue") !=null) {
+				Integer stateValue = (Integer) session.getAttribute("retAcctStmtStateValue");
+				for (int i = 0; i<=stateValue;i++) {
+					session.removeAttribute("acctStmtEntirePastDetails"+stateValue);
+				}
+			}
+
+			session.removeAttribute("retAcctStmtStateValue");
+
 			if(accountStatement != null) {
+				list = accountStatement.getTransactionDetails();
 				session.setAttribute("hasMoreTransaction", accountStatement.getHasMoreData());
+
 			}
 			session.removeAttribute("acctStmtLastDetails");
 			if(!list.isEmpty()){
 				session.setAttribute("acctStmtLastDetails",list.get(list.size()-1));
-				session.setAttribute("acctStmtEntirePastDetails",list);
+				session.setAttribute("retAcctStmtStateValue",0);
+				session.setAttribute("acctStmtEntirePastDetails0",list);
 			}
 
 		} catch (ParseException e) {
@@ -645,17 +657,21 @@ public class AccountController {
 //				logger.info("accountStatement {}", accountStatement);
 				list = accountStatement.getTransactionDetails();
 				session.removeAttribute("acctStmtLastDetails");
-				session.removeAttribute("acctStmtEntirePastDetails");
+
 				session.removeAttribute("hasMoreTransaction");
 				if(accountStatement != null) {
 					session.setAttribute("hasMoreTransaction", accountStatement.getHasMoreData());
 				}
 				if (!list.isEmpty()) {
 					session.setAttribute("acctStmtLastDetails", list.get(list.size() - 1));
-
-					session.setAttribute("acctStmtEntirePastDetails", list);
+					Integer stateValue = (Integer) session.getAttribute("retAcctStmtStateValue");
+					stateValue= stateValue +1;
+					session.removeAttribute("acctStmtEntirePastDetails"+stateValue);
+					session.removeAttribute("retAcctStmtStateValue");
+					session.setAttribute("acctStmtEntirePastDetails"+stateValue, list);
+					session.setAttribute("retAcctStmtStateValue",stateValue);
 					logger.info("acctStmtLastDetails {}", list.get(list.size() - 1));
-//					logger.info("acctStmtFirstDetails {}", list.get(0));
+					logger.info("acct statemnet state {}", stateValue);
 				}
 			}
 
@@ -674,13 +690,20 @@ public class AccountController {
 		String state = webRequest.getParameter("state");
 	logger.info("the state {}",state);
 		List<TransactionDetails> list =  null;
-			if((session.getAttribute("acctStmtEntirePastDetails") != null)&&(state.equalsIgnoreCase("backward"))) {
-				 list = (List<TransactionDetails>) session.getAttribute("acctStmtEntirePastDetails");
-				session.removeAttribute("acctStmtLastDetails");
-				session.setAttribute("acctStmtLastDetails", list.get(list.size() - 1));
-				session.setAttribute("hasMoreTransaction", "Y");
-				logger.info("acctStmtLastDetails  last record previous {}", list.get(list.size() - 1));
-				return list;
+			if((state.equalsIgnoreCase("backward"))) {
+				Integer stateValue = (Integer) session.getAttribute("retAcctStmtStateValue");
+				stateValue -=1;
+				if(session.getAttribute("acctStmtEntirePastDetails"+stateValue) != null) {
+					session.removeAttribute("retAcctStmtStateValue");
+					session.setAttribute("retAcctStmtStateValue", stateValue);
+					logger.info("the state value {}",stateValue);
+					list = (List<TransactionDetails>) session.getAttribute("acctStmtEntirePastDetails" + stateValue);
+					session.removeAttribute("acctStmtLastDetails");
+					session.setAttribute("acctStmtLastDetails", list.get(list.size() - 1));
+					session.setAttribute("hasMoreTransaction", "Y");
+					logger.info("acctStmtLastDetails  last record previous {}", list.get(list.size() - 1));
+					return list;
+				}
 			}
 
 		return list;
@@ -689,27 +712,39 @@ public class AccountController {
 	@GetMapping("/viewstatement/display/data/reset/button")
 	@ResponseBody
 	public String resetButtonForStatement(HttpSession session) {
-		if((session.getAttribute("acctStmtEntirePastDetails") == null)&&(session.getAttribute("hasMoreTransaction") == null)){
+		if((session.getAttribute("acctStmtEntirePastDetails0") == null)&&(session.getAttribute("hasMoreTransaction") == null)){
 			return "both";
 		}
-		if((session.getAttribute("acctStmtEntirePastDetails") == null)){
-			String hasMoreTransaction = (String) session.getAttribute("hasMoreTransaction");
-			if(hasMoreTransaction.equalsIgnoreCase("")) {
-				return "both";
+		if((session.getAttribute("retAcctStmtStateValue") != null)){
+			Integer stateValue = (Integer) session.getAttribute("retAcctStmtStateValue");
+			if(stateValue == 0) {
+				String hasMoreTransaction = (String) session.getAttribute("hasMoreTransaction");
+				if(hasMoreTransaction.equalsIgnoreCase("")) {
+					return "both";
+				}
 			}
 		}
-		if((session.getAttribute("acctStmtEntirePastDetails") == null)){
-			String hasMoreTransaction = (String) session.getAttribute("hasMoreTransaction");
-			if(hasMoreTransaction.equalsIgnoreCase("Y")) {
-				return "previous";
+		if((session.getAttribute("retAcctStmtStateValue") != null)){
+			Integer stateValue = (Integer) session.getAttribute("retAcctStmtStateValue");
+			if(stateValue > 0) {
+				String hasMoreTransaction = (String) session.getAttribute("hasMoreTransaction");
+				if(hasMoreTransaction.equalsIgnoreCase("")) {
+					return "next";
+				}
 			}
 		}
-		if((session.getAttribute("acctStmtEntirePastDetails") != null)){
-			String hasMoreTransaction = (String) session.getAttribute("hasMoreTransaction");
-			if(hasMoreTransaction.equalsIgnoreCase("")) {
-				return "next";
+		if((session.getAttribute("retAcctStmtStateValue") != null)){
+			Integer stateValue = (Integer) session.getAttribute("retAcctStmtStateValue");
+			if(stateValue > 0) {
+				String hasMoreTransaction = (String) session.getAttribute("hasMoreTransaction");
+				if(hasMoreTransaction.equalsIgnoreCase("Y")) {
+					return "none";
+				}
 			}
 		}
+
+
+
 		return "none";
 
 	}
@@ -722,9 +757,12 @@ public class AccountController {
 		DataTablesOutput<TransactionDetails> out = new DataTablesOutput<TransactionDetails>();
 		SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy");
 		try {
+			JasperReportsPdfView view = new JasperReportsPdfView();
+			view.setUrl("classpath:jasperreports/rpt_account-statement3.jrxml");
+			view.setApplicationContext(appContext);
 			from = format.parse(fromDate);
 			to = format.parse(toDate);
-			AccountStatement accountStatement = integrationService.getAccountStatements(acctNumber, from, to, tranType,"5");
+			AccountStatement accountStatement = integrationService.getFullAccountStatement(acctNumber, from, to, tranType);
 			out.setDraw(input.getDraw());
 			List<TransactionDetails> list = accountStatement.getTransactionDetails();
 			RetailUser retailUser = retailUserService.getUserByName(principal.getName());
@@ -768,13 +806,24 @@ public class AccountController {
 			modelMap.put("toDate", toDate);
 			Date today = new Date();
 			modelMap.put("today", today);
-
+			ModelAndView modelAndView = new ModelAndView(view, modelMap);
+			return modelAndView;
 		} catch (ParseException e) {
 			logger.warn("didn't parse date", e);
+			ModelAndView modelAndView =  new ModelAndView("redirect:/retail/account/viewstatement");
+			modelAndView.addObject("failure", messageSource.getMessage("receipt.download.failed", null, locale));
+			//redirectAttributes.addFlashAttribute("failure", messageSource.getMessage("receipt.download.failed", null, locale));
+			return modelAndView;
+		}catch (Exception e){
+			logger.info(" RECEIPT DOWNLOAD {} ", e.getMessage());
+			ModelAndView modelAndView =  new ModelAndView("redirect:/retail/account/viewstatement");
+			modelAndView.addObject("failure", messageSource.getMessage("receipt.download.failed", null, locale));
+			//redirectAttributes.addFlashAttribute("failure", messageSource.getMessage("receipt.download.failed", null, locale));
+			return modelAndView;
 		}
 
-		ModelAndView modelAndView = new ModelAndView("rpt_account-statement", modelMap);
-		return modelAndView;
+//		ModelAndView modelAndView = new ModelAndView("rpt_account-statement", modelMap);
+//		return modelAndView;
 
 	}
 

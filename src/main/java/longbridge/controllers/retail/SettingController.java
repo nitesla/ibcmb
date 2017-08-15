@@ -13,6 +13,8 @@ import longbridge.models.Email;
 import longbridge.models.FinancialInstitutionType;
 import longbridge.models.RetailUser;
 import longbridge.services.*;
+import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,8 +34,11 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.security.Principal;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
+import java.util.stream.Collectors;
 
 /**
  * Created by Fortune on 4/5/2017.
@@ -78,6 +83,17 @@ public class SettingController {
     public String getRetailDashboard(Model model, Principal principal) {
         RetailUser retailUser = retailUserService.getUserByName(principal.getName());
         List<AccountDTO> accountList = accountService.getAccountsAndBalances(retailUser.getCustomerId());
+        SettingDTO dto= configService.getSettingByName("TRANSACTIONAL_ACCOUNTS");
+         if (dto!=null && dto.isEnabled()){
+             String []list= StringUtils.split(dto.getValue(),",");
+             accountList=  accountList
+                    .stream()
+                    .filter(
+                            i-> ArrayUtils.contains(list,i.getAccountType())
+                    ).collect(Collectors.toList());
+
+        }
+
 
         model.addAttribute("accountList", accountList);
 

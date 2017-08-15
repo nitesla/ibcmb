@@ -47,7 +47,7 @@
 
         // Some error handling if options are miss-configured
         if (opt.warnAfter < opt.redirAfter) {
-            console.error('Bootstrap-session-timeout plugin is miss-configured. Option "redirAfter" must be less than "warnAfter".');
+            // console.error('Bootstrap-session-timeout plugin is miss-configured. Option "redirAfter" must be less than "warnAfter".');
             return false;
         }
 

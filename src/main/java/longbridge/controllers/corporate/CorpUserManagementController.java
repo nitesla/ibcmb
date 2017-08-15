@@ -118,7 +118,7 @@ public class CorpUserManagementController {
         List<CorporateRoleDTO> corporateRoleDTO = corporateService.getRoles(corporateUser.getCorporate().getId());
         logger.info("CORP RULES >>>> " + corporateRoleDTO);
         CorporateUserDTO corporateUserDTO = new CorporateUserDTO();
-        model.addAttribute("corporateUser", corporateUserDTO);
+        model.addAttribute("corporateUserDTO", corporateUserDTO);
         model.addAttribute("corporate", corporate);
 
         model.addAttribute("corporateRoles", corporateRoleDTO);
@@ -126,7 +126,7 @@ public class CorpUserManagementController {
     }
 
     @PostMapping
-    public String createUser(@ModelAttribute("corporateUser") @Valid CorporateUserDTO corporateUserDTO, BindingResult result, WebRequest webRequest, Model model, RedirectAttributes redirectAttributes, Locale locale) throws Exception {
+    public String createUser(@ModelAttribute("corporateUserDTO") @Valid CorporateUserDTO corporateUserDTO, BindingResult result, WebRequest webRequest, Model model, RedirectAttributes redirectAttributes, Locale locale) throws Exception {
 
         if (result.hasErrors()) {
             return "corp/user/add";
@@ -151,14 +151,14 @@ public class CorpUserManagementController {
                 corporateUserDTO.setCorporateRole(corporateRole.getName() + " " + corporateRole.getRank());
 
                 if (makerCheckerService.isEnabled("ADD_AUTHORIZER_FROM_CORPORATE_ADMIN")){
-                    corpUserVerificationService.saveAuthorizer(corporateUserDTO, "ADD_AUTHORIZER_FROM_CORPORATE_ADMIN", "Add an authorizer by corporate Admin");
+                    corpUserVerificationService.addAuthorizer(corporateUserDTO, "ADD_AUTHORIZER_FROM_CORPORATE_ADMIN", "Add an authorizer by corporate Admin");
                 }else {
                     corporateUserService.addAuthorizer(corporateUserDTO);
                 }
 
             }else{
                 if (makerCheckerService.isEnabled("ADD_INITIATOR_FROM_CORPORATE_ADMIN")){
-                    corpUserVerificationService.saveInitiator(corporateUserDTO, "ADD_INITIATOR_FROM_CORPORATE_ADMIN", "Add an initiator by corporate Admin");
+                    corpUserVerificationService.addInitiator(corporateUserDTO, "ADD_INITIATOR_FROM_CORPORATE_ADMIN", "Add an initiator by corporate Admin");
                 }else {
                     corporateUserService.addInitiator(corporateUserDTO);
                 }
@@ -188,37 +188,46 @@ public class CorpUserManagementController {
 
     @GetMapping("{id}/edit")
     public String editUser(@PathVariable Long id, Model model){
-        CorporateUserDTO corporateUser = corporateUserService.getUser(id);
-        CorporateDTO corporate = corporateService.getCorporate(Long.parseLong(corporateUser.getCorporateId()));
-        List<CorporateRoleDTO> corporateRoleDTO = corporateService.getRoles(Long.parseLong(corporateUser.getCorporateId()));
+        CorporateUserDTO corporateUserDTO = corporateUserService.getUser(id);
+        CorporateDTO corporate = corporateService.getCorporate(Long.parseLong(corporateUserDTO.getCorporateId()));
+        List<CorporateRoleDTO> corporateRoleDTO = corporateService.getRoles(Long.parseLong(corporateUserDTO.getCorporateId()));
         logger.info("CORP RULES >>>> " + corporateRoleDTO);
-        model.addAttribute("corporateUser", corporateUser);
+        model.addAttribute("corporateUserDTO", corporateUserDTO);
         model.addAttribute("corporate", corporate);
-
         model.addAttribute("corporateRoles", corporateRoleDTO);
-        return "corp/user/add";
+        return "corp/user/edit";
     }
 
     @PostMapping("/edit")
-    public String updateUser(@ModelAttribute("corporateUser") @Valid CorporateUserDTO corporateUserDTO, BindingResult result, WebRequest webRequest, Model model, RedirectAttributes redirectAttributes, Locale locale) throws Exception {
+    public String updateUser(@ModelAttribute("corporateUserDTO") @Valid CorporateUserDTO corporateUserDTO, BindingResult result, WebRequest webRequest, Model model, RedirectAttributes redirectAttributes, Locale locale) throws Exception {
 
         if (result.hasErrors()) {
-            return "corp/user/add";
+            CorporateDTO corporate = corporateService.getCorporate(Long.parseLong(corporateUserDTO.getCorporateId()));
+            List<CorporateRoleDTO> corporateRoleDTO = corporateService.getRoles(Long.parseLong(corporateUserDTO.getCorporateId()));
+            model.addAttribute("corporate", corporate);
+            model.addAttribute("corporateRoles", corporateRoleDTO);
+            return "corp/user/edit";
         }
 
         try {
+            logger.info("GOT HERE {} >>>>> ");
             CorporateUserDTO corporateUser = corporateUserService.getUser(corporateUserDTO.getId());
             if (!corporateUserDTO.getEmail().equals(corporateUser.getEmail())) {
                 Corporate corporate = corporateService.getCorp(Long.parseLong(corporateUserDTO.getCorporateId()));
                 CorporateUser cp = corporateUserService.getUserByCifAndEmailIgnoreCase(corporate, corporateUserDTO.getEmail());
                 if (cp != null) {
+                    CorporateDTO corporateDTO = corporateService.getCorporate(Long.parseLong(corporateUserDTO.getCorporateId()));
+                    List<CorporateRoleDTO> corporateRoleDTO = corporateService.getRoles(Long.parseLong(corporateUserDTO.getCorporateId()));
+                    model.addAttribute("corporate", corporateDTO);
+                    model.addAttribute("corporateRoles", corporateRoleDTO);
                     model.addAttribute("failure", messageSource.getMessage("email.exists", null, locale));
-                    return "corp/user/add";
+                    return "corp/user/edit";
                 }
             }
 
 
             if (corporateUserDTO.isAuthorizer() != corporateUser.isAuthorizer()){
+                logger.info("GOT HERE {} ---- ");
                 if (makerCheckerService.isEnabled("UPDATE_USER_FROM_CORPORATE_ADMIN")){
                     corpUserVerificationService.saveAuthorizer(corporateUserDTO, "UPDATE_USER_FROM_CORPORATE_ADMIN", "Edit an authorizer by corporate Admin");
                 }else {
@@ -226,6 +235,7 @@ public class CorpUserManagementController {
                 }
 
             }else{
+                logger.info("GOT HERE {} ++++++ ");
                 if (makerCheckerService.isEnabled("UPDATE_USER_FROM_CORPORATE_ADMIN")){
                     corpUserVerificationService.saveInitiator(corporateUserDTO, "UPDATE_USER_FROM_CORPORATE_ADMIN", "Edit an initiator by corporate Admin");
                 }else {
@@ -235,24 +245,28 @@ public class CorpUserManagementController {
 
             return "redirect:/corporate/users/";
 
-        } catch (DuplicateObjectException doe) {
+        }catch (DuplicateObjectException doe) {
             result.addError(new ObjectError("error", doe.getMessage()));
             logger.error("Error creating corporate user {}", corporateUserDTO.getUserName(), doe);
             model.addAttribute("failure", doe.getMessage());
-            return "corp/user/add";
+            return "corp/user/edit";
         } catch (VerificationInterruptedException ib){
-            model.addAttribute("message", ib.getMessage());
+            redirectAttributes.addFlashAttribute("message", ib.getMessage());
             return "redirect:/corporate/users/";
         }catch (VerificationException e){
             result.addError(new ObjectError("error", e.getMessage()));
-            logger.error("Error creating corporate user", e);
+            logger.error("Error editing corporate user", e);
             model.addAttribute("failure", messageSource.getMessage("user.add.failure", null, locale));
-            return "corp/user/add";
+            return "corp/user/edit";
         }catch (InternetBankingException ibe) {
             result.addError(new ObjectError("error", ibe.getMessage()));
             logger.error("Error creating corporate user", ibe);
-            model.addAttribute("failure", messageSource.getMessage("failure",null,locale));
-            return "corp/user/add";
+            model.addAttribute("failure", ibe.getMessage());
+            CorporateDTO corporate = corporateService.getCorporate(Long.parseLong(corporateUserDTO.getCorporateId()));
+            List<CorporateRoleDTO> corporateRoleDTO = corporateService.getRoles(Long.parseLong(corporateUserDTO.getCorporateId()));
+            model.addAttribute("corporate", corporate);
+            model.addAttribute("corporateRoles", corporateRoleDTO);
+            return "corp/user/edit";
         }
     }
 

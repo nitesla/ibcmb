@@ -3,7 +3,6 @@
 	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
-	<parameter name="imagePath" class="java.lang.String"/>
 	<parameter name="tranDate" class="java.lang.String"/>
 	<parameter name="customer" class="java.lang.String"/>
 	<parameter name="customerAcctNumber" class="java.lang.String"/>
@@ -110,7 +109,7 @@
 				<text><![CDATA[Recipeint Bank:]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="258" y="117" width="298" height="19" uuid="fab2855b-4155-46ed-85b8-bdb4f8bfa4e1"/>
+				<reportElement x="249" y="117" width="307" height="19" uuid="fab2855b-4155-46ed-85b8-bdb4f8bfa4e1"/>
 				<textElement>
 					<font fontName="Arial" size="12"/>
 				</textElement>
@@ -124,7 +123,7 @@
 				<textFieldExpression><![CDATA[$P{beneficiaryBank}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="258" y="138" width="296" height="19" uuid="823b6655-13c1-4270-8d4c-e77e001c364d"/>
+				<reportElement x="249" y="138" width="305" height="19" uuid="823b6655-13c1-4270-8d4c-e77e001c364d"/>
 				<textElement>
 					<font fontName="Arial" size="12"/>
 				</textElement>
@@ -181,7 +180,7 @@
 			</staticText>
 			<image>
 				<reportElement x="438" y="0" width="116" height="61" uuid="f63a7808-4ded-41e5-9fe6-6c9756513880"/>
-				<imageExpression><![CDATA[$P{imagePath}]]></imageExpression>
+				<imageExpression><![CDATA["C:\\Users\\Longbridge\\Documents\\InternetBanking\\master\\src\\main\\resources\\static\\bank\\images\\cmb_logo.png"]]></imageExpression>
 			</image>
 			<textField pattern="dd/MM/yyyy">
 				<reportElement x="1" y="1" width="100" height="20" uuid="307ff6c6-640f-44df-bd2a-4e5e0775ff32"/>

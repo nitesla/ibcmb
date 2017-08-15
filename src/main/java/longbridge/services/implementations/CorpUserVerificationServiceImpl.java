@@ -104,7 +104,7 @@ public class CorpUserVerificationServiceImpl implements CorpUserVerificationServ
             String oldStatus = corporateUserDTO.getStatus();
             String newStatus = "A".equals(oldStatus) ? "I" : "A";
             corporateUserDTO.setStatus(newStatus);
-            saveInitiator(corporateUserDTO, "UPDATE_CORP_USER_STATUS", "Change corporate user activation status" );
+            saveInit(corporateUserDTO, "UPDATE_CORP_USER_STATUS", "Change corporate user activation status" );
             return messageSource.getMessage("user.add.success", null, locale);
         }catch (VerificationInterruptedException ib){
             return ib.getMessage();
@@ -119,6 +119,12 @@ public class CorpUserVerificationServiceImpl implements CorpUserVerificationServ
 
     @Override
     @Verifiable(operation = "ADD_INITIATOR_FROM_CORPORATE_ADMIN", description = "Add an initiator by corporate Admin")
+    public void addInitiator(CorporateUserDTO userDTO, String operation, String description) throws VerificationException {
+        saveInit(userDTO, operation, description);
+    }
+
+    @Override
+    @Verifiable(operation = "UPDATE_USER_FROM_CORPORATE_ADMIN", description = "Edit an initiator by corporate Admin")
     public void saveInitiator(CorporateUserDTO userDTO, String operation, String description) throws VerificationException {
         saveInit(userDTO, operation, description);
     }
@@ -155,7 +161,7 @@ public class CorpUserVerificationServiceImpl implements CorpUserVerificationServ
                         id, VerificationStatus.PENDING);
                 if (pendingVerification != null) {
                     logger.info("Found entity with pending verification");
-                    throw new InternetBankingException(entityName + " has changes pending for verification. Approve or " +
+                    throw new InternetBankingException("User has changes pending for verification. Approve or " +
                             "decline the changes before making another one.");
                 }
             }
@@ -195,7 +201,7 @@ public class CorpUserVerificationServiceImpl implements CorpUserVerificationServ
                         id, VerificationStatus.PENDING);
                 if (pendingVerification != null) {
                     // found pending verification
-                    throw new InternetBankingException(entityName + " has pending verification");
+                    throw new InternetBankingException("User has pending action waiting for verification");
                 }
 
                 CorporateUser originalEntity = entityManager.find(CorporateUser.class, id);
@@ -227,8 +233,13 @@ public class CorpUserVerificationServiceImpl implements CorpUserVerificationServ
     }
 
     @Override
-
     @Verifiable(operation = "ADD_AUTHORIZER_FROM_CORPORATE_ADMIN", description = "Add an authorizer by corporate Admin")
+    public void addAuthorizer(CorporateUserDTO userDTO, String operation, String description) throws VerificationException {
+        saveAuth(userDTO, operation, description);
+    }
+
+    @Override
+    @Verifiable(operation = "UPDATE_USER_FROM_CORPORATE_ADMIN", description = "Edit an authorizer by corporate Admin")
     public void saveAuthorizer(CorporateUserDTO userDTO, String operation, String description) throws VerificationException {
         saveAuth(userDTO, operation, description);
     }
@@ -268,7 +279,7 @@ public class CorpUserVerificationServiceImpl implements CorpUserVerificationServ
                         id, VerificationStatus.PENDING);
                 if (pendingVerification != null) {
                     logger.info("Found entity with pending verification");
-                    throw new InternetBankingException(entityName + " has changes pending for verification. Approve or " +
+                    throw new InternetBankingException("User has changes pending for verification. Approve or " +
                             "decline the changes before making another one.");
                 }
             }
