@@ -193,8 +193,9 @@ public @ResponseBody String getSecAns(WebRequest webRequest, HttpSession session
 
     }
     @GetMapping("/rest/corporate/verGenPass/{username}/{genpassword}")
-    public  @ResponseBody String verifyGenPassword(@PathVariable String username, @PathVariable String genpassword){
+    public  @ResponseBody String verifyGenPassword(@PathVariable String username, WebRequest webRequest){
         try {
+            String genpassword = webRequest.getParameter("genpassword");
             CorporateUser corporateUser = corporateUserService.getUserByName(username);
             boolean match = passwordEncoder.matches(genpassword, corporateUser.getTempPassword());
             if (match){
@@ -205,9 +206,12 @@ public @ResponseBody String getSecAns(WebRequest webRequest, HttpSession session
             return messageSource.getMessage("reset.password.gpv.failed", null, locale);
         }
     }
-    @GetMapping("/rest/corporate/password/check/{password}")
-    public @ResponseBody String checkPassword(@PathVariable String password){
-        String message = passwordPolicyService.validate(password, null);
+    @GetMapping("/rest/corporate/password/check/password")
+    public @ResponseBody String checkPassword(WebRequest webRequest){
+        String password  = webRequest.getParameter("password");
+        String username  = webRequest.getParameter("username");
+        CorporateUser user = corporateUserService.getUserByName(username);
+        String message = passwordPolicyService.validate(password, user);
 
         if (!"".equals(message)){
             return message;

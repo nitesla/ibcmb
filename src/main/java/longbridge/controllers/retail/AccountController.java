@@ -214,6 +214,8 @@ import longbridge.utils.DateFormatter;
 import longbridge.utils.statement.AccountStatement;
 import longbridge.utils.statement.TransactionDetails;
 import longbridge.utils.statement.TransactionHistory;
+import net.sf.jasperreports.engine.*;
+import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -221,9 +223,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.MessageSource;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
 import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
 import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
@@ -234,10 +239,15 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.jasperreports.JasperReportsPdfView;
 
+import javax.activation.DataSource;
 import javax.mail.MessagingException;
+import javax.mail.internet.MimeMessage;
+import javax.mail.util.ByteArrayDataSource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.security.Principal;
 import java.text.DecimalFormat;
 import java.text.ParseException;
@@ -660,7 +670,9 @@ public class AccountController {
 @GetMapping("/viewstatement/display/data/back")
 	@ResponseBody
 	public List<TransactionDetails> getStatementDataForBack(WebRequest webRequest, HttpSession session) {
+	
 		String state = webRequest.getParameter("state");
+	logger.info("the state {}",state);
 		List<TransactionDetails> list =  null;
 			if((session.getAttribute("acctStmtEntirePastDetails") != null)&&(state.equalsIgnoreCase("backward"))) {
 				 list = (List<TransactionDetails>) session.getAttribute("acctStmtEntirePastDetails");
@@ -769,35 +781,34 @@ public class AccountController {
 	@PostMapping("sendEmail")
 	public String sendEmail(ModelMap modelMap, DataTablesInput input, String acctNumber, String fromDate, String toDate,
 							String tranType, Principal principal) throws MessagingException {
-		/*
-		 * JRDataSource ds = new JRBeanCollectionDataSource(reportList);
-		 *
-		 * Resource report = new
-		 * ClassPathResource("static/jasper/rpt_report.jasper");
-		 *
-		 * JasperPrint jasperPrint =
-		 * JasperFillManager.fillReport(report.getInputStream(),
-		 * Collections.EMPTY_MAP,ds); ByteArrayOutputStream baos = new
-		 * ByteArrayOutputStream();
-		 * JasperExportManager.exportReportToPdfStream(jasperPrint, baos);
-		 * DataSource aAttachment = new ByteArrayDataSource(baos.toByteArray(),
-		 * "application/pdf");
-		 *
-		 * MimeMessage message = mailSender.createMimeMessage();
-		 * MimeMessageHelper helper = new MimeMessageHelper(message);
-		 *
-		 * helper.setTo("xxxxxx");
-		 *
-		 * helper.setFrom("xxxxx"); helper.setSubject("Testing Email");
-		 *
-		 * String text = "Testing Email";
-		 *
-		 * helper.setText(text, false);
-		 *
-		 * helper.addAttachment("report.pdf",aAttachment);
-		 *
-		 * mailSender.send(message);
-		 */
+
+//		 JRDataSource ds = new JRBeanCollectionDataSource(modelMap);
+//
+//		 Resource report = new
+//				 ClassPathResource("static/jasper/rpt_report.jasper");
+//
+//		try {
+//			JasperPrint jasperPrint =
+//            JasperFillManager.fillReport(report.getInputStream(),Collections.EMPTY_MAP,ds);
+//			ByteArrayOutputStream baos = new ByteArrayOutputStream();
+//			JasperExportManager.exportReportToPdfStream(jasperPrint, baos);
+//			DataSource aAttachment = new ByteArrayDataSource(baos.toByteArray(),
+//            "application/pdf");
+//			MimeMessage message = mailSender.createMimeMessage();
+//			MimeMessageHelper helper = new MimeMessageHelper(message);
+//
+//			helper.setTo("xxxxxx");
+//			helper.setFrom("xxxxx");
+//			helper.setSubject("Testing Email");
+//			String text = "Testing Email";
+//			helper.setText(text, false);
+//			helper.addAttachment("report.pdf",aAttachment);
+//			mailSender.send(message);
+//		} catch (JRException e) {
+//			e.printStackTrace();
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//		}
 		return null;
 	}
 

@@ -59,6 +59,7 @@ form.children("div").steps({
             console.log("Current step is the change password step");
             //form.submit();
             var confirm = $('#confirm').val();
+
             return isValid && validatePassword(confirm);
         }
         if(TOKEN_AUTH === currentIndex){
@@ -90,7 +91,7 @@ function validateSecAnswer(secAnswers){
     var secAnswer = secAnswers;
     var sent = "";
     var result;
-    var username = $('input[name="username"]').val();
+    var username = $('#username').val();
     // console.log("validating "+secAnswer);
     $.ajax({
         type:'GET',
@@ -159,20 +160,22 @@ function sendGenPassword() {
 
 function validateGenPassword() {
      $('#myLoader').modal('show');
-    console.log("p** fff");
+    // console.log("p** fff");
     var result;
     var username = $('#username').val();
     var genpassword = $('#genpassword').val();
-    console.log("p** "+genpassword);
-    genpassword =     genpassword.trim();
+    // console.log("p** "+genpassword);
+    genpassword = genpassword.trim();
     
     $.ajax({
         type:'GET',
-        url:"/rest/verGenPass/"+username+"/"+genpassword,
+        data:{genpassword:genpassword},
+        url:"/rest/verGenPass/"+username+"/genpassword",
         async:false,
         cache:false,
         success:function(data1){
             result = ''+String(data1);
+            console.log("the result "+result);
             if(result == "true"){
                 $('#myLoader').modal('hide');
             }else{
@@ -193,12 +196,16 @@ function validateGenPassword() {
 }
 
 function validatePassword(password){
+    password =  password.trim();
+    var username = $('#username').val();
+// console.log("username "+username+" confirm "+password);
     var res;
      $('#myLoader').modal('show');
     $.ajax({
         type:'GET',
         cache:false,
-        url:"/rest/password/check/"+password,
+        data:{password:password},
+        url:"/rest/password/check/password/"+username,
         async:false,
         success:function(data1){
             res = ''+String(data1);
