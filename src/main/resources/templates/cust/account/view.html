@@ -85,7 +85,7 @@
                            </tr>
                            </tfoot>
                        </table>
-                       <div> <a class="btn-primary" type="button" id="next" onclick="nextData()">next</a>&nbsp;<a class="btn-primary" type="button" id="previous" onclick="previousData()">previous</a></div>
+                       <div> <a class="btn-primary" type="button" id="previous" onclick="previousData()">previous</a>&nbsp;<a class="btn-primary" type="button" id="next" onclick="nextData()">next</a></div>
                    </div>
 
 
@@ -118,23 +118,25 @@
     };
     $(document).ready(function() {
         $('#btn-print').hide();
+        $('#tranDetails_length').hide();
+        $('#tranDetails_paginate').hide();
 //        $('.datepicker').datepicker({ dateFormat: 'dd-mm-yy' });//
-        $('#start').datepicker({
-            onSelect: function(dateText, inst) {
-                //Get today's date at midnight
-                var today = new Date();
-                today = Date.parse(today.getMonth()+1+'/'+today.getDate()+'/'+today.getFullYear());
-                //Get the selected date (also at midnight)
-                var selDate = Date.parse(dateText);
-
-                if(selDate < today) {
-                    console.log("hshs");
-                    //If the selected date was before today, continue to show the datepicker
-                    $('#start').val('');
-                    $(inst).datepicker('show');
-                }
-            }
-        });
+//        $('#start').datepicker({
+//            onSelect: function(dateText, inst) {
+//                //Get today's date at midnight
+//                var today = new Date();
+//                today = Date.parse(today.getMonth()+1+'/'+today.getDate()+'/'+today.getFullYear());
+//                //Get the selected date (also at midnight)
+//                var selDate = Date.parse(dateText);
+//
+//                if(selDate < today) {
+//                    console.log("hshs");
+//                    //If the selected date was before today, continue to show the datepicker
+//                    $('#start').val('');
+//                    $(inst).datepicker('show');
+//                }
+//            }
+//        });
 
 //        $('#tranDetails').DataTable({
 //            responsive: true,
@@ -326,6 +328,8 @@
                     toDate : $('[name=toDate]').val(),
                     tranType : $('[name=tranType]').val()
                 },success: function (result) {
+                    resetButton();
+                    $('#btn-print').show();
                     if (result != null) {
 
 //                        var detialsList = JSON.parse(result);
@@ -349,13 +353,22 @@
                 }
             
             });
-//
+
 
         });
+        $('#previous').hide();
+        $('#next').hide();
+        $('#tranDetails_length').hide();
+        $('#tranDetails_paginate').hide();
         $("#btn-print").on("click", function(e) {
             e.preventDefault();
-            var table = $('#tranDetails').DataTable();
-            var data = table.ajax.params();
+
+//            var table = $('#tranDetails').DataTable();
+            var data = { "acctNumber" : $('[name=acctNumber]').val(),
+                    "fromDate" : $('[name=fromDate]').val(),
+                    "toDate" : $('[name=toDate]').val(),
+                    "tranType" : $('[name=tranType]').val()} ;
+            console.log("data "+data);
             $.download("downloadstatement", "data", data);
 
         });
@@ -376,7 +389,7 @@ function nextData() {
             state : "forward"
         },success: function (result) {
             if (result != null) {
-
+                resetButton();
 //                        var detialsList = JSON.parse(result);
                 console.log("the result next"+result);
 //                $('#tranDetails').DataTable().fnClearTable();
@@ -413,7 +426,7 @@ function nextData() {
             state : "backward"
         },success: function (result) {
             if (result != null) {
-
+                resetButton();
 //                        var detialsList = JSON.parse(result);
                 console.log("the result next"+result);
 //                $('#tranDetails').DataTable().fnClearTable();
@@ -447,8 +460,25 @@ function nextData() {
         "data" :  {
             state : "backward"
         },success: function (result) {
-            if (result != null) {
-                console.log("the result next"+result);
+            if (result == "both") {
+//                console.log("the result next"+result);
+                $('#previous').hide();
+                $('#next').hide();
+            }
+            if (result == "previous") {
+//                console.log("the result next"+result);
+                $('#previous').hide();
+                $('#next').show();
+            }
+            if (result == "next") {
+//                console.log("the result next"+result);
+                $('#previous').show();
+                $('#next').hide();
+            }
+            if (result == "none") {
+//                console.log("the result next"+result);
+                $('#previous').show();
+                $('#next').show();
             }
         },
         error:  function (dd) {

@@ -87,7 +87,6 @@ public class CorpCompletedTransferController {
         out.setData(transferRequests.getContent());
         out.setRecordsFiltered(transferRequests.getTotalElements());
         out.setRecordsTotal(transferRequests.getTotalElements());
-
         return out;
     }
 
