@@ -155,6 +155,36 @@ public class IntegrationServiceImpl implements IntegrationService {
 
         return statement;
     }
+
+    @Override
+    public AccountStatement getFullAccountStatement(String accountNo, Date fromDate, Date toDate, String tranType) {
+        AccountStatement statement = new AccountStatement();
+        try {
+            SimpleDateFormat formatter = new SimpleDateFormat("dd-MMM-yyyy");
+       /* String dateInString = "7-Jun-2013";
+        Date date = formatter.parse(dateInString);*/
+            String uri = URI + "/fullstatement";
+            Map<String, Object> params = new HashMap<>();
+            params.put("accountNumber", accountNo);
+            params.put("fromDate", formatter.format(fromDate));
+            params.put("solId", viewAccountDetails(accountNo).getSolId());
+            if (tranType != null)
+                params.put("tranType", tranType);
+            if (toDate != null) params.put("toDate", formatter.format(toDate));
+
+
+
+
+            statement = template.postForObject(uri, params, AccountStatement.class);
+
+
+        } catch (Exception e) {
+
+        }
+
+
+        return statement;
+    }
     @Override
     public List<TransactionHistory> getLastNTransactions(String accountNo, String numberOfRecords) {
         List<TransactionHistory> histories = new ArrayList<>();
