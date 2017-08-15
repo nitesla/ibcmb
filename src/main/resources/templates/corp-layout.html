@@ -118,16 +118,16 @@
                                 </ul>
                             </li>
                             <li class="dropdown" th:classappend="${#httpServletRequest.getRequestURI().startsWith('/corporate/transfer') ? 'active':''}" sec:authorize="hasAuthority('MANAGE_TRANSFERS')">
-                                <a href="#" class="dropdown-toggle menu-link" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><span th:text="#{menu.transfer}">Transfers</span> <span th:if="${corporateType=='MULTI'}" class="btn-xs badge" th:text="${pendingRequests}">30</span></a>
+                                <a href="#" class="dropdown-toggle menu-link" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><span th:text="#{menu.transfer}">Transfers</span> <span th:if="${pending}" class="btn-xs badge" th:text="${pending}">0</span></a>
                                 <ul class="dropdown-menu">
                                     <li sec:authorize="hasAuthority('OWN_ACCOUNT_TRANSFER')"><a th:href="@{/corporate/transfer/ownaccount}" th:text="#{menu.transfer.own}">Own account transfers </a></li>
                                     <li sec:authorize="hasAuthority('CMB_CMB_TRANSFER')"><a th:href="@{/corporate/transfer/local}" th:text="#{menu.transfer.cmb}">Transfer to Coronation account </a></li>
                                     <li sec:authorize="hasAuthority('INTERBANK_TRANSFER')"><a th:href="@{/corporate/transfer/interbank}" th:text="#{menu.transfer.other}">Transfer to other banks</a></li>
                                     <li sec:authorize="hasAuthority('INTERNATIONAL_TRANSFER')"><a th:href="@{/corporate/transfer}" th:text="#{menu.transfer.int}">International transfer</a></li>
-                                    <li sec:authorize="hasAuthority('BULK_TRANSFER')"><a th:href="@{/corporate/transfer/bulk}"><span th:text="#{menu.transfer.bulk}">Bulk transfer</span> <span th:if="${corporateType=='MULTI'}" class="btn-xs badge bg-orange" th:text="${pendingRequests}">0</span></a></li>
+                                    <li sec:authorize="hasAuthority('BULK_TRANSFER')"><a th:href="@{/corporate/transfer/bulk}"><span th:text="#{menu.transfer.bulk}">Bulk transfer</span> <span th:if="${pendingBulk}" class="btn-xs badge bg-orange" th:text="${pendingBulk}">0</span></a></li>
                                     <li sec:authorize="hasAuthority('CORP_TRANSACTION_LIMIT')"><a th:href="@{/corporate/transfer/settransferlimit}" th:text="#{menu.transfer.limit}">Set transfer limit</a></li>
                                     <li sec:authorize="hasAuthority('STANDING_ORDER')"><a th:href="@{/corporate/transfer/standingorder}" th:text="#{menu.transfer.order}">Standing order</a></li>
-                                    <li th:if="${corporateType=='MULTI'}"><a th:href="@{/corporate/transfer/requests}"><span th:text="#{menu.transfer.request}">Transaction Requests</span> <span class="btn-xs badge bg-orange">0</span></a></li>
+                                    <li th:if="${corporateType=='MULTI'}"><a th:href="@{/corporate/transfer/requests}"><span th:text="#{menu.transfer.request}">Transaction Requests</span> <span th:if="${pendingRequests}" class="btn-xs badge bg-orange" th:text="${pendingRequests}">0</span></a></li>
                                     <li sec:authorize="hasAuthority('MANAGE_TRANSFERS')"><a th:href="@{/corporate/transfer/history}" th:text="#{menu.transfer.completed}">Completed Transfers</a></li>
                                 </ul>
                             </li>

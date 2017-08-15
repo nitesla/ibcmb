@@ -17,10 +17,6 @@ import longbridge.services.bulkTransfers.BulkTransferJobLauncher;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.batch.core.JobParametersInvalidException;
-import org.springframework.batch.core.repository.JobExecutionAlreadyRunningException;
-import org.springframework.batch.core.repository.JobInstanceAlreadyCompleteException;
-import org.springframework.batch.core.repository.JobRestartException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
@@ -324,6 +320,11 @@ public class BulkTransferServiceImpl implements BulkTransferService {
             }
         }
         return false;
+    }
+
+    @Override
+    public int getPendingBulkTransferRequests(Corporate corporate) {
+        return bulkTransferRepo.countByCorporateAndStatus(corporate, "P");
     }
 
     private boolean isAuthorizationComplete(BulkTransfer transRequest) {
