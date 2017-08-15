@@ -494,7 +494,7 @@ public class AccountController {
 		Date daysAgo = new DateTime(date).minusDays(Integer.parseInt(setting.getValue())).toDate();
 		logger.info("the from date {} and the to date {}",date,daysAgo);
 		AccountDTO account = accountService.getAccount(Long.parseLong(acct));
-		AccountStatement accountStatement = integrationService.getAccountStatements(account.getAccountNumber(),daysAgo , date, "B");
+		AccountStatement accountStatement = integrationService.getAccountStatements(account.getAccountNumber(),daysAgo , date, "B","5");
 		List<TransactionDetails> list = accountStatement.getTransactionDetails();
 
 		model.addAttribute("history", list);
@@ -563,7 +563,7 @@ public class AccountController {
 			logger.info("to Date after format {}",format2.format(to));
 			//int diffInDays = (int) ((to.getTime() - from.getTime()) / (1000 * 60 * 60 * 24));
 
-			AccountStatement accountStatement = integrationService.getAccountStatements(acctNumber, from, to, tranType);
+			AccountStatement accountStatement = integrationService.getAccountStatements(acctNumber, from, to, tranType,"5");
 			logger.info("accountStatement new {}", accountStatement);
 			list = accountStatement.getTransactionDetails();
 			session.removeAttribute("hasMoreTransaction");
@@ -631,7 +631,7 @@ public class AccountController {
 				paginationDetails.setLastTranDate(transactionDetails.getTranDate());
 				paginationDetails.setLastTranSN(transactionDetails.getTranSN());
 				logger.info("paginationDetails {}", paginationDetails);
-				AccountStatement accountStatement = integrationService.getAccountStatements(acctNumber, from, to, tranType, paginationDetails);
+				AccountStatement accountStatement = integrationService.getAccountStatements(acctNumber, from, to, tranType, "5",paginationDetails);
 //				logger.info("accountStatement {}", accountStatement);
 				list = accountStatement.getTransactionDetails();
 				session.removeAttribute("acctStmtLastDetails");
@@ -712,7 +712,7 @@ public class AccountController {
 		try {
 			from = format.parse(fromDate);
 			to = format.parse(toDate);
-			AccountStatement accountStatement = integrationService.getAccountStatements(acctNumber, from, to, tranType);
+			AccountStatement accountStatement = integrationService.getAccountStatements(acctNumber, from, to, tranType,"5");
 			out.setDraw(input.getDraw());
 			List<TransactionDetails> list = accountStatement.getTransactionDetails();
 			RetailUser retailUser = retailUserService.getUserByName(principal.getName());

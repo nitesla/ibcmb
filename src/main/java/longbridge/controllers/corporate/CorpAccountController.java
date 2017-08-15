@@ -279,7 +279,7 @@ logger.info("viewstatement");
 //        Date daysAgo = format.parse(format.format(daysAgo1));
         AccountDTO account = accountService.getAccount(Long.parseLong(acct));
 //        logger.info("the from date {} and the to date {} acctNUm {}",date,daysAgo,account.getAccountNumber());
-        AccountStatement accountStatement = integrationService.getAccountStatements(account.getAccountNumber(),daysAgo, date, "B");
+        AccountStatement accountStatement = integrationService.getAccountStatements(account.getAccountNumber(),daysAgo, date,"5", "B");
         List<TransactionDetails> list = accountStatement.getTransactionDetails();
         model.addAttribute("history", list);
         return "corp/account/tranhistory";
@@ -296,7 +296,7 @@ logger.info("viewstatement");
 
             AccountDTO account = accountService.getAccount(Long.parseLong(acct));
 
-            AccountStatement accountStatement = integrationService.getAccountStatements(account.getAccountNumber(), date, daysAgo, "B");
+            AccountStatement accountStatement = integrationService.getAccountStatements(account.getAccountNumber(), date, daysAgo,"B","5");
 
             logger.info("TransactionType {}","B");
             out.setDraw(input.getDraw());
@@ -338,7 +338,7 @@ logger.info("viewstatement");
             logger.info("toDate {}",to);
             //int diffInDays = (int) ((to.getTime() - from.getTime()) / (1000 * 60 * 60 * 24));
 
-            AccountStatement accountStatement = integrationService.getAccountStatements(acctNumber, from, to, tranType);
+            AccountStatement accountStatement = integrationService.getAccountStatements(acctNumber, from, to, tranType,"5");
             logger.info("TransactionType {}", tranType);
             out.setDraw(input.getDraw());
             List<TransactionDetails> list = accountStatement.getTransactionDetails();
@@ -369,7 +369,7 @@ logger.info("viewstatement");
             from = format.parse(fromDate);
             to = format.parse(toDate);
 
-            AccountStatement accountStatement = integrationService.getAccountStatements(acctNumber, from, to, tranType);
+            AccountStatement accountStatement = integrationService.getAccountStatements(acctNumber, from, to, tranType,"5");
 
             out.setDraw(input.getDraw());
             List<TransactionDetails> list = accountStatement.getTransactionDetails();
