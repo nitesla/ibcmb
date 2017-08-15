@@ -161,7 +161,7 @@ public class CorpUserVerificationServiceImpl implements CorpUserVerificationServ
                         id, VerificationStatus.PENDING);
                 if (pendingVerification != null) {
                     logger.info("Found entity with pending verification");
-                    throw new InternetBankingException(entityName + " has changes pending for verification. Approve or " +
+                    throw new InternetBankingException("User has changes pending for verification. Approve or " +
                             "decline the changes before making another one.");
                 }
             }
@@ -201,7 +201,7 @@ public class CorpUserVerificationServiceImpl implements CorpUserVerificationServ
                         id, VerificationStatus.PENDING);
                 if (pendingVerification != null) {
                     // found pending verification
-                    throw new InternetBankingException(entityName + " has pending verification");
+                    throw new InternetBankingException("User has pending action waiting for verification");
                 }
 
                 CorporateUser originalEntity = entityManager.find(CorporateUser.class, id);
@@ -279,7 +279,7 @@ public class CorpUserVerificationServiceImpl implements CorpUserVerificationServ
                         id, VerificationStatus.PENDING);
                 if (pendingVerification != null) {
                     logger.info("Found entity with pending verification");
-                    throw new InternetBankingException(entityName + " has changes pending for verification. Approve or " +
+                    throw new InternetBankingException("User has changes pending for verification. Approve or " +
                             "decline the changes before making another one.");
                 }
             }
