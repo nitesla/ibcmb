@@ -168,6 +168,9 @@ public class ServiceRequestController {
     public String makeRequest(@PathVariable Long reqId, Model model, Principal principal) {
         RetailUser user = userService.getUserByName(principal.getName());
         ServiceReqConfigDTO serviceReqConfig = serviceReqConfigService.getServiceReqConfig(reqId);
+
+//        List<List<CodeDTO>> codeList = new ArrayList<>();
+
         for (ServiceReqFormFieldDTO field : serviceReqConfig.getFormFields()) {
             if (field.getFieldType() != null && field.getFieldType().equals("CODE")) {
                 List<CodeDTO> codeList = codeService.getCodesByType(field.getTypeData());
