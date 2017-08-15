@@ -665,8 +665,9 @@ public class AccountController {
 				if (!list.isEmpty()) {
 					session.setAttribute("acctStmtLastDetails", list.get(list.size() - 1));
 					Integer stateValue = (Integer) session.getAttribute("retAcctStmtStateValue");
-					stateValue=+1;
+					stateValue= stateValue +1;
 					session.removeAttribute("acctStmtEntirePastDetails"+stateValue);
+					session.removeAttribute("retAcctStmtStateValue");
 					session.setAttribute("acctStmtEntirePastDetails"+stateValue, list);
 					session.setAttribute("retAcctStmtStateValue",stateValue);
 					logger.info("acctStmtLastDetails {}", list.get(list.size() - 1));
