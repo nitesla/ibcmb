@@ -171,28 +171,21 @@ public class CorporateControllerAdvice {
         return "";
     }
 
-//    @GetMapping
-//    public String passwordEx(){
-//        if (hostMaster.isPasswordExpired()){
-//            return "redirect:/corporate/reset_password";
+
+
+//    @ModelAttribute
+//    public void sessionTimeout(Model model) {
+//        SettingDTO setting = configurationService.getSettingByName("SESSION_TIMEOUT");
+//        try {
+//            if (setting != null && setting.isEnabled()) {
+//                Long timeOut = (Long.parseLong(setting.getValue()) * 60000) - 25000;
+//                logger.info("SESSION TIME OUT PERIOD CORP" + timeOut);
+//                model.addAttribute("timeOut", timeOut);
+//            }
+//
+//        } catch (Exception ex) {
 //        }
-//        return "";
 //    }
-
-    @ModelAttribute
-    public String sessionTimeout(Model model) {
-        SettingDTO setting = configurationService.getSettingByName("SESSION_TIMEOUT");
-        try {
-            if (setting != null && setting.isEnabled()) {
-                Long timeOut = (Long.parseLong(setting.getValue()) * 60000) - 25000;
-                logger.info("SESSION TIME OUT PERIOD CORP" + timeOut);
-                model.addAttribute("timeOut", timeOut);
-            }
-
-        } catch (Exception ex) {
-        }
-        return "";
-    }
 
 
 }
