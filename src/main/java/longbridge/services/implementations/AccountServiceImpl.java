@@ -175,7 +175,7 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public AccountStatement getAccountStatements(Account account, Date fromDate, Date toDate, String transType) {
-        return integrationService.getAccountStatements(account.getAccountNumber(), fromDate, toDate, transType);
+        return integrationService.getAccountStatements(account.getAccountNumber(), fromDate, toDate, transType,"5");
     }
 
 

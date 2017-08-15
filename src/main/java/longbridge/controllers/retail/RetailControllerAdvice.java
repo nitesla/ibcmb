@@ -154,7 +154,7 @@ public class RetailControllerAdvice {
     }
 
     @ModelAttribute
-    public void getSystemNotifications(Model model){
+    public String getSystemNotifications(Model model){
         try{
             List<NotificationsDTO> notifications = notificationsService.getNotifications();
 //            NotificationsDTO notificationsDTO = new NotificationsDTO();
@@ -166,26 +166,27 @@ public class RetailControllerAdvice {
         }
 
 
+        return "";
     }
 
 
-    @ModelAttribute
-    public void sessionTimeout(Model model) {
-        SettingDTO setting = configurationService.getSettingByName("SESSION_TIMEOUT");
-        try {
-            if (setting != null && setting.isEnabled()) {
-                Long timeOut = (Long.parseLong(setting.getValue()) * 60000) - 25000;
-                logger.info("SESSION TIME OUT PERIOD" + timeOut);
-                model.addAttribute("timeOut", timeOut);
-            }
-
-        }
-        catch (Exception ex) {
-        }
-
-    }
-
-
+//    @ModelAttribute
+//    public String sessionTimeout(Model model) {
+//        SettingDTO setting = configurationService.getSettingByName("SESSION_TIMEOUT");
+//        try {
+//            if (setting != null && setting.isEnabled()) {
+//                Long timeOut = (Long.parseLong(setting.getValue()) * 60000) - 25000;
+//                logger.info("SESSION TIME OUT PERIOD" + timeOut);
+//                model.addAttribute("timeOut", timeOut);
+//            }
+//
+//        }
+//        catch (Exception ex) {
+//        }
+//
+//        return "";
+//
+//    }
 
 
 }

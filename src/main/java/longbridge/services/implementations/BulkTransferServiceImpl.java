@@ -5,6 +5,7 @@ import longbridge.dtos.BulkTransferDTO;
 import longbridge.dtos.CreditRequestDTO;
 import longbridge.dtos.SettingDTO;
 import longbridge.exception.InternetBankingException;
+import longbridge.exception.InternetBankingTransferException;
 import longbridge.exception.TransferAuthorizationException;
 import longbridge.exception.TransferRuleException;
 import longbridge.models.*;
@@ -17,10 +18,6 @@ import longbridge.services.bulkTransfers.BulkTransferJobLauncher;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.batch.core.JobParametersInvalidException;
-import org.springframework.batch.core.repository.JobExecutionAlreadyRunningException;
-import org.springframework.batch.core.repository.JobInstanceAlreadyCompleteException;
-import org.springframework.batch.core.repository.JobRestartException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
@@ -174,32 +171,40 @@ public class BulkTransferServiceImpl implements BulkTransferService {
         }
 
         if (userRole == null) {
-            throw new TransferAuthorizationException("User is not authorized to approve the transaction");
+            throw new TransferAuthorizationException(messageSource.getMessage("transfer.auth.invalid", null, locale));
         }
 
         CorpTransferAuth transferAuth = bulkTransfer.getTransferAuth();
+
+        if (!"P".equals(transferAuth.getStatus())) {
+            throw new TransferAuthorizationException(messageSource.getMessage("transfer.auth.complete", null, locale));
+        }
 
         if (reqEntryRepo.existsByTranReqIdAndRole(bulkTransfer.getId(), userRole)) {
             throw new TransferAuthorizationException(messageSource.getMessage("transfer.auth.exist", null, locale));
         }
 
-        if (!"P".equals(transferAuth.getStatus())) {
-            throw new TransferAuthorizationException("Transaction is not pending");
-        }
-        transReqEntry.setEntryDate(new Date());
-        transReqEntry.setRole(userRole);
-        transReqEntry.setUser(corporateUser);
-        transReqEntry.setStatus("Approved");
-        transferAuth.getAuths().add(transReqEntry);
-        transferAuthRepo.save(transferAuth);
-        if (isAuthorizationComplete(bulkTransfer)) {
-            transferAuth.setStatus("C");
-            transferAuth.setLastEntry(new Date());
-            transferAuthRepo.save(transferAuth);
-            return makeBulkTransferRequest(bulkTransfer);
-        }
 
-        return messageSource.getMessage("transfer.auth.failure", null, locale);
+        try {
+            transReqEntry.setEntryDate(new Date());
+            transReqEntry.setRole(userRole);
+            transReqEntry.setUser(corporateUser);
+            transReqEntry.setStatus("Approved");
+            transferAuth.getAuths().add(transReqEntry);
+            transferAuthRepo.save(transferAuth);
+            if (isAuthorizationComplete(bulkTransfer)) {
+                transferAuth.setStatus("C");
+                transferAuth.setLastEntry(new Date());
+                transferAuthRepo.save(transferAuth);
+                return makeBulkTransferRequest(bulkTransfer);
+            }
+
+            return messageSource.getMessage("transfer.auth.failure", null, locale);
+        } catch (InternetBankingTransferException te) {
+            throw te;
+        } catch (Exception e) {
+            throw new InternetBankingException(messageSource.getMessage("transfer.auth.failure", null, locale), e);
+        }
     }
 
 
@@ -324,6 +329,11 @@ public class BulkTransferServiceImpl implements BulkTransferService {
             }
         }
         return false;
+    }
+
+    @Override
+    public int getPendingBulkTransferRequests(Corporate corporate) {
+        return bulkTransferRepo.countByCorporateAndStatus(corporate, "P");
     }
 
     private boolean isAuthorizationComplete(BulkTransfer transRequest) {

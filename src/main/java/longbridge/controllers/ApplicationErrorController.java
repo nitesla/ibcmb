@@ -74,34 +74,32 @@ public class ApplicationErrorController implements ErrorController {
 
     private void sendNotification(Map errorDetails) {
         String time = errorDetails.get("timestamp").toString();
-        String status = errorDetails.get("status").toString();
+        String statusCode = errorDetails.get("status").toString();
         String error = errorDetails.get("error").toString();
         String exception = (String) errorDetails.get("exception");
         String message = errorDetails.get("message").toString();
         String trace = (String) errorDetails.get("trace");
         String path = (String) errorDetails.get("path");
 
+        if (!"405".equals(statusCode)) {
+            StringBuilder builder = new StringBuilder();
+            builder.append("Time: " + time + "\n")
+                    .append("Path: " + path + "\n")
+                    .append("Status Code: " + statusCode + "\n")
+                    .append("Error: " + error + "\n")
+                    .append("Exception: " + exception + "\n")
+                    .append("Message: " + message + "\n")
+                    .append("Trace: " + trace + "\n");
 
-        StringBuilder builder = new StringBuilder();
-        builder.append("Time: " + time + "\n")
-                .append("Path: " + path + "\n")
-                .append("Status Code: " + status + "\n")
-                .append("Error: " + error + "\n")
-                .append("Exception: " + exception + "\n")
-                .append("Message: " + message + "\n")
-                .append("Trace: " + trace + "\n");
-
-        try {
             String[] ccList = {"farooq.ayoade@longbridgetech.com", "oluwawunmi.sowunmi@longbridgetech.com"};
             Email email = new Email.Builder().setRecipient("fortunatus.ekenachi@longbridgetech.com")
                     .setCCList(ccList)
                     .setSubject(error)
                     .setBody(builder.toString())
                     .build();
-            mailService.send(email);
-        } catch (MailException e) {
-            logger.error("Failed to send error notification mail: {}", e.getMessage());
+            new Thread(() -> mailService.send(email)).start();
         }
+
 
     }
 }

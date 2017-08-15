@@ -1,10 +1,10 @@
 package longbridge.controllers.retail;
 
-import longbridge.exception.InternetBankingException;
 import longbridge.models.RetailUser;
 import longbridge.models.TransRequest;
 import longbridge.services.RetailUserService;
 import longbridge.services.TransferService;
+import longbridge.utils.DateFormatter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,10 +26,7 @@ import org.springframework.web.servlet.view.jasperreports.JasperReportsPdfView;
 import javax.servlet.http.HttpServletRequest;
 import java.security.Principal;
 import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by Showboy on 12/08/2017.
@@ -52,6 +49,8 @@ public class CompletedTransferController {
     @Autowired
     private MessageSource messageSource;
 
+    @Value("${jrxmlImage.path}")
+    private String imagePath;
     @Value("${jsonFile.path}")
     private String JOSNpath;
     @Value("${jrxmlFile.path}")
@@ -103,24 +102,26 @@ public class CompletedTransferController {
             double amount = Double.parseDouble(transRequest.getAmount().toString());
             DecimalFormat formatter = new DecimalFormat("#,###.00");
             modelMap.put("datasource", new ArrayList<>());
+            modelMap.put("imagePath", imagePath);
             modelMap.put("amount", formatter.format(amount));
-            modelMap.put("sender",retailUser.getFirstName()+" "+retailUser.getLastName() );
+            modelMap.put("customer",retailUser.getFirstName()+" "+retailUser.getLastName() );
+            modelMap.put("customerAcctNumber", transRequest.getCustomerAccountNumber());
             modelMap.put("remarks", transRequest.getRemarks());
             modelMap.put("beneficiary", transRequest.getBeneficiaryAccountName());
-            modelMap.put("beneficiaryBank", transRequest.getBeneficiaryAccountNumber());
-            modelMap.put("recipientBank", transRequest.getFinancialInstitution().getInstitutionName());
+            modelMap.put("beneficiaryAcctNumber", transRequest.getBeneficiaryAccountNumber());
+            modelMap.put("beneficiaryBank", transRequest.getFinancialInstitution().getInstitutionName());
             modelMap.put("refNUm", transRequest.getReferenceNumber());
-            //modelMap.put("tranDate", DateFormatter.format(transRequest.getTranDate()));
+            modelMap.put("tranDate", DateFormatter.format(transRequest.getTranDate()));
+            modelMap.put("date", DateFormatter.format(new Date()));
 
             ModelAndView modelAndView=new ModelAndView(view, modelMap);
             return modelAndView;
-        }catch (InternetBankingException e){
+        }catch (Exception e){
             logger.info(" RECEIPT DOWNLOAD {} ", e.getMessage());
             ModelAndView modelAndView =  new ModelAndView("redirect:/retail/transfer/history");
-            modelAndView.addObject("failure" , messageSource.getMessage("receipt.download.failed", null, locale));
+            modelAndView.addObject("failure", messageSource.getMessage("receipt.download.failed", null, locale));
             //redirectAttributes.addFlashAttribute("failure", messageSource.getMessage("receipt.download.failed", null, locale));
             return modelAndView;
-
         }
 
     }

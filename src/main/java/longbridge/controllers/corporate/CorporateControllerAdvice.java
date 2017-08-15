@@ -36,6 +36,10 @@ public class CorporateControllerAdvice {
     private MessageService messageService;
     @Autowired
     private ConfigurationService configurationService;
+    @Autowired
+    private  CorpTransferService corpTransferService;
+    @Autowired
+    private  BulkTransferService bulkTransferService;
 
     @Autowired
     public CorporateControllerAdvice(CorporateUserService corporateUserService, IntegrationService integrationService, TransferService transferService, AccountService accountService, ServiceReqConfigService reqConfigService, MessageService messageService) {
@@ -124,6 +128,19 @@ public class CorporateControllerAdvice {
             model.addAttribute("isAuthorizer", isAuthorizer);
         }
 
+        if ("MULTI".equals(corporateUser.getCorporate().getCorporateType())){
+            int pendingRequests = corpTransferService.countPendingRequest();
+            if (pendingRequests > 0)
+                model.addAttribute("pendingRequests", pendingRequests);
+
+            int pendingBulk = bulkTransferService.getPendingBulkTransferRequests(corporateUser.getCorporate());
+            if (pendingBulk > 0)
+                model.addAttribute("pendingBulk", pendingBulk);
+
+            int pending = pendingRequests + pendingBulk;
+            model.addAttribute("pending", pending);
+        }
+
         model.addAttribute("corporateType", corporateUser.getCorporate().getCorporateType());
 
         return "";
@@ -154,28 +171,21 @@ public class CorporateControllerAdvice {
         return "";
     }
 
-//    @GetMapping
-//    public String passwordEx(){
-//        if (hostMaster.isPasswordExpired()){
-//            return "redirect:/corporate/reset_password";
+
+
+//    @ModelAttribute
+//    public void sessionTimeout(Model model) {
+//        SettingDTO setting = configurationService.getSettingByName("SESSION_TIMEOUT");
+//        try {
+//            if (setting != null && setting.isEnabled()) {
+//                Long timeOut = (Long.parseLong(setting.getValue()) * 60000) - 25000;
+//                logger.info("SESSION TIME OUT PERIOD CORP" + timeOut);
+//                model.addAttribute("timeOut", timeOut);
+//            }
+//
+//        } catch (Exception ex) {
 //        }
-//        return "";
 //    }
-
-    @ModelAttribute
-    public String sessionTimeout(Model model) {
-        SettingDTO setting = configurationService.getSettingByName("SESSION_TIMEOUT");
-        try {
-            if (setting != null && setting.isEnabled()) {
-                Long timeOut = (Long.parseLong(setting.getValue()) * 60000) - 25000;
-                logger.info("SESSION TIME OUT PERIOD CORP" + timeOut);
-                model.addAttribute("timeOut", timeOut);
-            }
-
-        } catch (Exception ex) {
-        }
-        return "";
-    }
 
 
 }

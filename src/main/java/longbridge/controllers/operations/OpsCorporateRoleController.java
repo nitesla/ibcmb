@@ -178,7 +178,7 @@ public class OpsCorporateRoleController {
             return "redirect:/ops/corporates/" + roleDTO.getCorporateId() + "/view";
         }
         catch (DuplicateObjectException ibe) {
-            result.addError(new ObjectError("invalid", messageSource.getMessage("form.fields.required", null, locale)));
+            result.addError(new ObjectError("invalid", ibe.getMessage()));
             CorporateDTO corporate = corporateService.getCorporate(NumberUtils.toLong(roleDTO.getCorporateId()));
             List<CorporateUserDTO> users = corporateUserService.getUsersWithoutRole(NumberUtils.toLong(roleDTO.getCorporateId()));
             CorporateRoleDTO role = corporateService.getCorporateRole(roleDTO.getId());
@@ -188,7 +188,7 @@ public class OpsCorporateRoleController {
             return "ops/corporate/editrole";
         }
         catch (InternetBankingException ibe) {
-            result.addError(new ObjectError("invalid", messageSource.getMessage("form.fields.required", null, locale)));
+            result.addError(new ObjectError("invalid", ibe.getMessage()));
             CorporateDTO corporate = corporateService.getCorporate(NumberUtils.toLong(roleDTO.getCorporateId()));
             List<CorporateUserDTO> users = corporateUserService.getUsersWithoutRole(NumberUtils.toLong(roleDTO.getCorporateId()));
             CorporateRoleDTO role = corporateService.getCorporateRole(roleDTO.getId());

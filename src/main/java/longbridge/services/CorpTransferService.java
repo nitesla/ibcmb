@@ -38,6 +38,8 @@ public interface CorpTransferService {
 
     Page<CorpTransRequest> getTransferRequests(Pageable pageDetails);
 
+    int countPendingRequest();
+
     CorpTransferAuth getAuthorizations(CorpTransRequest transRequest);
     //CorpTransferAuth getAuthorizations(TransRequest transRequest);
 

@@ -97,6 +97,7 @@ public class CorpTransferServiceImpl implements CorpTransferService {
             transferAuth.setStatus("P");
             transferRequest.setTransferAuth(transferAuth);
             CorpTransRequest corpTransRequest = corpTransferRequestRepo.save(transferRequest);
+            logger.info("Transfer request saved for authorization");
             if (userCanAuthorize(corpTransRequest)) {
                 CorpTransReqEntry transReqEntry = new CorpTransReqEntry();
                 transReqEntry.setTranReqId(corpTransRequest.getId());
@@ -136,7 +137,7 @@ public class CorpTransferServiceImpl implements CorpTransferService {
     public Page<CorpTransRequest> getCompletedTransfers(Pageable pageDetails) {
         CorporateUser corporateUser = getCurrentUser();
         Corporate corporate = corporateUser.getCorporate();
-        Page<CorpTransRequest> page = corpTransferRequestRepo.findByCorporateAndStatusIn(corporate, Arrays.asList("00","000"), pageDetails);
+        Page<CorpTransRequest> page = corpTransferRequestRepo.findByCorporateAndStatusIn(corporate, Arrays.asList("00", "000"), pageDetails);
         //List<CorpTransferRequestDTO> dtOs = convertEntitiesToDTOs(page.getContent());
 //        long t = page.getTotalElements();
 //        Page<CorpTransferRequestDTO> pageImpl = new PageImpl<CorpTransferRequestDTO>(dtOs, pageDetails, t);
@@ -147,7 +148,7 @@ public class CorpTransferServiceImpl implements CorpTransferService {
     public Page<CorpTransRequest> findCompletedTransfers(String pattern, Pageable pageDetails) {
         CorporateUser corporateUser = getCurrentUser();
         Corporate corporate = corporateUser.getCorporate();
-        Page<CorpTransRequest> page = corpTransferRequestRepo.findByCorporateAndStatusIn(corporate, Arrays.asList("00","000"), pageDetails);
+        Page<CorpTransRequest> page = corpTransferRequestRepo.findByCorporateAndStatusIn(corporate, Arrays.asList("00", "000"), pageDetails);
         return page;
     }
 
@@ -225,8 +226,15 @@ public class CorpTransferServiceImpl implements CorpTransferService {
     public Page<CorpTransRequest> getTransferRequests(Pageable pageDetails) {
         CorporateUser corporateUser = getCurrentUser();
         Corporate corporate = corporateUser.getCorporate();
-        Page<CorpTransRequest> corpTransRequests = corpTransferRequestRepo.findByCorporateAndStatus(corporate, "P", pageDetails);
+        Page<CorpTransRequest> corpTransRequests = corpTransferRequestRepo.findByCorporateOrderByTranDateDesc(corporate, pageDetails);
         return corpTransRequests;
+    }
+
+    @Override
+    public int countPendingRequest(){
+        CorporateUser corporateUser = getCurrentUser();
+        Corporate corporate = corporateUser.getCorporate();
+        return corpTransferRequestRepo.countByCorporateAndStatus(corporate, "P");
     }
 
     public CorpTransferRequestDTO convertEntityToDTO(CorpTransRequest corpTransRequest) {
@@ -324,8 +332,6 @@ public class CorpTransferServiceImpl implements CorpTransferService {
     }
 
 
-
-
     @Override
     public CorpTransferAuth getAuthorizations(CorpTransRequest transRequest) {
         CorpTransRequest corpTransRequest = corpTransferRequestRepo.findOne(transRequest.getId());
@@ -355,34 +361,39 @@ public class CorpTransferServiceImpl implements CorpTransferService {
     @Override
     public String addAuthorization(CorpTransReqEntry transReqEntry) {
 
+        CorporateUser corporateUser = getCurrentUser();
+        CorpTransRequest corpTransRequest = corpTransferRequestRepo.findOne(transReqEntry.getTranReqId());
+        CorpTransRule transferRule = corporateService.getApplicableTransferRule(corpTransRequest);
+        List<CorporateRole> roles = getExistingRoles(transferRule.getRoles());
+        CorporateRole userRole = null;
+
+
+        for (CorporateRole corporateRole : roles) {
+            if (corpRoleRepo.countInRole(corporateRole, corporateUser) > 0) {
+                userRole = corporateRole;
+                break;
+            }
+        }
+
+        if (userRole == null) {
+            throw new TransferAuthorizationException(messageSource.getMessage("transfer.auth.invalid", null, locale));
+        }
+
+
+
+        CorpTransferAuth transferAuth = corpTransRequest.getTransferAuth();
+
+        if (!"P".equals(transferAuth.getStatus())) {
+            throw new TransferAuthorizationException(messageSource.getMessage("transfer.auth.complete", null, locale));
+        }
+
+
+        if (reqEntryRepo.existsByTranReqIdAndRole(corpTransRequest.getId(), userRole)) {
+            throw new TransferAuthorizationException(messageSource.getMessage("transfer.auth.exist", null, locale));
+        }
+
+
         try {
-            CorporateUser corporateUser = getCurrentUser();
-            CorpTransRequest corpTransRequest = corpTransferRequestRepo.findOne(transReqEntry.getTranReqId());
-            CorpTransRule transferRule = corporateService.getApplicableTransferRule(corpTransRequest);
-            List<CorporateRole> roles = getExistingRoles(transferRule.getRoles());
-            CorporateRole userRole = null;
-
-
-            for (CorporateRole corporateRole : roles) {
-                if (corpRoleRepo.countInRole(corporateRole, corporateUser) > 0) {
-                    userRole = corporateRole;
-                    break;
-                }
-            }
-
-            if (userRole == null) {
-                throw new TransferAuthorizationException("User is not authorized to approve the transaction");
-            }
-
-            CorpTransferAuth transferAuth = corpTransRequest.getTransferAuth();
-
-            if (reqEntryRepo.existsByTranReqIdAndRole(corpTransRequest.getId(), userRole)) {
-                throw new TransferAuthorizationException(messageSource.getMessage("transfer.auth.exist", null, locale));
-            }
-
-            if (!"P".equals(transferAuth.getStatus())) {
-                throw new TransferAuthorizationException("Transaction is not pending");
-            }
             transReqEntry.setEntryDate(new Date());
             transReqEntry.setRole(userRole);
             transReqEntry.setUser(corporateUser);
@@ -429,7 +440,7 @@ public class CorpTransferServiceImpl implements CorpTransferService {
             for (CorpTransReqEntry corpTransReqEntry : transReqEntries) {
                 if (corpTransReqEntry.getRole().equals(role)) {
                     approvalCount++;
-                    if (any&&(approvalCount>=numAuthorizers)) return true;
+                    if (any && (approvalCount >= numAuthorizers)) return true;
                 }
             }
         }
