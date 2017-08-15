@@ -360,10 +360,12 @@ public class UserRegController {
         return user.getUserName();
     }
 
-    @GetMapping("/rest/password/check/{password}")
-    public @ResponseBody String checkPassword(@PathVariable String password){
-        String message = passwordPolicyService.validate(password, null);
-
+    @GetMapping("/rest/password/check/password/{username}")
+    public @ResponseBody String checkPassword(WebRequest webRequest,@PathVariable String username){
+        String password = webRequest.getParameter("password");
+        RetailUser user = retailUserService.getUserByName(username);
+        String message = passwordPolicyService.validate(password, user);
+//        logger.info("the message {}",message);
         if (!"".equals(message)){
             return message;
         }
@@ -542,7 +544,7 @@ public class UserRegController {
 //        logger.info("num of qs on entrust {}",noOfQuestions);
         ArrayList[] masterList = new ArrayList[noOfQuestions];
         int questionsPerSection = (secQues.size()-(secQues.size()%noOfQuestions))/noOfQuestions;
-        logger.info("question per section {}",questionsPerSection);
+//        logger.info("question per section {}",questionsPerSection);
         int questnPostn = 0;
         for(int i=0;i< noOfQuestions;i++) {
             masterList[i] =  new ArrayList<>();

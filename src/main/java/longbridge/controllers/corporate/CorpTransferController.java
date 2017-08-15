@@ -3,6 +3,7 @@ package longbridge.controllers.corporate;
 
 import longbridge.dtos.CorpLocalBeneficiaryDTO;
 import longbridge.dtos.CorpTransferRequestDTO;
+import longbridge.dtos.TransferRequestDTO;
 import longbridge.exception.*;
 import longbridge.models.*;
 import longbridge.repositories.CorpTransferRequestRepo;
@@ -179,15 +180,16 @@ public class CorpTransferController {
 
 
     @PostMapping("/process")
-    public String bankTransfer(@ModelAttribute("corpTransferRequest") @Valid CorpTransferRequestDTO corpTransferRequest, Model model, RedirectAttributes redirectAttributes, Locale locale, HttpServletRequest request, Principal principal) throws Exception {
-
+    public String bankTransfer( Model model, RedirectAttributes redirectAttributes, HttpServletRequest request, Principal principal) throws Exception {
+        CorpTransferRequestDTO transferRequestDTO = (CorpTransferRequestDTO) request.getSession().getAttribute("corpTransferRequest");
+        model.addAttribute("corpTransferRequest", transferRequestDTO);
         try {
 
-            if (request.getSession().getAttribute("AUTH") != null) {
+            if (request.getSession().getAttribute("auth-needed") != null) {
                 String token = request.getParameter("token");
                 if (token == null || token.isEmpty()) {
 
-                    return "/cust/transfer/transferauth";
+                    return "corp/transfer/transferauth";
                 }
 
 
@@ -198,7 +200,7 @@ public class CorpTransferController {
                 } catch (InternetBankingSecurityException ibse) {
                     ibse.printStackTrace();
                     model.addAttribute("failure", ibse.getMessage());
-                    return "/cust/transfer/transferauth";
+                    return "corp/transfer/transferauth";
                 }
                 request.getSession().removeAttribute("auth-needed");
 
@@ -439,7 +441,7 @@ public class CorpTransferController {
     public String authenticate(HttpServletRequest httpServletRequest, Model model) throws Exception {
         CorpTransferRequestDTO dto = (CorpTransferRequestDTO) httpServletRequest.getSession().getAttribute("corpTransferRequest");
         if (dto != null) model.addAttribute("corpTransferRequest", dto);
-        return "/corp/transfer/transferauth";
+        return "corp/transfer/transferauth";
     }
 
     //Receipt for sole corporate user

@@ -5,7 +5,7 @@
 <body onload="javascript:var bread = [['Home', '/corporate/dashboard'],['CMB transfer','/corporate/transfer/local'],['transfer']];currentBar('CMB transfer');breadCrumb(bread)">
 
 <div layout:fragment="content">
-    <div class="col-md-5 col-sm-5 ">
+    <div class="col-md-5 col-sm-5 "> Transfer TO
         <span class="my-label" th:if="${beneficiary.preferredName} !=''" th:text="${beneficiary.preferredName}"></span>
                 <span class="my-label" th:if="${beneficiary.preferredName} ==''" th:text="${beneficiary.preferredName}"></span>
 

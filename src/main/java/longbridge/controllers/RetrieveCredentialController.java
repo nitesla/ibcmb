@@ -277,9 +277,10 @@ public class RetrieveCredentialController {
 
     }
 
-    @GetMapping("/rest/verGenPass/{username}/{genpassword}")
-    public  @ResponseBody String verifyGenPassword(@PathVariable String username, @PathVariable String genpassword){
+    @GetMapping("/rest/verGenPass/{username}/genpassword")
+    public  @ResponseBody String verifyGenPassword(@PathVariable String username, WebRequest webRequest){
         try {
+            String genpassword = webRequest.getParameter("genpassword");
             RetailUser retailUser = retailUserService.getUserByName(username);
             boolean match = passwordEncoder.matches(genpassword, retailUser.getTempPassword());
             if (match){

@@ -160,7 +160,8 @@ function validateGenPassword() {
     var genpassword = $('#genpassword').val();
     $.ajax({
         type:'GET',
-        url:"/rest/corporate/verGenPass/"+username+"/"+genpassword,
+        data:{genpassword:genpassword},
+        url:"/rest/corporate/verGenPass/"+username+"/genpassword",
         async:false,
         success:function(data1){
             result = ''+String(data1);
@@ -186,10 +187,12 @@ function validateGenPassword() {
 function validatePassword(password){
      $('#myLoader').modal('show');
     var res;
+    var username = $('#username').val();
     password = password.trim();
     $.ajax({
         type:'GET',
-        url:"/rest/corporate/password/check/"+password,
+        data:{password:password,username:username},
+        url:"/rest/corporate/password/check/password",
         async:false,
         success:function(data1){
             res = ''+String(data1);
