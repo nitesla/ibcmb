@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.scheduling.annotation.Async;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -136,6 +137,7 @@ public class SessionUtils {
         try {
             ServletRequestAttributes attr = (ServletRequestAttributes)
                     RequestContextHolder.currentRequestAttributes();
+            SecurityContextHolder.clearContext();
 
             HttpSession session = attr.getRequest().getSession(false);
             if (session != null)

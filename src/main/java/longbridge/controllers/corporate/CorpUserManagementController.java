@@ -118,7 +118,7 @@ public class CorpUserManagementController {
         List<CorporateRoleDTO> corporateRoleDTO = corporateService.getRoles(corporateUser.getCorporate().getId());
         logger.info("CORP RULES >>>> " + corporateRoleDTO);
         CorporateUserDTO corporateUserDTO = new CorporateUserDTO();
-        model.addAttribute("corporateUser", corporateUserDTO);
+        model.addAttribute("corporateUserDTO", corporateUserDTO);
         model.addAttribute("corporate", corporate);
 
         model.addAttribute("corporateRoles", corporateRoleDTO);
@@ -126,7 +126,7 @@ public class CorpUserManagementController {
     }
 
     @PostMapping
-    public String createUser(@ModelAttribute("corporateUser") @Valid CorporateUserDTO corporateUserDTO, BindingResult result, WebRequest webRequest, Model model, RedirectAttributes redirectAttributes, Locale locale) throws Exception {
+    public String createUser(@ModelAttribute("corporateUserDTO") @Valid CorporateUserDTO corporateUserDTO, BindingResult result, WebRequest webRequest, Model model, RedirectAttributes redirectAttributes, Locale locale) throws Exception {
 
         if (result.hasErrors()) {
             return "corp/user/add";
@@ -199,9 +199,13 @@ public class CorpUserManagementController {
     }
 
     @PostMapping("/edit")
-    public String updateUser(@ModelAttribute("corporateUser") @Valid CorporateUserDTO corporateUserDTO, BindingResult result, WebRequest webRequest, Model model, RedirectAttributes redirectAttributes, Locale locale) throws Exception {
+    public String updateUser(@ModelAttribute("corporateUserDTO") @Valid CorporateUserDTO corporateUserDTO, BindingResult result, WebRequest webRequest, Model model, RedirectAttributes redirectAttributes, Locale locale) throws Exception {
 
         if (result.hasErrors()) {
+            CorporateDTO corporate = corporateService.getCorporate(Long.parseLong(corporateUserDTO.getCorporateId()));
+            List<CorporateRoleDTO> corporateRoleDTO = corporateService.getRoles(Long.parseLong(corporateUserDTO.getCorporateId()));
+            model.addAttribute("corporate", corporate);
+            model.addAttribute("corporateRoles", corporateRoleDTO);
             return "corp/user/edit";
         }
 
@@ -212,6 +216,10 @@ public class CorpUserManagementController {
                 Corporate corporate = corporateService.getCorp(Long.parseLong(corporateUserDTO.getCorporateId()));
                 CorporateUser cp = corporateUserService.getUserByCifAndEmailIgnoreCase(corporate, corporateUserDTO.getEmail());
                 if (cp != null) {
+                    CorporateDTO corporateDTO = corporateService.getCorporate(Long.parseLong(corporateUserDTO.getCorporateId()));
+                    List<CorporateRoleDTO> corporateRoleDTO = corporateService.getRoles(Long.parseLong(corporateUserDTO.getCorporateId()));
+                    model.addAttribute("corporate", corporateDTO);
+                    model.addAttribute("corporateRoles", corporateRoleDTO);
                     model.addAttribute("failure", messageSource.getMessage("email.exists", null, locale));
                     return "corp/user/edit";
                 }
@@ -237,23 +245,27 @@ public class CorpUserManagementController {
 
             return "redirect:/corporate/users/";
 
-        } catch (DuplicateObjectException doe) {
+        }catch (DuplicateObjectException doe) {
             result.addError(new ObjectError("error", doe.getMessage()));
             logger.error("Error creating corporate user {}", corporateUserDTO.getUserName(), doe);
             model.addAttribute("failure", doe.getMessage());
             return "corp/user/edit";
         } catch (VerificationInterruptedException ib){
-            model.addAttribute("message", ib.getMessage());
+            redirectAttributes.addFlashAttribute("message", ib.getMessage());
             return "redirect:/corporate/users/";
         }catch (VerificationException e){
             result.addError(new ObjectError("error", e.getMessage()));
-            logger.error("Error creating corporate user", e);
+            logger.error("Error editing corporate user", e);
             model.addAttribute("failure", messageSource.getMessage("user.add.failure", null, locale));
             return "corp/user/edit";
         }catch (InternetBankingException ibe) {
             result.addError(new ObjectError("error", ibe.getMessage()));
             logger.error("Error creating corporate user", ibe);
-            model.addAttribute("failure", messageSource.getMessage("failure",null,locale));
+            model.addAttribute("failure", ibe.getMessage());
+            CorporateDTO corporate = corporateService.getCorporate(Long.parseLong(corporateUserDTO.getCorporateId()));
+            List<CorporateRoleDTO> corporateRoleDTO = corporateService.getRoles(Long.parseLong(corporateUserDTO.getCorporateId()));
+            model.addAttribute("corporate", corporate);
+            model.addAttribute("corporateRoles", corporateRoleDTO);
             return "corp/user/edit";
         }
     }
