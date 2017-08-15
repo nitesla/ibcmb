@@ -173,8 +173,8 @@ public class ServiceRequestController {
 
         for (ServiceReqFormFieldDTO field : serviceReqConfig.getFormFields()) {
             if (field.getFieldType() != null && field.getFieldType().equals("CODE")) {
-                List<CodeDTO> codeList = codeService.getCodesByType(field.getTypeData());
-                model.addAttribute("codes", codeList);
+                List<CodeDTO> codes = codeService.getCodesByType(field.getTypeData());
+                model.addAttribute("codes", codes);
             }
 
             if (field.getFieldType() != null && field.getFieldType().equals("ACCT")) {

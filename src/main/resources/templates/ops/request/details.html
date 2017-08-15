@@ -84,7 +84,7 @@
                                         </tr>
                                         <tr>
                                             <td>Comment</td>
-                                            <td><textarea name ="comments" rows="2" class="form-control" th:value="*{comment}"></textarea>
+                                            <td><textarea rows="2" class="form-control" th:value="*{comments}"></textarea>
                                             </td>
                                         </tr>
                                         <tr>
@@ -134,8 +134,7 @@
 
                                             <span class="time" th:text="${history.createdOn}"></span>
 
-                                            <p class="message" th:text="${history.comment}">
-                                                Film festivals used to be do-or-die moments for movie makers. They were where you met the producers that
+                                            <p class="message" th:text="${history.comments}">
                                             </p>
                                         </a>
                                     </li>

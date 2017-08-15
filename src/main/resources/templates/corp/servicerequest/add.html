@@ -263,6 +263,20 @@
                                         </form>
 
                                     </div>
+
+
+                                    <div class="col-md-5 col-sm-5 col-xs-12">
+                                        <div  class=" related-box">
+                                            <h3 class="related-bar">Related Information</h3>
+
+                                            <p style="padding-left: 2%" th:each="code: ${codes}">
+                                                <strong><span th:text="${code.description}"></span></strong><br/>
+                                                <span th:if="${code.extraInfo!=null}" th:text="${code.extraInfo}"></span><br/><br/>
+                                            </p>
+
+                                        </div>
+
+                                    </div>
                                 </div>
                             </div>
                         </div>
