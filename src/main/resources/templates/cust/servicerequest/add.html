@@ -45,7 +45,7 @@
                                                 <p th:if="${field.fieldType} == 'CODE'">
                                                     <select class="form-control" th:name="${field.fieldName}" required="required">
                                                         <option th:each="code : ${codes}" th:value="${code.code}" th:text="${code.description}"></option>
-                                                    </select><span class='req-inner'></span><span th:text="${code.extraInfo}"></span>
+                                                    </select><span class='req-inner'></span>
                                                 </p>
 
                                                 <p th:if="${field.fieldType} == 'FI'">
@@ -71,6 +71,19 @@
                                         </form>
 
                     </div>
+
+               <div class="col-md-5 col-sm-5 col-xs-12">
+                   <div  class=" related-box">
+                       <h3 class="related-bar">Related Information</h3>
+
+                       <p style="padding-left: 2%" th:each="code: ${codes}">
+                           <strong><span th:text="${code.description}"></span></strong><br/>
+                           <span th:if="${code.extraInfo!=null}" th:text="${code.extraInfo}"></span><br/><br/>
+                       </p>
+
+                   </div>
+
+               </div>
                                
             </div>
         </div>
@@ -80,6 +93,19 @@
 
 
 <th:block layout:fragment="scripts">
+
+    <script>
+        $(document).ready(function () {
+            $('#datepicker').datepicker({
+                autoclose: true,
+                todayBtn: true,
+                todayHighlight: true
+            });
+        });
+
+    </script>
+
+
  <script>
             $('#reqForm').submit(function(event) {
                 //        event.preventDefault();

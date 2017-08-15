@@ -19,6 +19,6 @@ public class BatchJobController {
     @Autowired
     private AccountService accountService;
     public void updatAllAccounts(){
-        accountService.updateAccountDetails();
+//        accountService.updateAccountDetails();
     }
 }

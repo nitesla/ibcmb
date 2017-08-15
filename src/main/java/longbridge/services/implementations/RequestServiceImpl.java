@@ -252,7 +252,9 @@ public class RequestServiceImpl implements RequestService {
     private ServiceRequestDTO convertEntityToDTO(ServiceRequest serviceRequest) {
         ServiceRequestDTO requestDTO = modelMapper.map(serviceRequest, ServiceRequestDTO.class);
         if (serviceRequest.getUser() != null){
+            String fullName = serviceRequest.getUser().getFirstName()+" "+serviceRequest.getUser().getLastName();
             requestDTO.setUsername(serviceRequest.getUser().getUserName());
+            requestDTO.setFullName(fullName);
         }else if (serviceRequest.getCorporate() != null){
             requestDTO.setCorpName(serviceRequest.getCorporate().getName());
         }
@@ -285,7 +287,7 @@ public class RequestServiceImpl implements RequestService {
         requestDTO.setId(requestHistory.getId());
         String status = codeService.getByTypeAndCode("REQUEST_STATUS", requestHistory.getStatus()).getDescription();
         requestDTO.setStatus(status);
-        requestDTO.setComment(requestHistory.getComments());
+        requestDTO.setComments(requestHistory.getComments());
         requestDTO.setCreatedBy(requestHistory.getCreatedBy().getUserName());
         requestDTO.setCreatedOn(DateFormatter.format(requestHistory.getCreatedOn()));
         requestDTO.setServiceRequestId(requestHistory.getServiceRequest().getId().toString());
@@ -295,7 +297,7 @@ public class RequestServiceImpl implements RequestService {
     private RequestHistory convertRequestHistoryDTOToEntity(RequestHistoryDTO requestHistoryDTO) {
         RequestHistory requestHistory = new RequestHistory();
         requestHistory.setServiceRequest(serviceRequestRepo.findOne(Long.parseLong(requestHistoryDTO.getServiceRequestId())));
-        requestHistory.setComments(requestHistoryDTO.getComment());
+        requestHistory.setComments(requestHistoryDTO.getComments());
         requestHistory.setStatus(requestHistoryDTO.getStatus());
         requestHistory.setCreatedBy(operationsUserService.getUserByName(requestHistoryDTO.getCreatedBy()));
         requestHistory.setCreatedOn(new Date());

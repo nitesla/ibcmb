@@ -110,9 +110,9 @@ public class ServiceRequestController {
             serviceRequestDTO.setUserId(user.getId());
             serviceRequestDTO.setDateRequested(new Date());
 
-            if(serviceReqConfigDTO.isAuthenticate()){
-                if(session.getAttribute("authenticated")==null){
-                    session.setAttribute("requestDTO",serviceRequestDTO);
+            if (serviceReqConfigDTO.isAuthenticate()) {
+                if (session.getAttribute("authenticated") == null) {
+                    session.setAttribute("requestDTO", serviceRequestDTO);
                     session.setAttribute("redirectURL", "/retail/requests/process");
                     return "redirect:/retail/token/authenticate";
                 }
@@ -120,48 +120,46 @@ public class ServiceRequestController {
             String message = requestService.addRequest(serviceRequestDTO);
             redirectAttributes.addFlashAttribute("message", message);
 
-        } catch (InternetBankingException e){
+        } catch (InternetBankingException e) {
             logger.error("Service Request Error", e);
-            model.addAttribute("failure", e.getMessage());
-            return "cust/servicerequest/add";
+            redirectAttributes.addFlashAttribute("failure", e.getMessage());
+            return "/retail/requests/" + serviceReqConfigId;
         } catch (Exception e) {
             logger.error("Service Request Error", e);
-            model.addAttribute("failure", messageSource.getMessage("req.add.failure", null, locale));
-            return "cust/servicerequest/add";
+            redirectAttributes.addFlashAttribute("failure", messageSource.getMessage("req.add.failure", null, locale));
+            return "/retail/requests/" + serviceReqConfigId;
         }
         return "redirect:/retail/requests/track";
 
     }
 
     @GetMapping("/process")
-    public String processRequest(HttpSession session, RedirectAttributes redirectAttributes, Model model, Locale locale){
+    public String processRequest(HttpSession session, RedirectAttributes redirectAttributes, Model model, Locale locale) {
 
-        if(session.getAttribute("requestDTO")!=null){
-            ServiceRequestDTO requestDTO = (ServiceRequestDTO)session.getAttribute("requestDTO");
+        if (session.getAttribute("requestDTO") != null) {
+            ServiceRequestDTO requestDTO = (ServiceRequestDTO) session.getAttribute("requestDTO");
 
-            if(session.getAttribute("authenticated")!=null){
+            if (session.getAttribute("authenticated") != null) {
 
                 try {
                     String message = requestService.addRequest(requestDTO);
                     session.removeAttribute("authenticated");
                     session.removeAttribute("requestDTO");
                     redirectAttributes.addFlashAttribute("message", message);
+                } catch (InternetBankingException e) {
+                    logger.error("Service Request Error", e);
+                    model.addAttribute("failure", e.getMessage());
+                    return "cust/servicerequest/add";
+                } catch (Exception e) {
+                    logger.error("Service Request Error", e);
+                    redirectAttributes.addFlashAttribute("failure", messageSource.getMessage("req.add.failure", null, locale));
+                    return "cust/servicerequest/add";
                 }
-            catch (InternetBankingException e){
-                logger.error("Service Request Error", e);
-                model.addAttribute("failure", e.getMessage());
-                return "cust/servicerequest/add";
-            } catch (Exception e) {
-                logger.error("Service Request Error", e);
-                model.addAttribute("failure", messageSource.getMessage("req.add.failure", null, locale));
-                return "cust/servicerequest/add";
-            }
             }
 
         }
         return "redirect:/retail/requests/track";
     }
-
 
 
     @GetMapping("/{reqId}")
@@ -173,8 +171,8 @@ public class ServiceRequestController {
 
         for (ServiceReqFormFieldDTO field : serviceReqConfig.getFormFields()) {
             if (field.getFieldType() != null && field.getFieldType().equals("CODE")) {
-                List<CodeDTO> codeList = codeService.getCodesByType(field.getTypeData());
-                model.addAttribute("codes", codeList);
+                List<CodeDTO> codes = codeService.getCodesByType(field.getTypeData());
+                model.addAttribute("codes", codes);
             }
 
             if (field.getFieldType() != null && field.getFieldType().equals("ACCT")) {
@@ -201,7 +199,7 @@ public class ServiceRequestController {
     }
 
     @GetMapping("/track")
-    public String trackRequests(Model model, Principal principal){
+    public String trackRequests(Model model, Principal principal) {
 //        RetailUser user = userService.getUserByName(principal.getName());
 //        Iterable<ServiceRequestDTO> serviceRequests = requestService.getRequests(user);
 //        model.addAttribute("requests", serviceRequests);
@@ -209,8 +207,9 @@ public class ServiceRequestController {
     }
 
     @GetMapping(path = "/track/all")
-    public @ResponseBody
-    DataTablesOutput<ServiceRequestDTO> getUsers(DataTablesInput input, Principal principal){
+    public
+    @ResponseBody
+    DataTablesOutput<ServiceRequestDTO> getUsers(DataTablesInput input, Principal principal) {
         RetailUser user = userService.getUserByName(principal.getName());
         Pageable pageable = DataTablesUtils.getPageable(input);
         Page<ServiceRequestDTO> serviceRequests = requestService.getRequests(user, pageable);
@@ -221,7 +220,6 @@ public class ServiceRequestController {
         out.setRecordsTotal(serviceRequests.getTotalElements());
         return out;
     }
-
 
 
 }

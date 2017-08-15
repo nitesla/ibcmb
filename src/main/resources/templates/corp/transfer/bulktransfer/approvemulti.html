@@ -82,7 +82,6 @@
                                         <table class="table table-striped table-bordered table-hover">
                                             <thead>
                                             <td>Role</td>
-
                                             <td>Authorizer</td>
                                             <td>Status</td>
                                             <td>Comments</td>
@@ -115,10 +114,16 @@
                                         </table>
 
                                         <form th:action="@{/corporate/transfer/bulk/approve}" method="post">
-                                            <label class="control-label">Comments</label>
+                                            <!--<label class="control-label">Comments</label>-->
                                             <textarea th:if="${userCanAuthorize}" class="form-control"
-                                                      th:field="${corpTransReqEntry.comments}"></textarea>
+                                                      th:field="${corpTransReqEntry.comments}" placeholder="Enter comments"></textarea>
+
+                                            <div >
+                                                <input type="text" th:if="${userCanAuthorize}" class="form-control"
+                                                       name="token" placeholder="Enter token code"/>
+                                            </div>
                                             <div>
+
                                                 <input type="hidden" name="tranReqId" th:value="${corpTransRequest.id}"/>
                                             </div>
                                             <div>

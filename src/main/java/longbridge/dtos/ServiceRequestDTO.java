@@ -14,6 +14,7 @@ public class ServiceRequestDTO {
     private Long id;
     private Long userId;
     private String username;
+    private String fullName;
     private CorporateDTO corporate;
     private String corpName;
     private String requestName;
@@ -103,6 +104,14 @@ public class ServiceRequestDTO {
         this.corporate = corporate;
     }
 
+    public String getFullName() {
+        return fullName;
+    }
+
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
+    }
+
     public String getCorpName() {
         return corpName;
     }
@@ -111,16 +120,22 @@ public class ServiceRequestDTO {
         this.corpName = corpName;
     }
 
+
     @Override
     public String toString() {
         return "ServiceRequestDTO{" +
-                "userId=" + userId +
+                "id=" + id +
+                ", userId=" + userId +
                 ", username='" + username + '\'' +
+                ", fullName='" + fullName + '\'' +
+                ", corporate=" + corporate +
+                ", corpName='" + corpName + '\'' +
                 ", requestName='" + requestName + '\'' +
                 ", requestStatus='" + requestStatus + '\'' +
                 ", body='" + body + '\'' +
                 ", dateRequested=" + dateRequested +
                 ", date='" + date + '\'' +
+                ", serviceReqConfigId=" + serviceReqConfigId +
                 '}';
     }
 }

@@ -3,6 +3,7 @@ package longbridge.controllers.corporate;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import longbridge.dtos.*;
+import longbridge.exception.InternetBankingException;
 import longbridge.models.Corporate;
 import longbridge.models.CorporateUser;
 import longbridge.models.FinancialInstitutionType;
@@ -11,6 +12,7 @@ import longbridge.utils.NameValue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
@@ -22,11 +24,9 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.servlet.http.HttpSession;
 import java.security.Principal;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by Fortune on 4/3/2017.
@@ -40,6 +40,9 @@ public class CorpServiceRequestController {
 
     @Autowired
     private ServiceReqConfigService serviceReqConfigService;
+
+    @Autowired
+    private MessageSource messageSource;
 
     @Autowired
     private CodeService codeService;
@@ -67,7 +70,7 @@ public class CorpServiceRequestController {
     }
 
     @PostMapping
-    public String processRequest(@ModelAttribute("requestDTO") ServiceRequestDTO requestDTO, BindingResult result, Principal principal, RedirectAttributes redirectAttributes) {
+    public String processRequest(@ModelAttribute("requestDTO") ServiceRequestDTO requestDTO, BindingResult result, Principal principal, RedirectAttributes redirectAttributes,Locale locale) {
 
         String requestBody = requestDTO.getRequestName();
         Long serviceReqConfigId = 0L;
@@ -112,13 +115,56 @@ public class CorpServiceRequestController {
             serviceRequestDTO.setRequestStatus("S");
             serviceRequestDTO.setCorporate(corporate);
             serviceRequestDTO.setDateRequested(new Date());
-            requestService.addCorpRequest(serviceRequestDTO);
+            String message = requestService.addCorpRequest(serviceRequestDTO);
+            redirectAttributes.addFlashAttribute("message", message);
+            return "redirect:/corporate/requests/track";
 
-        } catch (Exception e) {
-            logger.error("Could not process the request: {}",e.toString());
         }
-        redirectAttributes.addFlashAttribute("message", "Request sent successfully");
-        return "redirect:/corporate/requests/track";
+
+        catch (InternetBankingException e){
+            logger.error("Service Request Error", e);
+            redirectAttributes.addFlashAttribute("failure", e.getMessage());
+            return "/corporate/requests/"+serviceReqConfigId;
+        }
+        catch (Exception e) {
+            logger.error("Service Request Error", e);
+            redirectAttributes.addFlashAttribute("failure", messageSource.getMessage("req.add.failure", null, locale));
+            return "/corporate/requests/"+serviceReqConfigId;
+
+
+        }
+
+    }
+
+
+
+    @GetMapping("/process")
+    public String processRequest(HttpSession session, RedirectAttributes redirectAttributes, Model model, Locale locale){
+
+        if(session.getAttribute("requestDTO")!=null){
+            ServiceRequestDTO requestDTO = (ServiceRequestDTO)session.getAttribute("requestDTO");
+
+            if(session.getAttribute("authenticated")!=null){
+
+                try {
+                    String message = requestService.addRequest(requestDTO);
+                    session.removeAttribute("authenticated");
+                    session.removeAttribute("requestDTO");
+                    redirectAttributes.addFlashAttribute("message", message);
+                }
+                catch (InternetBankingException e){
+                    logger.error("Service Request Error", e);
+                    model.addAttribute("failure", e.getMessage());
+                    return "corp/servicerequest/add";
+                } catch (Exception e) {
+                    logger.error("Service Request Error", e);
+                    redirectAttributes.addFlashAttribute("failure", messageSource.getMessage("req.add.failure", null, locale));
+                    return "corp/servicerequest/add";
+                }
+            }
+
+        }
+        return "redirect:/corporate/requests//track";
     }
 
     @GetMapping("/{reqId}")
