@@ -27,6 +27,7 @@ public interface BulkTransferService {
     Page<CreditRequestDTO> getCreditRequests(BulkTransfer bulkTransfer, Pageable pageable);
     Page<CreditRequest> getAllCreditRequests(BulkTransfer bulkTransfer, Pageable pageable);
 
-
     boolean userCanAuthorize(TransRequest transRequest);
+
+    int getPendingBulkTransferRequests(Corporate corporate);
 }

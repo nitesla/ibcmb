@@ -38,6 +38,8 @@ public class CorporateControllerAdvice {
     private ConfigurationService configurationService;
     @Autowired
     private  CorpTransferService corpTransferService;
+    @Autowired
+    private  BulkTransferService bulkTransferService;
 
     @Autowired
     public CorporateControllerAdvice(CorporateUserService corporateUserService, IntegrationService integrationService, TransferService transferService, AccountService accountService, ServiceReqConfigService reqConfigService, MessageService messageService) {
@@ -127,7 +129,16 @@ public class CorporateControllerAdvice {
         }
 
         if ("MULTI".equals(corporateUser.getCorporate().getCorporateType())){
-            model.addAttribute("pendingRequests", corpTransferService.countPendingRequest());
+            int pendingRequests = corpTransferService.countPendingRequest();
+            if (pendingRequests > 0)
+                model.addAttribute("pendingRequests", pendingRequests);
+
+            int pendingBulk = bulkTransferService.getPendingBulkTransferRequests(corporateUser.getCorporate());
+            if (pendingBulk > 0)
+                model.addAttribute("pendingBulk", pendingBulk);
+
+            int pending = pendingRequests + pendingBulk;
+            model.addAttribute("pending", pending);
         }
 
         model.addAttribute("corporateType", corporateUser.getCorporate().getCorporateType());

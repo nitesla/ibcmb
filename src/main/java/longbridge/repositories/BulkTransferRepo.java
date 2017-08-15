@@ -1,13 +1,9 @@
 package longbridge.repositories;
 
-import longbridge.dtos.BulkTransferDTO;
 import longbridge.models.BulkTransfer;
 import longbridge.models.Corporate;
-import longbridge.models.CreditRequest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
@@ -22,5 +18,7 @@ public interface BulkTransferRepo extends CommonRepo<BulkTransfer, Long>{
     List<BulkTransfer> findByStatusNotInIgnoreCase(List<String> list);
 
    BulkTransfer findFirstByRefCode(String refCode);
+
+   int countByCorporateAndStatus(Corporate corporate, String status);
 
 }

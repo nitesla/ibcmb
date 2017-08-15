@@ -331,6 +331,11 @@ public class BulkTransferServiceImpl implements BulkTransferService {
         return false;
     }
 
+    @Override
+    public int getPendingBulkTransferRequests(Corporate corporate) {
+        return bulkTransferRepo.countByCorporateAndStatus(corporate, "P");
+    }
+
     private boolean isAuthorizationComplete(BulkTransfer transRequest) {
         CorpTransferAuth transferAuth = transRequest.getTransferAuth();
         Set<CorpTransReqEntry> transReqEntries = transferAuth.getAuths();
