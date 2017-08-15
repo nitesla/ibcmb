@@ -230,6 +230,13 @@ public class CorpTransferServiceImpl implements CorpTransferService {
         return corpTransRequests;
     }
 
+    @Override
+    public int countPendingRequest(){
+        CorporateUser corporateUser = getCurrentUser();
+        Corporate corporate = corporateUser.getCorporate();
+        return corpTransferRequestRepo.countByCorporateAndStatus(corporate, "P");
+    }
+
     public CorpTransferRequestDTO convertEntityToDTO(CorpTransRequest corpTransRequest) {
         CorpTransferRequestDTO transferRequestDTO = new CorpTransferRequestDTO();
         transferRequestDTO.setId(corpTransRequest.getId());

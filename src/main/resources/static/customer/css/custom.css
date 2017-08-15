@@ -608,6 +608,10 @@ select::-ms-expand {
     color: #9F614B !important;
 }
 
+.badge{
+    background-color: #9F614B !important;
+}
+
 #loader {
     position: absolute;
     left: 50%;

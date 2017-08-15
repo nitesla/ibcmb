@@ -21,6 +21,8 @@ public interface CorpTransferRequestRepo extends CommonRepo<CorpTransRequest,Lon
     Page<CorpTransRequest> findByCorporateOrderByTranDateDesc(Corporate corporate, Pageable pageable);
 
 
+    int countByCorporateAndStatus(Corporate corporate, String status);
+
     Page<CorpTransRequest> findByCorporateAndStatusIn(Corporate corporate, List<String> status, Pageable pageable);
 
 

@@ -99,7 +99,7 @@ public class IntegrationServiceImpl implements IntegrationService {
     }
 
     @Override
-    public AccountStatement getAccountStatements(String accountNo, Date fromDate, Date toDate, String tranType,PaginationDetails paginationDetails) {
+    public AccountStatement getAccountStatements(String accountNo, Date fromDate, Date toDate, String tranType,String numOfTxn,PaginationDetails paginationDetails) {
         AccountStatement statement = new AccountStatement();
         try {
             SimpleDateFormat formatter = new SimpleDateFormat("dd-MMM-yyyy");
@@ -115,7 +115,7 @@ public class IntegrationServiceImpl implements IntegrationService {
             if (toDate != null) params.put("toDate", formatter.format(toDate));
             if (paginationDetails != null) params.put("paginationDetails", paginationDetails);
 
-
+            params.put("numOfTxn", numOfTxn);
             statement = template.postForObject(uri, params, AccountStatement.class);
 
 
@@ -127,7 +127,7 @@ public class IntegrationServiceImpl implements IntegrationService {
         return statement;
     }
     @Override
-    public AccountStatement getAccountStatements(String accountNo, Date fromDate, Date toDate, String tranType) {
+    public AccountStatement getAccountStatements(String accountNo, Date fromDate, Date toDate, String tranType,String numOfTxn) {
         AccountStatement statement = new AccountStatement();
         try {
             SimpleDateFormat formatter = new SimpleDateFormat("dd-MMM-yyyy");
@@ -141,6 +141,7 @@ public class IntegrationServiceImpl implements IntegrationService {
             if (tranType != null)
                 params.put("tranType", tranType);
             if (toDate != null) params.put("toDate", formatter.format(toDate));
+            params.put("numOfTxn", numOfTxn);
 
 
 

@@ -16,6 +16,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
@@ -33,6 +34,7 @@ import org.springframework.web.servlet.view.jasperreports.JasperReportsPdfView;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.security.Principal;
+import java.text.DecimalFormat;
 import java.util.*;
 import java.util.stream.StreamSupport;
 
@@ -62,6 +64,9 @@ public class CorpTransferController {
     private TransferUtils transferUtils;
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
+    private Locale locale = LocaleContextHolder.getLocale();
+    @Autowired
+    private MessageSource messageSource;
     @Autowired
     private CorpTransferService corpTransferService;
 
@@ -358,28 +363,43 @@ public class CorpTransferController {
     //The receipt for multi corporate user
     @RequestMapping(path = "{id}/receipt", method = RequestMethod.GET)
     public ModelAndView report(@PathVariable Long id, HttpServletRequest servletRequest, Principal principal) throws Exception {
-        servletRequest.getSession().setAttribute("newId", id);
-        CorporateUser corporateUser = corporateUserService.getUserByName(principal.getName());
-        JasperReportsPdfView view = new JasperReportsPdfView();
-        view.setUrl("classpath:jasperreports/rpt_receipt.jrxml");
-        view.setApplicationContext(appContext);
-        Map<String, Object> modelMap = new HashMap<>();
-        modelMap.put("datasource", new ArrayList<>());
-        modelMap.put("amount", transferService.getTransfer(id).getAmount());
-        modelMap.put("recipient", transferService.getTransfer(id).getBeneficiaryAccountName());
-        modelMap.put("recipient", transferService.getTransfer(id).getBeneficiaryAccountName());
-        modelMap.put("AccountNum", transferService.getTransfer(id).getCustomerAccountNumber());
-        modelMap.put("sender", corporateUser.getFirstName() + " " + corporateUser.getLastName());
-        modelMap.put("remarks", transferService.getTransfer(id).getRemarks());
-        modelMap.put("remarks", transferService.getTransfer(id));
-        modelMap.put("recipientBank", transferService.getTransfer(id).getFinancialInstitution().getInstitutionName());
-        modelMap.put("acctNo2", transferService.getTransfer(id).getBeneficiaryAccountNumber());
-        modelMap.put("acctNo1", transferService.getTransfer(id).getCustomerAccountNumber());
-        modelMap.put("refNUm", transferService.getTransfer(id).getReferenceNumber());
-        modelMap.put("date", DateFormatter.format(new Date()));
-        modelMap.put("tranDate", DateFormatter.format(new Date()));
-        ModelAndView modelAndView = new ModelAndView(view, modelMap);
-        return modelAndView;
+        //servletRequest.getSession().setAttribute("newId",id);
+        try {
+            CorporateUser corporateUser = corporateUserService.getUserByName(principal.getName());
+            Corporate corporate = corporateUser.getCorporate();
+            TransRequest transRequest = transferService.getTransfer(id);
+
+            logger.info("Trans Request {}", transRequest);
+            JasperReportsPdfView view = new JasperReportsPdfView();
+            view.setUrl("classpath:jasperreports/rpt_tran-hist.jrxml");
+            view.setApplicationContext(appContext);
+
+            Map<String, Object> modelMap = new HashMap<>();
+            double amount = Double.parseDouble(transRequest.getAmount().toString());
+            DecimalFormat formatter = new DecimalFormat("#,###.00");
+            modelMap.put("datasource", new ArrayList<>());
+            modelMap.put("amount", formatter.format(amount));
+            modelMap.put("customer",corporate.getName());
+            modelMap.put("customerAcctNumber", transRequest.getCustomerAccountNumber());
+            modelMap.put("remarks", transRequest.getRemarks());
+            modelMap.put("beneficiary", transRequest.getBeneficiaryAccountName());
+            modelMap.put("beneficiaryAcctNumber", transRequest.getBeneficiaryAccountNumber());
+            modelMap.put("beneficiaryBank", transRequest.getFinancialInstitution().getInstitutionName());
+            modelMap.put("refNUm", transRequest.getReferenceNumber());
+            modelMap.put("tranDate", DateFormatter.format(transRequest.getTranDate()));
+            modelMap.put("date", DateFormatter.format(new Date()));
+
+
+            ModelAndView modelAndView=new ModelAndView(view, modelMap);
+            return modelAndView;
+        }catch (InternetBankingException e){
+            logger.info(" RECEIPT DOWNLOAD {} ", e.getMessage());
+            ModelAndView modelAndView =  new ModelAndView("redirect:/corporate/transfer/history");
+            modelAndView.addObject("failure" , messageSource.getMessage("receipt.download.failed", null, locale));
+            //redirectAttributes.addFlashAttribute("failure", messageSource.getMessage("receipt.download.failed", null, locale));
+            return modelAndView;
+
+        }
     }
 
 

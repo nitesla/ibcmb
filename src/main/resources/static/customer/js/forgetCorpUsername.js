@@ -12,14 +12,14 @@ var email = "";
  *
  * @param accountNumber the account number to check
  */
-function validateAccountNo(accountNumber,email){
+function validateAccountNo(corporateId,email){
     $('#myLoader').modal('show');
     var secQues;
     var email1 = email;
-    console.log("the email "+email1)
+    console.log("the corporateId "+corporateId);
     $.ajax({
         type:'GET',
-        url:"/rest/corporate/"+email1+"/"+accountNumber,
+        url:"/rest/corporate/"+email1+"/"+corporateId,
         async:false,
         success:function(data1){
             entityDetails[0] = data1[0];
@@ -228,10 +228,10 @@ form.children("div").steps({
 
         if(ACCOUNT_DETAILS_STEP === currentIndex){
             console.log("Current step is the account details step");
-            var accountNumber = $('input[name="acct"]').val();
-            email = $('input[name="email"]').val();
+            var corporateId = $('#corporateId').val();
+            email = $('#email').val();
             console.log("email "+email);
-            return isValid && validateAccountNo(accountNumber,email);
+            return isValid && validateAccountNo(corporateId,email);
         }
         if(SEND_USERNAME_STEP === currentIndex){
             console.log("Current step is the change password step");

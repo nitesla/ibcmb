@@ -1,5 +1,6 @@
 package longbridge.controllers;
 
+import longbridge.dtos.PasswordStrengthDTO;
 import longbridge.exception.*;
 import longbridge.forms.CustResetPassword;
 import longbridge.forms.ResetPasswordForm;
@@ -110,7 +111,11 @@ public class RetrieveCorpCredentialController {
                 redirectAttributes.addFlashAttribute("failure", "Invalid Credentials");
                 return "redirect:/login/corporate";
             }
+            PasswordStrengthDTO passwordStrengthDTO = passwordPolicyService.getPasswordStrengthParams();
+            logger.info("Password Strength {}" + passwordStrengthDTO);
+            model.addAttribute("passwordStrength", passwordStrengthDTO);
 
+            model.addAttribute("forgotPasswordForm", resetPasswordForm);
 
             model.addAttribute("forgotPasswordForm", resetPasswordForm);
             List<String> policies = passwordPolicyService.getPasswordRules();
@@ -349,19 +354,20 @@ public @ResponseBody String getSecAns(WebRequest webRequest, HttpSession session
         return "false";
     }
 
-    @GetMapping("/rest/corporate/{email}/{accountNumber}")
-    public @ResponseBody String[] getAccountNameFromNumber(@PathVariable String email,@PathVariable String accountNumber){
-        logger.info("Account nUmber {} email {}",accountNumber,email);
+    @GetMapping("/rest/corporate/{email}/{corporateId}")
+    public @ResponseBody String[] getAccountNameFromNumber(@PathVariable String email,@PathVariable String corporateId){
+        logger.info("corporateId {} email {}",corporateId,email);
         String customerId = "";
         String[] userDetails =  new String[4];
         userDetails[0] = "";
         userDetails[1] = "";
-        Account account = accountService.getAccountByAccountNumber(accountNumber);
-        logger.info("this is the acc corpp ", account);
-        if (account != null){
-            customerId = account.getCustomerId();
-            Corporate corporate = corporateService.getCorporateByCustomerId(customerId);
-            if(corporate != null) {
+//        Account account = accountService.getAccountByAccountNumber(corporateId);
+        logger.info("this is the acc corpp {}", corporateId);
+//            customerId = account.getCustomerId();
+            Corporate corporate = corporateService.getCorporateByCorporateId(corporateId);
+//        logger.info("this is the acc corporate{}", corporate);
+
+        if(corporate != null) {
                 CorporateUser corporateUser = corporateUserService.getUserByCifAndEmailIgnoreCase(corporate, email);
                 if(corporateUser != null){
                 if (corporateUser.getEntrustGroup() != null && corporateUser.getEntrustId() != null) {
@@ -374,10 +380,6 @@ public @ResponseBody String getSecAns(WebRequest webRequest, HttpSession session
                 logger.info("entrust id {} entrust group {} ", corporateUser.getEntrustId(), corporateUser.getEntrustGroup());
                 }
             }
-        }else {
-            //nothing
-            customerId = "";
-        }
 
         return userDetails;
     }
