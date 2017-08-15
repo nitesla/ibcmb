@@ -326,6 +326,7 @@
                     toDate : $('[name=toDate]').val(),
                     tranType : $('[name=tranType]').val()
                 },success: function (result) {
+                    $('#btn-print').show();
                     if (result != null) {
 
 //                        var detialsList = JSON.parse(result);
@@ -349,7 +350,7 @@
                 }
             
             });
-//
+
 
         });
         $("#btn-print").on("click", function(e) {

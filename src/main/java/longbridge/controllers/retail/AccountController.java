@@ -575,16 +575,27 @@ public class AccountController {
 
 			AccountStatement accountStatement = integrationService.getAccountStatements(acctNumber, from, to, tranType,"5");
 			logger.info("accountStatement new {}", accountStatement);
-			list = accountStatement.getTransactionDetails();
+
 			session.removeAttribute("hasMoreTransaction");
-			session.removeAttribute("acctStmtEntirePastDetails");
+			if(session.getAttribute("retAcctStmtStateValue") !=null) {
+				Integer stateValue = (Integer) session.getAttribute("retAcctStmtStateValue");
+				for (int i = 0; i<=stateValue;i++) {
+					session.removeAttribute("acctStmtEntirePastDetails"+stateValue);
+				}
+			}
+
+			session.removeAttribute("retAcctStmtStateValue");
+
 			if(accountStatement != null) {
+				list = accountStatement.getTransactionDetails();
 				session.setAttribute("hasMoreTransaction", accountStatement.getHasMoreData());
+
 			}
 			session.removeAttribute("acctStmtLastDetails");
 			if(!list.isEmpty()){
 				session.setAttribute("acctStmtLastDetails",list.get(list.size()-1));
-				session.setAttribute("acctStmtEntirePastDetails",list);
+				session.setAttribute("retAcctStmtStateValue",0);
+				session.setAttribute("acctStmtEntirePastDetails0",list);
 			}
 
 		} catch (ParseException e) {
@@ -645,17 +656,20 @@ public class AccountController {
 //				logger.info("accountStatement {}", accountStatement);
 				list = accountStatement.getTransactionDetails();
 				session.removeAttribute("acctStmtLastDetails");
-				session.removeAttribute("acctStmtEntirePastDetails");
+
 				session.removeAttribute("hasMoreTransaction");
 				if(accountStatement != null) {
 					session.setAttribute("hasMoreTransaction", accountStatement.getHasMoreData());
 				}
 				if (!list.isEmpty()) {
 					session.setAttribute("acctStmtLastDetails", list.get(list.size() - 1));
-
-					session.setAttribute("acctStmtEntirePastDetails", list);
+					Integer stateValue = (Integer) session.getAttribute("retAcctStmtStateValue");
+					stateValue=+1;
+					session.removeAttribute("acctStmtEntirePastDetails"+stateValue);
+					session.setAttribute("acctStmtEntirePastDetails"+stateValue, list);
+					session.setAttribute("retAcctStmtStateValue",stateValue);
 					logger.info("acctStmtLastDetails {}", list.get(list.size() - 1));
-//					logger.info("acctStmtFirstDetails {}", list.get(0));
+					logger.info("acct statemnet state {}", stateValue);
 				}
 			}
 
@@ -674,13 +688,19 @@ public class AccountController {
 		String state = webRequest.getParameter("state");
 	logger.info("the state {}",state);
 		List<TransactionDetails> list =  null;
-			if((session.getAttribute("acctStmtEntirePastDetails") != null)&&(state.equalsIgnoreCase("backward"))) {
-				 list = (List<TransactionDetails>) session.getAttribute("acctStmtEntirePastDetails");
-				session.removeAttribute("acctStmtLastDetails");
-				session.setAttribute("acctStmtLastDetails", list.get(list.size() - 1));
-				session.setAttribute("hasMoreTransaction", "Y");
-				logger.info("acctStmtLastDetails  last record previous {}", list.get(list.size() - 1));
-				return list;
+			if((state.equalsIgnoreCase("backward"))) {
+				Integer stateValue = (Integer) session.getAttribute("retAcctStmtStateValue");
+				stateValue -=1;
+				if(session.getAttribute("acctStmtEntirePastDetails"+stateValue) != null) {
+					session.removeAttribute("retAcctStmtStateValue");
+					session.setAttribute("retAcctStmtStateValue", stateValue);
+					list = (List<TransactionDetails>) session.getAttribute("acctStmtEntirePastDetails" + stateValue);
+					session.removeAttribute("acctStmtLastDetails");
+					session.setAttribute("acctStmtLastDetails", list.get(list.size() - 1));
+					session.setAttribute("hasMoreTransaction", "Y");
+					logger.info("acctStmtLastDetails  last record previous {}", list.get(list.size() - 1));
+					return list;
+				}
 			}
 
 		return list;
