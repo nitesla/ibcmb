@@ -43,6 +43,7 @@ public interface IntegrationService {
      */
     AccountStatement getAccountStatements(String accountNo, Date fromDate, Date toDate, String tranType,String numOfTxn,PaginationDetails paginationDetails);
     AccountStatement getAccountStatements(String accountNo, Date fromDate, Date toDate, String tranType,String numOfTxn);
+    AccountStatement getFullAccountStatement(String accountNo, Date fromDate, Date toDate, String tranType);
 
     List<TransactionHistory> getLastNTransactions(String accountNo, String numberOfRecords);
 
