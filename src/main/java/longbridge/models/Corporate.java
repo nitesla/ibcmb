@@ -202,7 +202,7 @@ public class Corporate extends AbstractEntity implements PrettySerializer{
 
 	@Override @JsonIgnore
    	public List<String> getDefaultSearchFields() {
-   		return Arrays.asList("name", "rcNumber","customerId");
+   		return Arrays.asList("name","customerId","corporateId","corporateType");
    	}
 
     @Override @JsonIgnore

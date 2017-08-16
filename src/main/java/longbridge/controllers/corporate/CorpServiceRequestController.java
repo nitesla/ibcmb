@@ -70,7 +70,7 @@ public class CorpServiceRequestController {
     }
 
     @PostMapping
-    public String processRequest(@ModelAttribute("requestDTO") ServiceRequestDTO requestDTO, BindingResult result, Principal principal, RedirectAttributes redirectAttributes,Locale locale) {
+    public String processRequest(@ModelAttribute("requestDTO") ServiceRequestDTO requestDTO, HttpSession session, Principal principal, RedirectAttributes redirectAttributes,Locale locale) {
 
         String requestBody = requestDTO.getRequestName();
         Long serviceReqConfigId = 0L;
@@ -110,29 +110,35 @@ public class CorpServiceRequestController {
             requestBody = objectMapper.writeValueAsString(myFormObjects);
 
             CorporateUser user = userService.getUserByName(principal.getName());
-            CorporateDTO corporate = corporateService.getCorporate(user.getCorporate().getId());
             serviceRequestDTO.setBody(requestBody);
             serviceRequestDTO.setRequestStatus("S");
-            serviceRequestDTO.setCorporate(corporate);
+            serviceRequestDTO.setCorpId(user.getCorporate().getId());
             serviceRequestDTO.setDateRequested(new Date());
+
+            if (serviceReqConfigDTO.isAuthenticate()) {
+                if (session.getAttribute("authenticated") == null) {
+                    session.setAttribute("requestDTO", serviceRequestDTO);
+                    session.setAttribute("redirectURL", "/corporate/requests/process");
+                    return "redirect:/corporate/token/authenticate";
+                }
+            }
+
             String message = requestService.addCorpRequest(serviceRequestDTO);
             redirectAttributes.addFlashAttribute("message", message);
-            return "redirect:/corporate/requests/track";
 
         }
 
         catch (InternetBankingException e){
             logger.error("Service Request Error", e);
             redirectAttributes.addFlashAttribute("failure", e.getMessage());
-            return "/corporate/requests/"+serviceReqConfigId;
+            return "redirect:/corporate/requests/"+serviceReqConfigId;
         }
         catch (Exception e) {
             logger.error("Service Request Error", e);
             redirectAttributes.addFlashAttribute("failure", messageSource.getMessage("req.add.failure", null, locale));
-            return "/corporate/requests/"+serviceReqConfigId;
-
-
+            return "redirect:/corporate/requests/"+serviceReqConfigId;
         }
+        return "redirect:/corporate/requests/track";
 
     }
 
@@ -147,7 +153,7 @@ public class CorpServiceRequestController {
             if(session.getAttribute("authenticated")!=null){
 
                 try {
-                    String message = requestService.addRequest(requestDTO);
+                    String message = requestService.addCorpRequest(requestDTO);
                     session.removeAttribute("authenticated");
                     session.removeAttribute("requestDTO");
                     redirectAttributes.addFlashAttribute("message", message);
@@ -155,11 +161,11 @@ public class CorpServiceRequestController {
                 catch (InternetBankingException e){
                     logger.error("Service Request Error", e);
                     model.addAttribute("failure", e.getMessage());
-                    return "corp/servicerequest/add";
+                    return "redirect:/corporate/requests/"+requestDTO.getServiceReqConfigId();
                 } catch (Exception e) {
                     logger.error("Service Request Error", e);
                     redirectAttributes.addFlashAttribute("failure", messageSource.getMessage("req.add.failure", null, locale));
-                    return "corp/servicerequest/add";
+                    return "redirect:/corporate/requests/"+requestDTO.getServiceReqConfigId();
                 }
             }
 

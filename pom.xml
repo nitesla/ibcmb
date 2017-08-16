@@ -117,11 +117,11 @@
             <type>jar</type>
             <systemPath>${project.basedir}/ojdbc7.jar</systemPath>
         </dependency>
-        <!--<dependency>-->
-            <!--<groupId>com.jaspersoft</groupId>-->
-            <!--<artifactId>jasperreports-functions</artifactId>-->
-            <!--<version>6.4.0</version>-->
-        <!--</dependency>-->
+        <dependency>
+            <groupId>com.jaspersoft</groupId>
+            <artifactId>jasperreports-functions</artifactId>
+            <version>6.4.0</version>
+        </dependency>
 
         <dependency>
             <groupId>com.entrust</groupId>
@@ -137,11 +137,11 @@
         <!--<version>4.3.7.RELEASE</version>-->
         <!--</dependency>-->
 
-        <!--<dependency>-->
-        <!--<groupId>org.springframework.boot</groupId>-->
-        <!--<artifactId>spring-boot-starter-tomcat</artifactId>-->
-        <!--<scope>provided</scope>-->
-        <!--</dependency>-->
+        <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-tomcat</artifactId>
+        <scope>provided</scope>
+        </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web-services</artifactId>

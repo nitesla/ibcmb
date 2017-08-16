@@ -123,11 +123,11 @@ public class ServiceRequestController {
         } catch (InternetBankingException e) {
             logger.error("Service Request Error", e);
             redirectAttributes.addFlashAttribute("failure", e.getMessage());
-            return "/retail/requests/" + serviceReqConfigId;
+            return "redirect:/retail/requests/" + serviceReqConfigId;
         } catch (Exception e) {
             logger.error("Service Request Error", e);
             redirectAttributes.addFlashAttribute("failure", messageSource.getMessage("req.add.failure", null, locale));
-            return "/retail/requests/" + serviceReqConfigId;
+            return "redirect:/retail/requests/" + serviceReqConfigId;
         }
         return "redirect:/retail/requests/track";
 
@@ -148,12 +148,12 @@ public class ServiceRequestController {
                     redirectAttributes.addFlashAttribute("message", message);
                 } catch (InternetBankingException e) {
                     logger.error("Service Request Error", e);
-                    model.addAttribute("failure", e.getMessage());
-                    return "cust/servicerequest/add";
+                    redirectAttributes.addFlashAttribute("failure", e.getMessage());
+                    return "redirect:/retail/requests/" + requestDTO.getServiceReqConfigId();
                 } catch (Exception e) {
                     logger.error("Service Request Error", e);
                     redirectAttributes.addFlashAttribute("failure", messageSource.getMessage("req.add.failure", null, locale));
-                    return "cust/servicerequest/add";
+                    return "redirect:/retail/requests/" + requestDTO.getServiceReqConfigId();
                 }
             }
 
