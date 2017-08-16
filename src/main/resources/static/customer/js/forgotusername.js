@@ -8,7 +8,7 @@ var secAnswer ="";
  */
 
 function validateAccountNo(accountNumber){
-console.log("the num "+accountNumber);
+// console.log("the num "+accountNumber);
     // var customerId;
     var secQues;
     $.ajax({
@@ -17,7 +17,7 @@ console.log("the num "+accountNumber);
         async:false,
         success:function(data1){
             customerId = ''+String(data1);
-            console.log("customerId "+data1);
+            // console.log("customerId "+data1);
             if(customerId == ""){
                 //invalid account number
                 document.getElementById("errorMess").textContent="Ensure you put in a valid account number.";
@@ -62,10 +62,10 @@ console.log("the num "+accountNumber);
                         container.innerHTML += "<input type='text' required autocomplete='off' name='securityAnswer" + i + "' id='securityAnswer" + i + "' class='my-select required' placeholder='Security Answer'/>";
                         container.innerHTML += "</div>";
                     }
-                    console.log('no of questn ' +data2.length);
+                    // console.log('no of questn ' +data2.length);
                     noOfQs = data2.length;
                     $('input[name=noOfSecQn]').val(data2.length);
-                    console.log('security questn ' +$('#noOfSecQn').val());
+                    // console.log('security questn ' +$('#noOfSecQn').val());
                      $('#myLoader').modal('hide');
                 }
             }
@@ -113,7 +113,7 @@ function validateSecAnswer(secAnswer){
     });
 
     
-    console.log("the result after comparism 2"+result);
+    // console.log("the result after comparism 2"+result);
 
     if(result == "true"){
         result = sendUsername();

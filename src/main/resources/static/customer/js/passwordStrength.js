@@ -1,25 +1,16 @@
-/**
- * Created by Showboy on 20/06/2017.
- */
-var m_strUpperCase = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-var m_strLowerCase = "abcdefghijklmnopqrstuvwxyz";
-var m_strCase = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
 var m_strNumber = "0123456789";
-var m_strCharacters = "!@#$%^&*?_~"
-
-
-function checkPassword(strPassword)
+function checkPassword(strPassword,minLength,m_noOfDigits,m_strCharacters,noOfSpecChar)
 {
     // Reset combination count
     var nScore = 0;
 
     // Password length
     // -- Less than 4 characters
-    if (strPassword.length < 8)
+    if (strPassword.length < minLength)
     {
-        nScore += 0;
+        nScore += 2;
     }
-    else if (strPassword.length >= 8)
+    else if (strPassword.length >= minLength)
     {
         nScore += 25;
     }
@@ -27,12 +18,12 @@ function checkPassword(strPassword)
     // Numbers
     var nNumberCount = countContain(strPassword, m_strNumber);
     // -- 1 number
-    if (nNumberCount < 1)
+    if (nNumberCount < m_noOfDigits)
     {
         nScore += 0;
     }
     // -- 3 or more numbers
-    if (nNumberCount >= 1)
+    if (nNumberCount >= m_noOfDigits)
     {
         nScore += 25;
     }
@@ -40,7 +31,7 @@ function checkPassword(strPassword)
     // Characters
     var nCharacterCount = countContain(strPassword, m_strCharacters);
     // -- 1 character
-    if (nCharacterCount < 1)
+    if (nCharacterCount < noOfSpecChar)
     {
         nScore += 0;
     }
@@ -54,17 +45,16 @@ function checkPassword(strPassword)
 }
 
 // Runs password through check and then updates GUI
-function runPassword(strPassword)
+function runPassword(strPassword,minLength,m_noOfDigits,m_strCharacters,noOfSpecChar)
 {
     // Check password
-    var nScore = checkPassword(strPassword);
-
+//        console.log("p "+strPassword);
+    var nScore = checkPassword(strPassword,minLength,m_noOfDigits,m_strCharacters,noOfSpecChar);
 
     // Get controls
-    var ctlBar = document.getElementById('#passwordStrength');
-    var ctlText = document.getElementById('#passwordDescription');
-    if (!ctlBar || !ctlText)
-        return;
+    var ctlBar = document.getElementById('passwordStrength');
+    var ctlText = document.getElementById('passwordDescription');
+    if (!ctlBar || !ctlText) return;
 
     // Set new width
     ctlBar.style.width = (nScore*1.25>100)?100:nScore*1.25 + "%";
@@ -89,21 +79,23 @@ function runPassword(strPassword)
     {
         var strText = "Strong";
         var strColor = "#006000";
+    }else if(nScore >= 50){
+        var strText = "Medium";
+        var strColor = "#e3cb00";
     }
     else
     {
         var strText = "Weak";
         var strColor = "#e71a1a";
     }
-
     if(strPassword.length == 0)
     {
-        ctlBar.style.backgroundColor = "";
-        ctlText.innerHTML =  "";
+        ctlText.innerHTML =  "password field is empty";
     }
     else
     {
-        ctlBar.style.backgroundColor = strColor;
+//            console.log("password strenth "+strPassword.length);
+        ctlBar.style.background = strColor;
         ctlText.innerHTML =  strText;
     }
 }
