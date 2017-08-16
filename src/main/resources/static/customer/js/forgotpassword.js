@@ -48,7 +48,7 @@ form.children("div").steps({
 
                 }
             }
-            // console.log("answer 2 "+secAnswer);
+            console.log("answer 2 "+secAnswer);
             return isValid && validateSecAnswer(secAnswer);
         }
         if(VALIDATE_GEN_PASS === currentIndex){
@@ -205,7 +205,7 @@ function validatePassword(password){
         type:'GET',
         cache:false,
         data:{password:password},
-        url:"/rest/password/check/"+username,
+        url:"/rest/password/check/password/"+username,
         async:false,
         success:function(data1){
             res = ''+String(data1);
