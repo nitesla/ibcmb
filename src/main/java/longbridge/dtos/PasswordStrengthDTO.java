@@ -6,7 +6,8 @@ package longbridge.dtos;
 public class PasswordStrengthDTO {
 
     private int minLength;
-    private String digits;
+    private int numOfdigits;
+    private int numOfSpecChar;
     private String specialChars;
 
     public int getMinLength() {
@@ -17,12 +18,20 @@ public class PasswordStrengthDTO {
         this.minLength = minLength;
     }
 
-    public String getDigits() {
-        return digits;
+    public int getNumOfdigits() {
+        return numOfdigits;
     }
 
-    public void setDigits(String digits) {
-        this.digits = digits;
+    public void setNumOfdigits(int numOfdigits) {
+        this.numOfdigits = numOfdigits;
+    }
+
+    public int getNumOfSpecChar() {
+        return numOfSpecChar;
+    }
+
+    public void setNumOfSpecChar(int numOfSpecChar) {
+        this.numOfSpecChar = numOfSpecChar;
     }
 
     public String getSpecialChars() {
@@ -37,7 +46,8 @@ public class PasswordStrengthDTO {
     public String toString() {
         return "PasswordStrengthDTO{" +
                 "minLength=" + minLength +
-                ", digits='" + digits + '\'' +
+                ", numOfdigits=" + numOfdigits +
+                ", numOfSpecChar=" + numOfSpecChar +
                 ", specialChars='" + specialChars + '\'' +
                 '}';
     }
