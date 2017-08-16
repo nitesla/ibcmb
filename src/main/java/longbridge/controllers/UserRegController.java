@@ -11,7 +11,6 @@ import longbridge.exception.InternetBankingSecurityException;
 import longbridge.forms.RegistrationForm;
 import longbridge.models.Account;
 import longbridge.models.RetailUser;
-import longbridge.models.UserType;
 import longbridge.services.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -342,9 +341,7 @@ public class UserRegController {
     public @ResponseBody String checkUsername(@PathVariable String username){
         RetailUser user = retailUserService.getUserByName(username);
         logger.info("USER RETURNED{}", user);
-        RetailUser retailUser = retailUserService.getUserByEntrustId(UserType.RETAIL.toString()+"_"+username);
-        logger.info("ENTRUST USER RETURNED{}", retailUser);
-        if(user == null && retailUser == null){
+        if(null == user){
             return "true";
         }
         return "false";
@@ -359,6 +356,17 @@ public class UserRegController {
         }
         return user.getUserName();
     }
+
+
+    @GetMapping("/rest/password/{password}")
+    public @ResponseBody String checkRegPassword(WebRequest webRequest,@PathVariable String password){
+        String message = passwordPolicyService.validate(password, null);
+        if (!"".equals(message)){
+            return message;
+        }
+        return "true";
+    }
+
 
     @GetMapping("/rest/password/check/{username}")
     public @ResponseBody String checkPassword(WebRequest webRequest,@PathVariable String username){
