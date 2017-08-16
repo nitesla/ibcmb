@@ -11,7 +11,7 @@ public class RequestHistoryDTO {
     private Long id;
     private String serviceRequestId;
     private String status;
-    private String comment;
+    private String comments;
     private String createdBy;
     private String createdOn;
 
@@ -40,12 +40,12 @@ public class RequestHistoryDTO {
         this.status = status;
     }
 
-    public String getComment() {
-        return comment;
+    public String getComments() {
+        return comments;
     }
 
-    public void setComment(String comment) {
-        this.comment = comment;
+    public void setComments(String comments) {
+        this.comments = comments;
     }
 
     public String getCreatedBy() {
@@ -72,7 +72,7 @@ public class RequestHistoryDTO {
                 "id=" + id +
                 ", serviceRequestId='" + serviceRequestId + '\'' +
                 ", status='" + status + '\'' +
-                ", comment='" + comment + '\'' +
+                ", comments='" + comments + '\'' +
                 ", createdBy='" + createdBy + '\'' +
                 ", createdOn=" + createdOn +
                 '}';

@@ -137,7 +137,7 @@ public class SessionUtils {
         try {
             ServletRequestAttributes attr = (ServletRequestAttributes)
                     RequestContextHolder.currentRequestAttributes();
-            SecurityContextHolder.clearContext();
+//            SecurityContextHolder.clearContext();
 
             HttpSession session = attr.getRequest().getSession(false);
             if (session != null)

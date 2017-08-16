@@ -19,9 +19,9 @@ public interface VerificationRepo extends CommonRepo<Verification, Long>{
 
     Verification findFirstByEntityNameAndStatus(String name, VerificationStatus status);
 
-    Page<Verification> findByStatusAndInitiatedBy(VerificationStatus status, String initiatedBy, Pageable pageable);
+    Page<Verification> findByStatusAndInitiatedByOrderByInitiatedOnDesc(VerificationStatus status, String initiatedBy, Pageable pageable);
 
-    Page<Verification> findByOperationAndInitiatedByAndUserTypeAndStatus(String operation, String initiatedBy, UserType userType, VerificationStatus status, Pageable pageable);
+    Page<Verification> findByOperationAndInitiatedByAndUserTypeAndStatusOrderByInitiatedOnDesc(String operation, String initiatedBy, UserType userType, VerificationStatus status, Pageable pageable);
 
     List<Verification> findByStatusAndInitiatedBy(VerificationStatus status, String initiatedBy);
 
@@ -31,19 +31,19 @@ public interface VerificationRepo extends CommonRepo<Verification, Long>{
 
     long countByInitiatedByAndUserTypeAndStatus(String username, UserType userType, VerificationStatus status);
 
-    Page<Verification> findByInitiatedByAndUserTypeAndStatus(String initiatedby, UserType userType, VerificationStatus status, Pageable pageable);
+    Page<Verification> findByInitiatedByAndUserTypeAndStatusOrderByInitiatedOnDesc(String initiatedby, UserType userType, VerificationStatus status, Pageable pageable);
 
     List<Verification> findByInitiatedByAndUserType(String initiatedby, UserType userType);
 
-    @Query( "select v from Verification v where v.initiatedBy != :initiated and v.userType=:userType and v.operation in :permissionlist and v.status ='PENDING'")
+    @Query( "select v from Verification v where v.initiatedBy != :initiated and v.userType=:userType and v.operation in :permissionlist and v.status ='PENDING' order by v.initiatedOn Desc")
     List<Verification> findVerificationForUser(@Param("initiated") String initiatedBy, @Param("userType") UserType userType, @Param("permissionlist") List<String> operation);
 
 
-    @Query( "select v from Verification v where v.initiatedBy != :initiated and v.userType=:userType and v.operation in :permissionlist and v.status ='PENDING'")
+    @Query( "select v from Verification v where v.initiatedBy != :initiated and v.userType=:userType and v.operation in :permissionlist and v.status ='PENDING' order by v.initiatedOn Desc")
     Page<Verification> findVerificationForUsers(@Param("initiated") String initiatedBy, @Param("userType") UserType userType, @Param("permissionlist") List<String> operation,Pageable pageable);
 
 
-    @Query( "select v from Verification v where v.verifiedBy = :verified and v.userType=:userType and v.status !='PENDING'")
+    @Query( "select v from Verification v where v.verifiedBy = :verified and v.userType=:userType and v.status !='PENDING' order by v.verifiedOn Desc")
     Page<Verification> findVerifiedOperationsForUser(@Param("verified") String verifiedBy,@Param("userType") UserType userType, Pageable pageable);
 
 }

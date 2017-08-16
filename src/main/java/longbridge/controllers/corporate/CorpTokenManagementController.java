@@ -39,7 +39,7 @@ public class CorpTokenManagementController {
 
     @Autowired
     private SecurityService securityService;
-    private Locale locale;
+
     @Autowired
     private MessageSource messageSource;
 
@@ -114,7 +114,7 @@ public class CorpTokenManagementController {
 
         @PostMapping("/sync")
         public String synchroniseToken (@ModelAttribute("tokenSync") @Valid CustSyncTokenForm
-        custSyncTokenForm, BindingResult result, Principal principal, RedirectAttributes redirectAttributes){
+        custSyncTokenForm, BindingResult result, Principal principal, RedirectAttributes redirectAttributes, Locale locale){
             if (result.hasErrors()) {
                 return "corp/token/sync";
             }
@@ -159,7 +159,7 @@ public class CorpTokenManagementController {
 
         @PostMapping("/lost")
         public String blockToken (@ModelAttribute("tokenProp") @Valid TokenProp tokenProp, BindingResult
-        bindingResult, Principal principal, RedirectAttributes redirectAttributes){
+        bindingResult, Principal principal, RedirectAttributes redirectAttributes, Locale locale){
             if (bindingResult.hasErrors()) {
                 return "corp/token/lost";
             }

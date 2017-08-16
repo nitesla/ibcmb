@@ -136,5 +136,5 @@ public interface AccountService {
      * @return
      */
     String makePrimaryAccount(Long id, String customerId) throws InternetBankingException;
-    Boolean updateAccountDetails() throws InternetBankingException;
+
    }
