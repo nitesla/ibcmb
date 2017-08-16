@@ -69,7 +69,7 @@ public class OperationUserDetailsService implements UserDetailsService {
             logger.trace("IP -> {} has been blocked", ip);
             throw new RuntimeException("blocked");
         }
-        sessionUtils.clearSession();
+//        sessionUtils.clearSession();
         OperationsUser user = operationsUserRepo.findFirstByUserNameIgnoreCase(s);
         if (user != null && failedLoginService.isBlocked(user)) throw new RuntimeException("user_blocked");
         try {
