@@ -75,7 +75,7 @@ var fetchQuestion = "";
                         container.innerHTML += "<label>" + data2[i] + "</label>";
                         container.innerHTML += "</div>";
                         container.innerHTML += "<div class='form-group'>";
-                        container.innerHTML += "<input type='text' required name='corpSecurityAnswer" + i + "' id='corpSecurityAnswer" + i + "' class='my-select required' placeholder='Security Answer'/>";
+                        container.innerHTML += "<input type='text' autocomplete='off' required name='corpSecurityAnswer" + i + "' id='corpSecurityAnswer" + i + "' class='my-select required' placeholder='Security Answer'/>";
                         container.innerHTML += "</div>";
                     }
                     $('input[name=noOfSecQn]').val(data2.length);

@@ -53,7 +53,7 @@ public class RetailUserDetailsService implements UserDetailsService {
             logger.trace("IP -> {} has been blocked", ip);
             throw new RuntimeException("blocked");
         }
-        sessionUtils.clearSession();
+//        sessionUtils.clearSession();
         RetailUser user = retailUserRepo.findFirstByUserNameIgnoreCase(s);
 
         if (user != null && failedLoginService.isBlocked(user)) throw new RuntimeException("user_blocked");

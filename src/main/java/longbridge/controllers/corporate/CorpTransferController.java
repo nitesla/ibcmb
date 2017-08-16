@@ -208,16 +208,17 @@ public class CorpTransferController {
             }
 
 
-            if (request.getParameter("add") != null) {
+            if (request.getSession().getAttribute("add") != null) {
                 //checkbox  checked
                 if (request.getSession().getAttribute("Lbeneficiary") != null) {
                     CorpLocalBeneficiaryDTO l = (CorpLocalBeneficiaryDTO) request.getSession().getAttribute("Lbeneficiary");
                     try {
                         corpLocalBeneficiaryService.addCorpLocalBeneficiary(l);
                         request.getSession().removeAttribute("Lbeneficiary");
-                        // model.addAttribute("beneficiary", l);
                     } catch (InternetBankingException de) {
                         logger.error("Error occurred processing transfer");
+
+                    }finally {
 
                     }
                 }

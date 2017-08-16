@@ -88,8 +88,6 @@ public class CorpLocalTransferController {
         if (servletRequest.getSession().getAttribute("Lbeneficiary") != null) {
             CorpLocalBeneficiaryDTO beneficiary = (CorpLocalBeneficiaryDTO) servletRequest.getSession().getAttribute("Lbeneficiary");
             model.addAttribute("beneficiary", beneficiary);
-            if (beneficiary.getId() == null)
-                model.addAttribute("newBen", "newBen");
 
         }
         if (result.hasErrors()) {
