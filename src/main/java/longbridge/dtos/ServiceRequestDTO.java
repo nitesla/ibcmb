@@ -13,6 +13,7 @@ public class ServiceRequestDTO {
     @JsonProperty("DT_RowId")
     private Long id;
     private Long userId;
+    private String userType;
     private String username;
     private String fullName;
     private Long corpId;
@@ -120,6 +121,13 @@ public class ServiceRequestDTO {
         this.corpName = corpName;
     }
 
+    public String getUserType() {
+        return userType;
+    }
+
+    public void setUserType(String userType) {
+        this.userType = userType;
+    }
 
     @Override
     public String toString() {

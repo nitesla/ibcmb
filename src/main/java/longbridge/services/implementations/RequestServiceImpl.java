@@ -255,9 +255,13 @@ public class RequestServiceImpl implements RequestService {
         if (serviceRequest.getUser() != null){
             String fullName = serviceRequest.getUser().getFirstName()+" "+serviceRequest.getUser().getLastName();
             requestDTO.setUsername(serviceRequest.getUser().getUserName());
+            requestDTO.setUserType(serviceRequest.getUser().getUserType().toString());
             requestDTO.setFullName(fullName);
         }else if (serviceRequest.getCorporate() != null){
             requestDTO.setCorpName(serviceRequest.getCorporate().getName());
+            requestDTO.setFullName(serviceRequest.getCorporate().getName());
+            requestDTO.setUserType(UserType.CORPORATE.toString());
+
         }
         requestDTO.setDate(DateFormatter.format(serviceRequest.getDateRequested()));
         return requestDTO;
