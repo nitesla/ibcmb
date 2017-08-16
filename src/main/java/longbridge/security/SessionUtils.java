@@ -133,18 +133,18 @@ public class SessionUtils {
     }
 
 
-    public void clearSession() {
-        try {
-            ServletRequestAttributes attr = (ServletRequestAttributes)
-                    RequestContextHolder.currentRequestAttributes();
-//            SecurityContextHolder.clearContext();
-
-            HttpSession session = attr.getRequest().getSession(false);
-            if (session != null)
-                session.invalidate();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
+//    public void clearSession() {
+//        try {
+//            ServletRequestAttributes attr = (ServletRequestAttributes)
+//                    RequestContextHolder.currentRequestAttributes();
+////            SecurityContextHolder.clearContext();
+//
+//            HttpSession session = attr.getRequest().getSession(false);
+//            if (session != null)
+//                session.invalidate();
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//    }
 
 }

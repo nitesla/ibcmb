@@ -72,7 +72,7 @@ public class CorporateUserDetailsService implements UserDetailsService {
            }
         }
 
-          sessionUtils.clearSession();
+//          sessionUtils.clearSession();
         CorporateUser user = corporateUserRepo.findFirstByUserNameIgnoreCaseAndCorporate_CorporateIdIgnoreCase(userName,corpId);
         if (user!=null){
 
