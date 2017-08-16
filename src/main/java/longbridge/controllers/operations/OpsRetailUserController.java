@@ -4,8 +4,10 @@ import longbridge.dtos.RetailUserDTO;
 import longbridge.exception.InternetBankingException;
 import longbridge.exception.PasswordException;
 import longbridge.forms.ChangePassword;
+import longbridge.models.Account;
 import longbridge.models.RetailUser;
 import longbridge.security.FailedLoginService;
+import longbridge.services.AccountService;
 import longbridge.services.RetailUserService;
 
 import longbridge.services.VerificationService;
@@ -27,6 +29,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.util.List;
 import java.util.Locale;
 
 /**
@@ -44,6 +47,9 @@ public class OpsRetailUserController {
 
     @Autowired
     private MessageSource messageSource;
+
+    @Autowired
+    private AccountService accountService;
 
     @Autowired
     private VerificationService verificationService;
@@ -67,13 +73,29 @@ public class OpsRetailUserController {
      *
      * @return
      */
-    @GetMapping("/{userId}/edit")
-    public String editUser(@PathVariable Long userId, Model model) {
+    @GetMapping("/{userId}/view")
+    public String viewUserDetails(@PathVariable Long userId, Model model) {
         RetailUserDTO retailUser = retailUserService.getUser(userId);
         model.addAttribute("retailUser", retailUser);
-        return "/ops/retail/edit";
+        return "/ops/retail/viewdetails";
     }
 
+
+    @GetMapping(path = "/{userId}/accounts")
+    public
+    @ResponseBody
+    DataTablesOutput<Account> getAccounts(@PathVariable Long userId, DataTablesInput input) {
+
+        RetailUserDTO retailUser = retailUserService.getUser(userId);
+
+        List<Account> accounts = accountService.getAccountsForDebit(retailUser.getCustomerId());
+        DataTablesOutput<Account> out = new DataTablesOutput<Account>();
+        out.setDraw(input.getDraw());
+        out.setData(accounts);
+        out.setRecordsFiltered(accounts.size());
+        out.setRecordsTotal(accounts.size());
+        return out;
+    }
 
     @GetMapping
     public String getAllRetailUsers(Model model) {

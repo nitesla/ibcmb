@@ -212,7 +212,6 @@ public class OpsCorporateController {
     @ResponseBody
     DataTablesOutput<Account> getAccounts(@PathVariable Long corpId, DataTablesInput input) {
 
-//        Pageable pageable = DataTablesUtils.getPageable(input);
         List<Account> accounts = corporateService.getAccounts(corpId);
         DataTablesOutput<Account> out = new DataTablesOutput<Account>();
         out.setDraw(input.getDraw());

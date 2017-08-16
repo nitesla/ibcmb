@@ -91,7 +91,7 @@ public interface AccountService {
 
 
 
-    Iterable<Account> getAccountsForDebit(String customerId);
+    List<Account> getAccountsForDebit(String customerId);
 
 
     List<AccountDTO> getAccountsForDebitAndCredit(String customerId);
