@@ -59,7 +59,7 @@ console.log("the num "+accountNumber);
                         container.innerHTML += "<label>" + data2[i] + "</label>";
                         container.innerHTML += "</div>";
                         container.innerHTML += "<div class='form-group'>";
-                        container.innerHTML += "<input type='text' required name='securityAnswer" + i + "' id='securityAnswer" + i + "' class='my-select required' placeholder='Security Answer'/>";
+                        container.innerHTML += "<input type='text' required autocomplete='off' name='securityAnswer" + i + "' id='securityAnswer" + i + "' class='my-select required' placeholder='Security Answer'/>";
                         container.innerHTML += "</div>";
                     }
                     console.log('no of questn ' +data2.length);
