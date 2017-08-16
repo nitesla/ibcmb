@@ -639,7 +639,6 @@ public class OpsCorporateController {
             }
         }
 
-        logger.info("the schemeTYpe is {}", accountInfos.get(0).getSchemeType());
         model.addAttribute("accounts", accountInfos);
         if (((corporateExistingData != null) && (accounts != null)) && (corporate.getCustomerId().equalsIgnoreCase(corporateExistingData.getCustomerId()))) {
 

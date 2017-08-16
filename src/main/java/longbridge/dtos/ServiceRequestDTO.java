@@ -15,7 +15,7 @@ public class ServiceRequestDTO {
     private Long userId;
     private String username;
     private String fullName;
-    private CorporateDTO corporate;
+    private Long corpId;
     private String corpName;
     private String requestName;
     private String requestStatus;
@@ -96,12 +96,12 @@ public class ServiceRequestDTO {
         this.date = date;
     }
 
-    public CorporateDTO getCorporate() {
-        return corporate;
+    public Long getCorpId() {
+        return corpId;
     }
 
-    public void setCorporate(CorporateDTO corporate) {
-        this.corporate = corporate;
+    public void setCorpId(Long corpId) {
+        this.corpId = corpId;
     }
 
     public String getFullName() {
@@ -128,7 +128,6 @@ public class ServiceRequestDTO {
                 ", userId=" + userId +
                 ", username='" + username + '\'' +
                 ", fullName='" + fullName + '\'' +
-                ", corporate=" + corporate +
                 ", corpName='" + corpName + '\'' +
                 ", requestName='" + requestName + '\'' +
                 ", requestStatus='" + requestStatus + '\'' +
