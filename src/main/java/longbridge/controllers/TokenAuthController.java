@@ -190,7 +190,7 @@ public class TokenAuthController {
                     request.getSession().removeAttribute("2FA");
                     retailUserService.resetNoOfTokenAttempt(user);
                 }
-                redirectAttributes.addFlashAttribute("message", messageSource.getMessage("otp.auth.success", null, locale));
+//                redirectAttributes.addFlashAttribute("message", messageSource.getMessage("otp.auth.success", null, locale));
                 return "redirect:/retail/dashboard";
             }
         } catch (InternetBankingSecurityException ibe) {
@@ -219,7 +219,7 @@ public class TokenAuthController {
                     request.getSession().removeAttribute("2FA");
                     corporateUserService.resetNoOfTokenAttempt(user);
                 }
-                redirectAttributes.addFlashAttribute("message", messageSource.getMessage("otp.auth.success", null, locale));
+//                redirectAttributes.addFlashAttribute("message", messageSource.getMessage("otp.auth.success", null, locale));
                 return "redirect:/corporate/dashboard";
             }
         } catch (InternetBankingSecurityException ibe) {

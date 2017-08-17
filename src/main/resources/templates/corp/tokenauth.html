@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{corp-layout}">
+
+<body onload="javascript:var bread = 'home';currentBar('token authentication');breadCrumb(bread)">
+
+<div layout:fragment="content">
+
+    <div class="col-xs-12 ml-15 no-pad-left no-pad-right">
+        <div class="col-xs-11 no-pad-lef no-mt alert no-bd">
+            <div class="col-sm-6">
+                <form method="post" th:action="@{/corporate/token/authenticate}">
+                    <div class="form-group">
+                        <input type="text" name="token" class="form-control" placeholder="Token Code" required="required"/>
+                    </div>
+
+                    <button type="submit" class="btn btn-link required-step no-pad-left">Submit</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+<th:block layout:fragment="scripts">
+
+
+</th:block>
+
+</body>
+</html>

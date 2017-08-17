@@ -129,8 +129,9 @@ public class RequestServiceImpl implements RequestService {
     public String addCorpRequest(ServiceRequestDTO request) throws InternetBankingException {
         try {
             ServiceRequest serviceRequest = convertDTOToEntity(request);
-            serviceRequest.setCorporate(corporateRepo.findOne(request.getCorporate().getId()));
-            String name = request.getCorporate().getName();
+            Corporate corporate = corporateRepo.findOne(request.getCorpId());
+            serviceRequest.setCorporate(corporate);
+            String name = corporate.getName();
             ServiceReqConfigDTO config = reqConfigService.getServiceReqConfig(serviceRequest.getServiceReqConfigId());
 
             //***///
@@ -146,12 +147,12 @@ public class RequestServiceImpl implements RequestService {
             String message = messageBody.toString();
             serviceRequestRepo.save(serviceRequest);
 
-            Email email = new Email.Builder().setSender("info@ibanking.coronationmb.com")
+            Email email = new Email.Builder()
                     .setSubject("Service Request from " + name)
                     .setBody(message)
                     .build();
             groupMessageService.send(config.getGroupId(), email);
-            return messageSource.getMessage("request.add.success", null, locale);
+            return messageSource.getMessage("req.add.success", null, locale);
         } catch (Exception e) {
             throw new InternetBankingException(messageSource.getMessage("req.add.failure", null, locale), e);
         }
@@ -254,13 +255,16 @@ public class RequestServiceImpl implements RequestService {
         if (serviceRequest.getUser() != null){
             String fullName = serviceRequest.getUser().getFirstName()+" "+serviceRequest.getUser().getLastName();
             requestDTO.setUsername(serviceRequest.getUser().getUserName());
+            requestDTO.setUserType(serviceRequest.getUser().getUserType().toString());
             requestDTO.setFullName(fullName);
         }else if (serviceRequest.getCorporate() != null){
             requestDTO.setCorpName(serviceRequest.getCorporate().getName());
+            requestDTO.setFullName(serviceRequest.getCorporate().getName());
+            requestDTO.setUserType(UserType.CORPORATE.toString());
+
         }
         requestDTO.setDate(DateFormatter.format(serviceRequest.getDateRequested()));
         return requestDTO;
-
     }
 
     private ServiceRequest convertDTOToEntity(ServiceRequestDTO ServiceRequestDTO) {

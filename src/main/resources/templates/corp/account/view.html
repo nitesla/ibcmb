@@ -91,7 +91,11 @@
                                     </tr>
                                     </tfoot>
                                 </table>
-                                <div> <button class="btn-primary" type="button" id="previous" onclick="previousData()">previous</button>&nbsp;<button class="btn-primary" type="button" id="next" onclick="nextData()">next</button></div>
+                                <div class="col-md-12">
+                                    <div class="pull-right">
+                                        <button class="btn btn-md" id="previous" type="button" onclick="previousData()">previous</button>&nbsp;<button class="btn btn-md" type="button" id="next"  onclick="nextData()">next</button>
+                                    </div>
+                                </div>
                             </div>
 
 
@@ -221,6 +225,8 @@
 
             });
             $('#btn-print').hide();
+            $('#previous').hide();
+            $('#next').hide();
             $('#tranDetails_length').hide();
             $('#tranDetails_paginate').hide();
             $("#btn-print").on("click", function(e) {

@@ -212,7 +212,6 @@ public class OpsCorporateController {
     @ResponseBody
     DataTablesOutput<Account> getAccounts(@PathVariable Long corpId, DataTablesInput input) {
 
-//        Pageable pageable = DataTablesUtils.getPageable(input);
         List<Account> accounts = corporateService.getAccounts(corpId);
         DataTablesOutput<Account> out = new DataTablesOutput<Account>();
         out.setDraw(input.getDraw());
@@ -639,7 +638,6 @@ public class OpsCorporateController {
             }
         }
 
-        logger.info("the schemeTYpe is {}", accountInfos.get(0).getSchemeType());
         model.addAttribute("accounts", accountInfos);
         if (((corporateExistingData != null) && (accounts != null)) && (corporate.getCustomerId().equalsIgnoreCase(corporateExistingData.getCustomerId()))) {
 

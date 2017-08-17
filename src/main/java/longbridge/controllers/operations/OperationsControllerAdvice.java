@@ -34,9 +34,9 @@ public class OperationsControllerAdvice {
 
 
     @ModelAttribute
-    public String globallAttributes(Model model, Principal principal){
+    public String globalAttributes(Model model, Principal principal){
 
-        if(principal.getName()==null){
+        if(principal==null){
             return "redirect://login/ops";
         }
         OperationsUser operationsUser = operationsUserService.getUserByName(principal.getName());

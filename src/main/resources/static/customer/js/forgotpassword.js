@@ -48,7 +48,7 @@ form.children("div").steps({
 
                 }
             }
-            // console.log("answer 2 "+secAnswer);
+            console.log("answer 2 "+secAnswer);
             return isValid && validateSecAnswer(secAnswer);
         }
         if(VALIDATE_GEN_PASS === currentIndex){

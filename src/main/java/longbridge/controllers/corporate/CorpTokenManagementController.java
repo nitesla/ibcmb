@@ -5,6 +5,7 @@ import longbridge.exception.InternetBankingSecurityException;
 import longbridge.forms.CustSyncTokenForm;
 import longbridge.forms.TokenProp;
 import longbridge.models.CorporateUser;
+import longbridge.models.RetailUser;
 import longbridge.services.CorporateUserService;
 import longbridge.services.SecurityService;
 import org.apache.commons.lang3.StringUtils;
@@ -19,9 +20,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.security.Principal;
 import java.util.Arrays;
@@ -177,4 +180,46 @@ public class CorpTokenManagementController {
             return "redirect:/corporate/token/lost";
         }
 
+
+    @GetMapping("/authenticate")
+    public String getAuthPage(HttpSession session, Principal principal){
+        return "/corp/tokenauth";
     }
+
+
+    @PostMapping("/authenticate")
+    public String performAuthenticate(WebRequest webRequest, HttpSession session, Principal principal, RedirectAttributes redirectAttributes){
+        String url;
+        if (webRequest.getParameter("token") == null){
+            redirectAttributes.addFlashAttribute("failure", "Enter authentication code");
+            return "/corp/tokenauth";
+        }
+        if (webRequest.getParameter("token") != null && session.getAttribute("redirectURL") != null && session.getAttribute("requestDTO") != null){
+            String token = webRequest.getParameter("token");
+            url = (String) session.getAttribute("redirectURL");
+
+            try {
+                CorporateUser corporateUser = corporateUserService.getUserByName(principal.getName());
+                boolean result = securityService.performTokenValidation(corporateUser.getEntrustId(), corporateUser.getEntrustGroup(), token);
+                if (!result){
+                    redirectAttributes.addFlashAttribute("failure", "Token Authentication Failed");
+                    return "redirect:/corporate/token/authenticate";
+                }
+            }catch(InternetBankingSecurityException ibe){
+                logger.error("Error authenticating token", ibe);
+                redirectAttributes.addFlashAttribute("failure", "Token Authentication Failed");
+                return "redirect:/corporate/token/authenticate";
+
+            }
+
+        }else {
+            redirectAttributes.addFlashAttribute("failure", "Token Authentication Failed");
+            return "redirect:/retail/token/authenticate";
+        }
+        session.setAttribute("authenticated","authenticated");
+
+        return "redirect:"+url;
+    }
+
+
+}

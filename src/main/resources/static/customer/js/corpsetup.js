@@ -4,7 +4,7 @@
 
 //steps with form
 var map = {};
-var form = $("#reg-form");
+var form = $("#setup-form");
 form.validate({
     errorPlacement: function errorPlacement(error, element) {
         element.before(error);
@@ -13,6 +13,8 @@ form.validate({
 
 var SECURITY_QUESTION_STEP = 0;
 var PHISHING_IMAGE_STEP = 1;
+var PASSWORD_RESET_STEP = 2;
+var TOKEN_AUTH_STEP = 3;
 form.children("div").steps({
     headerTag: "h3",
     bodyTag: "section",
@@ -49,6 +51,17 @@ form.children("div").steps({
         if(PHISHING_IMAGE_STEP === currentIndex){
             console.log("Current Step is the phishing image step");
             //$("#reg-form").submit();
+            return isValid && checkImage();
+        }
+        if(PASSWORD_RESET_STEP === currentIndex){
+            console.log("Current Step is the phishing image step");
+            //$("#reg-form").submit();
+            var confirm = $('#confirm').val();
+            return isValid && validatePassword(confirm);
+        }
+        if(TOKEN_AUTH_STEP === currentIndex){
+            console.log("Current Step is the phishing image step");
+            //$("#reg-form").submit();
             return isValid && setup();
         }
 
@@ -80,15 +93,85 @@ form.children("div").steps({
     onFinished: function (event, currentIndex)
     {
 //            alert("Submitted!");
-        window.location.href = "/corporate/reset_password";
+        window.location.href = "/corporate/logout";
     }
 });
 
 
+function checkImage() {
+    var anyImageSelected = $('input[name="phishing"]:checked').length > 0;
+    if(anyImageSelected != true){
+        $('#errorMess').text("Please select phishing image.");
+        $('#myModalError').modal('show');
+        return false;
+    }else{
+        return true;
+    }
+}
+
+function validatePassword(password){
+    var result;
+    $.ajax({
+        type:'GET',
+        url:"/rest/corp/password/"+password,
+        async:false,
+        success:function(data1){
+            result = ''+String(data1);
+            if(result === 'true'){
+                //success
+
+            }else{
+                $('#errorMess').text(result);
+                $('#myModalError').modal('show');
+                $('#loading-icon').hide();
+            }
+        }
+    });
+
+    if(result === 'true'){
+
+        //username is valid and available
+        return true;
+    }else{
+
+        return false;
+    }
+}
+
+function validateToken(){
+    $('#myLoader').modal('show');
+    var token = $('input[name="token"]').val();
+    var result;
+    $.ajax({
+        type:'GET',
+        url:"/corporate/setup/tokenAuth/"+token,
+        async:false,
+
+        success:function(data1){
+            result = ''+String(data1);
+            if(result == "true"){
+
+            }else{
+                //invalid account number
+                //alert("Account number not found");
+                $('#myLoader').modal('hide');
+                $('#errorMess').text(result);
+                $('#myModalError').modal('show');
+            }
+        }
+    });
+
+    if(result == "true"){
+        return true;
+    }else{
+        return false;
+    }
+}
+
 function setup(){
 
     var returnValue = false;
-    $('#reg-form').submit(function(e){
+    $('#setup-form').submit(function(e){
         e.preventDefault();
 
         $.ajax({
@@ -103,13 +186,13 @@ function setup(){
                 if(data==="true"){
                     $('#returnValue').val(true);
                 }else {
-                    document.getElementById("errorMess").textContent="Setup successful.";
+                    $('#errorMess').text(data);
                     $('#myModalError').modal('show');
                 }
             }
         });
     });
-    $('#reg-form').submit();
+    $('#setup-form').submit();
     returnValue = $('#returnValue').val();
     //alert(returnValue);
     return Boolean(returnValue);
