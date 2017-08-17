@@ -68,7 +68,7 @@ form.children("div").steps({
     onFinished: function (event, currentIndex)
     {
 //            alert("Submitted!");
-        window.location.href = "/corporate/logout";
+        window.location.href = "/corporate/reset_password";
     }
 });
 

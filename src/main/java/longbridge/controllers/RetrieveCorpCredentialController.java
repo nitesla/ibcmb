@@ -5,7 +5,6 @@ import longbridge.exception.*;
 import longbridge.forms.CustResetPassword;
 import longbridge.forms.ResetPasswordForm;
 import longbridge.forms.RetrieveUsernameForm;
-import longbridge.models.Account;
 import longbridge.models.Corporate;
 import longbridge.models.CorporateUser;
 import longbridge.models.Email;
@@ -452,5 +451,19 @@ logger.info("out of the try");
             return messageSource.getMessage("sec.ans.failed", null, locale);
         }
         return messageSource.getMessage("sec.ans.failed", null, locale);
+    }
+
+    @GetMapping("/rest/corp/password/{password}")
+    public @ResponseBody String checkRegPassword(@PathVariable String password){
+        try {
+            String message = passwordPolicyService.validate(password, null);
+            if (!"".equals(message)){
+                return message;
+            }
+            return "true";
+        }catch (InternetBankingException e){
+            logger.error("ERROR AUTHENTICATING USER >>>>> ",e);
+            return e.getMessage();
+        }
     }
 }

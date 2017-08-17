@@ -52,10 +52,10 @@
                                 <span class='greeting' th:text="*{greeting}"></span>
                                 <br class="break"/>
                                 <b class="greeting-user" th:text="*{name}"></b> &nbsp;
-                                <a th:href="@{/corporate/mailbox/inbox}"><i class="fa fa-envelope" style="color:#003056"></i>
-                                    <span th:if="${numOfUnreadMessages}" class="badge bg-green" th:text="${numOfUnreadMessages}">count</span>
+                                <!--<a th:href="@{/corporate/mailbox/inbox}"><i class="fa fa-envelope" style="color:#003056"></i>-->
+                                    <!--<span th:if="${numOfUnreadMessages}" class="badge bg-green" th:text="${numOfUnreadMessages}">count</span>-->
 
-                                </a>
+                                <!--</a>-->
                             </h5>
 
                             <div class="hide-faq">
@@ -133,7 +133,7 @@
                                             <div class="col-md-12" style="max-height: 250px; max-width: 450px;overflow: scroll;">
                                                 <div class="col-md-3" th:each="image : ${images}" style="position: relative; max-height: 100px;">
                                                     <img th:src="${imagePath} + ${image}" width="100px" height="100px" style="padding: 5px;"/>
-                                                    <input type="radio" name="phishing" th:value="${image}" id="check1" class="required" style="position: absolute; bottom: 20px; right: 20px;" />
+                                                    <input type="radio" name="phishing" th:value="${image}" id="check1" style="position: absolute; bottom: 20px; right: 20px;" />
                                                 </div>
                                             </div>
                                         </div>
@@ -146,11 +146,56 @@
                                     </div>
                                 </div>
                             </section>
+                            <h3>Reset Password</h3>
+                            <section>
+                                <div class="row">
+                                    <div class="col-md-offset-4 col-md-4">
+                                        <br/>
+
+                                        <div class="form-group clearfix">
+                                            <label>Password</label>
+                                            <span class='req'></span><input onKeyUp="valPassword(this.value)" type="password" id="password" name="password" class="my-select required" placeholder="Password"/>
+                                        </div>
+                                        <div class="form-group clearfix">
+                                            <div id="passwordDescription">Password not entered</div>
+                                            <div id="passwordStrength"></div>
+                                        </div>
+                                        <div class="form-group clearfix">
+                                            <label>Confirm Password</label>
+                                            <span class='req'></span><input type="password" id="confirm" name="confirm" class="my-select required" placeholder="Confirm Password"/>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-4 password">
+                                        <br/>
+                                        <h5 style="font-size: 16px; font-weight: bolder;">Password tips</h5>
+                                        <ul>
+
+                                            <li th:each="rule : ${policies}" th:text="${rule}"></li>
+                                        </ul>
+
+                                    </div>
+                                </div>
+                            </section>
+                            <h3>Token</h3>
+                            <section>
+                                <div class="row">
+                                    <div class="col-md-offset-4 col-md-4">
+                                        <br/>
+
+                                        <div class="form-group clearfix">
+                                            <label>Token</label>
+                                            <span class='req'></span><input type="text" id="token" name="token" class="my-select required" placeholder="Enter Generated Token"/>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </section>
                             <h3>Summary</h3>
                             <section>
                                 <div class="row">
                                     <div class="col-md-offset-4 col-md-4">
-                                        Profile successfully updated.
+                                        Profile successfully updated and password reset successful.
                                     </div>
                                 </div>
                             </section>
@@ -198,10 +243,20 @@
     <!-- BOOTSTRAP SCRIPTS  -->
     <script th:src="@{~/customer/js/bootstrap.js}"></script>
     <script th:src="@{~/customer/js/bootstrap-session-timeout.js}"></script>
-    <script th:src="@{~/customer/js/firstLogonCorp.js}" type="text/javascript"></script>
+    <script th:src="@{~/customer/js/corpsetup.js}" type="text/javascript"></script>
+    <script th:src="@{~/customer/js/passwordStrength.js}" th:inline="javascript" type="text/javascript"></script>
 
     <script th:inline='javascript'>
         /*<![CDATA[*/
+
+        var m_noOfDigits = [[${passwordStrength.numOfdigits}]];
+        var m_strCharacters = [[${passwordStrength.specialChars}]];
+        var minLength =[[${passwordStrength.minLength}]];
+        var noOfSpecChar =[[${passwordStrength.numOfSpecChar}]];
+        function valPassword(strPassword){
+            runPassword(strPassword,minLength,m_noOfDigits,m_strCharacters,noOfSpecChar)
+        }
+
 
         $(document).ready(function ()
         {
