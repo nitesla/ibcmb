@@ -158,7 +158,7 @@ public class CorporateControllerAdvice {
         if (corporateUser != null) {
             List<Account> accountList = new ArrayList<>();
 
-            Iterable<Account> accounts = accountService.getAccountsForDebit(corporateUser.getCorporate().getCustomerId());
+            Iterable<Account> accounts = accountService.getAccountsForDebit(corporateUser.getCorporate().getAccounts());
 
             StreamSupport.stream(accounts.spliterator(), false)
                     .filter(Objects::nonNull)
