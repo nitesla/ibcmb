@@ -156,6 +156,10 @@ public class CorpTransferController {
     public
     @ResponseBody
     String getAccountCurrency(@PathVariable String accountId) {
+
+        if("null".equals(accountId)){
+            return "N/A";
+        }
         return accountService.getAccountByAccountNumber(accountId).getCurrencyCode();
     }
 
@@ -383,6 +387,9 @@ public class CorpTransferController {
     @ResponseBody
     public String getBalance(@PathVariable String accountNumber) throws Exception {
 
+        if("null".equals(accountNumber)){
+            return "N/A";
+        }
         return transferUtils.getBalance(accountNumber);
     }
 

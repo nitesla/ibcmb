@@ -147,7 +147,7 @@ public class CorporateControllerAdvice {
     }
 
     @ModelAttribute
-    public String getCustmerAccounts(Model model, Principal principal) {
+    public String getCustomerAccounts(Model model, Principal principal) {
 
         if (principal == null || principal.getName() == null) {
             return "redirect:/login/corporate";

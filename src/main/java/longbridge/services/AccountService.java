@@ -58,7 +58,7 @@ public interface AccountService {
      */
     List<AccountDTO> getAccounts(String customerId);
 
-    Iterable<Account> getCustomerAccounts(String customerId);
+    List<Account> getCustomerAccounts(String customerId);
 
     Page<AccountDTO> getAccounts(String customerId, Pageable pageDetails);
 
@@ -92,7 +92,7 @@ public interface AccountService {
 
 
 
-    Iterable<Account> getAccountsForDebit(String customerId);
+    List<Account> getAccountsForDebit(String customerId);
     Iterable<Account> getAccountsForDebit(List<Account> accounts);
 
 
@@ -101,7 +101,7 @@ public interface AccountService {
     List<AccountDTO> getAccountsAndBalances(String customerId);
 
 
-
+    List<AccountDTO> getAccountsAndBalances(List<Account> accounts);
 
     public Iterable<Account> getAccountsForCredit(String customerId);
 
