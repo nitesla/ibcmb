@@ -358,7 +358,6 @@ public class CorporateServiceImpl implements CorporateService {
             for (AccountInfo acct : accounts) {
                 accountService.AddFIAccount(customerId, acct);
             }
-
         }
     }
 
@@ -422,6 +421,7 @@ public class CorporateServiceImpl implements CorporateService {
             mailService.send(email);
         }).start();
     }
+
 
     @Override
 //    @Verifiable(operation = "UPDATE_CORPORATE", description = "Updating Corporate Entity")

@@ -11,7 +11,7 @@
         <div class="modal-dialog">
             <!-- Modal content-->
             <div class="modal-content no-bd-rad tokenBox" id="tokenmodal">
-                <form id="loginform" th:action="@{/corporate/beneficiary/authenticate}" method="POST" >
+                <form id="myForm" name="myForm" th:action="@{/corporate/beneficiary/authenticate}" method="POST" >
                     <input type="hidden" id="myID" name="id"/>
                     <div class="modal-body no-bd-rad">
                         <h3 class="tokenHeader"><span class='text-danger'>Delete Beneficiary</span>, <span th:text="*{username}" style="text-transform: capitalize">Tolu</span></h3>
@@ -30,7 +30,7 @@
                     </div>
                     <div class="modal-footer no-bd-top ">
                         <input type='submit' class="btn btn-link token-btn required-step" value='YES'/>
-                        <input type='button' class="btn btn-link less-required token-btn " data-dismiss="modal" value='NO'/>
+                        <input type='submit' class="btn btn-link less-required token-btn" id="submitNo" data-dismiss="modal" value='NO'/>
                     </div>
                 </form>
             </div>
@@ -115,6 +115,11 @@
         function validateDel(id) {
             $("#myModal").modal('show');
             $('#myID').val(id);
+            $(document).ready(function() {
+                $("#submitNo").click(function() {
+                    $('#token','#myForm').val("");
+                });
+            });
         }
 
         function validateDelete(id) {
