@@ -30,7 +30,7 @@ function validateAccountNo(corporateId,email){
             console.log("the entityDetails "+entityDetails);
             if(data1[0] == '' && data1[1] == ''){
                 //invalid account number
-                document.getElementById("errorMess").textContent="Ensure you put in a valid account number. and email";
+                document.getElementById("errorMess").textContent="Ensure you put in a valid Corporate ID. and email";
                 $('#myModalError').modal('show');
                 $('#myLoader').modal('hide');
                 //alert("Account number not found");

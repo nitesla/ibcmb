@@ -135,7 +135,7 @@ public class SecurityConfig {
                     .sessionFixation().migrateSession().sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
                     .and()
                     .logout().logoutUrl("/admin/logout").logoutSuccessUrl("/login/admin").deleteCookies("JSESSIONID")
-                    .and().requestCache()
+                    .invalidateHttpSession(true).and().requestCache()
                     .and().exceptionHandling().and().csrf().disable();
 
 
@@ -192,16 +192,19 @@ public class SecurityConfig {
                     .failureHandler(opAuthenticationFailureHandler)
 
                     .and()
-
+                    //.failur
                     .sessionManagement()
-                    .invalidSessionUrl("/invalidSession.html")
+
+                    .invalidSessionUrl("/login/ops")
                     .maximumSessions(1)
-                    .expiredUrl("/login/ops")
+                    .expiredUrl("/login/ops?expired=true")
                     .sessionRegistry(sessionRegistry()).and()
-                    .sessionFixation().migrateSession().invalidSessionUrl("/login/ops")
+                    .sessionFixation().migrateSession()
+                    .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
+
                     .and()
                     // logout
-                    .logout().logoutUrl("/ops/logout").logoutSuccessUrl("/login/ops").deleteCookies("JSESSIONID").and().exceptionHandling().and().csrf().disable()
+                    .logout().logoutUrl("/ops/logout").logoutSuccessUrl("/login/ops").deleteCookies("JSESSIONID").invalidateHttpSession(true).and().exceptionHandling().and().csrf().disable()
 
             ;
             // disable page caching
