@@ -33,7 +33,7 @@ form.children("div").steps({
         if (currentIndex > newIndex)
         {
             // $('#myModalSuccess').modal('hide');
-            $('#loading-icon').hide();
+            $('#myLoader').modal('hide');
             return true;
         }
 
@@ -93,7 +93,7 @@ form.children("div").steps({
     },
     onStepChanged: function (event, currentIndex, priorIndex)
     {
-        $('#loading-icon').hide();
+        $('#myLoader').modal('hide');
         // Used to skip the "Warning" step if the user is old enough and wants to the previous step.
         if (currentIndex === 2 && priorIndex === 3)
         {
@@ -183,7 +183,7 @@ function validateAccountDetails(accountNumber, email, birthDate){
             }else {
                 $('#errorMess').text(customerId);
                 $('#myModalError').modal('show');
-                $('#loading-icon').hide();
+                $('#myLoader').modal('hide');
             }
             // if(customerId == "" || customerId === null){
             //
@@ -230,7 +230,7 @@ function validateExists(accountNumber, email, birthDate){
                 //invalid account number
                 $('#errorMess').text("This account already exists on our internet banking platform, Please try logging in.");
                 $('#myModalError').modal('show');
-                $('#loading-icon').hide();
+                $('#myLoader').modal('hide');
 
                 //alert("Account number not found");
             }else{
@@ -264,7 +264,7 @@ function validateUsername(username){
                 //invalid account number
                 $('#errorMess').text("Username already exists.");
                 $('#myModalError').modal('show');
-                $('#loading-icon').hide();
+                $('#myLoader').modal('hide');
             }else{
                 //valid account number
                 //alert("user name: " + result);
@@ -287,8 +287,10 @@ function validatePassword(password){
     var result;
     $.ajax({
         type:'GET',
-        url:"/rest/password/"+password,
+        data:{password:password},
+        url:"/rest/password/password",
         async:false,
+        cache:false,
         success:function(data1){
             result = ''+String(data1);
             if(result === 'true'){
@@ -297,7 +299,7 @@ function validatePassword(password){
             }else{
                 $('#errorMess').text(result);
                 $('#myModalError').modal('show');
-                $('#loading-icon').hide();
+                $('#myLoader').modal('hide');
             }
         }
     });

@@ -369,10 +369,12 @@ catch(InternetBankingException e){
 
             }
             session.removeAttribute("acctStmtLastDetails");
-            if(!list.isEmpty()){
-                session.setAttribute("acctStmtLastDetails",list.get(list.size()-1));
-                session.setAttribute("retAcctStmtStateValue",0);
-                session.setAttribute("acctStmtEntirePastDetails0",list);
+            if(list !=null) {
+                if (!list.isEmpty()) {
+                    session.setAttribute("acctStmtLastDetails", list.get(list.size() - 1));
+                    session.setAttribute("retAcctStmtStateValue", 0);
+                    session.setAttribute("acctStmtEntirePastDetails0", list);
+                }
             }
         } catch (ParseException e) {
             logger.warn("didn't parse date", e);

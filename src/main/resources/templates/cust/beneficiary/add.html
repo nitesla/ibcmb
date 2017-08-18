@@ -181,7 +181,7 @@
                                     <label>Preferred Name</label>
                                     <input type="text" class="form-control full-width" name="preferredName"
                                            placeholder="Beneficiary Alias" th:field="*{preferredName}"
-                                           required="required"/>
+                                          />
                                 </div>
                                 <button id="ilocalsave" style="display: none;" class="btn btn-link required-step">Save</button>
 
@@ -248,7 +248,7 @@
                 $('#loading-icon').hide();
                 return false;
             }
-l
+
             $.getJSON('/retail/transfer/' + acct + '/' + bank + '/nameEnquiry', function (jd) {
                 var message = jd.message;
                 var success = jd.success;

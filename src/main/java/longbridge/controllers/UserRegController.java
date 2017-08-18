@@ -358,8 +358,9 @@ public class UserRegController {
     }
 
 
-    @GetMapping("/rest/password/{password}")
-    public @ResponseBody String checkRegPassword(WebRequest webRequest,@PathVariable String password){
+    @GetMapping("/rest/password/password")
+    public @ResponseBody String checkRegPassword(WebRequest webRequest){
+        String password = webRequest.getParameter("password");
         String message = passwordPolicyService.validate(password, null);
         if (!"".equals(message)){
             return message;
