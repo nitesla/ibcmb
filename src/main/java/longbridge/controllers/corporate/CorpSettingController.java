@@ -70,7 +70,9 @@ public class CorpSettingController {
     public String getCorporateDashboard(Model model, Principal principal) {
         CorporateUser corporateUser = corporateUserService.getUserByName(principal.getName());
         //List<AccountDTO> accountList = accountService.getAccountsForDebitAndCredit(corporateUser.getCorporate().getCustomerId());
+
         List<AccountDTO> accountList = accountService.getAccountsAndBalances(corporateUser.getCorporate().getAccounts());
+
         SettingDTO dto= configService.getSettingByName("TRANSACTIONAL_ACCOUNTS");
         if (dto!=null && dto.isEnabled()){
             String []list= StringUtils.split(dto.getValue(),",");

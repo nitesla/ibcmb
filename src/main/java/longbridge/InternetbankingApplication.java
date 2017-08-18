@@ -1,14 +1,10 @@
 package longbridge;
 
-import longbridge.jobs.CronJobScheduler;
-import longbridge.models.Account;
-import longbridge.models.AccountRestriction;
-import longbridge.models.Corporate;
-import longbridge.models.OperationsUser;
-import longbridge.repositories.*;
+import longbridge.repositories.AccountRepo;
+import longbridge.repositories.CorporateRepo;
+import longbridge.repositories.CustomJpaRepositoryFactoryBean;
+import longbridge.repositories.OperationsUserRepo;
 import longbridge.services.*;
-import org.apache.commons.lang3.math.NumberUtils;
-import org.codehaus.groovy.runtime.powerassert.SourceText;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -19,10 +15,6 @@ import org.springframework.boot.web.support.SpringBootServletInitializer;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
 
 @SpringBootApplication
 @EnableJpaRepositories(repositoryFactoryBeanClass = CustomJpaRepositoryFactoryBean.class)
@@ -39,6 +31,8 @@ public class InternetbankingApplication extends SpringBootServletInitializer imp
 
     @Autowired
     PasswordPolicyService passwordPolicyService;
+    @Autowired
+    IntegrationService integrationService;
 
 
     @Autowired
@@ -69,8 +63,10 @@ public class InternetbankingApplication extends SpringBootServletInitializer imp
 
 
 //        CronJobScheduler.startJobs();
+        // System.out.println(corporateService.getCorporateByCorporateId("nwanu").getAccounts());
+        System.out.println(integrationService.doNameEnquiry("999033","1005847601"));
 
-   }
+    }
 
 }
 
