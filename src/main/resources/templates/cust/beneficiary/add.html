@@ -248,7 +248,7 @@
                 $('#loading-icon').hide();
                 return false;
             }
-l
+
             $.getJSON('/retail/transfer/' + acct + '/' + bank + '/nameEnquiry', function (jd) {
                 var message = jd.message;
                 var success = jd.success;

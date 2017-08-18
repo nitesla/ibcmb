@@ -4,10 +4,7 @@ import longbridge.repositories.AccountRepo;
 import longbridge.repositories.CorporateRepo;
 import longbridge.repositories.CustomJpaRepositoryFactoryBean;
 import longbridge.repositories.OperationsUserRepo;
-import longbridge.services.AccountService;
-import longbridge.services.CorporateService;
-import longbridge.services.PasswordPolicyService;
-import longbridge.services.SecurityService;
+import longbridge.services.*;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -34,7 +31,8 @@ public class InternetbankingApplication extends SpringBootServletInitializer imp
 
     @Autowired
     PasswordPolicyService passwordPolicyService;
-
+    @Autowired
+    IntegrationService integrationService;
 
 
     @Autowired
@@ -65,10 +63,10 @@ public class InternetbankingApplication extends SpringBootServletInitializer imp
 
 
 //        CronJobScheduler.startJobs();
-        System.out.println(corporateService.getCorporateByCorporateId("nwanu").getAccounts());
+        // System.out.println(corporateService.getCorporateByCorporateId("nwanu").getAccounts());
+        System.out.println(integrationService.doNameEnquiry("999033","1005847601"));
 
-
-   }
+    }
 
 }
 
