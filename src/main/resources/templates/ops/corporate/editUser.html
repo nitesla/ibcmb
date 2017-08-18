@@ -108,14 +108,19 @@
 
                                             <p>
                                                 <label class="checkbox-inline">
-                                                    <input type="checkbox" class="checkbox-inline"
+                                                    <input id="admin" type="checkbox" class="checkbox-inline"
                                                            th:field="*{admin}"/>
                                                     <span>Make Corporate Admin</span>
                                                 </label>
                                             </p>
                                         </div>
 
-
+                                        <div id="userTypeChange" style="color:red; display: none;">
+                                            <label class="col-sm-2 control-label"></label>
+                                            <p>Note: An Admin user cannot be an
+                                                Authorizer at the same time.</p>
+                                            </p>
+                                        </div>
                                         <div class="form-group">
                                             <div class="col-sm-4 col-sm-offset-2">
                                                 <button class="btn btn-white" type="reset" id="cancel">Cancel</button>
@@ -146,6 +151,15 @@
     document.getElementById("cancel").onclick = function () {
         location.href = "/ops/corporates/"+corpId+"/view";}
     /*]]>*/
+
+    $("#admin").change(function () {
+        if ($(this).is(":checked")) {
+            $("#userTypeChange").show();
+        }
+        else {
+            $("#userTypeChange").hide();
+        }
+    })
 
 </script>
 </body>

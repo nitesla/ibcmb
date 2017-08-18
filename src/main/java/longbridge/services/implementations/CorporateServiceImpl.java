@@ -222,6 +222,7 @@ public class CorporateServiceImpl implements CorporateService {
             }
             corporateUser.setRole(role);
             corporateUser.setCorpUserType(getUserType(user.getUserType()));
+            corporateUser.setAdmin(CorpUserType.ADMIN.equals(corporateUser.getCorpUserType()));
             corporateUser.setCorporate(newCorporate);
             createUserOnEntrustAndSendCredentials(corporateUser);
             if ("AUTHORIZER".equals(user.getUserType())) {
@@ -358,7 +359,6 @@ public class CorporateServiceImpl implements CorporateService {
             for (AccountInfo acct : accounts) {
                 accountService.AddFIAccount(customerId, acct);
             }
-
         }
     }
 
@@ -422,6 +422,7 @@ public class CorporateServiceImpl implements CorporateService {
             mailService.send(email);
         }).start();
     }
+
 
     @Override
 //    @Verifiable(operation = "UPDATE_CORPORATE", description = "Updating Corporate Entity")

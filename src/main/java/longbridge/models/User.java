@@ -27,7 +27,6 @@ public class User extends AbstractEntity{
     protected Date lockedUntilDate;
     protected Date lastLoginDate;
     protected int noOfLoginAttempts;
-    @Column(nullable=true)
     protected Integer noOfTokenAttempts =0;
 
 

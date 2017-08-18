@@ -626,17 +626,16 @@ public class OpsCorporateController {
 
         List<AccountInfo> accountInfos = integrationService.fetchAccounts(corporate.getCustomerId().toUpperCase());
 
-        SettingDTO setting = configService.getSettingByName("SHARE_CORPORATE_ACCOUNT");
+        SettingDTO setting = configService.getSettingByName("ENABLE_UNIQUE_ACCOUNTS");
 
         if (setting != null) {
             if (setting.isEnabled()) {
-                if ("NO".equalsIgnoreCase(setting.getValue())) {
-                    accountInfos = filterAccounts(accountInfos, accountService.getAccounts(corporate.getCustomerId().toUpperCase()));
-                }
-            } else {
                 accountInfos = filterAccounts(accountInfos, accountService.getAccounts(corporate.getCustomerId().toUpperCase()));
             }
+        } else {
+            accountInfos = filterAccounts(accountInfos, accountService.getAccounts(corporate.getCustomerId().toUpperCase()));
         }
+
 
         model.addAttribute("accounts", accountInfos);
         if (((corporateExistingData != null) && (accounts != null)) && (corporate.getCustomerId().equalsIgnoreCase(corporateExistingData.getCustomerId()))) {

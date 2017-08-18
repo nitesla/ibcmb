@@ -60,7 +60,7 @@ public class InternetbankingApplication extends SpringBootServletInitializer imp
     @Override
     @Transactional
     public void run(String... strings) throws Exception {
-
+        
 
 //        CronJobScheduler.startJobs();
         // System.out.println(corporateService.getCorporateByCorporateId("nwanu").getAccounts());
