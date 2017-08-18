@@ -190,7 +190,7 @@ function validatePassword(password){
     var username = $('#username').val();
     password = password.trim();
     $.ajax({
-        type:'GET',
+        type:'POST',
         data:{password:password,username:username},
         url:"/rest/corporate/password/check/password",
         async:false,
@@ -203,7 +203,6 @@ function validatePassword(password){
                  $('#myLoader').modal('hide');
                 $('#errorMess').text(res);
                 $('#myModalError').modal('show');
-
             }
         }
     });

@@ -202,11 +202,12 @@ function validatePassword(password){
     var res;
      $('#myLoader').modal('show');
     $.ajax({
-        type:'GET',
+        type:'POST',
         cache:false,
-        data:{password:password},
-        url:"/rest/password/check/password/"+username,
+        data:{password:password, username:username},
+        url:"/rest/password/check",
         async:false,
+        cache:false,
         success:function(data1){
             res = ''+String(data1);
             if(res === 'true'){

@@ -369,9 +369,10 @@ public class UserRegController {
     }
 
 
-    @GetMapping("/rest/password/check/{username}")
-    public @ResponseBody String checkPassword(WebRequest webRequest,@PathVariable String username){
+    @PostMapping("/rest/password/check")
+    public @ResponseBody String checkPassword(WebRequest webRequest){
         String password = webRequest.getParameter("password");
+        String username = webRequest.getParameter("username");
         RetailUser user = retailUserService.getUserByName(username);
 //        logger.info("the user name {} and password {}",user.getUserName(),password);
         String message = passwordPolicyService.validate(password, user);

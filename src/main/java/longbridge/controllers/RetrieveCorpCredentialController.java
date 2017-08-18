@@ -205,7 +205,8 @@ public @ResponseBody String getSecAns(WebRequest webRequest, HttpSession session
             return messageSource.getMessage("reset.password.gpv.failed", null, locale);
         }
     }
-    @GetMapping("/rest/corporate/password/check/password")
+
+    @PostMapping("/rest/corporate/password/check/password")
     public @ResponseBody String checkPassword(WebRequest webRequest){
         String password  = webRequest.getParameter("password");
         String username  = webRequest.getParameter("username");
