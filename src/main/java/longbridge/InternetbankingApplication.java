@@ -8,6 +8,7 @@ import longbridge.repositories.AccountRepo;
 import longbridge.repositories.AccountRestrictionRepo;
 import longbridge.repositories.CustomJpaRepositoryFactoryBean;
 import longbridge.repositories.OperationsUserRepo;
+import longbridge.services.CorporateService;
 import longbridge.services.OperationsUserService;
 import longbridge.services.PasswordPolicyService;
 import longbridge.services.SecurityService;
@@ -22,6 +23,7 @@ import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.support.SpringBootServletInitializer;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.scheduling.annotation.EnableAsync;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Arrays;
 import java.util.Date;
@@ -44,6 +46,8 @@ public class InternetbankingApplication extends SpringBootServletInitializer imp
 
     @Autowired
     PasswordPolicyService passwordPolicyService;
+    @Autowired
+    CorporateService corporateService;
 
 
     public static void main(String[] args) {
@@ -57,8 +61,11 @@ public class InternetbankingApplication extends SpringBootServletInitializer imp
 
 
     @Override
+    @Transactional
     public void run(String... strings) throws Exception {
 //        CronJobScheduler.startJobs();
+        System.out.println(corporateService.getCorporateByCorporateId("nwanu").getAccounts());
+
 
    }
 

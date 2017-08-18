@@ -97,7 +97,7 @@ public class MainController {
 
     @GetMapping(value = "/login/admin")
     public ModelAndView adminLogin() {
-
+        SecurityContextHolder.clearContext();
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("admlogin");
         return modelAndView;

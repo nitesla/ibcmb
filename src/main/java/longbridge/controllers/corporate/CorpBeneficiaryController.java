@@ -94,7 +94,7 @@ public class CorpBeneficiaryController {
 
     public String createCorpLocalBeneficiary(@Valid CorpLocalBeneficiaryDTO corpLocalBeneficiaryDTO, BindingResult result, Principal principal, Model model, HttpServletRequest request, RedirectAttributes redirectAttributes, Locale locale) {
 
-
+        model.addAttribute("bank", financialInstitutionService.getFinancialInstitutionByCode(corpLocalBeneficiaryDTO.getBeneficiaryBank()).getInstitutionName());
         SettingDTO setting = configService.getSettingByName("ENABLE_CORPORATE_2FA");
         CorporateUser user = corporateUserService.getUserByName(principal.getName());
 

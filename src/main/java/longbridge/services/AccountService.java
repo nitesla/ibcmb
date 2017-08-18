@@ -92,7 +92,7 @@ public interface AccountService {
 
 
 
-    Iterable<Account> getAccountsForDebit(String customerId);
+    List<Account> getAccountsForDebit(String customerId);
     Iterable<Account> getAccountsForDebit(List<Account> accounts);
 
 
