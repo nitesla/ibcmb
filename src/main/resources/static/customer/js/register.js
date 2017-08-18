@@ -287,8 +287,10 @@ function validatePassword(password){
     var result;
     $.ajax({
         type:'GET',
-        url:"/rest/password/"+password,
+        data:{password:password},
+        url:"/rest/password/password",
         async:false,
+        cache:false,
         success:function(data1){
             result = ''+String(data1);
             if(result === 'true'){

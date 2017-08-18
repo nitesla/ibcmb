@@ -2318,7 +2318,7 @@ th {
   border-bottom-width: 2px;
 }
 .table-striped > tbody > tr:nth-of-type(odd) {
-  background-color: #f9f9f9;
+  background-color: transparent;
 }
 .table-hover > tbody > tr:hover {
   background-color: #f5f5f5;
@@ -5247,14 +5247,14 @@ a.thumbnail.active {
 .list-group {
   padding-left: 0;
   margin-bottom: 20px;
+  color: #003056;
 }
 .list-group-item {
   position: relative;
   display: block;
   padding: 10px 15px;
   margin-bottom: -1px;
-  background-color: #fff;
-  border: 1px solid #ddd;
+  border-top: 1px solid grey;
 }
 .list-group-item:first-child {
   border-top-left-radius: 4px;
@@ -5262,8 +5262,6 @@ a.thumbnail.active {
 }
 .list-group-item:last-child {
   margin-bottom: 0;
-  border-bottom-right-radius: 4px;
-  border-bottom-left-radius: 4px;
 }
 a.list-group-item,
 button.list-group-item {
@@ -5328,11 +5326,11 @@ button.list-group-item {
 }
 .list-group-item-success {
   color: #3c763d;
-  background-color: #dff0d8;
+  /*background-color: #dff0d8;*/
 }
 a.list-group-item-success,
 button.list-group-item-success {
-  color: #3c763d;
+  /*color: #3c763d;*/
 }
 a.list-group-item-success .list-group-item-heading,
 button.list-group-item-success .list-group-item-heading {
@@ -5343,7 +5341,7 @@ button.list-group-item-success:hover,
 a.list-group-item-success:focus,
 button.list-group-item-success:focus {
   color: #3c763d;
-  background-color: #d0e9c6;
+  /*background-color: #d0e9c6;*/
 }
 a.list-group-item-success.active,
 button.list-group-item-success.active,
@@ -5353,7 +5351,7 @@ a.list-group-item-success.active:focus,
 button.list-group-item-success.active:focus {
   color: #fff;
   background-color: #3c763d;
-  border-color: #3c763d;
+  /*border-color: #3c763d;*/
 }
 .list-group-item-info {
   color: #31708f;
@@ -5415,7 +5413,7 @@ button.list-group-item-warning.active:focus {
 }
 .list-group-item-danger {
   color: #a94442;
-  background-color: #f2dede;
+  /*background-color: #f2dede;*/
 }
 a.list-group-item-danger,
 button.list-group-item-danger {

@@ -763,7 +763,7 @@ public class CorporateUserServiceImpl implements CorporateUserService {
         corporateUserDTO.setRole(corporateUser.getRole().getName());
         corporateUserDTO.setCorpUserType(corporateUser.getCorpUserType());
         if (CorpUserType.AUTHORIZER.equals(corporateUser.getCorpUserType())){
-            corporateUserDTO.isAuthorizer();
+            corporateUserDTO.setAuthorizer(true);
         }
         if (CorpUserType.AUTHORIZER.equals(corporateUser.getCorpUserType())){
             CorporateRole corporateRole = getCorporateUserAuthorizerRole(corporateUser);
