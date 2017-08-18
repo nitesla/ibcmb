@@ -123,6 +123,7 @@ public class BeneficiaryController {
                 ){
 
             try {
+                model.addAttribute("bank",financialInstitutionService.getFinancialInstitutionByCode(localBeneficiaryDTO.getBeneficiaryBank()).getInstitutionName());
                 String token =request.getParameter("token");
                 RetailUser retailUser = retailUserService.getUserByName(principal.getName());
               securityService.performTokenValidation(retailUser.getEntrustId(), retailUser.getEntrustGroup(), token);
