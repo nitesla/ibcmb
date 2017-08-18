@@ -147,7 +147,7 @@ public class CorporateControllerAdvice {
     }
 
     @ModelAttribute
-    public String getCustmerAccounts(Model model, Principal principal) {
+    public String getCustomerAccounts(Model model, Principal principal) {
 
         if (principal == null || principal.getName() == null) {
             return "redirect:/login/corporate";
@@ -158,7 +158,7 @@ public class CorporateControllerAdvice {
         if (corporateUser != null) {
             List<Account> accountList = new ArrayList<>();
 
-            Iterable<Account> accounts = accountService.getAccountsForDebit(corporateUser.getCorporate().getCustomerId());
+            Iterable<Account> accounts = accountService.getAccountsForDebit(corporateUser.getCorporate().getAccounts());
 
             StreamSupport.stream(accounts.spliterator(), false)
                     .filter(Objects::nonNull)

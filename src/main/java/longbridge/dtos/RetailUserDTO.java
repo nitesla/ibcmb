@@ -24,6 +24,7 @@ public class RetailUserDTO {
     private String firstName;
     private String lastName;
     private String email;
+    private String phoneNumber;
     private Date birthDate;
     private String password;
     private String status;
@@ -223,6 +224,15 @@ public class RetailUserDTO {
 
     public void setCaptionSec(String captionSec) {
         this.captionSec = captionSec;
+    }
+
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
     }
 
     @Override

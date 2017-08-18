@@ -12,6 +12,7 @@ import longbridge.services.AccountService;
 import longbridge.services.ConfigurationService;
 import longbridge.services.IntegrationService;
 import longbridge.utils.statement.AccountStatement;
+import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
@@ -153,7 +154,7 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public Iterable<Account> getCustomerAccounts(String customerId) {
+    public List<Account> getCustomerAccounts(String customerId) {
 
         List<Account> accountList = accountRepo.findByCustomerId(customerId);
         return accountList;
@@ -261,7 +262,7 @@ public class AccountServiceImpl implements AccountService {
         SettingDTO settingDTO = configurationService.getSettingByName("ACCOUNT_FOR_DEBIT");
         if (settingDTO != null && settingDTO.isEnabled()) {
             List<String> list = Arrays.asList(StringUtils.split(settingDTO.getValue(), ","));
-            schmTypes.addAll(list);
+           schmTypes.addAll(list);
 
         }
 
@@ -271,6 +272,30 @@ public class AccountServiceImpl implements AccountService {
         for (Account account : accounts) {
             if ("A".equalsIgnoreCase(account.getStatus()) && !accountConfigService.isAccountHidden(account.getAccountNumber())
                     && (!accountConfigService.isAccountRestrictedForView(account.getAccountNumber())) && !accountConfigService.isAccountRestrictedForDebit(account.getAccountNumber()) && (!accountConfigService.isAccountSchemeTypeRestrictedForView(account.getSchemeCode()) && (!accountConfigService.isAccountSchemeTypeRestrictedForDebit(account.getSchemeCode())))) {
+                accountsForDebit.add(account);
+            }
+
+        }
+        return accountsForDebit;
+    }
+
+    @Override
+    public Iterable<Account> getAccountsForDebit(List<Account> accounts) {
+        List<String> schmTypes = new ArrayList<>();
+        SettingDTO settingDTO = configurationService.getSettingByName("ACCOUNT_FOR_DEBIT");
+        if (settingDTO != null && settingDTO.isEnabled()) {
+            List<String> list = Arrays.asList(StringUtils.split(settingDTO.getValue(), ","));
+            schmTypes=(list);
+
+        }
+
+
+        List<Account> accountsForDebit = new ArrayList<Account>();
+        for (Account account : accounts) {
+            if ("A".equalsIgnoreCase(account.getStatus()) && !accountConfigService.isAccountHidden(account.getAccountNumber())
+                    && (!accountConfigService.isAccountRestrictedForView(account.getAccountNumber())) && !accountConfigService.isAccountRestrictedForDebit(account.getAccountNumber()) && (!accountConfigService.isAccountSchemeTypeRestrictedForView(account.getSchemeCode()) && (!accountConfigService.isAccountSchemeTypeRestrictedForDebit(account.getSchemeCode())))
+                    && (!schmTypes.isEmpty() && ArrayUtils.contains(schmTypes.toArray(),account.getSchemeType()))
+                    ) {
                 accountsForDebit.add(account);
             }
 
@@ -305,6 +330,44 @@ public class AccountServiceImpl implements AccountService {
         List<AccountDTO> accountsForDebitAndCredit = new ArrayList<>();
         //Iterable<Account> accounts = this.getCustomerAccounts(customerId);
         Iterable<AccountDTO> accountDTOS = convertEntitiesToDTOs(this.getCustomerAccounts(customerId));
+        StreamSupport
+                .stream(accountDTOS.spliterator(), false)
+                .filter(i -> !accountConfigService.isAccountHidden(i.getAccountNumber()))
+                .filter(i -> !accountConfigService.isAccountRestrictedForView(i.getAccountNumber()))
+                .filter(i -> !accountConfigService.isAccountRestrictedForDebit(i.getAccountNumber()))
+                .filter(i -> !accountConfigService.isAccountRestrictedForCredit(i.getAccountNumber()))
+                .filter(i -> !accountConfigService.isAccountSchemeTypeRestrictedForView(i.getSchemeType()))
+                .filter(i -> !accountConfigService.isAccountSchemeTypeRestrictedForDebit(i.getSchemeType()))
+                .filter(i -> !accountConfigService.isAccountSchemeTypeRestrictedForCredit(i.getSchemeType()))
+                .filter(i -> !accountConfigService.isAccountSchemeCodeRestrictedForView(i.getSchemeCode()))
+                .filter(i -> !accountConfigService.isAccountSchemeCodeRestrictedForDebit(i.getSchemeCode()))
+                .filter(i -> !accountConfigService.isAccountSchemeCodeRestrictedForCredit(i.getSchemeCode()))
+
+                .forEach(i -> {
+                    Map<String, BigDecimal> balance = integrationService.getBalance(i.getAccountNumber());
+                    String availbalance = "0";
+                    String ledBalance = "0";
+                    if (balance != null) {
+                        availbalance = balance.get("AvailableBalance").toString();
+                        ledBalance = balance.get("LedgerBalance").toString();
+                    }
+
+                    i.setAccountBalance(availbalance);
+                    i.setLedgerBalance(ledBalance);
+                    accountsForDebitAndCredit.add(i);
+
+
+                });
+
+
+        return accountsForDebitAndCredit;
+    }
+
+    @Override
+    public List<AccountDTO> getAccountsAndBalances(List<Account> accounts) {
+        List<AccountDTO> accountsForDebitAndCredit = new ArrayList<>();
+        //Iterable<Account> accounts = this.getCustomerAccounts(customerId);
+        Iterable<AccountDTO> accountDTOS = convertEntitiesToDTOs(accounts);
         StreamSupport
                 .stream(accountDTOS.spliterator(), false)
                 .filter(i -> !accountConfigService.isAccountHidden(i.getAccountNumber()))
