@@ -86,7 +86,7 @@ public class MainController {
         return new ModelAndView("retpage1", "error", error);
     }
 
-    @RequestMapping(value = "/login/corporate", method = RequestMethod.GET)
+    @RequestMapping(value = "/login/corporate",  method = RequestMethod.GET)
     public ModelAndView getCorpLoginPage(@RequestParam Optional<String> error, @RequestParam Optional<HttpServletRequest> request) {
         SecurityContextHolder.clearContext();
         if (request.isPresent()) request.get().getSession().invalidate();
@@ -97,7 +97,7 @@ public class MainController {
 
     @GetMapping(value = "/login/admin")
     public ModelAndView adminLogin() {
-
+        SecurityContextHolder.clearContext();
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("admlogin");
         return modelAndView;

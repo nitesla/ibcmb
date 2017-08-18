@@ -71,7 +71,7 @@ public class LocalBeneficiaryServiceImpl implements LocalBeneficiaryService {
             return messageSource.getMessage("beneficiary.add.success", null, locale);
         } catch (Exception e) {
             //throw new InternetBankingException(messageSource.getMessage("beneficiary.add.failure",null, locale), e);
-            throw new InternetBankingException(e.getMessage());
+            throw new InternetBankingException(e.getMessage(),e);
         }
 
 

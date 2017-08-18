@@ -154,7 +154,7 @@ try {
     @GetMapping("/settings")
     public String settingsPage(Model model, Principal principal){
        CorporateUser user = corporateUserService.getUserByName(principal.getName());
-        Iterable<AccountDTO> accounts = accountService.getAccounts(user.getCorporate().getCustomerId());
+        Iterable<Account> accounts = user.getCorporate().getAccounts();
         model.addAttribute("accounts", accounts);
         return "corp/account/setting";
     }

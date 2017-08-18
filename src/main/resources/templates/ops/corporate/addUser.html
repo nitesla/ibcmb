@@ -39,7 +39,8 @@
 
                             <div class="x_content">
                                 <div class="ibox-content">
-                                    <form method="post" class="form-horizontal" th:action="@{/ops/corporates/users/new}" th:object="${corporateUser}">
+                                    <form method="post" class="form-horizontal" th:action="@{/ops/corporates/users/new}"
+                                          th:object="${corporateUser}">
 
                                         <div th:replace="layout::form-validation"></div>
 
@@ -51,7 +52,8 @@
                                             </div>
                                         </div>
 
-                                        <input th:if="${corporate.id}" th:type="hidden" name="corporateId" th:value="${corporate.id}"/>
+                                        <input th:if="${corporate.id}" th:type="hidden" name="corporateId"
+                                               th:value="${corporate.id}"/>
 
                                         <div class="form-group">
                                             <label class="col-sm-2 control-label">First Name</label>
@@ -65,7 +67,7 @@
                                             <label class="col-sm-2 control-label">Last Name</label>
 
                                             <div class="col-sm-6">
-                                                <input type="text" class="form-control" th:field="*{lastName}" />
+                                                <input type="text" class="form-control" th:field="*{lastName}"/>
                                             </div>
 
                                         </div>
@@ -91,22 +93,29 @@
                                             <div class="col-sm-6">
 
                                                 <select class="form-control" th:field="*{roleId}">
-                                                    <option th:each="role : ${roles.?[#strings.equalsIgnoreCase(userType, 'corporate')]}" th:value="${role.id}" th:text="${role.name}"></option>
+                                                    <option th:each="role : ${roles.?[#strings.equalsIgnoreCase(userType, 'corporate')]}"
+                                                            th:value="${role.id}" th:text="${role.name}"></option>
                                                 </select>
 
 
                                             </div>
                                         </div>
 
-                                        <div  th:if ="${corporate.corporateType=='MULTI'}" class="form-group">
+                                        <div th:if="${corporate.corporateType=='MULTI'}" class="form-group">
                                             <label class="col-sm-2 control-label"></label>
 
                                             <p><label class="checkbox-inline">
-                                                        <input type="checkbox" class="checkbox-inline"
-                                                               th:field="*{admin}"/>
-                                                        <span>Make Corporate Admin</span>
-                                                    </label>
-                                                </p>
+                                                <input id="admin" type="checkbox" class="checkbox-inline"
+                                                       th:field="*{admin}"/>
+                                                <span>Make Corporate Admin</span>
+
+                                            </label>
+                                        </div>
+                                        <div id="userTypeChange" style="color:red; display: none;">
+                                            <label class="col-sm-2 control-label"></label>
+                                            <p>Note: An Admin user cannot be an
+                                                Authorizer at the same time.</p>
+                                            </p>
                                         </div>
 
                                         <div class="form-group">
@@ -136,16 +145,26 @@
     /*<![CDATA[*/
 
     var corpId = [[${corporate.id}]];
-    if(corpId!=null) {
+    if (corpId != null) {
         document.getElementById("cancel").onclick = function () {
             location.href = "/ops/corporates/" + corpId + "/view";
         }
-    }else{
+    } else {
         document.getElementById("cancel").onclick = function () {
             location.href = "/ops/corporates/";
         }
     }
     /*]]>*/
+
+
+    $("#admin").change(function () {
+        if ($(this).is(":checked")) {
+            $("#userTypeChange").show();
+        }
+        else {
+            $("#userTypeChange").hide();
+        }
+    })
 
 </script>
 

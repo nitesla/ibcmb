@@ -222,6 +222,7 @@ public class CorporateServiceImpl implements CorporateService {
             }
             corporateUser.setRole(role);
             corporateUser.setCorpUserType(getUserType(user.getUserType()));
+            corporateUser.setAdmin(CorpUserType.ADMIN.equals(corporateUser.getCorpUserType()));
             corporateUser.setCorporate(newCorporate);
             createUserOnEntrustAndSendCredentials(corporateUser);
             if ("AUTHORIZER".equals(user.getUserType())) {
