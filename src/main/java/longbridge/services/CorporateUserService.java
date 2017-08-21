@@ -45,13 +45,6 @@ public interface CorporateUserService{
 
     CorporateUser getUserByNameAndCorporateId(String username, String corporateId);
 
-    /**
-     * Returns all the corporate users for the corporate customer
-     * @param Corporate  the corporate customer
-     * @return a list of the corporate users
-     */
-    @PreAuthorize("hasAuthority('GET_CORPORATE_USER')")
-    Iterable<CorporateUserDTO> getUsers(Corporate Corporate);
 
     CorporateUserDTO convertEntityToDTO(CorporateUser corporateUser);
 
