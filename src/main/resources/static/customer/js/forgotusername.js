@@ -12,8 +12,9 @@ function validateAccountNo(accountNumber){
     // var customerId;
     var secQues;
     $.ajax({
-        type:'GET',
-        url:"/rest/retail/accountname/"+accountNumber,
+        type:'POST',
+        url:"/rest/retail/accountname/accountNumber",
+        data:{accountNumber:accountNumber},
         async:false,
         success:function(data1){
             customerId = ''+String(data1);
@@ -88,7 +89,7 @@ function validateSecAnswer(secAnswer){
     // console.log('customer secAnswer '+secAnswer);
     var result = '';
     $.ajax({
-        type:'GET',
+        type:'POST',
         url:"/rest/secAns/cifId",
         cache:false,
         data: {customerId : customerId,secAnswers:secAnswer},

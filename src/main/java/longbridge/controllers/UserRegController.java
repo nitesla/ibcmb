@@ -77,11 +77,14 @@ public class UserRegController {
     @Autowired
     private PasswordPolicyService passwordPolicyService;
 
-    @GetMapping("/rest/accountdetails/{accountNumber}/{email}/{birthDate}")
-    public @ResponseBody String getAccountDetailsFromNumber(@PathVariable String accountNumber, @PathVariable String email, @PathVariable String birthDate){
+    @PostMapping("/rest/accountdetails")
+    public @ResponseBody String getAccountDetailsFromNumber(WebRequest webRequest){
         String customerId = "";
+        String accountNumber = webRequest.getParameter("accountNumber");
         logger.info("Account nUmber : " + accountNumber);
+        String email = webRequest.getParameter("email");
         logger.info("Email : " + email);
+        String birthDate = webRequest.getParameter("birthDate");
         logger.info("BirthDate : " + birthDate);
         CustomerDetails details = integrationService.isAccountValid(accountNumber, email, birthDate);
         logger.info("DETAILS {} ", details);
@@ -102,11 +105,14 @@ public class UserRegController {
         return customerId;
     }
 
-    @GetMapping("/rest/accountexists/{accountNumber}/{email}/{birthDate}")
-    public @ResponseBody String validateExists(@PathVariable String accountNumber, @PathVariable String email, @PathVariable String birthDate){
+    @PostMapping("/rest/accountexists")
+    public @ResponseBody String validateExists(WebRequest webRequest){
         String customerId = "";
-        logger.info("Account nUmber : " + accountNumber);
+        String accountNumber = webRequest.getParameter("accountNumber");
+        logger.info("Account Number : " + accountNumber);
+        String email = webRequest.getParameter("email");
         logger.info("Email : " + email);
+        String birthDate = webRequest.getParameter("birthDate");
         logger.info("BirthDate : " + birthDate);
         CustomerDetails details = integrationService.isAccountValid(accountNumber, email, birthDate);
         logger.info("details {} ", details);
@@ -129,8 +135,9 @@ public class UserRegController {
         return customerId;
     }
 
-    @GetMapping("/rest/retail/accountname/{accountNumber}")
-    public @ResponseBody String getAccountNameFromNumber(@PathVariable String accountNumber){
+    @PostMapping("/rest/retail/accountname/accountNumber")
+    public @ResponseBody String getAccountNameFromNumber(WebRequest webRequest){
+        String accountNumber = webRequest.getParameter("accountNumber");
         String customerId = "";
         String userEmail = "";
 //    	logger.info("Account nUmber : " + accountNumber);
@@ -283,12 +290,15 @@ public class UserRegController {
     }
 
 
-    @GetMapping("/rest/regCode/{accountNumber}/{email}/{birthDate}")
-    public @ResponseBody String sendRegCode(@PathVariable String accountNumber, @PathVariable String email, @PathVariable String birthDate, HttpSession session){
+    @PostMapping("/rest/regCode")
+    public @ResponseBody String sendRegCode(WebRequest webRequest, HttpSession session){
 
         String code = "";
-        logger.info("Account nUmber : " + accountNumber);
+        String accountNumber = webRequest.getParameter("accountNumber");
+        logger.info("Account Number : " + accountNumber);
+        String email = webRequest.getParameter("email");
         logger.info("Email : " + email);
+        String birthDate = webRequest.getParameter("birthDate");
         logger.info("BirthDate : " + birthDate);
         CustomerDetails details = integrationService.isAccountValid(accountNumber, email, birthDate);
         if (details != null){
@@ -325,8 +335,10 @@ public class UserRegController {
         return code;
     }
 
-    @GetMapping("/rest/regCode/check/{code}")
-    public @ResponseBody String checkRegCode(@PathVariable String code, HttpSession session){
+    @PostMapping("/rest/regCode/check")
+    public @ResponseBody String checkRegCode(WebRequest webRequest, HttpSession session){
+        String code= webRequest.getParameter("code");
+        logger.info("Code : " + code);
         String regCode = (String) session.getAttribute("regCode");
         logger.info("REGCODE IN SESSION {} ", regCode);
 //        Integer reg = Integer.parseInt(regCode);
@@ -337,8 +349,11 @@ public class UserRegController {
     }
 
 
-    @GetMapping("/rest/username/check/{username}")
-    public @ResponseBody String checkUsername(@PathVariable String username){
+    @PostMapping("/rest/username/check")
+    public @ResponseBody String checkUsername(WebRequest webRequest){
+
+        String username = webRequest.getParameter("username");
+        logger.info("Username : " + username);
         RetailUser user = retailUserService.getUserByName(username);
         logger.info("USER RETURNED{}", user);
         if(null == user){
@@ -358,7 +373,7 @@ public class UserRegController {
     }
 
 
-    @GetMapping("/rest/password/password")
+    @PostMapping("/rest/password/password")
     public @ResponseBody String checkRegPassword(WebRequest webRequest){
         String password = webRequest.getParameter("password");
         String message = passwordPolicyService.validate(password, null);
@@ -374,7 +389,7 @@ public class UserRegController {
         String password = webRequest.getParameter("password");
         String username = webRequest.getParameter("username");
         RetailUser user = retailUserService.getUserByName(username);
-//        logger.info("the user name {} and password {}",user.getUserName(),password);
+//        logger.info("the user name {} and password {}",user.getUserName(),password);E
         String message = passwordPolicyService.validate(password, user);
 //        logger.info("the message {}",message);
         if (!"".equals(message)){

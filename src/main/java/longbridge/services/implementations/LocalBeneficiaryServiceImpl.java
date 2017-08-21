@@ -2,10 +2,8 @@ package longbridge.services.implementations;
 
 import longbridge.api.NEnquiryDetails;
 import longbridge.dtos.LocalBeneficiaryDTO;
-import longbridge.dtos.SettingDTO;
 import longbridge.exception.DuplicateObjectException;
 import longbridge.exception.InternetBankingException;
-import longbridge.exception.InternetBankingTransferException;
 import longbridge.models.LocalBeneficiary;
 import longbridge.models.RetailUser;
 import longbridge.models.User;
