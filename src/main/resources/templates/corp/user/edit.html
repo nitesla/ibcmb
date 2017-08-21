@@ -99,12 +99,13 @@
                             </tr>
                             </thead>
                             <tbody>
-                            <tr th:each="list:${copcorpTransferRules}">
-                                <td th:each="${list.lowerLimitAmount}"></td>
-                                <td th:each="${list.upperLimitAmount}"></td>
-                                <td th:each="${list.currency}"></td>
-                                <td th:each="${list.roleNames}"></td>
-                                <td th:each="${list.anyCanAuthorize}"></td>
+                            <tr th:each="list : ${corpTransferRules}">
+                                <td th:text="${list.lowerLimitAmount}"></td>
+                                <td th:text="${list.upperLimitAmount}"></td>
+                                <td th:text="${list.currency}"></td>
+                                <td th:text="${list.roleNames}"></td>
+                                <td th:if="${list.anyCanAuthorize}" th:text="ANY"></td>
+                                <td th:unless="${list.anyCanAuthorize}" th:text="ALL"></td>
                             </tr>
                             </tbody>
                         </table>

@@ -86,7 +86,7 @@
                     <div class="modal-body no-bd-rad">
                         <h3 class="tokenHeader"><span class='text-danger'>Transfer Rule</span></h3>
                         <div class="margin-bottom">
-                            <table class="table table-striped table-bordered table-hover"  width="100%">
+                            <table class="table" id="rules" width="100%">
                                 <thead>
                                 <tr>
                                     <th>Lower Amount</th>
@@ -97,12 +97,13 @@
                                 </tr>
                                 </thead>
                                 <tbody>
-                                <tr th:each="list:${copcorpTransferRules}">
-                                    <td th:each="${list.lowerLimitAmount}"></td>
-                                    <td th:each="${list.upperLimitAmount}"></td>
-                                    <td th:each="${list.currency}"></td>
-                                    <td th:each="${list.roleNames}"></td>
-                                    <td th:each="${list.anyCanAuthorize}"></td>
+                                <tr th:each="list : ${corpTransferRules}">
+                                    <td th:text="${list.lowerLimitAmount}"></td>
+                                    <td th:text="${list.upperLimitAmount}"></td>
+                                    <td th:text="${list.currency}"></td>
+                                    <td th:text="${list.roleNames}"></td>
+                                    <td th:if="${list.anyCanAuthorize}" th:text="ANY"></td>
+                                    <td th:unless="${list.anyCanAuthorize}" th:text="ALL"></td>
                                 </tr>
                                 </tbody>
                             </table>
@@ -146,6 +147,18 @@
         })
     });
 </script>
+
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        var table = $('#rules').DataTable({
+            responsive: true,
+            "lengthMenu" : [ [ 5, 10, 20], [ 5, 10, 20 ] ],
+            "pagingType" : "simple_numbers",
+            "searching": false,
+            "dom": 'T<"clear">frtlp'
+        });
+        /*]]>*/
+    </script>
    
 </th:block>
 
