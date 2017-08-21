@@ -105,6 +105,10 @@ public class RequestServiceImpl implements RequestService {
             });
 
             StringBuilder messageBody = new StringBuilder();
+            messageBody.append("From : " + name + "\n");
+            messageBody.append("Date : " + DateFormatter.format(serviceRequest.getDateRequested()) + "\n");
+
+
             for(NameValue nameValue : myFormObjects){
                 messageBody.append(nameValue.getName() + " : " + nameValue.getValue() + "\n");
             }
@@ -113,7 +117,7 @@ public class RequestServiceImpl implements RequestService {
             serviceRequestRepo.save(serviceRequest);
 
             Email email = new Email.Builder()
-                    .setSubject(String.format(messageSource.getMessage("request.subject",null,locale),name))
+                    .setSubject(serviceRequest.getRequestName())
                     .setBody(message)
                     .build();
             if(config.getGroupId()!=null) {
@@ -140,6 +144,11 @@ public class RequestServiceImpl implements RequestService {
             });
 
             StringBuilder messageBody = new StringBuilder();
+
+            messageBody.append("From : " + name + "\n");
+            messageBody.append("Date : " + DateFormatter.format(serviceRequest.getDateRequested()) + "\n");
+
+
             for(NameValue nameValue : myFormObjects){
                 messageBody.append(nameValue.getName() + " : " + nameValue.getValue() + "\n");
             }
@@ -148,7 +157,7 @@ public class RequestServiceImpl implements RequestService {
             serviceRequestRepo.save(serviceRequest);
 
             Email email = new Email.Builder()
-                    .setSubject("Service Request from " + name)
+                    .setSubject(serviceRequest.getRequestName())
                     .setBody(message)
                     .build();
             groupMessageService.send(config.getGroupId(), email);
