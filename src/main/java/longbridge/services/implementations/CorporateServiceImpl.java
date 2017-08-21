@@ -649,7 +649,7 @@ public class CorporateServiceImpl implements CorporateService {
     @Transactional
     public List<CorpTransferRuleDTO> getCorporateRules(Long corpId) {
         Corporate corporate = corporateRepo.findOne(corpId);
-        List<CorpTransRule> transferRules = corporate.getCorpTransRules();
+        List<CorpTransRule> transferRules = corpTransferRuleRepo.findByCorporate(corporate);
         Collections.sort(transferRules, new TransferRuleComparator());
         return convertTransferRuleEntitiesToDTOs(transferRules);
 
