@@ -217,8 +217,13 @@
 
             $("#btn-find").on("click", function(e) {
 //                console.log("find");
-                $('#previous').show();
-                $('#next').show();
+                var table = $('#tranDetails').DataTable();
+
+//                console.log("is empty "+);
+                if(table.data().any() != false) {
+                    $('#previous').show();
+                    $('#next').show();
+                }
                 resetButton();
                 e.preventDefault();
                 dt = $('#tranDetails').DataTable();
