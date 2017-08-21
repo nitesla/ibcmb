@@ -143,6 +143,8 @@ public interface CorporateUserService{
 
     void changeCorporateUserAuthorizerRole(CorporateUser corporateUser, CorporateRole role, Long newRoleId);
 
+    void removeUserFromAuthorizerRole(CorporateUser corporateUser);
+
     String addCorpUserFromCorporateAdmin(CorpCorporateUserDTO user) throws InternetBankingException;
 
     String resetPassword(CorporateUser user, CustResetPassword changePassword);

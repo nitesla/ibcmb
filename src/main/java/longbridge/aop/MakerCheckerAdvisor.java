@@ -41,7 +41,7 @@ public class MakerCheckerAdvisor {
     private VerificationService verificationService;
 
     @Autowired
-    EntityManager entityManager;
+    private EntityManager entityManager;
 
     private Logger log = LoggerFactory.getLogger(this.getClass());
 
