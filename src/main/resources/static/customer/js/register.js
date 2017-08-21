@@ -173,8 +173,10 @@ function validateAccountDetails(accountNumber, email, birthDate){
     }
     var customerId;
     $.ajax({
-        type:'GET',
-        url:"/rest/accountdetails/"+accountNumber+"/"+email+"/"+birthDate,
+        type:'POST',
+        url:"/rest/accountdetails",
+        cache:false,
+        data:{accountNumber:accountNumber, email:email, birthDate:birthDate},
         async:false,
         success:function(data1){
             customerId = ''+String(data1);
@@ -196,18 +198,12 @@ function validateAccountDetails(accountNumber, email, birthDate){
         }
     });
 
-     
-
     if(customerId == "true"){
         return true;
     }else{
          $('#myLoader').modal('hide');
         return false;
     }
-
-   
-
-    
 }
 
 function validateExists(accountNumber, email, birthDate){
@@ -219,8 +215,10 @@ function validateExists(accountNumber, email, birthDate){
     }
     var cif;
     $.ajax({
-        type:'GET',
-        url:"/rest/accountexists/"+accountNumber+"/"+email+"/"+birthDate,
+        type:'POST',
+        url:"/rest/accountexists",
+        cache:false,
+        data:{accountNumber:accountNumber, email:email, birthDate:birthDate},
         async:false,
         success:function(data1){
             cif = ''+String(data1);
@@ -255,8 +253,10 @@ function validateUsername(username){
     var result;
      $('#myLoader').modal('show');
     $.ajax({
-        type:'GET',
-        url:"/rest/username/check/"+username,
+        type:'POST',
+        url:"/rest/username/check",
+        cache:false,
+        data:{username:username},
         async:false,
         success:function(data1){
             result = ''+String(data1);
@@ -286,7 +286,7 @@ function validateUsername(username){
 function validatePassword(password){
     var result;
     $.ajax({
-        type:'GET',
+        type:'POST',
         data:{password:password},
         url:"/rest/password/password",
         async:false,
@@ -317,8 +317,10 @@ function validatePassword(password){
 function validateRegCode(code){
     var result;
     $.ajax({
-        type:'GET',
-        url:"/rest/regCode/check/"+code,
+        type:'POST',
+        url:"/rest/regCode/check",
+        cache:false,
+        data:{code:code},
         async:false,
         success:function(data1){
             result = ''+String(data1);
@@ -359,8 +361,10 @@ function sendRegCode(){
     var result;
 
     $.ajax({
-        type:'GET',
-        url:"/rest/regCode/"+accountNumber+"/"+email+"/"+birthDate,
+        type:'POST',
+        url:"/rest/regCode",
+        cache:false,
+        data:{accountNumber:accountNumber, email:email, birthDate:birthDate},
         async:false,
         success:function(data1){
             result = ''+String(data1);

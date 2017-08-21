@@ -207,7 +207,6 @@ function validatePassword(password){
         data:{password:password, username:username},
         url:"/rest/password/check",
         async:false,
-        cache:false,
         success:function(data1){
             res = ''+String(data1);
             if(res === 'true'){
