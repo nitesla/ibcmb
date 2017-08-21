@@ -63,10 +63,6 @@ public class MainController {
 
 
 
-    @GetMapping("/test")
-    public String causeError(){
-        throw new RuntimeException("My caused error");
-    }
 
     @RequestMapping(value = {"/", "/home"})
     public String getHomePage(HttpSession session) {

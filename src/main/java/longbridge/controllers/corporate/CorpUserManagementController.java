@@ -78,6 +78,14 @@ public class CorpUserManagementController {
         CorporateUser corporateUser = corporateUserService.getUserByName(principal.getName());
         CorporateDTO corporate = corporateService.getCorporate(corporateUser.getCorporate().getId());
         model.addAttribute("corporate", corporate);
+
+        List<CorporateRoleDTO> corporateRoleDTO = corporateService.getRoles(corporateUser.getCorporate().getId());
+        logger.info("CORP ROLES >>>> " + corporateRoleDTO);
+        model.addAttribute("corporateRoles", corporateRoleDTO);
+
+        List<CorpTransferRuleDTO> corpTransferRuleDTO = corporateService.getCorporateRules(corporate.getId());
+        logger.info("CORP TRANSFER RULES >>>> " + corpTransferRuleDTO);
+        model.addAttribute("corpTransferRules", corpTransferRuleDTO);
     }
 
 //    @ModelAttribute
@@ -115,13 +123,11 @@ public class CorpUserManagementController {
     public String addUser(Principal principal, Model model){
         CorporateUser corporateUser = corporateUserService.getUserByName(principal.getName());
         CorporateDTO corporate = corporateService.getCorporate(corporateUser.getCorporate().getId());
-        List<CorporateRoleDTO> corporateRoleDTO = corporateService.getRoles(corporateUser.getCorporate().getId());
-        logger.info("CORP RULES >>>> " + corporateRoleDTO);
         CorporateUserDTO corporateUserDTO = new CorporateUserDTO();
         model.addAttribute("corporateUserDTO", corporateUserDTO);
         model.addAttribute("corporate", corporate);
 
-        model.addAttribute("corporateRoles", corporateRoleDTO);
+
         return "corp/user/add";
     }
 
@@ -190,11 +196,9 @@ public class CorpUserManagementController {
     public String editUser(@PathVariable Long id, Model model){
         CorporateUserDTO corporateUserDTO = corporateUserService.getUser(id);
         CorporateDTO corporate = corporateService.getCorporate(Long.parseLong(corporateUserDTO.getCorporateId()));
-        List<CorporateRoleDTO> corporateRoleDTO = corporateService.getRoles(Long.parseLong(corporateUserDTO.getCorporateId()));
-        logger.info("CORP RULES >>>> " + corporateRoleDTO);
+
         model.addAttribute("corporateUserDTO", corporateUserDTO);
         model.addAttribute("corporate", corporate);
-        model.addAttribute("corporateRoles", corporateRoleDTO);
         return "corp/user/edit";
     }
 
@@ -206,6 +210,11 @@ public class CorpUserManagementController {
             List<CorporateRoleDTO> corporateRoleDTO = corporateService.getRoles(Long.parseLong(corporateUserDTO.getCorporateId()));
             model.addAttribute("corporate", corporate);
             model.addAttribute("corporateRoles", corporateRoleDTO);
+            return "corp/user/edit";
+        }
+
+        if(verificationService.isPendingVerification(corporateUserDTO.getId(), CorporateUser.class.getSimpleName())){
+            model.addAttribute("failure", "User has pending changes to be verified");
             return "corp/user/edit";
         }
 
@@ -262,10 +271,6 @@ public class CorpUserManagementController {
             result.addError(new ObjectError("error", ibe.getMessage()));
             logger.error("Error creating corporate user", ibe);
             model.addAttribute("failure", ibe.getMessage());
-            CorporateDTO corporate = corporateService.getCorporate(Long.parseLong(corporateUserDTO.getCorporateId()));
-            List<CorporateRoleDTO> corporateRoleDTO = corporateService.getRoles(Long.parseLong(corporateUserDTO.getCorporateId()));
-            model.addAttribute("corporate", corporate);
-            model.addAttribute("corporateRoles", corporateRoleDTO);
             return "corp/user/edit";
         }
     }

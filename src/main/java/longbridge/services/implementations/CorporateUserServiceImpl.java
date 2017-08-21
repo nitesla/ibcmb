@@ -118,12 +118,7 @@ public class CorporateUserServiceImpl implements CorporateUserService {
         return corporateUserRepo.findFirstByUserNameIgnoreCaseAndCorporate_CorporateIdIgnoreCase(username, corporateId);
     }
 
-    @Override
-    public Iterable<CorporateUserDTO> getUsers(Corporate corporate) {
 
-        Iterable<CorporateUser> corporateUserDTOList = corporateUserRepo.findAll();
-        return convertEntitiesToDTOs(corporateUserDTOList);
-    }
 
     @Override
     public Iterable<CorporateUser> getUsers() {
@@ -168,7 +163,6 @@ public class CorporateUserServiceImpl implements CorporateUserService {
             corporateUser.setAdmin(user.isAdmin());
             if (user.isAdmin()) {
                 corporateUser.setCorpUserType(CorpUserType.ADMIN);
-                removeUserFromAuthorizerRole(corporateUser);
 
             }
             if (user.getRoleId() != null) {
@@ -177,7 +171,12 @@ public class CorporateUserServiceImpl implements CorporateUserService {
             }
 
             corporateUserRepo.save(corporateUser);
-            return messageSource.getMessage("user.update.success", null, locale);
+            if (user.isAdmin()) {
+                removeUserFromAuthorizerRole(corporateUser);
+        }
+
+
+        return messageSource.getMessage("user.update.success", null, locale);
         } catch (VerificationInterruptedException e) {
             return e.getMessage();
         } catch (InternetBankingException ibe) {
@@ -302,6 +301,7 @@ public class CorporateUserServiceImpl implements CorporateUserService {
 
         CorporateRole corporateRole = corporateRoleRepo.findOne(corpRoleId);
         corporateUser.setCorpUserType(CorpUserType.AUTHORIZER);
+        corporateUser.setAdmin(false);
         corporateRole.getUsers().add(corporateUser);
         corporateRoleRepo.save(corporateRole);
     }
@@ -317,7 +317,8 @@ public class CorporateUserServiceImpl implements CorporateUserService {
         corporateRoleRepo.save(newRole);
     }
 
-    private void removeUserFromAuthorizerRole(CorporateUser corporateUser) {
+    @Override
+    public void removeUserFromAuthorizerRole(CorporateUser corporateUser) {
         CorporateRole corporateRole = getCorporateUserAuthorizerRole(corporateUser);
 
         if (corporateRole != null) {
@@ -600,8 +601,8 @@ public class CorporateUserServiceImpl implements CorporateUserService {
             return ve.getMessage();
         } catch (InternetBankingSecurityException se) {
             throw new InternetBankingSecurityException(messageSource.getMessage("entrust.delete.failure", null, locale));
-        } catch (Exception ibe) {
-            throw new InternetBankingException(messageSource.getMessage("user.delete.failure", null, locale));
+        } catch (Exception e) {
+            throw new InternetBankingException(messageSource.getMessage("user.delete.failure", null, locale),e);
         }
     }
 
@@ -765,6 +766,7 @@ public class CorporateUserServiceImpl implements CorporateUserService {
         corporateUserDTO.setFirstName(corporateUser.getFirstName());
         corporateUserDTO.setLastName(corporateUser.getLastName());
         corporateUserDTO.setPhoneNumber(corporateUser.getPhoneNumber());
+        corporateUserDTO.setAdmin(corporateUser.isAdmin());
         corporateUserDTO.setStatus(corporateUser.getStatus());
         corporateUserDTO.setEmail(corporateUser.getEmail());
         corporateUserDTO.setEntrustId(corporateUser.getEntrustId());
