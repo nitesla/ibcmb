@@ -750,6 +750,7 @@ public class CorporateServiceImpl implements CorporateService {
             for (CorporateUserDTO user : roleDTO.getUsers()) {
                 CorporateUser corporateUser = corporateUserRepo.findOne(user.getId());
                 corporateUser.setCorpUserType(CorpUserType.AUTHORIZER);
+                corporateUser.setAdmin(false);
                 role.getUsers().add(corporateUser);
             }
             corporateRoleRepo.save(role);
