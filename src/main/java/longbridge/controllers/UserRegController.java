@@ -135,8 +135,9 @@ public class UserRegController {
         return customerId;
     }
 
-    @GetMapping("/rest/retail/accountname/{accountNumber}")
-    public @ResponseBody String getAccountNameFromNumber(@PathVariable String accountNumber){
+    @PostMapping("/rest/retail/accountname/accountNumber")
+    public @ResponseBody String getAccountNameFromNumber(WebRequest webRequest){
+        String accountNumber = webRequest.getParameter("accountNumber");
         String customerId = "";
         String userEmail = "";
 //    	logger.info("Account nUmber : " + accountNumber);

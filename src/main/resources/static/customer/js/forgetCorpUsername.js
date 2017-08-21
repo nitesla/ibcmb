@@ -16,18 +16,19 @@ function validateAccountNo(corporateId,email){
     $('#myLoader').modal('show');
     var secQues;
     var email1 = email;
-    console.log("the corporateId "+corporateId);
+    // console.log("the corporateId "+corporateId);
     $.ajax({
-        type:'GET',
-        url:"/rest/corporate/"+email1+"/"+corporateId,
+        type:'POST',
+        url:"/rest/corporate/email/corporateId",
+        data:{email:email1,corporateId:corporateId},
         async:false,
         success:function(data1){
             entityDetails[0] = data1[0];
             entityDetails[1] = data1[1];
             entityDetails[2] = data1[2];
             entityDetails[3] = data1[3];
-            console.log("the data "+data1);
-            console.log("the entityDetails "+entityDetails);
+            // console.log("the data "+data1);
+            // console.log("the entityDetails "+entityDetails);
             if(data1[0] == '' && data1[1] == ''){
                 //invalid account number
                 document.getElementById("errorMess").textContent="Ensure you put in a valid Corporate ID. and email";

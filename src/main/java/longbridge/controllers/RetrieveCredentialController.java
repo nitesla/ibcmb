@@ -174,7 +174,7 @@ public class RetrieveCredentialController {
         }
     }
 
-    @GetMapping("/rest/secAns")
+    @PostMapping("/rest/secAns")
     public @ResponseBody String getSecAns(WebRequest webRequest, HttpSession session){
         try{
             //confirm security question is correct
@@ -217,7 +217,7 @@ public class RetrieveCredentialController {
         }
         return messageSource.getMessage("sec.ans.failed", null, locale);
     }
-    @GetMapping("/rest/secAns/cifId")
+    @PostMapping("/rest/secAns/cifId")
     public @ResponseBody String getSecAnsByCustomerId(WebRequest webRequest, HttpSession session){
         try{
             //confirm security question is correct
@@ -253,9 +253,10 @@ public class RetrieveCredentialController {
         return messageSource.getMessage("sec.ans.failed", null, locale);
     }
 
-    @GetMapping("/rest/sendGenPass/{username}")
-    public @ResponseBody String sendGenPassword(@PathVariable String username){
+    @PostMapping("/rest/sendGenPass/username")
+    public @ResponseBody String sendGenPassword(WebRequest webRequest){
         try {
+            String username = webRequest.getParameter("username");
             RetailUser retailUser = retailUserService.getUserByName(username);
             String tempPassword = passwordPolicyService.generatePassword();
             retailUser.setTempPassword(passwordEncoder.encode(tempPassword));
@@ -277,10 +278,11 @@ public class RetrieveCredentialController {
 
     }
 
-    @GetMapping("/rest/verGenPass/{username}/genpassword")
-    public  @ResponseBody String verifyGenPassword(@PathVariable String username, WebRequest webRequest){
+    @PostMapping("/rest/verGenPass/username/genpassword")
+    public  @ResponseBody String verifyGenPassword(WebRequest webRequest){
         try {
             String genpassword = webRequest.getParameter("genpassword");
+            String username = webRequest.getParameter("username");
             RetailUser retailUser = retailUserService.getUserByName(username);
             boolean match = passwordEncoder.matches(genpassword, retailUser.getTempPassword());
             if (match){
@@ -292,9 +294,11 @@ public class RetrieveCredentialController {
         }
     }
 
-    @GetMapping("/rest/tokenAuth/{username}/{token}")
-    public @ResponseBody String tokenAth(@PathVariable String username, @PathVariable String token){
+    @PostMapping("/rest/tokenAuth/username/token")
+    public @ResponseBody String tokenAth(WebRequest webRequest){
         try {
+            String username = webRequest.getParameter("username");
+            String token = webRequest.getParameter("token");
             RetailUser retailUser = retailUserService.getUserByName(username);
             boolean message = securityService.performTokenValidation(retailUser.getEntrustId(), retailUser.getEntrustGroup(), token);
             if (message){
