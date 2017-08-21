@@ -217,6 +217,8 @@
 
             $("#btn-find").on("click", function(e) {
 //                console.log("find");
+                $('#previous').show();
+                $('#next').show();
                 resetButton();
                 e.preventDefault();
                 dt = $('#tranDetails').DataTable();
