@@ -39,9 +39,6 @@ public class CorpTransRule extends AbstractEntity implements PrettySerializer{
     @ManyToMany
     private List<CorporateRole> roles;
 
-
-
-
     public BigDecimal getLowerLimitAmount() {
         return lowerLimitAmount;
     }

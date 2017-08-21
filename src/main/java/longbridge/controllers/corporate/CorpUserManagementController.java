@@ -80,8 +80,12 @@ public class CorpUserManagementController {
         model.addAttribute("corporate", corporate);
 
         List<CorporateRoleDTO> corporateRoleDTO = corporateService.getRoles(corporateUser.getCorporate().getId());
-        logger.info("CORP RULES >>>> " + corporateRoleDTO);
+        logger.info("CORP ROLES >>>> " + corporateRoleDTO);
         model.addAttribute("corporateRoles", corporateRoleDTO);
+
+        List<CorpTransferRuleDTO> corpTransferRuleDTO = corporateService.getCorporateRules(corporate.getId());
+        logger.info("CORP TRANSFER RULES >>>> " + corpTransferRuleDTO);
+        model.addAttribute("corpTransferRules", corpTransferRuleDTO);
     }
 
 //    @ModelAttribute
@@ -206,6 +210,11 @@ public class CorpUserManagementController {
             List<CorporateRoleDTO> corporateRoleDTO = corporateService.getRoles(Long.parseLong(corporateUserDTO.getCorporateId()));
             model.addAttribute("corporate", corporate);
             model.addAttribute("corporateRoles", corporateRoleDTO);
+            return "corp/user/edit";
+        }
+
+        if(verificationService.isPendingVerification(corporateUserDTO.getId(), CorporateUser.class.getSimpleName())){
+            model.addAttribute("failure", "User has pending changes to be verified");
             return "corp/user/edit";
         }
 
