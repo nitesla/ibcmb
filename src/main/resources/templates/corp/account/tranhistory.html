@@ -22,33 +22,32 @@
                                 <table class="table" id="tranDetails">
                                     <thead>
                                     <tr>
-                                        <th>Transaction Narration</th>
                                         <th>Post Date</th>
                                         <th>Value Date</th>
-                                        <th>Debit/Credit</th>
-                                        <th>Transaction ReferenceID</th>
+                                        <th>Transaction Narration</th>
+                                        <th>Debit</th>
+                                        <th>Credit</th>
                                         <th>Account Balance</th>
                                     </tr>
                                     </thead>
                                     <tbody>
                                     <tr th:each="list:${history}">
-                                        <td th:text="${list.narration}"></td>
                                         <td th:text="${list.postDate}"></td>
                                         <td th:text="${list.valueDate}"></td>
-                                        <td th:text="${list.tranType}"></td>
-                                        <td th:text="${list.tranId}"></td>
+                                        <td th:text="${list.narration}"></td>
+                                        <td th:text="${list.debitAmount}"></td>
+                                        <td th:text="${list.creditAmount}"></td>
                                         <td th:text="${list.accountBalance}"></td>
                                     </tr>
                                     </tbody>
                                     <tfoot>
                                     <tr>
-                                        <th>Transaction Narration</th>
                                         <th>Post Date</th>
                                         <th>Value Date</th>
-                                        <th>Debit/Credit</th>
-                                        <th>Transaction ReferenceID</th>
+                                        <th>Transaction Narration</th>
+                                        <th>Debit</th>
+                                        <th>Credit</th>
                                         <th>Account Balance</th>
-
                                     </tr>
                                     </tfoot>
                                 </table>
@@ -77,7 +76,7 @@
             "pagingType" : "simple_numbers",
             "dom": 'T<"clear">frtlp',
             "columnDefs" : [{
-                "targets": 1,
+                "targets": 0,
                 "data": "postDate",
                 "render": function (data, type, full, meta) {
                     if (type === 'display') {
@@ -91,7 +90,7 @@
                     return data;
                 }
             },{
-                "targets" : 2,
+                "targets" : 1,
                 "data" : "valueDate",
                 "render" : function(data, type,full, meta) {
                     if (type === 'display') {
