@@ -68,7 +68,8 @@
                                <th>Post Date</th>
                                <th>Value Date</th>
                                <th>Transaction Narration</th>
-                               <th>Debit/Credit</th>
+                               <th>Debit</th>
+                               <th>Credit</th>
                                <th>Transaction ReferenceID</th>
                                <th>Account Balance</th>
                            </tr>
@@ -243,7 +244,8 @@
                 {"data" : "postDate"} ,
                 {"data" : "valueDate"},
                 {"data" : "narration"},
-                {"data" : "tranType"},
+                {"data" : "debitAmount"},
+                {"data" : "creditAmount"},
                 {"data" : "tranId"},
                 {"data" : "accountBalance"}
             ],
@@ -274,7 +276,7 @@
                     return data;
                 }
             },{
-                "targets" : 5,
+                "targets" : 6,
                 "data" : "accountBalance",
                 "render" : function(data, type,full, meta) {
                     if (type === 'display') {
@@ -322,7 +324,8 @@
 //        $('#tranDetails_paginate').hide();
 //        $('#tranDetails_length').hide();
         $("#btn-find").on("click", function(e) {
-
+            var table = $('#tranDetails').DataTable();
+            var row  = table.rows().remove().draw();
             e.preventDefault();
             $.ajax({ 
                 "url":"viewstatement/display/data",
@@ -333,16 +336,14 @@
                     toDate : $('[name=toDate]').val(),
                     tranType : $('[name=tranType]').val()
                 },success: function (result) {
-                    resetButton();
+//                    resetButton();
                     $('#btn-print').show();
-                    if (result != null) {
+                    if (result.details != null) {
 
-//                        var detialsList = JSON.parse(result);
-//                        console.log("the result "+result);
                         var contactsTab2 = $('#tranDetails').DataTable();
-                        for (var key in result) {
-                            if (result.hasOwnProperty(key)) {
-                                var od = result[key];
+                        for (var key in result.details) {
+                            if (result.details.hasOwnProperty(key)) {
+                                var od = result.details[key];
 //                                console.log("the key "+key+" value "+result[key]);
                                 contactsTab2.row.add(od);
                             }
@@ -352,6 +353,14 @@
                         }
 
                     }
+                    if(result.moreData === "Y"){
+                        $('#next').show();
+
+                    }else{
+                        $('#next').hide();
+                    }
+                    $('#previous').hide();
+
                 },
                 error:  function (dd) {
                     console.log("error")
@@ -384,7 +393,7 @@
 function nextData() {
 //    console.log("field value "+valu);
     $.ajax({
-        "url":"viewstatement/display/data/state",
+        "url":"viewstatement/display/data/next",
         "type" : "GET",
         "data" :  {
             acctNumber : $('[name=acctNumber]').val(),
@@ -393,19 +402,19 @@ function nextData() {
             tranType : $('[name=tranType]').val(),
             state : "forward"
         },success: function (result) {
-            if (result != null) {
-                resetButton();
+            if (result.details != null) {
+//                resetButton();
 //                        var detialsList = JSON.parse(result);
-                console.log("the result next"+result);
+//                console.log("the result next"+result);
 //                $('#tranDetails').DataTable().fnClearTable();
 //                $('#tranDetails').dataTable().destroy();
 //                $('#tranDetails tbody').empty();
 
                 var contactsTab2 = $('#tranDetails').DataTable();
                 var row  = contactsTab2.rows().remove().draw();
-                for (var key in result) {
-                            if (result.hasOwnProperty(key)) {
-                                var od = result[key];
+                for (var key in result.details) {
+                            if (result.details.hasOwnProperty(key)) {
+                                var od = result.details[key];
 //                                console.log("the key "+key+" value "+result[key]);
                                 contactsTab2.row.add(od);
                             }
@@ -415,6 +424,13 @@ function nextData() {
                 }
 
             }
+            if(result.moreData === "Y"){
+                $('#next').show();
+
+            }else{
+                $('#next').hide();
+            }
+            $('#previous').show();
         },
         error:  function (dd) {
             console.log("error")
@@ -430,17 +446,17 @@ function nextData() {
         "data" :  {
             state : "backward"
         },success: function (result) {
-            if (result != null) {
-                resetButton();
+            if (result.details != null) {
+//                resetButton();
 //                        var detialsList = JSON.parse(result);
-                console.log("the result next"+result);
+//                console.log("the result next"+result);
 //                $('#tranDetails').DataTable().fnClearTable();
 //                $('#tranDetails').dataTable().destroy();
                 var contactsTab2 = $('#tranDetails').DataTable();
                 var row  = contactsTab2.rows().remove().draw();
-                                        for (var key in result) {
-                            if (result.hasOwnProperty(key)) {
-                                var od = result[key];
+                                        for (var key in result.details) {
+                            if (result.details.hasOwnProperty(key)) {
+                                var od = result.details[key];
 //                                console.log("the key "+key+" value "+result[key]);
                                 contactsTab2.row.add(od);
                             }
@@ -449,7 +465,16 @@ function nextData() {
 //
                         }
 
+            }if(result.previousData === 0){
+                $('#previous').hide();
+
+            }else{
+                $('#previous').show();
             }
+            $('#next').show();
+//            console.log("the result previous button "+result.previousData);
+
+
         },
         error:  function (dd) {
             console.log("error")
@@ -465,6 +490,7 @@ function nextData() {
         "data" :  {
             state : "backward"
         },success: function (result) {
+            console.log("the button to hide "+result);
             if (result == "both") {
 //                console.log("the result next"+result);
                 $('#previous').hide();

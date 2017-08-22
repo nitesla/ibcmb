@@ -218,13 +218,10 @@
             $("#btn-find").on("click", function(e) {
 //                console.log("find");
                 var table = $('#tranDetails').DataTable();
-
-//                console.log("is empty "+);
-                if(table.data().any() != false) {
-                    $('#previous').show();
-                    $('#next').show();
-                }
-                resetButton();
+                var row  = table.rows().remove().draw();
+                console.log("is empty "+table.data().any());
+                $('#next').show();
+//                resetButton();
                 e.preventDefault();
                 dt = $('#tranDetails').DataTable();
                     $('#btn-print').show();
@@ -259,29 +256,33 @@
                     tranType : $('[name=tranType]').val(),
                     state : "forward"
                 },success: function (result) {
-                    if (result != null) {
-                        resetButton();
-//                        var detialsList = JSON.parse(result);
-                        console.log("the result next"+result);
+                            console.log("the result next" + result.details);
 //                $('#tranDetails').DataTable().fnClearTable();
 //                $('#tranDetails').dataTable().destroy();
 //                $('#tranDetails tbody').empty();
-
-                        var contactsTab2 = $('#tranDetails').DataTable();
-                        var row  = contactsTab2.rows().remove().draw();
-                        for (var key in result) {
-                            if (result.hasOwnProperty(key)) {
-                                var od = result[key];
+                    if (result.details != null) {
+                            var contactsTab2 = $('#tranDetails').DataTable();
+                            var row = contactsTab2.rows().remove().draw();
+                            for (var key in result.details) {
+                                if (result.details.hasOwnProperty(key)) {
+                                    var od = result.details[key];
 //                                console.log("the key "+key+" value "+result[key]);
-                                contactsTab2.row.add(od);
-                            }
+                                    contactsTab2.row.add(od);
+                                }
 
-                            contactsTab2.draw();
+                                contactsTab2.draw();
 //
+                            }
                         }
+                    if(result.moreData === "Y"){
+                        $('#next').show();
 
+                    }else{
+                        $('#next').hide();
                     }
-                },
+                    $('#previous').show();
+
+                    },
                 error:  function (dd) {
                     console.log("error")
                 }
@@ -297,7 +298,7 @@
                 "data" :  {
                     state : "backward"
                 },success: function (result) {
-                    if (result != null) {
+                    if (result.details != null) {
                         resetButton();
 //                        var detialsList = JSON.parse(result);
                         console.log("the result next"+result);
@@ -305,9 +306,9 @@
 //                $('#tranDetails').dataTable().destroy();
                         var contactsTab2 = $('#tranDetails').DataTable();
                         var row  = contactsTab2.rows().remove().draw();
-                        for (var key in result) {
-                            if (result.hasOwnProperty(key)) {
-                                var od = result[key];
+                        for (var key in result.details) {
+                            if (result.details.hasOwnProperty(key)) {
+                                var od = result.details[key];
 //                                console.log("the key "+key+" value "+result[key]);
                                 contactsTab2.row.add(od);
                             }
@@ -317,6 +318,13 @@
                         }
 
                     }
+                    if(result.previousData === 0){
+                        $('#previous').hide();
+
+                    }else{
+                        $('#previous').show();
+                    }
+                    $('#next').show();
                 },
                 error:  function (dd) {
                     console.log("error")

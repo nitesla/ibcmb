@@ -552,16 +552,17 @@ public class AccountController {
 
 	@GetMapping("/viewstatement/display/data")
 	@ResponseBody
-	public List<TransactionDetails> getStatementData(WebRequest webRequest, HttpSession session) {
+	public Map<String,Object> getStatementData(WebRequest webRequest, HttpSession session) {
 		// Pageable pageable = DataTablesUtils.getPageable(input);
+		Map<String,Object> objectMap =  new HashMap<>();
+		objectMap.put("details",null);
+		objectMap.put("moreData","");
 		String acctNumber = webRequest.getParameter("acctNumber");
 		String fromDate = webRequest.getParameter("fromDate");
 		String toDate = webRequest.getParameter("toDate");
 		String tranType = webRequest.getParameter("tranType");
 		logger.info("fromDate {}",fromDate);
 		logger.info("toDate {}",toDate);
-//		Duration diffInDays= new Duration(new DateTime(fromDate),new DateTime(toDate));
-//		logger.info("Day difference {}",diffInDays.getStandardDays());
 		List<TransactionDetails> list =  null;
 		Date from = null;
 		Date to = null;
@@ -571,13 +572,7 @@ public class AccountController {
 		try {
 			from = format.parse(fromDate);
 			to = format.parse(toDate);
-			logger.info("from Date after format{}",format2.format(from));
-			logger.info("to Date after format {}",format2.format(to));
-			//int diffInDays = (int) ((to.getTime() - from.getTime()) / (1000 * 60 * 60 * 24));
-
 			AccountStatement accountStatement = integrationService.getAccountStatements(acctNumber, from, to, tranType,"5");
-//			logger.info("accountStatement new {}", accountStatement);
-
 			session.removeAttribute("hasMoreTransaction");
 			if(session.getAttribute("retAcctStmtStateValue") !=null) {
 				Integer stateValue = (Integer) session.getAttribute("retAcctStmtStateValue");
@@ -591,13 +586,16 @@ public class AccountController {
 			if(accountStatement != null) {
 				list = accountStatement.getTransactionDetails();
 				session.setAttribute("hasMoreTransaction", accountStatement.getHasMoreData());
-
+				logger.info("the current has more data  new {}",accountStatement.getHasMoreData());
 			}
 			session.removeAttribute("acctStmtLastDetails");
 			if(!list.isEmpty()){
+				logger.info("the current has more data  empty {}",accountStatement.getHasMoreData());
 				session.setAttribute("acctStmtLastDetails",list.get(list.size()-1));
 				session.setAttribute("retAcctStmtStateValue",0);
 				session.setAttribute("acctStmtEntirePastDetails0",list);
+				objectMap.replace("details",list);
+				objectMap.replace("moreData",accountStatement.getHasMoreData());
 			}
 
 		} catch (ParseException e) {
@@ -605,13 +603,16 @@ public class AccountController {
 		}catch (Exception e){
 			logger.warn("error cause by", e.getMessage());
 		}
-		return list;
+		return objectMap;
 
 	}
-@GetMapping("/viewstatement/display/data/state")
+	@GetMapping("/viewstatement/display/data/next")
 	@ResponseBody
-	public List<TransactionDetails> getStatementDataByState(WebRequest webRequest, HttpSession session) {
+	public Map<String,Object> getStatementDataByState(WebRequest webRequest, HttpSession session) {
 		// Pageable pageable = DataTablesUtils.getPageable(input);
+		Map<String,Object> objectMap =  new HashMap<>();
+		objectMap.put("details",null);
+		objectMap.put("moreData","");
 		String acctNumber = webRequest.getParameter("acctNumber");
 		String fromDate = webRequest.getParameter("fromDate");
 		String toDate = webRequest.getParameter("toDate");
@@ -629,22 +630,10 @@ public class AccountController {
 		try {
 			from = format.parse(fromDate);
 			to = format.parse(toDate);
-			logger.info("fromDate {}",from);
-			logger.info("toDate {}",to);
-			//int diffInDays = (int) ((to.getTime() - from.getTime()) / (1000 * 60 * 60 * 24));
 			TransactionDetails transactionDetails = null;
 			if((session.getAttribute("acctStmtLastDetails") != null)&&(state.equalsIgnoreCase("forward"))) {
 				transactionDetails = (TransactionDetails) session.getAttribute("acctStmtLastDetails");
-				logger.info("the transaction {}",transactionDetails);
 			}
-//			if((session.getAttribute("acctStmtEntirePastDetails") != null)&&(state.equalsIgnoreCase("backward"))) {
-//				 list = (List<TransactionDetails>) session.getAttribute("acctStmtEntirePastDetails");
-//				session.removeAttribute("acctStmtLastDetails");
-//				session.setAttribute("acctStmtLastDetails", list.get(list.size() - 1));
-//				logger.info("acctStmtLastDetails previous {}", list.get(list.size() - 1));
-//				return list;
-//			}
-
 			if(transactionDetails != null) {
 				PaginationDetails paginationDetails = new PaginationDetails();
 				paginationDetails.setLastAccountBalance(transactionDetails.getAccountBalance());
@@ -653,15 +642,14 @@ public class AccountController {
 				paginationDetails.setLastTranId(transactionDetails.getTranId());
 				paginationDetails.setLastTranDate(transactionDetails.getTranDate());
 				paginationDetails.setLastTranSN(transactionDetails.getTranSN());
-				logger.info("paginationDetails {}", paginationDetails);
 				AccountStatement accountStatement = integrationService.getAccountStatements(acctNumber, from, to, tranType, "5",paginationDetails);
-//				logger.info("accountStatement {}", accountStatement);
 				list = accountStatement.getTransactionDetails();
 				session.removeAttribute("acctStmtLastDetails");
 
 				session.removeAttribute("hasMoreTransaction");
 				if(accountStatement != null) {
 					session.setAttribute("hasMoreTransaction", accountStatement.getHasMoreData());
+					logger.info("the current has more data {}",accountStatement.getHasMoreData());
 				}
 				if (!list.isEmpty()) {
 					session.setAttribute("acctStmtLastDetails", list.get(list.size() - 1));
@@ -673,6 +661,8 @@ public class AccountController {
 					session.setAttribute("retAcctStmtStateValue",stateValue);
 					logger.info("acctStmtLastDetails {}", list.get(list.size() - 1));
 					logger.info("acct statemnet state {}", stateValue);
+					objectMap.replace("details",list);
+					objectMap.replace("moreData",accountStatement.getHasMoreData());
 				}
 			}
 
@@ -681,15 +671,17 @@ public class AccountController {
 		}catch (Exception e){
 			logger.warn("error cause by {}", e.getMessage());
 		}
-		return list;
+		return objectMap;
 
 	}
 @GetMapping("/viewstatement/display/data/back")
 	@ResponseBody
-	public List<TransactionDetails> getStatementDataForBack(WebRequest webRequest, HttpSession session) {
-	
+	public Map<String,Object> getStatementDataForBack(WebRequest webRequest, HttpSession session) {
 		String state = webRequest.getParameter("state");
-	logger.info("the state {}",state);
+//	logger.info("the state {}",state);
+	Map<String,Object> objectMap =  new HashMap<>();
+	objectMap.put("details",null);
+	objectMap.put("previousData","");
 		List<TransactionDetails> list =  null;
 			if((state.equalsIgnoreCase("backward"))) {
 				Integer stateValue = (Integer) session.getAttribute("retAcctStmtStateValue");
@@ -697,17 +689,18 @@ public class AccountController {
 				if(session.getAttribute("acctStmtEntirePastDetails"+stateValue) != null) {
 					session.removeAttribute("retAcctStmtStateValue");
 					session.setAttribute("retAcctStmtStateValue", stateValue);
-					logger.info("the state value {}",stateValue);
-					list = (List<TransactionDetails>) session.getAttribute("acctStmtEntirePastDetails" + stateValue);
+					logger.info("the state value back {}",stateValue);
+					list = (List<TransactionDetails>) session.getAttribute("acctStmtEntirePastDetails"+stateValue);
 					session.removeAttribute("acctStmtLastDetails");
 					session.setAttribute("acctStmtLastDetails", list.get(list.size() - 1));
 					session.setAttribute("hasMoreTransaction", "Y");
-					logger.info("acctStmtLastDetails  last record previous {}", list.get(list.size() - 1));
-					return list;
+//					logger.info("acctStmtLastDetails  last record previous {}", list.get(list.size() - 1));
+					objectMap.replace("details",list);
+					objectMap.replace("previousData",stateValue);
 				}
 			}
 
-		return list;
+		return objectMap;
 
 	}
 	@GetMapping("/viewstatement/display/data/reset/button")
@@ -736,10 +729,14 @@ public class AccountController {
 		}
 		if((session.getAttribute("retAcctStmtStateValue") != null)){
 			Integer stateValue = (Integer) session.getAttribute("retAcctStmtStateValue");
+			logger.info("the state value for reset is {}",stateValue);
 			if(stateValue > 0) {
-				String hasMoreTransaction = (String) session.getAttribute("hasMoreTransaction");
-				if(hasMoreTransaction.equalsIgnoreCase("Y")) {
-					return "none";
+				if(session.getAttribute("hasMoreTransaction") != null) {
+					String hasMoreTransaction = (String) session.getAttribute("hasMoreTransaction");
+					logger.info("the hasMoreTransaction value for reset is {}", hasMoreTransaction);
+					if (hasMoreTransaction.equalsIgnoreCase("Y")) {
+						return "none";
+					}
 				}
 			}
 		}
