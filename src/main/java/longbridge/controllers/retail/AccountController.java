@@ -508,7 +508,6 @@ public class AccountController {
 		AccountDTO account = accountService.getAccount(Long.parseLong(acct));
 		AccountStatement accountStatement = integrationService.getFullAccountStatement(account.getAccountNumber(), daysAgo , date, "B");
 		List<TransactionDetails> list = accountStatement.getTransactionDetails();
-
 		model.addAttribute("history", list);
 		return "cust/account/tranhistory";
 	}
