@@ -118,12 +118,7 @@ public class CorporateUserServiceImpl implements CorporateUserService {
         return corporateUserRepo.findFirstByUserNameIgnoreCaseAndCorporate_CorporateIdIgnoreCase(username, corporateId);
     }
 
-    @Override
-    public Iterable<CorporateUserDTO> getUsers(Corporate corporate) {
 
-        Iterable<CorporateUser> corporateUserDTOList = corporateUserRepo.findAll();
-        return convertEntitiesToDTOs(corporateUserDTOList);
-    }
 
     @Override
     public Iterable<CorporateUser> getUsers() {
@@ -606,8 +601,8 @@ public class CorporateUserServiceImpl implements CorporateUserService {
             return ve.getMessage();
         } catch (InternetBankingSecurityException se) {
             throw new InternetBankingSecurityException(messageSource.getMessage("entrust.delete.failure", null, locale));
-        } catch (Exception ibe) {
-            throw new InternetBankingException(messageSource.getMessage("user.delete.failure", null, locale));
+        } catch (Exception e) {
+            throw new InternetBankingException(messageSource.getMessage("user.delete.failure", null, locale),e);
         }
     }
 

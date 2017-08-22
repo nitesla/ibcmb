@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.4.0.final using JasperReports Library version 6.4.1  -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="accountStatment" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="b1c76af6-01a7-4384-8820-23f298be1610">
 	<property name="ireport.zoom" value="1.1"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="179"/>
+	<property name="ireport.y" value="46"/>
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
 	<style name="Table_TH" mode="Opaque" backcolor="#F0F8FF">
 		<box>
@@ -256,42 +257,42 @@
 		</band>
 	</columnHeader>
 	<detail>
-		<band height="25" splitType="Stretch">
+		<band height="61" splitType="Stretch">
 			<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.grid.JSSGridBagLayout"/>
+			<textField>
+				<reportElement x="96" y="0" width="88" height="58" uuid="3865d28a-8137-4294-91cd-c5b120a0a102"/>
+				<textFieldExpression><![CDATA[$F{valueDate}]]></textFieldExpression>
+			</textField>
 			<line>
 				<reportElement x="4" y="0" width="546" height="2" uuid="938473f4-ddc6-41e4-bc9b-88378d3a3271"/>
 			</line>
 			<line>
-				<reportElement x="0" y="24" width="551" height="1" uuid="6b3b6822-9484-4c3c-a252-a95cc5016e2b"/>
+				<reportElement x="0" y="60" width="551" height="1" uuid="6b3b6822-9484-4c3c-a252-a95cc5016e2b"/>
 			</line>
 			<textField>
-				<reportElement x="4" y="0" width="92" height="24" uuid="0176c4f9-76dc-4223-b870-b32f26c23905"/>
+				<reportElement x="4" y="0" width="92" height="58" uuid="0176c4f9-76dc-4223-b870-b32f26c23905"/>
 				<textFieldExpression><![CDATA[$F{postDate}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="184" y="2" width="131" height="22" uuid="3e2276a4-0c93-479b-8f90-eeceb8683a26"/>
+				<reportElement x="184" y="2" width="131" height="58" uuid="3e2276a4-0c93-479b-8f90-eeceb8683a26"/>
 				<textFieldExpression><![CDATA[$F{narration}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="459" y="2" width="92" height="22" uuid="e05ff331-6988-466e-a9b9-bde3fde9e3cf"/>
+				<reportElement x="459" y="2" width="92" height="58" uuid="e05ff331-6988-466e-a9b9-bde3fde9e3cf"/>
 				<textFieldExpression><![CDATA[new java.text.DecimalFormat("#,##0.00").format(Double.valueOf($F{accountBalance}))]]></textFieldExpression>
 			</textField>
 			<textField pattern="#,##0.00">
-				<reportElement x="386" y="2" width="73" height="22" uuid="73612d66-3a04-494d-b16e-0b02e6bc8f4a"/>
+				<reportElement x="386" y="2" width="73" height="55" uuid="73612d66-3a04-494d-b16e-0b02e6bc8f4a"/>
 				<textFieldExpression><![CDATA[$F{tranType}.contentEquals("C") ? new java.text.DecimalFormat("#,##0.00").format(Double.valueOf($F{tranAmount})): 0.0]]></textFieldExpression>
 			</textField>
 			<textField pattern="#,##0.00">
-				<reportElement x="315" y="2" width="71" height="22" uuid="8fcfc291-29c0-40e4-86bf-1dc83676dbf5"/>
+				<reportElement x="315" y="2" width="71" height="55" uuid="8fcfc291-29c0-40e4-86bf-1dc83676dbf5"/>
 				<textFieldExpression><![CDATA[$F{tranType}.contentEquals("D") ? new java.text.DecimalFormat("#,##0.00").format(Double.valueOf($F{tranAmount})): 0.0]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="96" y="2" width="88" height="22" uuid="3865d28a-8137-4294-91cd-c5b120a0a102"/>
-				<textFieldExpression><![CDATA[$F{valueDate}]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>
 	<columnFooter>
-		<band height="23" splitType="Stretch"/>
+		<band height="18" splitType="Stretch"/>
 	</columnFooter>
 	<pageFooter>
 		<band height="84" splitType="Stretch">

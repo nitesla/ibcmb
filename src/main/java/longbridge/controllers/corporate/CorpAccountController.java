@@ -18,6 +18,7 @@ import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
@@ -78,6 +79,8 @@ public class CorpAccountController {
 
     private Long customizeAccountId;
     private Locale locale = LocaleContextHolder.getLocale();
+    @Value("${jrxmlImage.path}")
+    private String imagePath;
 
     @GetMapping
     public String listAccounts(){
@@ -392,9 +395,9 @@ catch(InternetBankingException e){
         try {
             from = format.parse(fromDate);
             to = format.parse(toDate);
-            JasperReportsPdfView view = new JasperReportsPdfView();
-            view.setUrl("classpath:jasperreports/rpt_account-statement3.jrxml");
-            view.setApplicationContext(appContext);
+//            JasperReportsPdfView view = new JasperReportsPdfView();
+//            view.setUrl("classpath:jasperreports/rpt_account-statement3.jrxml");
+//            view.setApplicationContext(appContext);
             AccountStatement accountStatement = integrationService.getFullAccountStatement(acctNumber, from, to, tranType);
 
             out.setDraw(input.getDraw());
@@ -408,15 +411,14 @@ catch(InternetBankingException e){
             modelMap.put("summary.customerName",corporateUser.getFirstName()+" "+corporateUser.getLastName());
             modelMap.put("summary.customerNo", corporateUser.getCorporate().getCustomerId());
             double amount = Double.parseDouble(accountStatement.getOpeningBalance());
-
             modelMap.put("summary.openingBalance", formatter.format(amount));
             // the total debit and credit is referred as total debit count and credit count
-            if(accountStatement.getTotalDebit()!=null) {
-                modelMap.put("summary.debitCount", accountStatement.getTotalDebit());
+            if(accountStatement.getDebitCount()!=null) {
+                modelMap.put("summary.debitCount", accountStatement.getDebitCount());
             }
             else{modelMap.put("summary.debitCount", "");}
-            if(accountStatement.getTotalCredit()!=null) {
-                modelMap.put("summary.creditCount", accountStatement.getTotalCredit());
+            if(accountStatement.getCreditCount()!=null) {
+                modelMap.put("summary.creditCount", accountStatement.getCreditCount());
             }
             else{modelMap.put("summary.creditCount", "");}
             modelMap.put("summary.currencyCode", accountStatement.getCurrencyCode());
@@ -427,22 +429,29 @@ catch(InternetBankingException e){
             }else{modelMap.put("summary.closingBalance","" );}
 
             // the total debit and credit is referred as total debit count and credit count
-            if(accountStatement.getDebitCount()!=null) {
-                modelMap.put("summary.totalDebit", accountStatement.getDebitCount());
-            }else{modelMap.put("summary.totalDebit", "");}
-            if(accountStatement.getCreditCount()!=null) {
-                modelMap.put("summary.totalCredit", accountStatement.getCreditCount());
-            }else{ modelMap.put("summary.totalCredit", "");
+            if(accountStatement.getTotalDebit()!=null) {
+                double totalDebit = Double.parseDouble(accountStatement.getTotalDebit());
+                modelMap.put("summary.totalDebit", formatter.format(totalDebit));
+            }else{
+                modelMap.put("summary.totalDebit", "");
+                logger.info("total debit is empty");
             }
-
+            if(accountStatement.getTotalCredit()!=null) {
+                double totalCredit = Double.parseDouble(accountStatement.getTotalCredit());
+                modelMap.put("summary.totalCredit", formatter.format(totalCredit));
+            }else{
+                modelMap.put("summary.totalCredit", "");
+                logger.info("total Credit is empty");
+            }
             if(accountStatement.getAddress()!=null) {
                 modelMap.put("summary.address", accountStatement.getAddress());
             }else{modelMap.put("summary.address", "");}
             modelMap.put("fromDate", fromDate);
             modelMap.put("toDate", toDate);
-            Date today=new Date();
-            modelMap.put("today",today);
-            ModelAndView modelAndView = new ModelAndView(view, modelMap);
+            Date today = new Date();
+            modelMap.put("today", today);
+            modelMap.put("imagePath", imagePath);
+            ModelAndView modelAndView = new ModelAndView("rpt_account-statement", modelMap);
             return modelAndView;
         } catch (ParseException e) {
             logger.warn("didn't parse date", e);

@@ -620,8 +620,7 @@ public class OpsCorporateController {
         corporate.setRcNumber(customerDetails.getRcNo());
         session.setAttribute("corporateRequest", corporateRequestDTO);
 
-        logger.info("Corporate Request DTO " +
-                "{}", corporateRequestDTO.toString());
+        logger.info("Corporate Request DTO " + "{}", corporateRequestDTO.toString());
 
 
         List<AccountInfo> accountInfos = integrationService.fetchAccounts(corporate.getCustomerId().toUpperCase());
@@ -647,7 +646,6 @@ public class OpsCorporateController {
             model.addAttribute("selectedAccounts", "null");
         }
         return "/ops/corporate/setup/account";
-
     }
 
     private List<AccountInfo> filterAccounts(List<AccountInfo> newAccs, List<AccountDTO> existingAccs) {
