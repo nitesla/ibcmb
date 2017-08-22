@@ -495,7 +495,7 @@ public class CorpUserVerificationServiceImpl implements CorpUserVerificationServ
     public long getTotalNumberPending() {
         CustomUserPrincipal principal = (CustomUserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         CorporateUser doneBy = (CorporateUser) principal.getUser();
-        long totalNumberPending = corpUserVerificationRepo.countByInitiatedByAndCorpUserTypeAndStatus(doneBy.getUserName(),doneBy.getCorpUserType(), VerificationStatus.PENDING);
+        long totalNumberPending = corpUserVerificationRepo.countByCorpIdAndStatus(doneBy.getCorporate().getId(), VerificationStatus.PENDING);
         return totalNumberPending;
     }
 

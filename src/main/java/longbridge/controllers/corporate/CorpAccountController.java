@@ -281,7 +281,7 @@ catch(InternetBankingException e){
 //        Date daysAgo = format.parse(format.format(daysAgo1));
         AccountDTO account = accountService.getAccount(Long.parseLong(acct));
 //        logger.info("the from date {} and the to date {} acctNUm {}",date,daysAgo,account.getAccountNumber());
-        AccountStatement accountStatement = integrationService.getAccountStatements(account.getAccountNumber(),daysAgo, date,"5", "B");
+        AccountStatement accountStatement = integrationService.getFullAccountStatement(account.getAccountNumber(), daysAgo , date, "B");
         List<TransactionDetails> list = accountStatement.getTransactionDetails();
         model.addAttribute("history", list);
         return "corp/account/tranhistory";

@@ -67,7 +67,7 @@ form.children("div").steps({
             var confirm = $('input[name="confirm"]').val();
             summaryConfirm = confirm;
             var regCode = $('input[name="regCode"]').val();
-            return isValid && validateUsername(username) && validatePassword(confirm) && validateRegCode(regCode);
+            return isValid && validateRegCode(regCode) && validateUsername(username) && validatePassword(confirm);
         }
         if(SECURITY_QUESTION_STEP === currentIndex){
             
