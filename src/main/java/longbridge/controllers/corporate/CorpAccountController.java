@@ -319,10 +319,15 @@ catch(InternetBankingException e){
         return out;
 
     }@GetMapping("/viewstatement/display/data/new")
-    public @ResponseBody
-    DataTablesOutput<TransactionDetails> getStatementData( DataTablesInput input,String acctNumber,
-                                                          String fromDate, String toDate, String tranType,HttpSession session) {
-
+    @ResponseBody
+    public Map<String,Object> getStatementData(WebRequest webRequest, HttpSession session) {
+        Map<String,Object> objectMap =  new HashMap<>();
+        objectMap.put("details",null);
+        objectMap.put("moreData","");
+        String acctNumber = webRequest.getParameter("acctNumber");
+        String fromDate = webRequest.getParameter("fromDate");
+        String toDate = webRequest.getParameter("toDate");
+        String tranType = webRequest.getParameter("tranType");
         Date from = null;
         Date to = null;
         DataTablesOutput<TransactionDetails> out = new DataTablesOutput<TransactionDetails>();
@@ -338,7 +343,7 @@ catch(InternetBankingException e){
             AccountStatement accountStatement = integrationService.getAccountStatements(acctNumber, from, to, tranType,"5");
 //            logger.info("TransactionType {}", tranType);
 //            logger.info("accountStatement {}", accountStatement.getAccountNumber());
-            out.setDraw(input.getDraw());
+//            out.setDraw(input.getDraw());
             List<TransactionDetails> list = accountStatement.getTransactionDetails();
 
             out.setData(list);
@@ -363,6 +368,8 @@ catch(InternetBankingException e){
             session.removeAttribute("acctStmtLastDetails");
             if(list !=null) {
                 if (!list.isEmpty()) {
+                    objectMap.replace("details",list);
+                    objectMap.replace("moreData",accountStatement.getHasMoreData());
                     session.setAttribute("acctStmtLastDetails", list.get(list.size() - 1));
                     session.setAttribute("retAcctStmtStateValue", 0);
                     session.setAttribute("acctStmtEntirePastDetails0", list);
@@ -371,7 +378,7 @@ catch(InternetBankingException e){
         } catch (ParseException e) {
             logger.warn("didn't parse date", e);
         }
-        return out;
+        return objectMap;
 
     }
 

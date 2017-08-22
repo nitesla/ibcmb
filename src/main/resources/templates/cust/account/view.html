@@ -64,13 +64,11 @@
                        <table class="table" id="tranDetails">
                            <thead>
                            <tr>
-
                                <th>Post Date</th>
                                <th>Value Date</th>
                                <th>Transaction Narration</th>
                                <th>Debit</th>
                                <th>Credit</th>
-                               <th>Transaction ReferenceID</th>
                                <th>Account Balance</th>
                            </tr>
                            </thead>
@@ -79,8 +77,8 @@
                                <th>Post Date</th>
                                <th>Value Date</th>
                                <th>Transaction Narration</th>
-                               <th>Debit/Credit</th>
-                               <th>Transaction ReferenceID</th>
+                               <th>Debit</th>
+                               <th>Credit</th>
                                <th>Account Balance</th>
 
                            </tr>
@@ -246,7 +244,6 @@
                 {"data" : "narration"},
                 {"data" : "debitAmount"},
                 {"data" : "creditAmount"},
-                {"data" : "tranId"},
                 {"data" : "accountBalance"}
             ],
             "columnDefs" : [ {
@@ -276,7 +273,7 @@
                     return data;
                 }
             },{
-                "targets" : 6,
+                "targets" : 5,
                 "data" : "accountBalance",
                 "render" : function(data, type,full, meta) {
                     if (type === 'display') {
@@ -337,9 +334,8 @@
                     tranType : $('[name=tranType]').val()
                 },success: function (result) {
 //                    resetButton();
-                    $('#btn-print').show();
                     if (result.details != null) {
-
+                        $('#btn-print').show();
                         var contactsTab2 = $('#tranDetails').DataTable();
                         for (var key in result.details) {
                             if (result.details.hasOwnProperty(key)) {

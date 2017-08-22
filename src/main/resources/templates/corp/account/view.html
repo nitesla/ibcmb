@@ -74,8 +74,8 @@
                                         <th>Post Date</th>
                                         <th>Value Date</th>
                                         <th>Transaction Narration</th>
-                                        <th>Debit/Credit</th>
-                                        <th>Transaction ReferenceID</th>
+                                        <th>Debit</th>
+                                        <th>Credit</th>
                                         <th>Account Balance</th>
 
                                     </tr>
@@ -85,8 +85,8 @@
                                         <th>Post Date</th>
                                         <th>Value Date</th>
                                         <th>Transaction Narration</th>
-                                        <th>Debit/Credit</th>
-                                        <th>Transaction ReferenceID</th>
+                                        <th>Debit</th>
+                                        <th>Credit</th>
                                         <th>Account Balance</th>
                                     </tr>
                                     </tfoot>
@@ -151,8 +151,8 @@
                     {"data" : "postDate"} ,
                     {"data" : "valueDate"},
                     {"data" : "narration"},
-                    {"data" : "tranType"},
-                    {"data" : "tranId"},
+                    {"data" : "debitAmount"},
+                    {"data" : "creditAmount"},
                     {"data" : "accountBalance"}
 
                 ],
@@ -199,33 +199,67 @@
                             return data;
                         }
                     } ],
-                "ajax" : {
-                    "url":"/corporate/account/viewstatement/display/data/new",
-                    "type" : "GET",
-                    "data" : function(d) {
-                        d.acctNumber = $('[name=acctNumber]').val();
-                        d.fromDate = $('[name=fromDate]').val();
-                        d.toDate = $('[name=toDate]').val();
-                        d.tranType = $('[name=tranType]').val();
-                        console.log("the data parsed is "+d.acctNumber+" fromDate "+d.fromDate+" toDate"+d.toDate+" tranType"+d.tranType);
-                    }
-                }, "language": {
+//                "ajax" : {
+//                    "url":"/corporate/account/viewstatement/display/data/new",
+//                    "type" : "GET",
+//                    "data" : function(d) {
+//                        d.acctNumber = $('[name=acctNumber]').val();
+//                        d.fromDate = $('[name=fromDate]').val();
+//                        d.toDate = $('[name=toDate]').val();
+//                        d.tranType = $('[name=tranType]').val();
+//                        console.log("the data parsed is "+d.acctNumber+" fromDate "+d.fromDate+" toDate"+d.toDate+" tranType"+d.tranType);
+//                    }
+//                },
+                "language": {
                     "emptyTable": "No data available in table"
                 }
 
             });
 
             $("#btn-find").on("click", function(e) {
-//                console.log("find");
                 var table = $('#tranDetails').DataTable();
                 var row  = table.rows().remove().draw();
-                console.log("is empty "+table.data().any());
-                $('#next').show();
-//                resetButton();
                 e.preventDefault();
-                dt = $('#tranDetails').DataTable();
-                    $('#btn-print').show();
-                dt.ajax.reload(null, true);
+                $.ajax({
+                    "url":"/corporate/account/viewstatement/display/data/new",
+                    "type" : "GET",
+                    "data" :  {
+                        acctNumber : $('[name=acctNumber]').val(),
+                        fromDate : $('[name=fromDate]').val(),
+                        toDate : $('[name=toDate]').val(),
+                        tranType : $('[name=tranType]').val()
+                    },success: function (result) {
+//                    resetButton();
+                        if (result.details != null) {
+                            $('#btn-print').show();
+                            var contactsTab2 = $('#tranDetails').DataTable();
+                            for (var key in result.details) {
+                                if (result.details.hasOwnProperty(key)) {
+                                    var od = result.details[key];
+//                                console.log("the key "+key+" value "+result[key]);
+                                    contactsTab2.row.add(od);
+                                }
+
+                                contactsTab2.draw();
+//
+                            }
+
+                        }
+                        if(result.moreData === "Y"){
+                            $('#next').show();
+
+                        }else{
+                            $('#next').hide();
+                        }
+                        $('#previous').hide();
+
+                    },
+                    error:  function (dd) {
+                        console.log("error")
+                    }
+
+                });
+
 
             });
             $('#btn-print').hide();
@@ -235,9 +269,11 @@
             $('#tranDetails_paginate').hide();
             $("#btn-print").on("click", function(e) {
 //                e.preventDefault();
-                var table = $('#tranDetails').DataTable();
-                var data = table.ajax.params();
-                console.log("the data "+data);
+                var data = { "acctNumber" : $('[name=acctNumber]').val(),
+                    "fromDate" : $('[name=fromDate]').val(),
+                    "toDate" : $('[name=toDate]').val(),
+                    "tranType" : $('[name=tranType]').val()} ;
+                console.log("data "+data);
                 $.download("downloadstatement", "data", data);
 
             });
