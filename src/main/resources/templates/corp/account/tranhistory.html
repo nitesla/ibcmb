@@ -75,7 +75,36 @@
             responsive: true,
             "lengthMenu" : [ [ 5, 10, 20],	[ 5, 10, 20 ] ],
             "pagingType" : "simple_numbers",
-            "dom": 'T<"clear">frtlp'
+            "dom": 'T<"clear">frtlp',
+            "columnDefs" : [{
+                "targets": 1,
+                "data": "postDate",
+                "render": function (data, type, full, meta) {
+                    if (type === 'display') {
+                        if (data == null)
+                            return data;
+
+                        var pattern = /(\d{2})\.(\d{2})\.(\d{4})/;
+                        var dt = new Date(data.replace(pattern, '$3-$2-$1'));
+                        return dt.toDateString();
+                    }
+                    return data;
+                }
+            },{
+                "targets" : 2,
+                "data" : "valueDate",
+                "render" : function(data, type,full, meta) {
+                    if (type === 'display') {
+                        if(data == null)
+                            return data;
+
+                        var pattern = /(\d{2})\.(\d{2})\.(\d{4})/;
+                        var dt = new Date(data.replace(pattern,'$3-$2-$1'));
+                        return dt.toDateString();
+                    }
+                    return data;
+                }
+            }]
         });
         <!--$(document).ready(function(){-->
             <!--var acct = $('#acct').val();-->
