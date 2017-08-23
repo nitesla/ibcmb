@@ -51,8 +51,6 @@ public class MainController {
     @Autowired
     private CorporateUserService corporateUserService;
     @Autowired
-    private CorporateService corporateService;
-    @Autowired
     private SecurityService securityService;
     @Autowired
     private ConfigurationService configurationService;

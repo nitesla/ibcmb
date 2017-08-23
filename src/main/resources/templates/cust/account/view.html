@@ -64,23 +64,23 @@
                        <table class="table" id="tranDetails">
                            <thead>
                            <tr>
-
+                               <th>Transaction Narration</th>
                                <th>Post Date</th>
                                <th>Value Date</th>
-                               <th>Transaction Narration</th>
                                <th>Debit</th>
                                <th>Credit</th>
-                               <th>Transaction ReferenceID</th>
+                               <th>Tran ID</th>
                                <th>Account Balance</th>
                            </tr>
                            </thead>
                            <tfoot>
                            <tr>
+                               <th>Transaction Narration</th>
                                <th>Post Date</th>
                                <th>Value Date</th>
-                               <th>Transaction Narration</th>
-                               <th>Debit/Credit</th>
-                               <th>Transaction ReferenceID</th>
+                               <th>Debit</th>
+                               <th>Credit</th>
+                               <th>Tran ID</th>
                                <th>Account Balance</th>
 
                            </tr>
@@ -241,28 +241,30 @@
             "ordering" : false,
             "dom": 'T<"clear">frtlp',
             "columns" : [
+                {"data" : "narration"},
                 {"data" : "postDate"} ,
                 {"data" : "valueDate"},
-                {"data" : "narration"},
                 {"data" : "debitAmount"},
                 {"data" : "creditAmount"},
                 {"data" : "tranId"},
                 {"data" : "accountBalance"}
             ],
-            "columnDefs" : [ {
-                "targets" : 3,
-                "data" : "tranType",
-                "render" : function(data, type,full, meta) {
-                    if (type === 'display') {
-                        if(data == null) return data;
-
-                       var spacedData = '         '+data;
-                        return spacedData;
-                    }
-                    return data;
-                }
-            }, {
-                "targets" : 0,
+            "columnDefs" : [
+//                {
+//                "targets" : 3,
+//                "data" : "tranType",
+//                "render" : function(data, type,full, meta) {
+//                    if (type === 'display') {
+//                        if(data == null) return data;
+//
+//                       var spacedData = '         '+data;
+//                        return spacedData;
+//                    }
+//                    return data;
+//                }
+//            },
+                {
+                "targets" : 1,
                 "data" : "postDate",
                 "render" : function(data, type,full, meta) {
                     if (type === 'display') {
@@ -289,7 +291,7 @@
                 }
             }
                 , {
-                    "targets": 1,
+                    "targets": 2,
                     "data": "valueDate",
                     "render": function (data, type, full, meta) {
                         if (type === 'display') {
@@ -324,6 +326,9 @@
 //        $('#tranDetails_paginate').hide();
 //        $('#tranDetails_length').hide();
         $("#btn-find").on("click", function(e) {
+//            console.log("date "+$('[name=fromDate]').val());
+//            console.log(daydiff(parseDate($('[name=fromDate]').val()), parseDate($('[name=fromDate]').val())));
+
             var table = $('#tranDetails').DataTable();
             var row  = table.rows().remove().draw();
             e.preventDefault();
@@ -337,9 +342,9 @@
                     tranType : $('[name=tranType]').val()
                 },success: function (result) {
 //                    resetButton();
-                    $('#btn-print').show();
-                    if (result.details != null) {
-
+                    console.log("the output is "+result.details);
+                    if (result.details != null && result.details != "null") {
+                        $('#btn-print').show();
                         var contactsTab2 = $('#tranDetails').DataTable();
                         for (var key in result.details) {
                             if (result.details.hasOwnProperty(key)) {
@@ -390,6 +395,15 @@
         $('.dataTables_empty').html('No data available');
 
     });
+    function parseDate(str) {
+        var mdy = str.split('-');
+        return new Date(mdy[2], mdy[0]-1, mdy[1]);
+    }
+
+    function daydiff(first, second) {
+        return Math.round((second-first)/(1000*60*60*24));
+    }
+
 function nextData() {
 //    console.log("field value "+valu);
     $.ajax({
@@ -482,42 +496,7 @@ function nextData() {
 
     });
 }
-    function resetButton() {
-//    console.log("field value "+valu);
-    $.ajax({
-        "url":"viewstatement/display/data/reset/button",
-        "type" : "GET",
-        "data" :  {
-            state : "backward"
-        },success: function (result) {
-            console.log("the button to hide "+result);
-            if (result == "both") {
-//                console.log("the result next"+result);
-                $('#previous').hide();
-                $('#next').hide();
-            }
-            if (result == "previous") {
-//                console.log("the result next"+result);
-                $('#previous').hide();
-                $('#next').show();
-            }
-            if (result == "next") {
-//                console.log("the result next"+result);
-                $('#previous').show();
-                $('#next').hide();
-            }
-            if (result == "none") {
-//                console.log("the result next"+result);
-                $('#previous').show();
-                $('#next').show();
-            }
-        },
-        error:  function (dd) {
-            console.log("error")
-        }
 
-    });
-}
 
     /*]]>*/
 </script>

@@ -1,5 +1,6 @@
 package longbridge;
 
+import longbridge.jobs.CronJobScheduler;
 import longbridge.repositories.AccountRepo;
 import longbridge.repositories.CorporateRepo;
 import longbridge.repositories.CustomJpaRepositoryFactoryBean;

@@ -618,10 +618,6 @@ public class AccountController {
 		String toDate = webRequest.getParameter("toDate");
 		String tranType = webRequest.getParameter("tranType");
 		String state = webRequest.getParameter("state");
-		logger.info("fromDate {}",fromDate);
-		logger.info("toDate {}",toDate);
-//		Duration diffInDays= new Duration(new DateTime(fromDate),new DateTime(toDate));
-//		logger.info("Day difference {}",diffInDays.getStandardDays());
 		List<TransactionDetails> list =  null;
 		Date from = null;
 		Date to = null;
@@ -703,49 +699,7 @@ public class AccountController {
 		return objectMap;
 
 	}
-	@GetMapping("/viewstatement/display/data/reset/button")
-	@ResponseBody
-	public String resetButtonForStatement(HttpSession session) {
-		if((session.getAttribute("acctStmtEntirePastDetails0") == null)&&(session.getAttribute("hasMoreTransaction") == null)){
-			return "both";
-		}
-		if((session.getAttribute("retAcctStmtStateValue") != null)){
-			Integer stateValue = (Integer) session.getAttribute("retAcctStmtStateValue");
-			if(stateValue == 0) {
-				String hasMoreTransaction = (String) session.getAttribute("hasMoreTransaction");
-				if(hasMoreTransaction.equalsIgnoreCase("")) {
-					return "both";
-				}
-			}
-		}
-		if((session.getAttribute("retAcctStmtStateValue") != null)){
-			Integer stateValue = (Integer) session.getAttribute("retAcctStmtStateValue");
-			if(stateValue > 0) {
-				String hasMoreTransaction = (String) session.getAttribute("hasMoreTransaction");
-				if(hasMoreTransaction.equalsIgnoreCase("")) {
-					return "next";
-				}
-			}
-		}
-		if((session.getAttribute("retAcctStmtStateValue") != null)){
-			Integer stateValue = (Integer) session.getAttribute("retAcctStmtStateValue");
-			logger.info("the state value for reset is {}",stateValue);
-			if(stateValue > 0) {
-				if(session.getAttribute("hasMoreTransaction") != null) {
-					String hasMoreTransaction = (String) session.getAttribute("hasMoreTransaction");
-					logger.info("the hasMoreTransaction value for reset is {}", hasMoreTransaction);
-					if (hasMoreTransaction.equalsIgnoreCase("Y")) {
-						return "none";
-					}
-				}
-			}
-		}
 
-
-
-		return "none";
-
-	}
 
 	@GetMapping("/downloadstatement")
 	public ModelAndView downloadStatementData(ModelMap modelMap, DataTablesInput input, String acctNumber,
@@ -817,7 +771,7 @@ public class AccountController {
 			Date today = new Date();
 			modelMap.put("today", today);
 			modelMap.put("imagePath", imagePath);
-			ModelAndView modelAndView = new ModelAndView("rpt_account-statement", modelMap);
+			ModelAndView modelAndView = new ModelAndView("rpt_account-statement4", modelMap);
 			return modelAndView;
 		} catch (ParseException e) {
 			logger.warn("didn't parse date", e);
@@ -826,7 +780,7 @@ public class AccountController {
 			//redirectAttributes.addFlashAttribute("failure", messageSource.getMessage("receipt.download.failed", null, locale));
 			return modelAndView;
 		}catch (Exception e){
-			logger.info(" RECEIPT DOWNLOAD {} ", e.getMessage());
+			logger.info(" STATEMENT DOWNLOAD {} ", e.getMessage());
 			ModelAndView modelAndView =  new ModelAndView("redirect:/retail/account/viewstatement");
 			modelAndView.addObject("failure", messageSource.getMessage("receipt.download.failed", null, locale));
 			//redirectAttributes.addFlashAttribute("failure", messageSource.getMessage("receipt.download.failed", null, locale));
