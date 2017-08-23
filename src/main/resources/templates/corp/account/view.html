@@ -230,7 +230,7 @@
                         tranType : $('[name=tranType]').val()
                     },success: function (result) {
 //                    resetButton();
-                        if (result.details != null) {
+                        if (result.details != null && result.details != "null") {
                             $('#btn-print').show();
                             var contactsTab2 = $('#tranDetails').DataTable();
                             for (var key in result.details) {
