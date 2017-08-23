@@ -115,6 +115,7 @@
 
     <script th:src="@{~/customer/js/dataTables.bootstrap.js}"></script>
     <script th:src="@{~/customer/js/dataTables.select.js}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootbox.js/4.4.0/bootbox.min.js"></script>
     <script th:inline="javascript">
         /*<![CDATA[*/
         jQuery.download = function(url, key, data) {
@@ -219,6 +220,7 @@
             });
 
             $("#btn-find").on("click", function(e) {
+                if(daydiff(parseDate($('[name=fromDate]').val()), parseDate($('[name=toDate]').val())) >= 0) {
                 var table = $('#tranDetails').DataTable();
                 var row  = table.rows().remove().draw();
                 e.preventDefault();
@@ -231,7 +233,7 @@
                         toDate : $('[name=toDate]').val(),
                         tranType : $('[name=tranType]').val()
                     },success: function (result) {
-//                    resetButton();
+                        $('#btn-print').hide();
                         if (result.details != null && result.details != "null") {
                             $('#btn-print').show();
                             var contactsTab2 = $('#tranDetails').DataTable();
@@ -261,7 +263,10 @@
                     }
 
                 });
-
+                }else{
+                    bootbox.alert("<div style='text-align: center'>Start date cannot be less than end date</div>");
+                    return false;
+                }
 
             });
             $('#btn-print').hide();
@@ -281,6 +286,14 @@
             });
 //            $('.dataTables_empty').html('No data available');
         });
+        function parseDate(str) {
+            var mdy = str.split('-');
+            return new Date(mdy[2], mdy[0]-1, mdy[1]);
+        }
+
+        function daydiff(first, second) {
+            return Math.round((second-first)/(1000*60*60*24));
+        }
 
         function nextData() {
 //    console.log("field value "+valu);
@@ -322,7 +335,9 @@
 
                     },
                 error:  function (dd) {
-                    console.log("error")
+//                    console.log("error")
+                    bootbox.alert("<div style='text-align: center'>Service not available</div>");
+                    return false;
                 }
 
             });
