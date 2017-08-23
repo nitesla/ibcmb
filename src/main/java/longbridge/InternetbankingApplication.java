@@ -1,9 +1,11 @@
 package longbridge;
 
-import longbridge.repositories.AccountRepo;
-import longbridge.repositories.CorporateRepo;
-import longbridge.repositories.CustomJpaRepositoryFactoryBean;
-import longbridge.repositories.OperationsUserRepo;
+import longbridge.dtos.CorporateUserDTO;
+import longbridge.jobs.CronJobScheduler;
+import longbridge.models.Account;
+import longbridge.models.Corporate;
+import longbridge.models.CorporateUser;
+import longbridge.repositories.*;
 import longbridge.services.*;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +17,9 @@ import org.springframework.boot.web.support.SpringBootServletInitializer;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @SpringBootApplication
 @EnableJpaRepositories(repositoryFactoryBeanClass = CustomJpaRepositoryFactoryBean.class)
@@ -45,6 +50,12 @@ public class InternetbankingApplication extends SpringBootServletInitializer imp
     CorporateService corporateService;
 
     @Autowired
+    CorporateUserRepo userRepo;
+
+    @Autowired
+    CorporateUserService corporateUserService;
+
+    @Autowired
     CorporateRepo corporateRepo;
 
     public static void main(String[] args) {
@@ -60,11 +71,11 @@ public class InternetbankingApplication extends SpringBootServletInitializer imp
     @Override
     @Transactional
     public void run(String... strings) throws Exception {
-        
+
+
+
 
 //        CronJobScheduler.startJobs();
-        // System.out.println(corporateService.getCorporateByCorporateId("nwanu").getAccounts());
-       // System.out.println(integrationService.doNameEnquiry("999033","1005847601"));
 
     }
 

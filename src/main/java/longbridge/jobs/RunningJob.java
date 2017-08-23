@@ -29,11 +29,11 @@ public class RunningJob implements Job {
         CronJobService cronJobService = context.getBean (CronJobService.class);
         System.out.println("job runing");
         try {
-            CompileJasper.compile();
-//            cronJobService.saveRunningJob("in-built",cronJobService.getCurrentExpression());
-//            cronJobService.updateAccountDetials();
-//            cronJobService.updateRetailUserDetails();
-//            cronJobService.updateCorporateUserDetails();
+//            CompileJasper.compile();
+            cronJobService.saveRunningJob("in-built",cronJobService.getCurrentExpression());
+            cronJobService.updateAccountDetials();
+            cronJobService.updateRetailUserDetails();
+            cronJobService.updateCorporateUserDetails();
 //
 //            cronJobService.updateRunningJob();
         } catch (InternetBankingException e) {
