@@ -326,6 +326,9 @@
 //        $('#tranDetails_paginate').hide();
 //        $('#tranDetails_length').hide();
         $("#btn-find").on("click", function(e) {
+//            console.log("date "+$('[name=fromDate]').val());
+//            console.log(daydiff(parseDate($('[name=fromDate]').val()), parseDate($('[name=fromDate]').val())));
+
             var table = $('#tranDetails').DataTable();
             var row  = table.rows().remove().draw();
             e.preventDefault();
@@ -392,6 +395,15 @@
         $('.dataTables_empty').html('No data available');
 
     });
+    function parseDate(str) {
+        var mdy = str.split('-');
+        return new Date(mdy[2], mdy[0]-1, mdy[1]);
+    }
+
+    function daydiff(first, second) {
+        return Math.round((second-first)/(1000*60*60*24));
+    }
+
 function nextData() {
 //    console.log("field value "+valu);
     $.ajax({
