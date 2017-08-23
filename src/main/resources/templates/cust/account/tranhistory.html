@@ -20,31 +20,34 @@
                                 <table class="table" id="tranDetails">
                                     <thead>
                                     <tr>
+                                        <th>Transaction Narration</th>
                                         <th>Post Date</th>
                                         <th>Value Date</th>
-                                        <th>Transaction Narration</th>
                                         <th>Debit</th>
                                         <th>Credit</th>
+                                        <th>Transaction Reference ID</th>
                                         <th>Account Balance</th>
                                     </tr>
                                     </thead>
                                     <tbody>
                                     <tr th:each="list:${history}">
+                                        <td th:text="${list.narration}"></td>
                                         <td th:text="${list.postDate}"></td>
                                         <td th:text="${list.valueDate}"></td>
-                                        <td th:text="${list.narration}"></td>
                                         <td th:text="${list.debitAmount}"></td>
                                         <td th:text="${list.creditAmount}"></td>
+                                        <td th:text="${list.tranId}"></td>
                                         <td th:text="${list.accountBalance}"></td>
                                     </tr>
                                     </tbody>
                                     <tfoot>
                                     <tr>
+                                        <th>Transaction Narration</th>
                                         <th>Post Date</th>
                                         <th>Value Date</th>
-                                        <th>Transaction Narration</th>
                                         <th>Debit</th>
                                         <th>Credit</th>
+                                        <th>Transaction Reference ID</th>
                                         <th>Account Balance</th>
                                     </tr>
                                     </tfoot>
@@ -73,7 +76,7 @@
             "pagingType" : "simple_numbers",
             "dom": 'T<"clear">frtlp',
             "columnDefs" : [{
-                "targets": 0,
+                "targets": 1,
                 "data": "postDate",
                 "render": function (data, type, full, meta) {
                     if (type === 'display') {
@@ -87,7 +90,7 @@
                     return data;
                 }
             },{
-                "targets" : 1,
+                "targets" : 2,
                 "data" : "valueDate",
                 "render" : function(data, type,full, meta) {
                     if (type === 'display') {

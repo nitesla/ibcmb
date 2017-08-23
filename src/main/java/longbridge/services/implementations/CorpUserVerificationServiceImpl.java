@@ -150,6 +150,7 @@ public class CorpUserVerificationServiceImpl implements CorpUserVerificationServ
             }else {
                 userDTO.setCorpUserType(CorpUserType.INITIATOR);
             }
+
             CorporateUser user = corporateUserService.convertDTOToEntity(userDTO);
 
 
