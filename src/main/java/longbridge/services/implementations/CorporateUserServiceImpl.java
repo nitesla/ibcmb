@@ -762,6 +762,7 @@ public class CorporateUserServiceImpl implements CorporateUserService {
         corporateUserDTO.setCorporateName(corporateUser.getCorporate().getName());
         corporateUserDTO.setCorporateType(corporateUser.getCorporate().getCorporateType());
         corporateUserDTO.setId(corporateUser.getId());
+        corporateUserDTO.setVersion(corporateUser.getVersion());
         corporateUserDTO.setUserName(corporateUser.getUserName());
         corporateUserDTO.setFirstName(corporateUser.getFirstName());
         corporateUserDTO.setLastName(corporateUser.getLastName());
@@ -801,6 +802,7 @@ public class CorporateUserServiceImpl implements CorporateUserService {
         //CorporateUser corporateUser = modelMapper.map(corporateUserDTO, CorporateUser.class);
         CorporateUser corporateUser = new CorporateUser();
         corporateUser.setId(corporateUserDTO.getId());
+        corporateUser.setVersion(corporateUserDTO.getVersion());
         corporateUser.setUserName(corporateUserDTO.getUserName());
         corporateUser.setFirstName(corporateUserDTO.getFirstName());
         corporateUser.setLastName(corporateUserDTO.getLastName());
