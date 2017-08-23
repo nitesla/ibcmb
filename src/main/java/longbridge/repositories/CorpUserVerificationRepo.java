@@ -23,7 +23,7 @@ public interface CorpUserVerificationRepo extends CommonRepo<CorpUserVerificatio
 
     CorpUserVerification findFirstByEntityNameAndEntityIdAndStatus(String name, long id, VerificationStatus status);
 
-    long countByInitiatedByAndCorpUserTypeAndStatus(String username, CorpUserType corpUserType, VerificationStatus status);
+    long countByCorpIdAndStatus(Long id, VerificationStatus status);
 
     Page<CorpUserVerification> findByInitiatedByAndCorpUserTypeAndStatus(String initiatedby, CorpUserType corpUserType, VerificationStatus status, Pageable pageable);
 

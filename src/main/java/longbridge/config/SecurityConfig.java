@@ -55,11 +55,11 @@ public class SecurityConfig {
     public static class AdminUserConfigurationAdapter extends WebSecurityConfigurerAdapter {
         @Autowired
         @Qualifier("adminUserDetails")
-        UserDetailsService adminDetails;
+        private UserDetailsService adminDetails;
         @Autowired
-        BCryptPasswordEncoder bCryptPasswordEncoder;
+        private BCryptPasswordEncoder bCryptPasswordEncoder;
         @Autowired
-        AdminAuthenticationSuccessHandler adminAuthenticationSuccessHandler;
+        private AdminAuthenticationSuccessHandler adminAuthenticationSuccessHandler;
         //        @Autowired
 //        //@Qualifier("opAuthenticationSuccessHandler")
 //        @Qualifier("adminAuthenticationSuccessHandler")

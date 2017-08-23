@@ -306,7 +306,8 @@ public class AccountController {
 	private String savedDoc;
 	@Value("${excel.path}")
 	String PROPERTY_EXCEL_SOURCE_FILE_PATH;
-
+	@Value("${jrxmlImage.path}")
+	private String imagePath;
 	private SimpleDateFormat dateFormat = new SimpleDateFormat("dd-mm-yyyy");
 
 	@GetMapping
@@ -507,7 +508,7 @@ public class AccountController {
 		AccountDTO account = accountService.getAccount(Long.parseLong(acct));
 		AccountStatement accountStatement = integrationService.getFullAccountStatement(account.getAccountNumber(), daysAgo , date, "B");
 		List<TransactionDetails> list = accountStatement.getTransactionDetails();
-
+		logger.info("The List {} ", list);
 		model.addAttribute("history", list);
 		return "cust/account/tranhistory";
 	}
@@ -551,16 +552,17 @@ public class AccountController {
 
 	@GetMapping("/viewstatement/display/data")
 	@ResponseBody
-	public List<TransactionDetails> getStatementData(WebRequest webRequest, HttpSession session) {
+	public Map<String,Object> getStatementData(WebRequest webRequest, HttpSession session) {
 		// Pageable pageable = DataTablesUtils.getPageable(input);
+		Map<String,Object> objectMap =  new HashMap<>();
+		objectMap.put("details",null);
+		objectMap.put("moreData","");
 		String acctNumber = webRequest.getParameter("acctNumber");
 		String fromDate = webRequest.getParameter("fromDate");
 		String toDate = webRequest.getParameter("toDate");
 		String tranType = webRequest.getParameter("tranType");
 		logger.info("fromDate {}",fromDate);
 		logger.info("toDate {}",toDate);
-//		Duration diffInDays= new Duration(new DateTime(fromDate),new DateTime(toDate));
-//		logger.info("Day difference {}",diffInDays.getStandardDays());
 		List<TransactionDetails> list =  null;
 		Date from = null;
 		Date to = null;
@@ -570,13 +572,7 @@ public class AccountController {
 		try {
 			from = format.parse(fromDate);
 			to = format.parse(toDate);
-			logger.info("from Date after format{}",format2.format(from));
-			logger.info("to Date after format {}",format2.format(to));
-			//int diffInDays = (int) ((to.getTime() - from.getTime()) / (1000 * 60 * 60 * 24));
-
 			AccountStatement accountStatement = integrationService.getAccountStatements(acctNumber, from, to, tranType,"5");
-			logger.info("accountStatement new {}", accountStatement);
-
 			session.removeAttribute("hasMoreTransaction");
 			if(session.getAttribute("retAcctStmtStateValue") !=null) {
 				Integer stateValue = (Integer) session.getAttribute("retAcctStmtStateValue");
@@ -590,13 +586,16 @@ public class AccountController {
 			if(accountStatement != null) {
 				list = accountStatement.getTransactionDetails();
 				session.setAttribute("hasMoreTransaction", accountStatement.getHasMoreData());
-
+				logger.info("the current has more data  new {}",accountStatement.getHasMoreData());
 			}
 			session.removeAttribute("acctStmtLastDetails");
 			if(!list.isEmpty()){
+				logger.info("the current has more data  empty {}",accountStatement.getHasMoreData());
 				session.setAttribute("acctStmtLastDetails",list.get(list.size()-1));
 				session.setAttribute("retAcctStmtStateValue",0);
 				session.setAttribute("acctStmtEntirePastDetails0",list);
+				objectMap.replace("details",list);
+				objectMap.replace("moreData",accountStatement.getHasMoreData());
 			}
 
 		} catch (ParseException e) {
@@ -604,22 +603,21 @@ public class AccountController {
 		}catch (Exception e){
 			logger.warn("error cause by", e.getMessage());
 		}
-		return list;
+		return objectMap;
 
 	}
-@GetMapping("/viewstatement/display/data/state")
+	@GetMapping("/viewstatement/display/data/next")
 	@ResponseBody
-	public List<TransactionDetails> getStatementDataByState(WebRequest webRequest, HttpSession session) {
+	public Map<String,Object> getStatementDataByState(WebRequest webRequest, HttpSession session) {
 		// Pageable pageable = DataTablesUtils.getPageable(input);
+		Map<String,Object> objectMap =  new HashMap<>();
+		objectMap.put("details",null);
+		objectMap.put("moreData","");
 		String acctNumber = webRequest.getParameter("acctNumber");
 		String fromDate = webRequest.getParameter("fromDate");
 		String toDate = webRequest.getParameter("toDate");
 		String tranType = webRequest.getParameter("tranType");
 		String state = webRequest.getParameter("state");
-		logger.info("fromDate {}",fromDate);
-		logger.info("toDate {}",toDate);
-//		Duration diffInDays= new Duration(new DateTime(fromDate),new DateTime(toDate));
-//		logger.info("Day difference {}",diffInDays.getStandardDays());
 		List<TransactionDetails> list =  null;
 		Date from = null;
 		Date to = null;
@@ -628,22 +626,10 @@ public class AccountController {
 		try {
 			from = format.parse(fromDate);
 			to = format.parse(toDate);
-			logger.info("fromDate {}",from);
-			logger.info("toDate {}",to);
-			//int diffInDays = (int) ((to.getTime() - from.getTime()) / (1000 * 60 * 60 * 24));
 			TransactionDetails transactionDetails = null;
 			if((session.getAttribute("acctStmtLastDetails") != null)&&(state.equalsIgnoreCase("forward"))) {
 				transactionDetails = (TransactionDetails) session.getAttribute("acctStmtLastDetails");
-				logger.info("the transaction {}",transactionDetails);
 			}
-//			if((session.getAttribute("acctStmtEntirePastDetails") != null)&&(state.equalsIgnoreCase("backward"))) {
-//				 list = (List<TransactionDetails>) session.getAttribute("acctStmtEntirePastDetails");
-//				session.removeAttribute("acctStmtLastDetails");
-//				session.setAttribute("acctStmtLastDetails", list.get(list.size() - 1));
-//				logger.info("acctStmtLastDetails previous {}", list.get(list.size() - 1));
-//				return list;
-//			}
-
 			if(transactionDetails != null) {
 				PaginationDetails paginationDetails = new PaginationDetails();
 				paginationDetails.setLastAccountBalance(transactionDetails.getAccountBalance());
@@ -652,15 +638,14 @@ public class AccountController {
 				paginationDetails.setLastTranId(transactionDetails.getTranId());
 				paginationDetails.setLastTranDate(transactionDetails.getTranDate());
 				paginationDetails.setLastTranSN(transactionDetails.getTranSN());
-				logger.info("paginationDetails {}", paginationDetails);
 				AccountStatement accountStatement = integrationService.getAccountStatements(acctNumber, from, to, tranType, "5",paginationDetails);
-//				logger.info("accountStatement {}", accountStatement);
 				list = accountStatement.getTransactionDetails();
 				session.removeAttribute("acctStmtLastDetails");
 
 				session.removeAttribute("hasMoreTransaction");
 				if(accountStatement != null) {
 					session.setAttribute("hasMoreTransaction", accountStatement.getHasMoreData());
+					logger.info("the current has more data {}",accountStatement.getHasMoreData());
 				}
 				if (!list.isEmpty()) {
 					session.setAttribute("acctStmtLastDetails", list.get(list.size() - 1));
@@ -672,6 +657,8 @@ public class AccountController {
 					session.setAttribute("retAcctStmtStateValue",stateValue);
 					logger.info("acctStmtLastDetails {}", list.get(list.size() - 1));
 					logger.info("acct statemnet state {}", stateValue);
+					objectMap.replace("details",list);
+					objectMap.replace("moreData",accountStatement.getHasMoreData());
 				}
 			}
 
@@ -680,15 +667,17 @@ public class AccountController {
 		}catch (Exception e){
 			logger.warn("error cause by {}", e.getMessage());
 		}
-		return list;
+		return objectMap;
 
 	}
 @GetMapping("/viewstatement/display/data/back")
 	@ResponseBody
-	public List<TransactionDetails> getStatementDataForBack(WebRequest webRequest, HttpSession session) {
-	
+	public Map<String,Object> getStatementDataForBack(WebRequest webRequest, HttpSession session) {
 		String state = webRequest.getParameter("state");
-	logger.info("the state {}",state);
+//	logger.info("the state {}",state);
+	Map<String,Object> objectMap =  new HashMap<>();
+	objectMap.put("details",null);
+	objectMap.put("previousData","");
 		List<TransactionDetails> list =  null;
 			if((state.equalsIgnoreCase("backward"))) {
 				Integer stateValue = (Integer) session.getAttribute("retAcctStmtStateValue");
@@ -696,58 +685,21 @@ public class AccountController {
 				if(session.getAttribute("acctStmtEntirePastDetails"+stateValue) != null) {
 					session.removeAttribute("retAcctStmtStateValue");
 					session.setAttribute("retAcctStmtStateValue", stateValue);
-					logger.info("the state value {}",stateValue);
-					list = (List<TransactionDetails>) session.getAttribute("acctStmtEntirePastDetails" + stateValue);
+					logger.info("the state value back {}",stateValue);
+					list = (List<TransactionDetails>) session.getAttribute("acctStmtEntirePastDetails"+stateValue);
 					session.removeAttribute("acctStmtLastDetails");
 					session.setAttribute("acctStmtLastDetails", list.get(list.size() - 1));
 					session.setAttribute("hasMoreTransaction", "Y");
-					logger.info("acctStmtLastDetails  last record previous {}", list.get(list.size() - 1));
-					return list;
+//					logger.info("acctStmtLastDetails  last record previous {}", list.get(list.size() - 1));
+					objectMap.replace("details",list);
+					objectMap.replace("previousData",stateValue);
 				}
 			}
 
-		return list;
+		return objectMap;
 
 	}
-	@GetMapping("/viewstatement/display/data/reset/button")
-	@ResponseBody
-	public String resetButtonForStatement(HttpSession session) {
-		if((session.getAttribute("acctStmtEntirePastDetails0") == null)&&(session.getAttribute("hasMoreTransaction") == null)){
-			return "both";
-		}
-		if((session.getAttribute("retAcctStmtStateValue") != null)){
-			Integer stateValue = (Integer) session.getAttribute("retAcctStmtStateValue");
-			if(stateValue == 0) {
-				String hasMoreTransaction = (String) session.getAttribute("hasMoreTransaction");
-				if(hasMoreTransaction.equalsIgnoreCase("")) {
-					return "both";
-				}
-			}
-		}
-		if((session.getAttribute("retAcctStmtStateValue") != null)){
-			Integer stateValue = (Integer) session.getAttribute("retAcctStmtStateValue");
-			if(stateValue > 0) {
-				String hasMoreTransaction = (String) session.getAttribute("hasMoreTransaction");
-				if(hasMoreTransaction.equalsIgnoreCase("")) {
-					return "next";
-				}
-			}
-		}
-		if((session.getAttribute("retAcctStmtStateValue") != null)){
-			Integer stateValue = (Integer) session.getAttribute("retAcctStmtStateValue");
-			if(stateValue > 0) {
-				String hasMoreTransaction = (String) session.getAttribute("hasMoreTransaction");
-				if(hasMoreTransaction.equalsIgnoreCase("Y")) {
-					return "none";
-				}
-			}
-		}
 
-
-
-		return "none";
-
-	}
 
 	@GetMapping("/downloadstatement")
 	public ModelAndView downloadStatementData(ModelMap modelMap, DataTablesInput input, String acctNumber,
@@ -757,14 +709,19 @@ public class AccountController {
 		DataTablesOutput<TransactionDetails> out = new DataTablesOutput<TransactionDetails>();
 		SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy");
 		try {
-			JasperReportsPdfView view = new JasperReportsPdfView();
-			view.setUrl("classpath:jasperreports/rpt_account-statement3.jrxml");
-			view.setApplicationContext(appContext);
+//			JasperReportsPdfView view = new JasperReportsPdfView();
+//			view.setUrl("classpath:jasperreports/rpt_account-statement4.jrxml");
+//			view.setApplicationContext(appContext);
 			from = format.parse(fromDate);
 			to = format.parse(toDate);
 			AccountStatement accountStatement = integrationService.getFullAccountStatement(acctNumber, from, to, tranType);
 			out.setDraw(input.getDraw());
 			List<TransactionDetails> list = accountStatement.getTransactionDetails();
+			if(!list.isEmpty()) {
+//				logger.info("statemet list is {}", list);
+			}else{
+				logger.info("statement list is empty");
+			}
 			RetailUser retailUser = retailUserService.getUserByName(principal.getName());
 			DecimalFormat formatter = new DecimalFormat("#,###.00");
 			modelMap.put("datasource", list);
@@ -776,12 +733,12 @@ public class AccountController {
 			double amount = Double.parseDouble(accountStatement.getOpeningBalance());
 			modelMap.put("summary.openingBalance", formatter.format(amount));
 			// the total debit and credit is referred as total debit count and credit count
-			if(accountStatement.getTotalDebit()!=null) {
-				modelMap.put("summary.debitCount", accountStatement.getTotalDebit());
+			if(accountStatement.getDebitCount()!=null) {
+				modelMap.put("summary.debitCount", accountStatement.getDebitCount());
 			}
 			else{modelMap.put("summary.debitCount", "");}
-			if(accountStatement.getTotalCredit()!=null) {
-				modelMap.put("summary.creditCount", accountStatement.getTotalCredit());
+			if(accountStatement.getCreditCount()!=null) {
+				modelMap.put("summary.creditCount", accountStatement.getCreditCount());
 			}
 			else{modelMap.put("summary.creditCount", "");}
 			modelMap.put("summary.currencyCode", accountStatement.getCurrencyCode());
@@ -792,12 +749,19 @@ public class AccountController {
 			}else{modelMap.put("summary.closingBalance","" );}
 
 			// the total debit and credit is referred as total debit count and credit count
-			if(accountStatement.getDebitCount()!=null) {
-				modelMap.put("summary.totalDebit", accountStatement.getDebitCount());
-			}else{modelMap.put("summary.totalDebit", "");}
-			if(accountStatement.getCreditCount()!=null) {
-				modelMap.put("summary.totalCredit", accountStatement.getCreditCount());
-			}else{ modelMap.put("summary.totalCredit", "");
+			if(accountStatement.getTotalDebit()!=null) {
+				double totalDebit = Double.parseDouble(accountStatement.getTotalDebit());
+				modelMap.put("summary.totalDebit", formatter.format(totalDebit));
+			}else{
+				modelMap.put("summary.totalDebit", "");
+				logger.info("total debit is empty");
+			}
+			if(accountStatement.getTotalCredit()!=null) {
+				double totalCredit = Double.parseDouble(accountStatement.getTotalCredit());
+				modelMap.put("summary.totalCredit", formatter.format(totalCredit));
+			}else{
+				modelMap.put("summary.totalCredit", "");
+				logger.info("total Credit is empty");
 			}
 			if(accountStatement.getAddress()!=null) {
 				modelMap.put("summary.address", accountStatement.getAddress());
@@ -806,7 +770,8 @@ public class AccountController {
 			modelMap.put("toDate", toDate);
 			Date today = new Date();
 			modelMap.put("today", today);
-			ModelAndView modelAndView = new ModelAndView(view, modelMap);
+			modelMap.put("imagePath", imagePath);
+			ModelAndView modelAndView = new ModelAndView("rpt_account-statement4", modelMap);
 			return modelAndView;
 		} catch (ParseException e) {
 			logger.warn("didn't parse date", e);
@@ -815,7 +780,7 @@ public class AccountController {
 			//redirectAttributes.addFlashAttribute("failure", messageSource.getMessage("receipt.download.failed", null, locale));
 			return modelAndView;
 		}catch (Exception e){
-			logger.info(" RECEIPT DOWNLOAD {} ", e.getMessage());
+			logger.info(" STATEMENT DOWNLOAD {} ", e.getMessage());
 			ModelAndView modelAndView =  new ModelAndView("redirect:/retail/account/viewstatement");
 			modelAndView.addObject("failure", messageSource.getMessage("receipt.download.failed", null, locale));
 			//redirectAttributes.addFlashAttribute("failure", messageSource.getMessage("receipt.download.failed", null, locale));

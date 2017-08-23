@@ -19,7 +19,7 @@
 
                 <!--<div id="before" style="overflow-wrap: break-word;border-left: 1px solid;margin-right: 1px;padding:5px; ">-->
 
-                <table class="table table-striped dt-responsive no-wrap table-hover" id="table">
+                <table class="table table-striped dt-responsive no-wrap" id="table">
                     <thead>
                     <tr>
                         <th>Before</th>
@@ -45,7 +45,7 @@
                 </div>
 
                 <br/>
-                <label for="comments" class="col-sm-2">Comments</label>
+                <label style="font-size: 16px;" for="comments" class="col-sm-2">Comments</label>
                 <div th:unless="${status}">
                     <p  th:text="${verify.comments}"></p>
                 </div>
@@ -79,7 +79,7 @@
     <script th:src="@{~/bank/js/jsonpath-0.8.0.js}"></script>
     <script th:inline="javascript">
         /*<![CDATA[*/
-        var parseJsonAsList = function(jsn,path){
+        var parseJsonAsList = function(jsn,path, color){
 
             var result = '';
             for(node in jsn){
@@ -135,7 +135,7 @@
                         result += '<li class="list-group-item">' + node + ':'+jsn[node] +'</li>'
                     }else
                     {
-                        result += '<li class="list-group-item list-group-item-danger">' + node + ':'+jsn[node] +'</li>'
+                        result += '<li class="list-group-item list-group-item-'+color+'">' + node + ':'+jsn[node] +'</li>'
                     }
                 }
 
@@ -163,7 +163,7 @@
                             }
                             before = JSON.parse(temp);
 
-                            return '<ul>'+parseJsonAsList(before,'$')+'</ul>';
+                            return '<ul>'+parseJsonAsList(before,'$', 'danger')+'</ul>';
                         }
                         return data;
                     }
@@ -176,9 +176,9 @@
                             if(!temp || 0 === temp.length ){
                                 temp = '{}'
                             }
-                            before = JSON.parse(temp);
+                            after = JSON.parse(temp);
 
-                            return '<ul>'+parseJsonAsList(before,'$')+'</ul>';
+                            return '<ul>'+parseJsonAsList(after,'$', 'success')+'</ul>';
                         }
                         return data;
                     }

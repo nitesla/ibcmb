@@ -34,8 +34,7 @@
                                                 </p>
 
                                                 <p th:if="${field.fieldType} == 'TEXTAREA'" required="required">
-                                            <textarea class="form-control" th:name="${field.fieldName}">
-                                            </textarea><span class='req-inner'></span>
+                                                    <textarea class="form-control" th:name="${field.fieldName}" wrap="physical"></textarea><span class='req-inner'></span>
                                                 </p>
 
                                                 <p th:if="${field.fieldType} == 'DATE'">

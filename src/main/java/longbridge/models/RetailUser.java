@@ -15,8 +15,10 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by Wunmi on 3/28/2017.
@@ -28,7 +30,7 @@ import java.util.Date;
 @Audited(withModifiedFlag=true)
 @AuditOverride(forClass=User.class)
 @Where(clause ="del_Flag='N'" )
-@Table(uniqueConstraints=@UniqueConstraint(columnNames={"userName","deletedOn"}))
+@Table(uniqueConstraints=@UniqueConstraint(columnNames={"userName"}))
 public class RetailUser extends User implements PrettySerializer{
 
 	private String bvn;
@@ -109,6 +111,12 @@ public class RetailUser extends User implements PrettySerializer{
 	public void setBeneficiaries(Collection<LocalBeneficiary> beneficiaries) {
 		this.beneficiaries = beneficiaries;
 	}
+
+	@Override @JsonIgnore
+	public List<String> getDefaultSearchFields() {
+		return Arrays.asList("customerId","userName", "firstName","lastName");
+	}
+
 
 	@Override
 	@JsonIgnore

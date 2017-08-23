@@ -20,13 +20,13 @@
                                 <table class="table" id="tranDetails">
                                     <thead>
                                     <tr>
-                                        <th>Account Balance</th>
-                                        <th>Transaction ReferenceID</th>
-                                        <th>Post Date</th>
                                         <th>Transaction Narration</th>
-                                        <th>Debit/Credit</th>
+                                        <th>Post Date</th>
                                         <th>Value Date</th>
-
+                                        <th>Debit</th>
+                                        <th>Credit</th>
+                                        <th>Transaction Reference ID</th>
+                                        <th>Account Balance</th>
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -34,20 +34,21 @@
                                         <td th:text="${list.narration}"></td>
                                         <td th:text="${list.postDate}"></td>
                                         <td th:text="${list.valueDate}"></td>
-                                        <td th:text="${list.tranType}"></td>
+                                        <td th:text="${list.debitAmount}"></td>
+                                        <td th:text="${list.creditAmount}"></td>
                                         <td th:text="${list.tranId}"></td>
                                         <td th:text="${list.accountBalance}"></td>
                                     </tr>
                                     </tbody>
                                     <tfoot>
                                     <tr>
-                                        <th>Account Balance</th>
-                                        <th>Transaction ReferenceID</th>
-                                        <th>Post Date</th>
                                         <th>Transaction Narration</th>
-                                        <th>Debit/Credit</th>
+                                        <th>Post Date</th>
                                         <th>Value Date</th>
-
+                                        <th>Debit</th>
+                                        <th>Credit</th>
+                                        <th>Transaction Reference ID</th>
+                                        <th>Account Balance</th>
                                     </tr>
                                     </tfoot>
                                 </table>
@@ -73,7 +74,36 @@
             responsive: true,
             "lengthMenu" : [ [ 5, 10, 20],	[ 5, 10, 20 ] ],
             "pagingType" : "simple_numbers",
-            "dom": 'T<"clear">frtlp'
+            "dom": 'T<"clear">frtlp',
+            "columnDefs" : [{
+                "targets": 1,
+                "data": "postDate",
+                "render": function (data, type, full, meta) {
+                    if (type === 'display') {
+                        if (data == null)
+                            return data;
+
+                        var pattern = /(\d{2})\.(\d{2})\.(\d{4})/;
+                        var dt = new Date(data.replace(pattern, '$3-$2-$1'));
+                        return dt.toDateString();
+                    }
+                    return data;
+                }
+            },{
+                "targets" : 2,
+                "data" : "valueDate",
+                "render" : function(data, type,full, meta) {
+                    if (type === 'display') {
+                        if(data == null)
+                            return data;
+
+                        var pattern = /(\d{2})\.(\d{2})\.(\d{4})/;
+                        var dt = new Date(data.replace(pattern,'$3-$2-$1'));
+                        return dt.toDateString();
+                    }
+                    return data;
+                }
+            }]
         });
 
         /*]]>*/

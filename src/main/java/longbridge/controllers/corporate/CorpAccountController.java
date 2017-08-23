@@ -3,7 +3,6 @@ package longbridge.controllers.corporate;
 import longbridge.api.AccountDetails;
 import longbridge.api.PaginationDetails;
 import longbridge.dtos.AccountDTO;
-import longbridge.dtos.CodeDTO;
 import longbridge.dtos.SettingDTO;
 import longbridge.exception.InternetBankingException;
 import longbridge.forms.CustomizeAccount;
@@ -19,14 +18,12 @@ import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
 import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
-import org.springframework.data.jpa.datatables.repository.DataTablesUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
@@ -41,7 +38,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.security.Principal;
-import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -83,6 +79,8 @@ public class CorpAccountController {
 
     private Long customizeAccountId;
     private Locale locale = LocaleContextHolder.getLocale();
+    @Value("${jrxmlImage.path}")
+    private String imagePath;
 
     @GetMapping
     public String listAccounts(){
@@ -154,7 +152,7 @@ try {
     @GetMapping("/settings")
     public String settingsPage(Model model, Principal principal){
        CorporateUser user = corporateUserService.getUserByName(principal.getName());
-        Iterable<AccountDTO> accounts = accountService.getAccounts(user.getCorporate().getCustomerId());
+        Iterable<Account> accounts = user.getCorporate().getAccounts();
         model.addAttribute("accounts", accounts);
         return "corp/account/setting";
     }
@@ -283,7 +281,7 @@ catch(InternetBankingException e){
 //        Date daysAgo = format.parse(format.format(daysAgo1));
         AccountDTO account = accountService.getAccount(Long.parseLong(acct));
 //        logger.info("the from date {} and the to date {} acctNUm {}",date,daysAgo,account.getAccountNumber());
-        AccountStatement accountStatement = integrationService.getAccountStatements(account.getAccountNumber(),daysAgo, date,"5", "B");
+        AccountStatement accountStatement = integrationService.getFullAccountStatement(account.getAccountNumber(), daysAgo , date, "B");
         List<TransactionDetails> list = accountStatement.getTransactionDetails();
         model.addAttribute("history", list);
         return "corp/account/tranhistory";
@@ -321,16 +319,15 @@ catch(InternetBankingException e){
         return out;
 
     }@GetMapping("/viewstatement/display/data/new")
-    public @ResponseBody
-    DataTablesOutput<TransactionDetails> getStatementData( DataTablesInput input,String acctNumber,
-                                                          String fromDate, String toDate, String tranType,HttpSession session) {
-
-// Pageable pageable = DataTablesUtils.getPageable(input);
-        logger.info("fromDate {}",fromDate);
-        logger.info("toDate {}",toDate);
-//		Duration diffInDays= new Duration(new DateTime(fromDate),new DateTime(toDate));
-//		logger.info("Day difference {}",diffInDays.getStandardDays());
-
+    @ResponseBody
+    public Map<String,Object> getStatementData(WebRequest webRequest, HttpSession session) {
+        Map<String,Object> objectMap =  new HashMap<>();
+        objectMap.put("details",null);
+        objectMap.put("moreData","");
+        String acctNumber = webRequest.getParameter("acctNumber");
+        String fromDate = webRequest.getParameter("fromDate");
+        String toDate = webRequest.getParameter("toDate");
+        String tranType = webRequest.getParameter("tranType");
         Date from = null;
         Date to = null;
         DataTablesOutput<TransactionDetails> out = new DataTablesOutput<TransactionDetails>();
@@ -344,12 +341,9 @@ catch(InternetBankingException e){
             //int diffInDays = (int) ((to.getTime() - from.getTime()) / (1000 * 60 * 60 * 24));
 
             AccountStatement accountStatement = integrationService.getAccountStatements(acctNumber, from, to, tranType,"5");
-            logger.info("TransactionType {}", tranType);
-//            logger.info("accountStatement {}", accountStatement.getAccountNumber());
-            out.setDraw(input.getDraw());
             List<TransactionDetails> list = accountStatement.getTransactionDetails();
 
-            out.setData(list);
+//            out.setData(list);
             int sz = list==null?0:list.size();
             out.setRecordsFiltered(sz);
             out.setRecordsTotal(sz);
@@ -371,6 +365,8 @@ catch(InternetBankingException e){
             session.removeAttribute("acctStmtLastDetails");
             if(list !=null) {
                 if (!list.isEmpty()) {
+                    objectMap.replace("details",list);
+                    objectMap.replace("moreData",accountStatement.getHasMoreData());
                     session.setAttribute("acctStmtLastDetails", list.get(list.size() - 1));
                     session.setAttribute("retAcctStmtStateValue", 0);
                     session.setAttribute("acctStmtEntirePastDetails0", list);
@@ -379,7 +375,7 @@ catch(InternetBankingException e){
         } catch (ParseException e) {
             logger.warn("didn't parse date", e);
         }
-        return out;
+        return objectMap;
 
     }
 
@@ -388,7 +384,7 @@ catch(InternetBankingException e){
 
                                               String fromDate, String toDate, String tranType, Principal principal,RedirectAttributes redirectAttributes)  {
         // Pageable pageable = DataTablesUtils.getPageable(input);
-        logger.info("the acctNumber{} fromDate {} toDate {} tranType {} ",acctNumber,fromDate,toDate,tranType);
+//        logger.info("the acctNumber{} fromDate {} toDate {} tranType {} ",acctNumber,fromDate,toDate,tranType);
         Date from = null;
         Date to = null;
         DataTablesOutput<TransactionDetails> out = new DataTablesOutput<TransactionDetails>();
@@ -397,31 +393,30 @@ catch(InternetBankingException e){
         try {
             from = format.parse(fromDate);
             to = format.parse(toDate);
-            JasperReportsPdfView view = new JasperReportsPdfView();
-            view.setUrl("classpath:jasperreports/rpt_account-statement3.jrxml");
-            view.setApplicationContext(appContext);
+//            JasperReportsPdfView view = new JasperReportsPdfView();
+//            view.setUrl("classpath:jasperreports/rpt_account-statement3.jrxml");
+//            view.setApplicationContext(appContext);
             AccountStatement accountStatement = integrationService.getFullAccountStatement(acctNumber, from, to, tranType);
 
             out.setDraw(input.getDraw());
             List<TransactionDetails> list = accountStatement.getTransactionDetails();
             CorporateUser corporateUser=corporateUserService.getUserByName(principal.getName());
             DecimalFormat formatter = new DecimalFormat("#,###.00");
-            logger.info("list {}", list);
+//            logger.info("list {}", list);
             modelMap.put("datasource", list);
             modelMap.put("format", "pdf");
               modelMap.put("summary.accountNum", acctNumber);
             modelMap.put("summary.customerName",corporateUser.getFirstName()+" "+corporateUser.getLastName());
             modelMap.put("summary.customerNo", corporateUser.getCorporate().getCustomerId());
             double amount = Double.parseDouble(accountStatement.getOpeningBalance());
-
             modelMap.put("summary.openingBalance", formatter.format(amount));
             // the total debit and credit is referred as total debit count and credit count
-            if(accountStatement.getTotalDebit()!=null) {
-                modelMap.put("summary.debitCount", accountStatement.getTotalDebit());
+            if(accountStatement.getDebitCount()!=null) {
+                modelMap.put("summary.debitCount", accountStatement.getDebitCount());
             }
             else{modelMap.put("summary.debitCount", "");}
-            if(accountStatement.getTotalCredit()!=null) {
-                modelMap.put("summary.creditCount", accountStatement.getTotalCredit());
+            if(accountStatement.getCreditCount()!=null) {
+                modelMap.put("summary.creditCount", accountStatement.getCreditCount());
             }
             else{modelMap.put("summary.creditCount", "");}
             modelMap.put("summary.currencyCode", accountStatement.getCurrencyCode());
@@ -432,22 +427,29 @@ catch(InternetBankingException e){
             }else{modelMap.put("summary.closingBalance","" );}
 
             // the total debit and credit is referred as total debit count and credit count
-            if(accountStatement.getDebitCount()!=null) {
-                modelMap.put("summary.totalDebit", accountStatement.getDebitCount());
-            }else{modelMap.put("summary.totalDebit", "");}
-            if(accountStatement.getCreditCount()!=null) {
-                modelMap.put("summary.totalCredit", accountStatement.getCreditCount());
-            }else{ modelMap.put("summary.totalCredit", "");
+            if(accountStatement.getTotalDebit()!=null) {
+                double totalDebit = Double.parseDouble(accountStatement.getTotalDebit());
+                modelMap.put("summary.totalDebit", formatter.format(totalDebit));
+            }else{
+                modelMap.put("summary.totalDebit", "");
+                logger.info("total debit is empty");
             }
-
+            if(accountStatement.getTotalCredit()!=null) {
+                double totalCredit = Double.parseDouble(accountStatement.getTotalCredit());
+                modelMap.put("summary.totalCredit", formatter.format(totalCredit));
+            }else{
+                modelMap.put("summary.totalCredit", "");
+                logger.info("total Credit is empty");
+            }
             if(accountStatement.getAddress()!=null) {
                 modelMap.put("summary.address", accountStatement.getAddress());
             }else{modelMap.put("summary.address", "");}
             modelMap.put("fromDate", fromDate);
             modelMap.put("toDate", toDate);
-            Date today=new Date();
-            modelMap.put("today",today);
-            ModelAndView modelAndView = new ModelAndView(view, modelMap);
+            Date today = new Date();
+            modelMap.put("today", today);
+            modelMap.put("imagePath", imagePath);
+            ModelAndView modelAndView = new ModelAndView("rpt_account-statement4", modelMap);
             return modelAndView;
         } catch (ParseException e) {
             logger.warn("didn't parse date", e);
@@ -467,17 +469,16 @@ catch(InternetBankingException e){
     }
     @GetMapping("/viewstatement/corp/display/data/next")
     @ResponseBody
-    public List<TransactionDetails> getStatementDataByState(WebRequest webRequest, HttpSession session) {
+    public Map<String,Object> getStatementDataByState(WebRequest webRequest, HttpSession session) {
         // Pageable pageable = DataTablesUtils.getPageable(input);
+        Map<String,Object> objectMap =  new HashMap<>();
+        objectMap.put("details",null);
+        objectMap.put("moreData","");
         String acctNumber = webRequest.getParameter("acctNumber");
         String fromDate = webRequest.getParameter("fromDate");
         String toDate = webRequest.getParameter("toDate");
         String tranType = webRequest.getParameter("tranType");
         String state = webRequest.getParameter("state");
-        logger.info("fromDate corp{}",fromDate);
-        logger.info("toDate {}",toDate);
-//		Duration diffInDays= new Duration(new DateTime(fromDate),new DateTime(toDate));
-//		logger.info("Day difference {}",diffInDays.getStandardDays());
         List<TransactionDetails> list =  null;
         Date from = null;
         Date to = null;
@@ -486,22 +487,10 @@ catch(InternetBankingException e){
         try {
             from = format.parse(fromDate);
             to = format.parse(toDate);
-            logger.info("fromDate {}",from);
-            logger.info("toDate {}",to);
-            //int diffInDays = (int) ((to.getTime() - from.getTime()) / (1000 * 60 * 60 * 24));
             TransactionDetails transactionDetails = null;
             if((session.getAttribute("acctStmtLastDetails") != null)&&(state.equalsIgnoreCase("forward"))) {
                 transactionDetails = (TransactionDetails) session.getAttribute("acctStmtLastDetails");
-                logger.info("the transaction {}",transactionDetails);
             }
-//			if((session.getAttribute("acctStmtEntirePastDetails") != null)&&(state.equalsIgnoreCase("backward"))) {
-//				 list = (List<TransactionDetails>) session.getAttribute("acctStmtEntirePastDetails");
-//				session.removeAttribute("acctStmtLastDetails");
-//				session.setAttribute("acctStmtLastDetails", list.get(list.size() - 1));
-//				logger.info("acctStmtLastDetails previous {}", list.get(list.size() - 1));
-//				return list;
-//			}
-
             if(transactionDetails != null) {
                 PaginationDetails paginationDetails = new PaginationDetails();
                 paginationDetails.setLastAccountBalance(transactionDetails.getAccountBalance());
@@ -510,9 +499,7 @@ catch(InternetBankingException e){
                 paginationDetails.setLastTranId(transactionDetails.getTranId());
                 paginationDetails.setLastTranDate(transactionDetails.getTranDate());
                 paginationDetails.setLastTranSN(transactionDetails.getTranSN());
-                logger.info("paginationDetails {}", paginationDetails);
                 AccountStatement accountStatement = integrationService.getAccountStatements(acctNumber, from, to, tranType, "5",paginationDetails);
-//				logger.info("accountStatement {}", accountStatement);
                 list = accountStatement.getTransactionDetails();
                 session.removeAttribute("acctStmtLastDetails");
 
@@ -529,8 +516,8 @@ catch(InternetBankingException e){
                     session.setAttribute("acctStmtEntirePastDetails"+stateValue, list);
                     session.removeAttribute("retAcctStmtStateValue");
                     session.setAttribute("retAcctStmtStateValue",stateValue);
-                    logger.info("acctStmtLastDetails corp{}", list.get(list.size() - 1));
-                    logger.info("acct statemnet state corp{}", stateValue);
+                    objectMap.replace("details",list);
+                    objectMap.replace("moreData",accountStatement.getHasMoreData());
                 }
             }
 
@@ -539,15 +526,16 @@ catch(InternetBankingException e){
         }catch (Exception e){
             logger.warn("error cause by {}", e.getMessage());
         }
-        return list;
+        return objectMap;
 
     }
     @GetMapping("/viewstatement/corp/display/data/back")
     @ResponseBody
-    public List<TransactionDetails> getStatementDataForBack(WebRequest webRequest, HttpSession session) {
-
+    public Map<String,Object> getStatementDataForBack(WebRequest webRequest, HttpSession session) {
+        Map<String,Object> objectMap =  new HashMap<>();
+        objectMap.put("details",null);
+        objectMap.put("previousData","");
         String state = webRequest.getParameter("state");
-        logger.info("the state corp {}",state);
         List<TransactionDetails> list =  null;
         if((state.equalsIgnoreCase("backward"))) {
             Integer stateValue = (Integer) session.getAttribute("retAcctStmtStateValue");
@@ -555,56 +543,17 @@ catch(InternetBankingException e){
             if(session.getAttribute("acctStmtEntirePastDetails"+stateValue) != null) {
                 session.removeAttribute("retAcctStmtStateValue");
                 session.setAttribute("retAcctStmtStateValue", stateValue);
-                logger.info("the state value {}",stateValue);
                 list = (List<TransactionDetails>) session.getAttribute("acctStmtEntirePastDetails" + stateValue);
                 session.removeAttribute("acctStmtLastDetails");
                 session.setAttribute("acctStmtLastDetails", list.get(list.size() - 1));
                 session.setAttribute("hasMoreTransaction", "Y");
-                logger.info("acctStmtLastDetails  last record previous corp {}", list.get(list.size() - 1));
-                return list;
+                objectMap.replace("details",list);
+                objectMap.replace("previousData",stateValue);
             }
         }
 
-        return list;
+        return objectMap;
 
     }
-    @GetMapping("/viewstatement/corp/display/data/reset/button")
-    @ResponseBody
-    public String resetButtonForStatement(HttpSession session) {
-        if((session.getAttribute("acctStmtEntirePastDetails0") == null)&&(session.getAttribute("hasMoreTransaction") == null)){
-            return "both";
-        }
-        if((session.getAttribute("retAcctStmtStateValue") != null)){
-            Integer stateValue = (Integer) session.getAttribute("retAcctStmtStateValue");
-            if(stateValue == 0) {
-                String hasMoreTransaction = (String) session.getAttribute("hasMoreTransaction");
-                if(hasMoreTransaction.equalsIgnoreCase("")) {
-                    return "both";
-                }
-            }
-        }
-        if((session.getAttribute("retAcctStmtStateValue") != null)){
-            Integer stateValue = (Integer) session.getAttribute("retAcctStmtStateValue");
-            if(stateValue > 0) {
-                String hasMoreTransaction = (String) session.getAttribute("hasMoreTransaction");
-                if(hasMoreTransaction.equalsIgnoreCase("")) {
-                    return "next";
-                }
-            }
-        }
-        if((session.getAttribute("retAcctStmtStateValue") != null)){
-            Integer stateValue = (Integer) session.getAttribute("retAcctStmtStateValue");
-            if(stateValue > 0) {
-                String hasMoreTransaction = (String) session.getAttribute("hasMoreTransaction");
-                if(hasMoreTransaction.equalsIgnoreCase("Y")) {
-                    return "none";
-                }
-            }
-        }
 
-
-
-        return "none";
-
-    }
 }
