@@ -86,7 +86,7 @@ public class OpAuthenticationSuccessHandler extends SavedRequestAwareAuthenticat
         SettingDTO setting = configService.getSettingByName("ENABLE_OPS_2FA");
         boolean tokenAuth = false;
         if (setting != null && setting.isEnabled()) {
-            tokenAuth = (setting.getValue().equalsIgnoreCase("yes") ? true : false);
+            tokenAuth = ("YES".equalsIgnoreCase(setting.getValue()) ? true : false);
         }
         if (tokenAuth) {
             return "/ops/token";

@@ -104,6 +104,7 @@
 
 
 <th:block layout:fragment="scripts">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootbox.js/4.4.0/bootbox.min.js"></script>
     <script th:inline="javascript">
     /*<![CDATA[*/
     jQuery.download = function(url, key, data) {
@@ -304,7 +305,7 @@
                         }
                         return data;
                     }
-                } ],
+                } ]
 
         });
 //        var table = $('#tranDetails').DataTable({
@@ -326,52 +327,58 @@
 //        $('#tranDetails_paginate').hide();
 //        $('#tranDetails_length').hide();
         $("#btn-find").on("click", function(e) {
-//            console.log("date "+$('[name=fromDate]').val());
-//            console.log(daydiff(parseDate($('[name=fromDate]').val()), parseDate($('[name=fromDate]').val())));
-
-            var table = $('#tranDetails').DataTable();
-            var row  = table.rows().remove().draw();
-            e.preventDefault();
-            $.ajax({ 
-                "url":"viewstatement/display/data",
-                "type" : "GET",
-                "data" :  {
-                    acctNumber : $('[name=acctNumber]').val(),
-                    fromDate : $('[name=fromDate]').val(),
-                    toDate : $('[name=toDate]').val(),
-                    tranType : $('[name=tranType]').val()
-                },success: function (result) {
+//            console.log("fromDate "+$('[name=fromDate]').val()+"to "+$('[name=toDate]').val());
+//            console.log();
+            if(daydiff(parseDate($('[name=fromDate]').val()), parseDate($('[name=toDate]').val())) >= 0) {
+                var table = $('#tranDetails').DataTable();
+                var row = table.rows().remove().draw();
+                e.preventDefault();
+                $.ajax({
+                    "url": "viewstatement/display/data",
+                    "type": "GET",
+                    "data": {
+                        acctNumber: $('[name=acctNumber]').val(),
+                        fromDate: $('[name=fromDate]').val(),
+                        toDate: $('[name=toDate]').val(),
+                        tranType: $('[name=tranType]').val()
+                    }, success: function (result) {
 //                    resetButton();
-                    console.log("the output is "+result.details);
-                    if (result.details != null && result.details != "null") {
-                        $('#btn-print').show();
-                        var contactsTab2 = $('#tranDetails').DataTable();
-                        for (var key in result.details) {
-                            if (result.details.hasOwnProperty(key)) {
-                                var od = result.details[key];
+                        $('#btn-print').hide();
+//                        console.log("the output is " + result.details);
+                        if (result.details != null && result.details != "null") {
+                            $('#btn-print').show();
+                            var contactsTab2 = $('#tranDetails').DataTable();
+                            for (var key in result.details) {
+                                if (result.details.hasOwnProperty(key)) {
+                                    var od = result.details[key];
 //                                console.log("the key "+key+" value "+result[key]);
-                                contactsTab2.row.add(od);
+                                    contactsTab2.row.add(od);
+                                }
+
+                                contactsTab2.draw();
+//
                             }
 
-                            contactsTab2.draw();
-//
                         }
+                        if (result.moreData === "Y") {
+                            $('#next').show();
 
+                        } else {
+                            $('#next').hide();
+                        }
+                        $('#previous').hide();
+                    },
+                    error: function (dd) {
+//                        console.log("error")
+                        bootbox.alert("<div style='text-align: center'>Service not available</div>");
+                        return false;
                     }
-                    if(result.moreData === "Y"){
-                        $('#next').show();
 
-                    }else{
-                        $('#next').hide();
-                    }
-                    $('#previous').hide();
-
-                },
-                error:  function (dd) {
-                    console.log("error")
-                }
-            
-            });
+                });
+            }else{
+                bootbox.alert("<div style='text-align: center'>Start date cannot be less than end date</div>");
+                return false;
+            }
 
 
         });
@@ -397,6 +404,7 @@
     });
     function parseDate(str) {
         var mdy = str.split('-');
+        console.log("the spilted");
         return new Date(mdy[2], mdy[0]-1, mdy[1]);
     }
 
