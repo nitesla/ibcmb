@@ -19,11 +19,11 @@ public interface CorpUserVerificationRepo extends CommonRepo<CorpUserVerificatio
 
     Page<CorpUserVerification> findByStatusAndInitiatedBy(VerificationStatus status, String initiatedBy, Pageable pageable);
 
-    Page<CorpUserVerification>  findByCorpId(Long corpId, Pageable pageable);
+    Page<CorpUserVerification>  findByCorpIdOrderByStatusDesc(Long corpId, Pageable pageable);
 
     CorpUserVerification findFirstByEntityNameAndEntityIdAndStatus(String name, long id, VerificationStatus status);
 
-    long countByCorpIdAndStatus(Long id, VerificationStatus status);
+    int countByCorpIdAndStatus(Long id, VerificationStatus status);
 
     Page<CorpUserVerification> findByInitiatedByAndCorpUserTypeAndStatus(String initiatedby, CorpUserType corpUserType, VerificationStatus status, Pageable pageable);
 

@@ -42,7 +42,7 @@ public interface CorpUserVerificationService {
 
     List<CorpUserVerificationDTO> convertEntitiesToDTOs(Iterable<CorpUserVerification> corpUserVerifications);
 
-    long getTotalNumberPending();
+    int getTotalNumberPending();
 
     int getTotalNumberForVerification();
 
