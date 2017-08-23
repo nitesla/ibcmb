@@ -132,7 +132,7 @@ public class SecurityConfig {
                     .maximumSessions(1)
                     .expiredUrl("/login/admin?expired=true")
                     .sessionRegistry(sessionRegistry()).and()
-                    .sessionFixation().migrateSession().sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
+                    .sessionFixation().newSession().sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
                     .and()
                     .logout().logoutUrl("/admin/logout").logoutSuccessUrl("/login/admin").deleteCookies("JSESSIONID")
                     .invalidateHttpSession(true).and().requestCache()
@@ -199,7 +199,7 @@ public class SecurityConfig {
                     .maximumSessions(1)
                     .expiredUrl("/login/ops?expired=true")
                     .sessionRegistry(sessionRegistry()).and()
-                    .sessionFixation().migrateSession()
+                    .sessionFixation().newSession()
                     .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
 
                     .and()
@@ -267,7 +267,7 @@ public class SecurityConfig {
                     .invalidSessionUrl("/login/retail")
                     .maximumSessions(1)
                     .expiredUrl("/login/retail?expired=true").sessionRegistry(sessionRegistry()).and()
-                    .sessionFixation().migrateSession()
+                    .sessionFixation().newSession()
                     .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
                     .invalidSessionUrl("/login/retail")
 
@@ -350,7 +350,7 @@ public class SecurityConfig {
                     .sessionManagement()
                     .invalidSessionUrl("/login/corporate")
                     .maximumSessions(1).expiredUrl("/login/corporate").sessionRegistry(sessionRegistry()).and()
-                    .sessionFixation().migrateSession()
+                    .sessionFixation().newSession()
                     .and()
                     // logout
                     .logout().logoutUrl("/corporate/logout").logoutSuccessUrl("/login/corporate").deleteCookies("JSESSIONID").invalidateHttpSession(true).and().exceptionHandling().and().csrf().disable();

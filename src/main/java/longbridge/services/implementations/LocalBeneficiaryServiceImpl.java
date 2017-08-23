@@ -139,12 +139,12 @@ public class LocalBeneficiaryServiceImpl implements LocalBeneficiaryService {
         if (financialInstitutionRepo.findByInstitutionCode(localBeneficiary.getBeneficiaryBank())==null)
             throw new InternetBankingException("transfer.beneficiary.invalid");
 
-      if (!bankCode.equalsIgnoreCase(localBeneficiary.getBeneficiaryBank())){
+     /* if (!bankCode.equalsIgnoreCase(localBeneficiary.getBeneficiaryBank())){
           logger.error("local beneficiary is "+localBeneficiary);
           NEnquiryDetails details=integrationService.doNameEnquiry(localBeneficiary.getBeneficiaryBank(), localBeneficiary.getAccountNumber());
           if (details==null || details.getAccountName()==null )
               throw new InternetBankingException("transfer.beneficiary.invalid");
-      }
+      }*/
     }
 
     @Async
