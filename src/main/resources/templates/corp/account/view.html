@@ -71,23 +71,25 @@
                                 <table class="table" id="tranDetails">
                                     <thead>
                                     <tr>
+                                        <th>Transaction Narration</th>
                                         <th>Post Date</th>
                                         <th>Value Date</th>
-                                        <th>Transaction Narration</th>
                                         <th>Debit</th>
                                         <th>Credit</th>
+                                        <th>Tran ID</th>
                                         <th>Account Balance</th>
-
                                     </tr>
                                     </thead>
                                     <tfoot>
                                     <tr>
+                                        <th>Transaction Narration</th>
                                         <th>Post Date</th>
                                         <th>Value Date</th>
-                                        <th>Transaction Narration</th>
                                         <th>Debit</th>
                                         <th>Credit</th>
+                                        <th>Tran ID</th>
                                         <th>Account Balance</th>
+
                                     </tr>
                                     </tfoot>
                                 </table>
@@ -148,16 +150,16 @@
                 "ordering" : false,
                 "dom": 'T<"clear">frtlp',
                 "columns" : [
+                    {"data" : "narration"},
                     {"data" : "postDate"} ,
                     {"data" : "valueDate"},
-                    {"data" : "narration"},
                     {"data" : "debitAmount"},
                     {"data" : "creditAmount"},
+                    {"data" : "tranId"},
                     {"data" : "accountBalance"}
-
                 ],
                 "columnDefs" : [ {
-                    "targets" : 0,
+                    "targets" : 1,
                     "data" : "postDate",
                     "render" : function(data, type,full, meta) {
 
@@ -172,7 +174,7 @@
                         return data;
                     }
                 },{
-                    "targets" : 5,
+                    "targets" : 6,
                     "data" : "accountBalance",
                     "render" : function(data, type,full, meta) {
                         if (type === 'display') {
@@ -185,7 +187,7 @@
                     }
                 }
                     , {
-                        "targets": 1,
+                        "targets": 2,
                         "data": "valueDate",
                         "render": function (data, type, full, meta) {
                             if (type === 'display') {
@@ -335,7 +337,6 @@
                     state : "backward"
                 },success: function (result) {
                     if (result.details != null) {
-                        resetButton();
 //                        var detialsList = JSON.parse(result);
                         console.log("the result next"+result);
 //                $('#tranDetails').DataTable().fnClearTable();

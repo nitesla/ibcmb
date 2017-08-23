@@ -64,21 +64,23 @@
                        <table class="table" id="tranDetails">
                            <thead>
                            <tr>
+                               <th>Transaction Narration</th>
                                <th>Post Date</th>
                                <th>Value Date</th>
-                               <th>Transaction Narration</th>
                                <th>Debit</th>
                                <th>Credit</th>
+                               <th>Tran ID</th>
                                <th>Account Balance</th>
                            </tr>
                            </thead>
                            <tfoot>
                            <tr>
+                               <th>Transaction Narration</th>
                                <th>Post Date</th>
                                <th>Value Date</th>
-                               <th>Transaction Narration</th>
                                <th>Debit</th>
                                <th>Credit</th>
+                               <th>Tran ID</th>
                                <th>Account Balance</th>
 
                            </tr>
@@ -239,27 +241,30 @@
             "ordering" : false,
             "dom": 'T<"clear">frtlp',
             "columns" : [
+                {"data" : "narration"},
                 {"data" : "postDate"} ,
                 {"data" : "valueDate"},
-                {"data" : "narration"},
                 {"data" : "debitAmount"},
                 {"data" : "creditAmount"},
+                {"data" : "tranId"},
                 {"data" : "accountBalance"}
             ],
-            "columnDefs" : [ {
-                "targets" : 3,
-                "data" : "tranType",
-                "render" : function(data, type,full, meta) {
-                    if (type === 'display') {
-                        if(data == null) return data;
-
-                       var spacedData = '         '+data;
-                        return spacedData;
-                    }
-                    return data;
-                }
-            }, {
-                "targets" : 0,
+            "columnDefs" : [
+//                {
+//                "targets" : 3,
+//                "data" : "tranType",
+//                "render" : function(data, type,full, meta) {
+//                    if (type === 'display') {
+//                        if(data == null) return data;
+//
+//                       var spacedData = '         '+data;
+//                        return spacedData;
+//                    }
+//                    return data;
+//                }
+//            },
+                {
+                "targets" : 1,
                 "data" : "postDate",
                 "render" : function(data, type,full, meta) {
                     if (type === 'display') {
@@ -273,7 +278,7 @@
                     return data;
                 }
             },{
-                "targets" : 5,
+                "targets" : 6,
                 "data" : "accountBalance",
                 "render" : function(data, type,full, meta) {
                     if (type === 'display') {
@@ -286,7 +291,7 @@
                 }
             }
                 , {
-                    "targets": 1,
+                    "targets": 2,
                     "data": "valueDate",
                     "render": function (data, type, full, meta) {
                         if (type === 'display') {
@@ -479,42 +484,7 @@ function nextData() {
 
     });
 }
-    function resetButton() {
-//    console.log("field value "+valu);
-    $.ajax({
-        "url":"viewstatement/display/data/reset/button",
-        "type" : "GET",
-        "data" :  {
-            state : "backward"
-        },success: function (result) {
-            console.log("the button to hide "+result);
-            if (result == "both") {
-//                console.log("the result next"+result);
-                $('#previous').hide();
-                $('#next').hide();
-            }
-            if (result == "previous") {
-//                console.log("the result next"+result);
-                $('#previous').hide();
-                $('#next').show();
-            }
-            if (result == "next") {
-//                console.log("the result next"+result);
-                $('#previous').show();
-                $('#next').hide();
-            }
-            if (result == "none") {
-//                console.log("the result next"+result);
-                $('#previous').show();
-                $('#next').show();
-            }
-        },
-        error:  function (dd) {
-            console.log("error")
-        }
 
-    });
-}
 
     /*]]>*/
 </script>

@@ -126,7 +126,7 @@ public class CronJobServiceImpl implements CronJobService {
         String userBvn = retailUser.getBvn();
         if((userBvn == null)||userBvn.equalsIgnoreCase("")||(!userBvn.equalsIgnoreCase(details.getBvn()))){
             retailUser.setBvn(details.getBvn());
-//            logger.info("new bvn is {}",details.getBvn());
+            logger.info("new bvn is {}",details.getBvn());
             retailUserRepo.save(retailUser);
         }
     }
