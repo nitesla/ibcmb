@@ -1,143 +1,160 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org"
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{corp-layout}">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{corp-layout}">
+<style>
+    td {
+        padding: 8px 5px !important;
+    }
+</style>lllll
 
 <body onload="javascript:var bread = [['Home', '/corporate/dashboard'],['User management']];currentBar('User management Approval');breadCrumb(bread)">
 
-<div layout:fragment="content">
-    <div class="col-md-5 col-sm-5 ">
 
-        <select class="form-control full-width coronation-form-control hide-content-only" id="view">
+    <div layout:fragment="content">
+        <div class="col-md-5 col-sm-5 ">
+
+            <select class="form-control full-width coronation-form-control hide-content-only" id="view">
             <option value="account">Overview</option>
         </select>
-    </div>
+        </div>
 
-    <div class="col-xs-12 ml-15 no-pad-left" >
-        <div class="col-xs-12  no-pad-lef no-mt no-bd  alert" >
+        <div class="col-xs-12 ">
+            <div class=" no-mt no-bd  alert">
 
-            <div class="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
-                <div class="btn-group" role="group" aria-label="First group">
-                    <a type="button" th:href="@{/corporate/users}" class="btn btn-link">Back to previous page</a>
+                <div class="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
+                    <div class="btn-group" role="group" aria-label="First group">
+                        <a type="button" th:href="@{/corporate/users}" class="btn btn-link">Back to previous page</a>
+                    </div>
                 </div>
-            </div>
-            <br/>
-            <div class="row">
-                <div class="col-sm-12 table-responsive">
-                    <table class="table" id="verification">
-                        <thead>
-                        <tr>
-                            <th>Operation</th>
-                            <th>Initiator</th>
-                            <th>Date</th>
-                            <th>Authorizer</th>
-                            <th>Date</th>
-                            <th>Status</th>
-                            <th>Details</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        </tbody>
-                    </table>
+                <br/>
+                <div class="">
+                    <div class="table-responsive">
+                        <table class="table" id="verification" style="width:100%">
+                            <thead>
+                                <tr>
+                                    <th>Operation</th>
+                                    <th>Initiator</th>
+                                    <th>Date</th>
+                                    <th>Authorizer</th>
+                                    <th>Date</th>
+                                    <th>Status</th>
+                                    <th>Details</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
+
     </div>
 
-</div>
 
+    <th:block layout:fragment="scripts">
+        <script th:src="@{~/customer/js/dataTables.bootstrap.js}"></script>
+        <script th:src="@{~/customer/js/dataTables.select.js}"></script>
+        <script th:src="@{~/bank/js/jquery.spring-friendly.min.js}"></script>
+        <script th:src="@{~/bank/js/momentMin.js}"></script>
 
-<th:block layout:fragment="scripts">
-    <script th:src="@{~/customer/js/dataTables.bootstrap.js}"></script>
-    <script th:src="@{~/customer/js/dataTables.select.js}"></script>
-    <script th:src="@{~/bank/js/jquery.spring-friendly.min.js}"></script>
-    <script th:src="@{~/bank/js/momentMin.js}"></script>
+        <script th:inline="javascript">
+            /*<![CDATA[*/
+            $(document).ready(function() {
+                var url = "/corporate/users/approvals/all";
+                var table = $('#verification').DataTable({
+                    select: false,
+                    scrollY: "200px",
+                    scrollCollapse: true,
 
-    <script th:inline="javascript">
-        /*<![CDATA[*/
-        $(document).ready(function() {
-            var url = "/corporate/users/approvals/all";
-            var table = $('#verification').DataTable({
-                select: false,
-                responsive : false,
-                "lengthMenu" : [ [ 5, 10 ], [ 5, 10 ] ],
-                "pagingType" : "simple_numbers",
-                "searching" : true,
-                "paging" : true,
-                "serverSide" : true,
-                "ajax" : url,
-                "dom": 'T<"clear">frtlp',
-                "columns": [
-                    {"data": "description"},
-                    {"data": "initiatedBy"},
-                    {"data": "initiatedOn"},
-                    {"data": "verifiedBy", "defaultContent": "<i>Not Verified</i>"},
-                    {"data": "verifiedOn", "defaultContent": "<i>Not Verified</i>"},
-                    {"data": "status"},
-                    {"data": "DT_RowId"}
-                ], "columnDefs": [{
-                    "targets": 2,
-                    "data": "initiatedOn",
-                    "render": function (data, type, full, meta) {
-                        if (type === 'display') {
-                            if (data == null)
-                                return data;
-                            var dtStart = new Date(parseInt(data));
+                    responsive: false,
+                    "lengthMenu": [
+                        [5, 10],
+                        [5, 10]
+                    ],
+                    "pagingType": "simple_numbers",
+                    "searching": true,
+                    "paging": true,
+                    "serverSide": true,
+                    "ajax": url,
+                    "dom": 'T<"clear">frtlp',
+                    "columns": [{
+                        "data": "description"
+                    }, {
+                        "data": "initiatedBy"
+                    }, {
+                        "data": "initiatedOn"
+                    }, {
+                        "data": "verifiedBy",
+                        "defaultContent": "<i>Not Verified</i>"
+                    }, {
+                        "data": "verifiedOn",
+                        "defaultContent": "<i>Not Verified</i>"
+                    }, {
+                        "data": "status"
+                    }, {
+                        "data": "DT_RowId"
+                    }],
+                    "columnDefs": [{
+                        "targets": 2,
+                        "data": "initiatedOn",
+                        "render": function(data, type, full, meta) {
+                            if (type === 'display') {
+                                if (data == null)
+                                    return data;
+                                var dtStart = new Date(parseInt(data));
 
-                            var dtStartWrapper = moment(dtStart);
-                            return dtStartWrapper.format('LLLL');
-                        }
-                        return data;
-                    }
-                }, {
-                    "targets": 4,
-                    "data": "verifiedOn",
-                    "render": function (data, type, full, meta) {
-                        if (type === 'display') {
-
-                            if (data == null)
-                                return data;
-                            var dtStart = new Date(parseInt(data));
-                            var dtStartWrapper = moment(dtStart);
-                            return dtStartWrapper.format('LLLL');
-                        }
-                        return data;
-                    }
-                },  {
-                    "targets": 5,
-                    "data": "status",
-                    "render": function (data, type, full, meta) {
-                        if (type === 'display') {
-                            if (data == "PENDING") {
-                                return "Pending <i class='fa fa-hourglass-half dt-body-center' style='color:green;display:block; text-align:center; margin:0 auto;'></i>";
-                            } else if (data == "APPROVED") {
-                                return "Approved <i class='fa fa-check-circle-o  dt-body-center' style='color:green;display:block; text-align:center; margin:0 auto;'></i>";
+                                var dtStartWrapper = moment(dtStart);
+                                return dtStartWrapper.format('ddd MMM Do YYYY, h:mm:ss a');
                             }
-                            else if (data == "DECLINED") {
-                                return "Declined <i class='fa fa-times-circle-o  dt-body-center' style='color:red;display:block; text-align:center; margin:0 auto;'></i>"
-                            }
-                            else {
-                                return "<i class='fa fa-times  dt-body-center' style='color:red;display:block; text-align:center; margin:0 auto;'></i>"
-                            }
+                            return data;
                         }
-                        return data;
-                    }
-                }
-                ,  {
-                    "targets": 6,
-                    "data": "DT_RowId",
-                    "render": function (data, type, full, meta) {
-                        return '<a href="/corporate/users/'+ data +'/approvals" class="dt-body-center" style="text-align:center; margin:0 auto;">View</a>';
-                    }
-                }
-                ]
+                    }, {
+                        "targets": 4,
+                        "data": "verifiedOn",
+                        "render": function(data, type, full, meta) {
+                            if (type === 'display') {
+
+                                if (data == null)
+                                    return data;
+                                var dtStart = new Date(parseInt(data));
+                                var dtStartWrapper = moment(dtStart);
+                                return dtStartWrapper.format('ddd MMM Do YYYY, h:mm:ss a');
+                            }
+                            return data;
+                        }
+                    }, {
+                        "targets": 5,
+                        "data": "status",
+                        "render": function(data, type, full, meta) {
+                            if (type === 'display') {
+                                if (data == "PENDING") {
+                                    return "<span>Pending <i class='fa fa-hourglass-half' style='color:green;'></i></span>";
+                                } else if (data == "APPROVED") {
+                                    return "<span>Approved </span> <i class='fa fa-check-circle-o  dt-body-center' style='color:green; text-align:center; margin:0 auto;'></i>";
+                                } else if (data == "DECLINED") {
+                                    return "<span>Declined</span> <i class='fa fa-times-circle-o  dt-body-center' style='color:red; text-align:center; margin:0 auto;'></i>"
+                                } else {
+                                    return "<i class='fa fa-times  dt-body-center' style='color:red; text-align:center; margin:0 auto;'></i>"
+                                }
+                            }
+                            return data;
+                        }
+                    }, {
+                        "targets": 6,
+                        "data": "DT_RowId",
+                        "render": function(data, type, full, meta) {
+                            return '<a href="/corporate/users/' + data + '/approvals" class="dt-body-center" style="text-align:center; margin:0 auto;">View</a>';
+                        }
+                    }]
+                });
+
             });
 
-        });
 
-
-        /*]]>*/
-    </script>
-</th:block>
+            /*]]>*/
+        </script>
+    </th:block>
 
 </body>
+
 </html>

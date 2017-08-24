@@ -11,8 +11,8 @@
             <option value="account">Overview</option>
         </select>
     </div>
-    <div class="col-xs-12 ml-15 no-pad-left" >
-        <div class="col-xs-12  no-pad-lef no-mt no-bd  alert" >
+    <div class="col-xs-12 " >
+        <div class=" no-mt no-bd  alert" >
             <form method="post" th:action="@{/corporate/users/verify}" class="form-horizontal" th:object="${verification}" >
 
                 <label style="font-size:large" th:text="${verify.description}"></label>
@@ -22,16 +22,16 @@
                 <table class="table table-striped dt-responsive no-wrap" id="table">
                     <thead>
                     <tr>
-                        <th>Before</th>
-                        <th>After</th>
+                        <th class='bg-grey'>Before</th>
+                        <th class='bg-danger'>After</th>
                     </tr>
                     </thead>
-                    <tbody>
+                    <tbody >
                     <tr>
-                        <td style ="word-break:break-all;width:50%;">
+                        <td style ="word-break:break-all;width:50%;text-align:left;border-top:none;color:#032A4F;">
                             <th:block th:text="${verify.beforeObject}"></th:block>
                         </td>
-                        <td style ="word-break:break-all;">
+                        <td class="" style ="word-break:break-all;text-align:left;border-top:none;color:#032A4F">
                             <th:block th:text="${verify.afterObject}"></th:block>
                         </td>
                     </tr>
