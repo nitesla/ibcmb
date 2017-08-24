@@ -30,7 +30,8 @@
                                     <th>Transaction Narration</th>
                                     <th>Post Date</th>
                                     <th>Value Date</th>
-                                    <th>Debit/Credit</th>
+                                    <th>Debit</th>
+                                    <th>Credit</th>
                                     <th>Transaction ReferenceID</th>
                                     <th>Account Balance</th>
                                 </tr>
@@ -40,7 +41,8 @@
                                     <td  th:text="${list.narration}"></td>
                                     <td th:text="${#dates.format(list.postedDate, 'dd-MMM-yyyy')}"></td>
                                     <td th:text="${#dates.format(list.valueDate, 'dd-MMM-yyyy')}"></td>
-                                    <td th:text="${list.tranType}"></td>
+                                    <td th:text="${list.debitAmount}"></td>
+                                    <td th:text="${list.creditAmount}"></td>
                                     <td th:text="${list.tranId}"></td>
                                     <td th:text="${#numbers.formatDecimal(list.balance, 0, 'COMMA', 2, 'POINT')}"></td>
 
