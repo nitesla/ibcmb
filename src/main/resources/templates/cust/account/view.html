@@ -377,6 +377,7 @@ if($('#start').val() != '' && $('#endDate').val() !='' ) {
 //                        console.log("error")
                 var contactsTab2 = $('#tranDetails').DataTable();
                 var row  = contactsTab2.rows().remove().draw();
+
                 bootbox.alert("<div style='text-align: center'>Service not available</div>");
                 return false;
             }
@@ -385,6 +386,7 @@ if($('#start').val() != '' && $('#endDate').val() !='' ) {
     } else {
         var contactsTab2 = $('#tranDetails').DataTable();
         var row  = contactsTab2.rows().remove().draw();
+        $('#btn-print').hide();
         bootbox.alert("<div style='text-align: center'>Start date cannot be less than end date</div>");
         return false;
     }

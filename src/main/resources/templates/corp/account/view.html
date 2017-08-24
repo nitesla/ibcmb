@@ -270,6 +270,7 @@
                     } else {
                         var contactsTab2 = $('#tranDetails').DataTable();
                         var row  = contactsTab2.rows().remove().draw();
+                        $('#btn-print').hide();
                         bootbox.alert("<div style='text-align: center'>Start date cannot be less than end date</div>");
                         return false;
                     }
