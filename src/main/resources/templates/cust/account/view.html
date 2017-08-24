@@ -328,8 +328,8 @@
 //        $('#tranDetails_length').hide();
         $("#btn-find").on("click", function(e) {
 //            console.log("fromDate "+$('[name=fromDate]').val()+"to "+$('[name=toDate]').val());
-//            console.log();
-            if(daydiff(parseDate($('[name=fromDate]').val()), parseDate($('[name=toDate]').val())) >= 0) {
+            console.log("dateDifference "+dateDifference(parseDate($('#start').val()), parseDate($('#endDate').val())));
+            if(dateDifference(parseDate($('#start').val()), parseDate($('#endDate').val()))) {
                 var table = $('#tranDetails').DataTable();
                 var row = table.rows().remove().draw();
                 e.preventDefault();
@@ -404,12 +404,25 @@
     });
     function parseDate(str) {
         var mdy = str.split('-');
-        console.log("the spilted");
-        return new Date(mdy[2], mdy[0]-1, mdy[1]);
+        return mdy;
     }
-
-    function daydiff(first, second) {
-        return Math.round((second-first)/(1000*60*60*24));
+    function dateDifference(first, second) {
+        var yearsDiff = second[2]-first[2];
+        var monthDiff = second[1]-first[1];
+        var dayDiff = second[0]-first[0];
+        console.log("yearsDiff "+yearsDiff+" monthDiff "+monthDiff+" dayDiff "+dayDiff);
+        if(yearsDiff==0){
+            if(monthDiff ==0){
+                if(dayDiff >=0){
+                    return true;
+                }
+            }else if(monthDiff >0){
+                return true;
+            }
+        }else if(yearsDiff >0){
+            return true;
+        }
+        return false;
     }
 
 function nextData() {

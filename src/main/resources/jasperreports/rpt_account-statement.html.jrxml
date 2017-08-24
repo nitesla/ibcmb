@@ -175,7 +175,7 @@
 					<printWhenExpression><![CDATA[$V{PAGE_NUMBER}==1]]></printWhenExpression>
 				</reportElement>
 				<textElement>
-					<font fontName="Arial" size="9"/>
+					<font fontName="Fedra Sans Std Light LF" size="9"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{summary.address}]]></textFieldExpression>
 			</textField>

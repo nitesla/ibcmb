@@ -220,7 +220,8 @@
             });
 
             $("#btn-find").on("click", function(e) {
-                if(daydiff(parseDate($('[name=fromDate]').val()), parseDate($('[name=toDate]').val())) >= 0) {
+                console.log("dateDiff "+dateDifference(parseDate($('[name=fromDate]').val()), parseDate($('[name=toDate]').val())));
+                if(dateDifference(parseDate($('[name=fromDate]').val()), parseDate($('[name=toDate]').val()))) {
                 var table = $('#tranDetails').DataTable();
                 var row  = table.rows().remove().draw();
                 e.preventDefault();
@@ -288,11 +289,25 @@
         });
         function parseDate(str) {
             var mdy = str.split('-');
-            return new Date(mdy[2], mdy[0]-1, mdy[1]);
+            return mdy;
         }
-
-        function daydiff(first, second) {
-            return Math.round((second-first)/(1000*60*60*24));
+        function dateDifference(first, second) {
+            var yearsDiff = second[2]-first[2];
+            var monthDiff = second[1]-first[1];
+            var dayDiff = second[0]-first[0];
+            console.log("yearsDiff "+yearsDiff+" monthDiff "+monthDiff+" dayDiff "+dayDiff);
+            if(yearsDiff==0){
+                if(monthDiff ==0){
+                    if(dayDiff >=0){
+                        return true;
+                    }
+                }else if(monthDiff >0){
+                    return true;
+                }
+            }else if(yearsDiff >0){
+                return true;
+            }
+            return false;
         }
 
         function nextData() {
@@ -384,41 +399,7 @@
 
             });
         }
-        function resetButton() {
-//    console.log("field value "+valu);
-            $.ajax({
-                "url":"viewstatement/display/data/reset/button",
-                "type" : "GET",
-                "data" :  {
-                    state : "backward"
-                },success: function (result) {
-                    if (result == "both") {
-//                console.log("the result next"+result);
-                        $('#previous').hide();
-                        $('#next').hide();
-                    }
-                    if (result == "previous") {
-//                console.log("the result next"+result);
-                        $('#previous').hide();
-                        $('#next').show();
-                    }
-                    if (result == "next") {
-//                console.log("the result next"+result);
-                        $('#previous').show();
-                        $('#next').hide();
-                    }
-                    if (result == "none") {
-//                console.log("the result next"+result);
-                        $('#previous').show();
-                        $('#next').show();
-                    }
-                },
-                error:  function (dd) {
-                    console.log("error")
-                }
 
-            });
-        }
         /*]]>*/
     </script>
 
