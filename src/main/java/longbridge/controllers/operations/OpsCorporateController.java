@@ -121,6 +121,7 @@ public class OpsCorporateController {
                 return "/ops/corporate/add";
             }
             corporate.setName(customerDetails.getCustomerName());
+            corporate.setBvn(customerDetails.getBvn());
             if (!makerCheckerService.isEnabled("ADD_CORPORATE")) {
 
                 session.setAttribute("corporate", corporate);
@@ -751,7 +752,7 @@ public class OpsCorporateController {
 
     @GetMapping("/validate/{id}")
     @ResponseBody
-    public String valiidateCorporateId(@PathVariable String id) {
+    public String validateCorporateId(@PathVariable String id) {
         try {
             boolean isExisting = corporateService.corporateIdExists(id);
             if (!isExisting) {

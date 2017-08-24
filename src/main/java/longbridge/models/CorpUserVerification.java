@@ -48,7 +48,6 @@ public class CorpUserVerification extends AbstractEntity{
         this.dependency = dependency;
     }
 
-
     public String getEntityName() {
         return entityName;
     }
@@ -57,7 +56,6 @@ public class CorpUserVerification extends AbstractEntity{
         this.entityName = entityName;
     }
 
-
     public VerificationStatus getStatus() {
         return status;
     }
@@ -65,7 +63,6 @@ public class CorpUserVerification extends AbstractEntity{
     public void setStatus(VerificationStatus status) {
         this.status = status;
     }
-
 
     public String getComments() {
         return comments;
@@ -82,7 +79,6 @@ public class CorpUserVerification extends AbstractEntity{
     public void setDescription(String description) {
         this.description = description;
     }
-
 
     public String getBeforeObject() {
         return beforeObject;
@@ -124,7 +120,6 @@ public class CorpUserVerification extends AbstractEntity{
         this.operation = operation;
     }
 
-
     public Date getInitiatedOn() {
         return initiatedOn;
     }
@@ -133,7 +128,6 @@ public class CorpUserVerification extends AbstractEntity{
         this.initiatedOn = initiatedOn;
     }
 
-
     public Date getVerifiedOn() {
         return verifiedOn;
     }
@@ -141,7 +135,6 @@ public class CorpUserVerification extends AbstractEntity{
     public void setVerifiedOn(Date verifiedOn) {
         this.verifiedOn = verifiedOn;
     }
-
 
     public CorpUserType getCorpUserType() {
         return corpUserType;
@@ -158,7 +151,6 @@ public class CorpUserVerification extends AbstractEntity{
     public void setInitiatedBy(String initiatedBy) {
         this.initiatedBy = initiatedBy;
     }
-
 
     public String getVerifiedBy() {
         return verifiedBy;

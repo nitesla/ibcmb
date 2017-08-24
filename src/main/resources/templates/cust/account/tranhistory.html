@@ -23,8 +23,9 @@
                                         <th>Transaction Narration</th>
                                         <th>Post Date</th>
                                         <th>Value Date</th>
-                                        <th>Debit/Credit</th>
-                                        <th>Transaction ReferenceID</th>
+                                        <th>Debit</th>
+                                        <th>Credit</th>
+                                        <th>Transaction Reference ID</th>
                                         <th>Account Balance</th>
                                     </tr>
                                     </thead>
@@ -33,7 +34,8 @@
                                         <td th:text="${list.narration}"></td>
                                         <td th:text="${list.postDate}"></td>
                                         <td th:text="${list.valueDate}"></td>
-                                        <td th:text="${list.tranType}"></td>
+                                        <td th:text="${list.debitAmount}"></td>
+                                        <td th:text="${list.creditAmount}"></td>
                                         <td th:text="${list.tranId}"></td>
                                         <td th:text="${list.accountBalance}"></td>
                                     </tr>
@@ -43,8 +45,9 @@
                                         <th>Transaction Narration</th>
                                         <th>Post Date</th>
                                         <th>Value Date</th>
-                                        <th>Debit/Credit</th>
-                                        <th>Transaction ReferenceID</th>
+                                        <th>Debit</th>
+                                        <th>Credit</th>
+                                        <th>Transaction Reference ID</th>
                                         <th>Account Balance</th>
                                     </tr>
                                     </tfoot>

@@ -27,7 +27,7 @@ public class AdmControllerAdvice {
     public String globalAttributes(Model model, Principal principal){
 
         if(principal==null){
-            return "redirect://login/admin";
+            return "redirect:/login/admin";
         }
 
 

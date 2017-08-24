@@ -11,6 +11,7 @@ import longbridge.security.userdetails.CustomUserPrincipal;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -63,6 +64,8 @@ public class AdminUserDetailsService implements UserDetailsService {
                     if (user.getRole().getUserType() != null) {
                         if (user.getRole().getUserType() != UserType.ADMIN) throw new UsernameNotFoundException(s);
                     }
+                    SecurityContextHolder.clearContext();
+                    sessionUtils.clearSession();
                     CustomUserPrincipal userPrincipal = new CustomUserPrincipal(user);
                     userPrincipal.setIpAddress(ip);
                     return userPrincipal;

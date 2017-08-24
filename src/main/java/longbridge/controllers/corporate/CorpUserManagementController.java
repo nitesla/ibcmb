@@ -86,6 +86,7 @@ public class CorpUserManagementController {
         List<CorpTransferRuleDTO> corpTransferRuleDTO = corporateService.getCorporateRules(corporate.getId());
         logger.info("CORP TRANSFER RULES >>>> " + corpTransferRuleDTO);
         model.addAttribute("corpTransferRules", corpTransferRuleDTO);
+
     }
 
 //    @ModelAttribute
@@ -234,19 +235,25 @@ public class CorpUserManagementController {
                 }
             }
 
+            if (corporateUserDTO.isAuthorizer()) {
+                CorporateRoleDTO corporateRole = corporateService.getCorporateRole(corporateUserDTO.getCorporateRoleId());
+                corporateUserDTO.setCorporateRole(corporateRole.getName() + " " + corporateRole.getRank());
+            }
 
-            if (corporateUserDTO.isAuthorizer() != corporateUser.isAuthorizer()){
-                logger.info("GOT HERE {} ---- ");
+            if (corporateUserDTO.isAuthorizer() == corporateUser.isAuthorizer()){
+
+                logger.info("GOT HERE {} ", corporateUserDTO.getCorporateRoleId());
                 if (makerCheckerService.isEnabled("UPDATE_USER_FROM_CORPORATE_ADMIN")){
-                    corpUserVerificationService.saveAuthorizer(corporateUserDTO, "UPDATE_USER_FROM_CORPORATE_ADMIN", "Edit an authorizer by corporate Admin");
+                    corpUserVerificationService.saveInitiator(corporateUserDTO, "UPDATE_USER_FROM_CORPORATE_ADMIN", "Edit an initiator by corporate Admin");
                 }else {
                     corporateUserService.updateUserFromCorpAdmin(corporateUserDTO);
                 }
 
             }else{
-                logger.info("GOT HERE {} ++++++ ");
+
+                logger.info("GOT HERE {} ---- ");
                 if (makerCheckerService.isEnabled("UPDATE_USER_FROM_CORPORATE_ADMIN")){
-                    corpUserVerificationService.saveInitiator(corporateUserDTO, "UPDATE_USER_FROM_CORPORATE_ADMIN", "Edit an initiator by corporate Admin");
+                    corpUserVerificationService.saveAuthorizer(corporateUserDTO, "UPDATE_USER_FROM_CORPORATE_ADMIN", "Edit an authorizer by corporate Admin");
                 }else {
                     corporateUserService.updateUserFromCorpAdmin(corporateUserDTO);
                 }

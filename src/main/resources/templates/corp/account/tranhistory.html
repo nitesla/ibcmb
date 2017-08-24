@@ -16,48 +16,45 @@
         <div class=" no-pad-lef table-responsive no-mt">
                 <!--<input id="acct" type="text" th:value="${accountNumber}" name="accountNumber"/>-->
 
-                            <h2>TRANSACTION DETAILS</h2>
+                <h2>TRANSACTION DETAILS</h2>
 
-                            <div class="table-responsive" >
-                                <table class="table" id="tranDetails">
-                                    <thead>
-                                    <tr>
-                                        <th>Transaction Narration</th>
-                                        <th>Post Date</th>
-                                        <th>Value Date</th>
-                                        <th>Debit/Credit</th>
-                                        <th>Transaction ReferenceID</th>
-                                        <th>Account Balance</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    <tr th:each="list:${history}">
-                                        <td th:text="${list.narration}"></td>
-                                        <td th:text="${list.postDate}"></td>
-                                        <td th:text="${list.valueDate}"></td>
-                                        <td th:text="${list.tranType}"></td>
-                                        <td th:text="${list.tranId}"></td>
-                                        <td th:text="${list.accountBalance}"></td>
-                                    </tr>
-                                    </tbody>
-                                    <tfoot>
-                                    <tr>
-                                        <th>Transaction Narration</th>
-                                        <th>Post Date</th>
-                                        <th>Value Date</th>
-                                        <th>Debit/Credit</th>
-                                        <th>Transaction ReferenceID</th>
-                                        <th>Account Balance</th>
-
-                                    </tr>
-                                    </tfoot>
-                                </table>
-                            </div>
-
-
-
+                <div class="table-responsive" >
+                    <table class="table" id="tranDetails">
+                        <thead>
+                        <tr>
+                            <th>Transaction Narration</th>
+                            <th>Post Date</th>
+                            <th>Value Date</th>
+                            <th>Debit</th>
+                            <th>Credit</th>
+                            <th>Transaction Reference ID</th>
+                            <th>Account Balance</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="list:${history}">
+                            <td th:text="${list.narration}"></td>
+                            <td th:text="${list.postDate}"></td>
+                            <td th:text="${list.valueDate}"></td>
+                            <td th:text="${list.debitAmount}"></td>
+                            <td th:text="${list.creditAmount}"></td>
+                            <td th:text="${list.tranId}"></td>
+                            <td th:text="${list.accountBalance}"></td>
+                        </tr>
+                        </tbody>
+                        <tfoot>
+                        <tr>
+                            <th>Transaction Narration</th>
+                            <th>Post Date</th>
+                            <th>Value Date</th>
+                            <th>Debit</th>
+                            <th>Credit</th>
+                            <th>Transaction Reference ID</th>
+                            <th>Account Balance</th>
+                        </tr>
+                        </tfoot>
+                    </table>
                 </div>
-
         
         </div>
     </div>
