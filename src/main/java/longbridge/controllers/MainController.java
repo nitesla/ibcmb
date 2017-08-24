@@ -80,7 +80,7 @@ public class MainController {
 
     @RequestMapping(value = "/login/corporate",  method = RequestMethod.GET)
     public ModelAndView getCorpLoginPage(@RequestParam Optional<String> error, @RequestParam Optional<HttpServletRequest> request) {
-        //SecurityContextHolder.clearContext();
+//        SecurityContextHolder.clearContext();
         if (request.isPresent()) request.get().getSession().invalidate();
         //clearSession();
         return new ModelAndView("corppage1", "error", error);

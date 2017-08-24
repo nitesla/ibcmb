@@ -105,9 +105,9 @@ public class Permission extends AbstractEntity  implements PrettySerializer{
             {
                 gen.writeStartObject();
                 gen.writeStringField("Name",value.name);
+                gen.writeStringField("Code",value.code);
                 gen.writeStringField("Description",value.description);
                 gen.writeStringField("User Type",value.userType);
-                gen.writeStringField("Category",value.category);
                 gen.writeEndObject();
             }
         };
