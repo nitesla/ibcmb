@@ -87,8 +87,6 @@ public class CorpUserManagementController {
         logger.info("CORP TRANSFER RULES >>>> " + corpTransferRuleDTO);
         model.addAttribute("corpTransferRules", corpTransferRuleDTO);
 
-        Long pendingVer = corpUserVerificationService.getTotalNumberPending();
-        model.addAttribute("corpPendingVerification", pendingVer);
     }
 
 //    @ModelAttribute
