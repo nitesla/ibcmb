@@ -328,7 +328,7 @@
 //        $('#tranDetails_length').hide();
         $("#btn-find").on("click", function(e) {
 //            console.log("fromDate "+$('[name=fromDate]').val()+"to "+$('[name=toDate]').val());
-            console.log("dateDifference "+dateDifference(parseDate($('#start').val()), parseDate($('#endDate').val())));
+//            console.log("dateDifference "+dateDifference(parseDate($('#start').val()), parseDate($('#endDate').val())));
             if(dateDifference(parseDate($('#start').val()), parseDate($('#endDate').val()))) {
                 var table = $('#tranDetails').DataTable();
                 var row = table.rows().remove().draw();
@@ -410,7 +410,7 @@
         var yearsDiff = second[2]-first[2];
         var monthDiff = second[1]-first[1];
         var dayDiff = second[0]-first[0];
-        console.log("yearsDiff "+yearsDiff+" monthDiff "+monthDiff+" dayDiff "+dayDiff);
+//        console.log("yearsDiff "+yearsDiff+" monthDiff "+monthDiff+" dayDiff "+dayDiff);
         if(yearsDiff==0){
             if(monthDiff ==0){
                 if(dayDiff >=0){
