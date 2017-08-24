@@ -375,12 +375,16 @@ if($('#start').val() != '' && $('#endDate').val() !='' ) {
             },
             error: function (dd) {
 //                        console.log("error")
+                var contactsTab2 = $('#tranDetails').DataTable();
+                var row  = contactsTab2.rows().remove().draw();
                 bootbox.alert("<div style='text-align: center'>Service not available</div>");
                 return false;
             }
 
         });
     } else {
+        var contactsTab2 = $('#tranDetails').DataTable();
+        var row  = contactsTab2.rows().remove().draw();
         bootbox.alert("<div style='text-align: center'>Start date cannot be less than end date</div>");
         return false;
     }
