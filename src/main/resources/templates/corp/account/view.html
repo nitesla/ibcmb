@@ -115,6 +115,7 @@
 
     <script th:src="@{~/customer/js/dataTables.bootstrap.js}"></script>
     <script th:src="@{~/customer/js/dataTables.select.js}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootbox.js/4.4.0/bootbox.min.js"></script>
     <script th:inline="javascript">
         /*<![CDATA[*/
         jQuery.download = function(url, key, data) {
@@ -219,50 +220,61 @@
             });
 
             $("#btn-find").on("click", function(e) {
-                var table = $('#tranDetails').DataTable();
-                var row  = table.rows().remove().draw();
-                e.preventDefault();
-                $.ajax({
-                    "url":"/corporate/account/viewstatement/display/data/new",
-                    "type" : "GET",
-                    "data" :  {
-                        acctNumber : $('[name=acctNumber]').val(),
-                        fromDate : $('[name=fromDate]').val(),
-                        toDate : $('[name=toDate]').val(),
-                        tranType : $('[name=tranType]').val()
-                    },success: function (result) {
-//                    resetButton();
-                        if (result.details != null && result.details != "null") {
-                            $('#btn-print').show();
-                            var contactsTab2 = $('#tranDetails').DataTable();
-                            for (var key in result.details) {
-                                if (result.details.hasOwnProperty(key)) {
-                                    var od = result.details[key];
+//                console.log("dateDiff "+dateDifference(parseDate($('[name=fromDate]').val()), parseDate($('[name=toDate]').val())));
+                if($('#start').val() != '' && $('#endDate').val() !='' ) {
+                    if (dateDifference(parseDate($('[name=fromDate]').val()), parseDate($('[name=toDate]').val()))) {
+                        var table = $('#tranDetails').DataTable();
+                        var row = table.rows().remove().draw();
+                        e.preventDefault();
+                        $.ajax({
+                            "url": "/corporate/account/viewstatement/display/data/new",
+                            "type": "GET",
+                            "data": {
+                                acctNumber: $('[name=acctNumber]').val(),
+                                fromDate: $('[name=fromDate]').val(),
+                                toDate: $('[name=toDate]').val(),
+                                tranType: $('[name=tranType]').val()
+                            }, success: function (result) {
+                                $('#btn-print').hide();
+                                if (result.details != null && result.details != "null") {
+                                    $('#btn-print').show();
+                                    var contactsTab2 = $('#tranDetails').DataTable();
+                                    for (var key in result.details) {
+                                        if (result.details.hasOwnProperty(key)) {
+                                            var od = result.details[key];
 //                                console.log("the key "+key+" value "+result[key]);
-                                    contactsTab2.row.add(od);
-                                }
+                                            contactsTab2.row.add(od);
+                                        }
 
-                                contactsTab2.draw();
+                                        contactsTab2.draw();
 //
+                                    }
+
+                                }
+                                if (result.moreData === "Y") {
+                                    $('#next').show();
+
+                                } else {
+                                    $('#next').hide();
+                                }
+                                $('#previous').hide();
+
+                            },
+                            error: function (dd) {
+                                var contactsTab2 = $('#tranDetails').DataTable();
+                                var row  = contactsTab2.rows().remove().draw();
+                                console.log("error")
                             }
 
-                        }
-                        if(result.moreData === "Y"){
-                            $('#next').show();
-
-                        }else{
-                            $('#next').hide();
-                        }
-                        $('#previous').hide();
-
-                    },
-                    error:  function (dd) {
-                        console.log("error")
+                        });
+                    } else {
+                        var contactsTab2 = $('#tranDetails').DataTable();
+                        var row  = contactsTab2.rows().remove().draw();
+                        $('#btn-print').hide();
+                        bootbox.alert("<div style='text-align: center'>Start date cannot be less than end date</div>");
+                        return false;
                     }
-
-                });
-
-
+                }
             });
             $('#btn-print').hide();
             $('#previous').hide();
@@ -281,6 +293,28 @@
             });
 //            $('.dataTables_empty').html('No data available');
         });
+        function parseDate(str) {
+            var mdy = str.split('-');
+            return mdy;
+        }
+        function dateDifference(first, second) {
+            var yearsDiff = second[2]-first[2];
+            var monthDiff = second[1]-first[1];
+            var dayDiff = second[0]-first[0];
+//            console.log("yearsDiff "+yearsDiff+" monthDiff "+monthDiff+" dayDiff "+dayDiff);
+            if(yearsDiff==0){
+                if(monthDiff ==0){
+                    if(dayDiff >=0){
+                        return true;
+                    }
+                }else if(monthDiff >0){
+                    return true;
+                }
+            }else if(yearsDiff >0){
+                return true;
+            }
+            return false;
+        }
 
         function nextData() {
 //    console.log("field value "+valu);
@@ -322,7 +356,9 @@
 
                     },
                 error:  function (dd) {
-                    console.log("error")
+//                    console.log("error")
+                    bootbox.alert("<div style='text-align: center'>Service not available</div>");
+                    return false;
                 }
 
             });
@@ -369,41 +405,7 @@
 
             });
         }
-        function resetButton() {
-//    console.log("field value "+valu);
-            $.ajax({
-                "url":"viewstatement/display/data/reset/button",
-                "type" : "GET",
-                "data" :  {
-                    state : "backward"
-                },success: function (result) {
-                    if (result == "both") {
-//                console.log("the result next"+result);
-                        $('#previous').hide();
-                        $('#next').hide();
-                    }
-                    if (result == "previous") {
-//                console.log("the result next"+result);
-                        $('#previous').hide();
-                        $('#next').show();
-                    }
-                    if (result == "next") {
-//                console.log("the result next"+result);
-                        $('#previous').show();
-                        $('#next').hide();
-                    }
-                    if (result == "none") {
-//                console.log("the result next"+result);
-                        $('#previous').show();
-                        $('#next').show();
-                    }
-                },
-                error:  function (dd) {
-                    console.log("error")
-                }
 
-            });
-        }
         /*]]>*/
     </script>
 

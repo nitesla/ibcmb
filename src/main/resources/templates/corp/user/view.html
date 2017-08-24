@@ -24,7 +24,7 @@
                         <a th:if="${isUserAdmin}" type="button" th:href="@{/corporate/users/index/unblock}" class="btn btn-default bt-select bt-link-act" disabled="disabled">Unblock user</a>
                     </div>
                        <div class="pull-right">
-                           <a type="button" th:href="@{/corporate/users/approvals}" class="btn btn-default">Approvals</a>
+                           <a type="button" th:href="@{/corporate/users/approvals}" class="btn btn-default">Approvals <span th:if="${corpPendingVerification}" class="btn-xs badge bg-orange" th:text="${corpPendingVerification}"></span></a>
                        </div>
                 </div>
                 <br/>

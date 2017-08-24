@@ -1,8 +1,13 @@
 package longbridge.controllers.admin;
 
 import longbridge.models.AdminUser;
+import longbridge.models.User;
+import longbridge.models.UserType;
+import longbridge.security.userdetails.CustomUserPrincipal;
 import longbridge.services.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -36,8 +41,8 @@ public class AdmDashboardController {
     @RequestMapping(value = {"/admin/dashboard", "/admin"})
     public String getAdminDashboard(Model model, Principal principal) {
 
-        if (principal.getName() == null) {
-            return "redirect://login/admin";
+        if (principal== null) {
+            return "redirect:/login/admin";
         }
 
         int noOfRetailCust = retailUserService.countUser().intValue();
@@ -61,7 +66,25 @@ public class AdmDashboardController {
 
 
     @GetMapping("/admin/error")
-    public String getAdminErrorPage() {
+    public String getAdminErrorPage(Principal principal) {
+
+            if (principal == null) {
+                return "redirect:/admin/logout";
+            }
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+            if(authentication!=null) {
+                CustomUserPrincipal princip = (CustomUserPrincipal) authentication.getPrincipal();
+                User user = princip.getUser();
+                if (!UserType.ADMIN.equals(user.getUserType())) {
+                    return "redirect:/admin/logout";
+                }
+            }
+            else {
+                return "redirect:/login/admin";
+            }
+
         return "/adm/error";
 
     }
