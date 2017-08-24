@@ -221,54 +221,55 @@
 
             $("#btn-find").on("click", function(e) {
 //                console.log("dateDiff "+dateDifference(parseDate($('[name=fromDate]').val()), parseDate($('[name=toDate]').val())));
-                if(dateDifference(parseDate($('[name=fromDate]').val()), parseDate($('[name=toDate]').val()))) {
-                var table = $('#tranDetails').DataTable();
-                var row  = table.rows().remove().draw();
-                e.preventDefault();
-                $.ajax({
-                    "url":"/corporate/account/viewstatement/display/data/new",
-                    "type" : "GET",
-                    "data" :  {
-                        acctNumber : $('[name=acctNumber]').val(),
-                        fromDate : $('[name=fromDate]').val(),
-                        toDate : $('[name=toDate]').val(),
-                        tranType : $('[name=tranType]').val()
-                    },success: function (result) {
-                        $('#btn-print').hide();
-                        if (result.details != null && result.details != "null") {
-                            $('#btn-print').show();
-                            var contactsTab2 = $('#tranDetails').DataTable();
-                            for (var key in result.details) {
-                                if (result.details.hasOwnProperty(key)) {
-                                    var od = result.details[key];
+                if($('#start').val() != '' && $('#endDate').val() !='' ) {
+                    if (dateDifference(parseDate($('[name=fromDate]').val()), parseDate($('[name=toDate]').val()))) {
+                        var table = $('#tranDetails').DataTable();
+                        var row = table.rows().remove().draw();
+                        e.preventDefault();
+                        $.ajax({
+                            "url": "/corporate/account/viewstatement/display/data/new",
+                            "type": "GET",
+                            "data": {
+                                acctNumber: $('[name=acctNumber]').val(),
+                                fromDate: $('[name=fromDate]').val(),
+                                toDate: $('[name=toDate]').val(),
+                                tranType: $('[name=tranType]').val()
+                            }, success: function (result) {
+                                $('#btn-print').hide();
+                                if (result.details != null && result.details != "null") {
+                                    $('#btn-print').show();
+                                    var contactsTab2 = $('#tranDetails').DataTable();
+                                    for (var key in result.details) {
+                                        if (result.details.hasOwnProperty(key)) {
+                                            var od = result.details[key];
 //                                console.log("the key "+key+" value "+result[key]);
-                                    contactsTab2.row.add(od);
-                                }
+                                            contactsTab2.row.add(od);
+                                        }
 
-                                contactsTab2.draw();
+                                        contactsTab2.draw();
 //
+                                    }
+
+                                }
+                                if (result.moreData === "Y") {
+                                    $('#next').show();
+
+                                } else {
+                                    $('#next').hide();
+                                }
+                                $('#previous').hide();
+
+                            },
+                            error: function (dd) {
+                                console.log("error")
                             }
 
-                        }
-                        if(result.moreData === "Y"){
-                            $('#next').show();
-
-                        }else{
-                            $('#next').hide();
-                        }
-                        $('#previous').hide();
-
-                    },
-                    error:  function (dd) {
-                        console.log("error")
+                        });
+                    } else {
+                        bootbox.alert("<div style='text-align: center'>Start date cannot be less than end date</div>");
+                        return false;
                     }
-
-                });
-                }else{
-                    bootbox.alert("<div style='text-align: center'>Start date cannot be less than end date</div>");
-                    return false;
                 }
-
             });
             $('#btn-print').hide();
             $('#previous').hide();
