@@ -592,8 +592,6 @@ public class OpsCorporateController {
 
     @GetMapping("/new")
     public String addCorporate(Model model) {
-        CorporateDTO corporateDTO = new CorporateDTO();
-
         return "redirect:/ops/dashboard";
     }
 
@@ -617,8 +615,10 @@ public class OpsCorporateController {
         corporateRequestDTO.setCustomerId(corporate.getCustomerId());
         corporateRequestDTO.setCorporateType(corporate.getCorporateType());
         corporateRequestDTO.setCustomerName(customerDetails.getCustomerName());
+        corporateRequestDTO.setRcNumber(customerDetails.getRcNo());
+        corporateRequestDTO.setBvn(customerDetails.getBvn());
+        corporateRequestDTO.setEmail(customerDetails.getEmail());
         corporate.setCustomerName(customerDetails.getCustomerName());
-        corporate.setRcNumber(customerDetails.getRcNo());
         session.setAttribute("corporateRequest", corporateRequestDTO);
 
         logger.info("Corporate Request DTO " + "{}", corporateRequestDTO.toString());
@@ -652,9 +652,6 @@ public class OpsCorporateController {
     private List<AccountInfo> filterAccounts(List<AccountInfo> newAccs, List<AccountDTO> existingAccs) {
 
         List<AccountInfo> accountInfos = new ArrayList<>();
-        logger.debug("Existing accounts: {}", existingAccs);
-        logger.debug("New Accounts: {}", newAccs);
-
         for (AccountInfo accountInfo : newAccs) {
             boolean existingAcc = false;
             for (AccountDTO accountDTO : existingAccs) {
@@ -667,7 +664,6 @@ public class OpsCorporateController {
                 accountInfos.add(accountInfo);
             }
         }
-        logger.debug("Filtered accounts: {}", accountInfos.toString());
         return accountInfos;
     }
 
@@ -726,7 +722,6 @@ public class OpsCorporateController {
             logger.info("Corporate Request DTO {}", corporateRequestDTO.toString());
             if ((session.getAttribute("inputedUsers") != null)) {
                 String users = session.getAttribute("inputedUsers").toString();
-//            logger.info("The inputed users are {}",users);
                 model.addAttribute("inputedUsers", users);
             } else {
                 model.addAttribute("inputedUsers", "");
@@ -822,7 +817,7 @@ public class OpsCorporateController {
             return "/ops/corporate/setup/addrule";
 
         } catch (Exception ibe) {
-            logger.error("Error creating group", ibe);
+            logger.error("Error creating authorizer levels", ibe);
             redirectAttributes.addFlashAttribute("failure", "Error has occurred");
             session.removeAttribute("corporateRequest");
             session.removeAttribute("authorizerLevels");
@@ -843,8 +838,6 @@ public class OpsCorporateController {
     public String addAccountUsingBack(Model model, HttpSession session) {
         String accounts[] = (String[]) session.getAttribute("selectedAccounts");
         CorporateRequestDTO corporate = (CorporateRequestDTO) session.getAttribute("corporateRequest");
-//        logger.info("the session corp request {}",corporate);
-//        logger.info("the session accounts {}",Arrays.asList(accounts));
         List<AccountInfo> accountInfos = (List<AccountInfo>) session.getAttribute("accountInfos");
         model.addAttribute("accounts", accountInfos);
         model.addAttribute("corporate", corporate);
@@ -883,10 +876,8 @@ public class OpsCorporateController {
         String rules = (String) session.getAttribute("rules");
         model.addAttribute("corporate", corporateRequestDTO);
         corporateRequestDTO.setAuthorizers(authorizerList);
-//        logger.info("Corporate Request DTO {}", corporateRequestDTO.toString());
         model.addAttribute("currencies", currencies);
         model.addAttribute("authorizerList", authorizerList);
-//        logger.info("the authorizer is {}",corporateRequestDTO);
         int num = 2;
         SettingDTO setting = configService.getSettingByName("MIN_AUTHORIZER_LEVEL");
         if (setting != null && setting.isEnabled()) {
@@ -918,7 +909,7 @@ public class OpsCorporateController {
             session.setAttribute("rules", rules);
             logger.debug("Corp Transfer Rules: {}", transferRules.toString());
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error("Error parsing transfer rules",e);
         }
         if (session.getAttribute("corporateRequest") != null) {
             CorporateRequestDTO corporateRequestDTO = (CorporateRequestDTO) session.getAttribute("corporateRequest");
@@ -931,7 +922,6 @@ public class OpsCorporateController {
 
         if ((session.getAttribute("inputedUsers") != null)) {
             String users = session.getAttribute("inputedUsers").toString();
-//            logger.info("The inputed users are {}",users);
             model.addAttribute("inputedUsers", users);
         } else {
             model.addAttribute("inputedUsers", "");
@@ -951,7 +941,7 @@ public class OpsCorporateController {
 
         String users = request.getParameter("users");
 
-        logger.info("Corporate Users are: {}", users);
+        logger.debug("Corporate Users are: {}", users);
         session.removeAttribute("users");
         session.setAttribute("users", users);
 

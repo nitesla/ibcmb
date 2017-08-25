@@ -193,6 +193,9 @@ public class CorporateServiceImpl implements CorporateService {
         corporate.setName(corporateRequestDTO.getCorporateName());
         corporate.setCustomerId(corporateRequestDTO.getCustomerId());
         corporate.setCorporateId(corporateRequestDTO.getCorporateId());
+        corporate.setBvn(corporateRequestDTO.getBvn());
+        corporate.setRcNumber(corporateRequestDTO.getRcNumber());
+        corporate.setEmail(corporateRequestDTO.getEmail());
         corporate.setCreatedOnDate(new Date());
         corporate.setStatus("A");
         List<Account> accounts = accountService.addAccounts(corporateRequestDTO.getAccounts());
@@ -353,7 +356,7 @@ public class CorporateServiceImpl implements CorporateService {
 
     public void addAccounts(Corporate corporate) {
         String customerId = corporate.getCustomerId();
-        Corporate corp = corporateRepo.findByCustomerId(customerId);
+        Corporate corp = corporateRepo.findFirstByCustomerId(customerId);
         if (corp != null) {
             Collection<AccountInfo> accounts = integrationService.fetchAccounts(customerId);
             for (AccountInfo acct : accounts) {
@@ -395,7 +398,6 @@ public class CorporateServiceImpl implements CorporateService {
                 sendUserCredentials(user, password);
             }
         }
-//        }
     }
 
     @Override
@@ -825,17 +827,7 @@ public class CorporateServiceImpl implements CorporateService {
         return applicableTransferRule;
     }
 
-    @Override
-    @Transactional
-    public CorpTransRule getApplicableBulkTransferRule(BulkTransfer bulkTransfer) {
 
-        Corporate corporate = bulkTransfer.getCorporate();
-        List<CorpTransRule> transferRules = corpTransferRuleRepo.findByCorporate(corporate);
-        Collections.sort(transferRules, new TransferRuleComparator());
-        BigDecimal transferAmount = bulkTransfer.getAmount();
-        CorpTransRule applicableTransferRule = findApplicableRule(transferRules,transferAmount);
-        return applicableTransferRule;
-    }
 
 
 

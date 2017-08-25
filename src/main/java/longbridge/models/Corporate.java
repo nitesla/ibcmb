@@ -214,24 +214,14 @@ public class Corporate extends AbstractEntity implements PrettySerializer{
             {
                 gen.writeStartObject();
                 gen.writeStringField("Name",value.name);
-                gen.writeStringField("Customer Id",value.customerId);
                 gen.writeStringField("Type",value.corporateType);
+                gen.writeStringField("CIF ID",value.customerId);
+                gen.writeStringField("Corporate ID",value.corporateId);
                 gen.writeStringField("RC Number",value.rcNumber);
-                gen.writeStringField("Status",getStatusDescription(value.status));
-
                 gen.writeEndObject();
             }
         };
     }
 
-    private  String getStatusDescription(String status){
-        String description =null;
-        if ("A".equals(status))
-            description = "Active";
-        else if ("I".equals(status))
-            description = "Inactive";
-        else if ("L".equals(status))
-            description = "Locked";
-        return description;
-    }
+
 }

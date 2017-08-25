@@ -32,6 +32,7 @@ public class CorporateRequestDTO implements PrettySerializer {
     @NotEmpty(message = "customerId")
     private String customerId;
     private String customerName;
+    private String email;
     private String createdOn;
     private List<AuthorizerLevelDTO> authorizers = new ArrayList<>();
     private List<CorporateUserDTO> corporateUsers = new ArrayList<>();
@@ -143,6 +144,14 @@ public class CorporateRequestDTO implements PrettySerializer {
         this.corpTransferRules = corpTransferRules;
     }
 
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
     public String getCustomerName() {
         return customerName;
     }
@@ -190,10 +199,12 @@ public class CorporateRequestDTO implements PrettySerializer {
             public void serialize(CorporateRequestDTO value, JsonGenerator gen, SerializerProvider serializers)
                     throws IOException, JsonProcessingException {
                 gen.writeStartObject();
-                gen.writeStringField("CIFID", value.customerId);
-                gen.writeStringField("Corporate Type", value.corporateType);
-                gen.writeStringField("Corporate Name", value.corporateName);
-                gen.writeStringField("Unique Corporate ID", value.corporateId);
+                gen.writeStringField("Name", value.corporateName);
+                gen.writeStringField("Type", value.corporateType);
+                gen.writeStringField("CIF ID", value.customerId);
+                gen.writeStringField("Corporate ID", value.corporateId);
+                gen.writeStringField("RC Number", value.rcNumber);
+
 
                 gen.writeObjectFieldStart("Accounts");
                 Integer count = 0;
@@ -251,8 +262,8 @@ public class CorporateRequestDTO implements PrettySerializer {
                         gen.writeObjectFieldStart((++count).toString());
 
                         gen.writeStringField("Lower Amount", transferRule.getLowerLimitAmount());
-                        if ("Unlimited".equals(transferRule.getUpperLimitAmount())) {
-                            gen.writeStringField("Upper Amount", "Unlimited");
+                        if ("Unlimited".equalsIgnoreCase(transferRule.getUpperLimitAmount())) {
+                            gen.writeStringField("Upper Amount", "UNLIMITED");
                         } else {
                             gen.writeStringField("Upper Amount", transferRule.getUpperLimitAmount());
 
@@ -282,14 +293,4 @@ public class CorporateRequestDTO implements PrettySerializer {
         };
     }
 
-    private String getStatusDescription(String status) {
-        String description = null;
-        if ("A".equals(status))
-            description = "Active";
-        else if ("I".equals(status))
-            description = "Inactive";
-        else if ("L".equals(status))
-            description = "Locked";
-        return description;
-    }
 }
