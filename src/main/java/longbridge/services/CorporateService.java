@@ -223,9 +223,6 @@ public interface CorporateService{
     @PreAuthorize("hasAuthority('GET_TRANSFER_RULE')")
     CorpTransRule getApplicableTransferRule(TransRequest transferRequest);
 
-    @PreAuthorize("hasAuthority('GET_BULKTRANSFER_RULE')")
-    CorpTransRule getApplicableBulkTransferRule(BulkTransfer bulkTransfer);
-
 
     @PreAuthorize("hasAuthority('ADD_CORPORATE_ROLE')")
     String addCorporateRole(CorporateRoleDTO roleDTO) throws InternetBankingException;

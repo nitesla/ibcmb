@@ -259,6 +259,7 @@ public class OperationsUserServiceImpl implements OperationsUserService {
             opsUser.setLastName(user.getLastName());
             opsUser.setUserName(user.getUserName());
             opsUser.setPhoneNumber(user.getPhoneNumber());
+            opsUser.setEmail(user.getEmail());
             Role role = roleRepo.findOne(Long.parseLong(user.getRoleId()));
             opsUser.setRole(role);
             operationsUserRepo.save(opsUser);

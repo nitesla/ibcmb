@@ -193,6 +193,9 @@ public class CorporateServiceImpl implements CorporateService {
         corporate.setName(corporateRequestDTO.getCorporateName());
         corporate.setCustomerId(corporateRequestDTO.getCustomerId());
         corporate.setCorporateId(corporateRequestDTO.getCorporateId());
+        corporate.setBvn(corporateRequestDTO.getBvn());
+        corporate.setRcNumber(corporateRequestDTO.getRcNumber());
+        corporate.setEmail(corporateRequestDTO.getEmail());
         corporate.setCreatedOnDate(new Date());
         corporate.setStatus("A");
         List<Account> accounts = accountService.addAccounts(corporateRequestDTO.getAccounts());
@@ -222,6 +225,7 @@ public class CorporateServiceImpl implements CorporateService {
             }
             corporateUser.setRole(role);
             corporateUser.setCorpUserType(getUserType(user.getUserType()));
+            corporateUser.setAdmin(CorpUserType.ADMIN.equals(corporateUser.getCorpUserType()));
             corporateUser.setCorporate(newCorporate);
             createUserOnEntrustAndSendCredentials(corporateUser);
             if ("AUTHORIZER".equals(user.getUserType())) {
@@ -352,13 +356,12 @@ public class CorporateServiceImpl implements CorporateService {
 
     public void addAccounts(Corporate corporate) {
         String customerId = corporate.getCustomerId();
-        Corporate corp = corporateRepo.findByCustomerId(customerId);
+        Corporate corp = corporateRepo.findFirstByCustomerId(customerId);
         if (corp != null) {
             Collection<AccountInfo> accounts = integrationService.fetchAccounts(customerId);
             for (AccountInfo acct : accounts) {
                 accountService.AddFIAccount(customerId, acct);
             }
-
         }
     }
 
@@ -395,7 +398,6 @@ public class CorporateServiceImpl implements CorporateService {
                 sendUserCredentials(user, password);
             }
         }
-//        }
     }
 
     @Override
@@ -422,6 +424,7 @@ public class CorporateServiceImpl implements CorporateService {
             mailService.send(email);
         }).start();
     }
+
 
     @Override
 //    @Verifiable(operation = "UPDATE_CORPORATE", description = "Updating Corporate Entity")
@@ -648,7 +651,7 @@ public class CorporateServiceImpl implements CorporateService {
     @Transactional
     public List<CorpTransferRuleDTO> getCorporateRules(Long corpId) {
         Corporate corporate = corporateRepo.findOne(corpId);
-        List<CorpTransRule> transferRules = corporate.getCorpTransRules();
+        List<CorpTransRule> transferRules = corpTransferRuleRepo.findByCorporate(corporate);
         Collections.sort(transferRules, new TransferRuleComparator());
         return convertTransferRuleEntitiesToDTOs(transferRules);
 
@@ -749,6 +752,7 @@ public class CorporateServiceImpl implements CorporateService {
             for (CorporateUserDTO user : roleDTO.getUsers()) {
                 CorporateUser corporateUser = corporateUserRepo.findOne(user.getId());
                 corporateUser.setCorpUserType(CorpUserType.AUTHORIZER);
+                corporateUser.setAdmin(false);
                 role.getUsers().add(corporateUser);
             }
             corporateRoleRepo.save(role);
@@ -823,17 +827,7 @@ public class CorporateServiceImpl implements CorporateService {
         return applicableTransferRule;
     }
 
-    @Override
-    @Transactional
-    public CorpTransRule getApplicableBulkTransferRule(BulkTransfer bulkTransfer) {
 
-        Corporate corporate = bulkTransfer.getCorporate();
-        List<CorpTransRule> transferRules = corpTransferRuleRepo.findByCorporate(corporate);
-        Collections.sort(transferRules, new TransferRuleComparator());
-        BigDecimal transferAmount = bulkTransfer.getAmount();
-        CorpTransRule applicableTransferRule = findApplicableRule(transferRules,transferAmount);
-        return applicableTransferRule;
-    }
 
 
 

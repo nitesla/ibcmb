@@ -5,7 +5,6 @@ import longbridge.exception.*;
 import longbridge.forms.CustResetPassword;
 import longbridge.forms.ResetPasswordForm;
 import longbridge.forms.RetrieveUsernameForm;
-import longbridge.models.Account;
 import longbridge.models.Corporate;
 import longbridge.models.CorporateUser;
 import longbridge.models.Email;
@@ -127,7 +126,7 @@ public class RetrieveCorpCredentialController {
         }
 //        return "corp/passwordreset";
     }
-@GetMapping("/rest/corp/secAns")
+@PostMapping("/rest/corp/secAns")
 public @ResponseBody String getSecAns(WebRequest webRequest, HttpSession session){
     try{
         //confirm security question is correct
@@ -192,10 +191,11 @@ public @ResponseBody String getSecAns(WebRequest webRequest, HttpSession session
         }
 
     }
-    @GetMapping("/rest/corporate/verGenPass/{username}/{genpassword}")
-    public  @ResponseBody String verifyGenPassword(@PathVariable String username, WebRequest webRequest){
+    @PostMapping("/rest/corporate/verGenPass/username/genpassword")
+    public  @ResponseBody String verifyGenPassword(WebRequest webRequest){
         try {
             String genpassword = webRequest.getParameter("genpassword");
+            String username = webRequest.getParameter("username");
             CorporateUser corporateUser = corporateUserService.getUserByName(username);
             boolean match = passwordEncoder.matches(genpassword, corporateUser.getTempPassword());
             if (match){
@@ -206,7 +206,8 @@ public @ResponseBody String getSecAns(WebRequest webRequest, HttpSession session
             return messageSource.getMessage("reset.password.gpv.failed", null, locale);
         }
     }
-    @GetMapping("/rest/corporate/password/check/password")
+
+    @PostMapping("/rest/corporate/password/check/password")
     public @ResponseBody String checkPassword(WebRequest webRequest){
         String password  = webRequest.getParameter("password");
         String username  = webRequest.getParameter("username");
@@ -218,12 +219,13 @@ public @ResponseBody String getSecAns(WebRequest webRequest, HttpSession session
         }
         return "true";
     }
-    @GetMapping("/rest/corporate/tokenAuth/{username}/{token}")
-    public @ResponseBody String tokenAth(@PathVariable String username, @PathVariable String token){
+    @PostMapping("/rest/corporate/tokenAuth/username/token")
+    public @ResponseBody String tokenAth(WebRequest webRequest){
         try {
+            String username = webRequest.getParameter("username");
+            String token = webRequest.getParameter("token");
             CorporateUser corporateUser = corporateUserService.getUserByName(username);
             boolean message = securityService.performTokenValidation(corporateUser.getEntrustId(), corporateUser.getEntrustGroup(), token);
-            logger.info("The message {}",message);
             if (message){
                 return "true";
             }
@@ -358,9 +360,11 @@ public @ResponseBody String getSecAns(WebRequest webRequest, HttpSession session
         return "false";
     }
 
-    @GetMapping("/rest/corporate/{email}/{corporateId}")
-    public @ResponseBody String[] getAccountNameFromNumber(@PathVariable String email,@PathVariable String corporateId){
-        logger.info("corporateId {} email {}",corporateId,email);
+    @PostMapping("/rest/corporate/email/corporateId")
+    public @ResponseBody String[] getAccountNameFromNumber(WebRequest webRequest){
+        String email = webRequest.getParameter("email");
+        String corporateId = webRequest.getParameter("corporateId");
+//        logger.info("corporateId {} email {}",corporateId,email);
         String customerId = "";
         String[] userDetails =  new String[4];
         userDetails[0] = "";
@@ -380,8 +384,8 @@ public @ResponseBody String getSecAns(WebRequest webRequest, HttpSession session
                     userDetails[2] = corporateUser.getFirstName();
                     userDetails[3] = corporateUser.getUserName();
                 }
-                logger.info("Cid id : " + customerId);
-                logger.info("entrust id {} entrust group {} ", corporateUser.getEntrustId(), corporateUser.getEntrustGroup());
+//                logger.info("Cid id : " + customerId);
+//                logger.info("entrust id {} entrust group {} ", corporateUser.getEntrustId(), corporateUser.getEntrustGroup());
                 }
             }
 
@@ -452,5 +456,19 @@ logger.info("out of the try");
             return messageSource.getMessage("sec.ans.failed", null, locale);
         }
         return messageSource.getMessage("sec.ans.failed", null, locale);
+    }
+
+    @GetMapping("/rest/corp/password/{password}")
+    public @ResponseBody String checkRegPassword(@PathVariable String password){
+        try {
+            String message = passwordPolicyService.validate(password, null);
+            if (!"".equals(message)){
+                return message;
+            }
+            return "true";
+        }catch (InternetBankingException e){
+            logger.error("ERROR AUTHENTICATING USER >>>>> ",e);
+            return e.getMessage();
+        }
     }
 }

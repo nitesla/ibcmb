@@ -33,7 +33,7 @@ form.children("div").steps({
         if (currentIndex > newIndex)
         {
             // $('#myModalSuccess').modal('hide');
-            $('#loading-icon').hide();
+            $('#myLoader').modal('hide');
             return true;
         }
 
@@ -67,7 +67,7 @@ form.children("div").steps({
             var confirm = $('input[name="confirm"]').val();
             summaryConfirm = confirm;
             var regCode = $('input[name="regCode"]').val();
-            return isValid && validateUsername(username) && validatePassword(confirm) && validateRegCode(regCode);
+            return isValid && validateRegCode(regCode) && validateUsername(username) && validatePassword(confirm);
         }
         if(SECURITY_QUESTION_STEP === currentIndex){
             
@@ -93,7 +93,7 @@ form.children("div").steps({
     },
     onStepChanged: function (event, currentIndex, priorIndex)
     {
-        $('#loading-icon').hide();
+        $('#myLoader').modal('hide');
         // Used to skip the "Warning" step if the user is old enough and wants to the previous step.
         if (currentIndex === 2 && priorIndex === 3)
         {
@@ -173,8 +173,10 @@ function validateAccountDetails(accountNumber, email, birthDate){
     }
     var customerId;
     $.ajax({
-        type:'GET',
-        url:"/rest/accountdetails/"+accountNumber+"/"+email+"/"+birthDate,
+        type:'POST',
+        url:"/rest/accountdetails",
+        cache:false,
+        data:{accountNumber:accountNumber, email:email, birthDate:birthDate},
         async:false,
         success:function(data1){
             customerId = ''+String(data1);
@@ -183,7 +185,7 @@ function validateAccountDetails(accountNumber, email, birthDate){
             }else {
                 $('#errorMess').text(customerId);
                 $('#myModalError').modal('show');
-                $('#loading-icon').hide();
+                $('#myLoader').modal('hide');
             }
             // if(customerId == "" || customerId === null){
             //
@@ -196,18 +198,12 @@ function validateAccountDetails(accountNumber, email, birthDate){
         }
     });
 
-     
-
     if(customerId == "true"){
         return true;
     }else{
          $('#myLoader').modal('hide');
         return false;
     }
-
-   
-
-    
 }
 
 function validateExists(accountNumber, email, birthDate){
@@ -219,8 +215,10 @@ function validateExists(accountNumber, email, birthDate){
     }
     var cif;
     $.ajax({
-        type:'GET',
-        url:"/rest/accountexists/"+accountNumber+"/"+email+"/"+birthDate,
+        type:'POST',
+        url:"/rest/accountexists",
+        cache:false,
+        data:{accountNumber:accountNumber, email:email, birthDate:birthDate},
         async:false,
         success:function(data1){
             cif = ''+String(data1);
@@ -230,7 +228,7 @@ function validateExists(accountNumber, email, birthDate){
                 //invalid account number
                 $('#errorMess').text("This account already exists on our internet banking platform, Please try logging in.");
                 $('#myModalError').modal('show');
-                $('#loading-icon').hide();
+                $('#myLoader').modal('hide');
 
                 //alert("Account number not found");
             }else{
@@ -255,8 +253,10 @@ function validateUsername(username){
     var result;
      $('#myLoader').modal('show');
     $.ajax({
-        type:'GET',
-        url:"/rest/username/check/"+username,
+        type:'POST',
+        url:"/rest/username/check",
+        cache:false,
+        data:{username:username},
         async:false,
         success:function(data1){
             result = ''+String(data1);
@@ -264,7 +264,7 @@ function validateUsername(username){
                 //invalid account number
                 $('#errorMess').text("Username already exists.");
                 $('#myModalError').modal('show');
-                $('#loading-icon').hide();
+                $('#myLoader').modal('hide');
             }else{
                 //valid account number
                 //alert("user name: " + result);
@@ -286,9 +286,11 @@ function validateUsername(username){
 function validatePassword(password){
     var result;
     $.ajax({
-        type:'GET',
-        url:"/rest/password/check/"+password,
+        type:'POST',
+        data:{password:password},
+        url:"/rest/password/password",
         async:false,
+        cache:false,
         success:function(data1){
             result = ''+String(data1);
             if(result === 'true'){
@@ -297,7 +299,7 @@ function validatePassword(password){
             }else{
                 $('#errorMess').text(result);
                 $('#myModalError').modal('show');
-                $('#loading-icon').hide();
+                $('#myLoader').modal('hide');
             }
         }
     });
@@ -315,8 +317,10 @@ function validatePassword(password){
 function validateRegCode(code){
     var result;
     $.ajax({
-        type:'GET',
-        url:"/rest/regCode/check/"+code,
+        type:'POST',
+        url:"/rest/regCode/check",
+        cache:false,
+        data:{code:code},
         async:false,
         success:function(data1){
             result = ''+String(data1);
@@ -357,8 +361,10 @@ function sendRegCode(){
     var result;
 
     $.ajax({
-        type:'GET',
-        url:"/rest/regCode/"+accountNumber+"/"+email+"/"+birthDate,
+        type:'POST',
+        url:"/rest/regCode",
+        cache:false,
+        data:{accountNumber:accountNumber, email:email, birthDate:birthDate},
         async:false,
         success:function(data1){
             result = ''+String(data1);

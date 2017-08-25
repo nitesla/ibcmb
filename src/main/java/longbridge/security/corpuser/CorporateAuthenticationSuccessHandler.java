@@ -114,7 +114,7 @@ public class CorporateAuthenticationSuccessHandler implements AuthenticationSucc
         SettingDTO setting = configService.getSettingByName("ENABLE_CORPORATE_2FA");
         boolean tokenAuth = false;
         if (setting != null && setting.isEnabled()) {
-            tokenAuth = (setting.getValue().equalsIgnoreCase("YES") ? true : false);
+            tokenAuth = ("YES".equalsIgnoreCase(setting.getValue()) ? true : false);
         }
 
         if (tokenAuth) {

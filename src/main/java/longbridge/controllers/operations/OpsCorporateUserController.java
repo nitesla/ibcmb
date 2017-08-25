@@ -236,7 +236,6 @@ public class OpsCorporateUserController {
         if(verificationService.isPendingVerification(id, CorporateUser.class.getSimpleName())){
             redirectAttributes.addFlashAttribute("failure", "User has pending changes to be verified");
             return "redirect:/ops/corporates/" + corpId + "/view";
-
         }
 
         try {

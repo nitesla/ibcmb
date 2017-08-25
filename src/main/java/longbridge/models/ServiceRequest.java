@@ -23,7 +23,6 @@ public class ServiceRequest extends AbstractEntity {
     private RetailUser user;
     @ManyToOne
     private Corporate corporate;
-
     private String requestName;
 
     @Lob

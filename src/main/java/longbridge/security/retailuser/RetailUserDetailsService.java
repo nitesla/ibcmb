@@ -11,6 +11,7 @@ import longbridge.security.userdetails.CustomUserPrincipal;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -53,7 +54,7 @@ public class RetailUserDetailsService implements UserDetailsService {
             logger.trace("IP -> {} has been blocked", ip);
             throw new RuntimeException("blocked");
         }
-        sessionUtils.clearSession();
+//        sessionUtils.clearSession();
         RetailUser user = retailUserRepo.findFirstByUserNameIgnoreCase(s);
 
         if (user != null && failedLoginService.isBlocked(user)) throw new RuntimeException("user_blocked");
@@ -63,6 +64,8 @@ public class RetailUserDetailsService implements UserDetailsService {
             if (user != null && user.getUserType() == UserType.RETAIL
 
                     && user.getRole().getUserType().equals(UserType.RETAIL)) {
+                SecurityContextHolder.clearContext();
+                sessionUtils.clearSession();
                 return new CustomUserPrincipal(user);
             }
             throw new UsernameNotFoundException(s);

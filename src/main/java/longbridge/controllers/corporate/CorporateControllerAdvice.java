@@ -1,6 +1,5 @@
 package longbridge.controllers.corporate;
 
-import longbridge.dtos.SettingDTO;
 import longbridge.models.Account;
 import longbridge.models.CorpUserType;
 import longbridge.models.CorporateUser;
@@ -16,7 +15,10 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ModelAttribute;
 
 import java.security.Principal;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.List;
+import java.util.Objects;
 import java.util.stream.StreamSupport;
 
 /**
@@ -40,6 +42,8 @@ public class CorporateControllerAdvice {
     private  CorpTransferService corpTransferService;
     @Autowired
     private  BulkTransferService bulkTransferService;
+    @Autowired
+    private CorpUserVerificationService corpUserVerificationService;
 
     @Autowired
     public CorporateControllerAdvice(CorporateUserService corporateUserService, IntegrationService integrationService, TransferService transferService, AccountService accountService, ServiceReqConfigService reqConfigService, MessageService messageService) {
@@ -139,6 +143,10 @@ public class CorporateControllerAdvice {
 
             int pending = pendingRequests + pendingBulk;
             model.addAttribute("pending", pending);
+
+            int pendingVer = corpUserVerificationService.getTotalNumberPending();
+            if (pendingVer > 0)
+                model.addAttribute("corpPendingVerification", pendingVer);
         }
 
         model.addAttribute("corporateType", corporateUser.getCorporate().getCorporateType());
@@ -147,7 +155,7 @@ public class CorporateControllerAdvice {
     }
 
     @ModelAttribute
-    public String getCustmerAccounts(Model model, Principal principal) {
+    public String getCustomerAccounts(Model model, Principal principal) {
 
         if (principal == null || principal.getName() == null) {
             return "redirect:/login/corporate";
@@ -158,7 +166,7 @@ public class CorporateControllerAdvice {
         if (corporateUser != null) {
             List<Account> accountList = new ArrayList<>();
 
-            Iterable<Account> accounts = accountService.getAccountsForDebit(corporateUser.getCorporate().getCustomerId());
+            Iterable<Account> accounts = accountService.getAccountsForDebit(corporateUser.getCorporate().getAccounts());
 
             StreamSupport.stream(accounts.spliterator(), false)
                     .filter(Objects::nonNull)

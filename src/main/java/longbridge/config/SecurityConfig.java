@@ -55,11 +55,11 @@ public class SecurityConfig {
     public static class AdminUserConfigurationAdapter extends WebSecurityConfigurerAdapter {
         @Autowired
         @Qualifier("adminUserDetails")
-        UserDetailsService adminDetails;
+        private UserDetailsService adminDetails;
         @Autowired
-        BCryptPasswordEncoder bCryptPasswordEncoder;
+        private BCryptPasswordEncoder bCryptPasswordEncoder;
         @Autowired
-        AdminAuthenticationSuccessHandler adminAuthenticationSuccessHandler;
+        private AdminAuthenticationSuccessHandler adminAuthenticationSuccessHandler;
         //        @Autowired
 //        //@Qualifier("opAuthenticationSuccessHandler")
 //        @Qualifier("adminAuthenticationSuccessHandler")
@@ -132,10 +132,10 @@ public class SecurityConfig {
                     .maximumSessions(1)
                     .expiredUrl("/login/admin?expired=true")
                     .sessionRegistry(sessionRegistry()).and()
-                    .sessionFixation().migrateSession().sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
+                    .sessionFixation().newSession().sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
                     .and()
                     .logout().logoutUrl("/admin/logout").logoutSuccessUrl("/login/admin").deleteCookies("JSESSIONID")
-                    .and().requestCache()
+                    .invalidateHttpSession(true).and().requestCache()
                     .and().exceptionHandling().and().csrf().disable();
 
 
@@ -192,16 +192,19 @@ public class SecurityConfig {
                     .failureHandler(opAuthenticationFailureHandler)
 
                     .and()
-
+                    //.failur
                     .sessionManagement()
-                    .invalidSessionUrl("/invalidSession.html")
+
+                    .invalidSessionUrl("/login/ops")
                     .maximumSessions(1)
-                    .expiredUrl("/login/ops")
+                    .expiredUrl("/login/ops?expired=true")
                     .sessionRegistry(sessionRegistry()).and()
-                    .sessionFixation().migrateSession().invalidSessionUrl("/login/ops")
+                    .sessionFixation().newSession()
+                    .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
+
                     .and()
                     // logout
-                    .logout().logoutUrl("/ops/logout").logoutSuccessUrl("/login/ops").deleteCookies("JSESSIONID").and().exceptionHandling().and().csrf().disable()
+                    .logout().logoutUrl("/ops/logout").logoutSuccessUrl("/login/ops").deleteCookies("JSESSIONID").invalidateHttpSession(true).and().exceptionHandling().and().csrf().disable()
 
             ;
             // disable page caching
@@ -264,7 +267,7 @@ public class SecurityConfig {
                     .invalidSessionUrl("/login/retail")
                     .maximumSessions(1)
                     .expiredUrl("/login/retail?expired=true").sessionRegistry(sessionRegistry()).and()
-                    .sessionFixation().migrateSession()
+                    .sessionFixation().newSession()
                     .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
                     .invalidSessionUrl("/login/retail")
 
@@ -347,7 +350,7 @@ public class SecurityConfig {
                     .sessionManagement()
                     .invalidSessionUrl("/login/corporate")
                     .maximumSessions(1).expiredUrl("/login/corporate").sessionRegistry(sessionRegistry()).and()
-                    .sessionFixation().migrateSession()
+                    .sessionFixation().newSession()
                     .and()
                     // logout
                     .logout().logoutUrl("/corporate/logout").logoutSuccessUrl("/login/corporate").deleteCookies("JSESSIONID").invalidateHttpSession(true).and().exceptionHandling().and().csrf().disable();

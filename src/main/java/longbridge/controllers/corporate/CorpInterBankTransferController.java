@@ -292,7 +292,7 @@ public class CorpInterBankTransferController {
         if (user != null) {
             List<Account> accountList = new ArrayList<>();
 
-            Iterable<Account> accounts = accountService.getAccountsForDebit(user.getCorporate().getCustomerId());
+            Iterable<Account> accounts = accountService.getAccountsForDebit(user.getCorporate().getAccounts());
 
             StreamSupport.stream(accounts.spliterator(), false)
                     .filter(Objects::nonNull)

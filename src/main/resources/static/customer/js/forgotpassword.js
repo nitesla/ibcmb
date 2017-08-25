@@ -48,7 +48,7 @@ form.children("div").steps({
 
                 }
             }
-            // console.log("answer 2 "+secAnswer);
+            console.log("answer 2 "+secAnswer);
             return isValid && validateSecAnswer(secAnswer);
         }
         if(VALIDATE_GEN_PASS === currentIndex){
@@ -94,7 +94,7 @@ function validateSecAnswer(secAnswers){
     var username = $('#username').val();
     // console.log("validating "+secAnswer);
     $.ajax({
-        type:'GET',
+        type:'POST',
         url:"/rest/secAns",
         data: {username : username,secAnswers:secAnswer},
         async:false,
@@ -130,8 +130,9 @@ function sendGenPassword() {
     var username = $('input[name="username"]').val();
     var result="";
     $.ajax({
-        type:'GET',
-        url:"/rest/sendGenPass/"+username,
+        type:'POST',
+        url:"/rest/sendGenPass/username",
+        data:{username:username},
         async:false,
         cache:false,
         success:function(data1){
@@ -168,9 +169,9 @@ function validateGenPassword() {
     genpassword = genpassword.trim();
     
     $.ajax({
-        type:'GET',
-        data:{genpassword:genpassword},
-        url:"/rest/verGenPass/"+username+"/genpassword",
+        type:'POST',
+        data:{genpassword:genpassword,username:username},
+        url:"/rest/verGenPass/username/genpassword",
         async:false,
         cache:false,
         success:function(data1){
@@ -202,10 +203,10 @@ function validatePassword(password){
     var res;
      $('#myLoader').modal('show');
     $.ajax({
-        type:'GET',
+        type:'POST',
         cache:false,
-        data:{password:password},
-        url:"/rest/password/check/password/"+username,
+        data:{password:password, username:username},
+        url:"/rest/password/check",
         async:false,
         success:function(data1){
             res = ''+String(data1);
@@ -235,8 +236,9 @@ function validateToken(){
     var token = $('input[name="token"]').val();
     var result;
     $.ajax({
-        type:'GET',
-        url:"/rest/tokenAuth/"+username+"/"+token,
+        type:'POST',
+        url:"/rest/tokenAuth/username/token",
+        data:{username:username,token:token},
         async:false,
         
         success:function(data1){

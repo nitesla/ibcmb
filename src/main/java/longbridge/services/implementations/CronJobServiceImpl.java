@@ -126,7 +126,7 @@ public class CronJobServiceImpl implements CronJobService {
         String userBvn = retailUser.getBvn();
         if((userBvn == null)||userBvn.equalsIgnoreCase("")||(!userBvn.equalsIgnoreCase(details.getBvn()))){
             retailUser.setBvn(details.getBvn());
-//            logger.info("new bvn is {}",details.getBvn());
+            logger.info("new bvn is {}",details.getBvn());
             retailUserRepo.save(retailUser);
         }
     }
@@ -158,9 +158,9 @@ public class CronJobServiceImpl implements CronJobService {
         List<CorporateUser>corporateUsers =  corporateUserRepo.findAll();
         for (CorporateUser corporateUser:corporateUsers) {
             try {
-                CustomerDetails details = integrationService.viewCustomerDetailsByCif(corporateUser.getCorporate().getCustomerId());
-                updateCorporateUserEmail(corporateUser,details);
-                updateCorporateUserPhoneNo(corporateUser,details);
+//                CustomerDetails details = integrationService.viewCustomerDetailsByCif(corporateUser.getCorporate().getCustomerId());
+//                updateCorporateUserEmail(corporateUser,details);
+//                updateCorporateUserPhoneNo(corporateUser,details);
             } catch (Exception e) {
                 e.printStackTrace();
             }

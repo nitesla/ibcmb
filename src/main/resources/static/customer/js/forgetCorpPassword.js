@@ -91,7 +91,7 @@ function validateSecAnswer(secAnswers){
     var username = $('input[name="username"]').val();
     // console.log("validating "+secAnswer);
     $.ajax({
-        type:'GET',
+        type:'POST',
         url:"/rest/corp/secAns",
         data: {username : username,secAnswers:secAnswer},
         async:false,
@@ -159,9 +159,9 @@ function validateGenPassword() {
     var username = $('#username').val();
     var genpassword = $('#genpassword').val();
     $.ajax({
-        type:'GET',
-        data:{genpassword:genpassword},
-        url:"/rest/corporate/verGenPass/"+username+"/genpassword",
+        type:'POST',
+        data:{genpassword:genpassword,username:username},
+        url:"/rest/corporate/verGenPass/username/genpassword",
         async:false,
         success:function(data1){
             result = ''+String(data1);
@@ -190,7 +190,7 @@ function validatePassword(password){
     var username = $('#username').val();
     password = password.trim();
     $.ajax({
-        type:'GET',
+        type:'POST',
         data:{password:password,username:username},
         url:"/rest/corporate/password/check/password",
         async:false,
@@ -203,7 +203,6 @@ function validatePassword(password){
                  $('#myLoader').modal('hide');
                 $('#errorMess').text(res);
                 $('#myModalError').modal('show');
-
             }
         }
     });
@@ -222,12 +221,13 @@ function validateToken(){
     var token = $('input[name="token"]').val();
     var result;
     $.ajax({
-        type:'GET',
-        url:"/rest/corporate/tokenAuth/"+username+"/"+token,
+        type:'POST',
+        data:{username:username,token:token},
+        url:"/rest/corporate/tokenAuth/username/token",
         async:false,
         success:function(data1){
             result = ''+String(data1);
-            console.log("token response "+result)
+            // console.log("token response "+result);
             if(result == "true"){
 
             }else{

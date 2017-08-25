@@ -178,6 +178,27 @@ public class TransferUtils {
     }
 
 
+    public List<Account> getNairaAccounts(Long corpId) {
+
+        List<Account> accountList = new ArrayList<>();
+        if (corpId != null) {
+
+
+            Iterable<Account> accounts = accountService.getAccountsForDebit(corporateService.getAccounts(corpId));
+
+            StreamSupport.stream(accounts.spliterator(), false)
+                    .filter(Objects::nonNull)
+                    .filter(i -> "NGN".equalsIgnoreCase(i.getCurrencyCode()))
+
+                    .forEach(i -> accountList.add(i));
+
+        }
+        return accountList;
+    }
+
+
+
+
    
 
     public String getFee(String channel) {

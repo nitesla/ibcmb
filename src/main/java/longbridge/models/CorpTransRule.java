@@ -39,9 +39,6 @@ public class CorpTransRule extends AbstractEntity implements PrettySerializer{
     @ManyToMany
     private List<CorporateRole> roles;
 
-
-
-
     public BigDecimal getLowerLimitAmount() {
         return lowerLimitAmount;
     }
@@ -128,10 +125,16 @@ public class CorpTransRule extends AbstractEntity implements PrettySerializer{
 
                 }
                 gen.writeStringField("Currency", value.currency);
-                gen.writeBooleanField("Any Role", value.anyCanAuthorize);
+                if(value.anyCanAuthorize) {
+                    gen.writeStringField("Authorizers Required", "ANY");
+                }
+                else {
+                    gen.writeStringField("Authorizers Required", "ALL");
+
+                }
 
 
-                gen.writeObjectFieldStart("Approval Roles");
+                gen.writeObjectFieldStart("Authorizer Levels");
                 for(CorporateRole role : value.roles){
                     gen.writeObjectFieldStart(role.getId().toString());
                     //gen.writeStartObject();

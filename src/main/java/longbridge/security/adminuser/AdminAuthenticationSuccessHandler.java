@@ -60,7 +60,7 @@ public class AdminAuthenticationSuccessHandler extends SavedRequestAwareAuthenti
         setUseReferer(true);
         adminUserRepo.updateUserAfterLogin(authentication.getName());
 
-       sessionUtils.sendAlert(user);
+        sessionUtils.sendAlert(user);
         super.onAuthenticationSuccess(request, response, authentication);
 
     }
@@ -79,7 +79,7 @@ public class AdminAuthenticationSuccessHandler extends SavedRequestAwareAuthenti
     }
 
 
-    protected String determineTargetUrl(final Authentication authentication) {
+       protected String determineTargetUrl(final Authentication authentication) {
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
 
 
@@ -87,7 +87,7 @@ public class AdminAuthenticationSuccessHandler extends SavedRequestAwareAuthenti
         SettingDTO setting = configService.getSettingByName("ENABLE_ADMIN_2FA");
         boolean tokenAuth = false;
         if (setting != null && setting.isEnabled()) {
-            tokenAuth = (setting.getValue().equalsIgnoreCase("yes") ? true : false);
+            tokenAuth = ("YES".equalsIgnoreCase(setting.getValue()) ? true : false);
         }
 
         if (tokenAuth) {

@@ -156,6 +156,10 @@ public class CorpTransferController {
     public
     @ResponseBody
     String getAccountCurrency(@PathVariable String accountId) {
+
+        if("null".equals(accountId)){
+            return "N/A";
+        }
         return accountService.getAccountByAccountNumber(accountId).getCurrencyCode();
     }
 
@@ -208,16 +212,17 @@ public class CorpTransferController {
             }
 
 
-            if (request.getParameter("add") != null) {
+            if (request.getSession().getAttribute("add") != null) {
                 //checkbox  checked
                 if (request.getSession().getAttribute("Lbeneficiary") != null) {
                     CorpLocalBeneficiaryDTO l = (CorpLocalBeneficiaryDTO) request.getSession().getAttribute("Lbeneficiary");
                     try {
                         corpLocalBeneficiaryService.addCorpLocalBeneficiary(l);
                         request.getSession().removeAttribute("Lbeneficiary");
-                        // model.addAttribute("beneficiary", l);
                     } catch (InternetBankingException de) {
                         logger.error("Error occurred processing transfer");
+
+                    }finally {
 
                     }
                 }
@@ -382,6 +387,9 @@ public class CorpTransferController {
     @ResponseBody
     public String getBalance(@PathVariable String accountNumber) throws Exception {
 
+        if("null".equals(accountNumber)){
+            return "N/A";
+        }
         return transferUtils.getBalance(accountNumber);
     }
 

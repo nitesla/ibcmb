@@ -32,7 +32,7 @@ public class RunningJob implements Job {
             CompileJasper.compile();
 //            cronJobService.saveRunningJob("in-built",cronJobService.getCurrentExpression());
 //            cronJobService.updateAccountDetials();
-//            cronJobService.updateRetailUserDetails();
+            cronJobService.updateRetailUserDetails();
 //            cronJobService.updateCorporateUserDetails();
 //
 //            cronJobService.updateRunningJob();

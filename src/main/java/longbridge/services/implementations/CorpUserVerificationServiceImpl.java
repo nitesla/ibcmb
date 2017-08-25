@@ -150,6 +150,7 @@ public class CorpUserVerificationServiceImpl implements CorpUserVerificationServ
             }else {
                 userDTO.setCorpUserType(CorpUserType.INITIATOR);
             }
+
             CorporateUser user = corporateUserService.convertDTOToEntity(userDTO);
 
 
@@ -492,10 +493,10 @@ public class CorpUserVerificationServiceImpl implements CorpUserVerificationServ
     }
 
     @Override
-    public long getTotalNumberPending() {
+    public int getTotalNumberPending() {
         CustomUserPrincipal principal = (CustomUserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         CorporateUser doneBy = (CorporateUser) principal.getUser();
-        long totalNumberPending = corpUserVerificationRepo.countByInitiatedByAndCorpUserTypeAndStatus(doneBy.getUserName(),doneBy.getCorpUserType(), VerificationStatus.PENDING);
+        int totalNumberPending = corpUserVerificationRepo.countByCorpIdAndStatus(doneBy.getCorporate().getId(), VerificationStatus.PENDING);
         return totalNumberPending;
     }
 
@@ -528,7 +529,7 @@ public class CorpUserVerificationServiceImpl implements CorpUserVerificationServ
 
     @Override
     public Page<CorpUserVerificationDTO> getRequestsByCorpId(Long corpId, Pageable pageable) {
-        Page<CorpUserVerification> page = corpUserVerificationRepo.findByCorpId(corpId, pageable);
+        Page<CorpUserVerification> page = corpUserVerificationRepo.findByCorpIdOrderByStatusDesc(corpId, pageable);
         List<CorpUserVerificationDTO> dtOs = convertEntitiesToDTOs(page.getContent());
         long t =page.getTotalElements();
         Page<CorpUserVerificationDTO> pageImpl = new PageImpl<CorpUserVerificationDTO>(dtOs,pageable,t);

@@ -24,10 +24,10 @@ public class AdmControllerAdvice {
 
 
     @ModelAttribute
-    public String globallAttributes(Model model, Principal principal){
+    public String globalAttributes(Model model, Principal principal){
 
-        if(principal.getName()==null){
-            return "redirect://login/admin";
+        if(principal==null){
+            return "redirect:/login/admin";
         }
 
 

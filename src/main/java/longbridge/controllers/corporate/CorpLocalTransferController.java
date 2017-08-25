@@ -88,8 +88,6 @@ public class CorpLocalTransferController {
         if (servletRequest.getSession().getAttribute("Lbeneficiary") != null) {
             CorpLocalBeneficiaryDTO beneficiary = (CorpLocalBeneficiaryDTO) servletRequest.getSession().getAttribute("Lbeneficiary");
             model.addAttribute("beneficiary", beneficiary);
-            if (beneficiary.getId() == null)
-                model.addAttribute("newBen", "newBen");
 
         }
         if (result.hasErrors()) {
@@ -202,7 +200,7 @@ public class CorpLocalTransferController {
         CorporateUser user = corporateUserService.getUserByName(principal.getName());
 
 
-            model.addAttribute("accountList", transferUtils.getNairaAccounts(user.getCorporate().getCustomerId()));
+            model.addAttribute("accountList", transferUtils.getNairaAccounts(user.getCorporate().getId()));
 
 
 

@@ -86,7 +86,10 @@
                                             <label class="col-sm-2 control-label">Accounts <span
                                                     style="color: red"></span></label>
                                             <div class="col-sm-6" style="max-height: 250px; overflow-y: scroll;">
-                                                <input type="checkbox" id="checkAll"/> Select All
+                                                <p th:if="${not #lists.isEmpty(accounts)}"><input type="checkbox" id="checkAll"/> Select All</p>
+                                                <p th:if="${#lists.isEmpty(accounts)}" style="color: red">No Account Available</p>
+
+
                                                 <p th:each="account,index: ${accounts}">
                                                     <input type="hidden" id="accountSize" th:value="${index.size}"/>
                                                     <label class="checkbox-inline">
@@ -191,20 +194,6 @@
 
         });
 
-
-//        if(selectedAcct != ''){
-//            selectedAcct =  selectedAcct.replace('[','');
-//            selectedAcct =  selectedAcct.replace(']','');
-//            console.log("selectedAcct "+selectedAcct);
-//            var selectedAccts = selectedAcct.split(",");
-//            console.log("selectedAccts "+selectedAccts.length);
-//
-////            $('acct'+selectedAccts[1]).prop('checked', true);
-//            for(var i=0; i<selectedAccts.length;i++){
-//                console.log("selectedAccts "+selectedAccts[i]);
-//                $('#acct'+selectedAccts[i]).prop('checked', true);
-//            }
-//        }
     });
     $("#search").click(function (e) {
         e.preventDefault();

@@ -9,13 +9,11 @@ import longbridge.models.CorporateUser;
 import longbridge.models.Email;
 import longbridge.models.RetailUser;
 import longbridge.services.*;
-import net.sf.jasperreports.engine.util.JRStyledText;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -51,8 +49,6 @@ public class MainController {
     @Autowired
     private CorporateUserService corporateUserService;
     @Autowired
-    private CorporateService corporateService;
-    @Autowired
     private SecurityService securityService;
     @Autowired
     private ConfigurationService configurationService;
@@ -63,10 +59,6 @@ public class MainController {
 
 
 
-    @GetMapping("/test")
-    public String causeError(){
-        throw new RuntimeException("My caused error");
-    }
 
     @RequestMapping(value = {"/", "/home"})
     public String getHomePage(HttpSession session) {
@@ -86,9 +78,9 @@ public class MainController {
         return new ModelAndView("retpage1", "error", error);
     }
 
-    @RequestMapping(value = "/login/corporate", method = RequestMethod.GET)
+    @RequestMapping(value = "/login/corporate",  method = RequestMethod.GET)
     public ModelAndView getCorpLoginPage(@RequestParam Optional<String> error, @RequestParam Optional<HttpServletRequest> request) {
-        SecurityContextHolder.clearContext();
+//        SecurityContextHolder.clearContext();
         if (request.isPresent()) request.get().getSession().invalidate();
         //clearSession();
         return new ModelAndView("corppage1", "error", error);
@@ -97,7 +89,7 @@ public class MainController {
 
     @GetMapping(value = "/login/admin")
     public ModelAndView adminLogin() {
-
+        SecurityContextHolder.clearContext();
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("admlogin");
         return modelAndView;

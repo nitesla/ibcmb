@@ -143,8 +143,7 @@ public class IntegrationServiceImpl implements IntegrationService {
             if (toDate != null) params.put("toDate", formatter.format(toDate));
             params.put("numOfTxn", numOfTxn);
 
-
-
+            logger.info("params {}",params);
             statement = template.postForObject(uri, params, AccountStatement.class);
 
 
@@ -171,9 +170,6 @@ public class IntegrationServiceImpl implements IntegrationService {
             if (tranType != null)
                 params.put("tranType", tranType);
             if (toDate != null) params.put("toDate", formatter.format(toDate));
-
-
-
 
             statement = template.postForObject(uri, params, AccountStatement.class);
 

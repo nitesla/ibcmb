@@ -3,12 +3,9 @@ package longbridge.controllers;
 import longbridge.models.Email;
 import longbridge.services.MailService;
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.web.ErrorAttributes;
 import org.springframework.boot.autoconfigure.web.ErrorController;
-import org.springframework.mail.MailException;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.context.request.RequestAttributes;
@@ -32,7 +29,6 @@ public class ApplicationErrorController implements ErrorController {
     @Autowired
     private ErrorAttributes errorAttributes;
 
-    Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @RequestMapping(value = PATH)
     public String handleError(HttpServletRequest request) {
@@ -40,13 +36,22 @@ public class ApplicationErrorController implements ErrorController {
         RequestAttributes requestAttributes = new ServletRequestAttributes(request);
         Map<String, Object> errorDetails = errorAttributes.getErrorAttributes(requestAttributes, true);
 
+
+
+
+        String errorPath = (String) errorDetails.get("path");
+        String statusCode = errorDetails.get("status").toString();
         Object exception = errorDetails.get("exception");
+
+
         if (exception != null) {
             sendNotification(errorDetails);
         }
 
+        if("403".equals(statusCode)){
+            return "/error403";
+        }
 
-        String errorPath = (String) errorDetails.get("path");
         String subPath = StringUtils.substringAfter(errorPath, "/");
 
         if (subPath != null) {
@@ -61,8 +66,7 @@ public class ApplicationErrorController implements ErrorController {
             }
         }
 
-
-        return "/error";
+        return "/error500";
     }
 
 

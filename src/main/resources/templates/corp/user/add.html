@@ -60,17 +60,60 @@
                    <span>Make an Authorizer</span>
                </div>
 
-               <div id="level" class="form-group">
-                   <select class="form-control" th:field="*{corporateRoleId}">
-                       <option th:each="role : ${corporateRoles}" th:value="${role.id}" th:text="${role.name + ' ' + role.rank}"></option>
-                   </select>
+               <div id="level">
+                   <a id="mandate" href="javascript:void(0)" data-toggle="tooltip" data-placement="right" title="View Corporate Mandate">View Mandate</a>
+                   <div class="form-group">
+                       <select class="form-control" th:field="*{corporateRoleId}">
+                           <option th:each="role : ${corporateRoles}" th:value="${role.id}" th:text="${role.name + ' ' + role.rank}"></option>
+                       </select>
+                   </div>
                </div>
+
+
 
                 <div class="form-group">
                         <button class="btn btn-link required-step" type="submit">Create User</button>
                 </div>
            </form>
                    
+        </div>
+    </div>
+
+    <div id="myModal" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+            <!-- Modal content-->
+            <div class="modal-content no-bd-rad tokenBox" id="tokenmodal">
+                    <div class="modal-body no-bd-rad">
+                        <h3 class="tokenHeader"><span class='text-danger'>Transfer Rule</span></h3>
+                        <div class="margin-bottom">
+                            <table class="table" id="rules" width="100%">
+                                <thead>
+                                <tr>
+                                    <th>Lower Amount</th>
+                                    <th>Upper Limit</th>
+                                    <th>Currency</th>
+                                    <th>Authorizers</th>
+                                    <th>Required Authorizers</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:each="list : ${corpTransferRules}">
+                                    <td th:text="${list.lowerLimitAmount}"></td>
+                                    <td th:text="${list.upperLimitAmount}"></td>
+                                    <td th:text="${list.currency}"></td>
+                                    <td th:text="${list.roleNames}"></td>
+                                    <td th:if="${list.anyCanAuthorize}" th:text="ANY"></td>
+                                    <td th:unless="${list.anyCanAuthorize}" th:text="ALL"></td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                    </div>
+                    <div class="modal-footer no-bd-top ">
+                        <button type='submit' class="btn btn-link less-required token-btn" id="submitNo" data-dismiss="modal" value='Close'>Close</button>
+                    </div>
+            </div>
         </div>
     </div>
 
@@ -98,8 +141,24 @@
                 $("#level").hide();
             }
         });
+
+        $('#mandate').click(function () {
+            $('#myModal').modal('show');
+        })
     });
 </script>
+
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        var table = $('#rules').DataTable({
+            responsive: true,
+            "lengthMenu" : [ [ 5, 10, 20], [ 5, 10, 20 ] ],
+            "pagingType" : "simple_numbers",
+            "searching": false,
+            "dom": 'T<"clear">frtlp'
+        });
+        /*]]>*/
+    </script>
    
 </th:block>
 

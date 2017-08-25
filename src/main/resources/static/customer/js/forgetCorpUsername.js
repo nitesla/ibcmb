@@ -16,21 +16,22 @@ function validateAccountNo(corporateId,email){
     $('#myLoader').modal('show');
     var secQues;
     var email1 = email;
-    console.log("the corporateId "+corporateId);
+    // console.log("the corporateId "+corporateId);
     $.ajax({
-        type:'GET',
-        url:"/rest/corporate/"+email1+"/"+corporateId,
+        type:'POST',
+        url:"/rest/corporate/email/corporateId",
+        data:{email:email1,corporateId:corporateId},
         async:false,
         success:function(data1){
             entityDetails[0] = data1[0];
             entityDetails[1] = data1[1];
             entityDetails[2] = data1[2];
             entityDetails[3] = data1[3];
-            console.log("the data "+data1);
-            console.log("the entityDetails "+entityDetails);
+            // console.log("the data "+data1);
+            // console.log("the entityDetails "+entityDetails);
             if(data1[0] == '' && data1[1] == ''){
                 //invalid account number
-                document.getElementById("errorMess").textContent="Ensure you put in a valid account number. and email";
+                document.getElementById("errorMess").textContent="Ensure you put in a valid Corporate ID. and email";
                 $('#myModalError').modal('show');
                 $('#myLoader').modal('hide');
                 //alert("Account number not found");
@@ -55,9 +56,9 @@ var fetchQuestion = "";
             type: 'GET',
             async: false,
             success:function(data2){
-                console.log("kjhb "+data2);
+                // console.log("kjhb "+data2);
                 secQues = ''+String(data2);
-                console.log("sec question ",secQues);
+                // console.log("sec question ",secQues);
                 if(data2 == null || data2 ==''){
                     document.getElementById("errorMess").textContent="Could not get Security Question from server, please try again.";
                     $('#myModalError').modal('show');
@@ -65,7 +66,7 @@ var fetchQuestion = "";
                 }else{
                     fetchQuestion = "true";
                     // $('input[name=securityQuestion]').val(secQues);
-                    console.log(data2.length);
+                    // console.log(data2.length);
                     noOfQs = data2.length;
                     console.log("the noOfQs "+noOfQs);
                     var container = document.getElementById("secQuestionsDiv");
@@ -75,7 +76,7 @@ var fetchQuestion = "";
                         container.innerHTML += "<label>" + data2[i] + "</label>";
                         container.innerHTML += "</div>";
                         container.innerHTML += "<div class='form-group'>";
-                        container.innerHTML += "<input type='text' required name='corpSecurityAnswer" + i + "' id='corpSecurityAnswer" + i + "' class='my-select required' placeholder='Security Answer'/>";
+                        container.innerHTML += "<input type='text' autocomplete='off' required name='corpSecurityAnswer" + i + "' id='corpSecurityAnswer" + i + "' class='my-select required' placeholder='Security Answer'/>";
                         container.innerHTML += "</div>";
                     }
                     $('input[name=noOfSecQn]').val(data2.length);
@@ -84,7 +85,7 @@ var fetchQuestion = "";
         })
     }
 
-    console.log("fetchQuestion "+fetchQuestion);
+    // console.log("fetchQuestion "+fetchQuestion);
 
     if(fetchQuestion === "true"){
         return true ;
@@ -94,8 +95,8 @@ var fetchQuestion = "";
 }
 
 function validateSecAnswer(secAnswer){
-    console.log("the sec details "+entityDetails);
-    console.log("the sec answer "+secAnswer);
+    // console.log("the sec details "+entityDetails);
+    // console.log("the sec answer "+secAnswer);
     // var customerId = $('#customerId').val();
     $('#myLoader').modal('show');
     // console.log('customer id {}'+customerId);
@@ -238,9 +239,9 @@ form.children("div").steps({
             //form.submit();
             var i = 0;
             secAnswer = "";
-            console.log("noOfQuestion "+noOfQs);
+            // console.log("noOfQuestion "+noOfQs);
             for(var i = 0;i<parseInt(noOfQs);i++){
-                console.log("answer are"+$('#corpSecurityAnswer'+i).val());
+                // console.log("answer are"+$('#corpSecurityAnswer'+i).val());
                 if(i ===0){
                     secAnswer+=$('#corpSecurityAnswer'+i).val();
                 }else{

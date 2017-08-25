@@ -58,7 +58,7 @@
                     <li sec:authorize="hasAuthority('SETTING_CONFIG')"><a href="/admin/settings">System Settings</a></li>
                     <li><a href="/admin/checker">Maker Checker</a></li>
                     <li><a href="/admin/secquestions/">Security Questions</a></li>
-                    <li><a href="/admin/phishing/">Phishing Image</a></li>
+                    <!--<li><a href="/admin/phishing/">Phishing Image</a></li>-->
                     <li><a href="/admin/job">Batch Job</a></li>
                 </ul>
             </li>
@@ -79,7 +79,7 @@
 
                 </ul>
             </li>
-            <li><a><i class="fa fa-table"></i> Content Management <span class="fa fa-chevron-down"></span></a>
+            <li sec:authorize="hasAuthority('MANAGE_CONTENT')"><a><i class="fa fa-table"></i> Content Management <span class="fa fa-chevron-down"></span></a>
                 <ul class="nav child_menu">
                     <li><a href="/admin/faq">FAQ</a></li>
                     <li><a href="/admin/notification">System Notifications</a></li>
@@ -94,15 +94,15 @@
                     <!--<li><a href="/admin/token/synchronize">Synchronize Token</a></li>-->
                     <!--<li><a href="/admin/token/unlock">Unlock Token</a></li>-->
                 <!--</ul>-->
-            <!--</li>-->
-            <li><a><i class="fa fa-history"></i>Audit<span class="fa fa-chevron-down"></span></a>
+            </li>
+            <li sec:authorize="hasAuthority('VIEW_AUDIT')"><a><i class="fa fa-history"></i>Audit<span class="fa fa-chevron-down"></span></a>
                 <ul class="nav child_menu">
                     <li sec:authorize="hasAuthority('AUDIT_CONFIG')"><a href="/admin/audit">Configuration</a></li>
                     <li><a href="/admin/audit/revised/entity">Revision</a></li>
                 </ul>
             </li>
 
-            <li><a><i class="fa fa-check"></i> Verifications <span class="fa fa-chevron-down"></span></a>
+            <li sec:authorize="hasAuthority('VIEW_ADMIN_VERIFICATIONS')"><a><i class="fa fa-check"></i> Verifications <span class="fa fa-chevron-down"></span></a>
                 <ul class="nav child_menu">
                     <li><a href="/admin/verifications/verified">My Approvals </a></li>
                     <li><a href="/admin/verifications/operations">Pending  <button class="badge bg-orange"  th:text="${verificationNumber}"></button> </a></li>
@@ -191,7 +191,7 @@
                 <!--</ul>-->
             <!--</li>-->
 
-            <li><a><i class="fa fa-check"></i> Verifications <span class="fa fa-chevron-down"></span></a>
+            <li sec:authorize="hasAuthority('VIEW_OPS_VERIFICATIONS')"><a><i class="fa fa-check"></i> Verifications <span class="fa fa-chevron-down"></span></a>
                 <ul class="nav child_menu">
                     <li><a href="/ops/verifications/verified"> My Approvals </a></li>
                     <li><a href="/ops/verifications/operations"> Pending  <button class="badge bg-orange"  th:text="${verificationNumber}"></button> </a></li>

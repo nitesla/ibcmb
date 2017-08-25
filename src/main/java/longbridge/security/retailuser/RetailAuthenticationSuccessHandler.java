@@ -83,7 +83,7 @@ public class RetailAuthenticationSuccessHandler extends SimpleUrlAuthenticationS
         SettingDTO setting = configService.getSettingByName("ENABLE_RETAIL_2FA");
         boolean tokenAuth = false;
         if (setting != null && setting.isEnabled()) {
-            tokenAuth = (setting.getValue().equalsIgnoreCase("YES") ? true : false);
+            tokenAuth = ("YES".equalsIgnoreCase(setting.getValue()) ? true : false);
         }
 
         if (tokenAuth) {
