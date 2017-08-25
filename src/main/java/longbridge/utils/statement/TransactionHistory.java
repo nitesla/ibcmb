@@ -16,6 +16,8 @@ public class TransactionHistory
     private String tranType;
     private String tranId;
     private String balance;
+    private String debitAmount;
+    private String creditAmount;
 
     public String getNarration() {
         return narration;
@@ -65,6 +67,22 @@ public class TransactionHistory
         this.balance = balance;
     }
 
+    public String getDebitAmount() {
+        return debitAmount;
+    }
+
+    public void setDebitAmount(String debitAmount) {
+        this.debitAmount = debitAmount;
+    }
+
+    public String getCreditAmount() {
+        return creditAmount;
+    }
+
+    public void setCreditAmount(String creditAmount) {
+        this.creditAmount = creditAmount;
+    }
+
     @Override
     public String toString() {
         return "TransactionHistory{" +
@@ -74,6 +92,8 @@ public class TransactionHistory
                 ", tranType='" + tranType + '\'' +
                 ", tranId='" + tranId + '\'' +
                 ", balance='" + balance + '\'' +
+                ", debitAmount='" + debitAmount + '\'' +
+                ", creditAmount='" + creditAmount + '\'' +
                 '}';
     }
 }
