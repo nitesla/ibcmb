@@ -85,7 +85,7 @@ public class MakerCheckerAdvisor {
     @Around("isSaving() && inServiceLayer() && isInVerifiable2(verifier) && args(entity)")
     public Object proceed1(ProceedingJoinPoint pjp, AbstractEntity entity, Verifiable verifier) throws Throwable {
         System.out.println("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
-        log.info("Again testing that this save works");
+        log.debug("Again testing that this save works");
         entityManager.detach(entity);
         log.info("In operation [ " + verifier.operation() + "] ...{" + verifier.description() + "}");
 
@@ -172,7 +172,7 @@ public class MakerCheckerAdvisor {
     @Around("isDeleting() && inServiceLayer() && isInVerifiable2(verifier) && args(entity)")
     public Object proceed2(ProceedingJoinPoint pjp, AbstractEntity entity, Verifiable verifier) throws Throwable {
         System.out.println("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
-        log.info("Again testing that this delete works");
+        log.debug("Again testing that this delete works");
         entityManager.detach(entity);
         log.info("In operation [ " + verifier.operation() + "] ...{" + verifier.description() + "}");
 

@@ -30,10 +30,7 @@ public class AdminUserAdvisor {
 
 
     @Autowired
-    EntityManager entityManager;
-    private Logger log = LoggerFactory.getLogger(this.getClass());
-    @Autowired
-    private VerificationService verificationService;
+    private EntityManager entityManager;
 
     @Autowired
     private AdminUserService adminUserService;
@@ -42,15 +39,15 @@ public class AdminUserAdvisor {
     private AdminUserRepo adminUserRepo;
 
     @Autowired
-    PasswordPolicyService passwordPolicyService;
+    private PasswordPolicyService passwordPolicyService;
 
     @Autowired
-    PasswordEncoder passwordEncoder;
+    private PasswordEncoder passwordEncoder;
 
     @Autowired
-    VerificationRepo verificationRepo;
+    private VerificationRepo verificationRepo;
 
-    Logger logger = LoggerFactory.getLogger(this.getClass());
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
 
 
     @Pointcut("within( longbridge.services.implementations.VerificationServiceImpl)")
@@ -104,8 +101,6 @@ public class AdminUserAdvisor {
                 adminUserService.sendActivationMessage(adminUser, fullName,user.getUserName(),password);
             }
     	}
-
-
 
 
     	//general user creation
