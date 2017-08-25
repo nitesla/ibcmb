@@ -950,24 +950,24 @@ public class CorporateUserServiceImpl implements CorporateUserService {
             corporateUser.setEmail(user.getEmail());
             corporateUser.setStatus("A");
             corporateUser.setPhoneNumber(user.getPhoneNumber());
-            corporateUser.setCreatedOnDate(new Date());
             Role role = roleRepo.findOne(Long.parseLong(user.getRoleId()));
             corporateUser.setRole(role);
-            Corporate corp = corporateRepo.findOne(Long.parseLong(user.getCorporateId()));
-            corporateUser.setCorporate(corp);
-            CorporateUser corpUser = corporateUserRepo.save(corporateUser);
+            corporateUserRepo.save(corporateUser);
 
             if (user.isAuthorizer()) {
                 if (user.getCorporateRoleId() != null) {
                     CorporateRole corporateRole = getCorporateUserAuthorizerRole(corporateUser);
-                    if (!user.getCorporateRoleId().equals(corporateRole.getId())) {
-                        changeCorporateUserAuthorizerRole(corporateUser, corporateRole, user.getCorporateRoleId());
+
+                    if(corporateRole!=null) {
+                        if (!user.getCorporateRoleId().equals(corporateRole.getId())) {
+                            changeCorporateUserAuthorizerRole(corporateUser, corporateRole, user.getCorporateRoleId());
+                        }
+                    }
+                    else {
                         addCorporateUserToAuthorizerRole(corporateUser, user.getCorporateRoleId());
                     }
                 }
             }
-
-            createUserOnEntrustAndSendCredentials(corpUser);
 
             logger.info("New corporate user {} created", corporateUser.getUserName());
             return messageSource.getMessage("user.add.success", null, locale);
