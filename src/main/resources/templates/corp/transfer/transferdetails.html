@@ -18,7 +18,6 @@
                         <table class="table table-hover ">
                             <tr>
 
-
                                 <th>Source account</th>
                                 <td th:text="${transRequest.customerAccountNumber}"></td>
 
@@ -30,7 +29,6 @@
 
                             </tr>
                             <tr>
-
                                 <th>Amount</th>
                                 <td th:text="${transRequest.amount}"></td>
 
@@ -56,9 +54,9 @@
 
 
                                 <!--<span th:if="${corporateType=='SOLE'}" ><button type="submit" style="font-size: 13px !important;"  class="btn btn-link required-step trans-but my-buttons" target="_blank">Receipt</button></span>-->
-                                <span th:if="${corporateType=='SOLE'}">
-                                    <a style="font-size: 13px !important;" class="btn btn-link less-required trans-but my-buttons" th:href="@{/corporate/transfer/{tranId}/receipt(tranId=${transRequest.id})}">Home</a>
-                                </span>
+                                <!--<span th:if="${corporateType=='SOLE'}">-->
+                                    <!--<a style="font-size: 13px !important;" class="btn btn-link less-required trans-but my-buttons" th:href="@{/corporate/transfer/{tranId}/receipt(tranId=${transRequest.id})}">Home</a>-->
+                                <!--</span>-->
                                     <a style="font-size: 13px !important;" class="btn btn-link less-required trans-but my-buttons" th:href="@{/corporate/dashboard}" >Home</a>
                                     <a style="font-size: 13px !important;" class="btn btn-link less-required trans-but my-buttons" th:href="@{/corporate/transfer/}" >Make Another transfer</a>
                                 </div>

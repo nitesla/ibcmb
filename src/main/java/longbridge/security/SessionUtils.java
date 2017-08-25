@@ -1,6 +1,8 @@
 package longbridge.security;
 
 import longbridge.dtos.SettingDTO;
+import longbridge.models.AlertPreference;
+import longbridge.models.Code;
 import longbridge.models.CorporateUser;
 import longbridge.models.User;
 import longbridge.services.ConfigurationService;
@@ -45,7 +47,7 @@ public class SessionUtils {
     public void setTimeout(HttpSession session) {
         try {
             SettingDTO settingDTO = configService.getSettingByName("SESSION_TIMEOUT");
-            if ( settingDTO!=null && settingDTO.isEnabled()) {
+            if (settingDTO != null && settingDTO.isEnabled()) {
                 int timeout = Integer.parseInt(settingDTO.getValue());
                 session.setMaxInactiveInterval(timeout * 60);
             }
@@ -56,31 +58,35 @@ public class SessionUtils {
     }
 
     @Async
-    public  void sendAlert(User user) {
+    public void sendAlert(User user) {
         try {
             SettingDTO settingDTO = configService.getSettingByName("LOGIN_ALERT");
-            if (settingDTO!=null && settingDTO.isEnabled()) {
-                String preference = user.getAlertPreference().getCode();
-                String firstName= user.getFirstName();
-                String  lastName = user.getLastName();
-                if (firstName==null)firstName="";
-                if (lastName==null)lastName="";
-                String name = firstName + " "+ lastName;
-                if (name.isEmpty()) name=user.getUserName();
+            if (settingDTO != null && settingDTO.isEnabled()) {
+                Code alertPreference = user.getAlertPreference();
+                if (alertPreference == null) {
+                    return;
+                }
+                String preference = alertPreference.getCode();
+                String firstName = user.getFirstName();
+                String lastName = user.getLastName();
+                if (firstName == null) firstName = "";
+                if (lastName == null) lastName = "";
+                String name = firstName + " " + lastName;
+                if (name.isEmpty()) name = user.getUserName();
 
-                String alertMessage = String.format(messageSource.getMessage("login.alert.message", null, locale),name);
+                String alertMessage = String.format(messageSource.getMessage("login.alert.message", null, locale), name);
 
                 String alertSubject = String.format(messageSource.getMessage("login.alert.subject", null, locale));
                 if ("SMS".equalsIgnoreCase(preference)) {
 
-                    integrationService.sendSMS(alertMessage,user.getPhoneNumber(),  alertSubject);
+                    integrationService.sendSMS(alertMessage, user.getPhoneNumber(), alertSubject);
 
                 } else if ("EMAIL".equalsIgnoreCase(preference)) {
-                    mailService.send(user.getEmail(),alertSubject,alertMessage);
+                    mailService.send(user.getEmail(), alertSubject, alertMessage);
 
                 } else if ("BOTH".equalsIgnoreCase(preference)) {
-                    integrationService.sendSMS(alertMessage,user.getPhoneNumber(),  alertSubject);
-                    mailService.send(user.getEmail(),alertSubject,alertMessage);
+                    integrationService.sendSMS(alertMessage, user.getPhoneNumber(), alertSubject);
+                    mailService.send(user.getEmail(), alertSubject, alertMessage);
                 }
 
             }
@@ -100,7 +106,7 @@ public class SessionUtils {
                 if (LocalDate.now().isAfter(date) || LocalDate.now().isEqual(date)) {
 
                     session.setAttribute("expired-password", "expired-password");
-                 //   session.setMaxInactiveInterval(60);
+                    //   session.setMaxInactiveInterval(60);
 
 
                 }

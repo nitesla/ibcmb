@@ -2,7 +2,7 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="accountStatment" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="1466e9a2-d9da-4bad-8d18-3671e865c7c5">
 	<property name="ireport.zoom" value="1.1"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="117"/>
+	<property name="ireport.y" value="42"/>
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
 	<property name="ireport.scriptlethandling" value="0"/>
 	<property name="ireport.encoding" value="UTF-8"/>
@@ -71,6 +71,7 @@
 	<field name="tranAmount" class="java.lang.String">
 		<fieldDescription><![CDATA[tranAmount]]></fieldDescription>
 	</field>
+	<field name="tranId" class="java.lang.String"/>
 	<background>
 		<band splitType="Stretch"/>
 	</background>
@@ -84,7 +85,7 @@
 					<printWhenExpression><![CDATA[$V{PAGE_NUMBER}==1]]></printWhenExpression>
 				</reportElement>
 				<textElement textAlignment="Justified" verticalAlignment="Middle">
-					<font fontName="Arial" size="12" isBold="true" pdfFontName="Helvetica-Bold"/>
+					<font fontName="Georgia" size="12" isBold="true" pdfFontName="Helvetica-Bold"/>
 				</textElement>
 				<text><![CDATA[CUSTOMER STATEMENT]]></text>
 			</staticText>
@@ -102,7 +103,7 @@
 					<printWhenExpression><![CDATA[$V{PAGE_NUMBER}==1]]></printWhenExpression>
 				</reportElement>
 				<textElement>
-					<font fontName="Arial" size="9" isBold="true"/>
+					<font fontName="Fedra Sans Std Book LF" size="9" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Account No:]]></text>
 			</staticText>
@@ -111,7 +112,7 @@
 					<printWhenExpression><![CDATA[$V{PAGE_NUMBER}==1]]></printWhenExpression>
 				</reportElement>
 				<textElement>
-					<font fontName="Arial" size="9" isBold="false"/>
+					<font fontName="Fedra Sans Std Book LF" size="9" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Opening Balance:]]></text>
 			</staticText>
@@ -120,7 +121,7 @@
 					<printWhenExpression><![CDATA[$V{PAGE_NUMBER}==1]]></printWhenExpression>
 				</reportElement>
 				<textElement>
-					<font fontName="Arial" size="9"/>
+					<font fontName="Fedra Sans Std Book LF" size="9" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Total Debit:]]></text>
 			</staticText>
@@ -129,7 +130,7 @@
 					<printWhenExpression><![CDATA[$V{PAGE_NUMBER}==1]]></printWhenExpression>
 				</reportElement>
 				<textElement>
-					<font fontName="Arial" size="9"/>
+					<font fontName="Fedra Sans Std Book LF" size="9" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Total Credit:]]></text>
 			</staticText>
@@ -138,7 +139,7 @@
 					<printWhenExpression><![CDATA[$V{PAGE_NUMBER}==1]]></printWhenExpression>
 				</reportElement>
 				<textElement>
-					<font fontName="Arial" size="9"/>
+					<font fontName="Fedra Sans Std Book LF" size="9" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Closing Balance:]]></text>
 			</staticText>
@@ -147,7 +148,7 @@
 					<printWhenExpression><![CDATA[$V{PAGE_NUMBER}==1]]></printWhenExpression>
 				</reportElement>
 				<textElement>
-					<font fontName="Arial" size="9"/>
+					<font fontName="Fedra Sans Std Book LF" size="9" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Debit Count:]]></text>
 			</staticText>
@@ -156,7 +157,7 @@
 					<printWhenExpression><![CDATA[$V{PAGE_NUMBER}==1]]></printWhenExpression>
 				</reportElement>
 				<textElement>
-					<font fontName="Arial" size="9"/>
+					<font fontName="Fedra Sans Std Book LF" size="9" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Credit Count:]]></text>
 			</staticText>
@@ -165,7 +166,7 @@
 					<printWhenExpression><![CDATA[$V{PAGE_NUMBER}==1]]></printWhenExpression>
 				</reportElement>
 				<textElement>
-					<font fontName="Arial" size="9" isBold="true"/>
+					<font fontName="Fedra Sans Std Book LF" size="9" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Customer Name:]]></text>
 			</staticText>
@@ -174,7 +175,7 @@
 					<printWhenExpression><![CDATA[$V{PAGE_NUMBER}==1]]></printWhenExpression>
 				</reportElement>
 				<textElement>
-					<font fontName="Arial" size="9"/>
+					<font fontName="Fedra Sans Std Light LF" size="9"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{summary.address}]]></textFieldExpression>
 			</textField>
@@ -183,7 +184,7 @@
 					<printWhenExpression><![CDATA[$V{PAGE_NUMBER}==1]]></printWhenExpression>
 				</reportElement>
 				<textElement>
-					<font fontName="Arial" size="9" isBold="true"/>
+					<font fontName="Fedra Sans Std Book LF" size="9" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Address:]]></text>
 			</staticText>
@@ -192,7 +193,7 @@
 					<printWhenExpression><![CDATA[$V{PAGE_NUMBER}==1]]></printWhenExpression>
 				</reportElement>
 				<textElement>
-					<font fontName="Arial" size="9"/>
+					<font fontName="Fedra Sans Std Light LF" size="9"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{summary.customerName}]]></textFieldExpression>
 			</textField>
@@ -201,7 +202,7 @@
 					<printWhenExpression><![CDATA[$V{PAGE_NUMBER}==1]]></printWhenExpression>
 				</reportElement>
 				<textElement>
-					<font fontName="Arial" size="9"/>
+					<font fontName="Fedra Sans Std Light LF" size="9"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{summary.customerNo}]]></textFieldExpression>
 			</textField>
@@ -210,7 +211,7 @@
 					<printWhenExpression><![CDATA[$V{PAGE_NUMBER}==1]]></printWhenExpression>
 				</reportElement>
 				<textElement>
-					<font fontName="Arial" size="9" isBold="true"/>
+					<font fontName="Fedra Sans Std Book LF" size="9" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Currency]]></text>
 			</staticText>
@@ -219,7 +220,7 @@
 					<printWhenExpression><![CDATA[$V{PAGE_NUMBER}==1]]></printWhenExpression>
 				</reportElement>
 				<textElement>
-					<font fontName="Arial" size="9"/>
+					<font fontName="Fedra Sans Std Light LF" size="9"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{summary.openingBalance}]]></textFieldExpression>
 			</textField>
@@ -228,7 +229,7 @@
 					<printWhenExpression><![CDATA[$V{PAGE_NUMBER}==1]]></printWhenExpression>
 				</reportElement>
 				<textElement>
-					<font fontName="Arial" size="9"/>
+					<font fontName="Fedra Sans Std Light LF" size="9"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{summary.totalDebit}]]></textFieldExpression>
 			</textField>
@@ -237,7 +238,7 @@
 					<printWhenExpression><![CDATA[$V{PAGE_NUMBER}==1]]></printWhenExpression>
 				</reportElement>
 				<textElement>
-					<font fontName="Arial" size="9"/>
+					<font fontName="Fedra Sans Std Light LF" size="9"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{summary.totalCredit}]]></textFieldExpression>
 			</textField>
@@ -246,7 +247,7 @@
 					<printWhenExpression><![CDATA[$V{PAGE_NUMBER}==1]]></printWhenExpression>
 				</reportElement>
 				<textElement>
-					<font fontName="Arial" size="9"/>
+					<font fontName="Fedra Sans Std Light LF" size="9"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{summary.closingBalance}]]></textFieldExpression>
 			</textField>
@@ -255,7 +256,7 @@
 					<printWhenExpression><![CDATA[$V{PAGE_NUMBER}==1]]></printWhenExpression>
 				</reportElement>
 				<textElement>
-					<font fontName="Arial" size="9"/>
+					<font fontName="Fedra Sans Std Light LF" size="9"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{summary.debitCount}]]></textFieldExpression>
 			</textField>
@@ -264,7 +265,7 @@
 					<printWhenExpression><![CDATA[$V{PAGE_NUMBER}==1]]></printWhenExpression>
 				</reportElement>
 				<textElement>
-					<font fontName="Arial" size="9"/>
+					<font fontName="Fedra Sans Std Light LF" size="9"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{summary.creditCount}]]></textFieldExpression>
 			</textField>
@@ -273,7 +274,7 @@
 					<printWhenExpression><![CDATA[$V{PAGE_NUMBER}==1]]></printWhenExpression>
 				</reportElement>
 				<textElement>
-					<font fontName="Arial" size="9"/>
+					<font fontName="Fedra Sans Std Light LF" size="9"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{summary.currencyCode}]]></textFieldExpression>
 			</textField>
@@ -299,7 +300,7 @@
 					<printWhenExpression><![CDATA[$V{PAGE_NUMBER}==1]]></printWhenExpression>
 				</reportElement>
 				<textElement>
-					<font fontName="Arial" size="9" isBold="true"/>
+					<font fontName="Fedra Sans Std Book LF" size="9" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Account Summary]]></text>
 			</staticText>
@@ -364,7 +365,7 @@
 					<printWhenExpression><![CDATA[$V{PAGE_NUMBER}==1]]></printWhenExpression>
 				</reportElement>
 				<textElement>
-					<font fontName="Arial" size="9" isBold="true"/>
+					<font fontName="Fedra Sans Std Book LF" size="9" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Customer ID]]></text>
 			</staticText>
@@ -379,98 +380,105 @@
 		</band>
 	</pageHeader>
 	<columnHeader>
-		<band height="24" splitType="Stretch">
+		<band height="20" splitType="Stretch">
 			<staticText>
-				<reportElement key="staticText" x="126" y="0" width="189" height="17" uuid="821b847e-a390-4cde-92fa-b5b0853e57a6"/>
+				<reportElement key="staticText" x="1" y="2" width="162" height="17" uuid="821b847e-a390-4cde-92fa-b5b0853e57a6"/>
 				<textElement>
-					<font fontName="Arial" size="8"/>
+					<font fontName="Fedra Sans Std Book LF" size="10" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Naration]]></text>
 			</staticText>
 			<staticText>
-				<reportElement key="staticText" x="64" y="0" width="62" height="17" uuid="45a0ede3-0394-4076-a3ab-5e9755aa487e"/>
+				<reportElement key="staticText" x="215" y="2" width="50" height="17" uuid="45a0ede3-0394-4076-a3ab-5e9755aa487e"/>
 				<textElement>
-					<font fontName="Arial" size="8"/>
+					<font fontName="Fedra Sans Std Book LF" size="10" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Value Date]]></text>
 			</staticText>
 			<staticText>
-				<reportElement key="staticText" x="2" y="0" width="62" height="17" uuid="fb8a994e-8f99-4a58-883d-1d4576cc67c9"/>
+				<reportElement key="staticText" x="163" y="2" width="50" height="17" uuid="fb8a994e-8f99-4a58-883d-1d4576cc67c9"/>
 				<textElement>
-					<font fontName="Arial" size="8"/>
+					<font fontName="Fedra Sans Std Book LF" size="10" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Posted Date]]></text>
 			</staticText>
 			<staticText>
-				<reportElement key="staticText" x="458" y="1" width="92" height="17" uuid="68b5d44e-36a4-4e4c-bf8e-9922b34afc57"/>
+				<reportElement key="staticText" x="462" y="2" width="92" height="17" uuid="68b5d44e-36a4-4e4c-bf8e-9922b34afc57"/>
 				<textElement>
-					<font fontName="Arial" size="8"/>
+					<font fontName="Fedra Sans Std Book LF" size="10" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Balance]]></text>
 			</staticText>
 			<staticText>
-				<reportElement key="staticText" x="315" y="1" width="73" height="17" uuid="e234f08a-d5be-43f6-9ddb-51fd421b29ef"/>
+				<reportElement key="staticText" x="264" y="2" width="73" height="17" uuid="e234f08a-d5be-43f6-9ddb-51fd421b29ef"/>
 				<textElement>
-					<font fontName="Arial" size="8"/>
+					<font fontName="Fedra Sans Std Book LF" size="10" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Debit]]></text>
 			</staticText>
 			<staticText>
-				<reportElement key="staticText" x="388" y="1" width="70" height="17" uuid="942b0cf2-56a7-4ce1-8306-1597d547c0c0"/>
+				<reportElement key="staticText" x="336" y="2" width="70" height="17" uuid="942b0cf2-56a7-4ce1-8306-1597d547c0c0"/>
 				<textElement>
-					<font fontName="Arial" size="8"/>
+					<font fontName="Fedra Sans Std Book LF" size="10" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Credit]]></text>
 			</staticText>
 			<line>
-				<reportElement key="line-9" x="0" y="21" width="553" height="1" forecolor="#000066" uuid="c7c6ee26-432a-4ca7-a167-14eefb0a6807"/>
+				<reportElement key="line-9" x="0" y="19" width="553" height="1" forecolor="#000066" uuid="c7c6ee26-432a-4ca7-a167-14eefb0a6807"/>
 				<graphicElement>
 					<pen lineWidth="1.5" lineColor="#666666"/>
 				</graphicElement>
 			</line>
+			<staticText>
+				<reportElement x="411" y="2" width="50" height="16" uuid="e2c2fd70-52b0-45c5-9696-f5df699874dc"/>
+				<textElement>
+					<font fontName="Fedra Sans Std Book LF" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Tran ID]]></text>
+			</staticText>
 		</band>
 	</columnHeader>
 	<detail>
 		<band height="27" splitType="Stretch">
 			<textField pattern="dd-MMM-yyyy" isBlankWhenNull="true">
-				<reportElement key="textField" x="64" y="2" width="62" height="22" uuid="9244e473-4721-4359-8acd-dc93cbd6422f"/>
+				<reportElement key="textField" x="215" y="2" width="50" height="22" uuid="9244e473-4721-4359-8acd-dc93cbd6422f"/>
 				<textElement>
-					<font fontName="Arial" size="8"/>
+					<font fontName="Fedra Sans Std Light LF" size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{valueDate}]]></textFieldExpression>
 			</textField>
 			<textField pattern="dd-MMM-yyyy" isBlankWhenNull="false">
-				<reportElement key="textField" x="2" y="2" width="62" height="22" uuid="16c06de0-bae2-4f8b-8ab4-51f2380216d0"/>
+				<reportElement key="textField" x="163" y="2" width="50" height="22" uuid="16c06de0-bae2-4f8b-8ab4-51f2380216d0"/>
 				<textElement>
-					<font fontName="Arial" size="8"/>
+					<font fontName="Fedra Sans Std Light LF" size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{postDate}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="false">
-				<reportElement key="textField" x="126" y="2" width="188" height="22" uuid="4821fc56-f75a-4054-8b5f-9970f11c57ce"/>
+				<reportElement key="textField" x="1" y="2" width="162" height="22" uuid="4821fc56-f75a-4054-8b5f-9970f11c57ce"/>
 				<textElement>
-					<font fontName="Arial" size="8"/>
+					<font fontName="Fedra Sans Std Light LF" size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{narration}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="false">
-				<reportElement key="textField" x="458" y="2" width="92" height="22" uuid="db8e1df8-1997-4eb2-8421-41c74faad7d9"/>
+				<reportElement key="textField" x="462" y="2" width="92" height="22" uuid="db8e1df8-1997-4eb2-8421-41c74faad7d9"/>
 				<textElement>
-					<font fontName="Arial" size="8"/>
+					<font fontName="Fedra Sans Std Light LF" size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA[new java.text.DecimalFormat("#,##0.00").format(Double.valueOf($F{accountBalance}))]]></textFieldExpression>
 			</textField>
 			<textField pattern="#,##0.00" isBlankWhenNull="false">
-				<reportElement key="textField" x="385" y="2" width="73" height="22" uuid="5a8cee88-9182-4a84-b406-64aeb6ac8c03"/>
+				<reportElement key="textField" x="335" y="2" width="73" height="22" uuid="5a8cee88-9182-4a84-b406-64aeb6ac8c03"/>
 				<textElement>
-					<font fontName="Arial" size="8"/>
+					<font fontName="Fedra Sans Std Light LF" size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{tranType}.contentEquals("C") ? new java.text.DecimalFormat("#,##0.00").format(Double.valueOf($F{tranAmount})): 0.0]]></textFieldExpression>
 			</textField>
 			<textField pattern="#,##0.00" isBlankWhenNull="false">
-				<reportElement key="textField" x="314" y="2" width="71" height="22" uuid="2da58177-7a5a-4faa-b153-12485e944145"/>
+				<reportElement key="textField" x="265" y="2" width="71" height="22" uuid="2da58177-7a5a-4faa-b153-12485e944145"/>
 				<textElement>
-					<font fontName="Arial" size="8"/>
+					<font fontName="Fedra Sans Std Light LF" size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{tranType}.contentEquals("D") ? new java.text.DecimalFormat("#,##0.00").format(Double.valueOf($F{tranAmount})): 0.0]]></textFieldExpression>
 			</textField>
@@ -480,6 +488,13 @@
 					<pen lineWidth="0.5" lineColor="#666666"/>
 				</graphicElement>
 			</line>
+			<textField>
+				<reportElement x="408" y="2" width="53" height="20" uuid="ae779fbb-7011-4b0c-8f4b-2718c96a6e39"/>
+				<textElement>
+					<font fontName="Fedra Sans Std Light LF" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{tranId}]]></textFieldExpression>
+			</textField>
 		</band>
 	</detail>
 	<columnFooter>
@@ -491,7 +506,7 @@
 				<staticText>
 					<reportElement key="staticText" x="246" y="74" width="151" height="15" forecolor="#272765" uuid="95e4c377-50d2-48f6-b116-4cb7524777d1"/>
 					<textElement>
-						<font fontName="Arial" size="7" isBold="true"/>
+						<font fontName="Fedra Sans Std Light LF" size="7" isBold="true"/>
 					</textElement>
 					<text><![CDATA[Coronation Merchant Bank]]></text>
 				</staticText>
@@ -499,56 +514,56 @@
 			<staticText>
 				<reportElement key="staticText" x="412" y="73" width="100" height="16" forecolor="#666666" uuid="71590930-3e53-4c6e-a517-935f9a80e362"/>
 				<textElement>
-					<font size="7"/>
+					<font fontName="Fedra Sans Std Light LF" size="7"/>
 				</textElement>
 				<text><![CDATA[T +234(0)14614892]]></text>
 			</staticText>
 			<staticText>
 				<reportElement key="staticText" x="412" y="89" width="100" height="15" forecolor="#666666" uuid="2babaf44-e6ef-4ddd-a46c-2bb012219a53"/>
 				<textElement>
-					<font size="7"/>
+					<font fontName="Fedra Sans Std Light LF" size="7"/>
 				</textElement>
 				<text><![CDATA[F +234(0)14614896]]></text>
 			</staticText>
 			<staticText>
 				<reportElement key="staticText" x="412" y="104" width="140" height="15" forecolor="#666666" uuid="31b2f7fa-8f3a-4b9a-bc93-28ac29ac46b4"/>
 				<textElement>
-					<font size="7"/>
+					<font fontName="Fedra Sans Std Light LF" size="7"/>
 				</textElement>
 				<text><![CDATA[E inquiries@coronationmb.com]]></text>
 			</staticText>
 			<textField isBlankWhenNull="false">
 				<reportElement key="textField-1" x="0" y="74" width="126" height="15" uuid="2ea2d243-3b23-4efe-808d-86f007562f53"/>
 				<textElement>
-					<font fontName="Calibri" size="7"/>
+					<font fontName="Fedra Sans Std Light LF" size="7"/>
 				</textElement>
 				<textFieldExpression><![CDATA["Page "+ $V{PAGE_NUMBER}]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement key="staticText" x="246" y="89" width="151" height="15" forecolor="#666666" uuid="f0eec0ee-dcbf-4dcf-8781-824fc6992c19"/>
 				<textElement>
-					<font fontName="Arial" size="7" isBold="true"/>
+					<font fontName="Fedra Sans Std Light LF" size="7" isBold="true"/>
 				</textElement>
 				<text><![CDATA[10, Amodu Ojukutu Street]]></text>
 			</staticText>
 			<staticText>
 				<reportElement key="staticText" x="246" y="104" width="151" height="15" forecolor="#666666" uuid="4d31b6a1-a46c-4e16-8df6-36b898d543c0"/>
 				<textElement>
-					<font fontName="Arial" size="7" isBold="true"/>
+					<font fontName="Fedra Sans Std Light LF" size="7" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Victoria Island Lagos,  Nigeria]]></text>
 			</staticText>
 			<staticText>
 				<reportElement key="staticText" x="246" y="119" width="116" height="15" forecolor="#666666" uuid="f6a610bb-7951-4834-8db8-c6396c5e71be"/>
 				<textElement>
-					<font fontName="Arial" size="7" isBold="true"/>
+					<font fontName="Fedra Sans Std Light LF" size="7" isBold="true"/>
 				</textElement>
 				<text><![CDATA[www.coronationmb.com]]></text>
 			</staticText>
 			<staticText>
 				<reportElement key="staticText" x="246" y="134" width="116" height="15" forecolor="#666666" uuid="00967316-6107-4faf-959b-c3d18b53dc78"/>
 				<textElement>
-					<font fontName="Arial" size="7" isBold="true"/>
+					<font fontName="Fedra Sans Std Light LF" size="7" isBold="true"/>
 				</textElement>
 				<text><![CDATA[RC No. 201738]]></text>
 			</staticText>

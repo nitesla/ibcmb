@@ -25,7 +25,9 @@
                                <input type="text" data-date-format="dd-mm-yyyy" class="form-control datepicker" id="start" name="fromDate" placeholder="Start date" required="required" />
                                <span class="input-group-addon no-border">to</span>
                                <input type="text"  data-date-format="dd-mm-yyyy" class="form-control datepicker" name="toDate" id="endDate" placeholder="End date" required="required" />
+                           <!--<span id="emptyDateError"   class="error">Start and end date is mandatory</span>-->
                            </div>
+
                        </div>
                        <div class="form-group col-md-6 col-sm-6">
                            <label>Transaction Type</label>
@@ -127,6 +129,7 @@
         $('#btn-print').hide();
         $('#tranDetails_length').hide();
         $('#tranDetails_paginate').hide();
+        $('#emptyDateError').hide();
 //        $('.datepicker').datepicker({ dateFormat: 'dd-mm-yy' });//
 //        $('#start').datepicker({
 //            onSelect: function(dateText, inst) {
@@ -327,59 +330,67 @@
 //        $('#tranDetails_paginate').hide();
 //        $('#tranDetails_length').hide();
         $("#btn-find").on("click", function(e) {
-//            console.log("fromDate "+$('[name=fromDate]').val()+"to "+$('[name=toDate]').val());
-//            console.log();
-            if(daydiff(parseDate($('[name=fromDate]').val()), parseDate($('[name=toDate]').val())) >= 0) {
-                var table = $('#tranDetails').DataTable();
-                var row = table.rows().remove().draw();
-                e.preventDefault();
-                $.ajax({
-                    "url": "viewstatement/display/data",
-                    "type": "GET",
-                    "data": {
-                        acctNumber: $('[name=acctNumber]').val(),
-                        fromDate: $('[name=fromDate]').val(),
-                        toDate: $('[name=toDate]').val(),
-                        tranType: $('[name=tranType]').val()
-                    }, success: function (result) {
+            console.log("fromDate "+$('[name=fromDate]').val()+"to "+$('[name=toDate]').val());
+//            console.log("dateDifference "+dateDifference(parseDate($('#start').val()), parseDate($('#endDate').val())));
+if($('#start').val() != '' && $('#endDate').val() !='' ) {
+//    $('#emptyDateError').hide();
+    if (dateDifference(parseDate($('#start').val()), parseDate($('#endDate').val()))) {
+        var table = $('#tranDetails').DataTable();
+        var row = table.rows().remove().draw();
+        e.preventDefault();
+        $.ajax({
+            "url": "viewstatement/display/data",
+            "type": "GET",
+            "data": {
+                acctNumber: $('[name=acctNumber]').val(),
+                fromDate: $('[name=fromDate]').val(),
+                toDate: $('[name=toDate]').val(),
+                tranType: $('[name=tranType]').val()
+            }, success: function (result) {
 //                    resetButton();
-                        $('#btn-print').hide();
+                $('#btn-print').hide();
 //                        console.log("the output is " + result.details);
-                        if (result.details != null && result.details != "null") {
-                            $('#btn-print').show();
-                            var contactsTab2 = $('#tranDetails').DataTable();
-                            for (var key in result.details) {
-                                if (result.details.hasOwnProperty(key)) {
-                                    var od = result.details[key];
+                if (result.details != null && result.details != "null") {
+                    $('#btn-print').show();
+                    var contactsTab2 = $('#tranDetails').DataTable();
+                    for (var key in result.details) {
+                        if (result.details.hasOwnProperty(key)) {
+                            var od = result.details[key];
 //                                console.log("the key "+key+" value "+result[key]);
-                                    contactsTab2.row.add(od);
-                                }
+                            contactsTab2.row.add(od);
+                        }
 
-                                contactsTab2.draw();
+                        contactsTab2.draw();
 //
-                            }
-
-                        }
-                        if (result.moreData === "Y") {
-                            $('#next').show();
-
-                        } else {
-                            $('#next').hide();
-                        }
-                        $('#previous').hide();
-                    },
-                    error: function (dd) {
-//                        console.log("error")
-                        bootbox.alert("<div style='text-align: center'>Service not available</div>");
-                        return false;
                     }
 
-                });
-            }else{
-                bootbox.alert("<div style='text-align: center'>Start date cannot be less than end date</div>");
+                }
+                if (result.moreData === "Y") {
+                    $('#next').show();
+
+                } else {
+                    $('#next').hide();
+                }
+                $('#previous').hide();
+            },
+            error: function (dd) {
+//                        console.log("error")
+                var contactsTab2 = $('#tranDetails').DataTable();
+                var row  = contactsTab2.rows().remove().draw();
+
+                bootbox.alert("<div style='text-align: center'>Service not available</div>");
                 return false;
             }
 
+        });
+    } else {
+        var contactsTab2 = $('#tranDetails').DataTable();
+        var row  = contactsTab2.rows().remove().draw();
+        $('#btn-print').hide();
+        bootbox.alert("<div style='text-align: center'>Start date cannot be less than end date</div>");
+        return false;
+    }
+}
 
         });
         $('#previous').hide();
@@ -404,12 +415,25 @@
     });
     function parseDate(str) {
         var mdy = str.split('-');
-        console.log("the spilted");
-        return new Date(mdy[2], mdy[0]-1, mdy[1]);
+        return mdy;
     }
-
-    function daydiff(first, second) {
-        return Math.round((second-first)/(1000*60*60*24));
+    function dateDifference(first, second) {
+        var yearsDiff = second[2]-first[2];
+        var monthDiff = second[1]-first[1];
+        var dayDiff = second[0]-first[0];
+//        console.log("yearsDiff "+yearsDiff+" monthDiff "+monthDiff+" dayDiff "+dayDiff);
+        if(yearsDiff==0){
+            if(monthDiff ==0){
+                if(dayDiff >=0){
+                    return true;
+                }
+            }else if(monthDiff >0){
+                return true;
+            }
+        }else if(yearsDiff >0){
+            return true;
+        }
+        return false;
     }
 
 function nextData() {

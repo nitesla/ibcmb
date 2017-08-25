@@ -105,7 +105,7 @@ public class CustomUserPrincipal implements CustomeUserDetails {
 		roles.getPermissions().forEach(i ->{
 
 
-					if(user.getUserType()!=null  && i.getUserType()!=null &&   (i.getUserType().equals(user.getUserType()) ))
+					if(user.getUserType()!=null  && i.getUserType()!=null &&   (i.getUserType().equals(user.getUserType().toString()) ))
 						privileges.add(i.getCode());
 
 
