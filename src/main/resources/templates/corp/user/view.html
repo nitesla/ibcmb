@@ -70,14 +70,14 @@
             "ajax" : url,
             "dom": 'T<"clear">frtlp',
             "columns" : [
-                { "data": "Username" },
+                { "data": "userName" },
                 { "data": "firstName" },
                 { "data": "lastName" },
                 { "data": "role" },
                 { "data": "status" }
             ],
             "columnDefs" : [ {
-                "targets" : 3,
+                "targets" : 4,
                 "data" : "status",
                 "render" : function(data, type,full, meta) {
                     if (type === 'display') {
