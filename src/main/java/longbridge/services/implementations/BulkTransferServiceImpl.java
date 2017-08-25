@@ -195,7 +195,7 @@ public class BulkTransferServiceImpl implements BulkTransferService {
                 return makeBulkTransferRequest(bulkTransfer);
             }
 
-            return messageSource.getMessage("transfer.auth.failure", null, locale);
+            return messageSource.getMessage("transfer.auth.success", null, locale);
         } catch (InternetBankingTransferException te) {
             throw te;
         } catch (Exception e) {
