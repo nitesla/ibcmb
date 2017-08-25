@@ -136,7 +136,13 @@ public class VerificationServiceImpl implements VerificationService {
 
                 CorporateUserDTO corpUser = mapper.readValue(verification.getOriginalObject(), CorporateUserDTO.class);
                 corporateUserService.addAuthorizer(corpUser);
-            } else {
+            }
+            else if ("UPDATE_USER_FROM_CORPORATE_ADMIN".equals(verification.getOperation())) {
+
+                CorporateUserDTO corpUser = mapper.readValue(verification.getOriginalObject(), CorporateUserDTO.class);
+                corporateUserService.updateUserFromCorpAdmin(corpUser);
+            }
+            else {
                 clazz = Class.forName(PACKAGE_NAME + verification.getEntityName());
                 object = mapper.readValue(verification.getOriginalObject(), clazz);
                 entityManager.merge(object);
