@@ -33,6 +33,7 @@
                         <table class="table" id="users">
                             <thead>
                             <tr>
+                                <th>Username</th>
                                 <th>First Name</th>
                                 <th>Last Name</th>
                                 <th>Role</th>
@@ -69,6 +70,7 @@
             "ajax" : url,
             "dom": 'T<"clear">frtlp',
             "columns" : [
+                { "data": "Username" },
                 { "data": "firstName" },
                 { "data": "lastName" },
                 { "data": "role" },

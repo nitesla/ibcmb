@@ -240,7 +240,7 @@ public class CorpUserManagementController {
                 corporateUserDTO.setCorporateRole(corporateRole.getName() + " " + corporateRole.getRank());
             }
 
-            if (corporateUserDTO.isAuthorizer() == corporateUser.isAuthorizer()){
+            if (corporateUserDTO.isAuthorizer() == corporateUser.isAuthorizer() && !corporateUserDTO.getCorporateRoleId().equals(corporateUser.getCorporateRoleId())){
 
                 logger.info("GOT HERE {} ", corporateUserDTO.getCorporateRoleId());
                 if (makerCheckerService.isEnabled("UPDATE_USER_FROM_CORPORATE_ADMIN")){
