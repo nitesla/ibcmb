@@ -45,7 +45,6 @@ public class BulkTransferServiceImpl implements BulkTransferService {
 
     private BulkTransferJobLauncher jobLauncher;
 
-    private ModelMapper modelMapper;
     private Locale locale = LocaleContextHolder.getLocale();
 
     @Autowired
@@ -54,8 +53,6 @@ public class BulkTransferServiceImpl implements BulkTransferService {
     @Autowired
     private CreditRequestRepo creditRequestRepo;
 
-    @Autowired
-    private CorporateRepo corporateRepo;
 
     @Autowired
     private ConfigurationService configService;
@@ -71,12 +68,11 @@ public class BulkTransferServiceImpl implements BulkTransferService {
 
 
     @Autowired
-    public BulkTransferServiceImpl(BulkTransferRepo bulkTransferRepo, ModelMapper modelMapper
+    public BulkTransferServiceImpl(BulkTransferRepo bulkTransferRepo
             , BulkTransferJobLauncher jobLauncher, MessageSource messageSource
 
     ) {
         this.bulkTransferRepo = bulkTransferRepo;
-        this.modelMapper = modelMapper;
         this.jobLauncher = jobLauncher;
         this.messageSource = messageSource;
     }

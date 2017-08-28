@@ -1,6 +1,5 @@
 package longbridge.services.implementations;
 
-import longbridge.api.NEnquiryDetails;
 import longbridge.dtos.LocalBeneficiaryDTO;
 import longbridge.exception.DuplicateObjectException;
 import longbridge.exception.InternetBankingException;
@@ -103,6 +102,12 @@ public class LocalBeneficiaryServiceImpl implements LocalBeneficiaryService {
     @Override
     public Iterable<LocalBeneficiary> getBankBeneficiaries(RetailUser user) {
         return localBeneficiaryRepo.findByUserAndBeneficiaryBankIgnoreCase(user,bankCode );
+    }
+
+    @Override
+    public boolean doesBeneficiaryExist(RetailUser user, LocalBeneficiaryDTO beneficiaryDTO) {
+        LocalBeneficiary localBeneficiary = localBeneficiaryRepo.findByUser_IdAndAccountNumber(user.getId(), beneficiaryDTO.getAccountNumber());
+        return localBeneficiary!=null;
     }
 
     @Override

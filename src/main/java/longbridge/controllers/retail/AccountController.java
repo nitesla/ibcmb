@@ -447,7 +447,7 @@ public class AccountController {
 			model.addAttribute("acct", id);
 			model.addAttribute("transRequestList", transRequestList);
 			model.addAttribute("accountList", accountList);
-			logger.info("Last 10 Transaction {}", transRequestList);
+//			logger.info("Last 10 Transaction {}", transRequestList);
 			return "cust/account/accountstatement";
 		}
 		return "redirect:/retail/dashboard";
@@ -710,7 +710,7 @@ public class AccountController {
 		SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy");
 		try {
 //			JasperReportsPdfView view = new JasperReportsPdfView();
-//			view.setUrl("classpath:jasperreports/rpt_account-statement4.jrxml");
+//			view.setUrl("classpath:jasperreports/rpt_account-statement.jrxml");
 //			view.setApplicationContext(appContext);
 			from = format.parse(fromDate);
 			to = format.parse(toDate);
@@ -771,6 +771,7 @@ public class AccountController {
 			Date today = new Date();
 			modelMap.put("today", today);
 			modelMap.put("imagePath", imagePath);
+//			ModelAndView modelAndView = new ModelAndView(view, modelMap);
 			ModelAndView modelAndView = new ModelAndView("rpt_account-statement4", modelMap);
 			return modelAndView;
 		} catch (ParseException e) {

@@ -52,6 +52,8 @@ public interface LocalBeneficiaryService {
     Iterable<LocalBeneficiary> getLocalBeneficiaries(RetailUser user);
     Iterable<LocalBeneficiary> getBankBeneficiaries(RetailUser user);
 
+    boolean doesBeneficiaryExist(RetailUser user, LocalBeneficiaryDTO beneficiaryDTO);
+
 
     List<LocalBeneficiaryDTO> convertEntitiesToDTOs(Iterable<LocalBeneficiary> localBeneficiaries);
 

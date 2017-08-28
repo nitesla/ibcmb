@@ -1,4 +1,4 @@
-a<!DOCTYPE html>
+<!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head th:replace="layout :: site-head">
 </head>
@@ -48,6 +48,8 @@ a<!DOCTYPE html>
                             </div>
 
                             <div class="x_content">
+                                <div class="ibox-content">
+
                                 <form method="post" th:action="@{/ops/corporates/rules/users}" id="ruleForm"
                                       class="form-horizontal">
 
@@ -104,6 +106,7 @@ a<!DOCTYPE html>
                                     </div>
 
                                 </form>
+                                </div>
                             </div>
                         </div>
                     </div>

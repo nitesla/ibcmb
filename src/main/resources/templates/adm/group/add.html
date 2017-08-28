@@ -79,6 +79,9 @@
 											<fieldset>
 												<legend>Contacts</legend>
 
+												<p id="errorDisplay" style="display: none; color: red"></p>
+
+
 												<div class="col-md-6 col-sm-6 col-xs-12">
 													<button type="submit" id="button_add_op" class="btn-xs btn-default btn">
 														<i class="fa fa-user"></i> Add Internal
@@ -205,6 +208,8 @@ $(document).ready(function() {
     $('#button_add').on('click', function (e) {
 
         e.preventDefault()
+        $("#errorDisplay").hide();
+
         var options = {
             url: "/admin/groups/contact/new",
             title: 'Add ',
@@ -218,21 +223,28 @@ $(document).ready(function() {
                     contactsTab = $('#mytab').DataTable();
                     fname = $("input[name='firstName']").val();
                     lname = $("input[name='lastName']").val();
-                    em = $("input[name='email']").val();
+                    eMail = $.trim($("input[name='email']").val());
                     od = {
                         'DT_RowId': null,
                         'firstName': fname,
                         'lastName': lname,
-                        'email': em,
+                        'email': eMail,
                         'external': true
                     };
-                    validateDuplicateEmail(em);
-                    if(duplicateEmail==false) {
-                        contactsTab.row.add(od);
-                        contactsTab.draw();
-                    }
 
-                    duplicateEmail = false;
+                    if(eMail!="") {
+                        validateDuplicateEmail(eMail);
+                        if (duplicateEmail == false) {
+                            contactsTab.row.add(od);
+                            contactsTab.draw();
+                        }
+                        else {
+                            var msg = eMail + " has already been added";
+                            $("#errorDisplay").html(msg);
+                            $("#errorDisplay").show();
+                        }
+                        duplicateEmail = false;
+                    }
 
                 }
             }, {
@@ -273,6 +285,8 @@ $(document).ready(function() {
     
     $('#button_add_op').click(function(e) {
         e.preventDefault()
+        $("#errorDisplay").hide();
+
         var options = {
             url: "/admin/groups/find",
             title: 'Select ',

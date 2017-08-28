@@ -247,15 +247,8 @@ public class PasswordPolicyService {
         if (setting != null && setting.isEnabled()) {
 
             int days = NumberUtils.toInt(setting.getValue());
-            logger.info("Password auto reset is enabled with days {}",days);
-
             LocalDateTime dateToExpire = LocalDateTime.fromDateFields(expiryDate);
-
-            logger.info("Date to expire is {}",dateToExpire);
             LocalDateTime dateToStartNotifying = dateToExpire.minusDays(days);
-
-            logger.info("Date to start notifying is {}",dateToStartNotifying);
-
             LocalDateTime now = LocalDateTime.now();
 
             if (now.isAfter(dateToStartNotifying) && !now.isAfter(dateToExpire)) {
