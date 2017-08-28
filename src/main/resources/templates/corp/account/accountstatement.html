@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{corp-layout}">
 
-<body onload="javascript:var bread = [['Home', '/retail/dashboard'],['Accounts','/retail/account/customize'],['Last 10 Transactions', '#']];currentBar('Last 10 Transactions');breadCrumb(bread)">
+<body onload="javascript:var bread = [['Home', '/corporate/dashboard'],['Accounts','/corporate/account/customize'],['Last 10 Transactions', '#']];currentBar('Last 10 Transactions');breadCrumb(bread)">
 
 <div layout:fragment="content">
     <div class="col-md-5 col-sm-5 ">
@@ -31,7 +31,8 @@
                         <th>Transaction Narration</th>
                         <th>Post Date</th>
                         <th>Value Date</th>
-                        <th>Debit/Credit</th>
+                        <th>Debit</th>
+                        <th>Credit</th>
                         <th>Transaction ReferenceID</th>
                         <th>Account Balance</th>
                     </tr>
@@ -41,7 +42,8 @@
                         <td  th:text="${list.narration}"></td>
                         <td th:text="${#dates.format(list.postedDate, 'dd-MMM-yyyy')}"></td>
                         <td th:text="${#dates.format(list.valueDate, 'dd-MMM-yyyy')}"></td>
-                        <td th:text="${list.tranType}"></td>
+                        <td th:text="${list.debitAmount}"></td>
+                        <td th:text="${list.creditAmount}"></td>
                         <td th:text="${list.tranId}"></td>
                         <td th:text="${#numbers.formatDecimal(list.balance, 0, 'COMMA', 2, 'POINT')}"></td>
 

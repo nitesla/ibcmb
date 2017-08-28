@@ -1,31 +1,21 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{corp-layout}">
-
-
-<head>
-    <link rel="stylesheet" type="text/css" th:href="@{~/customer/css/tabs.css}" />
-    <link rel="stylesheet" type="text/css" th:href="@{~/customer/css/bootstrap.css}" />
-    <link rel="stylesheet" type="text/css" th:href="@{~/customer/css/custom.css}" />
-    <link rel="stylesheet" type="text/css" th:href="@{~/customer/css/select.bootstrap.css}" />
-    <link rel="stylesheet" type="text/css" th:href="@{~/customer/plugins/datatables/css/jquery.dataTables.min.css}" />
-    <link rel="stylesheet" type="text/css" th:href="@{~/customer/plugins/datatables/css/dataTables.bootstrap.css}" />
-
-</head>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{corp-layout}">
 
 <body onload="javascript:var bread = [['Home', '/corporate/dashboard'],['User management']];currentBar('User management');breadCrumb(bread)">
 
-    <div layout:fragment="content">
-        <div class="col-md-5 col-sm-5 ">
+<div layout:fragment="content">
+    <div class="col-md-5 col-sm-5 ">
 
-            <select class="form-control full-width coronation-form-control hide-content-only" id="view">
+        <select class="form-control full-width coronation-form-control hide-content-only" id="view">
             <option value="account">Overview</option>
         </select>
-        </div>
+    </div>
 
-        <div class="col-xs-12 ">
-            <div class="no-mt no-bd  alert">
-
-                <div class="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
+    <div class="col-xs-12 ml-15 no-pad-left" >
+        <div class="col-xs-12  no-pad-lef no-mt no-bd  alert" >
+           
+                   <div class="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
                     <div class="btn-group" role="group" aria-label="First group">
                         <a th:if="${isUserAdmin}" type="button" th:href="@{/corporate/users/add}" class="btn btn-default">New User</a>
                         <a th:if="${isUserAdmin}" type="button" th:href="@{/corporate/users/index/edit}" class="btn btn-default bt-select bt-link-act" disabled="disabled">Edit User</a>
@@ -33,127 +23,123 @@
                         <a th:if="${isUserAdmin}" type="button" th:href="@{/corporate/users/index/password/reset}" class="btn btn-default bt-select bt-link-act" disabled="disabled">Reset Password</a>
                         <a th:if="${isUserAdmin}" type="button" th:href="@{/corporate/users/index/unblock}" class="btn btn-default bt-select bt-link-act" disabled="disabled">Unblock user</a>
                     </div>
-                    <div class="pull-right">
-                        <a type="button" th:href="@{/corporate/users/approvals}" class="btn btn-default">Approvals <span th:if="${corpPendingVerification}" class="btn-xs badge bg-orange" th:text="${corpPendingVerification}"></span></a>
-                    </div>
+                       <div class="pull-right">
+                           <a type="button" th:href="@{/corporate/users/approvals}" class="btn btn-default">Approvals <span th:if="${corpPendingVerification}" class="btn-xs badge bg-orange" th:text="${corpPendingVerification}"></span></a>
+                       </div>
                 </div>
                 <br/>
-                <div class="">
-                    <div class="col-sm-12 no-pad-left no-pad-right table-responsive">
-                        <table class="table" id="users" style="width:100% !important">
+                <div class="row">
+                    <div class="col-sm-12 table-responsive">
+                        <table class="table" id="users">
                             <thead>
-                                <tr>
-                                    <th>First Name</th>
-                                    <th>Last Name</th>
-                                    <th>Role</th>
-                                    <th>Status</th>
-                                </tr>
+                            <tr>
+                                <th>Username</th>
+                                <th>First Name</th>
+                                <th>Last Name</th>
+                                <th>Role</th>
+                                <th>Status</th>
+                            </tr>
                             </thead>
                             <tbody>
                             </tbody>
                         </table>
                     </div>
                 </div>
-            </div>
         </div>
-
     </div>
 
+</div>
 
-    <th:block layout:fragment="scripts">
-        <script th:src="@{~/customer/js/dataTables.bootstrap.js}"></script>
-        <script th:src="@{~/customer/js/dataTables.select.js}"></script>
 
-        <script th:inline="javascript">
-            /*<![CDATA[*/
-            $(document).ready(function() {
-                var url = "/corporate/users/all";
-                var table = $('#users').DataTable({
-                    select: true,
-                    responsive: false,
-                    "lengthMenu": [
-                        [5, 10],
-                        [5, 10]
-                    ],
-                    "pagingType": "simple_numbers",
-                    "searching": false,
-                    "paging": true,
-                    "serverSide": true,
-                    "ajax": url,
-                    "dom": 'T<"clear">frtlp',
-                    "columns": [{
-                        "data": "firstName"
-                    }, {
-                        "data": "lastName"
-                    }, {
-                        "data": "role"
-                    }, {
-                        "data": "status"
-                    }],
-                    "columnDefs": [{
-                        "targets": 3,
-                        "data": "status",
-                        "render": function(data, type, full, meta) {
-                            if (type === 'display') {
-                                if (data == "A") {
-                                    return "<i class='fa fa-check' style='color:green;display:block;  margin:0 auto;' ></i>";
-                                } else if (data == "I") {
-                                    return "<i class='fa fa-ban' style='color:red;display:block; margin:0 auto;'></i>";
-                                } else if (data == "L") {
-                                    return "<i class='fa fa-lock' style='color:red;display:block;  margin:0 auto;'></i>";
-                                } else {
-                                    return "<i class='fa fa-question' style='color:red;display:block;  margin:0 auto;'></i>";
-                                }
-                            }
-                            return data;
+<th:block layout:fragment="scripts">
+    <script th:src="@{~/customer/js/dataTables.bootstrap.js}"></script>
+    <script th:src="@{~/customer/js/dataTables.select.js}"></script>
+    
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    $(document).ready(function() {
+        var url = "/corporate/users/all";
+        var table = $('#users').DataTable({
+            select: true,
+            responsive : false,
+            "lengthMenu" : [ [ 5, 10 ], [ 5, 10 ] ],
+            "pagingType" : "simple_numbers",
+            "searching" : false,
+            "paging" : true,
+            "serverSide" : true,
+            "ajax" : url,
+            "dom": 'T<"clear">frtlp',
+            "columns" : [
+                { "data": "userName" },
+                { "data": "firstName" },
+                { "data": "lastName" },
+                { "data": "role" },
+                { "data": "status" }
+            ],
+            "columnDefs" : [ {
+                "targets" : 4,
+                "data" : "status",
+                "render" : function(data, type,full, meta) {
+                    if (type === 'display') {
+                        if (data == "A") {
+                            return "<i class='fa fa-check' style='color:green;display:block;  margin:0 auto;' ></i>";
+                        } else if (data == "I") {
+                            return "<i class='fa fa-ban' style='color:red;display:block; margin:0 auto;'></i>";
                         }
-
-                    }]
-                });
-
-                table.on('select', function() {
-                    if (table.rows({
-                            selected: true
-                        }).indexes().length === 0) {
-                        $('.bt-select').attr("disabled", true);
-                    } else {
-                        $('.bt-select').removeAttr("disabled");
+                        else if (data == "L") {
+                            return "<i class='fa fa-lock' style='color:red;display:block;  margin:0 auto;'></i>";
+                        }else {
+                            return "<i class='fa fa-question' style='color:red;display:block;  margin:0 auto;'></i>";
+                        }
                     }
-
-
-                });
-
-                table.on('deselect', function() {
-                    if (table.rows({
-                            selected: true
-                        }).indexes().length === 0) {
-                        $('.bt-select').attr("disabled", true);
-                    } else {
-                        $('.bt-select').removeAttr("disabled");
-                    }
-                });
-            });
-
-            $("a.bt-link-act").on("click", function(e) {
-                e.preventDefault();
-                var link = $(e.currentTarget);
-                if ($(link).attr("disabled")) {
-                    return;
+                    return data;
                 }
 
-                var dt = $('#users').DataTable();
-                var id = $(dt.row({
-                    selected: true
-                }).node()).attr("id");
-                var ooo = link.attr("href").replace("index", id);
-                window.location.assign(ooo);
+            } ]
+        });
 
-            });
+        table.on('select', function() {
+            if (table.rows({
+                    selected : true
+                }).indexes().length === 0) {
+                $('.bt-select').attr("disabled", true);
+            } else {
+                $('.bt-select').removeAttr("disabled");
+            }
 
-            /*]]>*/
-        </script>
-    </th:block>
+
+        });
+
+        table.on('deselect', function() {
+            if (table.rows({
+                    selected : true
+                }).indexes().length === 0) {
+                $('.bt-select').attr("disabled", true);
+            } else {
+                $('.bt-select').removeAttr("disabled");
+            }
+        });
+    });
+
+    $("a.bt-link-act").on("click", function(e) {
+        e.preventDefault();
+        var link = $(e.currentTarget);
+        if($(link).attr("disabled")){
+            return;
+        }
+
+        var dt = $('#users').DataTable();
+        var id = $(dt.row({
+            selected: true
+        }).node()).attr("id");
+        var ooo = link.attr("href").replace("index",id);
+        window.location.assign(ooo);
+
+    } );
+
+    /*]]>*/
+</script>
+</th:block>
 
 </body>
-
 </html>

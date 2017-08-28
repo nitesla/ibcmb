@@ -458,7 +458,7 @@ catch(InternetBankingException e){
             //redirectAttributes.addFlashAttribute("failure", messageSource.getMessage("receipt.download.failed", null, locale));
             return modelAndView;
         }catch (Exception e){
-            logger.info(" RECEIPT DOWNLOAD {} ", e.getMessage());
+            logger.info(" STATEMENT DOWNLOAD {} ", e.getMessage());
             ModelAndView modelAndView =  new ModelAndView("redirect:/corporate/account/viewstatement");
             modelAndView.addObject("failure", messageSource.getMessage("receipt.download.failed", null, locale));
             //redirectAttributes.addFlashAttribute("failure", messageSource.getMessage("receipt.download.failed", null, locale));
