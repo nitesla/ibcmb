@@ -1,428 +1,445 @@
 <!DOCTYPE html>
 
-<html xmlns:th="http://www.thymeleaf.org"
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{corp-layout}">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{corp-layout}">
 
 <body onload="javascript:var bread = [['Home', '/corporate/dashboard'],['Accounts','/corporate/account/customize'],['Account Statement', '#']];currentBar('account statement');breadCrumb(bread)">
 
-<div layout:fragment="content">
-    <div class="col-md-5 col-sm-5 ">
+    <div layout:fragment="content">
+        <div class="col-md-5 col-sm-5 ">
 
-        <select class="form-control full-width coronation-form-control hide-content-only" id="view">
+            <select class="form-control full-width coronation-form-control hide-content-only" id="view">
             <option value="account">Overview</option>
         </select>
-    </div>
+        </div>
 
-    <div class="col-xs-12 no-mt" >
-        <div class=" no-pad-lef no-pad-righ   no-mt no-bd alert">
-            <form method="post" th:action="@{/corporate/account/viewstatement/display}">
+        <div class="col-xs-12 no-mt">
+            <div class=" no-pad-lef no-pad-righ   no-mt no-bd alert">
+                <form method="post" th:action="@{/corporate/account/viewstatement/display}">
 
-                        <div class="">
+                    <div class="">
 
-                            <br/>
-                            <div class="form-group col-md-12 no-pad-left col-sm-12">
-                                <div class="form-group col-md-6 no-pad-left col-sm-6">
-                                    <label>Date Range</label>
-                                    <div class="input-daterange input-group" id="date-range">
-                                        <input type="text" data-date-format="dd-mm-yyyy" class="form-control datepicker" id="start" name="fromDate" placeholder="Start date" required="required" />
-                                        <span class="input-group-addon no-border">to</span>
-                                        <input type="text"  data-date-format="dd-mm-yyyy" class="form-control datepicker" name="toDate" id="endDate" placeholder="End date" required="required" />
-                                    </div>
+                        <br/>
+                        <div class="form-group col-md-12 no-pad-left col-sm-12">
+                            <div class="form-group col-md-6 no-pad-left col-sm-6">
+                                <label>Date Range</label>
+                                <div class="input-daterange input-group" id="date-range">
+                                    <input type="text" data-date-format="dd-mm-yyyy" class="form-control datepicker" id="start" name="fromDate" placeholder="Start date" required="required" />
+                                    <span class="input-group-addon no-border">to</span>
+                                    <input type="text" data-date-format="dd-mm-yyyy" class="form-control datepicker" name="toDate" id="endDate" placeholder="End date" required="required" />
                                 </div>
-                                <div class="form-group col-md-6 no-pad-left col-sm-6">
-                                    <label>Transaction Type</label>
-                                    <select name="tranType"  class="form-control">
+                            </div>
+                            <div class="form-group col-md-6 no-pad-left col-sm-6">
+                                <label>Transaction Type</label>
+                                <select name="tranType" class="form-control">
                                         <option value="B">All</option>
                                         <option value="C">Credit</option>
                                         <option value="D">Debit</option>
                                     </select>
-                                </div>
                             </div>
-                            <div class="form-group col-md-12 no-pad-left col-sm-12">
-                                <div class="form-group col-md-6 no-pad-left col-sm-6">
-                                    <label>Account Number</label>
-                                    <span class="req"></span>
-                                    <select name="acctNumber" id="acctNumber" class="form-control"
-                                            required="required">
-                                        <option th:each="s: ${accounts}" th:value="${s.accountNumber}" th:text="${s.accountNumber}"></option></select>
-                                </div>
-
-                                <div class="form-group col-md-6">
-                                    <label>&nbsp;</label>
-
-                                    <button type="submit" class="btn btn-link " id="btn-find"><i class="fa fa-search"  ></i>&nbsp; view</button>
-
-                                </div>
-                            </div>
-
-
-
-                            <p>
-
-                                <a id="btn-print" href="#"  class="btn bt-link-act pull-right"> <i class="fa fa-print"  ></i>&nbsp; Download</a>
-
-                                <!--<a th:href="@{'#'}" class="btn "> <i class="fa fa-envelope" style="color: white" ></i>&nbsp; send mail</a>-->
-                            </p>
-
-                            <h2>TRANSACTION DETAILS</h2>
-
-
-                            <div class="" >
-                                <table class="table" id="tranDetails">
-                                    <thead>
-                                    <tr>
-                                        <th>Transaction Narration</th>
-                                        <th>Post Date</th>
-                                        <th>Value Date</th>
-                                        <th>Debit</th>
-                                        <th>Credit</th>
-                                        <th>Tran ID</th>
-                                        <th>Account Balance</th>
-                                    </tr>
-                                    </thead>
-                                    <tfoot>
-                                    <tr>
-                                        <th>Transaction Narration</th>
-                                        <th>Post Date</th>
-                                        <th>Value Date</th>
-                                        <th>Debit</th>
-                                        <th>Credit</th>
-                                        <th>Tran ID</th>
-                                        <th>Account Balance</th>
-
-                                    </tr>
-                                    </tfoot>
-                                </table>
-                                <div class="col-md-12">
-                                    <div class="pull-right">
-                                        <button class="btn btn-md" id="previous" type="button" onclick="previousData()">previous</button>&nbsp;<button class="btn btn-md" type="button" id="next"  onclick="nextData()">next</button>
-                                    </div>
-                                </div>
-                            </div>
-
-
-
                         </div>
-                    </form>
+                        <div class="form-group col-md-12 no-pad-left col-sm-12">
+                            <div class="form-group col-md-6 no-pad-left col-sm-6">
+                                <label>Account Number</label>
+                                <span class="req"></span>
+                                <select name="acctNumber" id="acctNumber" class="form-control" required="required">
+                                        <option th:each="s: ${accounts}" th:value="${s.accountNumber}" th:text="${s.accountNumber}"></option></select>
+                            </div>
+
+                            <div class="form-group col-md-6">
+                                <label>&nbsp;</label>
+
+                                <button type="submit" class="btn btn-link " id="btn-find"><i class="fa fa-search"  ></i>&nbsp; view</button>
+
+                            </div>
+                        </div>
+
+
+
+                        <p>
+
+                            <a id="btn-print" href="#" class="btn bt-link-act pull-right"> <i class="fa fa-print"></i>&nbsp; Download</a>
+
+                            <!--<a th:href="@{'#'}" class="btn "> <i class="fa fa-envelope" style="color: white" ></i>&nbsp; send mail</a>-->
+                        </p>
+
+                        <h2>TRANSACTION DETAILS</h2>
+
+
+                        <div class="table-responsive">
+                            <table class="table table-condensed" id="tranDetails">
+                                <thead>
+                                    <tr>
+                                        <th>Transaction Narration</th>
+                                        <th>Post Date</th>
+                                        <th>Value Date</th>
+                                        <th>Debit</th>
+                                        <th>Credit</th>
+                                        <th>Tran ID</th>
+                                        <th>Account Balance</th>
+                                    </tr>
+                                </thead>
+                                <tfoot>
+                                    <tr>
+                                        <th>Transaction Narration</th>
+                                        <th>Post Date</th>
+                                        <th>Value Date</th>
+                                        <th>Debit</th>
+                                        <th>Credit</th>
+                                        <th>Tran ID</th>
+                                        <th>Account Balance</th>
+
+                                    </tr>
+                                </tfoot>
+                            </table>
+                            <div class="col-md-12">
+                                <div class="pull-right">
+                                    <button class="btn btn-md" id="previous" type="button" onclick="previousData()">previous</button>&nbsp;<button class="btn btn-md" type="button" id="next" onclick="nextData()">next</button>
+                                </div>
+                            </div>
+                        </div>
+
+
+
+                    </div>
+                </form>
+            </div>
         </div>
+
     </div>
 
-</div>
 
 
+    <th:block layout:fragment="scripts">
 
-<th:block layout:fragment="scripts">
-
-    <script th:src="@{~/customer/js/dataTables.bootstrap.js}"></script>
-    <script th:src="@{~/customer/js/dataTables.select.js}"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootbox.js/4.4.0/bootbox.min.js"></script>
-    <script th:inline="javascript">
-        /*<![CDATA[*/
-        jQuery.download = function(url, key, data) {
-            // Build a form
-            var form = $('<form></form>').attr('action', url).attr('target', '_blank')
+        <script th:src="@{~/customer/js/dataTables.bootstrap.js}"></script>
+        <script th:src="@{~/customer/js/dataTables.select.js}"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/bootbox.js/4.4.0/bootbox.min.js"></script>
+        <script th:inline="javascript">
+            /*<![CDATA[*/
+            jQuery.download = function(url, key, data) {
+                // Build a form
+                var form = $('<form></form>').attr('action', url).attr('target', '_blank')
                     .attr('method', 'get');
-            // Add the one key/value
-            form.append($("<input/>").attr('type', 'hidden').attr('name',
+                // Add the one key/value
+                form.append($("<input/>").attr('type', 'hidden').attr('name',
                     key).attr('value', data));
 
-            $.each( data, function( propertyName, valueOfProperty ){
-                form.append($("<input/>").attr('type', 'hidden').attr('name',
+                $.each(data, function(propertyName, valueOfProperty) {
+                    form.append($("<input/>").attr('type', 'hidden').attr('name',
                         propertyName).attr('value', valueOfProperty));
-            });
+                });
 
-            //send request
-            form.appendTo('body').submit().remove();
-        };
+                //send request
+                form.appendTo('body').submit().remove();
+            };
 
-        $(document).ready(function() {
+            $(document).ready(function() {
 
-            $('.datepicker').datepicker({ dateFormat: 'dd-mm-yy' });//
+                $('.datepicker').datepicker({
+                    dateFormat: 'dd-mm-yy'
+                }); //
 
-            $('#tranDetails').DataTable({
-                responsive: true,
+                $('#tranDetails').DataTable({
+                    responsive: true,
 
-                "lengthMenu" : [ [ 5, 10, 20],	[ 5, 10, 20 ] ],
-                "pagingType" : "simple_numbers",
-                "searching": false,
-                "paging": true,
-                "processing": false,
-                "serverSide" : false,
-                "ordering" : false,
-                "dom": 'T<"clear">frtlp',
-                "columns" : [
-                    {"data" : "narration"},
-                    {"data" : "postDate"} ,
-                    {"data" : "valueDate"},
-                    {"data" : "debitAmount"},
-                    {"data" : "creditAmount"},
-                    {"data" : "tranId"},
-                    {"data" : "accountBalance"}
-                ],
-                "columnDefs" : [ {
-                    "targets" : 1,
-                    "data" : "postDate",
-                    "render" : function(data, type,full, meta) {
+                    "lengthMenu": [
+                        [5, 10, 20],
+                        [5, 10, 20]
+                    ],
+                    "pagingType": "simple_numbers",
+                    "searching": false,
+                    "paging": true,
+                    "processing": false,
+                    "serverSide": false,
+                    "ordering": false,
+                    "dom": 'T<"clear">frtlp',
+                    "columns": [{
+                        "data": "narration"
+                    }, {
+                        "data": "postDate"
+                    }, {
+                        "data": "valueDate"
+                    }, {
+                        "data": "debitAmount"
+                    }, {
+                        "data": "creditAmount"
+                    }, {
+                        "data": "tranId"
+                    }, {
+                        "data": "accountBalance"
+                    }],
+                    "columnDefs": [{
+                        "targets": 1,
+                        "data": "postDate",
+                        "render": function(data, type, full, meta) {
 
-                        if (type === 'display') {
-                            if(data == null)
-                                return data;
+                            if (type === 'display') {
+                                if (data == null)
+                                    return data;
 
-                            var pattern = /(\d{2})\.(\d{2})\.(\d{4})/;
-                            var dt = new Date(data.replace(pattern,'$3-$2-$1'));
-                            return dt.toDateString();
+                                var pattern = /(\d{2})\.(\d{2})\.(\d{4})/;
+                                var dt = new Date(data.replace(pattern, '$3-$2-$1'));
+                                return dt.toDateString();
+                            }
+                            return data;
                         }
-                        return data;
-                    }
-                },{
-                    "targets" : 6,
-                    "data" : "accountBalance",
-                    "render" : function(data, type,full, meta) {
-                        if (type === 'display') {
-                            if(data == null)
-                                return data;
-                            var twoPlacedFloat = parseFloat(data).toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,');
-                            return twoPlacedFloat;
+                    }, {
+                        "targets": 6,
+                        "data": "accountBalance",
+                        "render": function(data, type, full, meta) {
+                            if (type === 'display') {
+                                if (data == null)
+                                    return data;
+                                var twoPlacedFloat = parseFloat(data).toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,');
+                                return twoPlacedFloat;
+                            }
+                            return data;
                         }
-                        return data;
-                    }
-                }
-                    , {
+                    }, {
                         "targets": 2,
                         "data": "valueDate",
-                        "render": function (data, type, full, meta) {
+                        "render": function(data, type, full, meta) {
                             if (type === 'display') {
 
                                 if (data == null)
                                     return data;
                                 var pattern = /(\d{2})\.(\d{2})\.(\d{4})/;
-                                var dt = new Date(data.replace(pattern,'$3-$2-$1'));
+                                var dt = new Date(data.replace(pattern, '$3-$2-$1'));
                                 return dt.toDateString();
                             }
                             return data;
                         }
-                    } ],
-//                "ajax" : {
-//                    "url":"/corporate/account/viewstatement/display/data/new",
-//                    "type" : "GET",
-//                    "data" : function(d) {
-//                        d.acctNumber = $('[name=acctNumber]').val();
-//                        d.fromDate = $('[name=fromDate]').val();
-//                        d.toDate = $('[name=toDate]').val();
-//                        d.tranType = $('[name=tranType]').val();
-//                        console.log("the data parsed is "+d.acctNumber+" fromDate "+d.fromDate+" toDate"+d.toDate+" tranType"+d.tranType);
-//                    }
-//                },
-                "language": {
-                    "emptyTable": "No data available in table"
-                }
-
-            });
-
-            $("#btn-find").on("click", function(e) {
-                if(daydiff(parseDate($('[name=fromDate]').val()), parseDate($('[name=toDate]').val())) >= 0) {
-                var table = $('#tranDetails').DataTable();
-                var row  = table.rows().remove().draw();
-                e.preventDefault();
-                $.ajax({
-                    "url":"/corporate/account/viewstatement/display/data/new",
-                    "type" : "GET",
-                    "data" :  {
-                        acctNumber : $('[name=acctNumber]').val(),
-                        fromDate : $('[name=fromDate]').val(),
-                        toDate : $('[name=toDate]').val(),
-                        tranType : $('[name=tranType]').val()
-                    },success: function (result) {
-                        $('#btn-print').hide();
-                        if (result.details != null && result.details != "null") {
-                            $('#btn-print').show();
-                            var contactsTab2 = $('#tranDetails').DataTable();
-                            for (var key in result.details) {
-                                if (result.details.hasOwnProperty(key)) {
-                                    var od = result.details[key];
-//                                console.log("the key "+key+" value "+result[key]);
-                                    contactsTab2.row.add(od);
-                                }
-
-                                contactsTab2.draw();
-//
-                            }
-
-                        }
-                        if(result.moreData === "Y"){
-                            $('#next').show();
-
-                        }else{
-                            $('#next').hide();
-                        }
-                        $('#previous').hide();
-
-                    },
-                    error:  function (dd) {
-                        console.log("error")
+                    }],
+                    //                "ajax" : {
+                    //                    "url":"/corporate/account/viewstatement/display/data/new",
+                    //                    "type" : "GET",
+                    //                    "data" : function(d) {
+                    //                        d.acctNumber = $('[name=acctNumber]').val();
+                    //                        d.fromDate = $('[name=fromDate]').val();
+                    //                        d.toDate = $('[name=toDate]').val();
+                    //                        d.tranType = $('[name=tranType]').val();
+                    //                        console.log("the data parsed is "+d.acctNumber+" fromDate "+d.fromDate+" toDate"+d.toDate+" tranType"+d.tranType);
+                    //                    }
+                    //                },
+                    "language": {
+                        "emptyTable": "No data available in table"
                     }
 
                 });
-                }else{
-                    bootbox.alert("<div style='text-align: center'>Start date cannot be less than end date</div>");
-                    return false;
-                }
 
+                $("#btn-find").on("click", function(e) {
+                    if (daydiff(parseDate($('[name=fromDate]').val()), parseDate($('[name=toDate]').val())) >= 0) {
+                        var table = $('#tranDetails').DataTable();
+                        var row = table.rows().remove().draw();
+                        e.preventDefault();
+                        $.ajax({
+                            "url": "/corporate/account/viewstatement/display/data/new",
+                            "type": "GET",
+                            "data": {
+                                acctNumber: $('[name=acctNumber]').val(),
+                                fromDate: $('[name=fromDate]').val(),
+                                toDate: $('[name=toDate]').val(),
+                                tranType: $('[name=tranType]').val()
+                            },
+                            success: function(result) {
+                                $('#btn-print').hide();
+                                if (result.details != null && result.details != "null") {
+                                    $('#btn-print').show();
+                                    var contactsTab2 = $('#tranDetails').DataTable();
+                                    for (var key in result.details) {
+                                        if (result.details.hasOwnProperty(key)) {
+                                            var od = result.details[key];
+                                            //                                console.log("the key "+key+" value "+result[key]);
+                                            contactsTab2.row.add(od);
+                                        }
+
+                                        contactsTab2.draw();
+                                        //
+                                    }
+
+                                }
+                                if (result.moreData === "Y") {
+                                    $('#next').show();
+
+                                } else {
+                                    $('#next').hide();
+                                }
+                                $('#previous').hide();
+
+                            },
+                            error: function(dd) {
+                                console.log("error")
+                            }
+
+                        });
+                    } else {
+                        bootbox.alert("<div style='text-align: center'>Start date cannot be less than end date</div>");
+                        return false;
+                    }
+
+                });
+                $('#btn-print').hide();
+                $('#previous').hide();
+                $('#next').hide();
+                $('#tranDetails_length').hide();
+                $('#tranDetails_paginate').hide();
+                $("#btn-print").on("click", function(e) {
+                    //                e.preventDefault();
+                    var data = {
+                        "acctNumber": $('[name=acctNumber]').val(),
+                        "fromDate": $('[name=fromDate]').val(),
+                        "toDate": $('[name=toDate]').val(),
+                        "tranType": $('[name=tranType]').val()
+                    };
+                    console.log("data " + data);
+                    $.download("downloadstatement", "data", data);
+
+                });
+                //            $('.dataTables_empty').html('No data available');
             });
-            $('#btn-print').hide();
-            $('#previous').hide();
-            $('#next').hide();
-            $('#tranDetails_length').hide();
-            $('#tranDetails_paginate').hide();
-            $("#btn-print").on("click", function(e) {
-//                e.preventDefault();
-                var data = { "acctNumber" : $('[name=acctNumber]').val(),
-                    "fromDate" : $('[name=fromDate]').val(),
-                    "toDate" : $('[name=toDate]').val(),
-                    "tranType" : $('[name=tranType]').val()} ;
-                console.log("data "+data);
-                $.download("downloadstatement", "data", data);
 
-            });
-//            $('.dataTables_empty').html('No data available');
-        });
-        function parseDate(str) {
-            var mdy = str.split('-');
-            return new Date(mdy[2], mdy[0]-1, mdy[1]);
-        }
+            function parseDate(str) {
+                var mdy = str.split('-');
+                return new Date(mdy[2], mdy[0] - 1, mdy[1]);
+            }
 
-        function daydiff(first, second) {
-            return Math.round((second-first)/(1000*60*60*24));
-        }
+            function daydiff(first, second) {
+                return Math.round((second - first) / (1000 * 60 * 60 * 24));
+            }
 
-        function nextData() {
-//    console.log("field value "+valu);
-            $.ajax({
-                "url":"viewstatement/corp/display/data/next",
-                "type" : "GET",
-                "data" :  {
-                    acctNumber : $('[name=acctNumber]').val(),
-                    fromDate : $('[name=fromDate]').val(),
-                    toDate : $('[name=toDate]').val(),
-                    tranType : $('[name=tranType]').val(),
-                    state : "forward"
-                },success: function (result) {
-                            console.log("the result next" + result.details);
-//                $('#tranDetails').DataTable().fnClearTable();
-//                $('#tranDetails').dataTable().destroy();
-//                $('#tranDetails tbody').empty();
-                    if (result.details != null) {
+            function nextData() {
+                //    console.log("field value "+valu);
+                $.ajax({
+                    "url": "viewstatement/corp/display/data/next",
+                    "type": "GET",
+                    "data": {
+                        acctNumber: $('[name=acctNumber]').val(),
+                        fromDate: $('[name=fromDate]').val(),
+                        toDate: $('[name=toDate]').val(),
+                        tranType: $('[name=tranType]').val(),
+                        state: "forward"
+                    },
+                    success: function(result) {
+                        console.log("the result next" + result.details);
+                        //                $('#tranDetails').DataTable().fnClearTable();
+                        //                $('#tranDetails').dataTable().destroy();
+                        //                $('#tranDetails tbody').empty();
+                        if (result.details != null) {
                             var contactsTab2 = $('#tranDetails').DataTable();
                             var row = contactsTab2.rows().remove().draw();
                             for (var key in result.details) {
                                 if (result.details.hasOwnProperty(key)) {
                                     var od = result.details[key];
-//                                console.log("the key "+key+" value "+result[key]);
+                                    //                                console.log("the key "+key+" value "+result[key]);
                                     contactsTab2.row.add(od);
                                 }
 
                                 contactsTab2.draw();
-//
+                                //
                             }
                         }
-                    if(result.moreData === "Y"){
-                        $('#next').show();
+                        if (result.moreData === "Y") {
+                            $('#next').show();
 
-                    }else{
-                        $('#next').hide();
-                    }
-                    $('#previous').show();
+                        } else {
+                            $('#next').hide();
+                        }
+                        $('#previous').show();
 
                     },
-                error:  function (dd) {
-//                    console.log("error")
-                    bootbox.alert("<div style='text-align: center'>Service not available</div>");
-                    return false;
-                }
+                    error: function(dd) {
+                        //                    console.log("error")
+                        bootbox.alert("<div style='text-align: center'>Service not available</div>");
+                        return false;
+                    }
 
-            });
-        }
+                });
+            }
 
-        function previousData() {
-//    console.log("field value "+valu);
-            $.ajax({
-                "url":"viewstatement/corp/display/data/back",
-                "type" : "GET",
-                "data" :  {
-                    state : "backward"
-                },success: function (result) {
-                    if (result.details != null) {
-//                        var detialsList = JSON.parse(result);
-                        console.log("the result next"+result);
-//                $('#tranDetails').DataTable().fnClearTable();
-//                $('#tranDetails').dataTable().destroy();
-                        var contactsTab2 = $('#tranDetails').DataTable();
-                        var row  = contactsTab2.rows().remove().draw();
-                        for (var key in result.details) {
-                            if (result.details.hasOwnProperty(key)) {
-                                var od = result.details[key];
-//                                console.log("the key "+key+" value "+result[key]);
-                                contactsTab2.row.add(od);
+            function previousData() {
+                //    console.log("field value "+valu);
+                $.ajax({
+                    "url": "viewstatement/corp/display/data/back",
+                    "type": "GET",
+                    "data": {
+                        state: "backward"
+                    },
+                    success: function(result) {
+                        if (result.details != null) {
+                            //                        var detialsList = JSON.parse(result);
+                            console.log("the result next" + result);
+                            //                $('#tranDetails').DataTable().fnClearTable();
+                            //                $('#tranDetails').dataTable().destroy();
+                            var contactsTab2 = $('#tranDetails').DataTable();
+                            var row = contactsTab2.rows().remove().draw();
+                            for (var key in result.details) {
+                                if (result.details.hasOwnProperty(key)) {
+                                    var od = result.details[key];
+                                    //                                console.log("the key "+key+" value "+result[key]);
+                                    contactsTab2.row.add(od);
+                                }
+
+                                contactsTab2.draw();
+                                //
                             }
 
-                            contactsTab2.draw();
-//
                         }
+                        if (result.previousData === 0) {
+                            $('#previous').hide();
 
-                    }
-                    if(result.previousData === 0){
-                        $('#previous').hide();
-
-                    }else{
-                        $('#previous').show();
-                    }
-                    $('#next').show();
-                },
-                error:  function (dd) {
-                    console.log("error")
-                }
-
-            });
-        }
-        function resetButton() {
-//    console.log("field value "+valu);
-            $.ajax({
-                "url":"viewstatement/display/data/reset/button",
-                "type" : "GET",
-                "data" :  {
-                    state : "backward"
-                },success: function (result) {
-                    if (result == "both") {
-//                console.log("the result next"+result);
-                        $('#previous').hide();
-                        $('#next').hide();
-                    }
-                    if (result == "previous") {
-//                console.log("the result next"+result);
-                        $('#previous').hide();
+                        } else {
+                            $('#previous').show();
+                        }
                         $('#next').show();
+                    },
+                    error: function(dd) {
+                        console.log("error")
                     }
-                    if (result == "next") {
-//                console.log("the result next"+result);
-                        $('#previous').show();
-                        $('#next').hide();
-                    }
-                    if (result == "none") {
-//                console.log("the result next"+result);
-                        $('#previous').show();
-                        $('#next').show();
-                    }
-                },
-                error:  function (dd) {
-                    console.log("error")
-                }
 
-            });
-        }
-        /*]]>*/
-    </script>
+                });
+            }
 
-</th:block>
+            function resetButton() {
+                //    console.log("field value "+valu);
+                $.ajax({
+                    "url": "viewstatement/display/data/reset/button",
+                    "type": "GET",
+                    "data": {
+                        state: "backward"
+                    },
+                    success: function(result) {
+                        if (result == "both") {
+                            //                console.log("the result next"+result);
+                            $('#previous').hide();
+                            $('#next').hide();
+                        }
+                        if (result == "previous") {
+                            //                console.log("the result next"+result);
+                            $('#previous').hide();
+                            $('#next').show();
+                        }
+                        if (result == "next") {
+                            //                console.log("the result next"+result);
+                            $('#previous').show();
+                            $('#next').hide();
+                        }
+                        if (result == "none") {
+                            //                console.log("the result next"+result);
+                            $('#previous').show();
+                            $('#next').show();
+                        }
+                    },
+                    error: function(dd) {
+                        console.log("error")
+                    }
+
+                });
+            }
+            /*]]>*/
+        </script>
+
+    </th:block>
 
 </body>
+
 </html>
