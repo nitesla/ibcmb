@@ -114,7 +114,7 @@ public class TransferUtils {
             BigDecimal availBal = balance.get("AvailableBalance");
             return createMessage(availBal.toString(), true);
         }
-        return "";
+        return createMessage("", false);
     }
 
 

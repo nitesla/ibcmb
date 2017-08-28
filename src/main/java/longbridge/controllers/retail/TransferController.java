@@ -141,9 +141,10 @@ public class TransferController {
         try {
             Iterable<Account> accounts = accountService.getAccountsForCredit(accountService.getAccountByAccountNumber(accountId).getCustomerId());
 
-            StreamSupport.stream(accounts.spliterator(), false)
+            StreamSupport.stream(accounts.spliterator(), true)
                     .filter(Objects::nonNull)
                     .filter(i -> !i.getAccountNumber().equalsIgnoreCase(accountId))
+                    .filter(l -> l.getCurrencyCode().equalsIgnoreCase(accountService.getAccountByAccountNumber(accountId).getCurrencyCode()))
                     .forEach(i -> accountList.add(i.getAccountNumber()))
             ;
 

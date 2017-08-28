@@ -394,6 +394,16 @@
             $('[data-toggle="tooltip"]').tooltip();
         });
     </script>
+
+    <script>
+        window.onbeforeunload = function(){
+            $.ajax({
+                url: "/invalidate",
+                type: 'GET',
+                async: false
+            })
+        }
+    </script>
 </footer>
 <!-- /footer content -->
 
