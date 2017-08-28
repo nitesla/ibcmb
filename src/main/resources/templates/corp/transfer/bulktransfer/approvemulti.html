@@ -62,6 +62,12 @@
                         <button class="btn in-active btn-sm bulk-btn">Transaction Details</button>
                     </div>
 
+                    <style>
+                        .pd-5 {
+                            padding: 5px !important;
+                        }
+                    </style>
+
                     <div class="col-xs-12 no-pad-left no-pad-right" style="margin-top:10px">
 
                         <div class=" author col-xs-12 col-md-9 no-pad-left no-pad-right content-approve">
@@ -130,17 +136,17 @@
 
                         <div class=" trans col-xs-12 col-md-9 no-pad-left no-pad-right content-approve display-none">
                             <div class="table-responsive">
-                                <table id="mytab" class="table table-striped table-bordered table-hover trans-table ">
-                                    <thead style="border-top:2px solid #8d8d8f !important;padding:30px !important;border-bottom:2px solid #8d8d8f !important;background:#d3d4d7 !important">
-                                        <th style="padding:5px">Acc Num</th>
-                                        <th style="padding:5px">Sort Code</th>
-                                        <th style="padding:5px">Ben. Name</th>
-                                        <th style="padding:5px">Amount (N)</th>
-                                        <th style="padding:5px">Narration</th>
-                                        <th style="padding:5px">Status</th>
+                                <table id="mytab" class="table table-striped table-condensed table-hover" style='width:100%'>
+                                    <thead style="" class='th-table'>
+                                        <th style="padding:10px 3px !important">Acc Num</th>
+                                        <th style="padding:10px 3px !important">Sort Code</th>
+                                        <th style="padding:10px 3px !important">Ben. Name</th>
+                                        <th style="padding:10px 3px !important">Amt</th>
+                                        <th style="padding:10px 3px !important">Narration</th>
+                                        <th style="padding:10px 3px !important">Status</th>
 
                                     </thead>
-                                    <tbody>
+                                    <tbody class='body'>
 
                                     </tbody>
                                 </table>
@@ -149,7 +155,7 @@
                         </div>
 
 
-                        <div class="col-xs-12 col-md-3 no-pad-right">
+                        <div class="col-xs-12 col-md-3 no-pad-right  hidden-xs mobile-no-left">
                             <div id="pie-chart" style="width:100%;height:150px;  background-color: whitesmoke"></div>
                             <input type="hidden" class="form-control full-width" th:value="${bulkTransfer.id}" th:field="*{bulkTransfer.id}" th:id="bk" id="bk" />
 

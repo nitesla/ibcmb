@@ -1,74 +1,82 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org"
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{corp-layout}">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{corp-layout}">
 
 <body onload="javascript:var bread = [['Home', '/corporate/dashboard'],['Completed Transfers']];currentBar('completed transfers');breadCrumb(bread)">
 
-<div layout:fragment="content">
-    <div class="col-md-5 col-sm-5">
+    <div layout:fragment="content">
+        <div class="col-md-5 col-sm-5">
 
-        <select class="form-control full-width coronation-form-contro invisible" id="view">
+            <select class="form-control full-width coronation-form-contro invisible" id="view">
             <option value="account">Overview</option>
         </select>
+        </div>
+
+        <div class="col-xs-12 ">
+            <div class="table-responsive">
+                <table id="ct" class=" table table-condensed">
+                    <thead>
+                        <td>Date</td>
+
+                        <td>Amount</td>
+                        <td>Beneficiary</td>
+                        <td>Beneficiary Bank</td>
+                        <td>Remarks</td>
+                        <td>&nbsp;</td>
+                    </thead>
+                    <tbody>
+
+                    </tbody>
+                    <tfoot>
+                        <td>Date</td>
+                        <!--<td>Remarks</td>-->
+                        <td>Amount</td>
+                        <td>Beneficiary</td>
+                        <td>Beneficiary Bank</td>
+                        <td>Remarks</td>
+                        <td></td>
+                    </tfoot>
+                </table>
+            </div>
+
+        </div>
+
     </div>
 
-    <div class="col-xs-12 " >
 
-        <table id="ct">
-            <thead>
-                <td>Date</td>
-
-                <td>Amount</td>
-                <td>Beneficiary</td>
-                <td>Beneficiary Bank</td>
-                <td>Remarks</td>
-                <td></td>
-            </thead>
-            <tbody>
-
-            </tbody>
-            <tfoot>
-                <td>Date</td>
-                <!--<td>Remarks</td>-->
-                <td>Amount</td>
-                <td>Beneficiary</td>
-                <td>Beneficiary Bank</td>
-                <td>Remarks</td>
-                <td></td>
-            </tfoot>
-        </table>
-    </div>
-
-</div>
-
-
-<th:block layout:fragment="scripts">
-    <script th:inline="javascript">
-        /*<![CDATA[*/
-        $(document).ready(function() {
-            var url = "/corporate/transfer/history/all";
-            var table = $('#ct').DataTable({
-                responsive : true,
-                "lengthMenu" : [ [ 5, 10 ], [ 5, 10 ] ],
-                "pagingType" : "simple",
-                "searching" : false,
-                "paging" : true,
-                "serverSide" : true,
-                "ajax" : url,
-                "dom": 'T<"clear">frtlp',
-                "columns": [
-                    { "data": "tranDate" },
-                    { "data": "amount" },
-                    { "data": "beneficiaryAccountName" },
-                    { "data": "financialInstitution.institutionName"},
-                    { "data": "remarks"},
-                    { "data": "id"},
-                ],
-                "columnDefs" : [
-                    {
-                        "targets" : 0,
-                        "data" : "tranDate",
-                        "render" : function(data, type,full, meta) {
+    <th:block layout:fragment="scripts">
+        <script th:inline="javascript">
+            /*<![CDATA[*/
+            $(document).ready(function() {
+                var url = "/corporate/transfer/history/all";
+                var table = $('#ct').DataTable({
+                    responsive: true,
+                    "lengthMenu": [
+                        [5, 10],
+                        [5, 10]
+                    ],
+                    "pagingType": "simple",
+                    "searching": false,
+                    "paging": true,
+                    "serverSide": true,
+                    "ajax": url,
+                    "dom": 'T<"clear">frtlp',
+                    "columns": [{
+                        "data": "tranDate"
+                    }, {
+                        "data": "amount"
+                    }, {
+                        "data": "beneficiaryAccountName"
+                    }, {
+                        "data": "financialInstitution.institutionName"
+                    }, {
+                        "data": "remarks"
+                    }, {
+                        "data": "id"
+                    }, ],
+                    "columnDefs": [{
+                        "targets": 0,
+                        "data": "tranDate",
+                        "render": function(data, type, full, meta) {
                             if (type === 'display') {
                                 if (data == null)
                                     return data;
@@ -79,28 +87,29 @@
                             }
                             return data;
                         }
-                    },{
-                    "targets" : 5,
-                    "data" : "id",
-                    "render" : function(data, type,full, meta) {
-                        return '<a href="'+ data +'/downloadreceipt" target="_blank"><i class="fa fa-download"></i></a>';
-                    }
-                }]
+                    }, {
+                        "targets": 5,
+                        "data": "id",
+                        "render": function(data, type, full, meta) {
+                            return '<a href="' + data + '/downloadreceipt" target="_blank"><i class="fa fa-download"></i></a>';
+                        }
+                    }]
+                });
+
+                //            $("#search").on("click", function(e) {
+                //                e.preventDefault();
+                //                dt = $('#ct').DataTable();
+                //                dt.ajax.reload(null, true);
+                //
+                //            });
+                //            $('.dataTables_empty').html('No data available');
+
             });
 
-//            $("#search").on("click", function(e) {
-//                e.preventDefault();
-//                dt = $('#ct').DataTable();
-//                dt.ajax.reload(null, true);
-//
-//            });
-//            $('.dataTables_empty').html('No data available');
-
-        });
-
-        /*]]>*/
-    </script>
-</th:block>
+            /*]]>*/
+        </script>
+    </th:block>
 
 </body>
+
 </html>

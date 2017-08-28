@@ -1,91 +1,90 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org"
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{corp-layout}">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{corp-layout}">
 
 <body onload="javascript:var bread = [['Home', '/corporate/dashboard'],['inter bank transfer']];currentBar('inter bank transfer');breadCrumb(bread)">
 
-<div layout:fragment="content">
-    <div class="col-md-5 col-sm-5 ">
+    <div layout:fragment="content">
+        <div class="col-md-5 col-sm-5 ">
 
-        <select class="form-control full-width coronation-form-control hide-content-only" id="view">
+            <select class="form-control full-width coronation-form-control hide-content-only" id="view">
             <option value="account">Overview</option>
         </select>
-    </div>
+        </div>
 
-    <div class="col-xs-12 " >
-        <div class=" no-pad-lef table-responsive no-mt no-bd  alert">
-          <div class="col-md-6 col-sm-6 col-xs-12 no-pad-left ">
-                        <!-- <h6 class="sub_header">Interbank Transfer</h6> -->
-                        <form method="post" th:action="@{/corporate/transfer/interbank/index}" style="">
-                            <div class="form-group  no-pad-left">
-                                <label>Transfer Type</label>
+        <div class="col-xs-12 ">
+            <div class=" no-pad-lef table-responsive no-mt no-bd  alert">
+                <div class="col-md-6 col-sm-6 col-xs-12 no-pad-left ">
+                    <!-- <h6 class="sub_header">Interbank Transfer</h6> -->
+                    <form method="post" th:action="@{/corporate/transfer/interbank/index}" style="">
+                        <div class="form-group  no-pad-left">
+                            <label>Transfer Type</label>
 
-                                <span id="tran"></span>
-                                <select name="tranType" class="form-control full-width" id="tranType">
+                            <span id="tran"></span>
+                            <select name="tranType" class="form-control full-width" id="tranType">
                                     <option value="nip">NIP</option>
                                     <!--<option value="rtgs">RTGS</option>-->
                                 </select>
-                            </div>
+                        </div>
 
-                            <!-- <div class="col-md-4">
+                        <!-- <div class="col-md-4">
                                 <br/>
                                 <p id="nip" style="padding: 5%">Fee applicable: <span th:if="${nip.feeValue}!=null" th:text="'N'+${nip.feeValue}"></span></p>
                                 <p id="rtgs" style="display: none; padding: 5%">Fee applicable: <span th:if="${rtgs.feeValue}!=null" th:text="'N'+${rtgs.feeValue}"></span></p>
                             </div> -->
 
-                            <div class="form-group col-md-8 no-pad-left">
-                                <button class="btn btn-link no-pad-left" type="submit">NEXT</button>
-                            </div>
+                        <div class="form-group col-md-8 no-pad-left">
+                            <button class="btn btn-link no-pad-left" type="submit">NEXT</button>
+                        </div>
 
 
-                            <!-- <button type="submit" class="btn btn-default" style="float: right">Add beneficiary</button>
-                        --> </form>
+                        <!-- <button type="submit" class="btn btn-default" style="float: right">Add beneficiary</button>
+                        --></form>
+                </div>
+                <div class='col-sm-6 col-xs-12'>
+
+                    <div class="related-box">
+                        <h3 class="related-bar">Related Information</h3>
+
+                        <!--<input type="availBal" name="availBal"/>-->
+                        <p class="related-info coronation-blue" id="nip"><b>Fee applicable: <span th:if="${nip.feeValue}!=null" th:text="'N'+${nip.feeValue}"></span></b></p>
+
                     </div>
-                    <div class='col-sm-6'>
-
-                     <div  class="related-box">
-                                            <h3 class="related-bar">Related Information</h3>
-
-                                            <!--<input type="availBal" name="availBal"/>-->
-                                            <p class="related-info coronation-blue" id="nip"><b>Fee applicable: <span th:if="${nip.feeValue}!=null" th:text="'N'+${nip.feeValue}"></span></b></p>
-                                            
-                                        </div>
 
                     <!--<div class="col-md-4 col-sm-4">-->
-                        
-                            <!--<p id="rtgs" style="display: none; padding: 5%">Fee applicable: <span th:text="'N'+${rtgs.feeValue}"></span></p>-->
+
+                    <!--<p id="rtgs" style="display: none; padding: 5%">Fee applicable: <span th:text="'N'+${rtgs.feeValue}"></span></p>-->
                     <!--</div>-->
 
                 </div>
+            </div>
         </div>
+
     </div>
 
-</div>
+
+    <th:block layout:fragment="scripts">
+        <script>
+            //datepicker
+            $(function() {
+                $("#datepicker").datepicker({
+                    dateformat: 'dd/mm/yy'
+                });
+            });
 
 
-<th:block layout:fragment="scripts">
-<script>
-    //datepicker
-    $(function () {
-        $("#datepicker").datepicker(
-            {dateformat: 'dd/mm/yy'}
-        );
-    });
+            $('#tranType').on('change', function() {
+                if ($(this).val() === "nip") {
+                    $("#nip").show();
+                    $("#rtgs").hide();
 
-
-    $('#tranType').on('change', function () {
-        if ($(this).val() === "nip") {
-            $("#nip").show();
-            $("#rtgs").hide();
-
-        }
-        else if ($(this).val() === "rtgs") {
-            $("#rtgs").show();
-            $("#nip").hide();
-        }
-    });
-</script>
-</th:block>
+                } else if ($(this).val() === "rtgs") {
+                    $("#rtgs").show();
+                    $("#nip").hide();
+                }
+            });
+        </script>
+    </th:block>
 
 </body>
+
 </html>
