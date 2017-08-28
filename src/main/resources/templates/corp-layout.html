@@ -415,6 +415,9 @@
             $(document).ready(function ()
             {
                 showPop('.errors');
+                function preventBack(){window.history.forward();}
+                setTimeout("preventBack()", 0);
+                window.onunload=function(){null};
                 $('[data-toggle="tooltip"]').tooltip();
                 $('.datepicker').datepicker({
                     autoclose: true,

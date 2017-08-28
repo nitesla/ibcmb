@@ -488,7 +488,9 @@
 
             $(document).ready(function () {
                 showPop('.errors');
-
+                function preventBack(){window.history.forward();}
+                setTimeout("preventBack()", 0);
+                window.onunload=function(){null};
 
                 $('select').addClass('select-wrapper');
 
@@ -538,7 +540,11 @@
             });
             /*]]>*/
         </script>
-
+        <script>
+            function preventBack(){window.history.forward();}
+            setTimeout("preventBack()", 0);
+            window.onunload=function(){null};
+        </script>
 
         <!-- CORE JQUERY SCRIPTS -->
 
