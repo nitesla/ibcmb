@@ -319,7 +319,22 @@
         <!-- BOOTSTRAP SCRIPTS  -->
         <script th:src="@{~/customer/js/bootstrap.js}"></script>
         <script th:src="@{~/customer/js/bootstrap-session-timeout.js}"></script>
-        
+        <script>
+            window.onbeforeunload = function(){
+
+
+                $.ajax({
+                    url: "/invalidate",
+                    type: 'GET',
+                    async: false
+                })
+
+
+
+
+
+            }
+        </script>
 
 
 
