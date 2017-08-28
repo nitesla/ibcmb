@@ -45,6 +45,10 @@ public class InternetbankingApplication extends SpringBootServletInitializer imp
     @Autowired
     CorporateService corporateService;
 
+
+    @Autowired
+    CronJobService cronJobService;
+
     @Autowired
     CorporateRepo corporateRepo;
 
@@ -61,11 +65,8 @@ public class InternetbankingApplication extends SpringBootServletInitializer imp
     @Override
     @Transactional
     public void run(String... strings) throws Exception {
-        
 
-//        CronJobScheduler.startJobs();
-        // System.out.println(corporateService.getCorporateByCorporateId("nwanu").getAccounts());
-       // System.out.println(integrationService.doNameEnquiry("999033","1005847601"));
+        CronJobScheduler.startJobs();
 
     }
 

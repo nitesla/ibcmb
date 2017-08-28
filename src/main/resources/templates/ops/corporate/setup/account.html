@@ -214,6 +214,13 @@
                     $("#custName").hide();
                     $("#custError").show();
                 }
+            },
+            error: function (xhr, status, err) {
+                console.log("error");
+                var msg = "<p style='color:red;'>Error occurred validating Customer ID. Try again later.</p>";
+                $("#custError").html(msg);
+                $("#custError").show();
+
             }
         });
     });
@@ -238,6 +245,13 @@
                     corpIdExists = true
 
                 }
+            },
+            error: function (xhr, status, err) {
+                console.log("error");
+                var msg = "<p style='color:red;'>Error occurred validating Corporate ID. Try again later.</p>";
+                $("#custError").html(msg);
+                $("#custError").show();
+
             }
         });
     }

@@ -231,9 +231,7 @@ public class VerificationServiceImpl implements VerificationService {
                         .setSubject(messageSource.getMessage("verification.subject", null, locale))
                         .setBody(String.format(messageSource.getMessage("verification.message", null, locale), initiatorName, verifierName, operation, status, DateFormatter.format(date), comment))
                         .build();
-                new Thread(() -> {
-                    mailService.send(email);
-                }).start();
+                new Thread(() -> mailService.send(email)).start();
             }
         }
     }

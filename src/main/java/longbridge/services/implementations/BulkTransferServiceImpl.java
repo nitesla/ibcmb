@@ -83,7 +83,8 @@ public class BulkTransferServiceImpl implements BulkTransferService {
         logger.trace("Transfer details valid {}", bulkTransfer);
         //validate bulk transfer
 
-
+        bulkTransfer.setStatus("P");
+        bulkTransfer.setStatusDescription("Pending");
         BulkTransfer transfer = bulkTransferRepo.save(bulkTransfer);
         try {
             jobLauncher.launchBulkTransferJob("" + transfer.getId());

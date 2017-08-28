@@ -46,7 +46,7 @@
         <h3>Admin Console</h3>
         <ul class="nav side-menu">
             <li><a th:href="@{/admin/dashborad}"><i class="fa fa-dashboard"></i> Dashboard</a></li>
-            <li sec:authorize="hasAuthority('USER_MANAGEMENT')"><a><i class="fa fa-users"></i> User Management <span class="fa fa-chevron-down"></span></a>
+            <li sec:authorize="hasAuthority('ADMIN_USER_MANAGEMENT')"><a><i class="fa fa-users"></i> User Management <span class="fa fa-chevron-down"></span></a>
                 <ul class="nav child_menu">
                     <li sec:authorize="hasAuthority('ADMIN_USER_MANAGEMENT')"><a href="/admin/users/">Administrators</a></li>
                     <li sec:authorize="hasAuthority('OPS_USER_MANAGEMENT')"><a href="/admin/operations/users">Operators</a></li>
@@ -140,7 +140,7 @@
         <h3>Operations Console</h3>
         <ul class="nav side-menu">
             <li><a th:href="@{/ops/dashborad}"><i class="fa fa-dashboard"></i> Dashboard</a></li>
-            <li sec:authorize="hasAuthority('USER_MANAGEMENT')"><a><i class="fa fa-users"></i> User Management <span class="fa fa-chevron-down"></span></a>
+            <li sec:authorize="hasAuthority('CORPORATE_USER_MANAGEMENT')"><a><i class="fa fa-users"></i> User Management <span class="fa fa-chevron-down"></span></a>
                 <ul class="nav child_menu">
                     <li><a href="/ops/corporates/">Corporate</a></li>
                     <li ><a href="/ops/retail/users/">Retail</a></li>
@@ -395,15 +395,7 @@
         });
     </script>
 
-    <script>
-        window.onbeforeunload = function(){
-            $.ajax({
-                url: "/invalidate",
-                type: 'GET',
-                async: false
-            })
-        }
-    </script>
+
 </footer>
 <!-- /footer content -->
 
