@@ -103,7 +103,8 @@ public interface AccountService {
 
     List<AccountDTO> getAccountsAndBalances(List<Account> accounts);
 
-    public Iterable<Account> getAccountsForCredit(String customerId);
+     Iterable<Account> getAccountsForCredit(String customerId);
+     Iterable<Account> getAccountsForCredit(List<Account> accounts);
 
     /**
      * Fetches the details of an {@link Account} using the

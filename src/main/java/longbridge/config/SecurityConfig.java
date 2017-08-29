@@ -378,6 +378,10 @@ public class SecurityConfig {
             customFilter.setAuthenticationFailureHandler(corpAuthenticationFailureHandler);
             return customFilter;
         }
+        @Bean
+        public HttpSessionEventPublisher httpSessionEventPublisher() {
+            return new HttpSessionEventPublisher();
+        }
 
         @Bean
         public SessionRegistry sessionRegistry() {
