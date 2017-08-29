@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -39,6 +40,8 @@ import java.util.stream.StreamSupport;
 @RequestMapping("/retail/beneficiary")
 public class BeneficiaryController {
 
+
+    Locale locale = LocaleContextHolder.getLocale();
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private LocalBeneficiaryService localBeneficiaryService;
@@ -50,6 +53,8 @@ public class BeneficiaryController {
     private SecurityService securityService;
 
     private RetailUserService retailUserService;
+
+    private MessageSource messageSource;
 
     private ConfigurationService configurationService;
 
@@ -65,8 +70,7 @@ public class BeneficiaryController {
 
     @Autowired
     public BeneficiaryController(LocalBeneficiaryService localBeneficiaryService, MessageSource messages, InternationalBeneficiaryService internationalBeneficiaryService, FinancialInstitutionService financialInstitutionService, RetailUserService retailUserService, CodeService codeService
-    ,ConfigurationService configService,SecurityService securityService
-
+    ,ConfigurationService configService,SecurityService securityService, MessageSource messageSource
     ) {
         this.localBeneficiaryService = localBeneficiaryService;
         this.messages = messages;
@@ -76,6 +80,7 @@ public class BeneficiaryController {
         this.codeService = codeService;
         this.configService=configService;
         this.securityService=securityService;
+        this.messageSource=messageSource;
     }
 
     @GetMapping
@@ -269,17 +274,25 @@ public class BeneficiaryController {
 
 
     @PostMapping("/local/summary")
-    public String createLocalBeneficiary(@Valid LocalBeneficiaryDTO localBeneficiaryDTO, BindingResult result, Model model) {
+    public String createLocalBeneficiary(@Valid LocalBeneficiaryDTO localBeneficiaryDTO, BindingResult result, Model model, Principal principal) {
         if (result.hasErrors()) {
             model.addAttribute("internationalBeneficiaryDTO", new InternationalBeneficiaryDTO());
-
-
             return "cust/beneficiary/add";
         }
 
         try {
+            RetailUser retailUser = retailUserService.getUserByName(principal.getName());
+            boolean exist = localBeneficiaryService.doesBeneficiaryExist(retailUser, localBeneficiaryDTO);
+            if (exist) {
+                //model.addAttribute("localBeneficiaryDTO", localBeneficiaryDTO);
+                model.addAttribute("internationalBeneficiaryDTO", new InternationalBeneficiaryDTO());
+                model.addAttribute("failure", messageSource.getMessage("beneficiary.add.exist", null, locale));
+                return "cust/beneficiary/add";
+            }
+
+
             model.addAttribute("bank",financialInstitutionService.getFinancialInstitutionByCode(localBeneficiaryDTO.getBeneficiaryBank()).getInstitutionName());
-          model.addAttribute("beneficiary",localBeneficiaryDTO);
+            model.addAttribute("beneficiary",localBeneficiaryDTO);
             SettingDTO setting = configService.getSettingByName("ENABLE_RETAIL_2FA");
 
 

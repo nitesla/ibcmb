@@ -2220,12 +2220,7 @@ end
                                                         }
                                                         
                                                         @media screen and (max-width: 991px) and (min-width: 768px) {
-                                                            /* .my-select
-    {
-        width: 60% !important;
-        margin: 0px auto;
-    } */
-                                                            form#loginform {
+                                                            .my-select form#loginform {
                                                                 width: 60% !important;
                                                                 margin: 0px auto;
                                                             }
@@ -2310,7 +2305,7 @@ end
                                                                 padding: 0;
                                                             }
                                                             .content-wrapper {
-                                                                /*margin: 0 60px;*/
+                                                                margin: 0 60px;
                                                                 min-height: 4px;
                                                                 background: #FFF;
                                                             }
@@ -2390,12 +2385,6 @@ end
                                                             .links {
                                                                 border-bottom: 0px;
                                                             }
-                                                            .biglist {
-                                                                /* margin: 10px auto;
-        padding-bottom: 50px;
-        height: 110px;
-        max-width: 700px; */
-                                                            }
                                                             .fom-signin {
                                                                 max-width: 330px;
                                                                 margin: 0 auto;
@@ -2411,19 +2400,19 @@ end
                                                             /*}*/
                                                             /* .carousel-caption {
 
-    position: relative;
-    width:100%;
-    bottom: 10%;
-    display: none;
-    z-index: 10;
-    padding: 40px 0 40px 0;
-    color: #fff;
-    background-color: #9F614B;
-    opacity: 0.8;
-    line-height: 20px;
-    text-align: center;
-    font-size: 18px;
-}*/
+                                                                position: relative;
+                                                                width:100%;
+                                                                bottom: 10%;
+                                                                display: none;
+                                                                z-index: 10;
+                                                                padding: 40px 0 40px 0;
+                                                                color: #fff;
+                                                                background-color: #9F614B;
+                                                                opacity: 0.8;
+                                                                line-height: 20px;
+                                                                text-align: center;
+                                                                font-size: 18px;
+                                                            }*/
                                                         }
                                                         
                                                         @media screen and (max-width: 991px) and (min-width: 768px) {

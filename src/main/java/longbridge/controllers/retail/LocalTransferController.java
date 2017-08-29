@@ -52,18 +52,18 @@ public class LocalTransferController {
 
     @Autowired
     public LocalTransferController(RetailUserService retailUserService, TransferValidator validator, TransferService transferService, AccountService accountService, MessageSource messages, LocaleResolver localeResolver, LocalBeneficiaryService localBeneficiaryService, FinancialInstitutionService financialInstitutionService, TransferErrorService transferErrorService
-    ,TransferUtils transferUtils) {
+            , TransferUtils transferUtils) {
         this.retailUserService = retailUserService;
         this.transferService = transferService;
         this.localBeneficiaryService = localBeneficiaryService;
         this.financialInstitutionService = financialInstitutionService;
         this.validator = validator;
         this.transferErrorService = transferErrorService;
-        this.transferUtils=transferUtils;
+        this.transferUtils = transferUtils;
     }
 
     @GetMapping("")
-    public String index(Model model, Principal principal,HttpServletRequest request,RedirectAttributes redirectAttributes) throws Exception {
+    public String index(Model model, Principal principal, HttpServletRequest request, RedirectAttributes redirectAttributes) throws Exception {
         if (request.getSession().getAttribute("auth-needed") != null)
             request.getSession().removeAttribute("auth-needed");
         try {
@@ -73,14 +73,19 @@ public class LocalTransferController {
 
             List<LocalBeneficiary> beneficiaries = StreamSupport.stream(cmbBeneficiaries.spliterator(), false)
                     .collect(Collectors.toList());
-            beneficiaries.forEach(i -> i.setBeneficiaryBank(financialInstitutionService.getFinancialInstitutionByCode(i.getBeneficiaryBank()).getInstitutionName()));
+            beneficiaries.forEach(i ->
+                    {
+                        i.setBeneficiaryBank(financialInstitutionService.getFinancialInstitutionByCode(i.getBeneficiaryBank()).getInstitutionName());
+                        if (i.getPreferredName() == null && i.getAccountName() != null) i.setPreferredName(i.getAccountName());
+                    }
+            );
 
             model.addAttribute("localBen", beneficiaries
             );
 
 
             return page + "pagei";
-        }catch (InternetBankingTransferException e) {
+        } catch (InternetBankingTransferException e) {
             String errorMessage = transferErrorService.getMessage(e);
             model.addAttribute("failure", errorMessage);
             redirectAttributes.addFlashAttribute("failure", errorMessage);
@@ -113,8 +118,6 @@ public class LocalTransferController {
             transferService.validateTransfer(transferRequestDTO);
             transferRequestDTO.setTransferType(TransferType.CORONATION_BANK_TRANSFER);
             servletRequest.getSession().setAttribute("transferRequest", transferRequestDTO);
-
-
 
 
             return page + "pageiii";
@@ -196,26 +199,26 @@ public class LocalTransferController {
     @ModelAttribute
     public void getBankCode(Model model) {
         model.addAttribute("bankCode", bankCode);
-        model.addAttribute("fee",transferUtils.getFee("CMB"));
+        model.addAttribute("fee", transferUtils.getFee("CMB"));
     }
 
 
     @PostMapping("/edit")
-    public String editTransfer(@ModelAttribute("transferRequest")  TransferRequestDTO transferRequestDTO,Model model,HttpServletRequest request){
+    public String editTransfer(@ModelAttribute("transferRequest") TransferRequestDTO transferRequestDTO, Model model, HttpServletRequest request) {
         transferRequestDTO.setTransferType(TransferType.CORONATION_BANK_TRANSFER);
         transferRequestDTO.setFinancialInstitution(financialInstitutionService.getFinancialInstitutionByCode(bankCode));
-        model.addAttribute("transferRequest",transferRequestDTO);
-        if ( request.getSession().getAttribute("Lbeneficiary")!=null)
-            model.addAttribute("beneficiary",(LocalBeneficiaryDTO)request.getSession().getAttribute("Lbeneficiary"));
+        model.addAttribute("transferRequest", transferRequestDTO);
+        if (request.getSession().getAttribute("Lbeneficiary") != null)
+            model.addAttribute("beneficiary", (LocalBeneficiaryDTO) request.getSession().getAttribute("Lbeneficiary"));
 
         return page + "pageii";
     }
+
     @ModelAttribute
     public void setNairaSourceAccount(Model model) {
         model.addAttribute("accountList", transferUtils.getNairaAccounts());
 
 
-
-        }
+    }
 
 }

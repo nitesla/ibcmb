@@ -223,13 +223,17 @@
                         </div>
                     </div>
                 </div>
+
                 <div class="col-xs-12   col-md-3  no-bd alert no-bd-rad left-side">
                     <div class=" ">
                         <div class="sideba" style=" adding-top:20px;">
 
                             <div class="bg-danger alert no-mt advert no-bd-rad ">
                                 <h1 style="margin-bottom:10px;">Did You Know?</h1>
-                                <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore
+                                <p>The Coronation Merchant Bank Group has 3 subsidiaries: Coronation
+                                    Securities, Coronation Asset Management and Coronation Trustees.
+                                    <br/>
+                                    To learn more about what we do, click <a href="https://www.coronationmb.com/what-we-do/introduction" target="_blank"> here </a>
 
                                 </p>
                             </div>
@@ -320,9 +324,11 @@
 
 
 
+
     <script th:src="@{~/customer/js/jquery-1.11.1.js}"></script>
     <script th:src="@{~/customer/js/jquery-ui.js}"></script>
     <script th:src="@{~/customer/js/jquery.dataTables.js}"></script>
+    <script th:src="@{~/customer/js/dataTables.input.js}"></script>
     <!--<script th:src="@{~/customer/js/date/js/bootstrap-datepicker.js}"></script>-->
     <script th:src="@{~/customer/js/momentMin.js}"></script>
     <script th:src="@{~/customer/js/jquery.spring-friendly.min.js}"></script>
@@ -413,22 +419,17 @@
     <script th:inline='javascript'>
         /*<![CDATA[*/
 
-        $(document).ready(function() {
+        $(document).ready(function ()
+        {
             showPop('.errors');
+
             $('[data-toggle="tooltip"]').tooltip();
             $('.datepicker').datepicker({
                 autoclose: true,
                 todayBtn: true,
-                todayHighlight: true
-            });
-
-
-
+                todayHighlight: true});
 
         })
-
-
-
 
         /*]]>*/
     </script>
@@ -440,11 +441,7 @@
             keepAliveUrl: '',
             logoutUrl: '/corporate/logout',
             redirUrl: '/corporate/logout',
-            warnAfter: [
-                [$ {
-                    timeOut
-                }]
-            ],
+            warnAfter: [[${timeOut}]],
             redirAfter: 15000,
             countdownBar: true
         });

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:sec="http://www.w3.org/1999/xhtml">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.w3.org/1999/xhtml">
 
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
@@ -12,7 +13,6 @@
     <!--<link rel="stylesheet" type="text/css" th:href="@{~/customer/css/date/css/bootstrap-datepicker.standalone.css}"/>-->
 
 
-
     <link rel="stylesheet" type="text/css" th:href="@{~/customer/css/bootstrap.css}" />
 
     <link rel="stylesheet" type="text/css" th:href="@{~/customer/css/select.bootstrap.css}" />
@@ -22,6 +22,7 @@
     <link rel="stylesheet" type="text/css" th:href="@{~/customer/plugins/datatables/css/dataTables.bootstrap.css}" />
     <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.7.0/css/bootstrap-datepicker.min.css" />
     <link rel="stylesheet" type="text/css" th:href="@{~/customer/css/custom.css}" />
+
     <link rel="shortcut icon" th:href="@{~/customer/img/favicon.ico}" type="image/x-icon">
     <link rel="icon" th:href="@{~/customer/img/favico.ico}" type="image/x-icon">
     <title>Coronation Merchant Bank</title>
@@ -31,6 +32,7 @@
 <body>
 
     <div class="container" style="">
+
 
         <div>
             <header class="heade hidden-xs ">
@@ -51,11 +53,12 @@
                                     <a style='color:#003056;font-size:16px' th:href="@{/retail/bvn}" th:text="'BVN: ' + ${bvn}"></a>
                                 </h2>
                                 <h5 th:unless="${bvn=='NO BVN'}">
-                                    <span style='color:#003056;font-size:16px;font-weight:bold' th:text="'BVN: ' + ${bvn}"></span><span class="bvn-add-info"> Lorem ipsum</span>
+                                    <span style='color:#003056;font-size:16px;font-weight:bold' th:text="'BVN: ' + ${bvn}"></span><span class="bvn-add-info"> BVN is your Unique Identification Number</span>
                                 </h5>
 
                             </div>
                         </div>
+
                         <div class="col-sm-7 col-md-7 user-info ">
                             <div class=" ">
                                 <h5>
@@ -71,6 +74,7 @@
 
                                 <div class="hide-faq">
                                     <h6><a class="coronation-blue" target="_blank" th:href="@{/faqs}" style="text-decoration:none;"> FAQS
+
                                     <i style="font-size: 16px;" class="fa fa-question-circle"></i></a>
                                         <span class="date2 lorem">&nbsp; &nbsp;Login History:&nbsp;</span>&nbsp;
                                         <span class="lorem" th:text="*{lastLogin}">21st March 2017 10:30am</span>
@@ -106,7 +110,6 @@
                     </div>
 
                     <div class="">
-
                         <div class="collapse navbar-collapse" id="navbar-collapse-1">
                             <ul class="nav navbar-nav menu">
                                 <li th:classappend="${#httpServletRequest.getRequestURI().startsWith('/retail/dashboard') ? 'active':''}"><a class="menu-link" th:href="@{/retail/dashboard}">Dashboard</a></li>
@@ -183,7 +186,8 @@
                                 <li><a class="logout" th:href="@{/retail/logout}"> Log out
                                 <!--<span class="fa-stack fa-lg no-bd-rad">-->
                                 <!--<i class="fa fa-square fa-stack-1x fa-lg no-bd-rad"></i>-->
-                                <i class="fa fa-power-off fa-inverse no-bd-rad power" style="font-size:12px;color:white"></i>
+                                <i class="fa fa-power-off fa-inverse no-bd-rad power"
+                                   style="font-size:12px;color:white"></i>
                                 <!--</span>-->
                             </a>
                                 </li>
@@ -192,7 +196,6 @@
                     </div>
                 </div>
             </nav>
-
 
 
             <!--<div class=' alert alert-info text-white  no-bd-rad' style="margin:1px 15px 1px 1px!important;background-color:#003056;color:white;"><marquee class='marquee'>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</marquee></div>-->
@@ -221,15 +224,19 @@
                         </div>
                     </div>
                 </div>
+
                 <div class="col-xs-12   col-md-3  no-bd alert no-bd-rad left-side">
                     <div class=" ">
                         <div class="sideba" style=" adding-top:20px;">
 
                             <div class="bg-danger alert no-mt advert no-bd-rad ">
                                 <h1 style="margin-bottom:10px">Did You Know?</h1>
-                                <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore
+                                <p>The Coronation Merchant Bank Group has 3 subsidiaries: Coronation
+                                Securities, Coronation Asset Management and Coronation Trustees.
+                                <br/>
+                                To learn more about what we do, click <a href="https://www.coronationmb.com/what-we-do/introduction" target="_blank"> here </a>
 
-                                </p>
+                            </p>
                             </div>
                             <!--date-->
                             <div class=" hidden-xs bg-dan">
@@ -237,16 +244,16 @@
                                 <div class="no-bd no-bd-rad   time" style=" margin-to: 6px !important;margin-bottom:0px !important;border-top:2px solid #ebdfdb !important;border-bottom:2px solid #ebdfdb !important;">
                                     <span class=" ">
                 <i class="fa fa-calendar-plus-o datepicker cal-icon " data-provide="datepicker" onclick="show()" style="font-size:20px;background:transparent !important;border:0px !important"></i>
+
             </span>
                                     <span class="  ">
                 <span class="time-icon" id="day" style="font-size:13px;"></span><span>,</span>
+
                                     <span class="text-bold time-icon" id="cal_date" style="font-size:14px;color:#003056 !important;"></span>
                                     </span>
                                     <script>
                                         setInterval(
                                             function() {
-
-
                                                 var timer = moment().format('LTS'); //timer in hours,minutes and seconds
                                                 var day = moment().format('dddd'); // get the current day
                                                 var cur_date = moment().format("D MMMM");
@@ -279,8 +286,8 @@
             </span>
                                     <span id="time" class="text-bold no-bd" style="font-size:14px;padding-left:10px;color:#003056 !important;"></span>
                                 </div>
-                            </div>
 
+                            </div>
 
 
                             <!--image placeholdder-->
@@ -331,6 +338,7 @@
             <script th:src="@{~/customer/js/jquery-1.11.1.js}"></script>
             <script th:src="@{~/customer/js/jquery-ui.js}"></script>
             <script th:src="@{~/customer/js/jquery.dataTables.js}"></script>
+            <script th:src="@{~/customer/js/dataTables.input.js}"></script>
             <!--<script th:src="@{~/customer/js/date/js/bootstrap-datepicker.js}"></script>-->
             <script th:src="@{~/customer/js/momentMin.js}"></script>
             <script th:src="@{~/customer/js/jquery.spring-friendly.min.js}"></script>
@@ -349,24 +357,6 @@
 
 
 
-
-
-
-            <div th:if="${message}">
-                <div hidden="hidden">
-                    <ul class="actionMessage">
-                        <li th:each="msg : ${message}" th:text="${msg}">Message</li>
-                    </ul>
-                </div>
-            </div>
-
-            <div th:if="${failure}">
-                <div hidden="hidden">
-                    <ul class="actionError">
-                        <li th:each="msg : ${failure}" th:text="${msg}" id="error">Message</li>
-                    </ul>
-                </div>
-            </div>
 
             <div id="myModalError" class="modal fade " role="dialog">
                 <div class="modal-dialog">
@@ -422,10 +412,8 @@
             <script th:inline='javascript'>
                 /*<![CDATA[*/
 
-                $(document).ready(function() {
+                $(document).ready(function () {
                     showPop('.errors');
-
-
 
                     $('select').addClass('select-wrapper');
 
@@ -440,13 +428,12 @@
                     var text = ['Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
                         'i am two  Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
                         'i am 3 Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
-                        'i am 4 Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum is simply dummy text of the printing and typesetting industry. '
-                    ];
+                        'i am 4 Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum is simply dummy text of the printing and typesetting industry. '];
                     var x = 0;
                     var end = 0;
 
                     function textArray() {
-                        $(".marquee").fadeOut(function() {
+                        $(".marquee").fadeOut(function () {
                             $(this).text(text[x]).fadeIn();
 
                         });
@@ -457,6 +444,7 @@
                             x = 0;
                         }
                     }
+
                     setInterval(textArray, 30000);
 
                 })
@@ -469,11 +457,7 @@
                     keepAliveUrl: '',
                     logoutUrl: '/retail/logout',
                     redirUrl: '/retail/logout',
-                    warnAfter: [
-                        [$ {
-                            timeOut
-                        }]
-                    ],
+                    warnAfter: [[${timeOut}]],
                     redirAfter: 15000,
                     countdownBar: true
                 });

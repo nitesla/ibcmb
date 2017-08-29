@@ -18,15 +18,13 @@ import java.util.*;
 public class BulkTransferWriter implements ItemWriter<TransferDTO> {
 
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(BulkTransferWriter.class);
     private RestTemplate template;
 
     @Autowired
     public void setTemplate(RestTemplate template) {
         this.template = template;
     }
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(BulkTransferWriter.class);
-
 
     @Override
     public void write(List<? extends TransferDTO> items)
@@ -38,20 +36,19 @@ public class BulkTransferWriter implements ItemWriter<TransferDTO> {
         List<TransferDTO> dtos = new ArrayList<>();
         dtos.addAll(items);
 
-        TransferDetails details= details(dtos);
+        TransferDetails details = details(dtos);
 
     }
 
 
-
-    private TransferDetails details( List<TransferDTO> dtos ){
-        String uri =  "http://132.10.200.140:9292/service/outwardnapsTransfer";
+    private TransferDetails details(List<TransferDTO> dtos) {
+        String uri = "http://132.10.200.140:9292/service/outwardnapsTransfer";
         try {
 
             TransferDetails details = template.postForObject(uri, dtos, TransferDetails.class);
             return details;
         } catch (Exception e) {
-         e.printStackTrace();
+            e.printStackTrace();
             return new TransferDetails();
         }
 

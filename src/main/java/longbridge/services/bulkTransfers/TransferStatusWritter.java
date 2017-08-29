@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Created by ayoade_farooq@yahoo.com on 8/5/2017.
@@ -37,7 +38,7 @@ public class TransferStatusWritter implements ItemWriter<TransactionStatus> {
     @Override
     public void write(List<? extends TransactionStatus> items) throws Exception {
         logger.info("Received the information of {} transactions", items.size());
-        items.forEach(i -> logger.debug("Received the information of a transaction: {}", i));
+        items.stream().filter(Objects::nonNull).forEach(i -> logger.debug("Received the information of a transaction: {}", i));
         items.stream()
                 .forEach(
                         i -> {
