@@ -179,7 +179,7 @@ public class AdminUserServiceImpl implements AdminUserService {
                         boolean contactResult = securityService.addUserContacts(adminUser.getEmail(), adminUser.getPhoneNumber(), true, entrustId, group);
                         if (!contactResult) {
                             logger.error("Failed to add user contacts on Entrust");
-                            securityService.deleteEntrustUser(entrustId, group);
+
                             throw new EntrustException(messageSource.getMessage("entrust.contact.failure", null, locale));
 
                         }
