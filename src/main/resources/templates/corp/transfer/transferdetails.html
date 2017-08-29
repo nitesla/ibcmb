@@ -16,7 +16,7 @@
         <div class=" col-sm-offset-3 col-sm-6 no-pad-lef  no-mt no-bd alert">
 
                         <table class="table table-hover ">
-                            <tr>
+                            <tr class='top-row'>
 
                                 <th>Source account</th>
                                 <td th:text="${transRequest.customerAccountNumber}"></td>
@@ -58,7 +58,7 @@
                                     <!--<a style="font-size: 13px !important;" class="btn btn-link less-required trans-but my-buttons" th:href="@{/corporate/transfer/{tranId}/receipt(tranId=${transRequest.id})}">Home</a>-->
                                 <!--</span>-->
                                     <a style="font-size: 13px !important;" class="btn btn-link less-required trans-but my-buttons" th:href="@{/corporate/dashboard}" >Home</a>
-                                    <a style="font-size: 13px !important;" class="btn btn-link less-required trans-but my-buttons" th:href="@{/corporate/transfer/}" >Make Another transfer</a>
+                                    <a style="font-size: 13px !important;" class="btn btn-link required-step trans-but my-buttons" th:href="@{/corporate/transfer/}" >Make Another transfer</a>
                                 </div>
                 <!--</form>-->
 
