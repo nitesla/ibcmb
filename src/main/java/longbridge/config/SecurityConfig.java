@@ -60,10 +60,6 @@ public class SecurityConfig {
         private BCryptPasswordEncoder bCryptPasswordEncoder;
         @Autowired
         private AdminAuthenticationSuccessHandler adminAuthenticationSuccessHandler;
-        //        @Autowired
-//        //@Qualifier("opAuthenticationSuccessHandler")
-//        @Qualifier("adminAuthenticationSuccessHandler")
-//        private AuthenticationSuccessHandler adminAuthenticationSuccessHandler;
         @Autowired
         @Qualifier("adminAuthenticationFailureHandler")
         private AuthenticationFailureHandler adminAuthenticationFailureHandler;
@@ -118,7 +114,7 @@ public class SecurityConfig {
 
 
             http.antMatcher("/admin/**").authorizeRequests().anyRequest().
-                    // hasAuthority(UserType.ADMIN.toString())
+
 
 
                     // .and().authorizeRequests().and()
@@ -134,8 +130,9 @@ public class SecurityConfig {
                     .maximumSessions(1)
                     .expiredUrl("/login/admin?expired=true")
                     .sessionRegistry(sessionRegistry()).and()
-                    .sessionFixation().newSession()
-//                    .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
+
+                    .sessionFixation().migrateSession().sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
+
                     .and()
                     .logout().logoutUrl("/admin/logout").logoutSuccessUrl("/login/admin").deleteCookies("JSESSIONID")
                     .invalidateHttpSession(true).and().requestCache()
@@ -187,8 +184,10 @@ public class SecurityConfig {
 
         protected void configure(HttpSecurity http) throws Exception {
             http.antMatcher("/ops/**").authorizeRequests().anyRequest()
+
                     //.authenticated()
-                    .hasAuthority(UserType.OPERATIONS.toString())
+                   .hasAuthority(UserType.OPERATIONS.toString())
+
                     // log in
                     .and().formLogin().loginPage("/login/ops").loginProcessingUrl("/ops/login").failureUrl("/login/ops?error=true").defaultSuccessUrl("/ops/dashboard")
                     .successHandler(opAuthenticationSuccessHandler)
@@ -202,8 +201,11 @@ public class SecurityConfig {
                     .maximumSessions(1)
                     .expiredUrl("/login/ops?expired=true")
                     .sessionRegistry(sessionRegistry()).and()
-                    .sessionFixation().newSession()
-//                    .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
+
+                    .sessionFixation().migrateSession()
+                    .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
+
+
                     .and()
                     // logout
                     .logout().logoutUrl("/ops/logout")
@@ -271,7 +273,7 @@ public class SecurityConfig {
                     .invalidSessionUrl("/login/retail")
                     .maximumSessions(1)
                     .expiredUrl("/login/retail?expired=true").sessionRegistry(sessionRegistry()).and()
-                    .sessionFixation().newSession()
+                    .sessionFixation().migrateSession()
                     .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
                     .invalidSessionUrl("/login/retail")
                     .and()
@@ -352,7 +354,7 @@ public class SecurityConfig {
                     .sessionManagement()
                     .invalidSessionUrl("/login/corporate")
                     .maximumSessions(1).expiredUrl("/login/corporate").sessionRegistry(sessionRegistry()).and()
-                    .sessionFixation().newSession()
+                    .sessionFixation().migrateSession()
                     .and()
                     // logout
                     .logout().logoutUrl("/corporate/logout").logoutSuccessUrl("/login/corporate").deleteCookies("JSESSIONID").invalidateHttpSession(true).and().exceptionHandling().and().csrf().disable();
