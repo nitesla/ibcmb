@@ -2255,21 +2255,26 @@ end
                         margin-top: 60px !important;
                         padding-bottom: 30px !important;
                     }
+
                     @media screen and (max-width: 767px) and (min-width: 0) {
                         .header {
                             min-height: 1px;
                             padding-bottom: 10px;
                         }
+
                         .inside .icon-bar {
                             background: white !important;
                         }
+
                         .left-side {
                             padding-left: 0px !important;
                         }
+
                         .errors_div {
                             position: static !important;
                             margin-top: 5px;
                         }
+
                         .carousel-caption {
                             position: absolute !important;
                             top: 70% !important;
@@ -2283,35 +2288,44 @@ end
                             background-color: #9F614B !important;
                             opacity: 0.8 !important;
                         }
+
                         .img {
                             float: none !important;
                             display: block !important;
                             text-align: center !important;
                             margin: 0px auto !important;
                         }
+
                         .ml-15 {
                             margin-left: 0px !important;
                         }
+
                         .coronation-form-control {
                             margin-left: 0px !important;
                         }
+
                         .margin-xs {
                             margin-top: 30px;
                         }
+
                         .mtop {
                             margin-top: 20px;
                         }
+
                         .container {
                             padding: 0 19px;
                         }
+
                         .header .container {
                             padding: 0;
                         }
+
                         .content-wrapper {
                             /*margin: 0 60px;*/
                             min-height: 4px;
                             background: #FFF;
                         }
+
                         .logo {
                             clear: both;
                             display: block;
@@ -2321,9 +2335,11 @@ end
                             top: -20px;
                             width: 100px;
                         }
+
                         .logo img {
                             height: 75px;
                         }
+
                         .top_bar {
                             clear: both;
                             display: block;
@@ -2334,76 +2350,96 @@ end
                             top: 0;
                             right: 0;
                         }
+
                         .top_bar .list_group,
                         .search_bar,
                         .search_bar .icon {
                             display: none;
                         }
+
                         .header_info {
                             display: none;
                             border: 1px solid blue;
                         }
+
                         .nav {
                             margin-left: 10px;
                         }
+
                         .navbar {
                             margin-top: 0;
                             z-index: 10;
                         }
+
                         .navbar .container-fluid {
                             padding-left: 12px;
                         }
+
                         .navbar-default .navbar-toggle {
                             border-color: transparent;
                         }
+
                         .navbar-brand {
                             display: block;
                         }
+
                         .footer_bar p {
                             text-align: center;
                         }
-                        .navbar-nav>li:first-child>a {
+
+                        .navbar-nav > li:first-child > a {
                             /* padding-left: 15px; */
                         }
+
                         .slider {
                             /* height: 230px; */
                             margin: 0 15px 0 15px;
                             overflow: hidden;
                         }
+
                         .sidebar {
                             display: none;
                         }
+
                         .spacing {
                             padding: 10px 0px;
                         }
+
                         .form-spacing {
                             padding: 10px 0px;
                         }
+
                         .hide-faq {
                             display: none;
                         }
+
                         .bg {
                             min-height: 300px;
                         }
+
                         .links {
                             border-bottom: 0px;
                         }
+
                         .biglist {
                             /* margin: 10px auto;
         padding-bottom: 50px;
         height: 110px;
         max-width: 700px; */
                         }
+
                         .fom-signin {
                             max-width: 330px;
                             margin: 0 auto;
                             text-align: center;
                         }
+
                         .login-form {
                             position: relative;
                             padding: 100px 0;
                             margin: 30px 0 0 0;
                         }
+
                         /*.phishing-img{*/
                         /*margin: 0 0 10px 100px;*/
                         /*}*/
@@ -2427,6 +2463,7 @@ end
                         .inside .icon-bar {
                             background: white !important;
                         }
+
                         .left-side {
                             padding-left: 0px !important;
                         }
@@ -2435,8 +2472,10 @@ end
                     .body .even {
                         font-size: 11px !important;
                     }
+
                     .th-table tr {
                         border-top: 2px solid #8d8d8f !important;
                         border-bottom: 2px solid #8d8d8f !important;
                         background: #d3d4d7 !important
                     }
+                }
