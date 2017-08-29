@@ -24,14 +24,14 @@ public class RunningJob implements Job {
 //    private CronJobService cronJobService;
 
     @Override
-    public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
+    public void execute(JobExecutionContext joabExecutionContext) throws JobExecutionException {
         ApplicationContext context = SpringContext.getApplicationContext();
         CronJobService cronJobService = context.getBean (CronJobService.class);
-        System.out.println("job runing");
+//        System.out.println("job runing");
         try {
-            CompileJasper.compile();
+//            CompileJasper.compile();
 //            cronJobService.saveRunningJob("in-built",cronJobService.getCurrentExpression());
-//            cronJobService.updateAccountDetials();
+            cronJobService.updateAccountDetials();
             cronJobService.updateRetailUserDetails();
 //            cronJobService.updateCorporateUserDetails();
 //

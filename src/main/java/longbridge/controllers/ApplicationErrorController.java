@@ -3,6 +3,8 @@ package longbridge.controllers;
 import longbridge.models.Email;
 import longbridge.services.MailService;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.web.ErrorAttributes;
 import org.springframework.boot.autoconfigure.web.ErrorController;
@@ -30,13 +32,14 @@ public class ApplicationErrorController implements ErrorController {
     private ErrorAttributes errorAttributes;
 
 
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
+
+
     @RequestMapping(value = PATH)
     public String handleError(HttpServletRequest request) {
 
         RequestAttributes requestAttributes = new ServletRequestAttributes(request);
         Map<String, Object> errorDetails = errorAttributes.getErrorAttributes(requestAttributes, true);
-
-
 
 
         String errorPath = (String) errorDetails.get("path");
@@ -49,6 +52,7 @@ public class ApplicationErrorController implements ErrorController {
         }
 
         if("403".equals(statusCode)){
+            logger.error("Error Details: {}",errorDetails.toString());
             return "/error403";
         }
 

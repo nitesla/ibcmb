@@ -84,6 +84,8 @@ public class SecurityConfig {
 
         @Override
         protected void configure(HttpSecurity http) throws Exception {
+
+
             boolean ipRestricted = false;
             StringBuilder ipRange = new StringBuilder("hasIpAddress('::1') or hasIpAddress('127.0.0.1')");
             //Takes a specific IP address or a range using
@@ -92,15 +94,15 @@ public class SecurityConfig {
             if (dto != null && dto.isEnabled()) {
                 ipRestricted = true;
                 String temp = dto.getValue();
-                try{
-                    String [] whitelisted = temp.split(",");
+                try {
+                    String[] whitelisted = temp.split(",");
                     Arrays.asList(whitelisted)
                             .stream()
                             .filter(Objects::nonNull)
-                            .forEach(i -> ipRange.append(String.format(" or hasIpAddress('%s')", i)) );
+                            .forEach(i -> ipRange.append(String.format(" or hasIpAddress('%s')", i)));
 
 
-                }catch (Exception e){
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
 
@@ -116,7 +118,7 @@ public class SecurityConfig {
 
 
                     // .and().authorizeRequests().and()
-                            access("hasAuthority('" + UserType.ADMIN.toString() + "') and " + ipRange.toString()) .and()
+                            access("hasAuthority('" + UserType.ADMIN.toString() + "') and " + ipRange.toString()).and()
 
                     // log in
                     .formLogin().loginPage("/login/admin").loginProcessingUrl("/admin/login")
@@ -128,7 +130,9 @@ public class SecurityConfig {
                     .maximumSessions(1)
                     .expiredUrl("/login/admin?expired=true")
                     .sessionRegistry(sessionRegistry()).and()
+
                     .sessionFixation().migrateSession().sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
+
                     .and()
                     .logout().logoutUrl("/admin/logout").logoutSuccessUrl("/login/admin").deleteCookies("JSESSIONID")
                     .invalidateHttpSession(true).and().requestCache()
@@ -197,12 +201,16 @@ public class SecurityConfig {
                     .maximumSessions(1)
                     .expiredUrl("/login/ops?expired=true")
                     .sessionRegistry(sessionRegistry()).and()
+
                     .sessionFixation().migrateSession()
                     .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
 
+
                     .and()
                     // logout
-                    .logout().logoutUrl("/ops/logout").logoutSuccessUrl("/login/ops").deleteCookies("JSESSIONID").invalidateHttpSession(true).and().exceptionHandling().and().csrf().disable()
+                    .logout().logoutUrl("/ops/logout")
+                    .logoutSuccessUrl("/login/ops").deleteCookies("JSESSIONID")
+                    .invalidateHttpSession(true).and().exceptionHandling().and().csrf().disable()
 
             ;
             // disable page caching
@@ -268,8 +276,6 @@ public class SecurityConfig {
                     .sessionFixation().migrateSession()
                     .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
                     .invalidSessionUrl("/login/retail")
-
-
                     .and()
 
                     // logout
@@ -289,6 +295,7 @@ public class SecurityConfig {
         public SessionRegistry sessionRegistry() {
             return new SessionRegistryImpl();
         }
+
         @Bean
         public HttpSessionEventPublisher httpSessionEventPublisher() {
             return new HttpSessionEventPublisher();
@@ -324,8 +331,7 @@ public class SecurityConfig {
         protected void configure(HttpSecurity http) throws Exception {
 
 
-            http
-                    .addFilterBefore(customFilter(), UsernamePasswordAuthenticationFilter.class);
+            http.addFilterBefore(customFilter(), UsernamePasswordAuthenticationFilter.class);
 
             http
                     .antMatcher("/corporate/**").authorizeRequests()
@@ -371,8 +377,6 @@ public class SecurityConfig {
             customFilter.setAuthenticationSuccessHandler(corpAuthenticationSuccessHandler);
             customFilter.setAuthenticationFailureHandler(corpAuthenticationFailureHandler);
             return customFilter;
-
-
         }
 
         @Bean

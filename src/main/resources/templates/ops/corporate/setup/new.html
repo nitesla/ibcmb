@@ -32,8 +32,8 @@
                     <div class="col-md-12 col-sm-12 col-xs-12">
                         <div class="x_panel">
                             <div class="x_title">
-                                <h2 th:if="${corporate.corporateType=='SOLE'}" >Sole User Corporate</h2>
-                                <h2 th:if="${corporate.corporateType=='MULTI'}" >Multi User Corporate</h2>
+                                <h2 th:if="${corporate.corporateType=='SOLE'}">Sole User Corporate</h2>
+                                <h2 th:if="${corporate.corporateType=='MULTI'}">Multi User Corporate</h2>
 
                                 <div class="clearfix"></div>
                             </div>
@@ -55,8 +55,10 @@
                                         <!--</div>-->
                                         <div class="form-group">
                                             <label class="col-sm-2 control-label">Customer ID</label>
-                                        <div class="col-md-6">
-                                                    <input type="text" class="form-control" th:field="*{customerId}" placeholder="Enter CIFID here"  onkeyup="validateCorpId()" required="required"/>
+                                            <div class="col-md-6">
+                                                <input type="text" class="form-control" th:field="*{customerId}"
+                                                       placeholder="Enter CIFID here" onkeyup="validateCorpId()"
+                                                       required="required"/>
 
                                             </div>
 
@@ -74,7 +76,8 @@
                                             <label class="col-sm-2 control-label">Customer Name</label>
 
                                             <div class="col-sm-6">
-                                                <input type="text" class="form-control" th:field="*{customerName}" readonly="readonly"/>
+                                                <input type="text" class="form-control" th:field="*{customerName}"
+                                                       readonly="readonly"/>
                                             </div>
 
                                         </div>
@@ -105,61 +108,68 @@
     </div>
 </div>
 <script>
-$(document).ready(function () {
-    var custId = $("#customerId").val();
-    if (custId != '') {
-        $.ajax({
-            url: "/ops/corporates/" + custId + "/name",
-            success: function (result) {
-                if (result != "false") {
-                    $("#customerName").val(result);
-                    $("#custName").show();
-                    $("#custError").hide();
+    $(document).ready(function () {
+        var custId = $("#customerId").val();
+        if (custId != '') {
+            $.ajax({
+                url: "/ops/corporates/" + custId + "/name",
+                success: function (result) {
+                    if (result != "false") {
+                        $("#customerName").val(result);
+                        $("#custName").show();
+                        $("#custError").hide();
 
-                }
-                else {
-                    $("#custName").hide();
+                    }
+                    else {
+                        $("#custName").hide();
+                        $("#custError").show();
+                    }
+                },
+                error: function (xhr, status, error) {
+                    $("#custError").html("Error occurred validating Customer ID. Try again later.");
                     $("#custError").show();
                 }
-            }
-        });
-    }
+            });
+        }
 //    var value = '@Request.RequestContext.HttpContext.Session["corporateRequest"]';
 //    console.log("")
 
 
-    $("#customerId").blur(function () {
-        validateCorpId();
-    })
-});
-function validateCorpId() {
-    var custId = $("#customerId").val();
-    console.log("customer Id: " + custId);
-if(custId != ''){
-    $.ajax({
-        url: "/ops/corporates/" + custId + "/name",
-        success: function (result) {
-            if (result != "false") {
-                $("#customerName").val(result);
-                $("#custName").show();
-                $("#custError").hide();
+        $("#customerId").blur(function () {
+            validateCorpId();
+        })
+    });
+    function validateCorpId() {
+        var custId = $("#customerId").val();
+        console.log("customer Id: " + custId);
+        if (custId != '') {
+            $.ajax({
+                url: "/ops/corporates/" + custId + "/name",
+                success: function (result) {
+                    if (result != "false") {
+                        $("#customerName").val(result);
+                        $("#custName").show();
+                        $("#custError").hide();
 
-            }
-            else {
-                $("#custName").hide();
-                $("#custError").show();
-            }
-        },error: function (data) {
-            console.log("error");
-//            $('#loading-icon').hide();
-            // alert("failure");
-//                $('#sub').disabled();
+                    }
+                    else {
+                        $("#custName").hide();
+                        $("#custError").show();
+                    }
+                },
+                error: function (xhr, status, err) {
+                    console.log("error");
+                    var msg = "<p style='color:red;'>Error occurred validating Customer ID. Try again later.</p>";
+                    $("#custError").html(msg);
+                    $("#custError").show();
+
+                }
+            });
         }
-    });}
-}
-//    document.getElementById("cancel").onclick = function () {
-//        location.href = "/ops/corporates";
-//    }
+    }
+    //    document.getElementById("cancel").onclick = function () {
+    //        location.href = "/ops/corporates";
+    //    }
 
 
 </script>
