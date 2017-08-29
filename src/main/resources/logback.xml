@@ -35,6 +35,10 @@
         <appender-ref ref="File" />
         <appender-ref ref="Console" />
     </logger>
+    <logger level="error" name="longbridge.config.audits.CustomJdbcUtil" additivity="false">
+        <appender-ref ref="File" />
+        <appender-ref ref="Console" />
+    </logger>
 
     <root level="info">
         <appender-ref ref="File" />

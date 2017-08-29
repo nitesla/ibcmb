@@ -1,80 +1,80 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org"
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{corp-layout}">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{corp-layout}">
 
 <body onload="javascript:var bread = [['Home', '/corporate/dashboard'],['Change password']];currentBar('change password');breadCrumb(bread)">
 
-<div layout:fragment="content">
-    <div class="col-md-5 col-sm-5 ">
+    <div layout:fragment="content">
+        <div class="col-md-5 col-sm-5 ">
 
-        <select class="form-control full-width coronation-form-control hide-content-only" id="view">
+            <select class="form-control full-width coronation-form-control hide-content-only" id="view">
             <option value="account">Overview</option>
         </select>
-    </div>
+        </div>
 
-    <div class="col-xs-12 " >
-        <div class=" no-pad-lef no-mt alert no-bd">
-            <div class="">
-                <div class="col-md-7 col-sm-7 no-pad-left">
-            <form method="post" th:action="@{/corporate/settings/change_password}" th:object="${custChangePassword}">
+        <div class="col-xs-12 ">
+            <div class=" no-pad-lef no-mt alert no-bd">
+                <div class="">
+                    <div class="col-md-7 col-sm-7 no-pad-left">
+                        <form method="post" th:action="@{/corporate/settings/change_password}" th:object="${custChangePassword}">
                             <div class="form-group">
                                 <label>Old Password</label>
-                                <input id="old" type="password" th:field="*{oldPassword}" class="form-control"/><span class='req-inner'></span>
+                                <input id="old" type="password" th:field="*{oldPassword}" class="form-control" /><span class='req-inner'></span>
                                 <p class="errors" th:if="${#fields.hasErrors('oldPassword')}" th:errors="*{oldPassword}">&times;</p>
                             </div>
                             <div class="form-group">
                                 <label>New Password</label>
-                                <input id="password" type="password" th:field="*{newPassword}"  class="form-control"/><span class='req-inner'></span>
+                                <input id="password" type="password" th:field="*{newPassword}" class="form-control" /><span class='req-inner'></span>
                                 <p class="errors" th:if="${#fields.hasErrors('newPassword')}" th:errors="*{newPassword}">&times;</p>
                             </div>
-                            <div class="form-group">
+                            <div class="form-group" style="margin-bottom:-5px;">
                                 <label>Confirm New Password</label>
-                                <input id="confirm" type="password" th:field="*{confirmPassword}"  class="form-control"/><span class='req-inner'></span>
+                                <input id="confirm" type="password" th:field="*{confirmPassword}" class="form-control" /><span class='req-inner'></span>
                                 <p class="errors" th:if="${#fields.hasErrors('confirmPassword')}" th:errors="*{confirmPassword}">&times;</p>
                             </div>
 
-                            <button type="submit" class="btn btn-link required-step">Submit</button>
+
+                            <button type="submit" class="btn btn-link required-step" style='margin-bottom:20px'>Submit</button>
 
                             <div th:replace="layout :: form-validation">
 
                             </div>
                         </form>
-                </div>
-                <div class="col-xs-12 col-sm-5 wel">
-                    <div class=" ">
-                        <!--<p class="related" style="padding-top: 5%">Related Information</p>-->
-                        <div  class="related-box">
-                            <h3 class="related-bar">Related Information</h3>
+                    </div>
+                    <div class="col-xs-12 col-sm-5 wel mobile-no-left">
+                        <div class=" ">
+                            <!--<p class="related" style="padding-top: 5%">Related Information</p>-->
+                            <div class="related-box">
+                                <h3 class="related-bar">Related Information</h3>
 
-                            <!--<input type="availBal" name="availBal"/>-->
-                            <p class="related-info coronation-blue" th:each="rule : ${passwordRules}" th:text="${rule}"></p>
+                                <!--<input type="availBal" name="availBal"/>-->
+                                <p class="related-info coronation-blue" th:each="rule : ${passwordRules}" th:text="${rule}"></p>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+
     </div>
 
-</div>
 
+    <th:block layout:fragment="scripts">
+        <script>
+            $('#old').bind("cut copy paste", function(e) {
+                e.preventDefault();
+            });
 
-<th:block layout:fragment="scripts">
-<script>
+            $('#password').bind("cut copy paste", function(e) {
+                e.preventDefault();
+            });
 
-    $('#old').bind("cut copy paste",function(e) {
-        e.preventDefault();
-    });
+            $('#confirm').bind("cut copy paste", function(e) {
+                e.preventDefault();
+            });
+        </script>
 
-    $('#password').bind("cut copy paste",function(e) {
-        e.preventDefault();
-    });
-
-    $('#confirm').bind("cut copy paste",function(e) {
-        e.preventDefault();
-    });
-</script>
-   
-</th:block>
+    </th:block>
 
 </body>
+
 </html>

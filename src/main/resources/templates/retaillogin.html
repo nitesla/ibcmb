@@ -1,30 +1,42 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <link rel="stylesheet" type="text/css" th:href="@{~/customer/css/bootstrap.css}" />
-    <link rel="stylesheet" type="text/css" th:href="@{~/customer/css/custom.css}"/>
-    <link rel="stylesheet" type="text/css" th:href="@{~/customer/font-awesome/font-awesome.min.css}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{~/customer/css/custom.css}" />
+    <link rel="stylesheet" type="text/css" th:href="@{~/customer/font-awesome/font-awesome.min.css}" />
     <link rel="shortcut icon" th:href="@{~/customer/img/favicon.ico}" type="image/x-icon">
-<link rel="icon" th:href="@{~/customer/img/favico.ico}" type="image/x-icon">
+    <link rel="icon" th:href="@{~/customer/img/favico.ico}" type="image/x-icon">
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Test</title>
 </head>
+
 <body>
     <div class="container">
 
-         <div class="row">
+
+
+        <div class="row">
             <div class="top-bar col-xs-12">
-                    <ul class="top-link">
-                        <li class="no-bd"><a href="https://www.coronationmb.com/" target="_blank"> Coronation merchant bank</a>&nbsp;</li>
-                    </ul>
+                <ul class="top-link">
+                    <li class="no-bd"><a href="https://www.coronationmb.com/" target="_blank"> Coronation merchant bank</a>&nbsp;</li>
+                </ul>
             </div>
         </div>
 
-        <div  class="row">
+        <div class="row">
+            <div class="col-sm-3 visible-xs no-pad-left no-pad-right">
+                <div class="center" style="margin:0px auto;">
+                    <a href="/" class="log" data-toggle="tooltip" data-placement="bottom" title="Coronation Merchant Bank">
+                        <img class="img img-responsive pull-right" style="display:block;margin:0px auto;" th:src="@{~/customer/img/cmb_logo.png}" alt="Coronation Merchant Bank" />
+                    </a>
+                </div>
+            </div>
 
-                <div class="col-sm-9 no-pad-left">
 
-                <nav class="navbar navbar-default bg-success" >
+            <div class="col-sm-9 no-pad-left">
+
+                <nav class="navbar navbar-default bg-success">
                     <div class="">
                         <div class="navbar-header navbar-left ">
                             <button type="button" class="navbar-toggle collapsed " data-toggle="collapse" data-target="#navbar-collapse-1" aria-expanded="false">
@@ -46,7 +58,7 @@
                                     </ul>
                                 </li>
                                 <li><a href="/register"> REGISTER</a></li>
-                                <li><a href="#contact_us"> CONTACT US</a></li>
+                                <li><a href="/#contact_us"> CONTACT US</a></li>
                                 <li><a href="/faqs"> FAQ</a></li>
                             </ul>
 
@@ -54,120 +66,122 @@
                     </div>
                 </nav>
 
-                </div>
-
-                <div class="col-sm-3 no-pad-right">
-                     <div class="center" style="margin:0px auto;">
-                        <a href="/" class="log" data-toggle="tooltip" data-placement="bottom" title="Coronation Merchant Bank">
-                            <img class="img img-responsive pull-right" style="display:block;margin:0px auto;" th:src="@{~/customer/img/cmb_logo.png}" alt="Coronation Merchant Bank" />
-                        </a>
-                    </div>
-                </div>
-        </div>
-
-
-
-<section class="content-wrapper">
-    <div class="containe">
-        <div class="bg">
-           
-                <form id="loginform" th:action="@{/retail/login}" method="POST" class="" autocomplete="off">
-                     <div class='col-md-4 col-md-offset-4 form-signi'  style="padding:100px 15px 30px">
-                    <h5 class="form-signin-heading text-white">Enter Login Details</h5>
-
-
-                    <div th:if="${param.message != null}" class="alert alert-info" th:text="${param.message[0]}">message</div>
-                    <div th:if="${param.error != null}" class="alert alert-danger" th:text="${session[SPRING_SECURITY_LAST_EXCEPTION]}">error</div>
-                    <div th:if="${param.expired != null}" class="alert alert-danger" th:text="#{session.expired}">error</div>
-                    <br/>
-                     <div id="username_div" class="form-group">
-                        <input type="text" name="username" th:value="*{username}" class="my-select"  placeholder="Username" readonly="readonly" autocomplete="off"/>
-                        <p><a class="text-white" href="/forgot/username">Forgot Username?</a></p>
-                     </div>
-
-
-                     <div id="password_div" class="form-group">
-                        <input id="password" type="password" name="password" class="my-select"  placeholder="Password" required="required" autocomplete="off" />
-                        <p><a class="text-white" href="/forgot/password">Forgot Password?</a></p>
-                    </div>
-
-
-
-
-                    <div class="form-group">
-                        <button class="btn btn-primary my-select"> Continue </button>
-                    </div>
-
-                     </div>
-                </form>
-        </div>
-    </div>
-</section>
-
-<footer>
-    <div class="containe">
-        <div class="footer_bar footie">
-            <div class="">
-                <ul class="list_group">
-                    <li><a href="#" target="_blank">Privacy policy</a></li>
-                    <li><a href="#" target="_blank">Disclaimer</a></li>
-                    <li><a href="#" target="_blank">Terms &amp; Conditions</a></li>
-                </ul>
-
             </div>
-            <div class=" pull-right -xs-12"><p> &copy; 2017 - All rights reserved</p></div>
 
+            <div class="col-sm-3 hidden-xs no-pad-right">
+                <div class="center" style="margin:0px auto;">
+                    <a href="/" class="log" data-toggle="tooltip" data-placement="bottom" title="Coronation Merchant Bank">
+                        <img class="img img-responsive pull-right" style="display:block;margin:0px auto;" th:src="@{~/customer/img/cmb_logo.png}" alt="Coronation Merchant Bank" />
+                    </a>
+                </div>
+            </div>
         </div>
+
+
+
+        <section class="content-wrapper">
+            <div class="containe">
+                <div class="bg">
+
+                    <form id="loginform" th:action="@{/retail/login}" method="POST" class="" autocomplete="off">
+                        <div class='col-md-4 col-md-offset-4 form-signi' style="padding:100px 15px 30px">
+                            <h5 class="form-signin-heading text-white">Enter Login Details</h5>
+
+
+                            <div th:if="${param.message != null}" class="alert alert-info" th:text="${param.message[0]}">message</div>
+                            <div th:if="${param.error != null}" class="alert alert-danger" th:text="${session[SPRING_SECURITY_LAST_EXCEPTION]}">error</div>
+                            <div th:if="${param.expired != null}" class="alert alert-danger" th:text="#{session.expired}">error</div>
+                            <br/>
+                            <div id="username_div" class="form-group">
+                                <input type="text" name="username" th:value="*{username}" class="my-select" placeholder="Username" readonly="readonly" autocomplete="off" />
+                                <p><a class="text-white" href="/forgot/username">Forgot Username?</a></p>
+                            </div>
+
+
+                            <div id="password_div" class="form-group">
+                                <input id="password" type="password" name="password" class="my-select" placeholder="Password" required="required" autocomplete="off" />
+                                <p><a class="text-white" href="/forgot/password">Forgot Password?</a></p>
+                            </div>
+
+
+
+
+                            <div class="form-group">
+                                <button class="btn btn-primary my-select"> Continue </button>
+                            </div>
+
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </section>
+
+        <footer>
+            <div class="containe">
+                <div class="footer_bar footie">
+                    <div class="">
+                        <ul class="list_group">
+                            <li><a href="#" target="_blank">Privacy policy</a></li>
+                            <li><a href="#" target="_blank">Disclaimer</a></li>
+                            <li><a href="#" target="_blank">Terms &amp; Conditions</a></li>
+                        </ul>
+
+                    </div>
+                    <div class=" pull-right -xs-12">
+                        <p> &copy; 2017 - All rights reserved</p>
+                    </div>
+
+                </div>
+            </div>
+
+            <div th:if="${message}">
+                <div hidden="hidden">
+                    <ul class="actionMessage">
+                        <li th:each="msg : ${message}" th:text="${msg}">Message</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div th:if="${failure}">
+                <div hidden="hidden">
+                    <ul class="actionError">
+                        <li th:each="msg : ${failure}" th:text="${msg}">Message</li>
+                    </ul>
+                </div>
+            </div>
+        </footer>
+
+
     </div>
-
-    <div th:if="${message}">
-        <div hidden="hidden">
-            <ul class="actionMessage">
-                <li th:each="msg : ${message}" th:text="${msg}">Message</li>
-            </ul>
-        </div>
-    </div>
-
-    <div th:if="${failure}">
-        <div hidden="hidden">
-            <ul class="actionError">
-                <li th:each="msg : ${failure}" th:text="${msg}">Message</li>
-            </ul>
-        </div>
-    </div>
-</footer>
-
-
-</div>
-<!-- CORE JQUERY SCRIPTS -->
-<script th:src="@{~/customer/js/jquery-1.11.1.js}"></script>
-<!-- BOOTSTRAP SCRIPTS  -->
-<script th:src="@{~/customer/js/bootstrap.js}"></script>
+    <!-- CORE JQUERY SCRIPTS -->
+    <script th:src="@{~/customer/js/jquery-1.11.1.js}"></script>
+    <!-- BOOTSTRAP SCRIPTS  -->
+    <script th:src="@{~/customer/js/bootstrap.js}"></script>
     <script th:src="@{~/customer/plugins/bootstrap-notify/bootstrap-notify.js}"></script>
 
     <!--<script>-->
-        <!--$(document).ready(function(){-->
-            <!--$(".dropdown").hover(-->
-                <!--function() {-->
-                    <!--$('.dropdown-menu', this).not('.in .dropdown-menu').stop(true,true).slideDown(800);-->
-                    <!--$(this).toggleClass('open');-->
-                <!--},-->
-                <!--function() {-->
-                    <!--$('.dropdown-menu', this).not('.in .dropdown-menu').stop(true,true).slideUp(800);-->
-                    <!--$(this).toggleClass('open');-->
-                <!--}-->
-            <!--);-->
-        <!--});-->
+    <!--$(document).ready(function(){-->
+    <!--$(".dropdown").hover(-->
+    <!--function() {-->
+    <!--$('.dropdown-menu', this).not('.in .dropdown-menu').stop(true,true).slideDown(800);-->
+    <!--$(this).toggleClass('open');-->
+    <!--},-->
+    <!--function() {-->
+    <!--$('.dropdown-menu', this).not('.in .dropdown-menu').stop(true,true).slideUp(800);-->
+    <!--$(this).toggleClass('open');-->
+    <!--}-->
+    <!--);-->
+    <!--});-->
     <!--</script>-->
     <script>
-        $(document).ready(function(){
+        $(document).ready(function() {
             $('[data-toggle="tooltip"]').tooltip();
 
-            $('#password').bind("cut copy paste",function(e) {
+            $('#password').bind("cut copy paste", function(e) {
                 e.preventDefault();
             });
         });
-
     </script>
 </body>
+
 </html>

@@ -11,64 +11,33 @@
             <option value="account">Overview</option>
         </select>
     </div>
-    <div class="col-xs-12 ml-15 no-pad-left" >
-        <div class="col-xs-12  no-pad-lef no-mt no-bd  alert" >
+    <div class="col-xs-12 " >
+        <div class=" no-mt no-bd  alert" >
             <form method="post" th:action="@{/corporate/users/verify}" class="form-horizontal" th:object="${verification}" >
 
                 <label style="font-size:large" th:text="${verify.description}"></label>
 
                 <!--<div id="before" style="overflow-wrap: break-word;border-left: 1px solid;margin-right: 1px;padding:5px; ">-->
 
-                <table class="table table-striped dt-responsive no-wrap" id="table">
-                    <thead>
-                    <tr>
-                        <th>Before</th>
-                        <th>After</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr>
-                        <td style ="word-break:break-all;width:50%;">
-                            <th:block th:text="${verify.beforeObject}"></th:block>
-                        </td>
-                        <td style ="word-break:break-all;">
-                            <th:block th:text="${verify.afterObject}"></th:block>
-                        </td>
-                    </tr>
-                    </tbody>
-                </table>
+                    <table class="table table-striped dt-responsive no-wrap" id="table">
+                        <thead>
+                            <tr>
+                                <th class='bg-grey'>Before</th>
+                                <th class='bg-danger'>After</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td style="word-break:break-all;width:50%;text-align:left;border-top:none;color:#032A4F;">
+                                    <th:block th:text="${verify.beforeObject}"></th:block>
+                                </td>
+                                <td class="" style="word-break:break-all;text-align:left;border-top:none;color:#032A4F">
+                                    <th:block th:text="${verify.afterObject}"></th:block>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
 
-
-                <div>
-                    <input  th:hidden="hidden" th:field="${verify.version}"/>
-                    <input  th:hidden="hidden" th:field="${verify.id}"/>
-                </div>
-
-                <br/>
-                <label style="font-size: 16px;" for="comments" class="col-sm-2">Comments</label>
-                <div th:unless="${status}">
-                    <p  th:text="${verify.comments}"></p>
-                </div>
-                <div th:if="${isAuthorizer}"class="form-group" >
-                    <div th:if="${status}"  class="col-sm-6">
-                        <textarea  th:field="${verify.comments}" class="form-control" id="comments"></textarea>
-                        <p class="errors" th:if="${#fields.hasErrors('comments')}" th:errors="*{comments}">&times;</p>
-                    </div>
-                </div>
-
-                <div th:if="${isAuthorizer}">
-                    <div th:if="${status}">
-                        <div class="form-group">
-                            <button type="submit" name="approve"  value="true" class="btn btn-link required-step my-buttons">
-                                Approve
-                            </button>
-
-                            <button type="submit" name="approve" value="false" class="btn btn-link less-required my-buttons">
-                                Decline
-                            </button>
-                        </div>
-                    </div>
-                </div>
             </form>
         </div>
     </div>

@@ -3,10 +3,9 @@ package longbridge.utils;
 import longbridge.api.NEnquiryDetails;
 import longbridge.exception.InternetBankingTransferException;
 import longbridge.exception.TransferExceptions;
-import longbridge.models.Account;
-import longbridge.models.Corporate;
-import longbridge.models.RetailUser;
-import longbridge.models.User;
+import longbridge.models.*;
+import longbridge.repositories.CorpLocalBeneficiaryRepo;
+import longbridge.repositories.LocalBeneficiaryRepo;
 import longbridge.security.userdetails.CustomUserPrincipal;
 import longbridge.services.AccountService;
 import longbridge.services.CorporateService;
@@ -37,6 +36,12 @@ public class TransferUtils {
     private AccountService accountService;
     private RetailUserService retailUserService;
     private CorporateService corporateService;
+
+    @Autowired
+    private LocalBeneficiaryRepo localBeneficiaryRepo;
+
+    @Autowired
+    private CorpLocalBeneficiaryRepo corpLocalBeneficiaryRepo;
 
     @Autowired
     public void setCorporateService(CorporateService corporateService) {
@@ -72,9 +77,25 @@ public class TransferUtils {
 
 
     public String doIntraBankkNameLookup(String acctNo) {
-        if (getCurrentUser() != null) {
+        if (getCurrentUser() != null && !acctNo.isEmpty()) {
+            User user = getCurrentUser();
+            if (user.getUserType().equals(UserType.RETAIL)){
+                LocalBeneficiary localBeneficiary = localBeneficiaryRepo.findByUser_IdAndAccountNumber(user.getId(), acctNo);
+                if (localBeneficiary!=null){
+                    return createMessage("A beneficary with these details already exists", false);
+                }
+            }else if (user.getUserType().equals(UserType.CORPORATE)){
+                CorporateUser corporateUser = (CorporateUser) user;
+                boolean exists = corpLocalBeneficiaryRepo.existsByCorporate_IdAndAccountNumber(corporateUser.getCorporate().getId(), acctNo);
+                if (exists){
+                    return createMessage("A beneficary with these details already exists", false);
+                }
+            }
+
             String name = integrationService.viewAccountDetails(acctNo).getAcctName();
-            if (name != null && !name.isEmpty()) return createMessage(name, true);
+            if (name != null && !name.isEmpty()){
+                return createMessage(name, true);
+            }
 
             return createMessage("Invalid Account", false);
 
@@ -85,7 +106,22 @@ public class TransferUtils {
 
     public String doInterBankNameLookup(String bank, String accountNo) {
 
-        if (getCurrentUser() != null) {
+        if (getCurrentUser() != null && !accountNo.isEmpty()) {
+
+            User user = getCurrentUser();
+            if (user.getUserType().equals(UserType.RETAIL)){
+                LocalBeneficiary localBeneficiary = localBeneficiaryRepo.findByUser_IdAndAccountNumber(user.getId(), accountNo);
+                if (localBeneficiary!=null){
+                    return createMessage("A beneficary with these details already exists", false);
+                }
+            }else if (user.getUserType().equals(UserType.CORPORATE)){
+                CorporateUser corporateUser = (CorporateUser) user;
+                boolean exists = corpLocalBeneficiaryRepo.existsByCorporate_IdAndAccountNumber(corporateUser.getCorporate().getId(), accountNo);
+                if (exists){
+                    return createMessage("A beneficary with these details already exists", false);
+                }
+            }
+
 
             NEnquiryDetails details = integrationService.doNameEnquiry(bank, accountNo);
             if (details == null)
@@ -114,7 +150,7 @@ public class TransferUtils {
             BigDecimal availBal = balance.get("AvailableBalance");
             return createMessage(availBal.toString(), true);
         }
-        return "";
+        return createMessage("", false);
     }
 
 
@@ -164,13 +200,11 @@ public class TransferUtils {
         List<Account> accountList = new ArrayList<>();
         if (custId != null && !custId.isEmpty()) {
 
-
             Iterable<Account> accounts = accountService.getAccountsForDebit(custId);
 
             StreamSupport.stream(accounts.spliterator(), false)
                     .filter(Objects::nonNull)
                     .filter(i -> "NGN".equalsIgnoreCase(i.getCurrencyCode()))
-
                     .forEach(i -> accountList.add(i));
 
         }

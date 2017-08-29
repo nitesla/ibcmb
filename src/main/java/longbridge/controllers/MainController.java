@@ -462,11 +462,16 @@ public class MainController {
     }
 
     private void clearSession() {
-        ServletRequestAttributes attr = (ServletRequestAttributes)
-                RequestContextHolder.currentRequestAttributes();
-        HttpSession session = attr.getRequest().getSession(false);
-        if (session != null)
-            session.invalidate();
+       try{
+           ServletRequestAttributes attr = (ServletRequestAttributes)
+                   RequestContextHolder.currentRequestAttributes();
+           HttpSession session = attr.getRequest().getSession(false);
+           if (session != null)
+               session.invalidate();
+
+       }catch (Exception e ){
+           e.printStackTrace();
+       }
     }
 
 
@@ -485,6 +490,13 @@ public class MainController {
 //        }
 //
 //    }
+
+    @GetMapping(value = "/invalidate")
+    public String invalidateSession(){
+        System.out.println("hello boss");
+        clearSession();
+        return "redirect:/";
+    }
 
 
 }

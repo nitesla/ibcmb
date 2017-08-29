@@ -33,6 +33,7 @@
                         <table class="table" id="users">
                             <thead>
                             <tr>
+                                <th>Username</th>
                                 <th>First Name</th>
                                 <th>Last Name</th>
                                 <th>Role</th>
@@ -62,20 +63,21 @@
             select: true,
             responsive : false,
             "lengthMenu" : [ [ 5, 10 ], [ 5, 10 ] ],
-            "pagingType" : "simple_numbers",
+            "pagingType" : "input",
             "searching" : false,
             "paging" : true,
             "serverSide" : true,
             "ajax" : url,
-            "dom": 'T<"clear">frtlp',
+            "dom": 'T<"clear">frtpl',
             "columns" : [
+                { "data": "userName" },
                 { "data": "firstName" },
                 { "data": "lastName" },
                 { "data": "role" },
                 { "data": "status" }
             ],
             "columnDefs" : [ {
-                "targets" : 3,
+                "targets" : 4,
                 "data" : "status",
                 "render" : function(data, type,full, meta) {
                     if (type === 'display') {

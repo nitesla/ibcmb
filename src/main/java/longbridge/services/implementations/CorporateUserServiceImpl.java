@@ -119,7 +119,6 @@ public class CorporateUserServiceImpl implements CorporateUserService {
     }
 
 
-
     @Override
     public Iterable<CorporateUser> getUsers() {
         return corporateUserRepo.findAll();
@@ -173,10 +172,10 @@ public class CorporateUserServiceImpl implements CorporateUserService {
             corporateUserRepo.save(corporateUser);
             if (user.isAdmin()) {
                 removeUserFromAuthorizerRole(corporateUser);
-        }
+            }
 
 
-        return messageSource.getMessage("user.update.success", null, locale);
+            return messageSource.getMessage("user.update.success", null, locale);
         } catch (VerificationInterruptedException e) {
             return e.getMessage();
         } catch (InternetBankingException ibe) {
@@ -602,7 +601,7 @@ public class CorporateUserServiceImpl implements CorporateUserService {
         } catch (InternetBankingSecurityException se) {
             throw new InternetBankingSecurityException(messageSource.getMessage("entrust.delete.failure", null, locale));
         } catch (Exception e) {
-            throw new InternetBankingException(messageSource.getMessage("user.delete.failure", null, locale),e);
+            throw new InternetBankingException(messageSource.getMessage("user.delete.failure", null, locale), e);
         }
     }
 
@@ -799,7 +798,6 @@ public class CorporateUserServiceImpl implements CorporateUserService {
 
     @Override
     public CorporateUser convertDTOToEntity(CorporateUserDTO corporateUserDTO) {
-        //CorporateUser corporateUser = modelMapper.map(corporateUserDTO, CorporateUser.class);
         CorporateUser corporateUser = new CorporateUser();
         corporateUser.setId(corporateUserDTO.getId());
         corporateUser.setVersion(corporateUserDTO.getVersion());
@@ -901,8 +899,8 @@ public class CorporateUserServiceImpl implements CorporateUserService {
         } catch (InternetBankingException ibe) {
             throw ibe;
         } catch (Exception e) {
-            logger.error(e.getMessage());
-            throw new InternetBankingException(e.getMessage());
+            logger.error("Error creating corporate user",e);
+            throw new InternetBankingException(messageSource.getMessage("user.add.failure", null, locale),e);
         }
     }
 
@@ -935,8 +933,8 @@ public class CorporateUserServiceImpl implements CorporateUserService {
         } catch (InternetBankingException ibe) {
             throw ibe;
         } catch (Exception e) {
-            logger.error(e.getMessage());
-            throw new InternetBankingException(e.getMessage());
+            logger.error("Error creating corporate user",e);
+            throw new InternetBankingException(messageSource.getMessage("user.add.failure", null, locale),e);
         }
     }
 
@@ -950,26 +948,29 @@ public class CorporateUserServiceImpl implements CorporateUserService {
             corporateUser.setEmail(user.getEmail());
             corporateUser.setStatus("A");
             corporateUser.setPhoneNumber(user.getPhoneNumber());
-            corporateUser.setCreatedOnDate(new Date());
             Role role = roleRepo.findOne(Long.parseLong(user.getRoleId()));
             corporateUser.setRole(role);
-            Corporate corp = corporateRepo.findOne(Long.parseLong(user.getCorporateId()));
-            corporateUser.setCorporate(corp);
-            CorporateUser corpUser = corporateUserRepo.save(corporateUser);
 
             if (user.isAuthorizer()) {
                 if (user.getCorporateRoleId() != null) {
                     CorporateRole corporateRole = getCorporateUserAuthorizerRole(corporateUser);
-                    if (!user.getCorporateRoleId().equals(corporateRole.getId())) {
-                        changeCorporateUserAuthorizerRole(corporateUser, corporateRole, user.getCorporateRoleId());
+
+                    if (corporateRole != null) {
+                        if (!user.getCorporateRoleId().equals(corporateRole.getId())) {
+                            changeCorporateUserAuthorizerRole(corporateUser, corporateRole, user.getCorporateRoleId());
+                        }
+                    } else {
                         addCorporateUserToAuthorizerRole(corporateUser, user.getCorporateRoleId());
                     }
                 }
+            } else {
+                corporateUser.setCorpUserType(CorpUserType.INITIATOR);
+                removeUserFromAuthorizerRole(corporateUser);
             }
 
-            createUserOnEntrustAndSendCredentials(corpUser);
+            corporateUserRepo.save(corporateUser);
 
-            logger.info("New corporate user {} created", corporateUser.getUserName());
+            logger.info("Corporate user {} updated", corporateUser.getUserName());
             return messageSource.getMessage("user.add.success", null, locale);
         } catch (VerificationInterruptedException e) {
             return e.getMessage();
