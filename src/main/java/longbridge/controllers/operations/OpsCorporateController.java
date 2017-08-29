@@ -745,6 +745,7 @@ public class OpsCorporateController {
 
     }
 
+
     @GetMapping("/validate/{id}")
     @ResponseBody
     public String validateCorporateId(@PathVariable String id) {
