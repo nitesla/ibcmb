@@ -138,9 +138,10 @@ public class TransferController {
 
         String accountId = webRequest.getParameter("acctId");
 
-        List<String> accountList = new ArrayList<>();
+
 
         try {
+            List<String> accountList = new ArrayList<>();
             Iterable<Account> accounts = accountService.getAccountsForCredit(accountService.getAccountByAccountNumber(accountId).getCustomerId());
 
             StreamSupport.stream(accounts.spliterator(), true)
@@ -150,14 +151,14 @@ public class TransferController {
                     .forEach(i -> accountList.add(i.getAccountNumber()))
             ;
 
-        } catch (Exception e) {
+            logger.info("ACCOUNT LIST {}", accountList);
+            return accountList;
 
+        } catch (Exception e) {
+            logger.error(e.getMessage());
         }
 
-
-        return accountList;
-
-
+        return null;
     }
 
 

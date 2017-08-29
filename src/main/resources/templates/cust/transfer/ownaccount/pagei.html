@@ -129,15 +129,16 @@
     })
 
     $('#source').change(function () {
-        var acctId = $(input['name']).val();
+        var acctId = $('input[name=source]').val();
         $.ajax({
             type:'POST',
-            url:"/rest/secAns",
+            url:"/retail/transfer/dest/accounts",
             data: {acctId:acctId},
             async:false,
             cache:false,
             success:function(data){
                 result = ''+String(data);
+                console.log(data);
                 if(result == "true"){
                     //$('input[name=username]').val(result);
 
