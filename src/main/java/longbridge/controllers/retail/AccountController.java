@@ -670,7 +670,7 @@ public class AccountController {
 		return objectMap;
 
 	}
-@GetMapping("/viewstatement/display/data/back")
+	@GetMapping("/viewstatement/display/data/back")
 	@ResponseBody
 	public Map<String,Object> getStatementDataForBack(WebRequest webRequest, HttpSession session) {
 		String state = webRequest.getParameter("state");

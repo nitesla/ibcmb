@@ -30,4 +30,6 @@ public interface CronJobService {
     void saveRunningJob(String jobCategory,String cronExpression) throws InternetBankingException;
     String getCurrentExpression() throws InternetBankingException;
     boolean updateRunningJob() throws InternetBankingException;
+    boolean startCronJob() throws InternetBankingException;
+    boolean stopJob() throws InternetBankingException;
 }
