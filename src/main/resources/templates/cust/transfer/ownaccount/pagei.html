@@ -128,6 +128,30 @@
 
     })
 
+    $('#source').change(function () {
+        var acctId = $('input[name=source]').val();
+        $.ajax({
+            type:'POST',
+            url:"/retail/transfer/dest/accounts",
+            data: {acctId:acctId},
+            async:false,
+            cache:false,
+            success:function(data){
+                result = ''+String(data);
+                console.log(data);
+                if(result == "true"){
+                    //$('input[name=username]').val(result);
+
+                }else{
+                    //invalid account number
+                    //alert("Account number not found");
+                    $('#errorMess').text(result);
+                    $('#myLoader').modal('hide');
+                    $('#myModalError').modal('show');
+                }
+            }
+        });
+    });
 
 
     var sortSelect = function (select, attr, order) {
