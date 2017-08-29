@@ -31,11 +31,11 @@ form.children("div").steps({
     {
 
         form.validate().settings.ignore = ":disabled,:hidden";
-        console.log(currentIndex);
+        //console.log(currentIndex);
         var isValid = form.valid();
 
         if(SECURITY_QUESTION_STEP === currentIndex){
-            console.log("Current step is the account details step");
+            //console.log("Current step is the account details step");
             var noOfQs = $('#noOfQuestion').val();
             var i = 0;
             var secAnswer ="";
@@ -48,22 +48,22 @@ form.children("div").steps({
 
                 }
             }
-            console.log("answer 2 "+secAnswer);
+            //console.log("answer 2 "+secAnswer);
             return isValid && validateSecAnswer(secAnswer);
         }
         if(VALIDATE_GEN_PASS === currentIndex){
-            console.log("Current step is the account details step");
+            //console.log("Current step is the account details step");
             return isValid && validateGenPassword();
         }
         if(VALIDATE_PASSWORD_STEP === currentIndex){
-            console.log("Current step is the change password step");
+            //console.log("Current step is the change password step");
             //form.submit();
             var confirm = $('#confirm').val();
 
             return isValid && validatePassword(confirm);
         }
         if(TOKEN_AUTH === currentIndex){
-            console.log("Current step is the account details step");
+            //console.log("Current step is the account details step");
             return isValid && validateToken() && changePassword();
         }
 
@@ -92,6 +92,7 @@ function validateSecAnswer(secAnswers){
     var sent = "";
     var result;
     var username = $('#username').val();
+    username = username.trim();
     // console.log("validating "+secAnswer);
     $.ajax({
         type:'POST',
@@ -128,6 +129,7 @@ function validateSecAnswer(secAnswers){
 
 function sendGenPassword() {
     var username = $('input[name="username"]').val();
+    username = username.trim();
     var result="";
     $.ajax({
         type:'POST',
@@ -176,7 +178,7 @@ function validateGenPassword() {
         cache:false,
         success:function(data1){
             result = ''+String(data1);
-            console.log("the result "+result);
+            //console.log("the result "+result);
             if(result == "true"){
                 $('#myLoader').modal('hide');
             }else{
