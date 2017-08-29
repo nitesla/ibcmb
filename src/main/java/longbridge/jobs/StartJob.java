@@ -1,6 +1,9 @@
 package longbridge.jobs;
 
+import longbridge.config.SpringContext;
+import longbridge.services.CronJobService;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 
 /**
@@ -11,7 +14,10 @@ public class StartJob implements InitializingBean{
     @Override
     public void afterPropertiesSet() throws Exception {
         try {
-            CronJobScheduler.startJobs();
+            ApplicationContext context = SpringContext.getApplicationContext();
+            CronJobService cronJobService = context.getBean (CronJobService.class);
+            System.out.println("start job "+cronJobService.startCronJob());
+//            CronJobScheduler.startJobs();
         } catch (Exception e) {
             e.printStackTrace();
         }

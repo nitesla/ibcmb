@@ -2,9 +2,11 @@ package longbridge.services.implementations;
 
 import longbridge.api.AccountDetails;
 import longbridge.api.CustomerDetails;
+import longbridge.dtos.SettingDTO;
 import longbridge.exception.InternetBankingException;
 import longbridge.models.*;
 import longbridge.repositories.*;
+import longbridge.services.ConfigurationService;
 import longbridge.services.CronJobService;
 import longbridge.services.IntegrationService;
 import org.slf4j.Logger;
@@ -35,6 +37,8 @@ public class CronJobServiceImpl implements CronJobService {
     private CronJobExpressionRepo cronJobExpressionRepo;
     @Autowired
     private CronJobMonitorRepo cronJobMonitorRepo;
+    @Autowired
+    private ConfigurationService configService;
     @Override
     public void updateAllAccountName(Account account, AccountDetails accountDetails) throws InternetBankingException {
         if (!account.getAccountName().equalsIgnoreCase(accountDetails.getAcctName())) {
@@ -67,7 +71,7 @@ public class CronJobServiceImpl implements CronJobService {
     @Override
     public void updateAllAccountCurrency(Account account, AccountDetails accountDetails) throws InternetBankingException {
 //        logger.info("The account size {}",allAccounts.size());
-        if ((account.getCurrencyCode()==null)||(!account.getCurrencyCode().equalsIgnoreCase(""))||(!accountDetails.getAcctCrncyCode().equalsIgnoreCase(account.getCurrencyCode()))) {
+        if (accountDetails.getAcctCrncyCode() !=null && (!accountDetails.getAcctCrncyCode().equalsIgnoreCase(account.getCurrencyCode()))) {
             account.setCurrencyCode(accountDetails.getAcctCrncyCode());
 //            logger.info("the new account currency {} and {}" , account.getCurrencyCode(),accountDetails.getAcctCrncyCode());
             accountRepo.save(account);
@@ -75,9 +79,9 @@ public class CronJobServiceImpl implements CronJobService {
     }
     @Override
     public void updateAccountStatus(Account account, AccountDetails accountDetails) throws InternetBankingException {
-        if ((account.getStatus()==null)||(!account.getStatus().equalsIgnoreCase(""))||(!account.getStatus().equalsIgnoreCase(accountDetails.getAcctStatus()))) {
+        if ((account.getStatus()==null)||(account.getStatus().equalsIgnoreCase(""))||(!account.getStatus().equalsIgnoreCase(accountDetails.getAcctStatus()))) {
             account.setStatus(accountDetails.getAcctStatus());
-//            System.out.println("the account status after setting is" + account.getStatus());
+            logger.info("the account status after setting is {} and number {}", account.getStatus(),account.getAccountNumber(),accountDetails.getAcctStatus());
             accountRepo.save(account);
         }
     }
@@ -175,6 +179,7 @@ public class CronJobServiceImpl implements CronJobService {
                 CustomerDetails details = integrationService.viewCustomerDetailsByCif(corporate.getCustomerId());
                 updateCorporateUserBVN(corporate,details);
             } catch (Exception e) {
+                logger.info("the error {}",e.getMessage());
                 e.printStackTrace();
             }
 
@@ -243,7 +248,7 @@ public class CronJobServiceImpl implements CronJobService {
 
     @Override
     public boolean updateRunningJob() throws InternetBankingException {
-        CronJobMonitor lastIncompleteJob = cronJobMonitorRepo.findLastByStillRunning(true);
+        CronJobMonitor lastIncompleteJob = cronJobMonitorRepo.findFirstByOrderByStillRunningDesc();
 //        logger.info("monitor is {}", lastIncompleteJob);
             if(lastIncompleteJob != null) {
 //                logger.info("monitor time is {}", lastIncompleteJob.getJobStartTime());
@@ -254,6 +259,21 @@ public class CronJobServiceImpl implements CronJobService {
             }else {
                 return false;
             }
+    }
+
+    @Override
+    public boolean startCronJob() throws InternetBankingException {
+        SettingDTO setting = configService.getSettingByName("ENABLE_CRON_JOB");
+        if(setting != null && setting.isEnabled()) {
+            logger.info("the setting read is {}",setting.isEnabled());
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public boolean stopJob() throws InternetBankingException {
+        return false;
     }
 
 

@@ -32,11 +32,11 @@ public class RunningJob implements Job {
         System.out.println("job runing");
         try {
 //            CompileJasper.compile();
-//            cronJobService.saveRunningJob("in-built",cronJobService.getCurrentExpression());
-//            cronJobService.updateAccountDetials();
-//            cronJobService.updateRetailUserDetails();
-//            cronJobService.updateCorporateUserDetails();
-//            cronJobService.updateRunningJob();
+            cronJobService.saveRunningJob("in-built",cronJobService.getCurrentExpression());
+            cronJobService.updateAccountDetials();
+            cronJobService.updateRetailUserDetails();
+            cronJobService.updateCorporateUserDetails();
+            cronJobService.updateRunningJob();
         } catch (InternetBankingException e) {
             e.printStackTrace();
         }catch (Exception e){
