@@ -66,8 +66,6 @@ public class InternetbankingApplication extends SpringBootServletInitializer imp
     @Transactional
     public void run(String... strings) throws Exception {
 
-        CronJobScheduler.startJobs();
-
     }
 
 }

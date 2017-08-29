@@ -1,12 +1,10 @@
 package longbridge.controllers.admin;
 
-import longbridge.models.User;
-import longbridge.models.UserType;
-import longbridge.security.userdetails.CustomUserPrincipal;
 import longbridge.services.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.ui.Model;
@@ -35,8 +33,7 @@ public class AdmControllerAdvice {
             return "redirect:/login/admin";
         }
 
-
-
+        if ( getCurrentUser() != null && !getCurrentUser().getUserType().equals(UserType.ADMIN)) return "redirect:/login/admin";
         int verificationNumber = verificationService.getTotalNumberForVerification();
         long totalPending = verificationService.getTotalNumberPending();
         if(totalPending>0) {
@@ -51,4 +48,14 @@ public class AdmControllerAdvice {
         return "";
     }
 
+
+    private User getCurrentUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (!(authentication instanceof AnonymousAuthenticationToken)) {
+            CustomUserPrincipal currentUser = (CustomUserPrincipal) authentication.getPrincipal();
+            return currentUser.getUser();
+        }
+
+        return null;
+    }
 }

@@ -24,6 +24,7 @@ import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -33,6 +34,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.security.Principal;
 import java.text.DecimalFormat;
 import java.util.*;
+import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 
@@ -130,15 +132,17 @@ public class TransferController {
 
 
 
-    @GetMapping("/dest/{accountId}/accounts")
+    @PostMapping("/dest/accounts")
     public
     @ResponseBody
-    List<String> getDestinationAccounts(@PathVariable String accountId) {
+    List<String> getDestinationAccounts(WebRequest webRequest) {
 
+        String accountId = webRequest.getParameter("acctId");
 
-        List<String> accountList = new ArrayList<>();
+logger.info("the account id {}",accountId);
 
         try {
+            List<String> accountList = new ArrayList<>();
             Iterable<Account> accounts = accountService.getAccountsForCredit(accountService.getAccountByAccountNumber(accountId).getCustomerId());
 
             StreamSupport.stream(accounts.spliterator(), true)
@@ -148,14 +152,15 @@ public class TransferController {
                     .forEach(i -> accountList.add(i.getAccountNumber()))
             ;
 
-        } catch (Exception e) {
+            logger.info("ACCOUNT LIST {}", StreamSupport.stream(accounts.spliterator(),true).count());
+            logger.info("second LIST {}", accountList.size());
+            return accountList;
 
+        } catch (Exception e) {
+            logger.error("transfer error {}",e);
         }
 
-
-        return accountList;
-
-
+        return null;
     }
 
 
