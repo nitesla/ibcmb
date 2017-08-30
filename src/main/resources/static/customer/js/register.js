@@ -448,25 +448,6 @@ function registerUser(){
 }
 
 function redirectUser() {
-    $.ajax({
-        type:'GET',
-        url:"/rest/redirect/login",
-        cache:false,
-        async:false,
-        success:function(data1){
-            result = ''+String(data1);
-            if(result === 'false' || result=== '' || result === null){
-                //invalid account number
-                $("#errorMess").text("Registration Failed.");
-                $('#myModalError').modal('show');
-
-            }else{
-
-                $('#successMess').text("Registration Successful, Try Logging into your Account");
-                $('#myModalSuccess').modal('show');
-
-            }
-        }
-    });
+    window.location.href = '/rest/redirect/login';
 }
 

@@ -764,7 +764,7 @@ public class UserRegController {
 
     @GetMapping("/rest/redirect/login")
     public String redirectToLogin(RedirectAttributes redirectAttributes){
-        redirectAttributes.addFlashAttribute(messageSource.getMessage("user.reg.success", null, locale));
+        redirectAttributes.addFlashAttribute("message", messageSource.getMessage("user.reg.success", null, locale));
         return "redirect:/login/retail";
     }
 
