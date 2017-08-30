@@ -22,6 +22,7 @@
     <link rel="stylesheet" type="text/css" th:href="@{~/customer/plugins/datatables/css/dataTables.bootstrap.css}" />
     <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.7.0/css/bootstrap-datepicker.min.css" />
     <link rel="stylesheet" type="text/css" th:href="@{~/customer/css/custom.css}" />
+    <link rel="stylesheet" type="text/css" th:href="@{~/customer/css/media.css}" />
 
     <link rel="shortcut icon" th:href="@{~/customer/img/favicon.ico}" type="image/x-icon">
     <link rel="icon" th:href="@{~/customer/img/favico.ico}" type="image/x-icon">
@@ -35,7 +36,7 @@
 
 
         <div>
-            <header class="heade hidden-xs ">
+            <header class="heade  ">
                 <div class="row">
                     <div class="top-bar col-xs-12">
                         <ul class="top-link">
@@ -46,7 +47,7 @@
                     </div>
                 </div>
                 <div class="row header-bar">
-                    <div class="col-xs-12 col-sm-9 no-pad-left ">
+                    <div class="col-xs-12 col-sm-9 no-pad-left hidden-xs">
                         <div class='bvn-tab col-md-5 col-sm-5 '>
                             <div class=" header_inf bv"><small style="font-size:10px">Your Bank verification number</small>
                                 <h2 style="" th:if="${bvn=='NO BVN'}">
@@ -87,7 +88,7 @@
 
                     <div class="col-xs-12 col-sm-3 no-pad-right ">
                         <a href="/retail/dashboard" class="">
-                            <img class='img-responsive pull-right' style="height:70px" th:src="@{~/customer/img/cmb_logo.png}" alt="Coronation Merchant Bank" />
+                            <img class='img img-responsive pull-right' style="height:70px" th:src="@{~/customer/img/cmb_logo.png}" alt="Coronation Merchant Bank" />
                         </a>
                     </div>
                 </div>
@@ -107,6 +108,16 @@
                         <span class="icon-bar"></span>
                     </button>
                         <a class="navbar-brand" href="#" data-toggle="collapse" data-target="#navbar-collapse-1">Menu</a>
+
+                        <ul class="nav navbar-nav pull-right visible-xs">
+                                <li><a th:href="@{/corporate/logout}"> Log out
+                                <!--<span class="fa-stack fa-lg no-bd-rad">-->
+                                <!--<i class="fa fa-square fa-stack-1x fa-lg no-bd-rad"></i>-->
+                                <i class="fa fa-power-off fa-inverse no-bd-rad power" style="font-size:12px;color:white !important"></i>
+                                <!--</span>-->
+                            </a>
+                                </li>
+                            </ul>
                     </div>
 
                     <div class="">
@@ -280,7 +291,7 @@
 
                             <!--time-->
                             <div class="">
-                                <div class="time no-bd no-bd-rad " style="border-bottom:2px solid #ebdfdb !important;">
+                                <div class="time no-bd no-bd-rad hidden-xs" style="border-bottom:2px solid #ebdfdb !important;">
                                     <span class=" ">
                 <i class="fa fa-clock-o datepicker cal-icon " data-provide="datepicker" onclick="show()" style="font-size:20px;background:transparent !important;border:0px !important;"></i>
             </span>
@@ -303,21 +314,26 @@
 
         <!-- CONTENT-WRAPPER SECTION END-->
         <footer>
-            <div class="containe  bg-grey" style="padding:1px;">
-
-                <div class="footer_bar row">
-                    <div class="col-md-6 col-xs-12">
-                        <ul class="list_group">
-                            <li><a href="#" target="_blank">Privacy policy</a></li>
-                            <li><a href="#" target="_blank">Disclaimer</a></li>
-                            <li><a href="#" target="_blank">Terms &amp; Conditions</a></li>
-                        </ul>
-                    </div>
-                    <div class="col-md-6 col-xs-12">
-                        <p> &copy; 2017 Coronation Merchant Bank. All rights reserved</p>
-                    </div>
-                </div>
-            </div>
+               
+                        <div class="">
+                            <div class="">
+                                <div class="col-sm-6 col-xs-12 footer-mobile no-pad-left no-pad-right">
+                                    <ul class="footer-links ">
+                                        <li><a href="#" target="_blank">Privacy policy</a></li>
+                                        <li><a href="#" target="_blank">Disclaimer</a></li>
+                                        <li><a href="#" target="_blank">Terms &amp; Conditions</a></li>
+                                    </ul>
+            
+                                </div>
+                                <div class="col-sm-6  col-xs-12  footer-mobile  no-pad-left no-pad-right">
+                                    <p class=' '> &copy; 2017 - Coronation Merchant Bank.<span class="hidden-xs"> All rights reserved</span></p>
+                                    <p class="visible-xs">All rights reserved</p>
+            
+                                </div>
+            
+                            </div>
+                        </div>
+                  
 
             <div th:if="${message}">
                 <div hidden="hidden">
@@ -345,40 +361,9 @@
             <script th:src="@{~/customer/plugins/bootstrap-notify/bootstrap-notify.js}"></script>
             <script th:src="@{~/customer/plugins/bootstrap-daterangepicker/daterangepicker.js}"></script>
 
-<<<<<<< HEAD
-        <script th:src="@{~/customer/js/jquery-1.11.1.js}"></script>
-        <script th:src="@{~/customer/js/jquery-ui.js}"></script>
-        <script th:src="@{~/customer/js/jquery.dataTables.js}"></script>
-        <!--<script th:src="@{~/customer/js/date/js/bootstrap-datepicker.js}"></script>-->
-        <script th:src="@{~/customer/js/momentMin.js}"></script>
-        <script th:src="@{~/customer/js/jquery.spring-friendly.min.js}"></script>
-        <script th:src="@{~/customer/plugins/bootstrap-notify/bootstrap-notify.js}"></script>
-        <script th:src="@{~/customer/plugins/bootstrap-daterangepicker/daterangepicker.js}"></script>
-
-        <script th:src="@{~/customer/js/coronation.js}"></script>
-        <script th:src="@{~/customer/js/errors.js}"></script>
-        <!--<script th:src="@{~/customer/js/jquery.easydropdown.js}"></script>-->
-
-        <script type="text/javascript"
-                src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/js/bootstrap-datepicker.min.js"></script>
-
-        <!-- BOOTSTRAP SCRIPTS  -->
-        <script th:src="@{~/customer/js/bootstrap.js}"></script>
-        <script th:src="@{~/customer/js/bootstrap-session-timeout.js}"></script>
-        <script>
-            window. = function () {
-
-/*
-                $.ajax({
-                    url: "/invalidate",
-                    type: 'GET',
-                    async: false
-                })
-=======
             <script th:src="@{~/customer/js/coronation.js}"></script>
             <script th:src="@{~/customer/js/errors.js}"></script>
             <!--<script th:src="@{~/customer/js/jquery.easydropdown.js}"></script>-->
->>>>>>> e94809b4a162e5e90546d3bc983bd3d9dbce3d2a
 
             <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/js/bootstrap-datepicker.min.js"></script>
 

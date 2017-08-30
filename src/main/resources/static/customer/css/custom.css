@@ -2082,4 +2082,40 @@ end
                                                             
                                                         }
 
+                                                        .form
+                                                        {
+                                                            cursor:pointer;
+                                                        }
+
+                                                        .paginate_input
+                                                        {
+                                                            width:25px;
+                                                            padding:5px;
+                                                        }
+
+                                                        .paginate_input:focus
+                                                        {
+                                                            border: 2px solid scornflowerblue;
+                                                        }
+                                                        div.dataTables_filter input {
+                                                            width: 10em !important;
+                                                            padding: 2px !important;
+                                                        }
+
+                                                        div.dataTables_length label {
+                                                            
+                                                            margin-bottom: 25px !important;
+                                                        }
+
+                                                        div.dataTables_length label {
+                                                            
+                                                             text-align: center; 
+                                                          
+                                                        }
+
+                                                        .negative-margin
+                                                        {
+                                                            margin-top:-10px !important
+                                                        }
+
                                                       

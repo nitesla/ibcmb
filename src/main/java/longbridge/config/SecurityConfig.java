@@ -124,16 +124,11 @@ public class SecurityConfig {
 
 
                     // .and().authorizeRequests().and()
-<<<<<<< HEAD
-                           // access("hasAuthority('" + UserType.ADMIN.toString() + "') and " + ipRange.toString()).and()
-                            access(ipRange.toString()).and()
 
-
-=======
 
 
                             access("hasAuthority('" + UserType.ADMIN.toString() + "') and " + ipRange.toString()).and()
->>>>>>> 8bcac04c54e645c2a585a51af5a99d476deb1aff
+
 
                  // .fullyAuthenticated()
                     // log in
