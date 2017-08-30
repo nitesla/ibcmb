@@ -346,9 +346,7 @@ public class CorpTransferServiceImpl implements CorpTransferService {
         if (transferRule == null) {
             return false;
         }
-
         List<CorporateRole> roles = getExistingRoles(transferRule.getRoles());
-
         for (CorporateRole corporateRole : roles) {
             if (corpRoleRepo.countInRole(corporateRole, corporateUser) > 0) {
                 return true;
@@ -366,19 +364,15 @@ public class CorpTransferServiceImpl implements CorpTransferService {
         List<CorporateRole> roles = getExistingRoles(transferRule.getRoles());
         CorporateRole userRole = null;
 
-
         for (CorporateRole corporateRole : roles) {
             if (corpRoleRepo.countInRole(corporateRole, corporateUser) > 0) {
                 userRole = corporateRole;
                 break;
             }
         }
-
         if (userRole == null) {
             throw new TransferAuthorizationException(messageSource.getMessage("transfer.auth.invalid", null, locale));
         }
-
-
 
         CorpTransferAuth transferAuth = corpTransRequest.getTransferAuth();
 
@@ -386,44 +380,70 @@ public class CorpTransferServiceImpl implements CorpTransferService {
             throw new TransferAuthorizationException(messageSource.getMessage("transfer.auth.complete", null, locale));
         }
 
-
         if (reqEntryRepo.existsByTranReqIdAndRole(corpTransRequest.getId(), userRole)) {
             throw new TransferAuthorizationException(messageSource.getMessage("transfer.auth.exist", null, locale));
         }
 
+        SettingDTO setting = configService.getSettingByName("RETRY_FAILED_TRANSFER");
 
-        try {
+        if(setting!=null&&setting.isEnabled()){
 
-            transReqEntry.setEntryDate(new Date());
-            transReqEntry.setRole(userRole);
-            transReqEntry.setUser(corporateUser);
-            transReqEntry.setStatus("Approved");
+            try {
+                transReqEntry.setEntryDate(new Date());
+                transReqEntry.setRole(userRole);
+                transReqEntry.setUser(corporateUser);
+                transReqEntry.setStatus("Approved");
 
+                if (isAuthorizationComplete(corpTransRequest)) {
+                    CorpTransferRequestDTO requestDTO = makeTransfer(convertEntityToDTO(corpTransRequest));
 
-            if (isAuthorizationComplete(corpTransRequest)) {
-                CorpTransferRequestDTO requestDTO = makeTransfer(convertEntityToDTO(corpTransRequest));
+                    if ("00".equals(requestDTO.getStatus()) || "000".equals(requestDTO.getStatus())) {//successful transaction
 
-                if ("00".equals(requestDTO.getStatus()) || "000".equals(requestDTO.getStatus())) {//successful transaction
+                        transferAuth.setStatus("C");
+                        transferAuth.setLastEntry(new Date());
+                        transferAuth.getAuths().add(transReqEntry);
+                        transferAuthRepo.save(transferAuth);
+                        return requestDTO.getStatusDescription();
 
+                    } else {//failed transaction
+                        logger.debug("TransReqEntry {}",transReqEntry.toString());
+                        throw new InternetBankingTransferException(String.format(messageSource.getMessage("transfer.auth.failure.reason", null, locale), requestDTO.getStatusDescription()));
+                    }
+                }
+                transferAuth.getAuths().add(transReqEntry);
+                transferAuthRepo.save(transferAuth);
+                return messageSource.getMessage("transfer.auth.success", null, locale);
+            } catch (InternetBankingTransferException te) {
+                throw te;
+            } catch (Exception e) {
+                throw new InternetBankingException(messageSource.getMessage("transfer.auth.success", null, locale), e);
+            }
+        }
+        else {
+            try {
+                transReqEntry.setEntryDate(new Date());
+                transReqEntry.setRole(userRole);
+                transReqEntry.setUser(corporateUser);
+                transReqEntry.setStatus("Approved");
+                transferAuth.getAuths().add(transReqEntry);
+                transferAuthRepo.save(transferAuth);
+
+                if (isAuthorizationComplete(corpTransRequest)) {
                     transferAuth.setStatus("C");
                     transferAuth.setLastEntry(new Date());
-                    transferAuth.getAuths().add(transReqEntry);
                     transferAuthRepo.save(transferAuth);
+                    CorpTransferRequestDTO requestDTO = makeTransfer(convertEntityToDTO(corpTransRequest));
                     return requestDTO.getStatusDescription();
-
-                } else {//failed transaction
-                    logger.debug("TransReqEntry {}",transReqEntry.toString());
-                    throw new InternetBankingTransferException(String.format(messageSource.getMessage("transfer.auth.failure.reason", null, locale), requestDTO.getStatusDescription()));
                 }
+                return messageSource.getMessage("transfer.auth.success", null, locale);
+            } catch (InternetBankingTransferException te) {
+                throw te;
+            } catch (Exception e) {
+                throw new InternetBankingException(messageSource.getMessage("transfer.auth.success", null, locale), e);
             }
-            transferAuth.getAuths().add(transReqEntry);
-            transferAuthRepo.save(transferAuth);
-            return messageSource.getMessage("transfer.auth.success", null, locale);
-        } catch (InternetBankingTransferException te) {
-            throw te;
-        } catch (Exception e) {
-            throw new InternetBankingException(messageSource.getMessage("transfer.auth.success", null, locale), e);
         }
+
+
     }
 
 
@@ -434,17 +454,22 @@ public class CorpTransferServiceImpl implements CorpTransferService {
         CorpTransRule corpTransRule = corporateService.getApplicableTransferRule(transRequest);
         List<CorporateRole> roles = getExistingRoles(corpTransRule.getRoles());
         boolean any = false;
-        int approvalCount = 1;
+        int approvalCount = 0;
+
+        SettingDTO transferSetting = configService.getSettingByName("RETRY_FAILED_TRANSFER");
+        if(transferSetting!=null&&transferSetting.isEnabled()) {
+            approvalCount = 1;
+        }
 
         if (corpTransRule.isAnyCanAuthorize()) {
             any = true;
         }
 
         int numAuthorizers = 0;
-        SettingDTO setting = configService.getSettingByName("MIN_AUTHORIZER_LEVEL");
-        if (setting != null && setting.isEnabled()) {
+        SettingDTO authSetting = configService.getSettingByName("MIN_AUTHORIZER_LEVEL");
+        if (authSetting != null && authSetting.isEnabled()) {
 
-            numAuthorizers = Integer.parseInt(setting.getValue());
+            numAuthorizers = Integer.parseInt(authSetting.getValue());
         }
 
         for (CorporateRole role : roles) {
@@ -456,7 +481,9 @@ public class CorpTransferServiceImpl implements CorpTransferService {
             }
         }
 
-        if (any && (approvalCount >= numAuthorizers)) return true;
+        if(transferSetting!=null&&transferSetting.isEnabled()) {
+            if (any && (approvalCount >= numAuthorizers)) return true;
+        }
 
         return approvalCount >= roles.size();
 
