@@ -442,8 +442,6 @@ public class CorpTransferServiceImpl implements CorpTransferService {
                 throw new InternetBankingException(messageSource.getMessage("transfer.auth.success", null, locale), e);
             }
         }
-
-
     }
 
 
