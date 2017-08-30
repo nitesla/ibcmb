@@ -97,6 +97,8 @@ public class OwnTransferController {
     public String transferSummary(@ModelAttribute("transferRequest") @Valid TransferRequestDTO request, Locale locale, BindingResult result, Model model, HttpServletRequest servletRequest) {
         try {
             request.setFinancialInstitution(financialInstitutionService.getFinancialInstitutionByCode(bankCode));
+
+            logger.debug("Transfer request: {}", request);
             request.setBeneficiaryAccountName(accountService.getAccountByAccountNumber(request.getBeneficiaryAccountNumber()).getAccountName());
             model.addAttribute("transferRequest", request);
             validator.validate(request, result);

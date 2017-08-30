@@ -124,7 +124,7 @@ public class CorpTransferServiceImpl implements CorpTransferService {
 
             if (corpTransRequest.getStatus() != null) {
 //                if (corpTransRequest.getStatus().equals("000") || corpTransRequest.getStatus().equals("00"))
-                    return corpTransferRequestDTO;
+                return corpTransferRequestDTO;
 //                throw new InternetBankingTransferException(corpTransRequest.getStatusDescription());
             }
             throw new InternetBankingTransferException(TransferExceptions.ERROR.toString());
@@ -230,7 +230,7 @@ public class CorpTransferServiceImpl implements CorpTransferService {
     }
 
     @Override
-    public int countPendingRequest(){
+    public int countPendingRequest() {
         CorporateUser corporateUser = getCurrentUser();
         Corporate corporate = corporateUser.getCorporate();
         return corpTransferRequestRepo.countByCorporateAndStatus(corporate, "P");
@@ -386,7 +386,7 @@ public class CorpTransferServiceImpl implements CorpTransferService {
 
         SettingDTO setting = configService.getSettingByName("RETRY_FAILED_TRANSFER");
 
-        if(setting!=null&&setting.isEnabled()&&"YES".equalsIgnoreCase(setting.getValue())){
+        if (setting != null && setting.isEnabled() && "YES".equalsIgnoreCase(setting.getValue())) {
 
             try {
                 transReqEntry.setEntryDate(new Date());
@@ -406,7 +406,7 @@ public class CorpTransferServiceImpl implements CorpTransferService {
                         return requestDTO.getStatusDescription();
 
                     } else {//failed transaction
-                        logger.debug("TransReqEntry {}",transReqEntry.toString());
+                        logger.debug("TransReqEntry {}", transReqEntry.toString());
                         throw new InternetBankingTransferException(String.format(messageSource.getMessage("transfer.auth.failure.reason", null, locale), requestDTO.getStatusDescription()));
                     }
                 }
@@ -418,8 +418,7 @@ public class CorpTransferServiceImpl implements CorpTransferService {
             } catch (Exception e) {
                 throw new InternetBankingException(messageSource.getMessage("transfer.auth.success", null, locale), e);
             }
-        }
-        else {
+        } else {
             try {
                 transReqEntry.setEntryDate(new Date());
                 transReqEntry.setRole(userRole);
@@ -433,6 +432,8 @@ public class CorpTransferServiceImpl implements CorpTransferService {
                     transferAuth.setLastEntry(new Date());
                     transferAuthRepo.save(transferAuth);
                     CorpTransferRequestDTO requestDTO = makeTransfer(convertEntityToDTO(corpTransRequest));
+                    if (!"00".equals(requestDTO.getStatus()) || !"000".equals(requestDTO.getStatus())) //successful failed
+                        throw new InternetBankingTransferException(requestDTO.getStatusDescription());
                     return requestDTO.getStatusDescription();
                 }
                 return messageSource.getMessage("transfer.auth.success", null, locale);
@@ -445,7 +446,6 @@ public class CorpTransferServiceImpl implements CorpTransferService {
     }
 
 
-
     private boolean isAuthorizationComplete(CorpTransRequest transRequest) {
         CorpTransferAuth transferAuth = transRequest.getTransferAuth();
         Set<CorpTransReqEntry> transReqEntries = transferAuth.getAuths();
@@ -455,7 +455,7 @@ public class CorpTransferServiceImpl implements CorpTransferService {
         int approvalCount = 0;
 
         SettingDTO transferSetting = configService.getSettingByName("RETRY_FAILED_TRANSFER");
-        if(transferSetting!=null&&transferSetting.isEnabled()&&"YES".equalsIgnoreCase(transferSetting.getValue())){
+        if (transferSetting != null && transferSetting.isEnabled() && "YES".equalsIgnoreCase(transferSetting.getValue())) {
             approvalCount = 1;
         }
 
@@ -479,7 +479,7 @@ public class CorpTransferServiceImpl implements CorpTransferService {
             }
         }
 
-        if(transferSetting!=null&&transferSetting.isEnabled()) {
+        if (transferSetting != null && transferSetting.isEnabled()) {
             if (any && (approvalCount >= numAuthorizers)) return true;
         }
 

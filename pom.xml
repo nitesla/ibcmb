@@ -83,16 +83,16 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
             <!--<exclusions>-->
-                <!--<exclusion>-->
-                    <!--<groupId>org.springframework.boot</groupId>-->
-                    <!--<artifactId>spring-boot-starter-tomcat</artifactId>-->
-                <!--</exclusion>-->
+            <!--<exclusion>-->
+            <!--<groupId>org.springframework.boot</groupId>-->
+            <!--<artifactId>spring-boot-starter-tomcat</artifactId>-->
+            <!--</exclusion>-->
             <!--</exclusions>-->
         </dependency>
         <!--<dependency>-->
-            <!--<groupId>javax.servlet</groupId>-->
-            <!--<artifactId>javax.servlet-api</artifactId>-->
-            <!--<version>3.0.1</version>-->
+        <!--<groupId>javax.servlet</groupId>-->
+        <!--<artifactId>javax.servlet-api</artifactId>-->
+        <!--<version>3.0.1</version>-->
 
         <!--</dependency>-->
 
@@ -139,16 +139,16 @@
         <!--</dependency>-->
 
         <!--<dependency>-->
-        <!--<groupId>org.springframework.boot</groupId>-->
-        <!--<artifactId>spring-boot-starter-tomcat</artifactId>-->
-        <!--<scope>provided</scope>-->
+            <!--<groupId>org.springframework.boot</groupId>-->
+            <!--<artifactId>spring-boot-starter-tomcat</artifactId>-->
+            <!--<scope>provided</scope>-->
         <!--</dependency>-->
 
         <!-- hot swapping, disable cache for template, enable live reload -->
         <dependency>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-devtools</artifactId>
-        <optional>true</optional>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-devtools</artifactId>
+            <optional>true</optional>
         </dependency>
         <!--<dependency>-->
         <!--<groupId>org.springframework.boot</groupId>-->
@@ -245,17 +245,17 @@
         </dependency>
 
         <!--<dependency>-->
-            <!--<groupId>mysql</groupId>-->
-            <!--<artifactId>mysql-connector-java</artifactId>-->
-            <!--<scope>runtime</scope>-->
+        <!--<groupId>mysql</groupId>-->
+        <!--<artifactId>mysql-connector-java</artifactId>-->
+        <!--<scope>runtime</scope>-->
         <!--</dependency>-->
         <!--<dependency>-->
-            <!--<groupId>net.sf.jasperreports</groupId>-->
-            <!--<artifactId>jasperreports</artifactId>-->
-            <!--<artifactId>5.6.0</artifactId>-->
+        <!--<groupId>net.sf.jasperreports</groupId>-->
+        <!--<artifactId>jasperreports</artifactId>-->
+        <!--<artifactId>5.6.0</artifactId>-->
         <!--</dependency>-->
         <!--<dependency>-->
-            <!--<groupId>net.sf.j</groupId>-->
+        <!--<groupId>net.sf.j</groupId>-->
         <!--</dependency>-->
 
         <dependency>
@@ -276,15 +276,15 @@
         <!-- homtps://mvnrepository.com/artifact/org.eclipse.birt.runtime.3_7_1/com.lowagie.text -->
 
         <!--<dependency>-->
-            <!--<groupId>org.eclipse.birt.runtime.3_7_1</groupId>-->
-            <!--<artifactId>com.lowagie.text</artifactId>-->
-            <!--<version>2.1.7</version>-->
+        <!--<groupId>org.eclipse.birt.runtime.3_7_1</groupId>-->
+        <!--<artifactId>com.lowagie.text</artifactId>-->
+        <!--<version>2.1.7</version>-->
         <!--</dependency>-->
         <!-- https://mvnrepository.com/artifact/org.apache.poi/poi -->
         <!--<dependency>-->
-            <!--<groupId>org.apache.poi</groupId>-->
-            <!--<artifactId>poi</artifactId>-->
-            <!--<version>3.7</version>-->
+        <!--<groupId>org.apache.poi</groupId>-->
+        <!--<artifactId>poi</artifactId>-->
+        <!--<version>3.7</version>-->
         <!--</dependency>-->
 
 
