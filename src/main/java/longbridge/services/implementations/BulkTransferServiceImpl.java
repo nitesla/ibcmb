@@ -83,7 +83,8 @@ public class BulkTransferServiceImpl implements BulkTransferService {
         logger.trace("Transfer details valid {}", bulkTransfer);
         //validate bulk transfer
 
-
+        bulkTransfer.setStatus("P");
+        bulkTransfer.setStatusDescription("Pending");
         BulkTransfer transfer = bulkTransferRepo.save(bulkTransfer);
         try {
             jobLauncher.launchBulkTransferJob("" + transfer.getId());
@@ -121,7 +122,7 @@ public class BulkTransferServiceImpl implements BulkTransferService {
             if (userCanAuthorize(transfer)) {
                 CorpTransReqEntry transReqEntry = new CorpTransReqEntry();
                 transReqEntry.setTranReqId(transfer.getId());
-                addAuthorization(transReqEntry);
+                return addAuthorization(transReqEntry);
             }
         } catch (TransferAuthorizationException ex) {
             throw ex;
@@ -195,7 +196,7 @@ public class BulkTransferServiceImpl implements BulkTransferService {
                 return makeBulkTransferRequest(bulkTransfer);
             }
 
-            return messageSource.getMessage("transfer.auth.failure", null, locale);
+            return messageSource.getMessage("transfer.auth.success", null, locale);
         } catch (InternetBankingTransferException te) {
             throw te;
         } catch (Exception e) {

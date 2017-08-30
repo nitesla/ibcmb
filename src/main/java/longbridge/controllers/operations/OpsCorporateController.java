@@ -745,16 +745,17 @@ public class OpsCorporateController {
 
     }
 
-    @GetMapping("/validate/{id}")
+
+    @GetMapping("/validate/{corpId}")
     @ResponseBody
-    public String validateCorporateId(@PathVariable String id) {
+    public String validateCorporateId(@PathVariable String corpId) {
         try {
-            boolean isExisting = corporateService.corporateIdExists(id);
+            boolean isExisting = corporateService.corporateIdExists(corpId);
             if (!isExisting) {
                 return "true";
             }
         } catch (Exception e) {
-            e.printStackTrace();
+          logger.error("Error validating corporate Id",e);
         }
         return "false";
     }

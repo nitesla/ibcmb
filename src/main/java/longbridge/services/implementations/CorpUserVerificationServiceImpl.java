@@ -458,11 +458,11 @@ public class CorpUserVerificationServiceImpl implements CorpUserVerificationServ
                 String operation = corpUserVerification.getDescription();
                 String comment = corpUserVerification.getComments();
                 String status = corpUserVerification.getStatus().name();
-                Email email = new Email.Builder()
-                        .setRecipient(initiatedBy.getEmail())
-                        .setSubject(messageSource.getMessage("verification.subject", null, locale))
-                        .setBody(String.format(messageSource.getMessage("verification.message", null, locale),initiatorName, verifierName, operation, status, DateFormatter.format(date),comment))
-                        .build();
+                Email.Builder builder = new Email.Builder();
+                builder.setRecipient(initiatedBy.getEmail());
+                builder.setSubject(messageSource.getMessage("verification.subject", null, locale));
+                builder.setBody(String.format(messageSource.getMessage("verification.message", null, locale), initiatorName, verifierName, operation, status, DateFormatter.format(date), comment));
+                Email email = builder.build();
                 new Thread(() -> {
                     mailService.send(email);
                 }).start();
@@ -630,6 +630,7 @@ public class CorpUserVerificationServiceImpl implements CorpUserVerificationServ
                     String password = passwordPolicyService.generatePassword();
                     user.setPassword(passwordEncoder.encode(password));
                     user.setExpiryDate(new Date());
+                    user.setIsFirstTimeLogon("Y");
                     passwordPolicyService.saveCorporatePassword(user);
                     corporateUserRepo.save(user);
 

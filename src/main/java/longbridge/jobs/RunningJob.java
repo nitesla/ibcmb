@@ -4,6 +4,7 @@ import longbridge.config.SpringContext;
 import longbridge.exception.InternetBankingException;
 import longbridge.services.CronJobService;
 import longbridge.services.implementations.CronJobServiceImpl;
+import org.quartz.DisallowConcurrentExecution;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
@@ -19,6 +20,7 @@ import java.io.IOException;
  * Created by Longbridge on 6/29/2017.
  */
 @org.springframework.stereotype.Component
+@DisallowConcurrentExecution
 public class RunningJob implements Job {
 //    @Autowired
 //    private CronJobService cronJobService;
@@ -29,13 +31,12 @@ public class RunningJob implements Job {
         CronJobService cronJobService = context.getBean (CronJobService.class);
         System.out.println("job runing");
         try {
-            CompileJasper.compile();
-//            cronJobService.saveRunningJob("in-built",cronJobService.getCurrentExpression());
-//            cronJobService.updateAccountDetials();
+//            CompileJasper.compile();
+            cronJobService.saveRunningJob("in-built",cronJobService.getCurrentExpression());
+            cronJobService.updateAccountDetials();
             cronJobService.updateRetailUserDetails();
-//            cronJobService.updateCorporateUserDetails();
-//
-//            cronJobService.updateRunningJob();
+            cronJobService.updateCorporateUserDetails();
+            cronJobService.updateRunningJob();
         } catch (InternetBankingException e) {
             e.printStackTrace();
         }catch (Exception e){

@@ -64,8 +64,6 @@ public class RetailUserDetailsService implements UserDetailsService {
             if (user != null && user.getUserType() == UserType.RETAIL
 
                     && user.getRole().getUserType().equals(UserType.RETAIL)) {
-                SecurityContextHolder.clearContext();
-                sessionUtils.clearSession();
                 return new CustomUserPrincipal(user);
             }
             throw new UsernameNotFoundException(s);
