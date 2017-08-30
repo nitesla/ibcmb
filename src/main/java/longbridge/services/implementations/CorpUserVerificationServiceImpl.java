@@ -630,6 +630,7 @@ public class CorpUserVerificationServiceImpl implements CorpUserVerificationServ
                     String password = passwordPolicyService.generatePassword();
                     user.setPassword(passwordEncoder.encode(password));
                     user.setExpiryDate(new Date());
+                    user.setIsFirstTimeLogon("Y");
                     passwordPolicyService.saveCorporatePassword(user);
                     corporateUserRepo.save(user);
 
