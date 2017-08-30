@@ -7,23 +7,51 @@
 <div layout:fragment="content">
     
 
-    <div class="col-xs-12 ml-15 no-pad-left" >
-        <div class="col-xs-12 no-pad-le no-pad-righ alert no-bd">
+    <div class="col-xs-12" >
+        <div class="col-md-5 no-pad-lef invisible">
+        
+        </div>
+        <div class="col-xs-12  alert no-bd">
             <div class="">
                            
-                 <div class="col-md-6 alert no-mt no-bd">
-                        <h3>Contact Address</h3>
-                        <hr class="related-nfo"/>
-                        <address class='bg-white alert'>
+                <div class="col-md-5 alert no-mt no-bd">
+                        
+                        <div class='alert no-bd-rad coronation-blue' style="color:#003056;background:#d3d4d7;padding:15px !important">
                             Lorem ipsum dolor sit amet, consectetuer adipiscing elit,
                              sed diam nonummy nibh euismod tincidunt ut laoreet dolore
 
-                              <p>Tel: 01-34455</p>
-                        </address>
-                       
-                    </div>
+                             
+                        </div>
 
-                    <div class="col-md-6 alert no-mt no-bd col-xs-12 no-pad-right">
+                        <div class="col-xs-12" style="margin-bottom:20px">
+                            <h3 style="color:#003056;padding:5px 0px">Call</h3><hr style="background: #d3d4d7;width:20px;margin-top:0px;height:2px" />
+                            <div style="margin-top:10px">
+                                    <p class="coronation-blue col-xs-9  no-pad-left" >T: <span> +234 (0)818 831 4939</span></p>
+                                    <p class="col-xs-3 no-pad-left"><i class="fa fa-phone" style="color:white;background:#003056;padding:4px"></i></p><br/>
+                                    
+                            </div>
+                            <div style="margin-top:10px">
+                                    <p class="coronation-blue col-xs-9 no-pad-left" >&nbsp;&nbsp;: <span> +234 (0)818 831 4939</span></p>
+                                    <p class="col-xs-3 no-pad-left"><i class="fa fa-phone" style="color:white;background:#003056;padding:4px"></i></p>
+                                    
+                            </div>
+                            
+                        </div>
+
+                        <div class="col-xs-12" style="margin-bottom:20px">
+                                <h3 style="color:#003056;padding:5px 0px">Send Us an email</h3><hr style="background: #d3d4d7;width:150px;margin-top:0px;height:2px" />
+                                <div style="margin-top:10px">
+                                        <p class="coronation-blue col-xs-9  no-pad-left no-pad-right" >E: <span> cs@coronationmb.com</span></p>
+                                        <p class="col-xs-3 no-pad-left "><i class="fa fa-envelope form" style="color:white;background:#003056;padding:4px"></i></p><br/>
+                                        
+                                </div>
+                               
+                                
+                            </div>
+    
+                </div>
+
+                    <div id='form' class="col-md-6 alert no-mt no-bd col-xs-12 no-pad-right invisible">
 
                         <form action="/retail/contact" method="post">
                             <div class="form-group">
@@ -45,7 +73,13 @@
 
 <th:block layout:fragment="scripts">
 
-      
+    <script>
+        $(document).ready(function(){
+            $('.form').on('click', function(){
+                $('#form').removeClass('invisible');
+            });
+        });
+    </script>
             
 </th:block>
 
