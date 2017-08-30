@@ -106,8 +106,8 @@
                                                 <div class="form-group">
                                                     <label>Select Email or Date of birth</label>
                                                     <select name="userdet" id="userdet" class="my-select">
-                                                        <option th:value="email">Use Email</option>
-                                                        <option th:value="dob">Use Date of Birth</option>
+                                                        <option value="email">Use Email</option>
+                                                        <option value="dob">Use Date of Birth</option>
                                                     </select>
                                                 </div>
 
@@ -336,26 +336,10 @@
 
     <script th:inline="javascript" type="text/javascript">
         /*<![CDATA[*/
-        var m_noOfDigits = [
-            [$ {
-                passwordStrength.numOfdigits
-            }]
-        ];
-        var m_strCharacters = [
-            [$ {
-                passwordStrength.specialChars
-            }]
-        ];
-        var minLength = [
-            [$ {
-                passwordStrength.minLength
-            }]
-        ];
-        var noOfSpecChar = [
-            [$ {
-                passwordStrength.numOfSpecChar
-            }]
-        ];
+        var m_noOfDigits = [[${passwordStrength.numOfdigits}]];
+        var m_strCharacters = [[${passwordStrength.specialChars}]];
+        var minLength = [[${passwordStrength.minLength}]];
+        var noOfSpecChar = [[${passwordStrength.numOfSpecChar}]];
 
         function valPassword(strPassword) {
             runPassword(strPassword, minLength, m_noOfDigits, m_strCharacters, noOfSpecChar)
@@ -386,6 +370,7 @@
 
 
         $('#userdet').on('change', function() {
+            console.log("change");
             if ($(this).val() === "email") {
                 $("#email").show();
                 $("#dob").hide();

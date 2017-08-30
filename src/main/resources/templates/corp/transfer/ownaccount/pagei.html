@@ -47,10 +47,10 @@
                                     <div>
                                         <span class="alert no-bd-rad my-border bg-white" id="destCurrency">CCY</span>
                                         <select name="destination" class="form-control" id="destination"
-                                                th:field="*{beneficiaryAccountNumber}" onchange="getDestCurrency();"
+                                                onchange="getDestCurrency();"
                                                 required="required">
 
-                                            <option th:each="s: ${destAccounts}" th:value="${s}" th:text="${s}"></option>
+                                            <!--<option th:each="s: ${destAccounts}" th:value="${s}" th:text="${s}"></option>-->
 
 
                                         </select><span class='req-inner'></span>
@@ -124,7 +124,7 @@
 
         $(document).ready(function(){
 
-
+            getBeneficiaryAccts();
 //       document.getElementById("source").selectedIndex = -1;
             document.getElementById("destination").selectedIndex = -1;
 
@@ -136,8 +136,43 @@
             getSourceCurrency();
 
         })
+        $('#source').change(function () {
+            getBeneficiaryAccts();
+        });
+        function getBeneficiaryAccts() {
+            var acctId = $('#source').val();
+            if(acctId != '') {
+                $.ajax({
+                    type: 'POST',
+                    url: "/corporate/transfer/dest/accounts",
+                    data: {acctId: acctId},
+                    async: false,
+                    cache: false,
+                    success: function (data) {
+                        result = '' + String(data);
+                        console.log("details output " + data[0]);
+                        console.log("details output " + data.length);
+                        if (data != null) {
+                            //$('input[name=username]').val(result);
+                            $('#destination').empty();
+                            for (var i = 0; i < data.length; i++) {
+                                $('#destination')
+                                        .append($("<option></option>")
+                                                .attr("value", data[i])
+                                                .text(data[i]));
+                            }
 
-
+                        } else {
+                            //invalid account number
+                            //alert("Account number not found");
+                            $('#errorMess').text(result);
+                            $('#myLoader').modal('hide');
+                            $('#myModalError').modal('show');
+                        }
+                    }
+                });
+            }
+        }
 
 
 
