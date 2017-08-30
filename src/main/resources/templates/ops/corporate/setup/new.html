@@ -60,16 +60,18 @@
                                                        placeholder="Enter CIFID here" onkeyup="validateCorpId()"
                                                        required="required"/>
 
+
+                                                <div id="custError" style="display: none;">
+
+                                                    <p style="color:red;">Invalid Corporate Customer ID</p>
+                                                </div>
                                             </div>
 
+
                                         </div>
 
 
-                                        <div id="custError" style="display: none;">
-                                            <label class="col-sm-2 control-label"></label>
 
-                                            <p style="color:red;">Invalid Corporate Customer ID</p>
-                                        </div>
 
 
                                         <div id="custName" class="form-group" style="display: none">
@@ -126,7 +128,10 @@
                     }
                 },
                 error: function (xhr, status, error) {
-                    $("#custError").html("Error occurred validating Customer ID. Try again later.");
+
+                   var msg =  "<p style='color:red;'>Error occurred validating Customer ID. Try again later.</p>";
+
+                    $("#custError").html(msg);
                     $("#custError").show();
                 }
             });

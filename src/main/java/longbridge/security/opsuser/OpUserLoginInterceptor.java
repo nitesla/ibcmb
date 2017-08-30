@@ -1,8 +1,14 @@
 package longbridge.security.opsuser;
 
 import longbridge.forms.ChangeDefaultPassword;
+import longbridge.models.User;
+import longbridge.models.UserType;
+import longbridge.security.userdetails.CustomUserPrincipal;
 import longbridge.services.PasswordPolicyService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.ModelAndViewDefiningException;
@@ -23,6 +29,15 @@ public class OpUserLoginInterceptor extends HandlerInterceptorAdapter {
 
         String uri=httpServletRequest.getRequestURI();
 
+        if (getCurrentUser()==null) {
+            httpServletResponse.sendRedirect(httpServletRequest.getContextPath() +"/login/ops");
+            return false;
+        }
+
+        if (getCurrentUser()!=null && !UserType.OPERATIONS.equals(getCurrentUser().getUserType())) {
+            httpServletResponse.sendRedirect(httpServletRequest.getContextPath() +"/login/ops");
+            return false;
+        }
 
 
         if (httpServletRequest.getSession().getAttribute("expired-password")!=null&& !(uri.equalsIgnoreCase("/ops/users/password/new")))
@@ -74,6 +89,15 @@ public class OpUserLoginInterceptor extends HandlerInterceptorAdapter {
 
 
 
+    }
+    private User getCurrentUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (!(authentication instanceof AnonymousAuthenticationToken)) {
+            CustomUserPrincipal currentUser = (CustomUserPrincipal) authentication.getPrincipal();
+            return currentUser.getUser();
+        }
+
+        return null;
     }
 
 

@@ -37,6 +37,8 @@ import java.net.URL;
 import java.util.Locale;
 import java.util.concurrent.Executor;
 
+import static jdk.nashorn.internal.runtime.regexp.joni.Config.log;
+
 @Configuration
 public class WebMvcConfig extends WebMvcConfigurerAdapter {
 
@@ -117,7 +119,6 @@ public class WebMvcConfig extends WebMvcConfigurerAdapter {
     @Bean
     public AdminAuthenticationSuccessHandler successHandler() {
         AdminAuthenticationSuccessHandler handler = new AdminAuthenticationSuccessHandler();
-        handler.setUseReferer(true);
         return handler;
     }
 
@@ -177,4 +178,6 @@ public class WebMvcConfig extends WebMvcConfigurerAdapter {
 //        registry.addResourceHandler("/resources/static/**")
 //                .addResourceLocations("/resources/static/");
 //    }
+
+
 }

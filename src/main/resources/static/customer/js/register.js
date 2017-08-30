@@ -26,7 +26,7 @@ form.children("div").steps({
     onStepChanging: function (event, currentIndex, newIndex)
     {
         form.validate().settings.ignore = ":disabled,:hidden";
-        console.log(currentIndex);
+        //console.log(currentIndex);
         var isValid = form.valid();
 
         // Always allow previous action even if the current form is not valid!
@@ -49,19 +49,19 @@ form.children("div").steps({
 
         if(ACCOUNT_DETAILS_STEP === currentIndex){
 
-            console.log("Current step is the account details step");
+            //console.log("Current step is the account details step");
             var accountNumber = $('input[name="accountNumber"]').val();
 
             var email = $('input[name="email"]').val();
             summaryEmail = email;
-            console.log(email);
+            //console.log(email);
             var birthDate = $('input[name="birthDate"]').val();
             return isValid && validateAccountDetails(accountNumber, email, birthDate) && validateExists(accountNumber, email, birthDate);
 
         }
         if(PROFILE_DETAILS_STEP === currentIndex){
 
-            console.log("Current stp is the profile details step");
+            //console.log("Current stp is the profile details step");
             var username = $('input[name="userName"]').val();
             summaryUsername = username;
             var confirm = $('input[name="confirm"]').val();
@@ -71,13 +71,13 @@ form.children("div").steps({
         }
         if(SECURITY_QUESTION_STEP === currentIndex){
             
-            console.log("Current Step is the security question step");
+            //console.log("Current Step is the security question step");
             //$("#reg-form").submit();
 
             return isValid;
         }
         if(PHISHING_IMAGE_STEP === currentIndex){
-            console.log("Current Step is the phishing image step");
+            //console.log("Current Step is the phishing image step");
             //$("#reg-form").submit();
             getSummary();
             return isValid && checkImage();
@@ -117,12 +117,12 @@ form.children("div").steps({
 });
 function getSummary() {
     var noOfQuestions = $('#noOfQuestions').val();
-    console.log("noOfQuestions "+noOfQuestions);
+    //console.log("noOfQuestions "+noOfQuestions);
     var imgPath =  $('#imgPaths').val();
 
     var phishing = $("input[name='phishing']:checked"). val();
     var container = document.getElementById("regSummary");
-console.log("phishing "+phishing);
+//console.log("phishing "+phishing);
     container.innerHTML = "";
     container.innerHTML += "<p><h1>Self Registration Summary</h1></p> <br/>";
     container.innerHTML += "<p>Below are a summary of details entered to be used for registration</p>";
@@ -172,6 +172,10 @@ function validateAccountDetails(accountNumber, email, birthDate){
         birthDate = "19-20-1970"
     }
     var customerId;
+
+    accountNumber = accountNumber.trim();
+    email = email.trim();
+    birthDate = birthDate.trim();
     $.ajax({
         type:'POST',
         url:"/rest/accountdetails",
@@ -214,6 +218,9 @@ function validateExists(accountNumber, email, birthDate){
         birthDate = "19-20-1970"
     }
     var cif;
+    accountNumber = accountNumber.trim();
+    email = email.trim();
+    birthDate = birthDate.trim();
     $.ajax({
         type:'POST',
         url:"/rest/accountexists",
@@ -252,6 +259,7 @@ function validateExists(accountNumber, email, birthDate){
 function validateUsername(username){
     var result;
      $('#myLoader').modal('show');
+    username = username.trim();
     $.ajax({
         type:'POST',
         url:"/rest/username/check",
@@ -285,6 +293,7 @@ function validateUsername(username){
 
 function validatePassword(password){
     var result;
+    password = password.trim();
     $.ajax({
         type:'POST',
         data:{password:password},
@@ -316,6 +325,7 @@ function validatePassword(password){
 
 function validateRegCode(code){
     var result;
+    code = code.trim();
     $.ajax({
         type:'POST',
         url:"/rest/regCode/check",
@@ -359,7 +369,9 @@ function sendRegCode(){
         birthDate = "11-11-1111";
     }
     var result;
-
+    accountNumber = accountNumber.trim();
+    email = email.trim();
+    birthDate = birthDate.trim();
     $.ajax({
         type:'POST',
         url:"/rest/regCode",
@@ -385,7 +397,7 @@ function sendRegCode(){
 
                 //valid account number
                 //alert("code sent: " + result);
-                console.log(result);
+                //console.log(result);
             }
         }
     });
