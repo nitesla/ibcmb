@@ -51,6 +51,8 @@ public class InternetbankingApplication extends SpringBootServletInitializer imp
 
     @Autowired
     CorporateRepo corporateRepo;
+    @Autowired
+    TransferService transferService;
 
     public static void main(String[] args) {
         SpringApplication.run(InternetbankingApplication.class, args);
@@ -67,6 +69,8 @@ public class InternetbankingApplication extends SpringBootServletInitializer imp
     public void run(String... strings) throws Exception {
 
         CronJobScheduler.startJobs();
+
+
 
     }
 

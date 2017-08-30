@@ -39,7 +39,7 @@ public class AdmControllerAdvice {
             return "redirect:/login/admin";
         }
 
-        if ( getCurrentUser() != null && !getCurrentUser().getUserType().equals(UserType.ADMIN)) return "redirect:/login/admin";
+//        if ( getCurrentUser() != null && !getCurrentUser().getUserType().equals(UserType.ADMIN)) return "redirect:/login/admin";
         int verificationNumber = verificationService.getTotalNumberForVerification();
         long totalPending = verificationService.getTotalNumberPending();
         if (totalPending > 0) {

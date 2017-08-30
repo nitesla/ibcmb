@@ -501,7 +501,6 @@ public class IntegrationServiceImpl implements IntegrationService {
     }
 
     @Override
-    @Async
     public BigDecimal getAvailableBalance(String s) {
         try {
             Map<String, BigDecimal> getBalance = getBalance(s);

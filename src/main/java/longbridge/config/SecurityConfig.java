@@ -113,14 +113,26 @@ public class SecurityConfig {
             }
 
 
-            http.antMatcher("/admin/**").authorizeRequests().anyRequest().
+            http.antMatcher("/admin/**").authorizeRequests()
+                    .anyRequest().fullyAuthenticated()
+                    .and().antMatcher("/**").authorizeRequests()
+                    .and().antMatcher("/admin/**").authorizeRequests()
+                    .and().authorizeRequests().anyRequest().
+
+
 
 
 
                     // .and().authorizeRequests().and()
-                            access("hasAuthority('" + UserType.ADMIN.toString() + "') and " + ipRange.toString()).and()
+                           // access("hasAuthority('" + UserType.ADMIN.toString() + "') and " + ipRange.toString()).and()
+                            access(ipRange.toString()).and()
 
+
+
+                 // .fullyAuthenticated()
                     // log in
+
+
                     .formLogin().loginPage("/login/admin").loginProcessingUrl("/admin/login")
                     .failureUrl("/login/admin?error=login_error").defaultSuccessUrl("/admin/dashboard")
                     .successHandler(adminAuthenticationSuccessHandler).failureHandler(adminAuthenticationFailureHandler)
@@ -135,7 +147,7 @@ public class SecurityConfig {
 
                     .and()
                     .logout().logoutUrl("/admin/logout").logoutSuccessUrl("/login/admin").deleteCookies("JSESSIONID")
-                    .invalidateHttpSession(true).and().requestCache()
+                    .invalidateHttpSession(true)
                     .and().exceptionHandling().and().csrf().disable();
 
 
@@ -183,11 +195,13 @@ public class SecurityConfig {
         }
 
         protected void configure(HttpSecurity http) throws Exception {
-            http.antMatcher("/ops/**").authorizeRequests().anyRequest()
+            http.antMatcher("/ops/**")
+                    .authorizeRequests().anyRequest()
+
 
                     //.authenticated()
-                   .hasAuthority(UserType.OPERATIONS.toString())
-
+                  // .hasAuthority(UserType.OPERATIONS.toString())
+                    .fullyAuthenticated().anyRequest().hasAuthority(UserType.OPERATIONS.toString())
                     // log in
                     .and().formLogin().loginPage("/login/ops").loginProcessingUrl("/ops/login").failureUrl("/login/ops?error=true").defaultSuccessUrl("/ops/dashboard")
                     .successHandler(opAuthenticationSuccessHandler)
@@ -258,7 +272,8 @@ public class SecurityConfig {
                     .antMatcher("/retail/**").authorizeRequests()
                     .anyRequest()
                     // .authenticated()
-                    .hasAuthority(UserType.RETAIL.toString())
+                   // .hasAuthority(UserType.RETAIL.toString())
+                    .fullyAuthenticated()
                     // log in
                     .and().formLogin().loginPage("/login/retail").loginProcessingUrl("/retail/login")
                     .failureUrl("/login/retail?error=true").defaultSuccessUrl("/retail/dashboard")
