@@ -32,41 +32,53 @@
     <div class="col-xs-12" >
         <div class="no-pad-lef  no-mt no-bd  alert">
              <div class="">
-                    <div class="form-spacig">
-                        <p class="">To make a bulk transfer, You are required to download a pre-formatted file and fill
+                    <div class="col-md-6 coronation-blue">
+                        <h3 style="font-size:17px">Upload Bulk Transfer File</h3>
+                        <p class="" style="font-size:13px;line-height:20px;margin-top:20px">To make a bulk transfer, You are required to download a formatted file and fill
                             in the details of the beneficiaries...
-                            <a th:href="@{/corporate/transfer/bulk/download}">Download File</a>
                         </p>
 
-                        <p>
-                            <a th:href="@{/corporate/transfer/bankcodes}" target="_blank">click this link to view bank codes</a>
+
+
+                        <p style="margin-top:20px;">
+                                <a class='btn btn-default' th:href="@{/corporate/transfer/bulk/download}">Download File</a>
+                                
+                            <a style="margin-left" class="btn btn-default" th:href="@{/corporate/transfer/bankcodes}" target="_blank">View Bank Codes</a>
                         </p>
 
+
+                    </div>
+                    <div class="col-xs-12 no-pad-left">
 
                     </div>
 
                   
 
                     <!--<p>Upload the completed file through the link below</p>-->
-                    <hr width="100%" size="1" />
-                    <h6 class="hstyle"><span>Upload the completed Bulk Transfer file through the link below</span></h6>
-
-
-                    <div class="col-md-6 col-sm-6 no-pad-left" style="margin-top:20px;">
-                        <form method="post" th:action="@{/corporate/transfer/bulk/upload}" enctype="multipart/form-data">
-
-
-                            <div class="form-group">
-                                <!--<label>Bulk Transfer file</label>-->
-                                <input  type="file" name="transferFile"/>
-                                <br/>
-                                <!--<input  type="submit" value="Upload"/>-->
-                                <button class="btn btn-link" type="submit">Upload</button>
-
-                            </div>
-
-                        </form>
+                    <!-- <hr width="100%" size="1" /> -->
+                    <div class="col-md-6 coronation-blue" style="margin-top:60px;">
+                            <h6 class="hstyle"  style="font-size:13px;line-height:20px;margin-top:20px"><span>Upload the completed Bulk Transfer file through the link below</span></h6>
+                            <form style="margin-top:20px" method="post" th:action="@{/corporate/transfer/bulk/upload}" enctype="multipart/form-data">
+                                
+                                
+                                                            <div class="form-group" >
+                                                                <!--<label>Bulk Transfer file</label>-->
+                                                                <input id='input-file' style="width: 0.1px;height: 0.1px;opacity: 0;overflow: hidden;position: absolute;z-index: -1;"  type="file" name="transferFile"/>
+                                                                
+                                                                <div style="width:150px;display:inline">
+                                                                        <label  onchange="change()"  for="input-file" class="btn btn-default " style="display:inline !important;padding:8px !important;background:grey !important"><i class="fa fa-upload" aria-hidden="true" style="color:white"></i> Choose File</label>
+                                                                        
+                                                                </div>
+                                                              
+                                                                <!--<input  type="submit" value="Upload"/>-->
+                                                                <button  class="btn btn-link required-step" type="submit">Upload</button>
+                                
+                                                            </div>
+                                
+                                                        </form>
+    
                     </div>
+
                 </div>
         </div>
         
@@ -88,6 +100,12 @@
             { dateformat : 'dd/mm/yy'}
         );
     } );
+
+
+    function change()
+    {
+        alert($('#input-file').val());
+    }
 </script>
 </th:block>
 

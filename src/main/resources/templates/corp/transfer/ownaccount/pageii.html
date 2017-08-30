@@ -2,8 +2,8 @@
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{corp-layout}">
 
-<body onload="currentBar('Own Account transfer')">
-
+      <body onload="javascript:var bread = [['Home', '/corporate/dashboard'],['Own Account Transfer','/corporate/transfer/ownaccount'],['transaction summary','']];currentBar('Own Account Transfer');breadCrumb(bread)">
+        
 <div layout:fragment="content">
     <div class="col-md-5 col-sm-5 ">
 
@@ -19,7 +19,7 @@
 
                         <table class="table table-hover">
 
-                            <tr>
+                            <tr class="top-row">
 
                                 <th>Source account</th>
                                 <td th:text="${corpTransferRequest.customerAccountNumber}"></td>
@@ -44,7 +44,7 @@
 
                             </tr>
                         </table>
-                         </div>
+                    </div>
 
                         <form method="post" th:action="@{/corporate/transfer/process}"
                               th:object="${corpTransferRequest}">
@@ -54,7 +54,7 @@
                             <input type="hidden" th:field="*{amount}"/>
                             <input type="hidden" th:field="*{remarks}"/>
 
-                            <div class="form-group text-center">
+                            <div class="form-group">
                                 <!--<label>Token *</label>-->
                                 <!--<input type="text" name="token" placeholder="" class="form-control full-width"/>-->
                                 <br/>
@@ -81,7 +81,7 @@
                         </form>
                    
 
-                    </div>
+            </div>
         </div>
     </div>
 
