@@ -28,6 +28,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -129,7 +130,36 @@ public class CorpTransferController {
         return "redirect:/corporate/dashboard";
     }
 
+    @PostMapping("/dest/accounts")
+    public
+    @ResponseBody
+    List<String> getDestinationAccounts(WebRequest webRequest) {
 
+        String accountId = webRequest.getParameter("acctId");
+
+        logger.info("the account id {}",accountId);
+
+        try {
+            List<String> accountList = new ArrayList<>();
+            Iterable<Account> accounts = accountService.getAccountsForCredit(accountService.getAccountByAccountNumber(accountId).getCustomerId());
+
+            StreamSupport.stream(accounts.spliterator(), true)
+                    .filter(Objects::nonNull)
+                    .filter(i -> !i.getAccountNumber().equalsIgnoreCase(accountId))
+                    .filter(l -> l.getCurrencyCode().equalsIgnoreCase(accountService.getAccountByAccountNumber(accountId).getCurrencyCode()))
+                    .forEach(i -> accountList.add(i.getAccountNumber()))
+            ;
+
+            logger.info("ACCOUNT LIST {}", StreamSupport.stream(accounts.spliterator(),true).count());
+            logger.info("second LIST {}", accountList.size());
+            return accountList;
+
+        } catch (Exception e) {
+            logger.error("transfer error {}",e);
+        }
+
+        return null;
+    }
     @GetMapping("/dest/{accountId}/accounts")
     public
     @ResponseBody
