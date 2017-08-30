@@ -386,7 +386,7 @@ public class CorpTransferServiceImpl implements CorpTransferService {
 
         SettingDTO setting = configService.getSettingByName("RETRY_FAILED_TRANSFER");
 
-        if(setting!=null&&setting.isEnabled()){
+        if(setting!=null&&setting.isEnabled()&&"YES".equalsIgnoreCase(setting.getValue())){
 
             try {
                 transReqEntry.setEntryDate(new Date());
@@ -455,7 +455,7 @@ public class CorpTransferServiceImpl implements CorpTransferService {
         int approvalCount = 0;
 
         SettingDTO transferSetting = configService.getSettingByName("RETRY_FAILED_TRANSFER");
-        if(transferSetting!=null&&transferSetting.isEnabled()) {
+        if(transferSetting!=null&&transferSetting.isEnabled()&&"YES".equalsIgnoreCase(transferSetting.getValue())){
             approvalCount = 1;
         }
 
