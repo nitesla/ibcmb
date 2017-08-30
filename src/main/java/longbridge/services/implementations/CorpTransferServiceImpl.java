@@ -412,7 +412,10 @@ public class CorpTransferServiceImpl implements CorpTransferService {
                 }
                 transferAuth.getAuths().add(transReqEntry);
                 transferAuthRepo.save(transferAuth);
-                return messageSource.getMessage("transfer.auth.success", null, locale);
+                if (transferAuth.getAuths().size() == 1)
+                    return messageSource.getMessage("transfer.add.success", null, locale);
+                else
+                    return messageSource.getMessage("transfer.auth.success", null, locale);
             } catch (InternetBankingTransferException te) {
                 throw te;
             } catch (Exception e) {
@@ -436,7 +439,10 @@ public class CorpTransferServiceImpl implements CorpTransferService {
                         throw new InternetBankingTransferException(requestDTO.getStatusDescription());
                     return requestDTO.getStatusDescription();
                 }
-                return messageSource.getMessage("transfer.auth.success", null, locale);
+                if (transferAuth.getAuths().size() == 1)
+                    return messageSource.getMessage("transfer.add.success", null, locale);
+                else
+                    return messageSource.getMessage("transfer.auth.success", null, locale);
             } catch (InternetBankingTransferException te) {
                 throw te;
             } catch (Exception e) {
