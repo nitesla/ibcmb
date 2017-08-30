@@ -6,6 +6,7 @@ import longbridge.models.UserType;
 import longbridge.repositories.AdminUserRepo;
 import longbridge.security.SessionUtils;
 import longbridge.services.ConfigurationService;
+import longbridge.services.LoggedUserService;
 import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,6 +16,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.DefaultRedirectStrategy;
 import org.springframework.security.web.RedirectStrategy;
 import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
+import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
 
 import javax.servlet.ServletException;
@@ -25,7 +27,7 @@ import javax.transaction.Transactional;
 import java.io.IOException;
 
 @Component("adminAuthenticationSuccessHandler")
-public class AdminAuthenticationSuccessHandler extends SavedRequestAwareAuthenticationSuccessHandler {
+public class AdminAuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
     private final Logger logger = LoggerFactory.getLogger(getClass());
     @Autowired
     SessionUtils sessionUtils;
@@ -36,28 +38,31 @@ public class AdminAuthenticationSuccessHandler extends SavedRequestAwareAuthenti
     private AdminUserRepo adminUserRepo;
 
     @Autowired
+    private LoggedUserService loggedUserService;
+
+    @Autowired
     private ConfigurationService configService;
+
     public AdminAuthenticationSuccessHandler() {
-        setUseReferer(true);
+
     }
 
     @Override
     @Transactional
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws ServletException, IOException {
-        HttpSession session = request.getSession();
+        HttpSession session = request.getSession(false);
 
 
+        sessionUtils.setTimeout(session);
 
-            sessionUtils.setTimeout(session);
+        AdminUser user = adminUserRepo.findFirstByUserName(authentication.getName());
+        LocalDate date = new LocalDate(user.getExpiryDate());
 
-            AdminUser user = adminUserRepo.findFirstByUserName(authentication.getName());
-            LocalDate date = new LocalDate(user.getExpiryDate());
+        if (today.isAfter(date) || today.isEqual(date)) {
+            session.setAttribute("expired-password", "expired-password");
+        }
 
-            if (today.isAfter(date) || today.isEqual(date)) {
-                session.setAttribute("expired-password", "expired-password");
-            }
 
-        setUseReferer(true);
         adminUserRepo.updateUserAfterLogin(authentication.getName());
 
         sessionUtils.sendAlert(user);
@@ -75,13 +80,21 @@ public class AdminAuthenticationSuccessHandler extends SavedRequestAwareAuthenti
             return;
         }
 
+
+        if (loggedUserService.sessionExists(request.getSession().getId())) {
+
+            redirectStrategy.sendRedirect(request, response, "/login/admin");
+        }
+
+
+//        loggedUserService.loginUser(request.getSession().getId());
+
         redirectStrategy.sendRedirect(request, response, targetUrl);
     }
 
 
-       protected String determineTargetUrl(final Authentication authentication) {
+    protected String determineTargetUrl(final Authentication authentication) {
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-
 
         boolean isAdmin = adminUserRepo.findFirstByUserName(userDetails.getUsername()).getUserType().equals(UserType.ADMIN);
         SettingDTO setting = configService.getSettingByName("ENABLE_ADMIN_2FA");
@@ -102,4 +115,11 @@ public class AdminAuthenticationSuccessHandler extends SavedRequestAwareAuthenti
     }
 
 
+    public void setRedirectStrategy(final RedirectStrategy redirectStrategy) {
+        this.redirectStrategy = redirectStrategy;
+    }
+
+    protected RedirectStrategy getRedirectStrategy() {
+        return redirectStrategy;
+    }
 }

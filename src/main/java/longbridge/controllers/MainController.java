@@ -24,6 +24,7 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.security.Principal;
@@ -56,8 +57,8 @@ public class MainController {
     private MailService mailService;
     @Autowired
     private FaqsService faqsService;
-
-
+    @Autowired
+    private LoggedUserService loggedUserService;
 
 
     @RequestMapping(value = {"/", "/home"})
@@ -78,7 +79,7 @@ public class MainController {
         return new ModelAndView("retpage1", "error", error);
     }
 
-    @RequestMapping(value = "/login/corporate",  method = RequestMethod.GET)
+    @RequestMapping(value = "/login/corporate", method = RequestMethod.GET)
     public ModelAndView getCorpLoginPage(@RequestParam Optional<String> error, @RequestParam Optional<HttpServletRequest> request) {
 //        SecurityContextHolder.clearContext();
         if (request.isPresent()) request.get().getSession().invalidate();
@@ -88,17 +89,15 @@ public class MainController {
     }
 
     @GetMapping(value = "/login/admin")
-    public ModelAndView adminLogin() {
-        SecurityContextHolder.clearContext();
+    public ModelAndView adminLogin( /*HttpServletRequest request*/) {
         ModelAndView modelAndView = new ModelAndView();
+
         modelAndView.setViewName("admlogin");
         return modelAndView;
     }
 
     @GetMapping(value = "/login/ops")
-    public ModelAndView opsLogin() {
-        //clearSession();
-        SecurityContextHolder.clearContext();
+    public ModelAndView opsLogin(/*HttpServletRequest request*/) {
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("opslogin");
 
@@ -462,16 +461,16 @@ public class MainController {
     }
 
     private void clearSession() {
-       try{
-           ServletRequestAttributes attr = (ServletRequestAttributes)
-                   RequestContextHolder.currentRequestAttributes();
-           HttpSession session = attr.getRequest().getSession(false);
-           if (session != null)
-               session.invalidate();
+        try {
+            ServletRequestAttributes attr = (ServletRequestAttributes)
+                    RequestContextHolder.currentRequestAttributes();
+            HttpSession session = attr.getRequest().getSession(false);
+            if (session != null)
+                session.invalidate();
 
-       }catch (Exception e ){
-           e.printStackTrace();
-       }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 
@@ -492,7 +491,7 @@ public class MainController {
 //    }
 
     @GetMapping(value = "/invalidate")
-    public String invalidateSession(){
+    public String invalidateSession() {
         System.out.println("hello boss");
         clearSession();
         return "redirect:/";

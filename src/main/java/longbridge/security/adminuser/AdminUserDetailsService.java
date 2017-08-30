@@ -54,7 +54,7 @@ public class AdminUserDetailsService implements UserDetailsService {
             logger.trace("IP -> {} has been blocked", ip);
             throw new RuntimeException("blocked");
         }
-//        sessionUtils.clearSession();
+
         AdminUser user = adminUserRepo.findFirstByUserNameIgnoreCase(s);
         if (user != null) {
             if (failedLoginService.isBlocked(user)) throw new RuntimeException("user_blocked");
@@ -64,8 +64,6 @@ public class AdminUserDetailsService implements UserDetailsService {
                     if (user.getRole().getUserType() != null) {
                         if (user.getRole().getUserType() != UserType.ADMIN) throw new UsernameNotFoundException(s);
                     }
-                    SecurityContextHolder.clearContext();
-                    sessionUtils.clearSession();
                     CustomUserPrincipal userPrincipal = new CustomUserPrincipal(user);
                     userPrincipal.setIpAddress(ip);
                     return userPrincipal;

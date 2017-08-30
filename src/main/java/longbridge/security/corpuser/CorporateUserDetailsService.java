@@ -87,8 +87,7 @@ public class CorporateUserDetailsService implements UserDetailsService {
 
 
                     if ((user.getCorporate().getCorporateId().equalsIgnoreCase(corporate.getCorporateId())) && user.getUserType() == UserType.CORPORATE) {
-//                        SecurityContextHolder.clearContext();
-//                        sessionUtils.clearSession();
+
                         return new CustomUserPrincipal(user);
                     }
                 }

@@ -26,6 +26,10 @@ public class RetailUserLoginInterceptor extends HandlerInterceptorAdapter {
     public boolean preHandle(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Object o) throws Exception {
         String uri = httpServletRequest.getRequestURI();
 
+
+
+
+
         if (httpServletRequest.getSession().getAttribute("expired-password") != null && !(uri.equalsIgnoreCase("/retail/reset_password"))) {
             CustResetPassword resetPassword = new CustResetPassword();
 

@@ -23,7 +23,7 @@ public class CorpTransferAuth extends  AbstractEntity {
     private String status;
     private Date lastEntry;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
     private Set<CorpTransReqEntry> auths = new HashSet<>();
 
     @OneToOne

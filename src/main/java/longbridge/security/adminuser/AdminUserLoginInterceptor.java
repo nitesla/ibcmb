@@ -2,8 +2,14 @@ package longbridge.security.adminuser;
 
 import longbridge.forms.ChangeDefaultPassword;
 import longbridge.forms.ChangePassword;
+import longbridge.models.User;
+import longbridge.models.UserType;
+import longbridge.security.userdetails.CustomUserPrincipal;
 import longbridge.services.PasswordPolicyService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.DispatcherServlet;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -26,6 +32,17 @@ public class AdminUserLoginInterceptor extends HandlerInterceptorAdapter {
     public boolean preHandle(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Object o) throws Exception {
 
         String uri = httpServletRequest.getRequestURI();
+
+
+        if (getCurrentUser()==null) {
+            httpServletResponse.sendRedirect(httpServletRequest.getContextPath() +"/login/admin");
+            return false;
+        }
+
+        if (getCurrentUser()!=null && !UserType.ADMIN.equals(getCurrentUser().getUserType())) {
+            httpServletResponse.sendRedirect(httpServletRequest.getContextPath() +"/login/admin");
+            return false;
+        }
 
 
 
@@ -62,5 +79,16 @@ public class AdminUserLoginInterceptor extends HandlerInterceptorAdapter {
     @Override
     public void afterCompletion(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Object o, Exception e) throws Exception {
 
+    }
+
+
+    private User getCurrentUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (!(authentication instanceof AnonymousAuthenticationToken)) {
+            CustomUserPrincipal currentUser = (CustomUserPrincipal) authentication.getPrincipal();
+            return currentUser.getUser();
+        }
+
+        return null;
     }
 }

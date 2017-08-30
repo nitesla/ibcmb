@@ -127,9 +127,13 @@ public class TransferServiceImpl implements TransferService {
 
     private void validateBalance(TransferRequestDTO transferRequest) throws InternetBankingTransferException {
 
+
         BigDecimal balance = integrationService.getAvailableBalance(transferRequest.getCustomerAccountNumber());
+        System.out.println("it ttried validating>>>>>>>>>>>>>>>> "+balance);
         if (balance != null) {
+
             if (!(balance.compareTo(transferRequest.getAmount()) == 0 || (balance.compareTo(transferRequest.getAmount()) == 1))) {
+                System.out.println("it failed");
                 throw new InternetBankingTransferException(TransferExceptions.BALANCE.toString());
             }
         }
@@ -204,7 +208,9 @@ public class TransferServiceImpl implements TransferService {
     private boolean validateBalance() {
         SettingDTO setting = configService.getSettingByName("ACCOUNT_BALANCE_VALIDATION");
         if (setting != null && setting.isEnabled()) {
-            return ("YES".equals(setting.getValue()) ? true : false);
+
+
+            return ("YES".equals(setting.getValue()));
         }
         return true;
     }

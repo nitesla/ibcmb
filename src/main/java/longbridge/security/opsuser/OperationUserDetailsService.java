@@ -81,8 +81,6 @@ public class OperationUserDetailsService implements UserDetailsService {
                     user.getRole().getUserType() != null
                     && user.getRole().getUserType().equals(UserType.OPERATIONS)
                     ) {
-                sessionUtils.clearSession();
-                SecurityContextHolder.clearContext();
                 return new CustomUserPrincipal(user);
             }
             throw new UsernameNotFoundException(s);
