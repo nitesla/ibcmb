@@ -46,8 +46,7 @@
                                             <label class="col-sm-2 control-label">Corporate ID</label>
 
                                             <div class="col-sm-6">
-                                                <input type="text" id="corpUniqueId" class="form-control"
-                                                       onkeyup="validateCorpId()" onblur="validateCorpId()" on required
+                                                <input type="text" id="corpUniqueId" class="form-control"  required
                                                        th:field="*{corporateId}"
                                                        placeholder="Unique ID for the corporate"/>
                                                 <div id="custError" style="display: none;">
@@ -165,6 +164,15 @@
     $(document).ready(function () {
 
 
+        $("#corpUniqueId").keyup(function () {
+            validateCorpId();
+        });
+
+        $("#corpUniqueId").blur(function () {
+            validateCorpId();
+        });
+
+
         var corpName = [[${corporate.customerName}]];
 
         $("#corporateName").val(corpName);
@@ -219,7 +227,7 @@
                 console.log("error");
                 var msg = "<p style='color:red;'>Error occurred validating Customer ID. Try again later.</p>";
                 $("#custError").html(msg);
-                $("#custError").show();
+
 
             }
         });
@@ -250,7 +258,8 @@
                 console.log("error");
                 var msg = "<p style='color:red;'>Error occurred validating Corporate ID. Try again later.</p>";
                 $("#custError").html(msg);
-                $("#custError").show();
+                //$("#custError").show();
+
 
             }
         });

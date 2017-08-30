@@ -1,5 +1,8 @@
 package longbridge.controllers.admin;
 
+import longbridge.models.User;
+import longbridge.models.UserType;
+import longbridge.security.userdetails.CustomUserPrincipal;
 import longbridge.services.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

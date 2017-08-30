@@ -116,7 +116,7 @@
                                 <textarea th:if="${userCanAuthorize}" class="form-control full-width" th:field="${corpTransReqEntry.comments}" placeholder="Enter comments"></textarea>
 
                                 <div>
-                                    <input type="text" th:if="${userCanAuthorize}" class="form-control full-width" name="token" placeholder="Enter token code" />
+                                    <input type="text" th:if="${userCanAuthorize}" class="form-control full-width" name="token" placeholder="Enter token code" required="required"/>
                                 </div>
                                 <div>
 

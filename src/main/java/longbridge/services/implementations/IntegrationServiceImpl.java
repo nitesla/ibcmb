@@ -81,7 +81,7 @@ public class IntegrationServiceImpl implements IntegrationService {
             // List list= template.getForObject(uri, ArrayList.class,cifid);
 
         } catch (Exception e) {
-            logger.error("Exception occurred {}", e.getMessage());
+            logger.error("Exception occurred ", e);
             return new ArrayList<>();
         }
     }
@@ -93,13 +93,13 @@ public class IntegrationServiceImpl implements IntegrationService {
             String uri = URI + "/forex";
             return Arrays.stream(template.getForObject(uri, ExchangeRate[].class)).collect(Collectors.toList());
         } catch (Exception e) {
-            logger.error("Exception occurred {}", e.getMessage());
+            logger.error("Exception occurred ", e);
             return new ArrayList<>();
         }
     }
 
     @Override
-    public AccountStatement getAccountStatements(String accountNo, Date fromDate, Date toDate, String tranType,String numOfTxn,PaginationDetails paginationDetails) {
+    public AccountStatement getAccountStatements(String accountNo, Date fromDate, Date toDate, String tranType, String numOfTxn, PaginationDetails paginationDetails) {
         AccountStatement statement = new AccountStatement();
         try {
             SimpleDateFormat formatter = new SimpleDateFormat("dd-MMM-yyyy");
@@ -120,14 +120,15 @@ public class IntegrationServiceImpl implements IntegrationService {
 
 
         } catch (Exception e) {
-
+            logger.error("Error occurred",e);
         }
 
 
         return statement;
     }
+
     @Override
-    public AccountStatement getAccountStatements(String accountNo, Date fromDate, Date toDate, String tranType,String numOfTxn) {
+    public AccountStatement getAccountStatements(String accountNo, Date fromDate, Date toDate, String tranType, String numOfTxn) {
         AccountStatement statement = new AccountStatement();
         try {
             SimpleDateFormat formatter = new SimpleDateFormat("dd-MMM-yyyy");
@@ -143,12 +144,12 @@ public class IntegrationServiceImpl implements IntegrationService {
             if (toDate != null) params.put("toDate", formatter.format(toDate));
             params.put("numOfTxn", numOfTxn);
 
-            logger.info("params {}",params);
+            logger.info("params {}", params);
             statement = template.postForObject(uri, params, AccountStatement.class);
 
 
         } catch (Exception e) {
-
+            logger.error("Error occurred",e);
         }
 
 
@@ -175,12 +176,13 @@ public class IntegrationServiceImpl implements IntegrationService {
 
 
         } catch (Exception e) {
-
+            logger.error("Error occurred",e);
         }
 
 
         return statement;
     }
+
     @Override
     public List<TransactionHistory> getLastNTransactions(String accountNo, String numberOfRecords) {
         List<TransactionHistory> histories = new ArrayList<>();
@@ -200,10 +202,7 @@ public class IntegrationServiceImpl implements IntegrationService {
 
 
         } catch (Exception e) {
-       e.printStackTrace();
-        }
-
-
+            logger.error("Error occurred",e);        }
         return histories;
     }
 
@@ -223,7 +222,7 @@ public class IntegrationServiceImpl implements IntegrationService {
         } catch (Exception e) {
             response.put("AvailableBalance", new BigDecimal(0));
             response.put("LedgerBalance", new BigDecimal(0));
-            e.printStackTrace();
+            logger.error("Error occurred",e);
             return response;
         }
     }
@@ -250,23 +249,17 @@ public class IntegrationServiceImpl implements IntegrationService {
 
                 try {
                     response = template.postForObject(uri, params, TransferDetails.class);
-
-
                     transRequest.setStatus(response.getResponseCode());
                     transRequest.setStatusDescription(response.getResponseDescription());
                     transRequest.setReferenceNumber(response.getUniqueReferenceCode());
                     transRequest.setNarration(response.getNarration());
-
-
                     return transRequest;
 
                 } catch (HttpStatusCodeException e) {
-
-                    e.printStackTrace();
+                    logger.error("HTTP Error occurred", e);
                     transRequest.setStatus(e.getStatusCode().toString());
                     transRequest.setStatusDescription(e.getStatusCode().getReasonPhrase());
                     return transRequest;
-
                 }
 
 
@@ -293,16 +286,14 @@ public class IntegrationServiceImpl implements IntegrationService {
                     transRequest.setStatusDescription(response.getResponseDescription());
 
                     return transRequest;
+                } catch (HttpStatusCodeException e) {
+
+                    logger.error("HTTP Error occurred", e);
+                    transRequest.setStatus(e.getStatusCode().toString());
+                    transRequest.setStatusDescription(e.getStatusCode().getReasonPhrase());
+                    return transRequest;
+
                 }
-
-                catch (HttpStatusCodeException e) {
-
-                        e.printStackTrace();
-                        transRequest.setStatus(e.getStatusCode().toString());
-                        transRequest.setStatusDescription(e.getStatusCode().getReasonPhrase());
-                        return transRequest;
-
-                    }
 
             }
             case INTERNATIONAL_TRANSFER: {
@@ -328,9 +319,9 @@ public class IntegrationServiceImpl implements IntegrationService {
                     return transRequest;
 
 
-                }  catch (HttpStatusCodeException e) {
+                } catch (HttpStatusCodeException e) {
 
-                    e.printStackTrace();
+                    logger.error("HTTP Error occurred", e);
                     transRequest.setStatus(e.getStatusCode().toString());
                     transRequest.setStatusDescription(e.getStatusCode().getReasonPhrase());
                     return transRequest;
@@ -395,7 +386,7 @@ public class IntegrationServiceImpl implements IntegrationService {
             result = template.postForObject(uri, params, CustomerDetails.class);
 
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error("Error occurred",e);
         }
 
         return result;
@@ -412,8 +403,7 @@ public class IntegrationServiceImpl implements IntegrationService {
             result = template.getForObject(uri, CustomerDetails.class, params);
             return result;
         } catch (Exception e) {
-            e.printStackTrace();
-        }
+            logger.error("Error occurred",e);        }
 
         return result;
     }
@@ -471,7 +461,7 @@ public class IntegrationServiceImpl implements IntegrationService {
         params.put("transactionChannel", channel);
         try {
             String response = template.postForObject(uri, params, String.class);
-            result =(response);
+            result = (response);
         } catch (Exception e) {
 
             e.printStackTrace();
@@ -535,16 +525,16 @@ public class IntegrationServiceImpl implements IntegrationService {
 
         } catch (Exception e) {
             e.printStackTrace();
-            logger.error(uri,params,e);
+            logger.error(uri, params, e);
 
         }
 
-        return  CompletableFuture.completedFuture(result);
+        return CompletableFuture.completedFuture(result);
     }
 
     @Override
     //@Async
-    public Rate  getFee(String channel) {
+    public Rate getFee(String channel) {
 
         String uri = URI + "/transfer/fee";
         Map<String, String> params = new HashMap<>();
@@ -554,7 +544,7 @@ public class IntegrationServiceImpl implements IntegrationService {
             return details;
         } catch (Exception e) {
 
-            return  new Rate("", "0", "");
+            return new Rate("", "0", "");
         }
 
 
