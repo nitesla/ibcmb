@@ -139,7 +139,7 @@ public class TransferController {
 
         String accountId = webRequest.getParameter("acctId");
 
-        logger.info("the account id {}",accountId);
+logger.info("the account id {}",accountId);
 
         try {
             List<String> accountList = new ArrayList<>();

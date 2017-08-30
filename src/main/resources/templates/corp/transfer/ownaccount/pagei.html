@@ -47,7 +47,7 @@
                                     <div>
                                         <span class="alert no-bd-rad my-border bg-white" id="destCurrency">CCY</span>
                                         <select name="destination" class="form-control" id="destination"
-                                                onchange="getDestCurrency();"
+                                                th:field="*{beneficiaryAccountNumber}"  onchange="getDestCurrency();"
                                                 required="required">
 
                                             <!--<option th:each="s: ${destAccounts}" th:value="${s}" th:text="${s}"></option>-->
