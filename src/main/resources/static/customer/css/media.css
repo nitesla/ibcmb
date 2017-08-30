@@ -1,0 +1,394 @@
+@media screen and (max-width: 420px) and (min-width: 0px) {
+    .carousel-caption {
+        line-height: 12px !important;
+        font-size: 12px !important;
+    }
+    .carousel-caption p {
+        margin-top: 7px;
+        padding: 5px;
+    }
+
+    .home-para {
+      
+        font-size: 15px;
+       
+    }
+}
+
+@media screen and (max-width: 376px) and (min-width: 0px) {
+    .bg {
+        background-image: url('../img/bg-mobile.png');
+    }
+}
+
+
+
+@media screen and (max-width: 991px) and (min-width: 768px) {
+    .my-select form#loginform {
+        width: 60% !important;
+        margin: 0px auto;
+    }
+    .carousel-caption {
+        line-height: 20px !important;
+        font-size: 16px !important;
+    }
+    .footer-mobile {
+        text-align: left !important;
+    }
+    .footer-mobile p {
+        text-align: right !important;
+    }
+
+    .carousel-caption h3 {
+        margin-top: 50%;
+       
+    }
+    .carousel-caption p {
+        margin-top: 7px;
+        padding: 5px;
+    }
+}
+
+@media screen and (max-width: 767px) and (min-width: 0px) {
+    .footer-mobile {
+        text-align: center;
+    }
+    .footer-mobile p {
+        text-align: center;
+    }
+}
+
+@media screen and (max-width: 767px) {
+    .dataTables_wrapper .dataTables_paginate {
+        margin-top: 60px !important;
+        padding-bottom: 30px !important;
+    }
+}
+
+
+@media screen and (max-width: 767px) and (min-width: 620px) {
+
+    .carousel-caption p {
+        margin-top: 15px;
+        padding: 5px;
+    }
+    
+    
+}
+
+@media screen and (max-width: 767px) and (min-width: 0) {
+    .header {
+        min-height: 1px;
+        padding-bottom: 10px;
+    }
+    .inside .icon-bar {
+        background: white !important;
+    }
+    .left-side {
+        padding-left: 0px !important;
+    }
+    .errors_div {
+        position: static !important;
+        margin-top: 5px;
+    }
+    .carousel-caption {
+        position: absolute !important;
+        top: 70% !important;
+        right: 0% !important;
+        bottom: 0% !important;
+        left: 0% !important;
+        z-index: 10 !important;
+        padding: 5px 0 10px 0 !important;
+        color: #fff !important;
+        display: block;
+        background-color: #9F614B !important;
+        opacity: 0.8 !important;
+    }
+    .img {
+        float: none !important;
+        display: block !important;
+        text-align: center !important;
+        margin: 0px auto !important;
+    }
+    .ml-15 {
+        margin-left: 0px !important;
+    }
+    .coronation-form-control {
+        margin-left: 0px !important;
+    }
+    .margin-xs {
+        margin-top: 30px;
+    }
+    .mtop {
+        margin-top: 20px;
+    }
+    .container {
+        padding: 0 19px;
+    }
+    .header .container {
+        padding: 0;
+    }
+    .content-wrapper {
+        /* margin: 0 60px; */
+        min-height: 4px;
+        background: #FFF;
+    }
+    .logo {
+        clear: both;
+        display: block;
+        margin: 0 auto;
+        position: relative;
+        right: 45px;
+        top: -20px;
+        width: 100px;
+    }
+    .logo img {
+        height: 75px;
+    }
+    .top_bar {
+        clear: both;
+        display: block;
+        left: auto;
+        overflow: hidden;
+        padding: 9px 9px 0 9px;
+        position: absolute;
+        top: 0;
+        right: 0;
+    }
+    .top_bar .list_group,
+    .search_bar,
+    .search_bar .icon {
+        display: none;
+    }
+    .header_info {
+        display: none;
+        border: 1px solid blue;
+    }
+    .nav {
+        margin-left: 10px;
+    }
+    .navbar {
+        margin-top: 0;
+        z-index: 10;
+    }
+    .navbar .container-fluid {
+        padding-left: 12px;
+    }
+    .navbar-default .navbar-toggle {
+        border-color: transparent;
+    }
+    .navbar-brand {
+        display: block;
+    }
+    .footer_bar p {
+        text-align: center;
+    }
+    .navbar-nav>li:first-child>a {
+        /* padding-left: 15px; */
+    }
+    .slider {
+        /* height: 230px; */
+        margin: 0 15px 0 15px;
+        overflow: hidden;
+    }
+    .sidebar {
+        display: none;
+    }
+    .spacing {
+        padding: 10px 0px;
+    }
+    .form-spacing {
+        padding: 10px 0px;
+    }
+    .hide-faq {
+        display: none;
+    }
+    .bg {
+        min-height: 300px;
+    }
+    .links {
+        border-bottom: 0px;
+    }
+    .fom-signin {
+        max-width: 330px;
+        margin: 0 auto;
+        text-align: center;
+    }
+    .login-form {
+        position: relative;
+        padding: 100px 0;
+        margin: 30px 0 0 0;
+    }
+    /*.phishing-img{*/
+    /*margin: 0 0 10px 100px;*/
+    /*}*/
+    /* .carousel-caption {
+
+        position: relative;
+        width:100%;
+        bottom: 10%;
+        display: none;
+        z-index: 10;
+        padding: 40px 0 40px 0;
+        color: #fff;
+        background-color: #9F614B;
+        opacity: 0.8;
+        line-height: 20px;
+        text-align: center;
+        font-size: 18px;
+    }*/
+}
+
+@media screen and (max-width: 991px) and (min-width: 768px) {
+    .inside .icon-bar {
+        background: white !important;
+    }
+    .left-side {
+        padding-left: 0px !important;
+    }
+}
+
+@media screen and (min-width: 993px) {
+    .carousel-caption h3 {
+        margin-top: 50% !important;
+    }
+}
+
+@media screen and (max-width: 1200px) and (min-width: 993px) {
+    .logo {
+        right: 120px;
+    }
+    .menu-link {
+        padding: 10px 5px !important;
+        font-size: 13px;
+        font-weight: bold;
+    }
+    .carousel-caption h3 {
+        margin-top: 50% !important;
+    }
+    .bg {
+        min-height: 500px !important;
+    }
+}
+
+
+/*******************************************************************/
+
+@media screen and (min-width: 1200px) {
+    .bg {
+        min-height: 500px !important;
+    }
+
+    .carousel-caption p {
+        margin-top: 7px;
+        padding: 0px 25px;
+    }
+}
+
+@media screen and (max-width: 1199px) and (min-width: 0px) {
+    .current-body {
+        max-height: 383px !important;
+    }
+}
+
+@media screen and (max-width: 388px) and (min-width: 325px) {
+    .my-buttons {
+        padding: 6px 2px !important;
+    }
+}
+
+@media screen and (max-width: 324px) and (min-width: 0px) {
+    .my-buttons {
+        padding: 6px 1px !important;
+    }
+    .footer_bar {
+        text-align: center !important;
+    }
+}
+
+@media screen and (max-width: 992px) and (min-width: 0px) {
+    .mobile-no-left {
+        padding-left: 0px !important;
+    }
+}
+
+@media screen and (max-width: 992px) and (min-width: 760px) {
+    .logo {
+        right: 45px;
+    }
+    
+    .bg {
+        min-height: 500px !important;
+    }
+    .container {
+        padding: 0 45px;
+    }
+    .menu-link {
+        padding: 10px 5px !important;
+        font-size: 12px;
+        font-weight: bold;
+    }
+    .logout {
+        font-size: 12px;
+        padding: 10px 1px !important;
+    }
+    .top_bar {
+        padding-left: 45px;
+    }
+    .slider {
+        height: 100%;
+        margin: 0 15px 0 15px;
+        overflow: hidden;
+    }
+    .login-form {
+        position: relative;
+        padding: 120px;
+        margin: 50px 0 0 0;
+    }
+    /*.phishing-img{*/
+    /*clear: both;*/
+    /*display: block;*/
+    /*position: relative;*/
+    /*z-index: 999;*/
+    /*!*left: -100px;*!*/
+    /*!*right: 45px;*!*/
+    /*!*top: -20px;*!*/
+    /*!*width: 100px;*!*/
+    /*!*margin: 0 0 10px 10px;*!*/
+    /*!*padding: 10px;*!*/
+    /*!*width: 400px;*!*/
+    /*!*height: 400px;*!*/
+    /*}*/
+    .blue-bg {
+        background-color: #003056;
+    }
+    .info-acc {
+        padding: 10px !important;
+        padding-top: 3px !important;
+        background: #ebecef !important;
+    }
+    .sidebar {
+        display: none;
+    }
+    .hide-faq {
+        display: none;
+    }
+    .header_info p {
+        color: #7F8383;
+        font-size: 12px;
+    }
+    .header_info h5 {
+        color: #003056;
+        font-size: 16px;
+        font-weight: 100;
+        padding-bottom: 5px;
+    }
+    .header_info h5>b {
+        color: #003056;
+        font-size: 16px;
+        font-weight: 100;
+    }
+    .break {
+        display: block;
+    }
+}

@@ -125,7 +125,9 @@ public class SecurityConfig {
 
                     // .and().authorizeRequests().and()
 
+
                             access("hasAuthority('" + UserType.ADMIN.toString() + "') and " + ipRange.toString()).and()
+
 
                  // .fullyAuthenticated()
                     // log in
