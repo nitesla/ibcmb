@@ -45,9 +45,9 @@
                                                     <div>
                                                     <span class="alert no-bd-rad my-border bg-white hide-content-only" id="destCurrency">NGN</span>
                                                     <select name="destination" class="form-control" id="destination"
-                                                            th:field="*{beneficiaryAccountNumber}"  onchange="getDestCurrency();"  required="required">
+                                                             onchange="getDestCurrency();"  required="required">
 
-                                                        <option th:each="s: ${destAccounts}" th:value="${s}" th:text="${s}"></option>
+                                                        <!--<option th:each="s: ${destAccounts}" th:value="${s}" th:text="${s}"></option>-->
 
 
                                                     </select><span class='req-inner'></span>
@@ -114,7 +114,7 @@
     /*<![CDATA[*/
 
     $(document).ready(function(){
-        
+        getBeneficiaryAccts();
 
 //       document.getElementById("source").selectedIndex = -1;
     document.getElementById("destination").selectedIndex = -1;
@@ -126,22 +126,31 @@
         getBalance();
         getSourceCurrency();
 
-    })
-
-    $('#source').change(function () {
-        var acctId = $(input['name']).val();
+    });
+function getBeneficiaryAccts() {
+    var acctId = $('#source').val();
+    if(acctId != '') {
         $.ajax({
-            type:'POST',
-            url:"/rest/secAns",
-            data: {acctId:acctId},
-            async:false,
-            cache:false,
-            success:function(data){
-                result = ''+String(data);
-                if(result == "true"){
+            type: 'POST',
+            url: "/retail/transfer/dest/accounts",
+            data: {acctId: acctId},
+            async: false,
+            cache: false,
+            success: function (data) {
+                result = '' + String(data);
+                console.log("details output " + data[0]);
+                console.log("details output " + data.length);
+                if (data != null) {
                     //$('input[name=username]').val(result);
+                    $('#destination').empty();
+                    for (var i = 0; i < data.length; i++) {
+                        $('#destination')
+                                .append($("<option></option>")
+                                        .attr("value", data[i])
+                                        .text(data[i]));
+                    }
 
-                }else{
+                } else {
                     //invalid account number
                     //alert("Account number not found");
                     $('#errorMess').text(result);
@@ -150,6 +159,10 @@
                 }
             }
         });
+    }
+}
+    $('#source').change(function () {
+        getBeneficiaryAccts();
     });
 
 

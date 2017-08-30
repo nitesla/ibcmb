@@ -34,6 +34,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.security.Principal;
 import java.text.DecimalFormat;
 import java.util.*;
+import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 
@@ -138,9 +139,10 @@ public class TransferController {
 
         String accountId = webRequest.getParameter("acctId");
 
-        List<String> accountList = new ArrayList<>();
+logger.info("the account id {}",accountId);
 
         try {
+            List<String> accountList = new ArrayList<>();
             Iterable<Account> accounts = accountService.getAccountsForCredit(accountService.getAccountByAccountNumber(accountId).getCustomerId());
 
             StreamSupport.stream(accounts.spliterator(), true)
@@ -150,14 +152,15 @@ public class TransferController {
                     .forEach(i -> accountList.add(i.getAccountNumber()))
             ;
 
-        } catch (Exception e) {
+            logger.info("ACCOUNT LIST {}", StreamSupport.stream(accounts.spliterator(),true).count());
+            logger.info("second LIST {}", accountList.size());
+            return accountList;
 
+        } catch (Exception e) {
+            logger.error("transfer error {}",e);
         }
 
-
-        return accountList;
-
-
+        return null;
     }
 
 

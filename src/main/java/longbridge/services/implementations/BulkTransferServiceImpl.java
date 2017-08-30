@@ -122,7 +122,7 @@ public class BulkTransferServiceImpl implements BulkTransferService {
             if (userCanAuthorize(transfer)) {
                 CorpTransReqEntry transReqEntry = new CorpTransReqEntry();
                 transReqEntry.setTranReqId(transfer.getId());
-                addAuthorization(transReqEntry);
+                return addAuthorization(transReqEntry);
             }
         } catch (TransferAuthorizationException ex) {
             throw ex;

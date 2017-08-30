@@ -76,4 +76,17 @@ public class CorpTransReqEntry extends AbstractEntity {
     public void setTranReqId(Long tranReqId) {
         this.tranReqId = tranReqId;
     }
+
+
+    @Override
+    public String toString() {
+        return "CorpTransReqEntry{" +super.toString()+
+                "tranReqId=" + tranReqId +
+                ", comments='" + comments + '\'' +
+                ", status='" + status + '\'' +
+                ", role=" + role +
+                ", user=" + user +
+                ", entryDate=" + entryDate +
+                '}';
+    }
 }
