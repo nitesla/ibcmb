@@ -743,7 +743,7 @@ public class UserRegController {
             return e.getMessage();
         }catch (InternetBankingException e){
             logger.error("Error creating retail user", e);
-            //redirectAttributes.addFlashAttribute(messageSource.getMessage("user.add.failure", null, locale));
+
             return e.getMessage();
         }
 
@@ -759,6 +759,13 @@ public class UserRegController {
         if (!accounts.isEmpty()){
             throw new InternetBankingException(messageSource.getMessage("user.reg.exists", null, locale));
         }
+    }
+
+
+    @GetMapping("/rest/redirect/login")
+    public String redirectToLogin(RedirectAttributes redirectAttributes){
+        redirectAttributes.addFlashAttribute("message", messageSource.getMessage("user.reg.success", null, locale));
+        return "redirect:/login/retail";
     }
 
 

@@ -1,289 +1,19 @@
 <!DOCTYPE html>
-<link rel="stylesheet" type="text/css" th:href="@{~/customer/plugins/jquery-steps/css/jquery.steps.css}" />
-<link rel="stylesheet" type="text/css" th:href="@{~/customer/css/jquery-ui.css}" />
-<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{index-layout}">
+<html xmlns:th="http://www.thymeleaf.org">
 
-<div layout:fragment="content">
-        <section class="content-wrapper">
-                <div class="containe">
-                    <!-- Start row-->
-                    <div class="row">
-                        <div class="col-sm-12">
-                            <div class="white-box">
-                                <br/>
-                                <h2 class="header-title"> Self Registration</h2>
-                                <form id="reg-form" action="/register" method="post">
-    
-                                    <div>
-                                        <h3>Account Details</h3>
-                                        <section>
-                                            <div class="row">
-                                                <br/>
-                                                <div class="col-md-offset-4 col-md-4">
-                                                    <div class="form-group clearfix">
-    
-    
-                                                        <label>Account Number</label>
-                                                        <span class='req'></span><input type="text" name="accountNumber" autocomplete="off" class="my-select required" placeholder="Account Number" />
-                                                    </div>
-    
-                                                    <div class="form-group">
-                                                        <label>Select Email or Date of birth</label>
-                                                        <select name="userdet" id="userdet" class="my-select">
-                                                            <option th:value="email">Use Email</option>
-                                                            <option th:value="dob">Use Date of Birth</option>
-                                                        </select>
-                                                    </div>
-    
-                                                    <div id="email" class="form-group clearfix">
-                                                        <label>Email</label>
-                                                        <span class='req'></span><input type="email" name="email" autocomplete="off" class="my-select" placeholder="Email" />
-                                                    </div>
-                                                    <div id="dob" style="display: none;" class="form-group clearfix">
-                                                        <label>Date of Birth</label>
-                                                        <span class='req'></span><input name="birthDate" type="text" class="my-select" data-mask="99-99-9999" placeholder="DD-MM-YYYY" />
-                                                    </div>
-    
-    
-                                                    <p id='loading-icon' style="display:none"><i class='fa fa-spinner fa-spin' style="font-size:10px;color:#003056"></i> Confirming Account details. Please Wait</p>
-    
-    
-    
-                                                </div>
-                                            </div>
-                                        </section>
-                                        <h3>Profile Details</h3>
-                                        <section>
-                                            <div class="row">
-                                                <div class="col-md-offset-4 col-md-4">
-                                                    <br/>
-    
-                                                    <div id='regcodebox' class="form-group clearfix">
-                                                        <label>Please enter the registration code sent to your mobile device</label>
-                                                        <span class='req'></span><input type="number" min="0" id="code" name="regCode" class="col-md-8 my-select required" autocomplete="off" placeholder="Registration Code" />
-                                                        <a id="send" href="javascript:void(0)" onclick="sendRegCode();" data-toggle="tooltip" data-placement="right" title="Resend verification code">Resend Verification Code</a>
-                                                    </div>
-    
-                                                    <div class="form-group clearfix">
-                                                        <label>Username</label>
-                                                        <span class='req'></span><input type="text" name="userName" autocomplete="off" class="my-select required" placeholder="Preferred Username" />
-    
-    
-                                                    </div>
-    
-                                                    <div class="form-group clearfix">
-                                                        <label>Password</label>
-                                                        <span class='req'></span><input onKeyUp="valPassword(this.value)" type="password" id="password" name="password" class="my-select required" placeholder="Password" />
-                                                    </div>
-                                                    <div class="form-group clearfix">
-                                                        <div id="passwordDescription">Password not entered</div>
-                                                        <div id="passwordStrength"></div>
-                                                    </div>
-                                                    <div class="form-group clearfix">
-                                                        <label>Confirm Password</label>
-                                                        <span class='req'></span><input type="password" id="confirm" name="confirm" class="my-select required" placeholder="Confirm Password" />
-                                                    </div>
-    
-    
-                                                    <input id="customerId" name="customerId" type="hidden" />
-                                                </div>
-    
-                                                <div class="col-md-4 password">
-                                                    <br/>
-                                                    <h5 style="font-size: 16px; font-weight: bolder;">Password tips</h5>
-                                                    <ul>
-    
-                                                        <li th:each="rule : ${policies}" th:text="${rule}"></li>
-                                                    </ul>
-    
-                                                </div>
-                                            </div>
-                                        </section>
-                                        <h3>Security Questions</h3>
-                                        <section>
-                                            <div class="row">
-                                                <div class="col-md-offset-4 col-md-4">
-                                                    <br/>
-                                                    <input id="returnValue" type="hidden" />
-                                                    <input id="noOfQuestions" th:name="noOfQuestions" th:value="${noOfQuestions}" type="hidden" />
-                                                    <div th:each="questionList,ind : ${secQuestions}">
-                                                        <div class="form-group clearfix">
-                                                            <label th:text="'Security Question '+${ind.index+1}">Question</label>
-                                                            <select th:name="'securityQuestion'+${ind.index}" th:id="'securityQuestion'+${ind.index}" class="my-select">
-                                                                <option th:each="question : ${questionList}" th:text="${question.code}" th:value="${question.code}"></option>
-                                                            </select>
-                                                        </div>
-                                                        <div class="form-group clearfix">
-                                                            <label>Answer</label>
-                                                            <input type="text" th:name="'securityAnswer'+${ind.index}" class="my-select required" placeholder="Security Answer" />
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </section>
-                                        <h3>Phishing Image</h3>
-                                        <section>
-                                            <div class="row">
-                                                <br/>
-                                                <div class="col-md-offset-3 col-md-6">
-    
-                                                    <div class="form-group">
-                                                        <label>Select Phishing Image</label>
-    
-                                                        <div class="col-md-12" style="max-height: 250px; max-width: 450px;overflow: scroll;">
-                                                            <div class="col-md-3" th:each="image : ${images}" style="position: relative; max-height: 100px;">
-                                                                <img th:src="${imagePath} + ${image}" width="100px" height="100px" style="padding: 5px;" />
-                                                                <input type="radio" name="phishing" th:value="${image}" id="check1" style="position: absolute; bottom: 20px; right: 20px;" />
-                                                            </div>
-                                                        </div>
-                                                        <input id="imgPaths" th:value="${imagePath}" style="display: none;" />
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-offset-4 col-md-4">
-                                                    <input type="text" name="caption" class="my-select required" placeholder="Enter Image Caption" />
-                                                </div>
-                                            </div>
-                                        </section>
-                                        <h3>Summary</h3>
-                                        <section>
-                                            <br/>
-                                            <div class="row">
-                                                <div class="col-md-offset-3 col-md-6">
-                                                    <div id="regSummary">
-                                                    </div>
-                                                    <!--<b>Self Registration Summary</b>-->
-                                                    <!--<p>Below are a summary of details entered to be used for registration</p>-->
-                                                    <!--<p>Email address : <span id="email"></span></p>-->
-                                                    <!--<p>Username : <span id="username"></span></p>-->
-                                                    <!--<p>Password : <span id="password">****</span></p>-->
-                                                    <!--<p>Security Questions</p>-->
-                                                    <!--<p>Phishing Images : <span></span></p>-->
-                                                </div>
-                                            </div>
-                                        </section>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- End row-->
-                </div>
-            </section>
-    
+<head>
+    <!-- BEGIN PAGE LEVEL STYLES -->
+    <link rel="stylesheet" type="text/css" th:href="@{~/customer/plugins/jquery-steps/css/jquery.steps.css}" />
+    <link rel="stylesheet" type="text/css" th:href="@{~/customer/css/jquery-ui.css}" />
+    <link rel="stylesheet" type="text/css" th:href="@{~/customer/font-awesome/font-awesome.min.css}" />
+    <link rel="stylesheet" type="text/css" th:href="@{~/customer/css/bootstrap.css}" />
+    <link rel="stylesheet" type="text/css" th:href="@{~/customer/css/custom.css}" />
+    <link rel="shortcut icon" th:href="@{~/customer/img/favicon.ico}" type="image/x-icon">
+    <link rel="icon" th:href="@{~/customer/img/favico.ico}" type="image/x-icon">
 
-
-
-    <div id="myLoader" class="modal fade " role="dialog">
-        <div class="modal-dialog">
-
-            <!-- Modal content-->
-
-            <div class=" no-bd-rad no-bd content text-center " style=" background: transparent !important;">
-                <div class="bg-white center" style="width:40%">
-                    <img class="img-responsive block center  loader-img" style='padding:7px;' th:src="@{~/customer/img/loader.png}" alt="Coronation Merchant Bank" />
-                    <div id='loading-icon' class=' bg-white text-center'><i class='fa fa-spinner block center fa-spin' style="font-size:18px;color:#003056"></i> Loading. Please Wait</div>
-                </div>
-            </div>
-
-        </div>
-    </div>
-
-</div>
-
-
-
-
-<th:block layout:fragment="scripts">
-    
-    <script th:src="@{~/customer/js/jquery.validate.min.js}"></script>
-    <script th:src="@{~/customer/js/jquery-ui.js}"></script>
-    <script th:src="@{~/customer/plugins/jquery-steps/js/jquery.steps.min.js}" type="text/javascript"></script>
-    <script th:src="@{~/customer/js/jasny-bootstrap.min.js}"></script>
-    <script th:src="@{~/customer/js/passwordStrength.js}" th:inline="javascript" type="text/javascript"></script>
-    <script th:src="@{~/customer/js/register.js}" type="text/javascript"></script>
-
-    <script th:src="@{~/customer/js/errors.js}"></script>
-
-
-
-
-
-    <script>
-
-          /*<![CDATA[*/
-          var m_noOfDigits = [[${passwordStrength.numOfdigits}]];
-        var m_strCharacters = [[${passwordStrength.specialChars}]];
-        var minLength = [[${passwordStrength.minLength}]];
-        var noOfSpecChar = [[${passwordStrength.numOfSpecChar}]];
-
-
-
-
-
-function valPassword(strPassword) {
-            runPassword(strPassword, minLength, m_noOfDigits, m_strCharacters, noOfSpecChar)
-        }
-
-        $(document).ready(function() {
-            console.log("ready!");
-
-
-            $('input').on("focus", function() {
-                if ($(this).siblings('label.error')) {
-
-                    $(this).siblings('label.error').addClass('hidden');
-
-                }
-
-                if ($(this).hasClass('error')) {
-                    $(this).siblings('label.error').removeClass('hidden');
-                }
-
-
-            });
-
-
-        });
-
-    
-    $('#userdet').on('change', function() {
-            if ($(this).val() === "email") {
-                $("#email").show();
-                $("#dob").hide();
-            } else if ($(this).val() === "dob") {
-                $("#dob").show();
-                $("#email").hide();
-            }
-        });
-
-
-        $('#password').bind("cut copy paste", function(e) {
-            e.preventDefault();
-        });
-        $('#password').bind("cut copy paste", function(e) {
-            e.preventDefault();
-        });
-        $('#confirm').bind("cut copy paste", function(e) {
-            e.preventDefault();
-        });
-     /*]]>*/
-    </script>
-
-    
-
-</th:block>
-
-</html>
-
-
-
-
-
-
-
-
-
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Test</title>
+</head>
 
 <body>
     <div class="container">
@@ -350,12 +80,239 @@ function valPassword(strPassword) {
         </div>
 
 
-        
-        
+        <section class="content-wrapper">
+            <div class="containe">
+                <!-- Start row-->
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="white-box">
+                            <br/>
+                            <h2 class="header-title"> Self Registration</h2>
+                            <form id="reg-form" action="/register" method="post">
 
-      
+                                <div>
+                                    <h3>Account Details</h3>
+                                    <section>
+                                        <div class="row">
+                                            <br/>
+                                            <div class="col-md-offset-4 col-md-4">
+                                                <div class="form-group clearfix">
 
-        
+
+                                                    <label>Account Number</label>
+                                                    <span class='req'></span><input type="text" name="accountNumber" autocomplete="off" class="my-select required" placeholder="Account Number" />
+                                                </div>
+
+                                                <div class="form-group">
+                                                    <label>Select Email or Date of birth</label>
+                                                    <select name="userdet" id="userdet" class="my-select">
+                                                        <option value="email">Use Email</option>
+                                                        <option value="dob">Use Date of Birth</option>
+                                                    </select>
+                                                </div>
+
+                                                <div id="email" class="form-group clearfix">
+                                                    <label>Email</label>
+                                                    <span class='req'></span><input type="email" name="email" autocomplete="off" class="my-select" placeholder="Email" />
+                                                </div>
+                                                <div id="dob" style="display: none;" class="form-group clearfix">
+                                                    <label>Date of Birth</label>
+                                                    <span class='req'></span><input name="birthDate" type="text" class="my-select" data-mask="99-99-9999" placeholder="DD-MM-YYYY" />
+                                                </div>
+
+
+                                                <p id='loading-icon' style="display:none"><i class='fa fa-spinner fa-spin' style="font-size:10px;color:#003056"></i> Confirming Account details. Please Wait</p>
+
+
+
+                                            </div>
+                                        </div>
+                                    </section>
+                                    <h3>Profile Details</h3>
+                                    <section>
+                                        <div class="row">
+                                            <div class="col-md-offset-4 col-md-4">
+                                                <br/>
+
+                                                <div id='regcodebox' class="form-group clearfix">
+                                                    <label>Please enter the registration code sent to your mobile device</label>
+                                                    <span class='req'></span><input type="number" min="0" id="code" name="regCode" class="col-md-8 my-select required" autocomplete="off" placeholder="Registration Code" />
+                                                    <a id="send" href="javascript:void(0)" onclick="sendRegCode();" data-toggle="tooltip" data-placement="right" title="Resend verification code">Resend Verification Code</a>
+                                                </div>
+
+                                                <div class="form-group clearfix">
+                                                    <label>Username</label>
+                                                    <span class='req'></span><input type="text" name="userName" autocomplete="off" class="my-select required" placeholder="Preferred Username" />
+
+
+                                                </div>
+
+                                                <div class="form-group clearfix">
+                                                    <label>Password</label>
+                                                    <span class='req'></span><input onKeyUp="valPassword(this.value)" type="password" id="password" name="password" class="my-select required" placeholder="Password" />
+                                                </div>
+                                                <div class="form-group clearfix">
+                                                    <div id="passwordDescription">Password not entered</div>
+                                                    <div id="passwordStrength"></div>
+                                                </div>
+                                                <div class="form-group clearfix">
+                                                    <label>Confirm Password</label>
+                                                    <span class='req'></span><input type="password" id="confirm" name="confirm" class="my-select required" placeholder="Confirm Password" />
+                                                </div>
+
+
+                                                <input id="customerId" name="customerId" type="hidden" />
+                                            </div>
+
+                                            <div class="col-md-4 password">
+                                                <br/>
+                                                <h5 style="font-size: 16px; font-weight: bolder;">Password tips</h5>
+                                                <ul>
+
+                                                    <li th:each="rule : ${policies}" th:text="${rule}"></li>
+                                                </ul>
+
+                                            </div>
+                                        </div>
+                                    </section>
+                                    <h3>Security Questions</h3>
+                                    <section>
+                                        <div class="row">
+                                            <div class="col-md-offset-4 col-md-4">
+                                                <br/>
+                                                <input id="returnValue" type="hidden" />
+                                                <input id="noOfQuestions" th:name="noOfQuestions" th:value="${noOfQuestions}" type="hidden" />
+                                                <div th:each="questionList,ind : ${secQuestions}">
+                                                    <div class="form-group clearfix">
+                                                        <label th:text="'Security Question '+${ind.index+1}">Question</label>
+                                                        <select th:name="'securityQuestion'+${ind.index}" th:id="'securityQuestion'+${ind.index}" class="my-select">
+                                                            <option th:each="question : ${questionList}" th:text="${question.code}" th:value="${question.code}"></option>
+                                                        </select>
+                                                    </div>
+                                                    <div class="form-group clearfix">
+                                                        <label>Answer</label>
+                                                        <input type="text" th:name="'securityAnswer'+${ind.index}" class="my-select required" placeholder="Security Answer" />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </section>
+                                    <h3>Phishing Image</h3>
+                                    <section>
+                                        <div class="row">
+                                            <br/>
+                                            <div class="col-md-offset-3 col-md-6">
+
+                                                <div class="form-group">
+                                                    <label>Select Phishing Image</label>
+
+                                                    <div class="col-md-12" style="max-height: 250px; max-width: 450px;overflow: scroll;">
+                                                        <div class="col-md-3" th:each="image : ${images}" style="position: relative; max-height: 100px;">
+                                                            <img th:src="${imagePath} + ${image}" width="100px" height="100px" style="padding: 5px;" />
+                                                            <input type="radio" name="phishing" th:value="${image}" id="check1" style="position: absolute; bottom: 20px; right: 20px;" />
+                                                        </div>
+                                                    </div>
+                                                    <input id="imgPaths" th:value="${imagePath}" style="display: none;" />
+                                                </div>
+                                            </div>
+                                            <div class="col-md-offset-4 col-md-4">
+                                                <input type="text" name="caption" class="my-select required" placeholder="Enter Image Caption" />
+                                            </div>
+                                        </div>
+                                    </section>
+                                    <h3>Summary</h3>
+                                    <section>
+                                        <br/>
+                                        <div class="row">
+                                            <div class="col-md-offset-3 col-md-6">
+                                                <div id="regSummary">
+                                                </div>
+                                                <!--<b>Self Registration Summary</b>-->
+                                                <!--<p>Below are a summary of details entered to be used for registration</p>-->
+                                                <!--<p>Email address : <span id="email"></span></p>-->
+                                                <!--<p>Username : <span id="username"></span></p>-->
+                                                <!--<p>Password : <span id="password">****</span></p>-->
+                                                <!--<p>Security Questions</p>-->
+                                                <!--<p>Phishing Images : <span></span></p>-->
+                                            </div>
+                                        </div>
+                                    </section>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <!-- End row-->
+            </div>
+        </section>
+
+        <div id="myModalError" class="modal fade " role="dialog">
+            <div class="modal-dialog">
+
+                <!-- Modal content-->
+                <div class="modal-content no-bd-rad content ">
+                    <div class="modal-body">
+                        <p id='errorMess' class='mess text-danger'>Put something here iff need be.</p>
+                    </div>
+                    <div class="modal-footer no-bd-top">
+                        <button type="button" class="btn btn-link" data-dismiss="modal">OK</button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+
+        <div id="myModalSuccess" class="modal fade " role="dialog">
+            <div class="modal-dialog">
+
+                <!-- Modal content-->
+                <div class="modal-content no-bd-rad content ">
+                    <div class="modal-body">
+                        <p id='successMess' class='mess text-primary'>Put something here iff need be.</p>
+                    </div>
+                    <div class="modal-footer no-bd-top">
+                        <button type="button" class="btn btn-link" data-dismiss="modal">OK</button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+
+        <div id="myLoader" class="modal fade " role="dialog">
+            <div class="modal-dialog">
+
+                <!-- Modal content-->
+
+                <div class=" no-bd-rad no-bd content text-center " style=" background: transparent !important;">
+                    <div class="bg-white center" style="width:40%">
+                        <img class="img-responsive block center  loader-img" style='padding:7px;' th:src="@{~/customer/img/loader.png}" alt="Coronation Merchant Bank" />
+                        <div id='loading-icon bg-white text-center'><i class='fa fa-spinner block center fa-spin' style="font-size:18px;color:#003056"></i> Loading. Please Wait</div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <footer>
+            <div class="containe">
+                <div class="footer_bar">
+                    <div class="col-md-6 col-xs-12">
+                        <ul class="list_group">
+                            <li><a href="#" target="_blank">Privacy policy</a></li>
+                            <li><a href="#" target="_blank">Disclaimer</a></li>
+                            <li><a href="#" target="_blank">Terms &amp; Conditions</a></li>
+                        </ul>
+
+                    </div>
+                    <div class="col-md-6 col-xs-12">
+                        <p> &copy; 2017 - All rights reserved</p>
+                    </div>
+
+                </div>
+            </div>
+        </footer>
 
 
     </div>
@@ -363,8 +320,79 @@ function valPassword(strPassword) {
 
 
 
-    
-   
+    <!-- CORE JQUERY SCRIPTS -->
+    <script th:src="@{~/customer/js/jquery-1.11.1.js}"></script>
+    <!-- BOOTSTRAP SCRIPTS  -->
+    <script th:src="@{~/customer/js/bootstrap.js}"></script>
+
+    <script th:src="@{~/customer/js/jquery.validate.min.js}"></script>
+    <script th:src="@{~/customer/js/jquery-ui.js}"></script>
+    <script th:src="@{~/customer/plugins/jquery-steps/js/jquery.steps.min.js}" type="text/javascript"></script>
+    <script th:src="@{~/customer/js/jasny-bootstrap.min.js}"></script>
+    <script th:src="@{~/customer/js/passwordStrength.js}" th:inline="javascript" type="text/javascript"></script>
+    <script th:src="@{~/customer/js/register.js}" type="text/javascript"></script>
+    <script th:src="@{~/customer/plugins/bootstrap-notify/bootstrap-notify.js}"></script>
+    <script th:src="@{~/customer/js/errors.js}"></script>
+
+    <script th:inline="javascript" type="text/javascript">
+        /*<![CDATA[*/
+        var m_noOfDigits = [[${passwordStrength.numOfdigits}]];
+        var m_strCharacters = [[${passwordStrength.specialChars}]];
+        var minLength = [[${passwordStrength.minLength}]];
+        var noOfSpecChar = [[${passwordStrength.numOfSpecChar}]];
+
+        function valPassword(strPassword) {
+            runPassword(strPassword, minLength, m_noOfDigits, m_strCharacters, noOfSpecChar)
+        }
+
+        $(document).ready(function() {
+            console.log("ready!");
+
+
+            $('input').on("focus", function() {
+                if ($(this).siblings('label.error')) {
+
+                    $(this).siblings('label.error').addClass('hidden');
+
+                }
+
+                if ($(this).hasClass('error')) {
+                    $(this).siblings('label.error').removeClass('hidden');
+                }
+
+
+            });
+
+
+        });
+
+
+
+
+        $('#userdet').on('change', function() {
+            console.log("change");
+            if ($(this).val() === "email") {
+                $("#email").show();
+                $("#dob").hide();
+            } else if ($(this).val() === "dob") {
+                $("#dob").show();
+                $("#email").hide();
+            }
+        });
+
+
+        $('#password').bind("cut copy paste", function(e) {
+            e.preventDefault();
+        });
+        $('#password').bind("cut copy paste", function(e) {
+            e.preventDefault();
+        });
+        $('#confirm').bind("cut copy paste", function(e) {
+            e.preventDefault();
+        });
+
+        /*]]>*/
+    </script>
 </body>
 
 </html>

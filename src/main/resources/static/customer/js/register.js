@@ -112,7 +112,8 @@ form.children("div").steps({
     onFinished: function (event, currentIndex)
     {
 //            alert("Submitted!");
-        window.location.href = "/login/retail";
+        //window.location.href = "/login/retail";
+        return redirectUser();
     }
 });
 function getSummary() {
@@ -444,5 +445,9 @@ function registerUser(){
     returnValue = $('#returnValue').val();
     //alert(returnValue);
     return Boolean(returnValue);
+}
+
+function redirectUser() {
+    window.location.href = '/rest/redirect/login';
 }
 
