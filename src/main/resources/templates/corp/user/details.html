@@ -38,6 +38,37 @@
                         </tbody>
                     </table>
 
+
+                <div>
+                    <input  th:hidden="hidden" th:field="${verify.version}"/>
+                    <input  th:hidden="hidden" th:field="${verify.id}"/>
+                </div>
+
+                <br/>
+                <label for="comments" class="col-sm-2">Comments</label>
+                <div th:unless="${status}">
+                    <p  th:text="${verify.comments}"></p>
+                </div>
+                <div th:if="${isAuthorizer}"class="form-group" >
+                    <div th:if="${status}"  class="col-sm-6">
+                        <textarea  th:field="${verify.comments}" class="form-control" id="comments"></textarea>
+                        <p class="errors" th:if="${#fields.hasErrors('comments')}" th:errors="*{comments}">&times;</p>
+                    </div>
+                </div>
+
+                <div th:if="${isAuthorizer}">
+                    <div th:if="${status}">
+                        <div class="form-group">
+                            <button type="submit" name="approve"  value="true" class="btn btn-link required-step my-buttons">
+                                Approve
+                            </button>
+
+                            <button type="submit" name="approve" value="false" class="btn btn-link less-required my-buttons">
+                                Decline
+                            </button>
+                        </div>
+                    </div>
+                </div>
             </form>
         </div>
     </div>

@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{ret-layout}">
 
-<body onload="javascript:var bread = [['Home', '/retail/dashboard'],['successful transfer','']];currentBar('Sucessful transfer');breadCrumb(bread)">
+<body onload="javascript:var bread = [['Home', '/retail/dashboard'],['transfer summary','']];currentBar('Sucessful transfer');breadCrumb(bread)">
 
 <div>
 
@@ -24,7 +24,7 @@
                
                         <table class="table table-hover center text-center">
                             <tbody class="tab">
-                             <tr>
+                             <tr class="top-row">
 
                                 <th>Source account</th>
                                 <td th:text="${transRequest.customerAccountNumber}"></td>
