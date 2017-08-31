@@ -16,6 +16,7 @@
                     <div th:if="${param.message != null}" class="alert erro alert-info" th:text="${param.message[0]}"></div>
                     <div th:if="${param.error != null}" class="alert erro alert-danger" th:text="${session[SPRING_SECURITY_LAST_EXCEPTION]}"></div>
                     <div th:if="${param.expired != null}" class="alert erro alert-danger" th:text="#{session.expired}"></div>
+                    <div th:if="${message}" class="alert display-none alert-info" th:text="${message}"></div>
                     <br/>
                     <div class="form-group ">
                         <span id='reqspan' class='required text-white' style='top:1px;'></span>
