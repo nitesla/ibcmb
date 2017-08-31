@@ -1,7 +1,6 @@
 package longbridge.controllers.retail;
 
 import longbridge.dtos.NotificationsDTO;
-import longbridge.dtos.SettingDTO;
 import longbridge.models.Account;
 import longbridge.models.RetailUser;
 import longbridge.models.SRConfig;
@@ -72,7 +71,7 @@ public class RetailControllerAdvice {
 
         RetailUser user = retailUserService.getUserByName(principal.getName());
         String bvn = "";
-        if (user.getBvn() == null|| user.getBvn().isEmpty()) {
+        if (null == user.getBvn()) {
             bvn = "Not available";
         } else {
             bvn = user.getBvn();
