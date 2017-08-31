@@ -63,6 +63,12 @@
         margin-top: 60px !important;
         padding-bottom: 10px !important;
     }
+
+    
+    .wizard > .steps a, .wizard > .steps a:hover, .wizard > .steps a:active {
+       
+        font-size: 8px !important;
+    }
 }
 
 
