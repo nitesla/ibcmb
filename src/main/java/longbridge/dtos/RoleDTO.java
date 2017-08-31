@@ -16,6 +16,7 @@ public class RoleDTO{
     private Long id;
     @NotEmpty(message = "name")
     private String name;
+    @NotEmpty(message = "description")
     private String description;
     private String email;
     private int version;
