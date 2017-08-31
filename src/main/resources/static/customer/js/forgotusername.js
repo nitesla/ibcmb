@@ -29,6 +29,10 @@ function validateAccountNo(accountNumber){
                 //alert("Customer Id: " + customerId);
                 $('input[name=customerId]').val(customerId);
             }
+        },error:function (data) {
+            $('#myLoader').modal('hide');
+            $('#errorMess').text("Service not available, please try again later");
+            $('#myModalError').modal('show');
         }
     });
 
@@ -69,6 +73,10 @@ function validateAccountNo(accountNumber){
                     // console.log('security questn ' +$('#noOfSecQn').val());
                      $('#myLoader').modal('hide');
                 }
+            },error:function (data) {
+                $('#myLoader').modal('hide');
+                $('#errorMess').text("Service not available, please try again later");
+                $('#myModalError').modal('show');
             }
         })
     }
@@ -110,6 +118,10 @@ function validateSecAnswer(secAnswer){
                  $('#myLoader').modal('hide');
                 $('#myModalError').modal('show');
             }
+        },error:function (data) {
+            $('#myLoader').modal('hide');
+            $('#errorMess').text("Service not available, please try again later");
+            $('#myModalError').modal('show');
         }
     });
 
@@ -150,6 +162,10 @@ function sendUsername(){
                     $('#returnValue').val(returnValue);
                     returnValue= false;
                 }
+            },error:function (data) {
+                $('#myLoader').modal('hide');
+                $('#errorMess').text("Service not available, please try again later");
+                $('#myModalError').modal('show');
             }
         });
     });

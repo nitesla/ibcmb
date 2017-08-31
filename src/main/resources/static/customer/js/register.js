@@ -200,6 +200,10 @@ function validateAccountDetails(accountNumber, email, birthDate){
             // }else{
             //     $('input[name=customerId]').val(customerId);
             // }
+        },error:function (data) {
+            $('#myLoader').modal('hide');
+            $('#errorMess').text("Service not available, please try again later");
+            $('#myModalError').modal('show');
         }
     });
 
@@ -243,6 +247,10 @@ function validateExists(accountNumber, email, birthDate){
                 $('input[name=customerId]').val(cif);
                 // sendRegCode();
             }
+        },error:function (data) {
+            $('#myLoader').modal('hide');
+            $('#errorMess').text("Service not available, please try again later");
+            $('#myModalError').modal('show');
         }
     });
 
@@ -278,6 +286,10 @@ function validateUsername(username){
                 //valid account number
                 //alert("user name: " + result);
             }
+        },error:function (data) {
+            $('#myLoader').modal('hide');
+            $('#errorMess').text("Service not available, please try again later");
+            $('#myModalError').modal('show');
         }
     });
 
@@ -311,6 +323,10 @@ function validatePassword(password){
                 $('#myModalError').modal('show');
                 $('#myLoader').modal('hide');
             }
+        },error:function (data) {
+            $('#myLoader').modal('hide');
+            $('#errorMess').text("Service not available, please try again later");
+            $('#myModalError').modal('show');
         }
     });
 
@@ -344,6 +360,10 @@ function validateRegCode(code){
                 //valid account number
                 //alert("password: " + result);
             }
+        },error:function (data) {
+            $('#myLoader').modal('hide');
+            $('#errorMess').text("Service not available, please try again later");
+            $('#myModalError').modal('show');
         }
     });
 
@@ -400,6 +420,10 @@ function sendRegCode(){
                 //alert("code sent: " + result);
                 //console.log(result);
             }
+        },error:function (data) {
+            $('#myLoader').modal('hide');
+            $('#errorMess').text("Service not available, please try again later");
+            $('#myModalError').modal('show');
         }
     });
 }
@@ -437,6 +461,10 @@ function registerUser(){
                     $('#errorMess').text(data);
                     $('#myModalError').modal('show');
                 }
+            },error:function (data) {
+                $('#myLoader').modal('hide');
+                $('#errorMess').text("Service not available, please try again later");
+                $('#myModalError').modal('show');
             }
         });
     });
