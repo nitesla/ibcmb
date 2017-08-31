@@ -56,7 +56,7 @@
                     <br/>
 
                     <div class="col-xs-12 no-pad-right no-pad-left table-responsive">
-                        <table id="mytab" class="table table-striped table-bordered  table-hover" cellspacing="0">
+                        <table id="mytab" class="table table-bordered  table-hover" cellspacing="0">
                             <thead>
                                 <th>Account Number</th>
                                 <th>Beneficiary Name</th>
@@ -99,10 +99,9 @@
 
 
     <th:block layout:fragment="scripts">
-        <script th:src="@{~/customer/js/dataTables.bootstrap.js}"></script>
+
         <script th:src="@{~/bank/vendors/sweetalert/sweetalert.min.js}"></script>
-        <script th:src="@{~/bank/vendors/bootstrap-dialog/js/bootstrap-dialog.js}"></script>
-        <script th:src="@{~/bank/js/jquery.spring-friendly.min.js}"></script>
+
 
         <script th:inline="javascript">
             /*<![CDATA[*/
@@ -118,7 +117,7 @@
                         [5, 10, 20]
                     ],
                     "pagingType": "input",
-                    "searching": true,
+                    "searching": false,
                     "paging": true,
                     "serverSide": false,
                     "ajax": "/corporate/transfer/all",
