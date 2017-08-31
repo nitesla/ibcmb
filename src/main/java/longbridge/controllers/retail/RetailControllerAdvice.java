@@ -1,6 +1,7 @@
 package longbridge.controllers.retail;
 
 import longbridge.dtos.NotificationsDTO;
+import longbridge.dtos.SettingDTO;
 import longbridge.models.Account;
 import longbridge.models.RetailUser;
 import longbridge.models.SRConfig;
@@ -65,13 +66,13 @@ public class RetailControllerAdvice {
     public String globalAttributes(Model model, Principal principal) {
         String greeting = "";
 
-        if (principal.getName() == null) {
+        if (principal == null) {
             return "redirect:/login/retail";
         }
 
         RetailUser user = retailUserService.getUserByName(principal.getName());
         String bvn = "";
-        if (null == user.getBvn()) {
+        if (user.getBvn()==null) {
             bvn = "Not available";
         } else {
             bvn = user.getBvn();

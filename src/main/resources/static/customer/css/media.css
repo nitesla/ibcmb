@@ -61,7 +61,7 @@
 @media screen and (max-width: 767px) {
     .dataTables_wrapper .dataTables_paginate {
         margin-top: 60px !important;
-        padding-bottom: 30px !important;
+        padding-bottom: 10px !important;
     }
 }
 
@@ -391,4 +391,12 @@
     .break {
         display: block;
     }
+}
+
+@media screen and (max-width: 767px)
+{
+.table-responsive {
+   
+    border:none !important;
+}
 }

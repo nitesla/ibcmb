@@ -13,17 +13,17 @@
     </div>
 
     <div class="col-xs-12 " >
-        <div class="no-pad-left no-mt  alert no-bd">
+        <div class=" no-mt  alert no-bd">
            <form method="post" th:action="@{/retail/account/viewstatement/display}">
 
                <div class="col-md">
                    <br/>
-                   <div class="form-group col-md-12 col-sm-12">
+                   <div class="form-group col-md-12 col-sm-12 no-pad-left no-pad-right">
                        <div class="form-group col-md-6 col-sm-6">
                            <label>Date Range</label>
                            <div class="input-daterange input-group" id="date-range">
                                <input type="text" data-date-format="dd-mm-yyyy" class="form-control datepicker" id="start" name="fromDate" placeholder="Start date" required="required" />
-                               <span class="input-group-addon no-border">to</span>
+                               <span class="input-group-addon no-border no-bd" style="bacground:transparent !important">to</span>
                                <input type="text"  data-date-format="dd-mm-yyyy" class="form-control datepicker" name="toDate" id="endDate" placeholder="End date" required="required" />
                            <!--<span id="emptyDateError"   class="error">Start and end date is mandatory</span>-->
                            </div>
@@ -38,7 +38,7 @@
                            </select>
                        </div>
                    </div>
-                   <div class="form-group col-md-12 col-sm-12">
+                   <div class="form-group col-md-12 col-sm-12 no-pad-left no-pad-right">
                        <div class="form-group col-md-6 col-sm-6">
                            <label>Account Number</label>
                            <span class="req"></span>
@@ -62,7 +62,7 @@
 
                    <h2>TRANSACTION DETAILS</h2>
 
-                   <div class="" >
+                   <div class="table-responsive" >
                        <table class="table" id="tranDetails">
                            <thead>
                            <tr>
@@ -330,7 +330,7 @@
 //        $('#tranDetails_paginate').hide();
 //        $('#tranDetails_length').hide();
         $("#btn-find").on("click", function(e) {
-            console.log("fromDate "+$('[name=fromDate]').val()+"to "+$('[name=toDate]').val());
+//            console.log("fromDate "+$('[name=fromDate]').val()+"to "+$('[name=toDate]').val());
 //            console.log("dateDifference "+dateDifference(parseDate($('#start').val()), parseDate($('#endDate').val())));
 if($('#start').val() != '' && $('#endDate').val() !='' ) {
 //    $('#emptyDateError').hide();
@@ -377,7 +377,8 @@ if($('#start').val() != '' && $('#endDate').val() !='' ) {
 //                        console.log("error")
                 var contactsTab2 = $('#tranDetails').DataTable();
                 var row  = contactsTab2.rows().remove().draw();
-
+                $('#next').hide();
+                $('#previous').hide();
                 bootbox.alert("<div style='text-align: center'>Service not available</div>");
                 return false;
             }
@@ -418,6 +419,18 @@ if($('#start').val() != '' && $('#endDate').val() !='' ) {
         return mdy;
     }
     function dateDifference(first, second) {
+//        console.log("date 1"+new Date(first));
+//        var dateP = first[1]+"/"+first[0]+"/"+first[2]
+//        var dateA = second[1]+"/"+second[0]+"/"+second[2]
+//        var testDate1 = new Date(dateP);
+//        var testDate2 = new Date(dateA);
+//        console.log("date 2"+new Date(second));
+//        var timeDiff = Math.abs(testDate2.getTime() - testDate1.getTime());
+//        console.log("date time"+timeDiff);
+//
+//        var diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24));
+//        console.log("day diff"+diffDays);
+
         var yearsDiff = second[2]-first[2];
         var monthDiff = second[1]-first[1];
         var dayDiff = second[0]-first[0];
@@ -478,10 +491,16 @@ function nextData() {
             }
             $('#previous').show();
         },
-        error:  function (dd) {
-            console.log("error")
-        }
+        error: function (dd) {
+//                        console.log("error")
+            var contactsTab2 = $('#tranDetails').DataTable();
+            var row  = contactsTab2.rows().remove().draw();
+            $('#next').hide();
+            $('#previous').hide();
 
+            bootbox.alert("<div style='text-align: center'>Service not available</div>");
+            return false;
+        }
     });
 }
     function previousData() {
@@ -522,8 +541,14 @@ function nextData() {
 
 
         },
-        error:  function (dd) {
-            console.log("error")
+        error: function (dd) {
+//                        console.log("error")
+            var contactsTab2 = $('#tranDetails').DataTable();
+            var row  = contactsTab2.rows().remove().draw();
+            $('#next').hide();
+            $('#previous').hide();
+            bootbox.alert("<div style='text-align: center'>Service not available</div>");
+            return false;
         }
 
     });

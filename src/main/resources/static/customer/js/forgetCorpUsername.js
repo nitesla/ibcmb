@@ -41,6 +41,10 @@ function validateAccountNo(corporateId,email){
                 //alert("Customer Id: " + customerId);
                 // $('input[name=customerId]').val(customerId);
             }
+        },error:function (data) {
+            $('#myLoader').modal('hide');
+            $('#errorMess').text("Service not available, please try again later");
+            $('#myModalError').modal('show');
         }
     });
 
@@ -60,7 +64,7 @@ var fetchQuestion = "";
                 secQues = ''+String(data2);
                 // console.log("sec question ",secQues);
                 if(data2 == null || data2 ==''){
-                    document.getElementById("errorMess").textContent="Could not get Security Question from server, please try again.";
+                    document.getElementById("errorMess").textContent="Could not get Security Question from server, please try again later.";
                     $('#myModalError').modal('show');
 
                 }else{
@@ -81,6 +85,10 @@ var fetchQuestion = "";
                     }
                     $('input[name=noOfSecQn]').val(data2.length);
                 }
+            },error:function (data) {
+                $('#myLoader').modal('hide');
+                $('#errorMess').text("Service not available, please try again later");
+                $('#myModalError').modal('show');
             }
         })
     }
@@ -122,6 +130,10 @@ function validateSecAnswer(secAnswer){
                 document.getElementById("errorMess").textContent=data1;
                 $('#myModalError').modal('show');
             }
+        },error:function (data) {
+            $('#myLoader').modal('hide');
+            $('#errorMess').text("Service not available, please try again later");
+            $('#myModalError').modal('show');
         }
     });
 
@@ -158,11 +170,15 @@ function sendUsername(){
                     $('#returnValue').val(returnValue);
                     returnValue = true;
                 }else {
-                    document.getElementById("errorMess").textContent="Failed to send username, please try again later.";
+                    document.getElementById("errorMess").textContent="Failed to send username, please try again later later.";
                     $('#myModalError').modal('show');
                     $('#returnValue').val(returnValue);
                     returnValue= false;
                 }
+            },error:function (data) {
+                $('#myLoader').modal('hide');
+                $('#errorMess').text("Service not available, please try again later");
+                $('#myModalError').modal('show');
             }
         });
     });
