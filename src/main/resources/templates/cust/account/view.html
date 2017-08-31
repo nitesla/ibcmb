@@ -418,6 +418,18 @@ if($('#start').val() != '' && $('#endDate').val() !='' ) {
         return mdy;
     }
     function dateDifference(first, second) {
+//        console.log("date 1"+new Date(first));
+//        var dateP = first[1]+"/"+first[0]+"/"+first[2]
+//        var dateA = second[1]+"/"+second[0]+"/"+second[2]
+//        var testDate1 = new Date(dateP);
+//        var testDate2 = new Date(dateA);
+//        console.log("date 2"+new Date(second));
+//        var timeDiff = Math.abs(testDate2.getTime() - testDate1.getTime());
+//        console.log("date time"+timeDiff);
+//
+//        var diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24));
+//        console.log("day diff"+diffDays);
+
         var yearsDiff = second[2]-first[2];
         var monthDiff = second[1]-first[1];
         var dayDiff = second[0]-first[0];
