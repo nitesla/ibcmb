@@ -772,7 +772,7 @@ public class AccountController {
 			modelMap.put("today", today);
 			modelMap.put("imagePath", imagePath);
 //			ModelAndView modelAndView = new ModelAndView(view, modelMap);
-			ModelAndView modelAndView = new ModelAndView("rpt_account-statement4", modelMap);
+			ModelAndView modelAndView = new ModelAndView("rpt_account-statement3", modelMap);
 			return modelAndView;
 		} catch (ParseException e) {
 			logger.warn("didn't parse date", e);
