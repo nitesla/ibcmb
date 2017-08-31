@@ -412,10 +412,7 @@ public class CorpTransferServiceImpl implements CorpTransferService {
                 }
                 transferAuth.getAuths().add(transReqEntry);
                 transferAuthRepo.save(transferAuth);
-                if (transferAuth.getAuths().size() == 1)
-                    return messageSource.getMessage("transfer.add.success", null, locale);
-                else
-                    return messageSource.getMessage("transfer.auth.success", null, locale);
+                return messageSource.getMessage("transfer.auth.success", null, locale);
             } catch (InternetBankingTransferException te) {
                 throw te;
             } catch (Exception e) {
@@ -435,14 +432,12 @@ public class CorpTransferServiceImpl implements CorpTransferService {
                     transferAuth.setLastEntry(new Date());
                     transferAuthRepo.save(transferAuth);
                     CorpTransferRequestDTO requestDTO = makeTransfer(convertEntityToDTO(corpTransRequest));
-                    if (!"00".equals(requestDTO.getStatus()) || !"000".equals(requestDTO.getStatus())) //successful failed
+                    if ("00".equals(requestDTO.getStatus()) || "000".equals(requestDTO.getStatus()))  //successful failed
+                        return requestDTO.getStatusDescription();
+                    else
                         throw new InternetBankingTransferException(requestDTO.getStatusDescription());
-                    return requestDTO.getStatusDescription();
                 }
-                if (transferAuth.getAuths().size() == 1)
-                    return messageSource.getMessage("transfer.add.success", null, locale);
-                else
-                    return messageSource.getMessage("transfer.auth.success", null, locale);
+                return messageSource.getMessage("transfer.auth.success", null, locale);
             } catch (InternetBankingTransferException te) {
                 throw te;
             } catch (Exception e) {
