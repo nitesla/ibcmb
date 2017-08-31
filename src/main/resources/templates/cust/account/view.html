@@ -330,7 +330,7 @@
 //        $('#tranDetails_paginate').hide();
 //        $('#tranDetails_length').hide();
         $("#btn-find").on("click", function(e) {
-            console.log("fromDate "+$('[name=fromDate]').val()+"to "+$('[name=toDate]').val());
+//            console.log("fromDate "+$('[name=fromDate]').val()+"to "+$('[name=toDate]').val());
 //            console.log("dateDifference "+dateDifference(parseDate($('#start').val()), parseDate($('#endDate').val())));
 if($('#start').val() != '' && $('#endDate').val() !='' ) {
 //    $('#emptyDateError').hide();
@@ -377,7 +377,8 @@ if($('#start').val() != '' && $('#endDate').val() !='' ) {
 //                        console.log("error")
                 var contactsTab2 = $('#tranDetails').DataTable();
                 var row  = contactsTab2.rows().remove().draw();
-
+                $('#next').hide();
+                $('#previous').hide();
                 bootbox.alert("<div style='text-align: center'>Service not available</div>");
                 return false;
             }
@@ -490,10 +491,16 @@ function nextData() {
             }
             $('#previous').show();
         },
-        error:  function (dd) {
-            console.log("error")
-        }
+        error: function (dd) {
+//                        console.log("error")
+            var contactsTab2 = $('#tranDetails').DataTable();
+            var row  = contactsTab2.rows().remove().draw();
+            $('#next').hide();
+            $('#previous').hide();
 
+            bootbox.alert("<div style='text-align: center'>Service not available</div>");
+            return false;
+        }
     });
 }
     function previousData() {
@@ -534,8 +541,14 @@ function nextData() {
 
 
         },
-        error:  function (dd) {
-            console.log("error")
+        error: function (dd) {
+//                        console.log("error")
+            var contactsTab2 = $('#tranDetails').DataTable();
+            var row  = contactsTab2.rows().remove().draw();
+            $('#next').hide();
+            $('#previous').hide();
+            bootbox.alert("<div style='text-align: center'>Service not available</div>");
+            return false;
         }
 
     });
