@@ -265,12 +265,22 @@ public class CorpTransferController {
             CorpTransferRequestDTO corpTransferRequestDTO = (CorpTransferRequestDTO) request.getSession().getAttribute("corpTransferRequest");
             String corporateId = "" + corporateUserService.getUserByName(principal.getName()).getCorporate().getId();
             corpTransferRequestDTO.setCorporateId(corporateId);
-            String response = transferService.addTransferRequest(corpTransferRequestDTO);
+            Object object = transferService.addTransferRequest(corpTransferRequestDTO);
 
+            if(object instanceof CorpTransferRequestDTO){
 
-            model.addAttribute("transRequest", corpTransferRequestDTO);
-            logger.info("transRequest {}", corpTransferRequestDTO);
-            model.addAttribute("message", response);
+                corpTransferRequestDTO = (CorpTransferRequestDTO)object;
+
+                logger.info("transRequest {}", corpTransferRequestDTO);
+                model.addAttribute("transRequest", corpTransferRequestDTO);
+                model.addAttribute("message", corpTransferRequestDTO.getStatusDescription());
+
+            }
+
+            else if (object instanceof String){
+                model.addAttribute("message", object);
+            }
+
 
             return "corp/transfer/transferdetails";
 

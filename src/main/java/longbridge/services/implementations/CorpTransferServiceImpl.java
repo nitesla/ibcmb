@@ -20,7 +20,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.*;
@@ -42,8 +41,6 @@ public class CorpTransferServiceImpl implements CorpTransferService {
     private Logger logger = LoggerFactory.getLogger(this.getClass());
     private Locale locale = LocaleContextHolder.getLocale();
 
-    @Autowired
-    private TransferService transferService;
     @Autowired
     private CorpTransferAuthRepo transferAuthRepo;
 
@@ -74,14 +71,19 @@ public class CorpTransferServiceImpl implements CorpTransferService {
 
 
     @Override
-    public String addTransferRequest(CorpTransferRequestDTO transferRequestDTO) throws InternetBankingException {
+    public Object addTransferRequest(CorpTransferRequestDTO transferRequestDTO) throws InternetBankingException {
 
         CorpTransRequest transferRequest = convertDTOToEntity(transferRequestDTO);
 
 
         if ("SOLE".equals(transferRequest.getCorporate().getCorporateType())) {
             CorpTransferRequestDTO requestDTO = makeTransfer(transferRequestDTO);
-            return requestDTO.getStatusDescription();
+            if ("00".equals(requestDTO.getStatus()) || "000".equals(requestDTO.getStatus())) { // Transfer successful
+                return requestDTO;
+            } else {
+                throw new InternetBankingTransferException(requestDTO.getStatusDescription());
+            }
+
         }
 
         if (corporateService.getApplicableTransferRule(transferRequest) == null) {
@@ -343,13 +345,12 @@ public class CorpTransferServiceImpl implements CorpTransferService {
         CorporateUser corporateUser = getCurrentUser();
         CorpTransRule transferRule = corporateService.getApplicableTransferRule(transRequest);
 
-        if (transferRule == null) {
-            return false;
-        }
-        List<CorporateRole> roles = getExistingRoles(transferRule.getRoles());
-        for (CorporateRole corporateRole : roles) {
-            if (corpRoleRepo.countInRole(corporateRole, corporateUser) > 0) {
-                return true;
+        if (transferRule != null) {
+            List<CorporateRole> roles = getExistingRoles(transferRule.getRoles());
+            for (CorporateRole corporateRole : roles) {
+                if (corpRoleRepo.countInRole(corporateRole, corporateUser) > 0) {
+                    return true;
+                }
             }
         }
         return false;
@@ -452,16 +453,20 @@ public class CorpTransferServiceImpl implements CorpTransferService {
         Set<CorpTransReqEntry> transReqEntries = transferAuth.getAuths();
         CorpTransRule corpTransRule = corporateService.getApplicableTransferRule(transRequest);
         List<CorporateRole> roles = getExistingRoles(corpTransRule.getRoles());
-        boolean any = false;
+        boolean anyCanAuthorize = false;
         int approvalCount = 0;
 
         SettingDTO transferSetting = configService.getSettingByName("RETRY_FAILED_TRANSFER");
-        if (transferSetting != null && transferSetting.isEnabled() && "YES".equalsIgnoreCase(transferSetting.getValue())) {
+
+        boolean retryTransfer = transferSetting != null && transferSetting.isEnabled() && "YES".equalsIgnoreCase(transferSetting.getValue());
+
+
+        if (retryTransfer) {
             approvalCount = 1;
         }
 
         if (corpTransRule.isAnyCanAuthorize()) {
-            any = true;
+            anyCanAuthorize = true;
         }
 
         int numAuthorizers = 0;
@@ -475,13 +480,13 @@ public class CorpTransferServiceImpl implements CorpTransferService {
             for (CorpTransReqEntry corpTransReqEntry : transReqEntries) {
                 if (corpTransReqEntry.getRole().equals(role)) {
                     approvalCount++;
-                    if (any && (approvalCount >= numAuthorizers)) return true;
+                    if (anyCanAuthorize && (approvalCount >= numAuthorizers)) return true;
                 }
             }
         }
 
-        if (transferSetting != null && transferSetting.isEnabled()) {
-            if (any && (approvalCount >= numAuthorizers)) return true;
+        if (retryTransfer) {
+            if (anyCanAuthorize && (approvalCount >= numAuthorizers)) return true;
         }
 
         return approvalCount >= roles.size();
