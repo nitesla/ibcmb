@@ -254,7 +254,7 @@ public class CorpNAPSTransferController {
         List<String> accountList = new ArrayList<>();
         if (user != null) {
 
-            Iterable<Account> accountNumbers = accountService.getAccountsForDebit(user.getCorporate().getCustomerId());
+            Iterable<Account> accountNumbers = accountService.getAccountsForDebit(user.getCorporate().getAccounts());
 
             StreamSupport.stream(accountNumbers.spliterator(), false)
                     .filter(Objects::nonNull)

@@ -205,13 +205,16 @@ public class RetailUserServiceImpl implements RetailUserService {
 
             retailUser.setPassword(passwordEncoder.encode(user.getPassword()));
             retailUser.setExpiryDate(passwordPolicyService.getPasswordExpiryDate());
-            passwordPolicyService.saveRetailPassword(retailUser);
-            retailUserRepo.save(retailUser);
+
+
 
             Collection<AccountInfo> accounts = integrationService.fetchAccounts(details.getCifId());
             for (AccountInfo acct : accounts) {
                 accountService.AddFIAccount(details.getCifId(), acct);
             }
+
+            passwordPolicyService.saveRetailPassword(retailUser);
+            retailUserRepo.save(retailUser);
 
             logger.info("Retail user {} created", user.getUserName());
             return messageSource.getMessage("user.add.success", null, locale);
