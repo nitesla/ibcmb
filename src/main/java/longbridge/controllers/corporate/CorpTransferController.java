@@ -449,7 +449,7 @@ public class CorpTransferController {
             Corporate corporate = corporateUser.getCorporate();
             TransRequest transRequest = transferService.getTransfer(id);
 
-            logger.info("Trans Request {}", transRequest);
+//            logger.info("Trans Request {}", transRequest);
             JasperReportsPdfView view = new JasperReportsPdfView();
             view.setUrl("classpath:jasperreports/rpt_tran-hist.jrxml");
             view.setApplicationContext(appContext);
@@ -462,7 +462,11 @@ public class CorpTransferController {
             modelMap.put("amount", formatter.format(amount));
             modelMap.put("customer", corporate.getName());
             modelMap.put("customerAcctNumber", transRequest.getCustomerAccountNumber());
-            modelMap.put("remarks", transRequest.getRemarks());
+            if(transRequest.getRemarks() != null) {
+                modelMap.put("remarks", transRequest.getRemarks());
+            }else{
+                modelMap.put("remarks", "");
+            }
             modelMap.put("beneficiary", transRequest.getBeneficiaryAccountName());
             modelMap.put("beneficiaryAcctNumber", transRequest.getBeneficiaryAccountNumber());
             modelMap.put("beneficiaryBank", transRequest.getFinancialInstitution().getInstitutionName());

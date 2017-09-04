@@ -685,7 +685,7 @@ public class AccountController {
 				if(session.getAttribute("acctStmtEntirePastDetails"+stateValue) != null) {
 					session.removeAttribute("retAcctStmtStateValue");
 					session.setAttribute("retAcctStmtStateValue", stateValue);
-					logger.info("the state value back {}",stateValue);
+//					logger.info("the state value back {}",stateValue);
 					list = (List<TransactionDetails>) session.getAttribute("acctStmtEntirePastDetails"+stateValue);
 					session.removeAttribute("acctStmtLastDetails");
 					session.setAttribute("acctStmtLastDetails", list.get(list.size() - 1));

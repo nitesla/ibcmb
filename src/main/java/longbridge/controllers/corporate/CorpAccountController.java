@@ -247,7 +247,11 @@ catch(InternetBankingException e){
             modelMap.put("datasource", new ArrayList<>());
             modelMap.put("amount", formatter.format(amount));
             modelMap.put("sender",corporateUser.getFirstName()+" "+corporateUser.getLastName() );
-            modelMap.put("remarks", transactionHistory.getNarration());
+            if(transactionHistory.getNarration() != null) {
+                modelMap.put("remarks", transactionHistory.getNarration());
+            }else {
+                modelMap.put("remarks","");
+            }
             modelMap.put("recipientBank", "");
             modelMap.put("refNUm", transactionHistory.getTranType());
             modelMap.put("date",transactionHistory.getValueDate());
