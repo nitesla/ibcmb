@@ -164,6 +164,10 @@ public class CorporateUserServiceImpl implements CorporateUserService {
                 corporateUser.setCorpUserType(CorpUserType.ADMIN);
 
             }
+            else if(corporateUser.getCorpUserType().equals(CorpUserType.ADMIN)){
+                corporateUser.setCorpUserType(CorpUserType.INITIATOR);
+            }
+
             if (user.getRoleId() != null) {
                 Role role = roleRepo.findOne(Long.parseLong(user.getRoleId()));
                 corporateUser.setRole(role);

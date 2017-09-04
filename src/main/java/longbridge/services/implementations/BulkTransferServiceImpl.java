@@ -223,6 +223,7 @@ public class BulkTransferServiceImpl implements BulkTransferService {
         //Date dt = bulkTransfer.getTranDate();
         bulkTransferDTO.setTranDate(bulkTransfer.getTranDate());
         bulkTransferDTO.setStatus(bulkTransfer.getStatus());
+        bulkTransferDTO.setStatusDescription(bulkTransfer.getStatusDescription());
         return bulkTransferDTO;
     }
 

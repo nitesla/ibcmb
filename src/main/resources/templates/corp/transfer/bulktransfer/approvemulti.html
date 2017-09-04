@@ -126,7 +126,7 @@
                                     <button class="btn btn-link required-step" th:if="${userCanAuthorize}" type="submit">
                                                     Approve
                                                 </button>
-                                    <button id="cancel" class="btn btn-link less-required" type="reset">Decline</button>
+                                    <button id="cancel" class="btn btn-link less-required" type="reset">Back</button>
                                 </div>
                             </form>
 
@@ -277,6 +277,11 @@
             });
 
             //});
+
+
+            document.getElementById("cancel").onclick = function () {
+                location.href = "/corporate/transfer/bulk";
+            }
 
             /*]]>*/
         </script>
