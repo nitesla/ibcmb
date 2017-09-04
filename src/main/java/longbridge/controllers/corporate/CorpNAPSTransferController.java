@@ -4,10 +4,7 @@ import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import longbridge.dtos.BulkStatusDTO;
-import longbridge.dtos.BulkTransferDTO;
-import longbridge.dtos.CreditRequestDTO;
-import longbridge.dtos.FinancialInstitutionDTO;
+import longbridge.dtos.*;
 import longbridge.exception.InternetBankingException;
 import longbridge.exception.InternetBankingSecurityException;
 import longbridge.exception.TransferRuleException;
@@ -69,6 +66,8 @@ public class CorpNAPSTransferController {
     private BulkTransferService bulkTransferService;
     private SecurityService securityService;
     private FinancialInstitutionService financialInstitutionService;
+    @Autowired
+    private ConfigurationService configService;
 
     @Autowired
     public CorpNAPSTransferController(AccountService accountService, CorporateUserService corporateUserService,
@@ -158,23 +157,29 @@ public class CorpNAPSTransferController {
 
         CorporateUser user  = corporateUserService.getUserByName(principal.getName());
 
-        if (tokenCode != null && !tokenCode.isEmpty()) {
-            try {
-                boolean result = securityService.performTokenValidation(user.getEntrustId(), user.getEntrustGroup(), tokenCode);
-                if (!result) {
+
+        SettingDTO setting = configService.getSettingByName("ENABLE_CORPORATE_2FA");
+
+        if(setting!=null&&setting.isEnabled()) {
+
+            if (tokenCode != null && !tokenCode.isEmpty()) {
+                try {
+                    boolean result = securityService.performTokenValidation(user.getEntrustId(), user.getEntrustGroup(), tokenCode);
+                    if (!result) {
+                        logger.error("Error authenticating token");
+                        redirectAttributes.addFlashAttribute("failure", messageSource.getMessage("token.auth.failure", null, locale));
+                        return "redirect:/corporate/transfer/" + corpTransReqEntry.getTranReqId() + "/view";
+                    }
+                } catch (InternetBankingSecurityException se) {
                     logger.error("Error authenticating token");
-                    redirectAttributes.addFlashAttribute("failure", messageSource.getMessage("token.auth.failure", null, locale));
+                    redirectAttributes.addFlashAttribute("failure", se.getMessage());
                     return "redirect:/corporate/transfer/" + corpTransReqEntry.getTranReqId() + "/view";
                 }
-            } catch (InternetBankingSecurityException se) {
-                logger.error("Error authenticating token");
-                redirectAttributes.addFlashAttribute("failure", se.getMessage());
+            } else {
+                redirectAttributes.addFlashAttribute("failure", "Token code is required");
                 return "redirect:/corporate/transfer/" + corpTransReqEntry.getTranReqId() + "/view";
-            }
-        } else {
-            redirectAttributes.addFlashAttribute("failure", "Token code is required");
-            return "redirect:/corporate/transfer/" + corpTransReqEntry.getTranReqId() + "/view";
 
+            }
         }
 
 
@@ -418,18 +423,23 @@ public class CorpNAPSTransferController {
             CorporateUser user = corporateUserService.getUserByName(principal.getName());
             Corporate corporate = user.getCorporate();
 
-            try {
-                boolean result = securityService.performTokenValidation(user.getEntrustId(), user.getEntrustGroup(), tokenCode);
-                if (!result) {
+            SettingDTO setting = configService.getSettingByName("ENABLE_CORPORATE_2FA");
+
+            if(setting!=null&&setting.isEnabled()) {
+
+                try {
+                    boolean result = securityService.performTokenValidation(user.getEntrustId(), user.getEntrustGroup(), tokenCode);
+                    if (!result) {
+                        model.addAttribute("accounts", accountList);
+                        model.addAttribute("failure", messageSource.getMessage("token.auth.failure", null, locale));
+                        return "corp/transfer/bulktransfer/add";
+                    }
+                } catch (InternetBankingSecurityException ibe) {
+                    logger.error("Error authenticating token {} ", ibe);
                     model.addAttribute("accounts", accountList);
                     model.addAttribute("failure", messageSource.getMessage("token.auth.failure", null, locale));
                     return "corp/transfer/bulktransfer/add";
                 }
-            } catch (InternetBankingSecurityException ibe) {
-                logger.error("Error authenticating token {} ", ibe);
-                model.addAttribute("accounts", accountList);
-                model.addAttribute("failure", messageSource.getMessage("token.auth.failure", null, locale));
-                return "corp/transfer/bulktransfer/add";
             }
 
             DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");

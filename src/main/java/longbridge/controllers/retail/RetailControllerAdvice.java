@@ -72,7 +72,7 @@ public class RetailControllerAdvice {
 
         RetailUser user = retailUserService.getUserByName(principal.getName());
         String bvn = "";
-        if (user.getBvn()==null) {
+        if (user!=null && user.getBvn()==null) {
             bvn = "Not available";
         } else {
             bvn = user.getBvn();

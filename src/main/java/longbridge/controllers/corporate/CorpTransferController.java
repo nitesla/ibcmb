@@ -3,6 +3,7 @@ package longbridge.controllers.corporate;
 
 import longbridge.dtos.CorpLocalBeneficiaryDTO;
 import longbridge.dtos.CorpTransferRequestDTO;
+import longbridge.dtos.SettingDTO;
 import longbridge.dtos.TransferRequestDTO;
 import longbridge.exception.*;
 import longbridge.models.*;
@@ -66,7 +67,6 @@ public class CorpTransferController {
     private FinancialInstitutionService financialInstitutionService;
     private TransferErrorService transferErrorService;
     private SecurityService securityService;
-
     private TransferUtils transferUtils;
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -75,6 +75,10 @@ public class CorpTransferController {
     private MessageSource messageSource;
     @Autowired
     private CorpTransferService corpTransferService;
+
+    @Autowired
+    private ConfigurationService configService;
+
 
     @Autowired
     private ApplicationContext appContext;
@@ -274,15 +278,17 @@ public class CorpTransferController {
                 logger.info("transRequest {}", corpTransferRequestDTO);
                 model.addAttribute("transRequest", corpTransferRequestDTO);
                 model.addAttribute("message", corpTransferRequestDTO.getStatusDescription());
-
             }
 
             else if (object instanceof String){
-                model.addAttribute("message", object);
+                redirectAttributes.addFlashAttribute("message", object);
+                return "redirect:/corporate/transfer/requests";
+
             }
 
-
             return "corp/transfer/transferdetails";
+
+
 
         } catch (TransferAuthorizationException ae) {
             logger.error("Error initiating a transfer ", ae);
@@ -383,23 +389,27 @@ public class CorpTransferController {
 
         CorporateUser user = corporateUserService.getUserByName(principal.getName());
 
-        if (tokenCode != null && !tokenCode.isEmpty()) {
-            try {
-                boolean result = securityService.performTokenValidation(user.getEntrustId(), user.getEntrustGroup(), tokenCode);
-                if (!result) {
+        SettingDTO setting = configService.getSettingByName("ENABLE_CORPORATE_2FA");
+
+        if(setting!=null&&setting.isEnabled()) {
+            if (tokenCode != null && !tokenCode.isEmpty()) {
+                try {
+                    boolean result = securityService.performTokenValidation(user.getEntrustId(), user.getEntrustGroup(), tokenCode);
+                    if (!result) {
+                        logger.error("Error authenticating token");
+                        redirectAttributes.addFlashAttribute("failure", messageSource.getMessage("token.auth.failure", null, locale));
+                        return "redirect:/corporate/transfer/" + corpTransReqEntry.getTranReqId() + "/authorizations";
+                    }
+                } catch (InternetBankingSecurityException se) {
                     logger.error("Error authenticating token");
-                    redirectAttributes.addFlashAttribute("failure", messageSource.getMessage("token.auth.failure", null, locale));
+                    redirectAttributes.addFlashAttribute("failure", se.getMessage());
                     return "redirect:/corporate/transfer/" + corpTransReqEntry.getTranReqId() + "/authorizations";
                 }
-            } catch (InternetBankingSecurityException se) {
-                logger.error("Error authenticating token");
-                redirectAttributes.addFlashAttribute("failure", se.getMessage());
+            } else {
+                redirectAttributes.addFlashAttribute("failure", "Token code is required");
                 return "redirect:/corporate/transfer/" + corpTransReqEntry.getTranReqId() + "/authorizations";
-            }
-        } else {
-            redirectAttributes.addFlashAttribute("failure", "Token code is required");
-            return "redirect:/corporate/transfer/" + corpTransReqEntry.getTranReqId() + "/authorizations";
 
+            }
         }
 
         try {
