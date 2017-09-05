@@ -125,16 +125,16 @@ function getSummary() {
     var container = document.getElementById("regSummary");
 //console.log("phishing "+phishing);
     container.innerHTML = "";
-    container.innerHTML += "<p><h1>Self Registration Summary</h1></p> <br/>";
-    container.innerHTML += "<p>Below are a summary of details entered to be used for registration</p>";
-    container.innerHTML += "<p>Email address: "+summaryEmail+"</p>";
+    container.innerHTML += "<p><h1>Self-Registration Summary</h1></p> <br/>";
+    container.innerHTML += "<p>Please find below a summary of the details you have entered for your registration</p>";
+    container.innerHTML += "<p>Email Address: "+summaryEmail+"</p>";
     container.innerHTML += "<p>Username: "+summaryUsername+"</p>";
     container.innerHTML += "<p>Password: **********</p>";
     for (i = 0; i < noOfQuestions; i++) {
-        container.innerHTML += "<p>Security Question: "+i+1+"  "+$('#securityQuestion'+i).val()+"</p>";
+        container.innerHTML += "<p>Security Question: "+(i+1)+"  "+$('#securityQuestion'+i).val()+"</p>";
     }
     var imgP = imgPath+phishing;
-    container.innerHTML += "<p>Phishing Image: <img src='"+imgP +"' width='100px' height='100px' style='padding: 5px;'/></p>";
+    container.innerHTML += "<p>Phishing Image: <br/><img src='"+imgP +"' width='100px' height='100px' style='padding: 5px;'/></p>";
     // container.innerHTML +="<table>" +
     //         "<tbody>" +
     //         "<tr><td>Email address:</td><td>"+summaryEmail+"</td></tr>"+
