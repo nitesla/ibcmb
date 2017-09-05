@@ -12,6 +12,8 @@ import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.mail.javamail.MimeMessagePreparator;
 import org.springframework.stereotype.Service;
 
+import javax.mail.internet.MimeMessage;
+
 @Service
 public class MailServiceImpl implements MailService {
 
@@ -30,7 +32,7 @@ public class MailServiceImpl implements MailService {
 
     @Override
     public void send(String recipient, String subject, String message) throws MailException {
-        MimeMessagePreparator messagePreparator = mimeMessage -> {
+        MimeMessagePreparator messagePreparator = (MimeMessage mimeMessage) -> {
             MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage);
             messageHelper.setFrom(sender);
             messageHelper.setTo(recipient);
@@ -41,7 +43,7 @@ public class MailServiceImpl implements MailService {
         logger.info("Trying to send mail to {}", recipient);
 
         mailSender.send(messagePreparator);
-        logger.info("Email successfully sent to {}", recipient);
+        logger.info("Email successfully sent to {} with subject {}", recipient,subject);
     }
 
     @Override
@@ -61,6 +63,6 @@ public class MailServiceImpl implements MailService {
 
         mailSender.send(messagePreparator);
 
-        logger.info("Email successfully sent to {}", email.getReceiverEmail());
+        logger.info("Email successfully sent to {} with subject {}", email.getReceiverEmail(),email.getMessageSubject());
     }
 }

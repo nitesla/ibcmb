@@ -685,7 +685,7 @@ public class AccountController {
 				if(session.getAttribute("acctStmtEntirePastDetails"+stateValue) != null) {
 					session.removeAttribute("retAcctStmtStateValue");
 					session.setAttribute("retAcctStmtStateValue", stateValue);
-					logger.info("the state value back {}",stateValue);
+//					logger.info("the state value back {}",stateValue);
 					list = (List<TransactionDetails>) session.getAttribute("acctStmtEntirePastDetails"+stateValue);
 					session.removeAttribute("acctStmtLastDetails");
 					session.setAttribute("acctStmtLastDetails", list.get(list.size() - 1));
@@ -772,7 +772,7 @@ public class AccountController {
 			modelMap.put("today", today);
 			modelMap.put("imagePath", imagePath);
 //			ModelAndView modelAndView = new ModelAndView(view, modelMap);
-			ModelAndView modelAndView = new ModelAndView("rpt_account-statement4", modelMap);
+			ModelAndView modelAndView = new ModelAndView("rpt_account-statement3", modelMap);
 			return modelAndView;
 		} catch (ParseException e) {
 			logger.warn("didn't parse date", e);

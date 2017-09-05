@@ -425,6 +425,7 @@ public class AdminUserServiceImpl implements AdminUserService {
 
     private List<AdminUserDTO> convertEntitiesToDTOs(Iterable<AdminUser> adminUsers) {
         List<AdminUserDTO> adminUserDTOList = new ArrayList<>();
+
         for (AdminUser adminUser : adminUsers) {
             AdminUserDTO userDTO = convertEntityToDTO(adminUser);
             userDTO.setRole(adminUser.getRole().getName());

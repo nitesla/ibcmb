@@ -354,7 +354,11 @@ logger.info("the account id {}",accountId);
             modelMap.put("amount", formatter.format(amount));
             modelMap.put("customer",retailUser.getFirstName()+" "+retailUser.getLastName() );
             modelMap.put("customerAcctNumber", transRequest.getCustomerAccountNumber());
-            modelMap.put("remarks", transRequest.getRemarks());
+            if(transRequest.getRemarks() != null) {
+                modelMap.put("remarks", transRequest.getRemarks());
+            }else{
+                modelMap.put("remarks", "");
+            }
             modelMap.put("beneficiary", transRequest.getBeneficiaryAccountName());
             modelMap.put("beneficiaryAcctNumber", transRequest.getBeneficiaryAccountNumber());
             modelMap.put("beneficiaryBank", transRequest.getFinancialInstitution().getInstitutionName());

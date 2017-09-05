@@ -247,7 +247,11 @@ catch(InternetBankingException e){
             modelMap.put("datasource", new ArrayList<>());
             modelMap.put("amount", formatter.format(amount));
             modelMap.put("sender",corporateUser.getFirstName()+" "+corporateUser.getLastName() );
-            modelMap.put("remarks", transactionHistory.getNarration());
+            if(transactionHistory.getNarration() != null) {
+                modelMap.put("remarks", transactionHistory.getNarration());
+            }else {
+                modelMap.put("remarks","");
+            }
             modelMap.put("recipientBank", "");
             modelMap.put("refNUm", transactionHistory.getTranType());
             modelMap.put("date",transactionHistory.getValueDate());
@@ -449,7 +453,7 @@ catch(InternetBankingException e){
             Date today = new Date();
             modelMap.put("today", today);
             modelMap.put("imagePath", imagePath);
-            ModelAndView modelAndView = new ModelAndView("rpt_account-statement4", modelMap);
+            ModelAndView modelAndView = new ModelAndView("rpt_account-statement3", modelMap);
             return modelAndView;
         } catch (ParseException e) {
             logger.warn("didn't parse date", e);

@@ -15,6 +15,7 @@ public class BulkTransferDTO {
     private Date tranDate;
     private String refCode;
     private  String status;
+    private  String statusDescription;
     private Long batchId;
 
 
@@ -51,6 +52,14 @@ public class BulkTransferDTO {
 
     public void setCustomerAccountNumber(String customerAccountNumber) {
         this.customerAccountNumber = customerAccountNumber;
+    }
+
+    public String getStatusDescription() {
+        return statusDescription;
+    }
+
+    public void setStatusDescription(String statusDescription) {
+        this.statusDescription = statusDescription;
     }
 
     public Date getTranDate() {

@@ -72,11 +72,10 @@ public class RetailControllerAdvice {
 
         RetailUser user = retailUserService.getUserByName(principal.getName());
         String bvn = "";
-        if (user.getBvn()==null) {
-            bvn = "Not available";
-        } else {
-            bvn = user.getBvn();
+        if (user!=null){
+            bvn=(user.getBvn()==null)?"Not available":user.getBvn();
         }
+
         model.addAttribute("bvn", bvn);
 
         if(user.getLastLoginDate()!=null) {

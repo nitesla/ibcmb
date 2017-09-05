@@ -63,20 +63,21 @@
                                 
                                                             <div class="form-group" >
                                                                 <!--<label>Bulk Transfer file</label>-->
-                                                                <input id='input-file' style="width: 0.1px;height: 0.1px;opacity: 0;overflow: hidden;position: absolute;z-index: -1;"  type="file" name="transferFile"/>
+                                                                <input onchange="change()" id='input-file' style="width: 0.1px;height: 0.1px;opacity: 0;overflow: hidden;position: absolute;z-index: -1;"  type="file" name="transferFile"/>
                                                                 
                                                                 <div style="width:150px;display:inline">
-                                                                        <label  onchange="change()"  for="input-file" class="btn btn-default " style="display:inline !important;padding:8px !important;background:grey !important"><i class="fa fa-upload" aria-hidden="true" style="color:white"></i> Choose File</label>
+                                                                        <label id="label-input"   for="input-file" class="btn btn-default " style="display:inline !important;padding:8px !important;background:grey !important"><i class="fa fa-upload" aria-hidden="true" style="color:white"></i> Choose File</label>
                                                                         
                                                                 </div>
                                                               
                                                                 <!--<input  type="submit" value="Upload"/>-->
                                                                 <button  class="btn btn-link required-step" type="submit">Upload</button>
-                                
+                                                                <div id="input-msg">
+                                                                    No File Chosen.
+                                                                </div>
                                                             </div>
                                 
                                                         </form>
-    
                     </div>
 
                 </div>
@@ -104,7 +105,18 @@
 
     function change()
     {
-        alert($('#input-file').val());
+        if($('#input-file').val() == '')
+        {
+            var x = "<i class='fa fa-upload' aria-hidden='true' style='color:white'></i> Choose File";
+            $('#input-msg').text('No File Chosen.');
+            $('#label-input').html(x);
+        }
+        else {
+            $('#input-msg').text($('#input-file').val());
+            $('#label-input').text('One File Chosen');
+        }
+
+
     }
 </script>
 </th:block>

@@ -23,6 +23,7 @@ import sun.rmi.runtime.Log;
 
 import javax.persistence.EntityManager;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Date;
 
 /**
@@ -33,10 +34,7 @@ public class RetailUserAdvisor {
 
 
     @Autowired
-    EntityManager entityManager;
-    private Logger log = LoggerFactory.getLogger(this.getClass());
-    @Autowired
-    private VerificationService verificationService;
+    private EntityManager entityManager;
 
     @Autowired
     private RetailUserService retailUserService;
@@ -45,15 +43,14 @@ public class RetailUserAdvisor {
     private RetailUserRepo retailUserRepo;
 
     @Autowired
-    PasswordPolicyService passwordPolicyService;
+    private PasswordPolicyService passwordPolicyService;
 
     @Autowired
-    PasswordEncoder passwordEncoder;
+    private PasswordEncoder passwordEncoder;
 
     @Autowired
-    VerificationRepo verificationRepo;
+    private VerificationRepo verificationRepo;
 
-    Logger logger = LoggerFactory.getLogger(this.getClass());
 
 
     @Pointcut("within( longbridge.services.implementations.VerificationServiceImpl)")
@@ -88,15 +85,15 @@ public class RetailUserAdvisor {
             RetailUser user = retailUserRepo.findOne(verification.getEntityId());
             entityManager.detach(user);
             ObjectMapper objectMapper = new ObjectMapper();
-            RetailUser corpUser = objectMapper.readValue(verification.getOriginalObject(),RetailUser.class);
-            if("A".equals(corpUser.getStatus())){
+            RetailUser retailUser = objectMapper.readValue(verification.getOriginalObject(),RetailUser.class);
+            if("A".equals(retailUser.getStatus())){
                 String fullName = user.getFirstName()+" "+user.getLastName();
                 String password = passwordPolicyService.generatePassword();
                 user.setPassword(passwordEncoder.encode(password));
                 user.setExpiryDate(new Date());
                 passwordPolicyService.saveRetailPassword(user);
                 retailUserRepo.save(user);
-                retailUserService.sendPostActivateMessage(corpUser, fullName,user.getUserName(),password);
+                retailUserService.sendPostActivateMessage(retailUser, fullName,user.getUserName(),password);
             }
             else {
                 retailUserRepo.save(user);

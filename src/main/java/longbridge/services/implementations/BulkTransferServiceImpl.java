@@ -89,7 +89,6 @@ public class BulkTransferServiceImpl implements BulkTransferService {
         try {
             jobLauncher.launchBulkTransferJob("" + transfer.getId());
         } catch (Exception e) {
-            e.printStackTrace();
             logger.error("Exception occurred {}", e);
             return messageSource.getMessage("bulk.transfer.failure", null, null);
         }
@@ -223,6 +222,7 @@ public class BulkTransferServiceImpl implements BulkTransferService {
         //Date dt = bulkTransfer.getTranDate();
         bulkTransferDTO.setTranDate(bulkTransfer.getTranDate());
         bulkTransferDTO.setStatus(bulkTransfer.getStatus());
+        bulkTransferDTO.setStatusDescription(bulkTransfer.getStatusDescription());
         return bulkTransferDTO;
     }
 

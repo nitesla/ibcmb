@@ -32,7 +32,7 @@ public interface CorpTransferService {
 
 //    String authorizeTransfer(Long authId) throws InternetBankingException;
 
-    String addTransferRequest(CorpTransferRequestDTO transferRequestDTO) throws InternetBankingException;
+    Object addTransferRequest(CorpTransferRequestDTO transferRequestDTO) throws InternetBankingException;
 
 //    List<PendAuth> getPendingAuthorizations();
 
