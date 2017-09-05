@@ -89,7 +89,6 @@ public class BulkTransferServiceImpl implements BulkTransferService {
         try {
             jobLauncher.launchBulkTransferJob("" + transfer.getId());
         } catch (Exception e) {
-            e.printStackTrace();
             logger.error("Exception occurred {}", e);
             return messageSource.getMessage("bulk.transfer.failure", null, null);
         }

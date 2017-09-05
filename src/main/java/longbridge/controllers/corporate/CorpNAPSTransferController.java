@@ -427,17 +427,25 @@ public class CorpNAPSTransferController {
 
             if(setting!=null&&setting.isEnabled()) {
 
-                try {
-                    boolean result = securityService.performTokenValidation(user.getEntrustId(), user.getEntrustGroup(), tokenCode);
-                    if (!result) {
+                if (tokenCode != null && !tokenCode.isEmpty()) {
+
+                    try {
+                        boolean result = securityService.performTokenValidation(user.getEntrustId(), user.getEntrustGroup(), tokenCode);
+                        if (!result) {
+                            model.addAttribute("accounts", accountList);
+                            model.addAttribute("failure", messageSource.getMessage("token.auth.failure", null, locale));
+                            return "corp/transfer/bulktransfer/add";
+                        }
+                    } catch (InternetBankingSecurityException ibe) {
+                        logger.error("Error authenticating token {} ", ibe);
                         model.addAttribute("accounts", accountList);
                         model.addAttribute("failure", messageSource.getMessage("token.auth.failure", null, locale));
                         return "corp/transfer/bulktransfer/add";
                     }
-                } catch (InternetBankingSecurityException ibe) {
-                    logger.error("Error authenticating token {} ", ibe);
+                }
+                else {
                     model.addAttribute("accounts", accountList);
-                    model.addAttribute("failure", messageSource.getMessage("token.auth.failure", null, locale));
+                    model.addAttribute("failure", "Token code is required");
                     return "corp/transfer/bulktransfer/add";
                 }
             }

@@ -1,10 +1,11 @@
 package longbridge;
 
 import longbridge.jobs.CronJobScheduler;
-import longbridge.repositories.AccountRepo;
-import longbridge.repositories.CorporateRepo;
-import longbridge.repositories.CustomJpaRepositoryFactoryBean;
-import longbridge.repositories.OperationsUserRepo;
+import longbridge.models.AdminUser;
+import longbridge.models.CorporateUser;
+import longbridge.models.OperationsUser;
+import longbridge.models.RetailUser;
+import longbridge.repositories.*;
 import longbridge.services.*;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,14 +18,13 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @SpringBootApplication
 @EnableJpaRepositories(repositoryFactoryBeanClass = CustomJpaRepositoryFactoryBean.class)
 @EnableBatchProcessing
 @EnableAsync
 public class InternetbankingApplication extends SpringBootServletInitializer implements CommandLineRunner {
-
-    @Autowired
-    SecurityService securityService;
 
 
     @Autowired
@@ -54,6 +54,22 @@ public class InternetbankingApplication extends SpringBootServletInitializer imp
     @Autowired
     TransferService transferService;
 
+    @Autowired
+    RetailUserRepo retailUserService;
+
+    @Autowired
+    CorporateUserRepo corporateUserService;
+
+    @Autowired
+    AdminUserRepo adminUserService;
+
+    @Autowired
+    OperationsUserRepo operationsUserService;
+
+    @Autowired
+    SecurityService securityService;
+
+
     public static void main(String[] args) {
         SpringApplication.run(InternetbankingApplication.class, args);
 
@@ -61,13 +77,15 @@ public class InternetbankingApplication extends SpringBootServletInitializer imp
 
     protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
         return application.sources(InternetbankingApplication.class);
+
     }
 
 
     @Override
-    @Transactional
     public void run(String... strings) throws Exception {
+
     }
+
 
 }
 
