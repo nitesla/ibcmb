@@ -1,7 +1,6 @@
 package longbridge.security;
 
 import longbridge.dtos.SettingDTO;
-import longbridge.models.AlertPreference;
 import longbridge.models.Code;
 import longbridge.models.CorporateUser;
 import longbridge.models.User;
@@ -15,12 +14,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.scheduling.annotation.Async;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpSession;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Locale;
 
 /**
@@ -74,7 +74,9 @@ public class SessionUtils {
                 String name = firstName + " " + lastName;
                 if (name.isEmpty()) name = user.getUserName();
 
-                String alertMessage = String.format(messageSource.getMessage("login.alert.message", null, locale), name);
+                String date = new SimpleDateFormat("MMM dd, yyyy ' at ' hh:mm:ss a").format(new Date());
+
+                String alertMessage = String.format(messageSource.getMessage("login.alert.message", null, locale), name, date);
 
                 String alertSubject = String.format(messageSource.getMessage("login.alert.subject", null, locale));
                 if ("SMS".equalsIgnoreCase(preference)) {
