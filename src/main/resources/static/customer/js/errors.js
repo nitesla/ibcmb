@@ -28,7 +28,43 @@ function hideSibling(first,second)
     });
 
 
-}
+}function inputErrors()
+ {
+     $('input').on("focus", function() {
+
+         if ($(this).siblings('label.error').text().length > 0) {
+
+             $(this).siblings('label.error').addClass('hidden');
+             $(this).removeClass('error');
+             $(this).siblings('label.error').text('');
+
+         }
+
+         if ($(this).hasClass('error')) {
+             $(this).siblings('label.error').removeClass('hidden');
+
+         }
+
+
+     });
+
+     $('input').on("blur", function() {
+
+         if ($(this).siblings('label.error').text().length > 0) {
+
+             $(this).siblings('label.error').removeClass('hidden');
+
+
+         }
+
+
+
+
+     });
+
+ }
+
+
 
 
 

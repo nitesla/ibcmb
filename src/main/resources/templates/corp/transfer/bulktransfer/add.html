@@ -31,7 +31,7 @@
         </select>
         </div>
 
-        <div class="col-xs-12 no-pad-left no-pad-right">
+        <div class="col-xs-12">
             <div class=" no-mt no-bd  alert">
                 <form method="post" th:action="@{/corporate/transfer/save}" id="" class="form-horizontal">
                     <div class="">
@@ -80,8 +80,8 @@
 
                         <br/>
                         <div class="form-group col-md-6">
-                            <button class="btn btn-link" type="submit" id="button_submit">Submit</button>
-                            <a class="btn btn-link" type="button" th:href="@{/corporate/transfer/upload}">Back</a>
+                            <button class="btn btn-link required-step" type="submit" id="button_submit">Submit</button>
+                            <button class="btn btn-link less-required" onclick='redirect()' type="button">Back</button>
                         </div>
 
 
@@ -106,7 +106,10 @@
         <script th:inline="javascript">
             /*<![CDATA[*/
 
-
+            function redirect()
+            {
+                window.location.href = '/corporate/transfer/upload';
+            }
 
             var errorCount = 0;
             $(document).ready(function() {
@@ -138,13 +141,13 @@
                         "render": function(data, type, full, meta) {
                             if (data == "ERROR HERE") {
                                 errorCount = errorCount + 1;
-                                return '<input type="text" value="' + data + '" style = "color: red" readonly/>';
+                                return '<input type="text" style="background:transparent" value="' + data + '" style = "color: red" readonly/>';
 
                             }
                             if (errorCount > 0) {
                                 document.getElementById('tokendiv').style.display = 'none';
                             }
-                            return '<input type="text" value="' + data + '" readonly />';
+                            return '<input type="text" style="background:transparent" value="' + data + '" readonly />';
 
                         }
                     }]

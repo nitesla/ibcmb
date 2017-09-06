@@ -498,4 +498,12 @@ public class MainController {
     }
 
 
+
+    @GetMapping(value = "/unsupported")
+    public String browserNotSupported() {
+
+        return "redirect:https://support.microsoft.com/en-us/help/17621/internet-explorer-downloads";
+    }
+
+
 }

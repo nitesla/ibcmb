@@ -178,6 +178,13 @@ public class OperationsUserServiceImpl implements OperationsUserService {
         if (opsUser != null) {
             throw new DuplicateObjectException(messageSource.getMessage("user.exists", null, locale));
         }
+
+
+        opsUser = operationsUserRepo.findFirstByEmailIgnoreCase(user.getUserName());
+        if (opsUser != null) {
+            throw new DuplicateObjectException(messageSource.getMessage("email.exists", null, locale));
+        }
+
         try {
             opsUser = new OperationsUser();
             opsUser.setFirstName(user.getFirstName());
@@ -250,6 +257,14 @@ public class OperationsUserServiceImpl implements OperationsUserService {
         OperationsUser opsUser = operationsUserRepo.findOne(user.getId());
         if ("I".equals(opsUser.getStatus())) {
             throw new InternetBankingException(messageSource.getMessage("user.deactivated", null, locale));
+        }
+
+        if (!user.getEmail().equals(opsUser.getEmail())) {
+
+            opsUser = operationsUserRepo.findFirstByEmailIgnoreCase(user.getEmail());
+            if (opsUser != null && !user.getId().equals(opsUser.getId())) {
+                throw new DuplicateObjectException(messageSource.getMessage("email.exists", null, locale));
+            }
         }
 
         try {

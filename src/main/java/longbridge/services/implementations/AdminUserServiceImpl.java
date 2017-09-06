@@ -129,6 +129,12 @@ public class AdminUserServiceImpl implements AdminUserService {
         if (adminUser != null) {
             throw new DuplicateObjectException(messageSource.getMessage("user.exists", null, locale));
         }
+
+        adminUser = adminUserRepo.findFirstByEmailIgnoreCase(user.getUserName());
+        if (adminUser != null) {
+            throw new DuplicateObjectException(messageSource.getMessage("email.exists", null, locale));
+        }
+
         try {
             adminUser = new AdminUser();
             adminUser.setFirstName(user.getFirstName());
@@ -195,8 +201,6 @@ public class AdminUserServiceImpl implements AdminUserService {
     }
 
 
-
-
     @Override
     @Transactional
     @Verifiable(operation = "UPDATE_ADMIN_STATUS", description = "Change Admin Activation Status")
@@ -236,16 +240,15 @@ public class AdminUserServiceImpl implements AdminUserService {
                     .build();
 
             mailService.send(email);
-        }
-        catch (MailException me){
-            logger.error("Error sending mail to {}",user.getEmail(),me);
+        } catch (MailException me) {
+            logger.error("Error sending mail to {}", user.getEmail(), me);
         }
     }
 
 
     @Override
     @Transactional
-    @Verifiable(operation = "DELETE_ADMIN_USER",description = "Deleting an Admin User")
+    @Verifiable(operation = "DELETE_ADMIN_USER", description = "Deleting an Admin User")
     public String deleteUser(Long id) throws InternetBankingException {
         try {
             AdminUser user = adminUserRepo.findOne(id);
@@ -258,11 +261,9 @@ public class AdminUserServiceImpl implements AdminUserService {
             }
             logger.warn("Admin user {} deleted", user.getUserName());
             return messageSource.getMessage("user.delete.success", null, locale);
-        }
-        catch (VerificationInterruptedException ve){
+        } catch (VerificationInterruptedException ve) {
             return ve.getMessage();
-        }
-        catch (InternetBankingSecurityException se) {
+        } catch (InternetBankingSecurityException se) {
             throw new InternetBankingSecurityException(messageSource.getMessage("entrust.delete.failure", null, locale));
         } catch (Exception e) {
             throw new InternetBankingException(messageSource.getMessage("user.delete.failure", null, locale), e);
@@ -280,6 +281,15 @@ public class AdminUserServiceImpl implements AdminUserService {
         if ("I".equals(adminUser.getStatus())) {
             throw new InternetBankingException(messageSource.getMessage("user.deactivated", null, locale));
         }
+
+        if (!user.getEmail().equals(adminUser.getEmail())) {
+
+            adminUser = adminUserRepo.findFirstByEmailIgnoreCase(user.getEmail());
+            if (adminUser != null && !user.getId().equals(adminUser.getId())) {
+                throw new DuplicateObjectException(messageSource.getMessage("email.exists", null, locale));
+            }
+        }
+
         try {
             entityManager.detach(adminUser);
             adminUser.setId(user.getId());
