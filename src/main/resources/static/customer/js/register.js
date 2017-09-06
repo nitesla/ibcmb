@@ -351,16 +351,17 @@ function validateRegCode(code){
         async:false,
         success:function(data1){
             result = ''+String(data1);
-            if(result == 'false'){
+            // console.log("error "+result);
+            if(result == 'true'){
                 //invalid account number
-                $('#errorMess').text("Invalid reg code, Enter the Registration code sent to your mobile phone.");
-                $('#myModalError').modal('show');
+
 
             }else{
-                //valid account number
-                //alert("password: " + result);
+                $('#errorMess').text(result);
+                $('#myModalError').modal('show');
             }
         },error:function (data) {
+            console.log("error "+data);
             $('#myLoader').modal('hide');
             $('#errorMess').text("Service not available, please try again later");
             $('#myModalError').modal('show');

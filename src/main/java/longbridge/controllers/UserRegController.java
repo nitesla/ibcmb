@@ -12,6 +12,7 @@ import longbridge.forms.RegistrationForm;
 import longbridge.models.Account;
 import longbridge.models.RetailUser;
 import longbridge.services.*;
+import longbridge.utils.DateFormatter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -307,6 +308,7 @@ public class UserRegController {
             code = generateAndSendRegCode(contact);
             if (!"".equals(code)) {
                 session.setAttribute("regCode", code);
+                session.setAttribute("regCodeTime",new Date());
             }else{
                 return code;
             }
@@ -340,12 +342,24 @@ public class UserRegController {
         String code= webRequest.getParameter("code");
         logger.info("Code : " + code);
         String regCode = (String) session.getAttribute("regCode");
+        Date regCodeDate = (Date) session.getAttribute("regCodeTime");
+//        logger.info("the regcode validity {}", DateFormatter.validate(regCodeDate,new Date()));
+        boolean  codeValid = DateFormatter.validate(regCodeDate,new Date());
         logger.info("REGCODE IN SESSION {} ", regCode);
 //        Integer reg = Integer.parseInt(regCode);
-        if (!code.equals(regCode)){
-            return "false";
+        ;
+        String message = messageSource.getMessage("regCode.validate.expired", null, locale);
+
+        if (code.equals(regCode)){
+            if(codeValid) {
+                return "true";
+            }else {
+                return message;
+            }
         }
-        return "true";
+        message = messageSource.getMessage("regCode.validate.failed", null, locale);
+        logger.info("REGCODE failure Message{} ", message);
+        return message;
     }
 
 
@@ -522,7 +536,9 @@ public class UserRegController {
 
 
     @GetMapping("/register")
-    public String registerPage(Model model){
+    public String registerPage(Model model,HttpSession session){
+        session.removeAttribute("regCodeTime");
+        session.removeAttribute("regCode");
         RegistrationForm registrationForm = new RegistrationForm();
         registrationForm.step = "1";
         model.addAttribute("registrationForm", registrationForm);
