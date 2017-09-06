@@ -74,7 +74,7 @@ public class RetailControllerAdvice {
         String lastLogin = "";
         if (user!=null){
             bvn=(user.getBvn()==null)?"Not available":user.getBvn();
-            lastLogin=(user.getLastLoginDate()==null)?DateFormatter.format(user.getCreatedOnDate()):DateFormatter.format(user.getLastLoginDate());
+            lastLogin=(user.getLastLoginDate()==null)? DateFormatter.format(user.getCreatedOnDate()): DateFormatter.format(user.getLastLoginDate());
         }
         model.addAttribute("bvn", bvn);
         model.addAttribute("lastLogin", lastLogin);
