@@ -112,7 +112,8 @@ form.children("div").steps({
     onFinished: function (event, currentIndex)
     {
 //            alert("Submitted!");
-        window.location.href = "/login/retail";
+        //window.location.href = "/login/retail";
+        return redirectUser();
     }
 });
 function getSummary() {
@@ -124,16 +125,16 @@ function getSummary() {
     var container = document.getElementById("regSummary");
 //console.log("phishing "+phishing);
     container.innerHTML = "";
-    container.innerHTML += "<p><h1>Self Registration Summary</h1></p> <br/>";
-    container.innerHTML += "<p>Below are a summary of details entered to be used for registration</p>";
-    container.innerHTML += "<p>Email address: "+summaryEmail+"</p>";
+    container.innerHTML += "<p><h1>Self-Registration Summary</h1></p> <br/>";
+    container.innerHTML += "<p>Please find below a summary of the details you have entered for your registration</p>";
+    container.innerHTML += "<p>Email Address: "+summaryEmail+"</p>";
     container.innerHTML += "<p>Username: "+summaryUsername+"</p>";
     container.innerHTML += "<p>Password: **********</p>";
     for (i = 0; i < noOfQuestions; i++) {
-        container.innerHTML += "<p>Security Question: "+i+1+"  "+$('#securityQuestion'+i).val()+"</p>";
+        container.innerHTML += "<p>Security Question: "+(i+1)+"  "+$('#securityQuestion'+i).val()+"</p>";
     }
     var imgP = imgPath+phishing;
-    container.innerHTML += "<p>Phishing Image: <img src='"+imgP +"' width='100px' height='100px' style='padding: 5px;'/></p>";
+    container.innerHTML += "<p>Phishing Image: <br/><img src='"+imgP +"' width='100px' height='100px' style='padding: 5px;'/></p>";
     // container.innerHTML +="<table>" +
     //         "<tbody>" +
     //         "<tr><td>Email address:</td><td>"+summaryEmail+"</td></tr>"+
@@ -199,6 +200,10 @@ function validateAccountDetails(accountNumber, email, birthDate){
             // }else{
             //     $('input[name=customerId]').val(customerId);
             // }
+        },error:function (data) {
+            $('#myLoader').modal('hide');
+            $('#errorMess').text("Service not available, please try again later");
+            $('#myModalError').modal('show');
         }
     });
 
@@ -242,6 +247,10 @@ function validateExists(accountNumber, email, birthDate){
                 $('input[name=customerId]').val(cif);
                 // sendRegCode();
             }
+        },error:function (data) {
+            $('#myLoader').modal('hide');
+            $('#errorMess').text("Service not available, please try again later");
+            $('#myModalError').modal('show');
         }
     });
 
@@ -277,6 +286,10 @@ function validateUsername(username){
                 //valid account number
                 //alert("user name: " + result);
             }
+        },error:function (data) {
+            $('#myLoader').modal('hide');
+            $('#errorMess').text("Service not available, please try again later");
+            $('#myModalError').modal('show');
         }
     });
 
@@ -310,6 +323,10 @@ function validatePassword(password){
                 $('#myModalError').modal('show');
                 $('#myLoader').modal('hide');
             }
+        },error:function (data) {
+            $('#myLoader').modal('hide');
+            $('#errorMess').text("Service not available, please try again later");
+            $('#myModalError').modal('show');
         }
     });
 
@@ -343,6 +360,10 @@ function validateRegCode(code){
                 //valid account number
                 //alert("password: " + result);
             }
+        },error:function (data) {
+            $('#myLoader').modal('hide');
+            $('#errorMess').text("Service not available, please try again later");
+            $('#myModalError').modal('show');
         }
     });
 
@@ -399,6 +420,10 @@ function sendRegCode(){
                 //alert("code sent: " + result);
                 //console.log(result);
             }
+        },error:function (data) {
+            $('#myLoader').modal('hide');
+            $('#errorMess').text("Service not available, please try again later");
+            $('#myModalError').modal('show');
         }
     });
 }
@@ -436,6 +461,10 @@ function registerUser(){
                     $('#errorMess').text(data);
                     $('#myModalError').modal('show');
                 }
+            },error:function (data) {
+                $('#myLoader').modal('hide');
+                $('#errorMess').text("Service not available, please try again later");
+                $('#myModalError').modal('show');
             }
         });
     });
@@ -444,5 +473,9 @@ function registerUser(){
     returnValue = $('#returnValue').val();
     //alert(returnValue);
     return Boolean(returnValue);
+}
+
+function redirectUser() {
+    window.location.href = '/rest/redirect/login';
 }
 

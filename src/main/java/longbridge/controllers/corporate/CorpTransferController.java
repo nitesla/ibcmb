@@ -3,6 +3,7 @@ package longbridge.controllers.corporate;
 
 import longbridge.dtos.CorpLocalBeneficiaryDTO;
 import longbridge.dtos.CorpTransferRequestDTO;
+import longbridge.dtos.SettingDTO;
 import longbridge.dtos.TransferRequestDTO;
 import longbridge.exception.*;
 import longbridge.models.*;
@@ -66,7 +67,6 @@ public class CorpTransferController {
     private FinancialInstitutionService financialInstitutionService;
     private TransferErrorService transferErrorService;
     private SecurityService securityService;
-    private ApplicationContext appContext;
     private TransferUtils transferUtils;
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -75,6 +75,13 @@ public class CorpTransferController {
     private MessageSource messageSource;
     @Autowired
     private CorpTransferService corpTransferService;
+
+    @Autowired
+    private ConfigurationService configService;
+
+
+    @Autowired
+    private ApplicationContext appContext;
 
     @Autowired
     public CorpTransferController(CorporateService corporateService, CorporateRepo corporateRepo, CorporateUserService corporateUserService, IntegrationService integrationService, CorpTransferService transferService, AccountService accountService, MessageSource messages, LocaleResolver localeResolver, CorpLocalBeneficiaryService corpLocalBeneficiaryService, FinancialInstitutionService financialInstitutionService, TransferErrorService transferErrorService, SecurityService securityService, TransferUtils transferUtils) {
@@ -137,7 +144,7 @@ public class CorpTransferController {
 
         String accountId = webRequest.getParameter("acctId");
 
-        logger.info("the account id {}",accountId);
+        logger.info("the account id {}", accountId);
 
         try {
             List<String> accountList = new ArrayList<>();
@@ -150,16 +157,17 @@ public class CorpTransferController {
                     .forEach(i -> accountList.add(i.getAccountNumber()))
             ;
 
-            logger.info("ACCOUNT LIST {}", StreamSupport.stream(accounts.spliterator(),true).count());
+            logger.info("ACCOUNT LIST {}", StreamSupport.stream(accounts.spliterator(), true).count());
             logger.info("second LIST {}", accountList.size());
             return accountList;
 
         } catch (Exception e) {
-            logger.error("transfer error {}",e);
+            logger.error("transfer error {}", e);
         }
 
         return null;
     }
+
     @GetMapping("/dest/{accountId}/accounts")
     public
     @ResponseBody
@@ -187,7 +195,7 @@ public class CorpTransferController {
     @ResponseBody
     String getAccountCurrency(@PathVariable String accountId) {
 
-        if("null".equals(accountId)){
+        if ("null".equals(accountId)) {
             return "N/A";
         }
         return accountService.getAccountByAccountNumber(accountId).getCurrencyCode();
@@ -214,7 +222,7 @@ public class CorpTransferController {
 
 
     @PostMapping("/process")
-    public String bankTransfer( Model model, RedirectAttributes redirectAttributes, HttpServletRequest request, Principal principal) throws Exception {
+    public String bankTransfer(Model model, RedirectAttributes redirectAttributes, HttpServletRequest request, Principal principal) throws Exception {
         CorpTransferRequestDTO transferRequestDTO = (CorpTransferRequestDTO) request.getSession().getAttribute("corpTransferRequest");
         model.addAttribute("corpTransferRequest", transferRequestDTO);
         try {
@@ -252,7 +260,7 @@ public class CorpTransferController {
                     } catch (InternetBankingException de) {
                         logger.error("Error occurred processing transfer");
 
-                    }finally {
+                    } finally {
 
                     }
                 }
@@ -261,14 +269,26 @@ public class CorpTransferController {
             CorpTransferRequestDTO corpTransferRequestDTO = (CorpTransferRequestDTO) request.getSession().getAttribute("corpTransferRequest");
             String corporateId = "" + corporateUserService.getUserByName(principal.getName()).getCorporate().getId();
             corpTransferRequestDTO.setCorporateId(corporateId);
-            String response = transferService.addTransferRequest(corpTransferRequestDTO);
+            Object object = transferService.addTransferRequest(corpTransferRequestDTO);
 
+            if(object instanceof CorpTransferRequestDTO){
 
-            model.addAttribute("transRequest", corpTransferRequestDTO);
-            logger.info("transRequest {}", corpTransferRequestDTO);
-            model.addAttribute("message", response);
+                corpTransferRequestDTO = (CorpTransferRequestDTO)object;
+
+                logger.info("transRequest {}", corpTransferRequestDTO);
+                model.addAttribute("transRequest", corpTransferRequestDTO);
+                model.addAttribute("message", corpTransferRequestDTO.getStatusDescription());
+            }
+
+            else if (object instanceof String){
+                redirectAttributes.addFlashAttribute("message", object);
+                return "redirect:/corporate/transfer/requests";
+
+            }
 
             return "corp/transfer/transferdetails";
+
+
 
         } catch (TransferAuthorizationException ae) {
             logger.error("Error initiating a transfer ", ae);
@@ -367,25 +387,29 @@ public class CorpTransferController {
     public String addAuthorization(@ModelAttribute("corpTransReqEntry") CorpTransReqEntry corpTransReqEntry, @RequestParam("token") String tokenCode, RedirectAttributes redirectAttributes, Principal principal) {
 
 
-        CorporateUser user  = corporateUserService.getUserByName(principal.getName());
+        CorporateUser user = corporateUserService.getUserByName(principal.getName());
 
-        if (tokenCode != null && !tokenCode.isEmpty()) {
-            try {
-                boolean result = securityService.performTokenValidation(user.getEntrustId(), user.getEntrustGroup(), tokenCode);
-                if (!result) {
+        SettingDTO setting = configService.getSettingByName("ENABLE_CORPORATE_2FA");
+
+        if(setting!=null&&setting.isEnabled()) {
+            if (tokenCode != null && !tokenCode.isEmpty()) {
+                try {
+                    boolean result = securityService.performTokenValidation(user.getEntrustId(), user.getEntrustGroup(), tokenCode);
+                    if (!result) {
+                        logger.error("Error authenticating token");
+                        redirectAttributes.addFlashAttribute("failure", messageSource.getMessage("token.auth.failure", null, locale));
+                        return "redirect:/corporate/transfer/" + corpTransReqEntry.getTranReqId() + "/authorizations";
+                    }
+                } catch (InternetBankingSecurityException se) {
                     logger.error("Error authenticating token");
-                    redirectAttributes.addFlashAttribute("failure", messageSource.getMessage("token.auth.failure", null, locale));
+                    redirectAttributes.addFlashAttribute("failure", se.getMessage());
                     return "redirect:/corporate/transfer/" + corpTransReqEntry.getTranReqId() + "/authorizations";
                 }
-            } catch (InternetBankingSecurityException se) {
-                logger.error("Error authenticating token");
-                redirectAttributes.addFlashAttribute("failure", se.getMessage());
+            } else {
+                redirectAttributes.addFlashAttribute("failure", "Token code is required");
                 return "redirect:/corporate/transfer/" + corpTransReqEntry.getTranReqId() + "/authorizations";
-            }
-        } else {
-            redirectAttributes.addFlashAttribute("failure", "Token code is required");
-            return "redirect:/corporate/transfer/" + corpTransReqEntry.getTranReqId() + "/authorizations";
 
+            }
         }
 
         try {
@@ -408,16 +432,11 @@ public class CorpTransferController {
     }
 
 
-
-
-
-
-
     @RequestMapping(value = "/balance/{accountNumber}", method = RequestMethod.GET, produces = "application/json")
     @ResponseBody
     public String getBalance(@PathVariable String accountNumber) throws Exception {
 
-        if("null".equals(accountNumber)){
+        if ("null".equals(accountNumber)) {
             return "N/A";
         }
         return transferUtils.getBalance(accountNumber);
@@ -440,7 +459,7 @@ public class CorpTransferController {
             Corporate corporate = corporateUser.getCorporate();
             TransRequest transRequest = transferService.getTransfer(id);
 
-            logger.info("Trans Request {}", transRequest);
+//            logger.info("Trans Request {}", transRequest);
             JasperReportsPdfView view = new JasperReportsPdfView();
             view.setUrl("classpath:jasperreports/rpt_tran-hist.jrxml");
             view.setApplicationContext(appContext);
@@ -453,7 +472,11 @@ public class CorpTransferController {
             modelMap.put("amount", formatter.format(amount));
             modelMap.put("customer", corporate.getName());
             modelMap.put("customerAcctNumber", transRequest.getCustomerAccountNumber());
-            modelMap.put("remarks", transRequest.getRemarks());
+            if(transRequest.getRemarks() != null) {
+                modelMap.put("remarks", transRequest.getRemarks());
+            }else{
+                modelMap.put("remarks", "");
+            }
             modelMap.put("beneficiary", transRequest.getBeneficiaryAccountName());
             modelMap.put("beneficiaryAcctNumber", transRequest.getBeneficiaryAccountNumber());
             modelMap.put("beneficiaryBank", transRequest.getFinancialInstitution().getInstitutionName());

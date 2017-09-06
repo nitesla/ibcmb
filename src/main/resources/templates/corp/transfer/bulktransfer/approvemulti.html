@@ -116,7 +116,7 @@
                                 <textarea th:if="${userCanAuthorize}" class="form-control full-width" th:field="${corpTransReqEntry.comments}" placeholder="Enter comments"></textarea>
 
                                 <div>
-                                    <input type="text" th:if="${userCanAuthorize}" class="form-control full-width" name="token" placeholder="Enter token code" required="required"/>
+                                    <input type="text" th:if="${userCanAuthorize}" class="form-control full-width" name="token" placeholder="Enter token code"/>
                                 </div>
                                 <div>
 
@@ -126,7 +126,7 @@
                                     <button class="btn btn-link required-step" th:if="${userCanAuthorize}" type="submit">
                                                     Approve
                                                 </button>
-                                    <button id="cancel" class="btn btn-link less-required" type="reset">Decline</button>
+                                    <button id="cancel" class="btn btn-link less-required" type="reset">Back</button>
                                 </div>
                             </form>
 
@@ -253,7 +253,7 @@
                         [5, 10, 20],
                         [5, 10, 20]
                     ],
-                    "pagingType": "simple_numbers",
+                    "pagingType": "input",
                     "searching": false,
                     "paging": true,
                     "serverSide": false,
@@ -277,6 +277,11 @@
             });
 
             //});
+
+
+            document.getElementById("cancel").onclick = function () {
+                location.href = "/corporate/transfer/bulk";
+            }
 
             /*]]>*/
         </script>

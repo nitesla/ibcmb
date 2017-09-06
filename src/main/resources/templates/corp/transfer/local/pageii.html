@@ -30,7 +30,7 @@
                                     <span class="alert no-bd-rad my-border bg-white invisible">NGN</span>
                                     <input type="text" class="form-control ben-bg coronation-blue"  th:if="${beneficiary.preferredName} !=''" th:field="${beneficiary.preferredName}" disabled />
                                     <input type="text" class="form-control ben-bg coronation-blue" th:if="${beneficiary.preferredName} ==''" th:text="${beneficiary.preferredName}" disabled />
-                                    <a href='' class="btn btn-link required-step" style='font-size:11px;text-decoration:underline'>Change <span class='hidden-xs'>Beneficiary</span></a>
+                                    <a href='/corporate/transfer/local/' class="btn btn-link required-step" style='font-size:11px;text-decoration:underline'>Change <span class='hidden-xs'>Beneficiary</span></a>
                                     <p class="errors" th:if="${#fields.hasErrors('amount')}" th:errors="*{amount}">&times;</p>
                             </div>
                             <div class="form-group">

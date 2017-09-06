@@ -109,6 +109,10 @@ function validateSecAnswer(secAnswers){
                 $('#errorMess').text(result);
                 $('#myModalError').modal('show');
             }
+        },error:function (data) {
+            $('#myLoader').modal('hide');
+            $('#errorMess').text("Service not available, please try again later");
+            $('#myModalError').modal('show');
         }
     });
 
@@ -145,6 +149,10 @@ function sendGenPassword() {
                 $('#errorMess').text(result);
                 $('#myModalError').modal('show');
             }
+        },error:function (data) {
+            $('#myLoader').modal('hide');
+            $('#errorMess').text("Service not available, please try again later");
+            $('#myModalError').modal('show');
         }
     });
 
@@ -177,6 +185,10 @@ function validateGenPassword() {
                 $('#errorMess').text(result);
                 $('#myModalError').modal('show');
             }
+        },error:function (data) {
+            $('#myLoader').modal('hide');
+            $('#errorMess').text("Service not available, please try again later");
+            $('#myModalError').modal('show');
         }
     });
 
@@ -208,6 +220,10 @@ function validatePassword(password){
                 $('#errorMess').text(res);
                 $('#myModalError').modal('show');
             }
+        },error:function (data) {
+            $('#myLoader').modal('hide');
+            $('#errorMess').text("Service not available, please try again later");
+            $('#myModalError').modal('show');
         }
     });
 
@@ -243,6 +259,10 @@ function validateToken(){
                 $('#errorMess').text(result);
                 $('#myModalError').modal('show');
             }
+        },error:function (data) {
+            $('#myLoader').modal('hide');
+            $('#errorMess').text("Service not available, please try again later");
+            $('#myModalError').modal('show');
         }
     });
 
@@ -274,6 +294,10 @@ function changePassword(){
                     $('#myModalError').modal('show');
 
                 }
+            },error:function (data) {
+                $('#myLoader').modal('hide');
+                $('#errorMess').text("Service not available, please try again later");
+                $('#myModalError').modal('show');
             }
         });
     });

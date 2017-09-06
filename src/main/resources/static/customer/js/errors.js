@@ -52,14 +52,7 @@ function errorLogin()
          $('#errorMess').html(showErr);
          $('#myModalError').modal('show');
     }
-    
 
-    
-        
-       
-       
-        
-    
 }
 
 

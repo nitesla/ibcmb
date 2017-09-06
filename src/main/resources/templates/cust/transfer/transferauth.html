@@ -3,7 +3,7 @@
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{ret-layout}">
 
-<body onload="javascript:var bread = [['Home', '/retail/dashboard'],['Transfer','/retail/transfer/ownaccount'],['transfer summary']];currentBar('transfer summary');breadCrumb(bread)">
+<body onload="javascript:var bread = [['Home', '/retail/dashboard'],['transfer summary']];currentBar('transfer summary');breadCrumb(bread)">
 
 <div layout:fragment="content">
     <div class="col-md-5 col-sm-5 ">
@@ -15,12 +15,12 @@
 
     <div class="col-xs-12 ml-15 " >
         <div class="col-xs-12 no-pad-lef alert  no-bd">
-           <div class="col-sm-offset-3  col-sm-6 table-responsive">
+           <div class="col-sm-offset-3  col-sm-6">
 
 
                
                     <table class="table">
-                        <tr>
+                        <tr class="top-row">
 
                             <th>Source account</th>
                             <td th:text="${transferRequest.customerAccountNumber}"></td>

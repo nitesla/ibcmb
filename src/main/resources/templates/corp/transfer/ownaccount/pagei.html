@@ -46,8 +46,7 @@
                                     <span id="dcurency"></span>
                                     <div>
                                         <span class="alert no-bd-rad my-border bg-white" id="destCurrency">CCY</span>
-                                        <select name="destination" class="form-control" id="destination"
-                                                th:field="*{beneficiaryAccountNumber}"  onchange="getDestCurrency();"
+                                        <select name="destination" class="form-control" id="destination" th:field="*{beneficiaryAccountNumber}"  onchange="getDestCurrency();"
                                                 required="required">
 
                                             <!--<option th:each="s: ${destAccounts}" th:value="${s}" th:text="${s}"></option>-->
@@ -218,8 +217,12 @@
                         $('#sourceCurrency').text(cur);
                         document.getElementById('sourceCurrency').style.visibility = 'visible';
                     }
+                },
+                error: function (xhr, status, err) {
+
                 }
-            })
+
+                })
         }
 
         ///
@@ -241,6 +244,9 @@
                         document.getElementById('destCurrency').style.visibility = 'visible';
 
                     }
+                },
+                error: function (xhr, status, err) {
+
                 }
             })
         }

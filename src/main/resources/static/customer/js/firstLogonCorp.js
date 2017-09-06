@@ -93,6 +93,10 @@ function updateUser(){
                     $('#errorMess').text("Profile update could not be completed due to service unavailability.");
                     $('#myModalError').modal('show');
                 }
+            },error:function (data) {
+                $('#myLoader').modal('hide');
+                $('#errorMess').text("Service not available, please try again later");
+                $('#myModalError').modal('show');
             }
         });
     });

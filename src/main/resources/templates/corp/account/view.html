@@ -146,7 +146,7 @@
                         [5, 10, 20],
                         [5, 10, 20]
                     ],
-                    "pagingType": "simple_numbers",
+                    "pagingType": "input",
                     "searching": false,
                     "paging": true,
                     "processing": false,
@@ -269,20 +269,25 @@
                                     $('#previous').hide();
 
                                 },
-                                error: function(dd) {
+                                error: function (dd) {
+//                        console.log("error")
                                     var contactsTab2 = $('#tranDetails').DataTable();
-                                    var row = contactsTab2.rows().remove().draw();
-                                    console.log("error")
+                                    var row  = contactsTab2.rows().remove().draw();
+                                    $('#next').hide();
+                                    $('#previous').hide();
+                                    bootbox.alert("<div style='text-align: center'>Service not available</div>");
+                                    return false;
                                 }
-
                             });
                         } else {
                             var contactsTab2 = $('#tranDetails').DataTable();
                             var row = contactsTab2.rows().remove().draw();
                             $('#btn-print').hide();
+                            $('#next').hide();
+                            $('#previous').hide();
                             bootbox.alert("<div style='text-align: center'>Start date cannot be less than end date</div>");
                             return false;
-                            8
+
                         }
                     }
                 });
@@ -370,8 +375,12 @@
                         $('#previous').show();
 
                     },
-                    error: function(dd) {
-                        //                    console.log("error")
+                    error: function (dd) {
+//                        console.log("error")
+                        var contactsTab2 = $('#tranDetails').DataTable();
+                        var row  = contactsTab2.rows().remove().draw();
+                        $('#next').hide();
+                        $('#previous').hide();
                         bootbox.alert("<div style='text-align: center'>Service not available</div>");
                         return false;
                     }
@@ -415,10 +424,15 @@
                         }
                         $('#next').show();
                     },
-                    error: function(dd) {
-                        console.log("error")
+                    error: function (dd) {
+//                        console.log("error")
+                        var contactsTab2 = $('#tranDetails').DataTable();
+                        var row  = contactsTab2.rows().remove().draw();
+                        $('#next').hide();
+                        $('#previous').hide();
+                        bootbox.alert("<div style='text-align: center'>Service not available</div>");
+                        return false;
                     }
-
                 });
             }
 

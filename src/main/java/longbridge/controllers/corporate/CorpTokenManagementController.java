@@ -84,13 +84,14 @@ public class CorpTokenManagementController {
             }
         } catch (InternetBankingSecurityException ibe) {
             logger.error("Error authenticating token {} ", ibe);
+            redirectAttributes.addFlashAttribute("failure", ibe.getMessage());
+
         }
         if (user.getNoOfTokenAttempts() != null){
             corporateUserService.increaseNoOfTokenAttempt(user);
             noOfAttempts = user.getNoOfTokenAttempts();
         }
         model.addAttribute("noOfAttempts",noOfAttempts);
-        redirectAttributes.addFlashAttribute("failure", messageSource.getMessage("token.auth.failure", null, locale));
         return "redirect:/corporate/token";
 
     }
