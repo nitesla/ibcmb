@@ -99,7 +99,8 @@ public class SettingController {
 
                         {
                            Code code =codeService.getByTypeAndCode("ACCOUNT_CLASS",i.getAccountType());
-                           if (code!=null){
+                           if (code!=null)
+                           {
                                i.setAccountType(code.getDescription());
                            }
                         }
