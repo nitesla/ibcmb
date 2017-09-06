@@ -1,7 +1,6 @@
 package longbridge.controllers.retail;
 
 import longbridge.dtos.NotificationsDTO;
-import longbridge.dtos.SettingDTO;
 import longbridge.models.Account;
 import longbridge.models.RetailUser;
 import longbridge.models.SRConfig;
@@ -72,19 +71,20 @@ public class RetailControllerAdvice {
 
         RetailUser user = retailUserService.getUserByName(principal.getName());
         String bvn = "";
+        String lastLogin = "";
         if (user!=null){
             bvn=(user.getBvn()==null)?"Not available":user.getBvn();
+            lastLogin=(user.getLastLoginDate()==null)?DateFormatter.format(user.getCreatedOnDate()):DateFormatter.format(user.getLastLoginDate());
         }
-
         model.addAttribute("bvn", bvn);
+        model.addAttribute("lastLogin", lastLogin);
 
-        if(user.getLastLoginDate()!=null) {
-            model.addAttribute("lastLogin", DateFormatter.format(user.getLastLoginDate()));
-        }
-        else {
-            model.addAttribute("lastLogin", user.getLastLoginDate());
-
-        }
+//        if(user.getLastLoginDate()!=null) {
+//            model.addAttribute("lastLogin", DateFormatter.format(user.getLastLoginDate()));
+//        }
+//        else {
+//            model.addAttribute("lastLogin", user.getLastLoginDate());
+//        }
 
         Calendar c = Calendar.getInstance();
         int timeOfDay = c.get(Calendar.HOUR_OF_DAY);
