@@ -8,6 +8,7 @@ import longbridge.exception.*;
 import longbridge.forms.AlertPref;
 import longbridge.forms.CustChangePassword;
 import longbridge.forms.CustResetPassword;
+import longbridge.models.Code;
 import longbridge.models.CorporateUser;
 import longbridge.services.*;
 import org.apache.commons.lang3.ArrayUtils;
@@ -33,6 +34,7 @@ import javax.validation.Valid;
 import java.security.Principal;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Controller
@@ -83,6 +85,23 @@ public class CorpSettingController {
                     ).collect(Collectors.toList());
 
         }
+
+        accountList.stream().filter(Objects::nonNull)
+                .forEach(
+
+                        i->
+
+                        {
+                            Code code =codeService.getByTypeAndCode("ACCOUNT_CLASS",i.getAccountType());
+                            if (code!=null && code.getDescription()!=null)
+                            {
+                                i.setAccountType(code.getDescription());
+                            }
+                        }
+
+
+                );
+
 
 
         model.addAttribute("accountList", accountList);
