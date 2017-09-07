@@ -19,8 +19,8 @@ import org.springframework.transaction.annotation.Transactional;
 public interface OperationsUserRepo extends CommonRepo<OperationsUser, Long> {
 
     OperationsUser findFirstByUserName(String s);
-    OperationsUser findFirstByUserNameIgnoreCase (String s);
-    OperationsUser findByEmail(String email);
+    OperationsUser findFirstByUserNameIgnoreCase(String s);
+    OperationsUser findFirstByEmailIgnoreCase(String email);
     Iterable<OperationsUser> findByRole(Role r);
     Page<OperationsUser> findByRole(Role r, Pageable pageDetail);
     Integer countByRole(Role r);

@@ -161,6 +161,8 @@
     </div>
 </div>
 <script type="text/javascript" class="init" th:inline="javascript">
+
+
     $(document).ready(function () {
 
 
@@ -237,6 +239,11 @@
 
     function validateCorpId() {
         var custId = $("#corpUniqueId").val();
+
+        if(custId==""){
+            return;
+        }
+
         $.ajax({
             url: "/ops/corporates/validate/" + custId,
             success: function (result) {

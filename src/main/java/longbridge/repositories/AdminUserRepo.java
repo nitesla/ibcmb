@@ -27,7 +27,7 @@ public interface AdminUserRepo extends CommonRepo<AdminUser, Long>{
 
     AdminUser findById(Long id);
     AdminUser findFirstByUserNameIgnoreCase(String s);
-    AdminUser findByEmail(String email);
+    AdminUser findFirstByEmailIgnoreCase(String email);
     AdminUser findById(long id);
     Iterable<AdminUser> findByRole(Role r);
     Page<AdminUser> findByRole(Role r, Pageable pageDetail);
