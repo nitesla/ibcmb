@@ -25,7 +25,6 @@ public class AdminUserDTO {
     @NotEmpty(message = "lastName")
     private String lastName;
     @NotEmpty(message = "email")
-    @Email(message = "email")
     private String email;
     @NotEmpty(message = "phoneNumber")
     private String phoneNumber;

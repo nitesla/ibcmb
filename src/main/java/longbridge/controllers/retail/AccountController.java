@@ -207,6 +207,7 @@ import longbridge.dtos.SettingDTO;
 import longbridge.exception.InternetBankingException;
 import longbridge.forms.CustomizeAccount;
 import longbridge.models.Account;
+import longbridge.models.Code;
 import longbridge.models.RetailUser;
 import longbridge.repositories.AccountRepo;
 import longbridge.services.*;
@@ -273,7 +274,10 @@ public class AccountController {
 	private TransferService transferService;
 
 	@Autowired
-	AccountRepo accountRepo;
+	private AccountRepo accountRepo;
+
+	@Autowired
+	private CodeService codeService;
 
 	@Autowired
 	JavaMailSender mailSender;
@@ -324,6 +328,12 @@ public class AccountController {
 	public String CustomizeAccountHome(Model model, Principal principal) {
 		RetailUser user = retailUserService.getUserByName(principal.getName());
 		Iterable<AccountDTO> accounts = accountService.getAccounts(user.getCustomerId());
+		for (AccountDTO account : accounts) {
+			Code code = codeService.getByTypeAndCode("ACCOUNT_CLASS", account.getSchemeType());
+			if (code != null && code.getDescription() != null) {
+				account.setSchemeType(code.getDescription());
+			}
+		}
 		model.addAttribute("accounts", accounts);
 		return "cust/account/customizehome";
 	}
@@ -369,6 +379,13 @@ public class AccountController {
 	public String settingsPage(Model model, Principal principal) {
 		RetailUser user = retailUserService.getUserByName(principal.getName());
 		Iterable<AccountDTO> accounts = accountService.getAccounts(user.getCustomerId());
+
+		for (AccountDTO account : accounts) {
+			Code code = codeService.getByTypeAndCode("ACCOUNT_CLASS", account.getSchemeType());
+			if (code != null && code.getDescription() != null) {
+				account.setSchemeType(code.getDescription());
+			}
+		}
 		model.addAttribute("accounts", accounts);
 		return "cust/account/setting";
 	}

@@ -101,6 +101,9 @@ public class SettingController {
                            Code code =codeService.getByTypeAndCode("ACCOUNT_CLASS",i.getAccountType());
                            if (code!=null && code.getDescription()!=null)
                            {
+
+                               logger.info("Account class is  {}", code.getDescription());
+
                                i.setAccountType(code.getDescription());
                            }
                         }
@@ -111,7 +114,7 @@ public class SettingController {
         model.addAttribute("accountList", accountList);
 
         boolean exp = passwordPolicyService.displayPasswordExpiryDate(retailUser.getExpiryDate());
-        logger.info("EXPIRY RESULT {} ", exp);
+//        logger.info("EXPIRY RESULT {} ", exp);
         if (exp){
             model.addAttribute("message", messageSource.getMessage("password.reset.notice", null, locale));
         }

@@ -22,7 +22,7 @@ import java.util.List;
 public interface CodeService {
 
 	@PreAuthorize("hasAuthority('ADD_CODE')")
-	String addCode(CodeDTO code, AdminUser adminUser) throws InternetBankingException;
+	String addCode(CodeDTO code) throws InternetBankingException;
 
 	/**
 	 * Deletes a code from the system
@@ -57,7 +57,7 @@ public interface CodeService {
 	List<CodeDTO> getCodesByType(String codeType);
 
 	@PreAuthorize("hasAuthority('UPDATE_CODE')")
-	public String updateCode(CodeDTO codeDTO, AdminUser adminUser) throws InternetBankingException;
+	public String updateCode(CodeDTO codeDTO) throws InternetBankingException;
 
 	@PreAuthorize("hasAuthority('GET_CODES')")
     Page<CodeDTO> getCodesByType(String codeType, Pageable pageDetails);

@@ -739,7 +739,7 @@ public class UserRegController {
 
         RetailUserDTO retailUserDTO = new RetailUserDTO();
         retailUserDTO.setUserName(userName);
-        retailUserDTO.setEmail(email);
+        retailUserDTO.setEmail(details.getEmail());
         retailUserDTO.setPassword(password);
         retailUserDTO.setCustomerId(customerId);
         retailUserDTO.setBvn(bvn);
