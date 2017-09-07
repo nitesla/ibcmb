@@ -80,14 +80,19 @@ public class SettingController {
     @RequestMapping("/dashboard")
     public String getRetailDashboard(Model model, Principal principal) {
         RetailUser retailUser = retailUserService.getUserByName(principal.getName());
+
+        if(retailUser==null){
+            return "redirect:/login/retail";
+        }
+
         List<AccountDTO> accountList = accountService.getAccountsAndBalances(retailUser.getCustomerId());
-        SettingDTO dto= configService.getSettingByName("TRANSACTIONAL_ACCOUNTS");
-         if (dto!=null && dto.isEnabled()){
-             String []list= StringUtils.split(dto.getValue(),",");
-             accountList=  accountList
+        SettingDTO dto = configService.getSettingByName("TRANSACTIONAL_ACCOUNTS");
+        if (dto != null && dto.isEnabled()) {
+            String[] list = StringUtils.split(dto.getValue(), ",");
+            accountList = accountList
                     .stream()
                     .filter(
-                            i-> ArrayUtils.contains(list,i.getAccountType())
+                            i -> ArrayUtils.contains(list, i.getAccountType())
                     ).collect(Collectors.toList());
 
         }
@@ -95,17 +100,15 @@ public class SettingController {
         accountList.stream().filter(Objects::nonNull)
                 .forEach(
 
-                        i->
+                        i ->
 
                         {
-                           Code code =codeService.getByTypeAndCode("ACCOUNT_CLASS",i.getAccountType());
-                           if (code!=null && code.getDescription()!=null)
-                           {
+                            Code code = codeService.getByTypeAndCode("ACCOUNT_CLASS", i.getAccountType());
+                            if (code != null && code.getDescription() != null) {
 
-                               logger.info("Account class is  {}", code.getDescription());
 
-                               i.setAccountType(code.getDescription());
-                           }
+                                i.setAccountType(code.getDescription());
+                            }
                         }
 
 
@@ -115,7 +118,7 @@ public class SettingController {
 
         boolean exp = passwordPolicyService.displayPasswordExpiryDate(retailUser.getExpiryDate());
 //        logger.info("EXPIRY RESULT {} ", exp);
-        if (exp){
+        if (exp) {
             model.addAttribute("message", messageSource.getMessage("password.reset.notice", null, locale));
         }
 
@@ -286,11 +289,10 @@ public class SettingController {
 
 
         RetailUser user = retailUserService.getUserByName(principal.getName());
-        String fullname=user.getFirstName();
-        String custemail=user.getEmail();
-        String custId=user.getCustomerId();
-        String acctNumber=request.getParameter("acctNumber");
-
+        String fullname = user.getFirstName();
+        String custemail = user.getEmail();
+        String custId = user.getCustomerId();
+        String acctNumber = request.getParameter("acctNumber");
 
 
         SettingDTO setting = configService.getSettingByName("CUSTOMER_CARE_EMAIL");
@@ -299,10 +301,10 @@ public class SettingController {
                 Email email = new Email.Builder()
                         .setRecipient(setting.getValue())
                         .setSubject(messageSource.getMessage("customer.bvn.link.subject", null, locale))
-                        .setBody(String.format(messageSource.getMessage("customer.bvn.link.message", null, locale),user.getUserName(),fullname, bvn,acctNumber,custId,custemail))
+                        .setBody(String.format(messageSource.getMessage("customer.bvn.link.message", null, locale), user.getUserName(), fullname, bvn, acctNumber, custId, custemail))
                         .build();
                 mailService.send(email);
-                String message =  messageSource.getMessage("bvn.add.success", null, locale);
+                String message = messageSource.getMessage("bvn.add.success", null, locale);
                 logger.info("BVN request sent successfully");
                 redirectAttributes.addFlashAttribute("message", message);
 
@@ -318,25 +320,25 @@ public class SettingController {
 
 
     @GetMapping("/contact")
-    public String contactUs(){
+    public String contactUs() {
         return "cust/contact";
     }
 
     @PostMapping("/contact")
-    public String sendContactForm(WebRequest webRequest, Principal principal, Model model, Locale locale, RedirectAttributes redirectAttributes){
+    public String sendContactForm(WebRequest webRequest, Principal principal, Model model, Locale locale, RedirectAttributes redirectAttributes) {
         String message = webRequest.getParameter("message");
-        if (message == null){
+        if (message == null) {
             model.addAttribute("failure", "Field is required");
             return "cust/contact";
         }
 
         RetailUser user = retailUserService.getUserByName(principal.getName());
 
-        try{
+        try {
             messageService.sendRetailContact(message, user);
             redirectAttributes.addFlashAttribute("message", "message sent successfully");
             return "redirect:/retail/contact";
-        }catch (InternetBankingException e){
+        } catch (InternetBankingException e) {
             logger.error("Failed to send Email request", e);
             String mes = e.getMessage();
             model.addAttribute("failure", mes);
@@ -352,7 +354,7 @@ public class SettingController {
     }
 
     @GetMapping("/faq")
-    public String fAQ(){
+    public String fAQ() {
         return "cust/faq";
     }
 
