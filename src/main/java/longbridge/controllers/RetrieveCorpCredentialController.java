@@ -423,11 +423,10 @@ public @ResponseBody String getSecAns(WebRequest webRequest, HttpSession session
             e.printStackTrace();
         }catch (InternetBankingSecurityException e){
             e.printStackTrace();
-            logger.info("security question exception {}",e.getMessage());
+//            logger.info("security question exception {}",e.getMessage());
         }catch (Exception e){
             e.printStackTrace();
         }
-logger.info("out of the try");
         return question;
     }
     @GetMapping("/rest/corporate/validate/secAns/{acctDetails}")
@@ -435,8 +434,8 @@ logger.info("out of the try");
         try{
             //confirm security question is correct
             int noOfMismatch = 0;
-            logger.info("answer 1 {}",webRequest.getParameter("secAnswers"));
-            logger.info("acctDetails {}",acctDetails);
+//            logger.info("answer 1 {}",webRequest.getParameter("secAnswers"));
+//            logger.info("acctDetails {}",acctDetails);
             List<String> answers = StringUtil.splitByComma(webRequest.getParameter("secAnswers"));
 //            Map<String, List<String>> qa = securityService.getUserQA(acctDetails[0], acctDetails[1]);
             if(session.getAttribute("corpSecQestnAndAns") !=null) {
