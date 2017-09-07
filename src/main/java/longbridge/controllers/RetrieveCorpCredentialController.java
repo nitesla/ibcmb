@@ -83,6 +83,7 @@ public class RetrieveCorpCredentialController {
         resetPasswordForm.step = "1";
         resetPasswordForm.username = username;
         if (username == null){
+            redirectAttributes.addFlashAttribute("failure", "Invalid Credentials");
             return "redirect:/login/corporate";
         }
         logger.info("the username and corporateId is {} and {}",username,corporateId);
@@ -97,7 +98,7 @@ public class RetrieveCorpCredentialController {
                 List<String> questions= qa.get("questions");
                 logger.info("questions {}",questions);
                 if (questions == null){
-                    redirectAttributes.addFlashAttribute("failure", "Invalid Credentials");
+                    redirectAttributes.addFlashAttribute("failure", messageSource.getMessage("corp.reg.inconplete.failed", null, locale));
                     return "redirect:/login/corporate";
                 }else{
 //                    logger.info("the question size {} and values {} ",questions.size(),questions);
@@ -107,7 +108,7 @@ public class RetrieveCorpCredentialController {
                 }
 
             }else {
-                redirectAttributes.addFlashAttribute("failure", "Invalid Credentials");
+                    redirectAttributes.addFlashAttribute("failure", messageSource.getMessage("corp.reg.inconplete.failed", null, locale));
                 return "redirect:/login/corporate";
             }
             PasswordStrengthDTO passwordStrengthDTO = passwordPolicyService.getPasswordStrengthParams();
@@ -122,6 +123,7 @@ public class RetrieveCorpCredentialController {
             return "corp/passwordreset";
         }catch (InternetBankingException e){
             e.printStackTrace();
+            redirectAttributes.addFlashAttribute("failure", messageSource.getMessage("corp.reg.inconplete.failed", null, locale));
             return "redirect:/login/corporate";
         }
 //        return "corp/passwordreset";
@@ -143,7 +145,7 @@ public @ResponseBody String getSecAns(WebRequest webRequest, HttpSession session
             qa = securityService.getUserQA(corporateUser.getEntrustId(), corporateUser.getEntrustGroup());
         }
         //List<String> sec = null;
-        logger.info("sec questions {}",qa);
+//        logger.info("sec questions {}",qa);
         if (qa != null){
             List<String> entAnswers = qa.get("answers");
 //                secAnswer = question.stream().filter(Objects::nonNull).findFirst().orElse("");
@@ -370,7 +372,7 @@ public @ResponseBody String getSecAns(WebRequest webRequest, HttpSession session
         userDetails[0] = "";
         userDetails[1] = "";
 //        Account account = accountService.getAccountByAccountNumber(corporateId);
-        logger.info("this is the acc corpp {}", corporateId);
+//        logger.info("this is the acc corpp {}", corporateId);
 //            customerId = account.getCustomerId();
             Corporate corporate = corporateService.getCorporateByCorporateId(corporateId);
 //        logger.info("this is the acc corporate{}", corporate);
@@ -420,6 +422,7 @@ public @ResponseBody String getSecAns(WebRequest webRequest, HttpSession session
             e.printStackTrace();
         }catch (InternetBankingSecurityException e){
             e.printStackTrace();
+            logger.info("security question exception {}",e);
         }catch (Exception e){
             e.printStackTrace();
         }
