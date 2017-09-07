@@ -153,7 +153,7 @@ public class RetailUserServiceImpl implements RetailUserService {
         try {
             RetailUser retailUser = getUserByName(user.getUserName());
             if (retailUser != null) {
-                throw new DuplicateObjectException(messageSource.getMessage("username.invalid", null, locale));
+                throw new DuplicateObjectException(messageSource.getMessage("user.exists", null, locale));
             }
             RetailUser retUser = getUserByCustomerId(user.getCustomerId());
             if (retUser != null) {

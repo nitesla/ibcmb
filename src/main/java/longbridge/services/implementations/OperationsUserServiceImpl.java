@@ -180,7 +180,7 @@ public class OperationsUserServiceImpl implements OperationsUserService {
         }
 
 
-        opsUser = operationsUserRepo.findFirstByEmailIgnoreCase(user.getUserName());
+        opsUser = operationsUserRepo.findFirstByEmailIgnoreCase(user.getEmail());
         if (opsUser != null) {
             throw new DuplicateObjectException(messageSource.getMessage("email.exists", null, locale));
         }
@@ -266,6 +266,9 @@ public class OperationsUserServiceImpl implements OperationsUserService {
                 throw new DuplicateObjectException(messageSource.getMessage("email.exists", null, locale));
             }
         }
+
+        opsUser = operationsUserRepo.findOne(user.getId());
+
 
         try {
             entityManager.detach(opsUser);

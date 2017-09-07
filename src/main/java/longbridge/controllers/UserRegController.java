@@ -681,7 +681,7 @@ public class UserRegController {
 
         if (details.getCifId() == null||details.getCifId().isEmpty() ){
             logger.error("Account Number not valid");
-            return messageSource.getMessage("cif.not.valid", null, locale);
+            return messageSource.getMessage("account.reg.error", null, locale);
         }
 
         try {

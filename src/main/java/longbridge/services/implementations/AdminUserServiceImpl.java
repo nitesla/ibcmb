@@ -130,7 +130,7 @@ public class AdminUserServiceImpl implements AdminUserService {
             throw new DuplicateObjectException(messageSource.getMessage("user.exists", null, locale));
         }
 
-        adminUser = adminUserRepo.findFirstByEmailIgnoreCase(user.getUserName());
+        adminUser = adminUserRepo.findFirstByEmailIgnoreCase(user.getEmail());
         if (adminUser != null) {
             throw new DuplicateObjectException(messageSource.getMessage("email.exists", null, locale));
         }
@@ -289,6 +289,8 @@ public class AdminUserServiceImpl implements AdminUserService {
                 throw new DuplicateObjectException(messageSource.getMessage("email.exists", null, locale));
             }
         }
+
+        adminUser = adminUserRepo.findById(user.getId());
 
         try {
             entityManager.detach(adminUser);
