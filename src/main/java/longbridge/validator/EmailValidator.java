@@ -21,7 +21,7 @@ public class EmailValidator {
     @Autowired
     private ConfigurationService configService;
 
-    public  boolean isValid(String email) {
+    public boolean isValid(String email) {
 
         try {
             InternetAddress internetAddress = new InternetAddress(email);
