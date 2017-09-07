@@ -368,7 +368,7 @@ public @ResponseBody String getSecAns(WebRequest webRequest, HttpSession session
         String corporateId = webRequest.getParameter("corporateId");
 //        logger.info("corporateId {} email {}",corporateId,email);
         String customerId = "";
-        String[] userDetails =  new String[4];
+        String[] userDetails =  new String[5];
         userDetails[0] = "";
         userDetails[1] = "";
 //        Account account = accountService.getAccountByAccountNumber(corporateId);
@@ -385,6 +385,7 @@ public @ResponseBody String getSecAns(WebRequest webRequest, HttpSession session
                     userDetails[1] = corporateUser.getEntrustGroup();
                     userDetails[2] = corporateUser.getFirstName();
                     userDetails[3] = corporateUser.getUserName();
+                    userDetails[4] = corporateUser.getIsFirstTimeLogon();
                 }
 //                logger.info("Cid id : " + customerId);
 //                logger.info("entrust id {} entrust group {} ", corporateUser.getEntrustId(), corporateUser.getEntrustGroup());
@@ -422,7 +423,7 @@ public @ResponseBody String getSecAns(WebRequest webRequest, HttpSession session
             e.printStackTrace();
         }catch (InternetBankingSecurityException e){
             e.printStackTrace();
-            logger.info("security question exception {}",e);
+            logger.info("security question exception {}",e.getMessage());
         }catch (Exception e){
             e.printStackTrace();
         }
