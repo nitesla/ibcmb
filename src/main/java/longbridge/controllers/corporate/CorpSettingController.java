@@ -86,12 +86,13 @@ public class CorpSettingController {
 
         }
 
-        accountList.stream().filter(Objects::nonNull)
+         accountList.stream().filter(Objects::nonNull)
                 .forEach(
 
                         i->
 
                         {
+
                             Code code =codeService.getByTypeAndCode("ACCOUNT_CLASS",i.getAccountType());
                             if (code!=null && code.getDescription()!=null)
                             {
