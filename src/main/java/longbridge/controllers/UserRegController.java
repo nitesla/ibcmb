@@ -681,7 +681,7 @@ public class UserRegController {
 
         if (details.getCifId() == null||details.getCifId().isEmpty() ){
             logger.error("Account Number not valid");
-            return messageSource.getMessage("cif.not.valid", null, locale);
+            return messageSource.getMessage("account.reg.error", null, locale);
         }
 
         try {
@@ -739,7 +739,7 @@ public class UserRegController {
 
         RetailUserDTO retailUserDTO = new RetailUserDTO();
         retailUserDTO.setUserName(userName);
-        retailUserDTO.setEmail(email);
+        retailUserDTO.setEmail(details.getEmail());
         retailUserDTO.setPassword(password);
         retailUserDTO.setCustomerId(customerId);
         retailUserDTO.setBvn(bvn);

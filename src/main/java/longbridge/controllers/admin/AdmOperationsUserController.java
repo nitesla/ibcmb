@@ -13,6 +13,7 @@ import longbridge.services.RoleService;
 import longbridge.services.VerificationService;
 import longbridge.utils.VerificationStatus;
 
+import longbridge.validator.EmailValidator;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -57,6 +58,9 @@ public class AdmOperationsUserController {
 
     @Autowired
     private VerificationService verificationService;
+
+    @Autowired
+    private EmailValidator emailValidator;
 
 
 
@@ -107,6 +111,14 @@ public class AdmOperationsUserController {
             result.addError(new ObjectError("invalid", messageSource.getMessage("form.fields.required", null, locale)));
             return "adm/operation/add";
         }
+
+        if(!emailValidator.validate(operationsUser.getEmail())){
+            result.addError(new ObjectError("invalid", messageSource.getMessage("email.invalid",null,locale)));
+            logger.error("Invalid User email {}", operationsUser.getEmail());
+            return "adm/operation/add";
+        }
+
+
         try {
             String message = operationsUserService.addUser(operationsUser);
             redirectAttributes.addFlashAttribute("message", message);
@@ -204,6 +216,14 @@ public class AdmOperationsUserController {
             result.addError(new ObjectError("invalid", messageSource.getMessage("form.fields.required", null, locale)));
             return "adm/operation/edit";
         }
+
+
+        if(!emailValidator.validate(operationsUser.getEmail())){
+            result.addError(new ObjectError("invalid", messageSource.getMessage("email.invalid",null,locale)));
+            logger.error("Invalid User email {}", operationsUser.getEmail());
+            return "adm/operation/edit";
+        }
+
         try {
             String message = operationsUserService.updateUser(operationsUser);
             redirectAttributes.addFlashAttribute("message", message);

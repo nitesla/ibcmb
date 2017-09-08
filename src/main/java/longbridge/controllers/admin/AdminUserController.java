@@ -12,7 +12,9 @@ import longbridge.models.AdminUser;
 import longbridge.models.User;
 import longbridge.services.*;
 
+import longbridge.validator.EmailValidator;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Validate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -64,6 +66,9 @@ public class AdminUserController {
     @Autowired
     private VerificationService verificationService;
 
+    @Autowired
+    private EmailValidator emailValidator;
+
 
     @GetMapping("/new")
     public String addUser(Model model) {
@@ -73,12 +78,22 @@ public class AdminUserController {
         return "/adm/admin/add";
     }
 
+
+
     @PostMapping
     public String createUser(@ModelAttribute("adminUser") @Valid AdminUserDTO adminUser, BindingResult result, RedirectAttributes redirectAttributes, Locale locale, Principal principal) {
         if (result.hasErrors()) {
             result.addError(new ObjectError("invalid", messageSource.getMessage("form.fields.required", null, locale)));
             return "adm/admin/add";
         }
+
+
+        if(!emailValidator.validate(adminUser.getEmail())){
+            result.addError(new ObjectError("invalid", messageSource.getMessage("email.invalid",null,locale)));
+            logger.error("Invalid User email {}", adminUser.getEmail());
+            return "adm/admin/add";
+        }
+
         try {
             String message = adminUserService.addUser(adminUser);
             redirectAttributes.addFlashAttribute("message", message);
@@ -102,6 +117,8 @@ public class AdminUserController {
         }
 
     }
+
+
 
 
     @GetMapping("/all")
@@ -160,6 +177,15 @@ public class AdminUserController {
             result.addError(new ObjectError("invalid", messageSource.getMessage("form.fields.required", null, locale)));
             return "adm/admin/edit";
         }
+
+
+        if(!emailValidator.validate(adminUser.getEmail())){
+            result.addError(new ObjectError("invalid", messageSource.getMessage("email.invalid",null,locale)));
+            logger.error("Invalid User email {}", adminUser.getEmail());
+            return "adm/admin/edit";
+        }
+
+
         try {
             String message = adminUserService.updateUser(adminUser);
             redirectAttributes.addFlashAttribute("message", message);
@@ -214,7 +240,7 @@ public class AdminUserController {
     @GetMapping("/{id}/password/reset")
     public String resetPassword(@PathVariable Long id, RedirectAttributes redirectAttributes) {
 
-        if(verificationService.isPendingVerification(id,AdminUser.class.getSimpleName())){
+        if (verificationService.isPendingVerification(id, AdminUser.class.getSimpleName())) {
             redirectAttributes.addFlashAttribute("failure", "User has pending changes to be verified");
             return "redirect:/admin/users";
 

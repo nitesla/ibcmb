@@ -4,6 +4,21 @@
 <div layout:fragment="content">
     <section class="content-wrapper">
         <div class="containe">
+            <div th:if="${message}">
+                <div hidden="hidden">
+                    <ul class="actionMessage">
+                        <li th:each="msg : ${message}" th:text="${msg}">Message</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div th:if="${failure}">
+                <div hidden="hidden">
+                    <ul class="actionError">
+                        <li th:each="msg : ${failure}" th:text="${msg}">Message</li>
+                    </ul>
+                </div>
+            </div>
             <div class="bg">
                 <form th:action="@{/corporate/login}" method="POST" class="form-signin" autocomplete="off">
                     <h5 class="form-signin-heading text-white">Enter Login Details</h5>

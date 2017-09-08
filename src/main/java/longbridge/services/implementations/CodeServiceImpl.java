@@ -95,7 +95,7 @@ public class CodeServiceImpl implements CodeService {
 
     @Transactional
     @Verifiable(operation = "UPDATE_CODE", description = "Updating a Code")
-    public String updateCode(CodeDTO codeDTO, AdminUser adminUser) throws InternetBankingException {
+    public String updateCode(CodeDTO codeDTO) throws InternetBankingException {
         try {
             Code code = convertDTOToEntity(codeDTO);
             codeRepo.save(code);
@@ -158,7 +158,7 @@ public class CodeServiceImpl implements CodeService {
 
     @Override
     @Verifiable(operation = "ADD_CODE", description = "Adding a Code")
-    public String addCode(CodeDTO codeDTO, AdminUser adminUser) throws InternetBankingException {
+    public String addCode(CodeDTO codeDTO) throws InternetBankingException {
         try {
             Code code = convertDTOToEntity(codeDTO);
             codeRepo.save(code);
