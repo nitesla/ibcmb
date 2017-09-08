@@ -1,9 +1,10 @@
 var customerId = "null";
-var entityDetails =[4];
+var entityDetails =[5];
 entityDetails[0] = "";
 entityDetails[1] = "";
 entityDetails[2] = "";
 entityDetails[3] = "";
+entityDetails[4] = "";
 var noOfQs = 0;
 var secAnswer ="";
 var email = "";
@@ -27,11 +28,12 @@ function validateAccountNo(corporateId,email){
             entityDetails[1] = data1[1];
             entityDetails[2] = data1[2];
             entityDetails[3] = data1[3];
+            entityDetails[4] = data1[4];
             // console.log("the data "+data1);
             // console.log("the entityDetails "+entityDetails);
             if(data1[0] == '' && data1[1] == ''){
                 //invalid account number
-                document.getElementById("errorMess").textContent="Ensure you put in a valid Corporate ID. and email";
+                document.getElementById("errorMess").textContent="Please supply valid Corporate ID. and email";
                 $('#myModalError').modal('show');
                 $('#myLoader').modal('hide');
                 //alert("Account number not found");
@@ -62,10 +64,19 @@ var fetchQuestion = "";
             success:function(data2){
                 // console.log("kjhb "+data2);
                 secQues = ''+String(data2);
-                // console.log("sec question ",secQues);
+                console.log("first time login ",entityDetails[4]);
                 if(data2 == null || data2 ==''){
-                    document.getElementById("errorMess").textContent="Could not get Security Question from server, please try again later.";
-                    $('#myModalError').modal('show');
+                    if(entityDetails[4] == "Y"){
+                        document.getElementById("errorMess").textContent="Please complete registration by providing credentials sent to your email or contact the bank.";
+                        $('#myModalError').modal('show');
+                        $(".btn-link").on("click", function()
+                        {                            window.location.href = "/login/corporate";
+                        });
+                    }else{
+                        document.getElementById("errorMess").textContent="Could not get Security Question from server, please try again later.";
+                        $('#myModalError').modal('show');
+
+                    }
 
                 }else{
                     fetchQuestion = "true";

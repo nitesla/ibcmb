@@ -354,6 +354,8 @@ public class SecurityConfig {
 
                     // .authenticated()
                     .hasAuthority(UserType.CORPORATE.toString())
+                    .anyRequest().fullyAuthenticated()
+                    .anyRequest().authenticated()
 
                     // log in
                     .and().formLogin().loginPage("/login/corporate").loginProcessingUrl("/corporate/login")

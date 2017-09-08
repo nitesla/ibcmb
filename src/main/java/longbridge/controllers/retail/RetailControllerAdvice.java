@@ -72,52 +72,46 @@ public class RetailControllerAdvice {
         RetailUser user = retailUserService.getUserByName(principal.getName());
         String bvn = "";
         String lastLogin = "";
-        if (user!=null){
-            bvn=(user.getBvn()==null)?"Not available":user.getBvn();
-            lastLogin=(user.getLastLoginDate()==null)?DateFormatter.format(user.getCreatedOnDate()):DateFormatter.format(user.getLastLoginDate());
-        }
-        model.addAttribute("bvn", bvn);
-        model.addAttribute("lastLogin", lastLogin);
+        if (user!=null) {
+            bvn = (user.getBvn() == null) ? "Not available" : user.getBvn();
+            lastLogin = (user.getLastLoginDate() == null) ? DateFormatter.format(user.getCreatedOnDate()) : DateFormatter.format(user.getLastLoginDate());
 
-//        if(user.getLastLoginDate()!=null) {
-//            model.addAttribute("lastLogin", DateFormatter.format(user.getLastLoginDate()));
-//        }
-//        else {
-//            model.addAttribute("lastLogin", user.getLastLoginDate());
-//        }
+            model.addAttribute("bvn", bvn);
+            model.addAttribute("lastLogin", lastLogin);
 
-        Calendar c = Calendar.getInstance();
-        int timeOfDay = c.get(Calendar.HOUR_OF_DAY);
+            Calendar c = Calendar.getInstance();
+            int timeOfDay = c.get(Calendar.HOUR_OF_DAY);
 
-        if (timeOfDay >= 0 && timeOfDay < 12) {
-            greeting = "Good morning, ";
-        } else if (timeOfDay >= 12 && timeOfDay < 16) {
-            greeting = "Good afternoon, ";
-        } else if (timeOfDay >= 16 && timeOfDay < 24) {
-            greeting = "Good evening, ";
-        }
-        model.addAttribute("greeting", greeting);
+            if (timeOfDay >= 0 && timeOfDay < 12) {
+                greeting = "Good morning, ";
+            } else if (timeOfDay >= 12 && timeOfDay < 16) {
+                greeting = "Good afternoon, ";
+            } else if (timeOfDay >= 16 && timeOfDay < 24) {
+                greeting = "Good evening, ";
+            }
+            model.addAttribute("greeting", greeting);
 
 
-        String firstName = user.getFirstName();
-        String lastName = "";
-        if (user.getLastName() == null) {
-            lastName = "";
+            String firstName = user.getFirstName();
+            String lastName = "";
+            if (user.getLastName() == null) {
+                lastName = "";
 
-        } else {
-            lastName = user.getLastName();
-        }
+            } else {
+                lastName = user.getLastName();
+            }
 
-        String name = firstName + ' ' + lastName;
-        model.addAttribute("name", name);
+            String name = firstName + ' ' + lastName;
+            model.addAttribute("name", name);
 
-        List<SRConfig> requestList = reqConfigService.getServiceReqConfs();
-        model.addAttribute("serviceRequests", requestList);
+            List<SRConfig> requestList = reqConfigService.getServiceReqConfs();
+            model.addAttribute("serviceRequests", requestList);
 
 
-        int numOfUnreadMessages = messageService.getNumOfUnreadMessages(user);
-        if (numOfUnreadMessages > 0) {
-            model.addAttribute("numOfUnreadMessages", numOfUnreadMessages);
+            int numOfUnreadMessages = messageService.getNumOfUnreadMessages(user);
+            if (numOfUnreadMessages > 0) {
+                model.addAttribute("numOfUnreadMessages", numOfUnreadMessages);
+            }
         }
 
         //System.out.println( new SimpleDateFormat("HH:mm:ss").format(Calendar.getInstance().getTime()) );

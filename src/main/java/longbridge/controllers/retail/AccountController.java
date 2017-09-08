@@ -207,6 +207,7 @@ import longbridge.dtos.SettingDTO;
 import longbridge.exception.InternetBankingException;
 import longbridge.forms.CustomizeAccount;
 import longbridge.models.Account;
+import longbridge.models.Code;
 import longbridge.models.RetailUser;
 import longbridge.repositories.AccountRepo;
 import longbridge.services.*;
@@ -214,8 +215,6 @@ import longbridge.utils.DateFormatter;
 import longbridge.utils.statement.AccountStatement;
 import longbridge.utils.statement.TransactionDetails;
 import longbridge.utils.statement.TransactionHistory;
-import net.sf.jasperreports.engine.*;
-import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -224,12 +223,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.Resource;
 import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
 import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
 import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
@@ -240,15 +236,10 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.jasperreports.JasperReportsPdfView;
 
-import javax.activation.DataSource;
 import javax.mail.MessagingException;
-import javax.mail.internet.MimeMessage;
-import javax.mail.util.ByteArrayDataSource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.security.Principal;
 import java.text.DecimalFormat;
 import java.text.ParseException;
@@ -283,7 +274,10 @@ public class AccountController {
 	private TransferService transferService;
 
 	@Autowired
-	AccountRepo accountRepo;
+	private AccountRepo accountRepo;
+
+	@Autowired
+	private CodeService codeService;
 
 	@Autowired
 	JavaMailSender mailSender;
@@ -334,6 +328,12 @@ public class AccountController {
 	public String CustomizeAccountHome(Model model, Principal principal) {
 		RetailUser user = retailUserService.getUserByName(principal.getName());
 		Iterable<AccountDTO> accounts = accountService.getAccounts(user.getCustomerId());
+		for (AccountDTO account : accounts) {
+			Code code = codeService.getByTypeAndCode("ACCOUNT_CLASS", account.getSchemeType());
+			if (code != null && code.getDescription() != null) {
+				account.setSchemeType(code.getDescription());
+			}
+		}
 		model.addAttribute("accounts", accounts);
 		return "cust/account/customizehome";
 	}
@@ -379,6 +379,13 @@ public class AccountController {
 	public String settingsPage(Model model, Principal principal) {
 		RetailUser user = retailUserService.getUserByName(principal.getName());
 		Iterable<AccountDTO> accounts = accountService.getAccounts(user.getCustomerId());
+
+		for (AccountDTO account : accounts) {
+			Code code = codeService.getByTypeAndCode("ACCOUNT_CLASS", account.getSchemeType());
+			if (code != null && code.getDescription() != null) {
+				account.setSchemeType(code.getDescription());
+			}
+		}
 		model.addAttribute("accounts", accounts);
 		return "cust/account/setting";
 	}
@@ -478,7 +485,7 @@ public class AccountController {
 			modelMap.put("remarks", transactionHistory.getNarration());
 			modelMap.put("recipientBank", "");
 			modelMap.put("refNUm", transactionHistory.getTranType());
-			modelMap.put("date",DateFormatter.format(transactionHistory.getValueDate()));
+			modelMap.put("date", DateFormatter.format(transactionHistory.getValueDate()));
 			modelMap.put("tranDate", DateFormatter.format(transactionHistory.getPostedDate()));
 		}
 

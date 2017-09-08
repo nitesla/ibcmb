@@ -3,7 +3,6 @@
     <property name="LOG_PATH" value="C:/ibanking/logs" />
     <property name="LOG_ARCHIVE" value="${LOG_PATH}/archive" />
     <timestamp key="timestamp-by-second" datePattern="yyyy-MM-dd'T'HHmmss"/>
-
     <appender name="Console" class="ch.qos.logback.core.ConsoleAppender">
         <layout>
             <pattern>%d [%thread] %-5level %logger{36} - %msg%n</pattern>

@@ -9,6 +9,7 @@ import longbridge.exception.*;
 import longbridge.forms.AlertPref;
 import longbridge.forms.CustChangePassword;
 import longbridge.forms.CustResetPassword;
+import longbridge.models.Code;
 import longbridge.models.Email;
 import longbridge.models.FinancialInstitutionType;
 import longbridge.models.RetailUser;
@@ -34,10 +35,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.security.Principal;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -94,11 +92,29 @@ public class SettingController {
 
         }
 
+        accountList.stream().filter(Objects::nonNull)
+                .forEach(
+
+                        i->
+
+                        {
+                           Code code =codeService.getByTypeAndCode("ACCOUNT_CLASS",i.getAccountType());
+                           if (code!=null && code.getDescription()!=null)
+                           {
+
+                               logger.info("Account class is  {}", code.getDescription());
+
+                               i.setAccountType(code.getDescription());
+                           }
+                        }
+
+
+                );
 
         model.addAttribute("accountList", accountList);
 
         boolean exp = passwordPolicyService.displayPasswordExpiryDate(retailUser.getExpiryDate());
-        logger.info("EXPIRY RESULT {} ", exp);
+//        logger.info("EXPIRY RESULT {} ", exp);
         if (exp){
             model.addAttribute("message", messageSource.getMessage("password.reset.notice", null, locale));
         }

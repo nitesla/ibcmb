@@ -32,7 +32,6 @@ public class OperationsUserDTO implements Person{
     private String role;
 
     @NotEmpty(message = "email")
-    @Email(message = "email")
     private String email;
     @NotEmpty(message = "phoneNumber")
     private String phoneNumber;

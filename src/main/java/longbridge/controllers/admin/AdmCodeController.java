@@ -72,10 +72,9 @@ public class AdmCodeController {
             return "adm/code/add";
         }
 
-		AdminUser adminUser =adminUserService.getUserByName(principal.getName()) ;
 
         try {
-			String message = codeService.addCode(codeDTO, adminUser);
+			String message = codeService.addCode(codeDTO);
 			redirectAttributes.addFlashAttribute("message", message);
 			return "redirect:/admin/codes/alltypes";
 		}
@@ -184,8 +183,7 @@ public class AdmCodeController {
 
 		}
 		try {
-			AdminUser adminUser = adminUserService.getUserByName(principal.getName());
-			String message = codeService.updateCode(codeDTO, adminUser);
+			String message = codeService.updateCode(codeDTO);
 			redirectAttributes.addFlashAttribute("message", message);
 			return "redirect:/admin/codes/alltypes";
 		}

@@ -42,7 +42,8 @@ public class TransferErrorService {
 
        }catch (Exception e){
             e.printStackTrace();
-           errorMessage=exception.getMessage();
+
+           errorMessage=messages.getMessage("transfer.add.failure", null, locale);
 
        }
 

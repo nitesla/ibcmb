@@ -4,7 +4,6 @@ package longbridge.controllers.corporate;
 import longbridge.dtos.CorpLocalBeneficiaryDTO;
 import longbridge.dtos.CorpTransferRequestDTO;
 import longbridge.dtos.SettingDTO;
-import longbridge.dtos.TransferRequestDTO;
 import longbridge.exception.*;
 import longbridge.models.*;
 import longbridge.repositories.CorpTransferRequestRepo;
