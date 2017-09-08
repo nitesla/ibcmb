@@ -55,7 +55,7 @@ public class TransferStatusJobLauncher {
         this.creditRequestRepo = creditRequestRepo;
     }
 
-    @Scheduled(cron = "${rest.api.to.database.job.cron}")
+    @Scheduled(fixedDelay = 1000 * 60 * 30)
     void updateTransferStatusJob() throws JobParametersInvalidException, JobExecutionAlreadyRunningException, JobRestartException, JobInstanceAlreadyCompleteException {
 //        LOGGER.info("Starting restJob job");
 
