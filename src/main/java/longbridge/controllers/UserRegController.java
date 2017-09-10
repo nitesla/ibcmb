@@ -655,6 +655,12 @@ public class UserRegController {
         String caption = webRequest.getParameter("caption");
         String noOfQuestions = webRequest.getParameter("noOfQuestions");
         logger.info("no of questions {} ", noOfQuestions);
+
+        logger.info("------------------------------------------------");
+        logger.info("New user email: {}",email);
+        logger.info("New user date of birth: {}",dob);
+
+
         String bvn ="";
 //        String secQuestion = webRequest.getParameter("securityQuestion1");
 //        String secAnswer = webRequest.getParameter("securityAnswer1");

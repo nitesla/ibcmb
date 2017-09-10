@@ -32,18 +32,18 @@ import javax.persistence.EntityManager;
 public class ConfigurationServiceImpl implements ConfigurationService {
 
 	@Autowired
-	SettingRepo settingRepo;
+	private SettingRepo settingRepo;
 
 	@Autowired
-	ModelMapper modelMapper;
+	private ModelMapper modelMapper;
 
 	@Autowired
-	MessageSource messageSource;
+	private MessageSource messageSource;
 
 	@Autowired
-	EntityManager entityManager;
+	private EntityManager entityManager;
 
-	Locale locale = LocaleContextHolder.getLocale();
+	private Locale locale = LocaleContextHolder.getLocale();
 
 	@Transactional
 	@Override

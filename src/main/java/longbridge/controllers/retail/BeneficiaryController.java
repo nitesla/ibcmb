@@ -70,7 +70,7 @@ public class BeneficiaryController {
 
     @Autowired
     public BeneficiaryController(LocalBeneficiaryService localBeneficiaryService, MessageSource messages, InternationalBeneficiaryService internationalBeneficiaryService, FinancialInstitutionService financialInstitutionService, RetailUserService retailUserService, CodeService codeService
-    ,ConfigurationService configService,SecurityService securityService, MessageSource messageSource
+            , ConfigurationService configService, SecurityService securityService, MessageSource messageSource
     ) {
         this.localBeneficiaryService = localBeneficiaryService;
         this.messages = messages;
@@ -78,9 +78,9 @@ public class BeneficiaryController {
         this.financialInstitutionService = financialInstitutionService;
         this.retailUserService = retailUserService;
         this.codeService = codeService;
-        this.configService=configService;
-        this.securityService=securityService;
-        this.messageSource=messageSource;
+        this.configService = configService;
+        this.securityService = securityService;
+        this.messageSource = messageSource;
     }
 
     @GetMapping
@@ -92,9 +92,9 @@ public class BeneficiaryController {
         List<LocalBeneficiary> localBeneficiaries = StreamSupport.stream(localBeneficiary.spliterator(), false)
                 .filter(Objects::nonNull)
                 .filter(i -> financialInstitutionService.getFinancialInstitutionByCode(i.getBeneficiaryBank()) != null)
-                 .collect(Collectors.toList());
+                .collect(Collectors.toList());
 
-        localBeneficiaries.forEach(i-> i.setBeneficiaryBank(financialInstitutionService.getFinancialInstitutionByCode(i.getBeneficiaryBank()).getInstitutionName()));
+        localBeneficiaries.forEach(i -> i.setBeneficiaryBank(financialInstitutionService.getFinancialInstitutionByCode(i.getBeneficiaryBank()).getInstitutionName()));
 
 
         model.addAttribute("localBen",
@@ -113,33 +113,33 @@ public class BeneficiaryController {
         model.addAttribute("localBeneficiaryDTO", new LocalBeneficiaryDTO());
         model.addAttribute("internationalBeneficiaryDTO", new InternationalBeneficiaryDTO());
         model.addAttribute("foreignCurrencyCodes", codeService.getCodesByType("CURRENCY"));
-        List<FinancialInstitutionDTO> financialInstitutionDTOS =financialInstitutionService.getFinancialInstitutionsByType(FinancialInstitutionType.LOCAL);
+        List<FinancialInstitutionDTO> financialInstitutionDTOS = financialInstitutionService.getFinancialInstitutionsByType(FinancialInstitutionType.LOCAL);
         financialInstitutionDTOS
                 .stream()
                 .sorted(Comparator.comparing(FinancialInstitutionDTO::getInstitutionName));
-        model.addAttribute("localBanks",financialInstitutionDTOS);
+        model.addAttribute("localBanks", financialInstitutionDTOS);
         return "cust/beneficiary/add";
     }
 
     @PostMapping("/local")
-    public String createLocalBeneficiary(@Valid LocalBeneficiaryDTO localBeneficiaryDTO, Principal principal, Model model, RedirectAttributes redirectAttributes, Locale  locale, HttpServletRequest request) {
+    public String createLocalBeneficiary(@Valid LocalBeneficiaryDTO localBeneficiaryDTO, Principal principal, Model model, RedirectAttributes redirectAttributes, Locale locale, HttpServletRequest request) {
 
         SettingDTO setting = configService.getSettingByName("ENABLE_RETAIL_2FA");
 
         if (/* service to check if token is enabled comes in here  */
 
                 (setting != null && setting.isEnabled())
-                ){
+                ) {
 
             try {
-                model.addAttribute("bank",financialInstitutionService.getFinancialInstitutionByCode(localBeneficiaryDTO.getBeneficiaryBank()).getInstitutionName());
-                String token =request.getParameter("token");
+                model.addAttribute("bank", financialInstitutionService.getFinancialInstitutionByCode(localBeneficiaryDTO.getBeneficiaryBank()).getInstitutionName());
+                String token = request.getParameter("token");
                 RetailUser retailUser = retailUserService.getUserByName(principal.getName());
-              securityService.performTokenValidation(retailUser.getEntrustId(), retailUser.getEntrustGroup(), token);
+                securityService.performTokenValidation(retailUser.getEntrustId(), retailUser.getEntrustGroup(), token);
             } catch (InternetBankingSecurityException ibse) {
 
                 model.addAttribute("failure", ibse.getMessage());
-                model.addAttribute("beneficiary",localBeneficiaryDTO);
+                model.addAttribute("beneficiary", localBeneficiaryDTO);
                 return "cust/beneficiary/localSummary";
             }
 
@@ -153,10 +153,10 @@ public class BeneficiaryController {
 
             redirectAttributes.addFlashAttribute("message", message2);
         } catch (InternetBankingException e) {
-              e.printStackTrace();
-            try{
+            e.printStackTrace();
+            try {
                 redirectAttributes.addFlashAttribute("failure", messages.getMessage(e.getMessage(), null, locale));
-            }catch (Exception ex){
+            } catch (Exception ex) {
                 redirectAttributes.addFlashAttribute("failure", messages.getMessage("beneficiary.add.failure", null, locale));
 
             }
@@ -166,7 +166,7 @@ public class BeneficiaryController {
 
 
     @PostMapping("/authenticate")
-    public String delLocBenToken(WebRequest webRequest, Principal principal, RedirectAttributes redirectAttributes){
+    public String delLocBenToken(WebRequest webRequest, Principal principal, RedirectAttributes redirectAttributes) {
         String token = webRequest.getParameter("token");
         logger.info("this is the ben tokeeen {}", token);
         String beneficiaryId = webRequest.getParameter("id");
@@ -194,8 +194,7 @@ public class BeneficiaryController {
                 redirectAttributes.addFlashAttribute("failure", e.getMessage());
                 return "redirect:/retail/beneficiary";
             }
-        }
-        else {
+        } else {
             return "redirect:/retail/beneficiary";
         }
     }
@@ -268,13 +267,12 @@ public class BeneficiaryController {
         model.addAttribute("bankCode", bankCode);
     }
 
-   @ModelAttribute
-    public void getLocalBanks(Model model){
+    @ModelAttribute
+    public void getLocalBanks(Model model) {
         List<FinancialInstitutionDTO> dtos = financialInstitutionService.getOtherLocalBanks(bankCode);
         dtos.sort(Comparator.comparing(FinancialInstitutionDTO::getInstitutionName));
-       model.addAttribute("localBanks",dtos );
-   }
-
+        model.addAttribute("localBanks", dtos);
+    }
 
 
     @PostMapping("/local/summary")
@@ -295,17 +293,16 @@ public class BeneficiaryController {
             }
 
 
-            model.addAttribute("bank",financialInstitutionService.getFinancialInstitutionByCode(localBeneficiaryDTO.getBeneficiaryBank()).getInstitutionName());
-            model.addAttribute("beneficiary",localBeneficiaryDTO);
+            model.addAttribute("bank", financialInstitutionService.getFinancialInstitutionByCode(localBeneficiaryDTO.getBeneficiaryBank()).getInstitutionName());
+            model.addAttribute("beneficiary", localBeneficiaryDTO);
             SettingDTO setting = configService.getSettingByName("ENABLE_RETAIL_2FA");
-
 
 
             if (/* service to check if token is enabled comes in here  */
 
                     (setting != null && setting.isEnabled())
                     )
-                model.addAttribute("auth","auth");
+                model.addAttribute("auth", "auth");
 
         } catch (InternetBankingException e) {
 

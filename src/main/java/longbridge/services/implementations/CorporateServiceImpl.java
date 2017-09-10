@@ -85,7 +85,7 @@ public class CorporateServiceImpl implements CorporateService {
     }
 
     @Override
-    public Long countCorporate(){
+    public Long countCorporate() {
         return corporateRepo.count();
     }
 
@@ -115,7 +115,6 @@ public class CorporateServiceImpl implements CorporateService {
     }
 
     @Override
-//    @Transactional
     public String addCorporate(CorporateDTO corporateDTO, CorporateUserDTO user) throws InternetBankingException {
 
         Corporate corporate = corporateRepo.findByCustomerId(corporateDTO.getCustomerId());
@@ -171,14 +170,11 @@ public class CorporateServiceImpl implements CorporateService {
         try {
             saveCorporateRequest(corporateRequestDTO);
             return messageSource.getMessage("corporate.add.success", null, locale);
-        }
-        catch (DuplicateObjectException doe){
+        } catch (DuplicateObjectException doe) {
             throw doe;
-        }
-        catch (InternetBankingException ibe){
+        } catch (InternetBankingException ibe) {
             throw ibe;
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             throw new InternetBankingException(messageSource.getMessage("corporate.add.failure", null, locale), e);
         }
     }
@@ -186,7 +182,7 @@ public class CorporateServiceImpl implements CorporateService {
     @Transactional
     public void saveCorporateRequest(CorporateRequestDTO corporateRequestDTO) throws InternetBankingException {
 
-        validateCorporateCreation(corporateRequestDTO);
+        validateCorporate(corporateRequestDTO);
 
         Corporate corporate = new Corporate();
         corporate.setCorporateType(corporateRequestDTO.getCorporateType());
@@ -196,6 +192,7 @@ public class CorporateServiceImpl implements CorporateService {
         corporate.setBvn(corporateRequestDTO.getBvn());
         corporate.setRcNumber(corporateRequestDTO.getRcNumber());
         corporate.setEmail(corporateRequestDTO.getEmail());
+        corporate.setPhoneNumber(corporateRequestDTO.getPhoneNumber());
         corporate.setCreatedOnDate(new Date());
         corporate.setStatus("A");
         List<Account> accounts = accountService.addAccounts(corporateRequestDTO.getAccounts());
@@ -219,7 +216,7 @@ public class CorporateServiceImpl implements CorporateService {
             corporateUser.setStatus("A");
             Role role;
             if ("SOLE".equals(corporateRequestDTO.getCorporateType())) {
-                role = getSoleCoporateRole();
+                role = getSoleCorporateRole();
             } else {
                 role = roleRepo.findOne(Long.parseLong(user.getRoleId()));
             }
@@ -286,7 +283,7 @@ public class CorporateServiceImpl implements CorporateService {
 
     }
 
-    private void validateCorporateCreation(CorporateRequestDTO corporateRequestDTO) throws InternetBankingException{
+    private void validateCorporate(CorporateRequestDTO corporateRequestDTO) throws InternetBankingException {
 
         if (corporateIdExists(corporateRequestDTO.getCorporateId())) {
             throw new DuplicateObjectException(messageSource.getMessage("corp.id.exists", null, locale));
@@ -324,7 +321,7 @@ public class CorporateServiceImpl implements CorporateService {
     }
 
 
-    private  void validateCorporateUser(CorporateUserDTO user) {
+    private void validateCorporateUser(CorporateUserDTO user) {
         CorporateUser corporateUser = corporateUserRepo.findFirstByUserNameIgnoreCase(user.getUserName());
         if (corporateUser != null) {
             throw new DuplicateObjectException(messageSource.getMessage("user.exists", null, locale));
@@ -344,7 +341,7 @@ public class CorporateServiceImpl implements CorporateService {
     }
 
 
-    private Role getSoleCoporateRole() {
+    private Role getSoleCorporateRole() {
         Role role = null;
         SettingDTO setting = configService.getSettingByName("SOLE_CORPORATE_ROLE");
         if (setting != null && setting.isEnabled()) {
@@ -691,15 +688,15 @@ public class CorporateServiceImpl implements CorporateService {
     public String addCorporateRole(CorporateRoleDTO roleDTO) throws InternetBankingException {
 
 
-        if(roleDTO.getRank()<1){
+        if (roleDTO.getRank() < 1) {
             throw new InternetBankingException(messageSource.getMessage("auth.level.invalid", null, locale));
         }
 
-          CorporateRole corporateRole = corporateRoleRepo.findFirstByNameAndRankAndCorporate_Id(roleDTO.getName(),roleDTO.getRank(),Long.parseLong(roleDTO.getCorporateId()));
+        CorporateRole corporateRole = corporateRoleRepo.findFirstByNameAndRankAndCorporate_Id(roleDTO.getName(), roleDTO.getRank(), Long.parseLong(roleDTO.getCorporateId()));
 
-          if(corporateRole!=null){
-              throw new DuplicateObjectException(messageSource.getMessage("auth.level.exist", null, locale));
-          }
+        if (corporateRole != null) {
+            throw new DuplicateObjectException(messageSource.getMessage("auth.level.exist", null, locale));
+        }
 
         try {
             Corporate corporate = corporateRepo.findOne(NumberUtils.toLong(roleDTO.getCorporateId()));
@@ -731,13 +728,13 @@ public class CorporateServiceImpl implements CorporateService {
     @Verifiable(operation = "UPDATE_CORPORATE_ROLE", description = "Updating a Corporate Role")
     public String updateCorporateRole(CorporateRoleDTO roleDTO) throws InternetBankingException {
 
-        if(roleDTO.getRank()<1){
+        if (roleDTO.getRank() < 1) {
             throw new InternetBankingException(messageSource.getMessage("auth.level.invalid", null, locale));
         }
 
-        CorporateRole corporateRole = corporateRoleRepo.findFirstByNameAndRankAndCorporate_Id(roleDTO.getName(),roleDTO.getRank(),Long.parseLong(roleDTO.getCorporateId()));
+        CorporateRole corporateRole = corporateRoleRepo.findFirstByNameAndRankAndCorporate_Id(roleDTO.getName(), roleDTO.getRank(), Long.parseLong(roleDTO.getCorporateId()));
 
-        if(corporateRole!=null&&!roleDTO.getId().equals(corporateRole.getId())){
+        if (corporateRole != null && !roleDTO.getId().equals(corporateRole.getId())) {
             throw new DuplicateObjectException(messageSource.getMessage("auth.level.exist", null, locale));
         }
 
@@ -823,15 +820,12 @@ public class CorporateServiceImpl implements CorporateService {
         List<CorpTransRule> transferRules = corpTransferRuleRepo.findByCorporate(corporate);
         Collections.sort(transferRules, new TransferRuleComparator());
         BigDecimal transferAmount = transferRequest.getAmount();
-        CorpTransRule applicableTransferRule = findApplicableRule(transferRules,transferAmount);
+        CorpTransRule applicableTransferRule = findApplicableRule(transferRules, transferAmount);
         return applicableTransferRule;
     }
 
 
-
-
-
-    private CorpTransRule findApplicableRule(List<CorpTransRule> transferRules, BigDecimal transferAmount){
+    private CorpTransRule findApplicableRule(List<CorpTransRule> transferRules, BigDecimal transferAmount) {
 
         CorpTransRule applicableTransferRule = null;
         for (CorpTransRule transferRule : transferRules) {

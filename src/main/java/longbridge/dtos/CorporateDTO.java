@@ -25,6 +25,7 @@ public class CorporateDTO implements Serializable{
     private String customerName;
     private String name;
     private String email;
+    private String phoneNumber;
     private String status;
     private String address;
     private String createdOnDate;
@@ -81,6 +82,14 @@ public class CorporateDTO implements Serializable{
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
     }
 
     public String getAddress() {

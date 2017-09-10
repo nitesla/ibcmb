@@ -72,7 +72,7 @@ public class OpsUserAdvisor {
     @After("isVerification() && isMerging() && isVerify() && args(user)")
     public void postOpsUserCreation(JoinPoint p, OperationsUser user) {
 
-        logger.info("Executing ADD_OPS_USER operation");
+        logger.info("Executing post ADD_OPS_USER operation");
         operationsUserService.createUserOnEntrustAndSendCredentials(user);
     }
 
@@ -82,6 +82,8 @@ public class OpsUserAdvisor {
 
         Verification verification = verificationRepo.findOne(verificationDto.getId());
         if (verification.getOperation().equals("UPDATE_OPS_STATUS")) {
+
+            logger.info("Executing post UPDATE_OPS_STATUS operation");
 
             OperationsUser user = operationsUserRepo.findOne(verification.getEntityId());
             entityManager.detach(user);
@@ -94,6 +96,7 @@ public class OpsUserAdvisor {
                 user.setExpiryDate(new Date());
                 passwordPolicyService.saveOpsPassword(user);
                 operationsUserRepo.save(user);
+                logger.info("Ops user {} status changed to {}",opsUser.getUserName(),opsUser.getStatus());
                 operationsUserService.sendActivationMessage(opsUser, fullName, user.getUserName(), password);
             }
         }

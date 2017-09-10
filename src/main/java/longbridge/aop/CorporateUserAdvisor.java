@@ -27,8 +27,8 @@ public class CorporateUserAdvisor {
 
 
     @Autowired
-    EntityManager entityManager;
-    private Logger log = LoggerFactory.getLogger(this.getClass());
+    private EntityManager entityManager;
+
     @Autowired
     private VerificationService verificationService;
 
@@ -47,7 +47,7 @@ public class CorporateUserAdvisor {
     @Autowired
     private VerificationRepo verificationRepo;
 
-    Logger logger = LoggerFactory.getLogger(this.getClass());
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
 
 
     @Pointcut("within( longbridge.services.implementations.VerificationServiceImpl)")
@@ -79,20 +79,21 @@ public class CorporateUserAdvisor {
         Verification verification  = verificationRepo.findOne(verificationDto.getId());
         if(verification.getOperation().equals("UPDATE_CORP_USER_STATUS")){
 
-            log.info("Inside Advisor for Post Corporate user activation...");
+            logger.info("Executing post UPDATE_CORP_USER_STATUS operation");
 
             CorporateUser user = corporateUserRepo.findOne(verification.getEntityId());
             entityManager.detach(user);
             ObjectMapper objectMapper = new ObjectMapper();
             CorporateUser corpUser = objectMapper.readValue(verification.getOriginalObject(),CorporateUser.class);
             if("A".equals(corpUser.getStatus())){
-                log.info("Corp user status is A");
                 String fullName = user.getFirstName()+" "+user.getLastName();
                 String password = passwordPolicyService.generatePassword();
                 user.setPassword(passwordEncoder.encode(password));
                 user.setExpiryDate(new Date());
                 passwordPolicyService.saveCorporatePassword(user);
                 corporateUserRepo.save(user);
+                logger.info("Corporate user {} status changed to {}",corpUser.getUserName(),corpUser.getStatus());
+
                 corporateUserService.sendPostActivateMessage(corpUser, fullName,user.getUserName(),password,user.getCorporate().getCustomerId());
             }
             else{

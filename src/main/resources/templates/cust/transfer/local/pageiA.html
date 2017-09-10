@@ -55,10 +55,10 @@
                             <label for='add' style="font-weight: bold; color: black;display:inline !important">Add
                                 Beneficiary</label>
                         </div>
-                        <button id="localsave" style="display: none;" class="btn btn-link required-step">NEXT</button>
+                        <button id="localsave" style="display: none;" class="btn btn-link required-step">Next</button>
                         <!--<button id="neq" type="button" class="btn btn-link required-step" oncligetPreferredNameName();">Name Enquiry</button>-->
                         <form th:href="@{/retail/benficiary}">
-                            <button type='submit' class="btn btn-link less-required">Cancel</button>
+                            <button type='reset' class="btn btn-link less-required" onclick="cancel();">Cancel</button>
                         </form>
 
                     </form>
@@ -130,6 +130,10 @@
             $('#check').hide();
             $('#acct_name').val("");
             $('#loading-icon').show();
+        }
+
+        function cancel(){
+            window.location.href="/retail/transfer/local";
         }
         /*]]>*/
     </script>

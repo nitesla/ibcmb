@@ -74,7 +74,7 @@ public class AdminUserAdvisor {
     @After("isVerification() && isMerging() && isVerify() && args(user)")
     public void postAdminUserCreation(JoinPoint p, AdminUser user) {
 
-        logger.info("Executing ADD_ADMIN_USER operation");
+        logger.info("Executing post ADD_ADMIN_USER operation");
          adminUserService.createUserOnEntrustAndSendCredentials(user);
 
     }
@@ -87,6 +87,8 @@ public class AdminUserAdvisor {
 
         if(verification.getOperation().equals("UPDATE_ADMIN_STATUS")){
 
+            logger.info("Executing post UPDATE_ADMIN_STATUS operation");
+
             AdminUser user = adminUserRepo.findOne(verification.getEntityId());
             entityManager.detach(user);
             ObjectMapper objectMapper = new ObjectMapper();
@@ -98,6 +100,7 @@ public class AdminUserAdvisor {
                 user.setExpiryDate(new Date());
                 passwordPolicyService.saveAdminPassword(user);
                 adminUserRepo.save(user);
+                logger.info("Admin user {} status changed to {}",adminUser.getUserName(),adminUser.getStatus());
                 adminUserService.sendActivationMessage(adminUser, fullName,user.getUserName(),password);
             }
     	}

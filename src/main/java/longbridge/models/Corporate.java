@@ -32,6 +32,7 @@ public class Corporate extends AbstractEntity implements PrettySerializer{
     private String corporateId;
     private String name;
     private String email;
+    private String phoneNumber;
     private String address;
     private String status ;
     private Date createdOnDate;
@@ -143,6 +144,14 @@ public class Corporate extends AbstractEntity implements PrettySerializer{
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
     }
 
     public String getStatus() {

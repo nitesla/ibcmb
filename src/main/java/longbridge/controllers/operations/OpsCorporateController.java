@@ -618,6 +618,7 @@ public class OpsCorporateController {
         corporateRequestDTO.setRcNumber(customerDetails.getRcNo());
         corporateRequestDTO.setBvn(customerDetails.getBvn());
         corporateRequestDTO.setEmail(customerDetails.getEmail());
+        corporateRequestDTO.setPhoneNumber(customerDetails.getPhone());
         corporate.setCustomerName(customerDetails.getCustomerName());
         session.setAttribute("corporateRequest", corporateRequestDTO);
 
@@ -635,6 +636,8 @@ public class OpsCorporateController {
         } else {
             accountInfos = filterAccounts(accountInfos, accountService.getAccounts(corporate.getCustomerId().toUpperCase()));
         }
+
+//        accountInfos = accountService.filterTransactionalAccounts(accountInfos);
 
 
         model.addAttribute("accounts", accountInfos);

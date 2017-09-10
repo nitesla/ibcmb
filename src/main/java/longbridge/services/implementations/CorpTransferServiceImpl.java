@@ -125,9 +125,7 @@ public class CorpTransferServiceImpl implements CorpTransferService {
 
 
             if (corpTransRequest.getStatus() != null) {
-//                if (corpTransRequest.getStatus().equals("000") || corpTransRequest.getStatus().equals("00"))
                 return corpTransferRequestDTO;
-//                throw new InternetBankingTransferException(corpTransRequest.getStatusDescription());
             }
             throw new InternetBankingTransferException(TransferExceptions.ERROR.toString());
         }

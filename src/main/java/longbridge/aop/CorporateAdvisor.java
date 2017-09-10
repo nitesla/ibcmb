@@ -35,25 +35,15 @@ public class CorporateAdvisor {
 
 
     @Autowired
-    EntityManager entityManager;
-
-    private Logger log = LoggerFactory.getLogger(this.getClass());
-
+    private EntityManager entityManager;
 
     @Autowired
     private CorporateService corporateService;
 
-
     @Autowired
-    PasswordPolicyService passwordPolicyService;
+    private AccountRepo accountRepo;
 
-    @Autowired
-    PasswordEncoder passwordEncoder;
-
-    @Autowired
-    AccountRepo accountRepo;
-
-    Logger logger = LoggerFactory.getLogger(this.getClass());
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
 
 
     @Pointcut("within( longbridge.services.implementations.VerificationServiceImpl)")

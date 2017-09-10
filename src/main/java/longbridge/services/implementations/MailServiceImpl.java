@@ -43,7 +43,7 @@ public class MailServiceImpl implements MailService {
         logger.info("Trying to send mail to {}", recipient);
 
         mailSender.send(messagePreparator);
-        logger.info("Email successfully sent to {} with subject {}", recipient,subject);
+        logger.info("Email successfully sent to {} with subject '{}'", recipient,subject);
     }
 
     @Override
@@ -63,6 +63,6 @@ public class MailServiceImpl implements MailService {
 
         mailSender.send(messagePreparator);
 
-        logger.info("Email successfully sent to {} with subject {}", email.getReceiverEmail(),email.getMessageSubject());
+        logger.info("Email successfully sent to {} with subject '{}'", email.getReceiverEmail(),email.getMessageSubject());
     }
 }

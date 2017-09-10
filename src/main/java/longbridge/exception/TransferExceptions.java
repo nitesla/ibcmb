@@ -10,8 +10,6 @@ public enum TransferExceptions {
     ;
 
 
-    ;
-
     private  String name="";
 
     TransferExceptions(String s) {

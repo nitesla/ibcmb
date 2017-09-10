@@ -136,7 +136,7 @@ public class FinancialInstitutionServiceImpl implements FinancialInstitutionServ
 
     @Override
     public List<FinancialInstitutionDTO> getFinancialInstitutionsByType(FinancialInstitutionType institutionType) {
-        Iterable<FinancialInstitution> fis = financialInstitutionRepo.findByInstitutionType(institutionType);
+        Iterable<FinancialInstitution> fis = financialInstitutionRepo.findByInstitutionTypeOrderByInstitutionNameAsc(institutionType);
         return convertEntitiesToDTOs(fis);
     }
 

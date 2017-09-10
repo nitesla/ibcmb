@@ -52,25 +52,25 @@ public class CorpUserVerificationServiceImpl implements CorpUserVerificationServ
     @Autowired
     private CorpUserVerificationRepo corpUserVerificationRepo;
     @Autowired
-    CorporateUserService corporateUserService;
+    private CorporateUserService corporateUserService;
     @Autowired
     private CorporateRepo corporateRepo;
     @Autowired
     private CorporateUserRepo corporateUserRepo;
     @Autowired
-    RoleRepo roleRepo;
+    private RoleRepo roleRepo;
 
     @Autowired
-    PasswordPolicyService passwordPolicyService;
+    private PasswordPolicyService passwordPolicyService;
 
     @Autowired
     private BCryptPasswordEncoder passwordEncoder;
 
     @Autowired
-    SecurityService securityService;
+    private SecurityService securityService;
 
     @Autowired
-    ConfigurationService configService;
+    private ConfigurationService configService;
 
     @Autowired
     private VerificationRepo verificationRepo;
@@ -81,17 +81,16 @@ public class CorpUserVerificationServiceImpl implements CorpUserVerificationServ
     private MessageSource messageSource;
 
     @Autowired
-    MailService mailService;
+    private MailService mailService;
 
     @Autowired
     private ModelMapper modelMapper;
 
-    Locale locale = LocaleContextHolder.getLocale();
+    private Locale locale = LocaleContextHolder.getLocale();
 
     @Override
     public String changeStatusFromCorporateAdmin(Long id) throws InternetBankingException {
         CorporateUser corporateUser = corporateUserRepo.findOne(id);
-        logger.info("Corporate USER>>>>>>>>>> "+ corporateUser);
 
         if ("I".equals(corporateUser.getCorporate().getStatus())) {
             throw new InternetBankingException(messageSource.getMessage("corporate.deactivated", null, locale));
@@ -161,7 +160,6 @@ public class CorpUserVerificationServiceImpl implements CorpUserVerificationServ
                 CorpUserVerification pendingVerification = corpUserVerificationRepo.findFirstByEntityNameAndEntityIdAndStatus(entityName,
                         id, VerificationStatus.PENDING);
                 if (pendingVerification != null) {
-                    logger.info("Found entity with pending verification");
                     throw new InternetBankingException("User has changes pending for verification. Approve or " +
                             "decline the changes before making another one.");
                 }
@@ -463,9 +461,7 @@ public class CorpUserVerificationServiceImpl implements CorpUserVerificationServ
                 builder.setSubject(messageSource.getMessage("verification.subject", null, locale));
                 builder.setBody(String.format(messageSource.getMessage("verification.message", null, locale), initiatorName, verifierName, operation, status, DateFormatter.format(date), comment));
                 Email email = builder.build();
-                new Thread(() -> {
-                    mailService.send(email);
-                }).start();
+                new Thread(() -> mailService.send(email)).start();
             }
         }
     }

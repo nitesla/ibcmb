@@ -61,7 +61,7 @@ public class CorpLocalBeneficiaryServiceImpl implements CorpLocalBeneficiaryServ
            Corporate corporate= corporateRepo.findOne(getCurrentUser().getCorpId());
            corpLocalBeneficiary.setCorporate(corporate);
            this.corpLocalBeneficiaryRepo.save(corpLocalBeneficiary);
-           logger.trace("Beneficiary {} has been added");
+           logger.info("Beneficiary {} has been added", corpLocalBeneficiary.getAccountName());
            return messageSource.getMessage("beneficiary.add.success",null,locale);
 
 
