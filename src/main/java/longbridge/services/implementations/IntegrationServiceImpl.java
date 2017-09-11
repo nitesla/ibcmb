@@ -18,6 +18,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpStatusCodeException;
@@ -41,6 +43,8 @@ public class IntegrationServiceImpl implements IntegrationService {
 
 
     private Logger logger = LoggerFactory.getLogger(getClass());
+    private Locale locale = LocaleContextHolder.getLocale();
+
     @Value("${ebank.service.uri}")
     private String URI;
     @Value("${CMB.ALERT.URL}")
@@ -52,17 +56,20 @@ public class IntegrationServiceImpl implements IntegrationService {
     private TemplateEngine templateEngine;
     private ConfigurationService configService;
     private TransferErrorService errorService;
+    private MessageSource messageSource;
 
     @Autowired
-    public IntegrationServiceImpl(RestTemplate template, MailService mailService, TemplateEngine templateEngine
-            , ConfigurationService configService,
-                                  TransferErrorService errorService) {
+    public IntegrationServiceImpl(RestTemplate template, MailService mailService, TemplateEngine templateEngine, ConfigurationService configService, TransferErrorService errorService, MessageSource messageSource) {
         this.template = template;
         this.mailService = mailService;
         this.templateEngine = templateEngine;
         this.configService = configService;
         this.errorService = errorService;
+        this.messageSource = messageSource;
     }
+
+    @Autowired
+
 
 
     @Override

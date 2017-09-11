@@ -151,28 +151,23 @@ function getBeneficiaryAccts() {
                 if (data != null) {
                     //$('input[name=username]').val(result);
 //                    $('#destination').empty();
-                   var benAcc =  $('#destination').html();
+                   var benAcc =  "";
                     for (var i = 0; i < data.length; i++) {
 
+                        $('#destination')
+                            .append($("<option></option>")
+                                .attr("value", data[i])
+                                .text(data[i]));
 
                         if(data[i]==beneficiaryAcc){
-
-                            $('#destination')
-                                .append($("<option></option>")
-                                    .attr("value", data[i])
-                                    .attr("selected", "selected")
-                                    .text(data[i]));
-
+                            benAcc = data[i];
                         }
-                        else{
-                            $('#destination')
-                                .append($("<option></option>")
-                                    .attr("value", data[i])
-                                    .text(data[i]));
-                        }
+
                     }
-//                    $('#destination>option:eq(selectedIndex)').prop('selected', true);
 
+                    if(benAcc!="") {
+                        $("#destination").val(benAcc).change();
+                    }
 
 
                 } else {
