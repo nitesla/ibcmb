@@ -68,9 +68,6 @@ public class IntegrationServiceImpl implements IntegrationService {
         this.messageSource = messageSource;
     }
 
-    @Autowired
-
-
 
     @Override
     public AccountInfo fetchAccount(String accountNumber) {
