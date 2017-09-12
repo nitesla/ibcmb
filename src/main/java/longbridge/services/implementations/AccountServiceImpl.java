@@ -264,7 +264,7 @@ public class AccountServiceImpl implements AccountService {
             String[] list = StringUtils.split(setting.getValue(), ",");
 
             for (AccountInfo account : accounts) {
-                if (ArrayUtils.contains(list, account.getSchemeType()) && "A".equals(account.getAccountStatus())) {
+                if (ArrayUtils.contains(list, account.getSchemeType()) && "A".equalsIgnoreCase(account.getAccountStatus())) {
                     filteredAccounts.add(account);
                 }
             }
