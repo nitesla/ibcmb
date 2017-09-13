@@ -12,6 +12,8 @@ import longbridge.services.*;
 import longbridge.utils.DateFormatter;
 import longbridge.utils.TransferType;
 import longbridge.utils.TransferUtils;
+import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -148,11 +150,19 @@ public class CorpTransferController {
         try {
             List<String> accountList = new ArrayList<>();
             Iterable<Account> accounts = accountService.getAccountsForCredit(accountService.getAccountByAccountNumber(accountId).getCustomerId());
-
+            SettingDTO dto = configService.getSettingByName("TRANSACTIONAL_ACCOUNTS");
             StreamSupport.stream(accounts.spliterator(), true)
                     .filter(Objects::nonNull)
                     .filter(i -> !i.getAccountNumber().equalsIgnoreCase(accountId))
                     .filter(l -> l.getCurrencyCode().equalsIgnoreCase(accountService.getAccountByAccountNumber(accountId).getCurrencyCode()))
+                    .filter(i->{
+                        if (dto != null && dto.isEnabled()){
+                            String[]   list = StringUtils.split(dto.getValue(), ",");
+                            return  ArrayUtils.contains(list, i.getSchemeType());
+
+                        }
+                        return false;
+                    } )
                     .forEach(i -> accountList.add(i.getAccountNumber()))
             ;
 

@@ -1,7 +1,9 @@
 package longbridge.controllers.retail;
 
 
+import longbridge.dtos.AccountDTO;
 import longbridge.dtos.LocalBeneficiaryDTO;
+import longbridge.dtos.SettingDTO;
 import longbridge.dtos.TransferRequestDTO;
 import longbridge.exception.InternetBankingException;
 import longbridge.exception.InternetBankingSecurityException;
@@ -14,6 +16,8 @@ import longbridge.services.*;
 import longbridge.utils.DateFormatter;
 import longbridge.utils.TransferType;
 import longbridge.utils.TransferUtils;
+import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +38,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.security.Principal;
 import java.text.DecimalFormat;
 import java.util.*;
+import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 
@@ -55,7 +60,8 @@ public class TransferController {
     private SecurityService securityService;
     private ApplicationContext appContext;
     private TransferUtils transferUtils;
-
+    @Autowired
+    private ConfigurationService configService;
 //    @Autowired
 //    TransferRe
 
@@ -142,13 +148,27 @@ public class TransferController {
         try {
             List<String> accountList = new ArrayList<>();
             Iterable<Account> accounts = accountService.getAccountsForCredit(accountService.getAccountByAccountNumber(accountId).getCustomerId());
+            SettingDTO dto = configService.getSettingByName("TRANSACTIONAL_ACCOUNTS");
+
 
             StreamSupport.stream(accounts.spliterator(), true)
                     .filter(Objects::nonNull)
                     .filter(i -> !i.getAccountNumber().equalsIgnoreCase(accountId))
                     .filter(l -> l.getCurrencyCode().equalsIgnoreCase(accountService.getAccountByAccountNumber(accountId).getCurrencyCode()))
+                    .filter(i->{
+                        if (dto != null && dto.isEnabled()){
+                            String[]   list = StringUtils.split(dto.getValue(), ",");
+                        return  ArrayUtils.contains(list, i.getSchemeType());
+
+                        }
+                        return false;
+                    } )
                     .forEach(i -> accountList.add(i.getAccountNumber()))
             ;
+
+
+
+
 
             logger.info("ACCOUNT LIST {}", StreamSupport.stream(accounts.spliterator(), true).count());
             logger.info("second LIST {}", accountList.size());
