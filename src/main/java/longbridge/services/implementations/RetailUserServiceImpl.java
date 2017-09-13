@@ -208,8 +208,11 @@ public class RetailUserServiceImpl implements RetailUserService {
 
 
 
-            Collection<AccountInfo> accounts = integrationService.fetchAccounts(details.getCifId());
-            for (AccountInfo acct : accounts) {
+            List<AccountInfo> accounts = integrationService.fetchAccounts(details.getCifId());
+
+            List<AccountInfo> transactionalAccounts = accountService.filterTransactionalAccounts(accounts);
+
+            for (AccountInfo acct : transactionalAccounts) {
                 accountService.AddFIAccount(details.getCifId(), acct);
             }
 

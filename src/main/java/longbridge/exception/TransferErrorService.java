@@ -43,7 +43,8 @@ public class TransferErrorService {
                 String error = codeTransalator.getResponseMessage();
                 return messages.getMessage(error, null, locale);
             }
-            errorMessage = messages.getMessage("transfer.error", null, locale);
+
+            errorMessage = messages.getMessage(exception.getMessage(), null, locale);
 
         } catch (Exception e) {
             logger.error("Error resolving error code",e);

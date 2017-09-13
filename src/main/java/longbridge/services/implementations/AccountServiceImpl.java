@@ -27,9 +27,9 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.*;
+import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
-//import longbridge.utils.AccountStatement;
 
 /**
  * Created by chigozirim on 3/29/17.
@@ -46,7 +46,8 @@ public class AccountServiceImpl implements AccountService {
     private AccountConfigService accountConfigService;
     private MessageSource messageSource;
     private ConfigurationService configurationService;
-
+    @Autowired
+    private ConfigurationService configService;
     @Autowired
     public AccountServiceImpl(AccountRepo accountRepo, IntegrationService integrationService, ModelMapper modelMapper, AccountConfigService accountConfigService, MessageSource messageSource, ConfigurationService configurationService) {
         this.accountRepo = accountRepo;
@@ -62,6 +63,7 @@ public class AccountServiceImpl implements AccountService {
         if (!customerId.equals(acct.getCustomerId())) {
             return false;
         }
+
         Account account = new Account();
         account.setPrimaryFlag("N");
         account.setHiddenFlag("N");
@@ -84,7 +86,6 @@ public class AccountServiceImpl implements AccountService {
             return false;
         }
         Account account = getAccountDetails(accountdto.getAccountNumber());
-        //account.setAccountId(acct.);TODO
         accountRepo.save(account);
         return true;
     }
@@ -264,14 +265,13 @@ public class AccountServiceImpl implements AccountService {
             String[] list = StringUtils.split(setting.getValue(), ",");
 
             for (AccountInfo account : accounts) {
-                if (ArrayUtils.contains(list, account.getSchemeType()) && "A".equals(account.getAccountStatus())) {
+                if (ArrayUtils.contains(list, account.getSchemeType()) && "A".equalsIgnoreCase(account.getAccountStatus())) {
                     filteredAccounts.add(account);
                 }
             }
         }
         return filteredAccounts;
     }
-
 
 
     @Override
@@ -439,7 +439,16 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public Iterable<Account> getAccountsForCredit(List<Account> accounts) {
         List<Account> accountsForCredit = new ArrayList<>();
+        SettingDTO dto= configService.getSettingByName("TRANSACTIONAL_ACCOUNTS");
+        if (dto!=null && dto.isEnabled()){
+            String []list= StringUtils.split(dto.getValue(),",");
+        accounts=    accounts
+                    .stream()
+                    .filter(
+                            i-> org.apache.commons.lang3.ArrayUtils.contains(list,i.getSchemeType())
+                    ).collect(Collectors.toList());
 
+        }
         logger.info("accounts are {}", accounts);
         for (Account account : accounts) {
             if (!accountConfigService.isAccountHidden(account.getAccountNumber()) && "A".equalsIgnoreCase(account.getStatus())

@@ -124,7 +124,7 @@ public class IntegrationServiceImpl implements IntegrationService {
 
 
         } catch (Exception e) {
-            logger.error("Error occurred",e);
+            logger.error("Error occurred", e);
         }
 
 
@@ -153,7 +153,7 @@ public class IntegrationServiceImpl implements IntegrationService {
 
 
         } catch (Exception e) {
-            logger.error("Error occurred",e);
+            logger.error("Error occurred", e);
         }
 
 
@@ -180,7 +180,7 @@ public class IntegrationServiceImpl implements IntegrationService {
 
 
         } catch (Exception e) {
-            logger.error("Error occurred",e);
+            logger.error("Error occurred", e);
         }
 
 
@@ -206,7 +206,8 @@ public class IntegrationServiceImpl implements IntegrationService {
 
 
         } catch (Exception e) {
-            logger.error("Error occurred",e);        }
+            logger.error("Error occurred", e);
+        }
         return histories;
     }
 
@@ -226,7 +227,7 @@ public class IntegrationServiceImpl implements IntegrationService {
         } catch (Exception e) {
             response.put("AvailableBalance", new BigDecimal(0));
             response.put("LedgerBalance", new BigDecimal(0));
-            logger.error("Error occurred",e);
+            logger.error("Error occurred", e);
             return response;
         }
     }
@@ -390,10 +391,11 @@ public class IntegrationServiceImpl implements IntegrationService {
             result = template.postForObject(uri, params, CustomerDetails.class);
 
         } catch (Exception e) {
-            logger.error("Error occurred",e);
+            logger.error("Error occurred", e);
         }
 
         return result;
+
     }
 
     @Override
@@ -407,7 +409,8 @@ public class IntegrationServiceImpl implements IntegrationService {
             result = template.getForObject(uri, CustomerDetails.class, params);
             return result;
         } catch (Exception e) {
-            logger.error("Error occurred",e);        }
+            logger.error("Error occurred", e);
+        }
 
         return result;
     }
