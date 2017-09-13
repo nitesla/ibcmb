@@ -461,7 +461,9 @@
 
 
         $('#userdet').on('change', function() {
+
             console.log("change");
+            document.getElementById('reg-form').reset();
             if ($(this).val() === "email") {
                 $("#email").show();
                 $("#dob").hide();
