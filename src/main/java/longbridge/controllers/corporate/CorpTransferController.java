@@ -229,7 +229,7 @@ public class CorpTransferController {
             if (request.getSession().getAttribute("auth-needed") != null) {
                 String token = request.getParameter("token");
                 if (token == null || token.isEmpty()) {
-
+                    model.addAttribute("failure", "Token is required");
                     return "corp/transfer/transferauth";
                 }
 

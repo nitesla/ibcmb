@@ -220,7 +220,7 @@ logger.info("the account id {}",accountId);
 
                 String token = request.getParameter("token");
                 if (token == null || token.isEmpty()) {
-
+                    model.addAttribute("failure","Token is required");
                     return "/cust/transfer/transferauth";
                 }
 
