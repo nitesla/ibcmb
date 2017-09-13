@@ -2153,6 +2153,7 @@ end
                                                         }
 
 
+<<<<<<< HEAD
                                                         .datepicker-dropdown:before,.datepicker-dropdown:after {
                                                             display: none !important;
                                                         }
@@ -2164,6 +2165,15 @@ end
 
 
 
+=======
+                                                        .spinnerLoader{
+                                                            padding-top: 17%;
+                                                            padding-left: 45%;
+                                                            position: absolute;
+                                                            display: inline-block;
+                                                            z-index: -1;
+                                                        }
+>>>>>>> 85a0bb510fc1a577968847d9f8d1c174dc331c3f
                                                         /* .related-box
                                                         {
                                                             margin-left:20px;

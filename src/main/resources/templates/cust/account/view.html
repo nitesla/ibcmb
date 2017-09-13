@@ -11,7 +11,8 @@
             <option value="account">Overview</option>
         </select>
     </div>
-
+    <span id="rtstatementspinner"  hidden="true" class="spinnerLoader" ><i class="fa fa-spinner fa-pulse fa-5x fa-fw spinnerClass" aria-hidden="true" ></i></span>
+    <div class="spinnercontainer" style="!important;" id="rtstatementcontainer"></div>
     <div class="col-xs-12 " >
         <div class=" no-mt  alert no-bd">
            <form method="post" th:action="@{/retail/account/viewstatement/display}">
@@ -320,9 +321,8 @@
 //        $('#tranDetails_paginate').hide();
 //        $('#tranDetails_length').hide();
         $("#btn-find").on("click", function(e) {
-//            console.log("fromDate "+$('[name=fromDate]').val()+"to "+$('[name=toDate]').val());
-//            console.log("dateDifference "+dateDifference(parseDate($('#start').val()), parseDate($('#endDate').val())));
-if($('#start').val() != '' && $('#endDate').val() !='' ) {
+//            showSpinner("rtstatement");
+    if($('#start').val() != '' && $('#endDate').val() !='' ) {
 //    $('#emptyDateError').hide();
     if (dateDifference(parseDate($('#start').val()), parseDate($('#endDate').val()))) {
         var table = $('#tranDetails').DataTable();
@@ -438,7 +438,19 @@ if($('#start').val() != '' && $('#endDate').val() !='' ) {
         }
         return false;
     }
+    function showSpinner(divName) {
+        // alert("cha");
+        $("#" + divName + "spinner").show();
+        $('#' + divName + 'container').css("zIndex", 2);
+        $('#' + divName + 'spinner').css("zIndex", 3);
+    }
 
+    function hideSpinner(divName) {
+        // alert("hide");
+        $("#" + divName + "spinner").hide();
+        $('#' + divName + 'container').css("zIndex", -1);
+        $('#' + divName + 'spinner').css("zIndex", -2);
+    }
 function nextData() {
 //    console.log("field value "+valu);
     $.ajax({

@@ -297,7 +297,16 @@
                                                     <input id="imgPaths" th:value="${imagePath}" style="display: none;" />
                                                 </div>
                                             </div>
-                                            <div class="col-md-offset-4 col-md-4">
+                                            <div class="col-md-3 password">
+                                                <br/>
+                                                <h5 style="font-size: 16px; font-weight: bolder;">Related Information</h5>
+                                                <p>What is a Phishing Image?</p>
+                                                <p>This is a picture-based authentication system to determine that an attacker cannot access your account, and that you can defend yourself from becoming the prey of a phishing attack. </p>
+
+                                            </div>
+                                            <div class="col-md-offset-3 col-md-6">
+                                                <br/>
+                                                <label>Give a name to the Phishing Image you have selected</label>
                                                 <input type="text" name="caption" class="my-select required" placeholder="Enter Image Caption" />
                                             </div>
                                         </div>
@@ -452,7 +461,9 @@
 
 
         $('#userdet').on('change', function() {
+
             console.log("change");
+            document.getElementById('reg-form').reset();
             if ($(this).val() === "email") {
                 $("#email").show();
                 $("#dob").hide();
