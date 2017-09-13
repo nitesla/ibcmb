@@ -54,8 +54,8 @@ public class CronJobScheduler {
         try {
             Scheduler scheduler = new StdSchedulerFactory().getScheduler();
             scheduler.scheduleJob(FiveMinsJobs, fiveMins);
-            scheduler.scheduleJob(OneTimeJobs, oneTime);
             scheduler.scheduleJob(TwentyFourHoursJobs, twentyFourHours);
+            scheduler.scheduleJob(OneTimeJobs, oneTime);
             scheduler.start();
         }catch (SchedulerException e) {
             e.printStackTrace();
