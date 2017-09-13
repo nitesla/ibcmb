@@ -156,10 +156,9 @@ public class AdminUserServiceImpl implements AdminUserService {
             return e.getMessage();
         } catch (InternetBankingSecurityException se) {
             throw new InternetBankingSecurityException(messageSource.getMessage("entrust.create.failure", null, locale), se);
+        } catch (EntrustException entrustExc) {
+            throw entrustExc;
         } catch (Exception e) {
-            if (e instanceof EntrustException) {
-                throw e;
-            }
             throw new InternetBankingException(messageSource.getMessage("user.add.failure", null, locale), e);
 
         }

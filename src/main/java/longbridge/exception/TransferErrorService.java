@@ -2,10 +2,13 @@ package longbridge.exception;
 
 import longbridge.models.TransferCodeTransalator;
 import longbridge.repositories.TransferCodeRepo;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Service;
+
 import java.util.Locale;
 
 /**
@@ -17,6 +20,9 @@ public class TransferErrorService {
 
     private MessageSource messages;
     private TransferCodeRepo transferCodeRepo;
+
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
+
     @Autowired
     public void setMessages(MessageSource messages) {
         this.messages = messages;
@@ -27,25 +33,24 @@ public class TransferErrorService {
         this.transferCodeRepo = transferCodeRepo;
     }
 
-    public String getMessage(InternetBankingTransferException exception){
+    public String getMessage(InternetBankingTransferException exception) {
         final Locale locale = LocaleContextHolder.getLocale();
-     String errorMessage ;
+        String errorMessage;
 
-        try{
-            TransferCodeTransalator codeTransalator=transferCodeRepo.findFirstByResponseCode(exception.getMessage());
-           if (codeTransalator!=null)
-            { String error = codeTransalator.getResponseMessage() ;
+        try {
+            TransferCodeTransalator codeTransalator = transferCodeRepo.findFirstByResponseCode(exception.getMessage());
+            if (codeTransalator != null) {
+                String error = codeTransalator.getResponseMessage();
                 return messages.getMessage(error, null, locale);
             }
 
             errorMessage = messages.getMessage(exception.getMessage(), null, locale);
 
-       }catch (Exception e){
-            e.printStackTrace();
+        } catch (Exception e) {
+            logger.error("Error resolving error code",e);
+            errorMessage = messages.getMessage("transfer.error", null, locale);
 
-           errorMessage=messages.getMessage("transfer.add.failure", null, locale);
-
-       }
+        }
 
         return errorMessage;
 

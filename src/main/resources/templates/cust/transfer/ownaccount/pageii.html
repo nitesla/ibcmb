@@ -12,67 +12,81 @@
         </select>
     </div>
 
-    <div class="col-xs-12" >
+    <div class="col-xs-12">
         <div class=" alert no-bd no-mt">
-           <div class="">
-                    
-                    <div class="col-sm-offset-3  col-sm-6 " >
+            <div class="">
+
+                <div class="col-sm-offset-3  col-sm-6 ">
 
 
-                        <table class="table table-hover center text-center">
-                              <tbody class="tab">
-                                    <tr class="top-row">
+                    <table class="table table-hover center text-center">
+                        <tbody class="tab">
+                        <tr class="top-row">
 
-                                        <th colspan="2">Transaction Summary</th>
+                            <th colspan="2">Transaction Summary</th>
 
 
-                                    </tr>
-                                    <tr>
+                        </tr>
+                        <tr>
 
-                                        <th>Source account</th>
-                                        <td th:text="${transferRequest.customerAccountNumber}"></td>
+                            <th>Source account</th>
+                            <td th:text="${transferRequest.customerAccountNumber}"></td>
 
-                                    </tr>
-                                    <tr>
+                        </tr>
+                        <tr>
 
-                                        <th>Destination account</th>
-                                        <td th:text="${transferRequest.beneficiaryAccountNumber}"></td>
+                            <th>Destination account</th>
+                            <td th:text="${transferRequest.beneficiaryAccountNumber}"></td>
 
-                                    </tr>
-                                    <tr>
+                        </tr>
+                        <tr>
 
-                                        <th>Amount</th>
-                                        <td th:text="${transferRequest.amount}"></td>
+                            <th>Amount</th>
+                            <td th:text="${transferRequest.amount}"></td>
 
-                                    </tr>
-                                    <tr>
+                        </tr>
+                        <tr>
 
-                                        <th>Remarks</th>
-                                        <td th:text="${transferRequest.remarks}"></td>
+                            <th>Remarks</th>
+                            <td th:text="${transferRequest.remarks}"></td>
 
-                                    </tr>
-                              </tbody>
-                        </table>
+                        </tr>
+                        </tbody>
+                    </table>
 
-                        <form method="post" th:action="@{/retail/transfer/process}" th:object="${transferRequest}">
-                            <input type="hidden" th:field="*{customerAccountNumber}"/>
-                            <input type="hidden" th:field="*{beneficiaryAccountNumber}"/>
-                            <input type="hidden" th:field="*{beneficiaryAccountName}"/>
-                            <input type="hidden" th:field="*{amount}"/>
-                            <input type="hidden" th:field="*{remarks}"/>
-                            <input type="hidden" th:field="*{id}"/>
+                    <form method="post" th:action="@{/retail/transfer/process}" th:object="${transferRequest}">
+                        <input type="hidden" th:field="*{customerAccountNumber}"/>
+                        <input type="hidden" th:field="*{beneficiaryAccountNumber}"/>
+                        <input type="hidden" th:field="*{beneficiaryAccountName}"/>
+                        <input type="hidden" th:field="*{amount}"/>
+                        <input type="hidden" th:field="*{remarks}"/>
+                        <input type="hidden" th:field="*{id}"/>
 
-                            <div class="form-group text-center" style="margin:0px auto">
-                                <!--<a style="cursor: pointer;" onclick="goBack()" >Modify</a>-->
-                                 <button type="submit" class="btn btn-link required-step">Proceed</button>
-                                   <button type="button" onclick="cancel();" class='btn btn-link less-required'>Cancel</button>
-                                <!--<a th:href="@{/retail/transfer/ownaccount}">Cancel</a>-->
-                                <!--<a th:href="@{'/retail/transfer/ownaccount/' + ${transferRequest.id} + '/receipt'}">Print</a>-->
+                        <div class="form-group col-xs-12   no-pad-left ">
+                            <!--<a style="cursor: pointer;" onclick="goBack()" >Modify</a>-->
+                            <button type="submit" class="btn btn-link required-step">Proceed</button>
 
-                            </div>
-                        </form>
+                            <button type="button" onclick="cancel();" class='btn btn-link less-required my-buttons'>Cancel</button>
 
-                    </div>
+                            <button type='button' class='btn btn-link less-required my-buttons' onclick="edit();">Modify</button>
+
+                            <!--<a th:href="@{/retail/transfer/ownaccount}">Cancel</a>-->
+                            <!--<a th:href="@{'/retail/transfer/ownaccount/' + ${transferRequest.id} + '/receipt'}">Print</a>-->
+
+                        </div>
+
+
+                    </form>
+                    <form method="post" id="form_edit" th:action="@{/retail/transfer/ownaccount/edit}"
+                          th:object="${transferRequest}">
+                        <input type="hidden" th:field="*{customerAccountNumber}"/>
+                        <input type="hidden" th:field="*{beneficiaryAccountNumber}"/>
+                        <input type="hidden" th:field="*{beneficiaryAccountName}"/>
+                        <input type="hidden" th:field="*{amount}"/>
+                        <input type="hidden" th:field="*{remarks}"/>
+                    </form>
+
+                </div>
 
 
             </div>
@@ -83,7 +97,18 @@
 
 
 <th:block layout:fragment="scripts">
-    
+
+
+    <script th:src="@{~/customer/js/accountdetails.js}"></script>
+    <script>
+        function edit(){
+            $("#form_edit").submit();
+        }
+        function cancel(){
+            window.location.href="/retail/transfer/ownaccount";
+        }
+
+    </script>
 </th:block>
 
 </body>

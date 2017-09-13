@@ -209,7 +209,6 @@ public class TransferServiceImpl implements TransferService {
         SettingDTO setting = configService.getSettingByName("ACCOUNT_BALANCE_VALIDATION");
         if (setting != null && setting.isEnabled()) {
 
-
             return ("YES".equals(setting.getValue()));
         }
         return true;
@@ -217,8 +216,7 @@ public class TransferServiceImpl implements TransferService {
 
     @Override
     public Page<TransRequest> getTransfers(User user, Pageable pageDetails) {
-        // TODO Auto-generated method stub
-        return null;
+        throw new UnsupportedOperationException("Not yet implemented");
     }
 
     public TransferRequestDTO convertEntityToDTO(TransRequest transRequest) {

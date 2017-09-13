@@ -130,7 +130,6 @@ public class TransferController {
     }
 
 
-
     @PostMapping("/dest/accounts")
     public
     @ResponseBody
@@ -138,7 +137,7 @@ public class TransferController {
 
         String accountId = webRequest.getParameter("acctId");
 
-logger.info("the account id {}",accountId);
+        logger.info("the account id {}", accountId);
 
         try {
             List<String> accountList = new ArrayList<>();
@@ -151,12 +150,12 @@ logger.info("the account id {}",accountId);
                     .forEach(i -> accountList.add(i.getAccountNumber()))
             ;
 
-            logger.info("ACCOUNT LIST {}", StreamSupport.stream(accounts.spliterator(),true).count());
+            logger.info("ACCOUNT LIST {}", StreamSupport.stream(accounts.spliterator(), true).count());
             logger.info("second LIST {}", accountList.size());
             return accountList;
 
         } catch (Exception e) {
-            logger.error("transfer error {}",e);
+            logger.error("transfer error {}", e);
         }
 
         return null;
@@ -260,15 +259,13 @@ logger.info("the account id {}",accountId);
             }
 
 
-
-
             transferRequestDTO = transferService.makeTransfer(transferRequestDTO);
             model.addAttribute("transRequest", transferRequestDTO);
             model.addAttribute("message", messages.getMessage("transaction.success", null, locale));
             return "cust/transfer/transferdetails";
 
         } catch (InternetBankingTransferException e) {
-            e.printStackTrace();
+            logger.error("Error making transfer", e);
             if (request.getSession().getAttribute("Lbeneficiary") != null)
                 request.getSession().removeAttribute("Lbeneficiary");
             String errorMessage = transferErrorService.getMessage(e);
@@ -280,9 +277,8 @@ logger.info("the account id {}",accountId);
     }
 
 
-
     @GetMapping("/auth")
-    public String authenticate(HttpServletRequest httpServletRequest,Model model) throws Exception {
+    public String authenticate(HttpServletRequest httpServletRequest, Model model) throws Exception {
         TransferRequestDTO dto = (TransferRequestDTO) httpServletRequest.getSession().getAttribute("transferRequest");
         if (dto != null) model.addAttribute("transferRequest", dto);
         return "/cust/transfer/transferauth";
@@ -351,11 +347,11 @@ logger.info("the account id {}",accountId);
             modelMap.put("datasource", new ArrayList<>());
             modelMap.put("imagePath", imagePath);
             modelMap.put("amount", formatter.format(amount));
-            modelMap.put("customer",retailUser.getFirstName()+" "+retailUser.getLastName() );
+            modelMap.put("customer", retailUser.getFirstName() + " " + retailUser.getLastName());
             modelMap.put("customerAcctNumber", transRequest.getCustomerAccountNumber());
-            if(transRequest.getRemarks() != null) {
+            if (transRequest.getRemarks() != null) {
                 modelMap.put("remarks", transRequest.getRemarks());
-            }else{
+            } else {
                 modelMap.put("remarks", "");
             }
             modelMap.put("beneficiary", transRequest.getBeneficiaryAccountName());
@@ -366,11 +362,11 @@ logger.info("the account id {}",accountId);
             modelMap.put("date", DateFormatter.format(new Date()));
 
 
-            ModelAndView modelAndView=new ModelAndView(view, modelMap);
+            ModelAndView modelAndView = new ModelAndView(view, modelMap);
             return modelAndView;
-        }catch (Exception e){
+        } catch (Exception e) {
             logger.info(" RECEIPT DOWNLOAD {} ", e.getMessage());
-            ModelAndView modelAndView =  new ModelAndView("redirect:/retail/transfer/history");
+            ModelAndView modelAndView = new ModelAndView("redirect:/retail/transfer/history");
             modelAndView.addObject("failure", messageSource.getMessage("receipt.download.failed", null, locale));
             //redirectAttributes.addFlashAttribute("failure", messageSource.getMessage("receipt.download.failed", null, locale));
             return modelAndView;
@@ -399,7 +395,6 @@ logger.info("the account id {}",accountId);
         return transferUtils.getBalance(accountNumber);
 
     }
-
 
 
 }

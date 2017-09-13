@@ -30,7 +30,6 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
-//import longbridge.utils.AccountStatement;
 
 /**
  * Created by chigozirim on 3/29/17.
@@ -64,6 +63,7 @@ public class AccountServiceImpl implements AccountService {
         if (!customerId.equals(acct.getCustomerId())) {
             return false;
         }
+
         Account account = new Account();
         account.setPrimaryFlag("N");
         account.setHiddenFlag("N");
@@ -86,7 +86,6 @@ public class AccountServiceImpl implements AccountService {
             return false;
         }
         Account account = getAccountDetails(accountdto.getAccountNumber());
-        //account.setAccountId(acct.);TODO
         accountRepo.save(account);
         return true;
     }
@@ -178,7 +177,7 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public AccountStatement getAccountStatements(Account account, Date fromDate, Date toDate, String transType) {
-        return integrationService.getAccountStatements(account.getAccountNumber(), fromDate, toDate, transType,"5");
+        return integrationService.getAccountStatements(account.getAccountNumber(), fromDate, toDate, transType, "5");
     }
 
 
@@ -259,12 +258,29 @@ public class AccountServiceImpl implements AccountService {
 
 
     @Override
+    public List<AccountInfo> filterTransactionalAccounts(List<AccountInfo> accounts) {
+        ArrayList<AccountInfo> filteredAccounts = new ArrayList<>();
+        SettingDTO setting = configurationService.getSettingByName("TRANSACTIONAL_ACCOUNTS");
+        if (setting != null && setting.isEnabled()) {
+            String[] list = StringUtils.split(setting.getValue(), ",");
+
+            for (AccountInfo account : accounts) {
+                if (ArrayUtils.contains(list, account.getSchemeType()) && "A".equalsIgnoreCase(account.getAccountStatus())) {
+                    filteredAccounts.add(account);
+                }
+            }
+        }
+        return filteredAccounts;
+    }
+
+
+    @Override
     public List<Account> getAccountsForDebit(String customerId) {
         List<String> schmTypes = new ArrayList<>();
         SettingDTO settingDTO = configurationService.getSettingByName("ACCOUNT_FOR_DEBIT");
         if (settingDTO != null && settingDTO.isEnabled()) {
             List<String> list = Arrays.asList(StringUtils.split(settingDTO.getValue(), ","));
-           schmTypes.addAll(list);
+            schmTypes.addAll(list);
 
         }
 
@@ -287,7 +303,7 @@ public class AccountServiceImpl implements AccountService {
         SettingDTO settingDTO = configurationService.getSettingByName("ACCOUNT_FOR_DEBIT");
         if (settingDTO != null && settingDTO.isEnabled()) {
             List<String> list = Arrays.asList(StringUtils.split(settingDTO.getValue(), ","));
-            schmTypes=(list);
+            schmTypes = (list);
 
         }
 
@@ -296,7 +312,7 @@ public class AccountServiceImpl implements AccountService {
         for (Account account : accounts) {
             if ("A".equalsIgnoreCase(account.getStatus()) && !accountConfigService.isAccountHidden(account.getAccountNumber())
                     && (!accountConfigService.isAccountRestrictedForView(account.getAccountNumber())) && !accountConfigService.isAccountRestrictedForDebit(account.getAccountNumber()) && (!accountConfigService.isAccountSchemeTypeRestrictedForView(account.getSchemeCode()) && (!accountConfigService.isAccountSchemeTypeRestrictedForDebit(account.getSchemeCode())))
-                    && (!schmTypes.isEmpty() && ArrayUtils.contains(schmTypes.toArray(),account.getSchemeType()))
+                    && (!schmTypes.isEmpty() && ArrayUtils.contains(schmTypes.toArray(), account.getSchemeType()))
                     ) {
                 accountsForDebit.add(account);
             }

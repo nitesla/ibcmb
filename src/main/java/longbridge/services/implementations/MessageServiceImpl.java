@@ -138,14 +138,13 @@ public class MessageServiceImpl implements MessageService {
 
     @Override
     public Iterable<Message> getMessages(User user, Date date) {
-        return null;
+        throw new UnsupportedOperationException("Not yet implemented");
     }
 
 
     @Override
     public Iterable<Message> getMessages(User user, Date fromDate, Date toDate) {
-//        return this.messageRepo.findByMailBoxAndDateCreatedBetween(mailBox, fromDate, toDate);
-        return null; //TODO
+        throw new UnsupportedOperationException("Not yet implemented");
     }
 
     public Iterable<Message> getMessage(Date fromDate, Date toDate) {
@@ -189,7 +188,7 @@ public class MessageServiceImpl implements MessageService {
 
     @Override
     public String purge(int daysOld) throws InternetBankingException {
-        return null;
+        throw new UnsupportedOperationException("Not yet implemented");
     }
 
     @Override
@@ -287,7 +286,7 @@ public class MessageServiceImpl implements MessageService {
 
     @Override
     public String sendMessage(User sender, User recipient, MessageDTO message) throws InternetBankingException {
-        return null; //TODO
+        throw new UnsupportedOperationException("Not yet implemented");
     }
 
     @Override
@@ -302,35 +301,23 @@ public class MessageServiceImpl implements MessageService {
 
     @Override
     public Page<Message> getMessages(User user, java.awt.print.Pageable pageDetails) {
-        return null;
+        throw new UnsupportedOperationException("Not yet implemented");
     }
 
     @Override
     public Page<Message> getMessages(User user, Date date, java.awt.print.Pageable pageDetails) {
-        return null;
+        throw new UnsupportedOperationException("Not yet implemented");
     }
 
     @Override
     public Page<Message> getMessages(User user, Date fromDate, Date toDate, java.awt.print.Pageable pageDetails) {
-        return null;
+        throw new UnsupportedOperationException("Not yet implemented");
     }
 
-//    @Override
-//    public Page<Message> getMessages(User user, Pageable pageDetails) {
-//        // TODO Auto-generated method stub
-//        return null;
-//    }
-
-//    @Override
-//    public Page<Message> getMessages(User user, Date date, Pageable pageDetails) {
-//        // TODO Auto-generated method stub
-//        return null;
-//    }
 
     @Override
     public Page<Message> getMessages(User user, Date fromDate, Date toDate, Pageable pageDetails) {
-        // TODO Auto-generated method stub
-        return null;
+        throw new UnsupportedOperationException("Not yet implemented");
     }
 
     private List<MessageDTO> reverse(List<MessageDTO> list) {

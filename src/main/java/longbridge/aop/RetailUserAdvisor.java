@@ -51,6 +51,7 @@ public class RetailUserAdvisor {
     @Autowired
     private VerificationRepo verificationRepo;
 
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
 
 
     @Pointcut("within( longbridge.services.implementations.VerificationServiceImpl)")
@@ -82,6 +83,8 @@ public class RetailUserAdvisor {
         Verification verification  = verificationRepo.findOne(verificationDto.getId());
         if(verification.getOperation().equals("UPDATE_RETAIL_STATUS")){
 
+            logger.info("Executing post UPDATE_RETAIL_STATUS operation");
+
             RetailUser user = retailUserRepo.findOne(verification.getEntityId());
             entityManager.detach(user);
             ObjectMapper objectMapper = new ObjectMapper();
@@ -93,6 +96,9 @@ public class RetailUserAdvisor {
                 user.setExpiryDate(new Date());
                 passwordPolicyService.saveRetailPassword(user);
                 retailUserRepo.save(user);
+
+                logger.info("Retail user {} status changed to {}",retailUser.getUserName(),retailUser.getStatus());
+
                 retailUserService.sendPostActivateMessage(retailUser, fullName,user.getUserName(),password);
             }
             else {

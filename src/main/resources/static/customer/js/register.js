@@ -220,7 +220,7 @@ function validateExists(accountNumber, email, birthDate){
         email = "ib@coronationmb.com"
     }
     if(birthDate == ""){
-        birthDate = "19-20-1970"
+        birthDate = "19-20-1970" // just a place holder
     }
     var cif;
     accountNumber = accountNumber.trim();
@@ -388,7 +388,7 @@ function sendRegCode(){
     }
     var birthDate = $('input[name="birthDate"]').val();
     if(birthDate == ""){
-        birthDate = "11-11-1111";
+        birthDate = "19-20-1970";
     }
     var result;
     accountNumber = accountNumber.trim();

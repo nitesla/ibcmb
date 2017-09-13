@@ -89,8 +89,7 @@ public interface AccountService {
     public Iterable<Account> getCustomerAccounts(String customerId, String currencyCode);
 
 
-
-
+    List<AccountInfo> filterTransactionalAccounts(List<AccountInfo> accounts);
 
     List<Account> getAccountsForDebit(String customerId);
     Iterable<Account> getAccountsForDebit(List<Account> accounts);

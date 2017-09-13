@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 /**
  * Created by ayoade_farooq@yahoo.com on 4/25/2017.
  */
+
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class AccountInfo
 {
@@ -14,7 +15,6 @@ public class AccountInfo
     private String accountOpenDate;
     private String accountName;
     private String accountStatus;
-
     private String customerId;
     private String schemeType;
     private String schemeCode;

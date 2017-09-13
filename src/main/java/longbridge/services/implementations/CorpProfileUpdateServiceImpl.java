@@ -44,7 +44,7 @@ public class CorpProfileUpdateServiceImpl implements CorpProfileUpdateService{
     @Autowired
     private CorporateUserRepo corporateUserRepo;
 
-    Locale locale = LocaleContextHolder.getLocale();
+    private Locale locale = LocaleContextHolder.getLocale();
 
 
     private void addUserContact(String username, String group, String phone, String email){

@@ -47,7 +47,7 @@
                                                     <select name="beneficiaryAccountNumber" class="form-control" id="destination"
                                                             th:field="*{beneficiaryAccountNumber}"  onchange="getDestCurrency();"  required="required">
 
-                                                        <!--<option th:each="s: ${destAccounts}" th:value="${s}" th:text="${s}"></option>-->
+                                                        <!--<option th:if="${transferRequest.beneficiaryAccountNumber!=null}" th:value="*{beneficiaryAccountNumber}" th:text="*{beneficiaryAccountNumber}" th:selected="${true}"></option>-->
 
 
                                                     </select><span class='req-inner'></span>
@@ -84,7 +84,7 @@
                                                 <div class='no-pad-left negative-margin' style="margin-right:50px;">
                                                     <span class="alert no-bd-rad my-border bg-white hide-content-only">NGN</span>
                                                     <button class="btn btn-link required-step" type="submit">Submit</button>
-                                                    <button class="btn btn-link less-required" type="button ">Cancel</button>
+                                                    <button class="btn btn-link less-required" type="reset" onclick="cancel();">Cancel</button>
 
                                                 </div>
 
@@ -113,8 +113,14 @@
     <script th:inline="javascript">
     /*<![CDATA[*/
 
+    var beneficiaryAcc = [[${transferRequest.beneficiaryAccountNumber}]];
+
+    console.log("Benefic Acc Number = "+beneficiaryAcc);
+
     $(document).ready(function(){
         getBeneficiaryAccts();
+
+
 
 //       document.getElementById("source").selectedIndex = -1;
     document.getElementById("destination").selectedIndex = -1;
@@ -128,7 +134,9 @@
 
     });
 function getBeneficiaryAccts() {
+
     var acctId = $('#source').val();
+    var selectedIndex = 0;
     if(acctId != '') {
         $.ajax({
             type: 'POST',
@@ -142,13 +150,25 @@ function getBeneficiaryAccts() {
                 console.log("details output " + data.length);
                 if (data != null) {
                     //$('input[name=username]').val(result);
-                    $('#destination').empty();
+//                    $('#destination').empty();
+                   var benAcc =  "";
                     for (var i = 0; i < data.length; i++) {
+
                         $('#destination')
-                                .append($("<option></option>")
-                                        .attr("value", data[i])
-                                        .text(data[i]));
+                            .append($("<option></option>")
+                                .attr("value", data[i])
+                                .text(data[i]));
+
+                        if(data[i]==beneficiaryAcc){
+                            benAcc = data[i];
+                        }
+
                     }
+
+                    if(benAcc!="") {
+                        $("#destination").val(benAcc).change();
+                    }
+
 
                 } else {
                     //invalid account number
@@ -260,6 +280,12 @@ function getBeneficiaryAccts() {
 
 
     /*]]>*/
+
+
+
+    function cancel(){
+        window.location.href="/retail/dashboard";
+    }
 
 
 </script>

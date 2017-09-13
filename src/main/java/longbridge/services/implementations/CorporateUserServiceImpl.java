@@ -395,7 +395,7 @@ public class CorporateUserServiceImpl implements CorporateUserService {
                 user.setExpiryDate(new Date());
                 passwordPolicyService.saveCorporatePassword(user);
                 CorporateUser corpUser = corporateUserRepo.save(user);
-                sendActivationMessage(corpUser, fullName, user.getUserName(), password, user.getCorporate().getCustomerId());
+                sendActivationMessage(corpUser, fullName, user.getUserName(), password, user.getCorporate().getCorporateId());
 
             } else {
                 user.setStatus(newStatus);
@@ -430,7 +430,7 @@ public class CorporateUserServiceImpl implements CorporateUserService {
                 Email email = new Email.Builder()
                         .setRecipient(user.getEmail())
                         .setSubject(messageSource.getMessage("corporate.customer.create.subject", null, locale))
-                        .setBody(String.format(messageSource.getMessage("corporate.customer.create.message", null, locale), fullName, username, password, corporate.getCustomerId()))
+                        .setBody(String.format(messageSource.getMessage("corporate.customer.create.message", null, locale), fullName, username, password, corporate.getCorporateId()))
                         .build();
                 mailService.send(email);
             } catch (MailException me) {
