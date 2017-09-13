@@ -29,7 +29,6 @@ import java.math.BigDecimal;
 import java.util.*;
 import java.util.stream.StreamSupport;
 
-//import longbridge.utils.AccountStatement;
 
 /**
  * Created by chigozirim on 3/29/17.
@@ -62,6 +61,7 @@ public class AccountServiceImpl implements AccountService {
         if (!customerId.equals(acct.getCustomerId())) {
             return false;
         }
+
         Account account = new Account();
         account.setPrimaryFlag("N");
         account.setHiddenFlag("N");
@@ -84,7 +84,6 @@ public class AccountServiceImpl implements AccountService {
             return false;
         }
         Account account = getAccountDetails(accountdto.getAccountNumber());
-        //account.setAccountId(acct.);TODO
         accountRepo.save(account);
         return true;
     }
@@ -271,7 +270,6 @@ public class AccountServiceImpl implements AccountService {
         }
         return filteredAccounts;
     }
-
 
 
     @Override

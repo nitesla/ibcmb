@@ -68,14 +68,15 @@ public class SettingController {
     @Autowired
     private IntegrationService integrationService;
 
-    private Locale locale = LocaleContextHolder.getLocale();
-
     @Autowired
     private FinancialInstitutionService financialInstitutionService;
     @Autowired
     private MailService mailService;
     @Autowired
     private MessageSource messageSource;
+
+    private Locale locale = LocaleContextHolder.getLocale();
+
 
     @RequestMapping("/dashboard")
     public String getRetailDashboard(Model model, Principal principal) {
