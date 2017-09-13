@@ -27,6 +27,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.*;
+import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 
@@ -45,7 +46,8 @@ public class AccountServiceImpl implements AccountService {
     private AccountConfigService accountConfigService;
     private MessageSource messageSource;
     private ConfigurationService configurationService;
-
+    @Autowired
+    private ConfigurationService configService;
     @Autowired
     public AccountServiceImpl(AccountRepo accountRepo, IntegrationService integrationService, ModelMapper modelMapper, AccountConfigService accountConfigService, MessageSource messageSource, ConfigurationService configurationService) {
         this.accountRepo = accountRepo;
@@ -437,7 +439,16 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public Iterable<Account> getAccountsForCredit(List<Account> accounts) {
         List<Account> accountsForCredit = new ArrayList<>();
+        SettingDTO dto= configService.getSettingByName("TRANSACTIONAL_ACCOUNTS");
+        if (dto!=null && dto.isEnabled()){
+            String []list= StringUtils.split(dto.getValue(),",");
+        accounts=    accounts
+                    .stream()
+                    .filter(
+                            i-> org.apache.commons.lang3.ArrayUtils.contains(list,i.getSchemeType())
+                    ).collect(Collectors.toList());
 
+        }
         logger.info("accounts are {}", accounts);
         for (Account account : accounts) {
             if (!accountConfigService.isAccountHidden(account.getAccountNumber()) && "A".equalsIgnoreCase(account.getStatus())

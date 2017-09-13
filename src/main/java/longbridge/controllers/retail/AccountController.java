@@ -511,11 +511,11 @@ public class AccountController {
 		SettingDTO setting = configurationService.getSettingByName("TRANS_HISTORY_RANGE");
 		Date date = new Date();
 		Date daysAgo = new DateTime(date).minusDays(Integer.parseInt(setting.getValue())).toDate();
-		logger.info("the from date {} and the to date {}",date,daysAgo);
+//		logger.info("the from date {} and the to date {}",date,daysAgo);
 		AccountDTO account = accountService.getAccount(Long.parseLong(acct));
 		AccountStatement accountStatement = integrationService.getFullAccountStatement(account.getAccountNumber(), daysAgo , date, "B");
 		List<TransactionDetails> list = accountStatement.getTransactionDetails();
-		logger.info("The List {} ", list);
+//		logger.info("The List {} ", list);
 		model.addAttribute("history", list);
 		return "cust/account/tranhistory";
 	}
