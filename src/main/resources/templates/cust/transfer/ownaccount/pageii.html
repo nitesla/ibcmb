@@ -2,8 +2,8 @@
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{ret-layout}">
 
-<body onload="currentBar('transaction summary')">
-
+      <body onload="javascript:var bread = [['Home', '/retail/dashboard'],['Own Account Transfer','/retail/transfer/ownaccount']];currentBar('Own Account Transfer');breadCrumb(bread)">
+        
 <div layout:fragment="content">
     <div class="col-md-5 col-sm-5 ">
 
@@ -19,7 +19,7 @@
                 <div class="col-sm-offset-3  col-sm-6 ">
 
 
-                    <table class="table table-hover center text-center">
+                    <table class="table table-hover center">
                         <tbody class="tab">
                         <tr class="top-row">
 

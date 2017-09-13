@@ -19,8 +19,8 @@
                     <div class="">
 
                         <br/>
-                        <div class="form-group col-md-12 no-pad-left col-sm-12">
-                            <div class="form-group col-md-6 no-pad-left col-sm-6">
+                        <div class="form-group no-pad-left col-sm-12">
+                            <div class="form-group col-sm-4">
                                 <label>Date Range</label>
                                 <div class="input-daterange input-group" id="date-range">
                                     <input type="text" data-date-format="dd-mm-yyyy" class="form-control datepicker" id="start" name="fromDate" placeholder="Start date" required="required" />
@@ -28,7 +28,7 @@
                                     <input type="text" data-date-format="dd-mm-yyyy" class="form-control datepicker" name="toDate" id="endDate" placeholder="End date" required="required" />
                                 </div>
                             </div>
-                            <div class="form-group col-md-6 no-pad-left col-sm-6">
+                            <div class="form-group col-sm-3">
                                 <label>Transaction Type</label>
                                 <select name="tranType" class="form-control">
                                         <option value="B">All</option>
@@ -36,22 +36,23 @@
                                         <option value="D">Debit</option>
                                     </select>
                             </div>
+
+
+                            <div class="form-group  no-pad-left col-sm-4">
+                                    <label>Account Number</label>
+                                    <span class="req"></span>
+                                    <select name="acctNumber" id="acctNumber" class="form-control" required="required">
+                                            <option th:each="s: ${accounts}" th:value="${s.accountNumber}" th:text="${s.accountNumber}"></option></select>
+                                </div>
+    
+                                <div class="form-group col-sm-1">
+                                    <label>&nbsp;</label>
+    
+                                    <button type="submit" class="btn btn-link " id="btn-find"><i class="fa fa-search"  ></i>&nbsp; view</button>
+    
+                                </div>
                         </div>
-                        <div class="form-group col-md-12 no-pad-left col-sm-12">
-                            <div class="form-group col-md-6 no-pad-left col-sm-6">
-                                <label>Account Number</label>
-                                <span class="req"></span>
-                                <select name="acctNumber" id="acctNumber" class="form-control" required="required">
-                                        <option th:each="s: ${accounts}" th:value="${s.accountNumber}" th:text="${s.accountNumber}"></option></select>
-                            </div>
-
-                            <div class="form-group col-md-6">
-                                <label>&nbsp;</label>
-
-                                <button type="submit" class="btn btn-link " id="btn-find"><i class="fa fa-search"  ></i>&nbsp; view</button>
-
-                            </div>
-                        </div>
+                       
 
 
 
@@ -78,18 +79,7 @@
                                         <th>Account Balance</th>
                                     </tr>
                                 </thead>
-                                <tfoot>
-                                    <tr>
-                                        <th>Transaction Narration</th>
-                                        <th>Post Date</th>
-                                        <th>Value Date</th>
-                                        <th>Debit</th>
-                                        <th>Credit</th>
-                                        <th>Tran ID</th>
-                                        <th>Account Balance</th>
-
-                                    </tr>
-                                </tfoot>
+                               
                             </table>
                             <div class="col-md-12">
                                 <div class="pull-right">

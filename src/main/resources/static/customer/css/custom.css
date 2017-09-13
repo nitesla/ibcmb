@@ -2153,6 +2153,16 @@ end
                                                         }
 
 
+                                                        .datepicker-dropdown:before,.datepicker-dropdown:after {
+                                                            display: none !important;
+                                                        }
+
+                                                        .addBen
+                                                        {
+                                                            padding:10px;
+                                                        }
+
+
 
                                                         /* .related-box
                                                         {
