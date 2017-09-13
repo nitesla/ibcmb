@@ -1,101 +1,175 @@
 <!DOCTYPE html>
-<html xmlns:sec="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org">
+
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-    <meta charset="utf-8"/>
-    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1"/>
-
-    <link rel="stylesheet" type="text/css" th:href="@{~/customer/css/jquery-ui.css}"/>
-    <!--<link rel="stylesheet" type="text/css" th:href="@{~/customer/css/date/css/bootstrap-datepicker.css}"/>-->
-    <!--<link rel="stylesheet" type="text/css" th:href="@{~/customer/css/date/css/bootstrap-datepicker.standalone.css}"/>-->
-
+    <!-- BEGIN PAGE LEVEL STYLES -->
     <link rel="stylesheet" type="text/css" th:href="@{~/customer/plugins/jquery-steps/css/jquery.steps.css}" />
-    <link rel="stylesheet" type="text/css" th:href="@{~/customer/css/bootstrap.css}"/>
-    <link rel="stylesheet" type="text/css" th:href="@{~/customer/css/custom.css}"/>
-    <link rel="stylesheet" type="text/css" th:href="@{~/customer/css/select.bootstrap.css}"/>
-    <link rel="stylesheet" type="text/css" th:href="@{~/customer/font-awesome/font-awesome.min.css}"/>
-    <link rel="stylesheet" type="text/css" th:href="@{~/customer/plugins/bootstrap-daterangepicker/daterangepicker.css}"/>
-    <link rel="stylesheet" type="text/css" th:href="@{~/customer/plugins/datatables/css/jquery.dataTables.min.css}"/>
-    <link rel="stylesheet" type="text/css" th:href="@{~/customer/plugins/datatables/css/dataTables.bootstrap.css}"/>
-    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.7.0/css/bootstrap-datepicker.min.css"/>
-    <title>Coronation Merchant Bank</title>
+    <link rel="stylesheet" type="text/css" th:href="@{~/customer/css/jquery-ui.css}" />
+    <link rel="stylesheet" type="text/css" th:href="@{~/customer/font-awesome/font-awesome.min.css}" />
+    <link rel="stylesheet" type="text/css" th:href="@{~/customer/css/bootstrap.css}" />
+    <link rel="stylesheet" type="text/css" th:href="@{~/customer/css/custom.css}" />
+    <link rel="stylesheet" type="text/css" th:href="@{~/customer/css/media.css}" />
+    <link rel="shortcut icon" th:href="@{~/customer/img/favicon.ico}" type="image/x-icon">
+    <link rel="icon" th:href="@{~/customer/img/favico.ico}" type="image/x-icon">
 
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Test</title>
 </head>
-<body onload="currentBar('First Time Logon')">
 
-<div class="container" style="">
+<body onload ='redirect()' class="LTR Safari Chrome Safari44 Chrome44 JAJP SmallDevice ContentBody">
 
-    <div>
-        <header class="heade hidden-xs " >
-            <div class="row">
-                <div class="top-bar col-xs-12">
-                    <ul class="top-link">
-                        <li><a href="/corporate/contact"> Contact Us</a>&nbsp;</li>
-                        <li><a href="https://www.coronationmb.com/" target="_blank"> Coronation merchant bank</a>&nbsp;</li>
-                        <li><a  target="_blank" th:href="@{/faqs}" >Help</a>&nbsp;</li>
-                    </ul>
-                </div>
+
+<script>
+
+    function redirect()
+    {
+        var version = detectIE();
+
+        if (version <= 9 && version != false)
+        {
+            var id = document.getElementById('body');
+            if(version <= 8)
+            {
+
+                id.style.display = "none";
+            }
+            else
+
+                id.style.display = "";
+
+
+            // window.location.href='/unsupported';
+        }
+    }
+
+    function detectIE() {
+        var ua = window.navigator.userAgent;
+
+        // Test values; Uncomment to check result …
+
+        // IE 10
+        // ua = 'Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.2; Trident/6.0)';
+
+        // IE 11
+        // ua = 'Mozilla/5.0 (Windows NT 6.3; Trident/7.0; rv:11.0) like Gecko';
+
+        // Edge 12 (Spartan)
+        // ua = 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.71 Safari/537.36 Edge/12.0';
+
+        // Edge 13
+        // ua = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2486.0 Safari/537.36 Edge/13.10586';
+
+        var msie = ua.indexOf('MSIE ');
+        if (msie > 0) {
+            // IE 10 or older => return version number
+            return parseInt(ua.substring(msie + 5, ua.indexOf('.', msie)), 10);
+        }
+
+        var trident = ua.indexOf('Trident/');
+        if (trident > 0) {
+            // IE 11 => return version number
+            var rv = ua.indexOf('rv:');
+            return parseInt(ua.substring(rv + 3, ua.indexOf('.', rv)), 10);
+        }
+
+        var edge = ua.indexOf('Edge/');
+        if (edge > 0) {
+            // Edge (IE 12+) => return version number
+            return parseInt(ua.substring(edge + 5, ua.indexOf('.', edge)), 10);
+        }
+
+        // other browser
+        return false;
+    }
+</script>
+
+<!--[if lte IE 9]>
+<div class="browserupgrade">
+
+    <div class="text-center">
+        <img class="img img-responsive" style="display:block;margin:0px auto;text-align:center;background:white;padding:10px;margin-bottom:20px" th:src="@{~/customer/img/cmb_logo.png}" alt="Coronation Merchant Bank" />
+
+        <p >You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+
+    </div>
+
+
+</div>
+<![endif]-->
+
+<div class="container" id="body">
+
+
+    <div class="row">
+        <div class="top-bar col-xs-12">
+            <ul class="top-link">
+                <li class="no-bd"><a href="https://www.coronationmb.com/" target="_blank"> Coronation merchant bank</a>&nbsp;</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-sm-3 visible-xs no-pad-left no-pad-right">
+            <div class="center" style="margin:0px auto;">
+                <a href="/" class="log" data-toggle="tooltip" data-placement="bottom" title="Coronation Merchant Bank">
+                    <img class="img img-responsive pull-right" style="display:block;margin:0px auto;" th:src="@{~/customer/img/cmb_logo.png}" alt="Coronation Merchant Bank" />
+                </a>
             </div>
-            <div class='row header-bar'>
-                <div class="col-xs-12 col-sm-9 no-pad-left  ">
-                    <div class="bvn-tab col-md-5 col-sm-5 ">
-                        <div class="header_inf bv">
-                            <p th:text="${compName}">Your RC Number</p>
-                            <h5 th:text="'RC N0: ' + ${RcNo}"></h5>
+        </div>
 
-                        </div>
+
+        <div class="col-sm-9 no-pad-left">
+
+            <nav class="navbar navbar-default bg-success">
+                <div class="">
+                    <div class="navbar-header navbar-left ">
+                        <button type="button" class="navbar-toggle collapsed " data-toggle="collapse" data-target="#navbar-collapse-1" aria-expanded="false">
+                            <span class="sr-only">MENU</span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                        </button>
+                        <a class="navbar-brand" href="#" data-toggle="collapse" data-target="#navbar-collapse-1">Menu</a>
                     </div>
-                    <div class="col-sm-7 col-md-7 user-info">
-                        <div class="">
-                            <h5>
-                                <span class='greeting' th:text="*{greeting}"></span>
-                                <br class="break"/>
-                                <b class="greeting-user" th:text="*{name}"></b> &nbsp;
-                                <!--<a th:href="@{/corporate/mailbox/inbox}"><i class="fa fa-envelope" style="color:#003056"></i>-->
-                                    <!--<span th:if="${numOfUnreadMessages}" class="badge bg-green" th:text="${numOfUnreadMessages}">count</span>-->
+                    <div class="collapse navbar-collapse no-pad-left" id="navbar-collapse-1">
+                        <ul class="nav navbar-nav ">
+                            <li><a href="/"> HOME</a></li>
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"> LOGIN</a>
+                                <ul class="dropdown-menu">
+                                    <li><a th:href="@{/login/retail}"> INDIVIDUAL </a></li>
+                                    <li><a th:href="@{/login/corporate}"> CORPORATE </a></li>
+                                </ul>
+                            </li>
+                            <li><a href="/register"> REGISTER</a></li>
+                            <li><a href="/#contact_us"> CONTACT US</a></li>
+                            <li><a href="/faqs"> FAQ</a></li>
+                        </ul>
 
-                                <!--</a>-->
-                            </h5>
-
-                            <div class="hide-faq">
-                                <h6>
-                                    <a target="_blank" th:href="@{/faqs}">FAQS &nbsp; &nbsp;
-                                        <i class="fa fa-question-circle"></i></a>
-                                    <span class="date2 lorem">&nbsp; &nbsp;Login History:&nbsp;</span>&nbsp;
-                                    <span class="lorem" th:text="*{lastLogin}"></span>
-                                </h6>
-                            </div>
-                        </div>
                     </div>
                 </div>
+            </nav>
 
+        </div>
 
-                <div class="col-xs-12 col-sm-3 ">
-                    <a href="/corporate/dashboard" class="">
-                        <img class='img-responsive pull-right' style="height:70px" th:src="@{~/customer/img/cmb_logo.png}" alt="Coronation Merchant Bank" />
-                    </a>
-                </div>
-
-
-
+        <div class="col-sm-3 hidden-xs no-pad-right">
+            <div class="center" style="margin:0px auto;">
+                <a href="/" class="log" data-toggle="tooltip" data-placement="bottom" title="Coronation Merchant Bank">
+                    <img class="img img-responsive pull-right" style="display:block;margin:0px auto;" th:src="@{~/customer/img/cmb_logo.png}" alt="Coronation Merchant Bank" />
+                </a>
             </div>
-
-        </header>
- </div>
+        </div>
+    </div>
 
 
     <section class="content-wrapper">
-        <div class="row">
-
-            <div class="col-xs-12  col-md-12  no-ml no-pad-left no-pad-right">
-                <div class="">
-                    <div class="current-bar  col-md-12 no-ml no-pad-left alert no-mb no-bd-rad " style="">
-                        <div class="">
-                            <strong id="bar">&nbsp;</strong>
-                        </div>
-                    </div>
-                    <div class="col-xs-12 col-md-12 no-pad-right no-ml no-pad-left bg-danger alert no-mb no-mt no-bd-rad current-body">
+        <div class="containe">
+            <!-- Start row-->
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="white-box">
+                        <br/>
+                        <h2 class="header-title">First Time Login</h2>
                     <form id="setup-form"  action="/corporate/setup" method="post">
 
                         <div class="col-md-12">
@@ -105,11 +179,11 @@
                                     <div class="col-md-offset-3  col-md-6">
                                         <br/>
                                         <input id="returnValue" type="hidden"/>
-                                        <input th:name="noOfQuestions" th:value="${noOfQuestions}" type="hidden"/>
+                                        <input id="noOfQuestions" th:name="noOfQuestions" th:value="${noOfQuestions}" type="hidden"/>
                                         <div th:each="questionList,ind : ${secQuestions}">
                                             <div class="form-group clearfix">
                                                 <label>Question</label>
-                                                <select th:name="'securityQuestion'+${ind.index}" class="form-control">
+                                                <select th:name="'securityQuestion'+${ind.index}" th:id="'securityQuestion'+${ind.index}" class="form-control">
                                                     <option th:each="question : ${questionList}" th:text="${question.code}" th:value="${question.code}"></option>
                                                 </select>
                                             </div>
@@ -136,11 +210,19 @@
                                                     <input type="radio" name="phishing" th:value="${image}" id="check1" style="position: absolute; bottom: 20px; right: 20px;" />
                                                 </div>
                                             </div>
+                                            <input id="imgPaths" th:value="${imagePath}" style="display: none;" />
                                         </div>
                                     </div>
-                                    <div class="col-md-offset-4 col-md-4">
+                                    <div class="col-md-3 password">
                                         <br/>
-                                        <label>Image Caption</label>
+                                        <h5 style="font-size: 16px; font-weight: bolder;">Related Information</h5>
+                                        <p>What is a Phishing Image?</p>
+                                        <p>This is a picture-based authentication system to determine that an attacker cannot access your account, and that you can defend yourself from becoming the prey of a phishing attack. </p>
+
+                                    </div>
+                                    <div class="col-md-offset-3 col-md-6">
+                                        <br/>
+                                        <label>Give a name to the Phishing Image you have selected</label>
 
                                         <input type="text" name="caption" class="form-control required" placeholder="Enter Image Caption"/>
                                     </div>
@@ -170,10 +252,19 @@
                                         <br/>
                                         <h5 style="font-size: 16px; font-weight: bolder;">Password tips</h5>
                                         <ul>
-
                                             <li th:each="rule : ${policies}" th:text="${rule}"></li>
                                         </ul>
 
+                                    </div>
+                                </div>
+                            </section>
+
+                            <h3>Summary</h3>
+                            <section>
+                                <div class="row">
+                                    <div class="col-md-offset-3 col-md-6">
+                                        <div id="regSummary">
+                                        </div>
                                     </div>
                                 </div>
                             </section>
@@ -191,119 +282,26 @@
 
                                 </div>
                             </section>
-                            <h3>Summary</h3>
-                            <section>
-                                <div class="row">
-                                    <div class="col-md-offset-4 col-md-4">
-                                        Profile successfully updated and password reset successful.
-                                    </div>
-                                </div>
-                            </section>
                         </div>
                     </form>
                     </div>
                 </div>
             </div>
+            <!-- End row-->
         </div>
     </section>
-
-<!-- CONTENT-WRAPPER SECTION END-->
-<footer>
-    <div class="containe bg-danger bg-grey">
-
-        <div class="footer_bar row">
-            <div class="col-md-6 col-xs-12">
-                <ul class="list_group">
-                    <li><a href="#" target="_blank">Privacy policy</a></li>
-                    <li><a href="#" target="_blank">Disclaimer</a></li>
-                    <li><a href="#" target="_blank">Terms &amp; Conditions</a></li>
-                </ul>
-
-            </div>
-            <div class="col-md-6 col-xs-12"><p> &copy; 2017 Coronation Merchant Bank. All rights reserved</p></div>
-
-        </div>
-    </div>
-
-
-
-    <script th:src="@{~/customer/js/jquery-1.11.1.js}"></script>
-    <script th:src="@{~/customer/js/jquery-ui.js}"></script>
-    <script th:src="@{~/customer/js/jquery.dataTables.js}"></script>
-    <script th:src="@{~/customer/js/momentMin.js}"></script>
-    <script th:src="@{~/customer/plugins/jquery-steps/js/jquery.steps.min.js}" type="text/javascript"></script>
-    <script th:src="@{~/customer/js/jquery.validate.min.js}"></script>
-    <script th:src="@{~/customer/js/jquery.spring-friendly.min.js}"></script>
-    <script th:src="@{~/customer/plugins/bootstrap-notify/bootstrap-notify.js}"></script>
-    <script th:src="@{~/customer/plugins/bootstrap-daterangepicker/daterangepicker.js}"></script>
-
-    <script th:src="@{~/customer/js/coronation.js}"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/js/bootstrap-datepicker.min.js"></script>
-
-    <!-- BOOTSTRAP SCRIPTS  -->
-    <script th:src="@{~/customer/js/bootstrap.js}"></script>
-    <script th:src="@{~/customer/js/bootstrap-session-timeout.js}"></script>
-    <script th:src="@{~/customer/js/corpsetup.js}" type="text/javascript"></script>
-    <script th:src="@{~/customer/js/passwordStrength.js}" th:inline="javascript" type="text/javascript"></script>
-
-    <script th:inline='javascript'>
-        /*<![CDATA[*/
-
-        var m_noOfDigits = [[${passwordStrength.numOfdigits}]];
-        var m_strCharacters = [[${passwordStrength.specialChars}]];
-        var minLength =[[${passwordStrength.minLength}]];
-        var noOfSpecChar =[[${passwordStrength.numOfSpecChar}]];
-        function valPassword(strPassword){
-            runPassword(strPassword,minLength,m_noOfDigits,m_strCharacters,noOfSpecChar)
-        }
-
-
-        $(document).ready(function ()
-        {
-            $('[data-toggle="tooltip"]').tooltip();
-            $('.datepicker').datepicker({
-                autoclose: true,
-                todayBtn: true,
-                todayHighlight: true});
-
-        })
-
-        /*]]>*/
-    </script>
-    <!--<script th:inline='javascript'>-->
-        <!--$.sessionTimeout({-->
-            <!--keepAliveUrl: '',-->
-            <!--logoutUrl: '/retail/logout',-->
-            <!--redirUrl: '/retail/logout',-->
-            <!--warnAfter: null,-->
-            <!--redirAfter: 10000,-->
-            <!--countdownBar: true-->
-        <!--});-->
-    <!--</script>-->
-
-
-
 
     <div id="myModalError" class="modal fade " role="dialog">
         <div class="modal-dialog">
 
             <!-- Modal content-->
-
             <div class="modal-content no-bd-rad content ">
-
                 <div class="modal-body">
-
-
-                    <p id="errorMess" class="mess text-danger">Put something here iff need be.</p>
-
-
+                    <p id='errorMess' class='mess text-danger'>Put something here iff need be.</p>
                 </div>
-
-
                 <div class="modal-footer no-bd-top">
                     <button type="button" class="btn btn-link" data-dismiss="modal">OK</button>
                 </div>
-
             </div>
 
         </div>
@@ -314,31 +312,118 @@
         <div class="modal-dialog">
 
             <!-- Modal content-->
-
             <div class="modal-content no-bd-rad content ">
-
                 <div class="modal-body">
-
-
-                    <p id="successMess" class="mess text-primary">Put something here iff need be.</p>
-
-
+                    <p id='successMess' class='mess text-primary'>Put something here iff need be.</p>
                 </div>
-
-
                 <div class="modal-footer no-bd-top">
                     <button type="button" class="btn btn-link" data-dismiss="modal">OK</button>
                 </div>
-
             </div>
 
         </div>
     </div>
-    <!-- CORE JQUERY SCRIPTS -->
 
 
-</footer>
+    <div id="myLoader" class="modal fade " role="dialog">
+        <div class="modal-dialog">
+
+            <!-- Modal content-->
+
+            <div class=" no-bd-rad no-bd content text-center " style=" background: transparent !important;">
+                <div class="bg-white center" style="width:40%">
+                    <img class="img-responsive block center  loader-img" style='padding:7px;' th:src="@{~/customer/img/loader.png}" alt="Coronation Merchant Bank" />
+                    <div id='loading-icon bg-white text-center'><i class='fa fa-spinner block center fa-spin' style="font-size:18px;color:#003056"></i> Loading. Please Wait</div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <footer>
+        <div class="containe">
+            <div class="footer_bar">
+                <div class="col-md-6 col-xs-12">
+                    <ul class="list_group">
+                        <li><a href="#" target="_blank">Privacy policy</a></li>
+                        <li><a href="#" target="_blank">Disclaimer</a></li>
+                        <li><a href="#" target="_blank">Terms &amp; Conditions</a></li>
+                    </ul>
+
+                </div>
+                <div class="col-md-6 col-xs-12">
+                    <p> &copy; 2017 - All rights reserved</p>
+                </div>
+
+            </div>
+        </div>
+    </footer>
+
+
 </div>
 
+
+
+
+<!-- CORE JQUERY SCRIPTS -->
+<script th:src="@{~/customer/js/jquery-1.11.1.js}"></script>
+<!-- BOOTSTRAP SCRIPTS  -->
+<script th:src="@{~/customer/js/bootstrap.js}"></script>
+
+<script th:src="@{~/customer/js/jquery.validate.min.js}"></script>
+<script th:src="@{~/customer/js/jquery-ui.js}"></script>
+<script th:src="@{~/customer/plugins/jquery-steps/js/jquery.steps.min.js}" type="text/javascript"></script>
+<script th:src="@{~/customer/js/jasny-bootstrap.min.js}"></script>
+<script th:src="@{~/customer/js/corpSetup.js}" th:inline="javascript" type="text/javascript"></script>
+<script th:src="@{~/customer/js/passwordStrength.js}" th:inline="javascript" type="text/javascript"></script>
+<script th:src="@{~/customer/plugins/bootstrap-notify/bootstrap-notify.js}"></script>
+<script th:src="@{~/customer/js/errors.js}"></script>
+
+<script th:inline="javascript" type="text/javascript">
+    /*<![CDATA[*/
+    var m_noOfDigits = [[${passwordStrength.numOfdigits}]];
+    var m_strCharacters = [[${passwordStrength.specialChars}]];
+    var minLength = [[${passwordStrength.minLength}]];
+    var noOfSpecChar = [[${passwordStrength.numOfSpecChar}]];
+
+    function valPassword(strPassword) {
+        runPassword(strPassword, minLength, m_noOfDigits, m_strCharacters, noOfSpecChar)
+    }
+
+    $(document).ready(function() {
+        console.log("ready!");
+
+        inputErrors();
+        $('input').on("focus", function() {
+            if ($(this).siblings('label.error')) {
+
+                $(this).siblings('label.error').addClass('hidden');
+
+            }
+
+            if ($(this).hasClass('error')) {
+                $(this).siblings('label.error').removeClass('hidden');
+            }
+
+
+        });
+
+
+    });
+
+
+    $('#password').bind("cut copy paste", function(e) {
+        e.preventDefault();
+    });
+    $('#password').bind("cut copy paste", function(e) {
+        e.preventDefault();
+    });
+    $('#confirm').bind("cut copy paste", function(e) {
+        e.preventDefault();
+    });
+
+    /*]]>*/
+</script>
 </body>
+
 </html>

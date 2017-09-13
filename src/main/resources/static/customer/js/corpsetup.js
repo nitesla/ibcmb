@@ -14,7 +14,7 @@ form.validate({
 var SECURITY_QUESTION_STEP = 0;
 var PHISHING_IMAGE_STEP = 1;
 var PASSWORD_RESET_STEP = 2;
-var TOKEN_AUTH_STEP = 3;
+var TOKEN_AUTH_STEP = 4;
 form.children("div").steps({
     headerTag: "h3",
     bodyTag: "section",
@@ -57,12 +57,13 @@ form.children("div").steps({
             console.log("Current Step is the phishing image step");
             //$("#reg-form").submit();
             var confirm = $('#confirm').val();
+            getRegSummary();
             return isValid && validatePassword(confirm);
         }
         if(TOKEN_AUTH_STEP === currentIndex){
             console.log("Current Step is the phishing image step");
             //$("#reg-form").submit();
-            return isValid && setup();
+            return isValid;
         }
 
 
@@ -88,12 +89,11 @@ form.children("div").steps({
     onFinishing: function (event, currentIndex)
     {
         //form.validate().settings.ignore = ":disabled";
-        return form.valid();
+        return form.valid()  && setup();
     },
     onFinished: function (event, currentIndex)
     {
-//            alert("Submitted!");
-        window.location.href = "/corporate/logout";
+        return redirectUser();
     }
 });
 
@@ -107,6 +107,26 @@ function checkImage() {
     }else{
         return true;
     }
+}
+
+function getRegSummary() {
+    var noOfQuestions = $('#noOfQuestions').val();
+    //console.log("noOfQuestions "+noOfQuestions);a
+    var imgPath =  $('#imgPaths').val();
+
+    var phishing = $("input[name='phishing']:checked"). val();
+    var container = document.getElementById("regSummary");
+//console.log("phishing "+phishing);
+    container.innerHTML = "";
+    container.innerHTML += "<p style='text-transform: none'><h1>Self-Registration Summary</h1></p> <br/>";
+    container.innerHTML += "<p style='text-transform: none'>Please find below a summary of the details you have entered for your registration</p>";
+    container.innerHTML += "<p style='text-transform: none'>Password: **********</p>";
+    for (i = 0; i < noOfQuestions; i++) {
+        container.innerHTML += "<p style='text-transform: none'>Security Question: "+(i+1)+"  "+$('#securityQuestion'+i).val()+"</p>";
+    }
+    var imgP = imgPath+phishing;
+    container.innerHTML += "<p style='text-transform: none'>Phishing Image: <br/><img src='"+imgP +"' width='100px' height='100px' style='padding: 5px;'/></p>";
+
 }
 
 function validatePassword(password){
@@ -200,4 +220,6 @@ function setup(){
 }
 
 
-
+function redirectUser() {
+    window.location.href = '/rest/redirect/corp/login';
+}
