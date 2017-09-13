@@ -32,4 +32,5 @@ public interface CronJobService {
     boolean updateRunningJob() throws InternetBankingException;
     boolean startCronJob() throws InternetBankingException;
     boolean stopJob() throws InternetBankingException;
+    void addNewAccount() throws InternetBankingException;
 }
