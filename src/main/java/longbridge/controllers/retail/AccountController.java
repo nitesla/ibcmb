@@ -593,11 +593,11 @@ public class AccountController {
 			if(accountStatement != null) {
 				list = accountStatement.getTransactionDetails();
 				session.setAttribute("hasMoreTransaction", accountStatement.getHasMoreData());
-				logger.info("the current has more data  new {}",accountStatement.getHasMoreData());
+//				logger.info("the current has more data  new {}",accountStatement.getHasMoreData());
 			}
 			session.removeAttribute("acctStmtLastDetails");
 			if(!list.isEmpty()){
-				logger.info("the current has more data  empty {}",accountStatement.getHasMoreData());
+//				logger.info("the current has more data  empty {}",accountStatement.getHasMoreData());
 				session.setAttribute("acctStmtLastDetails",list.get(list.size()-1));
 				session.setAttribute("retAcctStmtStateValue",0);
 				session.setAttribute("acctStmtEntirePastDetails0",list);
@@ -662,8 +662,8 @@ public class AccountController {
 					session.removeAttribute("retAcctStmtStateValue");
 					session.setAttribute("acctStmtEntirePastDetails"+stateValue, list);
 					session.setAttribute("retAcctStmtStateValue",stateValue);
-					logger.info("acctStmtLastDetails {}", list.get(list.size() - 1));
-					logger.info("acct statemnet state {}", stateValue);
+//					logger.info("acctStmtLastDetails {}", list.get(list.size() - 1));
+//					logger.info("acct statemnet state {}", stateValue);
 					objectMap.replace("details",list);
 					objectMap.replace("moreData",accountStatement.getHasMoreData());
 				}

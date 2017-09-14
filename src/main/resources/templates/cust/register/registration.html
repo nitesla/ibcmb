@@ -219,11 +219,11 @@
 
                                                 <div id="email" class="form-group clearfix">
                                                     <label>Email</label>
-                                                    <span class='req'></span><input type="email" name="email" autocomplete="off" class="my-select" placeholder="Email" />
+                                                    <span class='req'></span><input type="email" name="email" id="emailId" autocomplete="off" class="my-select" placeholder="Email" />
                                                 </div>
                                                 <div id="dob" style="display: none;" class="form-group clearfix">
                                                     <label>Date of Birth</label>
-                                                    <span class='req'></span><input name="birthDate" type="text" class="my-select" data-mask="99-99-9999" placeholder="DD-MM-YYYY" />
+                                                    <span class='req'></span><input name="birthDate" id="birthDate" type="text" class="my-select" data-mask="99-99-9999" placeholder="DD-MM-YYYY" />
                                                 </div>
 
 
@@ -489,15 +489,21 @@
 
 
         $('#userdet').on('change', function() {
-
+//            document.getElementById("reg-form").reset();
             console.log("change");
-            document.getElementById('reg-form').reset();
+            $('#emailId').val("");
+            $('#birthDate').val("");
+
             if ($(this).val() === "email") {
-                $("#email").show();
-                $("#dob").hide();
+//                document.getElementById("emailId").value = "888";
+                $('#email').show();
+
+                $('#dob').hide();
             } else if ($(this).val() === "dob") {
-                $("#dob").show();
-                $("#email").hide();
+//                document.getElementById("birthDate").value = "";
+
+                $('#dob').show();
+                $('#email').hide();
             }
         });
 

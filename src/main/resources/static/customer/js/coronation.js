@@ -123,3 +123,15 @@ function numberWithCommas(x) {
     return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }
 
+
+function showSpinner() {
+    // alert("cha");
+    $(".spinner-box").show();
+    $('.spinner-box').css("display", 'block');
+}
+
+function hideSpinner() {
+    // alert("hide");
+    $(".spinner-box").hide();
+    $('.spinner-box').css("display", 'none');
+}
