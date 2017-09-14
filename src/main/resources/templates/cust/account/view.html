@@ -95,6 +95,7 @@
 
 <th:block layout:fragment="scripts">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootbox.js/4.4.0/bootbox.min.js"></script>
+    <script th:src="@{~/bank/js/momentMin.js}"></script>
     <script th:inline="javascript">
     /*<![CDATA[*/
     jQuery.download = function(url, key, data) {
@@ -160,10 +161,10 @@
                     if (type === 'display') {
                         if(data == null)
                             return data;
+                        var dtStart = new Date(data);
+                        var dtStartWrapper = moment(dtStart);
+                        return dtStartWrapper.format('DD-MMM-YYYY');
 
-                        var pattern = /(\d{2})\.(\d{2})\.(\d{4})/;
-                        var dt = new Date(data.replace(pattern,'$3-$2-$1'));
-                        return dt.toDateString();
                     }
                     return data;
                 }
@@ -188,9 +189,13 @@
 
                             if (data == null)
                                 return data;
-                            var pattern = /(\d{2})\.(\d{2})\.(\d{4})/;
-                            var dt = new Date(data.replace(pattern,'$3-$2-$1'));
-                            return dt.toDateString();
+//                            var pattern = /(\d{2})\.(\d{2})\.(\d{4})/;
+//                            var dt = new Date(data.replace(pattern,'$3-$2-$1'));
+                            var dtStart = new Date(data);
+                            var dtStartWrapper = moment(dtStart);
+                            return dtStartWrapper.format('DD-MMM-YYYY');
+//                            return dtStartWrapper.format('LLLL');
+//                            return dt.toDateString();
                         }
                         return data;
                     }
@@ -217,7 +222,6 @@
 //        $('#tranDetails_length').hide();
         $("#btn-find").on("click", function(e) {
     if($('#start').val() != '' && $('#endDate').val() !='' ) {
-//    $('#emptyDateError').hide();
     if (dateDifference(parseDate($('#start').val()), parseDate($('#endDate').val()))) {
         showSpinner();
         var table = $('#tranDetails').DataTable();
@@ -247,13 +251,11 @@
                         }
 
                         contactsTab2.draw();
-//
                     }
-
+                    contactsTab2.order([1,'desc']).draw();
                 }
                 if (result.moreData === "Y") {
                     $('#next').show();
-
                 } else {
                     $('#next').hide();
                 }
@@ -371,6 +373,7 @@ function nextData() {
                             contactsTab2.draw();
 //
                 }
+                contactsTab2.order( [ 1, 'desc' ] ).draw();
 
             }
             if(result.moreData === "Y"){
@@ -419,8 +422,10 @@ function nextData() {
                             }
 
                             contactsTab2.draw();
-//
-                        }
+
+                                        }
+                contactsTab2.order( [ 1, 'desc' ] ).draw();
+
 
             }if(result.previousData === 0){
                 $('#previous').hide();

@@ -166,9 +166,9 @@
                                 if (data == null)
                                     return data;
 
-                                var pattern = /(\d{2})\.(\d{2})\.(\d{4})/;
-                                var dt = new Date(data.replace(pattern, '$3-$2-$1'));
-                                return dt.toDateString();
+                                var dtStart = new Date(data);
+                                var dtStartWrapper = moment(dtStart);
+                                return dtStartWrapper.format('DD-MMM-YYYY');
                             }
                             return data;
                         }
@@ -192,9 +192,9 @@
 
                                 if (data == null)
                                     return data;
-                                var pattern = /(\d{2})\.(\d{2})\.(\d{4})/;
-                                var dt = new Date(data.replace(pattern, '$3-$2-$1'));
-                                return dt.toDateString();
+                                var dtStart = new Date(data);
+                                var dtStartWrapper = moment(dtStart);
+                                return dtStartWrapper.format('DD-MMM-YYYY');
                             }
                             return data;
                         }
@@ -215,7 +215,6 @@
                     }
 
                 });
-
                 $("#btn-find").on("click", function(e) {
                     //                console.log("dateDiff "+dateDifference(parseDate($('[name=fromDate]').val()), parseDate($('[name=toDate]').val())));
                     if ($('#start').val() != '' && $('#endDate').val() != '') {
