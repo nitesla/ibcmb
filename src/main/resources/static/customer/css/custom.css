@@ -2149,33 +2149,36 @@ end
                                                             color:#9F614B;
                                                             z-index:100000;
                                                             background: rgba(0, 0, 0, 0.4);
-
                                                         }
-
-
-<<<<<<< HEAD
-                                                        .datepicker-dropdown:before,.datepicker-dropdown:after {
-                                                            display: none !important;
-                                                        }
-
-                                                        .addBen
-                                                        {
-                                                            padding:10px;
-                                                        }
-
-
-
-=======
                                                         .spinnerLoader{
-                                                            padding-top: 17%;
-                                                            padding-left: 45%;
-                                                            position: fixed;
-                                                            display: inline-block;
-                                                            top:50%;
-                                                            left:50%;
-                                                            z-index: -1;
+
+
+                                                            display:block;
+                                                            position:absolute;
+                                                            top:40%;
+                                                            left:40%;
+                                                            text-align:center;
+                                                            font-weight:bold;
+
+
                                                         }
->>>>>>> 85a0bb510fc1a577968847d9f8d1c174dc331c3f
+
+                                                        .spinner-box
+                                                        {
+                                                            position:fixed;
+                                                            top:0px;
+                                                            width:100%;
+                                                            height: 100%;
+                                                            background: rgba(0,0,0,0.7);
+                                                            z-index:1000;
+                                                            display:none;
+                                                        }
+                                                        .spinner-tag
+                                                        {
+                                                            font-size:17px;
+                                                            color:white;
+                                                            margin-top:10px;
+                                                        }
                                                         /* .related-box
                                                         {
                                                             margin-left:20px;
