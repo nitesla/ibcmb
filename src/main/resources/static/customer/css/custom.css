@@ -2149,18 +2149,35 @@ end
                                                             color:#9F614B;
                                                             z-index:100000;
                                                             background: rgba(0, 0, 0, 0.4);
+                                                        }
+                                                        .spinnerLoader{
+
+
+                                                            display:block;
+                                                            position:absolute;
+                                                            top:40%;
+                                                            left:40%;
+                                                            text-align:center;
+                                                            font-weight:bold;
+
 
                                                         }
 
-
-                                                        .spinnerLoader{
-                                                            padding-top: 17%;
-                                                            padding-left: 45%;
-                                                            position: fixed;
-                                                            display: inline-block;
-                                                            top:50%;
-                                                            left:50%;
-                                                            z-index: -1;
+                                                        .spinner-box
+                                                        {
+                                                            position:fixed;
+                                                            top:0px;
+                                                            width:100%;
+                                                            height: 100%;
+                                                            background: rgba(0,0,0,0.7);
+                                                            z-index:1000;
+                                                            display:none;
+                                                        }
+                                                        .spinner-tag
+                                                        {
+                                                            font-size:17px;
+                                                            color:white;
+                                                            margin-top:10px;
                                                         }
                                                         /* .related-box
                                                         {

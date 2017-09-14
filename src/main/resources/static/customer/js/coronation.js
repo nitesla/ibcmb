@@ -117,3 +117,14 @@ function breadCrumb(arg) {
 function redirectFunc(arg) {
     window.location.href = arg;
 }
+function showSpinner() {
+    // alert("cha");
+    $(".spinner-box").show();
+    $('.spinner-box').css("display", 'block');
+}
+
+function hideSpinner() {
+    // alert("hide");
+    $(".spinner-box").hide();
+    $('.spinner-box').css("display", 'none');
+}

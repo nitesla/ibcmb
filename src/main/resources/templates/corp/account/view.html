@@ -231,6 +231,7 @@
                     //                console.log("dateDiff "+dateDifference(parseDate($('[name=fromDate]').val()), parseDate($('[name=toDate]').val())));
                     if ($('#start').val() != '' && $('#endDate').val() != '') {
                         if (dateDifference(parseDate($('[name=fromDate]').val()), parseDate($('[name=toDate]').val()))) {
+                            showSpinner();
                             var table = $('#tranDetails').DataTable();
                             var row = table.rows().remove().draw();
                             e.preventDefault();
@@ -267,6 +268,7 @@
                                         $('#next').hide();
                                     }
                                     $('#previous').hide();
+                                    hideSpinner();
 
                                 },
                                 error: function (dd) {
@@ -275,6 +277,7 @@
                                     var row  = contactsTab2.rows().remove().draw();
                                     $('#next').hide();
                                     $('#previous').hide();
+                                    hideSpinner();
                                     bootbox.alert("<div style='text-align: center'>Service not available</div>");
                                     return false;
                                 }
@@ -285,6 +288,7 @@
                             $('#btn-print').hide();
                             $('#next').hide();
                             $('#previous').hide();
+                            hideSpinner();
                             bootbox.alert("<div style='text-align: center'>Start date cannot be less than end date</div>");
                             return false;
 
@@ -298,6 +302,7 @@
                 $('#tranDetails_paginate').hide();
                 $("#btn-print").on("click", function(e) {
                     //                e.preventDefault();
+                    showSpinner();
                     var data = {
                         "acctNumber": $('[name=acctNumber]').val(),
                         "fromDate": $('[name=fromDate]').val(),
@@ -306,6 +311,7 @@
                     };
                     console.log("data " + data);
                     $.download("downloadstatement", "data", data);
+                    hideSpinner();
 
                 });
                 //            $('.dataTables_empty').html('No data available');
@@ -337,6 +343,7 @@
 
             function nextData() {
                 //    console.log("field value "+valu);
+                showSpinner();
                 $.ajax({
                     "url": "viewstatement/corp/display/data/next",
                     "type": "GET",
@@ -373,7 +380,7 @@
                             $('#next').hide();
                         }
                         $('#previous').show();
-
+                        hideSpinner();
                     },
                     error: function (dd) {
 //                        console.log("error")
@@ -381,6 +388,7 @@
                         var row  = contactsTab2.rows().remove().draw();
                         $('#next').hide();
                         $('#previous').hide();
+                        hideSpinner();
                         bootbox.alert("<div style='text-align: center'>Service not available</div>");
                         return false;
                     }
@@ -390,6 +398,7 @@
 
             function previousData() {
                 //    console.log("field value "+valu);
+                showSpinner();
                 $.ajax({
                     "url": "viewstatement/corp/display/data/back",
                     "type": "GET",
@@ -423,13 +432,16 @@
                             $('#previous').show();
                         }
                         $('#next').show();
+                        hideSpinner();
                     },
                     error: function (dd) {
 //                        console.log("error")
+
                         var contactsTab2 = $('#tranDetails').DataTable();
                         var row  = contactsTab2.rows().remove().draw();
                         $('#next').hide();
                         $('#previous').hide();
+                        hideSpinner();
                         bootbox.alert("<div style='text-align: center'>Service not available</div>");
                         return false;
                     }

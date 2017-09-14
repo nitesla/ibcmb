@@ -11,8 +11,6 @@
             <option value="account">Overview</option>
         </select>
     </div>
-    <span id="rtstatementspinner"  hidden="true" class="spinnerLoader" ><i class="fa fa-spinner fa-pulse fa-5x fa-fw spinnerClass" aria-hidden="true" ></i></span>
-    <div class="spinnercontainer" style="!important;" id="rtstatementcontainer"></div>
     <div class="col-xs-12 " >
         <div class=" no-mt  alert no-bd">
            <form method="post" th:action="@{/retail/account/viewstatement/display}">
@@ -218,10 +216,10 @@
 //        $('#tranDetails_paginate').hide();
 //        $('#tranDetails_length').hide();
         $("#btn-find").on("click", function(e) {
-//            showSpinner("rtstatement");
     if($('#start').val() != '' && $('#endDate').val() !='' ) {
 //    $('#emptyDateError').hide();
     if (dateDifference(parseDate($('#start').val()), parseDate($('#endDate').val()))) {
+        showSpinner();
         var table = $('#tranDetails').DataTable();
         var row = table.rows().remove().draw();
         e.preventDefault();
@@ -260,7 +258,7 @@
                     $('#next').hide();
                 }
                 $('#previous').hide();
-//                hideSpinner("rtstatement");
+                hideSpinner();
 
             },
             error: function (dd) {
@@ -269,6 +267,7 @@
                 var row  = contactsTab2.rows().remove().draw();
                 $('#next').hide();
                 $('#previous').hide();
+                hideSpinner();
                 bootbox.alert("<div style='text-align: center'>Service not available</div>");
                 return false;
             }
@@ -290,7 +289,7 @@
         $('#tranDetails_paginate').hide();
         $("#btn-print").on("click", function(e) {
             e.preventDefault();
-
+showSpinner();
 //            var table = $('#tranDetails').DataTable();
             var data = { "acctNumber" : $('[name=acctNumber]').val(),
                     "fromDate" : $('[name=fromDate]').val(),
@@ -298,7 +297,7 @@
                     "tranType" : $('[name=tranType]').val()} ;
             console.log("data "+data);
             $.download("downloadstatement", "data", data);
-
+hideSpinner();
         });
 
         $('.dataTables_empty').html('No data available');
@@ -338,21 +337,10 @@
         }
         return false;
     }
-    function showSpinner(divName) {
-        // alert("cha");
-        $("#" + divName + "spinner").show();
-        $('#' + divName + 'container').css("zIndex", 2);
-        $('#' + divName + 'spinner').css("zIndex", 3);
-    }
 
-    function hideSpinner(divName) {
-        // alert("hide");
-        $("#" + divName + "spinner").hide();
-        $('#' + divName + 'container').css("zIndex", -1);
-        $('#' + divName + 'spinner').css("zIndex", -2);
-    }
 function nextData() {
 //    console.log("field value "+valu);
+    showSpinner();
     $.ajax({
         "url":"viewstatement/display/data/next",
         "type" : "GET",
@@ -392,6 +380,7 @@ function nextData() {
                 $('#next').hide();
             }
             $('#previous').show();
+            hideSpinner();
         },
         error: function (dd) {
 //                        console.log("error")
@@ -399,7 +388,7 @@ function nextData() {
             var row  = contactsTab2.rows().remove().draw();
             $('#next').hide();
             $('#previous').hide();
-
+            hideSpinner();
             bootbox.alert("<div style='text-align: center'>Service not available</div>");
             return false;
         }
@@ -407,6 +396,7 @@ function nextData() {
 }
     function previousData() {
 //    console.log("field value "+valu);
+        showSpinner();
     $.ajax({
         "url":"viewstatement/display/data/back",
         "type" : "GET",
@@ -440,7 +430,7 @@ function nextData() {
             }
             $('#next').show();
 //            console.log("the result previous button "+result.previousData);
-
+            hideSpinner();
 
         },
         error: function (dd) {
@@ -449,6 +439,7 @@ function nextData() {
             var row  = contactsTab2.rows().remove().draw();
             $('#next').hide();
             $('#previous').hide();
+            hideSpinner();
             bootbox.alert("<div style='text-align: center'>Service not available</div>");
             return false;
         }
