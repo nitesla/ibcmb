@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <link rel="stylesheet" type="text/css" th:href="@{~/customer/css/bootstrap.css}" />
+    <link rel="stylesheet" type="text/css" th:href="@{~/customer/css/custom.css}" />
+    <link rel="stylesheet" type="text/css" th:href="@{~/customer/css/media.css}" />
+    <link rel="stylesheet" type="text/css" th:href="@{~/customer/font-awesome/font-awesome.min.css}" />
+    <link rel="shortcut icon" th:href="@{~/customer/img/favicon.ico}" type="image/x-icon">
+    <link rel="icon" th:href="@{~/customer/img/favico.ico}" type="image/x-icon">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Test</title>
+</head>
+
+<body  onload ='redirect()' class="LTR Safari Chrome Safari44 Chrome44 JAJP SmallDevice ContentBody">
+
+
+    <script>
+
+        function redirect()
+        {
+            var version = detectIE();
+
+            if (version <= 9 && version != false)
+            {
+                var id = document.getElementById('body');
+                if(version <= 8)
+                {
+
+                    id.style.display = "none";
+                }
+                else
+
+                    id.style.display = "";
+
+
+                // window.location.href='/unsupported';
+            }
+        }
+
+        function detectIE() {
+  var ua = window.navigator.userAgent;
+
+  // Test values; Uncomment to check result …
+
+  // IE 10
+  // ua = 'Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.2; Trident/6.0)';
+
+  // IE 11
+  // ua = 'Mozilla/5.0 (Windows NT 6.3; Trident/7.0; rv:11.0) like Gecko';
+
+  // Edge 12 (Spartan)
+  // ua = 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.71 Safari/537.36 Edge/12.0';
+
+  // Edge 13
+  // ua = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2486.0 Safari/537.36 Edge/13.10586';
+
+  var msie = ua.indexOf('MSIE ');
+  if (msie > 0) {
+    // IE 10 or older => return version number
+    return parseInt(ua.substring(msie + 5, ua.indexOf('.', msie)), 10);
+  }
+
+  var trident = ua.indexOf('Trident/');
+  if (trident > 0) {
+    // IE 11 => return version number
+    var rv = ua.indexOf('rv:');
+    return parseInt(ua.substring(rv + 3, ua.indexOf('.', rv)), 10);
+  }
+
+  var edge = ua.indexOf('Edge/');
+  if (edge > 0) {
+    // Edge (IE 12+) => return version number
+    return parseInt(ua.substring(edge + 5, ua.indexOf('.', edge)), 10);
+  }
+
+  // other browser
+  return false;
+}
+    </script>
+     <!--[if lte IE 9]>
+    <div class="browserupgrade">
+
+        <div class="text-center">
+            <img class="img img-responsive" style="display:block;margin:0px auto;text-align:center;background:white;padding:10px;margin-bottom:20px" th:src="@{~/customer/img/cmb_logo.png}" alt="Coronation Merchant Bank" />
+
+            <p >You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+
+        </div>
+
+
+    </div>
+    <![endif]-->
+
+
+    <div class="container">
+            <div class="row hide-content-only">
+                    <div class="top-bar col-xs-12">
+                        <ul class="top-link">
+                            <li class="no-bd"><a href="https://www.coronationmb.com/" target="_blank"> Coronation merchant bank</a>&nbsp;</li>
+                        </ul>
+                    </div>
+                </div>
+        
+                <div class="row  margin-bottom" style="margin-bottom:10px;">
+        
+                    <div class="col-sm-3 visible-xs no-pad-left no-pad-right">
+                        <div class="center" style="margin:0px auto;">
+                            <a href="/" class="log" data-toggle="tooltip" data-placement="bottom" title="Coronation Merchant Bank">
+                                <img class="img img-responsive pull-right" style="display:block;margin:0px auto;" th:src="@{~/customer/img/cmb_logo.png}" alt="Coronation Merchant Bank" />
+                            </a>
+                        </div>
+                    </div>
+        
+        
+                    <div class="col-sm-9 hide-content-only no-pad-left">
+        
+                        <nav class="navbar navbar-default bg-success">
+                            <div class="">
+                                <div class="navbar-header navbar-left ">
+                                    <button type="button" class="navbar-toggle collapsed " data-toggle="collapse" data-target="#navbar-collapse-1" aria-expanded="false">
+                                        <span class="sr-only">MENU</span>
+                                        <span class="icon-bar"></span>
+                                        <span class="icon-bar"></span>
+                                        <span class="icon-bar"></span>
+                                    </button>
+                                    <a class="navbar-brand" href="#" data-toggle="collapse" data-target="#navbar-collapse-1">Menu</a>
+                                </div>
+                                <div class="collapse navbar-collapse no-pad-left" id="navbar-collapse-1">
+                                    <ul class="nav navbar-nav ">
+                                        <li><a href="/"> HOME</a></li>
+                                        <li class="dropdown">
+                                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"> LOGIN</a>
+                                            <ul class="dropdown-menu">
+                                                <li><a th:href="@{/login/retail}"> INDIVIDUAL </a></li>
+                                                <li><a th:href="@{/login/corporate}"> CORPORATE </a></li>
+                                            </ul>
+                                        </li>
+                                        <li><a href="/register"> REGISTER</a></li>
+                                        <li><a href="/#contact_us"> CONTACT US</a></li>
+                                        <li><a href="/faqs"> FAQ</a></li>
+                                    </ul>
+        
+                                </div>
+                            </div>
+                        </nav>
+        
+                    </div>
+        
+                    <div class="col-sm-3 hidden-xs no-pad-right">
+                        <div class="center" style="margin:0px auto;">
+                            <a href="/" class="log" data-toggle="tooltip" data-placement="bottom" title="Coronation Merchant Bank">
+                                <img class="img img-responsive pull-right" style="display:block;margin:0px auto;" th:src="@{~/customer/img/cmb_logo.png}" alt="Coronation Merchant Bank" />
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class=''>
+                        
+                    <div class='alert info-box ' style='padding:30px !important;background:#f1f1f1'>
+                        <h3 style=''>Privacy Policy</h3>
+                        <h3 style=''>We care about your privacy.</h3>
+                        <p class='text-bold' style='font-size:14px;margin-bottom:10px;line-height:25px;'>
+                                Coronation Merchant Bank Limited does not use any form of cookies to track your activities. We take appropriate measures and technology to safeguard your personal information. These processes are regularly updated in line with industry standards. Our employees are also trained to ensure that your personal information is protected from loss, unauthorized access, misuse, modification or disclosure.                        </p>   
+                        <p class='text-bold' style='font-size:14px;margin-bottom:10px;line-height:25px;'>
+                                www.coronationmb.com is a corporate website that treats your information as private and confidential. We are dedicated to protecting your privacy and providing you with the highest level of security at any point of interaction with us. All activities are considered private and are not recorded. www.coronationmb.com does not provide any user information to any third party
+                        </p>   
+                        <p class='text-bold' style='font-size:14px;margin-bottom:10px;line-height:25px;'>
+                                www.coronationmb.com does not compromise any corporate security policies. Our application was entirely architected with a corporate IT department in mind. Security is always considered highly important.
+                        </p>
+                        
+                        <h3>Terms of Use</h3>
+
+
+                        <ol>
+
+
+                            <li>	General
+                                <ul class='terms'>
+                                           
+                                   <li>1.1	This agreement governs your use of the Coronation Merchant Bank Limited information service (the "Service"), including Discussion Areas, which are operated by Coronation Merchant Bank Limited, (“Coronation MB”)  Additional terms and conditions of use applicable to specific areas of the Service may also be posted in such areas and, together with this agreement, govern your use of those areas. This agreement, together with any such additional term and conditions, are referred to as this "Agreement." </li>
+                                    
+                                    <li>1.2	Coronation Merchant Bank Limited reserves the right, in its discretion, to change or modify all or any part of this Agreement at any time, effective immediately upon notice published on the Service. Your continued use of the Service constitutes your binding acceptance of these terms and conditions, including any changes or modifications made by Coronation MB as permitted above. If at any time the terms and conditions of this Agreement are no longer acceptable to you, you should immediately cease all use of the Service.  </li>
+                                    
+                                </ul>
+                            </li>
+
+                            <li> Use of Content
+                               
+                                <ul class='terms'>
+                                        <li>2.1	You acknowledge that the Service contains information, software, photographs, audio and video clips, graphics, links and other material (collectively, the "Content") that are protected by copyright, trademark or other proprietary rights of Coronation MB or third parties. All Content on the Service is copyrighted as a collective work of Coronation MB pursuant to applicable copyright law. You agree to comply with any additional copyright notices, information, or restrictions contained in any Content available on or accessed through the Service. Users of the Service may use the Content only for their personal, noncommercial use.</li>
+                                        
+                                        <li>2.2	You may not modify, publish, transmit, transfer or sell, reproduce, create derivative works from, distribute, perform, display, or in any way exploit any of the Content, in whole or in part, except as expressly permitted in this Agreement. Content consisting of downloadable software may not be reverse engineered unless specifically authorized by the owner of the software's patent and/or copyright. You may post on the Service any Content owned by you (such as your original statements), Content for which you have received express permission from the owner and Content in the public domain. You assume all risk and responsibility for determining whether any Content is in the public domain. You grant to Coronation MB the right to edit, copy, publish, distribute, translate and otherwise use in any medium any Content that you place on the Service without compensation to you. You represent and warrant that you are authorized to grant all rights set forth in the preceding sentence.</li>
+                                        
+                                        <li>2.3	You may download or copy the Content only for your own personal noncommercial use, provided that you maintain all copyright and other notices contained in such Content. You shall not store electronically any significant portion of any Content. Except as expressly permitted by the copyright laws, no copying, storage, redistribution or publication of any Content is permitted without the express permission of Coronation MB or the owners of such Content or their authorized persons, if other than Coronation MB. You may download from the Service any Content in the public domain for your own personal use or for non-commercial redistribution.</li>
+                                        
+                                    
+                                    
+                                </ul>
+                            </li>
+
+                            <li>  No Endorsement
+                                <ul class='terms'>
+                                        
+                                          
+                                   <li>3.1	Coronation MB does not represent or endorse the accuracy or reliability of any Content posted on any Interactive Area and you acknowledge that any reliance upon such Content shall be at your sole risk. Any Content placed on any Interactive Area by users represent the views of the user posting the statement, and does not represent the views of Coronation MB.</li>
+                                    
+                                    <li>3.2	 The Service may contain links to sites on the Internet which are owned and operated by third parties (the "External Sites"). You acknowledge that Coronation MB is not responsible for the availability of, or the content located on or through, any External Site. You should contact the site administrator or Webmaster for those External Sites if you have any concerns regarding such links or the content located on such External Sites.</li>
+                                    
+                                            
+                                </ul>
+
+
+                            </li>
+
+                            <li> Indemnity
+                                <ul class='terms'>
+                                       <li>                        You agree to indemnify, defend and hold Coronation MB and its affiliates, and their respective officers, directors, owners, agents, information providers and licensors (collectively, the "Coronation MB Parties") harmless from and against any and all claims, liability, losses, costs and expenses (including attorneys' fees) incurred by any Coronation MB Party in connection with any use or alleged use of the Service under your password by any person, whether or not authorized by you. Coronation MB reserves the right, at its own expense, to assume the exclusive defense and control of any matter otherwise subject to indemnification by you, and in such case, you agree to cooperate with Coronation MB defense of such claim.
+                                        </li> 
+                                </ul>
+                            </li>
+
+
+                            <li>  Disclaimer of Warranties; Limitation of Liability.
+                                    
+                                <ul class='terms'>
+                                        <li>5.1	 The service and the content are distributed on an "As is, as available" basis.</li>
+                                        <li>5.2	Neither Coronation MB, third party content providers nor their respective agents make any warranties of any kind, either express or implied, including, without limitation, warranties of title or implied warranties of merchantability or fitness for a particular purpose, with respect to the service, any content or any products or services sold through the service. </li>
+                                        
+                                        <li>5.3	Neither Coronation MB nor any provider of third party content or their respective agents warrants that;
+                                            <ul class='terms'>
+                                                    <li>a.	the service will be uninterrupted or error free; </li>
+                                                    <li>b.	nor does Coronation MB, any third party content provider, or their respective agents make any warranty as to the results to be obtained from use of the service or the content. </li>
+                                                    <li>c.	that any file available for downloading through the service will be free of viruses or similar contamination or destructive features. </li>
+                                                    
+                                            </ul>
+                                        </li>
+                                        <li>5.4	You expressly agree that the entire risk as to the quality and performance of the service and the accuracy or completeness of the content is assumed solely by you.</li>
+                                        <li>5.5 Neither Coronation MB, any third party content provider nor their respective agents shall be liable for any direct, indirect, incidental, special or consequential damages arising out of the use of or inability to use the service, whether or not  such party has been advised of the possibility of such damages.</li>
+                                </ul>
+
+                            </li>
+
+
+                        </ol>
+                    </div>
+                        
+                        
+                        
+                </div>
+                        
+
+
+    </div>
+
+
+    
+</body>
+
+</html>

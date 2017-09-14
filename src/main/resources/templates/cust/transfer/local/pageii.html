@@ -134,8 +134,8 @@
                     } else {
 //                    $('input[name=availBal]').val(bal);
 
-                        var  bal=message;
-                        $('#availBal').text("Available Balance: "+bal);
+                        var  bal=numberWithCommas(message);
+                        $('#availBal').html("Available Balance: &#8358;"+bal);
 
                     }
                 }

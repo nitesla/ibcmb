@@ -116,4 +116,10 @@ function breadCrumb(arg) {
 
 function redirectFunc(arg) {
     window.location.href = arg;
+
 }
+
+function numberWithCommas(x) {
+    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}
+

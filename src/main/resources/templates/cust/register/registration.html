@@ -17,7 +17,8 @@
 </head>
 
 <body onload ='redirect()' class="LTR Safari Chrome Safari44 Chrome44 JAJP SmallDevice ContentBody">
-
+        <div class='spinner-box'><span id="rtstatementspinner"  hidden="true" class="spinnerLoader" ><i class="fa fa-spinner fa-pulse fa-5x fa-fw spinnerClass" aria-hidden="true" ></i><p class=' text-bold spinner-tag'>Loading... Please Wait</p></span>
+        </div>   
 
 <script>
 
@@ -170,6 +171,24 @@
                         <div class="white-box">
                             <br/>
                             <h2 class="header-title"> Self Registration</h2>
+
+                            <div id ='register-info' class='' style='display:none'>
+                                    <i class='fa fa-exclamation register-help'></i>
+                                <div class="alert no-bd ">
+                                    
+                                       <p > This is the Email address/ Date of
+                                        birth that you have documented
+                                        with the Bank at the point of
+                                        opening your account.</p>
+
+                                        <p>
+                                        Please select either of the 2
+                                        options to confirm your account
+                                        with the Bank.</p>
+                                </div>
+
+
+                            </div>
                             <form id="reg-form" action="/register" method="post">
 
                                 <div>
@@ -187,10 +206,15 @@
 
                                                 <div class="form-group">
                                                     <label>Select Email or Date of birth</label>
-                                                    <select name="userdet" id="userdet" class="my-select">
-                                                        <option value="email">Use Email</option>
-                                                        <option value="dob">Use Date of Birth</option>
-                                                    </select>
+
+                                                    
+                                                    <div >
+                                                        <p class="req-info" title='Help'></p>
+                                                            <select name="userdet" id="userdet" class="my-select">
+                                                                    <option value="email">Use Email</option>
+                                                                    <option value="dob">Use Date of Birth</option>
+                                                                </select>
+                                                    </div>
                                                 </div>
 
                                                 <div id="email" class="form-group clearfix">
@@ -391,9 +415,9 @@
                 <div class="footer_bar">
                     <div class="col-md-6 col-xs-12">
                         <ul class="list_group">
-                            <li><a href="#" target="_blank">Privacy policy</a></li>
+                            <li><a href="/policy" target="_blank">Privacy policy</a></li>
                             <li><a href="#" target="_blank">Disclaimer</a></li>
-                            <li><a href="#" target="_blank">Terms &amp; Conditions</a></li>
+                            <li><a href="/terms" target="_blank">Terms &amp; Conditions</a></li>
                         </ul>
 
                     </div>
@@ -421,6 +445,7 @@
     <script th:src="@{~/customer/plugins/jquery-steps/js/jquery.steps.min.js}" type="text/javascript"></script>
     <script th:src="@{~/customer/js/jasny-bootstrap.min.js}"></script>
     <script th:src="@{~/customer/js/passwordStrength.js}" th:inline="javascript" type="text/javascript"></script>
+    <script th:src="@{~/customer/js/coronation.js}" th:inline="javascript" type="text/javascript"></script>
     <script th:src="@{~/customer/js/register.js}" type="text/javascript"></script>
     <script th:src="@{~/customer/plugins/bootstrap-notify/bootstrap-notify.js}"></script>
     <script th:src="@{~/customer/js/errors.js}"></script>
@@ -438,6 +463,9 @@
 
         $(document).ready(function() {
             console.log("ready!");
+            $('.req-info').on('click',function(){
+                $('#register-info').toggle();
+            });
 
             inputErrors();
             $('input').on("focus", function() {

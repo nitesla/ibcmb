@@ -30,8 +30,8 @@
                               <div class="form-group">
                                 <label class='my-label'>Beneficiary</label>
                                 <span class="alert no-bd-rad my-border bg-white invisible">NGN</span>
-                                <input type="text" class="form-control ben-bg coronation-blue"  th:if="${benName}== null"  th:field="${transferRequest.beneficiaryAccountName}" disabled />
-                                <input type="text" class="form-control ben-bg coronation-blue" th:if="${benName}!= null" th:field="${benName}" disabled />
+                                <input type="text" class="form-control ben-bg coronation-blue"  th:if="${benName}== null"  th:field= "${transferRequest.beneficiaryAccountName}" disabled />
+                                <input type="text" class="form-control ben-bg coronation-blue" th:if="${benName}!= null" th:field= "${benName}" disabled />
                                 <a href='/retail/transfer/interbank' class="btn btn-link required-step" style='font-size:11px;text-decoration:underline'>Change <span class='hidden-xs'>Beneficiary</span></a>
                                 <p class="errors" th:if="${#fields.hasErrors('amount')}" th:errors="*{amount}">&times;</p>
                         </div>
@@ -133,8 +133,8 @@
                     }else{
 //                    $('input[name=availBal]').val(bal);
 
-                        var  bal=message;
-                        $('#availBal').text("Available Balance: "+bal);
+                        var  bal=numberWithCommas(message);
+                        $('#availBal').html("Available Balance: &#8358;"+bal);
                         getLimit();
 
                     }
@@ -161,8 +161,8 @@
                         $("#mylimit").show();
                     }else{
 //                    $('input[name=availBal]').val(bal);
-                        var  bal=message;
-                        $('#limit').text("Limit: "+bal);
+                        var  bal= numberWithCommas(message);
+                        $('#limit').html("Limit: &#8358;"+bal);
 
                     }
                 }
