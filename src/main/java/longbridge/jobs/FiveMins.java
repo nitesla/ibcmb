@@ -19,7 +19,7 @@ public class FiveMins implements Job {
     public void execute(JobExecutionContext context) throws JobExecutionException {
         ApplicationContext contextFiveMinutes = SpringContext.getApplicationContext();
         CronJobService cronJobService = contextFiveMinutes.getBean (CronJobService.class);
-        System.out.println("five minute job runing");
+//        System.out.println("five minute job runing");
         try {
 //            cronJobService.saveRunningJob("in-built",cronJobService.getCurrentExpression());
             cronJobService.updateAccountDetials();

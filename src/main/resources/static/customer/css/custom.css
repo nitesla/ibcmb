@@ -2167,8 +2167,10 @@ end
                                                         .spinnerLoader{
                                                             padding-top: 17%;
                                                             padding-left: 45%;
-                                                            position: absolute;
+                                                            position: fixed;
                                                             display: inline-block;
+                                                            top:50%;
+                                                            left:50%;
                                                             z-index: -1;
                                                         }
                                                         /* .related-box
