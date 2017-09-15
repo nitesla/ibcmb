@@ -136,6 +136,7 @@ function validatePassword(password){
         url:"/rest/corp/password/"+password,
         async:false,
         success:function(data1){
+            console.log("The reponse "+data1);
             result = ''+String(data1);
             if(result === 'true'){
                 //success
@@ -221,5 +222,5 @@ function setup(){
 
 
 function redirectUser() {
-    window.location.href = '/rest/redirect/corp/login';
+    window.location.href = "/corporate/logout";
 }
