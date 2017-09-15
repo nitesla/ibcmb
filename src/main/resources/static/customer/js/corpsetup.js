@@ -222,5 +222,9 @@ function setup(){
 
 
 function redirectUser() {
-    window.location.href = "/corporate/logout";
+    document.getElementById("successMess").textContent="Registration successful!";
+    $('#myModalSuccess').modal('show');
+    $(".btn-link").on("click", function()
+    {                                 window.location.href = "/corporate/logout";
+    });
 }
