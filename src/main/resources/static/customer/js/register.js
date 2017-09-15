@@ -415,6 +415,10 @@ function sendRegCode(){
                 {
                     window.location.href = "/login/corporate";
                 });
+                $("#myModalError").on("hidden.bs.modal", function () {
+                    window.location.href = "/login/corporate";
+
+                });
             }
             else{
 
