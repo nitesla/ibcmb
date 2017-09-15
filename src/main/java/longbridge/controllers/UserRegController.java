@@ -344,7 +344,7 @@ public class UserRegController {
         if (details != null) {
             logger.info("Reg Code : " + details);
             String contact = details.getPhone();
-            if(!contact.equalsIgnoreCase("") && contact != null ) {
+            if(contact != null && !contact.equalsIgnoreCase("") ) {
                 code = generateAndSendRegCode(contact);
                 if (!"".equals(code)) {
                     session.setAttribute("regCode", code);
