@@ -234,13 +234,4 @@ public class CorpSetupController {
             return e.getMessage();
         }
     }
-    @GetMapping("/login")
-    public String redirectToLogin(Model model, HttpSession session) {
-        logger.info("the login");
-        model.addAttribute("message", messageSource.getMessage("user.reg.success", null, locale));
-        if(session.getAttribute("first-time-logon") != null){
-            session.removeAttribute("first-time-logon");
-        }
-        return "corplogin";
-    }
 }
