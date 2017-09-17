@@ -387,7 +387,7 @@ public class CorpTransferServiceImpl implements CorpTransferService {
 
         if (setting != null && setting.isEnabled() && "YES".equalsIgnoreCase(setting.getValue())) {
 
-            try {
+            try {// RETRY_FAILED_TRANSFER is enabled, the entry is not added until we check for completion of authorizations
                 transReqEntry.setEntryDate(new Date());
                 transReqEntry.setRole(userRole);
                 transReqEntry.setUser(corporateUser);
@@ -400,16 +400,15 @@ public class CorpTransferServiceImpl implements CorpTransferService {
 
                         transferAuth.setStatus("C");
                         transferAuth.setLastEntry(new Date());
-                        transferAuth.getAuths().add(transReqEntry);
+                        transferAuth.getAuths().add(transReqEntry);// the entry is added to the list of other entries
                         transferAuthRepo.save(transferAuth);
                         return requestDTO.getStatusDescription();
 
                     } else {//failed transaction
-                        logger.debug("TransReqEntry {}", transReqEntry.toString());
                         throw new InternetBankingTransferException(String.format(messageSource.getMessage("transfer.auth.failure.reason", null, locale), requestDTO.getStatusDescription()));
                     }
                 }
-                transferAuth.getAuths().add(transReqEntry);
+                transferAuth.getAuths().add(transReqEntry);// the entry is added, as authorizations are not yet completed
                 transferAuthRepo.save(transferAuth);
                 return messageSource.getMessage("transfer.auth.success", null, locale);
             } catch (InternetBankingTransferException te) {
@@ -417,7 +416,7 @@ public class CorpTransferServiceImpl implements CorpTransferService {
             } catch (Exception e) {
                 throw new InternetBankingException(messageSource.getMessage("transfer.auth.success", null, locale), e);
             }
-        } else {
+        } else {// RETRY_FAILED_TRANSFER is disabled, so we add the entry before checking for authorization completion
             try {
                 transReqEntry.setEntryDate(new Date());
                 transReqEntry.setRole(userRole);
@@ -431,14 +430,15 @@ public class CorpTransferServiceImpl implements CorpTransferService {
                     transferAuth.setLastEntry(new Date());
                     transferAuthRepo.save(transferAuth);
                     CorpTransferRequestDTO requestDTO = makeTransfer(convertEntityToDTO(corpTransRequest));
-                    if ("00".equals(requestDTO.getStatus()) || "000".equals(requestDTO.getStatus()))  //successful failed
+                    if ("00".equals(requestDTO.getStatus()) || "000".equals(requestDTO.getStatus())) { //successful transaction
                         return requestDTO.getStatusDescription();
-                    else
+                    } else {
                         throw new InternetBankingTransferException(requestDTO.getStatusDescription());
+                    }
                 }
                 return messageSource.getMessage("transfer.auth.success", null, locale);
-            } catch (InternetBankingTransferException te) {
-                throw te;
+            } catch (InternetBankingTransferException transferException) {
+                throw transferException;
             } catch (Exception e) {
                 throw new InternetBankingException(messageSource.getMessage("transfer.auth.success", null, locale), e);
             }
@@ -460,31 +460,33 @@ public class CorpTransferServiceImpl implements CorpTransferService {
 
 
         if (retryTransfer) {
-            approvalCount = 1;
+            approvalCount = 1; //this is changed to 1 because the user authorization has to be added before counting all authorizations
         }
 
         if (corpTransRule.isAnyCanAuthorize()) {
             anyCanAuthorize = true;
         }
 
-        int numAuthorizers = 0;
+        int numAuthorizers = 1;
         SettingDTO authSetting = configService.getSettingByName("MIN_AUTHORIZER_LEVEL");
         if (authSetting != null && authSetting.isEnabled()) {
 
-            numAuthorizers = Integer.parseInt(authSetting.getValue());
+            numAuthorizers = NumberUtils.toInt(authSetting.getValue());
         }
 
         for (CorporateRole role : roles) {
             for (CorpTransReqEntry corpTransReqEntry : transReqEntries) {
                 if (corpTransReqEntry.getRole().equals(role)) {
                     approvalCount++;
-                    if (anyCanAuthorize && (approvalCount >= numAuthorizers)) return true;
+                    if (anyCanAuthorize && (approvalCount >= numAuthorizers))
+                        return true;
                 }
             }
         }
 
         if (retryTransfer) {
-            if (anyCanAuthorize && (approvalCount >= numAuthorizers)) return true;
+            if (anyCanAuthorize && (approvalCount >= numAuthorizers))
+                return true;
         }
 
         return approvalCount >= roles.size();

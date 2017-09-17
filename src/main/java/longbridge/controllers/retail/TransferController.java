@@ -1,6 +1,7 @@
 package longbridge.controllers.retail;
 
 
+import com.thoughtworks.xstream.security.RegExpTypePermission;
 import longbridge.dtos.AccountDTO;
 import longbridge.dtos.LocalBeneficiaryDTO;
 import longbridge.dtos.SettingDTO;
@@ -127,9 +128,7 @@ public class TransferController {
                 }
             }
             return "redirect:/retail/transfer/ownaccount";
-
         }
-
 
         return "redirect:/retail/dashboard";
 
@@ -155,19 +154,16 @@ public class TransferController {
                     .filter(Objects::nonNull)
                     .filter(i -> !i.getAccountNumber().equalsIgnoreCase(accountId))
                     .filter(l -> l.getCurrencyCode().equalsIgnoreCase(accountService.getAccountByAccountNumber(accountId).getCurrencyCode()))
-                    .filter(i->{
-                        if (dto != null && dto.isEnabled()){
-                            String[]   list = StringUtils.split(dto.getValue(), ",");
-                        return  ArrayUtils.contains(list, i.getSchemeType());
+                    .filter(i -> {
+                        if (dto != null && dto.isEnabled()) {
+                            String[] list = StringUtils.split(dto.getValue(), ",");
+                            return ArrayUtils.contains(list, i.getSchemeType());
 
                         }
                         return false;
-                    } )
+                    })
                     .forEach(i -> accountList.add(i.getAccountNumber()))
             ;
-
-
-
 
 
             logger.info("ACCOUNT LIST {}", StreamSupport.stream(accounts.spliterator(), true).count());
@@ -190,9 +186,9 @@ public class TransferController {
         try {
             return accountService.getAccountByAccountNumber(accountId).getCurrencyCode();
         } catch (Exception e) {
-            return "";
+            logger.error("Error getting currency");
         }
-
+        return "";
     }
 
 
@@ -208,7 +204,7 @@ public class TransferController {
             }
 
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error("Error getting bank account name", e);
         }
 
         return "";
@@ -239,7 +235,7 @@ public class TransferController {
 
                 String token = request.getParameter("token");
                 if (token == null || token.isEmpty()) {
-                    model.addAttribute("failure","Token is required");
+                    model.addAttribute("failure", "Token is required");
                     return "/cust/transfer/transferauth";
                 }
 
@@ -333,8 +329,6 @@ public class TransferController {
 
 
         }
-
-
         return "redirect:/retail/dashboard";
     }
 
@@ -405,15 +399,24 @@ public class TransferController {
     @ResponseBody
     public String getLimit(@PathVariable String accountNumber) throws Exception {
 
-        return transferUtils.getLimit(accountNumber);
+        try {
+            return transferUtils.getLimit(accountNumber);
+        } catch (Exception e) {
+            logger.error("Error getting limit", e);
+        }
+        return "";
     }
 
     @RequestMapping(value = "/balance/{accountNumber}", method = RequestMethod.GET, produces = "application/json")
     @ResponseBody
     public String getBalance(@PathVariable String accountNumber) {
 
-        return transferUtils.getBalance(accountNumber);
-
+        try {
+            return transferUtils.getBalance(accountNumber);
+        } catch (Exception e) {
+            logger.error("Error getting balance", e);
+        }
+        return "";
     }
 
 
