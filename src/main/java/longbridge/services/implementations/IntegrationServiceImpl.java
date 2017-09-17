@@ -124,7 +124,7 @@ public class IntegrationServiceImpl implements IntegrationService {
 
 
         } catch (Exception e) {
-            logger.error("Error occurred", e);
+            logger.error("Error occurred getting account statements", e);
         }
 
 
@@ -153,7 +153,7 @@ public class IntegrationServiceImpl implements IntegrationService {
 
 
         } catch (Exception e) {
-            logger.error("Error occurred", e);
+            logger.error("Error occurred getting account statements", e);
         }
 
 
@@ -180,7 +180,7 @@ public class IntegrationServiceImpl implements IntegrationService {
 
 
         } catch (Exception e) {
-            logger.error("Error occurred", e);
+            logger.error("Error occurred getting account statements", e);
         }
 
 
@@ -206,7 +206,7 @@ public class IntegrationServiceImpl implements IntegrationService {
 
 
         } catch (Exception e) {
-            logger.error("Error occurred", e);
+            logger.error("Error occurred getting last transactions", e);
         }
         return histories;
     }
@@ -227,7 +227,7 @@ public class IntegrationServiceImpl implements IntegrationService {
         } catch (Exception e) {
             response.put("AvailableBalance", new BigDecimal(0));
             response.put("LedgerBalance", new BigDecimal(0));
-            logger.error("Error occurred", e);
+            logger.error("Error occurred getting balance", e);
             return response;
         }
     }
@@ -357,6 +357,7 @@ public class IntegrationServiceImpl implements IntegrationService {
             TransferDetails details = template.getForObject(uri, TransferDetails.class, naps);
             return details;
         } catch (Exception e) {
+            logger.error("Error making NAPS transfer",e);
             return new TransferDetails();
         }
 
@@ -373,6 +374,7 @@ public class IntegrationServiceImpl implements IntegrationService {
             AccountDetails details = template.getForObject(uri, AccountDetails.class, params);
             return details;
         } catch (Exception e) {
+            logger.error("Error getting account details");
             return new AccountDetails();
         }
 
@@ -391,7 +393,7 @@ public class IntegrationServiceImpl implements IntegrationService {
             result = template.postForObject(uri, params, CustomerDetails.class);
 
         } catch (Exception e) {
-            logger.error("Error occurred", e);
+            logger.error("Error occurred validating account", e);
         }
 
         return result;
@@ -409,7 +411,7 @@ public class IntegrationServiceImpl implements IntegrationService {
             result = template.getForObject(uri, CustomerDetails.class, params);
             return result;
         } catch (Exception e) {
-            logger.error("Error occurred", e);
+            logger.error("Error occurred getting customer details", e);
         }
 
         return result;
@@ -425,7 +427,7 @@ public class IntegrationServiceImpl implements IntegrationService {
             result = template.getForObject(uri, CustomerDetails.class, params);
             return result;
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error("Error occurred getting customer details", e);
         }
         return result;
     }
@@ -451,7 +453,7 @@ public class IntegrationServiceImpl implements IntegrationService {
             result = new BigDecimal(response);
         } catch (Exception e) {
 
-            e.printStackTrace();
+            logger.error("Error occurred getting  daily transaction", e);
         }
 
         return result;
@@ -471,7 +473,7 @@ public class IntegrationServiceImpl implements IntegrationService {
             result = (response);
         } catch (Exception e) {
 
-            e.printStackTrace();
+            logger.error("Error occurred getting  daily account limit", e);
         }
 
         return result;
@@ -491,7 +493,7 @@ public class IntegrationServiceImpl implements IntegrationService {
             result = template.postForObject(uri, params, NEnquiryDetails.class);
 
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error("Error occurred doing name enquiry", e);
         }
 
         return result;
@@ -506,7 +508,7 @@ public class IntegrationServiceImpl implements IntegrationService {
                 return balance;
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error("Error occurred getting available balance", e);
         }
         return new BigDecimal(0);
     }
@@ -530,7 +532,6 @@ public class IntegrationServiceImpl implements IntegrationService {
             result = template.postForObject(uri, params, ObjectNode.class);
 
         } catch (Exception e) {
-            e.printStackTrace();
             logger.error(uri, params, e);
 
         }
@@ -549,6 +550,8 @@ public class IntegrationServiceImpl implements IntegrationService {
             Rate details = template.postForObject(uri, params, Rate.class);
             return details;
         } catch (Exception e) {
+
+            logger.error("Error occurred getting  fee", e);
 
             return new Rate("", "0", "");
         }
@@ -574,7 +577,7 @@ public class IntegrationServiceImpl implements IntegrationService {
             transRequest.setStatus("000");
             transRequest.setStatus("Approved or completed successfully");
         } catch (Exception e) {
-            e.printStackTrace();
+
             logger.error("Exception occurred {}", e);
             transRequest.setStatus("96");
             transRequest.setStatusDescription("TRANSACTION FAILED");

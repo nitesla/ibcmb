@@ -63,8 +63,7 @@ public class TransferController {
     private TransferUtils transferUtils;
     @Autowired
     private ConfigurationService configService;
-//    @Autowired
-//    TransferRe
+
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
     private Locale locale = LocaleContextHolder.getLocale();

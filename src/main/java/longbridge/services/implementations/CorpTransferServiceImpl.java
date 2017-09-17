@@ -123,7 +123,6 @@ public class CorpTransferServiceImpl implements CorpTransferService {
             logger.trace("params {}", corpTransRequest);
             corpTransferRequestDTO = saveTransfer(convertEntityToDTO(corpTransRequest));
 
-
             if (corpTransRequest.getStatus() != null) {
                 return corpTransferRequestDTO;
             }
@@ -137,9 +136,6 @@ public class CorpTransferServiceImpl implements CorpTransferService {
         CorporateUser corporateUser = getCurrentUser();
         Corporate corporate = corporateUser.getCorporate();
         Page<CorpTransRequest> page = corpTransferRequestRepo.findByCorporateAndStatusInAndTranDateNotNullOrderByTranDateDesc(corporate, Arrays.asList("00", "000"), pageDetails);
-        //List<CorpTransferRequestDTO> dtOs = convertEntitiesToDTOs(page.getContent());
-//        long t = page.getTotalElements();
-//        Page<CorpTransferRequestDTO> pageImpl = new PageImpl<CorpTransferRequestDTO>(dtOs, pageDetails, t);
         return page;
     }
 

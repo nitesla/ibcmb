@@ -125,7 +125,7 @@ public class TransferUtils {
 
             NEnquiryDetails details = integrationService.doNameEnquiry(bank, accountNo);
             if (details == null)
-                return createMessage("service down please try later", false);
+                return createMessage("Service unavailable, please try again later", false);
 
 
             if (details.getResponseCode() != null && !details.getResponseCode().equalsIgnoreCase("00"))
