@@ -200,6 +200,7 @@ public class CronJobServiceImpl implements CronJobService {
         String corporateBvn = corporate.getBvn();
         if((corporateBvn == null)||corporateBvn.equalsIgnoreCase("")||(!corporateBvn.equalsIgnoreCase(details.getBvn()))){
             corporate.setBvn(details.getBvn());
+            logger.info("Updating Corporate BVN for {} to {}",corporate.getCustomerId(),corporate.getBvn());
 //            logger.info("new corp bvn is {}",corporate.getBvn());
             try {
                 corporateRepo.save(corporate);
