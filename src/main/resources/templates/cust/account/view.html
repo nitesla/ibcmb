@@ -88,7 +88,7 @@
 
                </div>
             </form>
-        
+
             </div>
     </div>
 
@@ -262,7 +262,9 @@
                     $('#next').hide();
                 }
                 $('#previous').hide();
-                hideSpinner();            },
+               hideSpinner();
+
+            },
             error: function (dd) {
 //                        console.log("error")
                 var contactsTab2 = $('#tranDetails').DataTable();
@@ -340,11 +342,6 @@ hideSpinner();
         }
         return false;
     }
-<<<<<<< HEAD
-   
-=======
-
->>>>>>> 41345a3f1eaaff2feaab0f1438cae97e54ad0e74
 function nextData() {
 //    console.log("field value "+valu);
     showSpinner();
