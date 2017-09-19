@@ -9,12 +9,12 @@
         <div class="col-md-3 left_col">
             <div class="left_col scroll-view">
 
-                <div th:replace="layout :: ops-menu"></div>
+                <div th:replace="layout :: admin-menu"></div>
                 <div th:replace="layout :: menu-footer-adm"></div>
 
             </div>
         </div>
-        <div th:replace="layout :: ops-top-nav"></div>
+        <div th:replace="layout :: top-nav"></div>
 
         <!-- page content -->
         <div class="right_col" role="main">
@@ -28,7 +28,6 @@
 
 
                 <ul class="nav navbar-right panel_toolbox">
-
 
 
 
@@ -49,7 +48,7 @@
 
                             <div class="x_content">
                                 <div class="ibox-content">
-                                    <form method="post" class="form-horizontal" th:action="@{/ops/verifications/cancel}">
+                                    <form method="post" class="form-horizontal" th:action="@{/admin/verifications/cancel}" >
 
                                         <div class="form-group">
                                             <label for="comments" class="col-sm-2 control-label" style="text-align: left">Comments</label>
@@ -58,7 +57,10 @@
                                             </div>
                                         </div>
 
+
                                         <label style="font-size:large" th:text="${verify.description}"></label>
+
+                                        <!--<div id="before" style="overflow-wrap: break-word;border-left: 1px solid;margin-right: 1px;padding:5px; ">-->
 
                                         <table class="table table-striped dt-responsive no-wrap table-bordered table-hover" id="table">
                                             <thead>
@@ -82,13 +84,7 @@
 
 
                                         <div>
-                                            <button  id="cancel" type="reset"  class="btn btn-default btn-labeled pull-right">
-                                                Back<span class="btn-label btn-label-right"></span>
-                                            </button>
 
-                                            <button type="submit"  class="btn btn-danger btn-labeled pull-right">
-                                                Cancel Operation<span class="btn-label btn-label-right"> <i class="fa fa-times"></i></span>
-                                            </button>
                                             <input  th:hidden="hidden" th:field="${verify.version}"/>
                                             <input  th:hidden="hidden" th:field="${verify.id}"/>
 
@@ -152,6 +148,7 @@
 
                 b = jsonPath(beforeData,current_path)[0] ;
                 a = jsonPath(afterData,current_path)[0];
+
                 if(true ){
 
                     result += '<li class="list-group-item">'+ node +':<ul class="list-group">' + parseJsonAsList(jsn[node],current_path+'[') + '</ul></li>';
@@ -164,12 +161,12 @@
 
 
                 current_path = path.endsWith('[') ? path + node + ']' : path + '.' +node;
-                /* if(jsonPath(beforeData,current_path)){
+               /* if(jsonPath(beforeData,current_path)){
 
-                 }
-                 b = jsonPath(beforeData,current_path)[0] ;
-                 a = jsonPath(afterData,current_path)[0];
-                 */
+                }
+                b = jsonPath(beforeData,current_path)[0] ;
+                a = jsonPath(afterData,current_path)[0];
+                */
                 if(true){
                     result += '<li class="list-group-item">'+ node +':<ul class="list-group">' + parseJsonAsList(jsn[node],current_path) + '</ul></li>';
                 }else{
@@ -185,13 +182,18 @@
 
                 a = jsonPath(afterData,current_path) ? jsonPath(afterData,current_path)[0] : 'undefined' ;
 
-                if(a == b && typeof a != 'undefined' && typeof b != 'undefined' ){
+//                console.log(a);
+//                console.log(b);
+
+               // alert(jsn[node]);
+                if(a == b && typeof a != 'undefined' && typeof b != 'undefined' )
+                {
 
                     result += '<li class="list-group-item">' + node + ':'+jsn[node] +'</li>'
-                }else{
-
+                }else
+                {
                     result += '<li class="list-group-item list-group-item-danger">' + node + ':'+jsn[node] +'</li>'
-                }
+                  }
             }
 
         }
@@ -199,7 +201,6 @@
     }
     var beforeData = JSON.parse([[${verify.beforeObject}]]);
     var afterData =JSON.parse([[${verify.afterObject}]]);
-    console.log(beforeData);
     $(document).ready(function() {
 
         $("#table").DataTable({
@@ -243,7 +244,8 @@
 
     });
 
-    document.getElementById("cancel").onclick = function () {location.href = "/ops/verifications/pendingops";}
+    document.getElementById("cancel").onclick = function () {location.href = "/admin/verifications/pendingops";}
+
 
     /*]]>*/
 </script>
