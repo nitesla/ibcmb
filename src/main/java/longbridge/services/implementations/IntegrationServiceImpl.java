@@ -374,7 +374,7 @@ public class IntegrationServiceImpl implements IntegrationService {
             AccountDetails details = template.getForObject(uri, AccountDetails.class, params);
             return details;
         } catch (Exception e) {
-            logger.error("Error getting account details");
+            logger.error("Error getting account details", e);
             return new AccountDetails();
         }
 
