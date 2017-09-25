@@ -57,19 +57,34 @@
                     </select><span class='req-inner'></span>
                 </div>
 
-                <div class="form-group">
-                    <input id="auth" type="checkbox" class="checkbox-inline"
-                           th:field="*{authorizer}"/>
-                    <span>Make an Authorizer</span>
+                <div th:if="${corporateUserDTO.corpUserType==T(longbridge.models.CorpUserType).ADMIN}" class="form-group">
+                    <label>User Type</label>
+                    <input type="text" class="form-control" th:field="*{corpUserType}" readonly="readonly"/>
                 </div>
 
+                <div th:if="${corporateUserDTO.corpUserType!=T(longbridge.models.CorpUserType).ADMIN}" class="form-group">
+                    <label>User Type</label>
+                    <select class="form-control" th:field="*{corpUserType}">
+                        <option value="INITIATOR">INITIATOR</option>
+                        <option value="AUTHORIZER">AUTHORIZER</option>
+
+                    </select><span class='req-inner'></span>
+                </div>
+
+                <!--<div class="form-group">-->
+                    <!--<input id="auth" type="checkbox" class="checkbox-inline"-->
+                           <!--th:field="*{authorizer}"/>-->
+                    <!--<span>Make an Authorizer</span>-->
+                <!--</div>-->
+
                 <div id="level">
-                    <a id="mandate" href="javascript:void(0)" data-toggle="tooltip" data-placement="right" title="View Corporate Mandate">View Mandate</a>
-                    <div  class="form-group">
+                    <div class="form-group">
+                        <label>Authorizer Level</label>
                         <select class="form-control" th:field="*{corporateRoleId}">
                             <option th:each="role : ${corporateRoles}" th:value="${role.id}" th:text="${role.name + ' ' + role.rank}"></option>
                         </select>
                     </div>
+                    <a id="mandate" href="javascript:void(0)" data-toggle="tooltip" data-placement="right" title="View Corporate Mandate">View Mandate</a>
                 </div>
 
 
@@ -151,10 +166,24 @@
                 }
             });
 
+            $("#corpUserType").change();
+
+
             $('#mandate').click(function () {
                 $('#myModal').modal('show');
             })
         });
+
+        $("#corpUserType").change(function () {
+            userType = $("select#corpUserType").val();
+            if (userType == "AUTHORIZER") {
+                $("#level").show();
+            }
+            else {
+                $("#level").hide();
+
+            }
+        })
     </script>
 
 </th:block>

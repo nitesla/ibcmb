@@ -248,7 +248,7 @@
 
                                                 <div class="form-group clearfix">
                                                     <label>Username</label>
-                                                    <span class='req'></span><input type="text" name="userName" autocomplete="off" class="my-select required" placeholder="Preferred Username" />
+                                                    <span class='req'></span><input id="username" type="text" name="userName" autocomplete="off" class="my-select required" placeholder="Preferred Username" />
 
 
                                                 </div>
@@ -516,6 +516,10 @@
         });
         $('#confirm').bind("cut copy paste", function(e) {
             e.preventDefault();
+        });
+
+        $("#username").on("keydown", function (e) {
+            return e.which !== 32;
         });
 
         /*]]>*/
