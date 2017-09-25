@@ -192,13 +192,13 @@ public class InterBankTransferController {
             String type = (String) request.getSession().getAttribute("NIP");
             if (type.equalsIgnoreCase("RTGS")) {
                 transferRequestDTO.setTransferType(TransferType.RTGS);
-                charge = integrationService.getFee("RTGS").getFeeValue();
+                charge = transferUtils.getFee("RTGS");
                 System.out.println("RTGS TRANSFER");
-                System.out.println(charge);
+
 
             } else {
                 transferRequestDTO.setTransferType(TransferType.INTER_BANK_TRANSFER);
-                charge = integrationService.getFee("NIP").getFeeValue();
+                charge = transferUtils.getFee("NIP");
             }
             // request.getSession().removeAttribute("NIP");
 
@@ -242,18 +242,14 @@ public class InterBankTransferController {
         sortedNames.sort(Comparator.comparing(FinancialInstitutionDTO::getInstitutionName));
 
         model.addAttribute("localBanks"
-                , sortedNames
-
-
-        );
+                , sortedNames);
 
 
         try {
-            model.addAttribute("nip", integrationService.getFee("NIP"));
-            model.addAttribute("rtgs", integrationService.getFee("RTGS"));
+            model.addAttribute("nip", transferUtils.getFee("NIP"));
+            model.addAttribute("rtgs", transferUtils.getFee("RTGS"));
         }catch (Exception e) {
-            model.addAttribute("nip", new Rate());
-            model.addAttribute("rtgs", new Rate());
+
             e.printStackTrace();
         }
 

@@ -183,6 +183,8 @@ function getBeneficiaryAccts() {
 }
     $('#source').change(function () {
         getBeneficiaryAccts();
+        $("#destination").prop("selectedIndex", -1);
+        $('#destCurrency').text('')
     });
 
 
