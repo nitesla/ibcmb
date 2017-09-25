@@ -57,12 +57,13 @@ form.children("div").steps({
             console.log("Current Step is the phishing image step");
             //$("#reg-form").submit();
             var confirm = $('#confirm').val();
+            getRegSummary();
             return isValid && validatePassword(confirm);
         }
         if(TOKEN_AUTH_STEP === currentIndex){
             console.log("Current Step is the phishing image step");
             //$("#reg-form").submit();
-            getRegSummary();
+            // getRegSummary();
 
             return isValid;
         }

@@ -12,6 +12,8 @@ public class CronJobExpression extends AbstractEntity {
     private Date createdOn;
     private String username;
     private String flag;
+    private String cronExpressionDesc;
+    private String category;
 
     public String getFlag() {
         return flag;
@@ -45,12 +47,31 @@ public class CronJobExpression extends AbstractEntity {
         this.username = username;
     }
 
+    public String getCronExpressionDesc() {
+        return cronExpressionDesc;
+    }
+
+    public void setCronExpressionDesc(String cronExpressionDesc) {
+        this.cronExpressionDesc = cronExpressionDesc;
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
+    }
+
     @Override
     public String toString() {
         return "CronJobExpression{" +
                 "cronExpression='" + cronExpression + '\'' +
                 ", createdOn=" + createdOn +
-                ", username=" + username +
+                ", username='" + username + '\'' +
+                ", flag='" + flag + '\'' +
+                ", cronExpressionDesc='" + cronExpressionDesc + '\'' +
+                ", category='" + category + '\'' +
                 '}';
     }
 }
