@@ -113,7 +113,7 @@ public class CorpNAPSTransferController {
         if (corporate.getCorporateType().equalsIgnoreCase("MULTI")) {
             CorpTransferAuth corpTransferAuth = bulkTransferService.getAuthorizations(bulkTransfer);
             CorpTransRule corpTransRule = corporateService.getApplicableTransferRule(bulkTransfer);
-            boolean userCanAuthorize = corpTransferService.userCanAuthorize(bulkTransfer);
+            boolean userCanAuthorize = bulkTransferService.userCanAuthorize(bulkTransfer);
             model.addAttribute("authorizationMap", corpTransferAuth);
             model.addAttribute("corpTransRequest", bulkTransfer);
             model.addAttribute("corpTransReqEntry", new CorpTransReqEntry());

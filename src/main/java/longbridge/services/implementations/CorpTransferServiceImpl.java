@@ -9,6 +9,7 @@ import longbridge.models.*;
 import longbridge.repositories.*;
 import longbridge.security.userdetails.CustomUserPrincipal;
 import longbridge.services.*;
+import longbridge.utils.TransferAuthorizationStatus;
 import longbridge.utils.TransferType;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.slf4j.Logger;
@@ -102,6 +103,7 @@ public class CorpTransferServiceImpl implements CorpTransferService {
             if (userCanAuthorize(corpTransRequest)) {
                 CorpTransReqEntry transReqEntry = new CorpTransReqEntry();
                 transReqEntry.setTranReqId(corpTransRequest.getId());
+                transReqEntry.setAuthStatus(TransferAuthorizationStatus.APPROVED);
                 return addAuthorization(transReqEntry);
             }
         } catch (TransferAuthorizationException ex) {
@@ -338,11 +340,12 @@ public class CorpTransferServiceImpl implements CorpTransferService {
     public boolean userCanAuthorize(TransRequest transRequest) {
         CorporateUser corporateUser = getCurrentUser();
         CorpTransRule transferRule = corporateService.getApplicableTransferRule(transRequest);
+        CorpTransRequest transferRequest = (CorpTransRequest)transRequest;
 
         if (transferRule != null) {
             List<CorporateRole> roles = getExistingRoles(transferRule.getRoles());
             for (CorporateRole corporateRole : roles) {
-                if (corpRoleRepo.countInRole(corporateRole, corporateUser) > 0) {
+                if (corpRoleRepo.countInRole(corporateRole, corporateUser) > 0 && !reqEntryRepo.existsByTranReqIdAndRole(transRequest.getId(), corporateRole) && !"C".equals(transferRequest.getTransferAuth().getStatus())) {
                     return true;
                 }
             }
@@ -381,6 +384,19 @@ public class CorpTransferServiceImpl implements CorpTransferService {
             throw new TransferAuthorizationException(messageSource.getMessage("transfer.auth.exist", null, locale));
         }
 
+        if(TransferAuthorizationStatus.DECLINED.equals(transReqEntry.getAuthStatus())){
+            transReqEntry.setEntryDate(new Date());
+            transReqEntry.setRole(userRole);
+            transReqEntry.setUser(corporateUser);
+            transferAuth.getAuths().add(transReqEntry);
+            transferAuth.setStatus("X");//cancelled
+            corpTransRequest.setStatus("X");
+            corpTransRequest.setStatusDescription("Cancelled");
+            transferAuthRepo.save(transferAuth);
+            return messageSource.getMessage("transfer.auth.decline", null, locale);
+
+        }
+
         SettingDTO setting = configService.getSettingByName("RETRY_FAILED_TRANSFER");
 
         if (setting != null && setting.isEnabled() && "YES".equalsIgnoreCase(setting.getValue())) {
@@ -389,7 +405,6 @@ public class CorpTransferServiceImpl implements CorpTransferService {
                 transReqEntry.setEntryDate(new Date());
                 transReqEntry.setRole(userRole);
                 transReqEntry.setUser(corporateUser);
-                transReqEntry.setStatus("Approved");
 
                 if (isAuthorizationComplete(corpTransRequest)) {
                     CorpTransferRequestDTO requestDTO = makeTransfer(convertEntityToDTO(corpTransRequest));
@@ -419,12 +434,11 @@ public class CorpTransferServiceImpl implements CorpTransferService {
                 transReqEntry.setEntryDate(new Date());
                 transReqEntry.setRole(userRole);
                 transReqEntry.setUser(corporateUser);
-                transReqEntry.setStatus("Approved");
                 transferAuth.getAuths().add(transReqEntry);
                 transferAuthRepo.save(transferAuth);
 
                 if (isAuthorizationComplete(corpTransRequest)) {
-                    transferAuth.setStatus("C");
+                    transferAuth.setStatus("C"); //completed
                     transferAuth.setLastEntry(new Date());
                     transferAuthRepo.save(transferAuth);
                     CorpTransferRequestDTO requestDTO = makeTransfer(convertEntityToDTO(corpTransRequest));

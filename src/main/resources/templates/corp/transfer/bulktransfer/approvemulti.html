@@ -123,9 +123,12 @@
                                     <input type="hidden" name="tranReqId" th:value="${corpTransRequest.id}" />
                                 </div>
                                 <div>
-                                    <button class="btn btn-link required-step" th:if="${userCanAuthorize}" type="submit">
-                                                    Approve
-                                                </button>
+                                    <button name="authStatus"  value="APPROVED" class="btn btn-link required-step" th:disabled="${userCanAuthorize==false}" type="submit">
+                                        Approve
+                                    </button>
+                                    <button name="authStatus"  value="DECLINED" class="btn btn-link required-step" th:disabled="${userCanAuthorize==false}" type="submit">
+                                        Decline
+                                    </button>
                                     <button id="cancel" class="btn btn-link less-required" type="reset">Back</button>
                                 </div>
                             </form>

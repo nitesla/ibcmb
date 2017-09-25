@@ -88,7 +88,7 @@
                 <tr th:each="auth : ${authorizationMap.auths}" th:if="${authorizationMap.auths != null }">
                     <td th:text="${auth.role.name+' '+auth.role.rank}"></td>
                     <td th:text="${auth.user.firstName+' '+auth.user.lastName}"></td>
-                    <td th:text="${auth.status}"></td>
+                    <td th:text="${auth.authStatus}"></td>
                     <td th:text="${auth.comments}"></td>
                     <td th:text="${#dates.format(auth.entryDate,'dd-MM-yyyy hh:mm a')}"></td>
                     <td th:if="${corpTransRule.anyCanAuthorize}">Optional</td>
@@ -121,8 +121,11 @@
                     <input type="hidden" name="tranReqId" th:value="${corpTransRequest.id}"/>
                 </div>
                 <div>
-                    <button class="btn btn-link required-step" th:if="${userCanAuthorize}" type="submit">
+                    <button name="authStatus"  value="APPROVED" class="btn btn-link required-step" th:disabled="${userCanAuthorize==false}" type="submit">
                         Approve
+                    </button>
+                    <button name="authStatus"  value="DECLINED" class="btn btn-link required-step" th:disabled="${userCanAuthorize==false}" type="submit">
+                        Decline
                     </button>
                     <button id="cancel" class="btn btn-link required-less" type="reset">Back</button>
                 </div>
