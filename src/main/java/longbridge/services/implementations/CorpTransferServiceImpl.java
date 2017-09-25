@@ -345,7 +345,7 @@ public class CorpTransferServiceImpl implements CorpTransferService {
         if (transferRule != null) {
             List<CorporateRole> roles = getExistingRoles(transferRule.getRoles());
             for (CorporateRole corporateRole : roles) {
-                if (corpRoleRepo.countInRole(corporateRole, corporateUser) > 0 && !reqEntryRepo.existsByTranReqIdAndRole(transRequest.getId(), corporateRole) && !"C".equals(transferRequest.getTransferAuth().getStatus())) {
+                if (corpRoleRepo.countInRole(corporateRole, corporateUser) > 0 && !reqEntryRepo.existsByTranReqIdAndRole(transRequest.getId(), corporateRole) && "P".equals(transferRequest.getTransferAuth().getStatus())) {
                     return true;
                 }
             }

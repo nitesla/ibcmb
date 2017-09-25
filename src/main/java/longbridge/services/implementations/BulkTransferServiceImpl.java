@@ -331,7 +331,7 @@ public class BulkTransferServiceImpl implements BulkTransferService {
         List<CorporateRole> roles = getExistingRoles(transferRule.getRoles());
 
         for (CorporateRole corporateRole : roles) {
-            if (corpRoleRepo.countInRole(corporateRole, corporateUser) > 0 && !reqEntryRepo.existsByTranReqIdAndRole(transRequest.getId(), corporateRole) && !"C".equals(bulkTransfer.getTransferAuth().getStatus())) {
+            if (corpRoleRepo.countInRole(corporateRole, corporateUser) > 0 && !reqEntryRepo.existsByTranReqIdAndRole(transRequest.getId(), corporateRole) && "P".equals(bulkTransfer.getTransferAuth().getStatus())) {
                 return true;
             }
         }
