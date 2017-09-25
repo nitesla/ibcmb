@@ -1,11 +1,11 @@
 package longbridge.models;
 
+import longbridge.utils.TransferRequestStatus;
 import org.hibernate.annotations.Where;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import java.util.Date;
 
 /**
@@ -19,6 +19,7 @@ public class CorpTransReqEntry extends AbstractEntity {
     private Long tranReqId;
     private String comments;
     private String status;
+    private TransferRequestStatus transferStatus;
 
     @ManyToOne
     private CorporateRole role;
@@ -77,6 +78,13 @@ public class CorpTransReqEntry extends AbstractEntity {
         this.tranReqId = tranReqId;
     }
 
+    public TransferRequestStatus getTransferStatus() {
+        return transferStatus;
+    }
+
+    public void setTransferStatus(TransferRequestStatus transferStatus) {
+        this.transferStatus = transferStatus;
+    }
 
     @Override
     public String toString() {

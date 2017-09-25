@@ -13,11 +13,11 @@
                         <h5 class="form-signin-heading text-white" style='margin:20px'>Check the box to Confirm Phishing Image</h5>
 
                         <div>
-                            <div class="bg-danger" style="max-height:auto;width:150px;margin:0px auto;padding:5px">
-                                <img th:if="${secImage}" class='bg-danger img-responsive center' style="height:100px;display: block;margin: 0px auto; margin-bottom: 5px;" th:src="@{'data:image/jpeg;base64,' + ${secImage}}" />
-                                <img th:unless="${secImage}" class='bg-danger img-responsive center' style="height:100px;display: block;margin: 0px auto; margin-bottom: 5px;" th:src="@{/customer/img/cmb_ph.png}" />
+                            <div class="bg-coronation-brown center img-phish-box-mobile">
+                                <img th:if="${secImage}" class='bg-danger img-responsive center img-phish'  th:src="@{'data:image/jpeg;base64,' + ${secImage}}" />
+                                <img th:unless="${secImage}" class='bg-danger img-responsive center img-phish' th:src="@{/customer/img/cmb_ph.png}" />
                                 <p class="text-center" th:text="${secCaption}"></p>
-                                <input type="checkbox" style='display:block;margin:0px auto;' name="phishing" />
+                                <input type="checkbox" class='center' style='display:block;' name="phishing" />
                             </div>
                         </div>
 
@@ -52,13 +52,13 @@
                         </div>
                     </div>
 
-                    <div class='col-md-4 form-signi hidden-xs hidden-sm' style="padding:100px 15px 30px">
-                        <div class="bg-danger" style="padding: 10px;width:150px">
-                            <div style="max-height:auto">
-                                <img th:if="${secImage}" class='bg-danger img-responsive center' style="height:100px;display: block;margin: 0px auto; margin-bottom: 5px;" th:src="@{'data:image/jpeg;base64,' + ${secImage}}" />
-                                <img th:unless="${secImage}" class='bg-danger img-responsive center' style="height:100px;display: block;margin: 0px auto; margin-bottom: 5px;" th:src="@{/customer/img/cmb_ph.png}" />
+                    <div class='col-md-4 form-signi hidden-xs hidden-sm' style="padding:100px 0px 30px">
+                        <div class="" style="width:200px;padding:25px 10px">
+                            <div class="bg-coronation-brown img-phish-box-desk" >
+                                <img th:if="${secImage}" class='bg-danger img-responsive center img-phish-desk'  th:src="@{'data:image/jpeg;base64,' + ${secImage}}" />
+                                <img th:unless="${secImage}" class='bg-danger img-responsive center img-phish-desk'  th:src="@{/customer/img/cmb_ph.png}" />
                                 <p class="text-center" th:text="${secCaption}"></p>
-                                <input type="checkbox" style='display:block;margin:0px auto;' name="phishing" />
+                                <input type="checkbox" class="center" style='display:block;' name="phishing" />
                             </div>
                         </div>
 
