@@ -137,6 +137,8 @@
         })
         $('#source').change(function () {
             getBeneficiaryAccts();
+            $("#destination").prop("selectedIndex", -1);
+
         });
         function getBeneficiaryAccts() {
             var acctId = $('#source').val();

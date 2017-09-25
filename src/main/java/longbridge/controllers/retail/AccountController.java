@@ -329,6 +329,7 @@ public class AccountController {
 		RetailUser user = retailUserService.getUserByName(principal.getName());
 		Iterable<AccountDTO> accounts = accountService.getAccounts(user.getCustomerId());
 		for (AccountDTO account : accounts) {
+
 			Code code = codeService.getByTypeAndCode("ACCOUNT_CLASS", account.getSchemeType());
 			if (code != null && code.getDescription() != null) {
 				account.setSchemeType(code.getDescription());

@@ -36,6 +36,7 @@ public class TransRequest extends AbstractEntity{
     private String narration;
     private String statusDescription;
     private BigDecimal amount;
+    private String charge;
 
     public TransRequest() {
     }
@@ -57,6 +58,14 @@ public class TransRequest extends AbstractEntity{
         this.amount = amount;
     }
 
+
+    public String getCharge() {
+        return charge;
+    }
+
+    public void setCharge(String charge) {
+        this.charge = charge;
+    }
 
     public String getCustomerAccountNumber() {
         return customerAccountNumber;
@@ -162,24 +171,24 @@ public class TransRequest extends AbstractEntity{
         this.amount = amount;
     }
 
-
     @Override
     public String toString() {
-        return "TransRequest{" +
-                "customerAccountNumber='" + customerAccountNumber + '\'' +
-                ", transferType=" + transferType +
-                ", tranDate=" + tranDate +
-                ", financialInstitution=" + financialInstitution +
-                ", beneficiaryAccountNumber='" + beneficiaryAccountNumber + '\'' +
-                ", beneficiaryAccountName='" + beneficiaryAccountName + '\'' +
-                ", remarks='" + remarks + '\'' +
-                ", status='" + status + '\'' +
-                ", referenceNumber='" + referenceNumber + '\'' +
-                ", userReferenceNumber='" + userReferenceNumber + '\'' +
-                ", narration='" + narration + '\'' +
-                ", statusDescription='" + statusDescription + '\'' +
-                ", amount=" + amount +
-                '}';
+        return "{\"TransRequest\":{"
+                + "                        \"customerAccountNumber\":\"" + customerAccountNumber + "\""
+                + ",                         \"transferType\":\"" + transferType + "\""
+                + ",                         \"tranDate\":" + tranDate
+                + ",                         \"financialInstitution\":" + financialInstitution
+                + ",                         \"beneficiaryAccountNumber\":\"" + beneficiaryAccountNumber + "\""
+                + ",                         \"beneficiaryAccountName\":\"" + beneficiaryAccountName + "\""
+                + ",                         \"remarks\":\"" + remarks + "\""
+                + ",                         \"status\":\"" + status + "\""
+                + ",                         \"referenceNumber\":\"" + referenceNumber + "\""
+                + ",                         \"userReferenceNumber\":\"" + userReferenceNumber + "\""
+                + ",                         \"narration\":\"" + narration + "\""
+                + ",                         \"statusDescription\":\"" + statusDescription + "\""
+                + ",                         \"amount\":\"" + amount + "\""
+                + ",                         \"charge\":\"" + charge + "\""
+                + "}}";
     }
 }
 

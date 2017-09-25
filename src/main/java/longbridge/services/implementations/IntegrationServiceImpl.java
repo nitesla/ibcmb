@@ -282,8 +282,6 @@ public class IntegrationServiceImpl implements IntegrationService {
                 logger.info("params for transfer {}", params.toString());
                 try {
                     response = template.postForObject(uri, params, TransferDetails.class);
-
-
                     logger.info("response for transfer {}", response.toString());
                     transRequest.setReferenceNumber(response.getUniqueReferenceCode());
                     transRequest.setNarration(response.getNarration());

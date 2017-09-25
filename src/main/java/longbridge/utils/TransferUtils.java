@@ -1,6 +1,7 @@
 package longbridge.utils;
 
 import longbridge.api.NEnquiryDetails;
+import longbridge.api.Rate;
 import longbridge.exception.InternetBankingTransferException;
 import longbridge.exception.TransferExceptions;
 import longbridge.models.*;
@@ -11,6 +12,7 @@ import longbridge.services.AccountService;
 import longbridge.services.CorporateService;
 import longbridge.services.IntegrationService;
 import longbridge.services.RetailUserService;
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -79,21 +81,21 @@ public class TransferUtils {
     public String doIntraBankkNameLookup(String acctNo) {
         if (getCurrentUser() != null && !acctNo.isEmpty()) {
             User user = getCurrentUser();
-            if (user.getUserType().equals(UserType.RETAIL)){
+            if (user.getUserType().equals(UserType.RETAIL)) {
                 LocalBeneficiary localBeneficiary = localBeneficiaryRepo.findByUser_IdAndAccountNumber(user.getId(), acctNo);
-                if (localBeneficiary!=null){
+                if (localBeneficiary != null) {
                     return createMessage("A beneficary with these details already exists", false);
                 }
-            }else if (user.getUserType().equals(UserType.CORPORATE)){
+            } else if (user.getUserType().equals(UserType.CORPORATE)) {
                 CorporateUser corporateUser = (CorporateUser) user;
                 boolean exists = corpLocalBeneficiaryRepo.existsByCorporate_IdAndAccountNumber(corporateUser.getCorporate().getId(), acctNo);
-                if (exists){
+                if (exists) {
                     return createMessage("A beneficary with these details already exists", false);
                 }
             }
 
             String name = integrationService.viewAccountDetails(acctNo).getAcctName();
-            if (name != null && !name.isEmpty()){
+            if (name != null && !name.isEmpty()) {
                 return createMessage(name, true);
             }
 
@@ -109,15 +111,15 @@ public class TransferUtils {
         if (getCurrentUser() != null && !accountNo.isEmpty()) {
 
             User user = getCurrentUser();
-            if (user.getUserType().equals(UserType.RETAIL)){
+            if (user.getUserType().equals(UserType.RETAIL)) {
                 LocalBeneficiary localBeneficiary = localBeneficiaryRepo.findByUser_IdAndAccountNumber(user.getId(), accountNo);
-                if (localBeneficiary!=null){
+                if (localBeneficiary != null) {
                     return createMessage("A beneficary with these details already exists", false);
                 }
-            }else if (user.getUserType().equals(UserType.CORPORATE)){
+            } else if (user.getUserType().equals(UserType.CORPORATE)) {
                 CorporateUser corporateUser = (CorporateUser) user;
                 boolean exists = corpLocalBeneficiaryRepo.existsByCorporate_IdAndAccountNumber(corporateUser.getCorporate().getId(), accountNo);
-                if (exists){
+                if (exists) {
                     return createMessage("A beneficary with these details already exists", false);
                 }
             }
@@ -231,18 +233,28 @@ public class TransferUtils {
     }
 
 
-
-
-   
-
     public String getFee(String channel) {
+        String result = "";
         try {
-            return integrationService.getFee(channel).getFeeValue();
-        } catch (Exception e) {
-            return null;
-        }
+            Rate rate = integrationService.getFee(channel);
+            if ("FIXED".equalsIgnoreCase(rate.getFeeName())) {
+                result = StringEscapeUtils.unescapeHtml4("&#8358;") + "" + rate.getFeeValue();
+            } else if ("RANGE".equalsIgnoreCase(rate.getFeeName())) {
+                result = rate.getFeeValue();
+            } else if ("RATE".equalsIgnoreCase(rate.getFeeName())) {
+                result = rate.getFeeValue() + "" + "%";
+            }
 
+        } catch (Exception e) {
+        e.printStackTrace();
+        }
+        return result;
     }
+
+    public String calculateFee(String amount) {
+        return null;
+    }
+
 
     public void validateBvn() {
 
