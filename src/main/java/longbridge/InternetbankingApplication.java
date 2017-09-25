@@ -39,10 +39,6 @@ public class InternetbankingApplication extends SpringBootServletInitializer imp
     @Autowired
     CorporateService corporateService;
 
-
-    @Autowired
-    CronJobService cronJobService;
-
     @Autowired
     CorporateRepo corporateRepo;
     @Autowired
@@ -62,6 +58,9 @@ public class InternetbankingApplication extends SpringBootServletInitializer imp
 
     @Autowired
     SecurityService securityService;
+
+    @Autowired
+    CronJobService cronJobService;
 
 
     public static void main(String[] args) {

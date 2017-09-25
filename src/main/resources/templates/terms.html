@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <link rel="stylesheet" type="text/css" th:href="@{~/customer/css/bootstrap.css}" />
+    <link rel="stylesheet" type="text/css" th:href="@{~/customer/css/custom.css}" />
+    <link rel="stylesheet" type="text/css" th:href="@{~/customer/css/media.css}" />
+    <link rel="stylesheet" type="text/css" th:href="@{~/customer/font-awesome/font-awesome.min.css}" />
+    <link rel="shortcut icon" th:href="@{~/customer/img/favicon.ico}" type="image/x-icon">
+    <link rel="icon" th:href="@{~/customer/img/favico.ico}" type="image/x-icon">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Test</title>
+</head>
+
+<body  onload ='redirect()' class="LTR Safari Chrome Safari44 Chrome44 JAJP SmallDevice ContentBody">
+
+
+    <script>
+
+        function redirect()
+        {
+            var version = detectIE();
+
+            if (version <= 9 && version != false)
+            {
+                var id = document.getElementById('body');
+                if(version <= 8)
+                {
+
+                    id.style.display = "none";
+                }
+                else
+
+                    id.style.display = "";
+
+
+                // window.location.href='/unsupported';
+            }
+        }
+
+        function detectIE() {
+  var ua = window.navigator.userAgent;
+
+  // Test values; Uncomment to check result …
+
+  // IE 10
+  // ua = 'Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.2; Trident/6.0)';
+
+  // IE 11
+  // ua = 'Mozilla/5.0 (Windows NT 6.3; Trident/7.0; rv:11.0) like Gecko';
+
+  // Edge 12 (Spartan)
+  // ua = 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.71 Safari/537.36 Edge/12.0';
+
+  // Edge 13
+  // ua = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2486.0 Safari/537.36 Edge/13.10586';
+
+  var msie = ua.indexOf('MSIE ');
+  if (msie > 0) {
+    // IE 10 or older => return version number
+    return parseInt(ua.substring(msie + 5, ua.indexOf('.', msie)), 10);
+  }
+
+  var trident = ua.indexOf('Trident/');
+  if (trident > 0) {
+    // IE 11 => return version number
+    var rv = ua.indexOf('rv:');
+    return parseInt(ua.substring(rv + 3, ua.indexOf('.', rv)), 10);
+  }
+
+  var edge = ua.indexOf('Edge/');
+  if (edge > 0) {
+    // Edge (IE 12+) => return version number
+    return parseInt(ua.substring(edge + 5, ua.indexOf('.', edge)), 10);
+  }
+
+  // other browser
+  return false;
+}
+    </script>
+     <!--[if lte IE 9]>
+    <div class="browserupgrade">
+
+        <div class="text-center">
+            <img class="img img-responsive" style="display:block;margin:0px auto;text-align:center;background:white;padding:10px;margin-bottom:20px" th:src="@{~/customer/img/cmb_logo.png}" alt="Coronation Merchant Bank" />
+
+            <p >You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+
+        </div>
+
+
+    </div>
+    <![endif]-->
+
+
+    <div class="container">
+            <div class="row hide-content-only">
+                    <div class="top-bar col-xs-12">
+                        <ul class="top-link">
+                            <li class="no-bd"><a href="https://www.coronationmb.com/" target="_blank"> Coronation merchant bank</a>&nbsp;</li>
+                        </ul>
+                    </div>
+                </div>
+        
+                <div class="row  margin-bottom" style="margin-bottom:10px;">
+        
+                    <div class="col-sm-3 visible-xs no-pad-left no-pad-right">
+                        <div class="center" style="margin:0px auto;">
+                            <a href="/" class="log" data-toggle="tooltip" data-placement="bottom" title="Coronation Merchant Bank">
+                                <img class="img img-responsive pull-right" style="display:block;margin:0px auto;" th:src="@{~/customer/img/cmb_logo.png}" alt="Coronation Merchant Bank" />
+                            </a>
+                        </div>
+                    </div>
+        
+        
+                    <div class="col-sm-9 hide-content-only no-pad-left">
+        
+                        <nav class="navbar navbar-default bg-success">
+                            <div class="">
+                                <div class="navbar-header navbar-left ">
+                                    <button type="button" class="navbar-toggle collapsed " data-toggle="collapse" data-target="#navbar-collapse-1" aria-expanded="false">
+                                        <span class="sr-only">MENU</span>
+                                        <span class="icon-bar"></span>
+                                        <span class="icon-bar"></span>
+                                        <span class="icon-bar"></span>
+                                    </button>
+                                    <a class="navbar-brand" href="#" data-toggle="collapse" data-target="#navbar-collapse-1">Menu</a>
+                                </div>
+                                <div class="collapse navbar-collapse no-pad-left" id="navbar-collapse-1">
+                                    <ul class="nav navbar-nav ">
+                                        <li><a href="/"> HOME</a></li>
+                                        <li class="dropdown">
+                                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"> LOGIN</a>
+                                            <ul class="dropdown-menu">
+                                                <li><a th:href="@{/login/retail}"> INDIVIDUAL </a></li>
+                                                <li><a th:href="@{/login/corporate}"> CORPORATE </a></li>
+                                            </ul>
+                                        </li>
+                                        <li><a href="/register"> REGISTER</a></li>
+                                        <li><a href="/#contact_us"> CONTACT US</a></li>
+                                        <li><a href="/faqs"> FAQ</a></li>
+                                    </ul>
+        
+                                </div>
+                            </div>
+                        </nav>
+        
+                    </div>
+        
+                    <div class="col-sm-3 hidden-xs no-pad-right">
+                        <div class="center" style="margin:0px auto;">
+                            <a href="/" class="log" data-toggle="tooltip" data-placement="bottom" title="Coronation Merchant Bank">
+                                <img class="img img-responsive pull-right" style="display:block;margin:0px auto;" th:src="@{~/customer/img/cmb_logo.png}" alt="Coronation Merchant Bank" />
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class=''>
+                        
+                    <div class='alert info-box ' style='padding:30px !important;background:#f1f1f1'>
+                        <h3 style=''>Terms and Conditions</h3>
+                        <p class='text-bold' style='font-size:14px;margin-bottom:10px;line-height:25px;'>
+                            The following Terms and Conditions apply to all services provided by Coronation Merchant Bank Ltd. (“Coronation MB”), which is accessed by a User through the internet, phone or any hand-held or computer device.
+                            In these Terms, “we”, “us” or “our” refers to Coronation MB and its successors, agents and assigns, while “you”, “your” refers to you and/or any person who subscribes for, uses or authorizes the use of the Service.
+                            By signing at the end of these Terms and Conditions, you agree that you have received, read, understood and agree to be bound by the terms contained herein, and subsequent amendments thereto, as well as the laws, rules, and regulations now existing or which may hereafter be enacted, issued or enforced. You also agree that you shall use the Services in accordance with these Terms. If you do not agree with the terms contained herein, DO NOT ACCESS THE SERVICE.
+                        </p>   
+                        <ol>
+
+
+                            <li>	Terms Used
+                                <ul class='terms'>
+                                    <li>1.1.	“Account” means the Bank account held or to be held with Coronation MB, the number of which is specified in the application form for a Service and/or communicated to the User, as appropriate.</li>
+                                    <li>1.2.	"Accesscode, Passcode, Username and Password” means the enabling code with which you access the system and which is known to you only. </li>
+                                    <li>1.3.	“Bank” or “Coronation MB” means Coronation Merchant Bank Ltd., a banking institution incorporated in Nigeria and having its registered office at 10 Amodu Ojikutu Street, Victoria Island, Lagos Nigeria. </li>
+                                    <li>1.4.	"Customers" means a customer of the Bank who has or operates an account with the bank and is named in the application form but where two individuals are named, either or both of them are customers.  </li>
+                                    <li>1.5.	“Transaction” means any banking transaction made via the Service.</li>
+                                    <li>1.6.	“Service” means any banking service provided by the Bank and accessed or used by a User through the internet, and/or a phone and/or a computer and/or any other mobile, hand-held or computer device or any type of card used through an electronic channel or payment platform. </li>
+                                    <li>1.7.	“Security Details” means the enabling code, personal identification number, any access number(s), password(s), Token(s), security question(s) and answer(s), account number(s), login information, and any other security or access information or item known to the User alone, required or used by a User to access the Service.  </li>
+                                    <li>1.8.	“Token” means a security hardware or device which generates a set of numbers and/or pass codes which may be required by a customer for access to a Service. The custody and information related to your Token constitutes part of your Security Details. Reference to Token herein shall include any replacements, upgrades, or enhancements thereto. </li>
+                                </ul>
+                            </li>
+
+                            <li> Your Responsibilities<br/>
+                                By accepting these Terms and Conditions
+                                <ul class='terms'>
+                                    <li>2.1.	You confirm that you are the legal owner of the accounts and other financial information that may be accessed via the Service. You represent and agree that all information you provide to us in connection with Service is and will remain accurate, current and complete; and that you have the right to provide such information to us. You shall keep your account information up to date and accurate.</li>
+                                    <li>2.2.	You accept responsibility for making sure that you understand how to properly use the applications and software for any Service. In the event we change or upgrade any Service, you are responsible for making sure that you understand how to use same, as changed or upgraded. We will not be liable to you for any losses caused by your failure to properly use your Token, any device or any other failure to properly access the Service.</li>
+                                    <li>2.3.	You shall comply with all instructions issued by the Bank from time to time regarding the use and operation of any Service you have chosen to access.</li>
+                                    <li>2.4.	You are responsible for maintaining the confidentiality, security and integrity of your Security Details.</li>
+                                    <li>2.5.	If you request for or agree to be issued a Token, you agree to have read, understood and shall be bound by the user guide(s) provided by the Bank from time to time (in any form and via any medium the Bank may chose) as well as any applicable Term s and Conditions as shall be determined by the Bank from time to time.</li>
+                                    <li>2.6.	If you believe or should have known that your phone, Token or any other device required to access your Account via a Service has been lost, stolen or compromised, it is your responsibility to contact the service provider immediately to stop all wireless service. If you believe that someone may attempt to use your access to the Service without your consent, or has transferred money from your account without your permission, notify us immediately.</li>
+                                    <li>2.7.	Before the service can be availed to  you, you must have a combination of the following: 
+                                        <ul class='terms'>
+                                            <li>1)	An account with the bank </li>
+                                            <li>2)	A Passcode, access code, username, password or Token authenticator. </li>
+                                            <li>3)	A Personal Identification Number “PIN”</li>
+                                            <li>4)	An E-mail address </li>
+                                            <li>5)	GSM Number 4 The Passcode/Access Code/Password/E-mail Security.</li>
+                                            <li>6)	You understand that your Passcode, Access code/ Password/E-mail is used to give instructions to the bank and accordingly undertake:
+                                                <ul class='terms'>
+                                                    <li>a.	That under no circumstances shall the Passcode, Access Code/Password be disclosed to anybody and for this purpose, you undertake to be absolutely responsible for safeguarding and maintaining the secrecy of your username, access code, passcode, PIN and password by not disclosing same to another person or reproducing same in any manner whatsoever either in writing or otherwise capable of making it known to third persons other than you.</li>
+                                                    <li>b.	Not to write the Passcode, Access Code/Password in an open place in order to avoid third party coming across same.</li>
+                                                    <li>c.	You instruct and authorize the bank to comply with any instructions given to the bank through the use of the service.</li>
+                                                    <li>d.	Once the bank is instructed by means of your Passcode, Access code and PIN the bank is entitled to assume that those are the instructions given by you and to rely on same. </li>
+                                                    <li>e.	Your Passcode, Access code must be changed immediately it becomes known to someone else. </li>
+                                                    <li>f.	To exempt the Bank from any form of liability whatsoever for complying with any or all instruction(s) given by means of your Passcode, Access code if by any means the Passcode, Access code becomes known to a third party. </li>
+                                                    <li>g.	Where you notify the bank of your intention to change your Passcode, Access code arising from loss of memory of same, or that it has come to the notice of a third party, the bank shall, with your consent, delete same and thereafter allow you  to enter a new Passcode or Access code PROVIDED That the bank shall not be responsible for any loss that occurs between the period of such loss of memory of the Passcode, Access code or knowledge of a third party and the time the report is lodged with the bank.</li>
+                                                    <li>Once your Passcode/Accesscode is given, it shall be sufficient confirmation of the authenticity of the instruction given. </li>
+                                                        <ul class='terms'>
+                                                            <li>i.	You shall be responsible for any instruction given by means of the customer’s Pass code/Access code. Accordingly, the bank shall not be responsible for any fraudulent, duplicate or erroneous instructions given by means of the customer’s Pass code/Access code. </li>
+
+                                                        </ul>
+                                                </ul>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                    <li>2.8.	To exempt the Bank from any liability arising from unauthorized access to your account and/or data as contained in the bank’s records via the service, which arises as a result of your inability and/or otherwise to safeguard your PIN Passcode/Accesscode and/or password and/or failure to log out of the system completely by allowing on screen display of your account information. </li>
+                                    <li>2.9.	Under no circumstances will the bank be liable for any damages, including without limitation direct or indirect, special, incidental or consequential damages, losses or expenses arising in connection with this service or use thereof or inability to use by any party, or in connection with any failure of performance, error, omission, interruption, defect, delay in operation, transmission, computer virus or line or system failure, even if the bank or its representatives thereof are advised of the possibility of such damages, losses or hyperlink to other internet resources are at the customers risk</li>
+                                    <li>2.10.	You further relieve the Bank of any liability as regards breach of duty of secrecy arising from your inability to scrupulously observe your responsibilities above and/or instances of breach of such duty by hackers and other unauthorized access to your account via the service.</li>
+                                    
+                                    <li>2.11.	You agree not to use the Service or the content or information delivered through the Service in any way that would:</li>
+                                        <ul class='terms'>
+
+                                                <li>2.11.1.	infringe any third-party copyright, patent, trademark, trade secret, or other proprietary rights or rights of publicity or privacy, including any rights in any software deployed for rendering the Service;</li>
+                                                <li>2.11.2.	be fraudulent or involve any illegal activity, including, but not limited to the impersonation of another person or entity;</li>
+                                                <li>2.11.3.	violate any law, statute, ordinance or regulation (including, but not limited to, those governing export control, consumer protection, unfair competition, anti-discrimination or false advertising);</li>
+                                                <li>2.11.4.	create liability for us or our affiliates or service providers, or cause us to lose (in whole or in part) the services of any of our service providers;</li>
+                                                <li>2.11.5.	interfere with or disrupt computer networks connected to any Service.</li>
+                                        </ul>
+                                    <li>2.12.	You accept liability for any loss incurred or otherwise from any non-compliance with any of the precautions stated herein or otherwise issued by the Bank or any other reasonable precautions for the prevention of a fraudulent access to your Account via the Service.</li>
+                                                
+                                    <li>2.13.	In the event that the Account upon which a Service is accessed is jointly owned, all your liabilities as contained in these Terms shall be joint and several.</li>
+                                                
+                                                
+                                    
+                                    
+                                </ul>
+                            </li>
+
+                            <li> Our Rights
+                                <ul class='terms'>
+                                        <li>3.1.	Have the right, in our sole discretion, to establish or change limits concerning the Service and any related services, temporarily or permanently, including but not limited to (i) the amount of storage space you have available through the Service at any time, and (ii) the number of times (and the maximum duration for which) you may access the Service in a given period of time. You may reject changes by discontinuing use of the Service and any related services to which such changes relate. Your continued use of the Service or any related services will constitute your acceptance of, and agreement to such changes.</li>
+                                        
+                                        <li>3.2.	Maintenance of the Service or any related services may be performed from time-to-time resulting in interrupted service, delays or errors in such Service or related services.</li>
+                                        
+                                        <li>3.3.	We may take any precautionary step deemed reasonable for the protection of the integrity of the Service via such measure(s) which may include, and are not limited to ending your log-in session after a determined period of inactivity.</li>
+                                        
+                                        <li>3.4.	We may refuse to effect a Transaction through the Service if:
+                                            <ul class='terms'>
+                                                    <li>3.4.1.	The Transaction exceeds the available funds in your account; or</li>
+                                                    <li>3.4.2.	The Transaction does not comply with any applicable terms we shall stipulate from time to time;</li>
+                                                    <li>3.4.3.	We reasonably determine that refusal to effect the Transaction is prudent under the circumstance.</li>
+                                                    
+                                            </ul>
+                                        </li>
+                                        <li> 3.5.	If any establishment asks us for authorization before effecting payment via the Service, we may decide not to give our authorization if:
+                                            <ul class='terms'>
+
+                                                    <li>3.5.1.	We reasonably believe that your Security Details have been compromised</li>
+                                                    <li>3.5.2.	You are in breach of any clause of this terms</li>
+                                            </ul>
+                                        </li>
+                                        These Terms shall be deemed to continue to subsist irrespective of the happening of any of the events stated under clauses 3.3 to 3.5 above.
+                                        <li>3.6.	We may notify you about any changes by:
+                                                
+                                            <ul class='terms'>
+                                                    <li>3.6.1.	Advertising in the press, our website or any other means of public notification;</li>
+                                                    <li>3.6.2.	Putting messages in your statements; or</li>
+                                                    <li>3.6.3.	Sending you a separate written notice via email, SMS; or</li>
+                                                    <li>3.6.4.	Any other means of communication that we may determine. You are encouraged to call the Bank if you have any queries, complaints or issues regarding the Service. Cost of calls made by cardholders will be at your expense.</li>
+                                                    
+                                            </ul>
+
+                                        </li>
+
+                                        <li>3.7.	We may disclose information about your Account(s) or transactions involving your Account(s) to third parties if:
+
+                                            <ul class='terms'>
+                                                    <li>3.7.1.	The disclosure is necessary to complete a transaction that you have authorized or requested;</li>
+                                                    <li>3.7.2.	The disclosure is necessary to verify the existence and condition of your Account to a third party, such as a credit bureau or merchant;</li>
+                                                    <li>3.7.3.	The disclosure is necessary to comply with a governmental agency or court order;</li>
+                                                    <li>3.7.4.	You gave us permission to make the disclosure;</li>
+                                                    <li>3.7.5.	The disclosure is necessary to collect information for internal use, or the use of our service providers, agents or contractors;</li>
+                                                    <li>3.7.6.	The disclosure involves a claim by or against us concerning a transaction involving your Account.</li>
+                                                    <li>3.7.7.	The disclosure otherwise is required or permitted under any laws and/or regulations</li>
+                                                    <li>3.7.8.	The disclosure is deemed by the Bank as being necessary to be made.</li>
+                                            </ul>
+                                        </li>
+                                
+                                
+                                
+                                
+                                </ul>
+
+
+                            </li>
+
+                            <li> Other Agreements
+                                <ul class='terms'>
+                                        <li>4.1.	You agree that when you use the Service, you will remain subject to the terms and conditions of all your existing agreements with any service providers of yours. You understand that those agreements may provide for fees, limitations and restrictions which might impact your use of the Service, and you agree to be solely responsible for all such fees, limitations and restrictions.</li>
+                                        
+                                        <li>4.2.	Any Transaction accessed through a Service shall also subject to all other terms entered with the Bank as well as terms set by the Bank from time to time regarding that Transaction; including any transaction limitations and fees Which may be applicable.</li>
+                                        
+                                </ul>
+                            </li>
+
+
+                            <li> Fees and Charges
+                                <ul class='terms'>
+                                        <li>5.1.	Users shall be charged fees by the Bank, in accordance with the schedule of fees determined by the Bank from time to time.</li>
+                                        <li>5.2.	Charges shall be determined, and are subject to review at any time and at our discretion. You waive your right to prior notification of any such charge; and hereby exonerate the Bank from any liability for taking such charges provided the charge is subsequently reflected in your bank statement.</li>
+                                        <li>5.3.	Charges applicable under this terms may be debited to any of your accounts (irrespective of account type and currency) with the Bank without recourse to you.</li>
+                                        
+                                </ul>
+
+                            </li>
+
+
+                            <li> Compromised Security Details
+                                    <ul class='terms'>
+                                            <li>6.1.	You shall notify us immediately if your device or token is lost/stolen or you suspect that any of your Security Details has been compromised or misused in any manner, or you become aware of any disputed Transaction, or you change your name, address, email address, phone numbers or any other personal details or you become aware of any other information which ordinarily and reasonably should be notified to us and if we request for it, obtain and provide us the police report in that regard.</li>
+                                            <li>6.2.	The notification should be done immediately via (Contact Phone Numbers and email). These details may be changed from time to time. </li>
+                                            <li>6.3.	On actual receipt of your report, we will take reasonable steps to stop or minimize access to your Account via the Service.</li>
+                                            <li>6.4.	You shall co-operate with us and any law enforcement agency in our efforts to recover your missing item and/or conduct investigation of the compromised Security Detail.</li>
+                                            <li>6.5.	In the absence of any proven fraud, connivance or negligence on the part of the Bank, any unauthorised access to your Account via the Service shall be deemed to have arisen as a result of your negligence.</li>
+                                            <li>6.6.	You will be liable for all losses incurred arising from any unauthorised access to your account through the Service.</li>
+                                            
+                                    </ul>
+
+
+                            </li>
+
+                            <li> Disclaimers/Limitation of Liability
+
+                                <ul class='terms'>
+                                          
+                                    <li>7.1.	We do not warrant that services and benefits that we provide pursuant to these Terms will always be available. You expressly understand and agree that use of the Service is at your sole risk. The Service is provided on an “as is” and “as available” basis; and the Bank expressly disclaims all warranties of any kind, whether express or implied, including, but not limited to the implied warranties of merchantability, fitness for a particular purpose and non-infringement. We further reserve the right to withdraw or vary the services or any related benefits at any time without giving you notice.</li>
+                                    
+                                    <li>7.2.	We will not be liable to you if we cannot carry out our responsibilities under these Terms as a result of anything that we cannot reasonably control. These include:
+                                        <ul class='terms'>
+                                                <li>7.2.1.	Network or system downtime or failures, maintenance processes, unavailability of any communication system;</li>
+                                                <li>7.2.2.	Industrial disputes, natural disasters, force majeure or other acts of God;</li>
+                                                <li>7.2.3.	Delays, malfunctions or any other analogous event arising from an 	external interface;</li>
+                                                <li>7.2.4.	Unavailability of supplies;</li>
+                                                <li>7.2.5.	Breach or virus in the processes or payment mechanism, sabotage, 	computer hacking, unauthorised access to computer data and storage 	device, computer crashes, breach of security and encryption, etc.</li>
+                                                
+                                        </ul>
+
+                                    </li>
+                                      
+                                    <li>7.3.	If the Bank provides any information to you via any email, telephone or other channel, details of which you provided to the Bank, the Bank shall not be liable if the information becomes intercepted, altered or misused by an unauthorized person.</li>
+                                    <li>7.4.	We shall not assume responsibility for the operation, security, functionality or availability of any service provider, phone, wireless device or mobile network, which you utilize to access the Service. We also disclaim responsibility for any virus or viruses that you may encounter while using the Service.</li>
+                                    <li>7.5.	Where you access other websites from the Bank’s web platform, this shall only be for convenience purposes; and the Bank assumes no responsibility for the safety, security, content and privacy of such link or transactions with respect thereto.</li>
+                                    <li>7.6.	The Bank shall not be responsible or accountable in any way whatsoever for any loss, injury or damage howsoever attributable to a third party act, omission or default.</li>
+                                    <li>7.7.	Except when caused by the Bank’s intentional and fraudulent misconduct, we shall not be responsible for any loss, injury or damage, whether direct, indirect, special or consequential, caused by your use of the Services. You shall indemnify and hold us harmless from all claims, demands, lawsuits, losses, costs, expenses and attorney’s fees we suffer or incur because of your use of the Services or your violation of these Terms.</li>
+                                    
+                                            
+                                </ul>
+                            </li>
+
+                            <li> 	Amendment to these Terms
+
+                                <ul class='terms'>
+                                    <li>We may change or otherwise vary these Terms and Conditions, including our charges.</li>
+                                </ul>
+
+                            </li>
+
+                            <li> General Terms
+
+                                <ul class='terms'>
+                                        <li>9.1.	You agree that any instruction given to the Bank in respect of your Account via the Service shall be binding and shall be given the same legal effect as your written and signed paper instruction. It shall be deemed for all purposes (i) to be “written” (ii) to have been “properly signed” (ii) to constitute an “original” when printed from electronic files or records established and maintained in the normal course of the Bank’s business.</li>
+                                        <li>9.2.	Non-enforcement or delay in enforcing the clause breached does not prevent the Bank from enforcing the clause against you at a later date.</li>
+                                        <li>9.3.	We may record phone calls and other communications between you and us, and use the information for any lawful purpose, at our sole discretion.</li>
+                                        <li>9.4.	You authorize us to exercise a right of set-off at any time we deem fit in respect of any account you may maintain with us (irrespective of the account type or currency) to settle any obligation to us.</li>
+                                        <li>9.5.	You confirm that all information provided to the Bank regarding the application for the Service is complete and accurate in all respects.</li>
+                                        <li>9.6.	Your application for any Service will be subject to the Bank’s processes and reviews, which may require you to provide further information or documents. We reserve the right to accept or reject your application.</li>
+                                        <li>9.7.	We will charge you for any loss or cost we may incur from a breach of these Terms by you.</li>
+                                        <li>9.8.	Your rights under these Terms and Conditions are personal to you and cannot be assigned.</li>
+                                        <li>These Terms and Conditions shall be governed by the Laws of the Federal Republic of Nigeria.</li>
+                                        
+
+                                </ul>
+                            </li> 
+                        </ol>
+                           
+                          
+                         
+                          
+                            
+
+                           
+                          
+                            
+                           
+                         
+                            
+            
+                    </div>
+                        
+                        
+                        
+                </div>
+                        
+
+
+    </div>
+
+
+    
+</body>
+
+</html>

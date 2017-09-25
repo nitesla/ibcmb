@@ -15,93 +15,80 @@
         <div class="col-xs-12 no-mt">
             <div class=" no-pad-lef no-pad-righ   no-mt no-bd alert">
                 <form method="post" th:action="@{/corporate/account/viewstatement/display}">
-
-                    <div class="">
-
-                        <br/>
-                        <div class="form-group col-md-12 no-pad-left col-sm-12">
-                            <div class="form-group col-md-6 no-pad-left col-sm-6">
-                                <label>Date Range</label>
-                                <div class="input-daterange input-group" id="date-range">
-                                    <input type="text" data-date-format="dd-mm-yyyy" class="form-control datepicker" id="start" name="fromDate" placeholder="Start date" required="required" />
-                                    <span class="input-group-addon no-border no-bd" style="background:transparent !important">to</span>
-                                    <input type="text" data-date-format="dd-mm-yyyy" class="form-control datepicker" name="toDate" id="endDate" placeholder="End date" required="required" />
-                                </div>
-                            </div>
-                            <div class="form-group col-md-6 no-pad-left col-sm-6">
-                                <label>Transaction Type</label>
-                                <select name="tranType" class="form-control">
-                                        <option value="B">All</option>
-                                        <option value="C">Credit</option>
-                                        <option value="D">Debit</option>
-                                    </select>
-                            </div>
-                        </div>
-                        <div class="form-group col-md-12 no-pad-left col-sm-12">
-                            <div class="form-group col-md-6 no-pad-left col-sm-6">
-                                <label>Account Number</label>
-                                <span class="req"></span>
-                                <select name="acctNumber" id="acctNumber" class="form-control" required="required">
-                                        <option th:each="s: ${accounts}" th:value="${s.accountNumber}" th:text="${s.accountNumber}"></option></select>
-                            </div>
-
-                            <div class="form-group col-md-6">
-                                <label>&nbsp;</label>
-
-                                <button type="submit" class="btn btn-link " id="btn-find"><i class="fa fa-search"  ></i>&nbsp; view</button>
-
-                            </div>
-                        </div>
-
-
-
-                        <p>
-
-                            <a id="btn-print" href="#" class="btn bt-link-act pull-right"> <i class="fa fa-print"></i>&nbsp; Download</a>
-
-                            <!--<a th:href="@{'#'}" class="btn "> <i class="fa fa-envelope" style="color: white" ></i>&nbsp; send mail</a>-->
-                        </p>
-
-                        <h2>TRANSACTION DETAILS</h2>
-
-
-                        <div class="table-responsive">
-                            <table class="table" id="tranDetails">
-                                <thead>
-                                    <tr>
-                                        <th>Transaction Narration</th>
-                                        <th>Post Date</th>
-                                        <th>Value Date</th>
-                                        <th>Debit</th>
-                                        <th>Credit</th>
-                                        <th>Tran ID</th>
-                                        <th>Account Balance</th>
-                                    </tr>
-                                </thead>
-                                <tfoot>
-                                    <tr>
-                                        <th>Transaction Narration</th>
-                                        <th>Post Date</th>
-                                        <th>Value Date</th>
-                                        <th>Debit</th>
-                                        <th>Credit</th>
-                                        <th>Tran ID</th>
-                                        <th>Account Balance</th>
-
-                                    </tr>
-                                </tfoot>
-                            </table>
-                            <div class="col-md-12">
-                                <div class="pull-right">
-                                    <button class="btn btn-md" id="previous" type="button" onclick="previousData()">previous</button>&nbsp;<button class="btn btn-md" type="button" id="next" onclick="nextData()">next</button>
-                                </div>
-                            </div>
-                        </div>
-
-
-
-                    </div>
-                </form>
+                    
+                                   <div class="row">
+                                       <br/>
+                                       <div class="form-group col-md-12 col-sm-12 no-pad-left no-pad-right">
+                                           <div class="form-group col-sm-4 no-pad-left">
+                                               <label>Date Range</label>
+                                               <div class="input-daterange input-group" id="date-range">
+                                                   <input type="text" data-date-format="dd-mm-yyyy" class="form-control datepicker" id="start" name="fromDate" placeholder="Start date" required="required" />
+                                                   <span class="input-group-addon no-border no-bd" style="bacground:transparent !important">to</span>
+                                                   <input type="text"  data-date-format="dd-mm-yyyy" class="form-control datepicker" name="toDate" id="endDate" placeholder="End date" required="required" />
+                                               <!--<span id="emptyDateError"   class="error">Start and end date is mandatory</span>-->
+                                               </div>
+                    
+                                           </div>
+                                           <div class="form-group col-sm-3 no-pad-left">
+                                               <label>Transaction Type</label>
+                                               <select name="tranType"  class="form-control full-width">
+                                                   <option value="B">All</option>
+                                                   <option value="C">Credit</option>
+                                                   <option value="D">Debit</option>
+                                               </select>
+                                           </div>
+                    
+                                           <div class="form-group col-sm-4 no-pad-left">
+                                            <label>Account Number</label>
+                                            <span class="req"></span>
+                                            <select name="acctNumber" id="acctNumber" class="form-control full-width"
+                                                    required="required">
+                                                <option th:each="s: ${accounts}" th:value="${s.accountNumber}" th:text="${s.accountNumber}"></option></select>
+                                        </div>
+                    
+                                        <div class="form-group col-sm-1 no-pad-left">
+                                            <label>&nbsp;</label>
+                                            <!-- <span class="req visible-md visible-lg"></span> -->
+                                            <button type="submit" class="btn btn-default " id="btn-find">View</button>
+                                        </div>
+                                       </div>
+                                      
+                    
+                    
+                    
+                                       <p>
+                                           <a id="btn-print" href="#"  class="btn bt-link-act pull-right"> <i class="fa fa-print"  ></i>&nbsp; Download</a>
+                                           <!--<a th:href="@{'#'}" class="btn "> <i class="fa fa-envelope" style="color: white" ></i>&nbsp; send mail</a>-->
+                                       </p>
+                    
+                                       <h2>TRANSACTION DETAILS</h2>
+                    
+                                       <div class="table-responsive col-xs-12 no-pad-left no-pad-right" >
+                                           <table class="table" id="tranDetails">
+                                               <thead>
+                                               <tr>
+                                                   <th>Transaction Narration</th>
+                                                   <th>Post Date</th>
+                                                   <th>Value Date</th>
+                                                   <th>Debit</th>
+                                                   <th>Credit</th>
+                                                   <th>Tran ID</th>
+                                                   <th>Account Balance</th>
+                                               </tr>
+                                               </thead>
+                                               
+                                           </table>
+                                           <div class="col-md-12">
+                                               <div class="pull-right">
+                                               <button class="btn btn-md" id="previous" type="button" onclick="previousData()">previous</button>&nbsp;<button class="btn btn-md" type="button" id="next"  onclick="nextData()">next</button>
+                                               </div>
+                                           </div>
+                                           <!--<div> <button class="btn-primary" type="button" id="previous" onclick="previousData()">previous</button>&nbsp;<button class="btn-primary" type="button" id="next" onclick="nextData()">next</button></div>-->
+                                       </div>
+                    
+                    
+                                   </div>
+                                </form>
             </div>
         </div>
 
@@ -177,9 +164,9 @@
                                 if (data == null)
                                     return data;
 
-                                var pattern = /(\d{2})\.(\d{2})\.(\d{4})/;
-                                var dt = new Date(data.replace(pattern, '$3-$2-$1'));
-                                return dt.toDateString();
+                                var dtStart = new Date(data);
+                                var dtStartWrapper = moment(dtStart);
+                                return dtStartWrapper.format('DD-MMM-YYYY');
                             }
                             return data;
                         }
@@ -203,9 +190,9 @@
 
                                 if (data == null)
                                     return data;
-                                var pattern = /(\d{2})\.(\d{2})\.(\d{4})/;
-                                var dt = new Date(data.replace(pattern, '$3-$2-$1'));
-                                return dt.toDateString();
+                                var dtStart = new Date(data);
+                                var dtStartWrapper = moment(dtStart);
+                                return dtStartWrapper.format('DD-MMM-YYYY');
                             }
                             return data;
                         }
@@ -226,11 +213,11 @@
                     }
 
                 });
-
                 $("#btn-find").on("click", function(e) {
                     //                console.log("dateDiff "+dateDifference(parseDate($('[name=fromDate]').val()), parseDate($('[name=toDate]').val())));
                     if ($('#start').val() != '' && $('#endDate').val() != '') {
                         if (dateDifference(parseDate($('[name=fromDate]').val()), parseDate($('[name=toDate]').val()))) {
+                            showSpinner();
                             var table = $('#tranDetails').DataTable();
                             var row = table.rows().remove().draw();
                             e.preventDefault();
@@ -267,6 +254,7 @@
                                         $('#next').hide();
                                     }
                                     $('#previous').hide();
+                                    hideSpinner();
 
                                 },
                                 error: function (dd) {
@@ -275,6 +263,7 @@
                                     var row  = contactsTab2.rows().remove().draw();
                                     $('#next').hide();
                                     $('#previous').hide();
+                                    hideSpinner();
                                     bootbox.alert("<div style='text-align: center'>Service not available</div>");
                                     return false;
                                 }
@@ -285,6 +274,7 @@
                             $('#btn-print').hide();
                             $('#next').hide();
                             $('#previous').hide();
+                            hideSpinner();
                             bootbox.alert("<div style='text-align: center'>Start date cannot be less than end date</div>");
                             return false;
 
@@ -298,6 +288,7 @@
                 $('#tranDetails_paginate').hide();
                 $("#btn-print").on("click", function(e) {
                     //                e.preventDefault();
+                    showSpinner();
                     var data = {
                         "acctNumber": $('[name=acctNumber]').val(),
                         "fromDate": $('[name=fromDate]').val(),
@@ -306,6 +297,7 @@
                     };
                     console.log("data " + data);
                     $.download("downloadstatement", "data", data);
+                    hideSpinner();
 
                 });
                 //            $('.dataTables_empty').html('No data available');
@@ -337,6 +329,7 @@
 
             function nextData() {
                 //    console.log("field value "+valu);
+                showSpinner();
                 $.ajax({
                     "url": "viewstatement/corp/display/data/next",
                     "type": "GET",
@@ -373,7 +366,7 @@
                             $('#next').hide();
                         }
                         $('#previous').show();
-
+                        hideSpinner();
                     },
                     error: function (dd) {
 //                        console.log("error")
@@ -381,6 +374,7 @@
                         var row  = contactsTab2.rows().remove().draw();
                         $('#next').hide();
                         $('#previous').hide();
+                        hideSpinner();
                         bootbox.alert("<div style='text-align: center'>Service not available</div>");
                         return false;
                     }
@@ -390,6 +384,7 @@
 
             function previousData() {
                 //    console.log("field value "+valu);
+                showSpinner();
                 $.ajax({
                     "url": "viewstatement/corp/display/data/back",
                     "type": "GET",
@@ -423,13 +418,16 @@
                             $('#previous').show();
                         }
                         $('#next').show();
+                        hideSpinner();
                     },
                     error: function (dd) {
 //                        console.log("error")
+
                         var contactsTab2 = $('#tranDetails').DataTable();
                         var row  = contactsTab2.rows().remove().draw();
                         $('#next').hide();
                         $('#previous').hide();
+                        hideSpinner();
                         bootbox.alert("<div style='text-align: center'>Service not available</div>");
                         return false;
                     }

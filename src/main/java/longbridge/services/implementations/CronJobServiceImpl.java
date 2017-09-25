@@ -1,20 +1,25 @@
 package longbridge.services.implementations;
 
 import longbridge.api.AccountDetails;
+import longbridge.api.AccountInfo;
 import longbridge.api.CustomerDetails;
 import longbridge.dtos.SettingDTO;
 import longbridge.exception.InternetBankingException;
 import longbridge.models.*;
 import longbridge.repositories.*;
+import longbridge.services.AccountService;
 import longbridge.services.ConfigurationService;
 import longbridge.services.CronJobService;
 import longbridge.services.IntegrationService;
+import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -41,6 +46,8 @@ public class CronJobServiceImpl implements CronJobService {
     private CronJobMonitorRepo cronJobMonitorRepo;
     @Autowired
     private ConfigurationService configService;
+    @Autowired
+    private AccountService accountService;
     @Override
     public void updateAllAccountName(Account account, AccountDetails accountDetails) throws InternetBankingException {
         if (!account.getAccountName().equalsIgnoreCase(accountDetails.getAcctName())) {
@@ -64,7 +71,7 @@ public class CronJobServiceImpl implements CronJobService {
     public void deleteRunningJob() throws InternetBankingException {
         CronJobExpression cronJobExpression = cronJobExpressionRepo.findLastByFlag("Y");
         if (cronJobExpression != null){
-            logger.info("about deleting");
+//            logger.info("about deleting");
             cronJobExpression.setFlag("N");
             cronJobExpressionRepo.save(cronJobExpression);
         }
@@ -83,7 +90,7 @@ public class CronJobServiceImpl implements CronJobService {
     public void updateAccountStatus(Account account, AccountDetails accountDetails) throws InternetBankingException {
         if ((account.getStatus()==null)||(account.getStatus().equalsIgnoreCase(""))||(!account.getStatus().equalsIgnoreCase(accountDetails.getAcctStatus()))) {
             account.setStatus(accountDetails.getAcctStatus());
-            logger.info("the account status after setting is {} and number {}", account.getStatus(),account.getAccountNumber(),accountDetails.getAcctStatus());
+//            logger.info("the account status after setting is {} and number {}", account.getStatus(),account.getAccountNumber(),accountDetails.getAcctStatus());
             accountRepo.save(account);
         }
     }
@@ -99,10 +106,10 @@ public class CronJobServiceImpl implements CronJobService {
 //                updateAllAccountName(account,accountDetails);
                     updateAllAccountCurrency(account,accountDetails);
                     updateAccountStatus(account,accountDetails);
-                    return true;
+//                    return true;
                 } catch (Exception e) {
                     e.printStackTrace();
-                    return false;
+//                    return false;
                 }
             }
         }
@@ -193,6 +200,7 @@ public class CronJobServiceImpl implements CronJobService {
         String corporateBvn = corporate.getBvn();
         if((corporateBvn == null)||corporateBvn.equalsIgnoreCase("")||(!corporateBvn.equalsIgnoreCase(details.getBvn()))){
             corporate.setBvn(details.getBvn());
+            logger.info("Updating Corporate BVN for {} to {}",corporate.getCustomerId(),corporate.getBvn());
 //            logger.info("new corp bvn is {}",corporate.getBvn());
             try {
                 corporateRepo.save(corporate);
@@ -276,6 +284,41 @@ public class CronJobServiceImpl implements CronJobService {
     @Override
     public boolean stopJob() throws InternetBankingException {
         return false;
+    }
+
+    @Override
+    public void addNewAccount() throws InternetBankingException {
+        List<RetailUser>retailUsers =  retailUserRepo.findAll();
+        SettingDTO setting = configService.getSettingByName("TRANSACTIONAL_ACCOUNTS");
+        String[] list = StringUtils.split(setting.getValue(), ",");
+        logger.info("the scheme code {}",list);
+        if (setting != null && setting.isEnabled()) {
+        for (RetailUser retailUser:retailUsers) {
+            try {
+                List<String> existingAccount =  new ArrayList<>();
+//                logger.info("old bvn is {}",retailUser.getCustomerId());
+                List<AccountInfo> accountInfos = integrationService.fetchAccounts(retailUser.getCustomerId());
+                List<Account> accounts =  accountService.getCustomerAccounts(retailUser.getCustomerId());
+                for (Account account:accounts) {
+                    existingAccount.add(account.getAccountNumber());
+                }
+
+                    for (AccountInfo accountInfo:accountInfos) {
+                        if (ArrayUtils.contains(list, accountInfo.getSchemeType()) && "A".equalsIgnoreCase(accountInfo.getAccountStatus())) {
+                            if(!existingAccount.contains(accountInfo.getAccountNumber())){
+                                logger.info("creating new account {}",accountInfo.getAccountNumber());
+                                accountService.AddFIAccount(retailUser.getCustomerId(),accountInfo);
+                            }
+                        }
+                    }
+
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+        }
+        }
     }
 
 

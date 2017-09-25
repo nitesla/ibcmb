@@ -11,15 +11,14 @@
             <option value="account">Overview</option>
         </select>
     </div>
-
     <div class="col-xs-12 " >
         <div class=" no-mt  alert no-bd">
            <form method="post" th:action="@{/retail/account/viewstatement/display}">
 
-               <div class="col-md">
+               <div class="row">
                    <br/>
                    <div class="form-group col-md-12 col-sm-12 no-pad-left no-pad-right">
-                       <div class="form-group col-md-6 col-sm-6">
+                       <div class="form-group col-sm-4 no-pad-left">
                            <label>Date Range</label>
                            <div class="input-daterange input-group" id="date-range">
                                <input type="text" data-date-format="dd-mm-yyyy" class="form-control datepicker" id="start" name="fromDate" placeholder="Start date" required="required" />
@@ -29,29 +28,30 @@
                            </div>
 
                        </div>
-                       <div class="form-group col-md-6 col-sm-6">
+                       <div class="form-group col-sm-3 no-pad-left">
                            <label>Transaction Type</label>
-                           <select name="tranType"  class="form-control">
+                           <select name="tranType"  class="form-control full-width">
                                <option value="B">All</option>
                                <option value="C">Credit</option>
                                <option value="D">Debit</option>
                            </select>
                        </div>
-                   </div>
-                   <div class="form-group col-md-12 col-sm-12 no-pad-left no-pad-right">
-                       <div class="form-group col-md-6 col-sm-6">
-                           <label>Account Number</label>
-                           <span class="req"></span>
-                           <select name="acctNumber" id="acctNumber" class="form-control"
-                                   required="required">
-                               <option th:each="s: ${accounts}" th:value="${s.accountNumber}" th:text="${s.accountNumber}"></option></select>
-                       </div>
 
-                       <div class="form-group col-md-6">
-                           <label>&nbsp;</label>
-                           <button type="submit" class="btn btn-link " id="btn-find"><i class="fa fa-search" style="color: white" ></i>&nbsp; view</button>
-                       </div>
+                       <div class="form-group col-sm-4 no-pad-left">
+                        <label>Account Number</label>
+                        <span class="req"></span>
+                        <select name="acctNumber" id="acctNumber" class="form-control full-width"
+                                required="required">
+                            <option th:each="s: ${accounts}" th:value="${s.accountNumber}" th:text="${s.accountNumber}"></option></select>
+                    </div>
+
+                    <div class="form-group col-sm-1 no-pad-left">
+                        <label>&nbsp;</label>
+                        <!-- <span class="req visible-md visible-lg"></span> -->
+                        <button type="submit" class="btn btn-default " id="btn-find">View</button>
+                    </div>
                    </div>
+                  
 
 
 
@@ -62,7 +62,7 @@
 
                    <h2>TRANSACTION DETAILS</h2>
 
-                   <div class="table-responsive col-xs-12" >
+                   <div class="table-responsive col-xs-12 no-pad-left no-pad-right" >
                        <table class="table" id="tranDetails">
                            <thead>
                            <tr>
@@ -87,8 +87,9 @@
 
 
                </div>
-                </form>
-        </div>
+            </form>
+
+            </div>
     </div>
 
 </div>
@@ -96,6 +97,7 @@
 
 <th:block layout:fragment="scripts">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootbox.js/4.4.0/bootbox.min.js"></script>
+    <script th:src="@{~/bank/js/momentMin.js}"></script>
     <script th:inline="javascript">
     /*<![CDATA[*/
     jQuery.download = function(url, key, data) {
@@ -119,109 +121,7 @@
         $('#tranDetails_length').hide();
         $('#tranDetails_paginate').hide();
         $('#emptyDateError').hide();
-//        $('.datepicker').datepicker({ dateFormat: 'dd-mm-yy' });//
-//        $('#start').datepicker({
-//            onSelect: function(dateText, inst) {
-//                //Get today's date at midnight
-//                var today = new Date();
-//                today = Date.parse(today.getMonth()+1+'/'+today.getDate()+'/'+today.getFullYear());
-//                //Get the selected date (also at midnight)
-//                var selDate = Date.parse(dateText);
 //
-//                if(selDate < today) {
-//                    console.log("hshs");
-//                    //If the selected date was before today, continue to show the datepicker
-//                    $('#start').val('');
-//                    $(inst).datepicker('show');
-//                }
-//            }
-//        });
-
-//        $('#tranDetails').DataTable({
-//            responsive: true,
-//
-//            "lengthMenu" : [ [ 5, 10, 20],	[ 5, 10, 20 ] ],
-//            "pagingType" : "simple_numbers",
-//            "searching": false,
-//            "paging": true,
-//            "processing": false,
-//            "serverSide" : false,
-//            "ordering" : false,
-//            "dom": 'T<"clear">frtlp',
-//            "columns" : [
-//                {"data" : "postDate"} ,
-//                {"data" : "valueDate"},
-//                {"data" : "narration"},
-//                {"data" : "tranType"},
-//                {"data" : "tranId"},
-//                {"data" : "accountBalance"}
-//            ],
-//            "columnDefs" : [ {
-//                "targets" : 3,
-//                "data" : "tranType",
-//                "render" : function(data, type,full, meta) {
-//                    if (type === 'display') {
-//                        if(data == null) return data;
-//
-//                       var spacedData = '         '+data;
-//                        return spacedData;
-//                    }
-//                    return data;
-//                }
-//            }, {
-//                "targets" : 0,
-//                "data" : "postDate",
-//                "render" : function(data, type,full, meta) {
-//                    if (type === 'display') {
-//                        if(data == null)
-//                            return data;
-//
-//                        var pattern = /(\d{2})\.(\d{2})\.(\d{4})/;
-//                        var dt = new Date(data.replace(pattern,'$3-$2-$1'));
-//                        return dt.toDateString();
-//                    }
-//                    return data;
-//                }
-//            },{
-//                "targets" : 5,
-//                "data" : "accountBalance",
-//                "render" : function(data, type,full, meta) {
-//                    if (type === 'display') {
-//                        if(data == null)
-//                            return data;
-//                        var twoPlacedFloat = parseFloat(data).toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,');
-//                        return twoPlacedFloat;
-//                    }
-//                    return data;
-//                }
-//            }
-//                , {
-//                    "targets": 1,
-//                    "data": "valueDate",
-//                    "render": function (data, type, full, meta) {
-//                        if (type === 'display') {
-//
-//                            if (data == null)
-//                                return data;
-//                            var pattern = /(\d{2})\.(\d{2})\.(\d{4})/;
-//                            var dt = new Date(data.replace(pattern,'$3-$2-$1'));
-//                            return dt.toDateString();
-//                        }
-//                        return data;
-//                    }
-//                } ],
-//            "ajax" : {
-//                "url":"viewstatement/display/data",
-//                "type" : "GET",
-//                "data" : function(d) {
-//                    d.acctNumber = $('[name=acctNumber]').val();
-//                    d.fromDate = $('[name=fromDate]').val();
-//                    d.toDate = $('[name=toDate]').val();
-//                    d.tranType = $('[name=tranType]').val();
-//                }
-//            }
-//
-//        });
             $('#tranDetails').DataTable({
             responsive: true,
 
@@ -263,10 +163,10 @@
                     if (type === 'display') {
                         if(data == null)
                             return data;
+                        var dtStart = new Date(data);
+                        var dtStartWrapper = moment(dtStart);
+                        return dtStartWrapper.format('DD-MMM-YYYY');
 
-                        var pattern = /(\d{2})\.(\d{2})\.(\d{4})/;
-                        var dt = new Date(data.replace(pattern,'$3-$2-$1'));
-                        return dt.toDateString();
                     }
                     return data;
                 }
@@ -291,9 +191,13 @@
 
                             if (data == null)
                                 return data;
-                            var pattern = /(\d{2})\.(\d{2})\.(\d{4})/;
-                            var dt = new Date(data.replace(pattern,'$3-$2-$1'));
-                            return dt.toDateString();
+//                            var pattern = /(\d{2})\.(\d{2})\.(\d{4})/;
+//                            var dt = new Date(data.replace(pattern,'$3-$2-$1'));
+                            var dtStart = new Date(data);
+                            var dtStartWrapper = moment(dtStart);
+                            return dtStartWrapper.format('DD-MMM-YYYY');
+//                            return dtStartWrapper.format('LLLL');
+//                            return dt.toDateString();
                         }
                         return data;
                     }
@@ -319,11 +223,9 @@
 //        $('#tranDetails_paginate').hide();
 //        $('#tranDetails_length').hide();
         $("#btn-find").on("click", function(e) {
-//            console.log("fromDate "+$('[name=fromDate]').val()+"to "+$('[name=toDate]').val());
-//            console.log("dateDifference "+dateDifference(parseDate($('#start').val()), parseDate($('#endDate').val())));
-if($('#start').val() != '' && $('#endDate').val() !='' ) {
-//    $('#emptyDateError').hide();
+    if($('#start').val() != '' && $('#endDate').val() !='' ) {
     if (dateDifference(parseDate($('#start').val()), parseDate($('#endDate').val()))) {
+        showSpinner();
         var table = $('#tranDetails').DataTable();
         var row = table.rows().remove().draw();
         e.preventDefault();
@@ -336,6 +238,7 @@ if($('#start').val() != '' && $('#endDate').val() !='' ) {
                 toDate: $('[name=toDate]').val(),
                 tranType: $('[name=tranType]').val()
             }, success: function (result) {
+
 //                    resetButton();
                 $('#btn-print').hide();
 //                        console.log("the output is " + result.details);
@@ -350,17 +253,17 @@ if($('#start').val() != '' && $('#endDate').val() !='' ) {
                         }
 
                         contactsTab2.draw();
-//
                     }
-
+                    contactsTab2.order([1,'desc']).draw();
                 }
                 if (result.moreData === "Y") {
                     $('#next').show();
-
                 } else {
                     $('#next').hide();
                 }
                 $('#previous').hide();
+               hideSpinner();
+
             },
             error: function (dd) {
 //                        console.log("error")
@@ -368,8 +271,10 @@ if($('#start').val() != '' && $('#endDate').val() !='' ) {
                 var row  = contactsTab2.rows().remove().draw();
                 $('#next').hide();
                 $('#previous').hide();
+                hideSpinner();
                 bootbox.alert("<div style='text-align: center'>Service not available</div>");
                 return false;
+                hideSpinner();
             }
 
         });
@@ -389,7 +294,7 @@ if($('#start').val() != '' && $('#endDate').val() !='' ) {
         $('#tranDetails_paginate').hide();
         $("#btn-print").on("click", function(e) {
             e.preventDefault();
-
+showSpinner();
 //            var table = $('#tranDetails').DataTable();
             var data = { "acctNumber" : $('[name=acctNumber]').val(),
                     "fromDate" : $('[name=fromDate]').val(),
@@ -397,7 +302,7 @@ if($('#start').val() != '' && $('#endDate').val() !='' ) {
                     "tranType" : $('[name=tranType]').val()} ;
             console.log("data "+data);
             $.download("downloadstatement", "data", data);
-
+hideSpinner();
         });
 
         $('.dataTables_empty').html('No data available');
@@ -437,9 +342,9 @@ if($('#start').val() != '' && $('#endDate').val() !='' ) {
         }
         return false;
     }
-
 function nextData() {
 //    console.log("field value "+valu);
+    showSpinner();
     $.ajax({
         "url":"viewstatement/display/data/next",
         "type" : "GET",
@@ -470,6 +375,7 @@ function nextData() {
                             contactsTab2.draw();
 //
                 }
+                contactsTab2.order( [ 1, 'desc' ] ).draw();
 
             }
             if(result.moreData === "Y"){
@@ -479,6 +385,7 @@ function nextData() {
                 $('#next').hide();
             }
             $('#previous').show();
+            hideSpinner();
         },
         error: function (dd) {
 //                        console.log("error")
@@ -486,7 +393,7 @@ function nextData() {
             var row  = contactsTab2.rows().remove().draw();
             $('#next').hide();
             $('#previous').hide();
-
+            hideSpinner();
             bootbox.alert("<div style='text-align: center'>Service not available</div>");
             return false;
         }
@@ -494,6 +401,7 @@ function nextData() {
 }
     function previousData() {
 //    console.log("field value "+valu);
+        showSpinner();
     $.ajax({
         "url":"viewstatement/display/data/back",
         "type" : "GET",
@@ -516,8 +424,10 @@ function nextData() {
                             }
 
                             contactsTab2.draw();
-//
-                        }
+
+                                        }
+                contactsTab2.order( [ 1, 'desc' ] ).draw();
+
 
             }if(result.previousData === 0){
                 $('#previous').hide();
@@ -527,7 +437,7 @@ function nextData() {
             }
             $('#next').show();
 //            console.log("the result previous button "+result.previousData);
-
+            hideSpinner();
 
         },
         error: function (dd) {
@@ -536,6 +446,7 @@ function nextData() {
             var row  = contactsTab2.rows().remove().draw();
             $('#next').hide();
             $('#previous').hide();
+            hideSpinner();
             bootbox.alert("<div style='text-align: center'>Service not available</div>");
             return false;
         }

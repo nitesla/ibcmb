@@ -430,12 +430,13 @@ public class AdminUserServiceImpl implements AdminUserService {
 
     @Override
     public boolean generateAndSendPassword(AdminUser user) {
-        return false;// TODO
+        throw new UnsupportedOperationException("Not Yet Implemented");
     }
 
 
     private List<AdminUserDTO> convertEntitiesToDTOs(Iterable<AdminUser> adminUsers) {
         List<AdminUserDTO> adminUserDTOList = new ArrayList<>();
+
 
         for (AdminUser adminUser : adminUsers) {
             AdminUserDTO userDTO = convertEntityToDTO(adminUser);

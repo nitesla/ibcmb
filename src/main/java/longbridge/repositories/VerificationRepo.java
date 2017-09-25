@@ -43,7 +43,7 @@ public interface VerificationRepo extends CommonRepo<Verification, Long>{
     Page<Verification> findVerificationForUsers(@Param("initiated") String initiatedBy, @Param("userType") UserType userType, @Param("permissionlist") List<String> operation,Pageable pageable);
 
 
-    @Query( "select v from Verification v where v.verifiedBy = :verified and v.userType=:userType and v.status !='PENDING' order by v.verifiedOn Desc")
+    @Query( "select v from Verification v where v.verifiedBy = :verified and v.userType=:userType and (v.status ='APPROVED' or v.status ='DECLINED') order by v.verifiedOn Desc")
     Page<Verification> findVerifiedOperationsForUser(@Param("verified") String verifiedBy,@Param("userType") UserType userType, Pageable pageable);
 
 }

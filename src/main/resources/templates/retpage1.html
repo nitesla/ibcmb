@@ -18,10 +18,11 @@
                     <div th:if="${param.expired != null}" class="alert erro alert-danger" th:text="#{session.expired}"></div>
                     <div th:if="${message}" class="alert display-none alert-info" th:text="${message}"></div>
                     <br/>
-                    <div class="form-group ">
+                    <div class="form-group " style="margin-bottom:30px">
                         <span id='reqspan' class='required text-white' style='top:1px;'></span>
                         <input type="text" id="username" name="username" class="my-select" required="required" placeholder="Username" autocomplete="off" />
-                        <p><a href="/forgot/username" class='text-white' data-toggle="tooltip" data-placement="right" title="Forgot Username?" autocomplete="off">Forgot Username?</a></p>
+                        <p class="col-xs-6 no-pad-left no-pad-right"><a href="/forgot/username" class='text-white' data-toggle="tooltip" data-placement="right" title="Forgot Username?" autocomplete="off">Forgot Username?</a></p>
+                        <p class='text-right col-xs-6 no-pad-left no-pad-right text-white'>New User? <a href="/register" class='text-white' data-toggle="tooltip" data-placement="right" title="Register" autocomplete="off">Register Now</a></p>
                     </div>
                     <div class="form-group">
                         <button class="btn btn-primary my-select"> Continue </button>

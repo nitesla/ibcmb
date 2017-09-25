@@ -111,11 +111,11 @@ public class FailedLoginService {
             System.out.println(e.getMessage());
 
         }
-        attempts++;
+        ++attempts;
 
 
         key.setNoOfLoginAttempts(attempts);
-        if (key.getNoOfLoginAttempts() >= getMaxAttempt()) {
+        if (getMaxAttempt()!=0 && key.getNoOfLoginAttempts() >= getMaxAttempt()) {
             key.setStatus("L");
             key.setLockedUntilDate( new DateTime().plusMinutes(getExpiryTime()).toDate());
         }

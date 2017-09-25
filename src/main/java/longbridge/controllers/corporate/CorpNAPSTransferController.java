@@ -32,6 +32,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.*;
@@ -109,7 +110,7 @@ public class CorpNAPSTransferController {
         }
         CorporateUser user = corporateUserService.getUserByName(principal.getName());
         Corporate corporate = user.getCorporate();
-        if(corporate.getCorporateType().equalsIgnoreCase("MULTI")){
+        if (corporate.getCorporateType().equalsIgnoreCase("MULTI")) {
             CorpTransferAuth corpTransferAuth = bulkTransferService.getAuthorizations(bulkTransfer);
             CorpTransRule corpTransRule = corporateService.getApplicableTransferRule(bulkTransfer);
             boolean userCanAuthorize = corpTransferService.userCanAuthorize(bulkTransfer);
@@ -122,13 +123,13 @@ public class CorpNAPSTransferController {
             List<CorporateRole> rolesNotInAuthList = new ArrayList<>();
             List<CorporateRole> rolesInAuth = new ArrayList<>();
 
-            if(corpTransferAuth.getAuths()!=null) {
+            if (corpTransferAuth.getAuths() != null) {
                 for (CorpTransReqEntry transReqEntry : corpTransferAuth.getAuths()) {
                     rolesInAuth.add(transReqEntry.getRole());
                 }
             }
 
-            if(corpTransRule!=null) {
+            if (corpTransRule != null) {
                 for (CorporateRole role : corpTransRule.getRoles()) {
                     if (!rolesInAuth.contains(role)) {
                         rolesNotInAuthList.add(role);
@@ -139,12 +140,9 @@ public class CorpNAPSTransferController {
             model.addAttribute("rolesNotAuth", rolesNotInAuthList);
 
             return "corp/transfer/bulktransfer/approvemulti";
-        }
-
-        else if(corporate.getCorporateType().equalsIgnoreCase("SOLE")){
+        } else if (corporate.getCorporateType().equalsIgnoreCase("SOLE")) {
             return "/corp/transfer/bulktransfer/crlistview";
-        }
-        else {
+        } else {
             return "redirect:/login/corporate";
         }
 
@@ -152,15 +150,15 @@ public class CorpNAPSTransferController {
     }
 
     @PostMapping("/bulk/approve")
-    public String addBulkTransferAuthorization(@ModelAttribute("corpTransReqEntry") CorpTransReqEntry corpTransReqEntry,@RequestParam("token") String tokenCode, RedirectAttributes redirectAttributes, Principal principal, Locale locale) {
+    public String addBulkTransferAuthorization(@ModelAttribute("corpTransReqEntry") CorpTransReqEntry corpTransReqEntry, @RequestParam("token") String tokenCode, RedirectAttributes redirectAttributes, Principal principal, Locale locale) {
 
 
-        CorporateUser user  = corporateUserService.getUserByName(principal.getName());
+        CorporateUser user = corporateUserService.getUserByName(principal.getName());
 
 
         SettingDTO setting = configService.getSettingByName("ENABLE_CORPORATE_2FA");
 
-        if(setting!=null&&setting.isEnabled()) {
+        if (setting != null && setting.isEnabled()) {
 
             if (tokenCode != null && !tokenCode.isEmpty()) {
                 try {
@@ -197,8 +195,6 @@ public class CorpNAPSTransferController {
     }
 
 
-
-
     @GetMapping("/add")
     public String addBulkTransfer(Model model) {
         return "/corp/transfer/bulktransfer/add";
@@ -224,7 +220,6 @@ public class CorpNAPSTransferController {
         out.setRecordsTotal(fis.getTotalElements());
         return out;
     }
-
 
 
     @GetMapping("/bulk/download")
@@ -285,11 +280,9 @@ public class CorpNAPSTransferController {
 
                 workbook = new HSSFWorkbook(inputStream);
 
-            }
-            else if(extension.equalsIgnoreCase("xlsx")) {
+            } else if (extension.equalsIgnoreCase("xlsx")) {
                 workbook = new XSSFWorkbook(inputStream);
-            }
-            else {
+            } else {
 
                 model.addAttribute("failure", messageSource.getMessage("file.format.failure", null, locale));
                 return "/corp/transfer/bulktransfer/upload";
@@ -298,9 +291,9 @@ public class CorpNAPSTransferController {
             // File content validation using number of header cells
             Sheet datatypeSheet = workbook.getSheetAt(0);
             Iterator<Row> iterator = datatypeSheet.iterator();
-            if (iterator.hasNext()){
+            if (iterator.hasNext()) {
                 Row headerRow = iterator.next();
-                if(headerRow.getLastCellNum() > 5){
+                if (headerRow.getLastCellNum() > 5) {
                     model.addAttribute("failure", messageSource.getMessage("file.content.failure", null, locale));
                     return "/corp/transfer/bulktransfer/upload";
                 }
@@ -323,9 +316,9 @@ public class CorpNAPSTransferController {
 
     @GetMapping("/all")
     @ResponseBody
-    public DataTablesOutput<CreditRequestDTO> getCreditRequests(HttpSession session , Model model) throws IOException {
+    public DataTablesOutput<CreditRequestDTO> getCreditRequests(HttpSession session, Model model) throws IOException {
         Workbook workbook = (Workbook) session.getAttribute("workbook");
-        String fileExtension = (String)session.getAttribute("fileExtension");
+        String fileExtension = (String) session.getAttribute("fileExtension");
         List<CreditRequestDTO> crLists = new ArrayList<>();
         try {
             System.out.println(workbook);
@@ -339,7 +332,7 @@ public class CorpNAPSTransferController {
                 Row currentRow = iterator.next();
                 //Iterator<Cell> cellIterator = currentRow.iterator();
                 ArrayList cellData = new ArrayList();
-                for (int i = 0; i < 5; i++){
+                for (int i = 0; i < 5; i++) {
                     Cell currentCell = currentRow.getCell(i);
                     System.out.println(currentCell);
                     if (currentCell == null || currentCell.getCellType() == Cell.CELL_TYPE_BLANK || currentCell.toString().isEmpty() || currentCell.toString() == null) {
@@ -356,32 +349,28 @@ public class CorpNAPSTransferController {
                 Long id = Long.valueOf(rowIndex);
                 creditRequest.setId(id);
 
-                if(!(NumberUtils.isDigits(cellData.get(0).toString())) && !(cellData.get(0).toString().equalsIgnoreCase("ERROR HERE")) ){
+                if (!(NumberUtils.isDigits(cellData.get(0).toString())) && !(cellData.get(0).toString().equalsIgnoreCase("ERROR HERE"))) {
                     creditRequest.setAccountNumber("ERROR HERE");
-                }
-                else {
+                } else {
                     creditRequest.setAccountNumber(cellData.get(0).toString());
                 }
 
                 creditRequest.setAccountName(cellData.get(1).toString());
 
-                if(!(NumberUtils.isParsable(cellData.get(2).toString())) && !(cellData.get(2).toString().equalsIgnoreCase("ERROR HERE"))  ){
-                   creditRequest.setAmount("ERROR HERE");
-                }
-                else {
+                if (!(NumberUtils.isParsable(cellData.get(2).toString())) && !(cellData.get(2).toString().equalsIgnoreCase("ERROR HERE"))) {
+                    creditRequest.setAmount("ERROR HERE");
+                } else {
                     creditRequest.setAmount(cellData.get(2).toString());
                 }
 
                 creditRequest.setNarration(cellData.get(3).toString());
 
 
-                if(!(NumberUtils.isDigits(cellData.get(4).toString())) && !(cellData.get(4).toString().equalsIgnoreCase("ERROR HERE")) ){
+                if (!(NumberUtils.isDigits(cellData.get(4).toString())) && !(cellData.get(4).toString().equalsIgnoreCase("ERROR HERE"))) {
                     creditRequest.setSortCode("ERROR HERE");
-                }
-                else if (cellData.get(4).toString().equalsIgnoreCase("ERROR HERE")){
+                } else if (cellData.get(4).toString().equalsIgnoreCase("ERROR HERE")) {
                     creditRequest.setSortCode("ERROR HERE");
-                }
-                else {
+                } else {
                     String bankCode = cellData.get(4).toString();
                     String sortCode = financialInstitutionService.getFinancialInstitutionByCode(bankCode).getSortCode();
                     creditRequest.setSortCode(sortCode);
@@ -425,7 +414,7 @@ public class CorpNAPSTransferController {
 
             SettingDTO setting = configService.getSettingByName("ENABLE_CORPORATE_2FA");
 
-            if(setting!=null&&setting.isEnabled()) {
+            if (setting != null && setting.isEnabled()) {
 
                 if (tokenCode != null && !tokenCode.isEmpty()) {
 
@@ -442,8 +431,7 @@ public class CorpNAPSTransferController {
                         model.addAttribute("failure", messageSource.getMessage("token.auth.failure", null, locale));
                         return "corp/transfer/bulktransfer/add";
                     }
-                }
-                else {
+                } else {
                     model.addAttribute("accounts", accountList);
                     model.addAttribute("failure", "Token code is required");
                     return "corp/transfer/bulktransfer/add";
@@ -452,8 +440,6 @@ public class CorpNAPSTransferController {
 
             DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
             Date date = new Date();
-
-
 
 
             String requests = request.getParameter("requests");
@@ -469,7 +455,7 @@ public class CorpNAPSTransferController {
             bulkTransfer.setCorporate(corporate);
             bulkTransfer.setTranDate(date);
 
-            while (!bulkTransferService.refCodeExists(generateRefCode())){
+            while (!bulkTransferService.refCodeExists(generateRefCode())) {
                 bulkTransfer.setRefCode(generateRefCode());
                 break;
             }
@@ -491,23 +477,22 @@ public class CorpNAPSTransferController {
             }
             redirectAttributes.addFlashAttribute("message", message);
             return "redirect:/corporate/transfer/bulk";
-        }catch (TransferRuleException t){
+        } catch (TransferRuleException t) {
             redirectAttributes.addFlashAttribute("failure", t.getMessage());
             return "redirect:/corporate/transfer/bulk";
         } catch (InternetBankingException ibe) {
             logger.error("Error creating transfer", ibe);
             redirectAttributes.addFlashAttribute("failure", ibe.getMessage());
             return "redirect:/corporate/transfer/bulk";
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             logger.error("Error creating transfer", e);
             redirectAttributes.addFlashAttribute("failure", messageSource.getMessage("bulk.save.success", null, null));
             return "redirect:/corporate/transfer/bulk";
         }
     }
 
-    private String generateRefCode(){
-        Random r = new Random(System.currentTimeMillis() );
+    private String generateRefCode() {
+        Random r = new Random(System.currentTimeMillis());
         int random = 100000 + r.nextInt(999999);
         String refCode = Integer.toString(random);
         return refCode;
@@ -554,7 +539,6 @@ public class CorpNAPSTransferController {
         System.out.println(bulkStatus);
         return bulkStatus;
     }
-
 
 
 }

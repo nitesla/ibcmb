@@ -505,5 +505,15 @@ public class MainController {
         return "redirect:https://support.microsoft.com/en-us/help/17621/internet-explorer-downloads";
     }
 
+     @GetMapping("/policy")
+    public String privacyPolicy() {
+        return "policy";
+    }
+
+    @GetMapping("/terms")
+    public String terms() {
+        return "terms";
+    }
+
 
 }

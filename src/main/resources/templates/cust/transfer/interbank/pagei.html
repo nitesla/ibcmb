@@ -18,6 +18,7 @@
 
 
                 <div class="col-md-7 col-sm-7 col-xs-12 no-pad-left no-pad-right">
+<<<<<<< HEAD
                     <form method="post" th:action="@{/retail/transfer/interbank/index}" style="">
                         <div class="form-group col-md- no-pad-left">
                             <label>Transfer Type</label>
@@ -40,6 +41,54 @@
 
                         <div class="form-group col-md-8 no-pad-left">
                             <button class="btn btn-link " type="submit">Next</button>
+=======
+                        <form method="post" th:action="@{/retail/transfer/interbank/index}" style="">
+                            <div class="form-group col-md- no-pad-left">
+                                <label>Transfer Type</label>
+
+                                <span id="tran"></span>
+                                <select name="tranType" class="form-control" id="tranType">
+                                    <option value="nip">NIP</option>
+                                    <!--<option value="rtgs">RTGS</option>-->
+                                </select>
+                            </div>
+                            
+                      
+                   
+
+                            <!--<div class="col-md-4">
+                                <br/>
+                                <p id="nip" style="padding: 5%">Fee applicable: <span th:if="${nip.feeValue}!=null" th:text="'N'+${nip.feeValue}"></span></p>
+                                <p id="rtgs" style="display: none; padding: 5%">Fee applicable: <span th:if="${rtgs.feeValue}!=null" th:text="'N'+${rtgs.feeValue}"></span></p>
+                          
+                          
+                            </div>-->
+
+                            <div class="form-group col-md-8 no-pad-left">
+                                <button class="btn btn-link " type="submit">Next</button>
+                            </div>
+
+                        
+                        </form>
+                    </div>
+                            <!-- <button type="submit" class="btn btn-default" style="float: right">Add beneficiary</button>
+                        --> 
+                               
+                        <div class="col-md-5 col-sm-5 col-xs-12 no-pad-left no-pad-right">
+                            <div  class=" related-box">
+                                            <h3 class="related-bar">Related Information</h3>
+
+                                            <!--<input type="availBal" name="availBal"/>-->
+                                            <p id="nip" style="padding: 5%">Fee applicable: &#8358;<span th:if="${nip.feeValue}!=null" th:text="''+${nip.feeValue}"></span></p>
+                                <p id="rtgs" style="display: none; padding: 5%">Fee applicable: &#8358;<span th:if="${rtgs.feeValue}!=null" th:text="''+${rtgs.feeValue}"></span></p>
+                          
+                          
+                                            <!--<p class="related-info coronation-blue" id="availBal"><b></b></p>-->
+
+                                        </div>
+
+                          </div>
+>>>>>>> fbcb7aed2d97eea35f814525a3d46efa69066d3a
                         </div>
 
 

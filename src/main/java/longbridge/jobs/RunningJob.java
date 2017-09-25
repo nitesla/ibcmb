@@ -29,14 +29,15 @@ public class RunningJob implements Job {
     public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
         ApplicationContext context = SpringContext.getApplicationContext();
         CronJobService cronJobService = context.getBean (CronJobService.class);
-        System.out.println("job runing");
+        System.out.println("hourly job runing");
         try {
 //            CompileJasper.compile();
             cronJobService.saveRunningJob("in-built",cronJobService.getCurrentExpression());
-            cronJobService.updateAccountDetials();
+//            cronJobService.updateAccountDetials();
             cronJobService.updateRetailUserDetails();
             cronJobService.updateCorporateUserDetails();
             cronJobService.updateRunningJob();
+            cronJobService.updateCorporateDetails();
         } catch (InternetBankingException e) {
             e.printStackTrace();
         }catch (Exception e){
@@ -46,9 +47,9 @@ public class RunningJob implements Job {
     private void runJars() throws IOException {
 //        Desktop.getDesktop().open(new File(""));
         try {
-            Process ps=Runtime.getRuntime().exec(new String[]{"java","-jar","A.jar"});
+            Process ps = Runtime.getRuntime().exec(new String[]{"java","-jar","A.jar"});
             ps.waitFor();
-            java.io.InputStream is=ps.getInputStream();
+            java.io.InputStream is = ps.getInputStream();
             byte b[]=new byte[is.available()];
             is.read(b,0,b.length);
             System.out.println(new String(b));

@@ -331,6 +331,14 @@ public class OpsCorporateController {
         model.addAttribute("roleList", roles);
         model.addAttribute("currencies", currencies);
         model.addAttribute("corporateRule", new CorpTransferRuleDTO());
+        int num = 1;
+        SettingDTO setting = configService.getSettingByName("MIN_AUTHORIZER_LEVEL");
+        if (setting != null && setting.isEnabled()) {
+            num = NumberUtils.toInt(setting.getValue());
+        }
+        model.addAttribute("authNum", num);
+
+
         return "/ops/corporate/addrule";
     }
 
@@ -342,11 +350,20 @@ public class OpsCorporateController {
         model.addAttribute("corporate", corporate);
         model.addAttribute("roleList", corporateRoles);
         model.addAttribute("currencies", currencies);
+
+        int num = 1;
+
+        SettingDTO setting = configService.getSettingByName("MIN_AUTHORIZER_LEVEL");
+        if (setting != null && setting.isEnabled()) {
+            num = NumberUtils.toInt(setting.getValue());
+        }
+        model.addAttribute("authNum", num);
     }
 
 
     @PostMapping("/rules")
     public String createCorporateRule(@ModelAttribute("corporateRule") CorpTransferRuleDTO transferRuleDTO, BindingResult bindingResult, WebRequest request, Principal principal, WebRequest webRequest, RedirectAttributes redirectAttributes, Model model, Locale locale) {
+
 
         String corporateId = transferRuleDTO.getCorporateId();
         try {
@@ -366,7 +383,7 @@ public class OpsCorporateController {
         roleIds = webRequest.getParameterValues("roles");
         List<CorporateRoleDTO> roleDTOs = new ArrayList<CorporateRoleDTO>();
         CorporateRoleDTO corporateRole;
-        int num = 2;
+        int num = 1;
         SettingDTO setting = configService.getSettingByName("MIN_AUTHORIZER_LEVEL");
         if (setting != null && setting.isEnabled()) {
             num = NumberUtils.toInt(setting.getValue());
@@ -436,6 +453,13 @@ public class OpsCorporateController {
 
             }
         }
+
+        int num = 1;
+        SettingDTO setting = configService.getSettingByName("MIN_AUTHORIZER_LEVEL");
+        if (setting != null && setting.isEnabled()) {
+            num = NumberUtils.toInt(setting.getValue());
+        }
+        model.addAttribute("authNum", num);
 
 
         model.addAttribute("corporate", corporate);

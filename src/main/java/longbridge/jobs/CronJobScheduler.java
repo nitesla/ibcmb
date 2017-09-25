@@ -17,6 +17,13 @@ public class CronJobScheduler {
         JobKey OneTimeKey = new JobKey("OneTime", "ibtest");
         JobDetail OneTimeJobs = JobBuilder.newJob(RunningJob.class)
                 .withIdentity(OneTimeKey).build();
+
+        JobKey FiveMinsKey = new JobKey("FiveMins", "bcons");
+        JobDetail FiveMinsJobs = JobBuilder.newJob(FiveMins.class)
+                                .withIdentity(FiveMinsKey).build();
+        JobKey TwentyFourHoursKey = new JobKey("TwentyFourHours", "bcons");
+        JobDetail TwentyFourHoursJobs = JobBuilder.newJob(TwentyFourHours.class)
+                .withIdentity(TwentyFourHoursKey).build();
         /**
          * JOB Triggers
          * @Shedules
@@ -30,15 +37,27 @@ public class CronJobScheduler {
                         CronScheduleBuilder.cronSchedule(cronJobService.getCurrentExpression()))
                 .build();
 
+        Trigger fiveMins = TriggerBuilder
+                .newTrigger()
+                .withIdentity("fiveMins", "ibtest")
+                .withSchedule(CronScheduleBuilder.cronSchedule("0 0/5 * 1/1 * ? *"))
+                .build();
+        Trigger twentyFourHours = TriggerBuilder
+                .newTrigger()
+                .withIdentity("twentyFourHours", "bcons")
+                .withSchedule(
+                        CronScheduleBuilder.cronSchedule("0 0/20 * 1/1 * ? *"))
+                .build();
         /**
          * STart Schedules.............
          */
         try {
             Scheduler scheduler = new StdSchedulerFactory().getScheduler();
+            scheduler.scheduleJob(FiveMinsJobs, fiveMins);
+            scheduler.scheduleJob(TwentyFourHoursJobs, twentyFourHours);
             scheduler.scheduleJob(OneTimeJobs, oneTime);
             scheduler.start();
-        } catch (SchedulerException e) {
-
+        }catch (SchedulerException e) {
             e.printStackTrace();
         }
     }

@@ -204,10 +204,13 @@ public class CorpTransferController {
     @ResponseBody
     String getAccountCurrency(@PathVariable String accountId) {
 
-        if ("null".equals(accountId)) {
-            return "N/A";
-        }
-        return accountService.getAccountByAccountNumber(accountId).getCurrencyCode();
+      try {
+          return accountService.getAccountByAccountNumber(accountId).getCurrencyCode();
+      }
+      catch (Exception e){
+          logger.error("Error getting currency", e);
+      }
+      return "";
     }
 
 
@@ -381,8 +384,6 @@ public class CorpTransferController {
     DataTablesOutput<CorpTransRequest> getTransferRequests(DataTablesInput input) {
         Pageable pageable = DataTablesUtils.getPageable(input);
         Page<CorpTransRequest> requests = corpTransferService.getTransferRequests(pageable);
-
-//        logger.info("Transfer requests ", requests.toString());
         DataTablesOutput<CorpTransRequest> out = new DataTablesOutput<CorpTransRequest>();
         out.setDraw(input.getDraw());
         out.setData(requests.getContent());
@@ -445,17 +446,27 @@ public class CorpTransferController {
     @ResponseBody
     public String getBalance(@PathVariable String accountNumber) throws Exception {
 
-        if ("null".equals(accountNumber)) {
-            return "N/A";
+
+        try {
+            return transferUtils.getBalance(accountNumber);
         }
-        return transferUtils.getBalance(accountNumber);
+        catch (Exception e){
+            logger.error("Error getting balance",e);
+        }
+        return "";
     }
 
     @RequestMapping(value = "/limit/{accountNumber}", method = RequestMethod.GET, produces = "application/json")
     @ResponseBody
     public String getLimit(@PathVariable String accountNumber) throws Exception {
 
-        return transferUtils.getLimit(accountNumber);
+        try {
+            return transferUtils.getLimit(accountNumber);
+        }
+        catch (Exception e){
+            logger.error("Error getting limit",e);
+        }
+        return "";
     }
 
     //The receipt for multi corporate user

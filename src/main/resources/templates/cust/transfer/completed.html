@@ -26,14 +26,7 @@
             <tbody>
 
             </tbody>
-            <tfoot>
-                <td>Date</td>
-                <td>Amount</td>
-                <td>Beneficiary</td>
-                <td>Beneficiary Bank</td>
-                <td>Remarks</td>
-                <td></td>
-            </tfoot>
+           
         </table>
     </div>
 
@@ -82,7 +75,7 @@
                     "targets" : 5,
                     "data" : "id",
                     "render" : function(data, type,full, meta) {
-                        return '<a href="'+ data +'/downloadreceipt" target="_blank"><i class="fa fa-download"></i></a>';
+                        return '<a href="'+ data +'/downloadreceipt" target="_blank">View</a>';
                     }
                 }]
 
@@ -90,6 +83,7 @@
 //                e.preventDefault();
 //                dt = $('#ct').DataTable();
 //                dt.ajax.reload(null, true);
+// &#8358;
 //
 //            });
 

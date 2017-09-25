@@ -78,12 +78,13 @@
 
                                         <div>
 
-                                            <button type="submit" name="approve"  value="true" class="btn btn-success btn-labeled pull-right">
-                                                Approve<span class="btn-label btn-label-right"><i class="fa fa-check"></i></span>
-                                            </button>
+
 
                                             <button type="submit" name="approve" value="false" class="btn btn-danger btn-labeled pull-right">
                                                 Decline<span class="btn-label btn-label-right"><i class="fa fa-times"></i></span>
+                                            </button>
+                                            <button type="submit" name="approve"  value="true" class="btn btn-success btn-labeled pull-right">
+                                                Approve<span class="btn-label btn-label-right"><i class="fa fa-check"></i></span>
                                             </button>
                                             <input  th:hidden="hidden" th:field="${verify.version}"/>
                                             <input  th:hidden="hidden" th:field="${verify.id}"/>

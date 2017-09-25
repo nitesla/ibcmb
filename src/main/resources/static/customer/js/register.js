@@ -408,7 +408,19 @@ function sendRegCode(){
                 $('#myModalError').modal('show');
                 
 
-            }else{
+            }else if(result ==="noPhoneNumber"){
+                $("#errorMess").text("No registered phone number to send reg code to, please contact the bank");
+                $('#myModalError').modal('show');
+                $(".btn-link").on("click", function()
+                {
+                    window.location.href = "/login/corporate";
+                });
+                $("#myModalError").on("hidden.bs.modal", function () {
+                    window.location.href = "/login/corporate";
+
+                });
+            }
+            else{
 
                 $('#successMess').text("Registration code has been successfully sent. If you do not receive a message after 3 minutes, please retry.");
                 $('#myModalSuccess').modal('show');

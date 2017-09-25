@@ -512,11 +512,11 @@ public class AccountController {
 		SettingDTO setting = configurationService.getSettingByName("TRANS_HISTORY_RANGE");
 		Date date = new Date();
 		Date daysAgo = new DateTime(date).minusDays(Integer.parseInt(setting.getValue())).toDate();
-		logger.info("the from date {} and the to date {}",date,daysAgo);
+//		logger.info("the from date {} and the to date {}",date,daysAgo);
 		AccountDTO account = accountService.getAccount(Long.parseLong(acct));
 		AccountStatement accountStatement = integrationService.getFullAccountStatement(account.getAccountNumber(), daysAgo , date, "B");
 		List<TransactionDetails> list = accountStatement.getTransactionDetails();
-		logger.info("The List {} ", list);
+//		logger.info("The List {} ", list);
 		model.addAttribute("history", list);
 		return "cust/account/tranhistory";
 	}
@@ -594,11 +594,11 @@ public class AccountController {
 			if(accountStatement != null) {
 				list = accountStatement.getTransactionDetails();
 				session.setAttribute("hasMoreTransaction", accountStatement.getHasMoreData());
-				logger.info("the current has more data  new {}",accountStatement.getHasMoreData());
+//				logger.info("the current has more data  new {}",accountStatement.getHasMoreData());
 			}
 			session.removeAttribute("acctStmtLastDetails");
 			if(!list.isEmpty()){
-				logger.info("the current has more data  empty {}",accountStatement.getHasMoreData());
+//				logger.info("the current has more data  empty {}",accountStatement.getHasMoreData());
 				session.setAttribute("acctStmtLastDetails",list.get(list.size()-1));
 				session.setAttribute("retAcctStmtStateValue",0);
 				session.setAttribute("acctStmtEntirePastDetails0",list);
@@ -663,8 +663,8 @@ public class AccountController {
 					session.removeAttribute("retAcctStmtStateValue");
 					session.setAttribute("acctStmtEntirePastDetails"+stateValue, list);
 					session.setAttribute("retAcctStmtStateValue",stateValue);
-					logger.info("acctStmtLastDetails {}", list.get(list.size() - 1));
-					logger.info("acct statemnet state {}", stateValue);
+//					logger.info("acctStmtLastDetails {}", list.get(list.size() - 1));
+//					logger.info("acct statemnet state {}", stateValue);
 					objectMap.replace("details",list);
 					objectMap.replace("moreData",accountStatement.getHasMoreData());
 				}

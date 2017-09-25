@@ -21,37 +21,27 @@
                     <table class="table" id="tranDetails">
                         <thead>
                             <tr>
-                                <th>Transaction Narration</th>
+                                <th>Trans. Narration</th>
                                 <th>Post Date</th>
                                 <th>Value Date</th>
                                 <th>Debit</th>
                                 <th>Credit</th>
-                                <th>Transaction Reference ID</th>
-                                <th>Account Balance</th>
+                                <th>Trans. Ref. ID</th>
+                                <th>Acct Bal.</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr th:each="list:${history}">
                                 <td th:text="${list.narration}"></td>
-                                <td th:text="${list.postDate}"></td>
-                                <td th:text="${list.valueDate}"></td>
+                                <td th:text="${#dates.format(list.postDate,'dd-MMM-yyyy')}"></td>
+                                <td th:text="${#dates.format(list.valueDate,'dd-MMM-yyyy')}"></td>
                                 <td th:text="${list.debitAmount}"></td>
                                 <td th:text="${list.creditAmount}"></td>
                                 <td th:text="${list.tranId}"></td>
                                 <td th:text="${list.accountBalance}"></td>
                             </tr>
                         </tbody>
-                        <tfoot>
-                            <tr>
-                                <th>Transaction Narration</th>
-                                <th>Post Date</th>
-                                <th>Value Date</th>
-                                <th>Debit</th>
-                                <th>Credit</th>
-                                <th>Transaction Reference ID</th>
-                                <th>Account Balance</th>
-                            </tr>
-                        </tfoot>
+                       
                     </table>
                 </div>
 
@@ -67,43 +57,14 @@
 
         <script th:inline="javascript">
             /*<![CDATA[*/
-            var table = $('#tranDetails').DataTable({
-                responsive: true,
-                "lengthMenu": [
-                    [5, 10, 20],
-                    [5, 10, 20]
-                ],
-                "pagingType": "input",
-                "dom": 'T<"clear">frtlp',
-                "columnDefs": [{
-                    "targets": 1,
-                    "data": "postDate",
-                    "render": function(data, type, full, meta) {
-                        if (type === 'display') {
-                            if (data == null)
-                                return data;
-
-                            var pattern = /(\d{2})\.(\d{2})\.(\d{4})/;
-                            var dt = new Date(data.replace(pattern, '$3-$2-$1'));
-                            return dt.toDateString();
-                        }
-                        return data;
-                    }
-                }, {
-                    "targets": 2,
-                    "data": "valueDate",
-                    "render": function(data, type, full, meta) {
-                        if (type === 'display') {
-                            if (data == null)
-                                return data;
-
-                            var pattern = /(\d{2})\.(\d{2})\.(\d{4})/;
-                            var dt = new Date(data.replace(pattern, '$3-$2-$1'));
-                            return dt.toDateString();
-                        }
-                        return data;
-                    }
-                }]
+            $(document).ready(function() {
+                var table = $('#tranDetails').DataTable({
+                    responsive: true,
+                    "lengthMenu" : [ [ 5, 10, 20],	[ 5, 10, 20 ] ],
+                    "pagingType" : "input",
+                    "dom": 'T<"clear">frtlp'
+                });
+                table.order( [ 1, 'desc' ] ).draw();
             });
         
 

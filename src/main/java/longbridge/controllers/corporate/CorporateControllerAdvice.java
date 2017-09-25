@@ -58,11 +58,16 @@ public class CorporateControllerAdvice {
     @ModelAttribute
     public String globalAtrributes(Model model, Principal principal) {
         String greeting = "";
-        if (principal.getName() == null) {
+        if (principal== null||principal.getName()==null) {
             return "redirect:/login/corporate";
         }
 
         CorporateUser corporateUser = corporateUserService.getUserByName(principal.getName());
+
+        if(corporateUser==null){
+            return "";
+        }
+
         String RCNumber;
         if (corporateUser.getCorporate().getRcNumber() == null) {
             RCNumber = "Not registered";

@@ -275,7 +275,44 @@
     .bg {
         min-height: 500px !important;
     }
+
+
+  
 }
+
+
+@media screen and (max-width: 1199px) and (min-width: 992px) {
+
+    #register-info
+    {
+       
+        
+        left:30px;
+       
+        
+    }
+}
+
+
+@media screen and (max-width: 991px)
+{
+    #register-info
+    {
+        
+        background:#F3F3F4;
+        top:360px;
+        width:200px;
+        left:30px;
+        z-index: 1000;
+       
+        
+    }
+    #register-info p
+    {
+        padding: 1px;
+    }
+}
+
 
 
 /*******************************************************************/
