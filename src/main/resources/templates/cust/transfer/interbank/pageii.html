@@ -134,7 +134,7 @@
 //                    $('input[name=availBal]').val(bal);
 
                         var  bal=numberWithCommas(message);
-                        $('#availBal').html("Available Balance: &#8358;"+bal);
+                        $('#availBal').html("Available Balance: "+bal);
                         getLimit();
 
                     }
@@ -148,7 +148,7 @@
 
             var accountNumber = $('#source').val();
             $.ajax({
-                url: "/retail/transfer/limit/"+accountNumber,
+                url: "/retail/transfer/limit/"+accountNumber+"/NIP",
                 type: 'GET',
                 async: false,
                 success:function(jd){
@@ -162,7 +162,7 @@
                     }else{
 //                    $('input[name=availBal]').val(bal);
                         var  bal= numberWithCommas(message);
-                        $('#limit').html("Limit: &#8358;"+bal);
+                        $('#limit').html("Limit: "+bal);
 
                     }
                 }
