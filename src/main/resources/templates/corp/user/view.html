@@ -37,6 +37,7 @@
                                 <th>First Name</th>
                                 <th>Last Name</th>
                                 <th>Role</th>
+                                <th>Designation</th>
                                 <th>Status</th>
                             </tr>
                             </thead>
@@ -75,10 +76,11 @@
                 { "data": "firstName" },
                 { "data": "lastName" },
                 { "data": "role" },
+                { "data": "designation" },
                 { "data": "status" }
             ],
             "columnDefs" : [ {
-                "targets" : 4,
+                "targets" : 5,
                 "data" : "status",
                 "render" : function(data, type,full, meta) {
                     if (type === 'display') {

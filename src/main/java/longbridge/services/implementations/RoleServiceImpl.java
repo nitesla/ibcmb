@@ -72,7 +72,7 @@ public class RoleServiceImpl implements RoleService {
     @Verifiable(operation = "ADD_ROLE", description = "Adding a Role")
     public String addRole(RoleDTO roleDTO) throws InternetBankingException {
 
-        Role role = roleRepo.findFirstByName(roleDTO.getName());
+        Role role = roleRepo.findByUserTypeAndName(roleDTO.getUserType(),roleDTO.getName());
 
         if (role != null) {
             throw new DuplicateObjectException(messageSource.getMessage("role.exist", null, locale));
@@ -119,7 +119,7 @@ public class RoleServiceImpl implements RoleService {
     @Verifiable(operation = "UPDATE_ROLE", description = "Updating a Role")
     public String updateRole(RoleDTO roleDTO) throws InternetBankingException {
 
-          Role role = roleRepo.findFirstByName(roleDTO.getName());
+          Role role = roleRepo.findByUserTypeAndName(roleDTO.getUserType(),roleDTO.getName());
 
         if (role != null && !roleDTO.getId().equals(role.getId())) {
             throw new DuplicateObjectException(messageSource.getMessage("role.exist", null, locale));
