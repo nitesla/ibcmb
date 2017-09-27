@@ -94,7 +94,7 @@
                                             <!--<input type="availBal" name="availBal"/>-->
                                             <p class="related-info coronation-blue" id="availBal"><b></b></p>
                                             <p class="related-info coronation-blue" th:if="${fee}!=null">Charge:&nbsp;&nbsp; <b th:text="${fee}"></b></p>
-
+                                            <p  class="related-info coronation-blue" id="limit"><b></b></p>
                                         </div>
                    
                 </div> 
@@ -136,6 +136,7 @@
 
                         var  bal=numberWithCommas(message);
                         $('#availBal').html("Available Balance: "+bal);
+                        getLimit();
 
                     }
                 }
@@ -163,7 +164,30 @@
         }
         /*]]>*/
 
+        function getLimit(){
 
+            var accountNumber = $('#source').val();
+            $.ajax({
+                url: "/retail/transfer/limit/"+accountNumber+"/INTRABANK",
+                type: 'GET',
+                async: false,
+                success:function(jd){
+                    var message = jd.message;
+                    var success =  jd.success;
+                    console.log(message);
+                    console.log(success);
+                    if (success==false){
+                        document.getElementById("mylimit").textContent="Could not get limit from server, please try again.";
+                        $("#mylimit").show();
+                    }else{
+//                    $('input[name=availBal]').val(bal);
+                        var  bal= numberWithCommas(message);
+                        $('#limit').html("Limit: "+bal);
+
+                    }
+                }
+            })
+        }
         function cancel(){
             window.location.href="/retail/transfer/local";
         }

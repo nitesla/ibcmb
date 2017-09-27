@@ -157,11 +157,11 @@ public class TransferUtils {
     }
 
 
-    public String getLimit(String accountNumber,String channel) {
+    public String getLimit(String accountNumber, String channel) {
         if (getCurrentUser() != null) {
             String limit = integrationService.getDailyAccountLimit(accountNumber, channel);
             if (limit != null && !limit.isEmpty())
-                return createMessage( getCurrency(accountNumber) + "" + limit, true);
+                return createMessage(getCurrency(accountNumber) + "" + limit, true);
         }
 
         return "";
@@ -252,8 +252,22 @@ public class TransferUtils {
         return result;
     }
 
-    public String calculateFee(String amount) {
-        return null;
+    public String calculateFee(BigDecimal amount, String channel) {
+        String result = "";
+        try {
+            Rate rate = integrationService.getFee(channel);
+            if ("FIXED".equalsIgnoreCase(rate.getFeeName())) {
+                result = rate.getFeeValue();
+            } else if ("RANGE".equalsIgnoreCase(rate.getFeeName())) {
+                result = new BigDecimal(rate.getFeeValue()).divide(new BigDecimal("100").multiply(amount)).toPlainString();
+            } else if ("RATE".equalsIgnoreCase(rate.getFeeName())) {
+                result = rate.getFeeValue();
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return result;
     }
 
 
