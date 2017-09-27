@@ -188,7 +188,7 @@ public class BulkTransferServiceImpl implements BulkTransferService {
             transReqEntry.setRole(userRole);
             transReqEntry.setUser(corporateUser);
             transferAuth.getAuths().add(transReqEntry);
-            if (TransferAuthorizationStatus.DECLINED.equals(transReqEntry.getStatus())) {
+            if (TransferAuthorizationStatus.DECLINED.equals(transReqEntry.getAuthStatus())) {
                 transferAuth.setStatus("X"); //cancelled
                 bulkTransfer.setStatus("X");
                 bulkTransfer.setStatusDescription("Cancelled");

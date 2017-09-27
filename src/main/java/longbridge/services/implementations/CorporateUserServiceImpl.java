@@ -231,11 +231,11 @@ public class CorporateUserServiceImpl implements CorporateUserService {
             return e.getMessage();
         } catch (MailException me) {
             throw new InternetBankingException(messageSource.getMessage("mail.failure", null, locale), me);
-        } catch (Exception e) {
-            if (e instanceof EntrustException) {
-                throw e;
+        } catch (Exception exception) {
+            if (exception instanceof EntrustException) {
+                throw exception;
             }
-            throw new InternetBankingException(messageSource.getMessage("user.add.failure", null, locale), e);
+            throw new InternetBankingException(messageSource.getMessage("user.add.failure", null, locale), exception);
         }
     }
 

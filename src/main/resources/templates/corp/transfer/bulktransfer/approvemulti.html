@@ -88,7 +88,7 @@
                                         <tr th:each="auth : ${authorizationMap.auths}" th:if="${authorizationMap.auths != null }" style='background:white;border-bottom:2px solid grey'>
                                             <td style="font-size:11px" th:text="${auth.role.name+' '+auth.role.rank}"></td>
                                             <td style="font-size:11px" th:text="${auth.user.firstName+' '+auth.user.lastName}"></td>
-                                            <td style="font-size:11px" th:text="${auth.status}"></td>
+                                            <td style="font-size:11px" th:text="${auth.authStatus}"></td>
                                             <td style="font-size:11px" th:text="${auth.comments}"></td>
                                             <td style="font-size:11px" th:text="${#dates.format(auth.entryDate,'dd-MM-yyyy hh:mm a')}"></td>
                                             <td style="font-size:11px" d th:if="${corpTransRule.anyCanAuthorize}">Optional</td>
@@ -111,9 +111,8 @@
 
                             </div>
 
-                            <form th:action="@{/corporate/transfer/bulk/approve}" method="post">
-                                <label class="control-label">Comments</label>
-                                <textarea th:if="${userCanAuthorize}" class="form-control full-width" th:field="${corpTransReqEntry.comments}" placeholder="Enter comments"></textarea>
+                            <form id="authForm" th:action="@{/corporate/transfer/bulk/approve}" method="post">
+                                <textarea id="commentField" th:if="${userCanAuthorize}" class="form-control full-width" th:field="${corpTransReqEntry.comments}" placeholder="Enter comments"></textarea>
 
                                 <div>
                                     <input type="text" th:if="${userCanAuthorize}" class="form-control full-width" name="token" placeholder="Enter token code"/>
@@ -123,10 +122,11 @@
                                     <input type="hidden" name="tranReqId" th:value="${corpTransRequest.id}" />
                                 </div>
                                 <div>
-                                    <button name="authStatus"  value="APPROVED" class="btn btn-link required-step" th:disabled="${userCanAuthorize==false}" type="submit">
+                                    <input type="hidden" id="authStatus" name="authStatus">
+                                    <button id="approveBtn"  class="btn btn-link required-step" th:disabled="${userCanAuthorize==false}" type="submit">
                                         Approve
                                     </button>
-                                    <button name="authStatus"  value="DECLINED" class="btn btn-link required-step" th:disabled="${userCanAuthorize==false}" type="submit">
+                                    <button  id="declineBtn" class="btn btn-link required-step" th:disabled="${userCanAuthorize==false}" type="submit">
                                         Decline
                                     </button>
                                     <button id="cancel" class="btn btn-link less-required" type="reset">Back</button>
@@ -285,6 +285,30 @@
             document.getElementById("cancel").onclick = function () {
                 location.href = "/corporate/transfer/bulk";
             }
+
+
+            $("#approveBtn").click(function (e) {
+                e.preventDefault();
+                $("#authStatus").val("APPROVED");
+                $("#authForm").submit();
+            })
+
+            $("#declineBtn").click(function (e) {
+                e.preventDefault();
+
+                var comment = $("#commentField").val();
+                if(comment==""){
+                    $("#commentField").css('border-color','red');
+                    $("#commentField").attr('placeholder', "The reason for declining is required")
+                    $("#commentField").focus();
+                }
+                else {
+                    $("#authStatus").val("DECLINED");
+                    $("#authForm").submit();
+                }
+
+
+            })
 
             /*]]>*/
         </script>

@@ -35,12 +35,12 @@ public class FinancialInstitutionServiceImpl implements FinancialInstitutionServ
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
-    ModelMapper modelMapper;
+    private ModelMapper modelMapper;
 
     @Autowired
-    MessageSource messageSource;
+    private MessageSource messageSource;
 
-    Locale locale = LocaleContextHolder.getLocale();
+    private Locale locale = LocaleContextHolder.getLocale();
 
     @Autowired
     public FinancialInstitutionServiceImpl(FinancialInstitutionRepo financialInstitutionRepo) {

@@ -181,7 +181,7 @@ public class BeneficiaryController {
                         String message = localBeneficiaryService.deleteLocalBeneficiary(benefit);
                         redirectAttributes.addFlashAttribute("message", message);
                     } catch (InternetBankingException e) {
-                        logger.error("International Beneficiary Error", e);
+                        logger.error("Beneficiary Error", e);
                         redirectAttributes.addFlashAttribute("failure", e.getMessage());
                     }
                     return "redirect:/retail/beneficiary";
@@ -243,7 +243,7 @@ public class BeneficiaryController {
             String message = localBeneficiaryService.deleteLocalBeneficiary(beneficiaryId);
             redirectAttributes.addFlashAttribute("message", message);
         } catch (InternetBankingException e) {
-            logger.error("International Beneficiary Error", e);
+            logger.error("Beneficiary Error", e);
             redirectAttributes.addFlashAttribute("failure", e.getMessage());
         }
         return "redirect:/retail/beneficiary";
