@@ -29,10 +29,10 @@
                             <label class='my-label'>Beneficiary</label>
                             <span class="alert no-bd-rad my-border bg-white invisible">NGN</span>
                             <input type="text" class="form-control ben-bg coronation-blue"
-                                   th:if="${beneficiary.preferredName} !=''" th:field="${beneficiary.preferredName}"
+                                   th:if="${beneficiary.preferredName} !=''" th:name="${beneficiary.preferredName}" th:value="${beneficiary.preferredName}"
                                    disabled/>
                             <input type="text" class="form-control ben-bg coronation-blue"
-                                   th:if="${beneficiary.preferredName} ==''" th:field="${beneficiary.accountName}"
+                                   th:if="${beneficiary.preferredName} ==''" th:name="${beneficiary.accountName}" th:value="${beneficiary.accountName}"
                                    disabled/>
                             <a href='/corporate/transfer/local/' class="btn btn-link required-step"
                                style='font-size:11px;text-decoration:underline'>Change <span class='hidden-xs'>Beneficiary</span></a>

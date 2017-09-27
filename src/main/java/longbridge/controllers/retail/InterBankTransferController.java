@@ -14,6 +14,8 @@ import longbridge.services.*;
 import longbridge.utils.TransferType;
 import longbridge.utils.TransferUtils;
 import longbridge.validator.transfer.TransferValidator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
@@ -51,6 +53,7 @@ public class InterBankTransferController {
     @Value("${bank.code}")
     private String bankCode;
     private TransferErrorService transferErrorService;
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
     public InterBankTransferController(RetailUserService retailUserService, TransferService transferService, MessageSource messages, LocalBeneficiaryService localBeneficiaryService, FinancialInstitutionService financialInstitutionService, AccountService accountService, TransferValidator validator
@@ -143,7 +146,7 @@ public class InterBankTransferController {
     }
 
     @PostMapping("/new")
-    public String getBeneficiary(@ModelAttribute("localBeneficiary") @Valid LocalBeneficiaryDTO localBeneficiaryDTO, BindingResult result, Model model, HttpServletRequest servletRequest) throws Exception {
+    public String getBeneficiary(@ModelAttribute("localBeneficiaryDTO") @Valid LocalBeneficiaryDTO localBeneficiaryDTO, BindingResult result, Model model, HttpServletRequest servletRequest) throws Exception {
         model.addAttribute("localBeneficiaryDTO", localBeneficiaryDTO);
         if (servletRequest.getSession().getAttribute("add") != null)
             servletRequest.getSession().removeAttribute("add");
@@ -154,6 +157,8 @@ public class InterBankTransferController {
         TransferRequestDTO transferRequestDTO = new TransferRequestDTO();
         transferRequestDTO.setBeneficiaryAccountName(localBeneficiaryDTO.getAccountName());
         transferRequestDTO.setBeneficiaryAccountNumber(localBeneficiaryDTO.getAccountNumber());
+
+        logger.info("Beneficiary is {}",transferRequestDTO.getBeneficiaryAccountName());
 
         transferRequestDTO.setFinancialInstitution(financialInstitutionService.getFinancialInstitutionByCode(localBeneficiaryDTO.getBeneficiaryBank()));
         model.addAttribute("transferRequest", transferRequestDTO);
