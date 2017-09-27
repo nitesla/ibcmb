@@ -8,10 +8,7 @@ import longbridge.models.*;
 import longbridge.repositories.CorpLocalBeneficiaryRepo;
 import longbridge.repositories.LocalBeneficiaryRepo;
 import longbridge.security.userdetails.CustomUserPrincipal;
-import longbridge.services.AccountService;
-import longbridge.services.CorporateService;
-import longbridge.services.IntegrationService;
-import longbridge.services.RetailUserService;
+import longbridge.services.*;
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
@@ -38,12 +35,16 @@ public class TransferUtils {
     private AccountService accountService;
     private RetailUserService retailUserService;
     private CorporateService corporateService;
-
+    private CodeService codeService;
     @Autowired
     private LocalBeneficiaryRepo localBeneficiaryRepo;
-
     @Autowired
     private CorpLocalBeneficiaryRepo corpLocalBeneficiaryRepo;
+
+    @Autowired
+    public void setCodeService(CodeService codeService) {
+        this.codeService = codeService;
+    }
 
     @Autowired
     public void setCorporateService(CorporateService corporateService) {
@@ -138,7 +139,7 @@ public class TransferUtils {
                 return createMessage(details.getAccountName(), true);
 
 
-            return createMessage("session expired", false);
+            return createMessage("Name enquiry failed because your session  has expired", false);
 
         }
         return "";
@@ -150,17 +151,17 @@ public class TransferUtils {
             Account account = accountService.getAccountByAccountNumber(accountNumber);
             Map<String, BigDecimal> balance = accountService.getBalance(account);
             BigDecimal availBal = balance.get("AvailableBalance");
-            return createMessage(availBal.toString(), true);
+            return createMessage(getCurrency(accountNumber) + "" + availBal.toString(), true);
         }
         return createMessage("", false);
     }
 
 
-    public String getLimit(String accountNumber) {
+    public String getLimit(String accountNumber, String channel) {
         if (getCurrentUser() != null) {
-            String limit = integrationService.getDailyAccountLimit(accountNumber, "NIP");
+            String limit = integrationService.getDailyAccountLimit(accountNumber, channel);
             if (limit != null && !limit.isEmpty())
-                return createMessage(limit, true);
+                return createMessage(getCurrency(accountNumber) + "" + limit, true);
         }
 
         return "";
@@ -246,13 +247,27 @@ public class TransferUtils {
             }
 
         } catch (Exception e) {
-        e.printStackTrace();
+            e.printStackTrace();
         }
         return result;
     }
 
-    public String calculateFee(String amount) {
-        return null;
+    public String calculateFee(BigDecimal amount, String channel) {
+        String result = "";
+        try {
+            Rate rate = integrationService.getFee(channel);
+            if ("FIXED".equalsIgnoreCase(rate.getFeeName())) {
+                result = rate.getFeeValue();
+            } else if ("RANGE".equalsIgnoreCase(rate.getFeeName())) {
+                result = new BigDecimal(rate.getFeeValue()).divide(new BigDecimal("100").multiply(amount)).toPlainString();
+            } else if ("RATE".equalsIgnoreCase(rate.getFeeName())) {
+                result = rate.getFeeValue();
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return result;
     }
 
 
@@ -284,6 +299,24 @@ public class TransferUtils {
 
 
         }
+
+    }
+
+
+    public String getCurrency(String accountNumber) {
+        String currency = "";
+        Account account = accountService.getAccountByAccountNumber(accountNumber);
+        if (account != null) {
+            Code code = codeService.getByTypeAndCode("CURRENCY", account.getCurrencyCode());
+            if (code != null && null != code.getExtraInfo()) {
+
+                currency = StringEscapeUtils.unescapeHtml4(code.getExtraInfo());
+                return currency;
+            }
+            currency = account.getCurrencyCode();
+
+        }
+        return currency;
 
     }
 }

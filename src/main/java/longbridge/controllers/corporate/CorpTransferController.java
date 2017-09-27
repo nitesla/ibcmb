@@ -458,10 +458,10 @@ public class CorpTransferController {
 
     @RequestMapping(value = "/limit/{accountNumber}", method = RequestMethod.GET, produces = "application/json")
     @ResponseBody
-    public String getLimit(@PathVariable String accountNumber) throws Exception {
+    public String getLimit(@PathVariable String accountNumber,@PathVariable String channel) throws Exception {
 
         try {
-            return transferUtils.getLimit(accountNumber);
+            return transferUtils.getLimit(accountNumber,channel);
         }
         catch (Exception e){
             logger.error("Error getting limit",e);

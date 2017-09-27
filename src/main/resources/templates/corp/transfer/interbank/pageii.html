@@ -7,93 +7,99 @@
 <div layout:fragment="content">
     <div class="col-md-5 col-sm-5 invisible ">
         <h5 class="page_header"> Transfer to
-                    <span class="my-label" th:if="${benName}== null"  th:text="${corpTransferRequest.beneficiaryAccountName}"></span>
-                    <span class="my-label" th:if="${benName}!= null" th:text="${benName}"></span>
-                    <select class="form-control invisible hide-content-only">
-                        <option value="account">Account Overview</option>
-                    </select>
+            <span class="my-label" th:if="${benName}== null"
+                  th:text="${corpTransferRequest.beneficiaryAccountName}"></span>
+            <span class="my-label" th:if="${benName}!= null" th:text="${benName}"></span>
+            <select class="form-control invisible hide-content-only">
+                <option value="account">Account Overview</option>
+            </select>
         </h5>
-       
+
     </div>
 
-    <div class="col-xs-12" >
+    <div class="col-xs-12">
         <div class="no-pad-lef table-responsive no-mt no-bd  alert">
             <div class="form-spacin col-md-7 col-sm-7 no-pad-left no-pad-right">
 
-                        <div th:if="${message != null}" class="alert alert-info" th:text="${message}">message</div>
-                        <div th:if="${error != null}" class="alert alert-info" th:text="${error}">message</div>
+                <div th:if="${message != null}" class="alert alert-info" th:text="${message}">message</div>
+                <div th:if="${error != null}" class="alert alert-info" th:text="${error}">message</div>
 
-                        <form method="post" th:action="@{/corporate/transfer/interbank/summary}"
-                              th:object="${corpTransferRequest}">
-
-                              
-                              <div class="form-group">
-                                    <label class='my-label'>Beneficiary</label>
-                                    <span class="alert no-bd-rad my-border bg-white invisible">NGN</span>
-                                    <input type="text" class="form-control ben-bg coronation-blue"  th:if="${benName}== null"  th:field="${corpTransferRequest.beneficiaryAccountName}" disabled />
-                                    <input type="text" class="form-control ben-bg coronation-blue" th:if="${benName}!= null" th:field="${benName}" disabled />
-                                    <a href='/retail/transfer/interbank' class="btn btn-link required-step" style='font-size:11px;text-decoration:underline'>Change <span class='hidden-xs'>Beneficiary</span></a>
-                                    <p class="errors" th:if="${#fields.hasErrors('amount')}" th:errors="*{amount}">&times;</p>
-                            </div>
-    
-
-                            <div class="form-group">
-                                <label class="my-label">Source account</label>
+                <form method="post" th:action="@{/corporate/transfer/interbank/summary}"
+                      th:object="${corpTransferRequest}">
 
 
-                                <span id="scurency"></span>
-                                <span class="alert no-bd-rad my-border bg-white hide-content-only">NGN</span>
+                    <div class="form-group">
+                        <label class='my-label'>Beneficiary</label>
+                        <span class="alert no-bd-rad my-border bg-white invisible">NGN</span>
+                        <input type="text" class="form-control ben-bg coronation-blue" th:if="${benName}== null"
+                               th:field="${corpTransferRequest.beneficiaryAccountName}" disabled/>
+                        <input type="text" class="form-control ben-bg coronation-blue" th:if="${benName}!= null"
+                               th:field="${benName}" disabled/>
+                        <a href='/retail/transfer/interbank' class="btn btn-link required-step"
+                           style='font-size:11px;text-decoration:underline'>Change <span
+                                class='hidden-xs'>Beneficiary</span></a>
+                        <p class="errors" th:if="${#fields.hasErrors('amount')}" th:errors="*{amount}">&times;</p>
+                    </div>
 
-                                <select name="source" class="form-control" id="source"
-                                        th:field="*{customerAccountNumber}" onchange="getBalance()">
-                                    <option th:each="s: ${accountList}" th:value="${s.accountNumber}" th:text="${s.accountNumber}" th:selected="${s.primaryFlag=='Y'}"></option>
+
+                    <div class="form-group">
+                        <label class="my-label">Source account</label>
 
 
-                                </select>
-                                <p th:if="${#fields.hasErrors('customerAccountNumber')}" th:errors="*{customerAccountNumber}"
-                                   class="errors"></p>
-                            </div>
+                        <span id="scurency"></span>
+                        <span class="alert no-bd-rad my-border bg-white hide-content-only">NGN</span>
 
-                            <input type="hidden" th:field="*{financialInstitution}" />
-                            <input type="hidden" th:field="*{beneficiaryAccountNumber}" />
-                            <input type="hidden" th:field="*{beneficiaryAccountName}" />
-                            <input type="hidden" th:field="*{transferType}" />
+                        <select name="source" class="form-control" id="source"
+                                th:field="*{customerAccountNumber}" onchange="getBalance()">
+                            <option th:each="s: ${accountList}" th:value="${s.accountNumber}"
+                                    th:text="${s.accountNumber}" th:selected="${s.primaryFlag=='Y'}"></option>
 
-                            <div class="form-group">
-                                <label class="my-label">Amount</label>
-                                <span class="alert no-bd-rad my-border bg-white">NGN</span>
 
-                                <input type="number" name="amount" step="any" placeholder="Enter an amount"
-                                       th:field="*{amount}" class="form-control"/><span class='req-inner'></span>
-                                <p th:if="${#fields.hasErrors('amount')}" th:errors="*{amount}"
-                                   class="errors"></p>
-                            </div>
-                            <div class="form-group">
-                                <label class="my-label">Remark</label>
-                                <span class="alert no-bd-rad my-border bg-white hide-content-only">NGN</span>
+                        </select>
+                        <p th:if="${#fields.hasErrors('customerAccountNumber')}" th:errors="*{customerAccountNumber}"
+                           class="errors"></p>
+                    </div>
 
-                                <input type="text" name="remarks" placeholder="" th:field="*{remarks}"
-                                       class="form-control"/>
-                            </div>
+                    <input type="hidden" th:field="*{financialInstitution}"/>
+                    <input type="hidden" th:field="*{beneficiaryAccountNumber}"/>
+                    <input type="hidden" th:field="*{beneficiaryAccountName}"/>
+                    <input type="hidden" th:field="*{transferType}"/>
 
-                            <span class="alert no-bd-rad my-border bg-white hide-content-only">NGN</span>
-                            <button class="btn btn-link required-step " type="submit">Submit</button>
-                        </form>
-                        <!--</div>-->
+                    <div class="form-group">
+                        <label class="my-label">Amount</label>
+                        <span class="alert no-bd-rad my-border bg-white">NGN</span>
+
+                        <input type="number" name="amount" step="any" placeholder="Enter an amount"
+                               th:field="*{amount}" class="form-control"/><span class='req-inner'></span>
+                        <p th:if="${#fields.hasErrors('amount')}" th:errors="*{amount}"
+                           class="errors"></p>
+                    </div>
+                    <div class="form-group">
+                        <label class="my-label">Remark</label>
+                        <span class="alert no-bd-rad my-border bg-white hide-content-only">NGN</span>
+
+                        <input type="text" name="remarks" placeholder="" th:field="*{remarks}"
+                               class="form-control"/>
+                    </div>
+
+                    <span class="alert no-bd-rad my-border bg-white hide-content-only">NGN</span>
+                    <button class="btn btn-link required-step " type="submit">Submit</button>
+                </form>
+                <!--</div>-->
+
+            </div>
+
+            <div class="col-xs-12 col-sm-5 wel ">
+                <!--<p class="related" style="padding-top: 5%">Related Information</p>-->
+                <div class="related-box">
+                    <h3 class="related-bar">Related Information</h3>
+
+                    <!--<input type="availBal" name="availBal"/>-->
+                    <p class="related-info coronation-blue" id="availBal"><b></b></p>
+                    <p class="related-info coronation-blue" id="limit"><b></b></p>
 
                 </div>
-                
-                     <div class="col-xs-12 col-sm-5 wel ">
-                                         <!--<p class="related" style="padding-top: 5%">Related Information</p>-->
-                                        <div  class="related-box">
-                                            <h3 class="related-bar">Related Information</h3>
-
-                                            <!--<input type="availBal" name="availBal"/>-->
-                                            <p class="related-info coronation-blue" id="availBal"><b></b></p>
-                                            <p  class="related-info coronation-blue" id="limit"><b></b></p>
-
-                                        </div>
-                                    </div>
+            </div>
         </div>
     </div>
 
@@ -101,37 +107,37 @@
 
 
 <th:block layout:fragment="scripts">
- <script th:src="@{~/customer/js/jquery-1.11.1.js}"></script>
+    <script th:src="@{~/customer/js/jquery-1.11.1.js}"></script>
     <script th:inline="javascript">
         /*<![CDATA[*/
 
 
-        $(document).ready(function(){
+        $(document).ready(function () {
             getBalance();
             getDestCurrency();
 
         })
 
-        function getBalance(){
+        function getBalance() {
 
             var accountNumber = $('#source').val();
             $.ajax({
-                url: "/corporate/transfer/balance/"+accountNumber,
+                url: "/corporate/transfer/balance/" + accountNumber,
                 type: 'GET',
                 async: false,
-                success:function(jd){
+                success: function (jd) {
                     var message = jd.message;
-                    var success =  jd.success;
+                    var success = jd.success;
                     console.log(message);
                     console.log(success);
-                    if (success==false){
-                        document.getElementById("myspan").textContent="Could not get balance from server, please try again.";
+                    if (success == false) {
+                        document.getElementById("myspan").textContent = "Could not get balance from server, please try again.";
                         $("#myspan").show();
-                    }else{
+                    } else {
 //                    $('input[name=availBal]').val(bal);
 
-                        var  bal=numberWithCommas(message);
-                        $('#availBal').html("Available Balance: &#8358;"+bal);
+                        var bal = numberWithCommas(message);
+                        $('#availBal').html("Available Balance: " + bal);
                         getLimit();
 
                     }
@@ -140,26 +146,25 @@
         }
 
 
-
-        function getLimit(){
+        function getLimit() {
 
             var accountNumber = $('#source').val();
             $.ajax({
-                url: "/corporate/transfer/limit/"+accountNumber,
+                url: "/corporate/transfer/limit/" + accountNumber + "/NIP",
                 type: 'GET',
                 async: false,
-                success:function(jd){
+                success: function (jd) {
                     var message = jd.message;
-                    var success =  jd.success;
+                    var success = jd.success;
                     console.log(message);
                     console.log(success);
-                    if (success==false){
-                        document.getElementById("mylimit").textContent="Could not get limit from server, please try again.";
+                    if (success == false) {
+                        document.getElementById("mylimit").textContent = "Could not get limit from server, please try again.";
                         $("#mylimit").show();
-                    }else{
+                    } else {
 //                    $('input[name=availBal]').val(bal);
-var  bal= numberWithCommas(message);
-$('#limit').html("Limit: &#8358;"+bal);
+                        var bal = numberWithCommas(message);
+                        $('#limit').html("Limit: " + bal);
 
                     }
                 }
@@ -167,19 +172,18 @@ $('#limit').html("Limit: &#8358;"+bal);
         }
 
 
-
-        function getDestCurrency(){
+        function getDestCurrency() {
             var accountNumber = $('#source').val();
             $.ajax({
-                url: "/corporate/transfer/"+accountNumber+"/currency",
+                url: "/corporate/transfer/" + accountNumber + "/currency",
                 type: 'GET',
                 async: false,
-                success:function(currency){
-                    cur = ''+String(currency);
-                    if(cur == "" ){
-                        document.getElementById("sourceCurrency").textContent="NAN";
+                success: function (currency) {
+                    cur = '' + String(currency);
+                    if (cur == "") {
+                        document.getElementById("sourceCurrency").textContent = "NAN";
                         // $("#myspan").show();
-                    }else{
+                    } else {
 //                    $('input[name=availBal]').val(bal);
 
                         $('#sourceCurrency').text(cur);
@@ -193,7 +197,7 @@ $('#limit').html("Limit: &#8358;"+bal);
 
 
     </script>
-   
+
 </th:block>
 
 </body>

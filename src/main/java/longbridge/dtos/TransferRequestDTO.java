@@ -44,6 +44,7 @@ public class TransferRequestDTO implements Serializable{
 
     private BigDecimal amount;
     private String statusDescription;
+    private String charge;
 
 
     public TransferRequestDTO() {
@@ -195,6 +196,14 @@ public class TransferRequestDTO implements Serializable{
 
     public void setStatusDescription(String statusDescription) {
         this.statusDescription = statusDescription;
+    }
+
+    public String getCharge() {
+        return charge;
+    }
+
+    public void setCharge(String charge) {
+        this.charge = charge;
     }
 
     @Override
