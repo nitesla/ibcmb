@@ -120,16 +120,13 @@ public class SecurityConfig {
                     .and().authorizeRequests().anyRequest().
 
 
-
-
-
                     // .and().authorizeRequests().and()
 
 
                             access("hasAuthority('" + UserType.ADMIN.toString() + "') and " + ipRange.toString()).and()
 
 
-                 // .fullyAuthenticated()
+                    // .fullyAuthenticated()
                     // log in
 
 
@@ -183,6 +180,9 @@ public class SecurityConfig {
         @Autowired
         @Qualifier("opAuthenticationFailureHandler")
         private AuthenticationFailureHandler opAuthenticationFailureHandler;
+        @Autowired
+        private ConfigurationService configService;
+        private Logger logger = LoggerFactory.getLogger(this.getClass());
 
         public OperationsUserConfigurationAdapter() {
             super();
@@ -195,15 +195,43 @@ public class SecurityConfig {
         }
 
         protected void configure(HttpSecurity http) throws Exception {
+
+
+            boolean ipRestricted = false;
+            StringBuilder ipRange = new StringBuilder("hasIpAddress('::1') or hasIpAddress('127.0.0.1')");
+            //Takes a specific IP address or a range using
+            //the IP/Netmask (e.g. 192.168.1.0/24 or 202.24.0.0/14).
+            SettingDTO dto = configService.getSettingByName("ADMIN_IP_WHITELIST");
+            if (dto != null && dto.isEnabled()) {
+
+                String temp = dto.getValue();
+                try {
+                    String[] whitelisted = temp.split(",");
+                    Arrays.asList(whitelisted)
+                            .stream()
+                            .filter(Objects::nonNull)
+                            .forEach(i -> ipRange.append(String.format(" or hasIpAddress('%s')", i)));
+
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+//                ipRange.append(String.format(" or hasIpAddress('%s')", temp));
+
+
+                logger.info("IP address whitelist " + ipRange.toString());
+            }
             http.antMatcher("/ops/**")
                     .authorizeRequests().anyRequest()
 
 
                     //.authenticated()
-                  // .hasAuthority(UserType.OPERATIONS.toString())
-                    .fullyAuthenticated().anyRequest().hasAuthority(UserType.OPERATIONS.toString())
+                    // .hasAuthority(UserType.OPERATIONS.toString())
+                    .fullyAuthenticated().anyRequest()
+                    .access("hasAuthority('" + UserType.OPERATIONS.toString() + "') and " + ipRange.toString()).and()
                     // log in
-                    .and().formLogin().loginPage("/login/ops").loginProcessingUrl("/ops/login").failureUrl("/login/ops?error=true").defaultSuccessUrl("/ops/dashboard")
+                    .formLogin().loginPage("/login/ops").loginProcessingUrl("/ops/login").failureUrl("/login/ops?error=true").defaultSuccessUrl("/ops/dashboard")
                     .successHandler(opAuthenticationSuccessHandler)
                     .failureHandler(opAuthenticationFailureHandler)
 
@@ -272,7 +300,7 @@ public class SecurityConfig {
                     .antMatcher("/retail/**").authorizeRequests()
                     .anyRequest()
                     // .authenticated()
-                   // .hasAuthority(UserType.RETAIL.toString())
+                    // .hasAuthority(UserType.RETAIL.toString())
                     .fullyAuthenticated()
                     // log in
                     .and().formLogin().loginPage("/login/retail").loginProcessingUrl("/retail/login")
@@ -395,6 +423,7 @@ public class SecurityConfig {
             customFilter.setAuthenticationFailureHandler(corpAuthenticationFailureHandler);
             return customFilter;
         }
+
         @Bean
         public HttpSessionEventPublisher httpSessionEventPublisher() {
             return new HttpSessionEventPublisher();

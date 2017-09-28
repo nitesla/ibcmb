@@ -50,5 +50,9 @@ public class EntityRevisionListener/*<T extends RevisionsEntity>*/  implements E
 	public void entityChanged(Class aClass, String s, Serializable serializable, RevisionType revisionType, Object o) {
 		String type = aClass.getName();
 		((CustomRevisionEntity) o).addModifiedEntityType(type);
+		((CustomRevisionEntity) o).setIpAddress(getIP());
+		((CustomRevisionEntity) o).setLastChangedBy(getUser());
+
+
 	}
 }

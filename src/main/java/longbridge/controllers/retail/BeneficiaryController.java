@@ -137,7 +137,11 @@ public class BeneficiaryController {
                 RetailUser retailUser = retailUserService.getUserByName(principal.getName());
                 securityService.performTokenValidation(retailUser.getEntrustId(), retailUser.getEntrustGroup(), token);
             } catch (InternetBankingSecurityException ibse) {
+                if (/* service to check if token is enabled comes in here  */
 
+                        (setting != null && setting.isEnabled())
+                        )
+                    model.addAttribute("auth", "auth");
                 model.addAttribute("failure", ibse.getMessage());
                 model.addAttribute("beneficiary", localBeneficiaryDTO);
                 return "cust/beneficiary/localSummary";
