@@ -112,23 +112,39 @@
             return false;
         }
 
-        $.getJSON('/retail/transfer/' +acct+ '/'+bank+'/nameEnquiry', function(jd) {
-            var message = jd.message;
-            var success =  jd.success;
-            console.log(message);
-            console.log(success);
-           if (success==false){
-               $('.acctError').text(message);
-               $('.acctError').show().css("color", "red");
-               $('#loading-icon').hide();
-           }else{
-               $('#acct_name').val(message);
-               $('#localsave').show();
-               $('#check').show();
-               $('.acctError').hide()
-               document.getElementById('loading-icon').style.display = 'none';
-               $('#loading-icon').hide();
-           }
+            $.getJSON('/retail/transfer/' + acct + '/' + bank + '/nameEnquiry', function (jd) {
+                var message = jd.message;
+                var success = jd.success;
+                console.log(message);
+                console.log(success);
+                if (success == false) {
+                    if (message == "session_expired") {
+                        $('#loading-icon').hide();
+                        $('#check').hide();
+                        var error_holder = message;
+//assign the error to a variable
+
+                        $('#errorMess').html(error_holder);
+//change the content of the modal to  the error message stored in the variable created
+
+
+                        $('#myModalError').modal();
+                        return false;
+
+                    }
+
+
+                    $('.acctError').text(message);
+                    $('.acctError').show().css("color", "red");
+                    $('#loading-icon').hide();
+                } else {
+                    $('#acct_name').val(message);
+                    $('#localsave').show();
+                    $('#check').show();
+                    $('.acctError').hide()
+                    document.getElementById('loading-icon').style.display = 'none';
+                    $('#loading-icon').hide();
+                }
 
 
 

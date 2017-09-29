@@ -139,7 +139,7 @@ public class TransferUtils {
                 return createMessage(details.getAccountName(), true);
 
 
-            return createMessage("Name enquiry failed because your session  has expired", false);
+            return createMessage("session_expired", false);
 
         }
         return "";
