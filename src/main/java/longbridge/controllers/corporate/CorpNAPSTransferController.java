@@ -206,13 +206,11 @@ public class CorpNAPSTransferController {
     }
 
     @GetMapping(path = "/allbankcodes")
-    public
-    @ResponseBody
+    public @ResponseBody
     DataTablesOutput<FinancialInstitutionDTO> getAllFis(DataTablesInput input) {
 
         Pageable pageable = DataTablesUtils.getPageable(input);
-        Page<FinancialInstitutionDTO> fis = null;
-        fis = financialInstitutionService.getFinancialInstitutions(pageable);
+        Page<FinancialInstitutionDTO> fis = financialInstitutionService.getFinancialInstitutionsWithSortCode(pageable);
         DataTablesOutput<FinancialInstitutionDTO> out = new DataTablesOutput<FinancialInstitutionDTO>();
         out.setDraw(input.getDraw());
         out.setData(fis.getContent());

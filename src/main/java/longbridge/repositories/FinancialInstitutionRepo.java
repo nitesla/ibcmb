@@ -2,6 +2,8 @@ package longbridge.repositories;
 
 import longbridge.models.FinancialInstitution;
 import longbridge.models.FinancialInstitutionType;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -17,7 +19,9 @@ public interface FinancialInstitutionRepo extends CommonRepo<FinancialInstitutio
     FinancialInstitution findByInstitutionCode(String institutionCode);
   FinancialInstitution findFirstByInstitutionNameIgnoreCase(String institutionName);
   List<FinancialInstitution> findByInstitutionCodeIgnoreCaseNot(String institutionCode);
-  List<FinancialInstitution> findByInstitutionTypeAndInstitutionCodeIgnoreCaseNot(FinancialInstitutionType institutionType ,String institutionCode);
+    Page<FinancialInstitution> findBySortCodeIsNotNull(Pageable pageable);
+
+    List<FinancialInstitution> findByInstitutionTypeAndInstitutionCodeIgnoreCaseNot(FinancialInstitutionType institutionType ,String institutionCode);
   FinancialInstitution findByInstitutionCodeAndInstitutionType(String code, FinancialInstitutionType type);
 
 }

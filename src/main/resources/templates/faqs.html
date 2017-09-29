@@ -1,145 +1,145 @@
-
 <!DOCTYPE html>
 
 <html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{index-layout}">
 
 <div layout:fragment="content">
-        <section class="content-wrapper">
-                <div class="containe">
-                    <div class="row">
-    
-                        <div class="col-md-12 col-sm-12 ">
-                            <div class="col-md-9 col-sm-9 ">
-                                <div class="">
-    
-                                    <h5 class="page_header">Frequently Asked Questions</h5>
-    
-                                    <table id="faqs">
-                                        <thead>
-                                            <tr></tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr th:each="faq : ${faqList}">
-                                                <div class="bg-coronation alert" style="margin-bottom:0px !important;">
-                                                    <span th:text="${faq.question}">Can i use the platform to transfer money abroad?</span>
-                                                    <a th:id="'_'+${faq.id}" class="switch" href='javascript:void(0)' onclick="serviceToggle(id)">
-                                                        <i data-toggle="collapse" th:attr="data-target='#'+${faq.id}" class='pull-right fa fa-plus-square faq-icon'></i>
-    
-                                                    </a>
-                                                </div>
-                                                <div th:id="${faq.id}" class="collapse alert bg-danger" style="margin-top:5px !important;" th:text="${faq.answer}">
-                                                    Lorem ipsum dolor text....
-                                                </div>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-    
-                                </div>
-                            </div>
-                            <div class="alert no-bd col-md-3 col-sm-3 ">
-                                <section class="content-wrapper">
-    
-                                    <div class="col-xs-12    no-bd alert no-bd-rad left-side">
-                                        <div class=" ">
-                                            <div class="sideba" style=" adding-top:20px;">
-    
-                                                <div class="bg-danger alert no-mt advert no-bd-rad ">
-                                                    <h1 style="margin-bottom:10px">Did You Know?</h1>
-                                                    <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore
-    
-                                                    </p>
-                                                </div>
-                                                <!--date-->
-                                                <div class=" hidden-xs bg-dan">
-    
-                                                    <div class="no-bd no-bd-rad   time" style=" margin-to: 6px !important;margin-bottom:0px !important;border-top:2px solid #ebdfdb !important;border-bottom:2px solid #ebdfdb !important;">
-                                                        <span class=" ">
+    <section class="content-wrapper">
+        <div class="containe">
+            <div class="row">
+
+                <div class="col-md-12 col-sm-12 ">
+                    <div class="col-md-9 col-sm-9 ">
+                        <div class="">
+
+                            <h5 class="page_header">Frequently Asked Questions</h5>
+
+                            <table id="faqs">
+                                <thead>
+                                    <tr></tr>
+                                </thead>
+                                <tbody>
+                                    <tr th:each="faq : ${faqList}">
+                                        <div class="bg-coronation alert" style="margin-bottom:0px !important;">
+                                            <span th:text="${faq.question}">Can i use the platform to transfer money abroad?</span>
+                                            <a th:id="'_'+${faq.id}" class="switch" href='javascript:void(0)' onclick="serviceToggle(id)">
+                                                <i data-toggle="collapse" th:attr="data-target='#'+${faq.id}" class='pull-right fa fa-plus-square faq-icon'></i>
+
+                                            </a>
+                                        </div>
+                                        <div th:id="${faq.id}" class="collapse alert bg-danger" style="margin-top:5px !important;" th:text="${faq.answer}">
+                                            Lorem ipsum dolor text....
+                                        </div>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                        </div>
+                    </div>
+                    <div class="alert no-bd col-md-3 col-sm-3 ">
+                        <section class="content-wrapper">
+
+                            <div class="col-xs-12    no-bd alert no-bd-rad left-side">
+                                <div class=" ">
+                                    <div class="sideba" style=" adding-top:20px;">
+
+                                        <div class="bg-danger alert no-mt advert no-bd-rad ">
+                                            <h1 style="margin-bottom:10px">Did You Know?</h1>
+                                            <p>The Coronation Merchant Bank Group has 3 subsidiaries: Coronation Securities, Coronation Asset Management and Coronation Trustees.
+                                                <br/> To learn more about what we do, click <a href="https://www.coronationmb.com/what-we-do/introduction" target="_blank"> here </a>
+
+                                            </p>
+                                        </div>
+                                        <!--date-->
+                                        <div class=" hidden-xs bg-dan">
+
+                                            <div class="no-bd no-bd-rad   time" style=" margin-to: 6px !important;margin-bottom:0px !important;border-top:2px solid #ebdfdb !important;border-bottom:2px solid #ebdfdb !important;">
+                                                <span class=" ">
                                                     <i class="fa fa-calendar-plus-o datepicker cal-icon " data-provide="datepicker" onclick="show()" style="font-size:20px;background:transparent !important;border:0px !important"></i>
                                                 </span>
-                                                        <span class="  ">
+                                                <span class="  ">
                                                     <span class="time-icon" id="day" style="font-size:13px;"></span><span>,</span>
-                                                        <span class="text-bold time-icon" id="cal_date" style="font-size:14px;color:#003056 !important;"></span>
-                                                        </span>
-                                                        <script>
-                                                            setInterval(
-                                                                function() {
-    
-    
-                                                                    var timer = moment().format('LTS'); //timer in hours,minutes and seconds
-                                                                    var day = moment().format('dddd'); // get the current day
-                                                                    var cur_date = moment().format("D MMMM");
-    
-    
-                                                                    var time_holder = document.getElementById('time'); // get where to insert the timer
-                                                                    var day_holder = document.getElementById('day'); // get where to insert the current day
-                                                                    var cur_date_holder = document.getElementById('cal_date'); // get where to insert the current date
-    
-                                                                    time_holder.innerHTML = timer;
-                                                                    day_holder.innerHTML = day;
-                                                                    cur_date_holder.innerHTML = cur_date;
-                                                                    //   var time_function = moment().format('Do MMMM YYYY, h:mm:ss a');
-                                                                    //   var holder = document.getElementById('time_');
-                                                                    //   holder.innerHTML = time_function;
-                                                                },
-                                                                1000);
-                                                        </script>
-    
-    
-                                                    </div>
-                                                    <!--<div  id="calendar" style="display: block; margin: 0px auto;" class=" calendar hidden-xs hidden-sm "></div>-->
-                                                </div>
-    
-                                                <!--time-->
-                                                <div class="">
-                                                    <div class="time hidden-xs no-bd no-bd-rad " style="border-bottom:2px solid #ebdfdb !important;">
-                                                        <span class=" ">
+                                                <span class="text-bold time-icon" id="cal_date" style="font-size:14px;color:#003056 !important;"></span>
+                                                </span>
+                                                <script>
+                                                    setInterval(
+                                                        function() {
+
+
+                                                            var timer = moment().format('LTS'); //timer in hours,minutes and seconds
+                                                            var day = moment().format('dddd'); // get the current day
+                                                            var cur_date = moment().format("D MMMM");
+
+
+                                                            var time_holder = document.getElementById('time'); // get where to insert the timer
+                                                            var day_holder = document.getElementById('day'); // get where to insert the current day
+                                                            var cur_date_holder = document.getElementById('cal_date'); // get where to insert the current date
+
+                                                            time_holder.innerHTML = timer;
+                                                            day_holder.innerHTML = day;
+                                                            cur_date_holder.innerHTML = cur_date;
+                                                            //   var time_function = moment().format('Do MMMM YYYY, h:mm:ss a');
+                                                            //   var holder = document.getElementById('time_');
+                                                            //   holder.innerHTML = time_function;
+                                                        },
+                                                        1000);
+                                                </script>
+
+
+                                            </div>
+                                            <!--<div  id="calendar" style="display: block; margin: 0px auto;" class=" calendar hidden-xs hidden-sm "></div>-->
+                                        </div>
+
+                                        <!--time-->
+                                        <div class="">
+                                            <div class="time hidden-xs no-bd no-bd-rad " style="border-bottom:2px solid #ebdfdb !important;">
+                                                <span class=" ">
                                                     <i class="fa fa-clock-o datepicker cal-icon " data-provide="datepicker" onclick="show()" style="font-size:20px;background:transparent !important;border:0px !important;"></i>
                                                 </span>
-                                                        <span id="time" class="text-bold no-bd" style="font-size:14px;padding-left:10px;color:#003056 !important;"></span>
-                                                    </div>
-                                                </div>
-    
-    
-    
-                                                <!--image placeholdder-->
-                                                <div class="sidebar-b hidden-xs hidden-sm bg-succes" style="max-height:300px;margin-top:10px;">
-                                                    <img style="max-height:250px" class="center img-responsive" alt="Coronation Merchant Bank" src="/customer/img/asset.jpg" />
-                                                </div>
+                                                <span id="time" class="text-bold no-bd" style="font-size:14px;padding-left:10px;color:#003056 !important;"></span>
                                             </div>
                                         </div>
+
+
+
+                                        <!--image placeholdder-->
+                                        <div class="sidebar-b hidden-xs hidden-sm bg-succes" style="max-height:300px;margin-top:10px;">
+                                            <img style="max-height:250px" class="center img-responsive" alt="Coronation Merchant Bank" src="/customer/img/asset.jpg" />
+                                        </div>
                                     </div>
-                                </section>
-    
+                                </div>
                             </div>
-    
-    
-                        </div>
+                        </section>
+
                     </div>
-    
+
+
                 </div>
-    
-        </section>
-    
+            </div>
+
+        </div>
+
+    </section>
 
 
 
-    
-            
-        <div id="myLoader" class="modal fade " role="dialog">
-                <div class="modal-dialog">
 
-        
 
-                    <div class=" no-bd-rad no-bd content text-center " style=" background: transparent !important;">
-                        <div class="bg-white center" style="width:40%">
-                            <img class="img-responsive block center  loader-img" style='padding:7px;' th:src="@{~/customer/img/loader.png}" alt="Coronation Merchant Bank" />
-                            <div id='loading-icon' class=' bg-white text-center'><i class='fa fa-spinner block center fa-spin' style="font-size:18px;color:#003056"></i> Loading. Please Wait
-                            </div>
-                        </div>
+
+    <div id="myLoader" class="modal fade " role="dialog">
+        <div class="modal-dialog">
+
+
+
+            <div class=" no-bd-rad no-bd content text-center " style=" background: transparent !important;">
+                <div class="bg-white center" style="width:40%">
+                    <img class="img-responsive block center  loader-img" style='padding:7px;' th:src="@{~/customer/img/loader.png}" alt="Coronation Merchant Bank" />
+                    <div id='loading-icon' class=' bg-white text-center'><i class='fa fa-spinner block center fa-spin' style="font-size:18px;color:#003056"></i> Loading. Please Wait
                     </div>
                 </div>
+            </div>
+        </div>
 
-             </div>
+    </div>
 </div>
 
 
@@ -148,27 +148,27 @@
 
 
 <th:block layout:fragment="scripts">
-    
-        <script th:src="@{~/customer/plugins/datatables/js/jquery.dataTables.js}"></script>
-        <script th:src="@{~/customer/js/jquery.spring-friendly.min.js}"></script>
-        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/js/bootstrap-datepicker.min.js"></script>
-        <script th:src="@{~/customer/js/momentMin.js}"></script>
-    
-    
-        <!-- Page-Level Scripts -->
-        <script>
-            /*<![CDATA[*/
-            $(document).ready(function() {
-    
-                $('#faqs').DataTable({
-                    "lengthMenu": [5, 10, 20]
-                });
-    
-    
-    
+
+    <script th:src="@{~/customer/plugins/datatables/js/jquery.dataTables.js}"></script>
+    <script th:src="@{~/customer/js/jquery.spring-friendly.min.js}"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/js/bootstrap-datepicker.min.js"></script>
+    <script th:src="@{~/customer/js/momentMin.js}"></script>
+
+
+    <!-- Page-Level Scripts -->
+    <script>
+        /*<![CDATA[*/
+        $(document).ready(function() {
+
+            $('#faqs').DataTable({
+                "lengthMenu": [5, 10, 20]
             });
 
-            function serviceToggle(id) {
+
+
+        });
+
+        function serviceToggle(id) {
             $('.collapse').collapse('hide'); // collaspe every open collapsible div
             $('.switch').not('#' + id).find('i').removeClass('fa-minus-square').addClass('fa-plus-square');
             //remove fa-minus icon and add fa-plus-icon.. do not do this for the clicked item
@@ -176,31 +176,20 @@
             //toggle the class icon on the clicked item
 
         }
-    
-            /*]]>*/
-        </script>
 
-
-
-    
+        /*]]>*/
+    </script>
 
 
 
 
 
-    
+
+
+
+
+
 
 </th:block>
 
 </html>
-
-
-
-
-
-
-
-
-
-
-

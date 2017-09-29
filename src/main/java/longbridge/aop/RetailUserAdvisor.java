@@ -96,9 +96,7 @@ public class RetailUserAdvisor {
                 user.setExpiryDate(new Date());
                 passwordPolicyService.saveRetailPassword(user);
                 retailUserRepo.save(user);
-
                 logger.info("Retail user {} status changed to {}",retailUser.getUserName(),retailUser.getStatus());
-
                 retailUserService.sendPostActivateMessage(retailUser, fullName,user.getUserName(),password);
             }
             else {

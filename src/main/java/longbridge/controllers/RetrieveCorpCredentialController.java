@@ -461,9 +461,10 @@ public @ResponseBody String getSecAns(WebRequest webRequest, HttpSession session
         return messageSource.getMessage("sec.ans.failed", null, locale);
     }
 
-    @GetMapping("/rest/corp/password/{password}")
-    public @ResponseBody String checkRegPassword(@PathVariable String password){
+    @PostMapping("/rest/corp/password")
+    public @ResponseBody String checkRegPassword(WebRequest webRequest){
         try {
+            String password =webRequest.getParameter("password");
             String message = passwordPolicyService.validate(password, null);
             if (!"".equals(message)){
                 return message;

@@ -125,7 +125,7 @@
                                     <select class='form-control ' style='margin-bottom:20px'>
                                         <option>A-Z</option>
                                     </select> -->
-                                    <div class="table-responsive" style="">
+                                    <div class="table-responsive" >
                                             <table  class="table table-striped table-bordered table-hover" id="codes">
                                                     <thead>
                                                     <tr style='background:rgb(154, 106, 79);color:white;border-bottom:3px solid grey !important'>
@@ -265,12 +265,12 @@
 
     <script th:src="@{~/customer/js/jquery-1.11.1.js}"></script>
     <script th:src="@{~/customer/js/jquery-ui.js}"></script>
-    <script th:src="@{~/customer/js/jquery.dataTables.js}"></script>
     <!--<script th:src="@{~/customer/js/date/js/bootstrap-datepicker.js}"></script>-->
     <script th:src="@{~/customer/js/momentMin.js}"></script>
     <script th:src="@{~/customer/js/jquery.spring-friendly.min.js}"></script>
     <script th:src="@{~/customer/js/coronation.js}"></script>
     <script th:src="@{~/customer/js/jquery.dataTables.js}"></script>
+
 
     <!-- BOOTSTRAP SCRIPTS  -->
     <script th:src="@{~/customer/js/bootstrap.js}"></script>
@@ -288,12 +288,15 @@
                 "pagingType" : "simple_numbers",
                 "searching": true,
                 "paging": true,
-                "serverSide" : false,
-                "ajax": "/corporate/transfer/allbankcodes",
+                "serverSide" : true,
+                "ajax": {
+                    url: "/corporate/transfer/allbankcodes",
+                    "type": "GET"
+                },
                 "dom": 'T<"clear">frtlp',
                 "columns": [
                     { "data": "institutionName" },
-                    { "data": "institutionCode" }
+                    { "data": "sortCode" }
                 ] });
     
             table.on('select', function() {

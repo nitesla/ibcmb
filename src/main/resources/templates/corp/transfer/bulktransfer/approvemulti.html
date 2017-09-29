@@ -31,7 +31,7 @@
     }
 </style>
 
-<body onload="javascript:var bread = [['Home', '/corporate/dashboard'],['Bulk transfer','/corporate/transfer/bulk'],['approve','']];currentBar('approve multiple');breadCrumb(bread)">
+<body onload="javascript:var bread = [['Home', '/corporate/dashboard'],['Bulk transfer','/corporate/transfer/bulk'],['approve','']];currentBar('authorization summary');breadCrumb(bread)">
 
     <div layout:fragment="content">
         <style>
@@ -51,7 +51,7 @@
                 <div class="">
                     <div class="">
                         <div class="form-group ">
-                            <p>Request Date: <span th:text="${bulkTransfer.tranDate}"></span></p>
+                            <p>Request Date: <span th:text="${#dates.format(bulkTransfer.tranDate,'dd-MM-yyyy hh:mm a')}"></span></p>
                             <p>Source account: <span th:text="${bulkTransfer.customerAccountNumber}"></span></p>
 
                         </div>

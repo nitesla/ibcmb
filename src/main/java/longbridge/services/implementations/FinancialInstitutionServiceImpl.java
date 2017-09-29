@@ -64,7 +64,7 @@ public class FinancialInstitutionServiceImpl implements FinancialInstitutionServ
         financialInstitutionDTO.setInstitutionType(financialInstitution.getInstitutionType());
         financialInstitutionDTO.setInstitutionName(financialInstitution.getInstitutionName());
         financialInstitutionDTO.setSortCode(financialInstitution.getSortCode());
-        return modelMapper.map(financialInstitution, FinancialInstitutionDTO.class);
+        return financialInstitutionDTO;
     }
 
     @Override
@@ -177,10 +177,19 @@ public class FinancialInstitutionServiceImpl implements FinancialInstitutionServ
         List<FinancialInstitutionDTO> dtOs = convertEntitiesToDTOs(page.getContent());
         long t = page.getTotalElements();
 
-        // return  new PageImpl<ServiceReqConfigDTO>(dtOs,pageDetails,page.getTotalElements());
         Page<FinancialInstitutionDTO> pageImpl = new PageImpl<FinancialInstitutionDTO>(dtOs, pageDetails, t);
         return pageImpl;
     }
+
+
+    @Override
+    public Page<FinancialInstitutionDTO> getFinancialInstitutionsWithSortCode(Pageable pageDetails) {
+        Page<FinancialInstitution> page = financialInstitutionRepo.findBySortCodeIsNotNull(pageDetails);
+        List<FinancialInstitutionDTO> dtOs = convertEntitiesToDTOs(page.getContent());
+        long t = page.getTotalElements();
+
+        Page<FinancialInstitutionDTO> pageImpl = new PageImpl<FinancialInstitutionDTO>(dtOs, pageDetails, t);
+        return pageImpl;    }
 
     @Override
     public FinancialInstitution getFinancialInstitutionByCode(String institutionCode) {
