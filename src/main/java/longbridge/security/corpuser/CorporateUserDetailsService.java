@@ -88,7 +88,9 @@ public class CorporateUserDetailsService implements UserDetailsService {
 
                     if ((user.getCorporate().getCorporateId().equalsIgnoreCase(corporate.getCorporateId())) && user.getUserType() == UserType.CORPORATE) {
 
-                        return new CustomUserPrincipal(user);
+                        CustomUserPrincipal userPrincipal = new CustomUserPrincipal(user);
+                        userPrincipal.setIpAddress(ip);
+                        return userPrincipal;
                     }
                 }
                 throw new UsernameNotFoundException(s);
