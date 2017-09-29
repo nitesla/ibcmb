@@ -116,6 +116,13 @@
                 console.log(message);
                 console.log(success);
                 if (success == false) {
+                    if (message=="session_expired") {
+                        $('#loading-icon').hide();
+                        $('#check').hide();
+
+                    }
+
+
                     $('.acctError').text(message);
                     $('.acctError').show().css("color", "red");
                     $('#loading-icon').hide();
