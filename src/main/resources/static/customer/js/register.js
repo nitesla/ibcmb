@@ -48,8 +48,12 @@ form.children("div").steps({
         }
 
         if(ACCOUNT_DETAILS_STEP === currentIndex){
+            console.log("Current step is the account details step");
+            // $('#reg-form').css("zIndex", -1);
+            // $('#spinner').css("zIndex", 200);
+            showSpinner();
 
-            //console.log("Current step is the account details step");
+
             var accountNumber = $('input[name="accountNumber"]').val();
 
             var email = $('input[name="email"]').val();
@@ -73,7 +77,7 @@ form.children("div").steps({
             
             //console.log("Current Step is the security question step");
             //$("#reg-form").submit();
-
+hideSpinner();
             return isValid;
         }
         if(PHISHING_IMAGE_STEP === currentIndex){
@@ -83,17 +87,15 @@ form.children("div").steps({
             return isValid && checkImage();
         }
 
-
+        showSpinner();
         form.validate().settings.ignore = ":disabled,:hidden";
-
-
         return form.valid();
 
 
     },
     onStepChanged: function (event, currentIndex, priorIndex)
     {
-        $('#myLoader').modal('hide');
+        // $('#myLoader').modal('hide');
         // Used to skip the "Warning" step if the user is old enough and wants to the previous step.
         if (currentIndex === 2 && priorIndex === 3)
         {
@@ -107,10 +109,13 @@ form.children("div").steps({
     onFinishing: function (event, currentIndex)
     {
         //form.validate().settings.ignore = ":disabled";
+        $('#reg-form').hide();
+        showSpinner();
         return form.valid() && registerUser();
     },
     onFinished: function (event, currentIndex)
     {
+        showSpinner();
 //            alert("Submitted!");
         //window.location.href = "/login/retail";
         return redirectUser();
@@ -146,7 +151,7 @@ function getSummary() {
     // }
     // container.innerHTML +=  "</tbody>"+
     //     "</table>"
-    
+    hideSpinner();
 }
 
 // function loadPhishingImages(){
@@ -164,8 +169,8 @@ var customerId = "null";
  * @param accountNumber the account number to check
  */
 function validateAccountDetails(accountNumber, email, birthDate){
-
-     $('#myLoader').modal('show');
+     // $('#myLoader').modal('show');
+    showSpinner();
     if(email == ""){
         email = "ib@coronationmb.com"
     }
@@ -180,6 +185,7 @@ function validateAccountDetails(accountNumber, email, birthDate){
     $.ajax({
         type:'POST',
         url:"/rest/accountdetails",
+        beforeSend: function () { showSpinner(); },
         cache:false,
         data:{accountNumber:accountNumber, email:email, birthDate:birthDate},
         async:false,
@@ -190,8 +196,10 @@ function validateAccountDetails(accountNumber, email, birthDate){
             }else {
                 $('#errorMess').text(customerId);
                 $('#myModalError').modal('show');
-                $('#myLoader').modal('hide');
+                // $('#myLoader').modal('hide');
+                hideSpinner();
             }
+
             // if(customerId == "" || customerId === null){
             //
             //     $('#errorMess').text(customerId);
@@ -201,7 +209,8 @@ function validateAccountDetails(accountNumber, email, birthDate){
             //     $('input[name=customerId]').val(customerId);
             // }
         },error:function (data) {
-            $('#myLoader').modal('hide');
+            // $('#myLoader').modal('hide');
+            hideSpinner();
             $('#errorMess').text("Service not available, please try again later");
             $('#myModalError').modal('show');
         }
@@ -210,7 +219,8 @@ function validateAccountDetails(accountNumber, email, birthDate){
     if(customerId == "true"){
         return true;
     }else{
-         $('#myLoader').modal('hide');
+         // $('#myLoader').modal('hide');
+        hideSpinner();
         return false;
     }
 }
@@ -220,7 +230,7 @@ function validateExists(accountNumber, email, birthDate){
         email = "ib@coronationmb.com"
     }
     if(birthDate == ""){
-        birthDate = "19-20-1970" // just a place holder
+        birthDate = "19-20-1970"; // just a place holder
     }
     var cif;
     accountNumber = accountNumber.trim();
@@ -231,6 +241,7 @@ function validateExists(accountNumber, email, birthDate){
         url:"/rest/accountexists",
         cache:false,
         data:{accountNumber:accountNumber, email:email, birthDate:birthDate},
+        beforeSend: function () { showSpinner(); },
         async:false,
         success:function(data1){
             cif = ''+String(data1);
@@ -240,7 +251,8 @@ function validateExists(accountNumber, email, birthDate){
                 //invalid account number
                 $('#errorMess').text("This account already exists on our internet banking platform, Please try logging in.");
                 $('#myModalError').modal('show');
-                $('#myLoader').modal('hide');
+                // $('#myLoader').modal('hide');
+                hideSpinner();
 
                 //alert("Account number not found");
             }else{
@@ -248,32 +260,38 @@ function validateExists(accountNumber, email, birthDate){
                 // sendRegCode();
             }
         },error:function (data) {
-            $('#myLoader').modal('hide');
+            // $('#myLoader').modal('hide');
+            hideSpinner();
+
             $('#errorMess').text("Service not available, please try again later");
             $('#myModalError').modal('show');
         }
     });
 
     if(cif == "" || cif == null ){
-         $('#myLoader').modal('hide');
+         // $('#myLoader').modal('hide');
+        hideSpinner();
         return false;
 
     }else{
         sendRegCode();
-         $('#myLoader').modal('hide');
+         // $('#myLoader').modal('hide');
+        hideSpinner();
         return true;
     }
 }
 
 function validateUsername(username){
     var result;
-     $('#myLoader').modal('show');
+     // $('#myLoader').modal('show');
+    showSpinner();
     username = username.trim();
     $.ajax({
         type:'POST',
         url:"/rest/username/check",
         cache:false,
         data:{username:username},
+        beforeSend: function () { showSpinner(); },
         async:false,
         success:function(data1){
             result = ''+String(data1);
@@ -281,13 +299,16 @@ function validateUsername(username){
                 //invalid account number
                 $('#errorMess').text("Username already exists.");
                 $('#myModalError').modal('show');
-                $('#myLoader').modal('hide');
+                // $('#myLoader').modal('hide');
+                hideSpinner();
             }else{
                 //valid account number
                 //alert("user name: " + result);
             }
         },error:function (data) {
-            $('#myLoader').modal('hide');
+            // $('#myLoader').modal('hide');
+            hideSpinner();
+
             $('#errorMess').text("Service not available, please try again later");
             $('#myModalError').modal('show');
         }
@@ -295,16 +316,18 @@ function validateUsername(username){
 
     if(result === 'true'){
         //username is valid and available
-        
+        hideSpinner();
         return true;
     }else{
-         $('#myLoader').modal('hide');
+         // $('#myLoader').modal('hide');
+        hideSpinner();
         return false;
     }
     
 }
 
 function validatePassword(password){
+    showSpinner();
     var result;
     password = password.trim();
     $.ajax({
@@ -313,6 +336,7 @@ function validatePassword(password){
         url:"/rest/password/password",
         async:false,
         cache:false,
+        beforeSend: function () { showSpinner(); },
         success:function(data1){
             result = ''+String(data1);
             if(result === 'true'){
@@ -321,10 +345,12 @@ function validatePassword(password){
             }else{
                 $('#errorMess').text(result);
                 $('#myModalError').modal('show');
-                $('#myLoader').modal('hide');
+                // $('#myLoader').modal('hide');
+                hideSpinner();
             }
         },error:function (data) {
-            $('#myLoader').modal('hide');
+            // $('#myLoader').modal('hide');
+            hideSpinner();
             $('#errorMess').text("Service not available, please try again later");
             $('#myModalError').modal('show');
         }
@@ -333,14 +359,17 @@ function validatePassword(password){
     if(result === 'true'){
         
         //username is valid and available
+        hideSpinner();
         return true;
     }else{
-        
+        hideSpinner();
         return false;
     }
 }
 
 function validateRegCode(code){
+
+    showSpinner();
     var result;
     code = code.trim();
     $.ajax({
@@ -349,6 +378,7 @@ function validateRegCode(code){
         cache:false,
         data:{code:code},
         async:false,
+        beforeSend: function () { showSpinner(); },
         success:function(data1){
             result = ''+String(data1);
             // console.log("error "+result);
@@ -357,12 +387,14 @@ function validateRegCode(code){
 
 
             }else{
+                hideSpinner();
                 $('#errorMess').text(result);
                 $('#myModalError').modal('show');
             }
         },error:function (data) {
             console.log("error "+data);
-            $('#myLoader').modal('hide');
+            // $('#myLoader').modal('hide');
+            hideSpinner();
             $('#errorMess').text("Service not available, please try again later");
             $('#myModalError').modal('show');
         }
@@ -370,10 +402,12 @@ function validateRegCode(code){
 
     if(result === 'true'){
         //username is valid and available
-         $('#myLoader').modal('hide');
+        //  $('#myLoader').modal('hide');
+        hideSpinner();
         return true;
     }else{
-         $('#myLoader').modal('hide');
+         // $('#myLoader').modal('hide');
+        hideSpinner();
         return false;
     }
 }
@@ -400,6 +434,8 @@ function sendRegCode(){
         cache:false,
         data:{accountNumber:accountNumber, email:email, birthDate:birthDate},
         async:false,
+        beforeSend: function () { showSpinner(); },
+
         success:function(data1){
             result = ''+String(data1);
             if(result === 'false' || result=== '' || result === null){
@@ -434,11 +470,13 @@ function sendRegCode(){
                 //console.log(result);
             }
         },error:function (data) {
-            $('#myLoader').modal('hide');
+            // $('#myLoader').modal('hide');
+            hideSpinner();
             $('#errorMess').text("Service not available, please try again later");
             $('#myModalError').modal('show');
         }
     });
+    hideSpinner();
 }
 
 
@@ -454,7 +492,8 @@ function checkImage() {
 }
 
 function registerUser(){
- $('#myLoader').modal('show');
+ // $('#myLoader').modal('show');
+    showSpinner();
     var returnValue = false;
     $('#reg-form').submit(function(e){
         e.preventDefault();
@@ -464,25 +503,35 @@ function registerUser(){
             async:false,
             type: "POST",
             data: $(this).serialize(),
+            beforeSend: function () { showSpinner(); },
             success: function(data)
             {
                 //alert(data+" return ");
                 //callback methods go right here
                 if(data==="true"){
+                    showSpinner();
                     $('#returnValue').val(true);
                 }else {
+                    $('#reg-form').show();
+
+                    hideSpinner();
                     $('#errorMess').text(data);
                     $('#myModalError').modal('show');
                 }
             },error:function (data) {
-                $('#myLoader').modal('hide');
+                // $('#myLoader').modal('hide');
+                $('#reg-form').show();
+
+                hideSpinner();
                 $('#errorMess').text("Service not available, please try again later");
                 $('#myModalError').modal('show');
             }
         });
     });
+
     $('#reg-form').submit();
-     $('#myLoader').modal('hide');
+
+    // $('#myLoader').modal('hide');
     returnValue = $('#returnValue').val();
     //alert(returnValue);
     return Boolean(returnValue);

@@ -4,6 +4,7 @@ import longbridge.config.audits.CustomRevisionEntity;
 import longbridge.config.audits.ModifiedEntityTypeEntity;
 import longbridge.config.audits.RevisedEntitiesUtil;
 import longbridge.dtos.AdminUserDTO;
+import longbridge.dtos.AuditDTO;
 import longbridge.dtos.CodeDTO;
 //import longbridge.dtos.RevisionInfo;
 import longbridge.dtos.VerificationDTO;
@@ -16,6 +17,7 @@ import longbridge.security.userdetails.CustomUserPrincipal;
 import longbridge.services.AuditConfigService;
 import longbridge.utils.Verifiable;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.tuple.Pair;
 import org.apache.poi.ss.formula.functions.T;
 import org.hibernate.envers.AuditReader;
 import org.hibernate.envers.AuditReaderFactory;
@@ -34,6 +36,8 @@ import javax.persistence.EntityManager;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import static java.lang.Math.E;
 
 /**
  * Created by ayoade_farooq@yahoo.com on 4/19/2017.
@@ -116,6 +120,7 @@ public class AuditConfigImpl implements AuditConfigService {
 		List<Object> revisionList = new ArrayList<>();
 		Page<CustomRevisionEntity> revisionEntities=null;
 		List<String> RevisionDetails = new ArrayList<>();
+		String className = PACKAGE_NAME + entityName;
 		try
 		{
 			Class<?> clazz  = Class.forName(PACKAGE_NAME + entityName);
@@ -125,15 +130,13 @@ public class AuditConfigImpl implements AuditConfigService {
 			revisionList = query.getResultList();
 			logger.info("this is the revision list"+query);
 			logger.info("this is the revision list"+revisionList);
-			List<Code> classes = query.getResultList();
-			getEachDetails(String.valueOf(revisionList));
+			List<T> classes = query.getResultList();
 
 		}
 		catch (ClassNotFoundException e)
 		{
 			e.printStackTrace();
 		}
-
 		catch (NumberFormatException e)
 		{
 			e.printStackTrace();
@@ -222,8 +225,74 @@ public class AuditConfigImpl implements AuditConfigService {
 		return auditConfig;
 	}
 
-//	@Override
-//	public List<T> revisedEntity(String entityName) {
-//		return null;
-//	}
+	@Override
+	public List<T> revisedEntity(String entityName) {
+		List<Object> revisionList = new ArrayList<>();
+		Page<CustomRevisionEntity> revisionEntities = null;
+		List<String> RevisionDetails = new ArrayList<>();
+		List<T> classes = null;
+		try
+		{
+			Class<?> clazz  = Class.forName(PACKAGE_NAME + entityName);
+			AuditReader auditReader = AuditReaderFactory.get(entityManager);
+			List<Number> revisions = auditReader.getRevisions(clazz, 32);
+			AuditQuery query = auditReader.createQuery().forRevisionsOfEntity(clazz,true,true);
+			revisionList = query.getResultList();
+			logger.info("this is the revision list"+revisionList);
+			List<Code> codes = query.getResultList();
+			for (Code code:codes) {
+
+				logger.info("this is the class code "+code);
+			}
+//			getEachDetails(String.valueOf(revisionList));
+
+		}
+		catch (ClassNotFoundException e)
+		{
+			e.printStackTrace();
+		}
+		catch (NumberFormatException e){
+			e.printStackTrace();
+		}
+
+		return classes;
+	}
+	public Page<AuditDTO> revisedEntity(String entityName,Pageable pageable) {
+		List<AuditDTO> compositeAudits = new ArrayList<>();
+		Page<CustomRevisionEntity> revisionEntities = null;
+		List<String> RevisionDetails = new ArrayList<>();
+		Page<ModifiedEntityTypeEntity> allEnityByRevisionByClass = null;
+		try
+		{
+
+			Class<?> clazz  = Class.forName(PACKAGE_NAME + entityName);
+			entityName = PACKAGE_NAME + entityName;
+			AuditReader auditReader = AuditReaderFactory.get(entityManager);
+			allEnityByRevisionByClass = modifiedEntityTypeEntityRepo.findAllEnityByRevisionByClass(entityName,pageable);
+			for (ModifiedEntityTypeEntity entity: allEnityByRevisionByClass) {
+				AuditDTO auditDTO = new AuditDTO();
+				logger.info("revision id  "+entity.getRevision().getId());
+				AuditQuery query = auditReader.createQuery().forEntitiesAtRevision(clazz,entity.getRevision().getId());
+				List<Object> abstractEntities = query.getResultList();
+				logger.info("the abstract entity {}",abstractEntities);
+				auditDTO.setEntityDetails(abstractEntities.get(0));
+				auditDTO.setModifiedEntities(entity);
+				compositeAudits.add(auditDTO);
+			}
+			logger.info("this is the revision list"+compositeAudits);
+//			Page<T> tPage = (Page<T>) compositeAudits;
+
+		}
+		catch (ClassNotFoundException e)
+		{
+			e.printStackTrace();
+		}
+		catch (NumberFormatException e){
+			e.printStackTrace();
+		}catch (Exception e){
+			e.printStackTrace();
+		}
+
+		return new PageImpl<AuditDTO>(compositeAudits, pageable, allEnityByRevisionByClass.getTotalPages());
+	}
 }

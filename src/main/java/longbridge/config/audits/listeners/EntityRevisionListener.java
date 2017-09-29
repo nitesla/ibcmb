@@ -29,6 +29,7 @@ public class EntityRevisionListener/*<T extends RevisionsEntity>*/  implements E
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		if (auth != null){
 			CustomUserPrincipal principal = (CustomUserPrincipal)auth.getPrincipal();
+			System.out.println("The ip audited is "+principal.getIpAddress());
 			return principal.getIpAddress();
 		}
 		return "Unknown";

@@ -2,6 +2,7 @@ package longbridge.config.audits;
 
 import longbridge.config.SpringContext;
 import org.codehaus.jettison.json.JSONObject;
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
@@ -11,6 +12,8 @@ import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.sql.DataSource;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -42,12 +45,12 @@ public class RevisedEntitiesUtil {
             if(!mapList.isEmpty()) {
                 for (Map map : mapList) {
                     revIds.add(Integer.parseInt(map.get("REV").toString()));
-
                 }
             }
 
         return revIds;
     }
+    @NotNull
     private static String getOracleEntity(String enttyname){
         StringBuilder builder = new StringBuilder();
         for(int y = 0; y < enttyname.length(); y++){
@@ -158,5 +161,4 @@ public class RevisedEntitiesUtil {
 
         return mapList;
     }
-
 }

@@ -135,7 +135,8 @@ function validatePassword(password){
     var result;
     $.ajax({
         type:'GET',
-        url:"/rest/corp/password/"+password,
+        url:"/rest/corp/password",
+        data:{password:password},
         async:false,
         success:function(data1){
             console.log("The reponse "+data1);
