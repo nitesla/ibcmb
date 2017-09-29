@@ -270,7 +270,8 @@
     <script th:src="@{~/customer/js/momentMin.js}"></script>
     <script th:src="@{~/customer/js/jquery.spring-friendly.min.js}"></script>
     <script th:src="@{~/customer/js/coronation.js}"></script>
-    
+    <script th:src="@{~/customer/js/jquery.dataTables.js}"></script>
+
     <!-- BOOTSTRAP SCRIPTS  -->
     <script th:src="@{~/customer/js/bootstrap.js}"></script>
     <script th:src="@{~/customer/js/bootstrap-session-timeout.js}"></script>
@@ -283,7 +284,7 @@
             var table = $('#codes').DataTable({
                 select:true,
                 responsive: true,
-                "lengthMenu" : [ [ 10, 20, 30],  [ 10, 20, 30 ] ],
+                "lengthMenu" : [ [ 10, 20, 30, -1],  [ 10, 20, 30, "All" ] ],
                 "pagingType" : "simple_numbers",
                 "searching": true,
                 "paging": true,
