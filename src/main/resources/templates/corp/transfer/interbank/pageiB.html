@@ -116,9 +116,18 @@
                 console.log(message);
                 console.log(success);
                 if (success == false) {
-                    if (message=="session_expired") {
+                    if (message == "session_expired") {
                         $('#loading-icon').hide();
                         $('#check').hide();
+                        var error_holder = message;
+//assign the error to a variable
+
+                        $('#errorMess').html(error_holder);
+//change the content of the modal to  the error message stored in the variable created
+
+
+                        $('#myModalError').modal();
+                        return false;
 
                     }
 
