@@ -1,5 +1,6 @@
 package longbridge.models;
 
+import longbridge.utils.TransferAuthorizationStatus;
 import org.hibernate.annotations.Where;
 import org.hibernate.envers.Audited;
 
@@ -7,8 +8,6 @@ import javax.persistence.*;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
-
-import static org.hibernate.envers.RelationTargetAuditMode.NOT_AUDITED;
 
 /**
  * Created by Fortune on 7/5/2017.

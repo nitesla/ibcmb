@@ -2284,6 +2284,26 @@ end
                                                             font-size:25px;
                                                             padding:10px 0px;
                                                         }
+
+                                                        .img-phish-box-mobile
+                                                        {
+                                                            padding: 10px;width:120px;
+                                                        }
+
+                                                        .img-phish-box-desk
+                                                        {
+                                                            max-height:auto;width:60%;padding:5px 7px
+                                                        }
+
+                                                        .img-phish
+                                                        {
+                                                            height:100px;display: block; margin-bottom: 5px !important;
+                                                        }
+
+                                                        .img-phish-desk
+                                                        {
+                                                            height:100px;display: block;margin-bottom: 5px !important;
+                                                        }
                                                         
                                             
 

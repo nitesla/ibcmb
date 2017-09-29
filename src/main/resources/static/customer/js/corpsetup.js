@@ -57,12 +57,13 @@ form.children("div").steps({
             console.log("Current Step is the phishing image step");
             //$("#reg-form").submit();
             var confirm = $('#confirm').val();
+            getRegSummary();
             return isValid && validatePassword(confirm);
         }
         if(TOKEN_AUTH_STEP === currentIndex){
             console.log("Current Step is the phishing image step");
             //$("#reg-form").submit();
-            getRegSummary();
+            // getRegSummary();
 
             return isValid;
         }
@@ -133,8 +134,9 @@ function getRegSummary() {
 function validatePassword(password){
     var result;
     $.ajax({
-        type:'GET',
-        url:"/rest/corp/password/"+password,
+        type:'POST',
+        url:"/rest/corp/password",
+        data:{password:password},
         async:false,
         success:function(data1){
             console.log("The reponse "+data1);

@@ -1,11 +1,13 @@
 package longbridge.models;
 
+import longbridge.utils.TransferAuthorizationStatus;
 import org.hibernate.annotations.Where;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import java.util.Date;
 
 /**
@@ -18,7 +20,11 @@ public class CorpTransReqEntry extends AbstractEntity {
 
     private Long tranReqId;
     private String comments;
+
     private String status;
+
+    @Enumerated(EnumType.ORDINAL)
+    private TransferAuthorizationStatus authStatus;
 
     @ManyToOne
     private CorporateRole role;
@@ -43,6 +49,14 @@ public class CorpTransReqEntry extends AbstractEntity {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public TransferAuthorizationStatus getAuthStatus() {
+        return authStatus;
+    }
+
+    public void setAuthStatus(TransferAuthorizationStatus authStatus) {
+        this.authStatus = authStatus;
     }
 
     public CorporateRole getRole() {
@@ -76,6 +90,7 @@ public class CorpTransReqEntry extends AbstractEntity {
     public void setTranReqId(Long tranReqId) {
         this.tranReqId = tranReqId;
     }
+
 
 
     @Override

@@ -15,6 +15,7 @@ import longbridge.services.BulkTransferService;
 import longbridge.services.ConfigurationService;
 import longbridge.services.CorporateService;
 import longbridge.services.bulkTransfers.BulkTransferJobLauncher;
+import longbridge.utils.TransferAuthorizationStatus;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -84,7 +85,7 @@ public class BulkTransferServiceImpl implements BulkTransferService {
         //validate bulk transfer
 
         bulkTransfer.setStatus("P");
-        bulkTransfer.setStatusDescription("Pending");
+        bulkTransfer.setStatusDescription("Processing");
         BulkTransfer transfer = bulkTransferRepo.save(bulkTransfer);
         try {
             jobLauncher.launchBulkTransferJob("" + transfer.getId());
@@ -121,6 +122,7 @@ public class BulkTransferServiceImpl implements BulkTransferService {
             if (userCanAuthorize(transfer)) {
                 CorpTransReqEntry transReqEntry = new CorpTransReqEntry();
                 transReqEntry.setTranReqId(transfer.getId());
+                transReqEntry.setAuthStatus(TransferAuthorizationStatus.APPROVED);
                 return addAuthorization(transReqEntry);
             }
         } catch (TransferAuthorizationException ex) {
@@ -185,8 +187,15 @@ public class BulkTransferServiceImpl implements BulkTransferService {
             transReqEntry.setEntryDate(new Date());
             transReqEntry.setRole(userRole);
             transReqEntry.setUser(corporateUser);
-            transReqEntry.setStatus("Approved");
             transferAuth.getAuths().add(transReqEntry);
+            if (TransferAuthorizationStatus.DECLINED.equals(transReqEntry.getAuthStatus())) {
+                transferAuth.setStatus("X"); //cancelled
+                bulkTransfer.setStatus("X");
+                bulkTransfer.setStatusDescription("Cancelled");
+                transferAuthRepo.save(transferAuth);
+                return messageSource.getMessage("transfer.auth.decline", null, locale);
+            }
+
             transferAuthRepo.save(transferAuth);
             if (isAuthorizationComplete(bulkTransfer)) {
                 transferAuth.setStatus("C");
@@ -313,6 +322,7 @@ public class BulkTransferServiceImpl implements BulkTransferService {
     public boolean userCanAuthorize(TransRequest transRequest) {
         CorporateUser corporateUser = getCurrentUser();
         CorpTransRule transferRule = corporateService.getApplicableTransferRule(transRequest);
+        BulkTransfer bulkTransfer = (BulkTransfer)transRequest;
 
         if (transferRule == null) {
             return false;
@@ -321,7 +331,7 @@ public class BulkTransferServiceImpl implements BulkTransferService {
         List<CorporateRole> roles = getExistingRoles(transferRule.getRoles());
 
         for (CorporateRole corporateRole : roles) {
-            if (corpRoleRepo.countInRole(corporateRole, corporateUser) > 0) {
+            if (corpRoleRepo.countInRole(corporateRole, corporateUser) > 0 && !reqEntryRepo.existsByTranReqIdAndRole(transRequest.getId(), corporateRole) && "P".equals(bulkTransfer.getTransferAuth().getStatus())) {
                 return true;
             }
         }

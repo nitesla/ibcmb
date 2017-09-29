@@ -47,7 +47,6 @@ public abstract class AbstractEntity implements Serializable{
 
     protected Date deletedOn;
 
-
     public Long getId() {
         return id;
     }

@@ -113,7 +113,7 @@ public class CorpNAPSTransferController {
         if (corporate.getCorporateType().equalsIgnoreCase("MULTI")) {
             CorpTransferAuth corpTransferAuth = bulkTransferService.getAuthorizations(bulkTransfer);
             CorpTransRule corpTransRule = corporateService.getApplicableTransferRule(bulkTransfer);
-            boolean userCanAuthorize = corpTransferService.userCanAuthorize(bulkTransfer);
+            boolean userCanAuthorize = bulkTransferService.userCanAuthorize(bulkTransfer);
             model.addAttribute("authorizationMap", corpTransferAuth);
             model.addAttribute("corpTransRequest", bulkTransfer);
             model.addAttribute("corpTransReqEntry", new CorpTransReqEntry());
@@ -206,13 +206,11 @@ public class CorpNAPSTransferController {
     }
 
     @GetMapping(path = "/allbankcodes")
-    public
-    @ResponseBody
+    public @ResponseBody
     DataTablesOutput<FinancialInstitutionDTO> getAllFis(DataTablesInput input) {
 
         Pageable pageable = DataTablesUtils.getPageable(input);
-        Page<FinancialInstitutionDTO> fis = null;
-        fis = financialInstitutionService.getFinancialInstitutions(pageable);
+        Page<FinancialInstitutionDTO> fis = financialInstitutionService.getFinancialInstitutionsWithSortCode(pageable);
         DataTablesOutput<FinancialInstitutionDTO> out = new DataTablesOutput<FinancialInstitutionDTO>();
         out.setDraw(input.getDraw());
         out.setData(fis.getContent());
