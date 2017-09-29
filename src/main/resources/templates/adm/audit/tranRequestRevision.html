@@ -23,7 +23,7 @@
             <div class="">
                 <div class="page-title">
                     <div class="title_left">
-                        <h3>Audit Revision</h3>
+                        <h3>Audit Revision for <label th:text="${entityName}"></label></h3>
                     </div>
 
                 </div>
@@ -38,7 +38,7 @@
                                     <li >
                                         <div class="col-lg-4">
                                             <div class="title-action">
-                                                <a  class="btn btn-primary btn-sm bt-select bt-link-act" href="/admin/audit/id/classname/view" disabled="disabled" ><i class="fa fa-pencil"></i>  View</a>
+                                                <!--<a  class="btn btn-primary btn-sm bt-select bt-link-act" href="/admin/audit/id/classname/view" disabled="disabled" ><i class="fa fa-pencil"></i>  View</a>-->
                                             </div>
                                         </div>
                                     </li>
@@ -62,7 +62,7 @@
                             </div>
                             <div class="x_content">
 
-                                <table class="table table-striped table-bordered table-hover" id="auditview">
+                                <table class="table table-striped table-bordered table-hover x_content" id="auditview" style="overflow-x:scroll;">
 
                                     <thead>
                                     <tr>
@@ -70,10 +70,17 @@
                                         <th>Modifed By</th>
                                         <th>Date</th>
                                         <th>IP Address</th>
-                                        <th>Id</th>
-                                        <th>Time</th>
-                                        <th>Code</th>
-                                        <th>Type</th>
+                                        <th>Customer ACCT NO</th>
+                                        <th>Transfer type</th>
+                                        <th>Tran Date</th>
+                                        <th>Beneficiary ACCT NO</th>
+                                        <th>Beneficiary ACCT name</th>
+                                        <th>Ref No</th>
+                                        <th>User Ref No</th>
+                                        <th>Naration</th>
+                                        <th>Status</th>
+                                        <th>Amount</th>
+                                        <th>Charge</th>
                                     </tr>
                                     </thead>
 
@@ -118,6 +125,7 @@
         var table = $('#auditview').DataTable({
             select:true,
             responsive: true,
+            "scrollX": true,
             "pagingType" : "simple_numbers",
             "searching": true,
             rowId: 'entityDetails.id',
@@ -139,12 +147,20 @@
                 { "data": "modifiedEntities.revision.lastChangedBy" },
                 { "data": "modifiedEntities.revision.revisionDate" },
                 { "data": "modifiedEntities.revision.ipAddress" },
-                { "data": "entityDetails.id" },
-                { "data": "entityDetails.code" },
-                { "data": "entityDetails.type" },
-                { "data": "entityDetails.description" }
+//                { "data": "entityDetails.id" },
+                { "data": "entityDetails.customerAccountNumber" },
+                { "data": "entityDetails.transferType" },
+                { "data": "entityDetails.tranDate" },
+                { "data": "entityDetails.beneficiaryAccountNumber" },
+                { "data": "entityDetails.beneficiaryAccountName" },
+                { "data": "entityDetails.referenceNumber" },
+                { "data": "entityDetails.userReferenceNumber" },
+                { "data": "entityDetails.narration" },
+                { "data": "entityDetails.statusDescription" },
+                { "data": "entityDetails.amount" },
+                { "data": "entityDetails.charge" }
             ],"columnDefs" : [ {
-                "targets" : 3,
+                "targets" : 1,
                 "data" : "modifiedEntities.revision.lastChangedBy",
                 "render" : function(data, type,full, meta) {
                     if (type === 'display') {
@@ -171,16 +187,16 @@
                 }
             }] });
 
-        table.on('select', function()
-        {
-            if (table.rows({
-                        selected : true
-                    }).indexes().length === 0) {
-                $('.bt-select').attr("disabled", true);
-            } else {
-                $('.bt-select').removeAttr("disabled");
-            }
-        });
+//        table.on('select', function()
+//        {
+//            if (table.rows({
+//                        selected : true
+//                    }).indexes().length === 0) {
+//                $('.bt-select').attr("disabled", true);
+//            } else {
+//                $('.bt-select').removeAttr("disabled");
+//            }
+//        });
 
         $("#search").on("click", function(e)
         {

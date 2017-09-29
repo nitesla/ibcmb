@@ -13,7 +13,8 @@ import java.util.List;
 public class AuditDTO {
     Object entityDetails;
     ModifiedEntityTypeEntity modifiedEntities;
-
+    String entityClassName;
+String finacialInstitution;
     public Object getEntityDetails() {
         return entityDetails;
     }
@@ -30,11 +31,29 @@ public class AuditDTO {
         this.modifiedEntities = modifiedEntities;
     }
 
+    public String getEntityClassName() {
+        return entityClassName;
+    }
+
+    public void setEntityClassName(String entityClassName) {
+        this.entityClassName = entityClassName;
+    }
+
+    public String getFinacialInstitution() {
+        return finacialInstitution;
+    }
+
+    public void setFinacialInstitution(String finacialInstitution) {
+        this.finacialInstitution = finacialInstitution;
+    }
+
     @Override
     public String toString() {
         return "AuditDTO{" +
                 "entityDetails=" + entityDetails +
                 ", modifiedEntities=" + modifiedEntities +
+                ", entityClassName='" + entityClassName + '\'' +
+                ", finacialInstitution='" + finacialInstitution + '\'' +
                 '}';
     }
 }

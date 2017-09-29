@@ -89,7 +89,11 @@ public class AdmAuditController {
     {
         logger.info("the entity name is {}",entityName);
         model.addAttribute("entityName",entityName);
-        return "adm/audit/entityRevision";
+        if(entityName.equalsIgnoreCase("TransRequest")){
+            return "adm/audit/tranRequestRevision";
+        }else {
+            return "adm/audit/entityRevision";
+        }
     }
     //    @GetMapping(path = "all/entityname")
 //    public @ResponseBody DataTablesOutput<AuditConfig> getAllEntities(DataTablesInput input,WebRequest webRequest)

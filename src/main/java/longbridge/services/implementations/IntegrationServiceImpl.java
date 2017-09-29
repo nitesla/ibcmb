@@ -282,8 +282,6 @@ public class IntegrationServiceImpl implements IntegrationService {
                 logger.info("params for transfer {}", params.toString());
                 try {
                     response = template.postForObject(uri, params, TransferDetails.class);
-
-
                     logger.info("response for transfer {}", response.toString());
                     transRequest.setReferenceNumber(response.getUniqueReferenceCode());
                     transRequest.setNarration(response.getNarration());
@@ -374,7 +372,7 @@ public class IntegrationServiceImpl implements IntegrationService {
             AccountDetails details = template.getForObject(uri, AccountDetails.class, params);
             return details;
         } catch (Exception e) {
-//            logger.error("Error getting account details for {} and the error is {}",acctNo,e);
+            logger.error("Error getting account details", e);
             return new AccountDetails();
         }
 

@@ -243,11 +243,9 @@ public class CorpInterBankTransferController {
 
 
         try {
-            model.addAttribute("nip", integrationService.getFee("NIP"));
-            model.addAttribute("rtgs", integrationService.getFee("RTGS"));
+            model.addAttribute("nip", transferUtils.getFee("NIP"));
+            model.addAttribute("rtgs", transferUtils.getFee("RTGS"));
         } catch (Exception e) {
-            model.addAttribute("nip", new Rate());
-            model.addAttribute("rtgs", new Rate());
             e.printStackTrace();
         }
 

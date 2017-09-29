@@ -134,7 +134,7 @@ function getRegSummary() {
 function validatePassword(password){
     var result;
     $.ajax({
-        type:'GET',
+        type:'POST',
         url:"/rest/corp/password",
         data:{password:password},
         async:false,

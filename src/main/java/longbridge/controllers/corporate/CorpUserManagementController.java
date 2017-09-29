@@ -2,6 +2,7 @@ package longbridge.controllers.corporate;
 
 import longbridge.dtos.*;
 import longbridge.exception.*;
+import longbridge.models.CorpUserType;
 import longbridge.models.Corporate;
 import longbridge.models.CorporateUser;
 import longbridge.models.UserType;
@@ -153,7 +154,7 @@ public class CorpUserManagementController {
 
         try {
 
-            if (corporateUserDTO.isAuthorizer()){
+            if (CorpUserType.AUTHORIZER.equals(corporateUserDTO.getCorpUserType())){
                 CorporateRoleDTO corporateRole = corporateService.getCorporateRole(corporateUserDTO.getCorporateRoleId());
                 corporateUserDTO.setCorporateRole(corporateRole.getName() + " " + corporateRole.getRank());
 
@@ -235,7 +236,7 @@ public class CorpUserManagementController {
                 }
             }
 
-            if (corporateUserDTO.isAuthorizer()) {
+            if (CorpUserType.AUTHORIZER.equals(corporateUserDTO.getCorpUserType())){
                 CorporateRoleDTO corporateRole = corporateService.getCorporateRole(corporateUserDTO.getCorporateRoleId());
                 corporateUserDTO.setCorporateRole(corporateRole.getName() + " " + corporateRole.getRank());
             }

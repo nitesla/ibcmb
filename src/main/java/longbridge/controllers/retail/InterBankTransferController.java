@@ -55,7 +55,7 @@ public class InterBankTransferController {
     @Autowired
     public InterBankTransferController(RetailUserService retailUserService, TransferService transferService, MessageSource messages, LocalBeneficiaryService localBeneficiaryService, FinancialInstitutionService financialInstitutionService, AccountService accountService, TransferValidator validator
 
-            , IntegrationService integrationService,TransferUtils transferUtils,TransferErrorService transferErrorService
+            , IntegrationService integrationService, TransferUtils transferUtils, TransferErrorService transferErrorService
     ) {
         this.retailUserService = retailUserService;
         this.transferService = transferService;
@@ -65,32 +65,31 @@ public class InterBankTransferController {
         this.validator = validator;
         this.integrationService = integrationService;
         this.accountService = accountService;
-        this.transferUtils=transferUtils;
-        this.transferErrorService=transferErrorService;
+        this.transferUtils = transferUtils;
+        this.transferErrorService = transferErrorService;
     }
-
 
 
     @GetMapping(value = "")
-    public String index(Model model,HttpServletRequest request,RedirectAttributes redirectAttributes) {
+    public String index(Model model, HttpServletRequest request, RedirectAttributes redirectAttributes) {
         if (request.getSession().getAttribute("auth-needed") != null)
             request.getSession().removeAttribute("auth-needed");
-    try{
-        transferUtils.validateBvn();
-        return page + "pagei";
-    }catch (InternetBankingTransferException e) {
-        String errorMessage = transferErrorService.getMessage(e);
-        redirectAttributes.addFlashAttribute("failure", errorMessage);
-        return "redirect:/retail/dashboard";
+        try {
+            transferUtils.validateBvn();
+            return page + "pagei";
+        } catch (InternetBankingTransferException e) {
+            String errorMessage = transferErrorService.getMessage(e);
+            redirectAttributes.addFlashAttribute("failure", errorMessage);
+            return "redirect:/retail/dashboard";
 
 
-    }
+        }
     }
 
 
     @PostMapping(value = "/index")
 
-    public String startTransfer(HttpServletRequest request, Model model,Principal principal) {
+    public String startTransfer(HttpServletRequest request, Model model, Principal principal) {
         RetailUser retailUser = retailUserService.getUserByName(principal.getName());
         List<LocalBeneficiary> beneficiaries = StreamSupport.stream(localBeneficiaryService.getLocalBeneficiaries(retailUser).spliterator(), false)
                 .filter(i -> !i.getBeneficiaryBank().equalsIgnoreCase(financialInstitutionService.getFinancialInstitutionByCode(bankCode).getInstitutionCode()))
@@ -115,9 +114,6 @@ public class InterBankTransferController {
 
         TransferRequestDTO requestDTO = new TransferRequestDTO();
         String type = request.getParameter("tranType");
-
-
-
 
 
         if ("NIP".equalsIgnoreCase(type)) {
@@ -179,7 +175,6 @@ public class InterBankTransferController {
         String benName = (String) request.getSession().getAttribute("benName");
 
 
-
         model.addAttribute("benName", benName);
 
         validator.validate(transferRequestDTO, result);
@@ -192,13 +187,14 @@ public class InterBankTransferController {
             String type = (String) request.getSession().getAttribute("NIP");
             if (type.equalsIgnoreCase("RTGS")) {
                 transferRequestDTO.setTransferType(TransferType.RTGS);
-                charge = integrationService.getFee("RTGS").getFeeValue();
-                System.out.println("RTGS TRANSFER");
-                System.out.println(charge);
+                charge = transferUtils.calculateFee(transferRequestDTO.getAmount(), "RTGS");
+                transferRequestDTO.setCharge(charge);
+
 
             } else {
                 transferRequestDTO.setTransferType(TransferType.INTER_BANK_TRANSFER);
-                charge = integrationService.getFee("NIP").getFeeValue();
+                charge = transferUtils.calculateFee(transferRequestDTO.getAmount(), "NIP");
+                transferRequestDTO.setCharge(charge);
             }
             // request.getSession().removeAttribute("NIP");
 
@@ -221,7 +217,7 @@ public class InterBankTransferController {
         if (institution == null) {
 
             attributes.addFlashAttribute("failure", messages.getMessage("transfer.beneficiary.invalid", null, locale));
-            return"redirect:/retail/transfer/interbank/index";
+            return "redirect:/retail/transfer/interbank/index";
         }
         requestDTO.setFinancialInstitution(institution);
 
@@ -242,24 +238,19 @@ public class InterBankTransferController {
         sortedNames.sort(Comparator.comparing(FinancialInstitutionDTO::getInstitutionName));
 
         model.addAttribute("localBanks"
-                , sortedNames
-
-
-        );
+                , sortedNames);
 
 
         try {
-            model.addAttribute("nip", integrationService.getFee("NIP"));
-            model.addAttribute("rtgs", integrationService.getFee("RTGS"));
-        }catch (Exception e) {
-            model.addAttribute("nip", new Rate());
-            model.addAttribute("rtgs", new Rate());
+            model.addAttribute("nip", transferUtils.getFee("NIP"));
+            model.addAttribute("rtgs", transferUtils.getFee("RTGS"));
+        } catch (Exception e) {
+
             e.printStackTrace();
         }
 
 
     }
-
 
 
     @PostMapping("/edit")
@@ -279,11 +270,10 @@ public class InterBankTransferController {
         if (request.getSession().getAttribute("Lbeneficiary") != null) {
             LocalBeneficiaryDTO dto = (LocalBeneficiaryDTO) request.getSession().getAttribute("Lbeneficiary");
             model.addAttribute("beneficiary", dto);
-            String  bank = dto.getBeneficiaryBank();
+            String bank = dto.getBeneficiaryBank();
 
 
-                transferRequestDTO.setFinancialInstitution(financialInstitutionService.getFinancialInstitutionByCode(bank));
-
+            transferRequestDTO.setFinancialInstitution(financialInstitutionService.getFinancialInstitutionByCode(bank));
 
 
         }
@@ -303,12 +293,11 @@ public class InterBankTransferController {
 
             StreamSupport.stream(accounts.spliterator(), false)
                     .filter(Objects::nonNull)
-                    .filter(i-> "NGN".equalsIgnoreCase(i.getCurrencyCode()))
+                    .filter(i -> "NGN".equalsIgnoreCase(i.getCurrencyCode()))
 
                     .forEach(i -> accountList.add(i));
 
             model.addAttribute("accountList", accountList);
-
 
 
         }

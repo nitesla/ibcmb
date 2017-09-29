@@ -137,6 +137,8 @@
         })
         $('#source').change(function () {
             getBeneficiaryAccts();
+            $("#destination").prop("selectedIndex", -1);
+
         });
         function getBeneficiaryAccts() {
             var acctId = $('#source').val();
@@ -191,7 +193,8 @@
                         $("#myspan").show();
                     }else{
                         var bal = numberWithCommas(message);
-                        $('#availBal').html("Available Balance: &#8358;" + bal);
+//                        $('#availBal').html("Available Balance: &#8358;" + bal);
+                        $('#availBal').html("Available Balance: " + bal);
 
                     }
                 }

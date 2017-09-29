@@ -29,29 +29,6 @@
 
                 <ul class="nav navbar-right panel_toolbox">
 
-                    <!--<li>-->
-                        <!--<div class="col-lg-4">-->
-                            <!--<div class="title-action">-->
-                                <!--<a class="btn btn-app" href="/admin/verifications/pendingops">-->
-                                    <!--<button class="badge bg-orange bt-select"   th:text="${totalPending}">count</button>-->
-                                    <!--<i class="fa fa-envelope"></i>My approval-->
-                                <!--</a>-->
-                            <!--</div>-->
-                        <!--</div>-->
-                    <!--</li>-->
-
-
-                    <!--<li>-->
-                        <!--<div class="col-lg-4">-->
-                            <!--<div class="title-action">-->
-                                <!--<a  class=" btn btn-app btn  btn-sm bt-select bt-link-act" href="#" disabled="disabled" >-->
-                                    <!--<button class="badge bg-orange" disabled="disabled" th:text="${verificationNumber}"></button>-->
-                                    <!--<i class="fa fa-envelope"></i>Approval Queue-->
-                                <!--</a>-->
-                            <!--</div>-->
-                        <!--</div>-->
-                    <!--</li>-->
-
 
 
                 </ul>
@@ -71,7 +48,7 @@
 
                             <div class="x_content">
                                 <div class="ibox-content">
-                                    <form method="post" class="form-horizontal" >
+                                    <form method="post" class="form-horizontal" th:action="@{/admin/verifications/cancel}" >
 
                                         <div class="form-group">
                                             <label for="comments" class="col-sm-2 control-label" style="text-align: left">Comments</label>
@@ -107,9 +84,16 @@
 
 
                                         <div>
-                                            <!--<input  th:hidden="hidden" th:field="*{version}"/>-->
-                                            <!--<input  th:hidden="hidden" th:field="*{id}"/>-->
 
+                                            <button  id="cancel" type="reset"  class="btn btn-default btn-labeled pull-right">
+                                                Back<span class="btn-label btn-label-right"></span>
+                                            </button>
+
+                                            <button type="submit"  class="btn btn-danger btn-labeled pull-right">
+                                                Cancel Operation<span class="btn-label btn-label-right"> <i class="fa fa-times"></i></span>
+                                            </button>
+                                            <input  th:hidden="hidden" th:field="${verify.version}"/>
+                                            <input  th:hidden="hidden" th:field="${verify.id}"/>
 
                                         </div>
                                     </form>
@@ -266,6 +250,10 @@
         });
 
     });
+
+    document.getElementById("cancel").onclick = function () {location.href = "/admin/verifications/pendingops";}
+
+
     /*]]>*/
 </script>
 

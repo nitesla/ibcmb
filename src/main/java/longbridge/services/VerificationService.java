@@ -11,6 +11,7 @@ import org.springframework.data.domain.Pageable;
 public interface VerificationService {
 
 
+    String cancel(VerificationDTO dto) throws VerificationException;
 
     /**
      * This will decline a Verification request.

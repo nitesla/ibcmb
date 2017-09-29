@@ -66,12 +66,43 @@ public class VerificationServiceImpl implements VerificationService {
     private CorporateUserService corporateUserService;
 
     @Autowired
-    MailService mailService;
+    private MailService mailService;
 
     @Autowired
     private ModelMapper modelMapper;
 
     private Locale locale = LocaleContextHolder.getLocale();
+
+
+    @Override
+    public String cancel(VerificationDTO dto) throws VerificationException {
+
+        Verification verification = verificationRepo.findOne(dto.getId());
+        String cancelledBy = getCurrentUserName();
+
+        if (!cancelledBy.equals(verification.getInitiatedBy())) {
+            throw new VerificationException("You cannot cancel what you did not initiate");
+        }
+
+        if (!VerificationStatus.PENDING.equals(verification.getStatus())) {
+            throw new VerificationException("Verification is not pending for the operation");
+        }
+
+        try {
+            verification.setVersion(dto.getVersion());
+            verification.setVerifiedBy(getCurrentUserName());
+            verification.setComments(dto.getComments());
+            verification.setVerifiedOn(new Date());
+            verification.setStatus(VerificationStatus.CANCELLED);
+            verificationRepo.save(verification);
+            logger.warn(verification.getOperation()+" cancelled by {}",cancelledBy);
+            return messageSource.getMessage("verification.cancel.success", null, locale);
+
+        } catch (Exception e) {
+            throw new InternetBankingException(messageSource.getMessage("verification.cancel.failure", null, locale), e);
+        }
+    }
+
 
     @Override
     public String decline(VerificationDTO dto) throws VerificationException {

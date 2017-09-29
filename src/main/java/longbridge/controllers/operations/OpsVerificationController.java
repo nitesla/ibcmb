@@ -70,6 +70,24 @@ public class OpsVerificationController {
     }
 
 
+    @PostMapping("/cancel")
+    public String cancel(@ModelAttribute("verification") @Valid VerificationDTO verification, BindingResult result, WebRequest request, Model model, RedirectAttributes redirectAttributes, Locale locale) {
+
+
+        try {
+            String message = verificationService.cancel(verification);
+            redirectAttributes.addFlashAttribute("message", message);
+        } catch (VerificationException ve) {
+            logger.error("Error canceling operation", ve);
+            redirectAttributes.addFlashAttribute("failure", ve.getMessage());
+        } catch (InternetBankingException ibe) {
+            logger.error("Error canceling operation", ibe);
+            redirectAttributes.addFlashAttribute("failure", ibe.getMessage());
+
+        }
+        return "redirect:/ops/verifications/pendingops";
+    }
+
     @PostMapping("/verify")
     public String verify(@ModelAttribute("verification") @Valid VerificationDTO verification, BindingResult result, WebRequest request, Model model, RedirectAttributes redirectAttributes, Locale locale) {
 
@@ -199,6 +217,13 @@ public class OpsVerificationController {
         VerificationDTO verification = verificationService.getVerification(id);
         model.addAttribute("verify", verification);
         return "ops/makerchecker/pendingdetails";
+    }
+
+    @GetMapping("/{id}/verifiedviews")
+    public String getVerifiedOperations(@PathVariable Long id, Model model) {
+        VerificationDTO verification = verificationService.getVerification(id);
+        model.addAttribute("verify", verification);
+        return "ops/makerchecker/verified-details";
     }
 
 

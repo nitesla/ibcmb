@@ -47,7 +47,7 @@ public class AdmVerificationController {
 
 
     @GetMapping("/")
-    public String getVerifications(Model model) {
+    public String getVerifications() {
 
         return "adm/admin/verification/view";
     }
@@ -68,6 +68,26 @@ public class AdmVerificationController {
 
         }
         return "redirect:/admin/verifications/operations";
+    }
+
+
+
+    @PostMapping("/cancel")
+    public String cancel(@ModelAttribute("verification") @Valid VerificationDTO verification, BindingResult result, WebRequest request, Model model, RedirectAttributes redirectAttributes, Locale locale) {
+
+
+        try {
+            String message = verificationService.cancel(verification);
+            redirectAttributes.addFlashAttribute("message", message);
+        } catch (VerificationException ve) {
+            logger.error("Error canceling operation", ve);
+            redirectAttributes.addFlashAttribute("failure", ve.getMessage());
+        } catch (InternetBankingException ibe) {
+            logger.error("Error canceling operation", ibe);
+            redirectAttributes.addFlashAttribute("failure", ibe.getMessage());
+
+        }
+        return "redirect:/admin/verifications/pendingops";
     }
 
 
@@ -202,6 +222,13 @@ public class AdmVerificationController {
         VerificationDTO verification = verificationService.getVerification(id);
         model.addAttribute("verify", verification);
         return "adm/makerchecker/pendingdetails";
+    }
+
+    @GetMapping("/{id}/verifiedviews")
+    public String getVerifiedOperations(@PathVariable Long id, Model model) {
+        VerificationDTO verification = verificationService.getVerification(id);
+        model.addAttribute("verify", verification);
+        return "adm/makerchecker/verified-details";
     }
 
 }

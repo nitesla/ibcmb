@@ -257,7 +257,7 @@ public class AuditConfigImpl implements AuditConfigService {
 
 		return classes;
 	}
-	public Page<AuditDTO> revisedEntity(String entityName,Pageable pageable) {
+	public Page<AuditDTO> revisedEntity(String entityName,Pageable pageable){
 		List<AuditDTO> compositeAudits = new ArrayList<>();
 		Page<CustomRevisionEntity> revisionEntities = null;
 		List<String> RevisionDetails = new ArrayList<>();
@@ -266,16 +266,29 @@ public class AuditConfigImpl implements AuditConfigService {
 		{
 
 			Class<?> clazz  = Class.forName(PACKAGE_NAME + entityName);
-			entityName = PACKAGE_NAME + entityName;
+			String fullEntityName = PACKAGE_NAME + entityName;
 			AuditReader auditReader = AuditReaderFactory.get(entityManager);
-			allEnityByRevisionByClass = modifiedEntityTypeEntityRepo.findAllEnityByRevisionByClass(entityName,pageable);
+			allEnityByRevisionByClass = modifiedEntityTypeEntityRepo.findAllEnityByRevisionByClass(fullEntityName,pageable);
 			for (ModifiedEntityTypeEntity entity: allEnityByRevisionByClass) {
 				AuditDTO auditDTO = new AuditDTO();
-				logger.info("revision id  "+entity.getRevision().getId());
+//				logger.info("revision id  "+entity.getRevision().getId());
 				AuditQuery query = auditReader.createQuery().forEntitiesAtRevision(clazz,entity.getRevision().getId());
+
 				List<Object> abstractEntities = query.getResultList();
-				logger.info("the abstract entity {}",abstractEntities);
-				auditDTO.setEntityDetails(abstractEntities.get(0));
+				if(entityName.equalsIgnoreCase("TransRequest")) {
+					TransRequest transRequest = (TransRequest) abstractEntities.get(0);
+					if (transRequest != null){
+//						transRequest.getFinancialInstitution().getInstitutionName();
+//						logger.info("The finanial institution {}",transRequest.getFinancialInstitution().getInstitutionName());
+						auditDTO.setFinacialInstitution(null);
+
+						transRequest.setFinancialInstitution(null);
+					}
+					auditDTO.setEntityDetails((Object)transRequest);
+				}else {
+//				logger.info("the abstract entity {}",abstractEntities);
+					auditDTO.setEntityDetails(abstractEntities.get(0));
+				}
 				auditDTO.setModifiedEntities(entity);
 				compositeAudits.add(auditDTO);
 			}
@@ -283,8 +296,7 @@ public class AuditConfigImpl implements AuditConfigService {
 //			Page<T> tPage = (Page<T>) compositeAudits;
 
 		}
-		catch (ClassNotFoundException e)
-		{
+		catch (ClassNotFoundException e){
 			e.printStackTrace();
 		}
 		catch (NumberFormatException e){

@@ -16,6 +16,7 @@ import longbridge.security.FailedLoginService;
 import longbridge.services.*;
 import longbridge.utils.DateFormatter;
 import longbridge.utils.Verifiable;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -729,17 +730,20 @@ public class CorporateUserServiceImpl implements CorporateUserService {
 
     private String getUserDesignation(CorporateUser corporateUser) {
 
+        String designation = "";
         List<CorporateRole> roles = corporateRoleRepo.findByCorporate(corporateUser.getCorporate());
         for (CorporateRole corporateRole : roles) {
             if (corporateRoleRepo.countInRole(corporateRole, corporateUser) > 0) {
-                if (corporateRole.getRank() != null) {
-                    return corporateRole.getName() + " " + corporateRole.getRank();
-                } else {
-                    return corporateRole.getName();
-                }
+                designation = corporateRole.getName() + " " + corporateRole.getRank();
+                break;
             }
+
         }
-        return null;
+        if (designation.isEmpty() && corporateUser.getCorpUserType() != null) {
+            designation = StringUtils.capitalize(corporateUser.getCorpUserType().toString().toLowerCase());
+        }
+
+        return designation;
     }
 
     public CorporateRole getCorporateUserAuthorizerRole(CorporateUser user) {
