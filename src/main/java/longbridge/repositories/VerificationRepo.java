@@ -46,4 +46,5 @@ public interface VerificationRepo extends CommonRepo<Verification, Long>{
     @Query( "select v from Verification v where v.verifiedBy = :verified and v.userType=:userType and (v.status ='APPROVED' or v.status ='DECLINED') order by v.verifiedOn Desc")
     Page<Verification> findVerifiedOperationsForUser(@Param("verified") String verifiedBy,@Param("userType") UserType userType, Pageable pageable);
 
+
 }
