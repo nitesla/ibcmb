@@ -267,7 +267,7 @@ public class TransferController {
                         request.getSession().removeAttribute("add");
                         // model.addAttribute("beneficiary", l);
                     } catch (InternetBankingException de) {
-                        de.printStackTrace();
+                        logger.error("Error adding beneficiary",de);
 
                     }
                 }
@@ -286,7 +286,6 @@ public class TransferController {
             String errorMessage = transferErrorService.getMessage(e);
             redirectAttributes.addFlashAttribute("failure", errorMessage);
             return index(request);
-
 
         }
     }

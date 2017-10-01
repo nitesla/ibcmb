@@ -70,7 +70,7 @@ public class TransferServiceImpl implements TransferService {
 
     public TransferRequestDTO makeTransfer(TransferRequestDTO transferRequestDTO) throws InternetBankingTransferException {
         validateTransfer(transferRequestDTO);
-        logger.trace("Transfer details valid {}", transferRequestDTO);
+        logger.trace("Initiating a transfer", transferRequestDTO);
         TransRequest transRequest = integrationService.makeTransfer(convertDTOToEntity(transferRequestDTO));
         if (transRequest != null) {
 
