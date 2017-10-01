@@ -46,12 +46,12 @@ public class IpAddressUtils
 
             if (address instanceof Inet4Address) {
                 // your IP is IPv4
-                System.out.println("Yor IP is >>>> "+s);
-                System.out.println("Yor IP is ipv4 ");
+                System.out.println("Your IP is >>>> "+s);
+                System.out.println("Your IP is ipv4 ");
             } else if (address instanceof Inet6Address) {
                 // your IP is IPv6
-                System.out.println("Yor IP is >>>> "+s);
-                System.out.println("Yor IP is ipv6 ");
+                System.out.println("Your IP is >>>> "+s);
+                System.out.println("Your IP is ipv6 ");
             }
 
         } catch(UnknownHostException e) {
