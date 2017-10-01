@@ -6,6 +6,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.web.ErrorAttributes;
 import org.springframework.boot.autoconfigure.web.ErrorController;
 import org.springframework.stereotype.Controller;
@@ -33,6 +34,10 @@ public class ApplicationErrorController implements ErrorController {
 
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
+
+
+    @Value("${dev.members.mail}")
+    private String devMembersMails;
 
 
     @RequestMapping(value = PATH)
@@ -90,8 +95,8 @@ public class ApplicationErrorController implements ErrorController {
         String path = (String) errorDetails.get("path");
 
         if (!"405".equals(statusCode)) {
-            StringBuilder builder = new StringBuilder();
-            builder.append("Time: " + time + "\n")
+            StringBuilder messageBuilder = new StringBuilder();
+            messageBuilder.append("Time: " + time + "\n")
                     .append("Path: " + path + "\n")
                     .append("Status Code: " + statusCode + "\n")
                     .append("Error: " + error + "\n")
@@ -99,13 +104,14 @@ public class ApplicationErrorController implements ErrorController {
                     .append("Message: " + message + "\n")
                     .append("Trace: " + trace + "\n");
 
-            String[] ccList = {"farooq.ayoade@longbridgetech.com", "oluwawunmi.sowunmi@longbridgetech.com"};
-            Email email = new Email.Builder().setRecipient("fortunatus.ekenachi@longbridgetech.com")
-                    .setCCList(ccList)
-                    .setSubject(error)
-                    .setBody(builder.toString())
-                    .build();
-            new Thread(() -> mailService.send(email)).start();
+            if(devMembersMails!=null) {
+                String[] mailAddresses = StringUtils.split(devMembersMails, ",");
+                Email email = new Email.Builder().setRecipients(mailAddresses)
+                        .setSubject(error)
+                        .setBody(messageBuilder.toString())
+                        .build();
+                new Thread(() -> mailService.send(email)).start();
+            }
         }
 
 
