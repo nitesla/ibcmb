@@ -36,7 +36,6 @@ public class RetailAuthenticationFailureHandler extends SimpleUrlAuthenticationF
     public void onAuthenticationFailure(final HttpServletRequest request, final HttpServletResponse response, final AuthenticationException exception) throws IOException, ServletException {
         setDefaultFailureUrl("/login/retail?error=true");
         String userName = request.getParameter("username");
-        String password = request.getParameter("password");
         RetailUser user = service.findFirstByUserNameIgnoreCase(userName);
 
         if (user != null && exception.getMessage().equalsIgnoreCase("Bad credentials")){
@@ -44,7 +43,7 @@ public class RetailAuthenticationFailureHandler extends SimpleUrlAuthenticationF
             failedLoginService.loginFailed(user);
     }
 
-        logger.error("Failed login authentication using credentials -- Username: {}, Password: {}",userName,password);
+        logger.error("Failed login authentication using credentials -- Username: {}, Password: ********",userName);
 
         super.onAuthenticationFailure(request, response, exception);
 

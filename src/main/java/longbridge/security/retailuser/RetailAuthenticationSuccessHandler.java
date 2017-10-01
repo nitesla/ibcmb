@@ -57,6 +57,8 @@ public class RetailAuthenticationSuccessHandler extends SimpleUrlAuthenticationS
             RetailUser user = retailUserRepo.findFirstByUserNameIgnoreCase(authentication.getName());
             sessionUtils.validateExpiredPassword(user, session);
             //session.setAttribute("user",retailUserRepo.findFirstByUserName(authentication.getName()));
+            logger.info("Retail user {} successfully passed first authentication",user.getUserName());
+
             retailUserRepo.updateUserAfterLogin(authentication.getName());
             sessionUtils.sendAlert(user);
 
@@ -87,6 +89,7 @@ public class RetailAuthenticationSuccessHandler extends SimpleUrlAuthenticationS
         }
 
         if (tokenAuth) {
+            logger.trace("Redirecting user to token authentication page");
             return "/retail/token";
         }
         if (isUser) {

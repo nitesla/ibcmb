@@ -219,18 +219,20 @@ public class IntegrationServiceImpl implements IntegrationService {
         try {
             AccountDetails details = viewAccountDetails(accountId);
 
-            BigDecimal availBal = new BigDecimal(details.getAvailableBalance());
-            BigDecimal ledgBal = new BigDecimal(details.getLedgerBalAmt());
-            response.put("AvailableBalance", availBal);
-            response.put("LedgerBalance", ledgBal);
-
-            return response;
+            if (details != null && details.getAvailableBalance()!=null) {
+                BigDecimal availBal = new BigDecimal(details.getAvailableBalance());
+                BigDecimal ledgBal = new BigDecimal(details.getLedgerBalAmt());
+                response.put("AvailableBalance", availBal);
+                response.put("LedgerBalance", ledgBal);
+                return response;
+            }
         } catch (Exception e) {
-            response.put("AvailableBalance", new BigDecimal(0));
-            response.put("LedgerBalance", new BigDecimal(0));
             logger.error("Error occurred getting balance", e);
-            return response;
         }
+        response.put("AvailableBalance", new BigDecimal(0));
+        response.put("LedgerBalance", new BigDecimal(0));
+        return response;
+
     }
 
     @Override
@@ -251,7 +253,7 @@ public class IntegrationServiceImpl implements IntegrationService {
                 params.put("creditAccountNumber", transRequest.getBeneficiaryAccountNumber());
                 params.put("tranAmount", transRequest.getAmount().toString());
                 params.put("naration", transRequest.getNarration());
-                logger.info("Starting Transfer with Params: {}",params.toString());
+                logger.info("Starting Transfer with Params: {}", params.toString());
 
                 try {
                     response = template.postForObject(uri, params, TransferDetails.class);
@@ -266,11 +268,10 @@ public class IntegrationServiceImpl implements IntegrationService {
                     transRequest.setStatus(e.getStatusCode().toString());
                     transRequest.setStatusDescription(e.getStatusCode().getReasonPhrase());
                     return transRequest;
-                }
-                catch (Exception e) {
+                } catch (Exception e) {
                     logger.error("Error occurred making transfer", e);
                     transRequest.setStatus(StatusCode.FAILED.toString());
-                    transRequest.setStatusDescription(messageSource.getMessage("status.code.failed",null,locale));
+                    transRequest.setStatusDescription(messageSource.getMessage("status.code.failed", null, locale));
                     return transRequest;
                 }
 
@@ -303,11 +304,10 @@ public class IntegrationServiceImpl implements IntegrationService {
                     transRequest.setStatusDescription(e.getStatusCode().getReasonPhrase());
                     return transRequest;
 
-                }
-                catch (Exception e) {
+                } catch (Exception e) {
                     logger.error("Error occurred making transfer", e);
                     transRequest.setStatus(StatusCode.FAILED.toString());
-                    transRequest.setStatusDescription(messageSource.getMessage("status.code.failed",null,locale));
+                    transRequest.setStatusDescription(messageSource.getMessage("status.code.failed", null, locale));
                     return transRequest;
                 }
 
@@ -342,11 +342,10 @@ public class IntegrationServiceImpl implements IntegrationService {
                     transRequest.setStatusDescription(e.getStatusCode().getReasonPhrase());
                     return transRequest;
 
-                }
-                catch (Exception e) {
+                } catch (Exception e) {
                     logger.error("Error occurred making transfer", e);
                     transRequest.setStatus(StatusCode.FAILED.toString());
-                    transRequest.setStatusDescription(messageSource.getMessage("status.code.failed",null,locale));
+                    transRequest.setStatusDescription(messageSource.getMessage("status.code.failed", null, locale));
                     return transRequest;
                 }
 
@@ -374,7 +373,7 @@ public class IntegrationServiceImpl implements IntegrationService {
             TransferDetails details = template.getForObject(uri, TransferDetails.class, naps);
             return details;
         } catch (Exception e) {
-            logger.error("Error making NAPS transfer",e);
+            logger.error("Error making NAPS transfer", e);
             return new TransferDetails();
         }
 

@@ -4,6 +4,8 @@ import longbridge.models.AdminUser;
 import longbridge.repositories.AdminUserRepo;
 import longbridge.security.AuthenticationErrorService;
 import longbridge.security.FailedLoginService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.WebAttributes;
@@ -26,6 +28,7 @@ public class AdminAuthenticationFailureHandler extends SimpleUrlAuthenticationFa
     @Autowired
     FailedLoginService failedLoginService;
 
+    Logger logger = LoggerFactory.getLogger(this.getClass());
 
 
     @Override
@@ -39,6 +42,7 @@ public class AdminAuthenticationFailureHandler extends SimpleUrlAuthenticationFa
 
         }
 
+        logger.error("Failed login authentication using credentials -- Username: {}, Password: ********",userName);
 
         super.onAuthenticationFailure(request, response, exception);
 

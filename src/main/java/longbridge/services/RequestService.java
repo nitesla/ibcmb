@@ -12,7 +12,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 /**
  * The {@code RequestService} interface provides the methods that manages customer's requests.
  * These requests include cheque request, draft request, Debit/Credit card request and token request.
- * @author Fortunatus Ekenaci
+ * @author Fortunatus Ekenachi
  * Created by 3/28/2017.
  */
 public interface RequestService {

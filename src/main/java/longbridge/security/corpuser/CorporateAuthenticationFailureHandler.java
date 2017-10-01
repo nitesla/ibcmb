@@ -34,7 +34,6 @@ public class CorporateAuthenticationFailureHandler extends SimpleUrlAuthenticati
     public void onAuthenticationFailure(final HttpServletRequest request, final HttpServletResponse response, final AuthenticationException exception) throws IOException, ServletException {
         setDefaultFailureUrl("/login/corporate?error=true");
         String userName = request.getParameter("username");
-        String password = request.getParameter("password");
         String corpId= request.getParameter("corporateId");
 
         CorporateUser user = corporateUserRepo.findFirstByUserNameIgnoreCaseAndCorporate_CustomerIdIgnoreCase(userName,corpId);
@@ -44,7 +43,7 @@ public class CorporateAuthenticationFailureHandler extends SimpleUrlAuthenticati
 
         }
 
-        logger.error("Failed login authentication using credentials -- Username: {}, Corporate ID: {}, Password: {}",userName,corpId,password);
+        logger.error("Failed login authentication using credentials -- Username: {}, Corporate ID: {}, Password: ********",userName,corpId);
 
         super.onAuthenticationFailure(request, response, exception);
 
