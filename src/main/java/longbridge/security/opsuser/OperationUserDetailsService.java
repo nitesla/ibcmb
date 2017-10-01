@@ -81,7 +81,9 @@ public class OperationUserDetailsService implements UserDetailsService {
                     user.getRole().getUserType() != null
                     && user.getRole().getUserType().equals(UserType.OPERATIONS)
                     ) {
-                return new CustomUserPrincipal(user);
+                CustomUserPrincipal userPrincipal = new CustomUserPrincipal(user);
+                userPrincipal.setIpAddress(ip);
+                return userPrincipal;
             }
             throw new UsernameNotFoundException(s);
         } catch (Exception e) {

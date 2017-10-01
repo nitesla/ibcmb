@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.item.ItemWriter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -16,9 +17,9 @@ import java.util.*;
  */
 @Service
 public class BulkTransferWriter implements ItemWriter<TransferDTO> {
-
-
     private static final Logger LOGGER = LoggerFactory.getLogger(BulkTransferWriter.class);
+    @Value("${naps.url}")
+    private String url;
     private RestTemplate template;
 
     @Autowired
@@ -42,10 +43,10 @@ public class BulkTransferWriter implements ItemWriter<TransferDTO> {
 
 
     private TransferDetails details(List<TransferDTO> dtos) {
-        String uri = "http://132.10.200.140:9292/service/outwardnapsTransfer";
+
         try {
 
-            TransferDetails details = template.postForObject(uri, dtos, TransferDetails.class);
+            TransferDetails details = template.postForObject(url, dtos, TransferDetails.class);
             return details;
         } catch (Exception e) {
             e.printStackTrace();
