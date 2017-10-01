@@ -70,11 +70,12 @@ public class TransferServiceImpl implements TransferService {
 
     public TransferRequestDTO makeTransfer(TransferRequestDTO transferRequestDTO) throws InternetBankingTransferException {
         validateTransfer(transferRequestDTO);
-        logger.trace("Transfer details valid {}", transferRequestDTO);
+        logger.trace("Initiating a Transfer", transferRequestDTO);
         TransRequest transRequest = integrationService.makeTransfer(convertDTOToEntity(transferRequestDTO));
-        if (transRequest != null) {
 
-            logger.trace("params {}", transRequest);
+        logger.trace("Transfer Details: ", transRequest);
+
+        if (transRequest != null) {
 
             transferRequestDTO = saveTransfer(convertEntityToDTO(transRequest));
 
@@ -88,7 +89,7 @@ public class TransferServiceImpl implements TransferService {
 
             throw new InternetBankingTransferException(TransferExceptions.ERROR.toString());
         }
-        throw new InternetBankingTransferException();
+        throw new InternetBankingTransferException(messages.getMessage("transfer.failed",null,locale));
     }
 
     @Override
