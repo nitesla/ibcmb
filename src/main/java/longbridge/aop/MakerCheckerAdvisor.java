@@ -84,14 +84,12 @@ public class MakerCheckerAdvisor {
         System.out.println("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
         log.debug("Executing Maker Checker for saving entity");
         entityManager.detach(entity);
-        log.info("In operation [ " + verifier.operation() + "] ...{" + verifier.description() + "}");
+        log.debug("In operation [ " + verifier.operation() + "] ...{" + verifier.description() + "}");
 
-        // pjp.getSignature().getDeclaringType().getAnnotations()
-//		log.info(entity.toString());
-        log.info("JB Around: " + pjp);
+        log.debug("JB Around: " + pjp);
 
         if (!makerCheckerService.isEnabled(verifier.operation())) {
-            log.info("Maker checker is disabled for operation");
+            log.info("Maker checker is disabled for operation: "+verifier.operation());
 
             if (entity.getId() != null) {
                 Long id = entity.getId();
@@ -110,7 +108,7 @@ public class MakerCheckerAdvisor {
             return entity;
         }
 
-        log.info("Maker checker is enabled for operation");
+        log.info("Maker checker is enabled for operation: "+verifier.operation());
 
 
         CustomUserPrincipal principal = (CustomUserPrincipal) SecurityContextHolder.getContext().getAuthentication()
@@ -171,12 +169,12 @@ public class MakerCheckerAdvisor {
         System.out.println("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
         log.debug("Executing Maker Checker for deleting entity");
         entityManager.detach(entity);
-        log.info("In operation [ " + verifier.operation() + "] ...{" + verifier.description() + "}");
+        log.debug("In operation [ " + verifier.operation() + "] ...{" + verifier.description() + "}");
 
-        log.info("JB Around: " + pjp);
+        log.debug("JB Around: " + pjp);
 
         if (!makerCheckerService.isEnabled(verifier.operation())) {
-            log.info("Maker checker is disabled for the operation");
+            log.info("Maker checker is disabled for the operation: "+verifier.operation());
             pjp.proceed();
             return entity;
         }

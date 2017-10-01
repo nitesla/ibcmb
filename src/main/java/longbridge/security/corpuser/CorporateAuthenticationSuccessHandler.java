@@ -55,8 +55,6 @@ public class CorporateAuthenticationSuccessHandler implements AuthenticationSucc
             if (s != null) {
                 try {
                     userName = s;
-
-
                 } catch (Exception e) {
                     e.printStackTrace();
                     userName=authentication.getName();

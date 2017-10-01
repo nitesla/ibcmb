@@ -32,6 +32,7 @@ public class OpAuthenticationFailureHandler extends SimpleUrlAuthenticationFailu
     public void onAuthenticationFailure(final HttpServletRequest request, final HttpServletResponse response, final AuthenticationException exception) throws IOException, ServletException {
         setDefaultFailureUrl("/login/ops?error=true");
         String userName = request.getParameter("username");
+
         OperationsUser user = service.findFirstByUserName(userName);
         if (user != null) {
 
