@@ -9,6 +9,7 @@ import longbridge.models.*;
 import longbridge.repositories.*;
 import longbridge.security.userdetails.CustomUserPrincipal;
 import longbridge.services.*;
+import longbridge.utils.StatusCode;
 import longbridge.utils.TransferAuthorizationStatus;
 import longbridge.utils.TransferType;
 import org.apache.commons.lang3.math.NumberUtils;
@@ -93,7 +94,7 @@ public class CorpTransferServiceImpl implements CorpTransferService {
 
 
         try {
-            transferRequest.setStatus("-1");
+            transferRequest.setStatus(StatusCode.PENDING.toString());
             transferRequest.setStatusDescription("Pending Authorization");
             CorpTransferAuth transferAuth = new CorpTransferAuth();
             transferAuth.setStatus("P");
@@ -232,7 +233,7 @@ public class CorpTransferServiceImpl implements CorpTransferService {
     public int countPendingRequest() {
         CorporateUser corporateUser = getCurrentUser();
         Corporate corporate = corporateUser.getCorporate();
-        return corpTransferRequestRepo.countByCorporateAndStatus(corporate, "-1");
+        return corpTransferRequestRepo.countByCorporateAndStatus(corporate, StatusCode.PENDING.toString());
     }
 
     public CorpTransferRequestDTO convertEntityToDTO(CorpTransRequest corpTransRequest) {
@@ -391,7 +392,7 @@ public class CorpTransferServiceImpl implements CorpTransferService {
             transReqEntry.setUser(corporateUser);
             transferAuth.getAuths().add(transReqEntry);
             transferAuth.setStatus("X");//cancelled
-            corpTransRequest.setStatus("-2");
+            corpTransRequest.setStatus(StatusCode.CANCELLED.toString());
             corpTransRequest.setStatusDescription("Cancelled");
             transferAuthRepo.save(transferAuth);
             return messageSource.getMessage("transfer.auth.decline", null, locale);
