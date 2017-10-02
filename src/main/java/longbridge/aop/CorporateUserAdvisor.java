@@ -29,8 +29,6 @@ public class CorporateUserAdvisor {
     @Autowired
     private EntityManager entityManager;
 
-    @Autowired
-    private VerificationService verificationService;
 
     @Autowired
     private CorporateUserRepo corporateUserRepo;

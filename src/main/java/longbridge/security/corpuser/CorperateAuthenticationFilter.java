@@ -30,8 +30,7 @@ public class CorperateAuthenticationFilter extends UsernamePasswordAuthenticatio
     public Authentication attemptAuthentication(HttpServletRequest request,
                                                 HttpServletResponse response) throws AuthenticationException {
         logger.debug("Attempting for authentication. " + "username = "
-                + request.getParameter("username") + ", password = "
-                + request.getParameter("password"));
+                + request.getParameter("username") );
         return super.attemptAuthentication(request, response);
     }
 

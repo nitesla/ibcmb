@@ -52,7 +52,6 @@ public class AdminAuthenticationSuccessHandler extends SimpleUrlAuthenticationSu
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws ServletException, IOException {
         HttpSession session = request.getSession(false);
 
-
         sessionUtils.setTimeout(session);
 
         AdminUser user = adminUserRepo.findFirstByUserName(authentication.getName());
@@ -62,6 +61,7 @@ public class AdminAuthenticationSuccessHandler extends SimpleUrlAuthenticationSu
             session.setAttribute("expired-password", "expired-password");
         }
 
+        logger.info("Admin user {} successfully passed first authentication",user.getUserName());
 
         adminUserRepo.updateUserAfterLogin(authentication.getName());
 
@@ -104,6 +104,7 @@ public class AdminAuthenticationSuccessHandler extends SimpleUrlAuthenticationSu
         }
 
         if (tokenAuth) {
+            logger.trace("Redirecting user to token authentication page");
             return "/admin/token";
         }
 

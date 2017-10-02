@@ -48,7 +48,7 @@ public class RetailUserDetailsService implements UserDetailsService {
     @Transactional(readOnly = true)
     public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
         final String ip = addressUtils.getClientIP();
-        logger.trace("User with IP Address {} trying to login", ip);
+        logger.trace("Retail User with IP Address {} trying to login", ip);
         //CHECK IF THE IP HAS BEEN BLOCKED BY THE CUSTOM BRUTE FORCE SERVICE
         if (bruteForceService.isBlocked(ip)) {
             logger.trace("IP -> {} has been blocked", ip);
@@ -64,7 +64,9 @@ public class RetailUserDetailsService implements UserDetailsService {
             if (user != null && user.getUserType() == UserType.RETAIL
 
                     && user.getRole().getUserType().equals(UserType.RETAIL)) {
-                return new CustomUserPrincipal(user);
+                CustomUserPrincipal userPrincipal = new CustomUserPrincipal(user);
+                userPrincipal.setIpAddress(ip);
+                return userPrincipal;
             }
             throw new UsernameNotFoundException(s);
         } catch (Exception e) {

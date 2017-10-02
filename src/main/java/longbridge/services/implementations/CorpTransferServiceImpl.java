@@ -119,10 +119,11 @@ public class CorpTransferServiceImpl implements CorpTransferService {
 
     private CorpTransferRequestDTO makeTransfer(CorpTransferRequestDTO corpTransferRequestDTO) throws InternetBankingTransferException {
         validateTransfer(corpTransferRequestDTO);
-        logger.trace("Transfer details valid {}", corpTransferRequestDTO);
+        logger.trace("Initiating a transfer", corpTransferRequestDTO);
         CorpTransRequest corpTransRequest = (CorpTransRequest) integrationService.makeTransfer(convertDTOToEntity(corpTransferRequestDTO));
+        logger.trace("Transfer Details", corpTransRequest);
+
         if (corpTransRequest != null) {
-            logger.trace("params {}", corpTransRequest);
             corpTransferRequestDTO = saveTransfer(convertEntityToDTO(corpTransRequest));
 
             if (corpTransRequest.getStatus() != null) {
@@ -130,7 +131,7 @@ public class CorpTransferServiceImpl implements CorpTransferService {
             }
             throw new InternetBankingTransferException(TransferExceptions.ERROR.toString());
         }
-        throw new InternetBankingTransferException(TransferExceptions.ERROR.toString());
+        throw new InternetBankingTransferException(messageSource.getMessage("transfer.failed",null,locale));
     }
 
     @Override
@@ -164,7 +165,7 @@ public class CorpTransferServiceImpl implements CorpTransferService {
             result = convertEntityToDTO(corpTransferRequestRepo.save(transRequest));
 
         } catch (Exception e) {
-            logger.error("Exception occurred", e);
+            logger.error("Exception occurred saving transfer request", e);
         }
         return result;
     }

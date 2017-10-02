@@ -9,6 +9,7 @@ public class Email {
 
     private String senderEmail;
     private String receiverEmail;
+    private String[] receiverEmails;
     private String messageSubject;
     private String messageBody;
     private String[] ccList;
@@ -21,6 +22,7 @@ public class Email {
     {
         this.setSenderEmail(builder.senderEmail);
         this.setReceiverEmail(builder.receiverEmail);
+        this.setReceiverEmails(builder.receiverEmails);
         this.setMessageSubject(builder.messageSubject);
         this.setMessageBody(builder.messageBody);
         this.setCcList(builder.ccList);
@@ -32,6 +34,7 @@ public class Email {
 
         private String senderEmail;
         private String receiverEmail;
+        private String[] receiverEmails;
         private String messageSubject;
         private String messageBody;
         private String[] ccList;
@@ -46,6 +49,13 @@ public class Email {
         {
 
             this.receiverEmail=recipient;
+            return this;
+        }
+
+
+
+        public Builder setRecipients(String[] receiverEmails) {
+            this.receiverEmails = receiverEmails;
             return this;
         }
 
@@ -91,6 +101,14 @@ public class Email {
 
     public void setReceiverEmail(String receiverEmail) {
         this.receiverEmail = receiverEmail;
+    }
+
+    public String[] getReceiverEmails() {
+        return receiverEmails;
+    }
+
+    public void setReceiverEmails(String[] receiverEmails) {
+        this.receiverEmails = receiverEmails;
     }
 
     public String getMessageSubject()
