@@ -61,6 +61,8 @@ public class OpAuthenticationSuccessHandler extends SavedRequestAwareAuthenticat
             sessionUtils.validateExpiredPassword(user,session);
             failedLoginService.loginSucceeded(user);
 
+        logger.info("Operations user {} successfully passed first authentication",user.getUserName());
+
         operationsUserRepo.updateUserAfterLogin(authentication.getName());
         super.onAuthenticationSuccess(request, response, authentication);
 
@@ -89,6 +91,7 @@ public class OpAuthenticationSuccessHandler extends SavedRequestAwareAuthenticat
             tokenAuth = ("YES".equalsIgnoreCase(setting.getValue()) ? true : false);
         }
         if (tokenAuth) {
+            logger.trace("Redirecting user to token authentication page");
             return "/ops/token";
         }
 

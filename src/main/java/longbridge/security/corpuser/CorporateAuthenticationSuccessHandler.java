@@ -46,7 +46,6 @@ public class CorporateAuthenticationSuccessHandler implements AuthenticationSucc
         final HttpSession session = request.getSession(false);
         if (session != null) {
 
-
             sessionUtils.setTimeout(session);
             String s = authentication.getName();
 
@@ -55,8 +54,6 @@ public class CorporateAuthenticationSuccessHandler implements AuthenticationSucc
             if (s != null) {
                 try {
                     userName = s;
-
-
                 } catch (Exception e) {
                     e.printStackTrace();
                     userName=authentication.getName();
@@ -77,6 +74,8 @@ public class CorporateAuthenticationSuccessHandler implements AuthenticationSucc
             }
 
             user.setLastLoginDate(new Date());
+            logger.info("Corporate user {} successfully passed first authentication",user.getUserName());
+
             failedLoginService.loginSucceeded(user);
             sessionUtils.sendAlert(user);
 
@@ -118,6 +117,7 @@ public class CorporateAuthenticationSuccessHandler implements AuthenticationSucc
         }
 
         if (tokenAuth) {
+            logger.trace("Redirecting user to token authentication page");
             return "/corporate/token";
         }
         if (isUser) {

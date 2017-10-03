@@ -47,7 +47,7 @@ public class TransferErrorService {
             errorMessage = messages.getMessage(exception.getMessage(), null, locale);
 
         } catch (Exception e) {
-            logger.error("Error resolving error code",e);
+            logger.error("Error resolving transfer error code",e);
             errorMessage = messages.getMessage("transfer.error", null, locale);
 
         }

@@ -70,11 +70,12 @@ public class TransferServiceImpl implements TransferService {
 
     public TransferRequestDTO makeTransfer(TransferRequestDTO transferRequestDTO) throws InternetBankingTransferException {
         validateTransfer(transferRequestDTO);
-        logger.trace("Transfer details valid {}", transferRequestDTO);
+        logger.trace("Initiating a Transfer", transferRequestDTO);
         TransRequest transRequest = integrationService.makeTransfer(convertDTOToEntity(transferRequestDTO));
-        if (transRequest != null) {
 
-            logger.trace("params {}", transRequest);
+        logger.trace("Transfer Details: ", transRequest);
+
+        if (transRequest != null) {
 
             transferRequestDTO = saveTransfer(convertEntityToDTO(transRequest));
 
@@ -88,7 +89,7 @@ public class TransferServiceImpl implements TransferService {
 
             throw new InternetBankingTransferException(TransferExceptions.ERROR.toString());
         }
-        throw new InternetBankingTransferException();
+        throw new InternetBankingTransferException(messages.getMessage("transfer.failed",null,locale));
     }
 
     @Override
@@ -99,8 +100,6 @@ public class TransferServiceImpl implements TransferService {
     @Override
     public Iterable<TransRequest> getTransfers(User user) {
         return transferRequestRepo.findByUserReferenceNumber("RET_" + user.getId());
-
-
 
     }
 
@@ -119,7 +118,7 @@ public class TransferServiceImpl implements TransferService {
 
 
         } catch (Exception e) {
-            logger.error("Exception occurred {}", e.getMessage());
+            logger.error("Exception occurred", e);
         }
         return transferRequestDTO;
     }
@@ -129,11 +128,9 @@ public class TransferServiceImpl implements TransferService {
 
 
         BigDecimal balance = integrationService.getAvailableBalance(transferRequest.getCustomerAccountNumber());
-        System.out.println("it ttried validating>>>>>>>>>>>>>>>> "+balance);
         if (balance != null) {
 
             if (!(balance.compareTo(transferRequest.getAmount()) == 0 || (balance.compareTo(transferRequest.getAmount()) == 1))) {
-                System.out.println("it failed");
                 throw new InternetBankingTransferException(TransferExceptions.BALANCE.toString());
             }
         }
@@ -176,17 +173,9 @@ public class TransferServiceImpl implements TransferService {
     public Page<TransRequest> getCompletedTransfers(Pageable pageDetails) {
         logger.info("GOT HERE");
         RetailUser user = getCurrentUser();
-//        List<TransRequest> test = transferRequestRepo.findByUserReferenceNumberAndStatus("RET_" + user.getId(),"000");
-//        logger.info("TEST {}" + test);
-
         Page<TransRequest> page = transferRequestRepo.findByUserReferenceNumberAndStatusInAndTranDateNotNullOrderByTranDateDesc("RET_" + user.getId(), Arrays.asList("00","000"), pageDetails);
         logger.info("PAGE CONTENT {}" + page.getContent());
-        //List<TransferRequestDTO> dtOs = convertEntitiesToDTOs(page.getContent());
-        //logger.info("TRans REQUEST {}" + dtOs);
-        //long t = page.getTotalElements();
-
         return page;
-        //return pageImpl;
     }
 
     @Override

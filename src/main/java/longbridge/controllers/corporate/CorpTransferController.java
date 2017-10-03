@@ -287,7 +287,7 @@ public class CorpTransferController {
 
                 corpTransferRequestDTO = (CorpTransferRequestDTO)object;
 
-                logger.info("transRequest {}", corpTransferRequestDTO);
+                logger.info("Transfer Request processed", corpTransferRequestDTO);
                 model.addAttribute("transRequest", corpTransferRequestDTO);
                 model.addAttribute("message", corpTransferRequestDTO.getStatusDescription());
             }
@@ -317,7 +317,13 @@ public class CorpTransferController {
             String errorMessage = e.getMessage();
             redirectAttributes.addFlashAttribute("failure", errorMessage);
             return index(request);
-        } finally {
+        }
+        catch (Exception e) {
+            logger.error("Error initiating a transfer ", e);
+            redirectAttributes.addFlashAttribute("failure", messageSource.getMessage("transfer.error",null,locale));
+            return index(request);
+        }
+        finally {
             if (request.getSession().getAttribute("Lbeneficiary") != null)
                 request.getSession().removeAttribute("Lbeneficiary");
         }

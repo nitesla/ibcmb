@@ -84,7 +84,7 @@ public class FailedLoginService {
 
 
             } catch (Exception e) {
-                logger.trace("Exception occurred   {}", e);
+                logger.trace("Exception occurred ", e);
                 e.printStackTrace();
 
 
@@ -176,7 +176,7 @@ public class FailedLoginService {
                 }
             }
         } catch (Exception e) {
-            logger.error("Exception occurred {}", e.getMessage());
+            logger.error("Exception occurred ", e);
             e.printStackTrace();
         }
 
@@ -194,7 +194,7 @@ public class FailedLoginService {
             }
         } catch (Exception e) {
 
-            logger.error("EXCEPTION OCCURRED {}", e.getMessage());
+            logger.error("EXCEPTION OCCURRED ", e);
             return MAX_ATTEMPT;
         }
         return MAX_ATTEMPT;
@@ -211,7 +211,7 @@ public class FailedLoginService {
             }
         } catch (Exception e) {
 
-            logger.error("EXCEPTION OCCURRED {}", e.getMessage());
+            logger.error("EXCEPTION OCCURRED ", e);
             return expiryTime;
         }
         return expiryTime;
