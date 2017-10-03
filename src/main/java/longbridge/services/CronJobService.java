@@ -25,7 +25,10 @@ public interface CronJobService {
     void updateRetailUserPhoneNo(RetailUser retailUser,CustomerDetails details) throws InternetBankingException;
     void updateRetailUserEmail(RetailUser retailUser,CustomerDetails details) throws InternetBankingException;
     void updateCorporateUserBVN(Corporate corporate, CustomerDetails details) throws InternetBankingException;
-    void updateCorporateUserPhoneNo(CorporateUser corporateUser,CustomerDetails details) throws InternetBankingException;
+
+    void updateCorporateUserTaxId(Corporate corporate, CustomerDetails details) throws InternetBankingException;
+
+    void updateCorporateUserPhoneNo(CorporateUser corporateUser, CustomerDetails details) throws InternetBankingException;
     void updateCorporateUserEmail(CorporateUser corporateUser,CustomerDetails details) throws InternetBankingException;
     void saveRunningJob(String jobCategory,String cronExpression) throws InternetBankingException;
     String getCurrentExpression() throws InternetBankingException;

@@ -23,6 +23,7 @@ public class FiveMins implements Job {
         try {
 //            cronJobService.saveRunningJob("in-built",cronJobService.getCurrentExpression());
             cronJobService.updateAccountDetials();
+            cronJobService.updateCorporateDetails();
 //            cronJobService.addNewAccount();
 //            cronJobService.updateRunningJob();
         } catch (InternetBankingException e) {
