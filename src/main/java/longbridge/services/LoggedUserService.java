@@ -11,6 +11,4 @@ public interface LoggedUserService {
     void loginUser(String sessionId);
     void logOutUser(String sessionId);
 
-
-
 }
