@@ -3,6 +3,7 @@ package longbridge;
 
 import longbridge.repositories.*;
 import longbridge.services.*;
+import longbridge.utils.StatusCode;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -77,6 +78,7 @@ public class InternetbankingApplication extends SpringBootServletInitializer imp
     @Override
     public void run(String... strings) throws Exception {
 
+        System.out.println("Printing pending status "+StatusCode.PENDING.toString());
     }
 
 
