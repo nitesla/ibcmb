@@ -191,6 +191,7 @@ public class CorporateServiceImpl implements CorporateService {
         corporate.setCorporateId(corporateRequestDTO.getCorporateId());
         corporate.setBvn(corporateRequestDTO.getBvn());
         corporate.setRcNumber(corporateRequestDTO.getRcNumber());
+        corporate.setTaxId(corporateRequestDTO.getTaxId());
         corporate.setEmail(corporateRequestDTO.getEmail());
         corporate.setPhoneNumber(corporateRequestDTO.getPhoneNumber());
         corporate.setCreatedOnDate(new Date());

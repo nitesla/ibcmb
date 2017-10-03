@@ -291,7 +291,7 @@ public class TransferUtils {
                 Corporate corporate = corporateService.getCorp(currentUser.getCorpId());
                 if (corporate == null) throw new InternetBankingTransferException(TransferExceptions.NO_BVN.toString());
 
-                if ((corporate.getRcNumber() == null || corporate.getRcNumber().isEmpty() || "NO BVN".equalsIgnoreCase(corporate.getBvn())) && (corporate==null){
+                if ((corporate.getRcNumber() == null || corporate.getRcNumber().isEmpty() || "NO BVN".equalsIgnoreCase(corporate.getBvn())) && (corporate.getTaxId()==null ||corporate.getTaxId().isEmpty() )){
                     throw new InternetBankingTransferException(TransferExceptions.NO_BVN.toString());
                 }
 

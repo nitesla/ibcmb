@@ -30,6 +30,8 @@ public class CorporateDTO implements Serializable{
     private String address;
     private String createdOnDate;
     private String bvn;
+    private String taxId;
+
 
 
     public Long getId() {return id;}
@@ -138,6 +140,14 @@ public class CorporateDTO implements Serializable{
 
     public void setBvn(String bvn) {
         this.bvn = bvn;
+    }
+
+    public String getTaxId() {
+        return taxId;
+    }
+
+    public void setTaxId(String taxId) {
+        this.taxId = taxId;
     }
 
     public String getCorporateName() {

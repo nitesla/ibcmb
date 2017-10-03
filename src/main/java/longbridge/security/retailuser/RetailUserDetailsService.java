@@ -58,8 +58,6 @@ public class RetailUserDetailsService implements UserDetailsService {
 //        sessionUtils.clearSession();
         RetailUser user = retailUserRepo.findFirstByUserNameIgnoreCase(s);
 
-
-
         if (user != null && failedLoginService.isBlocked(user)) throw new RuntimeException("user_blocked");
 
 
