@@ -15,6 +15,7 @@ import longbridge.services.BulkTransferService;
 import longbridge.services.ConfigurationService;
 import longbridge.services.CorporateService;
 import longbridge.services.bulkTransfers.BulkTransferJobLauncher;
+import longbridge.utils.StatusCode;
 import longbridge.utils.TransferAuthorizationStatus;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
@@ -62,7 +63,7 @@ public class BulkTransferServiceImpl implements BulkTransferService {
     private CorporateRoleRepo corpRoleRepo;
 
     @Autowired
-    CorpTransReqEntryRepo reqEntryRepo;
+    private CorpTransReqEntryRepo reqEntryRepo;
 
     @Autowired
     private CorpTransferAuthRepo transferAuthRepo;
@@ -84,8 +85,8 @@ public class BulkTransferServiceImpl implements BulkTransferService {
         logger.trace("Transfer details valid {}", bulkTransfer);
         //validate bulk transfer
 
-        bulkTransfer.setStatus("P");
-        bulkTransfer.setStatusDescription("Processing");
+        bulkTransfer.setStatus(StatusCode.PROCESSING.toString());
+        bulkTransfer.setStatusDescription("Processing Transaction");
         BulkTransfer transfer = bulkTransferRepo.save(bulkTransfer);
         try {
             jobLauncher.launchBulkTransferJob("" + transfer.getId());
@@ -106,15 +107,15 @@ public class BulkTransferServiceImpl implements BulkTransferService {
 
     @Override
     public String saveBulkTransferRequestForAuthorization(BulkTransfer bulkTransfer) {
-        logger.trace("Transfer details valid {}", bulkTransfer);
+        logger.trace("Saving bulk transfer request", bulkTransfer);
         //validate bulk transfer
         if (corporateService.getApplicableTransferRule(bulkTransfer) == null) {
             throw new TransferRuleException(messageSource.getMessage("rule.unapplicable", null, locale));
         }
         try {
 
-            bulkTransfer.setStatus("P");
-            bulkTransfer.setStatusDescription("Pending");
+            bulkTransfer.setStatus(StatusCode.PENDING.toString());
+            bulkTransfer.setStatusDescription("Pending Authorization");
             CorpTransferAuth transferAuth = new CorpTransferAuth();
             transferAuth.setStatus("P");
             bulkTransfer.setTransferAuth(transferAuth);
@@ -190,7 +191,7 @@ public class BulkTransferServiceImpl implements BulkTransferService {
             transferAuth.getAuths().add(transReqEntry);
             if (TransferAuthorizationStatus.DECLINED.equals(transReqEntry.getAuthStatus())) {
                 transferAuth.setStatus("X"); //cancelled
-                bulkTransfer.setStatus("X");
+                bulkTransfer.setStatus(StatusCode.CANCELLED.toString());
                 bulkTransfer.setStatusDescription("Cancelled");
                 transferAuthRepo.save(transferAuth);
                 return messageSource.getMessage("transfer.auth.decline", null, locale);
@@ -215,7 +216,7 @@ public class BulkTransferServiceImpl implements BulkTransferService {
 
     @Override
     public Page<BulkTransferDTO> getBulkTransferRequests(Corporate corporate, Pageable details) {
-        Page<BulkTransfer> page = bulkTransferRepo.findByCorporateOrderByTranDateDesc(corporate, details);
+        Page<BulkTransfer> page = bulkTransferRepo.findByCorporateOrderByStatusAsc(corporate, details);
         List<BulkTransferDTO> dtOs = convertEntitiesToDTOs(page.getContent());
         long t = page.getTotalElements();
         Page<BulkTransferDTO> pageImpl = new PageImpl<BulkTransferDTO>(dtOs, details, t);
@@ -249,7 +250,7 @@ public class BulkTransferServiceImpl implements BulkTransferService {
     public String cancelBulkTransferRequest(Long id) {
         //cancelling bulk transaction request
         BulkTransfer one = bulkTransferRepo.getOne(id);
-        one.setStatus("X");
+        one.setStatus(StatusCode.CANCELLED.toString());
         bulkTransferRepo.save(one);
         return null;
     }
@@ -340,7 +341,7 @@ public class BulkTransferServiceImpl implements BulkTransferService {
 
     @Override
     public int getPendingBulkTransferRequests(Corporate corporate) {
-        return bulkTransferRepo.countByCorporateAndStatus(corporate, "P");
+        return bulkTransferRepo.countByCorporateAndStatus(corporate, StatusCode.PENDING.toString());
     }
 
     private boolean isAuthorizationComplete(BulkTransfer transRequest) {

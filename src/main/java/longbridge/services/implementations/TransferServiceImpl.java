@@ -171,19 +171,19 @@ public class TransferServiceImpl implements TransferService {
 
     @Override
     public Page<TransRequest> getCompletedTransfers(Pageable pageDetails) {
-        logger.info("GOT HERE");
+        logger.trace("Retrieving completed transfers");
         RetailUser user = getCurrentUser();
         Page<TransRequest> page = transferRequestRepo.findByUserReferenceNumberAndStatusInAndTranDateNotNullOrderByTranDateDesc("RET_" + user.getId(), Arrays.asList("00","000"), pageDetails);
-        logger.info("PAGE CONTENT {}" + page.getContent());
+        logger.info("Completed transfers content" + page.getContent());
         return page;
     }
 
     @Override
     public Page<TransferRequestDTO> findCompletedTransfers(String pattern, Pageable pageDetails) {
-        logger.info("GOT HERE two");
+        logger.trace("Retrieving completed transfers");
         Page<TransRequest> page = transferRequestRepo.findUsingPattern(pattern, pageDetails);
         List<TransferRequestDTO> dtOs = convertEntitiesToDTOs(page.getContent());
-        logger.info("TRans REQ {}", dtOs);
+        logger.info("Completed transfers", dtOs);
         long t = page.getTotalElements();
         Page<TransferRequestDTO> pageImpl = new PageImpl<TransferRequestDTO>(dtOs, pageDetails, t);
         return pageImpl;
