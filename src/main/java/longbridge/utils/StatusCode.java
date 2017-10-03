@@ -18,5 +18,4 @@ public enum StatusCode {
         return this.code;
     }
 
-
 }

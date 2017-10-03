@@ -625,7 +625,6 @@ public class OpsCorporateController {
             result.addError(new ObjectError("invalid", messageSource.getMessage("form.fields.required", null, locale)));
             return "/ops/corporate/setup/new";
         }
-//        logger.info("the cif id {}",corporate.getCustomerId());
         CustomerDetails customerDetails = integrationService.viewCustomerDetailsByCif(corporate.getCustomerId());
 
         if (customerDetails.getCustomerName() == null || !customerDetails.isCorp()) {
@@ -641,6 +640,7 @@ public class OpsCorporateController {
         corporateRequestDTO.setCustomerName(customerDetails.getCustomerName());
         corporateRequestDTO.setRcNumber(customerDetails.getRcNo());
         corporateRequestDTO.setBvn(customerDetails.getBvn());
+        corporateRequestDTO.setTaxId(customerDetails.getTaxId());
         corporateRequestDTO.setEmail(customerDetails.getEmail());
         corporateRequestDTO.setPhoneNumber(customerDetails.getPhone());
         corporate.setCustomerName(customerDetails.getCustomerName());
