@@ -17,6 +17,7 @@ public class CustomerDetails {
     private String middleName;
     private String preferredName;
     private String rcNo;
+    private String taxId;
 
 
 
@@ -24,7 +25,7 @@ public class CustomerDetails {
     }
 
 
-    public CustomerDetails(String cifId, String customerName, String dateOfBirth, String email, String phone, String bvn, String lastName, String firstName, String middleName, String preferredName, boolean isCorp, String rcNo) {
+    public CustomerDetails(String cifId, String customerName, String dateOfBirth, String email, String phone, String bvn, String lastName, String firstName, String middleName, String preferredName, boolean isCorp, String rcNo,String taxId) {
         this.cifId = cifId;
         this.customerName = customerName;
         this.dateOfBirth = dateOfBirth;
@@ -37,6 +38,7 @@ public class CustomerDetails {
         this.middleName = middleName;
         this.preferredName = preferredName;
         this.rcNo=rcNo;
+        this.taxId=taxId;
     }
 
 
@@ -137,21 +139,30 @@ public class CustomerDetails {
         this.rcNo = rcNo;
     }
 
+    public String getTaxId() {
+        return taxId;
+    }
+
+    public void setTaxId(String taxId) {
+        this.taxId = taxId;
+    }
+
     @Override
     public String toString() {
-        return "CustomerDetails{" +
-                "cifId='" + cifId + '\'' +
-                ", customerName='" + customerName + '\'' +
-                ", dateOfBirth='" + dateOfBirth + '\'' +
-                ", email='" + email + '\'' +
-                ", phone='" + phone + '\'' +
-                ", bvn='" + bvn + '\'' +
-                ", isCorp=" + isCorp +
-                ", lastName='" + lastName + '\'' +
-                ", firstName='" + firstName + '\'' +
-                ", middleName='" + middleName + '\'' +
-                ", preferredName='" + preferredName + '\'' +
-                ", rcNo='" + rcNo + '\'' +
-                '}';
+        return "{\"CustomerDetails\":{"
+                + "                        \"cifId\":\"" + cifId + "\""
+                + ",                         \"customerName\":\"" + customerName + "\""
+                + ",                         \"dateOfBirth\":\"" + dateOfBirth + "\""
+                + ",                         \"email\":\"" + email + "\""
+                + ",                         \"phone\":\"" + phone + "\""
+                + ",                         \"bvn\":\"" + bvn + "\""
+                + ",                         \"isCorp\":\"" + isCorp + "\""
+                + ",                         \"lastName\":\"" + lastName + "\""
+                + ",                         \"firstName\":\"" + firstName + "\""
+                + ",                         \"middleName\":\"" + middleName + "\""
+                + ",                         \"preferredName\":\"" + preferredName + "\""
+                + ",                         \"rcNo\":\"" + rcNo + "\""
+                + ",                         \"taxId\":\"" + taxId + "\""
+                + "}}";
     }
 }

@@ -11,6 +11,7 @@ import longbridge.security.userdetails.CustomUserPrincipal;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -56,6 +57,8 @@ public class RetailUserDetailsService implements UserDetailsService {
         }
 //        sessionUtils.clearSession();
         RetailUser user = retailUserRepo.findFirstByUserNameIgnoreCase(s);
+
+        retailUserRepo.findAll(new Sort(Sort.Direction.ASC, "pending"));
 
         if (user != null && failedLoginService.isBlocked(user)) throw new RuntimeException("user_blocked");
 
