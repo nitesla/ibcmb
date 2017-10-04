@@ -210,7 +210,6 @@ function setup(){
     var time = 500;
     var fullData = $("#setup-form").serialize();
     var returnValue = false;
-        e.preventDefault();
     setTimeout(function() {
 
         $.ajax({
