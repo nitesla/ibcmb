@@ -90,7 +90,6 @@ form.children("div").steps({
         if($('#token').val() !=''){
              console.log("hide 1");
             $('#imgSpinner').show();
-            $('.actions > ul').hide();
 
         }
     },
@@ -100,7 +99,6 @@ form.children("div").steps({
         if($('#token').val() !=''){
             console.log("hide 2");
             $('#imgSpinner').show();
-            $('.actions > ul').hide();
         }
         return form.valid()  && setup();
     },
@@ -209,23 +207,26 @@ function validateToken(){
 
 function setup(){
     $('#myLoader').modal('show');
+    var time = 500;
+    var fullData = $("#setup-form").serialize();
     var returnValue = false;
         e.preventDefault();
+    setTimeout(function() {
 
         $.ajax({
             url: '/corporate/setup',
-            async:false,
+            async: false,
             type: "POST",
-            data: $("#setup-form").serialize(),
-            success: function(data)
-            {
+            data: fullData,
+            success: function (data) {
+                console.log("the corp response "+data);
                 //alert(data+" return ");
                 //callback methods go right here
-                if(data==="true"){
+                if (data === "true") {
                     $('#returnValue').val(true);
                     $('#myLoader').modal('hide');
                     redirectUser();
-                }else {
+                } else {
                     // $('.actions > ul').attr('style', 'display:inline');
                     $('#myLoader').modal('hide');
                     $('#errorMess').text(data);
@@ -234,9 +235,10 @@ function setup(){
                 }
             }
         });
-    returnValue = $('#returnValue').val();
-    //alert(returnValue);
-    return Boolean(returnValue);
+        returnValue = $('#returnValue').val();
+        //alert(returnValue);
+        return Boolean(returnValue);
+    },time);
 
 }
 
