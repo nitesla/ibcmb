@@ -7,9 +7,9 @@
 <div layout:fragment="content">
     <div class="col-md-5 col-sm-5 invisible ">
         <h5 class="page_header"> Transfer to
-            <span class="my-label" th:if="${benName}== null"
+            <span class="my-label" th:if="${benName}==''"
                   th:text="${corpTransferRequest.beneficiaryAccountName}"></span>
-            <span class="my-label" th:if="${benName}!= null" th:text="${benName}"></span>
+            <span class="my-label" th:if="${benName}!=''" th:text="${benName}"></span>
             <select class="form-control invisible hide-content-only">
                 <option value="account">Account Overview</option>
             </select>

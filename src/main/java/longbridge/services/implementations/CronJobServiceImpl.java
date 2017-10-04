@@ -58,12 +58,13 @@ public class CronJobServiceImpl implements CronJobService {
     }
 
     @Override
-    public void keepCronJobEprsDetials(String username, String cronExpression) throws InternetBankingException {
+    public void keepCronJobEprsDetials(String username, String cronExpression,String cronExprDesc) throws InternetBankingException {
         CronJobExpression cronJobExpression = new CronJobExpression();
         cronJobExpression.setUsername(username);
         cronJobExpression.setCreatedOn(new Date());
         cronJobExpression.setFlag("Y");
         cronJobExpression.setCronExpression(cronExpression);
+        cronJobExpression.setCronExpressionDesc(cronExprDesc);
         cronJobExpressionRepo.save(cronJobExpression);
     }
 
@@ -187,6 +188,7 @@ public class CronJobServiceImpl implements CronJobService {
             try {
                 CustomerDetails details = integrationService.viewCustomerDetailsByCif(corporate.getCustomerId());
                 updateCorporateUserBVN(corporate,details);
+                updateCorporateUserTaxId(corporate,details);
             } catch (Exception e) {
                 logger.info("the error {}",e.getMessage());
                 e.printStackTrace();
@@ -201,7 +203,6 @@ public class CronJobServiceImpl implements CronJobService {
         if((corporateBvn == null)||corporateBvn.equalsIgnoreCase("")||(!corporateBvn.equalsIgnoreCase(details.getBvn()))){
             corporate.setBvn(details.getBvn());
             logger.info("Updating Corporate BVN for {} to {}",corporate.getCustomerId(),corporate.getBvn());
-//            logger.info("new corp bvn is {}",corporate.getBvn());
             try {
                 corporateRepo.save(corporate);
             } catch (Exception e) {
@@ -209,6 +210,21 @@ public class CronJobServiceImpl implements CronJobService {
             }
         }
     }
+
+    @Override
+    public void updateCorporateUserTaxId(Corporate corporate, CustomerDetails details) throws InternetBankingException {
+        String taxId = corporate.getTaxId();
+        if((taxId == null)||taxId.equalsIgnoreCase("")||(!taxId.equalsIgnoreCase(details.getTaxId()))){
+            corporate.setTaxId(details.getTaxId());
+            logger.info("Updating Corporate Tax ID for {} to {}",corporate.getCustomerId(),corporate.getTaxId());
+            try {
+                corporateRepo.save(corporate);
+            } catch (Exception e) {
+//                e.printStackTrace();
+            }
+        }
+    }
+
 
     @Override
     public void updateCorporateUserPhoneNo(CorporateUser corporateUser, CustomerDetails details) throws InternetBankingException {

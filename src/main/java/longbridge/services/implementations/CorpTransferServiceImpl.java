@@ -76,6 +76,7 @@ public class CorpTransferServiceImpl implements CorpTransferService {
     public Object addTransferRequest(CorpTransferRequestDTO transferRequestDTO) throws InternetBankingException {
 
         CorpTransRequest transferRequest = convertDTOToEntity(transferRequestDTO);
+        transferRequest.setUserReferenceNumber("CORP_"+getCurrentUser().getId().toString());
 
 
         if ("SOLE".equals(transferRequest.getCorporate().getCorporateType())) {

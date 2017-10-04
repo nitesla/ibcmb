@@ -98,7 +98,6 @@ public class CorpAccountController {
         AccountDetails account = integrationService.viewAccountDetails(accountDTO.getAccountNumber());
 
         if (account == null) {
-            //account not found
             return "redirect:/corporate/account";
         }
         //send account to frontend

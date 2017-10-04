@@ -1,10 +1,8 @@
 package longbridge;
 
 
-import longbridge.models.BulkTransfer;
 import longbridge.repositories.*;
 import longbridge.services.*;
-import longbridge.utils.StatusCode;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -14,8 +12,6 @@ import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.support.SpringBootServletInitializer;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.scheduling.annotation.EnableAsync;
-
-import java.util.List;
 
 
 @SpringBootApplication
@@ -83,19 +79,8 @@ public class InternetbankingApplication extends SpringBootServletInitializer imp
 
     @Override
     public void run(String... strings) throws Exception {
-
-
+//        securityService.unLockUser("shina2","Corporate_Group");
     }
 
 
 }
-
-
-
-
-
-
-
-
-
-

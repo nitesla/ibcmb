@@ -8,7 +8,6 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
-import org.springframework.transaction.annotation.Transactional;
 
 import javax.sql.DataSource;
 import java.util.ArrayList;
@@ -25,7 +24,7 @@ public class RevisedEntitiesUtil {
 
     private static final String PACKAGE_NAME = "longbridge.models.";
 
-    @Transactional
+
     public static  List<Integer> revisedEntityDetails(String entityName,Integer revId)
     {
         List<Map<String ,Object>> mapList=null;
@@ -42,12 +41,12 @@ public class RevisedEntitiesUtil {
             if(!mapList.isEmpty()) {
                 for (Map map : mapList) {
                     revIds.add(Integer.parseInt(map.get("REV").toString()));
-
                 }
             }
 
         return revIds;
     }
+
     private static String getOracleEntity(String enttyname){
         StringBuilder builder = new StringBuilder();
         for(int y = 0; y < enttyname.length(); y++){
@@ -60,7 +59,7 @@ public class RevisedEntitiesUtil {
         }
         return builder.toString();
     }
-    @Transactional
+
     public static  Map<String, List<String>> getEntityPastDetails(String entityName,String[] revId)
     {
         List<Integer> refIds = new ArrayList<>();
@@ -146,7 +145,8 @@ public class RevisedEntitiesUtil {
         }
         return entityDetails;
     }
-    @Transactional
+
+
     public static  List<Map<String ,Object>> getCurrentDetails(NamedParameterJdbcTemplate namedParameterJdbcTemplate,String entity,Map refDetails)
     {
         List<Map<String ,Object>> mapList=null;
@@ -158,5 +158,4 @@ public class RevisedEntitiesUtil {
 
         return mapList;
     }
-
 }

@@ -90,15 +90,16 @@
                     }, {
                         "data": "customerAccountNumber"
                     }, {
-                        "data": "tranDate",
-                        type: "date",
-                        render: function(data) {
-                            function pad(s) {
-                                return (s < 10) ? '0' + s : s;
-                            }
-                            var d = new Date(data);
-                            return [pad(d.getDate()), pad(d.getMonth() + 1), d.getFullYear()].join('/');
-                        }
+                        "data": "tranDate"
+//                        ,
+//                        type: "date",
+//                        render: function(data) {
+//                            function pad(s) {
+//                                return (s < 10) ? '0' + s : s;
+//                            }
+//                            var d = new Date(data);
+//                            return [pad(d.getDate()), pad(d.getMonth() + 1), d.getFullYear()].join('/');
+//                        }
 
                     }, {
                         "data": "statusDescription"
@@ -110,6 +111,21 @@
                         "data": "DT_RowId",
                         "render": function(data, type, full, meta) {
                             return '<a href="/corporate/transfer/' + data + '/view" class="dt-body-center" style="text-align:center; margin:0 auto;">View</a>';
+                        }
+                    },{
+                        "targets": 2,
+                        "data": "tranDate",
+                        "render": function(data, type, full, meta) {
+
+                            if (type === 'display') {
+                                if (data == null)
+                                    return data;
+
+                                var dtStart = new Date(data);
+                                var dtStartWrapper = moment(dtStart);
+                                return dtStartWrapper.format('DD-MMM-YYYY');
+                            }
+                            return data;
                         }
                     }]
                 });
