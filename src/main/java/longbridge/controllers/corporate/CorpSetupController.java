@@ -151,7 +151,7 @@ public class CorpSetupController {
     public @ResponseBody
     String saveSetUp(WebRequest webRequest, RedirectAttributes redirectAttributes, Principal principal){
         Iterator<String> iterator = webRequest.getParameterNames();
-
+logger.info("posting response ");
         String result= "";
 
         try {
