@@ -202,7 +202,7 @@ public class CronJobServiceImpl implements CronJobService {
         String corporateBvn = corporate.getBvn();
         if((corporateBvn == null)||corporateBvn.equalsIgnoreCase("")||(!corporateBvn.equalsIgnoreCase(details.getBvn()))){
             corporate.setBvn(details.getBvn());
-            logger.info("Updating Corporate BVN for {} to {}",corporate.getCustomerId(),corporate.getBvn());
+//            logger.info("Updating Corporate BVN for {} to {}",corporate.getCustomerId(),corporate.getBvn());
             try {
                 corporateRepo.save(corporate);
             } catch (Exception e) {
@@ -216,7 +216,7 @@ public class CronJobServiceImpl implements CronJobService {
         String taxId = corporate.getTaxId();
         if((taxId == null)||taxId.equalsIgnoreCase("")||(!taxId.equalsIgnoreCase(details.getTaxId()))){
             corporate.setTaxId(details.getTaxId());
-            logger.info("Updating Corporate Tax ID for {} to {}",corporate.getCustomerId(),corporate.getTaxId());
+//            logger.info("Updating Corporate Tax ID for {} to {}",corporate.getCustomerId(),corporate.getTaxId());
             try {
                 corporateRepo.save(corporate);
             } catch (Exception e) {
