@@ -271,28 +271,43 @@ public class AuditConfigImpl implements AuditConfigService {
 			allEnityByRevisionByClass = modifiedEntityTypeEntityRepo.findAllEnityByRevisionByClass(fullEntityName,pageable);
 			for (ModifiedEntityTypeEntity entity: allEnityByRevisionByClass) {
 				AuditDTO auditDTO = new AuditDTO();
-//				logger.info("revision id  "+entity.getRevision().getId());
+				logger.info("revision id  "+entity.getRevision().getId());
 				AuditQuery query = auditReader.createQuery().forEntitiesAtRevision(clazz,entity.getRevision().getId());
 
 				List<Object> abstractEntities = query.getResultList();
-				if(entityName.equalsIgnoreCase("TransRequest")) {
-					TransRequest transRequest = (TransRequest) abstractEntities.get(0);
-					if (transRequest != null){
+				switch (entityName){
+					case "TransRequest":
+						TransRequest transRequest = (TransRequest) abstractEntities.get(0);
+						if (transRequest != null){
 //						transRequest.getFinancialInstitution().getInstitutionName();
 //						logger.info("The finanial institution {}",transRequest.getFinancialInstitution().getInstitutionName());
-						auditDTO.setFinacialInstitution(null);
+							auditDTO.setFinacialInstitution(null);
 
-						transRequest.setFinancialInstitution(null);
-					}
-					auditDTO.setEntityDetails((Object)transRequest);
-				}else {
-//				logger.info("the abstract entity {}",abstractEntities);
-					auditDTO.setEntityDetails(abstractEntities.get(0));
+							transRequest.setFinancialInstitution(null);
+						}
+						auditDTO.setEntityDetails((Object)transRequest);
+						break;
+					case "AdminUser":
+						AdminUser adminUser = (AdminUser) abstractEntities.get(0);
+						adminUser.setRole(null);
+						auditDTO.setEntityDetails((Object)adminUser);
+						break;
+					case "CorporateUser":
+						CorporateUser corporateUser = (CorporateUser) abstractEntities.get(0);
+						corporateUser.setCorporate(null);
+						corporateUser.setTempPassword(null);
+						corporateUser.setAlertPreference(null);
+						corporateUser.setRole(null);
+						auditDTO.setEntityDetails((Object)corporateUser);
+						break;
+						default:
+							auditDTO.setEntityDetails(abstractEntities.get(0));
+							break;
 				}
 				auditDTO.setModifiedEntities(entity);
 				compositeAudits.add(auditDTO);
 			}
-			logger.info("this is the revision list"+compositeAudits);
+			logger.info("this is the revision list {} element is {}",allEnityByRevisionByClass.getTotalPages(),allEnityByRevisionByClass.getTotalElements());
 //			Page<T> tPage = (Page<T>) compositeAudits;
 
 		}
@@ -305,6 +320,72 @@ public class AuditConfigImpl implements AuditConfigService {
 			e.printStackTrace();
 		}
 
-		return new PageImpl<AuditDTO>(compositeAudits, pageable, allEnityByRevisionByClass.getTotalPages());
+		return new PageImpl<AuditDTO>(compositeAudits, pageable, allEnityByRevisionByClass.getTotalElements());
 	}
+	public Page<AuditDTO> searchRevisedEntity(String entityName,Pageable pageable,String search){
+		List<AuditDTO> compositeAudits = new ArrayList<>();
+		Page<CustomRevisionEntity> revisionEntities = null;
+		List<String> RevisionDetails = new ArrayList<>();
+		Page<ModifiedEntityTypeEntity> allEnityByRevisionByClass = null;
+		try
+		{
+
+			Class<?> clazz  = Class.forName(PACKAGE_NAME + entityName);
+			String fullEntityName = PACKAGE_NAME + entityName;
+			AuditReader auditReader = AuditReaderFactory.get(entityManager);
+			allEnityByRevisionByClass = modifiedEntityTypeEntityRepo.findAllEnityByRevisionBySearch(fullEntityName,pageable,search);
+			for (ModifiedEntityTypeEntity entity: allEnityByRevisionByClass) {
+				AuditDTO auditDTO = new AuditDTO();
+				logger.info("revision id  "+entity.getRevision().getId());
+				AuditQuery query = auditReader.createQuery().forEntitiesAtRevision(clazz,entity.getRevision().getId());
+
+				List<Object> abstractEntities = query.getResultList();
+				switch (entityName){
+					case "TransRequest":
+						TransRequest transRequest = (TransRequest) abstractEntities.get(0);
+						if (transRequest != null){
+//						transRequest.getFinancialInstitution().getInstitutionName();
+//						logger.info("The finanial institution {}",transRequest.getFinancialInstitution().getInstitutionName());
+							auditDTO.setFinacialInstitution(null);
+
+							transRequest.setFinancialInstitution(null);
+						}
+						auditDTO.setEntityDetails((Object)transRequest);
+						break;
+					case "AdminUser":
+						AdminUser adminUser = (AdminUser) abstractEntities.get(0);
+						adminUser.setRole(null);
+						auditDTO.setEntityDetails((Object)adminUser);
+						break;
+					case "CorporateUser":
+						CorporateUser corporateUser = (CorporateUser) abstractEntities.get(0);
+						corporateUser.setCorporate(null);
+						corporateUser.setTempPassword(null);
+						corporateUser.setAlertPreference(null);
+						corporateUser.setRole(null);
+						auditDTO.setEntityDetails((Object)corporateUser);
+						break;
+						default:
+							auditDTO.setEntityDetails(abstractEntities.get(0));
+							break;
+				}
+				auditDTO.setModifiedEntities(entity);
+				compositeAudits.add(auditDTO);
+			}
+			logger.info("this is the revision list {} element is {}",allEnityByRevisionByClass.getTotalPages(),allEnityByRevisionByClass.getTotalElements());
+//			Page<T> tPage = (Page<T>) compositeAudits;
+
+		}
+		catch (ClassNotFoundException e){
+			e.printStackTrace();
+		}
+		catch (NumberFormatException e){
+			e.printStackTrace();
+		}catch (Exception e){
+			e.printStackTrace();
+		}
+
+		return new PageImpl<AuditDTO>(compositeAudits, pageable, allEnityByRevisionByClass.getTotalElements());
+	}
+
 }

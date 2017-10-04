@@ -42,12 +42,7 @@
                                             </div>
                                         </div>
                                     </li>
-                                    <div class="input-group col-lg-6">
-                                        <input type="text" class="form-control" id="pattern" placeholder="Search for..."/> <span
-                                            class="input-group-btn">
-										<button class="btn btn-success" id="search" type="button">Go!</button>
-									</span>
-                                    </div>
+
                                 </ul>
 
                                 <ul class="nav navbar-right panel_toolbox col-lg-4 pull-right">
@@ -67,16 +62,28 @@
                             </div>
                             <div class="x_content">
 
-                                <table class="table table-striped table-bordered table-hover" id="auditview">
+                                <table class="table table-striped table-bordered table-hover x_content" id="auditview" style="overflow-x:scroll;">
 
                                     <thead>
                                     <tr>
                                         <th> Name</th>
                                         <th>Modifed By</th>
                                         <th>Date</th>
-                                        <th>IP Address</th>
-                                        <th>ID</th>
-                                        <th th:each="header : ${headers}" th:text="${header}"></th>
+                                        <th>IP address</th>
+                                        <th>User name</th>
+                                        <th>First name</th>
+                                        <th>Last name</th>
+                                        <th>Email</th>
+                                        <th>Phone no</th>
+                                        <th>Status</th>
+                                        <th>Created on</th>
+                                        <th>Expiry date</th>
+                                        <th>Locked until date</th>
+                                        <th>Last login date</th>
+                                        <th>Noof login attempts</th>
+                                        <th>User type</th>
+                                        <th>Entrust id</th>
+                                        <th>Entrust group</th>
                                     </tr>
                                     </thead>
 
@@ -113,40 +120,22 @@
 <!-- Page-Level Scripts -->
 <script th:inline="javascript">
 
+var people = [];
+
 
     /*<![CDATA[*/
     $(document).ready(function() {
         var entityClass = [[${entityName}]];
-        var entityFields = [[${fields}]];
-        entityFields = String(entityFields);
         console.log("the entityname "+entityClass);
-        console.log("the entityname "+entityFields);
-
-        var dataTable= [
-            { "data": "entityClassName",
-                "visible" : false
-            },
-            { "data": "modifiedEntities.revision.lastChangedBy" },
-            { "data": "modifiedEntities.revision.revisionDate" },
-            { "data": "modifiedEntities.revision.ipAddress" },
-            { "data": "entityDetails.id" }
-        ];
-        var splitFields = entityFields.split(",");
-        console.log("the splited value "+splitFields);
-
-        for(var i =0; i<splitFields.length; i++){
-            dataTable.push({ "data": splitFields[i] });
-        }
-        console.log("the data to display is "+String(dataTable));
 
         var table = $('#auditview').DataTable({
             select:true,
             responsive: true,
-            "pagingType" : "simple_numbers",
-            "lengthMenu" : [ [5, 10, 20, 30, 40, -1],	[ 5,10, 20, 30, 40, "All" ] ],
-            "searching": false,
-            rowId: 'entityDetails.id',
+            "lengthMenu" : [ [ 10, 20, 30, 40, -1],	[ 10, 20, 30, 40, "All" ] ],
             "scrollX": true,
+            "pagingType" : "simple_numbers",
+            "searching": true,
+            rowId: 'entityDetails.id',
             "paging": true,
             "serverSide" : true,
 //            url : "/admin/audit/entity/name/details",
@@ -155,21 +144,54 @@
                 "type" : "GET",
                 "data" : function(d) {
                     d.className = entityClass;
-                    d.csearch = $('#pattern').val();
                 }
             },
             "dom": 'T<"clear">frtlp',
-            "columns":dataTable,"columnDefs" : [ {
-                "targets" : 2,
-                "data" : "modifiedEntities.revision.ipAddress",
+            "columns": [
+                { "data": "entityClassName",
+                    "visible" : false
+                },
+                { "data": "modifiedEntities.revision.lastChangedBy" },
+                { "data": "modifiedEntities.revision.revisionDate" },
+                { "data": "modifiedEntities.revision.ipAddress" },
+//                { "data": "entityDetails.id" },
+                { "data": "entityDetails.userName" },
+                { "data": "entityDetails.firstName" },
+                { "data": "entityDetails.email" },
+                { "data": "entityDetails.phoneNumber" },
+                { "data": "entityDetails.status" },
+                { "data": "entityDetails.createdOnDate" },
+                { "data": "entityDetails.expiryDate" },
+                { "data": "entityDetails.lockedUntilDate" },
+                { "data": "entityDetails.lastLoginDate" },
+                { "data": "entityDetails.noOfLoginAttempts" },
+                { "data": "entityDetails.userType" },
+                { "data": "entityDetails.entrustId" },
+                { "data": "entityDetails.entrustGroup" }
+            ],"columnDefs" : [ {
+                "targets" : 1,
+                "data" : "modifiedEntities.revision.lastChangedBy",
                 "render" : function(data, type,full, meta) {
                     if (type === 'display') {
                         if(data == null)
                             console.log("the entityclassName "+data);
-                        var dtStart = new Date(data);
-                        var dtStartWrapper = dtStart.toGMTString();
-                        return dtStartWrapper;
+                        return data;
+//                        var dtStart = new Date(parseInt(data));
+//                        var dtStartWrapper = moment(dtStart);
+//                        return dtStartWrapper.format('LLLL');
                     }
+                    return data;
+                }
+            },{
+                "targets" : 1,
+                "data" : "entityDetails.code",
+                "render" : function(data, type,full, meta) {
+                    if(type ==='display')
+                    {
+//                        data= data.substring((data.lastIndexOf(".")+1),(data.length));
+//console.log("the code details "+data);
+                    }
+
                     return data;
                 }
             }] });

@@ -35,6 +35,7 @@ import longbridge.models.AuditConfig;
 import longbridge.services.AuditConfigService;
 import org.springframework.web.context.request.WebRequest;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -52,6 +53,7 @@ public class AdmAuditController {
 
     @Autowired
     AuditConfigService auditCfgService;
+    private static final String PACKAGE_NAME = "longbridge.models.";
 
 
 
@@ -87,13 +89,50 @@ public class AdmAuditController {
     @GetMapping("/revised/{entityName}")
     public String revisedEntity(@PathVariable String entityName, Model model)
     {
+
         logger.info("the entity name is {}",entityName);
         model.addAttribute("entityName",entityName);
-        if(entityName.equalsIgnoreCase("TransRequest")){
-            return "adm/audit/tranRequestRevision";
-        }else {
-            return "adm/audit/entityRevision";
+        String className = PACKAGE_NAME+entityName;
+        Class<?> cl = null;
+        try {
+            List<String> classFields =  new ArrayList<>();
+            List<String> headers =  new ArrayList<>();
+            cl = Class.forName(className);
+            Field[] declaredFields = cl.getDeclaredFields();
+            logger.info("the fields of the {} are {}",entityName,declaredFields);
+            for (Field field:declaredFields) {
+                String fieldStringVal  = field.toString();
+                String fieldName = fieldStringVal.substring(fieldStringVal.lastIndexOf('.')+1,fieldStringVal.length());
+                logger.info("The field name {}",fieldStringVal.substring(fieldStringVal.lastIndexOf('.')+1,fieldStringVal.length()));
+                if(fieldName.equalsIgnoreCase("serialVersionUID")) {
+                    continue;
+                }if(entityName.equalsIgnoreCase("CorporateUser")){
+                    if(fieldName.equalsIgnoreCase("corporate") || fieldName.equalsIgnoreCase("tempPassword") ){
+                        continue;
+                    }
+                }
+                headers.add(fieldName);
+                classFields.add("entityDetails." + fieldStringVal.substring(fieldStringVal.lastIndexOf('.') + 1, fieldStringVal.length()));
+            }
+            model.addAttribute("fields",classFields);
+            model.addAttribute("headers",headers);
+            model.addAttribute("headerSize",headers.size());
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
         }
+
+//        List<AuditDTO> auditDTOs = auditCfgService.revisedEntityForClass(entityName);
+//        model.addAttribute("auditDTOs",auditDTOs);
+//        switch (entityName){
+//            case "TransRequest":
+//                return "adm/audit/tranRequestRevision";
+//            case "AdminUser":
+//                return "adm/audit/adminRevision";
+//            default:
+//                return "adm/audit/entityRevision";
+//
+//        }
+        return "adm/audit/entityRevision";
     }
     //    @GetMapping(path = "all/entityname")
 //    public @ResponseBody DataTablesOutput<AuditConfig> getAllEntities(DataTablesInput input,WebRequest webRequest)
@@ -117,12 +156,18 @@ public class AdmAuditController {
 
 
     @GetMapping("/entity/name/details")
-    public @ResponseBody DataTablesOutput<AuditDTO> getAllRevisedEntity(DataTablesInput input,@RequestParam("className") String className)
+    public @ResponseBody DataTablesOutput<AuditDTO> getAllRevisedEntity(DataTablesInput input,@RequestParam("className") String className,@RequestParam("csearch") String csearch)
     {
         logger.info("The class name {}",className);
+        logger.info("TO search {}",csearch);
         Pageable pageable = DataTablesUtils.getPageable(input);
         Page<AuditDTO> auditDTOs = null;
-        auditDTOs = auditCfgService.revisedEntity(className,pageable);
+        if(csearch==null || csearch.equalsIgnoreCase("")){
+            auditDTOs = auditCfgService.revisedEntity(className,pageable);
+        }else {
+            auditDTOs = auditCfgService.searchRevisedEntity(className,pageable,csearch);
+        }
+
         DataTablesOutput<AuditDTO> out = new DataTablesOutput<AuditDTO>();
         out.setDraw(input.getDraw());
         out.setData(auditDTOs.getContent());

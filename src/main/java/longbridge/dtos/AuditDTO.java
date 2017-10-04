@@ -14,7 +14,7 @@ public class AuditDTO {
     Object entityDetails;
     ModifiedEntityTypeEntity modifiedEntities;
     String entityClassName;
-String finacialInstitution;
+    String finacialInstitution;
     public Object getEntityDetails() {
         return entityDetails;
     }

@@ -170,8 +170,10 @@
                     <div class="white-box">
                         <br/>
                         <h2 class="header-title">First Time Login</h2>
+                        <div id="imgSpinner" style="display: none;" class="col-md-12">
+                            <img align="center" width="150" height="150" class="col-md-12" alt="Image result for gif spinner" src="https://media.giphy.com/media/3oEjI6SIIHBdRxXI40/giphy.gif">
+                        </div>
                     <form id="setup-form"  action="/corporate/setup" method="post">
-
                         <div class="col-md-12">
                             <h3>Security Questions</h3>
                             <section class="col-md-12">
@@ -283,6 +285,7 @@
                                 </div>
                             </section>
                         </div>
+
                     </form>
                     </div>
                 </div>
@@ -421,7 +424,14 @@
     $('#confirm').bind("cut copy paste", function(e) {
         e.preventDefault();
     });
-
+    $(document).ajaxStop(function(){
+        console.debug("ajaxStop");
+        $("#imgSpinner").hide();
+    });
+    $(document).ajaxStart(function(){
+        console.debug("ajaxStart");
+        $("#imgSpinner").show();
+    });
     /*]]>*/
 </script>
 </body>

@@ -50,7 +50,7 @@ form.children("div").steps({
         }
         if(PHISHING_IMAGE_STEP === currentIndex){
             console.log("Current Step is the phishing image step");
-            //$("#reg-form").submit();
+            //$("#reg-form").submit();    $('#imgSpinner').show();
             return isValid && checkImage();
         }
         if(PASSWORD_RESET_STEP === currentIndex){
@@ -87,10 +87,21 @@ form.children("div").steps({
         {
             form.steps("previous");
         }
+        if($('#token').val() !=''){
+             console.log("hide 1");
+            $('#imgSpinner').show();
+            $('.actions > ul').hide();
+
+        }
     },
     onFinishing: function (event, currentIndex)
     {
         //form.validate().settings.ignore = ":disabled";
+        if($('#token').val() !=''){
+            console.log("hide 2");
+            $('#imgSpinner').show();
+            $('.actions > ul').hide();
+        }
         return form.valid()  && setup();
     },
     onFinished: function (event, currentIndex)
@@ -132,6 +143,7 @@ function getRegSummary() {
 }
 
 function validatePassword(password){
+    $('#imgSpinner').show();
     var result;
     $.ajax({
         type:'POST',
@@ -145,6 +157,7 @@ function validatePassword(password){
                 //success
 
             }else{
+                $('#imgSpinner').show();
                 $('#errorMess').text(result);
                 $('#myModalError').modal('show');
                 $('#loading-icon').hide();
@@ -153,6 +166,7 @@ function validatePassword(password){
     });
 
     if(result === 'true'){
+        $('#imgSpinner').hide();
 
         //username is valid and available
         return true;
@@ -164,6 +178,7 @@ function validatePassword(password){
 
 function validateToken(){
     $('#myLoader').modal('show');
+
     var token = $('input[name="token"]').val();
     var result;
     $.ajax({
@@ -193,7 +208,6 @@ function validateToken(){
 }
 
 function setup(){
-
     var returnValue = false;
     $('#setup-form').submit(function(e){
         e.preventDefault();
@@ -210,8 +224,12 @@ function setup(){
                 if(data==="true"){
                     $('#returnValue').val(true);
                 }else {
+                    // $('.actions > ul').attr('style', 'display:inline');
+                    $('.actions > ul').show();
+
                     $('#errorMess').text(data);
                     $('#myModalError').modal('show');
+                    $('#imgSpinner').hide();
                 }
             }
         });
@@ -225,6 +243,9 @@ function setup(){
 
 
 function redirectUser() {
+    $('#imgSpinner').hide();
+    $('.actions > ul').show();
+    // $('.actions > ul').attr('style', 'display:block');
     document.getElementById("successMess").textContent="Registration successful!";
     $('#myModalSuccess').modal('show');
     $(".btn-link").on("click", function()

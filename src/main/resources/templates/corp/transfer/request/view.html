@@ -80,15 +80,16 @@
 
             ], "columnDefs": [{
                 "targets": 4,
-                "data": "verifiedOn",
-                "render": function (data, type, full, meta) {
-                    if (type === 'display') {
+                "data": "tranDate",
+                "render": function(data, type, full, meta) {
 
+                    if (type === 'display') {
                         if (data == null)
                             return data;
-                        var dtStart = new Date(parseInt(data));
+
+                        var dtStart = new Date(data);
                         var dtStartWrapper = moment(dtStart);
-                        return dtStartWrapper.format('LLL');
+                        return dtStartWrapper.format('DD-MMM-YYYY');
                     }
                     return data;
                 }

@@ -74,7 +74,7 @@
 
                                         <!--<input type="text" class="form-control" id="pattern" th:text="" />-->
 
-                                        <td th:if="${pastDetails.get(currentDetails.indexOf(list)) !=currentDetails.get(currentDetails.indexOf(list))}"  th:align="center" th:style="'background-color:#f2dede; color:#a94442'" th:text="${headers.get(currentDetails.indexOf(list))}" >
+                                    <td th:if="${pastDetails.get(currentDetails.indexOf(list)) !=currentDetails.get(currentDetails.indexOf(list))}"  th:align="center" th:style="'background-color:#f2dede; color:#a94442'" th:text="${headers.get(currentDetails.indexOf(list))}" >
                                         </td>
                                         <td th:if="${pastDetails.get(currentDetails.indexOf(list)) ==currentDetails.get(currentDetails.indexOf(list))}"  th:align="center" th:text="${headers.get(currentDetails.indexOf(list))}" >
                                         </td>
@@ -202,7 +202,7 @@
     {
         var itemid = [[${itemId}]];
         var classRef = [[${classname}]];
-
+        var dataSet = [{"data":"kkk.kkk"},{"data":"ppp"}];
         var table = $('#auditview').DataTable
         ({
             select:true,
