@@ -29,8 +29,6 @@ public class CorporateUserAdvisor {
     @Autowired
     private EntityManager entityManager;
 
-    @Autowired
-    private VerificationService verificationService;
 
     @Autowired
     private CorporateUserRepo corporateUserRepo;
@@ -94,7 +92,7 @@ public class CorporateUserAdvisor {
                 corporateUserRepo.save(user);
                 logger.info("Corporate user {} status changed to {}",corpUser.getUserName(),corpUser.getStatus());
 
-                corporateUserService.sendPostActivateMessage(corpUser, fullName,user.getUserName(),password,user.getCorporate().getCustomerId());
+                corporateUserService.sendPostActivateMessage(corpUser, fullName,user.getUserName(),password,user.getCorporate().getCorporateId());
             }
             else{
                 corporateUserRepo.save(user);

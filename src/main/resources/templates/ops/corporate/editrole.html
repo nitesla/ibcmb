@@ -75,7 +75,7 @@
 
                                                                     th:value="${user.id}"
                                                                     
-                                                                    th:text="${user.firstName}+' '+${user.lastName}"></option>
+                                                                    th:text="${user.userName}"></option>
                                                         </select>
                                                     </div>
 
@@ -99,7 +99,7 @@
                                                         <select multiple="multiple" class="form-control right-selector"
                                                                 name="usersList">
                                                             <option th:each="user: ${usersInRole}" th:value="${user.id}"
-                                                                    th:text="${user.firstName}+' '+${user.lastName}"></option>
+                                                                    th:text="${user.userName}"></option>
 
                                                         </select>
                                                     </div>

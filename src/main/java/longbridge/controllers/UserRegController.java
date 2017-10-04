@@ -13,6 +13,7 @@ import longbridge.services.*;
 import longbridge.utils.DateFormatter;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.http.HttpRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +29,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FilenameFilter;
@@ -78,10 +81,10 @@ public class UserRegController {
     @PostMapping("/rest/accountdetails")
     public
     @ResponseBody
-    String getAccountDetailsFromNumber(WebRequest webRequest) {
+    String getAccountDetailsFromNumber(HttpServletRequest webRequest) {
 
         logger.info("Customer Registration Started.");
-        logClientRequestHeaders(webRequest);
+//        logClientRequestHeaders(webRequest);
         String customerId = "";
         String accountNumber = webRequest.getParameter("accountNumber");
         logger.info("Account number : " + accountNumber);

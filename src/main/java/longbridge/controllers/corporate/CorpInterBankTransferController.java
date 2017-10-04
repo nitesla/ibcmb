@@ -153,6 +153,8 @@ public class CorpInterBankTransferController {
 
         corpTransferRequestDTO.setFinancialInstitution(financialInstitutionService.getFinancialInstitutionByCode(corpLocalBeneficiaryDTO.getBeneficiaryBank()));
         model.addAttribute("corpTransferRequest", corpTransferRequestDTO);
+        model.addAttribute("benName", corpLocalBeneficiaryDTO.getPreferredName());
+
 
 
         servletRequest.getSession().setAttribute("Lbeneficiary", corpLocalBeneficiaryDTO);

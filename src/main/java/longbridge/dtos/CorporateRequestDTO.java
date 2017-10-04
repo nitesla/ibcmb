@@ -27,6 +27,8 @@ public class CorporateRequestDTO implements PrettySerializer {
     @NotEmpty(message = "corporateId")
     private String corporateId;
     private String bvn;
+    private String taxId;
+
     private String status;
     private String rcNumber;
     @NotEmpty(message = "customerId")
@@ -95,6 +97,14 @@ public class CorporateRequestDTO implements PrettySerializer {
 
     public void setBvn(String bvn) {
         this.bvn = bvn;
+    }
+
+    public String getTaxId() {
+        return taxId;
+    }
+
+    public void setTaxId(String taxId) {
+        this.taxId = taxId;
     }
 
     public String getStatus() {

@@ -29,15 +29,15 @@ import java.util.Locale;
 public class AdminUserGeneralController {
 
     @Autowired
-    MessageSource messageSource;
+    private MessageSource messageSource;
 
     @Autowired
-    AdminUserService adminUserService;
+    private AdminUserService adminUserService;
 
     @Autowired
-    SecurityService securityService;
+    private SecurityService securityService;
 
-    Logger logger = LoggerFactory.getLogger(this.getClass());
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
 
 
     @GetMapping("/password/reset")

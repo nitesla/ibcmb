@@ -54,7 +54,7 @@ public class CorporateUserDetailsService implements UserDetailsService {
     @Transactional(readOnly = true)
     public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
         final String ip = addressUtils.getClientIP();
-        logger.trace("User with IP Address {} trying to login", ip);
+        logger.trace("Corporate User with IP Address {} trying to login", ip);
         //CHECK IF THE IP HAS BEEN BLOCKED BY THE CUSTOM BRUTE FORCE SERVICE
         if (bruteForceService.isBlocked(ip)) {
             logger.trace("IP -> {} has been blocked", ip);
@@ -88,12 +88,14 @@ public class CorporateUserDetailsService implements UserDetailsService {
 
                     if ((user.getCorporate().getCorporateId().equalsIgnoreCase(corporate.getCorporateId())) && user.getUserType() == UserType.CORPORATE) {
 
-                        return new CustomUserPrincipal(user);
+                        CustomUserPrincipal userPrincipal = new CustomUserPrincipal(user);
+                        userPrincipal.setIpAddress(ip);
+                        return userPrincipal;
                     }
                 }
                 throw new UsernameNotFoundException(s);
             } catch (Exception e) {
-                logger.error("An exception occurred {}", e.getMessage());
+                logger.error("An exception occurred at login", e);
                 throw new RuntimeException(e);
             }
         }

@@ -4,6 +4,8 @@ import longbridge.models.CorpTransRequest;
 import longbridge.models.Corporate;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -20,6 +22,11 @@ public interface CorpTransferRequestRepo extends CommonRepo<CorpTransRequest,Lon
 
     Page<CorpTransRequest> findByCorporateOrderByTranDateDesc(Corporate corporate, Pageable pageable);
 
+    Page<CorpTransRequest> findByCorporateOrderByStatusAsc(Corporate corporate, Pageable pageable);
+
+
+    Page<CorpTransRequest> findByCorporateOrderByStatusDesc(Corporate corporate,  Pageable pageable);
+
 
     int countByCorporateAndStatus(Corporate corporate, String status);
 
@@ -29,5 +36,8 @@ public interface CorpTransferRequestRepo extends CommonRepo<CorpTransRequest,Lon
     Page<CorpTransRequest> findByCorporateAndStatusDescription(Corporate corporate, String sd, Pageable pageable);
 
     CorpTransRequest findById(long id);
+
+
+
 
 }

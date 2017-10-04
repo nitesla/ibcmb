@@ -88,7 +88,7 @@
                 <tr th:each="auth : ${authorizationMap.auths}" th:if="${authorizationMap.auths != null }">
                     <td th:text="${auth.role.name+' '+auth.role.rank}"></td>
                     <td th:text="${auth.user.firstName+' '+auth.user.lastName}"></td>
-                    <td th:text="${auth.status}"></td>
+                    <td th:text="${auth.authStatus}"></td>
                     <td th:text="${auth.comments}"></td>
                     <td th:text="${#dates.format(auth.entryDate,'dd-MM-yyyy hh:mm a')}"></td>
                     <td th:if="${corpTransRule.anyCanAuthorize}">Optional</td>
@@ -109,11 +109,11 @@
         </div>
 
         <div>
-            <form th:action="@{/corporate/transfer/authorize}" method="post">
+            <form id="authForm" th:action="@{/corporate/transfer/authorize}" method="post">
 
-                    <textarea th:if="${userCanAuthorize}" class="form-control"
+                    <textarea id="commentField" th:if="${userCanAuthorize}" class="form-control"
                               th:field="${corpTransReqEntry.comments}" placeholder="Enter comments"></textarea>
-                <div >
+                <div>
                     <input type="text" th:if="${userCanAuthorize}" class="form-control"
                               name="token" placeholder="Enter token code"/>
                 </div>
@@ -121,8 +121,12 @@
                     <input type="hidden" name="tranReqId" th:value="${corpTransRequest.id}"/>
                 </div>
                 <div>
-                    <button class="btn btn-link required-step" th:if="${userCanAuthorize}" type="submit">
+                    <input type="hidden" id="authStatus" name="authStatus">
+                    <button id="approveBtn"  class="btn btn-link required-step" th:disabled="${userCanAuthorize==false}" type="submit">
                         Approve
+                    </button>
+                    <button  id="declineBtn" class="btn btn-link required-step" th:disabled="${userCanAuthorize==false}" type="submit">
+                        Decline
                     </button>
                     <button id="cancel" class="btn btn-link required-less" type="reset">Back</button>
                 </div>
@@ -245,6 +249,31 @@
         document.getElementById("cancel").onclick = function () {
             location.href = "/corporate/transfer/requests";
         }
+
+
+        $("#approveBtn").click(function (e) {
+            e.preventDefault();
+            $("#authStatus").val("APPROVED");
+            $("#authForm").submit();
+        })
+
+        $("#declineBtn").click(function (e) {
+            e.preventDefault();
+
+            var comment = $("#commentField").val();
+            if(comment==""){
+                $("#commentField").css('border-color','red');
+                $("#commentField").attr('placeholder', "The reason for declining is required")
+                $("#commentField").focus();
+            }
+            else {
+                $("#authStatus").val("DECLINED");
+                $("#authForm").submit();
+            }
+
+
+        })
+
         /*]]>*/
     </script>
 </th:block>

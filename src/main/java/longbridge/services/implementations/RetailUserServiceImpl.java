@@ -31,6 +31,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityManager;
 import java.util.*;
 
 /**
@@ -71,6 +72,9 @@ public class RetailUserServiceImpl implements RetailUserService {
     private IntegrationService integrationService;
     @Autowired
     private ConfigurationService configService;
+
+    @Autowired
+    private EntityManager entityManager;
 
     public RetailUserServiceImpl() {
     }
@@ -295,6 +299,7 @@ public class RetailUserServiceImpl implements RetailUserService {
     public String changeActivationStatus(Long userId) throws InternetBankingException {
         try {
             RetailUser user = retailUserRepo.findOne(userId);
+            entityManager.detach(user);
             String oldStatus = user.getStatus();
             String newStatus = "A".equals(oldStatus) ? "I" : "A";
             user.setStatus(newStatus);

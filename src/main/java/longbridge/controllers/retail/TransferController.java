@@ -267,7 +267,7 @@ public class TransferController {
                         request.getSession().removeAttribute("add");
                         // model.addAttribute("beneficiary", l);
                     } catch (InternetBankingException de) {
-                        de.printStackTrace();
+                        logger.error("Error adding beneficiary",de);
 
                     }
                 }
@@ -288,6 +288,12 @@ public class TransferController {
             return index(request);
 
 
+        } catch (Exception e) {
+            logger.error("Error making transfer", e);
+            if (request.getSession().getAttribute("Lbeneficiary") != null)
+                request.getSession().removeAttribute("Lbeneficiary");
+            redirectAttributes.addFlashAttribute("failure", messages.getMessage("transfer.failed", null, locale));
+            return index(request);
         }
     }
 
@@ -396,10 +402,10 @@ public class TransferController {
 
     @RequestMapping(value = "/limit/{accountNumber}/{channel}", method = RequestMethod.GET, produces = "application/json")
     @ResponseBody
-    public String getLimit(@PathVariable String accountNumber,@PathVariable String channel) throws Exception {
+    public String getLimit(@PathVariable String accountNumber, @PathVariable String channel) throws Exception {
 
         try {
-            return transferUtils.getLimit(accountNumber,channel);
+            return transferUtils.getLimit(accountNumber, channel);
         } catch (Exception e) {
             logger.error("Error getting limit", e);
         }

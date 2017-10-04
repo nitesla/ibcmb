@@ -11,6 +11,7 @@ import longbridge.security.userdetails.CustomUserPrincipal;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -48,7 +49,7 @@ public class RetailUserDetailsService implements UserDetailsService {
     @Transactional(readOnly = true)
     public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
         final String ip = addressUtils.getClientIP();
-        logger.trace("User with IP Address {} trying to login", ip);
+        logger.trace("Retail User with IP Address {} trying to login", ip);
         //CHECK IF THE IP HAS BEEN BLOCKED BY THE CUSTOM BRUTE FORCE SERVICE
         if (bruteForceService.isBlocked(ip)) {
             logger.trace("IP -> {} has been blocked", ip);
@@ -64,7 +65,9 @@ public class RetailUserDetailsService implements UserDetailsService {
             if (user != null && user.getUserType() == UserType.RETAIL
 
                     && user.getRole().getUserType().equals(UserType.RETAIL)) {
-                return new CustomUserPrincipal(user);
+                CustomUserPrincipal userPrincipal = new CustomUserPrincipal(user);
+                userPrincipal.setIpAddress(ip);
+                return userPrincipal;
             }
             throw new UsernameNotFoundException(s);
         } catch (Exception e) {

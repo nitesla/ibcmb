@@ -37,6 +37,9 @@ public interface FinancialInstitutionService {
 
     @PreAuthorize("hasAuthority('GET_FIN_INST')")
     Page<FinancialInstitutionDTO> getFinancialInstitutions(Pageable pageDetails);
+
+    @PreAuthorize("hasAuthority('GET_FIN_INST')")
+    Page<FinancialInstitutionDTO> getFinancialInstitutionsWithSortCode(Pageable pageDetails);
     
     @PreAuthorize("hasAuthority('GET_FIN_INST')")
     Page<FinancialInstitutionDTO> findFinancialInstitutions(String pattern,Pageable pageDetails);

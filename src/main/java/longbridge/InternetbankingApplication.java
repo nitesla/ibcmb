@@ -62,6 +62,9 @@ public class InternetbankingApplication extends SpringBootServletInitializer imp
     @Autowired
     CronJobService cronJobService;
 
+    @Autowired
+    BulkTransferRepo bulkTransferRepo;
+
 
     public static void main(String[] args) {
         SpringApplication.run(InternetbankingApplication.class, args);

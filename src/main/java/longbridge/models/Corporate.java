@@ -37,6 +37,7 @@ public class Corporate extends AbstractEntity implements PrettySerializer{
     private String status ;
     private Date createdOnDate;
     private String bvn;
+    private String taxId;
 
     @OneToMany(mappedBy = "corporate")
     @JsonIgnore
@@ -184,6 +185,14 @@ public class Corporate extends AbstractEntity implements PrettySerializer{
 
     public void setBvn(String bvn) {
         this.bvn = bvn;
+    }
+
+    public String getTaxId() {
+        return taxId;
+    }
+
+    public void setTaxId(String taxId) {
+        this.taxId = taxId;
     }
 
     public Date getCreatedOnDate() {

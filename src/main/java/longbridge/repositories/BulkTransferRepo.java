@@ -15,6 +15,9 @@ public interface BulkTransferRepo extends CommonRepo<BulkTransfer, Long>{
 
     Page<BulkTransfer> findByCorporateOrderByTranDateDesc(Corporate corporate, Pageable details);
 
+    Page<BulkTransfer> findByCorporateOrderByStatusAsc(Corporate corporate, Pageable details);
+
+
     List<BulkTransfer> findByStatusNotInIgnoreCase(List<String> list);
 
    BulkTransfer findFirstByRefCode(String refCode);
