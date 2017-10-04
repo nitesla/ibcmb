@@ -210,7 +210,6 @@ function setup(){
     var time = 500;
     var fullData = $("#setup-form").serialize();
     var returnValue = false;
-        e.preventDefault();
     setTimeout(function() {
 
         $.ajax({
@@ -249,5 +248,9 @@ function redirectUser() {
     $('#myModalSuccess').modal('show');
     $(".btn-link").on("click", function()
     {                                 window.location.href = "/corporate/logout";
+    });
+    $("#myModalSuccess").on("hidden.bs.modal", function () {
+        window.location.href = "/login/corporate";
+
     });
 }
