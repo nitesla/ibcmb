@@ -394,6 +394,10 @@
             </div>
         </div>
 
+        <!--<div id='ajax_loader' style="position: fixed; left: 50%; top: 50%; display: none;">-->
+            <!--<img src="https://www.drupal.org/files/issues/ajax-loader.gif"></img>-->
+        <!--</div>-->
+
 
         <div id="myLoader" class="modal fade " role="dialog">
             <div class="modal-dialog">
@@ -428,12 +432,7 @@
                 </div>
             </div>
         </footer>
-
-
     </div>
-
-
-
 
     <!-- CORE JQUERY SCRIPTS -->
     <script th:src="@{~/customer/js/jquery-1.11.1.js}"></script>
@@ -450,6 +449,24 @@
     <script th:src="@{~/customer/plugins/bootstrap-notify/bootstrap-notify.js}"></script>
     <script th:src="@{~/customer/js/errors.js}"></script>
 
+        <script type="text/javascript">
+//            jQuery(function ($){
+//                $(document).ajaxStop(function(){
+//                    $("#ajax_loader").hide();
+//                });
+//
+//                $(document).ajaxStart(function(){
+//                    $("#ajax_loader").show();
+//                });
+//            });
+//            $(document).ajaxSend(function() {
+//                $('#myLoader').show();
+//            });
+//
+//            $(document).ajaxComplete(function() {
+//                $('#myLoader').hide();
+//            });
+        </script>
     <script th:inline="javascript" type="text/javascript">
         /*<![CDATA[*/
         var m_noOfDigits = [[${passwordStrength.numOfdigits}]];

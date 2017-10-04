@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="accountStatment" language="groovy" pageWidth="595" pageHeight="409" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" whenResourceMissingType="Empty" uuid="b1c76af6-01a7-4384-8820-23f298be1610">
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="accountStatment" language="groovy" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" whenResourceMissingType="Empty" uuid="b1c76af6-01a7-4384-8820-23f298be1610">
 	<property name="ireport.zoom" value="1.1"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
@@ -28,7 +28,7 @@
 		<band splitType="Stretch"/>
 	</background>
 	<title>
-		<band splitType="Stretch"/>
+		<band height="79" splitType="Stretch"/>
 	</title>
 	<pageHeader>
 		<band height="21" splitType="Stretch">
@@ -42,7 +42,7 @@
 		</band>
 	</pageHeader>
 	<columnHeader>
-		<band height="125" splitType="Stretch">
+		<band height="150" splitType="Stretch">
 			<rectangle>
 				<reportElement x="1" y="62" width="553" height="19" backcolor="#EBE9E8" uuid="8fd0d94d-c621-4e57-96e1-97ff7d41e76a">
 					<printWhenExpression><![CDATA[($V{REPORT_COUNT}%2)==1]]></printWhenExpression>
@@ -193,37 +193,12 @@
 			</rectangle>
 		</band>
 	</columnHeader>
+
 	<columnFooter>
-		<band splitType="Stretch"/>
+		<band height="45" splitType="Stretch"/>
 	</columnFooter>
 	<pageFooter>
-		<band height="150" splitType="Stretch">
-			<staticText>
-				<reportElement x="3" y="0" width="551" height="116" uuid="7511f8dd-b895-4ea0-a195-f17c1e6416cc"/>
-				<text><![CDATA[Disclaimer:
-Your transfer has been successful and the beneficiary's account will be credited. However, this does not serve as confirmation
-of credit into the beneficiary's account. Due to the nature of the internet and electronic payment, transactions may be
-subject to interruption, transmission blackout, delayed transmission and incorrect data transmission. The Bank is not liable
-for malfunctions or errors in electronic payments not within its control that may affect the accuracy or timeliness of
-messages and transactions you initiate. All transactions are subject to verification and our normal fraud checks.The Bank is
-obliged to, and shall comply with applicable rules and legislations relating to electronic payment without further recourse to
-you.]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="1" y="116" width="124" height="14" uuid="40e8993a-7b69-4a1c-9283-d7f4c018933f"/>
-				<textElement>
-					<font isBold="false"/>
-				</textElement>
-				<text><![CDATA[ Yours faithfully,]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="2" y="130" width="165" height="20" uuid="2182797d-040f-4313-a6af-fe93979c6d74"/>
-				<textElement>
-					<font isBold="true"/>
-				</textElement>
-				<text><![CDATA[Coronation Merchant Bank]]></text>
-			</staticText>
-		</band>
+		<band height="54" splitType="Stretch"/>
 	</pageFooter>
 	<summary>
 		<band height="42" splitType="Stretch"/>

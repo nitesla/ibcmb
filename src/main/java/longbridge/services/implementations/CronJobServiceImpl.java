@@ -58,12 +58,13 @@ public class CronJobServiceImpl implements CronJobService {
     }
 
     @Override
-    public void keepCronJobEprsDetials(String username, String cronExpression) throws InternetBankingException {
+    public void keepCronJobEprsDetials(String username, String cronExpression,String cronExprDesc) throws InternetBankingException {
         CronJobExpression cronJobExpression = new CronJobExpression();
         cronJobExpression.setUsername(username);
         cronJobExpression.setCreatedOn(new Date());
         cronJobExpression.setFlag("Y");
         cronJobExpression.setCronExpression(cronExpression);
+        cronJobExpression.setCronExpressionDesc(cronExprDesc);
         cronJobExpressionRepo.save(cronJobExpression);
     }
 

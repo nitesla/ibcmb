@@ -31,6 +31,7 @@ public class AdmJobController {
     private Logger logger = LoggerFactory.getLogger(this.getClass());
     @GetMapping
     public String manage() {
+
         return "adm/job/manage-job";
     }
 
@@ -44,10 +45,12 @@ public class AdmJobController {
         }
         logger.info("schedule {} and username {}",schedule,username);
         if((schedule != null)&&(!schedule.equalsIgnoreCase(""))){
-            String cronExpression = CronJobUtils.getCronExpression(schedule, webRequest);
+            String cronExpression = CronJobUtils.getCronExpression(schedule, webRequest).get("value");
+            String cronExprValue = CronJobUtils.getCronExpression(schedule, webRequest).get("desc");
+            logger.info("expression value {} and description {}",cronExpression,cronExprValue);
             if(!cronExpression.equalsIgnoreCase("")) {
-                cronJobService.deleteRunningJob();
-                cronJobService.keepCronJobEprsDetials(username, cronExpression);
+//                cronJobService.deleteRunningJob();
+//                cronJobService.keepCronJobEprsDetials(username, cronExpression,"");
                 redirectAttributes.addFlashAttribute("message", messageSource.getMessage("job.update.success", null, locale));
                 return "redirect:/admin/job";
             }

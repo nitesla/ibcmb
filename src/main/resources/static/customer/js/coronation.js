@@ -125,7 +125,7 @@ function numberWithCommas(x) {
 
 
 function showSpinner() {
-    // alert("cha");
+    console.log("Show spinner");
     $(".spinner-box").show();
     $('.spinner-box').css("display", 'block');
 }
