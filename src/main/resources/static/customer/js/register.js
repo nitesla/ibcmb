@@ -105,7 +105,7 @@ form.children("div").steps({
     },
     onFinishing: function (event, currentIndex)
     {
-        $('#myLoader').modal('show');
+        // $('#myLoader').modal('show');
         //form.validate().settings.ignore = ":disabled";
         return form.valid() && registerUser();
     },
@@ -166,6 +166,7 @@ var customerId = "null";
 function validateAccountDetails(accountNumber, email, birthDate){
 
      $('#myLoader').modal('show');
+
     if(email == ""){
         email = "ib@coronationmb.com"
     }
@@ -637,13 +638,14 @@ function checkImage() {
 }
 
 function registerUser(){
- $('#myLoader').modal('show');
-    var returnValue = false;
-    $('#reg-form').submit(function(e){
-        e.preventDefault();
-        var url = '';
-        var data = $(this).serialize();
-
+    console.log("to register");
+    // $('.actions > ul').hide();
+    var time = 500;
+    $('#myLoader').modal('show');
+        var returnValue = false;
+        var url = '/register';
+        var data = $("#reg-form").serialize();
+    setTimeout(function(){
         var http = new XMLHttpRequest();
         http.open("POST", url, false);
         http.setRequestHeader("content-type","application/x-www-form-urlencoded");
@@ -653,11 +655,15 @@ function registerUser(){
                 data = String(http.responseText);
                 if(data==="true"){
                     $('#returnValue').val(true);
+                    redirectUser();
                 }else {
+                    // $('.actions > ul').show();
+                    $('#myLoader').modal('hide');
                     $('#errorMess').text(data);
                     $('#myModalError').modal('show');
                 }
             }else{
+                // hideSpinner();
                 console.log("http output 2 "+http.responseText);
                 $('#myLoader').modal('hide');
                 $('#errorMess').text("Service not available, please try again later");
@@ -665,6 +671,18 @@ function registerUser(){
             }
         };
         http.send(data);
+        returnValue = $('#returnValue').val();
+        console.log("final response "+returnValue);
+        if(returnValue === 'true'){
+            //username is valid and available
+            return true;
+        }else{
+            // $('#myLoader').modal('hide');
+            hideSpinner();
+            return false;
+        }
+    }, time );
+
     //     $.ajax({
     //         url: '',
     //         async:false,
@@ -686,12 +704,9 @@ function registerUser(){
     //             $('#myModalError').modal('show');
     //         }
     //     });
-    });
-    $('#reg-form').submit();
-     $('#myLoader').modal('hide');
-    returnValue = $('#returnValue').val();
-    //alert(returnValue);
-    return Boolean(returnValue);
+    // $('#reg-form').submit();
+    //  $('#myLoader').modal('hide');
+
 }
 
 function redirectUser() {
