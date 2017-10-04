@@ -92,7 +92,6 @@ public class PasswordPolicyService {
             minLength = NumberUtils.toInt(minLengthOfPassword.getValue());
 
             ruleMessage = String.format("Minimum length of password required is %d", minLength);
-
             passwordRules.add(ruleMessage);
 
         }
@@ -124,9 +123,8 @@ public class PasswordPolicyService {
 
 
     public List<String> getPasswordRules() {
-        if (!initialized) {
             init();
-        }
+
         return passwordRules;
     }
 
