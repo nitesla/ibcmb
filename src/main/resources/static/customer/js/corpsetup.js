@@ -221,6 +221,7 @@ function setup(){
                 console.log("the corp response "+data);
                 //alert(data+" return ");
                 //callback methods go right here
+                redirectUser();
                 if (data === "true") {
                     $('#returnValue').val(true);
                     $('#myLoader').modal('hide');
@@ -248,5 +249,9 @@ function redirectUser() {
     $('#myModalSuccess').modal('show');
     $(".btn-link").on("click", function()
     {                                 window.location.href = "/corporate/logout";
+    });
+    $("#myModalSuccess").on("hidden.bs.modal", function () {
+        window.location.href = "/login/corporate";
+
     });
 }
