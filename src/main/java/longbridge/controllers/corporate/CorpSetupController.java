@@ -14,15 +14,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.WebRequest;
-import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import javax.servlet.http.HttpSession;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FilenameFilter;
@@ -213,17 +210,17 @@ public class CorpSetupController {
             custResetPassword.setConfirmPassword(confirm);
 
 
-            boolean valid = securityService.performTokenValidation(userDTO.getEntrustId(), userDTO.getEntrustGroup(), token);
-            if (valid){
+//            boolean valid = securityService.performTokenValidation(userDTO.getEntrustId(), userDTO.getEntrustGroup(), token);
+//            if (valid){
                 String message = corpProfileUpdateService.completeEntrustProfileCreation(userDTO);
                 logger.info("MESSAGE", message);
                 CorporateUser user = corporateUserService.getUserByName(userDTO.getUserName());
                 String message2 = corporateUserService.resetPassword(user, custResetPassword);
                 logger.info("MESSAGE 2", message2);
                 return "true";
-            }else {
-                return messageSource.getMessage("token.auth.failure", null, locale);
-            }
+//            }else {
+//                return messageSource.getMessage("token.auth.failure", null, locale);
+//            }
 
         }catch (InternetBankingSecurityException ibe){
             logger.error("Error validating token", ibe);

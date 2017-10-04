@@ -5,7 +5,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.context.request.WebRequest;
 
-import javax.validation.constraints.NotNull;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -125,7 +124,7 @@ public class CronJobUtils {
         return expression;
     }
 
-    @NotNull
+
     public static String getWeeklyExpression(String hour, String minute, String[] days){
 
         String exrInit = "0 ";
@@ -148,7 +147,8 @@ Sample Cron expression expected
 */
         return stringBuilder.toString();
     }
-    @NotNull
+
+
     public static String getMonthlyExpression(String monthChecker, String monthDay, String monthNum, String monthCategory, String monthWeek, String monthNumDesp, String monthHour, String monthMinute){
 
         String exrInit = "0 ";
@@ -175,7 +175,6 @@ Sample Cron expression expected
         return stringBuilder.toString();
     }
 
-    @NotNull
     public static String getYearlyExpression(String yearChecker, String yearMonth1, String yearMonthNum, String yearCategory, String yearMonthWeek, String yearMonth2, String yearHour, String yearMinute){
 
         String exrInit = "0 ";
@@ -221,7 +220,7 @@ Sample Cron expression expected
         }
         return null   ;
     }
-@org.jetbrains.annotations.NotNull
+
 private static String getTimeSuffix(String hour){
     if(Integer.parseInt(hour)>11){
         return "PM";

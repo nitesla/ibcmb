@@ -14,7 +14,7 @@ form.validate({
 var SECURITY_QUESTION_STEP = 0;
 var PHISHING_IMAGE_STEP = 1;
 var PASSWORD_RESET_STEP = 2;
-var TOKEN_AUTH_STEP = 4;
+// var TOKEN_AUTH_STEP = 4;
 form.children("div").steps({
     headerTag: "h3",
     bodyTag: "section",
@@ -60,13 +60,13 @@ form.children("div").steps({
             getRegSummary();
             return isValid && validatePassword(confirm);
         }
-        if(TOKEN_AUTH_STEP === currentIndex){
-            console.log("Current Step is the phishing image step");
-            //$("#reg-form").submit();
-            // getRegSummary();
-
-            return isValid;
-        }
+        // if(TOKEN_AUTH_STEP === currentIndex){
+        //     console.log("Current Step is the phishing image step");
+        //     //$("#reg-form").submit();
+        //     // getRegSummary();
+        //
+        //     return isValid;
+        // }
 
 
         form.validate().settings.ignore = ":disabled,:hidden";

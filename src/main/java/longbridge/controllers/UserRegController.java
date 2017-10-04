@@ -639,7 +639,8 @@ public class UserRegController {
 //        }
 
         List<CodeDTO> secQues = codeService.getCodesByType("SECURITY_QUESTION");
-        int noOfQuestions = securityService.getMinUserQA();
+        //int noOfQuestions = securityService.getMinUserQA();
+        int noOfQuestions = 2;
 //        logger.info("num of qs on entrust {}",noOfQuestions);
         ArrayList[] masterList = new ArrayList[noOfQuestions];
         int questionsPerSection = (secQues.size() - (secQues.size() % noOfQuestions)) / noOfQuestions;

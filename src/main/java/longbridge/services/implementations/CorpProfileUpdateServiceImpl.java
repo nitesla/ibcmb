@@ -88,8 +88,6 @@ public class CorpProfileUpdateServiceImpl implements CorpProfileUpdateService{
 
                     setEntrustUserMutualAuth(user.getEntrustId(), user.getEntrustGroup(), user.getCaptionSec(), user.getPhishingSec());
 
-
-
                     CorporateUser corporateUser = corporateUserRepo.findOne(user.getId());
 
                     corporateUser.setIsFirstTimeLogon("N");
