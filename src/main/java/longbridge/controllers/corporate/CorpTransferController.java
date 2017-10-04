@@ -462,7 +462,7 @@ public class CorpTransferController {
         return "";
     }
 
-    @RequestMapping(value = "/limit/{accountNumber}", method = RequestMethod.GET, produces = "application/json")
+    @RequestMapping(value = "/limit/{accountNumber}/{channel}", method = RequestMethod.GET, produces = "application/json")
     @ResponseBody
     public String getLimit(@PathVariable String accountNumber,@PathVariable String channel) throws Exception {
 

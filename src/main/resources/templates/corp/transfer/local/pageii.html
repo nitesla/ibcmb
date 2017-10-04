@@ -166,26 +166,29 @@
         function getLimit() {
 
             var accountNumber = $('#source').val();
-            $.ajax({
-                url: "/retail/transfer/limit/" + accountNumber + "/INTRABANK",
-                type: 'GET',
-                async: false,
-                success: function (jd) {
-                    var message = jd.message;
-                    var success = jd.success;
-                    console.log(message);
-                    console.log(success);
-                    if (success == false) {
-                        document.getElementById("mylimit").textContent = "Could not get limit from server, please try again.";
-                        $("#mylimit").show();
-                    } else {
+            if(accountNumber!=null && accountNumber!='' ){
+                $.ajax({
+                    url: "/retail/transfer/limit/" + accountNumber + "/INTRABANK",
+                    type: 'GET',
+                    async: false,
+                    success: function (jd) {
+                        var message = jd.message;
+                        var success = jd.success;
+                        console.log(message);
+                        console.log(success);
+                        if (success == false) {
+                            document.getElementById("mylimit").textContent = "Could not get limit from server, please try again.";
+                            $("#mylimit").show();
+                        } else {
 //                    $('input[name=availBal]').val(bal);
-                        var bal = numberWithCommas(message);
-                        $('#limit').html("Limit: " + bal);
+                            var bal = numberWithCommas(message);
+                            $('#limit').html("Limit: " + bal);
 
+                        }
                     }
-                }
-            })
+                })
+            }
+
         }
 
     </script>
