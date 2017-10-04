@@ -189,6 +189,8 @@ public class CronJobServiceImpl implements CronJobService {
                 CustomerDetails details = integrationService.viewCustomerDetailsByCif(corporate.getCustomerId());
                 updateCorporateUserBVN(corporate,details);
                 updateCorporateUserTaxId(corporate,details);
+                updateCorporateRCNum(corporate,details);
+
             } catch (Exception e) {
                 logger.info("the error {}",e.getMessage());
                 e.printStackTrace();
@@ -224,7 +226,18 @@ public class CronJobServiceImpl implements CronJobService {
             }
         }
     }
-
+    public void updateCorporateRCNum(Corporate corporate, CustomerDetails details){
+        String RCNum = corporate.getRcNumber();
+        if((RCNum == null)||RCNum.equalsIgnoreCase("")||(!RCNum.equalsIgnoreCase(details.getRcNo()))){
+            corporate.setRcNumber(details.getRcNo());
+            logger.info("Updating Corporate RCNumber for for {} to {}",corporate.getCustomerId(),corporate.getRcNumber());
+            try {
+                corporateRepo.save(corporate);
+            } catch (Exception e) {
+//                e.printStackTrace();
+            }
+        }
+    }
 
     @Override
     public void updateCorporateUserPhoneNo(CorporateUser corporateUser, CustomerDetails details) throws InternetBankingException {

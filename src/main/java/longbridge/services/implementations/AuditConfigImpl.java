@@ -300,6 +300,13 @@ public class AuditConfigImpl implements AuditConfigService {
 						corporateUser.setRole(null);
 						auditDTO.setEntityDetails((Object)corporateUser);
 						break;
+					case "BulkTransfer":
+						BulkTransfer bulkTransfer = (BulkTransfer) abstractEntities.get(0);
+						bulkTransfer.setCorporate(null);
+						bulkTransfer.setCrRequestList(null);
+						bulkTransfer.setTransferAuth(null);
+						auditDTO.setEntityDetails((Object)bulkTransfer);
+						break;
 						default:
 							auditDTO.setEntityDetails(abstractEntities.get(0));
 							break;

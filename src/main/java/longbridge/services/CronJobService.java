@@ -27,6 +27,7 @@ public interface CronJobService {
     void updateCorporateUserBVN(Corporate corporate, CustomerDetails details) throws InternetBankingException;
 
     void updateCorporateUserTaxId(Corporate corporate, CustomerDetails details) throws InternetBankingException;
+    void updateCorporateRCNum(Corporate corporate, CustomerDetails details) throws InternetBankingException;
 
     void updateCorporateUserPhoneNo(CorporateUser corporateUser, CustomerDetails details) throws InternetBankingException;
     void updateCorporateUserEmail(CorporateUser corporateUser,CustomerDetails details) throws InternetBankingException;
