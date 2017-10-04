@@ -2,18 +2,14 @@ package longbridge.config.audits;
 
 import longbridge.config.SpringContext;
 import org.codehaus.jettison.json.JSONObject;
-import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
-import org.springframework.transaction.annotation.Transactional;
 
 import javax.sql.DataSource;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -28,7 +24,7 @@ public class RevisedEntitiesUtil {
 
     private static final String PACKAGE_NAME = "longbridge.models.";
 
-    @Transactional
+
     public static  List<Integer> revisedEntityDetails(String entityName,Integer revId)
     {
         List<Map<String ,Object>> mapList=null;
@@ -50,7 +46,7 @@ public class RevisedEntitiesUtil {
 
         return revIds;
     }
-    @NotNull
+
     private static String getOracleEntity(String enttyname){
         StringBuilder builder = new StringBuilder();
         for(int y = 0; y < enttyname.length(); y++){
@@ -63,7 +59,7 @@ public class RevisedEntitiesUtil {
         }
         return builder.toString();
     }
-    @Transactional
+
     public static  Map<String, List<String>> getEntityPastDetails(String entityName,String[] revId)
     {
         List<Integer> refIds = new ArrayList<>();
@@ -149,7 +145,8 @@ public class RevisedEntitiesUtil {
         }
         return entityDetails;
     }
-    @Transactional
+
+
     public static  List<Map<String ,Object>> getCurrentDetails(NamedParameterJdbcTemplate namedParameterJdbcTemplate,String entity,Map refDetails)
     {
         List<Map<String ,Object>> mapList=null;

@@ -84,13 +84,3 @@ public class InternetbankingApplication extends SpringBootServletInitializer imp
 
 
 }
-
-
-
-
-
-
-
-
-
-
