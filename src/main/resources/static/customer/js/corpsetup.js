@@ -221,7 +221,6 @@ function setup(){
                 console.log("the corp response "+data);
                 //alert(data+" return ");
                 //callback methods go right here
-                redirectUser();
                 if (data === "true") {
                     $('#returnValue').val(true);
                     $('#myLoader').modal('hide');
