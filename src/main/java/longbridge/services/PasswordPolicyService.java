@@ -94,8 +94,6 @@ public class PasswordPolicyService {
         if (minLengthOfPassword != null && minLengthOfPassword.isEnabled()) {
             minLength = NumberUtils.toInt(minLengthOfPassword.getValue());
             ruleMessage = String.format(messageSource.getMessage("password.min.len", null, locale), minLength);
-            System.out.println("Min password length is "+minLength);
-            System.out.println("Message: "+ruleMessage);
             passwordRules.add(ruleMessage);
 
         }

@@ -205,7 +205,10 @@ public class CorpTransferController {
     String getAccountCurrency(@PathVariable String accountId) {
 
       try {
-          return accountService.getAccountByAccountNumber(accountId).getCurrencyCode();
+          Account account = accountService.getAccountByAccountNumber(accountId);
+          if(account !=null) {
+              return account.getCurrencyCode();
+          }
       }
       catch (Exception e){
           logger.error("Error getting currency", e);
@@ -257,8 +260,6 @@ public class CorpTransferController {
                     return "corp/transfer/transferauth";
                 }
                 request.getSession().removeAttribute("auth-needed");
-
-
             }
 
 
