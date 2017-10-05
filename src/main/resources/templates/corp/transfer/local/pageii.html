@@ -145,7 +145,7 @@
         function getDestCurrency() {
             var accountNumber = $('#source').val();
             $.ajax({
-                url: "/corporate/transfer/" + accountNumber + "/currency",
+                url: "/corporate/transfer/"+accountNumber + "/currency",
                 type: 'GET',
                 async: false,
                 success: function (currency) {
@@ -197,4 +197,4 @@
 
 
 </body>
-</html>
+</html>    b

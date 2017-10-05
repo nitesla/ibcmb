@@ -345,39 +345,10 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public List<AccountDTO> getAccountsAndBalances(String customerId) {
-        List<AccountDTO> accountsForDebitAndCredit = new ArrayList<>();
+
         //Iterable<Account> accounts = this.getCustomerAccounts(customerId);
-        Iterable<AccountDTO> accountDTOS = convertEntitiesToDTOs(this.getCustomerAccounts(customerId));
-        StreamSupport
-                .stream(accountDTOS.spliterator(), false)
-                .filter(i -> !accountConfigService.isAccountHidden(i.getAccountNumber()))
-                .filter(i -> !accountConfigService.isAccountRestrictedForView(i.getAccountNumber()))
-                .filter(i -> !accountConfigService.isAccountRestrictedForDebit(i.getAccountNumber()))
-                .filter(i -> !accountConfigService.isAccountRestrictedForCredit(i.getAccountNumber()))
-                .filter(i -> !accountConfigService.isAccountSchemeTypeRestrictedForView(i.getSchemeType()))
-                .filter(i -> !accountConfigService.isAccountSchemeTypeRestrictedForDebit(i.getSchemeType()))
-                .filter(i -> !accountConfigService.isAccountSchemeTypeRestrictedForCredit(i.getSchemeType()))
-                .filter(i -> !accountConfigService.isAccountSchemeCodeRestrictedForView(i.getSchemeCode()))
-                .filter(i -> !accountConfigService.isAccountSchemeCodeRestrictedForDebit(i.getSchemeCode()))
-                .filter(i -> !accountConfigService.isAccountSchemeCodeRestrictedForCredit(i.getSchemeCode()))
 
-                .forEach(i -> {
-                    Map<String, BigDecimal> balance = integrationService.getBalance(i.getAccountNumber());
-                    String availbalance = "0";
-                    String ledBalance = "0";
-                    if (balance != null) {
-                        availbalance = balance.get("AvailableBalance").toString();
-                        ledBalance = balance.get("LedgerBalance").toString();
-                    }
-
-                    i.setAccountBalance(availbalance);
-                    i.setLedgerBalance(ledBalance);
-                    accountsForDebitAndCredit.add(i);
-
-
-                });
-
-
+        List<AccountDTO> accountsForDebitAndCredit = getAccountsAndBalances(this.getCustomerAccounts(customerId));
         return accountsForDebitAndCredit;
     }
 
@@ -390,14 +361,14 @@ public class AccountServiceImpl implements AccountService {
                 .stream(accountDTOS.spliterator(), false)
                 .filter(i -> !accountConfigService.isAccountHidden(i.getAccountNumber()))
                 .filter(i -> !accountConfigService.isAccountRestrictedForView(i.getAccountNumber()))
-                .filter(i -> !accountConfigService.isAccountRestrictedForDebit(i.getAccountNumber()))
-                .filter(i -> !accountConfigService.isAccountRestrictedForCredit(i.getAccountNumber()))
+//                .filter(i -> !accountConfigService.isAccountRestrictedForDebit(i.getAccountNumber()))
+//                .filter(i -> !accountConfigService.isAccountRestrictedForCredit(i.getAccountNumber()))
                 .filter(i -> !accountConfigService.isAccountSchemeTypeRestrictedForView(i.getSchemeType()))
-                .filter(i -> !accountConfigService.isAccountSchemeTypeRestrictedForDebit(i.getSchemeType()))
-                .filter(i -> !accountConfigService.isAccountSchemeTypeRestrictedForCredit(i.getSchemeType()))
+//                .filter(i -> !accountConfigService.isAccountSchemeTypeRestrictedForDebit(i.getSchemeType()))
+//                .filter(i -> !accountConfigService.isAccountSchemeTypeRestrictedForCredit(i.getSchemeType()))
                 .filter(i -> !accountConfigService.isAccountSchemeCodeRestrictedForView(i.getSchemeCode()))
-                .filter(i -> !accountConfigService.isAccountSchemeCodeRestrictedForDebit(i.getSchemeCode()))
-                .filter(i -> !accountConfigService.isAccountSchemeCodeRestrictedForCredit(i.getSchemeCode()))
+//                .filter(i -> !accountConfigService.isAccountSchemeCodeRestrictedForDebit(i.getSchemeCode()))
+//                .filter(i -> !accountConfigService.isAccountSchemeCodeRestrictedForCredit(i.getSchemeCode()))
 
                 .forEach(i -> {
                     Map<String, BigDecimal> balance = integrationService.getBalance(i.getAccountNumber());
