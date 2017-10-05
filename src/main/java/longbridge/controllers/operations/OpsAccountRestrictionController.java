@@ -32,16 +32,16 @@ import java.util.Locale;
 @RequestMapping("/ops/accounts")
 public class OpsAccountRestrictionController {
     @Autowired
-    CodeService codeService;
+    private CodeService codeService;
 
     @Autowired
-    AccountConfigService accountConfigService;
+    private AccountConfigService accountConfigService;
 
     @Autowired
-    MessageSource messageSource;
+    private MessageSource messageSource;
 
 
-    Logger logger = LoggerFactory.getLogger(this.getClass());
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @ModelAttribute
     public void init(Model model) {
@@ -149,7 +149,6 @@ public class OpsAccountRestrictionController {
         } catch (InternetBankingException ibe) {
             logger.error("Could not delete account restriction", ibe);
             redirectAttributes.addFlashAttribute("message",ibe.getMessage());
-
         }
         return "redirect:/ops/accounts/restriction/account";
     }
