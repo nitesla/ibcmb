@@ -57,7 +57,7 @@
                     <li sec:authorize="hasAuthority('CODE_CONFIG')"><a href="/admin/codes/alltypes">Codes</a></li>
                     <li sec:authorize="hasAuthority('SETTING_CONFIG')"><a href="/admin/settings">System Settings</a></li>
                     <li><a href="/admin/checker">Maker Checker</a></li>
-                    <li><a href="/admin/secquestions/">Security Questions</a></li>
+                    <!--<li><a href="/admin/secquestions/">Security Questions</a></li>-->
                     <!--<li><a href="/admin/phishing/">Phishing Image</a></li>-->
                     <li><a href="/admin/job">Batch Job</a></li>
                 </ul>
@@ -163,21 +163,21 @@
             <!--</li>-->
 
 
-            <!--<li sec:authorize="hasAuthority('MANAGE_TRANSACTION')"><a><i class="fa fa-tasks"></i> Transactions <span class="fa fa-chevron-down"></span></a>-->
-                <!--<ul class="nav child_menu">-->
+            <li sec:authorize="hasAuthority('MANAGE_TRANSACTION')"><a><i class="fa fa-tasks"></i> Account <span class="fa fa-chevron-down"></span></a>
+                <ul class="nav child_menu">
 
-                    <!--<li sec:authorize="hasAuthority('ACCOUNT_RESTRICTION')"><a href="/ops/accounts/restriction/account"> Account Restriction</a>-->
-                        <!--&lt;!&ndash;<ul class="nav child_menu">&ndash;&gt;-->
-                            <!--&lt;!&ndash;<li sec:authorize="hasAuthority('ACCOUNT_CLASS_RESTRICTION')" class="sub_menu"><a href="/ops/accounts/restriction/class">Global</a></li>&ndash;&gt;-->
-                            <!--&lt;!&ndash;<li sec:authorize="hasAuthority('SINGLE_ACCOUNT_RESTRICTION')" class="sub_menu"><a href="/ops/accounts/restriction/account">Individual</a></li>&ndash;&gt;-->
+                    <li sec:authorize="hasAuthority('ACCOUNT_RESTRICTION')"><a href="/ops/accounts/restriction/account"> Restriction</a>
+                        <!--<ul class="nav child_menu">-->
+                            <!--<li sec:authorize="hasAuthority('ACCOUNT_CLASS_RESTRICTION')" class="sub_menu"><a href="/ops/accounts/restriction/class">Global</a></li>-->
+                            <!--<li sec:authorize="hasAuthority('SINGLE_ACCOUNT_RESTRICTION')" class="sub_menu"><a href="/ops/accounts/restriction/account">Individual</a></li>-->
 
-                        <!--&lt;!&ndash;</ul>&ndash;&gt;-->
-                    <!--</li>-->
-                    <!--&lt;!&ndash;<li sec:authorize="hasAuthority('MANAGE_FEES')"><a href="/ops/fees">Fees</a></li>&ndash;&gt;-->
+                        <!--</ul>-->
+                    </li>
+                    <!--<li sec:authorize="hasAuthority('MANAGE_FEES')"><a href="/ops/fees">Fees</a></li>-->
 
-                <!--</ul>-->
+                </ul>
 
-            <!--</li>-->
+            </li>
 
             <!--<li sec:authorize="hasAuthority('MAILBOX')"><a><i class="fa fa-inbox"></i> Mailbox<span class="fa fa-chevron-down"></span></a>-->
                 <!--<ul class="nav child_menu">-->

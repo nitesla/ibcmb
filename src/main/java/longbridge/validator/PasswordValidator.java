@@ -12,12 +12,15 @@ import org.apache.commons.lang3.math.NumberUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Scope;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -44,6 +47,11 @@ public class PasswordValidator {
     @Autowired
     private CorporatePasswordRepo corporatePasswordRepo;
 
+    @Autowired
+    private MessageSource messageSource;
+
+    private Locale locale = LocaleContextHolder.getLocale();
+
 
     private Pattern digitPattern = Pattern.compile("[0-9]");
     private Pattern letterPattern = Pattern.compile("[a-zA-Z]");
@@ -67,7 +75,6 @@ public class PasswordValidator {
     private StringBuilder errorMessage;
     private String message = "";
 
-    Logger logger = LoggerFactory.getLogger(this.getClass());
 
 
 
@@ -75,8 +82,8 @@ public class PasswordValidator {
     private void initializeSettings() {
         numOfPasswordDigits = configService.getSettingByName("PASSWORD_NUM_DIGITS");
         noSpecialChar = configService.getSettingByName("PASSWORD_NUM_SPECIAL_CHARS");
-        minLengthOfPassword = configService.getSettingByName("PASSWORD_MIN_LEN");
-        maxLengthOfPassword = configService.getSettingByName("PASSWORD_MAX_LEN");
+        minLengthOfPassword = configService.getSettingByName("PASSWORD_MIN_LENGTH");
+        maxLengthOfPassword = configService.getSettingByName("PASSWORD_MAX_LENGTH");
         specialChars = configService.getSettingByName("PASSWORD_SPECIAL_CHARS");
         numOfChangesBeforeReuse = configService.getSettingByName("PASSWORD_REUSE");
 
@@ -135,30 +142,29 @@ public class PasswordValidator {
         boolean noOK = password.length() >= minLength && password.length() <= maxLength;
 
         if (!digitOK) {
-            message = String.format("Your password must include at least %d digits",
+            message = String.format(messageSource.getMessage("pass.num.digit",null,locale),
                     numOfDigits);
             errorMessage.append(message);
             errorMessage.append(".\n");
         }
         if (!specOK) {
-            message = String.format(
-                    "Your password must include at least %d special characters from %s", noOfSpecial,
+            message = String.format(messageSource.getMessage("pass.num.spec.char",null,locale), noOfSpecial,
                     specialCharacters);
             errorMessage.append(message);
             errorMessage.append(".\n");
 
         }
         if (!noOK) {
-            message = String.format(
-                    "Your password must be between %d and %d characters", minLength, maxLength);
+            message = String.format(messageSource.getMessage(
+                    "pass.length",null,locale), minLength, maxLength);
             errorMessage.append(message);
             errorMessage.append(".\n");
         }
 
 
             if (!isPasswordReuseable(password, user)) {
-                message = String.format(
-                        "Previous passwords can only be reused after %d different passwords", numOfChanges);
+                message = String.format(messageSource.getMessage(
+                        "pass.reuse",null,locale), numOfChanges);
                 errorMessage.append(message);
                 errorMessage.append(".\n");
             }

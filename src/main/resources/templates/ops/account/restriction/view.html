@@ -82,8 +82,9 @@
                                 <table class="table table-striped table-bordered table-hover" id="restriction">
                                     <thead>
                                     <tr>
-                                        <th>Restriction Value</th>
                                         <th>Restriction Type</th>
+                                        <th>Value</th>
+                                        <th>Restricted From</th>
                                         <th>Date Created</th>
 
                                     </tr>
@@ -94,8 +95,9 @@
                                     </tbody>
                                     <tfoot>
                                     <tr>
-                                        <th>Restriction Value</th>
                                         <th>Restriction Type</th>
+                                        <th>Value</th>
+                                        <th>Restricted From</th>
                                         <th>Date Created</th>
 
                                     </tr>
@@ -141,8 +143,9 @@
             "dom": 'T<"clear">frtlp',
 
             "columns": [
-                { "data": "restrictionValue" },
                 { "data": "restrictionType" },
+                { "data": "restrictionValue" },
+                { "data": "restrictedFor" },
                 { "data": "dateCreated" }
 
             ] });

@@ -84,7 +84,7 @@ public class UserRegController {
     String getAccountDetailsFromNumber(HttpServletRequest webRequest) {
 
         logger.info("Customer Registration Started.");
-//        logClientRequestHeaders(webRequest);
+        logClientRequestHeaders(webRequest);
         String customerId = "";
         String accountNumber = webRequest.getParameter("accountNumber");
         logger.info("Account number : " + accountNumber);
@@ -125,13 +125,13 @@ public class UserRegController {
 
     }
 
-    private void logClientRequestHeaders(WebRequest request) {
+    private void logClientRequestHeaders(HttpServletRequest request) {
 
-        Iterator<String> headers = request.getHeaderNames();
+        Enumeration<String> headers = request.getHeaderNames();
         StringBuilder builder = new StringBuilder();
 
-        while (headers.hasNext()) {
-            String header = headers.next();
+        while (headers.hasMoreElements()) {
+            String header = headers.nextElement();
             builder.append(header + " : " + request.getHeader(header) + "\n");
         }
 
@@ -639,8 +639,7 @@ public class UserRegController {
 //        }
 
         List<CodeDTO> secQues = codeService.getCodesByType("SECURITY_QUESTION");
-        //int noOfQuestions = securityService.getMinUserQA();
-        int noOfQuestions = 2;
+        int noOfQuestions = securityService.getMinUserQA();
 //        logger.info("num of qs on entrust {}",noOfQuestions);
         ArrayList[] masterList = new ArrayList[noOfQuestions];
         int questionsPerSection = (secQues.size() - (secQues.size() % noOfQuestions)) / noOfQuestions;

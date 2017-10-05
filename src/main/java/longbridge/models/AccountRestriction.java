@@ -81,9 +81,9 @@ public class AccountRestriction extends AbstractEntity implements PrettySerializ
                     throws IOException, JsonProcessingException
             {
                 gen.writeStartObject();
-                gen.writeStringField("Restriction Value",value.restrictionValue);
                 gen.writeStringField("Restriction Type",value.restrictionType);
-                gen.writeStringField("Restriction For",value.restrictedFor);
+                gen.writeStringField("Value",value.restrictionValue);
+                gen.writeStringField("Restricted From",value.restrictedFor);
                 gen.writeEndObject();
             }
         };

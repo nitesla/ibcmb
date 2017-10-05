@@ -99,6 +99,7 @@ public class AdmAuditController {
             List<String> headers =  new ArrayList<>();
             cl = Class.forName(className);
             Field[] declaredFields = cl.getDeclaredFields();
+
             logger.info("the fields of the {} are {}",entityName,declaredFields);
             for (Field field:declaredFields) {
                 String fieldStringVal  = field.toString();
@@ -117,6 +118,7 @@ public class AdmAuditController {
             model.addAttribute("fields",classFields);
             model.addAttribute("headers",headers);
             model.addAttribute("headerSize",headers.size());
+            logger.info("the superclass {}",cl.getSuperclass());
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
