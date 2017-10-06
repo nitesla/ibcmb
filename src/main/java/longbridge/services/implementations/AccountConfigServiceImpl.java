@@ -213,9 +213,9 @@ public class AccountConfigServiceImpl implements AccountConfigService {
     @Override
     public boolean isAccountRestrictedForDebit(String accountNumber) {
         boolean isRestricted = false;
-        AccountRestriction accountRestriction = accountRestrictionRepo.findByRestrictionValue(accountNumber);
+        AccountRestriction accountRestriction = accountRestrictionRepo.findFirstByRestrictionValueIgnoreCase(accountNumber);
         if (accountRestriction != null) {
-            if (accountRestriction.getRestrictionType().equals("D")) {
+            if (accountRestriction.getRestrictionType().equals("DEBIT")) {
                 isRestricted = true;
             }
         }
@@ -225,9 +225,9 @@ public class AccountConfigServiceImpl implements AccountConfigService {
     @Override
     public boolean isAccountRestrictedForCredit(String accountNumber) {
         boolean isRestricted = false;
-        AccountRestriction accountRestriction = accountRestrictionRepo.findByRestrictionValue(accountNumber);
+        AccountRestriction accountRestriction = accountRestrictionRepo.findFirstByRestrictionValueIgnoreCase(accountNumber);
         if (accountRestriction != null) {
-            if (accountRestriction.getRestrictionType().equals("C")) {
+            if (accountRestriction.getRestrictionType().equals("CREDIT")) {
                 isRestricted = true;
             }
         }
@@ -238,7 +238,7 @@ public class AccountConfigServiceImpl implements AccountConfigService {
     @Override
     public boolean isAccountRestrictedForView(String accountNumber) {
         boolean isRestricted = false;
-        AccountRestriction accountRestriction = accountRestrictionRepo.findFirstByRestrictionValueAndRestrictedForIgnoreCase(accountNumber,"V");
+        AccountRestriction accountRestriction = accountRestrictionRepo.findFirstByRestrictionValueIgnoreCaseAndRestrictedFor(accountNumber,"VIEW");
         if (accountRestriction != null) {
 
                 isRestricted = true;
@@ -250,7 +250,7 @@ public class AccountConfigServiceImpl implements AccountConfigService {
     @Override
     public boolean isAccountSchemeTypeRestrictedForDebit(String schemeType) {
         boolean isRestricted = false;
-        AccountRestriction accountRestriction = accountRestrictionRepo.findFirstByRestrictionValueAndRestrictedForIgnoreCase(schemeType,"D");
+        AccountRestriction accountRestriction = accountRestrictionRepo.findFirstByRestrictionValueIgnoreCaseAndRestrictedFor(schemeType,"DEBIT");
         if (accountRestriction != null) {
 
                 isRestricted = true;
@@ -262,7 +262,7 @@ public class AccountConfigServiceImpl implements AccountConfigService {
     @Override
     public boolean isAccountSchemeTypeRestrictedForCredit(String schemeType) {
         boolean isRestricted = false;
-        AccountRestriction accountRestriction = accountRestrictionRepo.findFirstByRestrictionValueAndRestrictedForIgnoreCase(schemeType,"D");
+        AccountRestriction accountRestriction = accountRestrictionRepo.findFirstByRestrictionValueIgnoreCaseAndRestrictedFor(schemeType,"CREDIT");
         if (accountRestriction != null) {
 
                 isRestricted = true;
@@ -276,7 +276,7 @@ public class AccountConfigServiceImpl implements AccountConfigService {
     @Override
     public boolean isAccountSchemeTypeRestrictedForView(String schemeType) {
         boolean isRestricted = false;
-        AccountRestriction accountRestriction = accountRestrictionRepo.findFirstByRestrictionValueAndRestrictedForIgnoreCase(schemeType,"V");
+        AccountRestriction accountRestriction = accountRestrictionRepo.findFirstByRestrictionValueIgnoreCaseAndRestrictedFor(schemeType,"VIEW");
         if (accountRestriction != null) {
                 isRestricted = true;
         }
@@ -287,7 +287,7 @@ public class AccountConfigServiceImpl implements AccountConfigService {
     @Override
     public boolean isAccountSchemeCodeRestrictedForDebit(String schemeCode) {
         boolean isRestricted = false;
-        AccountRestriction accountRestriction = accountRestrictionRepo.findFirstByRestrictionValueAndRestrictedForIgnoreCase(schemeCode,"D");
+        AccountRestriction accountRestriction = accountRestrictionRepo.findFirstByRestrictionValueIgnoreCaseAndRestrictedFor(schemeCode,"DEBIT");
         if (accountRestriction != null) {
 
             isRestricted = true;
@@ -300,7 +300,7 @@ public class AccountConfigServiceImpl implements AccountConfigService {
     @Override
     public boolean isAccountSchemeCodeRestrictedForCredit(String schemeCode) {
         boolean isRestricted = false;
-        AccountRestriction accountRestriction = accountRestrictionRepo.findFirstByRestrictionValueAndRestrictedForIgnoreCase(schemeCode,"D");
+        AccountRestriction accountRestriction = accountRestrictionRepo.findFirstByRestrictionValueIgnoreCaseAndRestrictedFor(schemeCode,"CREDIT");
         if (accountRestriction != null) {
 
             isRestricted = true;
@@ -314,7 +314,7 @@ public class AccountConfigServiceImpl implements AccountConfigService {
     @Override
     public boolean isAccountSchemeCodeRestrictedForView(String schemeCode) {
         boolean isRestricted = false;
-        AccountRestriction accountRestriction = accountRestrictionRepo.findFirstByRestrictionValueAndRestrictedForIgnoreCase(schemeCode,"V");
+        AccountRestriction accountRestriction = accountRestrictionRepo.findFirstByRestrictionValueIgnoreCaseAndRestrictedFor(schemeCode,"VIEW");
         if (accountRestriction != null) {
             isRestricted = true;
         }
@@ -348,11 +348,11 @@ public class AccountConfigServiceImpl implements AccountConfigService {
         Page<AccountClassRestriction> accountClassRestrictionPageable = accountClassRestrictionRepo.findAll(pageable);
         List<AccountClassRestrictionDTO> dtos = convertAccountClassRestrictionEntitiesToDTOs(accountClassRestrictionPageable.getContent());
         long t = accountClassRestrictionPageable.getTotalElements();
-        return new PageImpl<AccountClassRestrictionDTO>(dtos, pageable, t);
+        return new PageImpl<>(dtos, pageable, t);
     }
 
     private void validateNoAccountDuplication(AccountRestrictionDTO accountRestrictionDTO) throws DuplicateObjectException {
-        AccountRestriction accountRestriction = accountRestrictionRepo.findByRestrictionTypeAndRestrictionValue(accountRestrictionDTO.getRestrictionType(),accountRestrictionDTO.getRestrictionValue());
+        AccountRestriction accountRestriction = accountRestrictionRepo.findByRestrictionTypeAndRestrictionValueIgnoreCase(accountRestrictionDTO.getRestrictionType(),accountRestrictionDTO.getRestrictionValue());
         if (accountRestrictionDTO.getId() == null && accountRestriction != null) {
             throw new DuplicateObjectException(String.format(messageSource.getMessage("account.restrict.exists", null, locale), accountRestrictionDTO.getRestrictionValue())); //Duplication on creation
         }

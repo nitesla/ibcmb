@@ -225,7 +225,7 @@ public class CorpAccountController {
 
         Account account = accountRepo.findOne(id);
         String LAST_TEN_TRANSACTION = "10";
-        List<AccountDTO> accountList = accountService.getAccountsAndBalances(corporateUser.getCorporate().getCustomerId());
+        List<AccountDTO> accountList = accountService.getAccountsAndBalances(corporateUser.getCorporate().getAccounts());
         request.getSession().setAttribute("tranAccountNo", account.getAccountNumber());
         List<TransactionHistory> transRequestList = integrationService.getLastNTransactions(account.getAccountNumber(), LAST_TEN_TRANSACTION);
         if (transRequestList != null && !transRequestList.isEmpty()) {

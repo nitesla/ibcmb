@@ -284,12 +284,11 @@ public class AccountServiceImpl implements AccountService {
 
         }
 
-
         List<Account> accountsForDebit = new ArrayList<Account>();
         Iterable<Account> accounts = accountRepo.findByCustomerIdAndSchemeTypeIn(customerId, schmTypes);
         for (Account account : accounts) {
             if ("A".equalsIgnoreCase(account.getStatus()) && !accountConfigService.isAccountHidden(account.getAccountNumber())
-                    && (!accountConfigService.isAccountRestrictedForView(account.getAccountNumber())) && !accountConfigService.isAccountRestrictedForDebit(account.getAccountNumber()) && (!accountConfigService.isAccountSchemeTypeRestrictedForView(account.getSchemeCode()) && (!accountConfigService.isAccountSchemeTypeRestrictedForDebit(account.getSchemeCode())))) {
+                    && (!accountConfigService.isAccountRestrictedForView(account.getAccountNumber())) && !accountConfigService.isAccountRestrictedForDebit(account.getAccountNumber()) && (!accountConfigService.isAccountSchemeCodeRestrictedForView(account.getSchemeCode()) && (!accountConfigService.isAccountSchemeTypeRestrictedForDebit(account.getSchemeType())))) {
                 accountsForDebit.add(account);
             }
 
@@ -311,7 +310,7 @@ public class AccountServiceImpl implements AccountService {
         List<Account> accountsForDebit = new ArrayList<Account>();
         for (Account account : accounts) {
             if ("A".equalsIgnoreCase(account.getStatus()) && !accountConfigService.isAccountHidden(account.getAccountNumber())
-                    && (!accountConfigService.isAccountRestrictedForView(account.getAccountNumber())) && !accountConfigService.isAccountRestrictedForDebit(account.getAccountNumber()) && (!accountConfigService.isAccountSchemeTypeRestrictedForView(account.getSchemeCode()) && (!accountConfigService.isAccountSchemeTypeRestrictedForDebit(account.getSchemeCode())))
+                    && (!accountConfigService.isAccountRestrictedForView(account.getAccountNumber())) && !accountConfigService.isAccountRestrictedForDebit(account.getAccountNumber()) && (!accountConfigService.isAccountSchemeTypeRestrictedForView(account.getSchemeType()) && (!accountConfigService.isAccountSchemeCodeRestrictedForDebit(account.getSchemeCode())))
                     && (!schmTypes.isEmpty() && ArrayUtils.contains(schmTypes.toArray(), account.getSchemeType()))
                     ) {
                 accountsForDebit.add(account);
@@ -361,15 +360,8 @@ public class AccountServiceImpl implements AccountService {
                 .stream(accountDTOS.spliterator(), false)
                 .filter(i -> !accountConfigService.isAccountHidden(i.getAccountNumber()))
                 .filter(i -> !accountConfigService.isAccountRestrictedForView(i.getAccountNumber()))
-//                .filter(i -> !accountConfigService.isAccountRestrictedForDebit(i.getAccountNumber()))
-//                .filter(i -> !accountConfigService.isAccountRestrictedForCredit(i.getAccountNumber()))
                 .filter(i -> !accountConfigService.isAccountSchemeTypeRestrictedForView(i.getSchemeType()))
-//                .filter(i -> !accountConfigService.isAccountSchemeTypeRestrictedForDebit(i.getSchemeType()))
-//                .filter(i -> !accountConfigService.isAccountSchemeTypeRestrictedForCredit(i.getSchemeType()))
                 .filter(i -> !accountConfigService.isAccountSchemeCodeRestrictedForView(i.getSchemeCode()))
-//                .filter(i -> !accountConfigService.isAccountSchemeCodeRestrictedForDebit(i.getSchemeCode()))
-//                .filter(i -> !accountConfigService.isAccountSchemeCodeRestrictedForCredit(i.getSchemeCode()))
-
                 .forEach(i -> {
                     Map<String, BigDecimal> balance = integrationService.getBalance(i.getAccountNumber());
                     String availbalance = "0";
@@ -430,21 +422,6 @@ public class AccountServiceImpl implements AccountService {
         }
         return accountsForCredit;
     }
-
-
-//    private Account mockAccount;
-//
-//    /** Creates an empty {@link longbridge.models.Account} object which will be
-//     * returned in place of null
-//     * @return {@code Account} object containing "null" as account name
-//     */
-//    private Account mockAccount(){
-//        if(mockAccount==null){
-//            mockAccount = new Account();
-//            mockAccount.setPreferredName("null");
-//        }
-//        return mockAccount;
-//    }
 
 
 }

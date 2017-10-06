@@ -199,8 +199,8 @@ public class CorpTransferServiceImpl implements CorpTransferService {
         );
         if (limitExceeded) throw new InternetBankingTransferException(TransferExceptions.LIMIT_EXCEEDED.toString());
 
-        String cif = accountService.getAccountByAccountNumber(dto.getCustomerAccountNumber()).getCustomerId();
-        boolean acctPresent = StreamSupport.stream(accountService.getAccountsForDebit(cif).spliterator(), false)
+//        String cif = accountService.getAccountByAccountNumber(dto.getCustomerAccountNumber()).getCustomerId();
+        boolean acctPresent = StreamSupport.stream(accountService.getAccountsForDebit(getCurrentUser().getCorporate().getAccounts()).spliterator(), false)
                 .anyMatch(i -> i.getAccountNumber().equalsIgnoreCase(dto.getCustomerAccountNumber()));
 
 
