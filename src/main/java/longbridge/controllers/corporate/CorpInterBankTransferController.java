@@ -227,8 +227,9 @@ public class CorpInterBankTransferController {
 
         model.addAttribute("corpTransferRequest", requestDTO);
         model.addAttribute("beneficiary", corpLocalBeneficiaryService.convertEntityToDTO(beneficiary));
-        model.addAttribute("benName", beneficiary.getPreferredName());
-        request.getSession().setAttribute("benName", beneficiary.getPreferredName());
+        String benName = beneficiary.getPreferredName()!=null?beneficiary.getPreferredName():beneficiary.getAccountName();
+        model.addAttribute("benName", benName);
+        request.getSession().setAttribute("benName", benName);
         request.getSession().setAttribute("Lbeneficiary", corpLocalBeneficiaryService.convertEntityToDTO(beneficiary));
         return page + "pageii";
     }
@@ -260,7 +261,6 @@ public class CorpInterBankTransferController {
         if (type.equalsIgnoreCase("RTGS")) {
             transferRequestDTO.setTransferType(TransferType.RTGS);
 
-
         } else {
             transferRequestDTO.setTransferType(TransferType.INTER_BANK_TRANSFER);
 
@@ -269,17 +269,11 @@ public class CorpInterBankTransferController {
 
         if (request.getSession().getAttribute("Lbeneficiary") != null) {
             CorpLocalBeneficiaryDTO dto = (CorpLocalBeneficiaryDTO) request.getSession().getAttribute("Lbeneficiary");
-            model.addAttribute("beneficiary", dto);
+            String benName = dto.getPreferredName()!=null?dto.getPreferredName():dto.getAccountName();
+            model.addAttribute("benName", benName);
             transferRequestDTO.setFinancialInstitution(financialInstitutionService.getFinancialInstitutionByName(dto.getBeneficiaryBank()));
         }
         model.addAttribute("corpTransferRequest", transferRequestDTO);
-
-
-        if (request.getSession().getAttribute("Lbeneficiary") != null) {
-            CorpLocalBeneficiaryDTO dto = (CorpLocalBeneficiaryDTO) request.getSession().getAttribute("Lbeneficiary");
-            model.addAttribute("beneficiary", dto);
-            transferRequestDTO.setFinancialInstitution(financialInstitutionService.getFinancialInstitutionByCode(dto.getBeneficiaryBank()));
-        }
 
 
         return page + "pageii";

@@ -1,5 +1,6 @@
 package longbridge.services;
 
+import longbridge.api.AccountDetails;
 import longbridge.api.AccountInfo;
 import longbridge.dtos.AccountDTO;
 import longbridge.exception.InternetBankingException;
@@ -89,7 +90,12 @@ public interface AccountService {
     public Iterable<Account> getCustomerAccounts(String customerId, String currencyCode);
 
 
-    List<AccountInfo> filterTransactionalAccounts(List<AccountInfo> accounts);
+    List<AccountInfo> getTransactionalAccounts(List<AccountInfo> accounts);
+
+
+    List<Account> filterUnrestrictedAccounts(List<Account> accounts);
+
+    boolean isAccountRestricted(AccountDetails account);
 
     List<Account> getAccountsForDebit(String customerId);
     Iterable<Account> getAccountsForDebit(List<Account> accounts);

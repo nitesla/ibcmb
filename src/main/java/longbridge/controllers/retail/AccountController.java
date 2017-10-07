@@ -282,10 +282,6 @@ public class AccountController {
 	@Autowired
 	JavaMailSender mailSender;
 	private Locale locale = LocaleContextHolder.getLocale();
-	/*
-	 * @Autowired @Qualifier("accountReport2") private JasperReportsPdfView
-	 * helloReport;
-	 */
 
 	private Long customizeAccountId;
 
