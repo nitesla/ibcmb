@@ -34,58 +34,39 @@
                     <div class="col-md-12 col-sm-12 col-xs-12">
                         <div class="x_panel">
                             <div class="x_title">
-                                <div class="form-group">
-                                    <div class="col-lg-2">
-                                        <label for="entityName">Entity Name</label>
-                                    </div>
-                                    <div class="col-lg-8">
-                                        <select id="entityName" class="form-control" onchange="getEntityDetails(this.value)" >
-                                            <option>--entity name--</option>
-                                            <option th:each="entity: ${entities}" th:value="${entity.entityName}" th:text="${entity.entityName}"></option>
-                                        </select>
-                                    </div>
-                                </div>
                                 <ul class="nav navbar-left panel_toolbox">
-                                    <div class="col-lg-4">
-
-                                    </div>
-                                    <li>
+                                    <li >
                                         <div class="col-lg-4">
                                             <div class="title-action">
                                                 <!--<a  class="btn btn-primary btn-sm bt-select bt-link-act" href="/admin/audit/id/classname/view" disabled="disabled" ><i class="fa fa-pencil"></i>  View</a>-->
-
                                             </div>
                                         </div>
-                                        <div>
-
-                                        </div>
                                     </li>
-
+                                    <div class="input-group col-lg-6">
+                                        <!--<select id="entityName">-->
+                                            <!--<option th:each="entity: ${entities}" th:value="${entity}" th:text="${entity}"></option>-->
+                                        <!--</select>-->
+                                        <input type="text" class="form-control" id="pattern" placeholder="Search for..."/> <span
+                                            class="input-group-btn">
+										<button class="btn btn-success" id="search" type="button">Go!</button>
+									</span>
+                                    </div>
                                 </ul>
 
                                 <ul class="nav navbar-right panel_toolbox col-lg-4 pull-right">
 
                                     <!--<li class="pull-right" >-->
-                                    <!--<div class="input-group col-lg-12">-->
-                                    <!--<input type="text" class="form-control" id="pattern" placeholder="Search for..."/> <span-->
-                                    <!--class="input-group-btn">-->
-                                    <!--<button class="btn btn-success" id="search" type="button">Go!</button>-->
-                                    <!--</span>-->
-                                    <!--</div>-->
+                                        <!--<div class="input-group col-lg-12">-->
+                                            <!--<input type="text" class="form-control" id="pattern" placeholder="Search for..."/> <span-->
+                                                <!--class="input-group-btn">-->
+										     <!--<button class="btn btn-success" id="search" type="button">Go!</button>-->
+									       <!--</span>-->
+                                        <!--</div>-->
                                     <!--</li>-->
 
                                 </ul>
 
                                 <div class="clearfix"></div>
-                            </div>
-                            <div class="input-group col-lg-6">
-                                <!--<select id="entityName">-->
-                                <!--<option th:each="entity: ${entities}" th:value="${entity}" th:text="${entity}"></option>-->
-                                <!--</select>-->
-                                <input type="text" class="form-control" id="pattern" placeholder="Search for..."/> <span
-                                    class="input-group-btn">
-										<button class="btn btn-success" id="search" type="button">Go!</button>
-									</span>
                             </div>
                             <div class="x_content">
 
@@ -223,9 +204,29 @@
     var id;
     var className;
 
+    
 
 
+//    $("#auditview").on("click", "tr", function()
+//    {
+//        var table =  $('#auditview').DataTable();
+//        className = $(this).children(":first").text();
+//        id =table.row(this).id();
+//    });
 
+//    $("a.bt-link-act").on("click", function(e) {
+//        e.preventDefault();
+//        var link = $(e.currentTarget);
+//        if($(link).attr("disabled"))
+//        {
+//            return;
+//        }
+//        var dt = $('#auditview').DataTable();
+//        var details = id+"/"+className;
+//        var refDetials = link.attr("href").replace("id/classname",details);
+//        window.location.assign(refDetials);
+//
+//    } );
 
 
 
@@ -243,11 +244,7 @@
             window.location.assign(ooo);
         });
     }
-    function getEntityDetails(name) {
-        if(name != '') {
-            window.location.href = '/admin/audit/revised/' + name;
-        }
-    }
+
 
     /*]]>*/
 </script>

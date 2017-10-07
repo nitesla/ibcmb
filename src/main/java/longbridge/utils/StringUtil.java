@@ -42,4 +42,23 @@ public class StringUtil {
             }
         return "false";
     }
+    public static String convertFieldToTitle(String fieldName){
+        StringBuilder builder = new StringBuilder();
+        char[] fields = fieldName.toCharArray();
+        int counter = 0;
+        for (char field:fields) {
+            if(counter == 0){
+                builder.append(Character.toUpperCase(field));
+            }else {
+                if(Character.isUpperCase(field)){
+                    builder.append(" ");
+                    builder.append(field);
+                }else {
+                    builder.append(field);
+                }
+            }
+            counter++;
+        }
+        return builder.toString();
+    }
 }

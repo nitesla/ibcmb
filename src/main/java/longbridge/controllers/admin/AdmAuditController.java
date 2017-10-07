@@ -41,6 +41,7 @@ import java.util.List;
 import java.util.Map;
 
 import static java.lang.Integer.parseInt;
+import static longbridge.utils.StringUtil.convertFieldToTitle;
 
 
 /**
@@ -82,8 +83,10 @@ public class AdmAuditController {
     }
 
     @GetMapping("/revised/entities")
-    public String ListRevisedEnties()
+    public String ListRevisedEnties(Model model)
     {
+        List<AuditConfig> auditConfig=auditCfgService.getEntities();
+        model.addAttribute("entities",auditConfig);
         return "adm/audit/view";
     }
     @GetMapping("/revised/{entityName}")
@@ -92,6 +95,8 @@ public class AdmAuditController {
 
         logger.info("the entity name is {}",entityName);
         model.addAttribute("entityName",entityName);
+       List<AuditConfig> auditConfig=auditCfgService.getEntities();
+        model.addAttribute("entities",auditConfig);
         String className = PACKAGE_NAME+entityName;
         Class<?> cl = null;
         try {
@@ -112,7 +117,7 @@ public class AdmAuditController {
                         continue;
                     }
                 }
-                headers.add(fieldName);
+                headers.add(convertFieldToTitle(fieldName));
                 classFields.add("entityDetails." + fieldStringVal.substring(fieldStringVal.lastIndexOf('.') + 1, fieldStringVal.length()));
             }
             model.addAttribute("fields",classFields);

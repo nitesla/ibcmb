@@ -85,6 +85,10 @@ public class AuditConfigImpl implements AuditConfigService {
 	public Page<AuditConfig> getEntities(Pageable pageDetails) {
 		return configRepo.findAll(pageDetails);
 	}
+	@Override
+	public List<AuditConfig> getEntities() {
+		return configRepo.findAll();
+	}
 
 
 	@Override

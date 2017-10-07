@@ -38,8 +38,17 @@
                                     <li >
                                         <div class="col-lg-4">
                                             <div class="title-action">
-                                                <a  class="btn btn-primary btn-sm bt-select bt-link-act" href="/admin/audit/index/edit" disabled="disabled" ><i class="fa fa-pencil"></i>  View</a>
+                                                <div style="display: none">
+                                                    <a  class="btn btn-primary btn-sm bt-select bt-link-act" href="/admin/audit/revised/entityName" disabled="disabled" ><i class="fa fa-pencil"></i>  View</a>
+                                                </div>
+                                                <!--<input type="text" id="entitySearch" class="form-control"/><button onclick="searchEntity()">Search</button>-->
                                             </div>
+                                        </div>
+                                        <div class="input-group col-lg-6">
+                                            <input type="text" class="form-control" id="pattern" placeholder="Search for..."/> <span
+                                                class="input-group-btn">
+										<button class="btn btn-success" id="search" type="button">Go!</button>
+									</span>
                                         </div>
                                     </li>
 
@@ -85,7 +94,7 @@
 
 <script th:src="@{~/bank/vendors/datatables.net/js/jquery.dataTables.js}"></script>
 <script th:src="@{~/bank/js/dataTables.select.js}"></script>
-<script th:src="@{~/bank/js/dataTables.bootstrap.js}"></script>
+<script th:src="@{~/bank/js/dataTables.bootstrap.js}"></script>a
 <script th:src="@{~/bank/js/jquery.spring-friendly.min.js}"></script>
 <script th:src="@{~/bank/vendors/bootstrap-dialog/js/bootstrap-dialog.js}"></script>
 
@@ -93,46 +102,45 @@
 <!-- Page-Level Scripts -->
 <script>
     /*<![CDATA[*/
+
     $(document).ready(function() {
         var table = $('#audit').DataTable({
             select:true,
             responsive: true,
-            "lengthMenu" : [ [ 5, 10, 20],	[ 5, 10, 20 ] ],
             "pagingType" : "simple_numbers",
             "searching": false,
-            rowId: 'id',
+            rowId: 'entityName',
             "paging": true,
             "serverSide" : true,
-            "ajax": {
-                url: '/admin/audit/revised/entity/details',
-                type: 'POST',
-                async: true,
-                success: function (data) {
-                    alert("hh");
-                },error: function (data) {
-
+            "ajax" : {
+                url : "/admin/audit/all",
+                "type" : "GET",
+                "data" : function(d) {
+                    d.csearch = $('#pattern').val();
                 }
-            },
-            "dom": 'T<"clear">frtlp',
+            },            "dom": 'T<"clear">frtlp',
             "columns": [
                 { "data": "entityName" }
             ] });
 
         table.on('select', function() {
             if (table.rows({
-                    selected : true
-                }).indexes().length === 0) {
+                        selected : true
+                    }).indexes().length === 0) {
                 $('.bt-select').attr("disabled", true);
             } else {
                 $('.bt-select').removeAttr("disabled");
             }
+            var dt = $('#audit').DataTable();
+            $('.bt-link-act').click();
 
         });
 
-        table.on('deselect', function() {
+        table.on('deselect', function()
+        {
             if (table.rows({
-                    selected : true
-                }).indexes().length === 0) {
+                        selected : true
+                    }).indexes().length === 0) {
                 $('.bt-select').attr("disabled", true);
             } else {
                 $('.bt-select').removeAttr("disabled");
@@ -140,7 +148,29 @@
         });
 
     });
-
+    //    $("#audit tbody tr").live("click", function(event){
+    //        var position = audit.fnGetPosition(this); // getting the clicked row position
+    //        var id = audit.fnGetData(position)[0]; // getting the value of the first (invisible) column
+    //        console.log("the onclick id is "+id)
+    ////        displayUserInfo(id);
+    //    });
+    //function searchEntity() {
+    //    var csearch = $('#entitySearch').val();
+    //    var table = $('#audit').DataTable({
+    //        select:true,
+    //        responsive: true,
+    //        "pagingType" : "simple_numbers",
+    //        "searching": false,
+    //        rowId: 'entityName',
+    //        "paging": true,
+    //        "serverSide" : true,
+    //        "ajax": "/admin/audit/all",
+    //        "dom": 'T<"clear">frtlp',
+    //        "columns": [
+    //            { "data": csearch }
+    //        ] });
+    //
+    //}
     $("a.bt-link-act").on("click", function(e) {
         e.preventDefault();
         var link = $(e.currentTarget);
@@ -151,11 +181,15 @@
         var id = $(dt.row({
             selected: true
         }).node()).attr("id");
-        var ooo = link.attr("href").replace("index",id);
+        console.log("id "+id);
+        var ooo = link.attr("href").replace("entityName",id);
         window.location.assign(ooo);
 
     } );
-
+    $('#entitySearch').keyup(function(){
+        var table = $('#audit').DataTable();
+        table.search($(this).val()).draw() ;
+    });
     $("#delete-btn").on("click", function(e) {
         e.preventDefault();
         var link = $(e.currentTarget);
@@ -168,8 +202,8 @@
         }).node()).attr("id");
         //window.location.href = link.attr("formaction") + '?id=' + id;
         //replace {id} with id
-        var ooo = link.attr("href").replace("index",id);
-        warnBeforeRedirect(ooo);
+//        var ooo = link.attr("href").replace("index",id);
+//        warnBeforeRedirect(ooo);
 
     } );
 
@@ -201,20 +235,25 @@
             type: 'GET',
             url: '/admin/audit/edit',
             asyn:false,
-					data: {id:id},
+            data: {id:id},
 //					dataType: 'String',
             error: function (data) {
                 alert("failure");
 //                $('#sub').disabled();
             },
             success: function (reponse) {
-               alert(reponse);
+                alert(reponse);
             }
 
         });
 //        $.ajax({options});
     }
+    $("#search").on("click", function(e) {
+        e.preventDefault();
+        dt = $('#audit').DataTable();
+        dt.ajax.reload(null, true);
 
+    });
     /*]]>*/
 </script>
 
