@@ -228,8 +228,8 @@ public class InterBankTransferController {
 
         model.addAttribute("transferRequest", requestDTO);
         model.addAttribute("beneficiary", localBeneficiaryService.convertEntityToDTO(beneficiary));
-        model.addAttribute("benName", beneficiary.getPreferredName());
-        //request.getSession().setAttribute("benName", beneficiary.getPreferredName());
+        String benName = beneficiary.getPreferredName()!=null?beneficiary.getPreferredName():beneficiary.getAccountName();
+        model.addAttribute("benName", benName);
         request.getSession().setAttribute("Lbeneficiary", localBeneficiaryService.convertEntityToDTO(beneficiary));
         return page + "pageii";
     }
@@ -274,13 +274,10 @@ public class InterBankTransferController {
         model.addAttribute("transferRequest", transferRequestDTO);
         if (request.getSession().getAttribute("Lbeneficiary") != null) {
             LocalBeneficiaryDTO dto = (LocalBeneficiaryDTO) request.getSession().getAttribute("Lbeneficiary");
-            model.addAttribute("beneficiary", dto);
+            String benName = dto.getPreferredName()!=null?dto.getPreferredName():dto.getAccountName();
+            model.addAttribute("benName", benName);
             String bank = dto.getBeneficiaryBank();
-
-
             transferRequestDTO.setFinancialInstitution(financialInstitutionService.getFinancialInstitutionByCode(bank));
-
-
         }
 
 

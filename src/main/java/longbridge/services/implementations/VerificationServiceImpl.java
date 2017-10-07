@@ -249,8 +249,7 @@ public class VerificationServiceImpl implements VerificationService {
                 initiatedBy = operationsUserRepo.findFirstByUserName(initiator);
                 break;
         }
-        if (initiatedBy != null) {
-            if (initiatedBy.getEmail() != null) {
+        if (initiatedBy != null && initiatedBy.getEmail() != null) {
                 String initiatorName = initiatedBy.getFirstName() + " " + initiatedBy.getLastName();
                 String verifierName = verifiedBy.getFirstName() + " " + verifiedBy.getLastName();
                 Date date = verification.getVerifiedOn();
@@ -264,7 +263,7 @@ public class VerificationServiceImpl implements VerificationService {
                         .build();
                 new Thread(() -> mailService.send(email)).start();
             }
-        }
+
     }
 
     @Override

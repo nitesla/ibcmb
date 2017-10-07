@@ -143,7 +143,8 @@ public class LocalTransferController {
         transferRequestDTO.setFinancialInstitution(financialInstitutionService.getFinancialInstitutionByCode(bankCode));
         model.addAttribute("transferRequest", transferRequestDTO);
         model.addAttribute("beneficiary", beneficiary);
-        model.addAttribute("beneficiaryName", beneficiary.getPreferredName());
+        String benPreferedName = beneficiary.getPreferredName()==null?"":beneficiary.getPreferredName();
+        beneficiary.setPreferredName(benPreferedName);
         request.getSession().setAttribute("Lbeneficiary", beneficiary);
         return page + "pageii";
     }

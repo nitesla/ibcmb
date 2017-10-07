@@ -1387,13 +1387,13 @@ end
                                                             bottom: 0px;
                                                             left: 70%;
                                                             z-index: 10;
-                                                            padding: 40px 0 40px 0;
+                                                            padding: 140px 0 40px 0;
                                                             color: #fff;
-                                                            background-color: #9F614B;
+                                                            background-color: #946F61;
                                                             opacity: 0.8;
                                                             line-height: 20px;
                                                             text-align: center;
-                                                            font-size: 18px;
+                                                            font-size: 16px;
                                                         }
                                                         
                                                         .form-signin-heading {

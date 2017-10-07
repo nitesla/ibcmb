@@ -8,12 +8,11 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
 
-/** *
+/**
  * Created by Fortune on 4/5/2017.
- *
  */
 
-public class TransferRequestDTO implements Serializable{
+public class TransferRequestDTO implements Serializable {
 
 
     @JsonProperty("DT_RowId")
@@ -32,7 +31,7 @@ public class TransferRequestDTO implements Serializable{
 
     private String status;
 
-     private Date tranDate =new Date();
+    private Date tranDate = new Date();
 
     private String referenceNumber;
 

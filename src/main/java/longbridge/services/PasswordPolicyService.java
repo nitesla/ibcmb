@@ -11,12 +11,11 @@ import org.joda.time.LocalDateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by Fortune on 5/3/2017.
@@ -25,7 +24,7 @@ import java.util.List;
 @Service
 public class PasswordPolicyService {
 
-    String ruleMessage = "";
+    private String ruleMessage = "";
     @Autowired
     private ConfigurationService configService;
     @Autowired
@@ -40,6 +39,10 @@ public class PasswordPolicyService {
     private OpsPasswordRepo opsPasswordRepo;
     @Autowired
     private CorporatePasswordRepo corporatePasswordRepo;
+
+    @Autowired
+    private MessageSource messageSource;
+
     private List<String> passwordRules;
     private SettingDTO numOfPasswordDigits;
     private SettingDTO minLengthOfPassword;
@@ -57,15 +60,15 @@ public class PasswordPolicyService {
     private int numOfChanges = 0;
     private boolean initialized = false;
 
-    Logger logger = LoggerFactory.getLogger(this.getClass());
+    private Locale locale = LocaleContextHolder.getLocale();
 
     private void init() {
 
         passwordRules = new ArrayList<>();
         numOfPasswordDigits = configService.getSettingByName("PASSWORD_NUM_DIGITS");
         noSpecialChar = configService.getSettingByName("PASSWORD_NUM_SPECIAL_CHARS");
-        minLengthOfPassword = configService.getSettingByName("PASSWORD_MIN_LEN");
-        maxLengthOfPassword = configService.getSettingByName("PASSWORD_MAX_LEN");
+        minLengthOfPassword = configService.getSettingByName("PASSWORD_MIN_LENGTH");
+        maxLengthOfPassword = configService.getSettingByName("PASSWORD_MAX_LENGTH");
         specialChars = configService.getSettingByName("PASSWORD_SPECIAL_CHARS");
         numOfChangesBeforeReuse = configService.getSettingByName("PASSWORD_REUSE");
 
@@ -74,7 +77,7 @@ public class PasswordPolicyService {
             numOfDigits = NumberUtils.toInt(numOfPasswordDigits.getValue());
 
             if (numOfDigits > 0) {
-                ruleMessage = String.format("Minimum number of digits required in password is %d", numOfDigits);
+                ruleMessage = String.format(messageSource.getMessage("password.num.digit", null, locale), numOfDigits);
                 passwordRules.add(ruleMessage);
             }
 
@@ -83,34 +86,31 @@ public class PasswordPolicyService {
             noOfSpecial = NumberUtils.toInt(noSpecialChar.getValue());
 
             if (noOfSpecial > 0) {
-                ruleMessage = String.format("Minimum number of special characters required is %d", noOfSpecial);
+                ruleMessage = String.format(messageSource.getMessage("password.num.spec.char", null, locale), noOfSpecial);
                 passwordRules.add(ruleMessage);
             }
 
         }
         if (minLengthOfPassword != null && minLengthOfPassword.isEnabled()) {
             minLength = NumberUtils.toInt(minLengthOfPassword.getValue());
-
-            ruleMessage = String.format("Minimum length of password required is %d", minLength);
-
+            ruleMessage = String.format(messageSource.getMessage("password.min.len", null, locale), minLength);
             passwordRules.add(ruleMessage);
 
         }
         if (maxLengthOfPassword != null && maxLengthOfPassword.isEnabled()) {
             maxLength = NumberUtils.toInt(maxLengthOfPassword.getValue());
-
-            ruleMessage = String.format("Maximum length of password is %d", maxLength);
+            ruleMessage = String.format(messageSource.getMessage("password.max.len", null, locale), maxLength);
             passwordRules.add(ruleMessage);
         }
         if (specialChars != null && specialChars.isEnabled()) {
             specialCharacters = specialChars.getValue();
-            ruleMessage = String.format("Password must include any of these special characters: %s", specialCharacters);
+            ruleMessage = String.format(messageSource.getMessage("password.spec.chars", null, locale), specialCharacters);
             passwordRules.add(ruleMessage);
 
         }
         if (numOfChangesBeforeReuse != null && numOfChangesBeforeReuse.isEnabled()) {
             numOfChanges = NumberUtils.toInt(numOfChangesBeforeReuse.getValue());
-            ruleMessage = String.format("Password reuse must be after %d usages of different passwords", numOfChanges);
+            ruleMessage = String.format(messageSource.getMessage("password.reuse", null, locale), numOfChanges);
             passwordRules.add(ruleMessage);
 
         }
@@ -124,9 +124,7 @@ public class PasswordPolicyService {
 
 
     public List<String> getPasswordRules() {
-        if (!initialized) {
-            init();
-        }
+        init();
         return passwordRules;
     }
 
@@ -240,7 +238,7 @@ public class PasswordPolicyService {
 
     public boolean displayPasswordExpiryDate(Date expiryDate) {
 
-        if(expiryDate==null){
+        if (expiryDate == null) {
             return false;
         }
         SettingDTO setting = configService.getSettingByName("PASSWORD_AUTO_RESET");
@@ -259,14 +257,13 @@ public class PasswordPolicyService {
     }
 
 
-    public PasswordStrengthDTO getPasswordStrengthParams(){
+    public PasswordStrengthDTO getPasswordStrengthParams() {
         init();
         PasswordStrengthDTO passwordStrengthDTO = new PasswordStrengthDTO();
         passwordStrengthDTO.setNumOfdigits(numOfDigits);
         passwordStrengthDTO.setSpecialChars(specialCharacters);
         passwordStrengthDTO.setNumOfSpecChar(noOfSpecial);
         passwordStrengthDTO.setMinLength(minLength);
-
         return passwordStrengthDTO;
     }
 }

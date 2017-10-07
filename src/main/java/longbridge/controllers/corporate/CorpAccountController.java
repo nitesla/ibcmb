@@ -110,9 +110,9 @@ public class CorpAccountController {
     @GetMapping("/customize")
     public String CustomizeAccountHome(Model model, Principal principal) {
         CorporateUser user = corporateUserService.getUserByName(principal.getName());
-        Iterable<AccountDTO> accounts = accountService.getAccounts(user.getCorporate().getCustomerId());
+        Iterable<Account> accounts = accountService.filterUnrestrictedAccounts(user.getCorporate().getAccounts());
 
-        for (AccountDTO account : accounts) {
+        for (Account account : accounts) {
             Code code = codeService.getByTypeAndCode("ACCOUNT_CLASS", account.getSchemeType());
             if (code != null && code.getDescription() != null) {
                 account.setSchemeType(code.getDescription());
@@ -160,7 +160,7 @@ public class CorpAccountController {
     @GetMapping("/settings")
     public String settingsPage(Model model, Principal principal) {
         CorporateUser user = corporateUserService.getUserByName(principal.getName());
-        Iterable<Account> accounts = user.getCorporate().getAccounts();
+        Iterable<Account> accounts = accountService.filterUnrestrictedAccounts(user.getCorporate().getAccounts());
         for (Account account : accounts) {
             Code code = codeService.getByTypeAndCode("ACCOUNT_CLASS", account.getSchemeType());
             if (code != null && code.getDescription() != null) {
@@ -225,7 +225,7 @@ public class CorpAccountController {
 
         Account account = accountRepo.findOne(id);
         String LAST_TEN_TRANSACTION = "10";
-        List<AccountDTO> accountList = accountService.getAccountsAndBalances(corporateUser.getCorporate().getCustomerId());
+        List<AccountDTO> accountList = accountService.getAccountsAndBalances(corporateUser.getCorporate().getAccounts());
         request.getSession().setAttribute("tranAccountNo", account.getAccountNumber());
         List<TransactionHistory> transRequestList = integrationService.getLastNTransactions(account.getAccountNumber(), LAST_TEN_TRANSACTION);
         if (transRequestList != null && !transRequestList.isEmpty()) {
@@ -314,13 +314,12 @@ public class CorpAccountController {
         try {
             Date date = new Date();
             Date daysAgo = new DateTime(date).minusDays(300).toDate();
-            logger.info("the from date {} and the to date {}", date, daysAgo);
+            logger.info("Getting account statement from date {} to date {}", date.toString(), daysAgo.toString());
 
             AccountDTO account = accountService.getAccount(Long.parseLong(acct));
 
             AccountStatement accountStatement = integrationService.getAccountStatements(account.getAccountNumber(), date, daysAgo, "B", "5");
 
-            logger.info("TransactionType {}", "B");
             out.setDraw(input.getDraw());
 
             List<TransactionDetails> list = accountStatement.getTransactionDetails();
@@ -329,11 +328,11 @@ public class CorpAccountController {
             if (list != null) {
                 sz = list.size();
             }
-            logger.info("Size = " + sz);
+            logger.debug("Transaction history Size = {}",sz);
             out.setRecordsFiltered(sz);
             out.setRecordsTotal(sz);
         } catch (Exception e) {
-            logger.warn("failed to get history", e);
+            logger.error("Failed to get transaction history", e);
         }
         return out;
 

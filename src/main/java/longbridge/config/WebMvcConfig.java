@@ -7,10 +7,14 @@ import longbridge.security.opsuser.OpUserLoginInterceptor;
 import longbridge.security.retailuser.RetailUserLoginInterceptor;
 import org.modelmapper.ModelMapper;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.autoconfigure.jdbc.DataSourceBuilder;
+import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.CommonAnnotationBeanPostProcessor;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.http.HttpMethod;
 import org.springframework.scheduling.annotation.EnableAsync;
@@ -32,6 +36,7 @@ import org.springframework.web.servlet.i18n.CookieLocaleResolver;
 import org.springframework.web.servlet.i18n.LocaleChangeInterceptor;
 import org.springframework.web.servlet.mvc.WebContentInterceptor;
 
+import javax.sql.DataSource;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Locale;
@@ -66,6 +71,21 @@ public class WebMvcConfig extends WebMvcConfigurerAdapter {
        // builder.basicAuthorization()
         return builder.build();
     }
+
+
+//
+//    @Bean
+//    @Primary
+//    @ConfigurationProperties(prefix = "app.datasource")
+//    public DataSource primarySource() {
+//        return DataSourceBuilder.create().build();
+//    }
+//
+//    @Bean
+//    @ConfigurationProperties(prefix = "spring.secondDatasource")
+//    public DataSource secondarySource() {
+//        return DataSourceBuilder.create().build();
+//    }
 
 
     //
