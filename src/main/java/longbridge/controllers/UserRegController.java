@@ -113,7 +113,11 @@ public class UserRegController {
                 return messageSource.getMessage("account.nontransactional", null, locale);
             } else if (account != null && !"A".equalsIgnoreCase(account.getAcctStatus())) {
                 return messageSource.getMessage("account.inactive", null, locale);
-            } else {
+            }
+            else if (account != null && accountService.isAccountRestricted(account)) {
+                return messageSource.getMessage("account.restricted", null, locale);
+            }
+            else {
                 return "true";
             }
 
@@ -144,22 +148,22 @@ public class UserRegController {
     String validateExists(WebRequest webRequest) {
         String customerId = "";
         String accountNumber = webRequest.getParameter("accountNumber");
-        logger.info("Account Number : " + accountNumber);
+        logger.debug("Account Number : " + accountNumber);
         String email = webRequest.getParameter("email");
-        logger.info("Email : " + email);
+        logger.debug("Email : " + email);
         String birthDate = webRequest.getParameter("birthDate");
-        logger.info("BirthDate : " + birthDate);
+        logger.debug("BirthDate : " + birthDate);
         CustomerDetails details = integrationService.isAccountValid(accountNumber, email, birthDate);
-        logger.info("details {} ", details);
+        logger.debug("Customer details {} ", details);
         if (details.getCifId() != null) {
             RetailUser user = retailUserService.getUserByCustomerId(details.getCifId());
             List<AccountDTO> account = accountService.getAccounts(details.getCifId());
             logger.info("ACCOUNT {} ", account);
             if (user == null && account.isEmpty()) {
-                logger.info("customer does not exist on the platform currently " + details.getCifId());
+                logger.debug("User {} does not exist on the platform currently, can go on to register",details.getCifId());
                 customerId = details.getCifId();
             } else {
-                logger.info("user exists on our system");
+                logger.warn("User already exists on the system, cannot be allowed to register");
                 customerId = "";
             }
 
@@ -186,7 +190,7 @@ public class UserRegController {
             //nothing
             customerId = "";
         }
-        logger.info("cif is {}", customerId);
+        logger.info("Customer ID is {}", customerId);
         return customerId;
     }
 
@@ -229,10 +233,10 @@ public class UserRegController {
     @ResponseBody
     String getSecQues(@PathVariable String username) {
         String secQuestion = "";
-        logger.info("Username in Controller : " + username);
+        logger.debug("Username in Controller : " + username);
 
         RetailUser user = retailUserService.getUserByName(username);
-        logger.info("USER NAME {}", user);
+        logger.info("User is ", user);
 
         if (user != null) {
             logger.info("USER NAME {}", user.getUserName());

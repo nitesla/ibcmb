@@ -10,8 +10,7 @@ import org.springframework.stereotype.Repository;
 public interface AccountRestrictionRepo extends CommonRepo<AccountRestriction,Long> {
 
     AccountRestriction findFirstByRestrictionValueIgnoreCase(String accountNumber);
-    AccountRestriction findByRestrictionTypeAndRestrictionValueIgnoreCase(String restrictionType, String restrictionValue);
-    AccountRestriction findFirstByRestrictionValueIgnoreCaseAndRestrictedFor(String accountNumber, String s);
+    AccountRestriction findFirstByRestrictionTypeAndRestrictionValueIgnoreCaseAndRestrictedFor(String restrictionType, String restrictionValue,String restrictedFor);
 
 
 }

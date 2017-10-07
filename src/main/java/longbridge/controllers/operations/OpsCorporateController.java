@@ -661,7 +661,7 @@ public class OpsCorporateController {
             accountInfos = filterAccounts(accountInfos, accountService.getAccounts(corporate.getCustomerId().toUpperCase()));
         }
 
-        accountInfos = accountService.filterTransactionalAccounts(accountInfos);
+        accountInfos = accountService.getTransactionalAccounts(accountInfos);
 
 
         model.addAttribute("accounts", accountInfos);
