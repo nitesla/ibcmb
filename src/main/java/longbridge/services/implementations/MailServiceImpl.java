@@ -43,7 +43,7 @@ public class MailServiceImpl implements MailService {
         logger.info("Trying to send mail to {}", recipient);
 
         mailSender.send(messagePreparator);
-        logger.info("Email successfully sent to {} with subject '{}'", recipient,subject);
+        logger.info("Email successfully sent to {} with subject '{}'", recipient, subject);
     }
 
     @Override
@@ -51,7 +51,12 @@ public class MailServiceImpl implements MailService {
         MimeMessagePreparator messagePreparator = mimeMessage -> {
             MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage);
             messageHelper.setFrom(sender);
-            messageHelper.setTo(email.getReceiverEmail());
+            if (email.getReceiverEmail() != null) {
+                messageHelper.setTo(email.getReceiverEmail());
+            }
+            if (email.getReceiverEmails() != null) {
+                messageHelper.setTo(email.getReceiverEmails());
+            }
             if (email.getCcList() != null) {
                 messageHelper.setCc(email.getCcList());
             }
@@ -59,10 +64,10 @@ public class MailServiceImpl implements MailService {
             messageHelper.setText(email.getMessageBody());
 
         };
-        logger.info("Trying to send mail to {}", email.getReceiverEmail());
+        logger.info("Trying to send mail to {}", email.getReceiverEmail()!=null?email.getReceiverEmail():email.getReceiverEmails());
 
         mailSender.send(messagePreparator);
 
-        logger.info("Email successfully sent to {} with subject '{}'", email.getReceiverEmail(),email.getMessageSubject());
+        logger.info("Email successfully sent to {} with subject '{}'", email.getReceiverEmail()!=null?email.getReceiverEmail():email.getReceiverEmails(), email.getMessageSubject());
     }
 }
