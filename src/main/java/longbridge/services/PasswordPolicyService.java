@@ -6,6 +6,7 @@ import longbridge.models.*;
 import longbridge.repositories.*;
 import longbridge.utils.PasswordCreator;
 import longbridge.validator.PasswordValidator;
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.joda.time.LocalDateTime;
 import org.slf4j.Logger;
@@ -103,7 +104,7 @@ public class PasswordPolicyService {
             passwordRules.add(ruleMessage);
         }
         if (specialChars != null && specialChars.isEnabled()) {
-            specialCharacters = specialChars.getValue();
+            specialCharacters = StringEscapeUtils.escapeHtml4(specialChars.getValue());
             ruleMessage = String.format(messageSource.getMessage("password.spec.chars", null, locale), specialCharacters);
             passwordRules.add(ruleMessage);
 

@@ -149,15 +149,11 @@ public class RetrieveCredentialController {
             return "false";
         }
 
-        //if ()
-
-        //get Retail User by username
         RetailUser retailUser = retailUserService.getUserByName(username);
         if (retailUser == null){
             return "false";
         }
 
-        //change password
         CustResetPassword custResetPassword = new CustResetPassword();
         custResetPassword.setNewPassword(password);
         custResetPassword.setConfirmPassword(confirmPassword);
@@ -233,12 +229,8 @@ public class RetrieveCredentialController {
             }else{
                 qa = (Map<String, List<String>>) session.getAttribute("retSecQestnAndAnsFU");
             }
-            //List<String> sec = null;
-//            logger.info("sec questions {}",qa);
             if (qa != null){
                 List<String> answer = qa.get("answers");
-//                secAnswer = question.stream().filter(Objects::nonNull).findFirst().orElse("");
-
                 logger.info("user answer {}", answer);
                 logger.info("compared answer {}", compareAnswers(answers,answer));
                 if(compareAnswers(answers,answer).equalsIgnoreCase("true")){

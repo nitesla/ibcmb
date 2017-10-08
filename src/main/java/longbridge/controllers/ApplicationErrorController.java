@@ -32,7 +32,6 @@ public class ApplicationErrorController implements ErrorController {
     @Autowired
     private ErrorAttributes errorAttributes;
 
-
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
 
@@ -45,7 +44,6 @@ public class ApplicationErrorController implements ErrorController {
 
         RequestAttributes requestAttributes = new ServletRequestAttributes(request);
         Map<String, Object> errorDetails = errorAttributes.getErrorAttributes(requestAttributes, true);
-
 
         String errorPath = (String) errorDetails.get("path");
         String statusCode = errorDetails.get("status").toString();

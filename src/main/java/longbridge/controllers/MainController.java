@@ -116,7 +116,6 @@ public class MainController {
     @GetMapping("/login/retail/failure")
     public String retLoginFailure() {
 
-
         return "retloginfailure";
     }
 
@@ -141,11 +140,8 @@ public class MainController {
     @GetMapping(value = {"/admin/{path:(?!static).*$}", "/admin/{path:(?!static).*$}/**"})
     public String adminUnknown(Principal principal) {
         if (principal != null) {
-
             return "redirect:/admin/dashboard";
-
         }
-
         throw new UnknownResourceException();
         // return "";
     }
@@ -153,11 +149,8 @@ public class MainController {
     @GetMapping(value = {"/ops/{path:(?!static).*$}", "/ops/{path:(?!static).*$}/**"})
     public String opsUnknown(Principal principal) {
         if (principal != null) {
-
             return "redirect:/ops/dashboard";
-
         }
-
         throw new UnknownResourceException();
         // return "";
     }
@@ -271,7 +264,7 @@ public class MainController {
                     model.addAttribute("secCaption", caption);
                 }
             } catch (InternetBankingException e) {
-                model.addAttribute("imageException", "You are yet to set your antiphishing image");
+                model.addAttribute("imageException", "You are yet to set your anti-phishing image");
             }
 
 
