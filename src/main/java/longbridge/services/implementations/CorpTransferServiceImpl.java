@@ -304,7 +304,7 @@ public class CorpTransferServiceImpl implements CorpTransferService {
             throw new InternetBankingTransferException(TransferExceptions.INVALID_ACCOUNT.toString());
 
 
-        if (!NumberUtils.isNumber(dto.getAmount().toString()) || dto.getAmount().compareTo(new BigDecimal(0)) == 0)
+        if (!NumberUtils.isNumber(dto.getAmount().toString()) || dto.getAmount().compareTo(new BigDecimal(0)) <= 0)
             throw new InternetBankingTransferException(TransferExceptions.INVALID_AMOUNT.toString());
 
 
