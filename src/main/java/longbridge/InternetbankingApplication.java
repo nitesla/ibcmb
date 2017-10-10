@@ -20,52 +20,6 @@ import org.springframework.scheduling.annotation.EnableAsync;
 @EnableAsync
 public class InternetbankingApplication extends SpringBootServletInitializer implements CommandLineRunner {
 
-
-    @Autowired
-    OperationsUserRepo operationsUserRepo;
-
-    @Autowired
-    PasswordPolicyService passwordPolicyService;
-    @Autowired
-    IntegrationService integrationService;
-
-
-    @Autowired
-    AccountRepo accountRepo;
-
-    @Autowired
-    AccountService accountService;
-
-    @Autowired
-    CorporateService corporateService;
-
-    @Autowired
-    CorporateRepo corporateRepo;
-    @Autowired
-    TransferService transferService;
-
-    @Autowired
-    RetailUserRepo retailUserService;
-
-    @Autowired
-    CorporateUserRepo corporateUserService;
-
-    @Autowired
-    AdminUserRepo adminUserService;
-
-    @Autowired
-    OperationsUserRepo operationsUserService;
-
-    @Autowired
-    SecurityService securityService;
-
-    @Autowired
-    CronJobService cronJobService;
-
-    @Autowired
-    BulkTransferRepo bulkTransferRepo;
-
-
     public static void main(String[] args) {
         SpringApplication.run(InternetbankingApplication.class, args);
 
@@ -79,7 +33,6 @@ public class InternetbankingApplication extends SpringBootServletInitializer imp
 
     @Override
     public void run(String... strings) throws Exception {
-//        securityService.unLockUser("shina2","Corporate_Group");
     }
 
 
