@@ -88,4 +88,20 @@ public class AccountRestriction extends AbstractEntity implements PrettySerializ
             }
         };
     }
+    @Override @JsonIgnore
+    public JsonSerializer<AccountRestriction> getAuditSerializer() {
+        return new JsonSerializer<AccountRestriction>() {
+            @Override
+            public void serialize(AccountRestriction value, JsonGenerator gen, SerializerProvider serializers)
+                    throws IOException, JsonProcessingException
+            {
+                gen.writeStartObject();
+                gen.writeStringField("restrictionType",value.restrictionType);
+                gen.writeStringField("restrictionValue",value.restrictionValue);
+                gen.writeStringField("restrictedFor",value.restrictedFor);
+                gen.writeStringField("dateCreated",value.dateCreated.toString());
+                gen.writeEndObject();
+            }
+        };
+    }
 }

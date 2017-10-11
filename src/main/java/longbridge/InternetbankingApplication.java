@@ -65,6 +65,9 @@ public class InternetbankingApplication extends SpringBootServletInitializer imp
     @Autowired
     BulkTransferRepo bulkTransferRepo;
 
+    @Autowired
+    FinancialInstitutionService financialInstitutionService;
+
 
     public static void main(String[] args) {
         SpringApplication.run(InternetbankingApplication.class, args);

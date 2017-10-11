@@ -55,5 +55,6 @@ public interface FinancialInstitutionService {
     FinancialInstitution convertDTOToEntity(FinancialInstitutionDTO financialInstitutionDTO);
 
     List<FinancialInstitutionDTO> convertEntitiesToDTOs(Iterable<FinancialInstitution> financialInstitutions);
+    void updateFinancialInstitutions();
 
 }

@@ -107,5 +107,22 @@ public class Setting extends AbstractEntity implements PrettySerializer{
             }
         };
     }
+@Override @JsonIgnore
+    public JsonSerializer<Setting> getAuditSerializer() {
+        return new JsonSerializer<Setting>() {
+            @Override
+            public void serialize(Setting value, JsonGenerator gen, SerializerProvider serializers)
+                    throws IOException, JsonProcessingException
+            {
+                gen.writeStartObject();
+                gen.writeStringField("name",value.name);
+                gen.writeStringField("description",value.description);
+                gen.writeStringField("value",value.value);
+                gen.writeBooleanField("enabled",value.enabled);
+                gen.writeStringField("type",value.type);
+                gen.writeEndObject();
+            }
+        };
+    }
 
 }
