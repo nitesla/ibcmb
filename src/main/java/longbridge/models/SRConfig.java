@@ -100,4 +100,32 @@ public class SRConfig extends AbstractEntity implements PrettySerializer{
             }
         };
     }
+    @Override
+    @JsonIgnore
+    public JsonSerializer<SRConfig> getAuditSerializer() {
+        return new JsonSerializer<SRConfig>() {
+            @Override
+            public void serialize(SRConfig value, JsonGenerator gen, SerializerProvider serializers)
+                    throws IOException, JsonProcessingException
+            {
+                gen.writeStartObject();
+                gen.writeStringField("serviceRequestName",value.requestName);
+                gen.writeStringField("requestType",value.requestType);
+                gen.writeBooleanField("authentication",value.authenticate);
+                gen.writeObjectFieldStart("Form Fields");
+
+                Integer count =0;
+                for(ServiceReqFormField reqFormField: formFields){
+
+                    gen.writeObjectFieldStart((++count).toString());
+                    gen.writeStringField("fieldName",reqFormField.getFieldName());
+                    gen.writeStringField("fieldType",reqFormField.getFieldType());
+                    gen.writeStringField("fieldLabel",reqFormField.getFieldLabel());
+                    gen.writeStringField("fieldData",reqFormField.getTypeData());
+                    gen.writeEndObject();
+                }
+                gen.writeEndObject();
+            }
+        };
+    }
 }

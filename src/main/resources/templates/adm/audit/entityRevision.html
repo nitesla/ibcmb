@@ -157,13 +157,15 @@
             { "data": "modifiedEntities.revision.ipAddress" },
             { "data": "entityDetails.id" }
         ];
-        var splitFields = entityFields.split(",");
-        console.log("the splited value "+splitFields);
+        if(entityFields != null || entityFields != "null") {
+            var splitFields = entityFields.split(",");
+            console.log("the splited value " + splitFields);
 
-        for(var i =0; i<splitFields.length; i++){
-            dataTable.push({ "data": splitFields[i] });
+            for (var i = 0; i < splitFields.length; i++) {
+                dataTable.push({"data": splitFields[i]});
+            }
         }
-        console.log("the data to display is "+String(dataTable));
+//        console.log("the data to display is "+String(dataTable));
 
         var table = $('#auditview').DataTable({
             select:true,

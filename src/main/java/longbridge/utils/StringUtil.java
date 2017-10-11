@@ -61,4 +61,7 @@ public class StringUtil {
         }
         return builder.toString();
     }
+    public static String extractedFieldName(String genericFieldName){
+        return genericFieldName.substring(genericFieldName.lastIndexOf('.') + 1, genericFieldName.length());
+    }
 }

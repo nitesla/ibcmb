@@ -94,6 +94,42 @@ public class CorporateUser extends User implements PrettySerializer{
 
 	@Override
 	@JsonIgnore
+	public JsonSerializer<CorporateUser> getAuditSerializer() {
+		return new JsonSerializer<CorporateUser>() {
+			@Override
+			public void serialize(CorporateUser value, JsonGenerator gen, SerializerProvider serializers)
+					throws IOException, JsonProcessingException {
+
+				gen.writeStartObject();
+//				gen.writeStringField("Corporate Name", value.corporate.getName());
+				gen.writeStringField("Username", value.userName);
+				gen.writeStringField("First Name", value.firstName);
+				gen.writeStringField("Last Name", value.lastName);
+				gen.writeStringField("Email", value.email);
+				gen.writeStringField("Phone", value.phoneNumber);
+				String status =null;
+				if ("A".equals(value.status))
+					status = "Active";
+				else if ("I".equals(value.status))
+					status = "Inactive";
+				else if ("L".equals(value.status))
+					status = "Locked";
+				gen.writeStringField("Status", status);
+//				gen.writeStringField("Role", value.role.getName());
+//				if("MULTI".equals(corporate.getCorporateType())) {
+//					if(value.corpUserType!=null) {
+//						gen.writeStringField("User Type", value.corpUserType.name());
+//					}
+//				}
+//				if("MULTI".equals(corporate.getCorporateType())) {
+//					gen.writeBooleanField("Is Admin", value.admin);
+//				}
+				gen.writeEndObject();
+			}
+		};
+	}
+	@Override
+	@JsonIgnore
 	public JsonSerializer<CorporateUser> getSerializer() {
 		return new JsonSerializer<CorporateUser>() {
 			@Override

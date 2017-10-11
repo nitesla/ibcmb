@@ -57,6 +57,8 @@ public class FinancialInstitutionServiceImpl implements FinancialInstitutionServ
         return financialInstitutionDTOList;
     }
 
+
+
     @Override
     public FinancialInstitutionDTO convertEntityToDTO(FinancialInstitution financialInstitution) {
         FinancialInstitutionDTO financialInstitutionDTO = new FinancialInstitutionDTO();
@@ -211,4 +213,13 @@ public class FinancialInstitutionServiceImpl implements FinancialInstitutionServ
 	        Page<FinancialInstitutionDTO> pageImpl = new PageImpl<FinancialInstitutionDTO>(dtOs, pageDetails, t);
 	        return pageImpl;
 	}
+    @Override
+    public void updateFinancialInstitutions() {
+List<FinancialInstitution> financialInstitutions = financialInstitutionRepo.findAll();
+        for (FinancialInstitution financialInstitution: financialInstitutions) {
+            logger.info("the institution updated is {}",financialInstitution.getInstitutionName());
+            financialInstitution.setSortCode("1");
+            financialInstitutionRepo.save(financialInstitution);
+        }
+    }
 }
