@@ -240,6 +240,33 @@ public class Corporate extends AbstractEntity implements PrettySerializer{
             }
         };
     }
+    @Override @JsonIgnore
+    public JsonSerializer<Corporate> getAuditSerializer() {
+        return new JsonSerializer<Corporate>() {
+            @Override
+            public void serialize(Corporate value, JsonGenerator gen, SerializerProvider serializers)
+                    throws IOException, JsonProcessingException
+            {
+                gen.writeStartObject();
+                if(value.id != null) {
+                    gen.writeStringField("id", value.id.toString());
+                }else {
+                    gen.writeStringField("id", "");
+                }
+                gen.writeStringField("name",value.name);
+                gen.writeStringField("corporateType",value.corporateType);
+                gen.writeStringField("customerId",value.customerId);
+                gen.writeStringField("corporateID",value.corporateId);
+                gen.writeStringField("RcNumber",value.rcNumber);
+                gen.writeStringField("email",value.email);
+                gen.writeStringField("address",value.address);
+                gen.writeStringField("status",value.status);
+                gen.writeStringField("createdOnDate",value.createdOnDate.toString());
+                gen.writeStringField("bvn",value.bvn.toString());
+                gen.writeEndObject();
+            }
+        };
+    }
 
 
 }

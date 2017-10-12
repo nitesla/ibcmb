@@ -149,4 +149,53 @@ public class CorpTransRule extends AbstractEntity implements PrettySerializer{
         };
     }
 
+    @Override
+    @JsonIgnore
+    public JsonSerializer<CorpTransRule> getAuditSerializer() {
+        return new JsonSerializer<CorpTransRule>() {
+
+            @Override
+            public void serialize(CorpTransRule value, JsonGenerator gen, SerializerProvider arg2)
+                    throws IOException, JsonProcessingException {
+                gen.writeStartObject();
+//                gen.writeStringField("corporate", value.corporate.getName());
+                gen.writeNumberField("lowerAmount",value.lowerLimitAmount);
+                if(value.id != null) {
+                    gen.writeStringField("id", value.id.toString());
+                }else {
+                    gen.writeStringField("id", "");
+                }
+                if(value.unlimited){
+                    gen.writeStringField("upperAmount","No Upper Limit");
+
+                }
+                else {
+                    gen.writeNumberField("upperAmount",value.upperLimitAmount);
+
+                }
+                gen.writeStringField("currency", value.currency);
+                if(value.anyCanAuthorize) {
+                    gen.writeStringField("authorizersRequired", "ANY");
+                }
+                else {
+                    gen.writeStringField("authorizersRequired", "ALL");
+
+                }
+
+
+                gen.writeObjectFieldStart("authorizerLevels");
+                for(CorporateRole role : value.roles){
+                    gen.writeObjectFieldStart(role.getId().toString());
+                    //gen.writeStartObject();
+                    gen.writeStringField("name",role.name);
+                    gen.writeNumberField("rank",role.rank);
+                    gen.writeEndObject();
+                }
+                gen.writeEndObject();
+                //gen.writeEndArray();
+                gen.writeEndObject();
+            }
+        };
+    }
+
 }

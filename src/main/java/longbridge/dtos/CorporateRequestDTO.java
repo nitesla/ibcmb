@@ -311,5 +311,9 @@ public class CorporateRequestDTO implements PrettySerializer {
 
         };
     }
-
+@JsonIgnore
+    @Override
+    public <T> JsonSerializer<T> getAuditSerializer() {
+        return null;
+    }
 }

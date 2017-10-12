@@ -1,11 +1,18 @@
 package longbridge.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonSerializer;
+import com.fasterxml.jackson.databind.SerializerProvider;
+import longbridge.utils.PrettySerializer;
 import longbridge.utils.TransferType;
 import org.hibernate.annotations.Where;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.Date;
 
@@ -17,7 +24,7 @@ import java.util.Date;
 @Entity
 @Audited(withModifiedFlag=true)
 @Where(clause ="del_Flag='N'" )
-public class TransRequest extends AbstractEntity{
+public class TransRequest extends AbstractEntity implements PrettySerializer {
 
 
     private  String customerAccountNumber;
@@ -173,22 +180,69 @@ public class TransRequest extends AbstractEntity{
 
     @Override
     public String toString() {
-        return "{\"TransRequest\":{"
-                + "                        \"customerAccountNumber\":\"" + customerAccountNumber + "\""
-                + ",                         \"transferType\":\"" + transferType + "\""
-                + ",                         \"tranDate\":" + tranDate
-                + ",                         \"financialInstitution\":" + financialInstitution
-                + ",                         \"beneficiaryAccountNumber\":\"" + beneficiaryAccountNumber + "\""
-                + ",                         \"beneficiaryAccountName\":\"" + beneficiaryAccountName + "\""
-                + ",                         \"remarks\":\"" + remarks + "\""
-                + ",                         \"status\":\"" + status + "\""
-                + ",                         \"referenceNumber\":\"" + referenceNumber + "\""
-                + ",                         \"userReferenceNumber\":\"" + userReferenceNumber + "\""
-                + ",                         \"narration\":\"" + narration + "\""
-                + ",                         \"statusDescription\":\"" + statusDescription + "\""
-                + ",                         \"amount\":\"" + amount + "\""
-                + ",                         \"charge\":\"" + charge + "\""
-                + "}}";
+        return "TransRequest{" +
+                "customerAccountNumber='" + customerAccountNumber + '\'' +
+                ", transferType=" + transferType +
+                ", tranDate=" + tranDate +
+                ", financialInstitution=" + financialInstitution +
+                ", beneficiaryAccountNumber='" + beneficiaryAccountNumber + '\'' +
+                ", beneficiaryAccountName='" + beneficiaryAccountName + '\'' +
+                ", remarks='" + remarks + '\'' +
+                ", status='" + status + '\'' +
+                ", referenceNumber='" + referenceNumber + '\'' +
+                ", userReferenceNumber='" + userReferenceNumber + '\'' +
+                ", narration='" + narration + '\'' +
+                ", statusDescription='" + statusDescription + '\'' +
+                ", amount=" + amount +
+                ", charge='" + charge + '\'' +
+                '}';
     }
+
+    @Override
+    public <T> JsonSerializer<T> getSerializer() {
+        return null;
+    }
+
+    @Override
+    @JsonIgnore
+    public JsonSerializer<TransRequest> getAuditSerializer() {
+        return new JsonSerializer<TransRequest>() {
+            @Override
+            public void serialize(TransRequest value, JsonGenerator gen, SerializerProvider serializers)
+                    throws IOException, JsonProcessingException {
+
+                gen.writeStartObject();
+                if(value.id != null) {
+                    gen.writeStringField("id", value.id.toString());
+                }else {
+                    gen.writeStringField("id", "");
+                }
+                gen.writeStringField("customerAccountNumber", value.customerAccountNumber);
+                gen.writeStringField("transferType", value.transferType.toString());
+                gen.writeStringField("tranDate", value.tranDate.toString());
+                gen.writeStringField("beneficiaryAccountNumber", value.beneficiaryAccountNumber);
+                gen.writeStringField("beneficiaryAccountName", value.beneficiaryAccountName);
+                gen.writeStringField("remarks", value.remarks);
+                gen.writeStringField("status", value.status);
+                gen.writeStringField("referenceNumber", value.referenceNumber);
+                gen.writeStringField("userReferenceNumber", value.userReferenceNumber);
+                gen.writeStringField("narration", value.narration);
+                gen.writeStringField("statusDescription", value.statusDescription);
+                if(value.amount != null){
+                    gen.writeStringField("amount", value.amount.toString());
+                }else {
+                    gen.writeStringField("amount", "");
+                }
+                if(value.charge != null){
+                    gen.writeStringField("charge", value.charge.toString());
+                }else {
+                    gen.writeStringField("charge", "");
+                }
+
+                gen.writeEndObject();
+            }
+        };
+    }
+
 }
 

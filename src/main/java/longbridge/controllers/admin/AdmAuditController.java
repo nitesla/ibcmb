@@ -101,10 +101,12 @@ public class AdmAuditController {
         model.addAttribute("entities",auditConfig);
         String className = PACKAGE_NAME+entityName;
         Class<?> cl = null;
+
         try {
             List<String> classFields =  new ArrayList<>();
             List<String> headers =  new ArrayList<>();
             cl = Class.forName(className);
+            Class<?> superclass = cl.getSuperclass();
             Field[] declaredFields = cl.getDeclaredFields();
 
             logger.info("the fields of the {} are {}",entityName,declaredFields);
@@ -115,7 +117,7 @@ public class AdmAuditController {
                 Annotation[] annotations = field.getAnnotations();
                 boolean fieldDiplay = true;
                 for (Annotation annotation: annotations) {
-                    if(annotation.toString().contains("ManyToOne")||annotation.toString().contains("ManyToMany")||annotation.toString().contains("OneToMany")){
+                    if(annotation.toString().contains("ManyToOne")||annotation.toString().contains("OneToOne")||annotation.toString().contains("ManyToMany")||annotation.toString().contains("OneToMany")){
                         fieldDiplay = false;
                         break;
                     }
@@ -126,44 +128,36 @@ public class AdmAuditController {
                 if(fieldName.equalsIgnoreCase("serialVersionUID")) {
                     continue;
                 }
-                if(entityName.equalsIgnoreCase("CorporateUser")){
+                if(entityName.equalsIgnoreCase("CorporateUser")||entityName.equalsIgnoreCase("RetailUser")){
                     if(fieldName.equalsIgnoreCase("corporate") || fieldName.equalsIgnoreCase("tempPassword") ){
                         continue;
                     }
                 }
 
                 headers.add(convertFieldToTitle(fieldName));
-                classFields.add("entityDetails." + fieldName);
+                classFields.add("fullEntity." + fieldName);
             }
-//            if(!cl.getSuperclass().toString().contains("AbstractEntity")) {
-//                for (Field field : cl.getSuperclass().getDeclaredFields()) {
-//                    String fieldName = StringUtil.extractedFieldName(field.toString());
-//                    Annotation[] annotations = field.getAnnotations();
-//                    boolean fieldDiplay = true;
-//                    for (Annotation annotation: annotations) {
-//                        if(annotation.toString().contains("ManyToOne")||annotation.toString().contains("ManyToMany")||annotation.toString().contains("OneToMany")){
-//                            fieldDiplay = false;
-//                            break;
-//                        }
-//                    }
-//                    if(!fieldDiplay){
-//                        continue;
-//                    }
-//                    headers.add(convertFieldToTitle(fieldName));
-//                    classFields.add("entityDetails." + fieldName);
-//                }
-//            }
+            if (superclass.toString().contains("User")){
+                for (Field field: superclass.getDeclaredFields()) {
+                    String fieldName = StringUtil.extractedFieldName(field.toString());
+                    if(StringUtil.userDetials().contains(fieldName)){
+                        headers.add(convertFieldToTitle(fieldName));
+                        classFields.add("fullEntity." + fieldName);
+                    }
+                }
+            }
             if(!classFields.isEmpty()) {
                 model.addAttribute("fields", classFields);
             }else {
                 model.addAttribute("fields", null);
             }
+            logger.info("the superclass {}", superclass);
             model.addAttribute("headers",headers);
             model.addAttribute("headerSize",headers.size());
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
-        logger.info("the superclass {}",cl.getSuperclass());
+
 
         return "adm/audit/entityRevision";
     }
@@ -189,7 +183,7 @@ public class AdmAuditController {
 
 
     @GetMapping("/entity/name/details")
-    public @ResponseBody DataTablesOutput<AuditDTO> getAllRevisedEntity(DataTablesInput input,@RequestParam("className") String className,@RequestParam("csearch") String csearch)
+    public @ResponseBody DataTablesOutput<AuditDTO> getAllRevisedEntity(DataTablesInput input,@RequestParam("className") String className,@RequestParam("csearch") String csearch,Model model)
     {
 //        @RequestParam("className") String className,@RequestParam("csearch") String csearch
 //        String className = "TransRequest";
@@ -203,7 +197,11 @@ public class AdmAuditController {
         }else {
             auditDTOs = auditCfgService.searchRevisedEntity(className,pageable,csearch);
         }
-
+        for ( AuditDTO auditDTO:auditDTOs) {
+            model.addAttribute("fieldsDisp",auditDTO.getFullEntity().keySet());
+            logger.info("the fieldsDisp {}",auditDTO.getFullEntity().keySet());
+            break;
+        }
         DataTablesOutput<AuditDTO> out = new DataTablesOutput<AuditDTO>();
         out.setDraw(input.getDraw());
         out.setData(auditDTOs.getContent());

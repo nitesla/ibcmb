@@ -149,6 +149,11 @@ public class Code extends AbstractEntity implements PrettySerializer{
 					throws IOException, JsonProcessingException
 			{
 				gen.writeStartObject();
+				if(value.id != null) {
+					gen.writeStringField("id", value.id.toString());
+				}else {
+					gen.writeStringField("id", "");
+				}
 				gen.writeStringField("code",value.code);
 				gen.writeStringField("description",value.description);
 				gen.writeStringField("type",value.type);

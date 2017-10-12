@@ -88,6 +88,11 @@ public class AccountClassRestriction extends AbstractEntity implements PrettySer
                     throws IOException, JsonProcessingException
             {
                 gen.writeStartObject();
+                if(value.id != null) {
+                    gen.writeStringField("id", value.id.toString());
+                }else {
+                    gen.writeStringField("id", "");
+                }
                 gen.writeStringField("accountClass",value.accountClass);
                 gen.writeStringField("restrictionType",value.restrictionType);
                 gen.writeStringField("dateCreated",value.dateCreated.toString());

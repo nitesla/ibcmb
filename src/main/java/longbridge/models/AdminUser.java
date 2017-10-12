@@ -80,18 +80,24 @@ public class AdminUser extends User implements PrettySerializer{
 	}
 	@Override
 	@JsonIgnore
-	public JsonSerializer<User> getAuditSerializer() {
-		return new JsonSerializer<User>() {
+	public JsonSerializer<AdminUser> getAuditSerializer() {
+		return new JsonSerializer<AdminUser>() {
 			@Override
-			public void serialize(User value, JsonGenerator gen, SerializerProvider serializers)
+			public void serialize(AdminUser value, JsonGenerator gen, SerializerProvider serializers)
 					throws IOException, JsonProcessingException {
 
 				gen.writeStartObject();
+				if(value.id != null) {
+					gen.writeStringField("id", value.id.toString());
+				}else {
+					gen.writeStringField("id", "");
+				}
+				gen.writeStringField("authenticateMethod", value.authenticateMethod);
 				gen.writeStringField("userName", value.userName);
 				gen.writeStringField("firstName", value.firstName);
 				gen.writeStringField("lastName", value.lastName);
 				gen.writeStringField("email", value.email);
-				gen.writeStringField("phone", value.phoneNumber);
+				gen.writeStringField("phoneNumber", value.phoneNumber);
 				String status =null;
 				if ("A".equals(value.status))
 					status = "Active";

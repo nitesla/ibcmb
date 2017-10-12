@@ -94,7 +94,7 @@ public class Permission extends AbstractEntity  implements PrettySerializer{
                 ", code='" + code + '\'' +
                 ", userType='" + userType + '\'' +
                 '}';
-                 }
+    }
 
     @Override @JsonIgnore
     public JsonSerializer<Permission> getSerializer() {
@@ -112,10 +112,33 @@ public class Permission extends AbstractEntity  implements PrettySerializer{
             }
         };
     }
+    @Override @JsonIgnore
+    public JsonSerializer<Permission> getAuditSerializer() {
+        return new JsonSerializer<Permission>() {
+            @Override
+            public void serialize(Permission value,JsonGenerator gen,SerializerProvider serializers)
+                    throws IOException, JsonProcessingException
+            {
+                gen.writeStartObject();
+                gen.writeStringField("id",value.id.toString());
+                if(value.id != null) {
+                    gen.writeStringField("id", value.id.toString());
+                }else {
+                    gen.writeStringField("id", "");
+                }
+                gen.writeStringField("name",value.name);
+                gen.writeStringField("code",value.code);
+                gen.writeStringField("category",value.category);
+                gen.writeStringField("description",value.description);
+                gen.writeStringField("userType",value.userType);
+                gen.writeEndObject();
+            }
+        };
+    }
 
     @Override
-	public List<String> getDefaultSearchFields() {
-		return Arrays.asList("name", "description","category");
-	}
+    public List<String> getDefaultSearchFields() {
+        return Arrays.asList("name", "description","category");
+    }
 
 }

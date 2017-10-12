@@ -141,4 +141,23 @@ public class AccountLimit extends  AbstractEntity implements PrettySerializer{
             }
         };
     }
+    @Override @JsonIgnore
+    public JsonSerializer<AccountLimit> getAuditSerializer() {
+        return new JsonSerializer<AccountLimit>() {
+            @Override
+            public void serialize(AccountLimit value, JsonGenerator gen, SerializerProvider serializers)
+                    throws IOException, JsonProcessingException
+            {
+                gen.writeStartObject();
+                gen.writeStringField("accountNumber",value.accountNumber);
+                gen.writeStringField("channel",value.channel);
+                gen.writeNumberField("maximumLimit",value.maxLimit);
+                gen.writeStringField("currency",value.currency);
+                gen.writeStringField("frequency",value.frequency);
+                gen.writeStringField("description",value.description);
+
+                gen.writeEndObject();
+            }
+        };
+    }
 }

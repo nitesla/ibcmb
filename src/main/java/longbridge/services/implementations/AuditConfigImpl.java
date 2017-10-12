@@ -9,26 +9,20 @@ import com.fasterxml.jackson.databind.module.SimpleModule;
 import longbridge.config.audits.CustomRevisionEntity;
 import longbridge.config.audits.ModifiedEntityTypeEntity;
 import longbridge.config.audits.RevisedEntitiesUtil;
-import longbridge.dtos.AdminUserDTO;
 import longbridge.dtos.AuditDTO;
-import longbridge.dtos.CodeDTO;
 //import longbridge.dtos.RevisionInfo;
-import longbridge.dtos.VerificationDTO;
 import longbridge.exception.InternetBankingException;
 import longbridge.models.*;
 import longbridge.repositories.AuditConfigRepo;
 import longbridge.repositories.CustomRevisionEntityRepo;
 import longbridge.repositories.ModifiedEntityTypeEntityRepo;
-import longbridge.security.userdetails.CustomUserPrincipal;
 import longbridge.services.AuditConfigService;
 import longbridge.utils.PrettySerializer;
 import longbridge.utils.Verifiable;
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang3.tuple.Pair;
 import org.apache.poi.ss.formula.functions.T;
 import org.hibernate.envers.AuditReader;
 import org.hibernate.envers.AuditReaderFactory;
-import org.hibernate.envers.query.AuditEntity;
 import org.hibernate.envers.query.AuditQuery;
 import org.json.simple.JSONObject;
 import org.slf4j.Logger;
@@ -37,17 +31,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityManager;
 import java.io.IOException;
 import java.sql.Timestamp;
 import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
-import static java.lang.Math.E;
+import static longbridge.utils.StringUtil.convertToJSON;
 
 /**
  * Created by ayoade_farooq@yahoo.com on 4/19/2017.
@@ -97,7 +88,7 @@ public class AuditConfigImpl implements AuditConfigService {
 	}
 	@Override
 	public List<AuditConfig> getEntities() {
-		return configRepo.findAll();
+		return configRepo.findAllOrderByEntityNameAsc();
 	}
 
 
@@ -295,73 +286,73 @@ public class AuditConfigImpl implements AuditConfigService {
 					abstractEntity = abstractEntities.get(0);
 					if (abstractEntity instanceof PrettySerializer) {
                         JsonSerializer<Object> serializer = ((PrettySerializer) (abstractEntity)).getAuditSerializer();
-
                         SimpleModule module = new SimpleModule();
                         module.addSerializer(abstractEntity.getClass(), serializer);
                         prettyMapper.registerModule(module);
-						CorporateUser corporateUser = (CorporateUser) abstractEntity;
-						corporateUser.setCorporate(null);
-						corporateUser.setTempPassword(null);
-						corporateUser.setAlertPreference(null);
-						corporateUser.setRole(null);
                         logger.debug("Registering Pretty serializer for " + abstractEntity.getClass().getName());
-                        logger.info("the serialized data {}",prettyMapper.writeValueAsString((AbstractEntity) corporateUser));
-                    }
+						String writeValueAsString = prettyMapper.writeValueAsString(abstractEntity);
+						logger.info("the serialized data {}", writeValueAsString);
+						JSONObject jsonObject = convertToJSON(writeValueAsString);
+						auditDTO.setFullEntity(jsonObject);
+                    }else {
+						JSONObject jsonObject = convertToJSON(abstractEntity.toString());
+						auditDTO.setFullEntity(jsonObject);
+					}
 				} catch (JsonProcessingException e) {
 					e.printStackTrace();
 				}
-				AbstractEntity originalEntity = null;
-				if (abstractEntity.getId() != null) {
-					Long id = abstractEntity.getId();
-					originalEntity = entityManager.find(abstractEntity.getClass(), id);
-					logger.info("the extracted entity is {}",originalEntity);
-//					logger.info("the abstract entity is {}",abstractEntities.get(0));
-					if(originalEntity == null){
-						originalEntity = abstractEntity;
-					}
-				}
-				switch (entityName){
-					case "TransRequest":
-						TransRequest transRequest = (TransRequest) abstractEntities.get(0);
-						if (transRequest != null){
-//						transRequest.getFinancialInstitution().getInstitutionName();
-//						logger.info("The finanial institution {}",transRequest.getFinancialInstitution());
-//							auditDTO.setFinacialInstitution(null);
-
-							transRequest.setFinancialInstitution(null);
-						}
-						auditDTO.setEntityDetails((Object)transRequest);
-						break;
-					case "AdminUser":
-						AdminUser adminUser = (AdminUser)abstractEntity;
-						adminUser.setRole(null);
-						auditDTO.setEntityDetails((Object)adminUser);
-						break;
-					case "CorporateUser":
-						CorporateUser corporateUser = (CorporateUser) abstractEntity;
-
-
-//						logger.info("the corporate {}",serializer.handledType());
-						corporateUser.setCorporate(null);
-						corporateUser.setTempPassword(null);
-						corporateUser.setAlertPreference(null);
-						corporateUser.setRole(null);
-						auditDTO.setEntityDetails((Object)corporateUser);
-
-//						auditDTO.setEntityDetails((Object)serializer);
-						break;
-					case "BulkTransfer":
-						BulkTransfer bulkTransfer = (BulkTransfer) abstractEntities.get(0);
-						bulkTransfer.setCorporate(null);
-						bulkTransfer.setCrRequestList(null);
-						bulkTransfer.setTransferAuth(null);
-						auditDTO.setEntityDetails((Object)bulkTransfer);
-						break;
-						default:
-							auditDTO.setEntityDetails(abstractEntities.get(0));
-							break;
-				}
-				auditDTO.setEntityDetails(originalEntity);
+//				AbstractEntity originalEntity = null;
+//				if (abstractEntity.getId() != null) {
+//					Long id = abstractEntity.getId();
+//					originalEntity = entityManager.find(abstractEntity.getClass(), id);
+//					logger.info("the extracted entity is {}",originalEntity);
+////					logger.info("the abstract entity is {}",abstractEntities.get(0));
+//					if(originalEntity == null){
+//						originalEntity = abstractEntity;
+//					}
+//				}
+//				switch (entityName){
+//					case "TransRequest":
+//						TransRequest transRequest = (TransRequest) abstractEntities.get(0);
+//						if (transRequest != null){
+////						transRequest.getFinancialInstitution().getInstitutionName();
+////						logger.info("The finanial institution {}",transRequest.getFinancialInstitution());
+////							auditDTO.setFinacialInstitution(null);
+//
+//							transRequest.setFinancialInstitution(null);
+//						}
+//						auditDTO.setEntityDetails((Object)transRequest);
+//						break;
+//					case "AdminUser":
+//						AdminUser adminUser = (AdminUser)abstractEntity;
+//						adminUser.setRole(null);
+//						auditDTO.setEntityDetails((Object)adminUser);
+//						break;
+//					case "CorporateUser":
+//						CorporateUser corporateUser = (CorporateUser) abstractEntity;
+//
+//
+////						logger.info("the corporate {}",serializer.handledType());
+//						corporateUser.setCorporate(null);
+//						corporateUser.setTempPassword(null);
+//						corporateUser.setAlertPreference(null);
+//						corporateUser.setRole(null);
+//						auditDTO.setEntityDetails((Object)corporateUser);
+//
+////						auditDTO.setEntityDetails((Object)serializer);
+//						break;
+//					case "BulkTransfer":
+//						BulkTransfer bulkTransfer = (BulkTransfer) abstractEntities.get(0);
+//						bulkTransfer.setCorporate(null);
+//						bulkTransfer.setCrRequestList(null);
+//						bulkTransfer.setTransferAuth(null);
+//						auditDTO.setEntityDetails((Object)bulkTransfer);
+//						break;
+//						default:
+//							auditDTO.setEntityDetails(abstractEntities.get(0));
+//							break;
+//				}
+//				auditDTO.setEntityDetails(originalEntity);
 				auditDTO.setModifiedEntities(entity);
 				compositeAudits.add(auditDTO);
 			}
@@ -400,39 +391,62 @@ public class AuditConfigImpl implements AuditConfigService {
 				AuditDTO auditDTO = new AuditDTO();
 				logger.info("revision id  "+entity.getRevision().getId());
 				AuditQuery query = auditReader.createQuery().forEntitiesAtRevision(clazz,entity.getRevision().getId());
+				List<AbstractEntity> abstractEntities = query.getResultList();
+				ObjectMapper prettyMapper = new ObjectMapper();
 
-				List<Object> abstractEntities = query.getResultList();
-				switch (entityName){
-					case "TransRequest":
-						TransRequest transRequest = (TransRequest) abstractEntities.get(0);
-						if (transRequest != null){
-//						transRequest.getFinancialInstitution().getInstitutionName();
-//						logger.info("The finanial institution {}",transRequest.getFinancialInstitution().getInstitutionName());
-//							auditDTO.setFinacialInstitution(null);
-							transRequest.setFinancialInstitution(null);
-						}
-						auditDTO.setEntityDetails((Object)transRequest);
-						break;
-					case "AdminUser":
-						logger.info("this is the enitity name is "+entityName);
-						AdminUser adminUser = (AdminUser) abstractEntities.get(0);
-						adminUser.setRole(null);
-						logger.info("this is the enitity list {}",adminUser.getAlertPreference());
-						auditDTO.setEntityDetails((Object)adminUser);
-						break;
-					case "CorporateUser":
-						CorporateUser corporateUser = (CorporateUser) abstractEntities.get(0);
-						corporateUser.setCorporate(null);
-						corporateUser.setTempPassword(null);
-						corporateUser.setAlertPreference(null);
-						corporateUser.setRole(null);
-						auditDTO.setEntityDetails((Object)corporateUser);
-						parse(corporateUser.getSerializer().toString());
-						break;
-						default:
-							auditDTO.setEntityDetails(abstractEntities.get(0));
-							break;
+				AbstractEntity abstractEntity = null;
+				try {
+					abstractEntity = abstractEntities.get(0);
+					if (abstractEntity instanceof PrettySerializer) {
+						JsonSerializer<Object> serializer = ((PrettySerializer) (abstractEntity)).getAuditSerializer();
+						SimpleModule module = new SimpleModule();
+						module.addSerializer(abstractEntity.getClass(), serializer);
+						prettyMapper.registerModule(module);
+						logger.debug("Registering Pretty serializer for " + abstractEntity.getClass().getName());
+						String writeValueAsString = prettyMapper.writeValueAsString(abstractEntity);
+						logger.info("the serialized data {}", writeValueAsString);
+						JSONObject jsonObject = convertToJSON(writeValueAsString);
+						auditDTO.setFullEntity(jsonObject);
+					}
+				} catch (JsonProcessingException e) {
+					e.printStackTrace();
 				}
+//				AuditDTO auditDTO = new AuditDTO();
+//				logger.info("revision id  "+entity.getRevision().getId());
+//				AuditQuery query = auditReader.createQuery().forEntitiesAtRevision(clazz,entity.getRevision().getId());
+//
+//				List<Object> abstractEntities = query.getResultList();
+//				switch (entityName){
+//					case "TransRequest":
+//						TransRequest transRequest = (TransRequest) abstractEntities.get(0);
+//						if (transRequest != null){
+////						transRequest.getFinancialInstitution().getInstitutionName();
+////						logger.info("The finanial institution {}",transRequest.getFinancialInstitution().getInstitutionName());
+////							auditDTO.setFinacialInstitution(null);
+//							transRequest.setFinancialInstitution(null);
+//						}
+//						auditDTO.setEntityDetails((Object)transRequest);
+//						break;
+//					case "AdminUser":
+//						logger.info("this is the enitity name is "+entityName);
+//						AdminUser adminUser = (AdminUser) abstractEntities.get(0);
+//						adminUser.setRole(null);
+//						logger.info("this is the enitity list {}",adminUser.getAlertPreference());
+//						auditDTO.setEntityDetails((Object)adminUser);
+//						break;
+//					case "CorporateUser":
+//						CorporateUser corporateUser = (CorporateUser) abstractEntities.get(0);
+//						corporateUser.setCorporate(null);
+//						corporateUser.setTempPassword(null);
+//						corporateUser.setAlertPreference(null);
+//						corporateUser.setRole(null);
+//						auditDTO.setEntityDetails((Object)corporateUser);
+////						parse(corporateUser.getSerializer().toString());
+//						break;
+//						default:
+//							auditDTO.setEntityDetails(abstractEntities.get(0));
+//							break;
+//				}
 				auditDTO.setModifiedEntities(entity);
 				compositeAudits.add(auditDTO);
 			}
@@ -451,22 +465,5 @@ public class AuditConfigImpl implements AuditConfigService {
 
 		return new PageImpl<AuditDTO>(compositeAudits, pageable, allEnityByRevisionByClass.getTotalElements());
 	}
-	public void parse(String json)  {
-		JsonFactory factory = new JsonFactory();
 
-		ObjectMapper mapper = new ObjectMapper(factory);
-		JsonNode rootNode = null;
-		try {
-			rootNode = mapper.readTree(json);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
-		Iterator<Map.Entry<String,JsonNode>> fieldsIterator = rootNode.fields();
-		while (fieldsIterator.hasNext()) {
-
-			Map.Entry<String,JsonNode> field = fieldsIterator.next();
-			System.out.println("Key: " + field.getKey() + "\tValue:" + field.getValue());
-		}
-	}
 }
