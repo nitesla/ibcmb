@@ -15,7 +15,7 @@ import java.util.List;
 @Audited(withModifiedFlag=true)
 @Where(clause ="del_Flag='N'" )
 
-public class BulkTransfer extends TransRequest{
+public class BulkTransfer extends TransRequest {
 
     @Column(unique = true)
     private String refCode;

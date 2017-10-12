@@ -149,4 +149,26 @@ private SimpleDateFormat format=new SimpleDateFormat("DD/MM/YYYY");
             }
         };
     }
+    @Override @JsonIgnore
+    public JsonSerializer<FinancialTransaction> getAuditSerializer()
+    {
+        return new JsonSerializer<FinancialTransaction>()
+        {
+            @Override
+            public void serialize(FinancialTransaction value, JsonGenerator gen, SerializerProvider serializers)
+                    throws IOException, JsonProcessingException
+            {
+                gen.writeStartObject();
+                gen.writeStringField("transactionParticulars",value.transactionParticulars);
+                gen.writeStringField("Amount",value.amount.toString());
+                gen.writeStringField("currencyCode",value.currencyCode);
+                gen.writeStringField("currentBalance",value.currentBalance.toString());
+                gen.writeStringField("tranType",value.tranType);
+                gen.writeStringField("accountId",value.accountId);
+                gen.writeStringField("valueDate",value.valueDate.toString());
+                gen.writeStringField("postDate",value.postDate.toString());
+                gen.writeEndObject();
+            }
+        };
+    }
 }

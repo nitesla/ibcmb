@@ -117,4 +117,28 @@ public class GlobalLimit extends  AbstractEntity implements PrettySerializer{
             }
         };
     }
+    @Override @JsonIgnore
+    public JsonSerializer<GlobalLimit> getAuditSerializer() {
+        return new JsonSerializer<GlobalLimit>() {
+            @Override
+            public void serialize(GlobalLimit value, JsonGenerator gen, SerializerProvider serializers)
+                    throws IOException, JsonProcessingException
+            {
+                gen.writeStartObject();
+                if(value.id != null) {
+                    gen.writeStringField("id", value.id.toString());
+                }else {
+                    gen.writeStringField("id", "");
+                }
+                gen.writeStringField("channel",value.channel);
+                gen.writeStringField("status",value.status);
+                gen.writeStringField("customerType",value.customerType);
+                gen.writeNumberField("maximumLimit",value.maxLimit);
+                gen.writeStringField("currency",value.currency);
+                gen.writeStringField("frequency",value.frequency);
+                gen.writeStringField("description",value.description);
+                gen.writeEndObject();
+            }
+        };
+    }
     }

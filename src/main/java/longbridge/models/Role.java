@@ -100,7 +100,39 @@ public class Role extends AbstractEntity implements PrettySerializer{
                     throws IOException, JsonProcessingException {
 
                 gen.writeStartObject();
-                gen.writeStringField("Name", value.name);
+                gen.writeStringField("name", value.name);
+                gen.writeStringField("type",value.userType.name());
+                gen.writeStringField("email", value.email);
+                gen.writeStringField("description", value.description);
+
+                // gen.writeArrayFieldStart("permissions");
+                gen.writeObjectFieldStart("permissions");
+                for(Permission p : value.permissions){
+                   if(p.getId()!=null) {
+                       gen.writeObjectFieldStart(p.getId().toString());
+                       //gen.writeStartObject();
+                       gen.writeStringField("name", p.getName());
+                       gen.writeStringField("code", p.getCode());
+                       gen.writeStringField("description", p.getDescription());
+                       gen.writeEndObject();
+                   }
+                }
+                gen.writeEndObject();
+                //gen.writeEndArray();
+                gen.writeEndObject();
+            }
+        };
+    }
+    @Override
+    @JsonIgnore
+    public JsonSerializer<Role> getAuditSerializer() {
+        return new JsonSerializer<Role>() {
+            @Override
+            public void serialize(Role value, JsonGenerator gen, SerializerProvider serializers)
+                    throws IOException, JsonProcessingException {
+
+                gen.writeStartObject();
+                gen.writeStringField("rame", value.name);
                 gen.writeStringField("Type",value.userType.name());
                 gen.writeStringField("Email", value.email);
                 gen.writeStringField("Description", value.description);

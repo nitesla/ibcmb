@@ -100,6 +100,26 @@ public class FinancialInstitution extends AbstractEntity implements PrettySerial
             }
         };
     }
+    @Override @JsonIgnore
+    public JsonSerializer<FinancialInstitution> getAuditSerializer() {
+        return new JsonSerializer<FinancialInstitution>() {
+            @Override
+            public void serialize(FinancialInstitution value, JsonGenerator gen, SerializerProvider serializers)
+                    throws IOException, JsonProcessingException
+            {
+                gen.writeStartObject();
+                if(value.id != null) {
+                    gen.writeStringField("id", value.id.toString());
+                }else {
+                    gen.writeStringField("id", "");
+                }
+                gen.writeStringField("institutionCode",value.institutionCode);
+                gen.writeStringField("institutionName",value.institutionName);
+                gen.writeStringField("institutionType",value.institutionType.name());
+                gen.writeEndObject();
+            }
+        };
+    }
 
 }
 

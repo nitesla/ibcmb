@@ -80,5 +80,25 @@ public class AccountClassRestriction extends AbstractEntity implements PrettySer
             }
         };
     }
+    @Override @JsonIgnore
+    public JsonSerializer<AccountClassRestriction> getAuditSerializer() {
+        return new JsonSerializer<AccountClassRestriction>() {
+            @Override
+            public void serialize(AccountClassRestriction value, JsonGenerator gen, SerializerProvider serializers)
+                    throws IOException, JsonProcessingException
+            {
+                gen.writeStartObject();
+                if(value.id != null) {
+                    gen.writeStringField("id", value.id.toString());
+                }else {
+                    gen.writeStringField("id", "");
+                }
+                gen.writeStringField("accountClass",value.accountClass);
+                gen.writeStringField("restrictionType",value.restrictionType);
+                gen.writeStringField("dateCreated",value.dateCreated.toString());
+                gen.writeEndObject();
+            }
+        };
+    }
 
 }

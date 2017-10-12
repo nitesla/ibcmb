@@ -141,4 +141,26 @@ public class Code extends AbstractEntity implements PrettySerializer{
 		};
 	}
 
+	@Override @JsonIgnore
+	public JsonSerializer<Code> getAuditSerializer() {
+		return new JsonSerializer<Code>() {
+			@Override
+			public void serialize(Code value, JsonGenerator gen, SerializerProvider serializers)
+					throws IOException, JsonProcessingException
+			{
+				gen.writeStartObject();
+				if(value.id != null) {
+					gen.writeStringField("id", value.id.toString());
+				}else {
+					gen.writeStringField("id", "");
+				}
+				gen.writeStringField("code",value.code);
+				gen.writeStringField("description",value.description);
+				gen.writeStringField("type",value.type);
+				gen.writeStringField("extraInfo",value.extraInfo);
+				gen.writeEndObject();
+			}
+		};
+	}
+
 	}

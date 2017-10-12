@@ -456,4 +456,9 @@ public class CorporateUserDTO  implements PrettySerializer{
 			return false;
 		return true;
 	}
+    @JsonIgnore
+    @Override
+    public <T> JsonSerializer<T> getAuditSerializer() {
+        return null;
+    }
 }
