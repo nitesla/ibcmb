@@ -218,8 +218,16 @@ public class TransRequest extends AbstractEntity implements PrettySerializer {
                     gen.writeStringField("id", "");
                 }
                 gen.writeStringField("customerAccountNumber", value.customerAccountNumber);
-                gen.writeStringField("transferType", value.transferType.toString());
-                gen.writeStringField("tranDate", value.tranDate.toString());
+                if(value.transferType !=null) {
+                    gen.writeStringField("transferType", value.transferType.toString());
+                }else {
+                    gen.writeStringField("transferType", "");
+                }
+                if(value.tranDate !=null) {
+                    gen.writeStringField("tranDate", value.tranDate.toString());
+                }else {
+                    gen.writeStringField("tranDate", "");
+                }
                 gen.writeStringField("beneficiaryAccountNumber", value.beneficiaryAccountNumber);
                 gen.writeStringField("beneficiaryAccountName", value.beneficiaryAccountName);
                 gen.writeStringField("remarks", value.remarks);

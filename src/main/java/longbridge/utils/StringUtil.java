@@ -7,10 +7,9 @@ import org.json.simple.JSONObject;
 import org.springframework.web.context.request.WebRequest;
 
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
+import java.util.*;
 
 /**
  * Created by Longbridge on 7/19/2017.
@@ -94,5 +93,37 @@ public class StringUtil {
     public static List<String> userDetials(){
         String[] userDetails = new String[]{"userName","firstName","lastName","email","phoneNumber","status"};
         return Arrays.asList(userDetails);
+    }
+    public static Map<String,List<String>> addSupperClassFieldsIfNeccassary(Class<?> superclass, List<String> headers, List<String> classFields){
+        Map<String,List<String>> map = new HashMap<>();
+        if (superclass.toString().contains("User") ||superclass.toString().contains("Beneficiary")||superclass.toString().contains("TransRequest")){
+            for (Field field: superclass.getDeclaredFields()) {
+                String fieldName = StringUtil.extractedFieldName(field.toString());
+                if(superclass.toString().contains("User") ) {
+                    if (StringUtil.userDetials().contains(fieldName)) {
+                        headers.add(convertFieldToTitle(fieldName));
+                        classFields.add("fullEntity." + fieldName);
+                    }
+                }else {
+                    Annotation[] annotations = field.getAnnotations();
+                    boolean fieldDiplay = true;
+                    for (Annotation annotation: annotations) {
+                        if(annotation.toString().contains("ManyToOne")||annotation.toString().contains("OneToOne")||annotation.toString().contains("ManyToMany")||annotation.toString().contains("OneToMany")){
+                            fieldDiplay = false;
+                            break;
+                        }
+                    }
+                    if(!fieldDiplay){
+                        continue;
+                    }
+                    headers.add(convertFieldToTitle(fieldName));
+                    classFields.add("fullEntity." + fieldName);
+                }
+            }
+
+        }
+        map.put("headers",headers);
+        map.put("classFields",classFields);
+        return map;
     }
 }
