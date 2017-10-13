@@ -109,6 +109,11 @@ public class SRConfig extends AbstractEntity implements PrettySerializer{
                     throws IOException, JsonProcessingException
             {
                 gen.writeStartObject();
+                if(value.id != null) {
+                    gen.writeStringField("id", value.id.toString());
+                }else {
+                    gen.writeStringField("id", "");
+                }
                 gen.writeStringField("serviceRequestName",value.requestName);
                 gen.writeStringField("requestType",value.requestType);
                 gen.writeBooleanField("authentication",value.authenticate);

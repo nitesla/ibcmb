@@ -114,4 +114,37 @@ public class CorporateRole extends AbstractEntity implements PrettySerializer{
 			}
 		};
 	}
+    @Override
+    @JsonIgnore
+	public JsonSerializer<CorporateRole> getAuditSerializer() {
+		return new JsonSerializer<CorporateRole>() {
+
+			@Override
+			public void serialize(CorporateRole value, JsonGenerator gen, SerializerProvider arg2)
+					throws IOException, JsonProcessingException {
+				  gen.writeStartObject();
+                if(value.id != null) {
+                    gen.writeStringField("id", value.id.toString());
+                }else {
+                    gen.writeStringField("id", "");
+                }
+	                gen.writeStringField("name", value.name);
+	                gen.writeNumberField("rank",value.rank);
+//	                gen.writeStringField("Corporate", value.corporate.getName());
+	                // gen.writeArrayFieldStart("permissions");
+	                gen.writeObjectFieldStart("members");
+	                for(CorporateUser user : value.users){
+	                    gen.writeObjectFieldStart(user.getId().toString());
+	                    //gen.writeStartObject();
+                        gen.writeStringField("username",user.userName);
+                        gen.writeStringField("firstName",user.firstName);
+	                    gen.writeStringField("lastName",user.lastName);
+	                    gen.writeEndObject();
+	                }
+	                gen.writeEndObject();
+	                //gen.writeEndArray();
+	                gen.writeEndObject();
+			}
+		};
+	}
 }

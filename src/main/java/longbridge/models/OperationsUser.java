@@ -90,4 +90,38 @@ public class OperationsUser extends User implements Person,PrettySerializer {
 		};
 	}
 
+
+	@Override
+	@JsonIgnore
+	public JsonSerializer<User> getAuditSerializer() {
+		return new JsonSerializer<User>() {
+			@Override
+			public void serialize(User value, JsonGenerator gen, SerializerProvider serializers)
+					throws IOException, JsonProcessingException {
+
+				gen.writeStartObject();
+				if(value.id != null) {
+					gen.writeStringField("id", value.id.toString());
+				}else {
+					gen.writeStringField("id", "");
+				}
+				gen.writeStringField("username", value.userName);
+				gen.writeStringField("firstName", value.firstName);
+				gen.writeStringField("lastName", value.lastName);
+				gen.writeStringField("email", value.email);
+				gen.writeStringField("phone", value.phoneNumber);
+				String status =null;
+				if ("A".equals(value.status))
+					status = "Active";
+				else if ("I".equals(value.status))
+					status = "Inactive";
+				else if ("L".equals(value.status))
+					status = "Locked";
+				gen.writeStringField("status", status);
+				gen.writeStringField("role", value.role.getName());
+				gen.writeEndObject();
+			}
+		};
+	}
+
 }

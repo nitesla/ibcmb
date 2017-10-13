@@ -115,6 +115,11 @@ public class Setting extends AbstractEntity implements PrettySerializer{
                     throws IOException, JsonProcessingException
             {
                 gen.writeStartObject();
+                if(value.id != null) {
+                    gen.writeStringField("id", value.id.toString());
+                }else {
+                    gen.writeStringField("id", "");
+                }
                 gen.writeStringField("name",value.name);
                 gen.writeStringField("description",value.description);
                 gen.writeStringField("value",value.value);

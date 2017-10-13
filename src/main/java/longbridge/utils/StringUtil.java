@@ -1,9 +1,16 @@
 package longbridge.utils;
 
+import com.fasterxml.jackson.core.JsonFactory;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.json.simple.JSONObject;
 import org.springframework.web.context.request.WebRequest;
 
+import java.io.IOException;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Longbridge on 7/19/2017.
@@ -63,5 +70,29 @@ public class StringUtil {
     }
     public static String extractedFieldName(String genericFieldName){
         return genericFieldName.substring(genericFieldName.lastIndexOf('.') + 1, genericFieldName.length());
+    }
+    public static JSONObject convertToJSON(String json)  {
+        JSONObject jsonObject = new JSONObject();
+        JsonFactory factory = new JsonFactory();
+
+        ObjectMapper mapper = new ObjectMapper(factory);
+        JsonNode rootNode = null;
+        try {
+            rootNode = mapper.readTree(json);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        Iterator<Map.Entry<String,JsonNode>> fieldsIterator = rootNode.fields();
+        while (fieldsIterator.hasNext()) {
+            Map.Entry<String,JsonNode> field = fieldsIterator.next();
+            jsonObject.put(field.getKey(),field.getValue());
+//            System.out.println("Key: " + field.getKey() + "\tValue:" + field.getValue());
+        }
+        return jsonObject;
+    }
+    public static List<String> userDetials(){
+        String[] userDetails = new String[]{"userName","firstName","lastName","email","phoneNumber","status"};
+        return Arrays.asList(userDetails);
     }
 }

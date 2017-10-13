@@ -126,6 +126,53 @@ public class UserGroup extends AbstractEntity implements PrettySerializer{
             }
         };
     }
+    @Override
+    @JsonIgnore
+    public JsonSerializer<UserGroup> getAuditSerializer()
+    {
+        return new JsonSerializer<UserGroup>() {
+
+            @Override
+            public void serialize(UserGroup value, JsonGenerator gen, SerializerProvider arg2)
+                    throws IOException, JsonProcessingException {
+                gen.writeStartObject();
+                if(value.id != null) {
+                    gen.writeStringField("id", value.id.toString());
+                }else {
+                    gen.writeStringField("id", "");
+                }
+                gen.writeStringField("groupName", value.name);
+//                gen.writeStringField("Description",value.description);
+
+
+
+                gen.writeObjectFieldStart("internalUsers");
+                Integer count = 0;
+                for(OperationsUser user : value.users){
+                    gen.writeObjectFieldStart((++count).toString());
+                    //gen.writeStartObject();
+                    gen.writeStringField("firstName",user.firstName);
+                    gen.writeStringField("lastName",user.lastName);
+                    gen.writeStringField("email",user.email);
+                    gen.writeEndObject();
+                }
+                gen.writeEndObject();
+
+                gen.writeObjectFieldStart("externalUsers");
+                for(Contact contact : value.contacts){
+                    gen.writeObjectFieldStart((++count).toString());
+                    //gen.writeStartObject();
+                    gen.writeStringField("firstName",contact.firstName);
+                    gen.writeStringField("lastName",contact.lastName);
+                    gen.writeStringField("email",contact.email);
+                    gen.writeEndObject();
+                }
+                gen.writeEndObject();
+                //gen.writeEndArray();
+                gen.writeEndObject();
+            }
+        };
+    }
 
 
 }

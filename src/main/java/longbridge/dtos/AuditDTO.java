@@ -1,11 +1,7 @@
 package longbridge.dtos;
 
 import longbridge.config.audits.ModifiedEntityTypeEntity;
-import longbridge.models.AbstractEntity;
-import longbridge.models.Code;
-import org.apache.poi.ss.formula.functions.T;
-
-import java.util.List;
+import org.json.simple.JSONObject;
 
 /**
  * Created by Longbridge on 9/27/2017.
@@ -14,7 +10,8 @@ public class AuditDTO {
     Object entityDetails;
     ModifiedEntityTypeEntity modifiedEntities;
     String entityClassName;
-    String finacialInstitution;
+    JSONObject fullEntity;
+
     public Object getEntityDetails() {
         return entityDetails;
     }
@@ -39,12 +36,12 @@ public class AuditDTO {
         this.entityClassName = entityClassName;
     }
 
-    public String getFinacialInstitution() {
-        return finacialInstitution;
+    public JSONObject getFullEntity() {
+        return fullEntity;
     }
 
-    public void setFinacialInstitution(String finacialInstitution) {
-        this.finacialInstitution = finacialInstitution;
+    public void setFullEntity(JSONObject fullEntity) {
+        this.fullEntity = fullEntity;
     }
 
     @Override
@@ -53,7 +50,7 @@ public class AuditDTO {
                 "entityDetails=" + entityDetails +
                 ", modifiedEntities=" + modifiedEntities +
                 ", entityClassName='" + entityClassName + '\'' +
-                ", finacialInstitution='" + finacialInstitution + '\'' +
+                ", fullEntity=" + fullEntity +
                 '}';
     }
 }

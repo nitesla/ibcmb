@@ -21,6 +21,7 @@ import org.springframework.scheduling.annotation.EnableAsync;
 public class InternetbankingApplication extends SpringBootServletInitializer implements CommandLineRunner {
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 
     @Autowired
     OperationsUserRepo operationsUserRepo;
@@ -72,6 +73,8 @@ public class InternetbankingApplication extends SpringBootServletInitializer imp
 
 =======
 >>>>>>> 7c820936e5c0d03b8a2ffc82da427961368786a3
+=======
+>>>>>>> 4e9a44632aed2ae8a017b01fb8aa0b6aa9339011
     public static void main(String[] args) {
         SpringApplication.run(InternetbankingApplication.class, args);
 
