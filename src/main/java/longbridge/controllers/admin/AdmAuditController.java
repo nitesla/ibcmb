@@ -197,11 +197,6 @@ public class AdmAuditController {
         }else {
             auditDTOs = auditCfgService.searchRevisedEntity(className,pageable,csearch);
         }
-        for ( AuditDTO auditDTO:auditDTOs) {
-            model.addAttribute("fieldsDisp",auditDTO.getFullEntity().keySet());
-            logger.info("the fieldsDisp {}",auditDTO.getFullEntity().keySet());
-            break;
-        }
         DataTablesOutput<AuditDTO> out = new DataTablesOutput<AuditDTO>();
         out.setDraw(input.getDraw());
         out.setData(auditDTOs.getContent());
