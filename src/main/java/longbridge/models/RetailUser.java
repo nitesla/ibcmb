@@ -159,7 +159,7 @@ public class RetailUser extends User implements PrettySerializer{
 				}else {
 					gen.writeStringField("id", "");
 				}
-				gen.writeStringField("userName", value.userName);
+				gen.writeStringField("userName", value.firstName);
 				gen.writeStringField("firstName", value.firstName);
 				gen.writeStringField("lastName", value.lastName);
 				gen.writeStringField("email", value.email);

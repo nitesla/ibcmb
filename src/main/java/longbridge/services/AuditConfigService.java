@@ -52,6 +52,7 @@ public interface AuditConfigService
 	Page<ModifiedEntityTypeEntity> getRevisedDetailsForEntity(Integer id,String classname,Pageable pageable);
 	Page<ModifiedEntityTypeEntity> getRevisionEntitiesByDate(Pageable pageable);
 	Page<AuditDTO> revisedEntity(String entityName, Pageable pageable);
+	Page<AuditDTO> revisedEntityByQuery(String entityName, Pageable pageable);
 	Page<AuditDTO> searchRevisedEntity(String entityName, Pageable pageable,String search);
 //	List<AuditDTO> revisedEntityForClass(String entityName);
 

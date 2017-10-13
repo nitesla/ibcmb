@@ -116,15 +116,7 @@ public class AdmAuditController {
 
                 Annotation[] annotations = field.getAnnotations();
                 boolean fieldDiplay = true;
-                for (Annotation annotation: annotations) {
-                    if(annotation.toString().contains("ManyToOne")||annotation.toString().contains("OneToOne")||annotation.toString().contains("ManyToMany")||annotation.toString().contains("OneToMany")){
-                        fieldDiplay = false;
-                        break;
-                    }
-                }
-                if(!fieldDiplay){
-                    continue;
-                }
+
                 if(fieldName.equalsIgnoreCase("serialVersionUID")) {
                     continue;
                 }
@@ -135,23 +127,24 @@ public class AdmAuditController {
                 }
 
                 headers.add(convertFieldToTitle(fieldName));
-                classFields.add("fullEntity." + fieldName);
-            }
-            if (superclass.toString().contains("User")){
-                for (Field field: superclass.getDeclaredFields()) {
-                    String fieldName = StringUtil.extractedFieldName(field.toString());
-                    if(StringUtil.userDetials().contains(fieldName)){
-                        headers.add(convertFieldToTitle(fieldName));
-                        classFields.add("fullEntity." + fieldName);
+                String datatableField = StringUtil.convertFromKermelCaseing(fieldName);
+                for (Annotation annotation: annotations) {
+                    if(annotation.toString().contains("ManyToOne")||annotation.toString().contains("OneToOne")||annotation.toString().contains("ManyToMany")||annotation.toString().contains("OneToMany")){
+                        datatableField += "_ID";
+                        break;
                     }
                 }
+                classFields.add("fullEntity."+datatableField);
             }
+            Map<String, List<String>> allFields = StringUtil.addSupperClassFields(superclass, headers, classFields);
+            headers = allFields.get("headers");
+            classFields = allFields.get("classFields");
             if(!classFields.isEmpty()) {
                 model.addAttribute("fields", classFields);
             }else {
                 model.addAttribute("fields", null);
             }
-            logger.info("the superclass {}", superclass);
+            logger.info("the superclass {}", allFields);
             model.addAttribute("headers",headers);
             model.addAttribute("headerSize",headers.size());
         } catch (ClassNotFoundException e) {
@@ -183,17 +176,18 @@ public class AdmAuditController {
 
 
     @GetMapping("/entity/name/details")
-    public @ResponseBody DataTablesOutput<AuditDTO> getAllRevisedEntity(DataTablesInput input,@RequestParam("className") String className,@RequestParam("csearch") String csearch,Model model)
+    public @ResponseBody DataTablesOutput<AuditDTO> getAllRevisedEntity(DataTablesInput input,Model model,@RequestParam("className") String className,@RequestParam("csearch") String csearch)
     {
 //        @RequestParam("className") String className,@RequestParam("csearch") String csearch
-//        String className = "TransRequest";
+//        String className = "LocalBeneficiary";
 //        String csearch = "";
         logger.info("The class name {}",className);
         logger.info("TO search {}",csearch);
         Pageable pageable = DataTablesUtils.getPageable(input);
         Page<AuditDTO> auditDTOs = null;
         if(csearch==null || csearch.equalsIgnoreCase("")){
-            auditDTOs = auditCfgService.revisedEntity(className,pageable);
+            auditDTOs = auditCfgService.revisedEntityByQuery(className,pageable);
+//            auditDTOs = auditCfgService.revisedEntity(className,pageable);
         }else {
             auditDTOs = auditCfgService.searchRevisedEntity(className,pageable,csearch);
         }

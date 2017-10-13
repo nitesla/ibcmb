@@ -98,6 +98,11 @@ public class AdminUser extends User implements PrettySerializer{
 				gen.writeStringField("lastName", value.lastName);
 				gen.writeStringField("email", value.email);
 				gen.writeStringField("phoneNumber", value.phoneNumber);
+				if(value.role.getId() != null) {
+					gen.writeStringField("role", value.role.getId().toString());
+				}else {
+					gen.writeStringField("role", "");
+				}
 				String status =null;
 				if ("A".equals(value.status))
 					status = "Active";

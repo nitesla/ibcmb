@@ -31,18 +31,18 @@ public class RevisedEntitiesUtil {
         List<Integer> revIds = new ArrayList<>();
         entityName = getOracleEntity(entityName);
 
-            String auditEntity = entityName + "_AUD";
-            ApplicationContext context = SpringContext.getApplicationContext();
-            DataSource dataSource = context.getBean(DataSource.class);
-            NamedParameterJdbcTemplate namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
-            String sql = "select a.rev from "+ auditEntity +" a where a.id in (select ar.id from " + auditEntity + " ar where ar.rev = :revisionid)";
-            SqlParameterSource namedParameters = new MapSqlParameterSource("revisionid", revId);
-            mapList= namedParameterJdbcTemplate.queryForList(sql, namedParameters);
-            if(!mapList.isEmpty()) {
-                for (Map map : mapList) {
-                    revIds.add(Integer.parseInt(map.get("REV").toString()));
-                }
+        String auditEntity = entityName + "_AUD";
+        ApplicationContext context = SpringContext.getApplicationContext();
+        DataSource dataSource = context.getBean(DataSource.class);
+        NamedParameterJdbcTemplate namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
+        String sql = "select a.rev from "+ auditEntity +" a where a.id in (select ar.id from " + auditEntity + " ar where ar.rev = :revisionid)";
+        SqlParameterSource namedParameters = new MapSqlParameterSource("revisionid", revId);
+        mapList= namedParameterJdbcTemplate.queryForList(sql, namedParameters);
+        if(!mapList.isEmpty()) {
+            for (Map map : mapList) {
+                revIds.add(Integer.parseInt(map.get("REV").toString()));
             }
+        }
 
         return revIds;
     }
@@ -57,6 +57,7 @@ public class RevisedEntitiesUtil {
                 builder.append(enttyname.charAt(y));
             }
         }
+        logger.info("The entity name to search {}",builder);
         return builder.toString();
     }
 
@@ -82,42 +83,42 @@ public class RevisedEntitiesUtil {
 
         if(!entityDetails.isEmpty())
         {
-           entityDetails = removeIrrelevantDetails(entityDetails);
-           logger.info("this is the entity details {}",entityDetails);
+            entityDetails = removeIrrelevantDetails(entityDetails);
+            logger.info("this is the entity details {}",entityDetails);
 
-           if(entityDetails.size()>1)
-           {
-               for (String item:entityDetails.get(0).keySet())
-               {
-                   if(entityDetails.get(0).get(item)!=null)
-                   {
-                       itemList.add(entityDetails.get(0).get(item).toString());
-                   }
+            if(entityDetails.size()>1)
+            {
+                for (String item:entityDetails.get(0).keySet())
+                {
+                    if(entityDetails.get(0).get(item)!=null)
+                    {
+                        itemList.add(entityDetails.get(0).get(item).toString());
+                    }
 
-                   else
-                       {
-                       itemList.add("");
+                    else
+                    {
+                        itemList.add("");
 
-                        }
-               }
+                    }
+                }
 
-               mergedDetails.put("pastDetails",itemList);
-               for (String item:entityDetails.get(1).keySet())
-               {
-                   if(entityDetails.get(1).get(item)!=null)
-                   {
+                mergedDetails.put("pastDetails",itemList);
+                for (String item:entityDetails.get(1).keySet())
+                {
+                    if(entityDetails.get(1).get(item)!=null)
+                    {
 
-                       itemList2.add(entityDetails.get(1).get(item).toString());
-                   }
+                        itemList2.add(entityDetails.get(1).get(item).toString());
+                    }
 
-                   else{
-                       itemList2.add("");
-                   }
+                    else{
+                        itemList2.add("");
+                    }
 
-               }
-               mergedDetails.put("currentDetails",itemList2);
-               mergedDetails.put("keys",new ArrayList<>(entityDetails.get(0).keySet()));
-           }
+                }
+                mergedDetails.put("currentDetails",itemList2);
+                mergedDetails.put("keys",new ArrayList<>(entityDetails.get(0).keySet()));
+            }
 //           else
 //               {
 //               for (String item:entityDetails.get(0).keySet())
@@ -131,6 +132,25 @@ public class RevisedEntitiesUtil {
         }
 
         return mergedDetails;
+    }
+    public static Map<String, Object> getEntityDetailsById(String entityName, int rev)
+    {
+        Integer revId  = new Integer(rev);
+        entityName = getOracleEntity(entityName);
+        String auditEntity = entityName + "_AUD";
+        ApplicationContext context = SpringContext.getApplicationContext();
+        DataSource dataSource = context.getBean(DataSource.class);
+        NamedParameterJdbcTemplate namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
+        String sql = "select * from "+ auditEntity +" a where a.REV = :revIdList";
+        SqlParameterSource namedParameters = new MapSqlParameterSource("revIdList", revId);
+        List<Map<String ,Object>> entityDetails = namedParameterJdbcTemplate.queryForList(sql, namedParameters);
+        if(!entityDetails.isEmpty())
+        {
+            entityDetails = removeIrrelevantDetails(entityDetails);
+            logger.info("this is the entity details {}",entityDetails);
+        }
+
+        return entityDetails.get(0);
     }
     private static List<Map<String, Object>> removeIrrelevantDetails(List<Map<String ,Object>> entityDetails){
         for (Map map:entityDetails) {
