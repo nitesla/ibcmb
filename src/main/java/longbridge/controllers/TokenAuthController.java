@@ -50,7 +50,7 @@ public class TokenAuthController {
     public String authenticate(HttpServletRequest request, RedirectAttributes redirectAttributes, Locale locale, Principal principal) {
         String redirectUrl = (String) request.getSession().getAttribute("redirectUrl");
         String otpUrl = (String) request.getSession().getAttribute("otpUrl");
-        logger.info("the otp sent is {}", request.getParameter("otp"));
+        logger.info("The otp sent is {}", request.getParameter("otp"));
         String entrustId = (String) request.getSession().getAttribute("entrustId");
         String entrustGrp = (String) request.getSession().getAttribute("entrustGrp");
 

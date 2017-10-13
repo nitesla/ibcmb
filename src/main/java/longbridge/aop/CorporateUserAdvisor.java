@@ -29,7 +29,6 @@ public class CorporateUserAdvisor {
     @Autowired
     private EntityManager entityManager;
 
-
     @Autowired
     private CorporateUserRepo corporateUserRepo;
 

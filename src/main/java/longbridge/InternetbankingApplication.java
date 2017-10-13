@@ -20,6 +20,7 @@ import org.springframework.scheduling.annotation.EnableAsync;
 @EnableAsync
 public class InternetbankingApplication extends SpringBootServletInitializer implements CommandLineRunner {
 
+<<<<<<< HEAD
 
     @Autowired
     OperationsUserRepo operationsUserRepo;
@@ -69,6 +70,8 @@ public class InternetbankingApplication extends SpringBootServletInitializer imp
     FinancialInstitutionService financialInstitutionService;
 
 
+=======
+>>>>>>> 7c820936e5c0d03b8a2ffc82da427961368786a3
     public static void main(String[] args) {
         SpringApplication.run(InternetbankingApplication.class, args);
 
@@ -82,7 +85,6 @@ public class InternetbankingApplication extends SpringBootServletInitializer imp
 
     @Override
     public void run(String... strings) throws Exception {
-//        securityService.unLockUser("shina2","Corporate_Group");
     }
 
 

@@ -114,53 +114,53 @@ public class CorporateServiceImpl implements CorporateService {
         }
     }
 
-    @Override
-    public String addCorporate(CorporateDTO corporateDTO, CorporateUserDTO user) throws InternetBankingException {
-
-        Corporate corporate = corporateRepo.findByCustomerId(corporateDTO.getCustomerId());
-
-        if (corporate != null) {
-            throw new DuplicateObjectException(messageSource.getMessage("corporate.exist", null, locale));
-        }
-
-        CorporateUser corporateUser = corporateUserRepo.findFirstByUserName(user.getUserName());
-        if (corporateUser != null) {
-            throw new DuplicateObjectException(messageSource.getMessage("user.exists", null, locale));
-        }
-
-        try {
-            corporate = convertDTOToEntity(corporateDTO);
-            corporate.setStatus("A");
-            corporate.setCreatedOnDate(new Date());
-            corporateUser = new CorporateUser();
-            corporateUser.setFirstName(user.getFirstName());
-            corporateUser.setLastName(user.getLastName());
-            corporateUser.setUserName(user.getUserName());
-            corporateUser.setEmail(user.getEmail());
-            corporateUser.setPhoneNumber(user.getPhoneNumber());
-            corporateUser.setAdmin(user.isAdmin());
-            corporateUser.setAlertPreference(codeService.getByTypeAndCode("ALERT_PREFERENCE", "BOTH"));
-            corporateUser.setCreatedOnDate(new Date());
-            corporateUser.setStatus("A");
-            Role role = roleRepo.findOne(Long.parseLong(user.getRoleId()));
-            corporateUser.setRole(role);
-            corporateUser.setCorporate(corporate);
-            Corporate newCorporate = corporateRepo.save(corporate);
-            corporateUser.setCorporate(newCorporate);
-            CorporateUser corpUser = corporateUserRepo.save(corporateUser);
-            createUserOnEntrustAndSendCredentials(corpUser);
-            addAccounts(corporate);
-
-            logger.info("Corporate {} created", corporate.getName());
-            return messageSource.getMessage("corporate.add.success", null, locale);
-        } catch (Exception e) {
-            if (e instanceof EntrustException) {
-                throw new InternetBankingSecurityException(messageSource.getMessage("entrust.create.failure", null, locale));
-            }
-
-            throw new InternetBankingException(messageSource.getMessage("corporate.add.failure", null, locale), e);
-        }
-    }
+//    @Override
+//    public String addCorporate(CorporateDTO corporateDTO, CorporateUserDTO user) throws InternetBankingException {
+//
+//        Corporate corporate = corporateRepo.findByCustomerId(corporateDTO.getCustomerId());
+//
+//        if (corporate != null) {
+//            throw new DuplicateObjectException(messageSource.getMessage("corporate.exist", null, locale));
+//        }
+//
+//        CorporateUser corporateUser = corporateUserRepo.findFirstByUserName(user.getUserName());
+//        if (corporateUser != null) {
+//            throw new DuplicateObjectException(messageSource.getMessage("user.exists", null, locale));
+//        }
+//
+//        try {
+//            corporate = convertDTOToEntity(corporateDTO);
+//            corporate.setStatus("A");
+//            corporate.setCreatedOnDate(new Date());
+//            corporateUser = new CorporateUser();
+//            corporateUser.setFirstName(user.getFirstName());
+//            corporateUser.setLastName(user.getLastName());
+//            corporateUser.setUserName(user.getUserName());
+//            corporateUser.setEmail(user.getEmail());
+//            corporateUser.setPhoneNumber(user.getPhoneNumber());
+//            corporateUser.setAdmin(user.isAdmin());
+//            corporateUser.setAlertPreference(codeService.getByTypeAndCode("ALERT_PREFERENCE", "BOTH"));
+//            corporateUser.setCreatedOnDate(new Date());
+//            corporateUser.setStatus("A");
+//            Role role = roleRepo.findOne(Long.parseLong(user.getRoleId()));
+//            corporateUser.setRole(role);
+//            corporateUser.setCorporate(corporate);
+//            Corporate newCorporate = corporateRepo.save(corporate);
+//            corporateUser.setCorporate(newCorporate);
+//            CorporateUser corpUser = corporateUserRepo.save(corporateUser);
+//            createUserOnEntrustAndSendCredentials(corpUser);
+//            addAccounts(corporate);
+//
+//            logger.info("Corporate {} created", corporate.getName());
+//            return messageSource.getMessage("corporate.add.success", null, locale);
+//        } catch (Exception e) {
+//            if (e instanceof EntrustException) {
+//                throw new InternetBankingSecurityException(messageSource.getMessage("entrust.create.failure", null, locale));
+//            }
+//
+//            throw new InternetBankingException(messageSource.getMessage("corporate.add.failure", null, locale), e);
+//        }
+//    }
 
 
     @Override

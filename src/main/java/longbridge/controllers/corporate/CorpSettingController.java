@@ -71,7 +71,10 @@ public class CorpSettingController {
     @RequestMapping("/dashboard")
     public String getCorporateDashboard(Model model, Principal principal) {
         CorporateUser corporateUser = corporateUserService.getUserByName(principal.getName());
-        //List<AccountDTO> accountList = accountService.getAccountsForDebitAndCredit(corporateUser.getCorporate().getCustomerId());
+
+        if (corporateUser==null) {
+            return "redirect:/login/corporate";
+        }
 
         List<AccountDTO> accountList = accountService.getAccountsAndBalances(corporateUser.getCorporate().getAccounts());
 

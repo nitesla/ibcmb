@@ -230,7 +230,7 @@ public class CronJobServiceImpl implements CronJobService {
         String RCNum = corporate.getRcNumber();
         if((RCNum == null)||RCNum.equalsIgnoreCase("")||(!RCNum.equalsIgnoreCase(details.getRcNo()))){
             corporate.setRcNumber(details.getRcNo());
-            logger.info("Updating Corporate RCNumber for for {} to {}",corporate.getCustomerId(),corporate.getRcNumber());
+            logger.info("Updating Corporate RCNumber for {} to {}",corporate.getCustomerId(),corporate.getRcNumber());
             try {
                 corporateRepo.save(corporate);
             } catch (Exception e) {
