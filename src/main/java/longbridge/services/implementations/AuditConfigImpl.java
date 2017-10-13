@@ -18,6 +18,7 @@ import longbridge.repositories.CustomRevisionEntityRepo;
 import longbridge.repositories.ModifiedEntityTypeEntityRepo;
 import longbridge.services.AuditConfigService;
 import longbridge.utils.PrettySerializer;
+import longbridge.utils.SerializeUtil;
 import longbridge.utils.Verifiable;
 import org.apache.commons.lang.StringUtils;
 import org.apache.poi.ss.formula.functions.T;
@@ -277,82 +278,23 @@ public class AuditConfigImpl implements AuditConfigService {
 			for (ModifiedEntityTypeEntity entity: allEnityByRevisionByClass) {
 				AuditDTO auditDTO = new AuditDTO();
 				logger.info("revision id  "+entity.getRevision().getId());
-				AuditQuery query = auditReader.createQuery().forEntitiesAtRevision(clazz,entity.getRevision().getId());
+				AuditQuery query = auditReader.createQuery().forEntitiesModifiedAtRevision(clazz,entity.getRevision().getId());
 				List<AbstractEntity> abstractEntities = query.getResultList();
 				ObjectMapper prettyMapper = new ObjectMapper();
-
 				AbstractEntity abstractEntity = null;
 				try {
 					abstractEntity = abstractEntities.get(0);
 					if (abstractEntity instanceof PrettySerializer) {
-                        JsonSerializer<Object> serializer = ((PrettySerializer) (abstractEntity)).getAuditSerializer();
-                        SimpleModule module = new SimpleModule();
-                        module.addSerializer(abstractEntity.getClass(), serializer);
-                        prettyMapper.registerModule(module);
-                        logger.debug("Registering Pretty serializer for " + abstractEntity.getClass().getName());
-						String writeValueAsString = prettyMapper.writeValueAsString(abstractEntity);
-						logger.info("the serialized data {}", writeValueAsString);
-						JSONObject jsonObject = convertToJSON(writeValueAsString);
+						JSONObject jsonObject = SerializeUtil.getPrettySerialJSON(abstractEntity);
 						auditDTO.setFullEntity(jsonObject);
                     }else {
 						JSONObject jsonObject = convertToJSON(abstractEntity.toString());
 						auditDTO.setFullEntity(jsonObject);
 					}
-				} catch (JsonProcessingException e) {
+				} catch (IndexOutOfBoundsException e) {
 					e.printStackTrace();
+					continue;
 				}
-//				AbstractEntity originalEntity = null;
-//				if (abstractEntity.getId() != null) {
-//					Long id = abstractEntity.getId();
-//					originalEntity = entityManager.find(abstractEntity.getClass(), id);
-//					logger.info("the extracted entity is {}",originalEntity);
-////					logger.info("the abstract entity is {}",abstractEntities.get(0));
-//					if(originalEntity == null){
-//						originalEntity = abstractEntity;
-//					}
-//				}
-//				switch (entityName){
-//					case "TransRequest":
-//						TransRequest transRequest = (TransRequest) abstractEntities.get(0);
-//						if (transRequest != null){
-////						transRequest.getFinancialInstitution().getInstitutionName();
-////						logger.info("The finanial institution {}",transRequest.getFinancialInstitution());
-////							auditDTO.setFinacialInstitution(null);
-//
-//							transRequest.setFinancialInstitution(null);
-//						}
-//						auditDTO.setEntityDetails((Object)transRequest);
-//						break;
-//					case "AdminUser":
-//						AdminUser adminUser = (AdminUser)abstractEntity;
-//						adminUser.setRole(null);
-//						auditDTO.setEntityDetails((Object)adminUser);
-//						break;
-//					case "CorporateUser":
-//						CorporateUser corporateUser = (CorporateUser) abstractEntity;
-//
-//
-////						logger.info("the corporate {}",serializer.handledType());
-//						corporateUser.setCorporate(null);
-//						corporateUser.setTempPassword(null);
-//						corporateUser.setAlertPreference(null);
-//						corporateUser.setRole(null);
-//						auditDTO.setEntityDetails((Object)corporateUser);
-//
-////						auditDTO.setEntityDetails((Object)serializer);
-//						break;
-//					case "BulkTransfer":
-//						BulkTransfer bulkTransfer = (BulkTransfer) abstractEntities.get(0);
-//						bulkTransfer.setCorporate(null);
-//						bulkTransfer.setCrRequestList(null);
-//						bulkTransfer.setTransferAuth(null);
-//						auditDTO.setEntityDetails((Object)bulkTransfer);
-//						break;
-//						default:
-//							auditDTO.setEntityDetails(abstractEntities.get(0));
-//							break;
-//				}
-//				auditDTO.setEntityDetails(originalEntity);
 				auditDTO.setModifiedEntities(entity);
 				compositeAudits.add(auditDTO);
 			}
@@ -376,7 +318,15 @@ public class AuditConfigImpl implements AuditConfigService {
 		Page<CustomRevisionEntity> revisionEntities = null;
 		List<String> RevisionDetails = new ArrayList<>();
 		logger.info("entity name in {}",entityName);
-		Timestamp ts = Timestamp.valueOf(search);
+		Timestamp ts = null;
+		try {
+			ts = Timestamp.valueOf(search);
+			logger.info("the time stamp {}",ts);
+		} catch (IllegalArgumentException e){
+
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
 //		System.out.println(ts.getNanos());
 
 		Page<ModifiedEntityTypeEntity> allEnityByRevisionByClass = null;
@@ -386,11 +336,21 @@ public class AuditConfigImpl implements AuditConfigService {
 			Class<?> clazz  = Class.forName(PACKAGE_NAME + entityName);
 			String fullEntityName = PACKAGE_NAME + entityName;
 			AuditReader auditReader = AuditReaderFactory.get(entityManager);
-			allEnityByRevisionByClass = modifiedEntityTypeEntityRepo.findAllEnityByRevisionBySearch(fullEntityName,pageable,search,ts.toString());
-			for (ModifiedEntityTypeEntity entity: allEnityByRevisionByClass) {
+			String timeStamp = "";
+			if(ts == null){
+				timeStamp = "";
+			}else {
+				timeStamp = ts.toString();
+			}
+			if(timeStamp.isEmpty()) {
+				allEnityByRevisionByClass = modifiedEntityTypeEntityRepo.findAllEnityByRevisionBySearch(fullEntityName, pageable, search);
+
+			}else {
+				allEnityByRevisionByClass = modifiedEntityTypeEntityRepo.findAllEnityByRevisionBySearch(fullEntityName, pageable, search,ts.toString());
+			}for (ModifiedEntityTypeEntity entity: allEnityByRevisionByClass) {
 				AuditDTO auditDTO = new AuditDTO();
 				logger.info("revision id  "+entity.getRevision().getId());
-				AuditQuery query = auditReader.createQuery().forEntitiesAtRevision(clazz,entity.getRevision().getId());
+				AuditQuery query = auditReader.createQuery().forEntitiesModifiedAtRevision(clazz,entity.getRevision().getId());
 				List<AbstractEntity> abstractEntities = query.getResultList();
 				ObjectMapper prettyMapper = new ObjectMapper();
 
@@ -398,18 +358,12 @@ public class AuditConfigImpl implements AuditConfigService {
 				try {
 					abstractEntity = abstractEntities.get(0);
 					if (abstractEntity instanceof PrettySerializer) {
-						JsonSerializer<Object> serializer = ((PrettySerializer) (abstractEntity)).getAuditSerializer();
-						SimpleModule module = new SimpleModule();
-						module.addSerializer(abstractEntity.getClass(), serializer);
-						prettyMapper.registerModule(module);
-						logger.debug("Registering Pretty serializer for " + abstractEntity.getClass().getName());
-						String writeValueAsString = prettyMapper.writeValueAsString(abstractEntity);
-						logger.info("the serialized data {}", writeValueAsString);
-						JSONObject jsonObject = convertToJSON(writeValueAsString);
+						JSONObject jsonObject = SerializeUtil.getPrettySerialJSON(abstractEntity);
 						auditDTO.setFullEntity(jsonObject);
 					}
-				} catch (JsonProcessingException e) {
+				} catch (IndexOutOfBoundsException e) {
 					e.printStackTrace();
+					continue;
 				}
 //				AuditDTO auditDTO = new AuditDTO();
 //				logger.info("revision id  "+entity.getRevision().getId());

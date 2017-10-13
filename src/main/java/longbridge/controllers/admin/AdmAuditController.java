@@ -137,21 +137,29 @@ public class AdmAuditController {
                 headers.add(convertFieldToTitle(fieldName));
                 classFields.add("fullEntity." + fieldName);
             }
-            if (superclass.toString().contains("User")){
-                for (Field field: superclass.getDeclaredFields()) {
-                    String fieldName = StringUtil.extractedFieldName(field.toString());
-                    if(StringUtil.userDetials().contains(fieldName)){
-                        headers.add(convertFieldToTitle(fieldName));
-                        classFields.add("fullEntity." + fieldName);
-                    }
-                }
-            }
+//            if (superclass.toString().contains("User") ||superclass.toString().contains("Beneficiary")){
+//                for (Field field: superclass.getDeclaredFields()) {
+//                    String fieldName = StringUtil.extractedFieldName(field.toString());
+//                    if(superclass.toString().contains("User") ) {
+//                        if (StringUtil.userDetials().contains(fieldName)) {
+//                            headers.add(convertFieldToTitle(fieldName));
+//                            classFields.add("fullEntity." + fieldName);
+//                        }
+//                    }else {
+//                        headers.add(convertFieldToTitle(fieldName));
+//                        classFields.add("fullEntity." + fieldName);
+//                    }
+//                }
+//            }
+            Map<String, List<String>> allFields = StringUtil.addSupperClassFieldsIfNeccassary(superclass, headers, classFields);
+            headers = allFields.get("headers");
+            classFields = allFields.get("classFields");
             if(!classFields.isEmpty()) {
                 model.addAttribute("fields", classFields);
             }else {
                 model.addAttribute("fields", null);
             }
-            logger.info("the superclass {}", superclass);
+            logger.info("the superclass {}", allFields);
             model.addAttribute("headers",headers);
             model.addAttribute("headerSize",headers.size());
         } catch (ClassNotFoundException e) {
@@ -183,10 +191,10 @@ public class AdmAuditController {
 
 
     @GetMapping("/entity/name/details")
-    public @ResponseBody DataTablesOutput<AuditDTO> getAllRevisedEntity(DataTablesInput input,@RequestParam("className") String className,@RequestParam("csearch") String csearch,Model model)
+    public @ResponseBody DataTablesOutput<AuditDTO> getAllRevisedEntity(DataTablesInput input,Model model,@RequestParam("className") String className,@RequestParam("csearch") String csearch)
     {
 //        @RequestParam("className") String className,@RequestParam("csearch") String csearch
-//        String className = "TransRequest";
+//        String className = "LocalBeneficiary";
 //        String csearch = "";
         logger.info("The class name {}",className);
         logger.info("TO search {}",csearch);
@@ -197,11 +205,11 @@ public class AdmAuditController {
         }else {
             auditDTOs = auditCfgService.searchRevisedEntity(className,pageable,csearch);
         }
-        for ( AuditDTO auditDTO:auditDTOs) {
-            model.addAttribute("fieldsDisp",auditDTO.getFullEntity().keySet());
-            logger.info("the fieldsDisp {}",auditDTO.getFullEntity().keySet());
-            break;
-        }
+//        for ( AuditDTO auditDTO:auditDTOs) {
+//            model.addAttribute("fieldsDisp",auditDTO.getFullEntity().keySet());
+//            logger.info("the fieldsDisp {}",auditDTO.getFullEntity().keySet());
+//            break;
+//        }
         DataTablesOutput<AuditDTO> out = new DataTablesOutput<AuditDTO>();
         out.setDraw(input.getDraw());
         out.setData(auditDTOs.getContent());
