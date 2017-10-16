@@ -19,6 +19,7 @@ import longbridge.repositories.ModifiedEntityTypeEntityRepo;
 import longbridge.services.AuditConfigService;
 import longbridge.utils.PrettySerializer;
 import longbridge.utils.SerializeUtil;
+import longbridge.utils.StringUtil;
 import longbridge.utils.Verifiable;
 import org.apache.commons.lang.StringUtils;
 import org.apache.poi.ss.formula.functions.T;
@@ -317,6 +318,7 @@ public class AuditConfigImpl implements AuditConfigService {
 		List<AuditDTO> compositeAudits = new ArrayList<>();
 		Page<CustomRevisionEntity> revisionEntities = null;
 		List<String> RevisionDetails = new ArrayList<>();
+		JSONObject jsonObject2 = null;
 		Page<ModifiedEntityTypeEntity> allEnityByRevisionByClass = null;
 		logger.info("the entity name {}",entityName);
 		if(entityName.contains("TransRequest")|| entityName.contains("BulkTransfer")){
@@ -334,7 +336,26 @@ public class AuditConfigImpl implements AuditConfigService {
 //				logger.info("the entity details {}",entityDetials);
 				JSONObject jsonObject = new JSONObject();;
 				jsonObject.putAll(entityDetials);
-//				logger.info("the entity details {}",jsonObject);
+				if(entityName.contains("Beneficiary")){
+								AbstractEntity abstractEntity = null;
+				try {
+					AuditQuery query = auditReader.createQuery().forEntitiesModifiedAtRevision(clazz,entity.getRevision().getId());
+				List<AbstractEntity> abstractEntities = query.getResultList();
+					abstractEntity = abstractEntities.get(0);
+					if (abstractEntity instanceof PrettySerializer) {
+						jsonObject2 = SerializeUtil.getPrettySerialJSON(abstractEntity);
+//						auditDTO.setFullEntity(jsonObject2);
+						logger.info("the benefiary details is {}",jsonObject2);
+					}
+				} catch (IndexOutOfBoundsException e) {
+					e.printStackTrace();
+				}
+					for (Object key:jsonObject2.keySet()) {
+						jsonObject.put(StringUtil.convertFromKermelCaseing(key.toString()),jsonObject2.get(key));
+					}
+
+				}
+				logger.info("the entity details {}",jsonObject);
 				auditDTO.setFullEntity(jsonObject);
 
 				auditDTO.setModifiedEntities(entity);
@@ -370,7 +391,9 @@ public class AuditConfigImpl implements AuditConfigService {
 			e.printStackTrace();
 		}
 //		System.out.println(ts.getNanos());
-
+		if(entityName.contains("TransRequest")|| entityName.contains("BulkTransfer")){
+			entityName = "TransRequest";
+		}
 		Page<ModifiedEntityTypeEntity> allEnityByRevisionByClass = null;
 		try
 		{
@@ -390,59 +413,33 @@ public class AuditConfigImpl implements AuditConfigService {
 			}else {
 				allEnityByRevisionByClass = modifiedEntityTypeEntityRepo.findAllEnityByRevisionBySearch(fullEntityName, pageable, search,ts.toString());
 			}for (ModifiedEntityTypeEntity entity: allEnityByRevisionByClass) {
-				AuditDTO auditDTO = new AuditDTO();
-				logger.info("revision id  "+entity.getRevision().getId());
-				AuditQuery query = auditReader.createQuery().forEntitiesModifiedAtRevision(clazz,entity.getRevision().getId());
-				List<AbstractEntity> abstractEntities = query.getResultList();
-				ObjectMapper prettyMapper = new ObjectMapper();
-
+			AuditDTO auditDTO = new AuditDTO();
+//				logger.info("revision id  "+entity.getRevision().getId());
+			Map<String, Object> entityDetials = RevisedEntitiesUtil.getEntityDetailsById(entityName, entity.getRevision().getId());
+//				logger.info("the entity details {}",entityDetials);
+			JSONObject jsonObject = new JSONObject();;
+			JSONObject jsonObject2 = new JSONObject();;
+			jsonObject.putAll(entityDetials);
+			if(entityName.contains("Beneficiary")){
 				AbstractEntity abstractEntity = null;
 				try {
+					AuditQuery query = auditReader.createQuery().forEntitiesModifiedAtRevision(clazz,entity.getRevision().getId());
+					List<AbstractEntity> abstractEntities = query.getResultList();
 					abstractEntity = abstractEntities.get(0);
 					if (abstractEntity instanceof PrettySerializer) {
-						JSONObject jsonObject = SerializeUtil.getPrettySerialJSON(abstractEntity);
-						auditDTO.setFullEntity(jsonObject);
+						jsonObject2 = SerializeUtil.getPrettySerialJSON(abstractEntity);
+//						auditDTO.setFullEntity(jsonObject2);
+						logger.info("the benefiary details is {}",jsonObject2);
 					}
 				} catch (IndexOutOfBoundsException e) {
 					e.printStackTrace();
-					continue;
 				}
-//				AuditDTO auditDTO = new AuditDTO();
-//				logger.info("revision id  "+entity.getRevision().getId());
-//				AuditQuery query = auditReader.createQuery().forEntitiesAtRevision(clazz,entity.getRevision().getId());
-//
-//				List<Object> abstractEntities = query.getResultList();
-//				switch (entityName){
-//					case "TransRequest":
-//						TransRequest transRequest = (TransRequest) abstractEntities.get(0);
-//						if (transRequest != null){
-////						transRequest.getFinancialInstitution().getInstitutionName();
-////						logger.info("The finanial institution {}",transRequest.getFinancialInstitution().getInstitutionName());
-////							auditDTO.setFinacialInstitution(null);
-//							transRequest.setFinancialInstitution(null);
-//						}
-//						auditDTO.setEntityDetails((Object)transRequest);
-//						break;
-//					case "AdminUser":
-//						logger.info("this is the enitity name is "+entityName);
-//						AdminUser adminUser = (AdminUser) abstractEntities.get(0);
-//						adminUser.setRole(null);
-//						logger.info("this is the enitity list {}",adminUser.getAlertPreference());
-//						auditDTO.setEntityDetails((Object)adminUser);
-//						break;
-//					case "CorporateUser":
-//						CorporateUser corporateUser = (CorporateUser) abstractEntities.get(0);
-//						corporateUser.setCorporate(null);
-//						corporateUser.setTempPassword(null);
-//						corporateUser.setAlertPreference(null);
-//						corporateUser.setRole(null);
-//						auditDTO.setEntityDetails((Object)corporateUser);
-////						parse(corporateUser.getSerializer().toString());
-//						break;
-//						default:
-//							auditDTO.setEntityDetails(abstractEntities.get(0));
-//							break;
-//				}
+				for (Object key:jsonObject2.keySet()) {
+					jsonObject.put(StringUtil.convertFromKermelCaseing(key.toString()),jsonObject2.get(key));
+				}
+
+			}
+			auditDTO.setFullEntity(jsonObject);
 				auditDTO.setModifiedEntities(entity);
 				compositeAudits.add(auditDTO);
 			}

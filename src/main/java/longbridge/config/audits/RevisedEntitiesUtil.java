@@ -141,8 +141,8 @@ public class RevisedEntitiesUtil {
         ApplicationContext context = SpringContext.getApplicationContext();
         DataSource dataSource = context.getBean(DataSource.class);
         NamedParameterJdbcTemplate namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
-        String sql = "select * from "+ auditEntity +" a where a.REV = :revIdList";
-        SqlParameterSource namedParameters = new MapSqlParameterSource("revIdList", revId);
+        String sql = "select * from "+ auditEntity +" a where a.REV = :revId";
+        SqlParameterSource namedParameters = new MapSqlParameterSource("revId", revId);
         List<Map<String ,Object>> entityDetails = namedParameterJdbcTemplate.queryForList(sql, namedParameters);
         if(!entityDetails.isEmpty())
         {

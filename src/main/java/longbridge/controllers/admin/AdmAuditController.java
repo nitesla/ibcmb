@@ -125,15 +125,22 @@ public class AdmAuditController {
                         continue;
                     }
                 }
+                boolean ignoreField =false;
 
-                headers.add(convertFieldToTitle(fieldName));
                 String datatableField = StringUtil.convertFromKermelCaseing(fieldName);
                 for (Annotation annotation: annotations) {
                     if(annotation.toString().contains("ManyToOne")||annotation.toString().contains("OneToOne")||annotation.toString().contains("ManyToMany")||annotation.toString().contains("OneToMany")){
                         datatableField += "_ID";
+                        if(annotation.toString().contains("OneToMany")){
+                            ignoreField = true;
+                        }
                         break;
                     }
                 }
+                if(ignoreField){
+                    continue;
+                }
+                headers.add(convertFieldToTitle(fieldName));
                 classFields.add("fullEntity."+datatableField);
             }
             Map<String, List<String>> allFields = StringUtil.addSupperClassFields(superclass, headers, classFields);

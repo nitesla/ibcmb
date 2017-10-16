@@ -134,11 +134,16 @@ public class StringUtil {
                 Annotation[] annotations = field.getAnnotations();
                 String fieldName = StringUtil.extractedFieldName(field.toString());
                 String datatableField = StringUtil.convertFromKermelCaseing(fieldName);
+                boolean ignoreField = false;
                 for (Annotation annotation : annotations) {
                     if (annotation.toString().contains("ManyToOne") || annotation.toString().contains("OneToOne") || annotation.toString().contains("ManyToMany") || annotation.toString().contains("OneToMany")) {
                         datatableField += "_ID";
+                        ignoreField = true;
                         break;
                     }
+                }
+                if(ignoreField){
+                    continue;
                 }
                 headers.add(convertFieldToTitle(fieldName));
                 classFields.add("fullEntity." + datatableField);
@@ -159,7 +164,6 @@ public class StringUtil {
                     builder.append(Character.toUpperCase(enttyname.charAt(y)));
             }
         }
-        System.out.println("The entity name changed "+builder);
         return builder.toString();
     }
 }
