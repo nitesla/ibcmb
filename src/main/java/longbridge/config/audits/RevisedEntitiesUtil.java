@@ -1,6 +1,7 @@
 package longbridge.config.audits;
 
 import longbridge.config.SpringContext;
+import longbridge.utils.StringUtil;
 import org.codehaus.jettison.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,17 +11,15 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 
 import javax.sql.DataSource;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.math.BigDecimal;
+import java.util.*;
 
 /**
  * Created by chiomarose on 10/07/2017.
  */
 public class RevisedEntitiesUtil {
 
-    static Logger logger = LoggerFactory.getLogger(CustomJdbcUtil.class);
+    static Logger logger = LoggerFactory.getLogger(RevisedEntitiesUtil.class);
 
     private static final String PACKAGE_NAME = "longbridge.models.";
 
@@ -57,10 +56,9 @@ public class RevisedEntitiesUtil {
                 builder.append(enttyname.charAt(y));
             }
         }
-        logger.info("The entity name to search {}",builder);
         return builder.toString();
     }
-
+//Out dated method, kept in case of any necessity
     public static  Map<String, List<String>> getEntityPastDetails(String entityName,String[] revId)
     {
         List<Integer> refIds = new ArrayList<>();
@@ -84,8 +82,6 @@ public class RevisedEntitiesUtil {
         if(!entityDetails.isEmpty())
         {
             entityDetails = removeIrrelevantDetails(entityDetails);
-            logger.info("this is the entity details {}",entityDetails);
-
             if(entityDetails.size()>1)
             {
                 for (String item:entityDetails.get(0).keySet())
@@ -147,11 +143,12 @@ public class RevisedEntitiesUtil {
         if(!entityDetails.isEmpty())
         {
             entityDetails = removeIrrelevantDetails(entityDetails);
-            logger.info("this is the entity details {}",entityDetails);
+//            logger.info("this is the entity details {}",entityDetails);
         }
 
         return entityDetails.get(0);
     }
+
     private static List<Map<String, Object>> removeIrrelevantDetails(List<Map<String ,Object>> entityDetails){
         for (Map map:entityDetails) {
             for (Object itemDetail:map.keySet().toArray()) {
@@ -159,7 +156,6 @@ public class RevisedEntitiesUtil {
                     map.remove(itemDetail);
                 }
             }
-            map.remove("ID");
             map.remove("REV");
             map.remove("REVTYPE");
         }
@@ -167,15 +163,91 @@ public class RevisedEntitiesUtil {
     }
 
 
-    public static  List<Map<String ,Object>> getCurrentDetails(NamedParameterJdbcTemplate namedParameterJdbcTemplate,String entity,Map refDetails)
+    public static  Map<String ,Object> getCurrentEntityDetails(String entityName,BigDecimal id)
     {
+        entityName = StringUtil.convertFromKermelCaseing(entityName);
+        System.out.println("converted entity name "+entityName);
+        ApplicationContext context = SpringContext.getApplicationContext();
+        DataSource dataSource = context.getBean(DataSource.class);
+        NamedParameterJdbcTemplate namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
         List<Map<String ,Object>> mapList=null;
-        String sql = "select * from " + entity + " a where a.id=:id";
-        SqlParameterSource namedParameters =  new MapSqlParameterSource("id",refDetails.get("id"));
+        String sql = "select * from " + entityName + " a where a.id=:id";
+        SqlParameterSource namedParameters =  new MapSqlParameterSource("id",id);
         mapList = namedParameterJdbcTemplate.queryForList(sql, namedParameters);
-        logger.info("result details @@@@@ " + mapList);
-
-
-        return mapList;
+        System.out.println("result details @@@@@ " + mapList);
+        return mapList.get(0);
     }
+    public static  Collection<Integer> getSearchedRevisedEntityID(String entityName, Class<?> clazz, String search)
+    {
+        String searchString  = StringUtil.getFieldsFrom(clazz,search,"a.");
+        List<Map<String ,Object>> mapList=null;
+        Collection<Integer> revIds = new ArrayList<>();
+        entityName = getOracleEntity(entityName);
+        System.out.println("search using met "+search);
+        String auditEntity = entityName + "_AUD";
+        ApplicationContext context = SpringContext.getApplicationContext();
+        DataSource dataSource = context.getBean(DataSource.class);
+        NamedParameterJdbcTemplate namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
+        String sql = "select DISTINCT a.REV from "+ auditEntity +" a WHERE "+searchString;
+        SqlParameterSource namedParameters = new MapSqlParameterSource();
+        mapList= namedParameterJdbcTemplate.queryForList(sql, namedParameters);
+        if(!mapList.isEmpty()) {
+            for (Map map : mapList) {
+                    revIds.add(Integer.parseInt(map.get("REV").toString()));
+            }
+        }else {
+            logger.info("search list empty");
+            revIds =  null;
+        }
+        System.out.println();
+        return revIds;
+    }
+    public static  Collection<Integer> getSearchedAndMergedRevisedEntityID(String entityName, Class<?> clazz, String search)
+    {
+        String actualEntityName = StringUtil.convertFromKermelCaseing(entityName);
+        String searchString  = StringUtil.getFieldsFrom(clazz,search,"e.");
+        List<Map<String ,Object>> mapList=null;
+        Collection<Integer> revIds = new ArrayList<>();
+        entityName = getOracleEntity(entityName);
+        logger.info("search using met "+search);
+        String auditEntity = entityName + "_AUD";
+        ApplicationContext context = SpringContext.getApplicationContext();
+        DataSource dataSource = context.getBean(DataSource.class);
+        NamedParameterJdbcTemplate namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
+        String sql = "select DISTINCT a.REV from "+ auditEntity +" a, "+actualEntityName+" e WHERE "+searchString+" and e.id = a.id";
+        SqlParameterSource namedParameters = new MapSqlParameterSource();
+        mapList= namedParameterJdbcTemplate.queryForList(sql, namedParameters);
+        if(!mapList.isEmpty()) {
+            for (Map map : mapList) {
+                    revIds.add(Integer.parseInt(map.get("REV").toString()));
+            }
+            logger.info("the revision id is {}",revIds);
+        }else {
+            logger.info("search list empty");
+            revIds =  null;
+        }
+
+        return revIds;
+    }
+    public static Map<String, Object> getMergedEntityDetailsById(String entityName, int rev)
+    {
+        String actualEntityName = StringUtil.convertFromKermelCaseing(entityName);
+        Integer revId  = new Integer(rev);
+        entityName = getOracleEntity(entityName);
+        String auditEntity = entityName + "_AUD";
+        ApplicationContext context = SpringContext.getApplicationContext();
+        DataSource dataSource = context.getBean(DataSource.class);
+        NamedParameterJdbcTemplate namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
+        String sql = "select * from "+ auditEntity +" a, "+actualEntityName+" e where a.REV = :revId and a.id = e.id";
+        SqlParameterSource namedParameters = new MapSqlParameterSource("revId", revId);
+        List<Map<String ,Object>> entityDetails = namedParameterJdbcTemplate.queryForList(sql, namedParameters);
+        if(!entityDetails.isEmpty())
+        {
+            entityDetails = removeIrrelevantDetails(entityDetails);
+            logger.info("this is the entity details {}",entityDetails);
+        }
+
+        return entityDetails.get(0);
+    }
+
 }

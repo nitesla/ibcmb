@@ -10,6 +10,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -33,6 +34,10 @@ public interface ModifiedEntityTypeEntityRepo extends CommonRepo<ModifiedEntityT
     Page<ModifiedEntityTypeEntity> findAllEnityByRevisionByClass(@Param("className") String className,Pageable pageable);
     @Query("select r from ModifiedEntityTypeEntity r where r.entityClassName=:className and (r.revision.ipAddress like %:search% or r.revision.lastChangedBy like %:search%) order by r.revision.timestamp desc")
     Page<ModifiedEntityTypeEntity> findAllEnityByRevisionBySearch(@Param("className") String className,Pageable pageable,@Param("search") String search);
+    @Query("select r from ModifiedEntityTypeEntity r where r.revision.id in (:revidList) or ((r.revision.ipAddress like %:search% or r.revision.lastChangedBy like %:search% )and r.entityClassName=:className) and rownum <1000 order by r.revision.timestamp desc")
+    Page<ModifiedEntityTypeEntity> findEnityByRevisionBySearch(Pageable pageable,@Param("className") String className,@Param("search") String search,@Param("revidList") Collection<Integer> revId);
+    @Query("select r from ModifiedEntityTypeEntity r where r.revision.id in (:revidList) or (r.revision.ipAddress like %:search% or r.revision.lastChangedBy like %:search% or r.revision.timestamp like %:timestamp%) order by r.revision.timestamp desc")
+    Page<ModifiedEntityTypeEntity> findEnityByRevisionBySearch(Pageable pageable,@Param("search") String search,@Param("revidList") Collection<Integer> revId,@Param("search") String timestamp);
 
     @Query("select r from ModifiedEntityTypeEntity r where r.entityClassName=:className and (r.revision.ipAddress like %:search% or r.revision.lastChangedBy like %:search% or r.revision.timestamp like %:timestamp%) order by r.revision.timestamp desc")
     Page<ModifiedEntityTypeEntity> findAllEnityByRevisionBySearch(@Param("className") String className,Pageable pageable,@Param("search") String search,@Param("timestamp") String timestamp);
