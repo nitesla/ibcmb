@@ -90,7 +90,6 @@ public class CorporateUserAdvisor {
                 passwordPolicyService.saveCorporatePassword(user);
                 corporateUserRepo.save(user);
                 logger.info("Corporate user {} status changed to {}",corpUser.getUserName(),corpUser.getStatus());
-
                 corporateUserService.sendPostActivateMessage(corpUser, fullName,user.getUserName(),password,user.getCorporate().getCorporateId());
             }
             else{

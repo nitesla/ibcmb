@@ -70,10 +70,10 @@ public class TransferServiceImpl implements TransferService {
 
     public TransferRequestDTO makeTransfer(TransferRequestDTO transferRequestDTO) throws InternetBankingTransferException {
         validateTransfer(transferRequestDTO);
-        logger.trace("Initiating a Transfer", transferRequestDTO);
+        logger.info("Initiating a Transfer", transferRequestDTO);
         TransRequest transRequest = integrationService.makeTransfer(convertDTOToEntity(transferRequestDTO));
 
-        logger.trace("Transfer Details: ", transRequest);
+        logger.info("Transfer Details: ", transRequest);
 
         if (transRequest != null) {
 
@@ -118,7 +118,7 @@ public class TransferServiceImpl implements TransferService {
 
 
         } catch (Exception e) {
-            logger.error("Exception occurred", e);
+            logger.error("Exception occurred saving transfer request", e);
         }
         return transferRequestDTO;
     }
@@ -170,7 +170,7 @@ public class TransferServiceImpl implements TransferService {
 
     @Override
     public Page<TransRequest> getCompletedTransfers(Pageable pageDetails) {
-        logger.trace("Retrieving completed transfers");
+        logger.info("Retrieving completed transfers");
         RetailUser user = getCurrentUser();
         Page<TransRequest> page = transferRequestRepo.findByUserReferenceNumberAndStatusInAndTranDateNotNullOrderByTranDateDesc("RET_" + user.getId(), Arrays.asList("00","000"), pageDetails);
         logger.info("Completed transfers content" + page.getContent());
@@ -179,7 +179,7 @@ public class TransferServiceImpl implements TransferService {
 
     @Override
     public Page<TransferRequestDTO> findCompletedTransfers(String pattern, Pageable pageDetails) {
-        logger.trace("Retrieving completed transfers");
+        logger.info("Retrieving completed transfers");
         Page<TransRequest> page = transferRequestRepo.findUsingPattern(pattern, pageDetails);
         List<TransferRequestDTO> dtOs = convertEntitiesToDTOs(page.getContent());
         logger.info("Completed transfers", dtOs);
