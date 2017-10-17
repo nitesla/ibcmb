@@ -94,86 +94,16 @@ public class AdmAuditController {
     @GetMapping("/revised/{entityName}")
     public String revisedEntity(@PathVariable String entityName, Model model)
     {
-
         logger.info("the entity name is {}",entityName);
         model.addAttribute("entityName",entityName);
-       List<AuditConfig> auditConfig=auditCfgService.getEntities();
+        List<AuditConfig> auditConfig=auditCfgService.getEntities();
         model.addAttribute("entities",auditConfig);
-        String className = PACKAGE_NAME+entityName;
-        Class<?> cl = null;
-
-        try {
-            List<String> classFields =  new ArrayList<>();
-            List<String> headers =  new ArrayList<>();
-            cl = Class.forName(className);
-            Class<?> superclass = cl.getSuperclass();
-            Field[] declaredFields = cl.getDeclaredFields();
-
-            logger.info("the fields of the {} are {}",entityName,declaredFields);
-            for (Field field:declaredFields) {
-
-                String fieldName = StringUtil.extractedFieldName(field.toString());
-
-                Annotation[] annotations = field.getAnnotations();
-                boolean fieldDiplay = true;
-
-                if(fieldName.equalsIgnoreCase("serialVersionUID")) {
-                    continue;
-                }
-                if(entityName.equalsIgnoreCase("CorporateUser")||entityName.equalsIgnoreCase("RetailUser")){
-                    if(fieldName.equalsIgnoreCase("corporate") || fieldName.equalsIgnoreCase("tempPassword") ){
-                        continue;
-                    }
-                }
-                boolean ignoreField =false;
-
-                String datatableField = StringUtil.convertFromKermelCaseing(fieldName);
-                for (Annotation annotation: annotations) {
-                    if(annotation.toString().contains("ManyToOne")||annotation.toString().contains("OneToOne")||annotation.toString().contains("ManyToMany")||annotation.toString().contains("OneToMany")){
-                        datatableField += "_ID";
-                        if(annotation.toString().contains("OneToMany")){
-                            ignoreField = true;
-                        }
-                        break;
-                    }
-                }
-                if(ignoreField){
-                    continue;
-                }
-                headers.add(convertFieldToTitle(fieldName));
-                classFields.add("fullEntity."+datatableField);
-            }
-            Map<String, List<String>> allFields = StringUtil.addSupperClassFields(superclass, headers, classFields);
-            headers = allFields.get("headers");
-            classFields = allFields.get("classFields");
-            if(!classFields.isEmpty()) {
-                model.addAttribute("fields", classFields);
-            }else {
-                model.addAttribute("fields", null);
-            }
-            logger.info("the superclass {}", allFields);
-            model.addAttribute("headers",headers);
-            model.addAttribute("headerSize",headers.size());
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-
-
+        Map<String, Object> formatedEntityDetails = auditCfgService.getFormatedEntityDetails(entityName);
+        model.addAttribute("fields", formatedEntityDetails.get("fields"));
+        model.addAttribute("headers",formatedEntityDetails.get("headers"));
+        model.addAttribute("headerSize",formatedEntityDetails.get("headerSize"));
         return "adm/audit/entityRevision";
     }
-    //    @GetMapping(path = "all/entityname")
-//    public @ResponseBody DataTablesOutput<AuditConfig> getAllEntities(DataTablesInput input,WebRequest webRequest)
-//    {
-//        Pageable pageable=DataTablesUtils.getPageable(input);
-//        Page<AuditConfig> auditConfig=null;
-//        auditConfig=auditCfgService.getEntities(pageable);
-//        DataTablesOutput<AuditConfig> out=new DataTablesOutput<>();
-//        out.setDraw(input.getDraw());
-//        out.setData(auditConfig.getContent());
-//        out.setRecordsFiltered(auditConfig.getTotalElements());
-//        out.setRecordsTotal(auditConfig.getTotalElements());
-//        return out;
-//    }
     @GetMapping("/revised/entity")
     public String ListAllRevisedEnties()
 

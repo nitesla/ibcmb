@@ -65,7 +65,7 @@ public class StringUtil {
             }
             counter++;
         }
-        System.out.println("the datatble field "+builder.toString());
+//        System.out.println("the datatble field "+builder.toString());
         return builder.toString();
     }
     public static String extractedFieldName(String genericFieldName){
@@ -133,20 +133,12 @@ public class StringUtil {
             for (Field field : superclass.getDeclaredFields()) {
                 Annotation[] annotations = field.getAnnotations();
                 String fieldName = StringUtil.extractedFieldName(field.toString());
-                String datatableField = StringUtil.convertFromKermelCaseing(fieldName);
-                boolean ignoreField = false;
-                for (Annotation annotation : annotations) {
-                    if (annotation.toString().contains("ManyToOne") || annotation.toString().contains("OneToOne") || annotation.toString().contains("ManyToMany") || annotation.toString().contains("OneToMany")) {
-                        datatableField += "_ID";
-                        ignoreField = true;
-                        break;
-                    }
+                Map<String, Object> fieldsNameAfterCheck = getFieldsNameAfterCheck(field, fieldName);
+                if(!(boolean) fieldsNameAfterCheck.get("ignoreField")) {
+                    headers.add(convertFieldToTitle(fieldName));
+                    classFields.add("fullEntity." + fieldsNameAfterCheck.get("field"));
                 }
-                if(ignoreField){
-                    continue;
-                }
-                headers.add(convertFieldToTitle(fieldName));
-                classFields.add("fullEntity." + datatableField);
+
             }
         }
 
@@ -165,5 +157,89 @@ public class StringUtil {
             }
         }
         return builder.toString();
+    }
+    public static String getFieldsFrom(Class<?> className, String search,String initial){
+        Field[] declaredFields = className.getDeclaredFields();
+        StringBuilder stringBuilder =  new StringBuilder();
+        String searchIdentity = " like '%"+search+"%' ";
+        int counter = 0;
+        for (Field field:declaredFields) {
+
+            String fieldName = StringUtil.extractedFieldName(field.toString());
+
+            Annotation[] annotations = field.getAnnotations();
+            boolean fieldDiplay = true;
+
+            if(fieldName.equalsIgnoreCase("serialVersionUID")) {
+                continue;
+            }
+            boolean ignoreField =false;
+
+            String datatableField = StringUtil.convertFromKermelCaseing(fieldName);
+            for (Annotation annotation: annotations) {
+                if(annotation.toString().contains("ManyToOne")||annotation.toString().contains("OneToOne")||annotation.toString().contains("ManyToMany")||annotation.toString().contains("OneToMany")){
+                    datatableField += "_ID";
+                    if(annotation.toString().contains("OneToMany")){
+                        ignoreField = true;
+                    }
+                    break;
+                }
+            }
+            if(ignoreField){
+                continue;
+            }if(counter == 0){
+                stringBuilder.append(initial+datatableField+searchIdentity);
+            }else {
+                stringBuilder.append("or "+initial+datatableField+searchIdentity);
+            }
+            counter++;
+        }
+        Class<?> superclass = className.getSuperclass();
+        if (!superclass.toString().contains("AbstractEntity")) {
+            for (Field field : superclass.getDeclaredFields()) {
+                Annotation[] annotations = field.getAnnotations();
+                String fieldName = StringUtil.extractedFieldName(field.toString());
+                String datatableField = StringUtil.convertFromKermelCaseing(fieldName);
+                boolean ignoreField = false;
+                for (Annotation annotation : annotations) {
+                    if (annotation.toString().contains("ManyToOne") || annotation.toString().contains("OneToOne") || annotation.toString().contains("ManyToMany") || annotation.toString().contains("OneToMany")) {
+                        datatableField += "_ID";
+                        ignoreField = true;
+                        break;
+                    }
+                }
+                if(ignoreField){
+                    continue;
+                }
+                if(counter == 0){
+                    stringBuilder.append(initial+datatableField+searchIdentity);
+                }else {
+                    stringBuilder.append("or "+initial+datatableField+searchIdentity);
+                }
+                counter++;
+            }
+        }
+        System.out.println("search builder is \n\n "+stringBuilder);
+        return stringBuilder.toString();
+
+    }
+    public static Map<String, Object> getFieldsNameAfterCheck(Field field, String fieldName){
+        Map<String,Object> fields = new HashMap<>();
+        Annotation[] annotations = field.getAnnotations();
+        String datatableField = StringUtil.convertFromKermelCaseing(fieldName);
+        boolean ignoreField = false;
+        for (Annotation annotation: annotations) {
+            if(annotation.toString().contains("ManyToOne")||annotation.toString().contains("OneToOne")||annotation.toString().contains("ManyToMany")||annotation.toString().contains("OneToMany")){
+                datatableField += "_ID";
+
+                if(annotation.toString().contains("OneToMany")){
+                    ignoreField = true;
+                }
+                break;
+            }
+        }
+        fields.put("field",datatableField);
+        fields.put("ignoreField",ignoreField);
+        return fields;
     }
 }

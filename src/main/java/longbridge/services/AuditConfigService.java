@@ -15,6 +15,7 @@ import org.springframework.data.domain.Pageable;
 import longbridge.models.AuditConfig;
 import org.springframework.security.access.prepost.PreAuthorize;
 
+import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Map;
 
@@ -54,6 +55,7 @@ public interface AuditConfigService
 	Page<AuditDTO> revisedEntity(String entityName, Pageable pageable);
 	Page<AuditDTO> revisedEntityByQuery(String entityName, Pageable pageable);
 	Page<AuditDTO> searchRevisedEntity(String entityName, Pageable pageable,String search);
+	Map<String,Object> getFormatedEntityDetails(String entityName);
 //	List<AuditDTO> revisedEntityForClass(String entityName);
 
 }
