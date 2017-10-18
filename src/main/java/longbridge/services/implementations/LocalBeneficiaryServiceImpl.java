@@ -33,19 +33,18 @@ import java.util.Locale;
 public class LocalBeneficiaryServiceImpl implements LocalBeneficiaryService {
 
     @Autowired
-    ModelMapper modelMapper;
+    private ModelMapper modelMapper;
     @Autowired
-    FinancialInstitutionRepo financialInstitutionRepo;
+    private FinancialInstitutionRepo financialInstitutionRepo;
     @Autowired
-    IntegrationService integrationService;
+    private IntegrationService integrationService;
     @Autowired
-    MailService mailService;
+    private MailService mailService;
     @Autowired
     private MessageSource messageSource;
     @Autowired
     private ConfigurationService configService;
-
-    Locale locale = LocaleContextHolder.getLocale();
+    private Locale locale = LocaleContextHolder.getLocale();
     private LocalBeneficiaryRepo localBeneficiaryRepo;
     private Logger logger = LoggerFactory.getLogger(this.getClass());
     @Value("${bank.code}")

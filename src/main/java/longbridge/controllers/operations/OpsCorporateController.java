@@ -460,8 +460,6 @@ public class OpsCorporateController {
             num = NumberUtils.toInt(setting.getValue());
         }
         model.addAttribute("authNum", num);
-
-
         model.addAttribute("corporate", corporate);
         model.addAttribute("roleList", roles);
         model.addAttribute("currencies", currencies);
@@ -814,8 +812,6 @@ public class OpsCorporateController {
             if (session.getAttribute("corporateRequest") != null) {
                 CorporateRequestDTO corporateRequestDTO = (CorporateRequestDTO) session.getAttribute("corporateRequest");
                 session.removeAttribute("corporateRequest");
-
-
                 corporateRequestDTO.setAuthorizers(authorizerList);
                 session.setAttribute("corporateRequest", corporateRequestDTO);
                 model.addAttribute("corporate", corporateRequestDTO);
@@ -906,7 +902,7 @@ public class OpsCorporateController {
         corporateRequestDTO.setAuthorizers(authorizerList);
         model.addAttribute("currencies", currencies);
         model.addAttribute("authorizerList", authorizerList);
-        int num = 2;
+        int num = 1;
         SettingDTO setting = configService.getSettingByName("MIN_AUTHORIZER_LEVEL");
         if (setting != null && setting.isEnabled()) {
             num = Integer.parseInt(setting.getValue());
@@ -925,7 +921,6 @@ public class OpsCorporateController {
         String rules = request.getParameter("rules");
 
         logger.info("Transaction rules are: {}", rules);
-
 
         List<CorpTransferRuleDTO> transferRules = null;
         ObjectMapper mapper = new ObjectMapper();
@@ -1016,10 +1011,7 @@ public class OpsCorporateController {
         session.removeAttribute(" authorizerLevels");
         session.removeAttribute(" users");
         session.removeAttribute(" accountInfos");
-
         return "redirect:/ops/corporates";
-
-
     }
 
     @GetMapping("/{username}/exists")
@@ -1061,15 +1053,13 @@ public class OpsCorporateController {
             if (session.getAttribute("corporateRequest") != null) {
                 CorporateRequestDTO corporateRequestDTO = (CorporateRequestDTO) session.getAttribute("corporateRequest");
                 session.removeAttribute("corporateRequest");
-
                 corporateRequestDTO.setAuthorizers(authorizerList);
                 session.setAttribute("corporateRequest", corporateRequestDTO);
-                logger.info("Corporate Request DTO " +
-                        "{}", corporateRequestDTO.toString());
+                logger.info("Corporate Request DTO {}", corporateRequestDTO.toString());
 
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error("Error parsing authorizer levels");
         }
         return "success";
     }
@@ -1092,14 +1082,14 @@ public class OpsCorporateController {
             session.setAttribute("rules", rules);
             logger.debug("Corp Transfer Rules: {}", transferRules.toString());
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error("Error parsing transfer rules");
         }
         if (session.getAttribute("corporateRequest") != null) {
             CorporateRequestDTO corporateRequestDTO = (CorporateRequestDTO) session.getAttribute("corporateRequest");
             corporateRequestDTO.setCorpTransferRules(transferRules);
             session.removeAttribute("corporateRequest");
             session.setAttribute("corporateRequest", corporateRequestDTO);
-            logger.debug("Corporate Reequest: {}", corporateRequestDTO);
+            logger.debug("Corporate Request: {}", corporateRequestDTO);
         }
 
         return "success";

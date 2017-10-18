@@ -40,7 +40,7 @@ public class RequestServiceImpl implements RequestService {
     private UserGroupService userGroupService;
 
     @Autowired
-    UserGroupMessageService groupMessageService;
+    private UserGroupMessageService groupMessageService;
 
     @Autowired
     private RetailUserRepo retailUserRepo;

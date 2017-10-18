@@ -9,7 +9,6 @@ import longbridge.utils.PrettySerializer;
 import longbridge.utils.TransferType;
 import org.hibernate.annotations.Where;
 import org.hibernate.envers.Audited;
-
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 import java.io.IOException;
@@ -21,6 +20,7 @@ import java.util.Date;
  * @author Fortunatus Ekenachi
  * Created on 3/30/2017.
  */
+
 @Entity
 @Audited(withModifiedFlag=true)
 @Where(clause ="del_Flag='N'" )
@@ -30,10 +30,8 @@ public class TransRequest extends AbstractEntity implements PrettySerializer {
     private  String customerAccountNumber;
     private TransferType transferType;
     private Date tranDate = new Date();
-
     @ManyToOne
     private FinancialInstitution financialInstitution;
-
     private String beneficiaryAccountNumber;
     private String beneficiaryAccountName;
     private String remarks;
@@ -199,6 +197,7 @@ public class TransRequest extends AbstractEntity implements PrettySerializer {
     }
 
     @Override
+    @JsonIgnore
     public <T> JsonSerializer<T> getSerializer() {
         return null;
     }
