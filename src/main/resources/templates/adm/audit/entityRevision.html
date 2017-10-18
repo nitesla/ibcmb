@@ -91,7 +91,7 @@
 
                                 <table class="table table-striped table-bordered table-hover" id="auditview">
 
-                                    <thead>
+                                    <thead id="head">
                                     <tr>
                                         <th>Name</th>
                                         <th>Modifed By</th>
@@ -147,9 +147,10 @@
         var fieldsDisp = [[${fieldsDisp}]];
         entityFields = String(entityFields);
         console.log("the entityClass "+entityClass);
-        console.log("the entityFields "+entityFields);
-        console.log("the fieldsDisp "+fieldsDisp);
-
+//        console.log("the entityFields "+entityFields);
+//        console.log("the fieldsDisp "+fieldsDisp);
+//        var defaultSelect = 'select option:contains('+"CorpLocalBeneficiary"+')'
+        $('select option[value="'+entityClass+'"]').attr("selected",true);
         var dataTable= [
             { "data": "entityClassName",
                 "visible" : false
@@ -162,7 +163,7 @@
         ];
         if(entityFields != null || entityFields != "null") {
             var splitFields = entityFields.split(",");
-            console.log("the splited value " + splitFields);
+//            console.log("the splited value " + splitFields);
 
             for (var i = 0; i < splitFields.length; i++) {
                 dataTable.push({"data": splitFields[i]});
@@ -192,7 +193,7 @@
             "dom": 'T<"clear">frtlp',
             "columns":dataTable,"columnDefs" : [ {
                 "targets" : 2,
-                "data" : "modifiedEntities.revision.ipAddress",
+                "data" : "modifiedEntities.revision.revisionDate",
                 "render" : function(data, type,full, meta) {
                     if (type === 'display') {
                         if(data == null)
@@ -223,11 +224,12 @@
             dt.ajax.reload(null, true);
         });
     });
-
-
     var id;
     var className;
-
+//    $('#auditview thead').on('click', 'th', function () {
+////            alert( 'Column clicked on: ' + table.cell(this).index().column);
+//        return false;
+//    });
 
 
 

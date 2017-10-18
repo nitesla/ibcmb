@@ -58,7 +58,7 @@ public class RevisedEntitiesUtil {
         }
         return builder.toString();
     }
-//Out dated method, kept in case of any necessity
+    //Out dated method, kept in case of any necessity
     public static  Map<String, List<String>> getEntityPastDetails(String entityName,String[] revId)
     {
         List<Integer> refIds = new ArrayList<>();
@@ -188,12 +188,18 @@ public class RevisedEntitiesUtil {
         ApplicationContext context = SpringContext.getApplicationContext();
         DataSource dataSource = context.getBean(DataSource.class);
         NamedParameterJdbcTemplate namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
-        String sql = "select DISTINCT a.REV from "+ auditEntity +" a WHERE "+searchString;
+        String sql = "";
+        if(entityName.equalsIgnoreCase("TRANS_REQUEST")){
+            sql = "select DISTINCT a.REV from "+ auditEntity +" a WHERE "+searchString+"or DTYPE like '%"+search+"%' ";
+        }else {
+            sql = "select DISTINCT a.REV from "+ auditEntity +" a WHERE "+searchString;
+
+        }
         SqlParameterSource namedParameters = new MapSqlParameterSource();
         mapList= namedParameterJdbcTemplate.queryForList(sql, namedParameters);
         if(!mapList.isEmpty()) {
             for (Map map : mapList) {
-                    revIds.add(Integer.parseInt(map.get("REV").toString()));
+                revIds.add(Integer.parseInt(map.get("REV").toString()));
             }
         }else {
             logger.info("search list empty");
@@ -219,7 +225,7 @@ public class RevisedEntitiesUtil {
         mapList= namedParameterJdbcTemplate.queryForList(sql, namedParameters);
         if(!mapList.isEmpty()) {
             for (Map map : mapList) {
-                    revIds.add(Integer.parseInt(map.get("REV").toString()));
+                revIds.add(Integer.parseInt(map.get("REV").toString()));
             }
             logger.info("the revision id is {}",revIds);
         }else {

@@ -25,6 +25,7 @@ import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -191,29 +192,6 @@ public class AuditConfigImpl implements AuditConfigService {
 		return null;
 
 	}
-	//	@Override
-//	public Page<CustomRevisionEntity>  revisedEntityDetails(String entityName,Pageable pageable)
-//	{
-//		List<T> revisionList = new ArrayList<>();
-//		Page<CustomRevisionEntity> revisionEntities=null;
-//		try
-//		{
-//			logger.info("this is the revision list",revisionEntities);
-//			Class<?> clazz  = Class.forName(PACKAGE_NAME + entityName);
-//			AuditReader auditReader = AuditReaderFactory.get(entityManager);
-//			AuditQuery query = auditReader.createQuery().forRevisionsOfEntity(clazz, true, true);
-//			revisionList = query.getResultList();
-//			revisionEntities=customRevisionEntityRepo.findCustomRevisionId(revisionList,pageable);
-//			logger.info("this is the revision list",revisionEntities);
-//			query.getResultList();
-//		}
-//		catch (ClassNotFoundException e)
-//		{
-//			e.printStackTrace();
-//		}
-//
-//		return revisionEntities;
-//	}
 	@Override
 	public Page<AuditConfig> findEntities(String pattern, Pageable pageDetails)
 	{
@@ -346,12 +324,16 @@ public class AuditConfigImpl implements AuditConfigService {
 		}
 		catch (NumberFormatException e){
 			e.printStackTrace();
+		}catch (InvalidDataAccessApiUsageException e){
+			e.printStackTrace();
 		}catch (Exception e){
 			e.printStackTrace();
 		}
 		logger.info("this is the revision list {} element is {}",allEnityByRevisionByClass.getTotalPages(),allEnityByRevisionByClass.getTotalElements());
 		return new PageImpl<AuditDTO>(compositeAudits, pageable, allEnityByRevisionByClass.getTotalElements());
 	}
+
+
 	public Page<AuditDTO> searchRevisedEntity(String entityName,Pageable pageable,String search){
 		List<AuditDTO> compositeAudits = new ArrayList<>();
 		logger.info("entity name in {}",entityName);
@@ -433,6 +415,11 @@ public class AuditConfigImpl implements AuditConfigService {
 			cl = Class.forName(className);
 			Class<?> superclass = cl.getSuperclass();
 			Field[] declaredFields = cl.getDeclaredFields();
+			//DTYPE is a unique fields the is not attached to the model, needed to gotten seperately
+			if(entityName.contains("TransRequest")){
+				headers.add("DTYPE");
+				classFields.add("fullEntity.DTYPE");
+			}
 			for (Field field:declaredFields) {
 				String fieldName = StringUtil.extractedFieldName(field.toString());
 				if(fieldName.equalsIgnoreCase("serialVersionUID")) {
@@ -455,6 +442,7 @@ public class AuditConfigImpl implements AuditConfigService {
 			headers = allFields.get("headers");
 			classFields = allFields.get("classFields");
 			if(!classFields.isEmpty()) {
+
 				map.put("fields",classFields);
 			}else {
 				map.put("fields",null);
