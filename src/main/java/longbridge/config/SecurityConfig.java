@@ -123,7 +123,8 @@ public class SecurityConfig {
                     // .and().authorizeRequests().and()
 
 
-                            access("hasAuthority('" + UserType.ADMIN.toString() + "') and " + ipRange.toString()).and()
+                            access("hasAuthority('" + UserType.ADMIN.toString() + "')").and()
+//                            access("hasAuthority('" + UserType.ADMIN.toString() + "') and " + ipRange.toString()).and()
 
 
                     // .fullyAuthenticated()
@@ -229,7 +230,8 @@ public class SecurityConfig {
                     //.authenticated()
                     // .hasAuthority(UserType.OPERATIONS.toString())
                     .fullyAuthenticated().anyRequest()
-                    .access("hasAuthority('" + UserType.OPERATIONS.toString() + "') and " + ipRange.toString()).and()
+                    .access("hasAuthority('" + UserType.OPERATIONS.toString() + "')").and()
+//                    .access("hasAuthority('" + UserType.OPERATIONS.toString() + "') and " + ipRange.toString()).and()
                     // log in
                     .formLogin().loginPage("/login/ops").loginProcessingUrl("/ops/login").failureUrl("/login/ops?error=true").defaultSuccessUrl("/ops/dashboard")
                     .successHandler(opAuthenticationSuccessHandler)

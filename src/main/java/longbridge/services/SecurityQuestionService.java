@@ -29,4 +29,5 @@ public interface SecurityQuestionService {
     @PreAuthorize("hasAuthority('DELETE_SQ')")
     String deleteSecQuestion(Long id);
 
+
 }

@@ -218,11 +218,7 @@ public class UserRegController {
                 secQuestion = question.stream().filter(Objects::nonNull).findFirst().orElse("");
                 logger.info("question {}", question);
 
-            } else {
-                secQuestion = "";
             }
-        } else {
-            secQuestion = "";
         }
 
         return question;
@@ -236,8 +232,6 @@ public class UserRegController {
         logger.debug("Username in Controller : " + username);
 
         RetailUser user = retailUserService.getUserByName(username);
-        logger.info("User is ", user);
-
         if (user != null) {
             logger.info("USER NAME {}", user.getUserName());
             try {
@@ -247,12 +241,8 @@ public class UserRegController {
                 if (qa != null && !qa.isEmpty()) {
                     List<String> question = qa.get("questions");
                     secQuestion = question.stream().filter(Objects::nonNull).findFirst().orElse("");
-                    logger.info("question {}", secQuestion);
 
-                } else {
-                    secQuestion = "";
                 }
-
             } catch (Exception e) {
                 logger.info(e.getMessage());
                 secQuestion = "";

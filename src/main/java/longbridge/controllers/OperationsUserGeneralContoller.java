@@ -124,7 +124,11 @@ public class OperationsUserGeneralContoller {
                     session.removeAttribute("result");
                     return "redirect:/login/ops";
                 } catch (PasswordException pe) {
+                    logger.error("Error due to ",pe);
                     redirectAttributes.addFlashAttribute("failure", pe.getMessage());
+                }catch (Exception e){
+                    logger.error("Error due to ",e);
+                    redirectAttributes.addFlashAttribute("failure","Error resetting user's password");
                 }
             }
         }

@@ -348,7 +348,7 @@ public class OperationsUserServiceImpl implements OperationsUserService {
     @Override
     public String resetPassword(String username) throws InternetBankingException {
         try {
-            OperationsUser user = operationsUserRepo.findFirstByUserName(username);
+            OperationsUser user = operationsUserRepo.findFirstByUserNameIgnoreCase(username);
             String newPassword = passwordPolicyService.generatePassword();
             user.setPassword(passwordEncoder.encode(newPassword));
             String fullName = user.getFirstName() + " " + user.getLastName();
