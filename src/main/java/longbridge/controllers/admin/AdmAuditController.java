@@ -94,7 +94,6 @@ public class AdmAuditController {
     @GetMapping("/revised/{entityName}")
     public String revisedEntity(@PathVariable String entityName, Model model)
     {
-        logger.info("the entity name is {}",entityName);
         model.addAttribute("entityName",entityName);
         List<AuditConfig> auditConfig=auditCfgService.getEntities();
         model.addAttribute("entities",auditConfig);
@@ -200,25 +199,6 @@ public class AdmAuditController {
         model.addAttribute("headers",(entityPastDetails.get("keys")));
         return  "adm/audit/entityDetails";
     }
-
-
-
-
-//    @GetMapping("/{id}/{classname}/view")
-//    public  @ResponseBody DataTablesOutput<T> ListRevisedEnties(@PathVariable String id,@PathVariable String classname,DataTablesInput input)
-//    {
-//        Pageable pageable = DataTablesUtils.getPageable(input);
-//        Page<T> revisionEntity=null;
-//        revisionEntity=auditCfgService.revisedEntityDetails(classname,id,pageable);
-////        DataTablesOutput<T> out=new DataTablesOutput<T>();
-////        out.setDraw(input.getDraw());
-////        out.setData(revisionEntity.getContent());
-////        out.setRecordsFiltered(revisionEntity.getTotalElements());
-////        out.setRecordsTotal(revisionEntity.getTotalElements());
-////        return out;
-//    }
-
-
 
     @GetMapping(path = "all/entityname")
     public @ResponseBody DataTablesOutput<AuditConfig> getAllEntities(DataTablesInput input)

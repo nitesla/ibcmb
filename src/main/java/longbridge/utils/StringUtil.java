@@ -219,7 +219,6 @@ public class StringUtil {
                 counter++;
             }
         }
-        System.out.println("search builder is \n\n "+stringBuilder);
         return stringBuilder.toString();
 
     }

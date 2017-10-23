@@ -39,6 +39,8 @@ public class AdmControllerAdvice {
 //        if ( getCurrentUser() != null && !getCurrentUser().getUserType().equals(UserType.ADMIN)) return "redirect:/login/admin";
         int verificationNumber = verificationService.getTotalNumberForVerification();
         long totalPending = verificationService.getTotalNumberPending();
+//        int verificationNumber =0;
+//        long totalPending = 0;
         if(totalPending>0) {
             model.addAttribute("totalPending", totalPending);
         }
