@@ -718,7 +718,6 @@ public class OpsCorporateController {
             List<AccountInfo> accountInfos = integrationService.fetchAccounts(corporate.getCustomerId().toUpperCase());
             session.removeAttribute("accountInfos");
             session.removeAttribute("selectedAccounts");
-
             session.setAttribute("accountInfos", accountInfos);
             session.setAttribute("selectedAccounts", accounts);
             CorporateRequestDTO corporateRequestDTO = (CorporateRequestDTO) session.getAttribute("corporateRequest");

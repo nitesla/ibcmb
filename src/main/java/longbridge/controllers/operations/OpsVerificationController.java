@@ -35,11 +35,6 @@ public class OpsVerificationController {
     private Logger logger = LoggerFactory.getLogger(this.getClass());
     @Autowired
     private VerificationService verificationService;
-    @Autowired
-    private VerificationRepo verificationRepo;
-
-    @Autowired
-    private OperationsUserService operationsUserService;
 
     @Autowired
     private MessageSource messageSource;
