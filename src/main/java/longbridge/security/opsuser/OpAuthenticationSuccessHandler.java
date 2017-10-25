@@ -77,11 +77,10 @@ public class OpAuthenticationSuccessHandler extends SavedRequestAwareAuthenticat
             logger.debug("Response has already been committed. Unable to redirect to " + targetUrl);
             return;
         }
-
         redirectStrategy.sendRedirect(request, response, targetUrl);
     }
 
-
+p
     protected String determineTargetUrl(final Authentication authentication) {
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         boolean isOp = operationsUserRepo.findFirstByUserName(userDetails.getUsername()).getUserType().equals(UserType.OPERATIONS);
