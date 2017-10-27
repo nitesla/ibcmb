@@ -247,6 +247,8 @@ public class RetrieveCredentialController {
 
     @PostMapping("/rest/sendGenPass/username")
     public @ResponseBody String sendGenPassword(WebRequest webRequest){
+
+        logger.info("Trying to send generated password");
         try {
             String username = webRequest.getParameter("username");
             RetailUser retailUser = retailUserService.getUserByName(username);
