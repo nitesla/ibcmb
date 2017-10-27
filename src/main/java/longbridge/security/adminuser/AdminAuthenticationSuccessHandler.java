@@ -54,7 +54,7 @@ public class AdminAuthenticationSuccessHandler extends SimpleUrlAuthenticationSu
 
         sessionUtils.setTimeout(session);
 
-        AdminUser user = adminUserRepo.findFirstByUserName(authentication.getName());
+        AdminUser user = adminUserRepo.findFirstByUserNameIgnoreCase(authentication.getName());
         LocalDate date = new LocalDate(user.getExpiryDate());
 
         if (today.isAfter(date) || today.isEqual(date)) {
@@ -96,7 +96,7 @@ public class AdminAuthenticationSuccessHandler extends SimpleUrlAuthenticationSu
     protected String determineTargetUrl(final Authentication authentication) {
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
 
-        boolean isAdmin = adminUserRepo.findFirstByUserName(userDetails.getUsername()).getUserType().equals(UserType.ADMIN);
+        boolean isAdmin = adminUserRepo.findFirstByUserNameIgnoreCase(userDetails.getUsername()).getUserType().equals(UserType.ADMIN);
         SettingDTO setting = configService.getSettingByName("ENABLE_ADMIN_2FA");
         boolean tokenAuth = false;
         if (setting != null && setting.isEnabled()) {

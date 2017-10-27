@@ -111,7 +111,7 @@ public class TransferServiceImpl implements TransferService {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             if (!(authentication instanceof AnonymousAuthenticationToken)) {
                 String currentUserName = authentication.getName();
-                RetailUser user = retailUserRepo.findFirstByUserName(currentUserName);
+                RetailUser user = retailUserRepo.findFirstByUserNameIgnoreCase(currentUserName);
                 transRequest.setUserReferenceNumber("RET_" + user.getId());
             }
             transferRequestDTO = convertEntityToDTO(transferRequestRepo.save(transRequest));

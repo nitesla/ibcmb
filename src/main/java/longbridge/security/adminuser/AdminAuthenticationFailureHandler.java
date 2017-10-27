@@ -35,7 +35,7 @@ public class AdminAuthenticationFailureHandler extends SimpleUrlAuthenticationFa
     public void onAuthenticationFailure(final HttpServletRequest request, final HttpServletResponse response, final AuthenticationException exception) throws IOException, ServletException {
         setDefaultFailureUrl("/login/admin?error=login_error");
         String userName = request.getParameter("username");
-        AdminUser user = service.findFirstByUserName(userName);
+        AdminUser user = service.findFirstByUserNameIgnoreCase(userName);
         if (user != null) {
 
             failedLoginService.loginFailed(user);

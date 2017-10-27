@@ -35,7 +35,7 @@ form.children("div").steps({
         var isValid = form.valid();
 
         if(SECURITY_QUESTION_STEP === currentIndex){
-            //console.log("Current step is the account details step");
+            console.log("Current step is the account details step");
             var noOfQs = $('#noOfQuestion').val();
             var i = 0;
             var secAnswer ="";
@@ -48,7 +48,7 @@ form.children("div").steps({
 
                 }
             }
-            //console.log("answer 2 "+secAnswer);
+            console.log("answer 2 "+secAnswer);
             return isValid && validateSecAnswer(secAnswer);
         }
         if(VALIDATE_GEN_PASS === currentIndex){
@@ -72,7 +72,7 @@ form.children("div").steps({
     },
     onFinishing: function (event, currentIndex)
     {
-        
+
         //form.validate().settings.ignore = ":disabled";
         return form.valid();
     },
@@ -94,6 +94,34 @@ function validateSecAnswer(secAnswers){
     var username = $('#username').val();
     username = username.trim();
     // console.log("validating "+secAnswer);
+    // var url = "/rest/secAns";
+    // var data = "username="+username+"&secAnswers="+secAnswer;
+    // var http = new XMLHttpRequest();
+    // http.open("POST", url, false);
+    // http.setRequestHeader("content-type","application/x-www-form-urlencoded");
+    // http.onreadystatechange = function() {//Call a function when the state changes.
+    //     if(http.readyState == 4 && http.status == 200) {
+    //         console.log("http output "+http.responseText);
+    //         result = String(http.responseText);
+    //         // result = ''+data;
+    //         console.log("the result 1 "+result);
+    //         if(data === 'true'){
+    //             //$('input[name=username]').val(result);
+    //         }else{
+    //             //invalid account number
+    //             //alert("Account number not found");
+    //             $('#errorMess').text(result);
+    //             $('#myLoader').modal('hide');
+    //             $('#myModalError').modal('show');
+    //         }
+    //     }else{
+    //         // console.log("http output 2 "+http.responseText);
+    //         $('#myLoader').modal('hide');
+    //         $('#errorMess').text("Service not available, please try again later");
+    //         $('#myModalError').modal('show');
+    //     }
+    // };
+    // http.send(data);
     $.ajax({
         type:'POST',
         url:"/rest/secAns",
@@ -101,10 +129,10 @@ function validateSecAnswer(secAnswers){
         async:false,
         cache:false,
         success:function(data){
-            result = ''+String(data);
-            if(result == "true"){
+            result = ''+data;
+            console.log("the result 1 "+result);
+            if(data === 'true'){
                 //$('input[name=username]').val(result);
-                
             }else{
                 //invalid account number
                 //alert("Account number not found");
@@ -118,15 +146,18 @@ function validateSecAnswer(secAnswers){
             $('#myModalError').modal('show');
         }
     });
-
+    // console.log("the result "+result);
     if(result == "true"){
+        console.log("tyyey");
         sent = sendGenPassword();
+        console.log("the sent reponse "+sent);
         if(String(sent) == "true"){
             return true;
         }else {
             return false;
         }
     }else{
+        $('#myLoader').modal('hide');
         return false;
     }
 }
@@ -134,6 +165,7 @@ function validateSecAnswer(secAnswers){
 function sendGenPassword() {
     var username = $('input[name="username"]').val();
     username = username.trim();
+    console.log("the username "+username);
     var result="";
     $.ajax({
         type:'POST',
@@ -143,11 +175,12 @@ function sendGenPassword() {
         cache:false,
         success:function(data1){
             result = ''+String(data1);
+            console.log("the temp "+result);
             if(result == "true"){
                 $('#successMess').text("A temporary password has been sent to your email address.");
                 $('#myLoader').modal('hide');
                 $('#myModalSuccess').modal('show');
-               
+
             }else{
                 //invalid account number
                 //alert("Account number not found");
@@ -170,14 +203,14 @@ function sendGenPassword() {
 }
 
 function validateGenPassword() {
-     $('#myLoader').modal('show');
+    $('#myLoader').modal('show');
     // console.log("p** fff");
     var result;
     var username = $('#username').val();
     var genpassword = $('#genpassword').val();
     // console.log("p** "+genpassword);
     genpassword = genpassword.trim();
-    
+
     $.ajax({
         type:'POST',
         data:{genpassword:genpassword,username:username},
@@ -192,7 +225,7 @@ function validateGenPassword() {
             }else{
                 //invalid account number
                 //alert("Account number not found");
-                 $('#myLoader').modal('hide');
+                $('#myLoader').modal('hide');
                 $('#errorMess').text(result);
                 $('#myModalError').modal('show');
             }
@@ -215,7 +248,7 @@ function validatePassword(password){
     var username = $('#username').val();
 // console.log("username "+username+" confirm "+password);
     var res;
-     $('#myLoader').modal('show');
+    $('#myLoader').modal('show');
     $.ajax({
         type:'POST',
         cache:false,
@@ -226,9 +259,9 @@ function validatePassword(password){
             res = ''+String(data1);
             if(res === 'true'){
                 //success
-                 $('#myLoader').modal('hide');
+                $('#myLoader').modal('hide');
             }else{
-                 $('#myLoader').modal('hide');
+                $('#myLoader').modal('hide');
                 $('#errorMess').text(res);
                 $('#myModalError').modal('show');
 
@@ -249,7 +282,7 @@ function validatePassword(password){
 }
 
 function validateToken(){
-     $('#myLoader').modal('show');
+    $('#myLoader').modal('show');
     var username = $('input[name="username"]').val();
     var token = $('input[name="token"]').val();
     var result;
@@ -258,15 +291,15 @@ function validateToken(){
         url:"/rest/tokenAuth/username/token",
         data:{username:username,token:token},
         async:false,
-        
+
         success:function(data1){
             result = ''+String(data1);
             if(result == "true"){
-                
+
             }else{
                 //invalid account number
                 //alert("Account number not found");
-                 $('#myLoader').modal('hide');
+                $('#myLoader').modal('hide');
                 $('#errorMess').text(result);
                 $('#myModalError').modal('show');
             }
@@ -285,7 +318,7 @@ function validateToken(){
 }
 
 function changePassword(){
-    
+
     var returnValue = false;
     $('#reg-form').submit(function(e){
         e.preventDefault();
@@ -301,9 +334,9 @@ function changePassword(){
                 //callback methods go right here
                 if(data==="true"){
                     $('#returnValue').val(true);
-                     
+
                 }else {
-                     
+
                     document.getElementById("errorMess").textContent=data;
                     $('#myModalError').modal('show');
 
@@ -315,14 +348,14 @@ function changePassword(){
             }
         });
     });
-   
+
     $('#reg-form').submit();
-     $('#myLoader').modal('hide');
+    $('#myLoader').modal('hide');
     returnValue = $('#returnValue').val();
     //alert(returnValue);
     return Boolean(returnValue);
 }
-	
+
 
 
 

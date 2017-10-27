@@ -392,17 +392,41 @@ function validateUsername(username){
 
 function validatePassword(password){
     var result;
+    console.log("the pasw "+password);
     password = password.trim();
-    var url = "/rest/password/password";
-    var data = "password="+password;
+    // var url = "/rest/password/password";
+    // var data = "password="+password;
 
-    var http = new XMLHttpRequest();
-    http.open("POST", url, false);
-    http.setRequestHeader("content-type","application/x-www-form-urlencoded");
-    http.onreadystatechange = function() {//Call a function when the state changes.
-        if(http.readyState == 4 && http.status == 200) {
-            console.log("http output "+http.responseText);
-            result = String(http.responseText);
+    // var http = new XMLHttpRequest();
+    // http.open("POST", url, false);
+    // http.setRequestHeader("content-type","application/x-www-form-urlencoded");
+    // http.onreadystatechange = function() {//Call a function when the state changes.
+    //     if(http.readyState == 4 && http.status == 200) {
+    //         console.log("http output "+http.responseText);
+    //         result = String(http.responseText);
+    //         if(result === 'true'){
+    //             //success
+    //             $('#myLoader').modal('hide');
+    //         }else{
+    //             $('#errorMess').text(result);
+    //             $('#myModalError').modal('show');
+    //             $('#myLoader').modal('hide');
+    //         }
+    //     }else{
+    //         $('#myLoader').modal('hide');
+    //         $('#errorMess').text("Service not available, please try again later");
+    //         $('#myModalError').modal('show');
+    //     }
+    // };
+    // http.send(data);
+    $.ajax({
+        type:'POST',
+        data:{password:password},
+        url:"/rest/password/password",
+        async:false,
+        cache:false,
+        success:function(data1){
+            result = ''+String(data1);
             if(result === 'true'){
                 //success
                 $('#myLoader').modal('hide');
@@ -411,35 +435,12 @@ function validatePassword(password){
                 $('#myModalError').modal('show');
                 $('#myLoader').modal('hide');
             }
-        }else{
+        },error:function (data) {
             $('#myLoader').modal('hide');
             $('#errorMess').text("Service not available, please try again later");
             $('#myModalError').modal('show');
         }
-    };
-    http.send(data);
-    // $.ajax({
-    //     type:'POST',
-    //     data:{password:password},
-    //     url:"/rest/password/password",
-    //     async:false,
-    //     cache:false,
-    //     success:function(data1){
-    //         result = ''+String(data1);
-    //         if(result === 'true'){
-    //             //success
-    //
-    //         }else{
-    //             $('#errorMess').text(result);
-    //             $('#myModalError').modal('show');
-    //             $('#myLoader').modal('hide');
-    //         }
-    //     },error:function (data) {
-    //         $('#myLoader').modal('hide');
-    //         $('#errorMess').text("Service not available, please try again later");
-    //         $('#myModalError').modal('show');
-    //     }
-    // });
+    });
 
     if(result === 'true'){
         
@@ -454,41 +455,16 @@ function validatePassword(password){
 function validateRegCode(code){
     var result;
     code = code.trim();
-    var url = "/rest/regCode/check";
-    var data = "code="+code;
-
-    var http = new XMLHttpRequest();
-    http.open("POST", url, false);
-    http.setRequestHeader("content-type","application/x-www-form-urlencoded");
-    http.onreadystatechange = function() {//Call a function when the state changes.
-        if(http.readyState == 4 && http.status == 200) {
-            console.log("http output "+http.responseText);
-            result = String(http.responseText);
-            if(result == 'true'){
-                //invalid account number
-
-
-            }else{
-                $('#errorMess').text(result);
-                $('#myModalError').modal('show');
-            }
-        }else{
-            console.log("http output 2 "+http.responseText);
-            $('#myLoader').modal('hide');
-            $('#errorMess').text("Service not available, please try again later");
-            $('#myModalError').modal('show');
-        }
-    };
-    http.send(data);
-    // $.ajax({
-    //     type:'POST',
-    //     url:"/rest/regCode/check",
-    //     cache:false,
-    //     data:{code:code},
-    //     async:false,
-    //     success:function(data1){
-    //         result = ''+String(data1);
-    //         // console.log("error "+result);
+    // var url = "/rest/regCode/check";
+    // var data = "code="+code;
+    //
+    // var http = new XMLHttpRequest();
+    // http.open("POST", url, false);
+    // http.setRequestHeader("content-type","application/x-www-form-urlencoded");
+    // http.onreadystatechange = function() {//Call a function when the state changes.
+    //     if(http.readyState == 4 && http.status == 200) {
+    //         console.log("http output "+http.responseText);
+    //         result = String(http.responseText);
     //         if(result == 'true'){
     //             //invalid account number
     //
@@ -497,13 +473,38 @@ function validateRegCode(code){
     //             $('#errorMess').text(result);
     //             $('#myModalError').modal('show');
     //         }
-    //     },error:function (data) {
-    //         console.log("error "+data);
+    //     }else{
+    //         console.log("http output 2 "+http.responseText);
     //         $('#myLoader').modal('hide');
     //         $('#errorMess').text("Service not available, please try again later");
     //         $('#myModalError').modal('show');
     //     }
-    // });
+    // };
+    // http.send(data);
+    $.ajax({
+        type:'POST',
+        url:"/rest/regCode/check",
+        cache:false,
+        data:{code:code},
+        async:false,
+        success:function(data1){
+            result = ''+String(data1);
+            // console.log("error "+result);
+            if(result == 'true'){
+                //invalid account number
+
+
+            }else{
+                $('#errorMess').text(result);
+                $('#myModalError').modal('show');
+            }
+        },error:function (data) {
+            console.log("error "+data);
+            $('#myLoader').modal('hide');
+            $('#errorMess').text("Service not available, please try again later");
+            $('#myModalError').modal('show');
+        }
+    });
 
     if(result === 'true'){
         //username is valid and available

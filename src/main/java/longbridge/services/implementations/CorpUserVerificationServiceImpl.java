@@ -446,7 +446,7 @@ public class CorpUserVerificationServiceImpl implements CorpUserVerificationServ
 
         String initiator = corpUserVerification.getInitiatedBy();
 
-        User initiatedBy = corporateUserRepo.findFirstByUserName(initiator);
+        User initiatedBy = corporateUserRepo.findFirstByUserNameIgnoreCase(initiator);
 
         if(initiatedBy!=null) {
             if (initiatedBy.getEmail() != null) {
@@ -595,7 +595,7 @@ public class CorpUserVerificationServiceImpl implements CorpUserVerificationServ
     }
 
     public void createUserOnEntrustAndSendCredentials(CorporateUser corporateUser) {
-        CorporateUser user = corporateUserRepo.findFirstByUserName(corporateUser.getUserName());
+        CorporateUser user = corporateUserRepo.findFirstByUserNameIgnoreCase(corporateUser.getUserName());
         logger.info("Corporate User >>"+ user);
         if (user != null) {
 

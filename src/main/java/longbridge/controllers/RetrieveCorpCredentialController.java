@@ -151,6 +151,7 @@ public @ResponseBody String getSecAns(WebRequest webRequest, HttpSession session
 //                secAnswer = question.stream().filter(Objects::nonNull).findFirst().orElse("");
 
             logger.info("user answer {}", answers);
+            logger.info("entrust answers {}", entAnswers);
             if((answers.size()>0)&&(entAnswers.size()>0)) {
                 for(int i =0; i<answers.size();i++){
                     if(!answers.get(i).equalsIgnoreCase(entAnswers.get(i))){

@@ -3,7 +3,12 @@ package longbridge.utils;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import longbridge.config.audits.RevisedEntitiesUtil;
+import longbridge.dtos.AuditSearchDTO;
+import org.apache.commons.lang.StringUtils;
 import org.json.simple.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.context.request.WebRequest;
 
 import java.io.IOException;
@@ -15,6 +20,7 @@ import java.util.*;
  * Created by Longbridge on 7/19/2017.
  */
 public class StringUtil {
+    static Logger logger = LoggerFactory.getLogger(StringUtil.class);
     public static List<String> splitByComma(String word){
        return Arrays.asList(word.split(","));
     }
@@ -240,5 +246,37 @@ public class StringUtil {
         fields.put("field",datatableField);
         fields.put("ignoreField",ignoreField);
         return fields;
+    }
+    public static String searchModifiedEntityTypeEntity(AuditSearchDTO auditSearchDTO){
+        StringBuilder builder = new StringBuilder("");
+        String auditedEntity  = "";
+
+        boolean fromDateNotEmpty = auditSearchDTO.getFromDate() !=0;
+        boolean endDateNotEmpty = auditSearchDTO.getEndDate() !=0;
+        boolean idNotEmpty = !StringUtils.isEmpty(auditSearchDTO.getId());
+        boolean ipAddressNotEmpty = !StringUtils.isEmpty(auditSearchDTO.getIpAddress());
+        boolean classNameNotEmpty = !StringUtils.isEmpty(auditSearchDTO.getEntityClassName());
+        logger.info("search for id {} ip {} startDate {} enddate {} className {}",idNotEmpty,ipAddressNotEmpty,fromDateNotEmpty,endDateNotEmpty,classNameNotEmpty);
+        if(classNameNotEmpty){
+            auditedEntity= RevisedEntitiesUtil.getOracleEntity(auditSearchDTO.getEntityClassName())+"_AUD";
+        }
+        if(fromDateNotEmpty && endDateNotEmpty && idNotEmpty && ipAddressNotEmpty && classNameNotEmpty){
+            builder.append(", "+auditedEntity+" a");
+            builder.append(" and c.TIMESTAMP >= "+auditSearchDTO.getFromDate()+" and c.TIMESTAMP <="+auditSearchDTO.getEndDate());
+            builder.append(" and m.ENTITY_CLASS_NAME = "+auditSearchDTO.getEntityClassName());
+            builder.append(" and c.IP_ADDRESS = "+auditSearchDTO.getIpAddress());
+            builder.append(" and a.ID = "+auditSearchDTO.getId());
+        }else if(classNameNotEmpty && idNotEmpty && !fromDateNotEmpty && !endDateNotEmpty && !ipAddressNotEmpty){
+            builder.append(", "+auditedEntity+" a");
+            builder.append(" where m.REVISION_ID=c.id ");
+            builder.append(" and m.ENTITY_CLASS_NAME = "+auditSearchDTO.getEntityClassName()+" and a.ID = "+auditSearchDTO.getId());
+            builder.append("and a.REV = c.id and m.REVISION_ID=a.REV ");
+        }
+        if(StringUtils.isEmpty(builder.toString())){
+            builder.append(" where m.REVISION_ID=c.id ");
+            builder.append(" and rownum <100");
+        }
+        logger.info("the appended query is {}",builder.toString());
+        return builder.toString();
     }
 }

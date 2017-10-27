@@ -1,8 +1,10 @@
 package longbridge.repositories;
 
 
+import longbridge.config.audits.ModifiedEntityTypeEntity;
 import longbridge.models.AbstractEntity;
 import longbridge.services.VerificationService;
+import org.hibernate.Criteria;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -155,6 +157,9 @@ public class CommonRepoImpl<T extends AbstractEntity, ID extends Serializable> e
 		return en.getDefaultSearchFields();
 
 	}
-
+//   private List<ModifiedEntityTypeEntity> searchModidfiedEntity(){
+//       CriteriaBuilder cb = em.getCriteriaBuilder();
+//
+//   }
 
 }

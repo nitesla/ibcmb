@@ -3,11 +3,8 @@ package longbridge.controllers.admin;
 import longbridge.config.audits.CustomRevisionEntity;
 import longbridge.config.audits.ModifiedEntityTypeEntity;
 import longbridge.config.audits.RevisedEntitiesUtil;
-import longbridge.dtos.AdminUserDTO;
-import longbridge.dtos.AuditDTO;
-import longbridge.dtos.CodeDTO;
+import longbridge.dtos.*;
 //import longbridge.dtos.RevisionInfo;
-import longbridge.dtos.VerificationDTO;
 import longbridge.models.AuditRetrieve;
 import longbridge.models.User;
 import longbridge.models.Verification;
@@ -88,6 +85,7 @@ public class AdmAuditController {
     public String ListRevisedEnties(Model model)
     {
         List<AuditConfig> auditConfig=auditCfgService.getEntities();
+
         model.addAttribute("entities",auditConfig);
         return "adm/audit/view";
     }
@@ -109,14 +107,20 @@ public class AdmAuditController {
     {
         return "adm/audit/revisedview";
     }
+    @GetMapping("/entity/index")
+    public String viewRevisedEnties(Model model){
+
+//        RevisedEntitiesUtil.getSearchedModifiedEntity("AdminUser",null,"");
+//        List<ModifiedEntityTypeEntity> entityTypeEntities = auditCfgService.getAll();
+        List<AuditConfig> auditConfig=auditCfgService.getEntities();
+        model.addAttribute("entities",auditConfig);
+        return "adm/audit/new/auditIndex";
+    }
 
 
     @GetMapping("/entity/name/details")
     public @ResponseBody DataTablesOutput<AuditDTO> getAllRevisedEntity(DataTablesInput input,Model model,@RequestParam("className") String className,@RequestParam("csearch") String csearch)
     {
-//        @RequestParam("className") String className,@RequestParam("csearch") String csearch
-//        String className = "LocalBeneficiary";
-//        String csearch = "";
         logger.info("The class name {}",className);
         logger.info("TO search {}",csearch);
         Pageable pageable = DataTablesUtils.getPageable(input);
@@ -137,27 +141,53 @@ public class AdmAuditController {
 
 
 
-//    @GetMapping("/revised/entity/all")
-//    public @ResponseBody DataTablesOutput<ModifiedEntityTypeEntity> getAllRevisedEntity(DataTablesInput input,@RequestParam("csearch") String search)
-//    {
-//      //  Pageable pageable = DataTablesUtils.getPageable(input);
-//        Pageable pageables = DataTablesUtils.getPageable(input);
-//        Page<ModifiedEntityTypeEntity> audit = null;
-//        if(StringUtils.isNoneBlank(search))
-//        {
-//            audit=auditCfgService.getRevisionEntities(search,pageables);
-//        }
-//        else
-//        {
-//            audit=auditCfgService.getRevisionEntitiesByDate(pageables);
-//        }
-//        DataTablesOutput<ModifiedEntityTypeEntity> out = new DataTablesOutput<ModifiedEntityTypeEntity>();
-//        out.setDraw(input.getDraw());
-//        out.setData(audit.getContent());
-//        out.setRecordsFiltered(audit.getTotalElements());
-//        out.setRecordsTotal(audit.getTotalElements());
-//        return out;
-//    }
+    @GetMapping("/revised/entity/all")
+    public @ResponseBody DataTablesOutput<ModifiedEntityTypeEntity> getAllRevisedEntity(DataTablesInput input,@RequestParam("csearch") String search)
+    {
+      //  Pageable pageable = DataTablesUtils.getPageable(input);
+        logger.info("the search current "+search);
+        Pageable pageables = DataTablesUtils.getPageable(input);
+        Page<ModifiedEntityTypeEntity> audit = null;
+        if(StringUtils.isNoneBlank(search))
+        {
+            audit=auditCfgService.getRevisionEntities(search,pageables);
+        }
+        else
+        {
+            audit=auditCfgService.getRevisionEntitiesByDate(pageables);
+        }
+        DataTablesOutput<ModifiedEntityTypeEntity> out = new DataTablesOutput<ModifiedEntityTypeEntity>();
+        out.setDraw(input.getDraw());
+        out.setData(audit.getContent());
+        out.setRecordsFiltered(audit.getTotalElements());
+        out.setRecordsTotal(audit.getTotalElements());
+        return out;
+    }
+    @GetMapping("/revised/entity/search")
+    public @ResponseBody DataTablesOutput<ModifiedEntityTypeEntity> searchRevisedEntity(
+            DataTablesInput input,@RequestParam("id") String id, @RequestParam("entityName") String entityName,
+            @RequestParam("fromDate") String fromDate, @RequestParam("endDate") String endDate,
+            @RequestParam("ipAddress") String ipAddress)
+    {
+        logger.info("the search details entityName {},fromDate {}, endDate {}, ipAddress {}, id {} ",entityName,fromDate,endDate,ipAddress,id);
+
+        Pageable pageables = DataTablesUtils.getPageable(input);
+        Page<ModifiedEntityTypeEntity> audit = null;
+        if(StringUtils.isNoneBlank(id)){
+            AuditSearchDTO auditSearchDTO = new AuditSearchDTO(id,entityName,fromDate,endDate,ipAddress);
+            logger.info("the search query is {}",auditSearchDTO);
+            audit=auditCfgService.searchModifiedEntity(auditSearchDTO,pageables);
+        }
+        else{
+            audit=auditCfgService.getRevisionEntitiesByDate(pageables);
+        }
+        DataTablesOutput<ModifiedEntityTypeEntity> out = new DataTablesOutput<ModifiedEntityTypeEntity>();
+        out.setDraw(input.getDraw());
+        out.setData(audit.getContent());
+        out.setRecordsFiltered(audit.getTotalElements());
+        out.setRecordsTotal(audit.getTotalElements());
+        return out;
+    }
 
     @GetMapping("/{id}/{classname}/view")
     public String revisionEntites(@PathVariable String id,@PathVariable String classname,Model model)
@@ -218,7 +248,7 @@ public class AdmAuditController {
 
     @GetMapping("/view")
     public String listEntity(Model model) {
-        return "adm/audit/view";
+        return "adm/audit/viewbkp";
     }
 
 

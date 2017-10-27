@@ -6,6 +6,7 @@ import longbridge.config.audits.ModifiedEntityTypeEntity;
 import longbridge.config.audits.RevisedEntitiesUtil;
 import longbridge.dtos.AuditDTO;
 //import longbridge.dtos.RevisionInfo;
+import longbridge.dtos.AuditSearchDTO;
 import longbridge.exception.InternetBankingException;
 import longbridge.models.*;
 import longbridge.repositories.AuditConfigRepo;
@@ -18,6 +19,9 @@ import longbridge.utils.StringUtil;
 import longbridge.utils.Verifiable;
 import org.apache.commons.lang.StringUtils;
 import org.apache.poi.ss.formula.functions.T;
+import org.hibernate.Query;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.hibernate.envers.AuditReader;
 import org.hibernate.envers.AuditReaderFactory;
 import org.hibernate.envers.query.AuditQuery;
@@ -30,6 +34,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import java.lang.annotation.Annotation;
@@ -38,13 +43,16 @@ import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.*;
 
+import static longbridge.config.audits.RevisedEntitiesUtil.getSearchedModifiedEntity;
 import static longbridge.utils.StringUtil.convertFieldToTitle;
 import static longbridge.utils.StringUtil.convertToJSON;
+import static longbridge.utils.StringUtil.searchModifiedEntityTypeEntity;
 
 /**
  * Created by ayoade_farooq@yahoo.com on 4/19/2017.
  */
 @Service
+@Transactional
 public class AuditConfigImpl implements AuditConfigService {
 
 	private static final String PACKAGE_NAME = "longbridge.models.";
@@ -62,10 +70,7 @@ public class AuditConfigImpl implements AuditConfigService {
 
 	@Autowired
 	ModifiedEntityTypeEntityRepo modifiedEntityTypeEntityRepo;
-
-
-
-
+//	SessionFactory sessionFactory = entityManager.unwrap(SessionFactory.class);
 	public AuditConfig findEntity(String s) {
 		return configRepo.findFirstByEntityName(s);
 	}
@@ -96,16 +101,16 @@ public class AuditConfigImpl implements AuditConfigService {
 	@Override
 	public Page<ModifiedEntityTypeEntity> audit(String pattern, Pageable pageDetails)
 	{
-		Page<ModifiedEntityTypeEntity> page = modifiedEntityTypeEntityRepo.findUsingPattern(pattern, pageDetails);
+//		Page<ModifiedEntityTypeEntity> page = modifiedEntityTypeEntityRepo.findUsingPattern(pattern, pageDetails);
 		//Page<ModifiedEntityTypeEntity> pageImpl = new PageImpl<AdminUserDTO>(dtOs,pageDetails,t);
-		return page;
+		return null;
 	}
 
 	@Override
 	public Page<ModifiedEntityTypeEntity> getRevisionEntities(String pattern, Pageable pageDetails)
 	{
-		Page<ModifiedEntityTypeEntity> page=modifiedEntityTypeEntityRepo.findUsingPattern(pattern,pageDetails);
-		return page;
+//		Page<ModifiedEntityTypeEntity> page=modifiedEntityTypeEntityRepo.findUsingPattern(pattern,pageDetails);
+		return null;
 	}
 
 	public Page<ModifiedEntityTypeEntity> getRevisionEntities(Pageable pageable)
@@ -457,5 +462,16 @@ public class AuditConfigImpl implements AuditConfigService {
 		}
 		return map;
 	}
-
+	public List<ModifiedEntityTypeEntity> getAll(){
+//		Session session = sessionFactory.getCurrentSession();
+//		Query query =  session.createQuery("from ModifiedEntityTypeEntity");
+//		List<ModifiedEntityTypeEntity> branchList = query.list();
+//		logger.info("the list returned {}",branchList.get(0));
+		return null;
+	}
+	public Page<ModifiedEntityTypeEntity> searchModifiedEntity(AuditSearchDTO auditSearchDTO, Pageable pageable){
+		List<ModifiedEntityTypeEntity> searchedModifiedEntity = getSearchedModifiedEntity(auditSearchDTO);
+		long searchSize = Long.valueOf(searchedModifiedEntity.size());
+		return new PageImpl<ModifiedEntityTypeEntity>(searchedModifiedEntity, pageable, searchSize);
+	}
 }

@@ -107,7 +107,7 @@ public class AdminUserServiceImpl implements AdminUserService {
 
     @Override
     public boolean userExists(String username) throws InternetBankingException {
-        AdminUser adminUser = adminUserRepo.findFirstByUserName(username);
+        AdminUser adminUser = adminUserRepo.findFirstByUserNameIgnoreCase(username);
         return (adminUser != null) ? true : false;
     }
 
@@ -164,7 +164,7 @@ public class AdminUserServiceImpl implements AdminUserService {
 
 
     public AdminUser createUserOnEntrustAndSendCredentials(AdminUser adminUser) throws EntrustException {
-        AdminUser user = adminUserRepo.findFirstByUserName(adminUser.getUserName());
+        AdminUser user = adminUserRepo.findFirstByUserNameIgnoreCase(adminUser.getUserName());
         if (user != null) {
             if ("".equals(user.getEntrustId()) || user.getEntrustId() == null) {
                 String fullName = adminUser.getFirstName() + " " + adminUser.getLastName();
@@ -349,7 +349,7 @@ public class AdminUserServiceImpl implements AdminUserService {
     public String resetPassword(String username) throws PasswordException {
 
         try {
-            AdminUser user = adminUserRepo.findFirstByUserName(username);
+            AdminUser user = adminUserRepo.findFirstByUserNameIgnoreCase(username);
             String newPassword = passwordPolicyService.generatePassword();
             user.setPassword(passwordEncoder.encode(newPassword));
             user.setExpiryDate(new Date());

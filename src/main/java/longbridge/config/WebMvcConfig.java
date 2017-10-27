@@ -5,7 +5,10 @@ import longbridge.security.adminuser.AdminUserLoginInterceptor;
 import longbridge.security.corpuser.CorporateUserLoginInterceptor;
 import longbridge.security.opsuser.OpUserLoginInterceptor;
 import longbridge.security.retailuser.RetailUserLoginInterceptor;
+import org.hibernate.SessionFactory;
+import org.hibernate.jpa.HibernateEntityManagerFactory;
 import org.modelmapper.ModelMapper;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceBuilder;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
@@ -17,6 +20,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.http.HttpMethod;
+import org.springframework.orm.jpa.vendor.HibernateJpaSessionFactoryBean;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -36,6 +40,7 @@ import org.springframework.web.servlet.i18n.CookieLocaleResolver;
 import org.springframework.web.servlet.i18n.LocaleChangeInterceptor;
 import org.springframework.web.servlet.mvc.WebContentInterceptor;
 
+import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -45,6 +50,7 @@ import java.util.concurrent.Executor;
 import static jdk.nashorn.internal.runtime.regexp.joni.Config.log;
 
 @Configuration
+@EnableAutoConfiguration
 public class WebMvcConfig extends WebMvcConfigurerAdapter {
 
     @Bean
@@ -190,7 +196,10 @@ public class WebMvcConfig extends WebMvcConfigurerAdapter {
         interceptor.setUseCacheControlNoStore(true);
         return interceptor;
     }
-
+    @Bean
+    public SessionFactory sessionFactory(HibernateEntityManagerFactory emf) {
+        return emf.getSessionFactory();
+    }
 
 //
 //    @Override

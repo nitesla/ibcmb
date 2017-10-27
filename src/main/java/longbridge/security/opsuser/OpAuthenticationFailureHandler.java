@@ -36,7 +36,7 @@ public class OpAuthenticationFailureHandler extends SimpleUrlAuthenticationFailu
         setDefaultFailureUrl("/login/ops?error=true");
         String userName = request.getParameter("username");
 
-        OperationsUser user = service.findFirstByUserName(userName);
+        OperationsUser user = service.findFirstByUserNameIgnoreCase(userName);
         if (user != null) {
 
             failedLoginService.loginFailed(user);

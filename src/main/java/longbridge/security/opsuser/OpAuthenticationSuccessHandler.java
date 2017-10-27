@@ -84,7 +84,7 @@ public class OpAuthenticationSuccessHandler extends SavedRequestAwareAuthenticat
 
     protected String determineTargetUrl(final Authentication authentication) {
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-        boolean isOp = operationsUserRepo.findFirstByUserName(userDetails.getUsername()).getUserType().equals(UserType.OPERATIONS);
+        boolean isOp = operationsUserRepo.findFirstByUserNameIgnoreCase(userDetails.getUsername()).getUserType().equals(UserType.OPERATIONS);
         SettingDTO setting = configService.getSettingByName("ENABLE_OPS_2FA");
         boolean tokenAuth = false;
         if (setting != null && setting.isEnabled()) {

@@ -243,10 +243,10 @@ public class VerificationServiceImpl implements VerificationService {
 
         switch (verification.getUserType()) {
             case ADMIN:
-                initiatedBy = adminUserRepo.findFirstByUserName(initiator);
+                initiatedBy = adminUserRepo.findFirstByUserNameIgnoreCase(initiator);
                 break;
             case OPERATIONS:
-                initiatedBy = operationsUserRepo.findFirstByUserName(initiator);
+                initiatedBy = operationsUserRepo.findFirstByUserNameIgnoreCase(initiator);
                 break;
         }
         if (initiatedBy != null && initiatedBy.getEmail() != null) {

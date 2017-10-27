@@ -438,10 +438,18 @@ public class UserRegController {
     @ResponseBody
     String checkRegPassword(WebRequest webRequest) {
         String password = webRequest.getParameter("password");
-        String message = passwordPolicyService.validate(password, null);
-        if (!"".equals(message)) {
-            return message;
-        }
+        logger.info("the password {}",password);
+        String message = null;
+//        try {
+            message = passwordPolicyService.validate(password, null);
+            if (!"".equals(message)) {
+                return message;
+            }
+//        } catch (Exception e) {
+//            logger.error("Error Validating ",e);
+//            return e.getMessage();
+//        }
+
         return "true";
     }
 

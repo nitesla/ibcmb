@@ -13,7 +13,6 @@
 
                 <div th:replace="layout :: admin-menu"></div>
                 <div th:replace="layout :: menu-footer-adm"></div>
-
             </div>
         </div>
         <div th:replace="layout :: top-nav"></div>
@@ -34,6 +33,32 @@
                     <div class="col-md-12 col-sm-12 col-xs-12">
                         <div class="x_panel">
                             <div class="x_title">
+                                <div class="col-lg-12">
+                                    <!--<input type="text" id=""/>-->
+                                    <div class="col-lg-3">
+                                    <div class="input-daterange input-group" id="date-range">
+                                        <input type="text" data-date-format="dd-mm-yyyy" class="form-control datepicker" id="fromDate" name="fromDate" placeholder="Start date" required="required" />
+                                        <span class="input-group-addon no-border no-bd" style="bacground:transparent !important">to</span>
+                                        <input type="text"  data-date-format="dd-mm-yyyy" class="form-control datepicker" name="toDate" id="endDate" placeholder="End date" required="required" />
+                                        <!--<span id="emptyDateError"   class="error">Start and end date is mandatory</span>-->
+                                    </div>
+                                    </div>
+                                    <div class="col-lg-2">
+                                        <input type="text" class="form-control" id="ipAddress" placeholder="IP adress"/>
+                                    </div>
+                                    <div class="col-lg-2">
+                                        <select id="entityName" class="form-control">
+                                            <option value="">--Table name--</option>
+                                            <option th:each="entity: ${entities}" th:value="${entity.entityName}" th:text="${entity.entityName}"></option>
+                                        </select>
+                                    </div>
+                                    <div class="col-lg-2">
+                                        <input type="text" class="form-control" id="id" placeholder="id"/>
+                                    </div>
+                                    <div class="col-lg-2">
+                                        <button class="btn btn-success" id="search" type="button">Search!</button>
+                                    </div>
+                                </div>
                                 <ul class="nav navbar-left panel_toolbox">
                                     <li >
                                         <div class="col-lg-4">
@@ -43,17 +68,13 @@
                                         </div>
                                     </li>
 
+
                                 </ul>
 
                                 <ul class="nav navbar-right panel_toolbox col-lg-4 pull-right">
 
                                     <li class="pull-right" >
-                                        <div class="input-group col-lg-12">
-                                            <input type="text" class="form-control" id="pattern" placeholder="Search for..."/> <span
-                                                class="input-group-btn">
-										     <button class="btn btn-success" id="search" type="button">Go!</button>
-									       </span>
-                                        </div>
+
                                     <!--</li>-->
 
                                 </ul>
@@ -117,6 +138,11 @@
 
     /*<![CDATA[*/
     $(document).ready(function() {
+        $('.datepicker').datepicker({
+            autoclose: true,
+            todayBtn: true,
+            todayHighlight: true
+        });
         var table = $('#auditview').DataTable({
             select:true,
             responsive: true,
@@ -127,10 +153,14 @@
             "paging": true,
             "serverSide" : true,
             "ajax" : {
-                url : "/admin/audit/revised/entity/all",
+                url : "/admin/audit/revised/entity/search",
                 "type" : "GET",
                 "data" : function(d) {
-                    d.csearch = $('#pattern').val();
+                    d.id = $('#id').val();
+                    d.entityName = $('#entityName').val();
+                    d.fromDate = $('#fromDate').val();
+                    d.endDate = $('#endDate').val();
+                    d.ipAddress = $('#ipAddress').val();
                 }
             },
             "dom": 'T<"clear">frtlp',
@@ -180,6 +210,11 @@
 
         $("#search").on("click", function(e)
         {
+            console.log("id "+$('#id').val());
+            console.log("entityName "+$('#entityName').val());
+            console.log("fromDate "+$('#fromDate').val());
+            console.log("endDate "+$('#endDate').val());
+            console.log("ipAddress "+$('#ipAddress').val());
             e.preventDefault();
             dt = $('#auditview').DataTable();
             dt.ajax.reload(null, true);

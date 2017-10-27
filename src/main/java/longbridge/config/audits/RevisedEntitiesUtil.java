@@ -1,11 +1,16 @@
 package longbridge.config.audits;
 
 import longbridge.config.SpringContext;
+import longbridge.dtos.AuditSearchDTO;
 import longbridge.utils.StringUtil;
 import org.codehaus.jettison.json.JSONObject;
+import org.hibernate.Query;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -24,6 +29,7 @@ public class RevisedEntitiesUtil {
     static Logger logger = LoggerFactory.getLogger(RevisedEntitiesUtil.class);
 
     private static final String PACKAGE_NAME = "longbridge.models.";
+
 
 
     public static  List<Integer> revisedEntityDetails(String entityName,Integer revId)
@@ -48,7 +54,7 @@ public class RevisedEntitiesUtil {
         return revIds;
     }
 
-    private static String getOracleEntity(String enttyname){
+    public static String getOracleEntity(String enttyname){
         StringBuilder builder = new StringBuilder();
         for(int y = 0; y < enttyname.length(); y++){
             if(Character.isUpperCase(enttyname.charAt(y)) && y != 0){
@@ -254,5 +260,45 @@ public class RevisedEntitiesUtil {
 
         return entityDetails.get(0);
     }
+    public static List<ModifiedEntityTypeEntity>  getSearchedModifiedEntity(AuditSearchDTO auditSearchDTO){
+        String search = StringUtil.searchModifiedEntityTypeEntity(auditSearchDTO);
+        List<ModifiedEntityTypeEntity> modifiedEntityTypeEntities = new ArrayList<>();
+//        String actualEntityName = StringUtil.convertFromKermelCaseing(entityName);
+//        String searchString  = StringUtil.getFieldsFrom(clazz,search,"e.");
+        List<Map<String ,Object>> mapList=null;
+        Collection<Integer> revIds = new ArrayList<>();
+//        entityName = getOracleEntity(entityName);
+//        String auditEntity = entityName + "_AUD";
+        ApplicationContext context = SpringContext.getApplicationContext();
+        DataSource dataSource = context.getBean(DataSource.class);
+        NamedParameterJdbcTemplate namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
+        String sql = "select m.ENTITY_CLASS_NAME as \"entityClassName\",c.TIMESTAMP as \"timestamp\", " +
+                "c.IP_ADDRESS as \"ipAddress\",c.LAST_CHANGED_BY as \"lastChangedBy\" from  " +
+                "Modified_Entity_Type_Entity m, Custom_Revision_Entity c "+search;
+        SqlParameterSource namedParameters = new MapSqlParameterSource();
+        logger.info("the search query {}",mapList);
+        mapList= namedParameterJdbcTemplate.queryForList(sql, namedParameters);
+        if(!mapList.isEmpty()) {
+            logger.info("the revision mapList is {}",mapList);
+            for (Map map : mapList) {
+                ModifiedEntityTypeEntity typeEntity = new ModifiedEntityTypeEntity();
+                CustomRevisionEntity revisionEntity = new CustomRevisionEntity();
+                typeEntity.setEntityClassName(map.get("entityClassName").toString());
+                revisionEntity.setIpAddress(String.valueOf(map.get("ipAddress")));
+                revisionEntity.setTimestamp(new BigDecimal(map.get("timestamp").toString()).longValue());
+                revisionEntity.setLastChangedBy(String.valueOf(map.get("lastChangedBy")));
+                typeEntity.setRevision(revisionEntity);
+                modifiedEntityTypeEntities.add(typeEntity);
+
+            }
+
+        }else {
+            logger.info("search list empty");
+            revIds =  null;
+        }
+return modifiedEntityTypeEntities;
+    }
+
+
 
 }
