@@ -37,7 +37,7 @@ public class MailServiceImpl implements MailService {
             messageHelper.setFrom(sender);
             messageHelper.setTo(recipient);
             messageHelper.setSubject(subject);
-            messageHelper.setText(message,true);
+            messageHelper.setText(message);
         };
 
         logger.info("Trying to send mail to {}", recipient);
@@ -47,7 +47,49 @@ public class MailServiceImpl implements MailService {
     }
 
     @Override
+    public void sendHtml(String recipient, String subject, String message) throws MailException {
+        MimeMessagePreparator messagePreparator = (MimeMessage mimeMessage) -> {
+            MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage);
+            messageHelper.setFrom(sender);
+            messageHelper.setTo(recipient);
+            messageHelper.setSubject(subject);
+            messageHelper.setText(message,true);
+        };
+
+        logger.info("Trying to send mail to {}", recipient);
+
+        mailSender.send(messagePreparator);
+        logger.info("Email successfully sent to {} with subject '{}'", recipient, subject);
+    }
+
+
+
+    @Override
     public void send(Email email) throws MailException {
+        MimeMessagePreparator messagePreparator = mimeMessage -> {
+            MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage);
+            messageHelper.setFrom(sender);
+            if (email.getReceiverEmail() != null) {
+                messageHelper.setTo(email.getReceiverEmail());
+            }
+            if (email.getReceiverEmails() != null) {
+                messageHelper.setTo(email.getReceiverEmails());
+            }
+            if (email.getCcList() != null) {
+                messageHelper.setCc(email.getCcList());
+            }
+            messageHelper.setSubject(email.getMessageSubject());
+            messageHelper.setText(email.getMessageBody());
+
+        };
+        logger.info("Trying to send mail to {}", email.getReceiverEmail()!=null?email.getReceiverEmail():email.getReceiverEmails());
+        mailSender.send(messagePreparator);
+        logger.info("Email successfully sent to {} with subject '{}'", email.getReceiverEmail()!=null?email.getReceiverEmail():email.getReceiverEmails(), email.getMessageSubject());
+    }
+
+
+    @Override
+    public void sendHtml(Email email) throws MailException {
         MimeMessagePreparator messagePreparator = mimeMessage -> {
             MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage);
             messageHelper.setFrom(sender);

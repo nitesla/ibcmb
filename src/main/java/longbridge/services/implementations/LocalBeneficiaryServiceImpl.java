@@ -166,7 +166,7 @@ public class LocalBeneficiaryServiceImpl implements LocalBeneficiaryService {
                  context.setVariable("beneficiaryName",beneficiary);
 
 
-                 String smsMessage = String.format(messageSource.getMessage("beneficiary.alert.message", null, locale),user.getUserName(),beneficiary);
+                 String smsMessage = String.format(messageSource.getMessage("beneficiary.alert.message", null, locale),customerName,beneficiary);
 
                 String alertSubject = String.format(messageSource.getMessage("beneficiary.alert.subject", null, locale));
                 if ("SMS".equalsIgnoreCase(preference)) {
@@ -174,13 +174,13 @@ public class LocalBeneficiaryServiceImpl implements LocalBeneficiaryService {
 
                 } else if ("EMAIL".equalsIgnoreCase(preference)) {
                     String emailMessage = templateEngine.process("mail/beneficiary.html", context);
-                    mailService.send(user.getEmail(),alertSubject,emailMessage);
+                    mailService.sendHtml(user.getEmail(),alertSubject,emailMessage);
 
                 } else if ("BOTH".equalsIgnoreCase(preference)) {
                     String emailMessage = templateEngine.process("mail/beneficiary.html", context);
 
                     integrationService.sendSMS(smsMessage,user.getPhoneNumber(),  alertSubject);
-                    mailService.send(user.getEmail(),alertSubject,emailMessage);
+                    mailService.sendHtml(user.getEmail(),alertSubject,emailMessage);
                 }
 
             }
