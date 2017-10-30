@@ -34,8 +34,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-//import longbridge.utils.Verifiable;
-
 
 /**
  * Created by SYLVESTER on 3/30/2017.
@@ -417,10 +415,10 @@ public class AdminUserServiceImpl implements AdminUserService {
 
         try {
             AdminUser adminUser = adminUserRepo.findOne(user.getId());
-            adminUser.setPassword(this.passwordEncoder.encode(changePassword.getNewPassword()));
+            adminUser.setPassword(passwordEncoder.encode(changePassword.getNewPassword()));
             adminUser.setExpiryDate(passwordPolicyService.getPasswordExpiryDate());
             passwordPolicyService.saveAdminPassword(user);
-            this.adminUserRepo.save(adminUser);
+            adminUserRepo.save(adminUser);
             logger.info("User {}'s password has been updated", user.getId());
             return messageSource.getMessage("password.change.success", null, locale);
         } catch (Exception e) {
@@ -430,7 +428,7 @@ public class AdminUserServiceImpl implements AdminUserService {
 
     @Override
     public boolean generateAndSendPassword(AdminUser user) {
-        throw new UnsupportedOperationException("Not Yet Implemented");
+        throw new UnsupportedOperationException("Not Implemented");
     }
 
 

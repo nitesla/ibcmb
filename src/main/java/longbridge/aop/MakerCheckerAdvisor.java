@@ -218,9 +218,7 @@ public class MakerCheckerAdvisor {
         verification.setEntityId(entity.getId());
         verification.setStatus(VerificationStatus.PENDING);
         verificationRepo.save(verification);
-
         log.info(entityName + " has been saved for verification");
-
         throw new VerificationInterruptedException(verifier.description() + " has gone for verification");
     }
 
