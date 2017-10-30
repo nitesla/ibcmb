@@ -174,8 +174,8 @@ public class AdminUserServiceImpl implements AdminUserService {
                 SettingDTO setting = configService.getSettingByName("ENABLE_ENTRUST_CREATION");
                 if (setting != null && setting.isEnabled()) {
                     if ("YES".equalsIgnoreCase(setting.getValue())) {
-                        boolean createResult = securityService.createEntrustUser(entrustId, group, fullName, true);
-                        if (!createResult) {
+                        boolean creatResult = securityService.createEntrustUser(entrustId, group, fullName, true);
+                        if (!creatResult) {
                             throw new EntrustException(messageSource.getMessage("entrust.create.failure", null, locale));
                         }
 
