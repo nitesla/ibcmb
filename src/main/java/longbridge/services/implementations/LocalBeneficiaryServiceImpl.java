@@ -21,6 +21,8 @@ import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.thymeleaf.TemplateEngine;
+import org.thymeleaf.context.Context;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,6 +51,9 @@ public class LocalBeneficiaryServiceImpl implements LocalBeneficiaryService {
     private Logger logger = LoggerFactory.getLogger(this.getClass());
     @Value("${bank.code}")
     private String bankCode;
+
+    @Autowired
+    private TemplateEngine templateEngine;
 
     @Autowired
     public LocalBeneficiaryServiceImpl(LocalBeneficiaryRepo localBeneficiaryRepo) {
@@ -155,19 +160,27 @@ public class LocalBeneficiaryServiceImpl implements LocalBeneficiaryService {
              if (true) {
                 String preference = user.getAlertPreference().getCode();
 
+                 Context context = new Context();
+                 String customerName = user.getFirstName()+" "+user.getLastName();
+                 context.setVariable("customerName",customerName);
+                 context.setVariable("beneficiaryName",beneficiary);
 
-                String alertMessage = String.format(messageSource.getMessage("beneficiary.alert.message", null, locale),user.getUserName(),beneficiary);
+
+                 String smsMessage = String.format(messageSource.getMessage("beneficiary.alert.message", null, locale),user.getUserName(),beneficiary);
 
                 String alertSubject = String.format(messageSource.getMessage("beneficiary.alert.subject", null, locale));
                 if ("SMS".equalsIgnoreCase(preference)) {
-                    integrationService.sendSMS(alertMessage,user.getPhoneNumber(),  alertSubject);
+                    integrationService.sendSMS(smsMessage,user.getPhoneNumber(),  alertSubject);
 
                 } else if ("EMAIL".equalsIgnoreCase(preference)) {
-                    mailService.send(user.getEmail(),alertSubject,alertMessage);
+                    String emailMessage = templateEngine.process("mail/beneficiary.html", context);
+                    mailService.send(user.getEmail(),alertSubject,emailMessage);
 
                 } else if ("BOTH".equalsIgnoreCase(preference)) {
-                    integrationService.sendSMS(alertMessage,user.getPhoneNumber(),  alertSubject);
-                    mailService.send(user.getEmail(),alertSubject,alertMessage);
+                    String emailMessage = templateEngine.process("mail/beneficiary.html", context);
+
+                    integrationService.sendSMS(smsMessage,user.getPhoneNumber(),  alertSubject);
+                    mailService.send(user.getEmail(),alertSubject,emailMessage);
                 }
 
             }

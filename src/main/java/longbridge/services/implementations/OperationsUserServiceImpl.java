@@ -16,6 +16,7 @@ import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.*;
@@ -62,7 +63,10 @@ public class OperationsUserServiceImpl implements OperationsUserService {
     private RoleRepo roleRepo;
 
     @Autowired
-    EntityManager entityManager;
+    private EntityManager entityManager;
+
+    @Value("${host.url}")
+    private String hostUrl;
 
     private Locale locale = LocaleContextHolder.getLocale();
 
@@ -474,6 +478,8 @@ public class OperationsUserServiceImpl implements OperationsUserService {
 
     public void sendCredentialNotification(OperationsUser user) {
 
+        String opsUrl = (hostUrl != null)? hostUrl+"/ops":"";
+
         if ("A".equals(user.getStatus())) {
             String fullName = user.getFirstName() + " " + user.getLastName();
             String password = passwordPolicyService.generatePassword();
@@ -481,7 +487,7 @@ public class OperationsUserServiceImpl implements OperationsUserService {
             user.setExpiryDate(new Date());
             passwordPolicyService.saveOpsPassword(user);
             OperationsUser opsUser = operationsUserRepo.save(user);
-            sendActivationMessage(opsUser, fullName, user.getUserName(), password);
+            sendActivationMessage(opsUser, fullName, user.getUserName(), password,opsUrl);
         }
 
     }
