@@ -166,7 +166,7 @@ public class LocalBeneficiaryServiceImpl implements LocalBeneficiaryService {
                  context.setVariable("beneficiaryName",beneficiary);
 
 
-                 String smsMessage = String.format(messageSource.getMessage("beneficiary.alert.message", null, locale),user.getUserName(),beneficiary);
+                 String smsMessage = String.format(messageSource.getMessage("beneficiary.alert.message", null, locale),customerName,beneficiary);
 
                 String alertSubject = String.format(messageSource.getMessage("beneficiary.alert.subject", null, locale));
                 if ("SMS".equalsIgnoreCase(preference)) {
