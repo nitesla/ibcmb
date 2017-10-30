@@ -12,6 +12,10 @@ public interface MailService {
     @PreAuthorize("hasAuthority('SEND_EMAIL')")
     void send(String recipient, String subject, String message) throws MailException;
 
+    void sendHtml(String recipient, String subject, String message) throws MailException;
+
     @PreAuthorize("hasAuthority('SEND_EMAIL')")
     void send(Email email) throws MailException;
+
+    void sendHtml(Email email) throws MailException;
 }

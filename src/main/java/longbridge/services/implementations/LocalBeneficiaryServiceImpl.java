@@ -174,13 +174,13 @@ public class LocalBeneficiaryServiceImpl implements LocalBeneficiaryService {
 
                 } else if ("EMAIL".equalsIgnoreCase(preference)) {
                     String emailMessage = templateEngine.process("mail/beneficiary.html", context);
-                    mailService.send(user.getEmail(),alertSubject,emailMessage);
+                    mailService.sendHtml(user.getEmail(),alertSubject,emailMessage);
 
                 } else if ("BOTH".equalsIgnoreCase(preference)) {
                     String emailMessage = templateEngine.process("mail/beneficiary.html", context);
 
                     integrationService.sendSMS(smsMessage,user.getPhoneNumber(),  alertSubject);
-                    mailService.send(user.getEmail(),alertSubject,emailMessage);
+                    mailService.sendHtml(user.getEmail(),alertSubject,emailMessage);
                 }
 
             }

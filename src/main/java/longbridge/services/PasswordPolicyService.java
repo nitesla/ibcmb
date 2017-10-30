@@ -105,7 +105,7 @@ public class PasswordPolicyService {
         }
         if (specialChars != null && specialChars.isEnabled()) {
             specialCharacters = StringEscapeUtils.escapeHtml4(specialChars.getValue());
-            ruleMessage = String.format(messageSource.getMessage("password.spec.chars", null, locale), specialCharacters);
+            ruleMessage = StringEscapeUtils.escapeHtml4(String.format(messageSource.getMessage("password.spec.chars", null, locale), specialCharacters));
             passwordRules.add(ruleMessage);
 
         }

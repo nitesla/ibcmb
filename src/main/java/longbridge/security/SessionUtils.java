@@ -96,13 +96,13 @@ public class SessionUtils {
 
                 } else if ("EMAIL".equalsIgnoreCase(preference)) {
                     String emailMessage = templateEngine.process("mail/login.html",context);
-                    mailService.send(user.getEmail(), alertSubject, emailMessage);
+                    mailService.sendHtml(user.getEmail(), alertSubject, emailMessage);
 
                 } else if ("BOTH".equalsIgnoreCase(preference)) {
                     String emailMessage = templateEngine.process("mail/login.html",context);
 
                     integrationService.sendSMS(smsMessage, user.getPhoneNumber(), alertSubject);
-                    mailService.send(user.getEmail(), alertSubject, emailMessage);
+                    mailService.sendHtml(user.getEmail(), alertSubject, emailMessage);
                 }
 
             }
