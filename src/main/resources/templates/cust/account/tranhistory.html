@@ -68,6 +68,18 @@
                 "dom": 'T<"clear">frtlp',
                 "columnDefs" : [
                     {
+                        "targets" : 3
+//                        "data" : "accountBalance",
+                        "render" : function(data, type,full, meta) {
+                            if (type === 'display') {
+                                if(data == null)
+                                    return data;
+                                var twoPlacedFloat = parseFloat(data).toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,');
+                                return twoPlacedFloat;
+                            }
+                            return data;
+                        }
+                    },{
                         "targets" : 4,
 //                        "data" : "accountBalance",
                         "render" : function(data, type,full, meta) {
@@ -80,7 +92,7 @@
                             return data;
                         }
                     },{
-                        "targets" : 5,
+                        "targets" : 6,
 //                        "data" : "accountBalance",
                         "render" : function(data, type,full, meta) {
                             if (type === 'display') {
