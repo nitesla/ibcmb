@@ -104,10 +104,10 @@ public class OpsCorporateUserController {
         try {
 
             if (session.getAttribute("corporate") != null) {
-                CorporateDTO corporate = (CorporateDTO) session.getAttribute("corporate");
-                String message = corporateService.addCorporate(corporate, corporateUserDTO);
-                session.removeAttribute("corporate");
-                redirectAttributes.addFlashAttribute("message", message);
+//                CorporateDTO corporate = (CorporateDTO) session.getAttribute("corporate");
+////                String message = corporateService.addCorporate(corporate, corporateUserDTO);
+//                session.removeAttribute("corporate");
+//                redirectAttributes.addFlashAttribute("message", message);
                 return "redirect:/ops/corporates/";
             } else {
                 String message = corporateUserService.addUser(corporateUserDTO);
