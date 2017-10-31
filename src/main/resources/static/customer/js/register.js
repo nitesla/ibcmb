@@ -606,7 +606,7 @@ function sendRegCode(){
             }
             else{
 
-                $('#successMess').text("Registration code has been successfully sent. If you do not receive a message after 3 minutes, please retry.");
+                $('#successMess').text("Registration code has been sent to your registered phone number. If you do not receive a message after 3 minutes, please retry.");
                 $('#myModalSuccess').modal('show');
 
                 // var showreg = document.getElementById('regcodebox');

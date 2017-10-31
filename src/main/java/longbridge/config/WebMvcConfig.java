@@ -6,6 +6,7 @@ import longbridge.security.corpuser.CorporateUserLoginInterceptor;
 import longbridge.security.opsuser.OpUserLoginInterceptor;
 import longbridge.security.retailuser.RetailUserLoginInterceptor;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceBuilder;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
@@ -73,7 +74,8 @@ public class WebMvcConfig extends WebMvcConfigurerAdapter {
     }
 
 
-//
+
+    //
 //    @Bean
 //    @Primary
 //    @ConfigurationProperties(prefix = "app.datasource")
