@@ -38,7 +38,7 @@
                                         <td th:text="${#numbers.formatDecimal(list.debitAmount, 1, 'COMMA', 2, 'POINT')}"></td>
                                         <td th:text="${#numbers.formatDecimal(list.creditAmount, 1, 'COMMA', 2, 'POINT')}"></td>
                                         <td th:text="${list.tranId}"></td>
-                                        <td th:text="${#numbers.formatDecimal(list.balance, 1, 'COMMA', 2, 'POINT')}"></td>
+                                        <td th:text="${#numbers.formatDecimal(list.accountBalance, 1, 'COMMA', 2, 'POINT')}"></td>
 
                                     </tr>
                                     </tbody>
@@ -67,10 +67,19 @@
                 "lengthMenu" : [ [ 5, 10, 20],	[ 5, 10, 20 ] ],
                 "pagingType" : "input",
                 "dom": 'T<"clear">frtlp',
+                "columns" : [
+                    {"data" : "narration"},
+                    {"data" : "postDate"} ,
+                    {"data" : "valueDate"},
+                    {"data" : "debitAmount"},
+                    {"data" : "creditAmount"},
+                    {"data" : "tranId"},
+                    {"data" : "accountBalance"}
+                ],
                 "columnDefs" : [
                     {
                         "targets" : 3,
-//                        "data" : "accountBalance",
+                        "data" : "debitAmount",
                         "render" : function(data, type,full, meta) {
                             if (type === 'display') {
                                 if(data == null)
@@ -82,7 +91,7 @@
                         }
                     },{
                         "targets" : 4,
-//                        "data" : "accountBalance",
+                        "data" : "creditAmount",
                         "render" : function(data, type,full, meta) {
                             if (type === 'display') {
                                 if(data == null)
@@ -94,7 +103,7 @@
                         }
                     },{
                         "targets" : 6,
-//                        "data" : "accountBalance",
+                        "data" : "accountBalance",
                         "render" : function(data, type,full, meta) {
                             if (type === 'display') {
                                 if(data == null)
