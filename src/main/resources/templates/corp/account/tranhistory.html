@@ -32,14 +32,13 @@
                         </thead>
                         <tbody>
                             <tr th:each="list:${history}">
-                                <td  th:text="${list.narration}"></td>
-                                <td th:text="${#dates.format(list.postedDate, 'dd-MMM-yyyy')}"></td>
-                                <td th:text="${#dates.format(list.valueDate, 'dd-MMM-yyyy')}"></td>
-                                <td th:text="${#numbers.formatDecimal(list.debitAmount, 1, 'COMMA', 2, 'POINT')}"></td>
-                                <td th:text="${#numbers.formatDecimal(list.creditAmount, 1, 'COMMA', 2, 'POINT')}"></td>
+                                <td th:text="${list.narration}"></td>
+                                <td th:text="${#dates.format(list.postDate,'dd-MMM-yyyy')}"></td>
+                                <td th:text="${#dates.format(list.valueDate,'dd-MMM-yyyy')}"></td>
+                                <td th:text="${list.debitAmount}"></td>
+                                <td th:text="${list.creditAmount}"></td>
                                 <td th:text="${list.tranId}"></td>
-                                <td th:text="${#numbers.formatDecimal(list.accountBalance, 1, 'COMMA', 2, 'POINT')}"></td>
-                            </tr>
+                                <td th:text="${list.accountBalance}"></td></tr>
                         </tbody>
                        
                     </table>
