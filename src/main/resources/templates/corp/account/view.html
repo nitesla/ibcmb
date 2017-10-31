@@ -170,7 +170,31 @@
                             }
                             return data;
                         }
-                    }, {
+                    },{
+                        "targets" : 3,
+                        "data" : "debitAmount",
+                        "render" : function(data, type,full, meta) {
+                            if (type === 'display') {
+                                if(data == null)
+                                    return data;
+                                var twoPlacedFloat = parseFloat(data).toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,');
+                                return twoPlacedFloat;
+                            }
+                            return data;
+                        }
+                    },{
+                        "targets" : 4,
+                        "data" : "creditAmount",
+                        "render" : function(data, type,full, meta) {
+                            if (type === 'display') {
+                                if(data == null)
+                                    return data;
+                                var twoPlacedFloat = parseFloat(data).toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,');
+                                return twoPlacedFloat;
+                            }
+                            return data;
+                        }
+                    },{
                         "targets": 6,
                         "data": "accountBalance",
                         "render": function(data, type, full, meta) {

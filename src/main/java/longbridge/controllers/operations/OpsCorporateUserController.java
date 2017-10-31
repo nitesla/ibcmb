@@ -88,68 +88,6 @@ public class OpsCorporateUserController {
     }
 
 
-        if (result.hasErrors()) {
-            result.addError(new ObjectError("invalid", messageSource.getMessage("form.fields.required", null, locale)));
-            if (session.getAttribute("corporate") == null) {
-                CorporateDTO corporate = corporateService.getCorporate(Long.parseLong(corporateUserDTO.getCorporateId()));
-                model.addAttribute("corporate", corporate);
-            } else {
-                CorporateDTO corporate = (CorporateDTO) session.getAttribute("corporate");
-                model.addAttribute("corporate", corporate);
-            }
-            return "/ops/corporate/addUser";
-        }
-        try {
-
-            if (session.getAttribute("corporate") != null) {
-//                CorporateDTO corporate = (CorporateDTO) session.getAttribute("corporate");
-////                String message = corporateService.addCorporate(corporate, corporateUserDTO);
-//                session.removeAttribute("corporate");
-//                redirectAttributes.addFlashAttribute("message", message);
-                return "redirect:/ops/corporates/";
-            } else {
-                String message = corporateUserService.addUser(corporateUserDTO);
-                redirectAttributes.addFlashAttribute("message", message);
-                return "redirect:/ops/corporates/";
-            }
-        } catch (DuplicateObjectException doe) {
-            result.addError(new ObjectError("error", doe.getMessage()));
-            logger.error("Error creating corporate user ", doe);
-            if (session.getAttribute("corporate") == null) {
-                CorporateDTO corporate = corporateService.getCorporate(Long.parseLong(corporateUserDTO.getCorporateId()));
-                model.addAttribute("corporate", corporate);
-            } else {
-                CorporateDTO corporate = (CorporateDTO) session.getAttribute("corporate");
-                model.addAttribute("corporate", corporate);
-            }
-            return "/ops/corporate/addUser";
-
-        } catch (InternetBankingSecurityException se) {
-            result.addError(new ObjectError("error", se.getMessage()));
-            logger.error("Error creating corporate user on Entrust ", se);
-            if (session.getAttribute("corporate") == null) {
-                CorporateDTO corporate = corporateService.getCorporate(Long.parseLong(corporateUserDTO.getCorporateId()));
-                model.addAttribute("corporate", corporate);
-            } else {
-                CorporateDTO corporate = (CorporateDTO) session.getAttribute("corporate");
-                model.addAttribute("corporate", corporate);
-            }
-            return "/ops/corporate/addUser";
-        } catch (InternetBankingException ibe) {
-            result.addError(new ObjectError("error", ibe.getMessage()));
-            logger.error("Error creating corporate user", ibe);
-
-            if (session.getAttribute("corporate") == null) {
-                CorporateDTO corporate = corporateService.getCorporate(Long.parseLong(corporateUserDTO.getCorporateId()));
-                model.addAttribute("corporate", corporate);
-            } else {
-                CorporateDTO corporate = (CorporateDTO) session.getAttribute("corporate");
-                model.addAttribute("corporate", corporate);
-
-            }
-            return "/ops/corporate/addUser";
-        }
-    }
 
 
     @GetMapping("/{userId}/unlock")

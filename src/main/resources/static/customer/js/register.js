@@ -56,6 +56,7 @@ form.children("div").steps({
             summaryEmail = email;
             //console.log(email);
             var birthDate = $('input[name="birthDate"]').val();
+            $("register-info").hide();
             return isValid && validateAccountDetails(accountNumber, email, birthDate) && validateExists(accountNumber, email, birthDate);
 
         }

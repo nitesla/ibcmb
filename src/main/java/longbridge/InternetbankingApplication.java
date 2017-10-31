@@ -79,6 +79,10 @@ public class InternetbankingApplication extends SpringBootServletInitializer imp
 
     @Override
     public void run(String... strings) throws Exception {
+
+        for(String s: passwordPolicyService.getPasswordRules()){
+            System.out.println(s);
+        }
     }
 
 
