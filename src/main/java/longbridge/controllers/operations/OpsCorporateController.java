@@ -1058,7 +1058,7 @@ public class OpsCorporateController {
 
             }
         } catch (IOException e) {
-            logger.error("Error parsing authorizer levels");
+            logger.error("Error parsing authorizer levels",e);
         }
         return "success";
     }
@@ -1081,7 +1081,7 @@ public class OpsCorporateController {
             session.setAttribute("rules", rules);
             logger.debug("Corp Transfer Rules: {}", transferRules.toString());
         } catch (IOException e) {
-            logger.error("Error parsing transfer rules");
+            logger.error("Error parsing transfer rules",e);
         }
         if (session.getAttribute("corporateRequest") != null) {
             CorporateRequestDTO corporateRequestDTO = (CorporateRequestDTO) session.getAttribute("corporateRequest");

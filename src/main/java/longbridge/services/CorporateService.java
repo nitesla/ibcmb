@@ -26,7 +26,7 @@ public interface CorporateService{
      *
      */
     String addCorporate(CorporateDTO corporateDTO) throws InternetBankingException;
-//
+
 //    /**
 //     * Adds a new corporate customer to the system
 //     *
