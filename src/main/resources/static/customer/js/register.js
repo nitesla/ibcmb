@@ -393,16 +393,39 @@ function validateUsername(username){
 function validatePassword(password){
     var result;
     password = password.trim();
-    var url = "/rest/password/password";
-    var data = "password="+password;
-
-    var http = new XMLHttpRequest();
-    http.open("POST", url, false);
-    http.setRequestHeader("content-type","application/x-www-form-urlencoded");
-    http.onreadystatechange = function() {//Call a function when the state changes.
-        if(http.readyState == 4 && http.status == 200) {
-            console.log("http output "+http.responseText);
-            result = String(http.responseText);
+    // var url = "/rest/password/password";
+    // var data = "password="+password;
+    //
+    // var http = new XMLHttpRequest();
+    // http.open("POST", url, false);
+    // http.setRequestHeader("content-type","application/x-www-form-urlencoded");
+    // http.onreadystatechange = function() {//Call a function when the state changes.
+    //     if(http.readyState == 4 && http.status == 200) {
+    //         console.log("http output "+http.responseText);
+    //         result = String(http.responseText);
+    //         if(result === 'true'){
+    //             //success
+    //             $('#myLoader').modal('hide');
+    //         }else{
+    //             $('#errorMess').text(result);
+    //             $('#myModalError').modal('show');
+    //             $('#myLoader').modal('hide');
+    //         }
+    //     }else{
+    //         $('#myLoader').modal('hide');
+    //         $('#errorMess').text("Service not available, please try again later");
+    //         $('#myModalError').modal('show');
+    //     }
+    // };
+    // http.send(data);
+    $.ajax({
+        type:'POST',
+        data:{password:password},
+        url:"/rest/password/password",
+        async:false,
+        cache:false,
+        success:function(data1){
+            result = ''+String(data1);
             if(result === 'true'){
                 //success
                 $('#myLoader').modal('hide');
@@ -411,35 +434,12 @@ function validatePassword(password){
                 $('#myModalError').modal('show');
                 $('#myLoader').modal('hide');
             }
-        }else{
+        },error:function (data) {
             $('#myLoader').modal('hide');
             $('#errorMess').text("Service not available, please try again later");
             $('#myModalError').modal('show');
         }
-    };
-    http.send(data);
-    // $.ajax({
-    //     type:'POST',
-    //     data:{password:password},
-    //     url:"/rest/password/password",
-    //     async:false,
-    //     cache:false,
-    //     success:function(data1){
-    //         result = ''+String(data1);
-    //         if(result === 'true'){
-    //             //success
-    //
-    //         }else{
-    //             $('#errorMess').text(result);
-    //             $('#myModalError').modal('show');
-    //             $('#myLoader').modal('hide');
-    //         }
-    //     },error:function (data) {
-    //         $('#myLoader').modal('hide');
-    //         $('#errorMess').text("Service not available, please try again later");
-    //         $('#myModalError').modal('show');
-    //     }
-    // });
+    });
 
     if(result === 'true'){
         
@@ -606,7 +606,7 @@ function sendRegCode(){
             }
             else{
 
-                $('#successMess').text("Registration code has been successfully sent. If you do not receive a message after 3 minutes, please retry.");
+                $('#successMess').text("Registration code has been sent to your registered phone number. If you do not receive a message after 3 minutes, please retry.");
                 $('#myModalSuccess').modal('show');
 
                 // var showreg = document.getElementById('regcodebox');
