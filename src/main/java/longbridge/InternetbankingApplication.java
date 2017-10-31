@@ -64,8 +64,7 @@ public class InternetbankingApplication extends SpringBootServletInitializer imp
     @Autowired
     BulkTransferRepo bulkTransferRepo;
 
-    @Autowired
-    FinancialInstitutionService financialInstitutionService;
+
     public static void main(String[] args) {
         SpringApplication.run(InternetbankingApplication.class, args);
 
@@ -79,10 +78,7 @@ public class InternetbankingApplication extends SpringBootServletInitializer imp
 
     @Override
     public void run(String... strings) throws Exception {
-
-        for(String s: passwordPolicyService.getPasswordRules()){
-            System.out.println(s);
-        }
+//        securityService.unLockUser("shina2","Corporate_Group");
     }
 
 
