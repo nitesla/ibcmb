@@ -17,6 +17,8 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
+import org.thymeleaf.TemplateEngine;
+import org.thymeleaf.context.Context;
 
 import javax.servlet.http.HttpSession;
 import java.text.SimpleDateFormat;
@@ -30,15 +32,18 @@ import java.util.Locale;
 public class SessionUtils {
     private final Logger logger = LoggerFactory.getLogger(getClass());
     @Autowired
-    IntegrationService integrationService;
+    private IntegrationService integrationService;
 
     @Autowired
-    MailService mailService;
+    private MailService mailService;
 
     @Autowired
     private MessageSource messageSource;
 
     private Locale locale = LocaleContextHolder.getLocale();
+
+    @Autowired
+    private TemplateEngine templateEngine;
 
 
     @Autowired
@@ -74,21 +79,30 @@ public class SessionUtils {
                 String name = firstName + " " + lastName;
                 if (name.isEmpty()) name = user.getUserName();
 
+
+
                 String date = new SimpleDateFormat("MMM dd, yyyy ' at ' hh:mm:ss a").format(new Date());
 
-                String alertMessage = String.format(messageSource.getMessage("login.alert.message", null, locale), name, date);
+                Context context = new Context();
+                context.setVariable("customerName",name);
+                context.setVariable("loginDate",new Date());
+
+                String smsMessage = String.format(messageSource.getMessage("login.alert.message", null, locale), name, date);
 
                 String alertSubject = String.format(messageSource.getMessage("login.alert.subject", null, locale));
                 if ("SMS".equalsIgnoreCase(preference)) {
 
-                    integrationService.sendSMS(alertMessage, user.getPhoneNumber(), alertSubject);
+                    integrationService.sendSMS(smsMessage, user.getPhoneNumber(), alertSubject);
 
                 } else if ("EMAIL".equalsIgnoreCase(preference)) {
-                    mailService.send(user.getEmail(), alertSubject, alertMessage);
+                    String emailMessage = templateEngine.process("mail/login.html",context);
+                    mailService.sendHtml(user.getEmail(), alertSubject, emailMessage);
 
                 } else if ("BOTH".equalsIgnoreCase(preference)) {
-                    integrationService.sendSMS(alertMessage, user.getPhoneNumber(), alertSubject);
-                    mailService.send(user.getEmail(), alertSubject, alertMessage);
+                    String emailMessage = templateEngine.process("mail/login.html",context);
+
+                    integrationService.sendSMS(smsMessage, user.getPhoneNumber(), alertSubject);
+                    mailService.sendHtml(user.getEmail(), alertSubject, emailMessage);
                 }
 
             }

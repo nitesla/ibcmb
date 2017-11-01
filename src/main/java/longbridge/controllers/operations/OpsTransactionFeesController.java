@@ -34,9 +34,9 @@ public class OpsTransactionFeesController {
 
 
     @Autowired
-    CodeService codeService;
+    private CodeService codeService;
     @Autowired
-    MessageSource messageSource;
+    private MessageSource messageSource;
     @Autowired
     private TransactionService transactionService;
     private Logger logger = LoggerFactory.getLogger(this.getClass());

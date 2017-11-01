@@ -38,8 +38,7 @@
                                 <td th:text="${list.debitAmount}"></td>
                                 <td th:text="${list.creditAmount}"></td>
                                 <td th:text="${list.tranId}"></td>
-                                <td th:text="${list.accountBalance}"></td>
-                            </tr>
+                                <td th:text="${list.accountBalance}"></td></tr>
                         </tbody>
                        
                     </table>
@@ -62,9 +61,59 @@
                     responsive: true,
                     "lengthMenu" : [ [ 5, 10, 20],	[ 5, 10, 20 ] ],
                     "pagingType" : "input",
-                    "dom": 'T<"clear">frtlp'
+                    "dom": 'T<"clear">frtlp',
+                    "ordering": false,
+                    "columns" : [
+                        {"data" : "narration"},
+                        {"data" : "postDate"} ,
+                        {"data" : "valueDate"},
+                        {"data" : "debitAmount"},
+                        {"data" : "creditAmount"},
+                        {"data" : "tranId"},
+                        {"data" : "accountBalance"}
+                    ],
+                    "columnDefs" : [
+                        {
+                            "targets" : 3,
+                            "data" : "debitAmount",
+                            "render" : function(data, type,full, meta) {
+                                if (type === 'display') {
+                                    if(data == null)
+                                        return data;
+                                    var twoPlacedFloat = parseFloat(data).toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,');
+                                    return twoPlacedFloat;
+                                }
+                                return data;
+                            }
+                        },{
+                            "targets" : 4,
+                            "data" : "creditAmount",
+                            "render" : function(data, type,full, meta) {
+                                if (type === 'display') {
+                                    if(data == null)
+                                        return data;
+                                    var twoPlacedFloat = parseFloat(data).toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,');
+                                    return twoPlacedFloat;
+                                }
+                                return data;
+                            }
+                        },{
+                            "targets" : 6,
+                            "data" : "accountBalance",
+                            "render" : function(data, type,full, meta) {
+                                if (type === 'display') {
+                                    if(data == null)
+                                        return data;
+                                    var twoPlacedFloat = parseFloat(data).toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,');
+                                    return twoPlacedFloat;
+                                }
+                                return data;
+                            }
+
+                        }
+                    ]
                 });
-                table.order( [ 1, 'desc' ] ).draw();
+//                table.order( [ 1, 'desc' ] ).draw();
             });
         
 

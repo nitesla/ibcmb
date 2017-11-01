@@ -262,7 +262,7 @@
                         <li><a th:href="@{/admin/users/password}"> Change Password</a></li>
                     </ul>
                 </li>
-                <li >
+                <li sec:authorize="hasAuthority('VIEW_ADMIN_VERIFICATIONS')">
                     <a th:href="@{/admin/verifications/operations}" class="info-number"  aria-expanded="false">
                         <i class="fa fa-check"></i>
                         <span class="badge bg-green"  th:text="${verificationNumber}">0</span>
@@ -328,7 +328,7 @@
                         <span class="badge bg-green"  th:text="${numOfSubmittedRequests}">0</span>
                     </a>
                 </li>
-                <li >
+                <li sec:authorize="hasAuthority('VIEW_OPS_VERIFICATIONS')">
                     <a th:href="@{/ops/verifications/operations}" class="info-number"  aria-hidden="true">
                         <i class="fa fa-check"></i>
                         <span class="badge bg-green"  th:text="${verificationNumber}">0</span>

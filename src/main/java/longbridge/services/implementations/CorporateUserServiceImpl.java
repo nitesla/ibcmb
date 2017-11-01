@@ -20,6 +20,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.Page;
@@ -80,6 +81,10 @@ public class CorporateUserServiceImpl implements CorporateUserService {
 
     @Autowired
     private CorporateRoleRepo corporateRoleRepo;
+
+    @Value("${host.url}")
+    private String hostUrl;
+
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -285,12 +290,13 @@ public class CorporateUserServiceImpl implements CorporateUserService {
         String fullName = user.getFirstName() + " " + user.getLastName();
         Corporate corporate = user.getCorporate();
 
+        String corpUrl = (hostUrl != null)? hostUrl:"";
 
         try {
             Email email = new Email.Builder()
                     .setRecipient(user.getEmail())
                     .setSubject(messageSource.getMessage("corporate.customer.create.subject", null, locale))
-                    .setBody(String.format(messageSource.getMessage("corporate.customer.create.message", null, locale), fullName, user.getUserName(), password, corporate.getCorporateId()))
+                    .setBody(String.format(messageSource.getMessage("corporate.customer.create.message", null, locale), fullName, user.getUserName(), password, corporate.getCorporateId(),corpUrl))
                     .build();
             mailService.send(email);
         } catch (MailException me) {

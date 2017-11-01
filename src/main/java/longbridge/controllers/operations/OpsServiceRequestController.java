@@ -40,23 +40,18 @@ import java.util.List;
 @RequestMapping("/ops/requests")
 public class OpsServiceRequestController {
 
-    @Autowired
-    private RetailUserService retailUserService;
 
     @Autowired
     private CodeService codeService;
 
     @Autowired
-    private RetailUserRepo retailUserRepo;
+    private OperationsUserService opsUserService;
 
     @Autowired
-    private OperationsUserService opsUserService;
+    private RequestService requestService;
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
-
-    @Autowired
-    RequestService requestService;
 
     @GetMapping
     public String getRequests() {

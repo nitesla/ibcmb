@@ -249,6 +249,7 @@ public class RetrieveCredentialController {
     public @ResponseBody String sendGenPassword(WebRequest webRequest){
         logger.info("the retial Username {}",webRequest.getParameter("username"));
         try {
+            logger.info("Trying to send generated password");
             String username = webRequest.getParameter("username");
             RetailUser retailUser = retailUserService.getUserByName(username);
             String tempPassword = passwordPolicyService.generatePassword();
@@ -263,9 +264,10 @@ public class RetrieveCredentialController {
             mailService.send(email);
             return "true";
         }catch (MailException me) {
+            logger.error("Error occurred", me);
             return messageSource.getMessage("mail.failure", null, locale);
         } catch (Exception e){
-            logger.info(e.getMessage());
+            logger.error("Error occurred", e);
             return messageSource.getMessage("reset.send.password.failure", null, locale);
         }
 

@@ -14,35 +14,35 @@
     <div class="col-xs-12 no-pad-lef no-mt" >
         <div class="no-pad-lef table-responsive no-mt no-bd">
 
-                            <h2>TRANSACTION DETAILS</h2>
+            <h2>TRANSACTION DETAILS</h2>
 
-                            <div class="" >
-                                <table class="table" id="tranDetails">
-                                    <thead>
-                                    <tr>
-                                        <th>Trans. Narration</th>
-                                        <th>Post Date</th>
-                                        <th>Value Date</th>
-                                        <th>Debit</th>
-                                        <th>Credit</th>
+            <div class="" >
+                <table class="table" id="tranDetails">
+                    <thead>
+                    <tr>
+                        <th>Trans. Narration</th>
+                        <th>Post Date</th>
+                        <th>Value Date</th>
+                        <th>Debit</th>
+                        <th>Credit</th>
 
-                                        <th>Tran ID</th>
-                                        <th>Account Balance</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    <tr th:each="list:${history}">
-                                        <td th:text="${list.narration}"></td>
-                                        <td th:text="${#dates.format(list.postDate,'dd-MMM-yyyy')}"></td>
-                                        <td th:text="${#dates.format(list.valueDate,'dd-MMM-yyyy')}"></td>
-                                        <td th:text="${list.debitAmount}"></td>
-                                        <td th:text="${list.creditAmount}"></td>
-                                        <td th:text="${list.tranId}"></td>
-                                        <td th:text="${list.accountBalance}"></td>
-                                    </tr>
-                                    </tbody>
-                                </table>
-                            </div>
+                        <th>Tran ID</th>
+                        <th>Account Balance</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="list:${history}">
+                        <td th:text="${list.narration}"></td>
+                        <td th:text="${#dates.format(list.postDate,'dd-MMM-yyyy')}"></td>
+                        <td th:text="${#dates.format(list.valueDate,'dd-MMM-yyyy')}"></td>
+                        <td th:text="${list.debitAmount}"></td>
+                        <td th:text="${list.creditAmount}"></td>
+                        <td th:text="${list.tranId}"></td>
+                        <td th:text="${list.accountBalance}"></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
 
         </div>
 
@@ -65,125 +65,174 @@
                 responsive: true,
                 "lengthMenu" : [ [ 5, 10, 20],	[ 5, 10, 20 ] ],
                 "pagingType" : "input",
-                "dom": 'T<"clear">frtlp'
+                "dom": 'T<"clear">frtlp',
+                "ordering": false,
+                "columns" : [
+                    {"data" : "narration"},
+                    {"data" : "postDate"} ,
+                    {"data" : "valueDate"},
+                    {"data" : "debitAmount"},
+                    {"data" : "creditAmount"},
+                    {"data" : "tranId"},
+                    {"data" : "accountBalance"}
+                ],
+                "columnDefs" : [
+                    {
+                        "targets" : 3,
+                        "data" : "debitAmount",
+                        "render" : function(data, type,full, meta) {
+                            if (type === 'display') {
+                                if(data == null)
+                                    return data;
+                                var twoPlacedFloat = parseFloat(data).toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,');
+                                return twoPlacedFloat;
+                            }
+                            return data;
+                        }
+                    },{
+                        "targets" : 4,
+                        "data" : "creditAmount",
+                        "render" : function(data, type,full, meta) {
+                            if (type === 'display') {
+                                if(data == null)
+                                    return data;
+                                var twoPlacedFloat = parseFloat(data).toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,');
+                                return twoPlacedFloat;
+                            }
+                            return data;
+                        }
+                    },{
+                        "targets" : 6,
+                        "data" : "accountBalance",
+                        "render" : function(data, type,full, meta) {
+                            if (type === 'display') {
+                                if(data == null)
+                                    return data;
+                                var twoPlacedFloat = parseFloat(data).toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,');
+                                return twoPlacedFloat;
+                            }
+                            return data;
+                        }
+                    }
+                ]
             });
-            table.order( [ 1, 'desc' ] ).draw();
+//            table.order( [ 1, 'desc' ] ).draw();
         });
 
         /*]]>*/
     </script>
-<!-- CONTENT-WRAPPER SECTION END-->
-<!--<script th:inline="javascript">-->
+    <!-- CONTENT-WRAPPER SECTION END-->
+    <!--<script th:inline="javascript">-->
     <!--/*<![CDATA[*/-->
     <!--jQuery.download = function(url, key, data) {-->
-        <!--// Build a form-->
-        <!--var form = $('<form></form>').attr('action', url).attr('target', '_blank')-->
-                <!--.attr('method', 'get');-->
-        <!--// Add the one key/value-->
-        <!--form.append($("<input></input>").attr('type', 'hidden').attr('name',-->
-                <!--key).attr('value', data));-->
+    <!--// Build a form-->
+    <!--var form = $('<form></form>').attr('action', url).attr('target', '_blank')-->
+    <!--.attr('method', 'get');-->
+    <!--// Add the one key/value-->
+    <!--form.append($("<input></input>").attr('type', 'hidden').attr('name',-->
+    <!--key).attr('value', data));-->
 
-        <!--$.each( data, function( propertyName, valueOfProperty ){-->
-            <!--form.append($("<input></input>").attr('type', 'hidden').attr('name',-->
-                    <!--propertyName).attr('value', valueOfProperty));-->
-        <!--});-->
+    <!--$.each( data, function( propertyName, valueOfProperty ){-->
+    <!--form.append($("<input></input>").attr('type', 'hidden').attr('name',-->
+    <!--propertyName).attr('value', valueOfProperty));-->
+    <!--});-->
 
-        <!--//send request-->
-        <!--form.appendTo('body').submit().remove();-->
+    <!--//send request-->
+    <!--form.appendTo('body').submit().remove();-->
     <!--};-->
 
     <!--$(document).ready(function() {-->
 
-        <!--$('.datepicker').datepicker({ dateFormat: 'dd-mm-yy' });//-->
+    <!--$('.datepicker').datepicker({ dateFormat: 'dd-mm-yy' });//-->
 
-        <!--$('#tranDetails').DataTable({-->
-            <!--responsive: true,-->
+    <!--$('#tranDetails').DataTable({-->
+    <!--responsive: true,-->
 
-            <!--"lengthMenu" : [ [ 5, 10, 20],	[ 5, 10, 20 ] ],-->
-            <!--"pagingType" : "simple_numbers",-->
-            <!--"searching": false,-->
-            <!--"paging": true,-->
-            <!--"processing": true,-->
-            <!--"serverSide" : false,-->
-            <!--"ordering" : false,-->
-            <!--"columns" : [-->
-                <!--{"data" : "accountBalance"},-->
-                <!--{"data" : "tranId"},-->
-                <!--{"data" : "postDate"} ,-->
-                <!--{"data" : "narration"},-->
-                <!--{"data" : "tranType"},-->
-                <!--{"data" : "valueDate"}-->
-            <!--],-->
-            <!--"columnDefs" : [ {-->
-                <!--"targets" : 2,-->
-                <!--"data" : "postDate",-->
-                <!--"render" : function(data, type,full, meta) {-->
-                    <!--if (type === 'display') {-->
-                        <!--if(data == null)-->
-                            <!--return data;-->
+    <!--"lengthMenu" : [ [ 5, 10, 20],	[ 5, 10, 20 ] ],-->
+    <!--"pagingType" : "simple_numbers",-->
+    <!--"searching": false,-->
+    <!--"paging": true,-->
+    <!--"processing": true,-->
+    <!--"serverSide" : false,-->
+    <!--"ordering" : false,-->
+    <!--"columns" : [-->
+    <!--{"data" : "accountBalance"},-->
+    <!--{"data" : "tranId"},-->
+    <!--{"data" : "postDate"} ,-->
+    <!--{"data" : "narration"},-->
+    <!--{"data" : "tranType"},-->
+    <!--{"data" : "valueDate"}-->
+    <!--],-->
+    <!--"columnDefs" : [ {-->
+    <!--"targets" : 2,-->
+    <!--"data" : "postDate",-->
+    <!--"render" : function(data, type,full, meta) {-->
+    <!--if (type === 'display') {-->
+    <!--if(data == null)-->
+    <!--return data;-->
 
-                        <!--var pattern = /(\d{2})\.(\d{2})\.(\d{4})/;-->
-                        <!--var dt = new Date(data.replace(pattern,'$3-$2-$1'));-->
-                        <!--return dt.toDateString();-->
-                    <!--}-->
-                    <!--return data;-->
-                <!--}-->
-            <!--},{-->
-                <!--"targets" : 0,-->
-                <!--"data" : "accountBalance",-->
-                <!--"render" : function(data, type,full, meta) {-->
-                    <!--if (type === 'display') {-->
-                        <!--if(data == null)-->
-                            <!--return data;-->
-                        <!--var twoPlacedFloat = parseFloat(data).toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,');-->
-                        <!--return twoPlacedFloat;-->
-                    <!--}-->
-                    <!--return data;-->
-                <!--}-->
-            <!--}-->
-                <!--, {-->
-                    <!--"targets": 5,-->
-                    <!--"data": "valueDate",-->
-                    <!--"render": function (data, type, full, meta) {-->
-                        <!--if (type === 'display') {-->
+    <!--var pattern = /(\d{2})\.(\d{2})\.(\d{4})/;-->
+    <!--var dt = new Date(data.replace(pattern,'$3-$2-$1'));-->
+    <!--return dt.toDateString();-->
+    <!--}-->
+    <!--return data;-->
+    <!--}-->
+    <!--},{-->
+    <!--"targets" : 0,-->
+    <!--"data" : "accountBalance",-->
+    <!--"render" : function(data, type,full, meta) {-->
+    <!--if (type === 'display') {-->
+    <!--if(data == null)-->
+    <!--return data;-->
+    <!--var twoPlacedFloat = parseFloat(data).toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,');-->
+    <!--return twoPlacedFloat;-->
+    <!--}-->
+    <!--return data;-->
+    <!--}-->
+    <!--}-->
+    <!--, {-->
+    <!--"targets": 5,-->
+    <!--"data": "valueDate",-->
+    <!--"render": function (data, type, full, meta) {-->
+    <!--if (type === 'display') {-->
 
-                            <!--if (data == null)-->
-                                <!--return data;-->
-                            <!--var pattern = /(\d{2})\.(\d{2})\.(\d{4})/;-->
-                            <!--var dt = new Date(data.replace(pattern,'$3-$2-$1'));-->
-                            <!--return dt.toDateString();-->
-                        <!--}-->
-                        <!--return data;-->
-                    <!--}-->
-                <!--} ],-->
-            <!--"ajax" : {-->
-                <!--"url":"viewstatement/display/data",-->
-                <!--"type" : "GET",-->
-                <!--"data" : function(d) {-->
-                    <!--d.acctNumber = $('[name=acctNumber]').val();-->
-                    <!--d.fromDate = $('[name=fromDate]').val();-->
-                    <!--d.toDate = $('[name=toDate]').val();-->
-                    <!--d.tranType = $('[name=tranType]').val();-->
-                <!--}-->
-            <!--}-->
+    <!--if (data == null)-->
+    <!--return data;-->
+    <!--var pattern = /(\d{2})\.(\d{2})\.(\d{4})/;-->
+    <!--var dt = new Date(data.replace(pattern,'$3-$2-$1'));-->
+    <!--return dt.toDateString();-->
+    <!--}-->
+    <!--return data;-->
+    <!--}-->
+    <!--} ],-->
+    <!--"ajax" : {-->
+    <!--"url":"viewstatement/display/data",-->
+    <!--"type" : "GET",-->
+    <!--"data" : function(d) {-->
+    <!--d.acctNumber = $('[name=acctNumber]').val();-->
+    <!--d.fromDate = $('[name=fromDate]').val();-->
+    <!--d.toDate = $('[name=toDate]').val();-->
+    <!--d.tranType = $('[name=tranType]').val();-->
+    <!--}-->
+    <!--}-->
 
-        <!--});-->
+    <!--});-->
 
-        <!--$("#btn-find").on("click", function(e) {-->
+    <!--$("#btn-find").on("click", function(e) {-->
 
-            <!--e.preventDefault();-->
-            <!--dt = $('#tranDetails').DataTable();-->
-            <!--dt.ajax.reload(null, true);-->
+    <!--e.preventDefault();-->
+    <!--dt = $('#tranDetails').DataTable();-->
+    <!--dt.ajax.reload(null, true);-->
 
-        <!--});-->
+    <!--});-->
 
-        <!--$("#btn-print").on("click", function(e) {-->
-            <!--e.preventDefault();-->
-            <!--var table = $('#tranDetails').DataTable();-->
-            <!--var data = table.ajax.params();-->
-            <!--$.download("downloadstatement", "data", data);-->
+    <!--$("#btn-print").on("click", function(e) {-->
+    <!--e.preventDefault();-->
+    <!--var table = $('#tranDetails').DataTable();-->
+    <!--var data = table.ajax.params();-->
+    <!--$.download("downloadstatement", "data", data);-->
 
-        <!--});-->
+    <!--});-->
 
 
     <!--});-->
@@ -192,7 +241,7 @@
 
 
     <!--/*]]>*/-->
-<!--</script>-->
+    <!--</script>-->
 </th:block>
 
 </body>

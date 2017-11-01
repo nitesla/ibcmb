@@ -77,7 +77,6 @@ public class OpAuthenticationSuccessHandler extends SavedRequestAwareAuthenticat
             logger.debug("Response has already been committed. Unable to redirect to " + targetUrl);
             return;
         }
-
         redirectStrategy.sendRedirect(request, response, targetUrl);
     }
 

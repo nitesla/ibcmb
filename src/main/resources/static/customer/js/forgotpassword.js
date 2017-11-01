@@ -90,7 +90,7 @@ function validateSecAnswer(secAnswers){
     $('#myLoader').modal('show');
     var secAnswer = secAnswers;
     var sent = "";
-    var result;
+    var result = "";
     var username = $('#username').val();
     username = username.trim();
     // console.log("validating "+secAnswer);
