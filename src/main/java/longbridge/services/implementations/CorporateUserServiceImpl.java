@@ -103,7 +103,7 @@ public class CorporateUserServiceImpl implements CorporateUserService {
 
     @Override
     public CorporateUserDTO getUserDTOByName(String name) {
-        CorporateUser corporateUser = this.corporateUserRepo.findFirstByUserName(name);
+        CorporateUser corporateUser = this.corporateUserRepo.findFirstByUserNameIgnoreCase(name);
         return convertEntityToDTO(corporateUser);
     }
 
@@ -246,7 +246,7 @@ public class CorporateUserServiceImpl implements CorporateUserService {
 
 
     public void createUserOnEntrustAndSendCredentials(CorporateUser corporateUser) {
-        CorporateUser user = corporateUserRepo.findFirstByUserName(corporateUser.getUserName());
+        CorporateUser user = corporateUserRepo.findFirstByUserNameIgnoreCase(corporateUser.getUserName());
         if (user != null) {
 
             if ("".equals(user.getEntrustId()) || user.getEntrustId() == null) {
@@ -426,9 +426,8 @@ public class CorporateUserServiceImpl implements CorporateUserService {
 
 
     public void sendPostCreationMessage(User user, String fullName, String username, String password, String corporateId) {
-        CorporateUser corporateUser = corporateUserRepo.findFirstByUserName(user.getUserName());
+        CorporateUser corporateUser = corporateUserRepo.findFirstByUserNameIgnoreCase(user.getUserName());
         if (corporateUser != null) {
-
             Corporate corporate = corporateUser.getCorporate();
             corporateUser.setPassword(passwordEncoder.encode(password));
             corporateUser.setExpiryDate(new Date());

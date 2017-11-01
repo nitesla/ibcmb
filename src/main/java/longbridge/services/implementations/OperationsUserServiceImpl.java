@@ -77,7 +77,7 @@ public class OperationsUserServiceImpl implements OperationsUserService {
 
     @Override
     public boolean userExists(String username) {
-        OperationsUser opsUser = operationsUserRepo.findFirstByUserName(username);
+        OperationsUser opsUser = operationsUserRepo.findFirstByUserNameIgnoreCase(username);
         return (opsUser != null) ? true : false;
 
     }
@@ -221,7 +221,7 @@ public class OperationsUserServiceImpl implements OperationsUserService {
 
 
     public OperationsUser createUserOnEntrustAndSendCredentials(OperationsUser opsUser) {
-        OperationsUser user = operationsUserRepo.findFirstByUserName(opsUser.getUserName());
+        OperationsUser user = operationsUserRepo.findFirstByUserNameIgnoreCase(opsUser.getUserName());
         if (user != null) {
             if ("".equals(user.getEntrustId()) || user.getEntrustId() == null) {
                 String fullName = user.getFirstName() + " " + user.getLastName();
@@ -352,7 +352,7 @@ public class OperationsUserServiceImpl implements OperationsUserService {
     @Override
     public String resetPassword(String username) throws InternetBankingException {
         try {
-            OperationsUser user = operationsUserRepo.findFirstByUserName(username);
+            OperationsUser user = operationsUserRepo.findFirstByUserNameIgnoreCase(username);
             String newPassword = passwordPolicyService.generatePassword();
             user.setPassword(passwordEncoder.encode(newPassword));
             String fullName = user.getFirstName() + " " + user.getLastName();

@@ -381,7 +381,7 @@ public class MainController {
                 redirectAttributes.addFlashAttribute("message", message);
                 session.removeAttribute("username");
                 session.removeAttribute("url");
-                return "redirect:/login/admin";
+                return "redirect:/login/ops";
             } catch (PasswordException pe) {
                 redirectAttributes.addFlashAttribute("failure", pe.getMessage());
             }

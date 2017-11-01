@@ -20,7 +20,6 @@ import org.springframework.scheduling.annotation.EnableAsync;
 @EnableAsync
 public class InternetbankingApplication extends SpringBootServletInitializer implements CommandLineRunner {
 
-
     @Autowired
     OperationsUserRepo operationsUserRepo;
 
