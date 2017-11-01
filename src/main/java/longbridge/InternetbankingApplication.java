@@ -80,7 +80,7 @@ public class InternetbankingApplication extends SpringBootServletInitializer imp
     @Override
     public void run(String... strings) throws Exception {
 
-        passwordPolicyService.getPasswordRules().stream().forEach(System.out::println);
+        //passwordPolicyService.getPasswordRules().stream().forEach(System.out::println);
 
 
     }
