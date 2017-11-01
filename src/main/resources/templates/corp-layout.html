@@ -155,17 +155,17 @@
                                 </li>
                                 <li sec:authorize="hasAuthority('MANAGE_BILL_PAYMENT')"><a href="#" class="menu-link" th:text="#{menu.bill}">Bill Payments</a></li>
                                 <li sec:authorize="hasAuthority('MANAGE_INVESTMENT')"><a href="#" class="menu-link" th:text="#{menu.investment}">Investment</a></li>
-                                <li class="dropdown" th:classappend="${#httpServletRequest.getRequestURI().startsWith('/corporate/requests') ? 'active':''}" sec:authorize="hasAuthority('MANAGE_SERV_REQ')">
-                                    <a href="#" class="dropdown-toggle menu-link" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" th:text="#{menu.servreq}"> Service Requests </a>
-                                    <ul class="dropdown-menu">
-                                        <li sec:authorize="hasAuthority('TRACK_SERV_REQ')"><a th:href="@{/corporate/requests/track}" th:text="#{menu.servreq.track}">Track Requests</a></li>
-                                        <p th:each="requests : ${serviceRequests}">
-                                            <li sec:authorize="hasAuthority('MAKE_SERV_REQ')">
-                                                <a th:href="@{/corporate/requests/} + ${requests.id}" th:text="${requests.requestName}"></a>
-                                            </li>
-                                        </p>
-                                    </ul>
-                                </li>
+                                <!--<li class="dropdown" th:classappend="${#httpServletRequest.getRequestURI().startsWith('/corporate/requests') ? 'active':''}" sec:authorize="hasAuthority('MANAGE_SERV_REQ')">-->
+                                    <!--<a href="#" class="dropdown-toggle menu-link" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" th:text="#{menu.servreq}"> Service Requests </a>-->
+                                    <!--<ul class="dropdown-menu">-->
+                                        <!--<li sec:authorize="hasAuthority('TRACK_SERV_REQ')"><a th:href="@{/corporate/requests/track}" th:text="#{menu.servreq.track}">Track Requests</a></li>-->
+                                        <!--<p th:each="requests : ${serviceRequests}">-->
+                                            <!--<li sec:authorize="hasAuthority('MAKE_SERV_REQ')">-->
+                                                <!--<a th:href="@{/corporate/requests/} + ${requests.id}" th:text="${requests.requestName}"></a>-->
+                                            <!--</li>-->
+                                        <!--</p>-->
+                                    <!--</ul>-->
+                                <!--</li>-->
 
                                 <li class="dropdown" th:classappend="${#httpServletRequest.getRequestURI().startsWith('/corporate/settings') ? 'active':''}" sec:authorize="hasAuthority('CORP_USER_SETTINGS')">
                                     <a href="#" class="dropdown-toggle menu-link" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" th:text="#{menu.settings}"> Settings </a>
