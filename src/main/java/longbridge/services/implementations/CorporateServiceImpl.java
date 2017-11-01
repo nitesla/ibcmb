@@ -415,12 +415,15 @@ public class CorporateServiceImpl implements CorporateService {
 
     @Async
     public void sendUserCredentials(CorporateUser user, String password) throws InternetBankingException {
+
+        String url = (hostUrl != null)? hostUrl:"";
+
         String fullName = user.getFirstName() + " " + user.getLastName();
         Corporate corporate = user.getCorporate();
         Email email = new Email.Builder()
                 .setRecipient(user.getEmail())
                 .setSubject(messageSource.getMessage("corporate.customer.create.subject", null, locale))
-                .setBody(String.format(messageSource.getMessage("corporate.customer.create.message", null, locale), fullName, user.getUserName(), password, corporate.getCorporateId()))
+                .setBody(String.format(messageSource.getMessage("corporate.customer.create.message", null, locale), fullName, user.getUserName(), password, corporate.getCorporateId(),url))
                 .build();
         new Thread(() -> {
             mailService.send(email);
