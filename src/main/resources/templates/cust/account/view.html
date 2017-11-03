@@ -117,6 +117,10 @@
         form.appendTo('body').submit().remove();
     };
     $(document).ready(function() {
+        var acctNum = [[${acctNum}]];
+        if(acctNum != null) {
+            $('select option[value="' + acctNum + '"]').attr("selected", true);
+        }
         $('#btn-print').hide();
         $('#tranDetails_length').hide();
         $('#tranDetails_paginate').hide();

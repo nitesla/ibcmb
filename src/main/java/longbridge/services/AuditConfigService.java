@@ -6,6 +6,7 @@ import longbridge.dtos.AdminUserDTO;
 import longbridge.dtos.AuditConfigDTO;
 //import longbridge.dtos.RevisionInfo;
 import longbridge.dtos.AuditDTO;
+import longbridge.dtos.AuditSearchDTO;
 import longbridge.exception.InternetBankingException;
 import longbridge.models.Code;
 import org.apache.poi.ss.formula.functions.T;
@@ -15,6 +16,7 @@ import org.springframework.data.domain.Pageable;
 import longbridge.models.AuditConfig;
 import org.springframework.security.access.prepost.PreAuthorize;
 
+import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Map;
 
@@ -35,24 +37,30 @@ public interface AuditConfigService
 	List<AuditConfig> getEntities();
 	
 	@PreAuthorize("hasAuthority('GET_AUDIT_TABLES')")
-	Page<AuditConfig> findEntities(String pattern,Pageable pageDetails);
+	Page<AuditConfig> findEntities(String pattern, Pageable pageDetails);
 
 	AuditConfig getAuditEntity(Long auditId);
 
 	List<T> revisedEntity(String entityName);
-	Page<T> revisedEntityDetails(String entityName,String revisionNo,Pageable pageable);
+	Page<T> revisedEntityDetails(String entityName, String revisionNo, Pageable pageable);
 
 	Page<ModifiedEntityTypeEntity> getRevisionEntities(Pageable pageable);
 
-	Page<ModifiedEntityTypeEntity> getRevisionEntities(String pattern,Pageable pageDetails);
+	Page<ModifiedEntityTypeEntity> getRevisionEntities(String pattern, Pageable pageDetails);
 
-	Page<ModifiedEntityTypeEntity> audit(String pattern , Pageable pageDetails);
+	Page<ModifiedEntityTypeEntity> audit(String pattern, Pageable pageDetails);
 
-	Page<ModifiedEntityTypeEntity> getRevisedEntitiesDetails(Integer id,Pageable pageable);
-	Page<ModifiedEntityTypeEntity> getRevisedDetailsForEntity(Integer id,String classname,Pageable pageable);
+	Page<ModifiedEntityTypeEntity> getRevisedEntitiesDetails(Integer id, Pageable pageable);
+	Page<ModifiedEntityTypeEntity> getRevisedDetailsForEntity(Integer id, String classname, Pageable pageable);
 	Page<ModifiedEntityTypeEntity> getRevisionEntitiesByDate(Pageable pageable);
 	Page<AuditDTO> revisedEntity(String entityName, Pageable pageable);
-	Page<AuditDTO> searchRevisedEntity(String entityName, Pageable pageable,String search);
+	Page<AuditDTO> revisedEntityByQuery(String entityName, Pageable pageable);
+	Page<AuditDTO> searchRevisedEntity(String entityName, Pageable pageable, String search);
+	Map<String,Object> getFormatedEntityDetails(String entityName);
+	List<ModifiedEntityTypeEntity> getAll();
+
+	Page<ModifiedEntityTypeEntity> searchModifiedEntity(AuditSearchDTO auditSearchDTO, Pageable pageable);
+	Page<ModifiedEntityTypeEntity> searchMod(Pageable pageable, AuditSearchDTO auditSearchDTO);
 //	List<AuditDTO> revisedEntityForClass(String entityName);
 
 }

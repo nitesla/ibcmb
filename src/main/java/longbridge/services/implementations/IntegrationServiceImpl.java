@@ -572,7 +572,6 @@ public class IntegrationServiceImpl implements IntegrationService {
         try {
 
             result = template.postForObject(uri, params, ObjectNode.class);
-
         } catch (Exception e) {
             logger.error(uri, params, e);
 
