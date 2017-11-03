@@ -81,7 +81,7 @@ public class InternetbankingApplication extends SpringBootServletInitializer imp
     public void run(String... strings) throws Exception {
 
         //passwordPolicyService.getPasswordRules().stream().forEach(System.out::println);
-
+securityService.unLockUser("sunkoxy","Retail_Group");
 
     }
 

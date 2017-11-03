@@ -284,8 +284,16 @@ public class CorpAccountController {
 
 
     @GetMapping("/viewstatement")
-    public String getViewOnly(Model model, Principal principal) throws ParseException {
-//logger.info("viewstatement");
+    public String getViewOnly(Model model) throws ParseException {
+        model.addAttribute("acctNum",null);
+
+        return "corp/account/view";
+    }
+
+    @GetMapping("/viewstatement/{id}")
+    public String getViewOnlyById(@PathVariable Long id,Model model) throws ParseException {
+        AccountDTO accountDTO = accountService.getAccount(id);
+        model.addAttribute("acctNum",accountDTO.getAccountNumber());
         return "corp/account/view";
     }
 

@@ -121,7 +121,10 @@
             };
 
             $(document).ready(function() {
-
+                var acctNum = [[${acctNum}]];
+                if(acctNum != null) {
+                    $('select option[value="' + acctNum + '"]').attr("selected", true);
+                }
                 $('.datepicker').datepicker({
                     dateFormat: 'dd-mm-yy'
                 }); //

@@ -498,7 +498,16 @@ public class AccountController {
 
 	@GetMapping("/viewstatement")
 	public String getViewOnly(Model model, Principal principal) throws ParseException {
-
+		model.addAttribute("acctNum",null);
+		return "cust/account/view";
+	}
+	@GetMapping("/viewstatement/{id}")
+	public String getViewOnlyById(@PathVariable Long id,Model model, Principal principal) throws ParseException {
+		RetailUser user = retailUserService.getUserByName(principal.getName());
+		Iterable<AccountDTO> accounts = accountService.getAccountsForDebitAndCredit(user.getCustomerId());
+		AccountDTO accountDTO = accountService.getAccount(id);
+		model.addAttribute("acctNum",accountDTO.getAccountNumber());
+		model.addAttribute("accounts",accounts);
 		return "cust/account/view";
 	}
 
@@ -512,7 +521,7 @@ public class AccountController {
 		AccountDTO account = accountService.getAccount(Long.parseLong(acct));
 		AccountStatement accountStatement = integrationService.getFullAccountStatement(account.getAccountNumber(), daysAgo , date, "B");
 		List<TransactionDetails> list = accountStatement.getTransactionDetails();
-		logger.info("The List {} ", list.get(0));
+//		logger.info("The List {} ", list.get(0));
 		model.addAttribute("history", list);
 		return "cust/account/tranhistory";
 	}
