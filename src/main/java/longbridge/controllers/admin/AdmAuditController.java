@@ -3,15 +3,13 @@ package longbridge.controllers.admin;
 import longbridge.config.audits.CustomRevisionEntity;
 import longbridge.config.audits.ModifiedEntityTypeEntity;
 import longbridge.config.audits.RevisedEntitiesUtil;
-import longbridge.dtos.AdminUserDTO;
-import longbridge.dtos.AuditDTO;
-import longbridge.dtos.CodeDTO;
+import longbridge.dtos.*;
 //import longbridge.dtos.RevisionInfo;
-import longbridge.dtos.VerificationDTO;
 import longbridge.models.AuditRetrieve;
 import longbridge.models.User;
 import longbridge.models.Verification;
 import longbridge.security.userdetails.CustomUserPrincipal;
+import longbridge.utils.StringUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.ss.formula.functions.T;
 import org.apache.poi.ss.formula.functions.Value;
@@ -35,6 +33,7 @@ import longbridge.models.AuditConfig;
 import longbridge.services.AuditConfigService;
 import org.springframework.web.context.request.WebRequest;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
@@ -86,95 +85,52 @@ public class AdmAuditController {
     public String ListRevisedEnties(Model model)
     {
         List<AuditConfig> auditConfig=auditCfgService.getEntities();
+
         model.addAttribute("entities",auditConfig);
         return "adm/audit/view";
     }
     @GetMapping("/revised/{entityName}")
     public String revisedEntity(@PathVariable String entityName, Model model)
     {
-
-        logger.info("the entity name is {}",entityName);
         model.addAttribute("entityName",entityName);
-       List<AuditConfig> auditConfig=auditCfgService.getEntities();
+        List<AuditConfig> auditConfig=auditCfgService.getEntities();
         model.addAttribute("entities",auditConfig);
-        String className = PACKAGE_NAME+entityName;
-        Class<?> cl = null;
-        try {
-            List<String> classFields =  new ArrayList<>();
-            List<String> headers =  new ArrayList<>();
-            cl = Class.forName(className);
-            Field[] declaredFields = cl.getDeclaredFields();
-
-            logger.info("the fields of the {} are {}",entityName,declaredFields);
-            for (Field field:declaredFields) {
-                String fieldStringVal  = field.toString();
-                String fieldName = fieldStringVal.substring(fieldStringVal.lastIndexOf('.')+1,fieldStringVal.length());
-                logger.info("The field name {}",fieldStringVal.substring(fieldStringVal.lastIndexOf('.')+1,fieldStringVal.length()));
-                if(fieldName.equalsIgnoreCase("serialVersionUID")) {
-                    continue;
-                }if(entityName.equalsIgnoreCase("CorporateUser")){
-                    if(fieldName.equalsIgnoreCase("corporate") || fieldName.equalsIgnoreCase("tempPassword") ){
-                        continue;
-                    }
-                }
-                headers.add(convertFieldToTitle(fieldName));
-                classFields.add("entityDetails." + fieldStringVal.substring(fieldStringVal.lastIndexOf('.') + 1, fieldStringVal.length()));
-            }
-            model.addAttribute("fields",classFields);
-            model.addAttribute("headers",headers);
-            model.addAttribute("headerSize",headers.size());
-            logger.info("the superclass {}",cl.getSuperclass());
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-
-//        List<AuditDTO> auditDTOs = auditCfgService.revisedEntityForClass(entityName);
-//        model.addAttribute("auditDTOs",auditDTOs);
-//        switch (entityName){
-//            case "TransRequest":
-//                return "adm/audit/tranRequestRevision";
-//            case "AdminUser":
-//                return "adm/audit/adminRevision";
-//            default:
-//                return "adm/audit/entityRevision";
-//
-//        }
+        Map<String, Object> formatedEntityDetails = auditCfgService.getFormatedEntityDetails(entityName);
+        model.addAttribute("fields", formatedEntityDetails.get("fields"));
+        model.addAttribute("headers",formatedEntityDetails.get("headers"));
+        model.addAttribute("headerSize",formatedEntityDetails.get("headerSize"));
         return "adm/audit/entityRevision";
     }
-    //    @GetMapping(path = "all/entityname")
-//    public @ResponseBody DataTablesOutput<AuditConfig> getAllEntities(DataTablesInput input,WebRequest webRequest)
-//    {
-//        Pageable pageable=DataTablesUtils.getPageable(input);
-//        Page<AuditConfig> auditConfig=null;
-//        auditConfig=auditCfgService.getEntities(pageable);
-//        DataTablesOutput<AuditConfig> out=new DataTablesOutput<>();
-//        out.setDraw(input.getDraw());
-//        out.setData(auditConfig.getContent());
-//        out.setRecordsFiltered(auditConfig.getTotalElements());
-//        out.setRecordsTotal(auditConfig.getTotalElements());
-//        return out;
-//    }
     @GetMapping("/revised/entity")
     public String ListAllRevisedEnties()
 
     {
         return "adm/audit/revisedview";
     }
+    @GetMapping("/entity/index")
+    public String viewRevisedEnties(Model model){
+RevisedEntitiesUtil entitiesUtil = new RevisedEntitiesUtil();
+//        RevisedEntitiesUtil.getSearchedModifiedEntity("AdminUser",null,"");
+//        List<ModifiedEntityTypeEntity> entityTypeEntities = auditCfgService.getAll();
+        List<AuditConfig> auditConfig=auditCfgService.getEntities();
+        model.addAttribute("entities",auditConfig);
+        return "adm/audit/new/auditIndex";
+    }
 
 
     @GetMapping("/entity/name/details")
-    public @ResponseBody DataTablesOutput<AuditDTO> getAllRevisedEntity(DataTablesInput input,@RequestParam("className") String className,@RequestParam("csearch") String csearch)
+    public @ResponseBody DataTablesOutput<AuditDTO> getAllRevisedEntity(DataTablesInput input,Model model,@RequestParam("className") String className,@RequestParam("csearch") String csearch)
     {
         logger.info("The class name {}",className);
         logger.info("TO search {}",csearch);
         Pageable pageable = DataTablesUtils.getPageable(input);
         Page<AuditDTO> auditDTOs = null;
         if(csearch==null || csearch.equalsIgnoreCase("")){
-            auditDTOs = auditCfgService.revisedEntity(className,pageable);
+            auditDTOs = auditCfgService.revisedEntityByQuery(className,pageable);
+//            auditDTOs = auditCfgService.revisedEntity(className,pageable);
         }else {
             auditDTOs = auditCfgService.searchRevisedEntity(className,pageable,csearch);
         }
-
         DataTablesOutput<AuditDTO> out = new DataTablesOutput<AuditDTO>();
         out.setDraw(input.getDraw());
         out.setData(auditDTOs.getContent());
@@ -185,27 +141,56 @@ public class AdmAuditController {
 
 
 
-//    @GetMapping("/revised/entity/all")
-//    public @ResponseBody DataTablesOutput<ModifiedEntityTypeEntity> getAllRevisedEntity(DataTablesInput input,@RequestParam("csearch") String search)
-//    {
-//      //  Pageable pageable = DataTablesUtils.getPageable(input);
-//        Pageable pageables = DataTablesUtils.getPageable(input);
-//        Page<ModifiedEntityTypeEntity> audit = null;
-//        if(StringUtils.isNoneBlank(search))
-//        {
-//            audit=auditCfgService.getRevisionEntities(search,pageables);
-//        }
-//        else
-//        {
-//            audit=auditCfgService.getRevisionEntitiesByDate(pageables);
-//        }
-//        DataTablesOutput<ModifiedEntityTypeEntity> out = new DataTablesOutput<ModifiedEntityTypeEntity>();
-//        out.setDraw(input.getDraw());
-//        out.setData(audit.getContent());
-//        out.setRecordsFiltered(audit.getTotalElements());
-//        out.setRecordsTotal(audit.getTotalElements());
-//        return out;
-//    }
+    @GetMapping("/revised/entity/all")
+    public @ResponseBody DataTablesOutput<ModifiedEntityTypeEntity> getAllRevisedEntity(DataTablesInput input,@RequestParam("csearch") String search)
+    {
+      //  Pageable pageable = DataTablesUtils.getPageable(input);
+        logger.info("the search current "+search);
+        Pageable pageables = DataTablesUtils.getPageable(input);
+        Page<ModifiedEntityTypeEntity> audit = null;
+        if(StringUtils.isNoneBlank(search))
+        {
+            audit=auditCfgService.getRevisionEntities(search,pageables);
+        }
+        else
+        {
+            audit=auditCfgService.getRevisionEntitiesByDate(pageables);
+        }
+        DataTablesOutput<ModifiedEntityTypeEntity> out = new DataTablesOutput<ModifiedEntityTypeEntity>();
+        out.setDraw(input.getDraw());
+        out.setData(audit.getContent());
+        out.setRecordsFiltered(audit.getTotalElements());
+        out.setRecordsTotal(audit.getTotalElements());
+        return out;
+    }
+    @GetMapping("/revised/entity/search")
+    public @ResponseBody DataTablesOutput<ModifiedEntityTypeEntity> searchRevisedEntity(
+            DataTablesInput input,@RequestParam("id") String id, @RequestParam("entityName") String entityName,
+            @RequestParam("fromDate") String fromDate, @RequestParam("endDate") String endDate,
+            @RequestParam("ipAddress") String ipAddress, @RequestParam("lastChangedBy") String lastChangedBy)
+    {
+        logger.info("the search details entityName {},fromDate {}, endDate {}, ipAddress {}, id {} ",entityName,fromDate,endDate,ipAddress,id);
+
+        Pageable pageables = DataTablesUtils.getPageable(input);
+        Page<ModifiedEntityTypeEntity> audit = null;
+        if(!StringUtils.isNoneBlank(id)&& !StringUtils.isNoneBlank(entityName)&& !StringUtils.isNoneBlank(fromDate)
+                && !StringUtils.isNoneBlank(endDate)&& !StringUtils.isNoneBlank(ipAddress)
+                && !StringUtils.isNoneBlank(lastChangedBy)){
+            audit=auditCfgService.getRevisionEntitiesByDate(pageables);
+
+        }
+        else{
+            AuditSearchDTO auditSearchDTO = new AuditSearchDTO(id,entityName,fromDate,endDate,ipAddress,lastChangedBy);
+            audit=  auditCfgService.searchMod(pageables,auditSearchDTO);
+            logger.info("the search query is {}",auditSearchDTO);
+        }
+        DataTablesOutput<ModifiedEntityTypeEntity> out = new DataTablesOutput<ModifiedEntityTypeEntity>();
+        out.setDraw(input.getDraw());
+        out.setData(audit.getContent());
+        out.setRecordsFiltered(audit.getTotalElements());
+        out.setRecordsTotal(audit.getTotalElements());
+        return out;
+    }
 
     @GetMapping("/{id}/{classname}/view")
     public String revisionEntites(@PathVariable String id,@PathVariable String classname,Model model)
@@ -248,25 +233,6 @@ public class AdmAuditController {
         return  "adm/audit/entityDetails";
     }
 
-
-
-
-//    @GetMapping("/{id}/{classname}/view")
-//    public  @ResponseBody DataTablesOutput<T> ListRevisedEnties(@PathVariable String id,@PathVariable String classname,DataTablesInput input)
-//    {
-//        Pageable pageable = DataTablesUtils.getPageable(input);
-//        Page<T> revisionEntity=null;
-//        revisionEntity=auditCfgService.revisedEntityDetails(classname,id,pageable);
-////        DataTablesOutput<T> out=new DataTablesOutput<T>();
-////        out.setDraw(input.getDraw());
-////        out.setData(revisionEntity.getContent());
-////        out.setRecordsFiltered(revisionEntity.getTotalElements());
-////        out.setRecordsTotal(revisionEntity.getTotalElements());
-////        return out;
-//    }
-
-
-
     @GetMapping(path = "all/entityname")
     public @ResponseBody DataTablesOutput<AuditConfig> getAllEntities(DataTablesInput input)
     {
@@ -285,7 +251,7 @@ public class AdmAuditController {
 
     @GetMapping("/view")
     public String listEntity(Model model) {
-        return "adm/audit/view";
+        return "adm/audit/viewbkp";
     }
 
 
@@ -295,5 +261,49 @@ public class AdmAuditController {
         auditCfgService.saveAuditConfig(auditEntry);
         ResponseEntity<HttpStatus> resp = new ResponseEntity<>(HttpStatus.NO_CONTENT);
         return resp;
+    }
+    @GetMapping("/{id}/{classname}/view/details")
+    public String revisedEntityDetsils(@PathVariable String id,@PathVariable String classname,Model model)
+    {
+        logger.info("class {} and id is {}",classname,id);
+        Map<String, Object> entityDetailsById = RevisedEntitiesUtil.getEntityDetailsById(classname, Integer.parseInt(id));
+        model.addAttribute("entityId",entityDetailsById.get("id"));
+        model.addAttribute("classname",classname);
+        model.addAttribute("itemId",id);
+        return  "adm/audit/new/entityIdDetails";
+    }
+    @GetMapping("/{revisionId}/{classname}/{entityId}/view/details/compare")
+    public String compareEntityDetailsOfId(@PathVariable String[] revisionId,@PathVariable String classname,@PathVariable String entityId,Model model)
+    {
+//        logger.info("compare");
+        model.addAttribute("classname",classname);
+        model.addAttribute("itemId",revisionId[0]);
+        Map<String,List<String>> entityPastDetails = RevisedEntitiesUtil.getEntityPastDetails(classname, revisionId);
+        List<String> keys = entityPastDetails.get("keys");
+        logger.info("entity details is {} @@@@@ ", keys);
+        model.addAttribute("entityId",entityId);
+        logger.info("the pastDetails {}",entityPastDetails.get("pastDetails"));
+        logger.info("the currentDetails {}",entityPastDetails.get("currentDetails"));
+        model.addAttribute("pastDetails", entityPastDetails.get("pastDetails"));
+        model.addAttribute("currentDetails",(entityPastDetails.get("currentDetails")));
+        model.addAttribute("headers", keys);
+        model.addAttribute("headersSize",(keys.size()-1));
+
+        return  "adm/audit/new/entityIdDetails";
+    }
+    @GetMapping("/revised/entity/details/id")
+    public @ResponseBody DataTablesOutput<ModifiedEntityTypeEntity> getRevisedEntityDetailsById(DataTablesInput input,WebRequest webRequest)
+    {
+        Integer refId = parseInt(webRequest.getParameter("itemId"));
+        String classname = webRequest.getParameter("classname");
+        Pageable pageable = DataTablesUtils.getPageable(input);
+        Page<ModifiedEntityTypeEntity> auditConf=null;
+        auditConf = auditCfgService.getRevisedDetailsForEntity(refId,classname,pageable);
+        DataTablesOutput<ModifiedEntityTypeEntity> out = new DataTablesOutput<ModifiedEntityTypeEntity>();
+        out.setDraw(input.getDraw());
+        out.setData(auditConf.getContent());
+        out.setRecordsFiltered(auditConf.getTotalElements());
+        out.setRecordsTotal(auditConf.getTotalElements());
+        return out;
     }
 }
