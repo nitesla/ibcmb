@@ -90,7 +90,8 @@ Logger logger = LoggerFactory.getLogger(AuditRepoImpl.class);
     public Page<ModifiedEntityTypeEntity> findModifiedEntityBySearch(Pageable pageable, AuditSearchDTO auditSearchDTO){
         String search  = searchModifiedEntityTypeEntity(auditSearchDTO,true);
         String sql = "select m from  " +
-                "ModifiedEntityTypeEntity m"+search;
+                "ModifiedEntityTypeEntity m"+search+" order by m.revision.timestamp desc";
+
         try {
             TypedQuery<ModifiedEntityTypeEntity> query = em.createQuery(sql,ModifiedEntityTypeEntity.class);
             Long count = RevisedEntitiesUtil.fetchModifiedEntity(auditSearchDTO);

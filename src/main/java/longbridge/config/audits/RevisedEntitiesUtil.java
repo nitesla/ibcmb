@@ -331,7 +331,7 @@ return modifiedEntityTypeEntities;
         ApplicationContext context = SpringContext.getApplicationContext();
         DataSource dataSource = context.getBean(DataSource.class);
         NamedParameterJdbcTemplate namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
-        String sql = "select count(*) from Modified_Entity_Type_Entity m, Custom_Revision_Entity c"+search+"and c.id = m.revision_id";
+        String sql = "select count(*) from Modified_Entity_Type_Entity m, Custom_Revision_Entity c"+search+"and c.id = m.revision_id order by c.timestamp desc";
         SqlParameterSource namedParameters = new MapSqlParameterSource();
         logger.info("the select query {}",sql);
         counter = namedParameterJdbcTemplate.queryForObject(sql, namedParameters, Long.class);
