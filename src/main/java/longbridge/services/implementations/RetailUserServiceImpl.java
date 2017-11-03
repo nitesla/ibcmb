@@ -1,3 +1,4 @@
+
 package longbridge.services.implementations;
 
 
@@ -20,6 +21,7 @@ import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.Page;
@@ -30,6 +32,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.thymeleaf.context.Context;
 
 import javax.persistence.EntityManager;
 import java.util.*;
@@ -75,6 +78,9 @@ public class RetailUserServiceImpl implements RetailUserService {
 
     @Autowired
     private EntityManager entityManager;
+
+    @Value("${host.url}")
+    private String hostUrl;
 
     public RetailUserServiceImpl() {
     }
@@ -303,14 +309,9 @@ public class RetailUserServiceImpl implements RetailUserService {
             String oldStatus = user.getStatus();
             String newStatus = "A".equals(oldStatus) ? "I" : "A";
             user.setStatus(newStatus);
-            String fullName = user.getFirstName() + " " + user.getLastName();
             if ((oldStatus == null) || ("I".equals(oldStatus)) && "A".equals(newStatus)) {
-                String password = passwordPolicyService.generatePassword();
-                user.setPassword(passwordEncoder.encode(password));
-                user.setExpiryDate(new Date());
-                passwordPolicyService.saveRetailPassword(user);
                 retailUserRepo.save(user);
-                sendActivationMessage(user, fullName, user.getUserName(), password);
+                sendActivationMessage(user);
 
             } else {
                 user.setStatus(newStatus);
@@ -335,16 +336,35 @@ public class RetailUserServiceImpl implements RetailUserService {
 
 
     @Async
-    public void sendPostPasswordResetMessage(User user, String... args) {
+    public void sendPostPasswordResetMessage(RetailUser user) {
+
+        String url = (hostUrl != null) ? hostUrl : "";
+
         try {
+            String newPassword = passwordPolicyService.generatePassword();
+            user.setPassword(passwordEncoder.encode(newPassword));
+            user.setExpiryDate(new Date());
+            passwordPolicyService.saveRetailPassword(user);
+            retailUserRepo.save(user);
+            String fullName = user.getFirstName() + " " + user.getLastName();
+
+            Context context = new Context();
+            context.setVariable("fullName", fullName);
+            context.setVariable("username", user.getUserName());
+            context.setVariable("password", newPassword);
+            context.setVariable("url", url);
+
+
             Email email = new Email.Builder()
                     .setRecipient(user.getEmail())
                     .setSubject(messageSource.getMessage("customer.password.reset.subject", null, locale))
-                    .setBody(String.format(messageSource.getMessage("customer.password.reset.message", null, locale), args))
+                    .setTemplateName("mail/retailpasswordreset")
                     .build();
-            mailService.send(email);
-        } catch (MailException me) {
-            logger.error("Failed to send reactivation mail to {}", user.getEmail(), me);
+
+            mailService.sendMail(email, context);
+        }
+        catch (Exception exception){
+            logger.error("Error resetting password",exception);
         }
 
     }
@@ -367,15 +387,35 @@ public class RetailUserServiceImpl implements RetailUserService {
 
 
     @Async
-    private void sendActivationMessage(User user, String... args) {
-        RetailUser corpUser = getUserByName(user.getUserName());
-        if ("A".equals(corpUser.getStatus())) {
+    private void sendActivationMessage(User user) {
+        RetailUser retailUser = getUserByName(user.getUserName());
+        String url = (hostUrl != null) ? hostUrl : "";
+
+
+        if ("A".equals(retailUser.getStatus())) {
+
+            String fullName = user.getFirstName() + " " + user.getLastName();
+
+            String password = passwordPolicyService.generatePassword();
+            user.setPassword(passwordEncoder.encode(password));
+            user.setExpiryDate(new Date());
+            passwordPolicyService.saveRetailPassword(retailUser);
+            retailUserRepo.save(retailUser);
+
+
+            Context context = new Context();
+            context.setVariable("fullName", fullName);
+            context.setVariable("username", retailUser.getUserName());
+            context.setVariable("password", password);
+            context.setVariable("url", url);
+
+
             Email email = new Email.Builder()
                     .setRecipient(user.getEmail())
-                    .setSubject(messageSource.getMessage("customer.reactivation.subject", null, locale))
-                    .setBody(String.format(messageSource.getMessage("customer.reactivation.message", null, locale), args))
+                    .setSubject(messageSource.getMessage("customer.activation.subject", null, locale))
+                    .setTemplateName("mail/retailactivation")
                     .build();
-            mailService.send(email);
+            mailService.sendMail(email,context);
         }
     }
 
@@ -391,13 +431,8 @@ public class RetailUserServiceImpl implements RetailUserService {
                 throw new InternetBankingException(messageSource.getMessage("users.deactivated", null, locale));
             }
         try {
-            String newPassword = passwordPolicyService.generatePassword();
-            user.setPassword(passwordEncoder.encode(newPassword));
-            user.setExpiryDate(new Date());
-            passwordPolicyService.saveRetailPassword(user);
-            retailUserRepo.save(user);
-            String fullName = user.getFirstName() + " " + user.getLastName();
-            sendPostPasswordResetMessage(user, fullName, user.getUserName(), newPassword);
+
+            sendPostPasswordResetMessage(user);
             logger.info("Retail user {} password reset successfully", user.getUserName());
             return messageSource.getMessage("password.reset.success", null, locale);
            }

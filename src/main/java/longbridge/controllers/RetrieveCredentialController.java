@@ -29,6 +29,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.thymeleaf.context.Context;
 
 import javax.servlet.http.HttpSession;
 import java.util.Iterator;
@@ -255,12 +256,17 @@ public class RetrieveCredentialController {
             retailUser.setTempPassword(passwordEncoder.encode(tempPassword));
             String fullName = retailUser.getFirstName() + " " + retailUser.getLastName();
             retailUserRepo.save(retailUser);
+
+            Context context = new Context();
+            context.setVariable("fullName", fullName);
+            context.setVariable("resetCode",tempPassword);
+
             Email email = new Email.Builder()
                     .setRecipient(retailUser.getEmail())
                     .setSubject(messageSource.getMessage("reset.password.subject", null, locale))
-                    .setBody(String.format(messageSource.getMessage("reset.password.message", null, locale), fullName, tempPassword))
+                    .setTemplateName("mail/forgotpassword")
                     .build();
-            mailService.send(email);
+            mailService.sendMail(email,context);
             return "true";
         }catch (MailException me) {
             logger.error("Error occurred", me);
@@ -334,6 +340,10 @@ public class RetrieveCredentialController {
 
             RetailUser user = retailUserService.getUserByCustomerId(customerId);
 
+            if(user == null){
+                return "redirect:/login/retail";
+            }
+
             //confirm security question is correct
             String secAnswer="";
             if(session.getAttribute("retSecQestnAndAnsFU") == null) {
@@ -350,10 +360,17 @@ public class RetrieveCredentialController {
                 if (result.equalsIgnoreCase("true")){
                     logger.debug("User Info {}:", user.getUserName());
                     //Send Username to Email
+
+                    String fullName = user.getFirstName()+" "+user.getLastName();
+
+                    Context context = new Context();
+                    context.setVariable("fullName", fullName);
+                    context.setVariable("username", user.getUserName());
+
                     Email email = new Email.Builder()
                             .setRecipient(user.getEmail())
                             .setSubject(messageSource.getMessage("retrieve.username.subject",null,locale))
-                            .setBody(String.format(messageSource.getMessage("retrieve.username.message",null,locale),user.getFirstName(), user.getUserName()))
+                            .setTemplateName("mail/usernameretrieval")
                             .build();
                     mailService.send(email);
                     return "true";

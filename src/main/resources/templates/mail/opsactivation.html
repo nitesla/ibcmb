@@ -2,10 +2,9 @@
 <html xmlns:th="http://www.thymeleaf.org" style="box-sizing: border-box; font-size: 14px; margin: 0;">
 
 <head>
-    <meta name="viewport" content="width=device-width"  initial-scale="1.0" />
+      <meta name="viewport" content="width=device-width"  initial-scale="1.0" />
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <title>Alerts</title>
-
 
 </head>
 
@@ -27,7 +26,7 @@
                     </tr>
                     <tr>
                         <td class="alert alert-warning" style="font-family: 'FedraSansStdBook',Arial,sans-serif; font-size: 16px; vertical-align: top; color: #003056; font-weight: 500; border-radius: 3px 3px 0 0; background-color: #ffffff; margin: 0; padding: 0 20px 20px 20px;" bgcolor="#fffff" valign="top">
-                            <strong style="display: inline-block; text-align: left; ">Notification - New Beneficiary</strong>
+                            <strong style="display: inline-block; text-align: left; ">Notification - Activation on Internet Banking Operations Console</strong>
                         </td>
                     </tr>
                     <tr style="font-family: FedraSansStdLight,Arial,sans-serif; box-sizing: border-box; font-size: 14px; margin: 0;">
@@ -36,30 +35,18 @@
 
                                 <tr style="font-family: 'FedraSansStdBook',Arial,sans-serif; box-sizing: border-box; font-size: 14px; margin: 0;">
                                     <td class="content-block" style="font-family: 'FedraSansStdBook',Arial,sans-serif; box-sizing: border-box; font-size: 14px; color: #003056; vertical-align: top; margin: 0; padding: 0 0 20px;" valign="top">
-                                        Dear <span th:text="${customerName}"></span>,
-                                        <p>
-                                            You have successfully added a new beneficiary to your beneficiary list on the Internet
-                                            banking platform.
-                                        </p>
-                                        <p>
-                                            Please see details below:
-                                        </p>
+                                        Dear <span th:text="${fullName}"></span>,
 
-                                        <p>
-                                            Name: <span th:text="${beneficiaryName}"></span>
-                                        </p>
 
-                                        <p>
-                                            If you did not initiate this action, please immediately contact Coronation Customer Care on
-                                            08188314939 or email cs@coronationmb.com
+                                        <p>You have been successfully activated on the Internet banking Operations console.</p>
+                                        <p>You can log in with the following credentials.</p>
+                                        <p><strong>Username: <span th:text="${username}"></span></strong></p>
+                                        <p><strong>Password: <span th:text="${password}"></span></strong></p>
+                                        </p>Ops URL: <span th:text="${opsUrl}"></span></p>
 
-                                        </p>
                                     </td>
                                 </tr>
-                                <!--<tr style="font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; margin: 0;"><td class="content-block" style="font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; vertical-align: top; margin: 0; padding: 0 0 20px;" valign="top">
-										<a href="http://www.mailgun.com" class="btn-primary" style="font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; color: #FFF; text-decoration: none; line-height: 2em; font-weight: bold; text-align: center; cursor: pointer; display: inline-block; border-radius: 5px; text-transform: capitalize; background-color: #348eda; margin: 0; border-color: #348eda; border-style: solid; border-width: 10px 20px;">Upgrade my account</a>
-									</td>
-								</tr>-->
+
                                 <tr style="font-family: FedraSansStdLight,Arial,sans-serif; box-sizing: border-box; font-size: 14px; margin: 0;"><td class="content-block" style="font-family: FedraSansStdLight,Arial,sans-serif; box-sizing: border-box; font-size: 14px; vertical-align: top; color: #003056; margin: 0; padding: 0 0 20px;" valign="top">
                                     Regards,
                                     <p style="font-family: FedraSansStdBook,Arial,sans-serif;">Coronation Merchant Bank</p>

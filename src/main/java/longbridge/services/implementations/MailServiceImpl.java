@@ -10,7 +10,10 @@ import org.springframework.mail.MailException;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.mail.javamail.MimeMessagePreparator;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.thymeleaf.TemplateEngine;
+import org.thymeleaf.context.Context;
 
 import javax.mail.internet.MimeMessage;
 
@@ -23,6 +26,12 @@ public class MailServiceImpl implements MailService {
 
     @Value("${mail.from}")
     private String sender;
+
+    @Value("${logo.url}")
+    private String logoUrl;
+
+    @Autowired
+    private TemplateEngine templateEngine;
 
     @Autowired
     public MailServiceImpl(JavaMailSender mailSender) {
@@ -110,4 +119,35 @@ public class MailServiceImpl implements MailService {
         mailSender.send(messagePreparator);
         logger.info("Email successfully sent to {} with subject '{}'", email.getReceiverEmail()!=null?email.getReceiverEmail():email.getReceiverEmails(), email.getMessageSubject());
     }
+
+
+    @Override
+    @Async
+    public void sendMail(Email email, Context context){
+        context.setVariable("logoUrl",logoUrl);
+        String messageBody = templateEngine.process(email.getTemplateName(),context);
+
+        MimeMessagePreparator messagePreparator = mimeMessage -> {
+            MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage);
+            messageHelper.setFrom(sender);
+
+            if (email.getReceiverEmail() != null) {
+                messageHelper.setTo(email.getReceiverEmail());
+            }
+            if (email.getReceiverEmails() != null) {
+                messageHelper.setTo(email.getReceiverEmails());
+            }
+            if (email.getCcList() != null) {
+                messageHelper.setCc(email.getCcList());
+            }
+            messageHelper.setSubject(email.getMessageSubject());
+            messageHelper.setText(messageBody,true);
+
+        };
+        logger.info("Trying to send mail to {}", email.getReceiverEmail()!=null?email.getReceiverEmail():email.getReceiverEmails());
+        mailSender.send(messagePreparator);
+        logger.info("Email successfully sent to {} with subject '{}'", email.getReceiverEmail()!=null?email.getReceiverEmail():email.getReceiverEmails(), email.getMessageSubject());
+
+    }
+
 }

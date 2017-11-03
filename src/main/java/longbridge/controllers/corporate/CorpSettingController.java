@@ -185,7 +185,7 @@ public class CorpSettingController {
     }
 
     @GetMapping("/reset_password")
-    public String resetPaswordPage(Model model){
+    public String resetPasswordPage(Model model){
         List<String> passwordPolicy = passwordPolicyService.getPasswordRules();
         logger.info("PASSWORD RULES {}", passwordPolicy);
         model.addAttribute("passwordRules", passwordPolicy);

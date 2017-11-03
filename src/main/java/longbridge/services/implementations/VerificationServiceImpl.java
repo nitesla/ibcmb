@@ -35,6 +35,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.thymeleaf.context.Context;
 
 import javax.persistence.EntityManager;
 import java.math.BigDecimal;
@@ -254,14 +255,29 @@ public class VerificationServiceImpl implements VerificationService {
                 String verifierName = verifiedBy.getFirstName() + " " + verifiedBy.getLastName();
                 Date date = verification.getVerifiedOn();
                 String operation = verification.getDescription();
-                String comment = verification.getComments();
+                String comments = verification.getComments();
                 String status = verification.getStatus().name();
-                Email email = new Email.Builder()
+
+            Context context = new Context();
+            context.setVariable("fullName",initiatorName);
+            context.setVariable("verifier",verifierName);
+            context.setVariable("operation",operation);
+            context.setVariable("date",date);
+            context.setVariable("comments",comments);
+            context.setVariable("status",status);
+
+
+
+
+
+            Email email = new Email.Builder()
                         .setRecipient(initiatedBy.getEmail())
                         .setSubject(messageSource.getMessage("verification.subject", null, locale))
-                        .setBody(String.format(messageSource.getMessage("verification.message", null, locale), initiatorName, verifierName, operation, status, DateFormatter.format(date), comment))
+                        .setTemplateName("mail/verification")
                         .build();
-                new Thread(() -> mailService.send(email)).start();
+
+            mailService.sendMail(email,context);
+
             }
 
     }

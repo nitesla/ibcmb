@@ -2,22 +2,9 @@
 <html xmlns:th="http://www.thymeleaf.org" style="box-sizing: border-box; font-size: 14px; margin: 0;">
 
 <head>
-    <!--<style type="text/css">-->
-    <!--@media screen {-->
-    <!--@font-face{-->
-    <!--font-family:'Fedra Sans Std LF Book';-->
-    <!--font-style:normal;-->
-    <!--font-weight:400;-->
-    <!--src:local('Fedra Sans'), local('FedraSans'),url('https://customers.coronationsl.com/iw/images/font5.ttf') format('ttf');-->
-    <!--}-->
-    <!--}-->
-    <!--</style>-->
-    <!--<link rel="stylesheet" type="text/css" th:href="@{https://customers.coronationsl.com/iw/images/font5.ttf}"/>-->
-    <meta name="viewport" content="width=device-width"  initial-scale="1.0" />
+      <meta name="viewport" content="width=device-width"  initial-scale="1.0" />
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <title>Alerts</title>
-
-    <!--<link rel="stylesheet" type="text/css" href="http://localhost:9095/css/font.css"/>-->
 
 </head>
 
@@ -33,7 +20,7 @@
 
                         <td class="alert alert-warning" align="right" style="font-family: FedraSansStdBook,Arial,sans-serif; font-size: 16px; vertical-align: top; color: #003056; font-weight: 500; border-radius: 3px 3px 0 0; background-color: #ffffff; margin: 0; padding: 20px 20px 0 20px;" bgcolor="#fffff" valign="top">
                             <div>
-                                <img style="padding-right: 45px; width: 150px;" src="http://132.10.200.33:8080/bank/images/cmb_logo.png"/>
+                                <img style="padding-right: 45px; width: 150px;" th:src="${logoUrl}"/>
                             </div>
                         </td>
                     </tr>
