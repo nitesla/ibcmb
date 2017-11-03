@@ -91,7 +91,7 @@
 
                                 <table class="table table-striped table-bordered table-hover" id="auditview">
 
-                                    <thead>
+                                    <thead id="head">
                                     <tr>
                                         <th>Name</th>
                                         <th>Modifed By</th>
@@ -144,10 +144,13 @@
     $(document).ready(function() {
         var entityClass = [[${entityName}]];
         var entityFields = [[${fields}]];
+        var fieldsDisp = [[${fieldsDisp}]];
         entityFields = String(entityFields);
-        console.log("the entityname "+entityClass);
-        console.log("the entityname "+entityFields);
-
+        console.log("the entityClass "+entityClass);
+//        console.log("the entityFields "+entityFields);
+//        console.log("the fieldsDisp "+fieldsDisp);
+//        var defaultSelect = 'select option:contains('+"CorpLocalBeneficiary"+')'
+        $('select option[value="'+entityClass+'"]').attr("selected",true);
         var dataTable= [
             { "data": "entityClassName",
                 "visible" : false
@@ -155,15 +158,18 @@
             { "data": "modifiedEntities.revision.lastChangedBy" },
             { "data": "modifiedEntities.revision.revisionDate" },
             { "data": "modifiedEntities.revision.ipAddress" },
-            { "data": "entityDetails.id" }
+//            { "data": "modifiedEntities.revision.id" }
+            { "data": "fullEntity.ID" }
         ];
-        var splitFields = entityFields.split(",");
-        console.log("the splited value "+splitFields);
+        if(entityFields != null || entityFields != "null") {
+            var splitFields = entityFields.split(",");
+//            console.log("the splited value " + splitFields);
 
-        for(var i =0; i<splitFields.length; i++){
-            dataTable.push({ "data": splitFields[i] });
+            for (var i = 0; i < splitFields.length; i++) {
+                dataTable.push({"data": splitFields[i]});
+            }
         }
-        console.log("the data to display is "+String(dataTable));
+//        console.log("the data to display is "+String(dataTable));
 
         var table = $('#auditview').DataTable({
             select:true,
@@ -171,7 +177,7 @@
             "pagingType" : "simple_numbers",
             "lengthMenu" : [ [5, 10, 20, 30, 40, -1],	[ 5,10, 20, 30, 40, "All" ] ],
             "searching": false,
-            rowId: 'entityDetails.id',
+//            rowId: 'fullEntity.id',
             "scrollX": true,
             "paging": true,
             "serverSide" : true,
@@ -187,7 +193,7 @@
             "dom": 'T<"clear">frtlp',
             "columns":dataTable,"columnDefs" : [ {
                 "targets" : 2,
-                "data" : "modifiedEntities.revision.ipAddress",
+                "data" : "modifiedEntities.revision.revisionDate",
                 "render" : function(data, type,full, meta) {
                     if (type === 'display') {
                         if(data == null)
@@ -218,11 +224,12 @@
             dt.ajax.reload(null, true);
         });
     });
-
-
     var id;
     var className;
-
+//    $('#auditview thead').on('click', 'th', function () {
+////            alert( 'Column clicked on: ' + table.cell(this).index().column);
+//        return false;
+//    });
 
 
 
