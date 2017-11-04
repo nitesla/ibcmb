@@ -258,7 +258,7 @@ public class OperationsUserServiceImpl implements OperationsUserService {
         Email email = new Email.Builder()
                 .setRecipient(user.getEmail())
                 .setSubject(messageSource.getMessage("ops.creation.subject", null, locale))
-                .setTemplateName("mail/opscreation")
+                .setTemplate("mail/opscreation")
                 .build();
         generateAndSendCredentials(user,email);
     }
@@ -364,7 +364,7 @@ public class OperationsUserServiceImpl implements OperationsUserService {
         Email email = new Email.Builder()
                 .setRecipient(user.getEmail())
                 .setSubject(messageSource.getMessage("admin.password.reset.subject", null, locale))
-                .setTemplateName("mail/adminpasswordreset")
+                .setTemplate("mail/adminpasswordreset")
                 .build();
         generateAndSendCredentials(user,email);
     }

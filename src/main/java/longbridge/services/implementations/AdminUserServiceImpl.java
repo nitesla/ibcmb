@@ -205,7 +205,7 @@ public class AdminUserServiceImpl implements AdminUserService {
         Email email = new Email.Builder()
                 .setRecipient(user.getEmail())
                 .setSubject(messageSource.getMessage("admin.creation.subject", null, locale))
-                .setTemplateName("mail/admincreation")
+                .setTemplate("mail/admincreation")
                 .build();
         generateAndSendCredentials(user,email);
     }
@@ -245,7 +245,7 @@ public class AdminUserServiceImpl implements AdminUserService {
             Email email = new Email.Builder()
                     .setRecipient(user.getEmail())
                     .setSubject(messageSource.getMessage("admin.activation.subject", null, locale))
-                    .setTemplateName("mail/adminactivation")
+                    .setTemplate("mail/adminactivation")
                     .build();
 
             generateAndSendCredentials(user,email);
@@ -362,7 +362,7 @@ public class AdminUserServiceImpl implements AdminUserService {
         Email email = new Email.Builder()
                 .setRecipient(user.getEmail())
                 .setSubject(messageSource.getMessage("admin.password.reset.subject", null, locale))
-                .setTemplateName("mail/adminpasswordreset")
+                .setTemplate("mail/adminpasswordreset")
                 .build();
         generateAndSendCredentials(user,email);
     }

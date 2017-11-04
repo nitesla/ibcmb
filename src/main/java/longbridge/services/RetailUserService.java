@@ -8,6 +8,7 @@ import longbridge.exception.PasswordException;
 import longbridge.forms.AlertPref;
 import longbridge.forms.CustChangePassword;
 import longbridge.forms.CustResetPassword;
+import longbridge.models.CorporateUser;
 import longbridge.models.RetailUser;
 import longbridge.models.User;
 import org.springframework.data.domain.Page;
@@ -100,6 +101,8 @@ public interface RetailUserService {
     @PreAuthorize("hasAuthority('UPDATE_RETAIL_STATUS')")
     String changeActivationStatus(Long userId) throws InternetBankingException;
 
+
+    void sendActivationCredentials(RetailUser user, String password);
 
     /**
      *Sets the password of the specified retail user

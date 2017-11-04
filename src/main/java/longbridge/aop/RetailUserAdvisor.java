@@ -1,13 +1,18 @@
 package longbridge.aop;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.querydsl.core.types.Template;
 import longbridge.dtos.VerificationDTO;
 import longbridge.models.*;
+import longbridge.repositories.AdminUserRepo;
+import longbridge.repositories.OperationsUserRepo;
 import longbridge.repositories.RetailUserRepo;
 import longbridge.repositories.VerificationRepo;
 import longbridge.services.*;
 import org.aspectj.lang.JoinPoint;
+import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.After;
+import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.slf4j.Logger;
@@ -17,6 +22,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.persistence.EntityManager;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.Date;
 
 /**
  * Created by Fortune on 6/28/2017.
@@ -82,8 +89,13 @@ public class RetailUserAdvisor {
             ObjectMapper objectMapper = new ObjectMapper();
             RetailUser retailUser = objectMapper.readValue(verification.getOriginalObject(),RetailUser.class);
             if("A".equals(retailUser.getStatus())){
+                String password = passwordPolicyService.generatePassword();
+                user.setPassword(passwordEncoder.encode(password));
+                user.setExpiryDate(new Date());
+                passwordPolicyService.saveRetailPassword(user);
+                retailUserRepo.save(user);
                 logger.info("Retail user {} status changed to {}",retailUser.getUserName(),retailUser.getStatus());
-                retailUserService.sendActivationMessage(retailUser);
+                retailUserService.sendActivationCredentials(retailUser, password);
             }
             else {
                 retailUserRepo.save(user);

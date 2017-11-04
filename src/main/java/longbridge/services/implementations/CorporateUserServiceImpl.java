@@ -302,7 +302,7 @@ public class CorporateUserServiceImpl implements CorporateUserService {
         Email email = new Email.Builder()
                 .setRecipient(user.getEmail())
                 .setSubject(messageSource.getMessage("corporate.customer.create.subject", null, locale))
-                .setTemplateName("mail/corpcreation")
+                .setTemplate("mail/corpcreation")
                 .build();
         mailService.sendMail(email, context);
     }
@@ -324,7 +324,7 @@ public class CorporateUserServiceImpl implements CorporateUserService {
         Email email = new Email.Builder()
                 .setRecipient(user.getEmail())
                 .setSubject(messageSource.getMessage("corporate.customer.activation.subject", null, locale))
-                .setTemplateName("mail/corpactivation")
+                .setTemplate("mail/corpactivation")
                 .build();
         mailService.sendMail(email, context);
     }
@@ -472,7 +472,7 @@ public class CorporateUserServiceImpl implements CorporateUserService {
             Email email = new Email.Builder()
                     .setRecipient(corpUser.getEmail())
                     .setSubject(messageSource.getMessage("corporate.customer.activation.subject", null, locale))
-                    .setTemplateName("mail/corpactivation")
+                    .setTemplate("mail/corpactivation")
                     .build();
 
             mailService.sendMail(email, context);
@@ -504,7 +504,7 @@ public class CorporateUserServiceImpl implements CorporateUserService {
         Email email = new Email.Builder()
                 .setRecipient(user.getEmail())
                 .setSubject(messageSource.getMessage("corp.customer.password.reset.subject", null, locale))
-                .setTemplateName("mail/corppasswordreset")
+                .setTemplate("mail/corppasswordreset")
                 .build();
         mailService.sendMail(email, context);
     }

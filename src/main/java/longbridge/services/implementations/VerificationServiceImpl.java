@@ -7,10 +7,8 @@ import com.fasterxml.jackson.databind.module.SimpleModule;
 import longbridge.dtos.*;
 import longbridge.exception.InternetBankingException;
 import longbridge.exception.VerificationException;
-import longbridge.exception.VerificationInterruptedException;
 import longbridge.models.*;
 import longbridge.repositories.AdminUserRepo;
-import longbridge.repositories.CorporateUserRepo;
 import longbridge.repositories.OperationsUserRepo;
 import longbridge.repositories.VerificationRepo;
 import longbridge.security.userdetails.CustomUserPrincipal;
@@ -18,7 +16,6 @@ import longbridge.services.CorporateService;
 import longbridge.services.CorporateUserService;
 import longbridge.services.MailService;
 import longbridge.services.VerificationService;
-import longbridge.utils.DateFormatter;
 import longbridge.utils.PrettySerializer;
 import longbridge.utils.VerificationStatus;
 import org.modelmapper.ModelMapper;
@@ -30,7 +27,6 @@ import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
-import org.springframework.mail.MailException;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -38,7 +34,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.thymeleaf.context.Context;
 
 import javax.persistence.EntityManager;
-import java.math.BigDecimal;
 import java.util.*;
 
 @Service
@@ -273,7 +268,7 @@ public class VerificationServiceImpl implements VerificationService {
             Email email = new Email.Builder()
                         .setRecipient(initiatedBy.getEmail())
                         .setSubject(messageSource.getMessage("verification.subject", null, locale))
-                        .setTemplateName("mail/verification")
+                        .setTemplate("mail/verification")
                         .build();
 
             mailService.sendMail(email,context);

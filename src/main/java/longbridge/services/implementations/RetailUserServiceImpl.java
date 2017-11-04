@@ -351,7 +351,7 @@ public class RetailUserServiceImpl implements RetailUserService {
             Email email = new Email.Builder()
                     .setRecipient(user.getEmail())
                     .setSubject(messageSource.getMessage("customer.password.reset.subject", null, locale))
-                    .setTemplateName("mail/retailpasswordreset")
+                    .setTemplate("mail/retailpasswordreset")
                     .build();
 
             mailService.sendMail(email, context);
@@ -386,7 +386,7 @@ public class RetailUserServiceImpl implements RetailUserService {
             Email email = new Email.Builder()
                     .setRecipient(retailUser.getEmail())
                     .setSubject(messageSource.getMessage("customer.activation.subject", null, locale))
-                    .setTemplateName("mail/retailactivation")
+                    .setTemplate("mail/retailactivation")
                     .build();
             mailService.sendMail(email, context);
         } catch (MailException me) {
@@ -396,6 +396,26 @@ public class RetailUserServiceImpl implements RetailUserService {
     }
 
 
+    @Override
+    public void sendActivationCredentials(RetailUser user, String password) {
+
+        String url = (hostUrl != null) ? hostUrl : "";
+        String fullName = user.getFirstName() + " " + user.getLastName();
+
+        Context context = new Context();
+        context.setVariable("fullName", fullName);
+        context.setVariable("username", user.getUserName());
+        context.setVariable("password", password);
+        context.setVariable("url", url);
+
+
+        Email email = new Email.Builder()
+                .setRecipient(user.getEmail())
+                .setSubject(messageSource.getMessage("customer.activation.subject", null, locale))
+                .setTemplate("mail/retailactivation")
+                .build();
+        mailService.sendMail(email, context);
+    }
 
     @Override
     @Transactional

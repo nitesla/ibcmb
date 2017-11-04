@@ -24,7 +24,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.context.request.WebRequest;
@@ -264,7 +263,7 @@ public class RetrieveCredentialController {
             Email email = new Email.Builder()
                     .setRecipient(retailUser.getEmail())
                     .setSubject(messageSource.getMessage("reset.password.subject", null, locale))
-                    .setTemplateName("mail/forgotpassword")
+                    .setTemplate("mail/forgotpassword")
                     .build();
             mailService.sendMail(email,context);
             return "true";
@@ -370,7 +369,7 @@ public class RetrieveCredentialController {
                     Email email = new Email.Builder()
                             .setRecipient(user.getEmail())
                             .setSubject(messageSource.getMessage("retrieve.username.subject",null,locale))
-                            .setTemplateName("mail/usernameretrieval")
+                            .setTemplate("mail/usernameretrieval")
                             .build();
                     mailService.sendMail(email,context);
                     return "true";
