@@ -101,9 +101,10 @@ public class RetailUserServiceImpl implements RetailUserService {
     }
 
     @Override
-    public Long countUser(){
+    public Long countUser() {
         return retailUserRepo.count();
     }
+
     @Override
     public String unlockUser(Long id) throws InternetBankingException {
 
@@ -217,7 +218,6 @@ public class RetailUserServiceImpl implements RetailUserService {
             retailUser.setExpiryDate(passwordPolicyService.getPasswordExpiryDate());
 
 
-
             List<AccountInfo> accounts = integrationService.fetchAccounts(details.getCifId());
 
             List<AccountInfo> transactionalAccounts = accountService.getTransactionalAccounts(accounts);
@@ -273,7 +273,7 @@ public class RetailUserServiceImpl implements RetailUserService {
     }
 
     @Override
-    @Verifiable(operation = "DELETE_RETAIL_USER",description = "Deleting a Retail User")
+    @Verifiable(operation = "DELETE_RETAIL_USER", description = "Deleting a Retail User")
     public String deleteUser(Long userId) throws InternetBankingException {
         try {
 
@@ -287,11 +287,9 @@ public class RetailUserServiceImpl implements RetailUserService {
                 }
             }
             return messageSource.getMessage("user.delete.success", null, locale);
-        }
-        catch (VerificationInterruptedException ve){
+        } catch (VerificationInterruptedException ve) {
             return ve.getMessage();
-        }
-        catch (InternetBankingSecurityException se) {
+        } catch (InternetBankingSecurityException se) {
             throw new InternetBankingSecurityException(messageSource.getMessage("entrust.delete.failure", null, locale));
         } catch (Exception e) {
             throw new InternetBankingException(messageSource.getMessage("user.delete.failure", null, locale), e);
@@ -309,14 +307,9 @@ public class RetailUserServiceImpl implements RetailUserService {
             String oldStatus = user.getStatus();
             String newStatus = "A".equals(oldStatus) ? "I" : "A";
             user.setStatus(newStatus);
-            if ((oldStatus == null) || ("I".equals(oldStatus)) && "A".equals(newStatus)) {
-                retailUserRepo.save(user);
+            retailUserRepo.save(user);
+            if("A".equals(user.getStatus())) {
                 sendActivationMessage(user);
-
-            } else {
-                user.setStatus(newStatus);
-                retailUserRepo.save(user);
-
             }
 
             logger.info("Retail user {} status changed from {} to {}", user.getUserName(), oldStatus, newStatus);
@@ -336,7 +329,7 @@ public class RetailUserServiceImpl implements RetailUserService {
 
 
     @Async
-    public void sendPostPasswordResetMessage(RetailUser user) {
+    public void sendPasswordResetMessage(RetailUser user) {
 
         String url = (hostUrl != null) ? hostUrl : "";
 
@@ -362,43 +355,24 @@ public class RetailUserServiceImpl implements RetailUserService {
                     .build();
 
             mailService.sendMail(email, context);
-        }
-        catch (Exception exception){
-            logger.error("Error resetting password",exception);
+        } catch (Exception exception) {
+            logger.error("Error resetting password", exception);
         }
 
     }
 
 
     @Async
-    public void sendPostActivateMessage(User user, String... args) {
+    public void sendActivationMessage(RetailUser retailUser) {
         try {
-            Email email = new Email.Builder()
-                    .setRecipient(user.getEmail())
-                    .setSubject(messageSource.getMessage("customer.reactivation.subject", null, locale))
-                    .setBody(String.format(messageSource.getMessage("customer.reactivation.message", null, locale), args))
-                    .build();
-            mailService.send(email);
-        } catch (MailException me) {
-            logger.error("Failed to send reactivation mail to {}", user.getEmail(), me);
-        }
 
-    }
+            String url = (hostUrl != null) ? hostUrl : "";
 
-
-    @Async
-    private void sendActivationMessage(User user) {
-        RetailUser retailUser = getUserByName(user.getUserName());
-        String url = (hostUrl != null) ? hostUrl : "";
-
-
-        if ("A".equals(retailUser.getStatus())) {
-
-            String fullName = user.getFirstName() + " " + user.getLastName();
+            String fullName = retailUser.getFirstName() + " " + retailUser.getLastName();
 
             String password = passwordPolicyService.generatePassword();
-            user.setPassword(passwordEncoder.encode(password));
-            user.setExpiryDate(new Date());
+            retailUser.setPassword(passwordEncoder.encode(password));
+            retailUser.setExpiryDate(new Date());
             passwordPolicyService.saveRetailPassword(retailUser);
             retailUserRepo.save(retailUser);
 
@@ -409,35 +383,36 @@ public class RetailUserServiceImpl implements RetailUserService {
             context.setVariable("password", password);
             context.setVariable("url", url);
 
-
             Email email = new Email.Builder()
-                    .setRecipient(user.getEmail())
+                    .setRecipient(retailUser.getEmail())
                     .setSubject(messageSource.getMessage("customer.activation.subject", null, locale))
                     .setTemplateName("mail/retailactivation")
                     .build();
-            mailService.sendMail(email,context);
+            mailService.sendMail(email, context);
+        } catch (MailException me) {
+            logger.error("Failed to send reactivation mail to {}", retailUser.getEmail(), me);
         }
+
     }
+
+
 
     @Override
     @Transactional
     public String resetPassword(Long userId) throws PasswordException {
 
 
-            RetailUser user = retailUserRepo.findOne(userId);
-            logger.info("this is the user status{}",user.getStatus());
-            if("I".equals(user.getStatus()))
-            {
-                throw new InternetBankingException(messageSource.getMessage("users.deactivated", null, locale));
-            }
+        RetailUser user = retailUserRepo.findOne(userId);
+        logger.info("this is the user status{}", user.getStatus());
+        if ("I".equals(user.getStatus())) {
+            throw new InternetBankingException(messageSource.getMessage("users.deactivated", null, locale));
+        }
         try {
 
-            sendPostPasswordResetMessage(user);
+            sendPasswordResetMessage(user);
             logger.info("Retail user {} password reset successfully", user.getUserName());
             return messageSource.getMessage("password.reset.success", null, locale);
-           }
-        catch (MailException me)
-        {
+        } catch (MailException me) {
             throw new InternetBankingException(messageSource.getMessage("mail.failure", null, locale), me);
         } catch (Exception e) {
             throw new PasswordException(messageSource.getMessage("password.reset.failure", null, locale), e);
@@ -613,18 +588,20 @@ public class RetailUserServiceImpl implements RetailUserService {
         Page<RetailUserDTO> pageImpl = new PageImpl<RetailUserDTO>(dtOs, pageDetails, t);
         return pageImpl;
     }
+
     @Override
     public void increaseNoOfTokenAttempt(RetailUser retailUser) {
-        if(retailUser.getNoOfTokenAttempts() ==null){
-            retailUser.setNoOfTokenAttempts(0) ;
-        }else {
-        retailUser.setNoOfTokenAttempts(retailUser.getNoOfTokenAttempts()+1);
+        if (retailUser.getNoOfTokenAttempts() == null) {
+            retailUser.setNoOfTokenAttempts(0);
+        } else {
+            retailUser.setNoOfTokenAttempts(retailUser.getNoOfTokenAttempts() + 1);
         }
         retailUserRepo.save(retailUser);
     }
+
     @Override
     public void resetNoOfTokenAttempt(RetailUser retailUser) {
-            retailUser.setNoOfTokenAttempts(0) ;
+        retailUser.setNoOfTokenAttempts(0);
         retailUserRepo.save(retailUser);
     }
 

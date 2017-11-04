@@ -295,7 +295,7 @@ public class CorporateUserServiceImpl implements CorporateUserService {
         context.setVariable("fullName", fullName);
         context.setVariable("username", user.getUserName());
         context.setVariable("password", password);
-        context.setVariable("Corporate ID", corporate.getCorporateId());
+        context.setVariable("corporateId", corporate.getCorporateId());
         context.setVariable("url", url);
 
 
@@ -422,45 +422,44 @@ public class CorporateUserServiceImpl implements CorporateUserService {
     }
 
 
-    public void sendPostCreationMessage(User user, String fullName, String username, String password, String corporateId) {
-        CorporateUser corporateUser = corporateUserRepo.findFirstByUserNameIgnoreCase(user.getUserName());
-        if (corporateUser != null) {
-            Corporate corporate = corporateUser.getCorporate();
-            corporateUser.setPassword(passwordEncoder.encode(password));
-            corporateUser.setExpiryDate(new Date());
-            passwordPolicyService.saveCorporatePassword(corporateUser);
-            corporateUserRepo.save(corporateUser);
-            try {
-                Email email = new Email.Builder()
-                        .setRecipient(user.getEmail())
-                        .setSubject(messageSource.getMessage("corporate.customer.create.subject", null, locale))
-                        .setBody(String.format(messageSource.getMessage("corporate.customer.create.message", null, locale), fullName, username, password, corporate.getCorporateId()))
-                        .build();
-                mailService.send(email);
-            } catch (MailException me) {
-                logger.error("Failed to send creation mail to {}", user.getEmail(), me);
-            }
-            corporateUserRepo.save(corporateUser);
-        }
-    }
+
 
 
     @Async
-    public void sendPostActivateMessage(User user, String... args) {
-        try {
+    public void sendActivationMessage(User user) {
+        CorporateUser corpUser = getUserByName(user.getUserName());
+        Corporate corporate = corpUser.getCorporate();
+        if ("A".equals(corpUser.getStatus())) {
+
+            String fullName = corpUser.getFirstName() + " " + corpUser.getLastName();
+            String password = passwordPolicyService.generatePassword();
+            corpUser.setPassword(passwordEncoder.encode(password));
+            corpUser.setExpiryDate(new Date());
+            passwordPolicyService.saveCorporatePassword(corpUser);
+            corporateUserRepo.save(corpUser);
+            String url = (hostUrl != null) ? hostUrl : "";
+
+            Context context = new Context();
+            context.setVariable("fullName", fullName);
+            context.setVariable("username", corpUser.getUserName());
+            context.setVariable("password", password);
+            context.setVariable("corporateId", corporate.getCorporateId());
+            context.setVariable("url", url);
+
+
             Email email = new Email.Builder()
-                    .setRecipient(user.getEmail())
-                    .setSubject(messageSource.getMessage("corporate.customer.reactivation.subject", null, locale))
-                    .setBody(String.format(messageSource.getMessage("corporate.customer.reactivation.message", null, locale), args))
+                    .setRecipient(corpUser.getEmail())
+                    .setSubject(messageSource.getMessage("corporate.customer.activation.subject", null, locale))
+                    .setTemplateName("mail/corpactivation")
                     .build();
-            mailService.send(email);
-        } catch (MailException me) {
-            logger.error("Failed to send activation mail to {}", user.getEmail(), me);
+
+            mailService.sendMail(email, context);
+
         }
     }
 
     @Async
-    public void sendPostPasswordResetMessage(CorporateUser user) {
+    public void sendPasswordResetMessage(CorporateUser user) {
 
         CorporateUser corpUser = corporateUserRepo.findOne(user.getId());
         Corporate corporate = corpUser.getCorporate();
@@ -477,7 +476,7 @@ public class CorporateUserServiceImpl implements CorporateUserService {
         context.setVariable("fullName", fullName);
         context.setVariable("username", corpUser.getUserName());
         context.setVariable("password", password);
-        context.setVariable("Corporate ID", corporate.getCorporateId());
+        context.setVariable("corporateId", corporate.getCorporateId());
         context.setVariable("url", url);
 
         Email email = new Email.Builder()
@@ -488,37 +487,6 @@ public class CorporateUserServiceImpl implements CorporateUserService {
         mailService.sendMail(email, context);
     }
 
-    private void sendActivationMessage(CorporateUser corporateUser) {
-        CorporateUser corpUser = getUserByName(corporateUser.getUserName());
-        Corporate corporate = corpUser.getCorporate();
-        if ("A".equals(corpUser.getStatus())) {
-
-            String fullName = corpUser.getFirstName() + " " + corpUser.getLastName();
-            String password = passwordPolicyService.generatePassword();
-            corpUser.setPassword(passwordEncoder.encode(password));
-            corpUser.setExpiryDate(new Date());
-            passwordPolicyService.saveCorporatePassword(corpUser);
-            corporateUserRepo.save(corpUser);
-            String url = (hostUrl != null) ? hostUrl : "";
-
-            Context context = new Context();
-            context.setVariable("fullName", fullName);
-            context.setVariable("username", corpUser.getUserName());
-            context.setVariable("password", password);
-            context.setVariable("Corporate ID", corporate.getCorporateId());
-            context.setVariable("url", url);
-
-
-            Email email = new Email.Builder()
-                    .setRecipient(corpUser.getEmail())
-                    .setSubject(messageSource.getMessage("corporate.customer.activation.subject", null, locale))
-                    .setTemplateName("mail/corpactivation")
-                    .build();
-
-            mailService.sendMail(email, context);
-
-        }
-    }
 
     @Override
     public String changeCorpActivationStatus(Long userId) throws InternetBankingException {
@@ -562,7 +530,7 @@ public class CorporateUserServiceImpl implements CorporateUserService {
             throw new InternetBankingException(messageSource.getMessage("corporate.deactivated", null, locale));
         }
         try {
-            sendPostPasswordResetMessage(user);
+            sendPasswordResetMessage(user);
             logger.info("Corporate user {} password reset successfully", user.getUserName());
             return messageSource.getMessage("password.reset.success", null, locale);
         } catch (MailException me) {
@@ -585,7 +553,7 @@ public class CorporateUserServiceImpl implements CorporateUserService {
 
         try {
 
-            sendPostPasswordResetMessage(user);
+            sendPasswordResetMessage(user);
             logger.info("Corporate user {} password reset successfully", user.getUserName());
             return messageSource.getMessage("password.reset.success", null, locale);
         } catch (MailException me) {
@@ -931,7 +899,8 @@ public class CorporateUserServiceImpl implements CorporateUserService {
             corporateUser.setUserName(user.getUserName());
             corporateUser.setEmail(user.getEmail());
             corporateUser.setStatus("A");
-            corporateUser.setPhoneNumber(user.getPhoneNumber());
+            corporateUser.setPhoneNumber(user
+                    .getPhoneNumber());
             corporateUser.setCreatedOnDate(new Date());
             corporateUser.setCorpUserType(CorpUserType.INITIATOR);
             corporateUser.setEntrustId(user.getUserName());

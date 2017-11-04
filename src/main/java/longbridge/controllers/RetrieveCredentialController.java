@@ -372,7 +372,7 @@ public class RetrieveCredentialController {
                             .setSubject(messageSource.getMessage("retrieve.username.subject",null,locale))
                             .setTemplateName("mail/usernameretrieval")
                             .build();
-                    mailService.send(email);
+                    mailService.sendMail(email,context);
                     return "true";
                 }
 

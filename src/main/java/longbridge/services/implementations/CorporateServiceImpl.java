@@ -378,7 +378,7 @@ public class CorporateServiceImpl implements CorporateService {
         context.setVariable("username", user.getUserName());
         context.setVariable("username", user.getUserName());
         context.setVariable("password", password);
-        context.setVariable("Corporate ID", corporate.getCorporateId());
+        context.setVariable("corporateId", corporate.getCorporateId());
         context.setVariable("url", url);
 
 

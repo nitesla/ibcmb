@@ -1,6 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" style="box-sizing: border-box; font-size: 14px; margin: 0;">
-
+<html xmlns:th="http://www.thymeleaf.org"  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{mail/template}">
 
 <head>
      <meta name="viewport" content="width=device-width"  initial-scale="1.0" />
@@ -11,65 +10,48 @@
 
 <body itemscope="itemscope" itemtype="http://schema.org/EmailMessage" style="font-family: 'FedraSansStdBook',sans-serif; box-sizing: border-box; font-size: 14px; -webkit-font-smoothing: antialiased; -webkit-text-size-adjust: none; width: 100% !important; height: 100%; line-height: 1.6em; background-color: #ffffff; margin: 0;" bgcolor="#ffffff">
 
-<table class="body-wrap" style="font-family: FedraSansStdBook,Arial,sans-serif; box-sizing: border-box; font-size: 14px; width: 100%; background-color: #f6f6f6; margin: 0;" bgcolor="#ffffff">
-    <tr style="font-family: FedraSansStdBook,Arial,sans-serif; box-sizing: border-box; font-size: 14px; margin: 0;">
-        <td style="font-family: FedraSansStdBook,Arial,sans-serif; box-sizing: border-box; font-size: 14px; vertical-align: top; margin: 0;" valign="top"></td>
-        <td  class="container" width="600" style="font-family: FedraSansStdBook,Arial,sans-serif; box-sizing: border-box; font-size: 14px; vertical-align: top; display: block !important; max-width: 600px !important; clear: both !important; margin: 0 auto;" valign="top">
-            <div class="content" style="font-family: FedraSansStdBook,Arial,sans-serif; box-sizing: border-box; font-size: 14px; max-width: 600px; display: block; margin: 0 auto; padding: 20px;">
-                <table class="main" width="100%" cellpadding="0" cellspacing="0" style="font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; border-radius: 3px; background-color: #fff; margin: 0; border: 1px solid #e9e9e9;" bgcolor="b">
-                    <tr style="font-family: FedraSansStdBook,Arial,sans-serif; box-sizing: border-box; font-size: 14px; margin: 0;">
 
-                        <td class="alert alert-warning" align="right" style="font-family: FedraSansStdBook,Arial,sans-serif; font-size: 16px; vertical-align: top; color: #003056; font-weight: 500; border-radius: 3px 3px 0 0; background-color: #ffffff; margin: 0; padding: 20px 20px 0 20px;" bgcolor="#fffff" valign="top">
-                            <div>
-                                <img style="padding-right: 45px; width: 150px;" th:src="${logoUrl}"/>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="alert alert-warning" style="font-family: 'FedraSansStdBook',Arial,sans-serif; font-size: 16px; vertical-align: top; color: #003056; font-weight: 500; border-radius: 3px 3px 0 0; background-color: #ffffff; margin: 0; padding: 0 20px 20px 20px;" bgcolor="#fffff" valign="top">
-                            <strong style="display: inline-block; text-align: left; ">Notification - Activation on Internet Banking Admin Console</strong>
-                        </td>
-                    </tr>
-                    <tr style="font-family: FedraSansStdLight,Arial,sans-serif; box-sizing: border-box; font-size: 14px; margin: 0;">
-                        <td class="content-wrap" style="font-family: FedraSansStdBook,Arial,sans-serif; box-sizing: border-box; font-size: 14px; vertical-align: top; margin: 0; padding: 20px;" valign="top">
-                            <table width="100%" cellpadding="0" cellspacing="0" style="font-family: FedraSansStdBook,Arial,sans-serif; box-sizing: border-box; font-size: 14px; margin: 0;">
+<div layout:fragment="content">
 
-                                <tr style="font-family: 'FedraSansStdBook',Arial,sans-serif; box-sizing: border-box; font-size: 14px; margin: 0;">
-                                    <td class="content-block" style="font-family: 'FedraSansStdBook',Arial,sans-serif; box-sizing: border-box; font-size: 14px; color: #003056; vertical-align: top; margin: 0; padding: 0 0 20px;" valign="top">
-                                        Dear <span th:text="${fullName}"></span>,
-
-
-                                        <p>You have been successfully activated on the Internet banking Admin console.</p>
-                                        <p>You can log in with the following credentials.</p>
-                                        <p><strong>Username: <span th:text="${username}"></span></strong></p>
-                                        <p><strong>Password: <span th:text="${password}"></span></strong></p>
-                                        </p>Admin URL: <span th:text="${adminUrl}"></span></p>
-                                        <p> You are required to change your password after login.</p>
-
-                                    </td>
-                                </tr>
-
-                                <tr style="font-family: FedraSansStdLight,Arial,sans-serif; box-sizing: border-box; font-size: 14px; margin: 0;"><td class="content-block" style="font-family: FedraSansStdLight,Arial,sans-serif; box-sizing: border-box; font-size: 14px; vertical-align: top; color: #003056; margin: 0; padding: 0 0 20px;" valign="top">
-                                    Regards,
-                                    <p style="font-family: FedraSansStdBook,Arial,sans-serif;">Coronation Merchant Bank</p>
-
-                                </td>
-
-                                </tr>
-                            </table>
-                        </td>
-                    </tr>
-                    <!--<tr style="font-family: FedraSansStdBook,Arial,sans-serif; box-sizing: border-box; font-size: 14px; margin: 0; padding: 20px;">-->
-                    <!--<td class="aligncenter content-block" style="font-family: FedraSansStdLight,Arial,sans-serif; box-sizing: border-box; font-size: 12px; vertical-align: top; color: #003056; text-align: center; margin: 0; padding: 20px;" align="center" valign="top">-->
-                    <!--<hr style="border-color: lightgrey"/>-->
-                    <!--For enquiries / clarification, please contact our 24/7 interactive Contact Center <br/> Coronation Merchant Bank on: 01010203040, 0908839213,-->
-                    <!--</td>-->
-                    <!--</tr>-->
-                </table>
-            </div>
+    <tr>
+        <td class="alert alert-warning" style="font-family: 'FedraSansStdBook',Arial,sans-serif; font-size: 16px; vertical-align: top; color: #003056; font-weight: 500; border-radius: 3px 3px 0 0; background-color: #ffffff; margin: 0; padding: 0 20px 20px 20px;" bgcolor="#fffff" valign="top">
+            <strong style="display: inline-block; text-align: left; ">Notification - Activation on Internet Banking Admin Console</strong>
         </td>
-        <td style="font-family: FedraSansStdLight,Arial,sans-serif; box-sizing: border-box; font-size: 14px; vertical-align: top; margin: 0;" valign="top"></td>
     </tr>
-</table>
+    <tr style="font-family: FedraSansStdLight,Arial,sans-serif; box-sizing: border-box; font-size: 14px; margin: 0;">
+        <td class="content-wrap" style="font-family: FedraSansStdBook,Arial,sans-serif; box-sizing: border-box; font-size: 14px; vertical-align: top; margin: 0; padding: 20px;" valign="top">
+            <table width="100%" cellpadding="0" cellspacing="0" style="font-family: FedraSansStdBook,Arial,sans-serif; box-sizing: border-box; font-size: 14px; margin: 0;">
+
+                <tr style="font-family: 'FedraSansStdBook',Arial,sans-serif; box-sizing: border-box; font-size: 14px; margin: 0;">
+                    <td class="content-block" style="font-family: 'FedraSansStdBook',Arial,sans-serif; box-sizing: border-box; font-size: 14px; color: #003056; vertical-align: top; margin: 0; padding: 0 0 20px;" valign="top">
+                        Dear <span th:text="${fullName}"></span>,
+
+                        <p>You have been successfully activated on the Internet banking Admin console.</p>
+                        <p>You can log in with the following credentials:</p>
+                        <p><strong>Username: <span th:text="${username}"></span></strong></p>
+                        <p><strong>Password: <span th:text="${password}"></span></strong></p>
+                        <p>Admin URL: <a th:href="${adminUrl}" th:text="${adminUrl}"></a></p>
+
+                        <p> You are required to change your password after login.</p>
+
+                    </td>
+                </tr>
+
+                <tr style="font-family: FedraSansStdLight,Arial,sans-serif; box-sizing: border-box; font-size: 14px; margin: 0;"><td class="content-block" style="font-family: FedraSansStdLight,Arial,sans-serif; box-sizing: border-box; font-size: 14px; vertical-align: top; color: #003056; margin: 0; padding: 0 0 20px;" valign="top">
+                    Regards,
+                    <p style="font-family: FedraSansStdBook,Arial,sans-serif;">Coronation Merchant Bank</p>
+
+                </td>
+
+                </tr>
+
+            </table>
+        </td>
+    </tr>
+
+</div>
+
+
+
 </body>
 </html>

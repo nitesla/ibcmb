@@ -122,7 +122,7 @@ public interface RetailUserService {
     String changePassword(RetailUser retailUser, CustChangePassword custChangePassword) throws PasswordException;
 
 
-    void sendPostActivateMessage(User user, String ... args );
+    void sendActivationMessage(RetailUser user );
 
     /**
      *Generates a password and send it to the specified user

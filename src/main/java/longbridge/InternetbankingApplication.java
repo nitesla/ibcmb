@@ -78,7 +78,6 @@ public class InternetbankingApplication extends SpringBootServletInitializer imp
 
     @Override
     public void run(String... strings) throws Exception {
-        integrationService.sendSMS("testing","07068376801","Testing sms");
     }
 
 

@@ -1,7 +1,6 @@
 package longbridge.aop;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import longbridge.dtos.CorporateUserDTO;
 import longbridge.dtos.VerificationDTO;
 import longbridge.models.*;
 import longbridge.repositories.*;
@@ -83,15 +82,9 @@ public class CorporateUserAdvisor {
             ObjectMapper objectMapper = new ObjectMapper();
             CorporateUser corpUser = objectMapper.readValue(verification.getOriginalObject(),CorporateUser.class);
             if("A".equals(corpUser.getStatus())){
-                String fullName = user.getFirstName()+" "+user.getLastName();
-                String password = passwordPolicyService.generatePassword();
-                user.setPassword(passwordEncoder.encode(password));
-                user.setExpiryDate(new Date());
-                passwordPolicyService.saveCorporatePassword(user);
                 corporateUserRepo.save(user);
                 logger.info("Corporate user {} status changed to {}",corpUser.getUserName(),corpUser.getStatus());
-
-                corporateUserService.sendPostActivateMessage(corpUser, fullName,user.getUserName(),password,user.getCorporate().getCorporateId());
+                corporateUserService.sendActivationMessage(corpUser);
             }
             else{
                 corporateUserRepo.save(user);
