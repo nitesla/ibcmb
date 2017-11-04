@@ -82,9 +82,13 @@ public class CorporateUserAdvisor {
             ObjectMapper objectMapper = new ObjectMapper();
             CorporateUser corpUser = objectMapper.readValue(verification.getOriginalObject(),CorporateUser.class);
             if("A".equals(corpUser.getStatus())){
+                String password = passwordPolicyService.generatePassword();
+                user.setPassword(passwordEncoder.encode(password));
+                user.setExpiryDate(new Date());
+                passwordPolicyService.saveCorporatePassword(user);
                 corporateUserRepo.save(user);
                 logger.info("Corporate user {} status changed to {}",corpUser.getUserName(),corpUser.getStatus());
-                corporateUserService.sendActivationMessage(corpUser);
+                corporateUserService.sendActivationCredentials(corpUser, password);
             }
             else{
                 corporateUserRepo.save(user);

@@ -280,12 +280,12 @@ public class CorporateUserServiceImpl implements CorporateUserService {
                 user.setExpiryDate(new Date());
                 passwordPolicyService.saveCorporatePassword(user);
                 corporateUserRepo.save(user);
-                sendCredentials(user, password);
+                sendCreationCredentials(user, password);
             }
         }
     }
 
-    private void sendCredentials(CorporateUser user, String password) {
+    private void sendCreationCredentials(CorporateUser user, String password) {
 
         String url = (hostUrl != null) ? hostUrl : "";
         String fullName = user.getFirstName() + " " + user.getLastName();
@@ -303,6 +303,28 @@ public class CorporateUserServiceImpl implements CorporateUserService {
                 .setRecipient(user.getEmail())
                 .setSubject(messageSource.getMessage("corporate.customer.create.subject", null, locale))
                 .setTemplateName("mail/corpcreation")
+                .build();
+        mailService.sendMail(email, context);
+    }
+
+    public void sendActivationCredentials(CorporateUser user, String password) {
+
+        String url = (hostUrl != null) ? hostUrl : "";
+        String fullName = user.getFirstName() + " " + user.getLastName();
+        Corporate corporate = user.getCorporate();
+
+        Context context = new Context();
+        context.setVariable("fullName", fullName);
+        context.setVariable("username", user.getUserName());
+        context.setVariable("password", password);
+        context.setVariable("corporateId", corporate.getCorporateId());
+        context.setVariable("url", url);
+
+
+        Email email = new Email.Builder()
+                .setRecipient(user.getEmail())
+                .setSubject(messageSource.getMessage("corporate.customer.activation.subject", null, locale))
+                .setTemplateName("mail/corpactivation")
                 .build();
         mailService.sendMail(email, context);
     }

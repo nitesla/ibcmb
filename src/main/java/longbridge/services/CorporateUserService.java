@@ -92,6 +92,8 @@ public interface CorporateUserService{
 
     void sendActivationMessage(User user);
 
+    void sendActivationCredentials(CorporateUser user, String password);
+
     /**
      * resets the password for the specified corporate user
      * @param userId
