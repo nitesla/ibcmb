@@ -27,6 +27,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.thymeleaf.context.Context;
 
 import javax.servlet.http.HttpSession;
 import java.util.Iterator;
@@ -179,12 +180,16 @@ public @ResponseBody String getSecAns(WebRequest webRequest, HttpSession session
             corporateUser.setTempPassword(passwordEncoder.encode(tempPassword));
             String fullName = corporateUser.getFirstName() + " " + corporateUser.getLastName();
             corporateUserRepo.save(corporateUser);
+
+            Context context = new Context();
+            context.setVariable("fullName", fullName);
+            context.setVariable("resetCode",tempPassword);
+
             Email email = new Email.Builder()
-                    .setRecipient(corporateUser.getEmail())
                     .setSubject(messageSource.getMessage("reset.password.subject", null, locale))
-                    .setBody(String.format(messageSource.getMessage("reset.password.message", null, locale), fullName, tempPassword))
+                    .setTemplate("mail/forgotpassword")
                     .build();
-            mailService.send(email);
+            mailService.sendMail(email,context);
             return "true";
         }catch (MailException me) {
             return messageSource.getMessage("mail.failure", null, locale);
@@ -344,12 +349,17 @@ public @ResponseBody String getSecAns(WebRequest webRequest, HttpSession session
                     logger.debug("User Info {}:",userEmail );
                     session.removeAttribute("corpSecQestnAndAns");
                     //Send Username to Email
+
+                    Context context = new Context();
+                    context.setVariable("fullName", firstName);
+                    context.setVariable("username", userName);
+
                     Email email = new Email.Builder()
                             .setRecipient(userEmail)
                             .setSubject(messageSource.getMessage("retrieve.username.subject",null,locale))
-                            .setBody(String.format(messageSource.getMessage("retrieve.username.message",null,locale),firstName, userName))
+                            .setTemplate("mail/usernameretrieval")
                             .build();
-                    mailService.send(email);
+                    mailService.sendMail(email,context);
                     return "true";
                 }
             }

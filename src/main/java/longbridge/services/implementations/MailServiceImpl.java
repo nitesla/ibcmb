@@ -10,7 +10,10 @@ import org.springframework.mail.MailException;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.mail.javamail.MimeMessagePreparator;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.thymeleaf.TemplateEngine;
+import org.thymeleaf.context.Context;
 
 import javax.mail.internet.MimeMessage;
 
@@ -23,6 +26,12 @@ public class MailServiceImpl implements MailService {
 
     @Value("${mail.from}")
     private String sender;
+
+    @Value("${logo.url}")
+    private String logoUrl;
+
+    @Autowired
+    private TemplateEngine templateEngine;
 
     @Autowired
     public MailServiceImpl(JavaMailSender mailSender) {
@@ -46,25 +55,12 @@ public class MailServiceImpl implements MailService {
         logger.info("Email successfully sent to {} with subject '{}'", recipient, subject);
     }
 
-    @Override
-    public void sendHtml(String recipient, String subject, String message) throws MailException {
-        MimeMessagePreparator messagePreparator = (MimeMessage mimeMessage) -> {
-            MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage);
-            messageHelper.setFrom(sender);
-            messageHelper.setTo(recipient);
-            messageHelper.setSubject(subject);
-            messageHelper.setText(message,true);
-        };
 
-        logger.info("Trying to send mail to {}", recipient);
-
-        mailSender.send(messagePreparator);
-        logger.info("Email successfully sent to {} with subject '{}'", recipient, subject);
-    }
 
 
 
     @Override
+    @Async
     public void send(Email email) throws MailException {
         MimeMessagePreparator messagePreparator = mimeMessage -> {
             MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage);
@@ -88,11 +84,18 @@ public class MailServiceImpl implements MailService {
     }
 
 
+
+
+    @Async
     @Override
-    public void sendHtml(Email email) throws MailException {
+    public void sendMail(Email email, Context context){
+        context.setVariable("logoUrl",logoUrl);
+        String messageBody = templateEngine.process(email.getTemplate(),context);
+
         MimeMessagePreparator messagePreparator = mimeMessage -> {
             MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage);
             messageHelper.setFrom(sender);
+
             if (email.getReceiverEmail() != null) {
                 messageHelper.setTo(email.getReceiverEmail());
             }
@@ -103,11 +106,13 @@ public class MailServiceImpl implements MailService {
                 messageHelper.setCc(email.getCcList());
             }
             messageHelper.setSubject(email.getMessageSubject());
-            messageHelper.setText(email.getMessageBody(),true);
+            messageHelper.setText(messageBody,true);
 
         };
         logger.info("Trying to send mail to {}", email.getReceiverEmail()!=null?email.getReceiverEmail():email.getReceiverEmails());
         mailSender.send(messagePreparator);
         logger.info("Email successfully sent to {} with subject '{}'", email.getReceiverEmail()!=null?email.getReceiverEmail():email.getReceiverEmails(), email.getMessageSubject());
+
     }
+
 }

@@ -1,6 +1,7 @@
 package longbridge.dtos;
 
 import longbridge.utils.DateUtil;
+import org.apache.commons.lang.StringUtils;
 
 /**
  * Created by Longbridge on 10/26/2017.
@@ -12,12 +13,15 @@ public class AuditSearchDTO {
     long fromDate;
     long endDate;
     String ipAddress;
+    String lastChangeBy;
 
-    public AuditSearchDTO(String id,String entityClassName,String fromDate,String endDate,String ipAddress){
+    public AuditSearchDTO(String id,String entityClassName,String fromDate,String endDate,String ipAddress,String lastChangeBy){
         this.id = id;
         this.ipAddress = ipAddress;
+        this.entityClassName =entityClassName;
         this.fromDate = DateUtil.convertDateToLong(fromDate);
         this.endDate = DateUtil.convertDateToLong(endDate);
+        this.lastChangeBy = lastChangeBy;
     }
     public String getId() {
         return id;
@@ -68,6 +72,16 @@ public class AuditSearchDTO {
                 ", fromDate=" + fromDate +
                 ", endDate=" + endDate +
                 ", ipAddress='" + ipAddress + '\'' +
+                ", lastChangeBy='" + lastChangeBy + '\'' +
                 '}';
     }
+
+    public String getLastChangeBy() {
+        return lastChangeBy;
+    }
+
+    public void setLastChangeBy(String lastChangeBy) {
+        this.lastChangeBy = lastChangeBy;
+    }
+
 }

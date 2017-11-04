@@ -28,6 +28,7 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 
@@ -348,11 +349,20 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public List<AccountDTO> getAccountsForDebitAndCredit(String customerId) {
         List<AccountDTO> accountsForDebitAndCredit = new ArrayList<>();
+        SettingDTO dto = configService.getSettingByName("TRANSACTIONAL_ACCOUNTS");
         //Iterable<Account> accounts = this.getCustomerAccounts(customerId);
         Iterable<AccountDTO> accountDTOS = convertEntitiesToDTOs(this.getCustomerAccounts(customerId));
-        StreamSupport
-                .stream(accountDTOS.spliterator(), true)
-                .filter(i -> !accountConfigService.isAccountHidden(i.getAccountNumber()))
+
+        Stream<AccountDTO> accounts = StreamSupport
+                .stream(accountDTOS.spliterator(), true);
+        if (dto != null && dto.isEnabled()) {
+            String[] list = StringUtils.split(dto.getValue(), ",");
+
+            accounts = accounts.filter(
+                    i -> org.apache.commons.lang3.ArrayUtils.contains(list, i.getAccountType())
+            );
+        }
+        accounts.filter(i -> !accountConfigService.isAccountHidden(i.getAccountNumber()))
                 .filter(i -> !accountConfigService.isAccountRestrictedForView(i.getAccountNumber()))
                 .filter(i -> !accountConfigService.isAccountRestrictedForDebit(i.getAccountNumber()))
                 .filter(i -> !accountConfigService.isAccountRestrictedForCredit(i.getAccountNumber()))
@@ -364,9 +374,9 @@ public class AccountServiceImpl implements AccountService {
                 .filter(i -> !accountConfigService.isAccountSchemeTypeRestrictedForCredit(i.getSchemeType()))
                 .forEach(i -> accountsForDebitAndCredit.add(i));
 
+
         return accountsForDebitAndCredit;
     }
-
     @Override
     public List<AccountDTO> getAccountsAndBalances(String customerId) {
 

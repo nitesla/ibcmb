@@ -8,6 +8,7 @@ import longbridge.exception.PasswordException;
 import longbridge.forms.AlertPref;
 import longbridge.forms.CustChangePassword;
 import longbridge.forms.CustResetPassword;
+import longbridge.models.CorporateUser;
 import longbridge.models.RetailUser;
 import longbridge.models.User;
 import org.springframework.data.domain.Page;
@@ -101,6 +102,8 @@ public interface RetailUserService {
     String changeActivationStatus(Long userId) throws InternetBankingException;
 
 
+    void sendActivationCredentials(RetailUser user, String password);
+
     /**
      *Sets the password of the specified retail user
      * The password must meet the organisation's password policy if any one has been defined
@@ -122,7 +125,7 @@ public interface RetailUserService {
     String changePassword(RetailUser retailUser, CustChangePassword custChangePassword) throws PasswordException;
 
 
-    void sendPostActivateMessage(User user, String ... args );
+    void sendActivationMessage(RetailUser user );
 
     /**
      *Generates a password and send it to the specified user

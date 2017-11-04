@@ -20,11 +20,11 @@ import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.thymeleaf.context.Context;
 
 import javax.persistence.EntityManager;
 import java.math.BigDecimal;
@@ -117,54 +117,6 @@ public class CorporateServiceImpl implements CorporateService {
             throw new InternetBankingException(messageSource.getMessage("corporate.add.failure", null, locale), e);
         }
     }
-
-//    @Override
-//    public String addCorporate(CorporateDTO corporateDTO, CorporateUserDTO user) throws InternetBankingException {
-//
-//        Corporate corporate = corporateRepo.findByCustomerId(corporateDTO.getCustomerId());
-//
-//        if (corporate != null) {
-//            throw new DuplicateObjectException(messageSource.getMessage("corporate.exist", null, locale));
-//        }
-//
-//        CorporateUser corporateUser = corporateUserRepo.findFirstByUserName(user.getUserName());
-//        if (corporateUser != null) {
-//            throw new DuplicateObjectException(messageSource.getMessage("user.exists", null, locale));
-//        }
-//
-//        try {
-//            corporate = convertDTOToEntity(corporateDTO);
-//            corporate.setStatus("A");
-//            corporate.setCreatedOnDate(new Date());
-//            corporateUser = new CorporateUser();
-//            corporateUser.setFirstName(user.getFirstName());
-//            corporateUser.setLastName(user.getLastName());
-//            corporateUser.setUserName(user.getUserName());
-//            corporateUser.setEmail(user.getEmail());
-//            corporateUser.setPhoneNumber(user.getPhoneNumber());
-//            corporateUser.setAdmin(user.isAdmin());
-//            corporateUser.setAlertPreference(codeService.getByTypeAndCode("ALERT_PREFERENCE", "BOTH"));
-//            corporateUser.setCreatedOnDate(new Date());
-//            corporateUser.setStatus("A");
-//            Role role = roleRepo.findOne(Long.parseLong(user.getRoleId()));
-//            corporateUser.setRole(role);
-//            corporateUser.setCorporate(corporate);
-//            Corporate newCorporate = corporateRepo.save(corporate);
-//            corporateUser.setCorporate(newCorporate);
-//            CorporateUser corpUser = corporateUserRepo.save(corporateUser);
-//            createUserOnEntrustAndSendCredentials(corpUser);
-//            addAccounts(corporate);
-//
-//            logger.info("Corporate {} created", corporate.getName());
-//            return messageSource.getMessage("corporate.add.success", null, locale);
-//        } catch (Exception e) {
-//            if (e instanceof EntrustException) {
-//                throw new InternetBankingSecurityException(messageSource.getMessage("entrust.create.failure", null, locale));
-//            }
-//
-//            throw new InternetBankingException(messageSource.getMessage("corporate.add.failure", null, locale), e);
-//        }
-//    }
 
 
     @Override
@@ -393,12 +345,13 @@ public class CorporateServiceImpl implements CorporateService {
                 }
                 user.setEntrustId(entrustId);
                 user.setEntrustGroup(group);
-                String password = passwordPolicyService.generatePassword();
-                user.setPassword(passwordEncoder.encode(password));
-                user.setExpiryDate(new Date());
                 corporateUserRepo.save(user);
-                sendUserCredentials(user, password);
             }
+            String password = passwordPolicyService.generatePassword();
+            user.setPassword(passwordEncoder.encode(password));
+            user.setExpiryDate(new Date());
+            sendUserCredentials(user, password);
+
         }
     }
 
@@ -413,21 +366,27 @@ public class CorporateServiceImpl implements CorporateService {
         }
     }
 
-    @Async
     public void sendUserCredentials(CorporateUser user, String password) throws InternetBankingException {
 
-        String url = (hostUrl != null)? hostUrl:"";
-
+        String url = (hostUrl != null) ? hostUrl : "";
         String fullName = user.getFirstName() + " " + user.getLastName();
         Corporate corporate = user.getCorporate();
+
+        Context context = new Context();
+        context.setVariable("fullName", fullName);
+        context.setVariable("username", user.getUserName());
+        context.setVariable("username", user.getUserName());
+        context.setVariable("password", password);
+        context.setVariable("corporateId", corporate.getCorporateId());
+        context.setVariable("url", url);
+
+
         Email email = new Email.Builder()
                 .setRecipient(user.getEmail())
                 .setSubject(messageSource.getMessage("corporate.customer.create.subject", null, locale))
-                .setBody(String.format(messageSource.getMessage("corporate.customer.create.message", null, locale), fullName, user.getUserName(), password, corporate.getCorporateId(),url))
+                .setTemplate("mail/corpcreation")
                 .build();
-        new Thread(() -> {
-            mailService.send(email);
-        }).start();
+        mailService.sendMail(email, context);
     }
 
 

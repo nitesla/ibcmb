@@ -15,18 +15,18 @@ import static longbridge.utils.StringUtil.convertToJSON;
 public class SerializeUtil {
     public static JSONObject getPrettySerialJSON(AbstractEntity abstractEntity){
         JSONObject jsonObject = null;
-        try {
-            ObjectMapper prettyMapper = new ObjectMapper();
-            JsonSerializer<Object> serializer = ((PrettySerializer) (abstractEntity)).getAuditSerializer();
-            SimpleModule module = new SimpleModule();
-            module.addSerializer(abstractEntity.getClass(), serializer);
-            prettyMapper.registerModule(module);
-            String writeValueAsString = prettyMapper.writeValueAsString(abstractEntity);
-            System.out.println("the serialized data "+ writeValueAsString);
-            jsonObject = convertToJSON(writeValueAsString);
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-        }
+//        try {
+//            ObjectMapper prettyMapper = new ObjectMapper();
+//            JsonSerializer<Object> serializer = ((PrettySerializer) (abstractEntity)).getAuditSerializer();
+//            SimpleModule module = new SimpleModule();
+//            module.addSerializer(abstractEntity.getClass(), serializer);
+//            prettyMapper.registerModule(module);
+//            String writeValueAsString = prettyMapper.writeValueAsString(abstractEntity);
+//            System.out.println("the serialized data "+ writeValueAsString);
+//            jsonObject = convertToJSON(writeValueAsString);
+//        } catch (JsonProcessingException e) {
+//            e.printStackTrace();
+//        }
         return jsonObject;
     }
 }
