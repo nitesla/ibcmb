@@ -190,10 +190,11 @@ public class AdminUserServiceImpl implements AdminUserService {
                             throw new EntrustException(messageSource.getMessage("entrust.contact.failure", null, locale));
 
                         }
+
+                        user.setEntrustId(entrustId);
+                        user.setEntrustGroup(group);
+                        user = adminUserRepo.save(user);
                     }
-                    user.setEntrustId(entrustId);
-                    user.setEntrustGroup(group);
-                    user = adminUserRepo.save(user);
                 }
                 sendCreationMessage(user);
             }
@@ -239,8 +240,7 @@ public class AdminUserServiceImpl implements AdminUserService {
     }
 
 
-    @Override
-    public void sendActivationMessage(AdminUser user) {
+    private void sendActivationMessage(AdminUser user) {
 
             Email email = new Email.Builder()
                     .setRecipient(user.getEmail())
@@ -252,6 +252,27 @@ public class AdminUserServiceImpl implements AdminUserService {
 
     }
 
+    @Override
+    public void sendActivationCredentials(AdminUser user, String password) {
+
+
+        String adminUrl = (hostUrl != null) ? hostUrl + "/admin" : "";
+
+            String fullName = user.getFirstName() + " " + user.getLastName();
+            Context context = new Context();
+            context.setVariable("fullName",fullName);
+            context.setVariable("username", user.getUserName());
+            context.setVariable("password",password);
+            context.setVariable("adminUrl",adminUrl);
+
+        Email email = new Email.Builder()
+                .setRecipient(user.getEmail())
+                .setSubject(messageSource.getMessage("admin.activation.subject", null, locale))
+                .setTemplate("mail/adminactivation")
+                .build();
+
+            mailService.sendMail(email,context);
+    }
 
     @Override
     @Transactional
@@ -332,7 +353,6 @@ public class AdminUserServiceImpl implements AdminUserService {
         if ("I".equals(user.getStatus())) {
             throw new InternetBankingException(messageSource.getMessage("users.deactivated", null, locale));
         }
-
         try {
             sendResetMessage(user);
             logger.info("Admin user {} password reset successfully", user.getUserName());
@@ -470,8 +490,7 @@ public class AdminUserServiceImpl implements AdminUserService {
         return pageImpl;
     }
 
-
-    @Async
+    @Override
     public void generateAndSendCredentials(AdminUser user, Email email) {
 
         String adminUrl = (hostUrl != null) ? hostUrl + "/admin" : "";
@@ -491,12 +510,7 @@ public class AdminUserServiceImpl implements AdminUserService {
             context.setVariable("password",password);
             context.setVariable("adminUrl",adminUrl);
 
-
-            try {
-                mailService.sendMail(email,context);
-            } catch (MailException me) {
-                logger.error("Error sending mail to {}", user.getEmail(), me);
-            }
+            mailService.sendMail(email,context);
         }
 
     }

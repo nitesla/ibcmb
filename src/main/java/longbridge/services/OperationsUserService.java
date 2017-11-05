@@ -133,5 +133,6 @@ public interface OperationsUserService{
 
     String resetPassword(String username) throws InternetBankingException;
 
-    void  sendCredentialNotification(OperationsUser user);
+
+    void sendActivationCredentials(OperationsUser user, String password);
 }
