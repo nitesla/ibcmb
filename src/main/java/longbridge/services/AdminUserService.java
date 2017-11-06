@@ -71,7 +71,8 @@ public interface AdminUserService {
     String addUser(AdminUserDTO user) throws InternetBankingException;
 
 
-    void sendActivationMessage(AdminUser user);
+
+    void sendActivationCredentials(AdminUser user, String password);
 
     /**
      * * Deletes the admin user identified by the id

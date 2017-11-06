@@ -267,11 +267,7 @@ public class CorpUserVerificationServiceImpl implements CorpUserVerificationServ
                 userDTO.setCorporateName(corporate.getName());
             }
 
-            if (userDTO.isAuthorizer()){
-                userDTO.setCorpUserType(CorpUserType.AUTHORIZER);
-            }else {
-                userDTO.setCorpUserType(CorpUserType.INITIATOR);
-            }
+
             CorporateUser user = corporateUserService.convertDTOToEntity(userDTO);
 
 

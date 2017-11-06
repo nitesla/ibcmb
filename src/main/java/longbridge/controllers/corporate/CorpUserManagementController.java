@@ -221,7 +221,6 @@ public class CorpUserManagementController {
         }
 
         try {
-            logger.info("GOT HERE {} >>>>> ");
             CorporateUserDTO corporateUser = corporateUserService.getUser(corporateUserDTO.getId());
             if (!corporateUserDTO.getEmail().equals(corporateUser.getEmail())) {
                 Corporate corporate = corporateService.getCorp(Long.parseLong(corporateUserDTO.getCorporateId()));
@@ -241,22 +240,23 @@ public class CorpUserManagementController {
                 corporateUserDTO.setCorporateRole(corporateRole.getName() + " " + corporateRole.getRank());
             }
 
-            if (corporateUserDTO.isAuthorizer() == corporateUser.isAuthorizer() && corporateUserDTO.getCorporateRoleId().equals(corporateUser.getCorporateRoleId())){
+            if ( CorpUserType.AUTHORIZER.equals(corporateUserDTO.getCorpUserType()) && corporateUserDTO.getCorporateRoleId().equals(corporateUser.getCorporateRoleId())){
 
-                logger.info("GOT HERE {} ", corporateUserDTO.getCorporateRoleId());
                 if (makerCheckerService.isEnabled("UPDATE_USER_FROM_CORPORATE_ADMIN")){
-                    corpUserVerificationService.saveInitiator(corporateUserDTO, "UPDATE_USER_FROM_CORPORATE_ADMIN", "Edit an initiator by corporate Admin");
+                    corpUserVerificationService.saveAuthorizer(corporateUserDTO, "UPDATE_USER_FROM_CORPORATE_ADMIN", "Edit an authorizer by corporate Admin");
                 }else {
-                    corporateUserService.updateUserFromCorpAdmin(corporateUserDTO);
+                    String message =  corporateUserService.updateUserFromCorpAdmin(corporateUserDTO);
+                    redirectAttributes.addFlashAttribute("message", message);
+
                 }
 
             }else{
 
-                logger.info("GOT HERE {} ---- ");
                 if (makerCheckerService.isEnabled("UPDATE_USER_FROM_CORPORATE_ADMIN")){
-                    corpUserVerificationService.saveAuthorizer(corporateUserDTO, "UPDATE_USER_FROM_CORPORATE_ADMIN", "Edit an authorizer by corporate Admin");
+                    corpUserVerificationService.saveInitiator(corporateUserDTO, "UPDATE_USER_FROM_CORPORATE_ADMIN", "Edit an initiator by corporate Admin");
                 }else {
-                    corporateUserService.updateUserFromCorpAdmin(corporateUserDTO);
+                    String message = corporateUserService.updateUserFromCorpAdmin(corporateUserDTO);
+                    redirectAttributes.addFlashAttribute("message", message);
                 }
             }
 
@@ -277,7 +277,7 @@ public class CorpUserManagementController {
             return "corp/user/edit";
         }catch (InternetBankingException ibe) {
             result.addError(new ObjectError("error", ibe.getMessage()));
-            logger.error("Error creating corporate user", ibe);
+            logger.error("Error updating corporate user", ibe);
             model.addAttribute("failure", ibe.getMessage());
             return "corp/user/edit";
         }

@@ -90,8 +90,6 @@ public interface CorporateUserService{
     String changeCorpActivationStatus(Long userId) throws InternetBankingException;
 
 
-    void sendActivationMessage(User user);
-
     void sendActivationCredentials(CorporateUser user, String password);
 
     /**

@@ -74,13 +74,12 @@ public class OpsUserAdvisor {
     @After("isVerification() && isMerging() && isVerify() && args(user)")
     public void postOpsUserCreation(JoinPoint p, OperationsUser user) {
 
-        logger.info("Executing post ADD_OPS_USER operation");
         operationsUserService.createUserOnEntrustAndSendCredentials(user);
     }
 
     // this runs after execution
     @After("isVerification() && verified() && args(verificationDto)")
-    public void postAdminUserCreation2(JoinPoint p, VerificationDTO verificationDto) throws IOException {
+    public void postOpsUserStatusUpdate(JoinPoint p, VerificationDTO verificationDto) throws IOException {
 
         Verification verification = verificationRepo.findOne(verificationDto.getId());
         if (verification.getOperation().equals("UPDATE_OPS_STATUS")) {
@@ -92,14 +91,13 @@ public class OpsUserAdvisor {
             ObjectMapper objectMapper = new ObjectMapper();
             OperationsUser opsUser = objectMapper.readValue(verification.getOriginalObject(), OperationsUser.class);
             if ("A".equals(opsUser.getStatus())) {
-                String fullName = user.getFirstName() + " " + user.getLastName();
                 String password = passwordPolicyService.generatePassword();
                 user.setPassword(passwordEncoder.encode(password));
                 user.setExpiryDate(new Date());
                 passwordPolicyService.saveOpsPassword(user);
                 operationsUserRepo.save(user);
                 logger.info("Ops user {} status changed to {}",opsUser.getUserName(),opsUser.getStatus());
-                operationsUserService.sendActivationMessage(opsUser, fullName, user.getUserName(), password);
+                operationsUserService.sendActivationCredentials(opsUser, password);
             }
         }
 
