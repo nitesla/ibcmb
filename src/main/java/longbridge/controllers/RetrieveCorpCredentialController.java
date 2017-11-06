@@ -185,6 +185,7 @@ public @ResponseBody String getSecAns(WebRequest webRequest, HttpSession session
             context.setVariable("resetCode",tempPassword);
 
             Email email = new Email.Builder()
+                    .setRecipient(corporateUser.getEmail())
                     .setSubject(messageSource.getMessage("reset.password.subject", null, locale))
                     .setTemplate("mail/forgotpassword")
                     .build();
@@ -349,12 +350,18 @@ public @ResponseBody String getSecAns(WebRequest webRequest, HttpSession session
                     session.removeAttribute("corpSecQestnAndAns");
                     //Send Username to Email
 
+                    CorporateUser user = corporateUserService.getUserByName(userName);
+
+                    if(user == null){
+                        return "false";
+                    }
+
                     Context context = new Context();
-                    context.setVariable("fullName", firstName);
-                    context.setVariable("username", userName);
+                    context.setVariable("fullName", user.getFirstName()+" "+user.getLastName());
+                    context.setVariable("username", user.getUserName());
 
                     Email email = new Email.Builder()
-                            .setRecipient(userEmail)
+                            .setRecipient(user.getEmail())
                             .setSubject(messageSource.getMessage("retrieve.username.subject",null,locale))
                             .setTemplate("mail/usernameretrieval")
                             .build();

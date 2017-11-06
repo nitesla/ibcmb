@@ -60,6 +60,8 @@ public class FinancialInstitutionServiceImpl implements FinancialInstitutionServ
     @Override
     public FinancialInstitutionDTO convertEntityToDTO(FinancialInstitution financialInstitution) {
         FinancialInstitutionDTO financialInstitutionDTO = new FinancialInstitutionDTO();
+        financialInstitutionDTO.setId(financialInstitution.getId());
+        financialInstitutionDTO.setVersion(financialInstitution.getVersion());
         financialInstitutionDTO.setInstitutionCode(financialInstitution.getInstitutionCode());
         financialInstitutionDTO.setInstitutionType(financialInstitution.getInstitutionType());
         financialInstitutionDTO.setInstitutionName(financialInstitution.getInstitutionName());
