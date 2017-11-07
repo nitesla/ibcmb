@@ -48,7 +48,7 @@
                                         <ul class="dropdown-menu">
 
 
-                                            <li><a th:href="@{'/retail/transfer/international/' + ${loc.id} }">make a transfer</a>
+                                            <li><a class="useloader" th:href="@{'/retail/transfer/international/' + ${loc.id} }">make a transfer</a>
 
 
                                             </li>
@@ -64,7 +64,7 @@
                                 </tbody>
                             </table>
                             <br/>
-                            <a th:href="@{/retail/transfer/international/new}" class="btn">New Beneficiary</a>
+                            <a th:href="@{/retail/transfer/international/new}" class="btn useloader">New Beneficiary</a>
 
                            <!-- <button type="submit" class="btn btn-default" style="float: right">Add beneficiary</button>
                        --> </form>

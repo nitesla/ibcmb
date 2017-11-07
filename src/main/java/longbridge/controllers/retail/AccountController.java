@@ -240,6 +240,7 @@ import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
+import java.io.FileNotFoundException;
 import java.security.Principal;
 import java.text.DecimalFormat;
 import java.text.ParseException;
@@ -736,13 +737,14 @@ public class AccountController {
 			}else{
 				logger.info("statement list is empty");
 			}
-			RetailUser retailUser = retailUserService.getUserByName(principal.getName());
+//			RetailUser retailUser = retailUserService.getUserByName(principal.getName());
+			Account account = accountService.getAccountByAccountNumber(acctNumber);
 			DecimalFormat formatter = new DecimalFormat("#,###.00");
 			modelMap.put("datasource", list);
 			modelMap.put("format", "pdf");
 			modelMap.put("summary.accountNum",acctNumber);
-			modelMap.put("summary.customerName",retailUser.getFirstName()+" "+retailUser.getLastName());
-			modelMap.put("summary.customerNo", retailUser.getCustomerId());
+			modelMap.put("summary.customerName",account.getAccountName());
+			modelMap.put("summary.customerNo", account.getCustomerId());
 
 			double amount = Double.parseDouble(accountStatement.getOpeningBalance());
 			modelMap.put("summary.openingBalance", formatter.format(amount));
@@ -786,7 +788,7 @@ public class AccountController {
 			modelMap.put("today", today);
 			modelMap.put("imagePath", imagePath);
 //			ModelAndView modelAndView = new ModelAndView(view, modelMap);
-			ModelAndView modelAndView = new ModelAndView("rpt_account-statement3", modelMap);
+			ModelAndView modelAndView = new ModelAndView("rpt_account-statement", modelMap);
 			return modelAndView;
 		} catch (ParseException e) {
 			logger.warn("didn't parse date", e);

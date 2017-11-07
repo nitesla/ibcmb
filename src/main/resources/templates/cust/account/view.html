@@ -251,6 +251,8 @@
 //        $('#tranDetails_paginate').hide();
 //        $('#tranDetails_length').hide();
         $("#btn-find").on("click", function(e) {
+            console.log("the start "+$('#start').val());
+            console.log("the end "+$('#endDate').val());
     if($('#start').val() != '' && $('#endDate').val() !='' ) {
     if (dateDifference(parseDate($('#start').val()), parseDate($('#endDate').val()))) {
         showSpinner();
@@ -258,7 +260,7 @@
         var row = table.rows().remove().draw();
         e.preventDefault();
         $.ajax({
-            "url": "viewstatement/display/data",
+            "url": "/retail/account/viewstatement/display/data",
             "type": "GET",
             "data": {
                 acctNumber: $('[name=acctNumber]').val(),
@@ -329,7 +331,7 @@ showSpinner();
                     "toDate" : $('[name=toDate]').val(),
                     "tranType" : $('[name=tranType]').val()} ;
             console.log("data "+data);
-            $.download("downloadstatement", "data", data);
+            $.download("/retail/account/downloadstatement", "data", data);
 hideSpinner();
         });
 
@@ -374,7 +376,7 @@ function nextData() {
 //    console.log("field value "+valu);
     showSpinner();
     $.ajax({
-        "url":"viewstatement/display/data/next",
+        "url":"/retail/account/viewstatement/display/data/next",
         "type" : "GET",
         "data" :  {
             acctNumber : $('[name=acctNumber]').val(),
@@ -384,13 +386,6 @@ function nextData() {
             state : "forward"
         },success: function (result) {
             if (result.details != null) {
-//                resetButton();
-//                        var detialsList = JSON.parse(result);
-//                console.log("the result next"+result);
-//                $('#tranDetails').DataTable().fnClearTable();
-//                $('#tranDetails').dataTable().destroy();
-//                $('#tranDetails tbody').empty();
-
                 var contactsTab2 = $('#tranDetails').DataTable();
                 var row  = contactsTab2.rows().remove().draw();
                 for (var key in result.details) {
@@ -431,17 +426,12 @@ function nextData() {
 //    console.log("field value "+valu);
         showSpinner();
     $.ajax({
-        "url":"viewstatement/display/data/back",
+        "url":"/retail/account/viewstatement/display/data/back",
         "type" : "GET",
         "data" :  {
             state : "backward"
         },success: function (result) {
             if (result.details != null) {
-//                resetButton();
-//                        var detialsList = JSON.parse(result);
-//                console.log("the result next"+result);
-//                $('#tranDetails').DataTable().fnClearTable();
-//                $('#tranDetails').dataTable().destroy();
                 var contactsTab2 = $('#tranDetails').DataTable();
                 var row  = contactsTab2.rows().remove().draw();
                                         for (var key in result.details) {

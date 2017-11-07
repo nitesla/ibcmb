@@ -92,7 +92,7 @@ public class RevisedEntitiesUtil {
             refIds.add(Integer.parseInt(rev));
         }
         List<String> itemList =  new ArrayList<>();
-        List<String> itemList2 =  new ArrayList<>();
+        List<String> itemIds =  new ArrayList<>();
         Map<String,List<String>> mergedDetails =  new HashMap<>();
         entityName = getOracleEntity(entityName);
         String auditEntity = entityName + "_AUD";
@@ -114,6 +114,9 @@ public class RevisedEntitiesUtil {
                     if(entityDetails.get(0).get(item)!=null)
                     {
                         itemList.add(entityDetails.get(0).get(item).toString());
+                        if(item.equalsIgnoreCase("id")){
+                            itemIds.add(entityDetails.get(0).get(item).toString());
+                        }
                     }
 
                     else
@@ -127,24 +130,29 @@ public class RevisedEntitiesUtil {
                     if(entityName.contains("Beneficiary")) {
                         entityDetails.set(1,getCurrentEntityDetails(beneficiaryTableName, (BigDecimal) entityDetails.get(1).get("ID")));
                     }
+                    itemList.clear();
                 for (String item:entityDetails.get(1).keySet())
                 {
                     if(entityDetails.get(1).get(item)!=null)
                     {
-
-                        itemList2.add(entityDetails.get(1).get(item).toString());
+                        if(item.equalsIgnoreCase("id")){
+                            itemIds.add(entityDetails.get(0).get(item).toString());
+                        }
+                        itemList.add(entityDetails.get(1).get(item).toString());
                     }
 
                     else{
-                        itemList2.add("");
+                        itemList.add("");
                     }
 
                 }
-                mergedDetails.put("currentDetails",itemList2);
+                mergedDetails.put("currentDetails",itemList);
                 }else {
                     mergedDetails.put("currentDetails",null);
                 }
                 mergedDetails.put("keys",new ArrayList<>(entityDetails.get(0).keySet()));
+            logger.info("the selectedItemId {}",itemIds);
+                mergedDetails.put("selectedItemId",itemIds);
 
         }
 

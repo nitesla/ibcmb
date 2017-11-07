@@ -34,7 +34,7 @@
                             <tr>
 
                                 <th>Amount</th>
-                                <td th:text="${corpTransferRequest.amount}"></td>
+                                <td th:text="${#numbers.formatDecimal(corpTransferRequest.amount, 1, 'COMMA', 2, 'POINT')}"></td>
 
                             </tr>
                             <tr>
@@ -59,7 +59,7 @@
                                 <!--<input type="text" name="token" placeholder="" class="form-control full-width"/>-->
                                 <br/>
                                 <div class="form-group">
-                                    <button type="submit" class="btn btn-link required-step">Proceed</button>
+                                    <button type="submit" class="btn btn-link required-step useloader">Proceed</button>
                                     <button type="button" onclick="cancel()" class='btn btn-link less-required'>
                                         Cancel
                                     </button>

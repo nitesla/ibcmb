@@ -42,7 +42,7 @@
                         <tr>
 
                             <th>Amount</th>
-                            <td th:text="${transferRequest.amount}"></td>
+                            <td th:text="${#numbers.formatDecimal(transferRequest.amount, 1, 'COMMA', 2, 'POINT')}"></td>
 
                         </tr>
                         <tr>
@@ -64,7 +64,7 @@
 
                         <div class="form-group col-xs-12   no-pad-left ">
                             <!--<a style="cursor: pointer;" onclick="goBack()" >Modify</a>-->
-                            <button type="submit" class="btn btn-link required-step">Proceed</button>
+                            <button type="submit" class="btn btn-link required-step useloader">Proceed</button>
 
                             <button type="button" onclick="cancel();" class='btn btn-link less-required my-buttons'>Cancel</button>
 

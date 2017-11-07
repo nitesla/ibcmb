@@ -161,6 +161,7 @@
 
     var id;
     var className = [[${classname}]];
+    var selectedItemId ;
     var ids=[];
     var entityId = "";
 
@@ -180,6 +181,7 @@
         if(this.checked) {
 //            alert(ids.length);
             console.log("gate " + ids);
+            console.log("selected id " + selectedItemId);
 
             if (ids.length >= 2) {
                 $(row).find('input[type="checkbox"]').prop('checked', false);
@@ -226,7 +228,9 @@
         var itemid = [[${itemId}]];
         var classRef = [[${classname}]];
         entityId = [[${entityId}]];
+        selectedItemId = [[${selectedItemId}]];
         console.log("the entity id "+entityId);
+        console.log("the selectedItemId id "+selectedItemId);
         var dataSet = [{"data":"kkk.kkk"},{"data":"ppp"}];
         var table = $('#auditview').DataTable
         ({

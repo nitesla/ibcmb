@@ -232,7 +232,7 @@ public class CorpAccountController {
             model.addAttribute("acct", id);
             model.addAttribute("transRequestList", transRequestList);
             model.addAttribute("accountList", accountList);
-            logger.info("Last 10 Transaction {}", transRequestList);
+//            logger.info("Last 10 Transaction {}", transRequestList);
             return "corp/account/accountstatement";
         }
         return "redirect:/corporate/dashboard";
@@ -286,6 +286,16 @@ public class CorpAccountController {
     @GetMapping("/viewstatement")
     public String getViewOnly(Model model, Principal principal) throws ParseException {
 //logger.info("viewstatement");
+        return "corp/account/view";
+    }
+    @GetMapping("/viewstatement/{id}")
+    public String getViewOnlyById(@PathVariable Long id, Model model, Principal principal) throws ParseException {
+//logger.info("viewstatement");
+        CorporateUser user = corporateUserService.getUserByName(principal.getName());
+        Iterable<AccountDTO> accounts = accountService.getAccountsForDebitAndCredit(user.getCorporate().getCustomerId());
+        AccountDTO accountDTO = accountService.getAccount(id);
+        model.addAttribute("acctNum",accountDTO.getAccountNumber());
+        model.addAttribute("accounts",accounts);
         return "corp/account/view";
     }
 
@@ -403,8 +413,6 @@ public class CorpAccountController {
     public ModelAndView downloadStatementData(ModelMap modelMap, DataTablesInput input, String acctNumber,
 
                                               String fromDate, String toDate, String tranType, Principal principal, RedirectAttributes redirectAttributes) {
-        // Pageable pageable = DataTablesUtils.getPageable(input);
-//        logger.info("the acctNumber{} fromDate {} toDate {} tranType {} ",acctNumber,fromDate,toDate,tranType);
         Date from = null;
         Date to = null;
         DataTablesOutput<TransactionDetails> out = new DataTablesOutput<TransactionDetails>();
@@ -413,21 +421,18 @@ public class CorpAccountController {
         try {
             from = format.parse(fromDate);
             to = format.parse(toDate);
-//            JasperReportsPdfView view = new JasperReportsPdfView();
-//            view.setUrl("classpath:jasperreports/rpt_account-statement3.jrxml");
-//            view.setApplicationContext(appContext);
             AccountStatement accountStatement = integrationService.getFullAccountStatement(acctNumber, from, to, tranType);
-
             out.setDraw(input.getDraw());
             List<TransactionDetails> list = accountStatement.getTransactionDetails();
-            CorporateUser corporateUser = corporateUserService.getUserByName(principal.getName());
+            Account account = accountService.getAccountByAccountNumber(acctNumber);
+//            CorporateUser corporateUser = corporateUserService.getUserByName(principal.getName());
             DecimalFormat formatter = new DecimalFormat("#,###.00");
 //            logger.info("list {}", list);
             modelMap.put("datasource", list);
             modelMap.put("format", "pdf");
             modelMap.put("summary.accountNum", acctNumber);
-            modelMap.put("summary.customerName", corporateUser.getFirstName() + " " + corporateUser.getLastName());
-            modelMap.put("summary.customerNo", corporateUser.getCorporate().getCustomerId());
+            modelMap.put("summary.customerName", account.getAccountName());
+            modelMap.put("summary.customerNo", account.getCustomerId());
             double amount = Double.parseDouble(accountStatement.getOpeningBalance());
             modelMap.put("summary.openingBalance", formatter.format(amount));
             // the total debit and credit is referred as total debit count and credit count
@@ -475,7 +480,7 @@ public class CorpAccountController {
             Date today = new Date();
             modelMap.put("today", today);
             modelMap.put("imagePath", imagePath);
-            ModelAndView modelAndView = new ModelAndView("rpt_account-statement3", modelMap);
+            ModelAndView modelAndView = new ModelAndView("rpt_account-statement", modelMap);
             return modelAndView;
         } catch (ParseException e) {
             logger.warn("didn't parse date", e);

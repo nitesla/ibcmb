@@ -47,6 +47,7 @@ public class MailServiceImpl implements MailService {
             messageHelper.setTo(recipient);
             messageHelper.setSubject(subject);
             messageHelper.setText(message);
+
         };
 
         logger.info("Trying to send mail to {}", recipient);
