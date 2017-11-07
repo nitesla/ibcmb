@@ -60,8 +60,6 @@
     <script>
 
         $(document).ready(function () {
-
-
                 $('.tt').each(function () {
                     var sth = $(this).find(".bal").html();
                     $(this).find(".bal").html(parseFloat(sth).toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,'));

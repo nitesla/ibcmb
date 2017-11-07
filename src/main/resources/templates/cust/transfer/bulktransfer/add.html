@@ -129,6 +129,20 @@
                 { "data": "preferredName" },
                 { "data": "amount" },
                 { "data": "narration" }
+            ],"columnDefs" : [
+                {
+                    "targets" : 5,
+                    "data" : "amount",
+                    "render" : function(data, type,full, meta) {
+                        if (type === 'display') {
+                            if(data == null)
+                                return data;
+                            var twoPlacedFloat = parseFloat(data).toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,');
+                            return twoPlacedFloat;
+                        }
+                        return data;
+                    }
+                }
             ] });
 
 

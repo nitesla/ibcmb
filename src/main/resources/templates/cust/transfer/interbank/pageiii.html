@@ -45,13 +45,13 @@
                             <tr>
 
                                 <th>Amount</th>
-                                <td th:text="${transferRequest.amount}"></td>
+                                <td th:text="${#numbers.formatDecimal(transferRequest.amount, 1, 'COMMA', 2, 'POINT')}"></td>
 
                             </tr>
                             <tr>
 
                                 <th>Charge</th>
-                                <td th:text="${charge}"></td>
+                                <td th:text="${#numbers.formatDecimal(charge, 1, 'COMMA', 2, 'POINT')}"></td>
 
                             </tr>
                             <tr>
@@ -91,7 +91,7 @@
 
                         <div class="form-group col-xs-12 no-pad-left">
                             <!--<input value="Modify" style="cursor: pointer;" type="button" onclick="history.go(-1);" />-->
-                            <button type="submit" class="btn btn-link required-step my-buttons">Proceed</button>
+                            <button type="submit" class="btn btn-link required-step my-buttons useloader">Proceed</button>
                             <button type="button" class="btn btn-link less-required my-buttons" onclick="cancel();">Cancel</button>
                             <button type='button' class='btn btn-link less-required my-buttons' onclick="edit();">Modify</button>
 

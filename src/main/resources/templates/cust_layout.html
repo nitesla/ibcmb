@@ -305,7 +305,7 @@
             <div class="col-md-6 col-xs-12">
                 <ul class="list_group">
                     <li><a href="#" target="_blank">Privacy policy</a></li>
-                    <li><a href="#" target="_blank">Disclaimer</a></li>
+                    <!--<li><a href="#" target="_blank">Disclaimer</a></li>-->
                     <li><a href="#" target="_blank">Terms &amp; Conditions</a></li>
                 </ul>
 
@@ -339,6 +339,10 @@
 
         $(document).ready(function () 
         {
+            $(".useloader").click(function(){
+                showSpinner();
+//            alert("The paragraph was clicked.");
+            });
             $('[data-toggle="tooltip"]').tooltip();
             $('.datepicker').datepicker({
             autoclose: true,

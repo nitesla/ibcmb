@@ -70,7 +70,7 @@
                             <tr>
 
                                 <th>Amount</th>
-                                <td th:text="${corpTransRequest.amount}"></td>
+                                <td th:text="${#numbers.formatDecimal(corpTransRequest.amount, 1, 'COMMA', 2, 'POINT')}"></td>
 
                             </tr>
 
@@ -189,6 +189,20 @@
                 { "data": "beneficiaryAccountName" },
                 { "data": "financialInstitution.institutionName" },
                 { "data": "amount" }
+            ],"columnDefs" : [
+                {
+                    "targets" : 3,
+                    "data" : "amount",
+                    "render" : function(data, type,full, meta) {
+                        if (type === 'display') {
+                            if(data == null)
+                                return data;
+                            var twoPlacedFloat = parseFloat(data).toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,');
+                            return twoPlacedFloat;
+                        }
+                        return data;
+                    }
+                }
             ] });
 
         table.on('select', function() {
