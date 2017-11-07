@@ -34,7 +34,7 @@
         <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
     <![endif]-->
 
-    <div class='spinner-box'><span id="rtstatementspinner"  hidden="true" class="spinnerLoader" ><i class="fa fa-spinner fa-pulse fa-5x fa-fw spinnerClass" aria-hidden="true" ></i><p class=' text-bold spinner-tag'>Loading... Please Wait</p></span>
+    <div class='spinner-box'><span id="rtstatementspinner"  hidden="true" class="spinnerLoader" ><i class="fa fa-spinner fa-pulse fa-5x fa-fw spinnerClass" aria-hidden="true" ></i><p class=' text-bold spinner-tag'>Processing... Please Wait</p></span>
     </div>        
 
 
@@ -316,8 +316,10 @@
                     <div class="col-sm-6 col-xs-12 footer-mobile no-pad-left no-pad-right">
                         <ul class="footer-links ">
                             <li><a href="/policy" target="_blank">Privacy policy</a></li>
+                            <!--<li><a href="#" target="_blank">Disclaimer</a></li>-->
                             <li><a href="/terms" target="_blank">Terms &amp; Conditions</a></li>
                         </ul>
+
                     </div>
                     <div class="col-sm-6  col-xs-12  footer-links footer-mobile  no-pad-left no-pad-right">
                         <p class=' '> &copy; 2017 - Coronation Merchant Bank.<span class="hidden-xs"> All rights reserved</span></p>
@@ -429,6 +431,10 @@
 
         $(document).ready(function ()
         {
+            $(".useloader").click(function(){
+                showSpinner();
+//            alert("The paragraph was clicked.");
+            });
             showPop('.errors');
 
             $('[data-toggle="tooltip"]').tooltip();

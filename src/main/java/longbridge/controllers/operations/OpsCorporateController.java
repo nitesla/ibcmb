@@ -976,13 +976,12 @@ public class OpsCorporateController {
 
             logger.debug("Corporate users: {}", corporateUsers.toString());
 
-
             if (session.getAttribute("corporateRequest") != null) {
                 CorporateRequestDTO corporateRequestDTO = (CorporateRequestDTO) session.getAttribute("corporateRequest");
                 corporateRequestDTO.setCorporateUsers(corporateUsers);
                 model.addAttribute("corporate", corporateRequestDTO);
-
                 logger.debug("Corporate Request: {}", corporateRequestDTO);
+
                 if (makerCheckerService.isEnabled("ADD_CORPORATE")) {
                     String message = verificationService.add(corporateRequestDTO, "ADD_CORPORATE", "Adding Corporate Entity");
                     redirectAttributes.addFlashAttribute("message", message);

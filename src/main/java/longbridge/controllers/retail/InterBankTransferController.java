@@ -190,7 +190,7 @@ public class InterBankTransferController {
 
         if (request.getSession().getAttribute("NIP") != null) {
             String type = (String) request.getSession().getAttribute("NIP");
-            if (type.equalsIgnoreCase("RTGS")) {
+            if ("RTGS".equalsIgnoreCase(type)) {
                 transferRequestDTO.setTransferType(TransferType.RTGS);
                 charge = transferUtils.calculateFee(transferRequestDTO.getAmount(), "RTGS");
                 transferRequestDTO.setCharge(charge);
@@ -261,7 +261,7 @@ public class InterBankTransferController {
     @PostMapping("/edit")
     public String editTransfer(@ModelAttribute("transferRequest") TransferRequestDTO transferRequestDTO, Model model, HttpServletRequest request) {
         String type = (String) request.getSession().getAttribute("NIP");
-        if (type.equalsIgnoreCase("RTGS")) {
+        if ("RTGS".equalsIgnoreCase(type)) {
             transferRequestDTO.setTransferType(TransferType.RTGS);
 
 
@@ -296,9 +296,7 @@ public class InterBankTransferController {
             StreamSupport.stream(accounts.spliterator(), false)
                     .filter(Objects::nonNull)
                     .filter(i -> "NGN".equalsIgnoreCase(i.getCurrencyCode()))
-
                     .forEach(i -> accountList.add(i));
-
             model.addAttribute("accountList", accountList);
 
 

@@ -1,7 +1,6 @@
 package longbridge;
 
 
-import longbridge.config.audits.RevisedEntitiesUtil;
 import longbridge.repositories.*;
 import longbridge.services.*;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
@@ -79,10 +78,6 @@ public class InternetbankingApplication extends SpringBootServletInitializer imp
 
     @Override
     public void run(String... strings) throws Exception {
-
-        //passwordPolicyService.getPasswordRules().stream().forEach(System.out::println);
-
-
     }
 
 

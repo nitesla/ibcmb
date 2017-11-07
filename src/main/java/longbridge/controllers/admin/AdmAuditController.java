@@ -275,19 +275,15 @@ RevisedEntitiesUtil entitiesUtil = new RevisedEntitiesUtil();
     @GetMapping("/{revisionId}/{classname}/{entityId}/view/details/compare")
     public String compareEntityDetailsOfId(@PathVariable String[] revisionId,@PathVariable String classname,@PathVariable String entityId,Model model)
     {
-//        logger.info("compare");
         model.addAttribute("classname",classname);
         model.addAttribute("itemId",revisionId[0]);
         Map<String,List<String>> entityPastDetails = RevisedEntitiesUtil.getEntityPastDetails(classname, revisionId);
         List<String> keys = entityPastDetails.get("keys");
-        logger.info("entity details is {} @@@@@ ", keys);
         model.addAttribute("entityId",entityId);
-        logger.info("the pastDetails {}",entityPastDetails.get("pastDetails"));
-        logger.info("the currentDetails {}",entityPastDetails.get("currentDetails"));
         model.addAttribute("pastDetails", entityPastDetails.get("pastDetails"));
         model.addAttribute("currentDetails",(entityPastDetails.get("currentDetails")));
         model.addAttribute("headers", keys);
-        model.addAttribute("headersSize",(keys.size()-1));
+        model.addAttribute("selectedItemId", entityPastDetails.get("selectedItemId"));
 
         return  "adm/audit/new/entityIdDetails";
     }

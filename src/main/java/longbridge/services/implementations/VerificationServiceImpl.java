@@ -211,7 +211,6 @@ public class VerificationServiceImpl implements VerificationService {
 
         if (object instanceof PrettySerializer) {
             JsonSerializer<Object> serializer = ((PrettySerializer) (object)).getSerializer();
-
             SimpleModule module = new SimpleModule();
             module.addSerializer(object.getClass(), serializer);
             prettyMapper.registerModule(module);
