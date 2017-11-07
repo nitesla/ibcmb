@@ -6,6 +6,7 @@ import longbridge.exception.PasswordException;
 import longbridge.forms.ChangeDefaultPassword;
 import longbridge.forms.ChangePassword;
 import longbridge.models.AdminUser;
+import longbridge.models.Email;
 import longbridge.models.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -70,7 +71,8 @@ public interface AdminUserService {
     String addUser(AdminUserDTO user) throws InternetBankingException;
 
 
-    void sendActivationMessage(User user, String... args);
+
+    void sendActivationCredentials(AdminUser user, String password);
 
     /**
      * * Deletes the admin user identified by the id
@@ -110,15 +112,12 @@ public interface AdminUserService {
     @PreAuthorize("hasAuthority('CHANGE_ADMIN_USER_PASSWD')")
     String changePassword(AdminUser user, ChangePassword changePassword) throws PasswordException;
 
-    /**
-     * Generates and sends password to an admin user
-     * @param user the admin user
-     */
-    boolean generateAndSendPassword(AdminUser user);
+
 
     @PreAuthorize("hasAuthority('CHANGE_ADMIN_USER_PASSWD')")
     String changeDefaultPassword(AdminUser user, ChangeDefaultPassword changePassword) throws PasswordException;
 
     String resetPassword(String username) throws PasswordException;
-     void sendCredentialNotification(AdminUser user);
+
+    void generateAndSendCredentials(AdminUser user, Email email);
 }

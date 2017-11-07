@@ -3,6 +3,7 @@ package longbridge.services.implementations;
 import longbridge.dtos.LocalBeneficiaryDTO;
 import longbridge.exception.DuplicateObjectException;
 import longbridge.exception.InternetBankingException;
+import longbridge.models.Email;
 import longbridge.models.LocalBeneficiary;
 import longbridge.models.RetailUser;
 import longbridge.models.User;
@@ -25,6 +26,7 @@ import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -52,8 +54,6 @@ public class LocalBeneficiaryServiceImpl implements LocalBeneficiaryService {
     @Value("${bank.code}")
     private String bankCode;
 
-    @Autowired
-    private TemplateEngine templateEngine;
 
     @Autowired
     public LocalBeneficiaryServiceImpl(LocalBeneficiaryRepo localBeneficiaryRepo) {
@@ -160,10 +160,8 @@ public class LocalBeneficiaryServiceImpl implements LocalBeneficiaryService {
              if (true) {
                 String preference = user.getAlertPreference().getCode();
 
-                 Context context = new Context();
+
                  String customerName = user.getFirstName()+" "+user.getLastName();
-                 context.setVariable("customerName",customerName);
-                 context.setVariable("beneficiaryName",beneficiary);
 
 
                  String smsMessage = String.format(messageSource.getMessage("beneficiary.alert.message", null, locale),customerName,beneficiary);
@@ -173,14 +171,12 @@ public class LocalBeneficiaryServiceImpl implements LocalBeneficiaryService {
                     integrationService.sendSMS(smsMessage,user.getPhoneNumber(),  alertSubject);
 
                 } else if ("EMAIL".equalsIgnoreCase(preference)) {
-                    String emailMessage = templateEngine.process("mail/beneficiary.html", context);
-                    mailService.sendHtml(user.getEmail(),alertSubject,emailMessage);
+                    sendMail(user,alertSubject,beneficiary);
 
                 } else if ("BOTH".equalsIgnoreCase(preference)) {
-                    String emailMessage = templateEngine.process("mail/beneficiary.html", context);
 
                     integrationService.sendSMS(smsMessage,user.getPhoneNumber(),  alertSubject);
-                    mailService.sendHtml(user.getEmail(),alertSubject,emailMessage);
+                    sendMail(user,alertSubject,beneficiary);
                 }
 
             }
@@ -188,6 +184,20 @@ public class LocalBeneficiaryServiceImpl implements LocalBeneficiaryService {
             logger.error("EXCEPTION OCCURRED {}", e);
         }
 
+    }
+
+    private void sendMail(User user, String subject, String beneficiary){
+
+        String fullName = user.getFirstName()+" "+user.getLastName();
+        Context context = new Context();
+        context.setVariable("fullName",fullName);
+        context.setVariable("beneficiaryName",beneficiary);
+
+        Email email = new Email.Builder().setRecipient(user.getEmail())
+                .setSubject(subject)
+                .setTemplate("mail/beneficiary.html")
+                .build();
+        mailService.sendMail(email,context);
     }
 
 }

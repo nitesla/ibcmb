@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{mail/template}">
+
+
 <head>
     <meta name="viewport" content="width=device-width"  initial-scale="1.0" />
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
@@ -15,7 +17,7 @@
 
                     <tr>
                         <td class="alert alert-warning" style="font-family: 'FedraSansStdBook',Arial,sans-serif; font-size: 16px; vertical-align: top; color: #003056; font-weight: 500; border-radius: 3px 3px 0 0; background-color: #ffffff; margin: 0; padding: 0 20px 20px 20px;" bgcolor="#fffff" valign="top">
-                            <strong style="display: inline-block; text-align: left; ">Notification - New Beneficiary</strong>
+                            <strong style="display: inline-block; text-align: left; ">Notification - Creation on Internet Banking Platform</strong>
                         </td>
                     </tr>
                     <tr style="font-family: FedraSansStdLight,Arial,sans-serif; box-sizing: border-box; font-size: 14px; margin: 0;">
@@ -25,23 +27,16 @@
                                 <tr style="font-family: 'FedraSansStdBook',Arial,sans-serif; box-sizing: border-box; font-size: 14px; margin: 0;">
                                     <td class="content-block" style="font-family: 'FedraSansStdBook',Arial,sans-serif; box-sizing: border-box; font-size: 14px; color: #003056; vertical-align: top; margin: 0; padding: 0 0 20px;" valign="top">
                                         Dear <span th:text="${fullName}"></span>,
-                                        <p>
-                                            You have successfully added a new beneficiary to your beneficiary list on the Internet
-                                            banking platform.
-                                        </p>
-                                        <p>
-                                            Please see details below:
-                                        </p>
 
-                                        <p>
-                                            Name: <span th:text="${beneficiaryName}"></span>
-                                        </p>
 
-                                        <p>
-                                            If you did not initiate this action, please immediately contact Coronation Customer Care on
-                                            08188314939 or email cs@coronationmb.com
+                                        <p>You have been successfully created on the Internet banking platform.</p>
+                                        <p>You can log in with the following credentials:</p>
+                                        <p><strong>Username: <span th:text="${username}"></span></strong></p>
+                                        <p><strong>Password: <span th:text="${password}"></span></strong></p>
+                                        <p><strong>Corporate ID: <span th:text="${corporateId}"></span></strong></p>
+                                        <p>URL: <a th:href="${url}" th:text="${url}"></a></p>
+                                        <p> You are required to change your password on first time log on</p>
 
-                                        </p>
                                     </td>
                                 </tr>
 
@@ -55,6 +50,7 @@
                             </table>
                         </td>
                     </tr>
+
 </div>
 </body>
 </html>

@@ -14,6 +14,8 @@ public class Email {
     private String messageBody;
     private String[] ccList;
     private List<EmailAlertAttachment> emailAttachments;
+    private String template;
+
 
 
     public Email(){}
@@ -27,6 +29,7 @@ public class Email {
         this.setMessageBody(builder.messageBody);
         this.setCcList(builder.ccList);
         this.setEmailAttachments(builder.emailAttachments);
+        this.setTemplate(builder.template);
     }
 
     public static class Builder
@@ -37,6 +40,7 @@ public class Email {
         private String[] receiverEmails;
         private String messageSubject;
         private String messageBody;
+        private String template;
         private String[] ccList;
         private List<EmailAlertAttachment> emailAttachments;
 
@@ -78,6 +82,13 @@ public class Email {
         public Builder setAttachments(List<EmailAlertAttachment> attachments) {
 
             this.emailAttachments=attachments;
+            return this;
+        }
+
+
+
+        public Builder setTemplate(String template) {
+            this.template = template;
             return this;
         }
 
@@ -143,5 +154,13 @@ public class Email {
 
     public void setEmailAttachments(List<EmailAlertAttachment> emailAttachments) {
         this.emailAttachments = emailAttachments;
+    }
+
+    public String getTemplate() {
+        return template;
+    }
+
+    public void setTemplate(String template) {
+        this.template = template;
     }
 }

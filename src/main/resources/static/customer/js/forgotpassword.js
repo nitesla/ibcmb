@@ -144,7 +144,7 @@ function sendGenPassword() {
         success:function(data1){
             result = ''+String(data1);
             if(result == "true"){
-                $('#successMess').text("A temporary password has been sent to your email address.");
+                $('#successMess').text("A reset code has been sent to your email address.");
                 $('#myLoader').modal('hide');
                 $('#myModalSuccess').modal('show');
                

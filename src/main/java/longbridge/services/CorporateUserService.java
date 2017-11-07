@@ -90,7 +90,7 @@ public interface CorporateUserService{
     String changeCorpActivationStatus(Long userId) throws InternetBankingException;
 
 
-    void sendPostActivateMessage(User user, String ... args );
+    void sendActivationCredentials(CorporateUser user, String password);
 
     /**
      * resets the password for the specified corporate user
@@ -109,7 +109,6 @@ public interface CorporateUserService{
     @PreAuthorize("hasAuthority('DELETE_CORPORATE_USER')")
     String deleteUser(Long userId) throws InternetBankingException;
 
-    void sendPostCreationMessage(User user, String fullName, String username, String password, String corporateId);
 
     /**
      * Replaces the old password with the new password for the specified corporate user.
