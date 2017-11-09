@@ -7,10 +7,12 @@ import longbridge.models.Account;
 import longbridge.models.Corporate;
 import longbridge.models.CorporateUser;
 import longbridge.models.RetailUser;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Created by Longbridge on 6/24/2017.
  */
+@Transactional
 public interface CronJobService {
     void updateAllAccountName(Account account, AccountDetails accountDetails) throws InternetBankingException;
     boolean updateRetailUserDetails() throws InternetBankingException;

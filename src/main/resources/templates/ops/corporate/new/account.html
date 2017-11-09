@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="layout :: site-head">
+</head>
+
+<body class="nav-md">
+<div class="container body">
+    <div class="main_container">
+        <div class="col-md-3 left_col">
+            <div class="left_col scroll-view">
+
+                <div th:replace="layout :: ops-menu"></div>
+                <div th:replace="layout :: menu-footer-ops"></div>
+
+            </div>
+        </div>
+        <div th:replace="layout :: ops-top-nav"></div>
+
+        <!-- page content -->
+        <div class="right_col" role="main">
+            <div class="">
+                <div class="page-title">
+                    <div class="title_left">
+                        <h3 th:text="${corporate.customerName}"></h3>
+                    </div>
+
+                </div>
+
+                <div class="clearfix"></div>
+
+                <div class="row">
+                    <div class="col-md-12 col-sm-12 col-xs-12">
+                        <div class="x_panel">
+                            <div class="x_title">
+                                <h2>Corporate Identification</h2>
+
+                                <div class="clearfix"></div>
+                            </div>
+                            <div class="x_content">
+                                <div class="ibox-content">
+                                    <form method="post" class="form-horizontal" th:action="@{/ops/corporates/account/new/add}"
+                                          th:object="${corporate}">
+                                        <input type="hidden" class="form-control" th:field="*{customerId}"/>
+                                        <input type="hidden" class="form-control" th:field="*{corporateId}"/>
+                                        <input type="hidden" class="form-control" th:field="*{corporateName}"/>
+                                        <input type="hidden" class="form-control" th:field="*{id}"/>
+                                        <input type="hidden" class="form-control" th:field="*{corporateType}"/>
+                                        <input type="hidden" id="selectedAccounts" value=""/>
+
+
+                                        <hr/>
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label">Accounts <span
+                                                    style="color: red"></span></label>
+                                            <div class="col-sm-6" style="max-height: 250px; overflow-y: scroll;">
+                                                <p th:if="${not #lists.isEmpty(accounts)}"><input type="checkbox" id="checkAll"/> Select All</p>
+                                                <p th:if="${#lists.isEmpty(accounts)}" style="color: red">No Transactional/Active accounts available.</p>
+
+
+                                                <p th:each="account,index: ${accounts}">
+                                                    <input type="hidden" id="accountSize" th:value="${index.size}"/>
+                                                    <label class="checkbox-inline">
+                                                        <input type="checkbox" class="accountAttached"
+                                                               onclick="noCorpAccountSelected()"
+                                                               th:class="account+${index.index}"
+                                                               th:id="acct+${account.accountNumber}" name="accounts"
+                                                               th:value="${account.accountNumber}"/>
+                                                        <span th:text="${account.accountNumber}+' - '+${account.accountName}"></span>
+                                                            <span th:text="' - '+${account.schemeType}" name="acctType"></span>
+
+                                                    </label>
+                                                </p>
+                                            </div>
+                                            <div id="custAccountError" style="display: none;">
+
+                                                <p style="color:red;">&nbsp;&nbsp;At least one account is required</p>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <div class="col-sm-4 col-sm-offset-2">
+                                                <!--<a class="btn btn-primary" th:href="@{/ops/corporates/id/view(id=${corporate.id})}"-->
+                                                   <!--id="back">Previous</a>-->
+                                                <!--<button onclick="isCheckboxCheck()" class="btn btn-primary"-->
+                                                        <!--type="button">Next-->
+                                                <!--</button>-->
+                                                <button id="submit"  class="btn btn-primary"
+                                                        type="submit">Submit
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <div th:replace="layout::form-validation"></div>
+                                    </form>
+                                </div>
+                                `
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- /page content -->
+
+        <!-- footer content -->
+        <footer th:replace="layout :: footer">
+        </footer>
+        <!-- /footer content -->
+    </div>
+</div>
+<script type="text/javascript" class="init" th:inline="javascript">
+
+
+    $(document).ready(function () {
+
+
+        $("#corpUniqueId").keyup(function () {
+            validateCorpId();
+        });
+
+        $("#corpUniqueId").blur(function () {
+            validateCorpId();
+        });
+
+
+        var corpName = [[${corporate.customerName}]];
+
+        $("#corporateName").val(corpName);
+
+//        var selectedAcct =  $('#selectedAccounts').val();
+        $("#checkAll").change(function () {
+            if ($(this).is(":checked")) {
+
+                    $("input[name='accounts']").prop("checked", true);
+                    $("#custAccountError").hide();
+
+            }else{
+                $("input[name='accounts']").prop("checked", false);
+
+            }
+
+
+        });
+
+        $("input[name='accounts']").change(function () {
+
+            if (!$(this).is(":checked")) {
+
+                $("#checkAll").prop("checked", false);
+            }
+
+
+        });
+
+    });
+    $("#search").click(function (e) {
+        e.preventDefault();
+
+        var custId = $("#customerId").val();
+        console.log("customer Id: " + custId);
+
+        $.ajax({
+            url: "/ops/corporates/" + custId + "/name",
+            success: function (result) {
+                if (result != "false") {
+                    $("#customerName").val(result);
+                    $("#custName").show();
+                    $("#custError").hide();
+
+                }
+                else {
+                    $("#custName").hide();
+                    $("#custError").show();
+                }
+            },
+            error: function (xhr, status, err) {
+                console.log("error");
+                var msg = "<p style='color:red;'>Error occurred validating Customer ID. Try again later.</p>";
+                $("#custError").html(msg);
+
+
+            }
+        });
+    });
+
+    var corpIdExists = false;
+
+    function emptyCorpName() {
+        if ($('#corporateName').val() == '') {
+            $('#custNameError').show()
+        } else {
+            $('#custNameError').hide()
+        }
+    }
+    function noCorpAccountSelected() {
+        var selectedItem = 0;
+        var noOfAccounts = $('#accountSize').val();
+//        console.log("the accounts size "+$('#corpUniqueId').val());
+        var anyAccountSelected = $('input[name="accounts"]:checked').length > 0;
+//        console.log("no checked "+$('input[name="accounts"]:checked').length);
+        if (anyAccountSelected) {
+            selectedItem += 1;
+        }
+        if (selectedItem == 0) {
+            $('#custAccountError').show()
+        } else {
+            $('#custAccountError').hide()
+        }
+    }
+    function isCheckboxCheck() {
+        var selectedItem = 0;
+        var noOfAccounts = $('#accountSize').val();
+//        console.log("the accounts size " + $('#corpUniqueId').val());
+        var anyAccountSelected = $('input[name="accounts"]:checked').length > 0;
+//    console.log("no checked "+$('input[name="accounts"]:checked').length);
+        if (anyAccountSelected) {
+            selectedItem += 1;
+        }
+        if ($('#corpUniqueId').val() == '') {
+            $('#custiDError').show()
+        } else {
+            $('#custiDError').hide()
+        }
+        if ($('#corporateName').val() == '') {
+            $('#custNameError').show()
+        } else {
+            $('#custNameError').hide()
+        }
+//    if($('#corpUniqueId').val().isEmpty()){
+//        $('#custError').show()
+//    }else{
+//        $('#custError').hide()
+//    }
+        console.log("the no of accounts selected " + selectedItem);
+        if (selectedItem > 0) {
+            $('#custAccountError').hide();
+            validateCorpId();
+            if (corpIdExists == true) {
+                return;
+            }
+            else {
+                $('#submit').trigger('click');
+            }
+        } else {
+            $('#custAccountError').show();
+            return false;
+        }
+    }
+
+</script>
+</body>
+</html>

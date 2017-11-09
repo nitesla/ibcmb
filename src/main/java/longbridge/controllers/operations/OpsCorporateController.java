@@ -1,6 +1,7 @@
 package longbridge.controllers.operations;
 
 import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import longbridge.api.AccountInfo;
@@ -10,6 +11,8 @@ import longbridge.exception.DuplicateObjectException;
 import longbridge.exception.InternetBankingException;
 import longbridge.exception.TransferRuleException;
 import longbridge.models.*;
+import longbridge.repositories.AccountRepo;
+import longbridge.repositories.CorporateRepo;
 import longbridge.services.*;
 
 import org.apache.commons.lang3.StringUtils;
@@ -75,7 +78,10 @@ public class OpsCorporateController {
 
     @Autowired
     private VerificationService verificationService;
-
+    @Autowired
+    private AccountRepo accountRepo;
+    @Autowired
+    private CorporateRepo corporateRepo;
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
 
@@ -691,6 +697,23 @@ public class OpsCorporateController {
         }
         return accountInfos;
     }
+    private List<AccountInfo> getAccountsNotInDB(List<AccountInfo> newAccs, List<Account> existingAccs) {
+
+        List<AccountInfo> accountInfos = new ArrayList<>();
+        for (AccountInfo accountInfo : newAccs) {
+            boolean existingAcc = false;
+            for (Account account : existingAccs) {
+                if (accountInfo.getAccountNumber().equals(account.getAccountNumber())) {
+                    existingAcc = true;
+                    break;
+                }
+            }
+            if (!existingAcc) {
+                accountInfos.add(accountInfo);
+            }
+        }
+        return accountInfos;
+    }
 
 
     @PostMapping("/accounts/authorization")
@@ -1133,7 +1156,75 @@ public class OpsCorporateController {
 
         }
         return "redirect:/ops/corporates/new";
+    }
+    @GetMapping("/account/new/{corporateId}")
+    public String addAccount(@PathVariable Long corporateId, Model model) {
 
 
+        Corporate corporate = corporateService.getCorp(corporateId);
+        CorporateRequestDTO corporateRequestDTO =  new CorporateRequestDTO();
+        CustomerDetails customerDetails = integrationService.viewCustomerDetailsByCif(corporate.getCustomerId());
+        corporateRequestDTO.setCustomerName(customerDetails.getCustomerName());
+        corporateRequestDTO.setCorporateId(corporate.getCorporateId());
+        corporateRequestDTO.setId(corporate.getId());
+        corporateRequestDTO.setCorporateName(corporate.getName());
+        corporateRequestDTO.setCorporateType(corporate.getCorporateType());
+        corporateRequestDTO.setCustomerId(corporate.getCustomerId());
+
+        List<Account> accounts = corporate.getAccounts();
+
+        List<AccountInfo> accountInfos = integrationService.fetchAccounts(corporate.getCustomerId());
+        accountInfos = accountService.getTransactionalAccounts(accountInfos);
+
+        logger.info("the account size on finacle {} and ib {} and cifId {}",accountInfos.size(),corporate.getAccounts().size(),corporate.getCustomerId());
+        accountInfos = getAccountsNotInDB(accountInfos, accounts);
+
+        model.addAttribute("accounts", accountInfos);
+        model.addAttribute("corporate", corporateRequestDTO);
+//        for (Corporate corporate1:corporateRepo.findAll()) {
+//            accountInfos = integrationService.fetchAccounts(corporate1.getCustomerId());
+//            accountInfos = accountService.getTransactionalAccounts(accountInfos);
+//            if(accountInfos.size() > corporate1.getAccounts().size()){
+//                logger.info("the account size on finacle2 {} and ib2 {} and cifId2 {}",accountInfos.size(),corporate1.getAccounts().size(),corporate1.getCustomerId());
+//            }
+//        }
+        return "/ops/corporate/new/account";
+    }
+    @PostMapping("/account/new/add")
+    public String addNewCorporateAccounts(@ModelAttribute("corporateRequestDTO") @Valid CorporateRequestDTO corporateRequestDTO, BindingResult result, RedirectAttributes redirectAttributes, WebRequest request, HttpSession session, Locale locale, Model model) {
+        String[] accounts = request.getParameterValues("accounts");
+
+
+        logger.info("Corporate getCorporateName {}", corporateRequestDTO.getCorporateName());
+        logger.info("Corporate getCustomerId {}", corporateRequestDTO.getCustomerId());
+        logger.info("Corporate getId {}", corporateRequestDTO.getId());
+        logger.info("Corporate CorporateId {}", corporateRequestDTO.getCorporateId());
+        logger.info("Corporate CorporateType {}", corporateRequestDTO.getCorporateType());
+        if (accounts.length > 0) {
+            logger.info("Customer accounts {}", Arrays.asList(accounts));
+            List<AccountDTO> accountDTOs = new ArrayList<>();
+            for (String account : accounts) {
+                AccountDTO accountDTO = new AccountDTO();
+                accountDTO.setAccountNumber(account);
+                accountDTOs.add(accountDTO);
+            }
+            corporateRequestDTO.setAccounts(accountDTOs);
+        }
+//        if (result.hasErrors()) {
+//            result.addError(new ObjectError("invalid", messageSource.getMessage("form.fields.required", null, locale)));
+//            List<AccountInfo> accountInfos = integrationService.fetchAccounts(corporateRequestDTO.getCustomerId().toUpperCase());
+//            return "/ops/corporateRequestDTO/new/account";
+//        }
+//        try {
+//            String message = verificationService.add(corporateRequestDTO, "UPDATE_CORPORATE_ACCOUNT", "Adding Corporate Entity");
+//        } catch (JsonProcessingException e) {
+//            e.printStackTrace();
+//        redirectAttributes.addFlashAttribute("failure", messageSource.getMessage("corporate.add.new.success", null, locale));
+
+//        }
+        CorporateDTO corporate = corporateService.getCorporate(corporateRequestDTO.getId());
+        model.addAttribute("corporate", corporate);
+        redirectAttributes.addFlashAttribute("message", messageSource.getMessage("corporate.add.new.success", null, locale));
+        return "/ops/corporate/viewdetails";
     }
 }

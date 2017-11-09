@@ -975,4 +975,5 @@ public class CorporateServiceImpl implements CorporateService {
         User user = principal.getUser();
         return (CorporateUser) user;
     }
+
 }
