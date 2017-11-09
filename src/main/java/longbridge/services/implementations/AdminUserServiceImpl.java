@@ -509,7 +509,6 @@ public class AdminUserServiceImpl implements AdminUserService {
             context.setVariable("username", user.getUserName());
             context.setVariable("password",password);
             context.setVariable("adminUrl",adminUrl);
-
             mailService.sendMail(email,context);
         }
 

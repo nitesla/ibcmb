@@ -241,6 +241,7 @@ public class CorpTransferController {
         CorpTransferRequestDTO transferRequestDTO = (CorpTransferRequestDTO) request.getSession().getAttribute("corpTransferRequest");
         model.addAttribute("corpTransferRequest", transferRequestDTO);
         try {
+            transferUtils.validateTransferCriteria();
 
             if (request.getSession().getAttribute("auth-needed") != null) {
                 String token = request.getParameter("token");

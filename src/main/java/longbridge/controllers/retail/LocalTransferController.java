@@ -3,10 +3,8 @@ package longbridge.controllers.retail;
 import longbridge.dtos.FinancialInstitutionDTO;
 import longbridge.dtos.LocalBeneficiaryDTO;
 import longbridge.dtos.TransferRequestDTO;
-import longbridge.exception.DuplicateObjectException;
 import longbridge.exception.InternetBankingTransferException;
 import longbridge.exception.TransferErrorService;
-import longbridge.models.Account;
 import longbridge.models.FinancialInstitutionType;
 import longbridge.models.LocalBeneficiary;
 import longbridge.models.RetailUser;
@@ -26,7 +24,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-import java.math.BigDecimal;
 import java.security.Principal;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -67,7 +64,7 @@ public class LocalTransferController {
         if (request.getSession().getAttribute("auth-needed") != null)
             request.getSession().removeAttribute("auth-needed");
         try {
-            transferUtils.validateBvn();
+            transferUtils.validateTransferCriteria();
             RetailUser retailUser = retailUserService.getUserByName(principal.getName());
             Iterable<LocalBeneficiary> cmbBeneficiaries = localBeneficiaryService.getBankBeneficiaries(retailUser);
 

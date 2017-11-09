@@ -4,10 +4,8 @@ import longbridge.dtos.CorpTransferRequestDTO;
 import longbridge.dtos.TransferRequestDTO;
 import longbridge.exception.InternetBankingTransferException;
 import longbridge.exception.TransferErrorService;
-import longbridge.exception.TransferException;
 import longbridge.models.Account;
 import longbridge.models.CorporateUser;
-import longbridge.models.RetailUser;
 import longbridge.services.*;
 import longbridge.utils.TransferType;
 import longbridge.utils.TransferUtils;
@@ -15,12 +13,10 @@ import longbridge.validator.transfer.TransferValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.jasperreports.JasperReportsPdfView;
@@ -70,7 +66,7 @@ public class CorpOwnTransferController {
         if (request.getSession().getAttribute("auth-needed") != null)
             request.getSession().removeAttribute("auth-needed");
         try {
-            transferUtils.validateBvn();
+            transferUtils.validateTransferCriteria();
             CorpTransferRequestDTO corptransferRequestDTO = new CorpTransferRequestDTO();
             corptransferRequestDTO
                     .setFinancialInstitution(financialInstitutionService.getFinancialInstitutionByCode("bankCode"));

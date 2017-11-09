@@ -24,7 +24,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
@@ -77,7 +76,7 @@ public class OwnTransferController {
         if (request.getSession().getAttribute("auth-needed") != null)
             request.getSession().removeAttribute("auth-needed");
         try {
-            transferUtils.validateBvn();
+            transferUtils.validateTransferCriteria();
             TransferRequestDTO requestDTO = new TransferRequestDTO();
             requestDTO.setFinancialInstitution(financialInstitutionService.getFinancialInstitutionByCode(bankCode));
             model.addAttribute("transferRequest", requestDTO);
