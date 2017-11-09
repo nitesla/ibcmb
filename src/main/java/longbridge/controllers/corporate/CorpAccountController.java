@@ -290,12 +290,8 @@ public class CorpAccountController {
     }
     @GetMapping("/viewstatement/{id}")
     public String getViewOnlyById(@PathVariable Long id, Model model, Principal principal) throws ParseException {
-//logger.info("viewstatement");
-        CorporateUser user = corporateUserService.getUserByName(principal.getName());
-        Iterable<AccountDTO> accounts = accountService.getAccountsForDebitAndCredit(user.getCorporate().getCustomerId());
         AccountDTO accountDTO = accountService.getAccount(id);
         model.addAttribute("acctNum",accountDTO.getAccountNumber());
-        model.addAttribute("accounts",accounts);
         return "corp/account/view";
     }
 
@@ -419,6 +415,9 @@ public class CorpAccountController {
         SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy");
 
         try {
+//            JasperReportsPdfView view = new JasperReportsPdfView();
+//            view.setUrl("classpath:jasperreports/rpt_account-statement.jrxml");
+//            view.setApplicationContext(appContext);
             from = format.parse(fromDate);
             to = format.parse(toDate);
             AccountStatement accountStatement = integrationService.getFullAccountStatement(acctNumber, from, to, tranType);
@@ -481,6 +480,7 @@ public class CorpAccountController {
             modelMap.put("today", today);
             modelMap.put("imagePath", imagePath);
             ModelAndView modelAndView = new ModelAndView("rpt_account-statement", modelMap);
+//            ModelAndView modelAndView = new ModelAndView(view, modelMap);
             return modelAndView;
         } catch (ParseException e) {
             logger.warn("didn't parse date", e);
