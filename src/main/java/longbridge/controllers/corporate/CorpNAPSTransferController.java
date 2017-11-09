@@ -5,11 +5,10 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import longbridge.dtos.*;
-import longbridge.exception.InternetBankingException;
-import longbridge.exception.InternetBankingSecurityException;
-import longbridge.exception.TransferRuleException;
+import longbridge.exception.*;
 import longbridge.models.*;
 import longbridge.services.*;
+import longbridge.utils.TransferUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
@@ -69,6 +68,10 @@ public class CorpNAPSTransferController {
     private FinancialInstitutionService financialInstitutionService;
     @Autowired
     private ConfigurationService configService;
+    @Autowired
+    private TransferErrorService transferErrorService;
+    @Autowired
+    private TransferUtils transferUtils;
 
     @Autowired
     public CorpNAPSTransferController(AccountService accountService, CorporateUserService corporateUserService,
@@ -93,7 +96,18 @@ public class CorpNAPSTransferController {
     }
 
     @GetMapping("/upload")
-    public String getUploadBulkTransferFile(Model model, HttpSession session) {
+    public String getUploadBulkTransferFile(Model model, HttpSession session, RedirectAttributes redirectAttributes) {
+
+        try {
+            transferUtils.validateTransferCriteria();
+        } catch (InternetBankingTransferException e) {
+            String errorMessage = transferErrorService.getMessage(e);
+            redirectAttributes.addFlashAttribute("failure", errorMessage);
+            return "redirect:/corporate/transfer/bulk";
+
+
+        }
+
         if (session.getAttribute("workbook") != null) {
             session.removeAttribute("workbook");
         }
@@ -206,7 +220,8 @@ public class CorpNAPSTransferController {
     }
 
     @GetMapping(path = "/allbankcodes")
-    public @ResponseBody
+    public
+    @ResponseBody
     DataTablesOutput<FinancialInstitutionDTO> getAllFis(DataTablesInput input) {
 
         Pageable pageable = DataTablesUtils.getPageable(input);
@@ -404,6 +419,9 @@ public class CorpNAPSTransferController {
             if (principal == null || principal.getName() == null) {
                 return "redirect:/login/corporate";
             }
+
+            transferUtils.validateTransferCriteria();
+
             String tokenCode = request.getParameter("token");
             List<String> accountList = new ArrayList<>();
             accountList = (List<String>) session.getAttribute("accountList");
@@ -478,6 +496,11 @@ public class CorpNAPSTransferController {
         } catch (TransferRuleException t) {
             redirectAttributes.addFlashAttribute("failure", t.getMessage());
             return "redirect:/corporate/transfer/bulk";
+        } catch (InternetBankingTransferException e) {
+            String errorMessage = transferErrorService.getMessage(e);
+            redirectAttributes.addFlashAttribute("failure", errorMessage);
+            return "redirect:/corporate/transfer/bulk";
+
         } catch (InternetBankingException ibe) {
             logger.error("Error creating transfer", ibe);
             redirectAttributes.addFlashAttribute("failure", ibe.getMessage());

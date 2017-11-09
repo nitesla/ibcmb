@@ -13,16 +13,15 @@ import org.apache.commons.lang3.StringEscapeUtils;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.StreamSupport;
 
 /**
@@ -40,6 +39,10 @@ public class TransferUtils {
     private LocalBeneficiaryRepo localBeneficiaryRepo;
     @Autowired
     private CorpLocalBeneficiaryRepo corpLocalBeneficiaryRepo;
+    @Autowired
+    private MessageSource messageSource;
+
+    private Locale locale = LocaleContextHolder.getLocale();
 
     @Autowired
     public void setCodeService(CodeService codeService) {
@@ -271,13 +274,15 @@ public class TransferUtils {
     }
 
 
-    public void validateBvn() {
+    public void validateTransferCriteria() {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (!(authentication instanceof AnonymousAuthenticationToken)) {
             CustomUserPrincipal currentUser = (CustomUserPrincipal) authentication.getPrincipal();
 
-
+                if(currentUser == null){
+                    throw new InternetBankingTransferException(messageSource.getMessage("user.invalid",null,locale));
+                }
             if (currentUser.getCorpId() == null) {
 
                 RetailUser retailUser = retailUserService.getUserByName(currentUser.getUsername());
@@ -288,6 +293,12 @@ public class TransferUtils {
                 }
 
             } else {
+                CorporateUser user  = (CorporateUser)currentUser.getUser();
+                if(CorpUserType.AUTHORIZER.equals(user.getCorpUserType())){
+                    throw new InternetBankingTransferException(messageSource.getMessage("transfer.initiate.disallowed",null,locale));
+
+                }
+
                 Corporate corporate = corporateService.getCorp(currentUser.getCorpId());
                 if (corporate == null) throw new InternetBankingTransferException(TransferExceptions.NO_BVN.toString());
 

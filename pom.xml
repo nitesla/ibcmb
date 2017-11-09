@@ -138,11 +138,11 @@
         <!--<version>4.3.7.RELEASE</version>-->
         <!--</dependency>-->
 
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-tomcat</artifactId>
-            <scope>provided</scope>
-        </dependency>
+        <!--<dependency>-->
+            <!--<groupId>org.springframework.boot</groupId>-->
+            <!--<artifactId>spring-boot-starter-tomcat</artifactId>-->
+            <!--<scope>provided</scope>-->
+        <!--</dependency>-->
 
         <!-- hot swapping, disable cache for template, enable live reload -->
         <dependency>
@@ -150,11 +150,11 @@
             <artifactId>spring-boot-devtools</artifactId>
             <optional>true</optional>
         </dependency>
-        <dependency>
-            <groupId>net.sf.jasperreports</groupId>
-            <artifactId>jasperreports-fonts</artifactId>
-            <version>6.0.0</version>
-        </dependency>
+        <!--<dependency>-->
+            <!--<groupId>net.sf.jasperreports</groupId>-->
+            <!--<artifactId>jasperreports-fonts</artifactId>-->
+            <!--<version>6.0.0</version>-->
+        <!--</dependency>-->
         <!--<dependency>-->
         <!--<groupId>org.springframework.boot</groupId>-->
         <!--<artifactId>spring-boot-starter-test</artifactId>-->

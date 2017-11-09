@@ -14,6 +14,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.scheduling.annotation.EnableAsync;
 
 
+
 @SpringBootApplication
 @EnableJpaRepositories(repositoryFactoryBeanClass = CustomJpaRepositoryFactoryBean.class)
 @EnableBatchProcessing
@@ -27,8 +28,6 @@ public class InternetbankingApplication extends SpringBootServletInitializer imp
     PasswordPolicyService passwordPolicyService;
     @Autowired
     IntegrationService integrationService;
-
-
     @Autowired
     AccountRepo accountRepo;
 
@@ -78,7 +77,8 @@ public class InternetbankingApplication extends SpringBootServletInitializer imp
 
     @Override
     public void run(String... strings) throws Exception {
-//        securityService.unLockUser("sunkoxy","Retail_Group");
+
+
     }
 
 

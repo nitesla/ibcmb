@@ -1,6 +1,5 @@
 package longbridge.controllers.corporate;
 
-import longbridge.api.Rate;
 import longbridge.dtos.*;
 import longbridge.exception.InternetBankingTransferException;
 import longbridge.exception.TransferErrorService;
@@ -22,7 +21,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.security.Principal;
 import java.util.*;
-import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -66,7 +64,7 @@ public class CorpInterBankTransferController {
         if (request.getSession().getAttribute("auth-needed") != null)
             request.getSession().removeAttribute("auth-needed");
         try {
-            transferUtils.validateBvn();
+            transferUtils.validateTransferCriteria();
             return page + "pagei";
         } catch (InternetBankingTransferException e) {
             String errorMessage = transferErrorService.getMessage(e);
@@ -127,15 +125,26 @@ public class CorpInterBankTransferController {
 
 
     @GetMapping("/new")
-    public String newBeneficiary(@ModelAttribute("corpLocalBeneficiary") CorpLocalBeneficiaryDTO corpLocalBeneficiaryDTO, Model model) throws Exception {
-        model.addAttribute("localBanks",
-                financialInstitutionService.getFinancialInstitutionsByType(FinancialInstitutionType.LOCAL)
-                        .stream()
-                        .filter(i -> !i.getInstitutionCode().equals(bankCode))
-                        .collect(Collectors.toList())
-        );
+    public String newBeneficiary(@ModelAttribute("corpLocalBeneficiary") CorpLocalBeneficiaryDTO corpLocalBeneficiaryDTO, Model model, RedirectAttributes redirectAttributes) throws Exception {
 
-        return page + "pageiB";
+        try {
+            transferUtils.validateTransferCriteria();
+            model.addAttribute("localBanks",
+                    financialInstitutionService.getFinancialInstitutionsByType(FinancialInstitutionType.LOCAL)
+                            .stream()
+                            .filter(i -> !i.getInstitutionCode().equals(bankCode))
+                            .collect(Collectors.toList())
+            );
+
+            return page + "pageiB";        } catch (InternetBankingTransferException e) {
+            String errorMessage = transferErrorService.getMessage(e);
+            redirectAttributes.addFlashAttribute("failure", errorMessage);
+            return "redirect:/corporate/dashboard";
+
+
+        }
+
+
     }
 
     @PostMapping("/new")

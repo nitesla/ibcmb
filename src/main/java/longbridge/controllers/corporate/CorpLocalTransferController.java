@@ -67,9 +67,9 @@ public class CorpLocalTransferController {
         if (request.getSession().getAttribute("auth-needed") != null)
             request.getSession().removeAttribute("auth-needed");
         try {
-            transferUtils.validateBvn();
-//        CorporateUser corporateUser = corporateUserService.getUserByName(principal.getName());
-        return page + "pagei";
+        transferUtils.validateTransferCriteria();
+
+            return page + "pagei";
         }catch (InternetBankingTransferException e) {
             String errorMessage = transferErrorService.getMessage(e);
             model.addAttribute("failure", errorMessage);
@@ -128,10 +128,21 @@ public class CorpLocalTransferController {
 
 
     @GetMapping("/new")
-    public String addCoronationBeneficiary(Model model, CorpLocalBeneficiaryDTO corpLocalBeneficiaryDTO) throws Exception {
-        model.addAttribute("localBanks", financialInstitutionService.getFinancialInstitutionsByType(FinancialInstitutionType.LOCAL));
-        model.addAttribute("corpLocalBeneficiaryDTO", corpLocalBeneficiaryDTO);
-        return page + "pageiA";
+    public String addCoronationBeneficiary(Model model, CorpLocalBeneficiaryDTO corpLocalBeneficiaryDTO, RedirectAttributes redirectAttributes) throws Exception {
+
+        try {
+            transferUtils.validateTransferCriteria();
+
+            model.addAttribute("localBanks", financialInstitutionService.getFinancialInstitutionsByType(FinancialInstitutionType.LOCAL));
+            model.addAttribute("corpLocalBeneficiaryDTO", corpLocalBeneficiaryDTO);
+            return page + "pageiA";
+        }catch (InternetBankingTransferException e) {
+            String errorMessage = transferErrorService.getMessage(e);
+            model.addAttribute("failure", errorMessage);
+            redirectAttributes.addFlashAttribute("failure", errorMessage);
+            return "redirect:/corporate/dashboard";
+        }
+
     }
 
     @PostMapping("/new")
