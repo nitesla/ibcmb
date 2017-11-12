@@ -135,6 +135,7 @@ public class CorporateServiceImpl implements CorporateService {
         }
     }
 
+    @Override
     @Transactional
     public void saveCorporateRequest(CorporateRequestDTO corporateRequestDTO) throws InternetBankingException {
 
@@ -238,6 +239,29 @@ public class CorporateServiceImpl implements CorporateService {
 
         }
 
+    }
+
+    @Override
+    @Verifiable(operation = "ADD_CORPORATE_ACCOUNT", description = "Adding accounts to a Corporate Entity")
+    public String addCorporateAccounts(CorporateRequestDTO requestDTO){
+
+        try {
+            addAccounts(requestDTO);
+            return messageSource.getMessage("corporate.account.add.success",null,locale);
+        }
+        catch (Exception e){
+            throw new InternetBankingException(messageSource.getMessage("corporate.account.add.failure",null,locale));
+        }
+    }
+
+    @Override
+    public void addAccounts(CorporateRequestDTO requestDTO){
+        Corporate corporate = corporateRepo.findOne(requestDTO.getId());
+        List<Account> newAccounts = accountService.addAccounts(requestDTO.getAccounts());
+        List<Account> existingAccounts = corporate.getAccounts();
+        existingAccounts.addAll(newAccounts);
+        corporate.setAccounts(existingAccounts);
+        corporateRepo.save(corporate);
     }
 
     private void validateCorporate(CorporateRequestDTO corporateRequestDTO) throws InternetBankingException {

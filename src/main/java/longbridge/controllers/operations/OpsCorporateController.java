@@ -1120,12 +1120,11 @@ public class OpsCorporateController {
     public String createSoleCorporateUsers(WebRequest request, RedirectAttributes redirectAttributes, HttpSession session, Model model, Locale locale) {
 
         String users = request.getParameter("users");
-
         logger.info("Corporate Users are: {}", users);
         session.removeAttribute("users");
         session.setAttribute("users", users);
 
-        List<CorporateUserDTO> corporateUsers = null;
+        List<CorporateUserDTO> corporateUsers;
         ObjectMapper mapper = new ObjectMapper();
         mapper.configure(JsonParser.Feature.ALLOW_UNQUOTED_FIELD_NAMES, true);
         try {
