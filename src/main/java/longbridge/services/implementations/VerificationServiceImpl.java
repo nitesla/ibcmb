@@ -159,7 +159,12 @@ public class VerificationServiceImpl implements VerificationService {
             if ("ADD_CORPORATE".equals(verification.getOperation())) {
                 CorporateRequestDTO requestDTO = mapper.readValue(verification.getOriginalObject(), CorporateRequestDTO.class);
                 corporateService.saveCorporateRequest(requestDTO);
-            } else if ("ADD_AUTHORIZER_FROM_CORPORATE_ADMIN".equals(verification.getOperation())) {
+            }
+            else if ("ADD_CORPORATE_ACCOUNT".equals(verification.getOperation())) {
+                CorporateRequestDTO requestDTO = mapper.readValue(verification.getOriginalObject(), CorporateRequestDTO.class);
+                corporateService.addAccounts(requestDTO);
+            }
+            else if ("ADD_AUTHORIZER_FROM_CORPORATE_ADMIN".equals(verification.getOperation())) {
 
                 CorporateUserDTO corpUser = mapper.readValue(verification.getOriginalObject(), CorporateUserDTO.class);
                 corporateUserService.addAuthorizer(corpUser);
@@ -215,6 +220,23 @@ public class VerificationServiceImpl implements VerificationService {
             module.addSerializer(object.getClass(), serializer);
             prettyMapper.registerModule(module);
             logger.debug("Registering Pretty serializer for " + object.getClass().getName());
+        }
+
+        if (object instanceof CorporateRequestDTO) {
+            CorporateRequestDTO requestDTO = (CorporateRequestDTO)object;
+            Long id = requestDTO.getId();
+
+//            Corporate originalEntity = entityManager.find(Corporate.class, id);
+
+            Verification pendingVerification = verificationRepo.findFirstByEntityNameAndEntityIdAndStatus(entityName,
+                    id, VerificationStatus.PENDING);
+            if (pendingVerification != null) {
+                // found pending verification
+                throw new InternetBankingException(entityName + " has pending verification");
+            }
+//
+//            verification.setBeforeObject(prettyMapper.writeValueAsString(originalEntity));
+//            verification.setEntityId(entity.getId());
         }
 
 

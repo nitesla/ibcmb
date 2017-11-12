@@ -720,7 +720,7 @@ public class OpsCorporateController {
     public String addCorporateAccounts(@ModelAttribute("corporate") @Valid CorporateDTO corporate, BindingResult result, RedirectAttributes redirectAttributes, WebRequest request, HttpSession session, Locale locale, Model model) {
         if (result.hasErrors()) {
             result.addError(new ObjectError("invalid", messageSource.getMessage("form.fields.required", null, locale)));
-            List<AccountInfo> accountInfos = integrationService.fetchAccounts(corporate.getCustomerId().toUpperCase());
+            List<AccountInfo> accountInfos = accountService.getTransactionalAccounts(integrationService.fetchAccounts(corporate.getCustomerId().toUpperCase()));
             model.addAttribute("accounts", accountInfos);
             session.removeAttribute("corporateRequest");
             return "/ops/corporate/setup/account";
@@ -728,7 +728,7 @@ public class OpsCorporateController {
 
         if (corporateService.corporateIdExists(corporate.getCorporateId())) {
             result.addError(new ObjectError("invalid", messageSource.getMessage("corp.id.exists", null, locale)));
-            List<AccountInfo> accountInfos = integrationService.fetchAccounts(corporate.getCustomerId().toUpperCase());
+            List<AccountInfo> accountInfos = accountService.getTransactionalAccounts(integrationService.fetchAccounts(corporate.getCustomerId().toUpperCase()));
             model.addAttribute("accounts", accountInfos);
             return "/ops/corporate/setup/account";
         }
@@ -738,7 +738,7 @@ public class OpsCorporateController {
         logger.info("Customer accounts {}", Arrays.asList(accounts));
 
         if (session.getAttribute("corporateRequest") != null) {
-            List<AccountInfo> accountInfos = integrationService.fetchAccounts(corporate.getCustomerId().toUpperCase());
+            List<AccountInfo> accountInfos = accountService.getTransactionalAccounts(integrationService.fetchAccounts(corporate.getCustomerId().toUpperCase()));
             session.removeAttribute("accountInfos");
             session.removeAttribute("selectedAccounts");
             session.setAttribute("accountInfos", accountInfos);
@@ -884,7 +884,8 @@ public class OpsCorporateController {
     public String addAccountUsingBack(Model model, HttpSession session) {
         String accounts[] = (String[]) session.getAttribute("selectedAccounts");
         CorporateRequestDTO corporate = (CorporateRequestDTO) session.getAttribute("corporateRequest");
-        List<AccountInfo> accountInfos = (List<AccountInfo>) session.getAttribute("accountInfos");
+        List<AccountInfo> accountInfos = accountService.getTransactionalAccounts((List<AccountInfo>) session.getAttribute("accountInfos"));
+
         model.addAttribute("accounts", accountInfos);
         model.addAttribute("corporate", corporate);
         model.addAttribute("selectedAccounts", Arrays.asList(accounts));
@@ -1154,7 +1155,7 @@ public class OpsCorporateController {
             redirectAttributes.addFlashAttribute("failure", "Failed to create corporate entity");
 
         }
-        return "redirect:/ops/corporates/new";
+        return "redirect:/ops/corporates";
     }
     @GetMapping("/account/new/{corporateId}")
     public String addAccount(@PathVariable Long corporateId, Model model) {
@@ -1214,16 +1215,24 @@ public class OpsCorporateController {
 //            List<AccountInfo> accountInfos = integrationService.fetchAccounts(corporateRequestDTO.getCustomerId().toUpperCase());
 //            return "/ops/corporateRequestDTO/new/account";
 //        }
-//        try {
-//            String message = verificationService.add(corporateRequestDTO, "UPDATE_CORPORATE_ACCOUNT", "Adding Corporate Entity");
-//        } catch (JsonProcessingException e) {
-//            e.printStackTrace();
-//        redirectAttributes.addFlashAttribute("failure", messageSource.getMessage("corporate.add.new.success", null, locale));
 
-//        }
-        CorporateDTO corporate = corporateService.getCorporate(corporateRequestDTO.getId());
-        model.addAttribute("corporate", corporate);
-        redirectAttributes.addFlashAttribute("message", messageSource.getMessage("corporate.add.new.success", null, locale));
-        return "/ops/corporate/viewdetails";
+        try {
+            if (makerCheckerService.isEnabled("ADD_CORPORATE_ACCOUNT")) {
+                String message = verificationService.add(corporateRequestDTO, "ADD_CORPORATE_ACCOUNT", "dding accounts to a Corporate Entity");
+                redirectAttributes.addFlashAttribute("message", message);
+            } else {
+                String message = corporateService.addCorporateAccounts(corporateRequestDTO);
+                redirectAttributes.addFlashAttribute("message", message);
+            }
+
+            CorporateDTO corporate = corporateService.getCorporate(corporateRequestDTO.getId());
+            return "redirect:/ops/corporates/"+corporate.getId()+"/view";
+        }
+        catch (Exception e){
+            logger.error("Error creating corporate entity", e);
+            redirectAttributes.addFlashAttribute("failure", "Failed to add corporate accounts");
+
+        }
+        return "redirect:/ops/corporates";
     }
 }
