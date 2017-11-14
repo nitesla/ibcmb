@@ -312,11 +312,12 @@ public class StringUtil {
             builder.append(" and "+timeStamp+" >= "+auditSearchDTO.getFromDate()+" and "+timeStamp+dayBeforeComparator+auditSearchDTO.getEndDate());
             builder.append(" and "+ipAddress+" = "+auditSearchDTO.getIpAddress());
         }
-        else if(classNameNotEmpty && idNotEmpty && fromDateNotEmpty && ipAddressNotEmpty &&!lastChangeByNotEmpty){
+        else if(classNameNotEmpty && idNotEmpty && fromDateNotEmpty && ipAddressNotEmpty && lastChangeByNotEmpty){
             builder.append(" where m."+revsionField+" in ("+ replaceDetails +")");
             builder.append(" and m."+className+" = '"+PACKAGE_NAME+auditSearchDTO.getEntityClassName()+"'");
             builder.append(" and "+timeStamp+" >= "+auditSearchDTO.getFromDate()+" and "+timeStamp+dayBeforeComparator+auditSearchDTO.getEndDate());
             builder.append(" and "+ipAddress+" = "+auditSearchDTO.getIpAddress());
+            builder.append(" and "+lastChangedBy+" = '"+auditSearchDTO.getLastChangeBy()+"' ");
         }else if(classNameNotEmpty && idNotEmpty && fromDateNotEmpty && !ipAddressNotEmpty &&lastChangeByNotEmpty){
             builder.append(" where m."+revsionField+" in ("+ replaceDetails +")");
             builder.append(" and m."+className+" = '"+PACKAGE_NAME+auditSearchDTO.getEntityClassName()+"'");
