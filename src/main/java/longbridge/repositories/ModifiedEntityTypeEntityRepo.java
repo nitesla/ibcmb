@@ -23,10 +23,10 @@ public interface ModifiedEntityTypeEntityRepo extends JpaRepository<ModifiedEnti
     @Query("select r from ModifiedEntityTypeEntity r inner join r.revision  where r=:rev")
     Page<ModifiedEntityTypeEntity> findEnityByRevision(@Param("rev") CustomRevisionEntity revision, Pageable pageable);
 
-    @Query("select r from ModifiedEntityTypeEntity r inner join r.revision  where r.revision.id in (:revidList) and r.entityClassName = :class order by r.revision.timestamp desc")
+    @Query("select r from ModifiedEntityTypeEntity r inner join r.revision  where r.revision.id in (:revidList) and r.entityClassName = :class and r.revision.lastChangedBy <> 'Unknown' order by r.revision.timestamp desc")
     Page<ModifiedEntityTypeEntity> findEnityByRevisions(@Param("revidList") List<CustomRevisionEntity> revisions, Pageable pageable, @Param("class") String classname);
 
-    @Query("select r from ModifiedEntityTypeEntity r  order by r.revision.timestamp desc")
+    @Query("select r from ModifiedEntityTypeEntity r where r.revision.lastChangedBy <> 'Unknown' order by r.revision.timestamp desc")
     Page<ModifiedEntityTypeEntity> findAllEnityByRevision(Pageable pageable);
     @Query("select r from ModifiedEntityTypeEntity r where r.entityClassName=:className order by r.revision.timestamp desc")
     Page<ModifiedEntityTypeEntity> findAllEnityByRevisionByClass(@Param("className") String className, Pageable pageable);
