@@ -8,6 +8,7 @@ import longbridge.repositories.*;
 import longbridge.security.userdetails.CustomUserPrincipal;
 import longbridge.services.*;
 import longbridge.utils.DateFormatter;
+import longbridge.utils.StatusCode;
 import longbridge.utils.Verifiable;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.modelmapper.ModelMapper;
@@ -71,6 +72,14 @@ public class CorporateServiceImpl implements CorporateService {
     @Autowired
     private CorporateRoleRepo corporateRoleRepo;
 
+    @Autowired
+    private AccountRepo accountRepo;
+
+    @Autowired
+    private CorpTransferRequestRepo corpTransferRequestRepo;
+
+    @Autowired
+    private BulkTransferRepo bulkTransferRepo;
 
     @Autowired
     private EntityManager entityManager;
@@ -242,7 +251,7 @@ public class CorporateServiceImpl implements CorporateService {
     }
 
     @Override
-    @Verifiable(operation = "ADD_CORPORATE_ACCOUNT", description = "Adding accounts to a Corporate Entity")
+    @Verifiable(operation = "ADD_CORPORATE_ACCOUNT", description = "Adding Corporate Accounts")
     public String addCorporateAccounts(CorporateRequestDTO requestDTO){
 
         try {
@@ -255,6 +264,7 @@ public class CorporateServiceImpl implements CorporateService {
     }
 
     @Override
+    @Transactional
     public void addAccounts(CorporateRequestDTO requestDTO){
         Corporate corporate = corporateRepo.findOne(requestDTO.getId());
         List<Account> newAccounts = accountService.addAccounts(requestDTO.getAccounts());
@@ -636,6 +646,33 @@ public class CorporateServiceImpl implements CorporateService {
     }
 
     @Override
+    @Verifiable(operation = "DELETE_CORPORATE_ACCOUNT",description = "Delete Corporate Account")
+    public String deleteCorporateAccount(CorporateRequestDTO requestDTO) {
+
+      try {
+            deleteAccount(requestDTO);
+          return messageSource.getMessage("corporate.account.delete.success", null, locale);
+
+      }
+        catch (Exception e){
+          throw new InternetBankingException(messageSource.getMessage("corporate.account.delete.failure", null, locale));
+        }
+    }
+
+    public void deleteAccount(CorporateRequestDTO requestDTO){
+
+        Corporate corporate = corporateRepo.findOne(requestDTO.getId());
+        List<Account> existingAccounts = corporate.getAccounts();
+        for(AccountDTO accountDTO: requestDTO.getAccounts()){
+            Account account = accountRepo.findOne(accountDTO.getId());
+            existingAccounts.remove(account);
+            accountRepo.delete(account);
+        }
+        corporate.setAccounts(existingAccounts);
+        corporateRepo.save(corporate);
+    }
+
+    @Override
     @Transactional
     public List<CorpTransferRuleDTO> getCorporateRules(Long corpId) {
         Corporate corporate = corporateRepo.findOne(corpId);
@@ -732,6 +769,7 @@ public class CorporateServiceImpl implements CorporateService {
 
         try {
             CorporateRole role = corporateRoleRepo.findOne(roleDTO.getId());
+            entityManager.detach(role);
             role.setVersion(roleDTO.getVersion());
             role.setName(roleDTO.getName());
             role.setRank(roleDTO.getRank());
@@ -998,6 +1036,16 @@ public class CorporateServiceImpl implements CorporateService {
         CustomUserPrincipal principal = (CustomUserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         User user = principal.getUser();
         return (CorporateUser) user;
+    }
+
+    @Override
+    public boolean isTransactionPending(Long corpId, String accountNumber){
+
+    boolean tranferPending = corpTransferRequestRepo.existsByCorporate_IdAndCustomerAccountNumberAndStatus(corpId,accountNumber, StatusCode.PENDING.toString());
+
+    boolean bulkTranferPending = bulkTransferRepo.existsByCorporate_IdAndCustomerAccountNumberAndStatus(corpId,accountNumber, StatusCode.PENDING.toString());
+
+        return tranferPending || bulkTranferPending;
     }
 
 }

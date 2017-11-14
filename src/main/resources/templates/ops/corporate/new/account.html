@@ -21,7 +21,7 @@
             <div class="">
                 <div class="page-title">
                     <div class="title_left">
-                        <h3 th:text="${corporate.customerName}"></h3>
+                        <h3 th:text="${corporate.corporateName}"></h3>
                     </div>
 
                 </div>
@@ -32,7 +32,7 @@
                     <div class="col-md-12 col-sm-12 col-xs-12">
                         <div class="x_panel">
                             <div class="x_title">
-                                <h2>Corporate Identification</h2>
+                                <h2>Add New Accounts</h2>
 
                                 <div class="clearfix"></div>
                             </div>
@@ -48,7 +48,7 @@
                                         <input type="hidden" id="selectedAccounts" value=""/>
 
 
-                                        <hr/>
+                                        <!--<hr/>-->
                                         <div class="form-group">
                                             <label class="col-sm-2 control-label">Accounts <span
                                                     style="color: red"></span></label>
@@ -81,10 +81,12 @@
                                             <div class="col-sm-4 col-sm-offset-2">
                                                 <!--<a class="btn btn-primary" th:href="@{/ops/corporates/id/view(id=${corporate.id})}"-->
                                                    <!--id="back">Previous</a>-->
-                                                <!--<button onclick="isCheckboxCheck()" class="btn btn-primary"-->
-                                                        <!--type="button">Next-->
-                                                <!--</button>-->
-                                                <button id="submit"  class="btn btn-primary"
+                                                <button type="reset" id="cancel" class="btn btn-default" >Cancel
+                                                </button>
+                                                <button  onclick="isCheckboxCheck()" class="btn btn-primary"
+                                                        type="button" th:disabled="${#lists.isEmpty(accounts)}">Submit
+                                                </button>
+                                                <button id="submit" style="display: none" class="btn btn-primary"
                                                         type="submit">Submit
                                                 </button>
                                             </div>
@@ -206,6 +208,7 @@
             $('#custAccountError').hide()
         }
     }
+
     function isCheckboxCheck() {
         var selectedItem = 0;
         var noOfAccounts = $('#accountSize').val();
@@ -225,24 +228,25 @@
         } else {
             $('#custNameError').hide()
         }
-//    if($('#corpUniqueId').val().isEmpty()){
-//        $('#custError').show()
-//    }else{
-//        $('#custError').hide()
-//    }
+
         console.log("the no of accounts selected " + selectedItem);
         if (selectedItem > 0) {
-            $('#custAccountError').hide();
-            validateCorpId();
-            if (corpIdExists == true) {
-                return;
-            }
-            else {
                 $('#submit').trigger('click');
-            }
+
         } else {
             $('#custAccountError').show();
             return false;
+        }
+    }
+
+    var corpId = [[${corporate.id}]];
+    if (corpId != null) {
+        document.getElementById("cancel").onclick = function () {
+            location.href = "/ops/corporates/" + corpId + "/view";
+        }
+    } else {
+        document.getElementById("cancel").onclick = function () {
+            location.href = "/ops/corporates/";
         }
     }
 

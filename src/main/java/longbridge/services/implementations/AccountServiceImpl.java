@@ -257,6 +257,11 @@ public class AccountServiceImpl implements AccountService {
 
     }
 
+    @Override
+    public void deleteAccount(Long id) {
+            accountRepo.delete(id);
+    }
+
 
     @Override
     public List<AccountInfo> getTransactionalAccounts(List<AccountInfo> accounts) {

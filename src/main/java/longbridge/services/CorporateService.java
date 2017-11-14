@@ -253,4 +253,7 @@ public interface CorporateService{
 
     boolean corporateIdExists(String corporateId);
 
+    String deleteCorporateAccount(CorporateRequestDTO corporateRequestDTO);
+
+    boolean isTransactionPending(Long corpId, String accountNumber);
 }
