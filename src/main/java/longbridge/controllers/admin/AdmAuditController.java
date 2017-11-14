@@ -275,6 +275,9 @@ RevisedEntitiesUtil entitiesUtil = new RevisedEntitiesUtil();
     @GetMapping("/{revisionId}/{classname}/{entityId}/view/details/compare")
     public String compareEntityDetailsOfId(@PathVariable String[] revisionId,@PathVariable String classname,@PathVariable String entityId,Model model)
     {
+        if(revisionId.length>1) {
+            logger.info(" the revision ids is {}", revisionId[1]);
+        }
         model.addAttribute("classname",classname);
         model.addAttribute("itemId",revisionId[0]);
         Map<String,List<String>> entityPastDetails = RevisedEntitiesUtil.getEntityPastDetails(classname, revisionId);

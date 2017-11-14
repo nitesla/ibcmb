@@ -75,13 +75,13 @@
 
                                     <!--<input type="text" class="form-control" id="pattern" th:text="" />-->
 
-                                    <td th:if="${pastDetails.get(headers.indexOf(list)) !=currentDetails.get(headers.indexOf(list))}"   th:text="${headers.get(headers.indexOf(list))}" >
+                                    <td th:if="${pastDetails.get(headers.indexOf(list)) != currentDetails.get(headers.indexOf(list))}"   th:text="${headers.get(headers.indexOf(list))}" >
                                     </td>
-                                    <td th:if="${pastDetails.get(headers.indexOf(list)) ==currentDetails.get(headers.indexOf(list))}"   th:text="${headers.get(headers.indexOf(list))}" >
+                                    <td th:if="${pastDetails.get(headers.indexOf(list)) == currentDetails.get(headers.indexOf(list))}"   th:text="${headers.get(headers.indexOf(list))}" >
                                     </td>
-                                    <td  th:if="${pastDetails.get(headers.indexOf(list)) !=currentDetails.get(headers.indexOf(list))}" th:text="${{currentDetails.get(headers.indexOf(list))}}" th:style="'background-color:#f2dede; color:#a94442'">
+                                    <td  th:if="${pastDetails.get(headers.indexOf(list)) != currentDetails.get(headers.indexOf(list))}" th:text="${currentDetails.get(headers.indexOf(list))}" th:style="'background-color:#f2dede; color:#a94442'">
                                     </td>
-                                    <td  th:if="${pastDetails.get(headers.indexOf(list)) ==currentDetails.get(headers.indexOf(list))}" th:text="${{currentDetails.get(headers.indexOf(list))}}">
+                                    <td  th:if="${pastDetails.get(headers.indexOf(list)) == currentDetails.get(headers.indexOf(list))}" th:text="${{currentDetails.get(headers.indexOf(list))}}">
                                     </td>
                                     <td  th:if="${pastDetails.get(headers.indexOf(list)) !=currentDetails.get(headers.indexOf(list))}" th:text="${pastDetails.get(headers.indexOf(list))}"  th:style="'background-color:#f2dede; color:#a94442'">
                                     </td>
@@ -209,10 +209,11 @@
         }
         console.log("the entity lenght "+ids.length);
         console.log("the entity id "+className);
-        console.log("the entity id "+entityId);
+        console.log("the revision id "+ids);
         if(ids.length >= 1){
             $('.bt-select').removeAttr("disabled");
             if(ids.length == 2){
+
                 var details = ids+"/"+className+"/"+entityId;
                 var refDetials = $("a.bt-link-act").attr("href").replace("revisionId/classname/entityId",details);
                 window.location.assign(refDetials);
