@@ -1,6 +1,7 @@
 package longbridge.controllers.operations;
 
 import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import longbridge.api.AccountInfo;
@@ -10,6 +11,8 @@ import longbridge.exception.DuplicateObjectException;
 import longbridge.exception.InternetBankingException;
 import longbridge.exception.TransferRuleException;
 import longbridge.models.*;
+import longbridge.repositories.AccountRepo;
+import longbridge.repositories.CorporateRepo;
 import longbridge.services.*;
 
 import org.apache.commons.lang3.StringUtils;
@@ -75,7 +78,10 @@ public class OpsCorporateController {
 
     @Autowired
     private VerificationService verificationService;
-
+    @Autowired
+    private AccountRepo accountRepo;
+    @Autowired
+    private CorporateRepo corporateRepo;
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
 
@@ -691,13 +697,30 @@ public class OpsCorporateController {
         }
         return accountInfos;
     }
+    private List<AccountInfo> getAccountsNotInDB(List<AccountInfo> newAccs, List<Account> existingAccs) {
+
+        List<AccountInfo> accountInfos = new ArrayList<>();
+        for (AccountInfo accountInfo : newAccs) {
+            boolean existingAcc = false;
+            for (Account account : existingAccs) {
+                if (accountInfo.getAccountNumber().equals(account.getAccountNumber())) {
+                    existingAcc = true;
+                    break;
+                }
+            }
+            if (!existingAcc) {
+                accountInfos.add(accountInfo);
+            }
+        }
+        return accountInfos;
+    }
 
 
     @PostMapping("/accounts/authorization")
     public String addCorporateAccounts(@ModelAttribute("corporate") @Valid CorporateDTO corporate, BindingResult result, RedirectAttributes redirectAttributes, WebRequest request, HttpSession session, Locale locale, Model model) {
         if (result.hasErrors()) {
             result.addError(new ObjectError("invalid", messageSource.getMessage("form.fields.required", null, locale)));
-            List<AccountInfo> accountInfos = integrationService.fetchAccounts(corporate.getCustomerId().toUpperCase());
+            List<AccountInfo> accountInfos = accountService.getTransactionalAccounts(integrationService.fetchAccounts(corporate.getCustomerId().toUpperCase()));
             model.addAttribute("accounts", accountInfos);
             session.removeAttribute("corporateRequest");
             return "/ops/corporate/setup/account";
@@ -705,7 +728,7 @@ public class OpsCorporateController {
 
         if (corporateService.corporateIdExists(corporate.getCorporateId())) {
             result.addError(new ObjectError("invalid", messageSource.getMessage("corp.id.exists", null, locale)));
-            List<AccountInfo> accountInfos = integrationService.fetchAccounts(corporate.getCustomerId().toUpperCase());
+            List<AccountInfo> accountInfos = accountService.getTransactionalAccounts(integrationService.fetchAccounts(corporate.getCustomerId().toUpperCase()));
             model.addAttribute("accounts", accountInfos);
             return "/ops/corporate/setup/account";
         }
@@ -715,7 +738,7 @@ public class OpsCorporateController {
         logger.info("Customer accounts {}", Arrays.asList(accounts));
 
         if (session.getAttribute("corporateRequest") != null) {
-            List<AccountInfo> accountInfos = integrationService.fetchAccounts(corporate.getCustomerId().toUpperCase());
+            List<AccountInfo> accountInfos = accountService.getTransactionalAccounts(integrationService.fetchAccounts(corporate.getCustomerId().toUpperCase()));
             session.removeAttribute("accountInfos");
             session.removeAttribute("selectedAccounts");
             session.setAttribute("accountInfos", accountInfos);
@@ -861,7 +884,8 @@ public class OpsCorporateController {
     public String addAccountUsingBack(Model model, HttpSession session) {
         String accounts[] = (String[]) session.getAttribute("selectedAccounts");
         CorporateRequestDTO corporate = (CorporateRequestDTO) session.getAttribute("corporateRequest");
-        List<AccountInfo> accountInfos = (List<AccountInfo>) session.getAttribute("accountInfos");
+        List<AccountInfo> accountInfos = accountService.getTransactionalAccounts((List<AccountInfo>) session.getAttribute("accountInfos"));
+
         model.addAttribute("accounts", accountInfos);
         model.addAttribute("corporate", corporate);
         model.addAttribute("selectedAccounts", Arrays.asList(accounts));
@@ -967,7 +991,7 @@ public class OpsCorporateController {
         session.removeAttribute("users");
         session.setAttribute("users", users);
 
-        List<CorporateUserDTO> corporateUsers = null;
+        List<CorporateUserDTO> corporateUsers;
         ObjectMapper mapper = new ObjectMapper();
         mapper.configure(JsonParser.Feature.ALLOW_UNQUOTED_FIELD_NAMES, true);
         try {
@@ -1078,7 +1102,7 @@ public class OpsCorporateController {
             });
             session.removeAttribute("rules");
             session.setAttribute("rules", rules);
-            logger.debug("Corp Transfer Rules: {}", transferRules.toString());
+            logger.debug("Corporate Transfer Rules: {}", transferRules.toString());
         } catch (IOException e) {
             logger.error("Error parsing transfer rules",e);
         }
@@ -1097,12 +1121,11 @@ public class OpsCorporateController {
     public String createSoleCorporateUsers(WebRequest request, RedirectAttributes redirectAttributes, HttpSession session, Model model, Locale locale) {
 
         String users = request.getParameter("users");
-
         logger.info("Corporate Users are: {}", users);
         session.removeAttribute("users");
         session.setAttribute("users", users);
 
-        List<CorporateUserDTO> corporateUsers = null;
+        List<CorporateUserDTO> corporateUsers;
         ObjectMapper mapper = new ObjectMapper();
         mapper.configure(JsonParser.Feature.ALLOW_UNQUOTED_FIELD_NAMES, true);
         try {
@@ -1110,8 +1133,6 @@ public class OpsCorporateController {
             });
 
             logger.debug("Corporate users: {}", corporateUsers.toString());
-
-
             if (session.getAttribute("corporateRequest") != null) {
                 CorporateRequestDTO corporateRequestDTO = (CorporateRequestDTO) session.getAttribute("corporateRequest");
                 corporateRequestDTO.setCorporateUsers(corporateUsers);
@@ -1132,8 +1153,133 @@ public class OpsCorporateController {
             redirectAttributes.addFlashAttribute("failure", "Failed to create corporate entity");
 
         }
-        return "redirect:/ops/corporates/new";
+        return "redirect:/ops/corporates";
+    }
 
+
+    @GetMapping("/account/new/{corporateId}")
+    public String addAccount(@PathVariable Long corporateId, Model model) {
+
+        Corporate corporate = corporateService.getCorp(corporateId);
+        CorporateRequestDTO corporateRequestDTO =  new CorporateRequestDTO();
+        CustomerDetails customerDetails = integrationService.viewCustomerDetailsByCif(corporate.getCustomerId());
+        corporateRequestDTO.setCustomerName(customerDetails.getCustomerName());
+        corporateRequestDTO.setCorporateId(corporate.getCorporateId());
+        corporateRequestDTO.setId(corporate.getId());
+        corporateRequestDTO.setCorporateName(corporate.getName());
+        corporateRequestDTO.setCorporateType(corporate.getCorporateType());
+        corporateRequestDTO.setCustomerId(corporate.getCustomerId());
+        corporateRequestDTO.setRcNumber(corporate.getRcNumber());
+        corporateRequestDTO.setId(corporate.getId());
+
+        List<Account> accounts = corporate.getAccounts();
+
+        List<AccountInfo> accountInfos = integrationService.fetchAccounts(corporate.getCustomerId());
+        accountInfos = accountService.getTransactionalAccounts(accountInfos);
+
+        logger.debug("The account size on Finacle {}, IB {} and cifId {}",accountInfos.size(),corporate.getAccounts().size(),corporate.getCustomerId());
+        accountInfos = getAccountsNotInDB(accountInfos, accounts);
+
+        model.addAttribute("accounts", accountInfos);
+        model.addAttribute("corporate", corporateRequestDTO);
+
+        return "/ops/corporate/new/account";
+    }
+
+
+    @PostMapping("/account/new/add")
+    public String addNewCorporateAccounts(@ModelAttribute("corporateRequestDTO") @Valid CorporateRequestDTO corporateRequestDTO, BindingResult result, RedirectAttributes redirectAttributes, WebRequest request, HttpSession session, Locale locale, Model model) {
+        String[] accounts = request.getParameterValues("accounts");
+
+        logger.info("Corporate Request {}", corporateRequestDTO);
+          if (accounts.length > 0) {
+            logger.info("Customer accounts {}", Arrays.asList(accounts));
+            List<AccountDTO> accountDTOs = new ArrayList<>();
+            for (String account : accounts) {
+                AccountDTO accountDTO = new AccountDTO();
+                accountDTO.setAccountNumber(account);
+                accountDTOs.add(accountDTO);
+            }
+            corporateRequestDTO.setAccounts(accountDTOs);
+        }
+        CorporateDTO corporate = corporateService.getCorporate(corporateRequestDTO.getId());
+
+        try {
+            if (makerCheckerService.isEnabled("ADD_CORPORATE_ACCOUNT")) {
+                String message = verificationService.add(corporateRequestDTO, "ADD_CORPORATE_ACCOUNT", "Adding Corporate Accounts");
+                redirectAttributes.addFlashAttribute("message", message);
+            } else {
+                String message = corporateService.addCorporateAccounts(corporateRequestDTO);
+                redirectAttributes.addFlashAttribute("message", message);
+            }
+
+        }
+        catch (InternetBankingException ibe){
+            logger.error("Error creating corporate accounts", ibe);
+            redirectAttributes.addFlashAttribute("failure", ibe.getMessage());
+
+        }
+        catch (Exception e){
+            logger.error("Error creating corporate accounts", e);
+            redirectAttributes.addFlashAttribute("failure", "Failed to add corporate accounts");
+
+        }
+        return "redirect:/ops/corporates/"+corporate.getId()+"/view";
+
+    }
+
+    @GetMapping("/{corporateId}/account/{accountId}")
+    public String deleteCorporateAccount(@PathVariable Long  corporateId,@PathVariable Long accountId, RedirectAttributes redirectAttributes, Locale locale){
+
+        Corporate corporate = corporateService.getCorp(corporateId);
+
+        if(corporate.getAccounts().size()==1){
+            logger.warn("Attempted to delete a single corporate account");
+            redirectAttributes.addFlashAttribute("failure", messageSource.getMessage("account.single.delete.disallow",null,locale));
+            return "redirect:/ops/corporates/"+corporate.getId()+"/view";
+        }
+
+        AccountDTO accountDTO = accountService.getAccount(accountId);
+
+        if(corporateService.isTransactionPending(corporateId,accountDTO.getAccountNumber())){
+            logger.warn("Attempted to delete a corporate account with pending transaction");
+            redirectAttributes.addFlashAttribute("failure", messageSource.getMessage("account.delete.pending.disallow",null,locale));
+            return "redirect:/ops/corporates/"+corporate.getId()+"/view";
+        }
+
+        CorporateRequestDTO corporateRequestDTO =  new CorporateRequestDTO();
+        corporateRequestDTO.setCorporateId(corporate.getCorporateId());
+        corporateRequestDTO.setId(corporate.getId());
+        corporateRequestDTO.setCorporateName(corporate.getName());
+        corporateRequestDTO.setCorporateType(corporate.getCorporateType());
+        corporateRequestDTO.setCustomerId(corporate.getCustomerId());
+        corporateRequestDTO.setRcNumber(corporate.getRcNumber());
+        corporateRequestDTO.setId(corporate.getId());
+
+        corporateRequestDTO.setAccounts(Arrays.asList(accountDTO));
+
+
+        try {
+            if (makerCheckerService.isEnabled("DELETE_CORPORATE_ACCOUNT")) {
+                String message = verificationService.add(corporateRequestDTO, "DELETE_CORPORATE_ACCOUNT", "Deleting Corporate Account");
+                redirectAttributes.addFlashAttribute("message", message);
+            } else {
+                String message = corporateService.deleteCorporateAccount(corporateRequestDTO);
+                redirectAttributes.addFlashAttribute("message", message);
+            }
+
+        }
+
+        catch (InternetBankingException ibe){
+            logger.error("Error deleting corporate accounts", ibe);
+            redirectAttributes.addFlashAttribute("failure", ibe.getMessage());
+
+        }
+        catch (Exception e){
+            logger.error("Error deleting corporate accounts", e);
+            redirectAttributes.addFlashAttribute("failure", "Failed to delete corporate account");
+        }
+        return "redirect:/ops/corporates/"+corporate.getId()+"/view";
 
     }
 }

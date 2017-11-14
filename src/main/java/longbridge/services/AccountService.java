@@ -87,7 +87,7 @@ public interface AccountService {
 
 
 
-    public Iterable<Account> getCustomerAccounts(String customerId, String currencyCode);
+    Iterable<Account> getCustomerAccounts(String customerId, String currencyCode);
 
 
     List<AccountInfo> getTransactionalAccounts(List<AccountInfo> accounts);
@@ -109,6 +109,7 @@ public interface AccountService {
     List<AccountDTO> getAccountsAndBalances(List<Account> accounts);
 
      Iterable<Account> getAccountsForCredit(String customerId);
+
      Iterable<Account> getAccountsForCredit(List<Account> accounts);
 
     /**
@@ -145,5 +146,8 @@ public interface AccountService {
      * @return
      */
     String makePrimaryAccount(Long id, String customerId) throws InternetBankingException;
+
+
+    void deleteAccount(Long id);
 
    }

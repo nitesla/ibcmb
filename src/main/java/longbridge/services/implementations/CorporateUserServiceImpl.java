@@ -235,9 +235,7 @@ public class CorporateUserServiceImpl implements CorporateUserService {
             return messageSource.getMessage("user.add.success", null, locale);
         } catch (VerificationInterruptedException e) {
             return e.getMessage();
-        } catch (MailException me) {
-            throw new InternetBankingException(messageSource.getMessage("mail.failure", null, locale), me);
-        } catch (Exception exception) {
+        }  catch (Exception exception) {
             if (exception instanceof EntrustException) {
                 throw exception;
             }
