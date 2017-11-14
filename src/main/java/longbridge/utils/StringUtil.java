@@ -250,6 +250,7 @@ public class StringUtil {
     }
     public static String searchModifiedEntityTypeEntity(AuditSearchDTO auditSearchDTO, boolean queryFieldDirectly){
         String timeStamp = "";String className = ""; String lastChangedBy = ""; String revsionField = ""; String ipAddress ="";
+        logger.info("the auditSearchDTO is {}",auditSearchDTO);
         if(queryFieldDirectly){
             revsionField = "revision.id";
             timeStamp = "revision.timestamp";
@@ -267,7 +268,8 @@ public class StringUtil {
         String dayBeforeComparator = " <=";
         boolean fromDateNotEmpty = auditSearchDTO.getFromDate() !=0;
         boolean endDateNotEmpty = auditSearchDTO.getEndDate() !=0;
-        if(!fromDateNotEmpty && auditSearchDTO.getEndDate() ==0){
+        if(fromDateNotEmpty && auditSearchDTO.getEndDate() ==0){
+            logger.info("the from date {}",auditSearchDTO.getFromDate());
             auditSearchDTO.setEndDate(DateUtil.convertDateToLong(DateUtil.nextDate(auditSearchDTO.getFromDate())));
         }
         if(endDateNotEmpty){
@@ -326,7 +328,13 @@ public class StringUtil {
             builder.append(" and m."+className+" = '"+PACKAGE_NAME+auditSearchDTO.getEntityClassName()+"'");
             builder.append(" and "+timeStamp+" >= "+auditSearchDTO.getFromDate()+" and "+timeStamp+dayBeforeComparator+auditSearchDTO.getEndDate());
             builder.append(" and "+lastChangedBy+" = '"+auditSearchDTO.getLastChangeBy()+"' ");
-        }else if(classNameNotEmpty && idNotEmpty && fromDateNotEmpty && !ipAddressNotEmpty &&!lastChangeByNotEmpty){
+        }
+        else if(classNameNotEmpty && idNotEmpty && !fromDateNotEmpty && !ipAddressNotEmpty &&lastChangeByNotEmpty){
+            builder.append(" where m."+revsionField+" in ("+ replaceDetails +") ");
+            builder.append(" and m."+className+" = '"+PACKAGE_NAME+auditSearchDTO.getEntityClassName()+"'");
+            builder.append(" and "+lastChangedBy+" = '"+auditSearchDTO.getLastChangeBy()+"' ");
+        }
+        else if(classNameNotEmpty && idNotEmpty && fromDateNotEmpty && !ipAddressNotEmpty &&!lastChangeByNotEmpty){
             builder.append(" where m."+revsionField+" in ("+ replaceDetails +")");
             builder.append(" and m."+className+" = '"+PACKAGE_NAME+auditSearchDTO.getEntityClassName()+"'");
             builder.append(" and "+timeStamp+" >= "+auditSearchDTO.getFromDate()+" and "+timeStamp+dayBeforeComparator+auditSearchDTO.getEndDate());

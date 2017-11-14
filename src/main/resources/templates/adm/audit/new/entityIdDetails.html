@@ -105,8 +105,50 @@
                                 </tbody>
                             </table>
                             </div>
-                            <div class="x_content">
 
+                            <div class="x_content">
+                                <div class="panel panel-default">
+                                    <div class="panel-heading" style="cursor: pointer;" id="searchHeader">
+                                        <span class="glyphicon glyphicon-search"></span><b>Search</b>
+                                    </div>
+                                    <div class="panel-body" id="searchContent">
+
+                                        <div class="form-group">
+                                            <div class="col-lg-6" style="margin-top: 2px">
+                                                <div class="input-daterange input-group" id="date-range">
+                                                    <input type="text" data-date-format="dd-mm-yyyy" class="form-control datepicker" id="fromDate" name="fromDate" placeholder="Start date" required="required" />
+                                                    <span class="input-group-addon no-border no-bd" style="bacground:transparent !important">to</span>
+                                                    <input type="text"  data-date-format="dd-mm-yyyy" class="form-control datepicker" name="toDate" id="endDate" placeholder="End date" required="required" />
+                                                    <!--<span id="emptyDateError"   class="error">Start and end date is mandatory</span>-->
+                                                </div>
+                                            </div>
+
+                                            <div class="col-lg-6" style="margin-top: 2px">
+                                                <input type="text" class="form-control" id="ipAddress" placeholder="IP adress"/>
+                                            </div>
+                                        </div>
+                                        <div class="form-group input-group col-lg-12">
+                                            <div class="col-lg-6">
+                                                <input type="search" class="form-control" id="lastChangedBy" placeholder="Modifier"/>
+                                            </div>
+
+                                            <div class="col-lg-6">
+                                                <select id="entityName" class="form-control">
+                                                    <option th:value="${classname}" th:text="${classname}"></option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="form-group input-group col-lg-12">
+                                            <div class="col-lg-6">
+                                                <input type="text" class="form-control" id="id" th:value="${entityId}" placeholder="id" style="display: none"/>
+                                            </div>
+
+                                            <div class="col-lg-6">
+                                                <button class="btn btn-success pull-right" id="search" type="button">Go!</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                                 <table class="table table-striped table-bordered table-hover" id="auditview">
 
                                     <thead>
@@ -225,6 +267,14 @@
     } );
     $(document).ready(function()
     {
+        $('.datepicker').datepicker({
+            autoclose: true,
+            todayBtn: true,
+            todayHighlight: true
+        });
+        $('#entityName').attr("disabled",true);
+        $('#searchContent').hide();
+
         ids= [];
         var itemid = [[${itemId}]];
         var classRef = [[${classname}]];
@@ -247,7 +297,14 @@
                 url: '/admin/audit/revised/entity/details/id',
                 type: 'GET',
                 async: false,
-                data:{itemId:itemid,classname:classRef}
+                data:function(d) {
+                    d.id = entityId;
+                    d.entityName = classRef;
+                    d.fromDate = $('#fromDate').val();
+                    d.endDate = $('#endDate').val();
+                    d.ipAddress = $('#ipAddress').val();
+                    d.lastChangedBy = $('#lastChangedBy').val();
+                }
             },
             "dom": 'T<"clear">frtlp',
             "columns": [
@@ -304,7 +361,15 @@
 
     });
 
+    $('#searchHeader').on("click",function () {
+        var display = $('#searchContent').css('display');
+        if(display != 'none'){
+            $('#searchContent').hide();
+        }else {
+            $('#searchContent').show();
 
+        }
+    });
     $("a.bt-link-act").on("click", function(e) {
         e.preventDefault();
         var link = $(e.currentTarget);

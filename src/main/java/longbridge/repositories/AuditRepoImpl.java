@@ -91,7 +91,7 @@ Logger logger = LoggerFactory.getLogger(AuditRepoImpl.class);
         String search  = searchModifiedEntityTypeEntity(auditSearchDTO,true);
         String sql = "select m from  " +
                 "ModifiedEntityTypeEntity m"+search+" and m.revision.lastChangedBy <> 'Unknown' order by m.revision.timestamp desc";
-
+        logger.info("the searched query is {}",sql);
         try {
             TypedQuery<ModifiedEntityTypeEntity> query = em.createQuery(sql,ModifiedEntityTypeEntity.class);
             Long count = RevisedEntitiesUtil.fetchModifiedEntity(auditSearchDTO);
