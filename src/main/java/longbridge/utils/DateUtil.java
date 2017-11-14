@@ -21,6 +21,7 @@ public class DateUtil {
         long milliseconds = 0;
         SimpleDateFormat f = new SimpleDateFormat("dd-MM-yyyy");
         try {
+            logger.info("te");
             if(!StringUtils.isEmpty(date)) {
                 Date d = f.parse(date);
                 logger.info("the date  is {}",d);
@@ -33,6 +34,7 @@ public class DateUtil {
         return milliseconds;
     }
     public static String nextDate(Long date){
+        logger.info("the long day {}",date);
         SimpleDateFormat f = new SimpleDateFormat("dd-MM-yyyy");
             Date date1 =new Date(date);
         logger.info("the day {}",date1);
