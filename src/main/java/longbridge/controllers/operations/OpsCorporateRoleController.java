@@ -185,6 +185,7 @@ public class OpsCorporateRoleController {
             model.addAttribute("usersInRole",role.getUsers());
             model.addAttribute("users",users);
             model.addAttribute("corporate",corporate);
+            logger.error("Error updating role",ibe);
             return "ops/corporate/editrole";
         }
         catch (InternetBankingException ibe) {
@@ -195,6 +196,8 @@ public class OpsCorporateRoleController {
             model.addAttribute("usersInRole",role.getUsers());
             model.addAttribute("users",users);
             model.addAttribute("corporate",corporate);
+            logger.error("Error updating role",ibe);
+
             return "ops/corporate/editrole";
         }
     }

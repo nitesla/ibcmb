@@ -158,12 +158,15 @@ public class VerificationServiceImpl implements VerificationService {
             } else if ("DELETE_CORPORATE_ACCOUNT".equals(verification.getOperation())) {
                 CorporateRequestDTO requestDTO = mapper.readValue(verification.getOriginalObject(), CorporateRequestDTO.class);
                 corporateService.deleteCorporateAccount(requestDTO);
-            } else if ("ADD_AUTHORIZER_FROM_CORPORATE_ADMIN".equals(verification.getOperation())) {
-
+            }
+            else if("UPDATE_CORPORATE_ROLE".equals(verification.getOperation())){
+                CorporateRole role = mapper.readValue(verification.getOriginalObject(), CorporateRole.class);
+                corporateService.updateCorporateRole(role);
+            }
+            else if ("ADD_AUTHORIZER_FROM_CORPORATE_ADMIN".equals(verification.getOperation())) {
                 CorporateUserDTO corpUser = mapper.readValue(verification.getOriginalObject(), CorporateUserDTO.class);
                 corporateUserService.addAuthorizer(corpUser);
             } else if ("UPDATE_USER_FROM_CORPORATE_ADMIN".equals(verification.getOperation())) {
-
                 CorporateUserDTO corpUser = mapper.readValue(verification.getOriginalObject(), CorporateUserDTO.class);
                 corporateUserService.updateUserFromCorpAdmin(corpUser);
             } else {

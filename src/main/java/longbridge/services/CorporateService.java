@@ -231,6 +231,10 @@ public interface CorporateService{
     @PreAuthorize("hasAuthority('UPDATE_CORPORATE_ROLE')")
     String updateCorporateRole(CorporateRoleDTO roleDTO) throws  InternetBankingException;
 
+    void updateCorporateRole(CorporateRole updatedRole) throws InternetBankingException;
+
+    void updateUsersToInitiators(Set<CorporateUser> originalUsers, Set<CorporateUser> updatedUsers);
+
     @PreAuthorize("hasAuthority('GET_CORPORATE_ROLE')")
     CorporateRoleDTO getCorporateRole(Long id);
 
