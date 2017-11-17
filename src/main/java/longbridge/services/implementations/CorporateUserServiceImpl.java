@@ -183,7 +183,6 @@ public class CorporateUserServiceImpl implements CorporateUserService {
                 removeUserFromAuthorizerRole(corporateUser);
             }
 
-
             return messageSource.getMessage("user.update.success", null, locale);
         } catch (VerificationInterruptedException e) {
             return e.getMessage();
@@ -235,7 +234,7 @@ public class CorporateUserServiceImpl implements CorporateUserService {
             return messageSource.getMessage("user.add.success", null, locale);
         } catch (VerificationInterruptedException e) {
             return e.getMessage();
-        }  catch (Exception exception) {
+        } catch (Exception exception) {
             if (exception instanceof EntrustException) {
                 throw exception;
             }
@@ -247,7 +246,6 @@ public class CorporateUserServiceImpl implements CorporateUserService {
     public void createUserOnEntrustAndSendCredentials(CorporateUser corporateUser) {
         CorporateUser user = corporateUserRepo.findFirstByUserNameIgnoreCase(corporateUser.getUserName());
         if (user != null) {
-
             if ("".equals(user.getEntrustId()) || user.getEntrustId() == null) {
                 SettingDTO setting = configService.getSettingByName("ENABLE_ENTRUST_CREATION");
                 String entrustId = user.getUserName();
@@ -260,7 +258,6 @@ public class CorporateUserServiceImpl implements CorporateUserService {
                         boolean result = securityService.createEntrustUser(entrustId, group, fullName, true);
                         if (!result) {
                             throw new EntrustException(messageSource.getMessage("entrust.create.failure", null, locale));
-
                         }
                         boolean contactResult = securityService.addUserContacts(user.getEmail(), user.getPhoneNumber(), true, entrustId, group);
                         if (!contactResult) {
@@ -268,64 +265,74 @@ public class CorporateUserServiceImpl implements CorporateUserService {
                             securityService.deleteEntrustUser(entrustId, group);
                             throw new EntrustException(messageSource.getMessage("entrust.contact.failure", null, locale));
                         }
-
                         user.setEntrustId(entrustId);
                         user.setEntrustGroup(group);
                         corporateUserRepo.save(user);
                     }
                 }
+
                 String password = passwordPolicyService.generatePassword();
                 user.setPassword(passwordEncoder.encode(password));
                 user.setExpiryDate(new Date());
                 passwordPolicyService.saveCorporatePassword(user);
                 corporateUserRepo.save(user);
                 sendCreationCredentials(user, password);
+
+
             }
         }
     }
 
+
     private void sendCreationCredentials(CorporateUser user, String password) {
 
-        String url = (hostUrl != null) ? hostUrl : "";
-        String fullName = user.getFirstName() + " " + user.getLastName();
-        Corporate corporate = user.getCorporate();
+        try {
+            String url = (hostUrl != null) ? hostUrl : "";
+            String fullName = user.getFirstName() + " " + user.getLastName();
+            Corporate corporate = user.getCorporate();
 
-        Context context = new Context();
-        context.setVariable("fullName", fullName);
-        context.setVariable("username", user.getUserName());
-        context.setVariable("password", password);
-        context.setVariable("corporateId", corporate.getCorporateId());
-        context.setVariable("url", url);
+            Context context = new Context();
+            context.setVariable("fullName", fullName);
+            context.setVariable("username", user.getUserName());
+            context.setVariable("password", password);
+            context.setVariable("corporateId", corporate.getCorporateId());
+            context.setVariable("url", url);
 
-
-        Email email = new Email.Builder()
-                .setRecipient(user.getEmail())
-                .setSubject(messageSource.getMessage("corporate.customer.create.subject", null, locale))
-                .setTemplate("mail/corpcreation")
-                .build();
-        mailService.sendMail(email, context);
+            Email email = new Email.Builder()
+                    .setRecipient(user.getEmail())
+                    .setSubject(messageSource.getMessage("corporate.customer.create.subject", null, locale))
+                    .setTemplate("mail/corpcreation")
+                    .build();
+            mailService.sendMail(email, context);
+        } catch (Exception e) {
+            logger.error("Error occurred sending creation credentials", e);
+        }
     }
 
     public void sendActivationCredentials(CorporateUser user, String password) {
 
-        String url = (hostUrl != null) ? hostUrl : "";
-        String fullName = user.getFirstName() + " " + user.getLastName();
-        Corporate corporate = user.getCorporate();
+        try {
+            String url = (hostUrl != null) ? hostUrl : "";
+            String fullName = user.getFirstName() + " " + user.getLastName();
+            Corporate corporate = user.getCorporate();
 
-        Context context = new Context();
-        context.setVariable("fullName", fullName);
-        context.setVariable("username", user.getUserName());
-        context.setVariable("password", password);
-        context.setVariable("corporateId", corporate.getCorporateId());
-        context.setVariable("url", url);
+            Context context = new Context();
+            context.setVariable("fullName", fullName);
+            context.setVariable("username", user.getUserName());
+            context.setVariable("password", password);
+            context.setVariable("corporateId", corporate.getCorporateId());
+            context.setVariable("url", url);
 
 
-        Email email = new Email.Builder()
-                .setRecipient(user.getEmail())
-                .setSubject(messageSource.getMessage("corporate.customer.activation.subject", null, locale))
-                .setTemplate("mail/corpactivation")
-                .build();
-        mailService.sendMail(email, context);
+            Email email = new Email.Builder()
+                    .setRecipient(user.getEmail())
+                    .setSubject(messageSource.getMessage("corporate.customer.activation.subject", null, locale))
+                    .setTemplate("mail/corpactivation")
+                    .build();
+            mailService.sendMail(email, context);
+        } catch (Exception e) {
+            logger.error("Error occurred sending activation credentials", e);
+        }
     }
 
     @Override
@@ -390,7 +397,6 @@ public class CorporateUserServiceImpl implements CorporateUserService {
             corporateUser.setCorporate(corp);
             corporateUserRepo.save(corporateUser);
             createUserOnEntrustAndSendCredentials(corporateUser);
-
             logger.info("New corporate user {} created", corporateUser.getUserName());
             return messageSource.getMessage("user.add.success", null, locale);
         } catch (MailException me) {
@@ -443,13 +449,49 @@ public class CorporateUserServiceImpl implements CorporateUserService {
     }
 
 
-
-
-
     private void sendActivationMessage(User user) {
-        CorporateUser corpUser = getUserByName(user.getUserName());
-        Corporate corporate = corpUser.getCorporate();
-        if ("A".equals(corpUser.getStatus())) {
+
+        try {
+            CorporateUser corpUser = getUserByName(user.getUserName());
+            Corporate corporate = corpUser.getCorporate();
+
+            if ("A".equals(corpUser.getStatus())) {
+
+                String fullName = corpUser.getFirstName() + " " + corpUser.getLastName();
+                String password = passwordPolicyService.generatePassword();
+                corpUser.setPassword(passwordEncoder.encode(password));
+                corpUser.setExpiryDate(new Date());
+                passwordPolicyService.saveCorporatePassword(corpUser);
+                corporateUserRepo.save(corpUser);
+                String url = (hostUrl != null) ? hostUrl : "";
+
+                Context context = new Context();
+                context.setVariable("fullName", fullName);
+                context.setVariable("username", corpUser.getUserName());
+                context.setVariable("password", password);
+                context.setVariable("corporateId", corporate.getCorporateId());
+                context.setVariable("url", url);
+
+                Email email = new Email.Builder()
+                        .setRecipient(corpUser.getEmail())
+                        .setSubject(messageSource.getMessage("corporate.customer.activation.subject", null, locale))
+                        .setTemplate("mail/corpactivation")
+                        .build();
+
+                mailService.sendMail(email, context);
+            }
+
+        } catch (Exception e) {
+            logger.error("Error occurred sending activation credentials", e);
+        }
+    }
+
+    @Async
+    public void sendPasswordResetMessage(CorporateUser user) {
+
+        try {
+            CorporateUser corpUser = corporateUserRepo.findOne(user.getId());
+            Corporate corporate = corpUser.getCorporate();
 
             String fullName = corpUser.getFirstName() + " " + corpUser.getLastName();
             String password = passwordPolicyService.generatePassword();
@@ -466,45 +508,16 @@ public class CorporateUserServiceImpl implements CorporateUserService {
             context.setVariable("corporateId", corporate.getCorporateId());
             context.setVariable("url", url);
 
-
             Email email = new Email.Builder()
-                    .setRecipient(corpUser.getEmail())
-                    .setSubject(messageSource.getMessage("corporate.customer.activation.subject", null, locale))
-                    .setTemplate("mail/corpactivation")
+                    .setRecipient(user.getEmail())
+                    .setSubject(messageSource.getMessage("corp.customer.password.reset.subject", null, locale))
+                    .setTemplate("mail/corppasswordreset")
                     .build();
-
             mailService.sendMail(email, context);
-
         }
-    }
-
-    @Async
-    public void sendPasswordResetMessage(CorporateUser user) {
-
-        CorporateUser corpUser = corporateUserRepo.findOne(user.getId());
-        Corporate corporate = corpUser.getCorporate();
-
-        String fullName = corpUser.getFirstName() + " " + corpUser.getLastName();
-        String password = passwordPolicyService.generatePassword();
-        corpUser.setPassword(passwordEncoder.encode(password));
-        corpUser.setExpiryDate(new Date());
-        passwordPolicyService.saveCorporatePassword(corpUser);
-        corporateUserRepo.save(corpUser);
-        String url = (hostUrl != null) ? hostUrl : "";
-
-        Context context = new Context();
-        context.setVariable("fullName", fullName);
-        context.setVariable("username", corpUser.getUserName());
-        context.setVariable("password", password);
-        context.setVariable("corporateId", corporate.getCorporateId());
-        context.setVariable("url", url);
-
-        Email email = new Email.Builder()
-                .setRecipient(user.getEmail())
-                .setSubject(messageSource.getMessage("corp.customer.password.reset.subject", null, locale))
-                .setTemplate("mail/corppasswordreset")
-                .build();
-        mailService.sendMail(email, context);
+        catch (Exception e){
+            logger.error("Error occurred sending reset credentials",e);
+        }
     }
 
 
@@ -532,7 +545,6 @@ public class CorporateUserServiceImpl implements CorporateUserService {
             logger.info("Corporate user {} status changed from {} to {}", user.getUserName(), oldStatus, newStatus);
             return messageSource.getMessage("user.status.success", null, locale);
 
-
         } catch (Exception e) {
             throw new InternetBankingException(messageSource.getMessage("user.status.failure", null, locale), e);
 
@@ -553,8 +565,6 @@ public class CorporateUserServiceImpl implements CorporateUserService {
             sendPasswordResetMessage(user);
             logger.info("Corporate user {} password reset successfully", user.getUserName());
             return messageSource.getMessage("password.reset.success", null, locale);
-        } catch (MailException me) {
-            throw new InternetBankingException(messageSource.getMessage("mail.failure", null, locale), me);
         } catch (Exception e) {
             throw new PasswordException(messageSource.getMessage("password.reset.failure", null, locale), e);
         }
@@ -576,9 +586,7 @@ public class CorporateUserServiceImpl implements CorporateUserService {
             sendPasswordResetMessage(user);
             logger.info("Corporate user {} password reset successfully", user.getUserName());
             return messageSource.getMessage("password.reset.success", null, locale);
-        } catch (MailException me) {
-            throw new InternetBankingException(messageSource.getMessage("mail.failure", null, locale), me);
-        } catch (Exception e) {
+        }  catch (Exception e) {
             throw new PasswordException(messageSource.getMessage("password.reset.failure", null, locale), e);
         }
     }
@@ -919,8 +927,7 @@ public class CorporateUserServiceImpl implements CorporateUserService {
             corporateUser.setUserName(user.getUserName());
             corporateUser.setEmail(user.getEmail());
             corporateUser.setStatus("A");
-            corporateUser.setPhoneNumber(user
-                    .getPhoneNumber());
+            corporateUser.setPhoneNumber(user.getPhoneNumber());
             corporateUser.setCreatedOnDate(new Date());
             corporateUser.setCorpUserType(CorpUserType.INITIATOR);
             corporateUser.setEntrustId(user.getUserName());
@@ -931,7 +938,6 @@ public class CorporateUserServiceImpl implements CorporateUserService {
             Corporate corp = corporateRepo.findOne(Long.parseLong(user.getCorporateId()));
             corporateUser.setCorporate(corp);
             CorporateUser corpUser = corporateUserRepo.save(corporateUser);
-
             createUserOnEntrustAndSendCredentials(corpUser);
 
             logger.info("New corporate user {} created", corporateUser.getUserName());

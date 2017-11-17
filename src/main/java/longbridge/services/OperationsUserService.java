@@ -37,7 +37,6 @@ public interface OperationsUserService{
      */
     boolean userExists(String username);
 
-    void sendActivationMessage(User user, String... args);
 
     @PreAuthorize("hasAuthority('GET_OPS_USER')")
     OperationsUser getUserByName(String name);
