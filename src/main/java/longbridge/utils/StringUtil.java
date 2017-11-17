@@ -374,4 +374,14 @@ public class StringUtil {
         logger.info("the appended query is {}",builder.toString());
         return builder.toString();
     }
+    public static String maskAccountNumber(String acctNum){
+        if(!StringUtils.isEmpty(acctNum)) {
+            int acctNumLength = acctNum.length();
+            String visibleAcct = acctNum.substring(acctNumLength - 4, acctNumLength);
+            String repeat = StringUtils.repeat("*", acctNumLength - 4);
+            logger.info("the hidden customer account number "+repeat);
+            return repeat+visibleAcct;
+        }
+        return "";
+    }
 }
