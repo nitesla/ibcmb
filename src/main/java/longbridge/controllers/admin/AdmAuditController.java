@@ -275,6 +275,9 @@ RevisedEntitiesUtil entitiesUtil = new RevisedEntitiesUtil();
     @GetMapping("/{revisionId}/{classname}/{entityId}/view/details/compare")
     public String compareEntityDetailsOfId(@PathVariable String[] revisionId,@PathVariable String classname,@PathVariable String entityId,Model model)
     {
+        if(revisionId.length>1) {
+            logger.info(" the revision ids is {}", revisionId[1]);
+        }
         model.addAttribute("classname",classname);
         model.addAttribute("itemId",revisionId[0]);
         Map<String,List<String>> entityPastDetails = RevisedEntitiesUtil.getEntityPastDetails(classname, revisionId);
@@ -288,13 +291,17 @@ RevisedEntitiesUtil entitiesUtil = new RevisedEntitiesUtil();
         return  "adm/audit/new/entityIdDetails";
     }
     @GetMapping("/revised/entity/details/id")
-    public @ResponseBody DataTablesOutput<ModifiedEntityTypeEntity> getRevisedEntityDetailsById(DataTablesInput input,WebRequest webRequest)
+    public @ResponseBody DataTablesOutput<ModifiedEntityTypeEntity> getRevisedEntityDetailsById(DataTablesInput input,
+                                                                                                @RequestParam("id") String id, @RequestParam("entityName") String entityName,
+                                                                                                @RequestParam("fromDate") String fromDate, @RequestParam("endDate") String endDate,
+                                                                                                @RequestParam("ipAddress") String ipAddress, @RequestParam("lastChangedBy") String lastChangedBy)
     {
-        Integer refId = parseInt(webRequest.getParameter("itemId"));
-        String classname = webRequest.getParameter("classname");
+        logger.info("the search details entityName {},fromDate {}, endDate {}, ipAddress {}, id {} ",entityName,fromDate,endDate,ipAddress,id);
         Pageable pageable = DataTablesUtils.getPageable(input);
         Page<ModifiedEntityTypeEntity> auditConf=null;
-        auditConf = auditCfgService.getRevisedDetailsForEntity(refId,classname,pageable);
+        AuditSearchDTO auditSearchDTO = new AuditSearchDTO(id,entityName,fromDate,endDate,ipAddress,lastChangedBy);
+        logger.info("the search query is {}",auditSearchDTO);
+        auditConf=  auditCfgService.searchMod(pageable,auditSearchDTO);
         DataTablesOutput<ModifiedEntityTypeEntity> out = new DataTablesOutput<ModifiedEntityTypeEntity>();
         out.setDraw(input.getDraw());
         out.setData(auditConf.getContent());

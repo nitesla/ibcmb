@@ -399,22 +399,28 @@ public class RetailUserServiceImpl implements RetailUserService {
     @Override
     public void sendActivationCredentials(RetailUser user, String password) {
 
-        String url = (hostUrl != null) ? hostUrl : "";
-        String fullName = user.getFirstName() + " " + user.getLastName();
+        try {
+            String url = (hostUrl != null) ? hostUrl : "";
+            String fullName = user.getFirstName() + " " + user.getLastName();
 
-        Context context = new Context();
-        context.setVariable("fullName", fullName);
-        context.setVariable("username", user.getUserName());
-        context.setVariable("password", password);
-        context.setVariable("url", url);
+            Context context = new Context();
+            context.setVariable("fullName", fullName);
+            context.setVariable("username", user.getUserName());
+            context.setVariable("password", password);
+            context.setVariable("url", url);
 
 
-        Email email = new Email.Builder()
-                .setRecipient(user.getEmail())
-                .setSubject(messageSource.getMessage("customer.activation.subject", null, locale))
-                .setTemplate("mail/retailactivation")
-                .build();
-        mailService.sendMail(email, context);
+            Email email = new Email.Builder()
+                    .setRecipient(user.getEmail())
+                    .setSubject(messageSource.getMessage("customer.activation.subject", null, locale))
+                    .setTemplate("mail/retailactivation")
+                    .build();
+            mailService.sendMail(email, context);
+        }
+        catch (Exception e){
+            logger.error("Error occurred sending activation credentials",e);
+
+        }
     }
 
     @Override

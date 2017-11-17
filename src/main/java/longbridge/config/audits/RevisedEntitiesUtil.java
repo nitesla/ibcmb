@@ -91,7 +91,7 @@ public class RevisedEntitiesUtil {
         for (String rev:revId) {
             refIds.add(Integer.parseInt(rev));
         }
-        List<String> itemList =  new ArrayList<>();
+
         List<String> itemIds =  new ArrayList<>();
         Map<String,List<String>> mergedDetails =  new HashMap<>();
         entityName = getOracleEntity(entityName);
@@ -109,11 +109,12 @@ public class RevisedEntitiesUtil {
                 entityDetails.set(0,getCurrentEntityDetails(beneficiaryTableName, (BigDecimal) entityDetails.get(0).get("ID")));
             }
             entityDetails = removeIrrelevantDetails(entityDetails);
+            List<String> pastList =  new ArrayList<>();
                 for (String item:entityDetails.get(0).keySet())
                 {
                     if(entityDetails.get(0).get(item)!=null)
                     {
-                        itemList.add(entityDetails.get(0).get(item).toString());
+                        pastList.add(entityDetails.get(0).get(item).toString());
                         if(item.equalsIgnoreCase("id")){
                             itemIds.add(entityDetails.get(0).get(item).toString());
                         }
@@ -121,32 +122,35 @@ public class RevisedEntitiesUtil {
 
                     else
                     {
-                        itemList.add("");
+                        pastList.add("");
 
                     }
                 }
-            mergedDetails.put("pastDetails",itemList);
+//            logger.info("the pastDetails 2 {}",pastList);
+            mergedDetails.put("pastDetails",pastList);
                 if(entityDetails.size() >1){
+                    List<String> currentList =  new ArrayList<>();
                     if(entityName.contains("Beneficiary")) {
                         entityDetails.set(1,getCurrentEntityDetails(beneficiaryTableName, (BigDecimal) entityDetails.get(1).get("ID")));
                     }
-                    itemList.clear();
+//                    logger.info("the after clear {}",pastList);
                 for (String item:entityDetails.get(1).keySet())
                 {
                     if(entityDetails.get(1).get(item)!=null)
                     {
                         if(item.equalsIgnoreCase("id")){
-                            itemIds.add(entityDetails.get(0).get(item).toString());
+                            itemIds.add(entityDetails.get(1).get(item).toString());
                         }
-                        itemList.add(entityDetails.get(1).get(item).toString());
+                        currentList.add(entityDetails.get(1).get(item).toString());
                     }
 
                     else{
-                        itemList.add("");
+                        currentList.add("");
                     }
 
                 }
-                mergedDetails.put("currentDetails",itemList);
+//                    logger.info("the currentDetails 2 {}",currentList);
+                mergedDetails.put("currentDetails",currentList);
                 }else {
                     mergedDetails.put("currentDetails",null);
                 }
@@ -155,7 +159,6 @@ public class RevisedEntitiesUtil {
                 mergedDetails.put("selectedItemId",itemIds);
 
         }
-
         return mergedDetails;
     }
     public static Map<String, Object> getEntityDetailsById(String entityName, int rev)
@@ -339,7 +342,8 @@ return modifiedEntityTypeEntities;
         ApplicationContext context = SpringContext.getApplicationContext();
         DataSource dataSource = context.getBean(DataSource.class);
         NamedParameterJdbcTemplate namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
-        String sql = "select count(*) from Modified_Entity_Type_Entity m, Custom_Revision_Entity c"+search+"and c.id = m.revision_id order by c.timestamp desc";
+        String sql = "select count(*) from Modified_Entity_Type_Entity m, Custom_Revision_Entity c"+search+"and c.id = m.revision_id  " +
+                "and c.last_changed_by <> 'Unknown' order by c.timestamp desc";
         SqlParameterSource namedParameters = new MapSqlParameterSource();
         logger.info("the select query {}",sql);
         counter = namedParameterJdbcTemplate.queryForObject(sql, namedParameters, Long.class);

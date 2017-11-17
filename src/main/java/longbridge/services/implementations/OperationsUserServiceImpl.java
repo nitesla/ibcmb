@@ -156,21 +156,6 @@ public class OperationsUserServiceImpl implements OperationsUserService {
     }
 
 
-    @Override
-    public void sendActivationMessage(User user, String... args) {
-
-
-        try {
-            Email email = new Email.Builder()
-                    .setRecipient(user.getEmail())
-                    .setSubject(messageSource.getMessage("ops.activation.subject", null, locale))
-                    .setBody(String.format(messageSource.getMessage("ops.activation.message", null, locale), args))
-                    .build();
-            mailService.send(email);
-        } catch (MailException me) {
-            logger.error("Error sending mail to {}", user.getEmail(), me);
-        }
-    }
 
     @Override
     public OperationsUser getUserByName(String name) {
@@ -260,12 +245,18 @@ public class OperationsUserServiceImpl implements OperationsUserService {
     }
 
     private void sendCreationMessage(OperationsUser user) {
-        Email email = new Email.Builder()
-                .setRecipient(user.getEmail())
-                .setSubject(messageSource.getMessage("ops.creation.subject", null, locale))
-                .setTemplate("mail/opscreation")
-                .build();
-        generateAndSendCredentials(user, email);
+       try {
+           Email email = new Email.Builder()
+                   .setRecipient(user.getEmail())
+                   .setSubject(messageSource.getMessage("ops.creation.subject", null, locale))
+                   .setTemplate("mail/opscreation")
+                   .build();
+           generateAndSendCredentials(user, email);
+       }
+       catch (Exception e){
+           logger.error("Error occurred sending creation credentials",e);
+
+       }
     }
 
     @Override
@@ -364,12 +355,18 @@ public class OperationsUserServiceImpl implements OperationsUserService {
     }
 
     private void sendResetMessage(OperationsUser user) {
-        Email email = new Email.Builder()
-                .setRecipient(user.getEmail())
-                .setSubject(messageSource.getMessage("ops.password.reset.subject", null, locale))
-                .setTemplate("mail/opspasswordreset")
-                .build();
-        generateAndSendCredentials(user, email);
+        try {
+            Email email = new Email.Builder()
+                    .setRecipient(user.getEmail())
+                    .setSubject(messageSource.getMessage("ops.password.reset.subject", null, locale))
+                    .setTemplate("mail/opspasswordreset")
+                    .build();
+            generateAndSendCredentials(user, email);
+        }
+        catch (Exception e){
+            logger.error("Error occurred sending reset credentials",e);
+
+        }
     }
 
     @Override
@@ -500,21 +497,7 @@ public class OperationsUserServiceImpl implements OperationsUserService {
         return pageImpl;
     }
 
-    public void sendCredentialNotification(OperationsUser user) {
 
-        String opsUrl = (hostUrl != null) ? hostUrl + "/ops" : "";
-
-        if ("A".equals(user.getStatus())) {
-            String fullName = user.getFirstName() + " " + user.getLastName();
-            String password = passwordPolicyService.generatePassword();
-            user.setPassword(passwordEncoder.encode(password));
-            user.setExpiryDate(new Date());
-            passwordPolicyService.saveOpsPassword(user);
-            OperationsUser opsUser = operationsUserRepo.save(user);
-            sendActivationMessage(opsUser, fullName, user.getUserName(), password, opsUrl);
-        }
-
-    }
 
     @Override
     public void sendActivationCredentials(OperationsUser user, String password) {

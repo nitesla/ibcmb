@@ -19,11 +19,12 @@ public interface BulkTransferRepo extends CommonRepo<BulkTransfer, Long>{
 
     Page<BulkTransfer> findByCorporateOrderByStatusAsc(Corporate corporate, Pageable details);
 
+    boolean existsByCorporate_IdAndCustomerAccountNumberAndStatus(Long corpId,String accNumber, String status);
 
     List<BulkTransfer> findByStatusNotInIgnoreCase(List<String> list);
 
-   BulkTransfer findFirstByRefCode(String refCode);
+    BulkTransfer findFirstByRefCode(String refCode);
 
-   int countByCorporateAndStatus(Corporate corporate, String status);
+    int countByCorporateAndStatus(Corporate corporate, String status);
 
 }

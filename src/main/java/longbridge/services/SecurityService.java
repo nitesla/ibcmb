@@ -1,5 +1,6 @@
 package longbridge.services;
 
+import longbridge.exception.InternetBankingSecurityException;
 import longbridge.exception.InternetBankingTransferException;
 import longbridge.models.RetailUser;
 
@@ -53,29 +54,29 @@ public interface SecurityService {
      *
      * @param username the username of the required user
      */
-    boolean synchronizeToken(String username,String group, String sNo, String tokenResp1, String tokenResp2) throws InternetBankingTransferException;
+    boolean synchronizeToken(String username,String group, String sNo, String tokenResp1, String tokenResp2) throws InternetBankingSecurityException;
 
-    boolean sendOtp(String username,String group) throws InternetBankingTransferException;
+    boolean sendOtp(String username,String group) throws InternetBankingSecurityException;
 
-    boolean createEntrustUser(String username,String group, String fullName, boolean enableOtp) throws InternetBankingTransferException;
+    boolean createEntrustUser(String username,String group, String fullName, boolean enableOtp) throws InternetBankingSecurityException;
 
-    void deleteEntrustUser(String username,String group) throws InternetBankingTransferException;
+    void deleteEntrustUser(String username,String group) throws InternetBankingSecurityException;
 
-    boolean assignToken(String username,String group, String serialNumber) throws InternetBankingTransferException;
+    boolean assignToken(String username,String group, String serialNumber) throws InternetBankingSecurityException;
 
-    boolean activateToken(String username,String group, String serialNumber) throws InternetBankingTransferException;
+    boolean activateToken(String username,String group, String serialNumber) throws InternetBankingSecurityException;
 
-    boolean deActivateToken(String username,String group, String serialNumber) throws InternetBankingTransferException;
+    boolean deActivateToken(String username,String group, String serialNumber) throws InternetBankingSecurityException;
 
-    void setUserQA(String username,String group, String question, String answer) throws InternetBankingTransferException;
-    void setUserQA(String username,String group, List<String> questions, List<String> answers) throws InternetBankingTransferException;
+    void setUserQA(String username,String group, String question, String answer) throws InternetBankingSecurityException;
+    void setUserQA(String username,String group, List<String> questions, List<String> answers) throws InternetBankingSecurityException;
 
-    Map<String, List<String>> getUserQA(String username,String group) throws InternetBankingTransferException;
+    Map<String, List<String>> getUserQA(String username,String group) throws InternetBankingSecurityException;
      Integer getMinUserQA(String username,String group);
      Integer getMinUserQA();
      Integer geUserQASize(String username,String group);
 
-    Map<String, List<String>> getMutualAuth(String username,String group) throws InternetBankingTransferException;
+    Map<String, List<String>> getMutualAuth(String username,String group) throws InternetBankingSecurityException;
 
 
     void setMutualAuth(String username,String group, List<String> mutualCaption, List<String> mutualImage);
