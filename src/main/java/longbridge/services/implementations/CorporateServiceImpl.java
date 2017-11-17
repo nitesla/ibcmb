@@ -409,7 +409,6 @@ public class CorporateServiceImpl implements CorporateService {
         Context context = new Context();
         context.setVariable("fullName", fullName);
         context.setVariable("username", user.getUserName());
-        context.setVariable("username", user.getUserName());
         context.setVariable("password", password);
         context.setVariable("corporateId", corporate.getCorporateId());
         context.setVariable("url", url);
@@ -789,7 +788,7 @@ public class CorporateServiceImpl implements CorporateService {
             }
             role.setUsers(updatedUsers);
             corporateRoleRepo.save(role);
-            updateUsersToInitiators(originalUsers, updatedUsers);
+            updateUsersWithoutAuthorizerRoleToInitiators(originalUsers, updatedUsers);
             return messageSource.getMessage("role.update.success", null, locale);
 
         } catch (VerificationInterruptedException e) {
@@ -810,7 +809,7 @@ public class CorporateServiceImpl implements CorporateService {
             Set<CorporateUser> originalUsers = new HashSet<>();
             originalRole.getUsers().forEach(user -> originalUsers.add(user));
             corporateRoleRepo.save(updatedRole);
-            updateUsersToInitiators(originalUsers,updatedRole.getUsers());
+            updateUsersWithoutAuthorizerRoleToInitiators(originalUsers,updatedRole.getUsers());
    } catch (Exception e) {
             throw new InternetBankingException(messageSource.getMessage("role.update.failure", null, locale));
         }
@@ -819,13 +818,12 @@ public class CorporateServiceImpl implements CorporateService {
 
     @Override
     @Transactional
-    public void updateUsersToInitiators(Set<CorporateUser> originalUsers, Set<CorporateUser> updatedUsers){
+    public void updateUsersWithoutAuthorizerRoleToInitiators(Set<CorporateUser> originalUsers, Set<CorporateUser> updatedUsers){
 
         Set<CorporateUser> initiators =  new HashSet<>();
 
         for(CorporateUser corporateUser: originalUsers){
             if(!updatedUsers.contains(corporateUser)){
-                logger.info("Initiator: {}",corporateUser.getUserName());
                 initiators.add(corporateUser);
             }
         }
@@ -890,12 +888,12 @@ public class CorporateServiceImpl implements CorporateService {
         List<CorpTransRule> transferRules = corpTransferRuleRepo.findByCorporate(corporate);
         Collections.sort(transferRules, new TransferRuleComparator());
         BigDecimal transferAmount = transferRequest.getAmount();
-        CorpTransRule applicableTransferRule = findApplicableRule(transferRules, transferAmount);
+        CorpTransRule applicableTransferRule = getApplicableRule(transferRules, transferAmount);
         return applicableTransferRule;
     }
 
 
-    private CorpTransRule findApplicableRule(List<CorpTransRule> transferRules, BigDecimal transferAmount) {
+    private CorpTransRule getApplicableRule(List<CorpTransRule> transferRules, BigDecimal transferAmount) {
 
         CorpTransRule applicableTransferRule = null;
         for (CorpTransRule transferRule : transferRules) {
