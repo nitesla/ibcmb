@@ -216,7 +216,7 @@ public class BulkTransferServiceImpl implements BulkTransferService {
 
     @Override
     public Page<BulkTransferDTO> getBulkTransferRequests(Corporate corporate, Pageable details) {
-        Page<BulkTransfer> page = bulkTransferRepo.findByCorporateOrderByStatusAsc(corporate, details);
+        Page<BulkTransfer> page = bulkTransferRepo.findByCorporateOrderByStatusAscTranDateDesc(corporate, details);
         List<BulkTransferDTO> dtOs = convertEntitiesToDTOs(page.getContent());
         long t = page.getTotalElements();
         Page<BulkTransferDTO> pageImpl = new PageImpl<BulkTransferDTO>(dtOs, details, t);

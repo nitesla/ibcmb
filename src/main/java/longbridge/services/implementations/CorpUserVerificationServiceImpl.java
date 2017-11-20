@@ -134,6 +134,9 @@ public class CorpUserVerificationServiceImpl implements CorpUserVerificationServ
     }
     @Transactional
     private void saveInit(CorporateUserDTO userDTO, String operation, String description)throws VerificationException{
+
+
+
         try {
             if (userDTO.getStatus() == null){
                 userDTO.setStatus("A");
@@ -149,11 +152,10 @@ public class CorpUserVerificationServiceImpl implements CorpUserVerificationServ
                 userDTO.setCorporateName(corporate.getName());
             }
 
-            if (userDTO.isAuthorizer()){
-                userDTO.setCorpUserType(CorpUserType.AUTHORIZER);
-            }else {
-                userDTO.setCorpUserType(CorpUserType.INITIATOR);
-            }
+
+
+
+
 
             CorporateUser user = corporateUserService.convertDTOToEntity(userDTO);
 
@@ -170,6 +172,11 @@ public class CorpUserVerificationServiceImpl implements CorpUserVerificationServ
                 }
             }
 
+
+            if(CorpUserType.AUTHORIZER.equals(userDTO.getCorpUserType()) && userDTO.getCorporateRoleId()!=null){
+                saveAuth(userDTO, operation, description);
+            }
+
             CustomUserPrincipal principal = (CustomUserPrincipal) SecurityContextHolder.getContext().getAuthentication()
                     .getPrincipal();
             CorporateUser doneBy = corporateUserRepo.findByUserName(principal.getUsername());
@@ -179,7 +186,7 @@ public class CorpUserVerificationServiceImpl implements CorpUserVerificationServ
             corpUserVerification.setEntityName(entityName);
             corpUserVerification.setInitiatedOn(new Date());
             corpUserVerification.setInitiatedBy(doneBy.getUserName());
-            corpUserVerification.setCorpUserType(CorpUserType.AUTHORIZER);
+//            corpUserVerification.setCorpUserType(CorpUserType.AUTHORIZER);
             corpUserVerification.setCorpId(Long.parseLong(userDTO.getCorporateId()));
             corpUserVerification.setOperation(operation);
             corpUserVerification.setDescription(description);

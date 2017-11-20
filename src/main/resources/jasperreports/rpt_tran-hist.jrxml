@@ -135,7 +135,7 @@
 			<staticText>
 				<reportElement key="staticText" x="8" y="141" width="52" height="20" uuid="4e4e963e-150b-4c6e-af54-72211c1c7d66"/>
 				<textElement>
-					<font fontName="Arial" size="12" isBold="true"/>
+					<font fontName="Arial" size="12" isBold="true" pdfFontName="Helvetica-Bold"/>
 				</textElement>
 				<text><![CDATA[To:]]></text>
 			</staticText>

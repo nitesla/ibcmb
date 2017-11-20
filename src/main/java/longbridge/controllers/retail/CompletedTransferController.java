@@ -5,6 +5,7 @@ import longbridge.models.TransRequest;
 import longbridge.services.RetailUserService;
 import longbridge.services.TransferService;
 import longbridge.utils.DateFormatter;
+import longbridge.utils.StringUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -105,7 +106,7 @@ public class CompletedTransferController {
             modelMap.put("imagePath", imagePath);
             modelMap.put("amount", formatter.format(amount));
             modelMap.put("customer",retailUser.getFirstName()+" "+retailUser.getLastName() );
-            modelMap.put("customerAcctNumber", transRequest.getCustomerAccountNumber());
+            modelMap.put("customerAcctNumber", StringUtil.maskAccountNumber(transRequest.getCustomerAccountNumber()));
             if(transRequest.getRemarks() != null) {
                 modelMap.put("remarks", transRequest.getRemarks());
             }else{
