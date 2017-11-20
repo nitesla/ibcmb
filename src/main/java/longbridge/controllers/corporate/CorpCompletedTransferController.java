@@ -131,7 +131,7 @@ public class CorpCompletedTransferController {
             logger.info(" RECEIPT DOWNLOAD {} ", e.getMessage());
             ModelAndView modelAndView =  new ModelAndView("redirect:/retail/transfer/history");
             modelAndView.addObject("failure", messageSource.getMessage("receipt.download.failed", null, locale));
-            //redirectAttributes.addFlashAttribute("failure", messageSource.getMessage("receipt.download.failed", null, locale));
+            //redirectAttributes.addFlashAttribute("failure", opmessageSource.getMessage("receipt.download.failed", null, locale));
             return modelAndView;
         }
 
