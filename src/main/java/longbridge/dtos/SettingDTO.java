@@ -15,7 +15,7 @@ public class SettingDTO {
 	private String name;
 	@NotEmpty(message = "description")
 	private String description;
-	@NotEmpty(message = "value")
+//	@NotEmpty(message = "value")
 	private String value;
 	private String type;
 	private boolean enabled;
