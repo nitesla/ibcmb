@@ -99,11 +99,6 @@ public class OpsUserAdvisor {
             }
         }
 
-        else if(verification.getOperation().equals("UPDATE_CORPORATE_ROLE")){
-            ObjectMapper objectMapper = new ObjectMapper();
-
-        }
-
     }
 
 }

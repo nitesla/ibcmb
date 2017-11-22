@@ -272,12 +272,6 @@ public class AccountController {
 	private MessageSource messageSource;
 
 	@Autowired
-	private TransferService transferService;
-
-	@Autowired
-	private AccountRepo accountRepo;
-
-	@Autowired
 	private CodeService codeService;
 
 	@Autowired
@@ -442,7 +436,7 @@ public class AccountController {
 	public String getAccountHistory(@PathVariable Long id, Model model, Principal principal,HttpServletRequest request) {
 		RetailUser retailUser = retailUserService.getUserByName(principal.getName());
 
-		Account account = accountRepo.findOne(id);
+		AccountDTO account = accountService.getAccount(id);
 		String LAST_TEN_TRANSACTION = "10";
 		List<AccountDTO> accountList = accountService.getAccountsAndBalances(retailUser.getCustomerId());
 		request.getSession().setAttribute("tranAccountNo",account.getAccountNumber());
