@@ -75,6 +75,7 @@ public class StringUtil {
 //        System.out.println("the datatble field "+builder.toString());
         return builder.toString();
     }
+
     public static String extractedFieldName(String genericFieldName){
         return genericFieldName.substring(genericFieldName.lastIndexOf('.') + 1, genericFieldName.length());
     }
@@ -249,7 +250,7 @@ public class StringUtil {
         return fields;
     }
     public static String searchModifiedEntityTypeEntity(AuditSearchDTO auditSearchDTO, boolean queryFieldDirectly){
-        String timeStamp = "";String className = ""; String lastChangedBy = ""; String revsionField = ""; String ipAddress ="";
+        String timeStamp = "";String className = ""; String lastChangedBy = ""; String revsionField = ""; String ipAddress ="";String username ="";
         logger.info("the auditSearchDTO is {}",auditSearchDTO);
         if(queryFieldDirectly){
             revsionField = "revision.id";
@@ -257,6 +258,7 @@ public class StringUtil {
             lastChangedBy = "revision.lastChangedBy";
             ipAddress = "revision.ipAddress";
             className = "entityClassName";
+            username = "userName";
         }else {
             revsionField = "revision_id";
             timeStamp = "c.timestamp";
@@ -281,6 +283,7 @@ public class StringUtil {
         boolean ipAddressNotEmpty = !StringUtils.isEmpty(auditSearchDTO.getIpAddress());
         boolean classNameNotEmpty = !StringUtils.isEmpty(auditSearchDTO.getEntityClassName());
         boolean lastChangeByNotEmpty = !StringUtils.isEmpty(auditSearchDTO.getLastChangeBy());
+        boolean usernameNotEmpty = !StringUtils.isEmpty(auditSearchDTO.getUsername());
         if(idNotEmpty){
             revisionId = RevisedEntitiesUtil.getRevIdsFromId(auditSearchDTO,"");
             if(revisionId !=null) {
@@ -373,5 +376,15 @@ public class StringUtil {
         }
         logger.info("the appended query is {}",builder.toString());
         return builder.toString();
+    }
+    public static String maskAccountNumber(String acctNum){
+        if(!StringUtils.isEmpty(acctNum)) {
+            int acctNumLength = acctNum.length();
+            String visibleAcct = acctNum.substring(acctNumLength - 4, acctNumLength);
+            String repeat = StringUtils.repeat("*", acctNumLength - 4);
+            logger.info("the hidden customer account number "+repeat);
+            return repeat+visibleAcct;
+        }
+        return "";
     }
 }

@@ -2,7 +2,9 @@ package longbridge;
 
 
 import longbridge.repositories.*;
+import longbridge.services.SecurityService;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -17,7 +19,8 @@ import org.springframework.scheduling.annotation.EnableAsync;
 @EnableBatchProcessing
 @EnableAsync
 public class InternetbankingApplication extends SpringBootServletInitializer implements CommandLineRunner {
-
+    @Autowired
+    SecurityService securityService;
 
 
     public static void main(String[] args) {
@@ -33,6 +36,7 @@ public class InternetbankingApplication extends SpringBootServletInitializer imp
 
     @Override
     public void run(String... strings) throws Exception {
+        securityService.unLockUser("sukoxy","Retail_Group");
     }
 
 

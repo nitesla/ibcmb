@@ -8,6 +8,7 @@ import longbridge.services.CorpTransferService;
 import longbridge.services.CorporateUserService;
 import longbridge.services.TransferService;
 import longbridge.utils.DateFormatter;
+import longbridge.utils.StringUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -98,7 +99,6 @@ public class CorpCompletedTransferController {
             Corporate corporate = corporateUser.getCorporate();
             TransRequest transRequest = transferService.getTransfer(id);
 
-            logger.info("Trans Request {}", transRequest);
             JasperReportsPdfView view = new JasperReportsPdfView();
             view.setUrl("classpath:jasperreports/rpt_tran-hist.jrxml");
             view.setApplicationContext(appContext);
@@ -110,7 +110,7 @@ public class CorpCompletedTransferController {
             modelMap.put("imagePath", imagePath);
             modelMap.put("amount", formatter.format(amount));
             modelMap.put("customer",corporate.getName());
-            modelMap.put("customerAcctNumber", transRequest.getCustomerAccountNumber());
+            modelMap.put("customerAcctNumber", StringUtil.maskAccountNumber(transRequest.getCustomerAccountNumber()));
             if(transRequest.getRemarks() != null) {
                 modelMap.put("remarks", transRequest.getRemarks());
             }else {

@@ -34,6 +34,34 @@
                         <div class="x_panel">
                             <div class="x_title">
                                 <div class="col-lg-12">
+                                    <!--<div class="panel panel-default">-->
+                                        <!--<div class="panel-heading" style="cursor: pointer;" id="findHeader">-->
+                                            <!--<span class="glyphicon glyphicon-search"></span><b>Get id</b>-->
+                                        <!--</div>-->
+                                        <!--<div class="panel-body" id="searchById">-->
+                                            <!--<div class="form-group input-group col-lg-12">-->
+                                                <!--<div class="col-lg-6">-->
+                                                    <!--<select id="entityNameById" class="form-control">-->
+                                                        <!--<option value="AdminUser">Admin user</option>-->
+                                                        <!--<option value="CorporateUser">Corporate User</option>-->
+                                                        <!--<option value="OperationsUser">Operation user</option>-->
+                                                        <!--<option value="RetailUser">Retail User</option>-->
+                                                    <!--</select>-->
+                                                <!--</div>-->
+
+                                            <!--</div>-->
+                                            <!--<div class="form-group input-group col-lg-12">-->
+                                                <!--<div class="col-lg-6">-->
+                                                    <!--<button class="btn btn-success pull-right" id="searchByUsername" type="button">Find!</button>-->
+                                                <!--</div>-->
+                                            <!--</div>-->
+                                            <!--<div class="form-group input-group col-lg-12">-->
+                                                <!--<div class="col-lg-6" style="margin-top: 2px;">-->
+                                                    <!--<input type="text" class="form-control" id="searchedId" style="display: none" placeholder="Id"/>-->
+                                                <!--</div>-->
+                                            <!--</div>-->
+                                        <!--</div>-->
+                                    <!--</div>-->
                                     <div class="panel panel-default">
                                         <div class="panel-heading" style="cursor: pointer;" id="searchHeader">
                                             <span class="glyphicon glyphicon-search"></span><b>Search</b>
@@ -70,8 +98,15 @@
                                                 <div class="col-lg-6">
                                                     <input type="text" class="form-control" id="id" placeholder="id" style="display: none"/>
                                                 </div>
+                                                <div class="col-lg-6" style="margin-top: 2px">
+                                                    <input type="text" class="form-control" id="username" style="display:none" placeholder="User name"/>
+                                                </div>
 
-                                                <div class="col-lg-6">
+                                            </div>
+                                            <div class="form-group input-group col-lg-12">
+
+
+                                                <div class="col-lg-12">
                                                     <button class="btn btn-success pull-right" id="search" type="button">Go!</button>
                                                 </div>
                                             </div>
@@ -99,7 +134,7 @@
 
                                 <ul class="nav navbar-right panel_toolbox col-lg-4 pull-right">
 
-                                    <li class="pull-right" >
+                                    <!--<li class="pull-right" >-->
 
                                         <!--</li>-->
 
@@ -154,22 +189,36 @@
 <script th:inline="javascript">
     $('#entityName').change(function(){
         $('#id').hide();
+        $('#username').hide();
         if($(this).val() != ''){
             $('#id').show();
+            if($(this).val().indexOf("User") >0){
+                $('#username').show();
+            }
         }
     });
-$('#searchHeader').on("click",function () {
-    var display = $('#searchContent').css('display');
-    if(display != 'none'){
-        $('#searchContent').hide();
-    }else {
-        $('#searchContent').show();
+    $('#searchHeader').on("click",function () {
+        var display = $('#searchContent').css('display');
+        if(display != 'none'){
+            $('#searchContent').hide();
+        }else {
+            $('#searchContent').show();
 
-    }
-});
+        }
+    });
+    $('#findHeader').on("click",function () {
+        var display = $('#searchById').css('display');
+        if(display != 'none'){
+            $('#searchById').hide();
+        }else {
+            $('#searchById').show();
+
+        }
+    });
     /*<![CDATA[*/
     $(document).ready(function() {
         $('#searchContent').hide();
+        $('#searchById').hide();
         $('.datepicker').datepicker({
             autoclose: true,
             todayBtn: true,
@@ -195,6 +244,7 @@ $('#searchHeader').on("click",function () {
                     d.endDate = $('#endDate').val();
                     d.ipAddress = $('#ipAddress').val();
                     d.lastChangedBy = $('#lastChangedBy').val();
+                    d.username = $('#username').val();
                 }
             },
             "dom": 'T<"clear">frtlp',
@@ -229,7 +279,8 @@ $('#searchHeader').on("click",function () {
 
                     return data;
                 }
-            }]});
+            }]
+        });
 
         table.on('select', function()
         {
@@ -290,23 +341,6 @@ $('#searchHeader').on("click",function () {
         window.location.assign(refDetials);
 
     } );
-
-
-
-    function warnBeforeRedirect(ooo) {
-        swal({
-            title: "Are you sure?",
-            text: "Are you sure that you want to delete this code?",
-            type: "warning",
-            showCancelButton: true,
-            confirmButtonColor: "#DD6B55",
-            confirmButtonText: "Yes, delete code!",
-            closeOnConfirm: false
-        }, function() {
-
-            window.location.assign(ooo);
-        });
-    }
 
 
     /*]]>*/

@@ -163,34 +163,7 @@ RevisedEntitiesUtil entitiesUtil = new RevisedEntitiesUtil();
         out.setRecordsTotal(audit.getTotalElements());
         return out;
     }
-    @GetMapping("/revised/entity/search")
-    public @ResponseBody DataTablesOutput<ModifiedEntityTypeEntity> searchRevisedEntity(
-            DataTablesInput input,@RequestParam("id") String id, @RequestParam("entityName") String entityName,
-            @RequestParam("fromDate") String fromDate, @RequestParam("endDate") String endDate,
-            @RequestParam("ipAddress") String ipAddress, @RequestParam("lastChangedBy") String lastChangedBy)
-    {
-        logger.info("the search details entityName {},fromDate {}, endDate {}, ipAddress {}, id {} ",entityName,fromDate,endDate,ipAddress,id);
 
-        Pageable pageables = DataTablesUtils.getPageable(input);
-        Page<ModifiedEntityTypeEntity> audit = null;
-        if(!StringUtils.isNoneBlank(id)&& !StringUtils.isNoneBlank(entityName)&& !StringUtils.isNoneBlank(fromDate)
-                && !StringUtils.isNoneBlank(endDate)&& !StringUtils.isNoneBlank(ipAddress)
-                && !StringUtils.isNoneBlank(lastChangedBy)){
-            audit=auditCfgService.getRevisionEntitiesByDate(pageables);
-
-        }
-        else{
-            AuditSearchDTO auditSearchDTO = new AuditSearchDTO(id,entityName,fromDate,endDate,ipAddress,lastChangedBy);
-            audit=  auditCfgService.searchMod(pageables,auditSearchDTO);
-            logger.info("the search query is {}",auditSearchDTO);
-        }
-        DataTablesOutput<ModifiedEntityTypeEntity> out = new DataTablesOutput<ModifiedEntityTypeEntity>();
-        out.setDraw(input.getDraw());
-        out.setData(audit.getContent());
-        out.setRecordsFiltered(audit.getTotalElements());
-        out.setRecordsTotal(audit.getTotalElements());
-        return out;
-    }
 
     @GetMapping("/{id}/{classname}/view")
     public String revisionEntites(@PathVariable String id,@PathVariable String classname,Model model)
@@ -262,6 +235,35 @@ RevisedEntitiesUtil entitiesUtil = new RevisedEntitiesUtil();
         ResponseEntity<HttpStatus> resp = new ResponseEntity<>(HttpStatus.NO_CONTENT);
         return resp;
     }
+    @GetMapping("/revised/entity/search")
+    public @ResponseBody DataTablesOutput<ModifiedEntityTypeEntity> searchRevisedEntity(
+            DataTablesInput input,@RequestParam("id") String id, @RequestParam("entityName") String entityName,
+            @RequestParam("fromDate") String fromDate, @RequestParam("endDate") String endDate,
+            @RequestParam("ipAddress") String ipAddress, @RequestParam("lastChangedBy") String lastChangedBy, @RequestParam("username") String username)
+    {
+        logger.info("the search details entityName {},fromDate {}, endDate {}, ipAddress {}, id {} ",entityName,fromDate,endDate,ipAddress,id);
+
+        Pageable pageables = DataTablesUtils.getPageable(input);
+        Page<ModifiedEntityTypeEntity> audit = null;
+        if(!StringUtils.isNoneBlank(entityName)&& !StringUtils.isNoneBlank(fromDate)
+                && !StringUtils.isNoneBlank(endDate)&& !StringUtils.isNoneBlank(ipAddress)
+                && !StringUtils.isNoneBlank(lastChangedBy)){
+            audit=auditCfgService.getRevisionEntitiesByDate(pageables);
+
+        }
+        else{
+            AuditSearchDTO auditSearchDTO = new AuditSearchDTO(id,entityName,fromDate,endDate,ipAddress,lastChangedBy,username);
+            audit=  auditCfgService.searchMod(pageables,auditSearchDTO);
+            logger.info("the search query is {}",auditSearchDTO);
+        }
+        DataTablesOutput<ModifiedEntityTypeEntity> out = new DataTablesOutput<ModifiedEntityTypeEntity>();
+        out.setDraw(input.getDraw());
+        out.setData(audit.getContent());
+        out.setRecordsFiltered(audit.getTotalElements());
+        out.setRecordsTotal(audit.getTotalElements());
+        return out;
+    }
+    //for the index page for the onclick event.
     @GetMapping("/{id}/{classname}/view/details")
     public String revisedEntityDetsils(@PathVariable String id,@PathVariable String classname,Model model)
     {

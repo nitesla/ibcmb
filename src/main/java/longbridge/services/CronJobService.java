@@ -18,8 +18,8 @@ public interface CronJobService {
     boolean updateRetailUserDetails() throws InternetBankingException;
     boolean updateCorporateUserDetails() throws InternetBankingException;
     boolean updateCorporateDetails() throws InternetBankingException;
-    void keepCronJobEprsDetials(String username, String cronExp,String cronExprDesc) throws InternetBankingException;
-    void deleteRunningJob() throws InternetBankingException;
+    void keepCronJobEprsDetials(String username, String cronExp,String cronExprDesc, String category) throws InternetBankingException;
+    void deleteRunningJob(String category) throws InternetBankingException;
     void updateAllAccountCurrency(Account account, AccountDetails accountDetails) throws InternetBankingException;
     void updateAccountStatus(Account account, AccountDetails accountDetails) throws InternetBankingException ;
     boolean updateAccountDetials() throws InternetBankingException;
@@ -34,7 +34,7 @@ public interface CronJobService {
     void updateCorporateUserPhoneNo(CorporateUser corporateUser, CustomerDetails details) throws InternetBankingException;
     void updateCorporateUserEmail(CorporateUser corporateUser,CustomerDetails details) throws InternetBankingException;
     void saveRunningJob(String jobCategory,String cronExpression) throws InternetBankingException;
-    String getCurrentExpression() throws InternetBankingException;
+    String getCurrentExpression(String category) throws InternetBankingException;
     boolean updateRunningJob() throws InternetBankingException;
     boolean startCronJob() throws InternetBankingException;
     boolean stopJob() throws InternetBankingException;

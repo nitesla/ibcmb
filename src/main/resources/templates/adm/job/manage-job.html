@@ -96,6 +96,18 @@
                                         <form method="post" class="form-horizontal">
                                             <div class="form-group">
                                                 <div class="col-md-12">
+                                                    <label class="control-label col-sm-2">Batch Job category</label>
+                                                    <div class="col-sm-6">
+                                                        <select class="form-control" th:name="category" th:id="jobCategory">
+                                                            <option value="category1">Account currency, status</option>
+                                                            <option value="category2">BVN, RCNum, TaxId, Phone No,Email</option>
+                                                            <option value="category3">fetching new accounts, Currency, Status</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <div class="col-md-12">
                                                     <label class="control-label col-sm-2">Reschedule job</label>
                                                     <div class="col-sm-6">
                                                         <select class="form-control" th:name="scheduler" th:id="scheduler">
@@ -110,6 +122,7 @@
                                                     </div>
                                                 </div>
                                             </div>
+
                                             <div id="secondsDiv" class="schedulingSection">
                                                 <div class="form-group">
                                                     <div class="col-md-12">
