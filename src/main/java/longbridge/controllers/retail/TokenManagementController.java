@@ -45,7 +45,7 @@ public class TokenManagementController {
     @Autowired
     private MessageSource messageSource;
     @Autowired
-    RetailUserService retailUserService;
+    private RetailUserService retailUserService;
 
     @GetMapping
     public String getRetailToken( HttpServletRequest httpServletRequest, Principal principal, Model model){

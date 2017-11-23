@@ -409,7 +409,6 @@ public class CorporateServiceImpl implements CorporateService {
         Context context = new Context();
         context.setVariable("fullName", fullName);
         context.setVariable("username", user.getUserName());
-        context.setVariable("username", user.getUserName());
         context.setVariable("password", password);
         context.setVariable("corporateId", corporate.getCorporateId());
         context.setVariable("url", url);
@@ -650,7 +649,7 @@ public class CorporateServiceImpl implements CorporateService {
     public String deleteCorporateAccount(CorporateRequestDTO requestDTO) {
 
       try {
-            deleteAccount(requestDTO);
+          deleteAccount(requestDTO);
           return messageSource.getMessage("corporate.account.delete.success", null, locale);
 
       }
@@ -720,6 +719,8 @@ public class CorporateServiceImpl implements CorporateService {
             throw new InternetBankingException(messageSource.getMessage("auth.level.invalid", null, locale));
         }
 
+
+
         CorporateRole corporateRole = corporateRoleRepo.findFirstByNameAndRankAndCorporate_Id(roleDTO.getName(), roleDTO.getRank(), Long.parseLong(roleDTO.getCorporateId()));
 
         if (corporateRole != null) {
@@ -747,12 +748,11 @@ public class CorporateServiceImpl implements CorporateService {
             throw new InternetBankingException(messageSource.getMessage("role.add.failure", null, locale), e);
 
         }
-
-
     }
 
 
     @Override
+    @Transactional
     @Verifiable(operation = "UPDATE_CORPORATE_ROLE", description = "Updating a Corporate Role")
     public String updateCorporateRole(CorporateRoleDTO roleDTO) throws InternetBankingException {
 
@@ -766,22 +766,29 @@ public class CorporateServiceImpl implements CorporateService {
             throw new DuplicateObjectException(messageSource.getMessage("auth.level.exist", null, locale));
         }
 
-
         try {
             CorporateRole role = corporateRoleRepo.findOne(roleDTO.getId());
+            Set<CorporateUser> originalUsers = new HashSet<>();
+            role.getUsers().forEach(user -> originalUsers.add(user));
             entityManager.detach(role);
             role.setVersion(roleDTO.getVersion());
             role.setName(roleDTO.getName());
             role.setRank(roleDTO.getRank());
-            role.getUsers().clear();
+
+
+
+            Set<CorporateUser> updatedUsers = new HashSet<>();
 
             for (CorporateUserDTO user : roleDTO.getUsers()) {
                 CorporateUser corporateUser = corporateUserRepo.findOne(user.getId());
+                entityManager.detach(corporateUser);
                 corporateUser.setCorpUserType(CorpUserType.AUTHORIZER);
                 corporateUser.setAdmin(false);
-                role.getUsers().add(corporateUser);
+                updatedUsers.add(corporateUser);
             }
+            role.setUsers(updatedUsers);
             corporateRoleRepo.save(role);
+            updateUsersWithoutAuthorizerRoleToInitiators(originalUsers, updatedUsers);
             return messageSource.getMessage("role.update.success", null, locale);
 
         } catch (VerificationInterruptedException e) {
@@ -789,11 +796,43 @@ public class CorporateServiceImpl implements CorporateService {
         } catch (InternetBankingException e) {
             throw e;
         } catch (Exception e) {
-            throw new InternetBankingException(messageSource.getMessage("role.update.failure", null, locale));
+            throw new InternetBankingException(messageSource.getMessage("role.update.failure", null, locale),e);
 
         }
     }
 
+    @Override
+    @Transactional
+    public void updateCorporateRole(CorporateRole updatedRole) throws InternetBankingException {
+        try {
+            CorporateRole originalRole = corporateRoleRepo.findOne(updatedRole.getId());
+            Set<CorporateUser> originalUsers = new HashSet<>();
+            originalRole.getUsers().forEach(user -> originalUsers.add(user));
+            corporateRoleRepo.save(updatedRole);
+            updateUsersWithoutAuthorizerRoleToInitiators(originalUsers,updatedRole.getUsers());
+   } catch (Exception e) {
+            throw new InternetBankingException(messageSource.getMessage("role.update.failure", null, locale));
+        }
+    }
+
+
+    @Override
+    @Transactional
+    public void updateUsersWithoutAuthorizerRoleToInitiators(Set<CorporateUser> originalUsers, Set<CorporateUser> updatedUsers){
+
+        Set<CorporateUser> initiators =  new HashSet<>();
+
+        for(CorporateUser corporateUser: originalUsers){
+            if(!updatedUsers.contains(corporateUser)){
+                initiators.add(corporateUser);
+            }
+        }
+
+        for(CorporateUser user: initiators){
+            user.setCorpUserType(CorpUserType.INITIATOR);
+            corporateUserRepo.save(user);
+        }
+    }
 
     @Override
     public CorporateRoleDTO getCorporateRole(Long id) {
@@ -849,12 +888,12 @@ public class CorporateServiceImpl implements CorporateService {
         List<CorpTransRule> transferRules = corpTransferRuleRepo.findByCorporate(corporate);
         Collections.sort(transferRules, new TransferRuleComparator());
         BigDecimal transferAmount = transferRequest.getAmount();
-        CorpTransRule applicableTransferRule = findApplicableRule(transferRules, transferAmount);
+        CorpTransRule applicableTransferRule = getApplicableRule(transferRules, transferAmount);
         return applicableTransferRule;
     }
 
 
-    private CorpTransRule findApplicableRule(List<CorpTransRule> transferRules, BigDecimal transferAmount) {
+    private CorpTransRule getApplicableRule(List<CorpTransRule> transferRules, BigDecimal transferAmount) {
 
         CorpTransRule applicableTransferRule = null;
         for (CorpTransRule transferRule : transferRules) {
@@ -1041,11 +1080,11 @@ public class CorporateServiceImpl implements CorporateService {
     @Override
     public boolean isTransactionPending(Long corpId, String accountNumber){
 
-    boolean tranferPending = corpTransferRequestRepo.existsByCorporate_IdAndCustomerAccountNumberAndStatus(corpId,accountNumber, StatusCode.PENDING.toString());
+    boolean transferPending = corpTransferRequestRepo.existsByCorporate_IdAndCustomerAccountNumberAndStatus(corpId,accountNumber, StatusCode.PENDING.toString());
 
-    boolean bulkTranferPending = bulkTransferRepo.existsByCorporate_IdAndCustomerAccountNumberAndStatus(corpId,accountNumber, StatusCode.PENDING.toString());
+    boolean bulkTransferPending = bulkTransferRepo.existsByCorporate_IdAndCustomerAccountNumberAndStatus(corpId,accountNumber, StatusCode.PENDING.toString());
 
-        return tranferPending || bulkTranferPending;
+        return transferPending || bulkTransferPending;
     }
 
 }

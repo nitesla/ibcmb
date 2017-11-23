@@ -1,7 +1,6 @@
 package longbridge.controllers.operations;
 
 import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import longbridge.api.AccountInfo;
@@ -697,23 +696,6 @@ public class OpsCorporateController {
         }
         return accountInfos;
     }
-    private List<AccountInfo> getAccountsNotInDB(List<AccountInfo> newAccs, List<Account> existingAccs) {
-
-        List<AccountInfo> accountInfos = new ArrayList<>();
-        for (AccountInfo accountInfo : newAccs) {
-            boolean existingAcc = false;
-            for (Account account : existingAccs) {
-                if (accountInfo.getAccountNumber().equals(account.getAccountNumber())) {
-                    existingAcc = true;
-                    break;
-                }
-            }
-            if (!existingAcc) {
-                accountInfos.add(accountInfo);
-            }
-        }
-        return accountInfos;
-    }
 
 
     @PostMapping("/accounts/authorization")
@@ -1176,15 +1158,47 @@ public class OpsCorporateController {
         List<Account> accounts = corporate.getAccounts();
 
         List<AccountInfo> accountInfos = integrationService.fetchAccounts(corporate.getCustomerId());
+
+
+        SettingDTO setting = configService.getSettingByName("ENABLE_UNIQUE_ACCOUNTS");
+
+        if (setting != null) {
+            if (setting.isEnabled()) {
+                accountInfos = filterAccounts(accountInfos, accountService.getAccounts(corporate.getCustomerId().toUpperCase()));
+            }
+        } else {
+            accountInfos = filterAccounts(accountInfos, accountService.getAccounts(corporate.getCustomerId().toUpperCase()));
+        }
+
         accountInfos = accountService.getTransactionalAccounts(accountInfos);
 
+
         logger.debug("The account size on Finacle {}, IB {} and cifId {}",accountInfos.size(),corporate.getAccounts().size(),corporate.getCustomerId());
-        accountInfos = getAccountsNotInDB(accountInfos, accounts);
+        accountInfos = getAccountsNotInCorporate(accountInfos, accounts);
 
         model.addAttribute("accounts", accountInfos);
         model.addAttribute("corporate", corporateRequestDTO);
 
         return "/ops/corporate/new/account";
+    }
+
+
+    private List<AccountInfo> getAccountsNotInCorporate(List<AccountInfo> newAccs, List<Account> existingAccs) {
+
+        List<AccountInfo> accountInfos = new ArrayList<>();
+        for (AccountInfo accountInfo : newAccs) {
+            boolean existingAcc = false;
+            for (Account account : existingAccs) {
+                if (accountInfo.getAccountNumber().equals(account.getAccountNumber())) {
+                    existingAcc = true;
+                    break;
+                }
+            }
+            if (!existingAcc) {
+                accountInfos.add(accountInfo);
+            }
+        }
+        return accountInfos;
     }
 
 

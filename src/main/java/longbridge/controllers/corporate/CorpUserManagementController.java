@@ -239,7 +239,7 @@ public class CorpUserManagementController {
                 corporateUserDTO.setCorporateRole(corporateRole.getName() + " " + corporateRole.getRank());
             }
 
-            if ( CorpUserType.AUTHORIZER.equals(corporateUserDTO.getCorpUserType())){
+            if ( CorpUserType.AUTHORIZER.equals(corporateUser.getCorpUserType())){
 
                 if (makerCheckerService.isEnabled("UPDATE_USER_FROM_CORPORATE_ADMIN")){
                     corpUserVerificationService.saveAuthorizer(corporateUserDTO, "UPDATE_USER_FROM_CORPORATE_ADMIN", "Edit an authorizer by corporate Admin");

@@ -202,13 +202,17 @@ public class AdminUserServiceImpl implements AdminUserService {
         return user;
     }
 
-    private void sendCreationMessage(AdminUser user){
-        Email email = new Email.Builder()
-                .setRecipient(user.getEmail())
-                .setSubject(messageSource.getMessage("admin.creation.subject", null, locale))
-                .setTemplate("mail/admincreation")
-                .build();
-        generateAndSendCredentials(user,email);
+    private void sendCreationMessage(AdminUser user) {
+        try {
+            Email email = new Email.Builder()
+                    .setRecipient(user.getEmail())
+                    .setSubject(messageSource.getMessage("admin.creation.subject", null, locale))
+                    .setTemplate("mail/admincreation")
+                    .build();
+            generateAndSendCredentials(user, email);
+        } catch (Exception e) {
+            logger.error("Error occurred sending creation credentials", e);
+        }
     }
 
     @Override
@@ -241,6 +245,33 @@ public class AdminUserServiceImpl implements AdminUserService {
 
 
     private void sendActivationMessage(AdminUser user) {
+        try {
+            Email email = new Email.Builder()
+                    .setRecipient(user.getEmail())
+                    .setSubject(messageSource.getMessage("admin.activation.subject", null, locale))
+                    .setTemplate("mail/adminactivation")
+                    .build();
+
+            generateAndSendCredentials(user, email);
+        } catch (Exception e) {
+            logger.error("Error occurred sending activation credentials", e);
+
+        }
+
+    }
+
+    @Override
+    public void sendActivationCredentials(AdminUser user, String password) {
+
+        try {
+            String adminUrl = (hostUrl != null) ? hostUrl + "/admin" : "";
+
+            String fullName = user.getFirstName() + " " + user.getLastName();
+            Context context = new Context();
+            context.setVariable("fullName", fullName);
+            context.setVariable("username", user.getUserName());
+            context.setVariable("password", password);
+            context.setVariable("adminUrl", adminUrl);
 
             Email email = new Email.Builder()
                     .setRecipient(user.getEmail())
@@ -248,30 +279,11 @@ public class AdminUserServiceImpl implements AdminUserService {
                     .setTemplate("mail/adminactivation")
                     .build();
 
-            generateAndSendCredentials(user,email);
+            mailService.sendMail(email, context);
+        } catch (Exception e) {
+            logger.error("Error occurred sending activation credentials", e);
 
-    }
-
-    @Override
-    public void sendActivationCredentials(AdminUser user, String password) {
-
-
-        String adminUrl = (hostUrl != null) ? hostUrl + "/admin" : "";
-
-            String fullName = user.getFirstName() + " " + user.getLastName();
-            Context context = new Context();
-            context.setVariable("fullName",fullName);
-            context.setVariable("username", user.getUserName());
-            context.setVariable("password",password);
-            context.setVariable("adminUrl",adminUrl);
-
-        Email email = new Email.Builder()
-                .setRecipient(user.getEmail())
-                .setSubject(messageSource.getMessage("admin.activation.subject", null, locale))
-                .setTemplate("mail/adminactivation")
-                .build();
-
-            mailService.sendMail(email,context);
+        }
     }
 
     @Override
@@ -357,7 +369,7 @@ public class AdminUserServiceImpl implements AdminUserService {
             sendResetMessage(user);
             logger.info("Admin user {} password reset successfully", user.getUserName());
             return messageSource.getMessage("password.reset.success", null, locale);
-        }  catch (Exception e) {
+        } catch (Exception e) {
             throw new PasswordException(messageSource.getMessage("password.reset.failure", null, locale), e);
         }
     }
@@ -378,13 +390,19 @@ public class AdminUserServiceImpl implements AdminUserService {
     }
 
 
-    private void sendResetMessage(AdminUser user){
-        Email email = new Email.Builder()
-                .setRecipient(user.getEmail())
-                .setSubject(messageSource.getMessage("admin.password.reset.subject", null, locale))
-                .setTemplate("mail/adminpasswordreset")
-                .build();
-        generateAndSendCredentials(user,email);
+    private void sendResetMessage(AdminUser user) {
+
+        try {
+            Email email = new Email.Builder()
+                    .setRecipient(user.getEmail())
+                    .setSubject(messageSource.getMessage("admin.password.reset.subject", null, locale))
+                    .setTemplate("mail/adminpasswordreset")
+                    .build();
+            generateAndSendCredentials(user, email);
+        }
+        catch (Exception e){
+            logger.error("Error occurred sending reset credentials",e);
+        }
     }
 
     @Override
@@ -505,11 +523,11 @@ public class AdminUserServiceImpl implements AdminUserService {
             adminUserRepo.save(user);
 
             Context context = new Context();
-            context.setVariable("fullName",fullName);
+            context.setVariable("fullName", fullName);
             context.setVariable("username", user.getUserName());
-            context.setVariable("password",password);
-            context.setVariable("adminUrl",adminUrl);
-            mailService.sendMail(email,context);
+            context.setVariable("password", password);
+            context.setVariable("adminUrl", adminUrl);
+            mailService.sendMail(email, context);
         }
 
     }

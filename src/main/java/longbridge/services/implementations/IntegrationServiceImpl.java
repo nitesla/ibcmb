@@ -82,7 +82,7 @@ public class IntegrationServiceImpl implements IntegrationService {
         try {
 
             String uri = URI + "/customer/{acctId}/accounts";
-            return Arrays.stream(template.getForObject(uri, AccountInfo[].class, cifid)).collect(Collectors.toList());
+            return Arrays.stream(template.getForObject(uri, AccountInfo[].class, cifid.toUpperCase())).collect(Collectors.toList());
             // List list= template.getForObject(uri, ArrayList.class,cifid);
 
         } catch (Exception e) {
