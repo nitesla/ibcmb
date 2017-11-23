@@ -9,4 +9,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface CronJobExpressionRepo extends CommonRepo<CronJobExpression,Long> {
     CronJobExpression findLastByFlagAndCategory(String flag,String category);
+    CronJobExpression findLastByFlag(String flag);
 }

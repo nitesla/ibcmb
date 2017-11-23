@@ -282,7 +282,7 @@ public class CronJobServiceImpl implements CronJobService {
 
     @Override
     public String getCurrentExpression(String category) throws InternetBankingException {
-        CronJobExpression cronJobExpression = cronJobExpressionRepo.findLastByFlagAndCategory("Y",category);
+        CronJobExpression cronJobExpression = cronJobExpressionRepo.findLastByFlag("Y");
 
         return cronJobExpression.getCronExpression();
     }
