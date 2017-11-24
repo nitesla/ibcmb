@@ -227,9 +227,9 @@ public class TransferServiceImpl implements TransferService {
 
     private void validateAccounts(TransferRequestDTO dto) throws InternetBankingTransferException {
 
-//        String bvn = integrationService.viewCustomerDetails(dto.getCustomerAccountNumber()).getBvn();
-//        if (bvn == null || bvn.isEmpty() || bvn.equalsIgnoreCase(""))
-//            throw new InternetBankingTransferException(TransferExceptions.NO_BVN.toString());
+        String bvn = integrationService.viewCustomerDetails(dto.getCustomerAccountNumber()).getBvn();
+        if (bvn == null || bvn.isEmpty() || bvn.equalsIgnoreCase(""))
+            throw new InternetBankingTransferException(TransferExceptions.NO_BVN.toString());
 
 
         if (!integrationService.viewAccountDetails(dto.getCustomerAccountNumber()).getAcctStatus().equalsIgnoreCase("A"))
