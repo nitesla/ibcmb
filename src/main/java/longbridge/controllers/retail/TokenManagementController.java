@@ -51,12 +51,14 @@ public class TokenManagementController {
     public String getRetailToken( HttpServletRequest httpServletRequest, Principal principal, Model model){
         Integer noOfAttempts = 0;
         httpServletRequest.getSession().setAttribute("2FA", "2FA");
-        model.addAttribute("username", principal.getName());
+        String name = principal == null ? "" : principal.getName();
+        model.addAttribute("username",name);
         RetailUser user = retailUserService.getUserByName(principal.getName());
         if (user.getNoOfTokenAttempts() != null){
             noOfAttempts = user.getNoOfTokenAttempts();
         }
         model.addAttribute("noOfAttempts",noOfAttempts);
+        logger.debug("Loading the token page with number of attempts {} for user {}" ,noOfAttempts,name);
         return "/cust/logintoken";
     }
 
@@ -69,11 +71,12 @@ public class TokenManagementController {
         try{
             boolean result = securityService.performTokenValidation(user.getEntrustId(),user.getEntrustGroup(),tokenCode);
             if(result){
-                if( request.getSession().getAttribute("2FA") !=null) {
+                if(request.getSession().getAttribute("2FA") !=null) {
                     request.getSession().removeAttribute("2FA");
                 }
                 retailUserService.resetNoOfTokenAttempt(user);
                 //redirectAttributes.addFlashAttribute("message",messageSource.getMessage("token.auth.success",null,locale)) ;
+                logger.debug("Token authentication successful for user {}",user.getUserName());
                 return "redirect:/retail/dashboard";
             }
 

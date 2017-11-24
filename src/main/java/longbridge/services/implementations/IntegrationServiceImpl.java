@@ -6,7 +6,10 @@ import longbridge.dtos.SettingDTO;
 import longbridge.exception.InternetBankingTransferException;
 import longbridge.exception.TransferErrorService;
 import longbridge.exception.TransferExceptions;
+import longbridge.models.Account;
 import longbridge.models.TransRequest;
+import longbridge.repositories.AccountRepo;
+import longbridge.services.AccountService;
 import longbridge.services.ConfigurationService;
 import longbridge.services.IntegrationService;
 import longbridge.services.MailService;
@@ -58,15 +61,19 @@ public class IntegrationServiceImpl implements IntegrationService {
     private ConfigurationService configService;
     private TransferErrorService errorService;
     private MessageSource messageSource;
+    private AccountRepo accountRepo;
+
 
     @Autowired
-    public IntegrationServiceImpl(RestTemplate template, MailService mailService, TemplateEngine templateEngine, ConfigurationService configService, TransferErrorService errorService, MessageSource messageSource) {
+    public IntegrationServiceImpl(RestTemplate template, MailService mailService, TemplateEngine templateEngine, ConfigurationService configService, TransferErrorService errorService, MessageSource messageSource, AccountRepo accountRepo) {
         this.template = template;
         this.mailService = mailService;
         this.templateEngine = templateEngine;
         this.configService = configService;
         this.errorService = errorService;
         this.messageSource = messageSource;
+        this.accountRepo = accountRepo;
+
     }
 
 
@@ -265,6 +272,7 @@ public class IntegrationServiceImpl implements IntegrationService {
     public TransRequest makeTransfer(TransRequest transRequest) throws InternetBankingTransferException {
 
         TransferType type = transRequest.getTransferType();
+        Account account = accountRepo.findFirstByAccountNumber(transRequest.getCustomerAccountNumber());
 
         //switch (type) {
         switch (type) {
@@ -276,9 +284,11 @@ public class IntegrationServiceImpl implements IntegrationService {
                 String uri = URI + "/transfer/local";
                 Map<String, String> params = new HashMap<>();
                 params.put("debitAccountNumber", transRequest.getCustomerAccountNumber());
+                params.put("debitAccountName",account.getAccountName());
                 params.put("creditAccountNumber", transRequest.getBeneficiaryAccountNumber());
+                params.put("creditAccountName", transRequest.getBeneficiaryAccountName());
                 params.put("tranAmount", transRequest.getAmount().toString());
-                params.put("naration", transRequest.getNarration());
+                params.put("remarks", transRequest.getRemarks());
                 logger.info("Starting Transfer with Params: {}", params.toString());
 
                 try {
@@ -309,10 +319,14 @@ public class IntegrationServiceImpl implements IntegrationService {
                 String uri = URI + "/transfer/nip";
                 Map<String, String> params = new HashMap<>();
                 params.put("debitAccountNumber", transRequest.getCustomerAccountNumber());
+                params.put("debitAccountName",account.getAccountName());
                 params.put("creditAccountNumber", transRequest.getBeneficiaryAccountNumber());
+                params.put("creditAccountName", transRequest.getBeneficiaryAccountName());
                 params.put("tranAmount", transRequest.getAmount().toString());
                 params.put("destinationInstitutionCode", transRequest.getFinancialInstitution().getInstitutionCode());
                 params.put("tranType", "NIP");
+                params.put("remarks", transRequest.getRemarks());
+
                 logger.info("params for transfer {}", params.toString());
                 try {
                     response = template.postForObject(uri, params, TransferDetails.class);
@@ -348,9 +362,11 @@ public class IntegrationServiceImpl implements IntegrationService {
                 String uri = URI + "/transfer/local";
                 Map<String, String> params = new HashMap<>();
                 params.put("debitAccountNumber", transRequest.getCustomerAccountNumber());
+                params.put("debitAccountName",account.getAccountName());
                 params.put("creditAccountNumber", transRequest.getBeneficiaryAccountNumber());
+                params.put("creditAccountName", transRequest.getBeneficiaryAccountName());
                 params.put("tranAmount", transRequest.getAmount().toString());
-                params.put("naration", transRequest.getNarration());
+                params.put("remarks", transRequest.getRemarks());
                 logger.info("params for transfer {}", params.toString());
                 try {
                     response = template.postForObject(uri, params, TransferDetails.class);

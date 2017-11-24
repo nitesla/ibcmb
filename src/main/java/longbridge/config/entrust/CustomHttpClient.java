@@ -85,6 +85,8 @@ public class CustomHttpClient {
             int statusCode = response.getStatusLine().getStatusCode();
             httpResponse.setResponseCode(statusCode);
 
+            LOGGER.debug("The response code received is {}",statusCode);
+
             // If the response does not enclose an entity, there is no need
             // to bother about connection release
             if (entity != null) {
