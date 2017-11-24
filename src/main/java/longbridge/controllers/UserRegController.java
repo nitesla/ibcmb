@@ -270,8 +270,6 @@ public class UserRegController {
             if (qa != null) {
                 List<String> question = qa.get("answers");
                 secAnswer = question.stream().filter(Objects::nonNull).findFirst().orElse("");
-                logger.info("user answer {}", answer);
-                logger.info("answer {}", secAnswer);
 
                 if (!secAnswer.equalsIgnoreCase(answer)) {
                     return "";
@@ -600,8 +598,9 @@ public class UserRegController {
         if (phish.isDirectory()) { // make sure it's a directory
             for (final File f : phish.listFiles(IMAGE_FILTER)) {
                 images.add(f.getName());
-                logger.info("FILE NAME {}", f.getName());
             }
+            logger.info("FILE NAME size {}", images.size());
+
         }
 
         model.addAttribute("images", images);
@@ -649,10 +648,6 @@ public class UserRegController {
         }
         logger.info("master question length" + masterList.length);
 
-        for (int i = 0; i < masterList.length; i++) {
-//            logger.info("master question "+i+" "+masterList[i]);
-        }
-//        logger.trace("master question "+ Arrays.toString(masterList));
 
 
         logger.info("MASTER LIST {}", masterList);
@@ -732,7 +727,6 @@ public class UserRegController {
                 securityAnswers.add(webRequest.getParameter("securityAnswer" + i));
 
                 logger.info(" sec questions list {}", secQuestions);
-                logger.info("sec answer list {}", securityAnswers);
             }
         }
         CustomerDetails details = integrationService.isAccountValid(accountNumber, email, dob);

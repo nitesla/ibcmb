@@ -60,8 +60,6 @@ public class CorpCompletedTransferController {
     private String jrxmlPath;
     @Value("${savedDocFile.path}")
     private String savedDoc;
-    @Value("${excel.path}")
-    String PROPERTY_EXCEL_SOURCE_FILE_PATH;
 
     @Autowired
     private CorpTransferService corpTransferService;
@@ -99,7 +97,6 @@ public class CorpCompletedTransferController {
             Corporate corporate = corporateUser.getCorporate();
             TransRequest transRequest = transferService.getTransfer(id);
 
-            logger.info("Trans Request {}", transRequest);
             JasperReportsPdfView view = new JasperReportsPdfView();
             view.setUrl("classpath:jasperreports/rpt_tran-hist.jrxml");
             view.setApplicationContext(appContext);

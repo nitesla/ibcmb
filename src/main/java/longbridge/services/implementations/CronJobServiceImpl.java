@@ -58,19 +58,21 @@ public class CronJobServiceImpl implements CronJobService {
     }
 
     @Override
-    public void keepCronJobEprsDetials(String username, String cronExpression,String cronExprDesc) throws InternetBankingException {
+    public void keepCronJobEprsDetials(String username, String cronExpression,String cronExprDesc,String category) throws InternetBankingException {
         CronJobExpression cronJobExpression = new CronJobExpression();
         cronJobExpression.setUsername(username);
         cronJobExpression.setCreatedOn(new Date());
         cronJobExpression.setFlag("Y");
         cronJobExpression.setCronExpression(cronExpression);
         cronJobExpression.setCronExpressionDesc(cronExprDesc);
+        cronJobExpression.setCategory(category);
         cronJobExpressionRepo.save(cronJobExpression);
     }
 
     @Override
-    public void deleteRunningJob() throws InternetBankingException {
-        CronJobExpression cronJobExpression = cronJobExpressionRepo.findLastByFlag("Y");
+    public void deleteRunningJob(String category) throws InternetBankingException {
+        CronJobExpression cronJobExpression = cronJobExpressionRepo.findLastByFlagAndCategory("Y",category);
+        logger.info("the job to be deleted {}",cronJobExpression);
         if (cronJobExpression != null){
 //            logger.info("about deleting");
             cronJobExpression.setFlag("N");
@@ -279,7 +281,7 @@ public class CronJobServiceImpl implements CronJobService {
     }
 
     @Override
-    public String getCurrentExpression() throws InternetBankingException {
+    public String getCurrentExpression(String category) throws InternetBankingException {
         CronJobExpression cronJobExpression = cronJobExpressionRepo.findLastByFlag("Y");
 
         return cronJobExpression.getCronExpression();

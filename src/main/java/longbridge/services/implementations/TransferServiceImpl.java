@@ -73,7 +73,7 @@ public class TransferServiceImpl implements TransferService {
         logger.info("Initiating a Transfer", transferRequestDTO);
         TransRequest transRequest = integrationService.makeTransfer(convertDTOToEntity(transferRequestDTO));
 
-        logger.info("Transfer Details: ", transRequest);
+        logger.trace("Transfer Details: ", transRequest);
 
         if (transRequest != null) {
 
@@ -182,7 +182,7 @@ public class TransferServiceImpl implements TransferService {
         logger.info("Retrieving completed transfers");
         Page<TransRequest> page = transferRequestRepo.findUsingPattern(pattern, pageDetails);
         List<TransferRequestDTO> dtOs = convertEntitiesToDTOs(page.getContent());
-        logger.info("Completed transfers", dtOs);
+        logger.trace("Completed transfers", dtOs);
         long t = page.getTotalElements();
         Page<TransferRequestDTO> pageImpl = new PageImpl<TransferRequestDTO>(dtOs, pageDetails, t);
         return pageImpl;

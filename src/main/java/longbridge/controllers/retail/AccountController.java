@@ -235,12 +235,14 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.jasperreports.JasperReportsPdfView;
+import org.springframework.web.servlet.view.jasperreports.JasperReportsXlsView;
 
 import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.security.Principal;
 import java.text.DecimalFormat;
 import java.text.ParseException;
@@ -289,8 +291,6 @@ public class AccountController {
 	private String jrxmlPath;
 	@Value("${savedDocFile.path}")
 	private String savedDoc;
-	@Value("${excel.path}")
-	String PROPERTY_EXCEL_SOURCE_FILE_PATH;
 	@Value("${jrxmlImage.path}")
 	private String imagePath;
 	private SimpleDateFormat dateFormat = new SimpleDateFormat("dd-mm-yyyy");
@@ -718,9 +718,10 @@ public class AccountController {
 		DataTablesOutput<TransactionDetails> out = new DataTablesOutput<TransactionDetails>();
 		SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy");
 		try {
-//			JasperReportsPdfView view = new JasperReportsPdfView();
-//			view.setUrl("classpath:jasperreports/rpt_account-statement.jrxml");
-//			view.setApplicationContext(appContext);
+			JasperReportsPdfView view = new JasperReportsPdfView();
+//			JasperReportsXlsView xlsView = new JasperReportsXlsView();
+//			xlsView.setUrl("classpath:jasperreports/rpt_account-statement.jrxml");
+//			xlsView.setApplicationContext(appContext);
 			from = format.parse(fromDate);
 			to = format.parse(toDate);
 			AccountStatement accountStatement = integrationService.getFullAccountStatement(acctNumber, from, to, tranType);
@@ -781,7 +782,8 @@ public class AccountController {
 			Date today = new Date();
 			modelMap.put("today", today);
 			modelMap.put("imagePath", imagePath);
-//			ModelAndView modelAndView = new ModelAndView(view, modelMap);
+//			ModelAndView modelAndView = new ModelAndView(xlsView, modelMap);
+//
 			ModelAndView modelAndView = new ModelAndView("rpt_account-statement", modelMap);
 			return modelAndView;
 		} catch (ParseException e) {

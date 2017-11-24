@@ -488,7 +488,7 @@ public class CorpTransferController {
             Corporate corporate = corporateUser.getCorporate();
             TransRequest transRequest = transferService.getTransfer(id);
 
-//            logger.info("Trans Request {}", transRequest);
+            logger.info("Trans Request for customer");
             JasperReportsPdfView view = new JasperReportsPdfView();
             view.setUrl("classpath:jasperreports/rpt_tran-hist.jrxml");
             view.setApplicationContext(appContext);

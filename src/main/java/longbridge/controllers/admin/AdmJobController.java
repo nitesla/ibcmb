@@ -39,18 +39,19 @@ public class AdmJobController {
     public String getCronExpression(WebRequest webRequest, Principal principal,RedirectAttributes redirectAttributes) {
         String cronExpr = "";
         String username= "";
+        String category= webRequest.getParameter("category");
         String schedule  = webRequest.getParameter("scheduler");
         if (principal.getName() != null) {
             username = principal.getName();
         }
-        logger.info("schedule {} and username {}",schedule,username);
+        logger.info("schedule {} and username {} category {}",schedule,username,category);
         if((schedule != null)&&(!schedule.equalsIgnoreCase(""))){
             String cronExpression = CronJobUtils.getCronExpression(schedule, webRequest).get("value");
             String cronExprValue = CronJobUtils.getCronExpression(schedule, webRequest).get("desc");
             logger.info("expression value {} and description {}",cronExpression,cronExprValue);
             if(!cronExpression.equalsIgnoreCase("")) {
-//                cronJobService.deleteRunningJob();
-//                cronJobService.keepCronJobEprsDetials(username, cronExpression,"");
+                cronJobService.deleteRunningJob(category);
+                cronJobService.keepCronJobEprsDetials(username, cronExpression,"cronExprValue",category);
                 redirectAttributes.addFlashAttribute("message", messageSource.getMessage("job.update.success", null, locale));
                 return "redirect:/admin/job";
             }

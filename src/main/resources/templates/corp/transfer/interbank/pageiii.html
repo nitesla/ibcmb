@@ -51,7 +51,7 @@
                             <tr>
 
                                 <th>Charge</th>
-                                <td th:text="${#numbers.formatDecimal(charge, 1, 'COMMA', 2, 'POINT')}"></td>
+                                <td th:text="*{charge ==null or charge == ''} ? '':${#numbers.formatDecimal(charge, 1, 'COMMA', 2, 'POINT')}"></td>
 
                             </tr>
                             <tr>

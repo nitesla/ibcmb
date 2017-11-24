@@ -177,7 +177,6 @@ public class RetrieveCredentialController {
             Map<String, List<String>> qa = null;
             int noOfMismatch = 0;
             String username=webRequest.getParameter("username");
-            logger.info("answer 1 {}",webRequest.getParameter("secAnswers"));
             logger.info("user {}",webRequest.getParameter("username"));
             List<String> answers = StringUtil.splitByComma(webRequest.getParameter("secAnswers"));
             if(session.getAttribute("retSecQestnAndAns") == null) {
@@ -188,12 +187,11 @@ public class RetrieveCredentialController {
                 qa = (Map<String, List<String>>) session.getAttribute("retSecQestnAndAns");
             }
             //List<String> sec = null;
-            logger.info("sec questions {}",qa);
+            logger.info("sec questions {}",qa.get("questions"));
             if (qa != null){
                 List<String> entAnswers = qa.get("answers");
 //                secAnswer = question.stream().filter(Objects::nonNull).findFirst().orElse("");
 
-                logger.info("user answer {}", answers);
                 if((answers.size()>0)&&(entAnswers.size()>0)) {
                     for(int i =0; i<answers.size();i++){
                         if(!answers.get(i).equalsIgnoreCase(entAnswers.get(i))){
@@ -220,7 +218,7 @@ public class RetrieveCredentialController {
             int noOfMismatch = 0;
             Map<String, List<String>> qa = null;
             String customerId = webRequest.getParameter("customerId");
-            logger.info("answer 1 {}",webRequest.getParameter("secAnswers"));
+//            logger.info("answer 1 {}",webRequest.getParameter("secAnswers"));
             logger.info("cid id {}",webRequest.getParameter("customerId"));
             List<String> answers = StringUtil.splitByComma(webRequest.getParameter("secAnswers"));
             if(session.getAttribute("retSecQestnAndAnsFU") == null) {
@@ -231,7 +229,6 @@ public class RetrieveCredentialController {
             }
             if (qa != null){
                 List<String> answer = qa.get("answers");
-                logger.info("user answer {}", answer);
                 logger.info("compared answer {}", compareAnswers(answers,answer));
                 if(compareAnswers(answers,answer).equalsIgnoreCase("true")){
                     return "true";

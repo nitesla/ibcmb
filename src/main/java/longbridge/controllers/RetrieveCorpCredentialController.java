@@ -93,11 +93,10 @@ public class RetrieveCorpCredentialController {
             CorporateUser corporateUser = corporateUserService.getUserByNameAndCorporateId(username, corporateId);
 //            logger.info("the corporateUsername group {} and id {}",corporateUser.getEntrustGroup(),corporateUser.getEntrustId());
             Map<String, List<String>> qa = securityService.getUserQA(corporateUser.getEntrustId(), corporateUser.getEntrustGroup());
-            logger.info("the question and answer {}",qa.get("questions"));
+            logger.info("the question {}",qa.get("questions"));
                 if (qa != null && !qa.isEmpty()){
                     session.setAttribute("corpSecQestnAndAns",qa);
                 List<String> questions= qa.get("questions");
-                logger.info("questions {}",questions);
                 if (questions == null){
                     redirectAttributes.addFlashAttribute("failure", messageSource.getMessage("corp.reg.inconplete.failed", null, locale));
                     return "redirect:/login/corporate";
@@ -136,7 +135,6 @@ public @ResponseBody String getSecAns(WebRequest webRequest, HttpSession session
         int noOfMismatch = 0;
         Map<String, List<String>> qa = null;
         String username=webRequest.getParameter("username");
-        logger.info("answer 1 {}",webRequest.getParameter("secAnswers"));
         logger.info("user {}",webRequest.getParameter("username"));
         List<String> answers = StringUtil.splitByComma(webRequest.getParameter("secAnswers"));
         CorporateUser corporateUser = corporateUserService.getUserByName(username);
@@ -151,7 +149,6 @@ public @ResponseBody String getSecAns(WebRequest webRequest, HttpSession session
             List<String> entAnswers = qa.get("answers");
 //                secAnswer = question.stream().filter(Objects::nonNull).findFirst().orElse("");
 
-            logger.info("user answer {}", answers);
             if((answers.size()>0)&&(entAnswers.size()>0)) {
                 for(int i =0; i<answers.size();i++){
                     if(!answers.get(i).equalsIgnoreCase(entAnswers.get(i))){
@@ -458,12 +455,10 @@ public @ResponseBody String getSecAns(WebRequest webRequest, HttpSession session
             if(session.getAttribute("corpSecQestnAndAns") !=null) {
                 Map<String, List<String>> qa = (Map<String, List<String>>) session.getAttribute("corpSecQestnAndAns");
                 //List<String> sec = null;
-                logger.info("sec questions {}", answers);
                 if (qa != null) {
                     List<String> answer = qa.get("answers");
 //                secAnswer = question.stream().filter(Objects::nonNull).findFirst().orElse("");
 
-                    logger.info("user answer {}", answer);
                     if (compareAnswers(answers, answer).equalsIgnoreCase("true")) {
                         return "true";
                     }

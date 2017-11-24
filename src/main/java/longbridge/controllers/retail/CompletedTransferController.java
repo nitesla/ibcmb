@@ -58,8 +58,6 @@ public class CompletedTransferController {
     private String jrxmlPath;
     @Value("${savedDocFile.path}")
     private String savedDoc;
-    @Value("${excel.path}")
-    String PROPERTY_EXCEL_SOURCE_FILE_PATH;
 
     @GetMapping("/history")
     public String completedTransfers(){
@@ -94,7 +92,7 @@ public class CompletedTransferController {
 
             TransRequest transRequest = transferService.getTransfer(id);
 
-            logger.info("Trans Request {}", transRequest);
+//            logger.info("Trans Request {}", transRequest);
             JasperReportsPdfView view = new JasperReportsPdfView();
             view.setUrl("classpath:jasperreports/rpt_tran-hist.jrxml");
             view.setApplicationContext(appContext);

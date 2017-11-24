@@ -34,7 +34,7 @@ public class CronJobScheduler {
                 .newTrigger()
                 .withIdentity("oneTime", "ibtest")
                 .withSchedule(
-                        CronScheduleBuilder.cronSchedule(cronJobService.getCurrentExpression()))
+                        CronScheduleBuilder.cronSchedule(cronJobService.getCurrentExpression("category2")))
                 .build();
 
         Trigger fiveMins = TriggerBuilder

@@ -184,6 +184,22 @@ public class RevisedEntitiesUtil {
 
             return entityDetails.get(0);
     }
+    public static String getUserDetailsByUserName(String entityName, String username)
+    {
+            entityName = getOracleEntity(entityName);
+//            String auditEntity = entityName + "_AUD";
+            ApplicationContext context = SpringContext.getApplicationContext();
+            DataSource dataSource = context.getBean(DataSource.class);
+            NamedParameterJdbcTemplate namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
+            String sql = "select a.id from "+ entityName +" a where a.USER_NAME = :username";
+            SqlParameterSource namedParameters = new MapSqlParameterSource("username", username);
+            List<Map<String ,Object>> entityDetails = namedParameterJdbcTemplate.queryForList(sql, namedParameters);
+if(entityDetails != null) {
+    return entityDetails.get(0).get("ID").toString();
+}else {
+    return "";
+}
+    }
 
     private static List<Map<String, Object>> removeIrrelevantDetails(List<Map<String ,Object>> entityDetails){
         for (Map map:entityDetails) {
@@ -336,9 +352,6 @@ return modifiedEntityTypeEntities;
         Long counter = Long.parseLong("0");
         List<Map<String ,Object>> mapList=null;
         Collection<Integer> revIds = new ArrayList<>();
-        String modifiedEntityTypeEntity = getOracleEntity("ModifiedEntityTypeEntity");
-        String customRevisionEntity = getOracleEntity("CustomRevisionEntity");
-//        String auditEntity = entityName + "_AUD";
         ApplicationContext context = SpringContext.getApplicationContext();
         DataSource dataSource = context.getBean(DataSource.class);
         NamedParameterJdbcTemplate namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
