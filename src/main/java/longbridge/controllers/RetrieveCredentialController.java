@@ -105,7 +105,7 @@ public class RetrieveCredentialController {
                 return "redirect:/login/retail";
             }
             PasswordStrengthDTO passwordStrengthDTO = passwordPolicyService.getPasswordStrengthParams();
-            logger.info("Password Strength {}" + passwordStrengthDTO);
+            logger.debug("Password Strength {}" + passwordStrengthDTO);
             model.addAttribute("passwordStrength", passwordStrengthDTO);
 
             model.addAttribute("forgotPasswordForm", resetPasswordForm);
@@ -122,9 +122,9 @@ public class RetrieveCredentialController {
     String resetPassword(WebRequest webRequest, RedirectAttributes redirectAttributes, HttpSession session){
         Iterator<String> iterator = webRequest.getParameterNames();
 
-        while(iterator.hasNext()){
-            logger.info(iterator.next());
-        }
+//        while(iterator.hasNext()){
+//            logger.info(iterator.next());
+//        }
 
 
         String accountNumber = webRequest.getParameter("acct");
@@ -187,7 +187,7 @@ public class RetrieveCredentialController {
                 qa = (Map<String, List<String>>) session.getAttribute("retSecQestnAndAns");
             }
             //List<String> sec = null;
-            logger.info("sec questions {}",qa.get("questions"));
+//            logger.info("sec questions {}",qa.get("questions"));
             if (qa != null){
                 List<String> entAnswers = qa.get("answers");
 //                secAnswer = question.stream().filter(Objects::nonNull).findFirst().orElse("");
@@ -206,7 +206,7 @@ public class RetrieveCredentialController {
             }
             //return (String) session.getAttribute("username");
         }catch (Exception e){
-            logger.info(e.getMessage());
+            logger.error("Error validating security questions and answers",e);
             return messageSource.getMessage("sec.ans.failed", null, locale);
         }
         return messageSource.getMessage("sec.ans.failed", null, locale);
@@ -219,7 +219,7 @@ public class RetrieveCredentialController {
             Map<String, List<String>> qa = null;
             String customerId = webRequest.getParameter("customerId");
 //            logger.info("answer 1 {}",webRequest.getParameter("secAnswers"));
-            logger.info("cid id {}",webRequest.getParameter("customerId"));
+            logger.debug("cid id {}",webRequest.getParameter("customerId"));
             List<String> answers = StringUtil.splitByComma(webRequest.getParameter("secAnswers"));
             if(session.getAttribute("retSecQestnAndAnsFU") == null) {
                 RetailUser retailUser = retailUserService.getUserByCustomerId(customerId);
@@ -229,14 +229,14 @@ public class RetrieveCredentialController {
             }
             if (qa != null){
                 List<String> answer = qa.get("answers");
-                logger.info("compared answer {}", compareAnswers(answers,answer));
+                logger.debug("compared answer {}", compareAnswers(answers,answer));
                 if(compareAnswers(answers,answer).equalsIgnoreCase("true")){
                     return "true";
                 };
             }
             //return (String) session.getAttribute("username");
         }catch (Exception e){
-            logger.info(e.getMessage());
+            logger.error("Error validating security questions and answers",e);
             return messageSource.getMessage("sec.ans.failed", null, locale);
         }
         return messageSource.getMessage("sec.ans.failed", null, locale);
@@ -265,7 +265,7 @@ public class RetrieveCredentialController {
             mailService.sendMail(email,context);
             return "true";
         }catch (MailException me) {
-            logger.error("Error occurred", me);
+            logger.error("Mail error occurred", me);
             return messageSource.getMessage("mail.failure", null, locale);
         } catch (Exception e){
             logger.error("Error occurred", e);

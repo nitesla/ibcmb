@@ -90,7 +90,7 @@ public class InterBankTransferController {
     @PostMapping(value = "/index")
 
     public String startTransfer(HttpServletRequest request, Model model, Principal principal) {
-        if(principal.getName() == null){
+        if(principal == null){
             return "redirect:/retail/logout";
         }
         RetailUser retailUser = retailUserService.getUserByName(principal.getName());
