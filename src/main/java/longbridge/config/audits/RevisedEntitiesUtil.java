@@ -195,7 +195,6 @@ public class RevisedEntitiesUtil {
             SqlParameterSource namedParameters = new MapSqlParameterSource("username", username);
             List<Map<String ,Object>> entityDetails = namedParameterJdbcTemplate.queryForList(sql, namedParameters);
 if(entityDetails != null) {
-    logger.info("the entityDetails {}",entityDetails.get(0));
     return entityDetails.get(0).get("ID").toString();
 }else {
     return "";
