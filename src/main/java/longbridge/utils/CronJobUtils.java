@@ -23,7 +23,7 @@ public class CronJobUtils {
             StringBuilder builderExprDesc = new StringBuilder(desc);
             builderExprVal.append(second);
             builderExprVal.append(" * * * * *");
-            builderExprDesc.append(second +" second(s)");
+            builderExprDesc.append(second +pluralizeWordChecker(" second",second));
             expression.put("desc",builderExprDesc.toString());
             expression.put("value",builderExprVal.toString());
             logger.info("seconds expression {} and desc {}", builderExprVal,desc);
@@ -125,79 +125,112 @@ public class CronJobUtils {
     }
 
 
-    public static String getWeeklyExpression(String hour, String minute, String[] days){
-
+    public static Map<String,String> getWeeklyExpression(String hour, String minute, String[] days){
+        Map<String,String> expression = new HashMap<>();
         String exrInit = "0 ";
-        StringBuilder stringBuilder = new StringBuilder(exrInit);
-            stringBuilder.append(minute);
-            stringBuilder.append(" "+hour);
-            stringBuilder.append(" ? * ");
-            stringBuilder.append(days[0]);
+        StringBuilder builderExprVal = new StringBuilder(exrInit);
+        StringBuilder builderExprDesc = new StringBuilder("");
+            builderExprVal.append(minute);
+            builderExprVal.append(" "+hour);
+            builderExprVal.append(" ? * ");
+            builderExprVal.append(days[0]);
+
+        builderExprDesc.append("Every ");
+        builderExprDesc.append(getFullMonthName(days[0]));
         if(days.length>1) {
             for (int i = 1;i<=days.length-1;i++ ) {
-                stringBuilder.append(","+days[i]);
+                builderExprVal.append(","+days[i]);
+                    builderExprDesc.append("," + getFullMonthName(days[i]));
             }
         }
-            stringBuilder.append(" *");
-
-        logger.info("week expression {}",stringBuilder);
+        builderExprDesc.append(" starting at ");
+        builderExprDesc.append(normalizeTime(hour));
+        builderExprDesc.append(":");
+        if(minute.length() >1) {
+            builderExprDesc.append(minute);
+        }else{
+            builderExprDesc.append("0"+minute);
+        }
+        builderExprDesc.append(getTimeSuffix(hour));
+            builderExprVal.append(" *");
+        expression.put("value",builderExprVal.toString());
+        expression.put("desc",builderExprDesc.toString());
+        logger.info("week expression {}",builderExprVal);
         /*
 Sample Cron expression expected
 0 0 12 ? * MON *
 */
-        return stringBuilder.toString();
+        return expression;
     }
 
 
-    public static String getMonthlyExpression(String monthChecker, String monthDay, String monthNum, String monthCategory, String monthWeek, String monthNumDesp, String monthHour, String monthMinute){
-
+    public static Map<String,String> getMonthlyExpression(String monthChecker, String monthDay, String monthNum, String monthCategory, String monthWeek, String monthNumDesp, String monthHour, String monthMinute){
+        Map<String,String> expression = new HashMap<>();
         String exrInit = "0 ";
-        StringBuilder stringBuilder = new StringBuilder(exrInit);
-        stringBuilder.append(monthMinute);
-        stringBuilder.append(" " + monthHour);
+        StringBuilder builderExprVal = new StringBuilder(exrInit);
+        StringBuilder builderExprDesc = new StringBuilder("");
+        builderExprVal.append(monthMinute);
+        builderExprVal.append(" " + monthHour);
         if("eachMonthDay".equalsIgnoreCase(monthChecker)) {
-            stringBuilder.append(" " + monthDay);
-            stringBuilder.append(" 1/" + monthNum);
-            stringBuilder.append(" * ?");
+            builderExprVal.append(" " + monthDay);
+            builderExprVal.append(" 1/" + monthNum);
+            builderExprVal.append(" * ?");
+            builderExprDesc.append("day "+monthDay+" of every "+monthNum+pluralizeWordChecker(" month",monthNum));
         }else {
-            stringBuilder.append(" ? ");
-            stringBuilder.append(" 1/" + monthNum);
-            stringBuilder.append(" "+monthWeek+"#"+monthCategory);
-            stringBuilder.append(" "+monthNumDesp);
-            stringBuilder.append(" *");
-
+            builderExprVal.append(" ? ");
+            builderExprVal.append(" 1/" + monthNum);
+            builderExprVal.append(" "+monthWeek+"#"+monthCategory);
+            builderExprVal.append(" "+monthNumDesp);
+            builderExprVal.append(" *");
+            builderExprDesc.append(numberToExpr(monthCategory)+" "+getFullMonthName(monthWeek)+" of every "+monthNum+pluralizeWordChecker(" month",monthNum));
         }
-        logger.info("month expression {}",stringBuilder);
+        logger.info("month expression {}",builderExprVal);
+        expression.put("value",builderExprVal.toString());
+        expression.put("desc",builderExprDesc.toString());
         /*
 Sample Cron expression expected
 0 0 12 ? * MON *
 */
-        return stringBuilder.toString();
+        return expression;
     }
 
-    public static String getYearlyExpression(String yearChecker, String yearMonth1, String yearMonthNum, String yearCategory, String yearMonthWeek, String yearMonth2, String yearHour, String yearMinute){
-
+    public static Map<String,String> getYearlyExpression(String yearChecker, String yearMonth1, String yearMonthNum, String yearCategory, String yearMonthWeek, String yearMonth2, String yearHour, String yearMinute){
+        Map<String,String> expression = new HashMap<>();
         String exrInit = "0 ";
-        StringBuilder stringBuilder = new StringBuilder(exrInit);
-        stringBuilder.append(yearMinute);
-        stringBuilder.append(" " + yearHour);
+        StringBuilder builderExprVal = new StringBuilder(exrInit);
+        StringBuilder builderExprDesc = new StringBuilder("");
+        builderExprVal.append(yearMinute);
+        builderExprVal.append(" " + yearHour);
         if("perMonth".equalsIgnoreCase(yearChecker)) {
-            stringBuilder.append(" " + yearMonthNum);
-            stringBuilder.append(" " + yearMonth1);
-            stringBuilder.append(" ? *");
+            builderExprVal.append(" " + yearMonthNum);
+            builderExprVal.append(" " + yearMonth1);
+            builderExprVal.append(" ? *");
+            builderExprDesc.append("Every "+monthNumTOFullName(yearMonth1)+" "+yearMonthNum);
         }else {
-            stringBuilder.append(" ? ");
-            stringBuilder.append(" " + yearMonth2);
-            stringBuilder.append(" "+yearMonthWeek+"#"+yearCategory);
-            stringBuilder.append(" *");
-
+            builderExprVal.append(" ? ");
+            builderExprVal.append(" " + yearMonth2);
+            builderExprVal.append(" "+yearMonthWeek+"#"+yearCategory);
+            builderExprVal.append(" *");
+            builderExprVal.append(" ? ");
+            builderExprDesc.append(numberToExpr(yearCategory)+" "+getFullMonthName(yearMonthWeek)+" of "+monthNumTOFullName(yearMonth1));
         }
-        logger.info("year expression {}",stringBuilder);
+        builderExprDesc.append(" starting by ");
+        builderExprDesc.append(normalizeTime(yearHour));
+        builderExprDesc.append(":");
+        if(yearMinute.length() >1) {
+            builderExprDesc.append(yearMinute);
+        }else{
+            builderExprDesc.append("0"+yearMinute);
+        }
+        builderExprDesc.append(getTimeSuffix(yearHour));
+        expression.put("value",builderExprVal.toString());
+        expression.put("desc",builderExprDesc.toString());
+        logger.info("year expression {}",builderExprVal);
         /*
 Sample Cron expression expected
 0 0 12 ? * MON *
 */
-        return stringBuilder.toString();
+        return expression;
     }
 
     public static Map<String,String> getCronExpression(String schedule,WebRequest webRequest){
@@ -211,12 +244,12 @@ Sample Cron expression expected
                 return getHourExpression(webRequest.getParameter("hourChecker"), webRequest.getParameter("exactHour"), webRequest.getParameter("hour"), webRequest.getParameter("hourMin"));
             case "dailyDiv":
                 return getDailyExpression(webRequest.getParameter("dailyChecker"), webRequest.getParameter("dayInterval"), webRequest.getParameter("dailyHour"), webRequest.getParameter("dailyMin"));
-//            case "weekDiv":
-//                return getWeeklyExpression(webRequest.getParameter("weekHour"), webRequest.getParameter("weekSecond"), webRequest.getParameterValues("weekDay"));
-//            case "monthDiv":
-//                return getMonthlyExpression(webRequest.getParameter("monthChecker"), webRequest.getParameter("monthDay"), webRequest.getParameter("monthNum"), webRequest.getParameter("monthCategory"), webRequest.getParameter("monthWeek"), webRequest.getParameter("monthNumDesp"), webRequest.getParameter("monthHour"), webRequest.getParameter("monthMinute"));
-//            case "yearDiv":
-//            return getYearlyExpression(webRequest.getParameter("yearChecker"), webRequest.getParameter("yearMonth1"), webRequest.getParameter("yearMonthNum"), webRequest.getParameter("yearCategory"), webRequest.getParameter("yearMonthWeek"), webRequest.getParameter("yearMonth2"), webRequest.getParameter("yearHour"), webRequest.getParameter("yearMinute"));
+            case "weekDiv":
+                return getWeeklyExpression(webRequest.getParameter("weekHour"), webRequest.getParameter("weekSecond"), webRequest.getParameterValues("weekDay"));
+            case "monthDiv":
+                return getMonthlyExpression(webRequest.getParameter("monthChecker"), webRequest.getParameter("monthDay"), webRequest.getParameter("monthNum"), webRequest.getParameter("monthCategory"), webRequest.getParameter("monthWeek"), webRequest.getParameter("monthNumDesp"), webRequest.getParameter("monthHour"), webRequest.getParameter("monthMinute"));
+            case "yearDiv":
+            return getYearlyExpression(webRequest.getParameter("yearChecker"), webRequest.getParameter("yearMonth1"), webRequest.getParameter("yearMonthNum"), webRequest.getParameter("yearCategory"), webRequest.getParameter("yearMonthWeek"), webRequest.getParameter("yearMonth2"), webRequest.getParameter("yearHour"), webRequest.getParameter("yearMinute"));
         }
         return null   ;
     }
@@ -243,6 +276,70 @@ private static String getTimeSuffix(String hour){
             return regHour;
         }else{
             return hour;
+        }
+    }
+    private static String numberToExpr(String num){
+        switch (num){
+            case "1":
+                return "First";
+            case "2":
+                return "Second";
+            case "3":
+                return "Third";
+            case "4":
+                return "Fourth";
+            default:
+                return "";
+        }
+    }
+    private static String monthNumTOFullName(String monthNum){
+        switch (monthNum){
+            case "1":
+                return "January";
+            case "2":
+                return "February";
+            case "3":
+                return "March";
+            case "4":
+                return "April";
+            case "5":
+                return "May";
+            case "6":
+                return "June";
+            case "7":
+                return "July";
+            case "8":
+                return "August";
+            case "9":
+                return "September";
+            case "10":
+                return "October";
+            case "11":
+                return "November";
+            case "12":
+                return "December";
+            default:
+                return "";
+        }
+    }
+    private static String getFullMonthName(String month){
+        switch (month){
+            case "MON":
+                return "Monday";
+            case "TUE":
+                return "Tuesday";
+            case "WED":
+                return "Wednessday";
+            case "THU":
+                return "Thursday";
+            case "FRI":
+                return "Friday";
+            case "SAT":
+                return "Saturday";
+            case "SUN":
+                return "Sunday";
+            default:
+                return "";
         }
     }
 }
