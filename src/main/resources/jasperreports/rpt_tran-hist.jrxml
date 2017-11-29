@@ -135,7 +135,7 @@
 			<staticText>
 				<reportElement key="staticText" x="8" y="141" width="52" height="20" uuid="4e4e963e-150b-4c6e-af54-72211c1c7d66"/>
 				<textElement>
-					<font fontName="Arial" size="12" isBold="true" pdfFontName="Helvetica-Bold"/>
+					<font fontName="Arial" size="12" isBold="true"/>
 				</textElement>
 				<text><![CDATA[To:]]></text>
 			</staticText>
@@ -214,30 +214,24 @@
 	<pageFooter>
 		<band height="152" splitType="Stretch">
 			<staticText>
-				<reportElement x="2" y="22" width="551" height="96" uuid="5ddcb5b0-eb9d-4105-a8ea-bbeeb1a25e53"/>
-				<textElement verticalAlignment="Top">
-					<font size="10"/>
+				<reportElement x="2" y="22" width="551" height="95" uuid="5ddcb5b0-eb9d-4105-a8ea-bbeeb1a25e53"/>
+				<textElement textAlignment="Justified" verticalAlignment="Top">
+					<font fontName="Arial" size="10"/>
 				</textElement>
 				<text><![CDATA[Disclaimer:
-Your transfer has been successful and the beneficiary's account will be credited. However, this does not serve as confirmation
-of credit into the beneficiary's account. Due to the nature of the internet and electronic payment, transactions may be
-subject to interruption, transmission blackout, delayed transmission and incorrect data transmission. The Bank is not liable
-for malfunctions or errors in electronic payments not within its control that may affect the accuracy or timeliness of
-messages and transactions you initiate. All transactions are subject to verification and our normal fraud checks.The Bank is
-obliged to, and shall comply with applicable rules and legislations relating to electronic payment without further recourse to
-you.]]></text>
+Your transfer has been successful and the beneficiary's account will be credited. However, this does not serve as confirmation of credit into the beneficiary's account. Due to the nature of the internet and electronic payment, transactions may be subject to interruption, transmission blackout, delayed transmission and incorrect data transmission. The Bank is not liable for malfunctions or errors in electronic payments not within its control that may affect the accuracy or timeliness of messages and transactions you initiate. All transactions are subject to verification and our normal fraud checks.The Bank is obliged to, and shall comply with applicable rules and legislations relating to electronic payment without further recourse to you.]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="1" y="118" width="124" height="14" uuid="d3ce3d2c-0007-4644-8297-758ba22bbe33"/>
 				<textElement>
-					<font size="9" isBold="false"/>
+					<font fontName="Arial" size="9" isBold="false"/>
 				</textElement>
 				<text><![CDATA[ Yours faithfully,]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="2" y="132" width="165" height="20" uuid="8d5896a6-85d7-4d6e-ae29-80e05572cf6d"/>
 				<textElement>
-					<font size="9" isBold="true"/>
+					<font fontName="Arial" size="9" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Coronation Merchant Bank]]></text>
 			</staticText>
