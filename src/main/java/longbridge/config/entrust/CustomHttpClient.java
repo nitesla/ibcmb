@@ -85,6 +85,8 @@ public class CustomHttpClient {
             int statusCode = response.getStatusLine().getStatusCode();
             httpResponse.setResponseCode(statusCode);
 
+            LOGGER.debug("The response code received is {}",statusCode);
+
             // If the response does not enclose an entity, there is no need
             // to bother about connection release
             if (entity != null) {
@@ -95,7 +97,11 @@ public class CustomHttpClient {
                 httpResponse.setResponseMessage(result);
                 EntityUtils.consume(entity);
             }
-            LOGGER.debug("\n the response from Service \n\n" + httpResponse.getResponseMessage() + "\n");
+            if(!xmlFormatedMessage.contains("performGetMutualAuth")) {
+                LOGGER.debug("\n the response from Service \n\n" + httpResponse.getResponseMessage() + "\n");
+            }else {
+                LOGGER.info("Image retrieved successfully");
+            }
             LOGGER.debug("\n ********************************************************************" + "\n");
         } finally {
             try {

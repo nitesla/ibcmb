@@ -95,6 +95,11 @@
         <!--<version>3.0.1</version>-->
 
         <!--</dependency>-->
+        <!--<dependency>-->
+            <!--<groupId>org.liquibase</groupId>-->
+            <!--<artifactId>liquibase-core</artifactId>-->
+            <!--<version>3.0.5</version>-->
+        <!--</dependency>-->
 
 
         <dependency>
@@ -138,6 +143,11 @@
         <!--<version>4.3.7.RELEASE</version>-->
         <!--</dependency>-->
 
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-tomcat</artifactId>
+            <scope>provided</scope>
+        </dependency>
 
         <!-- hot swapping, disable cache for template, enable live reload -->
         <dependency>
@@ -370,6 +380,23 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
+            <!--<plugin>-->
+                <!--<groupId>org.liquibase</groupId>-->
+                <!--<artifactId>liquibase-maven-plugin</artifactId>-->
+                <!--<version>3.0.5</version>-->
+                <!--<configuration>-->
+                    <!--<propertyFile>src/main/resources/liquibase/liquibase.properties</propertyFile>-->
+                <!--</configuration>-->
+                <!--<executions>-->
+                    <!--<execution>-->
+                        <!--<phase>process-resources</phase>-->
+                        <!--<goals>-->
+                            <!--<goal>update</goal>-->
+                        <!--</goals>-->
+                    <!--</execution>-->
+                <!--</executions>-->
+            <!--</plugin>-->
+
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>aspectj-maven-plugin</artifactId>
@@ -389,6 +416,6 @@
                 </executions>
             </plugin>
         </plugins>
-    </build>
 
+    </build>
 </project>

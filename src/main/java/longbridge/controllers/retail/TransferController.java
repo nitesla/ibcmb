@@ -15,6 +15,7 @@ import longbridge.models.RetailUser;
 import longbridge.models.TransRequest;
 import longbridge.services.*;
 import longbridge.utils.DateFormatter;
+import longbridge.utils.StringUtil;
 import longbridge.utils.TransferType;
 import longbridge.utils.TransferUtils;
 import org.apache.commons.lang3.ArrayUtils;
@@ -367,7 +368,7 @@ public class TransferController {
             modelMap.put("imagePath", imagePath);
             modelMap.put("amount", formatter.format(amount));
             modelMap.put("customer", retailUser.getFirstName() + " " + retailUser.getLastName());
-            modelMap.put("customerAcctNumber", transRequest.getCustomerAccountNumber());
+            modelMap.put("customerAcctNumber", StringUtil.maskAccountNumber(transRequest.getCustomerAccountNumber()));
             if (transRequest.getRemarks() != null) {
                 modelMap.put("remarks", transRequest.getRemarks());
             } else {

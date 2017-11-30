@@ -473,7 +473,6 @@ public class AuditConfigImpl implements AuditConfigService {
 	}
 	@Override
 	public Page<ModifiedEntityTypeEntity> searchMod(Pageable pageable, AuditSearchDTO auditSearchDTO){
-
 		Page<ModifiedEntityTypeEntity> modifiedEntityTypeEntities = auditRepo.findModifiedEntityBySearch(pageable,auditSearchDTO);
 	return modifiedEntityTypeEntities;
 	}

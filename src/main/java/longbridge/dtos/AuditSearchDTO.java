@@ -1,5 +1,6 @@
 package longbridge.dtos;
 
+import longbridge.config.audits.RevisedEntitiesUtil;
 import longbridge.utils.DateUtil;
 import org.apache.commons.lang.StringUtils;
 
@@ -14,9 +15,24 @@ public class AuditSearchDTO {
     long endDate;
     String ipAddress;
     String lastChangeBy;
+    String username;
 
     public AuditSearchDTO(String id,String entityClassName,String fromDate,String endDate,String ipAddress,String lastChangeBy){
         this.id = id;
+        this.ipAddress = ipAddress;
+        this.entityClassName =entityClassName;
+        this.fromDate = DateUtil.convertDateToLong(fromDate);
+        this.endDate = DateUtil.convertDateToLong(endDate);
+        this.lastChangeBy = lastChangeBy;
+    }
+    public AuditSearchDTO(String id,String entityClassName,String fromDate,String endDate,String ipAddress,String lastChangeBy,String username){
+
+        if(!StringUtils.isEmpty(username)){
+            String extractedId = RevisedEntitiesUtil.getUserDetailsByUserName(entityClassName,username);
+            this.id = extractedId;
+        }else {
+            this.id = id;
+        }
         this.ipAddress = ipAddress;
         this.entityClassName =entityClassName;
         this.fromDate = DateUtil.convertDateToLong(fromDate);
@@ -64,6 +80,14 @@ public class AuditSearchDTO {
         this.ipAddress = ipAddress;
     }
 
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
     @Override
     public String toString() {
         return "AuditSearchDTO{" +
@@ -73,6 +97,7 @@ public class AuditSearchDTO {
                 ", endDate=" + endDate +
                 ", ipAddress='" + ipAddress + '\'' +
                 ", lastChangeBy='" + lastChangeBy + '\'' +
+                ", username='" + username + '\'' +
                 '}';
     }
 

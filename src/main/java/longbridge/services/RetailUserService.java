@@ -152,6 +152,6 @@ public interface RetailUserService {
     String retrieveUsername(String accountNumber, String securityQuestion, String securityAnswer);;
     void increaseNoOfTokenAttempt(RetailUser user);
     void resetNoOfTokenAttempt(RetailUser user);
-
+    String validateAccount();
     
 }

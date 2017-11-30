@@ -96,6 +96,22 @@
                                         <form method="post" class="form-horizontal">
                                             <div class="form-group">
                                                 <div class="col-md-12">
+                                                    <label class="control-label col-sm-2">Batch Job category</label>
+                                                    <div class="col-sm-6">
+                                                        <select class="form-control" th:name="category" id="jobCategory">
+                                                            <option value="category1">Account currency, status</option>
+                                                            <option value="category2">BVN, RCNum, TaxId, Phone No,Email</option>
+                                                            <option value="category3">fetching new accounts, Currency, Status</option>
+                                                        </select>
+                                                    </div>
+                                                    <label class="col-sm-2 control-label">Current schedule:</label>
+                                                    <label class="col-sm-2 control-label" id="curentCronExpr"></label>
+
+                                                </div>
+
+                                            </div>
+                                            <div class="form-group">
+                                                <div class="col-md-12">
                                                     <label class="control-label col-sm-2">Reschedule job</label>
                                                     <div class="col-sm-6">
                                                         <select class="form-control" th:name="scheduler" th:id="scheduler">
@@ -110,6 +126,7 @@
                                                     </div>
                                                 </div>
                                             </div>
+
                                             <div id="secondsDiv" class="schedulingSection">
                                                 <div class="form-group">
                                                     <div class="col-md-12">
@@ -429,8 +446,9 @@
     /*]]>*/
 
     $(document).ready(
-            function () {
 
+            function () {
+                getCronDesc("category1");
                 $('option').mousedown(function(e) {
                     e.preventDefault();
                     $(this).prop('selected', $(this).prop('selected') ? false : true);
@@ -451,6 +469,27 @@
 
 
     );
+    $('#jobCategory').change(function () {
+        getCronDesc($(this).val());
+    });
+    function getCronDesc(category) {
+        $.ajax({
+            "url": "/admin/job/current/description",
+            "type": "POST",
+            "data": {
+                category: category
+            }, success: function (result) {
+                console.log("the description "+result);
+//                    resetButton();
+                $('#curentCronExpr').html(result);
+            },
+            error: function (dd) {
+                console.log("error");
+//                return false;
+            }
+
+        });
+    }
     $(function() {
         // Makes sure the code contained doesn't run until
         //     all the DOM elements have loaded

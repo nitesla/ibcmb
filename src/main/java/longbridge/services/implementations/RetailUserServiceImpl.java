@@ -631,4 +631,10 @@ public class RetailUserServiceImpl implements RetailUserService {
         retailUserRepo.save(retailUser);
     }
 
+    @Override
+    public String validateAccount() {
+        return null;
+    }
+
+
 }

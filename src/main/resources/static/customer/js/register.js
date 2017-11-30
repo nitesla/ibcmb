@@ -121,10 +121,10 @@ function getSummary() {
     var noOfQuestions = $('#noOfQuestions').val();
     //console.log("noOfQuestions "+noOfQuestions);a
     var imgPath =  $('#imgPaths').val();
-
+ 
     var phishing = $("input[name='phishing']:checked"). val();
     var container = document.getElementById("regSummary");
-//console.log("phishing "+phishing);
+console.log("phishing "+phishing);
     container.innerHTML = "";
     container.innerHTML += "<p style='text-transform: none'><h1>Self-Registration Summary</h1></p> <br/>";
     container.innerHTML += "<p style='text-transform: none'>Please find below a summary of the details you have entered for your registration</p>";

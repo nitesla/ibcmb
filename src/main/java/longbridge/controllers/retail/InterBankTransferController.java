@@ -90,7 +90,11 @@ public class InterBankTransferController {
     @PostMapping(value = "/index")
 
     public String startTransfer(HttpServletRequest request, Model model, Principal principal) {
+        if(principal == null){
+            return "redirect:/retail/logout";
+        }
         RetailUser retailUser = retailUserService.getUserByName(principal.getName());
+
         List<LocalBeneficiary> beneficiaries = StreamSupport.stream(localBeneficiaryService.getLocalBeneficiaries(retailUser).spliterator(), false)
                 .filter(i -> !i.getBeneficiaryBank().equalsIgnoreCase(financialInstitutionService.getFinancialInstitutionByCode(bankCode).getInstitutionCode()))
                 .collect(Collectors.toList());
@@ -295,6 +299,8 @@ public class InterBankTransferController {
                     .filter(i -> "NGN".equalsIgnoreCase(i.getCurrencyCode()))
                     .forEach(i -> accountList.add(i));
             model.addAttribute("accountList", accountList);
+
+
 
 
         }

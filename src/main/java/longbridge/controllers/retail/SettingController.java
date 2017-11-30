@@ -82,11 +82,13 @@ public class SettingController {
     public String getRetailDashboard(Model model, Principal principal) {
         RetailUser retailUser = retailUserService.getUserByName(principal.getName());
 
-        if(retailUser==null){
+        if (retailUser == null) {
             return "redirect:/login/retail";
         }
 
+        logger.debug("Getting user {} accounts and balances", retailUser.getUserName());
         List<AccountDTO> accountList = accountService.getAccountsAndBalances(retailUser.getCustomerId());
+        logger.debug("Retrieved {} account balance(s) for user {}",accountList.size(),retailUser.getUserName());
         SettingDTO dto = configService.getSettingByName("TRANSACTIONAL_ACCOUNTS");
         if (dto != null && dto.isEnabled()) {
             String[] list = StringUtils.split(dto.getValue(), ",");
@@ -95,7 +97,6 @@ public class SettingController {
                     .filter(
                             i -> ArrayUtils.contains(list, i.getAccountType())
                     ).collect(Collectors.toList());
-
         }
 
         accountList.stream().filter(Objects::nonNull)
@@ -123,6 +124,7 @@ public class SettingController {
             model.addAttribute("message", messageSource.getMessage("password.reset.notice", null, locale));
         }
 
+        logger.debug("Redirecting user {} to dashboard" ,retailUser.getUserName());
         return "cust/dashboard";
     }
 

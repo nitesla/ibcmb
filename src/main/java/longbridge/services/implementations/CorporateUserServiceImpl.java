@@ -169,7 +169,8 @@ public class CorporateUserServiceImpl implements CorporateUserService {
             if (user.isAdmin()) {
                 corporateUser.setCorpUserType(CorpUserType.ADMIN);
 
-            } else if (corporateUser.getCorpUserType().equals(CorpUserType.ADMIN)) {
+            }
+            else if(!CorpUserType.AUTHORIZER.equals(corporateUser.getCorpUserType())){
                 corporateUser.setCorpUserType(CorpUserType.INITIATOR);
             }
 
@@ -179,7 +180,7 @@ public class CorporateUserServiceImpl implements CorporateUserService {
             }
 
             corporateUserRepo.save(corporateUser);
-            if (user.isAdmin()) {
+            if (corporateUser.isAdmin()) {
                 removeUserFromAuthorizerRole(corporateUser);
             }
 

@@ -314,9 +314,9 @@
                                                     <label>Select Phishing Image</label>
 
                                                     <div class="col-md-12" style="max-height: 250px; max-width: 450px;overflow: scroll;">
-                                                        <div class="col-md-3" th:each="image : ${images}" style="position: relative; max-height: 100px;">
-                                                            <img th:src="${imagePath} + ${image}" width="100px" height="100px" style="padding: 5px;" />
-                                                            <input type="radio" name="phishing" th:value="${image}" id="check1" style="position: absolute; bottom: 20px; right: 20px;" />
+                                                        <div class="col-md-3" th:each="image,ind : ${images}" style="position: relative; max-height: 100px;">
+                                                            <img th:src="${imagePath} + ${image}" th:value="${image}" width="100px" height="100px" onclick="checkSelectedImage(this)" style="padding: 5px;" th:class="'img'+${ind.index}" />
+                                                            <input type="radio" name="phishing" th:value="${image}" th:id="'img'+${ind.index}"  style="position: absolute; bottom: 20px; right: 20px;" />
                                                         </div>
                                                     </div>
                                                     <input id="imgPaths" th:value="${imagePath}" style="display: none;" />
@@ -479,14 +479,17 @@
         function valPassword(strPassword) {
             runPassword(strPassword, minLength, m_noOfDigits, m_strCharacters, noOfSpecChar)
         }
+        function checkSelectedImage(id) {
+            var selectedImg = $(id).attr('class');
+            $('#'+selectedImg).prop("checked", true);
+
+        }
 
         $(document).ready(function() {
             console.log("ready!");
             $('.req-info').on('click',function(){
                 $('#register-info').toggle();
             });
-
-            inputErrors();
             $('input').on("focus", function() {
                 if ($(this).siblings('label.error')) {
 

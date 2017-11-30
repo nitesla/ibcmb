@@ -70,10 +70,6 @@ public class RetrieveCorpCredentialController {
     @Autowired
     private MailService mailService;
 
-    @Autowired
-    private IntegrationService integrationService;
-    @Autowired
-    private AccountService accountService;
 
     @GetMapping("/forgot/password/corporate")
     public String showResetPassword(Model model, HttpSession session, RedirectAttributes redirectAttributes){
@@ -93,11 +89,10 @@ public class RetrieveCorpCredentialController {
             CorporateUser corporateUser = corporateUserService.getUserByNameAndCorporateId(username, corporateId);
 //            logger.info("the corporateUsername group {} and id {}",corporateUser.getEntrustGroup(),corporateUser.getEntrustId());
             Map<String, List<String>> qa = securityService.getUserQA(corporateUser.getEntrustId(), corporateUser.getEntrustGroup());
-            logger.info("the question and answer {}",qa.get("questions"));
+//            logger.info("the question {}",qa.get("questions"));
                 if (qa != null && !qa.isEmpty()){
                     session.setAttribute("corpSecQestnAndAns",qa);
                 List<String> questions= qa.get("questions");
-                logger.info("questions {}",questions);
                 if (questions == null){
                     redirectAttributes.addFlashAttribute("failure", messageSource.getMessage("corp.reg.inconplete.failed", null, locale));
                     return "redirect:/login/corporate";
@@ -113,7 +108,7 @@ public class RetrieveCorpCredentialController {
                 return "redirect:/login/corporate";
             }
             PasswordStrengthDTO passwordStrengthDTO = passwordPolicyService.getPasswordStrengthParams();
-            logger.info("Password Strength {}" + passwordStrengthDTO);
+            logger.debug("Password Strength {}" + passwordStrengthDTO);
             model.addAttribute("passwordStrength", passwordStrengthDTO);
 
             model.addAttribute("forgotPasswordForm", resetPasswordForm);
@@ -136,8 +131,7 @@ public @ResponseBody String getSecAns(WebRequest webRequest, HttpSession session
         int noOfMismatch = 0;
         Map<String, List<String>> qa = null;
         String username=webRequest.getParameter("username");
-        logger.info("answer 1 {}",webRequest.getParameter("secAnswers"));
-        logger.info("user {}",webRequest.getParameter("username"));
+        logger.debug("user {}",webRequest.getParameter("username"));
         List<String> answers = StringUtil.splitByComma(webRequest.getParameter("secAnswers"));
         CorporateUser corporateUser = corporateUserService.getUserByName(username);
         if(session.getAttribute("corpSecQestnAndAns") != null) {
@@ -151,15 +145,13 @@ public @ResponseBody String getSecAns(WebRequest webRequest, HttpSession session
             List<String> entAnswers = qa.get("answers");
 //                secAnswer = question.stream().filter(Objects::nonNull).findFirst().orElse("");
 
-            logger.info("user answer {}", answers);
-            logger.info("entrust answers {}", entAnswers);
             if((answers.size()>0)&&(entAnswers.size()>0)) {
                 for(int i =0; i<answers.size();i++){
                     if(!answers.get(i).equalsIgnoreCase(entAnswers.get(i))){
                         noOfMismatch++;
                     }
                 }
-                logger.info("no of mis match is {}",noOfMismatch);
+                logger.debug("no of mis match is {}",noOfMismatch);
                 if(noOfMismatch==0){
                     return "true";
                 }
@@ -247,11 +239,11 @@ public @ResponseBody String getSecAns(WebRequest webRequest, HttpSession session
     @PostMapping("/forgot/password/corporate")
     public @ResponseBody
     String resetPassword(WebRequest webRequest, RedirectAttributes redirectAttributes, HttpSession session){
-        Iterator<String> iterator = webRequest.getParameterNames();
+//        Iterator<String> iterator = webRequest.getParameterNames();
 
-        while(iterator.hasNext()){
-            logger.info(iterator.next());
-        }
+//        while(iterator.hasNext()){
+//            logger.info(iterator.next());
+//        }
 //
 //        String accountNumber = webRequest.getParameter("acct");
 //        String securityQuestion = webRequest.getParameter("securityQuestion");
@@ -428,7 +420,7 @@ public @ResponseBody String getSecAns(WebRequest webRequest, HttpSession session
                 if (qa != null && !qa.isEmpty()){
     //                logger.info("qs {}",qa);
                     question = qa.get("questions");
-                    logger.info("questions {}", question);
+//                    logger.info("questions {}", question);
 
                 }else {
                     secQuestion = "";
@@ -459,12 +451,10 @@ public @ResponseBody String getSecAns(WebRequest webRequest, HttpSession session
             if(session.getAttribute("corpSecQestnAndAns") !=null) {
                 Map<String, List<String>> qa = (Map<String, List<String>>) session.getAttribute("corpSecQestnAndAns");
                 //List<String> sec = null;
-                logger.info("sec questions {}", answers);
                 if (qa != null) {
                     List<String> answer = qa.get("answers");
 //                secAnswer = question.stream().filter(Objects::nonNull).findFirst().orElse("");
 
-                    logger.info("user answer {}", answer);
                     if (compareAnswers(answers, answer).equalsIgnoreCase("true")) {
                         return "true";
                     }
@@ -473,7 +463,7 @@ public @ResponseBody String getSecAns(WebRequest webRequest, HttpSession session
             }
             //return (String) session.getAttribute("username");
         }catch (Exception e){
-            logger.info(e.getMessage());
+            logger.error("Error validating security questions and answers",e);
             return messageSource.getMessage("sec.ans.failed", null, locale);
         }
         return messageSource.getMessage("sec.ans.failed", null, locale);

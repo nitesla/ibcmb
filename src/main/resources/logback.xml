@@ -27,6 +27,12 @@
     </appender>
 
 
+
+    <logger level="debug" name="longbridge" additivity="false">
+        <appender-ref ref="File" />
+        <appender-ref ref="Console" />
+    </logger>
+
     <logger level="error" name="org.springframework.batch.core" additivity="false">
         <appender-ref ref="File" />
         <appender-ref ref="Console" />

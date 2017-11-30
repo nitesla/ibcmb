@@ -56,10 +56,6 @@ public class BeneficiaryController {
 
     private MessageSource messageSource;
 
-    private ConfigurationService configurationService;
-
-    @Autowired
-    private MailService mailService;
 
     @Value("${bank.code}")
     private String bankCode;

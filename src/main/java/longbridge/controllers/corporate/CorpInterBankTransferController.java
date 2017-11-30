@@ -79,7 +79,12 @@ public class CorpInterBankTransferController {
     @PostMapping(value = "/index")
 
     public String startTransfer(HttpServletRequest request, Model model, Principal principal) {
+
+        if(principal == null){
+            return "redirect:/corporate/logout";
+        }
         CorporateUser user = corporateUserService.getUserByName(principal.getName());
+
         Corporate corporate = user.getCorporate();
         List<CorpLocalBeneficiary> beneficiaries = StreamSupport.stream(corpLocalBeneficiaryService.getCorpLocalBeneficiaries(corporate).spliterator(), false)
                 .filter(i -> !i.getBeneficiaryBank().equalsIgnoreCase(financialInstitutionService.getFinancialInstitutionByCode(bankCode).getInstitutionCode()))
