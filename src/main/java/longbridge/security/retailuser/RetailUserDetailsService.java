@@ -36,8 +36,7 @@ public class RetailUserDetailsService implements UserDetailsService {
 
     @Autowired
     public RetailUserDetailsService(RetailUserRepo retailUserRepo, CustomBruteForceService bruteForceService, IpAddressUtils addressUtils
-            , FailedLoginService failedLoginService,SessionUtils sessionUtils
-    ) {
+            , FailedLoginService failedLoginService,SessionUtils sessionUtils) {
         this.retailUserRepo = retailUserRepo;
         this.bruteForceService = bruteForceService;
         this.addressUtils = addressUtils;
