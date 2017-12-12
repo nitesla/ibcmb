@@ -296,12 +296,6 @@ public class CorpAccountController {
         model.addAttribute("acctNum",accountDTO.getAccountNumber());
         return "corp/account/view";
     }
-    @GetMapping("/viewstatement/{id}")
-    public String getViewOnlyById(@PathVariable Long id, Model model, Principal principal) throws ParseException {
-        AccountDTO accountDTO = accountService.getAccount(id);
-        model.addAttribute("acctNum",accountDTO.getAccountNumber());
-        return "corp/account/view";
-    }
 
     @GetMapping("/{acct}/viewonlyhistory")
     public String getViewOnlyHist(@PathVariable String acct, Model model, Principal principal) throws ParseException {
