@@ -1,9 +1,8 @@
 package longbridge;
 
 
-import longbridge.config.audits.RevisedEntitiesUtil;
 import longbridge.repositories.*;
-import longbridge.services.*;
+import longbridge.services.SecurityService;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -20,50 +19,8 @@ import org.springframework.scheduling.annotation.EnableAsync;
 @EnableBatchProcessing
 @EnableAsync
 public class InternetbankingApplication extends SpringBootServletInitializer implements CommandLineRunner {
-
-    @Autowired
-    OperationsUserRepo operationsUserRepo;
-
-    @Autowired
-    PasswordPolicyService passwordPolicyService;
-    @Autowired
-    IntegrationService integrationService;
-
-
-    @Autowired
-    AccountRepo accountRepo;
-
-    @Autowired
-    AccountService accountService;
-
-    @Autowired
-    CorporateService corporateService;
-
-    @Autowired
-    CorporateRepo corporateRepo;
-    @Autowired
-    TransferService transferService;
-
-    @Autowired
-    RetailUserRepo retailUserService;
-
-    @Autowired
-    CorporateUserRepo corporateUserService;
-
-    @Autowired
-    AdminUserRepo adminUserService;
-
-    @Autowired
-    OperationsUserRepo operationsUserService;
-
     @Autowired
     SecurityService securityService;
-
-    @Autowired
-    CronJobService cronJobService;
-
-    @Autowired
-    BulkTransferRepo bulkTransferRepo;
 
 
     public static void main(String[] args) {
@@ -79,10 +36,7 @@ public class InternetbankingApplication extends SpringBootServletInitializer imp
 
     @Override
     public void run(String... strings) throws Exception {
-
-        //passwordPolicyService.getPasswordRules().stream().forEach(System.out::println);
-securityService.unLockUser("sunkoxy","Retail_Group");
-
+//        securityService.unLockUser("sunkoxy","Retail_Group");
     }
 
 

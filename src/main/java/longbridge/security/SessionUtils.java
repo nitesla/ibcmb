@@ -3,6 +3,7 @@ package longbridge.security;
 import longbridge.dtos.SettingDTO;
 import longbridge.models.Code;
 import longbridge.models.CorporateUser;
+import longbridge.models.Email;
 import longbridge.models.User;
 import longbridge.services.ConfigurationService;
 import longbridge.services.IntegrationService;
@@ -42,8 +43,6 @@ public class SessionUtils {
 
     private Locale locale = LocaleContextHolder.getLocale();
 
-    @Autowired
-    private TemplateEngine templateEngine;
 
 
     @Autowired
@@ -79,30 +78,22 @@ public class SessionUtils {
                 String name = firstName + " " + lastName;
                 if (name.isEmpty()) name = user.getUserName();
 
-
-
                 String date = new SimpleDateFormat("MMM dd, yyyy ' at ' hh:mm:ss a").format(new Date());
 
-                Context context = new Context();
-                context.setVariable("customerName",name);
-                context.setVariable("loginDate",new Date());
+
 
                 String smsMessage = String.format(messageSource.getMessage("login.alert.message", null, locale), name, date);
 
                 String alertSubject = String.format(messageSource.getMessage("login.alert.subject", null, locale));
                 if ("SMS".equalsIgnoreCase(preference)) {
-
                     integrationService.sendSMS(smsMessage, user.getPhoneNumber(), alertSubject);
 
                 } else if ("EMAIL".equalsIgnoreCase(preference)) {
-                    String emailMessage = templateEngine.process("mail/login.html",context);
-                    mailService.sendHtml(user.getEmail(), alertSubject, emailMessage);
+                    sendMail(user, alertSubject);
 
                 } else if ("BOTH".equalsIgnoreCase(preference)) {
-                    String emailMessage = templateEngine.process("mail/login.html",context);
-
                     integrationService.sendSMS(smsMessage, user.getPhoneNumber(), alertSubject);
-                    mailService.sendHtml(user.getEmail(), alertSubject, emailMessage);
+                    sendMail(user, alertSubject);
                 }
 
             }
@@ -110,6 +101,20 @@ public class SessionUtils {
             logger.error("EXCEPTION OCCURRED {}", e);
         }
 
+    }
+
+    private void sendMail(User user, String subject){
+
+        String fullName = user.getFirstName()+" "+user.getLastName();
+        Context context = new Context();
+        context.setVariable("fullName",fullName);
+        context.setVariable("loginDate",new Date());
+
+        Email email = new Email.Builder().setRecipient(user.getEmail())
+                                         .setSubject(subject)
+                                         .setTemplate("mail/login.html")
+                                         .build();
+        mailService.sendMail(email,context);
     }
 
     public void validateExpiredPassword(User user, HttpSession session) {

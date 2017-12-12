@@ -85,6 +85,7 @@ public class NAPSTransferController {
 
     @GetMapping("/upload")
     public String getUploadBulkTransferFile(Model model) {
+
         return "/retail/transfer/bulktransfer/upload";
     }
 

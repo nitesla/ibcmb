@@ -1,6 +1,5 @@
 package longbridge.controllers.retail;
 
-import longbridge.api.Rate;
 import longbridge.dtos.FinancialInstitutionDTO;
 import longbridge.dtos.LocalBeneficiaryDTO;
 import longbridge.dtos.TransferRequestDTO;
@@ -27,10 +26,8 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-import java.math.BigDecimal;
 import java.security.Principal;
 import java.util.*;
-import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -78,7 +75,7 @@ public class InterBankTransferController {
         if (request.getSession().getAttribute("auth-needed") != null)
             request.getSession().removeAttribute("auth-needed");
         try {
-            transferUtils.validateBvn();
+            transferUtils.validateTransferCriteria();
             return page + "pagei";
         } catch (InternetBankingTransferException e) {
             String errorMessage = transferErrorService.getMessage(e);
@@ -93,7 +90,11 @@ public class InterBankTransferController {
     @PostMapping(value = "/index")
 
     public String startTransfer(HttpServletRequest request, Model model, Principal principal) {
+        if(principal == null){
+            return "redirect:/retail/logout";
+        }
         RetailUser retailUser = retailUserService.getUserByName(principal.getName());
+
         List<LocalBeneficiary> beneficiaries = StreamSupport.stream(localBeneficiaryService.getLocalBeneficiaries(retailUser).spliterator(), false)
                 .filter(i -> !i.getBeneficiaryBank().equalsIgnoreCase(financialInstitutionService.getFinancialInstitutionByCode(bankCode).getInstitutionCode()))
                 .collect(Collectors.toList());
@@ -190,7 +191,7 @@ public class InterBankTransferController {
 
         if (request.getSession().getAttribute("NIP") != null) {
             String type = (String) request.getSession().getAttribute("NIP");
-            if (type.equalsIgnoreCase("RTGS")) {
+            if ("RTGS".equalsIgnoreCase(type)) {
                 transferRequestDTO.setTransferType(TransferType.RTGS);
                 charge = transferUtils.calculateFee(transferRequestDTO.getAmount(), "RTGS");
                 transferRequestDTO.setCharge(charge);
@@ -261,7 +262,7 @@ public class InterBankTransferController {
     @PostMapping("/edit")
     public String editTransfer(@ModelAttribute("transferRequest") TransferRequestDTO transferRequestDTO, Model model, HttpServletRequest request) {
         String type = (String) request.getSession().getAttribute("NIP");
-        if (type.equalsIgnoreCase("RTGS")) {
+        if ("RTGS".equalsIgnoreCase(type)) {
             transferRequestDTO.setTransferType(TransferType.RTGS);
 
 
@@ -296,10 +297,10 @@ public class InterBankTransferController {
             StreamSupport.stream(accounts.spliterator(), false)
                     .filter(Objects::nonNull)
                     .filter(i -> "NGN".equalsIgnoreCase(i.getCurrencyCode()))
-
                     .forEach(i -> accountList.add(i));
-
             model.addAttribute("accountList", accountList);
+
+
 
 
         }

@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{ret-layout}">
 
-<body onload="javascript:var bread = [['Home', '/retail/dashboard'],['transfer summary','']];currentBar('Sucessful transfer');breadCrumb(bread)">
+<body onload="javascript:var bread = [['Home', '/retail/dashboard'],['transfer summary','']];currentBar('Successful transfer');breadCrumb(bread)">
 
 <div>
 
@@ -31,16 +31,12 @@
 
                             </tr>
                             <tr>
-
                                 <th>Destination account</th>
                                 <td th:text="${transRequest.beneficiaryAccountNumber}"></td>
-
                             </tr>
                             <tr>
-
                                 <th>Amount</th>
-                                <td th:text="${transRequest.amount}"></td>
-
+                                <td th:text="${#numbers.formatDecimal(transRequest.amount, 1, 'COMMA', 2, 'POINT')}"></td>
                             </tr>
                             <tr>
 

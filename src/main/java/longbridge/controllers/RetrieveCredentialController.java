@@ -24,11 +24,11 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.thymeleaf.context.Context;
 
 import javax.servlet.http.HttpSession;
 import java.util.Iterator;
@@ -105,7 +105,7 @@ public class RetrieveCredentialController {
                 return "redirect:/login/retail";
             }
             PasswordStrengthDTO passwordStrengthDTO = passwordPolicyService.getPasswordStrengthParams();
-            logger.info("Password Strength {}" + passwordStrengthDTO);
+            logger.debug("Password Strength {}" + passwordStrengthDTO);
             model.addAttribute("passwordStrength", passwordStrengthDTO);
 
             model.addAttribute("forgotPasswordForm", resetPasswordForm);
@@ -122,9 +122,9 @@ public class RetrieveCredentialController {
     String resetPassword(WebRequest webRequest, RedirectAttributes redirectAttributes, HttpSession session){
         Iterator<String> iterator = webRequest.getParameterNames();
 
-        while(iterator.hasNext()){
-            logger.info(iterator.next());
-        }
+//        while(iterator.hasNext()){
+//            logger.info(iterator.next());
+//        }
 
 
         String accountNumber = webRequest.getParameter("acct");
@@ -177,7 +177,6 @@ public class RetrieveCredentialController {
             Map<String, List<String>> qa = null;
             int noOfMismatch = 0;
             String username=webRequest.getParameter("username");
-            logger.info("answer 1 {}",webRequest.getParameter("secAnswers"));
             logger.info("user {}",webRequest.getParameter("username"));
             List<String> answers = StringUtil.splitByComma(webRequest.getParameter("secAnswers"));
             if(session.getAttribute("retSecQestnAndAns") == null) {
@@ -188,12 +187,11 @@ public class RetrieveCredentialController {
                 qa = (Map<String, List<String>>) session.getAttribute("retSecQestnAndAns");
             }
             //List<String> sec = null;
-            logger.info("sec questions {}",qa);
+//            logger.info("sec questions {}",qa.get("questions"));
             if (qa != null){
                 List<String> entAnswers = qa.get("answers");
 //                secAnswer = question.stream().filter(Objects::nonNull).findFirst().orElse("");
 
-                logger.info("user answer {}", answers);
                 if((answers.size()>0)&&(entAnswers.size()>0)) {
                     for(int i =0; i<answers.size();i++){
                         if(!answers.get(i).equalsIgnoreCase(entAnswers.get(i))){
@@ -208,7 +206,7 @@ public class RetrieveCredentialController {
             }
             //return (String) session.getAttribute("username");
         }catch (Exception e){
-            logger.info(e.getMessage());
+            logger.error("Error validating security questions and answers",e);
             return messageSource.getMessage("sec.ans.failed", null, locale);
         }
         return messageSource.getMessage("sec.ans.failed", null, locale);
@@ -220,8 +218,8 @@ public class RetrieveCredentialController {
             int noOfMismatch = 0;
             Map<String, List<String>> qa = null;
             String customerId = webRequest.getParameter("customerId");
-            logger.info("answer 1 {}",webRequest.getParameter("secAnswers"));
-            logger.info("cid id {}",webRequest.getParameter("customerId"));
+//            logger.info("answer 1 {}",webRequest.getParameter("secAnswers"));
+            logger.debug("cid id {}",webRequest.getParameter("customerId"));
             List<String> answers = StringUtil.splitByComma(webRequest.getParameter("secAnswers"));
             if(session.getAttribute("retSecQestnAndAnsFU") == null) {
                 RetailUser retailUser = retailUserService.getUserByCustomerId(customerId);
@@ -231,15 +229,14 @@ public class RetrieveCredentialController {
             }
             if (qa != null){
                 List<String> answer = qa.get("answers");
-                logger.info("user answer {}", answer);
-                logger.info("compared answer {}", compareAnswers(answers,answer));
+                logger.debug("compared answer {}", compareAnswers(answers,answer));
                 if(compareAnswers(answers,answer).equalsIgnoreCase("true")){
                     return "true";
                 };
             }
             //return (String) session.getAttribute("username");
         }catch (Exception e){
-            logger.info(e.getMessage());
+            logger.error("Error validating security questions and answers",e);
             return messageSource.getMessage("sec.ans.failed", null, locale);
         }
         return messageSource.getMessage("sec.ans.failed", null, locale);
@@ -256,15 +253,20 @@ public class RetrieveCredentialController {
             retailUser.setTempPassword(passwordEncoder.encode(tempPassword));
             String fullName = retailUser.getFirstName() + " " + retailUser.getLastName();
             retailUserRepo.save(retailUser);
+
+            Context context = new Context();
+            context.setVariable("fullName", fullName);
+            context.setVariable("resetCode",tempPassword);
+
             Email email = new Email.Builder()
                     .setRecipient(retailUser.getEmail())
                     .setSubject(messageSource.getMessage("reset.password.subject", null, locale))
-                    .setBody(String.format(messageSource.getMessage("reset.password.message", null, locale), fullName, tempPassword))
+                    .setTemplate("mail/forgotpassword")
                     .build();
-            mailService.send(email);
+            mailService.sendMail(email,context);
             return "true";
         }catch (MailException me) {
-            logger.error("Error occurred", me);
+            logger.error("Mail error occurred", me);
             return messageSource.getMessage("mail.failure", null, locale);
         } catch (Exception e){
             logger.error("Error occurred", e);
@@ -335,6 +337,10 @@ public class RetrieveCredentialController {
 
             RetailUser user = retailUserService.getUserByCustomerId(customerId);
 
+            if(user == null){
+                return "redirect:/login/retail";
+            }
+
             //confirm security question is correct
             String secAnswer="";
             if(session.getAttribute("retSecQestnAndAnsFU") == null) {
@@ -351,12 +357,19 @@ public class RetrieveCredentialController {
                 if (result.equalsIgnoreCase("true")){
                     logger.debug("User Info {}:", user.getUserName());
                     //Send Username to Email
+
+                    String fullName = user.getFirstName()+" "+user.getLastName();
+
+                    Context context = new Context();
+                    context.setVariable("fullName", fullName);
+                    context.setVariable("username", user.getUserName());
+
                     Email email = new Email.Builder()
                             .setRecipient(user.getEmail())
                             .setSubject(messageSource.getMessage("retrieve.username.subject",null,locale))
-                            .setBody(String.format(messageSource.getMessage("retrieve.username.message",null,locale),user.getFirstName(), user.getUserName()))
+                            .setTemplate("mail/usernameretrieval")
                             .build();
-                    mailService.send(email);
+                    mailService.sendMail(email,context);
                     return "true";
                 }
 

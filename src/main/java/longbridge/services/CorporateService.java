@@ -3,6 +3,7 @@ package longbridge.services;
 import longbridge.dtos.*;
 import longbridge.exception.InternetBankingException;
 import longbridge.models.*;
+import longbridge.utils.Verifiable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -230,6 +231,10 @@ public interface CorporateService{
     @PreAuthorize("hasAuthority('UPDATE_CORPORATE_ROLE')")
     String updateCorporateRole(CorporateRoleDTO roleDTO) throws  InternetBankingException;
 
+    void updateCorporateRole(CorporateRole updatedRole) throws InternetBankingException;
+
+    void updateUsersWithoutAuthorizerRoleToInitiators(Set<CorporateUser> originalUsers, Set<CorporateUser> updatedUsers);
+
     @PreAuthorize("hasAuthority('GET_CORPORATE_ROLE')")
     CorporateRoleDTO getCorporateRole(Long id);
 
@@ -239,6 +244,11 @@ public interface CorporateService{
     @PreAuthorize("hasAuthority('DELETE_CORPORATE_ROLE')")
     String deleteCorporateRole(Long id) throws InternetBankingException;
 
+    @Verifiable(operation = "ADD_CORPORATE_ACCOUNT", description = "Adding accounts to a Corporate Entity")
+    String addCorporateAccounts(CorporateRequestDTO requestDTO);
+
+    void addAccounts(CorporateRequestDTO requestDTO);
+
     void addAccounts(Corporate corporate);
 
     void createUserOnEntrustAndSendCredentials(CorporateUser corporateUser);
@@ -247,4 +257,7 @@ public interface CorporateService{
 
     boolean corporateIdExists(String corporateId);
 
+    String deleteCorporateAccount(CorporateRequestDTO corporateRequestDTO);
+
+    boolean isTransactionPending(Long corpId, String accountNumber);
 }

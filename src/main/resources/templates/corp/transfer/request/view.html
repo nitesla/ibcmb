@@ -79,6 +79,18 @@
                 {"data": "statusDescription"}
 
             ], "columnDefs": [{
+                "targets" : 3,
+                "data" : "amount",
+                "render" : function(data, type,full, meta) {
+                    if (type === 'display') {
+                        if(data == null)
+                            return data;
+                        var twoPlacedFloat = parseFloat(data).toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,');
+                        return twoPlacedFloat;
+                    }
+                    return data;
+                }
+            },{
                 "targets": 4,
                 "data": "tranDate",
                 "render": function(data, type, full, meta) {

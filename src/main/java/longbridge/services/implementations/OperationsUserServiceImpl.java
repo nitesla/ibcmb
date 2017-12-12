@@ -21,8 +21,10 @@ import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.*;
 import org.springframework.mail.MailException;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.thymeleaf.context.Context;
 
 import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
@@ -136,7 +138,7 @@ public class OperationsUserServiceImpl implements OperationsUserService {
             String newStatus = "A".equals(oldStatus) ? "I" : "A";
             user.setStatus(newStatus);
             operationsUserRepo.save(user);
-            sendCredentialNotification(user);
+            sendActivationMessage(user);
 
             logger.info("Operations user {} status changed from {} to {}", user.getUserName(), oldStatus, newStatus);
             return messageSource.getMessage("user.status.success", null, locale);
@@ -154,21 +156,6 @@ public class OperationsUserServiceImpl implements OperationsUserService {
     }
 
 
-    @Override
-    public void sendActivationMessage(User user, String... args) {
-
-
-        try {
-            Email email = new Email.Builder()
-                    .setRecipient(user.getEmail())
-                    .setSubject(messageSource.getMessage("ops.activation.subject", null, locale))
-                    .setBody(String.format(messageSource.getMessage("ops.activation.message", null, locale), args))
-                    .build();
-            mailService.send(email);
-        } catch (MailException me) {
-            logger.error("Error sending mail to {}", user.getEmail(), me);
-        }
-    }
 
     @Override
     public OperationsUser getUserByName(String name) {
@@ -244,15 +231,32 @@ public class OperationsUserServiceImpl implements OperationsUserService {
                             securityService.deleteEntrustUser(entrustId, group);
                             throw new EntrustException(messageSource.getMessage("entrust.contact.failure", null, locale));
                         }
+
+                        user.setEntrustId(entrustId);
+                        user.setEntrustGroup(group);
+                        user = operationsUserRepo.save(user);
+
                     }
-                    user.setEntrustId(entrustId);
-                    user.setEntrustGroup(group);
-                    OperationsUser ops = operationsUserRepo.save(user);
-                    sendCredentialNotification(ops);
                 }
+                sendCreationMessage(user);
             }
         }
         return user;
+    }
+
+    private void sendCreationMessage(OperationsUser user) {
+       try {
+           Email email = new Email.Builder()
+                   .setRecipient(user.getEmail())
+                   .setSubject(messageSource.getMessage("ops.creation.subject", null, locale))
+                   .setTemplate("mail/opscreation")
+                   .build();
+           generateAndSendCredentials(user, email);
+       }
+       catch (Exception e){
+           logger.error("Error occurred sending creation credentials",e);
+
+       }
     }
 
     @Override
@@ -315,11 +319,9 @@ public class OperationsUserServiceImpl implements OperationsUserService {
                 }
             }
             return messageSource.getMessage("user.delete.success", null, locale);
-        }
-        catch (VerificationInterruptedException ve){
+        } catch (VerificationInterruptedException ve) {
             return ve.getMessage();
-        }
-        catch (InternetBankingSecurityException se) {
+        } catch (InternetBankingSecurityException se) {
             throw new InternetBankingSecurityException(messageSource.getMessage("entrust.delete.failure", null, locale));
         } catch (Exception e) {
             throw new InternetBankingException(messageSource.getMessage("user.delete.failure", null, locale));
@@ -330,22 +332,9 @@ public class OperationsUserServiceImpl implements OperationsUserService {
     public String resetPassword(Long id) throws InternetBankingException {
         try {
             OperationsUser user = operationsUserRepo.findOne(id);
-            String newPassword = passwordPolicyService.generatePassword();
-            user.setPassword(passwordEncoder.encode(newPassword));
-            String fullName = user.getFirstName() + " " + user.getLastName();
-            user.setExpiryDate(new Date());
-            passwordPolicyService.saveOpsPassword(user);
-            this.operationsUserRepo.save(user);
-            Email email = new Email.Builder()
-                    .setRecipient(user.getEmail())
-                    .setSubject(messageSource.getMessage("ops.password.reset.subject", null, locale))
-                    .setBody(String.format(messageSource.getMessage("ops.password.reset.message", null, locale), fullName, newPassword))
-                    .build();
-            mailService.send(email);
+            sendResetMessage(user);
             logger.info("Operations user {} password reset successfully", user.getUserName());
             return messageSource.getMessage("password.reset.success", null, locale);
-        } catch (MailException me) {
-            throw new PasswordException(messageSource.getMessage("mail.failure", null, locale), me);
         } catch (Exception e) {
             throw new PasswordException(messageSource.getMessage("password.reset.failure", null, locale), e);
         }
@@ -355,24 +344,28 @@ public class OperationsUserServiceImpl implements OperationsUserService {
     public String resetPassword(String username) throws InternetBankingException {
         try {
             OperationsUser user = operationsUserRepo.findFirstByUserNameIgnoreCase(username);
-            String newPassword = passwordPolicyService.generatePassword();
-            user.setPassword(passwordEncoder.encode(newPassword));
-            String fullName = user.getFirstName() + " " + user.getLastName();
-            user.setExpiryDate(new Date());
-            passwordPolicyService.saveOpsPassword(user);
-            this.operationsUserRepo.save(user);
-            Email email = new Email.Builder()
-                    .setRecipient(user.getEmail())
-                    .setSubject(messageSource.getMessage("ops.password.reset.subject", null, locale))
-                    .setBody(String.format(messageSource.getMessage("ops.password.reset.message", null, locale), fullName, newPassword))
-                    .build();
-            mailService.send(email);
+            sendResetMessage(user);
             logger.info("Operations user {} password reset successfully", user.getUserName());
             return messageSource.getMessage("password.reset.success", null, locale);
         } catch (MailException me) {
             throw new PasswordException(messageSource.getMessage("mail.failure", null, locale), me);
         } catch (Exception e) {
             throw new PasswordException(messageSource.getMessage("password.reset.failure", null, locale), e);
+        }
+    }
+
+    private void sendResetMessage(OperationsUser user) {
+        try {
+            Email email = new Email.Builder()
+                    .setRecipient(user.getEmail())
+                    .setSubject(messageSource.getMessage("ops.password.reset.subject", null, locale))
+                    .setTemplate("mail/opspasswordreset")
+                    .build();
+            generateAndSendCredentials(user, email);
+        }
+        catch (Exception e){
+            logger.error("Error occurred sending reset credentials",e);
+
         }
     }
 
@@ -432,6 +425,32 @@ public class OperationsUserServiceImpl implements OperationsUserService {
     }
 
 
+    public void generateAndSendCredentials(OperationsUser user, Email email) {
+
+        String opsUrl = (hostUrl != null) ? hostUrl + "/ops" : "";
+
+        if ("A".equals(user.getStatus())) {
+
+            String fullName = user.getFirstName() + " " + user.getLastName();
+            String password = passwordPolicyService.generatePassword();
+            user.setPassword(passwordEncoder.encode(password));
+            user.setExpiryDate(new Date());
+            passwordPolicyService.saveOpsPassword(user);
+            operationsUserRepo.save(user);
+
+            Context context = new Context();
+            context.setVariable("fullName", fullName);
+            context.setVariable("username", user.getUserName());
+            context.setVariable("password", password);
+            context.setVariable("opsUrl", opsUrl);
+
+            mailService.sendMail(email, context);
+
+        }
+
+    }
+
+
     private OperationsUserDTO convertEntityToDTO(OperationsUser operationsUser) {
         OperationsUserDTO operationsUserDTO = modelMapper.map(operationsUser, OperationsUserDTO.class);
         operationsUserDTO.setRole(operationsUser.getRole().getName());
@@ -478,19 +497,40 @@ public class OperationsUserServiceImpl implements OperationsUserService {
         return pageImpl;
     }
 
-    public void sendCredentialNotification(OperationsUser user) {
 
-        String opsUrl = (hostUrl != null)? hostUrl+"/ops":"";
 
-        if ("A".equals(user.getStatus())) {
-            String fullName = user.getFirstName() + " " + user.getLastName();
-            String password = passwordPolicyService.generatePassword();
-            user.setPassword(passwordEncoder.encode(password));
-            user.setExpiryDate(new Date());
-            passwordPolicyService.saveOpsPassword(user);
-            OperationsUser opsUser = operationsUserRepo.save(user);
-            sendActivationMessage(opsUser, fullName, user.getUserName(), password,opsUrl);
-        }
+    @Override
+    public void sendActivationCredentials(OperationsUser user, String password) {
+
+
+        String opsUrl = (hostUrl != null) ? hostUrl + "/ops" : "";
+
+        String fullName = user.getFirstName() + " " + user.getLastName();
+        Context context = new Context();
+        context.setVariable("fullName", fullName);
+        context.setVariable("username", user.getUserName());
+        context.setVariable("password", password);
+        context.setVariable("opsUrl", opsUrl);
+
+        Email email = new Email.Builder()
+                .setRecipient(user.getEmail())
+                .setSubject(messageSource.getMessage("ops.activation.subject", null, locale))
+                .setTemplate("mail/opsactivation")
+                .build();
+
+        mailService.sendMail(email, context);
+    }
+
+    private void sendActivationMessage(OperationsUser user) {
+
+
+        Email email = new Email.Builder()
+                .setRecipient(user.getEmail())
+                .setSubject(messageSource.getMessage("ops.activation.subject", null, locale))
+                .setTemplate("mail/opsactivation")
+                .build();
+
+        generateAndSendCredentials(user, email);
 
     }
 }

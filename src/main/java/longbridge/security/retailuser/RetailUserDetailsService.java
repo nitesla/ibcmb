@@ -36,8 +36,7 @@ public class RetailUserDetailsService implements UserDetailsService {
 
     @Autowired
     public RetailUserDetailsService(RetailUserRepo retailUserRepo, CustomBruteForceService bruteForceService, IpAddressUtils addressUtils
-            , FailedLoginService failedLoginService,SessionUtils sessionUtils
-    ) {
+            , FailedLoginService failedLoginService,SessionUtils sessionUtils) {
         this.retailUserRepo = retailUserRepo;
         this.bruteForceService = bruteForceService;
         this.addressUtils = addressUtils;
@@ -58,7 +57,7 @@ public class RetailUserDetailsService implements UserDetailsService {
 //        sessionUtils.clearSession();
         RetailUser user = retailUserRepo.findFirstByUserNameIgnoreCase(s);
 
-        if (user != null && failedLoginService.isBlocked(user)) throw new RuntimeException("user_blocked");
+        if (user != null && failedLoginService.isBlocked(user)) throw new RuntimeException("Retail user "+user.getUserName()+" blocked");
 
 
         try {

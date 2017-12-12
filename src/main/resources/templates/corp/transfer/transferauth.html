@@ -31,7 +31,7 @@
                 <tr>
 
                     <th>Amount</th>
-                    <td th:text="${corpTransferRequest.amount}"></td>
+                    <td th:text="${#numbers.formatDecimal(corpTransferRequest.amount, 1, 'COMMA', 2, 'POINT')}"></td>
 
                 </tr>
                 <tr>
@@ -52,10 +52,10 @@
                 <!--<input type="hidden" th:field="*{remarks}"/>-->
                 <div class="form-group">
                     <label>Token *</label>
-                    <input type="text" name="token" placeholder="" class="form-control full-width" required="required"/>
+                    <input type="text" name="token" id="token" placeholder="" class="form-control full-width" required="required"/>
                     <br/>
                     <div class="form-group">
-                        <button type="submit" class="btn btn-link required-step">Proceed</button>
+                        <button type="submit" class="btn btn-link required-step useloader">Proceed</button>
                         <button type="button" onclick='redirect();' class="btn btn-link less-required">Cancel</button>
                     </div>
 
@@ -72,6 +72,16 @@
 <th:block layout:fragment="scripts">
 
     <script>
+        $(document).ready(function ()
+        {
+
+            $(".useloader").click(function(){
+                if($('#token').val() === ''){
+                    hideSpinner();
+                }
+//            alert("The paragraph was clicked.");
+            });
+        });
         function redirect()
         {
            

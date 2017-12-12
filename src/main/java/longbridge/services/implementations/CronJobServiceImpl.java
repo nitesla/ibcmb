@@ -58,19 +58,21 @@ public class CronJobServiceImpl implements CronJobService {
     }
 
     @Override
-    public void keepCronJobEprsDetials(String username, String cronExpression,String cronExprDesc) throws InternetBankingException {
+    public void keepCronJobEprsDetials(String username, String cronExpression,String cronExprDesc,String category) throws InternetBankingException {
         CronJobExpression cronJobExpression = new CronJobExpression();
         cronJobExpression.setUsername(username);
         cronJobExpression.setCreatedOn(new Date());
         cronJobExpression.setFlag("Y");
         cronJobExpression.setCronExpression(cronExpression);
         cronJobExpression.setCronExpressionDesc(cronExprDesc);
+        cronJobExpression.setCategory(category);
         cronJobExpressionRepo.save(cronJobExpression);
     }
 
     @Override
-    public void deleteRunningJob() throws InternetBankingException {
-        CronJobExpression cronJobExpression = cronJobExpressionRepo.findLastByFlag("Y");
+    public void deleteRunningJob(String category) throws InternetBankingException {
+        CronJobExpression cronJobExpression = cronJobExpressionRepo.findLastByFlagAndCategory("Y",category);
+        logger.info("the job to be deleted {}",cronJobExpression);
         if (cronJobExpression != null){
 //            logger.info("about deleting");
             cronJobExpression.setFlag("N");
@@ -279,25 +281,34 @@ public class CronJobServiceImpl implements CronJobService {
     }
 
     @Override
-    public String getCurrentExpression() throws InternetBankingException {
-        CronJobExpression cronJobExpression = cronJobExpressionRepo.findLastByFlag("Y");
+    public String getCurrentExpression(String category) throws InternetBankingException {
+        CronJobExpression cronJobExpression = cronJobExpressionRepo.findLastByFlagAndCategory("Y",category);
 
         return cronJobExpression.getCronExpression();
+    }
+    @Override
+    public String getCurrentJobDesc(String category) throws InternetBankingException {
+        CronJobExpression cronJobExpression = cronJobExpressionRepo.findLastByFlagAndCategory("Y",category);
+        if(cronJobExpression != null) {
+            return cronJobExpression.getCronExpressionDesc();
+        }else {
+            return "No Job has been configured for this category";
+        }
     }
 
     @Override
     public boolean updateRunningJob() throws InternetBankingException {
         CronJobMonitor lastIncompleteJob = cronJobMonitorRepo.findFirstByOrderByStillRunningDesc();
 //        logger.info("monitor is {}", lastIncompleteJob);
-            if(lastIncompleteJob != null) {
+        if(lastIncompleteJob != null) {
 //                logger.info("monitor time is {}", lastIncompleteJob.getJobStartTime());
-                lastIncompleteJob.setJobEndTime(new Date());
-                lastIncompleteJob.setStillRunning(false);
-                cronJobMonitorRepo.save(lastIncompleteJob);
-                return true;
-            }else {
-                return false;
-            }
+            lastIncompleteJob.setJobEndTime(new Date());
+            lastIncompleteJob.setStillRunning(false);
+            cronJobMonitorRepo.save(lastIncompleteJob);
+            return true;
+        }else {
+            return false;
+        }
     }
 
     @Override
@@ -322,15 +333,15 @@ public class CronJobServiceImpl implements CronJobService {
         String[] list = StringUtils.split(setting.getValue(), ",");
         logger.info("the scheme code {}",list);
         if (setting != null && setting.isEnabled()) {
-        for (RetailUser retailUser:retailUsers) {
-            try {
-                List<String> existingAccount =  new ArrayList<>();
+            for (RetailUser retailUser:retailUsers) {
+                try {
+                    List<String> existingAccount =  new ArrayList<>();
 //                logger.info("old bvn is {}",retailUser.getCustomerId());
-                List<AccountInfo> accountInfos = integrationService.fetchAccounts(retailUser.getCustomerId());
-                List<Account> accounts =  accountService.getCustomerAccounts(retailUser.getCustomerId());
-                for (Account account:accounts) {
-                    existingAccount.add(account.getAccountNumber());
-                }
+                    List<AccountInfo> accountInfos = integrationService.fetchAccounts(retailUser.getCustomerId());
+                    List<Account> accounts =  accountService.getCustomerAccounts(retailUser.getCustomerId());
+                    for (Account account:accounts) {
+                        existingAccount.add(account.getAccountNumber());
+                    }
 
                     for (AccountInfo accountInfo:accountInfos) {
                         if (ArrayUtils.contains(list, accountInfo.getSchemeType()) && "A".equalsIgnoreCase(accountInfo.getAccountStatus())) {
@@ -342,11 +353,11 @@ public class CronJobServiceImpl implements CronJobService {
                     }
 
 
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
 
-        }
+            }
         }
     }
 

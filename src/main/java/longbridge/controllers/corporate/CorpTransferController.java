@@ -10,6 +10,7 @@ import longbridge.repositories.CorpTransferRequestRepo;
 import longbridge.repositories.CorporateRepo;
 import longbridge.services.*;
 import longbridge.utils.DateFormatter;
+import longbridge.utils.StringUtil;
 import longbridge.utils.TransferType;
 import longbridge.utils.TransferUtils;
 import org.apache.commons.lang3.ArrayUtils;
@@ -241,6 +242,7 @@ public class CorpTransferController {
         CorpTransferRequestDTO transferRequestDTO = (CorpTransferRequestDTO) request.getSession().getAttribute("corpTransferRequest");
         model.addAttribute("corpTransferRequest", transferRequestDTO);
         try {
+            transferUtils.validateTransferCriteria();
 
             if (request.getSession().getAttribute("auth-needed") != null) {
                 String token = request.getParameter("token");
@@ -486,7 +488,7 @@ public class CorpTransferController {
             Corporate corporate = corporateUser.getCorporate();
             TransRequest transRequest = transferService.getTransfer(id);
 
-//            logger.info("Trans Request {}", transRequest);
+            logger.info("Trans Request for customer");
             JasperReportsPdfView view = new JasperReportsPdfView();
             view.setUrl("classpath:jasperreports/rpt_tran-hist.jrxml");
             view.setApplicationContext(appContext);
@@ -498,7 +500,7 @@ public class CorpTransferController {
             modelMap.put("imagePath", imagePath);
             modelMap.put("amount", formatter.format(amount));
             modelMap.put("customer", corporate.getName());
-            modelMap.put("customerAcctNumber", transRequest.getCustomerAccountNumber());
+            modelMap.put("customerAcctNumber", StringUtil.maskAccountNumber(transRequest.getCustomerAccountNumber()));
             if(transRequest.getRemarks() != null) {
                 modelMap.put("remarks", transRequest.getRemarks());
             }else{

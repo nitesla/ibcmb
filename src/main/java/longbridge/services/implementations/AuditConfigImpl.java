@@ -10,6 +10,7 @@ import longbridge.dtos.AuditSearchDTO;
 import longbridge.exception.InternetBankingException;
 import longbridge.models.*;
 import longbridge.repositories.AuditConfigRepo;
+import longbridge.repositories.AuditRepoImpl;
 import longbridge.repositories.CustomRevisionEntityRepo;
 import longbridge.repositories.ModifiedEntityTypeEntityRepo;
 import longbridge.services.AuditConfigService;
@@ -19,9 +20,6 @@ import longbridge.utils.StringUtil;
 import longbridge.utils.Verifiable;
 import org.apache.commons.lang.StringUtils;
 import org.apache.poi.ss.formula.functions.T;
-import org.hibernate.Query;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
 import org.hibernate.envers.AuditReader;
 import org.hibernate.envers.AuditReaderFactory;
 import org.hibernate.envers.query.AuditQuery;
@@ -34,10 +32,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
@@ -52,7 +48,6 @@ import static longbridge.utils.StringUtil.searchModifiedEntityTypeEntity;
  * Created by ayoade_farooq@yahoo.com on 4/19/2017.
  */
 @Service
-@Transactional
 public class AuditConfigImpl implements AuditConfigService {
 
 	private static final String PACKAGE_NAME = "longbridge.models.";
@@ -64,7 +59,8 @@ public class AuditConfigImpl implements AuditConfigService {
 	private AuditConfigRepo configRepo;
 	@Autowired
 	EntityManager entityManager;
-
+	@Autowired
+	AuditRepoImpl auditRepo;
 	@Autowired
 	CustomRevisionEntityRepo customRevisionEntityRepo;
 
@@ -268,10 +264,10 @@ public class AuditConfigImpl implements AuditConfigService {
 					abstractEntity = abstractEntities.get(0);
 					if (abstractEntity instanceof PrettySerializer) {
 						JSONObject jsonObject = SerializeUtil.getPrettySerialJSON(abstractEntity);
-						auditDTO.setFullEntity(jsonObject);
+//						auditDTO.setFullEntity(jsonObject);
 					}else {
-						JSONObject jsonObject = convertToJSON(abstractEntity.toString());
-						auditDTO.setFullEntity(jsonObject);
+//						JSONObject jsonObject = convertToJSON(abstractEntity.toString());
+//						auditDTO.setFullEntity(jsonObject);
 					}
 				} catch (IndexOutOfBoundsException e) {
 					e.printStackTrace();
@@ -469,9 +465,15 @@ public class AuditConfigImpl implements AuditConfigService {
 //		logger.info("the list returned {}",branchList.get(0));
 		return null;
 	}
+	@Override
 	public Page<ModifiedEntityTypeEntity> searchModifiedEntity(AuditSearchDTO auditSearchDTO, Pageable pageable){
 		List<ModifiedEntityTypeEntity> searchedModifiedEntity = getSearchedModifiedEntity(auditSearchDTO);
 		long searchSize = Long.valueOf(searchedModifiedEntity.size());
 		return new PageImpl<ModifiedEntityTypeEntity>(searchedModifiedEntity, pageable, searchSize);
+	}
+	@Override
+	public Page<ModifiedEntityTypeEntity> searchMod(Pageable pageable, AuditSearchDTO auditSearchDTO){
+		Page<ModifiedEntityTypeEntity> modifiedEntityTypeEntities = auditRepo.findModifiedEntityBySearch(pageable,auditSearchDTO);
+	return modifiedEntityTypeEntities;
 	}
 }

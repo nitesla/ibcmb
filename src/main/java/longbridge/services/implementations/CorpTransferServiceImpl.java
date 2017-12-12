@@ -78,7 +78,6 @@ public class CorpTransferServiceImpl implements CorpTransferService {
         CorpTransRequest transferRequest = convertDTOToEntity(transferRequestDTO);
         transferRequest.setUserReferenceNumber("CORP_"+getCurrentUser().getId().toString());
 
-
         if ("SOLE".equals(transferRequest.getCorporate().getCorporateType())) {
             CorpTransferRequestDTO requestDTO = makeTransfer(transferRequestDTO);
             if ("00".equals(requestDTO.getStatus()) || "000".equals(requestDTO.getStatus())) { // Transfer successful
@@ -228,7 +227,7 @@ public class CorpTransferServiceImpl implements CorpTransferService {
     public Page<CorpTransRequest> getTransferRequests(Pageable pageDetails) {
         CorporateUser corporateUser = getCurrentUser();
         Corporate corporate = corporateUser.getCorporate();
-        Page<CorpTransRequest> corpTransRequests = corpTransferRequestRepo.findByCorporateOrderByStatusAsc(corporate, pageDetails);
+        Page<CorpTransRequest> corpTransRequests = corpTransferRequestRepo.findByCorporateOrderByStatusAscTranDateDesc(corporate, pageDetails);
         return corpTransRequests;
     }
 

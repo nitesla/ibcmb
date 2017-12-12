@@ -53,7 +53,7 @@ public class EmailValidator {
         SettingDTO validateCorporateEmail = configService.getSettingByName("VALIDATE_CORPORATE_EMAIL");
         SettingDTO domainName = configService.getSettingByName("INTERNET_DOMAIN_NAME");
 
-        if (validateCorporateEmail != null && validateCorporateEmail.isEnabled() && validateCorporateEmail.getValue().equalsIgnoreCase("YES")) {
+        if (validateCorporateEmail != null && validateCorporateEmail.isEnabled() && "YES".equalsIgnoreCase(validateCorporateEmail.getValue())) {
 
             if (domainName != null && domainName.isEnabled()) {
                 if (domainName.getValue() != null && !domainName.getValue().isEmpty()) {

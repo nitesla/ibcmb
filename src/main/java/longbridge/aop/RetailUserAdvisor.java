@@ -19,7 +19,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import sun.rmi.runtime.Log;
 
 import javax.persistence.EntityManager;
 import java.io.IOException;
@@ -90,14 +89,13 @@ public class RetailUserAdvisor {
             ObjectMapper objectMapper = new ObjectMapper();
             RetailUser retailUser = objectMapper.readValue(verification.getOriginalObject(),RetailUser.class);
             if("A".equals(retailUser.getStatus())){
-                String fullName = user.getFirstName()+" "+user.getLastName();
                 String password = passwordPolicyService.generatePassword();
                 user.setPassword(passwordEncoder.encode(password));
                 user.setExpiryDate(new Date());
                 passwordPolicyService.saveRetailPassword(user);
                 retailUserRepo.save(user);
                 logger.info("Retail user {} status changed to {}",retailUser.getUserName(),retailUser.getStatus());
-                retailUserService.sendPostActivateMessage(retailUser, fullName,user.getUserName(),password);
+                retailUserService.sendActivationCredentials(retailUser, password);
             }
             else {
                 retailUserRepo.save(user);

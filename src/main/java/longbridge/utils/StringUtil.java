@@ -21,8 +21,9 @@ import java.util.*;
  */
 public class StringUtil {
     static Logger logger = LoggerFactory.getLogger(StringUtil.class);
+    private static final String PACKAGE_NAME = "longbridge.models.";
     public static List<String> splitByComma(String word){
-       return Arrays.asList(word.split(","));
+        return Arrays.asList(word.split(","));
     }
     public static String compareAnswers(List<String>answers,List<String>entAnswers ){
         int noOfMismatch = 0;
@@ -49,9 +50,9 @@ public class StringUtil {
                 noOfMismatch++;
             }
         }
-            if(noOfMismatch==0){
-                return "true";
-            }
+        if(noOfMismatch==0){
+            return "true";
+        }
         return "false";
     }
     public static String convertFieldToTitle(String fieldName){
@@ -74,6 +75,7 @@ public class StringUtil {
 //        System.out.println("the datatble field "+builder.toString());
         return builder.toString();
     }
+
     public static String extractedFieldName(String genericFieldName){
         return genericFieldName.substring(genericFieldName.lastIndexOf('.') + 1, genericFieldName.length());
     }
@@ -159,7 +161,7 @@ public class StringUtil {
                 builder.append("_");
                 builder.append(Character.toUpperCase(enttyname.charAt(y)));
             }else{
-                    builder.append(Character.toUpperCase(enttyname.charAt(y)));
+                builder.append(Character.toUpperCase(enttyname.charAt(y)));
             }
         }
         return builder.toString();
@@ -247,36 +249,142 @@ public class StringUtil {
         fields.put("ignoreField",ignoreField);
         return fields;
     }
-    public static String searchModifiedEntityTypeEntity(AuditSearchDTO auditSearchDTO){
+    public static String searchModifiedEntityTypeEntity(AuditSearchDTO auditSearchDTO, boolean queryFieldDirectly){
+        String timeStamp = "";String className = ""; String lastChangedBy = ""; String revsionField = ""; String ipAddress ="";String username ="";
+        logger.info("the auditSearchDTO is {}",auditSearchDTO);
+        if(queryFieldDirectly){
+            revsionField = "revision.id";
+            timeStamp = "revision.timestamp";
+            lastChangedBy = "revision.lastChangedBy";
+            ipAddress = "revision.ipAddress";
+            className = "entityClassName";
+            username = "userName";
+        }else {
+            revsionField = "revision_id";
+            timeStamp = "c.timestamp";
+            lastChangedBy = "c.last_Changed_By";
+            ipAddress = "c.ip_Address";
+            className = "entity_Class_Name";
+        }
         StringBuilder builder = new StringBuilder("");
-        String auditedEntity  = "";
-
+        String dayBeforeComparator = " <=";
         boolean fromDateNotEmpty = auditSearchDTO.getFromDate() !=0;
         boolean endDateNotEmpty = auditSearchDTO.getEndDate() !=0;
+        if(fromDateNotEmpty && auditSearchDTO.getEndDate() ==0){
+            logger.info("the from date {}",auditSearchDTO.getFromDate());
+            auditSearchDTO.setEndDate(DateUtil.convertDateToLong(DateUtil.nextDate(auditSearchDTO.getFromDate())));
+        }
+        if(endDateNotEmpty){
+            dayBeforeComparator = " < ";
+        }
+        Collection<Integer> revisionId = null;
+        String replaceDetails = "''";
         boolean idNotEmpty = !StringUtils.isEmpty(auditSearchDTO.getId());
         boolean ipAddressNotEmpty = !StringUtils.isEmpty(auditSearchDTO.getIpAddress());
         boolean classNameNotEmpty = !StringUtils.isEmpty(auditSearchDTO.getEntityClassName());
+        boolean lastChangeByNotEmpty = !StringUtils.isEmpty(auditSearchDTO.getLastChangeBy());
+        boolean usernameNotEmpty = !StringUtils.isEmpty(auditSearchDTO.getUsername());
+        if(idNotEmpty){
+            revisionId = RevisedEntitiesUtil.getRevIdsFromId(auditSearchDTO,"");
+            if(revisionId !=null) {
+                replaceDetails = revisionId.toString().replace("[", "").replace("]", "");
+            }
+        }
         logger.info("search for id {} ip {} startDate {} enddate {} className {}",idNotEmpty,ipAddressNotEmpty,fromDateNotEmpty,endDateNotEmpty,classNameNotEmpty);
-        if(classNameNotEmpty){
-            auditedEntity= RevisedEntitiesUtil.getOracleEntity(auditSearchDTO.getEntityClassName())+"_AUD";
+        logger.info("the auditSearch DTO {}",auditSearchDTO);
+        logger.info("is class empty {}",StringUtils.isEmpty(auditSearchDTO.getEntityClassName()));
+
+        if(fromDateNotEmpty && !idNotEmpty && ipAddressNotEmpty && classNameNotEmpty && lastChangeByNotEmpty){
+            builder.append(" where "+timeStamp+" >= "+auditSearchDTO.getFromDate()+" and "+timeStamp+dayBeforeComparator+auditSearchDTO.getEndDate());
+            builder.append(" and "+ipAddress+" = "+auditSearchDTO.getIpAddress());
+            builder.append(" and "+lastChangedBy+" = '"+auditSearchDTO.getLastChangeBy()+"' ");
         }
-        if(fromDateNotEmpty && endDateNotEmpty && idNotEmpty && ipAddressNotEmpty && classNameNotEmpty){
-            builder.append(", "+auditedEntity+" a");
-            builder.append(" and c.TIMESTAMP >= "+auditSearchDTO.getFromDate()+" and c.TIMESTAMP <="+auditSearchDTO.getEndDate());
-            builder.append(" and m.ENTITY_CLASS_NAME = "+auditSearchDTO.getEntityClassName());
-            builder.append(" and c.IP_ADDRESS = "+auditSearchDTO.getIpAddress());
-            builder.append(" and a.ID = "+auditSearchDTO.getId());
-        }else if(classNameNotEmpty && idNotEmpty && !fromDateNotEmpty && !endDateNotEmpty && !ipAddressNotEmpty){
-            builder.append(", "+auditedEntity+" a");
-            builder.append(" where m.REVISION_ID=c.id ");
-            builder.append(" and m.ENTITY_CLASS_NAME = "+auditSearchDTO.getEntityClassName()+" and a.ID = "+auditSearchDTO.getId());
-            builder.append("and a.REV = c.id and m.REVISION_ID=a.REV ");
+        else if(classNameNotEmpty && idNotEmpty && !fromDateNotEmpty &&  !ipAddressNotEmpty&&!lastChangeByNotEmpty){
+            builder.append(" where m."+revsionField+" in ("+ replaceDetails +")");
+            builder.append(" and m."+className+" = '"+PACKAGE_NAME+auditSearchDTO.getEntityClassName()+"'");
         }
-        if(StringUtils.isEmpty(builder.toString())){
-            builder.append(" where m.REVISION_ID=c.id ");
-            builder.append(" and rownum <100");
+        else if(classNameNotEmpty && idNotEmpty && fromDateNotEmpty  && !ipAddressNotEmpty && !lastChangeByNotEmpty){
+            builder.append(" where m."+revsionField+" in ("+ replaceDetails +")");
+            builder.append(" and m."+className+" = '"+PACKAGE_NAME+auditSearchDTO.getEntityClassName()+"'");
+            builder.append(" and "+timeStamp+" >= "+auditSearchDTO.getFromDate()+" and "+timeStamp+dayBeforeComparator
+                    +auditSearchDTO.getEndDate());
+        }
+        else if(classNameNotEmpty && idNotEmpty && fromDateNotEmpty && ipAddressNotEmpty &&!lastChangeByNotEmpty){
+            builder.append(" where m."+revsionField+" in ("+ replaceDetails +")");
+            builder.append(" and m."+className+" = '"+PACKAGE_NAME+auditSearchDTO.getEntityClassName()+"'");
+            builder.append(" and "+timeStamp+" >= "+auditSearchDTO.getFromDate()+" and "+timeStamp+dayBeforeComparator+auditSearchDTO.getEndDate());
+            builder.append(" and "+ipAddress+" = "+auditSearchDTO.getIpAddress());
+        }
+        else if(classNameNotEmpty && idNotEmpty && fromDateNotEmpty && ipAddressNotEmpty && lastChangeByNotEmpty){
+            builder.append(" where m."+revsionField+" in ("+ replaceDetails +")");
+            builder.append(" and m."+className+" = '"+PACKAGE_NAME+auditSearchDTO.getEntityClassName()+"'");
+            builder.append(" and "+timeStamp+" >= "+auditSearchDTO.getFromDate()+" and "+timeStamp+dayBeforeComparator+auditSearchDTO.getEndDate());
+            builder.append(" and "+ipAddress+" = "+auditSearchDTO.getIpAddress());
+            builder.append(" and "+lastChangedBy+" = '"+auditSearchDTO.getLastChangeBy()+"' ");
+        }else if(classNameNotEmpty && idNotEmpty && fromDateNotEmpty && !ipAddressNotEmpty &&lastChangeByNotEmpty){
+            builder.append(" where m."+revsionField+" in ("+ replaceDetails +")");
+            builder.append(" and m."+className+" = '"+PACKAGE_NAME+auditSearchDTO.getEntityClassName()+"'");
+            builder.append(" and "+timeStamp+" >= "+auditSearchDTO.getFromDate()+" and "+timeStamp+dayBeforeComparator+auditSearchDTO.getEndDate());
+            builder.append(" and "+lastChangedBy+" = '"+auditSearchDTO.getLastChangeBy()+"' ");
+        }
+        else if(classNameNotEmpty && idNotEmpty && fromDateNotEmpty && !ipAddressNotEmpty &&lastChangeByNotEmpty){
+            builder.append(" where m."+revsionField+" in ("+ replaceDetails +") ");
+            builder.append(" and m."+className+" = '"+PACKAGE_NAME+auditSearchDTO.getEntityClassName()+"'");
+            builder.append(" and "+timeStamp+" >= "+auditSearchDTO.getFromDate()+" and "+timeStamp+dayBeforeComparator+auditSearchDTO.getEndDate());
+            builder.append(" and "+lastChangedBy+" = '"+auditSearchDTO.getLastChangeBy()+"' ");
+        }
+        else if(classNameNotEmpty && idNotEmpty && !fromDateNotEmpty && !ipAddressNotEmpty &&lastChangeByNotEmpty){
+            builder.append(" where m."+revsionField+" in ("+ replaceDetails +") ");
+            builder.append(" and m."+className+" = '"+PACKAGE_NAME+auditSearchDTO.getEntityClassName()+"'");
+            builder.append(" and "+lastChangedBy+" = '"+auditSearchDTO.getLastChangeBy()+"' ");
+        }
+        else if(classNameNotEmpty && idNotEmpty && fromDateNotEmpty && !ipAddressNotEmpty &&!lastChangeByNotEmpty){
+            builder.append(" where m."+revsionField+" in ("+ replaceDetails +")");
+            builder.append(" and m."+className+" = '"+PACKAGE_NAME+auditSearchDTO.getEntityClassName()+"'");
+            builder.append(" and "+timeStamp+" >= "+auditSearchDTO.getFromDate()+" and "+timeStamp+dayBeforeComparator+auditSearchDTO.getEndDate());
+        }else if(classNameNotEmpty && !idNotEmpty && fromDateNotEmpty && !ipAddressNotEmpty &&!lastChangeByNotEmpty){
+            builder.append(" where m."+className+" = '"+PACKAGE_NAME+auditSearchDTO.getEntityClassName()+"'");
+            builder.append(" and "+timeStamp+" >= "+auditSearchDTO.getFromDate()+" and "+timeStamp+dayBeforeComparator+auditSearchDTO.getEndDate());
+        }else if(classNameNotEmpty && !idNotEmpty && !fromDateNotEmpty && !ipAddressNotEmpty &&!lastChangeByNotEmpty){
+            builder.append(" where m."+className+" = '"+PACKAGE_NAME+auditSearchDTO.getEntityClassName()+"'");
+        }else if(!classNameNotEmpty && !idNotEmpty && fromDateNotEmpty && !ipAddressNotEmpty &&!lastChangeByNotEmpty){
+            builder.append(" where "+timeStamp+" >= "+auditSearchDTO.getFromDate()+" and "+timeStamp+dayBeforeComparator+auditSearchDTO.getEndDate());
+        }else if(classNameNotEmpty && !idNotEmpty && fromDateNotEmpty && !ipAddressNotEmpty &&!lastChangeByNotEmpty){
+            builder.append(" where m."+className+" = '"+PACKAGE_NAME+auditSearchDTO.getEntityClassName()+"'");
+            builder.append(" and "+timeStamp+" >= "+auditSearchDTO.getFromDate()+" and "+timeStamp+dayBeforeComparator+auditSearchDTO.getEndDate());
+        }else if(classNameNotEmpty && !idNotEmpty && !fromDateNotEmpty && !ipAddressNotEmpty &&lastChangeByNotEmpty){
+            builder.append(" where m."+className+" = '"+PACKAGE_NAME+auditSearchDTO.getEntityClassName()+"'");
+            builder.append(" and "+lastChangedBy+" = '"+auditSearchDTO.getLastChangeBy()+"' ");
+        }
+        else if(classNameNotEmpty && !idNotEmpty && fromDateNotEmpty && !ipAddressNotEmpty &&!lastChangeByNotEmpty){
+            builder.append(" where m."+className+" = '"+PACKAGE_NAME+auditSearchDTO.getEntityClassName()+"' ");
+        }
+        else if(!classNameNotEmpty && !idNotEmpty && fromDateNotEmpty && ipAddressNotEmpty &&lastChangeByNotEmpty){
+            builder.append(" where "+timeStamp+" >= "+auditSearchDTO.getFromDate()+" and "+timeStamp+dayBeforeComparator+auditSearchDTO.getEndDate());
+            builder.append(" and "+lastChangedBy+" = '"+auditSearchDTO.getLastChangeBy()+"'");
+            builder.append(" and "+ipAddress+" = "+auditSearchDTO.getIpAddress());
+        }
+        else if(!classNameNotEmpty && !idNotEmpty && !fromDateNotEmpty && ipAddressNotEmpty &&lastChangeByNotEmpty){
+            builder.append(" where "+lastChangedBy+" = '"+auditSearchDTO.getLastChangeBy()+"'");
+            builder.append(" and "+ipAddress+" = "+auditSearchDTO.getIpAddress());
+        }
+        else if(!classNameNotEmpty && !idNotEmpty && !fromDateNotEmpty && !ipAddressNotEmpty &&lastChangeByNotEmpty){
+            builder.append(" where "+lastChangedBy+" = '"+auditSearchDTO.getLastChangeBy()+"' ");
+        }
+        else if(!classNameNotEmpty && !idNotEmpty && !fromDateNotEmpty && ipAddressNotEmpty && !lastChangeByNotEmpty){
+            builder.append(" where "+ipAddress+" = "+auditSearchDTO.getIpAddress());
         }
         logger.info("the appended query is {}",builder.toString());
         return builder.toString();
+    }
+    public static String maskAccountNumber(String acctNum){
+        if(!StringUtils.isEmpty(acctNum)) {
+            int acctNumLength = acctNum.length();
+            String visibleAcct = acctNum.substring(acctNumLength - 4, acctNumLength);
+            String repeat = StringUtils.repeat("*", acctNumLength - 4);
+            logger.info("the hidden customer account number "+repeat);
+            return repeat+visibleAcct;
+        }
+        return "";
     }
 }

@@ -8,7 +8,6 @@ import longbridge.forms.ChangePassword;
 import longbridge.models.AdminUser;
 import longbridge.models.Email;
 import longbridge.models.Role;
-import longbridge.models.User;
 import longbridge.repositories.AdminUserRepo;
 import longbridge.repositories.RoleRepo;
 import longbridge.services.*;
@@ -25,9 +24,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.mail.MailException;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.thymeleaf.context.Context;
 
 import javax.persistence.EntityManager;
 import java.util.ArrayList;
@@ -189,17 +190,30 @@ public class AdminUserServiceImpl implements AdminUserService {
                             throw new EntrustException(messageSource.getMessage("entrust.contact.failure", null, locale));
 
                         }
+
+                        user.setEntrustId(entrustId);
+                        user.setEntrustGroup(group);
+                        user = adminUserRepo.save(user);
                     }
-                    user.setEntrustId(entrustId);
-                    user.setEntrustGroup(group);
-                    user = adminUserRepo.save(user);
-                    sendCredentialNotification(user);
                 }
+                sendCreationMessage(user);
             }
         }
         return user;
     }
 
+    private void sendCreationMessage(AdminUser user) {
+        try {
+            Email email = new Email.Builder()
+                    .setRecipient(user.getEmail())
+                    .setSubject(messageSource.getMessage("admin.creation.subject", null, locale))
+                    .setTemplate("mail/admincreation")
+                    .build();
+            generateAndSendCredentials(user, email);
+        } catch (Exception e) {
+            logger.error("Error occurred sending creation credentials", e);
+        }
+    }
 
     @Override
     @Transactional
@@ -212,7 +226,7 @@ public class AdminUserServiceImpl implements AdminUserService {
             String newStatus = "A".equals(oldStatus) ? "I" : "A";
             user.setStatus(newStatus);
             adminUserRepo.save(user);
-            sendCredentialNotification(user);
+            sendActivationMessage(user);
 
             logger.info("Admin user {} status changed from {} to {}", user.getUserName(), oldStatus, newStatus);
             return messageSource.getMessage("user.status.success", null, locale);
@@ -230,22 +244,47 @@ public class AdminUserServiceImpl implements AdminUserService {
     }
 
 
-    @Override
-    public void sendActivationMessage(User user, String... args) {
-
+    private void sendActivationMessage(AdminUser user) {
         try {
             Email email = new Email.Builder()
                     .setRecipient(user.getEmail())
                     .setSubject(messageSource.getMessage("admin.activation.subject", null, locale))
-                    .setBody(String.format(messageSource.getMessage("admin.activation.message", null, locale), args))
+                    .setTemplate("mail/adminactivation")
                     .build();
 
-            mailService.send(email);
-        } catch (MailException me) {
-            logger.error("Error sending mail to {}", user.getEmail(), me);
+            generateAndSendCredentials(user, email);
+        } catch (Exception e) {
+            logger.error("Error occurred sending activation credentials", e);
+
         }
+
     }
 
+    @Override
+    public void sendActivationCredentials(AdminUser user, String password) {
+
+        try {
+            String adminUrl = (hostUrl != null) ? hostUrl + "/admin" : "";
+
+            String fullName = user.getFirstName() + " " + user.getLastName();
+            Context context = new Context();
+            context.setVariable("fullName", fullName);
+            context.setVariable("username", user.getUserName());
+            context.setVariable("password", password);
+            context.setVariable("adminUrl", adminUrl);
+
+            Email email = new Email.Builder()
+                    .setRecipient(user.getEmail())
+                    .setSubject(messageSource.getMessage("admin.activation.subject", null, locale))
+                    .setTemplate("mail/adminactivation")
+                    .build();
+
+            mailService.sendMail(email, context);
+        } catch (Exception e) {
+            logger.error("Error occurred sending activation credentials", e);
+
+        }
+    }
 
     @Override
     @Transactional
@@ -326,24 +365,10 @@ public class AdminUserServiceImpl implements AdminUserService {
         if ("I".equals(user.getStatus())) {
             throw new InternetBankingException(messageSource.getMessage("users.deactivated", null, locale));
         }
-
         try {
-            String newPassword = passwordPolicyService.generatePassword();
-            user.setPassword(passwordEncoder.encode(newPassword));
-            passwordPolicyService.saveAdminPassword(user);
-            user.setExpiryDate(new Date());
-            String fullName = user.getFirstName() + " " + user.getLastName();
-            adminUserRepo.save(user);
-            Email email = new Email.Builder()
-                    .setRecipient(user.getEmail())
-                    .setSubject(messageSource.getMessage("admin.password.reset.subject", null, locale))
-                    .setBody(String.format(messageSource.getMessage("admin.password.reset.message", null, locale), fullName, newPassword))
-                    .build();
-            mailService.send(email);
+            sendResetMessage(user);
             logger.info("Admin user {} password reset successfully", user.getUserName());
             return messageSource.getMessage("password.reset.success", null, locale);
-        } catch (MailException me) {
-            throw new PasswordException(messageSource.getMessage("mail.failure", null, locale), me);
         } catch (Exception e) {
             throw new PasswordException(messageSource.getMessage("password.reset.failure", null, locale), e);
         }
@@ -354,24 +379,29 @@ public class AdminUserServiceImpl implements AdminUserService {
 
         try {
             AdminUser user = adminUserRepo.findFirstByUserNameIgnoreCase(username);
-            String newPassword = passwordPolicyService.generatePassword();
-            user.setPassword(passwordEncoder.encode(newPassword));
-            user.setExpiryDate(new Date());
-            passwordPolicyService.saveAdminPassword(user);
-            String fullName = user.getFirstName() + " " + user.getLastName();
-            adminUserRepo.save(user);
-            Email email = new Email.Builder()
-                    .setRecipient(user.getEmail())
-                    .setSubject(messageSource.getMessage("admin.password.reset.subject", null, locale))
-                    .setBody(String.format(messageSource.getMessage("admin.password.reset.message", null, locale), fullName, newPassword))
-                    .build();
-            mailService.send(email);
+            sendResetMessage(user);
             logger.info("Admin user {} password reset successfully", user.getUserName());
             return messageSource.getMessage("password.reset.success", null, locale);
         } catch (MailException me) {
             throw new PasswordException(messageSource.getMessage("mail.failure", null, locale), me);
         } catch (Exception e) {
             throw new PasswordException(messageSource.getMessage("password.reset.failure", null, locale), e);
+        }
+    }
+
+
+    private void sendResetMessage(AdminUser user) {
+
+        try {
+            Email email = new Email.Builder()
+                    .setRecipient(user.getEmail())
+                    .setSubject(messageSource.getMessage("admin.password.reset.subject", null, locale))
+                    .setTemplate("mail/adminpasswordreset")
+                    .build();
+            generateAndSendCredentials(user, email);
+        }
+        catch (Exception e){
+            logger.error("Error occurred sending reset credentials",e);
         }
     }
 
@@ -396,7 +426,7 @@ public class AdminUserServiceImpl implements AdminUserService {
             adminUser.setPassword(this.passwordEncoder.encode(changePassword.getNewPassword()));
             adminUser.setExpiryDate(passwordPolicyService.getPasswordExpiryDate());
             passwordPolicyService.saveAdminPassword(user);
-            this.adminUserRepo.save(adminUser);
+            adminUserRepo.save(adminUser);
             logger.info("User {} password has been updated", user.getId());
             return messageSource.getMessage("password.change.success", null, locale);
         } catch (Exception e) {
@@ -430,11 +460,6 @@ public class AdminUserServiceImpl implements AdminUserService {
         }
     }
 
-    @Override
-    public boolean generateAndSendPassword(AdminUser user) {
-        throw new UnsupportedOperationException("Not Implemented");
-    }
-
 
     private List<AdminUserDTO> convertEntitiesToDTOs(Iterable<AdminUser> adminUsers) {
         List<AdminUserDTO> adminUserDTOList = new ArrayList<>();
@@ -465,7 +490,7 @@ public class AdminUserServiceImpl implements AdminUserService {
         return modelMapper.map(adminUserDTO, AdminUser.class);
     }
 
-    @Override
+
     public Page<AdminUserDTO> getUsers(Pageable pageDetails) {
         Page<AdminUser> page = adminUserRepo.findAll(pageDetails);
         List<AdminUserDTO> dtOs = convertEntitiesToDTOs(page.getContent());
@@ -483,9 +508,10 @@ public class AdminUserServiceImpl implements AdminUserService {
         return pageImpl;
     }
 
-    public void sendCredentialNotification(AdminUser user) {
+    @Override
+    public void generateAndSendCredentials(AdminUser user, Email email) {
 
-        String adminUrl = (hostUrl != null)? hostUrl+"/admin":"";
+        String adminUrl = (hostUrl != null) ? hostUrl + "/admin" : "";
 
         if ("A".equals(user.getStatus())) {
 
@@ -494,8 +520,14 @@ public class AdminUserServiceImpl implements AdminUserService {
             user.setPassword(passwordEncoder.encode(password));
             user.setExpiryDate(new Date());
             passwordPolicyService.saveAdminPassword(user);
-            AdminUser admin = adminUserRepo.save(user);
-            sendActivationMessage(admin, fullName, user.getUserName(), password,adminUrl);
+            adminUserRepo.save(user);
+
+            Context context = new Context();
+            context.setVariable("fullName", fullName);
+            context.setVariable("username", user.getUserName());
+            context.setVariable("password", password);
+            context.setVariable("adminUrl", adminUrl);
+            mailService.sendMail(email, context);
         }
 
     }

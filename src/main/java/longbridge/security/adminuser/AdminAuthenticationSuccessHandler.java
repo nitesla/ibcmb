@@ -104,7 +104,7 @@ public class AdminAuthenticationSuccessHandler extends SimpleUrlAuthenticationSu
         }
 
         if (tokenAuth) {
-            logger.trace("Redirecting user to token authentication page");
+            logger.debug("Redirecting user to token authentication page");
             return "/admin/token";
         }
 

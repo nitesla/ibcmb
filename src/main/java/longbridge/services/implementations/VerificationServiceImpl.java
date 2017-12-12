@@ -7,10 +7,8 @@ import com.fasterxml.jackson.databind.module.SimpleModule;
 import longbridge.dtos.*;
 import longbridge.exception.InternetBankingException;
 import longbridge.exception.VerificationException;
-import longbridge.exception.VerificationInterruptedException;
 import longbridge.models.*;
 import longbridge.repositories.AdminUserRepo;
-import longbridge.repositories.CorporateUserRepo;
 import longbridge.repositories.OperationsUserRepo;
 import longbridge.repositories.VerificationRepo;
 import longbridge.security.userdetails.CustomUserPrincipal;
@@ -18,7 +16,6 @@ import longbridge.services.CorporateService;
 import longbridge.services.CorporateUserService;
 import longbridge.services.MailService;
 import longbridge.services.VerificationService;
-import longbridge.utils.DateFormatter;
 import longbridge.utils.PrettySerializer;
 import longbridge.utils.VerificationStatus;
 import org.modelmapper.ModelMapper;
@@ -30,14 +27,13 @@ import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
-import org.springframework.mail.MailException;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.thymeleaf.context.Context;
 
 import javax.persistence.EntityManager;
-import java.math.BigDecimal;
 import java.util.*;
 
 @Service
@@ -52,25 +48,18 @@ public class VerificationServiceImpl implements VerificationService {
     private EntityManager entityManager;
     @Autowired
     private MessageSource messageSource;
-
     @Autowired
     private AdminUserRepo adminUserRepo;
-
     @Autowired
     private OperationsUserRepo operationsUserRepo;
-
     @Autowired
     private CorporateService corporateService;
-
     @Autowired
     private CorporateUserService corporateUserService;
-
     @Autowired
     private MailService mailService;
-
     @Autowired
     private ModelMapper modelMapper;
-
     private Locale locale = LocaleContextHolder.getLocale();
 
 
@@ -95,7 +84,7 @@ public class VerificationServiceImpl implements VerificationService {
             verification.setVerifiedOn(new Date());
             verification.setStatus(VerificationStatus.CANCELLED);
             verificationRepo.save(verification);
-            logger.warn(verification.getOperation()+" cancelled by {}",cancelledBy);
+            logger.warn(verification.getOperation() + " cancelled by {}", cancelledBy);
             return messageSource.getMessage("verification.cancel.success", null, locale);
 
         } catch (Exception e) {
@@ -163,12 +152,21 @@ public class VerificationServiceImpl implements VerificationService {
             if ("ADD_CORPORATE".equals(verification.getOperation())) {
                 CorporateRequestDTO requestDTO = mapper.readValue(verification.getOriginalObject(), CorporateRequestDTO.class);
                 corporateService.saveCorporateRequest(requestDTO);
-            } else if ("ADD_AUTHORIZER_FROM_CORPORATE_ADMIN".equals(verification.getOperation())) {
-
+            } else if ("ADD_CORPORATE_ACCOUNT".equals(verification.getOperation())) {
+                CorporateRequestDTO requestDTO = mapper.readValue(verification.getOriginalObject(), CorporateRequestDTO.class);
+                corporateService.addAccounts(requestDTO);
+            } else if ("DELETE_CORPORATE_ACCOUNT".equals(verification.getOperation())) {
+                CorporateRequestDTO requestDTO = mapper.readValue(verification.getOriginalObject(), CorporateRequestDTO.class);
+                corporateService.deleteCorporateAccount(requestDTO);
+            }
+            else if("UPDATE_CORPORATE_ROLE".equals(verification.getOperation())){
+                CorporateRole role = mapper.readValue(verification.getOriginalObject(), CorporateRole.class);
+                corporateService.updateCorporateRole(role);
+            }
+            else if ("ADD_AUTHORIZER_FROM_CORPORATE_ADMIN".equals(verification.getOperation())) {
                 CorporateUserDTO corpUser = mapper.readValue(verification.getOriginalObject(), CorporateUserDTO.class);
                 corporateUserService.addAuthorizer(corpUser);
             } else if ("UPDATE_USER_FROM_CORPORATE_ADMIN".equals(verification.getOperation())) {
-
                 CorporateUserDTO corpUser = mapper.readValue(verification.getOriginalObject(), CorporateUserDTO.class);
                 corporateUserService.updateUserFromCorpAdmin(corpUser);
             } else {
@@ -210,30 +208,43 @@ public class VerificationServiceImpl implements VerificationService {
         ObjectMapper mapper = new ObjectMapper();
         verification.setOriginalObject(mapper.writeValueAsString(object));
 
-
         ObjectMapper prettyMapper = new ObjectMapper();
 
         if (object instanceof PrettySerializer) {
             JsonSerializer<Object> serializer = ((PrettySerializer) (object)).getSerializer();
-
             SimpleModule module = new SimpleModule();
             module.addSerializer(object.getClass(), serializer);
             prettyMapper.registerModule(module);
             logger.debug("Registering Pretty serializer for " + object.getClass().getName());
         }
 
+        if (object instanceof CorporateRequestDTO) {
+            CorporateRequestDTO requestDTO = (CorporateRequestDTO) object;
+            Long id = requestDTO.getId();
+
+            if (id != null) {
+
+//            Corporate originalEntity = entityManager.find(Corporate.class, id);
+
+                Verification pendingVerification = verificationRepo.findFirstByEntityNameAndEntityIdAndStatus(entityName, id, VerificationStatus.PENDING);
+                if (pendingVerification != null) {
+                    // found pending verification
+                    throw new InternetBankingException("Corporate has pending verification");
+                }
+//            verification.setBeforeObject(prettyMapper.writeValueAsString(originalEntity));
+              verification.setEntityId(requestDTO.getId());
+            }
+        }
 
         verification.setAfterObject(prettyMapper.writeValueAsString(object));
         verification.setStatus(VerificationStatus.PENDING);
         verificationRepo.save(verification);
-
         logger.info(entityName + " has been saved for verification");
 
         return description + " has gone for verification";
 
     }
 
-    @Async
     private void notifyInitiator(Verification verification) {
 
         User verifiedBy = getCurrentUser();
@@ -250,19 +261,31 @@ public class VerificationServiceImpl implements VerificationService {
                 break;
         }
         if (initiatedBy != null && initiatedBy.getEmail() != null) {
-                String initiatorName = initiatedBy.getFirstName() + " " + initiatedBy.getLastName();
-                String verifierName = verifiedBy.getFirstName() + " " + verifiedBy.getLastName();
-                Date date = verification.getVerifiedOn();
-                String operation = verification.getDescription();
-                String comment = verification.getComments();
-                String status = verification.getStatus().name();
-                Email email = new Email.Builder()
-                        .setRecipient(initiatedBy.getEmail())
-                        .setSubject(messageSource.getMessage("verification.subject", null, locale))
-                        .setBody(String.format(messageSource.getMessage("verification.message", null, locale), initiatorName, verifierName, operation, status, DateFormatter.format(date), comment))
-                        .build();
-                new Thread(() -> mailService.send(email)).start();
-            }
+            String initiatorName = initiatedBy.getFirstName() + " " + initiatedBy.getLastName();
+            String verifierName = verifiedBy.getFirstName() + " " + verifiedBy.getLastName();
+            Date date = verification.getVerifiedOn();
+            String operation = verification.getDescription();
+            String comments = verification.getComments();
+            String status = verification.getStatus().name();
+
+            Context context = new Context();
+            context.setVariable("fullName", initiatorName);
+            context.setVariable("verifier", verifierName);
+            context.setVariable("operation", operation);
+            context.setVariable("date", date);
+            context.setVariable("comments", comments);
+            context.setVariable("status", status);
+
+
+            Email email = new Email.Builder()
+                    .setRecipient(initiatedBy.getEmail())
+                    .setSubject(messageSource.getMessage("verification.subject", null, locale))
+                    .setTemplate("mail/verification")
+                    .build();
+
+            mailService.sendMail(email, context);
+
+        }
 
     }
 
@@ -389,7 +412,7 @@ public class VerificationServiceImpl implements VerificationService {
         return user.getUserName();
     }
 
-    private User getCurrentUser(){
+    private User getCurrentUser() {
         CustomUserPrincipal principal = (CustomUserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         return principal.getUser();
     }

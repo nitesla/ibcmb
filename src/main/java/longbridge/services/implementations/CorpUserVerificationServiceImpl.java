@@ -25,6 +25,7 @@ import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.Page;
@@ -36,6 +37,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.thymeleaf.context.Context;
 
 import javax.persistence.EntityManager;
 import java.io.IOException;
@@ -86,6 +88,9 @@ public class CorpUserVerificationServiceImpl implements CorpUserVerificationServ
     @Autowired
     private ModelMapper modelMapper;
 
+    @Value("${host.url}")
+    private String hostUrl;
+
     private Locale locale = LocaleContextHolder.getLocale();
 
     @Override
@@ -129,6 +134,9 @@ public class CorpUserVerificationServiceImpl implements CorpUserVerificationServ
     }
     @Transactional
     private void saveInit(CorporateUserDTO userDTO, String operation, String description)throws VerificationException{
+
+
+
         try {
             if (userDTO.getStatus() == null){
                 userDTO.setStatus("A");
@@ -144,11 +152,10 @@ public class CorpUserVerificationServiceImpl implements CorpUserVerificationServ
                 userDTO.setCorporateName(corporate.getName());
             }
 
-            if (userDTO.isAuthorizer()){
-                userDTO.setCorpUserType(CorpUserType.AUTHORIZER);
-            }else {
-                userDTO.setCorpUserType(CorpUserType.INITIATOR);
-            }
+
+
+
+
 
             CorporateUser user = corporateUserService.convertDTOToEntity(userDTO);
 
@@ -165,6 +172,11 @@ public class CorpUserVerificationServiceImpl implements CorpUserVerificationServ
                 }
             }
 
+
+            if(CorpUserType.AUTHORIZER.equals(userDTO.getCorpUserType()) && userDTO.getCorporateRoleId()!=null){
+                saveAuth(userDTO, operation, description);
+            }
+
             CustomUserPrincipal principal = (CustomUserPrincipal) SecurityContextHolder.getContext().getAuthentication()
                     .getPrincipal();
             CorporateUser doneBy = corporateUserRepo.findByUserName(principal.getUsername());
@@ -174,7 +186,7 @@ public class CorpUserVerificationServiceImpl implements CorpUserVerificationServ
             corpUserVerification.setEntityName(entityName);
             corpUserVerification.setInitiatedOn(new Date());
             corpUserVerification.setInitiatedBy(doneBy.getUserName());
-            corpUserVerification.setCorpUserType(CorpUserType.AUTHORIZER);
+//            corpUserVerification.setCorpUserType(CorpUserType.AUTHORIZER);
             corpUserVerification.setCorpId(Long.parseLong(userDTO.getCorporateId()));
             corpUserVerification.setOperation(operation);
             corpUserVerification.setDescription(description);
@@ -262,11 +274,7 @@ public class CorpUserVerificationServiceImpl implements CorpUserVerificationServ
                 userDTO.setCorporateName(corporate.getName());
             }
 
-            if (userDTO.isAuthorizer()){
-                userDTO.setCorpUserType(CorpUserType.AUTHORIZER);
-            }else {
-                userDTO.setCorpUserType(CorpUserType.INITIATOR);
-            }
+
             CorporateUser user = corporateUserService.convertDTOToEntity(userDTO);
 
 
@@ -454,14 +462,26 @@ public class CorpUserVerificationServiceImpl implements CorpUserVerificationServ
                 String verifierName = verifiedBy.getFirstName()+" "+verifiedBy.getLastName();
                 Date date = corpUserVerification.getVerifiedOn();
                 String operation = corpUserVerification.getDescription();
-                String comment = corpUserVerification.getComments();
+                String comments = corpUserVerification.getComments();
                 String status = corpUserVerification.getStatus().name();
-                Email.Builder builder = new Email.Builder();
-                builder.setRecipient(initiatedBy.getEmail());
-                builder.setSubject(messageSource.getMessage("verification.subject", null, locale));
-                builder.setBody(String.format(messageSource.getMessage("verification.message", null, locale), initiatorName, verifierName, operation, status, DateFormatter.format(date), comment));
-                Email email = builder.build();
-                new Thread(() -> mailService.send(email)).start();
+
+
+                Context context = new Context();
+                context.setVariable("fullName",initiatorName);
+                context.setVariable("verifier",verifierName);
+                context.setVariable("operation",operation);
+                context.setVariable("date",date);
+                context.setVariable("comments",comments);
+                context.setVariable("status",status);
+
+
+                Email email = new Email.Builder()
+                        .setRecipient(initiatedBy.getEmail())
+                        .setSubject(messageSource.getMessage("verification.subject", null, locale))
+                        .setTemplate("mail/verification")
+                        .build();
+
+                mailService.sendMail(email,context);
             }
         }
     }
@@ -562,13 +582,12 @@ public class CorpUserVerificationServiceImpl implements CorpUserVerificationServ
             CorporateUser cUser = corporateUserService.convertDTOToEntity(corpUserDTO);
             if("A".equals(cUser.getStatus())){
                 logger.info("Corp user status is A");
-                String fullName = user.getFirstName()+" "+user.getLastName();
                 String password = passwordPolicyService.generatePassword();
                 user.setPassword(passwordEncoder.encode(password));
                 user.setExpiryDate(new Date());
                 passwordPolicyService.saveCorporatePassword(user);
                 corporateUserRepo.save(user);
-                sendPostActivateMessage(cUser, fullName,user.getUserName(),password,user.getCorporate().getCustomerId());
+                sendPostActivateMessage(cUser, password);
             }
             else{
                 corporateUserRepo.save(user);
@@ -622,43 +641,65 @@ public class CorpUserVerificationServiceImpl implements CorpUserVerificationServ
 
                     user.setEntrustId(entrustId);
                     user.setEntrustGroup(group);
-                    Corporate corporate = user.getCorporate();
                     String password = passwordPolicyService.generatePassword();
                     user.setPassword(passwordEncoder.encode(password));
                     user.setExpiryDate(new Date());
                     user.setIsFirstTimeLogon("Y");
                     passwordPolicyService.saveCorporatePassword(user);
                     corporateUserRepo.save(user);
+                    sendCreationCredentials(user,password);
 
 
-                    try {
-                        Email email = new Email.Builder()
-                                .setRecipient(user.getEmail())
-                                .setSubject(messageSource.getMessage("corporate.customer.create.subject", null, locale))
-                                .setBody(String.format(messageSource.getMessage("corporate.customer.create.message", null, locale), fullName, user.getUserName(), password, corporate.getCorporateId()))
-                                .build();
-                        mailService.send(email);
-                    } catch (MailException me) {
-                        logger.error("Failed to send creation mail to {}", user.getEmail(), me);
-                    }
+
                 }
             }
         }
     }
 
+    private void sendCreationCredentials(CorporateUser user, String password) {
+
+        String url = (hostUrl != null) ? hostUrl : "";
+        String fullName = user.getFirstName() + " " + user.getLastName();
+        Corporate corporate = user.getCorporate();
+
+        Context context = new Context();
+        context.setVariable("fullName", fullName);
+        context.setVariable("username", user.getUserName());
+        context.setVariable("password", password);
+        context.setVariable("corporateId", corporate.getCorporateId());
+        context.setVariable("url", url);
+
+
+        Email email = new Email.Builder()
+                .setRecipient(user.getEmail())
+                .setSubject(messageSource.getMessage("corporate.customer.create.subject", null, locale))
+                .setTemplate("mail/corpcreation")
+                .build();
+        mailService.sendMail(email, context);
+    }
 
     @Async
-    public void sendPostActivateMessage(User user, String... args) {
-        try {
-            Email email = new Email.Builder()
-                    .setRecipient(user.getEmail())
-                    .setSubject(messageSource.getMessage("corporate.customer.reactivation.subject", null, locale))
-                    .setBody(String.format(messageSource.getMessage("corporate.customer.reactivation.message", null, locale), args))
-                    .build();
-            mailService.send(email);
-        } catch (MailException me) {
-            logger.error("Failed to send activation mail to {}", user.getEmail(), me);
-        }
+    public void sendPostActivateMessage(CorporateUser user, String password) {
+
+        String url = (hostUrl != null) ? hostUrl : "";
+        String fullName = user.getFirstName() + " " + user.getLastName();
+        Corporate corporate = user.getCorporate();
+
+        Context context = new Context();
+        context.setVariable("fullName", fullName);
+        context.setVariable("username", user.getUserName());
+        context.setVariable("password", password);
+        context.setVariable("corporateId", corporate.getCorporateId());
+        context.setVariable("url", url);
+
+        Email email = new Email.Builder()
+                .setRecipient(user.getEmail())
+                .setSubject(messageSource.getMessage("corporate.customer.activation.subject", null, locale))
+                .setTemplate("mail/corpactivation")
+                .build();
+
+        mailService.sendMail(email, context);
+
     }
 
 }

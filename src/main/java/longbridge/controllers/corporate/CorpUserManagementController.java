@@ -38,8 +38,10 @@ import java.util.Locale;
 @Controller
 @RequestMapping("/corporate/users")
 public class CorpUserManagementController {
+
     @Autowired
     private CorporateUserService corporateUserService;
+
     @Autowired
     private CorporateService corporateService;
 
@@ -50,7 +52,8 @@ public class CorpUserManagementController {
     private MakerCheckerService makerCheckerService;
 
     @Autowired
-    CodeService codeService;
+    private CodeService codeService;
+
     @Autowired
     private RoleService roleService;
 
@@ -60,7 +63,7 @@ public class CorpUserManagementController {
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
-    MessageSource messageSource;
+    private MessageSource messageSource;
 
     @ModelAttribute
     public void init(Model model, Principal principal){
@@ -81,11 +84,9 @@ public class CorpUserManagementController {
         model.addAttribute("corporate", corporate);
 
         List<CorporateRoleDTO> corporateRoleDTO = corporateService.getRoles(corporateUser.getCorporate().getId());
-        logger.info("CORP ROLES >>>> " + corporateRoleDTO);
         model.addAttribute("corporateRoles", corporateRoleDTO);
 
         List<CorpTransferRuleDTO> corpTransferRuleDTO = corporateService.getCorporateRules(corporate.getId());
-        logger.info("CORP TRANSFER RULES >>>> " + corpTransferRuleDTO);
         model.addAttribute("corpTransferRules", corpTransferRuleDTO);
 
     }
@@ -128,8 +129,6 @@ public class CorpUserManagementController {
         CorporateUserDTO corporateUserDTO = new CorporateUserDTO();
         model.addAttribute("corporateUserDTO", corporateUserDTO);
         model.addAttribute("corporate", corporate);
-
-
         return "corp/user/add";
     }
 
@@ -221,7 +220,6 @@ public class CorpUserManagementController {
         }
 
         try {
-            logger.info("GOT HERE {} >>>>> ");
             CorporateUserDTO corporateUser = corporateUserService.getUser(corporateUserDTO.getId());
             if (!corporateUserDTO.getEmail().equals(corporateUser.getEmail())) {
                 Corporate corporate = corporateService.getCorp(Long.parseLong(corporateUserDTO.getCorporateId()));
@@ -241,22 +239,23 @@ public class CorpUserManagementController {
                 corporateUserDTO.setCorporateRole(corporateRole.getName() + " " + corporateRole.getRank());
             }
 
-            if (corporateUserDTO.isAuthorizer() == corporateUser.isAuthorizer() && corporateUserDTO.getCorporateRoleId().equals(corporateUser.getCorporateRoleId())){
+            if ( CorpUserType.AUTHORIZER.equals(corporateUser.getCorpUserType())){
 
-                logger.info("GOT HERE {} ", corporateUserDTO.getCorporateRoleId());
                 if (makerCheckerService.isEnabled("UPDATE_USER_FROM_CORPORATE_ADMIN")){
-                    corpUserVerificationService.saveInitiator(corporateUserDTO, "UPDATE_USER_FROM_CORPORATE_ADMIN", "Edit an initiator by corporate Admin");
+                    corpUserVerificationService.saveAuthorizer(corporateUserDTO, "UPDATE_USER_FROM_CORPORATE_ADMIN", "Edit an authorizer by corporate Admin");
                 }else {
-                    corporateUserService.updateUserFromCorpAdmin(corporateUserDTO);
+                    String message =  corporateUserService.updateUserFromCorpAdmin(corporateUserDTO);
+                    redirectAttributes.addFlashAttribute("message", message);
+
                 }
 
             }else{
 
-                logger.info("GOT HERE {} ---- ");
                 if (makerCheckerService.isEnabled("UPDATE_USER_FROM_CORPORATE_ADMIN")){
-                    corpUserVerificationService.saveAuthorizer(corporateUserDTO, "UPDATE_USER_FROM_CORPORATE_ADMIN", "Edit an authorizer by corporate Admin");
+                    corpUserVerificationService.saveInitiator(corporateUserDTO, "UPDATE_USER_FROM_CORPORATE_ADMIN", "Edit an initiator by corporate Admin");
                 }else {
-                    corporateUserService.updateUserFromCorpAdmin(corporateUserDTO);
+                    String message = corporateUserService.updateUserFromCorpAdmin(corporateUserDTO);
+                    redirectAttributes.addFlashAttribute("message", message);
                 }
             }
 
@@ -277,7 +276,7 @@ public class CorpUserManagementController {
             return "corp/user/edit";
         }catch (InternetBankingException ibe) {
             result.addError(new ObjectError("error", ibe.getMessage()));
-            logger.error("Error creating corporate user", ibe);
+            logger.error("Error updating corporate user", ibe);
             model.addAttribute("failure", ibe.getMessage());
             return "corp/user/edit";
         }

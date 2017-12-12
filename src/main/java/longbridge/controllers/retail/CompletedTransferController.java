@@ -5,6 +5,7 @@ import longbridge.models.TransRequest;
 import longbridge.services.RetailUserService;
 import longbridge.services.TransferService;
 import longbridge.utils.DateFormatter;
+import longbridge.utils.StringUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,8 +58,6 @@ public class CompletedTransferController {
     private String jrxmlPath;
     @Value("${savedDocFile.path}")
     private String savedDoc;
-    @Value("${excel.path}")
-    String PROPERTY_EXCEL_SOURCE_FILE_PATH;
 
     @GetMapping("/history")
     public String completedTransfers(){
@@ -93,7 +92,7 @@ public class CompletedTransferController {
 
             TransRequest transRequest = transferService.getTransfer(id);
 
-            logger.info("Trans Request {}", transRequest);
+//            logger.info("Trans Request {}", transRequest);
             JasperReportsPdfView view = new JasperReportsPdfView();
             view.setUrl("classpath:jasperreports/rpt_tran-hist.jrxml");
             view.setApplicationContext(appContext);
@@ -105,7 +104,7 @@ public class CompletedTransferController {
             modelMap.put("imagePath", imagePath);
             modelMap.put("amount", formatter.format(amount));
             modelMap.put("customer",retailUser.getFirstName()+" "+retailUser.getLastName() );
-            modelMap.put("customerAcctNumber", transRequest.getCustomerAccountNumber());
+            modelMap.put("customerAcctNumber", StringUtil.maskAccountNumber(transRequest.getCustomerAccountNumber()));
             if(transRequest.getRemarks() != null) {
                 modelMap.put("remarks", transRequest.getRemarks());
             }else{

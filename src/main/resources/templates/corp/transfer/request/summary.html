@@ -42,7 +42,7 @@
                 <tr>
 
                     <th>Amount</th>
-                    <td th:text="${corpTransRequest.amount}"></td>
+                    <td th:text="${#numbers.formatDecimal(corpTransRequest.amount, 1, 'COMMA', 2, 'POINT')}"></td>
 
                 </tr>
 
@@ -55,14 +55,14 @@
             <table class="table-condensed">
                 <tr>
                     <th>Lower Amount:</th>
-                    <td th:text="${corpTransRule.currency+''+corpTransRule.lowerLimitAmount}"></td>
+                    <td th:text="${corpTransRule.currency+''+#numbers.formatDecimal(corpTransRule.lowerLimitAmount, 1, 'COMMA', 2, 'POINT')}"></td>
 
                 </tr>
                 <tr>
 
                     <th>Upper Amount:</th>
                     <td th:unless="${corpTransRule.unlimited}"
-                        th:text="${corpTransRule.currency+''+corpTransRule.upperLimitAmount}"></td>
+                        th:text="${corpTransRule.currency+''+#numbers.formatDecimal(corpTransRule.upperLimitAmount, 1, 'COMMA', 2, 'POINT')}"></td>
                     <td th:if="${corpTransRule.unlimited}">Unlimited</td>
 
                 </tr>

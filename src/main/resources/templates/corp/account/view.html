@@ -323,7 +323,7 @@
                         "tranType": $('[name=tranType]').val()
                     };
                     console.log("data " + data);
-                    $.download("downloadstatement", "data", data);
+                    $.download("/corporate/account/downloadstatement", "data", data);
                     hideSpinner();
 
                 });
@@ -358,7 +358,7 @@
                 //    console.log("field value "+valu);
                 showSpinner();
                 $.ajax({
-                    "url": "viewstatement/corp/display/data/next",
+                    "url": "/corporate/account/viewstatement/corp/display/data/next",
                     "type": "GET",
                     "data": {
                         acctNumber: $('[name=acctNumber]').val(),
@@ -413,7 +413,7 @@
                 //    console.log("field value "+valu);
                 showSpinner();
                 $.ajax({
-                    "url": "viewstatement/corp/display/data/back",
+                    "url": "/corporate/account/viewstatement/corp/display/data/back",
                     "type": "GET",
                     "data": {
                         state: "backward"

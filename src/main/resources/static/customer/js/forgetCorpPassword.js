@@ -140,7 +140,7 @@ function sendGenPassword() {
             result = ''+String(data1);
             if(result == "true"){
                  $('#myLoader').modal('hide');
-                $('#successMess').text("A temporary password has been sent to your email address.");
+                $('#successMess').text("A reset code has been sent to your email address.");
                 $('#myModalSuccess').modal('show');
             }else{
                 //invalid account number

@@ -74,7 +74,6 @@ public class AdminUserAdvisor {
     @After("isVerification() && isMerging() && isVerify() && args(user)")
     public void postAdminUserCreation(JoinPoint p, AdminUser user) {
 
-        logger.info("Executing post ADD_ADMIN_USER operation");
          adminUserService.createUserOnEntrustAndSendCredentials(user);
 
     }
@@ -94,22 +93,16 @@ public class AdminUserAdvisor {
             ObjectMapper objectMapper = new ObjectMapper();
             AdminUser adminUser = objectMapper.readValue(verification.getOriginalObject(),AdminUser.class);
             if("A".equals(adminUser.getStatus())){
-                String fullName = user.getFirstName()+" "+user.getLastName();
                 String password = passwordPolicyService.generatePassword();
                 user.setPassword(passwordEncoder.encode(password));
                 user.setExpiryDate(new Date());
                 passwordPolicyService.saveAdminPassword(user);
                 adminUserRepo.save(user);
-                logger.info("Admin user {} status changed to {}",adminUser.getUserName(),adminUser.getStatus());
-                adminUserService.sendActivationMessage(adminUser, fullName,user.getUserName(),password);
+                logger.info("Admin user {} status changed to {}",user.getUserName(),adminUser.getStatus());
+                adminUserService.sendActivationCredentials(adminUser, password);
+
             }
     	}
-
-
-    	//general user creation
-
-
-    	//activation
 
 
     }

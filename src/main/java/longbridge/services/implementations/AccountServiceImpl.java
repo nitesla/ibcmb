@@ -257,6 +257,11 @@ public class AccountServiceImpl implements AccountService {
 
     }
 
+    @Override
+    public void deleteAccount(Long id) {
+            accountRepo.delete(id);
+    }
+
 
     @Override
     public List<AccountInfo> getTransactionalAccounts(List<AccountInfo> accounts) {
@@ -362,7 +367,7 @@ public class AccountServiceImpl implements AccountService {
                     i -> org.apache.commons.lang3.ArrayUtils.contains(list, i.getAccountType())
             );
         }
-                accounts.filter(i -> !accountConfigService.isAccountHidden(i.getAccountNumber()))
+        accounts.filter(i -> !accountConfigService.isAccountHidden(i.getAccountNumber()))
                 .filter(i -> !accountConfigService.isAccountRestrictedForView(i.getAccountNumber()))
                 .filter(i -> !accountConfigService.isAccountRestrictedForDebit(i.getAccountNumber()))
                 .filter(i -> !accountConfigService.isAccountRestrictedForCredit(i.getAccountNumber()))
@@ -377,7 +382,6 @@ public class AccountServiceImpl implements AccountService {
 
         return accountsForDebitAndCredit;
     }
-
     @Override
     public List<AccountDTO> getAccountsAndBalances(String customerId) {
 
