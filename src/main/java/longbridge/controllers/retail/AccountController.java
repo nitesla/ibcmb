@@ -496,15 +496,7 @@ public class AccountController {
 		model.addAttribute("acctNum",null);
 		return "cust/account/view";
 	}
-	@GetMapping("/viewstatement/{id}")
-	public String getViewOnlyById(@PathVariable Long id,Model model, Principal principal) throws ParseException {
-		RetailUser user = retailUserService.getUserByName(principal.getName());
-		Iterable<AccountDTO> accounts = accountService.getAccountsForDebitAndCredit(user.getCustomerId());
-		AccountDTO accountDTO = accountService.getAccount(id);
-		model.addAttribute("acctNum",accountDTO.getAccountNumber());
-		model.addAttribute("accounts",accounts);
-		return "cust/account/view";
-	}
+	
 
 	@GetMapping("/{acct}/viewonlyhistory")
 	public String getViewOnlyHist(@PathVariable String acct, Model model, Principal principal) throws ParseException {
