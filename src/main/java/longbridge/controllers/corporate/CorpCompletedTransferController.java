@@ -77,7 +77,7 @@ public class CorpCompletedTransferController {
 
         Page<CorpTransRequest> transferRequests = corpTransferService.getCompletedTransfers(pageable);
 //        if (StringUtils.isNoneBlank(search)) {
-//            transferRequests = transferService.findCompletedTransfers(search, pageable);
+//            transferRequests = transferService.getCompletedTransfers(search, pageable);
 //        }else{
 //            transferRequests = transferService.getCompletedTransfers(pageable);
 //        }

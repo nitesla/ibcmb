@@ -72,7 +72,7 @@ public class CompletedTransferController {
 
         Page<TransRequest> transferRequests = transferService.getCompletedTransfers(pageable);
 //        if (StringUtils.isNoneBlank(search)) {
-//            transferRequests = transferService.findCompletedTransfers(search, pageable);
+//            transferRequests = transferService.getCompletedTransfers(search, pageable);
 //        }else{
 //            transferRequests = transferService.getCompletedTransfers(pageable);
 //        }

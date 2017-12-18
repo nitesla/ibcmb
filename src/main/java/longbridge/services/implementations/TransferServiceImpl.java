@@ -178,7 +178,7 @@ public class TransferServiceImpl implements TransferService {
     }
 
     @Override
-    public Page<TransferRequestDTO> findCompletedTransfers(String pattern, Pageable pageDetails) {
+    public Page<TransferRequestDTO> getCompletedTransfers(String pattern, Pageable pageDetails) {
         logger.info("Retrieving completed transfers");
         Page<TransRequest> page = transferRequestRepo.findUsingPattern(pattern, pageDetails);
         List<TransferRequestDTO> dtOs = convertEntitiesToDTOs(page.getContent());
