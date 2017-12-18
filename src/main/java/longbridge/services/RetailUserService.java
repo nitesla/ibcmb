@@ -1,6 +1,8 @@
 package longbridge.services;
 
 import longbridge.api.CustomerDetails;
+import longbridge.api.omnichannel.dto.CustomerInfo;
+import longbridge.api.omnichannel.dto.RetailUserCredentials;
 import longbridge.dtos.AccountDTO;
 import longbridge.dtos.RetailUserDTO;
 import longbridge.exception.InternetBankingException;
@@ -153,5 +155,6 @@ public interface RetailUserService {
     void increaseNoOfTokenAttempt(RetailUser user);
     void resetNoOfTokenAttempt(RetailUser user);
     String validateAccount();
-    
+
+    CustomerInfo getCustomerInfo(RetailUserCredentials userCredentials);
 }

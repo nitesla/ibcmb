@@ -4,6 +4,8 @@ package longbridge.services.implementations;
 
 import longbridge.api.AccountInfo;
 import longbridge.api.CustomerDetails;
+import longbridge.api.omnichannel.dto.CustomerInfo;
+import longbridge.api.omnichannel.dto.RetailUserCredentials;
 import longbridge.dtos.AccountDTO;
 import longbridge.dtos.RetailUserDTO;
 import longbridge.dtos.SettingDTO;
@@ -637,4 +639,35 @@ public class RetailUserServiceImpl implements RetailUserService {
     }
 
 
+
+    @Override
+    public CustomerInfo getCustomerInfo(RetailUserCredentials userCredentials){
+
+        if(userCredentials.getUsername()==null||userCredentials.getPassword()==null){
+            logger.error("Missing credential {}",userCredentials);
+            throw new InternetBankingException("Username or password not provided");
+        }
+
+        CustomerInfo customerInfo;
+        RetailUser retailUser = retailUserRepo.findFirstByUserName(userCredentials.getUsername());
+
+        if(retailUser!=null){
+            String hashedPassword = retailUser.getPassword();
+            if(passwordEncoder.matches(userCredentials.getPassword(),hashedPassword)){
+                customerInfo = new CustomerInfo();
+                customerInfo.setCustomerName(retailUser.getFirstName()+" "+retailUser.getLastName());
+                customerInfo.setPhoneNumber(retailUser.getPhoneNumber());
+                customerInfo.setEmailAddress(retailUser.getEmail());
+                return customerInfo;
+            }else {
+                logger.debug("Omni-channel: Incorrect password provided for username {}",retailUser.getUserName());
+               throw new WrongPasswordException();
+            }
+        }
+        else {
+            logger.debug("Omni-channel: Retail user not found with username {}",userCredentials.getUsername());
+            throw new UserNotFoundException();
+        }
+
+    }
 }

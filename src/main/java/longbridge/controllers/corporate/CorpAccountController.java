@@ -96,7 +96,7 @@ public class CorpAccountController {
         //fetch account details from Account Service
         AccountDTO accountDTO = accountService.getAccount(id);
         AccountDetails account = integrationService.viewAccountDetails(accountDTO.getAccountNumber());
-s
+
         if (account == null) {
             return "redirect:/corporate/account";
         }
