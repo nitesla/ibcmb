@@ -5,7 +5,7 @@
     <groupId>longbridge</groupId>
     <artifactId>ROOT</artifactId>
     <!--<version></version>-->
-    <packaging>war</packaging>
+    <packaging>jar</packaging>
     <name>ROOT</name>
     <description>internet banking application</description>
     <parent>
@@ -372,6 +372,15 @@
             <scope>compile</scope>
 
         </dependency>
+        <dependency>
+            <groupId>com.github.tomakehurst</groupId>
+            <artifactId>wiremock-standalone</artifactId>
+            <version>2.12.0</version>
+        </dependency>
+
+
+
+
     </dependencies>
 
     <build>
@@ -416,6 +425,5 @@
                 </executions>
             </plugin>
         </plugins>
-
     </build>
 </project>
