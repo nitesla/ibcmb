@@ -290,12 +290,7 @@ public class CorpAccountController {
         return "corp/account/view";
     }
 
-    @GetMapping("/viewstatement/{id}")
-    public String getViewOnlyById(@PathVariable Long id,Model model) throws ParseException {
-        AccountDTO accountDTO = accountService.getAccount(id);
-        model.addAttribute("acctNum",accountDTO.getAccountNumber());
-        return "corp/account/view";
-    }
+
     @GetMapping("/viewstatement/{id}")
     public String getViewOnlyById(@PathVariable Long id, Model model, Principal principal) throws ParseException {
         AccountDTO accountDTO = accountService.getAccount(id);
