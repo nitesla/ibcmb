@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="customerpatternbehaviour" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="33887d84-92f6-49b0-ae5f-2a3f390d35f4">
+	<property name="ireport.zoom" value="1.5"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="logo" class="java.io.InputStream"/>
+	<parameter name="username" class="java.lang.String"/>
+	<parameter name="fullname" class="java.lang.String"/>
+	<parameter name="preferredTransactionTypes" class="java.lang.String"/>
+	<parameter name="preferredTransferPlatform" class="java.lang.String"/>
+	<parameter name="transactionAmount" class="java.lang.String"/>
+	<parameter name="preferredTransferType" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="119" splitType="Stretch">
+			<textField pattern="dd MMMMM yyyy">
+				<reportElement x="0" y="0" width="100" height="20" uuid="efbc6ad7-f196-45e7-a3a7-1b80b9979b12"/>
+				<textElement>
+					<font fontName="Fedra Sans"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="403" y="0" width="152" height="67" uuid="3a07b9ca-f566-4124-b838-ad1b9235364c"/>
+				<textFieldExpression><![CDATA[""+$P{logo}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="99" width="287" height="20" forecolor="#003057" uuid="06fc2e7d-7c77-40ec-b47e-942fda00ded6"/>
+				<textElement>
+					<font fontName="Fedra Sans" size="18"/>
+				</textElement>
+				<text><![CDATA[Customer Pattern and Behaviour Report]]></text>
+			</staticText>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="37" splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band height="20" splitType="Stretch">
+			<rectangle>
+				<reportElement x="0" y="0" width="70" height="20" backcolor="#003057" uuid="bd02a19e-38a5-4bb8-b85c-aac508c792d0"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="69" y="0" width="88" height="20" backcolor="#003057" uuid="a3631136-9f4c-468e-b9ac-1a706bf37f11"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="249" y="0" width="83" height="20" backcolor="#003057" uuid="29d7ec2f-3727-422e-aa14-a4126dade244"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="417" y="0" width="72" height="20" backcolor="#003057" uuid="a9d5c96a-7c37-499c-a1e2-65ebbbb36ab1"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="332" y="0" width="85" height="20" backcolor="#003057" uuid="d19ca913-4f3e-4574-a08a-f5b4f59cab29"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="489" y="0" width="66" height="20" backcolor="#003057" uuid="6b4ef968-c87f-42b6-8310-f59ac3b78eae"/>
+			</rectangle>
+			<staticText>
+				<reportElement x="3" y="0" width="67" height="20" forecolor="#FFFFFF" uuid="3116489f-4edb-49fa-8baf-4e1c16e53583"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Fedra Sans" size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Username]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="72" y="0" width="85" height="20" forecolor="#FFFFFF" uuid="fa09ac76-21ca-4cfa-90a8-b455dd6942ea"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Fedra Sans" size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[full Name]]></text>
+			</staticText>
+			<rectangle>
+				<reportElement x="157" y="0" width="92" height="20" backcolor="#003057" uuid="13df3cd6-86c4-4d66-8b2b-e81ae7324abb"/>
+			</rectangle>
+			<staticText>
+				<reportElement x="160" y="0" width="89" height="20" forecolor="#FFFFFF" uuid="a3b84156-fdbf-4f4f-a87f-7aef48e2e5a2"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Fedra Sans" size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Pref.Transac.Type]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="252" y="0" width="80" height="20" forecolor="#FFFFFF" uuid="bac63032-0ad8-4301-a04c-d89d5f199245"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Fedra Sans" size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Pref.Transf.Type]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="335" y="0" width="82" height="20" forecolor="#FFFFFF" uuid="ce525170-e2d6-4394-a1d9-e6ecb0d87814"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Fedra Sans" size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Pref.Trans.Platf]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="420" y="0" width="69" height="20" forecolor="#FFFFFF" uuid="9992b7e6-ecb6-45e2-a376-58926f2e82b9"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Fedra Sans" size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Transac.Amount]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="492" y="0" width="63" height="20" forecolor="#FFFFFF" uuid="1511764b-66f4-4bba-b8ad-19fdf8fe8733"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Fedra Sans" size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Transac.Account]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="20" splitType="Stretch">
+			<rectangle>
+				<reportElement x="0" y="0" width="69" height="20" uuid="eceaffdd-8465-4bdc-8e02-6096a96a1d18"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="69" y="0" width="88" height="20" uuid="61daf81e-bc60-49e9-90c8-638c1a32076f"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="157" y="0" width="92" height="20" uuid="fd6fa410-8d22-4c50-907a-f6df097fd01a"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="249" y="0" width="83" height="20" uuid="12d4150a-c658-433a-872e-c150cb844c0d"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="332" y="0" width="85" height="20" uuid="137e393c-6618-4b8b-bec8-20814657e33e"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="417" y="0" width="72" height="20" uuid="9d08f07f-ac83-4da9-9c01-5671781b9438"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="489" y="0" width="66" height="20" uuid="d3f178c5-28d6-4a0c-a3dd-8739c46a2aab"/>
+			</rectangle>
+			<textField>
+				<reportElement x="3" y="0" width="66" height="20" uuid="edfe10df-9477-4be7-bf9f-89e94afc1153"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Fedra Sans" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{username}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="72" y="0" width="85" height="20" uuid="224d0b67-0cef-4d53-80cd-f251d7ebe35c"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Fedra Sans" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{fullname}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="335" y="0" width="82" height="20" uuid="6b4b049e-f27b-4d66-b4b1-950174ed023d"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Fedra Sans" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{preferredTransferPlatform}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="420" y="0" width="69" height="20" uuid="bf43a91d-69e4-4fb1-bc06-64070cfccf29"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Fedra Sans" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{transactionAmount}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="492" y="0" width="63" height="20" uuid="3de7093e-0738-4da8-861d-ed2aa67ab803"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Fedra Sans" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{transactionAmount}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="160" y="0" width="89" height="20" uuid="cd72c02f-7674-4c43-9a60-55418b84dd82"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Fedra Sans" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{preferredTransactionTypes}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="252" y="0" width="80" height="20" uuid="0a921e62-11dd-4910-bd8b-398e7cc12ffd"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Fedra Sans" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{preferredTransferType}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="11" splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="20" splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band height="21" splitType="Stretch"/>
+	</summary>
+</jasperReport>

@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="RegisteredUser" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="9168c3b6-9225-407b-97ad-aee634bb2dfc">
+	<property name="ireport.zoom" value="2.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="50"/>
+	<parameter name="logo" class="java.io.InputStream"/>
+	<parameter name="user.cifId" class="java.lang.String"/>
+	<parameter name="user.username" class="java.lang.String"/>
+	<parameter name="user.fullName" class="java.lang.String"/>
+	<parameter name="user.email" class="java.lang.String"/>
+	<parameter name="user.createdOnDate" class="java.lang.String"/>
+	<parameter name="user.status" class="java.lang.String"/>
+	<parameter name="user.userName" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="135" splitType="Stretch">
+			<staticText>
+				<reportElement x="0" y="98" width="261" height="20" forecolor="#003057" uuid="7587d5e1-9939-49b2-bbc3-376cc876f596"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Fedra Sans" size="18"/>
+				</textElement>
+				<text><![CDATA[Registered Retail User  Report]]></text>
+			</staticText>
+			<textField pattern="dd MMMMM yyyy">
+				<reportElement x="0" y="0" width="100" height="14" uuid="5b9fd3c6-8e9e-48b0-b5fb-53269478746b"/>
+				<textElement>
+					<font fontName="Fedra Sans"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="430" y="0" width="125" height="71" uuid="a3e69b37-fdec-40fd-bb7a-f15249145854"/>
+				<textFieldExpression><![CDATA[""+$P{logo}]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="21" splitType="Stretch">
+			<rectangle>
+				<reportElement x="0" y="0" width="74" height="21" backcolor="#003057" uuid="1d1f2890-194f-4012-bbfc-39e611be2aba"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="74" y="0" width="88" height="21" backcolor="#003057" uuid="9ee972a4-1bd1-401e-adbf-82d4052b6506"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="162" y="0" width="118" height="21" backcolor="#003057" uuid="2db4fdbf-175c-455f-9eb6-609af1fe7e0e"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="462" y="0" width="93" height="21" backcolor="#003057" uuid="c3b37a46-7a5c-464b-9a71-8320f2ba3a07"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="280" y="0" width="100" height="21" backcolor="#003057" uuid="a53990db-45f3-403d-b7b4-cc984e57150f"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="380" y="0" width="82" height="21" backcolor="#003057" uuid="874f1bb3-d194-44c7-b637-c41ac82c00da"/>
+			</rectangle>
+			<staticText>
+				<reportElement x="165" y="1" width="115" height="20" forecolor="#FFFFFF" uuid="c77e9128-e6b1-4729-aa8c-91dc35d80729"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Fedra Sans" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Full Name]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="283" y="1" width="97" height="20" forecolor="#FFFFFF" uuid="3a60b327-441b-420a-b70c-25da2e749a62"/>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Email Address]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="383" y="1" width="79" height="20" forecolor="#FFFFFF" uuid="56a7b8fa-7012-4659-84af-297ddbeea9a9"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Fedra Sans" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Date Registd]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="465" y="1" width="90" height="20" forecolor="#FFFFFF" uuid="8a686499-5b7d-472e-9502-893f73e6f316"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Fedra Sans" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Token Actvn Stat]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="3" y="1" width="71" height="20" forecolor="#FFFFFF" uuid="fc79f93d-f944-4cee-a28b-0ba065c58038"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Fedra Sans" isBold="true"/>
+				</textElement>
+				<text><![CDATA[CifId]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="77" y="1" width="85" height="20" forecolor="#FFFFFF" uuid="64434626-c90e-42aa-9e37-60ab5eb79804"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Fedra Sans" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Username]]></text>
+			</staticText>
+		</band>
+	</pageHeader>
+	<detail>
+		<band height="20" splitType="Stretch">
+			<rectangle>
+				<reportElement x="0" y="0" width="74" height="20" uuid="fbc46a30-3860-4e2b-a385-85871e23bae5"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="74" y="0" width="88" height="20" uuid="f6b49e9b-5ec9-48ea-8b3d-cf81d0acaa52"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="162" y="0" width="118" height="20" uuid="1ac52723-91e6-491b-a5d1-5e5be78c8fd6"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="280" y="0" width="100" height="20" uuid="c4ed3ae5-145d-4310-9a06-427fe6c80d9a"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="380" y="0" width="82" height="20" uuid="82ab87e5-0d21-4e4e-ba50-bbad3f28ab6f"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="462" y="0" width="93" height="20" uuid="82cc7233-fa08-4d47-9eed-cb922b8a0de2"/>
+			</rectangle>
+			<textField>
+				<reportElement x="3" y="0" width="71" height="20" uuid="682783f9-8ec8-4d96-b1f8-e7ad8c5d499f"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Fedra Sans" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{user.cifId}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="165" y="0" width="115" height="20" uuid="b6086336-2258-4e5c-ba61-abb9745f6459"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Fedra Sans" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{user.fullName}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="283" y="0" width="97" height="20" uuid="86ceac15-4db0-47fb-a2d7-db6fcce1ab07"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Fedra Sans" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{user.email}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="383" y="0" width="79" height="20" uuid="6667e8e7-3378-44d2-adcb-3b136d401eb0"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Fedra Sans" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{user.createdOnDate}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="465" y="0" width="90" height="20" uuid="4f806578-b2e5-401f-8ba8-18b8e220bcb3"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Fedra Sans" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{user.status}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="77" y="0" width="85" height="20" uuid="104bd475-72f7-425b-bbf2-fb1f3ebc9c8a"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Fedra Sans" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{user.userName}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<summary>
+		<band height="42" splitType="Stretch"/>
+	</summary>
+</jasperReport>
