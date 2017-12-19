@@ -1,0 +1,220 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="AdminUserAuditTrail" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="41121124-aefa-4d68-8367-c5501d3389d7">
+	<property name="ireport.zoom" value="1.5"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="logo" class="java.io.InputStream"/>
+	<parameter name="initiator" class="java.lang.String"/>
+	<parameter name="verifier" class="java.lang.String"/>
+	<parameter name="ipAddress" class="java.lang.String"/>
+	<parameter name="lastLogonTime" class="java.lang.String"/>
+	<parameter name="operation" class="java.lang.String"/>
+	<parameter name="operationDescription" class="java.lang.String"/>
+	<parameter name="userAgent" class="java.lang.String"/>
+	<parameter name="sessionId" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="125" splitType="Stretch">
+			<textField pattern="dd MMMMM yyyy">
+				<reportElement x="0" y="0" width="100" height="13" uuid="9eeee3d8-02e8-4b03-9be9-444d8bb9d279"/>
+				<textElement>
+					<font fontName="Fedra Sans"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="415" y="0" width="140" height="72" uuid="53031021-5acb-411b-aeb2-e8a43ced01b7"/>
+				<textFieldExpression><![CDATA[""+$P{logo}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="99" width="205" height="26" forecolor="#003057" uuid="5e875abe-b049-454e-ac47-026062081621"/>
+				<textElement>
+					<font size="18"/>
+				</textElement>
+				<text><![CDATA[Admin User Audit Trail]]></text>
+			</staticText>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="35" splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band height="20" splitType="Stretch">
+			<rectangle>
+				<reportElement x="0" y="0" width="68" height="20" backcolor="#003057" uuid="37e486ea-9724-441e-b82a-d7aece93e377"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="68" y="0" width="65" height="20" backcolor="#003057" uuid="60f9e263-36b2-4724-9a51-b4151e554298"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="133" y="0" width="63" height="20" backcolor="#003057" uuid="daefc13b-1e76-4fb9-ba69-4d3dcd273171"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="196" y="0" width="91" height="20" backcolor="#003057" uuid="fc38657c-04a4-4a60-ade6-933025037153"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="287" y="0" width="58" height="20" backcolor="#003057" uuid="09996503-3f63-4d5a-bd3f-890598bde0ad"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="345" y="0" width="88" height="20" backcolor="#003057" uuid="faf3c18d-aed9-4339-9a0e-c07533b38cec"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="433" y="0" width="65" height="20" backcolor="#003057" uuid="3375bf70-7e76-47c5-8db4-c103d9863b8e"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="498" y="0" width="57" height="20" backcolor="#003057" uuid="4749ca97-42e3-4f7c-9185-b7c64f7e8e79"/>
+			</rectangle>
+			<staticText>
+				<reportElement x="3" y="0" width="65" height="20" forecolor="#FFFFFF" uuid="553cf632-29b5-4088-93c7-aa5b1d913ec4"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Fedra Sans" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Initiator]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="71" y="0" width="62" height="20" forecolor="#FFFFFF" uuid="f26ca106-90dc-47d1-8801-94a88e4f9441"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Fedra Sans" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Verifier]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="136" y="0" width="60" height="20" forecolor="#FFFFFF" uuid="d40558e1-e56a-497b-ab33-b1a179b3d06a"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Fedra Sans" isBold="true"/>
+				</textElement>
+				<text><![CDATA[IP Address]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="199" y="0" width="88" height="20" forecolor="#FFFFFF" uuid="57d9b038-534d-4e55-8318-660d89f864d9"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Fedra Sans" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Last Logon Time]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="290" y="0" width="55" height="20" forecolor="#FFFFFF" uuid="6365e5cc-5f12-4931-b6bb-f3dba916561c"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Fedra Sans" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Operation]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="348" y="0" width="85" height="20" forecolor="#FFFFFF" uuid="74724748-d475-4b5b-aef4-5d8bb41c2cef"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Fedra Sans" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Operation Desc]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="436" y="0" width="62" height="20" forecolor="#FFFFFF" uuid="8dd4c04c-e78b-447a-a7a0-16db547e5c8f"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Fedra Sans" isBold="true"/>
+				</textElement>
+				<text><![CDATA[User Agent]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="500" y="0" width="55" height="20" forecolor="#FFFFFF" uuid="099f1c37-801f-4fbf-8ceb-7c23288d12d1"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Fedra Sans" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Session ID]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="20" splitType="Stretch">
+			<rectangle>
+				<reportElement x="0" y="0" width="68" height="20" uuid="875787b5-e546-42e0-9d9c-9db1bf319b96"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="68" y="0" width="65" height="20" uuid="01c3ab3e-da5c-4f86-99f1-de483bcec86a"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="133" y="0" width="63" height="20" uuid="0cea1310-f44f-4fdb-b3b6-41986a335308"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="196" y="0" width="91" height="20" uuid="d48bec4a-2f1e-475b-953b-33d221bc02a2"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="287" y="0" width="58" height="20" uuid="b2fa0f27-66b0-419d-99f5-141c9814e38a"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="345" y="0" width="88" height="20" uuid="6d8d4369-5f43-45a4-a5f9-5ebf5a169f58"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="433" y="0" width="65" height="20" uuid="6ef819d2-d322-4288-8517-4ccb5b33b2c7"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="498" y="0" width="57" height="20" uuid="65123626-97ab-42d8-8c84-1125610a64e5"/>
+			</rectangle>
+			<textField>
+				<reportElement x="3" y="0" width="65" height="20" uuid="05f86c0c-edfa-4a02-9628-9d29a90b1b76"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Fedra Sans" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{initiator}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="71" y="0" width="62" height="20" uuid="1404af26-0f30-4b7f-9a29-b157a10bda19"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Fedra Sans" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{verifier}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="136" y="0" width="60" height="20" uuid="93e0665f-da35-43e0-9a8c-9522c4583d51"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Fedra Sans" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{ipAddress}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="199" y="0" width="88" height="20" uuid="cd39e991-866c-43ea-90f5-69bcaa30e0f6"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Fedra Sans" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{lastLogonTime}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="290" y="0" width="55" height="20" uuid="2e7f5984-0b80-4299-8471-0454d40939d8"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Fedra Sans" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{lastLogonTime}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="348" y="0" width="85" height="20" uuid="99115bc3-c92e-4d49-95e8-228e93e311e0"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Fedra Sans" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{operationDescription}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="436" y="0" width="62" height="20" uuid="17ff9149-ff06-4383-952a-df488de2ece8"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Fedra Sans" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{userAgent}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="500" y="0" width="55" height="20" uuid="afecce98-e492-442b-8522-4d4eb11d1c18"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Fedra Sans" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{sessionId}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="45" splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="54" splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band height="42" splitType="Stretch"/>
+	</summary>
+</jasperReport>
