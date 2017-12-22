@@ -14,7 +14,7 @@
           </elementProp>
           <elementProp name="port" elementType="Argument">
             <stringProp name="Argument.name">port</stringProp>
-            <stringProp name="Argument.value">9000</stringProp>
+            <stringProp name="Argument.value">8085</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
         </collectionProp>
@@ -973,6 +973,71 @@
             </collectionProp>
           </ModuleController>
           <hashTree/>
+          <Arguments guiclass="ArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
+            <collectionProp name="Arguments.arguments">
+              <elementProp name="tranType" elementType="Argument">
+                <stringProp name="Argument.name">tranType</stringProp>
+                <stringProp name="Argument.value">nip</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+              </elementProp>
+              <elementProp name="beneficiaryId" elementType="Argument">
+                <stringProp name="Argument.name">beneficiaryId</stringProp>
+                <stringProp name="Argument.value">221930</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+              </elementProp>
+              <elementProp name="account" elementType="Argument">
+                <stringProp name="Argument.name">account</stringProp>
+                <stringProp name="Argument.value">1990008109</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+              </elementProp>
+              <elementProp name="token" elementType="Argument">
+                <stringProp name="Argument.name">token</stringProp>
+                <stringProp name="Argument.value">90</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+              </elementProp>
+            </collectionProp>
+          </Arguments>
+          <hashTree/>
+          <Arguments guiclass="ArgumentsPanel" testclass="Arguments" testname="Summary Variables" enabled="true">
+            <collectionProp name="Arguments.arguments">
+              <elementProp name="customerAccountNumber" elementType="Argument">
+                <stringProp name="Argument.name">customerAccountNumber</stringProp>
+                <stringProp name="Argument.value">1990008109</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+              </elementProp>
+              <elementProp name="financialInstitution" elementType="Argument">
+                <stringProp name="Argument.name">financialInstitution</stringProp>
+                <stringProp name="Argument.value">47</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+              </elementProp>
+              <elementProp name="beneficiaryAccountNumber" elementType="Argument">
+                <stringProp name="Argument.name">beneficiaryAccountNumber</stringProp>
+                <stringProp name="Argument.value">0037067569</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+              </elementProp>
+              <elementProp name="beneficiaryAccountName" elementType="Argument">
+                <stringProp name="Argument.name">beneficiaryAccountName</stringProp>
+                <stringProp name="Argument.value">AKINOLA, SUNDAY AYODEJI</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+              </elementProp>
+              <elementProp name="transferType" elementType="Argument">
+                <stringProp name="Argument.name">transferType</stringProp>
+                <stringProp name="Argument.value">INTER_BANK_TRANSFER</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+              </elementProp>
+              <elementProp name="amount" elementType="Argument">
+                <stringProp name="Argument.name">amount</stringProp>
+                <stringProp name="Argument.value">200</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+              </elementProp>
+              <elementProp name="remarks" elementType="Argument">
+                <stringProp name="Argument.name">remarks</stringProp>
+                <stringProp name="Argument.value">transport</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+              </elementProp>
+            </collectionProp>
+          </Arguments>
+          <hashTree/>
           <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Interbank landing page" enabled="true">
             <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
             <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
@@ -1091,8 +1156,15 @@
             <hashTree/>
           </hashTree>
           <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Interbank -&gt;Select Beneficiary" enabled="true">
-            <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" enabled="true">
-              <collectionProp name="Arguments.arguments"/>
+            <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+            <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+              <collectionProp name="Arguments.arguments">
+                <elementProp name="" elementType="HTTPArgument">
+                  <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                  <stringProp name="Argument.value"></stringProp>
+                  <stringProp name="Argument.metadata">=</stringProp>
+                </elementProp>
+              </collectionProp>
             </elementProp>
             <stringProp name="HTTPSampler.domain"></stringProp>
             <stringProp name="HTTPSampler.port"></stringProp>
@@ -1679,71 +1751,6 @@
             </HeaderManager>
             <hashTree/>
           </hashTree>
-          <Arguments guiclass="ArgumentsPanel" testclass="Arguments" testname="Summary Variables" enabled="true">
-            <collectionProp name="Arguments.arguments">
-              <elementProp name="customerAccountNumber" elementType="Argument">
-                <stringProp name="Argument.name">customerAccountNumber</stringProp>
-                <stringProp name="Argument.value">1990008109</stringProp>
-                <stringProp name="Argument.metadata">=</stringProp>
-              </elementProp>
-              <elementProp name="financialInstitution" elementType="Argument">
-                <stringProp name="Argument.name">financialInstitution</stringProp>
-                <stringProp name="Argument.value">47</stringProp>
-                <stringProp name="Argument.metadata">=</stringProp>
-              </elementProp>
-              <elementProp name="beneficiaryAccountNumber" elementType="Argument">
-                <stringProp name="Argument.name">beneficiaryAccountNumber</stringProp>
-                <stringProp name="Argument.value">0037067569</stringProp>
-                <stringProp name="Argument.metadata">=</stringProp>
-              </elementProp>
-              <elementProp name="beneficiaryAccountName" elementType="Argument">
-                <stringProp name="Argument.name">beneficiaryAccountName</stringProp>
-                <stringProp name="Argument.value">AKINOLA, SUNDAY AYODEJI</stringProp>
-                <stringProp name="Argument.metadata">=</stringProp>
-              </elementProp>
-              <elementProp name="transferType" elementType="Argument">
-                <stringProp name="Argument.name">transferType</stringProp>
-                <stringProp name="Argument.value">INTER_BANK_TRANSFER</stringProp>
-                <stringProp name="Argument.metadata">=</stringProp>
-              </elementProp>
-              <elementProp name="amount" elementType="Argument">
-                <stringProp name="Argument.name">amount</stringProp>
-                <stringProp name="Argument.value">200</stringProp>
-                <stringProp name="Argument.metadata">=</stringProp>
-              </elementProp>
-              <elementProp name="remarks" elementType="Argument">
-                <stringProp name="Argument.name">remarks</stringProp>
-                <stringProp name="Argument.value">transport</stringProp>
-                <stringProp name="Argument.metadata">=</stringProp>
-              </elementProp>
-            </collectionProp>
-          </Arguments>
-          <hashTree/>
-          <Arguments guiclass="ArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
-            <collectionProp name="Arguments.arguments">
-              <elementProp name="tranType" elementType="Argument">
-                <stringProp name="Argument.name">tranType</stringProp>
-                <stringProp name="Argument.value">nip</stringProp>
-                <stringProp name="Argument.metadata">=</stringProp>
-              </elementProp>
-              <elementProp name="beneficiaryId" elementType="Argument">
-                <stringProp name="Argument.name">beneficiaryId</stringProp>
-                <stringProp name="Argument.value">221930</stringProp>
-                <stringProp name="Argument.metadata">=</stringProp>
-              </elementProp>
-              <elementProp name="account" elementType="Argument">
-                <stringProp name="Argument.name">account</stringProp>
-                <stringProp name="Argument.value">1990008109</stringProp>
-                <stringProp name="Argument.metadata">=</stringProp>
-              </elementProp>
-              <elementProp name="token" elementType="Argument">
-                <stringProp name="Argument.name">token</stringProp>
-                <stringProp name="Argument.value">90</stringProp>
-                <stringProp name="Argument.metadata">=</stringProp>
-              </elementProp>
-            </collectionProp>
-          </Arguments>
-          <hashTree/>
           <CookieManager guiclass="CookiePanel" testclass="CookieManager" testname="HTTP Cookie Manager" enabled="true">
             <collectionProp name="CookieManager.cookies"/>
             <boolProp name="CookieManager.clearEachIteration">false</boolProp>
@@ -1847,6 +1854,66 @@
             </collectionProp>
           </ModuleController>
           <hashTree/>
+          <Arguments guiclass="ArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
+            <collectionProp name="Arguments.arguments">
+              <elementProp name="benefId" elementType="Argument">
+                <stringProp name="Argument.name">benefId</stringProp>
+                <stringProp name="Argument.value">585899</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+              </elementProp>
+              <elementProp name="account" elementType="Argument">
+                <stringProp name="Argument.name">account</stringProp>
+                <stringProp name="Argument.value">1990008109</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+              </elementProp>
+              <elementProp name="token" elementType="Argument">
+                <stringProp name="Argument.name">token</stringProp>
+                <stringProp name="Argument.value">90</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+              </elementProp>
+            </collectionProp>
+          </Arguments>
+          <hashTree/>
+          <Arguments guiclass="ArgumentsPanel" testclass="Arguments" testname="Summary Variables" enabled="true">
+            <collectionProp name="Arguments.arguments">
+              <elementProp name="lCustomerAccountNumber" elementType="Argument">
+                <stringProp name="Argument.name">lCustomerAccountNumber</stringProp>
+                <stringProp name="Argument.value">1990008109</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+              </elementProp>
+              <elementProp name="lFinancialInstitution" elementType="Argument">
+                <stringProp name="Argument.name">lFinancialInstitution</stringProp>
+                <stringProp name="Argument.value">30</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+              </elementProp>
+              <elementProp name="lBeneficiaryAccountNumber" elementType="Argument">
+                <stringProp name="Argument.name">lBeneficiaryAccountNumber</stringProp>
+                <stringProp name="Argument.value">1990003472</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+              </elementProp>
+              <elementProp name="lBeneficiaryAccountName" elementType="Argument">
+                <stringProp name="Argument.name">lBeneficiaryAccountName</stringProp>
+                <stringProp name="Argument.value">ONYEIBO A CHUDE</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+              </elementProp>
+              <elementProp name="lTransferType" elementType="Argument">
+                <stringProp name="Argument.name">lTransferType</stringProp>
+                <stringProp name="Argument.value">CORONATION_BANK_TRANSFER</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+              </elementProp>
+              <elementProp name="lAmount" elementType="Argument">
+                <stringProp name="Argument.name">lAmount</stringProp>
+                <stringProp name="Argument.value">200</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+              </elementProp>
+              <elementProp name="lRemarks" elementType="Argument">
+                <stringProp name="Argument.name">lRemarks</stringProp>
+                <stringProp name="Argument.value">transport</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+              </elementProp>
+            </collectionProp>
+          </Arguments>
+          <hashTree/>
           <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="CMB Transfer landing page" enabled="true">
             <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" enabled="true">
               <collectionProp name="Arguments.arguments"/>
@@ -1897,14 +1964,21 @@
             <hashTree/>
           </hashTree>
           <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Select Beneficiary" enabled="true">
-            <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" enabled="true">
-              <collectionProp name="Arguments.arguments"/>
+            <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+            <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+              <collectionProp name="Arguments.arguments">
+                <elementProp name="" elementType="HTTPArgument">
+                  <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                  <stringProp name="Argument.value"></stringProp>
+                  <stringProp name="Argument.metadata">=</stringProp>
+                </elementProp>
+              </collectionProp>
             </elementProp>
             <stringProp name="HTTPSampler.domain"></stringProp>
             <stringProp name="HTTPSampler.port"></stringProp>
             <stringProp name="HTTPSampler.protocol">http</stringProp>
             <stringProp name="HTTPSampler.contentEncoding">UTF-8</stringProp>
-            <stringProp name="HTTPSampler.path">/retail/transfer/local/${beneficiaryId}</stringProp>
+            <stringProp name="HTTPSampler.path">/retail/transfer/local/${benefId}</stringProp>
             <stringProp name="HTTPSampler.method">GET</stringProp>
             <boolProp name="HTTPSampler.follow_redirects">false</boolProp>
             <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
@@ -1953,7 +2027,7 @@
             <stringProp name="HTTPSampler.port"></stringProp>
             <stringProp name="HTTPSampler.protocol">http</stringProp>
             <stringProp name="HTTPSampler.contentEncoding">UTF-8</stringProp>
-            <stringProp name="HTTPSampler.path">/retail/transfer/balance/1990008109</stringProp>
+            <stringProp name="HTTPSampler.path">/retail/transfer/balance/${account}</stringProp>
             <stringProp name="HTTPSampler.method">GET</stringProp>
             <boolProp name="HTTPSampler.follow_redirects">false</boolProp>
             <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
@@ -2098,49 +2172,49 @@
                 <elementProp name="customerAccountNumber" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">false</boolProp>
                   <stringProp name="Argument.name">customerAccountNumber</stringProp>
-                  <stringProp name="Argument.value">${customerAccountNumber}</stringProp>
+                  <stringProp name="Argument.value">${lCustomerAccountNumber}</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
                   <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="financialInstitution" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">false</boolProp>
                   <stringProp name="Argument.name">financialInstitution</stringProp>
-                  <stringProp name="Argument.value">${financialInstitution}</stringProp>
+                  <stringProp name="Argument.value">${lFinancialInstitution}</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
                   <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="beneficiaryAccountNumber" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">false</boolProp>
                   <stringProp name="Argument.name">beneficiaryAccountNumber</stringProp>
-                  <stringProp name="Argument.value">${beneficiaryAccountNumber}</stringProp>
+                  <stringProp name="Argument.value">${lBeneficiaryAccountNumber}</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
                   <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="beneficiaryAccountName" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">true</boolProp>
                   <stringProp name="Argument.name">beneficiaryAccountName</stringProp>
-                  <stringProp name="Argument.value">${beneficiaryAccountName}</stringProp>
+                  <stringProp name="Argument.value">${lBeneficiaryAccountName}</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
                   <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="transferType" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">false</boolProp>
                   <stringProp name="Argument.name">transferType</stringProp>
-                  <stringProp name="Argument.value">${transferType}</stringProp>
+                  <stringProp name="Argument.value">${lTransferType}</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
                   <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="amount" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">false</boolProp>
                   <stringProp name="Argument.name">amount</stringProp>
-                  <stringProp name="Argument.value">${amount}</stringProp>
+                  <stringProp name="Argument.value">${lAmount}</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
                   <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="remarks" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">false</boolProp>
                   <stringProp name="Argument.name">remarks</stringProp>
-                  <stringProp name="Argument.value">${remarks}</stringProp>
+                  <stringProp name="Argument.value">${lRemarks}</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
                   <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
@@ -2200,45 +2274,52 @@
               <collectionProp name="Arguments.arguments">
                 <elementProp name="customerAccountNumber" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">false</boolProp>
-                  <stringProp name="Argument.name">customerAccountNumber</stringProp>
-                  <stringProp name="Argument.value">${customerAccountNumber}</stringProp>
+                  <stringProp name="Argument.value">${lCustomerAccountNumber}</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
                   <boolProp name="HTTPArgument.use_equals">true</boolProp>
+                  <stringProp name="Argument.name">customerAccountNumber</stringProp>
+                </elementProp>
+                <elementProp name="financialInstitution" elementType="HTTPArgument">
+                  <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                  <stringProp name="Argument.value">${lFinancialInstitution}</stringProp>
+                  <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
+                  <stringProp name="Argument.name">financialInstitution</stringProp>
                 </elementProp>
                 <elementProp name="beneficiaryAccountNumber" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">false</boolProp>
-                  <stringProp name="Argument.name">beneficiaryAccountNumber</stringProp>
-                  <stringProp name="Argument.value">${beneficiaryAccountNumber}</stringProp>
+                  <stringProp name="Argument.value">${lBeneficiaryAccountNumber}</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
                   <boolProp name="HTTPArgument.use_equals">true</boolProp>
+                  <stringProp name="Argument.name">beneficiaryAccountNumber</stringProp>
                 </elementProp>
                 <elementProp name="beneficiaryAccountName" elementType="HTTPArgument">
-                  <boolProp name="HTTPArgument.always_encode">false</boolProp>
-                  <stringProp name="Argument.name">beneficiaryAccountName</stringProp>
-                  <stringProp name="Argument.value">${beneficiaryAccountName}</stringProp>
+                  <boolProp name="HTTPArgument.always_encode">true</boolProp>
+                  <stringProp name="Argument.value">${lBeneficiaryAccountName}</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
                   <boolProp name="HTTPArgument.use_equals">true</boolProp>
+                  <stringProp name="Argument.name">beneficiaryAccountName</stringProp>
+                </elementProp>
+                <elementProp name="transferType" elementType="HTTPArgument">
+                  <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                  <stringProp name="Argument.value">${lTransferType}</stringProp>
+                  <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
+                  <stringProp name="Argument.name">transferType</stringProp>
                 </elementProp>
                 <elementProp name="amount" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">false</boolProp>
-                  <stringProp name="Argument.name">amount</stringProp>
-                  <stringProp name="Argument.value">${amount}</stringProp>
+                  <stringProp name="Argument.value">${lAmount}</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
                   <boolProp name="HTTPArgument.use_equals">true</boolProp>
+                  <stringProp name="Argument.name">amount</stringProp>
                 </elementProp>
                 <elementProp name="remarks" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                  <stringProp name="Argument.value">${lRemarks}</stringProp>
+                  <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                   <stringProp name="Argument.name">remarks</stringProp>
-                  <stringProp name="Argument.value">${remarks}</stringProp>
-                  <stringProp name="Argument.metadata">=</stringProp>
-                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
-                </elementProp>
-                <elementProp name="id" elementType="HTTPArgument">
-                  <boolProp name="HTTPArgument.always_encode">false</boolProp>
-                  <stringProp name="Argument.name">id</stringProp>
-                  <stringProp name="Argument.value">${id}</stringProp>
-                  <stringProp name="Argument.metadata">=</stringProp>
-                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
               </collectionProp>
             </elementProp>
@@ -2345,45 +2426,59 @@
               <collectionProp name="Arguments.arguments">
                 <elementProp name="customerAccountNumber" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">false</boolProp>
-                  <stringProp name="Argument.name">customerAccountNumber</stringProp>
-                  <stringProp name="Argument.value">${customerAccountNumber}</stringProp>
+                  <stringProp name="Argument.value">${lCustomerAccountNumber}</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
                   <boolProp name="HTTPArgument.use_equals">true</boolProp>
+                  <stringProp name="Argument.name">customerAccountNumber</stringProp>
+                </elementProp>
+                <elementProp name="financialInstitution" elementType="HTTPArgument">
+                  <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                  <stringProp name="Argument.value">${lFinancialInstitution}</stringProp>
+                  <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
+                  <stringProp name="Argument.name">financialInstitution</stringProp>
                 </elementProp>
                 <elementProp name="beneficiaryAccountNumber" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">false</boolProp>
-                  <stringProp name="Argument.name">beneficiaryAccountNumber</stringProp>
-                  <stringProp name="Argument.value">${beneficiaryAccountNumber}</stringProp>
+                  <stringProp name="Argument.value">${lBeneficiaryAccountNumber}</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
                   <boolProp name="HTTPArgument.use_equals">true</boolProp>
+                  <stringProp name="Argument.name">beneficiaryAccountNumber</stringProp>
                 </elementProp>
                 <elementProp name="beneficiaryAccountName" elementType="HTTPArgument">
-                  <boolProp name="HTTPArgument.always_encode">false</boolProp>
-                  <stringProp name="Argument.name">beneficiaryAccountName</stringProp>
-                  <stringProp name="Argument.value">${beneficiaryAccountName}</stringProp>
+                  <boolProp name="HTTPArgument.always_encode">true</boolProp>
+                  <stringProp name="Argument.value">${lBeneficiaryAccountName}</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
                   <boolProp name="HTTPArgument.use_equals">true</boolProp>
+                  <stringProp name="Argument.name">beneficiaryAccountName</stringProp>
+                </elementProp>
+                <elementProp name="transferType" elementType="HTTPArgument">
+                  <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                  <stringProp name="Argument.value">${lTransferType}</stringProp>
+                  <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
+                  <stringProp name="Argument.name">transferType</stringProp>
                 </elementProp>
                 <elementProp name="amount" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">false</boolProp>
-                  <stringProp name="Argument.name">amount</stringProp>
-                  <stringProp name="Argument.value">${amount}</stringProp>
+                  <stringProp name="Argument.value">${lAmount}</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
                   <boolProp name="HTTPArgument.use_equals">true</boolProp>
+                  <stringProp name="Argument.name">amount</stringProp>
                 </elementProp>
                 <elementProp name="remarks" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">false</boolProp>
-                  <stringProp name="Argument.name">remarks</stringProp>
-                  <stringProp name="Argument.value">${remarks}</stringProp>
+                  <stringProp name="Argument.value">${lRemarks}</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
                   <boolProp name="HTTPArgument.use_equals">true</boolProp>
+                  <stringProp name="Argument.name">remarks</stringProp>
                 </elementProp>
                 <elementProp name="token" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">false</boolProp>
-                  <stringProp name="Argument.name">token</stringProp>
                   <stringProp name="Argument.value">${token}</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
                   <boolProp name="HTTPArgument.use_equals">true</boolProp>
+                  <stringProp name="Argument.name">token</stringProp>
                 </elementProp>
               </collectionProp>
             </elementProp>
@@ -2435,6 +2530,15 @@
               </collectionProp>
             </HeaderManager>
             <hashTree/>
+            <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="Response Assertion" enabled="true">
+              <collectionProp name="Asserion.test_strings">
+                <stringProp name="-2110126788">Transaction successful</stringProp>
+              </collectionProp>
+              <stringProp name="Assertion.test_field">Assertion.response_data</stringProp>
+              <boolProp name="Assertion.assume_success">false</boolProp>
+              <intProp name="Assertion.test_type">16</intProp>
+            </ResponseAssertion>
+            <hashTree/>
           </hashTree>
           <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Return to Transfer landing page" enabled="true">
             <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" enabled="true">
@@ -2485,66 +2589,6 @@
             </HeaderManager>
             <hashTree/>
           </hashTree>
-          <Arguments guiclass="ArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
-            <collectionProp name="Arguments.arguments">
-              <elementProp name="beneficiaryId" elementType="Argument">
-                <stringProp name="Argument.name">beneficiaryId</stringProp>
-                <stringProp name="Argument.value">217299</stringProp>
-                <stringProp name="Argument.metadata">=</stringProp>
-              </elementProp>
-              <elementProp name="account" elementType="Argument">
-                <stringProp name="Argument.name">account</stringProp>
-                <stringProp name="Argument.value">1990008109</stringProp>
-                <stringProp name="Argument.metadata">=</stringProp>
-              </elementProp>
-              <elementProp name="token" elementType="Argument">
-                <stringProp name="Argument.name">token</stringProp>
-                <stringProp name="Argument.value">90</stringProp>
-                <stringProp name="Argument.metadata">=</stringProp>
-              </elementProp>
-            </collectionProp>
-          </Arguments>
-          <hashTree/>
-          <Arguments guiclass="ArgumentsPanel" testclass="Arguments" testname="Summary Variables" enabled="true">
-            <collectionProp name="Arguments.arguments">
-              <elementProp name="customerAccountNumber" elementType="Argument">
-                <stringProp name="Argument.name">customerAccountNumber</stringProp>
-                <stringProp name="Argument.value">1990008109</stringProp>
-                <stringProp name="Argument.metadata">=</stringProp>
-              </elementProp>
-              <elementProp name="financialInstitution" elementType="Argument">
-                <stringProp name="Argument.name">financialInstitution</stringProp>
-                <stringProp name="Argument.value">30</stringProp>
-                <stringProp name="Argument.metadata">=</stringProp>
-              </elementProp>
-              <elementProp name="beneficiaryAccountNumber" elementType="Argument">
-                <stringProp name="Argument.name">beneficiaryAccountNumber</stringProp>
-                <stringProp name="Argument.value">1990003472</stringProp>
-                <stringProp name="Argument.metadata">=</stringProp>
-              </elementProp>
-              <elementProp name="beneficiaryAccountName" elementType="Argument">
-                <stringProp name="Argument.name">beneficiaryAccountName</stringProp>
-                <stringProp name="Argument.value">ONYEIBO A CHUDE</stringProp>
-                <stringProp name="Argument.metadata">=</stringProp>
-              </elementProp>
-              <elementProp name="transferType" elementType="Argument">
-                <stringProp name="Argument.name">transferType</stringProp>
-                <stringProp name="Argument.value">CORONATION_BANK_TRANSFER</stringProp>
-                <stringProp name="Argument.metadata">=</stringProp>
-              </elementProp>
-              <elementProp name="amount" elementType="Argument">
-                <stringProp name="Argument.name">amount</stringProp>
-                <stringProp name="Argument.value">200</stringProp>
-                <stringProp name="Argument.metadata">=</stringProp>
-              </elementProp>
-              <elementProp name="remarks" elementType="Argument">
-                <stringProp name="Argument.name">remarks</stringProp>
-                <stringProp name="Argument.value">transport</stringProp>
-                <stringProp name="Argument.metadata">=</stringProp>
-              </elementProp>
-            </collectionProp>
-          </Arguments>
-          <hashTree/>
           <CookieManager guiclass="CookiePanel" testclass="CookieManager" testname="HTTP Cookie Manager" enabled="true">
             <collectionProp name="CookieManager.cookies"/>
             <boolProp name="CookieManager.clearEachIteration">false</boolProp>
@@ -4023,10 +4067,26 @@
               </collectionProp>
             </HeaderManager>
             <hashTree/>
+            <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="Response Assertion" enabled="true">
+              <collectionProp name="Asserion.test_strings">
+                <stringProp name="-73101352">Password changed successfully</stringProp>
+              </collectionProp>
+              <stringProp name="Assertion.test_field">Assertion.response_data_as_document</stringProp>
+              <boolProp name="Assertion.assume_success">false</boolProp>
+              <intProp name="Assertion.test_type">2</intProp>
+            </ResponseAssertion>
+            <hashTree/>
           </hashTree>
           <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Return to Dashboard" enabled="false">
-            <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" enabled="true">
-              <collectionProp name="Arguments.arguments"/>
+            <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+            <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+              <collectionProp name="Arguments.arguments">
+                <elementProp name="" elementType="HTTPArgument">
+                  <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                  <stringProp name="Argument.value"></stringProp>
+                  <stringProp name="Argument.metadata">=</stringProp>
+                </elementProp>
+              </collectionProp>
             </elementProp>
             <stringProp name="HTTPSampler.domain">${host}</stringProp>
             <stringProp name="HTTPSampler.port">${port}</stringProp>
@@ -4083,12 +4143,12 @@
               </elementProp>
               <elementProp name="newPassword" elementType="Argument">
                 <stringProp name="Argument.name">newPassword</stringProp>
-                <stringProp name="Argument.value">password@$1</stringProp>
+                <stringProp name="Argument.value">password@@@$$1</stringProp>
                 <stringProp name="Argument.metadata">=</stringProp>
               </elementProp>
               <elementProp name="confirmPassword" elementType="Argument">
                 <stringProp name="Argument.name">confirmPassword</stringProp>
-                <stringProp name="Argument.value">password@$1</stringProp>
+                <stringProp name="Argument.value">password@@@$$1</stringProp>
                 <stringProp name="Argument.metadata">=</stringProp>
               </elementProp>
             </collectionProp>
