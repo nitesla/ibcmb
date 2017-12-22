@@ -498,6 +498,7 @@ public class AccountController {
 	}
 	
 
+
 	@GetMapping("/viewstatement/{id}")
 	public String getViewOnlyById(@PathVariable Long id,Model model, Principal principal) throws ParseException {
 		RetailUser user = retailUserService.getUserByName(principal.getName());

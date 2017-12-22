@@ -58,6 +58,10 @@ public class ApplicationErrorController implements ErrorController {
             logger.error("Error Details: {}",errorDetails.toString());
             return "/error403";
         }
+        if("404".equals(statusCode)){
+            logger.error("Error Details: {}",errorDetails.toString());
+            return "/error404";
+        }
 
         String subPath = StringUtils.substringAfter(errorPath, "/");
 
