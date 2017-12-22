@@ -5317,12 +5317,12 @@
               </elementProp>
               <elementProp name="newPassword" elementType="Argument">
                 <stringProp name="Argument.name">newPassword</stringProp>
-                <stringProp name="Argument.value">password@#$1</stringProp>
+                <stringProp name="Argument.value">password@@@@#$1</stringProp>
                 <stringProp name="Argument.metadata">=</stringProp>
               </elementProp>
               <elementProp name="confirmPassword" elementType="Argument">
                 <stringProp name="Argument.name">confirmPassword</stringProp>
-                <stringProp name="Argument.value">password@#$1</stringProp>
+                <stringProp name="Argument.value">password@@@@#$1</stringProp>
                 <stringProp name="Argument.metadata">=</stringProp>
               </elementProp>
             </collectionProp>
