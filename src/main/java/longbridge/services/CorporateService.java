@@ -39,7 +39,7 @@ public interface CorporateService{
 
     String addCorporate(CorporateRequestDTO corporateRequestDTO) throws InternetBankingException;
 
-    void saveCorporateRequest(CorporateRequestDTO corporateRequestDTO) throws InternetBankingException;
+//    void saveCorporateRequest(CorporateRequestDTO corporateRequestDTO) throws InternetBankingException;
 
     /**
      * Deletes the given corporate customer

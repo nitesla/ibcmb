@@ -144,9 +144,8 @@ public class CorporateServiceImpl implements CorporateService {
         }
     }
 
-    @Override
     @Transactional
-    public void saveCorporateRequest(CorporateRequestDTO corporateRequestDTO) throws InternetBankingException {
+    private void saveCorporateRequest(CorporateRequestDTO corporateRequestDTO) throws InternetBankingException {
 
         validateCorporate(corporateRequestDTO);
 
