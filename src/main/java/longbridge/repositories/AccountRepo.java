@@ -2,6 +2,8 @@ package longbridge.repositories;
 
 import longbridge.models.Account;
 import longbridge.models.Corporate;
+import longbridge.models.CorporateUser;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -48,7 +50,10 @@ public interface AccountRepo extends CommonRepo<Account,Long> {
     void unsetPrimaryAccount(@Param("customer") String customerId);
 //    @Query("select r from Account r inner join r.account  where r.customerId = :cifId")
 //    Page<Account> findEnityByRevisions(Pageable pageable, @Param("class") String cifId);
-
+   
+    @Query("select count(a) > 0 from Account a inner join corporate c where c.corporate_id=:corp and a.id=:acct")
+    boolean accountInCorp(@Param("corp") Corporate corporate, @Param("acct") Account account);
+  
 
 
 }

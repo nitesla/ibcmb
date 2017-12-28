@@ -255,8 +255,9 @@ public class AccountServiceImpl implements AccountService {
     public String makePrimaryAccount(Long acctId, String customerId) throws InternetBankingException {
 
         try {
-            accountRepo.unsetPrimaryAccount(customerId);
             Account account = accountRepo.findFirstById(acctId);
+            validate(account);
+            accountRepo.unsetPrimaryAccount(customerId);
             account.setPrimaryFlag("Y");
             accountRepo.save(account);
             return messageSource.getMessage("success", null, locale);
@@ -496,7 +497,8 @@ public class AccountServiceImpl implements AccountService {
     		case CORPORATE : {	
     			CorporateUser user = (CorporateUser) currentUser;
     			Account acct = accountRepo.findFirstByAccountNumber(account);
-    			boolean valid = user.getCorporate().getAccounts().contains(acct);
+    			boolean valid = accountRepo.accountInCorp(user.getCorporate(), acct);
+    			//boolean valid = user.getCorporate().getAccounts().contains(acct);
     			if(!valid) {
     				logger.warn("User " + user.toString() + "trying to access other accounts");
     				throw new InternetBankingException("Access Denied");
