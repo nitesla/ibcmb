@@ -1,0 +1,45 @@
+{
+  "id" : "9dea9959-e67b-4866-8e74-f5a4c080d04a",
+  "name" : "transfer_nip",
+  "request" : {
+    "url" : "/transfer/nip",
+    "method" : "POST",
+     "bodyPatterns": [
+{
+        "matchesJsonPath": "$.creditAccountName"
+      },
+	  {
+        "matchesJsonPath": "$.creditAccountNumber"
+      },
+      {
+        "matchesJsonPath": "$.debitAccountNumber"
+      },
+      {
+        "matchesJsonPath": "$.debitAccountName"
+      },
+	   {
+        "matchesJsonPath": "$.destinationInstitutionCode"
+      },
+	  
+	   {
+        "matchesJsonPath": "$.tranType"
+      },
+      {
+        "matchesJsonPath": "$.tranAmount"
+      },
+
+      {
+        "matchesJsonPath": "$.remarks"
+      }
+    ]
+  },
+  "response" : {
+    "status" : 200,
+    "body" : "{\"responseCode\":\"000\", \"responseDescription\":\"Transaction succcessful\",\"uniqueReferenceCode\":\"999001171229041643348196317811\",\"narration\":\"TRF FRM A TO Z\"}",
+    "headers" : {
+      "X-Application-Context" : "application:newtest:8090",
+      "Content-Type" : "application/json;charset=UTF-8",
+      "Date" : "Wed, 20 Dec 2017 13:16:44 GMT"
+    }
+  }
+}

@@ -1,0 +1,40 @@
+{
+  "id" : "e2b58413-d3ad-45cb-adc8-1c5cdb54915b",
+  "name" : "statement",
+  "request" : {
+    "url" : "/statement",
+    "method" : "POST",
+    "bodyPatterns": [
+       {
+        "matchesJsonPath": "$.fromDate"
+      },
+      {
+        "matchesJsonPath": "$.solId"
+      },
+      {
+        "matchesJsonPath": "$.toDate"
+      }
+	  ,
+      {
+        "matchesJsonPath": "$.accountNumber"
+      }
+	  ,
+      {
+        "matchesJsonPath": "$.numOfTxn"
+      }
+	    ,
+      {
+        "matchesJsonPath": "$.tranType"
+      }
+    ]
+  },
+  "response" : {
+    "status" : 200,
+    "body" : "{\"transactionDetails\":[{\"currencyCode\":\"NGN\",\"postDate\":\"2017-12-07T13:54:51.000\",\"valueDate\":\"2017-12-07T00:00:00.000\",\"narration\":\"NIBSS NIP TRSF/FIDELITY BANK/OBALENDE/LA/NG       \",\"accountBalance\":\"43019.49\",\"tranType\":\"D\",\"tranAmount\":\"1235.56\",\"debitAmount\":\"1235.56\",\"creditAmount\":\"0.00\",\"tranId\":\" Q1133896\",\"tranDate\":\"2017-12-07T00:00:00.000\",\"tranSN\":\"   1\"},{\"currencyCode\":\"NGN\",\"postDate\":\"2017-12-07T13:54:51.000\",\"valueDate\":\"2017-12-07T00:00:00.000\",\"narration\":\"NIBSS TRANSFER CHARGE                             \",\"accountBalance\":\"42974.49\",\"tranType\":\"D\",\"tranAmount\":\"45.0\",\"debitAmount\":\"45.0\",\"creditAmount\":\"0.00\",\"tranId\":\" Q1133896\",\"tranDate\":\"2017-12-07T00:00:00.000\",\"tranSN\":\"   3\"},{\"currencyCode\":\"NGN\",\"postDate\":\"2017-12-07T13:54:51.000\",\"valueDate\":\"2017-12-07T00:00:00.000\",\"narration\":\"VAT ON NIBSS CHARGE                               \",\"accountBalance\":\"42969.49\",\"tranType\":\"D\",\"tranAmount\":\"5.0\",\"debitAmount\":\"5.0\",\"creditAmount\":\"0.00\",\"tranId\":\" Q1133896\",\"tranDate\":\"2017-12-07T00:00:00.000\",\"tranSN\":\"   5\"},{\"currencyCode\":\"NGN\",\"postDate\":\"2017-12-07T13:54:51.000\",\"valueDate\":\"2017-12-07T00:00:00.000\",\"narration\":\"NIBSS NIP TRSF/FIDELITY BANK/OBALENDE/LA/NG       \",\"accountBalance\":\"42967.24\",\"tranType\":\"D\",\"tranAmount\":\"2.25\",\"debitAmount\":\"2.25\",\"creditAmount\":\"0.00\",\"tranId\":\" Q1133896\",\"tranDate\":\"2017-12-07T00:00:00.000\",\"tranSN\":\"   7\"},{\"currencyCode\":\"NGN\",\"postDate\":\"2017-12-07T13:54:51.000\",\"valueDate\":\"2017-12-07T00:00:00.000\",\"narration\":\"NIBSS NIP TRSF/FIDELITY BANK/OBALENDE/LA/NG       \",\"accountBalance\":\"42966.99\",\"tranType\":\"D\",\"tranAmount\":\"0.25\",\"debitAmount\":\"0.25\",\"creditAmount\":\"0.00\",\"tranId\":\" Q1133896\",\"tranDate\":\"2017-12-07T00:00:00.000\",\"tranSN\":\"   9\"}],\"accountNumber\":\"1990008109\",\"openingBalance\":\"43019.49\",\"closingBalance\":\"5.400048660131E10\",\"totalCredit\":\"0.0\",\"totalDebit\":\"1288.06\",\"customerName\":null,\"currencyCode\":\"NGN\",\"creditCount\":\"0\",\"debitCount\":\"5\",\"hasMoreData\":\"Y\",\"address\":\"3, OLUMUYIWA-ILO STREET, ABULE-ODU, EGBEDA, L\"}",
+    "headers" : {
+      "X-Application-Context" : "application:newtest:8090",
+      "Content-Type" : "application/json;charset=UTF-8",
+      "Date" : "Wed, 20 Dec 2017 13:21:21 GMT"
+    }
+  }
+}

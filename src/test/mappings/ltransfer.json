@@ -1,0 +1,33 @@
+{
+  "request": {
+    "method": "POST",
+    "url": "/service/localtransfer",
+    "bodyPatterns": [
+      {
+        "matchesJsonPath": "$.debitAccountNumber"
+      },
+      {
+        "matchesJsonPath": "$.creditAccountNumber"
+      },
+      {
+        "matchesJsonPath": "$.tranAmount"
+      },
+      {
+        "matchesJsonPath": "$.narration"
+      },
+      {
+        "matchesJsonPath": "$..[?(@.tranAmount < 1000000)]"
+      } 
+    ]
+  },
+  "response": {
+    "status": 200,
+    "jsonBody": {
+      "responseCode": "000",
+      "responseDescription": "Transaction Successful"
+    },
+    "headers": {
+      "Content-Type": "application/json"
+    }
+  }
+}

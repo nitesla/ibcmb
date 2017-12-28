@@ -1,0 +1,23 @@
+{
+  "id" : "0e7575e9-dd2f-4226-a97f-de758a1f8c55",
+  "name" : "transfer_fee",
+  "request" : {
+    "url" : "/transfer/fee",
+    "method" : "POST",
+   "bodyPatterns": [
+      {
+        "matchesJsonPath": "$.transactionChannel"
+      }
+    ]
+  },
+  "response" : {
+    "status" : 200,
+    "body" : "{\"feeName\":\"Fixed\",\"feeValue\":\"50\",\"feeDescription\":\"Fixed Fee value \"}",
+    "headers" : {
+      "X-Application-Context" : "application:newtest:8090",
+      "Content-Type" : "application/json;charset=UTF-8",
+      "Date" : "Wed, 20 Dec 2017 12:30:42 GMT"
+    }
+  }
+ 
+}

@@ -1,0 +1,17 @@
+{
+  "id" : "5a814ac4-2de6-4ec3-9477-0f431aa4d76f",
+  "name" : "customer_r001965",
+  "request" : {
+    "urlPathPattern" : "/customer/([A-Za-z0-9]+)",
+    "method" : "GET"
+  },
+  "response" : {
+    "status" : 200,
+    "body" : "{\"cifId\":\"R001965\",\"customerName\":\"SUNDAY A AKINOLA\",\"dateOfBirth\":\"1982-08-29\",\"email\":\"sakinola@coronationmb.com\",\"phone\":\"08039213119\",\"bvn\":\"22207271199\",\"lastName\":\"AKINOLA\",\"firstName\":\"SUNDAY\",\"middleName\":\"AYODEJI\",\"preferredName\":\"SUNDAY A AKINOLA\",\"rcNo\":\"\",\"taxId\":\"\",\"corp\":false}",
+    "headers" : {
+      "X-Application-Context" : "application:newtest:8090",
+      "Content-Type" : "application/json;charset=UTF-8",
+      "Date" : "Wed, 20 Dec 2017 13:16:43 GMT"
+    }
+  }
+}

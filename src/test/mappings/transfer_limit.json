@@ -1,0 +1,27 @@
+{
+  "id" : "d1904b45-abc9-413c-8227-2e5d1a8e26ad",
+  "name" : "transfer_limit",
+  "request" : {
+    "url" : "/transfer/limit",
+    "method" : "POST",
+   "bodyPatterns": [
+      {
+        "matchesJsonPath": "$.transactionChannel"
+      },
+      {
+        "matchesJsonPath": "$.accountNumber"
+      }
+    ]
+  },
+  "response" : {
+    "status" : 200,
+    "body" : "1800",
+    "headers" : {
+      "X-Application-Context" : "application:newtest:8090",
+      "Content-Type" : "text/plain;charset=ISO-8859-1",
+      "Date" : "Wed, 20 Dec 2017 13:16:17 GMT"
+    }
+  },
+  "uuid" : "d1904b45-abc9-413c-8227-2e5d1a8e26ad",
+  "persistent" : true
+}

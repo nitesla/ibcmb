@@ -1,0 +1,24 @@
+{
+  "id" : "ef0a66d2-d841-4ef8-9083-a43fa706f3ce",
+  "name" : "",
+  "request" : {
+    "url" : "/cmb-entrust-webservicetest/ws?wsdl",
+    "method" : "POST",
+    "bodyPatterns" : [ {
+	      "matchesXPath" : "Soap_Env:Envelope/Soap_Env:Body/Entrust:performGetQA",
+		   "xPathNamespaces" : {
+        "Soap_Env" : "http://schemas.xmlsoap.org/soap/envelope/",
+        "Entrust"  : "http://ws.entrustplugin.expertedge.com/"
+      }
+    } ]
+  },
+  "response" : {
+    "status" : 200,
+	"body" : "<?xml version='1.0' encoding='UTF-8'?><S:Envelope xmlns:S=\"http://schemas.xmlsoap.org/soap/envelope/\"><S:Body><ns2:performGetQAResponse xmlns:ns2=\"http://ws.entrustplugin.expertedge.com/\"><return><adminSuccessful>true</adminSuccessful><answers>FATIMA</answers><answers>RICE</answers><answers>JOS</answers><questions>what is the name of your primary school?</questions><questions>what is your favourite food?</questions><questions>what town did you grow up?</questions><respCode>1</respCode><respMessage>Qusetion size retrieve from Entrust successfully</respMessage><respMessageCode>QUESTION_SIZE_RETRIEVAL_SUCCESSFUL</respMessageCode></return></ns2:performGetQAResponse></S:Body></S:Envelope>",
+    "headers" : {
+      "Server" : "Apache-Coyote/1.1",
+      "Content-Type" : "text/xml;charset=utf-8",
+      "Date" : "Wed, 20 Dec 2017 14:06:28 GMT"
+    }
+  }
+}

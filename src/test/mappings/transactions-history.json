@@ -1,0 +1,30 @@
+{
+  "id" : "528251c9-12c5-4e2c-b3d3-de17eb10e43a",
+  "name" : "transactions",
+  "request" : {
+    "url" : "/transactions",
+    "method" : "POST",
+    "bodyPatterns": [
+       {
+        "matchesJsonPath": "$.branchId"
+      },
+      {
+        "matchesJsonPath": "$.numberOfRecords"
+      },
+      {
+        "matchesJsonPath": "$.accountNumber"
+      }
+    ]
+  },
+  "response" : {
+    "status" : 200,
+    "body" : "[{\"narration\":\"TRF FRM SUNDAY A AKINOLA to WALIU A FALEYE        \",\"postedDate\":\"2017-12-15T18:15:59.000\",\"valueDate\":\"2017-12-07T00:00:00.000\",\"tranType\":\"D\",\"tranId\":\" Q1133962\",\"balance\":\"5.400048680131E10\",\"debitAmount\":\"30.0\",\"creditAmount\":\"0.00\"},{\"narration\":\"NIBSS NIP TRSF/FIDELITY BANK/OBALENDE/LA/NG       \",\"postedDate\":\"2017-12-15T12:20:03.000\",\"valueDate\":\"2017-12-07T00:00:00.000\",\"tranType\":\"D\",\"tranId\":\" Q1133961\",\"balance\":\"5.400048683131E10\",\"debitAmount\":\"0.25\",\"creditAmount\":\"0.00\"},{\"narration\":\"NIBSS NIP TRSF/FIDELITY BANK/OBALENDE/LA/NG       \",\"postedDate\":\"2017-12-15T12:20:03.000\",\"valueDate\":\"2017-12-07T00:00:00.000\",\"tranType\":\"D\",\"tranId\":\" Q1133961\",\"balance\":\"5.400048683156E10\",\"debitAmount\":\"2.25\",\"creditAmount\":\"0.00\"},{\"narration\":\"VAT ON NIBSS CHARGE                               \",\"postedDate\":\"2017-12-15T12:20:03.000\",\"valueDate\":\"2017-12-07T00:00:00.000\",\"tranType\":\"D\",\"tranId\":\" Q1133961\",\"balance\":\"5.400048683381E10\",\"debitAmount\":\"5.0\",\"creditAmount\":\"0.00\"},{\"narration\":\"NIBSS TRANSFER CHARGE                             \",\"postedDate\":\"2017-12-15T12:20:03.000\",\"valueDate\":\"2017-12-07T00:00:00.000\",\"tranType\":\"D\",\"tranId\":\" Q1133961\",\"balance\":\"5.400048683881E10\",\"debitAmount\":\"45.0\",\"creditAmount\":\"0.00\"},{\"narration\":\"NIBSS NIP TRSF/FIDELITY BANK/OBALENDE/LA/NG       \",\"postedDate\":\"2017-12-15T12:20:03.000\",\"valueDate\":\"2017-12-07T00:00:00.000\",\"tranType\":\"D\",\"tranId\":\" Q1133961\",\"balance\":\"5.400048688381E10\",\"debitAmount\":\"100.56\",\"creditAmount\":\"0.00\"},{\"narration\":\"NIBSS NIP TRSF/FIDELITY BANK/OBALENDE/LA/NG       \",\"postedDate\":\"2017-12-15T12:13:45.000\",\"valueDate\":\"2017-12-07T00:00:00.000\",\"tranType\":\"D\",\"tranId\":\" Q1133960\",\"balance\":\"5.400048698437E10\",\"debitAmount\":\"0.25\",\"creditAmount\":\"0.00\"},{\"narration\":\"NIBSS NIP TRSF/FIDELITY BANK/OBALENDE/LA/NG       \",\"postedDate\":\"2017-12-15T12:13:45.000\",\"valueDate\":\"2017-12-07T00:00:00.000\",\"tranType\":\"D\",\"tranId\":\" Q1133960\",\"balance\":\"5.400048698462E10\",\"debitAmount\":\"2.25\",\"creditAmount\":\"0.00\"},{\"narration\":\"VAT ON NIBSS CHARGE                               \",\"postedDate\":\"2017-12-15T12:13:45.000\",\"valueDate\":\"2017-12-07T00:00:00.000\",\"tranType\":\"D\",\"tranId\":\" Q1133960\",\"balance\":\"5.400048698687E10\",\"debitAmount\":\"5.0\",\"creditAmount\":\"0.00\"},{\"narration\":\"NIBSS TRANSFER CHARGE                             \",\"postedDate\":\"2017-12-15T12:13:45.000\",\"valueDate\":\"2017-12-07T00:00:00.000\",\"tranType\":\"D\",\"tranId\":\" Q1133960\",\"balance\":\"5.400048699187E10\",\"debitAmount\":\"45.0\",\"creditAmount\":\"0.00\"}]",
+    "headers" : {
+      "X-Application-Context" : "application:newtest:8090",
+      "Content-Type" : "application/json;charset=UTF-8",
+      "Date" : "Wed, 20 Dec 2017 13:14:46 GMT"
+    }
+  },
+  "uuid" : "528251c9-12c5-4e2c-b3d3-de17eb10e43a",
+  "persistent" : true
+}
