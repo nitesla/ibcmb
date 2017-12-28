@@ -296,6 +296,9 @@ public class CorpTransferServiceImpl implements CorpTransferService {
     }
 
     private void validateAccounts(CorpTransferRequestDTO dto) throws InternetBankingTransferException {
+
+        accountService.validateAccount(dto.getCustomerAccountNumber());
+
         String bvn = integrationService.viewCustomerDetails(dto.getCustomerAccountNumber()).getBvn();
         if (bvn == null || bvn.isEmpty() || bvn.equalsIgnoreCase(""))
             throw new InternetBankingTransferException(TransferExceptions.NO_BVN.toString());

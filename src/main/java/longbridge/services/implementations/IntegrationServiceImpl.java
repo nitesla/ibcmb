@@ -7,12 +7,9 @@ import longbridge.exception.InternetBankingException;
 import longbridge.exception.InternetBankingTransferException;
 import longbridge.exception.TransferErrorService;
 import longbridge.exception.TransferExceptions;
-import longbridge.models.Account;
-import longbridge.models.CorporateUser;
-import longbridge.models.RetailUser;
-import longbridge.models.TransRequest;
-import longbridge.models.User;
+import longbridge.models.*;
 import longbridge.repositories.AccountRepo;
+import longbridge.repositories.CorporateRepo;
 import longbridge.security.userdetails.CustomUserPrincipal;
 import longbridge.services.AccountService;
 import longbridge.services.ConfigurationService;
@@ -65,11 +62,12 @@ public class IntegrationServiceImpl implements IntegrationService {
 	private TransferErrorService errorService;
 	private MessageSource messageSource;
 	private AccountRepo accountRepo;
+	private CorporateRepo corporateRepo;
 
 	@Autowired
 	public IntegrationServiceImpl(RestTemplate template, MailService mailService, TemplateEngine templateEngine,
 			ConfigurationService configService, TransferErrorService errorService, MessageSource messageSource,
-			AccountRepo accountRepo) {
+			AccountRepo accountRepo, CorporateRepo corporateRepo) {
 		this.template = template;
 		this.mailService = mailService;
 		this.templateEngine = templateEngine;
@@ -77,6 +75,7 @@ public class IntegrationServiceImpl implements IntegrationService {
 		this.errorService = errorService;
 		this.messageSource = messageSource;
 		this.accountRepo = accountRepo;
+		this.corporateRepo = corporateRepo;
 
 	}
 
@@ -673,9 +672,9 @@ public class IntegrationServiceImpl implements IntegrationService {
 		case CORPORATE: {
 			CorporateUser user = (CorporateUser) currentUser;
 			Account acct = accountRepo.findFirstByAccountNumber(account);
-			boolean valid = accountRepo.accountInCorp(user.getCorporate(), acct);
-			//boolean valid = user.getCorporate().getAccounts().contains(acct);
-			if (!valid) {
+//			boolean valid = accountRepo.accountInCorp(user.getCorporate(), acct);
+			Corporate corporate = corporateRepo.findOne(user.getCorporate().getId());
+			boolean valid = corporate.getAccounts().contains(acct);			if (!valid) {
 				logger.warn("User " + user.toString() + "trying to access other accounts");
 				throw new InternetBankingException("Access Denied");
 			}
