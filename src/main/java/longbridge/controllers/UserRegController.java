@@ -82,7 +82,7 @@ public class UserRegController {
     public
     @ResponseBody
     String getAccountDetailsFromNumber(HttpServletRequest webRequest) {
-
+//TODO : Move business logic to service layer
         logger.info("Customer Registration Started.");
         logClientRequestHeaders(webRequest);
         String customerId = "";
@@ -105,6 +105,7 @@ public class UserRegController {
         if (details.getCifId() != null && !details.isCorp()) {
 
             customerId = details.getCifId();
+            //TODO: Implementation needs to change
             account = integrationService.viewAccountDetails(accountNumber);
             logger.info("CustomerId {}", customerId);
             logger.info("Account details {}", account);

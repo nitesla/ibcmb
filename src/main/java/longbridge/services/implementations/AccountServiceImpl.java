@@ -6,7 +6,12 @@ import longbridge.dtos.AccountDTO;
 import longbridge.dtos.SettingDTO;
 import longbridge.exception.InternetBankingException;
 import longbridge.models.Account;
+import longbridge.models.CorporateUser;
+import longbridge.models.RetailUser;
+import longbridge.models.User;
+import longbridge.models.UserType;
 import longbridge.repositories.AccountRepo;
+import longbridge.security.userdetails.CustomUserPrincipal;
 import longbridge.services.AccountConfigService;
 import longbridge.services.AccountService;
 import longbridge.services.ConfigurationService;
@@ -23,6 +28,7 @@ import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -59,6 +65,7 @@ public class AccountServiceImpl implements AccountService {
         this.configurationService = configurationService;
     }
 
+    //TODO: Move to where Business rules reside
     @Override
     public boolean AddFIAccount(String customerId, AccountInfo acct) {
         if (!customerId.equals(acct.getCustomerId())) {
@@ -81,6 +88,7 @@ public class AccountServiceImpl implements AccountService {
         return true;
     }
 
+    //TODO: Move to where Business rules reside
     @Override
     public boolean AddAccount(String customerId, AccountDTO accountdto) throws InternetBankingException {
         if (!customerId.equals(accountdto.getCustomerId())) {
@@ -128,6 +136,7 @@ public class AccountServiceImpl implements AccountService {
     public String customizeAccount(Long id, String name) throws InternetBankingException {
         try {
             Account account = accountRepo.findFirstById(id);
+            validate(account);
             account.setPreferredName(name);
             this.accountRepo.save(account);
             return messageSource.getMessage("account.customize.success", null, locale);
@@ -403,6 +412,7 @@ public class AccountServiceImpl implements AccountService {
                 .filter(i -> !accountConfigService.isAccountSchemeTypeRestrictedForView(i.getSchemeType()))
                 .filter(i -> !accountConfigService.isAccountSchemeCodeRestrictedForView(i.getSchemeCode()))
                 .forEach(i -> {
+                		validate(i.getAccountNumber());
                     Map<String, BigDecimal> balance = integrationService.getBalance(i.getAccountNumber());
                     String availbalance = "0";
                     String ledBalance = "0";
@@ -424,12 +434,17 @@ public class AccountServiceImpl implements AccountService {
 
 
     @Override
-    public Iterable<Account> getAccountsForCredit(String customerId) {
+	public Iterable<Account> getAccountsForCredit(String customerId) {
         List<Account> accountsForCredit = new ArrayList<Account>();
         Iterable<Account> accounts = this.getCustomerAccounts(customerId);
         for (Account account : accounts) {
             if (!accountConfigService.isAccountHidden(account.getAccountNumber()) && "A".equalsIgnoreCase(account.getStatus())
-                    && (!accountConfigService.isAccountRestrictedForView(account.getAccountNumber())) && !accountConfigService.isAccountRestrictedForCredit(account.getAccountNumber()) && (!accountConfigService.isAccountSchemeTypeRestrictedForView(account.getSchemeType()) && (!accountConfigService.isAccountSchemeTypeRestrictedForCredit(account.getSchemeType())) && (!accountConfigService.isAccountSchemeCodeRestrictedForView(account.getSchemeCode()) && (!accountConfigService.isAccountSchemeCodeRestrictedForCredit(account.getSchemeCode()))))) {
+                    && (!accountConfigService.isAccountRestrictedForView(account.getAccountNumber())) 
+                    && !accountConfigService.isAccountRestrictedForCredit(account.getAccountNumber()) 
+                    && (!accountConfigService.isAccountSchemeTypeRestrictedForView(account.getSchemeType()) 
+                    		&& (!accountConfigService.isAccountSchemeTypeRestrictedForCredit(account.getSchemeType())) 
+                    		&& (!accountConfigService.isAccountSchemeCodeRestrictedForView(account.getSchemeCode()) 
+                    				&& (!accountConfigService.isAccountSchemeCodeRestrictedForCredit(account.getSchemeCode()))))) {
                 accountsForCredit.add(account);
             }
 
@@ -461,5 +476,48 @@ public class AccountServiceImpl implements AccountService {
         return accountsForCredit;
     }
 
+    private void validate(Account account) {
+    		validate(account.getAccountNumber());
+    }
+    
+    private void validate(String account) {
+    		User currentUser = getCurrentUser();
+    		switch(currentUser.getUserType()) {
+    		case RETAIL : {	
+    			RetailUser user = (RetailUser) currentUser;
+    			Account acct = accountRepo.findFirstByAccountNumber(account);
+    			if(acct == null || acct.getCustomerId() == null) {
+    				throw new InternetBankingException("Access Denied");
+    			}else if(!acct.getCustomerId().equals(user.getCustomerId())) {
+    				logger.warn("User " + user.toString() + "trying to access other accounts");
+    				throw new InternetBankingException("Access Denied");
+    			}
+    		} break;
+    		case CORPORATE : {	
+    			CorporateUser user = (CorporateUser) currentUser;
+    			Account acct = accountRepo.findFirstByAccountNumber(account);
+    			boolean valid = user.getCorporate().getAccounts().contains(acct);
+    			if(!valid) {
+    				logger.warn("User " + user.toString() + "trying to access other accounts");
+    				throw new InternetBankingException("Access Denied");
+    			}
+    		} break;
+    			default: {
+    				logger.warn("Internal User " + currentUser.toString() + "trying to access accounts");
+    				throw new InternetBankingException("Access Denied");
+    			} 
+    		}
+    }
 
+
+    private User getCurrentUser() {
+        CustomUserPrincipal principal = (CustomUserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return principal.getUser();
+    }
+
+	@Override
+	public void validateAccount(String accountNumber) throws InternetBankingException {
+		validate(accountNumber);
+	}
+    
 }
