@@ -126,6 +126,8 @@ public class RetrieveCredentialController {
 //            logger.info(iterator.next());
 //        }
 
+        try{
+        logger.debug("Doing a password reset operation");
 
         String accountNumber = webRequest.getParameter("acct");
         String securityQuestion = webRequest.getParameter("securityQuestion");
@@ -134,30 +136,34 @@ public class RetrieveCredentialController {
         String confirmPassword = webRequest.getParameter("confirm");
         String username = (String) session.getAttribute("username");
 
-        if (StringUtils.isBlank(username)){
+            logger.debug("Username got is {}",username);
+
+            if (StringUtils.isBlank(username)){
             return "false";
         }
 
-        if ( StringUtils.isBlank(username) ){
-            return "false";
-        }
+
 
         //confirm passwords are the same
         boolean isValid = password.trim().equalsIgnoreCase(confirmPassword.trim());
+        logger.debug("Password validation result {}",isValid);
         if(!isValid){
             logger.error("Passwords do not match");
             return "false";
         }
 
         RetailUser retailUser = retailUserService.getUserByName(username);
+            logger.debug("Retail user retrieved",retailUser);
         if (retailUser == null){
+            logger.error("Retail username {} returned null object",username);
+
             return "false";
         }
 
         CustResetPassword custResetPassword = new CustResetPassword();
         custResetPassword.setNewPassword(password);
         custResetPassword.setConfirmPassword(confirmPassword);
-        try{
+
             String message = retailUserService.resetPassword(retailUser,custResetPassword);
             redirectAttributes.addAttribute("success", message);
             return "true";
@@ -167,6 +173,10 @@ public class RetrieveCredentialController {
             return e.getMessage();
         }catch (PasswordException e){
             return e.getMessage();
+        }
+        catch (Exception ex){
+            logger.error("Error resetting password",ex);
+            return "Unexpected error occurred";
         }
     }
 
