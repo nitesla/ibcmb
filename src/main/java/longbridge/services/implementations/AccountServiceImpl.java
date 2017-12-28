@@ -5,12 +5,9 @@ import longbridge.api.AccountInfo;
 import longbridge.dtos.AccountDTO;
 import longbridge.dtos.SettingDTO;
 import longbridge.exception.InternetBankingException;
-import longbridge.models.Account;
-import longbridge.models.CorporateUser;
-import longbridge.models.RetailUser;
-import longbridge.models.User;
-import longbridge.models.UserType;
+import longbridge.models.*;
 import longbridge.repositories.AccountRepo;
+import longbridge.repositories.CorporateRepo;
 import longbridge.security.userdetails.CustomUserPrincipal;
 import longbridge.services.AccountConfigService;
 import longbridge.services.AccountService;
@@ -48,16 +45,16 @@ public class AccountServiceImpl implements AccountService {
     Locale locale = LocaleContextHolder.getLocale();
     private Logger logger = LoggerFactory.getLogger(this.getClass());
     private AccountRepo accountRepo;
+    private CorporateRepo corporateRepo;
     private IntegrationService integrationService;
     private ModelMapper modelMapper;
     private AccountConfigService accountConfigService;
     private MessageSource messageSource;
     private ConfigurationService configurationService;
     @Autowired
-    private ConfigurationService configService;
-    @Autowired
-    public AccountServiceImpl(AccountRepo accountRepo, IntegrationService integrationService, ModelMapper modelMapper, AccountConfigService accountConfigService, MessageSource messageSource, ConfigurationService configurationService) {
+    public AccountServiceImpl(AccountRepo accountRepo, CorporateRepo corporateRepo, IntegrationService integrationService, ModelMapper modelMapper, AccountConfigService accountConfigService, MessageSource messageSource, ConfigurationService configurationService) {
         this.accountRepo = accountRepo;
+        this.corporateRepo = corporateRepo;
         this.integrationService = integrationService;
         this.modelMapper = modelMapper;
         this.accountConfigService = accountConfigService;
@@ -364,7 +361,7 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public List<AccountDTO> getAccountsForDebitAndCredit(String customerId) {
         List<AccountDTO> accountsForDebitAndCredit = new ArrayList<>();
-        SettingDTO dto = configService.getSettingByName("TRANSACTIONAL_ACCOUNTS");
+        SettingDTO dto = configurationService.getSettingByName("TRANSACTIONAL_ACCOUNTS");
         //Iterable<Account> accounts = this.getCustomerAccounts(customerId);
         Iterable<AccountDTO> accountDTOS = convertEntitiesToDTOs(this.getCustomerAccounts(customerId));
 
@@ -456,7 +453,7 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public Iterable<Account> getAccountsForCredit(List<Account> accounts) {
         List<Account> accountsForCredit = new ArrayList<>();
-        SettingDTO dto= configService.getSettingByName("TRANSACTIONAL_ACCOUNTS");
+        SettingDTO dto= configurationService.getSettingByName("TRANSACTIONAL_ACCOUNTS");
         if (dto!=null && dto.isEnabled()){
             String []list= StringUtils.split(dto.getValue(),",");
         accounts = accounts
@@ -497,7 +494,9 @@ public class AccountServiceImpl implements AccountService {
     		case CORPORATE : {	
     			CorporateUser user = (CorporateUser) currentUser;
     			Account acct = accountRepo.findFirstByAccountNumber(account);
-    			boolean valid = user.getCorporate().getAccounts().contains(acct);
+//    			boolean valid = accountRepo.accountInCorp(user.getCorporate(), acct);
+                Corporate corporate = corporateRepo.findOne(user.getCorporate().getId());
+    			boolean valid = corporate.getAccounts().contains(acct);
     			if(!valid) {
     				logger.warn("User " + user.toString() + "trying to access other accounts");
     				throw new InternetBankingException("Access Denied");

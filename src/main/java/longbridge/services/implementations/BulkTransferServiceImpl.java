@@ -11,6 +11,7 @@ import longbridge.exception.TransferRuleException;
 import longbridge.models.*;
 import longbridge.repositories.*;
 import longbridge.security.userdetails.CustomUserPrincipal;
+import longbridge.services.AccountService;
 import longbridge.services.BulkTransferService;
 import longbridge.services.ConfigurationService;
 import longbridge.services.CorporateService;
@@ -68,6 +69,9 @@ public class BulkTransferServiceImpl implements BulkTransferService {
     @Autowired
     private CorpTransferAuthRepo transferAuthRepo;
 
+    @Autowired
+    private AccountService accountService;
+
 
     @Autowired
     public BulkTransferServiceImpl(BulkTransferRepo bulkTransferRepo
@@ -83,8 +87,8 @@ public class BulkTransferServiceImpl implements BulkTransferService {
     @Override
     public String makeBulkTransferRequest(BulkTransfer bulkTransfer) {
         logger.trace("Transfer details valid {}", bulkTransfer);
-        //validate bulk transfer
 
+        accountService.validateAccount(bulkTransfer.getCustomerAccountNumber());
         bulkTransfer.setStatus(StatusCode.PROCESSING.toString());
         bulkTransfer.setStatusDescription("Processing Transaction");
         BulkTransfer transfer = bulkTransferRepo.save(bulkTransfer);
@@ -108,7 +112,7 @@ public class BulkTransferServiceImpl implements BulkTransferService {
     @Override
     public String saveBulkTransferRequestForAuthorization(BulkTransfer bulkTransfer) {
         logger.trace("Saving bulk transfer request", bulkTransfer);
-        //validate bulk transfer
+        accountService.validateAccount(bulkTransfer.getCustomerAccountNumber());
         if (corporateService.getApplicableTransferRule(bulkTransfer) == null) {
             throw new TransferRuleException(messageSource.getMessage("rule.unapplicable", null, locale));
         }
