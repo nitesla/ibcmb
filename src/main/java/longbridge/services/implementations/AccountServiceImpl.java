@@ -255,8 +255,9 @@ public class AccountServiceImpl implements AccountService {
     public String makePrimaryAccount(Long acctId, String customerId) throws InternetBankingException {
 
         try {
-            accountRepo.unsetPrimaryAccount(customerId);
             Account account = accountRepo.findFirstById(acctId);
+            validate(account);
+            accountRepo.unsetPrimaryAccount(customerId);
             account.setPrimaryFlag("Y");
             accountRepo.save(account);
             return messageSource.getMessage("success", null, locale);

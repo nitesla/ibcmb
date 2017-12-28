@@ -118,6 +118,7 @@ public class IntegrationServiceImpl implements IntegrationService {
 	public AccountStatement getAccountStatements(String accountNo, Date fromDate, Date toDate, String tranType,
 			String numOfTxn, PaginationDetails paginationDetails) {
 		AccountStatement statement = new AccountStatement();
+		validate(accountNo);
 		try {
 			SimpleDateFormat formatter = new SimpleDateFormat("dd-MMM-yyyy");
 			/*
@@ -149,6 +150,7 @@ public class IntegrationServiceImpl implements IntegrationService {
 	@Override
 	public AccountStatement getAccountStatements(String accountNo, Date fromDate, Date toDate, String tranType,
 			String numOfTxn) {
+		validate(accountNo);
 		AccountStatement statement = new AccountStatement();
 		try {
 			SimpleDateFormat formatter = new SimpleDateFormat("dd-MMM-yyyy");
