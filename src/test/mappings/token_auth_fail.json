@@ -1,0 +1,35 @@
+{
+  "request": {
+    "method": "POST",
+    "url": "/cmb-entrust-webservicetest/ws",
+    "bodyPatterns": [
+      {
+        "matchesXPath" : "//*[local-name()='performTokenAuth']"
+      },
+      {
+        "matchesXPath" : ".//arg0/appCode"
+      },
+      {
+        "matchesXPath" : ".//arg0/group"
+      },
+      {
+        "matchesXPath" : ".//arg0/userName"
+      },
+      {
+        "matchesXPath" : ".//arg0/tokenPin"
+      },
+      {
+       "matchesXPath" : ".//arg0[tokenPin/text()='123']"
+      }
+
+    ]
+  },
+  "response": {
+    "status": 200,
+     "body": "<S:Envelope xmlns:S=\"http:\/\/schemas.xmlsoap.org\/soap\/envelope\/\">\r\n   <S:Body>\r\n      <ns2:performTokenAuthResponse xmlns:ns2=\"http:\/\/ws.entrustplugin.expertedge.com\/\">\r\n         <return>\r\n            <authenticationSuccessful>false<\/authenticationSuccessful>\r\n            <respCode>-1<\/respCode>\r\n            <respMessage>User failed token authentication<\/respMessage>\r\n            <respMessageCode>USER_TOKEN_AUTHENTICATION_FAILED<\/respMessageCode>\r\n         <\/return>\r\n      <\/ns2:performTokenAuthResponse>\r\n   <\/S:Body>\r\n<\/S:Envelope>",
+    "headers": {
+      "Content-Type": "text/xml",
+      "Transfer-Encoding": "chunked"
+    }
+  }
+}

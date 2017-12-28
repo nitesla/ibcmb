@@ -1,0 +1,26 @@
+{
+  "id" : "1f008d5c-ff58-4f1b-b1ac-ee935cb5cce3",
+  "name" : "transfer_nameenquiry",
+  "request" : {
+    "url" : "/transfer/nameEnquiry",
+    "method" : "POST",
+     "bodyPatterns": [
+     
+      {
+        "matchesJsonPath": "$.destinationInstitutionCode"
+      },
+      {
+        "matchesJsonPath": "$.accountNumber"
+      }
+    ]
+  },
+  "response" : {
+    "status" : 200,
+    "body" : "{\"responseCode\":\"00\",\"responseDescription\":\"Approved or completed successfully\",\"accountName\":\"Ekenachi Fortunatus \",\"customerBVN\":\"12345678901\",\"customerKYC\":\"\",\"sessionId\":\"999001171229041643348196317811\"}",
+    "headers" : {
+      "X-Application-Context" : "application:newtest:8090",
+      "Content-Type" : "application/json;charset=UTF-8",
+      "Date" : "Wed, 20 Dec 2017 13:16:44 GMT"
+    }
+  }
+}

@@ -151,7 +151,7 @@ public class VerificationServiceImpl implements VerificationService {
 
             if ("ADD_CORPORATE".equals(verification.getOperation())) {
                 CorporateRequestDTO requestDTO = mapper.readValue(verification.getOriginalObject(), CorporateRequestDTO.class);
-                corporateService.saveCorporateRequest(requestDTO);
+                corporateService.addCorporate(requestDTO);
             } else if ("ADD_CORPORATE_ACCOUNT".equals(verification.getOperation())) {
                 CorporateRequestDTO requestDTO = mapper.readValue(verification.getOriginalObject(), CorporateRequestDTO.class);
                 corporateService.addAccounts(requestDTO);

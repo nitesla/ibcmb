@@ -1,0 +1,297 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="cctab2" language="groovy" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="b6e8ffa3-8c55-4d69-9e03-40a6bb1b422b">
+	<property name="ireport.zoom" value="2.0"/>
+	<property name="ireport.x" value="192"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="logo" class="java.io.InputStream"/>
+	<parameter name="transRequest.referenceNumber" class="java.lang.Integer"/>
+	<parameter name="transRequest.platform" class="java.lang.String"/>
+	<parameter name="transRequest.debitAccountName" class="java.lang.String"/>
+	<parameter name="transRequest.debitAccountNumber" class="java.lang.String"/>
+	<parameter name="transRequest.beneficiaryAccountName" class="java.lang.String"/>
+	<parameter name="transRequest.beneficiaryAccountNumber" class="java.lang.String"/>
+	<parameter name="transRequest.beneficiaryBank" class="java.lang.String"/>
+	<parameter name="transRequest.Amount" class="java.lang.String"/>
+	<parameter name="TransRequest.status" class="java.lang.String"/>
+	<parameter name="transRequest.charge" class="java.lang.String"/>
+	<parameter name="transRequest.date" class="java.lang.String"/>
+	<parameter name="transRequest.inputterName" class="java.lang.String"/>
+	<parameter name="transRequest.authorizersName" class="java.lang.String"/>
+	<parameter name="transRequest.reversalReason" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="159" splitType="Stretch">
+			<staticText>
+				<reportElement x="0" y="112" width="802" height="20" forecolor="#003057" uuid="4f2aa50a-b963-4ec1-a662-237b729b265d"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Fedra Sans" size="18"/>
+				</textElement>
+				<text><![CDATA[Reversal/Failed Report For Sole Corperation]]></text>
+			</staticText>
+			<textField pattern="dd MMMMM yyyy">
+				<reportElement x="0" y="0" width="100" height="20" uuid="0d28fe2f-a73a-4fc0-90f6-e06f180407c0"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Fedra Sans"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="602" y="0" width="200" height="73" uuid="a8bd4f68-3c08-470d-89c8-30e00500a4ca"/>
+				<textFieldExpression><![CDATA[""+$P{logo}]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="21" splitType="Stretch">
+			<rectangle>
+				<reportElement x="0" y="0" width="63" height="21" forecolor="#000000" backcolor="#003057" uuid="4465251e-9c96-4751-880b-de556a397b86"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="200" y="0" width="60" height="21" backcolor="#003057" uuid="e066193e-630a-406b-a665-b160225f368f"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="473" y="0" width="60" height="21" backcolor="#003057" uuid="441afe4d-6722-4a71-895b-8c970757c4cc"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="341" y="0" width="70" height="21" backcolor="#003057" uuid="41c8563f-ccc7-4e2d-ae4b-b44818480bcd"/>
+			</rectangle>
+			<staticText>
+				<reportElement x="2" y="1" width="61" height="20" forecolor="#FFFFFF" uuid="93698c49-b725-45c5-ab47-7d926adfacd2"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Fedra Sans" size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Transac.Ref.    Id]]></text>
+			</staticText>
+			<rectangle>
+				<reportElement x="63" y="0" width="56" height="21" forecolor="#000000" backcolor="#003057" uuid="abe6483b-cdd0-4890-a100-7f608e8a3fa0"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="119" y="0" width="81" height="21" backcolor="#003057" uuid="a7547e62-33ff-4701-8b1e-3360bae2d036"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="258" y="0" width="83" height="21" backcolor="#003057" uuid="b0d176c9-47b5-4f62-8574-55fb1a75236f"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="531" y="0" width="71" height="21" backcolor="#003057" uuid="30b00c79-2d9e-4c8c-ac05-085fce5b0b32"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="745" y="0" width="57" height="21" backcolor="#003057" uuid="60d1a14e-7b00-431b-8c1f-59d073946397"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="600" y="0" width="75" height="21" backcolor="#003057" uuid="892ee133-e999-49a8-8186-fd0b30d39210"/>
+			</rectangle>
+			<staticText>
+				<reportElement x="65" y="1" width="54" height="20" forecolor="#FFFFFF" uuid="37616387-b6f7-4aa9-8c56-30371b085e87"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Fedra Sans" size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Platform]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="121" y="1" width="79" height="20" forecolor="#FFFFFF" uuid="440cb98d-2a26-40f1-a020-39894497648f"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Fedra Sans" size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Debit Acc Name]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="202" y="1" width="54" height="20" forecolor="#FFFFFF" uuid="2067e07a-2a7f-4bfd-964c-ef095c85a5d9"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Fedra Sans" size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Debit Acc No]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="345" y="1" width="66" height="20" forecolor="#FFFFFF" uuid="101efe29-57cb-4f3c-8c8f-3e7a31068bb7"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Fedra Sans" size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Benef.Acc.No]]></text>
+			</staticText>
+			<rectangle>
+				<reportElement x="411" y="0" width="64" height="21" backcolor="#003057" uuid="fe5bb8bd-cbff-49c0-a64b-779ca9ac077d"/>
+			</rectangle>
+			<staticText>
+				<reportElement x="413" y="1" width="62" height="20" forecolor="#FFFFFF" uuid="0d030d64-b323-499a-acf5-206416d430bc"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Fedra Sans" size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Benef.Bank]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="260" y="1" width="81" height="20" forecolor="#FFFFFF" uuid="52a98d59-1b54-4796-80cf-f72eb3a0f5b0"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Fedra Sans" size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Benef.Name]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="478" y="1" width="53" height="20" forecolor="#FFFFFF" uuid="eb360312-5e84-4c5b-adad-c91482658e01"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Fedra Sans" size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Amount]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="533" y="1" width="67" height="20" forecolor="#FFFFFF" uuid="33341acc-8313-483b-93fc-a3cbd9faf31c"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Fedra Sans" size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Transaction. Status]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="602" y="1" width="73" height="20" forecolor="#FFFFFF" uuid="820cc3eb-e11b-42e4-b64f-70088aaaaebe"/>
+				<textElement>
+					<font fontName="Fedra Sans" size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Reversal Reason]]></text>
+			</staticText>
+			<rectangle>
+				<reportElement x="675" y="0" width="70" height="21" backcolor="#003057" uuid="1ace00d5-30cb-4711-bd41-4c5407ee5c02"/>
+			</rectangle>
+			<staticText>
+				<reportElement x="677" y="0" width="68" height="21" forecolor="#FFFFFF" uuid="e3dbc633-fe87-4850-8ef0-5cee603b64af"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Fedra Sans" size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Transac.Charge]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="747" y="0" width="55" height="21" forecolor="#FFFFFF" uuid="70117d53-85af-494a-921f-3fe6e65aea4f"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Fedra Sans" size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Date]]></text>
+			</staticText>
+		</band>
+	</pageHeader>
+	<detail>
+		<band height="20" splitType="Stretch">
+			<rectangle>
+				<reportElement x="0" y="0" width="63" height="20" uuid="ddbdea3f-019e-4524-89da-49ec0484f681"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="63" y="0" width="56" height="20" uuid="ac7cdd18-1fc9-445c-afd8-fb637d0dac22"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="119" y="0" width="81" height="20" uuid="f5e610ff-c637-4051-b468-efb31ac504f7"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="200" y="0" width="60" height="20" uuid="a476324c-8c2e-48d2-898a-fbbef97a29c9"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="341" y="0" width="70" height="20" uuid="c501e45c-2190-4b3e-b4b0-f9c3a2d30cb7"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="473" y="0" width="60" height="20" uuid="6d683956-b836-4500-8d6e-1905d3ff8849"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="531" y="0" width="71" height="20" uuid="e62af4af-3d89-45f7-8fa7-81873e3f2f80"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="675" y="0" width="70" height="20" uuid="116d916c-349b-4bb6-85db-6b3521a723d3"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="745" y="0" width="57" height="20" uuid="8252911c-afe9-4642-8964-a727422901d8"/>
+			</rectangle>
+			<textField>
+				<reportElement x="2" y="0" width="61" height="20" uuid="a403fd8a-de98-46ed-b3de-daae072e2e91"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Fedra Sans" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{transRequest.referenceNumber}]]></textFieldExpression>
+			</textField>
+			<rectangle>
+				<reportElement x="258" y="0" width="83" height="20" uuid="56ef9caa-b25a-4870-9296-6d652b6c84d5"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="600" y="0" width="75" height="20" uuid="04a53c47-a7e3-4291-8742-6196e84571a7"/>
+			</rectangle>
+			<textField>
+				<reportElement x="65" y="0" width="54" height="20" uuid="f0221a84-ebf6-4c4d-b894-ea7177c7be41"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Fedra Sans" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{transRequest.platform}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="121" y="0" width="79" height="20" uuid="5b027185-b0f7-4080-b545-7fc498999e4e"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Fedra Sans" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{transRequest.debitAccountName}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="202" y="0" width="58" height="20" uuid="7780f2ca-ce60-4a5a-a65e-9a641636b04b"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Fedra Sans" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{transRequest.debitAccountNumber}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="345" y="0" width="66" height="20" uuid="99e53d2c-d7ed-47e0-9c07-99a8b0da0391"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Fedra Sans" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{transRequest.beneficiaryAccountNumber}]]></textFieldExpression>
+			</textField>
+			<rectangle>
+				<reportElement x="411" y="0" width="64" height="20" uuid="fe0a23c4-819e-44ae-a3ab-4ecd6d50d6a4"/>
+			</rectangle>
+			<textField>
+				<reportElement x="413" y="0" width="62" height="20" uuid="7d175261-b075-4726-be52-df4264a79011"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Fedra Sans" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{transRequest.beneficiaryBank}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="260" y="0" width="81" height="20" uuid="4bd3f86a-17f4-4084-ad82-689cf2e8fe05"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Fedra Sans" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{transRequest.beneficiaryAccountName}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="477" y="0" width="56" height="20" uuid="f2fd4dc2-b233-4f5a-8f84-7b793f7531d3"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Fedra Sans" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{transRequest.Amount}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="533" y="0" width="69" height="20" uuid="ea9df20a-f12b-4670-ad53-3bc11329f5f8"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Fedra Sans" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{TransRequest.status}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="602" y="0" width="73" height="20" uuid="6ed3546b-b3c8-49ae-b2eb-31ce5f4cdd34"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Fedra Sans" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{transRequest.reversalReason}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="677" y="0" width="68" height="20" uuid="d3a26cb4-0853-4397-b16d-9797b3821795"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Fedra Sans" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{transRequest.charge}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="747" y="0" width="55" height="20" uuid="562cd4e4-2dfb-4dfb-a247-4895c731b999"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Fedra Sans" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{transRequest.date}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<summary>
+		<band height="47" splitType="Stretch"/>
+	</summary>
+</jasperReport>

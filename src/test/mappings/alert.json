@@ -1,0 +1,30 @@
+{
+  "request": {
+    "method": "POST",
+    "url": "/sendalert",
+    "bodyPatterns": [
+      {
+        "matchesJsonPath": "$.message"
+      },
+      {
+        "matchesJsonPath": "$.subject"
+      },
+      {
+        "matchesJsonPath": "$.alertType"
+      },
+      {
+        "matchesJsonPath": "$.contactList"
+      }
+    ]
+  },
+  "response": {
+    "status": 200,
+    "jsonBody": {
+      "message": "Successfully dispatched alerts",
+      "success": true
+    },
+    "headers": {
+      "Content-Type": "application/json"
+    }
+  }
+}

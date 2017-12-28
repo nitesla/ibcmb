@@ -70,9 +70,9 @@ public class CorpAccountController {
     private TransferService transferService;
 
     @Autowired
-    AccountRepo accountRepo;
+    private AccountRepo accountRepo;
     @Autowired
-    CodeService codeService;
+    private CodeService codeService;
 
     @Autowired
     private ApplicationContext appContext;
@@ -290,8 +290,9 @@ public class CorpAccountController {
         return "corp/account/view";
     }
 
+
     @GetMapping("/viewstatement/{id}")
-    public String getViewOnlyById(@PathVariable Long id,Model model) throws ParseException {
+    public String getViewOnlyById(@PathVariable Long id, Model model, Principal principal) throws ParseException {
         AccountDTO accountDTO = accountService.getAccount(id);
         model.addAttribute("acctNum",accountDTO.getAccountNumber());
         return "corp/account/view";

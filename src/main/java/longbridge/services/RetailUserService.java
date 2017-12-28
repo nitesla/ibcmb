@@ -1,6 +1,8 @@
 package longbridge.services;
 
 import longbridge.api.CustomerDetails;
+import longbridge.api.omnichannel.dto.CustomerInfo;
+import longbridge.api.omnichannel.dto.RetailUserCredentials;
 import longbridge.dtos.AccountDTO;
 import longbridge.dtos.RetailUserDTO;
 import longbridge.exception.InternetBankingException;
@@ -8,9 +10,7 @@ import longbridge.exception.PasswordException;
 import longbridge.forms.AlertPref;
 import longbridge.forms.CustChangePassword;
 import longbridge.forms.CustResetPassword;
-import longbridge.models.CorporateUser;
 import longbridge.models.RetailUser;
-import longbridge.models.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -153,5 +153,6 @@ public interface RetailUserService {
     void increaseNoOfTokenAttempt(RetailUser user);
     void resetNoOfTokenAttempt(RetailUser user);
     String validateAccount();
-    
+
+    CustomerInfo getCustomerInfo(RetailUserCredentials userCredentials);
 }

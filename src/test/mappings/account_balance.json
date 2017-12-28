@@ -1,0 +1,17 @@
+{
+  "id" : "e043e136-c429-41f7-b24f-297015b8e3ea",
+  "name" : "account_1990008109",
+  "request" : {
+    "urlPathPattern" : "/account/([0-9]+)",
+    "method" : "GET"
+  },
+  "response" : {
+    "status" : 200,
+    "body" : "{\"solId\":\"999\",\"acctOpenDate\":\"2017-01-18\",\"acctCrncyCode\":\"NGN\",\"freezeCode\":\" \",\"acctStatus\":\"A\",\"acctType\":\"ODA\",\"unClrBalAmt\":\"0\",\"ledgerBalAmt\":\"54000486601.31\",\"sanctLim\":\"0\",\"drwngPower\":\"0\",\"acctName\":\"SUNDAY A AKINOLA\",\"acctNumber\":\"1990008109\",\"schmCode\":\"610\",\"availableBalance\":\"54000486601.31\",\"custId\":\"R001965\",\"acid\":\"0140120\"}",
+    "headers" : {
+      "X-Application-Context" : "application:newtest:8090",
+      "Content-Type" : "application/json;charset=UTF-8",
+      "Date" : "Wed, 20 Dec 2017 13:16:43 GMT"
+    }
+  }
+}
