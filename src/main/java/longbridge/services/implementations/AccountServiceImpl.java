@@ -497,7 +497,8 @@ public class AccountServiceImpl implements AccountService {
     		case CORPORATE : {	
     			CorporateUser user = (CorporateUser) currentUser;
     			Account acct = accountRepo.findFirstByAccountNumber(account);
-    			boolean valid = user.getCorporate().getAccounts().contains(acct);
+    			boolean valid = accountRepo.accountInCorp(user.getCorporate(), acct);
+    			//boolean valid = user.getCorporate().getAccounts().contains(acct);
     			if(!valid) {
     				logger.warn("User " + user.toString() + "trying to access other accounts");
     				throw new InternetBankingException("Access Denied");
