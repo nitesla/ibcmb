@@ -442,6 +442,7 @@ public class CorpCustomDutyServiceImpl implements CorpCustomDutyService {
                 corpPaymentRequest.setTransferType(TransferType.CORONATION_BANK_TRANSFER);
                 corpPaymentRequest.setRemarks(paymentRemark);
                 CorpPaymentRequest paymentRequest = (CorpPaymentRequest)integrationService.makeTransfer(corpPaymentRequest);
+                corpPaymentRequestRepo.save(corpPaymentRequest);
                 logger.info("the payment status {}",paymentRequest);
                 if (paymentRequest != null && paymentRequest.getStatus() != null && (paymentRequest. getStatus().equals("00") || paymentRequest.getStatus().equals("000"))) {
                     updatePaymentRequest(corpPaymentRequest,paymentRequest);
@@ -467,7 +468,8 @@ public class CorpCustomDutyServiceImpl implements CorpCustomDutyService {
                     if("00".equals(customPaymentNotification.getCode()) || "000".equals(customPaymentNotification.getCode())){ // Transfer successful
                         return messageSource.getMessage(customPaymentNotification.getMessage(), null, locale);
                     }else{
-                        throw new InternetBankingTransferException(messageSource.getMessage("custom.payment.failed",null,locale));
+//                        throw new InternetBankingTransferException(messageSource.getMessage("custom.payment.failed",null,locale));
+                        return messageSource.getMessage(paymentRequest.getStatusDescription(), null, locale);
                     }
                 }
          }
