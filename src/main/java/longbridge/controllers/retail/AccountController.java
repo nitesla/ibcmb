@@ -574,8 +574,6 @@ public class AccountController {
 
 		} catch (ParseException e) {
 			logger.warn("didn't parse date", e);
-		}catch (Exception e){
-			logger.warn("error cause by", e.getMessage());
 		}
 		return objectMap;
 
@@ -640,6 +638,7 @@ public class AccountController {
 			logger.warn("didn't parse date {}", e);
 		}catch (Exception e){
 			logger.warn("error cause by {}", e.getMessage());
+			throw e;
 		}
 		return objectMap;
 

@@ -227,18 +227,12 @@ public class TransferServiceImpl implements TransferService {
 
     private void validateAccounts(TransferRequestDTO dto) throws InternetBankingTransferException {
 
-//
-//        Account account = accountService.getAccountByAccountNumber(dto.getCustomerAccountNumber());
-//        List<Account> userAccounts = accountService.getCustomerAccounts(getCurrentUser().getCustomerId());
-//        if(!userAccounts.contains(account)){
-//            throw new InternetBankingTransferException();
-//        }
-
+        accountService.validateAccount(dto.getCustomerAccountNumber());
         String bvn = integrationService.viewCustomerDetails(dto.getCustomerAccountNumber()).getBvn();
         if (bvn == null || bvn.isEmpty() || bvn.equalsIgnoreCase(""))
             throw new InternetBankingTransferException(TransferExceptions.NO_BVN.toString());
 
-
+ 
         if (!integrationService.viewAccountDetails(dto.getCustomerAccountNumber()).getAcctStatus().equalsIgnoreCase("A"))
             throw new InternetBankingTransferException(TransferExceptions.INVALID_ACCOUNT.toString());
 
@@ -275,5 +269,7 @@ public class TransferServiceImpl implements TransferService {
         RetailUser retailUser = (RetailUser) principal.getUser();
         return retailUser;
     }
+    
+    
 
 }
