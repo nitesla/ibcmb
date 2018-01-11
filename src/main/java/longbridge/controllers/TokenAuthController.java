@@ -230,4 +230,5 @@ public class TokenAuthController {
         redirectAttributes.addFlashAttribute("failure", messageSource.getMessage("otp.auth.failure", null, locale));
         return "redirect:/corporate/token";
     }
+    
 }

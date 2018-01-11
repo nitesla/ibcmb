@@ -803,6 +803,17 @@ public class AccountController {
 //		}
 		return null;
 	}
-
+      @GetMapping("/validate/session")
+      public @ResponseBody String getUserSession(Principal principal){
+	     logger.info ( "session check" );
+//        Authentication auth = SecurityContextHolder.getContext().getAuthentication ();
+	     // CustomUserPrincipal principal = (CustomUserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+	     if(principal == null){
+		    return "invalid";
+	     }else {
+		    logger.trace ( "user session valid" );
+		    return "valid";
+	     }
+      }
 }
 

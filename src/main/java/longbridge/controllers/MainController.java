@@ -8,12 +8,15 @@ import longbridge.exception.UnknownResourceException;
 import longbridge.models.CorporateUser;
 import longbridge.models.Email;
 import longbridge.models.RetailUser;
+import longbridge.security.userdetails.CustomUserPrincipal;
 import longbridge.services.*;
+import org.apache.http.HttpResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -25,7 +28,9 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.ServletException;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.security.Principal;
 import java.util.*;
@@ -62,11 +67,15 @@ public class MainController {
 
 
     @RequestMapping(value = {"/", "/home"})
-    public String getHomePage(HttpSession session) {
+    public String getHomePage(HttpSession session, HttpServletResponse response) {
 
         session.invalidate();
         SecurityContextHolder.clearContext();
-
+    //    session.set( "time_out_time",configurationService.getSettingByName ( "SESSION_TIMOUT" ) );
+	   Integer val = (Integer.parseInt (  configurationService.getSettingByName ( "SESSION_TIMEOUT" ).getValue () )) * 60;
+	   Cookie cookie = new Cookie ( "time_out_time",val.toString ());
+	   cookie.setMaxAge ( 10000 );
+	   response.addCookie ( cookie );
         return "index";
     }
 
@@ -507,6 +516,6 @@ public class MainController {
     public String terms() {
         return "terms";
     }
-
+  
 
 }
