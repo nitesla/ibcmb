@@ -1,6 +1,6 @@
 target/
 !.mvn/wrapper/maven-wrapper.jar
-!jacoco-0.7.9
+jacoco-0.7.9
 ### STS ###
 .apt_generated
 .classpath
