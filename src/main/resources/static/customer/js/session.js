@@ -8,7 +8,7 @@ setInterval(function() {
 
 function count(){
     counter ++ ;
-    console.log('conter now '+ counter)
+    console.log('conter now '+ counter);
     if(counter > sessionCheck){
         location.href = '/';
         console.log('session to  be expired ')
