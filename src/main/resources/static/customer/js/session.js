@@ -1,20 +1,42 @@
-function checkAndInvalidateSession() {
-    console.log("test session");
-    $.ajax({
-        type:'GET',
-        url:"/retail/account/validate/session",
-        async:true,
-        success:function(data1){
-            console.log("the session response "+data1);
-            result = ''+String(data1);
-            if(result == "invalid"){
-                window.location.href = "/retail/logout";
-            }else {
-                console.log("valid session");
-            }
-        },error:function (data1) {
-            console.log("error");
-            window.location.href = "/retail/logout";
+var counter  = 0 ;
+var sessionCheck = getCookie('time_out_time') ;
+
+setInterval(function() {
+    console.log('cookie value is'+getCookie('time_out_time'))
+    count();
+}, 1000);
+
+function count(){
+    counter ++ ;
+    console.log('conter now '+ counter)
+    if(counter > sessionCheck){
+        location.href = '/';
+        console.log('session to  be expired ')
+    }else{
+        console.log('still in session !')
+    }
+}
+
+$('body').on('click',function () {
+    console.log('body was clicked')
+    refreshCount();
+})
+
+function refreshCount(){
+    counter = 0 ;
+}
+function getCookie(cname) {
+    var name = cname + "=";
+    var decodedCookie = decodeURIComponent(document.cookie);
+    var ca = decodedCookie.split(';');
+    for(var i = 0; i <ca.length; i++) {
+        var c = ca[i];
+        while (c.charAt(0) == ' ') {
+            c = c.substring(1);
         }
-    });
+        if (c.indexOf(name) == 0) {
+            return c.substring(name.length, c.length);
+        }
+    }
+    return "";
 }
