@@ -34,7 +34,8 @@ import java.util.*;
  */
 @Controller
 @RequestMapping("/retail/transfer")
-public class CompletedTransferController {
+public class
+CompletedTransferController {
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
     private Locale locale = LocaleContextHolder.getLocale();
