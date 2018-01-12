@@ -10,6 +10,7 @@ import longbridge.models.Email;
 import longbridge.models.RetailUser;
 import longbridge.security.userdetails.CustomUserPrincipal;
 import longbridge.services.*;
+import longbridge.utils.CookieUtil;
 import org.apache.http.HttpResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,6 +33,7 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.io.IOException;
 import java.security.Principal;
 import java.util.*;
 
@@ -71,7 +73,6 @@ public class MainController {
 
         session.invalidate();
         SecurityContextHolder.clearContext();
-    //    session.set( "time_out_time",configurationService.getSettingByName ( "SESSION_TIMOUT" ) );
 	   Integer val = (Integer.parseInt (  configurationService.getSettingByName ( "SESSION_TIMEOUT" ).getValue () )) * 60;
 	   Cookie cookie = new Cookie ( "time_out_time",val.toString ());
 	   cookie.setMaxAge ( 10000 );
@@ -80,17 +81,28 @@ public class MainController {
     }
 
     @RequestMapping(value = "/login/retail", method = RequestMethod.GET)
-    public ModelAndView getLoginPage(@RequestParam Optional<String> error, @RequestParam Optional<HttpServletRequest> request, Model model) {
+    public ModelAndView getLoginPage(@RequestParam Optional<String> error, @RequestParam Optional<HttpServletRequest> request, Model model,HttpServletResponse response,HttpServletRequest requests,HttpSession session) {
 
         if (request.isPresent()) request.get().getSession().invalidate();
         //clearSession();
         SecurityContextHolder.clearContext();
+        Integer val = (Integer.parseInt (  configurationService.getSettingByName ( "SESSION_TIMEOUT" ).getValue () )) * 60;
+        Cookie cookie = CookieUtil.getCookie(requests);
+        cookie.setValue(val.toString ());
+        cookie.setPath("/");
+        response.addCookie(cookie);
         return new ModelAndView("retpage1", "error", error);
     }
 
     @RequestMapping(value = "/login/corporate", method = RequestMethod.GET)
-    public ModelAndView getCorpLoginPage(@RequestParam Optional<String> error, @RequestParam Optional<HttpServletRequest> request) {
+    public ModelAndView getCorpLoginPage(@RequestParam Optional<String> error, @RequestParam Optional<HttpServletRequest> request,HttpServletResponse response,HttpServletRequest requests) {
 //        SecurityContextHolder.clearContext();
+        Integer val = (Integer.parseInt (  configurationService.getSettingByName ( "SESSION_TIMEOUT" ).getValue () )) * 60;
+        Cookie cookie = CookieUtil.getCookie(requests);
+        cookie.setValue(val.toString ());
+        cookie.setPath("/");
+        response.addCookie(cookie);
+
         if (request.isPresent()) request.get().getSession().invalidate();
         //clearSession();
         return new ModelAndView("corppage1", "error", error);
@@ -98,7 +110,16 @@ public class MainController {
     }
 
     @GetMapping(value = "/login/admin")
-    public ModelAndView adminLogin( /*HttpServletRequest request*/) {
+    public ModelAndView adminLogin( HttpServletResponse response) {
+        try {
+            response.flushBuffer();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        Integer val = (Integer.parseInt (  configurationService.getSettingByName ( "SESSION_TIMEOUT" ).getValue () )) * 60;
+        Cookie cookie = new Cookie ( "time_out_time",val.toString ());
+        cookie.setMaxAge ( 10000 );
+        response.addCookie ( cookie );
         ModelAndView modelAndView = new ModelAndView();
 
         modelAndView.setViewName("admlogin");
@@ -106,7 +127,11 @@ public class MainController {
     }
 
     @GetMapping(value = "/login/ops")
-    public ModelAndView opsLogin(/*HttpServletRequest request*/) {
+    public ModelAndView opsLogin(HttpServletResponse response) {
+        Integer val = (Integer.parseInt (  configurationService.getSettingByName ( "SESSION_TIMEOUT" ).getValue () )) * 60;
+        Cookie cookie = new Cookie ( "time_out_time",val.toString ());
+        cookie.setMaxAge ( 10000 );
+        response.addCookie ( cookie );
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("opslogin");
 

@@ -41,7 +41,9 @@ public class RetailAuthenticationFailureHandler extends SimpleUrlAuthenticationF
         if (user != null && exception.getMessage().equalsIgnoreCase("Bad credentials")){
 
             failedLoginService.loginFailed(user);
-    }
+        }else {
+
+        }
 
         logger.error("Failed login authentication using credentials -- Username: {}, Password: ********",userName);
 
