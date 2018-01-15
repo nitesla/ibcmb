@@ -1,4 +1,10 @@
 target/
+jacoco-0.8.0/
+aspectjrt.jar
+aspectjtools.jar
+aspectjweaver.jar
+org.aspectj.matcher.jar
+spring-instrument-4.3.8.RELEASE.jar
 !.mvn/wrapper/maven-wrapper.jar
 application-longbridge.properties
 jacoco-0.7.9
