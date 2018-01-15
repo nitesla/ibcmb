@@ -15,7 +15,7 @@ public final class CookieUtil {
             if (request.getCookies() != null) {
                 for (Cookie cookie : request.getCookies()) {
                     if (cookie.getName().equalsIgnoreCase("time_out_time")) {
-                        System.out.println("cookie match");
+                       // System.out.println("cookie match");
                         return cookie;
                     }
                 }

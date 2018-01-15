@@ -40,7 +40,6 @@ public class CorporateAuthenticationFailureHandler extends SimpleUrlAuthenticati
         if (user != null) {
 
             failedLoginService.loginFailed(user);
-
         }
 
         logger.error("Failed login authentication using credentials -- Username: {}, Corporate ID: {}, Password: ********",userName,corpId);

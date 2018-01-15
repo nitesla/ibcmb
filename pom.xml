@@ -96,9 +96,9 @@
 
         <!--</dependency>-->
         <!--<dependency>-->
-            <!--<groupId>org.liquibase</groupId>-->
-            <!--<artifactId>liquibase-core</artifactId>-->
-            <!--<version>3.0.5</version>-->
+        <!--<groupId>org.liquibase</groupId>-->
+        <!--<artifactId>liquibase-core</artifactId>-->
+        <!--<version>3.0.5</version>-->
         <!--</dependency>-->
 
 
@@ -122,9 +122,9 @@
             <scope>test</scope>
         </dependency>
         <!--<dependency>-->
-            <!--<groupId>mysql</groupId>-->
-            <!--<artifactId>mysql-connector-java</artifactId>-->
-            <!--<scope>runtime</scope>-->
+        <!--<groupId>mysql</groupId>-->
+        <!--<artifactId>mysql-connector-java</artifactId>-->
+        <!--<scope>runtime</scope>-->
         <!--</dependency>-->
         <dependency>
             <groupId>com.oracle</groupId>
@@ -132,9 +132,9 @@
             <version>12.1.0</version>
         </dependency>
         <!--<dependency>-->
-            <!--<groupId>com.jaspersoft</groupId>-->
-            <!--<artifactId>jasperreports-functions</artifactId>-->
-            <!--<version>6.4.0</version>-->
+        <!--<groupId>com.jaspersoft</groupId>-->
+        <!--<artifactId>jasperreports-functions</artifactId>-->
+        <!--<version>6.4.0</version>-->
         <!--</dependency>-->
 
         <!--<dependency>-->
@@ -144,9 +144,9 @@
         <!--</dependency>-->
 
         <!--<dependency>-->
-            <!--<groupId>org.springframework.boot</groupId>-->
-            <!--<artifactId>spring-boot-starter-tomcat</artifactId>-->
-            <!--<scope>provided</scope>-->
+        <!--<groupId>org.springframework.boot</groupId>-->
+        <!--<artifactId>spring-boot-starter-tomcat</artifactId>-->
+        <!--<scope>provided</scope>-->
         <!--</dependency>-->
 
         <!-- hot swapping, disable cache for template, enable live reload -->
@@ -156,9 +156,9 @@
             <optional>true</optional>
         </dependency>
         <!--<dependency>-->
-            <!--<groupId>net.sf.jasperreports</groupId>-->
-            <!--<artifactId>jasperreports-fonts</artifactId>-->
-            <!--<version>6.0.0</version>-->
+        <!--<groupId>net.sf.jasperreports</groupId>-->
+        <!--<artifactId>jasperreports-fonts</artifactId>-->
+        <!--<version>6.0.0</version>-->
         <!--</dependency>-->
         <!--<dependency>-->
         <!--<groupId>org.springframework.boot</groupId>-->
@@ -345,15 +345,15 @@
             <version>4.3.8.RELEASE</version>
         </dependency>
         <!--<dependency>-->
-            <!--<groupId>org.aspectj</groupId>-->
-            <!--<artifactId>aspectjrt</artifactId>-->
-            <!--<version>1.8.9</version>-->
+        <!--<groupId>org.aspectj</groupId>-->
+        <!--<artifactId>aspectjrt</artifactId>-->
+        <!--<version>1.8.9</version>-->
         <!--</dependency>-->
 
         <!--<dependency>-->
-            <!--<groupId>org.aspectj</groupId>-->
-            <!--<artifactId>aspectjweaver</artifactId>-->
-            <!--<version>1.8.9</version>-->
+        <!--<groupId>org.aspectj</groupId>-->
+        <!--<artifactId>aspectjweaver</artifactId>-->
+        <!--<version>1.8.9</version>-->
         <!--</dependency>-->
 
 
@@ -390,20 +390,20 @@
                 <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
             <!--<plugin>-->
-                <!--<groupId>org.liquibase</groupId>-->
-                <!--<artifactId>liquibase-maven-plugin</artifactId>-->
-                <!--<version>3.0.5</version>-->
-                <!--<configuration>-->
-                    <!--<propertyFile>src/main/resources/liquibase/liquibase.properties</propertyFile>-->
-                <!--</configuration>-->
-                <!--<executions>-->
-                    <!--<execution>-->
-                        <!--<phase>process-resources</phase>-->
-                        <!--<goals>-->
-                            <!--<goal>update</goal>-->
-                        <!--</goals>-->
-                    <!--</execution>-->
-                <!--</executions>-->
+            <!--<groupId>org.liquibase</groupId>-->
+            <!--<artifactId>liquibase-maven-plugin</artifactId>-->
+            <!--<version>3.0.5</version>-->
+            <!--<configuration>-->
+            <!--<propertyFile>src/main/resources/liquibase/liquibase.properties</propertyFile>-->
+            <!--</configuration>-->
+            <!--<executions>-->
+            <!--<execution>-->
+            <!--<phase>process-resources</phase>-->
+            <!--<goals>-->
+            <!--<goal>update</goal>-->
+            <!--</goals>-->
+            <!--</execution>-->
+            <!--</executions>-->
             <!--</plugin>-->
 
             <plugin>
