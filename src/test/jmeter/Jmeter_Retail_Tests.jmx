@@ -3096,7 +3096,7 @@
             <hashTree/>
           </hashTree>
         </hashTree>
-        <RecordingController guiclass="RecordController" testclass="RecordingController" testname="Retail CMB Account Transfer to Existing Beneficiary" enabled="true"/>
+        <RecordingController guiclass="RecordController" testclass="RecordingController" testname="Retail CMB Account Transfer to Existing Beneficiary" enabled="false"/>
         <hashTree>
           <ConfigTestElement guiclass="HttpDefaultsGui" testclass="ConfigTestElement" testname="HTTP Request Defaults" enabled="true">
             <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
@@ -12237,7 +12237,9 @@
             </ConstantTimer>
             <hashTree/>
             <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="Response Assertion" enabled="true">
-              <collectionProp name="Asserion.test_strings"/>
+              <collectionProp name="Asserion.test_strings">
+                <stringProp name="-817519425">CORONATION_BANK_TRANSFER</stringProp>
+              </collectionProp>
               <stringProp name="Assertion.test_field">Assertion.response_data</stringProp>
               <boolProp name="Assertion.assume_success">false</boolProp>
               <intProp name="Assertion.test_type">16</intProp>
