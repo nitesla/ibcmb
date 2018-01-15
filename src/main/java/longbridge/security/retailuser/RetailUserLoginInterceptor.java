@@ -60,7 +60,7 @@ public class RetailUserLoginInterceptor extends HandlerInterceptorAdapter {
     @Override
     public void postHandle(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Object o, ModelAndView modelAndView) throws Exception {
 
-
+System.out.println("the post handle test");
     }
 
     @Override

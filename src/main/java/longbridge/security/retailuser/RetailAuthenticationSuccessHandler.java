@@ -81,7 +81,6 @@ public class RetailAuthenticationSuccessHandler extends SimpleUrlAuthenticationS
     protected String determineTargetUrl(final Authentication authentication) {
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         boolean isUser = retailUserRepo.findFirstByUserNameIgnoreCase(userDetails.getUsername()).getUserType().equals(UserType.RETAIL);
-
         SettingDTO setting = configService.getSettingByName("ENABLE_RETAIL_2FA");
         boolean tokenAuth = false;
         if (setting != null && setting.isEnabled()) {

@@ -10,7 +10,7 @@ function count(){
     counter ++ ;
     // console.log('conter now '+ counter);
     if(counter > sessionCheck){
-        location.href = '/';
+        location.reload();
         // console.log('session to  be expired ')
     }else{
         // console.log('still in session !')
