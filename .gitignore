@@ -1,5 +1,6 @@
 target/
 !.mvn/wrapper/maven-wrapper.jar
+application-longbridge.properties
 jacoco-0.7.9
 ### STS ###
 .apt_generated
