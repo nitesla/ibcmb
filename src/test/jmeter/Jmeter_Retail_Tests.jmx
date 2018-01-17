@@ -1107,7 +1107,7 @@
           <ModuleController guiclass="ModuleControllerGui" testclass="ModuleController" testname="Login" enabled="true">
             <collectionProp name="ModuleController.node_path">
               <stringProp name="-1227702913">WorkBench</stringProp>
-              <stringProp name="1249088350">Internet Banking Test Plan</stringProp>
+              <stringProp name="707805760">COMPLETED TRANSFER</stringProp>
               <stringProp name="-1948168983">Thread Group</stringProp>
               <stringProp name="73596745">Login</stringProp>
             </collectionProp>
@@ -2045,7 +2045,7 @@
           <ModuleController guiclass="ModuleControllerGui" testclass="ModuleController" testname="Login" enabled="true">
             <collectionProp name="ModuleController.node_path">
               <stringProp name="-1227702913">WorkBench</stringProp>
-              <stringProp name="1249088350">Internet Banking Test Plan</stringProp>
+              <stringProp name="707805760">COMPLETED TRANSFER</stringProp>
               <stringProp name="-1948168983">Thread Group</stringProp>
               <stringProp name="73596745">Login</stringProp>
             </collectionProp>
@@ -3187,7 +3187,7 @@
           <ModuleController guiclass="ModuleControllerGui" testclass="ModuleController" testname="Login" enabled="true">
             <collectionProp name="ModuleController.node_path">
               <stringProp name="-1227702913">WorkBench</stringProp>
-              <stringProp name="1249088350">Internet Banking Test Plan</stringProp>
+              <stringProp name="707805760">COMPLETED TRANSFER</stringProp>
               <stringProp name="-1948168983">Thread Group</stringProp>
               <stringProp name="73596745">Login</stringProp>
             </collectionProp>
