@@ -205,16 +205,16 @@ public class CorpTransferController {
     @ResponseBody
     String getAccountCurrency(@PathVariable String accountId) {
 
-      try {
-          Account account = accountService.getAccountByAccountNumber(accountId);
-          if(account !=null) {
-              return account.getCurrencyCode();
-          }
-      }
-      catch (Exception e){
-          logger.error("Error getting currency", e);
-      }
-      return "";
+        try {
+            Account account = accountService.getAccountByAccountNumber(accountId);
+            if(account !=null) {
+                return account.getCurrencyCode();
+            }
+        }
+        catch (Exception e){
+            logger.error("Error getting currency", e);
+        }
+        return "";
     }
 
 

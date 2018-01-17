@@ -434,7 +434,7 @@ public class CorpTransferServiceImpl implements CorpTransferService {
             } catch (InternetBankingTransferException te) {
                 throw te;
             } catch (Exception e) {
-                throw new InternetBankingException(messageSource.getMessage("transfer.auth.success", null, locale), e);
+                throw new InternetBankingException(messageSource.getMessage("transfer.auth.failure", null, locale), e);
             }
         } else {// RETRY_FAILED_TRANSFER is disabled, so we add the entry before checking for authorization completion
             try {
