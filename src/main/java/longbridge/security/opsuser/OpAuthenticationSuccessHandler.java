@@ -27,6 +27,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.transaction.Transactional;
 import java.io.IOException;
+import java.util.Date;
 
 @Component("opAuthenticationSuccessHandler")
 public class OpAuthenticationSuccessHandler extends SavedRequestAwareAuthenticationSuccessHandler {
@@ -62,8 +63,12 @@ public class OpAuthenticationSuccessHandler extends SavedRequestAwareAuthenticat
             failedLoginService.loginSucceeded(user);
 
         logger.info("Operations user {} successfully passed first authentication",user.getUserName());
-
-        operationsUserRepo.updateUserAfterLogin(authentication.getName());
+        user.setLastLoginDate(new Date());
+        user.setNoOfLoginAttempts(0);
+        user.setLockedUntilDate(null);
+        user.setStatus("A");
+        operationsUserRepo.save(user);
+//        operationsUserRepo.updateUserAfterLogin(authentication.getName());
         super.onAuthenticationSuccess(request, response, authentication);
 
     }

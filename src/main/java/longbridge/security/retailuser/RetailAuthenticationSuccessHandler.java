@@ -26,6 +26,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.util.Date;
 import java.util.Locale;
 
 @Component("retailAuthenticationSuccessHandler")
@@ -58,8 +59,13 @@ public class RetailAuthenticationSuccessHandler extends SimpleUrlAuthenticationS
             sessionUtils.validateExpiredPassword(user, session);
             //session.setAttribute("user",retailUserRepo.findFirstByUserName(authentication.getName()));
             logger.info("Retail user {} successfully passed first authentication",user.getUserName());
+            user.setLastLoginDate(new Date());
+            user.setNoOfLoginAttempts(0);
+            user.setLockedUntilDate(null);
+            user.setStatus("A");
+            retailUserRepo.save(user);
+//            retailUserRepo.updateUserAfterLogin(authentication.getName());
 
-            retailUserRepo.updateUserAfterLogin(authentication.getName());
             sessionUtils.sendAlert(user);
 
         }
