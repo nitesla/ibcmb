@@ -60,8 +60,8 @@ public class FailedLoginService {
     }
 
 
-    public boolean removalListener(User user) {
-        boolean ok = false;
+    public boolean isLockOutDurationExpired(User user) {
+        boolean unlocked = false;
 
         if (user != null) {
             try {
@@ -76,9 +76,8 @@ public class FailedLoginService {
                 Duration duration = new Duration(dateTime, DateTime.now());
                 if (duration.getStandardMinutes() >= getExpiryTime()) {
                     logger.trace("update user to no attempts login");
-
                     unLockUser(user);
-                    ok = true;
+                    unlocked = true;
 
                 }
 
@@ -93,18 +92,19 @@ public class FailedLoginService {
         }
 
 
-        return ok;
-
-    }
-    public void loginSucceeded(final User key) {
-        unLockUser(key);
+        return unlocked;
 
     }
 
-    public void loginFailed(final User key) {
+    public void loginSucceeded(final User user) {
+        unLockUser(user);
+
+    }
+
+    public void loginFailed(final User user) {
         int attempts = 0;
         try {
-            attempts = key.getNoOfLoginAttempts();
+            attempts = user.getNoOfLoginAttempts();
 
         } catch (final Exception e) {
             e.printStackTrace();
@@ -114,37 +114,29 @@ public class FailedLoginService {
         ++attempts;
 
 
-        key.setNoOfLoginAttempts(attempts);
-        if (getMaxAttempt()!=0 && key.getNoOfLoginAttempts() >= getMaxAttempt()) {
-            key.setStatus("L");
-            key.setLockedUntilDate( new DateTime().plusMinutes(getExpiryTime()).toDate());
+        user.setNoOfLoginAttempts(attempts);
+        if (getMaxAttempt() != 0 && user.getNoOfLoginAttempts() >= getMaxAttempt()) {
+            user.setStatus("L");
+            user.setLockedUntilDate(new DateTime().plusMinutes(getExpiryTime()).toDate());
         }
 
-        updateFailedLogin(key);
+        updateFailedLogin(user);
 
 
     }
 
-    public boolean isBlocked(final User key) {
+    public boolean isBlocked(final User user) {
         try {
-            //  return attemptsCache.get(key) >= getMaxAttempt();
 
-            boolean ok = key.getStatus().equalsIgnoreCase("L");
-            if (ok && !removalListener(key))
-
-
-                return
-                        key.getStatus().equalsIgnoreCase("L");
-
-
-            // return key.getStatus()>= getMaxAttempt();
+            boolean isLocked = user.getStatus().equalsIgnoreCase("L");
+            return isLocked && !isLockOutDurationExpired(user);
 
         } catch (final Exception e) {
             e.printStackTrace();
-            return false;
         }
         return false;
     }
+
     @Transactional
     private void updateFailedLogin(User user) {
         try {

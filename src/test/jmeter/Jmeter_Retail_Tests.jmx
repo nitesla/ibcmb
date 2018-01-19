@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jmeterTestPlan version="1.2" properties="3.2" jmeter="3.3 r1808647">
   <hashTree>
-    <TestPlan guiclass="TestPlanGui" testclass="TestPlan" testname="Internet Banking Test Plan" enabled="true">
+    <TestPlan guiclass="TestPlanGui" testclass="TestPlan" testname="Internet Banking Retail Test" enabled="true">
       <stringProp name="TestPlan.comments">These are integration tests for internet banking</stringProp>
       <boolProp name="TestPlan.functional_mode">false</boolProp>
       <boolProp name="TestPlan.serialize_threadgroups">false</boolProp>
@@ -42,15 +42,15 @@
           <stringProp name="checkQuery">select 1 from dual</stringProp>
           <stringProp name="connectionAge">5000</stringProp>
           <stringProp name="dataSource">database</stringProp>
-          <stringProp name="dbUrl">jdbc:oracle:thin:@192.168.1.150:1521:xe</stringProp>
+          <stringProp name="dbUrl">jdbc:oracle:thin:@localhost:1521:xe</stringProp>
           <stringProp name="driver">oracle.jdbc.OracleDriver</stringProp>
           <boolProp name="keepAlive">true</boolProp>
-          <stringProp name="password">ibanking</stringProp>
+          <stringProp name="password">ibtest2</stringProp>
           <stringProp name="poolMax">0</stringProp>
           <stringProp name="timeout">10000</stringProp>
           <stringProp name="transactionIsolation">DEFAULT</stringProp>
           <stringProp name="trimInterval">60000</stringProp>
-          <stringProp name="username">ibanking</stringProp>
+          <stringProp name="username">ibtest2</stringProp>
         </JDBCDataSource>
         <hashTree/>
         <GenericController guiclass="LogicControllerGui" testclass="GenericController" testname="Setup Operations" enabled="false"/>
@@ -571,7 +571,7 @@
           </Arguments>
           <hashTree/>
         </hashTree>
-        <RecordingController guiclass="RecordController" testclass="RecordingController" testname="Login &amp; Logout" enabled="false"/>
+        <RecordingController guiclass="RecordController" testclass="RecordingController" testname="Login &amp; Logout" enabled="true"/>
         <hashTree>
           <ResultCollector guiclass="ViewResultsFullVisualizer" testclass="ResultCollector" testname="View Results Tree" enabled="true">
             <boolProp name="ResultCollector.error_logging">false</boolProp>
@@ -1016,7 +1016,7 @@
             <hashTree/>
           </hashTree>
         </hashTree>
-        <RecordingController guiclass="RecordController" testclass="RecordingController" testname="Retail Interbank Transfer to Existing Beneficiary" enabled="false"/>
+        <RecordingController guiclass="RecordController" testclass="RecordingController" testname="Retail Interbank Transfer to Existing Beneficiary" enabled="true"/>
         <hashTree>
           <ConfigTestElement guiclass="HttpDefaultsGui" testclass="ConfigTestElement" testname="HTTP Request Defaults" enabled="true">
             <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
@@ -1107,7 +1107,7 @@
           <ModuleController guiclass="ModuleControllerGui" testclass="ModuleController" testname="Login" enabled="true">
             <collectionProp name="ModuleController.node_path">
               <stringProp name="-1227702913">WorkBench</stringProp>
-              <stringProp name="707805760">COMPLETED TRANSFER</stringProp>
+              <stringProp name="1910147382">Internet Banking Retail Test</stringProp>
               <stringProp name="-1948168983">Thread Group</stringProp>
               <stringProp name="73596745">Login</stringProp>
             </collectionProp>
@@ -1869,7 +1869,7 @@
           </CookieManager>
           <hashTree/>
         </hashTree>
-        <RecordingController guiclass="RecordController" testclass="RecordingController" testname="Retail Interbank Transfer to New Beneficiary" enabled="false"/>
+        <RecordingController guiclass="RecordController" testclass="RecordingController" testname="Retail Interbank Transfer to New Beneficiary" enabled="true"/>
         <hashTree>
           <ConfigTestElement guiclass="HttpDefaultsGui" testclass="ConfigTestElement" testname="HTTP Request Defaults" enabled="true">
             <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
@@ -2045,7 +2045,7 @@
           <ModuleController guiclass="ModuleControllerGui" testclass="ModuleController" testname="Login" enabled="true">
             <collectionProp name="ModuleController.node_path">
               <stringProp name="-1227702913">WorkBench</stringProp>
-              <stringProp name="707805760">COMPLETED TRANSFER</stringProp>
+              <stringProp name="1910147382">Internet Banking Retail Test</stringProp>
               <stringProp name="-1948168983">Thread Group</stringProp>
               <stringProp name="73596745">Login</stringProp>
             </collectionProp>
@@ -3096,7 +3096,7 @@
             <hashTree/>
           </hashTree>
         </hashTree>
-        <RecordingController guiclass="RecordController" testclass="RecordingController" testname="Retail CMB Account Transfer to Existing Beneficiary" enabled="false"/>
+        <RecordingController guiclass="RecordController" testclass="RecordingController" testname="Retail CMB Account Transfer to Existing Beneficiary" enabled="true"/>
         <hashTree>
           <ConfigTestElement guiclass="HttpDefaultsGui" testclass="ConfigTestElement" testname="HTTP Request Defaults" enabled="true">
             <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
@@ -3187,7 +3187,7 @@
           <ModuleController guiclass="ModuleControllerGui" testclass="ModuleController" testname="Login" enabled="true">
             <collectionProp name="ModuleController.node_path">
               <stringProp name="-1227702913">WorkBench</stringProp>
-              <stringProp name="707805760">COMPLETED TRANSFER</stringProp>
+              <stringProp name="1910147382">Internet Banking Retail Test</stringProp>
               <stringProp name="-1948168983">Thread Group</stringProp>
               <stringProp name="73596745">Login</stringProp>
             </collectionProp>
@@ -3934,7 +3934,7 @@
           </CookieManager>
           <hashTree/>
         </hashTree>
-        <RecordingController guiclass="RecordController" testclass="RecordingController" testname="Retail CMB Account transfer to New Beneficiary" enabled="false"/>
+        <RecordingController guiclass="RecordController" testclass="RecordingController" testname="Retail CMB Account transfer to New Beneficiary" enabled="true"/>
         <hashTree>
           <ConfigTestElement guiclass="HttpDefaultsGui" testclass="ConfigTestElement" testname="HTTP Request Defaults" enabled="true">
             <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
@@ -4105,7 +4105,7 @@
           <ModuleController guiclass="ModuleControllerGui" testclass="ModuleController" testname="Login" enabled="true">
             <collectionProp name="ModuleController.node_path">
               <stringProp name="-1227702913">WorkBench</stringProp>
-              <stringProp name="1249088350">Internet Banking Test Plan</stringProp>
+              <stringProp name="1910147382">Internet Banking Retail Test</stringProp>
               <stringProp name="-1948168983">Thread Group</stringProp>
               <stringProp name="73596745">Login</stringProp>
             </collectionProp>
@@ -5116,7 +5116,7 @@
             <hashTree/>
           </hashTree>
         </hashTree>
-        <RecordingController guiclass="RecordController" testclass="RecordingController" testname="Retail Own Account Transfer" enabled="false"/>
+        <RecordingController guiclass="RecordController" testclass="RecordingController" testname="Retail Own Account Transfer" enabled="true"/>
         <hashTree>
           <ConfigTestElement guiclass="HttpDefaultsGui" testclass="ConfigTestElement" testname="HTTP Request Defaults" enabled="true">
             <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
@@ -5207,7 +5207,7 @@
           <ModuleController guiclass="ModuleControllerGui" testclass="ModuleController" testname="Login" enabled="true">
             <collectionProp name="ModuleController.node_path">
               <stringProp name="-1227702913">WorkBench</stringProp>
-              <stringProp name="1249088350">Internet Banking Test Plan</stringProp>
+              <stringProp name="1910147382">Internet Banking Retail Test</stringProp>
               <stringProp name="-1948168983">Thread Group</stringProp>
               <stringProp name="73596745">Login</stringProp>
             </collectionProp>
@@ -5859,7 +5859,7 @@
           </CookieManager>
           <hashTree/>
         </hashTree>
-        <RecordingController guiclass="RecordController" testclass="RecordingController" testname="Add Transfer Beneficiary" enabled="false"/>
+        <RecordingController guiclass="RecordController" testclass="RecordingController" testname="Add Transfer Beneficiary" enabled="true"/>
         <hashTree>
           <ConfigTestElement guiclass="HttpDefaultsGui" testclass="ConfigTestElement" testname="HTTP Request Defaults" enabled="true">
             <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
@@ -5962,7 +5962,7 @@
           <ModuleController guiclass="ModuleControllerGui" testclass="ModuleController" testname="Login" enabled="true">
             <collectionProp name="ModuleController.node_path">
               <stringProp name="-1227702913">WorkBench</stringProp>
-              <stringProp name="1249088350">Internet Banking Test Plan</stringProp>
+              <stringProp name="1910147382">Internet Banking Retail Test</stringProp>
               <stringProp name="-1948168983">Thread Group</stringProp>
               <stringProp name="73596745">Login</stringProp>
             </collectionProp>
@@ -6392,7 +6392,7 @@
           </CookieManager>
           <hashTree/>
         </hashTree>
-        <RecordingController guiclass="RecordController" testclass="RecordingController" testname="Delete Transfer Beneficiary" enabled="false"/>
+        <RecordingController guiclass="RecordController" testclass="RecordingController" testname="Delete Transfer Beneficiary" enabled="true"/>
         <hashTree>
           <ConfigTestElement guiclass="HttpDefaultsGui" testclass="ConfigTestElement" testname="HTTP Request Defaults" enabled="true">
             <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
@@ -6483,7 +6483,7 @@
           <ModuleController guiclass="ModuleControllerGui" testclass="ModuleController" testname="Login" enabled="true">
             <collectionProp name="ModuleController.node_path">
               <stringProp name="-1227702913">WorkBench</stringProp>
-              <stringProp name="1249088350">Internet Banking Test Plan</stringProp>
+              <stringProp name="1910147382">Internet Banking Retail Test</stringProp>
               <stringProp name="-1948168983">Thread Group</stringProp>
               <stringProp name="73596745">Login</stringProp>
             </collectionProp>
@@ -6724,7 +6724,7 @@
           </CookieManager>
           <hashTree/>
         </hashTree>
-        <RecordingController guiclass="RecordController" testclass="RecordingController" testname="Customize Account" enabled="false"/>
+        <RecordingController guiclass="RecordController" testclass="RecordingController" testname="Customize Account" enabled="true"/>
         <hashTree>
           <ConfigTestElement guiclass="HttpDefaultsGui" testclass="ConfigTestElement" testname="HTTP Request Defaults" enabled="true">
             <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
@@ -6815,7 +6815,7 @@
           <ModuleController guiclass="ModuleControllerGui" testclass="ModuleController" testname="Login" enabled="true">
             <collectionProp name="ModuleController.node_path">
               <stringProp name="-1227702913">WorkBench</stringProp>
-              <stringProp name="1249088350">Internet Banking Test Plan</stringProp>
+              <stringProp name="1910147382">Internet Banking Retail Test</stringProp>
               <stringProp name="-1948168983">Thread Group</stringProp>
               <stringProp name="73596745">Login</stringProp>
             </collectionProp>
@@ -7006,7 +7006,7 @@
           </CookieManager>
           <hashTree/>
         </hashTree>
-        <RecordingController guiclass="RecordController" testclass="RecordingController" testname="Account Setting" enabled="false"/>
+        <RecordingController guiclass="RecordController" testclass="RecordingController" testname="Account Setting" enabled="true"/>
         <hashTree>
           <ConfigTestElement guiclass="HttpDefaultsGui" testclass="ConfigTestElement" testname="HTTP Request Defaults" enabled="true">
             <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
@@ -7107,7 +7107,7 @@
           <ModuleController guiclass="ModuleControllerGui" testclass="ModuleController" testname="Login" enabled="true">
             <collectionProp name="ModuleController.node_path">
               <stringProp name="-1227702913">WorkBench</stringProp>
-              <stringProp name="1249088350">Internet Banking Test Plan</stringProp>
+              <stringProp name="1910147382">Internet Banking Retail Test</stringProp>
               <stringProp name="-1948168983">Thread Group</stringProp>
               <stringProp name="73596745">Login</stringProp>
             </collectionProp>
@@ -7318,7 +7318,7 @@
           </CookieManager>
           <hashTree/>
         </hashTree>
-        <RecordingController guiclass="RecordController" testclass="RecordingController" testname="Completed Transfer" enabled="false"/>
+        <RecordingController guiclass="RecordController" testclass="RecordingController" testname="Completed Transfer" enabled="true"/>
         <hashTree>
           <ConfigTestElement guiclass="HttpDefaultsGui" testclass="ConfigTestElement" testname="HTTP Request Defaults" enabled="true">
             <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
@@ -7409,7 +7409,7 @@
           <ModuleController guiclass="ModuleControllerGui" testclass="ModuleController" testname="Login" enabled="true">
             <collectionProp name="ModuleController.node_path">
               <stringProp name="-1227702913">WorkBench</stringProp>
-              <stringProp name="1249088350">Internet Banking Test Plan</stringProp>
+              <stringProp name="1910147382">Internet Banking Retail Test</stringProp>
               <stringProp name="-1948168983">Thread Group</stringProp>
               <stringProp name="73596745">Login</stringProp>
             </collectionProp>
@@ -7887,7 +7887,7 @@
           </CookieManager>
           <hashTree/>
         </hashTree>
-        <RecordingController guiclass="RecordController" testclass="RecordingController" testname="Change Password" enabled="false"/>
+        <RecordingController guiclass="RecordController" testclass="RecordingController" testname="Change Password" enabled="true"/>
         <hashTree>
           <ConfigTestElement guiclass="HttpDefaultsGui" testclass="ConfigTestElement" testname="HTTP Request Defaults" enabled="true">
             <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
@@ -7978,7 +7978,7 @@
           <ModuleController guiclass="ModuleControllerGui" testclass="ModuleController" testname="Login" enabled="true">
             <collectionProp name="ModuleController.node_path">
               <stringProp name="-1227702913">WorkBench</stringProp>
-              <stringProp name="1249088350">Internet Banking Test Plan</stringProp>
+              <stringProp name="1910147382">Internet Banking Retail Test</stringProp>
               <stringProp name="-1948168983">Thread Group</stringProp>
               <stringProp name="73596745">Login</stringProp>
             </collectionProp>
@@ -8201,7 +8201,7 @@
           </CookieManager>
           <hashTree/>
         </hashTree>
-        <RecordingController guiclass="RecordController" testclass="RecordingController" testname="Retrieve Username" enabled="false"/>
+        <RecordingController guiclass="RecordController" testclass="RecordingController" testname="Retrieve Username" enabled="true"/>
         <hashTree>
           <ConfigTestElement guiclass="HttpDefaultsGui" testclass="ConfigTestElement" testname="HTTP Request Defaults" enabled="true">
             <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
@@ -8684,7 +8684,7 @@
           </Arguments>
           <hashTree/>
         </hashTree>
-        <RecordingController guiclass="RecordController" testclass="RecordingController" testname="Reset Password" enabled="false"/>
+        <RecordingController guiclass="RecordController" testclass="RecordingController" testname="Reset Password" enabled="true"/>
         <hashTree>
           <ConfigTestElement guiclass="HttpDefaultsGui" testclass="ConfigTestElement" testname="HTTP Request Defaults" enabled="true">
             <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
@@ -9598,7 +9598,7 @@
           </CookieManager>
           <hashTree/>
         </hashTree>
-        <RecordingController guiclass="RecordController" testclass="RecordingController" testname="Self Registration" enabled="false"/>
+        <RecordingController guiclass="RecordController" testclass="RecordingController" testname="Self Registration" enabled="true"/>
         <hashTree>
           <ConfigTestElement guiclass="HttpDefaultsGui" testclass="ConfigTestElement" testname="HTTP Request Defaults" enabled="true">
             <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
@@ -11979,210 +11979,180 @@
                   <stringProp name="Argument.name">columns%5B4%5D.data</stringProp>
                   <stringProp name="Argument.value">remarks</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
-                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="columns%5B2%5D.search.regex" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">true</boolProp>
                   <stringProp name="Argument.name">columns%5B2%5D.search.regex</stringProp>
                   <stringProp name="Argument.value">false</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
-                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="columns%5B5%5D.search.regex" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">true</boolProp>
                   <stringProp name="Argument.name">columns%5B5%5D.search.regex</stringProp>
                   <stringProp name="Argument.value">false</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
-                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="_" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">true</boolProp>
                   <stringProp name="Argument.name">_</stringProp>
                   <stringProp name="Argument.value">1515495604993</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
-                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="columns%5B1%5D.orderable" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">true</boolProp>
                   <stringProp name="Argument.name">columns%5B1%5D.orderable</stringProp>
                   <stringProp name="Argument.value">true</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
-                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="columns%5B5%5D.data" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">true</boolProp>
                   <stringProp name="Argument.name">columns%5B5%5D.data</stringProp>
                   <stringProp name="Argument.value">id</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
-                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="columns%5B2%5D.orderable" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">true</boolProp>
                   <stringProp name="Argument.name">columns%5B2%5D.orderable</stringProp>
                   <stringProp name="Argument.value">true</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
-                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="columns%5B3%5D.search.value" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">true</boolProp>
                   <stringProp name="Argument.name">columns%5B3%5D.search.value</stringProp>
                   <stringProp name="Argument.value"></stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
-                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="columns%5B4%5D.orderable" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">true</boolProp>
                   <stringProp name="Argument.name">columns%5B4%5D.orderable</stringProp>
                   <stringProp name="Argument.value">true</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
-                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="columns%5B0%5D.search.regex" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">true</boolProp>
                   <stringProp name="Argument.name">columns%5B0%5D.search.regex</stringProp>
                   <stringProp name="Argument.value">false</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
-                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="columns%5B0%5D.orderable" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">true</boolProp>
                   <stringProp name="Argument.name">columns%5B0%5D.orderable</stringProp>
                   <stringProp name="Argument.value">true</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
-                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="columns%5B5%5D.orderable" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">true</boolProp>
                   <stringProp name="Argument.name">columns%5B5%5D.orderable</stringProp>
                   <stringProp name="Argument.value">true</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
-                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="search.regex" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">true</boolProp>
                   <stringProp name="Argument.name">search.regex</stringProp>
                   <stringProp name="Argument.value">false</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
-                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="start" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">true</boolProp>
                   <stringProp name="Argument.name">start</stringProp>
                   <stringProp name="Argument.value">0</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
-                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="length" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">true</boolProp>
                   <stringProp name="Argument.name">length</stringProp>
                   <stringProp name="Argument.value">5</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
-                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="columns%5B0%5D.search.value" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">true</boolProp>
                   <stringProp name="Argument.name">columns%5B0%5D.search.value</stringProp>
                   <stringProp name="Argument.value"></stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
-                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="columns%5B3%5D.search.regex" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">true</boolProp>
                   <stringProp name="Argument.name">columns%5B3%5D.search.regex</stringProp>
                   <stringProp name="Argument.value">false</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
-                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="columns%5B0%5D.searchable" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">true</boolProp>
                   <stringProp name="Argument.name">columns%5B0%5D.searchable</stringProp>
                   <stringProp name="Argument.value">true</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
-                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="draw" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">true</boolProp>
                   <stringProp name="Argument.name">draw</stringProp>
                   <stringProp name="Argument.value">1</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
-                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="columns%5B2%5D.searchable" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">true</boolProp>
                   <stringProp name="Argument.name">columns%5B2%5D.searchable</stringProp>
                   <stringProp name="Argument.value">true</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
-                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="columns%5B4%5D.searchable" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">true</boolProp>
                   <stringProp name="Argument.name">columns%5B4%5D.searchable</stringProp>
                   <stringProp name="Argument.value">true</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
-                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="columns%5B0%5D.data" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">true</boolProp>
                   <stringProp name="Argument.name">columns%5B0%5D.data</stringProp>
                   <stringProp name="Argument.value">tranDate</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
-                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="columns%5B0%5D.name" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">true</boolProp>
                   <stringProp name="Argument.name">columns%5B0%5D.name</stringProp>
                   <stringProp name="Argument.value"></stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
-                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="columns%5B1%5D.name" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">true</boolProp>
                   <stringProp name="Argument.name">columns%5B1%5D.name</stringProp>
                   <stringProp name="Argument.value"></stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
-                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="search.value" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">true</boolProp>
                   <stringProp name="Argument.name">search.value</stringProp>
                   <stringProp name="Argument.value"></stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
-                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="columns%5B2%5D.name" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">true</boolProp>
                   <stringProp name="Argument.name">columns%5B2%5D.name</stringProp>
                   <stringProp name="Argument.value"></stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
-                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="columns%5B3%5D.name" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">true</boolProp>
                   <stringProp name="Argument.name">columns%5B3%5D.name</stringProp>
                   <stringProp name="Argument.value"></stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
-                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="columns%5B3%5D.orderable" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">true</boolProp>
                   <stringProp name="Argument.name">columns%5B3%5D.orderable</stringProp>
                   <stringProp name="Argument.value">true</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
-                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="columns%5B5%5D.search.value" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">true</boolProp>
                   <stringProp name="Argument.name">columns%5B5%5D.search.value</stringProp>
                   <stringProp name="Argument.value"></stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
-                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
                 <elementProp name="columns%5B2%5D.search.value" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">true</boolProp>
                   <stringProp name="Argument.name">columns%5B2%5D.search.value</stringProp>
                   <stringProp name="Argument.value"></stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
-                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
               </collectionProp>
             </elementProp>
@@ -12235,15 +12205,6 @@
             <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Constant Timer" enabled="true">
               <stringProp name="ConstantTimer.delay">1409</stringProp>
             </ConstantTimer>
-            <hashTree/>
-            <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="Response Assertion" enabled="true">
-              <collectionProp name="Asserion.test_strings">
-                <stringProp name="-817519425">CORONATION_BANK_TRANSFER</stringProp>
-              </collectionProp>
-              <stringProp name="Assertion.test_field">Assertion.response_data</stringProp>
-              <boolProp name="Assertion.assume_success">false</boolProp>
-              <intProp name="Assertion.test_type">16</intProp>
-            </ResponseAssertion>
             <hashTree/>
           </hashTree>
           <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Download receipt" enabled="true">
