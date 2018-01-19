@@ -34,19 +34,22 @@ public class CronJobScheduler {
                 .newTrigger()
                 .withIdentity("oneTime", "ibtest")
                 .withSchedule(
+//                        CronScheduleBuilder.cronSchedule("0 0/1 * 1/1 * ? *"))
                         CronScheduleBuilder.cronSchedule(cronJobService.getCurrentExpression("category2")))
                 .build();
 
         Trigger fiveMins = TriggerBuilder
                 .newTrigger()
                 .withIdentity("fiveMins", "ibtest")
+//                .withSchedule(CronScheduleBuilder.cronSchedule("0 0/1 * 1/1 * ? *"))
                 .withSchedule(CronScheduleBuilder.cronSchedule(cronJobService.getCurrentExpression("category1")))
                 .build();
         Trigger twentyFourHours = TriggerBuilder
                 .newTrigger()
                 .withIdentity("twentyFourHours", "bcons")
-                .withSchedule(
-                        CronScheduleBuilder.cronSchedule(cronJobService.getCurrentExpression("category3")))
+                .withSchedule(CronScheduleBuilder.cronSchedule(cronJobService.getCurrentExpression("category1")))
+
+//                .withSchedule(CronScheduleBuilder.cronSchedule("0 0/1 * 1/1 * ? *"))
                 .build();
         /**
          * STart Schedules.............

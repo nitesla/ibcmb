@@ -141,7 +141,8 @@ public class CorpInterBankTransferController {
                             .collect(Collectors.toList())
             );
 
-            return page + "pageiB";        } catch (InternetBankingTransferException e) {
+            return page + "pageiB";
+        } catch (InternetBankingTransferException e) {
             String errorMessage = transferErrorService.getMessage(e);
             redirectAttributes.addFlashAttribute("failure", errorMessage);
             return "redirect:/corporate/dashboard";

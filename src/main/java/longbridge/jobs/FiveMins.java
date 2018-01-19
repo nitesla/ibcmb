@@ -22,10 +22,11 @@ public class FiveMins implements Job {
 //        System.out.println("five minute job runing");
         try {
 //            cronJobService.saveRunningJob("in-built",cronJobService.getCurrentExpression());
-            cronJobService.updateAccountDetials();
-            cronJobService.updateCorporateDetails();
+//            cronJobService.updateAccountDetials();
+//            cronJobService.updateCorporateDetails();
 //            cronJobService.addNewAccount();
 //            cronJobService.updateRunningJob();
+            System.out.println("five minutes");
         } catch (InternetBankingException e) {
             e.printStackTrace();
         }catch (Exception e){

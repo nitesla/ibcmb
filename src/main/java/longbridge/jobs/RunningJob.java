@@ -29,14 +29,15 @@ public class RunningJob implements Job {
     public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
         ApplicationContext context = SpringContext.getApplicationContext();
         CronJobService cronJobService = context.getBean (CronJobService.class);
-        System.out.println("hourly job runing");
+//        System.out.println("hourly job runing");
         try {
+            System.out.println("hourly job runing");
 //            CompileJasper.compile();
-            cronJobService.saveRunningJob("in-built",cronJobService.getCurrentExpression("category1"));
+//            cronJobService.saveRunningJob("in-built",cronJobService.getCurrentExpression("category1"));
 //            cronJobService.updateAccountDetials();
-            cronJobService.updateRetailUserDetails();
-            cronJobService.updateCorporateUserDetails();
-            cronJobService.updateRunningJob();
+//            cronJobService.updateRetailUserDetails();
+//            cronJobService.updateCorporateUserDetails();
+//            cronJobService.updateRunningJob();
         } catch (InternetBankingException e) {
             e.printStackTrace();
         }catch (Exception e){
