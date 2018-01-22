@@ -349,7 +349,7 @@ public class CorpNAPSTransferController {
                     Cell currentCell = currentRow.getCell(i);
                     System.out.println(currentCell);
                     if (currentCell == null || currentCell.getCellType() == Cell.CELL_TYPE_BLANK || currentCell.toString().isEmpty() || currentCell.toString() == null) {
-                        cellData.add("ERROR HERE");
+                        cellData.add("ERROR: Empty cell");
                     } else {
                         cellData.add(currentCell);
                     }
@@ -362,16 +362,16 @@ public class CorpNAPSTransferController {
                 Long id = Long.valueOf(rowIndex);
                 creditRequest.setId(id);
 
-                if (!(NumberUtils.isDigits(cellData.get(0).toString())) && !(cellData.get(0).toString().equalsIgnoreCase("ERROR HERE"))) {
-                    creditRequest.setAccountNumber("ERROR HERE");
+                if (!(NumberUtils.isDigits(cellData.get(0).toString())) && !(cellData.get(0).toString().contains("ERROR"))) {
+                    creditRequest.setAccountNumber("ERROR: Not a number");
                 } else {
                     creditRequest.setAccountNumber(cellData.get(0).toString());
                 }
 
                 creditRequest.setAccountName(cellData.get(1).toString());
 
-                if (!(NumberUtils.isParsable(cellData.get(2).toString())) && !(cellData.get(2).toString().equalsIgnoreCase("ERROR HERE"))) {
-                    creditRequest.setAmount("ERROR HERE");
+                if (!(NumberUtils.isParsable(cellData.get(2).toString())) && !(cellData.get(2).toString().contains("ERROR"))) {
+                    creditRequest.setAmount("ERROR: Invalid Amount");
                 } else {
                     creditRequest.setAmount(cellData.get(2).toString());
                 }
@@ -379,14 +379,19 @@ public class CorpNAPSTransferController {
                 creditRequest.setNarration(cellData.get(3).toString());
 
 
-                if (!(NumberUtils.isDigits(cellData.get(4).toString())) && !(cellData.get(4).toString().equalsIgnoreCase("ERROR HERE"))) {
-                    creditRequest.setSortCode("ERROR HERE");
-                } else if (cellData.get(4).toString().equalsIgnoreCase("ERROR HERE")) {
-                    creditRequest.setSortCode("ERROR HERE");
+                if (!(NumberUtils.isDigits(cellData.get(4).toString())) && !(cellData.get(4).toString().contains("ERROR"))) {
+                    creditRequest.setSortCode("ERROR: Not a Number");
+                } else if (cellData.get(4).toString().contains("ERROR")) {
+                    creditRequest.setSortCode("ERROR: Not a Number");
                 } else {
                     String bankCode = cellData.get(4).toString();
-                    String sortCode = financialInstitutionService.getFinancialInstitutionByCode(bankCode).getSortCode();
-                    creditRequest.setSortCode(sortCode);
+                    FinancialInstitution financialInstitution = financialInstitutionService.getFinancialInstitutionByBankCode(bankCode);
+                    if(financialInstitution != null) {
+                        String sortCode = financialInstitution.getSortCode();
+                        creditRequest.setSortCode(sortCode);
+                    }else{
+                        creditRequest.setSortCode("ERROR: Invalid Bank Code");
+                    }
                 }
                 crLists.add(creditRequest);
 

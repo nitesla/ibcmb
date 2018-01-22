@@ -201,6 +201,11 @@ public class FinancialInstitutionServiceImpl implements FinancialInstitutionServ
     }
 
     @Override
+    public FinancialInstitution getFinancialInstitutionByBankCode(String institutionCode) {
+        return financialInstitutionRepo.findBySortCode(institutionCode);
+    }
+
+    @Override
     public FinancialInstitution getFinancialInstitutionByName(String institutionName) {
         return financialInstitutionRepo.findFirstByInstitutionNameIgnoreCase(institutionName);
     }

@@ -62,7 +62,7 @@
                                 <th>Beneficiary Name</th>
                                 <th>Amount (N)</th>
                                 <th>Narration</th>
-                                <th>Sort Code</th>
+                                <th>Bank Code</th>
                             </thead>
                             <tbody>
 
@@ -139,9 +139,9 @@
                     "columnDefs": [{
                         "targets": '_all',
                         "render": function(data, type, full, meta) {
-                            if (data == "ERROR HERE") {
+                            if (data.includes("ERROR")) {
                                 errorCount = errorCount + 1;
-                                return '<input type="text" style="background:transparent" value="' + data + '" style = "color: red" readonly/>';
+                                return '<input type="text" style="background:transparent;color: red" value="' + data + '"  readonly/>';
 
                             }
                             if (errorCount > 0) {
