@@ -30,9 +30,9 @@ public class CorporateAuthenticationSuccessHandler implements AuthenticationSucc
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
     @Autowired
-    SessionUtils sessionUtils;
+    private SessionUtils sessionUtils;
     @Autowired
-    FailedLoginService failedLoginService;
+    private FailedLoginService failedLoginService;
     private LocalDate today = LocalDate.now();
     private RedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
     @Autowired
