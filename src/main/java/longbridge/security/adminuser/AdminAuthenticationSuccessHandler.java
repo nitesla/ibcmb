@@ -25,6 +25,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.transaction.Transactional;
 import java.io.IOException;
+import java.util.Date;
 
 @Component("adminAuthenticationSuccessHandler")
 public class AdminAuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
@@ -62,8 +63,12 @@ public class AdminAuthenticationSuccessHandler extends SimpleUrlAuthenticationSu
         }
 
         logger.info("Admin user {} successfully passed first authentication",user.getUserName());
-
-        adminUserRepo.updateUserAfterLogin(authentication.getName());
+        user.setLastLoginDate(new Date());
+        user.setNoOfLoginAttempts(0);
+        user.setLockedUntilDate(null);
+        user.setStatus("A");
+        adminUserRepo.save(user);
+//        adminUserRepo.updateUserAfterLogin(authentication.getName());
 
         sessionUtils.sendAlert(user);
         super.onAuthenticationSuccess(request, response, authentication);

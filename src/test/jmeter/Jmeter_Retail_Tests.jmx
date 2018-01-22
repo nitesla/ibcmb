@@ -37,7 +37,7 @@
         <stringProp name="ThreadGroup.delay"></stringProp>
       </ThreadGroup>
       <hashTree>
-        <JDBCDataSource guiclass="TestBeanGUI" testclass="JDBCDataSource" testname="Database Connection Configuration" enabled="false">
+        <JDBCDataSource guiclass="TestBeanGUI" testclass="JDBCDataSource" testname="Database Connection Configuration" enabled="true">
           <boolProp name="autocommit">true</boolProp>
           <stringProp name="checkQuery">select 1 from dual</stringProp>
           <stringProp name="connectionAge">5000</stringProp>
@@ -53,7 +53,7 @@
           <stringProp name="username">ibtest2</stringProp>
         </JDBCDataSource>
         <hashTree/>
-        <GenericController guiclass="LogicControllerGui" testclass="GenericController" testname="Setup Operations" enabled="false"/>
+        <GenericController guiclass="LogicControllerGui" testclass="GenericController" testname="Setup Operations" enabled="true"/>
         <hashTree>
           <JDBCSampler guiclass="TestBeanGUI" testclass="JDBCSampler" testname="Update user password" enabled="true">
             <stringProp name="dataSource">database</stringProp>
@@ -167,7 +167,7 @@
           <boolProp name="CookieManager.clearEachIteration">false</boolProp>
         </CookieManager>
         <hashTree/>
-        <RecordingController guiclass="RecordController" testclass="RecordingController" testname="Login" enabled="true"/>
+        <RecordingController guiclass="RecordController" testclass="RecordingController" testname="Login" enabled="false"/>
         <hashTree>
           <ResultCollector guiclass="ViewResultsFullVisualizer" testclass="ResultCollector" testname="View Results Tree" enabled="true">
             <boolProp name="ResultCollector.error_logging">false</boolProp>
@@ -549,22 +549,12 @@
               </elementProp>
               <elementProp name="password" elementType="Argument">
                 <stringProp name="Argument.name">password</stringProp>
-                <stringProp name="Argument.value">testuser</stringProp>
+                <stringProp name="Argument.value">pass@%1</stringProp>
                 <stringProp name="Argument.metadata">=</stringProp>
               </elementProp>
               <elementProp name="token" elementType="Argument">
                 <stringProp name="Argument.name">token</stringProp>
                 <stringProp name="Argument.value">45</stringProp>
-                <stringProp name="Argument.metadata">=</stringProp>
-              </elementProp>
-              <elementProp name="host" elementType="Argument">
-                <stringProp name="Argument.name">host</stringProp>
-                <stringProp name="Argument.value">localhost</stringProp>
-                <stringProp name="Argument.metadata">=</stringProp>
-              </elementProp>
-              <elementProp name="port" elementType="Argument">
-                <stringProp name="Argument.name">port</stringProp>
-                <stringProp name="Argument.value">8085</stringProp>
                 <stringProp name="Argument.metadata">=</stringProp>
               </elementProp>
             </collectionProp>
