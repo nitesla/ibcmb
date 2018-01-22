@@ -143,7 +143,7 @@ public class LocalBeneficiaryServiceImpl implements LocalBeneficiaryService {
         if (localBeneficiaryRepo.findByUser_IdAndAccountNumber(user.getId(), localBeneficiary.getAccountNumber()) != null)
             throw new DuplicateObjectException("beneficiary.exist");
 
-        if (financialInstitutionRepo.findBySortCode(localBeneficiary.getBeneficiaryBank())==null)
+        if (financialInstitutionRepo.findByInstitutionCode(localBeneficiary.getBeneficiaryBank())==null)
             throw new InternetBankingException("transfer.beneficiary.invalid");
 
      /* if (!bankCode.equalsIgnoreCase(localBeneficiary.getBeneficiaryBank())){
