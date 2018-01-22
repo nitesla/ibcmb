@@ -344,6 +344,7 @@ public class UserRegController {
             if(contact != null && !contact.equalsIgnoreCase("") ) {
                 code = generateAndSendRegCode(contact);
                 if (!"".equals(code)) {
+                    logger.info("reg code {} and time {} saved successfully",code,new Date());
                     session.setAttribute("regCode", code);
                     session.setAttribute("regCodeTime", new Date());
                 } else {
