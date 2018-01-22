@@ -113,9 +113,9 @@ public class UserRegController {
             if (accountTypes != null && !ArrayUtils.contains(accountTypes, account.getAcctType())) {
                 return messageSource.getMessage("account.nontransactional", null, locale);
             }
-//            else if (account != null && !"A".equalsIgnoreCase(account.getAcctStatus())) {
-//                return messageSource.getMessage("account.inactive", null, locale);
-//            }
+            else if (account != null && !"A".equalsIgnoreCase(account.getAcctStatus())) {
+                return messageSource.getMessage("account.inactive", null, locale);
+            }
             else if (account != null && accountService.isAccountRestricted(account)) {
                 return messageSource.getMessage("account.restricted", null, locale);
             }
@@ -388,7 +388,7 @@ public class UserRegController {
 
 //        logger.info("the regcode validity {}", DateFormatter.validate(regCodeDate,new Date()));
         if(regCodeDate ==null) {
-            return messageSource.getMessage("regCode.vslidate.error", null, locale);
+            return messageSource.getMessage("regCode.validate.error", null, locale);
         }
         boolean codeValid = DateFormatter.validate(regCodeDate, new Date());
         logger.info("REGCODE IN SESSION {} ", regCode);
