@@ -189,6 +189,7 @@
        location.href = '/retail/logout';
     }
 </script>
+
 <!-- jQuery -->
 <!-- Bootstrap -->
 <!-- FastClick -->
@@ -210,7 +211,6 @@
 <script th:src="@{~/customer/js/coronation.js}"></script>
 <!-- BOOTSTRAP SCRIPTS  -->
 <script th:src="@{~/customer/js/bootstrap.js}"></script>
-
 <script>
     $(document).ready(function () {
         $("#otpmodal").hide();
@@ -224,51 +224,49 @@
         $("#tokenmodal").show();
         $("#otpmodal").hide();
     });
+    function sendOtp(){
+//        console.log([[${username}]]);
+        $('#loading-icon').show();
+        $('#errorMess').hide();
+        //make sure alert message is not empty
+//        alert("send otp");
+//        console.log(acct);
+        $.ajax({
+            type: 'GET',
+            url: '/otp/send',
+            asyn:false,
+//					dataType: 'String',
+            data: {username:$('#username').val()},
+            error: function (data) {
+                $('#loading-icon').hide();
+                // alert("failure");
+//                $('#sub').disabled();
+            },
+            success: function (reponse) {
+                if (reponse === 'success') {
+                    $('#loading-icon').hide();
+                    $("#tokenmodal").hide();
+                    $("#otpmodal").show();
+                    $('#successMess').show();
+                    document.getElementById("successMess").textContent = "Successfully sent";
 
+                }else{
+                    $("#tokenModal").show();
+                    $("#otpmodal").hide();
+                    if(reponse==="empty"){
+                        $('#loading-icon').hide();
+                        $('#errorMess').show();
+                        document.getElementById("errorMess").textContent = "Invalid username";
+                    }else{
+                        $('#loading-icon').hide();
+                        $('#errorMess').show();
+                        document.getElementById("errorMess").textContent = reponse;
+                    }
+                }
+            }
+        });
+//        $.ajax({options});
+    }
 </script>
-<!--<script>-->
-    <!--var counter  = 0 ;-->
-    <!--var sessionCheck = getCookie('time_out_time') ;-->
-
-    <!--setInterval(function() {-->
-        <!--console.log('cookie value is'+getCookie('time_out_time'))-->
-        <!--count();-->
-    <!--}, 1000);-->
-
-    <!--function count(){-->
-        <!--counter ++ ;-->
-        <!--console.log('conter now '+ counter)-->
-        <!--if(counter > sessionCheck){-->
-            <!--location.href = '/';-->
-            <!--console.log('session to  be expired ')-->
-        <!--}else{-->
-            <!--console.log('still in session !')-->
-        <!--}-->
-    <!--}-->
-
-    <!--$('body').on('click',function () {-->
-        <!--console.log('body was clicked')-->
-        <!--refreshCount();-->
-    <!--})-->
-
-    <!--function refreshCount(){-->
-        <!--counter = 0 ;-->
-    <!--}-->
-    <!--function getCookie(cname) {-->
-        <!--var name = cname + "=";-->
-        <!--var decodedCookie = decodeURIComponent(document.cookie);-->
-        <!--var ca = decodedCookie.split(';');-->
-        <!--for(var i = 0; i <ca.length; i++) {-->
-            <!--var c = ca[i];-->
-            <!--while (c.charAt(0) == ' ') {-->
-                <!--c = c.substring(1);-->
-            <!--}-->
-            <!--if (c.indexOf(name) == 0) {-->
-                <!--return c.substring(name.length, c.length);-->
-            <!--}-->
-        <!--}-->
-        <!--return "";-->
-    <!--}-->
-<!--</script>-->
 </body>
 </html>
