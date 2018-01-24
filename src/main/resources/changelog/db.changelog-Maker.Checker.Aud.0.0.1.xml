@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog/1.1"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog/1.1
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-1.1.xsd">
+    <changeSet author="Longbridge (generated)" id="1511973765008-84">
+        <createTable tableName="MAKER_CHECKER_AUD">
+            <column name="ID" type="NUMBER(19, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="REV" type="NUMBER(10, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="REVTYPE" type="NUMBER(3, 0)"/>
+            <column name="DESCRIPTION" type="VARCHAR2(255 CHAR)"/>
+            <column name="DESCRIPTION_MOD" type="NUMBER(1, 0)"/>
+            <column name="ENABLED" type="VARCHAR2(255 CHAR)"/>
+            <column name="ENABLED_MOD" type="NUMBER(1, 0)"/>
+            <column name="OPERATION" type="VARCHAR2(255 CHAR)"/>
+            <column name="OPERATION_MOD" type="NUMBER(1, 0)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="Longbridge (generated)" id="1511973765008-213">
+        <createIndex indexName="SYS_C0027382" tableName="MAKER_CHECKER_AUD">
+            <column name="ID"/>
+            <column name="REV"/>
+        </createIndex>
+        <addPrimaryKey columnNames="ID, REV" constraintName="SYS_C0027382" tableName="MAKER_CHECKER_AUD"/>
+    </changeSet>
+    <changeSet author="Longbridge (generated)" id="1511973765008-319">
+        <addForeignKeyConstraint baseColumnNames="REV" baseTableName="MAKER_CHECKER_AUD" constraintName="FKATYRKDIT137I6FEDT4XW54U31" deferrable="false" initiallyDeferred="false" referencedColumnNames="ID" referencedTableName="CUSTOM_REVISION_ENTITY"/>
+    </changeSet>
+</databaseChangeLog>
