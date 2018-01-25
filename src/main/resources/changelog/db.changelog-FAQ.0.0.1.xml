@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog/1.1"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog/1.1
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-1.1.xsd">
+    <changeSet author="Longbridge (generated)" id="1511973765008-69">
+        <createTable tableName="FAQS_AUD">
+            <column name="ID" type="NUMBER(19, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="REV" type="NUMBER(10, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="REVTYPE" type="NUMBER(3, 0)"/>
+            <column name="ANSWER" type="VARCHAR2(255 CHAR)"/>
+            <column name="ANSWER_MOD" type="NUMBER(1, 0)"/>
+            <column name="QUESTION" type="VARCHAR2(255 CHAR)"/>
+            <column name="QUESTION_MOD" type="NUMBER(1, 0)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="Longbridge (generated)" id="1511973765008-200">
+        <createIndex indexName="SYS_C0027340" tableName="FAQS_AUD">
+            <column name="ID"/>
+            <column name="REV"/>
+        </createIndex>
+        <addPrimaryKey columnNames="ID, REV" constraintName="SYS_C0027340" tableName="FAQS_AUD"/>
+    </changeSet>
+    <changeSet author="Longbridge (generated)" id="1511973765008-314">
+        <addForeignKeyConstraint baseColumnNames="REV" baseTableName="FAQS_AUD" constraintName="FK9SUP4FHJXLTDJ6539QW63I4J5" deferrable="false" initiallyDeferred="false" referencedColumnNames="ID" referencedTableName="CUSTOM_REVISION_ENTITY"/>
+    </changeSet>
+</databaseChangeLog>
