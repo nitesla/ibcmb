@@ -57,8 +57,8 @@ public class BulkTransferConfig
         return stepBuilderFactory.get("customStep")
                 .<TransferDTO, TransferDTO>chunk(2000)
                 .reader(customReader(DEFAULT_BATCH_ID))
-                .processor(customProcessor)
-                .writer(customWriter)
+                .processor(customProcessor())
+                .writer(customWriter())
                 .listener(listener)
                 .build();
     }

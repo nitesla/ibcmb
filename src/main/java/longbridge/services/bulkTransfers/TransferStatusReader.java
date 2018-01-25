@@ -4,10 +4,13 @@ package longbridge.services.bulkTransfers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.item.ItemReader;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Scope;
 import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.*;
@@ -19,28 +22,31 @@ import java.util.*;
  * @author Ayoade Farooq
  */
 @Scope(value = "step", proxyMode = ScopedProxyMode.INTERFACES)
+@Service
 class TransferStatusReader implements ItemReader<TransactionStatus> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TransferStatusReader.class);
 
-    private final String apiUrl;
-    private final RestTemplate restTemplate;
+    @Value("${rest.api.to.database.job.api.url}")
+    private String apiUrl;
+    @Autowired
+    private RestTemplate restTemplate;
     private final String batchId;
 
     private int nextIndex;
     private List<TransactionStatus> data;
 
-    TransferStatusReader(@Value("#{jobParameters[batchId]}") final String batchId, String apiUrl, RestTemplate restTemplate) {
-        this.apiUrl = apiUrl;
+    TransferStatusReader(@Value("#{jobParameters[batchId]}") final String batchId) {
         this.batchId=batchId;
-        this.restTemplate = restTemplate;
         nextIndex = 0;
     }
 
     @Override
     public TransactionStatus read() throws Exception {
 
-        if (dataIsNotInitialized()) {
+        LOGGER.trace("Reading Status data");
+
+        if (!isInitialized()) {
             data = fetchDataFromAPI();
         }
 
@@ -54,14 +60,14 @@ class TransferStatusReader implements ItemReader<TransactionStatus> {
         return status;
     }
 
-    private boolean dataIsNotInitialized() {
-        return this.data == null;
+    private boolean isInitialized() {
+        return this.data != null;
     }
 
     private List<TransactionStatus> fetchDataFromAPI() {
 
        try {
-           LOGGER.debug("Fetching  data from an external API by using the url: {}", apiUrl);
+           LOGGER.debug("Fetching data from an external API by using the url: {}", apiUrl);
 
            Map<String, String> request = new HashMap<>();
            request.put("batchId", batchId);

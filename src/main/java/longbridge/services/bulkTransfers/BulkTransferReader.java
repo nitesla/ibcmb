@@ -2,7 +2,9 @@ package longbridge.services.bulkTransfers;
 
 import longbridge.api.CustomerDetails;
 import longbridge.dtos.CreditRequestDTO;
+import longbridge.models.BulkTransfer;
 import longbridge.models.CreditRequest;
+import longbridge.repositories.BulkTransferRepo;
 import longbridge.repositories.CreditRequestRepo;
 import longbridge.services.IntegrationService;
 import org.slf4j.Logger;
@@ -32,6 +34,7 @@ class BulkTransferReader implements ItemReader<TransferDTO>, InitializingBean {
     private final List<TransferDTO> transferData = new ArrayList<>();
     private final String batchId;
     private CreditRequestRepo repo;
+    private BulkTransferRepo transferRepo;
     private IntegrationService integrationService;
     private int nextIndex;
 
@@ -43,9 +46,10 @@ class BulkTransferReader implements ItemReader<TransferDTO>, InitializingBean {
     }
 
     @Autowired
-    void setFields(CreditRequestRepo repo, IntegrationService integrationService) {
+    void setFields(CreditRequestRepo repo, BulkTransferRepo transferRepo, IntegrationService integrationService) {
         this.repo = repo;
         this.integrationService = integrationService;
+        this.transferRepo = transferRepo;
 
     }
 
@@ -101,8 +105,8 @@ class BulkTransferReader implements ItemReader<TransferDTO>, InitializingBean {
 
     @Override
     public void afterPropertiesSet() throws Exception {
-
-        List<CreditRequest> creditRequests = repo.findByBulkTransfer_Id(Long.parseLong(batchId));
+        BulkTransfer bulkTransfer = transferRepo.findFirstByRefCode(batchId);
+        List<CreditRequest> creditRequests = repo.findByBulkTransfer_Id(bulkTransfer.getId());
         creditRequests.stream().filter(Objects::nonNull)
                 .forEach(
                         i -> {

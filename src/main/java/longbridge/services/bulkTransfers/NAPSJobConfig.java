@@ -28,13 +28,16 @@ import org.springframework.web.client.RestTemplate;
 @EnableAsync
 public class NAPSJobConfig {
 
-    private static final String PROPERTY_REST_API_URL = "rest.api.to.database.job.api.url";
+    private static final String DEFAULT_BATCH_ID = "";
+
     @Autowired
     public JobBuilderFactory jobBuilderFactory;
-    @Bean
+
+
     @StepScope
-    ItemReader<TransactionStatus> restReader(@Value("#{jobParameters[batchId]}")String batchId,Environment environment, RestTemplate restTemplate) {
-        return new TransferStatusReader(batchId,environment.getRequiredProperty(PROPERTY_REST_API_URL), restTemplate);
+    @Bean
+    ItemReader<TransactionStatus> restReader(@Value("#{jobParameters[batchId]}")String batchId) {
+        return new TransferStatusReader(batchId);
     }
 
     @Bean
@@ -51,20 +54,24 @@ public class NAPSJobConfig {
     Step restStep(ItemReader<TransactionStatus> restReader,
                          ItemProcessor<TransactionStatus, TransactionStatus> restProcessor,
                          ItemWriter<TransactionStatus> restWriter,
-                         StepBuilderFactory stepBuilderFactory) {
+                         StepBuilderFactory stepBuilderFactory,
+                  BulkTransferStatusNotificationListener statusNotificationListener) {
         return stepBuilderFactory.get("restStep")
-                .<TransactionStatus, TransactionStatus>chunk(1)
-                .reader(restReader)
-                .processor(restProcessor)
-                .writer(restWriter)
+                .<TransactionStatus, TransactionStatus>chunk(10)
+                .reader(restReader(DEFAULT_BATCH_ID))
+                .processor(restProcessor())
+                .writer(restWriter())
+                .listener(statusNotificationListener)
                 .build();
     }
 
     @Bean
     Job restJob(JobBuilderFactory jobBuilderFactory,
-                       @Qualifier("restStep") Step restStep) {
+                       @Qualifier("restStep") Step restStep,
+                BulkTransferStatusNotificationListener statusNotificationListener) {
         return jobBuilderFactory.get("restJob")
                 .incrementer(new RunIdIncrementer())
+                .listener(statusNotificationListener)
                 .flow(restStep)
                 .end()
                 .build();

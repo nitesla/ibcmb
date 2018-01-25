@@ -47,8 +47,8 @@ public class TransferStatusJobLauncher {
     @Value("${naps.cutoff.time}")
     private  String cutoffTime;
 
-    @Value("${naps.status.check.rate}")
-    private String statusCheckRate;
+//    @Value("${naps.status.check.rate}")
+//    private String statusCheckRate;
 
    // private final Long checkRate = Long.parseLong(statusCheckRate);
 
@@ -74,8 +74,8 @@ public class TransferStatusJobLauncher {
 
     @Scheduled(fixedDelay = 1000 * 60 * 30)
     void updateTransferStatusJob() throws JobParametersInvalidException, JobExecutionAlreadyRunningException, JobRestartException, JobInstanceAlreadyCompleteException {
-//        LOGGER.info("Starting restJob job");
 
+        LOGGER.info("Starting job to check NAPS Transaction status");
 
         List<BulkTransfer> transferList = bulkTransferRepo.findByStatus(StatusCode.PROCESSING.toString());
         transferList.stream().filter(Objects::nonNull).filter(i -> !isPastCutOffTime(getSubmittedDate(i),cutoffTime))
@@ -84,8 +84,8 @@ public class TransferStatusJobLauncher {
                         i -> {
 
                             try {
-                                String batch = "" + i.getId();
-//                                LOGGER.info("running update job for batch  {}", batch);
+                                String batch = "" + i.getRefCode();
+                                LOGGER.info("Running status update job for transfer batch  {}", batch);
                                 jobLauncher.run(job, newExecution(batch));
                             } catch (JobExecutionAlreadyRunningException e) {
                                 LOGGER.error("Error occurred", e);
