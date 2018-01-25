@@ -386,10 +386,10 @@ public class CorpNAPSTransferController {
                 } else {
                     String bankCode = cellData.get(4).toString();
                     FinancialInstitution financialInstitution = financialInstitutionService.getFinancialInstitutionByBankCode(bankCode);
-                    if(financialInstitution != null) {
+                    if (financialInstitution != null) {
                         String sortCode = financialInstitution.getSortCode();
                         creditRequest.setSortCode(sortCode);
-                    }else{
+                    } else {
                         creditRequest.setSortCode("ERROR: Invalid Bank Code");
                     }
                 }
@@ -476,16 +476,17 @@ public class CorpNAPSTransferController {
             bulkTransfer.setCorporate(corporate);
             bulkTransfer.setTranDate(date);
 
-            while (!bulkTransferService.refCodeExists(generateRefCode())) {
-                bulkTransfer.setRefCode(generateRefCode());
-                break;
-            }
+            String refCode;
+            do {refCode = generateRefCode();}
+            while (bulkTransferService.refCodeExists(refCode));
+            bulkTransfer.setReferenceNumber(refCode);
+            bulkTransfer.setRefCode(refCode);
 
             for (CreditRequest creditRequest : requestList) {
                 BigDecimal crAmount = new BigDecimal(creditRequest.getAmount());
                 totalTransferAmount = totalTransferAmount.add(crAmount);
                 creditRequest.setBulkTransfer(bulkTransfer);
-                creditRequest.setStatus("P");
+                creditRequest.setStatus("Processing");
             }
             bulkTransfer.setAmount(totalTransferAmount);
             String message = "";
@@ -518,9 +519,8 @@ public class CorpNAPSTransferController {
     }
 
     private String generateRefCode() {
-        Random r = new Random(System.currentTimeMillis());
-        int random = 100000 + r.nextInt(999999);
-        String refCode = Integer.toString(random);
+        long random = (long) Math.floor(Math.random() * 9000000000L) + 1000000000L;
+        String refCode = Long.toString(random);
         return refCode;
     }
 

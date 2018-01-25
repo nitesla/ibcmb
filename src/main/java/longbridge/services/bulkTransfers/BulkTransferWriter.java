@@ -45,7 +45,7 @@ public class BulkTransferWriter implements ItemWriter<TransferDTO> {
         List<TransferDTO> dtos = new ArrayList<>();
         dtos.addAll(items);
 
-        BulkTransfer bulkTransfer = bulkTransferRepo.findOne(Long.parseLong(batchId));
+        BulkTransfer bulkTransfer = bulkTransferRepo.findFirstByRefCode(batchId);
         TransferDetails response = submitTransferRequests(dtos);
         LOGGER.info("Updating bulk transfer ID {} status  {}",batchId,response);
         if("000".equals(response.getResponseCode())){

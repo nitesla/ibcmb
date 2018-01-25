@@ -93,7 +93,7 @@ public class BulkTransferServiceImpl implements BulkTransferService {
         bulkTransfer.setStatusDescription("Processing Transaction");
         BulkTransfer transfer = bulkTransferRepo.save(bulkTransfer);
         try {
-            jobLauncher.launchBulkTransferJob("" + transfer.getId());
+            jobLauncher.launchBulkTransferJob("" + transfer.getRefCode());
         } catch (Exception e) {
             logger.error("Exception occurred {}", e);
             return messageSource.getMessage("bulk.transfer.failure", null, null);

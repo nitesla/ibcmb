@@ -42,11 +42,11 @@ public class TransferStatusWritter implements ItemWriter<TransactionStatus> {
         items.stream()
                 .forEach(
                         i -> {
-                            CreditRequest creditRequest = creditRequestRepo.findByAccountNumberAndBulkTransfer_Id(i.getBeneficiaryAccountNumber(), Long.parseLong(i.getBatchId()));
+                            BulkTransfer bulkTransfer  = bulkTransferRepo.findFirstByRefCode(i.getBatchId());
+                            CreditRequest creditRequest = creditRequestRepo.findByAccountNumberAndBulkTransfer_Id(i.getBeneficiaryAccountNumber(), bulkTransfer.getId());
                             creditRequest.setStatus(i.getTranxStatus());
                             creditRequestRepo.save(creditRequest);
-                            BulkTransfer bulkTransfer = bulkTransferRepo.findOne(Long.parseLong(i.getBatchId()));
-                            bulkTransfer.setStatus(i.getBatchProcessingStatus());
+                            //bulkTransfer.setStatus(i.getBatchProcessingStatus());
                             bulkTransferRepo.save(bulkTransfer);
 
                         }
