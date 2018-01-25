@@ -98,8 +98,6 @@ public class BulkTransferServiceImpl implements BulkTransferService {
             logger.error("Exception occurred {}", e);
             return messageSource.getMessage("bulk.transfer.failure", null, null);
         }
-
-
         return messageSource.getMessage("bulk.transfer.success", null, null);
     }
 

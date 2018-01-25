@@ -10,10 +10,7 @@ import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * This class demonstrates how we can read the input of our batch job from an
@@ -42,7 +39,6 @@ class TransferStatusReader implements ItemReader<TransactionStatus> {
 
     @Override
     public TransactionStatus read() throws Exception {
-//        LOGGER.info("Reading the information of the next transaction");
 
         if (dataIsNotInitialized()) {
             data = fetchDataFromAPI();
@@ -55,8 +51,6 @@ class TransferStatusReader implements ItemReader<TransactionStatus> {
             nextIndex++;
         }
 
-//        LOGGER.info("Found transaction: {}", status);
-
         return status;
     }
 
@@ -65,15 +59,22 @@ class TransferStatusReader implements ItemReader<TransactionStatus> {
     }
 
     private List<TransactionStatus> fetchDataFromAPI() {
-        LOGGER.debug("Fetching  data from an external API by using the url: {}", apiUrl);
 
-        Map<String,String> request = new HashMap<>();
-        request.put("batchId" ,batchId);
+       try {
+           LOGGER.debug("Fetching  data from an external API by using the url: {}", apiUrl);
 
-        ResponseEntity<TransactionStatus[]> response = restTemplate.postForEntity(apiUrl,request, TransactionStatus[].class);
-        TransactionStatus[] restData = response.getBody();
-//        LOGGER.debug("Found {} data", restData.length);
+           Map<String, String> request = new HashMap<>();
+           request.put("batchId", batchId);
 
-        return Arrays.asList(restData);
+           ResponseEntity<TransactionStatus[]> response = restTemplate.postForEntity(apiUrl, request, TransactionStatus[].class);
+           TransactionStatus[] restData = response.getBody();
+           LOGGER.debug("Transaction Status Response: {}", restData);
+
+           return Arrays.asList(restData);
+       }
+       catch (Exception e){
+           LOGGER.error("Error calling NAPS web service",e);
+       }
+       return new ArrayList<>();
     }
 }

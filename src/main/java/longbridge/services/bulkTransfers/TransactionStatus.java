@@ -62,4 +62,16 @@ public class TransactionStatus {
     public void setBatchId(String batchId) {
         this.batchId = batchId;
     }
+
+    @Override
+    public String toString() {
+        return "TransactionStatus{" +
+                "tranxStatus='" + tranxStatus + '\'' +
+                ", batchProcessingStatus='" + batchProcessingStatus + '\'' +
+                ", beneficiaryAccountNumber='" + beneficiaryAccountNumber + '\'' +
+                ", beneficiaryName='" + beneficiaryName + '\'' +
+                ", amount='" + amount + '\'' +
+                ", batchId='" + batchId + '\'' +
+                '}';
+    }
 }
