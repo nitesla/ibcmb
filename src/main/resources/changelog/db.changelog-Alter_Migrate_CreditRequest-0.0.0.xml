@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd
+    http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+    <!--<changeSet author="Longbridge" id="credit_request3">-->
+        <!--<addColumn-->
+                   <!--tableName="CREDIT_REQUEST">-->
+            <!--&lt;!&ndash; replace varchar(255) with the actual type of column A &ndash;&gt;-->
+            <!--<column name="AMOUNT3" type="NUMBER(19,2)"/>-->
+        <!--</addColumn>-->
+
+        <!--<sql>UPDATE CREDIT_REQUEST SET AMOUNT3 = AMOUNT</sql>-->
+    <!--</changeSet>-->
+    <changeSet author="Longbridge" id="del-Credit-Account">
+        <dropColumn columnName="AMOUNT"
+                    tableName="CREDIT_REQUEST"/>
+    </changeSet>
+    <changeSet author="Longbridge" id="ren-Credit-Account">
+        <renameColumn
+                      columnDataType="NUMBER(19,2)"
+                      newColumnName="AMOUNT"
+                      oldColumnName="AMOUNT3"
+                      tableName="CREDIT_REQUEST"/>
+    </changeSet>
+</databaseChangeLog>

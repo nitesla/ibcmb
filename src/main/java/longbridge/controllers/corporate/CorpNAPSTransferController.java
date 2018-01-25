@@ -371,9 +371,9 @@ public class CorpNAPSTransferController {
                 creditRequest.setAccountName(cellData.get(1).toString());
 
                 if (!(NumberUtils.isNumber(cellData.get(2).toString())) && !(cellData.get(2).toString().contains("ERROR"))) {
-                    creditRequest.setAmount("ERROR: Invalid Amount");
+                    creditRequest.setAmount(new BigDecimal(-1));
                 } else {
-                    creditRequest.setAmount(cellData.get(2).toString());
+                    creditRequest.setAmount(new BigDecimal( cellData.get(2).toString()));
                 }
 
                 creditRequest.setNarration(cellData.get(3).toString());
@@ -483,8 +483,8 @@ public class CorpNAPSTransferController {
             bulkTransfer.setRefCode(refCode);
 
             for (CreditRequest creditRequest : requestList) {
-                BigDecimal crAmount = new BigDecimal(creditRequest.getAmount());
-                totalTransferAmount = totalTransferAmount.add(crAmount);
+//                BigDecimal crAmount = new BigDecimal(creditRequest.getAmount());
+                totalTransferAmount = totalTransferAmount.add(creditRequest.getAmount());
                 creditRequest.setBulkTransfer(bulkTransfer);
                 creditRequest.setStatus("Processing");
             }

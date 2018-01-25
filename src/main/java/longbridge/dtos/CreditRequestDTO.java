@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSetter;
 
+import java.math.BigDecimal;
+
 /**
  * Created by Longbridge on 14/06/2017.
  */
@@ -14,7 +16,7 @@ public class CreditRequestDTO {
     private String accountNumber;
     private String sortCode;
     private String accountName;
-    private String amount;
+    private BigDecimal amount;
     private String narration;
     private String status;
 
@@ -61,11 +63,11 @@ public class CreditRequestDTO {
         this.accountName = accountName;
     }
 
-    public String getAmount() {
+    public BigDecimal getAmount() {
         return amount;
     }
 
-    public void setAmount(String amount) {
+    public void setAmount(BigDecimal amount) {
         this.amount = amount;
     }
 
@@ -76,7 +78,6 @@ public class CreditRequestDTO {
     public void setNarration(String narration) {
         this.narration = narration;
     }
-
 
 
     public CreditRequestDTO() {
