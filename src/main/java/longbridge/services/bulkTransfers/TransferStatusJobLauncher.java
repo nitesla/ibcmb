@@ -47,6 +47,11 @@ public class TransferStatusJobLauncher {
     @Value("${naps.cutoff.time}")
     private  String cutoffTime;
 
+    @Value("${naps.status.check.rate}")
+    private String statusCheckRate;
+
+   // private final Long checkRate = Long.parseLong(statusCheckRate);
+
     @Autowired
     TransferStatusJobLauncher(@Qualifier("restJob") Job job, JobLauncher jobLauncher) {
         this.job = job;
