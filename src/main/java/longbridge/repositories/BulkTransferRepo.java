@@ -23,6 +23,8 @@ public interface BulkTransferRepo extends CommonRepo<BulkTransfer, Long>{
 
     List<BulkTransfer> findByStatusNotInIgnoreCase(List<String> list);
 
+    List<BulkTransfer> findByStatus(String status);
+
     BulkTransfer findFirstByRefCode(String refCode);
 
     int countByCorporateAndStatus(Corporate corporate, String status);

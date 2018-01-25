@@ -36,6 +36,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.*;
+import java.math.BigDecimal;
 import java.net.URLConnection;
 import java.nio.charset.Charset;
 import java.security.Principal;
@@ -203,7 +204,7 @@ public class NAPSTransferController {
                 creditRequest.setId(id);
                 creditRequest.setAccountNumber(cellData.get(0).toString());
                 creditRequest.setAccountName(cellData.get(1).toString());
-                creditRequest.setAmount(cellData.get(2).toString());
+                creditRequest.setAmount(new BigDecimal( cellData.get(2).toString()));
                 creditRequest.setNarration(cellData.get(3).toString());
                 crLists.add(creditRequest);
 

@@ -6,6 +6,7 @@ import org.hibernate.envers.Audited;
 
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
+import java.math.BigDecimal;
 
 /**
  * Created by Longbridge on 14/06/2017.
@@ -18,7 +19,7 @@ public class CreditRequest extends AbstractEntity{
 
     private String accountNumber;
     private String accountName;
-    private String amount;
+    private BigDecimal amount;
     private String narration;
     private String status;
     private String sortCode;
@@ -51,11 +52,11 @@ public class CreditRequest extends AbstractEntity{
         this.accountName = accountName;
     }
 
-    public String getAmount() {
+    public BigDecimal getAmount() {
         return amount;
     }
 
-    public void setAmount(String amount) {
+    public void setAmount(BigDecimal amount) {
         this.amount = amount;
     }
 
@@ -86,7 +87,7 @@ public class CreditRequest extends AbstractEntity{
     public CreditRequest() {
     }
 
-    public CreditRequest(String accountNumber, String sortCode, String accountName, String amount, String narration, String status, BulkTransfer bulkTransfer) {
+    public CreditRequest(String accountNumber, String sortCode, String accountName, BigDecimal amount, String narration, String status, BulkTransfer bulkTransfer) {
         this.accountNumber = accountNumber;
         this.sortCode = sortCode;
         this.accountName = accountName;

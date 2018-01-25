@@ -2,6 +2,9 @@ package longbridge.services.bulkTransfers;
 
 import longbridge.api.TransferDetails;
 import longbridge.dtos.CreditRequestDTO;
+import longbridge.models.BulkTransfer;
+import longbridge.repositories.BulkTransferRepo;
+import longbridge.utils.StatusCode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.item.ItemWriter;
@@ -20,7 +23,10 @@ public class BulkTransferWriter implements ItemWriter<TransferDTO> {
     private static final Logger LOGGER = LoggerFactory.getLogger(BulkTransferWriter.class);
     @Value("${naps.url}")
     private String url;
+    private String batchId;
     private RestTemplate template;
+    @Autowired
+    private BulkTransferRepo bulkTransferRepo;
 
     @Autowired
     public void setTemplate(RestTemplate template) {
@@ -28,28 +34,42 @@ public class BulkTransferWriter implements ItemWriter<TransferDTO> {
     }
 
     @Override
-    public void write(List<? extends TransferDTO> items)
-            throws Exception {
+    public void write(List<? extends TransferDTO> items) throws Exception {
 
         LOGGER.info("Received the information of {} transactions", items.size());
+        if(!items.isEmpty()){
+            batchId = items.get(0).getBatchId();
+        }
         items.forEach(i -> LOGGER.debug("Received the information of a transaction: {}", i));
 
         List<TransferDTO> dtos = new ArrayList<>();
         dtos.addAll(items);
 
-        TransferDetails details = details(dtos);
+        BulkTransfer bulkTransfer = bulkTransferRepo.findOne(Long.parseLong(batchId));
+        TransferDetails response = submitTransferRequests(dtos);
+        LOGGER.info("Updating bulk transfer ID {} status  {}",batchId,response);
+        if("000".equals(response.getResponseCode())){
+            bulkTransfer.setStatus(StatusCode.PROCESSING.toString());
+            bulkTransfer.setStatusDescription("Processing Transaction");
+        }
+        else {
+            bulkTransfer.setStatus(StatusCode.FAILED.toString());
+            bulkTransfer.setStatusDescription("Failed to submit transfer request");
+        }
+        bulkTransferRepo.save(bulkTransfer);
 
     }
 
 
-    private TransferDetails details(List<TransferDTO> dtos) {
+    private TransferDetails submitTransferRequests(List<TransferDTO> dtos) {
 
         try {
-
+            LOGGER.info("Calling NAPS Web service via {}", url);
             TransferDetails details = template.postForObject(url, dtos, TransferDetails.class);
+            LOGGER.debug("Response from service: {}",details);
             return details;
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.error("Error making web service call",e);
             return new TransferDetails();
         }
 

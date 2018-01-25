@@ -6,7 +6,7 @@ package longbridge.utils;
 public enum StatusCode {
 
 
-    PENDING("-01"), PROCESSING("-02"), SUCCESSFUL("00"), CANCELLED("-03"), FAILED("-09");
+    PENDING("-01"), PROCESSING("-02"), SUCCESSFUL("00"), COMPLETED("01"), CANCELLED("-03"), FAILED("-09");
 
     private String code;
 
