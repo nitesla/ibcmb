@@ -137,28 +137,75 @@
                         "data": "sortCode"
                     }],
                     "columnDefs": [
-//                        {
-//                        "targets": '_all',
-//                        "render": function(data, type, full, meta) {
-//                            if (data.includes("ERROR")) {
-//                                errorCount = errorCount + 1;
-//                                return '<input type="text" style="background:transparent;color: red" value="' + data + '"  readonly/>';
-//
-//                            }
-//                            if (errorCount > 0) {
-//                                document.getElementById('tokendiv').style.display = 'none';
-//                            }
-//                            return '<input type="text" style="background:transparent" value="' + data + '" readonly />';
-//
-//                        }
-//                    },
+                        {
+                        "targets": 0,
+                        "render": function(data, type, full, meta) {
+                            if (data.includes("ERROR")) {
+                                errorCount = errorCount + 1;
+                                return '<input type="text" style="background:transparent;color: red" value="' + data + '"  readonly/>';
+
+                            }
+                            if (errorCount > 0) {
+                                document.getElementById('tokendiv').style.display = 'none';
+                            }
+                            return '<input type="text" style="background:transparent" value="' + data + '" readonly />';
+
+                        }
+                    }, {
+                        "targets": 1,
+                        "render": function(data, type, full, meta) {
+                            if (data.includes("ERROR")) {
+                                errorCount = errorCount + 1;
+                                return '<input type="text" style="background:transparent;color: red" value="' + data + '"  readonly/>';
+
+                            }
+                            if (errorCount > 0) {
+                                document.getElementById('tokendiv').style.display = 'none';
+                            }
+                            return '<input type="text" style="background:transparent" value="' + data + '" readonly />';
+
+                        }
+                    }, {
+                        "targets": 3,
+                        "render": function(data, type, full, meta) {
+                            if (data.includes("ERROR")) {
+                                errorCount = errorCount + 1;
+                                return '<input type="text" style="background:transparent;color: red" value="' + data + '"  readonly/>';
+
+                            }
+                            if (errorCount > 0) {
+                                document.getElementById('tokendiv').style.display = 'none';
+                            }
+                            return '<input type="text" style="background:transparent" value="' + data + '" readonly />';
+
+                        }
+                    }, {
+                        "targets": 4,
+                        "render": function(data, type, full, meta) {
+                            if (data.includes("ERROR")) {
+                                errorCount = errorCount + 1;
+                                return '<input type="text" style="background:transparent;color: red" value="' + data + '"  readonly/>';
+
+                            }
+                            if (errorCount > 0) {
+                                document.getElementById('tokendiv').style.display = 'none';
+                            }
+                            return '<input type="text" style="background:transparent" value="' + data + '" readonly />';
+
+                        }
+                    },
                         {
                         "targets" : 2,
                         "data" : "amount",
                         "render" : function(data, type,full, meta) {
                             if (type === 'display') {
-                                if(data == null)
+                                if(data == null) {
                                     return data;
+                                }else if (data ===0) {
+                                    errorCount = errorCount + 1;
+                                    return '<input type="text" style="background:transparent;color: red" value="ERROR: Invalid amount"  readonly/>';
+
+                                }
                                 var twoPlacedFloat = parseFloat(data).toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,');
 
                                 return twoPlacedFloat;

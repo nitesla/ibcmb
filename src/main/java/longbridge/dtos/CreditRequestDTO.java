@@ -19,7 +19,6 @@ public class CreditRequestDTO {
     private BigDecimal amount;
     private String narration;
     private String status;
-    private String errorMessage;
 
 
     public Long getId() {
@@ -80,13 +79,6 @@ public class CreditRequestDTO {
         this.narration = narration;
     }
 
-    public String getErrorMessage() {
-        return errorMessage;
-    }
-
-    public void setErrorMessage(String errorMessage) {
-        this.errorMessage = errorMessage;
-    }
 
     public CreditRequestDTO() {
 

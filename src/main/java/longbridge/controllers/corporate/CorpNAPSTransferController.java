@@ -371,7 +371,7 @@ public class CorpNAPSTransferController {
                 creditRequest.setAccountName(cellData.get(1).toString());
 
                 if (!(NumberUtils.isNumber(cellData.get(2).toString())) && !(cellData.get(2).toString().contains("ERROR"))) {
-                    creditRequest.setErrorMessage("ERROR: Invalid Number");
+                    creditRequest.setAmount(new BigDecimal(-1));
                 } else {
                     creditRequest.setAmount(new BigDecimal( cellData.get(2).toString()));
                 }
