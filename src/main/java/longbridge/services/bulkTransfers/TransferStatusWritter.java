@@ -38,8 +38,7 @@ public class TransferStatusWritter implements ItemWriter<TransactionStatus> {
     @Override
     public void write(List<? extends TransactionStatus> items) throws Exception {
         logger.info("Received the information of {} transactions", items.size());
-        items.stream().filter(Objects::nonNull).forEach(i -> logger.debug("Received the information of a transaction: {}", i));
-        items.stream()
+        items.stream().filter(Objects::nonNull)
                 .forEach(
                         i -> {
                             BulkTransfer bulkTransfer  = bulkTransferRepo.findFirstByRefCode(i.getBatchId());
