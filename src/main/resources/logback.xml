@@ -38,7 +38,7 @@
         <appender-ref ref="Console" />
     </logger>
 
-    <logger level="info" name="longbridge.services.bulkTransfers.TransferStatusReader" additivity="false">
+    <logger level="debug" name="longbridge.services.bulkTransfers.TransferStatusReader" additivity="false">
         <appender-ref ref="File" />
         <appender-ref ref="Console" />
     </logger>
