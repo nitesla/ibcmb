@@ -47,7 +47,7 @@ public class CronJobScheduler {
         Trigger twentyFourHours = TriggerBuilder
                 .newTrigger()
                 .withIdentity("twentyFourHours", "bcons")
-                .withSchedule(CronScheduleBuilder.cronSchedule(cronJobService.getCurrentExpression("category1")))
+                .withSchedule(CronScheduleBuilder.cronSchedule(cronJobService.getCurrentExpression("category3")))
 
 //                .withSchedule(CronScheduleBuilder.cronSchedule("0 0/1 * 1/1 * ? *"))
                 .build();

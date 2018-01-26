@@ -21,11 +21,11 @@ public class FiveMins implements Job {
         CronJobService cronJobService = contextFiveMinutes.getBean (CronJobService.class);
 //        System.out.println("five minute job runing");
         try {
-//            cronJobService.saveRunningJob("in-built",cronJobService.getCurrentExpression());
-//            cronJobService.updateAccountDetials();
-//            cronJobService.updateCorporateDetails();
-//            cronJobService.addNewAccount();
-//            cronJobService.updateRunningJob();
+            cronJobService.saveRunningJob("in-built",cronJobService.getCurrentExpression("category1"));
+            cronJobService.updateAccountDetials();
+            cronJobService.updateCorporateDetails();
+            cronJobService.addNewAccount();
+            cronJobService.updateRunningJob();
             System.out.println("five minutes");
         } catch (InternetBankingException e) {
             e.printStackTrace();
