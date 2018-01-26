@@ -57,7 +57,7 @@ public class NAPSJobConfig {
                          StepBuilderFactory stepBuilderFactory,
                   BulkTransferStatusNotificationListener statusNotificationListener) {
         return stepBuilderFactory.get("restStep")
-                .<TransactionStatus, TransactionStatus>chunk(1)
+                .<TransactionStatus, TransactionStatus>chunk(100)
                 .reader(restReader(DEFAULT_BATCH_ID))
                 .processor(restProcessor())
                 .writer(restWriter())
