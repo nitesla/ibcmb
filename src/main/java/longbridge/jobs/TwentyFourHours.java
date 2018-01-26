@@ -19,10 +19,10 @@ public class TwentyFourHours implements Job {
 //        CronJobService cronJobService = contextFiveMinutes.getBean (CronJobService.class);
 //        System.out.println("twentyFourHour minute job runing");
         try {
-            cronJobService.saveRunningJob("in-built",cronJobService.getCurrentExpression("category3"));
-            cronJobService.updateAccountDetials();
-            cronJobService.addNewAccount();
-            cronJobService.updateRunningJob();
+//            cronJobService.saveRunningJob("in-built",cronJobService.getCurrentExpression("category3"));
+//            cronJobService.updateAccountDetials();
+//            cronJobService.addNewAccount();
+//            cronJobService.updateRunningJob();
             System.out.println("twenty four hours");
         } catch (InternetBankingException e) {
             e.printStackTrace();
