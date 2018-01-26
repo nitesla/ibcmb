@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog/1.1"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog/1.1
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-1.1.xsd">
+    <changeSet author="Longbridge" id="del-Credit-Account4">
+        <dropColumn columnName="AMOUNT3"
+                    tableName="CREDIT_REQUEST"/>
+        <addColumn
+                tableName="CREDIT_REQUEST">
+            <!-- replace varchar(255) with the actual type of column A -->
+            <column name="AMOUNT" type="NUMBER(19,2)"/>
+        </addColumn>
+    </changeSet>
+
+</databaseChangeLog>
