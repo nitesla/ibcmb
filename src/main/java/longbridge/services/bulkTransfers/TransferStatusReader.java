@@ -74,7 +74,7 @@ class TransferStatusReader implements ItemReader<TransactionStatus>, Initializin
     List<TransactionStatus> fetchDataFromAPI() {
 
        try {
-           LOGGER.debug("Fetching data from an external API by using the url: {}", apiUrl);
+           LOGGER.debug("Fetching data from NAPS service via the url: {}", apiUrl);
 
            Map<String, String> request = new HashMap<>();
            request.put("batchId", batchId);
@@ -82,7 +82,7 @@ class TransferStatusReader implements ItemReader<TransactionStatus>, Initializin
 
            ResponseEntity<TransactionStatus[]> response = restTemplate.postForEntity(apiUrl, request, TransactionStatus[].class);
            TransactionStatus[] restData = response.getBody();
-           LOGGER.debug("Transaction Status Response: {}", restData.toString());
+           LOGGER.debug("Transaction Status Response: {}", restData);
 
            return Arrays.asList(restData);
        }

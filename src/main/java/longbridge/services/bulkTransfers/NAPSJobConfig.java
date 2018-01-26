@@ -51,9 +51,9 @@ public class NAPSJobConfig {
     }
 
     @Bean
-    Step restStep(/**ItemReader<TransactionStatus> transferStatusReader,**/
-//                         ItemProcessor<TransactionStatus, TransactionStatus> restProcessor,
-//                         ItemWriter<TransactionStatus> restWriter,
+    Step restStep(ItemReader<TransactionStatus> transferStatusReader,
+                         ItemProcessor<TransactionStatus, TransactionStatus> restProcessor,
+                         ItemWriter<TransactionStatus> restWriter,
                          StepBuilderFactory stepBuilderFactory,
                   BulkTransferStatusNotificationListener statusNotificationListener) {
         return stepBuilderFactory.get("restStep")
