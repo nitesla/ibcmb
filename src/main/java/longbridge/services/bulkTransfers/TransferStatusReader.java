@@ -4,6 +4,7 @@ package longbridge.services.bulkTransfers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.item.ItemReader;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Scope;
@@ -22,33 +23,39 @@ import java.util.*;
  * @author Ayoade Farooq
  */
 @Scope(value = "step", proxyMode = ScopedProxyMode.INTERFACES)
-@Service
-class TransferStatusReader implements ItemReader<TransactionStatus> {
+@Component
+class TransferStatusReader implements ItemReader<TransactionStatus>, InitializingBean {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TransferStatusReader.class);
 
     @Value("${rest.api.to.database.job.api.url}")
     private String apiUrl;
-    @Autowired
+
     private RestTemplate restTemplate;
     private final String batchId;
 
     private int nextIndex;
-    private List<TransactionStatus> data;
+    private List<TransactionStatus> data  = new ArrayList<>();
 
+    @Autowired
     TransferStatusReader(@Value("#{jobParameters[batchId]}") final String batchId) {
         this.batchId=batchId;
         nextIndex = 0;
     }
 
+    @Autowired
+    public void setRestTemplate(RestTemplate restTemplate) {
+        this.restTemplate = restTemplate;
+    }
+
     @Override
     public TransactionStatus read() throws Exception {
 
-        LOGGER.trace("Reading Status data");
+//        LOGGER.info("Reading Status data");
 
-        if (!isInitialized()) {
-            data = fetchDataFromAPI();
-        }
+//        if (!isInitialized()) {
+//            data = fetchDataFromAPI();
+//        }
 
         TransactionStatus status = null;
 
@@ -60,21 +67,22 @@ class TransferStatusReader implements ItemReader<TransactionStatus> {
         return status;
     }
 
-    private boolean isInitialized() {
-        return this.data != null;
-    }
+//    private boolean isInitialized() {
+//        return this.data != null;
+//    }
 
-    private List<TransactionStatus> fetchDataFromAPI() {
+    List<TransactionStatus> fetchDataFromAPI() {
 
        try {
            LOGGER.debug("Fetching data from an external API by using the url: {}", apiUrl);
 
            Map<String, String> request = new HashMap<>();
            request.put("batchId", batchId);
+           LOGGER.debug("Request parameter: {}",request.toString());
 
            ResponseEntity<TransactionStatus[]> response = restTemplate.postForEntity(apiUrl, request, TransactionStatus[].class);
            TransactionStatus[] restData = response.getBody();
-           LOGGER.debug("Transaction Status Response: {}", restData);
+           LOGGER.debug("Transaction Status Response: {}", restData.toString());
 
            return Arrays.asList(restData);
        }
@@ -82,5 +90,10 @@ class TransferStatusReader implements ItemReader<TransactionStatus> {
            LOGGER.error("Error calling NAPS web service",e);
        }
        return new ArrayList<>();
+    }
+
+    @Override
+    public void afterPropertiesSet() throws Exception {
+        data = fetchDataFromAPI();
     }
 }

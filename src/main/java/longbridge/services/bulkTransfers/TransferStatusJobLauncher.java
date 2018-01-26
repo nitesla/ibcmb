@@ -10,10 +10,7 @@ import longbridge.utils.StatusCode;
 import org.eclipse.jdt.internal.compiler.ast.NullLiteral;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.batch.core.Job;
-import org.springframework.batch.core.JobParameter;
-import org.springframework.batch.core.JobParameters;
-import org.springframework.batch.core.JobParametersInvalidException;
+import org.springframework.batch.core.*;
 import org.springframework.batch.core.launch.JobLauncher;
 import org.springframework.batch.core.repository.JobExecutionAlreadyRunningException;
 import org.springframework.batch.core.repository.JobInstanceAlreadyCompleteException;
@@ -44,16 +41,13 @@ public class TransferStatusJobLauncher {
     private BulkTransferRepo bulkTransferRepo;
     private CreditRequestRepo creditRequestRepo;
     private CorporateRepo corporateRepo;
-    @Value("${naps.cutoff.time}")
-    private  String cutoffTime;
 
-//    @Value("${naps.status.check.rate}")
-//    private String statusCheckRate;
+
 
    // private final Long checkRate = Long.parseLong(statusCheckRate);
 
     @Autowired
-    TransferStatusJobLauncher(@Qualifier("restJob") Job job, JobLauncher jobLauncher) {
+    public TransferStatusJobLauncher(@Qualifier("restJob") Job job, JobLauncher jobLauncher) {
         this.job = job;
         this.jobLauncher = jobLauncher;
     }
@@ -72,29 +66,38 @@ public class TransferStatusJobLauncher {
         this.corporateRepo = corporateRepo;
     }
 
-    @Scheduled(fixedDelay = 1000 * 60 * 30)
+    @Scheduled(cron = "${naps.status.check.rate}")
     void updateTransferStatusJob() throws JobParametersInvalidException, JobExecutionAlreadyRunningException, JobRestartException, JobInstanceAlreadyCompleteException {
 
-        LOGGER.info("Starting job to check NAPS Transaction status");
+        LOGGER.info("Launching job scheduler to check NAPS transaction status");
 
         List<BulkTransfer> transferList = bulkTransferRepo.findByStatus(StatusCode.PROCESSING.toString());
-        transferList.stream().filter(Objects::nonNull).filter(i -> !isPastCutOffTime(getSubmittedDate(i),cutoffTime))
+        transferList.stream().filter(Objects::nonNull)
                 .forEach(
 
                         i -> {
 
                             try {
                                 String batch = "" + i.getRefCode();
-                                LOGGER.info("Running status update job for transfer batch  {}", batch);
-                                jobLauncher.run(job, newExecution(batch));
+                                LOGGER.info("Running status update job for transfer batchId {}", batch);
+                                JobExecution jobExecution = jobLauncher.run(job, newExecution(batch));
+                                LOGGER.info("Job Exit status: {}",jobExecution.getExitStatus().toString());
+                                LOGGER.info("Job Execution status: {}",jobExecution.toString());
+
                             } catch (JobExecutionAlreadyRunningException e) {
                                 LOGGER.error("Error occurred", e);
                             } catch (JobRestartException e) {
                                 LOGGER.error("Error occurred", e);
                             } catch (JobInstanceAlreadyCompleteException e) {
+                                LOGGER.error("Error occurred", e);
                             } catch (JobParametersInvalidException e) {
                                 LOGGER.error("Error occurred", e);
                             }
+                            catch (Exception e){
+                                LOGGER.error("Error occurred", e);
+
+                            }
+
                         }
 
                 );
@@ -115,30 +118,4 @@ public class TransferStatusJobLauncher {
     }
 
 
-    private boolean isPastCutOffTime(Date submittedTime, String cutoffTime) {
-
-        Long submittedAt = submittedTime.getTime();
-        Long nextStatusCheck = System.currentTimeMillis();
-
-        long durationInMins = (nextStatusCheck - submittedAt) / (1000 * 60);
-
-        if (durationInMins > Long.parseLong(cutoffTime)) {
-            return true;
-        }
-
-        return false;
-    }
-
-    private  Date getSubmittedDate(BulkTransfer bulkTransfer){
-
-        Date submittedDate;
-        Corporate corporate = bulkTransfer.getCorporate();
-        if("SOLE".equalsIgnoreCase(corporate.getCorporateType())){
-            submittedDate =  bulkTransfer.getTranDate();
-        }
-        else {
-            submittedDate = bulkTransfer.getTransferAuth().getLastEntry();
-        }
-        return submittedDate;
-    }
 }

@@ -34,8 +34,8 @@ public class NAPSJobConfig {
     public JobBuilderFactory jobBuilderFactory;
 
 
-    @StepScope
     @Bean
+    @StepScope
     ItemReader<TransactionStatus> restReader(@Value("#{jobParameters[batchId]}")String batchId) {
         return new TransferStatusReader(batchId);
     }
@@ -51,13 +51,13 @@ public class NAPSJobConfig {
     }
 
     @Bean
-    Step restStep(ItemReader<TransactionStatus> restReader,
-                         ItemProcessor<TransactionStatus, TransactionStatus> restProcessor,
-                         ItemWriter<TransactionStatus> restWriter,
+    Step restStep(/**ItemReader<TransactionStatus> transferStatusReader,**/
+//                         ItemProcessor<TransactionStatus, TransactionStatus> restProcessor,
+//                         ItemWriter<TransactionStatus> restWriter,
                          StepBuilderFactory stepBuilderFactory,
                   BulkTransferStatusNotificationListener statusNotificationListener) {
         return stepBuilderFactory.get("restStep")
-                .<TransactionStatus, TransactionStatus>chunk(10)
+                .<TransactionStatus, TransactionStatus>chunk(1)
                 .reader(restReader(DEFAULT_BATCH_ID))
                 .processor(restProcessor())
                 .writer(restWriter())
