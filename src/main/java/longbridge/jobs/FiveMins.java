@@ -18,7 +18,7 @@ public class FiveMins implements Job {
     @Override
     public void execute(JobExecutionContext context) throws JobExecutionException {
         ApplicationContext contextFiveMinutes = SpringContext.getApplicationContext();
-        CronJobService cronJobService = contextFiveMinutes.getBean (CronJobService.class);
+//        CronJobService cronJobService = contextFiveMinutes.getBean (CronJobService.class);
 //        System.out.println("five minute job runing");
         try {
 //            cronJobService.saveRunningJob("in-built",cronJobService.getCurrentExpression());
@@ -26,7 +26,7 @@ public class FiveMins implements Job {
 //            cronJobService.updateCorporateDetails();
 //            cronJobService.addNewAccount();
 //            cronJobService.updateRunningJob();
-            System.out.println("five minutes");
+//            System.out.println("five minutes");
         } catch (InternetBankingException e) {
             e.printStackTrace();
         }catch (Exception e){
