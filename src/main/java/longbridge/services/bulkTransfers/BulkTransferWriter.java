@@ -3,7 +3,9 @@ package longbridge.services.bulkTransfers;
 import longbridge.api.TransferDetails;
 import longbridge.dtos.CreditRequestDTO;
 import longbridge.models.BulkTransfer;
+import longbridge.models.CreditRequest;
 import longbridge.repositories.BulkTransferRepo;
+import longbridge.repositories.CreditRequestRepo;
 import longbridge.utils.StatusCode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,6 +29,8 @@ public class BulkTransferWriter implements ItemWriter<TransferDTO> {
     private RestTemplate template;
     @Autowired
     private BulkTransferRepo bulkTransferRepo;
+    @Autowired
+    private CreditRequestRepo creditRequestRepo;
 
     @Autowired
     public void setTemplate(RestTemplate template) {
@@ -55,6 +59,9 @@ public class BulkTransferWriter implements ItemWriter<TransferDTO> {
         else {
             bulkTransfer.setStatus(StatusCode.FAILED.toString());
             bulkTransfer.setStatusDescription("Failed to submit transfer request");
+            List<CreditRequest> creditRequests = creditRequestRepo.findByBulkTransfer_Id(bulkTransfer.getId());
+            creditRequests.stream().forEach(i -> {i.setStatus("FAILED"); creditRequestRepo.save(i);});
+
         }
         bulkTransferRepo.save(bulkTransfer);
 

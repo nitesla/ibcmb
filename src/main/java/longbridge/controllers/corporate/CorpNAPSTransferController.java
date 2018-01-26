@@ -486,7 +486,7 @@ public class CorpNAPSTransferController {
 //                BigDecimal crAmount = new BigDecimal(creditRequest.getAmount());
                 totalTransferAmount = totalTransferAmount.add(creditRequest.getAmount());
                 creditRequest.setBulkTransfer(bulkTransfer);
-                creditRequest.setStatus("Processing");
+                creditRequest.setStatus("PROCESSING");
             }
             bulkTransfer.setAmount(totalTransferAmount);
             String message = "";
