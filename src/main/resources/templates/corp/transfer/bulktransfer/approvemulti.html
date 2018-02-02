@@ -142,7 +142,7 @@
                                 <table id="mytab" class="table table-striped table-condensed table-hover" style='width:100%'>
                                     <thead style="" class='th-table'>
                                         <th style="padding:10px 3px !important">Acc Num</th>
-                                        <th style="padding:10px 3px !important">Bank Code</th>
+                                        <th style="padding:10px 3px !important">Bank</th>
                                         <th style="padding:10px 3px !important">Ben. Name</th>
                                         <th style="padding:10px 3px !important">Amt</th>
                                         <th style="padding:10px 3px !important">Narration</th>
@@ -244,7 +244,7 @@
 
                         return Math.round(y / (sum) * 100) + "%";
                     },
-                    colors: ['lightgreen', 'red', 'orange'],
+                    colors: ['lightblue'],
                 });
 
 
@@ -265,7 +265,7 @@
                     "columns": [{
                         "data": "accountNumber"
                     }, {
-                        "data": "sortCode"
+                        "data": "beneficiaryBank"
                     }, {
                         "data": "accountName"
                     }, {

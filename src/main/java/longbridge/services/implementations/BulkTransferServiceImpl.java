@@ -11,10 +11,7 @@ import longbridge.exception.TransferRuleException;
 import longbridge.models.*;
 import longbridge.repositories.*;
 import longbridge.security.userdetails.CustomUserPrincipal;
-import longbridge.services.AccountService;
-import longbridge.services.BulkTransferService;
-import longbridge.services.ConfigurationService;
-import longbridge.services.CorporateService;
+import longbridge.services.*;
 import longbridge.services.bulkTransfers.BulkTransferJobLauncher;
 import longbridge.utils.StatusCode;
 import longbridge.utils.TransferAuthorizationStatus;
@@ -52,6 +49,9 @@ public class BulkTransferServiceImpl implements BulkTransferService {
 
     @Autowired
     private CorporateService corporateService;
+
+    @Autowired
+    private FinancialInstitutionService financialInstitutionService;
 
     @Autowired
     private CreditRequestRepo creditRequestRepo;
@@ -92,6 +92,8 @@ public class BulkTransferServiceImpl implements BulkTransferService {
         bulkTransfer.setStatus(StatusCode.PROCESSING.toString());
         bulkTransfer.setStatusDescription("Processing Transaction");
         BulkTransfer transfer = bulkTransferRepo.save(bulkTransfer);
+        List<CreditRequest> creditRequests = bulkTransfer.getCrRequestList();
+        creditRequests.forEach(i -> {i.setStatus("PROCESSING");creditRequestRepo.save(i);});
         try {
             jobLauncher.launchBulkTransferJob("" + transfer.getRefCode());
         } catch (Exception e) {
@@ -196,6 +198,9 @@ public class BulkTransferServiceImpl implements BulkTransferService {
                 bulkTransfer.setStatus(StatusCode.CANCELLED.toString());
                 bulkTransfer.setStatusDescription("Cancelled");
                 transferAuthRepo.save(transferAuth);
+                List<CreditRequest> creditRequests = bulkTransfer.getCrRequestList();
+                creditRequests.forEach(i -> {i.setStatus("CANCELLED");creditRequestRepo.save(i);});
+
                 return messageSource.getMessage("transfer.auth.decline", null, locale);
             }
 
@@ -251,9 +256,11 @@ public class BulkTransferServiceImpl implements BulkTransferService {
     @Override
     public String cancelBulkTransferRequest(Long id) {
         //cancelling bulk transaction request
-        BulkTransfer one = bulkTransferRepo.getOne(id);
-        one.setStatus(StatusCode.CANCELLED.toString());
-        bulkTransferRepo.save(one);
+        BulkTransfer bulkTransfer = bulkTransferRepo.getOne(id);
+        bulkTransfer.setStatus(StatusCode.CANCELLED.toString());
+        bulkTransferRepo.save(bulkTransfer);
+        List<CreditRequest> creditRequests = bulkTransfer.getCrRequestList();
+        creditRequests.forEach(i -> {i.setStatus("CANCELLED");creditRequestRepo.save(i);});
         return null;
     }
 
@@ -286,6 +293,8 @@ public class BulkTransferServiceImpl implements BulkTransferService {
         List<CreditRequestDTO> creditRequestDTOList = new ArrayList<>();
         for (CreditRequest creditRequest : creditRequests) {
             CreditRequestDTO creditRequestDTO = convertEntityToDTO(creditRequest);
+            FinancialInstitution financialInstitution = financialInstitutionService.getFinancialInstitutionByBankCode(creditRequest.getSortCode());
+            creditRequestDTO.setBeneficiaryBank(financialInstitution.getInstitutionName());
             creditRequestDTOList.add(creditRequestDTO);
         }
         return creditRequestDTOList;

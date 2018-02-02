@@ -17,6 +17,7 @@ public class CreditRequestDTO {
     private String sortCode;
     private String accountName;
     private BigDecimal amount;
+    private String beneficiaryBank;
     private String narration;
     private String status;
 
@@ -79,6 +80,13 @@ public class CreditRequestDTO {
         this.narration = narration;
     }
 
+    public String getBeneficiaryBank() {
+        return beneficiaryBank;
+    }
+
+    public void setBeneficiaryBank(String beneficiaryBank) {
+        this.beneficiaryBank = beneficiaryBank;
+    }
 
     public CreditRequestDTO() {
 

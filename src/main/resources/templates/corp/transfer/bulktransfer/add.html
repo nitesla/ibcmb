@@ -62,6 +62,7 @@
                                 <th>Beneficiary Name</th>
                                 <th>Amount (N)</th>
                                 <th>Narration</th>
+                                <th>Bank Name</th>
                                 <th>Bank Code</th>
                             </thead>
                             <tbody>
@@ -133,6 +134,8 @@
                         "data": "amount"
                     }, {
                         "data": "narration"
+                    },{
+                        "data": "beneficiaryBank"
                     }, {
                         "data": "sortCode"
                     }],
@@ -180,7 +183,7 @@
 
                         }
                     }, {
-                        "targets": 4,
+                        "targets": 5,
                         "render": function(data, type, full, meta) {
                             if (data.includes("ERROR")) {
                                 errorCount = errorCount + 1;

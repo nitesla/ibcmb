@@ -110,16 +110,12 @@ public class MainController {
     }
 
     @GetMapping(value = "/login/admin")
-    public ModelAndView adminLogin( HttpServletResponse response) {
-        try {
-            response.flushBuffer();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    public ModelAndView adminLogin( HttpServletResponse response,HttpServletRequest requests) {
         Integer val = (Integer.parseInt (  configurationService.getSettingByName ( "SESSION_TIMEOUT" ).getValue () )) * 60;
-        Cookie cookie = new Cookie ( "time_out_time",val.toString ());
-        cookie.setMaxAge ( 10000 );
-        response.addCookie ( cookie );
+        Cookie cookie = CookieUtil.getCookie(requests);
+        cookie.setValue(val.toString ());
+        cookie.setPath("/");
+        response.addCookie(cookie);
         ModelAndView modelAndView = new ModelAndView();
 
         modelAndView.setViewName("admlogin");
@@ -127,11 +123,12 @@ public class MainController {
     }
 
     @GetMapping(value = "/login/ops")
-    public ModelAndView opsLogin(HttpServletResponse response) {
+    public ModelAndView opsLogin(HttpServletResponse response,HttpServletRequest requests) {
         Integer val = (Integer.parseInt (  configurationService.getSettingByName ( "SESSION_TIMEOUT" ).getValue () )) * 60;
-        Cookie cookie = new Cookie ( "time_out_time",val.toString ());
-        cookie.setMaxAge ( 10000 );
-        response.addCookie ( cookie );
+        Cookie cookie = CookieUtil.getCookie(requests);
+        cookie.setValue(val.toString ());
+        cookie.setPath("/");
+        response.addCookie(cookie);
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("opslogin");
 

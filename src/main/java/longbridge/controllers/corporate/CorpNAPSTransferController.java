@@ -389,6 +389,7 @@ public class CorpNAPSTransferController {
                     if (financialInstitution != null) {
                         String sortCode = financialInstitution.getSortCode();
                         creditRequest.setSortCode(sortCode);
+                        creditRequest.setBeneficiaryBank(financialInstitution.getInstitutionName());
                     } else {
                         creditRequest.setSortCode("ERROR: Invalid Bank Code");
                     }
@@ -486,7 +487,7 @@ public class CorpNAPSTransferController {
 //                BigDecimal crAmount = new BigDecimal(creditRequest.getAmount());
                 totalTransferAmount = totalTransferAmount.add(creditRequest.getAmount());
                 creditRequest.setBulkTransfer(bulkTransfer);
-                creditRequest.setStatus("PROCESSING");
+                creditRequest.setStatus("PENDING");
             }
             bulkTransfer.setAmount(totalTransferAmount);
             String message = "";
