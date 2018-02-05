@@ -150,7 +150,7 @@ public class CorpNAPSTransferController {
                     }
                 }
             }
-            logger.info("Roles not In Auth List..{}", rolesNotInAuthList.toString());
+            logger.debug("Roles not In Auth List..{}", rolesNotInAuthList.toString());
             model.addAttribute("rolesNotAuth", rolesNotInAuthList);
 
             return "corp/transfer/bulktransfer/approvemulti";

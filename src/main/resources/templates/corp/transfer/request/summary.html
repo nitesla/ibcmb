@@ -129,6 +129,9 @@
                         Decline
                     </button>
                     <button id="cancel" class="btn btn-link required-less" type="reset">Back</button>
+                    <p><p/>
+                    <p th:if="${!userCanAuthorize}" >NB: Only Authorizers added to the Transaction Rule within the Total Amount Range can approve the transaction (if pending Authorization)</p>
+
                 </div>
             </form>
         </div>

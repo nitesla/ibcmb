@@ -58,7 +58,7 @@ public class BulkTransferWriter implements ItemWriter<TransferDTO> {
         }
         else {
             bulkTransfer.setStatus(StatusCode.FAILED.toString());
-            bulkTransfer.setStatusDescription("Failed to submit transfer request");
+            bulkTransfer.setStatusDescription("Failed");
             List<CreditRequest> creditRequests = creditRequestRepo.findByBulkTransfer_Id(bulkTransfer.getId());
             creditRequests.stream().forEach(i -> {i.setStatus("FAILED"); creditRequestRepo.save(i);});
 
