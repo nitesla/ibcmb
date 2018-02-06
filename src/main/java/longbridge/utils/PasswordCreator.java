@@ -1,5 +1,7 @@
 package longbridge.utils;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import java.security.SecureRandom;
@@ -11,6 +13,7 @@ import java.security.SecureRandom;
 @Component
 public class PasswordCreator {
 
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private static SecureRandom random = new SecureRandom();
 
     private String DIGITS = "123456789";
@@ -32,6 +35,8 @@ public class PasswordCreator {
 
 
     public String generatePassword(int length, int noOfDigits,  String specialChars) {
+
+        logger.debug("Generating random password for user");
 
         minLength = length;
         numOfDigits = noOfDigits;

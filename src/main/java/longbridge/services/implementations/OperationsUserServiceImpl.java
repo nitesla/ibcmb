@@ -343,6 +343,7 @@ public class OperationsUserServiceImpl implements OperationsUserService {
     @Override
     public String resetPassword(String username) throws InternetBankingException {
         try {
+            logger.debug("About to reset ops user {} password",username);
             OperationsUser user = operationsUserRepo.findFirstByUserNameIgnoreCase(username);
             sendResetMessage(user);
             logger.info("Operations user {} password reset successfully", user.getUserName());
@@ -430,7 +431,7 @@ public class OperationsUserServiceImpl implements OperationsUserService {
         String opsUrl = (hostUrl != null) ? hostUrl + "/ops" : "";
 
         if ("A".equals(user.getStatus())) {
-
+            logger.debug("Ops user {} is ACTIVE and should receive mail",user.getUserName());
             String fullName = user.getFirstName() + " " + user.getLastName();
             String password = passwordPolicyService.generatePassword();
             user.setPassword(passwordEncoder.encode(password));
@@ -444,7 +445,11 @@ public class OperationsUserServiceImpl implements OperationsUserService {
             context.setVariable("password", password);
             context.setVariable("opsUrl", opsUrl);
 
+            logger.debug("About to send new credentials to user {} ",user.getUserName());
             mailService.sendMail(email, context);
+
+        }else {
+            logger.debug("Ops user {} is INACTIVE and will not receive mail, the user should be reactivated instead",user.getUserName());
 
         }
 
