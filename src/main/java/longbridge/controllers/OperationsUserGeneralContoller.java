@@ -83,6 +83,16 @@ public class OperationsUserGeneralContoller {
             model.addAttribute("failure", messageSource.getMessage("username.invalid", null, locale));
             return "/ops/username";
         }
+        else if("I".equals(operationsUser.getStatus())){
+            model.addAttribute("failure", messageSource.getMessage("user.inactive", null, locale));
+            return "/ops/username";
+        }
+        else if("L".equals(operationsUser.getStatus())){
+            model.addAttribute("failure", messageSource.getMessage("user.locked", null, locale));
+            return "/ops/username";
+        }
+
+
         try {
             boolean result = securityService.sendOtp(operationsUser.getEntrustId(), operationsUser.getEntrustGroup());
             if (result) {
