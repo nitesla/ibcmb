@@ -53,7 +53,7 @@ public class CronJobServiceImpl implements CronJobService {
         if (!account.getAccountName().equalsIgnoreCase(accountDetails.getAcctName())) {
             account.setAccountName(accountDetails.getAcctName());
 //            System.out.println("the account name after setting is" + account.getAccountName());
-//            accountRepo.save(account);
+            accountRepo.save(account);
         }
     }
 
@@ -85,15 +85,17 @@ public class CronJobServiceImpl implements CronJobService {
 //        logger.info("The account size {}",allAccounts.size());
         if (accountDetails.getAcctCrncyCode() !=null && (!accountDetails.getAcctCrncyCode().equalsIgnoreCase(account.getCurrencyCode()))) {
             account.setCurrencyCode(accountDetails.getAcctCrncyCode());
-//            logger.info("the new account currency {} and {}" , account.getCurrencyCode(),accountDetails.getAcctCrncyCode());
+            logger.trace("the new account currency {} and {}" , account.getCurrencyCode(),accountDetails.getAcctCrncyCode());
             accountRepo.save(account);
         }
     }
     @Override
     public void updateAccountStatus(Account account, AccountDetails accountDetails) throws InternetBankingException {
+//        logger.info("the account status after setting is {} and number {}", account.getStatus(),account.getAccountNumber(),accountDetails.getAcctStatus());
+
         if ((account.getStatus()==null)||(account.getStatus().equalsIgnoreCase(""))||(!account.getStatus().equalsIgnoreCase(accountDetails.getAcctStatus()))) {
             account.setStatus(accountDetails.getAcctStatus());
-//            logger.info("the account status after setting is {} and number {}", account.getStatus(),account.getAccountNumber(),accountDetails.getAcctStatus());
+            logger.trace("the account status after setting is {} and number {}", account.getStatus(),account.getAccountNumber(),accountDetails.getAcctStatus());
             accountRepo.save(account);
         }
     }
@@ -106,9 +108,11 @@ public class CronJobServiceImpl implements CronJobService {
             for (Account account : allAccounts) {
                 AccountDetails accountDetails = integrationService.viewAccountDetails(account.getAccountNumber());
                 try {
+                    if(accountDetails  != null) {
 //                updateAllAccountName(account,accountDetails);
-                    updateAllAccountCurrency(account,accountDetails);
-                    updateAccountStatus(account,accountDetails);
+                        updateAllAccountCurrency(account, accountDetails);
+                        updateAccountStatus(account, accountDetails);
+                    }
 //                    return true;
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -121,13 +125,18 @@ public class CronJobServiceImpl implements CronJobService {
     @Override
     public boolean updateRetailUserDetails() throws InternetBankingException {
         List<RetailUser>retailUsers =  retailUserRepo.findAll();
+//        logger.info("the users gotten {}",retailUsers.size());
         for (RetailUser retailUser:retailUsers) {
             try {
 //                logger.info("old bvn is {}",retailUser.getCustomerId());
                 CustomerDetails details = integrationService.viewCustomerDetailsByCif(retailUser.getCustomerId());
-                updateRetailUserBVN(retailUser,details);
-                updateRetailUserPhoneNo(retailUser,details);
-                updateRetailUserEmail(retailUser,details);
+
+                if(details != null) {
+                    logger.trace("updating details {}",details.getPhone());
+                    updateRetailUserBVN(retailUser, details);
+                    updateRetailUserPhoneNo(retailUser, details);
+                    updateRetailUserEmail(retailUser, details);
+                }
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -142,7 +151,7 @@ public class CronJobServiceImpl implements CronJobService {
         String userBvn = retailUser.getBvn();
         if((userBvn == null)||userBvn.equalsIgnoreCase("")||(!userBvn.equalsIgnoreCase(details.getBvn()))){
             retailUser.setBvn(details.getBvn());
-            logger.info("new bvn is {}",details.getBvn());
+            logger.trace("new bvn is {}",details.getBvn());
             retailUserRepo.save(retailUser);
         }
     }
@@ -153,7 +162,7 @@ public class CronJobServiceImpl implements CronJobService {
 //        logger.info("new phone number is {}",retailUser.getPhoneNumber());
         if((retailUserPhoneNumber == null)||retailUserPhoneNumber.equalsIgnoreCase("")||(!retailUserPhoneNumber.equalsIgnoreCase(details.getPhone()))){
             retailUser.setPhoneNumber(details.getPhone());
-//            logger.info("new phone number 2 is {}",details.getPhone());
+            logger.trace("new phone number 2 is {}",details.getPhone());
 
             retailUserRepo.save(retailUser);
         }
@@ -162,10 +171,10 @@ public class CronJobServiceImpl implements CronJobService {
     @Override
     public void updateRetailUserEmail(RetailUser retailUser, CustomerDetails details) throws InternetBankingException {
         String retailUserEmail = retailUser.getEmail();
-//        logger.info("new email is {}",retailUser.getEmail());
+//        logger.info("new email is {} and username {}",retailUser.getEmail(),retailUser.getUserName());
         if((retailUserEmail == null)||retailUserEmail.equalsIgnoreCase("")||(!retailUserEmail.equalsIgnoreCase(details.getEmail()))){
             retailUser.setEmail(details.getEmail());
-//            logger.info("new email 2 is {}",details.getEmail());
+            logger.trace("new email 2 is {}",details.getEmail());
             retailUserRepo.save(retailUser);
         }
     }
@@ -174,9 +183,9 @@ public class CronJobServiceImpl implements CronJobService {
         List<CorporateUser>corporateUsers =  corporateUserRepo.findAll();
         for (CorporateUser corporateUser:corporateUsers) {
             try {
-//                CustomerDetails details = integrationService.viewCustomerDetailsByCif(corporateUser.getCorporate().getCustomerId());
-//                updateCorporateUserEmail(corporateUser,details);
-//                updateCorporateUserPhoneNo(corporateUser,details);
+                CustomerDetails details = integrationService.viewCustomerDetailsByCif(corporateUser.getCorporate().getCustomerId());
+                updateCorporateUserEmail(corporateUser,details);
+                updateCorporateUserPhoneNo(corporateUser,details);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -189,10 +198,11 @@ public class CronJobServiceImpl implements CronJobService {
         for (Corporate corporate:corporates) {
             try {
                 CustomerDetails details = integrationService.viewCustomerDetailsByCif(corporate.getCustomerId());
-                updateCorporateUserBVN(corporate,details);
-                updateCorporateUserTaxId(corporate,details);
-                updateCorporateRCNum(corporate,details);
-
+                if(details != null) {
+                    updateCorporateUserBVN(corporate, details);
+                    updateCorporateUserTaxId(corporate, details);
+                    updateCorporateRCNum(corporate, details);
+                }
             } catch (Exception e) {
                 logger.info("the error {}",e.getMessage());
                 e.printStackTrace();
@@ -206,7 +216,7 @@ public class CronJobServiceImpl implements CronJobService {
         String corporateBvn = corporate.getBvn();
         if((corporateBvn == null)||corporateBvn.equalsIgnoreCase("")||(!corporateBvn.equalsIgnoreCase(details.getBvn()))){
             corporate.setBvn(details.getBvn());
-//            logger.info("Updating Corporate BVN for {} to {}",corporate.getCustomerId(),corporate.getBvn());
+            logger.trace("Updating Corporate BVN for {} to {}",corporate.getCustomerId(),corporate.getBvn());
             try {
                 corporateRepo.save(corporate);
             } catch (Exception e) {
@@ -220,7 +230,7 @@ public class CronJobServiceImpl implements CronJobService {
         String taxId = corporate.getTaxId();
         if((taxId == null)||taxId.equalsIgnoreCase("")||(!taxId.equalsIgnoreCase(details.getTaxId()))){
             corporate.setTaxId(details.getTaxId());
-//            logger.info("Updating Corporate Tax ID for {} to {}",corporate.getCustomerId(),corporate.getTaxId());
+            logger.trace("Updating Corporate Tax ID for {} to {}",corporate.getCustomerId(),corporate.getTaxId());
             try {
                 corporateRepo.save(corporate);
             } catch (Exception e) {
@@ -232,7 +242,7 @@ public class CronJobServiceImpl implements CronJobService {
         String RCNum = corporate.getRcNumber();
         if((RCNum == null)||RCNum.equalsIgnoreCase("")||(!RCNum.equalsIgnoreCase(details.getRcNo()))){
             corporate.setRcNumber(details.getRcNo());
-            logger.info("Updating Corporate RCNumber for {} to {}",corporate.getCustomerId(),corporate.getRcNumber());
+            logger.trace("Updating Corporate RCNumber for {} to {}",corporate.getCustomerId(),corporate.getRcNumber());
             try {
                 corporateRepo.save(corporate);
             } catch (Exception e) {
@@ -246,7 +256,7 @@ public class CronJobServiceImpl implements CronJobService {
         String corporateUserPhoneNumber = corporateUser.getPhoneNumber();
         if((corporateUserPhoneNumber == null)||corporateUserPhoneNumber.equalsIgnoreCase("")||(!details.getPhone().equalsIgnoreCase(corporateUserPhoneNumber))){
             corporateUser.setPhoneNumber(details.getPhone());
-            logger.info("new corp phone is {}",details.getPhone());
+            logger.trace("new corp phone is {}",details.getPhone());
             try {
                 corporateUserRepo.save(corporateUser);
             } catch (Exception e) {
@@ -260,7 +270,7 @@ public class CronJobServiceImpl implements CronJobService {
         String corporateUserEmail = corporateUser.getEmail();
         if((corporateUserEmail == null)||corporateUserEmail.equalsIgnoreCase("")||(!corporateUserEmail.equalsIgnoreCase(details.getEmail()))){
             corporateUser.setEmail(details.getEmail());
-//            logger.info("new corp email is {}",details.getEmail());
+            logger.trace("new corp email is {}",details.getEmail());
             try {
                 corporateUserRepo.save(corporateUser);
             } catch (Exception e) {
@@ -331,12 +341,12 @@ public class CronJobServiceImpl implements CronJobService {
         List<RetailUser>retailUsers =  retailUserRepo.findAll();
         SettingDTO setting = configService.getSettingByName("TRANSACTIONAL_ACCOUNTS");
         String[] list = StringUtils.split(setting.getValue(), ",");
-        logger.info("the scheme code {}",list);
+//        logger.info("the scheme code {}",setting);
         if (setting != null && setting.isEnabled()) {
             for (RetailUser retailUser:retailUsers) {
                 try {
                     List<String> existingAccount =  new ArrayList<>();
-//                logger.info("old bvn is {}",retailUser.getCustomerId());
+                logger.trace("old bvn is {}",retailUser.getCustomerId());
                     List<AccountInfo> accountInfos = integrationService.fetchAccounts(retailUser.getCustomerId());
                     List<Account> accounts =  accountService.getCustomerAccounts(retailUser.getCustomerId());
                     for (Account account:accounts) {

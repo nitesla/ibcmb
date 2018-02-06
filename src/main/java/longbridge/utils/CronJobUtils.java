@@ -22,7 +22,7 @@ public class CronJobUtils {
             StringBuilder builderExprVal = new StringBuilder(exrInit);
             StringBuilder builderExprDesc = new StringBuilder(desc);
             builderExprVal.append(second);
-            builderExprVal.append(" * * * * *");
+            builderExprVal.append(" * * * * ?");
             builderExprDesc.append(second +pluralizeWordChecker(" second",second));
             expression.put("desc",builderExprDesc.toString());
             expression.put("value",builderExprVal.toString());

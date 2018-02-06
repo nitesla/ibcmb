@@ -135,6 +135,11 @@
 <!-- Page-Level Scripts -->
 <script th:inline="javascript">
     /*<![CDATA[*/
+    $("#pattern").keyup(function(event){
+        if(event.keyCode == 13){
+            $("#search").click();
+        }
+    });
     $(document).ready(function () {
         var table = $('#permission').DataTable({
             select:true,

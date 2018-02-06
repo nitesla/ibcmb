@@ -3,6 +3,7 @@ package longbridge.jobs;
 import longbridge.config.SpringContext;
 import longbridge.exception.InternetBankingException;
 import longbridge.services.CronJobService;
+import org.quartz.DisallowConcurrentExecution;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
@@ -11,6 +12,7 @@ import org.springframework.context.ApplicationContext;
 /**
  * Created by Longbridge on 9/12/2017.
  */
+@DisallowConcurrentExecution
 public class TwentyFourHours implements Job {
 
     @Override
@@ -21,6 +23,8 @@ public class TwentyFourHours implements Job {
         try {
             cronJobService.saveRunningJob("in-built",cronJobService.getCurrentExpression("category3"));
             cronJobService.updateAccountDetials();
+            cronJobService.updateRetailUserDetails();
+            cronJobService.updateCorporateUserDetails();
             cronJobService.addNewAccount();
             cronJobService.updateRunningJob();
             System.out.println("twenty four hours");
