@@ -58,6 +58,15 @@ public class AdminUserGeneralController {
             model.addAttribute("failure",messageSource.getMessage("username.invalid",null,locale));
             return "/adm/admin/username";
         }
+        else if("I".equals(adminUser.getStatus())){
+            model.addAttribute("failure", messageSource.getMessage("user.inactive", null, locale));
+            return "/adm/admin/username";
+
+        }
+        else if("L".equals(adminUser.getStatus())){
+            model.addAttribute("failure", messageSource.getMessage("user.locked", null, locale));
+            return "/adm/admin/username";
+        }
 
         try {
             boolean result = securityService.sendOtp(adminUser.getEntrustId(), adminUser.getEntrustGroup());
