@@ -448,7 +448,16 @@
     $(document).ready(
 
             function () {
-                getCronDesc("category1");
+                var category = [[${initCategory}]];
+                console.log("the category "+category);
+//                $('select option[value="' + "category2" + '"]').attr("selected", true);
+
+                if(category != null) {
+                    $('select option[value="' + category + '"]').attr("selected", true);
+                }else{
+                    category = "category1"
+                }
+                getCronDesc(category);
                 $('option').mousedown(function(e) {
                     e.preventDefault();
                     $(this).prop('selected', $(this).prop('selected') ? false : true);
@@ -482,6 +491,7 @@
                 console.log("the description "+result);
 //                    resetButton();
                 $('#curentCronExpr').html(result);
+
             },
             error: function (dd) {
                 console.log("error");

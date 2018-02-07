@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -37,7 +38,7 @@ public class AdmJobController {
     }
 
     @PostMapping
-    public String getCronExpression(WebRequest webRequest, Principal principal,RedirectAttributes redirectAttributes) {
+    public String getCronExpression(WebRequest webRequest, Principal principal, RedirectAttributes redirectAttributes, Model model) {
         String username= "";
         String category= webRequest.getParameter("category");
         String schedule  = webRequest.getParameter("scheduler");
@@ -52,7 +53,10 @@ public class AdmJobController {
             if(!cronExpression.equalsIgnoreCase("")) {
                 cronJobService.deleteRunningJob(category);
                 cronJobService.keepCronJobEprsDetials(username, cronExpression,cronExprValue,category);
+                logger.info("the category {}",category);
+                redirectAttributes.addFlashAttribute("initCategory", category);
                 redirectAttributes.addFlashAttribute("message", messageSource.getMessage("job.update.success", null, locale));
+
                 return "redirect:/admin/job";
             }
         }

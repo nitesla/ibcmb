@@ -143,6 +143,11 @@
 <!-- Page-Level Scripts -->
 <script>
     /*<![CDATA[*/
+    $("#pattern").keyup(function(event){
+        if(event.keyCode == 13){
+            $("#search").click();
+        }
+    });
     $(document).ready(function() {
         var table = $('#operation').DataTable({
             select:true,

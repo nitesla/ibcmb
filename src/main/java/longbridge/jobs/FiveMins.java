@@ -23,7 +23,9 @@ public class FiveMins implements Job {
         try {
             cronJobService.saveRunningJob("in-built",cronJobService.getCurrentExpression("category1"));
             cronJobService.updateAccountDetials();
+            cronJobService.updateRetailUserDetails();
             cronJobService.updateCorporateDetails();
+
             cronJobService.addNewAccount();
             cronJobService.updateRunningJob();
             System.out.println("five minutes");
