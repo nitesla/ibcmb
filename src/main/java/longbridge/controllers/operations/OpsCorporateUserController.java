@@ -90,6 +90,9 @@ public class OpsCorporateUserController {
     @PostMapping("/new")
     public String createUser(@ModelAttribute("corporateUser") @Valid CorporateUserDTO corporateUserDTO, BindingResult result, HttpSession session, Model model, RedirectAttributes redirectAttributes, Locale locale) throws Exception {
 
+        CorporateDTO corporateDTO = corporateService.getCorporate(Long.parseLong(corporateUserDTO.getCorporateId()));
+        model.addAttribute("corporate", corporateDTO);
+
         if (result.hasErrors()) {
             result.addError(new ObjectError("invalid", messageSource.getMessage("form.fields.required", null, locale)));
             return "/ops/corporate/addUser";
