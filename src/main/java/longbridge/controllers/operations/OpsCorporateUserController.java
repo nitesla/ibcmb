@@ -87,6 +87,35 @@ public class OpsCorporateUserController {
         return "/ops/corporate/addUser";
     }
 
+    @PostMapping("/new")
+    public String createUser(@ModelAttribute("corporateUser") @Valid CorporateUserDTO corporateUserDTO, BindingResult result, HttpSession session, Model model, RedirectAttributes redirectAttributes, Locale locale) throws Exception {
+
+        if (result.hasErrors()) {
+            result.addError(new ObjectError("invalid", messageSource.getMessage("form.fields.required", null, locale)));
+            return "/ops/corporate/addUser";
+        }
+        try {
+                String message = corporateUserService.addUser(corporateUserDTO);
+                redirectAttributes.addFlashAttribute("message", message);
+                return "redirect:/ops/corporates/"+corporateUserDTO.getCorporateId()+"/view";
+
+
+        } catch (DuplicateObjectException doe) {
+            result.addError(new ObjectError("error", doe.getMessage()));
+            logger.error("Error creating corporate user ", doe);
+            return "/ops/corporate/addUser";
+
+        } catch (InternetBankingSecurityException se) {
+            result.addError(new ObjectError("error", se.getMessage()));
+            logger.error("Error creating corporate user on Entrust ", se);
+            return "/ops/corporate/addUser";
+        } catch (InternetBankingException ibe) {
+            result.addError(new ObjectError("error", ibe.getMessage()));
+            logger.error("Error creating corporate user", ibe);
+            return "/ops/corporate/addUser";
+        }
+    }
+
 
 
 
