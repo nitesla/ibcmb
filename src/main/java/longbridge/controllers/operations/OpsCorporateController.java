@@ -582,9 +582,13 @@ public class OpsCorporateController {
         CustomerDetails customerDetails = integrationService.viewCustomerDetailsByCif(cifid);
 
         if (customerDetails.getCustomerName() == null) {
+            logger.warn("The account details for CIFID {} could not be found. The reasons could be that the account is NOT VERIFIED, CLOSED or DELETED");
+
             return "false";
         }
         if (!customerDetails.isCorp()) {
+            logger.warn("The account details for CIFID {} is for a Retail User and cannot be used for Corporate",cifid);
+
             return "false";
         }
         return customerDetails.getCustomerName();

@@ -170,6 +170,7 @@ public class UserRegController {
             }
 
         } else {
+            logger.warn("The account details for {} could not be found. The reasons could be that the account is NOT VERIFIED, CLOSED or DELETED",accountNumber);
             //nothing
             customerId = "";
         }
