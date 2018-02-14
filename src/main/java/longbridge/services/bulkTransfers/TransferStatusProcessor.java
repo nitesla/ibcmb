@@ -17,6 +17,10 @@ private Logger logger= LoggerFactory.getLogger(getClass());
 
     @Override
     public TransactionStatus process(TransactionStatus item) throws Exception {
+
+        if(item.getTranxStatus()==null){
+            item.setTranxStatus("PROCESSING");
+        }
         logger.info("Processing transfer information: {}", item);
         return item;
     }
