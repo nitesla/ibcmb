@@ -12,6 +12,7 @@ public interface CreditRequestRepo extends CommonRepo<CreditRequest,Long>
 {
 
     List<CreditRequest> findByBulkTransfer_Id(Long id);
+    boolean existsByReferenceNumber(String refNumber);
   CreditRequest findByAccountNumberAndBulkTransfer_Id(String acctNo,Long id);
 
     @Query("select new longbridge.dtos.BulkStatusDTO(c.status,count(c.status)) from CreditRequest c  where c.bulkTransfer =:bulkTransfer group by c.status ")

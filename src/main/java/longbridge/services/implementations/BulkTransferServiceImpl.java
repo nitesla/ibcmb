@@ -150,6 +150,10 @@ public class BulkTransferServiceImpl implements BulkTransferService {
         return null;
     }
 
+    @Override
+    public boolean creditRequestRefNumberExists(String refNumber){
+        return creditRequestRepo.existsByReferenceNumber(refNumber);
+    }
 
     @Override
     public List<BulkStatusDTO> getStatus(BulkTransfer bulkTransfer) {

@@ -68,8 +68,7 @@ public class InternationalTransferController {
 
 
     @PostMapping(value = "/index")
-    public String startTransfer(HttpServletRequest request, Model model, Principal principal) {
-        RetailUser retailUser = retailUserService.getUserByName(principal.getName());
+    public String startTransfer(HttpServletRequest request, Model model) {
 
         TransferRequestDTO requestDTO = new TransferRequestDTO();
         requestDTO.setTransferType(TransferType.INTERNATIONAL_TRANSFER);

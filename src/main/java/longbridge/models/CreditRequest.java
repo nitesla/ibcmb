@@ -5,6 +5,7 @@ import org.hibernate.annotations.Where;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.Entity;
+import javax.persistence.Index;
 import javax.persistence.ManyToOne;
 import java.math.BigDecimal;
 
@@ -23,9 +24,11 @@ public class CreditRequest extends AbstractEntity{
     private String narration;
     private String status;
     private String sortCode;
+    private String referenceNumber;
+
 
     @ManyToOne
-    BulkTransfer bulkTransfer;
+    private BulkTransfer bulkTransfer;
 
 
     public String getAccountNumber() {
@@ -84,16 +87,28 @@ public class CreditRequest extends AbstractEntity{
         this.status = status;
     }
 
+    public String getReferenceNumber() {
+        return referenceNumber;
+    }
+
+    public void setReferenceNumber(String referenceNumber) {
+        this.referenceNumber = referenceNumber;
+    }
+
     public CreditRequest() {
     }
 
-    public CreditRequest(String accountNumber, String sortCode, String accountName, BigDecimal amount, String narration, String status, BulkTransfer bulkTransfer) {
-        this.accountNumber = accountNumber;
-        this.sortCode = sortCode;
-        this.accountName = accountName;
-        this.amount = amount;
-        this.narration = narration;
-        this.status = status;
-        this.bulkTransfer = bulkTransfer;
+    @Override
+    public String toString() {
+        return "CreditRequest{" +
+                "accountNumber='" + accountNumber + '\'' +
+                ", accountName='" + accountName + '\'' +
+                ", amount=" + amount +
+                ", narration='" + narration + '\'' +
+                ", status='" + status + '\'' +
+                ", sortCode='" + sortCode + '\'' +
+                ", referenceNumber='" + referenceNumber + '\'' +
+                ", bulkTransfer=" + bulkTransfer +
+                '}';
     }
 }

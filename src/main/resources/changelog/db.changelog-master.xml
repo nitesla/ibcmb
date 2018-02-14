@@ -10,5 +10,7 @@
 <include file="changelog/db.changelog-Audit_config_Aud.0.0.1.xml"/>
 <include file="changelog/db.changelog-Alter_Migrate_CreditRequest-0.0.0.xml"/>
 <include file="changelog/db.changelog-Alter_Migrate_CreditRequest_aud-0.0.0.xml"/>
+<include file="changelog/db.changelog-addFieldToCreditRequest.xml"/>
+<include file="changelog/db.changelog-addFieldToCreditRequest_aud.xml"/>
 
 </databaseChangeLog>

@@ -16,6 +16,9 @@ public interface BulkTransferService {
     String saveBulkTransferRequestForAuthorization(BulkTransfer bulkTransfer);
     CorpTransferAuth getAuthorizations(BulkTransfer transRequest);
     String addAuthorization(CorpTransReqEntry transReqEntry);
+
+    boolean creditRequestRefNumberExists(String refNumber);
+
     List<BulkStatusDTO> getStatus(BulkTransfer bulkTransfer);
 
     Boolean refCodeExists(String refCode);

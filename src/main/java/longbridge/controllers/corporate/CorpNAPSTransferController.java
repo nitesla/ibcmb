@@ -473,12 +473,19 @@ public class CorpNAPSTransferController {
             BigDecimal totalTransferAmount = new BigDecimal("0.00");
             BulkTransfer bulkTransfer = new BulkTransfer();
             bulkTransfer.setCustomerAccountNumber(debitAccount);
-            bulkTransfer.setCrRequestList(requestList);
             bulkTransfer.setCorporate(corporate);
             bulkTransfer.setTranDate(date);
 
+            requestList.forEach(i -> {
+                String refNumber;
+                do{refNumber = transferUtils.generateReferenceNumber(12);}
+                while (bulkTransferService.creditRequestRefNumberExists(refNumber));
+                i.setReferenceNumber(refNumber);
+            });
+            bulkTransfer.setCrRequestList(requestList);
+
             String refCode;
-            do {refCode = generateRefCode();}
+            do {refCode = transferUtils.generateReferenceNumber(10);}
             while (bulkTransferService.refCodeExists(refCode));
             bulkTransfer.setReferenceNumber(refCode);
             bulkTransfer.setRefCode(refCode);
@@ -519,11 +526,6 @@ public class CorpNAPSTransferController {
         }
     }
 
-    private String generateRefCode() {
-        long random = (long) Math.floor(Math.random() * 9000000000L) + 1000000000L;
-        String refCode = Long.toString(random);
-        return refCode;
-    }
 
     @GetMapping(path = "/alltransfers")
     public
