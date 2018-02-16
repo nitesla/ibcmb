@@ -128,11 +128,7 @@ public class SessionUtils {
 
                     session.setAttribute("expired-password", "expired-password");
                     //   session.setMaxInactiveInterval(60);
-
-
                 }
-
-
             }
 
 
