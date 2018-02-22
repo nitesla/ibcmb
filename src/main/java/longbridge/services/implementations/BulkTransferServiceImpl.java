@@ -298,7 +298,9 @@ public class BulkTransferServiceImpl implements BulkTransferService {
         for (CreditRequest creditRequest : creditRequests) {
             CreditRequestDTO creditRequestDTO = convertEntityToDTO(creditRequest);
             FinancialInstitution financialInstitution = financialInstitutionService.getFinancialInstitutionByBankCode(creditRequest.getSortCode());
-            creditRequestDTO.setBeneficiaryBank(financialInstitution.getInstitutionName());
+            if(financialInstitution != null) {
+                creditRequestDTO.setBeneficiaryBank(financialInstitution.getInstitutionName());
+            }
             creditRequestDTOList.add(creditRequestDTO);
         }
         return creditRequestDTOList;
