@@ -36,7 +36,7 @@ public class RunningJob implements Job {
             cronJobService.saveRunningJob("in-built",cronJobService.getCurrentExpression("category1"));
             cronJobService.updateAccountDetials();
             cronJobService.updateRetailUserDetails();
-            cronJobService.updateCorporateUserDetails();
+//            cronJobService.updateCorporateUserDetails();
             cronJobService.updateRunningJob();
         } catch (InternetBankingException e) {
             e.printStackTrace();
