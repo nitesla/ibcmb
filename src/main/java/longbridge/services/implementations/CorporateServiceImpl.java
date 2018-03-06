@@ -810,7 +810,7 @@ public class CorporateServiceImpl implements CorporateService {
             corporateRoleRepo.save(updatedRole);
             updateUsersWithoutAuthorizerRoleToInitiators(originalUsers,updatedRole.getUsers());
    } catch (Exception e) {
-            throw new InternetBankingException(messageSource.getMessage("role.update.failure", null, locale));
+            throw new InternetBankingException(messageSource.getMessage("role.update.failure", null, locale),e);
         }
     }
 
