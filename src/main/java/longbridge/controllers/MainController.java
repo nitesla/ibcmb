@@ -325,7 +325,7 @@ public class MainController {
         if ((username != null) && (corporateId != null)) {
             session.removeAttribute("corporateId");
             session.removeAttribute("corpUsername");
-            session.setAttribute("corpUsername", username + ":"+ corporateId);
+            session.setAttribute("corpUsername", username );
             session.setAttribute("corporateId", corporateId);
         }
 //        CorporateUser user = corporateUserService.getUserByName(username);
