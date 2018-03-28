@@ -60,6 +60,7 @@ public class CorporateUserDetailsService implements UserDetailsService {
             logger.trace("IP -> {} has been blocked", ip);
             throw new RuntimeException("blocked");
         }
+        logger.info("login for {}",s);
         String userName = "";
         String corpId = "";
         if (s!=null){

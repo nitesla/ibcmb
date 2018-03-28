@@ -28,8 +28,12 @@
                     <div th:if="${param.error != null}" class="alert alert-danger" th:text="${session[SPRING_SECURITY_LAST_EXCEPTION]}">error</div>
 
                     <div class="form-group">
-                        <input type="text" name="username" id="username" th:value="*{username}" class="my-select" readonly="readonly" autocomplete="off" />
+                        <input type="text" name="fake" id="false_username" th:value="*{fake_name}" class="my-select" readonly="readonly" autocomplete="off" />
                         <p><a class="text-white" href="/corporate/forgot/username">Forgot Username?</a></p>
+                    </div>
+                    <div class="form-group">
+                        <input hidden type="text" name="username" id="username" th:value="*{username}" class="my-select hidden" readonly="readonly" autocomplete="off" />
+                        <p><a hidden class="text-white" href="/corporate/forgot/username">Forgot Username?</a></p>
                     </div>
 
                     <div class="form-group">
@@ -44,7 +48,8 @@
                     </div>
                     <div class="form-group">
                         <!--<input name="submit" type="submit" value="submit" />-->
-                        <button class="btn btn-primary  my-select">Submit</button>
+                        <button id="submit_btn" type="submit" hidden class="btn btn-primary  my-select ">Submit</button>
+
                     </div>
                 </form>
             </div>
@@ -120,6 +125,20 @@
                     console.log("error")
                 }
             });
+        }
+
+        function performauth() {
+
+            var username =  $('#false_username ').val();
+            var corp = $('#corporateId').val();
+
+            var set =  username + ':'+ corp ;
+            console.log("set is "+ set) ;
+
+            $('#username').val(set) ;
+
+            $("submit_btn").click();
+
         }
     </script>
 </th:block>

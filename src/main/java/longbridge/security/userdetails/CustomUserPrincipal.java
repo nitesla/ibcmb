@@ -138,5 +138,14 @@ public class CustomUserPrincipal implements CustomeUserDetails {
 		return user.hashCode();
 	}
 
-
+	@Override
+	public String toString() {
+		return "CustomUserPrincipal{" +
+				"username=" + user.getUserName()+ '\'' +
+				"user type=" + user.getUserType()+ '\'' +
+				", ipAddress='" + ipAddress + '\'' +
+				", today=" + today +
+				", corpId=" + corpId +
+				'}';
+	}
 }

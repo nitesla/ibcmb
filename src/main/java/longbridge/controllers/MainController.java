@@ -325,7 +325,7 @@ public class MainController {
         if ((username != null) && (corporateId != null)) {
             session.removeAttribute("corporateId");
             session.removeAttribute("corpUsername");
-            session.setAttribute("corpUsername", username);
+            session.setAttribute("corpUsername", username + ":"+ corporateId);
             session.setAttribute("corporateId", corporateId);
         }
 //        CorporateUser user = corporateUserService.getUserByName(username);
@@ -333,7 +333,8 @@ public class MainController {
 
         CorporateUser user = corporateUserService.getUserByNameAndCorporateId(username, corporateId);
         if (user != null && phishing != null) {
-            model.addAttribute("username", user.getUserName());
+            model.addAttribute("fake_name", user.getUserName());
+            model.addAttribute("username", user.getUserName() + ":"+ corporateId);
             model.addAttribute("corporateId", corporateId);
             return "corplogin";
         }
