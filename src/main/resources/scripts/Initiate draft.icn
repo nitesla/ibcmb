@@ -1,0 +1,39 @@
+
+
+print("this is a test script supposed to be run for draft request ")
+
+print("the input parameters are ")
+print(inparam)
+
+
+var amount  = 345678905657890 ;
+var balance ;
+
+inparam.forEach(function(e){
+    print(e.name + "currently !")
+    if(e.name == 'Amount'){
+        amount = e.value
+
+    }
+
+    if(e.name == 'Account'){
+        balance  =  check_acct_balance(e.value) ;
+    }
+
+})
+
+
+if( amount >= balance){
+    print('account balance not enought !')
+    // fire exception
+    script_bean.throwError('Please fund your account in order to process this request !')
+}
+
+
+
+function check_acct_balance(acct){
+    print('about to call function to check account balance ')
+    var balance  = script_bean.getAccountBalance(acct)
+    print('balance gotten is :' + balance)
+    return balance
+}

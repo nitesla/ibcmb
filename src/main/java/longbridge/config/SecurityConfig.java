@@ -36,7 +36,7 @@ import java.util.Objects;
 
 
 @Configuration
-@EnableWebSecurity(debug = true)
+@EnableWebSecurity
 //@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig {
 
@@ -400,7 +400,7 @@ public class SecurityConfig {
                     .and()
                     .sessionManagement()
                     .invalidSessionUrl("/login/corporate")
-                    .maximumSessions(1).expiredUrl("/login/corporate").sessionRegistry(sessionRegistry()).and()
+                    .maximumSessions(1).expiredUrl("/login/corporate?expired=true").sessionRegistry(sessionRegistry()).and()
                     .sessionFixation().migrateSession()
                     .and()
                     // logout
