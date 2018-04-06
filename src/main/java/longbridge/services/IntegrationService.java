@@ -123,6 +123,8 @@ public interface IntegrationService {
     @Async
     CompletableFuture<ObjectNode>  sendSMS(String message, String contact, String subject);
 
+    boolean  sendRegCodeSMS(String message, String contact, String subject);
+
     Rate getFee(String channel);
 
 

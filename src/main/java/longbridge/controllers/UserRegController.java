@@ -340,7 +340,7 @@ public class UserRegController {
         logger.info("BirthDate : " + birthDate);
         CustomerDetails details = integrationService.isAccountValid(accountNumber, email, birthDate);
         if (details != null) {
-            logger.info("Reg Code : " + details);
+            logger.info("Reg Details : " + details);
             String contact = details.getPhone();
             if(contact != null && !contact.equalsIgnoreCase("") ) {
                 code = generateAndSendRegCode(contact);
@@ -372,8 +372,9 @@ public class UserRegController {
         message += n;
 
 
-        CompletableFuture<ObjectNode> sent = integrationService.sendSMS(message, contact, "Internet Banking Registration Code");
-        if (sent != null) {
+        boolean sent = integrationService.sendRegCodeSMS(message, contact, "Internet Banking Registration Code");
+        logger.info("is reg code sent {}",sent);
+        if (sent) {
             return String.valueOf(n);
         }
         return code;

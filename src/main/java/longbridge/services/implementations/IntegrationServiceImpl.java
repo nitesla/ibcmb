@@ -1,5 +1,6 @@
 package longbridge.services.implementations;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import longbridge.api.*;
 import longbridge.dtos.SettingDTO;
@@ -603,6 +604,35 @@ public class IntegrationServiceImpl implements IntegrationService {
 		}
 
 		return CompletableFuture.completedFuture(result);
+	}
+
+	@Override
+	public boolean sendRegCodeSMS(String message, String contact, String subject) {
+		List<String> contacts = new ArrayList<>();
+		contacts.add(contact);
+		ObjectNode result = null;
+		String uri = cmbAlert+"/regcode";
+		Map<String, Object> params = new HashMap<>();
+		params.put("alertType", "SMS");
+		params.put("message", message);
+		params.put("subject", subject);
+		params.put("contactList", contacts);
+		logger.trace("params {}", params);
+
+		try {
+
+			result = template.postForObject(uri, params, ObjectNode.class);
+			logger.info("the reg code response {}",result);
+			if(result != null) {
+				boolean response = result.get("success").asBoolean();
+				logger.info("the boolean {}",response);
+					return response;
+			}
+		} catch (Exception e) {
+			logger.error(uri, params, e);
+
+		}
+		return false;
 	}
 
 	@Override
