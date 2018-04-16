@@ -24,7 +24,7 @@ public class TwentyFourHours implements Job {
             cronJobService.saveRunningJob("in-built",cronJobService.getCurrentExpression("category3"));
             cronJobService.updateAccountDetials();
             cronJobService.updateRetailUserDetails();
-            cronJobService.updateCorporateUserDetails();
+//            cronJobService.updateCorporateUserDetails();
             cronJobService.addNewAccount();
             cronJobService.updateRunningJob();
             System.out.println("twenty four hours");

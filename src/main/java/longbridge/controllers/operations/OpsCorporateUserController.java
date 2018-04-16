@@ -127,6 +127,11 @@ public class OpsCorporateUserController {
 
         String corpId = corporateUserService.getUser(userId).getCorporateId();
 
+        if(verificationService.isPendingVerification(userId, CorporateUser.class.getSimpleName())){
+            redirectAttributes.addFlashAttribute("failure", "User has pending changes to be verified");
+            return "redirect:/ops/corporates/" + corpId + "/view";
+        }
+
         try {
             String message = corporateUserService.unlockUser(userId);
             redirectAttributes.addFlashAttribute("message", message);

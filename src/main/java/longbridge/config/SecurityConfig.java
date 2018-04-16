@@ -376,7 +376,7 @@ public class SecurityConfig {
         protected void configure(HttpSecurity http) throws Exception {
 
 
-            http.addFilterBefore(customFilter(), UsernamePasswordAuthenticationFilter.class);
+            //http.addFilterBefore(customFilter(), UsernamePasswordAuthenticationFilter.class);
 
             http
                     .antMatcher("/corporate/**").authorizeRequests()
@@ -400,7 +400,7 @@ public class SecurityConfig {
                     .and()
                     .sessionManagement()
                     .invalidSessionUrl("/login/corporate")
-                    .maximumSessions(1).expiredUrl("/login/corporate").sessionRegistry(sessionRegistry()).and()
+                    .maximumSessions(1).expiredUrl("/login/corporate?expired=true").sessionRegistry(sessionRegistry()).and()
                     .sessionFixation().migrateSession()
                     .and()
                     // logout

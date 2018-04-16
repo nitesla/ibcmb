@@ -36,12 +36,12 @@ public class CorpLocalBeneficiaryServiceImpl implements CorpLocalBeneficiaryServ
 
 
     @Autowired
-    ModelMapper modelMapper;
+    private ModelMapper modelMapper;
 
     @Autowired
-    MessageSource messageSource;
+    private MessageSource messageSource;
 
-    Locale locale = LocaleContextHolder.getLocale();
+    private Locale locale = LocaleContextHolder.getLocale();
 
     @Autowired
     public CorpLocalBeneficiaryServiceImpl(CorpLocalBeneficiaryRepo corpLocalBeneficiaryRepo,CorporateRepo corporateRepo) {
