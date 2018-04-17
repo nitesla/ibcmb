@@ -9,7 +9,7 @@ import net.sf.jasperreports.engine.JasperCompileManager;
 public class CompileJasper {
 
     public static void compile() {
-        String sourceFileName = "C:\\Users\\Longbridge\\Documents\\Coronation\\Statement\\rpt_account-statement.jrxml";
+        String sourceFileName = "/Users/mac/Documents/Resources/rpt_account-statement.jrxml";
 
         System.out.println("Compiling Report Design ...");
         try {

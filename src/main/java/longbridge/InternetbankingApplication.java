@@ -1,6 +1,7 @@
 package longbridge;
 
 
+import longbridge.jobs.CompileJasper;
 import longbridge.repositories.*;
 import longbridge.services.SecurityService;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;

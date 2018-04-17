@@ -56,7 +56,8 @@
 
 
                    <p>
-                       <a id="btn-print" th:href="@{'~/viewstatement/display/data'}"  class="btn bt-link-act pull-right"> <i class="fa fa-print"  ></i>&nbsp; Download</a>
+                       <a id="btn-print" th:href="@{'~/viewstatement/display/data'}"  class="btn bt-link-act pull-right btn-print"> <i class="fa fa-print"  ></i>&nbsp; PDF</a>
+                       <a id="excel" th:href="@{'~/viewstatement/display/data'}"  class="btn bt-link-act pull-right btn-print"> <i class="fa fa-print"  ></i>&nbsp; Excel</a>
                        <!--<a th:href="@{'#'}" class="btn "> <i class="fa fa-envelope" style="color: white" ></i>&nbsp; send mail</a>-->
                    </p>
 
@@ -121,7 +122,7 @@
         if(acctNum != null) {
             $('select option[value="' + acctNum + '"]').attr("selected", true);
         }
-        $('#btn-print').hide();
+        $('.btn-print').hide();
         $('#tranDetails_length').hide();
         $('#tranDetails_paginate').hide();
         $('#emptyDateError').hide();
@@ -244,7 +245,7 @@
 //
 //            e.preventDefault();
 //            dt = $('#tranDetails').DataTable();
-//            $('#btn-print').show();
+//            $('.btn-print').show();
 //            dt.ajax.reload(null, true);
 //
 //        });
@@ -270,10 +271,10 @@
             }, success: function (result) {
 
 //                    resetButton();
-                $('#btn-print').hide();
+                $('.btn-print').hide();
 //                        console.log("the output is " + result.details);
                 if (result.details != null && result.details != "null") {
-                    $('#btn-print').show();
+                    $('.btn-print').show();
                     var contactsTab2 = $('#tranDetails').DataTable();
                     for (var key in result.details) {
                         if (result.details.hasOwnProperty(key)) {
@@ -311,7 +312,7 @@
     } else {
         var contactsTab2 = $('#tranDetails').DataTable();
         var row  = contactsTab2.rows().remove().draw();
-        $('#btn-print').hide();
+        $('.btn-print').hide();
         bootbox.alert("<div style='text-align: center'>Start date cannot be less than end date</div>");
         return false;
     }
@@ -324,7 +325,7 @@
         $('#tranDetails_paginate').hide();
         $("#btn-print").on("click", function(e) {
             e.preventDefault();
-showSpinner();
+            showSpinner();
 //            var table = $('#tranDetails').DataTable();
             var data = { "acctNumber" : $('[name=acctNumber]').val(),
                     "fromDate" : $('[name=fromDate]').val(),
@@ -332,7 +333,19 @@ showSpinner();
                     "tranType" : $('[name=tranType]').val()} ;
             console.log("data "+data);
             $.download("/retail/account/downloadstatement", "data", data);
-hideSpinner();
+            hideSpinner();
+        });
+        $("#excel").on("click", function(e) {
+            e.preventDefault();
+            showSpinner();
+//            var table = $('#tranDetails').DataTable();
+            var data = { "acctNumber" : $('[name=acctNumber]').val(),
+                    "fromDate" : $('[name=fromDate]').val(),
+                    "toDate" : $('[name=toDate]').val(),
+                    "tranType" : $('[name=tranType]').val()} ;
+            console.log("data "+data);
+            $.download("/retail/account/downloadstatement/excel", "data", data);
+            hideSpinner();
         });
 
         $('.dataTables_empty').html('No data available');
