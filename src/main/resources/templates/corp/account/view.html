@@ -57,7 +57,9 @@
                     
                     
                                        <p>
-                                           <a id="btn-print" href="#"  class="btn bt-link-act pull-right"> <i class="fa fa-print"  ></i>&nbsp; Download</a>
+                                           <a id="btn-print" href="#"  class="btn bt-link-act pull-right btn-print"> <i class="fa fa-print"  ></i>&nbsp; PDF</a>
+                                           <a id="excel" href="#"  class="btn bt-link-act pull-right btn-print"> <i class="fa fa-print"  ></i>&nbsp; Excel</a>
+
                                            <!--<a th:href="@{'#'}" class="btn "> <i class="fa fa-envelope" style="color: white" ></i>&nbsp; send mail</a>-->
                                        </p>
                     
@@ -258,9 +260,9 @@
                                     tranType: $('[name=tranType]').val()
                                 },
                                 success: function(result) {
-                                    $('#btn-print').hide();
+                                    $('.btn-print').hide();
                                     if (result.details != null && result.details != "null") {
-                                        $('#btn-print').show();
+                                        $('.btn-print').show();
                                         var contactsTab2 = $('#tranDetails').DataTable();
                                         for (var key in result.details) {
                                             if (result.details.hasOwnProperty(key)) {
@@ -298,7 +300,7 @@
                         } else {
                             var contactsTab2 = $('#tranDetails').DataTable();
                             var row = contactsTab2.rows().remove().draw();
-                            $('#btn-print').hide();
+                            $('.btn-print').hide();
                             $('#next').hide();
                             $('#previous').hide();
                             hideSpinner();
@@ -308,11 +310,23 @@
                         }
                     }
                 });
-                $('#btn-print').hide();
+                $('.btn-print').hide();
                 $('#previous').hide();
                 $('#next').hide();
                 $('#tranDetails_length').hide();
                 $('#tranDetails_paginate').hide();
+                $("#excel").on("click", function(e) {
+                    e.preventDefault();
+                    showSpinner();
+//            var table = $('#tranDetails').DataTable();
+                    var data = { "acctNumber" : $('[name=acctNumber]').val(),
+                        "fromDate" : $('[name=fromDate]').val(),
+                        "toDate" : $('[name=toDate]').val(),
+                        "tranType" : $('[name=tranType]').val()} ;
+                    console.log("data "+data);
+                    $.download("/corporate/account/downloadstatement/excel", "data", data);
+                    hideSpinner();
+                });
                 $("#btn-print").on("click", function(e) {
                     //                e.preventDefault();
                     showSpinner();

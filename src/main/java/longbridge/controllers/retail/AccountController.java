@@ -220,8 +220,10 @@ import net.sf.jasperreports.engine.*;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import net.sf.jasperreports.engine.data.JsonDataSource;
 import net.sf.jasperreports.engine.design.JasperDesign;
+import net.sf.jasperreports.engine.export.JExcelApiExporter;
 import net.sf.jasperreports.engine.export.JRPdfExporter;
 import net.sf.jasperreports.engine.export.JRXlsExporter;
+import net.sf.jasperreports.engine.export.JRXlsExporterParameter;
 import net.sf.jasperreports.engine.util.JRLoader;
 import net.sf.jasperreports.engine.xml.JRXmlLoader;
 import net.sf.jasperreports.export.SimpleExporterInput;
@@ -693,7 +695,7 @@ public class AccountController {
 
 	@GetMapping("/downloadstatement")
 	public ModelAndView downloadStatementData(ModelMap modelMap, DataTablesInput input, String acctNumber,
-											  String fromDate, String toDate, String tranType, Principal principal) {
+											  String fromDate, String toDate, String tranType, RedirectAttributes redirectAttributes) {
 		Date from = null;
 		Date to = null;
 		DataTablesOutput<TransactionDetails> out = new DataTablesOutput<TransactionDetails>();
@@ -764,31 +766,22 @@ public class AccountController {
 			Date today = new Date();
 			modelMap.put("today", today);
 			modelMap.put("imagePath", imagePath);
-//			ModelAndView modelAndView = new ModelAndView(xlsView, modelMap);
 //
 			ModelAndView modelAndView = new ModelAndView("rpt_account-statement", modelMap);
 			return modelAndView;
 		} catch (ParseException e) {
 			logger.warn("didn't parse date", e);
-			ModelAndView modelAndView =  new ModelAndView("redirect:/retail/account/viewstatement");
-			modelAndView.addObject("failure", messageSource.getMessage("receipt.download.failed", null, locale));
-			//redirectAttributes.addFlashAttribute("failure", messageSource.getMessage("receipt.download.failed", null, locale));
-			return modelAndView;
 		}catch (Exception e){
 			logger.info(" STATEMENT DOWNLOAD {} ", e.getMessage());
-			ModelAndView modelAndView =  new ModelAndView("redirect:/retail/account/viewstatement");
-			modelAndView.addObject("failure", messageSource.getMessage("receipt.download.failed", null, locale));
-			//redirectAttributes.addFlashAttribute("failure", messageSource.getMessage("receipt.download.failed", null, locale));
-			return modelAndView;
+
 		}
-
-//		ModelAndView modelAndView = new ModelAndView("rpt_account-statement", modelMap);
-//		return modelAndView;
-
+		ModelAndView modelAndView =  new ModelAndView("redirect:/retail/account/viewstatement");
+		redirectAttributes.addFlashAttribute("failure", messageSource.getMessage("statement.download.failed", null, locale));
+		return modelAndView;
 	}
 	@GetMapping("/downloadstatement/excel")
-	public ModelAndView downloadStatementExcel(ModelMap modelMap, DataTablesInput input, String acctNumber,
-											   String fromDate, String toDate, String tranType, Principal principal, HttpServletResponse response) {
+	public ModelAndView downloadStatementExcel(ModelMap modelMap, String acctNumber,
+											   String fromDate, String toDate, String tranType,HttpServletResponse response,RedirectAttributes redirectAttributes) {
 		Date from = null;
 		Date to = null;
 		DataTablesOutput<TransactionDetails> out = new DataTablesOutput<TransactionDetails>();
@@ -856,46 +849,34 @@ public class AccountController {
 			modelMap.put("today", today);
 			modelMap.put("imagePath", imagePath);
 
-
 			JRDataSource dataSource = new JRBeanCollectionDataSource(list);
 			JasperReport jasperReport = (JasperReport) JRLoader.loadObject(file);
-
 			JasperPrint print = JasperFillManager.fillReport(jasperReport,modelMap,dataSource);
-
 			JRXlsExporter exporter = new JRXlsExporter();
 						exporter.setExporterInput(new SimpleExporterInput(print));
 			ByteArrayOutputStream pdfReportStream = new ByteArrayOutputStream();
 			exporter.setExporterOutput(new SimpleOutputStreamExporterOutput(pdfReportStream));
+
 			exporter.exportReport();
 			response.setHeader("Content-Length", String.valueOf(pdfReportStream.size()));
 			response.setContentType("application/vnd.ms-excel");
-			response.addHeader("Content-Disposition", String.format("inline; filename=\"" + "statement" + "\""));
+			response.addHeader("Content-Disposition", String.format("inline; filename=\"" + "Statement" + "\""));
 			OutputStream responseOutputStream = response.getOutputStream();
 			responseOutputStream.write(pdfReportStream.toByteArray());
 
 			responseOutputStream.close();
 			pdfReportStream.close();
 			responseOutputStream.flush();
-
-//			ModelAndView modelAndView = new ModelAndView("rpt_account-statement","excelView", modelMap);
-//
-//			return modelAndView;
 		} catch (ParseException e) {
 			logger.warn("didn't parse date", e);
-			ModelAndView modelAndView =  new ModelAndView("redirect:/retail/account/viewstatement");
-			modelAndView.addObject("failure", messageSource.getMessage("receipt.download.failed", null, locale));
-			//redirectAttributes.addFlashAttribute("failure", messageSource.getMessage("receipt.download.failed", null, locale));
-			return modelAndView;
+
 		} catch (Exception e){
 			logger.info(" STATEMENT DOWNLOAD {} ", e);
 
 		}
 		ModelAndView modelAndView =  new ModelAndView("redirect:/retail/account/viewstatement");
-		modelAndView.addObject("failure", messageSource.getMessage("receipt.download.failed", null, locale));
-		//redirectAttributes.addFlashAttribute("failure", messageSource.getMessage("receipt.download.failed", null, locale));
+		redirectAttributes.addFlashAttribute("failure", messageSource.getMessage("statement.download.failed", null, locale));
 		return modelAndView;
-//		ModelAndView modelAndView = new ModelAndView("rpt_account-statement", modelMap);
-//		return modelAndView;
 
 	}
 

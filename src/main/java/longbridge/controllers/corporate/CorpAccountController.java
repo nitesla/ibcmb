@@ -15,6 +15,15 @@ import longbridge.utils.DateFormatter;
 import longbridge.utils.statement.AccountStatement;
 import longbridge.utils.statement.TransactionDetails;
 import longbridge.utils.statement.TransactionHistory;
+import net.sf.jasperreports.engine.JRDataSource;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.JasperReport;
+import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
+import net.sf.jasperreports.engine.export.JRXlsExporter;
+import net.sf.jasperreports.engine.util.JRLoader;
+import net.sf.jasperreports.export.SimpleExporterInput;
+import net.sf.jasperreports.export.SimpleOutputStreamExporterOutput;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,8 +45,12 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.jasperreports.JasperReportsPdfView;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.OutputStream;
 import java.security.Principal;
 import java.text.DecimalFormat;
 import java.text.ParseException;
@@ -83,6 +96,8 @@ public class CorpAccountController {
     private Locale locale = LocaleContextHolder.getLocale();
     @Value("${jrxmlImage.path}")
     private String imagePath;
+    @Value("${jrxmlFile.path}")
+    private String jrxmlPath;
 
     @GetMapping
     public String listAccounts() {
@@ -483,23 +498,126 @@ public class CorpAccountController {
             modelMap.put("today", today);
             modelMap.put("imagePath", imagePath);
             ModelAndView modelAndView = new ModelAndView("rpt_account-statement", modelMap);
-//            ModelAndView modelAndView = new ModelAndView(view, modelMap);
             return modelAndView;
         } catch (ParseException e) {
             logger.warn("didn't parse date", e);
-            ModelAndView modelAndView = new ModelAndView("redirect:/corporate/account/viewstatement");
-            modelAndView.addObject("failure", messageSource.getMessage("receipt.download.failed", null, locale));
-            //redirectAttributes.addFlashAttribute("failure", messageSource.getMessage("receipt.download.failed", null, locale));
-            return modelAndView;
         } catch (Exception e) {
             logger.info(" STATEMENT DOWNLOAD {} ", e.getMessage());
-            ModelAndView modelAndView = new ModelAndView("redirect:/corporate/account/viewstatement");
-            modelAndView.addObject("failure", messageSource.getMessage("receipt.download.failed", null, locale));
-            //redirectAttributes.addFlashAttribute("failure", messageSource.getMessage("receipt.download.failed", null, locale));
-            return modelAndView;
+
         }
-//        ModelAndView modelAndView = new ModelAndView("rpt_account-statement", modelMap);
-//        return modelAndView;
+        ModelAndView modelAndView = new ModelAndView("redirect:/corporate/account/viewstatement");
+        redirectAttributes.addFlashAttribute("failure", messageSource.getMessage("statement.download.failed", null, locale));
+        return modelAndView;
+    }
+    @GetMapping("/downloadstatement/excel")
+    public ModelAndView downloadStatementExcel(ModelMap modelMap, String acctNumber,
+                                               String fromDate, String toDate, String tranType, HttpServletResponse response, RedirectAttributes redirectAttributes) {
+        Date from = null;
+        Date to = null;
+        DataTablesOutput<TransactionDetails> out = new DataTablesOutput<TransactionDetails>();
+        SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy");
+        try {
+            from = format.parse(fromDate);
+            to = format.parse(toDate);
+            logger.info("from date {} to date {} type {}",fromDate,toDate,tranType);
+            File file =  new File(jrxmlPath);
+            AccountStatement accountStatement = integrationService.getFullAccountStatement(acctNumber, from, to, tranType);
+//			out.setDraw(input.getDraw());
+            List<TransactionDetails> list = accountStatement.getTransactionDetails();
+            if(list != null) {
+                logger.info("statemet list is {}", list);
+            }else{
+                logger.info("statement list is empty");
+            }
+            Account account = accountService.getAccountByAccountNumber(acctNumber);
+            DecimalFormat formatter = new DecimalFormat("#,###.00");
+//			modelMap.put("datasource", list);
+            modelMap.put("format", "pdf");
+            modelMap.put("summary.accountNum",acctNumber);
+            modelMap.put("summary.customerName",account.getAccountName());
+            modelMap.put("summary.customerNo", account.getCustomerId());
+
+            double amount = Double.parseDouble(accountStatement.getOpeningBalance());
+            modelMap.put("summary.openingBalance", formatter.format(amount));
+            // the total debit and credit is referred as total debit count and credit count
+            if(accountStatement.getDebitCount()!=null) {
+                modelMap.put("summary.debitCount", accountStatement.getDebitCount());
+            }
+            else{modelMap.put("summary.debitCount", "");}
+            if(accountStatement.getCreditCount()!=null) {
+                modelMap.put("summary.creditCount", accountStatement.getCreditCount());
+            }
+            else{modelMap.put("summary.creditCount", "");}
+            modelMap.put("summary.currencyCode", accountStatement.getCurrencyCode());
+            if(accountStatement.getClosingBalance()!=null) {
+                double closingbal = Double.parseDouble(accountStatement.getClosingBalance());
+
+                modelMap.put("summary.closingBalance", formatter.format(closingbal));
+            }else{modelMap.put("summary.closingBalance","" );}
+
+            // the total debit and credit is referred as total debit count and credit count
+            if(accountStatement.getTotalDebit()!=null) {
+                double totalDebit = Double.parseDouble(accountStatement.getTotalDebit());
+                modelMap.put("summary.totalDebit", formatter.format(totalDebit));
+            }else{
+                modelMap.put("summary.totalDebit", "");
+                logger.info("total debit is empty");
+            }
+            if(accountStatement.getTotalCredit()!=null) {
+                double totalCredit = Double.parseDouble(accountStatement.getTotalCredit());
+                modelMap.put("summary.totalCredit", formatter.format(totalCredit));
+            }else{
+                modelMap.put("summary.totalCredit", "");
+                logger.info("total Credit is empty");
+            }
+            if(accountStatement.getAddress()!=null) {
+                modelMap.put("summary.address", accountStatement.getAddress());
+            }else{modelMap.put("summary.address", "");}
+            modelMap.put("fromDate", fromDate);
+            modelMap.put("toDate", toDate);
+            Date today = new Date();
+            modelMap.put("today", today);
+            modelMap.put("imagePath", imagePath);
+
+            JRDataSource dataSource = new JRBeanCollectionDataSource(list);
+            JasperReport jasperReport = (JasperReport) JRLoader.loadObject(file);
+            JasperPrint print = JasperFillManager.fillReport(jasperReport,modelMap,dataSource);
+            JRXlsExporter exporter = new JRXlsExporter();
+            exporter.setExporterInput(new SimpleExporterInput(print));
+            ByteArrayOutputStream pdfReportStream = new ByteArrayOutputStream();
+            exporter.setExporterOutput(new SimpleOutputStreamExporterOutput(pdfReportStream));
+
+            exporter.exportReport();
+            response.setHeader("Content-Length", String.valueOf(pdfReportStream.size()));
+            response.setContentType("application/vnd.ms-excel");
+            response.addHeader("Content-Disposition", String.format("inline; filename=\"" + "Statement" + "\""));
+            OutputStream responseOutputStream = response.getOutputStream();
+            responseOutputStream.write(pdfReportStream.toByteArray());
+
+            responseOutputStream.close();
+            pdfReportStream.close();
+            responseOutputStream.flush();
+
+//			ModelAndView modelAndView = new ModelAndView(view, modelMap);
+//
+//			return modelAndView;
+        } catch (ParseException e) {
+            logger.warn("didn't parse date", e);
+            ModelAndView modelAndView =  new ModelAndView("redirect:/retail/account/viewstatement");
+//			modelAndView.addObject("failure", messageSource.getMessage("receipt.download.failed", null, locale));
+            redirectAttributes.addFlashAttribute("failure", messageSource.getMessage("statement.download.failed", null, locale));
+            return modelAndView;
+        } catch (Exception e){
+            logger.info(" STATEMENT DOWNLOAD {} ", e);
+
+        }
+        ModelAndView modelAndView =  new ModelAndView("redirect:/retail/account/viewstatement");
+//		modelAndView.addObject("failure", messageSource.getMessage("receipt.download.failed", null, locale));
+        redirectAttributes.addFlashAttribute("failure", messageSource.getMessage("statement.download.failed", null, locale));
+        return modelAndView;
+//		ModelAndView modelAndView = new ModelAndView("rpt_account-statement", modelMap);
+//		return modelAndView;
+
     }
 
     @GetMapping("/viewstatement/corp/display/data/next")
