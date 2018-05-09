@@ -35,10 +35,25 @@
                                 <h2>Corporate Identification</h2>
 
                                 <div class="clearfix"></div>
+
+                                            <!--<div class="x_title">-->
+                                                <!--<ul class="nav navbar-right panel_toolbox col-lg-4 pull-right">-->
+
+                                                    <!--<li>-->
+                                                        <!--<div class="col-lg-4">-->
+                                                            <!--<div class="title-action">-->
+                                                                <!--<a href="/admin/users/new" class="btn btn-sm btn-primary"><i class="fa fa-plus"></i> Add</a>-->
+                                                            <!--</div>-->
+                                                        <!--</div>-->
+                                                    <!--</li>-->
+
+                                                <!--</ul>-->
+                                        <!--</div>-->
                             </div>
                             <div class="x_content">
                                 <div class="ibox-content">
-                                    <form method="post" class="form-horizontal" th:action="@{/ops/corporates/accounts/authorization}"
+                                    <form method="post" class="form-horizontal"
+                                          th:action="@{/ops/corporates/accounts/authorization}"
                                           th:object="${corporate}">
 
 
@@ -46,7 +61,7 @@
                                             <label class="col-sm-2 control-label">Corporate ID</label>
 
                                             <div class="col-sm-6">
-                                                <input type="text" id="corpUniqueId" class="form-control"  required
+                                                <input type="text" id="corpUniqueId" class="form-control" required
                                                        th:field="*{corporateId}"
                                                        placeholder="Unique ID for the corporate"/>
                                                 <div id="custError" style="display: none;">
@@ -84,10 +99,19 @@
                                         <div class="form-group">
                                             <label class="col-sm-2 control-label">Accounts <span
                                                     style="color: red"></span></label>
-                                            <div class="col-sm-6" style="max-height: 250px; overflow-y: scroll;">
-                                                <p th:if="${not #lists.isEmpty(accounts)}"><input type="checkbox" id="checkAll"/> Select All</p>
-                                                <p th:if="${#lists.isEmpty(accounts)}" style="color: red">No Transactional/Active accounts available.</p>
+                                            <div class="col-sm-6">
+                                                <a style="float: right" href="#"  data-toggle="modal" data-target="#myModal">Add More Accounts</a>
 
+                                            </div>
+
+                                            <div class="col-sm-6" id="accountsDiv" style="max-height: 250px; overflow-y: scroll;">
+
+                                                <p th:if="${not #lists.isEmpty(accounts)}"><input type="checkbox"
+                                                                                                  id="checkAll"/> Select
+                                                    All</p>
+                                                <p th:if="${#lists.isEmpty(accounts)}" style="color: red">No
+                                                    Transactional/Active accounts available.</p>
+                                                    <hr/>
 
                                                 <p th:each="account,index: ${accounts}">
                                                     <input type="hidden" id="accountSize" th:value="${index.size}"/>
@@ -98,18 +122,27 @@
                                                                th:class="account+${index.index}"
                                                                th:id="acct+${account.accountNumber}" name="accounts"
                                                                th:value="${account.accountNumber}"/>
+                                                            <input type="hidden" name="cifids" th:value="${account.customerId}"/>
                                                         <span th:text="${account.accountNumber}+' - '+${account.accountName}"></span>
-                                                            <span th:text="' - '+${account.schemeType}" name="acctType"></span>
+                                                            <span th:text="' - '+${account.schemeType}"
+                                                                  name="acctType"></span>
+                                                             <span th:text="' - '+${account.customerId}"
+                                                                   th:name="acctCustomerId"></span>
                                                         </span>
                                                         <span th:if="${selectedAccounts} != 'null'">
-                                                        <span th:if="${#lists.contains(selectedAccounts,account.accountNumber)}">
+                                                        <span th:if="${#lists.contains(selectedAccounts,account.accountNumber)} == true">
                                                         <input type="checkbox" checked class="accountAttached"
                                                                onclick="noCorpAccountSelected()"
                                                                th:class="account+${index.index}"
                                                                th:id="acct+${account.accountNumber}" name="accounts"
                                                                th:value="${account.accountNumber}"/>
+                                                            <input type="hidden" name="cifids" th:value="${account.customerId}"/>
+
                                                         <span th:text="${account.accountNumber}+' - '+${account.accountName}"></span>
-                                                            <span th:text="' - '+${account.schemeType}" th:name="acctType"></span>
+                                                            <span th:text="' - '+${account.schemeType}"
+                                                                  th:name="acctType"></span>
+                                                            <span th:text="' - '+${account.customerId}"
+                                                                  th:name="acctCustomerId"></span>
                                                         </span>
                                                         <span th:if="${#lists.contains(selectedAccounts,account.accountNumber)} == false">
                                                         <input type="checkbox" class="accountAttached"
@@ -117,8 +150,13 @@
                                                                th:class="account+${index.index}"
                                                                th:id="acct+${account.accountNumber}" name="accounts"
                                                                th:value="${account.accountNumber}"/>
+                                                            <input type="hidden" name="cifids" th:value="${account.customerId}"/>
+
                                                         <span th:text="${account.accountNumber}+' - '+${account.accountName}"></span>
-                                                            <span th:text="' - '+${account.schemeType}" th:name="acctType"></span>
+                                                            <span th:text="' - '+${account.schemeType}"
+                                                                  th:name="acctType"></span>
+                                                             <span th:text="' - '+${account.customerId}"
+                                                                   th:name="acctCustomerId"></span>
                                                         </span>
                                                             </span>
                                                     </label>
@@ -154,6 +192,67 @@
         </div>
         <!-- /page content -->
 
+        <!-- Modal -->
+        <form method="post" class="form-horizontal" id="aform">
+            <div id="myModal" class="modal fade" role="dialog">
+                <div class="modal-dialog">
+
+                    <!-- Modal content-->
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <!--<button type="button" id="closeModal" class="close" data-dismiss="modal">&times;</button>-->
+                            <button type="button" id="closeModal" class="close">&times;</button>
+                            <h4 class="modal-title">Add Corporate Accounts</h4>
+                        </div>
+                        <div class="modal-body">
+                            <div class="panel panel-default">
+                                <div class="panel-body">
+                                    <div class="col-sm-12">
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label">CIFID</label>
+
+                                            <div class="col-sm-9">
+
+                                                <div class="input-group col-lg-12">
+                                                    <input type="text" class="form-control" name="cifid" id="cifid" placeholder="Enter CIFID"/> <span
+                                                        class="input-group-btn">
+
+										<button  class="btn btn-primary"  id="find">Fetch</button>
+									</span>
+
+                                                </div>
+                                                <p id="cifid-error" style="color: red;display:none"></p>
+
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-12">
+
+
+
+
+
+                                    </div>
+                                </div>
+
+
+                            </div>
+
+                        </div>
+                        <!--<div class="modal-footer">-->
+                            <!--<button id="add_authorizer" type="submit" class="btn btn-primary">Add</button>-->
+                            <!--<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>-->
+                        <!--</div>-->
+                    </div>
+
+
+                </div>
+            </div>
+        </form>
+        <!-- Modal -->
+
+
         <!-- footer content -->
         <footer th:replace="layout :: footer">
         </footer>
@@ -183,15 +282,12 @@
         $("#checkAll").change(function () {
             if ($(this).is(":checked")) {
 
-                    $("input[name='accounts']").prop("checked", true);
-                    $("#custAccountError").hide();
+                $("input[name='accounts']").prop("checked", true);
+                $("#custAccountError").hide();
 
-            }else{
+            } else {
                 $("input[name='accounts']").prop("checked", false);
-
             }
-
-
         });
 
         $("input[name='accounts']").change(function () {
@@ -230,17 +326,109 @@
                 var msg = "<p style='color:red;'>Error occurred validating Customer ID. Try again later.</p>";
                 $("#custError").html(msg);
 
-
             }
         });
     });
+
+
+
+
+    $("#closeModal").click(function (e) {
+        e.preventDefault();
+        $("input[name='cifid']").val("");
+        $("#cifid-error").text("");
+        $("#myModal").modal('toggle');
+
+    });
+
+    $("#find").click(function (e) {
+        e.preventDefault();
+
+        $("#cifid-error").text("");
+
+        cifid = $("input[name='cifid']").val();
+
+        if (cifid == "") {
+            $("#cifid-error").text("CIFID is required")
+            $("#cifid-error").show();
+            $("#cifid").focus();
+            return;
+        }
+        else {
+            $("#cifid-error").modal('hide');
+            $("#cifid-error").text("");
+            $("#cifid").focus();
+
+
+            var accountsAdded = false;
+
+            $("#accountsDiv").each(function(){
+                if($(this).html().indexOf(cifid) > -1){
+                  accountsAdded = true;
+                  return;
+                }
+            });
+
+            if(accountsAdded){
+                $("#cifid-error").text("Accounts already added for the CIFID");
+                $("#cifid-error").show();
+                return;
+            }
+
+            $("#find").text("Fetching Accounts...")
+            $("#find").attr("disabled","disabled")
+
+            $.ajax({
+                url: "/ops/corporates/new/" + cifid+"/accounts",
+                success: function (account) {
+                    console.log("cifid is " + cifid);
+
+                    if(account.length==0){
+                        $("#cifid-error").text("No available accounts for CIFID");
+                        $("#cifid-error").show()
+                        $("#find").text("Fetch")
+                        $("#find").removeAttr("disabled")
+                        return;
+                    }
+                   for(var i=0;i<account.length;i++){
+                       console.log("data is "+account[i].accountNumber)
+
+                       var newAccount =  "<p><label class='checkbox-inline'><input type='checkbox' checked='checked' class='accountAttached' onclick='noCorpAccountSelected()' id='acct'"+account[i].accountNumber+"  name='accounts' value='"+account[i].accountNumber+"'/> <span>"+account[i].accountNumber+" - "+account[i].accountName+" - "+account[i].schemeType+" - "+account[i].customerId+"</span><input type='hidden' name='cifids' value='"+account[i].customerId+"'/> </p>"
+                        $('#accountsDiv').append(newAccount)
+                   }
+
+                    $("#find").text("Fetch")
+                    $("#find").removeAttr("disabled")
+                    $("#myModal").modal('toggle');
+                    $("input[name='cifid']").val("");
+                    $("#cifid-error").hide()
+
+                },
+                error: function (xhr, status, err) {
+                    console.log("error");
+                    $("#find").text("Fetch")
+                    $("#find").removeAttr("disabled")
+                    $("#cifid-error").text("Error occurred fetching accounts");
+                    $("#cifid-error").show();
+                    return;
+
+                }
+            });
+
+
+        }
+    });
+
+
+
+
 
     var corpIdExists = false;
 
     function validateCorpId() {
         var custId = $("#corpUniqueId").val();
 
-        if(custId==""){
+        if (custId == "") {
             return;
         }
 
@@ -278,6 +466,7 @@
             $('#custNameError').hide()
         }
     }
+
     function noCorpAccountSelected() {
         var selectedItem = 0;
         var noOfAccounts = $('#accountSize').val();

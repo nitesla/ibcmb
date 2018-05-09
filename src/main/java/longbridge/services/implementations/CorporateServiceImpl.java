@@ -161,8 +161,10 @@ public class CorporateServiceImpl implements CorporateService {
         corporate.setPhoneNumber(corporateRequestDTO.getPhoneNumber());
         corporate.setCreatedOnDate(new Date());
         corporate.setStatus("A");
+        corporate.setCifids(corporateRequestDTO.getCifids());
         List<Account> accounts = accountService.addAccounts(corporateRequestDTO.getAccounts());
         corporate.setAccounts(accounts);
+
         Corporate newCorporate = corporateRepo.save(corporate);
 
 
@@ -269,7 +271,11 @@ public class CorporateServiceImpl implements CorporateService {
         List<Account> newAccounts = accountService.addAccounts(requestDTO.getAccounts());
         List<Account> existingAccounts = corporate.getAccounts();
         existingAccounts.addAll(newAccounts);
-        corporate.setAccounts(existingAccounts);
+
+        corporate.getCifids().add(corporate.getCustomerId());
+        corporate.getCifids().addAll(requestDTO.getCifids());
+
+
         corporateRepo.save(corporate);
     }
 
@@ -356,6 +362,8 @@ public class CorporateServiceImpl implements CorporateService {
     @Transactional
     public void createUserOnEntrustAndSendCredentials(CorporateUser user) throws EntrustException {
 
+        logger.debug("Creating user {} on Entrust platform", user.getUserName());
+
         if ("".equals(user.getEntrustId()) || user.getEntrustId() == null) {
             String fullName = user.getFirstName() + " " + user.getLastName();
             SettingDTO setting = configService.getSettingByName("ENABLE_ENTRUST_CREATION");
@@ -378,11 +386,11 @@ public class CorporateServiceImpl implements CorporateService {
                 }
                 user.setEntrustId(entrustId);
                 user.setEntrustGroup(group);
-                corporateUserRepo.save(user);
             }
             String password = passwordPolicyService.generatePassword();
             user.setPassword(passwordEncoder.encode(password));
             user.setExpiryDate(new Date());
+            corporateUserRepo.save(user);
             sendUserCredentials(user, password);
 
         }

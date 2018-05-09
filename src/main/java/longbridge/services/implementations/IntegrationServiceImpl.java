@@ -90,7 +90,6 @@ public class IntegrationServiceImpl implements IntegrationService {
 	@Override
 	public List<AccountInfo> fetchAccounts(String cifid) {
 		try {
-
 			String uri = URI + "/customer/{acctId}/accounts";
 			return Arrays.stream(template.getForObject(uri, AccountInfo[].class, cifid.toUpperCase()))
 					.collect(Collectors.toList());

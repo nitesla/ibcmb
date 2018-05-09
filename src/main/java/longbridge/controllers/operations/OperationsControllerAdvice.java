@@ -1,13 +1,23 @@
 package longbridge.controllers.operations;
 
+import longbridge.exception.AccountFetchException;
+import longbridge.exception.IdentificationException;
 import longbridge.models.OperationsUser;
-import longbridge.services.*;
+import longbridge.services.MessageService;
+import longbridge.services.OperationsUserService;
+import longbridge.services.RequestService;
+import longbridge.services.VerificationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ControllerAdvice;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.context.request.WebRequest;
 
 import java.security.Principal;
 
@@ -64,6 +74,18 @@ public class OperationsControllerAdvice {
         model.addAttribute("pendingRequests", numOfSubmittedRequests);
 
         return "";
+    }
+
+
+
+    @ExceptionHandler(IdentificationException.class)
+    public ResponseEntity<?> handleIdentificationException(Exception ex, WebRequest webRequest){
+        return new ResponseEntity<Object>(ex.getMessage(), new HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @ExceptionHandler(AccountFetchException.class)
+    public ResponseEntity<?> handleAccountFetchException(Exception ex, WebRequest webRequest){
+        return new ResponseEntity<Object>(ex.getMessage(), new HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
 }

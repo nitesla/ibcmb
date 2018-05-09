@@ -1,13 +1,10 @@
 package longbridge.models;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
-import longbridge.repositories.CorporateRepo;
 import longbridge.utils.PrettySerializer;
 import org.hibernate.annotations.Where;
 import org.hibernate.envers.Audited;
@@ -38,6 +35,9 @@ public class Corporate extends AbstractEntity implements PrettySerializer{
     private Date createdOnDate;
     private String bvn;
     private String taxId;
+
+    @ElementCollection
+    private Set<String> cifids;
 
     @OneToMany(mappedBy = "corporate")
     @JsonIgnore
@@ -209,6 +209,14 @@ public class Corporate extends AbstractEntity implements PrettySerializer{
 
     public void setCorporateId(String corporateId) {
         this.corporateId = corporateId;
+    }
+
+    public Set<String> getCifids() {
+        return cifids;
+    }
+
+    public void setCifids(Set<String> cifids) {
+        this.cifids = cifids;
     }
 
     @Override

@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head th:replace="layout :: site-head">
+
+
 </head>
 
 <body class="nav-md">
@@ -38,7 +40,8 @@
                             </div>
                             <div class="x_content">
                                 <div class="ibox-content">
-                                    <form method="post" class="form-horizontal" th:action="@{/ops/corporates/account/new/add}"
+                                    <div id="existingCifidForm" style="display: block">
+                                    <form  method="post" class="form-horizontal" th:action="@{/ops/corporates/account/new/add}"
                                           th:object="${corporate}">
                                         <input type="hidden" class="form-control" th:field="*{customerId}"/>
                                         <input type="hidden" class="form-control" th:field="*{corporateId}"/>
@@ -48,33 +51,51 @@
                                         <input type="hidden" id="selectedAccounts" value=""/>
 
 
-                                        <!--<hr/>-->
                                         <div class="form-group">
+                                            <label class="col-sm-2 control-label">CIFID</label>
+                                            <div class="col-sm-6">
+
+                                            <select id="cifid" name="cifid" class="form-control">
+                                                <option th:if="${not #lists.contains(corporate.cifids,corporate.customerId)}" th:value="${corporate.customerId}" th:text="${corporate.customerId}"></option>
+                                                <option th:each="cifid : ${corporate.cifids}" th:value="${cifid}" th:text="${cifid}"></option>
+
+                                            </select>
+
+                                                <div>
+                                                   <p> <a id="showCifidForm" style="float: right" href="javascript:void(0);" >Use New CIFID</a></p>
+
+                                                </div>
+                                            </div>
+
+
+                                        </div>
+
+
+                                        <div class="form-group">
+
                                             <label class="col-sm-2 control-label">Accounts <span
                                                     style="color: red"></span></label>
-                                            <div class="col-sm-6" style="max-height: 250px; overflow-y: scroll;">
-                                                <p th:if="${not #lists.isEmpty(accounts)}"><input type="checkbox" id="checkAll"/> Select All</p>
-                                                <p th:if="${#lists.isEmpty(accounts)}" style="color: red">No Transactional/Active accounts available.</p>
 
 
-                                                <p th:each="account,index: ${accounts}">
-                                                    <input type="hidden" id="accountSize" th:value="${index.size}"/>
-                                                    <label class="checkbox-inline">
-                                                        <input type="checkbox" class="accountAttached"
-                                                               onclick="noCorpAccountSelected()"
-                                                               th:class="account+${index.index}"
-                                                               th:id="acct+${account.accountNumber}" name="accounts"
-                                                               th:value="${account.accountNumber}"/>
-                                                        <span th:text="${account.accountNumber}+' - '+${account.accountName}"></span>
-                                                            <span th:text="' - '+${account.schemeType}" name="acctType"></span>
+                                            <div class="col-sm-6">
+                                                <p  style="color: red; display: none" id="noAccountsError">No Transactional/Active accounts available.</p>
+                                                <p style="display: none" id="selectAll"><input type="checkbox" checked="checked" id="checkAll"/> Select All</p>
+                                                <p  style="color: red; display: none" id="accountFetchError">Error fetching accounts.</p>
 
-                                                    </label>
-                                                </p>
+                                                <div id="accountsDiv" class="col-sm-12" style="max-height: 250px; overflow-y: scroll;">
+
+
                                             </div>
+                                            </div>
+
+                                            <div  style="display: none" class="loader"></div>
+
+
                                             <div id="custAccountError" style="display: none;">
 
                                                 <p style="color:red;">&nbsp;&nbsp;At least one account is required</p>
                                             </div>
+
                                         </div>
 
                                         <div class="form-group">
@@ -83,8 +104,8 @@
                                                    <!--id="back">Previous</a>-->
                                                 <button type="reset" id="cancel" class="btn btn-default" >Cancel
                                                 </button>
-                                                <button  onclick="isCheckboxCheck()" class="btn btn-primary"
-                                                        type="button" th:disabled="${#lists.isEmpty(accounts)}">Submit
+                                                <button id="submitButton" onclick="isCheckboxCheck()" class="btn btn-primary"
+                                                        type="button" >Submit
                                                 </button>
                                                 <button id="submit" style="display: none" class="btn btn-primary"
                                                         type="submit">Submit
@@ -93,6 +114,84 @@
                                         </div>
                                         <div th:replace="layout::form-validation"></div>
                                     </form>
+                                </div>
+
+
+                                    <div id="newCifidForm" style="display: none">
+                                    <form method="post" class="form-horizontal" th:action="@{/ops/corporates/cifid/new/add}"
+                                          th:object="${corporate}">
+                                        <input type="hidden" class="form-control" th:field="*{customerId}"/>
+                                        <input type="hidden" class="form-control" th:field="*{corporateId}"/>
+                                        <input type="hidden" class="form-control" th:field="*{corporateName}"/>
+                                        <input type="hidden" class="form-control" th:field="*{id}"/>
+                                        <input type="hidden" class="form-control" th:field="*{corporateType}"/>
+                                        <input type="hidden" id="selectedAccounts" value=""/>
+
+
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label">CIFID</label>
+                                            <div class="col-sm-6">
+
+                                                <div class="input-group">
+                                                    <input type="text" class="form-control" name="cifid" id="cifid" placeholder="Enter CIFID"/> <span
+                                                        class="input-group-btn">
+
+										<button  class="btn btn-success"  id="find">Fetch</button>
+									</span>
+
+                                                </div>
+                                                <p id="cifid-error" style="color: red;display:none"></p>
+
+                                            </div>
+
+
+                                        </div>
+
+
+                                        <div class="form-group">
+
+                                            <label id="accountsLabel" style="display: none" class="col-sm-2 control-label">Accounts <span
+                                                    style="color: red"></span></label>
+
+
+                                            <div class="col-sm-6">
+                                                <p  style="color: red; display: none" id="noAccountsError2">No Transactional/Active accounts available.</p>
+                                                <p style="display: none" id="selectAll2"><input type="checkbox" checked="checked" id="checkAll2"/> Select All</p>
+                                                <p  style="color: red; display: none" id="accountFetchError2">Error fetching accounts.</p>
+
+                                                <div id="accountsDiv2" class="col-sm-12" style="max-height: 250px; overflow-y: scroll;">
+
+
+                                                </div>
+                                            </div>
+
+                                            <div  style="display: none" class="loader"></div>
+
+
+                                            <div id="custAccountError2" style="display: none;">
+
+                                                <p style="color:red;">&nbsp;&nbsp;At least one account is required</p>
+                                            </div>
+
+                                        </div>
+
+                                        <div id="submitButtons" style="display: none;" class="form-group">
+                                            <div class="col-sm-4 col-sm-offset-2">
+                                                <!--<a class="btn btn-primary" th:href="@{/ops/corporates/id/view(id=${corporate.id})}"-->
+                                                <!--id="back">Previous</a>-->
+                                                <button type="reset" id="cancel" class="btn btn-default" >Cancel
+                                                </button>
+                                                <button id="submitButton2" onclick="isCheckboxCheck2()" class="btn btn-primary"
+                                                        type="button" >Submit
+                                                </button>
+                                                <button id="submit2" style="display: none" class="btn btn-primary"
+                                                        type="submit">Submit
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <div th:replace="layout::form-validation"></div>
+                                    </form>
+                                    </div>
                                 </div>
                                 `
                             </div>
@@ -103,7 +202,12 @@
         </div>
         <!-- /page content -->
 
-        <!-- footer content -->
+
+
+
+
+
+<!-- footer content -->
         <footer th:replace="layout :: footer">
         </footer>
         <!-- /footer content -->
@@ -143,6 +247,20 @@
 
         });
 
+        $("#checkAll2").change(function () {
+            if ($(this).is(":checked")) {
+
+                    $("input[name='accounts']").prop("checked", true);
+                    $("#custAccountError").hide();
+
+            }else{
+                $("input[name='accounts']").prop("checked", false);
+
+            }
+
+
+        });
+
         $("input[name='accounts']").change(function () {
 
             if (!$(this).is(":checked")) {
@@ -153,7 +271,34 @@
 
         });
 
+        $("input[name='accounts']").change(function () {
+
+            if (!$(this).is(":checked")) {
+
+                $("#checkAll2").prop("checked", false);
+            }
+
+
+        });
+
+
+        fetchAvailableAccounts();
+
     });
+
+
+    $("#cifid").change(function () {
+        fetchAvailableAccounts();
+    });
+
+
+    $("#showCifidForm").click(function (e) {
+        e.preventDefault();
+        $("#existingCifidForm").hide();
+        $("#newCifidForm").show();
+        $("#cifid").focus();
+    });
+
     $("#search").click(function (e) {
         e.preventDefault();
 
@@ -184,6 +329,180 @@
         });
     });
 
+
+
+    $("#closeModal").click(function (e) {
+        e.preventDefault();
+        $("input[name='cifid']").val("");
+        $("#cifid-error").text("");
+        $("#myModal").modal('toggle');
+
+    });
+
+    $("#find").click(function (e) {
+        e.preventDefault();
+
+        $("#cifid-error").text("");
+
+        cifid = $("input[name='cifid']").val();
+
+        if (cifid == "") {
+            $("#cifid-error").text("CIFID is required")
+            $("#cifid-error").show();
+            $("#accountsLabel").hide()
+            $("#submitButtons").hide()
+            $("#accountsDiv2").empty()
+            $("#selectAll2").hide()
+            $("#cifid").focus();
+            return;
+        }
+        else {
+            $("#cifid-error").modal('hide');
+            $("#cifid-error").text("");
+            $("#cifid").focus();
+
+
+            var accountsAdded = false;
+
+            $("#accountsDiv2").each(function(){
+                if($(this).html().indexOf(cifid) > -1){
+                    accountsAdded = true;
+                    return;
+                }
+            });
+
+            if(accountsAdded){
+                $("#cifid-error").text("Accounts already added for the CIFID");
+                $("#cifid-error").show();
+                return;
+            }
+
+            $("#find").text("Fetching Accounts...")
+            $("#find").attr("disabled","disabled")
+
+
+            var corporateId = [[${corporate.id}]];
+
+            $.ajax({
+                url: "/ops/corporates/"+corporateId+"/new/" + cifid+"/accounts",
+                success: function (account) {
+                    console.log("cifid is " + cifid);
+
+                    if(account.length==0){
+                        $("#cifid-error").text("No available accounts for CIFID");
+                        $("#cifid-error").show()
+                        $("#find").text("Fetch")
+                        $("#find").removeAttr("disabled")
+                        $("#accountsLabel").hide()
+                        $("#submitButtons").hide()
+                        $("#accountsDiv2").empty()
+                        $("#selectAll2").hide()
+                        return;
+                    }
+                    $("#selectAll2").show()
+                    $("#accountsLabel").show()
+                    $("#noAccountsError2").hide()
+                    $("#submitButtons").show()
+                    $("#accountsDiv2").empty()
+                    for(var i=0;i<account.length;i++){
+                        console.log("data is "+account[i].accountNumber)
+
+                        var newAccount =  "<p><label class='checkbox-inline'><input name='accounts' type='checkbox' checked='checked' class='accountAttached' onclick='noCorpAccountSelected()' id='acct'"+account[i].accountNumber+"   value='"+account[i].accountNumber+"'/> <span>"+account[i].accountNumber+" - "+account[i].accountName+" - "+account[i].schemeType+" - "+account[i].customerId+"</span><input type='hidden' name='cifids' value='"+account[i].customerId+"'/> </p>"
+                        $('#accountsDiv2').append(newAccount)
+                    }
+
+                    $("#find").text("Fetch")
+                    $("#find").removeAttr("disabled")
+                    $("#cifid-error").hide()
+
+
+                },
+                error: function (xhr, status, err) {
+                    console.log("error");
+                    $("#find").text("Fetch")
+                    $("#find").removeAttr("disabled")
+                    $("#cifid-error").text(xhr.responseText);
+                    $("#cifid-error").show();
+                    $("#accountsLabel").hide()
+                    $("#submitButtons").hide()
+                    $("#accountsDiv2").empty()
+                    $("#selectAll2").hide()
+                    return;
+
+                }
+            });
+
+
+        }
+    });
+
+
+    function fetchAvailableAccounts(){
+
+        var corporateId = [[${corporate.id}]];
+        var cifid = $("select#cifid").val();
+
+
+        $("#selectAll").hide()
+        $("#noAccountsError").hide()
+        $("#accountFetchError").hide();
+
+
+
+
+        $(".loader").show();
+        $.ajax({
+            url: "/ops/corporates/account/" + corporateId+"/"+cifid,
+            success: function (account, status, xhr) {
+                console.log("cifid is " + cifid);
+                console.log("status" + status);
+                console.log("response test" + xhr.responseText);
+                console.log("corporateId is " + corporateId);
+
+                if(account.length==0){
+                    $("#noAccountsError").show()
+                    $("#submitButton").attr("disabled","disabled")
+                    $('#accountsDiv').empty()
+                    $(".loader").hide();
+                    return;
+                }
+                $(".loader").hide();
+                $('#accountsDiv').empty()
+                $("#submitButton").removeAttr("disabled")
+                for(var i=0;i<account.length;i++){
+                    console.log("account number is "+account[i].accountNumber)
+
+                    if(account[i].accountNumber == "undefined"){
+//                        $("#accountFetchError").text(xhr.responseText)
+                        $("#accountFetchError").show();
+                        $(".loader").hide();
+                        break;
+                    }
+
+                    var newAccount =  "<p><label class='checkbox-inline'><input type='checkbox' checked='checked' class='accountAttached' onclick='noCorpAccountSelected()' id='acct'"+account[i].accountNumber+"  name='accounts' value='"+account[i].accountNumber+"'/> <span>"+account[i].accountNumber+" - "+account[i].accountName+" - "+account[i].schemeType+" - "+account[i].customerId+"</span><input type='hidden' name='cifids' value='"+account[i].customerId+"'/> </p>"
+                    $('#accountsDiv').append(newAccount)
+                }
+
+                $("#selectAll").show()
+                $("#noAccountsError").hide()
+
+
+            },
+            error: function (xhr, status, err) {
+                console.log("error occurred fetching accounts");
+                console.log("response: "+xhr.responseText);
+                console.log("status: "+xhr.status);
+                $("#accountFetchError").text(xhr.responseText)
+                $("#accountFetchError").show();
+                $(".loader").hide();
+                return;
+
+            }
+        });
+
+    }
+
+
     var corpIdExists = false;
 
     function emptyCorpName() {
@@ -211,10 +530,7 @@
 
     function isCheckboxCheck() {
         var selectedItem = 0;
-        var noOfAccounts = $('#accountSize').val();
-//        console.log("the accounts size " + $('#corpUniqueId').val());
         var anyAccountSelected = $('input[name="accounts"]:checked').length > 0;
-//    console.log("no checked "+$('input[name="accounts"]:checked').length);
         if (anyAccountSelected) {
             selectedItem += 1;
         }
@@ -235,6 +551,33 @@
 
         } else {
             $('#custAccountError').show();
+            return false;
+        }
+    }
+
+    function isCheckboxCheck2() {
+        var selectedItem = 0;
+        var anyAccountSelected = $('input[name="accounts"]:checked').length > 0;
+        if (anyAccountSelected) {
+            selectedItem += 1;
+        }
+        if ($('#corpUniqueId').val() == '') {
+            $('#custiDError').show()
+        } else {
+            $('#custiDError').hide()
+        }
+        if ($('#corporateName').val() == '') {
+            $('#custNameError').show()
+        } else {
+            $('#custNameError').hide()
+        }
+
+        console.log("the no of accounts selected " + selectedItem);
+        if (selectedItem > 0) {
+                $('#submit2').trigger('click');
+
+        } else {
+            $('#custAccountError2').show();
             return false;
         }
     }
