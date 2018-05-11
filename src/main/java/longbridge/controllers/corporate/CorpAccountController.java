@@ -20,7 +20,7 @@ import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
-import net.sf.jasperreports.engine.export.JRXlsExporter;
+import net.sf.jasperreports.engine.export.ooxml.JRXlsxExporter;
 import net.sf.jasperreports.engine.util.JRLoader;
 import net.sf.jasperreports.export.SimpleExporterInput;
 import net.sf.jasperreports.export.SimpleOutputStreamExporterOutput;
@@ -582,7 +582,7 @@ public class CorpAccountController {
             JRDataSource dataSource = new JRBeanCollectionDataSource(list);
             JasperReport jasperReport = (JasperReport) JRLoader.loadObject(file);
             JasperPrint print = JasperFillManager.fillReport(jasperReport,modelMap,dataSource);
-            JRXlsExporter exporter = new JRXlsExporter();
+            JRXlsxExporter exporter = new JRXlsxExporter();
             exporter.setExporterInput(new SimpleExporterInput(print));
             ByteArrayOutputStream pdfReportStream = new ByteArrayOutputStream();
             exporter.setExporterOutput(new SimpleOutputStreamExporterOutput(pdfReportStream));
@@ -590,7 +590,7 @@ public class CorpAccountController {
             exporter.exportReport();
             response.setHeader("Content-Length", String.valueOf(pdfReportStream.size()));
             response.setContentType("application/vnd.ms-excel");
-            response.addHeader("Content-Disposition", String.format("inline; filename=\"" + "Statement" + "\""));
+            response.addHeader("Content-Disposition", String.format("inline; filename=\"" + "Account_Statement.xlsx" + "\""));
             OutputStream responseOutputStream = response.getOutputStream();
             responseOutputStream.write(pdfReportStream.toByteArray());
 
