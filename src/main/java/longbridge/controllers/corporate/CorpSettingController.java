@@ -252,25 +252,31 @@ public class CorpSettingController {
 
     @GetMapping("/reset/securityquestion")
     public String getSecurityQuestionPage(Model model) {
-        List<CodeDTO> secQues = codeService.getCodesByType("SECURITY_QUESTION");
-        int noOfQuestions = securityService.getMinUserQA();
-//        logger.info("num of qs on entrust {}",noOfQuestions);
-        ArrayList[] masterList = new ArrayList[noOfQuestions];
-        int questionsPerSection = (secQues.size() - (secQues.size() % noOfQuestions)) / noOfQuestions;
-//        logger.info("question per section {}",questionsPerSection);
-        int questnPostn = 0;
-        for (int i = 0; i < noOfQuestions; i++) {
-            masterList[i] = new ArrayList<>();
-            for (int j = 0; j < questionsPerSection; j++) {
-                masterList[i].add(secQues.get(questnPostn));
-                questnPostn++;
+
+        try {
+            List<CodeDTO> secQues = codeService.getCodesByType("SECURITY_QUESTION");
+            int noOfQuestions = securityService.getMinUserQA();
+            ArrayList[] masterList = new ArrayList[noOfQuestions];
+            int questionsPerSection = (secQues.size() - (secQues.size() % noOfQuestions)) / noOfQuestions;
+            int questnPostn = 0;
+            for (int i = 0; i < noOfQuestions; i++) {
+                masterList[i] = new ArrayList<>();
+                for (int j = 0; j < questionsPerSection; j++) {
+                    masterList[i].add(secQues.get(questnPostn));
+                    questnPostn++;
+
+
+                }
+
             }
 
+            model.addAttribute("secQuestions", masterList);
+            model.addAttribute("noOfQuestions", noOfQuestions);
+            return "cust/settings/securityquestion";
         }
-
-        model.addAttribute("secQuestions", masterList);
-        model.addAttribute("noOfQuestions", noOfQuestions);
-        return "cust/settings/securityquestion";
+        catch (InternetBankingSecurityException se){
+            return "redirect:/corporate/logout";
+        }
     }
 
 
@@ -289,12 +295,12 @@ public class CorpSettingController {
                 String answer = webRequest.getParameter("securityAnswer" + i);
                 if (question == null || "".equals(question)) {
                     redirectAttributes.addFlashAttribute("failure","Error processing request");
-                    return "redirect:/reset/securityquestion";
+                    return "redirect:/corporate/reset/securityquestion";
                 }
 
                 if (answer == null || "".equals(answer)) {
                     redirectAttributes.addFlashAttribute("failure","Please provide all answers to the questions");
-                    return "redirect:/retail/reset/securityquestion";
+                    return "redirect:/corporate/reset/securityquestion";
                 }
 
                 secQuestions.add(question);
@@ -305,18 +311,18 @@ public class CorpSettingController {
 
             try{
                 securityService.setUserQA(user.getUserName(),user.getEntrustGroup(),secQuestions,securityAnswers);
-                return "redirect:/retail/token";
+                return "redirect:/corporate/token";
             }
             catch (InternetBankingSecurityException e){
                 redirectAttributes.addFlashAttribute("failure",e.getMessage());
-                return "redirect:/retail/reset/securityquestion";
+                return "redirect:/corporate/reset/securityquestion";
             }
             catch (InternetBankingException ibe){
                 redirectAttributes.addFlashAttribute("failure",ibe.getMessage());
-                return "redirect:/retail/reset/securityquestion";
+                return "redirect:/corporate/reset/securityquestion";
             }
         }
-        return "redirect:/retail/reset/securityquestion";
+        return "redirect:/corporate/reset/securityquestion";
 
     }
 

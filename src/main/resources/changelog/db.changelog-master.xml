@@ -13,6 +13,7 @@
     <include file="changelog/db.changelog-addFieldToCreditRequest.xml"/>
     <include file="changelog/db.changelog-addFieldToCreditRequest_aud.xml"/>
     <include file="changelog/db.changelog-addFieldToRetailUser.xml"/>
+    <include file="changelog/db.changelog-addFieldToRetailUser_aud.xml"/>
      <include file="changelog/db.changelog-addFieldToCorporateUser.xml"/>
     <include file="changelog/db.changelog-addFieldToCorporateUser_aud.xml"/>
 

@@ -7,6 +7,12 @@
 
     <changeSet author="Longbridge (Fortune)" id="addResetSecurityQuestionToCorporateUser_AUD">
         <addColumn   tableName="CORPORATE_USER_AUD">
+            <column name="RESET_SECURITY_QUESTION" type="VARCHAR2(255 CHAR)"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet author="Longbridge (Fortune)" id="addResetSecurityQuestionModToCorporateUser_AUD">
+        <addColumn   tableName="CORPORATE_USER_AUD">
             <column name="RESET_SECURITY_QUESTION_MOD" type="VARCHAR2(255 CHAR)"/>
         </addColumn>
     </changeSet>

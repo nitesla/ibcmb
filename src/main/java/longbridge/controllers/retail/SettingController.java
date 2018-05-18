@@ -227,7 +227,7 @@ public class SettingController {
                 String answer = webRequest.getParameter("securityAnswer" + i);
                 if (question == null || "".equals(question)) {
                     redirectAttributes.addFlashAttribute("failure","Error processing request");
-                    return "redirect:/reset/securityquestion";
+                    return "redirect:/retail/reset/securityquestion";
                 }
 
                 if (answer == null || "".equals(answer)) {
