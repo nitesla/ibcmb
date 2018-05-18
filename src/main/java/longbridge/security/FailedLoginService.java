@@ -71,7 +71,6 @@ public class FailedLoginService {
                     return true;
                 }
 
-
                 DateTime dateTime = new DateTime(user.getLockedUntilDate());
                 Duration duration = new Duration(dateTime, DateTime.now());
                 if (duration.getStandardMinutes() >= getExpiryTime()) {
@@ -81,16 +80,11 @@ public class FailedLoginService {
 
                 }
 
-
             } catch (Exception e) {
                 logger.trace("Exception occurred ", e);
                 e.printStackTrace();
-
-
             }
-
         }
-
 
         return unlocked;
 
@@ -180,7 +174,6 @@ public class FailedLoginService {
             SettingDTO settingDTO = configService.getSettingByName("MAX_FAILED_LOGIN_TRIALS");
             if (settingDTO.isEnabled()) {
                 int timeout = Integer.parseInt(settingDTO.getValue());
-
                 return timeout;
 
             }
@@ -197,7 +190,6 @@ public class FailedLoginService {
             SettingDTO settingDTO = configService.getSettingByName("LOCK_OUT_DURATION");
             if (settingDTO.isEnabled()) {
                 int timeout = Integer.parseInt(settingDTO.getValue());
-
                 return timeout;
 
             }

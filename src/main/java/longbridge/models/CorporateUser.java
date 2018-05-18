@@ -37,8 +37,9 @@ public class CorporateUser extends User implements PrettySerializer{
 	@ManyToOne
 	private Corporate corporate;
 	private String tempPassword;
+	private String resetSecurityQuestion;
 
-    public String getIsFirstTimeLogon() {
+	public String getIsFirstTimeLogon() {
         return isFirstTimeLogon;
     }
 
@@ -180,5 +181,13 @@ public class CorporateUser extends User implements PrettySerializer{
 				gen.writeEndObject();
 			}
 		};
+	}
+
+	public String getResetSecurityQuestion() {
+		return resetSecurityQuestion;
+	}
+
+	public void setResetSecurityQuestion(String resetSecurityQuestion) {
+		this.resetSecurityQuestion = resetSecurityQuestion;
 	}
 }

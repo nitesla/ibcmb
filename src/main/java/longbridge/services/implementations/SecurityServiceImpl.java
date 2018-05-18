@@ -5,7 +5,6 @@ import longbridge.config.entrust.EntrustServiceResponse;
 import longbridge.exception.InternetBankingSecurityException;
 import longbridge.exception.InternetBankingTransferException;
 import longbridge.models.RetailUser;
-import longbridge.models.TransferCodeTransalator;
 import longbridge.security.IpAddressUtils;
 import longbridge.services.IntegrationService;
 import longbridge.services.SecurityService;
@@ -470,8 +469,7 @@ public class SecurityServiceImpl implements SecurityService {
     }
 
     @Override
-    public void setUserQA(String username, String group, List<String> questions, List<String> answers)
-            throws InternetBankingTransferException {
+    public void setUserQA(String username, String group, List<String> questions, List<String> answers) throws InternetBankingTransferException {
         if (questions == null || questions.isEmpty())
             throw new IllegalArgumentException();
         if (answers == null || answers.isEmpty())

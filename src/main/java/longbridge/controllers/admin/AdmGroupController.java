@@ -1,22 +1,16 @@
 package longbridge.controllers.admin;
 
-import longbridge.dtos.CodeDTO;
+import com.fasterxml.jackson.core.JsonParser.Feature;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import longbridge.dtos.ContactDTO;
 import longbridge.dtos.OperationsUserDTO;
-import longbridge.dtos.UnitDTO;
 import longbridge.dtos.UserGroupDTO;
 import longbridge.exception.InternetBankingException;
-import longbridge.models.Contact;
 import longbridge.models.OperationsUser;
-import longbridge.models.Person;
-import longbridge.models.UserGroup;
 import longbridge.services.CodeService;
 import longbridge.services.OperationsUserService;
-
-import java.util.*;
-
 import longbridge.services.UserGroupService;
-import org.apache.commons.lang3.math.NumberUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,11 +27,12 @@ import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import com.fasterxml.jackson.core.JsonParser.Feature;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import javax.validation.Valid;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Locale;
 
 
 /**
@@ -54,10 +49,10 @@ public class AdmGroupController {
 
 
     @Autowired
-    UserGroupService userGroupService;
+    private UserGroupService userGroupService;
 
     @Autowired
-    MessageSource messageSource;
+    private MessageSource messageSource;
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 

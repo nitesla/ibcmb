@@ -155,4 +155,9 @@ public interface RetailUserService {
     String validateAccount();
 
     CustomerInfo getCustomerInfo(RetailUserCredentials userCredentials);
+
+
+    @PreAuthorize("hasAuthority('UPDATE_RETAIL_USER')")
+    String resetSecurityQuestion(Long userId);
+
 }

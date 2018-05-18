@@ -46,7 +46,7 @@ import java.util.*;
 @Service
 public class RetailUserServiceImpl implements RetailUserService {
 
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
     private RetailUserRepo retailUserRepo;
@@ -444,6 +444,28 @@ public class RetailUserServiceImpl implements RetailUserService {
             throw new InternetBankingException(messageSource.getMessage("mail.failure", null, locale), me);
         } catch (Exception e) {
             throw new PasswordException(messageSource.getMessage("password.reset.failure", null, locale), e);
+        }
+    }
+
+    @Override
+    @Transactional
+    public String resetSecurityQuestion(Long userId) throws PasswordException {
+
+
+        RetailUser user = retailUserRepo.findOne(userId);
+        logger.info("this is the user status{}", user.getStatus());
+        if ("I".equals(user.getStatus())) {
+            throw new InternetBankingException(messageSource.getMessage("users.deactivated", null, locale));
+        }
+        try {
+            user.setResetSecurityQuestion("Y");
+            retailUserRepo.save(user);
+            logger.info("Retail user {} security question reset successfully", user.getUserName());
+            return messageSource.getMessage("securityquestion.reset.success", null, locale);
+        } catch (MailException me) {
+            throw new InternetBankingException(messageSource.getMessage("mail.failure", null, locale), me);
+        } catch (Exception e) {
+            throw new InternetBankingException(messageSource.getMessage("securityquestion.reset.failure", null, locale), e);
         }
     }
 

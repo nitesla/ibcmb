@@ -75,11 +75,14 @@ public class SettingController {
     @Autowired
     private MessageSource messageSource;
 
-    private Locale locale = LocaleContextHolder.getLocale();
+    @Autowired
+    private SecurityService securityService;
+
+    private final Locale locale = LocaleContextHolder.getLocale();
 
 
     @RequestMapping("/dashboard")
-    public String getRetailDashboard(Model model, Principal principal) {
+    public String getRetailDashboard(Model model, Principal principal, HttpServletRequest request) {
         RetailUser retailUser = retailUserService.getUserByName(principal.getName());
 
         if (retailUser == null) {
@@ -88,43 +91,33 @@ public class SettingController {
 
         logger.debug("Getting user {} accounts and balances", retailUser.getUserName());
         List<AccountDTO> accountList = accountService.getAccountsAndBalances(retailUser.getCustomerId());
-        logger.debug("Retrieved {} account balance(s) for user {}",accountList.size(),retailUser.getUserName());
+        logger.debug("Retrieved {} account balance(s) for user {}", accountList.size(), retailUser.getUserName());
         SettingDTO dto = configService.getSettingByName("TRANSACTIONAL_ACCOUNTS");
         if (dto != null && dto.isEnabled()) {
             String[] list = StringUtils.split(dto.getValue(), ",");
             accountList = accountList
                     .stream()
-                    .filter(
-                            i -> ArrayUtils.contains(list, i.getAccountType())
-                    ).collect(Collectors.toList());
+                    .filter(i -> ArrayUtils.contains(list, i.getAccountType()))
+                    .collect(Collectors.toList());
         }
 
         accountList.stream().filter(Objects::nonNull)
-                .forEach(
-
-                        i ->
-
-                        {
+                .forEach(i -> {
                             Code code = codeService.getByTypeAndCode("ACCOUNT_CLASS", i.getAccountType());
                             if (code != null && code.getDescription() != null) {
-
-
                                 i.setAccountType(code.getDescription());
                             }
                         }
-
-
                 );
 
         model.addAttribute("accountList", accountList);
 
-        boolean exp = passwordPolicyService.displayPasswordExpiryDate(retailUser.getExpiryDate());
-//        logger.info("EXPIRY RESULT {} ", exp);
-        if (exp) {
+        boolean expired = passwordPolicyService.displayPasswordExpiryDate(retailUser.getExpiryDate());
+        if (expired) {
             model.addAttribute("message", messageSource.getMessage("password.reset.notice", null, locale));
         }
 
-        logger.debug("Redirecting user {} to dashboard" ,retailUser.getUserName());
+        logger.debug("Redirecting user {} to dashboard", retailUser.getUserName());
         return "cust/dashboard";
     }
 
@@ -189,8 +182,85 @@ public class SettingController {
         }
     }
 
+
+    @GetMapping("/reset/securityquestion")
+    public String getSecurityQuestionPage(Model model) {
+
+       try {
+           List<CodeDTO> secQues = codeService.getCodesByType("SECURITY_QUESTION");
+           int noOfQuestions = securityService.getMinUserQA();
+           ArrayList[] masterList = new ArrayList[noOfQuestions];
+           int questionsPerSection = (secQues.size() - (secQues.size() % noOfQuestions)) / noOfQuestions;
+           int questnPostn = 0;
+           for (int i = 0; i < noOfQuestions; i++) {
+               masterList[i] = new ArrayList<>();
+               for (int j = 0; j < questionsPerSection; j++) {
+                   masterList[i].add(secQues.get(questnPostn));
+                   questnPostn++;
+               }
+
+           }
+
+           model.addAttribute("secQuestions", masterList);
+           model.addAttribute("noOfQuestions", noOfQuestions);
+           return "cust/settings/securityquestion";
+       }
+       catch (InternetBankingSecurityException se){
+
+           return "redirect:/retail/logout";
+       }
+    }
+
+
+    @PostMapping("/reset/securityquestion")
+    public String resetSecurityQuestions(Principal principal, WebRequest webRequest, RedirectAttributes redirectAttributes) {
+
+        RetailUser user = retailUserService.getUserByName(principal.getName());
+        List<String> secQuestions = new ArrayList<>();
+        List<String> securityAnswers = new ArrayList<>();
+
+        String noOfQuestions = webRequest.getParameter("noOfQuestions");
+
+        if (noOfQuestions != null) {
+            for (int i = 0; i < Integer.parseInt(noOfQuestions); i++) {
+                String question = webRequest.getParameter("securityQuestion" + i);
+                String answer = webRequest.getParameter("securityAnswer" + i);
+                if (question == null || "".equals(question)) {
+                    redirectAttributes.addFlashAttribute("failure","Error processing request");
+                    return "redirect:/reset/securityquestion";
+                }
+
+                if (answer == null || "".equals(answer)) {
+                    redirectAttributes.addFlashAttribute("failure","Please provide all answers to the questions");
+                    return "redirect:/retail/reset/securityquestion";
+                }
+
+                secQuestions.add(question);
+                securityAnswers.add(answer);
+
+                logger.debug(" sec questions list {}", secQuestions);
+            }
+
+            try{
+                securityService.setUserQA(user.getUserName(),user.getEntrustGroup(),secQuestions,securityAnswers);
+                return "redirect:/retail/token";
+            }
+            catch (InternetBankingSecurityException e){
+                redirectAttributes.addFlashAttribute("failure",e.getMessage());
+                return "redirect:/retail/reset/securityquestion";
+            }
+            catch (InternetBankingException ibe){
+                redirectAttributes.addFlashAttribute("failure",ibe.getMessage());
+                return "redirect:/retail/reset/securityquestion";
+            }
+        }
+        return "redirect:/retail/reset/securityquestion";
+
+    }
+
+
     @GetMapping("/reset_password")
-    public String resetPaswordPage(Model model) {
+    public String resetPasswordPage(Model model) {
         List<String> passwordPolicy = passwordPolicyService.getPasswordRules();
         logger.info("PASSWORD RULES {}", passwordPolicy);
         model.addAttribute("passwordRules", passwordPolicy);
@@ -214,6 +284,9 @@ public class SettingController {
             redirectAttributes.addFlashAttribute("message", message);
             if (httpServletRequest.getSession().getAttribute("expired-password") != null) {
                 httpServletRequest.getSession().removeAttribute("expired-password");
+            } else if ("Y".equals(user.getResetSecurityQuestion())) {
+                logger.debug("Redirecting user to change security question");
+                return "redirect:/retail/reset/securityquestion";
             }
 
             SettingDTO setting = configService.getSettingByName("ENABLE_RETAIL_2FA");

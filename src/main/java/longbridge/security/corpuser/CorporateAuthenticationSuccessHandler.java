@@ -2,7 +2,6 @@ package longbridge.security.corpuser;
 
 import longbridge.dtos.SettingDTO;
 import longbridge.models.CorporateUser;
-import longbridge.models.UserType;
 import longbridge.repositories.CorporateUserRepo;
 import longbridge.security.FailedLoginService;
 import longbridge.security.SessionUtils;
@@ -100,7 +99,6 @@ public class CorporateAuthenticationSuccessHandler implements AuthenticationSucc
 
       CorporateUser corporateUser = corporateUserRepo.findFirstByUserNameIgnoreCaseAndCorporate_Id(userDetails.getUsername(),userDetails.getCorpId());
 
-        boolean isUser = corporateUser.getUserType().equals(UserType.CORPORATE);
 
         String isFirstLogon= corporateUser.getIsFirstTimeLogon();
 
@@ -115,15 +113,18 @@ public class CorporateAuthenticationSuccessHandler implements AuthenticationSucc
         if (setting != null && setting.isEnabled()) {
             tokenAuth = ("YES".equalsIgnoreCase(setting.getValue()) ? true : false);
         }
-
-        if (tokenAuth) {
-            logger.trace("Redirecting user to token authentication page");
+        if (sessionUtils.passwordExpired(corporateUser)) {
+            logger.debug("Redirecting user to reset password");
+            return "/corporate/reset_password";
+        } else if ("Y".equals(corporateUser.getResetSecurityQuestion())) {
+            logger.debug("Redirecting user to change security question");
+            return "/corporate/reset/securityquestion";
+        } else if (tokenAuth) {
+            logger.debug("Redirecting user to token authentication page");
             return "/corporate/token";
-        }
-        if (isUser) {
-            return "/corporate/dashboard";
         } else {
-            throw new IllegalStateException();
+            logger.debug("Redirecting user to dashboard");
+            return "/corporate/dashboard";
         }
     }
 

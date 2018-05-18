@@ -203,6 +203,26 @@ public class OpsRetailUserController {
         return "redirect:/ops/retail/users";
     }
 
+    @GetMapping("/{id}/securityquestion/reset")
+    public String resetSecurityQuestion(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+
+
+        if(verificationService.isPendingVerification(id, RetailUser.class.getSimpleName())){
+            redirectAttributes.addFlashAttribute("failure", "User has pending changes to be verified");
+            return "redirect:/ops/retail/users";
+
+        }
+
+        try {
+            String message = retailUserService.resetSecurityQuestion(id);
+            redirectAttributes.addFlashAttribute("message", message);
+        }  catch (InternetBankingException e) {
+            redirectAttributes.addFlashAttribute("failure", e.getMessage());
+        }
+
+        return "redirect:/ops/retail/users";
+    }
+
     @GetMapping("/{userId}/delete")
     public String deleteUser(@PathVariable Long userId, RedirectAttributes redirectAttributes) {
 
