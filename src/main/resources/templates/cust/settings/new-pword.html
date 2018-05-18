@@ -61,7 +61,7 @@
                             <p class="alert alert-danger"><span style="color: red;">Your current password has expired.</span> <br/>Please enter a new password.</p>
                             <div class="form-group">
                                 <p id="">
-                                    <span th:each="rule : ${passwordRules}" th:text="${rule}">Input is incorrect</span>
+                                    <p th:each="rule : ${passwordRules}" th:text="${rule}">Input is incorrect</p>
                                 </p>
                             </div>
                             <div class="form-group">

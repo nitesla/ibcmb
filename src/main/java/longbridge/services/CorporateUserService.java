@@ -10,7 +10,6 @@ import longbridge.forms.CustResetPassword;
 import longbridge.models.Corporate;
 import longbridge.models.CorporateRole;
 import longbridge.models.CorporateUser;
-import longbridge.models.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -162,6 +161,8 @@ public interface CorporateUserService{
     String addInitiator(CorporateUserDTO user)throws InternetBankingException;
     String updateUserFromCorpAdmin(CorporateUserDTO user) throws InternetBankingException;
     String changeActivationStatusFromCorpAdmin(Long id) throws InternetBankingException;
+
+    String resetSecurityQuestion(Long id);
 
 //    String addUserFromCorporateAdmin(CorporateUserDTO user) throws InternetBankingException;
 //

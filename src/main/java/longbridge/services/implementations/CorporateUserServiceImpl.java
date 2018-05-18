@@ -1020,4 +1020,23 @@ public class CorporateUserServiceImpl implements CorporateUserService {
             throw new InternetBankingException(messageSource.getMessage("corporate.update.failure", null, locale), e);
         }
     }
+
+    @Override
+    public String resetSecurityQuestion(Long id) {
+        CorporateUser user = corporateUserRepo.findOne(id);
+        logger.info("this is the user status{}", user.getStatus());
+        if ("I".equals(user.getStatus())) {
+            throw new InternetBankingException(messageSource.getMessage("users.deactivated", null, locale));
+        }
+        try {
+            user.setResetSecurityQuestion("Y");
+            corporateUserRepo.save(user);
+            logger.info("Retail user {} Security question reset successfully", user.getUserName());
+            return messageSource.getMessage("securityquestion.reset.success", null, locale);
+        } catch (MailException me) {
+            throw new InternetBankingException(messageSource.getMessage("mail.failure", null, locale), me);
+        } catch (Exception e) {
+            throw new InternetBankingException(messageSource.getMessage("securityquestion.reset.failure", null, locale), e);
+        }
+    }
 }

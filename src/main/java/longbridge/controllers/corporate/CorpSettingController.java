@@ -32,6 +32,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.security.Principal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
@@ -60,10 +61,13 @@ public class CorpSettingController {
     private AccountService accountService;
 
     @Autowired
-    ConfigurationService configService;
+    private ConfigurationService configService;
 
     @Autowired
     private MessageService messageService;
+
+    @Autowired
+    private SecurityService securityService;
 
     @Autowired
     private MessageSource messageSource;
@@ -78,25 +82,20 @@ public class CorpSettingController {
 
         List<AccountDTO> accountList = accountService.getAccountsAndBalances(corporateUser.getCorporate().getAccounts());
 
-        SettingDTO dto= configService.getSettingByName("TRANSACTIONAL_ACCOUNTS");
+        SettingDTO dto = configService.getSettingByName("TRANSACTIONAL_ACCOUNTS");
         if (dto!=null && dto.isEnabled()){
             String []list= StringUtils.split(dto.getValue(),",");
             accountList=  accountList
                     .stream()
-                    .filter(
-                            i-> ArrayUtils.contains(list,i.getAccountType())
-                    ).collect(Collectors.toList());
+                    .filter(i-> ArrayUtils.contains(list,i.getAccountType()))
+                    .collect(Collectors.toList());
 
         }
 
          accountList.stream().filter(Objects::nonNull)
-                .forEach(
+                .forEach(i-> {
 
-                        i->
-
-                        {
-
-                            Code code =codeService.getByTypeAndCode("ACCOUNT_CLASS",i.getAccountType());
+                    Code code =codeService.getByTypeAndCode("ACCOUNT_CLASS",i.getAccountType());
                             if (code!=null && code.getDescription()!=null)
                             {
                                 i.setAccountType(code.getDescription());
@@ -248,6 +247,77 @@ public class CorpSettingController {
             model.addAttribute("passwordRules", passwordPolicy);
             return "corp/settings/new-pword";
         }
+    }
+
+
+    @GetMapping("/reset/securityquestion")
+    public String getSecurityQuestionPage(Model model) {
+        List<CodeDTO> secQues = codeService.getCodesByType("SECURITY_QUESTION");
+        int noOfQuestions = securityService.getMinUserQA();
+//        logger.info("num of qs on entrust {}",noOfQuestions);
+        ArrayList[] masterList = new ArrayList[noOfQuestions];
+        int questionsPerSection = (secQues.size() - (secQues.size() % noOfQuestions)) / noOfQuestions;
+//        logger.info("question per section {}",questionsPerSection);
+        int questnPostn = 0;
+        for (int i = 0; i < noOfQuestions; i++) {
+            masterList[i] = new ArrayList<>();
+            for (int j = 0; j < questionsPerSection; j++) {
+                masterList[i].add(secQues.get(questnPostn));
+                questnPostn++;
+            }
+
+        }
+
+        model.addAttribute("secQuestions", masterList);
+        model.addAttribute("noOfQuestions", noOfQuestions);
+        return "cust/settings/securityquestion";
+    }
+
+
+    @PostMapping("/reset/securityquestion")
+    public String resetSecurityQuestions(Principal principal, WebRequest webRequest, RedirectAttributes redirectAttributes) {
+
+        CorporateUser user = corporateUserService.getUserByName(principal.getName());
+        List<String> secQuestions = new ArrayList<>();
+        List<String> securityAnswers = new ArrayList<>();
+
+        String noOfQuestions = webRequest.getParameter("noOfQuestions");
+
+        if (noOfQuestions != null) {
+            for (int i = 0; i < Integer.parseInt(noOfQuestions); i++) {
+                String question = webRequest.getParameter("securityQuestion" + i);
+                String answer = webRequest.getParameter("securityAnswer" + i);
+                if (question == null || "".equals(question)) {
+                    redirectAttributes.addFlashAttribute("failure","Error processing request");
+                    return "redirect:/reset/securityquestion";
+                }
+
+                if (answer == null || "".equals(answer)) {
+                    redirectAttributes.addFlashAttribute("failure","Please provide all answers to the questions");
+                    return "redirect:/retail/reset/securityquestion";
+                }
+
+                secQuestions.add(question);
+                securityAnswers.add(answer);
+
+                logger.debug(" sec questions list {}", secQuestions);
+            }
+
+            try{
+                securityService.setUserQA(user.getUserName(),user.getEntrustGroup(),secQuestions,securityAnswers);
+                return "redirect:/retail/token";
+            }
+            catch (InternetBankingSecurityException e){
+                redirectAttributes.addFlashAttribute("failure",e.getMessage());
+                return "redirect:/retail/reset/securityquestion";
+            }
+            catch (InternetBankingException ibe){
+                redirectAttributes.addFlashAttribute("failure",ibe.getMessage());
+                return "redirect:/retail/reset/securityquestion";
+            }
+        }
+        return "redirect:/retail/reset/securityquestion";
+
     }
 
     @GetMapping("/settings/alert_preference")

@@ -1,6 +1,5 @@
 package longbridge.controllers;
 
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import longbridge.api.AccountDetails;
 import longbridge.api.CustomerDetails;
 import longbridge.dtos.*;
@@ -13,7 +12,6 @@ import longbridge.services.*;
 import longbridge.utils.DateFormatter;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.http.HttpRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,12 +29,10 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FilenameFilter;
 import java.util.*;
-import java.util.concurrent.CompletableFuture;
 
 /**
  * Created by Wunmi Sowunmi on 18/04/2017.
@@ -627,33 +623,12 @@ public class UserRegController {
         model.addAttribute("policies", policies);
 
 
-//        List<SecurityQuestions> secQues = securityQuestionService.getSecQuestions();
-//        logger.info("security questions "+secQues);
-//        int noOfQuestions = securityService.getMinUserQA();
-//
-//        ArrayList[] masterList = new ArrayList[noOfQuestions];
-//
-//        //init arrays
-//        for (int idx=0; idx < noOfQuestions ; ++idx) {
-//           masterList[idx] = new ArrayList();
-//        }
-//
-//        //porpulate arrays
-//        for(int idx=0 ; idx < secQues.size() ; ++idx){
-//            masterList[idx % noOfQuestions].add(secQues.get(idx));
-//        }
-//
-//        for (ArrayList m:masterList
-//                ) {
-//            logger.info("master question "+masterList);
-//        }
+
 
         List<CodeDTO> secQues = codeService.getCodesByType("SECURITY_QUESTION");
         int noOfQuestions = securityService.getMinUserQA();
-//        logger.info("num of qs on entrust {}",noOfQuestions);
         ArrayList[] masterList = new ArrayList[noOfQuestions];
         int questionsPerSection = (secQues.size() - (secQues.size() % noOfQuestions)) / noOfQuestions;
-//        logger.info("question per section {}",questionsPerSection);
         int questnPostn = 0;
         for (int i = 0; i < noOfQuestions; i++) {
             masterList[i] = new ArrayList<>();
@@ -675,7 +650,6 @@ public class UserRegController {
         logger.info("Password Strength {}" + passwordStrengthDTO);
         model.addAttribute("passwordStrength", passwordStrengthDTO);
 
-        //logger.info("MIN SEC {}", noOfQuestions);
 
         return "cust/register/registration";
     }
@@ -727,8 +701,6 @@ public class UserRegController {
 
 
         String bvn = "";
-//        String secQuestion = webRequest.getParameter("securityQuestion1");
-//        String secAnswer = webRequest.getParameter("securityAnswer1");
         List<String> secQuestions = new ArrayList<>();
         List<String> securityAnswers = new ArrayList<>();
         logger.info("Customer Id {}:", customerId);
@@ -768,7 +740,7 @@ public class UserRegController {
 
 
         //confirm passwords are the same
-        boolean isValid = password.trim().equalsIgnoreCase(confirmPassword.trim());
+        boolean isValid = password.trim().equals(confirmPassword.trim());
         if (!isValid) {
             logger.error("Passwords do not match");
             return messageSource.getMessage("password.mismatch", null, locale);
@@ -777,15 +749,8 @@ public class UserRegController {
         //password meets policy
 
 
-        //security questions
-//        String securityQuestion = secQuestion;
-//        String securityAnswer = secAnswer;
-//        logger.info("Question" + secQuestion);
-//        logger.info("Answer" + secAnswer);
-
-
         //phishing image
-        //byte[] encodedBytes = Base64.encodeBase64(phishing.getBytes());
+//        byte[] encodedBytes = Base64.encodeBase64(phishing.getBytes());
         File image = new File(fullImagePath, phishing);
         Long length = image.length();
         // length <= Integer.MAX_VALUE;
@@ -803,9 +768,6 @@ public class UserRegController {
 
         String encPhishImage = java.util.Base64.getEncoder().encodeToString(buffer);
         logger.info("ENCODED STRING " + encPhishImage);
-
-//        System.out.println("encodedBytes " + new String(encodedBytes));
-//        String encPhishImage = new String(encodedBytes);
 
         RetailUserDTO retailUserDTO = new RetailUserDTO();
         retailUserDTO.setUserName(userName);

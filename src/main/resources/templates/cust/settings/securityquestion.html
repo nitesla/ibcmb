@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <!-- BEGIN PAGE LEVEL STYLES -->
+
+    <link rel="stylesheet" type="text/css" th:href="@{~/customer/css/jquery-ui.css}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{~/customer/css/bootstrap.css}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{~/customer/css/custom.css}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{~/customer/css/calendar.css}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{~/customer/css/select.bootstrap.css}" />
+    <link rel="stylesheet" type="text/css" th:href="@{~/customer/font-awesome/font-awesome.min.css}"/>
+
+    <title>Security Questions Reset</title>
+</head>
+<body>
+
+<header class="header">
+    <div class="container">
+        <div class="top_bar">
+            <ul class="list_group">
+                <li><a href="#"> CORONATION MERCHANT BANK</a></li>
+            </ul>
+        </div>
+        <nav class="navbar navbar-default">
+            <div class="container-fluid">
+                <div class="navbar-header navbar-left">
+                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse-1" aria-expanded="false">
+                        <span class="sr-only">MENU</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="#" data-toggle="collapse" data-target="#navbar-collapse-1">Menu</a>
+                </div>
+                <div class="collapse navbar-collapse" id="navbar-collapse-1">
+                    <ul class="nav navbar-nav">
+                        <li><a href="/">HOME</a></li>
+                        <li><a href="/">CONTACT US</a></li>
+                        <li><a href="/">HELP</a></li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+        <a href="#" class="logo">
+            <img th:src="@{~/customer/img/cmb_logo.png}" alt="Coronation Merchant Bank" />
+        </a>
+    </div>
+</header>
+<br/>
+<br/>
+<section class="content-wrapper">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12 col-sm-12">
+                <div class="row">
+                    <h5 class="page_header col-md-offset-4 col-md-4 col-sm-6">Change Security Questions</h5>
+
+                    <div class="col-md-offset-4 col-md-4 col-sm-6">
+                        <form method="POST" th:action="@{/retail/reset/securityquestion}">
+
+                            <p class="alert alert-danger"><span style="color: red;">Your current security questions have been reset.</span> <br/>Please select new ones.</p>
+
+                            <br/>
+                            <input id="returnValue" type="hidden" />
+                            <input id="noOfQuestions" th:name="noOfQuestions" th:value="${noOfQuestions}" type="hidden" />
+                            <div th:each="questionList,ind : ${secQuestions}">
+                                <div class="form-group clearfix">
+                                    <label th:text="'Security Question '+${ind.index+1}">Question</label>
+                                    <select th:name="'securityQuestion'+${ind.index}" th:id="'securityQuestion'+${ind.index}" class="my-select">
+                                        <option th:each="question : ${questionList}" th:text="${question.code}" th:value="${question.code}"></option>
+                                    </select>
+                                </div>
+                                <div class="form-group clearfix">
+                                    <label>Answer</label>
+                                    <input type="text" th:name="'securityAnswer'+${ind.index}" class="my-select required" required="required" placeholder="Security Answer" />
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                            <button class="btn btn-link required-step form-control"> Submit</button>
+                            </div>
+                            <!--<div th:replace="layout :: form-validation"></div>-->
+
+                        </form>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</section>
+
+<footer>
+    <div class="container">
+        <div class="footer_bar">
+            <div class="col-md-6 col-xs-12">
+                <ul class="list_group">
+                    <li><a href="#" target="_blank">Privacy policy</a></li>
+                    <!--<li><a href="#" target="_blank">Disclaimer</a></li>-->
+                    <li><a href="#" target="_blank">Terms &amp; Conditions</a></li>
+                </ul>
+
+            </div>
+            <div class="col-md-6 col-xs-12"><p> &copy; 2017 - All rights reserved</p></div>
+
+        </div>
+    </div>
+</footer>
+<div th:if="${message}">
+    <div hidden="hidden">
+        <ul class="actionMessage">
+            <li th:each="msg : ${message}" th:text="${msg}">Message</li>
+        </ul>
+    </div>
+</div>
+
+<div th:if="${failure}">
+    <div hidden="hidden">
+        <ul class="actionError">
+            <li th:each="msg : ${failure}" th:text="${msg}">Message</li>
+        </ul>
+    </div>
+</div>
+
+<div id="myModalError" class="modal fade " role="dialog">
+    <div class="modal-dialog">
+
+        <!-- Modal content-->
+
+        <div class="modal-content no-bd-rad content ">
+
+            <div class="modal-body">
+
+
+                <p id='errorMess' class='mess text-danger'>Put something here iff need be.</p>
+
+
+            </div>
+
+
+            <div class="modal-footer no-bd-top">
+                <button type="button" class="btn btn-link" data-dismiss="modal">OK</button>
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+
+<div id="myModalSuccess" class="modal fade " role="dialog">
+    <div class="modal-dialog">
+
+        <!-- Modal content-->
+
+        <div class="modal-content no-bd-rad content ">
+
+            <div class="modal-body">
+
+
+                <p id='successMess' class='mess text-primary'>Put something here iff need be.</p>
+
+
+            </div>
+
+
+            <div class="modal-footer no-bd-top">
+                <button type="button" class="btn btn-link" data-dismiss="modal">OK</button>
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+<!-- CORE JQUERY SCRIPTS -->
+<script th:src="@{~/customer/js/jquery-1.11.1.js}"></script>
+<script th:src="@{~/customer/js/jquery-ui.js}"></script>
+<script th:src="@{~/customer/js/jquery.dataTables.js}"></script>
+<script th:src="@{~/customer/js/momentMin.js}"></script>
+<script th:src="@{~/customer/js/calendar.js}"></script>
+<script th:src="@{~/customer/js/jquery.spring-friendly.min.js}"></script>
+<script th:src="@{~/customer/plugins/bootstrap-notify/bootstrap-notify.js}"></script>
+<script th:src="@{~/customer/js/coronation.js}"></script>
+<!-- BOOTSTRAP SCRIPTS  -->
+<script th:src="@{~/customer/js/bootstrap.js}"></script>
+
+
+<script>
+    $(document).ready(function() {
+        $('#password').bind("cut copy paste", function (e) {
+            e.preventDefault();
+        });
+
+        $('#confirm').bind("cut copy paste", function (e) {
+            e.preventDefault();
+        });
+    });
+</script>
+
+
+</body>
+</html>

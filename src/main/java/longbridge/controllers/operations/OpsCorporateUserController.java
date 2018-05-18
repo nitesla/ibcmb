@@ -224,6 +224,27 @@ public class OpsCorporateUserController {
         return "redirect:/ops/corporates/" + corpId + "/view";
     }
 
+
+    @GetMapping("/{id}/securityquestion/reset")
+    public String resetSecurityQuestion(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+
+
+        if(verificationService.isPendingVerification(id, CorporateUser.class.getSimpleName())){
+            redirectAttributes.addFlashAttribute("failure", "User has pending changes to be verified");
+            return "redirect:/ops/retail/users";
+
+        }
+
+        try {
+            String message = corporateUserService.resetSecurityQuestion(id);
+            redirectAttributes.addFlashAttribute("message", message);
+        }  catch (InternetBankingException e) {
+            redirectAttributes.addFlashAttribute("failure", e.getMessage());
+        }
+
+        return "redirect:/ops/retail/users";
+    }
+
     @GetMapping("changePassword")
     public String changePassword() {
         return "changePassword";

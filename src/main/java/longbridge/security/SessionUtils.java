@@ -1,10 +1,7 @@
 package longbridge.security;
 
 import longbridge.dtos.SettingDTO;
-import longbridge.models.Code;
-import longbridge.models.CorporateUser;
-import longbridge.models.Email;
-import longbridge.models.User;
+import longbridge.models.*;
 import longbridge.services.ConfigurationService;
 import longbridge.services.IntegrationService;
 import longbridge.services.MailService;
@@ -18,7 +15,6 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
-import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
 import javax.servlet.http.HttpSession;
@@ -130,6 +126,50 @@ public class SessionUtils {
                     //   session.setMaxInactiveInterval(60);
                 }
             }
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+
+        }
+
+    }
+
+    public boolean passwordExpired(User user) {
+
+            if (user.getExpiryDate() != null) {
+
+                LocalDate date = new LocalDate(user.getExpiryDate());
+                if (LocalDate.now().isAfter(date) || LocalDate.now().isEqual(date)) {
+                    return true;
+                }
+            }
+            return false;
+    }
+
+    public void checkSecurityQuestionReset(User user, HttpSession session) {
+        try {
+            String resetFlag;
+
+            if(user instanceof RetailUser){
+                RetailUser retailUser = (RetailUser)user;
+                resetFlag = retailUser.getResetSecurityQuestion();
+                if("Y".equals(resetFlag)){
+                    session.setAttribute("reset-security-question", "reset-security-question");
+
+                }
+            }
+            if(user instanceof CorporateUser){
+                CorporateUser corporateUser = (CorporateUser)user;
+                resetFlag = corporateUser.getResetSecurityQuestion();
+                if("Y".equals(resetFlag)){
+                    session.setAttribute("reset-security-question", "reset-security-question");
+
+                }
+            }
+
+
+
 
 
         } catch (Exception e) {

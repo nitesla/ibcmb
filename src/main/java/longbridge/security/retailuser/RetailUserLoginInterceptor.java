@@ -1,12 +1,11 @@
 package longbridge.security.retailuser;
 
-import longbridge.forms.ChangeDefaultPassword;
-import longbridge.forms.CustChangePassword;
 import longbridge.forms.CustResetPassword;
+import longbridge.services.CodeService;
 import longbridge.services.PasswordPolicyService;
+import longbridge.services.SecurityService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.ModelAndViewDefiningException;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
@@ -22,12 +21,15 @@ public class RetailUserLoginInterceptor extends HandlerInterceptorAdapter {
     @Autowired
     private PasswordPolicyService passwordPolicyService;
 
+    @Autowired
+    private CodeService codeService;
+
+    @Autowired
+    private SecurityService securityService;
+
     @Override
     public boolean preHandle(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Object o) throws Exception {
         String uri = httpServletRequest.getRequestURI();
-
-
-
 
 
         if (httpServletRequest.getSession().getAttribute("expired-password") != null && !(uri.equalsIgnoreCase("/retail/reset_password"))) {
@@ -43,8 +45,9 @@ public class RetailUserLoginInterceptor extends HandlerInterceptorAdapter {
 
         }
 
-        if (httpServletRequest.getSession().getAttribute("2FA")!=null&& !(uri.equalsIgnoreCase("/retail/token")))
-        {
+
+
+        if (httpServletRequest.getSession().getAttribute("2FA")!=null&& !(uri.equalsIgnoreCase("/retail/token"))) {
 
             ModelAndView modelAndView = new ModelAndView("forwarded-view");
 

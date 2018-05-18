@@ -58,8 +58,6 @@ public class MailServiceImpl implements MailService {
 
 
 
-
-
     @Override
     @Async
     public void send(Email email) throws MailException {

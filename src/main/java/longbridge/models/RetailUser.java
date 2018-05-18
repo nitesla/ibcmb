@@ -36,6 +36,7 @@ public class RetailUser extends User implements PrettySerializer{
 	private String bvn;
 	private String customerId;
 	private Date birthDate;
+	private String resetSecurityQuestion;
 
 	@OneToMany
 	@JsonIgnore
@@ -47,17 +48,6 @@ public class RetailUser extends User implements PrettySerializer{
 
 	private String tempPassword;
 
-
-//	private Collection<Beneficiary> beneficiaries;
-//
-//	public Collection<Beneficiary> getBeneficiaries() {
-//		return beneficiaries;
-//	}
-//
-//
-//	public void setBeneficiaries(Collection<Beneficiary> beneficiaries) {
-//		this.beneficiaries = beneficiaries;
-//	}
 
 
 	public String getBvn() {
@@ -86,6 +76,14 @@ public class RetailUser extends User implements PrettySerializer{
 
 	public void setBirthDate(Date birthDate) {
 		this.birthDate = birthDate;
+	}
+
+	public String getResetSecurityQuestion() {
+		return resetSecurityQuestion;
+	}
+
+	public void setResetSecurityQuestion(String resetSecurityQuestion) {
+		this.resetSecurityQuestion = resetSecurityQuestion;
 	}
 
 	public String getTempPassword() {
