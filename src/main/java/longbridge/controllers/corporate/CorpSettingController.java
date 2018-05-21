@@ -254,10 +254,8 @@ public class CorpSettingController {
     public String getSecurityQuestionPage(Model model) {
         List<CodeDTO> secQues = codeService.getCodesByType("SECURITY_QUESTION");
         int noOfQuestions = securityService.getMinUserQA();
-//        logger.info("num of qs on entrust {}",noOfQuestions);
         ArrayList[] masterList = new ArrayList[noOfQuestions];
         int questionsPerSection = (secQues.size() - (secQues.size() % noOfQuestions)) / noOfQuestions;
-//        logger.info("question per section {}",questionsPerSection);
         int questnPostn = 0;
         for (int i = 0; i < noOfQuestions; i++) {
             masterList[i] = new ArrayList<>();

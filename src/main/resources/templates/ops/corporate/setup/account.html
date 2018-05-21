@@ -390,12 +390,33 @@
                         $("#find").removeAttr("disabled")
                         return;
                     }
+
+                    var fetchError = false;
                    for(var i=0;i<account.length;i++){
                        console.log("data is "+account[i].accountNumber)
 
-                       var newAccount =  "<p><label class='checkbox-inline'><input type='checkbox' checked='checked' class='accountAttached' onclick='noCorpAccountSelected()' id='acct'"+account[i].accountNumber+"  name='accounts' value='"+account[i].accountNumber+"'/> <span>"+account[i].accountNumber+" - "+account[i].accountName+" - "+account[i].schemeType+" - "+account[i].customerId+"</span><input type='hidden' name='cifids' value='"+account[i].customerId+"'/> </p>"
+
+                       if(account[i].accountNumber === undefined){
+                           $("#cifid-error").text("Error occurred while fetching account");
+                           fetchError = true;
+                           break;
+                       }
+
+                       var newAccount =  "<p><label class='checkbox-inline'><input type='checkbox' checked onclick='noCorpAccountSelected()' id='acct"+account[i].accountNumber+"'  name='accounts' value='"+account[i].accountNumber+"'/> <span>"+account[i].accountNumber+" - "+account[i].accountName+" - "+account[i].schemeType+" - "+account[i].customerId+"</span><input type='hidden' name='cifids' value='"+account[i].customerId+"'/> </p>"
                         $('#accountsDiv').append(newAccount)
                    }
+
+
+                    if(fetchError){
+                        $("#cifid-error").show()
+                        $("#find").text("Fetch")
+                        $("#find").removeAttr("disabled")
+                            return;
+                    }
+                    else {
+                        $("#cifid-error").hide()
+
+                    }
 
                     $("#find").text("Fetch")
                     $("#find").removeAttr("disabled")

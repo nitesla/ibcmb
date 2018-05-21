@@ -404,8 +404,16 @@
                     $("#noAccountsError2").hide()
                     $("#submitButtons").show()
                     $("#accountsDiv2").empty()
+
+                    var fetchError = false;
+
                     for(var i=0;i<account.length;i++){
                         console.log("data is "+account[i].accountNumber)
+                        if(account[i].accountNumber === undefined){
+                            $("#cifid-error").text("Error occurred while fetching account");
+                            fetchError = true;
+                            break;
+                        }
 
                         var newAccount =  "<p><label class='checkbox-inline'><input name='accounts' type='checkbox' checked='checked' class='accountAttached' onclick='noCorpAccountSelected()' id='acct'"+account[i].accountNumber+"   value='"+account[i].accountNumber+"'/> <span>"+account[i].accountNumber+" - "+account[i].accountName+" - "+account[i].schemeType+" - "+account[i].customerId+"</span><input type='hidden' name='cifids' value='"+account[i].customerId+"'/> </p>"
                         $('#accountsDiv2').append(newAccount)
@@ -413,7 +421,19 @@
 
                     $("#find").text("Fetch")
                     $("#find").removeAttr("disabled")
-                    $("#cifid-error").hide()
+
+                    if(fetchError){
+                        $("#cifid-error").show()
+                        $("#selectAll2").hide()
+                        $("#accountsLabel").hide()
+                        $("#noAccountsError2").hide()
+                        $("#submitButtons").hide()
+                        $("#accountsDiv2").empty()
+                    }
+                    else {
+                        $("#cifid-error").hide()
+
+                    }
 
 
                 },
@@ -472,10 +492,11 @@
                 for(var i=0;i<account.length;i++){
                     console.log("account number is "+account[i].accountNumber)
 
-                    if(account[i].accountNumber == "undefined"){
-//                        $("#accountFetchError").text(xhr.responseText)
+                    if(account[i].accountNumber === undefined){
                         $("#accountFetchError").show();
                         $(".loader").hide();
+                        $("#submitButton").attr("disabled","disabled")
+                        $('#accountsDiv').empty()
                         break;
                     }
 

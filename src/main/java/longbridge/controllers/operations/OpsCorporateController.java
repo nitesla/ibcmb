@@ -580,7 +580,7 @@ public class OpsCorporateController {
         CustomerDetails customerDetails = integrationService.viewCustomerDetailsByCif(cifid);
 
         if (customerDetails.getCustomerName() == null) {
-            logger.warn("The account details for CIFID {} could not be found. The reasons could be that the account is NOT VERIFIED, CLOSED or DELETED");
+            logger.warn("The account details for CIFID {} could not be found. The reasons could be that the account is NOT VERIFIED, CLOSED or DELETED",cifid);
 
             return "false";
         }
@@ -1412,6 +1412,22 @@ public class OpsCorporateController {
         if(corporate.getCustomerId().equals(cifid) || corporate.getCifids().contains(cifid)){
             throw new IdentificationException("CIFID already exists");
         }
+
+        try {
+            List<AccountInfo> accountInfos = integrationService.fetchAccounts(cifid);
+            return accountInfos;
+
+        } catch (Exception e) {
+            logger.error("Error fetching accounts", e);
+            throw new AccountFetchException("Error occurred fetching accounts");
+        }
+    }
+
+
+    @ResponseBody
+    @GetMapping("/new/{cifid}/accounts")
+    public List<AccountInfo> getAccountsFromFinacle( @PathVariable String cifid) {
+
 
         try {
             List<AccountInfo> accountInfos = integrationService.fetchAccounts(cifid);
