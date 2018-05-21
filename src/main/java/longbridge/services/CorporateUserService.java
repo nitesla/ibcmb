@@ -164,6 +164,8 @@ public interface CorporateUserService{
 
     String resetSecurityQuestion(Long id);
 
+    void setSecurityQuestion(Long id);
+
 //    String addUserFromCorporateAdmin(CorporateUserDTO user) throws InternetBankingException;
 //
 //    String updateUserFromCorporateAdmin(CorporateUserDTO user) throws InternetBankingException;

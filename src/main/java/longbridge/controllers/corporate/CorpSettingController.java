@@ -96,15 +96,11 @@ public class CorpSettingController {
                 .forEach(i-> {
 
                     Code code =codeService.getByTypeAndCode("ACCOUNT_CLASS",i.getAccountType());
-                            if (code!=null && code.getDescription()!=null)
-                            {
+                            if (code!=null && code.getDescription()!=null) {
                                 i.setAccountType(code.getDescription());
                             }
                         }
-
-
                 );
-
 
 
         model.addAttribute("accountList", accountList);
@@ -205,12 +201,18 @@ public class CorpSettingController {
 
         try {
             String message =corporateUserService.resetPassword(user, custResetPassword);
-            redirectAttributes.addFlashAttribute("message", message);
+//            redirectAttributes.addFlashAttribute("message", message);
 
 
             if (httpServletRequest.getSession().getAttribute("expired-password") != null) {
                 httpServletRequest.getSession().removeAttribute("expired-password");
             }
+
+            if ("Y".equals(user.getResetSecurityQuestion())) {
+                logger.debug("Redirecting user to change security question");
+                return "redirect:/corporate/reset/securityquestion";
+            }
+
             SettingDTO setting = configService.getSettingByName("ENABLE_CORPORATE_2FA");
             boolean tokenAuth = false;
             if (setting != null && setting.isEnabled()) {
@@ -272,7 +274,7 @@ public class CorpSettingController {
 
             model.addAttribute("secQuestions", masterList);
             model.addAttribute("noOfQuestions", noOfQuestions);
-            return "cust/settings/securityquestion";
+            return "corp/settings/securityquestion";
         }
         catch (InternetBankingSecurityException se){
             return "redirect:/corporate/logout";
@@ -311,6 +313,7 @@ public class CorpSettingController {
 
             try{
                 securityService.setUserQA(user.getUserName(),user.getEntrustGroup(),secQuestions,securityAnswers);
+                corporateUserService.setSecurityQuestion(user.getId());
                 return "redirect:/corporate/token";
             }
             catch (InternetBankingSecurityException e){

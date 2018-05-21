@@ -243,6 +243,8 @@ public class SettingController {
 
             try{
                 securityService.setUserQA(user.getUserName(),user.getEntrustGroup(),secQuestions,securityAnswers);
+                retailUserService.setSecurityQuestion(user.getId());
+
                 return "redirect:/retail/token";
             }
             catch (InternetBankingSecurityException e){
@@ -281,10 +283,13 @@ public class SettingController {
 
         try {
             String message = retailUserService.resetPassword(user, custResetPassword);
-            redirectAttributes.addFlashAttribute("message", message);
+//            redirectAttributes.addFlashAttribute("message", message);
+
             if (httpServletRequest.getSession().getAttribute("expired-password") != null) {
                 httpServletRequest.getSession().removeAttribute("expired-password");
-            } else if ("Y".equals(user.getResetSecurityQuestion())) {
+            }
+
+            if ("Y".equals(user.getResetSecurityQuestion())) {
                 logger.debug("Redirecting user to change security question");
                 return "redirect:/retail/reset/securityquestion";
             }

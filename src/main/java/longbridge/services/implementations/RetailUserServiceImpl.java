@@ -462,9 +462,25 @@ public class RetailUserServiceImpl implements RetailUserService {
             retailUserRepo.save(user);
             logger.info("Retail user {} security question reset successfully", user.getUserName());
             return messageSource.getMessage("securityquestion.reset.success", null, locale);
-        } catch (MailException me) {
-            throw new InternetBankingException(messageSource.getMessage("mail.failure", null, locale), me);
-        } catch (Exception e) {
+        }  catch (Exception e) {
+            throw new InternetBankingException(messageSource.getMessage("securityquestion.reset.failure", null, locale), e);
+        }
+    }
+
+
+    @Override
+    @Transactional
+    public void setSecurityQuestion(Long userId) throws PasswordException {
+
+
+        RetailUser user = retailUserRepo.findOne(userId);
+        logger.info("this is the user status{}", user.getStatus());
+
+        try {
+            user.setResetSecurityQuestion("N");
+            retailUserRepo.save(user);
+            logger.info("Retail user {} security question set successfully", user.getUserName());
+        }  catch (Exception e) {
             throw new InternetBankingException(messageSource.getMessage("securityquestion.reset.failure", null, locale), e);
         }
     }

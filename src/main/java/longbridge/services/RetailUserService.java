@@ -160,4 +160,7 @@ public interface RetailUserService {
     @PreAuthorize("hasAuthority('UPDATE_RETAIL_USER')")
     String resetSecurityQuestion(Long userId);
 
+    @PreAuthorize("hasAuthority('UPDATE_RETAIL_USER')")
+    void setSecurityQuestion(Long userId);
+
 }
