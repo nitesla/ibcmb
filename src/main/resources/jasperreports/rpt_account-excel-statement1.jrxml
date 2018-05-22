@@ -6,7 +6,7 @@
 	<property name="ireport.y" value="121"/>
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="FULLJSON.xml"/>
 	<property name="net.sf.jasperreports.export.xls.white.page.background" value="true" />
-	<!--<property name="net.sf.jasperreports.export.xls.ignore.graphics" value="false"/>-->
+	<property name="net.sf.jasperreports.export.xls.ignore.graphics" value="true"/>
 	<property name="net.sf.jasperreports.export.xls.remove.empty.space.between.columns" value="true"/>
 	<property name="net.sf.jasperreports.export.xls.remove.empty.space.between.rows" value="true"/>
 	<property name="net.sf.jasperreports.export.xls.collapse.row.span" value="true"/>

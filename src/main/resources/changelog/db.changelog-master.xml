@@ -16,5 +16,7 @@
     <include file="changelog/db.changelog-addFieldToRetailUser_aud.xml"/>
      <include file="changelog/db.changelog-addFieldToCorporateUser.xml"/>
     <include file="changelog/db.changelog-addFieldToCorporateUser_aud.xml"/>
+    <include file="changelog/db.changelog-createTableCorporateCifids.xml"/>
+    <include file="changelog/db.changelog-createTableCorporateCifids_aud.xml"/>
 
 </databaseChangeLog>
