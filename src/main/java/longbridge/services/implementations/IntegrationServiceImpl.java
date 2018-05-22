@@ -89,11 +89,17 @@ public class IntegrationServiceImpl implements IntegrationService {
 
 	@Override
 	public List<AccountInfo> fetchAccounts(String cifid) {
+
+		List<AccountInfo> accounts;
 		try {
+			logger.info("Fetching accounts with CIFID {}",cifid);
 			String uri = URI + "/customer/{acctId}/accounts";
-			return Arrays.stream(template.getForObject(uri, AccountInfo[].class, cifid.toUpperCase()))
+			accounts = Arrays.stream(template.getForObject(uri, AccountInfo[].class, cifid.toUpperCase()))
 					.collect(Collectors.toList());
-			// List list= template.getForObject(uri, ArrayList.class,cifid);
+			logger.debug("Accounts fetched {}", accounts.toString());
+			logger.info("Successfully fetched accounts with CIFID {}",cifid);
+
+			return accounts;
 
 		} catch (Exception e) {
 			logger.error("Exception occurred ", e);
@@ -119,6 +125,8 @@ public class IntegrationServiceImpl implements IntegrationService {
 		AccountStatement statement = new AccountStatement();
 		validate(accountNo);
 		try {
+			logger.info("Fetching account statement with account number {}",accountNo);
+
 			SimpleDateFormat formatter = new SimpleDateFormat("dd-MMM-yyyy");
 			/*
 			 * String dateInString = "7-Jun-2013"; Date date =
@@ -142,6 +150,7 @@ public class IntegrationServiceImpl implements IntegrationService {
 		} catch (Exception e) {
 			logger.error("Error occurred getting account statements", e);
 		}
+		logger.info("Successfully fetched account statement with account number {}",accountNo);
 
 		return statement;
 	}
@@ -152,6 +161,8 @@ public class IntegrationServiceImpl implements IntegrationService {
 		validate(accountNo);
 		AccountStatement statement = new AccountStatement();
 		try {
+
+
 			SimpleDateFormat formatter = new SimpleDateFormat("dd-MMM-yyyy");
 			/*
 			 * String dateInString = "7-Jun-2013"; Date date =
@@ -168,13 +179,15 @@ public class IntegrationServiceImpl implements IntegrationService {
 				params.put("toDate", formatter.format(toDate));
 			params.put("numOfTxn", numOfTxn);
 
-			logger.info("params {}", params);
+			logger.debug("statement params {}", params);
+			logger.info("Fetching account statement with account number {}",accountNo);
+
 			statement = template.postForObject(uri, params, AccountStatement.class);
+			logger.info("Successfully fetched account statement with account number {}",accountNo);
 
 		} catch (Exception e) {
 			logger.error("Error occurred getting account statements", e);
 		}
-
 		return statement;
 	}
 
@@ -184,6 +197,9 @@ public class IntegrationServiceImpl implements IntegrationService {
 		//TODO: Move to account service
 		validate(accountNo);
 		try {
+
+			logger.info("Fetching account statement with account number {}",accountNo);
+
 			SimpleDateFormat formatter = new SimpleDateFormat("dd-MMM-yyyy");
 			/*
 			 * String dateInString = "7-Jun-2013"; Date date =
@@ -200,10 +216,13 @@ public class IntegrationServiceImpl implements IntegrationService {
 				params.put("toDate", formatter.format(toDate));
 
 			statement = template.postForObject(uri, params, AccountStatement.class);
+			logger.info("Successfully fetched account statement with account number {}",accountNo);
 
 		} catch (Exception e) {
 			logger.error("Error occurred getting account statements", e);
 		}
+
+
 
 		return statement;
 	}
@@ -215,10 +234,7 @@ public class IntegrationServiceImpl implements IntegrationService {
 				validate(accountNo);
 		try {
 			SimpleDateFormat formatter = new SimpleDateFormat("dd-MMM-yyyy");
-			/*
-			 * String dateInString = "7-Jun-2013"; Date date =
-			 * formatter.parse(dateInString);
-			 */
+
 			String uri = URI + "/tranhistory";
 			Map<String, Object> params = new HashMap<>();
 			params.put("accountNumber", accountNo);
@@ -229,7 +245,11 @@ public class IntegrationServiceImpl implements IntegrationService {
 			if (toDate != null)
 				params.put("toDate", formatter.format(toDate));
 
+			logger.info("Fetching account statement with account number {}",accountNo);
+
 			statement = template.postForObject(uri, params, AccountStatement.class);
+
+			logger.info("Successfully fetched account statement with account number {}",accountNo);
 
 		} catch (Exception e) {
 			logger.error("Error occurred getting account statements", e);
@@ -251,8 +271,12 @@ public class IntegrationServiceImpl implements IntegrationService {
 			params.put("numberOfRecords", numberOfRecords);
 			params.put("branchId", viewAccountDetails(accountNo).getSolId());
 
+			logger.info("Fetching last N transactions with account number {}",accountNo);
+
 			TransactionHistory[] t = template.postForObject(uri, params, TransactionHistory[].class);
 			histories.addAll(Arrays.asList(t));
+
+			logger.info("Successfully fetched last N transactions with account number {}",accountNo);
 
 		} catch (Exception e) {
 			logger.error("Error occurred getting last transactions", e);
@@ -308,6 +332,9 @@ public class IntegrationServiceImpl implements IntegrationService {
 			logger.info("Starting Transfer with Params: {}", params.toString());
 
 			try {
+				logger.info("Initiating Local Transfer");
+				logger.debug("Transfer Params: {}", params.toString());
+
 				response = template.postForObject(uri, params, TransferDetails.class);
 				transRequest.setStatus(response.getResponseCode());
 				transRequest.setStatusDescription(response.getResponseDescription());
@@ -342,8 +369,10 @@ public class IntegrationServiceImpl implements IntegrationService {
 			params.put("tranType", "NIP");
 			params.put("remarks", transRequest.getRemarks());
 
-			logger.info("params for transfer {}", params.toString());
 			try {
+				logger.info("Initiating Inter Bank Transfer");
+				logger.debug("Transfer Params: {}", params.toString());
+
 				response = template.postForObject(uri, params, TransferDetails.class);
 				logger.info("response for transfer {}", response.toString());
 				transRequest.setReferenceNumber(response.getUniqueReferenceCode());
@@ -384,6 +413,10 @@ public class IntegrationServiceImpl implements IntegrationService {
 			params.put("remarks", transRequest.getRemarks());
 			logger.info("params for transfer {}", params.toString());
 			try {
+
+				logger.info("Initiating Local (Own Account) Transfer");
+				logger.debug("Transfer Params: {}", params.toString());
+
 				response = template.postForObject(uri, params, TransferDetails.class);
 				transRequest.setNarration(response.getNarration());
 				transRequest.setReferenceNumber(response.getUniqueReferenceCode());
@@ -476,10 +509,16 @@ public class IntegrationServiceImpl implements IntegrationService {
 		Map<String, String> params = new HashMap<>();
 		params.put("cifId", cifId);
 		try {
+			logger.info("Fetching customer details with account number {}",accNo);
+
 			result = template.getForObject(uri, CustomerDetails.class, params);
+
+			logger.debug("Customer details {}",result.toString());
+			logger.info("Successfully fetched customer details with account number {}",accNo);
+
 			return result;
 		} catch (Exception e) {
-			logger.error("Error occurred getting customer details", e);
+			logger.error("Error occurred fetching customer details", e);
 		}
 
 		return result;
@@ -492,7 +531,13 @@ public class IntegrationServiceImpl implements IntegrationService {
 		Map<String, String> params = new HashMap<>();
 		params.put("cifId", cifId);
 		try {
+			logger.info("Fetching customer details with CIFID {}",cifId);
+
 			result = template.getForObject(uri, CustomerDetails.class, params);
+
+			logger.debug("Customer details {}",result.toString());
+			logger.info("Successfully fetched customer details with CIFID {}",cifId);
+
 			return result;
 		} catch (Exception e) {
 			logger.error("Error occurred getting customer details", e);
@@ -554,10 +599,15 @@ public class IntegrationServiceImpl implements IntegrationService {
 		Map<String, String> params = new HashMap<>();
 		params.put("destinationInstitutionCode", destinationInstitutionCode);
 		params.put("accountNumber", accountNumber);
-		logger.trace("params {}", params);
+		logger.debug("Enquiry params {}", params);
 		try {
 
+			logger.info("Doing name enquiry for account number {}",accountNumber);
+
 			result = template.postForObject(uri, params, NEnquiryDetails.class);
+
+			logger.info("Completed name enquiry for account number {}",accountNumber);
+
 
 		} catch (Exception e) {
 			logger.error("Error occurred doing name enquiry", e);
@@ -592,11 +642,18 @@ public class IntegrationServiceImpl implements IntegrationService {
 		params.put("message", message);
 		params.put("subject", subject);
 		params.put("contactList", contacts);
-		logger.trace("params {}", params);
+
+		logger.debug("SMS params {}", params);
 
 		try {
 
+			logger.info("Sending SMS to {}",contact);
+
 			result = template.postForObject(uri, params, ObjectNode.class);
+
+			logger.debug("SMS API response {}",result.toString());
+			logger.info("SMS sent to {}",contacts);
+
 		} catch (Exception e) {
 			logger.error(uri, params, e);
 
@@ -620,8 +677,15 @@ public class IntegrationServiceImpl implements IntegrationService {
 
 		try {
 
+			logger.info("Sending registration code to {} via SMS",contact);
+
 			result = template.postForObject(uri, params, ObjectNode.class);
-			logger.info("the reg code response {}",result);
+
+			logger.debug("SMS API response {}",result.toString());
+
+			logger.info("Registration code sent to {}",contact);
+
+
 			if(result != null) {
 				boolean response = result.get("success").asBoolean();
 				logger.info("the boolean {}",response);
