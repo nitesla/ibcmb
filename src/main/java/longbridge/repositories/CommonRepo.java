@@ -14,7 +14,7 @@ import java.io.Serializable;
 @NoRepositoryBean
 public interface CommonRepo<T, ID extends Serializable> extends JpaRepository<T, ID>
 {
-	public Page<T> findUsingPattern(String pattern, Pageable details);
+	Page<T> findUsingPattern(String pattern, Pageable details);
 
 
 }

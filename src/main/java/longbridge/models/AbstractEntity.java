@@ -1,21 +1,12 @@
 package longbridge.models;
 
 
-import org.hibernate.annotations.Where;
-import org.modelmapper.ModelMapper;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.Version;
-
-import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
@@ -107,7 +98,7 @@ public abstract class AbstractEntity implements Serializable{
     @JsonIgnore
 	 public List<String> getDefaultSearchFields(){
 		return new ArrayList<String>();
-	};
+	}
 	
     @Override
     public String toString() {

@@ -11,7 +11,9 @@ import org.hibernate.validator.constraints.NotEmpty;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by Fortune on 7/20/2017.
@@ -41,6 +43,7 @@ public class CorporateRequestDTO implements PrettySerializer {
     private List<CorporateUserDTO> corporateUsers = new ArrayList<>();
     private List<CorpTransferRuleDTO> corpTransferRules = new ArrayList<>();
     private List<AccountDTO> accounts = new ArrayList<>();
+    private Set<String> cifids = new HashSet<>();
 
 
     public Long getId() {
@@ -155,6 +158,14 @@ public class CorporateRequestDTO implements PrettySerializer {
         this.corpTransferRules = corpTransferRules;
     }
 
+    public Set<String> getCifids() {
+        return cifids;
+    }
+
+    public void setCifids(Set<String> cifids) {
+        this.cifids = cifids;
+    }
+
     public String getEmail() {
         return email;
     }
@@ -197,18 +208,21 @@ public class CorporateRequestDTO implements PrettySerializer {
                 ", corporateName='" + corporateName + '\'' +
                 ", corporateId='" + corporateId + '\'' +
                 ", bvn='" + bvn + '\'' +
+                ", taxId='" + taxId + '\'' +
                 ", status='" + status + '\'' +
                 ", rcNumber='" + rcNumber + '\'' +
                 ", customerId='" + customerId + '\'' +
                 ", customerName='" + customerName + '\'' +
+                ", email='" + email + '\'' +
+                ", phoneNumber='" + phoneNumber + '\'' +
                 ", createdOn='" + createdOn + '\'' +
                 ", authorizers=" + authorizers +
                 ", corporateUsers=" + corporateUsers +
                 ", corpTransferRules=" + corpTransferRules +
                 ", accounts=" + accounts +
+                ", cifids=" + cifids +
                 '}';
     }
-
 
     @Override
     @JsonIgnore
@@ -220,7 +234,7 @@ public class CorporateRequestDTO implements PrettySerializer {
                 gen.writeStartObject();
                 gen.writeStringField("Name", value.corporateName);
                 gen.writeStringField("Type", value.corporateType);
-                gen.writeStringField("CIF ID", value.customerId);
+                gen.writeStringField("CIF IDs", value.cifids.toString());
                 gen.writeStringField("Corporate ID", value.corporateId);
                 gen.writeStringField("RC Number", value.rcNumber);
 

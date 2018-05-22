@@ -24,7 +24,6 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.session.HttpSessionEventPublisher;
 
 import java.util.Arrays;
@@ -197,6 +196,8 @@ public class SecurityConfig {
 
         protected void configure(HttpSecurity http) throws Exception {
 
+
+//            http.addFilterAfter(new AjaxSessionTimeoutHandlingFilter(), ExceptionTranslationFilter.class);
 
             boolean ipRestricted = false;
             StringBuilder ipRange = new StringBuilder("hasIpAddress('::1') or hasIpAddress('127.0.0.1')");
