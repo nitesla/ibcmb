@@ -179,7 +179,7 @@
                                             <div class="col-sm-4 col-sm-offset-2">
                                                 <!--<a class="btn btn-primary" th:href="@{/ops/corporates/id/view(id=${corporate.id})}"-->
                                                 <!--id="back">Previous</a>-->
-                                                <button type="reset" id="cancel" class="btn btn-default" >Cancel
+                                                <button type="reset" id="cancel2" class="btn btn-default" >Cancel
                                                 </button>
                                                 <button id="submitButton2" onclick="isCheckboxCheck2()" class="btn btn-primary"
                                                         type="button" >Submit
@@ -606,6 +606,10 @@
     var corpId = [[${corporate.id}]];
     if (corpId != null) {
         document.getElementById("cancel").onclick = function () {
+            location.href = "/ops/corporates/" + corpId + "/view";
+        }
+
+        document.getElementById("cancel2").onclick = function () {
             location.href = "/ops/corporates/" + corpId + "/view";
         }
     } else {
