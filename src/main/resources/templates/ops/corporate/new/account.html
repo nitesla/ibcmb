@@ -415,7 +415,7 @@
                             break;
                         }
 
-                        var newAccount =  "<p><label class='checkbox-inline'><input name='accounts' type='checkbox' checked='checked' class='accountAttached' onclick='noCorpAccountSelected()' id='acct'"+account[i].accountNumber+"   value='"+account[i].accountNumber+"'/> <span>"+account[i].accountNumber+" - "+account[i].accountName+" - "+account[i].schemeType+" - "+account[i].customerId+"</span><input type='hidden' name='cifids' value='"+account[i].customerId+"'/> </p>"
+                        var newAccount =  "<p><label class='checkbox-inline'><input name='accounts' type='checkbox' checked='checked' class='accountAttached' onclick='noCorpAccountSelected2(this)' id='acct'"+account[i].accountNumber+"   value='"+account[i].accountNumber+"'/> <span>"+account[i].accountNumber+" - "+account[i].accountName+" - "+account[i].schemeType+" - "+account[i].customerId+"</span><input type='hidden' name='cifids' value='"+account[i].customerId+"'/> </p>"
                         $('#accountsDiv2').append(newAccount)
                     }
 
@@ -500,7 +500,7 @@
                         break;
                     }
 
-                    var newAccount =  "<p><label class='checkbox-inline'><input type='checkbox' checked='checked' class='accountAttached' onclick='noCorpAccountSelected()' id='acct'"+account[i].accountNumber+"  name='accounts' value='"+account[i].accountNumber+"'/> <span>"+account[i].accountNumber+" - "+account[i].accountName+" - "+account[i].schemeType+" - "+account[i].customerId+"</span><input type='hidden' name='cifids' value='"+account[i].customerId+"'/> </p>"
+                    var newAccount =  "<p><label class='checkbox-inline'><input type='checkbox' checked='checked' class='accountAttached' onclick='noCorpAccountSelected(this)' id='acct'"+account[i].accountNumber+"  name='accounts' value='"+account[i].accountNumber+"'/> <span>"+account[i].accountNumber+" - "+account[i].accountName+" - "+account[i].schemeType+" - "+account[i].customerId+"</span><input type='hidden' name='cifids' value='"+account[i].customerId+"'/> </p>"
                     $('#accountsDiv').append(newAccount)
                 }
 
@@ -533,12 +533,9 @@
             $('#custNameError').hide()
         }
     }
-    function noCorpAccountSelected() {
+    function noCorpAccountSelected(checkbox) {
         var selectedItem = 0;
-        var noOfAccounts = $('#accountSize').val();
-//        console.log("the accounts size "+$('#corpUniqueId').val());
         var anyAccountSelected = $('input[name="accounts"]:checked').length > 0;
-//        console.log("no checked "+$('input[name="accounts"]:checked').length);
         if (anyAccountSelected) {
             selectedItem += 1;
         }
@@ -546,6 +543,29 @@
             $('#custAccountError').show()
         } else {
             $('#custAccountError').hide()
+        }
+
+        if(!checkbox.checked){
+            $("#checkAll").prop("checked", false);
+
+        }
+
+    }
+    function noCorpAccountSelected2(checkbox) {
+        var selectedItem = 0;
+        var anyAccountSelected = $('input[name="accounts"]:checked').length > 0;
+        if (anyAccountSelected) {
+            selectedItem += 1;
+        }
+        if (selectedItem == 0) {
+            $('#custAccountError').show()
+        } else {
+            $('#custAccountError').hide()
+        }
+
+        if(!checkbox.checked){
+            $("#checkAll2").prop("checked", false);
+
         }
     }
 

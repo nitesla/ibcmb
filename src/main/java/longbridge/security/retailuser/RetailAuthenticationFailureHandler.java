@@ -35,7 +35,7 @@ public class RetailAuthenticationFailureHandler extends SimpleUrlAuthenticationF
         String userName = request.getParameter("username");
         RetailUser user = service.findFirstByUserNameIgnoreCase(userName);
 
-        if (user != null && exception.getMessage().equalsIgnoreCase("Bad credentials")){
+        if (user != null && exception.getMessage().equalsIgnoreCase("Bad credentials from user "+userName)){
             failedLoginService.loginFailed(user);
         }
 

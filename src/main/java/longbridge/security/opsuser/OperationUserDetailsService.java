@@ -11,7 +11,6 @@ import longbridge.security.userdetails.CustomUserPrincipal;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -72,7 +71,7 @@ public class OperationUserDetailsService implements UserDetailsService {
         }
 //        sessionUtils.clearSession();
         OperationsUser user = operationsUserRepo.findFirstByUserNameIgnoreCase(s);
-        if (user != null && failedLoginService.isBlocked(user)) throw new RuntimeException("user_blocked");
+        if (user != null && failedLoginService.isLocked(user)) throw new RuntimeException("user_blocked");
         try {
 
 

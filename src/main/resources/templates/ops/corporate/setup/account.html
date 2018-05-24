@@ -118,7 +118,7 @@
                                                     <label class="checkbox-inline">
                                                         <span th:if="${selectedAccounts} =='null'">
                                                         <input type="checkbox" class="accountAttached"
-                                                               onclick="noCorpAccountSelected()"
+                                                               onclick="noCorpAccountSelected(this)"
                                                                th:class="account+${index.index}"
                                                                th:id="acct+${account.accountNumber}" name="accounts"
                                                                th:value="${account.accountNumber}"/>
@@ -132,7 +132,7 @@
                                                         <span th:if="${selectedAccounts} != 'null'">
                                                         <span th:if="${#lists.contains(selectedAccounts,account.accountNumber)} == true">
                                                         <input type="checkbox" checked class="accountAttached"
-                                                               onclick="noCorpAccountSelected()"
+                                                               onclick="noCorpAccountSelected(this)"
                                                                th:class="account+${index.index}"
                                                                th:id="acct+${account.accountNumber}" name="accounts"
                                                                th:value="${account.accountNumber}"/>
@@ -146,7 +146,7 @@
                                                         </span>
                                                         <span th:if="${#lists.contains(selectedAccounts,account.accountNumber)} == false">
                                                         <input type="checkbox" class="accountAttached"
-                                                               onclick="noCorpAccountSelected()"
+                                                               onclick="noCorpAccountSelected(this)"
                                                                th:class="account+${index.index}"
                                                                th:id="acct+${account.accountNumber}" name="accounts"
                                                                th:value="${account.accountNumber}"/>
@@ -401,8 +401,7 @@
                            fetchError = true;
                            break;
                        }
-
-                       var newAccount =  "<p><label class='checkbox-inline'><input type='checkbox' checked onclick='noCorpAccountSelected()' id='acct"+account[i].accountNumber+"'  name='accounts' value='"+account[i].accountNumber+"'/> <span>"+account[i].accountNumber+" - "+account[i].accountName+" - "+account[i].schemeType+" - "+account[i].customerId+"</span><input type='hidden' name='cifids' value='"+account[i].customerId+"'/> </p>"
+                       var newAccount =  "<p><label class='checkbox-inline'><input type='checkbox' checked='checked' onclick='noCorpAccountSelected(this)' id='acct"+account[i].accountNumber+"'  name='accounts' value='"+account[i].accountNumber+"'/> <span>"+account[i].accountNumber+" - "+account[i].accountName+" - "+account[i].schemeType+" - "+account[i].customerId+"</span><input type='hidden' name='cifids' value='"+account[i].customerId+"'/> </p>"
                         $('#accountsDiv').append(newAccount)
                    }
 
@@ -488,12 +487,10 @@
         }
     }
 
-    function noCorpAccountSelected() {
+    function noCorpAccountSelected(checkbox) {
         var selectedItem = 0;
         var noOfAccounts = $('#accountSize').val();
-//        console.log("the accounts size "+$('#corpUniqueId').val());
         var anyAccountSelected = $('input[name="accounts"]:checked').length > 0;
-//        console.log("no checked "+$('input[name="accounts"]:checked').length);
         if (anyAccountSelected) {
             selectedItem += 1;
         }
@@ -502,6 +499,11 @@
         } else {
             $('#custAccountError').hide()
         }
+
+        if (!checkbox.checked) {
+            $("#checkAll").prop("checked", false);
+        }
+
     }
     function isCheckboxCheck() {
         var selectedItem = 0;

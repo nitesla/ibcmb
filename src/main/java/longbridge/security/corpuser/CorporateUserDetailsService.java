@@ -16,7 +16,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.DisabledException;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -78,7 +77,7 @@ public class CorporateUserDetailsService implements UserDetailsService {
         CorporateUser user = corporateUserRepo.findFirstByUserNameIgnoreCaseAndCorporate_CorporateIdIgnoreCase(userName,corpId);
         if (user!=null){
 
-            if (failedLoginService.isBlocked(user)) throw new RuntimeException(user.getUserName()+" is blocked");
+            if (failedLoginService.isLocked(user)) throw new RuntimeException(user.getUserName()+" is blocked");
             try {
                 Corporate corporate = corporateRepo.findFirstByCorporateIdIgnoreCase(corpId);
                 if (corporate != null && user != null) {

@@ -5,7 +5,6 @@ import longbridge.models.*;
 import longbridge.repositories.*;
 import longbridge.services.ConfigurationService;
 import org.joda.time.DateTime;
-import org.joda.time.Duration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,8 +24,6 @@ public class FailedLoginService {
     private OperationsUserRepo operationsUserRepo;
     @Autowired
     private CorporateUserRepo corporateUserRepo;
-    @Autowired
-    private CorporateRepo corporateRepo;
 
     private Logger logger = LoggerFactory.getLogger(getClass());
     private int MAX_ATTEMPT = 3;
@@ -37,56 +34,47 @@ public class FailedLoginService {
 
     public FailedLoginService() {
     }
-    //
 
 
     public boolean unLockUser(User user) {
-        boolean ok = false;
+        boolean unlocked = false;
+
         try {
             user.setNoOfLoginAttempts(0);
             user.setStatus("A");
             user.setLockedUntilDate(null);
             updateFailedLogin(user);
-            ok = true;
+            unlocked = true;
+
+            logger.info("User {} has been unlocked",user.getUserName());
+
 
         } catch (Exception e) {
-            e.printStackTrace();
-
-
+            logger.error("Error occurred unlocking user {}",user.getUserName(),e);
         }
-        return ok;
+        return unlocked;
 
 
     }
 
 
     public boolean isLockOutDurationExpired(User user) {
-        boolean unlocked = false;
+        boolean expired = false;
 
-        if (user != null) {
-            try {
-
-                if (user.getLockedUntilDate() == null) {
+             if (user.getLockedUntilDate() == null) {
                     unLockUser(user);
                     return true;
                 }
 
-                DateTime dateTime = new DateTime(user.getLockedUntilDate());
-                Duration duration = new Duration(dateTime, DateTime.now());
-                if (duration.getStandardMinutes() >= getExpiryTime()) {
-                    logger.trace("update user to no attempts login");
+                DateTime lockedUntilDate = new DateTime(user.getLockedUntilDate());
+                if (DateTime.now().isAfter(lockedUntilDate)) {
+                    logger.info("User {} locked out period has expired", user.getUserName());
                     unLockUser(user);
-                    unlocked = true;
+                    expired = true;
 
                 }
 
-            } catch (Exception e) {
-                logger.trace("Exception occurred ", e);
-                e.printStackTrace();
-            }
-        }
-
-        return unlocked;
+        return expired;
 
     }
 
@@ -97,14 +85,9 @@ public class FailedLoginService {
 
     public void loginFailed(final User user) {
         int attempts = 0;
-        try {
-            attempts = user.getNoOfLoginAttempts();
 
-        } catch (final Exception e) {
-            e.printStackTrace();
-            System.out.println(e.getMessage());
+        attempts = user.getNoOfLoginAttempts();
 
-        }
         ++attempts;
 
 
@@ -112,6 +95,7 @@ public class FailedLoginService {
         if (getMaxAttempt() != 0 && user.getNoOfLoginAttempts() >= getMaxAttempt()) {
             user.setStatus("L");
             user.setLockedUntilDate(new DateTime().plusMinutes(getExpiryTime()).toDate());
+            logger.info("User {} has reached max failed logins and is now locked", user.getUserName());
         }
 
         updateFailedLogin(user);
@@ -119,16 +103,11 @@ public class FailedLoginService {
 
     }
 
-    public boolean isBlocked(final User user) {
-        try {
+    public boolean isLocked(final User user) {
 
             boolean isLocked = user.getStatus().equalsIgnoreCase("L");
             return isLocked && !isLockOutDurationExpired(user);
 
-        } catch (final Exception e) {
-            e.printStackTrace();
-        }
-        return false;
     }
 
     @Transactional
@@ -162,8 +141,7 @@ public class FailedLoginService {
                 }
             }
         } catch (Exception e) {
-            logger.error("Exception occurred ", e);
-            e.printStackTrace();
+            logger.error("Error occurred updating failed login ", e);
         }
 
 
