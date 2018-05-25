@@ -79,7 +79,6 @@ public class IntegrationServiceImpl implements IntegrationService {
 
 	@Override
 	public AccountInfo fetchAccount(String accountNumber) {
-		// TODO
 		AccountInfo accountInfo = new AccountInfo();
 		return accountInfo;
 	}
@@ -125,10 +124,7 @@ public class IntegrationServiceImpl implements IntegrationService {
 			logger.info("Fetching account statement with account number {}",accountNo);
 
 			SimpleDateFormat formatter = new SimpleDateFormat("dd-MMM-yyyy");
-			/*
-			 * String dateInString = "7-Jun-2013"; Date date =
-			 * formatter.parse(dateInString);
-			 */
+
 			String uri = URI + "/statement";
 			Map<String, Object> params = new HashMap<>();
 			params.put("accountNumber", accountNo);
@@ -161,10 +157,7 @@ public class IntegrationServiceImpl implements IntegrationService {
 
 
 			SimpleDateFormat formatter = new SimpleDateFormat("dd-MMM-yyyy");
-			/*
-			 * String dateInString = "7-Jun-2013"; Date date =
-			 * formatter.parse(dateInString);
-			 */
+
 			String uri = URI + "/statement";
 			Map<String, Object> params = new HashMap<>();
 			params.put("accountNumber", accountNo);
@@ -198,10 +191,7 @@ public class IntegrationServiceImpl implements IntegrationService {
 			logger.info("Fetching account statement with account number {}",accountNo);
 
 			SimpleDateFormat formatter = new SimpleDateFormat("dd-MMM-yyyy");
-			/*
-			 * String dateInString = "7-Jun-2013"; Date date =
-			 * formatter.parse(dateInString);
-			 */
+
 			String uri = URI + "/fullstatement";
 			Map<String, Object> params = new HashMap<>();
 			params.put("accountNumber", accountNo);
@@ -311,7 +301,7 @@ public class IntegrationServiceImpl implements IntegrationService {
 		TransferType type = transRequest.getTransferType();
 		Account account = accountRepo.findFirstByAccountNumber(transRequest.getCustomerAccountNumber());
 		validate(account);
-		// switch (type) {
+
 		switch (type) {
 		case CORONATION_BANK_TRANSFER:
 
