@@ -1,7 +1,6 @@
 package longbridge;
 
 
-import longbridge.jobs.CompileJasper;
 import longbridge.repositories.CustomJpaRepositoryFactoryBean;
 import longbridge.services.SecurityService;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
@@ -39,10 +38,6 @@ public class InternetbankingApplication extends SpringBootServletInitializer imp
 
     @Override
     public void run(String... strings) throws Exception {
-        CompileJasper.compile();
-//        securityService.createEntrustUser("sunkoxy","Retail_Group", "SUNDAY AKINOLA", true);
-//        securityService.addUserContacts("sakinola@coronationmb.com","+2348039213119",true,"sunkoxy","Retail_Group");
-// securityService.unLockUser("fortune500","Coronation Group");
 
     }
 

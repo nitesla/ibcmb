@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created with Jaspersoft Studio version 6.4.0.final using JasperReports Library version 6.4.1  -->
+<!-- Created with Jaspersoft Studio version 6.5.1.final using JasperReports Library version 6.5.1  -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="accountStatment" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="1466e9a2-d9da-4bad-8d18-3671e865c7c5">
 	<property name="ireport.zoom" value="1.1"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="121"/>
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="FULLJSON.xml"/>
-	<property name="net.sf.jasperreports.export.xls.white.page.background" value="true" />
-	<!--<property name="net.sf.jasperreports.export.xls.ignore.graphics" value="false"/>-->
+	<property name="net.sf.jasperreports.export.xls.white.page.background" value="true"/>
+	<property name="net.sf.jasperreports.export.xls.ignore.graphics" value="false"/>
 	<property name="net.sf.jasperreports.export.xls.remove.empty.space.between.columns" value="true"/>
 	<property name="net.sf.jasperreports.export.xls.remove.empty.space.between.rows" value="true"/>
 	<property name="net.sf.jasperreports.export.xls.collapse.row.span" value="true"/>
@@ -392,7 +392,7 @@
 				<text><![CDATA[Customer ID:]]></text>
 			</staticText>
 			<image>
-				<reportElement key="image" x="413" y="19" width="142" height="52" uuid="b7dae1f4-4eb0-49e0-b29b-f2c3cb008baf"/>
+				<reportElement key="image" isPrintRepeatedValues="false" x="413" y="19" width="142" height="52" uuid="b7dae1f4-4eb0-49e0-b29b-f2c3cb008baf"/>
 				<imageExpression><![CDATA[$P{imagePath}]]></imageExpression>
 			</image>
 			<textField pattern="dd MMMMM yyyy" isBlankWhenNull="false">
