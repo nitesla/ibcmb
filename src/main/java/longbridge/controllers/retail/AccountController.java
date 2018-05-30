@@ -791,7 +791,6 @@ public class AccountController {
 			from = format.parse(fromDate);
 			to = format.parse(toDate);
 			logger.info("from date {} to date {} type {}",fromDate,toDate,tranType);
-			File file =  new File(jrxmlPath);
 			AccountStatement accountStatement = integrationService.getFullAccountStatement(acctNumber, from, to, tranType);
 //			out.setDraw(input.getDraw());
 			List<TransactionDetails> list = accountStatement.getTransactionDetails();
@@ -850,6 +849,7 @@ public class AccountController {
 			modelMap.put("today", today);
 			modelMap.put("imagePath", imagePath);
 
+			File file =  new File(jrxmlPath);
 			JRDataSource dataSource = new JRBeanCollectionDataSource(list);
 			JasperReport jasperReport = (JasperReport) JRLoader.loadObject(file);
 			JasperPrint print = JasperFillManager.fillReport(jasperReport,modelMap,dataSource);

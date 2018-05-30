@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.5.1.final using JasperReports Library version 6.5.1  -->
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="accountStatment" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="1466e9a2-d9da-4bad-8d18-3671e865c7c5">
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="accountStatment" pageWidth="800" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="760" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="1466e9a2-d9da-4bad-8d18-3671e865c7c5">
 	<property name="ireport.zoom" value="1.1"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="121"/>
-	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="FULLJSON.xml"/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
 	<property name="net.sf.jasperreports.export.xls.white.page.background" value="true"/>
 	<property name="net.sf.jasperreports.export.xls.ignore.graphics" value="false"/>
 	<property name="net.sf.jasperreports.export.xls.remove.empty.space.between.columns" value="true"/>
@@ -12,6 +12,7 @@
 	<property name="net.sf.jasperreports.export.xls.collapse.row.span" value="true"/>
 	<property name="ireport.scriptlethandling" value="0"/>
 	<property name="ireport.encoding" value="UTF-8"/>
+	<property name="com.jaspersoft.studio.unit." value="pixel"/>
 	<import value="net.sf.jasperreports.engine.*"/>
 	<import value="java.util.*"/>
 	<import value="net.sf.jasperreports.engine.data.*"/>
@@ -88,7 +89,7 @@
 		<band height="4" splitType="Stretch"/>
 	</title>
 	<pageHeader>
-		<band height="392" splitType="Stretch">
+		<band height="359" splitType="Stretch">
 			<staticText>
 				<reportElement key="FIN_PAGE_HEADER-1" stretchType="RelativeToTallestObject" x="2" y="92" width="224" height="20" isRemoveLineWhenBlank="true" uuid="692bdc7b-c9ec-4bbd-a9e2-8c9beb92b605">
 					<printWhenExpression><![CDATA[$V{PAGE_NUMBER}==1]]></printWhenExpression>
@@ -99,7 +100,7 @@
 				<text><![CDATA[CUSTOMER STATEMENT]]></text>
 			</staticText>
 			<textField isBlankWhenNull="false">
-				<reportElement key="textField" x="453" y="144" width="100" height="19" isRemoveLineWhenBlank="true" uuid="65b78130-4fdf-410d-b2c1-1d8db972c144">
+				<reportElement key="textField" x="593" y="144" width="100" height="19" isRemoveLineWhenBlank="true" uuid="65b78130-4fdf-410d-b2c1-1d8db972c144">
 					<printWhenExpression><![CDATA[$V{PAGE_NUMBER}==1]]></printWhenExpression>
 				</reportElement>
 				<textElement verticalAlignment="Bottom">
@@ -108,7 +109,7 @@
 				<textFieldExpression><![CDATA[$P{summary.accountNum}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement key="staticText" x="354" y="144" width="100" height="19" isRemoveLineWhenBlank="true" uuid="da0a3966-4f88-4e4e-9dca-fd2fff423e79">
+				<reportElement key="staticText" x="494" y="144" width="100" height="19" isRemoveLineWhenBlank="true" uuid="da0a3966-4f88-4e4e-9dca-fd2fff423e79">
 					<printWhenExpression><![CDATA[$V{PAGE_NUMBER}==1]]></printWhenExpression>
 				</reportElement>
 				<textElement>
@@ -117,7 +118,7 @@
 				<text><![CDATA[Account No:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement key="staticText" x="354" y="170" width="100" height="20" isRemoveLineWhenBlank="true" uuid="9d68d025-4ae3-44f3-9617-0141d63b8535">
+				<reportElement key="staticText" x="494" y="170" width="100" height="20" isRemoveLineWhenBlank="true" uuid="9d68d025-4ae3-44f3-9617-0141d63b8535">
 					<printWhenExpression><![CDATA[$V{PAGE_NUMBER}==1]]></printWhenExpression>
 				</reportElement>
 				<textElement>
@@ -126,7 +127,7 @@
 				<text><![CDATA[Opening Balance:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement key="staticText" x="354" y="196" width="100" height="20" isRemoveLineWhenBlank="true" uuid="4f9bead7-f133-459b-96a7-2087b1f603a1">
+				<reportElement key="staticText" x="494" y="196" width="100" height="20" isRemoveLineWhenBlank="true" uuid="4f9bead7-f133-459b-96a7-2087b1f603a1">
 					<printWhenExpression><![CDATA[$V{PAGE_NUMBER}==1]]></printWhenExpression>
 				</reportElement>
 				<textElement>
@@ -135,7 +136,7 @@
 				<text><![CDATA[Total Debit:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement key="staticText" x="354" y="222" width="100" height="20" isRemoveLineWhenBlank="true" uuid="bd592bcb-e4d6-4d4d-a00c-0c810611ea06">
+				<reportElement key="staticText" x="494" y="222" width="100" height="20" isRemoveLineWhenBlank="true" uuid="bd592bcb-e4d6-4d4d-a00c-0c810611ea06">
 					<printWhenExpression><![CDATA[$V{PAGE_NUMBER}==1]]></printWhenExpression>
 				</reportElement>
 				<textElement>
@@ -144,7 +145,7 @@
 				<text><![CDATA[Total Credit:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement key="staticText" x="354" y="248" width="100" height="20" isRemoveLineWhenBlank="true" uuid="0ce9f59e-e41d-4ef7-acc4-fb34ee7d79ef">
+				<reportElement key="staticText" x="494" y="248" width="100" height="20" isRemoveLineWhenBlank="true" uuid="0ce9f59e-e41d-4ef7-acc4-fb34ee7d79ef">
 					<printWhenExpression><![CDATA[$V{PAGE_NUMBER}==1]]></printWhenExpression>
 				</reportElement>
 				<textElement>
@@ -153,7 +154,7 @@
 				<text><![CDATA[Closing Balance:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement key="staticText" x="354" y="274" width="100" height="20" isRemoveLineWhenBlank="true" uuid="f196e0f6-b20c-4adf-9312-e80a64e659c3">
+				<reportElement key="staticText" x="494" y="274" width="100" height="20" isRemoveLineWhenBlank="true" uuid="f196e0f6-b20c-4adf-9312-e80a64e659c3">
 					<printWhenExpression><![CDATA[$V{PAGE_NUMBER}==1]]></printWhenExpression>
 				</reportElement>
 				<textElement>
@@ -162,7 +163,7 @@
 				<text><![CDATA[Debit Count:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement key="staticText" x="354" y="300" width="100" height="20" isRemoveLineWhenBlank="true" uuid="dc9a9828-d108-4167-90e6-9ce017d4061c">
+				<reportElement key="staticText" x="494" y="300" width="100" height="20" isRemoveLineWhenBlank="true" uuid="dc9a9828-d108-4167-90e6-9ce017d4061c">
 					<printWhenExpression><![CDATA[$V{PAGE_NUMBER}==1]]></printWhenExpression>
 				</reportElement>
 				<textElement>
@@ -235,7 +236,7 @@
 				<text><![CDATA[Currency:]]></text>
 			</staticText>
 			<textField isBlankWhenNull="false">
-				<reportElement key="textField" x="454" y="170" width="100" height="20" isRemoveLineWhenBlank="true" uuid="41827319-f2d0-4d0f-a481-9ab12b613a90">
+				<reportElement key="textField" x="594" y="170" width="100" height="20" isRemoveLineWhenBlank="true" uuid="41827319-f2d0-4d0f-a481-9ab12b613a90">
 					<printWhenExpression><![CDATA[$V{PAGE_NUMBER}==1]]></printWhenExpression>
 				</reportElement>
 				<textElement>
@@ -244,7 +245,7 @@
 				<textFieldExpression><![CDATA[$P{summary.openingBalance}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="false">
-				<reportElement key="textField" x="454" y="196" width="100" height="20" isRemoveLineWhenBlank="true" uuid="b0fad1ab-d148-4f29-b546-86b780db1a55">
+				<reportElement key="textField" x="594" y="196" width="100" height="20" isRemoveLineWhenBlank="true" uuid="b0fad1ab-d148-4f29-b546-86b780db1a55">
 					<printWhenExpression><![CDATA[$V{PAGE_NUMBER}==1]]></printWhenExpression>
 				</reportElement>
 				<textElement>
@@ -253,7 +254,7 @@
 				<textFieldExpression><![CDATA[$P{summary.totalDebit}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="false">
-				<reportElement key="textField" x="454" y="222" width="100" height="20" isRemoveLineWhenBlank="true" uuid="ba6ab289-36a0-4581-a17c-8e9e636f42a5">
+				<reportElement key="textField" x="594" y="222" width="100" height="20" isRemoveLineWhenBlank="true" uuid="ba6ab289-36a0-4581-a17c-8e9e636f42a5">
 					<printWhenExpression><![CDATA[$V{PAGE_NUMBER}==1]]></printWhenExpression>
 				</reportElement>
 				<textElement>
@@ -262,7 +263,7 @@
 				<textFieldExpression><![CDATA[$P{summary.totalCredit}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="false">
-				<reportElement key="textField" x="454" y="248" width="100" height="20" isRemoveLineWhenBlank="true" uuid="a6f2e2c9-08a2-4d6d-bc6a-0d72b2c48bf7">
+				<reportElement key="textField" x="594" y="248" width="100" height="20" isRemoveLineWhenBlank="true" uuid="a6f2e2c9-08a2-4d6d-bc6a-0d72b2c48bf7">
 					<printWhenExpression><![CDATA[$V{PAGE_NUMBER}==1]]></printWhenExpression>
 				</reportElement>
 				<textElement>
@@ -271,7 +272,7 @@
 				<textFieldExpression><![CDATA[$P{summary.closingBalance}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="false">
-				<reportElement key="textField" x="454" y="274" width="100" height="20" isRemoveLineWhenBlank="true" uuid="f6d628ac-b607-423a-87b6-856e28746b94">
+				<reportElement key="textField" x="594" y="274" width="100" height="20" isRemoveLineWhenBlank="true" uuid="f6d628ac-b607-423a-87b6-856e28746b94">
 					<printWhenExpression><![CDATA[$V{PAGE_NUMBER}==1]]></printWhenExpression>
 				</reportElement>
 				<textElement>
@@ -280,7 +281,7 @@
 				<textFieldExpression><![CDATA[$P{summary.debitCount}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="false">
-				<reportElement key="textField" x="454" y="300" width="100" height="20" isRemoveLineWhenBlank="true" uuid="615f1d5f-638f-4b96-9e5f-cfa2fb8be0ad">
+				<reportElement key="textField" x="594" y="300" width="100" height="20" isRemoveLineWhenBlank="true" uuid="615f1d5f-638f-4b96-9e5f-cfa2fb8be0ad">
 					<printWhenExpression><![CDATA[$V{PAGE_NUMBER}==1]]></printWhenExpression>
 				</reportElement>
 				<textElement>
@@ -309,7 +310,7 @@
 				<text><![CDATA[TRANSACTION DETAILS]]></text>
 			</staticText>
 			<line>
-				<reportElement key="line-9" x="353" y="140" width="201" height="1" isRemoveLineWhenBlank="true" forecolor="#000066" uuid="67884b9b-8424-42f5-9908-3d2a34b7b43e">
+				<reportElement key="line-9" x="493" y="140" width="201" height="1" isRemoveLineWhenBlank="true" forecolor="#000066" uuid="67884b9b-8424-42f5-9908-3d2a34b7b43e">
 					<printWhenExpression><![CDATA[$V{PAGE_NUMBER}==1]]></printWhenExpression>
 				</reportElement>
 				<graphicElement>
@@ -317,7 +318,7 @@
 				</graphicElement>
 			</line>
 			<staticText>
-				<reportElement key="staticText" x="354" y="117" width="107" height="20" isRemoveLineWhenBlank="true" uuid="42927e1a-138d-42d5-896c-22e5f094350c">
+				<reportElement key="staticText" x="494" y="117" width="107" height="20" isRemoveLineWhenBlank="true" uuid="42927e1a-138d-42d5-896c-22e5f094350c">
 					<printWhenExpression><![CDATA[$V{PAGE_NUMBER}==1]]></printWhenExpression>
 				</reportElement>
 				<textElement>
@@ -326,7 +327,7 @@
 				<text><![CDATA[Account Summary]]></text>
 			</staticText>
 			<line>
-				<reportElement key="line-9" x="354" y="192" width="201" height="1" isRemoveLineWhenBlank="true" forecolor="#000066" uuid="c70fec27-f50e-40fe-8daf-f4cb1f2f15fb">
+				<reportElement key="line-9" x="494" y="192" width="201" height="1" isRemoveLineWhenBlank="true" forecolor="#000066" uuid="c70fec27-f50e-40fe-8daf-f4cb1f2f15fb">
 					<printWhenExpression><![CDATA[$V{PAGE_NUMBER}==1]]></printWhenExpression>
 				</reportElement>
 				<graphicElement>
@@ -334,7 +335,7 @@
 				</graphicElement>
 			</line>
 			<line>
-				<reportElement key="line-9" x="354" y="166" width="201" height="1" isRemoveLineWhenBlank="true" forecolor="#000066" uuid="381ba6f9-f7cf-42e3-aa32-efd04d3d1d02">
+				<reportElement key="line-9" x="494" y="166" width="201" height="1" isRemoveLineWhenBlank="true" forecolor="#000066" uuid="381ba6f9-f7cf-42e3-aa32-efd04d3d1d02">
 					<printWhenExpression><![CDATA[$V{PAGE_NUMBER}==1]]></printWhenExpression>
 				</reportElement>
 				<graphicElement>
@@ -342,7 +343,7 @@
 				</graphicElement>
 			</line>
 			<line>
-				<reportElement key="line-9" x="353" y="113" width="201" height="1" isRemoveLineWhenBlank="true" forecolor="#000066" uuid="74650476-9449-4d15-ad55-98a742ac699a">
+				<reportElement key="line-9" x="493" y="113" width="201" height="1" isRemoveLineWhenBlank="true" forecolor="#000066" uuid="74650476-9449-4d15-ad55-98a742ac699a">
 					<printWhenExpression><![CDATA[$V{PAGE_NUMBER}==1]]></printWhenExpression>
 				</reportElement>
 				<graphicElement>
@@ -350,7 +351,7 @@
 				</graphicElement>
 			</line>
 			<line>
-				<reportElement key="line-9" x="354" y="219" width="201" height="1" isRemoveLineWhenBlank="true" forecolor="#000066" uuid="745f8ced-6d0e-4fcf-ab87-8de710db871e">
+				<reportElement key="line-9" x="494" y="219" width="201" height="1" isRemoveLineWhenBlank="true" forecolor="#000066" uuid="745f8ced-6d0e-4fcf-ab87-8de710db871e">
 					<printWhenExpression><![CDATA[$V{PAGE_NUMBER}==1]]></printWhenExpression>
 				</reportElement>
 				<graphicElement>
@@ -358,7 +359,7 @@
 				</graphicElement>
 			</line>
 			<line>
-				<reportElement key="line-9" x="353" y="244" width="201" height="1" isRemoveLineWhenBlank="true" forecolor="#000066" uuid="99de5f84-b1eb-42b7-9236-5357ede102d3">
+				<reportElement key="line-9" x="493" y="244" width="201" height="1" isRemoveLineWhenBlank="true" forecolor="#000066" uuid="99de5f84-b1eb-42b7-9236-5357ede102d3">
 					<printWhenExpression><![CDATA[$V{PAGE_NUMBER}==1]]></printWhenExpression>
 				</reportElement>
 				<graphicElement>
@@ -366,7 +367,7 @@
 				</graphicElement>
 			</line>
 			<line>
-				<reportElement key="line-9" x="353" y="271" width="201" height="1" isRemoveLineWhenBlank="true" forecolor="#000066" uuid="997abf56-cefd-4d45-b6a8-e177baf4ecb1">
+				<reportElement key="line-9" x="493" y="271" width="201" height="1" isRemoveLineWhenBlank="true" forecolor="#000066" uuid="997abf56-cefd-4d45-b6a8-e177baf4ecb1">
 					<printWhenExpression><![CDATA[$V{PAGE_NUMBER}==1]]></printWhenExpression>
 				</reportElement>
 				<graphicElement>
@@ -374,7 +375,7 @@
 				</graphicElement>
 			</line>
 			<line>
-				<reportElement key="line-9" x="353" y="297" width="201" height="1" isRemoveLineWhenBlank="true" forecolor="#000066" uuid="b514ec77-76dd-46c9-adf1-753353a13e78">
+				<reportElement key="line-9" x="493" y="297" width="201" height="1" isRemoveLineWhenBlank="true" forecolor="#000066" uuid="b514ec77-76dd-46c9-adf1-753353a13e78">
 					<printWhenExpression><![CDATA[$V{PAGE_NUMBER}==1]]></printWhenExpression>
 				</reportElement>
 				<graphicElement>
@@ -392,7 +393,7 @@
 				<text><![CDATA[Customer ID:]]></text>
 			</staticText>
 			<image>
-				<reportElement key="image" isPrintRepeatedValues="false" x="413" y="19" width="142" height="52" uuid="b7dae1f4-4eb0-49e0-b29b-f2c3cb008baf"/>
+				<reportElement key="image" isPrintRepeatedValues="false" x="553" y="19" width="142" height="52" uuid="b7dae1f4-4eb0-49e0-b29b-f2c3cb008baf"/>
 				<imageExpression><![CDATA[$P{imagePath}]]></imageExpression>
 			</image>
 			<textField pattern="dd MMMMM yyyy" isBlankWhenNull="false">
@@ -407,7 +408,7 @@
 		<band height="18" splitType="Stretch">
 			<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 			<staticText>
-				<reportElement key="staticText" x="1" y="0" width="162" height="17" uuid="821b847e-a390-4cde-92fa-b5b0853e57a6">
+				<reportElement key="staticText" x="0" y="0" width="240" height="17" uuid="821b847e-a390-4cde-92fa-b5b0853e57a6">
 					<printWhenExpression><![CDATA[$V{PAGE_NUMBER}==1]]></printWhenExpression>
 				</reportElement>
 				<textElement>
@@ -416,7 +417,7 @@
 				<text><![CDATA[Naration]]></text>
 			</staticText>
 			<staticText>
-				<reportElement key="staticText" x="213" y="0" width="52" height="17" uuid="45a0ede3-0394-4076-a3ab-5e9755aa487e">
+				<reportElement key="staticText" x="335" y="0" width="70" height="17" uuid="45a0ede3-0394-4076-a3ab-5e9755aa487e">
 					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
 					<printWhenExpression><![CDATA[$V{PAGE_NUMBER}==1]]></printWhenExpression>
 				</reportElement>
@@ -426,7 +427,7 @@
 				<text><![CDATA[Value Date]]></text>
 			</staticText>
 			<staticText>
-				<reportElement key="staticText" x="163" y="0" width="50" height="17" uuid="fb8a994e-8f99-4a58-883d-1d4576cc67c9">
+				<reportElement key="staticText" x="253" y="0" width="70" height="17" uuid="fb8a994e-8f99-4a58-883d-1d4576cc67c9">
 					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
 					<printWhenExpression><![CDATA[$V{PAGE_NUMBER}==1]]></printWhenExpression>
 				</reportElement>
@@ -436,7 +437,7 @@
 				<text><![CDATA[Posted Date]]></text>
 			</staticText>
 			<staticText>
-				<reportElement key="staticText" x="461" y="0" width="93" height="17" uuid="68b5d44e-36a4-4e4c-bf8e-9922b34afc57">
+				<reportElement key="staticText" x="680" y="0" width="93" height="17" uuid="68b5d44e-36a4-4e4c-bf8e-9922b34afc57">
 					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
 					<printWhenExpression><![CDATA[$V{PAGE_NUMBER}==1]]></printWhenExpression>
 				</reportElement>
@@ -446,7 +447,7 @@
 				<text><![CDATA[Balance]]></text>
 			</staticText>
 			<staticText>
-				<reportElement key="staticText" x="265" y="0" width="70" height="17" uuid="e234f08a-d5be-43f6-9ddb-51fd421b29ef">
+				<reportElement key="staticText" x="420" y="0" width="65" height="17" uuid="e234f08a-d5be-43f6-9ddb-51fd421b29ef">
 					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
 					<printWhenExpression><![CDATA[$V{PAGE_NUMBER}==1]]></printWhenExpression>
 				</reportElement>
@@ -456,7 +457,7 @@
 				<text><![CDATA[Debit]]></text>
 			</staticText>
 			<staticText>
-				<reportElement key="staticText" x="335" y="0" width="74" height="17" uuid="942b0cf2-56a7-4ce1-8306-1597d547c0c0">
+				<reportElement key="staticText" x="493" y="0" width="65" height="17" uuid="942b0cf2-56a7-4ce1-8306-1597d547c0c0">
 					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
 					<printWhenExpression><![CDATA[$V{PAGE_NUMBER}==1]]></printWhenExpression>
 				</reportElement>
@@ -466,7 +467,7 @@
 				<text><![CDATA[Credit]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="409" y="0" width="52" height="17" uuid="e2c2fd70-52b0-45c5-9696-f5df699874dc">
+				<reportElement x="566" y="0" width="64" height="17" uuid="e2c2fd70-52b0-45c5-9696-f5df699874dc">
 					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
 					<printWhenExpression><![CDATA[$V{PAGE_NUMBER}==1]]></printWhenExpression>
@@ -482,28 +483,28 @@
 		<band height="21" splitType="Stretch">
 			<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 			<textField pattern="dd-MMM-yyyy" isBlankWhenNull="true">
-				<reportElement key="textField" x="213" y="-1" width="52" height="22" uuid="9244e473-4721-4359-8acd-dc93cbd6422f"/>
+				<reportElement key="textField" x="335" y="-1" width="70" height="22" uuid="9244e473-4721-4359-8acd-dc93cbd6422f"/>
 				<textElement>
 					<font fontName="Arial" size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{valueDate}]]></textFieldExpression>
 			</textField>
 			<textField pattern="dd-MMM-yyyy" isBlankWhenNull="true">
-				<reportElement key="textField" x="163" y="-1" width="50" height="22" uuid="16c06de0-bae2-4f8b-8ab4-51f2380216d0"/>
+				<reportElement key="textField" x="253" y="-1" width="70" height="22" uuid="16c06de0-bae2-4f8b-8ab4-51f2380216d0"/>
 				<textElement>
 					<font fontName="Arial" size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{postDate}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement key="textField" x="1" y="-1" width="162" height="22" uuid="4821fc56-f75a-4054-8b5f-9970f11c57ce"/>
+				<reportElement key="textField" x="0" y="-1" width="240" height="22" uuid="4821fc56-f75a-4054-8b5f-9970f11c57ce"/>
 				<textElement>
 					<font fontName="Arial" size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{narration}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement key="textField" x="461" y="-1" width="93" height="22" uuid="db8e1df8-1997-4eb2-8421-41c74faad7d9">
+				<reportElement key="textField" x="680" y="-1" width="93" height="22" uuid="db8e1df8-1997-4eb2-8421-41c74faad7d9">
 					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
 				</reportElement>
 				<textElement>
@@ -512,7 +513,7 @@
 				<textFieldExpression><![CDATA[new java.text.DecimalFormat("#,##0.00").format(Double.valueOf($F{accountBalance}))]]></textFieldExpression>
 			</textField>
 			<textField pattern="#,##0.00" isBlankWhenNull="true">
-				<reportElement key="textField" x="335" y="-1" width="74" height="22" uuid="5a8cee88-9182-4a84-b406-64aeb6ac8c03">
+				<reportElement key="textField" x="493" y="-1" width="65" height="22" uuid="5a8cee88-9182-4a84-b406-64aeb6ac8c03">
 					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
 				</reportElement>
 				<textElement>
@@ -521,7 +522,7 @@
 				<textFieldExpression><![CDATA[$F{tranType}.contentEquals("C") ? new java.text.DecimalFormat("#,##0.00").format(Double.valueOf($F{tranAmount})): 0.0]]></textFieldExpression>
 			</textField>
 			<textField pattern="#,##0.00" isBlankWhenNull="true">
-				<reportElement key="textField" x="265" y="-1" width="70" height="22" uuid="2da58177-7a5a-4faa-b153-12485e944145">
+				<reportElement key="textField" x="420" y="-1" width="65" height="22" uuid="2da58177-7a5a-4faa-b153-12485e944145">
 					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
 				</reportElement>
 				<textElement>
@@ -530,7 +531,7 @@
 				<textFieldExpression><![CDATA[$F{tranType}.contentEquals("D") ? new java.text.DecimalFormat("#,##0.00").format(Double.valueOf($F{tranAmount})): 0.0]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="409" y="-1" width="52" height="22" uuid="ae779fbb-7011-4b0c-8f4b-2718c96a6e39">
+				<reportElement x="566" y="-1" width="64" height="22" uuid="ae779fbb-7011-4b0c-8f4b-2718c96a6e39">
 					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
 				</reportElement>
