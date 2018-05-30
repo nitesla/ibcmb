@@ -803,7 +803,7 @@ public class AccountController {
 			DecimalFormat formatter = new DecimalFormat("#,###.00");
 //			modelMap.put("datasource", list);
 			modelMap.put("format", "pdf");
-			modelMap.put("summary.accountNum",acctNumber);
+			modelMap.put("summary.accountNum",account.getAccountNumber());
 			modelMap.put("summary.customerName",account.getAccountName());
 			modelMap.put("summary.customerNo", account.getCustomerId());
 
@@ -865,10 +865,9 @@ public class AccountController {
 					"Statement.xlsx" + "\""));
 			OutputStream responseOutputStream = response.getOutputStream();
 			responseOutputStream.write(pdfReportStream.toByteArray());
-
+			responseOutputStream.flush();
 			responseOutputStream.close();
 			pdfReportStream.close();
-			responseOutputStream.flush();
 		} catch (ParseException e) {
 			logger.warn("didn't parse date", e);
 
