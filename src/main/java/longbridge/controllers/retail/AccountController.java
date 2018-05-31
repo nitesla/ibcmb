@@ -296,7 +296,7 @@ public class AccountController {
 	private CodeService codeService;
 
 	@Autowired
-	JavaMailSender mailSender;
+	private JavaMailSender mailSender;
 	private Locale locale = LocaleContextHolder.getLocale();
 
 	private Long customizeAccountId;
