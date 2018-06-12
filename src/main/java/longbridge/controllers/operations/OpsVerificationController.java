@@ -4,8 +4,6 @@ import longbridge.dtos.VerificationDTO;
 import longbridge.exception.InternetBankingException;
 import longbridge.exception.VerificationException;
 import longbridge.models.Verification;
-import longbridge.repositories.VerificationRepo;
-import longbridge.services.OperationsUserService;
 import longbridge.services.VerificationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -176,7 +174,7 @@ public class OpsVerificationController {
     @ResponseBody
     DataTablesOutput<VerificationDTO> getVerifiedOperations(DataTablesInput input) {
         Pageable pageable = DataTablesUtils.getPageable(input);
-        Page<VerificationDTO> page = verificationService.getVerifiedOPerations(pageable);
+        Page<VerificationDTO> page = verificationService.getVerifiedOperations(pageable);
         DataTablesOutput<VerificationDTO> out = new DataTablesOutput<VerificationDTO>();
         out.setDraw(input.getDraw());
         out.setData(page.getContent());

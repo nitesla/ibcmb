@@ -27,7 +27,6 @@ import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -41,7 +40,7 @@ import java.util.*;
 public class VerificationServiceImpl implements VerificationService {
 
     private static final String PACKAGE_NAME = "longbridge.models.";
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
     @Autowired
     private VerificationRepo verificationRepo;
     @Autowired
@@ -60,7 +59,7 @@ public class VerificationServiceImpl implements VerificationService {
     private MailService mailService;
     @Autowired
     private ModelMapper modelMapper;
-    private Locale locale = LocaleContextHolder.getLocale();
+    private final Locale locale = LocaleContextHolder.getLocale();
 
 
     @Override
@@ -140,12 +139,9 @@ public class VerificationServiceImpl implements VerificationService {
         if (!VerificationStatus.PENDING.equals(verification.getStatus())) {
             throw new VerificationException("Verification is not pending for the operation");
         }
-
         ObjectMapper mapper = new ObjectMapper();
 
-
         try {
-
             Class<?> clazz;
             Object object;
 
@@ -158,18 +154,21 @@ public class VerificationServiceImpl implements VerificationService {
             } else if ("DELETE_CORPORATE_ACCOUNT".equals(verification.getOperation())) {
                 CorporateRequestDTO requestDTO = mapper.readValue(verification.getOriginalObject(), CorporateRequestDTO.class);
                 corporateService.deleteCorporateAccount(requestDTO);
-            }
-            else if("UPDATE_CORPORATE_ROLE".equals(verification.getOperation())){
+            } else if ("UPDATE_CORPORATE_ROLE".equals(verification.getOperation())) {
                 CorporateRole role = mapper.readValue(verification.getOriginalObject(), CorporateRole.class);
                 corporateService.updateCorporateRole(role);
-            }
-            else if ("ADD_AUTHORIZER_FROM_CORPORATE_ADMIN".equals(verification.getOperation())) {
+            } else if ("ADD_AUTHORIZER_FROM_CORPORATE_ADMIN".equals(verification.getOperation())) {
                 CorporateUserDTO corpUser = mapper.readValue(verification.getOriginalObject(), CorporateUserDTO.class);
                 corporateUserService.addAuthorizer(corpUser);
             } else if ("UPDATE_USER_FROM_CORPORATE_ADMIN".equals(verification.getOperation())) {
                 CorporateUserDTO corpUser = mapper.readValue(verification.getOriginalObject(), CorporateUserDTO.class);
                 corporateUserService.updateUserFromCorpAdmin(corpUser);
-            } else {
+            }
+            else if ("UPDATE_USER_ACCOUNT_PERMISSION".equals(verification.getOperation())) {
+                CorporateUserDTO corpUser = mapper.readValue(verification.getOriginalObject(), CorporateUserDTO.class);
+                corporateUserService.updateAccountRestrictionsBasedOnPermissions(corpUser);
+            }
+            else {
                 clazz = Class.forName(PACKAGE_NAME + verification.getEntityName());
                 object = mapper.readValue(verification.getOriginalObject(), clazz);
                 entityManager.merge(object);
@@ -193,7 +192,7 @@ public class VerificationServiceImpl implements VerificationService {
     }
 
     @Override
-    public String add(Object object, String operation, String description) throws JsonProcessingException {
+    public String add(AbstractDTO object, String operation, String description) throws JsonProcessingException {
 
         User doneBy = getCurrentUser();
         String entityName = object.getClass().getSimpleName();
@@ -218,31 +217,49 @@ public class VerificationServiceImpl implements VerificationService {
             logger.debug("Registering Pretty serializer for " + object.getClass().getName());
         }
 
-        if (object instanceof CorporateRequestDTO) {
-            CorporateRequestDTO requestDTO = (CorporateRequestDTO) object;
-            Long id = requestDTO.getId();
+        Long id = object.getId();
+        verification.setAfterObject(prettyMapper.writeValueAsString(object));
 
-            if (id != null) {
+        if (id != null) {
 
-//            Corporate originalEntity = entityManager.find(Corporate.class, id);
+            Verification pendingVerification = verificationRepo.findFirstByEntityNameAndEntityIdAndStatus(entityName, id, VerificationStatus.PENDING);
+            if (pendingVerification != null) {
+                logger.info("Found entity with pending verification");
+                throw new InternetBankingException(entityName + " has changes pending for verification. Approve or " +
+                        "decline the changes before making another one.");
 
-                Verification pendingVerification = verificationRepo.findFirstByEntityNameAndEntityIdAndStatus(entityName, id, VerificationStatus.PENDING);
-                if (pendingVerification != null) {
-                    // found pending verification
-                    throw new InternetBankingException("Corporate has pending verification");
-                }
-//            verification.setBeforeObject(prettyMapper.writeValueAsString(originalEntity));
-              verification.setEntityId(requestDTO.getId());
             }
+            verification.setEntityId(id);
+            Object beforeObject = getBeforeObject(operation, object);
+            if (beforeObject != null) {
+                verification.setBeforeObject(prettyMapper.writeValueAsString(beforeObject));
+            }
+
         }
 
-        verification.setAfterObject(prettyMapper.writeValueAsString(object));
+
         verification.setStatus(VerificationStatus.PENDING);
         verificationRepo.save(verification);
         logger.info(entityName + " has been saved for verification");
 
         return description + " has gone for verification";
 
+    }
+
+    private Object getBeforeObject(String operation, AbstractDTO dto) {
+
+        Object beforeObject = null;
+
+        if ("UPDATE_USER_ACCOUNT_PERMISSION".equals(operation)) {
+            CorporateUserDTO corporateUserDTO = (CorporateUserDTO) dto;
+            List<AccountPermissionDTO> accountPermissions = corporateUserService.getAccountPermissions(corporateUserDTO.getId());
+            ModelMapper modelMapper = new ModelMapper();
+            CorporateUserDTO existingUserDTO = modelMapper.map(corporateUserDTO, CorporateUserDTO.class);
+            existingUserDTO.setAccountPermissions(accountPermissions);
+            beforeObject = existingUserDTO;
+        }
+
+        return beforeObject;
     }
 
     private void notifyInitiator(Verification verification) {
@@ -361,7 +378,7 @@ public class VerificationServiceImpl implements VerificationService {
             List<Verification> b = verificationRepo.findVerificationForUser(doneBy.getUserName(), doneBy.getUserType(), permissions);
             return b.size();
         } catch (Exception e) {
-            logger.error("Error retrieving verification", e);
+            logger.error("Error retrieving verification count", e);
         }
         return 0;
     }
@@ -397,7 +414,7 @@ public class VerificationServiceImpl implements VerificationService {
 
 
     @Override
-    public Page<VerificationDTO> getVerifiedOPerations(Pageable pageable) {
+    public Page<VerificationDTO> getVerifiedOperations(Pageable pageable) {
         User verifiedBy = getCurrentUser();
         Page<Verification> page = verificationRepo.findVerifiedOperationsForUser(verifiedBy.getUserName(), verifiedBy.getUserType(), pageable);
         List<VerificationDTO> dtOs = convertEntitiesToDTOs(page.getContent());

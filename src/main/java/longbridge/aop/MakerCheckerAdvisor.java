@@ -81,7 +81,6 @@ public class MakerCheckerAdvisor {
 
     @Around("isSaving() && inServiceLayer() && isInVerifiable2(verifier) && args(entity)")
     public Object proceed1(ProceedingJoinPoint pjp, AbstractEntity entity, Verifiable verifier) throws Throwable {
-        System.out.println("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
         log.debug("Executing Maker Checker for saving entity");
         entityManager.detach(entity);
         log.debug("In operation [ " + verifier.operation() + "] ...{" + verifier.description() + "}");
@@ -158,7 +157,6 @@ public class MakerCheckerAdvisor {
 
         log.info(entityName + " has been saved for verification");
 
-        System.out.println("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
         throw new VerificationInterruptedException(verifier.description() + " has gone for verification");
 
     }
@@ -166,7 +164,6 @@ public class MakerCheckerAdvisor {
 
     @Around("isDeleting() && inServiceLayer() && isInVerifiable2(verifier) && args(entity)")
     public Object proceed2(ProceedingJoinPoint pjp, AbstractEntity entity, Verifiable verifier) throws Throwable {
-        System.out.println("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
         log.debug("Executing Maker Checker for deleting entity");
         entityManager.detach(entity);
         log.debug("In operation [ " + verifier.operation() + "] ...{" + verifier.description() + "}");
@@ -194,7 +191,6 @@ public class MakerCheckerAdvisor {
         ObjectMapper mapper = new ObjectMapper();
         entity.setDelFlag("Y");
         verification.setOriginalObject(mapper.writeValueAsString(entity));
-
 
         ObjectMapper prettyMapper = new ObjectMapper();
 

@@ -88,46 +88,8 @@ public interface CorporateService{
 
     @PreAuthorize("hasAuthority('GET_CORPORATE')")
     Page<CorporateDTO> findCorporates(String pattern, Pageable pageDetails);
-    /**
-     * Sets the limit of transaction amount for the corporate customer
-     *
-     * @param corporate the corporate customer
-     * @param limit        the corporate limit
-     */
-
-
-    @PreAuthorize("hasAuthority('SET_CORPORATE_LIMIT')")
-    void setLimit(Corporate corporate, CorpLimit limit) throws InternetBankingException;
 
     public boolean corporateExists(String customerId);
-
-    /**
-     * Updates the limit of transaction amount for the specified corporate customer
-     *
-     * @param corporate the corporate customer
-     * @param limit        the corporate limit
-     */
-    @PreAuthorize("hasAuthority('UPDATE_CORPORATE_LIMIT')")
-    void updateLimit(Corporate corporate, CorpLimit limit) throws InternetBankingException;
-
-
-    /**
-     * Returns the transaction limit set for the specified customer
-     *
-     * @param corporate the corporate customer
-     * @return the limit set for the corporate customer
-     */
-    @PreAuthorize("hasAuthority('GET_CORPORATE_LIMIT')")
-    List<CorpLimit>  getLimit(Corporate corporate);
-
-    /**
-     * Deletes the transaction limit set for the specified customer
-     *
-     * @param corporateId the corporate customer's id
-     * @param  limit the corporate limit
-     */
-    @PreAuthorize("hasAuthority('DELETE_CORPORATE_LIMIT')")
-    void deleteLimit(Long corporateId, CorpLimit limit) throws InternetBankingException;
 
 
     /**
@@ -251,7 +213,7 @@ public interface CorporateService{
 
     void addAccounts(Corporate corporate);
 
-    void createUserOnEntrustAndSendCredentials(CorporateUser corporateUser);
+    CorporateUser createUserOnEntrustAndSendCredentials(CorporateUser corporateUser);
 
     Page<CorpTransferRuleDTO> getCorporateRules(Long corpId, Pageable pageable);
 

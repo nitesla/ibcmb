@@ -1243,7 +1243,7 @@ public class OpsCorporateController {
             return accountInfos;
         }
         catch (Exception e){
-            throw new AccountFetchException("Error occured fetching accounts",e);
+            throw new AccountFetchException("Error occurred fetching accounts",e);
         }
     }
 

@@ -2,10 +2,7 @@ package longbridge.controllers.operations;
 
 import longbridge.api.AccountInfo;
 import longbridge.api.CustomerDetails;
-import longbridge.dtos.CorporateDTO;
-import longbridge.dtos.CorporateRequestDTO;
-import longbridge.dtos.CorporateUserDTO;
-import longbridge.dtos.RoleDTO;
+import longbridge.dtos.*;
 import longbridge.exception.DuplicateObjectException;
 import longbridge.exception.InternetBankingException;
 import longbridge.exception.InternetBankingSecurityException;
@@ -13,7 +10,6 @@ import longbridge.exception.PasswordException;
 import longbridge.forms.ChangePassword;
 import longbridge.models.CorporateUser;
 import longbridge.models.UserType;
-import longbridge.security.FailedLoginService;
 import longbridge.services.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -57,6 +53,8 @@ public class OpsCorporateUserController {
 
     @Autowired
     private VerificationService verificationService;
+    @Autowired
+    private MakerCheckerService makerCheckerService;
 
 
     @ModelAttribute
@@ -98,9 +96,9 @@ public class OpsCorporateUserController {
             return "/ops/corporate/addUser";
         }
         try {
-                String message = corporateUserService.addUser(corporateUserDTO);
-                redirectAttributes.addFlashAttribute("message", message);
-                return "redirect:/ops/corporates/"+corporateUserDTO.getCorporateId()+"/view";
+            String message = corporateUserService.addUser(corporateUserDTO);
+            redirectAttributes.addFlashAttribute("message", message);
+            return "redirect:/ops/corporates/" + corporateUserDTO.getCorporateId() + "/view";
 
 
         } catch (DuplicateObjectException doe) {
@@ -120,14 +118,12 @@ public class OpsCorporateUserController {
     }
 
 
-
-
     @GetMapping("/{userId}/unlock")
     public String unlockUser(@PathVariable Long userId, RedirectAttributes redirectAttributes, Locale locale) {
 
         String corpId = corporateUserService.getUser(userId).getCorporateId();
 
-        if(verificationService.isPendingVerification(userId, CorporateUser.class.getSimpleName())){
+        if (verificationService.isPendingVerification(userId, CorporateUser.class.getSimpleName())) {
             redirectAttributes.addFlashAttribute("failure", "User has pending changes to be verified");
             return "redirect:/ops/corporates/" + corpId + "/view";
         }
@@ -139,7 +135,6 @@ public class OpsCorporateUserController {
         } catch (InternetBankingException e) {
             logger.error("Error unlocking user", e);
             redirectAttributes.addFlashAttribute("failure", e.getMessage());
-
         }
 
         return "redirect:/ops/corporates/" + corpId + "/view";
@@ -172,6 +167,7 @@ public class OpsCorporateUserController {
 
         return "redirect:/ops/corporates/" + corporateUserDTO.getCorporateId() + "/view";
     }
+
 
     @GetMapping("/{id}/activation")
     public String changeUserActivationStatus(@PathVariable Long id, RedirectAttributes redirectAttributes) {
@@ -206,7 +202,7 @@ public class OpsCorporateUserController {
     public String resetPassword(@PathVariable Long id, RedirectAttributes redirectAttributes) {
         String corpId = corporateUserService.getUser(id).getCorporateId();
 
-        if(verificationService.isPendingVerification(id, CorporateUser.class.getSimpleName())){
+        if (verificationService.isPendingVerification(id, CorporateUser.class.getSimpleName())) {
             redirectAttributes.addFlashAttribute("failure", "User has pending changes to be verified");
             return "redirect:/ops/corporates/" + corpId + "/view";
         }
@@ -229,7 +225,7 @@ public class OpsCorporateUserController {
     public String resetSecurityQuestion(@PathVariable Long id, RedirectAttributes redirectAttributes) {
 
 
-        if(verificationService.isPendingVerification(id, CorporateUser.class.getSimpleName())){
+        if (verificationService.isPendingVerification(id, CorporateUser.class.getSimpleName())) {
             redirectAttributes.addFlashAttribute("failure", "User has pending changes to be verified");
             return "redirect:/ops/retail/users";
 
@@ -238,7 +234,7 @@ public class OpsCorporateUserController {
         try {
             String message = corporateUserService.resetSecurityQuestion(id);
             redirectAttributes.addFlashAttribute("message", message);
-        }  catch (InternetBankingException e) {
+        } catch (InternetBankingException e) {
             redirectAttributes.addFlashAttribute("failure", e.getMessage());
         }
 
@@ -272,15 +268,17 @@ public class OpsCorporateUserController {
         logger.info("PASSWORD CHANGED SUCCESSFULLY");
         return "changePassword";
     }
+
     @GetMapping("new/entity")
     public String newCorporate() {
         return "/ops/corporate/newCorporate";
     }
+
     @GetMapping("corp/new")
-    public Map<String,List<String>> addCorporateEntity(WebRequest webRequest, HttpSession session, Locale locale) {
+    public Map<String, List<String>> addCorporateEntity(WebRequest webRequest, HttpSession session, Locale locale) {
         logger.info("ggg");
-        String custId =  webRequest.getParameter("customerId");
-        Map<String,List<String>> accountDetails = new HashMap<>();
+        String custId = webRequest.getParameter("customerId");
+        Map<String, List<String>> accountDetails = new HashMap<>();
         List<String> accountNum = new ArrayList<>();
         List<String> accountName = new ArrayList<>();
         if (custId == null) {
@@ -304,9 +302,9 @@ public class OpsCorporateUserController {
         session.setAttribute("corporateRequest", corporateRequestDTO);
 
         List<AccountInfo> accountInfos = integrationService.fetchAccounts(custId.toUpperCase());
-        if(accountInfos.size() >0) {
+        if (accountInfos.size() > 0) {
             for (AccountInfo acctInfo : accountInfos) {
-                logger.info("the acount number {}",acctInfo.getAccountNumber());
+                logger.info("the acount number {}", acctInfo.getAccountNumber());
                 accountNum.add(acctInfo.getAccountNumber());
                 accountName.add(acctInfo.getAccountName());
             }
@@ -319,4 +317,62 @@ public class OpsCorporateUserController {
         return accountDetails;
 
     }
+
+    @GetMapping("/{userId}/accountpermission")
+    public String getAccountPermissions(@PathVariable Long userId, Model model) {
+
+        List<AccountPermissionDTO> accountPermissions = corporateUserService.getAccountPermissions(userId);
+        CorporateUserDTO user = corporateUserService.getUser(userId);
+        model.addAttribute("corporateUser", user);
+        model.addAttribute("accountPermissions", accountPermissions);
+
+
+        return "ops/corporate/accountpermission";
+    }
+
+    @PostMapping("/accountpermission")
+    public String UpdateAccountPermissions(@ModelAttribute("corporateUser") CorporateUserDTO corporateUserDTO, WebRequest request, RedirectAttributes redirectAttributes) {
+
+        boolean permissionChanged = false;
+
+        List<AccountPermissionDTO> existingPermissions = corporateUserService.getAccountPermissions(corporateUserDTO.getId());
+
+        for (AccountPermissionDTO accountPermission : existingPermissions) {
+
+            AccountPermissionDTO.Permission currentPermission = AccountPermissionDTO.Permission.valueOf(request.getParameter(accountPermission.getAccountNumber()));
+
+            if (currentPermission != accountPermission.getPermission()) {
+                permissionChanged = true;
+                accountPermission.setPermission(currentPermission);
+            }
+        }
+        corporateUserDTO.setAccountPermissions(existingPermissions);
+        if (permissionChanged) {
+            try {
+
+                if (makerCheckerService.isEnabled("UPDATE_USER_ACCOUNT_PERMISSION")) {
+                    String message = verificationService.add(corporateUserDTO, "UPDATE_USER_ACCOUNT_PERMISSION", "Update corporate user account permission");
+                    redirectAttributes.addFlashAttribute("message", message);
+                } else {
+                    String message = corporateUserService.updateAccountPermissions(corporateUserDTO);
+                    redirectAttributes.addFlashAttribute("message", message);
+                }
+
+            } catch (InternetBankingException ibe) {
+                logger.error("Failed to update corporate user account permissions", ibe);
+                redirectAttributes.addFlashAttribute("failure", ibe.getMessage());
+                return "redirect:/ops/corporates/users/" + corporateUserDTO.getId() + "/accountpermission";
+
+            } catch (Exception e) {
+                logger.error("Failed to update corporate user account permissions", e);
+                redirectAttributes.addFlashAttribute("failure", "Error occured updating account permissions");
+                return "redirect:/ops/corporates/users/" + corporateUserDTO.getId() + "/accountpermission";
+
+            }
+        }
+
+        return "redirect:/ops/corporates/" + corporateUserDTO.getCorporateId() + "/view";
+    }
+
+
 }

@@ -38,7 +38,6 @@ import java.util.*;
 public class CorporateServiceImpl implements CorporateService {
 
     private CorporateRepo corporateRepo;
-    private CorpLimitRepo corpLimitRepo;
     private CorpTransferRuleRepo corpTransferRuleRepo;
     @Autowired
     private CorporateUserRepo corporateUserRepo;
@@ -84,6 +83,9 @@ public class CorporateServiceImpl implements CorporateService {
     @Autowired
     private EntityManager entityManager;
 
+    @Autowired
+    private CorporateUserService corporateUserService;
+
     @Value("${host.url}")
     private String hostUrl;
 
@@ -91,9 +93,8 @@ public class CorporateServiceImpl implements CorporateService {
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
 
-    public CorporateServiceImpl(CorporateRepo corporateRepo, CorpLimitRepo corpLimitRepo, CorpTransferRuleRepo corpTransferRuleRepo) {
+    public CorporateServiceImpl(CorporateRepo corporateRepo, CorpTransferRuleRepo corpTransferRuleRepo) {
         this.corporateRepo = corporateRepo;
-        this.corpLimitRepo = corpLimitRepo;
         this.corpTransferRuleRepo = corpTransferRuleRepo;
     }
 
@@ -192,7 +193,9 @@ public class CorporateServiceImpl implements CorporateService {
             corporateUser.setCorpUserType(getUserType(user.getUserType()));
             corporateUser.setAdmin(CorpUserType.ADMIN.equals(corporateUser.getCorpUserType()));
             corporateUser.setCorporate(newCorporate);
-            createUserOnEntrustAndSendCredentials(corporateUser);
+            CorporateUser newUser = createUserOnEntrustAndSendCredentials(corporateUser);
+            user.setId(newUser.getId());
+            corporateUserService.updateAccountRestrictionsBasedOnPermissions(user);
             if ("AUTHORIZER".equals(user.getUserType())) {
                 authorizers.add(user);
             }
@@ -251,33 +254,6 @@ public class CorporateServiceImpl implements CorporateService {
 
     }
 
-    @Override
-    @Verifiable(operation = "ADD_CORPORATE_ACCOUNT", description = "Adding Corporate Accounts")
-    public String addCorporateAccounts(CorporateRequestDTO requestDTO){
-
-        try {
-            addAccounts(requestDTO);
-            return messageSource.getMessage("corporate.account.add.success",null,locale);
-        }
-        catch (Exception e){
-            throw new InternetBankingException(messageSource.getMessage("corporate.account.add.failure",null,locale));
-        }
-    }
-
-    @Override
-    @Transactional
-    public void addAccounts(CorporateRequestDTO requestDTO){
-        Corporate corporate = corporateRepo.findOne(requestDTO.getId());
-        List<Account> newAccounts = accountService.addAccounts(requestDTO.getAccounts());
-        List<Account> existingAccounts = corporate.getAccounts();
-        existingAccounts.addAll(newAccounts);
-
-        corporate.getCifids().add(corporate.getCustomerId());
-        corporate.getCifids().addAll(requestDTO.getCifids());
-
-
-        corporateRepo.save(corporate);
-    }
 
     private void validateCorporate(CorporateRequestDTO corporateRequestDTO) throws InternetBankingException {
 
@@ -347,20 +323,11 @@ public class CorporateServiceImpl implements CorporateService {
         return role;
     }
 
-    public void addAccounts(Corporate corporate) {
-        String customerId = corporate.getCustomerId();
-        Corporate corp = corporateRepo.findFirstByCustomerId(customerId);
-        if (corp != null) {
-            Collection<AccountInfo> accounts = integrationService.fetchAccounts(customerId);
-            for (AccountInfo acct : accounts) {
-                accountService.AddFIAccount(customerId, acct);
-            }
-        }
-    }
-
 
     @Transactional
-    public void createUserOnEntrustAndSendCredentials(CorporateUser user) throws EntrustException {
+    public CorporateUser createUserOnEntrustAndSendCredentials(CorporateUser user) throws EntrustException {
+
+        CorporateUser corporateUser = null;
 
         logger.debug("Creating user {} on Entrust platform", user.getUserName());
 
@@ -390,9 +357,52 @@ public class CorporateServiceImpl implements CorporateService {
             String password = passwordPolicyService.generatePassword();
             user.setPassword(passwordEncoder.encode(password));
             user.setExpiryDate(new Date());
-            corporateUserRepo.save(user);
+            corporateUser = corporateUserRepo.save(user);
             sendUserCredentials(user, password);
 
+        }
+        return corporateUser;
+    }
+
+
+
+
+    @Override
+    @Verifiable(operation = "ADD_CORPORATE_ACCOUNT", description = "Adding Corporate Accounts")
+    public String addCorporateAccounts(CorporateRequestDTO requestDTO) {
+
+        try {
+            addAccounts(requestDTO);
+            return messageSource.getMessage("corporate.account.add.success", null, locale);
+        } catch (Exception e) {
+            throw new InternetBankingException(messageSource.getMessage("corporate.account.add.failure", null, locale));
+        }
+    }
+
+    @Override
+    @Transactional
+    public void addAccounts(CorporateRequestDTO requestDTO) {
+        Corporate corporate = corporateRepo.findOne(requestDTO.getId());
+        List<Account> newAccounts = accountService.addAccounts(requestDTO.getAccounts());
+        List<Account> existingAccounts = corporate.getAccounts();
+        existingAccounts.addAll(newAccounts);
+
+        corporate.getCifids().add(corporate.getCustomerId());
+        corporate.getCifids().addAll(requestDTO.getCifids());
+
+
+        corporateRepo.save(corporate);
+    }
+
+
+    public void addAccounts(Corporate corporate) {
+        String customerId = corporate.getCustomerId();
+        Corporate corp = corporateRepo.findFirstByCustomerId(customerId);
+        if (corp != null) {
+            Collection<AccountInfo> accounts = integrationService.fetchAccounts(customerId);
+            for (AccountInfo acct : accounts) {
+                accountService.AddFIAccount(customerId, acct);
+            }
         }
     }
 
@@ -526,28 +536,6 @@ public class CorporateServiceImpl implements CorporateService {
         return (corporate != null) ? true : false;
     }
 
-    @Override
-    public void setLimit(Corporate corporate, CorpLimit limit) throws InternetBankingException {
-        limit.setCorporate(corporate);
-        corpLimitRepo.save(limit);
-    }
-
-    @Override
-    public void updateLimit(Corporate corporate, CorpLimit limit) throws InternetBankingException {
-        limit.setCorporate(corporate);
-        corpLimitRepo.save(limit);
-    }
-
-    @Override
-    public List<CorpLimit> getLimit(Corporate corporate) {
-        return corpLimitRepo.findByCorporate(corporate);
-    }
-
-    @Override
-    public void deleteLimit(Long corporateId, CorpLimit limit) {
-        limit.setDelFlag("Y");
-        corpLimitRepo.save(limit);
-    }
 
     @Override
     public Page<CorporateDTO> getCorporates(Pageable pageDetails) {
@@ -652,24 +640,23 @@ public class CorporateServiceImpl implements CorporateService {
     }
 
     @Override
-    @Verifiable(operation = "DELETE_CORPORATE_ACCOUNT",description = "Delete Corporate Account")
+    @Verifiable(operation = "DELETE_CORPORATE_ACCOUNT", description = "Delete Corporate Account")
     public String deleteCorporateAccount(CorporateRequestDTO requestDTO) {
 
-      try {
-          deleteAccount(requestDTO);
-          return messageSource.getMessage("corporate.account.delete.success", null, locale);
+        try {
+            deleteAccount(requestDTO);
+            return messageSource.getMessage("corporate.account.delete.success", null, locale);
 
-      }
-        catch (Exception e){
-          throw new InternetBankingException(messageSource.getMessage("corporate.account.delete.failure", null, locale));
+        } catch (Exception e) {
+            throw new InternetBankingException(messageSource.getMessage("corporate.account.delete.failure", null, locale));
         }
     }
 
-    public void deleteAccount(CorporateRequestDTO requestDTO){
+    public void deleteAccount(CorporateRequestDTO requestDTO) {
 
         Corporate corporate = corporateRepo.findOne(requestDTO.getId());
         List<Account> existingAccounts = corporate.getAccounts();
-        for(AccountDTO accountDTO: requestDTO.getAccounts()){
+        for (AccountDTO accountDTO : requestDTO.getAccounts()) {
             Account account = accountRepo.findOne(accountDTO.getId());
             existingAccounts.remove(account);
             accountRepo.delete(account);
@@ -727,7 +714,6 @@ public class CorporateServiceImpl implements CorporateService {
         }
 
 
-
         CorporateRole corporateRole = corporateRoleRepo.findFirstByNameAndRankAndCorporate_Id(roleDTO.getName(), roleDTO.getRank(), Long.parseLong(roleDTO.getCorporateId()));
 
         if (corporateRole != null) {
@@ -783,7 +769,6 @@ public class CorporateServiceImpl implements CorporateService {
             role.setRank(roleDTO.getRank());
 
 
-
             Set<CorporateUser> updatedUsers = new HashSet<>();
 
             for (CorporateUserDTO user : roleDTO.getUsers()) {
@@ -803,7 +788,7 @@ public class CorporateServiceImpl implements CorporateService {
         } catch (InternetBankingException e) {
             throw e;
         } catch (Exception e) {
-            throw new InternetBankingException(messageSource.getMessage("role.update.failure", null, locale),e);
+            throw new InternetBankingException(messageSource.getMessage("role.update.failure", null, locale), e);
 
         }
     }
@@ -816,26 +801,26 @@ public class CorporateServiceImpl implements CorporateService {
             Set<CorporateUser> originalUsers = new HashSet<>();
             originalRole.getUsers().forEach(user -> originalUsers.add(user));
             corporateRoleRepo.save(updatedRole);
-            updateUsersWithoutAuthorizerRoleToInitiators(originalUsers,updatedRole.getUsers());
-   } catch (Exception e) {
-            throw new InternetBankingException(messageSource.getMessage("role.update.failure", null, locale),e);
+            updateUsersWithoutAuthorizerRoleToInitiators(originalUsers, updatedRole.getUsers());
+        } catch (Exception e) {
+            throw new InternetBankingException(messageSource.getMessage("role.update.failure", null, locale), e);
         }
     }
 
 
     @Override
     @Transactional
-    public void updateUsersWithoutAuthorizerRoleToInitiators(Set<CorporateUser> originalUsers, Set<CorporateUser> updatedUsers){
+    public void updateUsersWithoutAuthorizerRoleToInitiators(Set<CorporateUser> originalUsers, Set<CorporateUser> updatedUsers) {
 
-        Set<CorporateUser> initiators =  new HashSet<>();
+        Set<CorporateUser> initiators = new HashSet<>();
 
-        for(CorporateUser corporateUser: originalUsers){
-            if(!updatedUsers.contains(corporateUser)){
+        for (CorporateUser corporateUser : originalUsers) {
+            if (!updatedUsers.contains(corporateUser)) {
                 initiators.add(corporateUser);
             }
         }
 
-        for(CorporateUser user: initiators){
+        for (CorporateUser user : initiators) {
             user.setCorpUserType(CorpUserType.INITIATOR);
             corporateUserRepo.save(user);
         }
@@ -1085,11 +1070,11 @@ public class CorporateServiceImpl implements CorporateService {
     }
 
     @Override
-    public boolean isTransactionPending(Long corpId, String accountNumber){
+    public boolean isTransactionPending(Long corpId, String accountNumber) {
 
-    boolean transferPending = corpTransferRequestRepo.existsByCorporate_IdAndCustomerAccountNumberAndStatus(corpId,accountNumber, StatusCode.PENDING.toString());
+        boolean transferPending = corpTransferRequestRepo.existsByCorporate_IdAndCustomerAccountNumberAndStatus(corpId, accountNumber, StatusCode.PENDING.toString());
 
-    boolean bulkTransferPending = bulkTransferRepo.existsByCorporate_IdAndCustomerAccountNumberAndStatus(corpId,accountNumber, StatusCode.PENDING.toString());
+        boolean bulkTransferPending = bulkTransferRepo.existsByCorporate_IdAndCustomerAccountNumberAndStatus(corpId, accountNumber, StatusCode.PENDING.toString());
 
         return transferPending || bulkTransferPending;
     }

@@ -1,5 +1,6 @@
 package longbridge.services;
 
+import longbridge.dtos.AccountPermissionDTO;
 import longbridge.dtos.CorpCorporateUserDTO;
 import longbridge.dtos.CorporateUserDTO;
 import longbridge.exception.InternetBankingException;
@@ -165,6 +166,14 @@ public interface CorporateUserService{
     String resetSecurityQuestion(Long id);
 
     void setSecurityQuestion(Long id);
+
+    //    @Verifiable(operation = "UPDATE_USER_ACCOUNT_PERMISSION", description = "Update corporate user account permission")
+    String updateAccountPermissions(CorporateUserDTO corporateUserDTO);
+
+    String updateAccountRestrictionsBasedOnPermissions(CorporateUserDTO userDTO);
+
+    List<AccountPermissionDTO> getAccountPermissions(Long userId);
+
 
 //    String addUserFromCorporateAdmin(CorporateUserDTO user) throws InternetBankingException;
 //

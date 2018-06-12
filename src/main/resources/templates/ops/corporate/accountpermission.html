@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="layout :: site-head">
+</head>
+
+<body class="nav-md">
+<div class="container body">
+    <div class="main_container">
+        <div class="col-md-3 left_col">
+            <div class="left_col scroll-view">
+
+                <div th:replace="layout :: ops-menu"></div>
+                <div th:replace="layout :: menu-footer-ops"></div>
+
+            </div>
+        </div>
+        <div th:replace="layout :: ops-top-nav"></div>
+
+        <!-- page content -->
+        <div class="right_col" role="main">
+            <div class="">
+                <div class="page-title">
+                    <div class="title_left">
+                        <h3 th:text="${corporateUser.corporateName}"></h3>
+                    </div>
+
+                </div>
+
+                <div class="clearfix"></div>
+
+                <div class="row">
+                    <div class="col-md-12 col-sm-12 col-xs-12">
+                        <div class="x_panel">
+                            <div class="x_title">
+                                <h2>Account Permissions <span
+                                        th:text="${'('+corporateUser.firstName+' '+corporateUser.lastName+')'}"></span>
+                                </h2>
+
+                                <div class="clearfix"></div>
+                            </div>
+                            <div class="x_content">
+                                <div class="ibox-content">
+                                    <form method="post" class="form-horizontal"
+                                          th:action="@{/ops/corporates/users/accountpermission}"
+                                          th:object="${corporateUser}">
+
+
+                                        <div th:replace="layout::form-validation"></div>
+
+                                        <input type="hidden" th:field="*{id}"/>
+                                        <input type="hidden" th:field="*{corporateId}"/>
+                                        <input type="hidden" th:field="*{corporateName}"/>
+                                        <input type="hidden" th:field="*{corporateType}"/>
+                                        <input type="hidden" th:field="*{userName}"/>
+                                        <input type="hidden" th:field="*{firstName}"/>
+                                        <input type="hidden" th:field="*{lastName}"/>
+                                        <input type="hidden" th:field="*{email}"/>
+                                        <input type="hidden" th:field="*{phoneNumber}"/>
+                                        <input type="hidden" th:field="*{roleId}"/>
+
+                                        <div class="ibox-content">
+
+                                            <table class="table table-striped table-bordered table-hover corporate"
+                                                   id="corporate">
+                                                <thead>
+                                                <tr>
+                                                    <td>CIFID</td>
+                                                    <td>Account Number</td>
+                                                    <th style="text-align: center">VIEW ONLY</th>
+                                                    <th style="text-align: center">VIEW & TRANSACT</th>
+                                                    <th style="text-align: center">NONE</th>
+
+                                                </tr>
+                                                <tr th:each="account: ${accountPermissions}">
+                                                    <td th:text="${account.customerId}"></td>
+                                                    <td th:text="${account.accountNumber}"></td>
+                                                    <td style="text-align: center;"><input
+                                                            style="background-color: #00C851;" type="radio"
+                                                            th:name="${account.accountNumber}" value="VIEW_ONLY"
+                                                            th:checked="${account.permission==T(longbridge.dtos.AccountPermissionDTO.Permission).VIEW_ONLY}"/>
+                                                    </td>
+                                                    <td style="text-align: center;"><input
+                                                            style="background-color: #00C851;" type="radio"
+                                                            th:name="${account.accountNumber}" value="VIEW_AND_TRANSACT"
+                                                            th:checked="${account.permission==T(longbridge.dtos.AccountPermissionDTO.Permission).VIEW_AND_TRANSACT}"/>
+                                                    </td>
+                                                    <td style="text-align: center;"><input
+                                                            style="background-color: #00C851;" type="radio"
+                                                            th:name="${account.accountNumber}" value="NONE"
+                                                            th:checked="${account.permission==T(longbridge.dtos.AccountPermissionDTO.Permission).NONE}"/>
+                                                    </td>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+
+
+                                                </tbody>
+                                            </table>
+
+
+                                        </div>
+
+
+                                        <div class="col-sm-4">
+                                            <button class="btn btn-white" type="reset" id="cancel">Cancel</button>
+                                            <button class="btn btn-primary" type="submit">Save</button>
+                                        </div>
+
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- /page content -->
+
+        <!-- footer content -->
+        <footer th:replace="layout :: footer">
+        </footer>
+        <!-- /footer content -->
+    </div>
+</div>
+<script th:inline="javascript">
+    /*<![CDATA[*/
+
+    var corpId = [[${corporateUser.corporateId}]];
+    document.getElementById("cancel").onclick = function () {
+        location.href = "/ops/corporates/" + corpId + "/view";
+    }
+    /*]]>*/
+
+    $("#admin").change(function () {
+        if ($(this).is(":checked")) {
+            $("#userTypeChange").show();
+        }
+        else {
+            $("#userTypeChange").hide();
+        }
+    })
+
+</script>
+</body>
+</html>

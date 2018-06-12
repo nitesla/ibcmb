@@ -1,7 +1,6 @@
 package longbridge.dtos;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonSerializer;
@@ -18,10 +17,8 @@ import java.util.Set;
 /**
  * Created by Fortune on 7/20/2017.
  */
-public class CorporateRequestDTO implements PrettySerializer {
+public class CorporateRequestDTO extends AbstractDTO implements PrettySerializer {
 
-    @JsonProperty("DT_RowId")
-    private Long id;
     private int version;
     private String corporateType;
     @NotEmpty(message = "corporateName")
@@ -45,14 +42,6 @@ public class CorporateRequestDTO implements PrettySerializer {
     private List<AccountDTO> accounts = new ArrayList<>();
     private Set<String> cifids = new HashSet<>();
 
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     public int getVersion() {
         return version;
@@ -202,7 +191,7 @@ public class CorporateRequestDTO implements PrettySerializer {
     @Override
     public String toString() {
         return "CorporateRequestDTO{" +
-                "id=" + id +
+                "id=" + super.getId() +
                 ", version=" + version +
                 ", corporateType='" + corporateType + '\'' +
                 ", corporateName='" + corporateName + '\'' +
@@ -234,7 +223,7 @@ public class CorporateRequestDTO implements PrettySerializer {
                 gen.writeStartObject();
                 gen.writeStringField("Name", value.corporateName);
                 gen.writeStringField("Type", value.corporateType);
-                gen.writeStringField("CIF IDs", value.cifids.toString());
+                gen.writeStringField("CIFID(s)", value.cifids.toString());
                 gen.writeStringField("Corporate ID", value.corporateId);
                 gen.writeStringField("RC Number", value.rcNumber);
 
@@ -254,7 +243,6 @@ public class CorporateRequestDTO implements PrettySerializer {
                 for (CorporateUserDTO user : value.corporateUsers) {
 
                     gen.writeObjectFieldStart((++count).toString());
-                    //gen.writeStartObject();
                     gen.writeStringField("Username", user.getUserName());
                     gen.writeStringField("First Name", user.getFirstName());
                     gen.writeStringField("Last Name", user.getLastName());
@@ -270,6 +258,21 @@ public class CorporateRequestDTO implements PrettySerializer {
 
                         gen.writeStringField("Role", user.getRole());
                     }
+
+                    if(!user.getAccountPermissions().isEmpty()) {
+                        gen.writeObjectFieldStart("Account Permissions");
+
+                        count = 0;
+                        for (AccountPermissionDTO permission : user.getAccountPermissions()) {
+                            gen.writeObjectFieldStart((++count).toString());
+
+                            gen.writeStringField("Account Number", permission.getAccountNumber() + "|" + permission.getPermission());
+
+                            gen.writeEndObject();
+                        }
+                        gen.writeEndObject();
+                    }
+
                     gen.writeEndObject();
                 }
                 gen.writeEndObject();

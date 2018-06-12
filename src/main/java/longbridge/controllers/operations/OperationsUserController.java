@@ -13,7 +13,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -21,6 +20,7 @@ import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
@@ -33,12 +33,10 @@ import java.util.Locale;
  */
 
 @Controller
+@RequestMapping("/ops")
 public class OperationsUserController {
     @Autowired
-    OperationsUserService operationsUserService;
-
-    @Autowired
-    private BCryptPasswordEncoder passwordEncoder;
+    private OperationsUserService operationsUserService;
 
     @Autowired
     private PasswordPolicyService passwordPolicyService;
@@ -51,18 +49,18 @@ public class OperationsUserController {
     @Autowired
     private ConfigurationService configService;
 
-    private Logger logger= LoggerFactory.getLogger(this.getClass());
+    private final Logger logger= LoggerFactory.getLogger(this.getClass());
 
 
 
-    @GetMapping("/ops/token")
+    @GetMapping("/token")
     public String getOpsToken(HttpServletRequest httpServletRequest){
         httpServletRequest.getSession().setAttribute("2FA","2FA");
 
         return "/ops/token";
     }
 
-    @PostMapping("/ops/token")
+    @PostMapping("/token")
     public String performTokenAuthentication(HttpServletRequest request, Principal principal, RedirectAttributes redirectAttributes, Locale locale){
 
         String username = principal.getName();
@@ -102,13 +100,13 @@ public class OperationsUserController {
         model.addAttribute("passwordRules", passwordPolicyService.getPasswordRules());
     }
 
-    @GetMapping("ops/users/password")
+    @GetMapping("/users/password")
     public String changePassword(Model model){
         model.addAttribute("changePassword",new ChangePassword());
         return "/ops/pword";
     }
 
-    @PostMapping("ops/users/password")
+    @PostMapping("/users/password")
     public String changePassword(@ModelAttribute("changePassword") @Valid ChangePassword changePassword, BindingResult result, Principal principal, RedirectAttributes redirectAttributes,Locale locale){
         if (result.hasErrors()) {
             result.addError(new ObjectError("invalid", messageSource.getMessage("form.fields.required",null,locale)));
@@ -140,7 +138,7 @@ public class OperationsUserController {
 
     }
 
-    @GetMapping("ops/users/password/new")
+    @GetMapping("/users/password/new")
     public String changeDefaultPassword(Model model) {
         ChangeDefaultPassword changePassword = new ChangeDefaultPassword();
         model.addAttribute("changePassword", changePassword);
@@ -149,7 +147,7 @@ public class OperationsUserController {
     }
 
 
-    @PostMapping("/ops/users/password/new")
+    @PostMapping("/users/password/new")
     public String changeDefaultPassword(@ModelAttribute("changePassword") @Valid ChangeDefaultPassword changePassword, BindingResult result, Principal principal, RedirectAttributes redirectAttributes,Locale locale,HttpServletRequest httpServletRequest) {
 
         if (result.hasErrors()) {

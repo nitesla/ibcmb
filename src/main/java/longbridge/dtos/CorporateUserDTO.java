@@ -1,7 +1,6 @@
 package longbridge.dtos;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonSerializer;
@@ -12,6 +11,7 @@ import longbridge.utils.PrettySerializer;
 import org.hibernate.validator.constraints.NotEmpty;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -19,10 +19,9 @@ import java.util.List;
  * Created by Fortune on 4/5/2017.
  */
 
-public class CorporateUserDTO  implements PrettySerializer{
+public class CorporateUserDTO extends AbstractDTO  implements PrettySerializer{
 
-    @JsonProperty("DT_RowId")
-    private Long id;
+
     private int version;
     private String corporateId;
     private String corporateType;
@@ -63,12 +62,8 @@ public class CorporateUserDTO  implements PrettySerializer{
     private String phishingSec;
     private String captionSec;
     private String isFirstTimeLogon;
+    private List<AccountPermissionDTO> accountPermissions =  new ArrayList<>();
 
-    public Long getId() {return id;}
-
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     public int getVersion() {
         return version;
@@ -353,6 +348,14 @@ public class CorporateUserDTO  implements PrettySerializer{
         this.userType = userType;
     }
 
+    public List<AccountPermissionDTO> getAccountPermissions() {
+        return accountPermissions;
+    }
+
+    public void setAccountPermissions(List<AccountPermissionDTO> accountPermissions) {
+        this.accountPermissions = accountPermissions;
+    }
+
     @Override
     @JsonIgnore
     public JsonSerializer<CorporateUserDTO> getSerializer() {
@@ -369,21 +372,43 @@ public class CorporateUserDTO  implements PrettySerializer{
                 gen.writeStringField("Email", value.email);
                 gen.writeStringField("Phone", value.phoneNumber);
                 String status =null;
-                if ("A".equals(value.status))
+                if ("A".equals(value.status)) {
                     status = "Active";
-                else if ("I".equals(value.status))
+                }
+                else if ("I".equals(value.status)) {
                     status = "Inactive";
-                else if ("L".equals(value.status))
+                }
+                else if ("L".equals(value.status)) {
                     status = "Locked";
-                gen.writeStringField("Status", status);
-                gen.writeStringField("Role", value.role);
-                gen.writeStringField("User Type", value.corpUserType.name());
+                }
+                if(status!=null) {
+                    gen.writeStringField("Status", status);
+                }
+                if(value.role!=null) {
+                    gen.writeStringField("Role", value.role);
+                }
+                if(value.corpUserType!=null) {
+                    gen.writeStringField("User Type", value.corpUserType.name());
+                }
                 if (CorpUserType.AUTHORIZER.equals(value.corpUserType)) {
                     gen.writeStringField("Authorizer Level", value.corporateRole);
                 }
-//				if("MULTI".equals(corporate.getCorporateType())) {
-//					gen.writeBooleanField("Is Admin", value.admin);
-//				}
+				if(!accountPermissions.isEmpty()) {
+                    gen.writeObjectFieldStart("Account Permissions");
+
+                    Integer count = 0;
+                    for(AccountPermissionDTO accountPermission: accountPermissions){
+                        gen.writeObjectFieldStart((++count).toString());
+
+                            gen.writeStringField("Account Number", accountPermission.getAccountNumber()+" | "+accountPermission.getPermission());
+
+                            gen.writeEndObject();
+                        }
+
+                    }
+
+					gen.writeEndObject();
+
                 gen.writeEndObject();
             }
         };
@@ -392,7 +417,7 @@ public class CorporateUserDTO  implements PrettySerializer{
     @Override
     public String toString() {
         return "CorporateUserDTO{" +
-                "id=" + id +
+                "id=" + super.getId()+
                 ", version=" + version +
                 ", corporateId='" + corporateId + '\'' +
                 ", corporateType='" + corporateType + '\'' +
@@ -436,7 +461,7 @@ public class CorporateUserDTO  implements PrettySerializer{
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((id == null) ? 0 : id.hashCode());
+		result = prime * result + ((super.getId() == null) ? 0 : super.getId().hashCode());
 		return result;
 	}
 
@@ -449,10 +474,10 @@ public class CorporateUserDTO  implements PrettySerializer{
 		if (getClass() != obj.getClass())
 			return false;
 		CorporateUserDTO other = (CorporateUserDTO) obj;
-		if (id == null) {
-			if (other.id != null)
+		if (super.getId() == null) {
+			if (other.getId() != null)
 				return false;
-		} else if (!id.equals(other.id))
+		} else if (!super.getId().equals(other.getId()))
 			return false;
 		return true;
 	}

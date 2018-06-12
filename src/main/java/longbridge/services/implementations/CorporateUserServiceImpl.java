@@ -1,18 +1,13 @@
 
 package longbridge.services.implementations;
 
-import longbridge.dtos.CorpCorporateUserDTO;
-import longbridge.dtos.CorporateUserDTO;
-import longbridge.dtos.SettingDTO;
+import longbridge.dtos.*;
 import longbridge.exception.*;
 import longbridge.forms.AlertPref;
 import longbridge.forms.CustChangePassword;
 import longbridge.forms.CustResetPassword;
 import longbridge.models.*;
-import longbridge.repositories.CorporateRepo;
-import longbridge.repositories.CorporateRoleRepo;
-import longbridge.repositories.CorporateUserRepo;
-import longbridge.repositories.RoleRepo;
+import longbridge.repositories.*;
 import longbridge.security.FailedLoginService;
 import longbridge.services.*;
 import longbridge.utils.DateFormatter;
@@ -39,6 +34,11 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+
+import static longbridge.dtos.AccountPermissionDTO.Permission.VIEW_ONLY;
+import static longbridge.models.UserAccountRestriction.RestrictionType.NONE;
+import static longbridge.models.UserAccountRestriction.RestrictionType.TRANSACTION;
+import static longbridge.models.UserAccountRestriction.RestrictionType.VIEW;
 
 /**
  * Created by Fortune on 4/4/2017.
@@ -88,7 +88,10 @@ public class CorporateUserServiceImpl implements CorporateUserService {
     private String hostUrl;
 
 
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
+    @Autowired
+    private UserAccountRestrictionRepo userAccountRestrictionRepo;
 
     @Autowired
     public CorporateUserServiceImpl(CorporateUserRepo corporateUserRepo, BCryptPasswordEncoder passwordEncoder, SecurityService securityService) {
@@ -169,8 +172,7 @@ public class CorporateUserServiceImpl implements CorporateUserService {
             if (user.isAdmin()) {
                 corporateUser.setCorpUserType(CorpUserType.ADMIN);
 
-            }
-            else if(!CorpUserType.AUTHORIZER.equals(corporateUser.getCorpUserType())){
+            } else if (!CorpUserType.AUTHORIZER.equals(corporateUser.getCorpUserType())) {
                 corporateUser.setCorpUserType(CorpUserType.INITIATOR);
             }
 
@@ -515,9 +517,8 @@ public class CorporateUserServiceImpl implements CorporateUserService {
                     .setTemplate("mail/corppasswordreset")
                     .build();
             mailService.sendMail(email, context);
-        }
-        catch (Exception e){
-            logger.error("Error occurred sending reset credentials",e);
+        } catch (Exception e) {
+            logger.error("Error occurred sending reset credentials", e);
         }
     }
 
@@ -587,7 +588,7 @@ public class CorporateUserServiceImpl implements CorporateUserService {
             sendPasswordResetMessage(user);
             logger.info("Corporate user {} password reset successfully", user.getUserName());
             return messageSource.getMessage("password.reset.success", null, locale);
-        }  catch (Exception e) {
+        } catch (Exception e) {
             throw new PasswordException(messageSource.getMessage("password.reset.failure", null, locale), e);
         }
     }
@@ -1033,7 +1034,7 @@ public class CorporateUserServiceImpl implements CorporateUserService {
             corporateUserRepo.save(user);
             logger.info("Retail user {} Security question reset successfully", user.getUserName());
             return messageSource.getMessage("securityquestion.reset.success", null, locale);
-        }  catch (Exception e) {
+        } catch (Exception e) {
             throw new InternetBankingException(messageSource.getMessage("securityquestion.reset.failure", null, locale), e);
         }
     }
@@ -1046,8 +1047,138 @@ public class CorporateUserServiceImpl implements CorporateUserService {
             user.setResetSecurityQuestion("N");
             corporateUserRepo.save(user);
             logger.info("Retail user {} Security question set successfully", user.getUserName());
-        }  catch (Exception e) {
+        } catch (Exception e) {
             throw new InternetBankingException(messageSource.getMessage("securityquestion.reset.failure", null, locale), e);
         }
     }
+
+
+    @Override
+    @Verifiable(operation = "UPDATE_USER_ACCOUNT_PERMISSION", description = "Update corporate user account permission")
+    public String updateAccountPermissions(CorporateUserDTO corporateUserDTO) {
+
+        try {
+            String message = updateAccountRestrictionsBasedOnPermissions(corporateUserDTO);
+            return message;
+        } catch (InternetBankingException ibe) {
+            throw ibe;
+        }
+    }
+
+    @Override
+    public String updateAccountRestrictionsBasedOnPermissions(CorporateUserDTO userDTO) {
+
+        try {
+            List<UserAccountRestriction> accountRestrictions = new ArrayList<>();
+            CorporateUser user = corporateUserRepo.findOne(userDTO.getId());
+            List<Account> accounts = user.getCorporate().getAccounts();
+            for (Account account : accounts) {
+                AccountPermissionDTO accountPermission = getAccountPermission(account, userDTO.getAccountPermissions());
+
+                UserAccountRestriction accountRestriction = userAccountRestrictionRepo.findByCorporateUserIdAndAccountId(user.getId(), account.getId());
+
+                switch (accountPermission.getPermission()) {
+                    case VIEW_ONLY:
+                        if (accountRestriction != null) {
+                            accountRestriction.setRestrictionType(TRANSACTION);
+
+                        } else {
+                            accountRestriction = new UserAccountRestriction(user.getId(), account.getId(), TRANSACTION);
+                            accountRestrictions.add(accountRestriction);
+                        }
+                        break;
+                    case VIEW_AND_TRANSACT:
+                        if (accountRestriction != null) {
+                            accountRestriction.setRestrictionType(NONE);
+
+                        } else {
+                            accountRestriction = new UserAccountRestriction(user.getId(), account.getId(), NONE);
+                            accountRestrictions.add(accountRestriction);
+                        }
+                        break;
+                    case NONE:
+                        if (accountRestriction != null) {
+                            accountRestriction.setRestrictionType(VIEW);
+                        } else {
+                            accountRestriction = new UserAccountRestriction(user.getId(), account.getId(), VIEW);
+                            accountRestrictions.add(accountRestriction);
+                        }
+                        break;
+
+                    default:
+                        break;
+                }
+                userAccountRestrictionRepo.save(accountRestriction);
+            }
+            userAccountRestrictionRepo.save(accountRestrictions);
+            return "Account permissions updated successfully";
+        } catch (Exception e) {
+            throw new InternetBankingException("Failed to update account permissions", e);
+        }
+    }
+
+    private AccountPermissionDTO getAccountPermission(Account account, List<AccountPermissionDTO> accountPermissions) {
+
+        for (AccountPermissionDTO permission : accountPermissions) {
+            if (permission.getAccountNumber().equals(account.getAccountNumber())) {
+                return permission;
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public List<AccountPermissionDTO> getAccountPermissions(Long userId) {
+
+        CorporateUser corporateUser = corporateUserRepo.findOne(userId);
+        Corporate corporate = corporateUser.getCorporate();
+        List<Account> accounts = corporate.getAccounts();
+
+        List<UserAccountRestriction> accountRestrictions = userAccountRestrictionRepo.findByCorporateUserId(userId);
+
+        List<AccountPermissionDTO> accountPermissions = new ArrayList<>();
+
+        for (Account account : accounts) {
+
+            if (accountRestricted(account, accountRestrictions)) {
+                UserAccountRestriction restrictedAccount = userAccountRestrictionRepo.findByCorporateUserIdAndAccountId(corporateUser.getId(), account.getId());
+                AccountPermissionDTO accountPermission;
+                switch (restrictedAccount.getRestrictionType()) {
+                    case VIEW:
+                        accountPermission = new AccountPermissionDTO(account, AccountPermissionDTO.Permission.NONE);
+                        accountPermissions.add(accountPermission);
+                        break;
+                    case TRANSACTION:
+                        accountPermission = new AccountPermissionDTO(account, VIEW_ONLY);
+                        accountPermissions.add(accountPermission);
+                        break;
+
+                    case NONE:
+                        accountPermission = new AccountPermissionDTO(account, AccountPermissionDTO.Permission.VIEW_AND_TRANSACT);
+                        accountPermissions.add(accountPermission);
+                        break;
+                    default:
+                        break;
+                }
+            } else {
+                AccountPermissionDTO permission = new AccountPermissionDTO(account, AccountPermissionDTO.Permission.VIEW_AND_TRANSACT);
+                accountPermissions.add(permission);
+            }
+
+        }
+        return accountPermissions;
+    }
+
+
+    private boolean accountRestricted(Account account, List<UserAccountRestriction> accountRestrictions) {
+
+        for (UserAccountRestriction accountRestriction : accountRestrictions) {
+            if (accountRestriction.getAccountId().equals(account.getId())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
 }
+

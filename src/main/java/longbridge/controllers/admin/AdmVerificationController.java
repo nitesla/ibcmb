@@ -185,7 +185,7 @@ public class AdmVerificationController {
     @ResponseBody
     DataTablesOutput<VerificationDTO> getVerifiedOperations(DataTablesInput input) {
         Pageable pageable = DataTablesUtils.getPageable(input);
-        Page<VerificationDTO> page = verificationService.getVerifiedOPerations(pageable);
+        Page<VerificationDTO> page = verificationService.getVerifiedOperations(pageable);
         DataTablesOutput<VerificationDTO> out = new DataTablesOutput<VerificationDTO>();
         out.setDraw(input.getDraw());
         out.setData(page.getContent());

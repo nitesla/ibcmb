@@ -109,7 +109,9 @@
                                                 <p th:if="${not #lists.isEmpty(accounts)}"><input type="checkbox"
                                                                                                   id="checkAll"/> Select
                                                     All</p>
-                                                <p th:if="${#lists.isEmpty(accounts)}" style="color: red">No
+                                                <p id="checkAll" style="display: none"><input type="checkbox" id="checkAll" style="display: none"/> Select All</p>
+
+                                                <p th:if="${#lists.isEmpty(accounts)}" style="color: red" id="accountsError">No
                                                     Transactional/Active accounts available.</p>
                                                     <hr/>
 
@@ -401,6 +403,9 @@
                            fetchError = true;
                            break;
                        }
+
+                       $("#checkAll").show();
+                       $("#accountsError").hide();
                        var newAccount =  "<p><label class='checkbox-inline'><input type='checkbox' checked='checked' onclick='noCorpAccountSelected(this)' id='acct"+account[i].accountNumber+"'  name='accounts' value='"+account[i].accountNumber+"'/> <span>"+account[i].accountNumber+" - "+account[i].accountName+" - "+account[i].schemeType+" - "+account[i].customerId+"</span><input type='hidden' name='cifids' value='"+account[i].customerId+"'/> </p>"
                         $('#accountsDiv').append(newAccount)
                    }

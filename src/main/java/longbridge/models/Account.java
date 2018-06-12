@@ -151,7 +151,6 @@ public class Account extends AbstractEntity {
 
         Account account = (Account) o;
 
-//        if (!accountId.equals(account.accountId)) return false;
         if (!accountNumber.equals(account.accountNumber)) return false;
         if (!customerId.equals(account.customerId)) return false;
         return solId != null ? solId.equals(account.solId) : account.solId == null;
@@ -182,17 +181,6 @@ public class Account extends AbstractEntity {
                 + "}";
     }
 
-//	@Override
-//	public String serialize() throws JsonProcessingException {
-//		// TODO Auto-generated method stub
-//		return null;
-//	}
-//
-//	@Override
-//	public AbstractEntity deserialize(String data) throws JsonParseException, JsonMappingException, IOException {
-//		// TODO Auto-generated method stub
-//		return null;
-//	}
     
     /** Gets a description for the account.
      * This description is of the form: ACCOUNTNUMBER - ACCOUNT CLASS
