@@ -16,7 +16,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -46,7 +45,6 @@ public class OwnTransferController {
     private AccountService accountService;
     private TransferValidator validator;
     private FinancialInstitutionService financialInstitutionService;
-    private ApplicationContext appContext;
     private TransferErrorService errorService;
     private RetailUserService retailUserService;
     private TransferUtils transferUtils;
@@ -57,21 +55,20 @@ public class OwnTransferController {
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
-    public OwnTransferController(TransferService transferService, AccountService accountService, TransferValidator validator, FinancialInstitutionService financialInstitutionService, ApplicationContext appContext,
-                                 TransferErrorService errorService, RetailUserService retailUserService,TransferUtils transferUtils) {
+    public OwnTransferController(TransferService transferService, AccountService accountService, TransferValidator validator, FinancialInstitutionService financialInstitutionService,
+                                 TransferErrorService errorService, RetailUserService retailUserService, TransferUtils transferUtils) {
         this.transferService = transferService;
         this.accountService = accountService;
         this.validator = validator;
         this.financialInstitutionService = financialInstitutionService;
-        this.appContext = appContext;
         this.errorService = errorService;
         this.retailUserService = retailUserService;
-        this.transferUtils=transferUtils;
+        this.transferUtils = transferUtils;
     }
 
 
     @GetMapping("")
-    public String index(Model model, HttpServletRequest request,RedirectAttributes redirectAttributes) throws Exception {
+    public String index(Model model, HttpServletRequest request, RedirectAttributes redirectAttributes) throws Exception {
 
         if (request.getSession().getAttribute("auth-needed") != null)
             request.getSession().removeAttribute("auth-needed");
@@ -86,7 +83,7 @@ public class OwnTransferController {
             String errorMessage = errorService.getMessage(e);
             redirectAttributes.addFlashAttribute("failure", errorMessage);
 
-          return "redirect:/retail/dashboard";
+            return "redirect:/retail/dashboard";
 
         }
 

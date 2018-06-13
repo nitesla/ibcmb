@@ -12,6 +12,7 @@ import longbridge.repositories.AccountRepo;
 import longbridge.repositories.CorporateRepo;
 import longbridge.services.*;
 
+import longbridge.utils.NameValue;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.slf4j.Logger;
@@ -580,7 +581,7 @@ public class OpsCorporateController {
         CustomerDetails customerDetails = integrationService.viewCustomerDetailsByCif(cifid);
 
         if (customerDetails.getCustomerName() == null) {
-            logger.warn("The account details for CIFID {} could not be found. The reasons could be that the account is NOT VERIFIED, CLOSED or DELETED",cifid);
+            logger.warn("The account details for CIFID {} could not be found. The reasons could be that the account is NOT VERIFIED, CLOSED or DELETED", cifid);
 
             return "false";
         }
@@ -592,8 +593,8 @@ public class OpsCorporateController {
         return customerDetails.getCustomerName();
     }
 
-    @GetMapping("/new/{corpTYpe}")
-    public String addCorporate(@PathVariable String corpTYpe, Model model, HttpSession session) {
+    @GetMapping("/new/{corporateType}")
+    public String addCorporate(@PathVariable String corporateType, Model model, HttpSession session) {
 
         session.removeAttribute("corporateRequest");
         session.removeAttribute("selectedAccounts");
@@ -606,11 +607,11 @@ public class OpsCorporateController {
 
         CorporateDTO corporateDTO = new CorporateDTO();
 
-        if (corpTYpe == null) {
+        if (corporateType == null) {
             return "redirect:/ops/dashboard";
-        } else if (corpTYpe.equalsIgnoreCase("1")) {
+        } else if (corporateType.equalsIgnoreCase("1")) {
             corporateDTO.setCorporateType("SOLE");
-        } else if (corpTYpe.equalsIgnoreCase("2")) {
+        } else if (corporateType.equalsIgnoreCase("2")) {
             corporateDTO.setCorporateType("MULTI");
         } else {
             return "redirect:/ops/dashboard";
@@ -620,7 +621,7 @@ public class OpsCorporateController {
     }
 
     @GetMapping("/new")
-    public String addCorporate(Model model) {
+    public String addCorporate() {
         return "redirect:/ops/dashboard";
     }
 
@@ -682,18 +683,18 @@ public class OpsCorporateController {
         return "/ops/corporate/setup/account";
     }
 
-    private List<AccountInfo> filterAccounts(List<AccountInfo> newAccs, List<AccountDTO> existingAccs) {
+    private List<AccountInfo> filterAccounts(List<AccountInfo> newAccounts, List<AccountDTO> existingAccs) {
 
         List<AccountInfo> accountInfos = new ArrayList<>();
-        for (AccountInfo accountInfo : newAccs) {
-            boolean existingAcc = false;
+        for (AccountInfo accountInfo : newAccounts) {
+            boolean existingAccount = false;
             for (AccountDTO accountDTO : existingAccs) {
                 if (accountInfo.getAccountNumber().equals(accountDTO.getAccountNumber())) {
-                    existingAcc = true;
+                    existingAccount = true;
                     break;
                 }
             }
-            if (!existingAcc) {
+            if (!existingAccount) {
                 accountInfos.add(accountInfo);
             }
         }
@@ -716,6 +717,7 @@ public class OpsCorporateController {
             List<AccountInfo> accountInfos = accountService.getTransactionalAccounts(integrationService.fetchAccounts(corporate.getCustomerId()));
             model.addAttribute("accounts", accountInfos);
             return "/ops/corporate/setup/account";
+
         }
 
         String[] accounts = request.getParameterValues("accounts");
@@ -1241,12 +1243,10 @@ public class OpsCorporateController {
             logger.debug("The account size on Finacle {}, IB {} and cifId {}", accountInfos.size(), corporate.getAccounts().size(), cifId);
             accountInfos = getAccountsNotInCorporate(accountInfos, accounts);
             return accountInfos;
-        }
-        catch (Exception e){
-            throw new AccountFetchException("Error occurred fetching accounts",e);
+        } catch (Exception e) {
+            throw new AccountFetchException("Error occurred fetching accounts", e);
         }
     }
-
 
 
     private List<AccountInfo> getAccountsNotInCorporate(List<AccountInfo> newAccs, List<Account> existingAccs) {
@@ -1409,7 +1409,7 @@ public class OpsCorporateController {
 
         Corporate corporate = corporateService.getCorp(corporateId);
 
-        if(corporate.getCustomerId().equals(cifid) || corporate.getCifids().contains(cifid)){
+        if (corporate.getCustomerId().equals(cifid) || corporate.getCifids().contains(cifid)) {
             throw new IdentificationException("CIFID already exists");
         }
 
@@ -1426,7 +1426,7 @@ public class OpsCorporateController {
 
     @ResponseBody
     @GetMapping("/new/{cifid}/accounts")
-    public List<AccountInfo> getAccountsFromFinacle( @PathVariable String cifid) {
+    public List<AccountInfo> getAccountsFromFinacle(@PathVariable String cifid) {
 
 
         try {
@@ -1438,4 +1438,99 @@ public class OpsCorporateController {
             throw new AccountFetchException("Error occurred fetching accounts");
         }
     }
+
+    @ResponseBody
+    @GetMapping("/accountpermissions")
+    public List<AccountPermissionDTO> getUserAccountPermissions(@RequestParam String userName, HttpSession session) {
+
+        logger.debug("Getting user {} saved account permissions", userName);
+
+        List<AccountPermissionDTO> accountPermissions;
+
+        String[] accounts = (String[]) session.getAttribute("selectedAccounts");
+        Map<String, List<AccountPermissionDTO>> userAccountPermissions = (HashMap) session.getAttribute("userAccountPermissions");
+
+        if (userAccountPermissions != null) {
+            List<String> selectedAccounts = Arrays.asList(accounts);
+            accountPermissions = userAccountPermissions.get(userName);
+
+            Iterator<AccountPermissionDTO> accountsIterator = accountPermissions.iterator();
+            while (accountsIterator.hasNext()) {
+                AccountPermissionDTO permissionDTO = accountsIterator.next();
+                if (!selectedAccounts.contains(permissionDTO.getAccountNumber())) {
+                    accountsIterator.remove();
+                    logger.debug("Removed an account {} which is no longer in the selected corporate accounts", permissionDTO);
+                }
+            }
+
+            for (String account : accounts) {
+                if (!accountPermissions.contains(new AccountPermissionDTO(account))) {
+                    AccountPermissionDTO accountPermission = new AccountPermissionDTO(account);
+                    accountPermission.setPermission(AccountPermissionDTO.Permission.VIEW_AND_TRANSACT);
+                    accountPermissions.add(accountPermission);
+                    logger.debug("Added account {} found in the list of corporate selected accounts", accountPermission);
+                }
+            }
+
+        } else {
+            logger.debug("No existing saved account permissions for user {}, will set default permissions", userName);
+            accountPermissions = new ArrayList<>();
+
+            for (String account : accounts) {
+                AccountPermissionDTO accountPermission = new AccountPermissionDTO(account);
+                accountPermission.setPermission(AccountPermissionDTO.Permission.VIEW_AND_TRANSACT);
+                accountPermissions.add(accountPermission);
+            }
+        }
+        logger.debug("Returning user account permissions {}", accountPermissions);
+
+        return accountPermissions;
+    }
+
+    @ResponseBody
+    @GetMapping("/accountpermissions/save")
+    public String saveUserAccountPermissions(@RequestParam String userName, @RequestParam String
+            accountPermissions, HttpSession session) {
+
+        logger.debug("Saving user {} account permissions {}", userName, accountPermissions);
+
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.configure(JsonParser.Feature.ALLOW_UNQUOTED_FIELD_NAMES, true);
+        List<AccountPermissionDTO> accountPermissionDTOs = new ArrayList<>();
+        List<NameValue> nameValues;
+        try {
+            nameValues = mapper.readValue(accountPermissions, new TypeReference<List<NameValue>>() {
+            });
+        } catch (IOException e) {
+            logger.error("Failed to read the user account permissions", e);
+            return "failure";
+        }
+
+
+        Map<String, List<AccountPermissionDTO>> userAccountPermissions = (HashMap) session.getAttribute("userAccountPermissions");
+
+        logger.debug("Existing users account permissions list {}", userAccountPermissions);
+
+        if (nameValues != null) {
+            for (NameValue nameValue : nameValues) {
+                AccountPermissionDTO accountPermissionDTO = new AccountPermissionDTO();
+                accountPermissionDTO.setAccountNumber(nameValue.getName());
+                accountPermissionDTO.setPermission(AccountPermissionDTO.Permission.valueOf(nameValue.getValue()));
+                accountPermissionDTOs.add(accountPermissionDTO);
+            }
+        }
+
+        if (userAccountPermissions != null) {
+            userAccountPermissions.put(userName, accountPermissionDTOs);
+        } else {
+            logger.debug("Creating new users account permissions list", userAccountPermissions);
+            userAccountPermissions = new HashMap<>();
+            userAccountPermissions.put(userName, accountPermissionDTOs);
+        }
+        logger.debug("Updated users account permissions list {}", userAccountPermissions);
+        session.setAttribute("userAccountPermissions", userAccountPermissions);
+
+        return "success";
+    }
+
 }

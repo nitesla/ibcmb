@@ -74,18 +74,15 @@
                                                 <tr th:each="account: ${accountPermissions}">
                                                     <td th:text="${account.customerId}"></td>
                                                     <td th:text="${account.accountNumber}"></td>
-                                                    <td style="text-align: center;"><input
-                                                            style="background-color: #00C851;" type="radio"
+                                                    <td style="text-align: center;"><input type="radio"
                                                             th:name="${account.accountNumber}" value="VIEW_ONLY"
                                                             th:checked="${account.permission==T(longbridge.dtos.AccountPermissionDTO.Permission).VIEW_ONLY}"/>
                                                     </td>
-                                                    <td style="text-align: center;"><input
-                                                            style="background-color: #00C851;" type="radio"
+                                                    <td style="text-align: center;"><input type="radio"
                                                             th:name="${account.accountNumber}" value="VIEW_AND_TRANSACT"
                                                             th:checked="${account.permission==T(longbridge.dtos.AccountPermissionDTO.Permission).VIEW_AND_TRANSACT}"/>
                                                     </td>
-                                                    <td style="text-align: center;"><input
-                                                            style="background-color: #00C851;" type="radio"
+                                                    <td style="text-align: center;"><input type="radio"
                                                             th:name="${account.accountNumber}" value="NONE"
                                                             th:checked="${account.permission==T(longbridge.dtos.AccountPermissionDTO.Permission).NONE}"/>
                                                     </td>

@@ -34,8 +34,6 @@ public class RetailControllerAdvice {
     @Value("${bank.code}")
     private String bankCode;
     private RetailUserService retailUserService;
-    private IntegrationService integrationService;
-    private TransferService transferService;
     private AccountService accountService;
     private ServiceReqConfigService reqConfigService;
     private MessageService messageService;
@@ -43,17 +41,10 @@ public class RetailControllerAdvice {
     private NotificationsService notificationsService;
 
     @Autowired
-    private SecurityService securityService;
-    @Autowired
-    private ConfigurationService configurationService;
-
-    @Autowired
-    public RetailControllerAdvice(RetailUserService retailUserService, IntegrationService integrationService, TransferService transferService, AccountService accountService, ServiceReqConfigService reqConfigService, MessageService messageService
+    public RetailControllerAdvice(RetailUserService retailUserService, AccountService accountService, ServiceReqConfigService reqConfigService, MessageService messageService
             , FinancialInstitutionService financialInstitutionService, NotificationsService notificationsService
     ) {
         this.retailUserService = retailUserService;
-        this.integrationService = integrationService;
-        this.transferService = transferService;
         this.accountService = accountService;
         this.reqConfigService = reqConfigService;
         this.messageService = messageService;
@@ -72,7 +63,7 @@ public class RetailControllerAdvice {
         RetailUser user = retailUserService.getUserByName(principal.getName());
         String bvn = "";
         String lastLogin = "";
-        if (user!=null) {
+        if (user != null) {
             bvn = (user.getBvn() == null) ? "Not available" : user.getBvn();
             lastLogin = (user.getLastLoginDate() == null) ? DateFormatter.format(user.getCreatedOnDate()) : DateFormatter.format(user.getLastLoginDate());
 
@@ -114,13 +105,12 @@ public class RetailControllerAdvice {
             }
         }
 
-        //System.out.println( new SimpleDateFormat("HH:mm:ss").format(Calendar.getInstance().getTime()) );
         return "";
     }
 
 
     @ModelAttribute
-    public String getCustmerAccounts(Model model, Principal principal) {
+    public String getCustomerAccounts(Model model, Principal principal) {
 
 
         if (principal == null || principal.getName() == null) {
@@ -147,14 +137,14 @@ public class RetailControllerAdvice {
     }
 
     @ModelAttribute
-    public String getSystemNotifications(Model model){
-        try{
+    public String getSystemNotifications(Model model) {
+        try {
             List<NotificationsDTO> notifications = notificationsService.getNotifications();
 //            NotificationsDTO notificationsDTO = new NotificationsDTO();
 //            notificationsDTO.setMessage("welcome");
 //            notifications.add(notificationsDTO);
             model.addAttribute("notifications", notifications);
-        }catch (Exception e){
+        } catch (Exception e) {
             logger.warn(e.getMessage());
         }
 

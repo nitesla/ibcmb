@@ -12,6 +12,10 @@ public class AccountPermissionDTO {
     public AccountPermissionDTO() {
     }
 
+    public AccountPermissionDTO(String accountNumber) {
+        this.accountNumber = accountNumber;
+    }
+
     public AccountPermissionDTO(Account account, Permission permission) {
         this.accountNumber = account.getAccountNumber();
         this.customerId = account.getCustomerId();

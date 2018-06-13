@@ -27,7 +27,6 @@ public class CorporateRequestDTO extends AbstractDTO implements PrettySerializer
     private String corporateId;
     private String bvn;
     private String taxId;
-
     private String status;
     private String rcNumber;
     @NotEmpty(message = "customerId")
