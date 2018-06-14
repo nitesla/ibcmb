@@ -7,11 +7,10 @@ import longbridge.api.AccountInfo;
 import longbridge.api.CustomerDetails;
 import longbridge.dtos.*;
 import longbridge.exception.*;
-import longbridge.models.*;
-import longbridge.repositories.AccountRepo;
-import longbridge.repositories.CorporateRepo;
+import longbridge.models.Account;
+import longbridge.models.Corporate;
+import longbridge.models.UserType;
 import longbridge.services.*;
-
 import longbridge.utils.NameValue;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
@@ -76,10 +75,7 @@ public class OpsCorporateController {
 
     @Autowired
     private VerificationService verificationService;
-    @Autowired
-    private AccountRepo accountRepo;
-    @Autowired
-    private CorporateRepo corporateRepo;
+
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
 
@@ -1005,11 +1001,9 @@ public class OpsCorporateController {
     public String createCorporateUsers(WebRequest request, RedirectAttributes redirectAttributes, HttpSession session, Model model, Locale locale) {
 
         String users = request.getParameter("users");
+        users = StringUtils.replace(users, "DT_RowId", "userName");
 
-        logger.debug("Corporate Users are: {}", users);
-        session.removeAttribute("users");
-        session.setAttribute("users", users);
-
+        logger.debug("Corporate Users submitted: {}", users);
         List<CorporateUserDTO> corporateUsers;
         ObjectMapper mapper = new ObjectMapper();
         mapper.configure(JsonParser.Feature.ALLOW_UNQUOTED_FIELD_NAMES, true);
@@ -1017,13 +1011,38 @@ public class OpsCorporateController {
             corporateUsers = mapper.readValue(users, new TypeReference<List<CorporateUserDTO>>() {
             });
 
-            logger.debug("Corporate users: {}", corporateUsers.toString());
+            logger.debug("Corporate users after deserialization: {}", corporateUsers.toString());
 
             if (session.getAttribute("corporateRequest") != null) {
                 CorporateRequestDTO corporateRequestDTO = (CorporateRequestDTO) session.getAttribute("corporateRequest");
+
+                Map<String, List<AccountPermissionDTO>> userAccountPermissions = (HashMap) session.getAttribute("userAccountPermissions");
+
+                if (userAccountPermissions != null) {
+                    logger.debug("Found saved map of users account permissions {}", userAccountPermissions);
+                    for (CorporateUserDTO corporateUser : corporateUsers) {
+                        String userName = corporateUser.getUserName();
+                        if (userAccountPermissions.containsKey(userName)) {
+                            logger.debug("Found user [{}] saved account permissions {}", userName, userAccountPermissions.get(userName));
+                            corporateUser.setAccountPermissions(userAccountPermissions.get(userName));
+                        } else {
+                            List<AccountPermissionDTO> defaultAccountPermissions = getDefaultAccountPermissions((String[]) session.getAttribute("selectedAccounts"));
+                            logger.debug("User [{}] does not have saved account permissions, will set default ones {}", userName, defaultAccountPermissions);
+                            corporateUser.setAccountPermissions(defaultAccountPermissions);
+                        }
+                    }
+                } else {
+                    logger.debug("No saved map of users account permissions, will set default permissions for all users");
+                    for (CorporateUserDTO corporateUser : corporateUsers) {
+                        List<AccountPermissionDTO> defaultAccountPermissions = getDefaultAccountPermissions((String[]) session.getAttribute("selectedAccounts"));
+                        corporateUser.setAccountPermissions(defaultAccountPermissions);
+                    }
+                }
                 corporateRequestDTO.setCorporateUsers(corporateUsers);
+
                 model.addAttribute("corporate", corporateRequestDTO);
-                logger.debug("Corporate Request: {}", corporateRequestDTO);
+                logger.debug("Saving Corporate Request: {}", corporateRequestDTO);
+
 
                 if (makerCheckerService.isEnabled("ADD_CORPORATE")) {
                     String message = verificationService.add(corporateRequestDTO, "ADD_CORPORATE", "Adding Corporate Entity");
@@ -1450,47 +1469,66 @@ public class OpsCorporateController {
         String[] accounts = (String[]) session.getAttribute("selectedAccounts");
         Map<String, List<AccountPermissionDTO>> userAccountPermissions = (HashMap) session.getAttribute("userAccountPermissions");
 
+        logger.debug("Existing all users saved account permissions {}", userAccountPermissions);
+
+        List<String> selectedAccounts = Arrays.asList(accounts);
         if (userAccountPermissions != null) {
-            List<String> selectedAccounts = Arrays.asList(accounts);
             accountPermissions = userAccountPermissions.get(userName);
 
-            Iterator<AccountPermissionDTO> accountsIterator = accountPermissions.iterator();
-            while (accountsIterator.hasNext()) {
-                AccountPermissionDTO permissionDTO = accountsIterator.next();
-                if (!selectedAccounts.contains(permissionDTO.getAccountNumber())) {
-                    accountsIterator.remove();
-                    logger.debug("Removed an account {} which is no longer in the selected corporate accounts", permissionDTO);
-                }
-            }
+            if (accountPermissions != null) {
 
-            for (String account : accounts) {
-                if (!accountPermissions.contains(new AccountPermissionDTO(account))) {
-                    AccountPermissionDTO accountPermission = new AccountPermissionDTO(account);
-                    accountPermission.setPermission(AccountPermissionDTO.Permission.VIEW_AND_TRANSACT);
-                    accountPermissions.add(accountPermission);
-                    logger.debug("Added account {} found in the list of corporate selected accounts", accountPermission);
+                Iterator<AccountPermissionDTO> accountsIterator = accountPermissions.iterator();
+                while (accountsIterator.hasNext()) {
+                    AccountPermissionDTO permissionDTO = accountsIterator.next();
+                    if (!selectedAccounts.contains(permissionDTO.getAccountNumber())) {
+                        accountsIterator.remove();
+                        logger.debug("Removed an account {} which is no longer in the selected corporate accounts", permissionDTO);
+                    }
                 }
-            }
 
+                for (String account : accounts) {
+                    if (!accountPermissions.contains(new AccountPermissionDTO(account))) {
+                        AccountPermissionDTO accountPermission = new AccountPermissionDTO(account);
+                        accountPermission.setPermission(AccountPermissionDTO.Permission.VIEW_AND_TRANSACT);
+                        accountPermissions.add(accountPermission);
+                        logger.debug("Added account {} found in the list of corporate selected accounts", accountPermission);
+                    }
+                }
+            } else {
+                logger.debug("No existing saved account permissions for user {}, will set default permissions", userName);
+                accountPermissions = getDefaultAccountPermissions(accounts);
+                userAccountPermissions.put(userName, accountPermissions);
+            }
         } else {
-            logger.debug("No existing saved account permissions for user {}, will set default permissions", userName);
-            accountPermissions = new ArrayList<>();
+            logger.debug("Creating new map for all users account permissions, as none is already existing");
+            userAccountPermissions = new HashMap<>();
+            accountPermissions = getDefaultAccountPermissions(accounts);
 
-            for (String account : accounts) {
-                AccountPermissionDTO accountPermission = new AccountPermissionDTO(account);
-                accountPermission.setPermission(AccountPermissionDTO.Permission.VIEW_AND_TRANSACT);
-                accountPermissions.add(accountPermission);
-            }
+            logger.debug("Adding new user {} account permissions list to the map", userName);
+            userAccountPermissions.put(userName, accountPermissions);
+            session.setAttribute("userAccountPermissions", userAccountPermissions);
+
         }
-        logger.debug("Returning user account permissions {}", accountPermissions);
+        logger.debug("Returning user {} account permissions list {}", userName, accountPermissions);
+
+        return accountPermissions;
+    }
+
+    private List<AccountPermissionDTO> getDefaultAccountPermissions(String[] accounts) {
+        List<AccountPermissionDTO> accountPermissions = new ArrayList<>();
+
+        for (String account : accounts) {
+            AccountPermissionDTO accountPermission = new AccountPermissionDTO(account);
+            accountPermission.setPermission(AccountPermissionDTO.Permission.VIEW_AND_TRANSACT);
+            accountPermissions.add(accountPermission);
+        }
 
         return accountPermissions;
     }
 
     @ResponseBody
     @GetMapping("/accountpermissions/save")
-    public String saveUserAccountPermissions(@RequestParam String userName, @RequestParam String
-            accountPermissions, HttpSession session) {
+    public String saveUserAccountPermissions(@RequestParam String userName, @RequestParam String accountPermissions, HttpSession session) {
 
         logger.debug("Saving user {} account permissions {}", userName, accountPermissions);
 
@@ -1505,7 +1543,6 @@ public class OpsCorporateController {
             logger.error("Failed to read the user account permissions", e);
             return "failure";
         }
-
 
         Map<String, List<AccountPermissionDTO>> userAccountPermissions = (HashMap) session.getAttribute("userAccountPermissions");
 
@@ -1523,7 +1560,7 @@ public class OpsCorporateController {
         if (userAccountPermissions != null) {
             userAccountPermissions.put(userName, accountPermissionDTOs);
         } else {
-            logger.debug("Creating new users account permissions list", userAccountPermissions);
+            logger.debug("Creating new users account permissions list");
             userAccountPermissions = new HashMap<>();
             userAccountPermissions.put(userName, accountPermissionDTOs);
         }

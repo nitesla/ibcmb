@@ -8,9 +8,11 @@ import longbridge.exception.VerificationInterruptedException;
 import longbridge.models.Account;
 import longbridge.models.AccountClassRestriction;
 import longbridge.models.AccountRestriction;
+import longbridge.models.UserAccountRestriction;
 import longbridge.repositories.AccountClassRestrictionRepo;
 import longbridge.repositories.AccountRepo;
 import longbridge.repositories.AccountRestrictionRepo;
+import longbridge.repositories.UserAccountRestrictionRepo;
 import longbridge.services.AccountConfigService;
 import longbridge.services.CodeService;
 import longbridge.utils.DateFormatter;
@@ -44,30 +46,33 @@ public class AccountConfigServiceImpl implements AccountConfigService {
     private AccountClassRestrictionRepo accountClassRestrictionRepo;
     private CodeService codeService;
     private ModelMapper modelMapper;
-
-    @Autowired
     private AccountRepo accountRepo;
-    @Autowired
     private MessageSource messageSource;
-    @Autowired
     private EntityManager entityManager;
+    private UserAccountRestrictionRepo userAccountRestrictionRepo;
 
-    private Locale locale = LocaleContextHolder.getLocale();
+    private final Locale locale = LocaleContextHolder.getLocale();
 
     @Autowired
-    public AccountConfigServiceImpl(AccountRestrictionRepo accountRestrictionRepo, AccountClassRestrictionRepo accountClassRestrictionRepo, CodeService codeService, ModelMapper modelMapper) {
+    public AccountConfigServiceImpl(AccountRestrictionRepo accountRestrictionRepo, AccountClassRestrictionRepo accountClassRestrictionRepo, CodeService codeService, ModelMapper modelMapper, AccountRepo accountRepo, MessageSource messageSource, EntityManager entityManager, UserAccountRestrictionRepo userAccountRestrictionRepo) {
         this.accountRestrictionRepo = accountRestrictionRepo;
         this.accountClassRestrictionRepo = accountClassRestrictionRepo;
         this.codeService = codeService;
         this.modelMapper = modelMapper;
+        this.accountRepo = accountRepo;
+        this.messageSource = messageSource;
+        this.entityManager = entityManager;
+        this.userAccountRestrictionRepo = userAccountRestrictionRepo;
     }
+
+
 
 
     @Override
     public boolean isAccountHidden(String accountNumber) {
 
         Account account = accountRepo.findFirstByAccountNumber(accountNumber);
-        if(account!=null) {
+        if (account != null) {
             if ("Y".equals(account.getHiddenFlag())) {
                 return true;
             }
@@ -76,7 +81,7 @@ public class AccountConfigServiceImpl implements AccountConfigService {
     }
 
     @Override
-    @Verifiable(operation="ADD_ACCT_RESTRICT",description="Adding Account Restriction")
+    @Verifiable(operation = "ADD_ACCT_RESTRICT", description = "Adding Account Restriction")
     public String addAccountRestriction(AccountRestrictionDTO accountRestrictionDTO) throws InternetBankingException {
 
         validateNoAccountDuplication(accountRestrictionDTO);
@@ -85,18 +90,16 @@ public class AccountConfigServiceImpl implements AccountConfigService {
             accountRestriction.setDateCreated(new Date());
             accountRestrictionRepo.save(accountRestriction);
             return messageSource.getMessage("account.restrict.add.success", null, locale);
-        }  catch (VerificationInterruptedException e) {
+        } catch (VerificationInterruptedException e) {
             return e.getMessage();
-        }
-
-        catch (Exception e) {
+        } catch (Exception e) {
             throw new InternetBankingException(messageSource.getMessage("account.restrict.add.failure", null, locale), e);
         }
     }
 
 
     @Override
-    @Verifiable(operation="UPDATE_ACCT_RESTRICT",description="Updating Account Restriction")
+    @Verifiable(operation = "UPDATE_ACCT_RESTRICT", description = "Updating Account Restriction")
     public String updateAccountRestriction(AccountRestrictionDTO accountRestrictionDTO) throws InternetBankingException {
 
         validateNoAccountDuplication(accountRestrictionDTO);
@@ -109,14 +112,11 @@ public class AccountConfigServiceImpl implements AccountConfigService {
             accountRestriction.setRestrictedFor(accountRestrictionDTO.getRestrictedFor());
             accountRestrictionRepo.save(accountRestriction);
             return messageSource.getMessage("account.restrict.update.success", null, locale);
-        }
-        catch (VerificationInterruptedException e) {
+        } catch (VerificationInterruptedException e) {
             return e.getMessage();
-        }
-        catch (InternetBankingException e){
+        } catch (InternetBankingException e) {
             throw e;
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             throw new InternetBankingException(messageSource.getMessage("account.restrict.update.failure", null, locale), e);
         }
     }
@@ -135,21 +135,18 @@ public class AccountConfigServiceImpl implements AccountConfigService {
 
     @Override
     @Transactional
-    @Verifiable(operation="DELETE_ACCT_RESTRICT",description="Deleting Account Restriction")
+    @Verifiable(operation = "DELETE_ACCT_RESTRICT", description = "Deleting Account Restriction")
     public String deleteAccountRestriction(Long id) throws InternetBankingException {
         try {
             AccountRestriction accountRestriction = accountRestrictionRepo.findOne(id);
             accountRestrictionRepo.delete(accountRestriction);
             return messageSource.getMessage("account.restrict.delete.success", null, LocaleContextHolder.getLocale());
 
-        }
-        catch (VerificationInterruptedException e) {
+        } catch (VerificationInterruptedException e) {
             return e.getMessage();
-        }
-        catch (InternetBankingException e){
+        } catch (InternetBankingException e) {
             throw e;
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             throw new InternetBankingException(messageSource.getMessage("account.restrict.delete.failure", null, locale), e);
 
         }
@@ -164,12 +161,9 @@ public class AccountConfigServiceImpl implements AccountConfigService {
             accountClassRestriction.setDateCreated(new Date());
             accountClassRestrictionRepo.save(accountClassRestriction);
             return messageSource.getMessage("class.restrict.add.success", null, locale);
-        }
-        catch (VerificationInterruptedException e) {
+        } catch (VerificationInterruptedException e) {
             return e.getMessage();
-        }
-
-        catch (Exception e) {
+        } catch (Exception e) {
             throw new InternetBankingException(messageSource.getMessage("class.restrict.add.failure", null, locale), e);
         }
     }
@@ -187,14 +181,11 @@ public class AccountConfigServiceImpl implements AccountConfigService {
             accountClassRestrictionRepo.save(accountClassRestriction);
             return messageSource.getMessage("class.restrict.update.success", null, locale);
 
-        }
-        catch (VerificationInterruptedException e) {
+        } catch (VerificationInterruptedException e) {
             return e.getMessage();
-        }
-        catch (InternetBankingException e){
+        } catch (InternetBankingException e) {
             throw e;
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             throw new InternetBankingException(messageSource.getMessage("class.restrict.update.failure", null, locale), e);
 
         }
@@ -220,7 +211,7 @@ public class AccountConfigServiceImpl implements AccountConfigService {
     @Override
     public boolean isAccountRestrictedForDebit(String accountNumber) {
         boolean isRestricted = false;
-        AccountRestriction accountRestriction = accountRestrictionRepo.findFirstByRestrictionTypeAndRestrictionValueIgnoreCaseAndRestrictedFor("ACCOUNT",accountNumber,"DEBIT");
+        AccountRestriction accountRestriction = accountRestrictionRepo.findFirstByRestrictionTypeAndRestrictionValueIgnoreCaseAndRestrictedFor("ACCOUNT", accountNumber, "DEBIT");
         if (accountRestriction != null) {
 
             isRestricted = true;
@@ -232,7 +223,7 @@ public class AccountConfigServiceImpl implements AccountConfigService {
     @Override
     public boolean isAccountRestrictedForCredit(String accountNumber) {
         boolean isRestricted = false;
-        AccountRestriction accountRestriction = accountRestrictionRepo.findFirstByRestrictionTypeAndRestrictionValueIgnoreCaseAndRestrictedFor("ACCOUNT",accountNumber,"CREDIT");
+        AccountRestriction accountRestriction = accountRestrictionRepo.findFirstByRestrictionTypeAndRestrictionValueIgnoreCaseAndRestrictedFor("ACCOUNT", accountNumber, "CREDIT");
         if (accountRestriction != null) {
 
             isRestricted = true;
@@ -245,11 +236,9 @@ public class AccountConfigServiceImpl implements AccountConfigService {
     @Override
     public boolean isAccountRestrictedForView(String accountNumber) {
         boolean isRestricted = false;
-        AccountRestriction accountRestriction = accountRestrictionRepo.findFirstByRestrictionTypeAndRestrictionValueIgnoreCaseAndRestrictedFor("ACCOUNT",accountNumber,"VIEW");
+        AccountRestriction accountRestriction = accountRestrictionRepo.findFirstByRestrictionTypeAndRestrictionValueIgnoreCaseAndRestrictedFor("ACCOUNT", accountNumber, "VIEW");
         if (accountRestriction != null) {
-
             isRestricted = true;
-
         }
         return isRestricted;
     }
@@ -257,11 +246,9 @@ public class AccountConfigServiceImpl implements AccountConfigService {
     @Override
     public boolean isAccountSchemeTypeRestrictedForDebit(String schemeType) {
         boolean isRestricted = false;
-        AccountRestriction accountRestriction = accountRestrictionRepo.findFirstByRestrictionTypeAndRestrictionValueIgnoreCaseAndRestrictedFor("SCHEME_TYPE",schemeType,"DEBIT");
+        AccountRestriction accountRestriction = accountRestrictionRepo.findFirstByRestrictionTypeAndRestrictionValueIgnoreCaseAndRestrictedFor("SCHEME_TYPE", schemeType, "DEBIT");
         if (accountRestriction != null) {
-
-                isRestricted = true;
-
+            isRestricted = true;
         }
         return isRestricted;
     }
@@ -269,23 +256,20 @@ public class AccountConfigServiceImpl implements AccountConfigService {
     @Override
     public boolean isAccountSchemeTypeRestrictedForCredit(String schemeType) {
         boolean isRestricted = false;
-        AccountRestriction accountRestriction = accountRestrictionRepo.findFirstByRestrictionTypeAndRestrictionValueIgnoreCaseAndRestrictedFor("SCHEME_TYPE",schemeType,"CREDIT");
+        AccountRestriction accountRestriction = accountRestrictionRepo.findFirstByRestrictionTypeAndRestrictionValueIgnoreCaseAndRestrictedFor("SCHEME_TYPE", schemeType, "CREDIT");
         if (accountRestriction != null) {
-
-                isRestricted = true;
-
+            isRestricted = true;
         }
         return isRestricted;
     }
 
 
-
     @Override
     public boolean isAccountSchemeTypeRestrictedForView(String schemeType) {
         boolean isRestricted = false;
-        AccountRestriction accountRestriction = accountRestrictionRepo.findFirstByRestrictionTypeAndRestrictionValueIgnoreCaseAndRestrictedFor("SCHEME_TYPE",schemeType,"VIEW");
+        AccountRestriction accountRestriction = accountRestrictionRepo.findFirstByRestrictionTypeAndRestrictionValueIgnoreCaseAndRestrictedFor("SCHEME_TYPE", schemeType, "VIEW");
         if (accountRestriction != null) {
-                isRestricted = true;
+            isRestricted = true;
         }
         return isRestricted;
     }
@@ -294,11 +278,9 @@ public class AccountConfigServiceImpl implements AccountConfigService {
     @Override
     public boolean isAccountSchemeCodeRestrictedForDebit(String schemeCode) {
         boolean isRestricted = false;
-        AccountRestriction accountRestriction = accountRestrictionRepo.findFirstByRestrictionTypeAndRestrictionValueIgnoreCaseAndRestrictedFor("SCHEME_CODE",schemeCode,"DEBIT");
+        AccountRestriction accountRestriction = accountRestrictionRepo.findFirstByRestrictionTypeAndRestrictionValueIgnoreCaseAndRestrictedFor("SCHEME_CODE", schemeCode, "DEBIT");
         if (accountRestriction != null) {
-
             isRestricted = true;
-
         }
         return isRestricted;
     }
@@ -307,26 +289,44 @@ public class AccountConfigServiceImpl implements AccountConfigService {
     @Override
     public boolean isAccountSchemeCodeRestrictedForCredit(String schemeCode) {
         boolean isRestricted = false;
-        AccountRestriction accountRestriction = accountRestrictionRepo.findFirstByRestrictionTypeAndRestrictionValueIgnoreCaseAndRestrictedFor("SCHEME_CODE",schemeCode,"CREDIT");
+        AccountRestriction accountRestriction = accountRestrictionRepo.findFirstByRestrictionTypeAndRestrictionValueIgnoreCaseAndRestrictedFor("SCHEME_CODE", schemeCode, "CREDIT");
         if (accountRestriction != null) {
-
             isRestricted = true;
-
         }
         return isRestricted;
     }
-
 
 
     @Override
     public boolean isAccountSchemeCodeRestrictedForView(String schemeCode) {
         boolean isRestricted = false;
-        AccountRestriction accountRestriction = accountRestrictionRepo.findFirstByRestrictionTypeAndRestrictionValueIgnoreCaseAndRestrictedFor("SCHEME_CODE",schemeCode,"VIEW");
+        AccountRestriction accountRestriction = accountRestrictionRepo.findFirstByRestrictionTypeAndRestrictionValueIgnoreCaseAndRestrictedFor("SCHEME_CODE", schemeCode, "VIEW");
         if (accountRestriction != null) {
             isRestricted = true;
         }
         return isRestricted;
     }
+
+    @Override
+    public boolean isAccountRestrictedForViewFromUser(Long accountId, Long userId){
+        boolean isRestricted = false;
+        UserAccountRestriction accountRestriction = userAccountRestrictionRepo.findByCorporateUserIdAndAccountIdAndRestrictionType(userId,accountId, UserAccountRestriction.RestrictionType.VIEW);
+        if (accountRestriction != null) {
+            isRestricted = true;
+        }
+        return isRestricted;
+    }
+
+    @Override
+    public boolean isAccountRestrictedForTransactionFromUser(Long accountId, Long userId){
+        boolean isRestricted = false;
+        UserAccountRestriction accountRestriction = userAccountRestrictionRepo.findByCorporateUserIdAndAccountIdAndRestrictionType(userId,accountId, UserAccountRestriction.RestrictionType.TRANSACTION);
+        if (accountRestriction != null) {
+            isRestricted = true;
+        }
+        return isRestricted;
+    }
+
 
     @Override
     public Iterable<AccountRestrictionDTO> getAccountRestrictions() {
@@ -359,7 +359,7 @@ public class AccountConfigServiceImpl implements AccountConfigService {
     }
 
     private void validateNoAccountDuplication(AccountRestrictionDTO accountRestrictionDTO) throws DuplicateObjectException {
-        AccountRestriction accountRestriction = accountRestrictionRepo.findFirstByRestrictionTypeAndRestrictionValueIgnoreCaseAndRestrictedFor(accountRestrictionDTO.getRestrictionType(),accountRestrictionDTO.getRestrictionValue(),accountRestrictionDTO.getRestrictedFor());
+        AccountRestriction accountRestriction = accountRestrictionRepo.findFirstByRestrictionTypeAndRestrictionValueIgnoreCaseAndRestrictedFor(accountRestrictionDTO.getRestrictionType(), accountRestrictionDTO.getRestrictionValue(), accountRestrictionDTO.getRestrictedFor());
         if (accountRestrictionDTO.getId() == null && accountRestriction != null) {
             throw new DuplicateObjectException(String.format(messageSource.getMessage("account.restrict.exists", null, locale), accountRestrictionDTO.getRestrictionValue())); //Duplication on creation
         }
@@ -402,7 +402,6 @@ public class AccountConfigServiceImpl implements AccountConfigService {
         }
         return accountRestrictionDTOList;
     }
-
 
 
     private AccountClassRestrictionDTO convertAccountClassRestrictionEntityToDTO(AccountClassRestriction accountClassRestriction) {

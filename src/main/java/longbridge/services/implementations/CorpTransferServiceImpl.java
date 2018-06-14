@@ -38,7 +38,6 @@ public class CorpTransferServiceImpl implements CorpTransferService {
     private IntegrationService integrationService;
     private TransactionLimitServiceImpl limitService;
     private AccountService accountService;
-    private FinancialInstitutionService financialInstitutionService;
     private ConfigurationService configService;
     private Logger logger = LoggerFactory.getLogger(this.getClass());
     private Locale locale = LocaleContextHolder.getLocale();
@@ -62,12 +61,11 @@ public class CorpTransferServiceImpl implements CorpTransferService {
     private CorpTransReqEntryRepo reqEntryRepo;
 
     @Autowired
-    public CorpTransferServiceImpl(CorpTransferRequestRepo corpTransferRequestRepo, IntegrationService integrationService, TransactionLimitServiceImpl limitService, AccountService accountService, FinancialInstitutionService financialInstitutionService, ConfigurationService configService) {
+    public CorpTransferServiceImpl(CorpTransferRequestRepo corpTransferRequestRepo, IntegrationService integrationService, TransactionLimitServiceImpl limitService, AccountService accountService, ConfigurationService configService) {
         this.corpTransferRequestRepo = corpTransferRequestRepo;
         this.integrationService = integrationService;
         this.limitService = limitService;
         this.accountService = accountService;
-        this.financialInstitutionService = financialInstitutionService;
         this.configService = configService;
     }
 
@@ -198,7 +196,6 @@ public class CorpTransferServiceImpl implements CorpTransferService {
         );
         if (limitExceeded) throw new InternetBankingTransferException(TransferExceptions.LIMIT_EXCEEDED.toString());
 
-//        String cif = accountService.getAccountByAccountNumber(dto.getCustomerAccountNumber()).getCustomerId();
        Corporate corporate = corporateRepo.findOne(getCurrentUser().getCorporate().getId());
         boolean acctPresent = StreamSupport.stream(accountService.getAccountsForDebit(corporate.getAccounts()).spliterator(), false)
                 .anyMatch(i -> i.getAccountNumber().equalsIgnoreCase(dto.getCustomerAccountNumber()));

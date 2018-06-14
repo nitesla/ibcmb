@@ -363,7 +363,6 @@ public class TransferUtils {
             case CORPORATE: {
                 CorporateUser user = (CorporateUser) currentUser;
                 Account acct = accountRepo.findFirstByAccountNumber(account);
-//			boolean valid = accountRepo.accountInCorp(user.getCorporate(), acct);
                 Corporate corporate = corporateRepo.findOne(user.getCorporate().getId());
                 boolean valid = corporate.getAccounts().contains(acct);			if (!valid) {
                     logger.warn("User " + user.toString() + "trying to access other accounts");

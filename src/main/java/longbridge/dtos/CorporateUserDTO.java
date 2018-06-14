@@ -458,6 +458,7 @@ public class CorporateUserDTO extends AbstractDTO implements PrettySerializer {
                 ", phishingSec='" + phishingSec + '\'' +
                 ", captionSec='" + captionSec + '\'' +
                 ", isFirstTimeLogon='" + isFirstTimeLogon + '\'' +
+                ", accountPermissions='" + accountPermissions + '\'' +
                 '}';
     }
 

@@ -41,8 +41,8 @@ import java.util.stream.Collectors;
 @Controller
 @RequestMapping("/corporate")
 public class CorpSettingController {
-    private Logger logger= LoggerFactory.getLogger(this.getClass());
 
+    private Logger logger= LoggerFactory.getLogger(this.getClass());
     private Locale locale = LocaleContextHolder.getLocale();
 
     @Autowired
@@ -121,7 +121,6 @@ public class CorpSettingController {
         return "/corp/error";
 
     }
-
 
     @GetMapping("/settings/change_password")
     public String ChangePaswordPage( Model model)
@@ -267,9 +266,7 @@ public class CorpSettingController {
                     masterList[i].add(secQues.get(questnPostn));
                     questnPostn++;
 
-
                 }
-
             }
 
             model.addAttribute("secQuestions", masterList);

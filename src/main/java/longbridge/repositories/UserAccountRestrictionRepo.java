@@ -14,6 +14,6 @@ import java.util.List;
 public interface UserAccountRestrictionRepo extends CommonRepo<UserAccountRestriction,Long> {
 
     List<UserAccountRestriction> findByCorporateUserId(Long userId);
-
     UserAccountRestriction findByCorporateUserIdAndAccountId(Long userId, Long accountId);
+    UserAccountRestriction findByCorporateUserIdAndAccountIdAndRestrictionType(Long userId, Long accountId, UserAccountRestriction.RestrictionType restrictionType);
 }

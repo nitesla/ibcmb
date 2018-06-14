@@ -261,11 +261,11 @@ public class CorporateRequestDTO extends AbstractDTO implements PrettySerializer
                     if(!user.getAccountPermissions().isEmpty()) {
                         gen.writeObjectFieldStart("Account Permissions");
 
-                        count = 0;
+                        Integer accountNum = 0;
                         for (AccountPermissionDTO permission : user.getAccountPermissions()) {
-                            gen.writeObjectFieldStart((++count).toString());
+                            gen.writeObjectFieldStart((++accountNum).toString());
 
-                            gen.writeStringField("Account Number", permission.getAccountNumber() + "|" + permission.getPermission());
+                            gen.writeStringField("Account Number", permission.getAccountNumber() + " | " + permission.getPermission());
 
                             gen.writeEndObject();
                         }

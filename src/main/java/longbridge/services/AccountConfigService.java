@@ -125,6 +125,10 @@ public interface AccountConfigService {
     boolean isAccountSchemeTypeRestrictedForView(String accountClass);
 
 
+    boolean isAccountRestrictedForViewFromUser(Long accountId, Long userId);
+
+    boolean isAccountRestrictedForTransactionFromUser(Long accountId, Long userId);
+
     /**
      * Returns a list of restricted accounts
      * @return restricted accounts
