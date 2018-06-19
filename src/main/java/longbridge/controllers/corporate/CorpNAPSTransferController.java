@@ -10,7 +10,6 @@ import longbridge.models.*;
 import longbridge.services.*;
 import longbridge.utils.TransferUtils;
 import org.apache.commons.lang3.math.NumberUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -37,7 +36,6 @@ import javax.servlet.http.HttpSession;
 import java.io.*;
 import java.math.BigDecimal;
 import java.net.URLConnection;
-import java.nio.charset.Charset;
 import java.security.Principal;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -532,10 +530,8 @@ public class CorpNAPSTransferController {
     @ResponseBody
     DataTablesOutput<BulkTransferDTO> getAllTransfers(DataTablesInput input, Principal principal) {
 
-        CorporateUser user = corporateUserService.getUserByName(principal.getName());
-        Corporate corporate = user.getCorporate();
         Pageable pageable = DataTablesUtils.getPageable(input);
-        Page<BulkTransferDTO> transfers = bulkTransferService.getBulkTransferRequests(corporate, pageable);
+        Page<BulkTransferDTO> transfers = bulkTransferService.getBulkTransferRequests(pageable);
         DataTablesOutput<BulkTransferDTO> out = new DataTablesOutput<BulkTransferDTO>();
         out.setDraw(input.getDraw());
         out.setData(transfers.getContent());

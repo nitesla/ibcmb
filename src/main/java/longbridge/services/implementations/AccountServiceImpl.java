@@ -293,6 +293,7 @@ public class AccountServiceImpl implements AccountService {
         return accounts.stream().filter(account -> !accountConfigService.isAccountRestrictedForView(account.getAccountNumber()))
                                 .filter(account -> !accountConfigService.isAccountSchemeCodeRestrictedForView(account.getSchemeType()))
                                 .filter(account -> !accountConfigService.isAccountSchemeTypeRestrictedForView(account.getSchemeType()))
+                                .filter(account -> !accountConfigService.isAccountRestrictedForViewFromUser(account.getId(),getCurrentUser().getId()))
                                 .collect(Collectors.toList());
     }
 
@@ -308,7 +309,8 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public boolean isAccountRestricted(AccountDetails account){
 
-        return accountConfigService.isAccountRestrictedForView(account.getAcctNumber()) || accountConfigService.isAccountSchemeCodeRestrictedForView(account.getSchmCode())
+        return accountConfigService.isAccountRestrictedForView(account.getAcctNumber())
+                || accountConfigService.isAccountSchemeCodeRestrictedForView(account.getSchmCode())
                 || accountConfigService.isAccountSchemeTypeRestrictedForView(account.getAcctType());
     }
 
@@ -342,10 +344,7 @@ public class AccountServiceImpl implements AccountService {
         if (settingDTO != null && settingDTO.isEnabled()) {
             List<String> list = Arrays.asList(StringUtils.split(settingDTO.getValue(), ","));
             schmTypes = (list);
-
         }
-
-
         List<Account> accountsForDebit = new ArrayList<Account>();
         for (Account account : accounts) {
             if ("A".equalsIgnoreCase(account.getStatus()) && !accountConfigService.isAccountHidden(account.getAccountNumber()) &&

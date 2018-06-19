@@ -15,7 +15,6 @@ import longbridge.services.*;
 import longbridge.services.bulkTransfers.BulkTransferJobLauncher;
 import longbridge.utils.StatusCode;
 import longbridge.utils.TransferAuthorizationStatus;
-import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,9 +26,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Created by Longbridge on 14/06/2017.
@@ -71,6 +69,8 @@ public class BulkTransferServiceImpl implements BulkTransferService {
 
     @Autowired
     private AccountService accountService;
+    @Autowired
+    private AccountConfigService accountConfigService;
 
 
     @Autowired
@@ -86,14 +86,18 @@ public class BulkTransferServiceImpl implements BulkTransferService {
 
     @Override
     public String makeBulkTransferRequest(BulkTransfer bulkTransfer) {
-        logger.trace("Transfer details valid {}", bulkTransfer);
+
+        logger.debug("Transfer details valid {}", bulkTransfer);
 
         accountService.validateAccount(bulkTransfer.getCustomerAccountNumber());
         bulkTransfer.setStatus(StatusCode.PROCESSING.toString());
         bulkTransfer.setStatusDescription("Processing Transaction");
         BulkTransfer transfer = bulkTransferRepo.save(bulkTransfer);
         List<CreditRequest> creditRequests = bulkTransfer.getCrRequestList();
-        creditRequests.forEach(i -> {i.setStatus("PROCESSING");creditRequestRepo.save(i);});
+        creditRequests.forEach(request -> {
+            request.setStatus("PROCESSING");
+            creditRequestRepo.save(request);
+        });
         try {
             jobLauncher.launchBulkTransferJob("" + transfer.getRefCode());
         } catch (Exception e) {
@@ -145,13 +149,7 @@ public class BulkTransferServiceImpl implements BulkTransferService {
     }
 
     @Override
-    public Page<BulkTransfer> getAllBulkTransferRequests(Corporate corporate, Pageable details) {
-        //return bulkTransferRepo.findByCorporate(corporate,details);
-        return null;
-    }
-
-    @Override
-    public boolean creditRequestRefNumberExists(String refNumber){
+    public boolean creditRequestRefNumberExists(String refNumber) {
         return creditRequestRepo.existsByReferenceNumber(refNumber);
     }
 
@@ -203,7 +201,10 @@ public class BulkTransferServiceImpl implements BulkTransferService {
                 bulkTransfer.setStatusDescription("Cancelled");
                 transferAuthRepo.save(transferAuth);
                 List<CreditRequest> creditRequests = bulkTransfer.getCrRequestList();
-                creditRequests.forEach(i -> {i.setStatus("CANCELLED");creditRequestRepo.save(i);});
+                creditRequests.forEach(i -> {
+                    i.setStatus("CANCELLED");
+                    creditRequestRepo.save(i);
+                });
 
                 return messageSource.getMessage("transfer.auth.decline", null, locale);
             }
@@ -226,11 +227,16 @@ public class BulkTransferServiceImpl implements BulkTransferService {
 
 
     @Override
-    public Page<BulkTransferDTO> getBulkTransferRequests(Corporate corporate, Pageable details) {
+    public Page<BulkTransferDTO> getBulkTransferRequests(Pageable details) {
+        CorporateUser corporateUser = getCurrentUser();
+        Corporate corporate = corporateUser.getCorporate();
         Page<BulkTransfer> page = bulkTransferRepo.findByCorporateOrderByStatusAscTranDateDesc(corporate, details);
         List<BulkTransferDTO> dtOs = convertEntitiesToDTOs(page.getContent());
+        List<BulkTransferDTO> bulkTransferRequests = dtOs.stream()
+                .filter(transRequest -> !accountConfigService.isAccountRestrictedForViewFromUser(accountService.getAccountByAccountNumber(transRequest.getCustomerAccountNumber()).getId(),corporateUser.getId())).collect(Collectors.toList());
+
         long t = page.getTotalElements();
-        Page<BulkTransferDTO> pageImpl = new PageImpl<BulkTransferDTO>(dtOs, details, t);
+        Page<BulkTransferDTO> pageImpl = new PageImpl<BulkTransferDTO>(bulkTransferRequests, details, t);
         return pageImpl;
     }
 
@@ -239,8 +245,6 @@ public class BulkTransferServiceImpl implements BulkTransferService {
         bulkTransferDTO.setId(bulkTransfer.getId());
         bulkTransferDTO.setCustomerAccountNumber(bulkTransfer.getCustomerAccountNumber());
         bulkTransferDTO.setRefCode(bulkTransfer.getRefCode());
-        DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
-        //Date dt = bulkTransfer.getTranDate();
         bulkTransferDTO.setTranDate(bulkTransfer.getTranDate());
         bulkTransferDTO.setStatus(bulkTransfer.getStatus());
         bulkTransferDTO.setStatusDescription(bulkTransfer.getStatusDescription());
@@ -264,7 +268,10 @@ public class BulkTransferServiceImpl implements BulkTransferService {
         bulkTransfer.setStatus(StatusCode.CANCELLED.toString());
         bulkTransferRepo.save(bulkTransfer);
         List<CreditRequest> creditRequests = bulkTransfer.getCrRequestList();
-        creditRequests.forEach(i -> {i.setStatus("CANCELLED");creditRequestRepo.save(i);});
+        creditRequests.forEach(i -> {
+            i.setStatus("CANCELLED");
+            creditRequestRepo.save(i);
+        });
         return null;
     }
 
@@ -298,7 +305,7 @@ public class BulkTransferServiceImpl implements BulkTransferService {
         for (CreditRequest creditRequest : creditRequests) {
             CreditRequestDTO creditRequestDTO = convertEntityToDTO(creditRequest);
             FinancialInstitution financialInstitution = financialInstitutionService.getFinancialInstitutionByBankCode(creditRequest.getSortCode());
-            if(financialInstitution != null) {
+            if (financialInstitution != null) {
                 creditRequestDTO.setBeneficiaryBank(financialInstitution.getInstitutionName());
             }
             creditRequestDTOList.add(creditRequestDTO);
@@ -340,7 +347,7 @@ public class BulkTransferServiceImpl implements BulkTransferService {
     public boolean userCanAuthorize(TransRequest transRequest) {
         CorporateUser corporateUser = getCurrentUser();
         CorpTransRule transferRule = corporateService.getApplicableTransferRule(transRequest);
-        BulkTransfer bulkTransfer = (BulkTransfer)transRequest;
+        BulkTransfer bulkTransfer = (BulkTransfer) transRequest;
 
         if (transferRule == null) {
             return false;

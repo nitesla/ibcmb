@@ -23,8 +23,7 @@ public interface BulkTransferService {
 
     Boolean refCodeExists(String refCode);
 
-    Page<BulkTransfer> getAllBulkTransferRequests(Corporate corporate, Pageable details);
-    Page<BulkTransferDTO> getBulkTransferRequests(Corporate corporate, Pageable details);
+    Page<BulkTransferDTO> getBulkTransferRequests(Pageable details);
     String cancelBulkTransferRequest(Long id);
     BulkTransfer getBulkTransferRequest(Long id);
     Page<CreditRequestDTO> getCreditRequests(BulkTransfer bulkTransfer, Pageable pageable);

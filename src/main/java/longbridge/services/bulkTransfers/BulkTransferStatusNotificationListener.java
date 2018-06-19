@@ -44,28 +44,22 @@ public class BulkTransferStatusNotificationListener extends JobExecutionListener
 
         if (jobExecution.getStatus() == BatchStatus.COMPLETED) {
 
-
             try {
-
-                 BulkTransfer bulkTransfer = bulkTransferRepo.findFirstByRefCode(batchId);
+                BulkTransfer bulkTransfer = bulkTransferRepo.findFirstByRefCode(batchId);
 
                 if(isPastCutOffTime(getSubmittedDate(bulkTransfer),cutoffTime)){
                     bulkTransfer.setStatus(StatusCode.COMPLETED.toString());
                     bulkTransfer.setStatusDescription("Completed");
                     bulkTransferRepo.save(bulkTransfer);
-                    log.info("!!! Completed Status Update for Bulk Transfer Batch ID {} with status {}", batchId, BatchStatus.COMPLETED.toString());
+                    log.info("Completed Status Update for Bulk Transfer Batch ID {} with status {}", batchId, BatchStatus.COMPLETED.toString());
 
                 }
-
-
-
             } catch (Exception e) {
                 log.error("Exception occurred  {}", e);
             }
 
-
         } else {
-            log.error("!!! JOB FINISHED for Bulk Transfer ID {} with status {}", batchId, jobExecution.getStatus().toString());
+            log.error("JOB FINISHED for Bulk Transfer ID {} with status {}", batchId, jobExecution.getStatus().toString());
         }
     }
 

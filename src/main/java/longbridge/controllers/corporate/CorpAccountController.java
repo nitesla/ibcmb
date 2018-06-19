@@ -80,9 +80,6 @@ public class CorpAccountController {
     private MessageSource messageSource;
 
     @Autowired
-    private TransferService transferService;
-
-    @Autowired
     private AccountRepo accountRepo;
     @Autowired
     private CodeService codeService;
@@ -314,18 +311,16 @@ public class CorpAccountController {
     }
 
     @GetMapping("/{acct}/viewonlyhistory")
-    public String getViewOnlyHist(@PathVariable String acct, Model model, Principal principal) throws ParseException {
+    public String getViewOnlyHist(@PathVariable String acct, Model model) throws ParseException {
         model.addAttribute("accountNumber", acct);
+        logger.debug("About to get transaction history for account Id {}",acct);
         SettingDTO setting = configurationService.getSettingByName("TRANS_HISTORY_RANGE");
         Date date = new Date();
         Date daysAgo = new DateTime(date).minusDays(Integer.parseInt(setting.getValue())).toDate();
-//        DateFormat format = new SimpleDateFormat("dd-MM-yyyy");
-//        Date date = format.parse(format.format(date1));
-//        Date daysAgo = format.parse(format.format(daysAgo1));
         AccountDTO account = accountService.getAccount(Long.parseLong(acct));
-//        logger.info("the from date {} and the to date {} acctNUm {}",date,daysAgo,account.getAccountNumber());
         AccountStatement accountStatement = integrationService.getFullAccountStatement(account.getAccountNumber(), daysAgo, date, "B");
         List<TransactionDetails> list = accountStatement.getTransactionDetails();
+        logger.debug("Transaction Details {}",list);
         model.addAttribute("history", list);
         return "corp/account/tranhistory";
     }

@@ -1,7 +1,6 @@
 package longbridge.services.bulkTransfers;
 
 import longbridge.api.CustomerDetails;
-import longbridge.dtos.CreditRequestDTO;
 import longbridge.models.BulkTransfer;
 import longbridge.models.CreditRequest;
 import longbridge.repositories.BulkTransferRepo;
@@ -17,8 +16,9 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.stereotype.Component;
 
-import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 /**
  * This class demonstrates how we can read the input of our batch job from
@@ -65,15 +65,6 @@ class BulkTransferReader implements ItemReader<TransferDTO>, InitializingBean {
             nextIndex++;
         }
 
-//      Iterator<CreditRequestDTO>  iterator =transferData.iterator();
-//      while(iterator.hasNext()){
-//
-//          nextRequest= iterator.next();
-//          transferData.remove(nextRequest);
-//          return nextRequest;
-//      }
-
-
 
         LOGGER.info("Found record: {}", nextRequest);
 
@@ -83,7 +74,6 @@ class BulkTransferReader implements ItemReader<TransferDTO>, InitializingBean {
 
 
     TransferDTO map(CreditRequest request) {
-//        String payRef = "CORONATION/NAPS/" + (new SimpleDateFormat("yyMMddHHmmss").format(new Date()));
         CustomerDetails details = integrationService.viewCustomerDetails(request.getBulkTransfer().getCustomerAccountNumber());
         TransferDTO dto = new TransferDTO();
         dto.setAccountName(details.getCustomerName());

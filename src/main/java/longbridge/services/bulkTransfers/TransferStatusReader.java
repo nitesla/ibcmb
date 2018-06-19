@@ -11,7 +11,6 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.*;
@@ -51,25 +50,15 @@ class TransferStatusReader implements ItemReader<TransactionStatus>, Initializin
     @Override
     public TransactionStatus read() throws Exception {
 
-//        LOGGER.info("Reading Status data");
-
-//        if (!isInitialized()) {
-//            data = fetchDataFromAPI();
-//        }
-
         TransactionStatus status = null;
 
         if (nextIndex < data.size()) {
             status = data.get(nextIndex);
             nextIndex++;
         }
-
         return status;
     }
 
-//    private boolean isInitialized() {
-//        return this.data != null;
-//    }
 
     List<TransactionStatus> fetchDataFromAPI() {
 

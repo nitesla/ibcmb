@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog/1.1"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog/1.1
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-1.1.xsd">
+    <changeSet author="Longbridge (Fortune)" id="createTableUserAccountRestriction">
+        <createTable   tableName="USER_ACCOUNT_RESTRICTION">
+            <column name="ID" type="NUMBER(19,0)"/>
+            <column name="DEL_FLAG" type="VARCHAR2(255 CHAR)"/>
+            <column name="DELETED_ON" type="TIMESTAMP(6)"/>
+            <column name="VERSION" type="NUMBER(10,0)"/>
+            <column name="ACCOUNT_ID" type="NUMBER(19,0)"/>
+            <column name="CORPORATE_USER_ID" type="NUMBER(19,0)"/>
+            <column name="RESTRICTION_TYPE" type="VARCHAR2(255 CHAR)"/>
+        </createTable>
+    </changeSet>
+</databaseChangeLog>

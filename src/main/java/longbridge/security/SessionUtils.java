@@ -5,6 +5,7 @@ import longbridge.models.*;
 import longbridge.services.ConfigurationService;
 import longbridge.services.IntegrationService;
 import longbridge.services.MailService;
+import org.apache.commons.lang3.StringUtils;
 import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -71,7 +72,7 @@ public class SessionUtils {
                 String lastName = user.getLastName();
                 if (firstName == null) firstName = "";
                 if (lastName == null) lastName = "";
-                String name = firstName + " " + lastName;
+                String name = StringUtils.capitalize(firstName.toLowerCase());
                 if (name.isEmpty()) name = user.getUserName();
 
                 String date = new SimpleDateFormat("MMM dd, yyyy ' at ' hh:mm:ss a").format(new Date());

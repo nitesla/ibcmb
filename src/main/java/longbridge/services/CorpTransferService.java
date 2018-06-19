@@ -45,8 +45,6 @@ public interface CorpTransferService {
 
     Page<CorpTransRequest> getCompletedTransfers(Pageable pageDetails);
 
-    Page<CorpTransRequest> findCompletedTransfers(String pattern, Pageable pageDetails);
-
     String addAuthorization(CorpTransReqEntry transReqEntry);
 
 

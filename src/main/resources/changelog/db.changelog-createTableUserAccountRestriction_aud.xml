@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog/1.1"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog/1.1
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-1.1.xsd">
+    <changeSet author="Longbridge (Fortune)" id="createTableUserAccountRestrictionAud">
+        <createTable   tableName="USER_ACCOUNT_RESTRICTION_AUD">
+            <column name="ID" type="NUMBER(19,0)"/>
+            <column name="REV" type="NUMBER(10,0)"/>
+            <column name="REVTYPE" type="NUMBER(3,0)"/>
+            <column name="ACCOUNT_ID" type="NUMBER(19,0)"/>
+            <column name="ACCOUNT_ID_MOD" type="NUMBER(1,0)"/>
+            <column name="CORPORATE_USER_ID" type="NUMBER(19,0)"/>
+            <column name="CORPORATE_USER_ID_MOD" type="NUMBER(1,0)"/>
+            <column name="RESTRICTION_TYPE" type="VARCHAR2(255 CHAR)"/>
+            <column name="RESTRICTION_TYPE_MOD" type="NUMBER(1,0)"/>
+        </createTable>
+    </changeSet>
+</databaseChangeLog>

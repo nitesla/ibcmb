@@ -18,5 +18,7 @@
     <include file="changelog/db.changelog-addFieldToCorporateUser_aud.xml"/>
     <include file="changelog/db.changelog-createTableCorporateCifids.xml"/>
     <include file="changelog/db.changelog-createTableCorporateCifids_aud.xml"/>
+    <include file="changelog/db.changelog-createTableUserAccountRestriction.xml"/>
+    <include file="changelog/db.changelog-createTableUserAccountRestriction_aud.xml"/>
 
 </databaseChangeLog>

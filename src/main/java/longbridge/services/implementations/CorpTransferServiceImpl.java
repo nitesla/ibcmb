@@ -19,12 +19,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.*;
+import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 /**
@@ -41,6 +43,9 @@ public class CorpTransferServiceImpl implements CorpTransferService {
     private ConfigurationService configService;
     private Logger logger = LoggerFactory.getLogger(this.getClass());
     private Locale locale = LocaleContextHolder.getLocale();
+
+    @Autowired
+    private AccountConfigService accountConfigService;
 
     @Autowired
     private CorpTransferAuthRepo transferAuthRepo;
@@ -138,15 +143,9 @@ public class CorpTransferServiceImpl implements CorpTransferService {
         CorporateUser corporateUser = getCurrentUser();
         Corporate corporate = corporateUser.getCorporate();
         Page<CorpTransRequest> page = corpTransferRequestRepo.findByCorporateAndStatusInAndTranDateNotNullOrderByTranDateDesc(corporate, Arrays.asList("00", "000"), pageDetails);
-        return page;
-    }
-
-    @Override
-    public Page<CorpTransRequest> findCompletedTransfers(String pattern, Pageable pageDetails) {
-        CorporateUser corporateUser = getCurrentUser();
-        Corporate corporate = corporateUser.getCorporate();
-        Page<CorpTransRequest> page = corpTransferRequestRepo.findByCorporateAndStatusInAndTranDateNotNullOrderByTranDateDesc(corporate, Arrays.asList("00", "000"), pageDetails);
-        return page;
+        List<CorpTransRequest> corpTransRequests = page.getContent().stream()
+                .filter(transRequest -> !accountConfigService.isAccountRestrictedForViewFromUser(accountService.getAccountByAccountNumber(transRequest.getCustomerAccountNumber()).getId(),corporateUser.getId())).collect(Collectors.toList());
+        return new PageImpl<CorpTransRequest>(corpTransRequests,pageDetails,page.getTotalElements());
     }
 
     @Override
@@ -224,8 +223,11 @@ public class CorpTransferServiceImpl implements CorpTransferService {
     public Page<CorpTransRequest> getTransferRequests(Pageable pageDetails) {
         CorporateUser corporateUser = getCurrentUser();
         Corporate corporate = corporateUser.getCorporate();
-        Page<CorpTransRequest> corpTransRequests = corpTransferRequestRepo.findByCorporateOrderByStatusAscTranDateDesc(corporate, pageDetails);
-        return corpTransRequests;
+        Page<CorpTransRequest> page = corpTransferRequestRepo.findByCorporateOrderByStatusAscTranDateDesc(corporate, pageDetails);
+        List<CorpTransRequest> corpTransRequests = page.getContent().stream()
+                .filter(transRequest -> !accountConfigService.isAccountRestrictedForViewFromUser(accountService.getAccountByAccountNumber(transRequest.getCustomerAccountNumber()).getId(),corporateUser.getId())).collect(Collectors.toList());
+        return new PageImpl<CorpTransRequest>(corpTransRequests,pageDetails,page.getTotalElements());
+
     }
 
     @Override
