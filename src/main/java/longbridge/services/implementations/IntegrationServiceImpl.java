@@ -78,12 +78,6 @@ public class IntegrationServiceImpl implements IntegrationService {
 	}
 
 	@Override
-	public AccountInfo fetchAccount(String accountNumber) {
-		AccountInfo accountInfo = new AccountInfo();
-		return accountInfo;
-	}
-
-	@Override
 	public List<AccountInfo> fetchAccounts(String cifid) {
 
 		List<AccountInfo> accounts;

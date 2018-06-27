@@ -19,8 +19,6 @@ import java.util.concurrent.CompletableFuture;
 public interface IntegrationService {
 
 
-    AccountInfo fetchAccount(String accountNumber);
-
     /**
      * Returns all the accounts of a customer
      *

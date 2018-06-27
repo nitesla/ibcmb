@@ -6,6 +6,7 @@ import longbridge.exception.InternetBankingException;
 import longbridge.exception.VerificationException;
 import longbridge.models.CorpUserVerification;
 import longbridge.models.Role;
+import longbridge.utils.Verifiable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -16,7 +17,9 @@ import java.util.List;
  */
 public interface CorpUserVerificationService {
 
-//    String addUserFromCorporateAdmin(CorporateUserDTO user) throws InternetBankingException;
+
+    @Verifiable(operation = "UPDATE_ACCOUNT_PERMISSION_FROM_CORPORATE_ADMIN", description = "Update corporate user account permission")
+    String updateAccountPermissionsFromCorporateAdmin(CorporateUserDTO corporateUserDTO);
 
     String changeStatusFromCorporateAdmin(Long id) throws InternetBankingException;
 

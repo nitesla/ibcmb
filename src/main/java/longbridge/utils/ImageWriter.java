@@ -9,7 +9,7 @@ import java.io.IOException;
 import java.util.Base64;
 
 /**
- * Created by Showboy on 07/06/2017.
+ * Created by Wunmi on 07/06/2017.
  */
 public class ImageWriter {
 

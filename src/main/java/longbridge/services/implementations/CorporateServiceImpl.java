@@ -30,6 +30,7 @@ import org.thymeleaf.context.Context;
 import javax.persistence.EntityManager;
 import java.math.BigDecimal;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Created by Fortune on 4/5/2017.
@@ -163,7 +164,7 @@ public class CorporateServiceImpl implements CorporateService {
         corporate.setCreatedOnDate(new Date());
         corporate.setStatus("A");
         corporate.setCifids(corporateRequestDTO.getCifids());
-        List<Account> accounts = accountService.addAccounts(corporateRequestDTO.getAccounts());
+        List<Account> accounts = accountService.addAccounts(corporateRequestDTO.getAccounts().stream().collect(Collectors.toList()));
         corporate.setAccounts(accounts);
 
         Corporate newCorporate = corporateRepo.save(corporate);
@@ -383,7 +384,7 @@ public class CorporateServiceImpl implements CorporateService {
     @Transactional
     public void addAccounts(CorporateRequestDTO requestDTO) {
         Corporate corporate = corporateRepo.findOne(requestDTO.getId());
-        List<Account> newAccounts = accountService.addAccounts(requestDTO.getAccounts());
+        List<Account> newAccounts = accountService.addAccounts(requestDTO.getAccounts().stream().collect(Collectors.toList()));
         List<Account> existingAccounts = corporate.getAccounts();
         existingAccounts.addAll(newAccounts);
 
@@ -903,12 +904,7 @@ public class CorporateServiceImpl implements CorporateService {
     }
 
     private void sortRolesByRank(List<CorporateRole> roles) {
-        Collections.sort(roles, new Comparator<CorporateRole>() {
-            @Override
-            public int compare(CorporateRole o1, CorporateRole o2) {
-                return o1.getRank().compareTo(o2.getRank());
-            }
-        });
+        Collections.sort(roles, (o1, o2) -> o1.getRank().compareTo(o2.getRank()));
     }
 
     private CorporateRole convertCorporateRoleDTOToEntity(CorporateRoleDTO roleDTO) {

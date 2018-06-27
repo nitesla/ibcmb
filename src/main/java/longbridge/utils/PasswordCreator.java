@@ -42,9 +42,7 @@ public class PasswordCreator {
         numOfDigits = noOfDigits;
         int count = 0;
 
-//        if(specialChars!=null) {
-//            specialCharsArray = specialChars.toCharArray();
-//        }
+
         StringBuilder sb = new StringBuilder();
         // get at least one lowercase letter
 //        sb.append(locaseArray[random.nextInt(locaseArray.length)]);

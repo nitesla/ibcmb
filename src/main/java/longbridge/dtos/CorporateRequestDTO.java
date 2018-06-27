@@ -38,7 +38,7 @@ public class CorporateRequestDTO extends AbstractDTO implements PrettySerializer
     private List<AuthorizerLevelDTO> authorizers = new ArrayList<>();
     private List<CorporateUserDTO> corporateUsers = new ArrayList<>();
     private List<CorpTransferRuleDTO> corpTransferRules = new ArrayList<>();
-    private List<AccountDTO> accounts = new ArrayList<>();
+    private Set<AccountDTO> accounts = new HashSet<>();
     private Set<String> cifids = new HashSet<>();
 
 
@@ -122,11 +122,11 @@ public class CorporateRequestDTO extends AbstractDTO implements PrettySerializer
         this.authorizers = authorizers;
     }
 
-    public List<AccountDTO> getAccounts() {
+    public Set<AccountDTO> getAccounts() {
         return accounts;
     }
 
-    public void setAccounts(List<AccountDTO> accounts) {
+    public void setAccounts(Set<AccountDTO> accounts) {
         this.accounts = accounts;
     }
 
@@ -232,6 +232,7 @@ public class CorporateRequestDTO extends AbstractDTO implements PrettySerializer
                 for (AccountDTO accountDTO : value.accounts) {
                     gen.writeObjectFieldStart((++count).toString());
                     gen.writeStringField("Account Number", accountDTO.getAccountNumber());
+                    gen.writeStringField("Account Name", accountDTO.getAccountName());
                     gen.writeEndObject();
                 }
                 gen.writeEndObject();
@@ -265,7 +266,9 @@ public class CorporateRequestDTO extends AbstractDTO implements PrettySerializer
                         for (AccountPermissionDTO permission : user.getAccountPermissions()) {
                             gen.writeObjectFieldStart((++accountNum).toString());
 
-                            gen.writeStringField("Account Number", permission.getAccountNumber() + " | " + permission.getPermission());
+                            gen.writeStringField("Account Number", permission.getAccountNumber());
+                            gen.writeStringField("Account Name", permission.getAccountName() );
+                            gen.writeStringField("Account Permission", permission.getPermission().name());
 
                             gen.writeEndObject();
                         }

@@ -53,7 +53,7 @@ public class SessionUtils {
                 session.setMaxInactiveInterval(timeout * 60);
             }
         } catch (Exception e) {
-            logger.error("EXCEPTION OCCURRED {}", e.getMessage());
+            logger.error("EXCEPTION OCCURRED ", e);
         }
 
     }

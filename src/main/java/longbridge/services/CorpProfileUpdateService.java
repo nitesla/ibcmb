@@ -3,7 +3,7 @@ package longbridge.services;
 import longbridge.dtos.CorporateUserDTO;
 
 /**
- * Created by Showboy on 08/07/2017.
+ * Created by Wunmi on 08/07/2017.
  */
 public interface CorpProfileUpdateService {
 

@@ -166,7 +166,12 @@ public class VerificationServiceImpl implements VerificationService {
             }
             else if ("UPDATE_USER_ACCOUNT_PERMISSION".equals(verification.getOperation())) {
                 CorporateUserDTO corpUser = mapper.readValue(verification.getOriginalObject(), CorporateUserDTO.class);
-                corporateUserService.updateAccountRestrictionsBasedOnPermissions(corpUser);
+                corporateUserService.updateAccountPermissions(corpUser);
+            }
+
+            else if ("UPDATE_ACCOUNT_PERMISSION_FROM_CORPORATE_ADMIN".equals(verification.getOperation())) {
+                CorporateUserDTO corpUser = mapper.readValue(verification.getOriginalObject(), CorporateUserDTO.class);
+                corporateUserService.updateAccountPermissions(corpUser);
             }
             else {
                 clazz = Class.forName(PACKAGE_NAME + verification.getEntityName());
@@ -237,6 +242,59 @@ public class VerificationServiceImpl implements VerificationService {
 
         }
 
+        verification.setStatus(VerificationStatus.PENDING);
+        verificationRepo.save(verification);
+        logger.info(entityName + " has been saved for verification");
+
+        return description + " has gone for verification";
+
+    }
+
+    @Override
+    public String add(AbstractDTO object, String operation, String description, UserType userTypeForApproval) throws JsonProcessingException {
+
+        User doneBy = getCurrentUser();
+        String entityName = object.getClass().getSimpleName();
+
+        Verification verification = new Verification();
+        verification.setEntityName(entityName);
+        verification.setInitiatedOn(new Date());
+        verification.setInitiatedBy(doneBy.getUserName());
+        verification.setUserType(userTypeForApproval);
+        verification.setOperation(operation);
+        verification.setDescription(description);
+        ObjectMapper mapper = new ObjectMapper();
+        verification.setOriginalObject(mapper.writeValueAsString(object));
+
+        ObjectMapper prettyMapper = new ObjectMapper();
+
+        if (object instanceof PrettySerializer) {
+            JsonSerializer<Object> serializer = ((PrettySerializer) (object)).getSerializer();
+            SimpleModule module = new SimpleModule();
+            module.addSerializer(object.getClass(), serializer);
+            prettyMapper.registerModule(module);
+            logger.debug("Registering Pretty serializer for " + object.getClass().getName());
+        }
+
+        Long id = object.getId();
+        verification.setAfterObject(prettyMapper.writeValueAsString(object));
+
+        if (id != null) {
+
+            Verification pendingVerification = verificationRepo.findFirstByEntityNameAndEntityIdAndStatus(entityName, id, VerificationStatus.PENDING);
+            if (pendingVerification != null) {
+                logger.info("Found entity with pending verification");
+                throw new InternetBankingException(entityName + " has changes pending for verification. Approve or " +
+                        "decline the changes before making another one.");
+
+            }
+            verification.setEntityId(id);
+            Object beforeObject = getBeforeObject(operation, object);
+            if (beforeObject != null) {
+                verification.setBeforeObject(prettyMapper.writeValueAsString(beforeObject));
+            }
+
+        }
 
         verification.setStatus(VerificationStatus.PENDING);
         verificationRepo.save(verification);
@@ -250,7 +308,7 @@ public class VerificationServiceImpl implements VerificationService {
 
         Object beforeObject = null;
 
-        if ("UPDATE_USER_ACCOUNT_PERMISSION".equals(operation)) {
+        if ("UPDATE_USER_ACCOUNT_PERMISSION".equals(operation) || "UPDATE_ACCOUNT_PERMISSION_FROM_CORPORATE_ADMIN".equals(operation) ) {
             CorporateUserDTO corporateUserDTO = (CorporateUserDTO) dto;
             List<AccountPermissionDTO> accountPermissions = corporateUserService.getAccountPermissions(corporateUserDTO.getId());
             ModelMapper modelMapper = new ModelMapper();

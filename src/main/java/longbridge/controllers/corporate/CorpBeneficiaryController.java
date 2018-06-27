@@ -82,6 +82,8 @@ public class CorpBeneficiaryController {
         return "corp/beneficiary/view";
     }
 
+
+
     @GetMapping("/new")
     public String addBeneficiary(Model model) {
         model.addAttribute("corpLocalBeneficiaryDTO", new CorpLocalBeneficiaryDTO());

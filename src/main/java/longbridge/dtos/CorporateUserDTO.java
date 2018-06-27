@@ -404,14 +404,15 @@ public class CorporateUserDTO extends AbstractDTO implements PrettySerializer {
                     for (AccountPermissionDTO accountPermission : accountPermissions) {
                         gen.writeObjectFieldStart((++count).toString());
 
-                        gen.writeStringField("Account Number", accountPermission.getAccountNumber() + " | " + accountPermission.getPermission());
+                        gen.writeStringField("Account Number", accountPermission.getAccountNumber());
+                        gen.writeStringField("Account Name", accountPermission.getAccountName() );
+                        gen.writeStringField("Account Permission", accountPermission.getPermission().name() );
 
                         gen.writeEndObject();
                     }
-
+                    gen.writeEndObject();
                 }
 
-                gen.writeEndObject();
 
                 gen.writeEndObject();
             }

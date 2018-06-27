@@ -8,4 +8,6 @@ public class VerificationException extends InternetBankingException {
     public VerificationException(){super();}
 
     public VerificationException(String message){super(message);}
+
+    public VerificationException(String message, Throwable cause){super(message,cause);}
 }

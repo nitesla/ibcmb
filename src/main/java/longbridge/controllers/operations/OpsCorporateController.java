@@ -3,6 +3,7 @@ package longbridge.controllers.operations;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import longbridge.api.AccountDetails;
 import longbridge.api.AccountInfo;
 import longbridge.api.CustomerDetails;
 import longbridge.dtos.*;
@@ -738,7 +739,7 @@ public class OpsCorporateController {
             corporateRequestDTO.setCorporateName(corporate.getCorporateName());
             corporateRequestDTO.setCorporateId(corporate.getCorporateId());
             if (accounts.length > 0) {
-                List<AccountDTO> accountDTOs = getAccountDTOs(accounts);
+                Set<AccountDTO> accountDTOs = getAccountDTOs(accounts);
                 corporateRequestDTO.setAccounts(accountDTOs);
                 Set<String> uniqueCifids = getUniqueCifids(cifids);
                 corporateRequestDTO.setCifids(uniqueCifids);
@@ -787,11 +788,15 @@ public class OpsCorporateController {
         return accountInfos;
     }
 
-    private List<AccountDTO> getAccountDTOs(String[] accounts) {
-        List<AccountDTO> accountDTOs = new ArrayList<>();
+    private Set<AccountDTO> getAccountDTOs(String[] accounts) {
+        Set<AccountDTO> accountDTOs = new HashSet<>();
         for (String account : accounts) {
+            AccountDetails accountDetails = integrationService.viewAccountDetails(account);
+            logger.debug("Fetched account details: {}",accountDetails);
             AccountDTO accountDTO = new AccountDTO();
-            accountDTO.setAccountNumber(account);
+            accountDTO.setAccountNumber(accountDetails.getAcctNumber());
+            accountDTO.setAccountName(accountDetails.getAcctName());
+            accountDTO.setCustomerId(accountDetails.getCustId());
             accountDTOs.add(accountDTO);
         }
         return accountDTOs;
@@ -1132,7 +1137,6 @@ public class OpsCorporateController {
 
         logger.info("Transaction rules are: {}", rules);
 
-
         List<CorpTransferRuleDTO> transferRules = null;
         ObjectMapper mapper = new ObjectMapper();
         mapper.configure(JsonParser.Feature.ALLOW_UNQUOTED_FIELD_NAMES, true);
@@ -1294,7 +1298,7 @@ public class OpsCorporateController {
         logger.info("Corporate Request {}", corporateRequestDTO);
         if (accounts.length > 0) {
             logger.info("Customer accounts {}", Arrays.asList(accounts));
-            List<AccountDTO> accountDTOs = new ArrayList<>();
+            Set<AccountDTO> accountDTOs = new HashSet<>();
             for (String account : accounts) {
                 AccountDTO accountDTO = new AccountDTO();
                 accountDTO.setAccountNumber(account);
@@ -1336,7 +1340,7 @@ public class OpsCorporateController {
         cifids.add(cifid);
         if (accounts.length > 0) {
             logger.info("Customer accounts {}", Arrays.asList(accounts));
-            List<AccountDTO> accountDTOs = new ArrayList<>();
+            Set<AccountDTO> accountDTOs = new HashSet<>();
             for (String account : accounts) {
                 AccountDTO accountDTO = new AccountDTO();
                 accountDTO.setAccountNumber(account);
@@ -1397,7 +1401,9 @@ public class OpsCorporateController {
         corporateRequestDTO.setRcNumber(corporate.getRcNumber());
         corporateRequestDTO.setId(corporate.getId());
 
-        corporateRequestDTO.setAccounts(Arrays.asList(accountDTO));
+        Set<AccountDTO> accountDTOs = new HashSet<>();
+        accountDTOs.add(accountDTO);
+        corporateRequestDTO.setAccounts(accountDTOs);
 
 
         try {
@@ -1486,9 +1492,12 @@ public class OpsCorporateController {
                     }
                 }
 
-                for (String account : accounts) {
-                    if (!accountPermissions.contains(new AccountPermissionDTO(account))) {
-                        AccountPermissionDTO accountPermission = new AccountPermissionDTO(account);
+                Set<AccountDTO> accountDTOs = getAccountDTOs(accounts);
+
+                for (AccountDTO account : accountDTOs) {
+                    if (!accountPermissions.contains(new AccountPermissionDTO(account.getAccountNumber()))) {
+                        AccountPermissionDTO accountPermission = new AccountPermissionDTO(account.getAccountNumber());
+                        accountPermission.setAccountName(account.getAccountName());
                         accountPermission.setPermission(AccountPermissionDTO.Permission.VIEW_AND_TRANSACT);
                         accountPermissions.add(accountPermission);
                         logger.debug("Added account {} found in the list of corporate selected accounts", accountPermission);
@@ -1515,10 +1524,14 @@ public class OpsCorporateController {
     }
 
     private List<AccountPermissionDTO> getDefaultAccountPermissions(String[] accounts) {
+
+        Set<AccountDTO> accountDTOs = getAccountDTOs(accounts);
+
         List<AccountPermissionDTO> accountPermissions = new ArrayList<>();
 
-        for (String account : accounts) {
-            AccountPermissionDTO accountPermission = new AccountPermissionDTO(account);
+        for (AccountDTO account : accountDTOs) {
+            AccountPermissionDTO accountPermission = new AccountPermissionDTO(account.getAccountNumber());
+            accountPermission.setAccountName(account.getAccountName());
             accountPermission.setPermission(AccountPermissionDTO.Permission.VIEW_AND_TRANSACT);
             accountPermissions.add(accountPermission);
         }
@@ -1551,7 +1564,9 @@ public class OpsCorporateController {
         if (nameValues != null) {
             for (NameValue nameValue : nameValues) {
                 AccountPermissionDTO accountPermissionDTO = new AccountPermissionDTO();
-                accountPermissionDTO.setAccountNumber(nameValue.getName());
+                AccountDetails accountDetails = integrationService.viewAccountDetails(nameValue.getName());
+                accountPermissionDTO.setAccountNumber(accountDetails.getAcctNumber());
+                accountPermissionDTO.setAccountName(accountDetails.getAcctName());
                 accountPermissionDTO.setPermission(AccountPermissionDTO.Permission.valueOf(nameValue.getValue()));
                 accountPermissionDTOs.add(accountPermissionDTO);
             }

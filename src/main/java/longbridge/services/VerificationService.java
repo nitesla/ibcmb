@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import longbridge.dtos.AbstractDTO;
 import longbridge.dtos.VerificationDTO;
 import longbridge.exception.VerificationException;
+import longbridge.models.UserType;
 import longbridge.models.Verification;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -43,6 +44,8 @@ public interface VerificationService {
     String verify(Long id) throws VerificationException;
 
     String add(AbstractDTO dto, String operation, String description) throws JsonProcessingException;
+
+    String add(AbstractDTO object, String operation, String description, UserType userTypeForApproval) throws JsonProcessingException;
 
     boolean isPendingVerification(Long entityId, String entityName);
 

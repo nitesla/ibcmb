@@ -7,7 +7,6 @@ import longbridge.exception.DuplicateObjectException;
 import longbridge.exception.InternetBankingException;
 import longbridge.exception.InternetBankingSecurityException;
 import longbridge.exception.PasswordException;
-import longbridge.forms.ChangePassword;
 import longbridge.models.CorporateUser;
 import longbridge.models.UserType;
 import longbridge.services.*;
@@ -15,7 +14,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
-import org.springframework.http.HttpRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -241,33 +239,6 @@ public class OpsCorporateUserController {
         return "redirect:/ops/retail/users";
     }
 
-    @GetMapping("changePassword")
-    public String changePassword() {
-        return "changePassword";
-    }
-
-    @PostMapping("changePassword")
-    public String changePassword(@Valid ChangePassword changePassword, Long userId, BindingResult result, HttpRequest request, Model model) {
-        if (result.hasErrors()) {
-            return "changePassword";
-        }
-        CorporateUserDTO user = corporateUserService.getUser(userId);
-        String oldPassword = changePassword.getOldPassword();
-        String newPassword = changePassword.getNewPassword();
-        String confirmPassword = changePassword.getConfirmPassword();
-
-        //TODO validate password according to the defined password policy
-        //The validations can be done on the ChangePassword class
-
-        if (!newPassword.equals(confirmPassword)) {
-            logger.info("PASSWORD MISMATCH");
-        }
-
-        user.setPassword(newPassword);
-        //corporateUserService.addUser(user);
-        logger.info("PASSWORD CHANGED SUCCESSFULLY");
-        return "changePassword";
-    }
 
     @GetMapping("new/entity")
     public String newCorporate() {
@@ -311,9 +282,6 @@ public class OpsCorporateUserController {
             accountDetails.put("accountNum", accountNum);
             accountDetails.put("accountName", accountName);
         }
-//        model.addAttribute("accounts", accountInfos);
-//        model.addAttribute("corporate", corporate);
-
         return accountDetails;
 
     }
@@ -365,7 +333,7 @@ public class OpsCorporateUserController {
 
             } catch (Exception e) {
                 logger.error("Failed to update corporate user account permissions", e);
-                redirectAttributes.addFlashAttribute("failure", "Error occured updating account permissions");
+                redirectAttributes.addFlashAttribute("failure", "Error occurred updating account permissions");
                 return "redirect:/ops/corporates/users/" + corporateUserDTO.getId() + "/accountpermission";
 
             }

@@ -7,7 +7,6 @@ import com.fasterxml.jackson.databind.module.SimpleModule;
 import longbridge.dtos.CorpUserVerificationDTO;
 import longbridge.dtos.CorporateUserDTO;
 import longbridge.dtos.SettingDTO;
-import longbridge.dtos.VerificationDTO;
 import longbridge.exception.EntrustException;
 import longbridge.exception.InternetBankingException;
 import longbridge.exception.VerificationException;
@@ -16,11 +15,9 @@ import longbridge.models.*;
 import longbridge.repositories.*;
 import longbridge.security.userdetails.CustomUserPrincipal;
 import longbridge.services.*;
-import longbridge.utils.DateFormatter;
 import longbridge.utils.PrettySerializer;
 import longbridge.utils.Verifiable;
 import longbridge.utils.VerificationStatus;
-import org.aspectj.lang.JoinPoint;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,7 +28,6 @@ import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
-import org.springframework.mail.MailException;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -44,7 +40,7 @@ import java.io.IOException;
 import java.util.*;
 
 /**
- * Created by Showboy on 28/07/2017.
+ * Created by Wunmi on 28/07/2017.
  */
 @Service
 public class CorpUserVerificationServiceImpl implements CorpUserVerificationService {
@@ -88,10 +84,34 @@ public class CorpUserVerificationServiceImpl implements CorpUserVerificationServ
     @Autowired
     private ModelMapper modelMapper;
 
+    @Autowired
+    private VerificationService verificationService;
+
     @Value("${host.url}")
     private String hostUrl;
 
     private Locale locale = LocaleContextHolder.getLocale();
+
+
+
+
+
+    @Override
+    @Verifiable(operation = "UPDATE_ACCOUNT_PERMISSION_FROM_CORPORATE_ADMIN", description = "Update corporate user account permission")
+    public String updateAccountPermissionsFromCorporateAdmin(CorporateUserDTO corporateUserDTO) {
+
+        try {
+            String message = verificationService.add(corporateUserDTO,"UPDATE_ACCOUNT_PERMISSION_FROM_CORPORATE_ADMIN","Update corporate user account permission", UserType.OPERATIONS);
+            logger.info("User account permissions updated successfully");
+            return message;
+        } catch (InternetBankingException ibe) {
+            throw ibe;
+        } catch (Exception e) {
+            logger.error("Failed to update user account permissions",e);
+            throw new InternetBankingException(messageSource.getMessage("accountpermission.update.failure", null, locale), e);
+        }
+    }
+
 
     @Override
     public String changeStatusFromCorporateAdmin(Long id) throws InternetBankingException {
@@ -109,12 +129,12 @@ public class CorpUserVerificationServiceImpl implements CorpUserVerificationServ
             String newStatus = "A".equals(oldStatus) ? "I" : "A";
             corporateUserDTO.setStatus(newStatus);
             saveInit(corporateUserDTO, "UPDATE_CORP_USER_STATUS", "Change corporate user activation status" );
-            return messageSource.getMessage("user.add.success", null, locale);
+            return messageSource.getMessage("success.user.status", null, locale);
         }catch (VerificationInterruptedException ib){
             return ib.getMessage();
         }catch (VerificationException e){
-            logger.error(e.getMessage());
-            throw new InternetBankingException(messageSource.getMessage("failed.user.add", null, locale));
+            logger.error(e.getMessage(),e);
+            throw new InternetBankingException(messageSource.getMessage("failed.user.status", null, locale));
         }catch (InternetBankingException ibe){
             logger.error(ibe.getMessage());
             throw ibe;
@@ -239,7 +259,7 @@ public class CorpUserVerificationServiceImpl implements CorpUserVerificationServ
 
         }catch (JsonProcessingException e){
             logger.error(e.getMessage(), e);
-            throw new VerificationException(e.getMessage());
+            throw new VerificationException(e.getMessage(),e);
         }
     }
 

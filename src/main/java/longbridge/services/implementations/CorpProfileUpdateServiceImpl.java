@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.Locale;
 
 /**
- * Created by Showboy on 08/07/2017.
+ * Created by Wunmi on 08/07/2017.
  */
 @Service
 public class CorpProfileUpdateServiceImpl implements CorpProfileUpdateService{

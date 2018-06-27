@@ -41,7 +41,7 @@
                         <tr>
 
                             <th>Amount</th>
-                            <td th:text="${transferRequest.amount}"></td>
+                            <td th:text="${#numbers.formatDecimal(transferRequest.amount, 1, 'COMMA', 2, 'POINT')}"></td>
 
                         </tr>
                         <tr>

@@ -1,26 +1,17 @@
 package longbridge.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import org.hibernate.annotations.Where;
-import org.hibernate.envers.Audited;
-
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
-
 import longbridge.utils.PrettySerializer;
+import org.hibernate.annotations.Where;
+import org.hibernate.envers.Audited;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-
+import javax.persistence.*;
 import java.io.IOException;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 /**
@@ -32,17 +23,17 @@ import java.util.Set;
 @Where(clause = "del_Flag='N'")
 public class CorporateRole extends AbstractEntity implements PrettySerializer{
 
-    String name;
-    Integer rank;
-    String roleType;
+    private String name;
+    private Integer rank;
+    private String roleType;
 
     @ManyToOne
-    Corporate corporate;
+    private Corporate corporate;
 
     @OneToMany(cascade={CascadeType.ALL})
     @JoinTable(name="corp_role_user")
     @JoinColumn(name="user_id")
-    Set<CorporateUser> users = new HashSet<CorporateUser>();
+    private Set<CorporateUser> users = new HashSet<CorporateUser>();
 
 
     public String getName() {

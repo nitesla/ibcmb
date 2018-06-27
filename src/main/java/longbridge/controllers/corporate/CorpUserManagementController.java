@@ -66,7 +66,7 @@ public class CorpUserManagementController {
     private MessageSource messageSource;
 
     @ModelAttribute
-    public void init(Model model, Principal principal){
+    public void init(Model model, Principal principal) {
         List<CodeDTO> corporateTypes = codeService.getCodesByType("CORPORATE_TYPE");
         model.addAttribute("corporateTypes", corporateTypes);
 
@@ -99,11 +99,16 @@ public class CorpUserManagementController {
 //    }
 
     @GetMapping
-    public String viewUsers(Principal principal, Model model){
+    public String viewUsers(Principal principal, Model model) {
         CorporateUser corporateUser = corporateUserService.getUserByName(principal.getName());
-        CorporateDTO corporate = corporateService.getCorporate(corporateUser.getCorporate().getId());
-        model.addAttribute("corporate", corporate);
-        return "corp/user/view";
+
+        if(!corporateUser.getCorpUserType().equals(CorpUserType.INITIATOR)) {
+            CorporateDTO corporate = corporateService.getCorporate(corporateUser.getCorporate().getId());
+            model.addAttribute("corporate", corporate);
+            return "corp/user/view";
+        }
+        //Redirect the Initiator to dashboard, has no right to manage users
+        return "redirect:/corporate/dashboard";
     }
 
     @GetMapping(path = "/all")
@@ -111,20 +116,27 @@ public class CorpUserManagementController {
     @ResponseBody
     DataTablesOutput<CorporateUserDTO> getUsers(Principal principal, DataTablesInput input) {
         CorporateUser corporateUser = corporateUserService.getUserByName(principal.getName());
-        CorporateDTO corporate = corporateService.getCorporate(corporateUser.getCorporate().getId());
-        Pageable pageable = DataTablesUtils.getPageable(input);
-        Page<CorporateUserDTO> users = corporateUserService.getUsers(corporate.getId(), pageable);
-        DataTablesOutput<CorporateUserDTO> out = new DataTablesOutput<CorporateUserDTO>();
-        out.setDraw(input.getDraw());
-        out.setData(users.getContent());
-        out.setRecordsFiltered(users.getTotalElements());
-        out.setRecordsTotal(users.getTotalElements());
-        return out;
+        if(!corporateUser.getCorpUserType().equals(CorpUserType.INITIATOR)) {
+            CorporateDTO corporate = corporateService.getCorporate(corporateUser.getCorporate().getId());
+            Pageable pageable = DataTablesUtils.getPageable(input);
+            Page<CorporateUserDTO> users = corporateUserService.getUsers(corporate.getId(), pageable);
+            DataTablesOutput<CorporateUserDTO> out = new DataTablesOutput<CorporateUserDTO>();
+            out.setDraw(input.getDraw());
+            out.setData(users.getContent());
+            out.setRecordsFiltered(users.getTotalElements());
+            out.setRecordsTotal(users.getTotalElements());
+            return out;
+        }
+        return null;
     }
 
     @GetMapping("/add")
-    public String addUser(Principal principal, Model model){
+    public String addUser(Principal principal, Model model) {
         CorporateUser corporateUser = corporateUserService.getUserByName(principal.getName());
+
+        if(!corporateUser.getCorpUserType().equals(CorpUserType.ADMIN)){
+            return "redirect:/corporate/dashboard";
+        }
         CorporateDTO corporate = corporateService.getCorporate(corporateUser.getCorporate().getId());
         CorporateUserDTO corporateUserDTO = new CorporateUserDTO();
         model.addAttribute("corporateUserDTO", corporateUserDTO);
@@ -133,9 +145,14 @@ public class CorpUserManagementController {
     }
 
     @PostMapping
-    public String createUser(@ModelAttribute("corporateUserDTO") @Valid CorporateUserDTO corporateUserDTO, BindingResult result, WebRequest webRequest, Model model, RedirectAttributes redirectAttributes, Locale locale) throws Exception {
+    public String createUser(@ModelAttribute("corporateUserDTO") @Valid CorporateUserDTO corporateUserDTO, BindingResult result, Principal principal, Model model, RedirectAttributes redirectAttributes, Locale locale) throws Exception {
 
-        if (result.hasErrors()) {
+        CorporateUser loggedInUser = corporateUserService.getUserByName(principal.getName());
+        if(!loggedInUser.getCorpUserType().equals(CorpUserType.ADMIN)) {
+            return "redirect:/corporate/dashboard";
+        }
+
+            if (result.hasErrors()) {
             return "corp/user/add";
         }
 
@@ -153,20 +170,20 @@ public class CorpUserManagementController {
 
         try {
 
-            if (CorpUserType.AUTHORIZER.equals(corporateUserDTO.getCorpUserType())){
+            if (CorpUserType.AUTHORIZER.equals(corporateUserDTO.getCorpUserType())) {
                 CorporateRoleDTO corporateRole = corporateService.getCorporateRole(corporateUserDTO.getCorporateRoleId());
                 corporateUserDTO.setCorporateRole(corporateRole.getName() + " " + corporateRole.getRank());
 
-                if (makerCheckerService.isEnabled("ADD_AUTHORIZER_FROM_CORPORATE_ADMIN")){
+                if (makerCheckerService.isEnabled("ADD_AUTHORIZER_FROM_CORPORATE_ADMIN")) {
                     corpUserVerificationService.addAuthorizer(corporateUserDTO, "ADD_AUTHORIZER_FROM_CORPORATE_ADMIN", "Add an authorizer by corporate Admin");
-                }else {
+                } else {
                     corporateUserService.addAuthorizer(corporateUserDTO);
                 }
 
-            }else{
-                if (makerCheckerService.isEnabled("ADD_INITIATOR_FROM_CORPORATE_ADMIN")){
+            } else {
+                if (makerCheckerService.isEnabled("ADD_INITIATOR_FROM_CORPORATE_ADMIN")) {
                     corpUserVerificationService.addInitiator(corporateUserDTO, "ADD_INITIATOR_FROM_CORPORATE_ADMIN", "Add an initiator by corporate Admin");
-                }else {
+                } else {
                     corporateUserService.addInitiator(corporateUserDTO);
                 }
             }
@@ -177,24 +194,31 @@ public class CorpUserManagementController {
             logger.error("Error creating corporate user {}", corporateUserDTO.getUserName(), doe);
             model.addAttribute("failure", doe.getMessage());
             return "corp/user/add";
-        } catch (VerificationInterruptedException ib){
+        } catch (VerificationInterruptedException ib) {
             redirectAttributes.addFlashAttribute("message", ib.getMessage());
             return "redirect:/corporate/users/";
-        }catch (VerificationException e){
+        } catch (VerificationException e) {
             result.addError(new ObjectError("error", e.getMessage()));
             logger.error("Error creating corporate user", e);
             model.addAttribute("failure", messageSource.getMessage("user.add.failure", null, locale));
             return "corp/user/add";
-        }catch (InternetBankingException ibe) {
+        } catch (InternetBankingException ibe) {
             result.addError(new ObjectError("error", ibe.getMessage()));
             logger.error("Error creating corporate user", ibe);
-            model.addAttribute("failure", messageSource.getMessage("failure",null,locale));
+            model.addAttribute("failure", messageSource.getMessage("failure", null, locale));
             return "corp/user/add";
         }
     }
 
+
     @GetMapping("{id}/edit")
-    public String editUser(@PathVariable Long id, Model model){
+    public String editUser(@PathVariable Long id, Model model, Principal principal) {
+
+        CorporateUser loggedInUser = corporateUserService.getUserByName(principal.getName());
+        if(!loggedInUser.getCorpUserType().equals(CorpUserType.ADMIN)) {
+            return "redirect:/corporate/dashboard";
+        }
+
         CorporateUserDTO corporateUserDTO = corporateUserService.getUser(id);
         CorporateDTO corporate = corporateService.getCorporate(Long.parseLong(corporateUserDTO.getCorporateId()));
 
@@ -204,7 +228,12 @@ public class CorpUserManagementController {
     }
 
     @PostMapping("/edit")
-    public String updateUser(@ModelAttribute("corporateUserDTO") @Valid CorporateUserDTO corporateUserDTO, BindingResult result, WebRequest webRequest, Model model, RedirectAttributes redirectAttributes, Locale locale) throws Exception {
+    public String updateUser(@ModelAttribute("corporateUserDTO") @Valid CorporateUserDTO corporateUserDTO, BindingResult result, Principal principal, Model model, RedirectAttributes redirectAttributes, Locale locale) throws Exception {
+
+        CorporateUser loggedInUser = corporateUserService.getUserByName(principal.getName());
+        if(!loggedInUser.getCorpUserType().equals(CorpUserType.ADMIN)) {
+            return "redirect:/corporate/dashboard";
+        }
 
         if (result.hasErrors()) {
             CorporateDTO corporate = corporateService.getCorporate(Long.parseLong(corporateUserDTO.getCorporateId()));
@@ -214,7 +243,7 @@ public class CorpUserManagementController {
             return "corp/user/edit";
         }
 
-        if(verificationService.isPendingVerification(corporateUserDTO.getId(), CorporateUser.class.getSimpleName())){
+        if (verificationService.isPendingVerification(corporateUserDTO.getId(), CorporateUser.class.getSimpleName())) {
             model.addAttribute("failure", "User has pending changes to be verified");
             return "corp/user/edit";
         }
@@ -234,26 +263,25 @@ public class CorpUserManagementController {
                 }
             }
 
-            if (CorpUserType.AUTHORIZER.equals(corporateUserDTO.getCorpUserType())){
+            if (CorpUserType.AUTHORIZER.equals(corporateUserDTO.getCorpUserType())) {
                 CorporateRoleDTO corporateRole = corporateService.getCorporateRole(corporateUserDTO.getCorporateRoleId());
                 corporateUserDTO.setCorporateRole(corporateRole.getName() + " " + corporateRole.getRank());
             }
 
-            if ( CorpUserType.AUTHORIZER.equals(corporateUser.getCorpUserType())){
+            if (CorpUserType.AUTHORIZER.equals(corporateUser.getCorpUserType())) {
 
-                if (makerCheckerService.isEnabled("UPDATE_USER_FROM_CORPORATE_ADMIN")){
+                if (makerCheckerService.isEnabled("UPDATE_USER_FROM_CORPORATE_ADMIN")) {
                     corpUserVerificationService.saveAuthorizer(corporateUserDTO, "UPDATE_USER_FROM_CORPORATE_ADMIN", "Edit an authorizer by corporate Admin");
-                }else {
-                    String message =  corporateUserService.updateUserFromCorpAdmin(corporateUserDTO);
+                } else {
+                    String message = corporateUserService.updateUserFromCorpAdmin(corporateUserDTO);
                     redirectAttributes.addFlashAttribute("message", message);
-
                 }
 
-            }else{
+            } else {
 
-                if (makerCheckerService.isEnabled("UPDATE_USER_FROM_CORPORATE_ADMIN")){
+                if (makerCheckerService.isEnabled("UPDATE_USER_FROM_CORPORATE_ADMIN")) {
                     corpUserVerificationService.saveInitiator(corporateUserDTO, "UPDATE_USER_FROM_CORPORATE_ADMIN", "Edit an initiator by corporate Admin");
-                }else {
+                } else {
                     String message = corporateUserService.updateUserFromCorpAdmin(corporateUserDTO);
                     redirectAttributes.addFlashAttribute("message", message);
                 }
@@ -261,20 +289,20 @@ public class CorpUserManagementController {
 
             return "redirect:/corporate/users/";
 
-        }catch (DuplicateObjectException doe) {
+        } catch (DuplicateObjectException doe) {
             result.addError(new ObjectError("error", doe.getMessage()));
             logger.error("Error creating corporate user {}", corporateUserDTO.getUserName(), doe);
             model.addAttribute("failure", doe.getMessage());
             return "corp/user/edit";
-        } catch (VerificationInterruptedException ib){
+        } catch (VerificationInterruptedException ib) {
             redirectAttributes.addFlashAttribute("message", ib.getMessage());
             return "redirect:/corporate/users/";
-        }catch (VerificationException e){
+        } catch (VerificationException e) {
             result.addError(new ObjectError("error", e.getMessage()));
             logger.error("Error editing corporate user", e);
             model.addAttribute("failure", messageSource.getMessage("user.add.failure", null, locale));
             return "corp/user/edit";
-        }catch (InternetBankingException ibe) {
+        } catch (InternetBankingException ibe) {
             result.addError(new ObjectError("error", ibe.getMessage()));
             logger.error("Error updating corporate user", ibe);
             model.addAttribute("failure", ibe.getMessage());
@@ -283,17 +311,21 @@ public class CorpUserManagementController {
     }
 
     @GetMapping("/{id}/status")
-    public String activationStatus(@PathVariable Long id, RedirectAttributes redirectAttributes){
+    public String activationStatus(@PathVariable Long id, RedirectAttributes redirectAttributes, Principal principal) {
 
+        CorporateUser loggedInUser = corporateUserService.getUserByName(principal.getName());
+        if(!loggedInUser.getCorpUserType().equals(CorpUserType.ADMIN)) {
+            return "redirect:/corporate/dashboard";
+        }
         try {
             String message = "";
-            if (makerCheckerService.isEnabled("UPDATE_CORP_USER_STATUS")){
+            if (makerCheckerService.isEnabled("UPDATE_CORP_USER_STATUS")) {
                 message = corpUserVerificationService.changeStatusFromCorporateAdmin(id);
-            }else {
+            } else {
                 message = corporateUserService.changeActivationStatusFromCorpAdmin(id);
             }
             redirectAttributes.addFlashAttribute("message", message);
-        }catch (InternetBankingException ibe){
+        } catch (InternetBankingException ibe) {
             logger.error("Error changing corporate user activation status", ibe);
             redirectAttributes.addFlashAttribute("failure", ibe.getMessage());
         }
@@ -302,21 +334,22 @@ public class CorpUserManagementController {
 
 
     @GetMapping("/{id}/password/reset")
-    public String resetPassword(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+    public String resetPassword(@PathVariable Long id, RedirectAttributes redirectAttributes, Principal principal) {
 
-
-        if(verificationService.isPendingVerification(id, CorporateUser.class.getSimpleName())){
-            redirectAttributes.addFlashAttribute("failure", "User has pending changes to be verified");
-            return "redirect:/corporate/users";
-
+        CorporateUser loggedInUser = corporateUserService.getUserByName(principal.getName());
+        if(!loggedInUser.getCorpUserType().equals(CorpUserType.ADMIN)) {
+            return "redirect:/corporate/dashboard";
         }
 
-        if(corpUserVerificationService.isPendingVerification(id, CorporateUser.class.getSimpleName())){
+        if (verificationService.isPendingVerification(id, CorporateUser.class.getSimpleName())) {
             redirectAttributes.addFlashAttribute("failure", "User has pending changes to be verified");
             return "redirect:/corporate/users";
-
         }
 
+        if (corpUserVerificationService.isPendingVerification(id, CorporateUser.class.getSimpleName())) {
+            redirectAttributes.addFlashAttribute("failure", "User has pending changes to be verified");
+            return "redirect:/corporate/users";
+        }
 
         try {
             String message = corporateUserService.resetCorpPassword(id);
@@ -324,8 +357,7 @@ public class CorpUserManagementController {
         } catch (PasswordException pe) {
             redirectAttributes.addFlashAttribute("failure", pe.getMessage());
             logger.error("Error resetting password for corporate user", pe);
-        }
-        catch (InternetBankingException ibe) {
+        } catch (InternetBankingException ibe) {
             redirectAttributes.addFlashAttribute("failure", ibe.getMessage());
             logger.error("Error resetting password for corporate user", ibe);
         }
@@ -333,16 +365,19 @@ public class CorpUserManagementController {
     }
 
     @GetMapping("/{id}/unblock")
-    public String unblock(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+    public String unblock(@PathVariable Long id, RedirectAttributes redirectAttributes, Principal principal) {
 
+        CorporateUser loggedInUser = corporateUserService.getUserByName(principal.getName());
+        if(!loggedInUser.getCorpUserType().equals(CorpUserType.ADMIN)) {
+            return "redirect:/corporate/dashboard";
+        }
         try {
             String message = corporateUserService.unlockUser(id);
             redirectAttributes.addFlashAttribute("message", message);
         } catch (PasswordException pe) {
             redirectAttributes.addFlashAttribute("failure", pe.getMessage());
             logger.error("Error unblocking corporate user", pe);
-        }
-        catch (InternetBankingException ibe) {
+        } catch (InternetBankingException ibe) {
             redirectAttributes.addFlashAttribute("failure", ibe.getMessage());
             logger.error("Error unblocking corporate user", ibe);
         }
@@ -350,31 +385,45 @@ public class CorpUserManagementController {
     }
 
     @GetMapping("/approvals")
-    public String approvals(Principal principal, Model model){
+    public String approvals(Principal principal, Model model) {
+
+        CorporateUser loggedInUser = corporateUserService.getUserByName(principal.getName());
+        if(loggedInUser.getCorpUserType().equals(CorpUserType.INITIATOR)) {
+            return "redirect:/corporate/dashboard";
+        }
         return "/corp/user/approval";
     }
 
     @GetMapping(path = "/approvals/all")
     public
     @ResponseBody
-    DataTablesOutput<CorpUserVerificationDTO> getAllVerification(Principal principal, DataTablesInput input)
-    {
+    DataTablesOutput<CorpUserVerificationDTO> getAllVerification(Principal principal, DataTablesInput input) {
         CorporateUser corporateUser = corporateUserService.getUserByName(principal.getName());
-        Pageable pageable = DataTablesUtils.getPageable(input);
-        Page<CorpUserVerificationDTO> page = corpUserVerificationService.getRequestsByCorpId(corporateUser.getCorporate().getId(), pageable);
-        DataTablesOutput<CorpUserVerificationDTO> out = new DataTablesOutput<CorpUserVerificationDTO>();
-        out.setDraw(input.getDraw());
-        out.setData(page.getContent());
-        out.setRecordsFiltered(page.getTotalElements());
-        out.setRecordsTotal(page.getTotalElements());
-        return out;
+
+        if(!corporateUser.getCorpUserType().equals(CorpUserType.INITIATOR)) {
+
+            Pageable pageable = DataTablesUtils.getPageable(input);
+            Page<CorpUserVerificationDTO> page = corpUserVerificationService.getRequestsByCorpId(corporateUser.getCorporate().getId(), pageable);
+            DataTablesOutput<CorpUserVerificationDTO> out = new DataTablesOutput<CorpUserVerificationDTO>();
+            out.setDraw(input.getDraw());
+            out.setData(page.getContent());
+            out.setRecordsFiltered(page.getTotalElements());
+            out.setRecordsTotal(page.getTotalElements());
+            return out;
+        }
+        return null;
     }
 
     @GetMapping("/{id}/approvals")
-    public String getObjectsForVerification(@PathVariable Long id, Model model, Principal principal)
-    {
+    public String getObjectsForVerification(@PathVariable Long id, Model model, Principal principal) {
+
+        CorporateUser loggedInUser = corporateUserService.getUserByName(principal.getName());
+        if(loggedInUser.getCorpUserType().equals(CorpUserType.INITIATOR)) {
+            return "redirect:/corporate/dashboard";
+        }
+
         CorpUserVerificationDTO verification = corpUserVerificationService.getVerification(id);
-        model.addAttribute("verification",new CorpUserVerificationDTO());
+        model.addAttribute("verification", new CorpUserVerificationDTO());
         model.addAttribute("verify", verification);
 
         if (VerificationStatus.PENDING.equals(verification.getStatus())) {
@@ -386,21 +435,18 @@ public class CorpUserManagementController {
     }
 
     @PostMapping("/verify")
-    public String verify(@ModelAttribute("verification") @Valid CorpUserVerificationDTO corpUserVerification, BindingResult result, WebRequest request, Model model, RedirectAttributes redirectAttributes,  Locale locale) {
+    public String verify(@ModelAttribute("verification") @Valid CorpUserVerificationDTO corpUserVerification, BindingResult result, WebRequest request, Model model, RedirectAttributes redirectAttributes, Locale locale) {
 
         String approval = request.getParameter("approve");
 
         try {
-            if ("true".equals(approval))
-            {
+            if ("true".equals(approval)) {
                 corpUserVerificationService.verify(corpUserVerification);
                 redirectAttributes.addFlashAttribute("message", "Operation approved successfully");
 
-            } else if ("false".equals(approval))
-            {
-                if (result.hasErrors())
-                {
-                    CorpUserVerificationDTO corpUserVerification2=corpUserVerificationService.getVerification(corpUserVerification.getId());
+            } else if ("false".equals(approval)) {
+                if (result.hasErrors()) {
+                    CorpUserVerificationDTO corpUserVerification2 = corpUserVerificationService.getVerification(corpUserVerification.getId());
                     model.addAttribute("verify", corpUserVerification2);
                     if (VerificationStatus.PENDING.equals(corpUserVerification2.getStatus())) {
                         boolean status = true;
@@ -412,16 +458,79 @@ public class CorpUserManagementController {
                 redirectAttributes.addFlashAttribute("message", "Operation declined successfully");
 
             }
-        }
-        catch (VerificationException ve){
-            logger.error("Error verifying the operation",ve);
+        } catch (VerificationException ve) {
+            logger.error("Error verifying the operation", ve);
             redirectAttributes.addFlashAttribute("failure", ve.getMessage());
-        }
-        catch (InternetBankingException ibe){
-            logger.error("Error verifying the operation",ibe);
+        } catch (InternetBankingException ibe) {
+            logger.error("Error verifying the operation", ibe);
             redirectAttributes.addFlashAttribute("failure", ibe.getMessage());
         }
         return "redirect:/corporate/users/approvals";
     }
 
+
+    @GetMapping("/{userId}/account/permission")
+    public String getAccountPermissions(@PathVariable Long userId, Model model, Principal principal) {
+
+        CorporateUser loggedInUser = corporateUserService.getUserByName(principal.getName());
+        if(!loggedInUser.getCorpUserType().equals(CorpUserType.ADMIN)) {
+            return "redirect:/corporate/dashboard";
+        }
+
+        List<AccountPermissionDTO> accountPermissions = corporateUserService.getAccountPermissions(userId);
+        CorporateUserDTO user = corporateUserService.getUser(userId);
+        model.addAttribute("corporateUser", user);
+        model.addAttribute("accountPermissions", accountPermissions);
+
+        return "corp/user/accountpermission";
+    }
+
+
+    @PostMapping("/account/permission")
+    public String UpdateAccountPermissions(@ModelAttribute("corporateUser") CorporateUserDTO corporateUserDTO, WebRequest request, RedirectAttributes redirectAttributes, Principal principal) {
+
+        CorporateUser loggedInUser = corporateUserService.getUserByName(principal.getName());
+        if(!loggedInUser.getCorpUserType().equals(CorpUserType.ADMIN)) {
+            return "redirect:/corporate/dashboard";
+        }
+        boolean permissionChanged = false;
+
+        List<AccountPermissionDTO> existingPermissions = corporateUserService.getAccountPermissions(corporateUserDTO.getId());
+
+        for (AccountPermissionDTO accountPermission : existingPermissions) {
+
+            AccountPermissionDTO.Permission currentPermission = AccountPermissionDTO.Permission.valueOf(request.getParameter(accountPermission.getAccountNumber()));
+
+            if (currentPermission != accountPermission.getPermission()) {
+                permissionChanged = true;
+                accountPermission.setPermission(currentPermission);
+            }
+        }
+        corporateUserDTO.setAccountPermissions(existingPermissions);
+        if (permissionChanged) {
+            try {
+
+                if (makerCheckerService.isEnabled("UPDATE_ACCOUNT_PERMISSION_FROM_CORPORATE_ADMIN")) {
+                    String message = corpUserVerificationService.updateAccountPermissionsFromCorporateAdmin(corporateUserDTO);
+                    redirectAttributes.addFlashAttribute("message", message);
+                } else {
+                    String message = corporateUserService.updateAccountPermissions(corporateUserDTO);
+                    redirectAttributes.addFlashAttribute("message", message);
+                }
+
+            } catch (InternetBankingException ibe) {
+                logger.error("Failed to update corporate user account permissions", ibe);
+                redirectAttributes.addFlashAttribute("failure", ibe.getMessage());
+                return "redirect:/corporate/users/" + corporateUserDTO.getId() + "/account/permission";
+
+            } catch (Exception e) {
+                logger.error("Failed to update corporate user account permissions", e);
+                redirectAttributes.addFlashAttribute("failure", "Error occurred updating account permissions");
+                return "redirect:/corporate/users/" + corporateUserDTO.getId() + "/account/permission";
+
+            }
+        }
+
+        return "redirect:/corporate/users";
+    }
 }

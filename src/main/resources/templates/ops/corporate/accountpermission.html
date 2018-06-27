@@ -66,14 +66,17 @@
                                                 <tr>
                                                     <td>CIFID</td>
                                                     <td>Account Number</td>
+                                                    <td>Account Name</td>
                                                     <th style="text-align: center">VIEW ONLY</th>
                                                     <th style="text-align: center">VIEW & TRANSACT</th>
                                                     <th style="text-align: center">NONE</th>
 
                                                 </tr>
+                                                </thead>
                                                 <tr th:each="account: ${accountPermissions}">
                                                     <td th:text="${account.customerId}"></td>
                                                     <td th:text="${account.accountNumber}"></td>
+                                                    <td th:text="${account.accountName}"></td>
                                                     <td style="text-align: center;"><input type="radio"
                                                             th:name="${account.accountNumber}" value="VIEW_ONLY"
                                                             th:checked="${account.permission==T(longbridge.dtos.AccountPermissionDTO.Permission).VIEW_ONLY}"/>
@@ -87,7 +90,7 @@
                                                             th:checked="${account.permission==T(longbridge.dtos.AccountPermissionDTO.Permission).NONE}"/>
                                                     </td>
                                                 </tr>
-                                                </thead>
+
                                                 <tbody>
 
 

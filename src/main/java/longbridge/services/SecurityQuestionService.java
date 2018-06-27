@@ -9,7 +9,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import java.util.List;
 
 /**
- * Created by Showboy on 07/06/2017.
+ * Created by Wunmi on 07/06/2017.
  */
 public interface SecurityQuestionService {
 

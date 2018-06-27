@@ -18,35 +18,28 @@ import org.springframework.security.access.prepost.PreAuthorize;
 public interface CorpTransferService {
 
 
-    //Page<CorpTransferRequestDTO> getCompletedTransfers(Pageable pageDetails);
-
     @PreAuthorize("hasAuthority('GET_TRANSFER')")
     CorpTransRequest getTransfer(Long id);
 
-
-
     @PreAuthorize("hasAuthority('MAKE_TRANSFER')")
     CorpTransferRequestDTO saveTransfer(CorpTransferRequestDTO corpTransferRequestDTO) throws TransferException;
+
     @PreAuthorize("hasAuthority('MAKE_TRANSFER')")
     void validateTransfer(CorpTransferRequestDTO corpTransferRequestDTO) throws InternetBankingTransferException;
 
-//    String authorizeTransfer(Long authId) throws InternetBankingException;
 
     Object addTransferRequest(CorpTransferRequestDTO transferRequestDTO) throws InternetBankingException;
 
-//    List<PendAuth> getPendingAuthorizations();
 
     Page<CorpTransRequest> getTransferRequests(Pageable pageDetails);
 
     int countPendingRequest();
 
     CorpTransferAuth getAuthorizations(CorpTransRequest transRequest);
-    //CorpTransferAuth getAuthorizations(TransRequest transRequest);
 
     Page<CorpTransRequest> getCompletedTransfers(Pageable pageDetails);
 
     String addAuthorization(CorpTransReqEntry transReqEntry);
-
 
     boolean userCanAuthorize(TransRequest transRequest);
 }

@@ -105,7 +105,6 @@ public class SecurityConfig {
                     e.printStackTrace();
                 }
 
-//                ipRange.append(String.format(" or hasIpAddress('%s')", temp));
 
 
                 logger.info("IP address whitelist " + ipRange.toString());
@@ -117,18 +116,8 @@ public class SecurityConfig {
                     .and().antMatcher("/**").authorizeRequests()
                     .and().antMatcher("/admin/**").authorizeRequests()
                     .and().authorizeRequests().anyRequest().
-
-
-                    // .and().authorizeRequests().and()
-
-
-                            access("hasAuthority('" + UserType.ADMIN.toString() + "')").and()
-//                            access("hasAuthority('" + UserType.ADMIN.toString() + "') and " + ipRange.toString()).and()
-
-
-                    // .fullyAuthenticated()
-                    // log in
-
+                    //access("hasAuthority('" + UserType.ADMIN.toString() + "')").and()
+                    access("hasAuthority('" + UserType.ADMIN.toString() + "') and " + ipRange.toString()).and()
 
                     .formLogin().loginPage("/login/admin").loginProcessingUrl("/admin/login")
                     .failureUrl("/login/admin?error=login_error").defaultSuccessUrl("/admin/dashboard")
@@ -171,9 +160,9 @@ public class SecurityConfig {
     public static class OperationsUserConfigurationAdapter extends WebSecurityConfigurerAdapter {
         @Autowired
         @Qualifier("operationUserDetails")
-        UserDetailsService opsDetails;
+        private UserDetailsService opsDetails;
         @Autowired
-        BCryptPasswordEncoder bCryptPasswordEncoder;
+        private BCryptPasswordEncoder bCryptPasswordEncoder;
         @Autowired
         @Qualifier("opAuthenticationSuccessHandler")
         private AuthenticationSuccessHandler opAuthenticationSuccessHandler;
@@ -197,8 +186,6 @@ public class SecurityConfig {
         protected void configure(HttpSecurity http) throws Exception {
 
 
-//            http.addFilterAfter(new AjaxSessionTimeoutHandlingFilter(), ExceptionTranslationFilter.class);
-
             boolean ipRestricted = false;
             StringBuilder ipRange = new StringBuilder("hasIpAddress('::1') or hasIpAddress('127.0.0.1')");
             //Takes a specific IP address or a range using
@@ -219,8 +206,6 @@ public class SecurityConfig {
                     e.printStackTrace();
                 }
 
-//                ipRange.append(String.format(" or hasIpAddress('%s')", temp));
-
 
                 logger.info("IP address whitelist " + ipRange.toString());
             }
@@ -231,15 +216,14 @@ public class SecurityConfig {
                     //.authenticated()
                     // .hasAuthority(UserType.OPERATIONS.toString())
                     .fullyAuthenticated().anyRequest()
-                    .access("hasAuthority('" + UserType.OPERATIONS.toString() + "')").and()
-//                    .access("hasAuthority('" + UserType.OPERATIONS.toString() + "') and " + ipRange.toString()).and()
+//                    .access("hasAuthority('" + UserType.OPERATIONS.toString() + "')").and()
+                    .access("hasAuthority('" + UserType.OPERATIONS.toString() + "') and " + ipRange.toString()).and()
                     // log in
                     .formLogin().loginPage("/login/ops").loginProcessingUrl("/ops/login").failureUrl("/login/ops?error=true").defaultSuccessUrl("/ops/dashboard")
                     .successHandler(opAuthenticationSuccessHandler)
                     .failureHandler(opAuthenticationFailureHandler)
 
                     .and()
-                    //.failur
                     .sessionManagement()
 
                     .invalidSessionUrl("/login/ops")

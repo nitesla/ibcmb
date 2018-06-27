@@ -5,8 +5,8 @@ package longbridge.utils;
  */
 public class NameValue {
 
-    String name;
-    String value;
+    private String name;
+    private String value;
 
     public String getName() {
         return name;

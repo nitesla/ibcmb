@@ -831,14 +831,14 @@ public class AccountController {
 				modelMap.put("summary.totalDebit", formatter.format(totalDebit));
 			}else{
 				modelMap.put("summary.totalDebit", "");
-				logger.info("total debit is empty");
+				logger.debug("total debit is empty");
 			}
 			if(accountStatement.getTotalCredit()!=null) {
 				double totalCredit = Double.parseDouble(accountStatement.getTotalCredit());
 				modelMap.put("summary.totalCredit", formatter.format(totalCredit));
 			}else{
 				modelMap.put("summary.totalCredit", "");
-				logger.info("total Credit is empty");
+				logger.debug("total Credit is empty");
 			}
 			if(accountStatement.getAddress()!=null) {
 				modelMap.put("summary.address", accountStatement.getAddress());

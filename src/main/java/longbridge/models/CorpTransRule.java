@@ -138,8 +138,8 @@ public class CorpTransRule extends AbstractEntity implements PrettySerializer{
                 for(CorporateRole role : value.roles){
                     gen.writeObjectFieldStart(role.getId().toString());
                     //gen.writeStartObject();
-                    gen.writeStringField("Name",role.name);
-                    gen.writeNumberField("Rank",role.rank);
+                    gen.writeStringField("Name",role.getName());
+                    gen.writeNumberField("Rank",role.getRank());
                     gen.writeEndObject();
                 }
                 gen.writeEndObject();
@@ -187,8 +187,8 @@ public class CorpTransRule extends AbstractEntity implements PrettySerializer{
                 for(CorporateRole role : value.roles){
                     gen.writeObjectFieldStart(role.getId().toString());
                     //gen.writeStartObject();
-                    gen.writeStringField("name",role.name);
-                    gen.writeNumberField("rank",role.rank);
+                    gen.writeStringField("name",role.getName());
+                    gen.writeNumberField("rank",role.getRank());
                     gen.writeEndObject();
                 }
                 gen.writeEndObject();

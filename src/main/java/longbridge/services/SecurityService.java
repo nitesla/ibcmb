@@ -10,7 +10,7 @@ import java.util.Map;
 /**
  * The {@code SecurityService} interface provides the methods for managing roles, profiles and permissions
  *
- * @author Fortunatus Ekenachi
+ * @author Farooq Ayoade
  *         Created on 3/28/2017.
  */
 public interface SecurityService {

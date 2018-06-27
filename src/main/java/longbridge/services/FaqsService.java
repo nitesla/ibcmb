@@ -10,7 +10,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import java.util.List;
 
 /**
- * Created by Showboy on 24/06/2017.
+ * Created by Wunmi on 24/06/2017.
  */
 public interface FaqsService {
 

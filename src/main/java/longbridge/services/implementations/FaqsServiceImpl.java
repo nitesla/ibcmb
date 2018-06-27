@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.Locale;
 
 /**
- * Created by Showboy on 24/06/2017.
+ * Created by Wunmi on 24/06/2017.
  */
 @Service
 public class FaqsServiceImpl implements FaqsService {

@@ -954,6 +954,7 @@ public class CorporateUserServiceImpl implements CorporateUserService {
 
     @Override
     public String updateUserFromCorpAdmin(CorporateUserDTO user) throws InternetBankingException {
+
         try {
             CorporateUser corporateUser = corporateUserRepo.findOne(user.getId());
             corporateUser.setFirstName(user.getFirstName());
@@ -1059,11 +1060,13 @@ public class CorporateUserServiceImpl implements CorporateUserService {
 
         try {
             String message = updateAccountRestrictionsBasedOnPermissions(corporateUserDTO);
+            logger.info("User account permissions updated successfully");
             return message;
         } catch (InternetBankingException ibe) {
             throw ibe;
         }
     }
+
 
     @Override
     public String updateAccountRestrictionsBasedOnPermissions(CorporateUserDTO userDTO) {
@@ -1111,9 +1114,10 @@ public class CorporateUserServiceImpl implements CorporateUserService {
                 userAccountRestrictionRepo.save(accountRestriction);
             }
             userAccountRestrictionRepo.save(accountRestrictions);
-            return "Account permissions updated successfully";
+            return messageSource.getMessage("accountpermission.update.success", null, locale);
         } catch (Exception e) {
-            throw new InternetBankingException("Failed to update account permissions", e);
+            logger.error("Failed to update user account permissions", e);
+            throw new InternetBankingException(messageSource.getMessage("accountpermission.update.failure", null, locale), e);
         }
     }
 
@@ -1126,6 +1130,7 @@ public class CorporateUserServiceImpl implements CorporateUserService {
         }
         return null;
     }
+
 
     @Override
     public List<AccountPermissionDTO> getAccountPermissions(Long userId) {

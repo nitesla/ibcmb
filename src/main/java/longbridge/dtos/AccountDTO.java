@@ -159,6 +159,21 @@ public class AccountDTO{
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof AccountDTO)) return false;
+
+        AccountDTO that = (AccountDTO) o;
+
+        return getAccountNumber().equals(that.getAccountNumber());
+    }
+
+    @Override
+    public int hashCode() {
+        return getAccountNumber().hashCode();
+    }
+
+    @Override
     public String toString() {
         return "AccountDTO{"
                 + super.toString() +

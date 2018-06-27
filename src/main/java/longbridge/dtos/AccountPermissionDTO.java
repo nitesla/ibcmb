@@ -5,6 +5,7 @@ import longbridge.models.Account;
 public class AccountPermissionDTO {
 
     private String accountNumber;
+    private String accountName;
     private String customerId;
     private Permission permission;
 
@@ -18,6 +19,7 @@ public class AccountPermissionDTO {
 
     public AccountPermissionDTO(Account account, Permission permission) {
         this.accountNumber = account.getAccountNumber();
+        this.accountName = account.getAccountName();
         this.customerId = account.getCustomerId();
         this.permission = permission;
     }
@@ -49,6 +51,14 @@ public class AccountPermissionDTO {
         this.accountNumber = accountNumber;
     }
 
+    public String getAccountName() {
+        return accountName;
+    }
+
+    public void setAccountName(String accountName) {
+        this.accountName = accountName;
+    }
+
     public String getCustomerId() {
         return customerId;
     }
@@ -69,6 +79,7 @@ public class AccountPermissionDTO {
     public String toString() {
         return "AccountPermissionDTO{" +
                 "accountNumber='" + accountNumber + '\'' +
+                ", accountName='" + accountName + '\'' +
                 ", customerId='" + customerId + '\'' +
                 ", permission=" + permission +
                 '}';

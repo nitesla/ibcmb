@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{corp-layout}">
+
+<body onload="javascript:var bread = [['Home', '/corporate/dashboard'],['User management']];currentBar('User account permissions');breadCrumb(bread)">
+
+<div layout:fragment="content">
+    <div class="col-md-5 col-sm-5 ">
+
+        <select class="form-control full-width coronation-form-control hide-content-only" id="view">
+            <option value="account">Overview</option>
+        </select>
+    </div>
+
+    <div class="col-xs-12 ">
+        <div class="col-xs-12  no-pad-lef no-mt no-bd  alert">
+
+            <div class="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
+
+                <div class="">
+                </div>
+            </div>
+            <br/>
+            <div class="row">
+                <form method="post" class="form-horizontal"
+                      th:action="@{/corporate/users/account/permission}"
+                      th:object="${corporateUser}">
+                    <div class=" table-responsive">
+                        <table class="table" id="accounts">
+                            <thead>
+                            <tr>
+                                <td>Account Name</td>
+                                <td>Account Number</td>
+                                <th style="text-align: center">VIEW ONLY</th>
+                                <th style="text-align: center">VIEW & TRANSACT</th>
+                                <th style="text-align: center">NONE</th>
+
+                            </tr>
+                            </thead>
+                            <tr th:each="account: ${accountPermissions}">
+                                <td th:text="${account.accountName}"></td>
+                                <td th:text="${account.accountNumber}"></td>
+                                <td style="text-align: center;"><input type="radio"
+                                   th:name="${account.accountNumber}"
+                                   value="VIEW_ONLY"
+                                   th:checked="${account.permission==T(longbridge.dtos.AccountPermissionDTO.Permission).VIEW_ONLY}"/>
+                                </td>
+                                <td style="text-align: center;"><input type="radio"
+                                   th:name="${account.accountNumber}"
+                                   value="VIEW_AND_TRANSACT"
+                                   th:checked="${account.permission==T(longbridge.dtos.AccountPermissionDTO.Permission).VIEW_AND_TRANSACT}"/>
+                                </td>
+                                <td style="text-align: center;"><input type="radio"
+                                   th:name="${account.accountNumber}" value="NONE"
+                                   th:checked="${account.permission==T(longbridge.dtos.AccountPermissionDTO.Permission).NONE}"/>
+                                </td>
+                            </tr>
+
+                            <tbody>
+
+
+                            </tbody>
+                        </table>
+                    </div>
+                    <input type="hidden" th:field="*{id}"/>
+                    <input type="hidden" th:field="*{corporateId}"/>
+                    <input type="hidden" th:field="*{corporateName}"/>
+                    <input type="hidden" th:field="*{corporateType}"/>
+                    <input type="hidden" th:field="*{userName}"/>
+                    <input type="hidden" th:field="*{firstName}"/>
+                    <input type="hidden" th:field="*{lastName}"/>
+                    <input type="hidden" th:field="*{email}"/>
+                    <input type="hidden" th:field="*{phoneNumber}"/>
+                    <input type="hidden" th:field="*{roleId}"/>
+                    <div class="col-sm-4">
+                        <button class="btn btn-link" id="cancelButton">Cancel</button>
+                        <button class="btn btn-link" type="submit">Save</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+<th:block layout:fragment="scripts">
+    <script th:src="@{~/customer/js/dataTables.bootstrap.js}"></script>
+    <script th:src="@{~/customer/js/dataTables.select.js}"></script>
+
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        $(document).ready(function () {
+            var table = $('#accounts').DataTable({
+                select: true,
+                responsive: false,
+                "dom": 'T<"clear">frtlp'
+
+            });
+
+            table.on('select', function () {
+                if (table.rows({
+                        selected: true
+                    }).indexes().length === 0) {
+                    $('.bt-select').attr("disabled", true);
+                } else {
+                    $('.bt-select').removeAttr("disabled");
+                }
+
+
+            });
+
+            table.on('deselect', function () {
+                if (table.rows({
+                        selected: true
+                    }).indexes().length === 0) {
+                    $('.bt-select').attr("disabled", true);
+                } else {
+                    $('.bt-select').removeAttr("disabled");
+                }
+            });
+        });
+
+        $("a.bt-link-act").on("click", function (e) {
+            e.preventDefault();
+            var link = $(e.currentTarget);
+            if ($(link).attr("disabled")) {
+                return;
+            }
+
+            var dt = $('#users').DataTable();
+            var id = $(dt.row({
+                selected: true
+            }).node()).attr("id");
+            var ooo = link.attr("href").replace("index", id);
+            window.location.assign(ooo);
+
+        });
+
+        $("#cancelButton").on("click", function (e) {
+            e.preventDefault();
+            window.location.assign("/corporate/users");
+        }
+
+        /*]]>*/
+    </script>
+</th:block>
+
+</body>
+</html>

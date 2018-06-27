@@ -433,7 +433,8 @@
                         console.log("Account: " + account[i].accountNumber+", Permission: "+account[i].permission);
 
 
-                        var row = "<tr><td>"+account[i].accountNumber+"</td><td style='text-align: center;'><input type='radio' name='" + account[i].accountNumber + "' value='VIEW_ONLY'" + (account[i].permission === 'VIEW_ONLY' ? 'checked' : '') + "/></td>" +
+                        var row = "<tr><td>"+account[i].accountNumber+"</td><td>"+account[i].accountName+"</td>" +
+                            "<td style='text-align: center;'><input type='radio' name='" + account[i].accountNumber + "' value='VIEW_ONLY'" + (account[i].permission === 'VIEW_ONLY' ? 'checked' : '') + "/></td>" +
                             "<td style='text-align: center;'><input type='radio' name='" + account[i].accountNumber + "' value='VIEW_AND_TRANSACT'" + (account[i].permission == 'VIEW_AND_TRANSACT' ? 'checked' : '') + "/></td>" +
                             "<td style='text-align: center;'><input type='radio' name='" + account[i].accountNumber + "' value='NONE'" + (account[i].permission === 'NONE' ? 'checked' : '') + "/></td>";
 
