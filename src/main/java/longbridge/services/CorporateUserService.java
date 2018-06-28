@@ -172,6 +172,8 @@ public interface CorporateUserService{
 
     String updateAccountRestrictionsBasedOnPermissions(CorporateUserDTO userDTO);
 
+    List<AccountPermissionDTO> getAccountPermissionsForAdminManagement(Long userId);
+
     List<AccountPermissionDTO> getAccountPermissions(Long userId);
 
 

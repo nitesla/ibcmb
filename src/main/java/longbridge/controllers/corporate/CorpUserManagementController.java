@@ -477,7 +477,7 @@ public class CorpUserManagementController {
             return "redirect:/corporate/dashboard";
         }
 
-        List<AccountPermissionDTO> accountPermissions = corporateUserService.getAccountPermissions(userId);
+        List<AccountPermissionDTO> accountPermissions = corporateUserService.getAccountPermissionsForAdminManagement(userId);
         CorporateUserDTO user = corporateUserService.getUser(userId);
         model.addAttribute("corporateUser", user);
         model.addAttribute("accountPermissions", accountPermissions);
@@ -487,15 +487,17 @@ public class CorpUserManagementController {
 
 
     @PostMapping("/account/permission")
-    public String UpdateAccountPermissions(@ModelAttribute("corporateUser") CorporateUserDTO corporateUserDTO, WebRequest request, RedirectAttributes redirectAttributes, Principal principal) {
+    public String UpdateAccountPermissions(@ModelAttribute("corporateUser") CorporateUserDTO corporateUserDTO, WebRequest request, RedirectAttributes redirectAttributes, Principal principal, Locale locale) {
 
         CorporateUser loggedInUser = corporateUserService.getUserByName(principal.getName());
         if(!loggedInUser.getCorpUserType().equals(CorpUserType.ADMIN)) {
             return "redirect:/corporate/dashboard";
         }
+
+
         boolean permissionChanged = false;
 
-        List<AccountPermissionDTO> existingPermissions = corporateUserService.getAccountPermissions(corporateUserDTO.getId());
+        List<AccountPermissionDTO> existingPermissions = corporateUserService.getAccountPermissionsForAdminManagement(corporateUserDTO.getId());
 
         for (AccountPermissionDTO accountPermission : existingPermissions) {
 
@@ -508,6 +510,12 @@ public class CorpUserManagementController {
         }
         corporateUserDTO.setAccountPermissions(existingPermissions);
         if (permissionChanged) {
+
+            if(corporateUserDTO.getId().equals(loggedInUser.getId())){
+                redirectAttributes.addFlashAttribute("failure", messageSource.getMessage("account.permission.notallowed",null,locale));
+                return "redirect:/corporate/users/";
+            }
+
             try {
 
                 if (makerCheckerService.isEnabled("UPDATE_ACCOUNT_PERMISSION_FROM_CORPORATE_ADMIN")) {

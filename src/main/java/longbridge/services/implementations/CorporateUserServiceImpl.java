@@ -9,6 +9,7 @@ import longbridge.forms.CustResetPassword;
 import longbridge.models.*;
 import longbridge.repositories.*;
 import longbridge.security.FailedLoginService;
+import longbridge.security.userdetails.CustomUserPrincipal;
 import longbridge.services.*;
 import longbridge.utils.DateFormatter;
 import longbridge.utils.Verifiable;
@@ -24,16 +25,14 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.mail.MailException;
 import org.springframework.scheduling.annotation.Async;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.thymeleaf.context.Context;
 
 import javax.persistence.EntityManager;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 
 import static longbridge.dtos.AccountPermissionDTO.Permission.VIEW_ONLY;
 import static longbridge.models.UserAccountRestriction.RestrictionType.NONE;
@@ -1068,6 +1067,7 @@ public class CorporateUserServiceImpl implements CorporateUserService {
     }
 
 
+
     @Override
     public String updateAccountRestrictionsBasedOnPermissions(CorporateUserDTO userDTO) {
 
@@ -1080,38 +1080,40 @@ public class CorporateUserServiceImpl implements CorporateUserService {
 
                 UserAccountRestriction accountRestriction = userAccountRestrictionRepo.findByCorporateUserIdAndAccountId(user.getId(), account.getId());
 
-                switch (accountPermission.getPermission()) {
-                    case VIEW_ONLY:
-                        if (accountRestriction != null) {
-                            accountRestriction.setRestrictionType(TRANSACTION);
+                if(accountPermission!=null) {
+                    switch (accountPermission.getPermission()) {
+                        case VIEW_ONLY:
+                            if (accountRestriction != null) {
+                                accountRestriction.setRestrictionType(TRANSACTION);
 
-                        } else {
-                            accountRestriction = new UserAccountRestriction(user.getId(), account.getId(), TRANSACTION);
-                            accountRestrictions.add(accountRestriction);
-                        }
-                        break;
-                    case VIEW_AND_TRANSACT:
-                        if (accountRestriction != null) {
-                            accountRestriction.setRestrictionType(NONE);
+                            } else {
+                                accountRestriction = new UserAccountRestriction(user.getId(), account.getId(), TRANSACTION);
+                                accountRestrictions.add(accountRestriction);
+                            }
+                            break;
+                        case VIEW_AND_TRANSACT:
+                            if (accountRestriction != null) {
+                                accountRestriction.setRestrictionType(NONE);
 
-                        } else {
-                            accountRestriction = new UserAccountRestriction(user.getId(), account.getId(), NONE);
-                            accountRestrictions.add(accountRestriction);
-                        }
-                        break;
-                    case NONE:
-                        if (accountRestriction != null) {
-                            accountRestriction.setRestrictionType(VIEW);
-                        } else {
-                            accountRestriction = new UserAccountRestriction(user.getId(), account.getId(), VIEW);
-                            accountRestrictions.add(accountRestriction);
-                        }
-                        break;
+                            } else {
+                                accountRestriction = new UserAccountRestriction(user.getId(), account.getId(), NONE);
+                                accountRestrictions.add(accountRestriction);
+                            }
+                            break;
+                        case NONE:
+                            if (accountRestriction != null) {
+                                accountRestriction.setRestrictionType(VIEW);
+                            } else {
+                                accountRestriction = new UserAccountRestriction(user.getId(), account.getId(), VIEW);
+                                accountRestrictions.add(accountRestriction);
+                            }
+                            break;
 
-                    default:
-                        break;
+                        default:
+                            break;
+                    }
+                    userAccountRestrictionRepo.save(accountRestriction);
                 }
-                userAccountRestrictionRepo.save(accountRestriction);
             }
             userAccountRestrictionRepo.save(accountRestrictions);
             return messageSource.getMessage("accountpermission.update.success", null, locale);
@@ -1131,6 +1133,37 @@ public class CorporateUserServiceImpl implements CorporateUserService {
         return null;
     }
 
+
+    @Override
+    public List<AccountPermissionDTO> getAccountPermissionsForAdminManagement(Long userId) {
+
+        //Corporate Admin cannot view and manage accounts permission that he does not have
+        //permission to view
+
+        CorporateUser adminUser = getCurrentUser();
+        //Get admin user account permissions
+        List<AccountPermissionDTO> adminAccountPermissions = getAccountPermissions(adminUser.getId());
+        logger.debug("Admin user permissions {}",adminAccountPermissions);
+
+        //Get the target corporate user permissions
+        List<AccountPermissionDTO> accountPermissions = getAccountPermissions(userId);
+        logger.debug("Corporate user account permissions {}",accountPermissions);
+
+        Iterator<AccountPermissionDTO> accountPermissionIterator = accountPermissions.iterator();
+
+        while (accountPermissionIterator.hasNext()){
+            AccountPermissionDTO accountPermission = accountPermissionIterator.next();
+            for(AccountPermissionDTO adminAccountPermission: adminAccountPermissions ){
+                if(accountPermission.equals(adminAccountPermission) && adminAccountPermission.getPermission().equals(AccountPermissionDTO.Permission.NONE)){
+                    accountPermissionIterator.remove();
+                    logger.debug("Removed account permission {} as admin has no VIEW access permission",accountPermission);
+                }
+            }
+
+        }
+
+        return accountPermissions;
+    }
 
     @Override
     public List<AccountPermissionDTO> getAccountPermissions(Long userId) {
@@ -1185,5 +1218,11 @@ public class CorporateUserServiceImpl implements CorporateUserService {
         return false;
     }
 
+
+    private CorporateUser getCurrentUser() {
+        CustomUserPrincipal principal = (CustomUserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User user = principal.getUser();
+        return (CorporateUser) user;
+    }
 }
 

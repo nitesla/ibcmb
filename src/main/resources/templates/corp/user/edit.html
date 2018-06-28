@@ -52,7 +52,7 @@
 
                 <div class="form-group">
                     <label>Role</label>
-                    <select class="form-control" th:field="*{roleId}">
+                    <select class="form-control" th:field="*{roleId}" th:disabled="${corporateUserDTO.corpUserType==T(longbridge.models.CorpUserType).ADMIN}">
                         <option th:each="role : ${roles.?[#strings.equalsIgnoreCase(userType, 'corporate')]}" th:value="${role.id}" th:text="${role.name}"></option>
                     </select><span class='req-inner'></span>
                 </div>
