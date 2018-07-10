@@ -505,7 +505,7 @@ public class AccountServiceImpl implements AccountService {
     		case CORPORATE : {
     			CorporateUser user = (CorporateUser) currentUser;
     			Account acct = accountRepo.findFirstByAccountNumber(account);
-//    			boolean valid = accountRepo.accountInCorp(user.getCorporate(), acct);
+    			logger.debug("Account returned: {}",acct);
                 Corporate corporate = corporateRepo.findOne(user.getCorporate().getId());
     			boolean valid = corporate.getAccounts().contains(acct);
     			if(!valid) {
