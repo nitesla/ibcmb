@@ -320,6 +320,7 @@ public class CorpAccountController {
         AccountDTO account = accountService.getAccount(Long.parseLong(acct));
         AccountStatement accountStatement = integrationService.getFullAccountStatement(account.getAccountNumber(), daysAgo, date, "B");
         List<TransactionDetails> list = accountStatement.getTransactionDetails();
+        Collections.reverse(list);
         logger.debug("Transaction Details {}",list);
         model.addAttribute("history", list);
         return "corp/account/tranhistory";

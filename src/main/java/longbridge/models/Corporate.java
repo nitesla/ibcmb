@@ -20,7 +20,6 @@ import java.util.*;
 @Audited(withModifiedFlag=true)
 @Where(clause ="del_Flag='N'" )
 @Table(uniqueConstraints=@UniqueConstraint(columnNames={"corporateId"}))
-
 public class Corporate extends AbstractEntity implements PrettySerializer{
 
     private String rcNumber;
@@ -58,7 +57,7 @@ public class Corporate extends AbstractEntity implements PrettySerializer{
 
     @OneToMany
     @JsonIgnore
-    List<CorpTransRule> corpTransRules;
+    private List<CorpTransRule> corpTransRules;
 
 
     @ManyToMany

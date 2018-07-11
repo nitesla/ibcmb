@@ -2,6 +2,7 @@ package longbridge.utils.statement;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -11,7 +12,8 @@ import java.util.List;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class AccountStatement{
-    List<TransactionDetails> transactionDetails;
+
+
     private String accountNumber;
     private String Address;
     private String openingBalance;
@@ -23,6 +25,10 @@ public class AccountStatement{
     private String creditCount;
     private String debitCount;
     private String hasMoreData;
+    private List<TransactionDetails> transactionDetails = new ArrayList<>();
+
+
+
     public List<TransactionDetails> getTransactionDetails() {
         return transactionDetails;
     }
