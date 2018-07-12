@@ -83,7 +83,7 @@ public class IntegrationServiceImpl implements IntegrationService {
 		List<AccountInfo> accounts;
 		try {
 			logger.info("Fetching accounts with CIFID {}",cifid);
-			String uri = URI + "/customer/{acctId}/accounts";
+			String uri = URI + "/customer/"+cifid+"/accounts";
 			accounts = Arrays.stream(template.getForObject(uri, AccountInfo[].class, cifid.toUpperCase()))
 					.collect(Collectors.toList());
 			logger.debug("Accounts fetched {}", accounts.toString());
