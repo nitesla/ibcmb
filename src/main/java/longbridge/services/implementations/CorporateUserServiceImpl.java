@@ -1075,6 +1075,8 @@ public class CorporateUserServiceImpl implements CorporateUserService {
             List<UserAccountRestriction> accountRestrictions = new ArrayList<>();
             CorporateUser user = corporateUserRepo.findOne(userDTO.getId());
             List<Account> accounts = user.getCorporate().getAccounts();
+
+            logger.debug("Corporate accounts: {}",accounts);
             for (Account account : accounts) {
                 AccountPermissionDTO accountPermission = getAccountPermission(account, userDTO.getAccountPermissions());
 

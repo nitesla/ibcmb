@@ -1498,7 +1498,7 @@ public class OpsCorporateController {
                     if (!accountPermissions.contains(new AccountPermissionDTO(account.getAccountNumber()))) {
                         AccountPermissionDTO accountPermission = new AccountPermissionDTO(account.getAccountNumber());
                         accountPermission.setAccountName(account.getAccountName());
-                        accountPermission.setPermission(AccountPermissionDTO.Permission.VIEW_AND_TRANSACT);
+                        accountPermission.setPermission(AccountPermissionDTO.Permission.NONE);
                         accountPermissions.add(accountPermission);
                         logger.debug("Added account {} found in the list of corporate selected accounts", accountPermission);
                     }
@@ -1532,7 +1532,7 @@ public class OpsCorporateController {
         for (AccountDTO account : accountDTOs) {
             AccountPermissionDTO accountPermission = new AccountPermissionDTO(account.getAccountNumber());
             accountPermission.setAccountName(account.getAccountName());
-            accountPermission.setPermission(AccountPermissionDTO.Permission.VIEW_AND_TRANSACT);
+            accountPermission.setPermission(AccountPermissionDTO.Permission.NONE);
             accountPermissions.add(accountPermission);
         }
 

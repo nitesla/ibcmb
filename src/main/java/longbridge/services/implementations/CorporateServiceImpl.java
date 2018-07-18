@@ -87,6 +87,9 @@ public class CorporateServiceImpl implements CorporateService {
     @Autowired
     private CorporateUserService corporateUserService;
 
+    @Autowired
+    private UserAccountRestrictionRepo userAccountRestrictionRepo;
+
     @Value("${host.url}")
     private String hostUrl;
 
@@ -390,9 +393,25 @@ public class CorporateServiceImpl implements CorporateService {
 
         corporate.getCifids().add(corporate.getCustomerId());
         corporate.getCifids().addAll(requestDTO.getCifids());
-
-
         corporateRepo.save(corporate);
+        setCorporateUsersDefaultAccountRestrictions(corporate,newAccounts);
+    }
+
+
+    private void setCorporateUsersDefaultAccountRestrictions(Corporate corporate, List<Account> accounts){
+
+        logger.debug("Setting corporate users default account restrictions");
+        List<CorporateUser> users = corporate.getUsers();
+
+        for(CorporateUser user: users){
+            for(Account account: accounts){
+                UserAccountRestriction accountRestriction = new UserAccountRestriction();
+                accountRestriction.setRestrictionType(UserAccountRestriction.RestrictionType.VIEW);
+                accountRestriction.setAccountId(account.getId());
+                accountRestriction.setCorporateUserId(user.getId());
+                userAccountRestrictionRepo.save(accountRestriction);
+            }
+        }
     }
 
 

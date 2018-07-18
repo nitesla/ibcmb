@@ -21,8 +21,9 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @EnableScheduling
 @EnableAsync
 public class InternetbankingApplication extends SpringBootServletInitializer implements CommandLineRunner {
+
     @Autowired
-    SecurityService securityService;
+    private SecurityService securityService;
 
 
     public static void main(String[] args) {
