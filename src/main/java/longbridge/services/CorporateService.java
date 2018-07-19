@@ -211,6 +211,8 @@ public interface CorporateService{
 
     void addAccounts(CorporateRequestDTO requestDTO);
 
+    AccountPermissionDTO.Permission getDefaultAccountPermission();
+
     void addAccounts(Corporate corporate);
 
     CorporateUser createUserOnEntrustAndSendCredentials(CorporateUser corporateUser);

@@ -1298,12 +1298,7 @@ public class OpsCorporateController {
         logger.info("Corporate Request {}", corporateRequestDTO);
         if (accounts.length > 0) {
             logger.info("Customer accounts {}", Arrays.asList(accounts));
-            Set<AccountDTO> accountDTOs = new HashSet<>();
-            for (String account : accounts) {
-                AccountDTO accountDTO = new AccountDTO();
-                accountDTO.setAccountNumber(account);
-                accountDTOs.add(accountDTO);
-            }
+            Set<AccountDTO> accountDTOs = getAccountDTOs(accounts);
             corporateRequestDTO.setAccounts(accountDTOs);
         }
         CorporateDTO corporate = corporateService.getCorporate(corporateRequestDTO.getId());
@@ -1340,12 +1335,7 @@ public class OpsCorporateController {
         cifids.add(cifid);
         if (accounts.length > 0) {
             logger.info("Customer accounts {}", Arrays.asList(accounts));
-            Set<AccountDTO> accountDTOs = new HashSet<>();
-            for (String account : accounts) {
-                AccountDTO accountDTO = new AccountDTO();
-                accountDTO.setAccountNumber(account);
-                accountDTOs.add(accountDTO);
-            }
+            Set<AccountDTO> accountDTOs = getAccountDTOs(accounts);
             corporateRequestDTO.setAccounts(accountDTOs);
             corporateRequestDTO.setCifids(cifids);
         }
@@ -1498,7 +1488,7 @@ public class OpsCorporateController {
                     if (!accountPermissions.contains(new AccountPermissionDTO(account.getAccountNumber()))) {
                         AccountPermissionDTO accountPermission = new AccountPermissionDTO(account.getAccountNumber());
                         accountPermission.setAccountName(account.getAccountName());
-                        accountPermission.setPermission(AccountPermissionDTO.Permission.NONE);
+                        accountPermission.setPermission(corporateService.getDefaultAccountPermission());
                         accountPermissions.add(accountPermission);
                         logger.debug("Added account {} found in the list of corporate selected accounts", accountPermission);
                     }
@@ -1532,7 +1522,7 @@ public class OpsCorporateController {
         for (AccountDTO account : accountDTOs) {
             AccountPermissionDTO accountPermission = new AccountPermissionDTO(account.getAccountNumber());
             accountPermission.setAccountName(account.getAccountName());
-            accountPermission.setPermission(AccountPermissionDTO.Permission.NONE);
+            accountPermission.setPermission(corporateService.getDefaultAccountPermission());
             accountPermissions.add(accountPermission);
         }
 

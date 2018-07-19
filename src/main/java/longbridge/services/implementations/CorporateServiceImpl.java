@@ -32,6 +32,8 @@ import java.math.BigDecimal;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static longbridge.models.UserAccountRestriction.*;
+
 /**
  * Created by Fortune on 4/5/2017.
  */
@@ -369,8 +371,6 @@ public class CorporateServiceImpl implements CorporateService {
     }
 
 
-
-
     @Override
     @Verifiable(operation = "ADD_CORPORATE_ACCOUNT", description = "Adding Corporate Accounts")
     public String addCorporateAccounts(CorporateRequestDTO requestDTO) {
@@ -394,19 +394,21 @@ public class CorporateServiceImpl implements CorporateService {
         corporate.getCifids().add(corporate.getCustomerId());
         corporate.getCifids().addAll(requestDTO.getCifids());
         corporateRepo.save(corporate);
-        setCorporateUsersDefaultAccountRestrictions(corporate,newAccounts);
+        setCorporateUsersDefaultAccountRestrictions(corporate, newAccounts);
     }
 
 
-    private void setCorporateUsersDefaultAccountRestrictions(Corporate corporate, List<Account> accounts){
+    private void setCorporateUsersDefaultAccountRestrictions(Corporate corporate, List<Account> accounts) {
 
         logger.debug("Setting corporate users default account restrictions");
         List<CorporateUser> users = corporate.getUsers();
 
-        for(CorporateUser user: users){
-            for(Account account: accounts){
+        RestrictionType defaultAccountRestriction = getDefaultAccountRestriction();
+
+        for (CorporateUser user : users) {
+            for (Account account : accounts) {
                 UserAccountRestriction accountRestriction = new UserAccountRestriction();
-                accountRestriction.setRestrictionType(UserAccountRestriction.RestrictionType.VIEW);
+                accountRestriction.setRestrictionType(defaultAccountRestriction);
                 accountRestriction.setAccountId(account.getId());
                 accountRestriction.setCorporateUserId(user.getId());
                 userAccountRestrictionRepo.save(accountRestriction);
@@ -414,6 +416,43 @@ public class CorporateServiceImpl implements CorporateService {
         }
     }
 
+    private RestrictionType getDefaultAccountRestriction() {
+
+        AccountPermissionDTO.Permission permission = getDefaultAccountPermission();
+
+        RestrictionType restrictionType;
+
+        switch (permission) {
+            case VIEW_ONLY:
+                restrictionType = RestrictionType.TRANSACTION;
+                break;
+            case VIEW_AND_TRANSACT:
+                restrictionType = RestrictionType.NONE;
+                break;
+            case NONE:
+                restrictionType = RestrictionType.VIEW;
+                break;
+            default:
+                //User entered invalid input, however apply the most restrictive permission
+                restrictionType = RestrictionType.VIEW;
+                break;
+        }
+        return restrictionType;
+    }
+
+    @Override
+    public AccountPermissionDTO.Permission getDefaultAccountPermission(){
+        SettingDTO defaultAccountPermission = configService.getSettingByName("DEFAULT_ACCOUNT_PERMISSION");
+        String defaultPermission;
+        if (defaultAccountPermission != null && defaultAccountPermission.isEnabled()) {
+            defaultPermission = defaultAccountPermission.getValue();
+        } else {
+            defaultPermission = "NONE";
+        }
+
+        AccountPermissionDTO.Permission permission = AccountPermissionDTO.Permission.valueOf(defaultPermission);
+        return permission;
+    }
 
     public void addAccounts(Corporate corporate) {
         String customerId = corporate.getCustomerId();
@@ -728,11 +767,9 @@ public class CorporateServiceImpl implements CorporateService {
     @Verifiable(operation = "ADD_CORPORATE_ROLE", description = "Adding a Corporate Role")
     public String addCorporateRole(CorporateRoleDTO roleDTO) throws InternetBankingException {
 
-
         if (roleDTO.getRank() < 1) {
             throw new InternetBankingException(messageSource.getMessage("auth.level.invalid", null, locale));
         }
-
 
         CorporateRole corporateRole = corporateRoleRepo.findFirstByNameAndRankAndCorporate_Id(roleDTO.getName(), roleDTO.getRank(), Long.parseLong(roleDTO.getCorporateId()));
 
