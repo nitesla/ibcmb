@@ -601,6 +601,7 @@ public class OpsCorporateController {
         session.removeAttribute("authorizerLevels");
         session.removeAttribute("users");
         session.removeAttribute("accountInfos");
+        session.removeAttribute("userAccountPermissions");
 
         CorporateDTO corporateDTO = new CorporateDTO();
 
@@ -1077,6 +1078,7 @@ public class OpsCorporateController {
         session.removeAttribute(" authorizerLevels");
         session.removeAttribute(" users");
         session.removeAttribute(" accountInfos");
+        session.removeAttribute("userAccountPermissions");
         return "redirect:/ops/corporates";
     }
 
