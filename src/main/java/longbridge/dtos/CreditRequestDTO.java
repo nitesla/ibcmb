@@ -1,10 +1,9 @@
 package longbridge.dtos;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonSetter;
 
 import java.math.BigDecimal;
+import java.util.Date;
 
 /**
  * Created by Longbridge on 14/06/2017.
@@ -13,6 +12,7 @@ import java.math.BigDecimal;
 public class CreditRequestDTO {
     @JsonProperty("DT_RowId")
     private Long id;
+    private String customerAccountNumber;
     private String accountNumber;
     private String sortCode;
     private String accountName;
@@ -20,6 +20,8 @@ public class CreditRequestDTO {
     private String beneficiaryBank;
     private String narration;
     private String status;
+    private String referenceNumber;
+    private Date tranDate;
 
 
     public Long getId() {
@@ -88,7 +90,27 @@ public class CreditRequestDTO {
         this.beneficiaryBank = beneficiaryBank;
     }
 
-    public CreditRequestDTO() {
+    public String getCustomerAccountNumber() {
+        return customerAccountNumber;
+    }
 
+    public void setCustomerAccountNumber(String customerAccountNumber) {
+        this.customerAccountNumber = customerAccountNumber;
+    }
+
+    public String getReferenceNumber() {
+        return referenceNumber;
+    }
+
+    public void setReferenceNumber(String referenceNumber) {
+        this.referenceNumber = referenceNumber;
+    }
+
+    public Date getTranDate() {
+        return tranDate;
+    }
+
+    public void setTranDate(Date tranDate) {
+        this.tranDate = tranDate;
     }
 }

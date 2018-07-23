@@ -1,0 +1,305 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.5.1.final using JasperReports Library version 6.5.1  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="accountStatment" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="1466e9a2-d9da-4bad-8d18-3671e865c7c5">
+	<property name="ireport.zoom" value="1.1"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="121"/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
+	<property name="ireport.scriptlethandling" value="0"/>
+	<property name="ireport.encoding" value="UTF-8"/>
+	<import value="net.sf.jasperreports.engine.*"/>
+	<import value="java.util.*"/>
+	<import value="net.sf.jasperreports.engine.data.*"/>
+	<style name="Table_TH" mode="Opaque" backcolor="#F0F8FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+			<topPen lineWidth="0.5" lineColor="#000000"/>
+			<leftPen lineWidth="0.5" lineColor="#000000"/>
+			<bottomPen lineWidth="0.5" lineColor="#000000"/>
+			<rightPen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="Table_CH" mode="Opaque" backcolor="#BFE1FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+			<topPen lineWidth="0.5" lineColor="#000000"/>
+			<leftPen lineWidth="0.5" lineColor="#000000"/>
+			<bottomPen lineWidth="0.5" lineColor="#000000"/>
+			<rightPen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="Table_TD" mode="Opaque" backcolor="#FFFFFF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+			<topPen lineWidth="0.5" lineColor="#000000"/>
+			<leftPen lineWidth="0.5" lineColor="#000000"/>
+			<bottomPen lineWidth="0.5" lineColor="#000000"/>
+			<rightPen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<parameter name="imagePath" class="java.lang.String"/>
+	<parameter name="customerAccountName" class="java.lang.String"/>
+	<parameter name="customerAccountNumber" class="java.lang.String"/>
+	<field name="narration" class="java.lang.String">
+		<fieldDescription><![CDATA[narration]]></fieldDescription>
+	</field>
+	<field name="accountNumber" class="java.lang.String">
+		<fieldDescription><![CDATA[accountNumber]]></fieldDescription>
+	</field>
+	<field name="accountName" class="java.lang.String">
+		<fieldDescription><![CDATA[accountName]]></fieldDescription>
+	</field>
+	<field name="beneficiaryBank" class="java.lang.String">
+		<fieldDescription><![CDATA[beneficiaryBank]]></fieldDescription>
+	</field>
+	<field name="amount" class="java.math.BigDecimal">
+		<fieldDescription><![CDATA[amount]]></fieldDescription>
+	</field>
+	<field name="status" class="java.lang.String">
+		<fieldDescription><![CDATA[status]]></fieldDescription>
+	</field>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="4" splitType="Stretch"/>
+	</title>
+	<pageHeader>
+		<band height="237" splitType="Stretch">
+			<staticText>
+				<reportElement key="FIN_PAGE_HEADER-1" stretchType="RelativeToTallestObject" x="0" y="80" width="224" height="20" isRemoveLineWhenBlank="true" uuid="692bdc7b-c9ec-4bbd-a9e2-8c9beb92b605">
+					<printWhenExpression><![CDATA[$V{PAGE_NUMBER}==1]]></printWhenExpression>
+				</reportElement>
+				<textElement textAlignment="Justified" verticalAlignment="Middle">
+					<font fontName="Arial" size="12" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[BULK TRANSFER REPORT]]></text>
+			</staticText>
+			<staticText>
+				<reportElement key="staticText" x="2" y="115" width="100" height="20" isRemoveLineWhenBlank="true" uuid="76a0e631-99db-45a6-9d93-d6ad7eace939">
+					<printWhenExpression><![CDATA[$V{PAGE_NUMBER}==1]]></printWhenExpression>
+				</reportElement>
+				<textElement>
+					<font fontName="Arial" size="9" isBold="true" pdfFontName="Helvetica-Bold" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[Account Name:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="false">
+				<reportElement key="textField" x="113" y="112" width="208" height="25" isRemoveLineWhenBlank="true" uuid="5d79ff1d-0a9e-436f-b2f8-6fbf41a5cea8">
+					<printWhenExpression><![CDATA[$V{PAGE_NUMBER}==1]]></printWhenExpression>
+				</reportElement>
+				<textElement>
+					<font fontName="Arial" size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{customerAccountName}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement key="staticText" x="2" y="139" width="101" height="20" isRemoveLineWhenBlank="true" uuid="4aefd67c-c864-4998-94e0-978a57802a73">
+					<printWhenExpression><![CDATA[$V{PAGE_NUMBER}==1]]></printWhenExpression>
+				</reportElement>
+				<textElement>
+					<font fontName="Arial" size="9" isBold="true" pdfFontName="Helvetica-Bold" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[Account Number:]]></text>
+			</staticText>
+			<image>
+				<reportElement key="image" x="413" y="19" width="142" height="52" uuid="b7dae1f4-4eb0-49e0-b29b-f2c3cb008baf"/>
+				<imageExpression><![CDATA[$P{imagePath}]]></imageExpression>
+			</image>
+			<textField pattern="dd MMMMM yyyy" isBlankWhenNull="false">
+				<reportElement key="textField" x="2" y="19" width="100" height="20" uuid="5b3b6859-bb9e-4d45-9756-72f7ac793d50"/>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="false">
+				<reportElement key="textField" x="113" y="138" width="208" height="25" isRemoveLineWhenBlank="true" uuid="7b5979b7-8191-4cc2-9b2d-f02fdebf40b9">
+					<printWhenExpression><![CDATA[$V{PAGE_NUMBER}==1]]></printWhenExpression>
+				</reportElement>
+				<textElement>
+					<font fontName="Arial" size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{customerAccountNumber}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement key="staticText" x="0" y="200" width="101" height="20" isRemoveLineWhenBlank="true" uuid="14cec8dc-4de6-482e-b787-65560161b59a">
+					<printWhenExpression><![CDATA[$V{PAGE_NUMBER}==1]]></printWhenExpression>
+				</reportElement>
+				<textElement>
+					<font fontName="Arial" size="9" isBold="true" pdfFontName="Helvetica-Bold" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[Beneficiaries]]></text>
+			</staticText>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="20" splitType="Stretch">
+			<staticText>
+				<reportElement key="staticText" x="1" y="2" width="89" height="17" uuid="821b847e-a390-4cde-92fa-b5b0853e57a6"/>
+				<textElement>
+					<font fontName="Arial" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Account Number]]></text>
+			</staticText>
+			<staticText>
+				<reportElement key="staticText" x="200" y="2" width="65" height="17" uuid="45a0ede3-0394-4076-a3ab-5e9755aa487e"/>
+				<textElement>
+					<font fontName="Arial" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Beneficiary]]></text>
+			</staticText>
+			<staticText>
+				<reportElement key="staticText" x="110" y="2" width="70" height="17" uuid="fb8a994e-8f99-4a58-883d-1d4576cc67c9"/>
+				<textElement>
+					<font fontName="Arial" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Bank]]></text>
+			</staticText>
+			<staticText>
+				<reportElement key="staticText" x="280" y="2" width="57" height="17" uuid="e234f08a-d5be-43f6-9ddb-51fd421b29ef"/>
+				<textElement>
+					<font fontName="Arial" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Amount]]></text>
+			</staticText>
+			<staticText>
+				<reportElement key="staticText" x="347" y="0" width="123" height="17" uuid="942b0cf2-56a7-4ce1-8306-1597d547c0c0"/>
+				<textElement>
+					<font fontName="Arial" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Narration]]></text>
+			</staticText>
+			<line>
+				<reportElement key="line-9" x="0" y="19" width="553" height="1" forecolor="#000066" uuid="c7c6ee26-432a-4ca7-a167-14eefb0a6807"/>
+				<graphicElement>
+					<pen lineWidth="1.5" lineColor="#666666"/>
+				</graphicElement>
+			</line>
+			<staticText>
+				<reportElement x="490" y="2" width="50" height="16" uuid="e2c2fd70-52b0-45c5-9696-f5df699874dc"/>
+				<textElement>
+					<font fontName="Arial" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Status]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="25" splitType="Stretch">
+			<textField pattern="dd-MMM-yyyy" isBlankWhenNull="true">
+				<reportElement key="textField" x="200" y="2" width="65" height="22" uuid="9244e473-4721-4359-8acd-dc93cbd6422f"/>
+				<textElement>
+					<font fontName="Arial" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{accountName}]]></textFieldExpression>
+			</textField>
+			<textField pattern="dd-MMM-yyyy" isBlankWhenNull="false">
+				<reportElement key="textField" x="110" y="2" width="70" height="22" uuid="16c06de0-bae2-4f8b-8ab4-51f2380216d0"/>
+				<textElement>
+					<font fontName="Arial" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{beneficiaryBank}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="false">
+				<reportElement key="textField" x="1" y="2" width="89" height="22" uuid="4821fc56-f75a-4054-8b5f-9970f11c57ce"/>
+				<textElement>
+					<font fontName="Arial" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{accountNumber}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00" isBlankWhenNull="false">
+				<reportElement key="textField" x="347" y="2" width="123" height="22" uuid="5a8cee88-9182-4a84-b406-64aeb6ac8c03"/>
+				<textElement>
+					<font fontName="Arial" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{narration}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00" isBlankWhenNull="false">
+				<reportElement key="textField" x="280" y="2" width="56" height="22" uuid="2da58177-7a5a-4faa-b153-12485e944145"/>
+				<textElement>
+					<font fontName="Arial" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{amount}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement key="line-9" x="1" y="22" width="553" height="1" forecolor="#000066" uuid="6878e07d-db35-4edf-9401-b3e2cd55f918"/>
+				<graphicElement>
+					<pen lineWidth="0.5" lineColor="#666666"/>
+				</graphicElement>
+			</line>
+			<textField>
+				<reportElement x="487" y="3" width="53" height="20" uuid="ae779fbb-7011-4b0c-8f4b-2718c96a6e39"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{status}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="134" splitType="Stretch">
+			<elementGroup>
+				<staticText>
+					<reportElement key="staticText" x="246" y="74" width="151" height="12" forecolor="#272765" uuid="95e4c377-50d2-48f6-b116-4cb7524777d1"/>
+					<textElement>
+						<font fontName="Arial" size="7" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Coronation Merchant Bank]]></text>
+				</staticText>
+			</elementGroup>
+			<staticText>
+				<reportElement key="staticText" x="412" y="85" width="100" height="12" forecolor="#666666" uuid="71590930-3e53-4c6e-a517-935f9a80e362"/>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<text><![CDATA[T- 01-2366217]]></text>
+			</staticText>
+			<staticText>
+				<reportElement key="staticText" x="412" y="97" width="140" height="12" forecolor="#666666" uuid="31b2f7fa-8f3a-4b9a-bc93-28ac29ac46b4"/>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<text><![CDATA[E - clientcare@coronationmb.com]]></text>
+			</staticText>
+			<textField isBlankWhenNull="false">
+				<reportElement key="textField-1" x="0" y="74" width="126" height="15" uuid="2ea2d243-3b23-4efe-808d-86f007562f53"/>
+				<textElement>
+					<font fontName="Calibri" size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Page "+ $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement key="staticText" x="246" y="85" width="151" height="12" forecolor="#666666" uuid="f0eec0ee-dcbf-4dcf-8781-824fc6992c19"/>
+				<textElement>
+					<font fontName="Arial" size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[10, Amodu Ojukutu Street]]></text>
+			</staticText>
+			<staticText>
+				<reportElement key="staticText" x="246" y="97" width="151" height="12" forecolor="#666666" uuid="4d31b6a1-a46c-4e16-8df6-36b898d543c0"/>
+				<textElement>
+					<font fontName="Arial" size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Victoria Island Lagos,  Nigeria]]></text>
+			</staticText>
+			<staticText>
+				<reportElement key="staticText" x="246" y="109" width="116" height="12" forecolor="#666666" uuid="f6a610bb-7951-4834-8db8-c6396c5e71be"/>
+				<textElement>
+					<font fontName="Arial" size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[www.coronationmb.com]]></text>
+			</staticText>
+			<staticText>
+				<reportElement key="staticText" x="246" y="121" width="116" height="12" forecolor="#666666" uuid="00967316-6107-4faf-959b-c3d18b53dc78"/>
+				<textElement>
+					<font fontName="Arial" size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[RC No. 201738]]></text>
+			</staticText>
+		</band>
+	</pageFooter>
+	<summary>
+		<band height="6" splitType="Stretch"/>
+	</summary>
+</jasperReport>

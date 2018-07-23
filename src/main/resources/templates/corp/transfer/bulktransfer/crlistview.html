@@ -78,6 +78,7 @@
                         <th>Amount (N)</th>
                         <th>Narration</th>
                         <th>Status</th>
+                        <th></th>
 
                         </thead>
                         <tbody>
@@ -118,7 +119,29 @@
                 async: false,
                 global: false,
                 success: function(data) {
-                    json = data;
+                	pnd = 0;
+                	proc = 0;
+                	paid = 0;
+                	failed=0;
+                	others=0;
+                	$(data).each(function(index, e){
+                		if( e['label'] == 'PENDING')
+                			pnd = e['value'];
+                		else if( e['label'] == 'PROCESSING')
+                			proc = e['value'];
+                		else if( e['label'] == 'PAID')
+                			paid = e['value'];
+                		else if( e['label'] == 'FAILED')
+                			failed = e['value'];
+                		else
+                			others += e['value'];
+                	});
+                	json = [{ label:'Pending',value: pnd},
+		                	{ label:'Processing',value: proc},
+		                	{ label:'Paid',value: paid},
+		                	{ label:'Failed',value: failed},
+		                	{ label:'Others',value: others}]
+                   // json = data;
                 },
                 error:function(){
                     alert("Error loading chart");
@@ -142,7 +165,7 @@
 
                 return Math.round(y/(sum)*100) + "%";
             },
-            colors: [ 'lightblue']
+            colors: [ 'orange','lightblue','lightgreen','red','grey']
         });
 
         var table = $('#mytab').DataTable({
@@ -160,7 +183,8 @@
                 { "data": "accountName" },
                 { "data": "amount" },
                 { "data": "narration" },
-                { "data": "status" }
+                { "data": "status" },
+                {"data": "DT_RowId"}
             ],
             "columnDefs": [
                 {
@@ -175,7 +199,13 @@
                         }
                         return data;
                     }
-                }
+                },
+                {
+                    "targets": 6,
+                    "data": "DT_RowId",
+                    "render": function(data, type, full, meta) {
+                        return '<a href="/corporate/transfer/bulk/receipt/' + data + '" target="_blank">Receipt</a>';
+                    }}
             ]});
 
 

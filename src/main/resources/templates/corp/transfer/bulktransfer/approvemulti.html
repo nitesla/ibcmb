@@ -60,6 +60,8 @@
                     <div class="col-xs-12 no-pad-left no-pad-right">
                         <button class="btn btn-default btn-sm bulk-btn ">Authorizations</button>
                         <button class="btn in-active btn-sm bulk-btn">Transaction Details</button>
+                        <a id="pdf" href="#"  class="btn bt-link-act btn-print" style="display: none"> <i class="fa fa-print"></i>&nbsp; PDF</a>
+                        <a id="excel" href="#"  class="btn bt-link-act btn-print" style="display: none"><i class="fa fa-print"  ></i>&nbsp;Excel</a>
                     </div>
 
                     <style>
@@ -107,8 +109,6 @@
                                 </table>
 
 
-
-
                             </div>
 
                             <form id="authForm" th:action="@{/corporate/transfer/bulk/approve}" method="post">
@@ -149,6 +149,7 @@
                                         <th style="padding:10px 3px !important">Amt</th>
                                         <th style="padding:10px 3px !important">Narration</th>
                                         <th style="padding:10px 3px !important">Status</th>
+                                        <th style="padding:10px 3px !important"></th>
 
                                     </thead>
                                     <tbody class='body'>
@@ -162,7 +163,7 @@
 
                         <div class="col-xs-12 col-md-3 no-pad-right  hidden-xs mobile-no-left">
                             <div id="pie-chart" style="width:100%;height:150px;  background-color: whitesmoke"></div>
-                            <input type="hidden" class="form-control full-width" th:value="${bulkTransfer.id}" th:field="*{bulkTransfer.id}" th:id="bk" id="bk" />
+                            <input type="hidden" class="form-control full-width" th:value="${bulkTransfer.id}" th:field="*{bulkTransfer.id}" th:id="bk"/>
 
                         </div>
 
@@ -187,11 +188,32 @@
         <script th:src="@{~/bank/js/jquery.spring-friendly.min.js}"></script>
         <script th:src="@{~/customer/js/raphael-min.js}"></script>
         <script th:src="@{~/customer/js/morris.min.js}"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/bootbox.js/4.4.0/bootbox.min.js"></script>
+
 
 
 
         <script th:inline="javascript">
             //<![CDATA[
+
+
+
+            jQuery.download = function(url, key, data) {
+                // Build a form
+                var form = $('<form></form>').attr('action', url).attr('target', '_blank')
+                    .attr('method', 'get');
+                // Add the one key/value
+                form.append($("<input/>").attr('type', 'hidden').attr('name',
+                    key).attr('value', data));
+
+                $.each(data, function(propertyName, valueOfProperty) {
+                    form.append($("<input/>").attr('type', 'hidden').attr('name',
+                        propertyName).attr('value', valueOfProperty));
+                });
+
+                //send request
+                form.appendTo('body').submit().remove();
+            };
 
             $(document).ready(function() {
 
@@ -203,12 +225,30 @@
                     if ($(this).text() == 'Transaction Details') {
                         $('.author').addClass('display-none');
                         $('.trans').removeClass('display-none');
+                        $(".btn-print").show();
 
                     } else {
                         $('.author').removeClass('display-none');
                         $('.trans').addClass('display-none');
+                        $(".btn-print").hide();
+
                     }
 
+                });
+
+
+                var bulkTransferId = document.getElementById("bk").value;
+
+
+                $("#pdf").on("click", function(e) {
+
+                    $.download("/corporate/transfer/bulk/"+bulkTransferId+"/pdf", "data", "");
+
+                });
+
+                $("#excel").on("click", function(e) {
+
+                    $.download("/corporate/transfer/bulk/"+bulkTransferId+"/excel", "data", "");
 
                 });
 
@@ -217,12 +257,34 @@
                 var json_data = (function() {
                     var json;
                     $.ajax({
-                        type: 'GET',
-                        url: "/corporate/transfer/" + id + "/status",
+                        type:'GET',
+                        url: "/corporate/transfer/" +id+ "/status",
                         async: false,
                         global: false,
                         success: function(data) {
-                            json = data;
+                            pnd = 0;
+                            proc = 0;
+                            paid = 0;
+                            failed=0;
+                            others=0;
+                            $(data).each(function(index, e){
+                                if( e['label'] == 'PENDING')
+                                    pnd = e['value'];
+                                else if( e['label'] == 'PROCESSING')
+                                    proc = e['value'];
+                                else if( e['label'] == 'PAID')
+                                    paid = e['value'];
+                                else if( e['label'] == 'FAILED')
+                                    failed = e['value'];
+                                else
+                                    others += e['value'];
+                            });
+                            json = [{ label:'Pending',value: pnd},
+                                { label:'Processing',value: proc},
+                                { label:'Paid',value: paid},
+                                { label:'Failed',value: failed},
+                                { label:'Others',value: others}]
+                            // json = data;
                         },
                         error: function() {
                             alert("Error loading chart");
@@ -231,9 +293,7 @@
                     return json;
                 })();
 
-                var sum = 0,
-                    value = json_data,
-                    i;
+                var sum = 0, value = json_data, i;
                 for (i = 0; i < value.length; i++) {
                     sum += value[i].value;
                 }
@@ -241,12 +301,14 @@
 
                 Morris.Donut({
                     element: "pie-chart",
-                    data: json_data,
-                    formatter: function(y, data) {
+                    data:
+                    json_data
+                    ,
+                    formatter: function(y,data) {
 
-                        return Math.round(y / (sum) * 100) + "%";
+                        return Math.round(y/(sum)*100) + "%";
                     },
-                    colors: ['lightblue'],
+                    colors: [ 'orange','lightblue','lightgreen','red','grey']
                 });
 
 
@@ -259,7 +321,7 @@
                         [5, 10, 20]
                     ],
                     "pagingType": "input",
-                    "searching": false,
+                    "searching": true,
                     "paging": true,
                     "serverSide": false,
                     "ajax": "/corporate/transfer/" + id + "/allcreditrequests",
@@ -276,8 +338,31 @@
                         "data": "narration"
                     }, {
                         "data": "status"
-                    }]
-                });
+                    }, {
+                        "data": "DT_RowId"
+                    }],
+                    "columnDefs": [
+                        {
+                            "targets" : 3,
+                            "data" : "amount",
+                            "render" : function(data, type,full, meta) {
+                                if (type === 'display') {
+                                    if(data == null)
+                                        return data;
+                                    var twoPlacedFloat = parseFloat(data).toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,');
+                                    return twoPlacedFloat;
+                                }
+                                return data;
+                            }
+                        },
+                        {
+                        "targets": 6,
+                        "data": "DT_RowId",
+                        "render": function(data, type, full, meta) {
+                            return '<a href="/corporate/transfer/bulk/receipt/' + data + '" target="_blank">Receipt</a>';
+                        }}
+                        ]
+                    });
 
             });
 

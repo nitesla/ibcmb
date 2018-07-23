@@ -27,7 +27,9 @@ public interface BulkTransferService {
     String cancelBulkTransferRequest(Long id);
     BulkTransfer getBulkTransferRequest(Long id);
     Page<CreditRequestDTO> getCreditRequests(BulkTransfer bulkTransfer, Pageable pageable);
+    List<CreditRequestDTO> getCreditRequests(Long bulkTransferId);
     Page<CreditRequest> getAllCreditRequests(BulkTransfer bulkTransfer, Pageable pageable);
+    CreditRequestDTO getCreditRequest(Long id);
 
     boolean userCanAuthorize(TransRequest transRequest);
 

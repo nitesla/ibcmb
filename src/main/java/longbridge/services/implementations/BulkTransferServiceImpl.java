@@ -291,12 +291,30 @@ public class BulkTransferServiceImpl implements BulkTransferService {
     }
 
     @Override
+    public List<CreditRequestDTO> getCreditRequests(Long bulkTransferId) {
+
+        BulkTransfer bulkTransfer = bulkTransferRepo.findOne(bulkTransferId);
+        List<CreditRequest> creditRequests = bulkTransfer.getCrRequestList();
+        List<CreditRequestDTO> dtOs = convertEntToDTOs(creditRequests);
+        return dtOs;
+
+    }
+
+    @Override
     public Page<CreditRequest> getAllCreditRequests(BulkTransfer bulkTransfer, Pageable pageable) {
         Page<CreditRequest> page = (Page<CreditRequest>) bulkTransfer.getCrRequestList();
         List<CreditRequest> creditRequests = page.getContent();
         long t = page.getTotalElements();
         Page<CreditRequest> pageImpl = new PageImpl<CreditRequest>(creditRequests, pageable, t);
         return pageImpl;
+    }
+
+    @Override
+    public CreditRequestDTO getCreditRequest(Long id) {
+
+        CreditRequest creditRequest = creditRequestRepo.findOne(id);
+        CreditRequestDTO creditRequestDTO = convertEntityToDTO(creditRequest);
+        return creditRequestDTO;
     }
 
 
@@ -316,12 +334,20 @@ public class BulkTransferServiceImpl implements BulkTransferService {
 
     public CreditRequestDTO convertEntityToDTO(CreditRequest creditRequest) {
         CreditRequestDTO creditRequestDTO = new CreditRequestDTO();
+        creditRequestDTO.setId(creditRequest.getId());
         creditRequestDTO.setNarration(creditRequest.getNarration());
         creditRequestDTO.setAmount(creditRequest.getAmount());
         creditRequestDTO.setAccountName(creditRequest.getAccountName());
         creditRequestDTO.setSortCode(creditRequest.getSortCode());
         creditRequestDTO.setAccountNumber(creditRequest.getAccountNumber());
         creditRequestDTO.setStatus(creditRequest.getStatus());
+        creditRequestDTO.setCustomerAccountNumber(creditRequest.getBulkTransfer().getCustomerAccountNumber());
+        creditRequestDTO.setReferenceNumber(creditRequest.getReferenceNumber());
+        creditRequestDTO.setTranDate(creditRequest.getBulkTransfer().getTranDate());
+        FinancialInstitution financialInstitution = financialInstitutionService.getFinancialInstitutionByBankCode(creditRequest.getSortCode());
+        if (financialInstitution != null) {
+            creditRequestDTO.setBeneficiaryBank(financialInstitution.getInstitutionName());
+        }
         return creditRequestDTO;
     }
 
