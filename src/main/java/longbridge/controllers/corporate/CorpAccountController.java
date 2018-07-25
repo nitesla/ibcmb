@@ -401,6 +401,8 @@ public class CorpAccountController {
                 list = accountStatement.getTransactionDetails();
                 session.setAttribute("hasMoreTransaction", accountStatement.getHasMoreData());
 
+
+
             }
             session.removeAttribute("acctStmtLastDetails");
             if (list != null) {
