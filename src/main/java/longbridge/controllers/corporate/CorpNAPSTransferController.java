@@ -648,7 +648,6 @@ public class CorpNAPSTransferController {
             BulkTransfer bulkTransferRequest = bulkTransferService.getBulkTransferRequest(id);
             List<CreditRequestDTO> creditRequests = bulkTransferService.getCreditRequests(id);
 
-            logger.debug("Credit requests: {}",creditRequests);
 
             modelMap.put("datasource", creditRequests);
             modelMap.put("format", "pdf");

@@ -99,6 +99,7 @@ public class OperationsUserServiceImpl implements OperationsUserService {
     @Override
     public OperationsUserDTO getUser(Long id) {
         OperationsUser user = operationsUserRepo.findOne(id);
+
         return convertEntityToDTO(user);
     }
 
