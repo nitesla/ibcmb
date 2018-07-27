@@ -384,7 +384,7 @@
             </ResultCollector>
             <hashTree/>
           </hashTree>
-          <GenericController guiclass="LogicControllerGui" testclass="GenericController" testname="BULK transfer set up" enabled="true"/>
+          <GenericController guiclass="LogicControllerGui" testclass="GenericController" testname="Bulk transfer set up" enabled="true"/>
           <hashTree>
             <JDBCSampler guiclass="TestBeanGUI" testclass="JDBCSampler" testname="Create a rule for corporate ID (2001) (own Transfer)" enabled="true">
               <stringProp name="dataSource">database</stringProp>
@@ -974,17 +974,17 @@
             <collectionProp name="Arguments.arguments">
               <elementProp name="username_a" elementType="Argument">
                 <stringProp name="Argument.name">username_a</stringProp>
-                <stringProp name="Argument.value">fortune500</stringProp>
+                <stringProp name="Argument.value">deborah</stringProp>
                 <stringProp name="Argument.metadata">=</stringProp>
               </elementProp>
               <elementProp name="corporateId_a" elementType="Argument">
                 <stringProp name="Argument.name">corporateId_a</stringProp>
-                <stringProp name="Argument.value">mcp</stringProp>
+                <stringProp name="Argument.value">gmnig</stringProp>
                 <stringProp name="Argument.metadata">=</stringProp>
               </elementProp>
               <elementProp name="password_a" elementType="Argument">
                 <stringProp name="Argument.name">password_a</stringProp>
-                <stringProp name="Argument.value">pass@%1</stringProp>
+                <stringProp name="Argument.value">password100</stringProp>
                 <stringProp name="Argument.metadata">=</stringProp>
               </elementProp>
             </collectionProp>
@@ -1456,7 +1456,7 @@
           </ResultCollector>
           <hashTree/>
         </hashTree>
-        <GenericController guiclass="LogicControllerGui" testclass="GenericController" testname="Login With invalid Token" enabled="true"/>
+        <GenericController guiclass="LogicControllerGui" testclass="GenericController" testname="Login With invalid Token" enabled="false"/>
         <hashTree>
           <CookieManager guiclass="CookiePanel" testclass="CookieManager" testname="HTTP Cookie Manager" enabled="true">
             <collectionProp name="CookieManager.cookies"/>
@@ -1899,7 +1899,7 @@
           </ResultCollector>
           <hashTree/>
         </hashTree>
-        <GenericController guiclass="LogicControllerGui" testclass="GenericController" testname="Login" enabled="false"/>
+        <GenericController guiclass="LogicControllerGui" testclass="GenericController" testname="Login" enabled="true"/>
         <hashTree>
           <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Login" enabled="true">
             <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" enabled="true">
@@ -2322,7 +2322,7 @@
           </CookieManager>
           <hashTree/>
         </hashTree>
-        <GenericController guiclass="LogicControllerGui" testclass="GenericController" testname="Initiator Login" enabled="false"/>
+        <GenericController guiclass="LogicControllerGui" testclass="GenericController" testname="Initiator Login" enabled="true"/>
         <hashTree>
           <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Login" enabled="true">
             <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" enabled="true">
@@ -2759,7 +2759,7 @@
           </CookieManager>
           <hashTree/>
         </hashTree>
-        <GenericController guiclass="LogicControllerGui" testclass="GenericController" testname="Authorizer Login" enabled="false"/>
+        <GenericController guiclass="LogicControllerGui" testclass="GenericController" testname="Authorizer Login" enabled="true"/>
         <hashTree>
           <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Login" enabled="true">
             <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" enabled="true">
@@ -3196,7 +3196,7 @@
           </CookieManager>
           <hashTree/>
         </hashTree>
-        <GenericController guiclass="LogicControllerGui" testclass="GenericController" testname="Sole User Login" enabled="false"/>
+        <GenericController guiclass="LogicControllerGui" testclass="GenericController" testname="Sole User Login" enabled="true"/>
         <hashTree>
           <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Login" enabled="true">
             <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" enabled="true">
@@ -3633,7 +3633,7 @@
           </CookieManager>
           <hashTree/>
         </hashTree>
-        <GenericController guiclass="LogicControllerGui" testclass="GenericController" testname="Initiate Multi Corp Inter Bank" enabled="false"/>
+        <GenericController guiclass="LogicControllerGui" testclass="GenericController" testname="Initiate Multi Corp Inter Bank" enabled="true"/>
         <hashTree>
           <ConfigTestElement guiclass="HttpDefaultsGui" testclass="ConfigTestElement" testname="HTTP Request Defaults" enabled="true">
             <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
@@ -3658,12 +3658,12 @@
               </elementProp>
               <elementProp name="corporateId_b" elementType="Argument">
                 <stringProp name="Argument.name">corporateId_b</stringProp>
-                <stringProp name="Argument.value">GM NIG</stringProp>
+                <stringProp name="Argument.value">GMNIG</stringProp>
                 <stringProp name="Argument.metadata">=</stringProp>
               </elementProp>
               <elementProp name="password_b" elementType="Argument">
                 <stringProp name="Argument.name">password_b</stringProp>
-                <stringProp name="Argument.value">pass@%1</stringProp>
+                <stringProp name="Argument.value">password100</stringProp>
                 <stringProp name="Argument.metadata">=</stringProp>
               </elementProp>
               <elementProp name="customerAccountNumber_ii" elementType="Argument">
@@ -5022,7 +5022,7 @@
           </ResultCollector>
           <hashTree/>
         </hashTree>
-        <RecordingController guiclass="RecordController" testclass="RecordingController" testname="Approve inter bank Transfer" enabled="false"/>
+        <RecordingController guiclass="RecordController" testclass="RecordingController" testname="Approve inter bank Transfer" enabled="true"/>
         <hashTree>
           <ConfigTestElement guiclass="HttpDefaultsGui" testclass="ConfigTestElement" testname="HTTP Request Defaults" enabled="true">
             <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
@@ -5047,12 +5047,12 @@
               </elementProp>
               <elementProp name="corporateId_ai" elementType="Argument">
                 <stringProp name="Argument.name">corporateId_ai</stringProp>
-                <stringProp name="Argument.value">GM NIG</stringProp>
+                <stringProp name="Argument.value">GMNIG</stringProp>
                 <stringProp name="Argument.metadata">=</stringProp>
               </elementProp>
               <elementProp name="password_ai" elementType="Argument">
                 <stringProp name="Argument.name">password_ai</stringProp>
-                <stringProp name="Argument.value">pass@%1</stringProp>
+                <stringProp name="Argument.value">password100</stringProp>
                 <stringProp name="Argument.metadata">=</stringProp>
               </elementProp>
               <elementProp name="token_ai" elementType="Argument">
@@ -6885,23 +6885,23 @@
           </ResultCollector>
           <hashTree/>
         </hashTree>
-        <GenericController guiclass="LogicControllerGui" testclass="GenericController" testname="Initiate Multi Corp Own Transfer" enabled="false"/>
+        <GenericController guiclass="LogicControllerGui" testclass="GenericController" testname="Initiate Multi Corp Own Transfer" enabled="true"/>
         <hashTree>
           <Arguments guiclass="ArgumentsPanel" testclass="Arguments" testname="User Details" enabled="true">
             <collectionProp name="Arguments.arguments">
               <elementProp name="username" elementType="Argument">
                 <stringProp name="Argument.name">username</stringProp>
-                <stringProp name="Argument.value">fortune</stringProp>
+                <stringProp name="Argument.value">deborah</stringProp>
                 <stringProp name="Argument.metadata">=</stringProp>
               </elementProp>
               <elementProp name="corporateId" elementType="Argument">
                 <stringProp name="Argument.name">corporateId</stringProp>
-                <stringProp name="Argument.value">mcp</stringProp>
+                <stringProp name="Argument.value">gmnig</stringProp>
                 <stringProp name="Argument.metadata">=</stringProp>
               </elementProp>
               <elementProp name="password" elementType="Argument">
                 <stringProp name="Argument.name">password</stringProp>
-                <stringProp name="Argument.value">pass@%1</stringProp>
+                <stringProp name="Argument.value">password100</stringProp>
                 <stringProp name="Argument.metadata">=</stringProp>
               </elementProp>
               <elementProp name="acctId_io" elementType="Argument">
@@ -6950,7 +6950,7 @@
           <ModuleController guiclass="ModuleControllerGui" testclass="ModuleController" testname="Login" enabled="true">
             <collectionProp name="ModuleController.node_path">
               <stringProp name="-1227702913">WorkBench</stringProp>
-              <stringProp name="-1982343629">RECORD 01/23/18 3:45:13 PM</stringProp>
+              <stringProp name="-2041229348">Corporate Test Plan</stringProp>
               <stringProp name="-622676109">Corp Login</stringProp>
               <stringProp name="-1578832392">Initiator Login</stringProp>
             </collectionProp>
@@ -7812,7 +7812,7 @@
           </ResultCollector>
           <hashTree/>
         </hashTree>
-        <GenericController guiclass="LogicControllerGui" testclass="GenericController" testname="Approve Own Transfer" enabled="false"/>
+        <GenericController guiclass="LogicControllerGui" testclass="GenericController" testname="Approve Own Transfer" enabled="true"/>
         <hashTree>
           <ConfigTestElement guiclass="HttpDefaultsGui" testclass="ConfigTestElement" testname="HTTP Request Defaults" enabled="true">
             <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
@@ -7857,17 +7857,17 @@
               </elementProp>
               <elementProp name="username2" elementType="Argument">
                 <stringProp name="Argument.name">username2</stringProp>
-                <stringProp name="Argument.value">fortune500</stringProp>
+                <stringProp name="Argument.value">ebenezer</stringProp>
                 <stringProp name="Argument.metadata">=</stringProp>
               </elementProp>
               <elementProp name="corporateId2" elementType="Argument">
                 <stringProp name="Argument.name">corporateId2</stringProp>
-                <stringProp name="Argument.value">mcp</stringProp>
+                <stringProp name="Argument.value">gmnig</stringProp>
                 <stringProp name="Argument.metadata">=</stringProp>
               </elementProp>
               <elementProp name="password2" elementType="Argument">
                 <stringProp name="Argument.name">password2</stringProp>
-                <stringProp name="Argument.value">pass@%1</stringProp>
+                <stringProp name="Argument.value">password100</stringProp>
                 <stringProp name="Argument.metadata">=</stringProp>
               </elementProp>
             </collectionProp>
@@ -7881,7 +7881,7 @@
           <ModuleController guiclass="ModuleControllerGui" testclass="ModuleController" testname="Login" enabled="true">
             <collectionProp name="ModuleController.node_path">
               <stringProp name="-1227702913">WorkBench</stringProp>
-              <stringProp name="239068077">Corporate Test</stringProp>
+              <stringProp name="-2041229348">Corporate Test Plan</stringProp>
               <stringProp name="-622676109">Corp Login</stringProp>
               <stringProp name="-654267854">Authorizer Login</stringProp>
             </collectionProp>
@@ -8839,23 +8839,23 @@
           </ResultCollector>
           <hashTree/>
         </hashTree>
-        <GenericController guiclass="LogicControllerGui" testclass="GenericController" testname="Initiate Multi Corp Cmb Transfer" enabled="false"/>
+        <GenericController guiclass="LogicControllerGui" testclass="GenericController" testname="Initiate Multi Corp Cmb Transfer" enabled="true"/>
         <hashTree>
           <Arguments guiclass="ArgumentsPanel" testclass="Arguments" testname="User Details" enabled="true">
             <collectionProp name="Arguments.arguments">
               <elementProp name="username" elementType="Argument">
                 <stringProp name="Argument.name">username</stringProp>
-                <stringProp name="Argument.value">fortune</stringProp>
+                <stringProp name="Argument.value">deborah</stringProp>
                 <stringProp name="Argument.metadata">=</stringProp>
               </elementProp>
               <elementProp name="corporateId" elementType="Argument">
                 <stringProp name="Argument.name">corporateId</stringProp>
-                <stringProp name="Argument.value">mcp</stringProp>
+                <stringProp name="Argument.value">gmnig</stringProp>
                 <stringProp name="Argument.metadata">=</stringProp>
               </elementProp>
               <elementProp name="password" elementType="Argument">
                 <stringProp name="Argument.name">password</stringProp>
-                <stringProp name="Argument.value">pass@%1</stringProp>
+                <stringProp name="Argument.value">password100</stringProp>
                 <stringProp name="Argument.metadata">=</stringProp>
               </elementProp>
               <elementProp name="customerAccountNumber3" elementType="Argument">
@@ -8919,7 +8919,7 @@
           <ModuleController guiclass="ModuleControllerGui" testclass="ModuleController" testname="Login" enabled="true">
             <collectionProp name="ModuleController.node_path">
               <stringProp name="-1227702913">WorkBench</stringProp>
-              <stringProp name="-1982343629">RECORD 01/23/18 3:45:13 PM</stringProp>
+              <stringProp name="-2041229348">Corporate Test Plan</stringProp>
               <stringProp name="-622676109">Corp Login</stringProp>
               <stringProp name="-1578832392">Initiator Login</stringProp>
             </collectionProp>
@@ -10278,7 +10278,7 @@
           </ResultCollector>
           <hashTree/>
         </hashTree>
-        <GenericController guiclass="LogicControllerGui" testclass="GenericController" testname="Approve CMB transfer" enabled="false"/>
+        <GenericController guiclass="LogicControllerGui" testclass="GenericController" testname="Approve CMB transfer" enabled="true"/>
         <hashTree>
           <CookieManager guiclass="CookiePanel" testclass="CookieManager" testname="HTTP Cookie Manager" enabled="true">
             <collectionProp name="CookieManager.cookies"/>
@@ -10289,17 +10289,17 @@
             <collectionProp name="Arguments.arguments">
               <elementProp name="username2" elementType="Argument">
                 <stringProp name="Argument.name">username2</stringProp>
-                <stringProp name="Argument.value">fortune500</stringProp>
+                <stringProp name="Argument.value">ebenezer</stringProp>
                 <stringProp name="Argument.metadata">=</stringProp>
               </elementProp>
               <elementProp name="corporateId2" elementType="Argument">
                 <stringProp name="Argument.name">corporateId2</stringProp>
-                <stringProp name="Argument.value">mcp</stringProp>
+                <stringProp name="Argument.value">gmnig</stringProp>
                 <stringProp name="Argument.metadata">=</stringProp>
               </elementProp>
               <elementProp name="password2" elementType="Argument">
                 <stringProp name="Argument.name">password2</stringProp>
-                <stringProp name="Argument.value">pass@%1</stringProp>
+                <stringProp name="Argument.value">password100</stringProp>
                 <stringProp name="Argument.metadata">=</stringProp>
               </elementProp>
               <elementProp name="comments_ac" elementType="Argument">
@@ -10328,7 +10328,7 @@
           <ModuleController guiclass="ModuleControllerGui" testclass="ModuleController" testname="Login" enabled="true">
             <collectionProp name="ModuleController.node_path">
               <stringProp name="-1227702913">WorkBench</stringProp>
-              <stringProp name="239068077">Corporate Test</stringProp>
+              <stringProp name="-2041229348">Corporate Test Plan</stringProp>
               <stringProp name="-622676109">Corp Login</stringProp>
               <stringProp name="-654267854">Authorizer Login</stringProp>
             </collectionProp>
@@ -11259,7 +11259,7 @@
           </ResultCollector>
           <hashTree/>
         </hashTree>
-        <RecordingController guiclass="RecordController" testclass="RecordingController" testname="Customized Account" enabled="false"/>
+        <RecordingController guiclass="RecordController" testclass="RecordingController" testname="Customized Account" enabled="true"/>
         <hashTree>
           <Arguments guiclass="ArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
             <collectionProp name="Arguments.arguments">
@@ -11280,12 +11280,12 @@
               </elementProp>
               <elementProp name="corporateId_ca" elementType="Argument">
                 <stringProp name="Argument.name">corporateId_ca</stringProp>
-                <stringProp name="Argument.value">GM NIG</stringProp>
+                <stringProp name="Argument.value">GMNIG</stringProp>
                 <stringProp name="Argument.metadata">=</stringProp>
               </elementProp>
               <elementProp name="password_ca" elementType="Argument">
                 <stringProp name="Argument.name">password_ca</stringProp>
-                <stringProp name="Argument.value">pass@%1</stringProp>
+                <stringProp name="Argument.value">password100</stringProp>
                 <stringProp name="Argument.metadata">=</stringProp>
               </elementProp>
               <elementProp name="token_ca" elementType="Argument">
@@ -11875,7 +11875,7 @@
           </ResultCollector>
           <hashTree/>
         </hashTree>
-        <RecordingController guiclass="RecordController" testclass="RecordingController" testname="Corp Forget User name" enabled="false"/>
+        <RecordingController guiclass="RecordController" testclass="RecordingController" testname="Corp Forget User name" enabled="true"/>
         <hashTree>
           <Arguments guiclass="ArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
             <collectionProp name="Arguments.arguments">
@@ -12415,7 +12415,7 @@
           </ResultCollector>
           <hashTree/>
         </hashTree>
-        <RecordingController guiclass="RecordController" testclass="RecordingController" testname="Corp Forget Password" enabled="false"/>
+        <RecordingController guiclass="RecordController" testclass="RecordingController" testname="Corp Forget Password" enabled="true"/>
         <hashTree>
           <Arguments guiclass="ArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
             <collectionProp name="Arguments.arguments">
@@ -13341,7 +13341,7 @@
           </ResultCollector>
           <hashTree/>
         </hashTree>
-        <RecordingController guiclass="RecordController" testclass="RecordingController" testname="Corporate First Login" enabled="false"/>
+        <RecordingController guiclass="RecordController" testclass="RecordingController" testname="Corporate First Login" enabled="true"/>
         <hashTree>
           <Arguments guiclass="ArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
             <collectionProp name="Arguments.arguments">
@@ -14063,7 +14063,7 @@
           </ResultCollector>
           <hashTree/>
         </hashTree>
-        <RecordingController guiclass="RecordController" testclass="RecordingController" testname="CMB Transfer (Sole Corporate)" enabled="false"/>
+        <RecordingController guiclass="RecordController" testclass="RecordingController" testname="CMB Transfer (Sole Corporate)" enabled="true"/>
         <hashTree>
           <Arguments guiclass="ArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
             <collectionProp name="Arguments.arguments">
@@ -14079,7 +14079,7 @@
               </elementProp>
               <elementProp name="password_s" elementType="Argument">
                 <stringProp name="Argument.name">password_s</stringProp>
-                <stringProp name="Argument.value">pass@%1</stringProp>
+                <stringProp name="Argument.value">password100</stringProp>
                 <stringProp name="Argument.metadata">=</stringProp>
               </elementProp>
               <elementProp name="acctId_cs" elementType="Argument">
@@ -14138,7 +14138,7 @@
           <ModuleController guiclass="ModuleControllerGui" testclass="ModuleController" testname="Login" enabled="true">
             <collectionProp name="ModuleController.node_path">
               <stringProp name="-1227702913">WorkBench</stringProp>
-              <stringProp name="-1982343629">RECORD 01/23/18 3:45:13 PM</stringProp>
+              <stringProp name="-2041229348">Corporate Test Plan</stringProp>
               <stringProp name="-622676109">Corp Login</stringProp>
               <stringProp name="-759379233">Sole User Login</stringProp>
             </collectionProp>
@@ -14725,7 +14725,7 @@
           </ResultCollector>
           <hashTree/>
         </hashTree>
-        <RecordingController guiclass="RecordController" testclass="RecordingController" testname="Own Transfer (Sole Corporate)" enabled="false"/>
+        <RecordingController guiclass="RecordController" testclass="RecordingController" testname="Own Transfer (Sole Corporate)" enabled="true"/>
         <hashTree>
           <Arguments guiclass="ArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
             <collectionProp name="Arguments.arguments">
@@ -14741,7 +14741,7 @@
               </elementProp>
               <elementProp name="password_s" elementType="Argument">
                 <stringProp name="Argument.name">password_s</stringProp>
-                <stringProp name="Argument.value">pass@%1</stringProp>
+                <stringProp name="Argument.value">password100</stringProp>
                 <stringProp name="Argument.metadata">=</stringProp>
               </elementProp>
               <elementProp name="acctId_os" elementType="Argument">
@@ -14790,7 +14790,7 @@
           <ModuleController guiclass="ModuleControllerGui" testclass="ModuleController" testname="Login" enabled="true">
             <collectionProp name="ModuleController.node_path">
               <stringProp name="-1227702913">WorkBench</stringProp>
-              <stringProp name="239068077">Corporate Test</stringProp>
+              <stringProp name="-2041229348">Corporate Test Plan</stringProp>
               <stringProp name="-622676109">Corp Login</stringProp>
               <stringProp name="-759379233">Sole User Login</stringProp>
             </collectionProp>
@@ -15320,7 +15320,7 @@
           </ResultCollector>
           <hashTree/>
         </hashTree>
-        <RecordingController guiclass="RecordController" testclass="RecordingController" testname="Inter Bank transfer (Sole Corporate)" enabled="false"/>
+        <RecordingController guiclass="RecordController" testclass="RecordingController" testname="Inter Bank transfer (Sole Corporate)" enabled="true"/>
         <hashTree>
           <ConfigTestElement guiclass="HttpDefaultsGui" testclass="ConfigTestElement" testname="HTTP Request Defaults" enabled="true">
             <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
@@ -15350,7 +15350,7 @@
               </elementProp>
               <elementProp name="password_s" elementType="Argument">
                 <stringProp name="Argument.name">password_s</stringProp>
-                <stringProp name="Argument.value">pass@%1</stringProp>
+                <stringProp name="Argument.value">password100</stringProp>
                 <stringProp name="Argument.metadata">=</stringProp>
               </elementProp>
               <elementProp name="customerAccountNumber_is" elementType="Argument">
@@ -15409,7 +15409,7 @@
           <ModuleController guiclass="ModuleControllerGui" testclass="ModuleController" testname="Login" enabled="true">
             <collectionProp name="ModuleController.node_path">
               <stringProp name="-1227702913">WorkBench</stringProp>
-              <stringProp name="239068077">Corporate Test</stringProp>
+              <stringProp name="-2041229348">Corporate Test Plan</stringProp>
               <stringProp name="-622676109">Corp Login</stringProp>
               <stringProp name="-759379233">Sole User Login</stringProp>
             </collectionProp>
@@ -16091,7 +16091,7 @@
               </elementProp>
               <elementProp name="password_s" elementType="Argument">
                 <stringProp name="Argument.name">password_s</stringProp>
-                <stringProp name="Argument.value">pass@%1</stringProp>
+                <stringProp name="Argument.value">password100</stringProp>
                 <stringProp name="Argument.metadata">=</stringProp>
               </elementProp>
               <elementProp name="acctId_acs" elementType="Argument">
@@ -16135,7 +16135,7 @@
           <ModuleController guiclass="ModuleControllerGui" testclass="ModuleController" testname="Login" enabled="true">
             <collectionProp name="ModuleController.node_path">
               <stringProp name="-1227702913">WorkBench</stringProp>
-              <stringProp name="239068077">Corporate Test</stringProp>
+              <stringProp name="-2041229348">Corporate Test Plan</stringProp>
               <stringProp name="-622676109">Corp Login</stringProp>
               <stringProp name="-759379233">Sole User Login</stringProp>
             </collectionProp>
@@ -16411,7 +16411,7 @@
           </ResultCollector>
           <hashTree/>
         </hashTree>
-        <RecordingController guiclass="RecordController" testclass="RecordingController" testname="Bulk transfer (Sole Corporate)" enabled="false"/>
+        <RecordingController guiclass="RecordController" testclass="RecordingController" testname="Bulk transfer (Sole Corporate)" enabled="true"/>
         <hashTree>
           <ConfigTestElement guiclass="HttpDefaultsGui" testclass="ConfigTestElement" testname="HTTP Request Defaults" enabled="true">
             <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
@@ -16441,7 +16441,7 @@
               </elementProp>
               <elementProp name="password_s" elementType="Argument">
                 <stringProp name="Argument.name">password_s</stringProp>
-                <stringProp name="Argument.value">pass@%1</stringProp>
+                <stringProp name="Argument.value">password100</stringProp>
                 <stringProp name="Argument.metadata">=</stringProp>
               </elementProp>
               <elementProp name="debitAccount_obt" elementType="Argument">
@@ -16490,7 +16490,7 @@
           <ModuleController guiclass="ModuleControllerGui" testclass="ModuleController" testname="Login" enabled="true">
             <collectionProp name="ModuleController.node_path">
               <stringProp name="-1227702913">WorkBench</stringProp>
-              <stringProp name="239068077">Corporate Test</stringProp>
+              <stringProp name="-2041229348">Corporate Test Plan</stringProp>
               <stringProp name="-622676109">Corp Login</stringProp>
               <stringProp name="-759379233">Sole User Login</stringProp>
             </collectionProp>
@@ -17575,7 +17575,7 @@ Content-Type: application/octet-stream&#xd;
           </ResultCollector>
           <hashTree/>
         </hashTree>
-        <RecordingController guiclass="RecordController" testclass="RecordingController" testname="Initiate Bulk Transfer" enabled="false"/>
+        <RecordingController guiclass="RecordController" testclass="RecordingController" testname="Initiate Bulk Transfer" enabled="true"/>
         <hashTree>
           <ConfigTestElement guiclass="HttpDefaultsGui" testclass="ConfigTestElement" testname="HTTP Request Defaults" enabled="true">
             <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
@@ -17595,17 +17595,17 @@ Content-Type: application/octet-stream&#xd;
             <collectionProp name="Arguments.arguments">
               <elementProp name="username_bl" elementType="Argument">
                 <stringProp name="Argument.name">username_bl</stringProp>
-                <stringProp name="Argument.value">fortune</stringProp>
+                <stringProp name="Argument.value">kingsley</stringProp>
                 <stringProp name="Argument.metadata">=</stringProp>
               </elementProp>
               <elementProp name="corporateId_bl" elementType="Argument">
                 <stringProp name="Argument.name">corporateId_bl</stringProp>
-                <stringProp name="Argument.value">mcp</stringProp>
+                <stringProp name="Argument.value">gmnig</stringProp>
                 <stringProp name="Argument.metadata">=</stringProp>
               </elementProp>
               <elementProp name="password_bl" elementType="Argument">
                 <stringProp name="Argument.name">password_bl</stringProp>
-                <stringProp name="Argument.value">pass@%1</stringProp>
+                <stringProp name="Argument.value">password100</stringProp>
                 <stringProp name="Argument.metadata">=</stringProp>
               </elementProp>
               <elementProp name="debitAccount_bt" elementType="Argument">
@@ -17639,7 +17639,7 @@ Content-Type: application/octet-stream&#xd;
           <ModuleController guiclass="ModuleControllerGui" testclass="ModuleController" testname="Login" enabled="true">
             <collectionProp name="ModuleController.node_path">
               <stringProp name="-1227702913">WorkBench</stringProp>
-              <stringProp name="-1982343629">RECORD 01/23/18 3:45:13 PM</stringProp>
+              <stringProp name="-2041229348">Corporate Test Plan</stringProp>
               <stringProp name="-622676109">Corp Login</stringProp>
               <stringProp name="73596745">Login</stringProp>
             </collectionProp>
@@ -18656,7 +18656,7 @@ Content-Type: application/octet-stream&#xd;
           </ResultCollector>
           <hashTree/>
         </hashTree>
-        <GenericController guiclass="LogicControllerGui" testclass="GenericController" testname="Approve BULK transfer" enabled="false"/>
+        <GenericController guiclass="LogicControllerGui" testclass="GenericController" testname="Approve Bulk transfer" enabled="true"/>
         <hashTree>
           <CookieManager guiclass="CookiePanel" testclass="CookieManager" testname="HTTP Cookie Manager" enabled="true">
             <collectionProp name="CookieManager.cookies"/>
@@ -18667,17 +18667,17 @@ Content-Type: application/octet-stream&#xd;
             <collectionProp name="Arguments.arguments">
               <elementProp name="username2" elementType="Argument">
                 <stringProp name="Argument.name">username2</stringProp>
-                <stringProp name="Argument.value">fortune500</stringProp>
+                <stringProp name="Argument.value">fortune</stringProp>
                 <stringProp name="Argument.metadata">=</stringProp>
               </elementProp>
               <elementProp name="corporateId2" elementType="Argument">
                 <stringProp name="Argument.name">corporateId2</stringProp>
-                <stringProp name="Argument.value">mcp</stringProp>
+                <stringProp name="Argument.value">gmnig</stringProp>
                 <stringProp name="Argument.metadata">=</stringProp>
               </elementProp>
               <elementProp name="password2" elementType="Argument">
                 <stringProp name="Argument.name">password2</stringProp>
-                <stringProp name="Argument.value">pass@%1</stringProp>
+                <stringProp name="Argument.value">password100</stringProp>
                 <stringProp name="Argument.metadata">=</stringProp>
               </elementProp>
               <elementProp name="comments_ab" elementType="Argument">
@@ -18706,9 +18706,9 @@ Content-Type: application/octet-stream&#xd;
           <ModuleController guiclass="ModuleControllerGui" testclass="ModuleController" testname="Login" enabled="true">
             <collectionProp name="ModuleController.node_path">
               <stringProp name="-1227702913">WorkBench</stringProp>
-              <stringProp name="-1982343629">RECORD 01/23/18 3:45:13 PM</stringProp>
+              <stringProp name="-2041229348">Corporate Test Plan</stringProp>
               <stringProp name="-622676109">Corp Login</stringProp>
-              <stringProp name="-654267854">Authorizer Login</stringProp>
+              <stringProp name="73596745">Login</stringProp>
             </collectionProp>
           </ModuleController>
           <hashTree/>
@@ -19736,7 +19736,7 @@ Content-Type: application/octet-stream&#xd;
           </ResultCollector>
           <hashTree/>
         </hashTree>
-        <RecordingController guiclass="RecordController" testclass="RecordingController" testname="Add Beneficiary" enabled="false"/>
+        <RecordingController guiclass="RecordController" testclass="RecordingController" testname="Add Beneficiary" enabled="true"/>
         <hashTree>
           <Arguments guiclass="ArgumentsPanel" testclass="Arguments" testname="User Details" enabled="true">
             <collectionProp name="Arguments.arguments">
@@ -19767,17 +19767,17 @@ Content-Type: application/octet-stream&#xd;
               </elementProp>
               <elementProp name="username_bl" elementType="Argument">
                 <stringProp name="Argument.name">username_bl</stringProp>
-                <stringProp name="Argument.value">fortune</stringProp>
+                <stringProp name="Argument.value">deborah</stringProp>
                 <stringProp name="Argument.metadata">=</stringProp>
               </elementProp>
               <elementProp name="corporateId_bl" elementType="Argument">
                 <stringProp name="Argument.name">corporateId_bl</stringProp>
-                <stringProp name="Argument.value">mcp</stringProp>
+                <stringProp name="Argument.value">gmnig</stringProp>
                 <stringProp name="Argument.metadata">=</stringProp>
               </elementProp>
               <elementProp name="password_bl" elementType="Argument">
                 <stringProp name="Argument.name">password_bl</stringProp>
-                <stringProp name="Argument.value">pass@%1</stringProp>
+                <stringProp name="Argument.value">password100</stringProp>
                 <stringProp name="Argument.metadata">=</stringProp>
               </elementProp>
             </collectionProp>
@@ -19786,7 +19786,7 @@ Content-Type: application/octet-stream&#xd;
           <ModuleController guiclass="ModuleControllerGui" testclass="ModuleController" testname="Login" enabled="true">
             <collectionProp name="ModuleController.node_path">
               <stringProp name="-1227702913">WorkBench</stringProp>
-              <stringProp name="-1982343629">RECORD 01/23/18 3:45:13 PM</stringProp>
+              <stringProp name="-2041229348">Corporate Test Plan</stringProp>
               <stringProp name="-622676109">Corp Login</stringProp>
               <stringProp name="73596745">Login</stringProp>
             </collectionProp>
@@ -20198,23 +20198,23 @@ Content-Type: application/octet-stream&#xd;
           </ResultCollector>
           <hashTree/>
         </hashTree>
-        <RecordingController guiclass="RecordController" testclass="RecordingController" testname="Delete Beneficiary" enabled="false"/>
+        <RecordingController guiclass="RecordController" testclass="RecordingController" testname="Delete Beneficiary" enabled="true"/>
         <hashTree>
           <Arguments guiclass="ArgumentsPanel" testclass="Arguments" testname="User Details" enabled="true">
             <collectionProp name="Arguments.arguments">
               <elementProp name="username_bl" elementType="Argument">
                 <stringProp name="Argument.name">username_bl</stringProp>
-                <stringProp name="Argument.value">fortune</stringProp>
+                <stringProp name="Argument.value">deborah</stringProp>
                 <stringProp name="Argument.metadata">=</stringProp>
               </elementProp>
               <elementProp name="corporateId_bl" elementType="Argument">
                 <stringProp name="Argument.name">corporateId_bl</stringProp>
-                <stringProp name="Argument.value">mcp</stringProp>
+                <stringProp name="Argument.value">gmnig</stringProp>
                 <stringProp name="Argument.metadata">=</stringProp>
               </elementProp>
               <elementProp name="password_bl" elementType="Argument">
                 <stringProp name="Argument.name">password_bl</stringProp>
-                <stringProp name="Argument.value">pass@%1</stringProp>
+                <stringProp name="Argument.value">password100</stringProp>
                 <stringProp name="Argument.metadata">=</stringProp>
               </elementProp>
               <elementProp name="id_db" elementType="Argument">
@@ -20228,9 +20228,9 @@ Content-Type: application/octet-stream&#xd;
           <ModuleController guiclass="ModuleControllerGui" testclass="ModuleController" testname="Login" enabled="true">
             <collectionProp name="ModuleController.node_path">
               <stringProp name="-1227702913">WorkBench</stringProp>
-              <stringProp name="239068077">Corporate Test</stringProp>
+              <stringProp name="-2041229348">Corporate Test Plan</stringProp>
               <stringProp name="-622676109">Corp Login</stringProp>
-              <stringProp name="-1578832392">Initiator Login</stringProp>
+              <stringProp name="73596745">Login</stringProp>
             </collectionProp>
           </ModuleController>
           <hashTree/>
@@ -20421,7 +20421,7 @@ Content-Type: application/octet-stream&#xd;
           </ResultCollector>
           <hashTree/>
         </hashTree>
-        <RecordingController guiclass="RecordController" testclass="RecordingController" testname="Approve inter bank Transfer (with invalid token)" enabled="false"/>
+        <RecordingController guiclass="RecordController" testclass="RecordingController" testname="Approve inter bank Transfer (with invalid token)" enabled="true"/>
         <hashTree>
           <ConfigTestElement guiclass="HttpDefaultsGui" testclass="ConfigTestElement" testname="HTTP Request Defaults" enabled="true">
             <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
@@ -20446,12 +20446,12 @@ Content-Type: application/octet-stream&#xd;
               </elementProp>
               <elementProp name="corporateId_ai" elementType="Argument">
                 <stringProp name="Argument.name">corporateId_ai</stringProp>
-                <stringProp name="Argument.value">GM NIG</stringProp>
+                <stringProp name="Argument.value">GMNIG</stringProp>
                 <stringProp name="Argument.metadata">=</stringProp>
               </elementProp>
               <elementProp name="password_ai" elementType="Argument">
                 <stringProp name="Argument.name">password_ai</stringProp>
-                <stringProp name="Argument.value">pass@%1</stringProp>
+                <stringProp name="Argument.value">password100</stringProp>
                 <stringProp name="Argument.metadata">=</stringProp>
               </elementProp>
               <elementProp name="token_ai2" elementType="Argument">
@@ -22234,7 +22234,7 @@ Content-Type: application/octet-stream&#xd;
           </ResultCollector>
           <hashTree/>
         </hashTree>
-        <GenericController guiclass="LogicControllerGui" testclass="GenericController" testname="Approve Own Transfer (with invalid token)" enabled="false"/>
+        <GenericController guiclass="LogicControllerGui" testclass="GenericController" testname="Approve Own Transfer (with invalid token)" enabled="true"/>
         <hashTree>
           <ConfigTestElement guiclass="HttpDefaultsGui" testclass="ConfigTestElement" testname="HTTP Request Defaults" enabled="true">
             <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
@@ -22279,17 +22279,17 @@ Content-Type: application/octet-stream&#xd;
               </elementProp>
               <elementProp name="username2" elementType="Argument">
                 <stringProp name="Argument.name">username2</stringProp>
-                <stringProp name="Argument.value">fortune500</stringProp>
+                <stringProp name="Argument.value">fortune</stringProp>
                 <stringProp name="Argument.metadata">=</stringProp>
               </elementProp>
               <elementProp name="corporateId2" elementType="Argument">
                 <stringProp name="Argument.name">corporateId2</stringProp>
-                <stringProp name="Argument.value">mcp</stringProp>
+                <stringProp name="Argument.value">gmnig</stringProp>
                 <stringProp name="Argument.metadata">=</stringProp>
               </elementProp>
               <elementProp name="password2" elementType="Argument">
                 <stringProp name="Argument.name">password2</stringProp>
-                <stringProp name="Argument.value">pass@%1</stringProp>
+                <stringProp name="Argument.value">password100</stringProp>
                 <stringProp name="Argument.metadata">=</stringProp>
               </elementProp>
             </collectionProp>
@@ -22303,7 +22303,7 @@ Content-Type: application/octet-stream&#xd;
           <ModuleController guiclass="ModuleControllerGui" testclass="ModuleController" testname="Login" enabled="true">
             <collectionProp name="ModuleController.node_path">
               <stringProp name="-1227702913">WorkBench</stringProp>
-              <stringProp name="239068077">Corporate Test</stringProp>
+              <stringProp name="-2041229348">Corporate Test Plan</stringProp>
               <stringProp name="-622676109">Corp Login</stringProp>
               <stringProp name="-654267854">Authorizer Login</stringProp>
             </collectionProp>
@@ -23261,7 +23261,7 @@ Content-Type: application/octet-stream&#xd;
           </ResultCollector>
           <hashTree/>
         </hashTree>
-        <GenericController guiclass="LogicControllerGui" testclass="GenericController" testname="Approve CMB transfer (with invalid token)" enabled="false"/>
+        <GenericController guiclass="LogicControllerGui" testclass="GenericController" testname="Approve CMB transfer (with invalid token)" enabled="true"/>
         <hashTree>
           <CookieManager guiclass="CookiePanel" testclass="CookieManager" testname="HTTP Cookie Manager" enabled="true">
             <collectionProp name="CookieManager.cookies"/>
@@ -23272,17 +23272,17 @@ Content-Type: application/octet-stream&#xd;
             <collectionProp name="Arguments.arguments">
               <elementProp name="username2" elementType="Argument">
                 <stringProp name="Argument.name">username2</stringProp>
-                <stringProp name="Argument.value">fortune500</stringProp>
+                <stringProp name="Argument.value">fortune</stringProp>
                 <stringProp name="Argument.metadata">=</stringProp>
               </elementProp>
               <elementProp name="corporateId2" elementType="Argument">
                 <stringProp name="Argument.name">corporateId2</stringProp>
-                <stringProp name="Argument.value">mcp</stringProp>
+                <stringProp name="Argument.value">gmnig</stringProp>
                 <stringProp name="Argument.metadata">=</stringProp>
               </elementProp>
               <elementProp name="password2" elementType="Argument">
                 <stringProp name="Argument.name">password2</stringProp>
-                <stringProp name="Argument.value">pass@%1</stringProp>
+                <stringProp name="Argument.value">password100</stringProp>
                 <stringProp name="Argument.metadata">=</stringProp>
               </elementProp>
               <elementProp name="comments_ac" elementType="Argument">
@@ -23311,7 +23311,7 @@ Content-Type: application/octet-stream&#xd;
           <ModuleController guiclass="ModuleControllerGui" testclass="ModuleController" testname="Login" enabled="true">
             <collectionProp name="ModuleController.node_path">
               <stringProp name="-1227702913">WorkBench</stringProp>
-              <stringProp name="239068077">Corporate Test</stringProp>
+              <stringProp name="-2041229348">Corporate Test Plan</stringProp>
               <stringProp name="-622676109">Corp Login</stringProp>
               <stringProp name="-654267854">Authorizer Login</stringProp>
             </collectionProp>
@@ -24277,6 +24277,21 @@ Content-Type: application/octet-stream&#xd;
           </objProp>
           <stringProp name="filename"></stringProp>
         </ResultCollector>
+        <hashTree/>
+        <Arguments guiclass="ArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
+          <collectionProp name="Arguments.arguments">
+            <elementProp name="host" elementType="Argument">
+              <stringProp name="Argument.name">host</stringProp>
+              <stringProp name="Argument.value">localhost</stringProp>
+              <stringProp name="Argument.metadata">=</stringProp>
+            </elementProp>
+            <elementProp name="port" elementType="Argument">
+              <stringProp name="Argument.name">port</stringProp>
+              <stringProp name="Argument.value">9000</stringProp>
+              <stringProp name="Argument.metadata">=</stringProp>
+            </elementProp>
+          </collectionProp>
+        </Arguments>
         <hashTree/>
       </hashTree>
     </hashTree>

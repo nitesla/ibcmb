@@ -6,7 +6,6 @@ import longbridge.models.User;
 import org.joda.time.LocalDate;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
@@ -26,6 +25,7 @@ public class CustomUserPrincipal implements CustomeUserDetails {
 	public CustomUserPrincipal(User user) {
 		this.user = user;
 	}
+
 	public CustomUserPrincipal(CorporateUser user) {
 		this.user = user;
 		this.corpId=user.getCorporate().getId();
