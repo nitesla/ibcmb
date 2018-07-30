@@ -72,7 +72,7 @@
           <boolProp name="CookieManager.clearEachIteration">false</boolProp>
         </CookieManager>
         <hashTree/>
-        <GenericController guiclass="LogicControllerGui" testclass="GenericController" testname="Setup Operations" enabled="true"/>
+        <GenericController guiclass="LogicControllerGui" testclass="GenericController" testname="Setup Operations" enabled="false"/>
         <hashTree>
           <JDBCSampler guiclass="TestBeanGUI" testclass="JDBCSampler" testname="Update user password" enabled="true">
             <stringProp name="dataSource">database</stringProp>
@@ -967,7 +967,7 @@
         <hashTree>
           <CookieManager guiclass="CookiePanel" testclass="CookieManager" testname="HTTP Cookie Manager" enabled="true">
             <collectionProp name="CookieManager.cookies"/>
-            <boolProp name="CookieManager.clearEachIteration">false</boolProp>
+            <boolProp name="CookieManager.clearEachIteration">true</boolProp>
           </CookieManager>
           <hashTree/>
           <Arguments guiclass="ArgumentsPanel" testclass="Arguments" testname="User Login details" enabled="true">
@@ -2179,7 +2179,7 @@
                 <elementProp name="token" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">false</boolProp>
                   <stringProp name="Argument.name">token</stringProp>
-                  <stringProp name="Argument.value">34</stringProp>
+                  <stringProp name="Argument.value">3432</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
                   <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 </elementProp>
@@ -2322,7 +2322,7 @@
           </CookieManager>
           <hashTree/>
         </hashTree>
-        <GenericController guiclass="LogicControllerGui" testclass="GenericController" testname="Initiator Login" enabled="true"/>
+        <GenericController guiclass="LogicControllerGui" testclass="GenericController" testname="Initiator Login" enabled="false"/>
         <hashTree>
           <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Login" enabled="true">
             <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" enabled="true">
@@ -2759,7 +2759,7 @@
           </CookieManager>
           <hashTree/>
         </hashTree>
-        <GenericController guiclass="LogicControllerGui" testclass="GenericController" testname="Authorizer Login" enabled="true"/>
+        <GenericController guiclass="LogicControllerGui" testclass="GenericController" testname="Authorizer Login" enabled="false"/>
         <hashTree>
           <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Login" enabled="true">
             <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" enabled="true">
@@ -3196,7 +3196,7 @@
           </CookieManager>
           <hashTree/>
         </hashTree>
-        <GenericController guiclass="LogicControllerGui" testclass="GenericController" testname="Sole User Login" enabled="true"/>
+        <GenericController guiclass="LogicControllerGui" testclass="GenericController" testname="Sole User Login" enabled="false"/>
         <hashTree>
           <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Login" enabled="true">
             <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" enabled="true">
@@ -3633,7 +3633,7 @@
           </CookieManager>
           <hashTree/>
         </hashTree>
-        <GenericController guiclass="LogicControllerGui" testclass="GenericController" testname="Initiate Multi Corp Inter Bank" enabled="true"/>
+        <GenericController guiclass="LogicControllerGui" testclass="GenericController" testname="Initiate Multi Corp Inter Bank" enabled="false"/>
         <hashTree>
           <ConfigTestElement guiclass="HttpDefaultsGui" testclass="ConfigTestElement" testname="HTTP Request Defaults" enabled="true">
             <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
@@ -5022,7 +5022,7 @@
           </ResultCollector>
           <hashTree/>
         </hashTree>
-        <RecordingController guiclass="RecordController" testclass="RecordingController" testname="Approve inter bank Transfer" enabled="true"/>
+        <RecordingController guiclass="RecordController" testclass="RecordingController" testname="Approve inter bank Transfer" enabled="false"/>
         <hashTree>
           <ConfigTestElement guiclass="HttpDefaultsGui" testclass="ConfigTestElement" testname="HTTP Request Defaults" enabled="true">
             <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
@@ -6885,7 +6885,7 @@
           </ResultCollector>
           <hashTree/>
         </hashTree>
-        <GenericController guiclass="LogicControllerGui" testclass="GenericController" testname="Initiate Multi Corp Own Transfer" enabled="true"/>
+        <GenericController guiclass="LogicControllerGui" testclass="GenericController" testname="Initiate Multi Corp Own Transfer" enabled="false"/>
         <hashTree>
           <Arguments guiclass="ArgumentsPanel" testclass="Arguments" testname="User Details" enabled="true">
             <collectionProp name="Arguments.arguments">
@@ -7812,7 +7812,7 @@
           </ResultCollector>
           <hashTree/>
         </hashTree>
-        <GenericController guiclass="LogicControllerGui" testclass="GenericController" testname="Approve Own Transfer" enabled="true"/>
+        <GenericController guiclass="LogicControllerGui" testclass="GenericController" testname="Approve Own Transfer" enabled="false"/>
         <hashTree>
           <ConfigTestElement guiclass="HttpDefaultsGui" testclass="ConfigTestElement" testname="HTTP Request Defaults" enabled="true">
             <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
@@ -8839,7 +8839,7 @@
           </ResultCollector>
           <hashTree/>
         </hashTree>
-        <GenericController guiclass="LogicControllerGui" testclass="GenericController" testname="Initiate Multi Corp Cmb Transfer" enabled="true"/>
+        <GenericController guiclass="LogicControllerGui" testclass="GenericController" testname="Initiate Multi Corp Cmb Transfer" enabled="false"/>
         <hashTree>
           <Arguments guiclass="ArgumentsPanel" testclass="Arguments" testname="User Details" enabled="true">
             <collectionProp name="Arguments.arguments">
@@ -10278,7 +10278,7 @@
           </ResultCollector>
           <hashTree/>
         </hashTree>
-        <GenericController guiclass="LogicControllerGui" testclass="GenericController" testname="Approve CMB transfer" enabled="true"/>
+        <GenericController guiclass="LogicControllerGui" testclass="GenericController" testname="Approve CMB transfer" enabled="false"/>
         <hashTree>
           <CookieManager guiclass="CookiePanel" testclass="CookieManager" testname="HTTP Cookie Manager" enabled="true">
             <collectionProp name="CookieManager.cookies"/>
@@ -11259,7 +11259,7 @@
           </ResultCollector>
           <hashTree/>
         </hashTree>
-        <RecordingController guiclass="RecordController" testclass="RecordingController" testname="Customized Account" enabled="true"/>
+        <RecordingController guiclass="RecordController" testclass="RecordingController" testname="Customized Account" enabled="false"/>
         <hashTree>
           <Arguments guiclass="ArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
             <collectionProp name="Arguments.arguments">
@@ -11875,7 +11875,7 @@
           </ResultCollector>
           <hashTree/>
         </hashTree>
-        <RecordingController guiclass="RecordController" testclass="RecordingController" testname="Corp Forget User name" enabled="true"/>
+        <RecordingController guiclass="RecordController" testclass="RecordingController" testname="Corp Forget User name" enabled="false"/>
         <hashTree>
           <Arguments guiclass="ArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
             <collectionProp name="Arguments.arguments">
@@ -12415,7 +12415,7 @@
           </ResultCollector>
           <hashTree/>
         </hashTree>
-        <RecordingController guiclass="RecordController" testclass="RecordingController" testname="Corp Forget Password" enabled="true"/>
+        <RecordingController guiclass="RecordController" testclass="RecordingController" testname="Corp Forget Password" enabled="false"/>
         <hashTree>
           <Arguments guiclass="ArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
             <collectionProp name="Arguments.arguments">
@@ -13341,7 +13341,7 @@
           </ResultCollector>
           <hashTree/>
         </hashTree>
-        <RecordingController guiclass="RecordController" testclass="RecordingController" testname="Corporate First Login" enabled="true"/>
+        <RecordingController guiclass="RecordController" testclass="RecordingController" testname="Corporate First Login" enabled="false"/>
         <hashTree>
           <Arguments guiclass="ArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
             <collectionProp name="Arguments.arguments">
@@ -14063,7 +14063,7 @@
           </ResultCollector>
           <hashTree/>
         </hashTree>
-        <RecordingController guiclass="RecordController" testclass="RecordingController" testname="CMB Transfer (Sole Corporate)" enabled="true"/>
+        <RecordingController guiclass="RecordController" testclass="RecordingController" testname="CMB Transfer (Sole Corporate)" enabled="false"/>
         <hashTree>
           <Arguments guiclass="ArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
             <collectionProp name="Arguments.arguments">
@@ -14725,7 +14725,7 @@
           </ResultCollector>
           <hashTree/>
         </hashTree>
-        <RecordingController guiclass="RecordController" testclass="RecordingController" testname="Own Transfer (Sole Corporate)" enabled="true"/>
+        <RecordingController guiclass="RecordController" testclass="RecordingController" testname="Own Transfer (Sole Corporate)" enabled="false"/>
         <hashTree>
           <Arguments guiclass="ArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
             <collectionProp name="Arguments.arguments">
@@ -15320,7 +15320,7 @@
           </ResultCollector>
           <hashTree/>
         </hashTree>
-        <RecordingController guiclass="RecordController" testclass="RecordingController" testname="Inter Bank transfer (Sole Corporate)" enabled="true"/>
+        <RecordingController guiclass="RecordController" testclass="RecordingController" testname="Inter Bank transfer (Sole Corporate)" enabled="false"/>
         <hashTree>
           <ConfigTestElement guiclass="HttpDefaultsGui" testclass="ConfigTestElement" testname="HTTP Request Defaults" enabled="true">
             <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
@@ -16061,7 +16061,7 @@
           </ResultCollector>
           <hashTree/>
         </hashTree>
-        <RecordingController guiclass="RecordController" testclass="RecordingController" testname="Account Statement" enabled="true"/>
+        <RecordingController guiclass="RecordController" testclass="RecordingController" testname="Account Statement" enabled="false"/>
         <hashTree>
           <ConfigTestElement guiclass="HttpDefaultsGui" testclass="ConfigTestElement" testname="HTTP Request Defaults" enabled="true">
             <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
@@ -16411,7 +16411,7 @@
           </ResultCollector>
           <hashTree/>
         </hashTree>
-        <RecordingController guiclass="RecordController" testclass="RecordingController" testname="Bulk transfer (Sole Corporate)" enabled="true"/>
+        <RecordingController guiclass="RecordController" testclass="RecordingController" testname="Bulk transfer (Sole Corporate)" enabled="false"/>
         <hashTree>
           <ConfigTestElement guiclass="HttpDefaultsGui" testclass="ConfigTestElement" testname="HTTP Request Defaults" enabled="true">
             <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
@@ -17575,7 +17575,7 @@ Content-Type: application/octet-stream&#xd;
           </ResultCollector>
           <hashTree/>
         </hashTree>
-        <RecordingController guiclass="RecordController" testclass="RecordingController" testname="Initiate Bulk Transfer" enabled="true"/>
+        <RecordingController guiclass="RecordController" testclass="RecordingController" testname="Initiate Bulk Transfer" enabled="false"/>
         <hashTree>
           <ConfigTestElement guiclass="HttpDefaultsGui" testclass="ConfigTestElement" testname="HTTP Request Defaults" enabled="true">
             <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
@@ -18656,7 +18656,7 @@ Content-Type: application/octet-stream&#xd;
           </ResultCollector>
           <hashTree/>
         </hashTree>
-        <GenericController guiclass="LogicControllerGui" testclass="GenericController" testname="Approve Bulk transfer" enabled="true"/>
+        <GenericController guiclass="LogicControllerGui" testclass="GenericController" testname="Approve Bulk transfer" enabled="false"/>
         <hashTree>
           <CookieManager guiclass="CookiePanel" testclass="CookieManager" testname="HTTP Cookie Manager" enabled="true">
             <collectionProp name="CookieManager.cookies"/>
@@ -19736,7 +19736,7 @@ Content-Type: application/octet-stream&#xd;
           </ResultCollector>
           <hashTree/>
         </hashTree>
-        <RecordingController guiclass="RecordController" testclass="RecordingController" testname="Add Beneficiary" enabled="true"/>
+        <RecordingController guiclass="RecordController" testclass="RecordingController" testname="Add Beneficiary" enabled="false"/>
         <hashTree>
           <Arguments guiclass="ArgumentsPanel" testclass="Arguments" testname="User Details" enabled="true">
             <collectionProp name="Arguments.arguments">
@@ -20198,7 +20198,7 @@ Content-Type: application/octet-stream&#xd;
           </ResultCollector>
           <hashTree/>
         </hashTree>
-        <RecordingController guiclass="RecordController" testclass="RecordingController" testname="Delete Beneficiary" enabled="true"/>
+        <RecordingController guiclass="RecordController" testclass="RecordingController" testname="Delete Beneficiary" enabled="false"/>
         <hashTree>
           <Arguments guiclass="ArgumentsPanel" testclass="Arguments" testname="User Details" enabled="true">
             <collectionProp name="Arguments.arguments">
@@ -20421,7 +20421,7 @@ Content-Type: application/octet-stream&#xd;
           </ResultCollector>
           <hashTree/>
         </hashTree>
-        <RecordingController guiclass="RecordController" testclass="RecordingController" testname="Approve inter bank Transfer (with invalid token)" enabled="true"/>
+        <RecordingController guiclass="RecordController" testclass="RecordingController" testname="Approve inter bank Transfer (with invalid token)" enabled="false"/>
         <hashTree>
           <ConfigTestElement guiclass="HttpDefaultsGui" testclass="ConfigTestElement" testname="HTTP Request Defaults" enabled="true">
             <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
@@ -22234,7 +22234,7 @@ Content-Type: application/octet-stream&#xd;
           </ResultCollector>
           <hashTree/>
         </hashTree>
-        <GenericController guiclass="LogicControllerGui" testclass="GenericController" testname="Approve Own Transfer (with invalid token)" enabled="true"/>
+        <GenericController guiclass="LogicControllerGui" testclass="GenericController" testname="Approve Own Transfer (with invalid token)" enabled="false"/>
         <hashTree>
           <ConfigTestElement guiclass="HttpDefaultsGui" testclass="ConfigTestElement" testname="HTTP Request Defaults" enabled="true">
             <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
@@ -23261,7 +23261,7 @@ Content-Type: application/octet-stream&#xd;
           </ResultCollector>
           <hashTree/>
         </hashTree>
-        <GenericController guiclass="LogicControllerGui" testclass="GenericController" testname="Approve CMB transfer (with invalid token)" enabled="true"/>
+        <GenericController guiclass="LogicControllerGui" testclass="GenericController" testname="Approve CMB transfer (with invalid token)" enabled="false"/>
         <hashTree>
           <CookieManager guiclass="CookiePanel" testclass="CookieManager" testname="HTTP Cookie Manager" enabled="true">
             <collectionProp name="CookieManager.cookies"/>
