@@ -69,6 +69,11 @@
 
                         <br/>
                         <div class="col-xs-12">
+                            <p>
+                                <a id="pdf" href="#"  class="btn bt-link-act btn-print"> <i class="fa fa-print"></i>&nbsp; PDF</a>
+                                <a id="excel" href="#"  class="btn bt-link-act btn-print"><i class="fa fa-print"  ></i>&nbsp;Excel</a>
+
+                            </p>
                         <div class="table-responsive">
                     <table id="mytab" class="table table-striped table-bordered table-hover" cellspacing="0"  >
                         <thead>
@@ -109,7 +114,42 @@
     <script th:inline="javascript">
     //<![CDATA[
 
+
+    jQuery.download = function(url, key, data) {
+        // Build a form
+        var form = $('<form></form>').attr('action', url).attr('target', '_blank')
+            .attr('method', 'get');
+        // Add the one key/value
+        form.append($("<input/>").attr('type', 'hidden').attr('name',
+            key).attr('value', data));
+
+        $.each(data, function(propertyName, valueOfProperty) {
+            form.append($("<input/>").attr('type', 'hidden').attr('name',
+                propertyName).attr('value', valueOfProperty));
+        });
+
+        //send request
+        form.appendTo('body').submit().remove();
+    };
+
     $(document).ready(function() {
+
+        var bulkTransferId = document.getElementById("bk").value;
+
+
+        $("#pdf").on("click", function(e) {
+
+            $.download("/corporate/transfer/bulk/"+bulkTransferId+"/pdf", "data", "");
+
+        });
+
+        $("#excel").on("click", function(e) {
+
+            $.download("/corporate/transfer/bulk/"+bulkTransferId+"/excel", "data", "");
+
+        });
+
+
         var id = document.getElementById("bk").value;
         var json_data = (function() {
             var json;
@@ -172,7 +212,7 @@
             select:true,
             "lengthMenu" : [ [ 5, 10, 20],	[ 5, 10, 20 ] ],
             "pagingType" : "input",
-            "searching": false,
+            "searching": true,
             "paging": true,
             "serverSide" : false,
             "ajax": "/corporate/transfer/" +id+ "/allcreditrequests",

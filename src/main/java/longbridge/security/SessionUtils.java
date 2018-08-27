@@ -103,6 +103,7 @@ public class SessionUtils {
     private void sendMail(User user, String subject){
 
         String fullName = user.getFirstName()+" "+user.getLastName();
+        logger.info("the user fullname {} ",fullName);
         Context context = new Context();
         context.setVariable("fullName",fullName);
         context.setVariable("loginDate",new Date());

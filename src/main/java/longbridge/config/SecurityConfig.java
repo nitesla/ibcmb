@@ -361,7 +361,7 @@ public class SecurityConfig {
         protected void configure(HttpSecurity http) throws Exception {
 
 
-            //http.addFilterBefore(customFilter(), UsernamePasswordAuthenticationFilter.class);
+//            http.addFilterBefore(customFilter(), UsernamePasswordAuthenticationFilter.class);
 
             http
                     .antMatcher("/corporate/**").authorizeRequests()
