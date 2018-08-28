@@ -79,7 +79,9 @@ public class FailedLoginService {
     }
 
     public void loginSucceeded(final User user) {
+        logger.info("unlock user if necessary");
         unLockUser(user);
+        logger.info("unlocking user done");
 
     }
 

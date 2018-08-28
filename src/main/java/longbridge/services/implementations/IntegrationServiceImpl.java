@@ -617,7 +617,7 @@ public class IntegrationServiceImpl implements IntegrationService {
 		List<String> contacts = new ArrayList<>();
 		contacts.add(contact);
 		ObjectNode result = null;
-		String uri = cmbAlert;
+		String uri = cmbAlert+"/regcode";
 		Map<String, Object> params = new HashMap<>();
 		params.put("alertType", "SMS");
 		params.put("message", message);
