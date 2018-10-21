@@ -83,14 +83,14 @@ public class SessionUtils {
 
                 String alertSubject = String.format(messageSource.getMessage("login.alert.subject", null, locale));
                 if ("SMS".equalsIgnoreCase(preference)) {
-                    integrationService.sendSMS(smsMessage, user.getPhoneNumber(), alertSubject);
+                    integrationService.sendRegCodeSMS(smsMessage, user.getPhoneNumber(), alertSubject);
 
                 } else if ("EMAIL".equalsIgnoreCase(preference)) {
 
                     sendMail(user, alertSubject);
 
                 } else if ("BOTH".equalsIgnoreCase(preference)) {
-                    integrationService.sendSMS(smsMessage, user.getPhoneNumber(), alertSubject);
+                    integrationService.sendRegCodeSMS(smsMessage, user.getPhoneNumber(), alertSubject);
                     sendMail(user, alertSubject);
                 }
 
