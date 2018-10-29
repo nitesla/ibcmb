@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{corp-layout}">
+
+    <body onload="javascript:var bread = [['Home', '/corporate/custom'],['Custom Payment', '/corporate/custom']];currentBar('Custom Payment');breadCrumb(bread)">
+
+        <div layout:fragment="content">
+            <div class="col-md-5 col-sm-5 ">
+                <select class="form-control full-width coronation-form-control hide-content-only" id="view">
+                    <option value="account">Overview</option>
+                </select>
+            </div>
+            <div class="col-xs-12 no-mt">
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Custom Area Command</label>
+                        <div class="col-sm-4">
+                            <select name="CommandCode" class="form-control" >
+                                <option value="">- Select Area Command -</option>
+                                <option th:each="command : ${commands}" th:value="${command.commandCode}" th:text="${command.commandDesc}"></option>
+                            </select>
+                        </div>
+                    </div>
+                <form method="post" class="form-horizontal" th:action="@{/corporate/custom/details}" th:object="${assessmentDetailsRequest}">
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Custom Area Command</label>
+                        <div class="col-sm-4">
+                            <input type="text" class="form-control" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Type</label>
+                        <div class="col-sm-4">
+                            <input type="text" class="form-control" />
+                        </div>
+                    </div>
+                </form>
+                <form method="post" class="form-horizontal" th:action="@{/corporate/custom/payment}" th:object="${paymentNotificationRequest}">
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Type</label>
+                        <div class="col-sm-4">
+                            <input type="text" class="form-control" />
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </body>
+</html>

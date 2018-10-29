@@ -125,7 +125,16 @@
 
                                 </ul>
                             </li>
-                            <li sec:authorize="hasAuthority('MANAGE_BILL_PAYMENT')"><a href="#" th:text="#{menu.bill}">Bill Payments</a></li>
+                            <li class="dropdown"  sec:authorize="hasAuthority('CUSTOM_DUTY')">
+                                <a href="#" th:text="#{menu.bill}">Bill Payments</a>
+                                <ul class="dropdown-menu">
+                                    <li sec:authorize="hasAuthority('MANAGE_BILL_PAYMENT')"><a href="#" th:text="#{menu.bill}">Bill Payments</a></li>
+                                    <li sec:authorize="hasAuthority('CUSTOM_DUTY')"><a th:href="@{/corporate/custom}" th:text="#{menu.bill.custom}">Custom Duty</a></li>
+                                </ul>
+                            </li>
+                            <li class="dropdown"  sec:authorize="hasAuthority('CUSTOM_DUTY')">
+                                <a th:href="@{/corporate/custom}" th:text="#{menu.bill.custom}">Custom Duty</a>
+                            </li>
                             <li sec:authorize="hasAuthority('MANAGE_INVESTMENT')"><a href="#" th:text="#{menu.investment}">Investment</a></li>
                             <li class="dropdown" th:classappend="${#httpServletRequest.getRequestURI().startsWith('/corporate/requests') ? 'active':''}" sec:authorize="hasAuthority('MANAGE_SERV_REQ')">
                                 <a href="#" class="dropdown-toggle menu-link" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" th:text="#{menu.servreq}"> Service Requests </a>
@@ -154,8 +163,6 @@
                                     <li th:if="${isUserAdmin}"><a th:href="@{/corporate/users}" th:text="#{menu.usermanagement}">User Management</a></li>
                                 </ul>
                             </li>
-
-
                         </ul>
 
                         <ul class="nav navbar-nav pull-right">
