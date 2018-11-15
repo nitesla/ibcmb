@@ -34,7 +34,6 @@ public class CorpTransReqEntry extends AbstractEntity {
     private Date entryDate;
 
 
-
     public String getComments() {
         return comments;
     }

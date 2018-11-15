@@ -1,6 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<beans xmlns="http://www.springframework.org/schema/beans"
-       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
-
-</beans>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog/1.1"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog/1.1
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-1.1.xsd">
+    <changeSet author="Longbridge (Abiodun)" id="createTableCustomDuty">
+        <createTable   tableName="CUSTOM_DUTY">
+            <column name="DTYPE" type="VARCHAR2(31)"/>
+            <column name="ID" type="NUMBER(19)"/>
+            <column name="DEL_FLAG" type="VARCHAR2(255)"/>
+            <column name="DELETED_ON" type="TIMESTAMP"/>
+            <column name="VERSION" type="NUMBER(10)"/>
+            <column name="TRANSFER_REQUEST_ID" type="NUMBER(19)"/>
+            <column name="TRAN_ID" type="NUMBER(19)"/>
+            <column name="AMOUNT" type="NUMBER(19,2)"/>
+            <column name="DECLARANT_CODE" type="VARCHAR2(255)"/>
+            <column name="DECLARANT_NAME" type="VARCHAR2(255)"/>
+            <column name="COMPANY_CODE" type="VARCHAR2(255)"/>
+            <column name="SGD_ASSESSMENT_DATE" type="VARCHAR2(255)"/>
+            <column name="FORM_M_NUMBER" type="VARCHAR2(255)"/>
+            <column name="BANK_CODE" type="VARCHAR2(255)"/>
+            <column name="INITIATED_BY" type="VARCHAR2(255)"/>
+            <column name="AUTHORIZED_BY" type="VARCHAR2(255)"/>
+            <column name="PAYMENT_REF" type="VARCHAR2(255)"/>
+            <column name="CUSTOMER_ACCT_NUMBER" type="VARCHAR2(255)"/>
+            <column name="STATUS" type="VARCHAR2(255)"/>
+            <column name="DATE_CREATED" type="TIMESTAMP"/>
+        </createTable>
+    </changeSet>
+</databaseChangeLog>

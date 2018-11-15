@@ -1,35 +1,70 @@
 package longbridge.controllers.corporate;
 
+import longbridge.exception.InternetBankingTransferException;
+import longbridge.exception.TransferErrorService;
 import longbridge.models.*;
-import longbridge.services.CorpCustomDutyService;
-import longbridge.services.IntegrationService;
+import longbridge.services.*;
+import longbridge.utils.TransferType;
+import longbridge.utils.TransferUtils;
+import longbridge.validator.transfer.TransferValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.ResponseEntity;
+import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.RestTemplate;
 import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.servlet.LocaleResolver;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.security.Principal;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 @Controller
 @RequestMapping("/corporate/custom")
-public class CustomDutyController {
+public class CorpCustomDutyController {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(CustomDutyController.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(CorpCustomDutyController.class);
 
     @Autowired
     private CorpCustomDutyService customDutyService;
+
+    @Value("060001")
+    private String bankCode;
+
+    private CorporateUserService corporateUserService;
+    private CorpTransferService corpTransferService;
+    private AccountService accountService;
+    private MessageSource messages;
+    private LocaleResolver localeResolver;
+    private FinancialInstitutionService financialInstitutionService;
+    private TransferValidator validator;
+    private TransferErrorService transferErrorService;
+    private CorporateService corporateService;
+    private TransferUtils transferUtils;
+
+    @Autowired
+    public CorpCustomDutyController(
+            CorporateUserService corporateUserService, AccountService accountService, CorpTransferService corpTransferService,
+             LocaleResolver localeResolver,
+            FinancialInstitutionService financialInstitutionService, TransferValidator validator,
+            TransferErrorService transferErrorService, CorporateService corporateService,
+            TransferUtils transferUtils) {
+        this.accountService = accountService;
+        this.corporateUserService = corporateUserService;
+        this.corpTransferService = corpTransferService;
+        this.localeResolver = localeResolver;
+        this.financialInstitutionService = financialInstitutionService;
+        this.validator = validator;
+        this.transferErrorService = transferErrorService;
+        this.corporateService = corporateService;
+        this.transferUtils = transferUtils;
+    }
 
     @GetMapping
     public String getCustomDuty(Model model, Principal principal) {
@@ -64,25 +99,67 @@ public class CustomDutyController {
         return null;
     }
 
+    @PostMapping("/summary")
+    public String transferSummary(@ModelAttribute("assessmentDetail")  @Valid  CustomAssessmentDetail assessmentDetail,
+                                  BindingResult result, Model model, HttpServletRequest servletRequest, Principal principal) {
+        CorpPaymentRequest request = new CorpPaymentRequest();
+        try {
+        request.setAmount(new BigDecimal(
+                assessmentDetail.getResponseInfo().getTotalAmount(), MathContext.DECIMAL64));
+        request.setBeneficiaryAccountNumber(assessmentDetail.getAccount());
+            FinancialInstitution financialInstitution =
+            financialInstitutionService.getFinancialInstitutionByBankCode(
+                    assessmentDetail.getResponseInfo().getBankCode().substring(2));
+        request.setFinancialInstitution(financialInstitution);
+        request.setCustomerAccountNumber(assessmentDetail.getAccount());
+        request.setBeneficiaryAccountName(
+                    accountService.getAccountByAccountNumber(assessmentDetail.getAccount()).getAccountName());
+//            model.addAttribute("corpTransferRequest", request);
+            request.setTransferType(TransferType.CUSTOM_DUTY);
+            CorporateUser user = corporateUserService.getUserByName(principal.getName());
+            Corporate corporate = user.getCorporate();
+
+            if (corporate.getCorporateType().equalsIgnoreCase("MULTI")) {
+                customDutyService.saveCustomPaymentRequestForAuthorization(request);
+            } else if (corporate.getCorporateType().equalsIgnoreCase("SOLE")) {
+                //customDutyService.makeBulkTransferRequest(bulkTransfer);
+            } else {
+                return "redirect:/login/corporate";
+            }
+        } catch (InternetBankingTransferException exception)
+        {
+
+
+        }
+        return "";
+    }
+
     @PostMapping("/payment")
-    public CustomPaymentNotification customPayment(
+    public void customPayment(
             @ModelAttribute("assessmentDetail")  @Valid  CustomAssessmentDetail assessmentDetail,
-            @ModelAttribute("account") String account){
+            @ModelAttribute("account") String account, BindingResult result){
 
         LOGGER.debug("Assessment Details: {}",assessmentDetail);
-        customDutyService.checkAccountBalance(account,
+        boolean isAccountBalanceEnough = customDutyService.isAccountBalanceEnough(account,
                 new BigDecimal(
                         assessmentDetail.getResponseInfo().getTotalAmount(), MathContext.DECIMAL64));
-
+        if(!isAccountBalanceEnough){
+            return;
+        }
         CustomPaymentNotificationRequest paymentNotificationRequest = new CustomPaymentNotificationRequest();
         try {
             LOGGER.debug("making payment requests:{}",paymentNotificationRequest);
+            try {
+                transferUtils.validateTransferCriteria();
+            } catch (InternetBankingTransferException e) {
+                String errorMessage = transferErrorService.getMessage(e);
+                //redirectAttributes.addFlashAttribute("failure", errorMessage);
+            }
             customDutyService.paymentNotification(assessmentDetail);
         }
         catch (Exception e){
             LOGGER.error("Error calling coronation service rest service",e);
         }
-        return new CustomPaymentNotification();
     }
 
     public CustomTransactionStatus paymentStatus(@ModelAttribute @Valid CustomTransactionStatus customTransactionStatus){

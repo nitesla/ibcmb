@@ -16,8 +16,8 @@ public enum TransferType {
     INTERNATIONAL_TRANSFER("International Transfer"),
     NIP("NIP Transfer"),
     NAPS("NAPS Transfer"),
-    RTGS("RTGS Transfer");
-
+    RTGS("RTGS Transfer"),
+    CUSTOM_DUTY("Custom Duty Payment");
 
 
     private String description;

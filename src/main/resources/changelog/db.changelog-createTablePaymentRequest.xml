@@ -1,6 +1,41 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<beans xmlns="http://www.springframework.org/schema/beans"
-       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
-
-</beans>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog/1.1"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog/1.1
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-1.1.xsd">
+    <changeSet author="Longbridge (Abiodun)" id="createTablePaymentRequest">
+        <createTable   tableName="PAYMENT_REQUEST">
+            <column name="DTYPE" type="VARCHAR2(31)"/>
+            <column name="ID" type="NUMBER(19)"/>
+            <column name="DEL_FLAG" type="VARCHAR2(255)"/>
+            <column name="DELETED_ON" type="TIMESTAMP"/>
+            <column name="VERSION" type="NUMBER(10)"/>
+            <column name="AMOUNT_PAID" type="NUMBER(19,2)"/>
+            <column name="AMOUNT_REFUND" type="NUMBER(19,2)"/>
+            <column name="CHARGE" type="NUMBER(19,2)"/>
+            <column name="NARRATION" type="VARCHAR2(255)"/>
+            <column name="REFERENCE_NUMBER" type="VARCHAR2(255)"/>
+            <column name="ENTRY_DATE" type="TIMESTAMP"/>
+            <column name="AUTH_STATUS" type="NUMBER(10)"/>
+            <column name="REMARK" type="VARCHAR2(255)"/>
+            <column name="STATUS" type="VARCHAR2(255)"/>
+            <column name="STATUS_DESCRIPTION" type="VARCHAR2(255)"/>
+            <column name="USER_REFERENCE_NUMBER" type="NUMBER(19,2)"/>
+            <column name="PAYMENT_TYPE" type="NUMBER(10)"/>
+            <column name="INSTITUION_ID" type="NUMBER(19)"/>
+            <column name="CORPORATE_ID" type="NUMBER(19)"/>
+            <column name="PAYMENT_AUTH_ID" type="NUMBER(19,2)"/>
+            <column name="BENEFICIARY_BANK" type="VARCHAR2(255)"/>
+            <column name="INTERMEDIARY_BANK_NAME" type="VARCHAR2(255)"/>
+            <column name="INTERMEDIARY_BANK_ACCT_NO" type="VARCHAR2(255)"/>
+            <column name="CURRENCY_CODE" type="VARCHAR2(255)"/>
+            <column name="INTERMEDIARY_BANK_NAME" type="VARCHAR2(255)"/>
+            <column name="INTERMEDIARY_BANK_ACCT_NO" type=" VARCHAR2(255)"/>
+            <column name="CURRENCY_CODE" type="VARCHAR2(255)"/>
+            <column name="CHARGE_FROM" type="VARCHAR2(255)"/>
+            <column name="BENEFICIARY_ADDRESS" type="VARCHAR2(255)"/>
+            <column name="CORP_DIRECT_DEBIT_ID" type="VARCHAR2(19)"/>
+        </createTable>
+    </changeSet>
+</databaseChangeLog>

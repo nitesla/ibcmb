@@ -127,8 +127,6 @@ public class CorpNAPSTransferController {
             String errorMessage = transferErrorService.getMessage(e);
             redirectAttributes.addFlashAttribute("failure", errorMessage);
             return "redirect:/corporate/transfer/bulk";
-
-
         }
 
         if (session.getAttribute("workbook") != null) {
@@ -182,13 +180,10 @@ public class CorpNAPSTransferController {
         } else {
             return "redirect:/login/corporate";
         }
-
-
     }
 
     @PostMapping("/bulk/approve")
     public String addBulkTransferAuthorization(@ModelAttribute("corpTransReqEntry") CorpTransReqEntry corpTransReqEntry, @RequestParam("token") String tokenCode, RedirectAttributes redirectAttributes, Principal principal, Locale locale) {
-
 
         CorporateUser user = corporateUserService.getUserByName(principal.getName());
 
@@ -228,7 +223,6 @@ public class CorpNAPSTransferController {
 
         }
         return "redirect:/corporate/transfer/bulk";
-
     }
 
 

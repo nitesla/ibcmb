@@ -141,8 +141,6 @@ public class CorpOwnTransferController {
 
                 Iterable<Account> accounts = accountService.getAccountsForCredit(user.getCorporate().getCustomerId());
 
-
-
                 StreamSupport.stream(accounts.spliterator(), false)
                         .filter(Objects::nonNull)
 
@@ -151,11 +149,7 @@ public class CorpOwnTransferController {
 
                 model.addAttribute("destAccounts", accountList);
             }
-
-
         }
-
-
     }
 
 

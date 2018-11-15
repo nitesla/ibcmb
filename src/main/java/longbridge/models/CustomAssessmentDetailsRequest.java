@@ -6,13 +6,17 @@ import java.util.List;
 
 public class CustomAssessmentDetailsRequest {
 
-    private CustomSADAsmt SadAsmt;
-    private String customsCode;
-    private String SADAssessmentSerial;
-    private String SADAssessmentNumber;
-    private String SADYear;
+    @JsonProperty("appId")
     private String appId;
+
+    @JsonProperty("hash")
     private String hash;
+
+    @JsonProperty("CustomsCode")
+    private String customsCode;
+
+    @JsonProperty("SadAsmt")
+    private CustomSADAsmt sadAsmt;
 
     public CustomAssessmentDetailsRequest() {
     }
@@ -25,28 +29,12 @@ public class CustomAssessmentDetailsRequest {
         this.customsCode = customsCode;
     }
 
-    public String getSADAssessmentSerial() {
-        return SADAssessmentSerial;
+    public CustomSADAsmt getSadAsmt() {
+        return sadAsmt;
     }
 
-    public void setSADAssessmentSerial(String SADAssessmentSerial) {
-        this.SADAssessmentSerial = SADAssessmentSerial;
-    }
-
-    public String getSADAssessmentNumber() {
-        return SADAssessmentNumber;
-    }
-
-    public void setSADAssessmentNumber(String SADAssessmentNumber) {
-        this.SADAssessmentNumber = SADAssessmentNumber;
-    }
-
-    public String getSADYear() {
-        return SADYear;
-    }
-
-    public void setSADYear(String SADYear) {
-        this.SADYear = SADYear;
+    public void setSadAsmt(CustomSADAsmt sadAsmt) {
+        this.sadAsmt = sadAsmt;
     }
 
     public String getAppId() {
@@ -68,12 +56,10 @@ public class CustomAssessmentDetailsRequest {
     @Override
     public String toString() {
         return "CustomAssessmentDetailsRequest{" +
-                "customsCode='" + customsCode + '\'' +
-                ", SADAssessmentSerial='" + SADAssessmentSerial + '\'' +
-                ", SADAssessmentNumber='" + SADAssessmentNumber + '\'' +
-                ", SADYear='" + SADYear + '\'' +
-                ", appId='" + appId + '\'' +
+                "appId='" + appId + '\'' +
                 ", hash='" + hash + '\'' +
+                ", customsCode='" + customsCode + '\'' +
+                ", sadAsmt=" + sadAsmt +
                 '}';
     }
 }

@@ -1,62 +1,278 @@
 <!DOCTYPE html>
 
 <html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{corp-layout}">
+<head>
+    <link rel="stylesheet" type="text/css" th:href="@{~/customer/css/bootstrap.css}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{~/customer/css/custom.css}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{~/customer/font-awesome/font-awesome.min.css}"/>
+    <link rel="shortcut icon" th:href="@{~/customer/img/favicon.ico}" type="image/x-icon">
+    <link rel="icon" th:href="@{~/customer/img/favico.ico}" type="image/x-icon">
+    <title>Log in | Coronation Merchant Bank
+    </title>
+</head>
+<body onload="javascript:var bread = [['Home', '/corporate/custom'],['Custom Payment', '/corporate/custom']];currentBar('Custom Payment');breadCrumb(bread)">
+<div layout:fragment="content">
+    <div class="col-md-5 col-sm-5 ">
+        <select class="form-control full-width coronation-form-control hide-content-only" id="view">
+            <option value="account">Overview</option>
+        </select>
+    </div>
+    <div class="col-xs-12  no-pad-left no-pad-right">
+        <div class="no-pad-lef no-mt alert no-bd">
+            <div class="col-md-12 col-sm-12 col-xs-12">
+                <div class="col-md-12 col-sm-12">
+                    <form  class="form-horizontal">
+                        <!--<div th:replace="layout::form-validation"></div>-->
+                        <div id="assessmentGrp">
+                            <div class="form-group">
+                                <div class="col-sm-8">
+                                    <label class="col-sm-2">Custom Area Command</label>
+                                    <select name="CommandCode" id="CommandCode" class="form-control full-width" th:field="*{assessmentDetailsRequest.customsCode}">
+                                        <option value=""> -Select Area Command- </option>
+                                        <option th:each="command : ${commands}" th:value="${command.commandCode}" th:text="${command.commandDesc}"></option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-sm-8">
+                                    <label class="col-sm-2">SDG Assessment Year</label>
+                                    <input type="text" class="form-control full-width" id="sdgAssessmentYear" name="sdgAssessmentYear"
+                                           placeholder="2018" th:field="*{assessmentDetailsRequest.sadAsmt.SADYear}"/>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-sm-8">
+                                    <label class="col-sm-2">SDG Assessment Serial</label>
+                                    <input type="text" class="form-control full-width" id="sdgAssessmentSerial" name="sdgAssessmentSerial"
+                                           placeholder="A" th:field="*{assessmentDetailsRequest.sadAsmt.SADAssessmentSerial}"/>
+                                </div>
+                            </div>
 
-    <body onload="javascript:var bread = [['Home', '/corporate/custom'],['Custom Payment', '/corporate/custom']];currentBar('Custom Payment');breadCrumb(bread)">
-        <div layout:fragment="content">
-            <div class="col-md-5 col-sm-5 ">
-                <select class="form-control full-width coronation-form-control hide-content-only" id="view">
-                    <option value="account">Overview</option>
-                </select>
-            </div>
-            <div class="col-xs-12  no-pad-left no-pad-right">
-                <div class="no-pad-lef no-mt alert no-bd">
-                    <div class="col-md-12 col-sm-12 col-xs-12">
-                        <div class="col-md-12 col-sm-12">
-                            <form method="post" class="form-horizontal" th:action="@{/corporate/custom/details}" th:object="${assessmentDetailsRequest}">
-                                <!--<div th:replace="layout::form-validation"></div>-->
-                                <div class="form-group">
-                                    <div class="col-sm-6">
-                                        <label class="col-sm-2">Custom Area Command</label>
-                                        <select name="CommandCode" class="form-control full-width" th:field="*{customsCode}">
-                                            <option value=""> -Select Area Command- </option>
-                                            <option th:each="command : ${commands}" th:value="${command.commandCode}" th:text="${command.commandDesc}"></option>
-                                        </select>
-                                    </div>
+                            <div class="form-group">
+                                <div class="col-sm-8">
+                                    <label class="col-sm-2">SDG Assessment Number</label>
+                                    <input type="text" class="form-control full-width" name="sdgAssessmentNumber" id="sdgAssessmentNumber"
+                                           placeholder="1234" th:field="*{assessmentDetailsRequest.sadAsmt.SADAssessmentNumber}"/>
                                 </div>
-                                <div class="form-group">
-                                    <div class="col-sm-6">
-                                        <label class="col-sm-2">SDG Assessment Year</label>
-                                        <input type="text" class="form-control full-width" name="sdgAssessmentYear"
-                                               placeholder="2018" th:field="*{SADYear}"/>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <div class="col-sm-6">
-                                        <label class="col-sm-2">SDG Assessment Serial</label>
-                                        <input type="text" class="form-control full-width" name="sdgAssessmentSerial"
-                                               placeholder="A" th:field="*{SADAssessmentSerial}"/>
-                                    </div>
-                                </div>
-
-                                <div class="form-group">
-                                    <div class="col-sm-6">
-                                        <label class="col-sm-2">SDG Assessment Number</label>
-                                        <input type="text" class="form-control full-width" name="sdgAssessmentNumber"
-                                               placeholder="1234" th:field="*{SADAssessmentNumber}"/>
-                                    </div>
-                                </div>
-                                <!--<div class="form-group">-->
-                                    <div class="col-sm-4 col-sm-offset-2">
-                                        <!--<button class="btn btn-white" type="reset" id="cancel">Cancel</button>-->
-                                        <button class="btn btn-primary pull-right" type="submit">Get Assessment</button>
-                                    </div>
-                                <!--</div>-->
-                            </form>
+                            </div>
+                            <div class="col-sm-6 col-sm-offset-2">
+                                <btn id="assessmentBtn"  class="btn btn-primary pull-right">Get Assessment</btn>
+                            </div>
                         </div>
-                    </div>
+                        <div id="paymentGrp">
+                            <div class="form-group">
+                                <div class="col-sm-8">
+                                    <label class="col-sm-2 ">SDG Assessment Date</label>
+                                    <input class="col-sm-8 form-control full-width" readonly="readonly" type="text" id="sgdAssessmentDate"
+                                           th:field="*{assessmentDetail.responseInfo.SGDAssessmentDate}"/>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-sm-8">
+                                    <label class="col-sm-2 ">Declarant Code</label>
+                                    <input class="col-sm-8 form-control full-width" readonly="readonly" type="text" id="declarantCode"
+                                           th:field="*{assessmentDetail.responseInfo.declarantCode}"/>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <div class="col-sm-8">
+                                    <label class="col-sm-2">Declarant Name</label>
+                                    <input class="col-sm-8 form-control full-width" readonly="readonly" type="text" id="declarantName" th:field="*{assessmentDetail.responseInfo.declarantName}"/>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-sm-8">
+                                    <label class="col-sm-2">Company Code</label>
+                                    <input class="col-sm-8 form-control full-width" readonly="readonly" type="text" id="companyCode"  th:field="*{assessmentDetail.responseInfo.companyCode}"/>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-sm-8">
+                                    <label class="col-sm-2">Company Name</label>
+                                    <input class="col-sm-8 form-control full-width" readonly="readonly" type="text" id="companyName" th:field="*{assessmentDetail.responseInfo.companyName}"/>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-sm-8">
+                                    <label class="col-sm-2">Bank Code</label>
+                                    <input class="col-sm-8 form-control full-width" readonly="readonly" type="text" id="bankCode" th:field="*{assessmentDetail.responseInfo.bankCode}"/>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-sm-8">
+                                    <label class="col-sm-2">Bank Branch Code</label>
+                                    <input class="col-sm-8 form-control full-width" readonly="readonly" type="text" id="bankBranchCode" th:field="*{assessmentDetail.responseInfo.bankBranchCode}"/>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-sm-8">
+                                    <label class="col-sm-2">Total Amount to be Paid</label>
+                                    <input class="col-sm-8 form-control full-width" readonly="readonly" type="text" id="totalAmount" th:field="*{assessmentDetail.responseInfo.totalAmount}"/>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-sm-8">
+                                    <label class="col-sm-2">Payment Details</label>
+                                    <div class="x_content">
+                                        <div class="table-responsive col-xs-12 no-pad-left no-pad-right" >
+                                            <table class="table" id="tranDetails">
+                                                <thead>
+                                                <tr>
+                                                    <th>Tax Code</th>
+                                                    <th>Description</th>
+                                                    <th>Amount</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody id="content">
+
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-sm-8">
+                                    <label class="col-sm-2">Approval Status</label>
+                                    <input class="col-sm-8 form-control full-width" readonly="readonly" type="text" id="approvalStatusDescription" th:field="*{assessmentDetail.responseInfo.approvalStatusDescription}"/>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-sm-8">
+                                <label>Account Number</label>
+                                <span class="req"></span>
+                                <select name="acctNumber" id="acctNumber" class="form-control full-width"
+                                        required="required" th:field="*{assessmentDetail.account}">
+                                    <option th:each="s: ${accounts}" th:value="${s.accountNumber}" th:text="${s.accountNumber}"></option></select>
+                            </div>
+                            </div>
+                            <div class="col-sm-6 col-sm-offset-2">
+                                <a id="paymentBtn" class="btn btn-primary pull-right">Next</a>
+                            </div>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
-    </body>
+    </div>
+
+    <div id="myModal" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+
+            <!-- Modal content-->
+
+            <div class="modal-content no-bd-rad tokenBox" id="paymentModal">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <form id="otpform" th:action="@{/otp/retail/login}" method="POST" >
+                    <div class="modal-body no-bd-rad">
+
+                       <div class="margin-bottom">
+                            <p style="margin-bottom:20px">Kindly enter the OTP from your email/sms</p>
+                            <div id="username_div1" class="form-group">
+                                <input  type="text" id="otp" name="otp" class='my-select tokenInput' required placeholder="Otp" autofocus="autofocus" autocomplete="off"/>
+                            </div>
+                            <div id='successMess' class=" text-success "></div>
+                        </div>
+                        <!--<div >-->
+                        <!--<p>Don't have a token?</p>-->
+                        <!--<p><a class="btn" id="usetoken">Send me an OTP </a><i class='fa fa-angle-down'  style="font-size:18px;"></i></p>-->
+                        <!--</div>-->
+
+                    </div>
+                    <div class="modal-footer no-bd-top ">
+                        <input type='button' class="btn btn-link less-required token-btn" onclick="hideModal(false)" id="usetoken" value='Back'/>
+
+                        <input type='submit' class="btn btn-link token-btn required-step" value='Continue'/>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+
+<th:block layout:fragment="scripts">
+    <script th:inline="javascript">
+        $(document).ready(function () {
+            console.log("start");
+
+            $('#paymentGrp').hide();
+            hideModal(false);
+            // $('#myModal').hide();
+        })
+        function hideModal(bool){
+            console.log("should it show "+bool);
+        $('#myModal').modal({
+            backdrop: 'static',
+            keyboard: false,
+            show: bool
+
+        });
+        }
+        $("#assessmentBtn").on("click",function(event) {
+            // Prevent the form from submitting via the browser.
+            event.preventDefault();
+            console.log("test btn");
+            //ajaxPost();
+            // $('#custompayment').show();
+            $.ajax({
+                "url": "/corporate/custom/accessment/details",
+                "type": "POST",
+                "data": {
+                    SADAssessmentNumber: $('#sdgAssessmentNumber').val(),
+                    SADAssessmentSerial: $('#sdgAssessmentSerial').val(),
+                    SADYear: $('#sdgAssessmentYear').val(),
+                    CommandCode: $('#CommandCode').val()
+                },
+                success: function(result) {
+                    $('#assessmentBtn').hide();
+                    $('#declarantCode').val(result.ResponseInfo["DeclarantCode"]);
+                    $('#declarantName').val(result.ResponseInfo["DeclarantName"]);
+                    $('#companyCode').val(result.ResponseInfo["CompanyCode"]);
+                    $('#totalAmount').val(result.ResponseInfo["TotalAmount"]);
+                    $('#companyName').val(result.ResponseInfo["CompanyName"]);
+                    $('#formMNumber').val(result.ResponseInfo["FormMNumber"]);
+                    $('#approvalStatus').val(result.ResponseInfo["ApprovalStatus"]);
+                    $('#approvalStatusDescription').val(result.ResponseInfo["ApprovalStatusDescription"]);
+                    $('#totalAmount').val(result.ResponseInfo["TotalAmount"]);
+                    $('#sgdAssessmentDate').val(result.ResponseInfo["SGDAssessmentDate"]);
+                    $('#bankCode').val(result.ResponseInfo["BankCode"]);
+                    $('#bankBranchCode').val(result.ResponseInfo["BankBranchCode"]);
+                    console.log("tax result"+result.ResponseInfo["TaxDetails"]);
+                    var t = result.ResponseInfo["TaxDetails"];
+                    var table = document.getElementById('tranDetails');
+                    var tr = document.createElement('tr');
+                    t.forEach(function(t) {
+                        var tr = document.createElement('tr');
+                        tr.innerHTML = '<td>' + t.TaxAmount+ '</td>' +
+                            '<td>' + t.TaxDesc + '</td>' +
+                            '<td>' + t.TaxAmount + '</td>' ;
+                        table.appendChild(tr);
+                    });
+                    if (result != null && result!= "null") {
+                        $('#paymentGrp').show();
+
+                    }
+
+                },
+                error: function (dd) {
+                    console.log("error");
+
+                    return false;
+                }
+            });
+        });
+        $("#paymentBtn").on("click",function(event) {
+            console.log("hELLO yes!");
+
+           hideModal(true);
+        });
+
+
+    </script>
+</th:block>
+</body>
 </html>

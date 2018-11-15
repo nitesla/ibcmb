@@ -43,10 +43,4 @@ public class TransferValidator implements Validator {
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "amount", "message.amount", "amount is required.");
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "customerAccountNumber", "message.customerAccountNumber", "customerAccountNumber is required.");
     }
-
-
-
-
-
-
 }

@@ -34,13 +34,11 @@ public class InternetbankingApplication extends SpringBootServletInitializer imp
 
     protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
         return application.sources(InternetbankingApplication.class);
-
     }
 
 
     @Override
     public void run(String... strings) throws Exception {
     }
-
 
 }

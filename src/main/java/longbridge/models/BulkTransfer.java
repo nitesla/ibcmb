@@ -19,7 +19,6 @@ import java.util.List;
 @Entity
 @Audited(withModifiedFlag=true)
 @Where(clause ="del_Flag='N'" )
-
 public class BulkTransfer extends TransRequest {
 
     @Column(unique = true)

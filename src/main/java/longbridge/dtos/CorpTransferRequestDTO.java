@@ -10,7 +10,6 @@ public class CorpTransferRequestDTO extends TransferRequestDTO {
 
     private String transAuthId;
 
-
     public String getTransAuthId() {
         return transAuthId;
     }

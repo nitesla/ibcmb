@@ -14,6 +14,7 @@ import longbridge.security.userdetails.CustomUserPrincipal;
 import longbridge.services.ConfigurationService;
 import longbridge.services.IntegrationService;
 import longbridge.services.MailService;
+import longbridge.utils.EncryptionUtil;
 import longbridge.utils.ResultType;
 import longbridge.utils.StatusCode;
 import longbridge.utils.TransferType;
@@ -464,7 +465,6 @@ public class IntegrationServiceImpl implements IntegrationService {
 			logger.error("Error getting account details for {}", acctNo,e);
 			return new AccountDetails();
 		}
-
 	}
 
 	@Override
@@ -770,22 +770,30 @@ public class IntegrationServiceImpl implements IntegrationService {
 		return principal.getUser();
 	}
 
-	public List<CustomAssessmentDetail> getAssessmentDetails(CustomAssessmentDetailsRequest assessmentDetailsRequest){
+	public CustomAssessmentDetail getAssessmentDetails(CustomAssessmentDetailsRequest assessmentDetailsRequest){
 		try {
-			CustomAssessmentDetail[] response = template.postForObject(CustomDutyUrl+"/customduty/retrieveassessmentdetail", assessmentDetailsRequest, CustomAssessmentDetail[].class);
-			logger.debug("Fetching data from coronation rest service via the url: {}", response);
-			return Arrays.asList(response);
+//			assessmentDetailsRequest.setHash(EncryptionUtil.getSHA512("test"+assessmentDetailsRequest.getCustomsCode()
+//					+ assessmentDetailsRequest.getSADAssessmentSerial()
+//					+"1", null);
+			assessmentDetailsRequest.setAppId("test");
+			assessmentDetailsRequest.setHash("4556ggg778jj");
+			logger.debug("Fetching data from coronation rest service via the url: {}", CustomDutyUrl+"/customduty/retrieveassessmentdetail");
+			logger.debug("Fetching data assessmentDetailsRequest: {}", assessmentDetailsRequest);
+			CustomAssessmentDetail response = template.postForObject("http://localhost:8090/customduty/retrieveassessmentdetail", assessmentDetailsRequest, CustomAssessmentDetail.class);
+			logger.debug("{}", response);
+			return response;
 		}
 		catch (Exception e){
 			logger.error("Error calling coronation service rest service",e);
 		}
-		return new ArrayList<>();
+		return null;
 	}
 
 	public CustomsAreaCommand getCustomsAreaCommands(CustomsAreaCommandRequest customsAreaCommandRequest) {
 		try {
 			logger.debug("Fetching data from coronation rest service via the url: {}", CustomDutyUrl);
-			CustomsAreaCommand command = template.postForObject(CustomDutyUrl+"/customduty/getncscommand"   , customsAreaCommandRequest, CustomsAreaCommand.class);
+			CustomsAreaCommand command = template.postForObject(CustomDutyUrl+"/customduty/getncscommand"
+					, customsAreaCommandRequest, CustomsAreaCommand.class);
 			logger.debug("Fetching data from coronation rest service via the url: {}", command);
 			return command;
 		}
@@ -795,18 +803,18 @@ public class IntegrationServiceImpl implements IntegrationService {
 		return null;
 	}
 
-	public List<CustomPaymentNotification> paymentNotification(CustomPaymentNotificationRequest paymentNotificationRequest){
+	public CustomPaymentNotification paymentNotification(CustomPaymentNotificationRequest paymentNotificationRequest){
 		try {
 			logger.debug("Fetching data from coronation rest service via the url: {}", CustomDutyUrl);
 
-			CustomPaymentNotification[] response = template.postForObject(CustomDutyUrl+"/customduty/payassessment", paymentNotificationRequest, CustomPaymentNotification[].class);
+			CustomPaymentNotification response = template.postForObject(CustomDutyUrl+"/customduty/payassessment", paymentNotificationRequest, CustomPaymentNotification.class);
 			logger.debug("payment notification Response: {}", response);
-			return Arrays.asList(response);
+			return response;
 		}
 		catch (Exception e){
 			logger.error("Error calling coronation service rest service",e);
 		}
-		return new ArrayList<>();
+		return null;
 	}
 
 	public CustomTransactionStatus paymentStatus(CustomTransactionStatus customTransactionStatus){

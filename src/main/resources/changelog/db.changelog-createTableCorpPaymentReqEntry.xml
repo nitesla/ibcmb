@@ -1,6 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<beans xmlns="http://www.springframework.org/schema/beans"
-       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
-
-</beans>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog/1.1"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog/1.1
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-1.1.xsd">
+    <changeSet author="Longbridge (Abiodun)" id="createTableCorpPaymentReqEntry">
+        <createTable   tableName="CORP_PAYMENT_REQ_ENTRY">
+            <column name="ID" type="NUMBER(19)"/>
+            <column name="PAYMENT_REQ_ID" type="NUMBER(19)"/>
+            <column name="DEL_FLAG" type="VARCHAR2(255)"/>
+            <column name="DELETED_ON" type="TIMESTAMP"/>
+            <column name="ENTRY_DATE" type="TIMESTAMP"/>
+            <column name="VERSION" type="NUMBER(10)"/>
+            <column name="AUTH_STATUS" type="NUMBER(10)"/>
+            <column name="COMMENTS" type="VARCHAR2(255)"/>
+            <column name="STATUS" type="VARCHAR2(255)"/>
+            <column name="ROLE_ID" type="NUMBER(19)"/>
+            <column name="USER_ID" type="NUMBER(19)"/>
+        </createTable>
+    </changeSet>
+</databaseChangeLog>

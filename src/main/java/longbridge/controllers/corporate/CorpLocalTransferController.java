@@ -132,7 +132,6 @@ public class CorpLocalTransferController {
 
         try {
             transferUtils.validateTransferCriteria();
-
             model.addAttribute("localBanks", financialInstitutionService.getFinancialInstitutionsByType(FinancialInstitutionType.LOCAL));
             model.addAttribute("corpLocalBeneficiaryDTO", corpLocalBeneficiaryDTO);
             return page + "pageiA";

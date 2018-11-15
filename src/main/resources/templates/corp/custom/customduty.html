@@ -4,13 +4,38 @@
     <body onload="javascript:var bread = [['Home', '/corporate/custom']];currentBar('custom duty');breadCrumb(bread)">
 
         <div layout:fragment="content">
-            <div class="col-md-5 col-sm-5 ">
-                <select class="form-control full-width coronation-form-control hide-content-only" id="view">
+            <div class="col-md-5 col-sm-5">
+
+                <select class="form-control full-width coronation-form-contro invisible" id="view">
                     <option value="account">Overview</option>
                 </select>
+            </div>
 
-                <div class="col-xs-12 no-mt" >
-                    <a type="button" th:href="@{/corporate/custom/payment}" class="btn btn-default ">New</a>
+            <div class="col-xs-12 " >
+                <div class=" no-pad-lef  no-mt no-bd  alert">
+                    <div class="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
+                        <div class="btn-group" role="group" aria-label="First group">
+                            <a type="button" th:href="@{/corporate/custom/payment}" class="btn btn-default pull-right">New</a>
+                        </div>
+                    </div>
+                    <br/>
+                    <div class="table-responsive">
+                        <table class="table table-hover no-pad-lef" id="users">
+                            <thead>
+                            <tr>
+                                <th>Account Name</th>
+                                <th>Custom Command</th>
+                                <th>Payment Type</th>
+                                <th>Payment Item</th>
+                                <th>Amount</th>
+                                <th>Status</th>
+                            </tr>
+                            </thead>
+                            <tbody id="content">
+
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>

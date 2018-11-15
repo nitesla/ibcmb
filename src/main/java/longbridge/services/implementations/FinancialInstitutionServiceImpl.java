@@ -57,8 +57,6 @@ public class FinancialInstitutionServiceImpl implements FinancialInstitutionServ
         return financialInstitutionDTOList;
     }
 
-
-
     @Override
     public FinancialInstitutionDTO convertEntityToDTO(FinancialInstitution financialInstitution) {
         FinancialInstitutionDTO financialInstitutionDTO = new FinancialInstitutionDTO();

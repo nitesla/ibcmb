@@ -1,5 +1,6 @@
 package longbridge.services;
 
+import longbridge.dtos.CorpPaymentRequestDTO;
 import longbridge.dtos.CorpTransferRequestDTO;
 import longbridge.exception.InternetBankingException;
 import longbridge.exception.InternetBankingTransferException;
@@ -27,9 +28,7 @@ public interface CorpTransferService {
     @PreAuthorize("hasAuthority('MAKE_TRANSFER')")
     void validateTransfer(CorpTransferRequestDTO corpTransferRequestDTO) throws InternetBankingTransferException;
 
-
-    Object addTransferRequest(CorpTransferRequestDTO transferRequestDTO) throws InternetBankingException;
-
+    Object addTransferRequest(CorpTransferRequestDTO corpTransferRequestDTO) throws InternetBankingException;
 
     Page<CorpTransRequest> getTransferRequests(Pageable pageDetails);
 

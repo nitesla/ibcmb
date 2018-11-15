@@ -129,10 +129,10 @@ public interface IntegrationService {
     public CustomsAreaCommand getCustomsAreaCommands(CustomsAreaCommandRequest customsAreaCommandRequest);
 
     @PreAuthorize("hasAuthority('CUSTOM_DUTY')")
-    public List<CustomAssessmentDetail> getAssessmentDetails(CustomAssessmentDetailsRequest assessmentDetailsRequest);
+    public CustomAssessmentDetail getAssessmentDetails(CustomAssessmentDetailsRequest assessmentDetailsRequest);
 
     @PreAuthorize("hasAuthority('CUSTOM_DUTY')")
-    public List<CustomPaymentNotification> paymentNotification(CustomPaymentNotificationRequest paymentNotificationRequest);
+    public CustomPaymentNotification paymentNotification(CustomPaymentNotificationRequest paymentNotificationRequest);
 
     @PreAuthorize("hasAuthority('CUSTOM_DUTY')")
     public CustomTransactionStatus paymentStatus(CustomTransactionStatus customTransactionStatus);

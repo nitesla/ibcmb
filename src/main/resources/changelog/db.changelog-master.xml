@@ -20,4 +20,7 @@
     <!--<include file="changelog/db.changelog-createTableCorporateCifids_aud.xml"/>-->
     <!--<include file="changelog/db.changelog-createTableUserAccountRestriction.xml"/>-->
     <!--<include file="changelog/db.changelog-createTableUserAccountRestriction_aud.xml"/>-->
+    <!--<include file="changelog/db.changelog-createTableCorpPaymentReqEntry.xml"/>-->
+    <include file="changelog/db.changelog-createTableCustomDuty.xml"/>
+    <!--<include file="changelog/db.changelog-createTablePaymentRequest.xml"/>-->
 </databaseChangeLog>
