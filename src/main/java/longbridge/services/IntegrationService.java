@@ -3,9 +3,10 @@ package longbridge.services;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import longbridge.api.*;
 import longbridge.exception.InternetBankingTransferException;
-import longbridge.models.TransRequest;
+import longbridge.models.*;
 import longbridge.utils.statement.*;
 import org.springframework.scheduling.annotation.Async;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -116,7 +117,6 @@ public interface IntegrationService {
 
     NEnquiryDetails doNameEnquiry(String destinationInstitutionCode, String accountNumber);
 
-
     BigDecimal getAvailableBalance(String s);
     @Async
     CompletableFuture<ObjectNode>  sendSMS(String message, String contact, String subject);
@@ -125,5 +125,16 @@ public interface IntegrationService {
 
     Rate getFee(String channel);
 
+    @PreAuthorize("hasAuthority('CUSTOM_DUTY')")
+    public CustomsAreaCommand getCustomsAreaCommands(CustomsAreaCommandRequest customsAreaCommandRequest);
+
+    @PreAuthorize("hasAuthority('CUSTOM_DUTY')")
+    public List<CustomAssessmentDetail> getAssessmentDetails(CustomAssessmentDetailsRequest assessmentDetailsRequest);
+
+    @PreAuthorize("hasAuthority('CUSTOM_DUTY')")
+    public List<CustomPaymentNotification> paymentNotification(CustomPaymentNotificationRequest paymentNotificationRequest);
+
+    @PreAuthorize("hasAuthority('CUSTOM_DUTY')")
+    public CustomTransactionStatus paymentStatus(CustomTransactionStatus customTransactionStatus);
 
 }

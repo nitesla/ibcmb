@@ -1,8 +1,20 @@
 package longbridge.models;
 
-public class Commands {
-    private String commandCode;
-    private String commandDesc;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import java.io.Serializable;
+
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class Commands{
+
+    @JsonProperty("CommandCode")
+    public String commandCode;
+
+    @JsonProperty("CommandDesc")
+    public String commandDesc;
+
+    public Commands() {
+    }
 
     public String getCommandCode() {
         return commandCode;

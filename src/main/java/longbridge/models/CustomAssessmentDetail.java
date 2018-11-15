@@ -1,22 +1,40 @@
 package longbridge.models;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.util.List;
 
 public class CustomAssessmentDetail {
+
+    @JsonProperty("DeclarantCode")
     private String declarantCode;
+    @JsonProperty("DeclarantName")
     private String declarantName;
+    @JsonProperty("CompanyCode")
     private String companyCode;
+    @JsonProperty("SGDAssessmentDate")
     private String SGDAssessmentDate;
+    @JsonProperty("TotalAmount")
     private double totalAmount;
+    @JsonProperty("CompanyName")
     private String companyName;
+    @JsonProperty("FormMNumber")
     private String formMNumber;
+    @JsonProperty("ApprovalStatusDescription")
     private String approvalStatusDescription;
+    @JsonProperty("ApprovalStatus")
     private String approvalStatus;
+    @JsonProperty("TranId")
     private String tranId;
+    @JsonProperty("BankCode")
     private String bankCode;
+    @JsonProperty("TaxDetails")
     private List<CustomTaxDetail> taxDetails;
+    @JsonProperty("BankBranchCode")
     private String bankBranchCode;
+    @JsonProperty("Code")
     private String code;
+    @JsonProperty("Message")
     private String message;
 
     public String getDeclarantCode() {
@@ -137,5 +155,29 @@ public class CustomAssessmentDetail {
 
     public void setMessage(String message) {
         this.message = message;
+    }
+
+    public CustomAssessmentDetail() {
+    }
+
+    @Override
+    public String toString() {
+        return "CustomAssessmentDetail{" +
+                "declarantCode='" + declarantCode + '\'' +
+                ", declarantName='" + declarantName + '\'' +
+                ", companyCode='" + companyCode + '\'' +
+                ", SGDAssessmentDate='" + SGDAssessmentDate + '\'' +
+                ", totalAmount=" + totalAmount +
+                ", companyName='" + companyName + '\'' +
+                ", formMNumber='" + formMNumber + '\'' +
+                ", approvalStatusDescription='" + approvalStatusDescription + '\'' +
+                ", approvalStatus='" + approvalStatus + '\'' +
+                ", tranId='" + tranId + '\'' +
+                ", bankCode='" + bankCode + '\'' +
+                ", taxDetails=" + taxDetails +
+                ", bankBranchCode='" + bankBranchCode + '\'' +
+                ", code='" + code + '\'' +
+                ", message='" + message + '\'' +
+                '}';
     }
 }

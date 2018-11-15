@@ -1,5 +1,6 @@
 package longbridge.services.implementations;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import longbridge.api.*;
 import longbridge.dtos.SettingDTO;
@@ -52,6 +53,9 @@ public class IntegrationServiceImpl implements IntegrationService {
 	private String URI;
 	@Value("${CMB.ALERT.URL}")
 	private String cmbAlert;
+
+	@Value("http://localhost:8090")
+	private String CustomDutyUrl;
 
 	private RestTemplate template;
 	private MailService mailService;
@@ -637,7 +641,6 @@ public class IntegrationServiceImpl implements IntegrationService {
 
 		} catch (Exception e) {
 			logger.error(uri, params, e);
-
 		}
 
 		return CompletableFuture.completedFuture(result);
@@ -765,6 +768,57 @@ public class IntegrationServiceImpl implements IntegrationService {
 		CustomUserPrincipal principal = (CustomUserPrincipal) SecurityContextHolder.getContext().getAuthentication()
 				.getPrincipal();
 		return principal.getUser();
+	}
+
+	public List<CustomAssessmentDetail> getAssessmentDetails(CustomAssessmentDetailsRequest assessmentDetailsRequest){
+		try {
+			CustomAssessmentDetail[] response = template.postForObject(CustomDutyUrl+"/customduty/retrieveassessmentdetail", assessmentDetailsRequest, CustomAssessmentDetail[].class);
+			logger.debug("Fetching data from coronation rest service via the url: {}", response);
+			return Arrays.asList(response);
+		}
+		catch (Exception e){
+			logger.error("Error calling coronation service rest service",e);
+		}
+		return new ArrayList<>();
+	}
+
+	public CustomsAreaCommand getCustomsAreaCommands(CustomsAreaCommandRequest customsAreaCommandRequest) {
+		try {
+			logger.debug("Fetching data from coronation rest service via the url: {}", CustomDutyUrl);
+			CustomsAreaCommand command = template.postForObject(CustomDutyUrl+"/customduty/getncscommand"   , customsAreaCommandRequest, CustomsAreaCommand.class);
+			logger.debug("Fetching data from coronation rest service via the url: {}", command);
+			return command;
+		}
+		catch (Exception e){
+			logger.error("Error calling coronation service rest service",e);
+		}
+		return null;
+	}
+
+	public List<CustomPaymentNotification> paymentNotification(CustomPaymentNotificationRequest paymentNotificationRequest){
+		try {
+			logger.debug("Fetching data from coronation rest service via the url: {}", CustomDutyUrl);
+
+			CustomPaymentNotification[] response = template.postForObject(CustomDutyUrl+"/customduty/payassessment", paymentNotificationRequest, CustomPaymentNotification[].class);
+			logger.debug("payment notification Response: {}", response);
+			return Arrays.asList(response);
+		}
+		catch (Exception e){
+			logger.error("Error calling coronation service rest service",e);
+		}
+		return new ArrayList<>();
+	}
+
+	public CustomTransactionStatus paymentStatus(CustomTransactionStatus customTransactionStatus){
+		try {
+			logger.debug("Fetching data from coronation rest service via the url: {}", CustomDutyUrl);
+			return template.postForObject(CustomDutyUrl+"/customduty/checktransactionstatus", customTransactionStatus, CustomTransactionStatus.class);
+		}
+		catch (Exception e){
+			logger.error("Error calling coronation service rest service",e);
+		}
+		return null;
+
 	}
 
 }
