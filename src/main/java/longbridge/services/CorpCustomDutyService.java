@@ -29,4 +29,10 @@ public interface CorpCustomDutyService {
     String addAuthorization(CorpTransReqEntry transReqEntry);
 
     boolean userCanAuthorize(TransRequest transRequest);
+
+    Page<CorpPaymentRequest> getPaymentRequests(Pageable pageable);
+
+    CorpPaymentRequest getPayment(Long id);
+
+    CorpTransferAuth getAuthorizations(CorpPaymentRequest corpPaymentRequest);
 }

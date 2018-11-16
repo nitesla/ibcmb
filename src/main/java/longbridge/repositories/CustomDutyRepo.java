@@ -1,6 +1,7 @@
 package longbridge.repositories;
 
 import longbridge.models.CorpPaymentRequest;
+import longbridge.models.CorpTransRequest;
 import longbridge.models.Corporate;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -24,4 +25,6 @@ public interface CustomDutyRepo extends CommonRepo<CorpPaymentRequest, Long>{
     CorpPaymentRequest findFirstByRefCode(String refCode);
 
     int countByCorporateAndStatus(Corporate corporate, String status);
+
+    CorpPaymentRequest findById(long id);
 }

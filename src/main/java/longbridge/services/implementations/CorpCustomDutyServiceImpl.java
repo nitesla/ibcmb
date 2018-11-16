@@ -19,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -29,6 +30,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.stream.Collectors;
 
 @Service
 public class CorpCustomDutyServiceImpl implements CorpCustomDutyService {
@@ -109,7 +111,6 @@ public class CorpCustomDutyServiceImpl implements CorpCustomDutyService {
 
     @Override
     public String saveCustomPaymentRequestForAuthorization(CorpPaymentRequest corpPaymentRequest) {
-        logger.trace("Saving Corp Custom Payment request", corpPaymentRequest);
         accountService.validateAccount(corpPaymentRequest.getCustomerAccountNumber());
         if (corporateService.getApplicableTransferRule(corpPaymentRequest) == null) {
             throw new TransferRuleException(messageSource.getMessage("rule.unapplicable", null, locale));
@@ -155,6 +156,22 @@ public class CorpCustomDutyServiceImpl implements CorpCustomDutyService {
         return false;
     }
 
+    @Override
+    public Page<CorpPaymentRequest> getPaymentRequests(Pageable pageDetails) {
+        CorporateUser corporateUser = getCurrentUser();
+        Corporate corporate = corporateUser.getCorporate();
+        LOGGER.debug("Fetching request for :{}",corporate);
+        Page<CorpPaymentRequest> page = customDutyRepo.findByCorporateOrderByStatusAscTranDateDesc(corporate, pageDetails);
+        List<CorpPaymentRequest> corpPaymentRequest = page.getContent().stream()
+                .filter(transRequest -> !accountConfigService.isAccountRestrictedForViewFromUser(accountService.getAccountByAccountNumber(transRequest.getCustomerAccountNumber()).getId(),corporateUser.getId())).collect(Collectors.toList());
+        return new PageImpl<CorpPaymentRequest>(corpPaymentRequest,pageDetails,page.getTotalElements());
+    }
+
+    @Override
+    public CorpPaymentRequest getPayment(Long id) {
+        return customDutyRepo.findById(id);
+    }
+
     private CorporateUser getCurrentUser() {
         CustomUserPrincipal principal = (CustomUserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         CorporateUser corporateUser = (CorporateUser) principal.getUser();
@@ -169,6 +186,13 @@ public class CorpCustomDutyServiceImpl implements CorpCustomDutyService {
             }
         }
         return existingRoles;
+    }
+
+    @Override
+    public CorpTransferAuth getAuthorizations(CorpPaymentRequest paymentRequest) {
+        CorpPaymentRequest corpPaymentRequest = customDutyRepo.findOne(paymentRequest.getId());
+        return corpPaymentRequest.getTransferAuth();
+
     }
 
     @Override
