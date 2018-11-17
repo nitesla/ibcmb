@@ -1,10 +1,5 @@
 package longbridge.services.implementations;
 
-import longbridge.api.AccountDetails;
-import longbridge.api.NEnquiryDetails;
-import longbridge.dtos.CorpTransferRequestDTO;
-import longbridge.dtos.CorpTransferRequestDTO;
-import longbridge.dtos.SettingDTO;
 import longbridge.exception.*;
 import longbridge.models.*;
 import longbridge.repositories.*;
@@ -23,9 +18,11 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-import org.apache.commons.lang3.math.NumberUtils;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.math.MathContext;
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -38,12 +35,17 @@ public class CorpCustomDutyServiceImpl implements CorpCustomDutyService {
     private static final Logger LOGGER = LoggerFactory.getLogger(CorpCustomDutyServiceImpl.class);
 
     @Autowired
-    private CustomDutyRepo customDutyRepo;
+    private CorpPaymentRequestRepo corpPaymentRequestRepo;
+
+    @Autowired
+    private CustomDutyPaymentRepo customDutyPaymentRepo;
 
     private IntegrationService integrationService;
     private TransactionLimitServiceImpl limitService;
     private AccountService accountService;
     private ConfigurationService configService;
+    private FinancialInstitutionService financialInstitutionService;
+    private CorporateUserService corporateUserService;
     private Logger logger = LoggerFactory.getLogger(this.getClass());
     private Locale locale = LocaleContextHolder.getLocale();
 
@@ -70,11 +72,13 @@ public class CorpCustomDutyServiceImpl implements CorpCustomDutyService {
     private CorpTransReqEntryRepo reqEntryRepo;
 
     @Autowired
-    public CorpCustomDutyServiceImpl( IntegrationService integrationService, TransactionLimitServiceImpl limitService, AccountService accountService, ConfigurationService configService) {
+    public CorpCustomDutyServiceImpl( IntegrationService integrationService, TransactionLimitServiceImpl limitService, AccountService accountService, ConfigurationService configService, FinancialInstitutionService financialInstitution, CorporateUserService corporateUserService) {
         this.integrationService = integrationService;
         this.limitService = limitService;
         this.accountService = accountService;
         this.configService = configService;
+        this.financialInstitutionService = financialInstitution;
+        this.corporateUserService =  corporateUserService;
     }
 
     @Override
@@ -116,12 +120,79 @@ public class CorpCustomDutyServiceImpl implements CorpCustomDutyService {
             throw new TransferRuleException(messageSource.getMessage("rule.unapplicable", null, locale));
         }
         try {
+
             corpPaymentRequest.setStatus(StatusCode.PENDING.toString());
             corpPaymentRequest.setStatusDescription("Pending Authorization");
             CorpTransferAuth transferAuth = new CorpTransferAuth();
             transferAuth.setStatus("P");
             corpPaymentRequest.setTransferAuth(transferAuth);
-            CorpPaymentRequest transfer = customDutyRepo.save(corpPaymentRequest);
+            CorpPaymentRequest transfer = corpPaymentRequestRepo.save(corpPaymentRequest);
+            if (userCanAuthorize(transfer)) {
+                CorpTransReqEntry transReqEntry = new CorpTransReqEntry();
+                transReqEntry.setTranReqId(transfer.getId());
+                transReqEntry.setAuthStatus(TransferAuthorizationStatus.APPROVED);
+                return addAuthorization(transReqEntry);
+            }
+        } catch (TransferAuthorizationException ex) {
+            throw ex;
+        } catch (Exception e) {
+            throw new InternetBankingException(messageSource.getMessage("bulk.save.failure", null, null), e);
+        }
+        return messageSource.getMessage("bulk.save.success", null, null);
+    }
+    @Override
+    @Transactional
+    public String saveCustomPaymentRequestForAuthorization(CustomAssessmentDetail assessmentDetail, Principal principal,Corporate corporate ) {
+
+        CorpPaymentRequest request = new CorpPaymentRequest();
+        try {
+            request.setAmount(new BigDecimal(
+                    assessmentDetail.getResponseInfo().getTotalAmount(), MathContext.DECIMAL64));
+            request.setBeneficiaryAccountNumber(assessmentDetail.getAccount());
+            FinancialInstitution financialInstitution =
+                    financialInstitutionService.getFinancialInstitutionByBankCode(
+                            assessmentDetail.getResponseInfo().getBankCode().substring(2));
+            request.setFinancialInstitution(financialInstitution);
+            request.setCustomerAccountNumber(assessmentDetail.getAccount());
+            request.setBeneficiaryAccountName(
+                    accountService.getAccountByAccountNumber(assessmentDetail.getAccount()).getAccountName());
+            //            model.addAttribute("corpTransferRequest", request);
+            request.setTransferType(TransferType.CUSTOM_DUTY);
+//            CorporateUser user = corporateUserService.getUserByName(principal.getName());
+//            Corporate corporate = user.getCorporate();
+            request.setCorporate(corporate);
+            CustomDutyPayment customDutyPayment = new CustomDutyPayment();
+            customDutyPayment.setTotalAmount(request.getAmount());
+            customDutyPayment.setBankCode(assessmentDetail.getResponseInfo().getBankCode());
+            customDutyPayment.setCompanyCode(assessmentDetail.getResponseInfo().getCompanyCode());
+            customDutyPayment.setDeclarantCode(assessmentDetail.getResponseInfo().getDeclarantCode());
+            customDutyPayment.setDeclarantName(assessmentDetail.getResponseInfo().getDeclarantName());
+            customDutyPayment.setCompanyName(assessmentDetail.getResponseInfo().getCompanyName());
+            customDutyPayment.setApprovalStatus(assessmentDetail.getResponseInfo().getApprovalStatus());
+            customDutyPayment.setApprovalStatusDescription(assessmentDetail.getResponseInfo().getApprovalStatusDescription());
+            customDutyPayment.setCollectionAccount(assessmentDetail.getResponseInfo().getCollectionAccount());
+            customDutyPayment.setFormMNumber(assessmentDetail.getResponseInfo().getFormMNumber());
+            customDutyPayment.setSGDAssessmentDate(assessmentDetail.getResponseInfo().getSGDAssessmentDate());
+            //customDutyPayment.setSGDAssessment(assessmentDetail.);
+            customDutyPayment.setTranId(assessmentDetail.getResponseInfo().getTranId());
+            customDutyPayment.setAccount(assessmentDetail.getAccount());
+            customDutyPayment.setCode(assessmentDetail.getCode());
+            customDutyPayment.setMessage(assessmentDetail.getMessage());
+            CustomDutyPayment resp = customDutyPaymentRepo.save(customDutyPayment);
+            logger.info("the request {}",resp.getId());
+            request.setCustomDutyPayment(resp);
+
+            accountService.validateAccount(request.getCustomerAccountNumber());
+            if (corporateService.getApplicableTransferRule(request) == null) {
+                throw new TransferRuleException(messageSource.getMessage("rule.unapplicable", null, locale));
+            }
+            request.setStatus(StatusCode.PENDING.toString());
+            request.setStatusDescription("Pending Authorization");
+            CorpTransferAuth transferAuth = new CorpTransferAuth();
+            transferAuth.setStatus("P");
+            request.setTransferAuth(transferAuth);
+            CorpPaymentRequest transfer = corpPaymentRequestRepo.save(request);
+
             if (userCanAuthorize(transfer)) {
                 CorpTransReqEntry transReqEntry = new CorpTransReqEntry();
                 transReqEntry.setTranReqId(transfer.getId());
@@ -161,7 +232,7 @@ public class CorpCustomDutyServiceImpl implements CorpCustomDutyService {
         CorporateUser corporateUser = getCurrentUser();
         Corporate corporate = corporateUser.getCorporate();
         LOGGER.debug("Fetching request for :{}",corporate);
-        Page<CorpPaymentRequest> page = customDutyRepo.findByCorporateOrderByStatusAscTranDateDesc(corporate, pageDetails);
+        Page<CorpPaymentRequest> page = corpPaymentRequestRepo.findByCorporateOrderByStatusAscTranDateDesc(corporate, pageDetails);
         List<CorpPaymentRequest> corpPaymentRequest = page.getContent().stream()
                 .filter(transRequest -> !accountConfigService.isAccountRestrictedForViewFromUser(accountService.getAccountByAccountNumber(transRequest.getCustomerAccountNumber()).getId(),corporateUser.getId())).collect(Collectors.toList());
         return new PageImpl<CorpPaymentRequest>(corpPaymentRequest,pageDetails,page.getTotalElements());
@@ -169,7 +240,7 @@ public class CorpCustomDutyServiceImpl implements CorpCustomDutyService {
 
     @Override
     public CorpPaymentRequest getPayment(Long id) {
-        return customDutyRepo.findById(id);
+        return corpPaymentRequestRepo.findById(id);
     }
 
     private CorporateUser getCurrentUser() {
@@ -190,7 +261,7 @@ public class CorpCustomDutyServiceImpl implements CorpCustomDutyService {
 
     @Override
     public CorpTransferAuth getAuthorizations(CorpPaymentRequest paymentRequest) {
-        CorpPaymentRequest corpPaymentRequest = customDutyRepo.findOne(paymentRequest.getId());
+        CorpPaymentRequest corpPaymentRequest = corpPaymentRequestRepo.findOne(paymentRequest.getId());
         return corpPaymentRequest.getTransferAuth();
 
     }
@@ -199,7 +270,7 @@ public class CorpCustomDutyServiceImpl implements CorpCustomDutyService {
     public String addAuthorization(CorpTransReqEntry transReqEntry) {
 
         CorporateUser corporateUser = getCurrentUser();
-        CorpPaymentRequest corpPaymentRequest = customDutyRepo.findOne(transReqEntry.getTranReqId());
+        CorpPaymentRequest corpPaymentRequest = corpPaymentRequestRepo.findOne(transReqEntry.getTranReqId());
         CorpTransRule transferRule = corporateService.getApplicableTransferRule(corpPaymentRequest);
         List<CorporateRole> roles = getExistingRoles(transferRule.getRoles());
         CorporateRole userRole = null;

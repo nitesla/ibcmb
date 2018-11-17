@@ -110,45 +110,45 @@ public class CorpCustomDutyController {
     @PostMapping("/summary")
     public String transferSummary(@ModelAttribute("assessmentDetail")  @Valid  CustomAssessmentDetail assessmentDetail,
                                   BindingResult result, Model model, HttpServletRequest servletRequest, Principal principal) {
-        CorpPaymentRequest request = new CorpPaymentRequest();
+//        CorpPaymentRequest request = new CorpPaymentRequest();
         try {
-            request.setAmount(new BigDecimal(
-                    assessmentDetail.getResponseInfo().getTotalAmount(), MathContext.DECIMAL64));
-            request.setBeneficiaryAccountNumber(assessmentDetail.getAccount());
-                FinancialInstitution financialInstitution =
-                financialInstitutionService.getFinancialInstitutionByBankCode(
-                        assessmentDetail.getResponseInfo().getBankCode().substring(2));
-            request.setFinancialInstitution(financialInstitution);
-            request.setCustomerAccountNumber(assessmentDetail.getAccount());
-            request.setBeneficiaryAccountName(
-                        accountService.getAccountByAccountNumber(assessmentDetail.getAccount()).getAccountName());
-    //            model.addAttribute("corpTransferRequest", request);
-            request.setTransferType(TransferType.CUSTOM_DUTY);
+//            request.setAmount(new BigDecimal(
+//                    assessmentDetail.getResponseInfo().getTotalAmount(), MathContext.DECIMAL64));
+//            request.setBeneficiaryAccountNumber(assessmentDetail.getAccount());
+//                FinancialInstitution financialInstitution =
+//                financialInstitutionService.getFinancialInstitutionByBankCode(
+//                        assessmentDetail.getResponseInfo().getBankCode().substring(2));
+//            request.setFinancialInstitution(financialInstitution);
+//            request.setCustomerAccountNumber(assessmentDetail.getAccount());
+//            request.setBeneficiaryAccountName(
+//                        accountService.getAccountByAccountNumber(assessmentDetail.getAccount()).getAccountName());
+//    //            model.addAttribute("corpTransferRequest", request);
+//            request.setTransferType(TransferType.CUSTOM_DUTY);
             CorporateUser user = corporateUserService.getUserByName(principal.getName());
             Corporate corporate = user.getCorporate();
-            request.setCorporate(corporate);
+//            request.setCorporate(corporate);
 
-            CustomDutyPayment customDutyPayment = new CustomDutyPayment();
-            customDutyPayment.setTotalAmount(request.getAmount());
-            customDutyPayment.setBankCode(assessmentDetail.getResponseInfo().getBankCode());
-            customDutyPayment.setCompanyCode(assessmentDetail.getResponseInfo().getCompanyCode());
-            customDutyPayment.setDeclarantCode(assessmentDetail.getResponseInfo().getDeclarantCode());
-            customDutyPayment.setDeclarantName(assessmentDetail.getResponseInfo().getDeclarantName());
-            customDutyPayment.setCompanyName(assessmentDetail.getResponseInfo().getCompanyName());
-            customDutyPayment.setApprovalStatus(assessmentDetail.getResponseInfo().getApprovalStatus());
-            customDutyPayment.setApprovalStatusDescription(assessmentDetail.getResponseInfo().getApprovalStatusDescription());
-            customDutyPayment.setCollectionAccount(assessmentDetail.getResponseInfo().getCollectionAccount());
-            customDutyPayment.setFormMNumber(assessmentDetail.getResponseInfo().getFormMNumber());
-            customDutyPayment.setSGDAssessmentDate(assessmentDetail.getResponseInfo().getSGDAssessmentDate());
-            //customDutyPayment.setSGDAssessment(assessmentDetail.);
-            customDutyPayment.setTranId(assessmentDetail.getResponseInfo().getTranId());
-            customDutyPayment.setAccount(assessmentDetail.getAccount());
-            customDutyPayment.setCode(assessmentDetail.getCode());
-            customDutyPayment.setMessage(assessmentDetail.getMessage());
-
+//            CustomDutyPayment customDutyPayment = new CustomDutyPayment();
+//            customDutyPayment.setTotalAmount(request.getAmount());
+//            customDutyPayment.setBankCode(assessmentDetail.getResponseInfo().getBankCode());
+//            customDutyPayment.setCompanyCode(assessmentDetail.getResponseInfo().getCompanyCode());
+//            customDutyPayment.setDeclarantCode(assessmentDetail.getResponseInfo().getDeclarantCode());
+//            customDutyPayment.setDeclarantName(assessmentDetail.getResponseInfo().getDeclarantName());
+//            customDutyPayment.setCompanyName(assessmentDetail.getResponseInfo().getCompanyName());
+//            customDutyPayment.setApprovalStatus(assessmentDetail.getResponseInfo().getApprovalStatus());
+//            customDutyPayment.setApprovalStatusDescription(assessmentDetail.getResponseInfo().getApprovalStatusDescription());
+//            customDutyPayment.setCollectionAccount(assessmentDetail.getResponseInfo().getCollectionAccount());
+//            customDutyPayment.setFormMNumber(assessmentDetail.getResponseInfo().getFormMNumber());
+//            customDutyPayment.setSGDAssessmentDate(assessmentDetail.getResponseInfo().getSGDAssessmentDate());
+//            //customDutyPayment.setSGDAssessment(assessmentDetail.);
+//            customDutyPayment.setTranId(assessmentDetail.getResponseInfo().getTranId());
+//            customDutyPayment.setAccount(assessmentDetail.getAccount());
+//            customDutyPayment.setCode(assessmentDetail.getCode());
+//            customDutyPayment.setMessage(assessmentDetail.getMessage());
+//            request.setCustomDutyPayment(customDutyPayment);
             //customDutyPayment.setCommandDutyArea();
             if (corporate.getCorporateType().equalsIgnoreCase("MULTI")) {
-                customDutyService.saveCustomPaymentRequestForAuthorization(request);
+                customDutyService.saveCustomPaymentRequestForAuthorization(assessmentDetail,principal,corporate);
             } else if (corporate.getCorporateType().equalsIgnoreCase("SOLE")) {
             } else {
                 return "redirect:/login/corporate";
