@@ -23,6 +23,17 @@ public class CorpPaymentRequest extends TransRequest{
     @JsonIgnore
     private  CorpTransferAuth transferAuth;
 
+    @OneToOne(mappedBy = "corpPaymentRequest" ,cascade = {CascadeType.ALL})
+    private CustomDutyPayment customDutyPayment;
+
+    public CustomDutyPayment getCustomDutyPayment() {
+        return customDutyPayment;
+    }
+
+    public void setCustomDutyPayment(CustomDutyPayment customDutyPayment) {
+        this.customDutyPayment = customDutyPayment;
+    }
+
     public String getRefCode() {
         return refCode;
     }
@@ -46,7 +57,6 @@ public class CorpPaymentRequest extends TransRequest{
 
     private  String status;
 
-    @OneToOne(cascade = CascadeType.ALL)
     public Corporate getCorporate() {
         return corporate;
     }

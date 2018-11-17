@@ -1,31 +1,39 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<databaseChangeLog
-        xmlns="http://www.liquibase.org/xml/ns/dbchangelog/1.1"
-        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog/1.1
-    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-1.1.xsd">
-    <changeSet author="Longbridge (Abiodun)" id="createTableCustomDuty">
-        <createTable   tableName="CUSTOM_DUTY">
-            <column name="DTYPE" type="VARCHAR2(31)"/>
-            <column name="ID" type="NUMBER(19)"/>
-            <column name="DEL_FLAG" type="VARCHAR2(255)"/>
-            <column name="DELETED_ON" type="TIMESTAMP"/>
-            <column name="VERSION" type="NUMBER(10)"/>
-            <column name="TRANSFER_REQUEST_ID" type="NUMBER(19)"/>
-            <column name="TRAN_ID" type="NUMBER(19)"/>
-            <column name="AMOUNT" type="NUMBER(19,2)"/>
-            <column name="DECLARANT_CODE" type="VARCHAR2(255)"/>
-            <column name="DECLARANT_NAME" type="VARCHAR2(255)"/>
-            <column name="COMPANY_CODE" type="VARCHAR2(255)"/>
-            <column name="SGD_ASSESSMENT_DATE" type="VARCHAR2(255)"/>
-            <column name="FORM_M_NUMBER" type="VARCHAR2(255)"/>
-            <column name="BANK_CODE" type="VARCHAR2(255)"/>
-            <column name="INITIATED_BY" type="VARCHAR2(255)"/>
-            <column name="AUTHORIZED_BY" type="VARCHAR2(255)"/>
-            <column name="PAYMENT_REF" type="VARCHAR2(255)"/>
-            <column name="CUSTOMER_ACCT_NUMBER" type="VARCHAR2(255)"/>
-            <column name="STATUS" type="VARCHAR2(255)"/>
-            <column name="DATE_CREATED" type="TIMESTAMP"/>
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
+    <changeSet author="longbridge (generated)" id="1542393529168-127">
+        <createTable tableName="TRANS_REQUEST">
+            <column name="DTYPE" type="VARCHAR2(31 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="ID" type="NUMBER(19, 0)">
+                <constraints primaryKey="true" primaryKeyName="SYS_C007833"/>
+            </column>
+            <column name="DEL_FLAG" type="VARCHAR2(255 CHAR)"/>
+            <column name="DELETED_ON" type="TIMESTAMP(6)"/>
+            <column name="VERSION" type="NUMBER(10, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="AMOUNT" type="NUMBER(19, 2)"/>
+            <column name="BENEFICIARY_ACCOUNT_NAME" type="VARCHAR2(255 CHAR)"/>
+            <column name="BENEFICIARY_ACCOUNT_NUMBER" type="VARCHAR2(255 CHAR)"/>
+            <column name="CHARGE" type="VARCHAR2(255 CHAR)"/>
+            <column name="CUSTOMER_ACCOUNT_NUMBER" type="VARCHAR2(255 CHAR)"/>
+            <column name="NARRATION" type="VARCHAR2(255 CHAR)"/>
+            <column name="REFERENCE_NUMBER" type="VARCHAR2(255 CHAR)"/>
+            <column name="REMARKS" type="VARCHAR2(255 CHAR)"/>
+            <column name="STATUS" type="VARCHAR2(255 CHAR)"/>
+            <column name="STATUS_DESCRIPTION" type="VARCHAR2(255 CHAR)"/>
+            <column name="TRAN_DATE" type="TIMESTAMP(6)"/>
+            <column name="TRANSFER_TYPE" type="NUMBER(10, 0)"/>
+            <column name="USER_REFERENCE_NUMBER" type="VARCHAR2(255 CHAR)"/>
+            <column name="REF_CODE" type="VARCHAR2(255 CHAR)"/>
+            <column name="FINANCIAL_INSTITUTION_ID" type="NUMBER(19, 0)"/>
+            <column name="CORPORATE_ID" type="NUMBER(19, 0)"/>
+            <column name="TRANSFER_AUTH_ID" type="NUMBER(19, 0)"/>
+            <column name="CUSTOM_DUTY_PAYMENT_ID" type="NUMBER(19, 0)"/>
         </createTable>
+    </changeSet>
+    <changeSet author="longbridge (generated)" id="1542393529168-164">
+        <addForeignKeyConstraint baseColumnNames="CORP_PAYMENT_REQUEST_ID" baseTableName="CUSTOM_DUTY_PAYMENT" constraintName="FK2T4D026QHS7MOTK02LO1437BB" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="ID" referencedTableName="TRANS_REQUEST"/>
     </changeSet>
 </databaseChangeLog>

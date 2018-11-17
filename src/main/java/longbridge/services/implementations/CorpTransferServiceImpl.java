@@ -177,7 +177,6 @@ public class CorpTransferServiceImpl implements CorpTransferService {
                 throw new InternetBankingTransferException(TransferExceptions.BALANCE.toString());
             }
         }
-
     }
 
     @Override

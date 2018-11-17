@@ -12,8 +12,14 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
+import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
+import org.springframework.data.jpa.datatables.repository.DataTablesUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.WebRequest;
@@ -24,6 +30,8 @@ import javax.validation.Valid;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.security.Principal;
+import java.util.ArrayList;
+import java.util.List;
 
 @Controller
 @RequestMapping("/corporate/custom")
@@ -80,7 +88,7 @@ public class CorpCustomDutyController {
         return "corp/custom/custompayment";
     }
 
-    @PostMapping("/accessment/details")
+    @PostMapping("/assessment/details")
     @ResponseBody
     public CustomAssessmentDetail getAssessment(WebRequest webRequest,@ModelAttribute("assessmentDetailsRequest") @Valid CustomSADAsmt customSADAsmt){
         LOGGER.info("the assessmentDetailsRequest {}",customSADAsmt);
@@ -104,32 +112,49 @@ public class CorpCustomDutyController {
                                   BindingResult result, Model model, HttpServletRequest servletRequest, Principal principal) {
         CorpPaymentRequest request = new CorpPaymentRequest();
         try {
-        request.setAmount(new BigDecimal(
-                assessmentDetail.getResponseInfo().getTotalAmount(), MathContext.DECIMAL64));
-        request.setBeneficiaryAccountNumber(assessmentDetail.getAccount());
-            FinancialInstitution financialInstitution =
-            financialInstitutionService.getFinancialInstitutionByBankCode(
-                    assessmentDetail.getResponseInfo().getBankCode().substring(2));
-        request.setFinancialInstitution(financialInstitution);
-        request.setCustomerAccountNumber(assessmentDetail.getAccount());
-        request.setBeneficiaryAccountName(
-                    accountService.getAccountByAccountNumber(assessmentDetail.getAccount()).getAccountName());
-//            model.addAttribute("corpTransferRequest", request);
+            request.setAmount(new BigDecimal(
+                    assessmentDetail.getResponseInfo().getTotalAmount(), MathContext.DECIMAL64));
+            request.setBeneficiaryAccountNumber(assessmentDetail.getAccount());
+                FinancialInstitution financialInstitution =
+                financialInstitutionService.getFinancialInstitutionByBankCode(
+                        assessmentDetail.getResponseInfo().getBankCode().substring(2));
+            request.setFinancialInstitution(financialInstitution);
+            request.setCustomerAccountNumber(assessmentDetail.getAccount());
+            request.setBeneficiaryAccountName(
+                        accountService.getAccountByAccountNumber(assessmentDetail.getAccount()).getAccountName());
+    //            model.addAttribute("corpTransferRequest", request);
             request.setTransferType(TransferType.CUSTOM_DUTY);
             CorporateUser user = corporateUserService.getUserByName(principal.getName());
             Corporate corporate = user.getCorporate();
+            request.setCorporate(corporate);
 
+            CustomDutyPayment customDutyPayment = new CustomDutyPayment();
+            customDutyPayment.setTotalAmount(request.getAmount());
+            customDutyPayment.setBankCode(assessmentDetail.getResponseInfo().getBankCode());
+            customDutyPayment.setCompanyCode(assessmentDetail.getResponseInfo().getCompanyCode());
+            customDutyPayment.setDeclarantCode(assessmentDetail.getResponseInfo().getDeclarantCode());
+            customDutyPayment.setDeclarantName(assessmentDetail.getResponseInfo().getDeclarantName());
+            customDutyPayment.setCompanyName(assessmentDetail.getResponseInfo().getCompanyName());
+            customDutyPayment.setApprovalStatus(assessmentDetail.getResponseInfo().getApprovalStatus());
+            customDutyPayment.setApprovalStatusDescription(assessmentDetail.getResponseInfo().getApprovalStatusDescription());
+            customDutyPayment.setCollectionAccount(assessmentDetail.getResponseInfo().getCollectionAccount());
+            customDutyPayment.setFormMNumber(assessmentDetail.getResponseInfo().getFormMNumber());
+            customDutyPayment.setSGDAssessmentDate(assessmentDetail.getResponseInfo().getSGDAssessmentDate());
+            //customDutyPayment.setSGDAssessment(assessmentDetail.);
+            customDutyPayment.setTranId(assessmentDetail.getResponseInfo().getTranId());
+            customDutyPayment.setAccount(assessmentDetail.getAccount());
+            customDutyPayment.setCode(assessmentDetail.getCode());
+            customDutyPayment.setMessage(assessmentDetail.getMessage());
+
+            //customDutyPayment.setCommandDutyArea();
             if (corporate.getCorporateType().equalsIgnoreCase("MULTI")) {
                 customDutyService.saveCustomPaymentRequestForAuthorization(request);
             } else if (corporate.getCorporateType().equalsIgnoreCase("SOLE")) {
-                //customDutyService.makeBulkTransferRequest(bulkTransfer);
             } else {
                 return "redirect:/login/corporate";
             }
         } catch (InternetBankingTransferException exception)
         {
-
-
         }
         return "";
     }
@@ -171,6 +196,56 @@ public class CorpCustomDutyController {
             LOGGER.error("Error calling coronation service rest service",e);
         }
         return null;
+    }
 
+    @GetMapping("/requests")
+    public
+    @ResponseBody
+    DataTablesOutput<CorpPaymentRequest> getCustomPaymentRequests(DataTablesInput input){
+        LOGGER.debug("Fetching requests:{}",input);
+        Pageable pageable = DataTablesUtils.getPageable(input);
+        Page<CorpPaymentRequest> requests = customDutyService.getPaymentRequests(pageable);
+        DataTablesOutput<CorpPaymentRequest> out = new DataTablesOutput<CorpPaymentRequest>();
+        LOGGER.debug("Fetching requests:{}",out);
+        out.setDraw(input.getDraw());
+        out.setData(requests.getContent());
+        out.setRecordsFiltered(requests.getTotalElements());
+        out.setRecordsTotal(requests.getTotalElements());
+        return out;
+    }
+
+    @GetMapping("/{id}/authorizations")
+    public String getAuthorizations(@PathVariable Long id, ModelMap modelMap) {
+
+        CorpPaymentRequest corpPaymentRequest = customDutyService.getPayment(id);
+        CorpTransferAuth corpTransferAuth = customDutyService.getAuthorizations(corpPaymentRequest);
+        CorpTransRule corpTransRule = corporateService.getApplicableTransferRule(corpPaymentRequest);
+        boolean userCanAuthorize = customDutyService.userCanAuthorize(corpPaymentRequest);
+        modelMap.addAttribute("authorizationMap", corpTransferAuth)
+                .addAttribute("corpTransRequest", corpPaymentRequest)
+                .addAttribute("corpTransReqEntry", new CorpTransReqEntry())
+                .addAttribute("corpTransRule", corpTransRule)
+                .addAttribute("userCanAuthorize", userCanAuthorize);
+
+        List<CorporateRole> rolesNotInAuthList = new ArrayList<>();
+        List<CorporateRole> rolesInAuth = new ArrayList<>();
+
+        if (corpTransferAuth.getAuths() != null) {
+            for (CorpTransReqEntry transReqEntry : corpTransferAuth.getAuths()) {
+                rolesInAuth.add(transReqEntry.getRole());
+            }
+        }
+
+        if (corpTransRule != null) {
+            for (CorporateRole role : corpTransRule.getRoles()) {
+                if (!rolesInAuth.contains(role)) {
+                    rolesNotInAuthList.add(role);
+                }
+            }
+        }
+        LOGGER.info("Roles not In Auth List..{}", rolesNotInAuthList.toString());
+        modelMap.addAttribute("rolesNotAuth", rolesNotInAuthList);
+
+        return "corp/transfer/request/summary";
     }
 }
