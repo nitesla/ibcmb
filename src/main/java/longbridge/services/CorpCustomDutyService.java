@@ -34,5 +34,7 @@ public interface CorpCustomDutyService {
 
     CorpPaymentRequest getPayment(Long id);
 
+    Page<CorpPaymentRequest> getPayments(Pageable pageable);
+
     CorpTransferAuth getAuthorizations(CorpPaymentRequest corpPaymentRequest);
 }

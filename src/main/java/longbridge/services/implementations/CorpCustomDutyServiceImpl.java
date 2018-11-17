@@ -171,6 +171,10 @@ public class CorpCustomDutyServiceImpl implements CorpCustomDutyService {
     public CorpPaymentRequest getPayment(Long id) {
         return customDutyRepo.findById(id);
     }
+    @Override
+    public Page<CorpPaymentRequest> getPayments(Pageable pageable) {
+        return customDutyRepo.findAll(pageable);
+    }
 
     private CorporateUser getCurrentUser() {
         CustomUserPrincipal principal = (CustomUserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
