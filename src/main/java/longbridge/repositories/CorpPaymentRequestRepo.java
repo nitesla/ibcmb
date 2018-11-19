@@ -10,7 +10,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface CustomDutyRepo extends CommonRepo<CorpPaymentRequest, Long>{
+public interface CorpPaymentRequestRepo extends CommonRepo<CorpPaymentRequest, Long>{
 
     Page<CorpPaymentRequest> findByCorporateOrderByTranDateDesc(Corporate corporate, Pageable details);
 

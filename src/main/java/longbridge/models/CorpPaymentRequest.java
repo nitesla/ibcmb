@@ -23,7 +23,7 @@ public class CorpPaymentRequest extends TransRequest{
     @JsonIgnore
     private  CorpTransferAuth transferAuth;
 
-    @OneToOne(mappedBy = "corpPaymentRequest" ,cascade = {CascadeType.ALL})
+    @OneToOne(cascade = {CascadeType.ALL})
     private CustomDutyPayment customDutyPayment;
 
     public CustomDutyPayment getCustomDutyPayment() {
