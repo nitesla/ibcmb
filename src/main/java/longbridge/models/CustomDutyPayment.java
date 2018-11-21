@@ -13,7 +13,7 @@ import java.util.List;
 @Entity
 @Audited(withModifiedFlag=true)
 @Where(clause ="del_Flag='N'" )
-@JsonIgnoreProperties(ignoreUnknown = true)
+//@JsonIgnoreProperties(ignoreUnknown = true)
 public class CustomDutyPayment extends AbstractEntity {
     private String dtype;
     private String transferRequestId;
