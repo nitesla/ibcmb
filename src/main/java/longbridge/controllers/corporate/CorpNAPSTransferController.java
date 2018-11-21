@@ -214,6 +214,7 @@ public class CorpNAPSTransferController {
 
 
         try {
+            logger.debug("corpTransferReqEntry:{}",corpTransReqEntry);
             String message = bulkTransferService.addAuthorization(corpTransReqEntry);
             redirectAttributes.addFlashAttribute("message", message);
 
@@ -634,9 +635,7 @@ public class CorpNAPSTransferController {
     @GetMapping("/bulk/{id}/pdf")
     public ModelAndView downloadBulkTransferPDFReport(@PathVariable Long id, ModelMap modelMap, Principal principal, RedirectAttributes redirectAttributes, Locale locale) {
 
-
         SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy");
-
         try {
 
             BulkTransfer bulkTransferRequest = bulkTransferService.getBulkTransferRequest(id);

@@ -95,6 +95,7 @@ public class CorpCustomDutyController {
         model.addAttribute("assessmentDetailsRequest",new CustomAssessmentDetailsRequest());
         model.addAttribute("paymentNotificationRequest",new CustomPaymentNotificationRequest());
         model.addAttribute("assessmentDetail",new CustomAssessmentDetail());
+        model.addAttribute("corpTransReqEntry", new CorpTransReqEntry());
         return "corp/custom/custompayment";
     }
 
@@ -119,15 +120,13 @@ public class CorpCustomDutyController {
 
     @PostMapping("/summary")
     public String transferSummary(@ModelAttribute("assessmentDetail")  @Valid  CustomAssessmentDetail assessmentDetail,
-                                  RedirectAttributes redirectAttributes,Principal principal) {
-//        CorpPaymentRequest request = new CorpPaymentRequest();
+                                  BindingResult result, Model model, HttpServletRequest servletRequest, Principal principal,RedirectAttributes redirectAttributes) {
         try {
             CorporateUser user = corporateUserService.getUserByName(principal.getName());
             Corporate corporate = user.getCorporate();
             if (corporate.getCorporateType().equalsIgnoreCase("MULTI")) {
                 customDutyService.saveCustomPaymentRequestForAuthorization(assessmentDetail,principal,corporate);
             } else if (corporate.getCorporateType().equalsIgnoreCase("SOLE")) {
-
             } else {
                 redirectAttributes.addFlashAttribute("message",messages);
                 return "redirect:/login/corporate";
@@ -136,7 +135,7 @@ public class CorpCustomDutyController {
         } catch (InternetBankingTransferException exception)
         {
         }
-        return "";
+        return "/corporate/custom";
     }
 
     @PostMapping("/payment")
@@ -226,13 +225,13 @@ public class CorpCustomDutyController {
         LOGGER.info("Roles not In Auth List..{}", rolesNotInAuthList.toString());
         modelMap.addAttribute("rolesNotAuth", rolesNotInAuthList);
 
-        return "corp/transfer/request/summary";
+        return "corp/custom/approval";
     }
-    @PostMapping("/approve")
-    public String addBulkTransferAuthorization(@ModelAttribute("corpTransReqEntry") CorpTransReqEntry corpTransReqEntry, @RequestParam("token") String tokenCode, RedirectAttributes redirectAttributes, Principal principal, Locale locale) {
+
+    @PostMapping("/authorize")
+    public String authorization(@ModelAttribute("corpTransReqEntry") CorpTransReqEntry corpTransReqEntry, @RequestParam("token") String tokenCode, RedirectAttributes redirectAttributes, Principal principal, Locale locale) {
 
         CorporateUser user = corporateUserService.getUserByName(principal.getName());
-
 
         SettingDTO setting = configService.getSettingByName("ENABLE_CORPORATE_2FA");
 
@@ -254,13 +253,12 @@ public class CorpCustomDutyController {
             } else {
                 redirectAttributes.addFlashAttribute("failure", "Token code is required");
                 return "redirect:/corporate/transfer/" + corpTransReqEntry.getTranReqId() + "/view";
-
             }
         }
 
-
         try {
             String message = customDutyService.addAuthorization(corpTransReqEntry);
+            LOGGER.info("corpTransReqEntry:{}",corpTransReqEntry);
             redirectAttributes.addFlashAttribute("message", message);
 
         } catch (InternetBankingException ibe) {
@@ -268,6 +266,8 @@ public class CorpCustomDutyController {
             redirectAttributes.addFlashAttribute("failure", ibe.getMessage());
 
         }
-        return "redirect:/corporate/transfer/bulk";
+        return "redirect:/corporate/custom";
     }
+
+
 }

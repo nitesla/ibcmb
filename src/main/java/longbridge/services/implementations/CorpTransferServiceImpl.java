@@ -338,7 +338,6 @@ public class CorpTransferServiceImpl implements CorpTransferService {
     public CorpTransferAuth getAuthorizations(CorpTransRequest transRequest) {
         CorpTransRequest corpTransRequest = corpTransferRequestRepo.findOne(transRequest.getId());
         return corpTransRequest.getTransferAuth();
-
     }
 
 

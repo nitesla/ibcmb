@@ -932,7 +932,6 @@ public class CorporateServiceImpl implements CorporateService {
     @Override
     @Transactional
     public CorpTransRule getApplicableTransferRule(TransRequest transferRequest) {
-
         Corporate corporate = getCurrentUser().getCorporate();
         List<CorpTransRule> transferRules = corpTransferRuleRepo.findByCorporate(corporate);
         Collections.sort(transferRules, new TransferRuleComparator());
