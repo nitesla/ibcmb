@@ -61,7 +61,10 @@ public class CorpCustomDutyController {
     private CorporateService corporateService;
     private TransferUtils transferUtils;
     private SecurityService securityService;
-
+    @Autowired
+    private ConfigurationService configService;
+    @Autowired
+    private MessageSource messageSource;
     @Autowired
     public CorpCustomDutyController(
             CorporateUserService corporateUserService, AccountService accountService, CorpTransferService corpTransferService,
@@ -225,46 +228,46 @@ public class CorpCustomDutyController {
 
         return "corp/transfer/request/summary";
     }
-//    @PostMapping("/bulk/approve")
-//    public String addBulkTransferAuthorization(@ModelAttribute("corpTransReqEntry") CorpTransReqEntry corpTransReqEntry, @RequestParam("token") String tokenCode, RedirectAttributes redirectAttributes, Principal principal, Locale locale) {
-//
-//        CorporateUser user = corporateUserService.getUserByName(principal.getName());
-//
-//
-//        SettingDTO setting = configService.getSettingByName("ENABLE_CORPORATE_2FA");
-//
-//        if (setting != null && setting.isEnabled()) {
-//
-//            if (tokenCode != null && !tokenCode.isEmpty()) {
-//                try {
-//                    boolean result = securityService.performTokenValidation(user.getEntrustId(), user.getEntrustGroup(), tokenCode);
-//                    if (!result) {
-//                        LOGGER.error("Error authenticating token");
-//                        redirectAttributes.addFlashAttribute("failure", messageSource.getMessage("token.auth.failure", null, locale));
-//                        return "redirect:/corporate/transfer/" + corpTransReqEntry.getTranReqId() + "/view";
-//                    }
-//                } catch (InternetBankingSecurityException se) {
-//                    LOGGER.error("Error authenticating token");
-//                    redirectAttributes.addFlashAttribute("failure", se.getMessage());
-//                    return "redirect:/corporate/transfer/" + corpTransReqEntry.getTranReqId() + "/view";
-//                }
-//            } else {
-//                redirectAttributes.addFlashAttribute("failure", "Token code is required");
-//                return "redirect:/corporate/transfer/" + corpTransReqEntry.getTranReqId() + "/view";
-//
-//            }
-//        }
-//
-//
-//        try {
-//            String message = bulkTransferService.addAuthorization(corpTransReqEntry);
-//            redirectAttributes.addFlashAttribute("message", message);
-//
-//        } catch (InternetBankingException ibe) {
-//            LOGGER.error("Failed to authorize transfer", ibe);
-//            redirectAttributes.addFlashAttribute("failure", ibe.getMessage());
-//
-//        }
-//        return "redirect:/corporate/transfer/bulk";
-//    }
+    @PostMapping("/approve")
+    public String addBulkTransferAuthorization(@ModelAttribute("corpTransReqEntry") CorpTransReqEntry corpTransReqEntry, @RequestParam("token") String tokenCode, RedirectAttributes redirectAttributes, Principal principal, Locale locale) {
+
+        CorporateUser user = corporateUserService.getUserByName(principal.getName());
+
+
+        SettingDTO setting = configService.getSettingByName("ENABLE_CORPORATE_2FA");
+
+        if (setting != null && setting.isEnabled()) {
+
+            if (tokenCode != null && !tokenCode.isEmpty()) {
+                try {
+                    boolean result = securityService.performTokenValidation(user.getEntrustId(), user.getEntrustGroup(), tokenCode);
+                    if (!result) {
+                        LOGGER.error("Error authenticating token");
+                        redirectAttributes.addFlashAttribute("failure", messageSource.getMessage("token.auth.failure", null, locale));
+                        return "redirect:/corporate/transfer/" + corpTransReqEntry.getTranReqId() + "/view";
+                    }
+                } catch (InternetBankingSecurityException se) {
+                    LOGGER.error("Error authenticating token");
+                    redirectAttributes.addFlashAttribute("failure", se.getMessage());
+                    return "redirect:/corporate/transfer/" + corpTransReqEntry.getTranReqId() + "/view";
+                }
+            } else {
+                redirectAttributes.addFlashAttribute("failure", "Token code is required");
+                return "redirect:/corporate/transfer/" + corpTransReqEntry.getTranReqId() + "/view";
+
+            }
+        }
+
+
+        try {
+            String message = customDutyService.addAuthorization(corpTransReqEntry);
+            redirectAttributes.addFlashAttribute("message", message);
+
+        } catch (InternetBankingException ibe) {
+            LOGGER.error("Failed to authorize transfer", ibe);
+            redirectAttributes.addFlashAttribute("failure", ibe.getMessage());
+
+        }
+        return "redirect:/corporate/transfer/bulk";
+    }
 }
