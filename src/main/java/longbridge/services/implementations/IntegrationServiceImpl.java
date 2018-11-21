@@ -55,7 +55,7 @@ public class IntegrationServiceImpl implements IntegrationService {
 	@Value("${CMB.ALERT.URL}")
 	private String cmbAlert;
 
-	@Value("http://localhost:9001")
+	@Value("http://localhost:8090")
 	private String CustomDutyUrl;
 
 	private RestTemplate template;
@@ -779,7 +779,7 @@ public class IntegrationServiceImpl implements IntegrationService {
 			assessmentDetailsRequest.setHash("4556ggg778jj");
 			logger.debug("Fetching data from coronation rest service via the url: {}", CustomDutyUrl+"/customduty/retrieveassessmentdetail");
 			logger.debug("Fetching data assessmentDetailsRequest: {}", assessmentDetailsRequest);
-			CustomAssessmentDetail response = template.postForObject("http://localhost:9001/customduty/retrieveassessmentdetail", assessmentDetailsRequest, CustomAssessmentDetail.class);
+			CustomAssessmentDetail response = template.postForObject(CustomDutyUrl+"/customduty/retrieveassessmentdetail", assessmentDetailsRequest, CustomAssessmentDetail.class);
 			logger.debug("{}", response);
 			return response;
 		}

@@ -1,5 +1,7 @@
 package longbridge.services.implementations;
 
+import longbridge.dtos.CorpTransferRequestDTO;
+import longbridge.dtos.SettingDTO;
 import longbridge.exception.*;
 import longbridge.models.*;
 import longbridge.repositories.*;
@@ -23,10 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.security.Principal;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -276,10 +275,20 @@ public class CorpCustomDutyServiceImpl implements CorpCustomDutyService {
 
         CorporateUser corporateUser = getCurrentUser();
         CorpPaymentRequest corpPaymentRequest = corpPaymentRequestRepo.findOne(transReqEntry.getTranReqId());
+        corpPaymentRequest.setUserReferenceNumber("CORP_"+getCurrentUser().getId().toString());
+
+        if ("SOLE".equals(corpPaymentRequest.getCorporate().getCorporateType())) {
+            TransRequest transRequest  = integrationService.makeTransfer(corpPaymentRequest);
+            if ("00".equals(transRequest.getStatus()) || "000".equals(transRequest.getStatus())) { // Transfer successful
+                logger.debug("returning payment Request Sent for sole:{}",corpPaymentRequest.getCorporate().getCorporateType());
+                return corpPaymentRequest.getStatus();
+            } else {
+                throw new InternetBankingTransferException(corpPaymentRequest.getStatusDescription());
+            }
+        }
         CorpTransRule transferRule = corporateService.getApplicableTransferRule(corpPaymentRequest);
         List<CorporateRole> roles = getExistingRoles(transferRule.getRoles());
         CorporateRole userRole = null;
-
 
         for (CorporateRole corporateRole : roles) {
             if (corpRoleRepo.countInRole(corporateRole, corporateUser) > 0) {
@@ -302,7 +311,6 @@ public class CorpCustomDutyServiceImpl implements CorpCustomDutyService {
             throw new TransferAuthorizationException(messageSource.getMessage("transfer.auth.exist", null, locale));
         }
 
-
         try {
             transReqEntry.setEntryDate(new Date());
             transReqEntry.setRole(userRole);
@@ -318,17 +326,19 @@ public class CorpCustomDutyServiceImpl implements CorpCustomDutyService {
 //                    i.setStatus("CANCELLED");
 //                    creditRequestRepo.save(i);
 //                });
-//
+
 //                return messageSource.getMessage("transfer.auth.decline", null, locale);
 //            }
-//
-//            transferAuthRepo.save(transferAuth);
-//            if (isAuthorizationComplete(bulkTransfer)) {
-//                transferAuth.setStatus("C");
-//                transferAuth.setLastEntry(new Date());
-//                transferAuthRepo.save(transferAuth);
-//                return makeBulkTransferRequest(bulkTransfer);
-//            }
+
+            transferAuthRepo.save(transferAuth);
+            if (isAuthorizationComplete(corpPaymentRequest)) {
+                transferAuth.setStatus("C");
+                transferAuth.setLastEntry(new Date());
+               transferAuthRepo.save(transferAuth);
+                //return makeBulkTransferRequest(bulkTransfer);
+                TransRequest transRequest = integrationService.makeTransfer(corpPaymentRequest);
+         }
+
 
             return messageSource.getMessage("transfer.auth.success", null, locale);
         } catch (InternetBankingTransferException transferException) {
@@ -338,5 +348,36 @@ public class CorpCustomDutyServiceImpl implements CorpCustomDutyService {
         }
     }
 
+
+    private boolean isAuthorizationComplete(CorpPaymentRequest corpPaymentRequest) {
+        CorpTransferAuth transferAuth = corpPaymentRequest.getTransferAuth();
+        Set<CorpTransReqEntry> transReqEntries = transferAuth.getAuths();
+        CorpTransRule corpTransRule = corporateService.getApplicableTransferRule(corpPaymentRequest);
+        List<CorporateRole> roles = getExistingRoles(corpTransRule.getRoles());
+        boolean any = false;
+        int approvalCount = 0;
+
+        if (corpTransRule.isAnyCanAuthorize()) {
+            any = true;
+        }
+
+        int numAuthorizers = 0;
+        SettingDTO setting = configService.getSettingByName("MIN_AUTHORIZER_LEVEL");
+        if (setting != null && setting.isEnabled()) {
+
+            numAuthorizers = Integer.parseInt(setting.getValue());
+        }
+
+        for (CorporateRole role : roles) {
+            for (CorpTransReqEntry corpTransReqEntry : transReqEntries) {
+                if (corpTransReqEntry.getRole().equals(role)) {
+                    approvalCount++;
+                    if (any && (approvalCount >= numAuthorizers)) return true;
+                }
+            }
+        }
+        return approvalCount >= roles.size();
+
+    }
 
 }
