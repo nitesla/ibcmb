@@ -242,6 +242,11 @@ public class CorpCustomDutyServiceImpl implements CorpCustomDutyService {
     public CorpPaymentRequest getPayment(Long id) {
         return corpPaymentRequestRepo.findById(id);
     }
+    @Override
+    public Page<CorpPaymentRequest> getPayments(Pageable pageable) {
+//        return customDutyRepo.findAll(pageable);
+        return null;
+    }
 
     private CorporateUser getCurrentUser() {
         CustomUserPrincipal principal = (CustomUserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -332,5 +337,6 @@ public class CorpCustomDutyServiceImpl implements CorpCustomDutyService {
             throw new InternetBankingException(messageSource.getMessage("transfer.auth.failure", null, locale), e);
         }
     }
+
 
 }

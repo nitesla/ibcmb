@@ -1,5 +1,8 @@
 package longbridge.controllers.corporate;
 
+import longbridge.dtos.SettingDTO;
+import longbridge.exception.InternetBankingException;
+import longbridge.exception.InternetBankingSecurityException;
 import longbridge.exception.InternetBankingTransferException;
 import longbridge.exception.TransferErrorService;
 import longbridge.models.*;
@@ -24,6 +27,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.LocaleResolver;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
@@ -32,6 +36,7 @@ import java.math.MathContext;
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 @Controller
 @RequestMapping("/corporate/custom")
@@ -55,14 +60,18 @@ public class CorpCustomDutyController {
     private TransferErrorService transferErrorService;
     private CorporateService corporateService;
     private TransferUtils transferUtils;
-
+    private SecurityService securityService;
+    @Autowired
+    private ConfigurationService configService;
+    @Autowired
+    private MessageSource messageSource;
     @Autowired
     public CorpCustomDutyController(
             CorporateUserService corporateUserService, AccountService accountService, CorpTransferService corpTransferService,
              LocaleResolver localeResolver,
             FinancialInstitutionService financialInstitutionService, TransferValidator validator,
             TransferErrorService transferErrorService, CorporateService corporateService,
-            TransferUtils transferUtils) {
+            TransferUtils transferUtils,SecurityService securityService) {
         this.accountService = accountService;
         this.corporateUserService = corporateUserService;
         this.corpTransferService = corpTransferService;
@@ -72,6 +81,7 @@ public class CorpCustomDutyController {
         this.transferErrorService = transferErrorService;
         this.corporateService = corporateService;
         this.transferUtils = transferUtils;
+        this.securityService = securityService;
     }
 
     @GetMapping
@@ -110,16 +120,24 @@ public class CorpCustomDutyController {
 
     @PostMapping("/summary")
     public String transferSummary(@ModelAttribute("assessmentDetail")  @Valid  CustomAssessmentDetail assessmentDetail,
+<<<<<<< HEAD
                                   BindingResult result, Model model, HttpServletRequest servletRequest, Principal principal) {
+=======
+                                  RedirectAttributes redirectAttributes,Principal principal) {
+//        CorpPaymentRequest request = new CorpPaymentRequest();
+>>>>>>> 1321da5da756aff0ad412dc5ef3ff3c9fc92a01a
         try {
             CorporateUser user = corporateUserService.getUserByName(principal.getName());
             Corporate corporate = user.getCorporate();
             if (corporate.getCorporateType().equalsIgnoreCase("MULTI")) {
                 customDutyService.saveCustomPaymentRequestForAuthorization(assessmentDetail,principal,corporate);
             } else if (corporate.getCorporateType().equalsIgnoreCase("SOLE")) {
+
             } else {
+                redirectAttributes.addFlashAttribute("message",messages);
                 return "redirect:/login/corporate";
             }
+            return "redirect:/corporate/custom";
         } catch (InternetBankingTransferException exception)
         {
         }
@@ -216,6 +234,51 @@ public class CorpCustomDutyController {
 
         return "corp/transfer/request/summary";
     }
+<<<<<<< HEAD
 
 
+=======
+    @PostMapping("/approve")
+    public String addBulkTransferAuthorization(@ModelAttribute("corpTransReqEntry") CorpTransReqEntry corpTransReqEntry, @RequestParam("token") String tokenCode, RedirectAttributes redirectAttributes, Principal principal, Locale locale) {
+
+        CorporateUser user = corporateUserService.getUserByName(principal.getName());
+
+
+        SettingDTO setting = configService.getSettingByName("ENABLE_CORPORATE_2FA");
+
+        if (setting != null && setting.isEnabled()) {
+
+            if (tokenCode != null && !tokenCode.isEmpty()) {
+                try {
+                    boolean result = securityService.performTokenValidation(user.getEntrustId(), user.getEntrustGroup(), tokenCode);
+                    if (!result) {
+                        LOGGER.error("Error authenticating token");
+                        redirectAttributes.addFlashAttribute("failure", messageSource.getMessage("token.auth.failure", null, locale));
+                        return "redirect:/corporate/transfer/" + corpTransReqEntry.getTranReqId() + "/view";
+                    }
+                } catch (InternetBankingSecurityException se) {
+                    LOGGER.error("Error authenticating token");
+                    redirectAttributes.addFlashAttribute("failure", se.getMessage());
+                    return "redirect:/corporate/transfer/" + corpTransReqEntry.getTranReqId() + "/view";
+                }
+            } else {
+                redirectAttributes.addFlashAttribute("failure", "Token code is required");
+                return "redirect:/corporate/transfer/" + corpTransReqEntry.getTranReqId() + "/view";
+
+            }
+        }
+
+
+        try {
+            String message = customDutyService.addAuthorization(corpTransReqEntry);
+            redirectAttributes.addFlashAttribute("message", message);
+
+        } catch (InternetBankingException ibe) {
+            LOGGER.error("Failed to authorize transfer", ibe);
+            redirectAttributes.addFlashAttribute("failure", ibe.getMessage());
+
+        }
+        return "redirect:/corporate/transfer/bulk";
+    }
+>>>>>>> 1321da5da756aff0ad412dc5ef3ff3c9fc92a01a
 }
