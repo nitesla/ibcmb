@@ -56,6 +56,7 @@ public class IntegrationServiceImpl implements IntegrationService {
 	private String cmbAlert;
 
 	@Value("http://localhost:8090")
+	//@Value("${customDuty.baseUrl}")
 	private String CustomDutyUrl;
 
 	private RestTemplate template;

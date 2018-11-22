@@ -155,7 +155,6 @@ public class CorpTransferServiceImpl implements CorpTransferService {
 
 
     @Override
-
     public CorpTransferRequestDTO saveTransfer(CorpTransferRequestDTO corpTransferRequestDTO) throws InternetBankingTransferException {
         CorpTransferRequestDTO result = new CorpTransferRequestDTO();
         try {

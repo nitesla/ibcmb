@@ -1,5 +1,6 @@
 package longbridge.services.implementations;
 
+import longbridge.dtos.CorpPaymentRequestDTO;
 import longbridge.dtos.CorpTransferRequestDTO;
 import longbridge.dtos.SettingDTO;
 import longbridge.exception.*;
@@ -39,6 +40,7 @@ public class CorpCustomDutyServiceImpl implements CorpCustomDutyService {
     @Autowired
     private CustomDutyPaymentRepo customDutyPaymentRepo;
 
+    private CorpTransferServiceImpl CorpTransferServiceImpl;
     private IntegrationService integrationService;
     private TransactionLimitServiceImpl limitService;
     private AccountService accountService;
@@ -335,12 +337,17 @@ public class CorpCustomDutyServiceImpl implements CorpCustomDutyService {
                 transferAuth.setStatus("C");
                 transferAuth.setLastEntry(new Date());
                transferAuthRepo.save(transferAuth);
-                //return makeBulkTransferRequest(bulkTransfer);
-                TransRequest transRequest = integrationService.makeTransfer(corpPaymentRequest);
+                CorpPaymentRequest paymentRequest = (CorpPaymentRequest)  integrationService.makeTransfer(corpPaymentRequest);
+                if (paymentRequest != null) {
+                    CorpPaymentRequestDTO corpPaymentRequestDTO = savePayment(convertEntityToDTO(paymentRequest));
+                    if (paymentRequest.getStatus() != null) {
+                        //return corpPaymentRequestDTO;
+                    }
+                    //throw new InternetBankingTransferException(TransferExceptions.ERROR.toString());
+                }
+                //throw new InternetBankingTransferException(messageSource.getMessage("transfer.failed",null,locale));
          }
-
-
-            return messageSource.getMessage("transfer.auth.success", null, locale);
+            return messageSource.getMessage("payment.auth.success", null, locale);
         } catch (InternetBankingTransferException transferException) {
             throw transferException;
         } catch (Exception e) {
@@ -378,6 +385,67 @@ public class CorpCustomDutyServiceImpl implements CorpCustomDutyService {
         }
         return approvalCount >= roles.size();
 
+    }
+
+    public CorpPaymentRequest convertDTOToEntity(CorpPaymentRequestDTO paymentRequestDTO) {
+        logger.debug("request converter:{}",paymentRequestDTO);
+        CorpPaymentRequest corpPaymentRequest = new CorpPaymentRequest();
+        corpPaymentRequest.setId(paymentRequestDTO.getId());
+        corpPaymentRequest.setVersion(paymentRequestDTO.getVersion());
+        corpPaymentRequest.setCustomerAccountNumber(paymentRequestDTO.getCustomerAccountNumber());
+        corpPaymentRequest.setTransferType(paymentRequestDTO.getTransferType());
+        corpPaymentRequest.setFinancialInstitution(paymentRequestDTO.getFinancialInstitution());
+        corpPaymentRequest.setBeneficiaryAccountNumber(paymentRequestDTO.getBeneficiaryAccountNumber());
+        corpPaymentRequest.setBeneficiaryAccountName(paymentRequestDTO.getBeneficiaryAccountName());
+        corpPaymentRequest.setRemarks(paymentRequestDTO.getRemarks());
+        corpPaymentRequest.setStatus(paymentRequestDTO.getStatus());
+        corpPaymentRequest.setReferenceNumber(paymentRequestDTO.getReferenceNumber());
+        corpPaymentRequest.setNarration(paymentRequestDTO.getNarration());
+        corpPaymentRequest.setStatusDescription(paymentRequestDTO.getStatusDescription());
+        corpPaymentRequest.setAmount(paymentRequestDTO.getAmount());
+        Corporate corporate = corporateRepo.findOne(Long.parseLong(paymentRequestDTO.getCorporateId()));
+
+        corpPaymentRequest.setCorporate(corporate);
+        if (paymentRequestDTO.getTransAuthId() != null) {
+            CorpTransferAuth transferAuth = transferAuthRepo.findOne(Long.parseLong(paymentRequestDTO.getTransAuthId()));
+            corpPaymentRequest.setTransferAuth(transferAuth);
+        }
+        return corpPaymentRequest;
+    }
+
+    public CorpPaymentRequestDTO convertEntityToDTO(CorpPaymentRequest corpPaymentRequest) {
+        CorpPaymentRequestDTO corpPaymentRequestDTO = new CorpPaymentRequestDTO();
+        corpPaymentRequestDTO.setId(corpPaymentRequest.getId());
+        corpPaymentRequestDTO.setVersion(corpPaymentRequest.getVersion());
+        corpPaymentRequestDTO.setCustomerAccountNumber(corpPaymentRequest.getCustomerAccountNumber());
+        corpPaymentRequestDTO.setTransferType(corpPaymentRequest.getTransferType());
+        corpPaymentRequestDTO.setFinancialInstitution(corpPaymentRequest.getFinancialInstitution());
+        corpPaymentRequestDTO.setBeneficiaryAccountNumber(corpPaymentRequest.getBeneficiaryAccountNumber());
+        corpPaymentRequestDTO.setBeneficiaryAccountName(corpPaymentRequest.getBeneficiaryAccountName());
+        corpPaymentRequestDTO.setRemarks(corpPaymentRequest.getRemarks());
+        corpPaymentRequestDTO.setStatus(corpPaymentRequest.getStatus());
+        corpPaymentRequestDTO.setReferenceNumber(corpPaymentRequest.getReferenceNumber());
+        corpPaymentRequestDTO.setNarration(corpPaymentRequest.getNarration());
+        corpPaymentRequestDTO.setStatusDescription(corpPaymentRequest.getStatusDescription());
+        corpPaymentRequestDTO.setAmount(corpPaymentRequest.getAmount());
+        corpPaymentRequestDTO.setTranDate(corpPaymentRequest.getTranDate());
+        corpPaymentRequestDTO.setCorporateId(corpPaymentRequest.getCorporate().getId().toString());
+        if (corpPaymentRequest.getTransferAuth() != null) {
+            corpPaymentRequestDTO.setTransAuthId(corpPaymentRequest.getTransferAuth().getId().toString());
+        }
+        return corpPaymentRequestDTO;
+    }
+
+    public CorpPaymentRequestDTO savePayment(CorpPaymentRequestDTO corpPaymentRequestDTO) throws InternetBankingTransferException {
+        CorpPaymentRequestDTO result = new CorpPaymentRequestDTO();
+        try {
+            CorpPaymentRequest paymentRequest = convertDTOToEntity(corpPaymentRequestDTO);
+            result = convertEntityToDTO(corpPaymentRequestRepo.save(paymentRequest));
+
+        } catch (Exception e) {
+            logger.error("Exception occurred saving transfer request", e);
+        }
+        return result;
     }
 
 }

@@ -181,7 +181,6 @@ public class CorpCustomDutyController {
     public
     @ResponseBody
     DataTablesOutput<CorpPaymentRequest> getCustomPaymentRequests(DataTablesInput input){
-        LOGGER.debug("Fetching requests:{}",input);
         Pageable pageable = DataTablesUtils.getPageable(input);
         Page<CorpPaymentRequest> requests = customDutyService.getPaymentRequests(pageable);
         DataTablesOutput<CorpPaymentRequest> out = new DataTablesOutput<CorpPaymentRequest>();
