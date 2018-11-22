@@ -244,9 +244,9 @@ public class CorpCustomDutyServiceImpl implements CorpCustomDutyService {
         return corpPaymentRequestRepo.findById(id);
     }
     @Override
-    public Page<CorpPaymentRequest> getPayments(Pageable pageable) {
-//        return customDutyRepo.findAll(pageable);
-        return null;
+    public Page<CorpPaymentRequest> getPayments(Pageable pageable,String search) {
+        return corpPaymentRequestRepo.findAll(pageable);
+//        return null;
     }
 
     private CorporateUser getCurrentUser() {

@@ -81,7 +81,7 @@ public class CorpTransferServiceImpl implements CorpTransferService {
         transferRequest.setUserReferenceNumber("CORP_"+getCurrentUser().getId().toString());
 
         if ("SOLE".equals(transferRequest.getCorporate().getCorporateType())) {
-            CorpTransferRequestDTO requestDTO = makeTransfer(transferRequestDTO);
+            CorpTransferRequestDTO requestDTO =  makeTransfer(transferRequestDTO);
             if ("00".equals(requestDTO.getStatus()) || "000".equals(requestDTO.getStatus())) { // Transfer successful
                 logger.debug("returning payment Request Sent for sole:{}",transferRequest.getCorporate().getCorporateType());
                 return requestDTO;
