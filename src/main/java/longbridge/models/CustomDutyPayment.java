@@ -35,6 +35,10 @@ public class CustomDutyPayment extends AbstractEntity {
     private String account;
     private String code;
     private String message;
+    private String initiatedBy;
+    private String lastAuthorizer;
+    private String paymentStatus;
+    private String notificationStatus;
 
     @OneToOne
     private CorpPaymentRequest corpPaymentRequest;
@@ -50,7 +54,8 @@ public class CustomDutyPayment extends AbstractEntity {
                              String SADAssessmentNumber, String SADYear, String commandDutyArea, BigDecimal totalAmount,
                              String companyName, String formMNumber, String approvalStatusDesc, String approvalStatus,
                              String tranId, String bankCode, String bankBranchCode, String collectionAccount, String account,
-                             String code, String message, longbridge.models.CorpPaymentRequest corpPaymentRequest) {
+                             String code, String message, longbridge.models.CorpPaymentRequest corpPaymentRequest,String lastAuthorizer,
+                             String initiatedBy, String paymentStatus, String notificationStatus) {
         this.dtype = dtype;
         this.transferRequestId = transferRequestId;
         this.declarantCode = declarantCode;
@@ -74,6 +79,10 @@ public class CustomDutyPayment extends AbstractEntity {
         this.code = code;
         this.message = message;
         this.corpPaymentRequest = corpPaymentRequest;
+        this.lastAuthorizer = lastAuthorizer;
+        this.initiatedBy = initiatedBy;
+        this.paymentStatus = paymentStatus;
+        this.notificationStatus = notificationStatus;
     }
 
    public longbridge.models.CorpPaymentRequest getCorpPaymentRequest() {
@@ -269,4 +278,36 @@ public class CustomDutyPayment extends AbstractEntity {
         this.collectionAccount = collectionAccount;
     }
 
+
+    public String getInitiatedBy() {
+        return initiatedBy;
+    }
+
+    public void setInitiatedBy(String initiatedBy) {
+        this.initiatedBy = initiatedBy;
+    }
+
+    public String getLastAuthorizer() {
+        return lastAuthorizer;
+    }
+
+    public void setLastAuthorizer(String lastAuthorizer) {
+        this.lastAuthorizer = lastAuthorizer;
+    }
+
+    public String getPaymentStatus() {
+        return paymentStatus;
+    }
+
+    public void setPaymentStatus(String paymentStatus) {
+        this.paymentStatus = paymentStatus;
+    }
+
+    public String getNotificationStatus() {
+        return notificationStatus;
+    }
+
+    public void setNotificationStatus(String notificationStatus) {
+        this.notificationStatus = notificationStatus;
+    }
 }

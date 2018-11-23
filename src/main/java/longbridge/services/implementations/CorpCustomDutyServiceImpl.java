@@ -8,6 +8,7 @@ import longbridge.models.*;
 import longbridge.repositories.*;
 import longbridge.security.userdetails.CustomUserPrincipal;
 import longbridge.services.*;
+import longbridge.utils.EncryptionUtil;
 import longbridge.utils.StatusCode;
 import longbridge.utils.TransferAuthorizationStatus;
 import longbridge.utils.TransferType;
@@ -43,6 +44,12 @@ public class CorpCustomDutyServiceImpl implements CorpCustomDutyService {
 
     @Value("${custom.duty.remark}")
     private String paymentRemark;
+
+    @Value("${custom.appId}")
+    private String appId;
+
+    @Value("${custom.secretKey}")
+    private String secretKey;
 
     private CorpTransferServiceImpl CorpTransferServiceImpl;
     private IntegrationService integrationService;
@@ -96,8 +103,8 @@ public class CorpCustomDutyServiceImpl implements CorpCustomDutyService {
     @Override
     public CustomsAreaCommand getCustomsAreaCommands() {
         CustomsAreaCommandRequest customsAreaCommandRequest = new CustomsAreaCommandRequest();
-        customsAreaCommandRequest.setAppId("test");
-        customsAreaCommandRequest.setHash("ad1222bgfghj22j33m333");
+        customsAreaCommandRequest.setAppId(appId);
+        customsAreaCommandRequest.setHash(EncryptionUtil.getSHA512(appId+" "+secretKey,null));
         return integrationService.getCustomsAreaCommands(customsAreaCommandRequest);
     }
 
@@ -125,7 +132,6 @@ public class CorpCustomDutyServiceImpl implements CorpCustomDutyService {
             throw new TransferRuleException(messageSource.getMessage("rule.unapplicable", null, locale));
         }
         try {
-
             corpPaymentRequest.setStatus(StatusCode.PENDING.toString());
             corpPaymentRequest.setStatusDescription("Pending Authorization");
             CorpTransferAuth transferAuth = new CorpTransferAuth();
@@ -346,12 +352,18 @@ public class CorpCustomDutyServiceImpl implements CorpCustomDutyService {
                 corpPaymentRequest.setRemarks(paymentRemark);
                 CorpPaymentRequest paymentRequest = (CorpPaymentRequest)  integrationService.makeTransfer(corpPaymentRequest);
                 logger.info("the payment status {}",paymentRequest);
-                if (paymentRequest != null) {
+                if (paymentRequest != null && paymentRequest.getStatus() != null && (paymentRequest. getStatus() == "00" || paymentRequest. getStatus() == "000")) {
                     updatePaymentRequest(corpPaymentRequest,paymentRequest);
-//                    CorpPaymentRequestDTO corpPaymentRequestDTO = savePayment(convertEntityToDTO(paymentRequest));
-//                    if (paymentRequest.getStatus() != null) {
-//                        //return corpPaymentRequestDTO;
-//                    }
+                    CustomPaymentNotificationRequest notificationRequest = new CustomPaymentNotificationRequest();
+                    notificationRequest.setTranId(corpPaymentRequest.getCustomDutyPayment().getTranId());
+                    notificationRequest.setAmount(corpPaymentRequest.getAmount().toString());
+                    notificationRequest.setPaymentRef(corpPaymentRequest.getReferenceNumber());
+                    notificationRequest.setLastAuthorizer(corpPaymentRequest.getCustomDutyPayment().getLastAuthorizer());
+                    notificationRequest.setInitiatedBy(corpPaymentRequest.getCustomDutyPayment().getInitiatedBy());
+                    notificationRequest.setAppId(appId);
+                    notificationRequest.setHash(EncryptionUtil.getSHA512(
+                            appId+corpPaymentRequest.getCustomDutyPayment().getTranId()+ secretKey,null));
+
                     //throw new InternetBankingTransferException(TransferExceptions.ERROR.toString());
                 }
                 //throw new InternetBankingTransferException(messageSource.getMessage("transfer.failed",null,locale));
