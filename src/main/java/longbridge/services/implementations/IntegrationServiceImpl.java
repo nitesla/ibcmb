@@ -55,7 +55,7 @@ public class IntegrationServiceImpl implements IntegrationService {
 	@Value("${CMB.ALERT.URL}")
 	private String cmbAlert;
 
-	@Value("http://localhost:9001")
+	@Value("http://localhost:8090")
 	//@Value("${customDuty.baseUrl}")
 	private String CustomDutyUrl;
 

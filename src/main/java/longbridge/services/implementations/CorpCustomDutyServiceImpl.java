@@ -40,6 +40,7 @@ public class CorpCustomDutyServiceImpl implements CorpCustomDutyService {
 
     @Autowired
     private CustomDutyPaymentRepo customDutyPaymentRepo;
+
     @Value("${custom.duty.remark}")
     private String paymentRemark;
 
