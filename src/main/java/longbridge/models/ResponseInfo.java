@@ -28,7 +28,7 @@ public class ResponseInfo {
     @JsonProperty("BankCode")
     private String bankCode;
     @JsonProperty("TaxDetails")
-    private List<CustomTaxDetail> taxDetails;
+    private List<Tax> taxDetails;
     @JsonProperty("BankBranchCode")
     private String bankBranchCode;
 
@@ -129,11 +129,11 @@ public class ResponseInfo {
         this.bankCode = bankCode;
     }
 
-    public List<CustomTaxDetail> getTaxDetails() {
+    public List<Tax> getTaxDetails() {
         return taxDetails;
     }
 
-    public void setTaxDetails(List<CustomTaxDetail> taxDetails) {
+    public void setTaxDetails(List<Tax> taxDetails) {
         this.taxDetails = taxDetails;
     }
 

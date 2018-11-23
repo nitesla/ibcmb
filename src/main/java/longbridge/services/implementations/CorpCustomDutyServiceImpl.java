@@ -14,6 +14,7 @@ import longbridge.utils.TransferType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.Page;
@@ -39,6 +40,8 @@ public class CorpCustomDutyServiceImpl implements CorpCustomDutyService {
 
     @Autowired
     private CustomDutyPaymentRepo customDutyPaymentRepo;
+    @Value("${custom.duty.remark}")
+    private String paymentRemark;
 
     private CorpTransferServiceImpl CorpTransferServiceImpl;
     private IntegrationService integrationService;
@@ -232,7 +235,7 @@ public class CorpCustomDutyServiceImpl implements CorpCustomDutyService {
     public Page<CorpPaymentRequest> getPaymentRequests(Pageable pageDetails) {
         CorporateUser corporateUser = getCurrentUser();
         Corporate corporate = corporateUser.getCorporate();
-        LOGGER.debug("Fetching request for :{}",corporate);
+//        LOGGER.debug("Fetching request for :{}",corporate);
         Page<CorpPaymentRequest> page = corpPaymentRequestRepo.findByCorporateOrderByStatusAscTranDateDesc(corporate, pageDetails);
         List<CorpPaymentRequest> corpPaymentRequest = page.getContent().stream()
                 .filter(transRequest -> !accountConfigService.isAccountRestrictedForViewFromUser(accountService.getAccountByAccountNumber(transRequest.getCustomerAccountNumber()).getId(),corporateUser.getId())).collect(Collectors.toList());
@@ -338,6 +341,7 @@ public class CorpCustomDutyServiceImpl implements CorpCustomDutyService {
                 transferAuth.setLastEntry(new Date());
                transferAuthRepo.save(transferAuth);
                 corpPaymentRequest.setTransferType(TransferType.CORONATION_BANK_TRANSFER);
+                corpPaymentRequest.setRemarks(paymentRemark);
                 CorpPaymentRequest paymentRequest = (CorpPaymentRequest)  integrationService.makeTransfer(corpPaymentRequest);
                 logger.info("the payment status {}",paymentRequest);
                 if (paymentRequest != null) {
@@ -431,6 +435,7 @@ public class CorpCustomDutyServiceImpl implements CorpCustomDutyService {
         corpPaymentRequestDTO.setStatusDescription(corpPaymentRequest.getStatusDescription());
         corpPaymentRequestDTO.setAmount(corpPaymentRequest.getAmount());
         corpPaymentRequestDTO.setTranDate(corpPaymentRequest.getTranDate());
+        corpPaymentRequestDTO.setTransferType(TransferType.CUSTOM_DUTY);
         corpPaymentRequestDTO.setCorporateId(corpPaymentRequest.getCorporate().getId().toString());
         if (corpPaymentRequest.getTransferAuth() != null) {
             corpPaymentRequestDTO.setTransAuthId(corpPaymentRequest.getTransferAuth().getId().toString());

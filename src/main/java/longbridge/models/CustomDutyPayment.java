@@ -30,19 +30,17 @@ public class CustomDutyPayment extends AbstractEntity {
     private String approvalStatus;
     private String tranId;
     private String bankCode;
-    //private List<CustomTaxDetail> taxDetails;
     private String bankBranchCode;
     private String collectionAccount;
     private String account;
     private String code;
     private String message;
 
-
     @OneToOne
     private CorpPaymentRequest corpPaymentRequest;
 
-//    @OneToMany(mappedBy = "bulkTransfer",cascade = {CascadeType.ALL})
-//    private List<CustomTaxDetail> crRequestList;
+    @OneToMany(cascade = {CascadeType.ALL})
+    private List<Tax> taxs;
 
     public CustomDutyPayment() {
     }
@@ -246,14 +244,14 @@ public class CustomDutyPayment extends AbstractEntity {
     public void setBankCode(String bankCode) {
         this.bankCode = bankCode;
     }
-//
-//    public List<CustomTaxDetail> getTaxDetails() {
-//        return taxDetails;
-//    }
-//
-//    public void setTaxDetails(List<CustomTaxDetail> taxDetails) {
-//        this.taxDetails = taxDetails;
-//    }
+
+    public List<Tax> getTaxs() {
+        return taxs;
+    }
+
+    public void setTaxs(List<Tax> taxs) {
+        this.taxs = taxs;
+    }
 
     public String getBankBranchCode() {
         return bankBranchCode;

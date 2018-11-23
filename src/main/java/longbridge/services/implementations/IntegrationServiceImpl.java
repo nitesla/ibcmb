@@ -304,7 +304,6 @@ public class IntegrationServiceImpl implements IntegrationService {
 
 		switch (type) {
 		case CORONATION_BANK_TRANSFER:
-
 		{
 			transRequest.setTransferType(TransferType.CORONATION_BANK_TRANSFER);
 			TransferDetails response;
