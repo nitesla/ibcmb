@@ -55,7 +55,7 @@ public class IntegrationServiceImpl implements IntegrationService {
 	@Value("${CMB.ALERT.URL}")
 	private String cmbAlert;
 
-	@Value("http://localhost:8090")
+	@Value("http://localhost:9001")
 	//@Value("${customDuty.baseUrl}")
 	private String CustomDutyUrl;
 
@@ -304,7 +304,6 @@ public class IntegrationServiceImpl implements IntegrationService {
 
 		switch (type) {
 		case CORONATION_BANK_TRANSFER:
-
 		{
 			transRequest.setTransferType(TransferType.CORONATION_BANK_TRANSFER);
 			TransferDetails response;

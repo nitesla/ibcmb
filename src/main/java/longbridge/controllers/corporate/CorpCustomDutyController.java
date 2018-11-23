@@ -90,7 +90,17 @@ public class CorpCustomDutyController {
     }
 
     @GetMapping("/payment")
-    public String dutyPayment(Model model, Principal principal) {
+    public String dutyPayment(Model model, Principal principal, RedirectAttributes redirectAttributes) {
+
+        try {
+            transferUtils.validateTransferCriteria();
+        } catch (InternetBankingTransferException e)
+        {
+            String errorMessage = transferErrorService.getMessage(e);
+            model.addAttribute("failure", errorMessage);
+            redirectAttributes.addFlashAttribute("failure", errorMessage);
+            return "redirect:/corporate/custom";
+        }
         model.addAttribute("commands",getCustomsAreaCommands().getCommands());
         model.addAttribute("assessmentDetailsRequest",new CustomAssessmentDetailsRequest());
         model.addAttribute("paymentNotificationRequest",new CustomPaymentNotificationRequest());

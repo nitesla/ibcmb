@@ -76,11 +76,11 @@
                                 <table class="table table-striped table-bordered table-hover" id="request">
                                     <thead>
                                     <tr>
-                                        <th>Name</th>
-                                        <th>status</th>
-                                        <th>Submitted by</th>
-                                        <th>Type</th>
-                                        <th>Date</th>
+                                        <th>Customer Acct No</th>
+                                        <th>Amount</th>
+                                        <th>Reference Number</th>
+                                        <th>Tran Id</th>
+                                        <th>Transaction Date</th>
 
                                     </tr>
                                     </thead>
@@ -90,12 +90,11 @@
                                     </tbody>
                                     <tfoot>
                                     <tr>
-                                        <th>Name</th>
-                                        <th>status</th>
-                                        <th>Submitted By</th>
-                                        <th>Type</th>
-                                        <th>Date</th>
-
+                                        <th>Customer Acct No</th>
+                                        <th>Amount</th>
+                                        <th>Reference Number</th>
+                                        <th>Tran Id</th>
+                                        <th>Transaction Date</th>
                                     </tr>
                                     </tfoot>
                                 </table>
@@ -121,7 +120,7 @@
 <script th:src="@{~/bank/js/dataTables.bootstrap.js}"></script>
 <script th:src="@{~/bank/js/dataTables.select.js}"></script>
 <script th:src="@{~/bank/js/jquery.spring-friendly.min.js}"></script>
-
+<script th:src="@{~/bank/js/momentMin.js}"></script>
 <!-- Page-Level Scripts -->
 <script>
     /*<![CDATA[*/
@@ -141,16 +140,44 @@
                 d.csearch = $('#pattern').val();
             }
         },
-
             "dom": 'T<"clear">frtlp',
             "columns": [
-                { "data": "beneficiaryAccountNumber" },
                 { "data": "customerAccountNumber" },
-                { "data": "tranDate" },
                 { "data": "amount" },
-                { "data": "beneficiaryAccountName" }
+                { "data": "referenceNumber" },
+                { "data": "customDutyPayment.tranId" },
+                { "data": "tranDate" }
 
-            ] });
+            ], "columnDefs" : [
+                {
+                    "targets" : 4,
+                    "data" : "tranDate",
+                    "render" : function(data, type,full, meta) {
+                        if (type === 'display') {
+                            if(data == null)
+                                return data;
+                            var dtStart = new Date(data);
+                            var dtStartWrapper = moment(dtStart);
+                            return dtStartWrapper.format('DD-MMM-YYYY');
+
+                        }
+                        return data;
+                    }
+                },{
+                    "targets" : 1,
+                    "data" : "amount",
+                    "render" : function(data, type,full, meta) {
+                        if (type === 'display') {
+                            if(data == null)
+                                return data;
+                            var twoPlacedFloat = parseFloat(data).toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,');
+                            return twoPlacedFloat;
+                        }
+                        return data;
+                    }
+                }
+                 ]
+        });
 
         table.on('select', function() {
             if (table.rows({
