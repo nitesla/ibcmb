@@ -1,15 +1,23 @@
 package longbridge.models;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class CustomPaymentNotificationRequest {
 
+    @JsonProperty("TranId")
     private String TranId;
-    private String  Amount;
-    private String  LastAuthorizer;
+    @JsonProperty("Amount")
+    private String Amount;
+    @JsonProperty("LastAuthorizer")
+    private String LastAuthorizer;
+    @JsonProperty("InitiatedBy")
     private String InitiatedBy;
-    private String  PaymentRef;
+    @JsonProperty("PaymentRef")
+    private String PaymentRef;
+    @JsonProperty("CustomerAccountNo")
     private String CustomerAccountNo;
-    private String  appId;
-    private String  hash;
+    private String appId;
+    private String hash;
 
     public String getTranId() {
         return TranId;
@@ -73,5 +81,19 @@ public class CustomPaymentNotificationRequest {
 
     public void setHash(String hash) {
         this.hash = hash;
+    }
+
+    @Override
+    public String toString() {
+        return "CustomPaymentNotificationRequest{" +
+                "TranId='" + TranId + '\'' +
+                ", Amount='" + Amount + '\'' +
+                ", LastAuthorizer='" + LastAuthorizer + '\'' +
+                ", InitiatedBy='" + InitiatedBy + '\'' +
+                ", PaymentRef='" + PaymentRef + '\'' +
+                ", CustomerAccountNo='" + CustomerAccountNo + '\'' +
+                ", appId='" + appId + '\'' +
+                ", hash='" + hash + '\'' +
+                '}';
     }
 }

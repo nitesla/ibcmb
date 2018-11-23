@@ -33,11 +33,11 @@ public interface CorpCustomDutyService {
     @PreAuthorize("hasAuthority('CUSTOM_DUTY')")
     public String saveCustomPaymentRequestForAuthorization(CorpPaymentRequest corpPaymentRequest);
 
-    String addAuthorization(CorpTransReqEntry transReqEntry);
+    String addAuthorization(CorpTransReqEntry transReqEntry, Principal principal);
 
     @PreAuthorize("hasAuthority('CUSTOM_DUTY')")
     @Transactional
-    String saveCustomPaymentRequestForAuthorization(CustomAssessmentDetail assessmentDetail, Principal principal,Corporate corporate );
+    String saveCustomPaymentRequestForAuthorization(CustomAssessmentDetail assessmentDetail, CustomAssessmentDetailsRequest assessmentDetailsRequest,  Principal principal,Corporate corporate );
 
     boolean userCanAuthorize(TransRequest transRequest);
 

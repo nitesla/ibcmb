@@ -130,12 +130,13 @@ public class CorpCustomDutyController {
 
     @PostMapping("/summary")
     public String transferSummary(@ModelAttribute("assessmentDetail")  @Valid  CustomAssessmentDetail assessmentDetail,
+                                  @ModelAttribute("assessmentDetailsRequest")  @Valid  CustomAssessmentDetailsRequest assessmentDetailsRequest,
                                   BindingResult result, Model model, HttpServletRequest servletRequest, Principal principal,RedirectAttributes redirectAttributes) {
         try {
             CorporateUser user = corporateUserService.getUserByName(principal.getName());
             Corporate corporate = user.getCorporate();
             if (corporate.getCorporateType().equalsIgnoreCase("MULTI")) {
-                customDutyService.saveCustomPaymentRequestForAuthorization(assessmentDetail,principal,corporate);
+                customDutyService.saveCustomPaymentRequestForAuthorization(assessmentDetail,assessmentDetailsRequest, principal,corporate);
             } else if (corporate.getCorporateType().equalsIgnoreCase("SOLE")) {
             } else {
                 redirectAttributes.addFlashAttribute("message",messages);
@@ -268,7 +269,7 @@ public class CorpCustomDutyController {
         }
 
         try {
-            String message = customDutyService.addAuthorization(corpTransReqEntry);
+            String message = customDutyService.addAuthorization(corpTransReqEntry, principal);
             LOGGER.info("corpTransReqEntry:{}",corpTransReqEntry);
             redirectAttributes.addFlashAttribute("message", message);
 
