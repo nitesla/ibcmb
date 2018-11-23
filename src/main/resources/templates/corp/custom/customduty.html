@@ -30,6 +30,7 @@
                             <td>Amount</td>
                             <td>Date</td>
                             <td>Status</td>
+                            <td></td>
                             </thead>
                             <tbody>
 
@@ -71,7 +72,8 @@
                             {"data": "financialInstitution.institutionName"},
                             {"data": "amount"},
                             {"data": "tranDate"},
-                            {"data": "statusDescription"}
+                            {"data": "statusDescription"},
+                            {"data": "id"}
 
                         ], "columnDefs": [{
                             "targets" : 3,
@@ -100,7 +102,13 @@
                                 }
                                 return data;
                             }
-                        }]
+                        },{
+                            "targets" : 6,
+                            "data" : "id",
+                            "render" : function(data, type,full, meta) {
+                                return '<button  class="btn btn-link required-step">Update Status</button>';
+                            }}
+                            ]
                     });
 
 

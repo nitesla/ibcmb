@@ -53,7 +53,6 @@ public class CorpCustomDutyController {
     private CorporateUserService corporateUserService;
     private CorpTransferService corpTransferService;
     private AccountService accountService;
-    private MessageSource messages;
     private LocaleResolver localeResolver;
     private FinancialInstitutionService financialInstitutionService;
     private TransferValidator validator;
@@ -130,20 +129,25 @@ public class CorpCustomDutyController {
 
     @PostMapping("/summary")
     public String transferSummary(@ModelAttribute("assessmentDetail")  @Valid  CustomAssessmentDetail assessmentDetail,
-                                  BindingResult result, Model model, HttpServletRequest servletRequest, Principal principal,RedirectAttributes redirectAttributes) {
+                                  BindingResult result, Model model, HttpServletRequest servletRequest, Principal principal,RedirectAttributes redirectAttributes, Locale locale) {
+        String message ="";
         try {
             CorporateUser user = corporateUserService.getUserByName(principal.getName());
             Corporate corporate = user.getCorporate();
             if (corporate.getCorporateType().equalsIgnoreCase("MULTI")) {
-                customDutyService.saveCustomPaymentRequestForAuthorization(assessmentDetail,principal,corporate);
+                message = customDutyService.saveCustomPaymentRequestForAuthorization(assessmentDetail,principal,corporate);
+                redirectAttributes.addFlashAttribute("message",messageSource.getMessage(message,null,locale));
             } else if (corporate.getCorporateType().equalsIgnoreCase("SOLE")) {
+
             } else {
-                redirectAttributes.addFlashAttribute("message",messages);
+
                 return "redirect:/login/corporate";
             }
             return "redirect:/corporate/custom";
         } catch (InternetBankingTransferException exception)
         {
+            redirectAttributes.addFlashAttribute("failure",messageSource.getMessage(exception.getMessage(),null,locale));
+
         }
         return "/corporate/custom";
     }

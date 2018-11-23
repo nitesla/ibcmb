@@ -206,9 +206,9 @@ public class CorpCustomDutyServiceImpl implements CorpCustomDutyService {
         } catch (TransferAuthorizationException ex) {
             throw ex;
         } catch (Exception e) {
-            throw new InternetBankingException(messageSource.getMessage("bulk.save.failure", null, null), e);
+            throw new InternetBankingException(messageSource.getMessage("custom.payment.save.failure", null, null), e);
         }
-        return messageSource.getMessage("bulk.save.success", null, null);
+        return messageSource.getMessage("custom.payment.save.success", null, null);
     }
 
     @Override
@@ -394,7 +394,6 @@ public class CorpCustomDutyServiceImpl implements CorpCustomDutyService {
 
     }
     public void updatePaymentRequest(CorpPaymentRequest originalPayment, CorpPaymentRequest newPaymentRequest) throws InternetBankingTransferException {
-        CorpPaymentRequestDTO result = new CorpPaymentRequestDTO();
         try {
             originalPayment.setStatus(newPaymentRequest.getStatus());
             originalPayment.setTransferType(TransferType.CUSTOM_DUTY);
