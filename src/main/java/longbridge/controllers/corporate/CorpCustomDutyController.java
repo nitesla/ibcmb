@@ -181,7 +181,6 @@ public class CorpCustomDutyController {
     public
     @ResponseBody
     DataTablesOutput<CorpPaymentRequest> getCustomPaymentRequests(DataTablesInput input){
-        LOGGER.debug("Fetching requests:{}",input);
         Pageable pageable = DataTablesUtils.getPageable(input);
         Page<CorpPaymentRequest> requests = customDutyService.getPaymentRequests(pageable);
         DataTablesOutput<CorpPaymentRequest> out = new DataTablesOutput<CorpPaymentRequest>();
@@ -195,8 +194,9 @@ public class CorpCustomDutyController {
 
     @GetMapping("/{id}/authorizations")
     public String getAuthorizations(@PathVariable Long id, ModelMap modelMap) {
-
         CorpPaymentRequest corpPaymentRequest = customDutyService.getPayment(id);
+        CustomDutyPayment dutyPayment = corpPaymentRequest.getCustomDutyPayment();
+        LOGGER.info("dutyPayment:{}",dutyPayment);
         CorpTransferAuth corpTransferAuth = customDutyService.getAuthorizations(corpPaymentRequest);
         CorpTransRule corpTransRule = corporateService.getApplicableTransferRule(corpPaymentRequest);
         boolean userCanAuthorize = customDutyService.userCanAuthorize(corpPaymentRequest);
@@ -204,6 +204,7 @@ public class CorpCustomDutyController {
                 .addAttribute("corpTransRequest", corpPaymentRequest)
                 .addAttribute("corpTransReqEntry", new CorpTransReqEntry())
                 .addAttribute("corpTransRule", corpTransRule)
+                .addAttribute("dutyPayment", dutyPayment)
                 .addAttribute("userCanAuthorize", userCanAuthorize);
 
         List<CorporateRole> rolesNotInAuthList = new ArrayList<>();

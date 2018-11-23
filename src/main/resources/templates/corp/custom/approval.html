@@ -41,6 +41,19 @@
                 </tr>
                 <tr>
 
+                    <th>Beneficiary Bank</th>
+                    <td th:text="${corpTransRequest.financialInstitution.institutionName}"></td>
+
+                </tr>
+                <tr>
+
+                    <th>Declarant</th>
+                    <td th:text="${dutyPayment.declarantName}"></td>
+
+                </tr>
+
+                <tr>
+
                     <th>Amount</th>
                     <td th:text="${#numbers.formatDecimal(corpTransRequest.amount, 1, 'COMMA', 2, 'POINT')}"></td>
 
@@ -249,7 +262,7 @@
             });
         }
         document.getElementById("cancel").onclick = function () {
-            location.href = "/corporate/transfer/requests";
+            location.href = "/corporate/custom";
         }
 
 
