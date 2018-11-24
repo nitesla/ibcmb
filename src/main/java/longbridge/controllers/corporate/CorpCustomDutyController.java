@@ -1,5 +1,6 @@
 package longbridge.controllers.corporate;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import longbridge.dtos.SettingDTO;
 import longbridge.exception.InternetBankingException;
 import longbridge.exception.InternetBankingSecurityException;
@@ -106,6 +107,7 @@ public class CorpCustomDutyController {
         model.addAttribute("paymentNotificationRequest",new CustomPaymentNotificationRequest());
         model.addAttribute("assessmentDetail",new CustomAssessmentDetail());
         model.addAttribute("corpTransReqEntry", new CorpTransReqEntry());
+        model.addAttribute("taxDetails", new String());
         return "corp/custom/custompayment";
     }
 
@@ -131,7 +133,18 @@ public class CorpCustomDutyController {
     @PostMapping("/summary")
     public String transferSummary(@ModelAttribute("assessmentDetail")  @Valid  CustomAssessmentDetail assessmentDetail,
                                   @ModelAttribute("assessmentDetailsRequest")  @Valid  CustomAssessmentDetailsRequest assessmentDetailsRequest,
+                                  WebRequest request,
                                   BindingResult result, Model model, HttpServletRequest servletRequest, Principal principal,RedirectAttributes redirectAttributes) {
+
+        String tokenCode = request.getParameter("TaxDetails");
+        ObjectMapper objectMapper = new ObjectMapper();
+        List<Tax> navigation = new ArrayList<>();
+        try {
+           navigation = objectMapper.readValue(tokenCode,
+                    objectMapper.getTypeFactory().constructCollectionType(
+                            List.class, Tax.class));
+            assessmentDetail.getResponseInfo().setTaxDetails(navigation);
+        }catch(Exception e){}
         try {
             CorporateUser user = corporateUserService.getUserByName(principal.getName());
             Corporate corporate = user.getCorporate();

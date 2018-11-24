@@ -165,9 +165,9 @@
                 <form th:action="@{/corporate/custom/summary}" method="POST" id="otpform" modelAttribute="assessmentDetail">
                     <div class="modal-body no-bd-rad col-md-12 col-sm-12 col-xs-12">
                         <p style="margin-bottom:20px">Please, make sure you confirm the payment is confirm </p>
-                        <div id="massessmentGrp">
+                        <div id="massessmentGrp" >
                             <div class="form-group">
-                                <div class="col-sm-8">
+                                <div class="col-sm-12">
                                     <label class="col-sm-2">Custom Area Command</label>
                                     <input type="text" class="form-control full-width" id="mcommand" name="mcommand"
                                            readonly="readonly"  th:field="*{assessmentDetailsRequest.customsCode}"/>
@@ -175,7 +175,7 @@
                             </div>
                             <br/>
                             <div class="form-group">
-                                <div class="col-sm-8">
+                                <div class="col-sm-12">
                                     <label class="col-sm-2">SDG Assessment Year</label>
                                     <input type="text" class="form-control full-width" id="msdgAssessmentYear" name="sdgAssessmentYear"
                                            readonly="readonly"  th:field="*{assessmentDetailsRequest.sadAsmt.SADYear}"/>
@@ -183,7 +183,7 @@
                             </div>
                             <br/>
                             <div class="form-group">
-                                <div class="col-sm-8">
+                                <div class="col-sm-12">
                                     <label class="col-sm-2">SDG Assessment Serial</label>
                                     <input type="text" class="form-control full-width" id="msdgAssessmentSerial" name="sdgAssessmentSerial"
                                            readonly="readonly"   th:field="*{assessmentDetailsRequest.sadAsmt.SADAssessmentSerial}"/>
@@ -191,7 +191,7 @@
                             </div>
                             <br/>
                             <div class="form-group">
-                                <div class="col-sm-8">
+                                <div class="col-sm-12">
                                     <label class="col-sm-2">SDG Assessment Number</label>
                                     <input type="text" class="form-control full-width" readonly="readonly"  name="sdgAssessmentNumber" id="msdgAssessmentNumber"
                                            th:field="*{assessmentDetailsRequest.sadAsmt.SADAssessmentNumber}"/>
@@ -199,7 +199,7 @@
                             </div>
                             <br/>
                             <div class="form-group">
-                                <div class="col-sm-8">
+                                <div class="col-sm-12">
                                     <label class="col-sm-2 ">SDG Assessment Date</label>
                                     <input class="col-sm-8 form-control full-width" readonly="readonly" type="text" id="msgdAssessmentDate"
                                            th:field="*{assessmentDetail.responseInfo.SGDAssessmentDate}"/>
@@ -207,7 +207,7 @@
                             </div>
                             <br/>
                             <div class="form-group">
-                                <div class="col-sm-8">
+                                <div class="col-sm-12">
                                     <label class="col-sm-2 ">Declarant Code</label>
                                     <input class="col-sm-8 form-control full-width" readonly="readonly" type="text" id="mdeclarantCode"
                                            th:field="*{assessmentDetail.responseInfo.declarantCode}"/>
@@ -215,28 +215,28 @@
                             </div>
                             <br/>
                             <div class="form-group">
-                                <div class="col-sm-8">
+                                <div class="col-sm-12">
                                     <label class="col-sm-2">Declarant Name</label>
                                     <input class="col-sm-8 form-control full-width" readonly="readonly" type="text" id="mdeclarantName" th:field="*{assessmentDetail.responseInfo.declarantName}"/>
                                 </div>
                             </div>
                             <br/>
                             <div class="form-group">
-                                <div class="col-sm-8">
+                                <div class="col-sm-12">
                                     <label class="col-sm-2">Company Code</label>
                                     <input class="col-sm-8 form-control full-width" readonly="readonly" type="text" id="mcompanyCode"  th:field="*{assessmentDetail.responseInfo.companyCode}"/>
                                 </div>
                             </div>
                             <br/>
                             <div class="form-group">
-                                <div class="col-sm-8">
+                                <div class="col-sm-12">
                                     <label class="col-sm-2">Company Name</label>
                                     <input class="col-sm-8 form-control full-width" readonly="readonly" type="text" id="mcompanyName" th:field="*{assessmentDetail.responseInfo.companyName}"/>
                                 </div>
                             </div>
                             <br/>
                             <div class="form-group">
-                                <div class="col-sm-8">
+                                <div class="col-sm-12">
                                     <label class="col-sm-2">Bank Code</label>
                                     <input class="col-sm-8 form-control full-width" readonly="readonly" type="text" id="mbankCode" th:field="*{assessmentDetail.responseInfo.bankCode}"/>
                                 </div>
@@ -250,43 +250,36 @@
                             <!--</div>-->
                             <br/>
                             <div class="form-group">
-                                <input type="hidden" id="mTranId" readonly="readonly" th:field="*{assessmentDetail.responseInfo.tranId}"/>
-                                <div class="col-sm-8">
+                                <input type="hidden" id="mTranId"  th:field="*{assessmentDetail.responseInfo.tranId}"/>
+                                <input type="hidden" id="mTaxDetails" name="TaxDetails"/>
+                                <!--<input type="hidden" id="mTaxDetails" name="mTaxDetails"/>-->
+                                <div class="col-sm-12">
                                     <label class="col-sm-2">Total Amount to be Paid</label>
                                     <input class="col-sm-8 form-control full-width" readonly="readonly" type="text" id="mtotalAmount" th:field="*{assessmentDetail.responseInfo.totalAmount}"/>
                                 </div>
                             </div>
                             <br/>
                             <div class="form-group">
-                                <div class="col-sm-8">
+                                <div class="col-sm-12">
                                     <label class="col-sm-2">Payment Details</label>
                                     <div class="x_content">
                                         <div class="table-responsive col-xs-12 no-pad-left no-pad-right" >
-                                            <table class="table" id="mTaxDetails">
-                                                <thead>
-                                                <tr>
-                                                    <th>Tax Code</th>
-                                                    <th>Description</th>
-                                                    <th>Amount</th>
-                                                </tr>
-                                                </thead>
-                                                <!--<tbody id="content">-->
+                                            <div id="taxtable">
 
-                                                <!--</tbody>-->
-                                            </table>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                             <div class="form-group">
-                                <div class="col-sm-8">
+                                <div class="col-sm-12">
                                     <label class="col-sm-2">Approval Status</label>
                                     <input class="col-sm-8 form-control full-width" readonly="readonly" type="text" id="mapprovalStatusDescription" th:field="*{assessmentDetail.responseInfo.approvalStatusDescription}"/>
                                 </div>
                             </div>
                             <br/>
                             <div class="form-group">
-                                <div class="col-sm-8">
+                                <div class="col-sm-12">
                                     <label>Account Number</label>
                                     <input class="col-sm-8 form-control full-width" readonly="readonly"
                                            type="text" id="macctNumber" th:field="*{assessmentDetail.account}"/>
@@ -309,7 +302,7 @@
 <th:block layout:fragment="scripts">
     <script th:inline="javascript">
         $(document).ready(function () {
-            console.log("start");
+            console.log("start "+$('#teste').val());
 
             $('#paymentGrp').hide();
             hideModal(false);
@@ -337,18 +330,11 @@
             $('#mbankCode').val($('#bankCode').val());
             // $('#mbankBranchCode').val($('#bankBranchCode').val());
             $('#macctNumber').val($('#acctNumber').val());
-            var t = ($('#taxId').val()).data();
-            console.log('test');
-            console.log(t);
-            var table = document.getElementById('mtranDetails');
-            var tr = document.createElement('tr');
-            t.forEach(function(t) {
-                var tr = document.createElement('tr');
-                tr.innerHTML = '<td>' + t.TaxAmount+ '</td>' +
-                    '<td>' + t.TaxDesc + '</td>' +
-                    '<td>' + t.TaxAmount + '</td>' ;
-                table.appendChild(tr);
-            });
+            console.info($("#taxId").val());
+            var t = $("#taxId").val();
+
+
+
             $('#myModal').modal({
                 backdrop: 'static',
                 keyboard: false,
@@ -392,8 +378,9 @@
                     $('#sgdAssessmentDate').val(result.ResponseInfo["SGDAssessmentDate"]);
                     $('#bankCode').val(result.ResponseInfo["BankCode"]);
                     // $('#bankBranchCode').val(result.ResponseInfo["BankBranchCode"]);
-                    $('#taxId').val(result.ResponseInfo["TaxDetails"]);
+                    $('#taxId').val(JSON.stringify(result.ResponseInfo["TaxDetails"]));
                     var t = result.ResponseInfo["TaxDetails"];
+                    console.info(t);
                     var table = document.getElementById('tranDetails');
                     var tr = document.createElement('tr');
                     t.forEach(function(t) {
@@ -403,10 +390,11 @@
                             '<td>' + t.TaxAmount + '</td>' ;
                         table.appendChild(tr);
                     });
+                    console.log("on success "+$('#teste').val());
+                    $('#taxtable').append(table);
                     if (result != null && result!= "null") {
                         $('#paymentGrp').show();
                     }
-
                 },
                 error: function (dd) {
                     console.log("error");

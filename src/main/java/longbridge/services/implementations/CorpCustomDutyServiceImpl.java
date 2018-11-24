@@ -159,6 +159,7 @@ public class CorpCustomDutyServiceImpl implements CorpCustomDutyService {
     @Transactional
     public String saveCustomPaymentRequestForAuthorization(CustomAssessmentDetail assessmentDetail, CustomAssessmentDetailsRequest assessmentDetailsRequest, Principal principal,Corporate corporate ) {
 
+        LOGGER.info("Taxes",assessmentDetail.getResponseInfo().getTaxDetails());
         if(assessmentDetail == null || principal == null) {
             //return messageSource.getMessage("bulk.save.success", null, null);
             return null;
@@ -187,6 +188,7 @@ public class CorpCustomDutyServiceImpl implements CorpCustomDutyService {
             customDutyPayment.setSADAssessmentNumber(assessmentDetailsRequest.getSadAsmt().getSADAssessmentNumber());
             customDutyPayment.setSADAssessmentSerial(assessmentDetailsRequest.getSadAsmt().getSADAssessmentSerial());
             customDutyPayment.setTotalAmount(request.getAmount());
+            customDutyPayment.setTaxs(assessmentDetail.getResponseInfo().getTaxDetails());
             customDutyPayment.setBankCode(assessmentDetail.getResponseInfo().getBankCode());
             customDutyPayment.setCompanyCode(assessmentDetail.getResponseInfo().getCompanyCode());
             customDutyPayment.setDeclarantCode(assessmentDetail.getResponseInfo().getDeclarantCode());
