@@ -134,7 +134,7 @@ public class CorpCustomDutyController {
     public String transferSummary(@ModelAttribute("assessmentDetail")  @Valid  CustomAssessmentDetail assessmentDetail,
                                   @ModelAttribute("assessmentDetailsRequest")  @Valid  CustomAssessmentDetailsRequest assessmentDetailsRequest,
                                   WebRequest request,
-                                  BindingResult result, Model model, HttpServletRequest servletRequest, Principal principal,RedirectAttributes redirectAttributes) {
+                                  BindingResult result, Model model, HttpServletRequest servletRequest, Principal principal,RedirectAttributes redirectAttributes, Locale locale) {
 
         String tokenCode = request.getParameter("TaxDetails");
         ObjectMapper objectMapper = new ObjectMapper();
@@ -158,6 +158,8 @@ public class CorpCustomDutyController {
             return "redirect:/corporate/custom";
         } catch (InternetBankingTransferException exception)
         {
+            redirectAttributes.addFlashAttribute("failure",messageSource.getMessage(exception.getMessage(),null,locale));
+
         }
         return "/corporate/custom";
     }
@@ -189,11 +191,13 @@ public class CorpCustomDutyController {
             LOGGER.error("Error calling coronation service rest service",e);
         }
     }
-
-    public CustomTransactionStatus paymentStatus(@ModelAttribute @Valid CustomTransactionStatus customTransactionStatus){
+    @GetMapping("/{id}/refresh")
+    @ResponseBody
+    public CustomTransactionStatus paymentStatus(@PathVariable Long id){
 
         try {
-            return customDutyService.paymentStatus(customTransactionStatus);
+            LOGGER.info("the is {}",id);
+            return customDutyService.updatePayamentStatus(id);
         }
         catch (Exception e){
             LOGGER.error("Error calling coronation service rest service",e);

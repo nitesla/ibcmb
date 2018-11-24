@@ -25,7 +25,10 @@ public interface CorpCustomDutyService {
     void paymentNotification(CustomAssessmentDetail assessmentDetail);
 
     @PreAuthorize("hasAuthority('CUSTOM_DUTY')")
-    CustomTransactionStatus paymentStatus(CustomTransactionStatus customTransactionStatus);
+    CustomTransactionStatus getPaymentStatus(CorpPaymentRequest corpPaymentRequest);
+
+    @PreAuthorize("hasAuthority('CUSTOM_DUTY')")
+    CustomTransactionStatus updatePayamentStatus(Long id);
 
     @PreAuthorize("hasAuthority('CUSTOM_DUTY')")
     public boolean isAccountBalanceEnough(String acctNumber, BigDecimal amount);

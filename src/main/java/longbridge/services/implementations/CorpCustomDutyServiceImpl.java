@@ -1,7 +1,5 @@
 package longbridge.services.implementations;
 
-import longbridge.dtos.CorpPaymentRequestDTO;
-import longbridge.dtos.CorpTransferRequestDTO;
 import longbridge.dtos.SettingDTO;
 import longbridge.exception.*;
 import longbridge.models.*;
@@ -118,10 +116,38 @@ public class CorpCustomDutyServiceImpl implements CorpCustomDutyService {
     }
 
     @Override
-    public CustomTransactionStatus paymentStatus(CustomTransactionStatus customTransactionStatus) {
-        return integrationService.paymentStatus(customTransactionStatus);
+    public CustomTransactionStatus getPaymentStatus(CorpPaymentRequest corpPaymentRequest) {
+        return integrationService.paymentStatus(corpPaymentRequest);
     }
-
+    @Override
+    public CustomTransactionStatus updatePayamentStatus(Long id) {
+        CorpPaymentRequest corpPaymentRequest = getPayment(id);
+//        CustomTransactionStatus customTransactionStatus = extractStatusFromPayment(corpPaymentRequest);
+        CustomTransactionStatus customTransactionStatus= getPaymentStatus(corpPaymentRequest);
+        corpPaymentRequest = updatePaymentFields(customTransactionStatus,corpPaymentRequest);
+        corpPaymentRequestRepo.save(corpPaymentRequest);
+        return customTransactionStatus;
+    }
+    private CustomTransactionStatus extractStatusFromPayment(CorpPaymentRequest corpPaymentRequest){
+        CustomTransactionStatus customTransactionStatus =  new CustomTransactionStatus();
+        customTransactionStatus.setCode(corpPaymentRequest.getCustomDutyPayment().getCode());
+        customTransactionStatus.setMessage(corpPaymentRequest.getCustomDutyPayment().getMessage());
+        customTransactionStatus.setPaymentRef(corpPaymentRequest.getCustomDutyPayment().getPaymentRef());
+        customTransactionStatus.setNotificationStatus(corpPaymentRequest.getCustomDutyPayment().getNotificationStatus());
+        customTransactionStatus.setApprovalStatus(corpPaymentRequest.getCustomDutyPayment().getApprovalStatus());
+        customTransactionStatus.setPaymentStatus(corpPaymentRequest.getCustomDutyPayment().getPaymentStatus());
+        return  customTransactionStatus;
+    }
+    private CorpPaymentRequest updatePaymentFields(CustomTransactionStatus customTransactionStatus,CorpPaymentRequest corpPaymentRequest){
+//        CorpPaymentRequest corpPaymentRequest =  new CorpPaymentRequest();
+        corpPaymentRequest.getCustomDutyPayment().setCode(customTransactionStatus.getCode());
+        corpPaymentRequest.getCustomDutyPayment().setMessage(customTransactionStatus.getMessage());
+        corpPaymentRequest.getCustomDutyPayment().setPaymentRef(customTransactionStatus.getPaymentRef());
+        corpPaymentRequest.getCustomDutyPayment().setNotificationStatus(customTransactionStatus.getNotificationStatus());
+        corpPaymentRequest.getCustomDutyPayment().setApprovalStatus(customTransactionStatus.getApprovalStatus());
+        corpPaymentRequest.getCustomDutyPayment().setPaymentStatus(customTransactionStatus.getPaymentStatus());
+        return  corpPaymentRequest;
+    }
     public boolean isAccountBalanceEnough(String acctNumber, BigDecimal amount){
         BigDecimal availableBalance =  integrationService.getAvailableBalance(acctNumber);
         LOGGER.info("the availableBalance {}",availableBalance);
@@ -228,9 +254,9 @@ public class CorpCustomDutyServiceImpl implements CorpCustomDutyService {
         } catch (TransferAuthorizationException ex) {
             throw ex;
         } catch (Exception e) {
-            throw new InternetBankingException(messageSource.getMessage("bulk.save.failure", null, null), e);
+            throw new InternetBankingException(messageSource.getMessage("custom.payment.save.failure", null, null), e);
         }
-        return messageSource.getMessage("bulk.save.success", null, null);
+        return messageSource.getMessage("custom.payment.save.success", null, null);
     }
 
     @Override
@@ -446,7 +472,6 @@ public class CorpCustomDutyServiceImpl implements CorpCustomDutyService {
     }
 
     public void updatePaymentRequest(CorpPaymentRequest originalPayment, CorpPaymentRequest newPaymentRequest) throws InternetBankingTransferException {
-        CorpPaymentRequestDTO result = new CorpPaymentRequestDTO();
         try {
             originalPayment.setStatus(newPaymentRequest.getStatus());
             originalPayment.setTransferType(TransferType.CUSTOM_DUTY);

@@ -135,6 +135,6 @@ public interface IntegrationService {
     public CustomPaymentNotification paymentNotification(CustomPaymentNotificationRequest paymentNotificationRequest);
 
     @PreAuthorize("hasAuthority('CUSTOM_DUTY')")
-    public CustomTransactionStatus paymentStatus(CustomTransactionStatus customTransactionStatus);
+    public CustomTransactionStatus paymentStatus(CorpPaymentRequest corpPaymentRequest);
 
 }
