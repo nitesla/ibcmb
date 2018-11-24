@@ -808,6 +808,7 @@ public class IntegrationServiceImpl implements IntegrationService {
 			logger.debug("Fetching data from coronation rest service via the url: {}", CustomDutyUrl);
 			logger.debug("Fetching data from coronation rest service via the url: {}", CustomDutyUrl+"/customduty/payassessment");
 			logger.debug("paymentNotificationRequest: {}", paymentNotificationRequest);
+			paymentNotificationRequest.setCustomerAccountNo("190219101");
 			CustomPaymentNotification response = template.postForObject(CustomDutyUrl+"/customduty/payassessment", paymentNotificationRequest, CustomPaymentNotification.class);
 			logger.debug("payment notification Response: {}", response);
 			return response;

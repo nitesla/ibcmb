@@ -39,6 +39,7 @@ public class CustomDutyPayment extends AbstractEntity {
     private String lastAuthorizer;
     private String paymentStatus;
     private String notificationStatus;
+    private String paymentRef;
 
     @OneToOne
     private CorpPaymentRequest corpPaymentRequest;
@@ -54,8 +55,8 @@ public class CustomDutyPayment extends AbstractEntity {
                              String SADAssessmentNumber, String SADYear, String commandDutyArea, BigDecimal totalAmount,
                              String companyName, String formMNumber, String approvalStatusDesc, String approvalStatus,
                              String tranId, String bankCode, String bankBranchCode, String collectionAccount, String account,
-                             String code, String message, longbridge.models.CorpPaymentRequest corpPaymentRequest,String lastAuthorizer,
-                             String initiatedBy, String paymentStatus, String notificationStatus) {
+                             String code, String message, CorpPaymentRequest corpPaymentRequest,String lastAuthorizer,
+                             String initiatedBy, String paymentStatus, String notificationStatus, String paymentRef) {
         this.dtype = dtype;
         this.transferRequestId = transferRequestId;
         this.declarantCode = declarantCode;
@@ -83,13 +84,14 @@ public class CustomDutyPayment extends AbstractEntity {
         this.initiatedBy = initiatedBy;
         this.paymentStatus = paymentStatus;
         this.notificationStatus = notificationStatus;
+        this.paymentRef = paymentRef;
     }
 
-   public longbridge.models.CorpPaymentRequest getCorpPaymentRequest() {
+   public CorpPaymentRequest getCorpPaymentRequest() {
         return corpPaymentRequest;
     }
 
-    public void setCorpPaymentRequest(longbridge.models.CorpPaymentRequest corpPaymentRequest) {
+    public void setCorpPaymentRequest(CorpPaymentRequest corpPaymentRequest) {
         corpPaymentRequest = corpPaymentRequest;
     }
 
@@ -309,5 +311,13 @@ public class CustomDutyPayment extends AbstractEntity {
 
     public void setNotificationStatus(String notificationStatus) {
         this.notificationStatus = notificationStatus;
+    }
+
+    public void setPaymentRef(String paymentRef) {
+        this.paymentRef = paymentRef;
+    }
+
+    public String getPaymentRef() {
+        return paymentRef;
     }
 }

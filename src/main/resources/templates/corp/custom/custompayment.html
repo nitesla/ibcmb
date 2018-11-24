@@ -105,6 +105,7 @@
                             <!--</div>-->
                             <div class="form-group">
                                 <input type="hidden" id="tranId" readonly="readonly" th:field="*{assessmentDetail.responseInfo.tranId}"/>
+                                <input type="hidden" id="taxId" readonly="readonly" th:field="*{assessmentDetail.responseInfo.taxDetails}"/>
                                 <div class="col-sm-8">
                                     <label class="col-sm-2">Total Amount to be Paid</label>
                                     <input class="col-sm-8 form-control full-width" readonly="readonly" type="text" id="totalAmount" th:field="*{assessmentDetail.responseInfo.totalAmount}"/>
@@ -123,9 +124,9 @@
                                                     <th>Amount</th>
                                                 </tr>
                                                 </thead>
-                                                <tbody id="content">
+                                                <!--<tbody id="content">-->
 
-                                                </tbody>
+                                                <!--</tbody>-->
                                             </table>
                                         </div>
                                     </div>
@@ -258,6 +259,27 @@
                             <br/>
                             <div class="form-group">
                                 <div class="col-sm-8">
+                                    <label class="col-sm-2">Payment Details</label>
+                                    <div class="x_content">
+                                        <div class="table-responsive col-xs-12 no-pad-left no-pad-right" >
+                                            <table class="table" id="mTaxDetails">
+                                                <thead>
+                                                <tr>
+                                                    <th>Tax Code</th>
+                                                    <th>Description</th>
+                                                    <th>Amount</th>
+                                                </tr>
+                                                </thead>
+                                                <!--<tbody id="content">-->
+
+                                                <!--</tbody>-->
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-sm-8">
                                     <label class="col-sm-2">Approval Status</label>
                                     <input class="col-sm-8 form-control full-width" readonly="readonly" type="text" id="mapprovalStatusDescription" th:field="*{assessmentDetail.responseInfo.approvalStatusDescription}"/>
                                 </div>
@@ -311,9 +333,22 @@
             $('#mapprovalStatusDescription').val($('#approvalStatusDescription').val());
             $('#mtotalAmount').val($('#totalAmount').val());
             $('#msgdAssessmentDate').val($('#sgdAssessmentDate').val());
+            $('#mTaxDetails').val($('#taxId').val());
             $('#mbankCode').val($('#bankCode').val());
             // $('#mbankBranchCode').val($('#bankBranchCode').val());
             $('#macctNumber').val($('#acctNumber').val());
+            var t = ($('#taxId').val()).data();
+            console.log('test');
+            console.log(t);
+            var table = document.getElementById('mtranDetails');
+            var tr = document.createElement('tr');
+            t.forEach(function(t) {
+                var tr = document.createElement('tr');
+                tr.innerHTML = '<td>' + t.TaxAmount+ '</td>' +
+                    '<td>' + t.TaxDesc + '</td>' +
+                    '<td>' + t.TaxAmount + '</td>' ;
+                table.appendChild(tr);
+            });
             $('#myModal').modal({
                 backdrop: 'static',
                 keyboard: false,
@@ -325,7 +360,6 @@
                 },
                 show: bool
             });
-
         }
 
         $("#assessmentBtn").on("click",function(event) {
@@ -355,11 +389,10 @@
                     $('#approvalStatus').val(result.ResponseInfo["ApprovalStatus"]);
                     $('#approvalStatusDescription').val(result.ResponseInfo["ApprovalStatusDescription"]);
                     $('#totalAmount').val(result.ResponseInfo["TotalAmount"]);
-
                     $('#sgdAssessmentDate').val(result.ResponseInfo["SGDAssessmentDate"]);
                     $('#bankCode').val(result.ResponseInfo["BankCode"]);
-                    $('#bankBranchCode').val(result.ResponseInfo["BankBranchCode"]);
-                    console.log("tax result"+result.ResponseInfo["TaxDetails"]);
+                    // $('#bankBranchCode').val(result.ResponseInfo["BankBranchCode"]);
+                    $('#taxId').val(result.ResponseInfo["TaxDetails"]);
                     var t = result.ResponseInfo["TaxDetails"];
                     var table = document.getElementById('tranDetails');
                     var tr = document.createElement('tr');
