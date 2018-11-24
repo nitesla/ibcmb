@@ -16,7 +16,11 @@
                         <div class="btn-group" role="group" aria-label="First group">
                             <a type="button" class="btn bt-select btn-default bt-link-act"
                                th:href="@{/corporate/custom/index/authorizations}" disabled="disabled"> View</a>
-                            <a type="button" th:href="@{/corporate/custom/payment}" class="btn btn-default pull-right">New</a>
+                            <a type="button" th:href="@{/corporate/custom/payment}" class="btn btn-default">New</a>
+
+                        </div>
+                        <div>
+                        <button class="btn btn-default pull-right bt-select" disabled="disabled" id="refresh" type="button">Refresh</button>
                         </div>
                     </div>
                     <br/>
@@ -25,12 +29,13 @@
 
                             <thead>
                             <td>Transfer type</td>
+                            <td>Transfer type</td>
                             <td>Beneficiary</td>
                             <td>Bank</td>
                             <td>Amount</td>
                             <td>Date</td>
                             <td>Status</td>
-                            <td></td>
+                            <!--<td></td>-->
                             </thead>
                             <tbody>
 
@@ -46,6 +51,7 @@
 
         <th:block layout:fragment="scripts">
             <!-- <script th:src="@{~/customer/js/dataTables.bootstrap.js}"></script>-->
+            <!--<script th:src="@{~/bank/vendors/datatables.net/js/jquery.dataTables.js}"></script>-->
             <script th:src="@{~/customer/js/dataTables.select.js}"></script>
             <script th:src="@{~/bank/vendors/sweetalert/sweetalert.min.js}"></script>
             <script th:src="@{~/bank/vendors/bootstrap-dialog/js/bootstrap-dialog.js}"></script>
@@ -66,17 +72,17 @@
                         "ajax": "/corporate/custom/requests",
                         "dom": 'T<"clear">frtlp',
                         "columns": [
-
+                            {"data": "id",
+                            "visible":false},
                             {"data": "transferType"},
                             {"data": "beneficiaryAccountName"},
                             {"data": "financialInstitution.institutionName"},
                             {"data": "amount"},
                             {"data": "tranDate"},
-                            {"data": "statusDescription"},
-                            {"data": "id"}
+                            {"data": "statusDescription"}
 
                         ], "columnDefs": [{
-                            "targets" : 3,
+                            "targets" : 4,
                             "data" : "amount",
                             "render" : function(data, type,full, meta) {
                                 if (type === 'display') {
@@ -88,7 +94,7 @@
                                 return data;
                             }
                         },{
-                            "targets": 4,
+                            "targets": 5,
                             "data": "tranDate",
                             "render": function(data, type, full, meta) {
 
@@ -102,12 +108,14 @@
                                 }
                                 return data;
                             }
-                        },{
-                            "targets" : 6,
-                            "data" : "id",
-                            "render" : function(data, type,full, meta) {
-                                return '<button  class="btn btn-link required-step">Update Status</button>';
-                            }}
+                        }
+//                        ,{
+//                            "targets" : 6,
+//                            "data" : "id",
+//                            "render" : function(data, type,full, meta) {
+//                                return '<button  class="btn btn-sm btn-link required-step">Update Status</button>';
+//                            }
+//                        }
                             ]
                     });
 
@@ -134,6 +142,42 @@
                     });
 
                 });
+                var id;
+                var table =  $('#auditview').DataTable();
+
+                $("#requests").on("click", "tr", function()
+                {
+                    var table =  $('#auditview').DataTable();
+                    id = $(this).children(":first").text();
+                    console.log("first it "+id);
+                });
+                $("#refresh").on("click", function (e) {
+                    e.preventDefault();
+
+                });
+    function refresh() {
+        showSpinner();
+
+        console.log("refresh id "+id);
+
+        $.ajax({
+        "url":"/corporate/custom/refresh",
+        "type" : "GET",
+        "data" :  {
+            id : id
+        },success: function (result) {
+table.ajax.reload(null,true);
+                hideSpinner();
+        },
+        error: function (dd) {
+            $('#refresh'.attr("disabled", true));
+//                        console.log("error")
+            hideSpinner();
+            bootbox.alert("<div style='text-align: center'>Service not available</div>");
+            return false;
+        }
+    });
+}
 
                 $("a.bt-link-act").on("click", function (e) {
                     e.preventDefault();

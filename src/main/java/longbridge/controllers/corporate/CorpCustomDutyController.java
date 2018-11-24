@@ -179,7 +179,7 @@ public class CorpCustomDutyController {
             LOGGER.error("Error calling coronation service rest service",e);
         }
     }
-
+    @GetMapping("/refresh")
     public CustomTransactionStatus paymentStatus(@ModelAttribute @Valid CustomTransactionStatus customTransactionStatus){
 
         try {
