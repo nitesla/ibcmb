@@ -55,9 +55,15 @@ public class IntegrationServiceImpl implements IntegrationService {
 	@Value("${CMB.ALERT.URL}")
 	private String cmbAlert;
 
-	@Value("http://localhost:9001")
-	//@Value("${customDuty.baseUrl}")
+	//	@Value("http://localhost:8090")
+	@Value("${customDuty.baseUrl}")
 	private String CustomDutyUrl;
+
+	@Value("${custom.appId}")
+	private String appId;
+
+	@Value("${custom.secretKey}")
+	private String secretKey;
 
 	private RestTemplate template;
 	private MailService mailService;
@@ -70,8 +76,8 @@ public class IntegrationServiceImpl implements IntegrationService {
 
 	@Autowired
 	public IntegrationServiceImpl(RestTemplate template, MailService mailService, TemplateEngine templateEngine,
-			ConfigurationService configService, TransferErrorService errorService, MessageSource messageSource,
-			AccountRepo accountRepo, CorporateRepo corporateRepo) {
+								  ConfigurationService configService, TransferErrorService errorService, MessageSource messageSource,
+								  AccountRepo accountRepo, CorporateRepo corporateRepo) {
 		this.template = template;
 		this.mailService = mailService;
 		this.templateEngine = templateEngine;
@@ -117,7 +123,7 @@ public class IntegrationServiceImpl implements IntegrationService {
 
 	@Override
 	public AccountStatement getAccountStatements(String accountNo, Date fromDate, Date toDate, String tranType,
-			String numOfTxn, PaginationDetails paginationDetails) {
+												 String numOfTxn, PaginationDetails paginationDetails) {
 		AccountStatement statement = new AccountStatement();
 		validate(accountNo);
 		try {
@@ -150,7 +156,7 @@ public class IntegrationServiceImpl implements IntegrationService {
 
 	@Override
 	public AccountStatement getAccountStatements(String accountNo, Date fromDate, Date toDate, String tranType,
-			String numOfTxn) {
+												 String numOfTxn) {
 		validate(accountNo);
 		AccountStatement statement = new AccountStatement();
 		try {
@@ -218,7 +224,7 @@ public class IntegrationServiceImpl implements IntegrationService {
 	public AccountStatement getTransactionHistory(String accountNo, Date fromDate, Date toDate, String tranType) {
 		AccountStatement statement = new AccountStatement();
 		//TODO: Move to account service
-				validate(accountNo);
+		validate(accountNo);
 		try {
 			SimpleDateFormat formatter = new SimpleDateFormat("dd-MMM-yyyy");
 
@@ -303,134 +309,134 @@ public class IntegrationServiceImpl implements IntegrationService {
 		validate(account);
 
 		switch (type) {
-		case CORONATION_BANK_TRANSFER:
-		{
-			transRequest.setTransferType(TransferType.CORONATION_BANK_TRANSFER);
-			TransferDetails response;
-			String uri = URI + "/transfer/local";
-			Map<String, String> params = new HashMap<>();
-			params.put("debitAccountNumber", transRequest.getCustomerAccountNumber());
-			params.put("debitAccountName", account.getAccountName());
-			params.put("creditAccountNumber", transRequest.getBeneficiaryAccountNumber());
-			params.put("creditAccountName", transRequest.getBeneficiaryAccountName());
-			params.put("tranAmount", transRequest.getAmount().toString());
-			params.put("remarks", transRequest.getRemarks());
-			logger.info("Starting Transfer with Params: {}", params.toString());
+			case CORONATION_BANK_TRANSFER:
+			{
+				transRequest.setTransferType(TransferType.CORONATION_BANK_TRANSFER);
+				TransferDetails response;
+				String uri = URI + "/transfer/local";
+				Map<String, String> params = new HashMap<>();
+				params.put("debitAccountNumber", transRequest.getCustomerAccountNumber());
+				params.put("debitAccountName", account.getAccountName());
+				params.put("creditAccountNumber", transRequest.getBeneficiaryAccountNumber());
+				params.put("creditAccountName", transRequest.getBeneficiaryAccountName());
+				params.put("tranAmount", transRequest.getAmount().toString());
+				params.put("remarks", transRequest.getRemarks());
+				logger.info("Starting Transfer with Params: {}", params.toString());
 
-			try {
-				logger.info("Initiating Local Transfer");
-				logger.debug("Transfer Params: {}", params.toString());
+				try {
+					logger.info("Initiating Local Transfer");
+					logger.debug("Transfer Params: {}", params.toString());
 
-				response = template.postForObject(uri, params, TransferDetails.class);
-				transRequest.setStatus(response.getResponseCode());
-				transRequest.setStatusDescription(response.getResponseDescription());
-				transRequest.setReferenceNumber(response.getUniqueReferenceCode());
-				transRequest.setNarration(response.getNarration());
-				return transRequest;
+					response = template.postForObject(uri, params, TransferDetails.class);
+					transRequest.setStatus(response.getResponseCode());
+					transRequest.setStatusDescription(response.getResponseDescription());
+					transRequest.setReferenceNumber(response.getUniqueReferenceCode());
+					transRequest.setNarration(response.getNarration());
+					return transRequest;
 
-			} catch (HttpStatusCodeException e) {
-				logger.error("HTTP Error occurred", e);
-				transRequest.setStatus(e.getStatusCode().toString());
-				transRequest.setStatusDescription(e.getStatusCode().getReasonPhrase());
-				return transRequest;
-			} catch (Exception e) {
-				logger.error("Error occurred making transfer", e);
-				transRequest.setStatus(StatusCode.FAILED.toString());
-				transRequest.setStatusDescription(messageSource.getMessage("status.code.failed", null, locale));
-				return transRequest;
+				} catch (HttpStatusCodeException e) {
+					logger.error("HTTP Error occurred", e);
+					transRequest.setStatus(e.getStatusCode().toString());
+					transRequest.setStatusDescription(e.getStatusCode().getReasonPhrase());
+					return transRequest;
+				} catch (Exception e) {
+					logger.error("Error occurred making transfer", e);
+					transRequest.setStatus(StatusCode.FAILED.toString());
+					transRequest.setStatusDescription(messageSource.getMessage("status.code.failed", null, locale));
+					return transRequest;
+				}
+
+			}
+			case INTER_BANK_TRANSFER: {
+				transRequest.setTransferType(TransferType.INTER_BANK_TRANSFER);
+				TransferDetails response;
+				String uri = URI + "/transfer/nip";
+				Map<String, String> params = new HashMap<>();
+				params.put("debitAccountNumber", transRequest.getCustomerAccountNumber());
+				params.put("debitAccountName", account.getAccountName());
+				params.put("creditAccountNumber", transRequest.getBeneficiaryAccountNumber());
+				params.put("creditAccountName", transRequest.getBeneficiaryAccountName());
+				params.put("tranAmount", transRequest.getAmount().toString());
+				params.put("destinationInstitutionCode", transRequest.getFinancialInstitution().getInstitutionCode());
+				params.put("tranType", "NIP");
+				params.put("remarks", transRequest.getRemarks());
+
+				try {
+					logger.info("Initiating Inter Bank Transfer");
+					logger.debug("Transfer Params: {}", params.toString());
+
+					response = template.postForObject(uri, params, TransferDetails.class);
+					logger.info("response for transfer {}", response.toString());
+					transRequest.setReferenceNumber(response.getUniqueReferenceCode());
+					transRequest.setNarration(response.getNarration());
+					transRequest.setStatus(response.getResponseCode());
+					transRequest.setStatusDescription(response.getResponseDescription());
+
+					return transRequest;
+				} catch (HttpStatusCodeException e) {
+
+					logger.error("HTTP Error occurred", e);
+					transRequest.setStatus(e.getStatusCode().toString());
+					transRequest.setStatusDescription(e.getStatusCode().getReasonPhrase());
+					return transRequest;
+
+				} catch (Exception e) {
+					logger.error("Error occurred making transfer", e);
+					transRequest.setStatus(StatusCode.FAILED.toString());
+					transRequest.setStatusDescription(messageSource.getMessage("status.code.failed", null, locale));
+					return transRequest;
+				}
+
+			}
+			case INTERNATIONAL_TRANSFER: {
+
 			}
 
-		}
-		case INTER_BANK_TRANSFER: {
-			transRequest.setTransferType(TransferType.INTER_BANK_TRANSFER);
-			TransferDetails response;
-			String uri = URI + "/transfer/nip";
-			Map<String, String> params = new HashMap<>();
-			params.put("debitAccountNumber", transRequest.getCustomerAccountNumber());
-			params.put("debitAccountName", account.getAccountName());
-			params.put("creditAccountNumber", transRequest.getBeneficiaryAccountNumber());
-			params.put("creditAccountName", transRequest.getBeneficiaryAccountName());
-			params.put("tranAmount", transRequest.getAmount().toString());
-			params.put("destinationInstitutionCode", transRequest.getFinancialInstitution().getInstitutionCode());
-			params.put("tranType", "NIP");
-			params.put("remarks", transRequest.getRemarks());
+			case OWN_ACCOUNT_TRANSFER: {
+				transRequest.setTransferType(TransferType.OWN_ACCOUNT_TRANSFER);
+				TransferDetails response;
+				String uri = URI + "/transfer/local";
+				Map<String, String> params = new HashMap<>();
+				params.put("debitAccountNumber", transRequest.getCustomerAccountNumber());
+				params.put("debitAccountName", account.getAccountName());
+				params.put("creditAccountNumber", transRequest.getBeneficiaryAccountNumber());
+				params.put("creditAccountName", transRequest.getBeneficiaryAccountName());
+				params.put("tranAmount", transRequest.getAmount().toString());
+				params.put("remarks", transRequest.getRemarks());
+				logger.info("params for transfer {}", params.toString());
+				try {
 
-			try {
-				logger.info("Initiating Inter Bank Transfer");
-				logger.debug("Transfer Params: {}", params.toString());
+					logger.info("Initiating Local (Own Account) Transfer");
+					logger.debug("Transfer Params: {}", params.toString());
 
-				response = template.postForObject(uri, params, TransferDetails.class);
-				logger.info("response for transfer {}", response.toString());
-				transRequest.setReferenceNumber(response.getUniqueReferenceCode());
-				transRequest.setNarration(response.getNarration());
-				transRequest.setStatus(response.getResponseCode());
-				transRequest.setStatusDescription(response.getResponseDescription());
+					response = template.postForObject(uri, params, TransferDetails.class);
+					transRequest.setNarration(response.getNarration());
+					transRequest.setReferenceNumber(response.getUniqueReferenceCode());
+					transRequest.setStatus(response.getResponseCode());
+					transRequest.setStatusDescription(response.getResponseDescription());
+					return transRequest;
 
-				return transRequest;
-			} catch (HttpStatusCodeException e) {
+				} catch (HttpStatusCodeException e) {
 
-				logger.error("HTTP Error occurred", e);
-				transRequest.setStatus(e.getStatusCode().toString());
-				transRequest.setStatusDescription(e.getStatusCode().getReasonPhrase());
-				return transRequest;
+					logger.error("HTTP Error occurred", e);
+					transRequest.setStatus(e.getStatusCode().toString());
+					transRequest.setStatusDescription(e.getStatusCode().getReasonPhrase());
+					return transRequest;
 
-			} catch (Exception e) {
-				logger.error("Error occurred making transfer", e);
-				transRequest.setStatus(StatusCode.FAILED.toString());
-				transRequest.setStatusDescription(messageSource.getMessage("status.code.failed", null, locale));
-				return transRequest;
+				} catch (Exception e) {
+					logger.error("Error occurred making transfer", e);
+					transRequest.setStatus(StatusCode.FAILED.toString());
+					transRequest.setStatusDescription(messageSource.getMessage("status.code.failed", null, locale));
+					return transRequest;
+				}
+
 			}
 
-		}
-		case INTERNATIONAL_TRANSFER: {
+			case RTGS: {
+				TransRequest request = sendTransfer(transRequest);
 
-		}
-
-		case OWN_ACCOUNT_TRANSFER: {
-			transRequest.setTransferType(TransferType.OWN_ACCOUNT_TRANSFER);
-			TransferDetails response;
-			String uri = URI + "/transfer/local";
-			Map<String, String> params = new HashMap<>();
-			params.put("debitAccountNumber", transRequest.getCustomerAccountNumber());
-			params.put("debitAccountName", account.getAccountName());
-			params.put("creditAccountNumber", transRequest.getBeneficiaryAccountNumber());
-			params.put("creditAccountName", transRequest.getBeneficiaryAccountName());
-			params.put("tranAmount", transRequest.getAmount().toString());
-			params.put("remarks", transRequest.getRemarks());
-			logger.info("params for transfer {}", params.toString());
-			try {
-
-				logger.info("Initiating Local (Own Account) Transfer");
-				logger.debug("Transfer Params: {}", params.toString());
-
-				response = template.postForObject(uri, params, TransferDetails.class);
-				transRequest.setNarration(response.getNarration());
-				transRequest.setReferenceNumber(response.getUniqueReferenceCode());
-				transRequest.setStatus(response.getResponseCode());
-				transRequest.setStatusDescription(response.getResponseDescription());
-				return transRequest;
-
-			} catch (HttpStatusCodeException e) {
-
-				logger.error("HTTP Error occurred", e);
-				transRequest.setStatus(e.getStatusCode().toString());
-				transRequest.setStatusDescription(e.getStatusCode().getReasonPhrase());
-				return transRequest;
-
-			} catch (Exception e) {
-				logger.error("Error occurred making transfer", e);
-				transRequest.setStatus(StatusCode.FAILED.toString());
-				transRequest.setStatusDescription(messageSource.getMessage("status.code.failed", null, locale));
-				return transRequest;
+				return request;
 			}
-
-		}
-
-		case RTGS: {
-			TransRequest request = sendTransfer(transRequest);
-
-			return request;
-		}
 		}
 		logger.trace("request did not match any type");
 		transRequest.setStatus(ResultType.ERROR.toString());
@@ -673,7 +679,7 @@ public class IntegrationServiceImpl implements IntegrationService {
 			if(result != null) {
 				boolean response = result.get("success").asBoolean();
 				logger.info("the boolean {}",response);
-					return response;
+				return response;
 			}
 		} catch (Exception e) {
 			logger.error(uri, params, e);
@@ -735,32 +741,32 @@ public class IntegrationServiceImpl implements IntegrationService {
 	private void validate(String account) {
 		User currentUser = getCurrentUser();
 		switch (currentUser.getUserType()) {
-		case RETAIL: {
-			RetailUser user = (RetailUser) currentUser;
-			Account acct = accountRepo.findFirstByAccountNumber(account);
-			if (acct == null || acct.getCustomerId() == null) {
-				throw new InternetBankingException("Access Denied");
-			} else if (!acct.getCustomerId().equals(user.getCustomerId())) {
-				logger.warn("User " + user.toString() + "trying to access other accounts");
-				throw new InternetBankingException("Access Denied");
+			case RETAIL: {
+				RetailUser user = (RetailUser) currentUser;
+				Account acct = accountRepo.findFirstByAccountNumber(account);
+				if (acct == null || acct.getCustomerId() == null) {
+					throw new InternetBankingException("Access Denied");
+				} else if (!acct.getCustomerId().equals(user.getCustomerId())) {
+					logger.warn("User " + user.toString() + "trying to access other accounts");
+					throw new InternetBankingException("Access Denied");
+				}
 			}
-		}
 			break;
-		case CORPORATE: {
-			CorporateUser user = (CorporateUser) currentUser;
-			Account acct = accountRepo.findFirstByAccountNumber(account);
+			case CORPORATE: {
+				CorporateUser user = (CorporateUser) currentUser;
+				Account acct = accountRepo.findFirstByAccountNumber(account);
 //			boolean valid = accountRepo.accountInCorp(user.getCorporate(), acct);
-			Corporate corporate = corporateRepo.findOne(user.getCorporate().getId());
-			boolean valid = corporate.getAccounts().contains(acct);			if (!valid) {
-				logger.warn("User " + user.toString() + "trying to access other accounts");
+				Corporate corporate = corporateRepo.findOne(user.getCorporate().getId());
+				boolean valid = corporate.getAccounts().contains(acct);			if (!valid) {
+					logger.warn("User " + user.toString() + "trying to access other accounts");
+					throw new InternetBankingException("Access Denied");
+				}
+			}
+			break;
+			default: {
+				logger.warn("Internal User " + currentUser.toString() + "trying to access accounts");
 				throw new InternetBankingException("Access Denied");
 			}
-		}
-			break;
-		default: {
-			logger.warn("Internal User " + currentUser.toString() + "trying to access accounts");
-			throw new InternetBankingException("Access Denied");
-		}
 		}
 	}
 
@@ -806,7 +812,9 @@ public class IntegrationServiceImpl implements IntegrationService {
 	public CustomPaymentNotification paymentNotification(CustomPaymentNotificationRequest paymentNotificationRequest){
 		try {
 			logger.debug("Fetching data from coronation rest service via the url: {}", CustomDutyUrl);
-
+			logger.debug("Fetching data from coronation rest service via the url: {}", CustomDutyUrl+"/customduty/payassessment");
+			logger.debug("paymentNotificationRequest: {}", paymentNotificationRequest);
+//			paymentNotificationRequest.setCustomerAccountNo("190219101");
 			CustomPaymentNotification response = template.postForObject(CustomDutyUrl+"/customduty/payassessment", paymentNotificationRequest, CustomPaymentNotification.class);
 			logger.debug("payment notification Response: {}", response);
 			return response;
@@ -816,11 +824,19 @@ public class IntegrationServiceImpl implements IntegrationService {
 		}
 		return null;
 	}
-
-	public CustomTransactionStatus paymentStatus(CustomTransactionStatus customTransactionStatus){
+	@Override
+	public CustomTransactionStatus paymentStatus(CorpPaymentRequest corpPaymentRequest){
 		try {
 			logger.debug("Fetching data from coronation rest service via the url: {}", CustomDutyUrl);
-			return template.postForObject(CustomDutyUrl+"/customduty/checktransactionstatus", customTransactionStatus, CustomTransactionStatus.class);
+			Map<String,String> request = new HashMap<>();
+			request.put("hash",EncryptionUtil.getSHA512(
+					appId+corpPaymentRequest.getCustomDutyPayment().getTranId()+ corpPaymentRequest.getAmount()+secretKey,null));
+			request.put("appId",appId);
+			request.put("id",corpPaymentRequest.getCustomDutyPayment().getTranId());
+			logger.debug("Fetching data from coronation rest service using: {}", request);
+			CustomTransactionStatus transactionStatus= template.postForObject(CustomDutyUrl+"/customduty/checktransactionstatus", request, CustomTransactionStatus.class);
+			logger.info("the transaction status response {}",transactionStatus);
+			return transactionStatus;
 		}
 		catch (Exception e){
 			logger.error("Error calling coronation service rest service",e);

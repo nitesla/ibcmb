@@ -1,13 +1,20 @@
 package longbridge.models;
 
-public class CustomTransactionStatus {
+import com.fasterxml.jackson.annotation.JsonProperty;
 
+public class CustomTransactionStatus {
+    @JsonProperty("PaymentStatus")
     private String PaymentStatus;
+    @JsonProperty("ApprovalStatus")
     private String ApprovalStatus;
+    @JsonProperty("NotificationStatus")
     private String NotificationStatus;
-    private String paymentRef;
-    private String code;
-    private String message;
+    @JsonProperty("PaymentRef")
+    private String PaymentRef;
+    @JsonProperty("Code")
+    private String Code;
+    @JsonProperty("Message")
+    private String Message;
 
     public String getPaymentStatus() {
         return PaymentStatus;
@@ -34,26 +41,38 @@ public class CustomTransactionStatus {
     }
 
     public String getPaymentRef() {
-        return paymentRef;
+        return PaymentRef;
     }
 
     public void setPaymentRef(String paymentRef) {
-        this.paymentRef = paymentRef;
+        this.PaymentRef = paymentRef;
     }
 
     public String getCode() {
-        return code;
+        return Code;
     }
 
     public void setCode(String code) {
-        this.code = code;
+        this.Code = code;
     }
 
     public String getMessage() {
-        return message;
+        return Message;
     }
 
     public void setMessage(String message) {
-        this.message = message;
+        this.Message = message;
+    }
+
+    @Override
+    public String toString() {
+        return "CustomTransactionStatus{" +
+                "PaymentStatus='" + PaymentStatus + '\'' +
+                ", ApprovalStatus='" + ApprovalStatus + '\'' +
+                ", NotificationStatus='" + NotificationStatus + '\'' +
+                ", PaymentRef='" + PaymentRef + '\'' +
+                ", Code='" + Code + '\'' +
+                ", Message='" + Message + '\'' +
+                '}';
     }
 }

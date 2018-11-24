@@ -7,7 +7,6 @@ import longbridge.exception.InternetBankingTransferException;
 import longbridge.exception.TransferErrorService;
 import longbridge.models.*;
 import longbridge.services.*;
-import longbridge.utils.TransferType;
 import longbridge.utils.TransferUtils;
 import longbridge.validator.transfer.TransferValidator;
 import org.slf4j.Logger;
@@ -53,6 +52,7 @@ public class CorpCustomDutyController {
     private CorporateUserService corporateUserService;
     private CorpTransferService corpTransferService;
     private AccountService accountService;
+    private MessageSource messages;
     private LocaleResolver localeResolver;
     private FinancialInstitutionService financialInstitutionService;
     private TransferValidator validator;
@@ -129,18 +129,16 @@ public class CorpCustomDutyController {
 
     @PostMapping("/summary")
     public String transferSummary(@ModelAttribute("assessmentDetail")  @Valid  CustomAssessmentDetail assessmentDetail,
+                                  @ModelAttribute("assessmentDetailsRequest")  @Valid  CustomAssessmentDetailsRequest assessmentDetailsRequest,
                                   BindingResult result, Model model, HttpServletRequest servletRequest, Principal principal,RedirectAttributes redirectAttributes, Locale locale) {
-        String message ="";
         try {
             CorporateUser user = corporateUserService.getUserByName(principal.getName());
             Corporate corporate = user.getCorporate();
             if (corporate.getCorporateType().equalsIgnoreCase("MULTI")) {
-                message = customDutyService.saveCustomPaymentRequestForAuthorization(assessmentDetail,principal,corporate);
-                redirectAttributes.addFlashAttribute("message",messageSource.getMessage(message,null,locale));
+                customDutyService.saveCustomPaymentRequestForAuthorization(assessmentDetail,assessmentDetailsRequest, principal,corporate);
             } else if (corporate.getCorporateType().equalsIgnoreCase("SOLE")) {
-
             } else {
-
+                redirectAttributes.addFlashAttribute("message",messages);
                 return "redirect:/login/corporate";
             }
             return "redirect:/corporate/custom";
@@ -179,11 +177,13 @@ public class CorpCustomDutyController {
             LOGGER.error("Error calling coronation service rest service",e);
         }
     }
-    @GetMapping("/refresh")
-    public CustomTransactionStatus paymentStatus(@ModelAttribute @Valid CustomTransactionStatus customTransactionStatus){
+    @GetMapping("/{id}/refresh")
+    @ResponseBody
+    public CustomTransactionStatus paymentStatus(@PathVariable Long id){
 
         try {
-            return customDutyService.paymentStatus(customTransactionStatus);
+            LOGGER.info("the is {}",id);
+            return customDutyService.updatePayamentStatus(id);
         }
         catch (Exception e){
             LOGGER.error("Error calling coronation service rest service",e);
@@ -272,7 +272,7 @@ public class CorpCustomDutyController {
         }
 
         try {
-            String message = customDutyService.addAuthorization(corpTransReqEntry);
+            String message = customDutyService.addAuthorization(corpTransReqEntry, principal);
             LOGGER.info("corpTransReqEntry:{}",corpTransReqEntry);
             redirectAttributes.addFlashAttribute("message", message);
 

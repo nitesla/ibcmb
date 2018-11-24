@@ -1,13 +1,12 @@
 package longbridge.services.implementations;
 
-import longbridge.dtos.CorpPaymentRequestDTO;
-import longbridge.dtos.CorpTransferRequestDTO;
 import longbridge.dtos.SettingDTO;
 import longbridge.exception.*;
 import longbridge.models.*;
 import longbridge.repositories.*;
 import longbridge.security.userdetails.CustomUserPrincipal;
 import longbridge.services.*;
+import longbridge.utils.EncryptionUtil;
 import longbridge.utils.StatusCode;
 import longbridge.utils.TransferAuthorizationStatus;
 import longbridge.utils.TransferType;
@@ -40,8 +39,18 @@ public class CorpCustomDutyServiceImpl implements CorpCustomDutyService {
 
     @Autowired
     private CustomDutyPaymentRepo customDutyPaymentRepo;
+
     @Value("${custom.duty.remark}")
     private String paymentRemark;
+
+    @Value("${custom.appId}")
+    private String appId;
+
+    @Value("${custom.secretKey}")
+    private String secretKey;
+
+    @Value("${custom.beneficiaryAcct}")
+    private String beneficiaryAcct;
 
     private CorpTransferServiceImpl CorpTransferServiceImpl;
     private IntegrationService integrationService;
@@ -95,8 +104,8 @@ public class CorpCustomDutyServiceImpl implements CorpCustomDutyService {
     @Override
     public CustomsAreaCommand getCustomsAreaCommands() {
         CustomsAreaCommandRequest customsAreaCommandRequest = new CustomsAreaCommandRequest();
-        customsAreaCommandRequest.setAppId("test");
-        customsAreaCommandRequest.setHash("ad1222bgfghj22j33m333");
+        customsAreaCommandRequest.setAppId(appId);
+        customsAreaCommandRequest.setHash(EncryptionUtil.getSHA512(appId+" "+secretKey,null));
         return integrationService.getCustomsAreaCommands(customsAreaCommandRequest);
     }
 
@@ -107,10 +116,38 @@ public class CorpCustomDutyServiceImpl implements CorpCustomDutyService {
     }
 
     @Override
-    public CustomTransactionStatus paymentStatus(CustomTransactionStatus customTransactionStatus) {
-        return integrationService.paymentStatus(customTransactionStatus);
+    public CustomTransactionStatus getPaymentStatus(CorpPaymentRequest corpPaymentRequest) {
+        return integrationService.paymentStatus(corpPaymentRequest);
     }
-
+    @Override
+    public CustomTransactionStatus updatePayamentStatus(Long id) {
+        CorpPaymentRequest corpPaymentRequest = getPayment(id);
+//        CustomTransactionStatus customTransactionStatus = extractStatusFromPayment(corpPaymentRequest);
+        CustomTransactionStatus customTransactionStatus= getPaymentStatus(corpPaymentRequest);
+        corpPaymentRequest = updatePaymentFields(customTransactionStatus,corpPaymentRequest);
+        corpPaymentRequestRepo.save(corpPaymentRequest);
+        return customTransactionStatus;
+    }
+    private CustomTransactionStatus extractStatusFromPayment(CorpPaymentRequest corpPaymentRequest){
+        CustomTransactionStatus customTransactionStatus =  new CustomTransactionStatus();
+        customTransactionStatus.setCode(corpPaymentRequest.getCustomDutyPayment().getCode());
+        customTransactionStatus.setMessage(corpPaymentRequest.getCustomDutyPayment().getMessage());
+        customTransactionStatus.setPaymentRef(corpPaymentRequest.getCustomDutyPayment().getPaymentRef());
+        customTransactionStatus.setNotificationStatus(corpPaymentRequest.getCustomDutyPayment().getNotificationStatus());
+        customTransactionStatus.setApprovalStatus(corpPaymentRequest.getCustomDutyPayment().getApprovalStatus());
+        customTransactionStatus.setPaymentStatus(corpPaymentRequest.getCustomDutyPayment().getPaymentStatus());
+        return  customTransactionStatus;
+    }
+    private CorpPaymentRequest updatePaymentFields(CustomTransactionStatus customTransactionStatus,CorpPaymentRequest corpPaymentRequest){
+//        CorpPaymentRequest corpPaymentRequest =  new CorpPaymentRequest();
+        corpPaymentRequest.getCustomDutyPayment().setCode(customTransactionStatus.getCode());
+        corpPaymentRequest.getCustomDutyPayment().setMessage(customTransactionStatus.getMessage());
+        corpPaymentRequest.getCustomDutyPayment().setPaymentRef(customTransactionStatus.getPaymentRef());
+        corpPaymentRequest.getCustomDutyPayment().setNotificationStatus(customTransactionStatus.getNotificationStatus());
+        corpPaymentRequest.getCustomDutyPayment().setApprovalStatus(customTransactionStatus.getApprovalStatus());
+        corpPaymentRequest.getCustomDutyPayment().setPaymentStatus(customTransactionStatus.getPaymentStatus());
+        return  corpPaymentRequest;
+    }
     public boolean isAccountBalanceEnough(String acctNumber, BigDecimal amount){
         BigDecimal availableBalance =  integrationService.getAvailableBalance(acctNumber);
         LOGGER.info("the availableBalance {}",availableBalance);
@@ -124,7 +161,6 @@ public class CorpCustomDutyServiceImpl implements CorpCustomDutyService {
             throw new TransferRuleException(messageSource.getMessage("rule.unapplicable", null, locale));
         }
         try {
-
             corpPaymentRequest.setStatus(StatusCode.PENDING.toString());
             corpPaymentRequest.setStatusDescription("Pending Authorization");
             CorpTransferAuth transferAuth = new CorpTransferAuth();
@@ -135,7 +171,7 @@ public class CorpCustomDutyServiceImpl implements CorpCustomDutyService {
                 CorpTransReqEntry transReqEntry = new CorpTransReqEntry();
                 transReqEntry.setTranReqId(transfer.getId());
                 transReqEntry.setAuthStatus(TransferAuthorizationStatus.APPROVED);
-                return addAuthorization(transReqEntry);
+                return addAuthorization(transReqEntry,null);
             }
         } catch (TransferAuthorizationException ex) {
             throw ex;
@@ -144,10 +180,15 @@ public class CorpCustomDutyServiceImpl implements CorpCustomDutyService {
         }
         return messageSource.getMessage("bulk.save.success", null, null);
     }
+
     @Override
     @Transactional
-    public String saveCustomPaymentRequestForAuthorization(CustomAssessmentDetail assessmentDetail, Principal principal,Corporate corporate ) {
+    public String saveCustomPaymentRequestForAuthorization(CustomAssessmentDetail assessmentDetail, CustomAssessmentDetailsRequest assessmentDetailsRequest, Principal principal,Corporate corporate ) {
 
+        if(assessmentDetail == null || principal == null) {
+            //return messageSource.getMessage("bulk.save.success", null, null);
+            return null;
+        }
         CorpPaymentRequest request = new CorpPaymentRequest();
         try {
             request.setAmount(new BigDecimal(
@@ -166,6 +207,11 @@ public class CorpCustomDutyServiceImpl implements CorpCustomDutyService {
 //            Corporate corporate = user.getCorporate();
             request.setCorporate(corporate);
             CustomDutyPayment customDutyPayment = new CustomDutyPayment();
+            customDutyPayment.setSADYear(assessmentDetailsRequest.getSadAsmt().getSADYear());
+            customDutyPayment.setCommandDutyArea(assessmentDetailsRequest.getCustomsCode());
+            customDutyPayment.setSGDAssessmentDate(assessmentDetail.getResponseInfo().getSGDAssessmentDate());
+            customDutyPayment.setSADAssessmentNumber(assessmentDetailsRequest.getSadAsmt().getSADAssessmentNumber());
+            customDutyPayment.setSADAssessmentSerial(assessmentDetailsRequest.getSadAsmt().getSADAssessmentSerial());
             customDutyPayment.setTotalAmount(request.getAmount());
             customDutyPayment.setBankCode(assessmentDetail.getResponseInfo().getBankCode());
             customDutyPayment.setCompanyCode(assessmentDetail.getResponseInfo().getCompanyCode());
@@ -177,11 +223,11 @@ public class CorpCustomDutyServiceImpl implements CorpCustomDutyService {
             customDutyPayment.setCollectionAccount(assessmentDetail.getResponseInfo().getCollectionAccount());
             customDutyPayment.setFormMNumber(assessmentDetail.getResponseInfo().getFormMNumber());
             customDutyPayment.setSGDAssessmentDate(assessmentDetail.getResponseInfo().getSGDAssessmentDate());
-            //customDutyPayment.setSGDAssessment(assessmentDetail.);
             customDutyPayment.setTranId(assessmentDetail.getResponseInfo().getTranId());
             customDutyPayment.setAccount(assessmentDetail.getAccount());
             customDutyPayment.setCode(assessmentDetail.getCode());
             customDutyPayment.setMessage(assessmentDetail.getMessage());
+            customDutyPayment.setInitiatedBy(principal.getName());
             CustomDutyPayment resp = customDutyPaymentRepo.save(customDutyPayment);
             logger.info("the request {}",resp.getId());
             request.setCustomDutyPayment(resp);
@@ -201,7 +247,7 @@ public class CorpCustomDutyServiceImpl implements CorpCustomDutyService {
                 CorpTransReqEntry transReqEntry = new CorpTransReqEntry();
                 transReqEntry.setTranReqId(transfer.getId());
                 transReqEntry.setAuthStatus(TransferAuthorizationStatus.APPROVED);
-                return addAuthorization(transReqEntry);
+                return addAuthorization(transReqEntry, principal);
             }
         } catch (TransferAuthorizationException ex) {
             throw ex;
@@ -276,7 +322,7 @@ public class CorpCustomDutyServiceImpl implements CorpCustomDutyService {
     }
 
     @Override
-    public String addAuthorization(CorpTransReqEntry transReqEntry) {
+    public String addAuthorization(CorpTransReqEntry transReqEntry, Principal principal) {
 
         CorporateUser corporateUser = getCurrentUser();
         CorpPaymentRequest corpPaymentRequest = corpPaymentRequestRepo.findOne(transReqEntry.getTranReqId());
@@ -285,6 +331,17 @@ public class CorpCustomDutyServiceImpl implements CorpCustomDutyService {
         if ("SOLE".equals(corpPaymentRequest.getCorporate().getCorporateType())) {
             TransRequest transRequest  = integrationService.makeTransfer(corpPaymentRequest);
             if ("00".equals(transRequest.getStatus()) || "000".equals(transRequest.getStatus())) { // Transfer successful
+                CustomPaymentNotificationRequest notificationRequest = new CustomPaymentNotificationRequest();
+                notificationRequest.setTranId(corpPaymentRequest.getCustomDutyPayment().getTranId());
+                notificationRequest.setAmount(corpPaymentRequest.getAmount().toString());
+                notificationRequest.setPaymentRef(corpPaymentRequest.getReferenceNumber());
+                notificationRequest.setLastAuthorizer(principal.getName());
+                notificationRequest.setInitiatedBy(corpPaymentRequest.getCustomDutyPayment().getInitiatedBy());
+                notificationRequest.setAppId(appId);
+                LOGGER.debug(appId+corpPaymentRequest.getCustomDutyPayment().getTranId()+ corpPaymentRequest.getAmount()+secretKey);
+                notificationRequest.setHash(EncryptionUtil.getSHA512(
+                        appId+corpPaymentRequest.getCustomDutyPayment().getTranId()+ corpPaymentRequest.getAmount()+secretKey,null));
+                CustomPaymentNotification CustomPaymentNotification = integrationService.paymentNotification(notificationRequest);
                 logger.debug("returning payment Request Sent for sole: {}",corpPaymentRequest.getCorporate().getCorporateType());
                 return corpPaymentRequest.getStatus();
             } else {
@@ -340,28 +397,47 @@ public class CorpCustomDutyServiceImpl implements CorpCustomDutyService {
                 transferAuth.setStatus("C");
                 transferAuth.setLastEntry(new Date());
                transferAuthRepo.save(transferAuth);
+               LOGGER.info(beneficiaryAcct);
+                corpPaymentRequest.setBeneficiaryAccountNumber(beneficiaryAcct);
+                corpPaymentRequest.setBeneficiaryAccountName("Coronation");
                 corpPaymentRequest.setTransferType(TransferType.CORONATION_BANK_TRANSFER);
                 corpPaymentRequest.setRemarks(paymentRemark);
-                CorpPaymentRequest paymentRequest = (CorpPaymentRequest)  integrationService.makeTransfer(corpPaymentRequest);
+                CorpPaymentRequest paymentRequest = (CorpPaymentRequest)integrationService.makeTransfer(corpPaymentRequest);
                 logger.info("the payment status {}",paymentRequest);
-                if (paymentRequest != null) {
+                if (paymentRequest != null && paymentRequest.getStatus() != null && (paymentRequest. getStatus().equals("00") || paymentRequest.getStatus().equals("000"))) {
                     updatePaymentRequest(corpPaymentRequest,paymentRequest);
-//                    CorpPaymentRequestDTO corpPaymentRequestDTO = savePayment(convertEntityToDTO(paymentRequest));
-//                    if (paymentRequest.getStatus() != null) {
-//                        //return corpPaymentRequestDTO;
-//                    }
-                    //throw new InternetBankingTransferException(TransferExceptions.ERROR.toString());
+                    CustomPaymentNotificationRequest notificationRequest = new CustomPaymentNotificationRequest();
+                    notificationRequest.setTranId(corpPaymentRequest.getCustomDutyPayment().getTranId());
+                    notificationRequest.setAmount(corpPaymentRequest.getAmount().toString());
+                    notificationRequest.setPaymentRef(corpPaymentRequest.getReferenceNumber());
+                    notificationRequest.setLastAuthorizer(principal.getName());
+                    notificationRequest.setInitiatedBy(corpPaymentRequest.getCustomDutyPayment().getInitiatedBy());
+                    notificationRequest.setAppId(appId);
+                    LOGGER.debug(appId+corpPaymentRequest.getCustomDutyPayment().getTranId()+ corpPaymentRequest.getAmount()+secretKey);
+                    notificationRequest.setHash(EncryptionUtil.getSHA512(
+                            appId+corpPaymentRequest.getCustomDutyPayment().getTranId()+ corpPaymentRequest.getAmount()+secretKey,null));
+                    CustomPaymentNotification customPaymentNotification = integrationService.paymentNotification(notificationRequest);
+                    LOGGER.debug("CustomPaymentNotification:{}",customPaymentNotification);
+
+                        CustomDutyPayment dutyPayment = corpPaymentRequest.getCustomDutyPayment();
+                        dutyPayment.setPaymentStatus(customPaymentNotification.getCode());
+                        dutyPayment.setMessage(customPaymentNotification.getMessage());
+                        dutyPayment.setPaymentRef(customPaymentNotification.getPaymentRef());
+                        customDutyPaymentRepo.save(dutyPayment);
+                    if("00".equals(customPaymentNotification.getCode()) || "000".equals(customPaymentNotification.getCode())){ // Transfer successful
+                        return messageSource.getMessage(customPaymentNotification.getMessage(), null, locale);
+                    }else{
+                        throw new InternetBankingTransferException(messageSource.getMessage("custum.payment.failed=",null,locale));
+                    }
                 }
-                //throw new InternetBankingTransferException(messageSource.getMessage("transfer.failed",null,locale));
          }
-            return messageSource.getMessage("payment.auth.success", null, locale);
+         throw new InternetBankingTransferException(messageSource.getMessage("payment.auth.successs",null,locale));
         } catch (InternetBankingTransferException transferException) {
             throw transferException;
         } catch (Exception e) {
             throw new InternetBankingException(messageSource.getMessage("transfer.auth.failure", null, locale), e);
         }
     }
-
 
     private boolean isAuthorizationComplete(CorpPaymentRequest corpPaymentRequest) {
         CorpTransferAuth transferAuth = corpPaymentRequest.getTransferAuth();
@@ -391,8 +467,8 @@ public class CorpCustomDutyServiceImpl implements CorpCustomDutyService {
             }
         }
         return approvalCount >= roles.size();
-
     }
+
     public void updatePaymentRequest(CorpPaymentRequest originalPayment, CorpPaymentRequest newPaymentRequest) throws InternetBankingTransferException {
         try {
             originalPayment.setStatus(newPaymentRequest.getStatus());
