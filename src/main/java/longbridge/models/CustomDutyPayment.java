@@ -320,4 +320,39 @@ public class CustomDutyPayment extends AbstractEntity {
     public String getPaymentRef() {
         return paymentRef;
     }
+
+    @Override
+    public String toString() {
+        return "CustomDutyPayment{" +
+                "dtype='" + dtype + '\'' +
+                ", transferRequestId='" + transferRequestId + '\'' +
+                ", declarantCode='" + declarantCode + '\'' +
+                ", declarantName='" + declarantName + '\'' +
+                ", companyCode='" + companyCode + '\'' +
+                ", SGDAssessmentDate='" + SGDAssessmentDate + '\'' +
+                ", SADAssessmentSerial='" + SADAssessmentSerial + '\'' +
+                ", SADAssessmentNumber='" + SADAssessmentNumber + '\'' +
+                ", SADYear='" + SADYear + '\'' +
+                ", commandDutyArea='" + commandDutyArea + '\'' +
+                ", totalAmount=" + totalAmount +
+                ", companyName='" + companyName + '\'' +
+                ", formMNumber='" + formMNumber + '\'' +
+                ", approvalStatusDesc='" + approvalStatusDesc + '\'' +
+                ", approvalStatus='" + approvalStatus + '\'' +
+                ", tranId='" + tranId + '\'' +
+                ", bankCode='" + bankCode + '\'' +
+                ", bankBranchCode='" + bankBranchCode + '\'' +
+                ", collectionAccount='" + collectionAccount + '\'' +
+                ", account='" + account + '\'' +
+                ", code='" + code + '\'' +
+                ", message='" + message + '\'' +
+                ", initiatedBy='" + initiatedBy + '\'' +
+                ", lastAuthorizer='" + lastAuthorizer + '\'' +
+                ", paymentStatus='" + paymentStatus + '\'' +
+                ", notificationStatus='" + notificationStatus + '\'' +
+                ", paymentRef='" + paymentRef + '\'' +
+                ", corpPaymentRequest=" + corpPaymentRequest +
+                ", taxs=" + taxs +
+                '}';
+    }
 }

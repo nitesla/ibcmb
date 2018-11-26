@@ -9,4 +9,9 @@
             <column name="CUSTOM_DUTY_PAYMENT_ID" type="NUMBER(19, 0)"/>
         </addColumn>
     </changeSet>
+
+    <changeSet author="longbridge (Gbubemi)" id="1543253681699-254">
+        <addForeignKeyConstraint baseColumnNames="CUSTOM_DUTY_PAYMENT_ID" baseTableName="TRANS_REQUEST" constraintName="FKMP9TVKXCMGRIY92I05SYS6DFD" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="ID" referencedTableName="CUSTOM_DUTY_PAYMENT" />
+    </changeSet>
+
 </databaseChangeLog>

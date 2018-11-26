@@ -10,10 +10,11 @@
 
     <include file="changelog/db.changelog-createTableCustomDuty.xml"/>
     <include file="changelog/db.changelog-createTableCustomDuty_aud.xml"/>
-    <include file="changelog/db.changelog-createTableCustomDutyTax.xml"/>
-    <include file="changelog/db.changelog-createTableCustomDutyTax_aud.xml"/>
     <include file="changelog/db.changelog-createTableTax.xml"/>
     <include file="changelog/db.changelog-CreateTableTax_aud.xml"/>
+    <include file="changelog/db.changelog-createTableCustomDutyTax.xml"/>
+    <include file="changelog/db.changelog-createTableCustomDutyTax_aud.xml"/>
+
     <include file="changelog/db.changelog-addnewFieldToTransRequest.xml"/>
     <include file="changelog/db.changelog-addnewFieldToTransRequest_aud.xml"/>
     <!--<include file="changelog/db.changelog-addFieldToRetailUser.xml"/>-->
