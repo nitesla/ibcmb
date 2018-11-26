@@ -1,6 +1,30 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<beans xmlns="http://www.springframework.org/schema/beans"
-       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+    <changeSet author="longbridge (Gbubemi)" id="1543253681699-69">
+        <createTable tableName="CUSTOM_DUTY_PAYMENT_TAXS">
+            <column name="CUSTOM_DUTY_PAYMENT_ID" type="NUMBER(19, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="TAXS_ID" type="NUMBER(19, 0)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
 
-</beans>
+    <changeSet author="longbridge (Gbubemi)" id="1543253681699-161">
+        <createIndex indexName="UK_R1VYPR7GT9OUQ7PHEUFY6UH1" tableName="CUSTOM_DUTY_PAYMENT_TAXS" unique="true">
+            <column name="TAXS_ID"/>
+        </createIndex>
+        <addUniqueConstraint columnNames="TAXS_ID" constraintName="UK_R1VYPR7GT9OUQ7PHEUFY6UH1" forIndexName="UK_R1VYPR7GT9OUQ7PHEUFY6UH1" tableName="CUSTOM_DUTY_PAYMENT_TAXS"/>
+    </changeSet>
+
+    <changeSet author="longbridge (Gbubemi)" id="1543253681699-208">
+        <addForeignKeyConstraint baseColumnNames="TAXS_ID" baseTableName="CUSTOM_DUTY_PAYMENT_TAXS" constraintName="FKBJVVYSHD8TFL223I1MWSCF3E5" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="ID" referencedTableName="TAX" />
+    </changeSet>
+
+    <changeSet author="longbridge (Gbubemi)" id="1543253681699-263">
+        <addForeignKeyConstraint baseColumnNames="CUSTOM_DUTY_PAYMENT_ID" baseTableName="CUSTOM_DUTY_PAYMENT_TAXS" constraintName="FKOM9RAJX25XE0SCE0NOOR87K1Q" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="ID" referencedTableName="CUSTOM_DUTY_PAYMENT" />
+    </changeSet>
+
+
+</databaseChangeLog>

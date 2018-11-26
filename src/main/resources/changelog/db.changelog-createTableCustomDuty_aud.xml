@@ -1,6 +1,75 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<beans xmlns="http://www.springframework.org/schema/beans"
-       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+    <changeSet author="longbridge (generated)" id="1543253681699-68">
+        <createTable tableName="CUSTOM_DUTY_PAYMENT_AUD">
+            <column name="ID" type="NUMBER(19, 0)">
+                <constraints primaryKey="true" primaryKeyName="SYS_C009695"/>
+            </column>
+            <column name="REV" type="NUMBER(10, 0)">
+                <constraints primaryKey="true" primaryKeyName="SYS_C009695"/>
+            </column>
+            <column name="REVTYPE" type="NUMBER(3, 0)"/>
+            <column name="SADASSESSMENT_NUMBER" type="VARCHAR2(255 CHAR)"/>
+            <column name="SADASSESSMENT_NUMBER_MOD" type="NUMBER(1, 0)"/>
+            <column name="SADASSESSMENT_SERIAL" type="VARCHAR2(255 CHAR)"/>
+            <column name="SADASSESSMENT_SERIAL_MOD" type="NUMBER(1, 0)"/>
+            <column name="SADYEAR" type="VARCHAR2(255 CHAR)"/>
+            <column name="SADYEAR_MOD" type="NUMBER(1, 0)"/>
+            <column name="SGDASSESSMENT_DATE" type="VARCHAR2(255 CHAR)"/>
+            <column name="SGDASSESSMENT_DATE_MOD" type="NUMBER(1, 0)"/>
+            <column name="ACCOUNT" type="VARCHAR2(255 CHAR)"/>
+            <column name="ACCOUNT_MOD" type="NUMBER(1, 0)"/>
+            <column name="APPROVAL_STATUS" type="VARCHAR2(255 CHAR)"/>
+            <column name="APPROVAL_STATUS_MOD" type="NUMBER(1, 0)"/>
+            <column name="APPROVAL_STATUS_DESC" type="VARCHAR2(255 CHAR)"/>
+            <column name="APPROVAL_STATUS_DESC_MOD" type="NUMBER(1, 0)"/>
+            <column name="BANK_BRANCH_CODE" type="VARCHAR2(255 CHAR)"/>
+            <column name="BANK_BRANCH_CODE_MOD" type="NUMBER(1, 0)"/>
+            <column name="BANK_CODE" type="VARCHAR2(255 CHAR)"/>
+            <column name="BANK_CODE_MOD" type="NUMBER(1, 0)"/>
+            <column name="CODE" type="VARCHAR2(255 CHAR)"/>
+            <column name="CODE_MOD" type="NUMBER(1, 0)"/>
+            <column name="COLLECTION_ACCOUNT" type="VARCHAR2(255 CHAR)"/>
+            <column name="COLLECTION_ACCOUNT_MOD" type="NUMBER(1, 0)"/>
+            <column name="COMMAND_DUTY_AREA" type="VARCHAR2(255 CHAR)"/>
+            <column name="COMMAND_DUTY_AREA_MOD" type="NUMBER(1, 0)"/>
+            <column name="COMPANY_CODE" type="VARCHAR2(255 CHAR)"/>
+            <column name="COMPANY_CODE_MOD" type="NUMBER(1, 0)"/>
+            <column name="COMPANY_NAME" type="VARCHAR2(255 CHAR)"/>
+            <column name="COMPANY_NAME_MOD" type="NUMBER(1, 0)"/>
+            <column name="DECLARANT_CODE" type="VARCHAR2(255 CHAR)"/>
+            <column name="DECLARANT_CODE_MOD" type="NUMBER(1, 0)"/>
+            <column name="DECLARANT_NAME" type="VARCHAR2(255 CHAR)"/>
+            <column name="DECLARANT_NAME_MOD" type="NUMBER(1, 0)"/>
+            <column name="DTYPE" type="VARCHAR2(255 CHAR)"/>
+            <column name="DTYPE_MOD" type="NUMBER(1, 0)"/>
+            <column name="FORMMNUMBER" type="VARCHAR2(255 CHAR)"/>
+            <column name="FORMMNUMBER_MOD" type="NUMBER(1, 0)"/>
+            <column name="INITIATED_BY" type="VARCHAR2(255 CHAR)"/>
+            <column name="INITIATED_BY_MOD" type="NUMBER(1, 0)"/>
+            <column name="LAST_AUTHORIZER" type="VARCHAR2(255 CHAR)"/>
+            <column name="LAST_AUTHORIZER_MOD" type="NUMBER(1, 0)"/>
+            <column name="MESSAGE" type="VARCHAR2(255 CHAR)"/>
+            <column name="MESSAGE_MOD" type="NUMBER(1, 0)"/>
+            <column name="NOTIFICATION_STATUS" type="VARCHAR2(255 CHAR)"/>
+            <column name="NOTIFICATION_STATUS_MOD" type="NUMBER(1, 0)"/>
+            <column name="PAYMENT_REF" type="VARCHAR2(255 CHAR)"/>
+            <column name="PAYMENT_REF_MOD" type="NUMBER(1, 0)"/>
+            <column name="PAYMENT_STATUS" type="VARCHAR2(255 CHAR)"/>
+            <column name="PAYMENT_STATUS_MOD" type="NUMBER(1, 0)"/>
+            <column name="TOTAL_AMOUNT" type="NUMBER(19, 2)"/>
+            <column name="TOTAL_AMOUNT_MOD" type="NUMBER(1, 0)"/>
+            <column name="TRAN_ID" type="VARCHAR2(255 CHAR)"/>
+            <column name="TRAN_ID_MOD" type="NUMBER(1, 0)"/>
+            <column name="TRANSFER_REQUEST_ID" type="VARCHAR2(255 CHAR)"/>
+            <column name="TRANSFER_REQUEST_ID_MOD" type="NUMBER(1, 0)"/>
+            <column name="CORP_PAYMENT_REQUEST_ID" type="NUMBER(19, 0)"/>
+            <column name="CORP_PAYMENT_REQUEST_MOD" type="NUMBER(1, 0)"/>
+            <column name="TAXS_MOD" type="NUMBER(1, 0)"/>
+        </createTable>
+    </changeSet>
 
-</beans>
+    <changeSet author="longbridge (Gbubemi)" id="1543253681699-199">
+        <addForeignKeyConstraint baseColumnNames="REV" baseTableName="CUSTOM_DUTY_PAYMENT_AUD" constraintName="FK9RGGFEC87EP4WN21Q5Q0Y3FH2" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="ID" referencedTableName="CUSTOM_REVISION_ENTITY" />
+    </changeSet>
+</databaseChangeLog>

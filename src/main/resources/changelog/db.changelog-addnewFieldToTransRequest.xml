@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog/1.1"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog/1.1
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-1.1.xsd">
+    <changeSet author="Longbridge (Gbubemi)" id="addCustomDutyId">
+        <addColumn tableName="TRANS_REQUEST">
+            <column name="CUSTOM_DUTY_PAYMENT_ID" type="NUMBER(19, 0)"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet author="longbridge (Gbubemi)" id="1543253681699-160">
+        <createIndex indexName="UK_PYT35VV935HJI4C7PB8KK1CMK" tableName="TRANS_REQUEST" >
+            <column name="REF_CODE"/>
+        </createIndex>
+        <addUniqueConstraint columnNames="REF_CODE" constraintName="UK_PYT35VV935HJI4C7PB8KK1CMK"  tableName="TRANS_REQUEST"/>
+    </changeSet>
+    <changeSet author="longbridge (Gbubemi)" id="1543253681699-186">
+        <addForeignKeyConstraint baseColumnNames="CORP_TRANSFER_REQUEST_ID" baseTableName="PEND_AUTH" constraintName="FK64DF7RBTV7BQFTTTOG15VYFVY" deferrable="false" initiallyDeferred="false"   referencedColumnNames="ID" referencedTableName="TRANS_REQUEST" />
+    </changeSet>
+
+</databaseChangeLog>
