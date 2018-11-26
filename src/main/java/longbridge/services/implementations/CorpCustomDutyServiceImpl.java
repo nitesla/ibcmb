@@ -184,7 +184,6 @@ public class CorpCustomDutyServiceImpl implements CorpCustomDutyService {
     @Override
     @Transactional
     public String saveCustomPaymentRequestForAuthorization(CustomAssessmentDetail assessmentDetail, CustomAssessmentDetailsRequest assessmentDetailsRequest, Principal principal,Corporate corporate ) {
-
         LOGGER.info("Taxes",assessmentDetail.getResponseInfo().getTaxDetails());
         if(assessmentDetail == null || principal == null) {
             //return messageSource.getMessage("bulk.save.success", null, null);
@@ -337,6 +336,7 @@ public class CorpCustomDutyServiceImpl implements CorpCustomDutyService {
                 notificationRequest.setTranId(corpPaymentRequest.getCustomDutyPayment().getTranId());
                 notificationRequest.setAmount(corpPaymentRequest.getAmount().toString());
                 notificationRequest.setPaymentRef(corpPaymentRequest.getReferenceNumber());
+                notificationRequest.setCustomerAccountNo(corpPaymentRequest.getCustomerAccountNumber());
                 notificationRequest.setLastAuthorizer(principal.getName());
                 notificationRequest.setInitiatedBy(corpPaymentRequest.getCustomDutyPayment().getInitiatedBy());
                 notificationRequest.setAppId(appId);
@@ -412,6 +412,7 @@ public class CorpCustomDutyServiceImpl implements CorpCustomDutyService {
                     notificationRequest.setTranId(corpPaymentRequest.getCustomDutyPayment().getTranId());
                     notificationRequest.setAmount(corpPaymentRequest.getAmount().toString());
                     notificationRequest.setPaymentRef(corpPaymentRequest.getReferenceNumber());
+                    notificationRequest.setCustomerAccountNo(corpPaymentRequest.getCustomerAccountNumber());
                     notificationRequest.setLastAuthorizer(principal.getName());
                     notificationRequest.setInitiatedBy(corpPaymentRequest.getCustomDutyPayment().getInitiatedBy());
                     notificationRequest.setAppId(appId);
@@ -425,15 +426,16 @@ public class CorpCustomDutyServiceImpl implements CorpCustomDutyService {
                         dutyPayment.setPaymentStatus(customPaymentNotification.getCode());
                         dutyPayment.setMessage(customPaymentNotification.getMessage());
                         dutyPayment.setPaymentRef(customPaymentNotification.getPaymentRef());
+                        LOGGER.debug("dutyPayment:{}",dutyPayment);
                         customDutyPaymentRepo.save(dutyPayment);
-                    if("00".equals(customPaymentNotification.getCode()) || "000".equals(customPaymentNotification.getCode())){ // Transfer successful
+                    if("00".equals(dutyPayment.getCode()) || "000".equals(dutyPayment.getCode())){ // Transfer successful
                         return messageSource.getMessage(customPaymentNotification.getMessage(), null, locale);
                     }else{
-                        throw new InternetBankingTransferException(messageSource.getMessage("custum.payment.failed=",null,locale));
+                        throw new InternetBankingTransferException(messageSource.getMessage("custom.payment.failed",null,locale));
                     }
                 }
          }
-         throw new InternetBankingTransferException(messageSource.getMessage("payment.auth.successs",null,locale));
+         throw new InternetBankingTransferException(messageSource.getMessage("payment.auth.success",null,locale));
         } catch (InternetBankingTransferException transferException) {
             throw transferException;
         } catch (Exception e) {
@@ -483,5 +485,4 @@ public class CorpCustomDutyServiceImpl implements CorpCustomDutyService {
             logger.error("Exception occurred saving transfer request", e);
         }
     }
-
 }

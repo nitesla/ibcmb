@@ -1,8 +1,14 @@
 package longbridge.models;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class CustomPaymentNotification {
+
+    @JsonProperty("PaymentRef")
     private String paymentRef;
+    @JsonProperty("Code")
     private String code;
+    @JsonProperty("Message")
     private String message;
 
     public String getPaymentRef() {
@@ -27,5 +33,14 @@ public class CustomPaymentNotification {
 
     public void setMessage(String message) {
         this.message = message;
+    }
+
+    @Override
+    public String toString() {
+        return "CustomPaymentNotification{" +
+                "paymentRef='" + paymentRef + '\'' +
+                ", code='" + code + '\'' +
+                ", message='" + message + '\'' +
+                '}';
     }
 }

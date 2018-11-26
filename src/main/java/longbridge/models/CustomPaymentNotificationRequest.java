@@ -16,7 +16,9 @@ public class CustomPaymentNotificationRequest {
     private String PaymentRef;
     @JsonProperty("CustomerAccountNo")
     private String CustomerAccountNo;
+    @JsonProperty("appId")
     private String appId;
+    @JsonProperty("hash")
     private String hash;
 
     public String getTranId() {

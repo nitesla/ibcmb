@@ -778,11 +778,9 @@ public class IntegrationServiceImpl implements IntegrationService {
 
 	public CustomAssessmentDetail getAssessmentDetails(CustomAssessmentDetailsRequest assessmentDetailsRequest){
 		try {
-//			assessmentDetailsRequest.setHash(EncryptionUtil.getSHA512("test"+assessmentDetailsRequest.getCustomsCode()
-//					+ assessmentDetailsRequest.getSADAssessmentSerial()
-//					+"1", null);
-			assessmentDetailsRequest.setAppId("test");
-			assessmentDetailsRequest.setHash("4556ggg778jj");
+			assessmentDetailsRequest.setHash(EncryptionUtil.getSHA512(appId+assessmentDetailsRequest.getCustomsCode()
+					+ assessmentDetailsRequest.getSadAsmt().getSADAssessmentSerial()+secretKey, null));
+
 			logger.debug("Fetching data from coronation rest service via the url: {}", CustomDutyUrl+"/customduty/retrieveassessmentdetail");
 			logger.debug("Fetching data assessmentDetailsRequest: {}", assessmentDetailsRequest);
 			CustomAssessmentDetail response = template.postForObject(CustomDutyUrl+"/customduty/retrieveassessmentdetail", assessmentDetailsRequest, CustomAssessmentDetail.class);
