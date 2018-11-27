@@ -1,0 +1,23 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+    <changeSet author="longbridge (Gbubemi)" id="1543253681699-70">
+        <createTable tableName="CUSTOM_DUTY_PAYMENT_TAXS_AUD">
+            <column name="REV" type="NUMBER(10, 0)">
+                <constraints primaryKey="true" primaryKeyName="SYS_C009699"/>
+            </column>
+            <column name="CUSTOM_DUTY_PAYMENT_ID" type="NUMBER(19, 0)">
+                <constraints primaryKey="true" primaryKeyName="SYS_C009699"/>
+            </column>
+            <column name="TAXS_ID" type="NUMBER(19, 0)">
+                <constraints primaryKey="true" primaryKeyName="SYS_C009699"/>
+            </column>
+            <column name="REVTYPE" type="NUMBER(3, 0)"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet author="longbridge (Gbubemi)" id="1543253681699-265">
+        <addForeignKeyConstraint baseColumnNames="REV" baseTableName="CUSTOM_DUTY_PAYMENT_TAXS_AUD" constraintName="FKOT0RERUN09O5A7RJFW5HFSEPL" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="ID" referencedTableName="CUSTOM_REVISION_ENTITY" />
+    </changeSet>
+
+
+</databaseChangeLog>

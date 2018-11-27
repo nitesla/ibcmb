@@ -1,0 +1,27 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+    <changeSet author="longbridge (Gbubemi)" id="1543253681699-128">
+        <createTable tableName="TAX_AUD">
+            <column name="ID" type="NUMBER(19, 0)">
+                <constraints primaryKey="true" primaryKeyName="SYS_C009884"/>
+            </column>
+            <column name="REV" type="NUMBER(10, 0)">
+                <constraints primaryKey="true" primaryKeyName="SYS_C009884"/>
+            </column>
+            <column name="REVTYPE" type="NUMBER(3, 0)"/>
+            <column name="TAX_AMOUNT" type="VARCHAR2(255 CHAR)"/>
+            <column name="TAX_AMOUNT_MOD" type="NUMBER(1, 0)"/>
+            <column name="TAX_CODE" type="VARCHAR2(255 CHAR)"/>
+            <column name="TAX_CODE_MOD" type="NUMBER(1, 0)"/>
+            <column name="TAX_DESC" type="VARCHAR2(255 CHAR)"/>
+            <column name="TAX_DESC_MOD" type="NUMBER(1, 0)"/>
+            <column name="CUSTOM_DUTY_PAYMENT_ID" type="NUMBER(19, 0)"/>
+            <column name="CUSTOM_DUTY_PAYMENT_MOD" type="NUMBER(1, 0)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="longbridge (Gbubemi)" id="1543253681699-236">
+        <addForeignKeyConstraint baseColumnNames="REV" baseTableName="TAX_AUD" constraintName="FKI7D1IK6JX3J372KF7BEJ7IGRD" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="ID" referencedTableName="CUSTOM_REVISION_ENTITY" />
+    </changeSet>
+
+
+</databaseChangeLog>
