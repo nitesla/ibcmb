@@ -55,15 +55,20 @@ public class IntegrationServiceImpl implements IntegrationService {
 	@Value("${CMB.ALERT.URL}")
 	private String cmbAlert;
 
-	//	@Value("http://localhost:8090")
-	@Value("${customDuty.baseUrl}")
-	private String CustomDutyUrl;
+	@Value("${custom.duty.remark")
+	private String paymentRemark;
 
 	@Value("${custom.appId}")
 	private String appId;
 
 	@Value("${custom.secretKey}")
 	private String secretKey;
+
+	@Value("${custom.beneficiaryAcct}")
+	private String beneficiaryAcct;
+
+	@Value("${customDuty.baseUrl}")
+	private String CustomDutyUrl;
 
 	private RestTemplate template;
 	private MailService mailService;
@@ -777,6 +782,7 @@ public class IntegrationServiceImpl implements IntegrationService {
 	}
 
 	public CustomAssessmentDetail getAssessmentDetails(CustomAssessmentDetailsRequest assessmentDetailsRequest){
+		assessmentDetailsRequest.setAppId(appId);
 		try {
 			assessmentDetailsRequest.setHash(EncryptionUtil.getSHA512(appId+assessmentDetailsRequest.getCustomsCode()
 					+ assessmentDetailsRequest.getSadAsmt().getSADAssessmentSerial()+secretKey, null));

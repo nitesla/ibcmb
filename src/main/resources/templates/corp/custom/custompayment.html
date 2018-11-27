@@ -172,7 +172,7 @@
                             <div class="form-group">
                                 <div class="col-sm-12">
                                     <label class="col-sm-2">Custom Area Command</label>
-                                    <input type="text" class="form-control full-width" id="mcommand" name="mcommand"
+                                    <input type="text" class="form-control full-width" id="mCommand" name="mcommand"
                                            readonly="readonly"  th:field="*{assessmentDetailsRequest.customsCode}"/>
                                 </div>
                             </div>
@@ -254,6 +254,7 @@
                             <br/>
                             <div class="form-group">
                                 <input type="hidden" id="mTranId"  th:field="*{assessmentDetail.responseInfo.tranId}"/>
+                                <input type="hidden" id="mCustomCode"  th:field="*{assessmentDetail.customCode}"/>
                                 <input type="hidden" id="mTaxDetails" name="TaxDetails"/>
                                 <input type="hidden" id="mCode" readonly="readonly" th:field="*{assessmentDetail.code}"/>
                                 <input type="hidden" id="mMessage" readonly="readonly" th:field="*{assessmentDetail.message}"/>
@@ -317,6 +318,7 @@
         function hideModal(bool){
             console.log("should it show "+bool);
             console.log($('#declarantCode').val());
+            $('#mCommand').val($('#CommandCode').val());
             $('#msdgAssessmentNumber').val($('#sdgAssessmentNumber').val());
             $('#msdgAssessmentSerial').val($('#sdgAssessmentSerial').val());
             $('#msdgAssessmentYear').val($('#sdgAssessmentYear').val());
