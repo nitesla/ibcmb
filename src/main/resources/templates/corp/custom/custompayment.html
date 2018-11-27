@@ -108,6 +108,7 @@
                                 <input type="hidden" id="code" readonly="readonly" th:field="*{assessmentDetail.code}"/>
                                 <input type="hidden" id="message" readonly="readonly" th:field="*{assessmentDetail.message}"/>
                                 <input type="hidden" id="taxId" readonly="readonly" th:field="*{assessmentDetail.responseInfo.taxDetails}"/>
+                                <input type="hidden" id="formMNumber" readonly="readonly" th:field="*{assessmentDetail.responseInfo.formMNumber}"/>
                                 <div class="col-sm-8">
                                     <label class="col-sm-2">Total Amount to be Paid</label>
                                     <input class="col-sm-8 form-control full-width" readonly="readonly" type="text" id="totalAmount" th:field="*{assessmentDetail.responseInfo.totalAmount}"/>
@@ -256,6 +257,7 @@
                                 <input type="hidden" id="mTaxDetails" name="TaxDetails"/>
                                 <input type="hidden" id="mCode" readonly="readonly" th:field="*{assessmentDetail.code}"/>
                                 <input type="hidden" id="mMessage" readonly="readonly" th:field="*{assessmentDetail.message}"/>
+                                <input type="hidden" id="mFormMNumber" readonly="readonly" th:field="*{assessmentDetail.responseInfo.formMNumber}"/>
                                 <!--<input type="hidden" id="mTaxDetails" name="mTaxDetails"/>-->
                                 <div class="col-sm-12">
                                     <label class="col-sm-2">Total Amount to be Paid</label>
@@ -325,7 +327,7 @@
             $('#mtotalAmount').val($('#totalAmount').val());
             $('#mcompanyName').val($('#companyName').val());
             $('#mTranId').val($('#tranId').val());
-            $('#mformMNumber').val($('#formMNumber').val());
+            $('#mFormMNumber').val($('#formMNumber').val());
             $('#mapprovalStatus').val($('#approvalStatus').val());
             $('#mapprovalStatusDescription').val($('#approvalStatusDescription').val());
             $('#mtotalAmount').val($('#totalAmount').val());
