@@ -95,8 +95,9 @@ public class CorpCustomDutyServiceImpl implements CorpCustomDutyService {
     }
 
     @Override
-    public CustomAssessmentDetail getAssessmentDetails(CustomSADAsmt sadAsmt) {
+    public CustomAssessmentDetail getAssessmentDetails(CustomSADAsmt sadAsmt, String customCode) {
         CustomAssessmentDetailsRequest assessmentDetailsRequest =  new CustomAssessmentDetailsRequest();
+        assessmentDetailsRequest.setCustomsCode(customCode);
         assessmentDetailsRequest.setSadAsmt(sadAsmt);
        return integrationService.getAssessmentDetails(assessmentDetailsRequest);
     }

@@ -108,14 +108,16 @@ public class CorpCustomDutyController {
         model.addAttribute("assessmentDetail",new CustomAssessmentDetail());
         model.addAttribute("corpTransReqEntry", new CorpTransReqEntry());
         model.addAttribute("taxDetails", new String());
+        model.addAttribute("customsCode", new String());
         return "corp/custom/custompayment";
     }
 
     @PostMapping("/assessment/details")
     @ResponseBody
     public CustomAssessmentDetail getAssessment(WebRequest webRequest,@ModelAttribute("assessmentDetailsRequest") @Valid CustomSADAsmt customSADAsmt){
+        String customCode = webRequest.getParameter("CommandCode");
         LOGGER.info("the assessmentDetailsRequest {}",customSADAsmt);
-        return customDutyService.getAssessmentDetails(customSADAsmt);
+        return customDutyService.getAssessmentDetails(customSADAsmt,customCode);
     }
 
     @PostMapping("/commands")

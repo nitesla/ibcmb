@@ -16,7 +16,7 @@ import java.security.Principal;
 public interface CorpCustomDutyService {
 
     @PreAuthorize("hasAuthority('CUSTOM_DUTY')")
-    CustomAssessmentDetail getAssessmentDetails(CustomSADAsmt sadAsmt);
+    CustomAssessmentDetail getAssessmentDetails(CustomSADAsmt sadAsmt, String customCode);
 
     @PreAuthorize("hasAuthority('CUSTOM_DUTY')")
     CustomsAreaCommand getCustomsAreaCommands();
