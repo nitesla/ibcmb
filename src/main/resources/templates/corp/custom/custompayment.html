@@ -98,10 +98,10 @@
                                 </div>
                             </div>
                             <!--<div class="form-group">-->
-                                <!--<div class="col-sm-8">-->
-                                    <!--<label class="col-sm-2">Bank Branch Code</label>-->
-                                    <!--<input class="col-sm-8 form-control full-width" readonly="readonly" type="text" id="bankBranchCode" th:field="*{assessmentDetail.responseInfo.bankBranchCode}"/>-->
-                                <!--</div>-->
+                            <!--<div class="col-sm-8">-->
+                            <!--<label class="col-sm-2">Bank Branch Code</label>-->
+                            <!--<input class="col-sm-8 form-control full-width" readonly="readonly" type="text" id="bankBranchCode" th:field="*{assessmentDetail.responseInfo.bankBranchCode}"/>-->
+                            <!--</div>-->
                             <!--</div>-->
                             <div class="form-group">
                                 <input type="hidden" id="tranId" readonly="readonly" th:field="*{assessmentDetail.responseInfo.tranId}"/>
@@ -127,9 +127,9 @@
                                                     <th>Amount</th>
                                                 </tr>
                                                 </thead>
-                                                <!--<tbody id="content">-->
+                                                <tbody id="content">
 
-                                                <!--</tbody>-->
+                                                </tbody>
                                             </table>
                                         </div>
                                     </div>
@@ -168,12 +168,12 @@
                 <form th:action="@{/corporate/custom/summary}" method="POST" id="otpform" modelAttribute="assessmentDetail">
                     <div class="modal-body no-bd-rad col-md-12 col-sm-12 col-xs-12">
                         <p style="margin-bottom:20px">Please, make sure you confirm the payment is confirm </p>
-                        <div id="massessmentGrp" >
+                        <div id="massessmentGrp">
                             <div class="form-group">
                                 <div class="col-sm-12">
                                     <label class="col-sm-2">Custom Area Command</label>
                                     <input type="text" class="form-control full-width" id="mcommand" name="mcommand"
-                                           readonly="readonly"  th:field="*{assessmentDetailsRequest.customsCode}"/>
+                                           readonly="readonly"  th:field="*{customsCode}"/>
                                 </div>
                             </div>
                             <br/>
@@ -246,10 +246,10 @@
                             </div>
                             <br/>
                             <!--<div class="form-group">-->
-                                <!--<div class="col-sm-8">-->
-                                    <!--<label class="col-sm-2">Bank Branch Code</label>-->
-                                    <!--<input class="col-sm-8 form-control full-width" readonly="readonly" type="text" id="mbankBranchCode" th:field="*{assessmentDetail.responseInfo.bankBranchCode}"/>-->
-                                <!--</div>-->
+                            <!--<div class="col-sm-8">-->
+                            <!--<label class="col-sm-2">Bank Branch Code</label>-->
+                            <!--<input class="col-sm-8 form-control full-width" readonly="readonly" type="text" id="mbankBranchCode" th:field="*{assessmentDetail.responseInfo.bankBranchCode}"/>-->
+                            <!--</div>-->
                             <!--</div>-->
                             <br/>
                             <div class="form-group">
@@ -258,7 +258,6 @@
                                 <input type="hidden" id="mCode" readonly="readonly" th:field="*{assessmentDetail.code}"/>
                                 <input type="hidden" id="mMessage" readonly="readonly" th:field="*{assessmentDetail.message}"/>
                                 <input type="hidden" id="mFormMNumber" readonly="readonly" th:field="*{assessmentDetail.responseInfo.formMNumber}"/>
-                                <!--<input type="hidden" id="mTaxDetails" name="mTaxDetails"/>-->
                                 <div class="col-sm-12">
                                     <label class="col-sm-2">Total Amount to be Paid</label>
                                     <input class="col-sm-8 form-control full-width" readonly="readonly" type="text" id="mtotalAmount" th:field="*{assessmentDetail.responseInfo.totalAmount}"/>
@@ -308,8 +307,6 @@
 <th:block layout:fragment="scripts">
     <script th:inline="javascript">
         $(document).ready(function () {
-            console.log("start "+$('#teste').val());
-
             $('#paymentGrp').hide();
             hideModal(false);
         });
@@ -340,9 +337,6 @@
             $('#macctNumber').val($('#acctNumber').val());
             console.info($("#taxId").val());
             var t = $("#taxId").val();
-
-
-
             $('#myModal').modal({
                 backdrop: 'static',
                 keyboard: false,
@@ -372,43 +366,48 @@
                     CommandCode: $('#CommandCode').val()
                 },
                 success: function(result) {
-                    $('#assessmentBtn').hide();
-                    $('#declarantCode').val(result.ResponseInfo["DeclarantCode"]);
-                    $('#declarantName').val(result.ResponseInfo["DeclarantName"]);
-                    $('#companyCode').val(result.ResponseInfo["CompanyCode"]);
-                    $('#totalAmount').val(result.ResponseInfo["TotalAmount"]);
-                    $('#companyName').val(result.ResponseInfo["CompanyName"]);
-                    $('#tranId').val(result.ResponseInfo["TranId"]);
-                    $('#formMNumber').val(result.ResponseInfo["FormMNumber"]);
-                    $('#approvalStatus').val(result.ResponseInfo["ApprovalStatus"]);
-                    $('#approvalStatusDescription').val(result.ResponseInfo["ApprovalStatusDescription"]);
-                    $('#totalAmount').val(result.ResponseInfo["TotalAmount"]);
-                    $('#sgdAssessmentDate').val(result.ResponseInfo["SGDAssessmentDate"]);
-                    $('#bankCode').val(result.ResponseInfo["BankCode"]);
-                    $('#code').val(result["Code"]);
-                    $('#message').val(result["Message"]);
-                    // $('#bankBranchCode').val(result.ResponseInfo["BankBranchCode"]);
-                    $('#taxId').val(JSON.stringify(result.ResponseInfo["TaxDetails"]));
-                    var t = result.ResponseInfo["TaxDetails"];
-                    console.info(t);
-                    var table = document.getElementById('tranDetails');
-                    var tr = document.createElement('tr');
-                    t.forEach(function(t) {
+                    if(result.ResponseInfo != null) {
+                        $('#assessmentBtn').hide();
+                        $('#declarantCode').val(result.ResponseInfo["DeclarantCode"]);
+                        $('#declarantName').val(result.ResponseInfo["DeclarantName"]);
+                        $('#companyCode').val(result.ResponseInfo["CompanyCode"]);
+                        $('#totalAmount').val(result.ResponseInfo["TotalAmount"]);
+                        $('#companyName').val(result.ResponseInfo["CompanyName"]);
+                        $('#tranId').val(result.ResponseInfo["TranId"]);
+                        $('#formMNumber').val(result.ResponseInfo["FormMNumber"]);
+                        $('#approvalStatus').val(result.ResponseInfo["ApprovalStatus"]);
+                        $('#approvalStatusDescription').val(result.ResponseInfo["ApprovalStatusDescription"]);
+                        $('#totalAmount').val(result.ResponseInfo["TotalAmount"]);
+                        $('#sgdAssessmentDate').val(result.ResponseInfo["SGDAssessmentDate"]);
+                        $('#bankCode').val(result.ResponseInfo["BankCode"]);
+                        $('#code').val(result["Code"]);
+                        $('#message').val(result["Message"]);
+                        // $('#bankBranchCode').val(result.ResponseInfo["BankBranchCode"]);
+                        $('#taxId').val(JSON.stringify(result.ResponseInfo["TaxDetails"]));
+                        var t = result.ResponseInfo["TaxDetails"];
+                        console.info(t);
+                        var table = document.getElementById('tranDetails');
+
                         var tr = document.createElement('tr');
-                        tr.innerHTML = '<td>' + t.TaxAmount+ '</td>' +
-                            '<td>' + t.TaxDesc + '</td>' +
-                            '<td>' + t.TaxAmount + '</td>' ;
-                        table.appendChild(tr);
-                    });
-                    console.log("on success "+$('#teste').val());
-                    $('#taxtable').append(table);
-                    if (result != null && result!= "null") {
-                        $('#paymentGrp').show();
+                        t.forEach(function (t) {
+                            var tr = document.createElement('tr');
+                            tr.innerHTML = '<td>' + t.TaxAmount + '</td>' +
+                                '<td>' + t.TaxDesc + '</td>' +
+                                '<td>' + t.TaxAmount + '</td>';
+                            table.appendChild(tr);
+                        });
+                        $('#taxtable').append(table);
+                        if (result != null && result != "null") {
+                            $('#paymentGrp').show();
+                        }
+                    }else{
+                        alert("Assessment Details not found")
+                        console.info("empty");
+                        return false;
                     }
                 },
                 error: function (dd) {
-                    console.log("error");
-
+                    alert("Assessment Details not found");
                     return false;
                 }
             });

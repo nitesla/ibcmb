@@ -120,6 +120,7 @@ public class CorpCustomDutyServiceImpl implements CorpCustomDutyService {
     public CustomTransactionStatus getPaymentStatus(CorpPaymentRequest corpPaymentRequest) {
         return integrationService.paymentStatus(corpPaymentRequest);
     }
+
     @Override
     public CustomTransactionStatus updatePayamentStatus(Long id) {
         CorpPaymentRequest corpPaymentRequest = getPayment(id);
@@ -320,7 +321,6 @@ public class CorpCustomDutyServiceImpl implements CorpCustomDutyService {
     public CorpTransferAuth getAuthorizations(CorpPaymentRequest paymentRequest) {
         CorpPaymentRequest corpPaymentRequest = corpPaymentRequestRepo.findOne(paymentRequest.getId());
         return corpPaymentRequest.getTransferAuth();
-
     }
 
     @Override
@@ -381,26 +381,13 @@ public class CorpCustomDutyServiceImpl implements CorpCustomDutyService {
             transReqEntry.setRole(userRole);
             transReqEntry.setUser(corporateUser);
             transferAuth.getAuths().add(transReqEntry);
-//            if (TransferAuthorizationStatus.DECLINED.equals(transReqEntry.getAuthStatus())) {
-//                transferAuth.setStatus("X"); //cancelled
-//                corpPaymentRequest.setStatus(StatusCode.CANCELLED.toString());
-//                corpPaymentRequest.setStatusDescription("Cancelled");
-//                transferAuthRepo.save(transferAuth);
-//                List<CreditRequest> creditRequests = corpPaymentRequest.getCrRequestList();
-//                creditRequests.forEach(i -> {
-//                    i.setStatus("CANCELLED");
-//                    creditRequestRepo.save(i);
-//                });
 
-//                return messageSource.getMessage("transfer.auth.decline", null, locale);
-//            }
-
-            transferAuthRepo.save(transferAuth);
+            CorpTransferAuth auth = transferAuthRepo.save(transferAuth);
             if (isAuthorizationComplete(corpPaymentRequest)) {
                 transferAuth.setStatus("C");
                 transferAuth.setLastEntry(new Date());
-               transferAuthRepo.save(transferAuth);
-               LOGGER.info(beneficiaryAcct);
+                transferAuthRepo.save(transferAuth);
+                LOGGER.info(beneficiaryAcct);
                 corpPaymentRequest.setBeneficiaryAccountNumber(beneficiaryAcct);
                 corpPaymentRequest.setBeneficiaryAccountName("Coronation");
                 corpPaymentRequest.setTransferType(TransferType.CORONATION_BANK_TRANSFER);
