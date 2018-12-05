@@ -18,6 +18,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -65,17 +66,24 @@ public class WebMvcConfig extends WebMvcConfigurerAdapter {
     }
 
 
+//    @Bean
+//    public RestTemplate restTemplate(RestTemplateBuilder builder) {
+//        builder.setConnectTimeout(1*60);
+//        builder.setReadTimeout(1*60);
+//       // builder.basicAuthorization()
+//        return builder.build();
+//    }
     @Bean
-    public RestTemplate restTemplate(RestTemplateBuilder builder) {
-        builder.setConnectTimeout(1*60);
-        builder.setReadTimeout(1*60);
-       // builder.basicAuthorization()
-        return builder.build();
+    public RestTemplate restTemplate() {
+        RestTemplate restTemplate = new RestTemplate();
+        ((SimpleClientHttpRequestFactory) restTemplate.getRequestFactory()).setConnectTimeout(1000);
+        ((SimpleClientHttpRequestFactory) restTemplate.getRequestFactory()).setReadTimeout(1000);
+
+        return restTemplate;
+
     }
 
-
-
-    //
+        //
 //    @Bean
 //    @Primary
 //    @ConfigurationProperties(prefix = "app.datasource")

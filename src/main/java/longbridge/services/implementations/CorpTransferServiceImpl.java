@@ -77,23 +77,27 @@ public class CorpTransferServiceImpl implements CorpTransferService {
 
     @Override
     public Object addTransferRequest(CorpTransferRequestDTO transferRequestDTO) throws InternetBankingException {
+
         CorpTransRequest transferRequest = convertDTOToEntity(transferRequestDTO);
-        transferRequest.setUserReferenceNumber("CORP_"+getCurrentUser().getId().toString());
+        String userRefereneceNumber = "CORP_"+getCurrentUser().getId().toString();
+        transferRequest.setUserReferenceNumber(userRefereneceNumber);
+        transferRequestDTO.setUserReferenceNumber(userRefereneceNumber);
 
         if ("SOLE".equals(transferRequest.getCorporate().getCorporateType())) {
-            CorpTransferRequestDTO requestDTO =  makeTransfer(transferRequestDTO);
+            CorpTransferRequestDTO requestDTO = makeTransfer(transferRequestDTO);
             if ("00".equals(requestDTO.getStatus()) || "000".equals(requestDTO.getStatus())) { // Transfer successful
                 logger.debug("returning payment Request Sent for sole:{}",transferRequest.getCorporate().getCorporateType());
                 return requestDTO;
             } else {
                 throw new InternetBankingTransferException(requestDTO.getStatusDescription());
             }
+
         }
-        logger.debug("Payment Request Sent for corp:{}",transferRequest.getCorporate().getCorporateType());
-        logger.debug("Payment Request Sent for corp:{}",transferRequest.getCorporate().getCorporateType());
+
         if (corporateService.getApplicableTransferRule(transferRequest) == null) {
             throw new TransferRuleException(messageSource.getMessage("rule.unapplicable", null, locale));
         }
+
 
         try {
             transferRequest.setStatus(StatusCode.PENDING.toString());
@@ -122,13 +126,14 @@ public class CorpTransferServiceImpl implements CorpTransferService {
 
     private CorpTransferRequestDTO makeTransfer(CorpTransferRequestDTO corpTransferRequestDTO) throws InternetBankingTransferException {
         validateTransfer(corpTransferRequestDTO);
-        logger.trace("Initiating a transfer", corpTransferRequestDTO);
-        logger.debug("Payment Request Sent for corp:{}",corpTransferRequestDTO);
-        CorpTransRequest corpTransRequest = (CorpTransRequest) integrationService.makeTransfer(convertDTOToEntity(corpTransferRequestDTO));
-        logger.trace("Transfer Details", corpTransRequest);
+        logger.trace("Initiating {} transfer to {} by {}", corpTransferRequestDTO.getTransferType(), corpTransferRequestDTO.getBeneficiaryAccountName(),corpTransferRequestDTO.getUserReferenceNumber());
+        CorpTransRequest corpTransRequest = persistTransfer(corpTransferRequestDTO);
+        corpTransRequest = (CorpTransRequest) integrationService.makeTransfer(corpTransRequest);
+        logger.trace("Transfer Details {} by {}", corpTransRequest.toString(),corpTransRequest.getUserReferenceNumber());
 
         if (corpTransRequest != null) {
-            corpTransferRequestDTO = saveTransfer(convertEntityToDTO(corpTransRequest));
+            corpTransferRequestRepo.save(corpTransRequest);
+            corpTransferRequestDTO = convertEntityToDTO(corpTransRequest);
 
             if (corpTransRequest.getStatus() != null) {
                 return corpTransferRequestDTO;
@@ -155,6 +160,7 @@ public class CorpTransferServiceImpl implements CorpTransferService {
 
 
     @Override
+
     public CorpTransferRequestDTO saveTransfer(CorpTransferRequestDTO corpTransferRequestDTO) throws InternetBankingTransferException {
         CorpTransferRequestDTO result = new CorpTransferRequestDTO();
         try {
@@ -168,6 +174,20 @@ public class CorpTransferServiceImpl implements CorpTransferService {
     }
 
 
+    public CorpTransRequest persistTransfer(CorpTransferRequestDTO corpTransferRequestDTO) throws InternetBankingTransferException {
+        CorpTransRequest transRequest = convertDTOToEntity(corpTransferRequestDTO);
+        return corpTransferRequestRepo.save(transRequest);
+//        try {
+//
+////            result = convertEntityToDTO(corpTransferRequestRepo.save(transRequest));
+//
+//        } catch (Exception e) {
+//            logger.error("Exception occurred saving transfer request", e);
+//        }
+//        return transRequest;
+    }
+
+
     private void validateBalance(CorpTransferRequestDTO corpTransferRequest) throws InternetBankingTransferException {
 
         BigDecimal balance = integrationService.getAvailableBalance(corpTransferRequest.getCustomerAccountNumber());
@@ -176,6 +196,7 @@ public class CorpTransferServiceImpl implements CorpTransferService {
                 throw new InternetBankingTransferException(TransferExceptions.BALANCE.toString());
             }
         }
+
     }
 
     @Override
@@ -247,6 +268,7 @@ public class CorpTransferServiceImpl implements CorpTransferService {
         transferRequestDTO.setRemarks(corpTransRequest.getRemarks());
         transferRequestDTO.setStatus(corpTransRequest.getStatus());
         transferRequestDTO.setReferenceNumber(corpTransRequest.getReferenceNumber());
+        transferRequestDTO.setUserReferenceNumber(corpTransRequest.getUserReferenceNumber());
         transferRequestDTO.setNarration(corpTransRequest.getNarration());
         transferRequestDTO.setStatusDescription(corpTransRequest.getStatusDescription());
         transferRequestDTO.setAmount(corpTransRequest.getAmount());
@@ -260,7 +282,6 @@ public class CorpTransferServiceImpl implements CorpTransferService {
 
 
     public CorpTransRequest convertDTOToEntity(CorpTransferRequestDTO transferRequestDTO) {
-        logger.debug("request converter:{}",transferRequestDTO);
         CorpTransRequest corpTransRequest = new CorpTransRequest();
         corpTransRequest.setId(transferRequestDTO.getId());
         corpTransRequest.setVersion(transferRequestDTO.getVersion());
@@ -275,8 +296,8 @@ public class CorpTransferServiceImpl implements CorpTransferService {
         corpTransRequest.setNarration(transferRequestDTO.getNarration());
         corpTransRequest.setStatusDescription(transferRequestDTO.getStatusDescription());
         corpTransRequest.setAmount(transferRequestDTO.getAmount());
+        corpTransRequest.setUserReferenceNumber(transferRequestDTO.getUserReferenceNumber());
         Corporate corporate = corporateRepo.findOne(Long.parseLong(transferRequestDTO.getCorporateId()));
-
         corpTransRequest.setCorporate(corporate);
         if (transferRequestDTO.getTransAuthId() != null) {
             CorpTransferAuth transferAuth = transferAuthRepo.findOne(Long.parseLong(transferRequestDTO.getTransAuthId()));
@@ -319,7 +340,9 @@ public class CorpTransferServiceImpl implements CorpTransferService {
             if (destAccount == null)
                 throw new InternetBankingTransferException(TransferExceptions.INVALID_BENEFICIARY.toString());
             if ((("NGN").equalsIgnoreCase(sourceAccount.getAcctCrncyCode())) && !("NGN").equalsIgnoreCase(destAccount.getAcctCrncyCode()))
+
                 throw new InternetBankingTransferException(TransferExceptions.NOT_ALLOWED.toString());
+
         }
         if (dto.getTransferType().equals(TransferType.INTER_BANK_TRANSFER)) {
             NEnquiryDetails details = integrationService.doNameEnquiry(dto.getFinancialInstitution().getInstitutionCode(), dto.getBeneficiaryAccountNumber());
@@ -337,6 +360,7 @@ public class CorpTransferServiceImpl implements CorpTransferService {
     public CorpTransferAuth getAuthorizations(CorpTransRequest transRequest) {
         CorpTransRequest corpTransRequest = corpTransferRequestRepo.findOne(transRequest.getId());
         return corpTransRequest.getTransferAuth();
+
     }
 
 
@@ -459,6 +483,7 @@ public class CorpTransferServiceImpl implements CorpTransferService {
             }
         }
     }
+
 
     private boolean isAuthorizationComplete(CorpTransRequest transRequest) {
         CorpTransferAuth transferAuth = transRequest.getTransferAuth();
