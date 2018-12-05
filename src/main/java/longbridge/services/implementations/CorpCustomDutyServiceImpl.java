@@ -409,14 +409,13 @@ public class CorpCustomDutyServiceImpl implements CorpCustomDutyService {
                             appId+corpPaymentRequest.getCustomDutyPayment().getTranId()+ corpPaymentRequest.getAmount()+secretKey,null));
                     CustomPaymentNotification customPaymentNotification = integrationService.paymentNotification(notificationRequest);
                     LOGGER.debug("CustomPaymentNotification:{}",customPaymentNotification);
-
                         CustomDutyPayment dutyPayment = corpPaymentRequest.getCustomDutyPayment();
                         dutyPayment.setPaymentStatus(customPaymentNotification.getCode());
                         dutyPayment.setMessage(customPaymentNotification.getMessage());
                         dutyPayment.setPaymentRef(customPaymentNotification.getPaymentRef());
                         LOGGER.debug("dutyPayment:{}",dutyPayment);
                         customDutyPaymentRepo.save(dutyPayment);
-                    if("00".equals(dutyPayment.getCode()) || "000".equals(dutyPayment.getCode())){ // Transfer successful
+                    if("00".equals(customPaymentNotification.getCode()) || "000".equals(customPaymentNotification.getCode())){ // Transfer successful
                         return messageSource.getMessage(customPaymentNotification.getMessage(), null, locale);
                     }else{
                         throw new InternetBankingTransferException(messageSource.getMessage("custom.payment.failed",null,locale));
