@@ -464,6 +464,7 @@ public class CorpCustomDutyServiceImpl implements CorpCustomDutyService {
         try {
             originalPayment.setStatus(newPaymentRequest.getStatus());
             originalPayment.setTransferType(TransferType.CUSTOM_DUTY);
+            originalPayment.setReferenceNumber(newPaymentRequest.getReferenceNumber());
             originalPayment.setStatusDescription(newPaymentRequest.getStatusDescription());
             logger.info("the payment {}",originalPayment.getAmount());
             corpPaymentRequestRepo.save(originalPayment);
