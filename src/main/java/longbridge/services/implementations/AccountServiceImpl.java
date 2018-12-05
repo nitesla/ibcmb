@@ -364,6 +364,32 @@ public class AccountServiceImpl implements AccountService {
         }
         return accountsForDebit;
     }
+    @Override
+    public Iterable<Account> getAccountsForDebitForStatement(List<Account> accounts) {
+        List<String> schmTypes = new ArrayList<>();
+        SettingDTO settingDTO = configurationService.getSettingByName("ACCOUNT_FOR_DEBIT");
+        if (settingDTO != null && settingDTO.isEnabled()) {
+            List<String> list = Arrays.asList(StringUtils.split(settingDTO.getValue(), ","));
+            schmTypes = (list);
+        }
+        List<Account> accountsForDebit = new ArrayList<Account>();
+        for (Account account : accounts) {
+            if ("A".equalsIgnoreCase(account.getStatus()) && !accountConfigService.isAccountHidden(account.getAccountNumber()) &&
+                    (!accountConfigService.isAccountRestrictedForView(account.getAccountNumber())) &&
+                    (!accountConfigService.isAccountRestrictedForDebit(account.getAccountNumber())) &&
+                    (!accountConfigService.isAccountSchemeCodeRestrictedForView(account.getSchemeCode()) &&
+                    (!accountConfigService.isAccountSchemeCodeRestrictedForDebit(account.getSchemeCode()) &&
+                    (!accountConfigService.isAccountSchemeTypeRestrictedForView(account.getSchemeType()) &&
+                    (!accountConfigService.isAccountSchemeTypeRestrictedForDebit(account.getSchemeType()))) &&
+                    (!accountConfigService.isAccountRestrictedForViewFromUser(account.getId(),getCurrentUser().getId())) &&
+//                    (!accountConfigService.isAccountRestrictedForTransactionFromUser(account.getId(),getCurrentUser().getId())) &&
+                    (!schmTypes.isEmpty() && ArrayUtils.contains(schmTypes.toArray(), account.getSchemeType()))))) {
+                accountsForDebit.add(account);
+            }
+
+        }
+        return accountsForDebit;
+    }
 
     @Override
     public List<AccountDTO> getAccountsForDebitAndCredit(String customerId) {

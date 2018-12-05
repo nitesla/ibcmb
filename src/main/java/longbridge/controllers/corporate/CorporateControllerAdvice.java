@@ -179,6 +179,17 @@ public class CorporateControllerAdvice {
 
 
             model.addAttribute("accounts", accountList);
+
+            List<Account> accountListStmt = new ArrayList<>();
+
+            Iterable<Account> accountsStmt = accountService.getAccountsForDebitForStatement(corporateUser.getCorporate().getAccounts());
+
+            StreamSupport.stream(accounts.spliterator(), false)
+                    .filter(Objects::nonNull)
+                    .forEach(i -> accountListStmt.add(i));
+
+
+            model.addAttribute("accountsStmt", accountsStmt);
         }
 
         return "";
