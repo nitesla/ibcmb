@@ -70,15 +70,18 @@ public class TransferServiceImpl implements TransferService {
 
     public TransferRequestDTO makeTransfer(TransferRequestDTO transferRequestDTO) throws InternetBankingTransferException {
         validateTransfer(transferRequestDTO);
-        logger.info("Initiating a Transfer", transferRequestDTO);
-        TransRequest transRequest = integrationService.makeTransfer(convertDTOToEntity(transferRequestDTO));
+        logger.info("Initiating {} Transfer to {}", transferRequestDTO.getTransferType(), transferRequestDTO.getBeneficiaryAccountName());
+        logger.info("Initiating Transfer to {}", transferRequestDTO);
+        TransRequest transRequest1 = convertDTOToEntity(transferRequestDTO);
+        transRequest1 = persistTransfer(convertEntityToDTO(transRequest1));
+        TransRequest transRequest = integrationService.makeTransfer(transRequest1);
 
         logger.trace("Transfer Details: ", transRequest);
 
         if (transRequest != null) {
 
-            transferRequestDTO = saveTransfer(convertEntityToDTO(transRequest));
-
+//            transferRequestDTO = saveTransfer(convertEntityToDTO(transRequest));
+            transRequest = transferRequestRepo.save(transRequest);
             if (transRequest.getStatus() != null) {
                 if (transRequest.getStatus().equalsIgnoreCase("000") || transRequest.getStatus().equalsIgnoreCase("00"))
                     return transferRequestDTO;
@@ -122,6 +125,25 @@ public class TransferServiceImpl implements TransferService {
         }
         return transferRequestDTO;
     }
+    private TransRequest persistTransfer(TransferRequestDTO transferRequestDTO) throws InternetBankingTransferException {
+        TransRequest transRequest = convertDTOToEntity(transferRequestDTO);
+        try {
+
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            if (!(authentication instanceof AnonymousAuthenticationToken)) {
+                String currentUserName = authentication.getName();
+                RetailUser user = retailUserRepo.findFirstByUserNameIgnoreCase(currentUserName);
+                transRequest.setUserReferenceNumber("RET_" + user.getId());
+            }
+            transRequest = transferRequestRepo.save(transRequest);
+//                transferRequestDTO = convertEntityToDTO();
+        return transRequest;
+
+        } catch (Exception e) {
+            logger.error("Exception occurred saving transfer request", e);
+        }
+        return transRequest;
+    }
 
 
     private void validateBalance(TransferRequestDTO transferRequest) throws InternetBankingTransferException {
@@ -144,7 +166,12 @@ public class TransferServiceImpl implements TransferService {
         if (dto.getBeneficiaryAccountNumber().equalsIgnoreCase(dto.getCustomerAccountNumber())) {
             throw new InternetBankingTransferException(TransferExceptions.SAME_ACCOUNT.toString());
         }
+        try {
         validateAccounts(dto);
+        } catch (InternetBankingTransferException e) {
+            logger.error("error validating account {}",e);
+            throw new InternetBankingTransferException(e.getMessage());
+        }
         boolean limitExceeded = limitService.isAboveInternetBankingLimit(
                 dto.getTransferType(),
                 UserType.RETAIL,
