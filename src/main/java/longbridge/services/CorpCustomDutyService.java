@@ -54,4 +54,10 @@ public interface CorpCustomDutyService {
     Page<CorpPaymentRequest> getPayments(Pageable pageable, String search);
 
     CorpTransferAuth getAuthorizations(CorpPaymentRequest corpPaymentRequest);
+
+    @PreAuthorize("hasAuthority('CUSTOM_DUTY')")
+    public CustomDutyPayment saveCustomDutyPayment(CustomAssessmentDetail assessmentDetail, CustomAssessmentDetailsRequest assessmentDetailsRequest, Principal principal);
+
+    @PreAuthorize("hasAuthority('CUSTOM_DUTY')")
+    public CorpPaymentRequest saveCorpPaymentRequest(CustomDutyPayment customDutyPayment, Corporate corporate,Principal principal, boolean isSole);
 }

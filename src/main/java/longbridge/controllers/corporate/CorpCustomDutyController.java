@@ -153,6 +153,8 @@ public class CorpCustomDutyController {
             if (corporate.getCorporateType().equalsIgnoreCase("MULTI")) {
                 customDutyService.saveCustomPaymentRequestForAuthorization(assessmentDetail,assessmentDetailsRequest, principal,corporate);
             } else if (corporate.getCorporateType().equalsIgnoreCase("SOLE")) {
+                CustomDutyPayment customDutyPayment = customDutyService.saveCustomDutyPayment(assessmentDetail, assessmentDetailsRequest,principal);
+                CorpPaymentRequest resp = customDutyService.saveCorpPaymentRequest( customDutyPayment, corporate,principal,true);
             } else {
                 redirectAttributes.addFlashAttribute("message",messages);
                 return "redirect:/login/corporate";
