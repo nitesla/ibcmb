@@ -40,7 +40,7 @@ public class CorpCustomDutyServiceImpl implements CorpCustomDutyService {
     @Autowired
     private CustomDutyPaymentRepo customDutyPaymentRepo;
 
-    @Value("${custom.duty.remark")
+    @Value("${custom.duty.remark}")
     private String paymentRemark;
 
     @Value("${custom.appId}")
@@ -433,9 +433,12 @@ public class CorpCustomDutyServiceImpl implements CorpCustomDutyService {
                 transferAuth.setStatus("C");
                 transferAuth.setLastEntry(new Date());
                 transferAuthRepo.save(transferAuth);
-                LOGGER.info(beneficiaryAcct);
+                LOGGER.info("corpPaymentRequest req:{}",corpPaymentRequest);
+                corpPaymentRequest.setCustomerAccountNumber(corpPaymentRequest.getCustomerAccountNumber());
+                corpPaymentRequest.setReferenceNumber(corpPaymentRequest.getReferenceNumber());
                 corpPaymentRequest.setBeneficiaryAccountNumber(beneficiaryAcct);
                 corpPaymentRequest.setBeneficiaryAccountName("Coronation");
+                corpPaymentRequest.setAmount(corpPaymentRequest.getAmount());
                 corpPaymentRequest.setTransferType(TransferType.CORONATION_BANK_TRANSFER);
                 corpPaymentRequest.setRemarks(paymentRemark);
                 CorpPaymentRequest paymentRequest = (CorpPaymentRequest)integrationService.makeTransfer(corpPaymentRequest);
@@ -468,7 +471,8 @@ public class CorpCustomDutyServiceImpl implements CorpCustomDutyService {
                     }
                 }
          }
-         throw new InternetBankingTransferException(messageSource.getMessage("payment.auth.success",null,locale));
+         return messageSource.getMessage("payment.auth.success",null,locale);
+         //throw new InternetBankingTransferException(messageSource.getMessage("payment.auth.success",null,locale));
         } catch (InternetBankingTransferException transferException) {
             throw transferException;
         } catch (Exception e) {
