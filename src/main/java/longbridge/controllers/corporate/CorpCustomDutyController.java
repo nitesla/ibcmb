@@ -137,7 +137,7 @@ public class CorpCustomDutyController {
                                   @ModelAttribute("assessmentDetailsRequest")  @Valid  CustomAssessmentDetailsRequest assessmentDetailsRequest,
                                   WebRequest request,
                                   BindingResult result, Model model, HttpServletRequest servletRequest, Principal principal,RedirectAttributes redirectAttributes, Locale locale) {
-
+String responseMessage = "";
         String tokenCode = request.getParameter("TaxDetails");
         ObjectMapper objectMapper = new ObjectMapper();
         List<Tax> navigation = new ArrayList<>();
@@ -146,17 +146,21 @@ public class CorpCustomDutyController {
                     objectMapper.getTypeFactory().constructCollectionType(
                             List.class, Tax.class));
             assessmentDetail.getResponseInfo().setTaxDetails(navigation);
-        }catch(Exception e){}
+        }catch(Exception e){
+
+        }
         try {
             CorporateUser user = corporateUserService.getUserByName(principal.getName());
             Corporate corporate = user.getCorporate();
             if (corporate.getCorporateType().equalsIgnoreCase("MULTI")) {
-                customDutyService.saveCustomPaymentRequestForAuthorization(assessmentDetail,assessmentDetailsRequest, principal,corporate);
+                responseMessage = customDutyService.saveCustomPaymentRequestForAuthorization(assessmentDetail,assessmentDetailsRequest, principal,corporate);
+                redirectAttributes.addFlashAttribute("message",responseMessage);
             } else if (corporate.getCorporateType().equalsIgnoreCase("SOLE")) {
                 CustomDutyPayment customDutyPayment = customDutyService.saveCustomDutyPayment(assessmentDetail, assessmentDetailsRequest,principal);
                 CorpPaymentRequest resp = customDutyService.saveCorpPaymentRequest( customDutyPayment, corporate,principal,true);
+                redirectAttributes.addFlashAttribute("message",resp.getCustomDutyPayment().getApprovalStatusDescription());
             } else {
-                redirectAttributes.addFlashAttribute("message",messages);
+//                redirectAttributes.addFlashAttribute("responseMessage",messages);
                 return "redirect:/login/corporate";
             }
             return "redirect:/corporate/custom";
