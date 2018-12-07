@@ -241,8 +241,7 @@ public class CorpCustomDutyServiceImpl implements CorpCustomDutyService {
                 request.setAmount(customDutyPayment.getTotalAmount());
                 request.setBeneficiaryAccountNumber(customDutyPayment.getAccount());
                 FinancialInstitution financialInstitution =
-                        financialInstitutionService.getFinancialInstitutionByBankCode(
-                                customDutyPayment.getBankCode().substring(2));
+                        financialInstitutionService.getFinancialInstitutionByBankCode("459");
                 request.setFinancialInstitution(financialInstitution);
                 request.setCustomerAccountNumber(customDutyPayment.getAccount());
                 request.setBeneficiaryAccountName(

@@ -128,6 +128,7 @@ public class CorpTransferServiceImpl implements CorpTransferService {
         validateTransfer(corpTransferRequestDTO);
         logger.trace("Initiating {} transfer to {} by {}", corpTransferRequestDTO.getTransferType(), corpTransferRequestDTO.getBeneficiaryAccountName(),corpTransferRequestDTO.getUserReferenceNumber());
         CorpTransRequest corpTransRequest = persistTransfer(corpTransferRequestDTO);
+        logger.info("the corporate transfer request {}",corpTransRequest);
         corpTransRequest = (CorpTransRequest) integrationService.makeTransfer(corpTransRequest);
         logger.trace("Transfer Details {} by {}", corpTransRequest.toString(),corpTransRequest.getUserReferenceNumber());
 
