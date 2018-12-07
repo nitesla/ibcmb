@@ -158,7 +158,7 @@ String responseMessage = "";
             } else if (corporate.getCorporateType().equalsIgnoreCase("SOLE")) {
                 CustomDutyPayment customDutyPayment = customDutyService.saveCustomDutyPayment(assessmentDetail, assessmentDetailsRequest,principal);
                 CorpPaymentRequest resp = customDutyService.saveCorpPaymentRequest( customDutyPayment, corporate,principal,true);
-                redirectAttributes.addFlashAttribute("message",resp.getCustomDutyPayment().getApprovalStatusDescription());
+                redirectAttributes.addFlashAttribute("message",resp.getStatusDescription());
             } else {
 //                redirectAttributes.addFlashAttribute("responseMessage",messages);
                 return "redirect:/login/corporate";

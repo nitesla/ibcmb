@@ -810,7 +810,7 @@ public class IntegrationServiceImpl implements IntegrationService {
 		catch (Exception e){
 			logger.error("Error calling coronation service rest service",e);
 		}
-		return null;
+		return new CustomsAreaCommand();
 	}
 
 	public CustomPaymentNotification paymentNotification(CustomPaymentNotificationRequest paymentNotificationRequest){
