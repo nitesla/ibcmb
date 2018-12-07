@@ -368,34 +368,6 @@ public class CorpCustomDutyServiceImpl implements CorpCustomDutyService {
         CorpPaymentRequest corpPaymentRequest = corpPaymentRequestRepo.findOne(transReqEntry.getTranReqId());
         corpPaymentRequest.setUserReferenceNumber("CORP_"+getCurrentUser().getId().toString());
         LOGGER.info("corpPayment Request:",corpPaymentRequest);
-        if ("SOLE".equals(corpPaymentRequest.getCorporate().getCorporateType())) {
-            TransRequest transRequest  = integrationService.makeTransfer(corpPaymentRequest);
-            LOGGER.info("Trans request:",transRequest);
-            if ("00".equals(transRequest.getStatus()) || "000".equals(transRequest.getStatus())) { // Transfer successful
-                CustomPaymentNotificationRequest notificationRequest = new CustomPaymentNotificationRequest();
-                notificationRequest.setTranId(corpPaymentRequest.getCustomDutyPayment().getTranId());
-                notificationRequest.setAmount(corpPaymentRequest.getAmount().toString());
-                notificationRequest.setPaymentRef(corpPaymentRequest.getReferenceNumber());
-                notificationRequest.setCustomerAccountNo(corpPaymentRequest.getCustomerAccountNumber());
-                notificationRequest.setLastAuthorizer(principal.getName());
-                notificationRequest.setInitiatedBy(corpPaymentRequest.getCustomDutyPayment().getInitiatedBy());
-                notificationRequest.setAppId(appId);
-                LOGGER.debug(appId+corpPaymentRequest.getCustomDutyPayment().getTranId()+ corpPaymentRequest.getAmount()+secretKey);
-                notificationRequest.setHash(EncryptionUtil.getSHA512(
-                        appId+corpPaymentRequest.getCustomDutyPayment().getTranId()+ corpPaymentRequest.getAmount()+secretKey,null));
-                CustomPaymentNotification customPaymentNotification = integrationService.paymentNotification(notificationRequest);
-                logger.debug("returning payment Request Sent for sole: {}",corpPaymentRequest.getCorporate().getCorporateType());
-                CustomDutyPayment dutyPayment = corpPaymentRequest.getCustomDutyPayment();
-                dutyPayment.setPaymentStatus(customPaymentNotification.getCode());
-                dutyPayment.setMessage(customPaymentNotification.getMessage());
-                dutyPayment.setPaymentRef(customPaymentNotification.getPaymentRef());
-                LOGGER.debug("dutyPayment:{}",dutyPayment);
-                customDutyPaymentRepo.save(dutyPayment);
-                return corpPaymentRequest.getStatus();
-            } else {
-                throw new InternetBankingTransferException(corpPaymentRequest.getStatusDescription());
-            }
-        }
         CorpTransRule transferRule = corporateService.getApplicableTransferRule(corpPaymentRequest);
         List<CorporateRole> roles = getExistingRoles(transferRule.getRoles());
         CorporateRole userRole = null;
