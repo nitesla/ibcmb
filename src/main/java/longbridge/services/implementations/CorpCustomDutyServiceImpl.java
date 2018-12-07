@@ -40,7 +40,7 @@ public class CorpCustomDutyServiceImpl implements CorpCustomDutyService {
     @Autowired
     private CustomDutyPaymentRepo customDutyPaymentRepo;
 
-    @Value("${custom.duty.remark")
+    @Value("${custom.duty.remark}")
     private String paymentRemark;
 
     @Value("${custom.appId}")
@@ -433,9 +433,12 @@ public class CorpCustomDutyServiceImpl implements CorpCustomDutyService {
                 transferAuth.setStatus("C");
                 transferAuth.setLastEntry(new Date());
                 transferAuthRepo.save(transferAuth);
-                LOGGER.info(beneficiaryAcct);
+                LOGGER.info("corpPaymentRequest req:{}",corpPaymentRequest);
+                corpPaymentRequest.setCustomerAccountNumber(corpPaymentRequest.getCustomerAccountNumber());
+                corpPaymentRequest.setReferenceNumber(corpPaymentRequest.getReferenceNumber());
                 corpPaymentRequest.setBeneficiaryAccountNumber(beneficiaryAcct);
                 corpPaymentRequest.setBeneficiaryAccountName("Coronation");
+                corpPaymentRequest.setAmount(corpPaymentRequest.getAmount());
                 corpPaymentRequest.setTransferType(TransferType.CORONATION_BANK_TRANSFER);
                 corpPaymentRequest.setRemarks(paymentRemark);
                 CorpPaymentRequest paymentRequest = (CorpPaymentRequest)integrationService.makeTransfer(corpPaymentRequest);
@@ -459,7 +462,7 @@ public class CorpCustomDutyServiceImpl implements CorpCustomDutyService {
                         dutyPayment.setPaymentStatus(customPaymentNotification.getCode());
                         dutyPayment.setMessage(customPaymentNotification.getMessage());
                         dutyPayment.setPaymentRef(customPaymentNotification.getPaymentRef());
-                        LOGGER.debug("customPaymentNotification: {}",customPaymentNotification);
+                        LOGGER.debug("customPaymentNotification:{}",customPaymentNotification);
                         customDutyPaymentRepo.save(dutyPayment);
                     if("00".equals(customPaymentNotification.getCode()) || "000".equals(customPaymentNotification.getCode())){ // Transfer successful
                         return messageSource.getMessage(customPaymentNotification.getMessage(), null, locale);
@@ -469,6 +472,7 @@ public class CorpCustomDutyServiceImpl implements CorpCustomDutyService {
                 }
          }
          return messageSource.getMessage("payment.auth.success",null,locale);
+         //throw new InternetBankingTransferException(messageSource.getMessage("payment.auth.success",null,locale));
         } catch (InternetBankingTransferException transferException) {
             throw transferException;
         } catch (Exception e) {
