@@ -113,7 +113,7 @@ public class CorpCustomDutyServiceImpl implements CorpCustomDutyService {
     @Override
     public void paymentNotification(CustomAssessmentDetail assessmentDetail) {
         CustomPaymentNotificationRequest paymentNotificationRequest = new CustomPaymentNotificationRequest();
-        integrationService.paymentNotification(paymentNotificationRequest);
+//        integrationService.paymentNotification(paymentNotificationRequest);
     }
 
     @Override
@@ -140,6 +140,7 @@ public class CorpCustomDutyServiceImpl implements CorpCustomDutyService {
         customTransactionStatus.setPaymentStatus(corpPaymentRequest.getCustomDutyPayment().getPaymentStatus());
         return  customTransactionStatus;
     }
+
     private CorpPaymentRequest updatePaymentFields(CustomTransactionStatus customTransactionStatus,CorpPaymentRequest corpPaymentRequest){
 //        CorpPaymentRequest corpPaymentRequest =  new CorpPaymentRequest();
         corpPaymentRequest.getCustomDutyPayment().setCode(customTransactionStatus.getCode());
@@ -150,6 +151,7 @@ public class CorpCustomDutyServiceImpl implements CorpCustomDutyService {
         corpPaymentRequest.getCustomDutyPayment().setPaymentStatus(customTransactionStatus.getPaymentStatus());
         return  corpPaymentRequest;
     }
+
     public boolean isAccountBalanceEnough(String acctNumber, BigDecimal amount){
         BigDecimal availableBalance =  integrationService.getAvailableBalance(acctNumber);
         LOGGER.info("the availableBalance {}",availableBalance);
@@ -248,6 +250,7 @@ public class CorpCustomDutyServiceImpl implements CorpCustomDutyService {
                         accountService.getAccountByAccountNumber(customDutyPayment.getAccount()).getAccountName());
                 request.setTransferType(TransferType.CUSTOM_DUTY);
                 request.setCorporate(corporate);
+                request.setBeneficiaryAccountNumber(beneficiaryAcct);
                 accountService.validateAccount(request.getCustomerAccountNumber());
                 CorpTransferAuth transferAuth = new CorpTransferAuth();
                 if(isSole){
@@ -267,19 +270,22 @@ public class CorpCustomDutyServiceImpl implements CorpCustomDutyService {
                         notificationRequest.setCustomerAccountNo(request.getCustomerAccountNumber());
                         notificationRequest.setLastAuthorizer(principal.getName());
                         notificationRequest.setInitiatedBy(request.getCustomDutyPayment().getInitiatedBy());
+
                         notificationRequest.setAppId(appId);
                         LOGGER.debug(appId + request.getCustomDutyPayment().getTranId() + request.getAmount() + secretKey);
                         notificationRequest.setHash(EncryptionUtil.getSHA512(
                                 appId + request.getCustomDutyPayment().getTranId() + request.getAmount() + secretKey, null));
-                        CustomPaymentNotification customPaymentNotification = integrationService.paymentNotification(notificationRequest);
+                        CustomPaymentNotification customPaymentNotification = integrationService.paymentNotification(request,principal.getName());
                         logger.debug("returning payment Request Sent for sole: {}", request.getCorporate().getCorporateType());
                         CustomDutyPayment dutyPayment = request.getCustomDutyPayment();
                         dutyPayment.setPaymentStatus(customPaymentNotification.getCode());
                         dutyPayment.setMessage(customPaymentNotification.getMessage());
                         dutyPayment.setPaymentRef(customPaymentNotification.getPaymentRef());
                         LOGGER.debug("dutyPayment:{}", dutyPayment);
-                        customDutyPaymentRepo.save(dutyPayment);
+                        transRequest.setCustomDutyPayment(dutyPayment);
                         transRequest.setStatusDescription(dutyPayment.getMessage());
+                        transRequest.setStatus(customPaymentNotification.getCode());
+                        transRequest = corpPaymentRequestRepo.save(transRequest);
                         return transRequest;
                     }
                     throw new InternetBankingException(messageSource.getMessage(transRequest.getStatusDescription(), null, null));
@@ -290,12 +296,9 @@ public class CorpCustomDutyServiceImpl implements CorpCustomDutyService {
                     }
                     request.setStatus(StatusCode.PENDING.toString());
                     request.setStatusDescription("Pending Authorization");
-
                     transferAuth.setStatus("P");
                     request.setTransferAuth(transferAuth);
                     request = corpPaymentRequestRepo.save(request);
-
-
                 }
 
 
@@ -424,20 +427,20 @@ public class CorpCustomDutyServiceImpl implements CorpCustomDutyService {
                 corpPaymentRequest.setTransferType(TransferType.CUSTOM_DUTY);
                 corpPaymentRequestRepo.save(corpPaymentRequest);
                 logger.info("the payment status {}",paymentRequest);
-                if ((paymentRequest. getStatus().equals("00") || paymentRequest.getStatus().equals("000"))) {
+                if ((paymentRequest.getStatus().equals("00") || paymentRequest.getStatus().equals("000"))) {
                     updatePaymentRequest(corpPaymentRequest,paymentRequest);
-                    CustomPaymentNotificationRequest notificationRequest = new CustomPaymentNotificationRequest();
-                    notificationRequest.setTranId(corpPaymentRequest.getCustomDutyPayment().getTranId());
-                    notificationRequest.setAmount(corpPaymentRequest.getAmount().toString());
-                    notificationRequest.setPaymentRef(corpPaymentRequest.getReferenceNumber());
-                    notificationRequest.setCustomerAccountNo(corpPaymentRequest.getCustomerAccountNumber());
-                    notificationRequest.setLastAuthorizer(principal.getName());
-                    notificationRequest.setInitiatedBy(corpPaymentRequest.getCustomDutyPayment().getInitiatedBy());
-                    notificationRequest.setAppId(appId);
-                    LOGGER.debug(appId+corpPaymentRequest.getCustomDutyPayment().getTranId()+ corpPaymentRequest.getAmount()+secretKey);
-                    notificationRequest.setHash(EncryptionUtil.getSHA512(
-                            appId+corpPaymentRequest.getCustomDutyPayment().getTranId()+ corpPaymentRequest.getAmount()+secretKey,null));
-                    CustomPaymentNotification customPaymentNotification = integrationService.paymentNotification(notificationRequest);
+//                    CustomPaymentNotificationRequest notificationRequest = new CustomPaymentNotificationRequest();
+//                    notificationRequest.setTranId(corpPaymentRequest.getCustomDutyPayment().getTranId());
+//                    notificationRequest.setAmount(corpPaymentRequest.getAmount().toString());
+//                    notificationRequest.setPaymentRef(corpPaymentRequest.getReferenceNumber());
+//                    notificationRequest.setCustomerAccountNo(corpPaymentRequest.getCustomerAccountNumber());
+//                    notificationRequest.setLastAuthorizer(principal.getName());
+//                    notificationRequest.setInitiatedBy(corpPaymentRequest.getCustomDutyPayment().getInitiatedBy());
+//                    notificationRequest.setAppId(appId);
+//                    notificationRequest.setHash(EncryptionUtil.getSHA512(
+//                            appId+corpPaymentRequest.getCustomDutyPayment().getTranId()+ corpPaymentRequest.getAmount()+secretKey,null));
+//                    LOGGER.debug("Notification Request:{}",notificationRequest);
+                    CustomPaymentNotification customPaymentNotification = integrationService.paymentNotification(corpPaymentRequest,principal.getName());
                     LOGGER.debug("CustomPaymentNotification:{}",customPaymentNotification);
                         CustomDutyPayment dutyPayment = corpPaymentRequest.getCustomDutyPayment();
                         dutyPayment.setPaymentStatus(customPaymentNotification.getCode());

@@ -35,7 +35,7 @@
                             <td>Amount</td>
                             <td>Date</td>
                             <td>Status</td>
-                            <!--<td></td>-->
+                            <td>Payment Status</td>
                             </thead>
                             <tbody>
 
@@ -85,13 +85,15 @@
                             {"data": "financialInstitution.institutionName"},
                             {"data": "amount"},
                             {"data": "tranDate"},
+
                             {"data": "statusDescription"},
+                            {"data": "customDutyPayment.message"},
                             {"data": "customDutyPayment.paymentStatus","visible":false},
                             {"data": "customDutyPayment.approvalStatus","visible":false},
                             {"data": "customDutyPayment.notificationStatus","visible":false},
                             {"data": "customDutyPayment.paymentRef","visible":false},
-                            {"data": "customDutyPayment.code","visible":false},
-                            {"data": "customDutyPayment.message","visible":false}
+                            {"data": "customDutyPayment.code","visible":false}
+                            // {"data": "customDutyPayment.message"}
 
                         ], "columnDefs": [{
                             "targets" : 4,

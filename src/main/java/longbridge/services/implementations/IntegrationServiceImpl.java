@@ -813,13 +813,24 @@ public class IntegrationServiceImpl implements IntegrationService {
 		return new CustomsAreaCommand();
 	}
 
-	public CustomPaymentNotification paymentNotification(CustomPaymentNotificationRequest paymentNotificationRequest){
+	public CustomPaymentNotification paymentNotification(CorpPaymentRequest corpPaymentRequest, String userName){
 		try {
+			Map<String,Object> request = new HashMap<>();
+			request.put("appId",appId);
+			request.put("hash",EncryptionUtil.getSHA512(
+					appId + corpPaymentRequest.getCustomDutyPayment().getTranId() + corpPaymentRequest.getAmount() + secretKey, null));
+			request.put("TranId",corpPaymentRequest.getCustomDutyPayment().getTranId());
+			request.put("Amount",corpPaymentRequest.getAmount().toString());
+			request.put("LastAuthorizer",userName);
+			request.put("InitiatedBy",corpPaymentRequest.getCustomDutyPayment().getInitiatedBy());
+			request.put("PaymentRef",corpPaymentRequest.getReferenceNumber());
+			request.put("CustomerAccountNo",corpPaymentRequest.getBeneficiaryAccountNumber());
 			logger.debug("Fetching data from coronation rest service via the url: {}", CustomDutyUrl);
 			logger.debug("Fetching data from coronation rest service via the url: {}", CustomDutyUrl+"/customduty/payassessment");
-			logger.debug("paymentNotificationRequest: {}", paymentNotificationRequest);
+			logger.debug("paymentNotificationRequest: {}", request);
+
 //			paymentNotificationRequest.setCustomerAccountNo("190219101");
-			CustomPaymentNotification response = template.postForObject(CustomDutyUrl+"/customduty/payassessment", paymentNotificationRequest, CustomPaymentNotification.class);
+			CustomPaymentNotification response = template.postForObject(CustomDutyUrl+"/customduty/payassessment", request, CustomPaymentNotification.class);
 			logger.debug("payment notification Response: {}", response);
 			return response;
 		}
@@ -828,15 +839,16 @@ public class IntegrationServiceImpl implements IntegrationService {
 		}
 		return null;
 	}
+
 	@Override
 	public CustomTransactionStatus paymentStatus(CorpPaymentRequest corpPaymentRequest){
 		try {
 			logger.debug("Fetching data from coronation rest service via the url: {}", CustomDutyUrl);
 			Map<String,String> request = new HashMap<>();
 			request.put("hash",EncryptionUtil.getSHA512(
-					appId+corpPaymentRequest.getCustomDutyPayment().getTranId()+ corpPaymentRequest.getAmount()+secretKey,null));
+					appId+corpPaymentRequest.getCustomDutyPayment().getTranId()+secretKey,null));
 			request.put("appId",appId);
-			request.put("id",corpPaymentRequest.getCustomDutyPayment().getTranId());
+			request.put("Id",corpPaymentRequest.getCustomDutyPayment().getTranId());
 			logger.debug("Fetching data from coronation rest service using: {}", request);
 			CustomTransactionStatus transactionStatus= template.postForObject(CustomDutyUrl+"/customduty/checktransactionstatus", request, CustomTransactionStatus.class);
 			logger.info("the transaction status response {}",transactionStatus);
@@ -846,7 +858,5 @@ public class IntegrationServiceImpl implements IntegrationService {
 			logger.error("Error calling coronation service rest service",e);
 		}
 		return null;
-
 	}
-
 }
