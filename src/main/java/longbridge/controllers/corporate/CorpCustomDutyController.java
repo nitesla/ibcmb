@@ -129,7 +129,7 @@ public class CorpCustomDutyController {
         catch (Exception e){
             LOGGER.error("Error calling coronation service rest service",e);
         }
-        return null;
+        return new CustomsAreaCommand();
     }
 
     @PostMapping("/summary")
@@ -220,7 +220,6 @@ String responseMessage = "";
         Pageable pageable = DataTablesUtils.getPageable(input);
         Page<CorpPaymentRequest> requests = customDutyService.getPaymentRequests(pageable);
         DataTablesOutput<CorpPaymentRequest> out = new DataTablesOutput<CorpPaymentRequest>();
-        LOGGER.debug("Fetching requests:{}",out);
         out.setDraw(input.getDraw());
         out.setData(requests.getContent());
         out.setRecordsFiltered(requests.getTotalElements());
