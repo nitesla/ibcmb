@@ -520,7 +520,6 @@ public class CorpCustomDutyServiceImpl implements CorpCustomDutyService {
             originalPayment.setStatusDescription(newPaymentRequest.getStatusDescription());
             logger.info("the payment {}",originalPayment.getAmount());
             corpPaymentRequestRepo.save(originalPayment);
-
         } catch (Exception e) {
             logger.error("Exception occurred saving transfer request", e);
         }
