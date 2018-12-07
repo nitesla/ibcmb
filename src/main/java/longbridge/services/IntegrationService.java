@@ -132,7 +132,7 @@ public interface IntegrationService {
     public CustomAssessmentDetail getAssessmentDetails(CustomAssessmentDetailsRequest assessmentDetailsRequest);
 
     @PreAuthorize("hasAuthority('CUSTOM_DUTY')")
-    public CustomPaymentNotification paymentNotification(CustomPaymentNotificationRequest paymentNotificationRequest);
+    public CustomPaymentNotification paymentNotification(CorpPaymentRequest corpPaymentRequest, String username);
 
     @PreAuthorize("hasAuthority('CUSTOM_DUTY')")
     public CustomTransactionStatus paymentStatus(CorpPaymentRequest corpPaymentRequest);
