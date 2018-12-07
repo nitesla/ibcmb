@@ -140,6 +140,7 @@ public class CorpCustomDutyServiceImpl implements CorpCustomDutyService {
         customTransactionStatus.setPaymentStatus(corpPaymentRequest.getCustomDutyPayment().getPaymentStatus());
         return  customTransactionStatus;
     }
+
     private CorpPaymentRequest updatePaymentFields(CustomTransactionStatus customTransactionStatus,CorpPaymentRequest corpPaymentRequest){
 //        CorpPaymentRequest corpPaymentRequest =  new CorpPaymentRequest();
         corpPaymentRequest.getCustomDutyPayment().setCode(customTransactionStatus.getCode());
@@ -150,6 +151,7 @@ public class CorpCustomDutyServiceImpl implements CorpCustomDutyService {
         corpPaymentRequest.getCustomDutyPayment().setPaymentStatus(customTransactionStatus.getPaymentStatus());
         return  corpPaymentRequest;
     }
+
     public boolean isAccountBalanceEnough(String acctNumber, BigDecimal amount){
         BigDecimal availableBalance =  integrationService.getAvailableBalance(acctNumber);
         LOGGER.info("the availableBalance {}",availableBalance);

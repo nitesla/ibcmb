@@ -839,15 +839,16 @@ public class IntegrationServiceImpl implements IntegrationService {
 		}
 		return null;
 	}
+
 	@Override
 	public CustomTransactionStatus paymentStatus(CorpPaymentRequest corpPaymentRequest){
 		try {
 			logger.debug("Fetching data from coronation rest service via the url: {}", CustomDutyUrl);
 			Map<String,String> request = new HashMap<>();
 			request.put("hash",EncryptionUtil.getSHA512(
-					appId+corpPaymentRequest.getCustomDutyPayment().getTranId()+ corpPaymentRequest.getAmount()+secretKey,null));
+					appId+corpPaymentRequest.getCustomDutyPayment().getTranId()+secretKey,null));
 			request.put("appId",appId);
-			request.put("id",corpPaymentRequest.getCustomDutyPayment().getTranId());
+			request.put("Id",corpPaymentRequest.getCustomDutyPayment().getTranId());
 			logger.debug("Fetching data from coronation rest service using: {}", request);
 			CustomTransactionStatus transactionStatus= template.postForObject(CustomDutyUrl+"/customduty/checktransactionstatus", request, CustomTransactionStatus.class);
 			logger.info("the transaction status response {}",transactionStatus);
@@ -857,7 +858,5 @@ public class IntegrationServiceImpl implements IntegrationService {
 			logger.error("Error calling coronation service rest service",e);
 		}
 		return null;
-
 	}
-
 }
