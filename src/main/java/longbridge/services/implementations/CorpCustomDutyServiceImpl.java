@@ -343,7 +343,7 @@ public class CorpCustomDutyServiceImpl implements CorpCustomDutyService {
     public Page<CorpPaymentRequest> getPaymentRequests(Pageable pageDetails) {
         CorporateUser corporateUser = getCurrentUser();
         Corporate corporate = corporateUser.getCorporate();
-        Page<CorpPaymentRequest> page = corpPaymentRequestRepo.findByCorporateOrderByStatusAscTranDateDesc(corporate, pageDetails);
+        Page<CorpPaymentRequest> page = corpPaymentRequestRepo.findByCorporateOrderByTranDateDesc(corporate, pageDetails);
         List<CorpPaymentRequest> corpPaymentRequest = page.getContent().stream()
                 .filter(transRequest -> !accountConfigService.isAccountRestrictedForViewFromUser(accountService.getAccountByAccountNumber(transRequest.getCustomerAccountNumber()).getId(),corporateUser.getId())).collect(Collectors.toList());
         return new PageImpl<CorpPaymentRequest>(corpPaymentRequest,pageDetails,page.getTotalElements());
@@ -353,6 +353,7 @@ public class CorpCustomDutyServiceImpl implements CorpCustomDutyService {
     public CorpPaymentRequest getPayment(Long id) {
         return corpPaymentRequestRepo.findById(id);
     }
+
     @Override
     public Page<CorpPaymentRequest> getPayments(Pageable pageable,String search) {
         return corpPaymentRequestRepo.findAll(pageable);
