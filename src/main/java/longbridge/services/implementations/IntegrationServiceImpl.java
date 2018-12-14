@@ -333,12 +333,12 @@ public class IntegrationServiceImpl implements IntegrationService {
 					logger.debug("Transfer Params: {}", params.toString());
 
 					response = template.postForObject(uri, params, TransferDetails.class);
+					logger.info("Response:{}",response);
 					transRequest.setStatus(response.getResponseCode());
 					transRequest.setStatusDescription(response.getResponseDescription());
 					transRequest.setReferenceNumber(response.getUniqueReferenceCode());
 					transRequest.setNarration(response.getNarration());
 					return transRequest;
-
 				} catch (HttpStatusCodeException e) {
 					logger.error("HTTP Error occurred", e);
 					transRequest.setStatus(e.getStatusCode().toString());
@@ -410,7 +410,6 @@ public class IntegrationServiceImpl implements IntegrationService {
 				params.put("remarks", transRequest.getRemarks());
 				logger.info("params for transfer {}", params.toString());
 				try {
-
 					logger.info("Initiating Local (Own Account) Transfer");
 					logger.debug("Transfer Params: {}", params.toString());
 
