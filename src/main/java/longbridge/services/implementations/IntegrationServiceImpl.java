@@ -35,6 +35,7 @@ import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
 import java.math.BigDecimal;
+import java.net.SocketTimeoutException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
@@ -317,7 +318,7 @@ public class IntegrationServiceImpl implements IntegrationService {
 			case CORONATION_BANK_TRANSFER:
 			{
 				transRequest.setTransferType(TransferType.CORONATION_BANK_TRANSFER);
-				TransferDetails response;
+				TransferDetails response = null;
 				String uri = URI + "/transfer/local";
 				Map<String, String> params = new HashMap<>();
 				params.put("debitAccountNumber", transRequest.getCustomerAccountNumber());
@@ -331,7 +332,6 @@ public class IntegrationServiceImpl implements IntegrationService {
 				try {
 					logger.info("Initiating Local Transfer");
 					logger.debug("Transfer Params: {}", params.toString());
-
 					response = template.postForObject(uri, params, TransferDetails.class);
 					logger.info("Response:{}",response);
 					transRequest.setStatus(response.getResponseCode());
@@ -344,12 +344,16 @@ public class IntegrationServiceImpl implements IntegrationService {
 					transRequest.setStatus(e.getStatusCode().toString());
 					transRequest.setStatusDescription(e.getStatusCode().getReasonPhrase());
 					return transRequest;
-				} catch (Exception e) {
+				}
+				catch (Exception e) {
+					String reversalUrl = "http://132.10.200.140:9292/service/reverseFundTransfer?uniqueIdentifier=";
 					logger.error("Error occurred making transfer", e);
 					transRequest.setStatus(StatusCode.FAILED.toString());
 					transRequest.setStatusDescription(messageSource.getMessage("status.code.failed", null, locale));
+					template.postForObject(reversalUrl+response.getUniqueReferenceCode(), params, TransferDetails.class);
 					return transRequest;
 				}
+
 
 			}
 			case INTER_BANK_TRANSFER: {
