@@ -60,4 +60,10 @@ public interface CorpCustomDutyService {
 
     @PreAuthorize("hasAuthority('CUSTOM_DUTY')")
     public CorpPaymentRequest saveCorpPaymentRequest(CustomDutyPayment customDutyPayment, Corporate corporate,Principal principal, boolean isSole);
+
+    @PreAuthorize("hasAuthority('CUSTOM_DUTY')")
+    Page<CorpPaymentRequest> findEntities(String search, Pageable pageable);
+
+    @PreAuthorize("hasAuthority('CUSTOM_DUTY')")
+    Page<CorpPaymentRequest> getEntities(Pageable pageable);
 }

@@ -11,6 +11,7 @@ import longbridge.services.*;
 import longbridge.utils.TransferType;
 import longbridge.utils.TransferUtils;
 import longbridge.validator.transfer.TransferValidator;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -300,9 +301,29 @@ String responseMessage = "";
         } catch (InternetBankingException ibe) {
             LOGGER.error("Failed to authorize transfer", ibe);
             redirectAttributes.addFlashAttribute("failure", ibe.getMessage());
-
         }
         return "redirect:/corporate/custom";
+    }
+
+    @GetMapping(path = "/all")
+    public @ResponseBody
+    DataTablesOutput<CorpPaymentRequest> getAllEntities(DataTablesInput input, @RequestParam("csearch") String search){
+        Pageable pageable = DataTablesUtils.getPageable(input);
+        Page<CorpPaymentRequest> paymentRequest= null;
+        if (StringUtils.isNoneBlank(search)) {
+            LOGGER.info("the search param {}",search);
+            //makerCheckers= makerCheckerService.findEntities(search,pageable);
+            paymentRequest = customDutyService.findEntities(search,pageable);
+        }else{
+            LOGGER.info("no search query");
+            paymentRequest= customDutyService.getPaymentRequests(pageable);//customDutyService.getEntities(pageable);
+        }
+        DataTablesOutput<CorpPaymentRequest> out = new DataTablesOutput<CorpPaymentRequest>();
+        out.setDraw(input.getDraw());
+        out.setData(paymentRequest.getContent());
+        out.setRecordsFiltered(paymentRequest.getTotalElements());
+        out.setRecordsTotal(paymentRequest.getTotalElements());
+        return out;
     }
 
 }
