@@ -10,25 +10,20 @@
                 </select>
             </div>
 
-            <div class="col-xs-12 " >
-                <div class=" no-pad-lef  no-mt no-bd  alert">
-                    <div>
-                        <!--<div class="row wrapper border-bottom white-bg page-heading">-->
-
-
-                        <!--</div>-->
-                        <ul class="nav navbar-right panel_toolbox col-lg-4 pull-right">
-
-                            <li class="pull-right" >
-                                <div class="input-group col-lg-12">
-                                    <input type="text" class="form-control" id="pattern" placeholder="Search for..."/> <span
-                                        class="input-group-btn">
-										<button class="btn btn-success" id="search" type="button">Go!</button>
-									</span>
+            <div class="col-xs-12">
+                <div class="no-pad-lef no-mt no-bd  alert">
+                    <div ><span>
+                                <div class="col-lg-6 pull-right">
+                                    <select id="dutyFilter" class="form-control pull-left" style="width:auto;" onchange="filter()">
+                                        <option>View By</option>
+                                        <option value="Date">Date</option>
+                                        <option value="Status">Status</option>
+                                        <option value="Amount">Transaction Amount</option>
+                                    </select>
+                                    <div id="cdinput" class="pull-left"></div>
+                                    <button class="btn btn-success pull-right" id="search" type="button">Go!</button>
                                 </div>
-                            </li>
-
-                        </ul>
+                    </span>
                         <div class="clearfix"></div>
                     </div>
                     <div class="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
@@ -83,74 +78,22 @@
                     e.preventDefault();
                     dt = $('#requests').DataTable();
                     dt.ajax.reload(null, true);
-
                 });
 
-                // $(document).ready(function() {
-                //     $('#requests').DataTable({
-                //         select:true,
-                //         responsive: true,
-                //         "lengthMenu": [ [5, 10, 20], [5, 10, 20] ],
-                //         "pagingType" : "input",
-                //         "searching": false,
-                //         "paging": true,
-                //         "processing" : true,
-                //         "serverSide" : true,
-                //         rowId: 'id',
-                //         "ajax" : {
-                //             url : "/corporate/custom/all",
-                //             "type" : "GET",
-                //             "data" : function(d) {
-                //                 d.csearch = $('#pattern').val();
-                //             }
-                //         },
-                //         "dom": 'T<"clear">frtlp',
-                //         // "drawCallback": function( settings ) {
-                //         //     var elems = Array.prototype.slice.call(document.querySelectorAll('.js-switch'));
-                //         //     elems.forEach(function(html) {
-                //         //         var switchery = new Switchery(html, { size: 'small' ,color: '#2A3F54'});
-                //         //     });
-                //         // },
-                //         "columns": [
-                //             {"data": "id","visible":false},
-                //             {"data": "transferType"},
-                //             {"data": "beneficiaryAccountName"},
-                //             {"data": "financialInstitution.institutionName"},
-                //             {"data": "amount"},
-                //             {"data": "tranDate"},
-                //             {"data": "statusDescription"},
-                //             {"data": "customDutyPayment.message"}
-                //         ] , "columnDefs": [{
-                //             "targets" : 4,
-                //             "data" : "amount",
-                //             "render" : function(data, type,full, meta) {
-                //                 if (type === 'display') {
-                //                     if(data == null)
-                //                         return data;
-                //                     var twoPlacedFloat = parseFloat(data).toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,');
-                //                     return twoPlacedFloat;
-                //                 }
-                //                 return data;
-                //             }
-                //         },{
-                //             "targets": 5,
-                //             "data": "tranDate",
-                //             "render": function(data, type, full, meta) {
-                //
-                //                 if (type === 'display') {
-                //                     if (data == null)
-                //                         return data;
-                //
-                //                     var dtStart = new Date(data);
-                //                     var dtStartWrapper = moment(dtStart);
-                //                     return dtStartWrapper.format('DD-MMM-YYYY');
-                //                 }
-                //                 return data;
-                //             }
-                //         }
-                //         ]
-                //     });
-                // });
+                function filter() {
+                    $('#pattern').remove();
+                    var pass = document.createElement('input');
+                    var selectedText = $('#dutyFilter :selected').text();
+                    if(selectedText == "Date"){
+                        pass.id='pattern';
+                        pass.type = 'Date';
+                    }else{
+                        pass.id='pattern';
+                        pass.type = 'text';
+                    }
+                    $('#cdinput').append(pass);
+                    $("#pattern").attr("class","form-control pull-right");
+                }
 
                 /*<![CDATA[*/
                 var PaymentStatus;
@@ -160,6 +103,11 @@
                 var code;
                 var message;
                 $(document).ready(function () {
+                    var pass = document.createElement('input');
+                    pass.id='pattern';
+                    pass.type = 'text';
+                    $('#cdinput').append(pass);
+                    $("#pattern").attr("class","form-control pull-right");
                     var table = $('#requests').DataTable({
                         select: true,
                         responsive: true,
