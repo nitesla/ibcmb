@@ -12,18 +12,19 @@
 
             <div class="col-xs-12">
                 <div class="no-pad-lef no-mt no-bd  alert">
-                    <div ><span>
-                                <div class="col-lg-6 pull-right">
-                                    <select id="dutyFilter" class="form-control pull-left" style="width:auto;" onchange="filter()">
-                                        <option>View By</option>
-                                        <option value="Date">Date</option>
-                                        <option value="Status">Status</option>
-                                        <option value="Amount">Transaction Amount</option>
-                                    </select>
-                                    <div id="cdinput" class="pull-left"></div>
-                                    <button class="btn btn-success pull-right" id="search" type="button">Go!</button>
-                                </div>
-                    </span>
+                    <div class="pull-right" style="width: 100%">
+                            <div class="pull-right">
+                                <select id="dutyFilter" class="form-control pull-left" style="width: 30%" onchange="filter()">
+                                    <option value="Status">Status</option>
+                                    <option value="Amount">Amount</option>
+                                    <option value="Date">Date</option>
+                                </select>
+                                <!--<span>-->
+                                <button class="btn btn-success pull-right" id="search" type="button">Go!</button>
+                                <div id="cdinput" class="col-lg-6 pull-left"></div>
+                                <!--</span>-->
+                            </div>
+
                         <div class="clearfix"></div>
                     </div>
                     <div class="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
@@ -84,6 +85,7 @@
                     $('#pattern').remove();
                     var pass = document.createElement('input');
                     var selectedText = $('#dutyFilter :selected').text();
+                    console.log(selectedText);
                     if(selectedText == "Date"){
                         pass.id='pattern';
                         pass.type = 'Date';
@@ -92,7 +94,7 @@
                         pass.type = 'text';
                     }
                     $('#cdinput').append(pass);
-                    $("#pattern").attr("class","form-control pull-right");
+                    $("#pattern").attr("class","form-control");
                 }
 
                 /*<![CDATA[*/
@@ -107,7 +109,8 @@
                     pass.id='pattern';
                     pass.type = 'text';
                     $('#cdinput').append(pass);
-                    $("#pattern").attr("class","form-control pull-right");
+                    $("#pattern").attr("class","form-control");
+
                     var table = $('#requests').DataTable({
                         select: true,
                         responsive: true,
@@ -122,6 +125,7 @@
                             "type" : "GET",
                             "data" : function(d) {
                                 d.csearch = $('#pattern').val();
+                                d.selectedStatus = $('#dutyFilter :selected').text();
                             }
                         },
                         "dom": 'T<"clear">frtlp',

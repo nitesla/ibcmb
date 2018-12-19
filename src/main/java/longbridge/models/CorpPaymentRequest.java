@@ -125,6 +125,6 @@ public class CorpPaymentRequest extends TransRequest{
 
     @Override
     public List<String> getDefaultSearchFields() {
-        return Arrays.asList("beneficiaryAccountName","status","statusDescription");
+        return Arrays.asList("status","statusDescription");
     }
 }
