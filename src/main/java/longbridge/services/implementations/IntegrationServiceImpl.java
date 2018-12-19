@@ -307,6 +307,47 @@ public class IntegrationServiceImpl implements IntegrationService {
 
 	}
 
+	public TransRequest makeCustomDutyPayment(TransRequest transRequest) throws InternetBankingTransferException {
+		TransferType type = transRequest.getTransferType();
+		Account account = accountRepo.findFirstByAccountNumber(transRequest.getCustomerAccountNumber());
+		validate(account);
+		transRequest.setTransferType(TransferType.CORONATION_BANK_TRANSFER);
+		TransferDetails response = null;
+		String uri = URI + "/transfer/local";
+		Map<String, String> params = new HashMap<>();
+		params.put("debitAccountNumber", transRequest.getCustomerAccountNumber());
+		params.put("debitAccountName", account.getAccountName());
+		params.put("creditAccountNumber", transRequest.getBeneficiaryAccountNumber());
+		params.put("creditAccountName", transRequest.getBeneficiaryAccountName());
+		params.put("tranAmount", transRequest.getAmount().toString());
+		params.put("remarks", transRequest.getRemarks());
+		logger.info("Starting Transfer with Params: {}", params.toString());
+
+		try {
+			logger.info("Initiating Local Transfer");
+			logger.debug("Transfer Params: {}", params.toString());
+			response = template.postForObject(uri, params, TransferDetails.class);
+			logger.info("Response:{}",response);
+			transRequest.setStatus(response.getResponseCode());
+			transRequest.setStatusDescription(response.getResponseDescription());
+			transRequest.setReferenceNumber(response.getUniqueReferenceCode());
+			transRequest.setNarration(response.getNarration());
+			return transRequest;
+		} catch (HttpStatusCodeException e) {
+			logger.error("HTTP Error occurred", e);
+			transRequest.setStatus(e.getStatusCode().toString());
+			transRequest.setStatusDescription(e.getStatusCode().getReasonPhrase());
+			return transRequest;
+		}
+		catch (Exception e) {
+			reverseLocalTransfer(response.getUniqueReferenceCode());
+			transRequest.setStatus(StatusCode.FAILED.toString());
+			transRequest.setStatusDescription(messageSource.getMessage("status.code.failed", null, locale));
+
+			return transRequest;
+		}
+	}
+
 	@Override
 	public TransRequest makeTransfer(TransRequest transRequest) throws InternetBankingTransferException {
 
@@ -346,11 +387,11 @@ public class IntegrationServiceImpl implements IntegrationService {
 					return transRequest;
 				}
 				catch (Exception e) {
-					String reversalUrl = "http://132.10.200.140:9292/service/reverseFundTransfer?uniqueIdentifier=";
-					logger.error("Error occurred making transfer", e);
+//					String reversalUrl = "http://132.10.200.140:9292/service/reverseFundTransfer?uniqueIdentifier=";
+//					logger.error("Error occurred making transfer", e);
 					transRequest.setStatus(StatusCode.FAILED.toString());
 					transRequest.setStatusDescription(messageSource.getMessage("status.code.failed", null, locale));
-					template.postForObject(reversalUrl+response.getUniqueReferenceCode(), params, TransferDetails.class);
+					//template.postForObject(reversalUrl+response.getUniqueReferenceCode(), params, TransferDetails.class);
 					return transRequest;
 				}
 
@@ -861,5 +902,17 @@ public class IntegrationServiceImpl implements IntegrationService {
 			logger.error("Error calling coronation service rest service",e);
 		}
 		return null;
+	}
+
+	@Override
+	public TransferDetails reverseLocalTransfer(String referenceId){
+		String reversalUrl = "http://132.10.200.140:9292/service/reverseFundTransfer?uniqueIdentifier=";
+		Map<String, String> params = new HashMap<>();
+		params.put("uniqueIdentifier", referenceId);
+
+		logger.error("Error occurred making transfer");
+		TransferDetails transferDetails = template.postForObject(reversalUrl + referenceId, params, TransferDetails.class);
+		logger.info("reversal response {}",transferDetails);
+		return transferDetails;
 	}
 }

@@ -67,7 +67,27 @@ public class StringUtil {
                     builder.append(" ");
                     builder.append(field);
                 }else {
+                    builder.append(Character.toLowerCase(field));
+                }
+            }
+            counter++;
+        }
+//        System.out.println("the datatble field "+builder.toString());
+        return builder.toString();
+    }
+ public static String convertToTitleCase(String fieldName){
+        StringBuilder builder = new StringBuilder();
+        char[] fields = fieldName.toCharArray();
+        int counter = 0;
+        for (char field:fields) {
+            if(counter == 0){
+                builder.append(Character.toUpperCase(field));
+            }else {
+                if(Character.isUpperCase(field)){
+                    builder.append(" ");
                     builder.append(field);
+                }else {
+                    builder.append(Character.toLowerCase(field));
                 }
             }
             counter++;

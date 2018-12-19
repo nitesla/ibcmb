@@ -9,6 +9,7 @@ import longbridge.models.CustomPaymentNotificationRequest;
 import longbridge.repositories.CustomJpaRepositoryFactoryBean;
 import longbridge.services.IntegrationService;
 import longbridge.services.SecurityService;
+import longbridge.utils.CustomDutyCode;
 import longbridge.utils.EncryptionUtil;
 import longbridge.utils.TransferType;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
@@ -50,7 +51,8 @@ public class InternetbankingApplication extends SpringBootServletInitializer imp
 
     @Override
     public void run(String... strings) throws Exception {
-
+//        integrationService.reverseLocalTransfer("544627229");
+//        System.out.println("code "+CustomDutyCode.getCustomDutyCodeByCode("00"));
     }
 
 }

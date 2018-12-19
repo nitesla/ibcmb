@@ -6,10 +6,7 @@ import longbridge.models.*;
 import longbridge.repositories.*;
 import longbridge.security.userdetails.CustomUserPrincipal;
 import longbridge.services.*;
-import longbridge.utils.EncryptionUtil;
-import longbridge.utils.StatusCode;
-import longbridge.utils.TransferAuthorizationStatus;
-import longbridge.utils.TransferType;
+import longbridge.utils.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -229,7 +226,7 @@ public class CorpCustomDutyServiceImpl implements CorpCustomDutyService {
         customDutyPayment.setTranId(assessmentDetail.getResponseInfo().getTranId());
         customDutyPayment.setAccount(assessmentDetail.getAccount());
         customDutyPayment.setCode(assessmentDetail.getCode());
-        customDutyPayment.setMessage(assessmentDetail.getMessage());
+        customDutyPayment.setMessage(CustomDutyCode.getCustomDutyCodeByCode(assessmentDetail.getCode()).replace("_"," "));
         customDutyPayment.setInitiatedBy(principal.getName());
         CustomDutyPayment resp = customDutyPaymentRepo.save(customDutyPayment);
         LOGGER.info("customDutyPayment:{}",resp);
@@ -278,7 +275,7 @@ public class CorpCustomDutyServiceImpl implements CorpCustomDutyService {
                         logger.debug("returning payment Request Sent for sole: {}", request.getCorporate().getCorporateType());
                         CustomDutyPayment dutyPayment = request.getCustomDutyPayment();
                         dutyPayment.setPaymentStatus(customPaymentNotification.getCode());
-                        dutyPayment.setMessage(customPaymentNotification.getMessage());
+                        dutyPayment.setMessage(CustomDutyCode.getCustomDutyCodeByCode(customPaymentNotification.getCode()));
                         dutyPayment.setPaymentRef(customPaymentNotification.getPaymentRef());
                         LOGGER.debug("dutyPayment:{}", dutyPayment);
                         transRequest.setCustomDutyPayment(dutyPayment);
@@ -356,7 +353,7 @@ public class CorpCustomDutyServiceImpl implements CorpCustomDutyService {
 
     @Override
     public Page<CorpPaymentRequest> getPayments(Pageable pageable,String search) {
-        return corpPaymentRequestRepo.findAll(pageable);
+        return corpPaymentRequestRepo.findAllByOrderByTranDateDesc(pageable);
 //        return null;
     }
 
@@ -432,7 +429,7 @@ public class CorpCustomDutyServiceImpl implements CorpCustomDutyService {
                 corpPaymentRequest.setAmount(corpPaymentRequest.getAmount());
                 corpPaymentRequest.setTransferType(TransferType.CORONATION_BANK_TRANSFER);
                 corpPaymentRequest.setRemarks(paymentRemark);
-                CorpPaymentRequest paymentRequest = (CorpPaymentRequest)integrationService.makeTransfer(corpPaymentRequest);
+                CorpPaymentRequest paymentRequest = (CorpPaymentRequest)integrationService.makeCustomDutyPayment(corpPaymentRequest);
                 corpPaymentRequest.setTransferType(TransferType.CUSTOM_DUTY);
                 corpPaymentRequest.setStatus(paymentRequest.getStatus());
                 corpPaymentRequestRepo.save(corpPaymentRequest);
@@ -451,10 +448,13 @@ public class CorpCustomDutyServiceImpl implements CorpCustomDutyService {
 //                            appId+corpPaymentRequest.getCustomDutyPayment().getTranId()+ corpPaymentRequest.getAmount()+secretKey,null));
 //                    LOGGER.debug("Notification Request:{}",notificationRequest);
                     CustomPaymentNotification customPaymentNotification = integrationService.paymentNotification(corpPaymentRequest,principal.getName());
+                    if(customPaymentNotification == null){
+                        return messageSource.getMessage("custom.auth.failure.reason", null, locale);
+                    }
                     LOGGER.debug("CustomPaymentNotification:{}",customPaymentNotification);
                         CustomDutyPayment dutyPayment = corpPaymentRequest.getCustomDutyPayment();
                         dutyPayment.setPaymentStatus(customPaymentNotification.getCode());
-                        dutyPayment.setMessage(customPaymentNotification.getMessage());
+                        dutyPayment.setMessage(CustomDutyCode.getCustomDutyCodeByCode(customPaymentNotification.getCode()).replace("_"," "));
                         dutyPayment.setPaymentRef(customPaymentNotification.getPaymentRef());
                         LOGGER.debug("customPaymentNotification:{}",customPaymentNotification);
                         customDutyPaymentRepo.save(dutyPayment);
@@ -473,6 +473,7 @@ public class CorpCustomDutyServiceImpl implements CorpCustomDutyService {
         } catch (InternetBankingTransferException transferException) {
             throw transferException;
         } catch (Exception e) {
+            e.printStackTrace();
             throw new InternetBankingException(messageSource.getMessage(e.getMessage(), null, locale), e);
         }
     }

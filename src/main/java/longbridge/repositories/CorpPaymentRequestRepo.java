@@ -17,6 +17,7 @@ import java.util.List;
 public interface CorpPaymentRequestRepo extends CommonRepo<CorpPaymentRequest, Long>{
 
     Page<CorpPaymentRequest> findByCorporateOrderByTranDateDesc(Corporate corporate, Pageable details);
+    Page<CorpPaymentRequest> findAllByOrderByTranDateDesc(Pageable details);
 
     boolean existsByCorporate_IdAndCustomerAccountNumberAndStatus(Long corpId,String accNumber, String status);
 
