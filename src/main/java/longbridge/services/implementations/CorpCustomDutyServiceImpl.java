@@ -23,6 +23,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.security.Principal;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -307,8 +309,34 @@ public class CorpCustomDutyServiceImpl implements CorpCustomDutyService {
     }
 
     @Override
-    public Page<CorpPaymentRequest> findEntities(String search, Pageable pageable) {
+    public Page<CorpPaymentRequest> findEntities(String filter, String search, Pageable pageable) {
+        Corporate corporate = getCurrentUser().getCorporate();
+        logger.info("filter type {}",filter);
+        if(filter.equals("Status")){
+            return corpPaymentRequestRepo.findUsingPattern(search,pageable);
+        }else if(filter.equals("Date")){
+            try {
+                Date startDate = new SimpleDateFormat("yyyy-MM-dd").parse(search);
+                LOGGER.info("startDate : {}",startDate.toString());
+                Date endDate = addDays(startDate,1);
+                LOGGER.info("endDate : ",endDate);
+            return corpPaymentRequestRepo.findCorpPaymentRequestByCorporateAndTranDateBetween(corporate,pageable,startDate,endDate);
+            }catch (ParseException e){
+                e.printStackTrace();
+            }
+            }else if(filter.equals("Amount")){
+            LOGGER.info("filter : {} id {}",search, corporate.getId());
+            return corpPaymentRequestRepo.filterByAmount(corporate.getId(),pageable,search);
+        }
         return corpPaymentRequestRepo.findUsingPattern(search,pageable);
+    }
+
+    public static Date addDays(Date date, int days)
+    {
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(date);
+        cal.add(Calendar.DATE, days); //minus number would decrement the days
+        return cal.getTime();
     }
 
     @Override

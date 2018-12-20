@@ -307,13 +307,13 @@ String responseMessage = "";
 
     @GetMapping(path = "/all")
     public @ResponseBody
-    DataTablesOutput<CorpPaymentRequest> getAllEntities(DataTablesInput input, @RequestParam("csearch") String search){
+    DataTablesOutput<CorpPaymentRequest> getAllEntities(@RequestParam("selectedStatus") String selectedStatus, DataTablesInput input, @RequestParam("csearch") String search){
+        LOGGER.info("Searching by:{}",selectedStatus);
         Pageable pageable = DataTablesUtils.getPageable(input);
         Page<CorpPaymentRequest> paymentRequest= null;
         if (StringUtils.isNoneBlank(search)) {
             LOGGER.info("the search param {}",search);
-            //makerCheckers= makerCheckerService.findEntities(search,pageable);
-            paymentRequest = customDutyService.findEntities(search,pageable);
+            paymentRequest = customDutyService.findEntities(selectedStatus,search,pageable);
         }else{
             LOGGER.info("no search query");
             paymentRequest= customDutyService.getPaymentRequests(pageable);//customDutyService.getEntities(pageable);
