@@ -179,13 +179,10 @@ logger.info("the ip whitelist {}",whitelisted);
 
         @Override
         protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-            auth
-                    .userDetailsService(opsDetails).passwordEncoder(bCryptPasswordEncoder);
+            auth.userDetailsService(opsDetails).passwordEncoder(bCryptPasswordEncoder);
         }
 
         protected void configure(HttpSecurity http) throws Exception {
-
-
             boolean ipRestricted = false;
             StringBuilder ipRange = new StringBuilder("hasIpAddress('::1') or hasIpAddress('127.0.0.1')");
             //Takes a specific IP address or a range using
