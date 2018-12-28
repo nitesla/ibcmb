@@ -257,7 +257,7 @@ public class CorpCustomDutyServiceImpl implements CorpCustomDutyService {
                     request.setStatusDescription("Transaction Scuccessful");
                     transferAuth.setStatus("C");
                     request.setTransferAuth(transferAuth);
-                    CorpPaymentRequest transRequest  = (CorpPaymentRequest) integrationService.makeTransfer(request);
+                    CorpPaymentRequest transRequest  = (CorpPaymentRequest) integrationService.makeCustomDutyPayment(request);
                     transRequest.setTransferType(TransferType.CUSTOM_DUTY);
                     transRequest = corpPaymentRequestRepo.save(transRequest);
                     if ("00".equals(transRequest.getStatus()) || "000".equals(transRequest.getStatus())) { // Transfer successful

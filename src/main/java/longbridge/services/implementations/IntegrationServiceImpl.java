@@ -336,12 +336,16 @@ public class IntegrationServiceImpl implements IntegrationService {
 		} catch (HttpStatusCodeException e) {
 			logger.error("HTTP Error occurred", e);
 			transRequest.setStatus(e.getStatusCode().toString());
+			transRequest.setTransferType(TransferType.CUSTOM_DUTY);
 			transRequest.setStatusDescription(e.getStatusCode().getReasonPhrase());
+			transRequest.setReferenceNumber(response.getUniqueReferenceCode());
 			return transRequest;
 		}
 		catch (Exception e) {
 			reverseLocalTransfer(response.getUniqueReferenceCode());
 			transRequest.setStatus(StatusCode.FAILED.toString());
+			transRequest.setTransferType(TransferType.CUSTOM_DUTY);
+			transRequest.setReferenceNumber(response.getUniqueReferenceCode());
 			transRequest.setStatusDescription(messageSource.getMessage("status.code.failed", null, locale));
 
 			return transRequest;
@@ -384,12 +388,14 @@ public class IntegrationServiceImpl implements IntegrationService {
 					logger.error("HTTP Error occurred", e);
 					transRequest.setStatus(e.getStatusCode().toString());
 					transRequest.setStatusDescription(e.getStatusCode().getReasonPhrase());
+					transRequest.setReferenceNumber(response.getUniqueReferenceCode());
 					return transRequest;
 				}
 				catch (Exception e) {
 //					String reversalUrl = "http://132.10.200.140:9292/service/reverseFundTransfer?uniqueIdentifier=";
 //					logger.error("Error occurred making transfer", e);
 					transRequest.setStatus(StatusCode.FAILED.toString());
+					transRequest.setReferenceNumber(response.getUniqueReferenceCode());
 					transRequest.setStatusDescription(messageSource.getMessage("status.code.failed", null, locale));
 					//template.postForObject(reversalUrl+response.getUniqueReferenceCode(), params, TransferDetails.class);
 					return transRequest;

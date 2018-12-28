@@ -99,7 +99,7 @@ public class SecurityConfig {
                             .stream()
                             .filter(Objects::nonNull)
                             .forEach(i -> ipRange.append(String.format(" or hasIpAddress('%s')", i)));
-
+logger.info("the ip whitelist {}",whitelisted);
 
                 } catch (Exception e) {
                     e.printStackTrace();
