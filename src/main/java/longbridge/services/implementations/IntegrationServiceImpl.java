@@ -311,7 +311,7 @@ public class IntegrationServiceImpl implements IntegrationService {
 		TransferType type = transRequest.getTransferType();
 		Account account = accountRepo.findFirstByAccountNumber(transRequest.getCustomerAccountNumber());
 		validate(account);
-		transRequest.setTransferType(TransferType.CORONATION_BANK_TRANSFER);
+//		transRequest.setTransferType(TransferType.CORONATION_BANK_TRANSFER);
 		TransferDetails response = null;
 		String uri = URI + "/transfer/local";
 		Map<String, String> params = new HashMap<>();
@@ -321,13 +321,14 @@ public class IntegrationServiceImpl implements IntegrationService {
 		params.put("creditAccountName", transRequest.getBeneficiaryAccountName());
 		params.put("tranAmount", transRequest.getAmount().toString());
 		params.put("remarks", transRequest.getRemarks());
+		params.put("tranType", type.toString());
 		logger.info("Starting Transfer with Params: {}", params.toString());
 
 		try {
 			logger.info("Initiating Local Transfer");
 			logger.debug("Transfer Params: {}", params.toString());
 			response = template.postForObject(uri, params, TransferDetails.class);
-			logger.info("Response:{}",response);
+			logger.info("Response: {}",response);
 			transRequest.setStatus(response.getResponseCode());
 			transRequest.setStatusDescription(response.getResponseDescription());
 			transRequest.setReferenceNumber(response.getUniqueReferenceCode());
@@ -338,14 +339,12 @@ public class IntegrationServiceImpl implements IntegrationService {
 			transRequest.setStatus(e.getStatusCode().toString());
 			transRequest.setTransferType(TransferType.CUSTOM_DUTY);
 			transRequest.setStatusDescription(e.getStatusCode().getReasonPhrase());
-			transRequest.setReferenceNumber(response.getUniqueReferenceCode());
 			return transRequest;
 		}
 		catch (Exception e) {
-			reverseLocalTransfer(response.getUniqueReferenceCode());
+			logger.error("transfer failed due to {}",e);
 			transRequest.setStatus(StatusCode.FAILED.toString());
 			transRequest.setTransferType(TransferType.CUSTOM_DUTY);
-			transRequest.setReferenceNumber(response.getUniqueReferenceCode());
 			transRequest.setStatusDescription(messageSource.getMessage("status.code.failed", null, locale));
 
 			return transRequest;
@@ -388,14 +387,12 @@ public class IntegrationServiceImpl implements IntegrationService {
 					logger.error("HTTP Error occurred", e);
 					transRequest.setStatus(e.getStatusCode().toString());
 					transRequest.setStatusDescription(e.getStatusCode().getReasonPhrase());
-					transRequest.setReferenceNumber(response.getUniqueReferenceCode());
 					return transRequest;
 				}
 				catch (Exception e) {
 //					String reversalUrl = "http://132.10.200.140:9292/service/reverseFundTransfer?uniqueIdentifier=";
 //					logger.error("Error occurred making transfer", e);
 					transRequest.setStatus(StatusCode.FAILED.toString());
-					transRequest.setReferenceNumber(response.getUniqueReferenceCode());
 					transRequest.setStatusDescription(messageSource.getMessage("status.code.failed", null, locale));
 					//template.postForObject(reversalUrl+response.getUniqueReferenceCode(), params, TransferDetails.class);
 					return transRequest;

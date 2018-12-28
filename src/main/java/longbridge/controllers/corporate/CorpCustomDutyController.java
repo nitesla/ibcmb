@@ -164,13 +164,17 @@ String responseMessage = "";
 //                redirectAttributes.addFlashAttribute("responseMessage",messages);
                 return "redirect:/login/corporate";
             }
-            return "redirect:/corporate/custom";
+            return "redirect:/corporate/custom/all";
         } catch (InternetBankingTransferException exception)
         {
             redirectAttributes.addFlashAttribute("failure",messageSource.getMessage(exception.getMessage(),null,locale));
 
+        } catch (InternetBankingException exception)
+        {
+            redirectAttributes.addFlashAttribute("failure",messageSource.getMessage(exception.getMessage(),null,locale));
+
         }
-        return "/corporate/custom";
+        return "redirect:/corporate/custom/all";
     }
 
     @PostMapping("/payment")
