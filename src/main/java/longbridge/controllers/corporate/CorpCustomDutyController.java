@@ -162,7 +162,7 @@ String responseMessage = "";
                 redirectAttributes.addFlashAttribute("message",resp.getStatusDescription());
             } else {
 //                redirectAttributes.addFlashAttribute("responseMessage",messages);
-                return "redirect:/login/corporate";
+                return "redirect:/corporate/custom";
             }
             return "redirect:/corporate/custom/all";
         } catch (InternetBankingTransferException exception)
@@ -174,7 +174,7 @@ String responseMessage = "";
             redirectAttributes.addFlashAttribute("failure",messageSource.getMessage(exception.getMessage(),null,locale));
 
         }
-        return "redirect:/corporate/custom/all";
+        return "redirect:/corporate/custom";
     }
 
     @PostMapping("/payment")

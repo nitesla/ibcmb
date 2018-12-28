@@ -293,8 +293,8 @@ public class CorpCustomDutyServiceImpl implements CorpCustomDutyService {
                         dutyPayment.setPaymentRef(customPaymentNotification.getPaymentRef());
                         LOGGER.debug("dutyPayment:{}", dutyPayment);
                         request.setCustomDutyPayment(dutyPayment);
-                        request.setStatusDescription(dutyPayment.getMessage());
-                        request.setStatus(customPaymentNotification.getCode());
+//                        request.setStatusDescription(dutyPayment.getMessage());
+//                        request.setStatus(customPaymentNotification.getCode());
                         request = corpPaymentRequestRepo.save(request);
                         LOGGER.info("CorpPaymentRequest SOLE: {}",request);
                         return request;
@@ -317,7 +317,7 @@ public class CorpCustomDutyServiceImpl implements CorpCustomDutyService {
             } catch (TransferAuthorizationException ex) {
                 throw ex;
             } catch (Exception e) {
-                throw new InternetBankingException(messageSource.getMessage("custom.payment.save.failure", null, null), e);
+                throw new InternetBankingException(e.getMessage(), e);
             }
     }
 
@@ -469,7 +469,7 @@ public class CorpCustomDutyServiceImpl implements CorpCustomDutyService {
                 corpPaymentRequest.setBeneficiaryAccountName("Coronation");
                 corpPaymentRequest.setAmount(corpPaymentRequest.getAmount());
                 corpPaymentRequest.setTransferType(TransferType.CUSTOM_DUTY);
-                corpPaymentRequest.setRemarks(paymentRemark);
+                corpPaymentRequest.setRemarks(corpPaymentRequest.getCustomDutyPayment().getSADAssessmentNumber());
                 corpPaymentRequest.setRemarks(corpPaymentRequest.getCustomDutyPayment().getSADAssessmentNumber());
                 CorpPaymentRequest paymentRequest = (CorpPaymentRequest)integrationService.makeCustomDutyPayment(corpPaymentRequest);
 //                corpPaymentRequest.setTransferType(TransferType.CUSTOM_DUTY);
