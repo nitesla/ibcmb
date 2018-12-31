@@ -266,6 +266,7 @@ public class CorpCustomDutyServiceImpl implements CorpCustomDutyService {
                     transRequest = corpPaymentRequestRepo.save(transRequest);
                         request = transRequest;
                     }catch (ResourceAccessException e) {
+//                        integrationService.reverseLocalTransfer(request.getReferenceNumber());
                         throw new InternetBankingException(messageSource.getMessage("transfer.failed", null, null));
 
                     }catch (Exception e){
@@ -286,7 +287,6 @@ public class CorpCustomDutyServiceImpl implements CorpCustomDutyService {
                         notificationRequest.setHash(EncryptionUtil.getSHA512(
                                 appId + request.getCustomDutyPayment().getTranId() + request.getAmount() + secretKey, null));
                         CustomPaymentNotification customPaymentNotification = integrationService.paymentNotification(request,principal.getName());
-                        logger.debug("returning payment Request Sent for sole: {}", request.getCorporate().getCorporateType());
                         CustomDutyPayment dutyPayment = request.getCustomDutyPayment();
                         dutyPayment.setPaymentStatus(customPaymentNotification.getCode());
                         dutyPayment.setMessage(CustomDutyCode.getCustomDutyCodeByCode(customPaymentNotification.getCode()));
@@ -296,6 +296,13 @@ public class CorpCustomDutyServiceImpl implements CorpCustomDutyService {
 //                        request.setStatusDescription(dutyPayment.getMessage());
 //                        request.setStatus(customPaymentNotification.getCode());
                         request = corpPaymentRequestRepo.save(request);
+                        if("00".equals(customPaymentNotification.getCode()) || "000".equals(customPaymentNotification.getCode())){ // Transfer successful
+//                            return messageSource.getMessage(customPaymentNotification.getMessage(), null, locale);
+                        }else{
+                            integrationService.reverseLocalTransfer(request.getReferenceNumber());
+//                        throw new InternetBankingTransferException(messageSource.getMessage("custom.payment.failed",null,locale));
+//                            return messageSource.getMessage(corpPaymentRequest.getStatusDescription(), null, locale);
+                        }
                         LOGGER.info("CorpPaymentRequest SOLE: {}",request);
                         return request;
                     }
@@ -465,30 +472,31 @@ public class CorpCustomDutyServiceImpl implements CorpCustomDutyService {
                 LOGGER.info("corpPaymentRequest req:{}",corpPaymentRequest);
                 corpPaymentRequest.setCustomerAccountNumber(corpPaymentRequest.getCustomerAccountNumber());
                 corpPaymentRequest.setReferenceNumber(corpPaymentRequest.getReferenceNumber());
-                corpPaymentRequest.setBeneficiaryAccountNumber(beneficiaryAcct);
-                corpPaymentRequest.setBeneficiaryAccountName("Coronation");
+//                corpPaymentRequest.setBeneficiaryAccountNumber(beneficiaryAcct);
+//                corpPaymentRequest.setBeneficiaryAccountName("Coronation");
                 corpPaymentRequest.setAmount(corpPaymentRequest.getAmount());
                 corpPaymentRequest.setTransferType(TransferType.CUSTOM_DUTY);
                 corpPaymentRequest.setRemarks(corpPaymentRequest.getCustomDutyPayment().getSADAssessmentNumber());
-                corpPaymentRequest.setRemarks(corpPaymentRequest.getCustomDutyPayment().getSADAssessmentNumber());
-                CorpPaymentRequest paymentRequest = (CorpPaymentRequest)integrationService.makeCustomDutyPayment(corpPaymentRequest);
-//                corpPaymentRequest.setTransferType(TransferType.CUSTOM_DUTY);
-                corpPaymentRequest.setStatus(paymentRequest.getStatus());
-                corpPaymentRequestRepo.save(corpPaymentRequest);
-                logger.info("the payment status {}",paymentRequest);
-                if ((paymentRequest.getStatus().equals("00") || paymentRequest.getStatus().equals("000"))) {
-                    updatePaymentRequest(corpPaymentRequest,paymentRequest);
-//                    CustomPaymentNotificationRequest notificationRequest = new CustomPaymentNotificationRequest();
-//                    notificationRequest.setTranId(corpPaymentRequest.getCustomDutyPayment().getTranId());
-//                    notificationRequest.setAmount(corpPaymentRequest.getAmount().toString());
-//                    notificationRequest.setPaymentRef(corpPaymentRequest.getReferenceNumber());
-//                    notificationRequest.setCustomerAccountNo(corpPaymentRequest.getCustomerAccountNumber());
-//                    notificationRequest.setLastAuthorizer(principal.getName());
-//                    notificationRequest.setInitiatedBy(corpPaymentRequest.getCustomDutyPayment().getInitiatedBy());
-//                    notificationRequest.setAppId(appId);
-//                    notificationRequest.setHash(EncryptionUtil.getSHA512(
-//                            appId+corpPaymentRequest.getCustomDutyPayment().getTranId()+ corpPaymentRequest.getAmount()+secretKey,null));
-//                    LOGGER.debug("Notification Request:{}",notificationRequest);
+//                CorpPaymentRequest paymentRequest = (CorpPaymentRequest)integrationService.makeCustomDutyPayment(corpPaymentRequest);
+////                corpPaymentRequest.setTransferType(TransferType.CUSTOM_DUTY);
+//                corpPaymentRequest.setStatus(paymentRequest.getStatus());
+//                corpPaymentRequestRepo.save(corpPaymentRequest);
+                try {
+                    CorpPaymentRequest transRequest  = (CorpPaymentRequest) integrationService.makeCustomDutyPayment(corpPaymentRequest);
+
+//                    transRequest.setTransferType(TransferType.CUSTOM_DUTY);
+                    transRequest = corpPaymentRequestRepo.save(transRequest);
+                    corpPaymentRequest = transRequest;
+                }catch (ResourceAccessException e) {
+//                        integrationService.reverseLocalTransfer(request.getReferenceNumber());
+                    throw new InternetBankingException(messageSource.getMessage("transfer.failed", null, null));
+
+                }catch (Exception e){
+                    throw new InternetBankingException(messageSource.getMessage(e.getMessage(), null, null));
+
+                }
+                logger.info("the payment status {}",corpPaymentRequest);
+                if ((corpPaymentRequest.getStatus().equals("00") || corpPaymentRequest.getStatus().equals("000"))) {
                     CustomPaymentNotification customPaymentNotification = integrationService.paymentNotification(corpPaymentRequest,principal.getName());
                     if(customPaymentNotification == null){
                         return messageSource.getMessage("custom.auth.failure.reason", null, locale);
@@ -503,11 +511,12 @@ public class CorpCustomDutyServiceImpl implements CorpCustomDutyService {
                     if("00".equals(customPaymentNotification.getCode()) || "000".equals(customPaymentNotification.getCode())){ // Transfer successful
                         return messageSource.getMessage(customPaymentNotification.getMessage(), null, locale);
                     }else{
+                        integrationService.reverseLocalTransfer(corpPaymentRequest.getReferenceNumber());
 //                        throw new InternetBankingTransferException(messageSource.getMessage("custom.payment.failed",null,locale));
-                        return messageSource.getMessage(paymentRequest.getStatusDescription(), null, locale);
+                        return messageSource.getMessage(corpPaymentRequest.getStatusDescription(), null, locale);
                     }
                 }
-                throw new InternetBankingException(messageSource.getMessage(paymentRequest.getStatusDescription(), null, null));
+                throw new InternetBankingException(messageSource.getMessage(corpPaymentRequest.getStatusDescription(), null, null));
 
             }
          return messageSource.getMessage("payment.auth.success",null,locale);
@@ -563,4 +572,16 @@ public class CorpCustomDutyServiceImpl implements CorpCustomDutyService {
             logger.error("Exception occurred saving transfer request", e);
         }
     }
+//    private void validateBalance(String accessMent) throws InternetBankingTransferException {
+//
+//
+//        BigDecimal balance = integrationService.getAvailableBalance(transferRequest.getCustomerAccountNumber());
+//        if (balance != null) {
+//
+//            if (!(balance.compareTo(transferRequest.getAmount()) == 0 || (balance.compareTo(transferRequest.getAmount()) == 1))) {
+//                throw new InternetBankingTransferException(TransferExceptions.BALANCE.toString());
+//            }
+//        }
+//
+//    }
 }

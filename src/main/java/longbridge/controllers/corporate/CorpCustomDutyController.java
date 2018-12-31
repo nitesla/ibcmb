@@ -157,6 +157,7 @@ String responseMessage = "";
                 responseMessage = customDutyService.saveCustomPaymentRequestForAuthorization(assessmentDetail,assessmentDetailsRequest, principal,corporate);
                 redirectAttributes.addFlashAttribute("message",responseMessage);
             } else if (corporate.getCorporateType().equalsIgnoreCase("SOLE")) {
+
                 CustomDutyPayment customDutyPayment = customDutyService.saveCustomDutyPayment(assessmentDetail, assessmentDetailsRequest,principal);
                 CorpPaymentRequest resp = customDutyService.saveCorpPaymentRequest( customDutyPayment, corporate,principal,true);
                 redirectAttributes.addFlashAttribute("message",resp.getStatusDescription());
@@ -164,7 +165,6 @@ String responseMessage = "";
 //                redirectAttributes.addFlashAttribute("responseMessage",messages);
                 return "redirect:/corporate/custom";
             }
-            return "redirect:/corporate/custom/all";
         } catch (InternetBankingTransferException exception)
         {
             redirectAttributes.addFlashAttribute("failure",messageSource.getMessage(exception.getMessage(),null,locale));

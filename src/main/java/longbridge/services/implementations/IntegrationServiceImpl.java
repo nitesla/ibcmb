@@ -342,7 +342,6 @@ public class IntegrationServiceImpl implements IntegrationService {
 			return transRequest;
 		}
 		catch (Exception e) {
-			logger.error("transfer failed due to {}",e);
 			transRequest.setStatus(StatusCode.FAILED.toString());
 			transRequest.setTransferType(TransferType.CUSTOM_DUTY);
 			transRequest.setStatusDescription(messageSource.getMessage("status.code.failed", null, locale));
@@ -913,7 +912,7 @@ public class IntegrationServiceImpl implements IntegrationService {
 		Map<String, String> params = new HashMap<>();
 		params.put("uniqueIdentifier", referenceId);
 
-		logger.error("Error occurred making transfer");
+		logger.error("Reversing transfer for {}",referenceId);
 		TransferDetails transferDetails = template.postForObject(reversalUrl + referenceId, params, TransferDetails.class);
 		logger.info("reversal response {}",transferDetails);
 		return transferDetails;

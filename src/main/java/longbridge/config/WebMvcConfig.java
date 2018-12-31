@@ -76,8 +76,8 @@ public class WebMvcConfig extends WebMvcConfigurerAdapter {
     @Bean
     public RestTemplate restTemplate() {
         RestTemplate restTemplate = new RestTemplate();
-        ((SimpleClientHttpRequestFactory) restTemplate.getRequestFactory()).setConnectTimeout(1000);
-        ((SimpleClientHttpRequestFactory) restTemplate.getRequestFactory()).setReadTimeout(1000);
+        ((SimpleClientHttpRequestFactory) restTemplate.getRequestFactory()).setConnectTimeout(10000);
+        ((SimpleClientHttpRequestFactory) restTemplate.getRequestFactory()).setReadTimeout(10000);
 
         return restTemplate;
 
