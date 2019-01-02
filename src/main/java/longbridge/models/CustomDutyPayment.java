@@ -48,45 +48,42 @@ public class CustomDutyPayment extends AbstractEntity {
     @OneToMany(cascade = {CascadeType.ALL})
     private List<Tax> taxs;
 
-    public CustomDutyPayment() {
-    }
-
-    public CustomDutyPayment(long customDutyPaymentId, String dtype, String transferRequestId, String declarantCode,
-                             String declarantName, String companyCode, String SGDAssessmentDate, String SADAssessmentSerial,
-                             String SADAssessmentNumber, String SADYear, String commandDutyArea, BigDecimal totalAmount,
-                             String companyName, String formMNumber, String approvalStatusDesc, String approvalStatus,
-                             String tranId, String bankCode, String bankBranchCode, String collectionAccount, String account,
-                             String code, String message, CorpPaymentRequest corpPaymentRequest,String lastAuthorizer,
-                             String initiatedBy, String paymentStatus, String notificationStatus, String paymentRef) {
-        this.dtype = dtype;
-        this.transferRequestId = transferRequestId;
-        this.declarantCode = declarantCode;
-        this.declarantName = declarantName;
-        this.companyCode = companyCode;
-        this.SGDAssessmentDate = SGDAssessmentDate;
-        this.SADAssessmentSerial = SADAssessmentSerial;
-        this.SADAssessmentNumber = SADAssessmentNumber;
-        this.SADYear = SADYear;
-        this.commandDutyArea = commandDutyArea;
-        this.totalAmount = totalAmount;
-        this.companyName = companyName;
-        this.formMNumber = formMNumber;
-        this.approvalStatusDesc = approvalStatusDesc;
-        this.approvalStatus = approvalStatus;
-        this.tranId = tranId;
-        this.bankCode = bankCode;
-        this.bankBranchCode = bankBranchCode;
-        this.collectionAccount = collectionAccount;
-        this.account = account;
-        this.code = code;
-        this.message = message;
-        this.corpPaymentRequest = corpPaymentRequest;
-        this.lastAuthorizer = lastAuthorizer;
-        this.initiatedBy = initiatedBy;
-        this.paymentStatus = paymentStatus;
-        this.notificationStatus = notificationStatus;
-        this.paymentRef = paymentRef;
-    }
+//    public CustomDutyPayment(long customDutyPaymentId, String dtype, String transferRequestId, String declarantCode,
+//                             String declarantName, String companyCode, String SGDAssessmentDate, String SADAssessmentSerial,
+//                             String SADAssessmentNumber, String SADYear, String commandDutyArea, BigDecimal totalAmount,
+//                             String companyName, String formMNumber, String approvalStatusDesc, String approvalStatus,
+//                             String tranId, String bankCode, String bankBranchCode, String collectionAccount, String account,
+//                             String code, String message, CorpPaymentRequest corpPaymentRequest,String lastAuthorizer,
+//                             String initiatedBy, String paymentStatus, String notificationStatus, String paymentRef) {
+//        this.dtype = dtype;
+//        this.transferRequestId = transferRequestId;
+//        this.declarantCode = declarantCode;
+//        this.declarantName = declarantName;
+//        this.companyCode = companyCode;
+//        this.SGDAssessmentDate = SGDAssessmentDate;
+//        this.SADAssessmentSerial = SADAssessmentSerial;
+//        this.SADAssessmentNumber = SADAssessmentNumber;
+//        this.SADYear = SADYear;
+//        this.commandDutyArea = commandDutyArea;
+//        this.totalAmount = totalAmount;
+//        this.companyName = companyName;
+//        this.formMNumber = formMNumber;
+//        this.approvalStatusDesc = approvalStatusDesc;
+//        this.approvalStatus = approvalStatus;
+//        this.tranId = tranId;
+//        this.bankCode = bankCode;
+//        this.bankBranchCode = bankBranchCode;
+//        this.collectionAccount = collectionAccount;
+//        this.account = account;
+//        this.code = code;
+//        this.message = message;
+//        this.corpPaymentRequest = corpPaymentRequest;
+//        this.lastAuthorizer = lastAuthorizer;
+//        this.initiatedBy = initiatedBy;
+//        this.paymentStatus = paymentStatus;
+//        this.notificationStatus = notificationStatus;
+//        this.paymentRef = paymentRef;
+//    }
 
    public CorpPaymentRequest getCorpPaymentRequest() {
         return corpPaymentRequest;

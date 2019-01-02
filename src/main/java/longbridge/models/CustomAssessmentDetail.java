@@ -2,7 +2,6 @@ package longbridge.models;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import java.util.List;
 
 public class CustomAssessmentDetail {
 
@@ -24,9 +23,6 @@ public class CustomAssessmentDetail {
 
     @JsonProperty("Message")
     private String message;
-
-    public CustomAssessmentDetail() {
-    }
 
     public ResponseInfo getResponseInfo() {
         return responseInfo;

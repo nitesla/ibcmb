@@ -28,9 +28,6 @@ public class Tax extends AbstractEntity{
     @ManyToOne
     private CustomDutyPayment customDutyPayment;
 
-    public Tax() {
-    }
-
     public String getTaxCode() {
         return taxCode;
     }

@@ -177,7 +177,7 @@ public class AdmCodeController {
 	@PostMapping("/update")
 	public String updateCode(@ModelAttribute("code") @Valid CodeDTO codeDTO, BindingResult result, Principal principal,RedirectAttributes redirectAttributes,Locale locale) {
 		if(result.hasErrors()){
-			logger.error("Error occurred creating code{}", result.toString());
+			logger.error("Error occurred creating code{}", result);
 			result.addError(new ObjectError("invalid",messageSource.getMessage("form.fields.required",null,locale)));
 			return "adm/code/edit";
 

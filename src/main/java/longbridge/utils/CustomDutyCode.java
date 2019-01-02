@@ -15,9 +15,11 @@ public enum CustomDutyCode {
         this.code = code;
     }
 
+    @Override
     public String toString() {
         return this.name();
     }
+
 
     public String getCode() {
         return code;
@@ -26,7 +28,6 @@ public enum CustomDutyCode {
     public static String getCustomDutyCodeByCode(String code){
         CustomDutyCode[] codes = CustomDutyCode.values();
         for (CustomDutyCode customDutyCode:codes) {
-//            System.out.println("codes "+customDutyCode);
             if(customDutyCode.getCode().equals(code)){
             return customDutyCode.name();
             }

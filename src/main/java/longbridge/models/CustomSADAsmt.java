@@ -13,8 +13,8 @@ public class CustomSADAsmt {
     @JsonProperty("SADYear")
     private String SADYear;
 
-    public CustomSADAsmt() {
-    }
+//    public CustomSADAsmt() {
+//    }
 
     public String getSADAssessmentSerial() {
         return SADAssessmentSerial;

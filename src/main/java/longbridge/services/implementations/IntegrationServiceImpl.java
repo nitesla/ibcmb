@@ -345,7 +345,6 @@ public class IntegrationServiceImpl implements IntegrationService {
 			transRequest.setStatus(StatusCode.FAILED.toString());
 			transRequest.setTransferType(TransferType.CUSTOM_DUTY);
 			transRequest.setStatusDescription(messageSource.getMessage("status.code.failed", null, locale));
-
 			return transRequest;
 		}
 	}
@@ -806,7 +805,6 @@ public class IntegrationServiceImpl implements IntegrationService {
 			case CORPORATE: {
 				CorporateUser user = (CorporateUser) currentUser;
 				Account acct = accountRepo.findFirstByAccountNumber(account);
-//			boolean valid = accountRepo.accountInCorp(user.getCorporate(), acct);
 				Corporate corporate = corporateRepo.findOne(user.getCorporate().getId());
 				boolean valid = corporate.getAccounts().contains(acct);			if (!valid) {
 					logger.warn("User " + user.toString() + "trying to access other accounts");
@@ -874,8 +872,6 @@ public class IntegrationServiceImpl implements IntegrationService {
 			logger.debug("Fetching data from coronation rest service via the url: {}", CustomDutyUrl);
 			logger.debug("Fetching data from coronation rest service via the url: {}", CustomDutyUrl+"/customduty/payassessment");
 			logger.debug("paymentNotificationRequest: {}", request);
-
-//			paymentNotificationRequest.setCustomerAccountNo("190219101");
 			CustomPaymentNotification response = template.postForObject(CustomDutyUrl+"/customduty/payassessment", request, CustomPaymentNotification.class);
 			logger.debug("payment notification Response: {}", response);
 			return response;

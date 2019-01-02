@@ -13,9 +13,6 @@ public class Commands{
     @JsonProperty("CommandDesc")
     public String commandDesc;
 
-    public Commands() {
-    }
-
     public String getCommandCode() {
         return commandCode;
     }

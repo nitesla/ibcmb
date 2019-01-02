@@ -8,9 +8,7 @@ import longbridge.exception.InternetBankingTransferException;
 import longbridge.exception.TransferErrorService;
 import longbridge.models.*;
 import longbridge.services.*;
-import longbridge.utils.TransferType;
 import longbridge.utils.TransferUtils;
-import longbridge.validator.transfer.TransferValidator;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,9 +26,7 @@ import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.WebRequest;
-import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.math.BigDecimal;
@@ -53,12 +49,6 @@ public class CorpCustomDutyController {
     private String bankCode;
 
     private CorporateUserService corporateUserService;
-    private CorpTransferService corpTransferService;
-    private AccountService accountService;
-    private MessageSource messages;
-    private LocaleResolver localeResolver;
-    private FinancialInstitutionService financialInstitutionService;
-    private TransferValidator validator;
     private TransferErrorService transferErrorService;
     private CorporateService corporateService;
     private TransferUtils transferUtils;
@@ -68,18 +58,10 @@ public class CorpCustomDutyController {
     @Autowired
     private MessageSource messageSource;
     @Autowired
-    public CorpCustomDutyController(
-            CorporateUserService corporateUserService, AccountService accountService, CorpTransferService corpTransferService,
-             LocaleResolver localeResolver,
-            FinancialInstitutionService financialInstitutionService, TransferValidator validator,
+    public CorpCustomDutyController(CorporateUserService corporateUserService,
             TransferErrorService transferErrorService, CorporateService corporateService,
             TransferUtils transferUtils,SecurityService securityService) {
-        this.accountService = accountService;
         this.corporateUserService = corporateUserService;
-        this.corpTransferService = corpTransferService;
-        this.localeResolver = localeResolver;
-        this.financialInstitutionService = financialInstitutionService;
-        this.validator = validator;
         this.transferErrorService = transferErrorService;
         this.corporateService = corporateService;
         this.transferUtils = transferUtils;
@@ -108,8 +90,6 @@ public class CorpCustomDutyController {
         model.addAttribute("paymentNotificationRequest",new CustomPaymentNotificationRequest());
         model.addAttribute("assessmentDetail",new CustomAssessmentDetail());
         model.addAttribute("corpTransReqEntry", new CorpTransReqEntry());
-        model.addAttribute("taxDetails", new String());
-        model.addAttribute("customsCode", new String());
         return "corp/custom/custompayment";
     }
 
@@ -162,10 +142,9 @@ String responseMessage = "";
                 CorpPaymentRequest resp = customDutyService.saveCorpPaymentRequest( customDutyPayment, corporate,principal,true);
                 redirectAttributes.addFlashAttribute("message",resp.getStatusDescription());
             } else {
-//                redirectAttributes.addFlashAttribute("responseMessage",messages);
                 return "redirect:/corporate/custom";
             }
-        } catch (InternetBankingTransferException exception)
+        } catch (InternetBankingTransferException exception )
         {
             redirectAttributes.addFlashAttribute("failure",messageSource.getMessage(exception.getMessage(),null,locale));
 
@@ -195,8 +174,7 @@ String responseMessage = "";
             try {
                 transferUtils.validateTransferCriteria();
             } catch (InternetBankingTransferException e) {
-                String errorMessage = transferErrorService.getMessage(e);
-                //redirectAttributes.addFlashAttribute("failure", errorMessage);
+
             }
             customDutyService.paymentNotification(assessmentDetail);
         }
@@ -224,7 +202,7 @@ String responseMessage = "";
     DataTablesOutput<CorpPaymentRequest> getCustomPaymentRequests(DataTablesInput input){
         Pageable pageable = DataTablesUtils.getPageable(input);
         Page<CorpPaymentRequest> requests = customDutyService.getPaymentRequests(pageable);
-        DataTablesOutput<CorpPaymentRequest> out = new DataTablesOutput<CorpPaymentRequest>();
+        DataTablesOutput<CorpPaymentRequest> out = new DataTablesOutput<>();
         out.setDraw(input.getDraw());
         out.setData(requests.getContent());
         out.setRecordsFiltered(requests.getTotalElements());
@@ -263,7 +241,7 @@ String responseMessage = "";
                 }
             }
         }
-        LOGGER.info("Roles not In Auth List..{}", rolesNotInAuthList.toString());
+        LOGGER.info("Roles not In Auth List..{}", rolesNotInAuthList);
         modelMap.addAttribute("rolesNotAuth", rolesNotInAuthList);
 
         return "corp/custom/approval";
@@ -320,9 +298,9 @@ String responseMessage = "";
             paymentRequest = customDutyService.findEntities(selectedStatus,search,pageable);
         }else{
             LOGGER.info("no search query");
-            paymentRequest= customDutyService.getPaymentRequests(pageable);//customDutyService.getEntities(pageable);
+            paymentRequest= customDutyService.getPaymentRequests(pageable);
         }
-        DataTablesOutput<CorpPaymentRequest> out = new DataTablesOutput<CorpPaymentRequest>();
+        DataTablesOutput<CorpPaymentRequest> out = new DataTablesOutput<>();
         out.setDraw(input.getDraw());
         out.setData(paymentRequest.getContent());
         out.setRecordsFiltered(paymentRequest.getTotalElements());

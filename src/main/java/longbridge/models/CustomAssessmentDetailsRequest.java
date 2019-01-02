@@ -2,8 +2,6 @@ package longbridge.models;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import java.util.List;
-
 public class CustomAssessmentDetailsRequest {
 
     @JsonProperty("appId")
@@ -17,9 +15,6 @@ public class CustomAssessmentDetailsRequest {
 
     @JsonProperty("SadAsmt")
     private CustomSADAsmt sadAsmt;
-
-    public CustomAssessmentDetailsRequest() {
-    }
 
     public String getCustomsCode() {
         return customsCode;
