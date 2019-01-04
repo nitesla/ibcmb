@@ -104,15 +104,7 @@ public class SecurityConfig {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-<<<<<<< HEAD
                 logger.info("IP address whitelist " + ipRange.toString());
-            }
-=======
-
-
-
->>>>>>> c6b7a425690b3f0f40ce020ce6386097a93300c9
-
             }
             logger.info("IP address whitelist " + ipRange.toString());
 

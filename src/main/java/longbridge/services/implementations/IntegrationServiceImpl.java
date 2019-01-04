@@ -34,6 +34,7 @@ import org.springframework.web.client.RestTemplate;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
+import javax.swing.text.html.HTML;
 import java.math.BigDecimal;
 import java.net.SocketTimeoutException;
 import java.text.SimpleDateFormat;
@@ -895,6 +896,28 @@ public class IntegrationServiceImpl implements IntegrationService {
 			CustomTransactionStatus transactionStatus= template.postForObject(CustomDutyUrl+"/customduty/checktransactionstatus", request, CustomTransactionStatus.class);
 			logger.info("the transaction status response {}",transactionStatus);
 			return transactionStatus;
+		}
+		catch (Exception e){
+			logger.error("Error calling coronation service rest service",e);
+		}
+		return null;
+	}
+
+	@Override
+	public HTML getReciept(CorpPaymentRequest corpPaymentRequest){
+
+		try {
+			logger.debug("Fetching data from coronation rest service via the url: {}", CustomDutyUrl);
+			Map<String,String> request = new HashMap<>();
+			request.put("hash",EncryptionUtil.getSHA512(
+					appId+"45988"+secretKey,null));
+//					appId+corpPaymentRequest.getCustomDutyPayment().getTranId()+secretKey,null));
+			request.put("appId",appId);
+			request.put("Id",corpPaymentRequest.getCustomDutyPayment().getTranId());
+			logger.debug("Fetching data from coronation rest service using: {}", request);
+			HTML transactionStatus= template.postForObject(CustomDutyUrl+"/customduty/getreceipt", request, HTML.class);
+			logger.info("the transaction status response {}",transactionStatus);
+			return null;
 		}
 		catch (Exception e){
 			logger.error("Error calling coronation service rest service",e);

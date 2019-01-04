@@ -90,6 +90,8 @@ public class CorpCustomDutyController {
         model.addAttribute("paymentNotificationRequest",new CustomPaymentNotificationRequest());
         model.addAttribute("assessmentDetail",new CustomAssessmentDetail());
         model.addAttribute("corpTransReqEntry", new CorpTransReqEntry());
+        model.addAttribute("taxDetails", new String());
+        model.addAttribute("customsCode", new String());
         return "corp/custom/custompayment";
     }
 

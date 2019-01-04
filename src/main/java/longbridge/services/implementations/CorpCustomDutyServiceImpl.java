@@ -101,7 +101,8 @@ public class CorpCustomDutyServiceImpl implements CorpCustomDutyService {
     public CustomsAreaCommand getCustomsAreaCommands() {
         CustomsAreaCommandRequest customsAreaCommandRequest = new CustomsAreaCommandRequest();
         customsAreaCommandRequest.setAppId(appId);
-        customsAreaCommandRequest.setHash(EncryptionUtil.getSHA512(appId+" "+secretKey,null));
+        customsAreaCommandRequest.setHash(EncryptionUtil.getSHA512(appId+secretKey,null));
+        logger.info("the sample hash {}",customsAreaCommandRequest.getHash());
         return integrationService.getCustomsAreaCommands(customsAreaCommandRequest);
     }
 

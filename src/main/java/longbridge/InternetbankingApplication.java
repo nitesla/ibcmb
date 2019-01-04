@@ -51,6 +51,8 @@ public class InternetbankingApplication extends SpringBootServletInitializer imp
 
     @Override
     public void run(String... strings) throws Exception {
+//        String test45988test = EncryptionUtil.getSHA512("test"+"45988"+"test", null);
+//        logger.info( "hash for receipt "+test45988test);
 //        integrationService.reverseLocalTransfer("544627229");
 //        System.out.println("code "+CustomDutyCode.getCustomDutyCodeByCode("00"));
     }
