@@ -90,6 +90,8 @@ public class CorpCustomDutyController {
         model.addAttribute("paymentNotificationRequest",new CustomPaymentNotificationRequest());
         model.addAttribute("assessmentDetail",new CustomAssessmentDetail());
         model.addAttribute("corpTransReqEntry", new CorpTransReqEntry());
+        model.addAttribute("taxDetails", new String());
+        model.addAttribute("customsCode", new String());
         return "corp/custom/custompayment";
     }
 
@@ -118,7 +120,7 @@ public class CorpCustomDutyController {
                                   @ModelAttribute("assessmentDetailsRequest")  @Valid  CustomAssessmentDetailsRequest assessmentDetailsRequest,
                                   WebRequest request,
                                   BindingResult result, Model model, HttpServletRequest servletRequest, Principal principal,RedirectAttributes redirectAttributes, Locale locale) {
-String responseMessage = "";
+        String responseMessage = "";
         String tokenCode = request.getParameter("TaxDetails");
         ObjectMapper objectMapper = new ObjectMapper();
         List<Tax> navigation = new ArrayList<>();
@@ -139,7 +141,7 @@ String responseMessage = "";
             } else if (corporate.getCorporateType().equalsIgnoreCase("SOLE")) {
 
                 CustomDutyPayment customDutyPayment = customDutyService.saveCustomDutyPayment(assessmentDetail, assessmentDetailsRequest,principal);
-                CorpPaymentRequest resp = customDutyService.saveCorpPaymentRequest( customDutyPayment, corporate,principal,true);
+                CorpPaymentRequest resp = customDutyService.saveCorpPaymentRequest(customDutyPayment, corporate,principal,true);
                 redirectAttributes.addFlashAttribute("message",resp.getStatusDescription());
             } else {
                 return "redirect:/corporate/custom";
@@ -176,7 +178,6 @@ String responseMessage = "";
             } catch (InternetBankingTransferException e) {
 
             }
-            customDutyService.paymentNotification(assessmentDetail);
         }
         catch (Exception e){
             LOGGER.error("Error calling coronation service rest service",e);
