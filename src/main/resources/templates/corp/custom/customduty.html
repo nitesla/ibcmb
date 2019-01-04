@@ -34,7 +34,8 @@
                             <a type="button" th:href="@{/corporate/custom/payment}" class="btn btn-default">New</a>
                         </div>
                         <div>
-                        <button class="btn btn-default pull-right bt-select" disabled="disabled" id="refresh" onclick="refresh()" type="button">Refresh</button>
+                            <button class="btn btn-default pull-right bt-select" disabled="disabled" id="receipt" onclick="receipt()" type="button">Receipt</button>
+                            <button class="btn btn-default pull-right bt-select" disabled="disabled" id="refresh" onclick="refresh()" type="button">Refresh</button>
                         </div>
                     </div>
 
@@ -177,7 +178,6 @@
                         }]
                     });
 
-
                     table.on('select', function () {
                         if (table.rows({
                             selected: true
@@ -186,7 +186,6 @@
                         } else {
                             $('.bt-select').removeAttr("disabled");
                         }
-
                     });
 
                     table.on('deselect', function () {
@@ -251,6 +250,35 @@
                             }
                         });
                     }
+
+                function receipt() {
+                    showSpinner();
+
+                    console.log("receipt id "+id);
+
+                    $.ajax({
+                        "url":"/corporate/custom/"+id+"/refresh",
+                        "type" : "GET",
+                        "data" :  {
+                            //            id : id
+                            //            ApprovalStatus : ApprovalStatus,
+                            //            NotificationStatus : NotificationStatus,
+                            //            paymentRef : paymentRef,
+                            //            code : message
+                        },success: function (result) {
+                            console.log(result["","message"]);
+                            table.ajax.reload(null,true);
+                            hideSpinner();
+                        },
+                        error: function (dd) {
+                            $('#receipt'.attr("disabled", true));
+                            //                        console.log("error")
+                            hideSpinner();
+                            bootbox.alert("<div style='text-align: center'>Service not available</div>");
+                            return false;
+                        }
+                    });
+                }
 
                 $("a.bt-link-act").on("click", function (e) {
                     e.preventDefault();
