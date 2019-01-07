@@ -1,6 +1,11 @@
 package longbridge.controllers.corporate;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.itextpdf.text.Document;
+import com.itextpdf.text.PageSize;
+import com.itextpdf.text.html.simpleparser.HTMLWorker;
+import com.itextpdf.text.pdf.PdfWriter;
+import com.itextpdf.tool.xml.XMLWorkerHelper;
 import longbridge.dtos.SettingDTO;
 import longbridge.exception.InternetBankingException;
 import longbridge.exception.InternetBankingSecurityException;
@@ -9,6 +14,8 @@ import longbridge.exception.TransferErrorService;
 import longbridge.models.*;
 import longbridge.services.*;
 import longbridge.utils.TransferUtils;
+import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,9 +35,12 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.io.*;
 import java.math.BigDecimal;
 import java.math.MathContext;
+import java.nio.charset.StandardCharsets;
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
@@ -57,6 +67,8 @@ public class CorpCustomDutyController {
     private ConfigurationService configService;
     @Autowired
     private MessageSource messageSource;
+    @Autowired
+    private IntegrationService integrationService;
     @Autowired
     public CorpCustomDutyController(CorporateUserService corporateUserService,
             TransferErrorService transferErrorService, CorporateService corporateService,
@@ -120,7 +132,7 @@ public class CorpCustomDutyController {
                                   @ModelAttribute("assessmentDetailsRequest")  @Valid  CustomAssessmentDetailsRequest assessmentDetailsRequest,
                                   WebRequest request,
                                   BindingResult result, Model model, HttpServletRequest servletRequest, Principal principal,RedirectAttributes redirectAttributes, Locale locale) {
-String responseMessage = "";
+        String responseMessage = "";
         String tokenCode = request.getParameter("TaxDetails");
         ObjectMapper objectMapper = new ObjectMapper();
         List<Tax> navigation = new ArrayList<>();
@@ -141,7 +153,7 @@ String responseMessage = "";
             } else if (corporate.getCorporateType().equalsIgnoreCase("SOLE")) {
 
                 CustomDutyPayment customDutyPayment = customDutyService.saveCustomDutyPayment(assessmentDetail, assessmentDetailsRequest,principal);
-                CorpPaymentRequest resp = customDutyService.saveCorpPaymentRequest( customDutyPayment, corporate,principal,true);
+                CorpPaymentRequest resp = customDutyService.saveCorpPaymentRequest(customDutyPayment, corporate,principal,true);
                 redirectAttributes.addFlashAttribute("message",resp.getStatusDescription());
             } else {
                 return "redirect:/corporate/custom";
@@ -178,7 +190,6 @@ String responseMessage = "";
             } catch (InternetBankingTransferException e) {
 
             }
-            customDutyService.paymentNotification(assessmentDetail);
         }
         catch (Exception e){
             LOGGER.error("Error calling coronation service rest service",e);
@@ -308,6 +319,23 @@ String responseMessage = "";
         out.setRecordsFiltered(paymentRequest.getTotalElements());
         out.setRecordsTotal(paymentRequest.getTotalElements());
         return out;
+    }
+
+    @GetMapping("/receipt")
+    public void generateReceipy(HttpServletResponse response){
+        String receiptInString = integrationService.getReciept("45988");
+        byte[] bytes = receiptInString.getBytes();
+        try {
+            response.setContentType("application/pdf");
+            response.setHeader("Content-Length", String.valueOf(receiptInString.length()));
+            response.addHeader("Content-Disposition", String.format("attachment; filename=\"" + "receipt" + ".pdf\""));
+            OutputStream responseOutputStream = response.getOutputStream();
+            responseOutputStream.write(bytes);
+            responseOutputStream.close();
+            responseOutputStream.flush();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 }

@@ -138,7 +138,7 @@ public interface IntegrationService {
     @PreAuthorize("hasAuthority('CUSTOM_DUTY')")
     public CustomTransactionStatus paymentStatus(CorpPaymentRequest corpPaymentRequest);
 
-    HTML getReciept(CorpPaymentRequest corpPaymentRequest);
+    String getReciept(String tranId);
 
     TransferDetails reverseLocalTransfer(String referenceId);
 

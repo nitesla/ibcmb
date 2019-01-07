@@ -862,8 +862,9 @@ public class IntegrationServiceImpl implements IntegrationService {
 		try {
 			Map<String,Object> request = new HashMap<>();
 			request.put("appId",appId);
+
 			request.put("hash",EncryptionUtil.getSHA512(
-					appId + corpPaymentRequest.getCustomDutyPayment().getTranId() + corpPaymentRequest.getAmount() + secretKey, null));
+					appId + corpPaymentRequest.getReferenceNumber() + corpPaymentRequest.getAmount().setScale(2,BigDecimal.ROUND_HALF_UP) + secretKey, null));
 			request.put("TranId",corpPaymentRequest.getCustomDutyPayment().getTranId());
 			request.put("Amount",corpPaymentRequest.getAmount().toString());
 			request.put("LastAuthorizer",userName);
@@ -875,6 +876,9 @@ public class IntegrationServiceImpl implements IntegrationService {
 			logger.debug("paymentNotificationRequest: {}", request);
 			CustomPaymentNotification response = template.postForObject(CustomDutyUrl+"/customduty/payassessment", request, CustomPaymentNotification.class);
 			logger.debug("payment notification Response: {}", response);
+			logger.debug("payment notification params: {}", appId + corpPaymentRequest.getReferenceNumber() + corpPaymentRequest.getAmount() + secretKey);
+			logger.debug("payment notification hash: {}",EncryptionUtil.getSHA512(
+					appId + corpPaymentRequest.getReferenceNumber() + corpPaymentRequest.getAmount() + secretKey, null));
 			return response;
 		}
 		catch (Exception e){
@@ -904,20 +908,19 @@ public class IntegrationServiceImpl implements IntegrationService {
 	}
 
 	@Override
-	public HTML getReciept(CorpPaymentRequest corpPaymentRequest){
+	public String getReciept(String tranId){
 
 		try {
 			logger.debug("Fetching data from coronation rest service via the url: {}", CustomDutyUrl);
 			Map<String,String> request = new HashMap<>();
 			request.put("hash",EncryptionUtil.getSHA512(
-					appId+"45988"+secretKey,null));
-//					appId+corpPaymentRequest.getCustomDutyPayment().getTranId()+secretKey,null));
+					appId+tranId+secretKey,null));
 			request.put("appId",appId);
-			request.put("Id",corpPaymentRequest.getCustomDutyPayment().getTranId());
+			request.put("tranId",tranId);
 			logger.debug("Fetching data from coronation rest service using: {}", request);
-			HTML transactionStatus= template.postForObject(CustomDutyUrl+"/customduty/getreceipt", request, HTML.class);
-			logger.info("the transaction status response {}",transactionStatus);
-			return null;
+			String receipt= template.postForObject(CustomDutyUrl+"/customduty/getreceipt", request, String.class);
+			logger.info("the transaction status response {}",receipt.length());
+			return receipt;
 		}
 		catch (Exception e){
 			logger.error("Error calling coronation service rest service",e);

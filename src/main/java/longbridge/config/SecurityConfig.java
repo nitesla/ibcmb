@@ -86,7 +86,6 @@ public class SecurityConfig {
 
             boolean ipRestricted = false;
             StringBuilder ipRange = new StringBuilder("hasIpAddress('::1') or hasIpAddress('127.0.0.1')");
-//            StringBuilder ipRange = new StringBuilder("hasIpAddress('::1') or hasIpAddress('192.168.88.27')");
             //Takes a specific IP address or a range using
             //the IP/Netmask (e.g. 192.168.1.0/24 or 202.24.0.0/14).
             SettingDTO dto = configService.getSettingByName("ADMIN_IP_WHITELIST");
@@ -106,18 +105,15 @@ public class SecurityConfig {
                 }
                 logger.info("IP address whitelist " + ipRange.toString());
             }
-            logger.info("IP address whitelist " + ipRange.toString());
+
 
             http.antMatcher("/admin/**").authorizeRequests()
                     .anyRequest().fullyAuthenticated()
                     .and().antMatcher("/**").authorizeRequests()
                     .and().antMatcher("/admin/**").authorizeRequests()
                     .and().authorizeRequests().anyRequest().
-//                    access("hasIpAddress('192.168.88.1/24')").and()
-//                    if(ipRestricted) {
-//                        //access("hasAuthority('" + UserType.ADMIN.toString() + "')").and()
+                    //access("hasAuthority('" + UserType.ADMIN.toString() + "')").and()
                     access("hasAuthority('" + UserType.ADMIN.toString() + "') and " + ipRange.toString()).and()
-//                    }
 
                     .formLogin().loginPage("/login/admin").loginProcessingUrl("/admin/login")
                     .failureUrl("/login/admin?error=login_error").defaultSuccessUrl("/admin/dashboard")
@@ -128,7 +124,6 @@ public class SecurityConfig {
                     .maximumSessions(1)
                     .expiredUrl("/login/admin?expired=true")
                     .sessionRegistry(sessionRegistry()).and()
-
 
                     .sessionFixation().migrateSession().sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
 
@@ -203,6 +198,8 @@ public class SecurityConfig {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
+
+
                 logger.info("IP address whitelist " + ipRange.toString());
             }
             http.antMatcher("/ops/**")

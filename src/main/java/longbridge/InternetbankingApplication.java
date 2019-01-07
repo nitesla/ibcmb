@@ -55,6 +55,7 @@ public class InternetbankingApplication extends SpringBootServletInitializer imp
 //        logger.info( "hash for receipt "+test45988test);
 //        integrationService.reverseLocalTransfer("544627229");
 //        System.out.println("code "+CustomDutyCode.getCustomDutyCodeByCode("00"));
+//        integrationService.getReciept("45988");
     }
 
 }

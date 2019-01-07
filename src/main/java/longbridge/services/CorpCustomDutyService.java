@@ -18,9 +18,6 @@ public interface CorpCustomDutyService {
     CustomsAreaCommand getCustomsAreaCommands();
 
     @PreAuthorize("hasAuthority('CUSTOM_DUTY')")
-    void paymentNotification(CustomAssessmentDetail assessmentDetail);
-
-    @PreAuthorize("hasAuthority('CUSTOM_DUTY')")
     CustomTransactionStatus getPaymentStatus(CorpPaymentRequest corpPaymentRequest);
 
     @PreAuthorize("hasAuthority('CUSTOM_DUTY')")
@@ -62,4 +59,6 @@ public interface CorpCustomDutyService {
 
     @PreAuthorize("hasAuthority('CUSTOM_DUTY')")
     Page<CorpPaymentRequest> getEntities(Pageable pageable);
+
+
 }
