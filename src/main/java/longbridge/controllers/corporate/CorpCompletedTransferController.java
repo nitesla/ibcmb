@@ -120,8 +120,6 @@ public class CorpCompletedTransferController {
             modelMap.put("refNUm", transRequest.getReferenceNumber());
             modelMap.put("tranDate", DateFormatter.format(transRequest.getTranDate()));
             modelMap.put("date", DateFormatter.format(new Date()));
-
-
             ModelAndView modelAndView=new ModelAndView(view, modelMap);
             return modelAndView;
         }catch (Exception e){

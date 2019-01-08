@@ -321,21 +321,35 @@ public class CorpCustomDutyController {
         return out;
     }
 
-    @GetMapping("/receipt")
-    public void generateReceipy(HttpServletResponse response){
+    @GetMapping("{id}/receipt")
+    public void generateReceipy(@PathVariable String id, HttpServletResponse response){
         String receiptInString = integrationService.getReciept("45988");
+        LOGGER.info("{}",receiptInString);
         byte[] bytes = receiptInString.getBytes();
         try {
             response.setContentType("application/pdf");
             response.setHeader("Content-Length", String.valueOf(receiptInString.length()));
             response.addHeader("Content-Disposition", String.format("attachment; filename=\"" + "receipt" + ".pdf\""));
+//            ITextRenderer renderer = new ITextRenderer();
             OutputStream responseOutputStream = response.getOutputStream();
-            responseOutputStream.write(bytes);
+//            responseOutputStream.write(bytes);
+//            renderer.setDocumentFromString(receiptInString);
+//            renderer.layout();
+//            renderer.createPDF(responseOutputStream,false);
+
+//            Document document = new Document(PageSize.A4);
+//            PdfWriter writer = PdfWriter.getInstance(document, responseOutputStream);
+//            writer.setPdfVersion(PdfWriter.PDF_VERSION_1_7);
+//            document.open();
+//            XMLWorkerHelper.getInstance().parseXHtml(writer, document, new StringReader(receiptInString));
+//            document.close();
+            //
             responseOutputStream.close();
             responseOutputStream.flush();
         } catch (IOException e) {
             e.printStackTrace();
+        }catch (Exception e){
+
         }
     }
-
 }

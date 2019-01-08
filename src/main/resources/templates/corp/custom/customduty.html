@@ -59,8 +59,6 @@
                 </div>
             </div>
         </div>
-
-
         <th:block layout:fragment="scripts">
             <!-- <script th:src="@{~/customer/js/dataTables.bootstrap.js}"></script>-->
             <!--<script th:src="@{~/bank/vendors/datatables.net/js/jquery.dataTables.js}"></script>-->
@@ -219,14 +217,11 @@
                 });
                 $("#refresh").on("click", function (e) {
                     e.preventDefault();
-
                 });
 
                 function refresh() {
                     showSpinner();
-
                     console.log("refresh id "+id);
-
                     $.ajax({
                     "url":"/corporate/custom/"+id+"/refresh",
                     "type" : "GET",
@@ -257,7 +252,7 @@
                     console.log("receipt id "+id);
 
                     $.ajax({
-                        "url":"/corporate/custom/"+id+"/refresh",
+                        "url":"/corporate/custom/"+id+"/receipt",
                         "type" : "GET",
                         "data" :  {
                             //            id : id
