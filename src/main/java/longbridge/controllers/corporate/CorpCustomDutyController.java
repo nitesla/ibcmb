@@ -2,6 +2,7 @@ package longbridge.controllers.corporate;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.itextpdf.text.Document;
+import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.PageSize;
 import com.itextpdf.text.html.simpleparser.HTMLWorker;
 import com.itextpdf.text.pdf.PdfWriter;
@@ -13,6 +14,7 @@ import longbridge.exception.InternetBankingTransferException;
 import longbridge.exception.TransferErrorService;
 import longbridge.models.*;
 import longbridge.services.*;
+import longbridge.utils.StringUtil;
 import longbridge.utils.TransferUtils;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang.StringEscapeUtils;
@@ -34,12 +36,15 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.xhtmlrenderer.pdf.ITextRenderer;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.io.*;
 import java.math.BigDecimal;
 import java.math.MathContext;
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.security.Principal;
 import java.util.ArrayList;
@@ -321,21 +326,14 @@ public class CorpCustomDutyController {
         return out;
     }
 
-    @GetMapping("/receipt")
-    public void generateReceipy(HttpServletResponse response){
-        String receiptInString = integrationService.getReciept("45988");
-        byte[] bytes = receiptInString.getBytes();
-        try {
-            response.setContentType("application/pdf");
-            response.setHeader("Content-Length", String.valueOf(receiptInString.length()));
-            response.addHeader("Content-Disposition", String.format("attachment; filename=\"" + "receipt" + ".pdf\""));
-            OutputStream responseOutputStream = response.getOutputStream();
-            responseOutputStream.write(bytes);
-            responseOutputStream.close();
-            responseOutputStream.flush();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    @GetMapping("/{tranId}/receipt")
+    public String generateReceipy(@PathVariable String tranId, Model model){
+        LOGGER.info("the tranid {}",tranId);
+        String receiptInString = integrationService.getReciept(tranId);
+        String result = StringUtils.substringBetween(receiptInString, "<html>", "</html>");
+
+        model.addAttribute("receiptPage", result);
+        return "corp/custom/receipt";
     }
 
 }

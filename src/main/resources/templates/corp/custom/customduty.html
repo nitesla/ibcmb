@@ -33,8 +33,8 @@
                                th:href="@{/corporate/custom/index/authorizations}" disabled="disabled"> View</a>
                             <a type="button" th:href="@{/corporate/custom/payment}" class="btn btn-default">New</a>
                         </div>
-                        <div>
-                            <button class="btn btn-default pull-right bt-select" disabled="disabled" id="receipt" onclick="receipt()" type="button">Receipt</button>
+                        <div class="btn-group pull-right" role="group" aria-label="First group">
+                            <a href="/corporate/custom/tranid/receipt" class="btn btn-default pull-right bt-select bt-receipt" disabled="disabled" style="margin-top: 4%" id="receipt">Receipt</a>
                             <button class="btn btn-default pull-right bt-select" disabled="disabled" id="refresh" onclick="refresh()" type="button">Refresh</button>
                         </div>
                     </div>
@@ -58,6 +58,10 @@
                     </div>
                 </div>
             </div>
+            <!--<p id="ignorePDF">don't print this to pdf</p>-->
+            <!--<div>-->
+                <!--<p id="testR"><font size="3" color="red">print this to pdf</font></p>-->
+            <!--</div>-->
         </div>
 
 
@@ -65,6 +69,10 @@
             <!-- <script th:src="@{~/customer/js/dataTables.bootstrap.js}"></script>-->
             <!--<script th:src="@{~/bank/vendors/datatables.net/js/jquery.dataTables.js}"></script>-->
             <script th:src="@{~/customer/js/dataTables.select.js}"></script>
+            <!--<script th:src="@{~/customer/jsPdf-1.3.2/from_html.js}"></script>-->
+            <!--<script th:src="@{~/customer/jsPdf-1.3.2/jspdf.js}"></script>-->
+            <!--<script th:src="@{~/customer/jsPdf-1.3.2/split_text_to_size.js}"></script>-->
+            <!--<script th:src="@{~/customer/jsPdf-1.3.2/standard_fonts_metrics.js}"></script>-->
             <script th:src="@{~/bank/vendors/sweetalert/sweetalert.min.js}"></script>
             <script th:src="@{~/bank/vendors/bootstrap-dialog/js/bootstrap-dialog.js}"></script>
             <script th:src="@{~/bank/js/jquery.spring-friendly.min.js}"></script>
@@ -145,7 +153,8 @@
                             {"data": "customDutyPayment.approvalStatus","visible":false},
                             {"data": "customDutyPayment.notificationStatus","visible":false},
                             {"data": "customDutyPayment.paymentRef","visible":false},
-                            {"data": "customDutyPayment.code","visible":false}
+                            {"data": "customDutyPayment.code","visible":false},
+                            {"data": "customDutyPayment.tranId","visible":false}
                             // {"data": "customDutyPayment.message"}
 
                         ], "columnDefs": [{
@@ -200,27 +209,24 @@
 
                 });
                 var id;
+                var tranId;
                 var table =  $('#auditview').DataTable();
 
                 $("#requests").on("click", "tr", function()
                 {
                     var table =  $('#requests').DataTable();
                     id = table.row(this).id();
-//                    var tet = $(this).children(":nth-child(0)").text();
-//                    PaymentStatus = $(this).children(":nth-child(7)").text();
-//                    ApprovalStatus= $(this).children(":nth-child(8)").text();
-//                    NotificationStatus= $(this).children(":nth-child(9)").text();
-//                    paymentRef= $(this).children(":nth-child(10)").text();
-//                    code= $(this).children(":nth-child(11)").text();
-//                    message= $(this).children(":nth-child(12)").text();
-//                    console.log("first it "+tet);
-                    console.log("the row id "+id);
-                    console.log("PaymentStatus "+PaymentStatus +"ApprovalStatus "+ApprovalStatus +"NotificationStatus "+NotificationStatus +"paymentRef "+paymentRef +"code "+code+"message "+message);
-                });
-                $("#refresh").on("click", function (e) {
-                    e.preventDefault();
+                    var currentRow = $(this).closest("tr");
 
+                    var data = table.row(currentRow).data();
+//                    console.log(data['id']);
+                    tranId = data['customDutyPayment']['tranId'];
+                    console.log("the row id "+id+" tran id "+tranId);
                 });
+//                $("#refresh").on("click", function (e) {
+//                    e.preventDefault();
+//
+//                });
 
                 function refresh() {
                     showSpinner();
@@ -251,36 +257,36 @@
                         });
                     }
 
-                function receipt() {
-                    showSpinner();
+//                function receipt() {
+//                    showSpinner();
+//
+//                    console.log("receipt id "+id);
+//
+//                    $.ajax({
+//                        "url":"/corporate/custom/"+tranId+"/report",
+//                        "type" : "GET",
+//                        "data" :  {
+//                            //            id : id
+//                            //            ApprovalStatus : ApprovalStatus,
+//                            //            NotificationStatus : NotificationStatus,
+//                            //            paymentRef : paymentRef,
+//                            //            code : message
+//                        },success: function (result) {
+//                            console.log(result["","message"]);
+//                            table.ajax.reload(null,true);
+//                            hideSpinner();
+//                        },
+//                        error: function (dd) {
+//                            $('#receipt'.attr("disabled", true));
+//                            //                        console.log("error")
+//                            hideSpinner();
+//                            bootbox.alert("<div style='text-align: center'>Service not available</div>");
+//                            return false;
+//                        }
+//                    });
+//                }
 
-                    console.log("receipt id "+id);
-
-                    $.ajax({
-                        "url":"/corporate/custom/"+id+"/refresh",
-                        "type" : "GET",
-                        "data" :  {
-                            //            id : id
-                            //            ApprovalStatus : ApprovalStatus,
-                            //            NotificationStatus : NotificationStatus,
-                            //            paymentRef : paymentRef,
-                            //            code : message
-                        },success: function (result) {
-                            console.log(result["","message"]);
-                            table.ajax.reload(null,true);
-                            hideSpinner();
-                        },
-                        error: function (dd) {
-                            $('#receipt'.attr("disabled", true));
-                            //                        console.log("error")
-                            hideSpinner();
-                            bootbox.alert("<div style='text-align: center'>Service not available</div>");
-                            return false;
-                        }
-                    });
-                }
-
-                $("a.bt-link-act").on("click", function (e) {
+                $("a.bt-receipt").on("click", function (e) {
                     e.preventDefault();
                     var link = $(e.currentTarget);
                     if ($(link).attr("disabled")) {
@@ -290,8 +296,9 @@
                     var id = $(dt.row({
                         selected: true
                     }).node()).attr("id");
-                    var ooo = link.attr("href").replace("index", id);
-                    window.location.assign(ooo);
+                    var ooo = link.attr("href").replace("tranid", tranId);
+
+                    window.open(ooo,'_blank');
 
                 });
 
