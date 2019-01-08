@@ -217,6 +217,7 @@
                     var table =  $('#requests').DataTable();
                     id = table.row(this).id();
                     var currentRow = $(this).closest("tr");
+//                    code= $(this).children(":nth-child(11)").text();
 
                     var data = table.row(currentRow).data();
 //                    console.log(data['id']);
@@ -243,7 +244,6 @@
             //            paymentRef : paymentRef,
             //            code : message
                             },success: function (result) {
-                                console.log(result["","message"]);
                             table.ajax.reload(null,true);
                                     hideSpinner();
                             },
@@ -301,7 +301,21 @@
                     window.open(ooo,'_blank');
 
                 });
+                $("a.bt-link-act").on("click", function (e) {
+                    e.preventDefault();
+                    var link = $(e.currentTarget);
+                    console.log("url "+link.attr("href"));
+                    if ($(link).attr("disabled")) {
+                        return;
+                    }
+                    var dt = $('#requests').DataTable();
+                    var id = $(dt.row({
+                        selected: true
+                    }).node()).attr("id");
+                    var ooo = link.attr("href").replace("index", id);
+                    window.location.assign(ooo);
 
+                });
                 $("#delete-btn").on("click", function (e) {
                     e.preventDefault();
                     var link = $(e.currentTarget);
