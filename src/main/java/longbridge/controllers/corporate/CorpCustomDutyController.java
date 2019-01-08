@@ -2,10 +2,10 @@ package longbridge.controllers.corporate;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.itextpdf.text.Document;
+import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.PageSize;
 import com.itextpdf.text.html.simpleparser.HTMLWorker;
 import com.itextpdf.text.pdf.PdfWriter;
-import com.itextpdf.tool.xml.XMLWorkerHelper;
 import longbridge.dtos.SettingDTO;
 import longbridge.exception.InternetBankingException;
 import longbridge.exception.InternetBankingSecurityException;
@@ -13,6 +13,7 @@ import longbridge.exception.InternetBankingTransferException;
 import longbridge.exception.TransferErrorService;
 import longbridge.models.*;
 import longbridge.services.*;
+import longbridge.utils.StringUtil;
 import longbridge.utils.TransferUtils;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang.StringEscapeUtils;
@@ -34,12 +35,14 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.io.*;
 import java.math.BigDecimal;
 import java.math.MathContext;
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.security.Principal;
 import java.util.ArrayList;
@@ -321,35 +324,14 @@ public class CorpCustomDutyController {
         return out;
     }
 
-    @GetMapping("{id}/receipt")
-    public void generateReceipy(@PathVariable String id, HttpServletResponse response){
-        String receiptInString = integrationService.getReciept("45988");
-        LOGGER.info("{}",receiptInString);
-        byte[] bytes = receiptInString.getBytes();
-        try {
-            response.setContentType("application/pdf");
-            response.setHeader("Content-Length", String.valueOf(receiptInString.length()));
-            response.addHeader("Content-Disposition", String.format("attachment; filename=\"" + "receipt" + ".pdf\""));
-//            ITextRenderer renderer = new ITextRenderer();
-            OutputStream responseOutputStream = response.getOutputStream();
-//            responseOutputStream.write(bytes);
-//            renderer.setDocumentFromString(receiptInString);
-//            renderer.layout();
-//            renderer.createPDF(responseOutputStream,false);
+    @GetMapping("/{tranId}/receipt")
+    public String generateReceipy(@PathVariable String tranId, Model model){
+        LOGGER.info("the tranid {}",tranId);
+        String receiptInString = integrationService.getReciept(tranId);
+        String result = StringUtils.substringBetween(receiptInString, "<html>", "</html>");
 
-//            Document document = new Document(PageSize.A4);
-//            PdfWriter writer = PdfWriter.getInstance(document, responseOutputStream);
-//            writer.setPdfVersion(PdfWriter.PDF_VERSION_1_7);
-//            document.open();
-//            XMLWorkerHelper.getInstance().parseXHtml(writer, document, new StringReader(receiptInString));
-//            document.close();
-            //
-            responseOutputStream.close();
-            responseOutputStream.flush();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }catch (Exception e){
-
-        }
+        model.addAttribute("receiptPage", result);
+        return "corp/custom/receipt";
     }
+
 }

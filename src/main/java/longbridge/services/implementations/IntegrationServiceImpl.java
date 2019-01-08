@@ -919,7 +919,7 @@ public class IntegrationServiceImpl implements IntegrationService {
 			request.put("tranId",tranId);
 			logger.debug("Fetching data from coronation rest service using: {}", request);
 			String receipt= template.postForObject(CustomDutyUrl+"/customduty/getreceipt", request, String.class);
-			logger.info("the transaction status response {}",receipt.length());
+			logger.info("the transaction status response length {}",receipt.length());
 			return receipt;
 		}
 		catch (Exception e){
