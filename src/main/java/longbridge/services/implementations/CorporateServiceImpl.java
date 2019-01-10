@@ -942,7 +942,6 @@ public class CorporateServiceImpl implements CorporateService {
 
 
     private CorpTransRule getApplicableRule(List<CorpTransRule> transferRules, BigDecimal transferAmount) {
-
         CorpTransRule applicableTransferRule = null;
         for (CorpTransRule transferRule : transferRules) {
             BigDecimal lowerLimit = transferRule.getLowerLimitAmount();

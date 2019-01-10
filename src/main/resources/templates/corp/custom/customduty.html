@@ -63,8 +63,6 @@
                 <!--<p id="testR"><font size="3" color="red">print this to pdf</font></p>-->
             <!--</div>-->
         </div>
-
-
         <th:block layout:fragment="scripts">
             <!-- <script th:src="@{~/customer/js/dataTables.bootstrap.js}"></script>-->
             <!--<script th:src="@{~/bank/vendors/datatables.net/js/jquery.dataTables.js}"></script>-->
@@ -177,7 +175,6 @@
                                 if (type === 'display') {
                                     if (data == null)
                                         return data;
-
                                     var dtStart = new Date(data);
                                     var dtStartWrapper = moment(dtStart);
                                     return dtStartWrapper.format('DD-MMM-YYYY');
@@ -206,10 +203,10 @@
                             $('.bt-select').removeAttr("disabled");
                         }
                     });
-
                 });
                 var id;
                 var tranId;
+                var code;
                 var table =  $('#auditview').DataTable();
 
                 $("#requests").on("click", "tr", function()
@@ -217,12 +214,13 @@
                     var table =  $('#requests').DataTable();
                     id = table.row(this).id();
                     var currentRow = $(this).closest("tr");
-//                    code= $(this).children(":nth-child(11)").text();
 
                     var data = table.row(currentRow).data();
 //                    console.log(data['id']);
                     tranId = data['customDutyPayment']['tranId'];
+                    code = data['customDutyPayment']['code']
                     console.log("the row id "+id+" tran id "+tranId);
+
                 });
 //                $("#refresh").on("click", function (e) {
 //                    e.preventDefault();
@@ -231,9 +229,7 @@
 
                 function refresh() {
                     showSpinner();
-
                     console.log("refresh id "+id);
-
                     $.ajax({
                     "url":"/corporate/custom/"+id+"/refresh",
                     "type" : "GET",
@@ -249,7 +245,6 @@
                             },
                             error: function (dd) {
                                 $('#refresh'.attr("disabled", true));
-                    //                        console.log("error")
                                 hideSpinner();
                                 bootbox.alert("<div style='text-align: center'>Service not available</div>");
                                 return false;
@@ -257,50 +252,25 @@
                         });
                     }
 
-//                function receipt() {
-//                    showSpinner();
-//
-//                    console.log("receipt id "+id);
-//
-//                    $.ajax({
-//                        "url":"/corporate/custom/"+tranId+"/report",
-//                        "type" : "GET",
-//                        "data" :  {
-//                            //            id : id
-//                            //            ApprovalStatus : ApprovalStatus,
-//                            //            NotificationStatus : NotificationStatus,
-//                            //            paymentRef : paymentRef,
-//                            //            code : message
-//                        },success: function (result) {
-//                            console.log(result["","message"]);
-//                            table.ajax.reload(null,true);
-//                            hideSpinner();
-//                        },
-//                        error: function (dd) {
-//                            $('#receipt'.attr("disabled", true));
-//                            //                        console.log("error")
-//                            hideSpinner();
-//                            bootbox.alert("<div style='text-align: center'>Service not available</div>");
-//                            return false;
-//                        }
-//                    });
-//                }
-
                 $("a.bt-receipt").on("click", function (e) {
                     e.preventDefault();
                     var link = $(e.currentTarget);
                     if ($(link).attr("disabled")) {
                         return;
+                    }else{
+                        console.log("the code "+code);
+                        if(code != "00" || code !="000"){
+                            return;
+                        }
                     }
                     var dt = $('#requests').DataTable();
                     var id = $(dt.row({
                         selected: true
                     }).node()).attr("id");
                     var ooo = link.attr("href").replace("tranid", tranId);
-
                     window.open(ooo,'_blank');
-
                 });
+
                 $("a.bt-link-act").on("click", function (e) {
                     e.preventDefault();
                     var link = $(e.currentTarget);
@@ -314,8 +284,8 @@
                     }).node()).attr("id");
                     var ooo = link.attr("href").replace("index", id);
                     window.location.assign(ooo);
-
                 });
+
                 $("#delete-btn").on("click", function (e) {
                     e.preventDefault();
                     var link = $(e.currentTarget);

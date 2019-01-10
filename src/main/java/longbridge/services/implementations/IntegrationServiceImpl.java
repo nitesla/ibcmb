@@ -848,7 +848,7 @@ public class IntegrationServiceImpl implements IntegrationService {
 		try {
 			logger.debug("Fetching data from coronation rest service via the url: {}", CustomDutyUrl);
 			CustomsAreaCommand command = template.postForObject(CustomDutyUrl+"/customduty/getncscommand"
-					, customsAreaCommandRequest, CustomsAreaCommand.class);
+					,customsAreaCommandRequest, CustomsAreaCommand.class);
 			logger.debug("Fetching data from coronation rest service via the url: {}", command);
 			return command;
 		}
