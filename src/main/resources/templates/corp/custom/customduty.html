@@ -221,7 +221,7 @@
                     code = data['customDutyPayment']['code']
                     status = data['status']
                     console.log("the row id "+id+" tran id "+tranId);
-                    if(status == '00' || status =='000'){
+                    if(status == '00' || status =='000' || status =='F' || status =='P' ){
                         console.log("the status is "+status);
                         $('#receipt').attr("disabled", false);
                         return;

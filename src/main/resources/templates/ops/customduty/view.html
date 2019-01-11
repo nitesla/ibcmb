@@ -80,6 +80,8 @@
                                         <th>Reference Number</th>
                                         <th>SGD Assessment Number</th>
                                         <th>Transaction Date</th>
+                                        <th>Approval Status</th>
+                                        <th>Payment Status</th>
 
                                     </tr>
                                     </thead>
@@ -87,15 +89,7 @@
 
 
                                     </tbody>
-                                    <tfoot>
-                                    <tr>
-                                        <th>Customer Acct No</th>
-                                        <th>Amount</th>
-                                        <th>Reference Number</th>
-                                        <th>SGD Assessment Number</th>
-                                        <th>Transaction Date</th>
-                                    </tr>
-                                    </tfoot>
+
                                 </table>
 
                             </div>
@@ -145,7 +139,9 @@
                 { "data": "amount" },
                 { "data": "referenceNumber" },
                 { "data": "customDutyPayment.sadassessmentNumber" },
-                { "data": "tranDate" }
+                { "data": "tranDate" },
+                { "data": "statusDescription" },
+                { "data": "customDutyPayment.message" }
 
             ], "columnDefs" : [
                 {
