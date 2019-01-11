@@ -233,6 +233,7 @@ public class CorpCustomDutyController {
         LOGGER.info("dutyPayment:{}",dutyPayment);
         CorpTransferAuth corpTransferAuth = customDutyService.getAuthorizations(corpPaymentRequest);
         CorpTransRule corpTransRule = corporateService.getApplicableTransferRule(corpPaymentRequest);
+
         boolean userCanAuthorize = customDutyService.userCanAuthorize(corpPaymentRequest);
         modelMap.addAttribute("authorizationMap", corpTransferAuth)
                 .addAttribute("corpTransRequest", corpPaymentRequest)
