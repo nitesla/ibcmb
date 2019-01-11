@@ -34,7 +34,7 @@
                             <a type="button" th:href="@{/corporate/custom/payment}" class="btn btn-default">New</a>
                         </div>
                         <div class="btn-group pull-right" role="group" aria-label="First group">
-                            <a href="/corporate/custom/tranid/receipt" class="btn btn-default pull-right bt-select bt-receipt" disabled="disabled" style="margin-top: 4%" id="receipt">Receipt</a>
+                            <a href="/corporate/custom/tranid/receipt" class="btn btn-default pull-right bt-select bt-receipt" disabled style="margin-top: 4%" id="receipt">Receipt</a>
                             <button class="btn btn-default pull-right bt-select" disabled="disabled" id="refresh" onclick="refresh()" type="button">Refresh</button>
                         </div>
                     </div>
@@ -219,7 +219,18 @@
 //                    console.log(data['id']);
                     tranId = data['customDutyPayment']['tranId'];
                     code = data['customDutyPayment']['code']
+                    status = data['status']
                     console.log("the row id "+id+" tran id "+tranId);
+                    if(status == '00' || status =='000'){
+                        console.log("the status is "+status);
+                        $('#receipt').attr("disabled", false);
+                        return;
+                    }else{
+                        console.log("the status "+status);
+                        $('#receipt').attr("disabled", true);
+                        return;
+                    }
+
 
                 });
 //                $("#refresh").on("click", function (e) {
@@ -258,10 +269,6 @@
                     if ($(link).attr("disabled")) {
                         return;
                     }else{
-                        console.log("the code "+code);
-                        if(code != "00" || code !="000"){
-                            return;
-                        }
                     }
                     var dt = $('#requests').DataTable();
                     var id = $(dt.row({
