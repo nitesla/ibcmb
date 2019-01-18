@@ -25,9 +25,6 @@ public class AdmControllerAdvice {
     @Autowired
     VerificationService verificationService;
 
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
-
-
 
     @ModelAttribute
     public String globalAttributes(Model model, Principal principal){
@@ -35,12 +32,8 @@ public class AdmControllerAdvice {
         if(principal==null){
             return "redirect:/login/admin";
         }
-
-//        if ( getCurrentUser() != null && !getCurrentUser().getUserType().equals(UserType.ADMIN)) return "redirect:/login/admin";
         int verificationNumber = verificationService.getTotalNumberForVerification();
         long totalPending = verificationService.getTotalNumberPending();
-//        int verificationNumber =0;
-//        long totalPending = 0;
         if(totalPending>0) {
             model.addAttribute("totalPending", totalPending);
         }
@@ -51,16 +44,5 @@ public class AdmControllerAdvice {
         model.addAttribute("pendingApprovals", verificationNumber);
 
         return "";
-    }
-
-
-    private User getCurrentUser() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (!(authentication instanceof AnonymousAuthenticationToken)) {
-            CustomUserPrincipal currentUser = (CustomUserPrincipal) authentication.getPrincipal();
-            return currentUser.getUser();
-        }
-
-        return null;
     }
 }

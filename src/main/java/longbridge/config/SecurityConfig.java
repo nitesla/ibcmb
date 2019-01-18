@@ -84,7 +84,6 @@ public class SecurityConfig {
         @Override
         protected void configure(HttpSecurity http) throws Exception {
 
-
             boolean ipRestricted = false;
             StringBuilder ipRange = new StringBuilder("hasIpAddress('::1') or hasIpAddress('127.0.0.1')");
             //Takes a specific IP address or a range using
@@ -99,14 +98,11 @@ public class SecurityConfig {
                             .stream()
                             .filter(Objects::nonNull)
                             .forEach(i -> ipRange.append(String.format(" or hasIpAddress('%s')", i)));
-
+                    logger.info("the ip whitelist {}",whitelisted);
 
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-
-
-
                 logger.info("IP address whitelist " + ipRange.toString());
             }
 
@@ -179,13 +175,10 @@ public class SecurityConfig {
 
         @Override
         protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-            auth
-                    .userDetailsService(opsDetails).passwordEncoder(bCryptPasswordEncoder);
+            auth.userDetailsService(opsDetails).passwordEncoder(bCryptPasswordEncoder);
         }
 
         protected void configure(HttpSecurity http) throws Exception {
-
-
             boolean ipRestricted = false;
             StringBuilder ipRange = new StringBuilder("hasIpAddress('::1') or hasIpAddress('127.0.0.1')");
             //Takes a specific IP address or a range using

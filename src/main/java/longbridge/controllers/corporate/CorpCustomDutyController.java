@@ -1,6 +1,11 @@
 package longbridge.controllers.corporate;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.itextpdf.text.Document;
+import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.PageSize;
+import com.itextpdf.text.html.simpleparser.HTMLWorker;
+import com.itextpdf.text.pdf.PdfWriter;
 import longbridge.dtos.SettingDTO;
 import longbridge.exception.InternetBankingException;
 import longbridge.exception.InternetBankingSecurityException;
@@ -8,9 +13,11 @@ import longbridge.exception.InternetBankingTransferException;
 import longbridge.exception.TransferErrorService;
 import longbridge.models.*;
 import longbridge.services.*;
-import longbridge.utils.TransferType;
+import longbridge.utils.StringUtil;
 import longbridge.utils.TransferUtils;
-import longbridge.validator.transfer.TransferValidator;
+import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,13 +34,16 @@ import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.WebRequest;
-import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.io.*;
 import java.math.BigDecimal;
 import java.math.MathContext;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
@@ -52,12 +62,6 @@ public class CorpCustomDutyController {
     private String bankCode;
 
     private CorporateUserService corporateUserService;
-    private CorpTransferService corpTransferService;
-    private AccountService accountService;
-    private MessageSource messages;
-    private LocaleResolver localeResolver;
-    private FinancialInstitutionService financialInstitutionService;
-    private TransferValidator validator;
     private TransferErrorService transferErrorService;
     private CorporateService corporateService;
     private TransferUtils transferUtils;
@@ -67,18 +71,12 @@ public class CorpCustomDutyController {
     @Autowired
     private MessageSource messageSource;
     @Autowired
-    public CorpCustomDutyController(
-            CorporateUserService corporateUserService, AccountService accountService, CorpTransferService corpTransferService,
-             LocaleResolver localeResolver,
-            FinancialInstitutionService financialInstitutionService, TransferValidator validator,
+    private IntegrationService integrationService;
+    @Autowired
+    public CorpCustomDutyController(CorporateUserService corporateUserService,
             TransferErrorService transferErrorService, CorporateService corporateService,
             TransferUtils transferUtils,SecurityService securityService) {
-        this.accountService = accountService;
         this.corporateUserService = corporateUserService;
-        this.corpTransferService = corpTransferService;
-        this.localeResolver = localeResolver;
-        this.financialInstitutionService = financialInstitutionService;
-        this.validator = validator;
         this.transferErrorService = transferErrorService;
         this.corporateService = corporateService;
         this.transferUtils = transferUtils;
@@ -129,7 +127,7 @@ public class CorpCustomDutyController {
         catch (Exception e){
             LOGGER.error("Error calling coronation service rest service",e);
         }
-        return null;
+        return new CustomsAreaCommand();
     }
 
     @PostMapping("/summary")
@@ -137,7 +135,7 @@ public class CorpCustomDutyController {
                                   @ModelAttribute("assessmentDetailsRequest")  @Valid  CustomAssessmentDetailsRequest assessmentDetailsRequest,
                                   WebRequest request,
                                   BindingResult result, Model model, HttpServletRequest servletRequest, Principal principal,RedirectAttributes redirectAttributes, Locale locale) {
-String responseMessage = "";
+        String responseMessage = "";
         String tokenCode = request.getParameter("TaxDetails");
         ObjectMapper objectMapper = new ObjectMapper();
         List<Tax> navigation = new ArrayList<>();
@@ -156,20 +154,23 @@ String responseMessage = "";
                 responseMessage = customDutyService.saveCustomPaymentRequestForAuthorization(assessmentDetail,assessmentDetailsRequest, principal,corporate);
                 redirectAttributes.addFlashAttribute("message",responseMessage);
             } else if (corporate.getCorporateType().equalsIgnoreCase("SOLE")) {
+
                 CustomDutyPayment customDutyPayment = customDutyService.saveCustomDutyPayment(assessmentDetail, assessmentDetailsRequest,principal);
-                CorpPaymentRequest resp = customDutyService.saveCorpPaymentRequest( customDutyPayment, corporate,principal,true);
-                redirectAttributes.addFlashAttribute("message",resp.getCustomDutyPayment().getApprovalStatusDescription());
+                CorpPaymentRequest resp = customDutyService.saveCorpPaymentRequest(customDutyPayment, corporate,principal,true);
+                redirectAttributes.addFlashAttribute("message",resp.getStatusDescription());
             } else {
-//                redirectAttributes.addFlashAttribute("responseMessage",messages);
-                return "redirect:/login/corporate";
+                return "redirect:/corporate/custom";
             }
-            return "redirect:/corporate/custom";
-        } catch (InternetBankingTransferException exception)
+        } catch (InternetBankingTransferException exception )
+        {
+            redirectAttributes.addFlashAttribute("failure",messageSource.getMessage(exception.getMessage(),null,locale));
+
+        } catch (InternetBankingException exception)
         {
             redirectAttributes.addFlashAttribute("failure",messageSource.getMessage(exception.getMessage(),null,locale));
 
         }
-        return "/corporate/custom";
+        return "redirect:/corporate/custom";
     }
 
     @PostMapping("/payment")
@@ -190,10 +191,8 @@ String responseMessage = "";
             try {
                 transferUtils.validateTransferCriteria();
             } catch (InternetBankingTransferException e) {
-                String errorMessage = transferErrorService.getMessage(e);
-                //redirectAttributes.addFlashAttribute("failure", errorMessage);
+
             }
-            customDutyService.paymentNotification(assessmentDetail);
         }
         catch (Exception e){
             LOGGER.error("Error calling coronation service rest service",e);
@@ -219,8 +218,7 @@ String responseMessage = "";
     DataTablesOutput<CorpPaymentRequest> getCustomPaymentRequests(DataTablesInput input){
         Pageable pageable = DataTablesUtils.getPageable(input);
         Page<CorpPaymentRequest> requests = customDutyService.getPaymentRequests(pageable);
-        DataTablesOutput<CorpPaymentRequest> out = new DataTablesOutput<CorpPaymentRequest>();
-        LOGGER.debug("Fetching requests:{}",out);
+        DataTablesOutput<CorpPaymentRequest> out = new DataTablesOutput<>();
         out.setDraw(input.getDraw());
         out.setData(requests.getContent());
         out.setRecordsFiltered(requests.getTotalElements());
@@ -235,6 +233,7 @@ String responseMessage = "";
         LOGGER.info("dutyPayment:{}",dutyPayment);
         CorpTransferAuth corpTransferAuth = customDutyService.getAuthorizations(corpPaymentRequest);
         CorpTransRule corpTransRule = corporateService.getApplicableTransferRule(corpPaymentRequest);
+
         boolean userCanAuthorize = customDutyService.userCanAuthorize(corpPaymentRequest);
         modelMap.addAttribute("authorizationMap", corpTransferAuth)
                 .addAttribute("corpTransRequest", corpPaymentRequest)
@@ -259,7 +258,7 @@ String responseMessage = "";
                 }
             }
         }
-        LOGGER.info("Roles not In Auth List..{}", rolesNotInAuthList.toString());
+        LOGGER.info("Roles not In Auth List..{}", rolesNotInAuthList);
         modelMap.addAttribute("rolesNotAuth", rolesNotInAuthList);
 
         return "corp/custom/approval";
@@ -301,9 +300,39 @@ String responseMessage = "";
         } catch (InternetBankingException ibe) {
             LOGGER.error("Failed to authorize transfer", ibe);
             redirectAttributes.addFlashAttribute("failure", ibe.getMessage());
-
         }
         return "redirect:/corporate/custom";
+    }
+
+    @GetMapping(path = "/all")
+    public @ResponseBody
+    DataTablesOutput<CorpPaymentRequest> getAllEntities(@RequestParam("selectedStatus") String selectedStatus, DataTablesInput input, @RequestParam("csearch") String search){
+        LOGGER.info("Searching by:{}",selectedStatus);
+        Pageable pageable = DataTablesUtils.getPageable(input);
+        Page<CorpPaymentRequest> paymentRequest= null;
+        if (StringUtils.isNoneBlank(search)) {
+            LOGGER.info("the search param {}",search);
+            paymentRequest = customDutyService.findEntities(selectedStatus,search,pageable);
+        }else{
+            LOGGER.info("no search query");
+            paymentRequest= customDutyService.getPaymentRequests(pageable);
+        }
+        DataTablesOutput<CorpPaymentRequest> out = new DataTablesOutput<>();
+        out.setDraw(input.getDraw());
+        out.setData(paymentRequest.getContent());
+        out.setRecordsFiltered(paymentRequest.getTotalElements());
+        out.setRecordsTotal(paymentRequest.getTotalElements());
+        return out;
+    }
+
+    @GetMapping("/{tranId}/receipt")
+    public String generateReceipy(@PathVariable String tranId, Model model){
+        LOGGER.info("the tranid {}",tranId);
+        String receiptInString = integrationService.getReciept(tranId);
+        String result = StringUtils.substringBetween(receiptInString, "<html>", "</html>");
+
+        model.addAttribute("receiptPage", result);
+        return "corp/custom/receipt";
     }
 
 }

@@ -7,6 +7,7 @@ import java.security.NoSuchAlgorithmException;
 public class EncryptionUtil {
 
     public static String getSHA512(String stringToHash, String   salt){
+        System.out.print("stringToHash:"+stringToHash);
         String generatedSHA = null;
             try {
                 MessageDigest md = MessageDigest.getInstance("SHA-512");

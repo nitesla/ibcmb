@@ -8,6 +8,7 @@ import longbridge.utils.statement.*;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.access.prepost.PreAuthorize;
 
+import javax.swing.text.html.HTML;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
@@ -132,9 +133,14 @@ public interface IntegrationService {
     public CustomAssessmentDetail getAssessmentDetails(CustomAssessmentDetailsRequest assessmentDetailsRequest);
 
     @PreAuthorize("hasAuthority('CUSTOM_DUTY')")
-    public CustomPaymentNotification paymentNotification(CustomPaymentNotificationRequest paymentNotificationRequest);
+    public CustomPaymentNotification paymentNotification(CorpPaymentRequest corpPaymentRequest, String username);
 
     @PreAuthorize("hasAuthority('CUSTOM_DUTY')")
     public CustomTransactionStatus paymentStatus(CorpPaymentRequest corpPaymentRequest);
 
+    String getReciept(String tranId);
+
+    TransferDetails reverseLocalTransfer(String referenceId);
+
+    TransRequest makeCustomDutyPayment(TransRequest transRequest);
 }

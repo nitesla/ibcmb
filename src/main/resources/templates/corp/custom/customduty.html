@@ -10,23 +10,38 @@
                 </select>
             </div>
 
-            <div class="col-xs-12 " >
-                <div class=" no-pad-lef  no-mt no-bd  alert">
+            <div class="col-xs-12">
+                <div class="no-pad-lef no-mt no-bd  alert">
+                    <div class="pull-right" style="width: 100%">
+                            <div class="pull-right">
+                                <select id="dutyFilter" class="form-control pull-left" style="width: 30%" onchange="filter()">
+                                    <option value="Status">Status</option>
+                                    <option value="Amount">Amount</option>
+                                    <option value="Date">Date</option>
+                                </select>
+                                <!--<span>-->
+                                <button class="btn btn-success pull-right" id="search" type="button">Go!</button>
+                                <div id="cdinput" class="col-lg-6 pull-left"></div>
+                                <!--</span>-->
+                            </div>
+
+                        <div class="clearfix"></div>
+                    </div>
                     <div class="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
                         <div class="btn-group" role="group" aria-label="First group">
                             <a type="button" class="btn bt-select btn-default bt-link-act"
                                th:href="@{/corporate/custom/index/authorizations}" disabled="disabled"> View</a>
                             <a type="button" th:href="@{/corporate/custom/payment}" class="btn btn-default">New</a>
-
                         </div>
-                        <div>
-                        <button class="btn btn-default pull-right bt-select" disabled="disabled" id="refresh" onclick="refresh()" type="button">Refresh</button>
+                        <div class="btn-group pull-right" role="group" aria-label="First group">
+                            <a href="/corporate/custom/tranid/receipt" class="btn btn-default pull-right bt-select bt-receipt" disabled style="margin-top: 4%" id="receipt">Receipt</a>
+                            <button class="btn btn-default pull-right bt-select" disabled="disabled" id="refresh" onclick="refresh()" type="button">Refresh</button>
                         </div>
                     </div>
+
                     <br/>
                     <div class="table-responsive">
                         <table class="table bg-white" id="requests">
-
                             <thead>
                             <td>Transfer type</td>
                             <td>Transfer type</td>
@@ -34,30 +49,61 @@
                             <td>Bank</td>
                             <td>Amount</td>
                             <td>Date</td>
-                            <td>Status</td>
-                            <!--<td></td>-->
+                            <td>Approval Status</td>
+                            <td>Payment Status</td>
                             </thead>
                             <tbody>
-
-
                             </tbody>
                         </table>
-
                     </div>
                 </div>
             </div>
+            <!--<p id="ignorePDF">don't print this to pdf</p>-->
+            <!--<div>-->
+                <!--<p id="testR"><font size="3" color="red">print this to pdf</font></p>-->
+            <!--</div>-->
         </div>
-
-
         <th:block layout:fragment="scripts">
             <!-- <script th:src="@{~/customer/js/dataTables.bootstrap.js}"></script>-->
             <!--<script th:src="@{~/bank/vendors/datatables.net/js/jquery.dataTables.js}"></script>-->
             <script th:src="@{~/customer/js/dataTables.select.js}"></script>
+            <!--<script th:src="@{~/customer/jsPdf-1.3.2/from_html.js}"></script>-->
+            <!--<script th:src="@{~/customer/jsPdf-1.3.2/jspdf.js}"></script>-->
+            <!--<script th:src="@{~/customer/jsPdf-1.3.2/split_text_to_size.js}"></script>-->
+            <!--<script th:src="@{~/customer/jsPdf-1.3.2/standard_fonts_metrics.js}"></script>-->
             <script th:src="@{~/bank/vendors/sweetalert/sweetalert.min.js}"></script>
             <script th:src="@{~/bank/vendors/bootstrap-dialog/js/bootstrap-dialog.js}"></script>
             <script th:src="@{~/bank/js/jquery.spring-friendly.min.js}"></script>
-
             <script th:inline="javascript">
+
+                $("#pattern").keyup(function(event){
+                    if(event.keyCode == 13){
+                        $("#search").click();
+                    }
+                });
+
+                $("#search").on("click", function(e) {
+                    e.preventDefault();
+                    dt = $('#requests').DataTable();
+                    dt.ajax.reload(null, true);
+                });
+
+                function filter() {
+                    $('#pattern').remove();
+                    var pass = document.createElement('input');
+                    var selectedText = $('#dutyFilter :selected').text();
+                    console.log(selectedText);
+                    if(selectedText == "Date"){
+                        pass.id='pattern';
+                        pass.type = 'Date';
+                    }else{
+                        pass.id='pattern';
+                        pass.type = 'text';
+                    }
+                    $('#cdinput').append(pass);
+                    $("#pattern").attr("class","form-control");
+                }
+
                 /*<![CDATA[*/
                 var PaymentStatus;
                 var ApprovalStatus;
@@ -66,6 +112,12 @@
                 var code;
                 var message;
                 $(document).ready(function () {
+                    var pass = document.createElement('input');
+                    pass.id='pattern';
+                    pass.type = 'text';
+                    $('#cdinput').append(pass);
+                    $("#pattern").attr("class","form-control");
+
                     var table = $('#requests').DataTable({
                         select: true,
                         responsive: true,
@@ -75,7 +127,14 @@
                         "paging": true,
                         "serverSide": true,
                         rowId: 'id',
-                        "ajax": "/corporate/custom/requests",
+                        "ajax" : {
+                            url : "/corporate/custom/all",
+                            "type" : "GET",
+                            "data" : function(d) {
+                                d.csearch = $('#pattern').val();
+                                d.selectedStatus = $('#dutyFilter :selected').text();
+                            }
+                        },
                         "dom": 'T<"clear">frtlp',
                         "columns": [
                             {"data": "id",
@@ -85,13 +144,16 @@
                             {"data": "financialInstitution.institutionName"},
                             {"data": "amount"},
                             {"data": "tranDate"},
+
                             {"data": "statusDescription"},
+                            {"data": "customDutyPayment.message"},
                             {"data": "customDutyPayment.paymentStatus","visible":false},
                             {"data": "customDutyPayment.approvalStatus","visible":false},
                             {"data": "customDutyPayment.notificationStatus","visible":false},
                             {"data": "customDutyPayment.paymentRef","visible":false},
                             {"data": "customDutyPayment.code","visible":false},
-                            {"data": "customDutyPayment.message","visible":false}
+                            {"data": "customDutyPayment.tranId","visible":false}
+                            // {"data": "customDutyPayment.message"}
 
                         ], "columnDefs": [{
                             "targets" : 4,
@@ -113,24 +175,14 @@
                                 if (type === 'display') {
                                     if (data == null)
                                         return data;
-
                                     var dtStart = new Date(data);
                                     var dtStartWrapper = moment(dtStart);
                                     return dtStartWrapper.format('DD-MMM-YYYY');
                                 }
                                 return data;
                             }
-                        }
-//                        ,{
-//                            "targets" : 6,
-//                            "data" : "id",
-//                            "render" : function(data, type,full, meta) {
-//                                return '<button  class="btn btn-sm btn-link required-step">Update Status</button>';
-//                            }
-//                        }
-                            ]
+                        }]
                     });
-
 
                     table.on('select', function () {
                         if (table.rows({
@@ -140,7 +192,6 @@
                         } else {
                             $('.bt-select').removeAttr("disabled");
                         }
-
                     });
 
                     table.on('deselect', function () {
@@ -152,63 +203,85 @@
                             $('.bt-select').removeAttr("disabled");
                         }
                     });
-
                 });
                 var id;
+                var tranId;
+                var code;
                 var table =  $('#auditview').DataTable();
 
                 $("#requests").on("click", "tr", function()
                 {
                     var table =  $('#requests').DataTable();
                     id = table.row(this).id();
-//                    var tet = $(this).children(":nth-child(0)").text();
-//                    PaymentStatus = $(this).children(":nth-child(7)").text();
-//                    ApprovalStatus= $(this).children(":nth-child(8)").text();
-//                    NotificationStatus= $(this).children(":nth-child(9)").text();
-//                    paymentRef= $(this).children(":nth-child(10)").text();
-//                    code= $(this).children(":nth-child(11)").text();
-//                    message= $(this).children(":nth-child(12)").text();
-//                    console.log("first it "+tet);
-                    console.log("the row id "+id);
-                    console.log("PaymentStatus "+PaymentStatus +"ApprovalStatus "+ApprovalStatus +"NotificationStatus "+NotificationStatus +"paymentRef "+paymentRef +"code "+code+"message "+message);
+                    var currentRow = $(this).closest("tr");
+
+                    var data = table.row(currentRow).data();
+//                    console.log(data['id']);
+                    tranId = data['customDutyPayment']['tranId'];
+                    code = data['customDutyPayment']['code']
+                    status = data['status']
+                    console.log("the row id "+id+" tran id "+tranId);
+                    if(status == '00' || status =='000'){
+                        console.log("the status is "+status);
+                        $('#receipt').attr("disabled", false);
+                        return;
+                    }else{
+                        console.log("the status "+status);
+                        $('#receipt').attr("disabled", true);
+                        return;
+                    }
+
+
                 });
-                $("#refresh").on("click", function (e) {
+//                $("#refresh").on("click", function (e) {
+//                    e.preventDefault();
+//
+//                });
+
+                function refresh() {
+                    showSpinner();
+                    console.log("refresh id "+id);
+                    $.ajax({
+                    "url":"/corporate/custom/"+id+"/refresh",
+                    "type" : "GET",
+                    "data" :  {
+            //            id : id
+            //            ApprovalStatus : ApprovalStatus,
+            //            NotificationStatus : NotificationStatus,
+            //            paymentRef : paymentRef,
+            //            code : message
+                            },success: function (result) {
+                            table.ajax.reload(null,true);
+                                    hideSpinner();
+                            },
+                            error: function (dd) {
+                                $('#refresh'.attr("disabled", true));
+                                hideSpinner();
+                                bootbox.alert("<div style='text-align: center'>Service not available</div>");
+                                return false;
+                            }
+                        });
+                    }
+
+                $("a.bt-receipt").on("click", function (e) {
                     e.preventDefault();
-
+                    var link = $(e.currentTarget);
+                    if ($(link).attr("disabled")) {
+                        return;
+                    }else{
+                    }
+                    var dt = $('#requests').DataTable();
+                    var id = $(dt.row({
+                        selected: true
+                    }).node()).attr("id");
+                    var ooo = link.attr("href").replace("tranid", tranId);
+                    window.open(ooo,'_blank');
                 });
-    function refresh() {
-        showSpinner();
-
-        console.log("refresh id "+id);
-
-
-        $.ajax({
-        "url":"/corporate/custom/"+id+"/refresh",
-        "type" : "GET",
-        "data" :  {
-//            id : id
-//            ApprovalStatus : ApprovalStatus,
-//            NotificationStatus : NotificationStatus,
-//            paymentRef : paymentRef,
-//            code : message
-        },success: function (result) {
-            console.log(result["","message"]);
-        table.ajax.reload(null,true);
-                hideSpinner();
-        },
-        error: function (dd) {
-            $('#refresh'.attr("disabled", true));
-//                        console.log("error")
-            hideSpinner();
-            bootbox.alert("<div style='text-align: center'>Service not available</div>");
-            return false;
-        }
-    });
-}
 
                 $("a.bt-link-act").on("click", function (e) {
                     e.preventDefault();
                     var link = $(e.currentTarget);
+                    console.log("url "+link.attr("href"));
                     if ($(link).attr("disabled")) {
                         return;
                     }
@@ -218,7 +291,6 @@
                     }).node()).attr("id");
                     var ooo = link.attr("href").replace("index", id);
                     window.location.assign(ooo);
-
                 });
 
                 $("#delete-btn").on("click", function (e) {

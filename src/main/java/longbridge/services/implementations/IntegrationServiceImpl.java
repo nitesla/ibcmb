@@ -34,7 +34,9 @@ import org.springframework.web.client.RestTemplate;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
+import javax.swing.text.html.HTML;
 import java.math.BigDecimal;
+import java.net.SocketTimeoutException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
@@ -306,6 +308,48 @@ public class IntegrationServiceImpl implements IntegrationService {
 
 	}
 
+	public TransRequest makeCustomDutyPayment(TransRequest transRequest) throws InternetBankingTransferException {
+		TransferType type = transRequest.getTransferType();
+		Account account = accountRepo.findFirstByAccountNumber(transRequest.getCustomerAccountNumber());
+		validate(account);
+//		transRequest.setTransferType(TransferType.CORONATION_BANK_TRANSFER);
+		TransferDetails response = null;
+		String uri = URI + "/transfer/local";
+		Map<String, String> params = new HashMap<>();
+		params.put("debitAccountNumber", transRequest.getCustomerAccountNumber());
+		params.put("debitAccountName", account.getAccountName());
+		params.put("creditAccountNumber", transRequest.getBeneficiaryAccountNumber());
+		params.put("creditAccountName", transRequest.getBeneficiaryAccountName());
+		params.put("tranAmount", transRequest.getAmount().toString());
+		params.put("remarks", transRequest.getRemarks());
+		params.put("tranType", type.toString());
+		logger.info("Starting Transfer with Params: {}", params.toString());
+
+		try {
+			logger.info("Initiating Local Transfer");
+			logger.debug("Transfer Params: {}", params.toString());
+			response = template.postForObject(uri, params, TransferDetails.class);
+			logger.info("Response: {}",response);
+			transRequest.setStatus(response.getResponseCode());
+			transRequest.setStatusDescription(response.getResponseDescription());
+			transRequest.setReferenceNumber(response.getUniqueReferenceCode());
+			transRequest.setNarration(response.getNarration());
+			return transRequest;
+		} catch (HttpStatusCodeException e) {
+			logger.error("HTTP Error occurred", e);
+			transRequest.setStatus(e.getStatusCode().toString());
+			transRequest.setTransferType(TransferType.CUSTOM_DUTY);
+			transRequest.setStatusDescription(e.getStatusCode().getReasonPhrase());
+			return transRequest;
+		}
+		catch (Exception e) {
+			transRequest.setStatus(StatusCode.FAILED.toString());
+			transRequest.setTransferType(TransferType.CUSTOM_DUTY);
+			transRequest.setStatusDescription(messageSource.getMessage("status.code.failed", null, locale));
+			return transRequest;
+		}
+	}
+
 	@Override
 	public TransRequest makeTransfer(TransRequest transRequest) throws InternetBankingTransferException {
 
@@ -317,7 +361,7 @@ public class IntegrationServiceImpl implements IntegrationService {
 			case CORONATION_BANK_TRANSFER:
 			{
 				transRequest.setTransferType(TransferType.CORONATION_BANK_TRANSFER);
-				TransferDetails response;
+				TransferDetails response = null;
 				String uri = URI + "/transfer/local";
 				Map<String, String> params = new HashMap<>();
 				params.put("debitAccountNumber", transRequest.getCustomerAccountNumber());
@@ -331,25 +375,28 @@ public class IntegrationServiceImpl implements IntegrationService {
 				try {
 					logger.info("Initiating Local Transfer");
 					logger.debug("Transfer Params: {}", params.toString());
-
 					response = template.postForObject(uri, params, TransferDetails.class);
+					logger.info("Response:{}",response);
 					transRequest.setStatus(response.getResponseCode());
 					transRequest.setStatusDescription(response.getResponseDescription());
 					transRequest.setReferenceNumber(response.getUniqueReferenceCode());
 					transRequest.setNarration(response.getNarration());
 					return transRequest;
-
 				} catch (HttpStatusCodeException e) {
 					logger.error("HTTP Error occurred", e);
 					transRequest.setStatus(e.getStatusCode().toString());
 					transRequest.setStatusDescription(e.getStatusCode().getReasonPhrase());
 					return transRequest;
-				} catch (Exception e) {
-					logger.error("Error occurred making transfer", e);
+				}
+				catch (Exception e) {
+//					String reversalUrl = "http://132.10.200.140:9292/service/reverseFundTransfer?uniqueIdentifier=";
+//					logger.error("Error occurred making transfer", e);
 					transRequest.setStatus(StatusCode.FAILED.toString());
 					transRequest.setStatusDescription(messageSource.getMessage("status.code.failed", null, locale));
+					//template.postForObject(reversalUrl+response.getUniqueReferenceCode(), params, TransferDetails.class);
 					return transRequest;
 				}
+
 
 			}
 			case INTER_BANK_TRANSFER: {
@@ -410,7 +457,6 @@ public class IntegrationServiceImpl implements IntegrationService {
 				params.put("remarks", transRequest.getRemarks());
 				logger.info("params for transfer {}", params.toString());
 				try {
-
 					logger.info("Initiating Local (Own Account) Transfer");
 					logger.debug("Transfer Params: {}", params.toString());
 
@@ -760,7 +806,6 @@ public class IntegrationServiceImpl implements IntegrationService {
 			case CORPORATE: {
 				CorporateUser user = (CorporateUser) currentUser;
 				Account acct = accountRepo.findFirstByAccountNumber(account);
-//			boolean valid = accountRepo.accountInCorp(user.getCorporate(), acct);
 				Corporate corporate = corporateRepo.findOne(user.getCorporate().getId());
 				boolean valid = corporate.getAccounts().contains(acct);			if (!valid) {
 					logger.warn("User " + user.toString() + "trying to access other accounts");
@@ -803,24 +848,37 @@ public class IntegrationServiceImpl implements IntegrationService {
 		try {
 			logger.debug("Fetching data from coronation rest service via the url: {}", CustomDutyUrl);
 			CustomsAreaCommand command = template.postForObject(CustomDutyUrl+"/customduty/getncscommand"
-					, customsAreaCommandRequest, CustomsAreaCommand.class);
+					,customsAreaCommandRequest, CustomsAreaCommand.class);
 			logger.debug("Fetching data from coronation rest service via the url: {}", command);
 			return command;
 		}
 		catch (Exception e){
 			logger.error("Error calling coronation service rest service",e);
 		}
-		return null;
+		return new CustomsAreaCommand();
 	}
 
-	public CustomPaymentNotification paymentNotification(CustomPaymentNotificationRequest paymentNotificationRequest){
+	public CustomPaymentNotification paymentNotification(CorpPaymentRequest corpPaymentRequest, String userName){
 		try {
+			Map<String,Object> request = new HashMap<>();
+			request.put("appId",appId);
+
+			request.put("hash",EncryptionUtil.getSHA512(
+					appId + corpPaymentRequest.getReferenceNumber() + corpPaymentRequest.getAmount().setScale(2,BigDecimal.ROUND_HALF_UP) + secretKey, null));
+			request.put("TranId",corpPaymentRequest.getCustomDutyPayment().getTranId());
+			request.put("Amount",corpPaymentRequest.getAmount().toString());
+			request.put("LastAuthorizer",userName);
+			request.put("InitiatedBy",corpPaymentRequest.getCustomDutyPayment().getInitiatedBy());
+			request.put("PaymentRef",corpPaymentRequest.getReferenceNumber());
+			request.put("CustomerAccountNo",corpPaymentRequest.getBeneficiaryAccountNumber());
 			logger.debug("Fetching data from coronation rest service via the url: {}", CustomDutyUrl);
 			logger.debug("Fetching data from coronation rest service via the url: {}", CustomDutyUrl+"/customduty/payassessment");
-			logger.debug("paymentNotificationRequest: {}", paymentNotificationRequest);
-//			paymentNotificationRequest.setCustomerAccountNo("190219101");
-			CustomPaymentNotification response = template.postForObject(CustomDutyUrl+"/customduty/payassessment", paymentNotificationRequest, CustomPaymentNotification.class);
+			logger.debug("paymentNotificationRequest: {}", request);
+			CustomPaymentNotification response = template.postForObject(CustomDutyUrl+"/customduty/payassessment", request, CustomPaymentNotification.class);
 			logger.debug("payment notification Response: {}", response);
+			logger.debug("payment notification params: {}", appId + corpPaymentRequest.getReferenceNumber() + corpPaymentRequest.getAmount() + secretKey);
+			logger.debug("payment notification hash: {}",EncryptionUtil.getSHA512(
+					appId + corpPaymentRequest.getReferenceNumber() + corpPaymentRequest.getAmount() + secretKey, null));
 			return response;
 		}
 		catch (Exception e){
@@ -828,15 +886,16 @@ public class IntegrationServiceImpl implements IntegrationService {
 		}
 		return null;
 	}
+
 	@Override
 	public CustomTransactionStatus paymentStatus(CorpPaymentRequest corpPaymentRequest){
 		try {
 			logger.debug("Fetching data from coronation rest service via the url: {}", CustomDutyUrl);
 			Map<String,String> request = new HashMap<>();
 			request.put("hash",EncryptionUtil.getSHA512(
-					appId+corpPaymentRequest.getCustomDutyPayment().getTranId()+ corpPaymentRequest.getAmount()+secretKey,null));
+					appId+corpPaymentRequest.getCustomDutyPayment().getTranId()+secretKey,null));
 			request.put("appId",appId);
-			request.put("id",corpPaymentRequest.getCustomDutyPayment().getTranId());
+			request.put("Id",corpPaymentRequest.getCustomDutyPayment().getTranId());
 			logger.debug("Fetching data from coronation rest service using: {}", request);
 			CustomTransactionStatus transactionStatus= template.postForObject(CustomDutyUrl+"/customduty/checktransactionstatus", request, CustomTransactionStatus.class);
 			logger.info("the transaction status response {}",transactionStatus);
@@ -846,7 +905,38 @@ public class IntegrationServiceImpl implements IntegrationService {
 			logger.error("Error calling coronation service rest service",e);
 		}
 		return null;
-
 	}
 
+	@Override
+	public String getReciept(String tranId){
+
+		try {
+			logger.debug("Fetching data from coronation rest service via the url: {}", CustomDutyUrl);
+			Map<String,String> request = new HashMap<>();
+			request.put("hash",EncryptionUtil.getSHA512(
+					appId+tranId+secretKey,null));
+			request.put("appId",appId);
+			request.put("tranId",tranId);
+			logger.debug("Fetching data from coronation rest service using: {}", request);
+			String receipt= template.postForObject(CustomDutyUrl+"/customduty/getreceipt", request, String.class);
+			logger.info("the transaction status response length {}",receipt.length());
+			return receipt;
+		}
+		catch (Exception e){
+			logger.error("Error calling coronation service rest service",e);
+		}
+		return null;
+	}
+
+	@Override
+	public TransferDetails reverseLocalTransfer(String referenceId){
+		String reversalUrl = "http://132.10.200.140:9292/service/reverseFundTransfer?uniqueIdentifier=";
+		Map<String, String> params = new HashMap<>();
+		params.put("uniqueIdentifier", referenceId);
+
+		logger.error("Reversing transfer for {}",referenceId);
+		TransferDetails transferDetails = template.postForObject(reversalUrl + referenceId, params, TransferDetails.class);
+		logger.info("reversal response {}",transferDetails);
+		return transferDetails;
+	}
 }

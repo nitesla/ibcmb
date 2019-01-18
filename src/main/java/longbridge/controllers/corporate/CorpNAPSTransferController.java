@@ -9,6 +9,7 @@ import longbridge.models.*;
 import longbridge.services.*;
 import longbridge.utils.DateFormatter;
 import longbridge.utils.StringUtil;
+import longbridge.utils.TransferType;
 import longbridge.utils.TransferUtils;
 import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.JasperFillManager;
@@ -514,7 +515,9 @@ public class CorpNAPSTransferController {
                 creditRequest.setBulkTransfer(bulkTransfer);
                 creditRequest.setStatus("PENDING");
             }
+            bulkTransferService.transactionAboveLimit(totalTransferAmount,debitAccount);
             bulkTransfer.setAmount(totalTransferAmount);
+            bulkTransfer.setTransferType(TransferType.NAPS);
             String message = "";
             if (corporate.getCorporateType().equalsIgnoreCase("MULTI")) {
                 message = bulkTransferService.saveBulkTransferRequestForAuthorization(bulkTransfer);

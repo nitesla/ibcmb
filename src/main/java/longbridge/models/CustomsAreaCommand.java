@@ -1,8 +1,6 @@
 package longbridge.models;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import java.io.Serializable;
 import java.util.List;
 
 public class CustomsAreaCommand{
@@ -13,9 +11,6 @@ public class CustomsAreaCommand{
     public String code;
     @JsonProperty("Message")
     public String message;
-
-    public CustomsAreaCommand() {
-    }
 
     public List<Commands> getCommands() {
         return commands;

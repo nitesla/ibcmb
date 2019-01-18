@@ -2,9 +2,12 @@ package longbridge.services;
 import longbridge.dtos.BulkStatusDTO;
 import longbridge.dtos.BulkTransferDTO;
 import longbridge.dtos.CreditRequestDTO;
+import longbridge.exception.InternetBankingException;
 import longbridge.models.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -34,4 +37,5 @@ public interface BulkTransferService {
     boolean userCanAuthorize(TransRequest transRequest);
 
     int getPendingBulkTransferRequests(Corporate corporate);
+    boolean transactionAboveLimit(BigDecimal totalCreditAmount, String debitAcccount) throws InternetBankingException;
 }

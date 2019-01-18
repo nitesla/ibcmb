@@ -12,8 +12,4 @@ import java.io.Serializable;
 
 public interface UserRepo<T extends User,ID extends Serializable> extends CommonRepo<T, ID>
 {
-
-    //User findByEmail(String email);
-
-
 }

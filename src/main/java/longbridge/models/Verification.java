@@ -87,7 +87,7 @@ public class Verification extends AbstractEntity {
         this.description = description;
     }
 
-
+    @Lob
     public String getBeforeObject() {
         return beforeObject;
     }
@@ -95,7 +95,7 @@ public class Verification extends AbstractEntity {
     public void setBeforeObject(String beforeObject) {
         this.beforeObject = beforeObject;
     }
-
+@Lob
     public String getAfterObject() {
         return afterObject;
     }
@@ -103,7 +103,7 @@ public class Verification extends AbstractEntity {
     public void setAfterObject(String afterObject) {
         this.afterObject = afterObject;
     }
-
+    @Lob
     public String getOriginalObject() {
         return originalObject;
     }

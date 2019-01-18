@@ -16,7 +16,6 @@ public class StartJob implements InitializingBean{
         try {
             ApplicationContext context = SpringContext.getApplicationContext();
             CronJobService cronJobService = context.getBean (CronJobService.class);
-            System.out.println("start job "+cronJobService.startCronJob());
             if(cronJobService.startCronJob()) {
                 CronJobScheduler.startJobs();
             }

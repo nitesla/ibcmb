@@ -91,13 +91,11 @@ public class CorpTransferServiceImpl implements CorpTransferService {
             } else {
                 throw new InternetBankingTransferException(requestDTO.getStatusDescription());
             }
-
         }
 
         if (corporateService.getApplicableTransferRule(transferRequest) == null) {
             throw new TransferRuleException(messageSource.getMessage("rule.unapplicable", null, locale));
         }
-
 
         try {
             transferRequest.setStatus(StatusCode.PENDING.toString());
@@ -123,11 +121,11 @@ public class CorpTransferServiceImpl implements CorpTransferService {
         return messageSource.getMessage("transfer.add.success", null, locale);
     }
 
-
     private CorpTransferRequestDTO makeTransfer(CorpTransferRequestDTO corpTransferRequestDTO) throws InternetBankingTransferException {
         validateTransfer(corpTransferRequestDTO);
         logger.trace("Initiating {} transfer to {} by {}", corpTransferRequestDTO.getTransferType(), corpTransferRequestDTO.getBeneficiaryAccountName(),corpTransferRequestDTO.getUserReferenceNumber());
         CorpTransRequest corpTransRequest = persistTransfer(corpTransferRequestDTO);
+        logger.info("the corporate transfer request {}",corpTransRequest);
         corpTransRequest = (CorpTransRequest) integrationService.makeTransfer(corpTransRequest);
         logger.trace("Transfer Details {} by {}", corpTransRequest.toString(),corpTransRequest.getUserReferenceNumber());
 
@@ -147,7 +145,9 @@ public class CorpTransferServiceImpl implements CorpTransferService {
     public Page<CorpTransRequest> getCompletedTransfers(Pageable pageDetails) {
         CorporateUser corporateUser = getCurrentUser();
         Corporate corporate = corporateUser.getCorporate();
+        logger.info("corporate:{}",corporate);
         Page<CorpTransRequest> page = corpTransferRequestRepo.findByCorporateAndStatusInAndTranDateNotNullOrderByTranDateDesc(corporate, Arrays.asList("00", "000"), pageDetails);
+        logger.info("Page<CorpTransRequest> count:{}",pageDetails.getPageSize());
         List<CorpTransRequest> corpTransRequests = page.getContent().stream()
                 .filter(transRequest -> !accountConfigService.isAccountRestrictedForViewFromUser(accountService.getAccountByAccountNumber(transRequest.getCustomerAccountNumber()).getId(),corporateUser.getId())).collect(Collectors.toList());
         return new PageImpl<CorpTransRequest>(corpTransRequests,pageDetails,page.getTotalElements());
@@ -160,7 +160,6 @@ public class CorpTransferServiceImpl implements CorpTransferService {
 
 
     @Override
-
     public CorpTransferRequestDTO saveTransfer(CorpTransferRequestDTO corpTransferRequestDTO) throws InternetBankingTransferException {
         CorpTransferRequestDTO result = new CorpTransferRequestDTO();
         try {
@@ -227,7 +226,6 @@ public class CorpTransferServiceImpl implements CorpTransferService {
         if (validateBalance()) {
             validateBalance(dto);
         }
-
     }
 
     private boolean validateBalance() {

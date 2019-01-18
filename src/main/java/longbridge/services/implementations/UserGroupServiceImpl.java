@@ -51,7 +51,6 @@ public class UserGroupServiceImpl implements UserGroupService {
 
     private Locale locale = LocaleContextHolder.getLocale();
 
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Override
     @Verifiable(operation="ADD_USER_GRP",description="Adding a Group")

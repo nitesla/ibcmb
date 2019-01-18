@@ -34,7 +34,6 @@ import java.util.Locale;
 public class UserGroupMessageServiceImpl implements UserGroupMessageService {
 
     private MailService mailService;
-    private UserGroupRepo userGroupRepo;
     private MessageRepo messageRepo;
     private UserGroupService userGroupService;
     private OperationsUserRepo opsUserRepo;
@@ -43,9 +42,8 @@ public class UserGroupMessageServiceImpl implements UserGroupMessageService {
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
-    public UserGroupMessageServiceImpl(MailService mailService, UserGroupRepo userGroupRepo, MessageRepo messageRepo, UserGroupService userGroupService, OperationsUserRepo opsUserRepo, MessageSource messageSource) {
+    public UserGroupMessageServiceImpl(MailService mailService, MessageRepo messageRepo, UserGroupService userGroupService, OperationsUserRepo opsUserRepo, MessageSource messageSource) {
         this.mailService = mailService;
-        this.userGroupRepo = userGroupRepo;
         this.messageRepo = messageRepo;
         this.userGroupService = userGroupService;
         this.opsUserRepo = opsUserRepo;
@@ -56,21 +54,6 @@ public class UserGroupMessageServiceImpl implements UserGroupMessageService {
     public String send(Long groupId, String sender, String subject, String message) throws MessageException {
         List<ContactDTO> contacts = userGroupService.getContacts(groupId);
         for (ContactDTO contact : contacts) {
-//            if (!contact.isExternal()) {
-//                Message msg = new Message();
-//                try {
-//                    msg.setSender(sender);
-//                    msg.setRecipient(opsUserRepo.findOne(contact.getDt_RowId()).getUserName());
-//                    msg.setSubject(subject);
-//                    msg.setBody(message);
-//                    msg.setRecipientType(opsUserRepo.findOne(contact.getDt_RowId()).getUserType());
-//                    msg.setDateCreated(new Date());
-//                    messageRepo.save(msg);
-//                } catch (Exception me) {
-//                    throw new MessageException(String.format(messageSource.getMessage("message.send.failure", null, locale), msg.getRecipient()), me);
-//                }
-//            }
-
             try {
                 mailService.send(contact.getEmail(), subject, message);
             } catch (MailAuthenticationException mae) {

@@ -65,40 +65,16 @@ public class WebMvcConfig extends WebMvcConfigurerAdapter {
         return new ModelMapper();
     }
 
-
-//    @Bean
-//    public RestTemplate restTemplate(RestTemplateBuilder builder) {
-//        builder.setConnectTimeout(1*60);
-//        builder.setReadTimeout(1*60);
-//       // builder.basicAuthorization()
-//        return builder.build();
-//    }
     @Bean
     public RestTemplate restTemplate() {
         RestTemplate restTemplate = new RestTemplate();
-        ((SimpleClientHttpRequestFactory) restTemplate.getRequestFactory()).setConnectTimeout(1000);
-        ((SimpleClientHttpRequestFactory) restTemplate.getRequestFactory()).setReadTimeout(1000);
+        ((SimpleClientHttpRequestFactory) restTemplate.getRequestFactory()).setConnectTimeout(10000);
+        ((SimpleClientHttpRequestFactory) restTemplate.getRequestFactory()).setReadTimeout(10000);
 
         return restTemplate;
 
     }
 
-        //
-//    @Bean
-//    @Primary
-//    @ConfigurationProperties(prefix = "app.datasource")
-//    public DataSource primarySource() {
-//        return DataSourceBuilder.create().build();
-//    }
-//
-//    @Bean
-//    @ConfigurationProperties(prefix = "spring.secondDatasource")
-//    public DataSource secondarySource() {
-//        return DataSourceBuilder.create().build();
-//    }
-
-
-    //
     @Override
     public void addInterceptors(final InterceptorRegistry registry) {
         final LocaleChangeInterceptor localeChangeInterceptor = new LocaleChangeInterceptor();
@@ -111,8 +87,6 @@ public class WebMvcConfig extends WebMvcConfigurerAdapter {
      registry.addInterceptor(retailTransferAuthInterceptor()).addPathPatterns("/retail/transfer/process");
      registry.addInterceptor(corpTransferAuthInterceptor()).addPathPatterns("/corporate/transfer/process");
      registry.addInterceptor(webContentInterceptor()).addPathPatterns("/retail/**");
-      //  registry.addInterceptor(webContentInterceptor()).addPathPatterns("/retail/**");
-       // registry.addInterceptor(webContentInterceptor()).addPathPatterns("/retail/**");
     }
 
     @Bean
@@ -200,14 +174,4 @@ public class WebMvcConfig extends WebMvcConfigurerAdapter {
         interceptor.setUseCacheControlNoStore(true);
         return interceptor;
     }
-
-
-//
-//    @Override
-//    public void addResourceHandlers(ResourceHandlerRegistry registry) {
-//        registry.addResourceHandler("/resources/static/**")
-//                .addResourceLocations("/resources/static/");
-//    }
-
-
 }

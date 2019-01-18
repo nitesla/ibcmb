@@ -88,6 +88,7 @@ public class AccountRestriction extends AbstractEntity implements PrettySerializ
             }
         };
     }
+
     @Override @JsonIgnore
     public JsonSerializer<AccountRestriction> getAuditSerializer() {
         return new JsonSerializer<AccountRestriction>() {

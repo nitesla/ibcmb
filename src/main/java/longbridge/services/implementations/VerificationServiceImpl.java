@@ -433,11 +433,13 @@ public class VerificationServiceImpl implements VerificationService {
         try {
             User doneBy = getCurrentUser();
             List<String> permissions = getPermissionCodes(doneBy.getRole());
+            logger.info("the about total verification {}",doneBy.getUserType());
             List<Verification> b = verificationRepo.findVerificationForUser(doneBy.getUserName(), doneBy.getUserType(), permissions);
             return b.size();
         } catch (Exception e) {
             logger.error("Error retrieving verification count", e);
         }
+
         return 0;
     }
 
