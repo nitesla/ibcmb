@@ -678,7 +678,7 @@ public class IntegrationServiceImpl implements IntegrationService {
 		List<String> contacts = new ArrayList<>();
 		contacts.add(contact);
 		ObjectNode result = null;
-		String uri = cmbAlert+"/regcode";
+		String uri = cmbAlert;
 		Map<String, Object> params = new HashMap<>();
 		params.put("alertType", "SMS");
 		params.put("message", message);
@@ -708,7 +708,7 @@ public class IntegrationServiceImpl implements IntegrationService {
 		List<String> contacts = new ArrayList<>();
 		contacts.add(contact);
 		ObjectNode result = null;
-		String uri = cmbAlert+"/regcode";
+		String uri = cmbAlert;
 		Map<String, Object> params = new HashMap<>();
 		params.put("alertType", "SMS");
 		params.put("message", message);
