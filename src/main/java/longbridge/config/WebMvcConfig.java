@@ -65,13 +65,23 @@ public class WebMvcConfig extends WebMvcConfigurerAdapter {
         return new ModelMapper();
     }
 
-    @Bean
+   /* @Bean
     public RestTemplate restTemplate() {
         RestTemplate restTemplate = new RestTemplate();
         ((SimpleClientHttpRequestFactory) restTemplate.getRequestFactory()).setConnectTimeout(10000);
         ((SimpleClientHttpRequestFactory) restTemplate.getRequestFactory()).setReadTimeout(10000);
 
         return restTemplate;
+
+    }*/
+
+ @Bean
+    public RestTemplate restTemplate(RestTemplateBuilder builder) {
+
+        builder.setConnectTimeout(10000);
+        builder.setReadTimeout(10000);
+
+        return
 
     }
 
