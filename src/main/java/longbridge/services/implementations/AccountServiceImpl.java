@@ -374,6 +374,8 @@ public class AccountServiceImpl implements AccountService {
         }
         List<Account> accountsForDebit = new ArrayList<Account>();
         for (Account account : accounts) {
+
+
             if ("A".equalsIgnoreCase(account.getStatus()) && !accountConfigService.isAccountHidden(account.getAccountNumber()) &&
                     (!accountConfigService.isAccountRestrictedForView(account.getAccountNumber())) &&
                     (!accountConfigService.isAccountRestrictedForDebit(account.getAccountNumber())) &&
