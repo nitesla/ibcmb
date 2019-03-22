@@ -125,14 +125,14 @@
 
                                 </ul>
                             </li>
-                            <li class="dropdown"  sec:authorize="hasAuthority('CUSTOM_DUTY')">
+                            <li class="dropdown" >
                                 <a href="#" th:text="#{menu.bill}">Bill Payments</a>
                                 <ul class="dropdown-menu">
-                                    <li sec:authorize="hasAuthority('MANAGE_BILL_PAYMENT')"><a href="#" th:text="#{menu.bill}">Bill Payments</a></li>
-                                    <li sec:authorize="hasAuthority('CUSTOM_DUTY')"><a th:href="@{/corporate/custom}" th:text="#{menu.bill.custom}">Custom Duty</a></li>
+                                    <li ><a href="#" th:text="#{menu.bill}">Bill Payments</a></li>
+                                    <li ><a th:href="@{/corporate/custom}" th:text="#{menu.bill.custom}">Custom Duty</a></li>
                                 </ul>
                             </li>
-                            <li class="dropdown"  sec:authorize="hasAuthority('CUSTOM_DUTY')">
+                            <li class="dropdown" >
                                 <a th:href="@{/corporate/custom}" th:text="#{menu.bill.custom}">Custom Duty</a>
                             </li>
                             <li sec:authorize="hasAuthority('MANAGE_INVESTMENT')"><a href="#" th:text="#{menu.investment}">Investment</a></li>
