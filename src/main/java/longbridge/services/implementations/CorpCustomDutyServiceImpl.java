@@ -481,6 +481,14 @@ public class CorpCustomDutyServiceImpl implements CorpCustomDutyService {
         }
     }
 
+    public String opsMakeCustomDutyPayment(CorpPaymentRequest corpPaymentRequest,Principal principal) {
+        CustomPaymentNotification customPaymentNotification = integrationService.opsPaymentNotification(corpPaymentRequest, principal.getName());
+        if (customPaymentNotification == null) {
+            return messageSource.getMessage("custom.auth.failure.reason", null, locale);
+        }
+        return messageSource.getMessage(customPaymentNotification.getMessage(), null, locale);
+    }
+
     private CorpPaymentRequest makeLocalTransferForCustomDuty(CorpPaymentRequest corpPaymentRequest) {
         corpPaymentRequest.setTransferType(TransferType.CUSTOM_DUTY);
         corpPaymentRequest.setRemarks(corpPaymentRequest.getCustomDutyPayment().getSADAssessmentNumber());
