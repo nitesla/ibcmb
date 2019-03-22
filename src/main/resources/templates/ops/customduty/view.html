@@ -62,6 +62,7 @@
                                                 class="input-group-btn">
 										<button class="btn btn-success" id="search" type="button">Go!</button>
                                         <button class="btn btn-success bt-select" disabled="disabled" id="refresh" onclick="refresh()" type="button">Refresh</button>
+                                        <button class="btn btn-success bt-select" disabled="disabled" id="retry" onclick="opsPayment()" type="button">Retry</button>
 									</span>
                                         </div>
                                     </li>
@@ -189,7 +190,6 @@
                  id = $(dt.row({
                     selected: true
                 }).node()).attr("id");
-                console.log(id);
             }
         });
 
@@ -207,9 +207,32 @@
 
     function refresh() {
         showSpinner();
-        console.log("refresh id "+id);
         $.ajax({
             "url":"/corporate/custom/"+id+"/refresh",
+            "type" : "GET",
+            "data" :  {
+                //            id : id
+                //            ApprovalStatus : ApprovalStatus,
+                //            NotificationStatus : NotificationStatus,
+                //            paymentRef : paymentRef,
+                //            code : message
+            },success: function (result) {
+                table.ajax.reload(null,true);
+                hideSpinner();
+            },
+            error: function (dd) {
+                $('#refresh'.attr("disabled", true));
+                hideSpinner();
+                bootbox.alert("<div style='text-align: center'>Service not available</div>");
+                return false;
+            }
+        });
+    }
+
+    function opsPayment() {
+        showSpinner();
+        $.ajax({
+            "url":"/corporate/custom/"+id+"/payment",
             "type" : "GET",
             "data" :  {
                 //            id : id

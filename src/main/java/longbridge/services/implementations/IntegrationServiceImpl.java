@@ -72,6 +72,9 @@ public class IntegrationServiceImpl implements IntegrationService {
 	@Value("${customDuty.baseUrl}")
 	private String CustomDutyUrl;
 
+	@Value("${custom.access.beneficiaryAcct}")
+	private String accessBeneficiaryAcct;
+
 	private RestTemplate template;
 	private MailService mailService;
 	private TemplateEngine templateEngine;
@@ -887,6 +890,35 @@ public class IntegrationServiceImpl implements IntegrationService {
 		return null;
 	}
 
+
+	public CustomPaymentNotification opsPaymentNotification(CorpPaymentRequest corpPaymentRequest, String userName){
+		try {
+			Map<String,Object> request = new HashMap<>();
+			request.put("appId",appId);
+
+			request.put("hash",EncryptionUtil.getSHA512(
+					appId + corpPaymentRequest.getReferenceNumber() + corpPaymentRequest.getAmount().setScale(2,BigDecimal.ROUND_HALF_UP) + secretKey, null));
+			request.put("TranId",corpPaymentRequest.getCustomDutyPayment().getTranId());
+			request.put("Amount",corpPaymentRequest.getAmount().toString());
+			request.put("LastAuthorizer",userName);
+			request.put("InitiatedBy",corpPaymentRequest.getCustomDutyPayment().getInitiatedBy());
+			request.put("PaymentRef",corpPaymentRequest.getReferenceNumber());
+			request.put("CustomerAccountNo",accessBeneficiaryAcct);
+			logger.debug("Fetching data from coronation rest service via the url: {}", CustomDutyUrl);
+			logger.debug("Fetching data from coronation rest service via the url: {}", CustomDutyUrl+"/customduty/payassessment");
+			logger.debug("paymentNotificationRequest: {}", request);
+			CustomPaymentNotification response = template.postForObject(CustomDutyUrl+"/customduty/payassessment", request, CustomPaymentNotification.class);
+			logger.debug("payment notification Response: {}", response);
+			logger.debug("payment notification params: {}", appId + corpPaymentRequest.getReferenceNumber() + corpPaymentRequest.getAmount() + secretKey);
+			logger.debug("payment notification hash: {}",EncryptionUtil.getSHA512(
+					appId + corpPaymentRequest.getReferenceNumber() + corpPaymentRequest.getAmount() + secretKey, null));
+			return response;
+		}
+		catch (Exception e){
+			logger.error("Error calling coronation service rest service",e);
+		}
+		return null;
+	}
 	@Override
 	public CustomTransactionStatus paymentStatus(CorpPaymentRequest corpPaymentRequest){
 		try {

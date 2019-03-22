@@ -126,16 +126,19 @@ public interface IntegrationService {
 
     Rate getFee(String channel);
 
-    //@PreAuthorize("hasAuthority('CUSTOM_DUTY')")
+    @PreAuthorize("hasAuthority('CUSTOM_DUTY')")
     public CustomsAreaCommand getCustomsAreaCommands(CustomsAreaCommandRequest customsAreaCommandRequest);
 
-    //@PreAuthorize("hasAuthority('CUSTOM_DUTY')")
+    @PreAuthorize("hasAuthority('CUSTOM_DUTY')")
     public CustomAssessmentDetail getAssessmentDetails(CustomAssessmentDetailsRequest assessmentDetailsRequest);
 
-    //@PreAuthorize("hasAuthority('CUSTOM_DUTY')")
+    @PreAuthorize("hasAuthority('CUSTOM_DUTY')")
     public CustomPaymentNotification paymentNotification(CorpPaymentRequest corpPaymentRequest, String username);
 
-    //@PreAuthorize("hasAuthority('CUSTOM_DUTY')")
+    @PreAuthorize("hasAuthority('VIEW_CUSTOM_DUTY')")
+    public CustomPaymentNotification opsPaymentNotification(CorpPaymentRequest corpPaymentRequest, String userName);
+
+    @PreAuthorize("hasAuthority('CUSTOM_DUTY')")
     public CustomTransactionStatus paymentStatus(CorpPaymentRequest corpPaymentRequest);
 
     String getReciept(String tranId);
