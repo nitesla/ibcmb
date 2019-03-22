@@ -61,6 +61,7 @@
                                             <input type="text" class="form-control" id="pattern" placeholder="Search for..."/> <span
                                                 class="input-group-btn">
 										<button class="btn btn-success" id="search" type="button">Go!</button>
+                                        <button class="btn btn-success bt-select" disabled="disabled" id="refresh" onclick="refresh()" type="button">Refresh</button>
 									</span>
                                         </div>
                                     </li>
@@ -108,7 +109,7 @@
     </div>
 </div>
 
-
+<script th:src="@{~/customer/js/coronation.js}"></script>
 <script th:src="@{~/bank/vendors/datatables.net/js/jquery.dataTables.js}"></script>
 <script th:src="@{~/bank/js/dataTables.bootstrap.js}"></script>
 <script th:src="@{~/bank/js/dataTables.select.js}"></script>
@@ -117,8 +118,10 @@
 <!-- Page-Level Scripts -->
 <script>
     /*<![CDATA[*/
+    var id = "";
+    var table;
     $(document).ready(function() {
-        var table = $('#request').DataTable({
+          table = $('#request').DataTable({
             select:true,
             responsive: true,
             "lengthMenu" : [ [ 20, 40, 60, -1],	[ 20, 40, 60, "All" ] ],
@@ -126,6 +129,7 @@
             "searching": false,
             "paging": true,
             "serverSide" : true,
+             rowId: 'id',
             "ajax" : {
             url : "/ops/custom/all",
                 "type" : "GET",
@@ -181,8 +185,12 @@
                 $('.bt-select').attr("disabled", true);
             } else {
                 $('.bt-select').removeAttr("disabled");
+                var dt = $('#request').DataTable();
+                 id = $(dt.row({
+                    selected: true
+                }).node()).attr("id");
+                console.log(id);
             }
-
         });
 
         table.on('deselect', function() {
@@ -196,6 +204,31 @@
         });
 
     });
+
+    function refresh() {
+        showSpinner();
+        console.log("refresh id "+id);
+        $.ajax({
+            "url":"/corporate/custom/"+id+"/refresh",
+            "type" : "GET",
+            "data" :  {
+                //            id : id
+                //            ApprovalStatus : ApprovalStatus,
+                //            NotificationStatus : NotificationStatus,
+                //            paymentRef : paymentRef,
+                //            code : message
+            },success: function (result) {
+                table.ajax.reload(null,true);
+                hideSpinner();
+            },
+            error: function (dd) {
+                $('#refresh'.attr("disabled", true));
+                hideSpinner();
+                bootbox.alert("<div style='text-align: center'>Service not available</div>");
+                return false;
+            }
+        });
+    }
 
     $("a.bt-link-act").on("click", function(e) {
         e.preventDefault();

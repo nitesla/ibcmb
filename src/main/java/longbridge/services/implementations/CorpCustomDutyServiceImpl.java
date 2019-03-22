@@ -84,8 +84,9 @@ public class CorpCustomDutyServiceImpl implements CorpCustomDutyService {
     @Autowired
     private CorpTransReqEntryRepo reqEntryRepo;
 
+    private TransferUtils transferUtils;
     @Autowired
-    public CorpCustomDutyServiceImpl( IntegrationService integrationService,  AccountService accountService, ConfigurationService configService, FinancialInstitutionService financialInstitution) {
+    public CorpCustomDutyServiceImpl( IntegrationService integrationService, TransferUtils transferUtils, AccountService accountService, ConfigurationService configService, FinancialInstitutionService financialInstitution) {
         this.integrationService = integrationService;
         this.accountService = accountService;
         this.configService = configService;
@@ -184,9 +185,14 @@ public class CorpCustomDutyServiceImpl implements CorpCustomDutyService {
             return null;
         }
 
+        String limitAmount = transferUtils.getLimit(assessmentDetail.getAccount(), "INTRABANK");
+        if(assessmentDetail.getResponseInfo().getTotalAmount() > Double.parseDouble(limitAmount)){
+            throw new InternetBankingException(messageSource.getMessage("transfer.limit", null, null));
+        }
+
+
         CustomDutyPayment customDutyPayment = saveCustomDutyPayment(assessmentDetail, assessmentDetailsRequest,principal);
         CorpPaymentRequest request = saveCorpPaymentRequest( customDutyPayment, corporate,principal, false);
-
             if (userCanAuthorize(request)) {
                 CorpTransReqEntry transReqEntry = new CorpTransReqEntry();
                 transReqEntry.setTranReqId(request.getId());
@@ -233,7 +239,7 @@ public class CorpCustomDutyServiceImpl implements CorpCustomDutyService {
                 request.setAmount(customDutyPayment.getTotalAmount());
                 request.setBeneficiaryAccountNumber(customDutyPayment.getAccount());
                 FinancialInstitution financialInstitution =
-                        financialInstitutionService.getFinancialInstitutionByBankCode("459");
+                        financialInstitutionService.getFinancialInstitutionByBankCode(customDutyPayment.getBankCode().substring(customDutyPayment.getBankCode().length()-3));
                 request.setFinancialInstitution(financialInstitution);
                 request.setCustomerAccountNumber(customDutyPayment.getAccount());
                 request.setBeneficiaryAccountName(
@@ -388,8 +394,15 @@ public class CorpCustomDutyServiceImpl implements CorpCustomDutyService {
 
     @Override
     public String addAuthorization(CorpTransReqEntry transReqEntry, Principal principal) {
+
         CorporateUser corporateUser = getCurrentUser();
         CorpPaymentRequest corpPaymentRequest = corpPaymentRequestRepo.findOne(transReqEntry.getTranReqId());
+
+        String limitAmount = transferUtils.getLimit(corpPaymentRequest.getCustomerAccountNumber(), "INTRABANK");
+        if(corpPaymentRequest.getAmount().compareTo(new BigDecimal(limitAmount))==1){
+            throw new InternetBankingException(messageSource.getMessage("transfer.limit", null, null));
+        }
+
         corpPaymentRequest.setUserReferenceNumber("CORP_"+getCurrentUser().getId().toString());
         LOGGER.info("corpPayment Request:{}",corpPaymentRequest);
         CorpTransRule transferRule = corporateService.getApplicableTransferRule(corpPaymentRequest);
@@ -423,6 +436,7 @@ public class CorpCustomDutyServiceImpl implements CorpCustomDutyService {
             transReqEntry.setUser(corporateUser);
             transferAuth.getAuths().add(transReqEntry);
             transferAuthRepo.save(transferAuth);
+
             if (isAuthorizationComplete(corpPaymentRequest)){
                 transferAuth.setStatus("C");
                 transferAuth.setLastEntry(new Date());

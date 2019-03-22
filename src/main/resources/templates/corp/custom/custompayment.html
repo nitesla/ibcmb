@@ -175,7 +175,7 @@
                                 <div class="col-sm-12">
                                     <label class="col-sm-2">Custom Area Command</label>
                                     <input type="text" class="form-control full-width" id="mcommand" name="mcommand"
-                                           readonly="readonly"  th:field="*{customsCode}"/>
+                                           readonly="readonly" />
                                 </div>
                             </div>
                             <br/>
@@ -335,7 +335,7 @@
             //$('#mCode').val($('#code').val());
             $('#mMessage').val($('#message').val());
             $('#mbankCode').val($('#bankCode').val());
-            // $('#mbankBranchCode').val($('#bankBranchCode').val());
+            $('#mbankBranchCode').val($('#bankBranchCode').val());
             $('#macctNumber').val($('#acctNumber').val());
             console.info($("#taxId").val());
             var t = $("#taxId").val();
@@ -382,9 +382,10 @@
                         $('#totalAmount').val(result.ResponseInfo["TotalAmount"]);
                         $('#sgdAssessmentDate').val(result.ResponseInfo["SGDAssessmentDate"]);
                         $('#bankCode').val(result.ResponseInfo["BankCode"]);
+                        $('#commandCode').val(result.ResponseInfo["CommandCode"]);
                         $('#code').val(result["Code"]);
                         $('#message').val(result["Message"]);
-                        // $('#bankBranchCode').val(result.ResponseInfo["BankBranchCode"]);
+                        $('#bankBranchCode').val(result.ResponseInfo["BankBranchCode"]);
                         $('#taxId').val(JSON.stringify(result.ResponseInfo["TaxDetails"]));
                         var t = result.ResponseInfo["TaxDetails"];
                         console.info(t);

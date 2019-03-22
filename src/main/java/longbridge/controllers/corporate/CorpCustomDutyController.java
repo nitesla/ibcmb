@@ -137,6 +137,8 @@ public class CorpCustomDutyController {
                                   BindingResult result, Model model, HttpServletRequest servletRequest, Principal principal,RedirectAttributes redirectAttributes, Locale locale) {
         String responseMessage = "";
         String tokenCode = request.getParameter("TaxDetails");
+        String mcommand = request.getParameter("mcommand");
+        assessmentDetailsRequest.setCustomsCode(mcommand);
         ObjectMapper objectMapper = new ObjectMapper();
         List<Tax> navigation = new ArrayList<>();
         try {
@@ -150,6 +152,7 @@ public class CorpCustomDutyController {
         try {
             CorporateUser user = corporateUserService.getUserByName(principal.getName());
             Corporate corporate = user.getCorporate();
+            assessmentDetailsRequest.setCustomsCode(mcommand);
             if (corporate.getCorporateType().equalsIgnoreCase("MULTI")) {
                 responseMessage = customDutyService.saveCustomPaymentRequestForAuthorization(assessmentDetail,assessmentDetailsRequest, principal,corporate);
                 redirectAttributes.addFlashAttribute("message",responseMessage);
