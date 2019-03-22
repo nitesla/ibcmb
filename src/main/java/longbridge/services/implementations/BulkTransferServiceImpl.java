@@ -26,6 +26,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -71,7 +72,8 @@ public class BulkTransferServiceImpl implements BulkTransferService {
     private AccountService accountService;
     @Autowired
     private AccountConfigService accountConfigService;
-
+    @Autowired
+    private IntegrationService integrationService;
 
     @Autowired
     public BulkTransferServiceImpl(BulkTransferRepo bulkTransferRepo
@@ -90,6 +92,7 @@ public class BulkTransferServiceImpl implements BulkTransferService {
         logger.debug("Transfer details valid {}", bulkTransfer);
 
         accountService.validateAccount(bulkTransfer.getCustomerAccountNumber());
+        bulkTransfer.setUserReferenceNumber("CORP_"+getCurrentUser().getId().toString());
         bulkTransfer.setStatus(StatusCode.PROCESSING.toString());
         bulkTransfer.setStatusDescription("Processing Transaction");
         BulkTransfer transfer = bulkTransferRepo.save(bulkTransfer);
@@ -122,6 +125,7 @@ public class BulkTransferServiceImpl implements BulkTransferService {
         }
         try {
 
+            bulkTransfer.setUserReferenceNumber("CORP_"+getCurrentUser().getId().toString());
             bulkTransfer.setStatus(StatusCode.PENDING.toString());
             bulkTransfer.setStatusDescription("Pending Authorization");
             CorpTransferAuth transferAuth = new CorpTransferAuth();
@@ -392,6 +396,24 @@ public class BulkTransferServiceImpl implements BulkTransferService {
     @Override
     public int getPendingBulkTransferRequests(Corporate corporate) {
         return bulkTransferRepo.countByCorporateAndStatus(corporate, StatusCode.PENDING.toString());
+    }
+
+    @Override
+    public boolean transactionAboveLimit(BigDecimal totalCreditAmount, String debitAccount) {
+
+        String amount = integrationService.getDailyAccountLimit(debitAccount, "NAPS");
+
+            logger.info("the daily limit {}",amount);
+
+            if(null==amount || amount.isEmpty()){
+                throw new InternetBankingException(messageSource.getMessage("transfer.limit.validate.failed", null, locale));
+            }
+            logger.debug("the debitAccount {} totalcredit amount {}",debitAccount, totalCreditAmount);
+            BigDecimal dailyLimit = new BigDecimal(amount);
+            if(totalCreditAmount.compareTo(dailyLimit)>0){
+                throw new InternetBankingException(messageSource.getMessage("transfer.daily.limit", null, locale));
+            }
+        return false;
     }
 
     private boolean isAuthorizationComplete(BulkTransfer transRequest) {

@@ -33,6 +33,7 @@
 
         <div class="col-xs-12">
             <div class=" no-mt no-bd  alert">
+                <div>
                 <form method="post" th:action="@{/corporate/transfer/save}" id="" class="form-horizontal">
                     <div class="">
                         <div>
@@ -50,6 +51,25 @@
                             <option th:each="s: ${accounts}" th:value="${s}" th:text="${s}"></option>
                         </select>
                             <input type="hidden" name="requests" />
+                        </div>
+                        <div class='col-sm-5 col-xs-12'>
+
+                            <div class="related-box-bulk">
+                                <h3 class="related-bar">Related Information</h3>
+
+                                <!--<input type="availBal" name="availBal"/>-->
+
+                                <p class="related-info coronation-blue" id="limit"><b></b></p>                                <!--<p id=mylimit" style="display: none; padding: 5%">Limit: <span th:if="${rtgs}!=null"-->
+                                                                                                      <!--th:text="${rtgs}"></span>-->
+                                </p>
+
+                            </div>
+
+                            <!--<div class="col-md-4 col-sm-4">-->
+
+                            <!--<p id="rtgs" style="display: none; padding: 5%">Fee applicable: <span th:text="'N'+${rtgs.feeValue}"></span></p>-->
+                            <!--</div>-->
+
                         </div>
                     </div>
 
@@ -93,6 +113,8 @@
                     <!--<button class="btn btn-link" type="submit" id="button_submit">Submit</button>-->
 
                 </form>
+                </div>
+
             </div>
         </div>
 
@@ -114,6 +136,7 @@
 
             var errorCount = 0;
             $(document).ready(function() {
+                getLimit();
                 var table = $('#mytab').DataTable({
                     select: true,
                     "lengthMenu": [
@@ -226,11 +249,41 @@
 
 
             });
+            $('#debitAccount').change(function () {
+                console.log("dropdown change");
+                getLimit()
+            })
+            function getLimit() {
 
+                var accountNumber = $('#debitAccount').val();
+                console.log("the account number " + accountNumber);
+                if (accountNumber != null && accountNumber != '') {
+                    $.ajax({
+                        url: "/retail/transfer/limit/" + accountNumber + "/NAPS",
+                        type: 'GET',
+                        async: false,
+                        success: function (jd) {
+                            var message = jd.message;
+                            var success = jd.success;
+                            console.log(message);
+                            console.log(success);
+                            if (success == false || message=='₦NAN' ) {
+                                document.getElementById("limit").textContent = "Could not get limit from server, please try again.";
+
+                            } else {
+//                    $('input[name=availBal]').val(bal);
+                                var bal = numberWithCommas(message);
+                                $('#limit').html("Limit: " + bal);
+
+                            }
+                        }
+                    })
+                }
+            }
 
 
             $('#button_submit').click(function(e) {
-                e.preventDefault()
+                e.preventDefault();
 
                 bulkTab = $('#mytab').DataTable();
 
