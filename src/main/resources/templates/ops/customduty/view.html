@@ -190,7 +190,6 @@
                  id = $(dt.row({
                     selected: true
                 }).node()).attr("id");
-                console.log(id);
             }
         });
 
@@ -208,7 +207,6 @@
 
     function refresh() {
         showSpinner();
-        console.log("refresh id "+id);
         $.ajax({
             "url":"/corporate/custom/"+id+"/refresh",
             "type" : "GET",
@@ -233,7 +231,6 @@
 
     function opsPayment() {
         showSpinner();
-        console.log("ops retry id "+id);
         $.ajax({
             "url":"/corporate/custom/"+id+"/payment",
             "type" : "GET",
