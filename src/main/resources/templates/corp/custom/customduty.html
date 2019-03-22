@@ -93,7 +93,6 @@
                     $('#pattern').remove();
                     var pass = document.createElement('input');
                     var selectedText = $('#dutyFilter :selected').text();
-                    console.log(selectedText);
                     if(selectedText == "Date"){
                         pass.id='pattern';
                         pass.type = 'Date';
@@ -221,13 +220,10 @@
                     tranId = data['customDutyPayment']['tranId'];
                     code = data['customDutyPayment']['code']
                     status = data['status']
-                    console.log("the row id "+id+" tran id "+tranId);
                     if(status == '00' || status =='000' || status =='F' || status =='P' ){
-                        console.log("the status is "+status);
                         $('#receipt').attr("disabled", false);
                         return;
                     }else{
-                        console.log("the status "+status);
                         $('#receipt').attr("disabled", true);
                         return;
                     }
@@ -241,7 +237,6 @@
 
                 function refresh() {
                     showSpinner();
-                    console.log("refresh id "+id);
                     $.ajax({
                     "url":"/corporate/custom/"+id+"/refresh",
                     "type" : "GET",
@@ -282,7 +277,6 @@
                 $("a.bt-link-act").on("click", function (e) {
                     e.preventDefault();
                     var link = $(e.currentTarget);
-                    console.log("url "+link.attr("href"));
                     if ($(link).attr("disabled")) {
                         return;
                     }
