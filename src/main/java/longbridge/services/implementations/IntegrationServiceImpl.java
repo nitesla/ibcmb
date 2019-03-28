@@ -96,7 +96,6 @@ public class IntegrationServiceImpl implements IntegrationService {
 		this.messageSource = messageSource;
 		this.accountRepo = accountRepo;
 		this.corporateRepo = corporateRepo;
-
 	}
 
 	@Override
@@ -610,7 +609,6 @@ public class IntegrationServiceImpl implements IntegrationService {
 			String response = template.postForObject(uri, params, String.class);
 			result = new BigDecimal(response);
 		} catch (Exception e) {
-
 			logger.error("Error occurred getting  daily transaction", e);
 		}
 

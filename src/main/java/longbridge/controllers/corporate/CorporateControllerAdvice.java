@@ -63,7 +63,7 @@ public class CorporateControllerAdvice {
         }
 
         CorporateUser corporateUser = corporateUserService.getUserByName(principal.getName());
-
+        logger.info("corporateUser",corporateUser);
         if(corporateUser==null){
             return "";
         }
