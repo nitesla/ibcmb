@@ -398,11 +398,11 @@ public class CorpCustomDutyServiceImpl implements CorpCustomDutyService {
         CorporateUser corporateUser = getCurrentUser();
         CorpPaymentRequest corpPaymentRequest = corpPaymentRequestRepo.findOne(transReqEntry.getTranReqId());
 
-        String limitAmount = transferUtils.getLimit(corpPaymentRequest.getCustomerAccountNumber(), "INTRABANK");
+      /*  String limitAmount = transferUtils.getLimit(corpPaymentRequest.getCustomerAccountNumber(), "INTRABANK");
         if(corpPaymentRequest.getAmount().compareTo(new BigDecimal(limitAmount))==1){
             throw new InternetBankingException(messageSource.getMessage("transfer.limit", null, null));
         }
-
+*/
         corpPaymentRequest.setUserReferenceNumber("CORP_"+getCurrentUser().getId().toString());
         LOGGER.info("corpPayment Request:{}",corpPaymentRequest);
         CorpTransRule transferRule = corporateService.getApplicableTransferRule(corpPaymentRequest);
