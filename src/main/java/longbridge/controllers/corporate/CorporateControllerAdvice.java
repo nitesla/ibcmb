@@ -177,7 +177,6 @@ public class CorporateControllerAdvice {
                     .filter(Objects::nonNull)
                     .forEach(i -> accountList.add(i));
 
-
             model.addAttribute("accounts", accountList);
 
             List<Account> accountListStmt = new ArrayList<>();

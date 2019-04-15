@@ -7,6 +7,8 @@ import longbridge.repositories.*;
 import longbridge.security.userdetails.CustomUserPrincipal;
 import longbridge.services.*;
 import longbridge.utils.*;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -399,9 +401,14 @@ public class CorpCustomDutyServiceImpl implements CorpCustomDutyService {
         CorpPaymentRequest corpPaymentRequest = corpPaymentRequestRepo.findOne(transReqEntry.getTranReqId());
 
         String limitAmount = transferUtils.getLimit(corpPaymentRequest.getCustomerAccountNumber(), "INTRABANK");
-        if(corpPaymentRequest.getAmount().compareTo(new BigDecimal(limitAmount))==1){
-            throw new InternetBankingException(messageSource.getMessage("transfer.limit", null, null));
-        }
+       try {
+           JSONObject object = (JSONObject) new JSONParser().parse(limitAmount);
+           String limit = (String) object.get("message");
+
+           if (corpPaymentRequest.getAmount().compareTo(new BigDecimal(limit.substring(1))) == 1) {
+               throw new InternetBankingException(messageSource.getMessage("transfer.limit", null, null));
+           }
+       }catch(org.json.simple.parser.ParseException e){e.printStackTrace();}
 
         corpPaymentRequest.setUserReferenceNumber("CORP_"+getCurrentUser().getId().toString());
         LOGGER.info("corpPayment Request:{}",corpPaymentRequest);

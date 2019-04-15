@@ -84,8 +84,7 @@ public class TransferServiceImpl implements TransferService {
             transRequest = transferRequestRepo.save(transRequest);
             if (transRequest.getStatus() != null) {
                 if (transRequest.getStatus().equalsIgnoreCase("000") || transRequest.getStatus().equalsIgnoreCase("00"))
-                    return transferRequestDTO;
-
+                return convertEntityToDTO(transRequest);
                 throw new InternetBankingTransferException(transRequest.getStatus());
             }
 
