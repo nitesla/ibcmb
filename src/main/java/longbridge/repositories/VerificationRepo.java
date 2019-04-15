@@ -38,6 +38,9 @@ public interface VerificationRepo extends CommonRepo<Verification, Long>{
     @Query( "select v from Verification v where v.initiatedBy != :initiated and v.userType=:userType and v.operation in :permissionlist and v.status ='PENDING' order by v.initiatedOn Desc")
     List<Verification> findVerificationForUser(@Param("initiated") String initiatedBy, @Param("userType") UserType userType, @Param("permissionlist") List<String> operation);
 
+    @Query( "select count(v.id) from Verification v where v.initiatedBy != :initiated and v.userType=:userType and v.operation in :permissionlist and v.status ='PENDING' order by v.initiatedOn Desc")
+    int countVerificationForUser(@Param("initiated") String initiatedBy, @Param("userType") UserType userType, @Param("permissionlist") List<String> operation);
+
 
     @Query( "select v from Verification v where v.initiatedBy <> :initiated and v.userType=:userType and v.operation in :permissionlist and v.status ='PENDING' order by v.initiatedOn Desc")
     Page<Verification> findVerificationForUsers(@Param("initiated") String initiatedBy, @Param("userType") UserType userType, @Param("permissionlist") List<String> operation,Pageable pageable);

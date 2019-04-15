@@ -60,5 +60,8 @@ public interface CorpCustomDutyService {
     @PreAuthorize("hasAuthority('CUSTOM_DUTY')")
     Page<CorpPaymentRequest> getEntities(Pageable pageable);
 
+    @PreAuthorize("hasAuthority('VIEW_CUSTOM_DUTY')")
+    public String opsMakeCustomDutyPayment(CorpPaymentRequest corpPaymentRequest,Principal principal);
+
 
 }

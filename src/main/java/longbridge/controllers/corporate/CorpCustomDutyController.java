@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.PageSize;
+import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.html.simpleparser.HTMLWorker;
 import com.itextpdf.text.pdf.PdfWriter;
 import longbridge.dtos.SettingDTO;
@@ -18,6 +19,10 @@ import longbridge.utils.TransferUtils;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
+
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -85,7 +90,7 @@ public class CorpCustomDutyController {
 
     @GetMapping
     public String getCustomDuty(Model model, Principal principal) {
-        return "corp/custom/customduty";
+                 return "corp/custom/customduty";
     }
 
     @GetMapping("/payment")
@@ -137,6 +142,8 @@ public class CorpCustomDutyController {
                                   BindingResult result, Model model, HttpServletRequest servletRequest, Principal principal,RedirectAttributes redirectAttributes, Locale locale) {
         String responseMessage = "";
         String tokenCode = request.getParameter("TaxDetails");
+        String mcommand = request.getParameter("mcommand");
+        assessmentDetailsRequest.setCustomsCode(mcommand);
         ObjectMapper objectMapper = new ObjectMapper();
         List<Tax> navigation = new ArrayList<>();
         try {
@@ -150,6 +157,7 @@ public class CorpCustomDutyController {
         try {
             CorporateUser user = corporateUserService.getUserByName(principal.getName());
             Corporate corporate = user.getCorporate();
+            assessmentDetailsRequest.setCustomsCode(mcommand);
             if (corporate.getCorporateType().equalsIgnoreCase("MULTI")) {
                 responseMessage = customDutyService.saveCustomPaymentRequestForAuthorization(assessmentDetail,assessmentDetailsRequest, principal,corporate);
                 redirectAttributes.addFlashAttribute("message",responseMessage);
@@ -210,6 +218,23 @@ public class CorpCustomDutyController {
             LOGGER.error("Error calling coronation service rest service",e);
         }
         return null;
+    }
+
+    @GetMapping("/{id}/payment")
+    @ResponseBody
+    public String payment(@PathVariable Long id, Principal principal){
+
+        CorpPaymentRequest corpPaymentRequest = customDutyService.getPayment(id);
+        CustomDutyPayment dutyPayment = corpPaymentRequest.getCustomDutyPayment();
+        LOGGER.info("dutyPayment:{}",dutyPayment);
+        try {
+            LOGGER.info("the id {}",id);
+            return customDutyService.opsMakeCustomDutyPayment(corpPaymentRequest,principal);
+        }
+        catch (Exception e){
+            LOGGER.error("Error calling coronation service rest service",e);
+        }
+        return "";
     }
 
     @GetMapping("/requests")

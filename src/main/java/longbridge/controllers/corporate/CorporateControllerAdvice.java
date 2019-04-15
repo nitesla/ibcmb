@@ -63,7 +63,7 @@ public class CorporateControllerAdvice {
         }
 
         CorporateUser corporateUser = corporateUserService.getUserByName(principal.getName());
-
+        logger.info("corporateUser",corporateUser);
         if(corporateUser==null){
             return "";
         }
@@ -176,7 +176,6 @@ public class CorporateControllerAdvice {
             StreamSupport.stream(accounts.spliterator(), false)
                     .filter(Objects::nonNull)
                     .forEach(i -> accountList.add(i));
-
 
             model.addAttribute("accounts", accountList);
 

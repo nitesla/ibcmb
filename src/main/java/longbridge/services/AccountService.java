@@ -150,7 +150,7 @@ public interface AccountService {
 
 
     void deleteAccount(Long id);
-    
+
     void validateAccount(String accountNumber) throws InternetBankingException;
 
    }
