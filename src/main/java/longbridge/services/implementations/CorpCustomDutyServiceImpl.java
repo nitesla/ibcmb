@@ -86,9 +86,11 @@ public class CorpCustomDutyServiceImpl implements CorpCustomDutyService {
     @Autowired
     private CorpTransReqEntryRepo reqEntryRepo;
 
-    private TransferUtils transferUtils;
     @Autowired
-    public CorpCustomDutyServiceImpl( IntegrationService integrationService, TransferUtils transferUtils, AccountService accountService, ConfigurationService configService, FinancialInstitutionService financialInstitution) {
+    private TransferUtils transferUtils;
+
+    @Autowired
+    public CorpCustomDutyServiceImpl( IntegrationService integrationService,  AccountService accountService, ConfigurationService configService, FinancialInstitutionService financialInstitution) {
         this.integrationService = integrationService;
         this.accountService = accountService;
         this.configService = configService;
@@ -187,11 +189,12 @@ public class CorpCustomDutyServiceImpl implements CorpCustomDutyService {
             return null;
         }
 
-        String limitAmount = transferUtils.getLimit(assessmentDetail.getAccount(), "INTRABANK");
-        if(assessmentDetail.getResponseInfo().getTotalAmount() > Double.parseDouble(limitAmount)){
-            throw new InternetBankingException(messageSource.getMessage("transfer.limit", null, null));
-        }
-
+//        logger.info("Checking limit for {}", assessmentDetail.getAccount());
+//        String limit =integrationService.getDailyAccountLimit(assessmentDetail.getAccount(), "INTRABANK");
+//        logger.info("limit:{}", limit);
+//        if (new BigDecimal(assessmentDetail.getResponseInfo().getTotalAmount()).compareTo(new BigDecimal(limit)) == 1) {
+//            throw new InternetBankingException(messageSource.getMessage("transfer.limit", null, null));
+//        }
 
         CustomDutyPayment customDutyPayment = saveCustomDutyPayment(assessmentDetail, assessmentDetailsRequest,principal);
         CorpPaymentRequest request = saveCorpPaymentRequest( customDutyPayment, corporate,principal, false);
@@ -396,19 +399,16 @@ public class CorpCustomDutyServiceImpl implements CorpCustomDutyService {
 
     @Override
     public String addAuthorization(CorpTransReqEntry transReqEntry, Principal principal) {
-
         CorporateUser corporateUser = getCurrentUser();
         CorpPaymentRequest corpPaymentRequest = corpPaymentRequestRepo.findOne(transReqEntry.getTranReqId());
 
-        String limitAmount = transferUtils.getLimit(corpPaymentRequest.getCustomerAccountNumber(), "INTRABANK");
-       try {
-           JSONObject object = (JSONObject) new JSONParser().parse(limitAmount);
-           String limit = (String) object.get("message");
-
-           if (corpPaymentRequest.getAmount().compareTo(new BigDecimal(limit.substring(1))) == 1) {
-               throw new InternetBankingException(messageSource.getMessage("transfer.limit", null, null));
-           }
-       }catch(org.json.simple.parser.ParseException e){e.printStackTrace();}
+//
+//        logger.info("Checking limit for {}",corpPaymentRequest.getCustomerAccountNumber());
+//        String limit = integrationService.getDailyAccountLimit(corpPaymentRequest.getCustomerAccountNumber(), "INTRABANK");
+//        logger.info("limit:{}", limit);
+//        if (corpPaymentRequest.getAmount().compareTo(new BigDecimal(limit)) == 1) {
+//            throw new InternetBankingException(messageSource.getMessage("transfer.limit", null, null));
+//        }
 
         corpPaymentRequest.setUserReferenceNumber("CORP_"+getCurrentUser().getId().toString());
         LOGGER.info("corpPayment Request:{}",corpPaymentRequest);
@@ -476,7 +476,7 @@ public class CorpCustomDutyServiceImpl implements CorpCustomDutyService {
         LOGGER.debug("CustomPaymentNotification:{}",customPaymentNotification);
         CustomDutyPayment dutyPayment = corpPaymentRequest.getCustomDutyPayment();
         dutyPayment.setPaymentStatus(customPaymentNotification.getCode());
-        dutyPayment.setMessage(CustomDutyCode.getCustomDutyCodeByCode(customPaymentNotification.getCode()).replace("_"," "));
+        dutyPayment.setMessage(CustomDutyCode.getCustomDutyCodeByCode(customPaymentNotification.getCode()));
         dutyPayment.setPaymentRef(customPaymentNotification.getPaymentRef());
         LOGGER.debug("customPaymentNotification:{}",customPaymentNotification);
         customDutyPaymentRepo.save(dutyPayment);

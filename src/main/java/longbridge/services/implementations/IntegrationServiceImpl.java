@@ -339,15 +339,15 @@ public class IntegrationServiceImpl implements IntegrationService {
 			return transRequest;
 		} catch (HttpStatusCodeException e) {
 			logger.error("HTTP Error occurred", e);
-			transRequest.setStatus(e.getStatusCode().toString());
+			transRequest.setStatus(StatusCode.FAILED.getStatusCode());
 			transRequest.setTransferType(TransferType.CUSTOM_DUTY);
-			transRequest.setStatusDescription(e.getStatusCode().getReasonPhrase());
+			transRequest.setStatusDescription(StatusCode.FAILED.toString());
 			return transRequest;
 		}
 		catch (Exception e) {
 			transRequest.setStatus(StatusCode.FAILED.toString());
 			transRequest.setTransferType(TransferType.CUSTOM_DUTY);
-			transRequest.setStatusDescription(messageSource.getMessage("status.code.failed", null, locale));
+			transRequest.setStatusDescription(StatusCode.FAILED.toString());
 			return transRequest;
 		}
 	}
@@ -373,7 +373,6 @@ public class IntegrationServiceImpl implements IntegrationService {
 				params.put("tranAmount", transRequest.getAmount().toString());
 				params.put("remarks", transRequest.getRemarks());
 				logger.info("Starting Transfer with Params: {}", params.toString());
-
 				try {
 					logger.info("Initiating Local Transfer");
 					logger.debug("Transfer Params: {}", params.toString());
@@ -499,7 +498,6 @@ public class IntegrationServiceImpl implements IntegrationService {
 	@Override
 	public TransferDetails makeNapsTransfer(Naps naps) throws InternetBankingTransferException {
 		String uri = URI + "/transfer/naps";
-
 		try {
 			TransferDetails details = template.getForObject(uri, TransferDetails.class, naps);
 			return details;
@@ -507,7 +505,6 @@ public class IntegrationServiceImpl implements IntegrationService {
 			logger.error("Error making NAPS transfer", e);
 			return new TransferDetails();
 		}
-
 	}
 
 	@Override
@@ -592,9 +589,7 @@ public class IntegrationServiceImpl implements IntegrationService {
 	@Override
 	public String getAccountName(String accountNumber) {
 		logger.info(accountNumber + "account number");
-
 		return viewAccountDetails(accountNumber).getAcctName();
-
 	}
 
 	@Override
@@ -611,9 +606,7 @@ public class IntegrationServiceImpl implements IntegrationService {
 		} catch (Exception e) {
 			logger.error("Error occurred getting  daily transaction", e);
 		}
-
 		return result;
-
 	}
 
 	@Override
@@ -627,7 +620,6 @@ public class IntegrationServiceImpl implements IntegrationService {
 			String response = template.postForObject(uri, params, String.class);
 			result = (response);
 		} catch (Exception e) {
-
 			logger.error("Error occurred getting  daily account limit", e);
 		}
 
@@ -832,7 +824,6 @@ public class IntegrationServiceImpl implements IntegrationService {
 		try {
 			assessmentDetailsRequest.setHash(EncryptionUtil.getSHA512(appId+assessmentDetailsRequest.getCustomsCode()
 					+ assessmentDetailsRequest.getSadAsmt().getSADAssessmentSerial()+secretKey, null));
-
 			logger.debug("Fetching data from coronation rest service via the url: {}", CustomDutyUrl+"/customduty/retrieveassessmentdetail");
 			logger.debug("Fetching data assessmentDetailsRequest: {}", assessmentDetailsRequest);
 			CustomAssessmentDetail response = template.postForObject(CustomDutyUrl+"/customduty/retrieveassessmentdetail", assessmentDetailsRequest, CustomAssessmentDetail.class);
@@ -863,11 +854,10 @@ public class IntegrationServiceImpl implements IntegrationService {
 		try {
 			Map<String,Object> request = new HashMap<>();
 			request.put("appId",appId);
-
 			request.put("hash",EncryptionUtil.getSHA512(
 					appId + corpPaymentRequest.getReferenceNumber() + corpPaymentRequest.getAmount().setScale(2,BigDecimal.ROUND_HALF_UP) + secretKey, null));
 			request.put("TranId",corpPaymentRequest.getCustomDutyPayment().getTranId());
-			request.put("Amount",corpPaymentRequest.getAmount().toString());
+			request.put("Amount",corpPaymentRequest.getAmount().toPlainString());
 			request.put("LastAuthorizer",userName);
 			request.put("InitiatedBy",corpPaymentRequest.getCustomDutyPayment().getInitiatedBy());
 			request.put("PaymentRef",corpPaymentRequest.getReferenceNumber());
@@ -897,7 +887,7 @@ public class IntegrationServiceImpl implements IntegrationService {
 			request.put("hash",EncryptionUtil.getSHA512(
 					appId + corpPaymentRequest.getReferenceNumber() + corpPaymentRequest.getAmount().setScale(2,BigDecimal.ROUND_HALF_UP) + secretKey, null));
 			request.put("TranId",corpPaymentRequest.getCustomDutyPayment().getTranId());
-			request.put("Amount",corpPaymentRequest.getAmount().toString());
+			request.put("Amount",corpPaymentRequest.getAmount().toPlainString());
 			request.put("LastAuthorizer",userName);
 			request.put("InitiatedBy",corpPaymentRequest.getCustomDutyPayment().getInitiatedBy());
 			request.put("PaymentRef",corpPaymentRequest.getReferenceNumber());
@@ -963,7 +953,6 @@ public class IntegrationServiceImpl implements IntegrationService {
 		String reversalUrl = "http://132.10.200.140:9292/service/reverseFundTransfer?uniqueIdentifier=";
 		Map<String, String> params = new HashMap<>();
 		params.put("uniqueIdentifier", referenceId);
-
 		logger.error("Reversing transfer for {}",referenceId);
 		TransferDetails transferDetails = template.postForObject(reversalUrl + referenceId, params, TransferDetails.class);
 		logger.info("reversal response {}",transferDetails);

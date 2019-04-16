@@ -6,7 +6,39 @@ package longbridge.utils;
 public enum StatusCode {
 
 
-    PENDING("-01"), PROCESSING("-02"), SUCCESSFUL("00"), COMPLETED("01"), CANCELLED("-03"), FAILED("-09");
+    PENDING("-01"){
+        public String toString(){
+            return "Pending";
+        }
+    },
+    PROCESSING("-02"){
+        public String toString(){
+            return "Processing";
+        }
+    },
+
+    SUCCESSFUL("00"){
+        public String toString(){
+            return "Successful";
+        }
+    },
+
+    COMPLETED("01"){
+        public String toString(){
+            return "Completed";
+        }
+    },
+
+    CANCELLED("-03"){
+        public String toString(){
+            return "Cancelled";
+        }
+    },
+    FAILED("-09"){
+        public String toString(){
+            return "Failed Debit";
+        }
+    };
 
     private String code;
 
@@ -14,8 +46,8 @@ public enum StatusCode {
         this.code = code;
     }
 
-    public String toString() {
-        return this.code;
+    public String getStatusCode(){
+        return code;
     }
 
 }

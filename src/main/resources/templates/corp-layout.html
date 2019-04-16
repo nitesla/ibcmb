@@ -153,11 +153,11 @@
                                         <li sec:authorize="hasAuthority('MANAGE_TRANSFERS')"><a th:href="@{/corporate/transfer/history}" th:text="#{menu.transfer.completed}">Completed Transfers</a></li>
                                     </ul>
                                 </li>
-                                <li sec:authorize="hasAuthority('CUSTOM_DUTY')" class="dropdown" >
+                                <li class="dropdown" >
                                     <a href="#"  th:text="#{menu.bill}">Bill Payments</a>
                                     <ul class="dropdown-menu">
                                         <li ><a sec:authorize="hasAuthority('CUSTOM_DUTY')" href="#" th:text="#{menu.bill}">Bill Payments</a></li>
-                                        <li ><a sec:authorize="hasAuthority('CUSTOM_DUTY')" th:href="@{/corporate/custom}" th:text="#{menu.bill.custom}">Custom Duty</a></li>
+                                        <li ><a  th:href="@{/corporate/custom}" th:text="#{menu.bill.custom}">Custom Duty</a></li>
                                     </ul>
                                 </li>
                                 <li sec:authorize="hasAuthority('MANAGE_INVESTMENT')"><a href="#" class="menu-link" th:text="#{menu.investment}">Investment</a></li>
