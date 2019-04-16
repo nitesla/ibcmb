@@ -87,6 +87,7 @@ public class CorpCustomDutyServiceImpl implements CorpCustomDutyService {
     private CorpTransReqEntryRepo reqEntryRepo;
 
     private TransferUtils transferUtils;
+
     @Autowired
     public CorpCustomDutyServiceImpl( IntegrationService integrationService, TransferUtils transferUtils, AccountService accountService, ConfigurationService configService, FinancialInstitutionService financialInstitution) {
         this.integrationService = integrationService;
@@ -187,10 +188,18 @@ public class CorpCustomDutyServiceImpl implements CorpCustomDutyService {
             return null;
         }
 
-        String limitAmount = transferUtils.getLimit(assessmentDetail.getAccount(), "INTRABANK");
-        if(assessmentDetail.getResponseInfo().getTotalAmount() > Double.parseDouble(limitAmount)){
-            throw new InternetBankingException(messageSource.getMessage("transfer.limit", null, null));
+        try{
+            String limitAmount = integrationService.getDailyAccountLimit(assessmentDetail.getAccount(), "INTRABANK");
+            logger.info("limit {}",limitAmount);
+
+                if (new BigDecimal(assessmentDetail.getResponseInfo().getTotalAmount()).compareTo(new BigDecimal(limitAmount)) == 1) {
+                    throw new InternetBankingException(messageSource.getMessage("transfer.limit", null, null));
+                }
+
+        }catch(Exception e){
+            logger.info("limit error {}",e);
         }
+
 
 
         CustomDutyPayment customDutyPayment = saveCustomDutyPayment(assessmentDetail, assessmentDetailsRequest,principal);
@@ -400,15 +409,21 @@ public class CorpCustomDutyServiceImpl implements CorpCustomDutyService {
         CorporateUser corporateUser = getCurrentUser();
         CorpPaymentRequest corpPaymentRequest = corpPaymentRequestRepo.findOne(transReqEntry.getTranReqId());
 
-        String limitAmount = transferUtils.getLimit(corpPaymentRequest.getCustomerAccountNumber(), "INTRABANK");
-       try {
-           JSONObject object = (JSONObject) new JSONParser().parse(limitAmount);
-           String limit = (String) object.get("message");
 
-           if (corpPaymentRequest.getAmount().compareTo(new BigDecimal(limit.substring(1))) == 1) {
-               throw new InternetBankingException(messageSource.getMessage("transfer.limit", null, null));
-           }
-       }catch(org.json.simple.parser.ParseException e){e.printStackTrace();}
+        try{
+            String limitAmount = integrationService.getDailyAccountLimit(corpPaymentRequest.getCustomerAccountNumber(), "INTRABANK");
+            logger.info("limit {}",limitAmount);
+
+            if(corpPaymentRequest.getAmount().compareTo(new BigDecimal(limitAmount)) == 1) {
+                throw new InternetBankingException(messageSource.getMessage("transfer.limit", null, null));
+
+            }
+
+        }catch(Exception e){
+            logger.info("limit error {}",e);
+        }
+
+
 
         corpPaymentRequest.setUserReferenceNumber("CORP_"+getCurrentUser().getId().toString());
         LOGGER.info("corpPayment Request:{}",corpPaymentRequest);

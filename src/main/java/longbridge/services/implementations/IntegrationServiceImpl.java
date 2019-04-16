@@ -867,11 +867,11 @@ public class IntegrationServiceImpl implements IntegrationService {
 			request.put("hash",EncryptionUtil.getSHA512(
 					appId + corpPaymentRequest.getReferenceNumber() + corpPaymentRequest.getAmount().setScale(2,BigDecimal.ROUND_HALF_UP) + secretKey, null));
 			request.put("TranId",corpPaymentRequest.getCustomDutyPayment().getTranId());
-			request.put("Amount",corpPaymentRequest.getAmount().toString());
+			request.put("Amount",corpPaymentRequest.getAmount().toPlainString());
 			request.put("LastAuthorizer",userName);
 			request.put("InitiatedBy",corpPaymentRequest.getCustomDutyPayment().getInitiatedBy());
 			request.put("PaymentRef",corpPaymentRequest.getReferenceNumber());
-			request.put("CustomerAccountNo",corpPaymentRequest.getBeneficiaryAccountNumber());
+			request.put("CustomerAccountNo",accessBeneficiaryAcct);
 			logger.debug("Fetching data from coronation rest service via the url: {}", CustomDutyUrl);
 			logger.debug("Fetching data from coronation rest service via the url: {}", CustomDutyUrl+"/customduty/payassessment");
 			logger.debug("paymentNotificationRequest: {}", request);
@@ -897,7 +897,7 @@ public class IntegrationServiceImpl implements IntegrationService {
 			request.put("hash",EncryptionUtil.getSHA512(
 					appId + corpPaymentRequest.getReferenceNumber() + corpPaymentRequest.getAmount().setScale(2,BigDecimal.ROUND_HALF_UP) + secretKey, null));
 			request.put("TranId",corpPaymentRequest.getCustomDutyPayment().getTranId());
-			request.put("Amount",corpPaymentRequest.getAmount().toString());
+			request.put("Amount",corpPaymentRequest.getAmount().toPlainString());
 			request.put("LastAuthorizer",userName);
 			request.put("InitiatedBy",corpPaymentRequest.getCustomDutyPayment().getInitiatedBy());
 			request.put("PaymentRef",corpPaymentRequest.getReferenceNumber());
