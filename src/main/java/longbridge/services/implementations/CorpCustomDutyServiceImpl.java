@@ -230,7 +230,7 @@ public class CorpCustomDutyServiceImpl implements CorpCustomDutyService {
         customDutyPayment.setTranId(assessmentDetail.getResponseInfo().getTranId());
         customDutyPayment.setAccount(assessmentDetail.getAccount());
 //        customDutyPayment.setCode(assessmentDetail.getCode());
-//        customDutyPayment.setMessage(CustomDutyCode.getCustomDutyCodeByCode(assessmentDetail.getCode()).replace("_"," "));
+//        customDutyPayment.setMessage(CustomDutyCode.getCustomDutyCodeByCode(assessmentDetail.getCode());
         customDutyPayment.setInitiatedBy(principal.getName());
         CustomDutyPayment resp = customDutyPaymentRepo.save(customDutyPayment);
         LOGGER.info("customDutyPayment:{}",resp);
@@ -277,7 +277,7 @@ public class CorpCustomDutyServiceImpl implements CorpCustomDutyService {
                         LOGGER.info("CorpPaymentRequest SOLE: {}",request);
                         return request;
                     }
-                    request.getCustomDutyPayment().setMessage(CustomDutyCode.getCustomDutyCodeByCode("-1").replace("_"," "));
+                    request.getCustomDutyPayment().setMessage(CustomDutyCode.getCustomDutyCodeByCode("-1"));
                     corpPaymentRequestRepo.save(request);
                     throw new InternetBankingTransferException(messageSource.getMessage(request.getStatusDescription(), null, null));
                 }else{
@@ -455,7 +455,7 @@ public class CorpCustomDutyServiceImpl implements CorpCustomDutyService {
                     corpPaymentRequestRepo.save(corpPaymentRequest);
                     return makeCustomDutyPayment(corpPaymentRequest,principal);
                 }
-                corpPaymentRequest.getCustomDutyPayment().setMessage(CustomDutyCode.getCustomDutyCodeByCode("-1").replace("_"," "));
+                corpPaymentRequest.getCustomDutyPayment().setMessage(CustomDutyCode.getCustomDutyCodeByCode("-1"));
                 corpPaymentRequestRepo.save(corpPaymentRequest);
                 throw new InternetBankingException(messageSource.getMessage(corpPaymentRequest.getStatusDescription(), null, null));
             }
