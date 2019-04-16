@@ -189,12 +189,19 @@ public class CorpCustomDutyServiceImpl implements CorpCustomDutyService {
             return null;
         }
 
-        logger.info("Checking limit for {}", assessmentDetail.getAccount());
-        String limit =integrationService.getDailyAccountLimit(assessmentDetail.getAccount(), "INTRABANK");
-        logger.info("limit:{}", limit);
-        if (new BigDecimal(assessmentDetail.getResponseInfo().getTotalAmount()).compareTo(new BigDecimal(limit)) == 1) {
-            throw new InternetBankingException(messageSource.getMessage("transfer.limit", null, null));
+        try{
+            String limitAmount = integrationService.getDailyAccountLimit(assessmentDetail.getAccount(), "INTRABANK");
+            logger.info("limit {}",limitAmount);
+
+                if (new BigDecimal(assessmentDetail.getResponseInfo().getTotalAmount()).compareTo(new BigDecimal(limitAmount)) == 1) {
+                    throw new InternetBankingException(messageSource.getMessage("transfer.limit", null, null));
+                }
+
+        }catch(Exception e){
+            logger.info("limit error {}",e);
         }
+
+
 
         CustomDutyPayment customDutyPayment = saveCustomDutyPayment(assessmentDetail, assessmentDetailsRequest,principal);
         CorpPaymentRequest request = saveCorpPaymentRequest( customDutyPayment, corporate,principal, false);
@@ -403,12 +410,22 @@ public class CorpCustomDutyServiceImpl implements CorpCustomDutyService {
         CorpPaymentRequest corpPaymentRequest = corpPaymentRequestRepo.findOne(transReqEntry.getTranReqId());
 
 
-        logger.info("Checking limit for {}",corpPaymentRequest.getCustomerAccountNumber());
-        String limit = integrationService.getDailyAccountLimit(corpPaymentRequest.getCustomerAccountNumber(), "INTRABANK");
-        logger.info("limit:{}", limit);
-        if (corpPaymentRequest.getAmount().compareTo(new BigDecimal(limit)) == 1) {
-            throw new InternetBankingException(messageSource.getMessage("transfer.limit", null, null));
+        try{
+            String limitAmount = integrationService.getDailyAccountLimit(corpPaymentRequest.getCustomerAccountNumber(), "INTRABANK");
+            logger.info("limit {}",limitAmount);
+
+            if(corpPaymentRequest.getAmount().compareTo(new BigDecimal(limitAmount)) == 1) {
+                throw new InternetBankingException(messageSource.getMessage("transfer.limit", null, null));
+
+            }
+
+        }catch(Exception e){
+            logger.info("limit error {}",e);
         }
+
+
+
+
 
         corpPaymentRequest.setUserReferenceNumber("CORP_"+getCurrentUser().getId().toString());
         LOGGER.info("corpPayment Request:{}",corpPaymentRequest);
