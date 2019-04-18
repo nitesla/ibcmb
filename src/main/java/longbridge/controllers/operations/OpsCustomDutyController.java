@@ -2,6 +2,7 @@ package longbridge.controllers.operations;
 
 import longbridge.models.CorpPaymentRequest;
 import longbridge.services.CorpCustomDutyService;
+import longbridge.utils.CustomDutyCode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,8 +38,14 @@ logger.info("the ");
         Pageable pageable = DataTablesUtils.getPageable(input);
         logger.info("the custom duty {}",search);
         Page<CorpPaymentRequest> corpPaymentRequests =customDutyService.getPayments(pageable,search);
+        for (CorpPaymentRequest request:corpPaymentRequests) {
+            request.getCustomDutyPayment().setMessage(
+                    CustomDutyCode.getCustomDutyCodeByCodeForOPS(
+                            request.getCustomDutyPayment().getPaymentStatus()).replace("_"," "));
+        }
         DataTablesOutput<CorpPaymentRequest> dataTablesOutput =  new DataTablesOutput<>();
         dataTablesOutput.setDraw(input.getDraw());
+
         dataTablesOutput.setData(corpPaymentRequests.getContent());
         dataTablesOutput.setRecordsFiltered(corpPaymentRequests.getTotalElements());
         dataTablesOutput.setRecordsTotal(corpPaymentRequests.getTotalElements());

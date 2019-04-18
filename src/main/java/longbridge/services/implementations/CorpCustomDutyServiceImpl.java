@@ -189,12 +189,12 @@ public class CorpCustomDutyServiceImpl implements CorpCustomDutyService {
             return null;
         }
 
-//        logger.info("Checking limit for {}", assessmentDetail.getAccount());
-//        String limit =integrationService.getDailyAccountLimit(assessmentDetail.getAccount(), "INTRABANK");
-//        logger.info("limit:{}", limit);
-//        if (new BigDecimal(assessmentDetail.getResponseInfo().getTotalAmount()).compareTo(new BigDecimal(limit)) == 1) {
-//            throw new InternetBankingException(messageSource.getMessage("transfer.limit", null, null));
-//        }
+        logger.info("Checking limit for {}", assessmentDetail.getAccount());
+        String limit =integrationService.getDailyAccountLimit(assessmentDetail.getAccount(), "INTRABANK");
+        logger.info("limit:{}", limit);
+        if (new BigDecimal(assessmentDetail.getResponseInfo().getTotalAmount()).compareTo(new BigDecimal(limit)) == 1) {
+            throw new InternetBankingException(messageSource.getMessage("transfer.limit", null, null));
+        }
 
         CustomDutyPayment customDutyPayment = saveCustomDutyPayment(assessmentDetail, assessmentDetailsRequest,principal);
         CorpPaymentRequest request = saveCorpPaymentRequest( customDutyPayment, corporate,principal, false);
@@ -402,13 +402,12 @@ public class CorpCustomDutyServiceImpl implements CorpCustomDutyService {
         CorporateUser corporateUser = getCurrentUser();
         CorpPaymentRequest corpPaymentRequest = corpPaymentRequestRepo.findOne(transReqEntry.getTranReqId());
 
-//
-//        logger.info("Checking limit for {}",corpPaymentRequest.getCustomerAccountNumber());
-//        String limit = integrationService.getDailyAccountLimit(corpPaymentRequest.getCustomerAccountNumber(), "INTRABANK");
-//        logger.info("limit:{}", limit);
-//        if (corpPaymentRequest.getAmount().compareTo(new BigDecimal(limit)) == 1) {
-//            throw new InternetBankingException(messageSource.getMessage("transfer.limit", null, null));
-//        }
+        logger.info("Checking limit for {}",corpPaymentRequest.getCustomerAccountNumber());
+        String limit = integrationService.getDailyAccountLimit(corpPaymentRequest.getCustomerAccountNumber(), "INTRABANK");
+        logger.info("limit:{}", limit);
+        if (corpPaymentRequest.getAmount().compareTo(new BigDecimal(limit)) == 1) {
+            throw new InternetBankingException(messageSource.getMessage("transfer.limit", null, null));
+        }
 
         corpPaymentRequest.setUserReferenceNumber("CORP_"+getCurrentUser().getId().toString());
         LOGGER.info("corpPayment Request:{}",corpPaymentRequest);
@@ -488,10 +487,27 @@ public class CorpCustomDutyServiceImpl implements CorpCustomDutyService {
         }
     }
 
+    @Override
+    @Transactional
+    @Verifiable(operation="VIEW_CUSTOM_DUTY",description="custom duty operations")
     public String opsMakeCustomDutyPayment(CorpPaymentRequest corpPaymentRequest,Principal principal) {
+        logger.info("Retrying payment notification...");
+//        if (corpPaymentRequest.getStatus() == "00" || corpPaymentRequest.getStatus() == "000") {
+//        }
+
         CustomPaymentNotification customPaymentNotification = integrationService.opsPaymentNotification(corpPaymentRequest, principal.getName());
         if (customPaymentNotification == null) {
             return messageSource.getMessage("custom.auth.failure.reason", null, locale);
+        }
+        LOGGER.debug("CustomPaymentNotification:{}",customPaymentNotification);
+        CustomDutyPayment dutyPayment = corpPaymentRequest.getCustomDutyPayment();
+        dutyPayment.setPaymentStatus(customPaymentNotification.getCode());
+        dutyPayment.setMessage(CustomDutyCode.getCustomDutyCodeByCode(customPaymentNotification.getCode()));
+        dutyPayment.setPaymentRef(customPaymentNotification.getPaymentRef());
+        LOGGER.debug("dutyPayment:{}",dutyPayment);
+        customDutyPaymentRepo.save(dutyPayment);
+        if("00".equals(customPaymentNotification.getCode()) || "000".equals(customPaymentNotification.getCode())){ // Transfer successful
+            return messageSource.getMessage(customPaymentNotification.getMessage(), null, locale);
         }
         return messageSource.getMessage(customPaymentNotification.getMessage(), null, locale);
     }

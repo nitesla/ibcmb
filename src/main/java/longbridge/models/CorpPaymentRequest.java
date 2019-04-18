@@ -5,6 +5,7 @@ import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
+import longbridge.utils.PrettySerializer;
 import org.hibernate.annotations.Where;
 import org.hibernate.envers.Audited;
 import javax.persistence.*;
@@ -15,7 +16,7 @@ import java.util.List;
 @Entity
 @Audited(withModifiedFlag=true)
 @Where(clause ="del_Flag='N'" )
-public class CorpPaymentRequest extends TransRequest{
+public class CorpPaymentRequest extends TransRequest implements PrettySerializer {
 
     @ManyToOne
     @JsonIgnore
@@ -118,6 +119,21 @@ public class CorpPaymentRequest extends TransRequest{
                     gen.writeStringField("charge", "");
                 }
 
+                gen.writeEndObject();
+            }
+        };
+    }
+
+    @Override @JsonIgnore
+    public JsonSerializer<CorpPaymentRequest> getSerializer() {
+        return new JsonSerializer<CorpPaymentRequest>() {
+            @Override
+            public void serialize(CorpPaymentRequest value, JsonGenerator gen, SerializerProvider serializers)
+                    throws IOException, JsonProcessingException
+            {
+                gen.writeStartObject();
+                gen.writeStringField("Custom Ref",value.refCode);
+                gen.writeStringField("Status",value.status);
                 gen.writeEndObject();
             }
         };

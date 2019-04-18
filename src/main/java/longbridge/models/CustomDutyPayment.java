@@ -1,10 +1,17 @@
 package longbridge.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonSerializer;
+import com.fasterxml.jackson.databind.SerializerProvider;
+import longbridge.utils.PrettySerializer;
 import org.hibernate.annotations.Where;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
@@ -13,7 +20,7 @@ import java.util.List;
 @Audited(withModifiedFlag=true)
 @Where(clause ="del_Flag='N'" )
 //@JsonIgnoreProperties(ignoreUnknown = true)
-public class CustomDutyPayment extends AbstractEntity {
+public class CustomDutyPayment extends AbstractEntity implements PrettySerializer {
     private String dtype;
     private String transferRequestId;
     private String declarantCode;
@@ -45,7 +52,7 @@ public class CustomDutyPayment extends AbstractEntity {
     @OneToOne
     private CorpPaymentRequest corpPaymentRequest;
 
-    @OneToMany(cascade = {CascadeType.ALL})
+    @OneToMany
     private List<Tax> taxs;
 
    public CorpPaymentRequest getCorpPaymentRequest() {
@@ -314,6 +321,39 @@ public class CustomDutyPayment extends AbstractEntity {
                 ", corpPaymentRequest=" + corpPaymentRequest +
                 ", taxs=" + taxs +
                 '}';
+    }
+    @Override @JsonIgnore
+    public JsonSerializer<CustomDutyPayment> getSerializer() {
+        return new JsonSerializer<CustomDutyPayment>() {
+            @Override
+            public void serialize(CustomDutyPayment value, JsonGenerator gen, SerializerProvider serializers)
+                    throws IOException, JsonProcessingException
+            {
+                gen.writeStartObject();
+                gen.writeStringField("Custom Duty Area",value.commandDutyArea);
+                gen.writeStringField("Approval Status Description",value.approvalStatusDesc);
+                gen.writeStringField("Payment Status",value.paymentStatus);
+                gen.writeStringField("Message",value.message);
+                gen.writeEndObject();
+            }
+        };
+    }
+
+    @Override @JsonIgnore
+    public JsonSerializer<CustomDutyPayment> getAuditSerializer() {
+        return new JsonSerializer<CustomDutyPayment>() {
+            @Override
+            public void serialize(CustomDutyPayment value, JsonGenerator gen, SerializerProvider serializers)
+                    throws IOException, JsonProcessingException
+            {
+                gen.writeStartObject();
+                gen.writeStringField("Custom Duty Area",value.commandDutyArea);
+                gen.writeStringField("Approval Status Description",value.approvalStatusDesc);
+                gen.writeStringField("Payment Status",value.paymentStatus);
+                gen.writeStringField("Message",value.message);
+                gen.writeEndObject();
+            }
+        };
     }
 
 //    @Override
