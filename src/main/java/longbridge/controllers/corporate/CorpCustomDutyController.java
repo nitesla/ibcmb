@@ -225,8 +225,8 @@ public class CorpCustomDutyController {
     public String payment(@PathVariable Long id, Principal principal){
 
         CorpPaymentRequest corpPaymentRequest = customDutyService.getPayment(id);
-        CustomDutyPayment dutyPayment = corpPaymentRequest.getCustomDutyPayment();
-        LOGGER.info("dutyPayment:{}",dutyPayment);
+//        CustomDutyPayment dutyPayment = corpPaymentRequest.getCustomDutyPayment();
+//        LOGGER.info("dutyPayment:{}",dutyPayment);
         try {
             LOGGER.info("the id {}",id);
             return customDutyService.opsMakeCustomDutyPayment(corpPaymentRequest,principal);

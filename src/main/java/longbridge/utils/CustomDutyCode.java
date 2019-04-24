@@ -98,4 +98,15 @@ public enum CustomDutyCode {
         return SYSTEM_FAILURE.toString();
     }
 
+    public static String getCustomDutyCodeByCodeForOPS(String code){
+        CustomDutyCode[] codes = CustomDutyCode.values();
+        for (CustomDutyCode customDutyCode:codes) {
+            if(customDutyCode.getCode().equals(code)){
+                return customDutyCode.name();
+            }
+        }
+        return SYSTEM_FAILURE.name();
+    }
+
+
 }
