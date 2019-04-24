@@ -1199,10 +1199,14 @@ public class CorporateUserServiceImpl implements CorporateUserService {
                         break;
                     default:
                         break;
-                }
+
+
+                }                    logger.info("not restricted {}",accountPermissions);
+
             } else {
                 AccountPermissionDTO permission = new AccountPermissionDTO(account, AccountPermissionDTO.Permission.VIEW_AND_TRANSACT);
                 accountPermissions.add(permission);
+                logger.info("restricted {}",accountPermissions);
             }
 
         }

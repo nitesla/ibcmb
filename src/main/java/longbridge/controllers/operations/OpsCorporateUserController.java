@@ -304,16 +304,25 @@ public class OpsCorporateUserController {
         boolean permissionChanged = false;
 
         List<AccountPermissionDTO> existingPermissions = corporateUserService.getAccountPermissions(corporateUserDTO.getId());
-
+        logger.info("existing PermissionsOld {}",existingPermissions);
+        List<AccountPermissionDTO> removePermissions=new ArrayList<>();
         for (AccountPermissionDTO accountPermission : existingPermissions) {
+            try {
+                AccountPermissionDTO.Permission currentPermission = AccountPermissionDTO.Permission.valueOf(request.getParameter(accountPermission.getAccountNumber()));
 
-            AccountPermissionDTO.Permission currentPermission = AccountPermissionDTO.Permission.valueOf(request.getParameter(accountPermission.getAccountNumber()));
+                if (currentPermission != accountPermission.getPermission()) {
+                    permissionChanged = true;
+                    accountPermission.setPermission(currentPermission);
+                }
+            }catch(NullPointerException e){
+                removePermissions.add(accountPermission);
+                logger.info("remove permission {}",removePermissions);
 
-            if (currentPermission != accountPermission.getPermission()) {
-                permissionChanged = true;
-                accountPermission.setPermission(currentPermission);
             }
         }
+        if(removePermissions.size()>-1) existingPermissions.removeAll(removePermissions);
+        logger.info("existing PermissionsNew {}",existingPermissions);
+
         corporateUserDTO.setAccountPermissions(existingPermissions);
         if (permissionChanged) {
             try {

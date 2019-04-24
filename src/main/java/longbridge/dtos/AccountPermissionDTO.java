@@ -29,11 +29,12 @@ public class AccountPermissionDTO {
         if (this == o) return true;
         if (!(o instanceof AccountPermissionDTO)) return false;
 
+
         AccountPermissionDTO that = (AccountPermissionDTO) o;
+        if(accountNumber==null)return true;//included by gb
 
         return accountNumber.equals(that.accountNumber);
     }
-
     @Override
     public int hashCode() {
         return accountNumber.hashCode();
