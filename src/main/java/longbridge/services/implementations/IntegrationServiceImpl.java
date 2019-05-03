@@ -855,7 +855,7 @@ public class IntegrationServiceImpl implements IntegrationService {
 			Map<String,Object> request = new HashMap<>();
 			request.put("appId",appId);
 			request.put("hash",EncryptionUtil.getSHA512(
-					appId + corpPaymentRequest.getReferenceNumber() + corpPaymentRequest.getAmount().setScale(2,BigDecimal.ROUND_HALF_UP) + secretKey, null));
+					appId + corpPaymentRequest.getReferenceNumber() + corpPaymentRequest.getAmount() + secretKey, null));
 			request.put("TranId",corpPaymentRequest.getCustomDutyPayment().getTranId());
 			request.put("Amount",corpPaymentRequest.getAmount().toPlainString());
 			request.put("LastAuthorizer",userName);
