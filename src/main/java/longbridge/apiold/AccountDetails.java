@@ -9,7 +9,6 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 public class AccountDetails {
 
     private String solId;
-    private String acctId;
     private String acctOpenDate;
     private String acctCrncyCode;
     private String freezeCode;
@@ -30,13 +29,6 @@ public class AccountDetails {
     public AccountDetails() {
     }
 
-    public String getAcctId() {
-        return acctId;
-    }
-
-    public void setAcctId(String acctId) {
-        this.acctId = acctId;
-    }
 
     public boolean isRetail() {
         return isRetail;
@@ -177,7 +169,6 @@ public class AccountDetails {
     public String toString() {
         return "AccountDetails{" +
                 "solId='" + solId + '\'' +
-                ", acctId='" + acctId + '\'' +
                 ", acctOpenDate='" + acctOpenDate + '\'' +
                 ", acctCrncyCode='" + acctCrncyCode + '\'' +
                 ", freezeCode='" + freezeCode + '\'' +

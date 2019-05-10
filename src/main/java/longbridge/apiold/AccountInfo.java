@@ -10,7 +10,6 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 public class AccountInfo
 {
 
-    private String accountId;
     private String accountNumber;
     private String accountCurrency;
     private String accountOpenDate;
@@ -27,8 +26,7 @@ public class AccountInfo
     private  String drawingPower;
 
 
-    public AccountInfo(String accountId, String accountNumber, String accountCurrency, String accountOpenDate, String accountName, String accountStatus, String customerId, String schemeType, String schemeCode, String solId, String freezeCode, String availableBalance, String bookBalance, String sanctionLimit, String drawingPower) {
-        this.accountId = accountId;
+    public AccountInfo(String accountNumber, String accountCurrency, String accountOpenDate, String accountName, String accountStatus, String customerId, String schemeType, String schemeCode, String solId, String freezeCode, String availableBalance, String bookBalance, String sanctionLimit, String drawingPower) {
         this.accountNumber = accountNumber;
         this.accountCurrency = accountCurrency;
         this.accountOpenDate = accountOpenDate;
@@ -49,13 +47,6 @@ public class AccountInfo
     public AccountInfo() {
     }
 
-    public String getAccountId() {
-        return accountId;
-    }
-
-    public void setAccountId(String accountId) {
-        this.accountId = accountId;
-    }
 
     public String getAccountNumber() {
         return accountNumber;
@@ -172,8 +163,7 @@ public class AccountInfo
     @Override
     public String toString() {
         return "AccountInfo{" +
-                "accountId='" + accountId + '\'' +
-                ", accountNumber='" + accountNumber + '\'' +
+                "accountNumber='" + accountNumber + '\'' +
                 ", accountCurrency='" + accountCurrency + '\'' +
                 ", accountOpenDate='" + accountOpenDate + '\'' +
                 ", accountName='" + accountName + '\'' +

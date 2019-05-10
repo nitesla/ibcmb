@@ -40,19 +40,19 @@ public class UserController {
             logger.debug("Omni-channel: Response for customer info request: {}", customerInfo);
             return new ResponseEntity<>(customerInfo, new HttpHeaders(),HttpStatus.OK);
         } catch (UserNotFoundException ex) {
-            logger.error("Omni-channel: User could not be found {}", ex.getMessage());
+            logger.error("Omni-channel: User could not be found", ex.getMessage());
             return new ResponseEntity<>(new ApiError(ex.getMessage()), new HttpHeaders(), HttpStatus.NOT_FOUND);
         } catch (WrongPasswordException ex) {
-            logger.error("Omni-channel: Incorrect password provided {}", ex.getMessage());
+            logger.error("Omni-channel: Incorrect password provided", ex.getMessage());
             return new ResponseEntity<>(new ApiError(ex.getMessage()), new HttpHeaders(), HttpStatus.NOT_FOUND);
 
         }
         catch (InternetBankingException ibe) {
-            logger.error("Omni-channel: Error processing request {}", ibe.getMessage());
+            logger.error("Omni-channel: Error processing request", ibe.getMessage());
             return new ResponseEntity<>(new ApiError(ibe.getMessage()), new HttpHeaders(), HttpStatus.BAD_REQUEST);
 
         } catch (Exception e) {
-            logger.error("Omni-channel: Error processing request {}", e);
+            logger.error("Omni-channel: Error processing request", e);
             return new ResponseEntity<>(new ApiError(e.getMessage()), new HttpHeaders(), HttpStatus.BAD_REQUEST);
         }
     }
