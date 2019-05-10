@@ -6,10 +6,7 @@ import io.swagger.annotations.ApiParam;
 import longbridge.apiLayer.data.ResponseData;
 import longbridge.dtos.SettingDTO;
 import longbridge.dtos.TransferRequestDTO;
-import longbridge.exception.InternetBankingException;
-import longbridge.exception.InternetBankingSecurityException;
-import longbridge.exception.InternetBankingTransferException;
-import longbridge.exception.TransferErrorService;
+import longbridge.exception.*;
 import longbridge.models.Account;
 import longbridge.models.FinancialInstitution;
 import longbridge.models.RetailUser;
@@ -124,7 +121,7 @@ public class MobileOwnTransferController {
 
     @ApiOperation(value = "Own Transfer")
     @PostMapping(value = "/process")
-    public ResponseEntity <?> ownTransfer(@ApiParam(" Retail Transfer Request DTO")@RequestBody TransferRequestDTO transferRequestDTO, Principal principal, Locale locale){
+    public ResponseEntity <?> ownTransfer(@ApiParam(" Retail Transfer Request DTO")@RequestBody TransferRequestDTO transferRequestDTO, Principal principal, Locale locale) throws TransferException {
 
         String errorMessage;
         String tokenCode = transferRequestDTO.getToken();

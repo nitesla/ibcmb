@@ -76,6 +76,10 @@ public interface RetailUserService {
 
 //    String setPassword(RetailUser user, String password) throws PasswordException;
 
+    /*
+   Mobile Users password reset
+    */
+String resetPasswordMobileUser(RetailUser user, CustResetPassword custResetPassword);
 
     //@PreAuthorize("hasAuthority('UPDATE_RETAIL_USER')")
     String resetPassword(RetailUser user, CustResetPassword custResetPassword);

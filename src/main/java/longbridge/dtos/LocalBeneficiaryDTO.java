@@ -22,6 +22,17 @@ public class LocalBeneficiaryDTO implements Serializable{
     @NotEmpty(message = "Please enter a Beneficiary Bank")
     private String beneficiaryBank;
     private String preferredName;
+    private String token;
+
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
+    }
+
 
 
     public Long getId() {

@@ -263,7 +263,7 @@ public class TransferController {
                     LocalBeneficiaryDTO l = (LocalBeneficiaryDTO) request.getSession().getAttribute("Lbeneficiary");
                     RetailUser user = retailUserService.getUserByName(principal.getName());
                     try {
-                        localBeneficiaryService.addLocalBeneficiary(user, l);
+                        localBeneficiaryService.addLocalBeneficiary( l);
                         request.getSession().removeAttribute("Lbeneficiary");
                         request.getSession().removeAttribute("add");
                         // model.addAttribute("beneficiary", l);
@@ -316,7 +316,7 @@ public class TransferController {
             if (request.getSession().getAttribute("Lbeneficiary") != null) {
                 RetailUser user = retailUserService.getUserByName(principal.getName());
                 LocalBeneficiaryDTO l = (LocalBeneficiaryDTO) request.getSession().getAttribute("Lbeneficiary");
-                localBeneficiaryService.addLocalBeneficiary(user, l);
+                localBeneficiaryService.addLocalBeneficiary(l);
                 request.getSession().removeAttribute("Lbeneficiary");
             }
 

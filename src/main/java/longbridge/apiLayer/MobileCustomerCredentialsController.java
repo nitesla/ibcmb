@@ -12,6 +12,7 @@ import longbridge.models.Corporate;
 import longbridge.models.CorporateUser;
 import longbridge.models.RetailUser;
 import longbridge.services.*;
+import longbridge.services.UserRetrievalService;
 import longbridge.utils.StringUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -276,7 +277,6 @@ public class MobileCustomerCredentialsController {
                             responseData.setCode("99");
                             return new ResponseEntity<Object>(responseData, HttpStatus.BAD_REQUEST);
                         }
-
 
                     }
 

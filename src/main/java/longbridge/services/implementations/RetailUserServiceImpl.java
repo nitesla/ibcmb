@@ -6,6 +6,7 @@ import longbridge.api.AccountInfo;
 import longbridge.api.CustomerDetails;
 import longbridge.api.omnichannel.dto.CustomerInfo;
 import longbridge.api.omnichannel.dto.RetailUserCredentials;
+import longbridge.apiLayer.models.WebhookResponse;
 import longbridge.dtos.AccountDTO;
 import longbridge.dtos.RetailUserDTO;
 import longbridge.dtos.SettingDTO;
@@ -18,6 +19,7 @@ import longbridge.repositories.RetailUserRepo;
 import longbridge.security.FailedLoginService;
 import longbridge.services.*;
 import longbridge.utils.DateFormatter;
+import longbridge.utils.RetailWebHook;
 import longbridge.utils.Verifiable;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
@@ -48,6 +50,11 @@ public class RetailUserServiceImpl implements RetailUserService {
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
+    @Value("${WEBHOOK.URL}")
+    private String webhookUrl;
+    @Value("${WEBHOOK.header}")
+    private String webhookAuthKey;
+
     @Autowired
     private RetailUserRepo retailUserRepo;
     @Autowired
@@ -67,6 +74,10 @@ public class RetailUserServiceImpl implements RetailUserService {
 
     @Autowired
     private FailedLoginService failedLoginService;
+
+    @Autowired
+    private RetailWebHook retailWebHook;
+
 
     private Locale locale = LocaleContextHolder.getLocale();
 
@@ -514,6 +525,72 @@ public class RetailUserServiceImpl implements RetailUserService {
             throw new PasswordException(messageSource.getMessage("password.change.failure", null, locale), e);
         }
     }
+ /*
+    Mobile Users password reset
+     */
+
+    @Transactional
+    @Override
+    public String resetPasswordMobileUser(RetailUser user, CustResetPassword custResetPassword) {
+        String message;
+
+        String errorMessage = passwordPolicyService.validate(custResetPassword.getNewPassword(), user);
+        if (!"".equals(errorMessage)) {
+            logger.info("Password violation");
+            throw new PasswordPolicyViolationException(errorMessage);
+        }
+
+        if (!custResetPassword.getNewPassword().equals(custResetPassword.getConfirmPassword())) {
+            logger.info("Password mismatch");
+            throw new PasswordMismatchException();
+        }
+
+        try {
+            RetailUser retailUser = retailUserRepo.findOne(user.getId());
+            String encodedPassword =  this.passwordEncoder.encode(custResetPassword.getNewPassword());
+            retailUser.setPassword(encodedPassword);
+            retailUser.setExpiryDate(passwordPolicyService.getPasswordExpiryDate());
+            retailUser.setTempPassword(null);
+            passwordPolicyService.saveRetailPassword(retailUser);
+            this.retailUserRepo.save(retailUser);
+
+            WebhookResponse webhookResponse = retailWebHook.pushToWebHook(retailUser);
+            logger.info("Webhook Response {} ", webhookResponse);
+
+            if(webhookResponse.getCode().equalsIgnoreCase("0")){
+
+                return messageSource.getMessage("password.change.success", null, locale);
+            }
+            else if ((webhookResponse.getCode().equalsIgnoreCase("20"))){
+                message =webhookResponse.getDescription();
+                return message;
+
+            }
+            else if ((webhookResponse.getCode().equalsIgnoreCase("40"))){
+                message =webhookResponse.getDescription();
+                return message;
+
+            }
+            else if ((webhookResponse.getCode().equalsIgnoreCase("99"))){
+                message =webhookResponse.getDescription();
+                return message;
+
+            }
+            else if ((webhookResponse.getCode().equalsIgnoreCase("10"))){
+                message =webhookResponse.getDescription();
+                return message;
+
+            }
+            logger.info("User {} password has been updated", user.getId());
+            return messageSource.getMessage("password.change.failure", null, locale);
+        } catch (MailException me) {
+            throw new InternetBankingException(messageSource.getMessage("mail.failure", null, locale), me);
+        } catch (Exception e) {
+            throw new PasswordException(messageSource.getMessage("password.change.failure", null, locale), e);
+        }
+    }
+
+
 
     @Override
     public String changePassword(RetailUser user, CustChangePassword changePassword) throws PasswordException {

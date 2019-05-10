@@ -7,10 +7,7 @@ import longbridge.apiLayer.data.ResponseData;
 import longbridge.dtos.*;
 import longbridge.dtos.apidtos.MobileAccountDTO;
 import longbridge.dtos.apidtos.MobileRetailBeneficiaryDTO;
-import longbridge.exception.InternetBankingException;
-import longbridge.exception.InternetBankingSecurityException;
-import longbridge.exception.InternetBankingTransferException;
-import longbridge.exception.TransferErrorService;
+import longbridge.exception.*;
 import longbridge.models.*;
 import longbridge.services.*;
 import longbridge.utils.TransferType;
@@ -193,7 +190,7 @@ public class MobileLocalTransferController {
 
     @ApiOperation(value = "CMB Transfer")
     @PostMapping(value = "/process")
-    public ResponseEntity<?> intrabankTransfer (@RequestBody TransferRequestDTO transferRequestDTO, Principal principal, Locale locale) {
+    public ResponseEntity<?> intrabankTransfer (@RequestBody TransferRequestDTO transferRequestDTO, Principal principal, Locale locale) throws TransferException {
         String errorMessage;
         String token= transferRequestDTO.getToken();
         String msg;

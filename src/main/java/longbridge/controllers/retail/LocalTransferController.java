@@ -66,7 +66,7 @@ public class LocalTransferController {
         try {
             transferUtils.validateTransferCriteria();
             RetailUser retailUser = retailUserService.getUserByName(principal.getName());
-            Iterable<LocalBeneficiary> cmbBeneficiaries = localBeneficiaryService.getBankBeneficiaries(retailUser);
+            Iterable<LocalBeneficiary> cmbBeneficiaries = localBeneficiaryService.getBankBeneficiaries();
 
             List<LocalBeneficiary> beneficiaries = StreamSupport.stream(cmbBeneficiaries.spliterator(), false)
                     .collect(Collectors.toList());

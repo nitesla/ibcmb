@@ -44,7 +44,7 @@ public interface CorpLocalBeneficiaryService {
      * @return a list of the beneficiaries
      */
     @PreAuthorize("hasAuthority('GET_BENEFICIARIES')")
-    Iterable<CorpLocalBeneficiary> getCorpLocalBeneficiaries(Corporate corporate);
+    Iterable<CorpLocalBeneficiary> getCorpLocalBeneficiaries();
 
     List<CorpLocalBeneficiaryDTO> convertEntitiesToDTOs(Iterable<CorpLocalBeneficiary> corpLocalBeneficiaries);
 

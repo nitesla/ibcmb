@@ -8,10 +8,7 @@ import longbridge.dtos.LocalBeneficiaryDTO;
 import longbridge.dtos.SettingDTO;
 import longbridge.dtos.TransferRequestDTO;
 import longbridge.dtos.apidtos.MobileRetailBeneficiaryDTO;
-import longbridge.exception.InternetBankingException;
-import longbridge.exception.InternetBankingSecurityException;
-import longbridge.exception.InternetBankingTransferException;
-import longbridge.exception.TransferErrorService;
+import longbridge.exception.*;
 import longbridge.models.Account;
 import longbridge.models.FinancialInstitution;
 import longbridge.models.LocalBeneficiary;
@@ -199,7 +196,7 @@ public class MobileInterBankTransferController {
 
     @ApiOperation(value = "Retail Inter Transfer")
     @PostMapping(value = "/nip")
-    public ResponseEntity<?> interbankTransfer (@RequestBody TransferRequestDTO transferRequestDTO, Principal principal, Locale locale) {
+    public ResponseEntity<?> interbankTransfer (@RequestBody TransferRequestDTO transferRequestDTO, Principal principal, Locale locale) throws TransferException {
         String errorMessage;
         String tokenCode = transferRequestDTO.getToken();
 

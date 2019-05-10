@@ -120,7 +120,7 @@ public interface CorporateUserService{
      */
     @PreAuthorize("hasAuthority('UPDATE_CORPORATE_USER')")
     String changePassword(CorporateUser user, CustChangePassword changePassword) throws PasswordException;
-
+    String resetPasswordForMobileUsers(CorporateUser user, CustResetPassword changePassword);
 
     boolean userExists(String username);
 

@@ -9,6 +9,7 @@ import longbridge.models.RetailUser;
 import longbridge.models.User;
 import longbridge.repositories.FinancialInstitutionRepo;
 import longbridge.repositories.LocalBeneficiaryRepo;
+import longbridge.security.userdetails.CustomUserPrincipal;
 import longbridge.services.ConfigurationService;
 import longbridge.services.IntegrationService;
 import longbridge.services.LocalBeneficiaryService;
@@ -21,6 +22,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.scheduling.annotation.Async;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
@@ -61,20 +65,48 @@ public class LocalBeneficiaryServiceImpl implements LocalBeneficiaryService {
     }
 
     @Override
-    public String addLocalBeneficiary(RetailUser user, LocalBeneficiaryDTO beneficiary) throws InternetBankingException {
+    public String addLocalBeneficiaryMobileApi(LocalBeneficiaryDTO beneficiary) throws InternetBankingException {
 
         try {
             LocalBeneficiary localBeneficiary = convertDTOToEntity(beneficiary);
-            localBeneficiary.setUser(user);
-            validateBeneficiary(localBeneficiary, user);
+            localBeneficiary.setUser(getCurrentUser());
+            validateBeneficiary(localBeneficiary);
             localBeneficiaryRepo.save(localBeneficiary);
-            logger.trace("Beneficiary {} has been added", localBeneficiary.toString());
+            logger.debug("Beneficiary {} has been added", localBeneficiary.toString());
+            User user=getCurrentUser();
+            user.setEmailTemplate("mail/beneficiaryMobile.html");
             sendAlert(user,beneficiary.getAccountName());
             return messageSource.getMessage("beneficiary.add.success", null, locale);
-        } catch (Exception e) {
-            //throw new InternetBankingException(messageSource.getMessage("beneficiary.add.failure",null, locale), e);
-            e.printStackTrace();
-            throw new InternetBankingException(e.getMessage(),e);
+        } catch (DuplicateObjectException e) {
+            //throw new DuplicateObjectException("beneficiary.exist");
+            return messageSource.getMessage("beneficiary.exist", null, locale);
+        }
+        catch (Exception e) {
+            throw new InternetBankingException(messageSource.getMessage("beneficiary.add.failure",null, locale), e);
+        }
+
+
+    }
+
+    @Override
+    public String addLocalBeneficiary(LocalBeneficiaryDTO beneficiary) throws InternetBankingException {
+
+        try {
+            LocalBeneficiary localBeneficiary = convertDTOToEntity(beneficiary);
+            localBeneficiary.setUser(getCurrentUser());
+            validateBeneficiary(localBeneficiary);
+            localBeneficiaryRepo.save(localBeneficiary);
+            logger.debug("Beneficiary {} has been added", localBeneficiary.toString());
+            User user=getCurrentUser();
+            user.setEmailTemplate("mail/beneficiary.html");
+            sendAlert(user,beneficiary.getAccountName());
+            return messageSource.getMessage("beneficiary.add.success", null, locale);
+        } catch (DuplicateObjectException e) {
+            //throw new DuplicateObjectException("beneficiary.exist");
+            return messageSource.getMessage("beneficiary.exist", null, locale);
+        }
+        catch (Exception e) {
+            throw new InternetBankingException(messageSource.getMessage("beneficiary.add.failure",null, locale), e);
         }
 
 
@@ -98,14 +130,20 @@ public class LocalBeneficiaryServiceImpl implements LocalBeneficiaryService {
         return localBeneficiaryRepo.findOne(id);
     }
 
-    @Override
+    /*@Override
     public Iterable<LocalBeneficiary> getLocalBeneficiaries(RetailUser user) {
         return localBeneficiaryRepo.findByUserAndBeneficiaryBankIsNotNull(user);
     }
+*/
+    @Override
+    public Iterable<LocalBeneficiary> getLocalBeneficiaries() {
+        return localBeneficiaryRepo.findByUserAndBeneficiaryBankIsNotNull(getCurrentUser());
+    }
+
 
     @Override
-    public Iterable<LocalBeneficiary> getBankBeneficiaries(RetailUser user) {
-        return localBeneficiaryRepo.findByUserAndBeneficiaryBankIgnoreCase(user,bankCode );
+    public Iterable<LocalBeneficiary> getBankBeneficiaries() {
+        return localBeneficiaryRepo.findByUserAndBeneficiaryBankIgnoreCase(getCurrentUser(),bankCode );
     }
 
     @Override
@@ -139,8 +177,23 @@ public class LocalBeneficiaryServiceImpl implements LocalBeneficiaryService {
         return modelMapper.map(localBeneficiaryDTO, LocalBeneficiary.class);
     }
 
-    private void validateBeneficiary(LocalBeneficiary localBeneficiary, User user) {
+   /* private void validateBeneficiary(LocalBeneficiary localBeneficiary, User user) {
         if (localBeneficiaryRepo.findByUser_IdAndAccountNumber(user.getId(), localBeneficiary.getAccountNumber()) != null)
+            throw new DuplicateObjectException("beneficiary.exist");
+
+        if (financialInstitutionRepo.findByInstitutionCode(localBeneficiary.getBeneficiaryBank())==null)
+            throw new InternetBankingException("transfer.beneficiary.invalid");
+
+     *//* if (!bankCode.equalsIgnoreCase(localBeneficiary.getBeneficiaryBank())){
+          logger.error("local beneficiary is "+localBeneficiary);
+          NEnquiryDetails details=integrationService.doNameEnquiry(localBeneficiary.getBeneficiaryBank(), localBeneficiary.getAccountNumber());
+          if (details==null || details.getAccountName()==null )
+              throw new InternetBankingException("transfer.beneficiary.invalid");
+      }*//*
+    }
+*/
+    private void validateBeneficiary(LocalBeneficiary localBeneficiary) {
+        if (localBeneficiaryRepo.findByUser_IdAndAccountNumber(getCurrentUser().getId(), localBeneficiary.getAccountNumber()) != null)
             throw new DuplicateObjectException("beneficiary.exist");
 
         if (financialInstitutionRepo.findByInstitutionCode(localBeneficiary.getBeneficiaryBank())==null)
@@ -199,5 +252,19 @@ public class LocalBeneficiaryServiceImpl implements LocalBeneficiaryService {
                 .build();
         mailService.sendMail(email,context);
     }
+
+    public RetailUser getCurrentUser(){
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (!(authentication instanceof AnonymousAuthenticationToken)) {
+            CustomUserPrincipal userPrincipal =(CustomUserPrincipal) authentication.getPrincipal();
+            return (RetailUser)userPrincipal.getUser();
+        }
+
+        return (null) ;
+
+
+    }
+
 
 }

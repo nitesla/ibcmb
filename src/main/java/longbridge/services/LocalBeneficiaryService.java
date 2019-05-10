@@ -25,7 +25,10 @@ public interface LocalBeneficiaryService {
      * @param  beneficiary  the beneficiary
      */
     @PreAuthorize("hasAuthority('ADD_BENEFICIARY')")
-    String addLocalBeneficiary(RetailUser user, LocalBeneficiaryDTO beneficiary);
+    String addLocalBeneficiary(LocalBeneficiaryDTO beneficiary);
+
+    @PreAuthorize("hasAuthority('ADD_BENEFICIARY')")
+    String addLocalBeneficiaryMobileApi(LocalBeneficiaryDTO beneficiary);
 
     /**
      * Deletes a beneficiary that has been created by the user
@@ -49,8 +52,9 @@ public interface LocalBeneficiaryService {
      * @return a list of the beneficiaries
      */
     @PreAuthorize("hasAuthority('GET_BENEFICIARIES')")
-    Iterable<LocalBeneficiary> getLocalBeneficiaries(RetailUser user);
-    Iterable<LocalBeneficiary> getBankBeneficiaries(RetailUser user);
+    Iterable<LocalBeneficiary> getLocalBeneficiaries();
+//    List<LocalBeneficiary> getLocalBeneficiaries();
+    Iterable<LocalBeneficiary> getBankBeneficiaries();
 
     boolean doesBeneficiaryExist(RetailUser user, LocalBeneficiaryDTO beneficiaryDTO);
 

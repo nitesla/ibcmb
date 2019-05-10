@@ -3,22 +3,25 @@ package longbridge.services.implementations;
 import longbridge.dtos.CorpLocalBeneficiaryDTO;
 import longbridge.exception.DuplicateObjectException;
 import longbridge.exception.InternetBankingException;
-import longbridge.models.CorpLocalBeneficiary;
-import longbridge.models.Corporate;
+import longbridge.models.*;
 import longbridge.repositories.CorpLocalBeneficiaryRepo;
 import longbridge.repositories.CorporateRepo;
 import longbridge.security.userdetails.CustomUserPrincipal;
 import longbridge.services.CorpLocalBeneficiaryService;
+import longbridge.services.IntegrationService;
+import longbridge.services.MailService;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.thymeleaf.context.Context;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,6 +44,12 @@ public class CorpLocalBeneficiaryServiceImpl implements CorpLocalBeneficiaryServ
     @Autowired
     private MessageSource messageSource;
 
+    @Autowired
+    private IntegrationService integrationService;
+
+    @Autowired
+    private MailService mailService;
+
     private Locale locale = LocaleContextHolder.getLocale();
 
     @Autowired
@@ -50,24 +59,27 @@ public class CorpLocalBeneficiaryServiceImpl implements CorpLocalBeneficiaryServ
     }
 
 
+
     @Override
     public String addCorpLocalBeneficiary(CorpLocalBeneficiaryDTO beneficiary) {
 
 
-       try{
-           validateBeneficiary(beneficiary);
-           CorpLocalBeneficiary corpLocalBeneficiary=convertDTOToEntity(beneficiary);
+        try{
+            validateBeneficiary(beneficiary);
+            CorpLocalBeneficiary corpLocalBeneficiary=convertDTOToEntity(beneficiary);
 
-           Corporate corporate= corporateRepo.findOne(getCurrentUser().getCorpId());
-           corpLocalBeneficiary.setCorporate(corporate);
-           this.corpLocalBeneficiaryRepo.save(corpLocalBeneficiary);
-           logger.info("Beneficiary {} has been added", corpLocalBeneficiary.getAccountName());
-           return messageSource.getMessage("beneficiary.add.success",null,locale);
+            Corporate corporate= getCurrentUser().getCorporate();
+            corpLocalBeneficiary.setCorporate(corporate);
+            this.corpLocalBeneficiaryRepo.save(corpLocalBeneficiary);
+            sendAlert(getCurrentUser(),beneficiary.getAccountName());
+            logger.info("Beneficiary {} has been added", corpLocalBeneficiary.getAccountName());
+            logger.info("account number is {}" , corpLocalBeneficiary.getAccountName());
+            return messageSource.getMessage("beneficiary.add.success",null,locale);
 
 
-       }catch (Exception e){
-           throw new InternetBankingException(e.getMessage());
-       }
+        }catch (Exception e){
+            throw new InternetBankingException(e.getMessage());
+        }
 
     }
 
@@ -84,9 +96,54 @@ public class CorpLocalBeneficiaryServiceImpl implements CorpLocalBeneficiaryServ
         return corpLocalBeneficiaryRepo.findOne(id);
     }
 
+
+
     @Override
-    public Iterable<CorpLocalBeneficiary> getCorpLocalBeneficiaries(Corporate corporate) {
-        return corpLocalBeneficiaryRepo.findByCorporate(corporate);
+    public Iterable<CorpLocalBeneficiary> getCorpLocalBeneficiaries() {
+        return corpLocalBeneficiaryRepo.findByCorporate(getCurrentUser().getCorporate());
+
+    }
+
+    @Async
+    private  void sendAlert(User user , String beneficiary) {
+        try {
+            if (true) {
+                String preference = user.getAlertPreference().getCode();
+                String customerName = user.getFirstName()+" "+user.getLastName();
+                String smsMessage = String.format(messageSource.getMessage("beneficiary.alert.message", null, locale),customerName,beneficiary);
+
+                String alertSubject = String.format(messageSource.getMessage("beneficiary.alert.subject", null, locale));
+                if ("SMS".equalsIgnoreCase(preference)) {
+                    integrationService.sendSMS(smsMessage,user.getPhoneNumber(),  alertSubject);
+
+                } else if ("EMAIL".equalsIgnoreCase(preference)) {
+                    sendMail(user,alertSubject,beneficiary);
+
+                } else if ("BOTH".equalsIgnoreCase(preference)) {
+
+                    integrationService.sendSMS(smsMessage,user.getPhoneNumber(),  alertSubject);
+                    sendMail(user,alertSubject,beneficiary);
+                }
+
+            }
+        } catch (Exception e) {
+            logger.error("Error occurred", e);
+        }
+
+    }
+
+    private void sendMail(User user, String subject, String beneficiary){
+
+        String fullName = user.getFirstName()+" "+user.getLastName();
+        Context context = new Context();
+        context.setVariable("fullName",fullName);
+        context.setVariable("beneficiaryName",beneficiary);
+
+        Email email = new Email.Builder().setRecipient(user.getEmail())
+                .setSubject(subject)
+                .setTemplate("mail/beneficiary.html")
+                .build();
+        mailService.sendMail(email,context);
 
     }
 
@@ -122,9 +179,10 @@ public class CorpLocalBeneficiaryServiceImpl implements CorpLocalBeneficiaryServ
         return  corpLocalBeneficiary;
 
     }
+
     private void validateBeneficiary(CorpLocalBeneficiaryDTO beneficiary) {
 
-        if (corpLocalBeneficiaryRepo.existsByCorporate_IdAndAccountNumber(getCurrentUser().getCorpId(),beneficiary.getAccountNumber()))
+        if (corpLocalBeneficiaryRepo.existsByCorporate_IdAndAccountNumber(getCurrentUser().getCorporate().getId(),beneficiary.getAccountNumber()))
             throw new DuplicateObjectException("beneficiary.exist");
 /*
         if (financialInstitutionRepo.findByInstitutionCode(beneficiary.getBeneficiaryBank())==null)
@@ -136,18 +194,17 @@ public class CorpLocalBeneficiaryServiceImpl implements CorpLocalBeneficiaryServ
     */
     }
 
-   private CustomUserPrincipal getCurrentUser(){
+    public CorporateUser getCurrentUser(){
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (!(authentication instanceof AnonymousAuthenticationToken)) {
+            CustomUserPrincipal userPrincipal =(CustomUserPrincipal) authentication.getPrincipal();
+            return (CorporateUser)userPrincipal.getUser();
+        }
+
+        return (null) ;
 
 
-       Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-       if (!(authentication instanceof AnonymousAuthenticationToken)) {
-           CustomUserPrincipal userPrincipal =(CustomUserPrincipal) authentication.getPrincipal();
-           return userPrincipal;
-       }
-
-       return (null) ;
-
-
-   }
+    }
 
 }

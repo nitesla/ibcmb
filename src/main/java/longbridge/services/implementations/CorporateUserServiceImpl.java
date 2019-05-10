@@ -1,6 +1,7 @@
 
 package longbridge.services.implementations;
 
+import longbridge.apiLayer.models.WebhookResponse;
 import longbridge.dtos.*;
 import longbridge.exception.*;
 import longbridge.forms.AlertPref;
@@ -11,6 +12,7 @@ import longbridge.repositories.*;
 import longbridge.security.FailedLoginService;
 import longbridge.security.userdetails.CustomUserPrincipal;
 import longbridge.services.*;
+import longbridge.utils.CorporateWebhook;
 import longbridge.utils.DateFormatter;
 import longbridge.utils.Verifiable;
 import org.apache.commons.lang3.StringUtils;
@@ -85,6 +87,10 @@ public class CorporateUserServiceImpl implements CorporateUserService {
 
     @Value("${host.url}")
     private String hostUrl;
+
+    @Autowired
+    private CorporateWebhook corporateWebhook;
+
 
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -673,6 +679,8 @@ public class CorporateUserServiceImpl implements CorporateUserService {
     }
 
 
+
+
     @Override
     public String resetPassword(CorporateUser user, CustResetPassword changePassword) {
 
@@ -695,6 +703,62 @@ public class CorporateUserServiceImpl implements CorporateUserService {
             throw new PasswordException(messageSource.getMessage("password.change.failure", null, locale), e);
         }
     }
+
+
+    @Transactional
+    @Override
+    public String resetPasswordForMobileUsers(CorporateUser user, CustResetPassword changePassword) {
+        String message;
+
+        String errorMessage = passwordPolicyService.validate(changePassword.getNewPassword(), user);
+        if (!"".equals(errorMessage)) {
+            throw new PasswordPolicyViolationException(errorMessage);
+        }
+        if (!changePassword.getNewPassword().equals(changePassword.getConfirmPassword())) {
+            throw new PasswordMismatchException();
+        }
+        try {
+            CorporateUser corporateUser = corporateUserRepo.getOne(user.getId());
+            corporateUser.setPassword(this.passwordEncoder.encode(changePassword.getNewPassword()));
+            corporateUser.setExpiryDate(passwordPolicyService.getPasswordExpiryDate());
+            passwordPolicyService.saveCorporatePassword(corporateUser);
+            corporateUserRepo.save(corporateUser);
+
+            //push request to webhook
+            WebhookResponse webhookResponse = corporateWebhook.pushToWebHook(corporateUser);
+            logger.info("Webhook Response {} ", webhookResponse);
+            if(webhookResponse.getCode().equalsIgnoreCase("0")){
+
+                return messageSource.getMessage("password.change.success", null, locale);
+            }
+            else if ((webhookResponse.getCode().equalsIgnoreCase("20"))){
+                message =webhookResponse.getDescription();
+                return message;
+
+            }
+            else if ((webhookResponse.getCode().equalsIgnoreCase("40"))){
+                message =webhookResponse.getDescription();
+                return message;
+
+            }
+            else if ((webhookResponse.getCode().equalsIgnoreCase("99"))){
+                message =webhookResponse.getDescription();
+                return message;
+
+            }
+            else if ((webhookResponse.getCode().equalsIgnoreCase("10"))){
+                message =webhookResponse.getDescription();
+                return message;
+
+            }
+
+            logger.info("User {} password has been updated", user.getId());
+            return messageSource.getMessage("password.change.failure", null, locale);
+        } catch (Exception e) {
+            throw new PasswordException(messageSource.getMessage("password.change.failure", null, locale), e);
+        }
+    }
+
 
 
     @Override

@@ -84,7 +84,7 @@ public class BeneficiaryController {
         RetailUser retailUser = retailUserService.getUserByName(principal.getName());
 
 
-        Iterable<LocalBeneficiary> localBeneficiary = localBeneficiaryService.getLocalBeneficiaries(retailUser);
+        Iterable<LocalBeneficiary> localBeneficiary = localBeneficiaryService.getLocalBeneficiaries();
         List<LocalBeneficiary> localBeneficiaries = StreamSupport.stream(localBeneficiary.spliterator(), false)
                 .filter(Objects::nonNull)
                 .filter(i -> financialInstitutionService.getFinancialInstitutionByCode(i.getBeneficiaryBank()) != null)
@@ -148,7 +148,7 @@ public class BeneficiaryController {
         try {
 
             RetailUser user = retailUserService.getUserByName(principal.getName());
-            String message2 = localBeneficiaryService.addLocalBeneficiary(user, localBeneficiaryDTO);
+            String message2 = localBeneficiaryService.addLocalBeneficiary(localBeneficiaryDTO);
 
 
             redirectAttributes.addFlashAttribute("message", message2);

@@ -44,7 +44,7 @@ public class DirectDebitController {
     @GetMapping
     public String getDirectDebits(Model model, Principal principal){
         RetailUser retailUser = retailUserService.getUserByName(principal.getName());
-        logger.info("local BEN {}", localBeneficiaryService.getLocalBeneficiaries(retailUser));
+        logger.info("local BEN {}", localBeneficiaryService.getLocalBeneficiaries());
         
         List<DirectDebit> directDebits = directDebitService.getUserDirectDebits(retailUser); //(directDebitId); //getDebit(retailUser);
 
@@ -55,7 +55,7 @@ public class DirectDebitController {
     @GetMapping("/new")
     public String addDirectDebit(Model model, Principal principal ,DirectDebitDTO directDebitDTO){
     	RetailUser retailUser = retailUserService.getUserByName(principal.getName());
-        model.addAttribute("beneficiaries", localBeneficiaryService.getLocalBeneficiaries(retailUser));
+        model.addAttribute("beneficiaries", localBeneficiaryService.getLocalBeneficiaries());
         model.addAttribute("accounts", accountService.getCustomerAccounts(retailUser.getCustomerId()));
         model.addAttribute("directDebit", directDebitDTO);
         return "cust/directdebit/add";
