@@ -28,6 +28,8 @@ public class User extends AbstractEntity{
     protected Date lastLoginDate;
     protected int noOfLoginAttempts;
     protected Integer noOfTokenAttempts =0;
+    @Transient
+    private transient String emailTemplate;
 
 
     //@Enumerated(value = EnumType.STRING)
@@ -189,6 +191,14 @@ public class User extends AbstractEntity{
 
     public void setNoOfTokenAttempts(int noOfTokenAttempts) {
         this.noOfTokenAttempts = noOfTokenAttempts;
+    }
+
+    public String getEmailTemplate() {
+        return emailTemplate;
+    }
+
+    public void setEmailTemplate(String emailTemplate) {
+        this.emailTemplate = emailTemplate;
     }
 
     @Override

@@ -113,6 +113,9 @@ public interface AccountService {
 
      Iterable<Account> getAccountsForCredit(List<Account> accounts);
 
+    List<AccountDTO> getAccountsForReg(String customerId);
+    List<Account> filterUnrestrictedAccountsForReg(List<Account> accounts);
+
     /**
      * Fetches the details of an {@link Account} using the
      * account number

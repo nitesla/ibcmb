@@ -561,4 +561,21 @@ public class AccountServiceImpl implements AccountService {
 		validate(accountNumber);
 	}
 
+    @Override
+    public List<AccountDTO> getAccountsForReg(String customerId) {
+        List<Account> accountList = accountRepo.findByCustomerId(customerId);
+        return convertEntitiesToDTOs(filterUnrestrictedAccountsForReg(accountList));
+    }
+
+    @Override
+    public List<Account> filterUnrestrictedAccountsForReg(List<Account> accounts){
+
+        return accounts.stream().filter(account -> !accountConfigService.isAccountRestrictedForView(account.getAccountNumber()))
+                .filter(account -> !accountConfigService.isAccountSchemeCodeRestrictedForView(account.getSchemeCode()))
+                .filter(account -> !accountConfigService.isAccountSchemeTypeRestrictedForView(account.getSchemeType()))
+                .collect(Collectors.toList());
+    }
+
+
+
 }

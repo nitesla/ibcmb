@@ -44,7 +44,8 @@ public interface CorporateUserService{
     CorporateUser getUserByNameAndCorpCif(String username, String cif);
 
     CorporateUser getUserByNameAndCorporateId(String username, String corporateId);
-
+    
+    CorporateUser getUserByEmail(String email);
 
     CorporateUserDTO convertEntityToDTO(CorporateUser corporateUser);
 

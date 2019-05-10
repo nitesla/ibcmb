@@ -32,6 +32,7 @@ public interface CorporateUserRepo extends JpaRepository<CorporateUser, Long> {
 
     CorporateUser   findFirstByUserNameIgnoreCaseAndCorporate_CustomerIdIgnoreCase(String s,String s1);
     CorporateUser   findFirstByUserNameIgnoreCaseAndCorporate_CorporateIdIgnoreCase(String s,String s1);
+    CorporateUser findByEmailIgnoreCase(String email);
     Page<CorporateUser> findByCorporateId(Long corpId, Pageable pageDetail);
 	Integer countByRole(Role role);
    // List<CorporateUser> findByCorporateAndCorporateRoleIsNull(Corporate corporate);

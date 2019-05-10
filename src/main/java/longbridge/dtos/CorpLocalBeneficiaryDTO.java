@@ -16,6 +16,25 @@ public class CorpLocalBeneficiaryDTO  implements Serializable{
     @NotEmpty(message = "Please enter a Beneficiary Bank")
     private String beneficiaryBank;
     private String preferredName;
+    private String token;
+    private String addFlag;
+
+    public String getAddFlag() {
+        return addFlag;
+    }
+
+    public void setAddFlag(String addFlag) {
+        this.addFlag = addFlag;
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
+    }
+
 
     public Long getId() {
         return id;

@@ -23,6 +23,8 @@ public class TransferRequestDTO implements Serializable {
 
     private FinancialInstitution financialInstitution;
 
+    private String beneficiaryBank;
+
     private String beneficiaryAccountNumber;
 
     private String beneficiaryAccountName;
@@ -44,17 +46,21 @@ public class TransferRequestDTO implements Serializable {
     private BigDecimal amount;
     private String statusDescription;
     private String charge;
+    private String token;
+    private String addBeneficiaryFlag;
+    private String beneficiaryPrefferedName;
 
 
     public TransferRequestDTO() {
     }
 
-    public TransferRequestDTO(Long id, int version, String customerAccountNumber, TransferType transferType, FinancialInstitution financialInstitution, String beneficiaryAccountNumber, String beneficiaryAccountName, String remarks, String status, String referenceNumber, String userReferenceNumber, String narration, String sessionId, BigDecimal amount, String statusDescription) {
+    public TransferRequestDTO(Long id, int version, String customerAccountNumber, TransferType transferType, FinancialInstitution financialInstitution, String beneficiaryBank,String beneficiaryAccountNumber, String beneficiaryAccountName, String remarks, String status, String referenceNumber, String userReferenceNumber, String narration, String sessionId, BigDecimal amount, String statusDescription) {
         this.id = id;
         this.version = version;
         this.customerAccountNumber = customerAccountNumber;
         this.transferType = transferType;
         this.financialInstitution = financialInstitution;
+        this.beneficiaryBank = beneficiaryBank;
         this.beneficiaryAccountNumber = beneficiaryAccountNumber;
         this.beneficiaryAccountName = beneficiaryAccountName;
         this.remarks = remarks;
@@ -65,6 +71,28 @@ public class TransferRequestDTO implements Serializable {
         this.sessionId = sessionId;
         this.amount = amount;
         this.statusDescription = statusDescription;
+    }
+    public String getBeneficiaryPrefferedName() {
+        return beneficiaryPrefferedName;
+    }
+
+    public void setBeneficiaryPrefferedName(String beneficiaryPrefferedName) {
+        this.beneficiaryPrefferedName = beneficiaryPrefferedName;
+    }
+
+    public String getAddBeneficiaryFlag() {
+        return addBeneficiaryFlag;
+    }
+
+    public void setAddBeneficiaryFlag(String addBeneficiaryFlag) {
+        this.addBeneficiaryFlag = addBeneficiaryFlag;
+    }
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
     }
 
 
@@ -108,6 +136,14 @@ public class TransferRequestDTO implements Serializable {
         this.financialInstitution = financialInstitution;
     }
 
+    public String getBeneficiaryBank() {
+        return beneficiaryBank;
+    }
+
+    public void setBeneficiaryBank(String beneficiaryBank) {
+        this.beneficiaryBank = beneficiaryBank;
+    }
+
     public String getBeneficiaryAccountNumber() {
         return beneficiaryAccountNumber;
     }
@@ -123,6 +159,7 @@ public class TransferRequestDTO implements Serializable {
     public void setBeneficiaryAccountName(String beneficiaryAccountName) {
         this.beneficiaryAccountName = beneficiaryAccountName;
     }
+
 
 
     public Date getTranDate() {
@@ -204,6 +241,7 @@ public class TransferRequestDTO implements Serializable {
     public void setCharge(String charge) {
         this.charge = charge;
     }
+
 
     @Override
     public String toString() {

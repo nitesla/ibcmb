@@ -126,6 +126,12 @@ public class CorporateUserServiceImpl implements CorporateUserService {
         return corporateUserRepo.findFirstByUserNameIgnoreCaseAndCorporate_CorporateIdIgnoreCase(username, corporateId);
     }
 
+    @Override
+    public CorporateUser getUserByEmail(String email) {
+        return corporateUserRepo.findByEmailIgnoreCase(email);
+    }
+
+
 
     @Override
     public Iterable<CorporateUser> getUsers() {
