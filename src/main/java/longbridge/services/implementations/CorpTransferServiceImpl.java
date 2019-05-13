@@ -24,6 +24,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityManager;
 import java.math.BigDecimal;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -64,6 +65,9 @@ public class CorpTransferServiceImpl implements CorpTransferService {
 
     @Autowired
     private CorpTransReqEntryRepo reqEntryRepo;
+
+    @Autowired
+    private EntityManager entityManager;
 
     @Autowired
     public CorpTransferServiceImpl(CorpTransferRequestRepo corpTransferRequestRepo, IntegrationService integrationService, TransactionLimitServiceImpl limitService, AccountService accountService, ConfigurationService configService) {
@@ -126,14 +130,21 @@ public class CorpTransferServiceImpl implements CorpTransferService {
         logger.trace("Initiating {} transfer to {} by {}", corpTransferRequestDTO.getTransferType(), corpTransferRequestDTO.getBeneficiaryAccountName(),corpTransferRequestDTO.getUserReferenceNumber());
         CorpTransRequest corpTransRequest = persistTransfer(corpTransferRequestDTO);
         logger.info("the corporate transfer request {}",corpTransRequest);
-        corpTransRequest = (CorpTransRequest) integrationService.makeTransfer(corpTransRequest);
+        CorpTransRequest corpTransRequestNew = (CorpTransRequest) integrationService.makeTransfer(corpTransRequest);//name change by GB
         logger.trace("Transfer Details {} by {}", corpTransRequest.toString(),corpTransRequest.getUserReferenceNumber());
 
-        if (corpTransRequest != null) {
-            corpTransferRequestRepo.save(corpTransRequest);
-            corpTransferRequestDTO = convertEntityToDTO(corpTransRequest);
+        if (corpTransRequestNew != null) {
+            CorpTransRequest corpTransRequest1=corpTransferRequestRepo.findOne(corpTransRequest.getId());
+            entityManager.detach(corpTransRequest1);
+            corpTransRequest1.setReferenceNumber(corpTransRequestNew.getReferenceNumber());
+            corpTransRequest1.setNarration(corpTransRequestNew.getNarration());
+            corpTransRequest1.setStatus(corpTransRequestNew.getStatus());
+            corpTransRequest1.setStatusDescription(corpTransRequestNew.getStatusDescription());
 
-            if (corpTransRequest.getStatus() != null) {
+            corpTransferRequestRepo.save(corpTransRequest1);
+            corpTransferRequestDTO = convertEntityToDTO(corpTransRequest1);
+
+            if (corpTransRequest1.getStatus() != null) {
                 return corpTransferRequestDTO;
             }
             throw new InternetBankingTransferException(TransferExceptions.ERROR.toString());
