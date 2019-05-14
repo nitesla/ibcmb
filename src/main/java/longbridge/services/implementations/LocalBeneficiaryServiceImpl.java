@@ -234,7 +234,7 @@ public class LocalBeneficiaryServiceImpl implements LocalBeneficiaryService {
 
             }
         } catch (Exception e) {
-            logger.error("EXCEPTION OCCURRED {}", e);
+            logger.error("Error occurred", e);
         }
 
     }
@@ -248,10 +248,12 @@ public class LocalBeneficiaryServiceImpl implements LocalBeneficiaryService {
 
         Email email = new Email.Builder().setRecipient(user.getEmail())
                 .setSubject(subject)
-                .setTemplate("mail/beneficiary.html")
+                .setTemplate(user.getEmailTemplate())
                 .build();
         mailService.sendMail(email,context);
+
     }
+
 
     public RetailUser getCurrentUser(){
 
@@ -265,6 +267,5 @@ public class LocalBeneficiaryServiceImpl implements LocalBeneficiaryService {
 
 
     }
-
 
 }
