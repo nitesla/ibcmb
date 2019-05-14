@@ -258,6 +258,7 @@ public class LocalBeneficiaryServiceImpl implements LocalBeneficiaryService {
     public RetailUser getCurrentUser(){
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        logger.info("auh {}",authentication);
         if (!(authentication instanceof AnonymousAuthenticationToken)) {
             CustomUserPrincipal userPrincipal =(CustomUserPrincipal) authentication.getPrincipal();
             return (RetailUser)userPrincipal.getUser();

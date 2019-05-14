@@ -57,7 +57,7 @@ public class ApiUserDetailsService implements UserDetailsService{
 
         RetailUser user = retailUserRepo.findFirstByUserNameIgnoreCase(s);
 
-logger.info("about checking user");
+        logger.info("about checking user");
         if (user!=null  ) {
 
             if (failedLoginService.isLocked(user)) throw new RuntimeException("user_blocked");

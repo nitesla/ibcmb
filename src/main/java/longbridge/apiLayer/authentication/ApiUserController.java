@@ -32,6 +32,7 @@ public class ApiUserController {
     @PostMapping(value = "/signin")
     public Object Signin(@RequestBody ApiUser passedUser){
 
+        logger.info("vali {}",apiUtil.validateUser(passedUser));
         return apiUtil.validateUser(passedUser);
     }
 

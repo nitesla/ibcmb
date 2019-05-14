@@ -77,20 +77,26 @@ public class SessionUtils {
 
                 String date = new SimpleDateFormat("MMM dd, yyyy ' at ' hh:mm:ss a").format(new Date());
 
+                String alertSub="login.alert.subject";
+                if(user.getEmailTemplate()!=null)
+                {
+                    alertSub="login.alert.subject.Mobile";
+                }
 
 
                 String smsMessage = String.format(messageSource.getMessage("login.alert.message", null, locale), name, date);
 
-                String alertSubject = String.format(messageSource.getMessage("login.alert.subject", null, locale));
+                String alertSubject = String.format(messageSource.getMessage(alertSub, null, locale));
+                logger.info("alertBen {}",alertSubject);
+
                 if ("SMS".equalsIgnoreCase(preference)) {
-                    integrationService.sendRegCodeSMS(smsMessage, user.getPhoneNumber(), alertSubject);
+                    integrationService.sendSMS(smsMessage, user.getPhoneNumber(), alertSubject);
 
                 } else if ("EMAIL".equalsIgnoreCase(preference)) {
-
                     sendMail(user, alertSubject);
 
                 } else if ("BOTH".equalsIgnoreCase(preference)) {
-                    integrationService.sendRegCodeSMS(smsMessage, user.getPhoneNumber(), alertSubject);
+                    integrationService.sendSMS(smsMessage, user.getPhoneNumber(), alertSubject);
                     sendMail(user, alertSubject);
                 }
 
@@ -104,15 +110,17 @@ public class SessionUtils {
     private void sendMail(User user, String subject){
 
         String fullName = user.getFirstName()+" "+user.getLastName();
-        logger.info("the user fullname {} ",fullName);
+        logger.info("emailTemplate {}",user.getEmailTemplate());
+        if(user.getEmailTemplate()==null)user.setEmailTemplate("mail/login.html");
+        logger.info("the user full name {}",fullName);
         Context context = new Context();
         context.setVariable("fullName",fullName);
         context.setVariable("loginDate",new Date());
 
         Email email = new Email.Builder().setRecipient(user.getEmail())
-                                         .setSubject(subject)
-                                         .setTemplate("mail/login.html")
-                                         .build();
+                .setSubject(subject)
+                .setTemplate(user.getEmailTemplate())
+                .build();
         mailService.sendMail(email,context);
     }
 
@@ -140,14 +148,14 @@ public class SessionUtils {
 
     public boolean passwordExpired(User user) {
 
-            if (user.getExpiryDate() != null) {
+        if (user.getExpiryDate() != null) {
 
-                LocalDate date = new LocalDate(user.getExpiryDate());
-                if (LocalDate.now().isAfter(date) || LocalDate.now().isEqual(date)) {
-                    return true;
-                }
+            LocalDate date = new LocalDate(user.getExpiryDate());
+            if (LocalDate.now().isAfter(date) || LocalDate.now().isEqual(date)) {
+                return true;
             }
-            return false;
+        }
+        return false;
     }
 
     public void checkSecurityQuestionReset(User user, HttpSession session) {
