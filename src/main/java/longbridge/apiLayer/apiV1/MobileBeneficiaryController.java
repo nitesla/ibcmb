@@ -68,7 +68,6 @@ public class MobileBeneficiaryController {
     @ApiOperation(value = "Add Local Corporate Beneficiary", tags = {"Beneficiary Management"})
     @PostMapping(value = "/corp/local/add",produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.TEXT_XML_VALUE})
     public ResponseEntity<?> CorporateLocalBeneficiary (@RequestBody CorpLocalBeneficiaryDTO corpLocalBeneficiaryDTO, Principal principal, Locale locale) {
-
         String failure;
         SettingDTO setting = configService.getSettingByName("ENABLE_CORPORATE_2FA");
         CorporateUser user = corporateUserService.getUserByName(principal.getName());
@@ -264,6 +263,7 @@ public class MobileBeneficiaryController {
     @ApiOperation(value = "Add Local Retail Beneficiary", tags = {"Beneficiary Management"})
     @PostMapping(value = "/retail/local/add", produces = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<?> RetailAddLocalBeneficiary (@RequestBody LocalBeneficiaryDTO localBeneficiaryDTO, Principal principal){
+        logger.info("prinT {}",principal);
 
         String failure;
         SettingDTO setting = configService.getSettingByName("ENABLE_RETAIL_2FA");

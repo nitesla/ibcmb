@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+	<title th:remove="all">Internet Banking Application Notification</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+<body>
+
+	<div class="body-wrap" style="font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; width: 650px; background-color: #f6f6f6; margin: 0;padding: 20px;" bgcolor="#ffffff">
+		<div class="content" style="font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif;box-sizing: border-box; font-size: 14px; max-width: 600px; background-color:white; display: block; margin: 0 auto;">
+			<img style="width: 100%;" src="http://image.fcmb.com/images/tradeimages/fcmb.jpg"/>
+
+		</div>
+		<div th:switch="${code}" style="font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; max-width: 600px;margin: 0 auto;background-color:white;padding: 20px">
+			<p>Dear <b data-th-text="${name}"></b>, </p>
+
+			<!--<span  th:text=" ${name}"/>-->
+			<p th:case="'APP_SHUTDOWN'">
+
+				Please be notified that Internet Banking Application is down <br/>
+				Time sent : <span th:text="${date}"/><br/>
+				Server ip : <span th:text="${ip}"/><br/>
+				You are required to log in to the server to start up this application.<br/><br/>
+
+			</p>
+			<p th:case="'APP_STARTUP'">
+
+				Please be notified that the trade Internet Banking Application  is up now <br/>
+				Time sent : <span th:text="${date}"/><br/>
+				Server ip : <span th:text="${ip}"/><br/>
+				<br/><br/>
+
+			</p>
+
+			<p>
+				<br />
+				<em>Thank you for choosing FCMB.</em>
+			</p>
+		</div>
+		<div class="content" style="font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif;box-sizing: border-box; font-size: 14px; max-width: 600px; background-color:white; display: block; margin: 0 auto;">
+				<img style="max-width: 100%;" src="http://image.fcmb.com/images/FCMBAccountNotification/base-strip.gif"/>
+		</div>
+		<div style="font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; max-width: 600px;margin: 0 auto;background-color:white;padding: 20px" >
+			<p>
+				<span >Connect with us:</span>
+				<a href="https://www.facebook.com/fcmbmybank"><img style="" src="http://image.fcmb.com/images/FCMBAccountNotification/FB-L.gif"/></a>
+				<a href="https://twitter.com/myfcmb"><img style="" src="http://image.fcmb.com/images/FCMBAccountNotification/TW-L.gif"/></a>
+				<img style="" src="http://image.fcmb.com/images/FCMBAccountNotification/In-L.gif"/>
+				<a href="http://www.linkedin.com/company/55002?trk=tyah"><img style="" src="http://image.fcmb.com/images/FCMBAccountNotification/Ln-L.gif" /></a>
+				<img style="" src="http://image.fcmb.com/images/FCMBAccountNotification/whatsapp.jpg"/>
+			</p>
+			<hr/>
+
+			<p>
+				If you have reason to suspect any unauthorised activity on your account please
+				contact us by sending an email to <a href= "mailto:frauddesk@fcmb.com">frauddesk@fcmb.com</a>
+			</p>
+		</div>
+
+<br/>
+		<p style="margin: 0 auto;text-align: center">
+			Copyright © 2019. Coronation Merchant Bank
+		</p>
+	</div>
+</body>
+</html>

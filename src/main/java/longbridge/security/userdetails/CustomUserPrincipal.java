@@ -109,7 +109,7 @@ public class CustomUserPrincipal implements CustomeUserDetails {
 						privileges.add(i.getCode());
 
 
-		}
+				}
 
 
 		);
@@ -126,23 +126,26 @@ public class CustomUserPrincipal implements CustomeUserDetails {
 	@Override
 	public boolean equals(Object o) {
 		if (this == o) return true;
-		if (o == null || getClass() != o.getClass()) return false;
+		if (!(o instanceof CustomUserPrincipal)) return false;
 
 		CustomUserPrincipal that = (CustomUserPrincipal) o;
 
-		return user.equals(that.user);
+		return user != null ? user.getUserName().equals(that.user.getUserName()) : that.user.getUserName() == null;
 	}
 
 	@Override
 	public int hashCode() {
-		return user.hashCode();
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((user.getId()==null)?0:user.getId().hashCode());
+		return result;
 	}
 
 	@Override
 	public String toString() {
 		return "CustomUserPrincipal{" +
-				"username=" + user.getUserName()+ '\'' +
-				"user type=" + user.getUserType()+ '\'' +
+				"username=" + user.getUserName() + '\'' +
+				"user type=" + user.getUserType() + '\'' +
 				", ipAddress='" + ipAddress + '\'' +
 				", today=" + today +
 				", corpId=" + corpId +
