@@ -77,7 +77,7 @@ public class CorporateUserAdvisor {
 
             logger.info("Executing post UPDATE_CORP_USER_STATUS operation");
 
-            CorporateUser user = corporateUserRepo.findOne(verification.getEntityId());
+            CorporateUser user = corporateUserRepo.getOne(verification.getEntityId());
             entityManager.detach(user);
             ObjectMapper objectMapper = new ObjectMapper();
             CorporateUser corpUser = objectMapper.readValue(verification.getOriginalObject(),CorporateUser.class);

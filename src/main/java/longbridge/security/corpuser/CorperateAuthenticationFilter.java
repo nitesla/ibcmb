@@ -13,7 +13,9 @@ import javax.servlet.http.HttpServletResponse;
 /**
  * Created by ayoade_farooq@yahoo.com on 5/17/2017.
  */
-public class CorperateAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
+public class
+
+CorperateAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
     private static final Logger logger = LoggerFactory
             .getLogger(CorperateAuthenticationFilter.class);
     private String delimiter = ":";
@@ -26,13 +28,13 @@ public class CorperateAuthenticationFilter extends UsernamePasswordAuthenticatio
 
     }
 
-    @Override
-    public Authentication attemptAuthentication(HttpServletRequest request,
-                                                HttpServletResponse response) throws AuthenticationException {
-        logger.debug("Attempting for authentication. " + "username = "
-                + request.getParameter("username") );
-        return super.attemptAuthentication(request, response);
-    }
+//    @Override
+//    public Authentication attemptAuthentication(HttpServletRequest request,
+//                                                HttpServletResponse response) throws AuthenticationException {
+//        logger.debug("Attempting for authentication. " + "username = "
+//                + request.getParameter("username") );
+//        return super.attemptAuthentication(request, response);
+//    }
 
     @Override
     protected String obtainUsername(HttpServletRequest request) {

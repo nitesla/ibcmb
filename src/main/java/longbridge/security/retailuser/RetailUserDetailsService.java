@@ -59,9 +59,7 @@ public class RetailUserDetailsService implements UserDetailsService {
 
 
         try {
-            if (user != null && user.getUserType() == UserType.RETAIL
-
-                    && user.getRole().getUserType().equals(UserType.RETAIL)) {
+            if (user != null && user.getUserType() == UserType.RETAIL && user.getRole().getUserType().equals(UserType.RETAIL)) {
                 CustomUserPrincipal userPrincipal = new CustomUserPrincipal(user);
                 userPrincipal.setIpAddress(ip);
                 return userPrincipal;

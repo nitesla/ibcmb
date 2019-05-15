@@ -2,9 +2,15 @@ package longbridge.config;
 
 import longbridge.dtos.SettingDTO;
 import longbridge.models.UserType;
+import longbridge.security.CustomerInternetBankingPassWordEncoder;
 import longbridge.security.adminuser.AdminAuthenticationSuccessHandler;
+import longbridge.security.api.ApiAuthenticationFilter;
+import longbridge.security.api.JWTAuthenticationFilter;
+import longbridge.security.api.JWTLoginFilter;
 import longbridge.security.corpuser.CorperateAuthenticationFilter;
 import longbridge.services.ConfigurationService;
+import org.apache.commons.lang3.StringUtils;
+import org.hibernate.type.descriptor.java.DataHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +18,9 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -22,8 +30,12 @@ import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.security.core.session.SessionRegistryImpl;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.firewall.HttpFirewall;
+//import org.springframework.security.web.firewall.StrictHttpFirewall;
 import org.springframework.security.web.session.HttpSessionEventPublisher;
 
 import java.util.Arrays;
@@ -32,7 +44,6 @@ import java.util.Objects;
 /**
  * Created by ayoade_farooq@yahoo.com on 4/10/2017.
  */
-
 
 @Configuration
 @EnableWebSecurity
@@ -43,11 +54,9 @@ public class SecurityConfig {
     public void customConfig(WebSecurity web) throws Exception {
         web.ignoring().antMatchers("/resources *", "/static *", "/css ", "/js *", "/images *", "/customer");
     }
+    @Autowired
+    public HttpSessionEventPublisher httpSessionEventPublisher;
 
-    @Bean
-    public HttpSessionEventPublisher httpSessionEventPublisher() {
-        return new HttpSessionEventPublisher();
-    }
 
     @Configuration
     @Order(1)
@@ -56,7 +65,7 @@ public class SecurityConfig {
         @Qualifier("adminUserDetails")
         private UserDetailsService adminDetails;
         @Autowired
-        private BCryptPasswordEncoder bCryptPasswordEncoder;
+        private PasswordEncoder passwordEncoder;
         @Autowired
         private AdminAuthenticationSuccessHandler adminAuthenticationSuccessHandler;
         @Autowired
@@ -68,21 +77,19 @@ public class SecurityConfig {
 
         public AdminUserConfigurationAdapter() {
             super();
-
         }
 
-        @Bean
-        public SessionRegistry sessionRegistry() {
-            return new SessionRegistryImpl();
-        }
+        @Autowired
+        SessionRegistry sessionRegistry;
 
         @Override
         protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-            auth.userDetailsService(adminDetails).passwordEncoder(bCryptPasswordEncoder);
+            auth.userDetailsService(adminDetails).passwordEncoder(passwordEncoder);
         }
 
         @Override
         protected void configure(HttpSecurity http) throws Exception {
+
 
             boolean ipRestricted = false;
             StringBuilder ipRange = new StringBuilder("hasIpAddress('::1') or hasIpAddress('127.0.0.1')");
@@ -96,14 +103,17 @@ public class SecurityConfig {
                     String[] whitelisted = temp.split(",");
                     Arrays.asList(whitelisted)
                             .stream()
-                            .filter(Objects::nonNull)
+                            .filter(StringUtils::isNoneBlank)
                             .forEach(i -> ipRange.append(String.format(" or hasIpAddress('%s')", i)));
-                    logger.info("the ip whitelist {}",whitelisted);
+
 
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-                logger.info("IP address whitelist " + ipRange.toString());
+
+
+
+                logger.info("IP address whitelist {}", ipRange.toString());
             }
 
 
@@ -113,7 +123,7 @@ public class SecurityConfig {
                     .and().antMatcher("/admin/**").authorizeRequests()
                     .and().authorizeRequests().anyRequest().
                     //access("hasAuthority('" + UserType.ADMIN.toString() + "')").and()
-                    access("hasAuthority('" + UserType.ADMIN.toString() + "') and " + ipRange.toString()).and()
+                            access("hasAuthority('" + UserType.ADMIN.toString() + "') and " + ipRange.toString()).and()
 
                     .formLogin().loginPage("/login/admin").loginProcessingUrl("/admin/login")
                     .failureUrl("/login/admin?error=login_error").defaultSuccessUrl("/admin/dashboard")
@@ -123,7 +133,7 @@ public class SecurityConfig {
                     .invalidSessionUrl("/login/admin")
                     .maximumSessions(1)
                     .expiredUrl("/login/admin?expired=true")
-                    .sessionRegistry(sessionRegistry()).and()
+                    .sessionRegistry(sessionRegistry).and()
 
                     .sessionFixation().migrateSession().sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
 
@@ -137,12 +147,12 @@ public class SecurityConfig {
             http.headers().cacheControl();
         }
 
-        @Override
-        public void configure(WebSecurity web) throws Exception {
-            new SecurityConfig().customConfig(web);
-
-
-        }
+//        @Override
+//        public void configure(WebSecurity web) throws Exception {
+//            new SecurityConfig().customConfig(web);
+//
+//
+//        }
 
     }
 
@@ -168,6 +178,8 @@ public class SecurityConfig {
         @Autowired
         private ConfigurationService configService;
         private Logger logger = LoggerFactory.getLogger(this.getClass());
+        @Autowired
+        private SessionRegistry sessionRegistry;
 
         public OperationsUserConfigurationAdapter() {
             super();
@@ -175,10 +187,13 @@ public class SecurityConfig {
 
         @Override
         protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-            auth.userDetailsService(opsDetails).passwordEncoder(bCryptPasswordEncoder);
+            auth
+                    .userDetailsService(opsDetails).passwordEncoder(bCryptPasswordEncoder);
         }
 
         protected void configure(HttpSecurity http) throws Exception {
+
+
             boolean ipRestricted = false;
             StringBuilder ipRange = new StringBuilder("hasIpAddress('::1') or hasIpAddress('127.0.0.1')");
             //Takes a specific IP address or a range using
@@ -198,7 +213,6 @@ public class SecurityConfig {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-
 
                 logger.info("IP address whitelist " + ipRange.toString());
             }
@@ -222,7 +236,7 @@ public class SecurityConfig {
                     .invalidSessionUrl("/login/ops")
                     .maximumSessions(1)
                     .expiredUrl("/login/ops?expired=true")
-                    .sessionRegistry(sessionRegistry()).and()
+                    .sessionRegistry(sessionRegistry).and()
 
                     .sessionFixation().migrateSession()
                     .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
@@ -232,9 +246,7 @@ public class SecurityConfig {
                     // logout
                     .logout().logoutUrl("/ops/logout")
                     .logoutSuccessUrl("/login/ops").deleteCookies("JSESSIONID")
-                    .invalidateHttpSession(true).and().exceptionHandling().and().csrf().disable()
-
-            ;
+                    .invalidateHttpSession(true).and().exceptionHandling().and().csrf().disable();
             // disable page caching
             http.headers().cacheControl();
         }
@@ -244,10 +256,7 @@ public class SecurityConfig {
             new SecurityConfig().customConfig(web);
         }
 
-        @Bean
-        public SessionRegistry sessionRegistry() {
-            return new SessionRegistryImpl();
-        }
+
     }
 
     @Configuration
@@ -264,6 +273,8 @@ public class SecurityConfig {
         @Autowired
         @Qualifier("retailAuthenticationFailureHandler")
         private AuthenticationFailureHandler retailAuthenticationFailureHandler;
+        @Autowired
+        private SessionRegistry sessionRegistry;
 
         public RetailUserConfigurationAdapter() {
             super();
@@ -295,7 +306,7 @@ public class SecurityConfig {
 
                     .invalidSessionUrl("/login/retail")
                     .maximumSessions(1)
-                    .expiredUrl("/login/retail?expired=true").sessionRegistry(sessionRegistry()).and()
+                    .expiredUrl("/login/retail?expired=true").sessionRegistry(sessionRegistry).and()
                     .sessionFixation().migrateSession()
                     .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
                     .invalidSessionUrl("/login/retail")
@@ -308,21 +319,21 @@ public class SecurityConfig {
             // disable page caching
             http.headers().cacheControl();
         }
-
-        @Override
+       /* @Bean
+        public HttpFirewall allowUrlEncodedSlashHttpFirewall() {
+            StrictHttpFirewall firewall = new StrictHttpFirewall();
+            firewall.setAllowUrlEncodedSlash(true);
+            firewall.setAllowSemicolon(true);
+            return firewall;
+        }*/
+      /*  @Override
         public void configure(WebSecurity web) throws Exception {
             new SecurityConfig().customConfig(web);
+            web.httpFirewall(allowUrlEncodedSlashHttpFirewall());
         }
+*/
 
-        @Bean
-        public SessionRegistry sessionRegistry() {
-            return new SessionRegistryImpl();
-        }
 
-        @Bean
-        public HttpSessionEventPublisher httpSessionEventPublisher() {
-            return new HttpSessionEventPublisher();
-        }
 
     }
 
@@ -336,10 +347,12 @@ public class SecurityConfig {
         BCryptPasswordEncoder bCryptPasswordEncoder;
         @Autowired
         @Qualifier("corporateAuthenticationSuccessHandler")
-        private AuthenticationSuccessHandler corpAuthenticationSuccessHandler;
+        AuthenticationSuccessHandler    corpAuthenticationSuccessHandler;
         @Autowired
         @Qualifier("corporateAuthenticationFailureHandler")
-        private AuthenticationFailureHandler corpAuthenticationFailureHandler;
+        AuthenticationFailureHandler corpAuthenticationFailureHandler;
+        @Autowired
+        private SessionRegistry sessionRegistry;
 
         public CorpUserConfigurationAdapter() {
             super();
@@ -375,11 +388,14 @@ public class SecurityConfig {
 
                     //.failureForwardUrl()
 
+
                     .and()
                     .sessionManagement()
                     .invalidSessionUrl("/login/corporate")
-                    .maximumSessions(1).expiredUrl("/login/corporate?expired=true").sessionRegistry(sessionRegistry()).and()
+                    .maximumSessions(1).expiredUrl("/login/corporate?expired=true")
+                    .sessionRegistry(sessionRegistry).and()
                     .sessionFixation().migrateSession()
+                    .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
                     .and()
                     // logout
                     .logout().logoutUrl("/corporate/logout").logoutSuccessUrl("/login/corporate").deleteCookies("JSESSIONID").invalidateHttpSession(true).and().exceptionHandling().and().csrf().disable();
@@ -395,26 +411,84 @@ public class SecurityConfig {
         }
 
 
-        @Bean
-        public CorperateAuthenticationFilter customFilter() throws Exception {
-            CorperateAuthenticationFilter customFilter = new CorperateAuthenticationFilter();
-            customFilter.setAuthenticationManager(authenticationManagerBean());
-            customFilter.setAuthenticationSuccessHandler(corpAuthenticationSuccessHandler);
-            customFilter.setAuthenticationFailureHandler(corpAuthenticationFailureHandler);
-            return customFilter;
-        }
+//        @Bean
+//        public CorperateAuthenticationFilter customFilter() throws Exception {
+//            CorperateAuthenticationFilter customFilter = new CorperateAuthenticationFilter();
+//            customFilter.setAuthenticationManager(authenticationManagerBean());
+//            customFilter.setAuthenticationSuccessHandler(corpAuthenticationSuccessHandler);
+//            customFilter.setAuthenticationFailureHandler(corpAuthenticationFailureHandler);
+//            return customFilter;
+//        }
 
-        @Bean
-        public HttpSessionEventPublisher httpSessionEventPublisher() {
-            return new HttpSessionEventPublisher();
-        }
-
-        @Bean
-        public SessionRegistry sessionRegistry() {
-            return new SessionRegistryImpl();
-        }
 
     }
+
+
+    @Configuration
+    @Order(5)
+    public static class ApiUserConfiguration extends WebSecurityConfigurerAdapter {
+        @Autowired
+        @Qualifier("apiUserDetails")
+        UserDetailsService apiUser;
+
+        @Autowired
+        @Qualifier("bCryptPasswordEncoder")
+        CustomerInternetBankingPassWordEncoder bCryptPasswordEncoder;
+
+        @Bean
+        public ApiAuthenticationFilter apiAuthenticationTokenFilter() throws Exception {
+            return new ApiAuthenticationFilter();
+        }
+        //
+        @Override
+        protected void configure(AuthenticationManagerBuilder auth) throws Exception
+        {
+            auth.userDetailsService(apiUser).passwordEncoder(bCryptPasswordEncoder);
+        }
+
+        @Override
+        protected void configure(HttpSecurity http) throws Exception {
+
+
+//            http.addFilterBefore(apiAuthenticationTokenFilter());
+
+            http.addFilterBefore(apiAuthenticationTokenFilter(), UsernamePasswordAuthenticationFilter.class);
+
+            http
+                    .antMatcher("/api/v1/**").authorizeRequests()
+                    .anyRequest()
+                    .fullyAuthenticated()
+                    .and()
+                    .exceptionHandling().and().csrf().disable();
+
+            // disable page caching
+        }
+
+
+
+    }
+
+//    @Configuration
+//    @Order(5)
+//    public static class ApiUserConfiguration extends WebSecurityConfigurerAdapter {
+//
+//        @Override
+//        protected void configure(HttpSecurity http) throws Exception {
+//            http.csrf().disable().authorizeRequests()
+//                    .antMatchers("/api/v1/**").permitAll()
+//                    .antMatchers(HttpMethod.POST, "/api/user/signin").permitAll()
+////                    .antMatchers("/api/v1/**").permitAll()
+//                    .anyRequest().authenticated()
+//                    .and()
+//                    // We filter the api/login requests
+//                    .addFilterBefore(new JWTLoginFilter("api/user/signin", authenticationManager()),
+//                            UsernamePasswordAuthenticationFilter.class)
+//                    // And filter other requests to check the presence of JWT in header
+//                    .addFilterBefore(new JWTAuthenticationFilter(),
+//                            UsernamePasswordAuthenticationFilter.class);
+//        }
+//
+//    }
 
 
 }

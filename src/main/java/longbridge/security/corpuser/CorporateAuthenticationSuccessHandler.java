@@ -73,7 +73,7 @@ public class CorporateAuthenticationSuccessHandler implements AuthenticationSucc
             }
 
             user.setLastLoginDate(new Date());
-            logger.info("Corporate user {} successfully passed first authentication ",user.getUserName());
+            logger.info("Corporate user {} successfully passed first authentication",user.getUserName());
 
             failedLoginService.loginSucceeded(user);
             sessionUtils.sendAlert(user);

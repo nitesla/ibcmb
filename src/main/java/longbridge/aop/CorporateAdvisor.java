@@ -65,14 +65,5 @@ public class CorporateAdvisor {
     }
 
 
-    //this is after merge of verification
-    @After("isVerification() && isMerging() && isVerify() && args(corporate)")
-    public void postCorporateCreation(JoinPoint p, Corporate corporate) {
 
-        logger.info("Executing Post Corporate Creation Operation...");
-        if(!accountRepo.existsByCustomerId(corporate.getCustomerId())) {
-            corporateService.addAccounts(corporate);
-
-        }
-    }
 }

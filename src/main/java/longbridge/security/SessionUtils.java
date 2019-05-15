@@ -77,7 +77,7 @@ public class SessionUtils {
 
                 String date = new SimpleDateFormat("MMM dd, yyyy ' at ' hh:mm:ss a").format(new Date());
 
-                String alertSub="login.alert.subject";
+               String alertSub="login.alert.subject";
                 if(user.getEmailTemplate()!=null)
                 {
                     alertSub="login.alert.subject.Mobile";
@@ -118,9 +118,9 @@ public class SessionUtils {
         context.setVariable("loginDate",new Date());
 
         Email email = new Email.Builder().setRecipient(user.getEmail())
-                .setSubject(subject)
-                .setTemplate(user.getEmailTemplate())
-                .build();
+                                         .setSubject(subject)
+                                         .setTemplate(user.getEmailTemplate())
+                                         .build();
         mailService.sendMail(email,context);
     }
 
@@ -148,14 +148,14 @@ public class SessionUtils {
 
     public boolean passwordExpired(User user) {
 
-        if (user.getExpiryDate() != null) {
+            if (user.getExpiryDate() != null) {
 
-            LocalDate date = new LocalDate(user.getExpiryDate());
-            if (LocalDate.now().isAfter(date) || LocalDate.now().isEqual(date)) {
-                return true;
+                LocalDate date = new LocalDate(user.getExpiryDate());
+                if (LocalDate.now().isAfter(date) || LocalDate.now().isEqual(date)) {
+                    return true;
+                }
             }
-        }
-        return false;
+            return false;
     }
 
     public void checkSecurityQuestionReset(User user, HttpSession session) {

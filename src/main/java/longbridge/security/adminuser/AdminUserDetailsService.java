@@ -31,6 +31,7 @@ public class AdminUserDetailsService implements UserDetailsService {
     private IpAddressUtils addressUtils;
     private Logger logger = LoggerFactory.getLogger(this.getClass());
     private FailedLoginService failedLoginService;
+     private SessionUtils sessionUtils;
 
     @Autowired
     public AdminUserDetailsService(AdminUserRepo adminUserRepo, CustomBruteForceService bruteForceService, IpAddressUtils addressUtils
@@ -39,6 +40,7 @@ public class AdminUserDetailsService implements UserDetailsService {
         this.addressUtils = addressUtils;
         this.bruteForceService = bruteForceService;
         this.failedLoginService = failedLoginService;
+        this.sessionUtils=sessionUtils;
     }
 
     @Override

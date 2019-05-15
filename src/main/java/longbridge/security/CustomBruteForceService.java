@@ -5,10 +5,10 @@ import java.util.concurrent.TimeUnit;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import wiremock.com.google.common.cache.CacheBuilder;
+import wiremock.com.google.common.cache.CacheLoader;
+import wiremock.com.google.common.cache.LoadingCache;
 
-import com.google.common.cache.CacheBuilder;
-import com.google.common.cache.CacheLoader;
-import com.google.common.cache.LoadingCache;
 
 @Service
 public class CustomBruteForceService

@@ -109,7 +109,7 @@ public class CustomUserPrincipal implements CustomeUserDetails {
 						privileges.add(i.getCode());
 
 
-				}
+		}
 
 
 		);

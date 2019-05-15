@@ -94,7 +94,7 @@ public class AjaxSessionTimeoutHandlingFilter extends GenericFilterBean {
     private static final class DefaultThrowableAnalyzer extends ThrowableAnalyzer
     {
         /**
-         * @see org.springframework.security.web.util.ThrowableAnalyzer#initExtractorMap()
+         * @see ThrowableAnalyzer#initExtractorMap()
          */
         protected void initExtractorMap()
         {
