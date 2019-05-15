@@ -196,7 +196,7 @@ public class SecurityServiceImpl implements SecurityService {
             String payload = writer.toString();
             EntrustServiceResponse webServiceResponse = httpClient.sendHttpRequest(payload);
             String responseMessage = webServiceResponse.getResponseMessage();
-            logger.trace("response {}", responseMessage);
+            logger.trace("token sync response {}", responseMessage);
             CharSequence charSequence = "<respCode>1</respCode>";
             boolean isSuccessful = responseMessage.contains(charSequence);
             result = isSuccessful;
@@ -434,7 +434,7 @@ public class SecurityServiceImpl implements SecurityService {
             result = isSuccessful;
 
             String respMesg = StringUtils.substringBetween(responseMessage, "<respMessageCode>", "</respMessageCode>");
-            logger.trace("response is {}", respMesg);
+            logger.trace("token Deactivation response is {}", respMesg);
 
             logger.info("******************END RESPONSE***********");
             if (!isSuccessful) {
@@ -704,7 +704,11 @@ public class SecurityServiceImpl implements SecurityService {
 
             String[] captions = StringUtils.substringsBetween(responseMessage, "<captionSecret>", "</captionSecret>");
             String[] images = StringUtils.substringsBetween(responseMessage, "<imageSecret>", "</imageSecret>");
-            List<String> captionSecret = Arrays.asList(captions);
+            List<String> captionSecret = new ArrayList<>();
+            for (String caption:captions) {
+                captionSecret.add(StringEscapeUtils.unescapeHtml(caption));
+            }
+
             List<String> imageSecret = Arrays.asList(images);
 
             list.put("imageSecret", imageSecret);
@@ -736,7 +740,7 @@ public class SecurityServiceImpl implements SecurityService {
             this.context.put("appCode", appCode);
             this.context.put("appDesc", appDesc);
             this.context.put("appGroup", group);
-            this.context.put("caption", mutualCaption);
+            this.context.put("caption", StringEscapeUtils.escapeHtml(mutualCaption));
             this.context.put("image", mutualImagePath);
             this.t.merge(this.context, writer);
             String payload = writer.toString();
