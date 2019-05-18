@@ -6,10 +6,12 @@ import longbridge.api.AccountInfo;
 import longbridge.api.CustomerDetails;
 import longbridge.api.omnichannel.dto.CustomerInfo;
 import longbridge.api.omnichannel.dto.RetailUserCredentials;
+import longbridge.apiLayer.models.WebHookCredentials;
 import longbridge.apiLayer.models.WebhookResponse;
 import longbridge.dtos.AccountDTO;
 import longbridge.dtos.RetailUserDTO;
 import longbridge.dtos.SettingDTO;
+import longbridge.dtos.apidtos.MobileRetailUserDTO;
 import longbridge.exception.*;
 import longbridge.forms.AlertPref;
 import longbridge.forms.CustChangePassword;
@@ -19,8 +21,17 @@ import longbridge.repositories.RetailUserRepo;
 import longbridge.security.FailedLoginService;
 import longbridge.services.*;
 import longbridge.utils.DateFormatter;
+import longbridge.utils.ReflectionUtils;
 import longbridge.utils.RetailWebHook;
 import longbridge.utils.Verifiable;
+import org.apache.http.HttpEntity;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.util.EntityUtils;
+import org.codehaus.jettison.json.JSONObject;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,14 +39,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.*;
 import org.springframework.mail.MailException;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.RestTemplate;
 import org.thymeleaf.context.Context;
 
 import javax.persistence.EntityManager;
@@ -49,6 +59,7 @@ import java.util.*;
 public class RetailUserServiceImpl implements RetailUserService {
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
 
     @Value("${WEBHOOK.URL}")
     private String webhookUrl;
@@ -75,10 +86,6 @@ public class RetailUserServiceImpl implements RetailUserService {
     @Autowired
     private FailedLoginService failedLoginService;
 
-    @Autowired
-    private RetailWebHook retailWebHook;
-
-
     private Locale locale = LocaleContextHolder.getLocale();
 
     private CodeService codeService;
@@ -94,6 +101,9 @@ public class RetailUserServiceImpl implements RetailUserService {
 
     @Value("${host.url}")
     private String hostUrl;
+
+    @Autowired
+    private RetailWebHook retailWebHook;
 
     public RetailUserServiceImpl() {
     }
@@ -233,9 +243,9 @@ public class RetailUserServiceImpl implements RetailUserService {
 
             List<AccountInfo> accounts = integrationService.fetchAccounts(details.getCifId());
 
-            List<AccountInfo> transactionalAccounts = accountService.getTransactionalAccounts(accounts);
+//            List<AccountInfo> transactionalAccounts = accountService.getTransactionalAccounts(accounts);
 
-            for (AccountInfo acct : transactionalAccounts) {
+            for (AccountInfo acct : accounts) {
                 accountService.AddFIAccount(details.getCifId(), acct);
             }
 
@@ -321,7 +331,7 @@ public class RetailUserServiceImpl implements RetailUserService {
             String newStatus = "A".equals(oldStatus) ? "I" : "A";
             user.setStatus(newStatus);
             retailUserRepo.save(user);
-            if("A".equals(user.getStatus())) {
+            if ("A".equals(user.getStatus())) {
                 sendActivationMessage(user);
             }
 
@@ -429,9 +439,8 @@ public class RetailUserServiceImpl implements RetailUserService {
                     .setTemplate("mail/retailactivation")
                     .build();
             mailService.sendMail(email, context);
-        }
-        catch (Exception e){
-            logger.error("Error occurred sending activation credentials",e);
+        } catch (Exception e) {
+            logger.error("Error occurred sending activation credentials", e);
 
         }
     }
@@ -473,7 +482,7 @@ public class RetailUserServiceImpl implements RetailUserService {
             retailUserRepo.save(user);
             logger.info("Retail user {} security question reset successfully", user.getUserName());
             return messageSource.getMessage("securityquestion.reset.success", null, locale);
-        }  catch (Exception e) {
+        } catch (Exception e) {
             throw new InternetBankingException(messageSource.getMessage("securityquestion.reset.failure", null, locale), e);
         }
     }
@@ -491,7 +500,7 @@ public class RetailUserServiceImpl implements RetailUserService {
             user.setResetSecurityQuestion("N");
             retailUserRepo.save(user);
             logger.info("Retail user {} security question set successfully", user.getUserName());
-        }  catch (Exception e) {
+        } catch (Exception e) {
             throw new InternetBankingException(messageSource.getMessage("securityquestion.reset.failure", null, locale), e);
         }
     }
@@ -525,10 +534,11 @@ public class RetailUserServiceImpl implements RetailUserService {
             throw new PasswordException(messageSource.getMessage("password.change.failure", null, locale), e);
         }
     }
- /*
+
+
+    /*
     Mobile Users password reset
      */
-
     @Transactional
     @Override
     public String resetPasswordMobileUser(RetailUser user, CustResetPassword custResetPassword) {
@@ -589,6 +599,7 @@ public class RetailUserServiceImpl implements RetailUserService {
             throw new PasswordException(messageSource.getMessage("password.change.failure", null, locale), e);
         }
     }
+
 
 
 
@@ -754,35 +765,85 @@ public class RetailUserServiceImpl implements RetailUserService {
     }
 
 
-
     @Override
-    public CustomerInfo getCustomerInfo(RetailUserCredentials userCredentials){
+    public CustomerInfo getCustomerInfo(RetailUserCredentials userCredentials) {
 
-        if(userCredentials.getUsername()==null||userCredentials.getPassword()==null){
-            logger.error("Missing credential {}",userCredentials);
+        if (userCredentials.getUsername() == null || userCredentials.getPassword() == null) {
+            logger.error("Missing credential {}", userCredentials);
             throw new InternetBankingException("Username or password not provided");
         }
 
         CustomerInfo customerInfo;
         RetailUser retailUser = retailUserRepo.findFirstByUserName(userCredentials.getUsername());
 
-        if(retailUser!=null){
+        if (retailUser != null) {
             String hashedPassword = retailUser.getPassword();
-            if(passwordEncoder.matches(userCredentials.getPassword(),hashedPassword)){
+            if (passwordEncoder.matches(userCredentials.getPassword(), hashedPassword)) {
                 customerInfo = new CustomerInfo();
-                customerInfo.setCustomerName(retailUser.getFirstName()+" "+retailUser.getLastName());
+                customerInfo.setCustomerName(retailUser.getFirstName() + " " + retailUser.getLastName());
                 customerInfo.setPhoneNumber(retailUser.getPhoneNumber());
                 customerInfo.setEmailAddress(retailUser.getEmail());
                 return customerInfo;
-            }else {
-                logger.debug("Omni-channel: Incorrect password provided for username {}",retailUser.getUserName());
-               throw new WrongPasswordException();
+            } else {
+                logger.debug("Omni-channel: Incorrect password provided for username {}", retailUser.getUserName());
+                throw new WrongPasswordException();
             }
-        }
-        else {
-            logger.debug("Omni-channel: Retail user not found with username {}",userCredentials.getUsername());
+        } else {
+            logger.debug("Omni-channel: Retail user not found with username {}", userCredentials.getUsername());
             throw new UserNotFoundException();
         }
 
     }
+
+    @Override
+    public MobileRetailUserDTO convertEntitiesToDTO(RetailUser retailUser) {
+
+        MobileRetailUserDTO mobileRetailUserDTO = modelMapper.map(retailUser, MobileRetailUserDTO.class);
+
+        mobileRetailUserDTO.setBvn(retailUser.getBvn());
+        mobileRetailUserDTO.setFirstName(retailUser.getFirstName());
+        mobileRetailUserDTO.setLastName(retailUser.getLastName());
+
+        if (retailUser.getLastLoginDate() != null) {
+            mobileRetailUserDTO.setLastLoginDate(DateFormatter.format(retailUser.getLastLoginDate()));
+        }
+        mobileRetailUserDTO.setUserName(retailUser.getUserName());
+        return mobileRetailUserDTO;
+    }
+  /*  @Override
+    public Page<RetailUserDTO> findUsers(RetailUserDTO user, Pageable pageDetails) {
+        RetailUser retailUser = modelMapper.map(user,RetailUser.class);
+        logger.info("Retail user: " + retailUser.toString());
+        Page<RetailUser> page = retailUserRepo.findAllUsers(retailUser.getUserName().toLowerCase(),
+                retailUser.getLastName().toLowerCase(),retailUser.getFirstName().toLowerCase(),
+                retailUser.getEmail().toLowerCase(), pageDetails);
+        logger.info("retailusers {}",page.getTotalElements());
+        List<RetailUserDTO> dtOs =new ArrayList<>();
+        for (RetailUser retailUser1 : page) {
+            RetailUserDTO retailDTO = modelMapper.map(retailUser1,RetailUserDTO.class);
+            dtOs.add(retailDTO);
+        }
+        long t = page.getTotalElements();
+        Page<RetailUserDTO> pageImpl = new PageImpl<RetailUserDTO>(dtOs, pageDetails, t);
+        return pageImpl;
+    }
+*/
+
+   /* @Override
+    public String changeFeedBackStatus(RetailUserDTO user) throws InternetBankingException{
+
+        try {
+            if (getUser(user.getId()) == null) {
+                logger.error("USER DOES NOT EXIST");
+                return null;
+            }
+            retailUserRepo.updateFeedBackStatus(user.getFeedBackStatus(), user.getId());
+            return messageSource.getMessage("feedback.update.success", null, locale);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error("FEEDBACK STATUS ERROR OCCURRED {}", e.getMessage());
+        }
+        return "Feedback status change not successful";
+    }*/
 }

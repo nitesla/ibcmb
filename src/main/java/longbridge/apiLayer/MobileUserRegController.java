@@ -67,8 +67,9 @@ public class MobileUserRegController {
         logger.debug("BirthDate : " + birthDate);
         String customerId ="";
 
-        if(birthDate == ""){
+        if(birthDate == ""|| birthDate==null){
             birthDate = "19-20-1970";
+            userRegDTO.setDob(birthDate);//added by GB
         }
         if(email == ""){
             email = "ib@coronationmb.com";

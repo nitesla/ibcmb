@@ -4,12 +4,15 @@ import longbridge.api.CustomerDetails;
 import longbridge.api.omnichannel.dto.CustomerInfo;
 import longbridge.api.omnichannel.dto.RetailUserCredentials;
 import longbridge.dtos.AccountDTO;
+import longbridge.dtos.FinancialInstitutionDTO;
 import longbridge.dtos.RetailUserDTO;
+import longbridge.dtos.apidtos.MobileRetailUserDTO;
 import longbridge.exception.InternetBankingException;
 import longbridge.exception.PasswordException;
 import longbridge.forms.AlertPref;
 import longbridge.forms.CustChangePassword;
 import longbridge.forms.CustResetPassword;
+import longbridge.models.CorporateUser;
 import longbridge.models.RetailUser;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -34,17 +37,17 @@ public interface RetailUserService {
     String unlockUser(Long id) throws InternetBankingException;
 
 
-//    @PreAuthorize("hasAuthority('GET_RETAIL_USER')")
+    //    @PreAuthorize("hasAuthority('GET_RETAIL_USER')")
     RetailUser getUserByName(String name);
 
     RetailUser getUserByEntrustId(String entrustId);
 
     RetailUser getUserByEmail(String email);
 
-//    @PreAuthorize("hasAuthority('GET_RETAIL_USER')")
+    //    @PreAuthorize("hasAuthority('GET_RETAIL_USER')")
     RetailUserDTO getUserDTOByName(String name);
 
-//    @PreAuthorize("hasAuthority('GET_RETAIL_USER')")
+    //    @PreAuthorize("hasAuthority('GET_RETAIL_USER')")
     RetailUser getUserByCustomerId(String custId);
 
     /**
@@ -56,7 +59,7 @@ public interface RetailUserService {
 
     @PreAuthorize("hasAuthority('GET_RETAIL_USER')")
     Page<RetailUserDTO> getUsers(Pageable pageDetails);
-    
+
     @PreAuthorize("hasAuthority('GET_RETAIL_USER')")
     Page<RetailUserDTO> findUsers(String pattern,Pageable pageDetails);
 
@@ -76,10 +79,6 @@ public interface RetailUserService {
 
 //    String setPassword(RetailUser user, String password) throws PasswordException;
 
-    /*
-   Mobile Users password reset
-    */
-String resetPasswordMobileUser(RetailUser user, CustResetPassword custResetPassword);
 
     //@PreAuthorize("hasAuthority('UPDATE_RETAIL_USER')")
     String resetPassword(RetailUser user, CustResetPassword custResetPassword);
@@ -118,6 +117,11 @@ String resetPasswordMobileUser(RetailUser user, CustResetPassword custResetPassw
     @PreAuthorize("hasAuthority('UPDATE_RETAIL_USER')")
     String resetPassword(Long userId) throws PasswordException;
 
+    /*
+    Mobile Users password reset
+     */
+    String resetPasswordMobileUser(RetailUser user, CustResetPassword custResetPassword);
+
     /**
      *Replaces the old password with the new password
      * The new password must meed the password policy of the organization if any one is defined
@@ -146,8 +150,11 @@ String resetPasswordMobileUser(RetailUser user, CustResetPassword custResetPassw
     @PreAuthorize("hasAuthority('UPDATE_RETAIL_USER')")
     boolean changeAlertPreference(RetailUserDTO retailUser, AlertPref alertPreference);
 
+//    @PreAuthorize("hasAuthority('UPDATE_RETAIL_USER')")
+//    String changeFeedBackStatus(RetailUserDTO retailUser);
+
     /** This tries to retrieve the username of a {@link RetailUser} using the specified information
-     * 
+     *
      * @param accountNumber a valid accountNumber representing one of the user's accounts
      * @param securityQuestion the user's security question
      * @param securityAnswer the answer to the user's security question
@@ -166,5 +173,10 @@ String resetPasswordMobileUser(RetailUser user, CustResetPassword custResetPassw
 
     @PreAuthorize("hasAuthority('UPDATE_RETAIL_USER')")
     void setSecurityQuestion(Long userId);
+
+//    Page<RetailUserDTO> findUsers(RetailUserDTO user, Pageable pageDetails);
+
+    MobileRetailUserDTO convertEntitiesToDTO(RetailUser retailUser);
+
 
 }

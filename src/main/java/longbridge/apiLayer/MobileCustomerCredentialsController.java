@@ -63,14 +63,13 @@ public class MobileCustomerCredentialsController {
     @ApiOperation(value = "Retail get Security Question for Username Retrieval")
     @GetMapping(value = "/retail/securityquestion/{acctNum}")
     public ResponseEntity<?> SecurityQuestion (@ApiParam("Account Number") @PathVariable String acctNum){
-        logger.info("retrieval");
 
         try{
             Account account = accountService.getAccountByAccountNumber(acctNum);
             if (account !=null) {
                 RetailUser user = retailUserService.getUserByCustomerId(account.getCustomerId());
-
                 Map<String, List<String>> qa = securityService.getUserQA(user.getEntrustId(), user.getEntrustGroup());
+
                 if (! qa.isEmpty()){
                     List<String> securityQuestion = qa.get("questions");
                     responseData.setMessage(message);
@@ -134,7 +133,7 @@ public class MobileCustomerCredentialsController {
 
     //Retail Forgot Password
     @ApiOperation(value = "Retail get Security Question for Password Retrieval")
-    @PostMapping(value = "/retail/forgotpassword/{userName}")
+    @GetMapping(value = "/retail/forgotpassword/{userName}")
     public ResponseEntity<?> forgotPassword (@PathVariable String userName){
 
         try{
@@ -385,7 +384,7 @@ public class MobileCustomerCredentialsController {
             if (validateToken.equalsIgnoreCase("true")){
 
                 RetailUser retailUser = retailUserService.getUserByName(username);
-                logger.debug("Retail user retrieved",retailUser);
+                logger.debug("Retail user retrieved {}",retailUser);
                 if (retailUser == null){
                     logger.error("Retail username {} returned null object",username);
                     responseData.setMessage("Invalid Username");

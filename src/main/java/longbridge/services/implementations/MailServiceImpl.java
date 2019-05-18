@@ -108,7 +108,7 @@ public class MailServiceImpl implements MailService {
             messageHelper.setText(messageBody,true);
 
         };
-        logger.info("Trying to send mail to {}", email.getReceiverEmail()!=null?email.getReceiverEmail():email.getReceiverEmails());
+        logger.info("Trying to send mails to {}", email.getReceiverEmail()!=null?email.getReceiverEmail():email.getReceiverEmails());
         mailSender.send(messagePreparator);
         logger.info("Email successfully sent to {} with subject '{}'", email.getReceiverEmail()!=null?email.getReceiverEmail():email.getReceiverEmails(), email.getMessageSubject());
 

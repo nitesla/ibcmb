@@ -132,9 +132,10 @@ public class MobileAccountController {
 
     @ApiOperation(value = "Customise Retail Account using Account Id", tags = {"Account"})
     @PostMapping(value = "/customiseaccount/{id}")
-    public ResponseEntity<?> customiseRetailAccount (@ApiParam("Account Id") @PathVariable Long id, CustomizeAccount customizeAccount){
+    public ResponseEntity<?> customiseRetailAccount (@ApiParam("Account Id") @PathVariable Long id,@RequestBody CustomizeAccount customizeAccount){
 
         try{
+            logger.info("new name {}",customizeAccount.toString());
 
         String customiseAcct = accountService.customizeAccount(id,customizeAccount.getPreferredName());
         responseData.setMessage(customiseAcct);

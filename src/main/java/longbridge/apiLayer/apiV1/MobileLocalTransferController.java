@@ -172,7 +172,7 @@ public class MobileLocalTransferController {
                 return new ResponseEntity<Object>(responseData, HttpStatus.OK);
             }
             else
-                responseData.setMessage(messageSource.getMessage("05",null,locale));
+                responseData.setMessage(messageSource.getMessage("No beneficiary",null,locale));
             responseData.setData(null);
             responseData.setCode("05");
             responseData.setError(true);

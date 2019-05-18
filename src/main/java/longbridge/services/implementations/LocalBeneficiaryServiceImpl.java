@@ -208,18 +208,19 @@ public class LocalBeneficiaryServiceImpl implements LocalBeneficiaryService {
     }
 
     @Async
-    private  void sendAlert(User user ,String beneficiary) {
+    public  void sendAlert(User user ,String beneficiary) {
         try {
-             if (true) {
+            if (true) {
                 String preference = user.getAlertPreference().getCode();
+                String customerName = user.getFirstName()+" "+user.getLastName();
+                String smsMessage = String.format(messageSource.getMessage("beneficiary.alert.message", null, locale),customerName,beneficiary);
+
+                String alertSub="beneficiary.alert.subject";
+                if("mail/beneficiaryMobile.html".equals(user.getEmailTemplate()))alertSub="beneficiary.alert.subject.mobile";
 
 
-                 String customerName = user.getFirstName()+" "+user.getLastName();
-
-
-                 String smsMessage = String.format(messageSource.getMessage("beneficiary.alert.message", null, locale),customerName,beneficiary);
-
-                String alertSubject = String.format(messageSource.getMessage("beneficiary.alert.subject", null, locale));
+                String alertSubject = String.format(messageSource.getMessage(alertSub, null, locale));
+                logger.info("alertBen {}",alertSubject);
                 if ("SMS".equalsIgnoreCase(preference)) {
                     integrationService.sendSMS(smsMessage,user.getPhoneNumber(),  alertSubject);
 
@@ -238,6 +239,7 @@ public class LocalBeneficiaryServiceImpl implements LocalBeneficiaryService {
         }
 
     }
+
 
     private void sendMail(User user, String subject, String beneficiary){
 
