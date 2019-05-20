@@ -68,6 +68,7 @@ public class MobileBeneficiaryController {
     @ApiOperation(value = "Add Local Corporate Beneficiary", tags = {"Beneficiary Management"})
     @PostMapping(value = "/corp/local/add",produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.TEXT_XML_VALUE})
     public ResponseEntity<?> CorporateLocalBeneficiary (@RequestBody CorpLocalBeneficiaryDTO corpLocalBeneficiaryDTO, Principal principal, Locale locale) {
+        System.out.println("startapi");
         String failure;
         SettingDTO setting = configService.getSettingByName("ENABLE_CORPORATE_2FA");
         CorporateUser user = corporateUserService.getUserByName(principal.getName());

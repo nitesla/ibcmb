@@ -189,6 +189,7 @@ public class MobileCustomerCredentialsController {
 
             Map<String, List<String>> qa;
             RetailUser retailUser = retailUserService.getUserByName(userRetrievalDTO.getUserName());
+            retailUser.setEmailTemplate("mail/forgotpasswordMobile");
             logger.info("retail user about getting its password {} ", retailUser.getCustomerId());
             //            Corporate corporate = corporateService.getCorporateByCorporateId(userRetrievalDTO.getCorpID());
 
@@ -591,6 +592,8 @@ public class MobileCustomerCredentialsController {
 
             Map<String, List<String>> qa;
             CorporateUser corporateUser = corporateUserService.getUserByName(userRetrievalDTO.getUserName());
+            corporateUser.setEmailTemplate("mail/forgotpasswordMobile");
+
             if (corporateUser != null) {
 
                 //confirm security question is correct

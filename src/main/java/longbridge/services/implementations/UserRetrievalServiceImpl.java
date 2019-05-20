@@ -198,11 +198,17 @@ public class UserRetrievalServiceImpl implements UserRetrievalService {
         context.setVariable("fullName", fullName);
         context.setVariable("resetCode",tempPassword);
         logger.info("reset tem password {} ",tempPassword);
+        String mailSubject=messageSource.getMessage("reset.password.subject", null, locale);
+        String mailTemplate="mail/forgotpassword";
+        if(retailUser.getEmailTemplate().equals("mail/forgotpasswordMobile")){
+            mailTemplate=retailUser.getEmailTemplate();
+            mailSubject=messageSource.getMessage("reset.password.subject.mobile", null, locale);
+        }
 
         Email email = new Email.Builder()
                 .setRecipient(retailUser.getEmail())
-                .setSubject(messageSource.getMessage("reset.password.subject", null, locale))
-                .setTemplate("mail/forgotpassword")
+                .setSubject(mailSubject)
+                .setTemplate(mailTemplate)
                 .build();
         mailService.sendMail(email,context);
         return "true";
@@ -329,11 +335,19 @@ public class UserRetrievalServiceImpl implements UserRetrievalService {
             Context context = new Context();
             context.setVariable("fullName", fullName);
             context.setVariable("resetCode",tempPassword);
+            String mailSubject=messageSource.getMessage("reset.password.subject", null, locale);
+            String mailTemplate="mail/forgotpassword";
+
+           logger.info("corp {}",corporateUser.getEmailTemplate());
+            if(corporateUser.getEmailTemplate().equals("mail/forgotpasswordMobile")){
+                mailTemplate=corporateUser.getEmailTemplate();
+                mailSubject=messageSource.getMessage("reset.password.subject.mobile", null, locale);
+            }
 
             Email email = new Email.Builder()
                     .setRecipient(corporateUser.getEmail())
-                    .setSubject(messageSource.getMessage("reset.password.subject", null, locale))
-                    .setTemplate("mail/forgotpassword")
+                    .setSubject(mailSubject)
+                    .setTemplate(mailTemplate)
                     .build();
             mailService.sendMail(email,context);
             return "true";

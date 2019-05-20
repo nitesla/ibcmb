@@ -59,6 +59,9 @@ public class ApiAuthenticationFilter extends OncePerRequestFilter {
         String error ;
         String authToken = getToken( request );
         Boolean isCorpUser = false;
+        UserDetails userDetails;
+        Boolean validate;
+
 
         if (authToken != null) {
             // Get username from token
@@ -71,27 +74,53 @@ public class ApiAuthenticationFilter extends OncePerRequestFilter {
             }
 
             // Get user
-            UserDetails userDetails;
-            isCorpUser = false;
-            Boolean validate;
-            try {
-                userDetails = retailUserDetailsService.loadUserByUsername(username);
-                logger.info("retail user details authentication "+userDetails);
-
-                if(userDetails !=null) {
+            if(username.contains(":")){
+                isCorpUser = true;
+                try {
+                    userDetails = corporateUserDetailsService.loadUserByUsername(username);
+                    logger.info("corporate user details authentication " + userDetails);
+                    isCorpUser = true;
                     validate = jwtTokenUtil.validateToken(authToken, userDetails, isCorpUser);
-                    logger.info("validate response {} " + validate);
                     if (validate) {
+
                         grantAccess(userDetails, authToken);
                         logger.info("user %s has been granted access");
+
+//                        TokenBasedAuthentication authentication = new TokenBasedAuthentication(userDetails);
+//                        authentication.setToken(authToken);
+//                        SecurityContextHolder.getContext().setAuthentication(authentication);
+//                        System.out.printf("user %s has been granted access", userDetails.getUsername());
                     } else {
                         error = "Token could not be validated as it does not pass data integrity test. Kindly generate another and try again";
                         response.getWriter().write(processErrorMessage(error));
                         return;
                     }
+                }catch(Exception e){
+                    e.printStackTrace();
+                    logger.info("User is not a corporate user...{} ", e);
                 }
 
-                else {
+
+            }else {
+
+                try {
+                    userDetails = retailUserDetailsService.loadUserByUsername(username);
+                    logger.info("retail user details authentication " + userDetails);
+
+                    if (userDetails != null) {
+                        validate = jwtTokenUtil.validateToken(authToken, userDetails, isCorpUser);
+                        logger.info("validate response {} " + validate);
+                        if (validate) {
+                            grantAccess(userDetails, authToken);
+                            logger.info("user %s has been granted access");
+                        } else {
+                            error = "Token could not be validated as it does not pass data integrity test. Kindly generate another and try again";
+                            response.getWriter().write(processErrorMessage(error));
+                            return;
+                        }
+                    }
+
+              /*  else {
                     userDetails = corporateUserDetailsService.loadUserByUsername(username);
                     logger.info("corporate user details authentication "+userDetails);
                     isCorpUser = true;
@@ -111,13 +140,13 @@ public class ApiAuthenticationFilter extends OncePerRequestFilter {
                         return;
                     }
 
+                }*/
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    logger.info("User is not a retail user...{} ", e);
                 }
-            } catch (Exception e) {
-                e.printStackTrace();
-                logger.info("User is not a retail user...{} ", e);
+
             }
-
-
 
 //            try {
 //                userDetails = corporateUserDetailsService.loadUserByUsername(username);
