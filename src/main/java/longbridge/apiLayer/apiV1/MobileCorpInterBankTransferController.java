@@ -201,7 +201,7 @@ public class MobileCorpInterBankTransferController {
             }
             else
                 //no beneficiary
-                responseData.setMessage(messageSource.getMessage("05", null, locale));
+                responseData.setMessage("No beneficiary");
             responseData.setData(null);
             responseData.setCode("05");
             responseData.setError(true);

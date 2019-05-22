@@ -24,6 +24,8 @@ import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
@@ -68,10 +70,10 @@ public class MobileBeneficiaryController {
     @ApiOperation(value = "Add Local Corporate Beneficiary", tags = {"Beneficiary Management"})
     @PostMapping(value = "/corp/local/add",produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.TEXT_XML_VALUE})
     public ResponseEntity<?> CorporateLocalBeneficiary (@RequestBody CorpLocalBeneficiaryDTO corpLocalBeneficiaryDTO, Principal principal, Locale locale) {
-        System.out.println("startapi");
         String failure;
         SettingDTO setting = configService.getSettingByName("ENABLE_CORPORATE_2FA");
         CorporateUser user = corporateUserService.getUserByName(principal.getName());
+        getCurrentUser().setEmailTemplate("mail/beneficiaryMobile.html");
 
         if ((setting != null && setting.isEnabled())) {
 
@@ -237,7 +239,7 @@ public class MobileBeneficiaryController {
                 return new ResponseEntity<>(responseData, HttpStatus.OK);
             }
             else{
-                responseData.setMessage(messageSource.getMessage("05", null, locale));
+                responseData.setMessage("No beneficiary");
                 responseData.setError(true);
                 responseData.setCode("05");
                 responseData.setData(mobileCorpLocalBeneficiaryDTOs);
@@ -447,6 +449,19 @@ public class MobileBeneficiaryController {
             responseData.setCode("99");
             return new ResponseEntity<>(responseData,HttpStatus.BAD_REQUEST);
         }
+
+    }
+
+    private CorporateUser getCurrentUser(){
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (!(authentication instanceof AnonymousAuthenticationToken)) {
+            CustomUserPrincipal userPrincipal =(CustomUserPrincipal) authentication.getPrincipal();
+            return (CorporateUser)userPrincipal.getUser();
+        }
+
+        return (null) ;
+
 
     }
 

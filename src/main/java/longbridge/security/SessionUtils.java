@@ -63,6 +63,7 @@ public class SessionUtils {
         try {
             SettingDTO settingDTO = configService.getSettingByName("LOGIN_ALERT");
             if (settingDTO != null && settingDTO.isEnabled()) {
+                logger.info("alertPref {}", user.getAlertPreference());
                 Code alertPreference = user.getAlertPreference();
                 if (alertPreference == null) {
                     return;

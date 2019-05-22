@@ -77,7 +77,11 @@ public class CorpLocalBeneficiaryServiceImpl implements CorpLocalBeneficiaryServ
             return messageSource.getMessage("beneficiary.add.success",null,locale);
 
 
-        }catch (Exception e){
+        }catch (DuplicateObjectException e) {
+            //throw new DuplicateObjectException("beneficiary.exist");
+            return messageSource.getMessage("beneficiary.exist", null, locale);
+        }
+        catch (Exception e){
             throw new InternetBankingException(e.getMessage());
         }
 
@@ -133,15 +137,25 @@ public class CorpLocalBeneficiaryServiceImpl implements CorpLocalBeneficiaryServ
     }
 
     private void sendMail(User user, String subject, String beneficiary){
-
         String fullName = user.getFirstName()+" "+user.getLastName();
         Context context = new Context();
         context.setVariable("fullName",fullName);
         context.setVariable("beneficiaryName",beneficiary);
+        String mailTemplate="";
+       try {
+
+           if (user.getEmailTemplate().equals("mail/beneficiaryMobile.html")) {
+               mailTemplate = user.getEmailTemplate();
+               subject = messageSource.getMessage("beneficiary.alert.subject.mobile", null, locale);
+           }
+       }catch(NullPointerException e){
+           logger.info("temp not found");
+           mailTemplate="mail/beneficiary.html";
+       }
 
         Email email = new Email.Builder().setRecipient(user.getEmail())
                 .setSubject(subject)
-                .setTemplate("mail/beneficiary.html")
+                .setTemplate(mailTemplate)
                 .build();
         mailService.sendMail(email,context);
 
@@ -194,7 +208,7 @@ public class CorpLocalBeneficiaryServiceImpl implements CorpLocalBeneficiaryServ
     */
     }
 
-    public CorporateUser getCurrentUser(){
+    private CorporateUser getCurrentUser(){
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (!(authentication instanceof AnonymousAuthenticationToken)) {

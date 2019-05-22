@@ -98,7 +98,7 @@ public class ApiUtil {
                             corpuser.setLastLoginDate(new Date());
                             corporateUserRepo.save(corpuser);
                             corpuser.setEmailTemplate("mail/loginMobile.html");
-                            sessionUtils.sendAlert(user);
+                            sessionUtils.sendAlert(corpuser);
                         }
                     }
                 }
