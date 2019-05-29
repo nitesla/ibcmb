@@ -63,7 +63,7 @@ public class CorpCustomDutyController {
     @Autowired
     private CorpCustomDutyService customDutyService;
 
-    @Value("060001")
+    @Value("${bank.code}")
     private String bankCode;
 
     private CorporateUserService corporateUserService;
@@ -90,7 +90,9 @@ public class CorpCustomDutyController {
 
     @GetMapping
     public String getCustomDuty(Model model, Principal principal) {
-                 return "corp/custom/customduty";
+
+        LOGGER.info("bankcode {}",bankCode);
+        return "corp/custom/customduty";
     }
 
     @GetMapping("/payment")

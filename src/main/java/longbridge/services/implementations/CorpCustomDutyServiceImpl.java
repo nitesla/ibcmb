@@ -489,7 +489,7 @@ public class CorpCustomDutyServiceImpl implements CorpCustomDutyService {
 
     @Override
     @Transactional
-    @Verifiable(operation="VIEW_CUSTOM_DUTY",description="custom duty operations")
+//    @Verifiable(operation="VIEW_CUSTOM_DUTY",description="custom duty operations")
     public String opsMakeCustomDutyPayment(CorpPaymentRequest corpPaymentRequest,Principal principal) {
         logger.info("Retrying payment notification...");
 //        if (corpPaymentRequest.getStatus() == "00" || corpPaymentRequest.getStatus() == "000") {

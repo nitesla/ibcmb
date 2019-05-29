@@ -854,8 +854,13 @@ public class IntegrationServiceImpl implements IntegrationService {
 		try {
 			Map<String,Object> request = new HashMap<>();
 			request.put("appId",appId);
-			request.put("hash",EncryptionUtil.getSHA512(
+			//hashed out by GB and replaced with the other hash gotten from opsNotificationPayment
+			/*request.put("hash",EncryptionUtil.getSHA512(
 					appId + corpPaymentRequest.getReferenceNumber() + corpPaymentRequest.getAmount() + secretKey, null));
+*/
+			request.put("hash",EncryptionUtil.getSHA512(
+					appId + corpPaymentRequest.getReferenceNumber() + corpPaymentRequest.getAmount().setScale(2,BigDecimal.ROUND_HALF_UP) + secretKey, null));
+
 			request.put("TranId",corpPaymentRequest.getCustomDutyPayment().getTranId());
 			request.put("Amount",corpPaymentRequest.getAmount().toPlainString());
 			request.put("LastAuthorizer",userName);
@@ -867,9 +872,10 @@ public class IntegrationServiceImpl implements IntegrationService {
 			logger.debug("paymentNotificationRequest: {}", request);
 			CustomPaymentNotification response = template.postForObject(CustomDutyUrl+"/customduty/payassessment", request, CustomPaymentNotification.class);
 			logger.debug("payment notification Response: {}", response);
-			logger.debug("payment notification params: {}", appId + corpPaymentRequest.getReferenceNumber() + corpPaymentRequest.getAmount() + secretKey);
+			logger.debug("payment notification params: {}", appId + corpPaymentRequest.getReferenceNumber() + corpPaymentRequest.getAmount().setScale(2,BigDecimal.ROUND_HALF_UP) + secretKey);
 			logger.debug("payment notification hash: {}",EncryptionUtil.getSHA512(
-					appId + corpPaymentRequest.getReferenceNumber() + corpPaymentRequest.getAmount() + secretKey, null));
+					appId + corpPaymentRequest.getReferenceNumber() + corpPaymentRequest.getAmount().setScale(2,BigDecimal.ROUND_HALF_UP) + secretKey, null));
+
 			return response;
 		}
 		catch (Exception e){

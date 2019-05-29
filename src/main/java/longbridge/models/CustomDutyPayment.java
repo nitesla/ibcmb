@@ -52,7 +52,7 @@ public class CustomDutyPayment extends AbstractEntity implements PrettySerialize
     @OneToOne
     private CorpPaymentRequest corpPaymentRequest;
 
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL)
     private List<Tax> taxs;
 
    public CorpPaymentRequest getCorpPaymentRequest() {
