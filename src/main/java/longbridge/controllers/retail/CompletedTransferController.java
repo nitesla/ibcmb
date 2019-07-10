@@ -62,6 +62,7 @@ CompletedTransferController {
 
     @GetMapping("/history")
     public String completedTransfers(){
+
         return "cust/transfer/completed";
     }
 
@@ -129,4 +130,6 @@ CompletedTransferController {
         }
 
     }
+
+
 }
