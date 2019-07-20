@@ -584,7 +584,7 @@ public class CorpNAPSTransferController {
     List<BulkStatusDTO> getStatus(@PathVariable BulkTransfer bulkTransfer) {
 
         List<BulkStatusDTO> bulkStatus = bulkTransferService.getStatus(bulkTransfer);
-        System.out.println(bulkStatus);
+        System.out.println(bulkStatus+"bulkStatus");
         return bulkStatus;
     }
 

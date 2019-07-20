@@ -71,6 +71,9 @@ class TransferStatusReader implements ItemReader<TransactionStatus>, Initializin
 
            ResponseEntity<TransactionStatus[]> response = restTemplate.postForEntity(apiUrl, request, TransactionStatus[].class);
            TransactionStatus[] restData = response.getBody();
+           /*for(int i=0;i<restData.length;i++){
+             LOGGER.info("BATCHSTATUS"+restData[i].getBatchProcessingStatus());
+           }*/
            LOGGER.debug("Transaction Status Response: {}", restData);
 
            return Arrays.asList(restData);

@@ -13,6 +13,7 @@ public class TransactionStatus {
     private String beneficiaryName;
     private String amount;
     private String batchId;
+    private String paymentReference;
 
 
     public String getTranxStatus() {
@@ -63,6 +64,14 @@ public class TransactionStatus {
         this.batchId = batchId;
     }
 
+    public String getPaymentReference() {
+        return paymentReference;
+    }
+
+    public void setPaymentReference(String paymentReference) {
+        this.paymentReference = paymentReference;
+    }
+
     @Override
     public String toString() {
         return "TransactionStatus{" +
@@ -72,6 +81,7 @@ public class TransactionStatus {
                 ", beneficiaryName='" + beneficiaryName + '\'' +
                 ", amount='" + amount + '\'' +
                 ", batchId='" + batchId + '\'' +
+                ", paymentReference='" + paymentReference + '\'' +
                 '}';
     }
 }
