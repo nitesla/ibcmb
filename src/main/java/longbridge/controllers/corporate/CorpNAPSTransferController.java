@@ -7,6 +7,7 @@ import longbridge.dtos.*;
 import longbridge.exception.*;
 import longbridge.models.*;
 import longbridge.services.*;
+import longbridge.services.bulkTransfers.TransferStatusJobLauncher;
 import longbridge.utils.DateFormatter;
 import longbridge.utils.StringUtil;
 import longbridge.utils.TransferType;
@@ -29,6 +30,10 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.batch.core.JobParametersInvalidException;
+import org.springframework.batch.core.repository.JobExecutionAlreadyRunningException;
+import org.springframework.batch.core.repository.JobInstanceAlreadyCompleteException;
+import org.springframework.batch.core.repository.JobRestartException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
@@ -38,6 +43,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
 import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
 import org.springframework.data.jpa.datatables.repository.DataTablesUtils;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
@@ -96,6 +102,8 @@ public class CorpNAPSTransferController {
     private String imagePath;
     @Value("${jrxmlBulkExcelFile.path}")
     private String jrxmlBulkExcelFile;
+    @Autowired
+    private TransferStatusJobLauncher transferStatusJobLauncher;
 
     @Autowired
     public CorpNAPSTransferController(AccountService accountService, CorporateUserService corporateUserService,
@@ -719,6 +727,30 @@ public class CorpNAPSTransferController {
         redirectAttributes.addFlashAttribute("failure", "Failed to download report");
         return modelAndView;
     }
+
+
+    @GetMapping("/refresh/naps")
+    @ResponseBody
+    public void refreshNapsStatus(Principal principal)  throws JobParametersInvalidException, JobExecutionAlreadyRunningException, JobRestartException, JobInstanceAlreadyCompleteException {
+        CorporateUser corporateUser = corporateUserService.getUserByName(principal.getName());
+
+        Corporate corporate = corporateUser.getCorporate();
+
+        List<BulkTransfer> bulkTransferRequest = bulkTransferService.getBulkTransferRequestsForCorporate(corporate);
+
+        transferStatusJobLauncher.updateTransferStatusJob(bulkTransferRequest);
+        logger.info("NAPS refresh update done");
+
+    }
+
+    @Scheduled(cron = "${naps.status.check.rate}")
+    public void startUpdateTransferStatusJob()throws JobParametersInvalidException, JobExecutionAlreadyRunningException, JobRestartException, JobInstanceAlreadyCompleteException{
+        List<BulkTransfer> transferList = bulkTransferService.getByStatus();
+        logger.info("transList {}",transferList);
+       transferStatusJobLauncher.updateTransferStatusJob(transferList);
+       logger.info("NAPS cron update done");
+    }
+
 
 
 }

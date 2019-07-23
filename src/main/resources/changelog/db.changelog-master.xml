@@ -4,7 +4,7 @@
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog/1.1
     http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-1.1.xsd">
-
+<!--
     <include file="changelog/db.changelog-createTableCustomDuty.xml"/>
     <include file="changelog/db.changelog-createTableCustomDuty_aud.xml"/>
     <include file="changelog/db.changelog-createTableTax.xml"/>
@@ -13,7 +13,10 @@
     <include file="changelog/db.changelog-createTableCustomDutyTax_aud.xml"/>
 
     <include file="changelog/db.changelog-addnewFieldToTransRequest.xml"/>
-    <include file="changelog/db.changelog-addnewFieldToTransRequest_aud.xml"/>
+    <include file="changelog/db.changelog-addnewFieldToTransRequest_aud.xml"/>-->
+
+    <include file="changelog/db.changelog.addApprovalField.xml"/>
+    <include file="changelog/db.changelog.addApprovalField_aud.xml"/>
 
     <!--<include file="changelog/db.changelog-1.1.2.xml"/>-->
 

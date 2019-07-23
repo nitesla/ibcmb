@@ -44,30 +44,26 @@ public class TransferStatusWritter implements ItemWriter<TransactionStatus> {
         items.stream().filter(Objects::nonNull)
                 .forEach(
                         i -> {
+                            logger.info("batchId {}", i.getBatchId());
 
                             BulkTransfer bulkTransfer = bulkTransferRepo.findFirstByRefCode(i.getBatchId());
 //                            CreditRequest creditRequest = creditRequestRepo.findAByAccountNumberAndBulkTransferId(i.getBeneficiaryAccountNumber(), bulkTransfer.getId());
                             CreditRequest creditRequest = creditRequestRepo.findByAccountNumberAndBulkTransferIdAndReferenceNumber(i.getBeneficiaryAccountNumber(),
                                     bulkTransfer.getId(), i.getPaymentReference());
-                            logger.info("creditreq {}",creditRequest);
+                                  logger.info("creditreq {}",creditRequest);
                             //  i.setTranxStatus("PENDING");
                             //added by GB
 
                                 creditRequest.setStatus(i.getTranxStatus());
-                                logger.info("request 0 {}",creditRequest.getStatus());
                                 creditRequestRepo.save(creditRequest);
 
 
-                                if ("PROCESSING".equals(i.getTranxStatus()) || "PENDING".equals(i.getTranxStatus())) {
+                               /* if ("PROCESSING".equals(i.getTranxStatus()) || "PENDING".equals(i.getTranxStatus())) {
                                     bulkTransfer.setStatus(StatusCode.PROCESSING.toString());
                                     bulkTransfer.setStatusDescription("Processing Transaction");
                                     bulkTransferRepo.save(bulkTransfer);
-                                }
+                                }*/
                                 //end
-
-
-
-
                         } );
 //added GB
         BulkTransfer bulkTransfer  = bulkTransferRepo.findFirstByRefCode( items.stream().filter(Objects::nonNull)
@@ -92,8 +88,10 @@ public class TransferStatusWritter implements ItemWriter<TransactionStatus> {
                     bulkTransferRepo.save(bulkTransfer);
                     logger.info("Batch completed");
 
-                }else{
-                    bulkTransfer.setStatus(StatusCode.PROCESSING.toString());
+                }
+                 if(creditRequestsPending.size()>0 || creditRequestsProcessing.size()>0) {
+
+                     bulkTransfer.setStatus(StatusCode.PROCESSING.toString());
                     bulkTransfer.setStatusDescription("Processing Transaction");
                     bulkTransferRepo.save(bulkTransfer);
                     logger.info("Batch not yet completed");

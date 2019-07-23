@@ -27,5 +27,6 @@ public interface BulkTransferRepo extends CommonRepo<BulkTransfer, Long>{
     BulkTransfer findFirstByRefCode(String refCode);
 
     int countByCorporateAndStatus(Corporate corporate, String status);
+    List<BulkTransfer> findByCorporate(Corporate corporate);
 
 }

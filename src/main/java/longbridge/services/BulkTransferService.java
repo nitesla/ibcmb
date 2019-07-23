@@ -1,4 +1,5 @@
 package longbridge.services;
+
 import longbridge.dtos.BulkStatusDTO;
 import longbridge.dtos.BulkTransferDTO;
 import longbridge.dtos.CreditRequestDTO;
@@ -38,4 +39,7 @@ public interface BulkTransferService {
 
     int getPendingBulkTransferRequests(Corporate corporate);
     boolean transactionAboveLimit(BigDecimal totalCreditAmount, String debitAcccount) throws InternetBankingException;
+    List<BulkTransfer> getBulkTransferRequestsForCorporate(Corporate corporate);
+
+    List<BulkTransfer>getByStatus();
 }

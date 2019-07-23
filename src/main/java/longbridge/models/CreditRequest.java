@@ -3,9 +3,11 @@ package longbridge.models;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.hibernate.annotations.Where;
 import org.hibernate.envers.Audited;
+
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 import java.math.BigDecimal;
+import java.util.Date;
 
 /**
  * Created by Longbridge on 14/06/2017.
@@ -23,6 +25,8 @@ public class CreditRequest extends AbstractEntity{
     private String status;
     private String sortCode;
     private String referenceNumber;
+
+    private Date approvalDate;
 
 
     @ManyToOne
@@ -93,6 +97,14 @@ public class CreditRequest extends AbstractEntity{
         this.referenceNumber = referenceNumber;
     }
 
+    public Date getApprovalDate() {
+        return approvalDate;
+    }
+
+    public void setApprovalDate(Date approvalDate) {
+        this.approvalDate = approvalDate;
+    }
+
     public CreditRequest() {
     }
 
@@ -106,6 +118,7 @@ public class CreditRequest extends AbstractEntity{
                 ", status='" + status + '\'' +
                 ", sortCode='" + sortCode + '\'' +
                 ", referenceNumber='" + referenceNumber + '\'' +
+                ", approvalDate=" + approvalDate +
                 ", bulkTransfer=" + bulkTransfer +
                 '}';
     }

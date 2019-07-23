@@ -99,6 +99,7 @@ public class BulkTransferServiceImpl implements BulkTransferService {
         List<CreditRequest> creditRequests = bulkTransfer.getCrRequestList();
         creditRequests.forEach(request -> {
             request.setStatus("PROCESSING");
+            request.setApprovalDate(new Date());
             creditRequestRepo.save(request);
         });
         try {
@@ -206,6 +207,7 @@ public class BulkTransferServiceImpl implements BulkTransferService {
                 transferAuthRepo.save(transferAuth);
                 List<CreditRequest> creditRequests = bulkTransfer.getCrRequestList();
                 creditRequests.forEach(i -> {
+                    i.setApprovalDate(new Date());
                     i.setStatus("CANCELLED");
                     creditRequestRepo.save(i);
                 });
@@ -446,5 +448,15 @@ public class BulkTransferServiceImpl implements BulkTransferService {
         return approvalCount >= roles.size();
 
     }
+
+   public List<BulkTransfer> getBulkTransferRequestsForCorporate(Corporate corporate){
+        List<BulkTransfer> bulkTransfers=bulkTransferRepo.findByCorporate(corporate);
+        return bulkTransfers;
+   }
+   public List<BulkTransfer>getByStatus(){
+       List<BulkTransfer> bulkTransfers=bulkTransferRepo.findByStatus("Processing");
+        return bulkTransfers;
+   }
+
 
 }
