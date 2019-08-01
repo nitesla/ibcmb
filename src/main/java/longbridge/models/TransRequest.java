@@ -9,8 +9,8 @@ import longbridge.utils.PrettySerializer;
 import longbridge.utils.TransferType;
 import org.hibernate.annotations.Where;
 import org.hibernate.envers.Audited;
-import javax.persistence.Entity;
-import javax.persistence.ManyToOne;
+
+import javax.persistence.*;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.Date;
@@ -42,6 +42,13 @@ public class TransRequest extends AbstractEntity implements PrettySerializer {
     private String statusDescription;
     private BigDecimal amount;
     private String charge;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @Transient
+    private AntiFraudData antiFraudData;
+
+
+    private String channel;
 
     public TransRequest() {
     }
@@ -175,6 +182,24 @@ public class TransRequest extends AbstractEntity implements PrettySerializer {
     public void setAmount(BigDecimal amount) {
         this.amount = amount;
     }
+
+    public AntiFraudData getAntiFraudData() {
+        return antiFraudData;
+    }
+
+    public void setAntiFraudData(AntiFraudData antiFraudData) {
+        this.antiFraudData = antiFraudData;
+    }
+
+
+    public String getChannel() {
+        return channel;
+    }
+
+    public void setChannel(String channel) {
+        this.channel = channel;
+    }
+
 
     @Override
     public String toString() {

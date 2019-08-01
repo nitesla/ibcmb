@@ -1,6 +1,5 @@
 package longbridge.services.implementations;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import longbridge.api.*;
 import longbridge.dtos.SettingDTO;
@@ -34,9 +33,7 @@ import org.springframework.web.client.RestTemplate;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
-import javax.swing.text.html.HTML;
 import java.math.BigDecimal;
-import java.net.SocketTimeoutException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
@@ -83,6 +80,7 @@ public class IntegrationServiceImpl implements IntegrationService {
 	private MessageSource messageSource;
 	private AccountRepo accountRepo;
 	private CorporateRepo corporateRepo;
+
 
 	@Autowired
 	public IntegrationServiceImpl(RestTemplate template, MailService mailService, TemplateEngine templateEngine,

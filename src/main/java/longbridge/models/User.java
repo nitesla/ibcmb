@@ -3,7 +3,6 @@ package longbridge.models;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import org.springframework.beans.factory.annotation.Value;
 
 import javax.persistence.*;
 import java.util.Arrays;
@@ -200,6 +199,7 @@ public class User extends AbstractEntity{
     public void setEmailTemplate(String emailTemplate) {
         this.emailTemplate = emailTemplate;
     }
+
 
     @Override
     public int hashCode() {

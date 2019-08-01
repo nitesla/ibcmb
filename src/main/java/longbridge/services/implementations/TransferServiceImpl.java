@@ -9,6 +9,7 @@ import longbridge.exception.TransferExceptions;
 import longbridge.models.*;
 import longbridge.repositories.RetailUserRepo;
 import longbridge.repositories.TransferRequestRepo;
+import longbridge.security.IpAddressUtils;
 import longbridge.security.userdetails.CustomUserPrincipal;
 import longbridge.services.*;
 import longbridge.utils.TransferType;
@@ -25,8 +26,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.authentication.WebAuthenticationDetails;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -52,6 +55,11 @@ public class TransferServiceImpl implements TransferService {
     private Locale locale = LocaleContextHolder.getLocale();
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
+    @Autowired
+    IpAddressUtils ipAddressUtils;
+
+    @Autowired
+    HttpServletRequest httpServletRequest;
 
     @Autowired
     public TransferServiceImpl(TransferRequestRepo transferRequestRepo, IntegrationService integrationService, TransactionLimitServiceImpl limitService, ModelMapper modelMapper, AccountService accountService, FinancialInstitutionService financialInstitutionService, ConfigurationService configurationService
@@ -72,7 +80,56 @@ public class TransferServiceImpl implements TransferService {
         validateTransfer(transferRequestDTO);
         logger.info("Initiating {} Transfer to {}", transferRequestDTO.getTransferType(), transferRequestDTO.getBeneficiaryAccountName());
         logger.info("Initiating Transfer to {}", transferRequestDTO);
+
         TransRequest transRequest1 = convertDTOToEntity(transferRequestDTO);
+
+        if(transferRequestDTO.getChannel().equals("web")) {
+            CustomUserPrincipal user = (CustomUserPrincipal) SecurityContextHolder.getContext().getAuthentication()
+                    .getPrincipal();
+
+            String sessionKey = ((WebAuthenticationDetails) SecurityContextHolder.getContext().getAuthentication().getDetails())
+                    .getSessionId();
+
+            AntiFraudData antiFraudData = new AntiFraudData();
+            antiFraudData.setIp(ipAddressUtils.getClientIP());
+            antiFraudData.setCountryCode(locale.getCountry());
+            antiFraudData.setSfactorAuthIndicator(user.getSfactorAuthIndicator());
+            antiFraudData.setHeaderUserAgent(httpServletRequest.getHeader("User-Agent"));
+            antiFraudData.setHeaderProxyAuthorization(httpServletRequest.getHeader("Proxy-Authorization"));
+            if (antiFraudData.getHeaderProxyAuthorization() == null) {
+                antiFraudData.setHeaderProxyAuthorization(httpServletRequest.getHeader("Proxy-Authenticate"));
+            } else {
+                antiFraudData.setHeaderProxyAuthorization("");
+            }
+            antiFraudData.setLoginName(user.getUsername());
+            antiFraudData.setDeviceNumber("");
+            antiFraudData.setSessionKey(sessionKey);
+            antiFraudData.setTranLocation(transferRequestDTO.getTranLocation());
+            transRequest1.setAntiFraudData(antiFraudData);
+
+            logger.info("country code {}", antiFraudData.getCountryCode());
+            logger.info("sfactorAuthIndicator {}", antiFraudData.getSfactorAuthIndicator());
+            logger.info("UserAgent {}", antiFraudData.getHeaderUserAgent());
+            logger.info("ip address {}", antiFraudData.getIp());
+            logger.info("tranLocation {}", antiFraudData.getTranLocation());
+            logger.info("proxyAuthorization {}", antiFraudData.getHeaderProxyAuthorization());
+            logger.info("loginName  {}", antiFraudData.getLoginName());
+            logger.info("sessionKey  {}", antiFraudData.getSessionKey());
+
+        }else {
+            AntiFraudData antiFraudData = new AntiFraudData();
+            antiFraudData.setIp(transferRequestDTO.getIp());
+            antiFraudData.setCountryCode(transferRequestDTO.getCountryCode());
+            antiFraudData.setSfactorAuthIndicator(transferRequestDTO.getSfactorAuthIndicator());
+            antiFraudData.setHeaderUserAgent(transferRequestDTO.getHeaderUserAgent());
+            antiFraudData.setHeaderProxyAuthorization(transferRequestDTO.getHeaderProxyAuthorization());
+            antiFraudData.setLoginName(transferRequestDTO.getLoginName());
+            antiFraudData.setDeviceNumber(transferRequestDTO.getDeviceNumber());
+            antiFraudData.setSessionKey(transferRequestDTO.getSessionKey());
+            transRequest1.setAntiFraudData(antiFraudData);
+        }
+
+//        TransRequest transRequest1 = convertDTOToEntity(transferRequestDTO);
         transRequest1 = persistTransfer(convertEntityToDTO(transRequest1));
         TransRequest transRequest = integrationService.makeTransfer(transRequest1);
 

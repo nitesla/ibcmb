@@ -1,8 +1,10 @@
 package longbridge.controllers.retail;
+
 import longbridge.exception.InternetBankingSecurityException;
 import longbridge.forms.CustSyncTokenForm;
 import longbridge.forms.TokenProp;
 import longbridge.models.RetailUser;
+import longbridge.security.userdetails.CustomUserPrincipal;
 import longbridge.services.RetailUserService;
 import longbridge.services.SecurityService;
 import org.apache.commons.lang3.StringUtils;
@@ -11,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -75,6 +78,11 @@ public class TokenManagementController {
                     request.getSession().removeAttribute("2FA");
                 }
                 retailUserService.resetNoOfTokenAttempt(user);
+
+                CustomUserPrincipal user1 = (CustomUserPrincipal) SecurityContextHolder.getContext().getAuthentication()
+                        .getPrincipal();
+                user1.setSfactorAuthIndicator("Y");//added by GB for antifraudData
+
                 logger.debug("Token authentication successful for user {}",user.getUserName());
                 return "redirect:/retail/dashboard";
             }

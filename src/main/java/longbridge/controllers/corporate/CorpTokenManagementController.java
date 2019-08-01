@@ -5,7 +5,7 @@ import longbridge.exception.InternetBankingSecurityException;
 import longbridge.forms.CustSyncTokenForm;
 import longbridge.forms.TokenProp;
 import longbridge.models.CorporateUser;
-import longbridge.models.RetailUser;
+import longbridge.security.userdetails.CustomUserPrincipal;
 import longbridge.services.CorporateUserService;
 import longbridge.services.SecurityService;
 import org.apache.commons.lang3.StringUtils;
@@ -13,6 +13,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.authentication.WebAuthenticationDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -65,6 +67,15 @@ public class CorpTokenManagementController {
 
     @PostMapping
     public String performTokenAuthentication(HttpServletRequest request, Principal principal, RedirectAttributes redirectAttributes, Locale locale,Model model) {
+
+        String sessionKey=((WebAuthenticationDetails) SecurityContextHolder.getContext().getAuthentication().getDetails())
+                .getSessionId();
+        logger.info("proxy1 {}",request.getHeader("Proxy-Authorization"));
+       logger.info("proxy2 {}",request.getHeader("ProxyAuthenticate"));
+       logger.info("useragent {}",request.getHeader("User-Agent"));
+       logger.info("ipAddress {}",request.getHeader("X-Forwarded-For"));
+       logger.info("sessionKey {}",sessionKey);
+
         Integer noOfAttempts = 0;
         CorporateUser user  = corporateUserService.getUserByName(principal.getName());
         String tokenCode = request.getParameter("token");
@@ -79,6 +90,10 @@ public class CorpTokenManagementController {
                     return "redirect:/corporate/setup";
                 }
                 corporateUserService.resetNoOfTokenAttempt(user);
+                CustomUserPrincipal user1 = (CustomUserPrincipal) SecurityContextHolder.getContext().getAuthentication()
+                        .getPrincipal();
+                user1.setSfactorAuthIndicator("Y");//added by GB for antifraudData
+
                 //redirectAttributes.addFlashAttribute("message", messageSource.getMessage("token.auth.success", null, locale));
                 return "redirect:/corporate/dashboard";
             }

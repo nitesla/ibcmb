@@ -21,6 +21,8 @@ public class CustomUserPrincipal implements CustomeUserDetails {
 	private String ipAddress;
 	private LocalDate today = LocalDate.now();
 	private Long corpId;
+	private String sfactorAuthIndicator="N";    //set default token auth to N
+
 
 	public CustomUserPrincipal(User user) {
 		this.user = user;
@@ -139,6 +141,14 @@ public class CustomUserPrincipal implements CustomeUserDetails {
 		int result = 1;
 		result = prime * result + ((user.getId()==null)?0:user.getId().hashCode());
 		return result;
+	}
+
+	public String getSfactorAuthIndicator() {
+		return sfactorAuthIndicator;
+	}
+
+	public void setSfactorAuthIndicator(String sfactorAuthIndicator) {
+		this.sfactorAuthIndicator = sfactorAuthIndicator;
 	}
 
 	@Override

@@ -50,6 +50,18 @@ public class TransferRequestDTO implements Serializable {
     private String addBeneficiaryFlag;
     private String beneficiaryPrefferedName;
 
+    //below fields are for antiFraudData
+    private String countryCode;
+    private String deviceNumber;
+    private String headerProxyAuthorization;
+    private String headerUserAgent;
+    private String ip;
+    private String loginName;
+    private String sessionKey;
+    private String  sfactorAuthIndicator;
+    private String tranLocation;
+    private String channel;
+
 
     public TransferRequestDTO() {
     }
@@ -242,25 +254,119 @@ public class TransferRequestDTO implements Serializable {
         this.charge = charge;
     }
 
+    public String getCountryCode() {
+        return countryCode;
+    }
+
+    public void setCountryCode(String countryCode) {
+        this.countryCode = countryCode;
+    }
+
+    public String getDeviceNumber() {
+        return deviceNumber;
+    }
+
+    public void setDeviceNumber(String deviceNumber) {
+        this.deviceNumber = deviceNumber;
+    }
+
+    public String getHeaderProxyAuthorization() {
+        return headerProxyAuthorization;
+    }
+
+    public void setHeaderProxyAuthorization(String headerProxyAuthorization) {
+        this.headerProxyAuthorization = headerProxyAuthorization;
+    }
+
+    public String getHeaderUserAgent() {
+        return headerUserAgent;
+    }
+
+    public void setHeaderUserAgent(String headerUserAgent) {
+        this.headerUserAgent = headerUserAgent;
+    }
+
+    public String getIp() {
+        return ip;
+    }
+
+    public void setIp(String ip) {
+        this.ip = ip;
+    }
+
+    public String getLoginName() {
+        return loginName;
+    }
+
+    public void setLoginName(String loginName) {
+        this.loginName = loginName;
+    }
+
+    public String getSessionKey() {
+        return sessionKey;
+    }
+
+    public void setSessionKey(String sessionKey) {
+        this.sessionKey = sessionKey;
+    }
+
+    public String getSfactorAuthIndicator() {
+        return sfactorAuthIndicator;
+    }
+
+    public void setSfactorAuthIndicator(String sfactorAuthIndicator) {
+        this.sfactorAuthIndicator = sfactorAuthIndicator;
+    }
+
+    public String getTranLocation() {
+        return tranLocation;
+    }
+
+    public void setTranLocation(String tranLocation) {
+        this.tranLocation = tranLocation;
+    }
+
+    public String getChannel() {
+        return channel;
+    }
+
+    public void setChannel(String channel) {
+        this.channel = channel;
+    }
 
     @Override
     public String toString() {
         return "TransferRequestDTO{" +
+                "id=" + id +
                 ", version=" + version +
                 ", customerAccountNumber='" + customerAccountNumber + '\'' +
                 ", transferType=" + transferType +
                 ", financialInstitution=" + financialInstitution +
+                ", beneficiaryBank='" + beneficiaryBank + '\'' +
                 ", beneficiaryAccountNumber='" + beneficiaryAccountNumber + '\'' +
                 ", beneficiaryAccountName='" + beneficiaryAccountName + '\'' +
                 ", remarks='" + remarks + '\'' +
                 ", status='" + status + '\'' +
+                ", tranDate=" + tranDate +
                 ", referenceNumber='" + referenceNumber + '\'' +
                 ", userReferenceNumber='" + userReferenceNumber + '\'' +
                 ", narration='" + narration + '\'' +
                 ", sessionId='" + sessionId + '\'' +
                 ", amount=" + amount +
                 ", statusDescription='" + statusDescription + '\'' +
+                ", charge='" + charge + '\'' +
+                ", token='" + token + '\'' +
+                ", addBeneficiaryFlag='" + addBeneficiaryFlag + '\'' +
+                ", beneficiaryPrefferedName='" + beneficiaryPrefferedName + '\'' +
+                ", countryCode='" + countryCode + '\'' +
+                ", deviceNumber='" + deviceNumber + '\'' +
+                ", headerProxyAuthorization='" + headerProxyAuthorization + '\'' +
+                ", headerUserAgent='" + headerUserAgent + '\'' +
+                ", ip='" + ip + '\'' +
+                ", loginName='" + loginName + '\'' +
+                ", sessionKey='" + sessionKey + '\'' +
+                ", sfactorAuthIndicator='" + sfactorAuthIndicator + '\'' +
+                ", tranLocation='" + tranLocation + '\'' +
                 '}';
     }
-
 }

@@ -7,6 +7,7 @@ import longbridge.dtos.SettingDTO;
 import longbridge.exception.*;
 import longbridge.models.*;
 import longbridge.repositories.*;
+import longbridge.security.IpAddressUtils;
 import longbridge.security.userdetails.CustomUserPrincipal;
 import longbridge.services.*;
 import longbridge.utils.StatusCode;
@@ -22,9 +23,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.authentication.WebAuthenticationDetails;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityManager;
+import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -69,6 +72,13 @@ public class CorpTransferServiceImpl implements CorpTransferService {
     @Autowired
     private EntityManager entityManager;
 
+
+    @Autowired
+    IpAddressUtils ipAddressUtils;
+
+    @Autowired
+    HttpServletRequest httpServletRequest;
+
     @Autowired
     public CorpTransferServiceImpl(CorpTransferRequestRepo corpTransferRequestRepo, IntegrationService integrationService, TransactionLimitServiceImpl limitService, AccountService accountService, ConfigurationService configService) {
         this.corpTransferRequestRepo = corpTransferRequestRepo;
@@ -86,6 +96,8 @@ public class CorpTransferServiceImpl implements CorpTransferService {
         String userRefereneceNumber = "CORP_"+getCurrentUser().getId().toString();
         transferRequest.setUserReferenceNumber(userRefereneceNumber);
         transferRequestDTO.setUserReferenceNumber(userRefereneceNumber);
+
+
 
         if ("SOLE".equals(transferRequest.getCorporate().getCorporateType())) {
             CorpTransferRequestDTO requestDTO = makeTransfer(transferRequestDTO);
@@ -130,6 +142,67 @@ public class CorpTransferServiceImpl implements CorpTransferService {
         logger.trace("Initiating {} transfer to {} by {}", corpTransferRequestDTO.getTransferType(), corpTransferRequestDTO.getBeneficiaryAccountName(),corpTransferRequestDTO.getUserReferenceNumber());
         CorpTransRequest corpTransRequest = persistTransfer(corpTransferRequestDTO);
         logger.info("the corporate transfer request {}",corpTransRequest);
+
+
+
+        if(corpTransferRequestDTO.getChannel().equals("web")) {
+            CustomUserPrincipal user = (CustomUserPrincipal) SecurityContextHolder.getContext().getAuthentication()
+                    .getPrincipal();
+
+            String sessionKey = ((WebAuthenticationDetails) SecurityContextHolder.getContext().getAuthentication().getDetails())
+                    .getSessionId();
+
+            AntiFraudData antiFraudData = new AntiFraudData();
+            antiFraudData.setIp(ipAddressUtils.getClientIP());
+            antiFraudData.setCountryCode(locale.getCountry());
+            antiFraudData.setSfactorAuthIndicator(user.getSfactorAuthIndicator());
+            antiFraudData.setHeaderUserAgent(httpServletRequest.getHeader("User-Agent"));
+            antiFraudData.setHeaderProxyAuthorization(httpServletRequest.getHeader("Proxy-Authorization"));
+            if (antiFraudData.getHeaderProxyAuthorization() == null) {
+                antiFraudData.setHeaderProxyAuthorization(httpServletRequest.getHeader("Proxy-Authenticate"));
+            } else {
+                antiFraudData.setHeaderProxyAuthorization("");
+            }
+            antiFraudData.setLoginName(user.getUsername());
+            antiFraudData.setDeviceNumber("");
+            antiFraudData.setSessionKey(sessionKey);
+            antiFraudData.setTranLocation(corpTransferRequestDTO.getTranLocation());
+            corpTransRequest.setAntiFraudData(antiFraudData);
+
+            logger.info("country code {}", antiFraudData.getCountryCode());
+            logger.info("sfactorAuthIndicator {}", antiFraudData.getSfactorAuthIndicator());
+            logger.info("UserAgent {}", antiFraudData.getHeaderUserAgent());
+            logger.info("ip address {}", antiFraudData.getIp());
+            logger.info("tranLocation {}", antiFraudData.getTranLocation());
+            logger.info("proxyAuthorization {}", antiFraudData.getHeaderProxyAuthorization());
+            logger.info("loginName  {}", antiFraudData.getLoginName());
+            logger.info("sessionKey  {}", antiFraudData.getSessionKey());
+
+        }else {
+            AntiFraudData antiFraudData = new AntiFraudData();
+            antiFraudData.setIp(corpTransferRequestDTO.getIp());
+            antiFraudData.setCountryCode(corpTransferRequestDTO.getCountryCode());
+            antiFraudData.setSfactorAuthIndicator(corpTransferRequestDTO.getSfactorAuthIndicator());
+            antiFraudData.setHeaderUserAgent(corpTransferRequestDTO.getHeaderUserAgent());
+            antiFraudData.setHeaderProxyAuthorization(corpTransferRequestDTO.getHeaderProxyAuthorization());
+            antiFraudData.setLoginName(corpTransferRequestDTO.getLoginName());
+            antiFraudData.setDeviceNumber(corpTransferRequestDTO.getDeviceNumber());
+            antiFraudData.setSessionKey(corpTransferRequestDTO.getSessionKey());
+            corpTransRequest.setAntiFraudData(antiFraudData);
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
         CorpTransRequest corpTransRequestNew = (CorpTransRequest) integrationService.makeTransfer(corpTransRequest);//name change by GB
         logger.trace("Transfer Details {} by {}", corpTransRequest.toString(),corpTransRequest.getUserReferenceNumber());
 
