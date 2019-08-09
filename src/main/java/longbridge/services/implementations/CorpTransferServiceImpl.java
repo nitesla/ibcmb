@@ -149,7 +149,7 @@ public class CorpTransferServiceImpl implements CorpTransferService {
             CustomUserPrincipal user = (CustomUserPrincipal) SecurityContextHolder.getContext().getAuthentication()
                     .getPrincipal();
 
-            String sessionKey = ((WebAuthenticationDetails) SecurityContextHolder.getContext().getAuthentication().getDetails())
+            String sessionkey = ((WebAuthenticationDetails) SecurityContextHolder.getContext().getAuthentication().getDetails())
                     .getSessionId();
 
             AntiFraudData antiFraudData = new AntiFraudData();
@@ -165,7 +165,7 @@ public class CorpTransferServiceImpl implements CorpTransferService {
             }
             antiFraudData.setLoginName(user.getUsername());
             antiFraudData.setDeviceNumber("");
-            antiFraudData.setSessionKey(sessionKey);
+            antiFraudData.setSessionkey(sessionkey);
             antiFraudData.setTranLocation(corpTransferRequestDTO.getTranLocation());
             corpTransRequest.setAntiFraudData(antiFraudData);
 
@@ -176,7 +176,7 @@ public class CorpTransferServiceImpl implements CorpTransferService {
             logger.info("tranLocation {}", antiFraudData.getTranLocation());
             logger.info("proxyAuthorization {}", antiFraudData.getHeaderProxyAuthorization());
             logger.info("loginName  {}", antiFraudData.getLoginName());
-            logger.info("sessionKey  {}", antiFraudData.getSessionKey());
+            logger.info("sessionKey  {}", antiFraudData.getSessionkey());
 
         }else {
             AntiFraudData antiFraudData = new AntiFraudData();
@@ -187,7 +187,7 @@ public class CorpTransferServiceImpl implements CorpTransferService {
             antiFraudData.setHeaderProxyAuthorization(corpTransferRequestDTO.getHeaderProxyAuthorization());
             antiFraudData.setLoginName(corpTransferRequestDTO.getLoginName());
             antiFraudData.setDeviceNumber(corpTransferRequestDTO.getDeviceNumber());
-            antiFraudData.setSessionKey(corpTransferRequestDTO.getSessionKey());
+            antiFraudData.setSessionkey(corpTransferRequestDTO.getSessionkey());
             corpTransRequest.setAntiFraudData(antiFraudData);
         }
 

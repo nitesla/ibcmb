@@ -1,5 +1,7 @@
 package longbridge.services.implementations;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import longbridge.api.*;
 import longbridge.dtos.SettingDTO;
@@ -80,7 +82,8 @@ public class IntegrationServiceImpl implements IntegrationService {
 	private MessageSource messageSource;
 	private AccountRepo accountRepo;
 	private CorporateRepo corporateRepo;
-
+	@Autowired
+	private ObjectMapper objectMapper;
 
 	@Autowired
 	public IntegrationServiceImpl(RestTemplate template, MailService mailService, TemplateEngine templateEngine,
@@ -356,30 +359,46 @@ public class IntegrationServiceImpl implements IntegrationService {
 		TransferType type = transRequest.getTransferType();
 		Account account = accountRepo.findFirstByAccountNumber(transRequest.getCustomerAccountNumber());
 		validate(account);
-
+        objectMapper.enable(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT);
 		switch (type) {
 			case CORONATION_BANK_TRANSFER:
 			{
 				transRequest.setTransferType(TransferType.CORONATION_BANK_TRANSFER);
-				TransferDetails response = null;
+//				TransferDetails response = null;
 				String uri = URI + "/transfer/local";
-				Map<String, String> params = new HashMap<>();
-				params.put("debitAccountNumber", transRequest.getCustomerAccountNumber());
+//				Map<String, String> params = new HashMap<>();
+				try {
+/*
+					params.put("debitAccountNumber", transRequest.getCustomerAccountNumber());
 				params.put("debitAccountName", account.getAccountName());
 				params.put("creditAccountNumber", transRequest.getBeneficiaryAccountNumber());
 				params.put("creditAccountName", transRequest.getBeneficiaryAccountName());
 				params.put("tranAmount", transRequest.getAmount().toString());
 				params.put("remarks", transRequest.getRemarks());
-				logger.info("Starting Transfer with Params: {}", params.toString());
-				try {
+				params.put("antiFraudData",objectMapper.writeValueAsString(transRequest.getAntiFraudData()));*/
+//				params.put("antiFraudData",transRequest.getAntiFraudData().toString());
+//				params.put("antiFraudData","boy");
+
+					TransferRequest params=new TransferRequest();
+					params.setDebitAccountNumber(transRequest.getCustomerAccountNumber());
+					params.setDebitAccountName( account.getAccountName());
+					params.setCreditAccountNumber(transRequest.getBeneficiaryAccountNumber());
+					params.setCreditAccountName(transRequest.getBeneficiaryAccountName());
+					params.setTranAmount(transRequest.getAmount().toString());
+					params.setRemarks(transRequest.getRemarks());
+					params.setAntiFraudData(transRequest.getAntiFraudData());
+//					params.setTranType(type.toString());
+
+					logger.info("Starting Transfer with Params: {}", params.toString());
 					logger.info("Initiating Local Transfer");
 					logger.debug("Transfer Params: {}", params.toString());
-					response = template.postForObject(uri, params, TransferDetails.class);
+					TransferRequest response = template.postForObject(uri, params, TransferRequest.class);
+//					response = template.postForObject(uri, params, TransferDetails.class);
 					logger.info("Response:{}",response);
 					transRequest.setStatus(response.getResponseCode());
 					transRequest.setStatusDescription(response.getResponseDescription());
 					transRequest.setReferenceNumber(response.getUniqueReferenceCode());
-					transRequest.setNarration(response.getNarration());
+					transRequest.setNarration(response.getNaration());
 					return transRequest;
 				} catch (HttpStatusCodeException e) {
 					logger.error("HTTP Error occurred", e);
@@ -400,9 +419,10 @@ public class IntegrationServiceImpl implements IntegrationService {
 			}
 			case INTER_BANK_TRANSFER: {
 				transRequest.setTransferType(TransferType.INTER_BANK_TRANSFER);
-				TransferDetails response;
+//				TransferDetails response;
+				TransferRequestNip response;
 				String uri = URI + "/transfer/nip";
-				Map<String, String> params = new HashMap<>();
+				/*Map<String, String> params = new HashMap<>();
 				params.put("debitAccountNumber", transRequest.getCustomerAccountNumber());
 				params.put("debitAccountName", account.getAccountName());
 				params.put("creditAccountNumber", transRequest.getBeneficiaryAccountNumber());
@@ -410,13 +430,24 @@ public class IntegrationServiceImpl implements IntegrationService {
 				params.put("tranAmount", transRequest.getAmount().toString());
 				params.put("destinationInstitutionCode", transRequest.getFinancialInstitution().getInstitutionCode());
 				params.put("tranType", "NIP");
-				params.put("remarks", transRequest.getRemarks());
+				params.put("remarks", transRequest.getRemarks());*/
+
+				TransferRequestNip params=new TransferRequestNip();
+				params.setOriginatorAccountNumber(transRequest.getCustomerAccountNumber());
+				params.setOriginatorAccountName( account.getAccountName());
+				params.setBeneficiaryAccountNumber(transRequest.getBeneficiaryAccountNumber());
+				params.setBeneficiaryAccountName(transRequest.getBeneficiaryAccountName());
+				params.setAmount(transRequest.getAmount().toString());
+				params.setDestinationInstitutionCode(transRequest.getFinancialInstitution().getInstitutionCode());
+				params.setTranType("NIP");
+				params.setRemarks(transRequest.getRemarks());
+				params.setAntiFraudData(transRequest.getAntiFraudData());
 
 				try {
 					logger.info("Initiating Inter Bank Transfer");
 					logger.debug("Transfer Params: {}", params.toString());
 
-					response = template.postForObject(uri, params, TransferDetails.class);
+					response = template.postForObject(uri, params, TransferRequestNip.class);
 					logger.info("response for transfer {}", response.toString());
 					transRequest.setReferenceNumber(response.getUniqueReferenceCode());
 					transRequest.setNarration(response.getNarration());
@@ -447,13 +478,24 @@ public class IntegrationServiceImpl implements IntegrationService {
 				transRequest.setTransferType(TransferType.OWN_ACCOUNT_TRANSFER);
 				TransferDetails response;
 				String uri = URI + "/transfer/local";
-				Map<String, String> params = new HashMap<>();
+				/*Map<String, String> params = new HashMap<>();
 				params.put("debitAccountNumber", transRequest.getCustomerAccountNumber());
 				params.put("debitAccountName", account.getAccountName());
 				params.put("creditAccountNumber", transRequest.getBeneficiaryAccountNumber());
 				params.put("creditAccountName", transRequest.getBeneficiaryAccountName());
 				params.put("tranAmount", transRequest.getAmount().toString());
-				params.put("remarks", transRequest.getRemarks());
+				params.put("remarks", transRequest.getRemarks());*/
+
+				TransferRequest params=new TransferRequest();
+				params.setDebitAccountNumber(transRequest.getCustomerAccountNumber());
+				params.setDebitAccountName( account.getAccountName());
+				params.setCreditAccountNumber(transRequest.getBeneficiaryAccountNumber());
+				params.setCreditAccountName(transRequest.getBeneficiaryAccountName());
+				params.setTranAmount(transRequest.getAmount().toString());
+				params.setRemarks(transRequest.getRemarks());
+				params.setAntiFraudData(transRequest.getAntiFraudData());
+
+
 				logger.info("params for transfer {}", params.toString());
 				try {
 					logger.info("Initiating Local (Own Account) Transfer");

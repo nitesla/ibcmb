@@ -57,7 +57,7 @@ public class TransferRequestDTO implements Serializable {
     private String headerUserAgent;
     private String ip;
     private String loginName;
-    private String sessionKey;
+    private String sessionkey;
     private String  sfactorAuthIndicator;
     private String tranLocation;
     private String channel;
@@ -302,12 +302,12 @@ public class TransferRequestDTO implements Serializable {
         this.loginName = loginName;
     }
 
-    public String getSessionKey() {
-        return sessionKey;
+    public String getSessionkey() {
+        return sessionkey;
     }
 
-    public void setSessionKey(String sessionKey) {
-        this.sessionKey = sessionKey;
+    public void setSessionkey(String sessionkey) {
+        this.sessionkey = sessionkey;
     }
 
     public String getSfactorAuthIndicator() {
@@ -364,7 +364,7 @@ public class TransferRequestDTO implements Serializable {
                 ", headerUserAgent='" + headerUserAgent + '\'' +
                 ", ip='" + ip + '\'' +
                 ", loginName='" + loginName + '\'' +
-                ", sessionKey='" + sessionKey + '\'' +
+                ", sessionkey='" + sessionkey + '\'' +
                 ", sfactorAuthIndicator='" + sfactorAuthIndicator + '\'' +
                 ", tranLocation='" + tranLocation + '\'' +
                 '}';

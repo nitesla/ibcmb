@@ -1,8 +1,6 @@
 package longbridge.controllers.retail;
 
 
-import com.thoughtworks.xstream.security.RegExpTypePermission;
-import longbridge.dtos.AccountDTO;
 import longbridge.dtos.LocalBeneficiaryDTO;
 import longbridge.dtos.SettingDTO;
 import longbridge.dtos.TransferRequestDTO;
@@ -40,7 +38,6 @@ import javax.servlet.http.HttpServletRequest;
 import java.security.Principal;
 import java.text.DecimalFormat;
 import java.util.*;
-import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 
@@ -284,8 +281,8 @@ public class TransferController {
             logger.error("Error making transfer", e);
             if (request.getSession().getAttribute("Lbeneficiary") != null)
                 request.getSession().removeAttribute("Lbeneficiary");
-            String errorMessage = transferErrorService.getMessage(e);
-            redirectAttributes.addFlashAttribute("failure", errorMessage);
+//            String errorMessage = transferErrorService.getMessage(e);  GB
+            redirectAttributes.addFlashAttribute("failure", messages.getMessage("transfer.failed", null, locale));//GB
             return index(request);
 
 

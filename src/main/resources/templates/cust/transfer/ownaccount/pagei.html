@@ -70,6 +70,8 @@
                                                 </div>
 
                                                 <input type="hidden" th:field="*{financialInstitution}" />
+                                            <input type="hidden" name="tranLocation" id="tranLocation"/>
+                                            <input type="hidden" name="channel" value="web"/>
                                                 <div class="form-group">
                                                     <label  class="my-label">Remark</label>
 
@@ -131,6 +133,9 @@
   $("#destination").prop("selectedIndex", -1);
         getBalance();
         getSourceCurrency();
+        ipLookUp();
+
+
 
     });
 function getBeneficiaryAccts() {
@@ -289,6 +294,21 @@ function getBeneficiaryAccts() {
         window.location.href="/retail/dashboard";
     }
 
+    function ipLookUp() {
+        $.ajax('http://ip-api.com/json')
+            .then(
+                function success(response) {
+                    // console.log('User\'s City', response.city);
+                    console.log('response', response);
+                    $('#tranLocation').val(response.city);
+                },
+
+                function fail(data, status) {
+                    console.log('Request failed.  Returned status of',
+                        status);
+                }
+            );
+    }
 
 </script>
    

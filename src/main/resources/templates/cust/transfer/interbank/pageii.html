@@ -57,6 +57,8 @@
                             <input type="hidden" th:field="*{beneficiaryAccountNumber}" />
                             <input type="hidden" th:field="*{beneficiaryAccountName}" />
                             <input type="hidden" th:field="*{transferType}" />
+                            <input type="hidden" name="tranLocation" id="tranLocation"/>
+                            <input type="hidden" name="channel" value="web"/>
 
                             <div class="form-group">
                                 <label class="my-label">Amount</label>
@@ -122,6 +124,8 @@
         $(document).ready(function(){
             getBalance();
             getDestCurrency();
+            ipLookUp();
+
 
         })
 
@@ -201,6 +205,23 @@
                 }
             })
         }
+
+        function ipLookUp() {
+            $.ajax('http://ip-api.com/json')
+                .then(
+                    function success(response) {
+                        // console.log('User\'s City', response.city);
+                        console.log('response', response);
+                        $('#tranLocation').val(response.city);
+                    },
+
+                    function fail(data, status) {
+                        console.log('Request failed.  Returned status of',
+                            status);
+                    }
+                );
+        }
+
 
         /*]]>*/
 

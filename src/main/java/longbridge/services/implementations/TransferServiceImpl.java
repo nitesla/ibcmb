@@ -83,11 +83,15 @@ public class TransferServiceImpl implements TransferService {
 
         TransRequest transRequest1 = convertDTOToEntity(transferRequestDTO);
 
-        if(transferRequestDTO.getChannel().equals("web")) {
+        if(null==transferRequestDTO.getChannel()) {
+            transferRequestDTO.setChannel("mobile");
+            transRequest1=convertDTOToEntity(transferRequestDTO);
+        }
+        if("web".equals(transferRequestDTO.getChannel())) {
             CustomUserPrincipal user = (CustomUserPrincipal) SecurityContextHolder.getContext().getAuthentication()
                     .getPrincipal();
 
-            String sessionKey = ((WebAuthenticationDetails) SecurityContextHolder.getContext().getAuthentication().getDetails())
+            String sessionkey = ((WebAuthenticationDetails) SecurityContextHolder.getContext().getAuthentication().getDetails())
                     .getSessionId();
 
             AntiFraudData antiFraudData = new AntiFraudData();
@@ -98,13 +102,15 @@ public class TransferServiceImpl implements TransferService {
             antiFraudData.setHeaderProxyAuthorization(httpServletRequest.getHeader("Proxy-Authorization"));
             if (antiFraudData.getHeaderProxyAuthorization() == null) {
                 antiFraudData.setHeaderProxyAuthorization(httpServletRequest.getHeader("Proxy-Authenticate"));
-            } else {
-                antiFraudData.setHeaderProxyAuthorization("");
+                if (antiFraudData.getHeaderProxyAuthorization() == null) {
+                    antiFraudData.setHeaderProxyAuthorization("fine");
+                }
             }
             antiFraudData.setLoginName(user.getUsername());
-            antiFraudData.setDeviceNumber("");
-            antiFraudData.setSessionKey(sessionKey);
-            antiFraudData.setTranLocation(transferRequestDTO.getTranLocation());
+            antiFraudData.setDeviceNumber("fine");
+            antiFraudData.setSessionkey(sessionkey);
+//            antiFraudData.setTranLocation(transferRequestDTO.getTranLocation());
+            antiFraudData.setTranLocation("Lagos");
             transRequest1.setAntiFraudData(antiFraudData);
 
             logger.info("country code {}", antiFraudData.getCountryCode());
@@ -114,19 +120,8 @@ public class TransferServiceImpl implements TransferService {
             logger.info("tranLocation {}", antiFraudData.getTranLocation());
             logger.info("proxyAuthorization {}", antiFraudData.getHeaderProxyAuthorization());
             logger.info("loginName  {}", antiFraudData.getLoginName());
-            logger.info("sessionKey  {}", antiFraudData.getSessionKey());
+            logger.info("sessionkey  {}", antiFraudData.getSessionkey());
 
-        }else {
-            AntiFraudData antiFraudData = new AntiFraudData();
-            antiFraudData.setIp(transferRequestDTO.getIp());
-            antiFraudData.setCountryCode(transferRequestDTO.getCountryCode());
-            antiFraudData.setSfactorAuthIndicator(transferRequestDTO.getSfactorAuthIndicator());
-            antiFraudData.setHeaderUserAgent(transferRequestDTO.getHeaderUserAgent());
-            antiFraudData.setHeaderProxyAuthorization(transferRequestDTO.getHeaderProxyAuthorization());
-            antiFraudData.setLoginName(transferRequestDTO.getLoginName());
-            antiFraudData.setDeviceNumber(transferRequestDTO.getDeviceNumber());
-            antiFraudData.setSessionKey(transferRequestDTO.getSessionKey());
-            transRequest1.setAntiFraudData(antiFraudData);
         }
 
 //        TransRequest transRequest1 = convertDTOToEntity(transferRequestDTO);
@@ -291,12 +286,37 @@ public class TransferServiceImpl implements TransferService {
     }
 
     public TransferRequestDTO convertEntityToDTO(TransRequest transRequest) {
-        return modelMapper.map(transRequest, TransferRequestDTO.class);
+       // return modelMapper.map(transRequest, TransferRequestDTO.class);
+        TransferRequestDTO dto= modelMapper.map(transRequest, TransferRequestDTO.class);
+        dto.setDeviceNumber(transRequest.getAntiFraudData().getDeviceNumber());
+        dto.setCountryCode(transRequest.getAntiFraudData().getCountryCode());
+        dto.setHeaderProxyAuthorization(transRequest.getAntiFraudData().getHeaderProxyAuthorization());
+        dto.setHeaderUserAgent(transRequest.getAntiFraudData().getHeaderUserAgent());
+        dto.setIp(transRequest.getAntiFraudData().getIp());
+        dto.setLoginName(transRequest.getAntiFraudData().getLoginName());
+        dto.setSessionkey(transRequest.getAntiFraudData().getSessionkey());
+        dto.setSfactorAuthIndicator(transRequest.getAntiFraudData().getSfactorAuthIndicator());
+        dto.setTranLocation(transRequest.getAntiFraudData().getTranLocation());
+        return dto;
     }
 
 
     public TransRequest convertDTOToEntity(TransferRequestDTO transferRequestDTO) {
-        return modelMapper.map(transferRequestDTO, TransRequest.class);
+//        return modelMapper.map(transferRequestDTO, TransRequest.class);
+        TransRequest transRequest= modelMapper.map(transferRequestDTO, TransRequest.class);
+        AntiFraudData antiFraudData=new AntiFraudData();
+        antiFraudData.setIp(transferRequestDTO.getIp());
+        antiFraudData.setCountryCode(transferRequestDTO.getCountryCode());
+        antiFraudData.setSfactorAuthIndicator(transferRequestDTO.getSfactorAuthIndicator());
+        antiFraudData.setHeaderUserAgent(transferRequestDTO.getHeaderUserAgent());
+        antiFraudData.setHeaderProxyAuthorization(transferRequestDTO.getHeaderProxyAuthorization());
+        antiFraudData.setLoginName(transferRequestDTO.getLoginName());
+        antiFraudData.setDeviceNumber(transferRequestDTO.getDeviceNumber());
+        antiFraudData.setSessionkey(transferRequestDTO.getSessionkey());
+        antiFraudData.setTranLocation(transferRequestDTO.getTranLocation());
+        transRequest.setAntiFraudData(antiFraudData);
+        return transRequest;
+
     }
 
     public List<TransferRequestDTO> convertEntitiesToDTOs(Iterable<TransRequest> transferRequests) {

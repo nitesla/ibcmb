@@ -1,37 +1,39 @@
 package longbridge.models;
 
-import org.hibernate.envers.Audited;
-
-import javax.persistence.*;
-import java.util.Date;
+import java.io.Serializable;
 
 //@Entity
-@Audited(withModifiedFlag=true)
-public class AntiFraudData {
+//@Audited(withModifiedFlag=true)
+//@JsonTypeInfo(use=JsonTypeInfo.Id.CLASS, include= JsonTypeInfo.As.PROPERTY, property="@class")
+public class AntiFraudData implements Serializable {
 
-           @Id
-           @GeneratedValue(strategy = GenerationType.AUTO)
-           private Long id;
+
+          // @Id
+         //  @GeneratedValue(strategy = GenerationType.AUTO)
+         //  private Long id;
            private String countryCode;
            private String deviceNumber;
            private String headerProxyAuthorization;
            private String headerUserAgent;
            private String ip;
            private String loginName;
-           private String sessionKey;
+           private String sessionkey;
            private String  sfactorAuthIndicator;
            private String tranLocation;
-           private Date createdOn=new Date();
-           @OneToOne
-           @Transient
-           private TransRequest transRequest;
-
+          // private  Date createdOn=new Date();
+         //  @OneToOne
+           //@Transient
+          // private TransRequest transRequest;
+/*
     public Long getId() {
         return id;
     }
 
     public void setId(Long id) {
         this.id = id;
+    }*/
+
+    public AntiFraudData() {
     }
 
     public String getCountryCode() {
@@ -82,12 +84,12 @@ public class AntiFraudData {
         this.loginName = loginName;
     }
 
-    public String getSessionKey() {
-        return sessionKey;
+    public String getSessionkey() {
+        return sessionkey;
     }
 
-    public void setSessionKey(String sessionKey) {
-        this.sessionKey = sessionKey;
+    public void setSessionkey(String sessionkey) {
+        this.sessionkey = sessionkey;
     }
 
     public String getSfactorAuthIndicator() {
@@ -106,6 +108,7 @@ public class AntiFraudData {
         this.tranLocation = tranLocation;
     }
 
+   /* @JsonIgnore
     public Date getCreatedOn() {
         return createdOn;
     }
@@ -114,11 +117,27 @@ public class AntiFraudData {
         this.createdOn = createdOn;
     }
 
+    @JsonIgnore
     public TransRequest getTransRequest() {
         return transRequest;
     }
 
     public void setTransRequest(TransRequest transRequest) {
         this.transRequest = transRequest;
+    }*/
+
+    @Override
+    public String toString() {
+        return "AntiFraudData{" +
+                "countryCode='" + countryCode + '\'' +
+                ", deviceNumber='" + deviceNumber + '\'' +
+                ", headerProxyAuthorization='" + headerProxyAuthorization + '\'' +
+                ", headerUserAgent='" + headerUserAgent + '\'' +
+                ", ip='" + ip + '\'' +
+                ", loginName='" + loginName + '\'' +
+                ", sessionkey='" + sessionkey + '\'' +
+                ", sfactorAuthIndicator='" + sfactorAuthIndicator + '\'' +
+                ", tranLocation='" + tranLocation + '\'' +
+                '}';
     }
 }
