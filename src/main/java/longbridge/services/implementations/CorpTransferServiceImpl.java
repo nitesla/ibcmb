@@ -141,11 +141,24 @@ public class CorpTransferServiceImpl implements CorpTransferService {
         validateTransfer(corpTransferRequestDTO);
         logger.trace("Initiating {} transfer to {} by {}", corpTransferRequestDTO.getTransferType(), corpTransferRequestDTO.getBeneficiaryAccountName(),corpTransferRequestDTO.getUserReferenceNumber());
         CorpTransRequest corpTransRequest = persistTransfer(corpTransferRequestDTO);
+        corpTransRequest.setChannel(corpTransferRequestDTO.getChannel());
         logger.info("the corporate transfer request {}",corpTransRequest);
+        if(null==corpTransferRequestDTO.getChannel()) {
+            corpTransRequest.setChannel("mobile");
 
+            AntiFraudData antiFraudData = new AntiFraudData();
+            antiFraudData.setIp(corpTransferRequestDTO.getIp());
+            antiFraudData.setCountryCode(corpTransferRequestDTO.getCountryCode());
+            antiFraudData.setSfactorAuthIndicator(corpTransferRequestDTO.getSfactorAuthIndicator());
+            antiFraudData.setHeaderUserAgent(corpTransferRequestDTO.getHeaderUserAgent());
+            antiFraudData.setHeaderProxyAuthorization(corpTransferRequestDTO.getHeaderProxyAuthorization());
+            antiFraudData.setLoginName(corpTransferRequestDTO.getLoginName());
+            antiFraudData.setDeviceNumber(corpTransferRequestDTO.getDeviceNumber());
+            antiFraudData.setSessionkey(corpTransferRequestDTO.getSessionkey());
+            corpTransRequest.setAntiFraudData(antiFraudData);
+        }
 
-
-        if(corpTransferRequestDTO.getChannel().equals("web")) {
+        if("web".equals(corpTransferRequestDTO.getChannel())) {
             CustomUserPrincipal user = (CustomUserPrincipal) SecurityContextHolder.getContext().getAuthentication()
                     .getPrincipal();
 
@@ -153,16 +166,18 @@ public class CorpTransferServiceImpl implements CorpTransferService {
                     .getSessionId();
 
             AntiFraudData antiFraudData = new AntiFraudData();
-            antiFraudData.setIp(ipAddressUtils.getClientIP());
+            antiFraudData.setIp(ipAddressUtils.getClientIP2());
             antiFraudData.setCountryCode(locale.getCountry());
             antiFraudData.setSfactorAuthIndicator(user.getSfactorAuthIndicator());
             antiFraudData.setHeaderUserAgent(httpServletRequest.getHeader("User-Agent"));
             antiFraudData.setHeaderProxyAuthorization(httpServletRequest.getHeader("Proxy-Authorization"));
             if (antiFraudData.getHeaderProxyAuthorization() == null) {
                 antiFraudData.setHeaderProxyAuthorization(httpServletRequest.getHeader("Proxy-Authenticate"));
-            } else {
-                antiFraudData.setHeaderProxyAuthorization("");
+                if (antiFraudData.getHeaderProxyAuthorization() == null) {
+                    antiFraudData.setHeaderProxyAuthorization("");
+                }
             }
+
             antiFraudData.setLoginName(user.getUsername());
             antiFraudData.setDeviceNumber("");
             antiFraudData.setSessionkey(sessionkey);
@@ -178,29 +193,7 @@ public class CorpTransferServiceImpl implements CorpTransferService {
             logger.info("loginName  {}", antiFraudData.getLoginName());
             logger.info("sessionKey  {}", antiFraudData.getSessionkey());
 
-        }else {
-            AntiFraudData antiFraudData = new AntiFraudData();
-            antiFraudData.setIp(corpTransferRequestDTO.getIp());
-            antiFraudData.setCountryCode(corpTransferRequestDTO.getCountryCode());
-            antiFraudData.setSfactorAuthIndicator(corpTransferRequestDTO.getSfactorAuthIndicator());
-            antiFraudData.setHeaderUserAgent(corpTransferRequestDTO.getHeaderUserAgent());
-            antiFraudData.setHeaderProxyAuthorization(corpTransferRequestDTO.getHeaderProxyAuthorization());
-            antiFraudData.setLoginName(corpTransferRequestDTO.getLoginName());
-            antiFraudData.setDeviceNumber(corpTransferRequestDTO.getDeviceNumber());
-            antiFraudData.setSessionkey(corpTransferRequestDTO.getSessionkey());
-            corpTransRequest.setAntiFraudData(antiFraudData);
         }
-
-
-
-
-
-
-
-
-
-
-
 
 
         CorpTransRequest corpTransRequestNew = (CorpTransRequest) integrationService.makeTransfer(corpTransRequest);//name change by GB
@@ -356,6 +349,7 @@ public class CorpTransferServiceImpl implements CorpTransferService {
         transferRequestDTO.setAmount(corpTransRequest.getAmount());
         transferRequestDTO.setTranDate(corpTransRequest.getTranDate());
         transferRequestDTO.setCorporateId(corpTransRequest.getCorporate().getId().toString());
+
         if (corpTransRequest.getTransferAuth() != null) {
             transferRequestDTO.setTransAuthId(corpTransRequest.getTransferAuth().getId().toString());
         }
@@ -466,7 +460,6 @@ public class CorpTransferServiceImpl implements CorpTransferService {
 
     @Override
     public String addAuthorization(CorpTransReqEntry transReqEntry) {
-
         CorporateUser corporateUser = getCurrentUser();
         CorpTransRequest corpTransRequest = corpTransferRequestRepo.findOne(transReqEntry.getTranReqId());
         CorpTransRule transferRule = corporateService.getApplicableTransferRule(corpTransRequest);
@@ -516,7 +509,12 @@ public class CorpTransferServiceImpl implements CorpTransferService {
                 transReqEntry.setUser(corporateUser);
 
                 if (isAuthorizationComplete(corpTransRequest)) {
-                    CorpTransferRequestDTO requestDTO = makeTransfer(convertEntityToDTO(corpTransRequest));
+
+                    CorpTransferRequestDTO corpTransferRequestDTO=convertEntityToDTO(corpTransRequest);
+                    corpTransferRequestDTO.setChannel(transReqEntry.getChannel());
+                    corpTransferRequestDTO.setTranLocation(transReqEntry.getTranLocation());
+
+                    CorpTransferRequestDTO requestDTO = makeTransfer(corpTransferRequestDTO);
 
                     if ("00".equals(requestDTO.getStatus()) || "000".equals(requestDTO.getStatus())) {//successful transaction
 
@@ -550,7 +548,12 @@ public class CorpTransferServiceImpl implements CorpTransferService {
                     transferAuth.setStatus("C"); //completed
                     transferAuth.setLastEntry(new Date());
                     transferAuthRepo.save(transferAuth);
-                    CorpTransferRequestDTO requestDTO = makeTransfer(convertEntityToDTO(corpTransRequest));
+                    CorpTransferRequestDTO corpTransferRequestDTO=convertEntityToDTO(corpTransRequest);
+                    corpTransferRequestDTO.setTranLocation(transReqEntry.getTranLocation());
+                    corpTransferRequestDTO.setChannel(transReqEntry.getChannel());
+
+                    CorpTransferRequestDTO requestDTO = makeTransfer(corpTransferRequestDTO);
+//                    CorpTransferRequestDTO requestDTO = makeTransfer(convertEntityToDTO(corpTransRequest));
                     if ("00".equals(requestDTO.getStatus()) || "000".equals(requestDTO.getStatus())) { //successful transaction
                         return requestDTO.getStatusDescription();
                     } else {

@@ -10,7 +10,6 @@ import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
 import java.io.IOException;
-import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -33,6 +32,9 @@ public class BulkTransfer extends TransRequest {
 
     @ManyToOne
     private Corporate corporate;
+
+    @Transient
+    private String tranLocation;
 
 
 
@@ -77,7 +79,15 @@ public class BulkTransfer extends TransRequest {
         this.status = status;
     }
 
-	public BulkTransfer(String reference, String status, List<CreditRequest> creditRequestList, Corporate corporate) {
+    public String getTranLocation() {
+        return tranLocation;
+    }
+
+    public void setTranLocation(String tranLocation) {
+        this.tranLocation = tranLocation;
+    }
+
+    public BulkTransfer(String reference, String status, List<CreditRequest> creditRequestList, Corporate corporate) {
 
         this.refCode = reference;
         this.status = status;

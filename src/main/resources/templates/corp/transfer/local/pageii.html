@@ -113,7 +113,7 @@
         $(document).ready(function () {
             getBalance();
             getDestCurrency();
-             ipLookUp()
+             ipLookUp();
 
 
         })
@@ -201,8 +201,8 @@
             $.ajax('http://ip-api.com/json')
                 .then(
                     function success(response) {
-                        // console.log('User\'s City', response.city);
-                        console.log('response', response);
+                         // console.log('User\'s City', response.city);
+                        // console.log('response', response);
                         $('#tranLocation').val(response.city);
                     },
 

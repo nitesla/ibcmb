@@ -1,41 +1,35 @@
 package longbridge.models;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.envers.Audited;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
-
+import java.util.List;
 
 @Entity
 @Audited(withModifiedFlag=true)
-public class AntiFraudData implements Serializable {
-
-    @Id
-    @JsonIgnore
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
-    private String countryCode;
-    private String deviceNumber;
-    private String headerProxyAuthorization;
-    private String headerUserAgent;
-    private String ip;
-    private String loginName;
-    private String sessionkey;
-    private String  sfactorAuthIndicator;
-    private String tranLocation;
-    private Date createdOn=new Date();
-    @JsonIgnore
-    private Long tranRequestId;
+public class NapsAntiFraudData implements Serializable {
 
 
+          @Id
+          @GeneratedValue(strategy = GenerationType.AUTO)
+           private Long id;
+           private String countryCode;
+           private String deviceNumber;
+           private String headerProxyAuthorization;
+           private String headerUserAgent;
+           private String ip;
+           private String loginName;
+           private String sessionkey;
+           private String  sfactorAuthIndicator;
+           private String tranLocation;
+           private  Date createdOn=new Date();
 
-    public AntiFraudData() {
-    }
+
+    @OneToMany(mappedBy = "napsAntiFraudData",cascade = {CascadeType.ALL})
+    private List<CreditRequest> crRequestList;
+
     public Long getId() {
         return id;
     }
@@ -43,6 +37,10 @@ public class AntiFraudData implements Serializable {
     public void setId(Long id) {
         this.id = id;
     }
+
+    public NapsAntiFraudData() {
+    }
+
     public String getCountryCode() {
         return countryCode;
     }
@@ -123,19 +121,19 @@ public class AntiFraudData implements Serializable {
         this.createdOn = createdOn;
     }
 
-
-    public Long getTranRequestId() {
-        return tranRequestId;
+    public List<CreditRequest> getCrRequestList() {
+        return crRequestList;
     }
 
-    public void setTranRequestId(Long tranRequestId) {
-        this.tranRequestId = tranRequestId;
+    public void setCrRequestList(List<CreditRequest> crRequestList) {
+        this.crRequestList = crRequestList;
     }
 
     @Override
     public String toString() {
-        return "AntiFraudData{" +
-                "countryCode='" + countryCode + '\'' +
+        return "NapsAntiFraudData{" +
+                "id=" + id +
+                ", countryCode='" + countryCode + '\'' +
                 ", deviceNumber='" + deviceNumber + '\'' +
                 ", headerProxyAuthorization='" + headerProxyAuthorization + '\'' +
                 ", headerUserAgent='" + headerUserAgent + '\'' +
@@ -144,8 +142,8 @@ public class AntiFraudData implements Serializable {
                 ", sessionkey='" + sessionkey + '\'' +
                 ", sfactorAuthIndicator='" + sfactorAuthIndicator + '\'' +
                 ", tranLocation='" + tranLocation + '\'' +
+                ", createdOn=" + createdOn +
+                ", crRequestList=" + crRequestList +
                 '}';
     }
-
-
 }

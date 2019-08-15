@@ -84,8 +84,8 @@ public class TransferServiceImpl implements TransferService {
         TransRequest transRequest1 = convertDTOToEntity(transferRequestDTO);
 
         if(null==transferRequestDTO.getChannel()) {
-            transferRequestDTO.setChannel("mobile");
-            transRequest1=convertDTOToEntity(transferRequestDTO);
+            transRequest1.setChannel("mobile");
+          //  transRequest1=convertDTOToEntity(transferRequestDTO);
         }
         if("web".equals(transferRequestDTO.getChannel())) {
             CustomUserPrincipal user = (CustomUserPrincipal) SecurityContextHolder.getContext().getAuthentication()
@@ -103,14 +103,13 @@ public class TransferServiceImpl implements TransferService {
             if (antiFraudData.getHeaderProxyAuthorization() == null) {
                 antiFraudData.setHeaderProxyAuthorization(httpServletRequest.getHeader("Proxy-Authenticate"));
                 if (antiFraudData.getHeaderProxyAuthorization() == null) {
-                    antiFraudData.setHeaderProxyAuthorization("fine");
+                    antiFraudData.setHeaderProxyAuthorization("");
                 }
             }
             antiFraudData.setLoginName(user.getUsername());
-            antiFraudData.setDeviceNumber("fine");
+            antiFraudData.setDeviceNumber("");
             antiFraudData.setSessionkey(sessionkey);
-//            antiFraudData.setTranLocation(transferRequestDTO.getTranLocation());
-            antiFraudData.setTranLocation("Lagos");
+            antiFraudData.setTranLocation(transferRequestDTO.getTranLocation());
             transRequest1.setAntiFraudData(antiFraudData);
 
             logger.info("country code {}", antiFraudData.getCountryCode());

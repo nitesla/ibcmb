@@ -367,6 +367,7 @@ public class TransferRequestDTO implements Serializable {
                 ", sessionkey='" + sessionkey + '\'' +
                 ", sfactorAuthIndicator='" + sfactorAuthIndicator + '\'' +
                 ", tranLocation='" + tranLocation + '\'' +
+                ", channel='" + channel + '\'' +
                 '}';
     }
 }

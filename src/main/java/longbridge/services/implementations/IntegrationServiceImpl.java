@@ -1,7 +1,5 @@
 package longbridge.services.implementations;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import longbridge.api.*;
 import longbridge.dtos.SettingDTO;
@@ -10,6 +8,7 @@ import longbridge.exception.InternetBankingTransferException;
 import longbridge.exception.TransferErrorService;
 import longbridge.models.*;
 import longbridge.repositories.AccountRepo;
+import longbridge.repositories.AntiFraudRepo;
 import longbridge.repositories.CorporateRepo;
 import longbridge.security.userdetails.CustomUserPrincipal;
 import longbridge.services.ConfigurationService;
@@ -82,13 +81,12 @@ public class IntegrationServiceImpl implements IntegrationService {
 	private MessageSource messageSource;
 	private AccountRepo accountRepo;
 	private CorporateRepo corporateRepo;
-	@Autowired
-	private ObjectMapper objectMapper;
+	private AntiFraudRepo antiFraudRepo;
 
 	@Autowired
 	public IntegrationServiceImpl(RestTemplate template, MailService mailService, TemplateEngine templateEngine,
 								  ConfigurationService configService, TransferErrorService errorService, MessageSource messageSource,
-								  AccountRepo accountRepo, CorporateRepo corporateRepo) {
+								  AccountRepo accountRepo, CorporateRepo corporateRepo, AntiFraudRepo antiFraudRepo) {
 		this.template = template;
 		this.mailService = mailService;
 		this.templateEngine = templateEngine;
@@ -97,6 +95,7 @@ public class IntegrationServiceImpl implements IntegrationService {
 		this.messageSource = messageSource;
 		this.accountRepo = accountRepo;
 		this.corporateRepo = corporateRepo;
+		this.antiFraudRepo=antiFraudRepo;
 	}
 
 	@Override
@@ -359,7 +358,6 @@ public class IntegrationServiceImpl implements IntegrationService {
 		TransferType type = transRequest.getTransferType();
 		Account account = accountRepo.findFirstByAccountNumber(transRequest.getCustomerAccountNumber());
 		validate(account);
-        objectMapper.enable(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT);
 		switch (type) {
 			case CORONATION_BANK_TRANSFER:
 			{
@@ -393,6 +391,11 @@ public class IntegrationServiceImpl implements IntegrationService {
 					logger.info("Initiating Local Transfer");
 					logger.debug("Transfer Params: {}", params.toString());
 					TransferRequest response = template.postForObject(uri, params, TransferRequest.class);
+
+					params.getAntiFraudData().setTranRequestId(transRequest.getId());
+					antiFraudRepo.save(params.getAntiFraudData());
+					logger.info("AntiFraud data saved {}",params.getAntiFraudData());
+
 //					response = template.postForObject(uri, params, TransferDetails.class);
 					logger.info("Response:{}",response);
 					transRequest.setStatus(response.getResponseCode());
@@ -454,6 +457,12 @@ public class IntegrationServiceImpl implements IntegrationService {
 					transRequest.setStatus(response.getResponseCode());
 					transRequest.setStatusDescription(response.getResponseDescription());
 
+
+					params.getAntiFraudData().setTranRequestId(transRequest.getId());
+					antiFraudRepo.save(params.getAntiFraudData());
+					logger.info("AntiFraud data saved {}",params.getAntiFraudData());
+
+
 					return transRequest;
 				} catch (HttpStatusCodeException e) {
 
@@ -506,6 +515,11 @@ public class IntegrationServiceImpl implements IntegrationService {
 					transRequest.setReferenceNumber(response.getUniqueReferenceCode());
 					transRequest.setStatus(response.getResponseCode());
 					transRequest.setStatusDescription(response.getResponseDescription());
+
+					params.getAntiFraudData().setTranRequestId(transRequest.getId());
+					antiFraudRepo.save(params.getAntiFraudData());
+					logger.info("AntiFraud data saved {}",params.getAntiFraudData());
+
 					return transRequest;
 
 				} catch (HttpStatusCodeException e) {

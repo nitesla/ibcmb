@@ -193,6 +193,7 @@ public class CorpNAPSTransferController {
 
     @PostMapping("/bulk/approve")
     public String addBulkTransferAuthorization(@ModelAttribute("corpTransReqEntry") CorpTransReqEntry corpTransReqEntry, @RequestParam("token") String tokenCode, RedirectAttributes redirectAttributes, Principal principal, Locale locale) {
+        corpTransReqEntry.setChannel("web");
 
         CorporateUser user = corporateUserService.getUserByName(principal.getName());
 

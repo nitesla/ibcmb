@@ -4,10 +4,7 @@ import longbridge.utils.TransferAuthorizationStatus;
 import org.hibernate.annotations.Where;
 import org.hibernate.envers.Audited;
 
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
 import java.util.Date;
 
 /**
@@ -32,6 +29,10 @@ public class CorpTransReqEntry extends AbstractEntity {
     @ManyToOne
     private CorporateUser user;
     private Date entryDate;
+    @Transient
+    private String channel;
+    @Transient
+    private String tranLocation;
 
 
     public String getComments() {
@@ -90,17 +91,34 @@ public class CorpTransReqEntry extends AbstractEntity {
         this.tranReqId = tranReqId;
     }
 
+    public String getChannel() {
+        return channel;
+    }
 
+    public void setChannel(String channel) {
+        this.channel = channel;
+    }
+
+    public String getTranLocation() {
+        return tranLocation;
+    }
+
+    public void setTranLocation(String tranLocation) {
+        this.tranLocation = tranLocation;
+    }
 
     @Override
-    public String toString() {
-        return "CorpTransReqEntry{" +super.toString()+
+    public String   toString() {
+        return "CorpTransReqEntry{" +
                 "tranReqId=" + tranReqId +
                 ", comments='" + comments + '\'' +
                 ", status='" + status + '\'' +
+                ", authStatus=" + authStatus +
                 ", role=" + role +
                 ", user=" + user +
                 ", entryDate=" + entryDate +
+                ", channel='" + channel + '\'' +
+                ", tranLocation='" + tranLocation + '\'' +
                 '}';
     }
 }

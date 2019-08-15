@@ -1,7 +1,6 @@
 package longbridge.services.bulkTransfers;
 
 import longbridge.api.TransferDetails;
-import longbridge.dtos.CreditRequestDTO;
 import longbridge.models.BulkTransfer;
 import longbridge.models.CreditRequest;
 import longbridge.repositories.BulkTransferRepo;
@@ -15,7 +14,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by ayoade_farooq@yahoo.com on 6/22/2017.
@@ -51,6 +51,7 @@ public class BulkTransferWriter implements ItemWriter<TransferDTO> {
 
         BulkTransfer bulkTransfer = bulkTransferRepo.findFirstByRefCode(batchId);
         TransferDetails response = submitTransferRequests(dtos);
+        LOGGER.info("dtos {}",dtos);
         LOGGER.info("Updating bulk transfer ID {} status  {}",batchId,response);
         if("000".equals(response.getResponseCode())){
             bulkTransfer.setStatus(StatusCode.PROCESSING.toString());
@@ -72,6 +73,7 @@ public class BulkTransferWriter implements ItemWriter<TransferDTO> {
 
         try {
             LOGGER.info("Calling NAPS Web service via {}", url);
+            LOGGER.info("credit req {}",dtos.get(0).getNapsAntiFraudData());
             TransferDetails details = template.postForObject(url, dtos, TransferDetails.class);
             LOGGER.debug("Response from service: {}",details);
             return details;

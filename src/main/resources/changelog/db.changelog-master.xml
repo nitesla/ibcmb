@@ -15,8 +15,16 @@
     <include file="changelog/db.changelog-addnewFieldToTransRequest.xml"/>
     <include file="changelog/db.changelog-addnewFieldToTransRequest_aud.xml"/>-->
 
-    <include file="changelog/db.changelog.addApprovalField.xml"/>
-    <include file="changelog/db.changelog.addApprovalField_aud.xml"/>
+   <!-- <include file="changelog/db.changelog.addApprovalField.xml"/>
+    <include file="changelog/db.changelog.addApprovalField_aud.xml"/>-->
+
+
+     <include file="changelog/db.changelog-createAntiFraudData.xml"/>
+     <include file="changelog/db.changelog-createAntiFraudDataAud.xml"/>
+     <include file="changelog/db.changelog-createNapsAntiFraudData.xml"/>
+     <include file="changelog/db.changelog-createNapsAntiFraudDataAud.xml"/>
+     <include file="changelog/db.changelog-addNewFieldToCreditRequest.xml"/>
+     <include file="changelog/db.changelog-addNewFieldToTranRequestTab.xml"/>
 
     <!--<include file="changelog/db.changelog-1.1.2.xml"/>-->
 

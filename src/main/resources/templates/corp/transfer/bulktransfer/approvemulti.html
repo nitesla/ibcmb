@@ -111,7 +111,7 @@
 
                             </div>
 
-                            <form id="authForm" th:action="@{/corporate/transfer/bulk/approve}" method="post">
+                            <form id="authForm" th:action="@{/corporate/transfer/bulk/approve}" method="post" th:object="${corpTransReqEntry}">
                                 <textarea id="commentField" th:if="${userCanAuthorize}" class="form-control full-width" th:field="${corpTransReqEntry.comments}" placeholder="Enter comments"></textarea>
 
                                 <div>
@@ -120,6 +120,8 @@
                                 <div>
 
                                     <input type="hidden" name="tranReqId" th:value="${corpTransRequest.id}" />
+                                    <input type="hidden" th:field="*{tranLocation}" name="tranLocation"  id="tranLocation"/>
+
                                 </div>
                                 <div>
                                     <input type="hidden" id="authStatus" name="authStatus">
@@ -193,6 +195,7 @@
         <script th:inline="javascript">
             //<![CDATA[
 
+            ipLookUp();
 
 
             jQuery.download = function(url, key, data) {
@@ -393,6 +396,24 @@
 
 
             })
+
+            function ipLookUp () {
+                $.ajax('http://ip-api.com/json')
+                    .then(
+                        function success(response) {
+                            console.log('User\'s City', response.city);
+                            console.log('response', response);
+                            $('#tranLocation').val(response.city);
+                        },
+
+                        function fail(data, status) {
+                            console.log('Request failed.  Returned status of',
+                                status);
+
+
+                        }
+                    );
+            }
 
             /*]]>*/
         </script>

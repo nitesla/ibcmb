@@ -10,6 +10,7 @@ import longbridge.exception.TransferAuthorizationException;
 import longbridge.exception.TransferRuleException;
 import longbridge.models.*;
 import longbridge.repositories.*;
+import longbridge.security.IpAddressUtils;
 import longbridge.security.userdetails.CustomUserPrincipal;
 import longbridge.services.*;
 import longbridge.services.bulkTransfers.BulkTransferJobLauncher;
@@ -18,14 +19,18 @@ import longbridge.utils.TransferAuthorizationStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.authentication.WebAuthenticationDetails;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
+import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -75,19 +80,34 @@ public class BulkTransferServiceImpl implements BulkTransferService {
     @Autowired
     private IntegrationService integrationService;
 
+    private RestTemplate template;
+
     @Autowired
-    public BulkTransferServiceImpl(BulkTransferRepo bulkTransferRepo
-            , BulkTransferJobLauncher jobLauncher, MessageSource messageSource
+    IpAddressUtils ipAddressUtils;
+
+    @Autowired
+    HttpServletRequest httpServletRequest;
+
+    @Value("${naps.url}")
+    private String url;
+
+    private NapsAntiFraudRepo napsAntiFraudRepo;
+
+
+    @Autowired
+    public BulkTransferServiceImpl(BulkTransferRepo bulkTransferRepo, BulkTransferJobLauncher jobLauncher, MessageSource messageSource,RestTemplate template,NapsAntiFraudRepo napsAntiFraudRepo
 
     ) {
         this.bulkTransferRepo = bulkTransferRepo;
         this.jobLauncher = jobLauncher;
         this.messageSource = messageSource;
+        this.template=template;
+        this.napsAntiFraudRepo=napsAntiFraudRepo;
     }
 
 
     @Override
-    public String makeBulkTransferRequest(BulkTransfer bulkTransfer) {
+    public String  makeBulkTransferRequest(BulkTransfer bulkTransfer) {
 
         logger.debug("Transfer details valid {}", bulkTransfer);
 
@@ -96,12 +116,57 @@ public class BulkTransferServiceImpl implements BulkTransferService {
         bulkTransfer.setStatus(StatusCode.PROCESSING.toString());
         bulkTransfer.setStatusDescription("Processing Transaction");
         BulkTransfer transfer = bulkTransferRepo.save(bulkTransfer);
+
+        CustomUserPrincipal user = (CustomUserPrincipal) SecurityContextHolder.getContext().getAuthentication()
+                .getPrincipal();
+
+        String sessionkey = ((WebAuthenticationDetails) SecurityContextHolder.getContext().getAuthentication().getDetails())
+                .getSessionId();
+
+        NapsAntiFraudData antiFraudData = new NapsAntiFraudData();
+        antiFraudData.setIp(ipAddressUtils.getClientIP());
+        antiFraudData.setCountryCode(locale.getCountry());
+        antiFraudData.setSfactorAuthIndicator(user.getSfactorAuthIndicator());
+        antiFraudData.setHeaderUserAgent(httpServletRequest.getHeader("User-Agent"));
+        antiFraudData.setHeaderProxyAuthorization(httpServletRequest.getHeader("Proxy-Authorization"));
+        if (antiFraudData.getHeaderProxyAuthorization() == null) {
+            antiFraudData.setHeaderProxyAuthorization(httpServletRequest.getHeader("Proxy-Authenticate"));
+            if (antiFraudData.getHeaderProxyAuthorization() == null) {
+                antiFraudData.setHeaderProxyAuthorization("");
+            }
+        }
+
+        antiFraudData.setLoginName(user.getUsername());
+        antiFraudData.setDeviceNumber("");
+        antiFraudData.setSessionkey(sessionkey);
+        antiFraudData.setTranLocation(bulkTransfer.getTranLocation());
+
+        logger.info("country code {}", antiFraudData.getCountryCode());
+        logger.info("sfactorAuthIndicator {}", antiFraudData.getSfactorAuthIndicator());
+        logger.info("UserAgent {}", antiFraudData.getHeaderUserAgent());
+        logger.info("ip address {}", antiFraudData.getIp());
+        logger.info("tranLocation {}", antiFraudData.getTranLocation());
+        logger.info("proxyAuthorization {}", antiFraudData.getHeaderProxyAuthorization());
+        logger.info("loginName  {}", antiFraudData.getLoginName());
+        logger.info("sessionKey  {}", antiFraudData.getSessionkey());
+
+        logger.info("Antifraud details {}",antiFraudData);
+        NapsAntiFraudData napsAntiFraudData2=napsAntiFraudRepo.save(antiFraudData);
+        logger.info("napsData {}",napsAntiFraudData2);
+
+
         List<CreditRequest> creditRequests = bulkTransfer.getCrRequestList();
         creditRequests.forEach(request -> {
             request.setStatus("PROCESSING");
             request.setApprovalDate(new Date());
+            request.setNapsAntiFraudData(napsAntiFraudData2);
             creditRequestRepo.save(request);
         });
+
+
+
+
+
         try {
             jobLauncher.launchBulkTransferJob("" + transfer.getRefCode());
         } catch (Exception e) {
@@ -217,6 +282,8 @@ public class BulkTransferServiceImpl implements BulkTransferService {
 
             transferAuthRepo.save(transferAuth);
             if (isAuthorizationComplete(bulkTransfer)) {
+                bulkTransfer.setChannel(transReqEntry.getChannel());
+                bulkTransfer.setTranLocation(transReqEntry.getTranLocation());
                 transferAuth.setStatus("C");
                 transferAuth.setLastEntry(new Date());
                 transferAuthRepo.save(transferAuth);

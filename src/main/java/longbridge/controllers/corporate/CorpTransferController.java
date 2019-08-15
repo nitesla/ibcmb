@@ -403,9 +403,9 @@ public class CorpTransferController {
 
 
     @PostMapping("/authorize")
-    public String addAuthorization(@ModelAttribute("corpTransReqEntry") CorpTransReqEntry corpTransReqEntry, @RequestParam("token") String tokenCode, RedirectAttributes redirectAttributes, Principal principal) {
+    public String addAuthorization(@ModelAttribute("corpTransReqEntry") CorpTransReqEntry corpTransReqEntry,@RequestParam("token") String tokenCode, RedirectAttributes redirectAttributes, Principal principal) {
 
-
+        corpTransReqEntry.setChannel("web");
         CorporateUser user = corporateUserService.getUserByName(principal.getName());
 
         SettingDTO setting = configService.getSettingByName("ENABLE_CORPORATE_2FA");

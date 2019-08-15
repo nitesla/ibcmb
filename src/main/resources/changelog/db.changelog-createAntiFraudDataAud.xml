@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog/1.1"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog/1.1
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-1.1.xsd">
+
+
+    <changeSet author="longbridge (generated)" id="1565792787129-14">
+        <createTable tableName="ANTI_FRAUD_DATA_AUD">
+            <column name="ID" type="NUMBER(19, 0)">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="REV" type="NUMBER(10, 0)">
+                <constraints primaryKey="true" />
+            </column>
+            <column name="REVTYPE" type="NUMBER(3, 0)"/>
+            <column name="COUNTRY_CODE" type="VARCHAR2(255 CHAR)"/>
+            <column name="COUNTRY_CODE_MOD" type="NUMBER(1, 0)"/>
+            <column name="CREATED_ON" type="TIMESTAMP(6)"/>
+            <column name="CREATED_ON_MOD" type="NUMBER(1, 0)"/>
+            <column name="DEVICE_NUMBER" type="VARCHAR2(255 CHAR)"/>
+            <column name="DEVICE_NUMBER_MOD" type="NUMBER(1, 0)"/>
+            <column name="HEADER_PROXY_AUTHORIZATION" type="VARCHAR2(255 CHAR)"/>
+            <column name="HEADER_PROXY_AUTHORIZATION_MOD" type="NUMBER(1, 0)"/>
+            <column name="HEADER_USER_AGENT" type="VARCHAR2(255 CHAR)"/>
+            <column name="HEADER_USER_AGENT_MOD" type="NUMBER(1, 0)"/>
+            <column name="IP" type="VARCHAR2(255 CHAR)"/>
+            <column name="IP_MOD" type="NUMBER(1, 0)"/>
+            <column name="LOGIN_NAME" type="VARCHAR2(255 CHAR)"/>
+            <column name="LOGIN_NAME_MOD" type="NUMBER(1, 0)"/>
+            <column name="SESSIONKEY" type="VARCHAR2(255 CHAR)"/>
+            <column name="SESSIONKEY_MOD" type="NUMBER(1, 0)"/>
+            <column name="SFACTOR_AUTH_INDICATOR" type="VARCHAR2(255 CHAR)"/>
+            <column name="SFACTOR_AUTH_INDICATOR_MOD" type="NUMBER(1, 0)"/>
+            <column name="TRAN_LOCATION" type="VARCHAR2(255 CHAR)"/>
+            <column name="TRAN_LOCATION_MOD" type="NUMBER(1, 0)"/>
+            <column name="TRAN_REQUEST_ID" type="NUMBER(19, 0)"/>
+            <column name="TRAN_REQUEST_ID_MOD" type="NUMBER(1, 0)"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet author="longbridge (generated)" id="1565792787129-270">
+        <addForeignKeyConstraint baseColumnNames="REV" baseTableName="ANTI_FRAUD_DATA_AUD" constraintName="FKE10EHNHVEG2KY5YR9PTEW4O87" deferrable="false" initiallyDeferred="false"   referencedColumnNames="ID" referencedTableName="CUSTOM_REVISION_ENTITY" />
+    </changeSet>
+
+
+</databaseChangeLog>

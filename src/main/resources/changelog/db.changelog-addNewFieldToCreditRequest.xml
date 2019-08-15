@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog/1.1"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog/1.1
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-1.1.xsd">
+    <changeSet author="Longbridge (gbubemi)" id="addNapsAntiFraudFieldTOCreditRequest">
+        <addColumn   tableName="CREDIT_REQUEST">
+            <column name="NAPS_ANTI_FRAUD_DATA_ID" type="NUMBER(19, 0)"/>
+
+        </addColumn>
+    </changeSet>
+
+
+    <changeSet author="longbridge (gbubemi)" id="1565792787129-324">
+        <addForeignKeyConstraint baseColumnNames="NAPS_ANTI_FRAUD_DATA_ID" baseTableName="CREDIT_REQUEST" constraintName="FKOQSIB7RCENJJ9DHUMLX2XK7KP" deferrable="false" initiallyDeferred="false"  referencedColumnNames="ID" referencedTableName="NAPS_ANTI_FRAUD_DATA" />
+    </changeSet>
+
+    <changeSet author="Longbridge (gbubemi)" id="addNapsAntiFraudFieldAudTOCreditRequest">
+         <addColumn   tableName="CREDIT_REQUEST_AUD">
+
+            <column name="NAPS_ANTI_FRAUD_DATA_ID" type="NUMBER(19, 0)"/>
+
+         </addColumn>
+    </changeSet>
+
+    <changeSet author="Longbridge (gbubemi)" id="addNapsAntiFraudFieldMODAudTOCreditRequest">
+         <addColumn   tableName="CREDIT_REQUEST_AUD">
+
+            <column name="NAPS_ANTI_FRAUD_DATA_MOD" type="NUMBER(1, 0)"/>
+
+         </addColumn>
+    </changeSet>
+
+
+
+</databaseChangeLog>

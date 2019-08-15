@@ -1,9 +1,15 @@
 package longbridge.services.bulkTransfers;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import longbridge.models.NapsAntiFraudData;
+
+import java.io.Serializable;
+
 /**
  * Created by ayoade_farooq@yahoo.com on 6/24/2017.
  */
-public class TransferDTO {
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class TransferDTO implements Serializable {
     private String accountName;
     private String accountNumber;
     private String beneficiaryAccountNumber;
@@ -16,6 +22,17 @@ public class TransferDTO {
     private String amount;
     private String payerAccountNumber;
     private String payerName;
+
+    private NapsAntiFraudData napsAntiFraudData;
+
+    private String status;
+    private String setStatusDescription;
+
+    private String responseCode;
+    private String  responseDescription;
+    private String  uniqueReferenceCode;
+
+
 
 
     public TransferDTO() {
@@ -130,10 +147,62 @@ public class TransferDTO {
         this.beneficiaryAccountNumber = beneficiaryAccountNumber;
     }
 
+
+    public String getResponseCode() {
+        return responseCode;
+    }
+
+    public void setResponseCode(String responseCode) {
+        this.responseCode = responseCode;
+    }
+
+    public String getResponseDescription() {
+        return responseDescription;
+    }
+
+    public void setResponseDescription(String responseDescription) {
+        this.responseDescription = responseDescription;
+    }
+
+    public String getUniqueReferenceCode() {
+        return uniqueReferenceCode;
+    }
+
+    public void setUniqueReferenceCode(String uniqueReferenceCode) {
+        this.uniqueReferenceCode = uniqueReferenceCode;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public String getSetStatusDescription() {
+        return setStatusDescription;
+    }
+
+    public void setSetStatusDescription(String setStatusDescription) {
+        this.setStatusDescription = setStatusDescription;
+    }
+
+    public NapsAntiFraudData getNapsAntiFraudData() {
+        return napsAntiFraudData;
+    }
+
+    public void setNapsAntiFraudData(NapsAntiFraudData napsAntiFraudData) {
+        this.napsAntiFraudData = napsAntiFraudData;
+    }
+
     @Override
     public String toString() {
         return "TransferDTO{" +
-                "beneficiaryName='" + beneficiaryName + '\'' +
+                "accountName='" + accountName + '\'' +
+                ", accountNumber='" + accountNumber + '\'' +
+                ", beneficiaryAccountNumber='" + beneficiaryAccountNumber + '\'' +
+                ", beneficiaryName='" + beneficiaryName + '\'' +
                 ", batchId='" + batchId + '\'' +
                 ", email='" + email + '\'' +
                 ", narration='" + narration + '\'' +
@@ -142,6 +211,12 @@ public class TransferDTO {
                 ", amount='" + amount + '\'' +
                 ", payerAccountNumber='" + payerAccountNumber + '\'' +
                 ", payerName='" + payerName + '\'' +
+                ", napsAntiFraudData=" + napsAntiFraudData +
+                ", status='" + status + '\'' +
+                ", setStatusDescription='" + setStatusDescription + '\'' +
+                ", responseCode='" + responseCode + '\'' +
+                ", responseDescription='" + responseDescription + '\'' +
+                ", uniqueReferenceCode='" + uniqueReferenceCode + '\'' +
                 '}';
     }
 }

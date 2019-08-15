@@ -31,6 +31,9 @@ public class CreditRequest extends AbstractEntity{
 
     @ManyToOne
     private BulkTransfer bulkTransfer;
+    @ManyToOne
+    private NapsAntiFraudData napsAntiFraudData;
+
 
 
     public String getAccountNumber() {
@@ -105,8 +108,17 @@ public class CreditRequest extends AbstractEntity{
         this.approvalDate = approvalDate;
     }
 
+    public NapsAntiFraudData getNapsAntiFraudData() {
+        return napsAntiFraudData;
+    }
+
+    public void setNapsAntiFraudData(NapsAntiFraudData napsAntiFraudData) {
+        this.napsAntiFraudData = napsAntiFraudData;
+    }
+
     public CreditRequest() {
     }
+
 
     @Override
     public String toString() {
@@ -120,6 +132,7 @@ public class CreditRequest extends AbstractEntity{
                 ", referenceNumber='" + referenceNumber + '\'' +
                 ", approvalDate=" + approvalDate +
                 ", bulkTransfer=" + bulkTransfer +
+                ", napsAntiFraudData=" + napsAntiFraudData +
                 '}';
     }
 }
