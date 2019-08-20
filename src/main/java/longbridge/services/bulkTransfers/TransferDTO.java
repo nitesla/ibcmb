@@ -1,7 +1,7 @@
 package longbridge.services.bulkTransfers;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import longbridge.models.NapsAntiFraudData;
+import longbridge.models.AntiFraudData;
 
 import java.io.Serializable;
 
@@ -23,7 +23,7 @@ public class TransferDTO implements Serializable {
     private String payerAccountNumber;
     private String payerName;
 
-    private NapsAntiFraudData napsAntiFraudData;
+    private AntiFraudData antiFraudData;
 
     private String status;
     private String setStatusDescription;
@@ -188,12 +188,12 @@ public class TransferDTO implements Serializable {
         this.setStatusDescription = setStatusDescription;
     }
 
-    public NapsAntiFraudData getNapsAntiFraudData() {
-        return napsAntiFraudData;
+    public AntiFraudData getAntiFraudData() {
+        return antiFraudData;
     }
 
-    public void setNapsAntiFraudData(NapsAntiFraudData napsAntiFraudData) {
-        this.napsAntiFraudData = napsAntiFraudData;
+    public void setAntiFraudData(AntiFraudData antiFraudData) {
+        this.antiFraudData = antiFraudData;
     }
 
     @Override
@@ -211,7 +211,7 @@ public class TransferDTO implements Serializable {
                 ", amount='" + amount + '\'' +
                 ", payerAccountNumber='" + payerAccountNumber + '\'' +
                 ", payerName='" + payerName + '\'' +
-                ", napsAntiFraudData=" + napsAntiFraudData +
+                ", antiFraudData=" + antiFraudData +
                 ", status='" + status + '\'' +
                 ", setStatusDescription='" + setStatusDescription + '\'' +
                 ", responseCode='" + responseCode + '\'' +

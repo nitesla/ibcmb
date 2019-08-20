@@ -1,11 +1,13 @@
 package longbridge.services.bulkTransfers;
 
 import longbridge.api.CustomerDetails;
+import longbridge.models.AntiFraudData;
 import longbridge.models.BulkTransfer;
 import longbridge.models.CreditRequest;
 import longbridge.repositories.BulkTransferRepo;
 import longbridge.repositories.CreditRequestRepo;
 import longbridge.services.IntegrationService;
+import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.item.ItemReader;
@@ -88,7 +90,7 @@ class BulkTransferReader implements ItemReader<TransferDTO>, InitializingBean {
         dto.setAmount(request.getAmount().toString());
         dto.setPayerAccountNumber(request.getBulkTransfer().getCustomerAccountNumber());
         dto.setPayerName(details.getCustomerName());
-        dto.setNapsAntiFraudData(request.getNapsAntiFraudData());
+        dto.setAntiFraudData(new ModelMapper().map(request.getNapsAntiFraudData(), AntiFraudData.class));
 
 
         return dto;

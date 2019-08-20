@@ -73,7 +73,6 @@ public class BulkTransferWriter implements ItemWriter<TransferDTO> {
 
         try {
             LOGGER.info("Calling NAPS Web service via {}", url);
-            LOGGER.info("credit req {}",dtos.get(0).getNapsAntiFraudData());
             TransferDetails details = template.postForObject(url, dtos, TransferDetails.class);
             LOGGER.debug("Response from service: {}",details);
             return details;

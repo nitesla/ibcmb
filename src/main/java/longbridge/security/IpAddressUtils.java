@@ -58,7 +58,7 @@ public class IpAddressUtils {
 
         }
     }
-
+//created this for antifraud implementation check
     public final String getClientIP2() {
         String remoteAddr = "";
         if (request != null) {

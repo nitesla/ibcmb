@@ -50,6 +50,7 @@
                                 <option th:each="s: ${accountList}" th:value="${s.accountNumber}"
                                         th:text="${s.accountNumber}" th:selected="${s.primaryFlag=='Y'}"></option>
                             </select>
+
                             <p class="errors" th:if="${#fields.hasErrors('customerAccountNumber')}"
                                th:errors="*{customerAccountNumber}">&times;</p>
                         </div>

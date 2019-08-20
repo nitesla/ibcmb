@@ -95,7 +95,7 @@ public class TransferServiceImpl implements TransferService {
                     .getSessionId();
 
             AntiFraudData antiFraudData = new AntiFraudData();
-            antiFraudData.setIp(ipAddressUtils.getClientIP());
+            antiFraudData.setIp(ipAddressUtils.getClientIP2());
             antiFraudData.setCountryCode(locale.getCountry());
             antiFraudData.setSfactorAuthIndicator(user.getSfactorAuthIndicator());
             antiFraudData.setHeaderUserAgent(httpServletRequest.getHeader("User-Agent"));
