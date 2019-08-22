@@ -286,7 +286,6 @@ function getBeneficiaryAccts() {
     }
 
 
-    /*]]>*/
 
 
 
@@ -294,7 +293,7 @@ function getBeneficiaryAccts() {
         window.location.href="/retail/dashboard";
     }
 
-    function ipLookUp() {
+   /* function ipLookUp() {
         $.ajax('http://ip-api.com/json')
             .then(
                 function success(response) {
@@ -309,8 +308,25 @@ function getBeneficiaryAccts() {
                 }
             );
     }
+*/
 
-</script>
+    var url=[[${url}]];
+    var key=[[${key}]];
+
+    function ipLookUp() {
+        $.ajax({
+            url: url+key,
+            dataType: 'jsonp',
+            success: function (response) {
+                console.log('response', response.city);
+                 $('#tranLocation').val(response.city+":"+response.country_code);
+            },
+        });
+    }
+
+    /*]]>*/
+
+    </script>
    
 </th:block>
 

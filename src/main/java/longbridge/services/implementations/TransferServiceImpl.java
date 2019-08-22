@@ -85,7 +85,6 @@ public class TransferServiceImpl implements TransferService {
 
         if(null==transferRequestDTO.getChannel()) {
             transRequest1.setChannel("mobile");
-          //  transRequest1=convertDTOToEntity(transferRequestDTO);
         }
         if("web".equals(transferRequestDTO.getChannel())) {
             CustomUserPrincipal user = (CustomUserPrincipal) SecurityContextHolder.getContext().getAuthentication()
@@ -95,8 +94,8 @@ public class TransferServiceImpl implements TransferService {
                     .getSessionId();
 
             AntiFraudData antiFraudData = new AntiFraudData();
-            antiFraudData.setIp(ipAddressUtils.getClientIP2());
-            antiFraudData.setCountryCode(locale.getCountry());
+            antiFraudData.setIp(ipAddressUtils.getClientIP());
+            antiFraudData.setCountryCode(transferRequestDTO.getTranLocation().split(":")[1]);
             antiFraudData.setSfactorAuthIndicator(user.getSfactorAuthIndicator());
             antiFraudData.setHeaderUserAgent(httpServletRequest.getHeader("User-Agent"));
             antiFraudData.setHeaderProxyAuthorization(httpServletRequest.getHeader("Proxy-Authorization"));
@@ -109,7 +108,7 @@ public class TransferServiceImpl implements TransferService {
             antiFraudData.setLoginName(user.getUsername());
             antiFraudData.setDeviceNumber("");
             antiFraudData.setSessionkey(sessionkey);
-            antiFraudData.setTranLocation(transferRequestDTO.getTranLocation());
+            antiFraudData.setTranLocation(transferRequestDTO.getTranLocation().split(":")[0]);
             transRequest1.setAntiFraudData(antiFraudData);
 
             logger.info("country code {}", antiFraudData.getCountryCode());

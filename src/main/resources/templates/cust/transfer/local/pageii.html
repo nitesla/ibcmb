@@ -163,7 +163,6 @@
                 }
             })
         }
-        /*]]>*/
 
         function getLimit(){
 
@@ -193,24 +192,25 @@
             window.location.href="/retail/transfer/local";
         }
 
-        function ipLookUp() {
-            $.ajax('http://ip-api.com/json')
-                .then(
-                    function success(response) {
-                        // console.log('User\'s City', response.city);
-                        console.log('response', response);
-                        $('#tranLocation').val(response.city);
-                    },
+        var url=[[${url}]];
+        var key=[[${key}]];
 
-                    function fail(data, status) {
-                        console.log('Request failed.  Returned status of',
-                            status);
-                    }
-                );
+        function ipLookUp() {
+            $.ajax({
+                url: url+key,
+                dataType: 'jsonp',
+                success: function (response) {
+                    $('#tranLocation').val(response.city+":"+response.country_code);
+                    console.log($('#tranLocation').val());
+                },
+            });
         }
 
+        /*]]>*/
 
-    </script>
+
+
+  </script>
 </th:block>
 
 </body>

@@ -50,8 +50,16 @@ public class OwnTransferController {
     private TransferUtils transferUtils;
 
     private String page = "cust/transfer/ownaccount/";
+
     @Value("${bank.code}")
     private String bankCode;
+
+    @Value("${geolocation.url}")
+    private String geolocationUrl;
+
+    @Value("${geolocation.key}")
+    private String geolocationKey;
+
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
@@ -148,6 +156,8 @@ public class OwnTransferController {
 
 
                 model.addAttribute("destAccounts", accountList);
+                model.addAttribute("key", geolocationKey);
+                model.addAttribute("url", geolocationUrl);
             }
 
 

@@ -47,6 +47,13 @@ public class LocalTransferController {
     @Value("${bank.code}")
     private String bankCode;
 
+
+    @Value("${geolocation.url}")
+    private String geolocationUrl;
+
+    @Value("${geolocation.key}")
+    private String geolocationKey;
+
     @Autowired
     public LocalTransferController(RetailUserService retailUserService, TransferValidator validator, TransferService transferService, AccountService accountService, MessageSource messages, LocaleResolver localeResolver, LocalBeneficiaryService localBeneficiaryService, FinancialInstitutionService financialInstitutionService, TransferErrorService transferErrorService
             , TransferUtils transferUtils) {
@@ -213,6 +220,13 @@ public class LocalTransferController {
     public void setNairaSourceAccount(Model model) {
         model.addAttribute("accountList", transferUtils.getNairaAccounts());
 
+
+    }
+
+    @ModelAttribute
+    public void setLocationParams(Model model) {
+        model.addAttribute("key", geolocationKey);
+        model.addAttribute("url", geolocationUrl);
 
     }
 
