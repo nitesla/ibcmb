@@ -899,7 +899,7 @@ public class IntegrationServiceImpl implements IntegrationService {
 			return command;
 		}
 		catch (Exception e){
-			logger.error("Error calling coronation service rest service",e);
+			logger.error("Error calling coronation service rest service1",e);
 		}
 		return new CustomsAreaCommand();
 	}
