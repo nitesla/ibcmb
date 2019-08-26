@@ -70,7 +70,7 @@
                                                 </div>
 
                                                 <input type="hidden" th:field="*{financialInstitution}" />
-                                            <input type="hidden" name="tranLocation" id="tranLocation"/>
+                                            <!--<input type="hidden" name="tranLocation" id="tranLocation"/>-->
                                             <input type="hidden" name="channel" value="web"/>
                                                 <div class="form-group">
                                                     <label  class="my-label">Remark</label>
@@ -133,7 +133,7 @@
   $("#destination").prop("selectedIndex", -1);
         getBalance();
         getSourceCurrency();
-        ipLookUp();
+        // ipLookUp();
 
 
 
@@ -310,7 +310,7 @@ function getBeneficiaryAccts() {
     }
 */
 
-    var url=[[${url}]];
+  /*  var url=[[${url}]];
     var key=[[${key}]];
 
     function ipLookUp() {
@@ -323,7 +323,7 @@ function getBeneficiaryAccts() {
             },
         });
     }
-
+*/
     /*]]>*/
 
     </script>

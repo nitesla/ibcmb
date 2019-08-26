@@ -274,14 +274,17 @@ public class TransferController {
 
             transferRequestDTO = transferService.makeTransfer(transferRequestDTO);
             model.addAttribute("transRequest", transferRequestDTO);
+            if(transferRequestDTO.getStatus().equalsIgnoreCase("00")||transferRequestDTO.getStatus().equalsIgnoreCase("000"))
             model.addAttribute("message", messages.getMessage("transaction.success", null, locale));
+            if(transferRequestDTO.getStatus().equalsIgnoreCase("34"))
+            model.addAttribute("failure", messages.getMessage("transaction.pending", null, locale));
+
             return "cust/transfer/transferdetails";
 
         } catch (InternetBankingTransferException e) {
             logger.error("Error making transfer", e);
             if (request.getSession().getAttribute("Lbeneficiary") != null)
                 request.getSession().removeAttribute("Lbeneficiary");
-//            String errorMessage = transferErrorService.getMessage(e);  GB
             redirectAttributes.addFlashAttribute("failure", messages.getMessage("transfer.failed", null, locale));//GB
             return index(request);
 

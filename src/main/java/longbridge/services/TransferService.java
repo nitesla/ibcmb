@@ -47,5 +47,7 @@ public interface TransferService {
 
     List<TransRequest> getLastTenTransactionsForAccount(String s);
 
+    TransRequest updateTransferStatus(TransferRequestDTO transferRequestDTO);
+
 
 }

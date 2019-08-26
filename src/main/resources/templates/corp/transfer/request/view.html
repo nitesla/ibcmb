@@ -104,7 +104,21 @@
                     }
                     return data;
                 }
-            }]
+            },{
+                "targets": 5,
+                "data": "tranDate",
+                "render": function(data, type, full, meta) {
+
+                    if (type === 'display') {
+                        if (data == "Suspected fraud")
+                            return "Pending Transaction";
+
+                    }
+                    return data;
+                }
+            }
+
+            ]
         });
 
 

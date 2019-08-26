@@ -57,7 +57,7 @@
                             <input type="hidden" th:field="*{beneficiaryAccountNumber}" />
                             <input type="hidden" th:field="*{beneficiaryAccountName}" />
                             <input type="hidden" th:field="*{transferType}" />
-                            <input type="hidden" name="tranLocation" id="tranLocation"/>
+                            <!--<input type="hidden" name="tranLocation" id="tranLocation"/>-->
                             <input type="hidden" name="channel" value="web"/>
 
                             <div class="form-group">
@@ -113,7 +113,7 @@
         $(document).ready(function(){
             getBalance();
             getDestCurrency();
-            ipLookUp();
+            // ipLookUp();
 
 
         })
@@ -194,7 +194,7 @@
             })
         }
 
-        var url=[[${url}]];
+        /*var url=[[${url}]];
         var key=[[${key}]];
 
         function ipLookUp() {
@@ -206,7 +206,7 @@
                     console.log($('#tranLocation').val());
                 },
             });
-        }
+        }*/
 
         /*]]>*/
 

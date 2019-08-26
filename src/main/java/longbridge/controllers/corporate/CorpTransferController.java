@@ -419,6 +419,7 @@ public class CorpTransferController {
                         redirectAttributes.addFlashAttribute("failure", messageSource.getMessage("token.auth.failure", null, locale));
                         return "redirect:/corporate/transfer/" + corpTransReqEntry.getTranReqId() + "/authorizations";
                     }
+
                 } catch (InternetBankingSecurityException se) {
                     logger.error("Error authenticating token");
                     redirectAttributes.addFlashAttribute("failure", se.getMessage());
@@ -433,6 +434,7 @@ public class CorpTransferController {
 
         try {
             String message = corpTransferService.addAuthorization(corpTransReqEntry);
+            logger.info("corpmessage {}",message);
             redirectAttributes.addFlashAttribute("message", message);
 
         } catch (TransferAuthorizationException te) {

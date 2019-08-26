@@ -52,12 +52,12 @@ public class InterBankTransferController {
     private TransferErrorService transferErrorService;
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
-
+/*
     @Value("${geolocation.url}")
     private String geolocationUrl;
 
     @Value("${geolocation.key}")
-    private String geolocationKey;
+    private String geolocationKey;*/
 
     @Autowired
     public InterBankTransferController(RetailUserService retailUserService, TransferService transferService, MessageSource messages, LocalBeneficiaryService localBeneficiaryService, FinancialInstitutionService financialInstitutionService, AccountService accountService, TransferValidator validator
@@ -313,13 +313,13 @@ public class InterBankTransferController {
         }
 
     }
-
+/*
     @ModelAttribute
     public void setLocationParams(Model model) {
         model.addAttribute("key", geolocationKey);
         model.addAttribute("url", geolocationUrl);
 
-    }
+    }*/
 
 
 }

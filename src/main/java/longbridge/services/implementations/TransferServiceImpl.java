@@ -95,7 +95,8 @@ public class TransferServiceImpl implements TransferService {
 
             AntiFraudData antiFraudData = new AntiFraudData();
             antiFraudData.setIp(ipAddressUtils.getClientIP());
-            antiFraudData.setCountryCode(transferRequestDTO.getTranLocation().split(":")[1]);
+//            antiFraudData.setCountryCode(transferRequestDTO.getTranLocation().split(":")[1]);
+            antiFraudData.setCountryCode("");
             antiFraudData.setSfactorAuthIndicator(user.getSfactorAuthIndicator());
             antiFraudData.setHeaderUserAgent(httpServletRequest.getHeader("User-Agent"));
             antiFraudData.setHeaderProxyAuthorization(httpServletRequest.getHeader("Proxy-Authorization"));
@@ -108,7 +109,7 @@ public class TransferServiceImpl implements TransferService {
             antiFraudData.setLoginName(user.getUsername());
             antiFraudData.setDeviceNumber("");
             antiFraudData.setSessionkey(sessionkey);
-            antiFraudData.setTranLocation(transferRequestDTO.getTranLocation().split(":")[0]);
+            antiFraudData.setTranLocation("");
             transRequest1.setAntiFraudData(antiFraudData);
 
             logger.info("country code {}", antiFraudData.getCountryCode());
@@ -131,9 +132,11 @@ public class TransferServiceImpl implements TransferService {
         if (transRequest != null) {
 
 //            transferRequestDTO = saveTransfer(convertEntityToDTO(transRequest));
+            logger.info("uniqueid {}",transRequest);
             transRequest = transferRequestRepo.save(transRequest);
             if (transRequest.getStatus() != null) {
-                if (transRequest.getStatus().equalsIgnoreCase("000") || transRequest.getStatus().equalsIgnoreCase("00"))
+                if (transRequest.getStatus().equalsIgnoreCase("000") || transRequest.getStatus().equalsIgnoreCase("00")||
+                        transRequest.getStatus().equalsIgnoreCase("34"))
                 return convertEntityToDTO(transRequest);
                 throw new InternetBankingTransferException(transRequest.getStatus());
             }
@@ -286,6 +289,7 @@ public class TransferServiceImpl implements TransferService {
     public TransferRequestDTO convertEntityToDTO(TransRequest transRequest) {
        // return modelMapper.map(transRequest, TransferRequestDTO.class);
         TransferRequestDTO dto= modelMapper.map(transRequest, TransferRequestDTO.class);
+        dto.setStatus(transRequest.getStatus());
         dto.setDeviceNumber(transRequest.getAntiFraudData().getDeviceNumber());
         dto.setCountryCode(transRequest.getAntiFraudData().getCountryCode());
         dto.setHeaderProxyAuthorization(transRequest.getAntiFraudData().getHeaderProxyAuthorization());
@@ -370,7 +374,26 @@ public class TransferServiceImpl implements TransferService {
         RetailUser retailUser = (RetailUser) principal.getUser();
         return retailUser;
     }
-    
+
+    @Override
+    public TransRequest updateTransferStatus(TransferRequestDTO transferRequestDTO) throws InternetBankingTransferException {
+        TransRequest transRequest=null;
+        try {
+
+          transRequest=transferRequestRepo.findByReferenceNumberAndStatus(transferRequestDTO.getReferenceNumber(),"34");
+          transRequest.setStatus(transferRequestDTO.getStatus());
+          transRequest.setStatusDescription(transferRequestDTO.getStatusDescription());
+
+            transRequest = transferRequestRepo.save(transRequest);
+            logger.info("updated");
+
+            return transRequest;
+
+        } catch (Exception e) {
+            logger.error("Exception occurred updating transfer status", e);
+        }
+        return transRequest;
+    }
     
 
 }

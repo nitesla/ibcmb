@@ -167,7 +167,7 @@ public class CorpTransferServiceImpl implements CorpTransferService {
 
             AntiFraudData antiFraudData = new AntiFraudData();
             antiFraudData.setIp(ipAddressUtils.getClientIP2());
-            antiFraudData.setCountryCode(locale.getCountry());
+            antiFraudData.setCountryCode("");
             antiFraudData.setSfactorAuthIndicator(user.getSfactorAuthIndicator());
             antiFraudData.setHeaderUserAgent(httpServletRequest.getHeader("User-Agent"));
             antiFraudData.setHeaderProxyAuthorization(httpServletRequest.getHeader("Proxy-Authorization"));
@@ -181,7 +181,7 @@ public class CorpTransferServiceImpl implements CorpTransferService {
             antiFraudData.setLoginName(user.getUsername());
             antiFraudData.setDeviceNumber("");
             antiFraudData.setSessionkey(sessionkey);
-            antiFraudData.setTranLocation(corpTransferRequestDTO.getTranLocation());
+            antiFraudData.setTranLocation("");
             corpTransRequest.setAntiFraudData(antiFraudData);
 
             logger.info("country code {}", antiFraudData.getCountryCode());
@@ -522,6 +522,10 @@ public class CorpTransferServiceImpl implements CorpTransferService {
                         transferAuth.setLastEntry(new Date());
                         transferAuth.getAuths().add(transReqEntry);// the entry is added to the list of other entries
                         transferAuthRepo.save(transferAuth);
+                        return requestDTO.getStatusDescription();
+
+                    } if ("34".equals(requestDTO.getStatus())){
+                        requestDTO.setStatusDescription(messageSource.getMessage("transaction.pending", null, locale));
                         return requestDTO.getStatusDescription();
 
                     } else {//failed transaction

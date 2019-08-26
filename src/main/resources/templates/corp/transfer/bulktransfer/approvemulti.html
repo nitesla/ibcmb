@@ -120,7 +120,7 @@
                                 <div>
 
                                     <input type="hidden" name="tranReqId" th:value="${corpTransRequest.id}" />
-                                    <input type="hidden" th:field="*{tranLocation}" name="tranLocation"  id="tranLocation"/>
+                                    <!--<input type="hidden" th:field="*{tranLocation}" name="tranLocation"  id="tranLocation"/>-->
 
                                 </div>
                                 <div>
@@ -195,7 +195,7 @@
         <script th:inline="javascript">
             //<![CDATA[
 
-            ipLookUp();
+            // ipLookUp();
 
 
             jQuery.download = function(url, key, data) {
@@ -397,7 +397,7 @@
 
             })
 
-            function ipLookUp () {
+           /* function ipLookUp () {
                 $.ajax('http://ip-api.com/json')
                     .then(
                         function success(response) {
@@ -413,7 +413,7 @@
 
                         }
                     );
-            }
+            }*/
 
             /*]]>*/
         </script>
