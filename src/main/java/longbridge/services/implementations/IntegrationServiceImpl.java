@@ -1035,7 +1035,6 @@ public class IntegrationServiceImpl implements IntegrationService {
 		} catch (Exception e) {
 			logger.error("Error getting status", e);
 		}
-
 		return transferDetails;
 	}
 }

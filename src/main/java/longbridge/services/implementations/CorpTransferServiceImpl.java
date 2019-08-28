@@ -317,7 +317,8 @@ public class CorpTransferServiceImpl implements CorpTransferService {
     public Page<CorpTransRequest> getTransferRequests(Pageable pageDetails) {
         CorporateUser corporateUser = getCurrentUser();
         Corporate corporate = corporateUser.getCorporate();
-        Page<CorpTransRequest> page = corpTransferRequestRepo.findByCorporateOrderByStatusAscTranDateDesc(corporate, pageDetails);
+//        Page<CorpTransRequest> page = corpTransferRequestRepo.findByCorporateOrderByStatusAscTranDateDesc(corporate, pageDetails);//GB
+        Page<CorpTransRequest> page = corpTransferRequestRepo.findByCorporateOrderByTranDateDesc(corporate, pageDetails);//GB
         List<CorpTransRequest> corpTransRequests = page.getContent().stream()
                 .filter(transRequest -> !accountConfigService.isAccountRestrictedForViewFromUser(accountService.getAccountByAccountNumber(transRequest.getCustomerAccountNumber()).getId(),corporateUser.getId())).collect(Collectors.toList());
         return new PageImpl<CorpTransRequest>(corpTransRequests,pageDetails,page.getTotalElements());
