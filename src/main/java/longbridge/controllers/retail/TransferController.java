@@ -274,12 +274,18 @@ public class TransferController {
 
             transferRequestDTO = transferService.makeTransfer(transferRequestDTO);
             model.addAttribute("transRequest", transferRequestDTO);
-            if(transferRequestDTO.getStatus().equalsIgnoreCase("00")||transferRequestDTO.getStatus().equalsIgnoreCase("000"))
-            model.addAttribute("message", messages.getMessage("transaction.success", null, locale));
-            if(transferRequestDTO.getStatus().equalsIgnoreCase("34"))
-            model.addAttribute("failure", messages.getMessage("transaction.pending", null, locale));
+            if(transferRequestDTO.getStatus().equalsIgnoreCase("00")||transferRequestDTO.getStatus().equalsIgnoreCase("000")) {
+                model.addAttribute("message", messages.getMessage("transaction.success", null, locale));
+                return "cust/transfer/transferdetails";
 
+            }
+            if(transferRequestDTO.getStatus().equalsIgnoreCase("34")) {
+                model.addAttribute("failure", messages.getMessage("transaction.pending", null, locale));
+                return "cust/transfer/pendingtransferdetails";
+
+            }
             return "cust/transfer/transferdetails";
+
 
         } catch (InternetBankingTransferException e) {
             logger.error("Error making transfer", e);

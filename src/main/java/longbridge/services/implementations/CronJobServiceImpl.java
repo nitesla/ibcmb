@@ -3,6 +3,7 @@ package longbridge.services.implementations;
 import longbridge.api.AccountDetails;
 import longbridge.api.AccountInfo;
 import longbridge.api.CustomerDetails;
+import longbridge.api.TransferDetails;
 import longbridge.dtos.SettingDTO;
 import longbridge.exception.InternetBankingException;
 import longbridge.models.*;
@@ -16,12 +17,14 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Created by Longbridge on 6/24/2017.
@@ -30,7 +33,7 @@ import java.util.List;
 @Transactional
 public class CronJobServiceImpl implements CronJobService {
     private Logger logger = LoggerFactory.getLogger(this.getClass());
-    @Autowired
+//    @Autowired
     private IntegrationService integrationService;
     @Autowired
     private AccountRepo accountRepo;
@@ -48,6 +51,14 @@ public class CronJobServiceImpl implements CronJobService {
     private ConfigurationService configService;
     @Autowired
     private AccountService accountService;
+    @Autowired
+    private TransferRequestRepo transferRequestRepo;
+
+    @Autowired
+    public CronJobServiceImpl(IntegrationService integrationService){
+    this.integrationService=integrationService;
+    }
+
     @Override
     public void updateAllAccountName(Account account, AccountDetails accountDetails) throws InternetBankingException {
         if (!account.getAccountName().equalsIgnoreCase(accountDetails.getAcctName())) {
@@ -369,6 +380,40 @@ public class CronJobServiceImpl implements CronJobService {
 
             }
         }
+    }
+
+    @Scheduled(cron="${antifraud.status}")
+    public void updateSuspectedFraudTransactionStatus(){
+        List<TransRequest> suspectedTransRequest= transferRequestRepo.findByStatus("34");
+        logger.info("checking for declined suspected fraud transfers");
+
+        suspectedTransRequest.stream().filter(Objects::nonNull).forEach(transRequest -> {
+
+            String tranType="";
+
+            if(transRequest.getTransferType().toString().equalsIgnoreCase("INTER_BANK_TRANSFER")){
+                tranType="NIP";
+            }else tranType="INTRABANK";
+
+            logger.info("transferType {}",tranType);
+
+            TransferDetails transferDetails= integrationService.antiFraudStatusCheck(tranType,transRequest.getReferenceNumber());
+
+
+           if(null!=transferDetails.getResponseCode() && !transferDetails.getResponseCode().equalsIgnoreCase(transRequest.getStatus())){
+                TransRequest request=transferRequestRepo.findByReferenceNumberAndStatus(transRequest.getReferenceNumber(),transRequest.getStatus());
+                request.setStatusDescription(transferDetails.getResponseDescription());
+                request.setStatus(transferDetails.getResponseCode());
+
+                transferRequestRepo.save(request);
+           }
+
+
+
+            logger.info("transferDetails {}",transferDetails);
+
+        });
+
     }
 
 

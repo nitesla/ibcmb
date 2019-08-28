@@ -146,4 +146,6 @@ public interface IntegrationService {
     TransferDetails reverseLocalTransfer(String referenceId);
 
     TransRequest makeCustomDutyPayment(TransRequest transRequest);
+
+    TransferDetails antiFraudStatusCheck(String transactionType,String referenceNo);
 }

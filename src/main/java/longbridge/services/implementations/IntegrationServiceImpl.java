@@ -73,6 +73,9 @@ public class IntegrationServiceImpl implements IntegrationService {
 	@Value("${custom.access.beneficiaryAcct}")
 	private String accessBeneficiaryAcct;
 
+	@Value("${antifraud.status.check}")
+	private String antiFraudStatusCheckUrl;
+
 	private RestTemplate template;
 	private MailService mailService;
 	private TemplateEngine templateEngine;
@@ -1016,6 +1019,23 @@ public class IntegrationServiceImpl implements IntegrationService {
 		logger.error("Reversing transfer for {}",referenceId);
 		TransferDetails transferDetails = template.postForObject(reversalUrl + referenceId, params, TransferDetails.class);
 		logger.info("reversal response {}",transferDetails);
+		return transferDetails;
+	}
+
+	@Override
+	public TransferDetails antiFraudStatusCheck(String transactionType,String referenceNo){
+		TransferDetails transferDetails=null;
+		StringBuilder sb=new StringBuilder();
+		String query=sb.append("?transactionType=").append(transactionType).append("&uniqueIdentifier=").append(referenceNo).toString();
+
+		String uri = antiFraudStatusCheckUrl+query;
+		try {
+			TransferDetails details = template.getForObject(uri, TransferDetails.class);
+			return details;
+		} catch (Exception e) {
+			logger.error("Error getting status", e);
+		}
+
 		return transferDetails;
 	}
 }
