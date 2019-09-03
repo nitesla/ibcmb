@@ -1,14 +1,15 @@
 package longbridge.services.implementations;
 
 import longbridge.dtos.SettingDTO;
-import longbridge.exception.*;
+import longbridge.exception.InternetBankingException;
+import longbridge.exception.InternetBankingTransferException;
+import longbridge.exception.TransferAuthorizationException;
+import longbridge.exception.TransferRuleException;
 import longbridge.models.*;
 import longbridge.repositories.*;
 import longbridge.security.userdetails.CustomUserPrincipal;
 import longbridge.services.*;
 import longbridge.utils.*;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,9 +24,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.ResourceAccessException;
 
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.security.Principal;
@@ -110,6 +108,7 @@ public class CorpCustomDutyServiceImpl implements CorpCustomDutyService {
         CustomsAreaCommandRequest customsAreaCommandRequest = new CustomsAreaCommandRequest();
         customsAreaCommandRequest.setAppId(appId);
         customsAreaCommandRequest.setHash(EncryptionUtil.getSHA512(appId+secretKey,null));
+        logger.info("hash {}",EncryptionUtil.getSHA512(appId+secretKey,null));
         return integrationService.getCustomsAreaCommands(customsAreaCommandRequest);
     }
 
