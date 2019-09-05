@@ -1,10 +1,7 @@
 package longbridge.services.implementations;
 
 import longbridge.dtos.SettingDTO;
-import longbridge.exception.InternetBankingException;
-import longbridge.exception.InternetBankingTransferException;
-import longbridge.exception.TransferAuthorizationException;
-import longbridge.exception.TransferRuleException;
+import longbridge.exception.*;
 import longbridge.models.*;
 import longbridge.repositories.*;
 import longbridge.security.userdetails.CustomUserPrincipal;
@@ -194,16 +191,19 @@ public class CorpCustomDutyServiceImpl implements CorpCustomDutyService {
         if (new BigDecimal(assessmentDetail.getResponseInfo().getTotalAmount()).compareTo(new BigDecimal(limit)) == 1) {
             throw new InternetBankingException(messageSource.getMessage("transfer.limit", null, null));
         }
+        if(validateBalance(assessmentDetail.getAccount(),new BigDecimal(assessmentDetail.getResponseInfo().getTotalAmount()))) {
 
-        CustomDutyPayment customDutyPayment = saveCustomDutyPayment(assessmentDetail, assessmentDetailsRequest,principal);
-        CorpPaymentRequest request = saveCorpPaymentRequest( customDutyPayment, corporate,principal, false);
+            CustomDutyPayment customDutyPayment = saveCustomDutyPayment(assessmentDetail, assessmentDetailsRequest, principal);
+            CorpPaymentRequest request = saveCorpPaymentRequest(customDutyPayment, corporate, principal, false);
             if (userCanAuthorize(request)) {
                 CorpTransReqEntry transReqEntry = new CorpTransReqEntry();
                 transReqEntry.setTranReqId(request.getId());
                 transReqEntry.setAuthStatus(TransferAuthorizationStatus.APPROVED);
                 return addAuthorization(transReqEntry, principal);
             }
-        return messageSource.getMessage("custom.payment.save.success", null, null);
+            return messageSource.getMessage("custom.payment.save.success", null, null);
+        }else  return messageSource.getMessage("custom.payment.save.failure", null, null);
+
     }
 
     public CustomDutyPayment saveCustomDutyPayment(CustomAssessmentDetail assessmentDetail, CustomAssessmentDetailsRequest assessmentDetailsRequest, Principal principal){
@@ -276,7 +276,9 @@ public class CorpCustomDutyServiceImpl implements CorpCustomDutyService {
                         LOGGER.info("CorpPaymentRequest SOLE: {}",request);
                         return request;
                     }
-                    request.getCustomDutyPayment().setMessage(CustomDutyCode.getCustomDutyCodeByCode("-1"));
+                    request.getCustomDutyPayment().setMessage(CustomDutyCode.FAILED_DEBIT.getCode());
+                    //Send email to bank
+
                     corpPaymentRequestRepo.save(request);
                     throw new InternetBankingTransferException(messageSource.getMessage(request.getStatusDescription(), null, null));
                 }else{
@@ -401,13 +403,18 @@ public class CorpCustomDutyServiceImpl implements CorpCustomDutyService {
         CorporateUser corporateUser = getCurrentUser();
         CorpPaymentRequest corpPaymentRequest = corpPaymentRequestRepo.findOne(transReqEntry.getTranReqId());
 
-        logger.info("Checking limit for {}",corpPaymentRequest.getCustomerAccountNumber());
+       /* logger.info("Checking limit for {}",corpPaymentRequest.getCustomerAccountNumber());
         String limit = integrationService.getDailyAccountLimit(corpPaymentRequest.getCustomerAccountNumber(), "INTRABANK");
         logger.info("limit:{}", limit);
         if (corpPaymentRequest.getAmount().compareTo(new BigDecimal(limit)) == 1) {
             throw new InternetBankingException(messageSource.getMessage("transfer.limit", null, null));
-        }
+        }*/
 
+
+       if(!validateBalance(corpPaymentRequest.getCustomerAccountNumber(),corpPaymentRequest.getAmount())) {
+
+           return messageSource.getMessage("custom.payment.save.failure", null, null);
+       }
         corpPaymentRequest.setUserReferenceNumber("CORP_"+getCurrentUser().getId().toString());
         LOGGER.info("corpPayment Request:{}",corpPaymentRequest);
         CorpTransRule transferRule = corporateService.getApplicableTransferRule(corpPaymentRequest);
@@ -474,6 +481,7 @@ public class CorpCustomDutyServiceImpl implements CorpCustomDutyService {
         LOGGER.debug("CustomPaymentNotification:{}",customPaymentNotification);
         CustomDutyPayment dutyPayment = corpPaymentRequest.getCustomDutyPayment();
         dutyPayment.setPaymentStatus(customPaymentNotification.getCode());
+        dutyPayment.setMessage(CustomDutyCode.getCustomDutyCodeByCode(customPaymentNotification.getCode()));
         dutyPayment.setMessage(CustomDutyCode.getCustomDutyCodeByCode(customPaymentNotification.getCode()));
         dutyPayment.setPaymentRef(customPaymentNotification.getPaymentRef());
         LOGGER.debug("customPaymentNotification:{}",customPaymentNotification);
@@ -555,6 +563,17 @@ public class CorpCustomDutyServiceImpl implements CorpCustomDutyService {
             }
         }
         return approvalCount >= roles.size();
+    }
+
+    private boolean validateBalance(String accountNo,BigDecimal amount) throws InternetBankingTransferException {
+        BigDecimal balance = integrationService.getAvailableBalance(accountNo);
+        if (balance != null) {
+            if (balance.compareTo(amount) == 0 || balance.compareTo(amount) == 1) {
+                return true;
+            }else return false;
+        }
+        return false;
+
     }
 
 }

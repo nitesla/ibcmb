@@ -3,10 +3,7 @@ package longbridge.models;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.envers.Audited;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -29,6 +26,8 @@ public class AntiFraudData implements Serializable {
     private String  sfactorAuthIndicator;
     private String tranLocation;
     private Date createdOn=new Date();
+    @Transient
+    private String channel;
     @JsonIgnore
     private Long tranRequestId;
 
@@ -132,6 +131,14 @@ public class AntiFraudData implements Serializable {
         this.tranRequestId = tranRequestId;
     }
 
+    public String getChannel() {
+        return channel;
+    }
+
+    public void setChannel(String channel) {
+        this.channel = channel;
+    }
+
     @Override
     public String toString() {
         return "AntiFraudData{" +
@@ -144,6 +151,7 @@ public class AntiFraudData implements Serializable {
                 ", sessionkey='" + sessionkey + '\'' +
                 ", sfactorAuthIndicator='" + sfactorAuthIndicator + '\'' +
                 ", tranLocation='" + tranLocation + '\'' +
+                ", channel='" + channel + '\'' +
                 '}';
     }
 

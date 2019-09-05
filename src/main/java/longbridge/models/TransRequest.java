@@ -54,7 +54,7 @@ public class TransRequest extends AbstractEntity implements PrettySerializer {
     }
 
 
-    public TransRequest(String customerAccountNumber, TransferType transferType, Date tranDate, FinancialInstitution financialInstitution, String beneficiaryAccountNumber, String beneficiaryAccountName, String remarks, String status, String referenceNumber, String userReferenceNumber, String narration, String statusDescription, BigDecimal amount) {
+    public TransRequest(String customerAccountNumber, TransferType transferType, Date tranDate, FinancialInstitution financialInstitution, String beneficiaryAccountNumber, String beneficiaryAccountName, String remarks, String status, String referenceNumber, String userReferenceNumber, String narration, String statusDescription, BigDecimal amount,String channel) {
         this.customerAccountNumber = customerAccountNumber;
         this.transferType = transferType;
         this.tranDate = tranDate;
@@ -68,6 +68,7 @@ public class TransRequest extends AbstractEntity implements PrettySerializer {
         this.narration = narration;
         this.statusDescription = statusDescription;
         this.amount = amount;
+        this.channel=channel;
     }
 
 
@@ -218,6 +219,8 @@ public class TransRequest extends AbstractEntity implements PrettySerializer {
                 ", statusDescription='" + statusDescription + '\'' +
                 ", amount=" + amount +
                 ", charge='" + charge + '\'' +
+                ", antiFraudData=" + antiFraudData +
+                ", channel='" + channel + '\'' +
                 '}';
     }
 

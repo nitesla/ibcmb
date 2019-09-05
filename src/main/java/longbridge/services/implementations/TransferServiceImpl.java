@@ -84,7 +84,7 @@ public class TransferServiceImpl implements TransferService {
         TransRequest transRequest1 = convertDTOToEntity(transferRequestDTO);
 
         if(null==transferRequestDTO.getChannel()) {
-            transRequest1.setChannel("mobile");
+            transRequest1.setChannel("mob");
         }
         if("web".equals(transferRequestDTO.getChannel())) {
             CustomUserPrincipal user = (CustomUserPrincipal) SecurityContextHolder.getContext().getAuthentication()
@@ -110,6 +110,7 @@ public class TransferServiceImpl implements TransferService {
             antiFraudData.setDeviceNumber("");
             antiFraudData.setSessionkey(sessionkey);
             antiFraudData.setTranLocation("");
+            transRequest1.setChannel("web");
             transRequest1.setAntiFraudData(antiFraudData);
 
             logger.info("country code {}", antiFraudData.getCountryCode());
@@ -120,12 +121,13 @@ public class TransferServiceImpl implements TransferService {
             logger.info("proxyAuthorization {}", antiFraudData.getHeaderProxyAuthorization());
             logger.info("loginName  {}", antiFraudData.getLoginName());
             logger.info("sessionkey  {}", antiFraudData.getSessionkey());
+            logger.info("channel  {}", antiFraudData.getChannel());
 
         }
 
-//        TransRequest transRequest1 = convertDTOToEntity(transferRequestDTO);
-        transRequest1 = persistTransfer(convertEntityToDTO(transRequest1));
-        TransRequest transRequest = integrationService.makeTransfer(transRequest1);
+        transRequest1.getAntiFraudData().setChannel(transRequest1.getChannel());
+      TransRequest  transRequest2 = persistTransfer(convertEntityToDTO(transRequest1));
+        TransRequest transRequest = integrationService.makeTransfer(transRequest2);
 
         logger.trace("Transfer Details: ", transRequest);
 
@@ -298,6 +300,7 @@ public class TransferServiceImpl implements TransferService {
         dto.setLoginName(transRequest.getAntiFraudData().getLoginName());
         dto.setSessionkey(transRequest.getAntiFraudData().getSessionkey());
         dto.setSfactorAuthIndicator(transRequest.getAntiFraudData().getSfactorAuthIndicator());
+        dto.setChannel(transRequest.getChannel());
         dto.setTranLocation(transRequest.getAntiFraudData().getTranLocation());
         return dto;
     }
@@ -316,6 +319,7 @@ public class TransferServiceImpl implements TransferService {
         antiFraudData.setDeviceNumber(transferRequestDTO.getDeviceNumber());
         antiFraudData.setSessionkey(transferRequestDTO.getSessionkey());
         antiFraudData.setTranLocation(transferRequestDTO.getTranLocation());
+        antiFraudData.setChannel(transferRequestDTO.getChannel());
         transRequest.setAntiFraudData(antiFraudData);
         return transRequest;
 

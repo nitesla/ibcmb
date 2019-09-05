@@ -63,9 +63,9 @@ public class IntegrationServiceImpl implements IntegrationService {
 
 	@Value("${custom.secretKey}")
 	private String secretKey;
-
+/*
 	@Value("${custom.beneficiaryAcct}")
-	private String beneficiaryAcct;
+	private String beneficiaryAcct;*/
 
 	@Value("${customDuty.baseUrl}")
 	private String CustomDutyUrl;
@@ -357,7 +357,7 @@ public class IntegrationServiceImpl implements IntegrationService {
 
 	@Override
 	public TransRequest makeTransfer(TransRequest transRequest) throws InternetBankingTransferException {
-
+logger.info("chanto {}",transRequest);
 		TransferType type = transRequest.getTransferType();
 		Account account = accountRepo.findFirstByAccountNumber(transRequest.getCustomerAccountNumber());
 		validate(account);
@@ -929,6 +929,11 @@ public class IntegrationServiceImpl implements IntegrationService {
 			logger.debug("paymentNotificationRequest: {}", request);
 			CustomPaymentNotification response = template.postForObject(CustomDutyUrl+"/customduty/payassessment", request, CustomPaymentNotification.class);
 			logger.debug("payment notification Response: {}", response);
+			logger.info("payment ref {}",corpPaymentRequest.getReferenceNumber());
+			logger.info("InitiatedBy {}",corpPaymentRequest.getCustomDutyPayment().getInitiatedBy());
+			logger.info("CustomerAccountNo {}",accessBeneficiaryAcct);
+			logger.info("LastAuthorizer {}",userName);
+
 			logger.debug("payment notification params: {}", appId + corpPaymentRequest.getReferenceNumber() + corpPaymentRequest.getAmount().setScale(2,BigDecimal.ROUND_HALF_UP) + secretKey);
 			logger.debug("payment notification hash: {}",EncryptionUtil.getSHA512(
 					appId + corpPaymentRequest.getReferenceNumber() + corpPaymentRequest.getAmount().setScale(2,BigDecimal.ROUND_HALF_UP) + secretKey, null));
