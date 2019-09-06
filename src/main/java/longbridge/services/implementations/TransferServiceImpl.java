@@ -84,7 +84,7 @@ public class TransferServiceImpl implements TransferService {
         TransRequest transRequest1 = convertDTOToEntity(transferRequestDTO);
 
         if(null==transferRequestDTO.getChannel()) {
-            transRequest1.setChannel("mob");
+            transRequest1.setChannel("MOBILE");
         }
         if("web".equals(transferRequestDTO.getChannel())) {
             CustomUserPrincipal user = (CustomUserPrincipal) SecurityContextHolder.getContext().getAuthentication()
@@ -110,7 +110,7 @@ public class TransferServiceImpl implements TransferService {
             antiFraudData.setDeviceNumber("");
             antiFraudData.setSessionkey(sessionkey);
             antiFraudData.setTranLocation("");
-            transRequest1.setChannel("web");
+            transRequest1.setChannel("INTERNET");
             transRequest1.setAntiFraudData(antiFraudData);
 
             logger.info("country code {}", antiFraudData.getCountryCode());
@@ -121,7 +121,6 @@ public class TransferServiceImpl implements TransferService {
             logger.info("proxyAuthorization {}", antiFraudData.getHeaderProxyAuthorization());
             logger.info("loginName  {}", antiFraudData.getLoginName());
             logger.info("sessionkey  {}", antiFraudData.getSessionkey());
-            logger.info("channel  {}", antiFraudData.getChannel());
 
         }
 

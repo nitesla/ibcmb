@@ -26,6 +26,9 @@ public class NapsAntiFraudData implements Serializable {
            private String tranLocation;
            private  Date createdOn=new Date();
 
+    @Transient
+    private String channel="INTERNET";
+
 
     @OneToMany(mappedBy = "napsAntiFraudData",cascade = {CascadeType.ALL})
     private List<CreditRequest> crRequestList;
@@ -129,6 +132,15 @@ public class NapsAntiFraudData implements Serializable {
         this.crRequestList = crRequestList;
     }
 
+
+    public String getChannel() {
+        return channel;
+    }
+
+    public void setChannel(String channel) {
+        this.channel = channel;
+    }
+
     @Override
     public String toString() {
         return "NapsAntiFraudData{" +
@@ -144,6 +156,7 @@ public class NapsAntiFraudData implements Serializable {
                 ", tranLocation='" + tranLocation + '\'' +
                 ", createdOn=" + createdOn +
                 ", crRequestList=" + crRequestList +
+                ", channel=" + channel +
                 '}';
     }
 }

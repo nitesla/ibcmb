@@ -357,7 +357,7 @@ public class IntegrationServiceImpl implements IntegrationService {
 
 	@Override
 	public TransRequest makeTransfer(TransRequest transRequest) throws InternetBankingTransferException {
-logger.info("chanto {}",transRequest);
+		logger.info("chanto {}",transRequest);
 		TransferType type = transRequest.getTransferType();
 		Account account = accountRepo.findFirstByAccountNumber(transRequest.getCustomerAccountNumber());
 		validate(account);
@@ -365,20 +365,9 @@ logger.info("chanto {}",transRequest);
 			case CORONATION_BANK_TRANSFER:
 			{
 				transRequest.setTransferType(TransferType.CORONATION_BANK_TRANSFER);
-//				TransferDetails response = null;
 				String uri = URI + "/transfer/local";
-//				Map<String, String> params = new HashMap<>();
 				try {
-/*
-					params.put("debitAccountNumber", transRequest.getCustomerAccountNumber());
-				params.put("debitAccountName", account.getAccountName());
-				params.put("creditAccountNumber", transRequest.getBeneficiaryAccountNumber());
-				params.put("creditAccountName", transRequest.getBeneficiaryAccountName());
-				params.put("tranAmount", transRequest.getAmount().toString());
-				params.put("remarks", transRequest.getRemarks());
-				params.put("antiFraudData",objectMapper.writeValueAsString(transRequest.getAntiFraudData()));*/
-//				params.put("antiFraudData",transRequest.getAntiFraudData().toString());
-//				params.put("antiFraudData","boy");
+
 
 					TransferRequest params=new TransferRequest();
 					params.setDebitAccountNumber(transRequest.getCustomerAccountNumber());

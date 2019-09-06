@@ -144,18 +144,7 @@ public class CorpTransferServiceImpl implements CorpTransferService {
         corpTransRequest.setChannel(corpTransferRequestDTO.getChannel());
         logger.info("the corporate transfer request {}",corpTransRequest);
         if(null==corpTransferRequestDTO.getChannel()) {
-            corpTransRequest.setChannel("mobile");
-
-            AntiFraudData antiFraudData = new AntiFraudData();
-            antiFraudData.setIp(corpTransferRequestDTO.getIp());
-            antiFraudData.setCountryCode(corpTransferRequestDTO.getCountryCode());
-            antiFraudData.setSfactorAuthIndicator(corpTransferRequestDTO.getSfactorAuthIndicator());
-            antiFraudData.setHeaderUserAgent(corpTransferRequestDTO.getHeaderUserAgent());
-            antiFraudData.setHeaderProxyAuthorization(corpTransferRequestDTO.getHeaderProxyAuthorization());
-            antiFraudData.setLoginName(corpTransferRequestDTO.getLoginName());
-            antiFraudData.setDeviceNumber(corpTransferRequestDTO.getDeviceNumber());
-            antiFraudData.setSessionkey(corpTransferRequestDTO.getSessionkey());
-            corpTransRequest.setAntiFraudData(antiFraudData);
+            corpTransRequest.setChannel("MOBILE");
         }
 
         if("web".equals(corpTransferRequestDTO.getChannel())) {
@@ -182,6 +171,8 @@ public class CorpTransferServiceImpl implements CorpTransferService {
             antiFraudData.setDeviceNumber("");
             antiFraudData.setSessionkey(sessionkey);
             antiFraudData.setTranLocation("");
+            corpTransRequest.setChannel("INTERNET");
+
             corpTransRequest.setAntiFraudData(antiFraudData);
 
             logger.info("country code {}", antiFraudData.getCountryCode());
@@ -195,6 +186,7 @@ public class CorpTransferServiceImpl implements CorpTransferService {
 
         }
 
+        corpTransRequest.getAntiFraudData().setChannel(corpTransRequest.getChannel());
 
         CorpTransRequest corpTransRequestNew = (CorpTransRequest) integrationService.makeTransfer(corpTransRequest);//name change by GB
         logger.trace("Transfer Details {} by {}", corpTransRequest.toString(),corpTransRequest.getUserReferenceNumber());

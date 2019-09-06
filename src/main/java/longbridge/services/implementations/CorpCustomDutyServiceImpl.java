@@ -147,7 +147,7 @@ public class CorpCustomDutyServiceImpl implements CorpCustomDutyService {
     public boolean isAccountBalanceEnough(String acctNumber, BigDecimal amount){
         BigDecimal availableBalance =  integrationService.getAvailableBalance(acctNumber);
         LOGGER.info("the availableBalance {}",availableBalance);
-        return availableBalance.compareTo(amount) > 0;
+        return availableBalance.compareTo(amount) >= 0;
     }
 
     @Override
@@ -191,7 +191,7 @@ public class CorpCustomDutyServiceImpl implements CorpCustomDutyService {
         if (new BigDecimal(assessmentDetail.getResponseInfo().getTotalAmount()).compareTo(new BigDecimal(limit)) == 1) {
             throw new InternetBankingException(messageSource.getMessage("transfer.limit", null, null));
         }
-        if(validateBalance(assessmentDetail.getAccount(),new BigDecimal(assessmentDetail.getResponseInfo().getTotalAmount()))) {
+//        if(isAccountBalanceEnough(assessmentDetail.getAccount(),new BigDecimal(assessmentDetail.getResponseInfo().getTotalAmount()))) {
 
             CustomDutyPayment customDutyPayment = saveCustomDutyPayment(assessmentDetail, assessmentDetailsRequest, principal);
             CorpPaymentRequest request = saveCorpPaymentRequest(customDutyPayment, corporate, principal, false);
@@ -202,7 +202,7 @@ public class CorpCustomDutyServiceImpl implements CorpCustomDutyService {
                 return addAuthorization(transReqEntry, principal);
             }
             return messageSource.getMessage("custom.payment.save.success", null, null);
-        }else  return messageSource.getMessage("custom.payment.save.failure", null, null);
+//        }else  return messageSource.getMessage("custom.payment.save.failure", null, null);
 
     }
 
@@ -403,15 +403,9 @@ public class CorpCustomDutyServiceImpl implements CorpCustomDutyService {
         CorporateUser corporateUser = getCurrentUser();
         CorpPaymentRequest corpPaymentRequest = corpPaymentRequestRepo.findOne(transReqEntry.getTranReqId());
 
-       /* logger.info("Checking limit for {}",corpPaymentRequest.getCustomerAccountNumber());
-        String limit = integrationService.getDailyAccountLimit(corpPaymentRequest.getCustomerAccountNumber(), "INTRABANK");
-        logger.info("limit:{}", limit);
-        if (corpPaymentRequest.getAmount().compareTo(new BigDecimal(limit)) == 1) {
-            throw new InternetBankingException(messageSource.getMessage("transfer.limit", null, null));
-        }*/
 
 
-       if(!validateBalance(corpPaymentRequest.getCustomerAccountNumber(),corpPaymentRequest.getAmount())) {
+       if(!isAccountBalanceEnough(corpPaymentRequest.getCustomerAccountNumber(),corpPaymentRequest.getAmount())) {
 
            return messageSource.getMessage("custom.payment.save.failure", null, null);
        }
@@ -458,7 +452,7 @@ public class CorpCustomDutyServiceImpl implements CorpCustomDutyService {
                 if ((corpPaymentRequest.getStatus().equals("00") || corpPaymentRequest.getStatus().equals("000"))) {
                     corpPaymentRequest.setStatusDescription("Authorisation Completed");
                     corpPaymentRequestRepo.save(corpPaymentRequest);
-                    return makeCustomDutyPayment(corpPaymentRequest,principal);
+                    return makeCustomDutyPayment(corpPaymentRequest,principal);/////////////
                 }
                 corpPaymentRequest.getCustomDutyPayment().setMessage(CustomDutyCode.getCustomDutyCodeByCode("-1"));
                 corpPaymentRequestRepo.save(corpPaymentRequest);
@@ -476,18 +470,23 @@ public class CorpCustomDutyServiceImpl implements CorpCustomDutyService {
     private String makeCustomDutyPayment(CorpPaymentRequest corpPaymentRequest,Principal principal) {
         CustomPaymentNotification customPaymentNotification = integrationService.paymentNotification(corpPaymentRequest,principal.getName());
         if(customPaymentNotification == null){
-            return messageSource.getMessage("custom.auth.failure.reason", null, locale);
+           // return messageSource.getMessage("custom.auth.failure.reason", null, locale);
+            throw new InternetBankingTransferException("Error calling access payment service");
+
         }
+        customPaymentNotification.setCode("00");
+
+
         LOGGER.debug("CustomPaymentNotification:{}",customPaymentNotification);
         CustomDutyPayment dutyPayment = corpPaymentRequest.getCustomDutyPayment();
         dutyPayment.setPaymentStatus(customPaymentNotification.getCode());
-        dutyPayment.setMessage(CustomDutyCode.getCustomDutyCodeByCode(customPaymentNotification.getCode()));
         dutyPayment.setMessage(CustomDutyCode.getCustomDutyCodeByCode(customPaymentNotification.getCode()));
         dutyPayment.setPaymentRef(customPaymentNotification.getPaymentRef());
         LOGGER.debug("customPaymentNotification:{}",customPaymentNotification);
         customDutyPaymentRepo.save(dutyPayment);
         if("00".equals(customPaymentNotification.getCode()) || "000".equals(customPaymentNotification.getCode())){ // Transfer successful
-            return messageSource.getMessage(customPaymentNotification.getMessage(), null, locale);
+//            return messageSource.getMessage(customPaymentNotification.getMessage(), null, locale);
+            return messageSource.getMessage(dutyPayment.getMessage(), null, locale);//by Gb
         }else{
             integrationService.reverseLocalTransfer(corpPaymentRequest.getReferenceNumber());
             return messageSource.getMessage(corpPaymentRequest.getStatusDescription(), null, locale);
@@ -565,15 +564,7 @@ public class CorpCustomDutyServiceImpl implements CorpCustomDutyService {
         return approvalCount >= roles.size();
     }
 
-    private boolean validateBalance(String accountNo,BigDecimal amount) throws InternetBankingTransferException {
-        BigDecimal balance = integrationService.getAvailableBalance(accountNo);
-        if (balance != null) {
-            if (balance.compareTo(amount) == 0 || balance.compareTo(amount) == 1) {
-                return true;
-            }else return false;
-        }
-        return false;
 
-    }
+
 
 }

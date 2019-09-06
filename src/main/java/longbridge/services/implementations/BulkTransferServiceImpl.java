@@ -15,7 +15,6 @@ import longbridge.security.IpAddressUtils;
 import longbridge.security.userdetails.CustomUserPrincipal;
 import longbridge.services.*;
 import longbridge.services.bulkTransfers.BulkTransferJobLauncher;
-import longbridge.services.bulkTransfers.BulkTransferWriter;
 import longbridge.services.bulkTransfers.TransferDTO;
 import longbridge.utils.StatusCode;
 import longbridge.utils.TransferAuthorizationStatus;
