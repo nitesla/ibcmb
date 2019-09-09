@@ -149,7 +149,10 @@
                                             required="required" th:field="*{assessmentDetail.account}">
                                         <option th:each="s: ${accounts}" th:value="${s.accountNumber}" th:text="${s.accountNumber}"></option></select>
                                 </div>
+
                             </div>
+                            <div class="col-sm-8 balError" style="color:red"></div>
+
 
                             <div class="col-sm-6 col-sm-offset-2">
                                 <a id="paymentBtn"  class="btn btn-primary pull-right">Next</a>
@@ -291,9 +294,10 @@
                                     <input class="col-sm-8 form-control full-width" readonly="readonly"
                                            type="text" id="macctNumber" th:field="*{assessmentDetail.account}"/>
                                 </div>
+                                <div class="col-sm-8 balError" style="color:red"></div>
+
                             </div>
                         </div>
-                        <div id='successMess' class=" text-success "></div>
                     </div>
                     <div class="modal-footer no-bd-top ">
                         <input type='button' class="btn btn-link less-required token-btn" id="usetoken" value='Decline'/>
@@ -387,6 +391,7 @@
                         $('#message').val(result["Message"]);
                         $('#bankBranchCode').val(result.ResponseInfo["BankBranchCode"]);
                         $('#taxId').val(JSON.stringify(result.ResponseInfo["TaxDetails"]));
+                        $("#balError").text(result.AccountBalanceStatusMessage);
                         var t = result.ResponseInfo["TaxDetails"];
                         console.info(t);
                         var table = document.getElementById('tranDetails');
@@ -417,12 +422,35 @@
         });
         $("#paymentBtn").on("click",function(event) {
             console.log(this.SADAssessmentNumber);
+            getBal($("#acctNumber").val(),$("#totalAmount").val());
             hideModal(true);
         });
 
         $("#usetoken").on("click",function(event) {
             $('#myModal').modal('hide');
         });
+
+        $("#acctNumber").on("change",function () {
+            console.log("her");
+            var account=$("#acctNumber").val();
+            var amount=$("#totalAmount").val();
+            console.log(account + ""+amount);
+            getBal(account,amount);
+
+
+        })
+
+        function getBal(account,amount){
+            $.ajax({
+                url:"/corporate/custom/"+account+"/"+amount+"/checkbal",
+                type:'GET',
+                success:function(result){
+                    console.log(result);
+                    $(".balError").text(result);
+                }
+
+            });
+        }
 
     </script>
 </th:block>

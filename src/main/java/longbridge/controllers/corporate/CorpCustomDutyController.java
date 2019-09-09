@@ -346,4 +346,14 @@ public class CorpCustomDutyController {
         return "corp/custom/receipt";
     }
 
+    @GetMapping("/{account}/{amount}/checkbal")
+    public
+    @ResponseBody
+    String getBalStatusMessage(@PathVariable String account,@PathVariable String amount){
+
+        if(!customDutyService.isAccountBalanceEnough(account,new BigDecimal(amount))) {
+            return messageSource.getMessage("message.insufficient", null, null);
+        }else return "";
+    }
+
 }
