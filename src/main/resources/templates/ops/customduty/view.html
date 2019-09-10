@@ -54,13 +54,13 @@
                                     </li>
 
                                 </ul>
-                                <ul class="nav navbar-right panel_toolbox col-lg-4 pull-right">
+                                <ul class="nav navbar-right panel_toolbox col-lg-1 pull-right">
 
                                     <li class="pull-right" >
-                                        <div class="input-group col-lg-12">
-                                            <input type="text" class="form-control" id="pattern" placeholder="Search for..."/> <span
-                                                class="input-group-btn">
-										<button class="btn btn-success" id="search" type="button">Go!</button>
+                                        <div class="input-group col-lg-6">
+                                            <input type="hidden" class="form-control" id="pattern" placeholder="Search for..."/>
+                                     <span class="input-group-btn">
+										<!--<button class="btn btn-success" id="search" type="button">Go!</button>-->
                                         <button class="btn btn-success bt-select" disabled="disabled" id="refresh" onclick="refresh()" type="button">Refresh</button>
                                         <button class="btn btn-success bt-select" disabled="disabled" id="retry" onclick="opsPayment()" type="button">Retry</button>
 									</span>
@@ -133,9 +133,9 @@
             responsive: true,
             "lengthMenu" : [ [ 20, 40, 60, -1],	[ 20, 40, 60, "All" ] ],
             "pagingType" : "simple_numbers",
-            "searching": true,
+            // "searching": false,
             "paging": true,
-            "serverSide" : true,
+            // "serverSide" : true,
              rowId: 'id',
             "ajax" : {
             url : "/ops/custom/all",
@@ -278,11 +278,13 @@
         window.location.assign(ooo);
 
     } );
-    $("#search").on("click", function(e) {
+   /* $("#search").on("click", function(e) {
         e.preventDefault();
-        dt = $('#settings').DataTable();
+        dt = $('#request').DataTable();
         dt.ajax.reload(null, true);
-    });
+    });*/
+
+
     /*]]>*/
 </script>
 
