@@ -101,6 +101,9 @@ public enum CustomDutyCode {
     public static String getCustomDutyCodeByCodeForOPS(String code){
         CustomDutyCode[] codes = CustomDutyCode.values();
         for (CustomDutyCode customDutyCode:codes) {
+            if("".equals(code)|| null==code){
+                return "";
+            }
             if(customDutyCode.getCode().equals(code)){
                 return customDutyCode.name();
             }

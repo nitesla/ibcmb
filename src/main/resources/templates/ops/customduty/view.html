@@ -110,11 +110,18 @@
 </div>
 
 <script th:src="@{~/customer/js/coronation.js}"></script>
+<!--<script th:src="@{~/bank/js/coronation.js}"></script>-->
+
 <script th:src="@{~/bank/vendors/datatables.net/js/jquery.dataTables.js}"></script>
 <script th:src="@{~/bank/js/dataTables.bootstrap.js}"></script>
 <script th:src="@{~/bank/js/dataTables.select.js}"></script>
 <script th:src="@{~/bank/js/jquery.spring-friendly.min.js}"></script>
 <script th:src="@{~/bank/js/momentMin.js}"></script>
+
+
+
+
+
 <!-- Page-Level Scripts -->
 <script>
     /*<![CDATA[*/
@@ -126,7 +133,7 @@
             responsive: true,
             "lengthMenu" : [ [ 20, 40, 60, -1],	[ 20, 40, 60, "All" ] ],
             "pagingType" : "simple_numbers",
-            "searching": false,
+            "searching": true,
             "paging": true,
             "serverSide" : true,
              rowId: 'id',
@@ -205,7 +212,7 @@
     });
 
     function refresh() {
-        showSpinner();
+        // showSpinner();
         $.ajax({
             "url":"/corporate/custom/"+id+"/refresh",
             "type" : "GET",
@@ -216,8 +223,11 @@
                 //            paymentRef : paymentRef,
                 //            code : message
             },success: function (result) {
-                table.ajax.reload(null,true);
-                hideSpinner();
+                //table.ajax.reload(null,true);
+                // hideSpinner();
+                // $('#request').DataTable().draw();
+                location.reload(true);
+
             },
             error: function (dd) {
                 $('#refresh'.attr("disabled", true));

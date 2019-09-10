@@ -356,4 +356,18 @@ public class CorpCustomDutyController {
         }else return "";
     }
 
+
+    @GetMapping("/refresh")
+    @ResponseBody
+    public void updatePendingPaymentsStatus(){
+        try {
+            List<CorpPaymentRequest> corpPaymentRequests= customDutyService.updatePendingStatus();
+
+
+        }
+        catch (Exception e){
+            LOGGER.error("Error calling coronation service rest service",e);
+        }
+    }
+
 }

@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.security.Principal;
+import java.util.List;
 
 public interface CorpCustomDutyService {
 
@@ -63,5 +64,6 @@ public interface CorpCustomDutyService {
     @PreAuthorize("hasAuthority('VIEW_CUSTOM_DUTY')")
     public String opsMakeCustomDutyPayment(CorpPaymentRequest corpPaymentRequest,Principal principal);
 
+    List<CorpPaymentRequest> updatePendingStatus();
 
 }

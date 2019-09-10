@@ -118,6 +118,8 @@ public class CorpCustomDutyServiceImpl implements CorpCustomDutyService {
     public CustomTransactionStatus updatePayamentStatus(Long id) {
         CorpPaymentRequest corpPaymentRequest = getPayment(id);
         CustomTransactionStatus customTransactionStatus= getPaymentStatus(corpPaymentRequest);
+//       customTransactionStatus.setPaymentStatus("F");
+        customTransactionStatus.setMessage(CustomDutyCode.getCustomDutyCodeByCode(customTransactionStatus.getPaymentStatus()));
         corpPaymentRequest = updatePaymentFields(customTransactionStatus,corpPaymentRequest);
         corpPaymentRequestRepo.save(corpPaymentRequest);
         return customTransactionStatus;
@@ -146,7 +148,6 @@ public class CorpCustomDutyServiceImpl implements CorpCustomDutyService {
 
     public boolean isAccountBalanceEnough(String acctNumber, BigDecimal amount){
         BigDecimal availableBalance =  integrationService.getAvailableBalance(acctNumber);
-        LOGGER.info("the availableBalance {}",availableBalance);
         return availableBalance.compareTo(amount) >= 0;
     }
 
@@ -191,7 +192,6 @@ public class CorpCustomDutyServiceImpl implements CorpCustomDutyService {
         if (new BigDecimal(assessmentDetail.getResponseInfo().getTotalAmount()).compareTo(new BigDecimal(limit)) == 1) {
             throw new InternetBankingException(messageSource.getMessage("transfer.limit", null, null));
         }
-//        if(isAccountBalanceEnough(assessmentDetail.getAccount(),new BigDecimal(assessmentDetail.getResponseInfo().getTotalAmount()))) {
 
             CustomDutyPayment customDutyPayment = saveCustomDutyPayment(assessmentDetail, assessmentDetailsRequest, principal);
             CorpPaymentRequest request = saveCorpPaymentRequest(customDutyPayment, corporate, principal, false);
@@ -202,7 +202,6 @@ public class CorpCustomDutyServiceImpl implements CorpCustomDutyService {
                 return addAuthorization(transReqEntry, principal);
             }
             return messageSource.getMessage("custom.payment.save.success", null, null);
-//        }else  return messageSource.getMessage("custom.payment.save.failure", null, null);
 
     }
 
@@ -452,7 +451,7 @@ public class CorpCustomDutyServiceImpl implements CorpCustomDutyService {
                 if ((corpPaymentRequest.getStatus().equals("00") || corpPaymentRequest.getStatus().equals("000"))) {
                     corpPaymentRequest.setStatusDescription("Authorisation Completed");
                     corpPaymentRequestRepo.save(corpPaymentRequest);
-                    return makeCustomDutyPayment(corpPaymentRequest,principal);/////////////
+                    return makeCustomDutyPayment(corpPaymentRequest,principal);
                 }
                 corpPaymentRequest.getCustomDutyPayment().setMessage(CustomDutyCode.getCustomDutyCodeByCode("-1"));
                 corpPaymentRequestRepo.save(corpPaymentRequest);
@@ -472,11 +471,7 @@ public class CorpCustomDutyServiceImpl implements CorpCustomDutyService {
         if(customPaymentNotification == null){
            // return messageSource.getMessage("custom.auth.failure.reason", null, locale);
             throw new InternetBankingTransferException("Error calling access payment service");
-
         }
-        customPaymentNotification.setCode("00");
-
-
         LOGGER.debug("CustomPaymentNotification:{}",customPaymentNotification);
         CustomDutyPayment dutyPayment = corpPaymentRequest.getCustomDutyPayment();
         dutyPayment.setPaymentStatus(customPaymentNotification.getCode());
@@ -485,8 +480,17 @@ public class CorpCustomDutyServiceImpl implements CorpCustomDutyService {
         LOGGER.debug("customPaymentNotification:{}",customPaymentNotification);
         customDutyPaymentRepo.save(dutyPayment);
         if("00".equals(customPaymentNotification.getCode()) || "000".equals(customPaymentNotification.getCode())){ // Transfer successful
-//            return messageSource.getMessage(customPaymentNotification.getMessage(), null, locale);
-            return messageSource.getMessage(dutyPayment.getMessage(), null, locale);//by Gb
+            CustomTransactionStatus customTransactionStatus=integrationService.paymentStatus(corpPaymentRequest);
+
+                dutyPayment.setPaymentStatus(customTransactionStatus.getPaymentStatus());
+                dutyPayment.setMessage(CustomDutyCode.getCustomDutyCodeByCode(customTransactionStatus.getPaymentStatus()));
+                dutyPayment.setApprovalStatus(customTransactionStatus.getApprovalStatus());
+                dutyPayment.setNotificationStatus(customTransactionStatus.getNotificationStatus());
+                customDutyPaymentRepo.save(dutyPayment);
+                LOGGER.debug("customPaymentNotification:{}",customTransactionStatus);
+
+
+                return messageSource.getMessage(dutyPayment.getMessage(), null, locale);//by Gb
         }else{
             integrationService.reverseLocalTransfer(corpPaymentRequest.getReferenceNumber());
             return messageSource.getMessage(corpPaymentRequest.getStatusDescription(), null, locale);
@@ -564,6 +568,16 @@ public class CorpCustomDutyServiceImpl implements CorpCustomDutyService {
         return approvalCount >= roles.size();
     }
 
+    @Override
+    public List<CorpPaymentRequest> updatePendingStatus(){
+        Corporate corporate=getCurrentUser().getCorporate();
+        List<CorpPaymentRequest> corpPaymentRequests=corpPaymentRequestRepo.findPendingRequestForCorporate(corporate.getId());
+        corpPaymentRequests.stream().forEach(i->updatePayamentStatus(i.getId()));
+
+        logger.info("corp {}",corpPaymentRequests.size());
+        return corpPaymentRequests;
+
+    }
 
 
 

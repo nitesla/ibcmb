@@ -112,6 +112,15 @@
                 var code;
                 var message;
                 $(document).ready(function () {
+
+                    $.ajax({
+                        url:"/corporate/custom/refresh",
+                        type:"GET",
+                        success:function(res){
+                            console.log("well");
+                        }
+                    })
+
                     var pass = document.createElement('input');
                     pass.id='pattern';
                     pass.type = 'text';
@@ -247,8 +256,9 @@
             //            paymentRef : paymentRef,
             //            code : message
                             },success: function (result) {
-                            table.ajax.reload(null,true);
+                           // table.ajax.reload(null,true);
                                     hideSpinner();
+                            $('#requests').DataTable().draw();
                             },
                             error: function (dd) {
                                 $('#refresh'.attr("disabled", true));

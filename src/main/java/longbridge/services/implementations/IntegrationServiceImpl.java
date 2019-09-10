@@ -967,16 +967,18 @@ public class IntegrationServiceImpl implements IntegrationService {
 	@Override
 	public CustomTransactionStatus paymentStatus(CorpPaymentRequest corpPaymentRequest){
 		try {
-			logger.debug("Fetching data from coronation rest service via the url: {}", CustomDutyUrl);
-			Map<String,String> request = new HashMap<>();
-			request.put("hash",EncryptionUtil.getSHA512(
-					appId+corpPaymentRequest.getCustomDutyPayment().getTranId()+secretKey,null));
-			request.put("appId",appId);
-			request.put("Id",corpPaymentRequest.getCustomDutyPayment().getTranId());
-			logger.debug("Fetching data from coronation rest service using: {}", request);
-			CustomTransactionStatus transactionStatus= template.postForObject(CustomDutyUrl+"/customduty/checktransactionstatus", request, CustomTransactionStatus.class);
-			logger.info("the transaction status response {}",transactionStatus);
-			return transactionStatus;
+			if(corpPaymentRequest.getCustomDutyPayment().getPaymentStatus().equals("F")) {
+				logger.debug("Fetching data from coronation rest service via the url: {}", CustomDutyUrl);
+				Map<String, String> request = new HashMap<>();
+				request.put("hash", EncryptionUtil.getSHA512(
+						appId + corpPaymentRequest.getCustomDutyPayment().getTranId() + secretKey, null));
+				request.put("appId", appId);
+				request.put("Id", corpPaymentRequest.getCustomDutyPayment().getTranId());
+				logger.debug("Fetching data from coronation rest service using: {}", request);
+				CustomTransactionStatus transactionStatus = template.postForObject(CustomDutyUrl + "/customduty/checktransactionstatus", request, CustomTransactionStatus.class);
+				logger.info("the transaction status response {}", transactionStatus);
+				return transactionStatus;
+			}
 		}
 		catch (Exception e){
 			logger.error("Error calling coronation service rest service",e);

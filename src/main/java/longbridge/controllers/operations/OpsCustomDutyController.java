@@ -28,7 +28,6 @@ public class OpsCustomDutyController {
     Logger logger = LoggerFactory.getLogger(this.getClass());
     @GetMapping
     public String viewCustomPaymentRequest(){
-logger.info("the ");
         return "ops/customduty/view";
     }
 
