@@ -112,21 +112,21 @@
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
-        <dependency>
+       <!-- <dependency>
         <groupId>mysql</groupId>
         <artifactId>mysql-connector-java</artifactId>
         <scope>runtime</scope>
-        </dependency>
+        </dependency>-->
         <dependency>
             <groupId>com.oracle</groupId>
             <artifactId>ojdbc7</artifactId>
             <version>12.1.0</version>
         </dependency>
-        <dependency>
+      <!--  <dependency>
             <groupId>com.jaspersoft</groupId>
             <artifactId>jasperreports-functions</artifactId>
             <version>6.4.0</version>
-        </dependency>
+        </dependency>-->
 
         <dependency>
             <groupId>org.springframework.security</groupId>
@@ -420,11 +420,7 @@
             <version>0.9.0</version>
         </dependency>
 
-        <dependency>
-            <groupId>com.maxmind.geoip2</groupId>
-            <artifactId>geoip2</artifactId>
-            <version>2.8.0</version>
-        </dependency>
+
 
     </dependencies>
 
@@ -434,7 +430,7 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
-            <plugin>
+            <!--<plugin>
                 <groupId>org.liquibase</groupId>
                 <artifactId>liquibase-maven-plugin</artifactId>
                 <configuration>
@@ -448,7 +444,7 @@
                         </goals>
                     </execution>
                 </executions>
-            </plugin>
+            </plugin>-->
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>aspectj-maven-plugin</artifactId>
