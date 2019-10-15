@@ -141,13 +141,12 @@ public class CorpTransferServiceImpl implements CorpTransferService {
         validateTransfer(corpTransferRequestDTO);
         logger.trace("Initiating {} transfer to {} by {}", corpTransferRequestDTO.getTransferType(), corpTransferRequestDTO.getBeneficiaryAccountName(),corpTransferRequestDTO.getUserReferenceNumber());
         CorpTransRequest corpTransRequest = persistTransfer(corpTransferRequestDTO);
-        corpTransRequest.setChannel(corpTransferRequestDTO.getChannel());
+        //corpTransRequest.setChannel(corpTransferRequestDTO.getChannel());
         logger.info("the corporate transfer request {}",corpTransRequest);
-        if(null==corpTransferRequestDTO.getChannel()) {
-            corpTransRequest.setChannel("MOBILE");
-        }
-
-        if("web".equals(corpTransferRequestDTO.getChannel())) {
+      /*  if(null==corpTransferRequestDTO.getChannel()) {
+            corpTransRequest.setChannel("MOBILE");es
+        }*/
+//        if("web".equals(corpTransferRequestDTO.getChannel())) {
             CustomUserPrincipal user = (CustomUserPrincipal) SecurityContextHolder.getContext().getAuthentication()
                     .getPrincipal();
 
@@ -171,22 +170,13 @@ public class CorpTransferServiceImpl implements CorpTransferService {
             antiFraudData.setDeviceNumber("");
             antiFraudData.setSessionkey(sessionkey);
             antiFraudData.setTranLocation("");
+            antiFraudData.setChannel("INTERNET");
             corpTransRequest.setChannel("INTERNET");
 
             corpTransRequest.setAntiFraudData(antiFraudData);
 
-            logger.info("country code {}", antiFraudData.getCountryCode());
-            logger.info("sfactorAuthIndicator {}", antiFraudData.getSfactorAuthIndicator());
-            logger.info("UserAgent {}", antiFraudData.getHeaderUserAgent());
-            logger.info("ip address {}", antiFraudData.getIp());
-            logger.info("tranLocation {}", antiFraudData.getTranLocation());
-            logger.info("proxyAuthorization {}", antiFraudData.getHeaderProxyAuthorization());
-            logger.info("loginName  {}", antiFraudData.getLoginName());
-            logger.info("sessionKey  {}", antiFraudData.getSessionkey());
 
-        }
-
-        corpTransRequest.getAntiFraudData().setChannel(corpTransRequest.getChannel());
+//        corpTransRequest.getAntiFraudData().setChannel(corpTransRequest.getChannel());
 
         CorpTransRequest corpTransRequestNew = (CorpTransRequest) integrationService.makeTransfer(corpTransRequest);//name change by GB
         logger.trace("Transfer Details {} by {}", corpTransRequest.toString(),corpTransRequest.getUserReferenceNumber());

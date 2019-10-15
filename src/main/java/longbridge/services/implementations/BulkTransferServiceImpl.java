@@ -178,7 +178,8 @@ public class BulkTransferServiceImpl implements BulkTransferService {
                 dto.setBeneficiaryAccountNumber(request.getAccountNumber());
                 dto.setBatchId("" + request.getBulkTransfer().getRefCode());
                 dto.setEmail(details.getEmail());
-                dto.setNarration(request.getNarration());
+//                dto.setNarration(request.getNarration());
+                dto.setDescription(request.getNarration());
                 dto.setPaymentReference(request.getReferenceNumber());
                 dto.setBeneficiaryBankCode(request.getSortCode());
                 dto.setAmount(request.getAmount().toString());
@@ -352,7 +353,9 @@ public class BulkTransferServiceImpl implements BulkTransferService {
     public Page<BulkTransferDTO> getBulkTransferRequests(Pageable details) {
         CorporateUser corporateUser = getCurrentUser();
         Corporate corporate = corporateUser.getCorporate();
-        Page<BulkTransfer> page = bulkTransferRepo.findByCorporateOrderByStatusAscTranDateDesc(corporate, details);
+//        Page<BulkTransfer> page = bulkTransferRepo.findByCorporateOrderByStatusAscTranDateDesc(corporate, details);
+        Page<BulkTransfer> page = bulkTransferRepo.findByCorporateOrderByTranDateDesc(corporate, details);//GB
+
         List<BulkTransferDTO> dtOs = convertEntitiesToDTOs(page.getContent());
         List<BulkTransferDTO> bulkTransferRequests = dtOs.stream()
                 .filter(transRequest -> !accountConfigService.isAccountRestrictedForViewFromUser(accountService.getAccountByAccountNumber(transRequest.getCustomerAccountNumber()).getId(),corporateUser.getId())).collect(Collectors.toList());

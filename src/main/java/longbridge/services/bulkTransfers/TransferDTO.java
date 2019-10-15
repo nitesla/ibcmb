@@ -31,7 +31,7 @@ public class TransferDTO implements Serializable {
     private String responseCode;
     private String  responseDescription;
     private String  uniqueReferenceCode;
-
+    private String description;
 
 
 
@@ -196,6 +196,14 @@ public class TransferDTO implements Serializable {
         this.antiFraudData = antiFraudData;
     }
 
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
     @Override
     public String toString() {
         return "TransferDTO{" +
@@ -217,6 +225,7 @@ public class TransferDTO implements Serializable {
                 ", responseCode='" + responseCode + '\'' +
                 ", responseDescription='" + responseDescription + '\'' +
                 ", uniqueReferenceCode='" + uniqueReferenceCode + '\'' +
+                ", description='" + description + '\'' +
                 '}';
     }
 }
