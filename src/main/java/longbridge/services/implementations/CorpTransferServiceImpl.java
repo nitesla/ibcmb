@@ -10,6 +10,7 @@ import longbridge.repositories.*;
 import longbridge.security.IpAddressUtils;
 import longbridge.security.userdetails.CustomUserPrincipal;
 import longbridge.services.*;
+import longbridge.utils.SessionUtil;
 import longbridge.utils.StatusCode;
 import longbridge.utils.TransferAuthorizationStatus;
 import longbridge.utils.TransferType;
@@ -79,13 +80,16 @@ public class CorpTransferServiceImpl implements CorpTransferService {
     @Autowired
     HttpServletRequest httpServletRequest;
 
+    private SessionUtil sessionUtil;
+
     @Autowired
-    public CorpTransferServiceImpl(CorpTransferRequestRepo corpTransferRequestRepo, IntegrationService integrationService, TransactionLimitServiceImpl limitService, AccountService accountService, ConfigurationService configService) {
+    public CorpTransferServiceImpl(CorpTransferRequestRepo corpTransferRequestRepo, IntegrationService integrationService, TransactionLimitServiceImpl limitService, AccountService accountService, ConfigurationService configService,SessionUtil sessionUtil) {
         this.corpTransferRequestRepo = corpTransferRequestRepo;
         this.integrationService = integrationService;
         this.limitService = limitService;
         this.accountService = accountService;
         this.configService = configService;
+        this.sessionUtil=sessionUtil;
     }
 
 
@@ -96,7 +100,9 @@ public class CorpTransferServiceImpl implements CorpTransferService {
         String userRefereneceNumber = "CORP_"+getCurrentUser().getId().toString();
         transferRequest.setUserReferenceNumber(userRefereneceNumber);
         transferRequestDTO.setUserReferenceNumber(userRefereneceNumber);
-
+        String sessId=sessionUtil.generateSessionId();
+        transferRequest.setReferenceNumber(sessId);
+        transferRequestDTO.setReferenceNumber(sessId);
 
 
         if ("SOLE".equals(transferRequest.getCorporate().getCorporateType())) {
@@ -141,12 +147,8 @@ public class CorpTransferServiceImpl implements CorpTransferService {
         validateTransfer(corpTransferRequestDTO);
         logger.trace("Initiating {} transfer to {} by {}", corpTransferRequestDTO.getTransferType(), corpTransferRequestDTO.getBeneficiaryAccountName(),corpTransferRequestDTO.getUserReferenceNumber());
         CorpTransRequest corpTransRequest = persistTransfer(corpTransferRequestDTO);
-        //corpTransRequest.setChannel(corpTransferRequestDTO.getChannel());
         logger.info("the corporate transfer request {}",corpTransRequest);
-      /*  if(null==corpTransferRequestDTO.getChannel()) {
-            corpTransRequest.setChannel("MOBILE");es
-        }*/
-//        if("web".equals(corpTransferRequestDTO.getChannel())) {
+
             CustomUserPrincipal user = (CustomUserPrincipal) SecurityContextHolder.getContext().getAuthentication()
                     .getPrincipal();
 
@@ -179,7 +181,7 @@ public class CorpTransferServiceImpl implements CorpTransferService {
 //        corpTransRequest.getAntiFraudData().setChannel(corpTransRequest.getChannel());
 
         CorpTransRequest corpTransRequestNew = (CorpTransRequest) integrationService.makeTransfer(corpTransRequest);//name change by GB
-        logger.trace("Transfer Details {} by {}", corpTransRequest.toString(),corpTransRequest.getUserReferenceNumber());
+        logger.trace("Transfer Details {} by {}", corpTransRequestNew.toString(),corpTransRequestNew.getUserReferenceNumber());
 
         if (corpTransRequestNew != null) {
             CorpTransRequest corpTransRequest1=corpTransferRequestRepo.findOne(corpTransRequest.getId());

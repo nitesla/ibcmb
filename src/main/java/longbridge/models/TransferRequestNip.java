@@ -27,7 +27,7 @@ public class TransferRequestNip implements Serializable {
     private String  uniqueReferenceCode;
     private String remarks;
     private String tranType;
-
+    private boolean statusNull=false;
 
     public String getDestinationInstitutionCode() {
         return destinationInstitutionCode;
@@ -147,6 +147,14 @@ public class TransferRequestNip implements Serializable {
 
     public void setTranType(String tranType) {
         this.tranType = tranType;
+    }
+
+    public boolean isStatusNull() {
+        return statusNull;
+    }
+
+    public void setStatusNull(boolean statusNull) {
+        this.statusNull = statusNull;
     }
 
     @Override

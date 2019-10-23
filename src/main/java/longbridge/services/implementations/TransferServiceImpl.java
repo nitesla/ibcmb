@@ -12,6 +12,7 @@ import longbridge.repositories.TransferRequestRepo;
 import longbridge.security.IpAddressUtils;
 import longbridge.security.userdetails.CustomUserPrincipal;
 import longbridge.services.*;
+import longbridge.utils.SessionUtil;
 import longbridge.utils.TransferType;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.modelmapper.ModelMapper;
@@ -37,6 +38,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.stream.StreamSupport;
 
+import static longbridge.utils.TransferType.INTER_BANK_TRANSFER;
+
 /**
  * Created by Fortune on 3/30/2017.
  */
@@ -54,6 +57,8 @@ public class TransferServiceImpl implements TransferService {
     private MessageSource messages;
     private Locale locale = LocaleContextHolder.getLocale();
     private Logger logger = LoggerFactory.getLogger(this.getClass());
+    private SessionUtil sessionUtil;
+
 
     @Autowired
     IpAddressUtils ipAddressUtils;
@@ -63,7 +68,7 @@ public class TransferServiceImpl implements TransferService {
 
     @Autowired
     public TransferServiceImpl(TransferRequestRepo transferRequestRepo, IntegrationService integrationService, TransactionLimitServiceImpl limitService, ModelMapper modelMapper, AccountService accountService, FinancialInstitutionService financialInstitutionService, ConfigurationService configurationService
-            , RetailUserRepo retailUserRepo, MessageSource messages) {
+            , RetailUserRepo retailUserRepo, MessageSource messages,SessionUtil sessionUtil) {
         this.transferRequestRepo = transferRequestRepo;
         this.integrationService = integrationService;
         this.limitService = limitService;
@@ -73,6 +78,7 @@ public class TransferServiceImpl implements TransferService {
         this.configService = configurationService;
         this.retailUserRepo = retailUserRepo;
         this.messages = messages;
+        this.sessionUtil=sessionUtil;
     }
 
 
@@ -95,7 +101,6 @@ public class TransferServiceImpl implements TransferService {
 
             AntiFraudData antiFraudData = new AntiFraudData();
             antiFraudData.setIp(ipAddressUtils.getClientIP());
-//            antiFraudData.setCountryCode(transferRequestDTO.getTranLocation().split(":")[1]);
             antiFraudData.setCountryCode("");
             antiFraudData.setSfactorAuthIndicator(user.getSfactorAuthIndicator());
             antiFraudData.setHeaderUserAgent(httpServletRequest.getHeader("User-Agent"));
@@ -180,6 +185,11 @@ public class TransferServiceImpl implements TransferService {
     }
     private TransRequest persistTransfer(TransferRequestDTO transferRequestDTO) throws InternetBankingTransferException {
         TransRequest transRequest = convertDTOToEntity(transferRequestDTO);
+        logger.info("trantype {}",transRequest.getTransferType());
+        if(transRequest.getTransferType().equals(INTER_BANK_TRANSFER)) {
+            String sessId = sessionUtil.generateSessionId();
+            transRequest.setReferenceNumber(sessId);
+        }
         try {
 
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -188,8 +198,9 @@ public class TransferServiceImpl implements TransferService {
                 RetailUser user = retailUserRepo.findFirstByUserNameIgnoreCase(currentUserName);
                 transRequest.setUserReferenceNumber("RET_" + user.getId());
             }
+
+
             transRequest = transferRequestRepo.save(transRequest);
-//                transferRequestDTO = convertEntityToDTO();
         return transRequest;
 
         } catch (Exception e) {
@@ -361,7 +372,7 @@ public class TransferServiceImpl implements TransferService {
                 throw new InternetBankingTransferException(TransferExceptions.NOT_ALLOWED.toString());
 
         }
-        if (dto.getTransferType().equals(TransferType.INTER_BANK_TRANSFER)) {
+        if (dto.getTransferType().equals(INTER_BANK_TRANSFER)) {
             NEnquiryDetails details = integrationService.doNameEnquiry(dto.getFinancialInstitution().getInstitutionCode(), dto.getBeneficiaryAccountNumber());
           /*  if (details != null && details.getAccountName() == null)
                 throw new InternetBankingTransferException(TransferExceptions.INVALID_BENEFICIARY.toString());*/

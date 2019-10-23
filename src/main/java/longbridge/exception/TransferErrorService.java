@@ -20,6 +20,7 @@ public class TransferErrorService {
 
     private MessageSource messages;
     private TransferCodeRepo transferCodeRepo;
+    final Locale locale = LocaleContextHolder.getLocale();
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -34,7 +35,6 @@ public class TransferErrorService {
     }
 
     public String getMessage(InternetBankingTransferException exception) {
-        final Locale locale = LocaleContextHolder.getLocale();
         String errorMessage;
 
         try {
@@ -55,6 +55,30 @@ public class TransferErrorService {
         return errorMessage;
 
     }
+    public String getMessage(String errorCode){
+       String error="";
+        try {
+            TransferCodeTransalator codeTransalator = transferCodeRepo.findFirstByResponseCode(errorCode);
+            if (codeTransalator != null) {
+                 error = codeTransalator.getResponseDesc();
+                return error;
+            }
+
+
+        } catch (Exception e) {
+            logger.error("Error resolving transfer error code",e);
+
+        }
+
+        return error;
+
+
+
+
+    }
+
+
+
 //    public String getExactMessage(String exception){
 //        final Locale locale = LocaleContextHolder.getLocale();
 //

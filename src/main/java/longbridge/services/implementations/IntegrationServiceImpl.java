@@ -357,7 +357,7 @@ public class IntegrationServiceImpl implements IntegrationService {
 
 	@Override
 	public TransRequest makeTransfer(TransRequest transRequest) throws InternetBankingTransferException {
-		logger.info("chanto {}",transRequest);
+//		logger.info("chanto {}",transRequest);
 		TransferType type = transRequest.getTransferType();
 		Account account = accountRepo.findFirstByAccountNumber(transRequest.getCustomerAccountNumber());
 		validate(account);
@@ -417,15 +417,6 @@ public class IntegrationServiceImpl implements IntegrationService {
 //				TransferDetails response;
 				TransferRequestNip response;
 				String uri = URI + "/transfer/nip";
-				/*Map<String, String> params = new HashMap<>();
-				params.put("debitAccountNumber", transRequest.getCustomerAccountNumber());
-				params.put("debitAccountName", account.getAccountName());
-				params.put("creditAccountNumber", transRequest.getBeneficiaryAccountNumber());
-				params.put("creditAccountName", transRequest.getBeneficiaryAccountName());
-				params.put("tranAmount", transRequest.getAmount().toString());
-				params.put("destinationInstitutionCode", transRequest.getFinancialInstitution().getInstitutionCode());
-				params.put("tranType", "NIP");
-				params.put("remarks", transRequest.getRemarks());*/
 
 				TransferRequestNip params=new TransferRequestNip();
 				params.setOriginatorAccountNumber(transRequest.getCustomerAccountNumber());
@@ -437,27 +428,33 @@ public class IntegrationServiceImpl implements IntegrationService {
 				params.setTranType("NIP");
 				params.setRemarks(transRequest.getRemarks());
 				params.setAntiFraudData(transRequest.getAntiFraudData());
+				params.setUniqueReferenceCode(transRequest.getReferenceNumber());
 
 				try {
 					logger.info("Initiating Inter Bank Transfer");
 					logger.debug("Transfer Params: {}", params.toString());
 
 					response = template.postForObject(uri, params, TransferRequestNip.class);
-					logger.info("response for transfer {}", response.toString());
 					transRequest.setReferenceNumber(response.getUniqueReferenceCode());
-					transRequest.setNarration(response.getNarration());
 					transRequest.setStatus(response.getResponseCode());
 					transRequest.setStatusDescription(response.getResponseDescription());
-
-
+					transRequest.setNarration(response.getNarration());
 					params.getAntiFraudData().setTranRequestId(transRequest.getId());
-					antiFraudRepo.save(params.getAntiFraudData());
-					logger.info("AntiFraud data saved {}",params.getAntiFraudData());
+
+					logger.info("response for transfer {}", response.toString());
+					if(response.isStatusNull()){
+
+						transRequest.setStatusDescription(errorService.getMessage(response.getResponseCode()));
+						logger.info("response code {}",transRequest.getStatusDescription());
+
+					}
+
+						antiFraudRepo.save(params.getAntiFraudData());
+						logger.info("AntiFraud data saved {}", params.getAntiFraudData());
 
 
 					return transRequest;
 				} catch (HttpStatusCodeException e) {
-
 					logger.error("HTTP Error occurred", e);
 					transRequest.setStatus(e.getStatusCode().toString());
 					transRequest.setStatusDescription(e.getStatusCode().getReasonPhrase());
@@ -479,13 +476,7 @@ public class IntegrationServiceImpl implements IntegrationService {
 				transRequest.setTransferType(TransferType.OWN_ACCOUNT_TRANSFER);
 				TransferDetails response;
 				String uri = URI + "/transfer/local";
-				/*Map<String, String> params = new HashMap<>();
-				params.put("debitAccountNumber", transRequest.getCustomerAccountNumber());
-				params.put("debitAccountName", account.getAccountName());
-				params.put("creditAccountNumber", transRequest.getBeneficiaryAccountNumber());
-				params.put("creditAccountName", transRequest.getBeneficiaryAccountName());
-				params.put("tranAmount", transRequest.getAmount().toString());
-				params.put("remarks", transRequest.getRemarks());*/
+
 
 				TransferRequest params=new TransferRequest();
 				params.setDebitAccountNumber(transRequest.getCustomerAccountNumber());
@@ -967,7 +958,7 @@ public class IntegrationServiceImpl implements IntegrationService {
 	@Override
 	public CustomTransactionStatus paymentStatus(CorpPaymentRequest corpPaymentRequest){
 		try {
-			if(corpPaymentRequest.getCustomDutyPayment().getPaymentStatus().equals("F")) {
+			//if(corpPaymentRequest.getCustomDutyPayment().getPaymentStatus().equals("F")) {
 				logger.debug("Fetching data from coronation rest service via the url: {}", CustomDutyUrl);
 				Map<String, String> request = new HashMap<>();
 				request.put("hash", EncryptionUtil.getSHA512(
@@ -978,7 +969,7 @@ public class IntegrationServiceImpl implements IntegrationService {
 				CustomTransactionStatus transactionStatus = template.postForObject(CustomDutyUrl + "/customduty/checktransactionstatus", request, CustomTransactionStatus.class);
 				logger.info("the transaction status response {}", transactionStatus);
 				return transactionStatus;
-			}
+			//}
 		}
 		catch (Exception e){
 			logger.error("Error calling coronation service rest service",e);
