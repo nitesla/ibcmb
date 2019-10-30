@@ -167,6 +167,7 @@ public class BulkTransferServiceImpl implements BulkTransferService {
             creditRequestRepo.save(request);
         });
 
+/*
 //added by Gb
        List<TransferDTO> transferDTO=new ArrayList<>();
         creditRequests.forEach(request->{
@@ -216,6 +217,7 @@ public class BulkTransferServiceImpl implements BulkTransferService {
         }
 
 //close
+*/
 
         try {
             jobLauncher.launchBulkTransferJob("" + transfer.getRefCode());
