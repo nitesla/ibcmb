@@ -129,7 +129,7 @@ public class BulkTransferServiceImpl implements BulkTransferService {
 
         NapsAntiFraudData antiFraudData = new NapsAntiFraudData();
         antiFraudData.setIp(ipAddressUtils.getClientIP2());
-        antiFraudData.setCountryCode(locale.getCountry());
+        antiFraudData.setCountryCode("");
         antiFraudData.setSfactorAuthIndicator(user.getSfactorAuthIndicator());
         antiFraudData.setHeaderUserAgent(httpServletRequest.getHeader("User-Agent"));
         antiFraudData.setHeaderProxyAuthorization(httpServletRequest.getHeader("Proxy-Authorization"));
@@ -145,14 +145,6 @@ public class BulkTransferServiceImpl implements BulkTransferService {
         antiFraudData.setSessionkey(sessionkey);
         antiFraudData.setTranLocation(bulkTransfer.getTranLocation());
 
-        logger.info("country code {}", antiFraudData.getCountryCode());
-        logger.info("sfactorAuthIndicator {}", antiFraudData.getSfactorAuthIndicator());
-        logger.info("UserAgent {}", antiFraudData.getHeaderUserAgent());
-        logger.info("ip address {}", antiFraudData.getIp());
-        logger.info("tranLocation {}", antiFraudData.getTranLocation());
-        logger.info("proxyAuthorization {}", antiFraudData.getHeaderProxyAuthorization());
-        logger.info("loginName  {}", antiFraudData.getLoginName());
-        logger.info("sessionKey  {}", antiFraudData.getSessionkey());
 
         logger.info("Antifraud details {}",antiFraudData);
         NapsAntiFraudData napsAntiFraudData2=napsAntiFraudRepo.save(antiFraudData);
@@ -167,57 +159,6 @@ public class BulkTransferServiceImpl implements BulkTransferService {
             creditRequestRepo.save(request);
         });
 
-/*
-//added by Gb
-       List<TransferDTO> transferDTO=new ArrayList<>();
-        creditRequests.forEach(request->{
-                CustomerDetails details = integrationService.viewCustomerDetails(request.getBulkTransfer().getCustomerAccountNumber());
-                TransferDTO dto = new TransferDTO();
-                dto.setAccountName(details.getCustomerName());
-                dto.setAccountNumber(request.getBulkTransfer().getCustomerAccountNumber());
-                dto.setBeneficiaryName(request.getAccountName());
-                dto.setBeneficiaryAccountNumber(request.getAccountNumber());
-                dto.setBatchId("" + request.getBulkTransfer().getRefCode());
-                dto.setEmail(details.getEmail());
-//                dto.setNarration(request.getNarration());
-                dto.setDescription(request.getNarration());
-                dto.setPaymentReference(request.getReferenceNumber());
-                dto.setBeneficiaryBankCode(request.getSortCode());
-                dto.setAmount(request.getAmount().toString());
-                dto.setPayerAccountNumber(request.getBulkTransfer().getCustomerAccountNumber());
-                dto.setPayerName(details.getCustomerName());
-                dto.setAntiFraudData(new ModelMapper().map(request.getNapsAntiFraudData(),AntiFraudData.class));
-                transferDTO.add(dto);
-
-        });
-
-
-
-
-        try {
-
-            logger.info("Sending Bulk Transfer with params: {}",transferDTO );
-
-            TransferDTO details = template.postForObject(url, transferDTO, TransferDTO.class);
-
-            if (details != null) {
-
-                logger.info("Transfer Response Code: {}", details.getResponseCode());
-                logger.info("Transfer Response Description: {}", details.getResponseDescription());
-
-            }
-        } catch (HttpStatusCodeException e) {
-            logger.error("Exception occurred submitting Bulk transfer \n\n", e);
-
-
-        }
-        catch (Exception e){
-            logger.error("Error occurred submitting bulk transfer", e);
-
-        }
-
-//close
-*/
 
         try {
             jobLauncher.launchBulkTransferJob("" + transfer.getRefCode());
