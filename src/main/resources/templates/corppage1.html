@@ -1,35 +1,116 @@
 <!DOCTYPE html>
 
 <html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{index-layout}">
-<div layout:fragment="content">
-    <section class="content-wrapper">
-        <div class="containe">
-            <div class="bg">
-                <form th:action="@{/login/u/corporate}" method="POST" class="form-signin" autocomplete="off">
-                    <h5 class="form-signin-heading text-white">Enter Login Details</h5>
-                    <br/>
-                    <div th:if="${param.message != null}" class="alert alert-info erro" th:text="${param.message[0]}"></div>
+<head>
+    <style>
+       /* @font-face {
+            font-family: FedraSansStdLight;
+            src: url(assets/FedraSansStd-LightLF.otf);
+        }*/
+        .login-section{
+            margin-top: 30px;
+            margin-bottom: 20px;
+        }
+        .body-color{
 
-                    <div th:if="${param.error != null}" class="alert alert-danger erro" th:text="${session[SPRING_SECURITY_LAST_EXCEPTION]}"></div>
-                    <div th:if="${param.expired != null}" class="alert erro alert-danger" th:text="#{session.expired}"></div>
-                    <div class="form-group">
-                        <input type="text" name="username" class="my-select" placeholder="Username" autocomplete="off" />
-                        <p><a class="text-white" href="/forgot/corporate/username">Forgot Username?</a></p>
-                        
+        }
+        .line{
+            background-color: #fff;
+        }
+        input{
+            border-radius: 5px;
+        }
+        .form-signin-heading {
+            text-align: left;
+            line-height: 1.2;
+            font-size: 22px;
+            text-transform: capitalize;
+        }
+        hr{
+            rgin-top: 20px;
+            margin-bottom: 20px;
+            border: 0;
+            border-top: 2px solid rgba(255, 255, 255, 0.23);
+        }
+        .form-signin-low{
+            font-weight: bolder;
+        }
+        .header-line{
+            font-size: 14px;
+            padding-left: 0px;
+        }
+        .no-pad-right{
+            padding-top: 10px;
+        }
+        .form-signinn {
+            max-width: 330px;
+
+            padding: 40px 10px 5px 10px;
+            margin: 0 auto;
+            margin-top: 40px;
+            border-radius: 5px;
+        }
+        .bodyform{
+            max-width: 400px;
+            background-color: rgba(0, 48, 87, 0.89);
+            padding-bottom: 20px;
+            margin: 0 auto;
+            border-radius: 7px;
+        }
+        .continue{
+            background-color: #a7674c;
+            color: #fff;
+            padding:8px 30px 8px 30px;
+            border-radius: 20px;
+
+        }
+        .continue:hover{
+            background-color: #9b4a28;
+            color: #fff;
+            text-decoration: none;
+            font-weight: bolder;
+        }
+
+    </style>
+
+</head>
+
+<div layout:fragment="content">
+    <div class="row content-wrapper" >
+        <div class="bg">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-6 login-section" >
+                        <div class="form-body bodyform" style="max-width: 400px; background-color: rgba(0, 48, 87, 0.89); padding-bottom: 50px;  margin: 0 auto;" >
+                            <form id="loginform" th:action="@{/login/u/corporate}" method="POST" class="form-signinn " autocomplete="off">
+                                <h5 class=" form-signin-heading text-white">Welcome to CoronationMB<br> Online Banking!</h5>
+                                <h6 class="form-signin header-line text-white">Enter your username to continue</h6>
+                                <br/>
+                                <div th:if="${param.message != null}" class="alert alert-info error" th:text="${param.message[0]}"></div>
+
+                                <div th:if="${param.error != null}" class="alert alert-danger error" th:text="${session[SPRING_SECURITY_LAST_EXCEPTION]}"></div>
+                                <div th:if="${param.expired != null}" class="alert error alert-danger" th:text="#{session.expired}"></div>
+                                <div class="form-group " >
+                                    <span id='reqspan' class='required text-white' style='top:1px;'></span>
+                                    <input type="text" id="username" name="username" class="my-select" required="required" placeholder="Username" autocomplete="off" />
+                                    <input type="text" id="corporateId" name="" class="my-select" required="required" placeholder="Corporate ID" autocomplete="off" />
+
+                                    <p class="col-xs-5 no-pad-left no-pad-right " style="margin-top: 15px;"><a href="/forgot/corporate/username" class='text-white' data-toggle="tooltip" data-placement="right" title="Forgot Username?" autocomplete="off" >Forgot Username?</a></p>
+                                    <p class='text-right col-xs-7 no-pad-left no-pad-right text-white' style="margin-top: 15px; "><a href="#" class="continue">Continue</a> </p>
+                                </div>
+
+                            </form>
+                        </div>
                     </div>
-                    <div class="form-group">
-                        <input type="text" name="corporateId" class="my-select" placeholder="Corporate ID" autocomplete="off" />
+                    <div class="col-md-6 ">
                     </div>
-                    <div class="form-group">
-                        <button class="btn btn-primary my-select">Submit</button>
-                    </div>
-                </form>
+                </div>
             </div>
         </div>
-    </section>
+    </div>
+
 
 </div>
-
 
 
 

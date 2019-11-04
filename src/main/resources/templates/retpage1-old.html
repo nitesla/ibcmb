@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{index-layout}">
+<div layout:fragment="content">
+    <div class="row content-wrapper">
+
+        <div class="bg">
+
+
+               
+
+            <form id="loginform" th:action="@{/login/u/retail}" method="POST" class="form-signin" autocomplete="off">
+                
+                    <h5 class="form-signin-heading text-white">Enter Login Details</h5>
+
+
+                    <div th:if="${param.message != null}" class="alert erro alert-info" th:text="${param.message[0]}"></div>
+                    <div th:if="${param.error != null}" class="alert erro alert-danger" th:text="${session[SPRING_SECURITY_LAST_EXCEPTION]}"></div>
+                    <div th:if="${param.expired != null}" class="alert erro alert-danger" th:text="#{session.expired}"></div>
+                    <div th:if="${message}" class="alert display-none alert-info" th:text="${message}"></div>
+                    <br/>
+                    <div class="form-group " style="margin-bottom:30px">
+                        <span id='reqspan' class='required text-white' style='top:1px;'></span>
+                        <input type="text" id="username" name="username" class="my-select" required="required" placeholder="Username" autocomplete="off" />
+                        <p class="col-xs-6 no-pad-left no-pad-right"><a href="/forgot/username" class='text-white' data-toggle="tooltip" data-placement="right" title="Forgot Username?" autocomplete="off">Forgot Username?</a></p>
+                        <p class='text-right col-xs-6 no-pad-left no-pad-right text-white'>New User? <a href="/register" class='text-white' data-toggle="tooltip" data-placement="right" title="Register" autocomplete="off">Register Now</a></p>
+                    </div>
+                    <div class="form-group">
+                        <button class="btn btn-primary my-select"> Continue </button>
+                    </div>
+
+             
+            </form>
+        </div>
+    </div>
+</div>
+
+
+
+
+<th:block layout:fragment="scripts">
+
+    <script>
+        $(document).ready(function() {
+            $('[data-toggle="tooltip"]').tooltip();
+            $('[data-toggle="popover"]').popover({
+                content: '',
+                html: 'true'
+            });
+
+            errorLogin();
+
+        });
+    </script>
+</th:block>
+
+</html>

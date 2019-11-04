@@ -1,7 +1,10 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.w3.org/1999/xhtml">
+
+
 
 <head>
+    <title>Coronation Merchant Bank</title>
     <link rel="stylesheet" type="text/css" th:href="@{~/customer/css/bootstrap.css}" />
     <link rel="stylesheet" type="text/css" th:href="@{~/customer/css/custom.css}" />
     <link rel="stylesheet" type="text/css" th:href="@{~/customer/css/media.css}" />
@@ -9,309 +12,370 @@
     <link rel="shortcut icon" th:href="@{~/customer/img/favicon.ico}" type="image/x-icon">
     <link rel="icon" th:href="@{~/customer/img/favico.ico}" type="image/x-icon">
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Coronation Merchant Bank</title>
+
+    <style>
+       /* @font-face {
+            font-family: FedraSansStdLight;
+            src: url(../fonts/FedraSans/FedraSansStd-LightLF.otf);
+        }*/
+        .login-section{
+            margin-top: 40px;
+        }
+        .body-color{
+
+        }
+        .line{
+            background-color: #fff;
+        }
+        input{
+            border-radius: 5px;
+        }
+        .form-signin-heading {
+            text-align: left;
+            line-height: 1.2;
+            font-size: 22px;
+            text-transform: capitalize;
+        }
+        hr{
+            rgin-top: 20px;
+            margin-bottom: 20px;
+            border: 0;
+            border-top: 2px solid rgba(255, 255, 255, 0.23);
+        }
+        .form-signin-low{
+            font-weight: bolder;
+        }
+        .header-line{
+            font-size: 14px;
+            padding-left: 0px;
+        }
+        .no-pad-right{
+            padding-top: 10px;
+        }
+        .bodyform{
+            max-width: 400px;
+            background-color: rgba(0, 48, 87, 0.89);
+            padding-bottom: 20px;
+            margin: 0 auto;
+            border-radius: 7px;
+        }
+        .continue{
+            background-color: #a7674c;
+            color: #fff;
+            padding:8px 30px 8px 30px;
+            border-radius: 20px;
+        }
+        .continue:hover{
+            background-color: #9b4a28;
+            color: #fff;
+            text-decoration: none;
+            font-weight: bolder;
+        }
+    </style>
 </head>
 
 <body  onload ='redirect()' class="LTR Safari Chrome Safari44 Chrome44 JAJP SmallDevice ContentBody">
 
 
-    <script>
 
-        function redirect()
+<script>
+
+    function redirect()
+    {
+        var version = detectIE();
+
+        if (version <= 9 && version != false)
         {
-            var version = detectIE();
-
-            if (version <= 9 && version != false)
+            var id = document.getElementById('body');
+            if(version <= 8)
             {
-                var id = document.getElementById('body');
-                if(version <= 8)
-                {
 
-                    id.style.display = "none";
-                }
-                else
-
-                    id.style.display = "";
-
-
-                // window.location.href='/unsupported';
+                id.style.display = "none";
             }
+            else
+
+                id.style.display = "";
+
+
+            // window.location.href='/unsupported';
+        }
+    }
+
+    function detectIE() {
+        var ua = window.navigator.userAgent;
+
+        // Test values; Uncomment to check result …
+
+        // IE 10
+        // ua = 'Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.2; Trident/6.0)';
+
+        // IE 11
+        // ua = 'Mozilla/5.0 (Windows NT 6.3; Trident/7.0; rv:11.0) like Gecko';
+
+        // Edge 12 (Spartan)
+        // ua = 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.71 Safari/537.36 Edge/12.0';
+
+        // Edge 13
+        // ua = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2486.0 Safari/537.36 Edge/13.10586';
+
+        var msie = ua.indexOf('MSIE ');
+        if (msie > 0) {
+            // IE 10 or older => return version number
+            return parseInt(ua.substring(msie + 5, ua.indexOf('.', msie)), 10);
         }
 
-        function detectIE() {
-  var ua = window.navigator.userAgent;
+        var trident = ua.indexOf('Trident/');
+        if (trident > 0) {
+            // IE 11 => return version number
+            var rv = ua.indexOf('rv:');
+            return parseInt(ua.substring(rv + 3, ua.indexOf('.', rv)), 10);
+        }
 
-  // Test values; Uncomment to check result …
+        var edge = ua.indexOf('Edge/');
+        if (edge > 0) {
+            // Edge (IE 12+) => return version number
+            return parseInt(ua.substring(edge + 5, ua.indexOf('.', edge)), 10);
+        }
 
-  // IE 10
-  // ua = 'Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.2; Trident/6.0)';
+        // other browser
+        return false;
+    }
+</script>
+<!--[if lte IE 9]>
+<div class="browserupgrade">
 
-  // IE 11
-  // ua = 'Mozilla/5.0 (Windows NT 6.3; Trident/7.0; rv:11.0) like Gecko';
+    <div class="text-center">
+        <img class="img img-responsive" style="display:block;margin:0px auto;text-align:center;background:white;padding:10px;margin-bottom:20px" th:src="@{~/customer/img/cmb_logo.png}" alt="Coronation Merchant Bank" />
 
-  // Edge 12 (Spartan)
-  // ua = 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.71 Safari/537.36 Edge/12.0';
-
-  // Edge 13
-  // ua = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2486.0 Safari/537.36 Edge/13.10586';
-
-  var msie = ua.indexOf('MSIE ');
-  if (msie > 0) {
-    // IE 10 or older => return version number
-    return parseInt(ua.substring(msie + 5, ua.indexOf('.', msie)), 10);
-  }
-
-  var trident = ua.indexOf('Trident/');
-  if (trident > 0) {
-    // IE 11 => return version number
-    var rv = ua.indexOf('rv:');
-    return parseInt(ua.substring(rv + 3, ua.indexOf('.', rv)), 10);
-  }
-
-  var edge = ua.indexOf('Edge/');
-  if (edge > 0) {
-    // Edge (IE 12+) => return version number
-    return parseInt(ua.substring(edge + 5, ua.indexOf('.', edge)), 10);
-  }
-
-  // other browser
-  return false;
-}
-    </script>
-     <!--[if lte IE 9]>
-    <div class="browserupgrade">
-
-        <div class="text-center">
-            <img class="img img-responsive" style="display:block;margin:0px auto;text-align:center;background:white;padding:10px;margin-bottom:20px" th:src="@{~/customer/img/cmb_logo.png}" alt="Coronation Merchant Bank" />
-
-            <p >You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
-
-        </div>
-
+        <p >You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
 
     </div>
-    <![endif]-->
 
-    <div class="container" id='body'>
 
-        <div class="row">
-            <div class="top-bar col-xs-12">
-                <ul class="top-link">
-                    <li class="no-bd"><a href="https://www.coronationmb.com/" target="_blank"> Coronation merchant bank</a>&nbsp;</li>
-                </ul>
-            </div>
+</div>
+<![endif]-->
+
+
+
+
+<div class="container" id='body'>
+
+    <div class="row">
+        <div class="top-bar col-xs-12">
+            <ul class="top-link">
+                <li class="no-bd"><a href="https://www.coronationmb.com/" target="_blank"> Coronation merchant bank</a>&nbsp;</li>
+            </ul>
         </div>
-
-        <div class="row  margin-botto" style="margin-bottom:10px;">
-
-            <div class="col-sm-3 visible-xs no-pad-left no-pad-right">
-                <div class="center" style="margin:0px auto;">
-                    <a href="/" class="log" data-toggle="tooltip" data-placement="bottom" title="Coronation Merchant Bank">
-                        <img class="img img-responsive pull-right" style="display:block;margin:0px auto;" th:src="@{~/customer/img/cmb_logo.png}" alt="Coronation Merchant Bank" />
-                    </a>
-                </div>
-            </div>
+    </div>
 
 
-            <div class="col-sm-9 no-pad-left">
-
-                <nav class="navbar navbar-default bg-success">
-                    <div class="">
-                        <div class="navbar-header navbar-left ">
-                            <button type="button" class="navbar-toggle collapsed " data-toggle="collapse" data-target="#navbar-collapse-1" aria-expanded="false">
-                                <span class="sr-only">MENU</span>
-                                <span class="icon-bar"></span>
-                                <span class="icon-bar"></span>
-                                <span class="icon-bar"></span>
-                            </button>
-                            <a class="navbar-brand" href="#" data-toggle="collapse" data-target="#navbar-collapse-1">Menu</a>
-                        </div>
-                        <div class="collapse navbar-collapse no-pad-left" id="navbar-collapse-1">
-                            <ul class="nav navbar-nav ">
-                                <li><a href="/"> HOME</a></li>
-                                <li class="dropdown">
-                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"> LOGIN</a>
-                                    <ul class="dropdown-menu">
-                                        <li><a th:href="@{/login/retail}"> INDIVIDUAL </a></li>
-                                        <li><a th:href="@{/login/corporate}"> CORPORATE </a></li>
-                                    </ul>
-                                </li>
-                                <li><a href="/register"> REGISTER</a></li>
-                                <li><a href="/#contact_us"> CONTACT US</a></li>
-                                <li><a href="/faqs"> FAQ</a></li>
-                                <li><a target="_blank" href="/assets/cmb_soft_token_setup.pdf" th:text="#{softtoken.menu}"></a></li>
-                            </ul>
-
-                        </div>
-                    </div>
-                </nav>
-
-            </div>
-
-            <div class="col-sm-3 hidden-xs no-pad-right">
-                <div class="center" style="margin:0px auto;">
-                    <a href="/" class="log" data-toggle="tooltip" data-placement="bottom" title="Coronation Merchant Bank">
-                        <img class="img img-responsive pull-right" style="display:block;margin:0px auto;" th:src="@{~/customer/img/cmb_logo.png}" alt="Coronation Merchant Bank" />
-                    </a>
-                </div>
+    <div class="row  margin-bottom" style="margin-bottom:10px;">
+        <div class="col-sm-3 visible-xs no-pad-left no-pad-right">
+            <div class="center" style="margin:0px auto;">
+                <a href="/" class="log" data-toggle="tooltip" data-placement="bottom" title="Coronation Merchant Bank">
+                    <img class="img img-responsive pull-right" style="display:block;margin:0px auto;" th:src="@{~/customer/img/cmb_logo.png}" alt="Coronation Merchant Bank" />
+                </a>
             </div>
         </div>
 
 
-        <div layout:fragment="content">
 
-        </div>
-
-
-        <footer>
-
-
-            <div class="">
+        <div class="col-sm-9 no-pad-left">
+            <nav class="navbar navbar-default bg-success">
                 <div class="">
-                    <div class="col-sm-6 col-xs-12 footer-mobile no-pad-left no-pad-right">
-                        <ul class="footer-links ">
-                            <li><a href="/policy" target="_blank">Privacy policy</a></li>
-                            <!--<li><a href="#" target="_blank">Disclaimer</a></li>-->
-                            <li><a href="/terms" target="_blank">Terms &amp; Conditions</a></li>
+                    <div class="navbar-header navbar-left ">
+                        <button type="button" class="navbar-toggle collapsed " data-toggle="collapse" data-target="#navbar-collapse-1" aria-expanded="false">
+                            <span class="sr-only">MENU</span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                        </button>
+                        <a class="navbar-brand" href="#" data-toggle="collapse" data-target="#navbar-collapse-1">Menu</a>
+                    </div>
+                    <div class="collapse navbar-collapse no-pad-left" id="navbar-collapse-1">
+                        <ul class="nav navbar-nav ">
+                            <li><a href="/"> HOME</a></li>
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"> LOGIN</a>
+                                <ul class="dropdown-menu">
+                                    <li><a th:href="@{/login/retail}"> INDIVIDUAL </a></li>
+                                    <li><a th:href="@{/login/corporate}"> CORPORATE </a></li>
+                                </ul>
+                            </li>
+                            <li><a href="/register"> REGISTER</a></li>
+                            <li><a href="/#contact_us"> CONTACT US</a></li>
+                            <li><a href="/faqs"> FAQ</a></li>
+                            <li><a target="_blank" href="/assets/cmb_soft_token_setup.pdf" th:text="#{softtoken.menu}"></a></li>
+
                         </ul>
 
                     </div>
-                    <div class="col-sm-6  col-xs-12  footer-mobile  no-pad-left no-pad-right">
-                        <p class=' '> &copy; 2017 - All rights reserved</p>
+                </div>
+            </nav>
+        </div>
+
+        <div class="col-sm-3 hidden-xs no-pad-right">
+            <div class="center" style="margin:0px auto;">
+                <a href="/" class="log" data-toggle="tooltip" data-placement="bottom" title="Coronation Merchant Bank">
+                    <img class="img img-responsive pull-right" style="display:block;margin:0px auto;" th:src="@{~/customer/img/cmb_logo.png}" alt="Coronation Merchant Bank" />
+                </a>
+            </div>
+        </div>
+
+    </div>
+
+    <div layout:fragment="content">
+
+    </div>
+
+
+    <footer>
+
+
+        <div class="">
+            <div class="">
+                <div class="col-sm-6 col-xs-12 footer-mobile no-pad-left no-pad-right">
+                    <ul class="footer-links ">
+                        <li><a href="/policy" target="_blank">Privacy policy</a></li>
+                        <!--<li><a href="#" target="_blank">Disclaimer</a></li>-->
+                        <li><a href="/terms" target="_blank">Terms &amp; Conditions</a></li>
+                    </ul>
+
+                </div>
+                <div class="col-sm-6  col-xs-12  footer-mobile  no-pad-left no-pad-right">
+                    <p class=' '> &copy; 2017 - All rights reserved</p>
+                </div>
+
+            </div>
+        </div>
+    </footer>
+
+</div>
+
+<div th:if="${message}">
+    <div hidden="hidden">
+        <ul class="actionMessage">
+            <li th:each="msg : ${message}" th:text="${msg}">Message</li>
+        </ul>
+    </div>
+</div>
+
+<div th:if="${failure}">
+    <div hidden="hidden">
+        <ul class="actionError">
+            <li th:each="msg : ${failure}" th:text="${msg}" id="error">Message</li>
+        </ul>
+    </div>
+</div>
+
+
+<div id="myModal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+
+        <!-- Modal content-->
+        <div class="modal-content no-bd-rad ">
+            <div class="modal-body">
+                <h1 style="font-size: 20px" class="text-center">Request Callback</h1>
+                <br/>
+
+                <form method="post" action="/request/callback" class="form-horizontal">
+                    <div class="row">
+                        <div class="col-sm-3 control-label"><label>Full Name:</label></div>
+                        <div class="col-sm-9 form-group">
+                            <input type="text" class="form-control" name="name" required="required" />
+                        </div>
                     </div>
-
-                </div>
-            </div>
-        </footer>
-    </div>
-
-
-
-    <div th:if="${message}">
-        <div hidden="hidden">
-            <ul class="actionMessage">
-                <li th:each="msg : ${message}" th:text="${msg}">Message</li>
-            </ul>
-        </div>
-    </div>
-
-    <div th:if="${failure}">
-        <div hidden="hidden">
-            <ul class="actionError">
-                <li th:each="msg : ${failure}" th:text="${msg}" id="error">Message</li>
-            </ul>
-        </div>
-    </div>
-
-
-    <div id="myModal" class="modal fade" role="dialog">
-        <div class="modal-dialog">
-
-            <!-- Modal content-->
-            <div class="modal-content no-bd-rad ">
-                <div class="modal-body">
-                    <h1 style="font-size: 20px" class="text-center">Request Callback</h1>
-                    <br/>
-
-                    <form method="post" action="/request/callback" class="form-horizontal">
-                        <div class="row">
-                            <div class="col-sm-3 control-label"><label>Full Name:</label></div>
-                            <div class="col-sm-9 form-group">
-                                <input type="text" class="form-control" name="name" required="required" />
-                            </div>
+                    <div class="row">
+                        <div class="col-sm-3 control-label"><label>Preferred Phone Number:</label></div>
+                        <div class="col-sm-9 form-group">
+                            <input type="number" class="form-control" name="phone" required="required" />
                         </div>
-                        <div class="row">
-                            <div class="col-sm-3 control-label"><label>Preferred Phone Number:</label></div>
-                            <div class="col-sm-9 form-group">
-                                <input type="number" class="form-control" name="phone" required="required" />
-                            </div>
-                        </div>
-                        <div class="row text-center">
-                            <button class="btn btn-link ">Make Request</button>
-                        </div>
-                    </form>
+                    </div>
+                    <div class="row text-center">
+                        <button class="btn btn-link ">Make Request</button>
+                    </div>
+                </form>
 
-                </div>
-                <!--<div class="modal-footer">-->
-                <!--<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>-->
-                <!--</div>-->
             </div>
+            <!--<div class="modal-footer">-->
+            <!--<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>-->
+            <!--</div>-->
         </div>
     </div>
+</div>
 
 
 
 
-    <div id="myModalError" class="modal fade " role="dialog">
-        <div class="modal-dialog">
+<div id="myModalError" class="modal fade " role="dialog">
+    <div class="modal-dialog">
 
-            <!-- Modal content-->
+        <!-- Modal content-->
 
-            <div class="modal-content no-bd-rad content ">
+        <div class="modal-content no-bd-rad content ">
 
-                <div class="modal-body">
-
-
-                    <p id='errorMess' class='mess text-danger'>Put something here iff need be.</p>
+            <div class="modal-body">
 
 
+                <p id='errorMess' class='mess text-danger'>Put something here iff need be.</p>
 
-                </div>
 
-
-                <div class="modal-footer no-bd-top">
-                    <button type="button" class="btn btn-link" data-dismiss="modal">OK</button>
-                </div>
 
             </div>
 
-        </div>
-    </div>
 
-
-    <div id="myModalSuccess" class="modal fade " role="dialog">
-        <div class="modal-dialog">
-
-            <!-- Modal content-->
-
-            <div class="modal-content no-bd-rad content ">
-
-                <div class="modal-body">
-
-
-                    <p id='successMess' class='mess text-primary'>Put something here iff need be.</p>
-
-
-
-                </div>
-
-
-                <div class="modal-footer no-bd-top">
-                    <button type="button" class="btn btn-link" data-dismiss="modal">OK</button>
-                </div>
-
+            <div class="modal-footer no-bd-top">
+                <button type="button" class="btn btn-link" data-dismiss="modal">OK</button>
             </div>
 
         </div>
+
     </div>
+</div>
+
+
+<div id="myModalSuccess" class="modal fade " role="dialog">
+    <div class="modal-dialog">
+
+        <!-- Modal content-->
+
+        <div class="modal-content no-bd-rad content ">
+
+            <div class="modal-body">
+
+
+                <p id='successMess' class='mess text-primary'>Put something here iff need be.</p>
 
 
 
-    <!-- CORE JQUERY SCRIPTS -->
-    <script th:src="@{~/customer/js/jquery-1.11.1.js}"></script>
-    <!-- BOOTSTRAP SCRIPTS  -->
-    <script th:src="@{~/customer/js/bootstrap.js}"></script>
-    <script th:src="@{~/customer/js/coronation.js}"></script>
-    <script th:src="@{~/customer/js/errors.js}"></script>
-    <script th:src="@{~/customer/plugins/bootstrap-notify/bootstrap-notify.js}"></script>
+            </div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js"></script>
 
-    <th:block layout:fragment="scripts">
+            <div class="modal-footer no-bd-top">
+                <button type="button" class="btn btn-link" data-dismiss="modal">OK</button>
+            </div>
 
-    </th:block>
+        </div>
+
+    </div>
+</div>
+
+
+<!-- CORE JQUERY SCRIPTS -->
+<script th:src="@{~/customer/js/jquery-1.11.1.js}"></script>
+<!-- BOOTSTRAP SCRIPTS  -->
+<script th:src="@{~/customer/js/bootstrap.js}"></script>
+<script th:src="@{~/customer/js/coronation.js}"></script>
+<script th:src="@{~/customer/js/errors.js}"></script>
+<script th:src="@{~/customer/plugins/bootstrap-notify/bootstrap-notify.js}"></script>
+<script th:src="@{~/customer/js/clipboard.min.js}"></script>
+
+<th:block layout:fragment="scripts">
+
+</th:block>
 
 
 </body>
+
 
 </html>
