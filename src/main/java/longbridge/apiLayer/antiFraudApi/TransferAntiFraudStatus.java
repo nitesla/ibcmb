@@ -34,6 +34,12 @@ import org.springframework.web.bind.annotation.RestController;
 
                 TransRequest transRequest = transferService.updateTransferStatus(transferRequestDTO);
 
+               if(transferRequestDTO.getChannel().equals("MOBILE")){
+
+
+               }
+
+
                 responseData.setMessage(transRequest.getStatusDescription());
                 responseData.setData(transRequest.getStatusDescription());
                 responseData.setError(false);
