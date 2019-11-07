@@ -139,7 +139,7 @@
                                         <input type="hidden" id="corporateId" name="corporateId" th:value="*{corporateId}" class="my-select" readonly="readonly" autocomplete="off" />
 
                                         <div class="col-xs-8 no-pad-left no-pad-right" >
-                                            <input type="password" id="password" name="password" class="my-select" required="required" placeholder="Password" autocomplete="off" />
+                                            <input type="password" id="password" name="password" class="my-select2" required="required" placeholder="Password" autocomplete="off" />
 
 
                                             <p class="col-xs-6 no-pad-left no-pad-right " style="margin-top: 15px;"><a href="/forgot/username" class='text-white' data-toggle="tooltip" data-placement="right" title="Forgot Username?" autocomplete="off" >Forgot password?</a></p>
@@ -159,6 +159,7 @@
                     </div>
                     <div class="col-md-6 login-sectionn" >
                         <div class="form-body" style="max-width: 420px; padding-bottom: 50px;  margin: 0 auto;" >
+                            <form id="loginform" action="" method="POST" class="form-signin-white " autocomplete="off">
                             <h5 class=" form-signin-headingg ">Do not disclose your...</h5>
                             <ul class="ulclass" >
                                 <li class="liclass">Token Code</li>
@@ -175,6 +176,7 @@
                                 <div class='col-xs-1 col-md-1 no-pad-left'><img th:src="@{~/customer/img/telephone.png}"></div>
                                 <div class='col-xs-4 col-md-4 no-pad-left'>+234 (0)1 279 7640-43 </div>
                             </div>
+                            </form>
                         </div>
                     </div>
                 </div>
