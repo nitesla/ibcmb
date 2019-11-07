@@ -1,88 +1,220 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{index-layout}">
+<head>
 
+    <style>
+       /* @font-face {
+            font-family: FedraSansStdLight;
+            src: url('../static/customer/fonts/FedraSans/FedraSansStd-Book LF.otf');
+
+        }*/
+
+        .login-section{
+            margin-top: 40px;
+        }
+        .login-sectionn{
+            margin-top: 20px;
+        }
+        .body-color{
+
+        }
+        .line{
+            background-color: #fff;
+        }
+        input{
+            border-radius: 5px;
+        }
+        .form-signin-headingg {
+            text-align: left;
+            line-height: 1.6;
+            font-size: 22px;
+            font-weight: bolder;
+            margin-bottom: 20px;
+        }
+        .hrclass{
+            margin-top: 15px;
+            border-top: 2px solid #ece9e6;
+        }
+        .form-signin-low{
+            font-weight: bolder;
+        }
+        .header-line{
+            font-size: 14px;
+        }
+        .no-pad-right{
+            padding-top: 10px;
+        }
+        .form-signin-white {
+            padding: 20px 0px 5px 0px;
+            margin: 0 auto;
+            margin-top: 50px;
+            border-radius: 5px;
+            color: #000;}
+        .p-bottom{
+            line-height: 1.6;
+            padding-top:20px;
+        }
+        .span-bold{
+            font-weight: 900;
+        }
+        .ulclass {
+            list-style: none; /* Remove default bullets */
+            font-size: 14px;
+        }
+        .ulclass .liclass::before {
+            content: "\2022";  /* Add content: \2022 is the CSS Code/unicode for a bullet */
+            color: #9A6A4F; /* Change the color */
+            font-weight: bolder; /* If you want it to be bold */
+            display: inline-block; /* Needed to add space between the bullet and the text */
+            width: 1.1em; /* Also needed for space (tweak if needed) */
+            margin-left: -1em; /* Also needed for space (tweak if needed) */
+            padding-top: 10px;
+            margin-left: 4px;
+            background: url(../static/customer/img/bullet.png) no-repeat top left;
+            font-size: 18px;
+
+
+        }
+        .bodyform{
+            max-width: 400px;
+            background-color: rgba(0, 48, 87, 0.89);
+            padding-bottom: 20px;
+            margin: 0 auto;
+            border-radius: 7px;
+        }
+        .continue{
+            background-color: #a7674c;
+            color: #fff;
+            padding:8px 30px 8px 30px;
+            border-radius: 20px;
+        }
+        .continue:hover{
+            background-color: #9b4a28;
+            color: #fff;
+            text-decoration: none;
+            font-weight: bolder;
+        }
+        .col-xs{
+            width: 5%;
+        }
+
+    </style>
+
+
+
+
+</head>
 <div layout:fragment="content">
 
 
-    <section class="content-wrapper">
+        <div class="content-wrapper" >
+            <div class="bb">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-6 login-section" >
+                            <div id="loginform" class="form-body bodyform" style="max-width: 400px; background-color: rgba(0, 48, 87, 0.89); padding-bottom: 80px;  margin: 0 auto;" >
+                                <!--<form  th:action="@{/login/p/retail}"  method="POST" class="form-signin " autocomplete="off">-->
+                                <!--<form id="login" th:action="@{/retail/login}"  method="POST" class="form-signin " autocomplete="off">-->
+                                <form id="login" th:action="@{/retail/login}"  method="POST" class="form-signin " autocomplete="off">
+                                    <h5 class=" form-signin-headingg text-white">Welcome to CoronationMB<br> Online Banking!</h5>
+                                    <h6 class="form-signin header-line text-white">Enter your password to login</h6>
+                                    <br/>
+                                    <div class="form-group " >
+                                        <span id='reqspan' class='required text-white' style='top:1px;'></span>
 
-        <div class="bg">
+                                        <div class="row">
 
-            <form id="loginform" th:action="@{/login/p/retail}" class="" method="POST" autocomplete="off">
+                                            <div class="bg-coronation-brown center img-phish-box-mobile col-xs-3 no-pad-left no-pad-right" style="width:108px; height: 144px;">
+                                                <img th:if="${secImage}" class='bg-danger img-responsive center img-phish' style="" th:src="@{'data:image/jpeg;base64,' + ${secImage}}" />
+                                                <img th:unless="${secImage}" class='bg-danger img-responsive center img-phish'  th:src="@{/customer/img/cmb_ph.png}" />
+                                                <p class="text-center text-white" th:text="${secCaption}"></p>
+                                                <input type="checkbox" id="phishing" class='center' style='display:block;' name="phishing" />
+                                            </div>
 
-                <div class='col form-signi visible-xs visible-sm' style="padding:10px 15px 1px">
-                    <h5 class="form-signin-heading text-white" style='margin-top:20px'>Check the box to Confirm Security Image</h5>
+                                            <input type="hidden" name="username" th:value="${username}"  />
 
-                    <div>
-                        <div class="bg-coronation-brown center img-phish-box-mobile" style="">
-                            <img th:if="${secImage}" class='bg-danger img-responsive center img-phish' style="" th:src="@{'data:image/jpeg;base64,' + ${secImage}}" />
-                            <img th:unless="${secImage}" class='bg-danger img-responsive center img-phish'  th:src="@{/customer/img/cmb_ph.png}" />
-                            <p class="text-center text-white" th:text="${secCaption}"></p>
-                            <input type="checkbox" class='center' style='display:block;' name="phishing" />
+                                            <div class="col-xs-8 no-pad-left no-pad-right" > <input type="password" id="password" name="password" class="my-select" required="required" placeholder="Password" autocomplete="off" />
+
+                                                <p class="col-xs-6 no-pad-left no-pad-right " style="margin-top: 15px;"><a href="/forgot/username" class='text-white' data-toggle="tooltip" data-placement="right" title="Forgot Username?" autocomplete="off" >Forgot password?</a></p>
+                                                <p class='text-right col-xs-6 no-pad-left no-pad-right text-white' ><input type="button" id="formbtn" class="continue" value="Login" /> </p>
+                                            </div>
+
+                                        </div>
+                                        <p class="text-white" style="display:none" id="sec">Check the box to Confirm Security Image</p>
+
+                                    </div>
+                                </form>
+
+
+
+
+                        </div>
+                        </div>
+                        <div class="col-md-6 login-sectionn" >
+                            <div class="form-body" style="max-width: 420px; padding-bottom: 50px;  margin: 0 auto;" >
+                                    <h5 class=" form-signin-headingg ">Do not disclose your...</h5>
+                                    <ul class="ulclass" >
+                                        <li class="liclass">Token Code</li>
+                                        <li class="liclass">Email password</li>
+                                        <li class="liclass">Internet banking password</li>
+                                        <li class="liclass">OTP app password or username</li>
+                                    </ul>
+                                    <p class="p-bottom"><span class="span-bold"> Coronation Merchant Bank will never ask you </span>to provide your banking details via  <span class="span-bold"> phone call, email, SMS, social media or website links.</span></p>
+                                    <hr class="hrclass" >
+                                    <p>Kindly report any of such request or attempted identity fraud to the Bank via</p>
+                                    <div class="row" style="padding-top: 5px;">
+                                        <div class="col-xs-1 col-md-1 no-pad-left"> <img th:src="@{~/customer/img/email.png}"></div>
+                                        <div class="col-xs-5 col-md-5 no-pad-left">crc@coronationmb.com</div>
+                                        <div class='col-xs-1 col-md-1 no-pad-left'><img th:src="@{~/customer/img/telephone.png}"></div>
+                                        <div class='col-xs-4 col-md-4 no-pad-left'>+234 (0)1 279 7640-43 </div>
+                                    </div>
+                            </div>
                         </div>
                     </div>
-
                 </div>
-
-
-                <div class='col-md-offset-4 col-md-4 hidden-sm hidden-xs  form-signi' style="padding:100px 15px 30px">
-                    <h5 class="form-signin-heading text-white hidden-xs hidden-sm">Check the box to Confirm Phishing Image</h5>
-                    <br/>
-                    <div class="form-group ">
-                        <input type="text" name="username" th:value="*{username}" class="my-select" readonly="readonly" autocomplete="off" />
-                        <p>&nbsp;</p>
-                    </div>
-
-
-                    <div class="form-group">
-                        <button class="btn btn-primary  my-select"> Continue </button>
-                    </div>
-
-                </div>
-
-                <div class='col-md-offset-4 col-md-4 visible-xs visible-sm   form-signi' style="padding:10px 15px 30px">
-                    <h5 class="form-signin-heading text-white hidden-xs hidden-sm">Check the box to Confirm Phishing Image</h5>
-                    <br/>
-                    <div class="form-group ">
-                        <input type="text" name="username" th:value="*{username}" class="my-select" readonly="readonly" autocomplete="off" />
-                        <p>&nbsp;</p>
-                    </div>
-
-
-                    <div class="form-group">
-                        <button class="btn btn-primary my-select"> Continue </button>
-                    </div>
-                </div>
-
-                <div class='col-md-4 form-signi hidden-xs hidden-sm' style="padding:100px 0px 30px">
-                    <div class="" style="width:200px;padding:0px 10px">
-                        <div class="bg-coronation-brown img-phish-box-desk" style="">
-                            <img th:if="${secImage}" class='bg-danger img-responsive center img-phish-desk'  th:src="@{'data:image/jpeg;base64,' + ${secImage}}" />
-                            <img th:unless="${secImage}" class='bg-danger img-responsive center img-phish-desk'  th:src="@{/customer/img/cmb_ph.png}" />
-                            <p class="text-center" th:text="${secCaption}">&#160;</p>
-                            <input type="checkbox" class="center" style='display:block;' name="phishing" />
-                        </div>
-                    </div>
-
-                </div>
-
-            </form>
-
+            </div>
         </div>
 
-    </section>
+
+    <th:block layout:fragment="scripts">
+        <!-- CORE JQUERY SCRIPTS -->
+        <script th:src="@{~/customer/js/jquery-1.11.1.js}"></script>
+        <!-- BOOTSTRAP SCRIPTS  -->
+        <script th:src="@{~/customer/js/bootstrap.js}"></script>
+        <script th:src="@{~/customer/js/coronation.js}"></script>
+        <script th:src="@{~/customer/js/errors.js}"></script>
+        <script th:src="@{~/customer/plugins/bootstrap-notify/bootstrap-notify.js}"></script>
+        <script th:src="@{~/customer/js/clipboard.min.js}"></script>
+
+    <script>
+        $("#formbtn").on("click",function (e) {
+            e.preventDefault();
+            if($('#phishing').is(':checked')){
+                $("#login").submit();
+             }else{
+                 $("#sec").show();
+             }
+
+        })
+
+        $('#phishing').on("change",function () {
+            $("#sec").hide();
+
+        })
+    </script>
+
+        <script>
+            $(document).ready(function() {
+                $('[data-toggle="tooltip"]').tooltip();
+
+                $('#password').bind("cut copy paste", function(e) {
+                    e.preventDefault();
+                });
+            });
+        </script>
+    </th:block>
 </div>
 
 
-
-
-<th:block layout:fragment="scripts">
-
-    <script>
-        $(document).ready(function() {
-            $('[data-toggle="tooltip"]').tooltip();
-        });
-    </script>
-</th:block>
 
 </html>

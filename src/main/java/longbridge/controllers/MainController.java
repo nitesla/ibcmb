@@ -238,11 +238,14 @@ public class MainController {
         return "redirect:/login/retail";
     }
 
-    @PostMapping("/login/p/retail")
-    public String step2(WebRequest webRequest, Model model, HttpSession session, RedirectAttributes redirectAttributes) {
-        String username = webRequest.getParameter("username");
-        String phishing = webRequest.getParameter("phishing");
 
+    //by gb
+   /* @PostMapping("/login/p/retail")
+    public String step2(WebRequest webRequest, Model model, HttpSession session, RedirectAttributes redirectAttributes) {
+       String username = webRequest.getParameter("username");
+        String password = webRequest.getParameter("password");//gb
+        String phishing = webRequest.getParameter("phishing");
+        logger.info("user {}",username+phishing);
         RetailUser user = retailUserService.getUserByName(username);
         if (user != null && phishing != null) {
             model.addAttribute("username", user.getUserName());
@@ -254,7 +257,7 @@ public class MainController {
         redirectAttributes.addFlashAttribute("error", messageSource.getMessage("invalid.user", null, locale));
         return "redirect:/login/retail/failure";
 
-    }
+    }*/
 
     @GetMapping("/login/u/corporate")
     public String loginCorporate1() {
@@ -297,10 +300,12 @@ public class MainController {
             } catch (InternetBankingException e) {
                 model.addAttribute("imageException", "You are yet to set your anti-phishing image");
             }
-
-
-            model.addAttribute("username", user.getUserName());
+            model.addAttribute("fake_name", user.getUserName());
+            model.addAttribute("username", user.getUserName() + ":"+ corporateId);
             model.addAttribute("corporateId", corporateId);
+
+//            model.addAttribute("username", user.getUserName());
+//            model.addAttribute("corporateId", corporateId);
             return "corppage2";
 
         }

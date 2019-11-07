@@ -78,11 +78,12 @@ public class RetailAuthenticationSuccessHandler extends SimpleUrlAuthenticationS
     protected String determineTargetUrl(final Authentication authentication, HttpServletRequest request) {
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         RetailUser retailUser = retailUserRepo.findFirstByUserNameIgnoreCase(userDetails.getUsername());
-        SettingDTO setting = configService.getSettingByName("ENABLE_RETAIL_2FA");
+//        SettingDTO setting = configService.getSettingByName("ENABLE_RETAIL_2FA"); //by GB
         boolean tokenAuth = false;
-        if (setting != null && setting.isEnabled()) {
+      //by GB
+       /* if (setting != null && setting.isEnabled()) {
             tokenAuth = ("YES".equalsIgnoreCase(setting.getValue()) ? true : false);
-        }
+        }*/
 
         if (sessionUtils.passwordExpired(retailUser)) {
             logger.debug("Redirecting user to reset password");

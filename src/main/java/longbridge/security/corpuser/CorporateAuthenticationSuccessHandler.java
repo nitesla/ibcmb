@@ -108,11 +108,11 @@ public class CorporateAuthenticationSuccessHandler implements AuthenticationSucc
             return "/corporate/setup";
         }
 
-        SettingDTO setting = configService.getSettingByName("ENABLE_CORPORATE_2FA");
+//        SettingDTO setting = configService.getSettingByName("ENABLE_CORPORATE_2FA");
         boolean tokenAuth = false;
-        if (setting != null && setting.isEnabled()) {
+      /*  if (setting != null && setting.isEnabled()) {
             tokenAuth = ("YES".equalsIgnoreCase(setting.getValue()) ? true : false);
-        }
+        }*/
         if (sessionUtils.passwordExpired(corporateUser)) {
             logger.debug("Redirecting user to reset password");
             return "/corporate/reset_password";
