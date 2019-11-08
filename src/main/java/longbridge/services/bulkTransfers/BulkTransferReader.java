@@ -85,6 +85,7 @@ class BulkTransferReader implements ItemReader<TransferDTO>, InitializingBean {
         dto.setBatchId("" + request.getBulkTransfer().getRefCode());
         dto.setEmail(details.getEmail());
         dto.setNarration(request.getNarration());
+        dto.setDescription(request.getNarration());
         dto.setPaymentReference(request.getReferenceNumber());
         dto.setBeneficiaryBankCode(request.getSortCode());
         dto.setAmount(request.getAmount().toString());
