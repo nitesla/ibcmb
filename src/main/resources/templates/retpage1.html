@@ -11,9 +11,9 @@
                             <form id="loginform" th:action="@{/login/u/retail}" method="POST" class="form-signin " autocomplete="off">
                                 <h5 class=" form-signin-heading text-white">Welcome to CoronationMB<br> Online Banking!</h5>
                                 <h6 class="form-signin header-line text-white">Enter your username to continue</h6>
-                                <div th:if="${param.message != null}" class="alert error alert-info" th:text="${param.message[0]}"></div>
-                                <div th:if="${param.error != null}" class="alert error alert-danger" th:text="${session[SPRING_SECURITY_LAST_EXCEPTION]}"></div>
-                                <div th:if="${param.expired != null}" class="alert error alert-danger" th:text="#{session.expired}"></div>
+                                <div th:if="${param.message != null}" class="alert erro alert-info" th:text="${param.message[0]}"></div>
+                                <div th:if="${param.error != null}" class="alert erro alert-danger" th:text="${session[SPRING_SECURITY_LAST_EXCEPTION]}"></div>
+                                <div th:if="${param.expired != null}" class="alert erro alert-danger" th:text="#{session.expired}"></div>
                                 <div th:if="${message}" class="alert display-none alert-info" th:text="${message}"></div>
 
 

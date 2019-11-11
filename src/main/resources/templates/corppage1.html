@@ -86,10 +86,10 @@
                                 <h5 class=" form-signin-heading text-white">Welcome to CoronationMB<br> Online Banking!</h5>
                                 <h6 class="form-signin header-line text-white">Enter your username to continue</h6>
                                 <br/>
-                                <div th:if="${param.message != null}" class="alert alert-info error" th:text="${param.message[0]}"></div>
+                                <div th:if="${param.message != null}" class="alert alert-info erro" th:text="${param.message[0]}"></div>
 
-                                <div th:if="${param.error != null}" class="alert alert-danger error" th:text="${session[SPRING_SECURITY_LAST_EXCEPTION]}"></div>
-                                <div th:if="${param.expired != null}" class="alert error alert-danger" th:text="#{session.expired}"></div>
+                                <div th:if="${param.error != null}" class="alert alert-danger erro" th:text="${session[SPRING_SECURITY_LAST_EXCEPTION]}"></div>
+                                <div th:if="${param.expired != null}" class="alert erro alert-danger" th:text="#{session.expired}"></div>
                                 <div class="form-group " >
                                     <span id='reqspan' class='required text-white' style='top:1px;'></span>
                                     <input type="text" id="username" name="username" class="my-select" required="required" placeholder="Username" autocomplete="off" />
