@@ -73,6 +73,7 @@ public class RetrieveCorpCredentialController {
 
     @GetMapping("/forgot/password/corporate")
     public String showResetPassword(Model model, HttpSession session, RedirectAttributes redirectAttributes){
+       logger.info("here");
         session.removeAttribute("corpSecQestnAndAns");
         String username =(String) session.getAttribute("corpUsername");
         String corporateId = (String) session.getAttribute("corporateId");

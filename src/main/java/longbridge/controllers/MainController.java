@@ -192,7 +192,7 @@ public class MainController {
     }
 
     @PostMapping("/login/u/retail")
-    public String userExists(WebRequest webRequest, Model model, RedirectAttributes redirectAttributes) {
+    public String userExists(WebRequest webRequest, Model model, HttpSession session) {
         String username = webRequest.getParameter("username");
         if (username == null) {
             return "retpage1";
@@ -204,7 +204,6 @@ public class MainController {
         }
 
         try {
-            logger.info("the username");
             Map<String, List<String>> mutualAuth = securityService.getMutualAuth(user.getEntrustId(), user.getEntrustGroup());
             if (mutualAuth != null) {
                 String image = mutualAuth.get("imageSecret")
@@ -230,6 +229,8 @@ public class MainController {
         }
 
         model.addAttribute("username", user.getUserName());
+        session.removeAttribute("username");
+        session.setAttribute("username", user.getUserName());
         return "retpage2";
     }
 
@@ -265,7 +266,7 @@ public class MainController {
     }
 
     @PostMapping("/login/u/corporate")
-    public String userExist(WebRequest webRequest, Model model, RedirectAttributes redirectAttributes) {
+    public String userExist(WebRequest webRequest, Model model, RedirectAttributes redirectAttributes,HttpSession session) {
         String username = webRequest.getParameter("username");
         String corporateId = webRequest.getParameter("corporateId");
 //        CorporateUser user = corporateUserService.getUserByName(username);
@@ -304,6 +305,11 @@ public class MainController {
             model.addAttribute("username", user.getUserName() + ":"+ corporateId);
             model.addAttribute("corporateId", corporateId);
 
+            session.removeAttribute("corporateId");
+            session.removeAttribute("corpUsername");
+            session.setAttribute("corpUsername", username );
+            session.setAttribute("corporateId", corporateId);
+
 //            model.addAttribute("username", user.getUserName());
 //            model.addAttribute("corporateId", corporateId);
             return "corppage2";
@@ -321,7 +327,8 @@ public class MainController {
         return "redirect:/login/corporate";
     }
 
-    @PostMapping("/login/p/corporate")
+ //by hashed out by GB
+   /* @PostMapping("/login/p/corporate")
     public String corpstep2(WebRequest webRequest, Model model, RedirectAttributes redirectAttributes, HttpSession session) {
         String username = webRequest.getParameter("username");
         String phishing = webRequest.getParameter("phishing");
@@ -347,7 +354,7 @@ public class MainController {
         redirectAttributes.addFlashAttribute("error", messageSource.getMessage("invalid.user", null, locale));
         return "redirect:/login/corporate/failure";
     }
-
+*/
 
     @GetMapping("/password/reset/admin")
     public String getAdminUsername() {

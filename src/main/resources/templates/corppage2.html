@@ -85,7 +85,7 @@
         .continue1{
             background-color: #a7674c;
             color: #fff;
-            padding:8px 15px 8px 15px;
+            padding:8px 34px 8px 34px;
             border-radius: 20px;
         }
         .continue:hover{
@@ -125,7 +125,7 @@
                                     <span id='reqspan' class='required text-white' style='top:1px;'></span>
 
                                     <div class="row">
-                                        <div class="col-xs-5 no-pad-left no-pad-right">
+                                        <div class="col-xs-4 no-pad-left no-pad-right">
                                             <div class="bg-coronation-brown center img-phish-box-mobile no-pad-left no-pad-right" style="width:115px; height: 155px;">
                                             <img th:if="${secImage}" class='bg-danger img-responsive center img-phish' style="" th:src="@{'data:image/jpeg;base64,' + ${secImage}}" />
                                             <img th:unless="${secImage}" class='bg-danger img-responsive center img-phish'  th:src="@{/customer/img/cmb_ph.png}" />
@@ -138,7 +138,7 @@
                                         <input type="hidden" name="username" id="username" th:value="*{username}" readonly="readonly" autocomplete="off" />
                                         <input type="hidden" id="corporateId" name="corporateId" th:value="*{corporateId}" class="my-select" readonly="readonly" autocomplete="off" />
 
-                                        <div class="col-xs-6 no-pad-left no-pad-right" style="margin-left: 25px;">
+                                        <div class="col-xs-7 no-pad-left no-pad-right" style="margin-left: 20px;">
                                             <input type="password" id="password" name="password" class="my-select2" required="required" placeholder="Password" autocomplete="off" />
 
 

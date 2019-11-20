@@ -415,7 +415,7 @@ span.req-inner {
     transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
 }.my-select2 {
     display: block;
-    width: 97%;
+    width: 105%;
     margin-left: 1%;
     height: 34px;
     padding: 6px 12px;
@@ -1776,16 +1776,13 @@ textarea {
 .form-signin {
     max-width: 350px;
 
-    padding: 40px 10px 5px 10px;
+    padding: 40px 1px 5px 1px;
     margin: 0 auto;
     margin-top: 30px;
     border-radius: 5px;
+    margin-right:2px;
+    margin-left:25px;
 
-    /*    margin-top: 50px;
-        border-radius: 5px;
-        height: 350px;
-        background-color: rgba(0, 48, 87, 0.89);
-        margin-bottom: 50px;*/
 }
 
 .form-signin1 {
