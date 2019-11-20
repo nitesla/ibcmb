@@ -116,7 +116,7 @@
 
                                 <form id="login" th:action="@{/retail/login}"  method="POST" class="form-signin " autocomplete="off">
                                     <h5 class=" form-signin-heading text-white">Welcome to CoronationMB<br> Online Banking!</h5>
-                                    <h6 class="form-signin1 header-line text-white">Enter your password to login</h6>
+                                    <h6 class="form-signin1 header-line text-white">Click the checkbox to confirm image and enter your password to login</h6>
                                     <br/>
                                     <div class="form-group " >
                                         <span id='reqspan' class='required text-white' style='top:1px;'></span>
@@ -135,7 +135,7 @@
                                                 <input type="hidden" name="username" th:value="${username}"  />
 
 
-                                                <p class="col-xs-6 no-pad-left no-pad-right " style="margin-top: 15px;"><a href="/forgot/username" class='text-white' data-toggle="tooltip" data-placement="right" title="Forgot Username?" autocomplete="off" >Forgot password?</a></p>
+                                                <p class="col-xs-6 no-pad-left no-pad-right " style="margin-top: 15px;"><a th:href="@{/forgot/password}" class='text-white' data-toggle="tooltip" data-placement="right" title="Forgot Password?" autocomplete="off" >Forgot password?</a></p>
                                                 <p class='text-right col-xs-6 no-pad-left no-pad-right text-white' ><input type="button" id="formbtn" class="continue" value="Login" /> </p>
                                             </div>
 

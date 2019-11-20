@@ -114,7 +114,7 @@
                         <div id="loginform" class="form-body bodyform" style="max-width: 400px; background-color: rgba(0, 48, 87, 0.89); padding-bottom: 30px;  margin: 0 auto;" >
                             <form id="login" th:action="@{/corporate/login}"  method="POST" class="form-signin " autocomplete="off">
                                 <h5 class=" form-signin-heading text-white">Welcome to CoronationMB<br> Online Banking!</h5>
-                                <h6 class="form-signin1 header-line text-white">Enter your password to login</h6>
+                                <h6 class="form-signin1 header-line text-white">Click the checkbox to confirm image and enter your password to login</h6>
                                 <br/>
 
                                 <div th:if="${param.message != null}" class="alert alert-info" th:text="${param.message[0]}">message</div>
@@ -142,7 +142,7 @@
                                             <input type="password" id="password" name="password" class="my-select2" required="required" placeholder="Password" autocomplete="off" />
 
 
-                                            <p class="col-xs-6 no-pad-left no-pad-right " style="margin-top: 15px;"><a href="/forgot/username" class='text-white' data-toggle="tooltip" data-placement="right" title="Forgot Username?" autocomplete="off" >Forgot password?</a></p>
+                                            <p class="col-xs-6 no-pad-left no-pad-right " style="margin-top: 15px;"><a href="/forgot/username" class='text-white' data-toggle="tooltip" data-placement="right" title="Forgot Password?" autocomplete="off" >Forgot password?</a></p>
                                             <p class='text-right col-xs-6 no-pad-left no-pad-right text-white' ><input type="button" id="formbtn" class="continue" value="Login" /> </p>
                                         </div>
 
