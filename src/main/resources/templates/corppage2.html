@@ -82,10 +82,10 @@
             margin: 0 auto;
             border-radius: 7px;
         }
-        .continue{
+        .continue1{
             background-color: #a7674c;
             color: #fff;
-            padding:8px 30px 8px 30px;
+            padding:8px 15px 8px 15px;
             border-radius: 20px;
         }
         .continue:hover{
@@ -111,7 +111,7 @@
             <div class="container">
                 <div class="row">
                     <div class="col-md-6 login-section" >
-                        <div id="loginform" class="form-body bodyform" style="max-width: 400px; background-color: rgba(0, 48, 87, 0.89); padding-bottom: 30px;  margin: 0 auto;" >
+                        <div id="loginform" class="form-body bodyform"  >
                             <form id="login" th:action="@{/corporate/login}"  method="POST" class="form-signin " autocomplete="off">
                                 <h5 class=" form-signin-heading text-white">Welcome to CoronationMB<br> Online Banking!</h5>
                                 <h6 class="form-signin1 header-line text-white">Click the checkbox to confirm image and enter your password to login</h6>
@@ -125,8 +125,8 @@
                                     <span id='reqspan' class='required text-white' style='top:1px;'></span>
 
                                     <div class="row">
-                                        <div class="col-xs-4 no-pad-left no-pad-right">
-                                            <div class="bg-coronation-brown center img-phish-box-mobile no-pad-left no-pad-right" style="width:108px; height: 144px;">
+                                        <div class="col-xs-5 no-pad-left no-pad-right">
+                                            <div class="bg-coronation-brown center img-phish-box-mobile no-pad-left no-pad-right" style="width:115px; height: 155px;">
                                             <img th:if="${secImage}" class='bg-danger img-responsive center img-phish' style="" th:src="@{'data:image/jpeg;base64,' + ${secImage}}" />
                                             <img th:unless="${secImage}" class='bg-danger img-responsive center img-phish'  th:src="@{/customer/img/cmb_ph.png}" />
                                             <p class="text-center text-white" th:text="${secCaption}"></p>
@@ -138,12 +138,12 @@
                                         <input type="hidden" name="username" id="username" th:value="*{username}" readonly="readonly" autocomplete="off" />
                                         <input type="hidden" id="corporateId" name="corporateId" th:value="*{corporateId}" class="my-select" readonly="readonly" autocomplete="off" />
 
-                                        <div class="col-xs-8 no-pad-left no-pad-right" >
+                                        <div class="col-xs-6 no-pad-left no-pad-right" style="margin-left: 25px;">
                                             <input type="password" id="password" name="password" class="my-select2" required="required" placeholder="Password" autocomplete="off" />
 
 
-                                            <p class="col-xs-6 no-pad-left no-pad-right " style="margin-top: 15px;"><a href="/forgot/username" class='text-white' data-toggle="tooltip" data-placement="right" title="Forgot Password?" autocomplete="off" >Forgot password?</a></p>
-                                            <p class='text-right col-xs-6 no-pad-left no-pad-right text-white' ><input type="button" id="formbtn" class="continue" value="Login" /> </p>
+                                            <p class="col-xs-7 no-pad-left no-pad-right " style="margin-top: 15px;"><a th:href="@{/forgot/password/corporate}" class='text-white' data-toggle="tooltip" data-placement="right" title="Forgot Password?" autocomplete="off" >Forgot password?</a></p>
+                                            <p class='text-right col-xs-5 no-pad-left no-pad-right text-white' ><input type="button" id="formbtn" class="continue1" value="Login" /> </p>
                                         </div>
 
                                     </div>
