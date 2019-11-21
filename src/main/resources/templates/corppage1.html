@@ -84,7 +84,7 @@
                         <div class="form-body bodyform" style="max-width: 400px; background-color: rgba(0, 48, 87, 0.89); padding-bottom: 50px;  margin: 0 auto;" >
                             <form id="loginform" th:action="@{/login/u/corporate}" method="POST" class="form-signinn " autocomplete="off">
                                 <h5 class=" form-signin-heading text-white">Welcome to CoronationMB<br> Online Banking!</h5>
-                                <h6 class="form-signin header-line text-white">Enter your username to continue</h6>
+                                <h6 class="form-signin header-line text-white" style="margin-left:0px !important;">Enter your username to continue</h6>
                                 <br/>
                                 <div th:if="${param.message != null}" class="alert alert-info erro" th:text="${param.message[0]}"></div>
 
