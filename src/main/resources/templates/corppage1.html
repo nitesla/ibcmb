@@ -1,18 +1,16 @@
 <!DOCTYPE html>
-
 <html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{index-layout}">
 <head>
     <style>
-       /* @font-face {
-            font-family: FedraSansStdLight;
-            src: url(assets/FedraSansStd-LightLF.otf);
-        }*/
+        /* @font-face {
+             font-family: FedraSansStdLight;
+             src: url(assets/FedraSansStd-LightLF.otf);
+         }*/
         .login-section{
             margin-top: 30px;
             margin-bottom: 20px;
         }
         .body-color{
-
         }
         .line{
             background-color: #fff;
@@ -44,7 +42,6 @@
         }
         .form-signinn {
             max-width: 330px;
-
             padding: 40px 10px 5px 10px;
             margin: 0 auto;
             margin-top: 40px;
@@ -62,7 +59,6 @@
             color: #fff;
             padding:8px 30px 8px 30px;
             border-radius: 20px;
-
         }
         .continue:hover{
             background-color: #9b4a28;
@@ -70,11 +66,8 @@
             text-decoration: none;
             font-weight: bolder;
         }
-
     </style>
-
 </head>
-
 <div layout:fragment="content">
     <div class="row content-wrapper" >
         <div class="bg">
@@ -87,20 +80,17 @@
                                 <h6 class="form-signin header-line text-white" style="margin-left:0px !important;">Enter your username to continue</h6>
                                 <br/>
                                 <div th:if="${param.message != null}" class="alert alert-info erro" th:text="${param.message[0]}"></div>
-
                                 <div th:if="${param.error != null}" class="alert alert-danger erro" th:text="${session[SPRING_SECURITY_LAST_EXCEPTION]}"></div>
                                 <div th:if="${param.expired != null}" class="alert erro alert-danger" th:text="#{session.expired}"></div>
                                 <div class="form-group " >
                                     <span id='reqspan' class='required text-white' style='top:1px;'></span>
                                     <input type="text" id="username" name="username" class="my-select" required="required" placeholder="Username" autocomplete="off" />
                                     <input type="text" id="corporateId" name="corporateId" class="my-select" required="required" placeholder="Corporate ID" autocomplete="off" />
-
                                     <p class="col-xs-5 no-pad-left no-pad-right " style="margin-top: 15px;"><a href="/forgot/corporate/username" class='text-white' data-toggle="tooltip" data-placement="right" title="Forgot Username?" autocomplete="off" >Forgot Username?</a></p>
                                     <p class='text-right col-xs-7 no-pad-left no-pad-right text-white' style="margin-top: 15px; ">
                                         <input type="submit" class="continue" value="Continue" >
-                                        </p>
+                                    </p>
                                 </div>
-
                             </form>
                         </div>
                     </div>
@@ -110,21 +100,13 @@
             </div>
         </div>
     </div>
-
-
 </div>
-
-
-
 <th:block layout:fragment="scripts">
-
     <script>
         $(document).ready(function() {
-
             errorLogin();
             $('[data-toggle="tooltip"]').tooltip();
         });
     </script>
 </th:block>
-
 </html>

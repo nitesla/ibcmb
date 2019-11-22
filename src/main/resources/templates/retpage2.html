@@ -1,14 +1,11 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{index-layout}">
 <head>
-
     <style>
         @font-face {
             font-family: FedraSansStdLight;
             src: url('../static/customer/fonts/FedraSans/FedraSansStd-Book LF.otf');
-
         }
-
         .login-section{
             margin-top: 40px;
         }
@@ -16,7 +13,6 @@
             margin-top: 20px;
         }
         .body-color{
-
         }
         .line{
             background-color: #fff;
@@ -72,8 +68,6 @@
             margin-left: 4px;
             background: url(../static/customer/img/bullet.png) no-repeat top left;
             font-size: 18px;
-
-
         }
         .bodyform{
             max-width: 400px;
@@ -95,7 +89,6 @@
             color: #fff;
             text-decoration: none;
             font-weight: bolder;
-
         }
         .col-xs{
             width: 5%;
@@ -110,74 +103,84 @@
             .pwd {
                 width: 88%;
             }
-
-            }
-
-        @media only screen and (max-width:330px) {
-            .fpwd {
-                margin-right: 30px;
-            }
-            .formb{
-                margin-left: 100px;
-            }
-
         }
-
-        @media only screen and (max-width:414px) {
-            .fpwd {
-                margin-left: 80px;
-
+        @media only screen and (max-width:320px){
+            .f-pwd {
+                margin-left: 36px !important;
             }
-            .formb{
+            .form-b{
+                margin-left: 40px !important;
+            }
+            .phish{
+                margin-left: -12px !important;
+            }
+            .pwd{
+                margin-left: 0px !important;
+            }
+            #sec{
+                margin-right:5px;
+            }
+        }
+        @media only screen and (max-width:414px) {
+            .f-pwd {
+                margin-left: 80px;
+            }
+            .form-b{
+                margin-left: 85px;
+            }
+            #sec{
+                margin-left:10px;
+            }
+        }
+        @media only screen and (max-width:400px) {
+            .f-pwd {
                 margin-left: 75px;
             }
-
+            .form-b{
+                margin-left: 80px;
+            }
+            #sec{
+                margin-left:10px;
+            }
         }
 
         @media only screen and (max-width:375px) {
-            .fpwd {
+            .f-pwd {
                 margin-left: 60px;
-
             }
-            .formb{
+            .form-b{
                 margin-left: 65px;
             }
-
+            #sec{
+                margin-left:-3px;
+            }
         }
         @media only screen and (max-width:360px) {
-            .fpwd {
-                margin-left: 50px;
-
-            }
-            .formb{
+            .f-pwd {
                 margin-left: 50px;
             }
-
+            .form-b{
+                margin-left: 60px;
+            }
+            #sec{
+                margin-left:-9px;
+            }
         }
-
     </style>
-
-
-
-
 </head>
 <div layout:fragment="content">
-
-
     <div class="content-wrapper" >
         <div class="bb">
             <div class="container">
                 <div class="row">
                     <div class="col-md-6 login-section" >
                         <div id="loginform" class="form-body bodyform" >
-
                             <form id="login" th:action="@{/retail/login}"  method="POST" class="form-signin " autocomplete="off">
                                 <h5 class=" form-signin-heading text-white">Welcome to CoronationMB<br> Online Banking!</h5>
                                 <h6 class="form-signin1 header-line text-white">Click the checkbox to confirm image and enter your password to login</h6>
                                 <br/>
                                 <div class="form-group " >
                                     <span id='reqspan' class='required text-white' style='top:1px;'></span>
-
                                     <div class="row">
                                         <div class="col-xs-5 col-sm-5 col-lg-5 col-md-5 no-pad-left no-pad-right phish"style="margin-left: -15px">
                                             <div class="bg-coronation-brown center img-phish-box-mobile no-pad-left no-pad-right" style="width:115px; height: 155px;">
@@ -187,26 +190,16 @@
                                                 <input type="checkbox" id="phishing" class='center' style='display:block;' name="phishing"  />
                                             </div>
                                         </div>
-
                                         <div class="col-xs-7 col-sm-7 col-lg-7 col-md-7 no-pad-left no-pad-right" style="">
                                             <input type="password" id="password" name="password" class="my-select2 pwd" required="required" placeholder="Password" autocomplete="off" />
-
                                             <input type="hidden" name="username" th:value="${username}"  />
-
-
-                                            <p class="col-xs-7 col-sm-7 col-lg-7 col-md-7 no-pad-left no-pad-right fpwd" style="margin-top: 15px;"><a th:href="@{~/forgot/password}" class='text-white' data-toggle="tooltip" data-placement="right" title="Forgot Password?" autocomplete="off" >Forgot password?</a></p>
-                                            <p class='col-xs-4 col-sm-4 col-lg-4 col-md-4 no-pad-left no-pad-right text-white' ><input type="button" id="formbtn" class="continue formb" value="Login" /> </p>
+                                            <p class="col-xs-7 col-sm-7 col-lg-7 col-md-7 no-pad-left no-pad-right f-pwd" style="margin-top: 15px;"><a th:href="@{~/forgot/password}" class='text-white' data-toggle="tooltip" data-placement="right" title="Forgot Password?" autocomplete="off" >Forgot password?</a></p>
+                                            <p class='col-xs-4 col-sm-4 col-lg-4 col-md-4 no-pad-left no-pad-right text-white' ><input type="button" id="formbtn" class="continue form-b" value="Login" /> </p>
                                         </div>
-
-                                    </div>
+                                    </div><br/>
                                     <p class="text-white" style="display:none" id="sec">Check the box to Confirm Security Image</p>
-
                                 </div>
                             </form>
-
-
-
-
                         </div>
                     </div>
                     <div class="col-md-6 login-sectionn" >
@@ -235,8 +228,6 @@
             </div>
         </div>
     </div>
-
-
     <th:block layout:fragment="scripts">
         <!-- CORE JQUERY SCRIPTS -->
         <script th:src="@{~/customer/js/jquery-1.11.1.js}"></script>
@@ -246,7 +237,6 @@
         <script th:src="@{~/customer/js/errors.js}"></script>
         <script th:src="@{~/customer/plugins/bootstrap-notify/bootstrap-notify.js}"></script>
         <script th:src="@{~/customer/js/clipboard.min.js}"></script>
-
         <script>
             $("#formbtn").on("click",function (e) {
                 e.preventDefault();
@@ -255,19 +245,14 @@
                 }else{
                     $("#sec").show();
                 }
-
             })
-
             $('#phishing').on("change",function () {
                 $("#sec").hide();
-
             })
         </script>
-
         <script>
             $(document).ready(function() {
                 $('[data-toggle="tooltip"]').tooltip();
-
                 $('#password').bind("cut copy paste", function(e) {
                     e.preventDefault();
                 });
@@ -275,7 +260,4 @@
         </script>
     </th:block>
 </div>
-
-
-
 </html>

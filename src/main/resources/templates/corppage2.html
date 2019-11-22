@@ -1,14 +1,11 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{index-layout}">
 <head>
-
     <style>
         @font-face {
             font-family: FedraSansStdLight;
             src: url('../static/customer/fonts/FedraSans/FedraSansStd-Book LF.otf');
-
         }
-
         .login-section{
             margin-top: 40px;
         }
@@ -16,7 +13,6 @@
             margin-top: 20px;
         }
         .body-color{
-
         }
         .line{
             background-color: #fff;
@@ -72,8 +68,6 @@
             margin-left: 4px;
             background: url(../static/customer/img/bullet.png) no-repeat top left;
             font-size: 18px;
-
-
         }
         .bodyform{
             max-width: 400px;
@@ -97,7 +91,6 @@
         .col-xs{
             width: 5%;
         }
-
         @media only screen and (max-width:500px) {
             /* For mobile phones: */
             [class*="col-"] {
@@ -108,59 +101,60 @@
             .pwd {
                 width: 88%;
             }
-
         }
-
-        @media only screen and (max-width:330px) {
-            .fpwd {
-                margin-right: 30px;
+        @media only screen and (max-width:320px){
+            .forgot {
+                margin-left: 30px !important;
             }
-            .formb{
-                margin-left: 100px;
+            .form-b{
+                margin-left: 38px !important;
             }
-
+            .fish{
+                margin-left: 37px !important;
+            }
+            .pwd{
+                margin-left: 0px !important;
+            }
+            #sec{
+                margin-right:5px;
+            }
         }
-
         @media only screen and (max-width:414px) {
-            .fpwd {
+            .forgot {
                 margin-left: 70px;
-
             }
-            .formb{
+            .form-b{
                 margin-left: 80px;
             }
-
-        }
-
-        @media only screen and (max-width:375px) {
-            .fpwd {
-                margin-left: 60px;
-
+            #sec{
+                margin-left:10px;
             }
-            .formb{
+        }
+        @media only screen and (max-width:375px) {
+            .forgot {
+                margin-left: 60px;
+            }
+            .form-b{
                 margin-left: 65px;
             }
-
+            #sec{
+                margin-left:-3px;
+            }
         }
         @media only screen and (max-width:360px) {
-            .fpwd {
-                margin-left: 50px;
-
-            }
-            .formb{
+            .forgot {
                 margin-left: 50px;
             }
-
+            .form-b{
+                margin-left: 55px;
+            }
+            #sec{
+                margin-left:-10px;
+            }
         }
-
     </style>
-
-
-
 </head>
 <div layout:fragment="content">
-
-
     <div class="content-wrapper" >
         <div class="bb">
             <div class="container">
@@ -171,66 +165,52 @@
                                 <h5 class=" form-signin-heading text-white">Welcome to CoronationMB<br> Online Banking!</h5>
                                 <h6 class="form-signin1 header-line text-white">Click the checkbox to confirm image and enter your password to login</h6>
                                 <br/>
-
                                 <div th:if="${param.message != null}" class="alert alert-info" th:text="${param.message[0]}">message</div>
-
                                 <div th:if="${param.error != null}" class="alert alert-danger" th:text="${session[SPRING_SECURITY_LAST_EXCEPTION]}">error</div>
-
                                 <div class="form-group " >
                                     <span id='reqspan' class='required text-white' style='top:1px;'></span>
-
                                     <div class="row">
                                         <div class="col-xs-5 no-pad-left no-pad-right" style="margin-left: -15px">
-                                            <div class="bg-coronation-brown center img-phish-box-mobile no-pad-left no-pad-right" style="width:115px; height: 155px;">
-                                            <img th:if="${secImage}" class='bg-danger img-responsive center img-phish' style="" th:src="@{'data:image/jpeg;base64,' + ${secImage}}" />
-                                            <img th:unless="${secImage}" class='bg-danger img-responsive center img-phish'  th:src="@{/customer/img/cmb_ph.png}" />
-                                            <p class="text-center text-white" th:text="${secCaption}"></p>
-                                            <input type="checkbox" id="phishing" class='center' style='display:block;' name="phishing" />
-                                        </div>
+                                            <div class="bg-coronation-brown center img-phish-box-mobile no-pad-left no-pad-right fish" style="width:115px; height: 155px;">
+                                                <img th:if="${secImage}" class='bg-danger img-responsive center img-phish' style="" th:src="@{'data:image/jpeg;base64,' + ${secImage}}" />
+                                                <img th:unless="${secImage}" class='bg-danger img-responsive center img-phish'  th:src="@{/customer/img/cmb_ph.png}" />
+                                                <p class="text-center text-white" th:text="${secCaption}"></p>
+                                                <input type="checkbox" id="phishing" class='center' style='display:block;' name="phishing" />
+                                            </div>
                                         </div>
                                         <input type="hidden" name="fake" id="false_username" th:value="*{fake_name}" class="my-select" readonly="readonly" autocomplete="off" />
-
                                         <input type="hidden" name="username" id="username" th:value="*{username}" readonly="readonly" autocomplete="off" />
                                         <input type="hidden" id="corporateId" name="corporateId" th:value="*{corporateId}" class="my-select" readonly="readonly" autocomplete="off" />
-
                                         <div class="col-xs-7 no-pad-left no-pad-right" >
                                             <input type="password" id="password" name="password" class="my-select2 pwd" required="required" placeholder="Password" autocomplete="off" />
-
-
-                                            <p class="col-xs-7 no-pad-left no-pad-right fpwd" style="margin-top: 15px;"><a th:href="@{/forgot/password/corporate}" class='text-white' data-toggle="tooltip" data-placement="right" title="Forgot Password?" autocomplete="off" >Forgot password?</a></p>
-                                            <p class='col-xs-4 col-sm-4 col-lg-4 col-md-4 no-pad-left no-pad-right text-white' ><input type="button" id="formbtn" class="continue formb" value="Login" /> </p>
+                                            <p class="col-xs-7 no-pad-left no-pad-right forgot" style="margin-top: 15px;"><a th:href="@{/forgot/password/corporate}" class='text-white' data-toggle="tooltip" data-placement="right" title="Forgot Password?" autocomplete="off" >Forgot password?</a></p>
+                                            <p class='col-xs-4 col-sm-4 col-lg-4 col-md-4 no-pad-left no-pad-right text-white' ><input type="button" id="formbtn" class="continue form-b" value="Login" /> </p>
                                         </div>
-
-                                    </div>
+                                    </div><br/>
                                     <p class="text-white" style="display:none" id="sec">Check the box to Confirm Security Image</p>
-
                                 </div>
                             </form>
-
-
-
-
                         </div>
                     </div>
                     <div class="col-md-6 login-sectionn" >
                         <div class="form-body" style="max-width: 420px; padding-bottom: 50px;  margin: 0 auto;" >
                             <form id="loginform" action="" method="POST" class="form-signin-white " autocomplete="off">
-                            <h5 class=" form-signin-headingg ">Do not disclose your...</h5>
-                            <ul class="ulclass" >
-                                <li class="liclass">Token Code</li>
-                                <li class="liclass">Email password</li>
-                                <li class="liclass">Internet banking password</li>
-                                <li class="liclass">OTP app password or username</li>
-                            </ul>
-                            <p class="p-bottom"><span class="span-bold"> Coronation Merchant Bank will never ask you </span>to provide your banking details via  <span class="span-bold"> phone call, email, SMS, social media or website links.</span></p>
-                            <hr class="hrclass" >
-                            <p>Kindly report any of such request or attempted identity fraud to the Bank via</p>
-                            <div class="row" style="padding-top: 5px;">
-                                <div class="col-xs-1 col-md-1 no-pad-left"> <img th:src="@{~/customer/img/email.png}"></div>
-                                <div class="col-xs-5 col-md-5 no-pad-left">crc@coronationmb.com</div>
-                                <div class='col-xs-1 col-md-1 no-pad-left'><img th:src="@{~/customer/img/telephone.png}"></div>
-                                <div class='col-xs-4 col-md-4 no-pad-left'>+234 (0)1 279 7640-43 </div>
-                            </div>
+                                <h5 class=" form-signin-headingg ">Do not disclose your...</h5>
+                                <ul class="ulclass" >
+                                    <li class="liclass">Token Code</li>
+                                    <li class="liclass">Email password</li>
+                                    <li class="liclass">Internet banking password</li>
+                                    <li class="liclass">OTP app password or username</li>
+                                </ul>
+                                <p class="p-bottom"><span class="span-bold"> Coronation Merchant Bank will never ask you </span>to provide your banking details via  <span class="span-bold"> phone call, email, SMS, social media or website links.</span></p>
+                                <hr class="hrclass" >
+                                <p>Kindly report any of such request or attempted identity fraud to the Bank via</p>
+                                <div class="row" style="padding-top: 5px;">
+                                    <div class="col-xs-1 col-md-1 no-pad-left"> <img th:src="@{~/customer/img/email.png}"></div>
+                                    <div class="col-xs-5 col-md-5 no-pad-left">crc@coronationmb.com</div>
+                                    <div class='col-xs-1 col-md-1 no-pad-left'><img th:src="@{~/customer/img/telephone.png}"></div>
+                                    <div class='col-xs-4 col-md-4 no-pad-left'>+234 (0)1 279 7640-43 </div>
+                                </div>
                             </form>
                         </div>
                     </div>
@@ -238,8 +218,6 @@
             </div>
         </div>
     </div>
-
-
     <th:block layout:fragment="scripts">
         <!-- CORE JQUERY SCRIPTS -->
         <script th:src="@{~/customer/js/jquery-1.11.1.js}"></script>
@@ -249,7 +227,6 @@
         <script th:src="@{~/customer/js/errors.js}"></script>
         <script th:src="@{~/customer/plugins/bootstrap-notify/bootstrap-notify.js}"></script>
         <script th:src="@{~/customer/js/clipboard.min.js}"></script>
-
         <script>
             $("#formbtn").on("click",function (e) {
                 e.preventDefault();
@@ -258,19 +235,14 @@
                 }else{
                     $("#sec").show();
                 }
-
             })
-
             $('#phishing').on("change",function () {
                 $("#sec").hide();
-
             })
         </script>
-
         <script>
             $(document).ready(function() {
                 $('[data-toggle="tooltip"]').tooltip();
-
                 $('#password').bind("cut copy paste", function(e) {
                     e.preventDefault();
                 });
@@ -278,7 +250,4 @@
         </script>
     </th:block>
 </div>
-
-
-
 </html>

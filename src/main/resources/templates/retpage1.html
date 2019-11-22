@@ -1,35 +1,92 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{index-layout}">
-<div layout:fragment="content">
+<head>
+    <style>
+        @media only screen and (max-width:240px) {
+           .welcome{
+               overflow-wrap: break-word;
+               font-size:15px;
+           }
 
+            .ctn{
+                margin-top: 5px !important;
+                margin-right: 75px !important;
+            }
+            #username{
+                /*width:100px !important;*/
+                margin-left: -7px;
+            }
+
+            .new-user{
+                margin-top: 70px;
+            }
+        }
+
+        @media only screen and (max-width:320px) {
+            .ctn{
+                margin-left: -15px !important;
+            }
+            #username{
+                width: 175px !important;
+
+            }
+        }
+        @media only screen and (max-width:414px) {
+            .ctn{
+                width:30px;
+                margin-left: 31px;
+            }
+            #username{
+                margin-left: -7px;
+
+                width: 257px;
+            }
+        }
+        @media only screen and (max-width:375px) {
+            .ctn{
+                width:14px;
+                margin-left: 10px;
+            }
+            #username{
+                width: 220px;
+            }
+        }
+        @media only screen and (max-width:360px) {
+            .ctn{
+                width:15px;
+                margin-left: 5px;
+            }
+            #username{
+                width: 211px;
+            }
+        }
+    </style>
+</head>
+<div layout:fragment="content">
     <div class="row content-wrapper" >
         <div class="bg">
             <div class="container">
                 <div class="row">
                     <div class="col-md-6 login-section" >
                         <div class="form-body bodyform" >
-                            <form id="loginform" th:action="@{/login/u/retail}" method="POST" class="form-signin " autocomplete="off">
-                                <h5 class=" form-signin-heading text-white">Welcome to CoronationMB<br> Online Banking!</h5>
-                                <h6 class="form-signin header-line text-white" style="margin-left:0px !important;">Enter your username to continue</h6>
+                            <form id="loginform" th:action="@{/login/u/retail}" method="POST" class="form-signin frm" autocomplete="off">
+                                <h5 class=" form-signin-heading text-white welcome">Welcome to CoronationMB<br> Online Banking!</h5>
+                                <h6 class="form-signin header-line text-white usr" style="margin-left:0px !important;">Enter your username to continue</h6>
                                 <div th:if="${param.message != null}" class="alert erro alert-info" th:text="${param.message[0]}"></div>
                                 <div th:if="${param.error != null}" class="alert erro alert-danger" th:text="${session[SPRING_SECURITY_LAST_EXCEPTION]}"></div>
                                 <div th:if="${param.expired != null}" class="alert erro alert-danger" th:text="#{session.expired}"></div>
                                 <div th:if="${message}" class="alert display-none alert-info" th:text="${message}"></div>
-
-
                                 <br/>
                                 <div class="form-group " >
                                     <span id='reqspan' class='required text-white' style='top:1px;'></span>
                                     <input type="text" id="username" name="username" class="my-select" required="required" placeholder="Username" autocomplete="off" />
-
-                                    <p class="col-xs-5 no-pad-left no-pad-right " style="margin-top: 15px;"><a href="/forgot/username" class='text-white' data-toggle="tooltip" data-placement="right" title="Forgot Username?" autocomplete="off" >Forgot Username?</a></p>
+                                    <p class="col-xs-5 no-pad-left no-pad-right forgot " style="margin-top: 15px;"><a href="/forgot/username" class='text-white' data-toggle="tooltip" data-placement="right" title="Forgot Username?" autocomplete="off" >Forgot Username?</a></p>
                                     <!--<p class='text-right col-xs-7 no-pad-left no-pad-right  text-white' style="margin-top: 15px; "><a href="#" class="continue">Continue</a> </p>-->
-                                    <p class='text-right col-xs-7 no-pad-left no-pad-right  text-white' > <input type="submit" class="continue" value="Continue" ></p>
-
+                                    <p class='text-right col-xs-7 no-pad-left no-pad-right  text-white ctn' > <input type="submit" class="continue" value="Continue" ></p>
                                 </div>
                                 <div style="color: #003057;">.</div>
                                 <hr>
-                                <h6 class="form-signin-low text-white">New User? <a href="/register" class='text-white form-signin-low' >Register Now</a> </h6>
+                                <h6 class="form-signin-low text-white new-user">New User? <a href="/register" class='text-white form-signin-low' >Register Now</a> </h6>
                             </form>
                         </div>
                     </div>
@@ -40,12 +97,7 @@
         </div>
     </div>
 </div>
-
-
-
-
 <th:block layout:fragment="scripts">
-
     <script>
         $(document).ready(function() {
             $('[data-toggle="tooltip"]').tooltip();
@@ -53,12 +105,8 @@
                 content: '',
                 html: 'true'
             });
-
             errorLogin();
-
         });
-
     </script>
 </th:block>
-
 </html>

@@ -1,29 +1,23 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.w3.org/1999/xhtml">
-
 <head>
     <title>Coronation Merchant Bank</title>
     <link rel="stylesheet" type="text/css" th:href="@{~/customer/css/bootstrap.css}" />
     <link rel="stylesheet" type="text/css" th:href="@{~/customer/css/custom.css}" />
     <link rel="stylesheet" type="text/css" th:href="@{~/customer/css/media.css}" />
     <link rel="stylesheet" type="text/css" th:href="@{~/customer/font-awesome/font-awesome.min.css}" />
-     <link rel="shortcut icon" th:href="@{~/customer/img/favicon.ico}" type="image/x-icon">
+    <link rel="shortcut icon" th:href="@{~/customer/img/favicon.ico}" type="image/x-icon">
     <link rel="icon" th:href="@{~/customer/img/favico.ico}" type="image/x-icon">
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
-
-
     <style>
         @font-face {
             font-family: FedraSansStdLight;
             src: url('../static/customer/fonts/FedraSans/FedraSansStd-Book LF.otf');
-
         }
         .login-section{
             margin-top: 40px;
         }
         .body-color{
-
         }
         .line{
             background-color: #fff;
@@ -72,95 +66,96 @@
             text-decoration: none;
             font-weight: bolder;
         }
+        @media only screen and (max-width:320px) {
+            .login-section{
+                margin-bottom: 40px !important;
+            }
+        }
+        @media only screen and (max-width:414px) {
+            .login-section{
+                margin-bottom: 40px !important;
+            }
+        }
+        @media only screen and (max-width:375px) {
+            .login-section{
+                margin-bottom: 40px !important;
+            }
+        }
+        @media only screen and (max-width:360px) {
+            .login-section{
+                margin-bottom: 40px !important;
+            }
+        }
+        @media only screen and (max-width:600px) {
+            .login-section{
+                margin-bottom: 40px !important;
+            }
+        }
+        @media only screen and (min-width:768px)and (max-height: 1024px) {
+            .login-section{
+                margin-top: 80px !important;
+                margin-left: -80px !important;
+            }
+        }
     </style>
 </head>
-
 <body  onload ='redirect()' class="LTR Safari Chrome Safari44 Chrome44 JAJP SmallDevice ContentBody">
-
-
-
 <script>
-
     function redirect()
     {
         var version = detectIE();
-
         if (version <= 9 && version != false)
         {
             var id = document.getElementById('body');
             if(version <= 8)
             {
-
                 id.style.display = "none";
             }
             else
-
                 id.style.display = "";
-
-
             // window.location.href='/unsupported';
         }
     }
-
     function detectIE() {
         var ua = window.navigator.userAgent;
-
         // Test values; Uncomment to check result …
-
         // IE 10
         // ua = 'Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.2; Trident/6.0)';
-
         // IE 11
         // ua = 'Mozilla/5.0 (Windows NT 6.3; Trident/7.0; rv:11.0) like Gecko';
-
         // Edge 12 (Spartan)
         // ua = 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.71 Safari/537.36 Edge/12.0';
-
         // Edge 13
         // ua = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2486.0 Safari/537.36 Edge/13.10586';
-
         var msie = ua.indexOf('MSIE ');
         if (msie > 0) {
             // IE 10 or older => return version number
             return parseInt(ua.substring(msie + 5, ua.indexOf('.', msie)), 10);
         }
-
         var trident = ua.indexOf('Trident/');
         if (trident > 0) {
             // IE 11 => return version number
             var rv = ua.indexOf('rv:');
             return parseInt(ua.substring(rv + 3, ua.indexOf('.', rv)), 10);
         }
-
         var edge = ua.indexOf('Edge/');
         if (edge > 0) {
             // Edge (IE 12+) => return version number
             return parseInt(ua.substring(edge + 5, ua.indexOf('.', edge)), 10);
         }
-
         // other browser
         return false;
     }
 </script>
 <!--[if lte IE 9]>
 <div class="browserupgrade">
-
     <div class="text-center">
         <img class="img img-responsive" style="display:block;margin:0px auto;text-align:center;background:white;padding:10px;margin-bottom:20px" th:src="@{~/customer/img/cmb_logo.png}" alt="Coronation Merchant Bank" />
-
         <p >You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
-
     </div>
-
-
 </div>
 <![endif]-->
-
-
-
-
 <div class="container" id='body'>
-
     <div class="row">
         <div class="top-bar col-xs-12">
             <ul class="top-link">
@@ -168,8 +163,6 @@
             </ul>
         </div>
     </div>
-
-
     <div class="row  margin-bottom" style="margin-bottom:10px;">
         <div class="col-sm-3 visible-xs no-pad-left no-pad-right">
             <div class="center" style="margin:0px auto;">
@@ -178,9 +171,6 @@
                 </a>
             </div>
         </div>
-
-
-
         <div class="col-sm-9 no-pad-left">
             <nav class="navbar navbar-default bg-success">
                 <div class="">
@@ -207,14 +197,11 @@
                             <li><a href="/#contact_us"> CONTACT US</a></li>
                             <li><a href="/faqs"> FAQ</a></li>
                             <li><a target="_blank" href="/assets/cmb_soft_token_setup.pdf" th:text="#{softtoken.menu}"></a></li>
-
                         </ul>
-
                     </div>
                 </div>
             </nav>
         </div>
-
         <div class="col-sm-3 hidden-xs no-pad-right">
             <div class="center" style="margin:0px auto;">
                 <a href="/" class="log" data-toggle="tooltip" data-placement="bottom" title="Coronation Merchant Bank">
@@ -222,17 +209,10 @@
                 </a>
             </div>
         </div>
-
     </div>
-
     <div layout:fragment="content">
-
     </div>
-
-
     <footer>
-
-
         <div class="">
             <div class="">
                 <div class="col-sm-6 col-xs-12 footer-mobile no-pad-left no-pad-right">
@@ -241,18 +221,14 @@
                         <!--<li><a href="#" target="_blank">Disclaimer</a></li>-->
                         <li><a href="/terms" target="_blank">Terms &amp; Conditions</a></li>
                     </ul>
-
                 </div>
                 <div class="col-sm-6  col-xs-12  footer-mobile  no-pad-left no-pad-right"style="margin-bottom: 15px">
                     <p class=' '> &copy; 2017 - All rights reserved</p>
                 </div><br/>
-
             </div>
         </div>
     </footer>
-
 </div>
-
 <div th:if="${message}">
     <div hidden="hidden">
         <ul class="actionMessage">
@@ -260,7 +236,6 @@
         </ul>
     </div>
 </div>
-
 <div th:if="${failure}">
     <div hidden="hidden">
         <ul class="actionError">
@@ -268,17 +243,13 @@
         </ul>
     </div>
 </div>
-
-
 <div id="myModal" class="modal fade" role="dialog">
     <div class="modal-dialog">
-
         <!-- Modal content-->
         <div class="modal-content no-bd-rad ">
             <div class="modal-body">
                 <h1 style="font-size: 20px" class="text-center">Request Callback</h1>
                 <br/>
-
                 <form method="post" action="/request/callback" class="form-horizontal">
                     <div class="row">
                         <div class="col-sm-3 control-label"><label>Full Name:</label></div>
@@ -296,7 +267,6 @@
                         <button class="btn btn-link ">Make Request</button>
                     </div>
                 </form>
-
             </div>
             <!--<div class="modal-footer">-->
             <!--<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>-->
@@ -304,64 +274,32 @@
         </div>
     </div>
 </div>
-
-
-
-
 <div id="myModalError" class="modal fade " role="dialog">
     <div class="modal-dialog">
-
         <!-- Modal content-->
-
         <div class="modal-content no-bd-rad content ">
-
             <div class="modal-body">
-
-
                 <p id='errorMess' class='mess text-danger'>Put something here iff need be.</p>
-
-
-
             </div>
-
-
             <div class="modal-footer no-bd-top">
                 <button type="button" class="btn btn-link" data-dismiss="modal">OK</button>
             </div>
-
         </div>
-
     </div>
 </div>
-
-
 <div id="myModalSuccess" class="modal fade " role="dialog">
     <div class="modal-dialog">
-
         <!-- Modal content-->
-
         <div class="modal-content no-bd-rad content ">
-
             <div class="modal-body">
-
-
                 <p id='successMess' class='mess text-primary'>Put something here iff need be.</p>
-
-
-
             </div>
-
-
             <div class="modal-footer no-bd-top">
                 <button type="button" class="btn btn-link" data-dismiss="modal">OK</button>
             </div>
-
         </div>
-
     </div>
 </div>
-
-
 <!-- CORE JQUERY SCRIPTS -->
 <script th:src="@{~/customer/js/jquery-1.11.1.js}"></script>
 <!-- BOOTSTRAP SCRIPTS  -->
@@ -370,13 +308,7 @@
 <script th:src="@{~/customer/js/errors.js}"></script>
 <script th:src="@{~/customer/plugins/bootstrap-notify/bootstrap-notify.js}"></script>
 <script th:src="@{~/customer/js/clipboard.min.js}"></script>
-
 <th:block layout:fragment="scripts">
-
 </th:block>
-
-
 </body>
-
-
 </html>
