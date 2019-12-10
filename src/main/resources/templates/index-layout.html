@@ -27,9 +27,14 @@
         }
         .form-signin-heading {
             text-align: left;
-            line-height: 1.2;
+            line-height: 1.5;
             font-size: 22px;
             text-transform: capitalize;
+            margin-top: -4%;
+            margin-left: -3%;
+            margin-left: -3%;
+            font-weight: 600;
+
         }
         hr{
             rgin-top: 20px;
@@ -53,12 +58,14 @@
             padding-bottom: 20px;
             margin: 0 auto;
             border-radius: 7px;
+            margin-top: -5.5%;
         }
         .continue{
             background-color: #a7674c;
             color: #fff;
             padding:8px 30px 8px 30px;
             border-radius: 20px;
+            margin-right: -43%;
         }
         .continue:hover{
             background-color: #9b4a28;
@@ -155,25 +162,34 @@
     </div>
 </div>
 <![endif]-->
-<div class="container" id='body'>
-    <div class="row">
-        <div class="top-bar col-xs-12">
+<!--style="width:100%;margin-left:-2%;margin-right:10%"-->
+<div class="" id='body'>
+    <!--<div class="row" >
+        <div class="top-bar col-xs-12" >
             <ul class="top-link">
-                <li class="no-bd"><a href="https://www.coronationmb.com/" target="_blank"> Coronation merchant bank</a>&nbsp;</li>
+                <li class="no-bd" style="margin-left: 6%"><a href="https://www.coronationmb.com/" target="_blank"> Coronation merchant bank</a>&nbsp;</li>
             </ul>
         </div>
-    </div>
-    <div class="row  margin-bottom" style="margin-bottom:10px;">
-        <div class="col-sm-3 visible-xs no-pad-left no-pad-right">
+    </div>-->
+    <div class="row  margin-bottom" style="margin-bottom:10px;margin-top: -4px">
+       <!-- <div class="col-sm-3 visible-xs no-pad-left no-pad-right">
             <div class="center" style="margin:0px auto;">
                 <a href="/" class="log" data-toggle="tooltip" data-placement="bottom" title="Coronation Merchant Bank">
                     <img class="img img-responsive pull-right" style="display:block;margin:0px auto;" th:src="@{~/customer/img/cmb_logo.png}" alt="Coronation Merchant Bank" />
                 </a>
             </div>
+        </div>-->
+        <div class="col-sm-8 no-pad-left"  >
+        <div>
+            <div class="top-bar col-xs-12" style="margin-top: 3%;margin-left: 8.5%">
+                <ul class="top-link">
+                    <li class="no-bd"><a href="https://www.coronationmb.com/" target="_blank"> Coronation merchant bank</a>&nbsp;</li>
+                </ul>
+            </div>
         </div>
-        <div class="col-sm-9 no-pad-left">
+        <div>
             <nav class="navbar navbar-default bg-success">
-                <div class="">
+                <div class="" style="margin-left: 8%">
                     <div class="navbar-header navbar-left ">
                         <button type="button" class="navbar-toggle collapsed " data-toggle="collapse" data-target="#navbar-collapse-1" aria-expanded="false">
                             <span class="sr-only">MENU</span>
@@ -202,6 +218,7 @@
                 </div>
             </nav>
         </div>
+        </div>
         <div class="col-sm-3 hidden-xs no-pad-right">
             <div class="center" style="margin:0px auto;">
                 <a href="/" class="log" data-toggle="tooltip" data-placement="bottom" title="Coronation Merchant Bank">
@@ -215,15 +232,15 @@
     <footer>
         <div class="">
             <div class="">
-                <div class="col-sm-6 col-xs-12 footer-mobile no-pad-left no-pad-right">
+                <div class="col-sm-6 col-xs-12 footer-mobile no-pad-left no-pad-right" style="margin-left: 6%">
                     <ul class="footer-links ">
                         <li><a href="/policy" target="_blank">Privacy policy</a></li>
                         <!--<li><a href="#" target="_blank">Disclaimer</a></li>-->
                         <li><a href="/terms" target="_blank">Terms &amp; Conditions</a></li>
                     </ul>
                 </div>
-                <div class="col-sm-6  col-xs-12  footer-mobile  no-pad-left no-pad-right"style="margin-bottom: 15px">
-                    <p class=' '> &copy; 2017 - All rights reserved</p>
+                <div class="col-sm-6  col-xs-12  footer-mobile  no-pad-left no-pad-right"style="margin-bottom: 15px;margin-left:-13% ">
+                    <p class='rights '> </p>
                 </div><br/>
             </div>
         </div>
@@ -308,6 +325,11 @@
 <script th:src="@{~/customer/js/errors.js}"></script>
 <script th:src="@{~/customer/plugins/bootstrap-notify/bootstrap-notify.js}"></script>
 <script th:src="@{~/customer/js/clipboard.min.js}"></script>
+<script>
+    let d = new Date();
+    let n = d.getFullYear();
+    $(".rights").html('&copy;'+ n+' - All rights reserved');
+</script>
 <th:block layout:fragment="scripts">
 </th:block>
 </body>

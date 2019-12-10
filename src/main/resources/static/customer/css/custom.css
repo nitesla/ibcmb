@@ -399,7 +399,7 @@ span.req-inner {
 
 .my-select {
     display: block;
-    width: 100%;
+    width: 125%;
     height: 34px;
     padding: 6px 12px;
     font-size: 14px;
@@ -415,10 +415,10 @@ span.req-inner {
     transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
 }.my-select2 {
     display: block;
-    width: 100%;
+    width: 170%;
     margin-left: 1%;
     height: 34px;
-    padding: 6px 12px;
+    /*padding: 6px 12px;*/
     font-size: 14px;
     line-height: 1.42857143;
     color: #555;
@@ -1418,6 +1418,7 @@ body {
     line-height: 1.2;
     font-size: 22px;
     text-transform: capitalize;
+
 }
 
 #label {
@@ -1741,7 +1742,7 @@ textarea {
     /* margin: 30px 0 0; */
     width: 100%;
     min-height: 500px;
-    background-image: url('../img/bgg.png');
+    background-image: url('../img/bgg.jpg');
     background-size: cover;
     /*overflow: hidden;*/
 }
@@ -1776,12 +1777,14 @@ textarea {
 .form-signin {
     max-width: 350px;
 
-    padding: 40px 1px 5px 1px;
+    padding: 40px 20px 5px 20px;
     margin: 0 auto;
-    margin-top: 30px;
+    margin-top: 15px;
     border-radius: 5px;
     margin-right:2px;
     margin-left:25px;
+    margin-bottom: -4%;
+    font-weight: 600;
 
 }
 
@@ -1793,6 +1796,8 @@ textarea {
     margin-top: 10px;
     border-radius: 5px;
     margin-bottom: 10px;
+    line-height: 1.5;
+    font-weight: 600;
 
     /*    margin-top: 50px;
         border-radius: 5px;

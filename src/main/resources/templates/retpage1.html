@@ -2,6 +2,16 @@
 <html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{index-layout}">
 <head>
     <style>
+        .bodyform{
+            max-width: 100%;
+            background-color: rgba(0, 48, 87, 0.89);
+            padding-bottom: 20px;
+            /*margin: 0 auto;*/
+            border-radius: 7px;
+            margin-top: -5.5%;
+            margin-right: -1%;
+            margin-left: 13%;
+        }
         @media only screen and (max-width:240px) {
            .welcome{
                overflow-wrap: break-word;
@@ -69,7 +79,7 @@
                 <div class="row">
                     <div class="col-md-6 login-section" >
                         <div class="form-body bodyform" >
-                            <form id="loginform" th:action="@{/login/u/retail}" method="POST" class="form-signin frm" autocomplete="off">
+                            <form id="loginform" th:action="@{/login/u/retail}" method="POST" class="form-signin frm" autocomplete="off" style="margin-bottom: 5% !important;">
                                 <h5 class=" form-signin-heading text-white welcome">Welcome to CoronationMB<br> Online Banking!</h5>
                                 <h6 class="form-signin header-line text-white usr" style="margin-left:0px !important;">Enter your username to continue</h6>
                                 <div th:if="${param.message != null}" class="alert erro alert-info" th:text="${param.message[0]}"></div>
@@ -80,12 +90,12 @@
                                 <div class="form-group " >
                                     <span id='reqspan' class='required text-white' style='top:1px;'></span>
                                     <input type="text" id="username" name="username" class="my-select" required="required" placeholder="Username" autocomplete="off" />
-                                    <p class="col-xs-5 no-pad-left no-pad-right forgot " style="margin-top: 15px;"><a href="/forgot/username" class='text-white' data-toggle="tooltip" data-placement="right" title="Forgot Username?" autocomplete="off" >Forgot Username?</a></p>
+                                    <p class="col-xs-5 no-pad-left no-pad-right forgot " style="margin-top: 15px;"><a style="font-weight: 600" href="/forgot/username" class='text-white' data-toggle="tooltip" data-placement="right" title="Forgot Username?" autocomplete="off" >Forgot Username?</a></p>
                                     <!--<p class='text-right col-xs-7 no-pad-left no-pad-right  text-white' style="margin-top: 15px; "><a href="#" class="continue">Continue</a> </p>-->
                                     <p class='text-right col-xs-7 no-pad-left no-pad-right  text-white ctn' > <input type="submit" class="continue" value="Continue" ></p>
                                 </div>
                                 <div style="color: #003057;">.</div>
-                                <hr>
+                                <hr style="border-top: 1px solid !important;color:#406082">
                                 <h6 class="form-signin-low text-white new-user">New User? <a href="/register" class='text-white form-signin-low' >Register Now</a> </h6>
                             </form>
                         </div>
