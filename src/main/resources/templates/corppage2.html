@@ -73,7 +73,7 @@
         }
         .bodyform{
             max-width: 100%;
-            background-color: rgba(0, 48, 87, 0.89);
+            background-color: rgba(0, 48, 87, 1);
             padding-bottom: 20px;
             margin: 0 auto;
             border-radius: 7px;
@@ -116,10 +116,10 @@
         }
         @media only screen and (min-width:320px) and (max-width: 359px){
             .f-pwd {
-                padding-right: -70px !important;
+                margin-right:35px !important;
             }
             .form-b{
-                margin-left: 7px !important;
+                margin-left: 25px !important;
             }
             .phish{
                 margin-left: -12px !important;
@@ -130,17 +130,28 @@
             .welcome{
                 margin-left: -20px;
             }
+
+            .bodyform{
+                /*max-width: 47% !important;
+                margin-left: 40%;*/
+                margin: 0 auto;
+                /*padding-left: 10px;*/
+            }
+            .bodyform2{
+                margin: 0 auto;
+                padding-right: 20px !important;
+            }
             /*#sec{
                 margin-right:5px;
             }*/
         }
 
-        @media only screen and (min-width:360px) and (max-width: 410px) {
+        @media only screen and (min-width:360px) and (max-width: 374px) {
             .f-pwd {
-                margin-left: -25px;
+                margin-left: -3px;
             }
             .form-b{
-                margin-left: 20px;
+                margin-left: 53px;
             }
             #sec{
                 margin-left:-9px;
@@ -155,14 +166,52 @@
             .ck{
                 margin-left: -7px;
             }
+            .bodyform{
+                /*max-width: 47% !important;
+                margin-left: 40%;*/
+                margin: 0 auto;
+            }
+            .bodyform2{
+                margin-left: 5px !important;
+            }
         }
 
-        @media only screen and (min-width:411px) and (max-width: 413px) {
+        @media only screen and (min-width:375px) and (max-width: 410px) {
             .f-pwd {
-                margin-left: -7px;
+                margin-left: -3px;
             }
             .form-b{
-                margin-left: 45px;
+                margin-left: 60px;
+            }
+            #sec{
+                margin-left:-9px;
+            }
+            .pwd{
+                margin-left: -13px !important;
+            }
+
+            .welcome{
+                margin-left: -15px;
+            }
+            .ck{
+                margin-left: -7px;
+            }
+            .bodyform{
+                /*max-width: 47% !important;
+                margin-left: 40%;*/
+                margin: 0 auto;
+            }
+            .bodyform2{
+                margin-left: 5px !important;
+            }
+        }
+
+            @media only screen and (min-width:411px) and (max-width: 413px) {
+            .f-pwd {
+                margin-left: 10px;
+            }
+            .form-b{
+                margin-left: 75px;
             }
             #sec{
                 margin-left:10px;
@@ -171,14 +220,25 @@
             .pwd{
                 margin-left: -13px;
             }
+
+            .bodyform{
+                /*max-width: 47% !important;
+                margin-left: 40%;*/
+                margin: 0 auto;
+                padding-left: 10px;
+            }
+            .bodyform2{
+                margin: 0 auto;
+                padding-right: 48px !important;
+            }
         }
 
         @media only screen and (min-width:414px) and (max-width: 599px) {
             .f-pwd {
-                margin-left: -7px;
+                margin-left: 10px;
             }
             .form-b{
-                margin-left: 45px;
+                margin-left: 75px;
             }
             #sec{
                 margin-left:10px;
@@ -186,6 +246,16 @@
 
             .pwd{
                 margin-left: -8px;
+            }
+            .bodyform{
+                /*max-width: 47% !important;
+                margin-left: 40%;*/
+                margin: 0 auto;
+                padding-right: 9px;
+            }
+            .bodyform2{
+                margin: 0 auto;
+                padding-right: 45px !important;
             }
         }
         @media only screen and (min-width:600px) and (max-width: 767px) {
@@ -205,13 +275,24 @@
             }
 
             .welcome{
-                margin-left: 30px;
+                /*margin-left: 30px;*/
             }
             .ck{
                 margin-left: 40px;
             }
             .phish{
                 margin-left: 20px !important;
+            }
+
+            .bodyform{
+                /*max-width: 47% !important;
+                margin-left: 40%;*/
+                margin: 0 auto;
+                padding-left: 60px;
+            }
+            .bodyform2{
+                margin: 0 auto;
+                padding-left: -30px !important;
             }
         }
         @media only screen and (min-width:768px) and (max-width: 1023px) {
@@ -238,9 +319,12 @@
             .phish{
                 margin-left: 20px !important;
             }
+
+
             .bodyform{
                 max-width: 64% !important;
                 margin-left: 35%;
+                margin: 0 auto;
 
             }
         }
@@ -259,10 +343,11 @@
 
             .pwd{
                 margin-left: 12px;
+                width:85%;
             }
 
             .welcome{
-                margin-left: 10px !important;
+                /*margin-left: 10px !important;*/
             }
             .ck{
                 margin-left: 40px;
@@ -270,10 +355,14 @@
             .phish{
                 margin-left: 20px !important;
             }
+
             .bodyform{
-                max-width: 47% !important;
+                max-width: 70% !important;
                 margin-left: 40%;
+                margin: 0 auto;
+                padding-left: 120px;
             }
+
         }
 
 
@@ -310,7 +399,7 @@
                                         <input type="hidden" id="corporateId" name="corporateId" th:value="*{corporateId}" class="my-select" readonly="readonly" autocomplete="off" />
                                         <div class="col-xs-7 no-pad-left no-pad-right" >
                                             <input type="password" id="password" name="password" class="my-select4 pwd" required="required" placeholder="Password" autocomplete="off" />
-                                            <p class="col-xs-10 col-sm-10 col-lg-10 col-md-10 no-pad-left no-pad-right f-pwd" style="margin-top: 15px;"><a style="font-weight:600;margin-left: 20%" th:href="@{/forgot/password/corporate}" class='text-white' data-toggle="tooltip" data-placement="right" title="Forgot Password?" autocomplete="off" >Forgot password?</a></p>
+                                            <p class="col-xs-10 col-sm-10 col-lg-10 col-md-10 no-pad-left no-pad-right f-pwd" style="margin-top: 15px;"><a style="font-weight:600;margin-left: 20%" th:href="@{/forgot/password/corporate}" class='text-white f-pwd' data-toggle="tooltip" data-placement="right" title="Forgot Password?" autocomplete="off" >Forgot password?</a></p>
                                             <p class='col-xs-2 col-sm-2 col-lg-2 col-md-2 no-pad-left no-pad-right text-white' ><input type="button" id="formbtn" class="continue form-b" value="Login" /> </p>
                                         </div>
                                     </div><br/>

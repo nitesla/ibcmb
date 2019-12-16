@@ -39,86 +39,115 @@
         }
         @media only screen and (min-width:320px) and (max-width: 359px){
             .ctn{
-                margin-left: -95px;
+                margin-left: -125px;
             }
             .forgot{
-
+                margin-left: 20px;
             }
             .usr{
                 width:85%;
 
             }
             .bodyform{
-                margin-top: 10% !important;
+                margin-top: 20% !important;
+                margin-left: 0;
 
+            }
+            .lin{
+                width: 88% !important;
             }
         }
         @media only screen and (min-width:360px) and (max-width: 374px){
             .ctn{
-                margin-left: -130px;
+                margin-left: -165px;
             }
             .forgot{
-                margin-left: 25px;
+                margin-left: 40px;
 
             }
             .usr{
-                width:85%;
+                width:90%;
 
             }
             .bodyform{
-                margin-top: 10% !important;
+                margin-top: 10% ;
+                margin-left: 0 ;
 
+            }
+            .lin{
+                width: 90% !important;
             }
         } @media only screen and (min-width:375px) and (max-width: 410px){
             .ctn{
-                margin-left: -150px;
+                margin-left: -170px;
             }
             .forgot{
-                margin-left: 25px;
+                margin-left: 50px;
 
             }
             .usr{
-                width:85%;
+                width:91%;
 
             }
             .bodyform{
                 margin-top: 10% !important;
+                margin-left: 0 ;
 
+            }
+            .lin{
+                width: 90% !important;
             }
 
         }
-        @media only screen and (min-width:411px) and (max-width: 413px){
-            .ctn{
-                margin-left: -180px;
+        @media only screen and (min-width:411px) and (max-width: 413px) {
+            .ctn {
+                margin-left: -225px;
             }
-            .forgot{
-                margin-left: 45px;
+
+            .forgot {
+                margin-left: 30%;
 
             }
-            .usr{
-                width:85%;
+
+            .usr {
+                width: 100%;
 
             }
-            .bodyform{
-                margin-top: 10% !important;
 
+            .bodyform {
+                margin: 10% auto;
+                /*margin-top: 10% !important;*/
+                /*margin-left: 1 ;*/
+
+            }
+            .lin{
+                width: 100% !important;
+            }
+
+            #loginform {
+                margin: 0 auto;
             }
         }
         @media only screen and (min-width:414px) and (max-width: 599px){
             .ctn{
-                margin-left: -180px;
+                margin-left: -200px;
             }
             .forgot{
-                margin-left: 45px;
+                margin-left: 65px;
 
             }
             .usr{
-                width:85%;
+                width:97%;
 
             }
             .bodyform{
                 margin-top: 10% !important;
+                margin: 0 auto;
+                padding-right: 3% !important;
 
+            }
+            .lin{
+                width: 95% !important;
             }
         } @media only screen and (min-width:600px) and (max-width: 767px){
             .ctn{
@@ -129,13 +158,16 @@
 
             }
             .usr{
-                width:85%;
+                width:98%;
 
             }
             .bodyform{
-                max-width: 70% !important;
+                max-width: 74% !important;
                 margin-top: 10% !important;
 
+            }
+            .lin{
+                width: 98% !important;
             }
         }
         @media only screen and (min-width:768px) and (max-width: 1023px){
@@ -147,12 +179,15 @@
 
             }
             .usr{
-                width:85%;
+                width:114%;
 
             }
             .bodyform{
                 max-width: 70% !important;
 
+            }
+            .lin{
+                width: 115% !important;
             }
         }
         @media only screen and (min-width:1024px) and (max-width: 1100px){
@@ -164,7 +199,7 @@
 
             }
             .usr{
-                width:85%;
+                width:93%;
 
             }
             .bodyform{
@@ -172,68 +207,15 @@
                 margin-top: 7% !important;
 
             }
-        }
-       /* @media only screen and (max-width:240px) {
-           .welcome{
-               overflow-wrap: break-word;
-               font-size:14px;
-           }
-
-            .ctn{
-                margin-top: 5px !important;
-                margin-right: 75px !important;
-            }
-            #username{
-                !*width:100px !important;*!
-                margin-left: -7px;
-            }
-
-            .new-user{
-                margin-top: 70px;
+            .lin{
+                width: 90% !important;
             }
         }
 
-        @media only screen and (max-width:320px) {
-            .ctn{
-                margin-left: -15px !important;
-            }
-            #username{
-                width: 175px !important;
 
-            }
-        }
-        @media only screen and (max-width:414px) {
-            .ctn{
-                width:30px;
-                margin-left: 31px;
-            }
-            #username{
-                margin-left: -7px;
-
-                width: 257px;
-            }
-        }
-        @media only screen and (max-width:375px) {
-            .ctn{
-                width:14px;
-                margin-left: 10px;
-            }
-            #username{
-                width: 220px;
-            }
-        }
-        @media only screen and (max-width:360px) {
-            .ctn{
-                width:15px;
-                margin-left: 5px;
-            }
-            #username{
-                width: 211px;
-            }
-        }*/
     </style>
 </head>
-<div layout:fragment="content" style="margin-left: -6.3% !important;margin-right: -6.3% !important;">
+<div layout:fragment="content">
     <div class="row content-wrapper">
         <div class="bg">
             <div class="container">
@@ -241,7 +223,7 @@
                     <div class="col-md-6 login-section" >
                         <div class="form-body bodyform" >
                             <form id="loginform" th:action="@{/login/u/retail}" method="POST" class="form-signin frm" autocomplete="off" style="margin-bottom: 5% !important;">
-                                <h5 class="form-signin-heading text-white welcome" style="font-size: 22px">Welcome to CoronationMB<br> Online Banking!</h5>
+                                <h5 class="form-signin-heading text-white welcome" style="font-size: 22px">Welcome to CoronationMB Online Banking!</h5>
                                 <p class="form-signin header-line text-white usr" style="margin-left:0px !important;">Enter your username to continue</p>
                                 <div th:if="${param.message != null}" class="alert erro alert-info" th:text="${param.message[0]}"></div>
                                 <div th:if="${param.error != null}" class="alert erro alert-danger" th:text="${session[SPRING_SECURITY_LAST_EXCEPTION]}"></div>
@@ -256,7 +238,7 @@
                                     <p class='text-right col-xs-7 no-pad-left no-pad-right  text-white ctn' > <input type="submit" class="continue" value="Continue" ></p>
                                 </div>
                                 <div style="color: #003057;">.</div>
-                                <hr style="border-top: 1px solid !important;color:#406082;width:124%">
+                                <hr class="lin" style="border-top: 1px solid !important;color:#406082;width:124%;margin-top: 27px">
                                 <h6 class="form-signin-low text-white new-user">New User? <a href="/register" class='text-white form-signin-low' >Register Now</a> </h6>
                             </form>
                         </div>

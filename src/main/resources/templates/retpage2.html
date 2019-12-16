@@ -86,7 +86,7 @@
         .bodyform{
             max-width: 100%;
             /*max-width: 74%;*/
-            background-color: rgba(0, 48, 87, 0.89);
+            background-color: rgba(0, 48, 87, 1);
             padding-bottom: 20px;
             margin: 0 auto;
             border-radius: 7px;
@@ -130,17 +130,30 @@
                 padding-right: -50px !important;
             }
             .form-b{
-                margin-left: -10px !important;
+                margin-left: 10px !important;
             }
             .phish{
                 margin-left: -12px !important;
             }
             .pwd{
-                margin-left: -15px !important;
+                margin-left: -19px !important;
+
             }
             .welcome{
-                margin-left: -20px;
+                margin-left: -5px;
             }
+            .bodyform{
+                /*max-width: 47% !important;
+                margin-left: 40%;*/
+                margin: 0 auto;
+                padding-left: 10px;
+            }
+            .bodyform2{
+                margin: 0 auto;
+                padding-right: 15px !important;
+            }
+
+
             /*#sec{
                 margin-right:5px;
             }*/
@@ -148,10 +161,10 @@
 
         @media only screen and (min-width:360px) and (max-width: 410px) {
             .f-pwd {
-                margin-left: -5px;
+                margin-left: 35px;
             }
             .form-b{
-                margin-left: 10px;
+                margin-left: 40px !important;
             }
             #sec{
                 margin-left:-9px;
@@ -166,14 +179,22 @@
             .ck{
                 margin-left: -7px;
             }
+            .bodyform{
+                /*max-width: 47% !important;
+                margin-left: 40%;*/
+                margin: 0 auto;
+            }
+            .bodyform2{
+                margin-left: 5px !important;
+            }
         }
 
          @media only screen and (min-width:411px) and (max-width: 413px) {
             .f-pwd {
-                margin-left: 20px;
+                margin-left: 53px;
             }
             .form-b{
-                margin-left: 30px;
+                margin-left: 58px;
             }
             #sec{
                 margin-left:10px;
@@ -182,14 +203,24 @@
              .pwd{
                  margin-left: -13px;
              }
+             .bodyform{
+                 /*max-width: 47% !important;
+                 margin-left: 40%;*/
+                 margin: 0 auto;
+                 padding-left: 10px;
+             }
+             .bodyform2{
+                 margin: 0 auto;
+                 padding-right: 45px !important;
+             }
         }
 
         @media only screen and (min-width:414px) and (max-width: 599px) {
             .f-pwd {
-                margin-left: 20px;
+                margin-left: 55px;
             }
             .form-b{
-                margin-left: 30px;
+                margin-left: 60px;
             }
             #sec{
                 margin-left:10px;
@@ -198,6 +229,16 @@
              .pwd{
                  margin-left: -8px;
              }
+            .bodyform{
+                /*max-width: 47% !important;
+                margin-left: 40%;*/
+                margin: 0 auto;
+                padding-right: 9px;
+            }
+            .bodyform2{
+                margin: 0 auto;
+                padding-right: 45px !important;
+            }
         }
             @media only screen and (min-width:600px) and (max-width: 767px) {
             .f-pwd {
@@ -223,6 +264,17 @@
                 .phish{
                     margin-left: 20px !important;
                 }
+                .bodyform{
+                    /*max-width: 47% !important;
+                    margin-left: 40%;*/
+                    margin: 0 auto;
+                    padding-left: 50px;
+                }
+                .bodyform2{
+                    margin: 0 auto;
+                    padding-left: -30px !important;
+                }
+
         }
         @media only screen and (min-width:768px) and (max-width: 1023px) {
             .f-pwd {
@@ -250,7 +302,9 @@
                 }
                 .bodyform{
                     max-width: 70% !important;
-                    margin-left: 35%;
+                    /*margin-left: 35%;*/
+                    margin: 0 auto;
+                    margin-right: 8px;
 
                 }
         }
@@ -280,11 +334,17 @@
                 margin-left: 20px !important;
             }
             .bodyform{
-                max-width: 47% !important;
+                max-width: 70% !important;
                 margin-left: 40%;
+                margin: 0 auto;
+                padding-left: 100px;
             }
         }
-
+        @media only screen and (min-width:1368px) {
+            .login-section{
+                margin-top: 80px !important;
+            }
+        }
 
 
 
@@ -303,7 +363,7 @@
                                 <h5 class=" form-signin-headin text-white welcome">Welcome to CoronationMB<br> Online Banking!</h5>
                                 <h6 class="form-signin1 header-line text-white ck">Click the checkbox to confirm image and enter your password to login</h6>
                                 <br/>
-                                <div class="form-group " >
+                                <div class="form-group">
                                     <span id='reqspan' class='required text-white' style='top:1px;'></span>
                                     <div class="row">
                                         <div class="col-xs-5 col-sm-5 col-lg-5 col-md-5 no-pad-left no-
@@ -329,7 +389,7 @@
                     </div>
                     <div class="col-xs-6 col-sm-6 col-lg-6 col-md-6 login-sectionn">
                         <!--style="max-width: 420px;margin-left: -10%; padding-bottom: 50px;  margin: 0 auto;"-->
-                        <div class="form-body" style="margin-left: 10%;" >
+                        <div class="form-body bodyform2" style="margin-left: 10%;" >
                             <form  action="" method="POST" class="form-signin-white " autocomplete="off">
                                 <h5 class=" form-signin-headingg ">Do not disclose your...</h5>
                                 <ul class="ulclass" >

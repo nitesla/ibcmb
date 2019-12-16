@@ -316,7 +316,7 @@
 
 
 /*******************************************************************/
-
+/*
 @media screen and (min-width: 1200px) {
     .bg {
         min-height: 500px !important;
@@ -324,6 +324,16 @@
 
     .carousel-caption p {
         margin-top: 7px;
+        padding: 0px 25px;
+    }
+}*/
+@media screen and (min-width: 1368px) {
+    .bg {
+        min-height: 700px !important;
+    }
+
+    .carousel-caption p {
+        margin-top: 11px;
         padding: 0px 25px;
     }
 }
