@@ -28,7 +28,7 @@ public class User extends AbstractEntity{
     protected int noOfLoginAttempts;
     protected Integer noOfTokenAttempts =0;
     @Transient
-    private transient String emailTemplate;
+    protected transient String emailTemplate;
 
 
     //@Enumerated(value = EnumType.STRING)

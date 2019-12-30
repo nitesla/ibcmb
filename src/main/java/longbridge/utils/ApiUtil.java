@@ -84,6 +84,8 @@ public class ApiUtil {
                         user.setLockedUntilDate(null);
                         retailUserRepo.save(user);
                         user.setEmailTemplate("mail/loginMobile.html");
+                        logger.info("TEMPLATE {}",user.getEmailTemplate());
+
                         sessionUtils.sendAlert(user);
                     } else {
                         CorporateUser corpuser = corporateUserRepo.findFirstByUserNameIgnoreCase(userDetails.getUsername());
@@ -145,6 +147,8 @@ public class ApiUtil {
                     user.setNoOfLoginAttempts(0);
                     user.setLockedUntilDate(null);
                     retailUserRepo.save(user);
+                    user.setEmailTemplate("mail/loginMobile.html");
+                    logger.info("TEMPLATE {}",user.getEmailTemplate());
                     sessionUtils.sendAlert(user);
                 } else {
                     CorporateUser corpuser = corporateUserRepo.findFirstByUserNameIgnoreCase(userDetails.getUsername());
@@ -165,6 +169,8 @@ public class ApiUtil {
                         responseMap.put("token", token);
                         corpuser.setLastLoginDate(new Date());
                         corporateUserRepo.save(corpuser);
+                        corpuser.setEmailTemplate("mail/loginMobile.html");
+                        logger.info("TEMPLATE {}",corpuser.getEmailTemplate());
                         sessionUtils.sendAlert(user);
                     }
                 }
