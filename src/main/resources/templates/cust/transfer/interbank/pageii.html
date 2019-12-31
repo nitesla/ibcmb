@@ -207,9 +207,13 @@
                type: 'GET',
                async: false,
                success:function(result){
-                   if(result.includes('<'))result='';
-                   let fee= numberWithCommas(result);
-                   $('#fee').html("Fee applicable: "+fee);
+                   if(result.includes('<')){
+                       result='';
+                       $("#fee").html("");
+                   }else {
+                       let fee = numberWithCommas(result);
+                       $('#fee').html("Fee applicable: " + '₦' + fee);
+                   }
 
                }
            })
