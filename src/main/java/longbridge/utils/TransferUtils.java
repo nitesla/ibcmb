@@ -249,10 +249,10 @@ public class TransferUtils {
     }
     
     
-    public String getFee(String channel) {
+    public String getFee(String...channel) {
         String result = "";
         try {
-            Rate rate = integrationService.getFee(channel);
+            Rate rate = integrationService.getFee(channel[0],channel[1]);
             if ("FIXED".equalsIgnoreCase(rate.getFeeName())) {
                 result = StringEscapeUtils.unescapeHtml4("&#8358;") + "" + rate.getFeeValue();
             } else if ("RANGE".equalsIgnoreCase(rate.getFeeName())) {

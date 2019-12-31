@@ -124,7 +124,7 @@ public interface IntegrationService {
 
     boolean  sendRegCodeSMS(String message, String contact, String subject);
 
-    Rate getFee(String channel);
+    Rate getFee(String...channel);
 
     @PreAuthorize("hasAuthority('CUSTOM_DUTY')")
     public CustomsAreaCommand getCustomsAreaCommands(CustomsAreaCommandRequest customsAreaCommandRequest);

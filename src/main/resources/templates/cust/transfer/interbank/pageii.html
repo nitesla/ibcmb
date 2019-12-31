@@ -65,7 +65,7 @@
                                 <span class="alert no-bd-rad my-border bg-white hide-content-only">NGN</span>
 
                                 <input type="number" name="amount" step="any" placeholder="Enter an amount"
-                                       th:field="*{amount}" class="form-control amount"/><span class='req-inner'></span>
+                                       th:field="*{amount}" class="form-control amount"/><span class='req-inner' id="amount"></span>
                                 <p th:if="${#fields.hasErrors('amount')}" th:errors="*{amount}"
                                    class="errors"></p>
                             </div>
@@ -93,6 +93,7 @@
                                             <!--<input type="availBal" name="availBal"/>-->
                                             <p class="related-info coronation-blue" id="availBal"><b></b></p>
                                             <p  class="related-info coronation-blue" id="limit"><b></b></p>
+                                            <p  class="related-info coronation-blue" id="fee"><b></b></p>
 
                                         </div>
                                     </div>
@@ -193,6 +194,28 @@
                 }
             })
         }
+
+        $("#amount").on('blur',function(){
+            getFee();
+        })
+
+       function getFee(){
+            let amount=$("#amount").val();
+
+           $.ajax({
+               url: "/retail/transfer/interbank/"+amount+"/fee",
+               type: 'GET',
+               async: false,
+               success:function(result){
+                   if(result.includes('<'))result='';
+                   let fee= numberWithCommas(result);
+                   $('#fee').html("Fee applicable: "+fee);
+
+               }
+           })
+
+
+       }
 
         /*var url=[[${url}]];
         var key=[[${key}]];

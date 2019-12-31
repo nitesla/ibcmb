@@ -771,11 +771,12 @@ public class IntegrationServiceImpl implements IntegrationService {
 
 	@Override
 	// @Async
-	public Rate getFee(String channel) {
+	public Rate getFee(String...channel) {
 
 		String uri = URI + "/transfer/fee";
 		Map<String, String> params = new HashMap<>();
-		params.put("transactionChannel", channel);
+		params.put("transactionChannel", channel[0]);
+		params.put("tranAmount", channel[1]);
 		try {
 			Rate details = template.postForObject(uri, params, Rate.class);
 			return details;

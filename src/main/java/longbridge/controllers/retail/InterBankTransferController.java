@@ -254,15 +254,6 @@ public class InterBankTransferController {
                 , sortedNames);
 
 
-        try {
-            model.addAttribute("nip", transferUtils.getFee("NIP"));
-            model.addAttribute("rtgs", transferUtils.getFee("RTGS"));
-        } catch (Exception e) {
-
-            e.printStackTrace();
-        }
-
-
     }
 
 
@@ -311,6 +302,20 @@ public class InterBankTransferController {
 
 
         }
+
+    }
+    @ResponseBody
+    @GetMapping("{amount}/fee")
+    public String getInterBankTransferFee(@PathVariable("amount") String amount) {
+       String fee="";
+        System.out.println("amount"+amount);
+        try {
+           fee=transferUtils.getFee("NIP", amount);
+        } catch (Exception e) {
+
+            e.printStackTrace();
+        }
+        return fee;
 
     }
 /*
