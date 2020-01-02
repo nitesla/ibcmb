@@ -75,12 +75,12 @@ public class MobileInterBankTransferController {
 //transferUtils.getFee("NIP")
 
     @ApiOperation(value = "Get Transfer Charge")
-    @GetMapping(value = "/fee")
-    public ResponseEntity<?> getTransFerFee(){
+    @GetMapping(value = "{tranAmount}/fee")
+    public ResponseEntity<?> getTransFerFee(@PathVariable("tranAmount") String tranAmount){
 
         try{
 
-            String fee =  transferUtils.getFee("NIP");
+            String fee =  transferUtils.getFee("NIP",tranAmount);
             responseData.setMessage(message);
             responseData.setData(fee);
             responseData.setCode("00");

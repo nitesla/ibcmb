@@ -208,10 +208,12 @@ public class CorpInterBankTransferController {
                 //TODO used RTGS
 
                 corpTransferRequestDTO.setTransferType(TransferType.RTGS);
-                charge = integrationService.getFee("RTGS").getFeeValue();
+                charge = integrationService.getFee("RTGS",String.valueOf(corpTransferRequestDTO.getAmount())).getFeeValue();
+
             } else {
 
-                charge = integrationService.getFee("NIP").getFeeValue();
+                charge = integrationService.getFee("NIP",String.valueOf(corpTransferRequestDTO.getAmount())).getFeeValue();
+
                 corpTransferRequestDTO.setTransferType(TransferType.INTER_BANK_TRANSFER);
             }
 //            request.getSession().removeAttribute("NIP");
@@ -260,13 +262,6 @@ public class CorpInterBankTransferController {
         model.addAttribute("banks", sortedNames);
 
 
-        try {
-            model.addAttribute("nip", transferUtils.getFee("NIP"));
-            model.addAttribute("rtgs", transferUtils.getFee("RTGS"));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
 
     }
 
@@ -314,6 +309,20 @@ public class CorpInterBankTransferController {
 
 
         }
+
+    }
+
+    @ResponseBody
+    @GetMapping("{amount}/fee")
+    public String getInterBankTransferFee(@PathVariable("amount") String amount) {
+        String fee="";
+        try {
+            fee=transferUtils.getFee("NIP", amount);
+        } catch (Exception e) {
+
+            e.printStackTrace();
+        }
+        return fee;
 
     }
 }

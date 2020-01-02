@@ -200,13 +200,13 @@ public class InterBankTransferController {
             String type = (String) request.getSession().getAttribute("NIP");
             if ("RTGS".equalsIgnoreCase(type)) {
                 transferRequestDTO.setTransferType(TransferType.RTGS);
-                charge = transferUtils.calculateFee(transferRequestDTO.getAmount(), "RTGS");
+                charge = transferUtils.getFee("RTGS",String.valueOf(transferRequestDTO.getAmount()) );
                 transferRequestDTO.setCharge(charge);
 
 
             } else {
                 transferRequestDTO.setTransferType(TransferType.INTER_BANK_TRANSFER);
-                charge = transferUtils.calculateFee(transferRequestDTO.getAmount(), "NIP");
+                charge = transferUtils.getFee("NIP",String.valueOf(transferRequestDTO.getAmount()));
                 transferRequestDTO.setCharge(charge);
             }
             // request.getSession().removeAttribute("NIP");

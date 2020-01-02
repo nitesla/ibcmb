@@ -195,6 +195,10 @@
             })
         }
 
+        /*$("#amount").on("keyup",function () {
+            $("#amount").val($("#amount").val().replace(/[^0-9][^\.]/g,''));
+
+        })*/
         $("#amount").on('blur',function(){
             getFee();
         })
