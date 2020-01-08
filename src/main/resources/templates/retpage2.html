@@ -424,6 +424,15 @@
         <script th:src="@{~/customer/plugins/bootstrap-notify/bootstrap-notify.js}"></script>
         <script th:src="@{~/customer/js/clipboard.min.js}"></script>
         <script>
+
+
+            $('#password').keypress(function(event) {
+                if (event.keyCode == 13 && !$('#phishing').is(':checked')) {
+                    event.preventDefault();
+                    $("#sec").show();
+                }
+            });
+
             $("#formbtn").on("click",function (e) {
                 e.preventDefault();
                 if($('#phishing').is(':checked')){
