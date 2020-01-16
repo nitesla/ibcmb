@@ -525,6 +525,7 @@ public class AccountServiceImpl implements AccountService {
     		case RETAIL : {
     			RetailUser user = (RetailUser) currentUser;
     			Account acct = accountRepo.findFirstByAccountNumber(account);
+    			logger.info("debit account {}",acct);
     			if(acct == null || acct.getCustomerId() == null) {
     				throw new InternetBankingException("Access Denied");
     			}else if(!acct.getCustomerId().equals(user.getCustomerId())) {
