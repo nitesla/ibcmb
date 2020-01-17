@@ -143,12 +143,12 @@ public class MobileCorpOwnTransferController {
                     responseData.setError(true);
                     return new ResponseEntity<Object>(responseData, HttpStatus.BAD_REQUEST);
                 }
-            } else {
+            } /*else {
                 responseData.setMessage("Token Code is Required");
                 responseData.setCode("99");
                 responseData.setError(true);
                 return new ResponseEntity<Object>(responseData, HttpStatus.BAD_REQUEST);
-            }
+            }*/
         }
 
         try{

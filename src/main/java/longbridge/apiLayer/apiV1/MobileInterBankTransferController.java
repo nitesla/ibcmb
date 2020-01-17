@@ -206,6 +206,8 @@ public class MobileInterBankTransferController {
 
         if (setting != null && setting.isEnabled()) {
             if (tokenCode != null && !tokenCode.isEmpty()) {
+                System.out.println("tokenCode"+tokenCode);
+
                 try {
                     boolean result = securityService.performTokenValidation(user.getEntrustId(), user.getEntrustGroup(), tokenCode);
                     if (!result) {
@@ -222,11 +224,6 @@ public class MobileInterBankTransferController {
                     responseData.setError(true);
                     return new ResponseEntity<Object>(responseData, HttpStatus.BAD_REQUEST);
                 }
-            } else {
-                responseData.setMessage("Token Code is Required");
-                responseData.setCode("99");
-                responseData.setError(true);
-                return new ResponseEntity<Object>(responseData, HttpStatus.BAD_REQUEST);
             }
         }
 

@@ -199,9 +199,13 @@ public class MobileLocalTransferController {
         RetailUser user = retailUserService.getUserByName(principal.getName());
 
         SettingDTO setting = configService.getSettingByName("ENABLE_RETAIL_2FA");
+        System.out.println("Entrust is Enabled"+setting.isEnabled());
 
         if (setting != null && setting.isEnabled()) {
             if (token != null && !token.isEmpty()) {
+
+                System.out.println("tokenCode"+token);
+
                 try {
                     boolean result = securityService.performTokenValidation(user.getEntrustId(), user.getEntrustGroup(), token);
                     if (!result) {
@@ -220,11 +224,6 @@ public class MobileLocalTransferController {
                     responseData.setCode("99");
                     return new ResponseEntity<Object>(responseData, HttpStatus.BAD_REQUEST);
                 }
-            } else {
-                responseData.setMessage("Token Code is Required");
-                responseData.setError(true);
-                responseData.setCode("99");
-                return new ResponseEntity<Object>(responseData, HttpStatus.BAD_REQUEST);
             }
         }
 

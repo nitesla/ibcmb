@@ -71,26 +71,9 @@ public class MobileBeneficiaryController {
     @PostMapping(value = "/corp/local/add",produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.TEXT_XML_VALUE})
     public ResponseEntity<?> CorporateLocalBeneficiary (@RequestBody CorpLocalBeneficiaryDTO corpLocalBeneficiaryDTO, Principal principal, Locale locale) {
         String failure;
-        SettingDTO setting = configService.getSettingByName("ENABLE_CORPORATE_2FA");
         CorporateUser user = corporateUserService.getUserByName(principal.getName());
         getCurrentUser().setEmailTemplate("mail/beneficiaryMobile.html");
 
-        if ((setting != null && setting.isEnabled())) {
-
-            try {
-
-                securityService.performTokenValidation(user.getEntrustId(), user.getEntrustGroup(), corpLocalBeneficiaryDTO.getToken());
-            } catch (InternetBankingSecurityException ibse) {
-
-                failure = ibse.getMessage();
-                responseData.setMessage(failure);
-                responseData.setError(true);
-                responseData.setCode("99");
-
-                return new ResponseEntity<Object>(responseData, HttpStatus.BAD_REQUEST);
-
-            }
-        }
         try {
 
             String message = corpLocalBeneficiaryService.addCorpLocalBeneficiary(corpLocalBeneficiaryDTO);
@@ -114,62 +97,13 @@ public class MobileBeneficiaryController {
 
     @ApiOperation(value = "Delete Local Corporate Beneficiary", tags = {"Beneficiary Management"})
     @PostMapping(value = "/corp/local/delete")
-    public ResponseEntity<?> DeleteCorpLocalBeneficiary (@RequestBody CorpLocalBeneficiaryDTO corpLocalBeneficiaryDTO, Principal principal) {
+    public ResponseEntity<?> DeleteCorpLocalBeneficiary (@RequestBody CorpLocalBeneficiaryDTO corpLocalBeneficiaryDTO) {
 
         String failure;
-        logger.info("am here 1");
         String token = corpLocalBeneficiaryDTO.getToken();
-        Long id  = corpLocalBeneficiaryDTO.getId();
-        logger.info("am here 2");
+        logger.info("am here 2"+token);
 
-        SettingDTO setting = configService.getSettingByName("ENABLE_CORPORATE_2FA");
 
-//      if (id.toString() !="") {
-          if ((setting != null && setting.isEnabled())) {
-
-//        if (!token.isEmpty() && !benefit.isEmpty()) {
-              try {
-                  CorporateUser corporateUser = corporateUserService.getUserByName(principal.getName());
-                  boolean result = securityService.performTokenValidation(corporateUser.getEntrustId(), corporateUser.getEntrustGroup(), token);
-                  logger.info("result  {} ", result);
-
-                  if (result) {
-                      try {
-                          logger.info("am here ");
-                          String message = corpLocalBeneficiaryService.deleteCorpLocalBeneficiary(corpLocalBeneficiaryDTO.getId());
-                          logger.info("delete msg  {} ", message);
-                          responseData.setMessage(message);
-                          responseData.setError(false);
-                          responseData.setCode("00");
-                          responseData.setData(null);
-
-                          return new ResponseEntity<>(responseData, HttpStatus.OK);
-                      } catch (InternetBankingException e) {
-                          failure = e.getMessage();
-                          responseData.setMessage(failure);
-                          responseData.setError(true);
-                          responseData.setCode("99");
-                          responseData.setData(null);
-                          return new ResponseEntity<Object>(responseData, HttpStatus.BAD_REQUEST);
-                      }
-                  } else {
-                      responseData.setMessage("Token Authentication Failed");
-                      responseData.setData(null);
-                      responseData.setError(true);
-                      responseData.setCode("99");
-                      return new ResponseEntity<Object>(responseData, HttpStatus.BAD_REQUEST);
-                  }
-              } catch (InternetBankingException e) {
-                  logger.error("Beneficiary Error", e);
-                  failure = e.getMessage();
-                  responseData.setMessage(failure);
-                  responseData.setData(null);
-                  responseData.setError(true);
-                  responseData.setCode("99");
-                  return new ResponseEntity<Object>(responseData, HttpStatus.BAD_REQUEST);
-              }
-
-          } else {
               try {
 
                   String message = corpLocalBeneficiaryService.deleteCorpLocalBeneficiary(corpLocalBeneficiaryDTO.getId());
@@ -189,14 +123,7 @@ public class MobileBeneficiaryController {
               }
 
           }
-      }
-// }else {
-//          responseData.setMessage("Invalid Id");
-//          responseData.setData(null);
-//          responseData.setCode("");
-//          responseData.setError(true);
-//          return new ResponseEntity<Object>(responseData,HttpStatus.BAD_REQUEST);
-//      }
+
 
 
     @ApiOperation(value = "View  Specific Local Corporate Beneficiary", tags = {"Beneficiary Management"})
@@ -266,31 +193,8 @@ public class MobileBeneficiaryController {
     @ApiOperation(value = "Add Local Retail Beneficiary", tags = {"Beneficiary Management"})
     @PostMapping(value = "/retail/local/add", produces = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<?> RetailAddLocalBeneficiary (@RequestBody LocalBeneficiaryDTO localBeneficiaryDTO, Principal principal){
-        logger.info("prinT {}",principal);
 
         String failure;
-        SettingDTO setting = configService.getSettingByName("ENABLE_RETAIL_2FA");
-        if (setting != null && setting.isEnabled()) {
-
-            try {
-                RetailUser retailUser = retailUserService.getUserByName(principal.getName());
-                securityService.performTokenValidation(retailUser.getEntrustId(), retailUser.getEntrustGroup(), localBeneficiaryDTO.getToken());
-            } catch (InternetBankingSecurityException ibse) {
-                responseData.setMessage(ibse.getMessage());
-                responseData.setError(true);
-                responseData.setCode("99");
-                return  new ResponseEntity<>(responseData,HttpStatus.BAD_REQUEST);
-
-            }
-
-            catch (InternetBankingException ibe) {
-                responseData.setMessage(ibe.getMessage());
-                responseData.setError(true);
-                responseData.setCode("99");
-                return  new ResponseEntity<>(responseData,HttpStatus.BAD_REQUEST);
-            }
-
-        }
 
         try {
             String responseMessage = localBeneficiaryService.addLocalBeneficiaryMobileApi(localBeneficiaryDTO);
@@ -312,50 +216,9 @@ public class MobileBeneficiaryController {
 
     @ApiOperation(value = "Delete Local Retail Beneficiary", tags = {"Beneficiary Management"})
     @PostMapping(value = "/retail/local/delete")
-    public ResponseEntity<?> RetailDeleteLocalBeneficiary (@RequestBody LocalBeneficiaryDTO localBeneficiaryDTO, Principal principal){
+    public ResponseEntity<?> RetailDeleteLocalBeneficiary (@RequestBody LocalBeneficiaryDTO localBeneficiaryDTO){
 
         String failure;
-        SettingDTO setting = configService.getSettingByName("ENABLE_RETAIL_2FA");
-//        if (id.toString() !="") {
-        if ((setting != null && setting.isEnabled())) {
-            try {
-                RetailUser retailUser = retailUserService.getUserByName(principal.getName());
-                boolean result = securityService.performTokenValidation(retailUser.getEntrustId(), retailUser.getEntrustGroup(), localBeneficiaryDTO.getToken());
-                if (result) {
-                    try {
-                        String message = localBeneficiaryService.deleteLocalBeneficiary(localBeneficiaryDTO.getId());
-                        responseData.setMessage(message);
-                        responseData.setData(null);
-                        responseData.setError(false);
-                        responseData.setCode("00");
-                        return  new ResponseEntity<Object>(responseData,HttpStatus.OK);
-                    } catch (InternetBankingException e) {
-                        logger.error("Beneficiary Error", e);
-                        failure = e.getMessage();
-                        responseData.setMessage(failure);
-                        responseData.setData(null);
-                        responseData.setError(true);
-                        responseData.setCode("99");
-                        return  new ResponseEntity<Object>(responseData,HttpStatus.BAD_REQUEST);
-                    }
-
-                } else {
-                    responseData.setMessage("Token Authentication Failed");
-                    responseData.setData(null);
-                    responseData.setError(true);
-                    responseData.setCode("99");
-                    return  new ResponseEntity<Object>(responseData, HttpStatus.BAD_REQUEST);
-                }
-            } catch (InternetBankingException e) {
-                logger.error("Local Beneficiary Error", e);
-                failure = e.getMessage();
-                responseData.setMessage(failure);
-                responseData.setData(null);
-                responseData.setError(true);
-                responseData.setCode("99");
-                return  new ResponseEntity<Object>(responseData,HttpStatus.BAD_REQUEST);
-            }
-        } else {
             try {
 
                 String message = localBeneficiaryService.deleteLocalBeneficiary(localBeneficiaryDTO.getId());
@@ -374,15 +237,8 @@ public class MobileBeneficiaryController {
                 return new ResponseEntity<Object>(responseData, HttpStatus.BAD_REQUEST);
             }
         }
-//        }else {
-//            responseData.setMessage("Invalid Id");
-//            responseData.setData(null);
-//            responseData.setCode("");
-//            responseData.setError(true);
-//            return new ResponseEntity<Object>(responseData,HttpStatus.BAD_REQUEST);
-//        }
 
-    }
+
 
 
     @ApiOperation(value = "View specific Local Retail Beneficiary", tags = {"Beneficiary Management"})

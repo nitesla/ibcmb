@@ -130,13 +130,15 @@ public class MobileOwnTransferController {
         RetailUser user = retailUserService.getUserByName(principal.getName());
 
         SettingDTO setting = configService.getSettingByName("ENABLE_RETAIL_2FA");
-
+        System.out.println("Entrust is Enabled"+setting.isEnabled());
         if (setting != null && setting.isEnabled()) {
+
             if (tokenCode != null && !tokenCode.isEmpty()) {
+                System.out.println("tokenCode"+tokenCode);
+
                 try {
                     boolean result = securityService.performTokenValidation(user.getEntrustId(), user.getEntrustGroup(), tokenCode);
                     if (!result) {
-//                        response = messageSource.getMessage("token.auth.failure", null, locale);
                         responseData.setMessage(messageSource.getMessage("token.auth.failure", null, locale));
                         responseData.setCode("99");
                         responseData.setError(true);
@@ -150,11 +152,6 @@ public class MobileOwnTransferController {
                     responseData.setError(true);
                     return new ResponseEntity<Object>(responseData, HttpStatus.BAD_REQUEST);
                 }
-            } else {
-                responseData.setMessage("Token Code is Required");
-                responseData.setCode("99");
-                responseData.setError(true);
-                return new ResponseEntity<Object>(responseData, HttpStatus.BAD_REQUEST);
             }
         }
 
