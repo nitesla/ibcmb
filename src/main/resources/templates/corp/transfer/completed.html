@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{corp-layout}">
 
-<body onload="javascript:var bread = [['Home', '/corporate/dashboard'],['Completed Transfers']];currentBar('completed transfers');breadCrumb(bread)">
+<body onload="javascript:var bread = [['Home', '/corporate/dashboard'],['Transfer Log']];currentBar('transfer log');breadCrumb(bread)">
 
     <div layout:fragment="content">
         <div class="col-md-5 col-sm-5">
@@ -20,6 +20,7 @@
                         <td>Beneficiary</td>
                         <td>Beneficiary Bank</td>
                         <td>Remarks</td>
+                        <td>Status</td>
                         <td>&nbsp;</td>
                     </thead>
                     <tbody>
@@ -31,6 +32,7 @@
                         <td>Beneficiary</td>
                         <td>Beneficiary Bank</td>
                         <td>Remarks</td>
+                        <td>Status</td>
                         <td></td>
                     </tfoot>
                 </table>
@@ -69,6 +71,8 @@
                     }, {
                         "data": "remarks"
                     }, {
+                        "data": "status"
+                    }, {
                         "data": "id"
                     }, ],
                     "columnDefs": [{
@@ -99,7 +103,23 @@
                         }
                     },
                         {
-                        "targets": 5,
+                            "targets" : 5,
+                            "data" : "status",
+                            "render" : function(data, type,full, meta) {
+                                if (type === 'display') {
+                                    if(data == '00'||data == '000')
+                                        return "Transaction Successful";
+                                    if(data=="09"||data=="34"){
+                                        return "Pending";
+                                    }
+                                    else return "Failed";
+
+                                }
+                                return data;
+                            }
+                        },
+                        {
+                        "targets": 6,
                         "data": "id",
                         "render": function(data, type, full, meta) {
                             return '<a href="' + data + '/downloadreceipt" target="_blank">Receipt</a>';

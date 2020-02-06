@@ -72,6 +72,9 @@ public class CorpTransferServiceImpl implements CorpTransferService {
 
     @Autowired
     private EntityManager entityManager;
+    @Autowired
+    private TransferErrorService transferErrorService;
+
 
 
     @Autowired
@@ -207,7 +210,8 @@ public class CorpTransferServiceImpl implements CorpTransferService {
         CorporateUser corporateUser = getCurrentUser();
         Corporate corporate = corporateUser.getCorporate();
         logger.info("corporate:{}",corporate);
-        Page<CorpTransRequest> page = corpTransferRequestRepo.findByCorporateAndStatusInAndTranDateNotNullOrderByTranDateDesc(corporate, Arrays.asList("00", "000"), pageDetails);
+//        Page<CorpTransRequest> page = corpTransferRequestRepo.findByCorporateAndStatusInAndTranDateNotNullOrderByTranDateDesc(corporate, Arrays.asList("00", "000"), pageDetails);
+        Page<CorpTransRequest> page = corpTransferRequestRepo.findByCorporateAndStatusNotAndTranDateNotNullOrderByTranDateDesc(corporate, Arrays.asList("Pending"),pageDetails);
         logger.info("Page<CorpTransRequest> count:{}",pageDetails.getPageSize());
         List<CorpTransRequest> corpTransRequests = page.getContent().stream()
                 .filter(transRequest -> !accountConfigService.isAccountRestrictedForViewFromUser(accountService.getAccountByAccountNumber(transRequest.getCustomerAccountNumber()).getId(),corporateUser.getId())).collect(Collectors.toList());
@@ -510,11 +514,18 @@ public class CorpTransferServiceImpl implements CorpTransferService {
                         return requestDTO.getStatusDescription();
 
                     } if ("34".equals(requestDTO.getStatus())){
-                        requestDTO.setStatusDescription(messageSource.getMessage("transaction.pending", null, locale));
+                        requestDTO.setStatusDescription(messageSource.getMessage(transferErrorService.getMessage(requestDTO.getStatus()), null, locale));
+                        return requestDTO.getStatusDescription();
+
+                    }
+                    if ("09".equals(requestDTO.getStatus())){
+                        requestDTO.setStatusDescription(messageSource.getMessage(transferErrorService.getMessage(requestDTO.getStatus()), null, locale));
                         return requestDTO.getStatusDescription();
 
                     } else {//failed transaction
-                        throw new InternetBankingTransferException(String.format(messageSource.getMessage("transfer.auth.failure.reason", null, locale), requestDTO.getStatusDescription()));
+                       return messageSource.getMessage(transferErrorService.getMessage(requestDTO.getStatus()),null,locale);//GB
+
+//                        throw new InternetBankingTransferException(String.format(messageSource.getMessage("transfer.auth.failure.reason", null, locale), requestDTO.getStatusDescription()));
                     }
                 }
                 transferAuth.getAuths().add(transReqEntry);// the entry is added, as authorizations are not yet completed

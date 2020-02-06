@@ -559,6 +559,8 @@ public class CorpTransferController {
         modelMap.put("refNUm", corpTransferRequestDTO.getReferenceNumber());
         modelMap.put("date", DateFormatter.format(new Date()));
         modelMap.put("tranDate", DateFormatter.format(new Date()));
+        modelMap.put("statusDescription", corpTransferRequestDTO.getStatusDescription());
+
         ModelAndView modelAndView = new ModelAndView(view, modelMap);
         return modelAndView;
 

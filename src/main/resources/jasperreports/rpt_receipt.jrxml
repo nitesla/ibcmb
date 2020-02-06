@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.6.0.final using JasperReports Library version 6.6.0  -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="accountStatment" language="groovy" pageWidth="595" pageHeight="409" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" whenResourceMissingType="Empty" uuid="b1c76af6-01a7-4384-8820-23f298be1610">
 	<property name="ireport.zoom" value="1.1"/>
 	<property name="ireport.x" value="0"/>
@@ -21,6 +22,7 @@
 	<parameter name="acctNo2" class="java.lang.String"/>
 	<parameter name="acctNo1" class="java.lang.String"/>
 	<parameter name="amount" class="java.lang.String"/>
+	<parameter name="statusDescription" class="java.lang.String"/>
 	<queryString language="json">
 		<![CDATA[]]>
 	</queryString>
@@ -42,7 +44,7 @@
 		</band>
 	</pageHeader>
 	<columnHeader>
-		<band height="125" splitType="Stretch">
+		<band height="145" splitType="Stretch">
 			<rectangle>
 				<reportElement x="1" y="62" width="553" height="19" backcolor="#EBE9E8" uuid="8fd0d94d-c621-4e57-96e1-97ff7d41e76a">
 					<printWhenExpression><![CDATA[($V{REPORT_COUNT}%2)==1]]></printWhenExpression>
@@ -191,6 +193,25 @@
 					<pen lineWidth="0.0"/>
 				</graphicElement>
 			</rectangle>
+			<rectangle>
+				<reportElement x="1" y="124" width="553" height="20" backcolor="#EBE9E8" uuid="7b4cbbc6-fd23-4fcb-bc13-1168de569fdc">
+					<printWhenExpression><![CDATA[($V{REPORT_COUNT}%2)==1]]></printWhenExpression>
+				</reportElement>
+				<graphicElement>
+					<pen lineWidth="0.0"/>
+				</graphicElement>
+			</rectangle>
+			<textField>
+				<reportElement x="101" y="124" width="451" height="19" uuid="8264ed81-30d0-4b1a-9d54-66a8d53c671a"/>
+				<textFieldExpression><![CDATA[$P{statusDescription}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="1" y="124" width="100" height="20" uuid="614a5351-b429-4638-acbd-b24e2b046893"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<text><![CDATA[Status:]]></text>
+			</staticText>
 		</band>
 	</columnHeader>
 	<columnFooter>

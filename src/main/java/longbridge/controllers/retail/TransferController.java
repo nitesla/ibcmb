@@ -63,6 +63,7 @@ public class TransferController {
     private ConfigurationService configService;
 
 
+
     private Logger logger = LoggerFactory.getLogger(this.getClass());
     private Locale locale = LocaleContextHolder.getLocale();
 
@@ -274,26 +275,42 @@ public class TransferController {
 
             transferRequestDTO = transferService.makeTransfer(transferRequestDTO);
             model.addAttribute("transRequest", transferRequestDTO);
+            logger.info("Transfer status {}",transferRequestDTO.getStatus());
             if(transferRequestDTO.getStatus().equalsIgnoreCase("00")||transferRequestDTO.getStatus().equalsIgnoreCase("000")) {
-                model.addAttribute("message", messages.getMessage("transaction.success", null, locale));
+                model.addAttribute("message", messages.getMessage(transferErrorService.getMessage(transferRequestDTO.getStatus()), null, locale));
+                logger.info("Transfer status1 {}",transferRequestDTO.getStatus());
+
                 return "cust/transfer/transferdetails";
 
             }
             if(transferRequestDTO.getStatus().equalsIgnoreCase("34")) {
-                model.addAttribute("failure", messages.getMessage("transaction.pending", null, locale));
+//                model.addAttribute("failure", messages.getMessage("transaction.pending", null, locale));
+                model.addAttribute("failure", messages.getMessage(transferErrorService.getMessage(transferRequestDTO.getStatus()), null, locale));
+                logger.info("Transfer status..antifraud {}",transferRequestDTO.getStatus());
+
                 return "cust/transfer/pendingtransferdetails";
 
             }
-            return "cust/transfer/transferdetails";
+            if(transferRequestDTO.getStatus().equalsIgnoreCase("09")) {
+                model.addAttribute("failure", messages.getMessage(transferErrorService.getMessage(transferRequestDTO.getStatus()), null, locale));
+                logger.info("Transfer status..pending {}",transferRequestDTO.getStatus());
+                return "cust/transfer/pendingtransferdetails";
+
+            }else{
+                logger.info("Transfer status..others {}",transferRequestDTO.getStatus());
+                redirectAttributes.addFlashAttribute("failure", transferErrorService.getMessage(transferRequestDTO.getStatus()));//GB
+                return index(request);
+            }
+//            return "cust/transfer/transferdetails";
 
 
         } catch (InternetBankingTransferException e) {
             logger.error("Error making transfer", e);
             if (request.getSession().getAttribute("Lbeneficiary") != null)
                 request.getSession().removeAttribute("Lbeneficiary");
-            redirectAttributes.addFlashAttribute("failure", messages.getMessage("transfer.failed", null, locale));//GB
+//            redirectAttributes.addFlashAttribute("failure", messages.getMessage("transfer.failed", null, locale));
+            redirectAttributes.addFlashAttribute("failure",transferErrorService.getMessage(transferRequestDTO.getStatus()) );
             return index(request);
-
 
         } catch (Exception e) {
             logger.error("Error making transfer", e);

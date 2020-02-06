@@ -28,7 +28,8 @@ public interface CorpTransferRequestRepo extends CommonRepo<CorpTransRequest,Lon
 
     boolean existsByCorporate_IdAndCustomerAccountNumberAndStatus(Long corpId,String accNumber, String status);
 
-    Page<CorpTransRequest> findByCorporateAndStatusInAndTranDateNotNullOrderByTranDateDesc(Corporate corporate, List<String> status, Pageable pageable);
+//    Page<CorpTransRequest> findByCorporateAndStatusInAndTranDateNotNullOrderByTranDateDesc(Corporate corporate, List<String> status, Pageable pageable);
+    Page<CorpTransRequest> findByCorporateAndStatusNotAndTranDateNotNullOrderByTranDateDesc(Corporate corporate,List<String> status, Pageable pageable);
 
     Page<CorpTransRequest> findByCorporateAndStatusDescription(Corporate corporate, String sd, Pageable pageable);
 

@@ -137,18 +137,18 @@ public class TransferServiceImpl implements TransferService {
 
         if (transRequest != null) {
 
-//            transferRequestDTO = saveTransfer(convertEntityToDTO(transRequest));
             logger.info("uniqueid {}",transRequest);
             transRequest = transferRequestRepo.save(transRequest);
-            if (transRequest.getStatus() != null) {
+            return convertEntityToDTO(transRequest);
+
+
+           /* if (transRequest.getStatus() != null) {
                 if (transRequest.getStatus().equalsIgnoreCase("000") || transRequest.getStatus().equalsIgnoreCase("00")||
                         transRequest.getStatus().equalsIgnoreCase("34"))
                 return convertEntityToDTO(transRequest);
                 throw new InternetBankingTransferException(transRequest.getStatus());
             }
-
-
-            throw new InternetBankingTransferException(TransferExceptions.ERROR.toString());
+            throw new InternetBankingTransferException(TransferExceptions.ERROR.toString());*/
         }
         throw new InternetBankingTransferException(messages.getMessage("transfer.failed",null,locale));
     }
@@ -263,7 +263,8 @@ public class TransferServiceImpl implements TransferService {
     public Page<TransRequest> getCompletedTransfers(Pageable pageDetails) {
         logger.info("Retrieving completed transfers");
         RetailUser user = getCurrentUser();
-        Page<TransRequest> page = transferRequestRepo.findByUserReferenceNumberAndStatusInAndTranDateNotNullOrderByTranDateDesc("RET_" + user.getId(), Arrays.asList("00","000"), pageDetails);
+//        Page<TransRequest> page = transferRequestRepo.findByUserReferenceNumberAndStatusInAndTranDateNotNullOrderByTranDateDesc("RET_" + user.getId(), Arrays.asList("00","000"), pageDetails);
+        Page<TransRequest> page = transferRequestRepo.findByUserReferenceNumberAndTranDateNotNullOrderByTranDateDesc("RET_" + user.getId(), pageDetails);
         logger.info("Completed transfers content" + page.getContent());
         return page;
     }

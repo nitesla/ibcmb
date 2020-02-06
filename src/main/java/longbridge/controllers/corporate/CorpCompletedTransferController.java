@@ -120,6 +120,13 @@ public class CorpCompletedTransferController {
             modelMap.put("refNUm", transRequest.getReferenceNumber());
             modelMap.put("tranDate", DateFormatter.format(transRequest.getTranDate()));
             modelMap.put("date", DateFormatter.format(new Date()));
+            if("00".equals(transRequest.getStatus())||"000".equals(transRequest.getStatus()))
+            modelMap.put("statusDescription", "Transaction Successful");
+            else if("09".equals(transRequest.getStatus())||"34".equals(transRequest.getStatus()))
+                modelMap.put("statusDescription", "Pending");
+            else modelMap.put("statusDescription", "Failed");
+
+
             ModelAndView modelAndView=new ModelAndView(view, modelMap);
             return modelAndView;
         }catch (Exception e){
