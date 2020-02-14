@@ -3,6 +3,8 @@ package longbridge.repositories;
 import longbridge.models.TransRequest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
@@ -18,4 +20,7 @@ public interface TransferRequestRepo extends CommonRepo<TransRequest, Long> {
     Page<TransRequest> findByUserReferenceNumberAndTranDateNotNullOrderByTranDateDesc(String rn, Pageable pageable);//by GB
     TransRequest findByReferenceNumberAndStatus(String referenceNumber,String status);
     List<TransRequest> findByStatus(String status);
+    @Query("select r from TransRequest r where r.userReferenceNumber=:userReference and (upper(r.remarks) like %:search% or r.amount like %:search% or upper(r.beneficiaryAccountName) like %:search% or upper(r.tranDate) like %:search%)")
+    Page<TransRequest> findUsingPattern(@Param("userReference") String userReference,@Param("search") String search, Pageable pageable);
+
 }

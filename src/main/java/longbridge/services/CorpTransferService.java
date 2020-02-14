@@ -38,6 +38,8 @@ public interface CorpTransferService {
 
     Page<CorpTransRequest> getCompletedTransfers(Pageable pageDetails);
 
+    Page<CorpTransRequest> getCompletedTransfers(String pattern,Pageable pageDetails);
+
     String addAuthorization(CorpTransReqEntry transReqEntry);
 
     boolean userCanAuthorize(TransRequest transRequest);

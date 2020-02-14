@@ -43,7 +43,7 @@ public interface TransferService {
 
     Page<TransRequest> getCompletedTransfers(Pageable pageDetails);
 
-    Page<TransferRequestDTO> getCompletedTransfers(String pattern, Pageable pageDetails);
+    Page<TransRequest> getCompletedTransfers(String pattern, Pageable pageDetails);
 
     List<TransRequest> getLastTenTransactionsForAccount(String s);
 

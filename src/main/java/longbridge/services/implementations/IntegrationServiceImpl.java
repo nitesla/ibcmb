@@ -434,7 +434,7 @@ public class IntegrationServiceImpl implements IntegrationService {
 					logger.info("Initiating Inter Bank Transfer");
 					logger.debug("Transfer Params: {}", params.toString());
 
-					response = template.postForObject(uri, params, TransferRequestNip.class);
+  					response = template.postForObject(uri, params, TransferRequestNip.class);
 					transRequest.setReferenceNumber(response.getUniqueReferenceCode());
 					transRequest.setStatus(response.getResponseCode());
 					transRequest.setStatusDescription(response.getResponseDescription());

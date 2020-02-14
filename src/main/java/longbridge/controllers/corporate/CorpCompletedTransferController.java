@@ -9,6 +9,7 @@ import longbridge.services.CorporateUserService;
 import longbridge.services.TransferService;
 import longbridge.utils.DateFormatter;
 import longbridge.utils.StringUtil;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -71,16 +72,14 @@ public class CorpCompletedTransferController {
 
     @GetMapping("/history/all")
     public @ResponseBody
-    DataTablesOutput<CorpTransRequest> getTransfersCompleted(DataTablesInput input){
+    DataTablesOutput<CorpTransRequest> getTransfersCompleted(DataTablesInput input,@RequestParam("csearch") String search){
 
         Pageable pageable = DataTablesUtils.getPageable(input);
 
-        Page<CorpTransRequest> transferRequests = corpTransferService.getCompletedTransfers(pageable);
-//        if (StringUtils.isNoneBlank(search)) {
-//            transferRequests = transferService.getCompletedTransfers(search, pageable);
-//        }else{
-//            transferRequests = transferService.getCompletedTransfers(pageable);
-//        }
+        Page<CorpTransRequest> transferRequests;
+        if (StringUtils.isNoneBlank(search)) {
+            transferRequests = corpTransferService.getCompletedTransfers(search.toUpperCase(), pageable);
+        }else transferRequests = corpTransferService.getCompletedTransfers(pageable);
         DataTablesOutput<CorpTransRequest> out = new DataTablesOutput<CorpTransRequest>();
         out.setDraw(input.getDraw());
         out.setData(transferRequests.getContent());

@@ -4,6 +4,8 @@ import longbridge.models.CorpTransRequest;
 import longbridge.models.Corporate;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -34,5 +36,9 @@ public interface CorpTransferRequestRepo extends CommonRepo<CorpTransRequest,Lon
     Page<CorpTransRequest> findByCorporateAndStatusDescription(Corporate corporate, String sd, Pageable pageable);
 
     CorpTransRequest findById(long id);
+
+    @Query("select r from CorpTransRequest r where r.corporate=:corporate and (upper(r.remarks) like %:search% or upper(r.amount) like %:search% or upper(r.beneficiaryAccountName) like %:search% or upper(r.tranDate) like %:search%)")
+    Page<CorpTransRequest> findUsingPattern(@Param("corporate")Corporate corporate,@Param("search") String search,Pageable pageable);
+
 
 }

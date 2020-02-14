@@ -219,6 +219,17 @@ public class CorpTransferServiceImpl implements CorpTransferService {
     }
 
     @Override
+    public Page<CorpTransRequest> getCompletedTransfers(String pattern, Pageable pageDetails) {
+        CorporateUser corporateUser = getCurrentUser();
+        Corporate corporate = corporateUser.getCorporate();
+        Page<CorpTransRequest> page = corpTransferRequestRepo.findUsingPattern(corporate,pattern, pageDetails);
+//        List<AdminUserDTO> dtOs = convertEntitiesToDTOs(page.getContent());
+//        long t = page.getTotalElements();
+//        Page<AdminUserDTO> pageImpl = new PageImpl<AdminUserDTO>(dtOs, pageDetails, t);
+        return page;
+    }
+
+    @Override
     public CorpTransRequest getTransfer(Long id) {
         return corpTransferRequestRepo.findById(id);
     }

@@ -1,11 +1,13 @@
 package longbridge.controllers.retail;
 
+import longbridge.dtos.TransferRequestDTO;
 import longbridge.models.RetailUser;
 import longbridge.models.TransRequest;
 import longbridge.services.RetailUserService;
 import longbridge.services.TransferService;
 import longbridge.utils.DateFormatter;
 import longbridge.utils.StringUtil;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -68,16 +70,16 @@ CompletedTransferController {
 
     @GetMapping("/history/all")
     public @ResponseBody
-    DataTablesOutput<TransRequest> getTransfersCompleted(DataTablesInput input){
+    DataTablesOutput<TransRequest> getTransfersCompleted(DataTablesInput input,@RequestParam("csearch") String search){
 
         Pageable pageable = DataTablesUtils.getPageable(input);
 
-        Page<TransRequest> transferRequests = transferService.getCompletedTransfers(pageable);
-//        if (StringUtils.isNoneBlank(search)) {
-//            transferRequests = transferService.getCompletedTransfers(search, pageable);
-//        }else{
-//            transferRequests = transferService.getCompletedTransfers(pageable);
-//        }
+        Page<TransRequest> transferRequests;
+
+        if (StringUtils.isNoneBlank(search)) {
+
+            transferRequests = transferService.getCompletedTransfers(search.toUpperCase(), pageable);
+        }else transferRequests = transferService.getCompletedTransfers(pageable);
         DataTablesOutput<TransRequest> out = new DataTablesOutput<TransRequest>();
         out.setDraw(input.getDraw());
         out.setData(transferRequests.getContent());

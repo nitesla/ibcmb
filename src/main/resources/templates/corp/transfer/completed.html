@@ -11,8 +11,22 @@
         </select>
         </div>
 
+
+
         <div class="col-xs-12 ">
             <div class="table-responsive">
+
+                <ul class="nav navbar-right panel_toolbox col-lg-4 pull-right">
+
+                    <li class="pull-right" >
+                        <div class="input-group col-lg-12">
+                            <input type="text" class="form-control" id="pattern" placeholder="Search..." />
+                        </div>
+                    </li>
+
+                </ul>
+
+
                 <table id="ct" class=" table table-condensed">
                     <thead>
                         <td>Date</td>
@@ -55,10 +69,16 @@
                         [5, 10]
                     ],
                     "pagingType": "input",
-                    "searching": true,
+                    "searching": false,
                     "paging": true,
                     "serverSide": true,
-                    "ajax": url,
+                    "ajax" : {
+                        url : url,
+                        "type" : "GET",
+                        "data" : function(d) {
+                            d.csearch = $('#pattern').val();
+                        }
+                    },
                     "dom": 'T<"clear">frtlp',
                     "columns": [{
                         "data": "tranDate"
@@ -136,6 +156,19 @@
                 //            $('.dataTables_empty').html('No data available');
 
             });
+
+            /*$("#pattern").keyup(function(event){
+                if(event.keyCode == 13){
+                    $("#search").click();
+                }
+            });*/
+            $("#pattern").on("keyup", function(e) {
+                e.preventDefault();
+                dt = $('#ct').DataTable();
+                dt.ajax.reload(null, true);
+
+            });
+
 
             /*]]>*/
         </script>
