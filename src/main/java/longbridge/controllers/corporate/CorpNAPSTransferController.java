@@ -3,6 +3,7 @@ package longbridge.controllers.corporate;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import longbridge.api.NEnquiryDetails;
 import longbridge.dtos.*;
 import longbridge.exception.*;
 import longbridge.models.*;
@@ -98,6 +99,9 @@ public class CorpNAPSTransferController {
     private TransferUtils transferUtils;
     @Autowired
     private ApplicationContext appContext;
+    @Autowired
+    IntegrationService integrationService;
+
     @Value("${jrxmlImage.path}")
     private String imagePath;
     @Value("${jrxmlBulkExcelFile.path}")
@@ -339,7 +343,23 @@ public class CorpNAPSTransferController {
                     return "/corp/transfer/bulktransfer/upload";
                 }
             }
+            //File Account numbers validation
+            for(Row row:datatypeSheet){
+                row.createCell(5);
+                if(row.getRowNum()!=0) {
+                    NEnquiryDetails details = integrationService.doNameEnquiry(row.getCell(4).toString(), row.getCell(0).toString());
+                    if(details.getAccountName()!=null && !details.getAccountName().equals("")) {
+                        row.getCell(5).setCellValue(details.getAccountName());
+                        logger.info("NameEnquiry" + row.getCell(5));
+                    }else {
+                        row.getCell(5).setCellValue(messageSource.getMessage("nameEnquiry.failed", null, locale));
+                        logger.info("NameEnquiry" + row.getCell(5));
+                    }
 
+                }else{
+                    row.getCell(5).setCellValue("Account Name");
+                }
+            }
             httpSession.setAttribute("accountList", accountList);
             httpSession.setAttribute("workbook", workbook);
             httpSession.setAttribute("fileExtension", extension);
@@ -373,7 +393,7 @@ public class CorpNAPSTransferController {
                 Row currentRow = iterator.next();
                 //Iterator<Cell> cellIter ator = currentRow.iterator();
                 ArrayList cellData = new ArrayList();
-                for (int i = 0; i < 5; i++) {
+                for (int i = 0; i < 6; i++) {
                     Cell currentCell = currentRow.getCell(i);
                     System.out.println(currentCell);
                     if (currentCell == null || currentCell.getCellType() == Cell.CELL_TYPE_BLANK || currentCell.toString().isEmpty() || currentCell.toString() == null) {
@@ -405,6 +425,8 @@ public class CorpNAPSTransferController {
                 }
 
                 creditRequest.setNarration(cellData.get(3).toString());
+                creditRequest.setEnquiredAccountName(cellData.get(5).toString());
+
 
 
                 if (!(NumberUtils.isDigits(cellData.get(4).toString())) && !(cellData.get(4).toString().contains("ERROR"))) {
