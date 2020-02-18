@@ -145,9 +145,11 @@
                                         <th style="padding:10px 3px !important">Acc Num</th>
                                         <th style="padding:10px 3px !important">Bank</th>
                                         <th style="padding:10px 3px !important">Ben. Name</th>
+                                        <th>Account Name</th>
                                         <th style="padding:10px 3px !important">Amt</th>
                                         <th style="padding:10px 3px !important">Narration</th>
                                         <th style="padding:10px 3px !important">Status</th>
+
                                         <th style="padding:10px 3px !important"></th>
 
                                     </thead>
@@ -332,6 +334,8 @@
                         "data": "beneficiaryBank"
                     }, {
                         "data": "accountName"
+                    },{
+                        "data": "accountNameEnquiry"
                     }, {
                         "data": "amount"
                     }, {
@@ -343,7 +347,7 @@
                     }],
                     "columnDefs": [
                         {
-                            "targets" : 3,
+                            "targets" : 4,
                             "data" : "amount",
                             "render" : function(data, type,full, meta) {
                                 if (type === 'display') {
@@ -356,7 +360,7 @@
                             }
                         },
                         {
-                        "targets": 6,
+                        "targets": 7,
                         "data": "DT_RowId",
                         "render": function(data, type, full, meta) {
                             return '<a href="/corporate/transfer/bulk/receipt/' + data + '" target="_blank">Receipt</a>';

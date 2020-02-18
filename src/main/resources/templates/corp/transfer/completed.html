@@ -20,7 +20,10 @@
 
                     <li class="pull-right" >
                         <div class="input-group col-lg-12">
-                            <input type="text" class="form-control" id="pattern" placeholder="Search..." />
+                            <input type="text" class="form-control pull-right" style="width:70%;" id="pattern" placeholder="Search..." /><span
+                                class="input-group-btn">
+										<button class="btn btn-success" id="search" type="button">Go!</button>
+									</span>
                         </div>
                     </li>
 
@@ -156,18 +159,25 @@
                 //            $('.dataTables_empty').html('No data available');
 
             });
-
-            /*$("#pattern").keyup(function(event){
+/*
+            $("#pattern").keyup(function(event){
                 if(event.keyCode == 13){
                     $("#search").click();
                 }
             });*/
+
             $("#pattern").on("keyup", function(e) {
                 e.preventDefault();
                 dt = $('#ct').DataTable();
                 dt.ajax.reload(null, true);
 
             });
+                       $("#search").on("click", function(e) {
+                           e.preventDefault();
+                           dt = $('#ct').DataTable();
+                           dt.ajax.reload(null, true);
+
+                       });
 
 
             /*]]>*/

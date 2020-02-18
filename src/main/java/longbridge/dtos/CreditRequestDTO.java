@@ -2,7 +2,6 @@ package longbridge.dtos;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import javax.persistence.Transient;
 import java.math.BigDecimal;
 import java.util.Date;
 
@@ -24,7 +23,7 @@ public class CreditRequestDTO {
     private String referenceNumber;
     private Date tranDate;
 
-    private String enquiredAccountName;
+    private String accountNameEnquiry;
 
 
     public Long getId() {
@@ -117,12 +116,12 @@ public class CreditRequestDTO {
         this.tranDate = tranDate;
     }
 
-    public String getEnquiredAccountName() {
-        return enquiredAccountName;
+    public String getAccountNameEnquiry() {
+        return accountNameEnquiry;
     }
 
-    public void setEnquiredAccountName(String enquiredAccountName) {
-        this.enquiredAccountName = enquiredAccountName;
+    public void setAccountNameEnquiry(String accountNameEnquiry) {
+        this.accountNameEnquiry = accountNameEnquiry;
     }
 
 }

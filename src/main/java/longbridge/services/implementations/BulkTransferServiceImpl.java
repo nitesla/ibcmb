@@ -412,6 +412,7 @@ public class BulkTransferServiceImpl implements BulkTransferService {
         creditRequestDTO.setCustomerAccountNumber(creditRequest.getBulkTransfer().getCustomerAccountNumber());
         creditRequestDTO.setReferenceNumber(creditRequest.getReferenceNumber());
         creditRequestDTO.setTranDate(creditRequest.getBulkTransfer().getTranDate());
+        creditRequestDTO.setAccountNameEnquiry(creditRequest.getAccountNameEnquiry());
         FinancialInstitution financialInstitution = financialInstitutionService.getFinancialInstitutionByBankCode(creditRequest.getSortCode());
         if (financialInstitution != null) {
             creditRequestDTO.setBeneficiaryBank(financialInstitution.getInstitutionName());

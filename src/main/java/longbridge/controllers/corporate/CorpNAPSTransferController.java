@@ -425,7 +425,7 @@ public class CorpNAPSTransferController {
                 }
 
                 creditRequest.setNarration(cellData.get(3).toString());
-                creditRequest.setEnquiredAccountName(cellData.get(5).toString());
+                creditRequest.setAccountNameEnquiry(cellData.get(5).toString());
 
 
 

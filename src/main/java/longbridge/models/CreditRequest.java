@@ -27,6 +27,8 @@ public class CreditRequest extends AbstractEntity{
     private String referenceNumber;
 
     private Date approvalDate;
+    private String accountNameEnquiry;
+
 
 
     @ManyToOne
@@ -116,6 +118,14 @@ public class CreditRequest extends AbstractEntity{
         this.napsAntiFraudData = napsAntiFraudData;
     }
 
+    public String getAccountNameEnquiry() {
+        return accountNameEnquiry;
+    }
+
+    public void setAccountNameEnquiry(String accountNameEnquiry) {
+        this.accountNameEnquiry = accountNameEnquiry;
+    }
+
     public CreditRequest() {
     }
 
@@ -131,6 +141,7 @@ public class CreditRequest extends AbstractEntity{
                 ", sortCode='" + sortCode + '\'' +
                 ", referenceNumber='" + referenceNumber + '\'' +
                 ", approvalDate=" + approvalDate +
+                ", accountNameEnquiry='" + accountNameEnquiry + '\'' +
                 ", bulkTransfer=" + bulkTransfer +
                 ", napsAntiFraudData=" + napsAntiFraudData +
                 '}';

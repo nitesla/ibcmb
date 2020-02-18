@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog/1.1"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog/1.1
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-1.1.xsd">
+
+
+    <changeSet author="Longbridge (Gbubemi)" id="addAccountNameEnquiryToCreditRequest_AUD">
+        <addColumn   tableName="CREDIT_REQUEST_AUD">
+            <column name="ACCOUNT_NAME_ENQUIRY" type="VARCHAR2(255 CHAR)"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet author="Longbridge (Gbubemi)" id="addAccountNameEnquiryModToCreditRequest_AUD">
+        <addColumn   tableName="CREDIT_REQUEST_AUD">
+            <column name="ACCOUNT_NAME_ENQUIRY_MOD" type="VARCHAR2(255 CHAR)"/>
+        </addColumn>
+    </changeSet>
+</databaseChangeLog>
