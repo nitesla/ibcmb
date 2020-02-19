@@ -344,7 +344,7 @@ public class CorpNAPSTransferController {
                 }
             }
             //File Account numbers validation
-            for(Row row:datatypeSheet){
+           /* for(Row row:datatypeSheet){
                 row.createCell(5);
                 if(row.getRowNum()!=0) {
                     NEnquiryDetails details = integrationService.doNameEnquiry(row.getCell(4).toString(), row.getCell(0).toString());
@@ -359,7 +359,7 @@ public class CorpNAPSTransferController {
                 }else{
                     row.getCell(5).setCellValue("Account Name");
                 }
-            }
+            }*/
             httpSession.setAttribute("accountList", accountList);
             httpSession.setAttribute("workbook", workbook);
             httpSession.setAttribute("fileExtension", extension);
@@ -377,18 +377,40 @@ public class CorpNAPSTransferController {
 
     @GetMapping("/all")
     @ResponseBody
-    public DataTablesOutput<CreditRequestDTO> getCreditRequests(HttpSession session, Model model) throws IOException {
+    public DataTablesOutput<CreditRequestDTO> getCreditRequests(HttpSession session, Model model,Locale locale) throws IOException {
         Workbook workbook = (Workbook) session.getAttribute("workbook");
         String fileExtension = (String) session.getAttribute("fileExtension");
+       model.addAttribute("accountList", session.getAttribute("accountList"));
+
         List<CreditRequestDTO> crLists = new ArrayList<>();
         try {
             System.out.println(workbook);
 
             Sheet datatypeSheet = workbook.getSheetAt(0);
 
+            for(Row row:datatypeSheet){
+                row.createCell(5);
+                if(row.getRowNum()!=0) {
+                    NEnquiryDetails details = integrationService.doNameEnquiry(row.getCell(4).toString(), row.getCell(0).toString());
+                    if(details.getAccountName()!=null && !details.getAccountName().equals("")) {
+                        row.getCell(5).setCellValue(details.getAccountName());
+                        logger.info("NameEnquiry" + row.getCell(5));
+                    }else {
+                        row.getCell(5).setCellValue(messageSource.getMessage("nameEnquiry.failed", null, locale));
+                        logger.info("NameEnquiry" + row.getCell(5));
+                    }
+
+                }else{
+                    row.getCell(5).setCellValue("Account Name");
+                }
+            }
+
             Iterator<Row> iterator = datatypeSheet.iterator();
 
             if (iterator.hasNext()) iterator.next();
+
+
+
             while (iterator.hasNext()) {
                 Row currentRow = iterator.next();
                 //Iterator<Cell> cellIter ator = currentRow.iterator();

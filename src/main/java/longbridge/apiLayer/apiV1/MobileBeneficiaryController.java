@@ -101,7 +101,6 @@ public class MobileBeneficiaryController {
 
         String failure;
         String token = corpLocalBeneficiaryDTO.getToken();
-        logger.info("am here 2"+token);
 
 
               try {
@@ -284,7 +283,6 @@ public class MobileBeneficiaryController {
                 return new ResponseEntity<>(responseData, HttpStatus.OK);
             }
             else{
-                logger.info("am here");
                 responseData.setMessage(messageSource.getMessage("05", null, locale));
                 responseData.setError(true);
                 responseData.setCode("05");

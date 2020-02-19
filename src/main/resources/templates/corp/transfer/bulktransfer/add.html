@@ -19,6 +19,7 @@
         color: black;
         background-color: #d7bdb3;
     }
+
 </style>
 
 <body onload="javascript:var bread = [['Home', '/corporate/dashboard'],['Bulk transfer','/corporate/transfer/bulk'],['add','']];currentBar('Bulk transfer');breadCrumb(bread)">
@@ -80,11 +81,11 @@
                             <thead>
                                 <th>Account Number</th>
                                 <th>Beneficiary Name</th>
+                                <th>Account Name</th>
                                 <th>Amount (N)</th>
                                 <th>Narration</th>
-                                <th>Bank Name</th>
-                                <th>Bank Code</th>
-                                <th>Account Name</th>
+                                <th >Bank Name</th>
+                                <th >Bank Code</th>
                             </thead>
                             <tbody>
 
@@ -155,6 +156,8 @@
                     }, {
                         "data": "accountName"
                     }, {
+                        "data": "accountNameEnquiry"
+                    },{
                         "data": "amount"
                     }, {
                         "data": "narration"
@@ -162,8 +165,6 @@
                         "data": "beneficiaryBank"
                     }, {
                         "data": "sortCode"
-                    },{
-                        "data": "accountNameEnquiry"
                     }],
                     "columnDefs": [
                         {
@@ -177,7 +178,8 @@
                             if (errorCount > 0) {
                                 document.getElementById('tokendiv').style.display = 'none';
                             }
-                            return '<input type="text" style="background:transparent" value="' + data + '" readonly />';
+                            // return '<input type="text" style="background:transparent" value="' + data + '" readonly />';
+                            return '<span>'+ data +'</span>';
 
                         }
                     }, {
@@ -195,7 +197,7 @@
 
                         }
                     }, {
-                        "targets": 3,
+                        "targets": 4,
                         "render": function(data, type, full, meta) {
                             if (data.includes("ERROR")) {
                                 errorCount = errorCount + 1;
@@ -209,7 +211,7 @@
 
                         }
                     }, {
-                        "targets": 5,
+                        "targets": 6,
                         "render": function(data, type, full, meta) {
                             if (data.includes("ERROR")) {
                                 errorCount = errorCount + 1;
@@ -219,12 +221,13 @@
                             if (errorCount > 0) {
                                 document.getElementById('tokendiv').style.display = 'none';
                             }
-                            return '<input type="text" style="background:transparent" value="' + data + '" readonly />';
+                            // return '<input type="text" style="background:transparent;" value="' + data + '" readonly />';
+                            return '<span>'+ data +'</span>';
 
                         }
                     },
                         {
-                        "targets" : 2,
+                        "targets" : 3,
                         "data" : "amount",
                         "render" : function(data, type,full, meta) {
                             if (type === 'display') {

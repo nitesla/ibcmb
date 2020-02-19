@@ -6755,4 +6755,24 @@ button.close {
     display: none !important;
   }
 }
+
+.btn-search{
+  color: #fff;
+  background-color: rgb(159, 97, 75);
+  border-color: rgb(159, 97, 75);
+}
+.btn-search:focus,
+.btn-search.focus{
+  color: #fff;
+  background-color: rgb(159, 97, 75);
+  border-color: rgb(166, 124, 98);
+
+}
+.btn-search:hover {
+  color: #fff;
+  background-color: rgb(187, 154, 132);
+  border-color: rgb(166, 124, 98);
+}
+
+#mytab
 /*# sourceMappingURL=bootstrap.css.map */

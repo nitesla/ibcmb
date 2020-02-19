@@ -19,7 +19,7 @@
                 <div class="input-group col-lg-12">
                     <input type="text" class="form-control pull-right" style="width:67%;height:10%;" id="pattern" placeholder="Search..." /><span
                         class="input-group-btn" >
-										<button style="width:80%;height: 30px;"class="btn btn-success" id="search" type="button">Go!</button>
+                    <button style="width:80%;height: 30px;"class="btn btn-search" id="search" type="button">Go!</button>
 									</span>
                 </div>
             </li>
@@ -59,6 +59,10 @@
                 "pagingType": "input",
                 "searching": false,
                 "paging": true,
+                "processing":true,
+                "language":{
+                    processing:'<i class="fa fa-spinner fa-spin fa-3x fa-fw"><span class="sr-only">Loading...</span>'
+                },
                 "serverSide": true,
                     "ajax" : {
                         url : url,
@@ -141,12 +145,12 @@
 
             });
         });
-        $("#pattern").on("keyup", function(e) {
+        /*$("#pattern").on("keyup", function(e) {
             e.preventDefault();
             dt = $('#ct').DataTable();
             dt.ajax.reload(null, true);
 
-        });
+        });*/
 
         $("#search").on("click", function(e) {
             e.preventDefault();
