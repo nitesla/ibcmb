@@ -193,7 +193,9 @@
                             if (errorCount > 0) {
                                 document.getElementById('tokendiv').style.display = 'none';
                             }
-                            return '<input type="text" style="background:transparent" value="' + data + '" readonly />';
+                            // return '<input type="text" style="background:transparent" value="' + data + '" readonly />';
+                            return '<span>'+ data +'</span>';
+
 
                         }
                     }, {
@@ -207,7 +209,8 @@
                             if (errorCount > 0) {
                                 document.getElementById('tokendiv').style.display = 'none';
                             }
-                            return '<input type="text" style="background:transparent" value="' + data + '" readonly />';
+                            // return '<input type="text" style="background:transparent" value="' + data + '" readonly />';
+                            return '<span>'+ data +'</span>';
 
                         }
                     }, {
