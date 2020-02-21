@@ -98,7 +98,7 @@ public class OperationsUserServiceImpl implements OperationsUserService {
 
     @Override
     public OperationsUserDTO getUser(Long id) {
-        OperationsUser user = operationsUserRepo.findOne(id);
+        OperationsUser user = operationsUserRepo.findById(id).get();
 
         return convertEntityToDTO(user);
     }
@@ -133,7 +133,7 @@ public class OperationsUserServiceImpl implements OperationsUserService {
     @Verifiable(operation = "UPDATE_OPS_STATUS", description = "Change Operations User Activation Status")
     public String changeActivationStatus(Long userId) throws InternetBankingException {
         try {
-            OperationsUser user = operationsUserRepo.findOne(userId);
+            OperationsUser user = operationsUserRepo.findById(userId).get();
             entityManager.detach(user);
             String oldStatus = user.getStatus();
             String newStatus = "A".equals(oldStatus) ? "I" : "A";
@@ -188,7 +188,7 @@ public class OperationsUserServiceImpl implements OperationsUserService {
             opsUser.setPhoneNumber(user.getPhoneNumber());
             opsUser.setStatus("A");
             opsUser.setCreatedOnDate(new Date());
-            Role role = roleRepo.findOne(Long.parseLong(user.getRoleId()));
+            Role role = roleRepo.findById(Long.parseLong(user.getRoleId())).get();
             opsUser.setRole(role);
             OperationsUser newUser = operationsUserRepo.save(opsUser);
             createUserOnEntrustAndSendCredentials(newUser);
@@ -265,7 +265,7 @@ public class OperationsUserServiceImpl implements OperationsUserService {
     @Verifiable(operation = "UPDATE_OPS_USER", description = "Updating an Operations User")
     public String updateUser(OperationsUserDTO user) throws InternetBankingException {
 
-        OperationsUser opsUser = operationsUserRepo.findOne(user.getId());
+        OperationsUser opsUser = operationsUserRepo.findById(user.getId()).get();
         if ("I".equals(opsUser.getStatus())) {
             throw new InternetBankingException(messageSource.getMessage("user.deactivated", null, locale));
         }
@@ -278,7 +278,7 @@ public class OperationsUserServiceImpl implements OperationsUserService {
             }
         }
 
-        opsUser = operationsUserRepo.findOne(user.getId());
+        opsUser = operationsUserRepo.findById(user.getId()).get();
 
 
         try {
@@ -289,7 +289,7 @@ public class OperationsUserServiceImpl implements OperationsUserService {
             opsUser.setUserName(user.getUserName());
             opsUser.setPhoneNumber(user.getPhoneNumber());
             opsUser.setEmail(user.getEmail());
-            Role role = roleRepo.findOne(Long.parseLong(user.getRoleId()));
+            Role role = roleRepo.findById(Long.parseLong(user.getRoleId())).get();
             opsUser.setRole(role);
             operationsUserRepo.save(opsUser);
 
@@ -309,7 +309,7 @@ public class OperationsUserServiceImpl implements OperationsUserService {
     @Verifiable(operation = "DELETE_OPS_USER", description = "Deleting an Ops User")
     public String deleteUser(Long userId) throws InternetBankingException {
         try {
-            OperationsUser opsUser = operationsUserRepo.findOne(userId);
+            OperationsUser opsUser = operationsUserRepo.findById(userId).get();
             operationsUserRepo.delete(opsUser);
             logger.warn("Operations user with Id {} deleted", userId);
             SettingDTO setting = configService.getSettingByName("ENABLE_ENTRUST_DELETION");
@@ -332,7 +332,7 @@ public class OperationsUserServiceImpl implements OperationsUserService {
     @Override
     public String resetPassword(Long id) throws InternetBankingException {
         try {
-            OperationsUser user = operationsUserRepo.findOne(id);
+            OperationsUser user = operationsUserRepo.findById(id).get();
             sendResetMessage(user);
             logger.info("Operations user {} password reset successfully", user.getUserName());
             return messageSource.getMessage("password.reset.success", null, locale);
@@ -388,7 +388,7 @@ public class OperationsUserServiceImpl implements OperationsUserService {
         }
 
         try {
-            OperationsUser opsUser = operationsUserRepo.findOne(user.getId());
+            OperationsUser opsUser = operationsUserRepo.findById(user.getId()).get();
             opsUser.setPassword(this.passwordEncoder.encode(changePassword.getNewPassword()));
             opsUser.setExpiryDate(passwordPolicyService.getPasswordExpiryDate());
             passwordPolicyService.saveOpsPassword(user);
@@ -414,7 +414,7 @@ public class OperationsUserServiceImpl implements OperationsUserService {
         }
 
         try {
-            OperationsUser opsUser = operationsUserRepo.findOne(user.getId());
+            OperationsUser opsUser = operationsUserRepo.findById(user.getId()).get();
             opsUser.setPassword(this.passwordEncoder.encode(changePassword.getNewPassword()));
             opsUser.setExpiryDate(passwordPolicyService.getPasswordExpiryDate());
             passwordPolicyService.saveOpsPassword(user);

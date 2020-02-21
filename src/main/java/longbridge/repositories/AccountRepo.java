@@ -21,7 +21,7 @@ import java.util.List;
 @Transactional
 public interface AccountRepo extends CommonRepo<Account,Long> {
 
-    Account findById(Long id);
+//    Account findById(Long id);
 
     Account findFirstById(Long id);
 

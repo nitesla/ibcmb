@@ -65,7 +65,7 @@ public class VerificationServiceImpl implements VerificationService {
     @Override
     public String cancel(VerificationDTO dto) throws VerificationException {
 
-        Verification verification = verificationRepo.findOne(dto.getId());
+        Verification verification = verificationRepo.findById(dto.getId()).get();
         String cancelledBy = getCurrentUserName();
 
         if (!cancelledBy.equals(verification.getInitiatedBy())) {
@@ -95,7 +95,7 @@ public class VerificationServiceImpl implements VerificationService {
     @Override
     public String decline(VerificationDTO dto) throws VerificationException {
 
-        Verification verification = verificationRepo.findOne(dto.getId());
+        Verification verification = verificationRepo.findById(dto.getId()).get();
         String verifiedBy = getCurrentUserName();
 
         if (verifiedBy.equals(verification.getInitiatedBy())) {
@@ -130,7 +130,7 @@ public class VerificationServiceImpl implements VerificationService {
     @Override
     public String verify(VerificationDTO dto) throws VerificationException {
 
-        Verification verification = verificationRepo.findOne(dto.getId());
+        Verification verification = verificationRepo.findById(dto.getId()).get();
         String verifiedBy = getCurrentUserName();
         if (verifiedBy.equals(verification.getInitiatedBy())) {
             throw new VerificationException("You cannot verify what you initiated");
@@ -378,7 +378,7 @@ public class VerificationServiceImpl implements VerificationService {
 
     @Override
     public VerificationDTO getVerification(Long id) {
-        return convertEntityToDTO(verificationRepo.findOne(id));
+        return convertEntityToDTO(verificationRepo.findById(id).get());
     }
 
 

@@ -205,7 +205,7 @@ public class AuditConfigImpl implements AuditConfigService {
 	@Override
 	public AuditConfig getAuditEntity(Long id)
 	{
-		AuditConfig auditConfig = this.configRepo.findOne(id);
+		AuditConfig auditConfig = this.configRepo.findById(id).get();
 		return auditConfig;
 	}
 

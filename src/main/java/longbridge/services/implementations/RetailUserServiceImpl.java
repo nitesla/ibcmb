@@ -119,7 +119,7 @@ public class RetailUserServiceImpl implements RetailUserService {
 
     @Override
     public RetailUserDTO getUser(Long id) {
-        RetailUser retailUser = this.retailUserRepo.findOne(id);
+        RetailUser retailUser = this.retailUserRepo.findById(id).get();
         return convertEntityToDTO(retailUser);
     }
 
@@ -131,7 +131,7 @@ public class RetailUserServiceImpl implements RetailUserService {
     @Override
     public String unlockUser(Long id) throws InternetBankingException {
 
-        RetailUser user = retailUserRepo.findOne(id);
+        RetailUser user = retailUserRepo.findById(id).get();
         if (!"L".equals(user.getStatus())) {
             throw new InternetBankingException(messageSource.getMessage("user.unlocked", null, locale));
         }
@@ -300,7 +300,7 @@ public class RetailUserServiceImpl implements RetailUserService {
     public String deleteUser(Long userId) throws InternetBankingException {
         try {
 
-            RetailUser retailUser = retailUserRepo.findOne(userId);
+            RetailUser retailUser = retailUserRepo.findById(userId).get();
             retailUserRepo.delete(retailUser);
             SettingDTO setting = configService.getSettingByName("ENABLE_ENTRUST_DELETION");
 
@@ -325,7 +325,7 @@ public class RetailUserServiceImpl implements RetailUserService {
     @Verifiable(operation = "UPDATE_RETAIL_STATUS", description = "Change Retail User Activation Status")
     public String changeActivationStatus(Long userId) throws InternetBankingException {
         try {
-            RetailUser user = retailUserRepo.findOne(userId);
+            RetailUser user = retailUserRepo.findById(userId).get();
             entityManager.detach(user);
             String oldStatus = user.getStatus();
             String newStatus = "A".equals(oldStatus) ? "I" : "A";
@@ -450,7 +450,7 @@ public class RetailUserServiceImpl implements RetailUserService {
     public String resetPassword(Long userId) throws PasswordException {
 
 
-        RetailUser user = retailUserRepo.findOne(userId);
+        RetailUser user = retailUserRepo.findById(userId).get();
         logger.info("this is the user status{}", user.getStatus());
         if ("I".equals(user.getStatus())) {
             throw new InternetBankingException(messageSource.getMessage("users.deactivated", null, locale));
@@ -472,7 +472,7 @@ public class RetailUserServiceImpl implements RetailUserService {
     public String resetSecurityQuestion(Long userId) throws PasswordException {
 
 
-        RetailUser user = retailUserRepo.findOne(userId);
+        RetailUser user = retailUserRepo.findById(userId).get();
         logger.info("this is the user status{}", user.getStatus());
         if ("I".equals(user.getStatus())) {
             throw new InternetBankingException(messageSource.getMessage("users.deactivated", null, locale));
@@ -493,7 +493,7 @@ public class RetailUserServiceImpl implements RetailUserService {
     public void setSecurityQuestion(Long userId) throws PasswordException {
 
 
-        RetailUser user = retailUserRepo.findOne(userId);
+        RetailUser user = retailUserRepo.findById(userId).get();
         logger.info("this is the user status{}", user.getStatus());
 
         try {
@@ -520,7 +520,7 @@ public class RetailUserServiceImpl implements RetailUserService {
         }
 
         try {
-            RetailUser retailUser = retailUserRepo.findOne(user.getId());
+            RetailUser retailUser = retailUserRepo.findById(user.getId()).get();
             retailUser.setPassword(this.passwordEncoder.encode(custResetPassword.getNewPassword()));
             retailUser.setExpiryDate(passwordPolicyService.getPasswordExpiryDate());
             retailUser.setTempPassword(null);
@@ -556,7 +556,7 @@ public class RetailUserServiceImpl implements RetailUserService {
         }
 
         try {
-            RetailUser retailUser = retailUserRepo.findOne(user.getId());
+            RetailUser retailUser = retailUserRepo.findById(user.getId()).get();
             String encodedPassword =  this.passwordEncoder.encode(custResetPassword.getNewPassword());
             retailUser.setPassword(encodedPassword);
             retailUser.setExpiryDate(passwordPolicyService.getPasswordExpiryDate());
@@ -618,7 +618,7 @@ public class RetailUserServiceImpl implements RetailUserService {
         }
 
         try {
-            RetailUser retailUser = retailUserRepo.findOne(user.getId());
+            RetailUser retailUser = retailUserRepo.findById(user.getId()).get();
             retailUser.setPassword(this.passwordEncoder.encode(changePassword.getNewPassword()));
             retailUser.setExpiryDate(passwordPolicyService.getPasswordExpiryDate());
             passwordPolicyService.saveRetailPassword(retailUser);

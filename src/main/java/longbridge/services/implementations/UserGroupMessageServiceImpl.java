@@ -79,10 +79,10 @@ public class UserGroupMessageServiceImpl implements UserGroupMessageService {
                 Message msg = new Message();
                 try {
                     msg.setSender(email.getSenderEmail());
-                    msg.setRecipient(opsUserRepo.findOne(contact.getDt_RowId()).getUserName());
+                    msg.setRecipient(opsUserRepo.findById(contact.getDt_RowId()).get().getUserName());
                     msg.setSubject(email.getMessageSubject());
                     msg.setBody(email.getMessageBody());
-                    msg.setRecipientType(opsUserRepo.findOne(contact.getDt_RowId()).getUserType());
+                    msg.setRecipientType(opsUserRepo.findById(contact.getDt_RowId()).get().getUserType());
                     msg.setDateCreated(new Date());
                     messageRepo.save(msg);
                 } catch (Exception me) {

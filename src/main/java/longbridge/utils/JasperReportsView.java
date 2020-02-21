@@ -3,9 +3,7 @@ package longbridge.utils;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
-import org.springframework.web.servlet.view.jasperreports.JasperReportsMultiFormatView;
-import org.springframework.web.servlet.view.jasperreports.JasperReportsPdfView;
-import org.springframework.web.servlet.view.jasperreports.JasperReportsViewResolver;
+import org.springframework.web.servlet.view.ResourceBundleViewResolver;
 
 /**
  * Created by SYLVESTER on 6/18/2017.
@@ -13,13 +11,9 @@ import org.springframework.web.servlet.view.jasperreports.JasperReportsViewResol
 
 public class JasperReportsView {
     @Bean
-    public JasperReportsViewResolver getJasperReportsViewResolver() {
-        JasperReportsViewResolver resolver = new JasperReportsViewResolver();
-        resolver.setPrefix("classpath:/jasperreports/");
-        resolver.setSuffix(".jasper");
-        resolver.setReportDataKey("datasource");
-        resolver.setViewNames("rpt_*");
-        resolver.setViewClass(JasperReportsMultiFormatView.class);
+    public ResourceBundleViewResolver getJasperReportsViewResolver() {
+        ResourceBundleViewResolver resolver = new ResourceBundleViewResolver();
+        resolver.setBasename("jasperreport-views");
         resolver.setOrder(0);
         return resolver;
     }

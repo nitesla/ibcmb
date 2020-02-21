@@ -81,12 +81,12 @@ public class OpsUserAdvisor {
     @After("isVerification() && verified() && args(verificationDto)")
     public void postOpsUserStatusUpdate(JoinPoint p, VerificationDTO verificationDto) throws IOException {
 
-        Verification verification = verificationRepo.findOne(verificationDto.getId());
+        Verification verification = verificationRepo.findById(verificationDto.getId()).get();
         if (verification.getOperation().equals("UPDATE_OPS_STATUS")) {
 
             logger.info("Executing post UPDATE_OPS_STATUS operation");
 
-            OperationsUser user = operationsUserRepo.findOne(verification.getEntityId());
+            OperationsUser user = operationsUserRepo.findById(verification.getEntityId()).get();
             entityManager.detach(user);
             ObjectMapper objectMapper = new ObjectMapper();
             OperationsUser opsUser = objectMapper.readValue(verification.getOriginalObject(), OperationsUser.class);

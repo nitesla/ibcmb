@@ -35,7 +35,8 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import org.springframework.web.servlet.view.jasperreports.JasperReportsPdfView;
+//import org.springframework.web.servlet.view.jasperreports.JasperReportsPdfView;
+import longbridge.utils.JasperReport.JasperReportsPdfView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;

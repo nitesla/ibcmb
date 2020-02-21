@@ -65,7 +65,7 @@ public class ConfigurationServiceImpl implements ConfigurationService {
 
 	@Override
 	public SettingDTO getSetting(Long id) {
-		Setting setting = settingRepo.findOne(id);
+		Setting setting = settingRepo.findById(id).get();
 		ModelMapper mapper = new ModelMapper();
 		return mapper.map(setting, SettingDTO.class);
 	}
@@ -107,7 +107,7 @@ public class ConfigurationServiceImpl implements ConfigurationService {
 	@Verifiable(operation="UPDATE_SETTING",description="Update Settings")
 	public String updateSetting(SettingDTO dto) throws InternetBankingException {
 		try {
-			Setting setting = settingRepo.findOne(dto.getId());
+			Setting setting = settingRepo.findById(dto.getId()).get();
 			entityManager.detach(setting);
 			ModelMapper mapper = new ModelMapper();
 			mapper.map(dto, setting);
@@ -129,7 +129,7 @@ public class ConfigurationServiceImpl implements ConfigurationService {
 	@Verifiable(operation="DELETE_SETTING",description="Delete Settings")
 	public String deleteSetting(Long id) throws InternetBankingException {
 		try {
-			Setting setting = settingRepo.findOne(id);
+			Setting setting = settingRepo.findById(id).get();
 			settingRepo.delete(setting);
 			return messageSource.getMessage("setting.delete.success", null, locale);
 		}

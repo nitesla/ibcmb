@@ -94,7 +94,7 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     public RoleDTO getRole(Long id) {
-        Role role = roleRepo.findOne(id);
+        Role role = roleRepo.findById(id).get();
         return convertEntityToDTO(role);
     }
 
@@ -144,7 +144,7 @@ public class RoleServiceImpl implements RoleService {
     @Verifiable(operation = "DELETE_ROLE", description = "Deleting a Role")
     public String deleteRole(Long id) throws InternetBankingException {
 
-        Role role = roleRepo.findOne(id);
+        Role role = roleRepo.findById(id).get();
         Integer users = countUsers(role);
         if (users > 0) {
             throw new InternetBankingException(messageSource.getMessage("role.delete.users.exist", null, locale));
@@ -181,7 +181,7 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     public PermissionDTO getPermission(Long id) {
-        Permission permission = permissionRepo.findOne(id);
+        Permission permission = permissionRepo.findById(id).get();
         return convertEntityToDTO(permission);
     }
 
@@ -214,7 +214,7 @@ public class RoleServiceImpl implements RoleService {
     @Verifiable(operation = "UPDATE_PERMISSION", description = "Updating a Permission")
     public String updatePermission(PermissionDTO permissionDTO) throws InternetBankingException {
         try {
-            Permission permission = permissionRepo.findOne(permissionDTO.getId());
+            Permission permission = permissionRepo.findById(permissionDTO.getId()).get();
             entityManager.detach(permission);
             permission.setVersion(permissionDTO.getVersion());
             permission.setUserType(permissionDTO.getUserType());
@@ -240,7 +240,7 @@ public class RoleServiceImpl implements RoleService {
     @Verifiable(operation = "DELETE_PERMISSION", description = "Deleting a Permission")
     public String deletePermission(Long id) throws InternetBankingException {
         try {
-            Permission permission = permissionRepo.findOne(id);
+            Permission permission = permissionRepo.findById(id).get();
             permissionRepo.delete(permission);
             logger.warn("Deleted permission with Id {}", id);
             return messageSource.getMessage("permission.delete.success", null, locale);
@@ -290,7 +290,7 @@ public class RoleServiceImpl implements RoleService {
         if (permissionDTO.getId() == null) {
             permission = modelMapper.map(permissionDTO, Permission.class);
         } else {
-            permission = permissionRepo.findOne(permissionDTO.getId());
+            permission = permissionRepo.findById(permissionDTO.getId()).get();
         }
         return permission;
     }
@@ -334,7 +334,7 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     public Page<User> getUsers(RoleDTO roledto, Pageable pageDetails) {
-        Role role = roleRepo.findOne(roledto.getId());
+        Role role = roleRepo.findById(roledto.getId()).get();
         Page<User> pageImpl = null;
         switch (role.getUserType()) {
             case ADMIN: {

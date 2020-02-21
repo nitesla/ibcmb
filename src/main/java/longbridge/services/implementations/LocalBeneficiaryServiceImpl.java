@@ -116,7 +116,7 @@ public class LocalBeneficiaryServiceImpl implements LocalBeneficiaryService {
     public String deleteLocalBeneficiary(Long beneficiaryId) {
 
         try {
-            this.localBeneficiaryRepo.delete(beneficiaryId);
+            this.localBeneficiaryRepo.deleteById(beneficiaryId);
             return messageSource.getMessage("beneficiary.delete.success", null, locale);
         } catch (Exception e) {
             throw new InternetBankingException(messageSource.getMessage("beneficiary.delete.failure", null, locale), e);
@@ -127,7 +127,7 @@ public class LocalBeneficiaryServiceImpl implements LocalBeneficiaryService {
 
     @Override
     public LocalBeneficiary getLocalBeneficiary(Long id) {
-        return localBeneficiaryRepo.findOne(id);
+        return localBeneficiaryRepo.findById(id).get();
     }
 
     /*@Override

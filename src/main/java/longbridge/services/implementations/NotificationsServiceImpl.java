@@ -47,7 +47,7 @@ public class NotificationsServiceImpl implements NotificationsService {
 
     @Override
     public NotificationsDTO getNotification(Long id) {
-        Notifications notifications = this.notificationsRepo.findOne(id);
+        Notifications notifications = this.notificationsRepo.findById(id).get();
         return convertEntityToDTO(notifications);
     }
 
@@ -90,7 +90,7 @@ public class NotificationsServiceImpl implements NotificationsService {
     @Override
     public String deleteNotification(Long id) {
         try{
-            notificationsRepo.delete(id);
+            notificationsRepo.deleteById(id);
             logger.info("Notification {} has been deleted",id.toString());
             return messageSource.getMessage("notifications.delete.success",null,locale);
         }

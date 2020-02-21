@@ -82,13 +82,13 @@ public class AdminUserAdvisor {
     @After("isVerification() && verified() && args(verificationDto)")
     public void postAdminUserStatusUpdate(JoinPoint p, VerificationDTO verificationDto) throws IOException {
 
-      Verification verification  = verificationRepo.findOne(verificationDto.getId());
+      Verification verification  = verificationRepo.findById(verificationDto.getId()).get();
 
         if(verification.getOperation().equals("UPDATE_ADMIN_STATUS")){
 
             logger.info("Executing post UPDATE_ADMIN_STATUS operation");
 
-            AdminUser user = adminUserRepo.findOne(verification.getEntityId());
+            AdminUser user = adminUserRepo.findById(verification.getEntityId()).get();
             entityManager.detach(user);
             ObjectMapper objectMapper = new ObjectMapper();
             AdminUser adminUser = objectMapper.readValue(verification.getOriginalObject(),AdminUser.class);

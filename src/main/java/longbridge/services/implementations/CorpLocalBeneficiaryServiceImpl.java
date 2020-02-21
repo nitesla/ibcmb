@@ -89,7 +89,7 @@ public class CorpLocalBeneficiaryServiceImpl implements CorpLocalBeneficiaryServ
 
     @Override
     public String deleteCorpLocalBeneficiary(Long beneficiaryId) {
-        this.corpLocalBeneficiaryRepo.delete(beneficiaryId);
+        this.corpLocalBeneficiaryRepo.deleteById(beneficiaryId);
         logger.info("Beneficiary with Id {} deleted", beneficiaryId);
         return messageSource.getMessage("beneficiary.delete.success",null,locale);
 
@@ -97,7 +97,7 @@ public class CorpLocalBeneficiaryServiceImpl implements CorpLocalBeneficiaryServ
 
     @Override
     public CorpLocalBeneficiary getCorpLocalBeneficiary(Long id) {
-        return corpLocalBeneficiaryRepo.findOne(id);
+        return corpLocalBeneficiaryRepo.findById(id).get();
     }
 
 

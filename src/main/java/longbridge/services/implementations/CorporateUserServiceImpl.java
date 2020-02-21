@@ -107,7 +107,7 @@ public class CorporateUserServiceImpl implements CorporateUserService {
 
     @Override
     public CorporateUserDTO getUser(Long id) {
-        CorporateUser corporateUser = corporateUserRepo.findOne(id);
+        CorporateUser corporateUser = corporateUserRepo.findById(id).get();
         return convertEntityToDTO(corporateUser);
     }
 
@@ -146,7 +146,7 @@ public class CorporateUserServiceImpl implements CorporateUserService {
 
     @Override
     public Iterable<CorporateUserDTO> getUsers(Long corpId) {
-        Corporate corporate = corporateRepo.findOne(corpId);
+        Corporate corporate = corporateRepo.findById(corpId).get();
         List<CorporateUser> users = corporate.getUsers();
         return convertEntitiesToDTOs(users);
     }
@@ -156,7 +156,7 @@ public class CorporateUserServiceImpl implements CorporateUserService {
     public String updateUser(CorporateUserDTO user) throws InternetBankingException {
 
 
-        CorporateUser corporateUser = corporateUserRepo.findOne(user.getId());
+        CorporateUser corporateUser = corporateUserRepo.findById(user.getId()).get();
 
         Corporate corporate = corporateUser.getCorporate();
         if ("I".equals(corporate.getStatus())) {
@@ -170,7 +170,7 @@ public class CorporateUserServiceImpl implements CorporateUserService {
             }
         }
 
-        corporateUser = corporateUserRepo.findOne(user.getId());
+        corporateUser = corporateUserRepo.findById(user.getId()).get();
 
         try {
             entityManager.detach(corporateUser);
@@ -188,7 +188,7 @@ public class CorporateUserServiceImpl implements CorporateUserService {
             }
 
             if (user.getRoleId() != null) {
-                Role role = roleRepo.findOne(Long.parseLong(user.getRoleId()));
+                Role role = roleRepo.findById(Long.parseLong(user.getRoleId())).get();
                 corporateUser.setRole(role);
             }
 
@@ -217,7 +217,7 @@ public class CorporateUserServiceImpl implements CorporateUserService {
         if (corporateUser != null) {
             throw new DuplicateObjectException(messageSource.getMessage("user.exists", null, locale));
         }
-        Corporate corporate = corporateRepo.findOne(Long.parseLong(user.getCorporateId()));
+        Corporate corporate = corporateRepo.findById(Long.parseLong(user.getCorporateId())).get();
         corporateUser = corporateUserRepo.findFirstByCorporateAndEmailIgnoreCase(corporate, user.getEmail());
         if (corporateUser != null) {
             throw new DuplicateObjectException(messageSource.getMessage("email.exists", null, locale));
@@ -231,7 +231,7 @@ public class CorporateUserServiceImpl implements CorporateUserService {
             corporateUser.setStatus("A");
             corporateUser.setPhoneNumber(user.getPhoneNumber());
             corporateUser.setCreatedOnDate(new Date());
-            Role role = roleRepo.findOne(Long.parseLong(user.getRoleId()));
+            Role role = roleRepo.findById(Long.parseLong(user.getRoleId())).get();
             corporateUser.setRole(role);
             corporateUser.setAdmin(user.isAdmin());
             if (user.isAdmin()) {
@@ -239,7 +239,7 @@ public class CorporateUserServiceImpl implements CorporateUserService {
             } else {
                 corporateUser.setCorpUserType(CorpUserType.INITIATOR);
             }
-            Corporate corp = corporateRepo.findOne(Long.parseLong(user.getCorporateId()));
+            Corporate corp = corporateRepo.findById(Long.parseLong(user.getCorporateId())).get();
             corporateUser.setCorporate(corp);
             CorporateUser corpUser = corporateUserRepo.save(corporateUser);
             createUserOnEntrustAndSendCredentials(corpUser);
@@ -352,7 +352,7 @@ public class CorporateUserServiceImpl implements CorporateUserService {
     @Override
     public void addCorporateUserToAuthorizerRole(CorporateUser corporateUser, Long corpRoleId) {
 
-        CorporateRole corporateRole = corporateRoleRepo.findOne(corpRoleId);
+        CorporateRole corporateRole = corporateRoleRepo.findById(corpRoleId).get();
         corporateUser.setCorpUserType(CorpUserType.AUTHORIZER);
         corporateUser.setAdmin(false);
         corporateRole.getUsers().add(corporateUser);
@@ -361,8 +361,8 @@ public class CorporateUserServiceImpl implements CorporateUserService {
 
     @Override
     public void changeCorporateUserAuthorizerRole(CorporateUser corporateUser, CorporateRole role, Long newRoleId) {
-        CorporateRole oldRole = corporateRoleRepo.findOne(role.getId());
-        CorporateRole newRole = corporateRoleRepo.findOne(newRoleId);
+        CorporateRole oldRole = corporateRoleRepo.findById(role.getId()).get();
+        CorporateRole newRole = corporateRoleRepo.findById(newRoleId).get();
         corporateUser.setCorpUserType(CorpUserType.AUTHORIZER);
         oldRole.getUsers().remove(corporateUser);
         corporateRoleRepo.save(oldRole);
@@ -375,7 +375,7 @@ public class CorporateUserServiceImpl implements CorporateUserService {
         CorporateRole corporateRole = getCorporateUserAuthorizerRole(corporateUser);
 
         if (corporateRole != null) {
-            CorporateRole role = corporateRoleRepo.findOne(corporateRole.getId());
+            CorporateRole role = corporateRoleRepo.findById(corporateRole.getId()).get();
             role.getUsers().remove(corporateUser);
             corporateRoleRepo.save(role);
         }
@@ -390,7 +390,7 @@ public class CorporateUserServiceImpl implements CorporateUserService {
             throw new DuplicateObjectException(messageSource.getMessage("user.exists", null, locale));
         }
 
-        Corporate corporate = corporateRepo.findOne(Long.parseLong(user.getCorporateId()));
+        Corporate corporate = corporateRepo.findById(Long.parseLong(user.getCorporateId())).get();
         corporateUser = corporateUserRepo.findFirstByCorporateAndEmailIgnoreCase(corporate, user.getEmail());
         if (corporateUser != null) {
             throw new DuplicateObjectException(messageSource.getMessage("email.exists", null, locale));
@@ -405,9 +405,9 @@ public class CorporateUserServiceImpl implements CorporateUserService {
             corporateUser.setPhoneNumber(user.getPhoneNumber());
             corporateUser.setCreatedOnDate(new Date());
             corporateUser.setStatus("A");
-            Role role = roleRepo.findOne(Long.parseLong(user.getRoleId()));
+            Role role = roleRepo.findById(Long.parseLong(user.getRoleId())).get();
             corporateUser.setRole(role);
-            Corporate corp = corporateRepo.findOne(Long.parseLong(user.getCorporateId()));
+            Corporate corp = corporateRepo.findById(Long.parseLong(user.getCorporateId())).get();
             corporateUser.setCorporate(corp);
             corporateUserRepo.save(corporateUser);
             createUserOnEntrustAndSendCredentials(corporateUser);
@@ -426,7 +426,7 @@ public class CorporateUserServiceImpl implements CorporateUserService {
     @Verifiable(operation = "UPDATE_CORP_USER_STATUS", description = "Change corporate user activation status")
     public String changeActivationStatus(Long userId) throws InternetBankingException {
 
-        CorporateUser user = corporateUserRepo.findOne(userId);
+        CorporateUser user = corporateUserRepo.findById(userId).get();
         Corporate corporate = user.getCorporate();
 
         if ("I".equals(corporate.getStatus())) {
@@ -504,7 +504,7 @@ public class CorporateUserServiceImpl implements CorporateUserService {
     public void sendPasswordResetMessage(CorporateUser user) {
 
         try {
-            CorporateUser corpUser = corporateUserRepo.findOne(user.getId());
+            CorporateUser corpUser = corporateUserRepo.findById(user.getId()).get();
             Corporate corporate = corpUser.getCorporate();
 
             String fullName = corpUser.getFirstName() + " " + corpUser.getLastName();
@@ -537,7 +537,7 @@ public class CorporateUserServiceImpl implements CorporateUserService {
     @Override
     public String changeCorpActivationStatus(Long userId) throws InternetBankingException {
 
-        CorporateUser user = corporateUserRepo.findOne(userId);
+        CorporateUser user = corporateUserRepo.findById(userId).get();
         Corporate corporate = user.getCorporate();
 
         if ("I".equals(corporate.getStatus())) {
@@ -568,7 +568,7 @@ public class CorporateUserServiceImpl implements CorporateUserService {
     @Override
     public String resetPassword(Long userId) throws PasswordException {
 
-        CorporateUser user = corporateUserRepo.findOne(userId);
+        CorporateUser user = corporateUserRepo.findById(userId).get();
         Corporate corporate = user.getCorporate();
 
         if ("I".equals(corporate.getStatus())) {
@@ -587,7 +587,7 @@ public class CorporateUserServiceImpl implements CorporateUserService {
     @Override
     public String resetCorpPassword(Long userId) throws PasswordException {
 
-        CorporateUser user = corporateUserRepo.findOne(userId);
+        CorporateUser user = corporateUserRepo.findById(userId).get();
         Corporate corporate = user.getCorporate();
 
         if ("I".equals(corporate.getStatus())) {
@@ -609,7 +609,7 @@ public class CorporateUserServiceImpl implements CorporateUserService {
     @Verifiable(operation = "DELETE_CORPORATE_USER", description = "Deleting a Corporate User")
     public String deleteUser(Long userId) throws InternetBankingException {
         try {
-            CorporateUser corporateUser = corporateUserRepo.findOne(userId);
+            CorporateUser corporateUser = corporateUserRepo.findById(userId).get();
             corporateUserRepo.delete(corporateUser);
             SettingDTO setting = configService.getSettingByName("ENABLE_ENTRUST_DELETION");
 
@@ -632,7 +632,7 @@ public class CorporateUserServiceImpl implements CorporateUserService {
     @Override
     public String unlockUser(Long id) throws InternetBankingException {
 
-        CorporateUser user = corporateUserRepo.findOne(id);
+        CorporateUser user = corporateUserRepo.findById(id).get();
         if (!"L".equals(user.getStatus())) {
             throw new InternetBankingException(messageSource.getMessage("user.unlocked", null, locale));
         }
@@ -666,7 +666,7 @@ public class CorporateUserServiceImpl implements CorporateUserService {
             throw new PasswordMismatchException();
         }
         try {
-            CorporateUser corporateUser = corporateUserRepo.findOne(user.getId());
+            CorporateUser corporateUser = corporateUserRepo.findById(user.getId()).get();
             corporateUser.setPassword(this.passwordEncoder.encode(changePassword.getNewPassword()));
             corporateUser.setExpiryDate(passwordPolicyService.getPasswordExpiryDate());
             passwordPolicyService.saveCorporatePassword(corporateUser);
@@ -692,7 +692,7 @@ public class CorporateUserServiceImpl implements CorporateUserService {
             throw new PasswordMismatchException();
         }
         try {
-            CorporateUser corporateUser = corporateUserRepo.findOne(user.getId());
+            CorporateUser corporateUser = corporateUserRepo.findById(user.getId()).get();
             corporateUser.setPassword(this.passwordEncoder.encode(changePassword.getNewPassword()));
             corporateUser.setExpiryDate(passwordPolicyService.getPasswordExpiryDate());
             passwordPolicyService.saveCorporatePassword(corporateUser);
@@ -768,7 +768,7 @@ public class CorporateUserServiceImpl implements CorporateUserService {
 
     @Override
     public List<CorporateUserDTO> getUsersWithoutRole(Long corpId) {
-        Corporate corporate = corporateRepo.findOne(corpId);
+        Corporate corporate = corporateRepo.findById(corpId).get();
         List<CorporateUser> userNotInRole = corporateUserRepo.findUsersWithoutRole(corporate);
         return convertEntitiesToDTOs(userNotInRole);
     }
@@ -895,7 +895,7 @@ public class CorporateUserServiceImpl implements CorporateUserService {
         corporateUser.setEntrustGroup(corporateUserDTO.getEntrustGroup());
         corporateUser.setUserType(UserType.CORPORATE);
         corporateUser.setIsFirstTimeLogon(corporateUserDTO.getIsFirstTimeLogon());
-        Role role = roleRepo.findOne(Long.parseLong(corporateUserDTO.getRoleId()));
+        Role role = roleRepo.findById(Long.parseLong(corporateUserDTO.getRoleId())).get();
         corporateUser.setRole(role);
         corporateUser.setCorpUserType(corporateUserDTO.getCorpUserType());
         if (corporateUserDTO.getCreatedOnDate() == null) {
@@ -966,9 +966,9 @@ public class CorporateUserServiceImpl implements CorporateUserService {
             corporateUser.setPhoneNumber(user.getPhoneNumber());
             corporateUser.setCreatedOnDate(new Date());
             corporateUser.setCorpUserType(CorpUserType.AUTHORIZER);
-            Role role = roleRepo.findOne(Long.parseLong(user.getRoleId()));
+            Role role = roleRepo.findById(Long.parseLong(user.getRoleId())).get();
             corporateUser.setRole(role);
-            Corporate corp = corporateRepo.findOne(Long.parseLong(user.getCorporateId()));
+            Corporate corp = corporateRepo.findById(Long.parseLong(user.getCorporateId())).get();
             corporateUser.setCorporate(corp);
             CorporateUser corpUser = corporateUserRepo.save(corporateUser);
             if (user.isAuthorizer()) {
@@ -1004,9 +1004,9 @@ public class CorporateUserServiceImpl implements CorporateUserService {
             corporateUser.setEntrustId(user.getUserName());
             SettingDTO settingDTO = configService.getSettingByName("DEF_ENTRUST_CORP_GRP");
             corporateUser.setEntrustGroup(settingDTO.getValue());
-            Role role = roleRepo.findOne(Long.parseLong(user.getRoleId()));
+            Role role = roleRepo.findById(Long.parseLong(user.getRoleId())).get();
             corporateUser.setRole(role);
-            Corporate corp = corporateRepo.findOne(Long.parseLong(user.getCorporateId()));
+            Corporate corp = corporateRepo.findById(Long.parseLong(user.getCorporateId())).get();
             corporateUser.setCorporate(corp);
             CorporateUser corpUser = corporateUserRepo.save(corporateUser);
             createUserOnEntrustAndSendCredentials(corpUser);
@@ -1025,14 +1025,14 @@ public class CorporateUserServiceImpl implements CorporateUserService {
     public String updateUserFromCorpAdmin(CorporateUserDTO user) throws InternetBankingException {
 
         try {
-            CorporateUser corporateUser = corporateUserRepo.findOne(user.getId());
+            CorporateUser corporateUser = corporateUserRepo.findById(user.getId()).get();
             corporateUser.setFirstName(user.getFirstName());
             corporateUser.setLastName(user.getLastName());
             corporateUser.setUserName(user.getUserName());
             corporateUser.setEmail(user.getEmail());
             corporateUser.setStatus("A");
             corporateUser.setPhoneNumber(user.getPhoneNumber());
-            Role role = roleRepo.findOne(Long.parseLong(user.getRoleId()));
+            Role role = roleRepo.findById(Long.parseLong(user.getRoleId())).get();
             corporateUser.setRole(role);
 
             if (CorpUserType.AUTHORIZER.equals(user.getCorpUserType())) {
@@ -1070,7 +1070,7 @@ public class CorporateUserServiceImpl implements CorporateUserService {
 
     @Override
     public String changeActivationStatusFromCorpAdmin(Long id) throws InternetBankingException {
-        CorporateUser corporateUser = corporateUserRepo.findOne(id);
+        CorporateUser corporateUser = corporateUserRepo.findById(id).get();
 
         if ("I".equals(corporateUser.getCorporate().getStatus())) {
             throw new InternetBankingException(messageSource.getMessage("corporate.deactivated", null, locale));
@@ -1094,7 +1094,7 @@ public class CorporateUserServiceImpl implements CorporateUserService {
 
     @Override
     public String resetSecurityQuestion(Long id) {
-        CorporateUser user = corporateUserRepo.findOne(id);
+        CorporateUser user = corporateUserRepo.findById(id).get();
         logger.info("this is the user status{}", user.getStatus());
         if ("I".equals(user.getStatus())) {
             throw new InternetBankingException(messageSource.getMessage("users.deactivated", null, locale));
@@ -1111,7 +1111,7 @@ public class CorporateUserServiceImpl implements CorporateUserService {
 
     @Override
     public void setSecurityQuestion(Long id) {
-        CorporateUser user = corporateUserRepo.findOne(id);
+        CorporateUser user = corporateUserRepo.findById(id).get();
 
         try {
             user.setResetSecurityQuestion("N");
@@ -1143,7 +1143,7 @@ public class CorporateUserServiceImpl implements CorporateUserService {
 
         try {
             List<UserAccountRestriction> accountRestrictions = new ArrayList<>();
-            CorporateUser user = corporateUserRepo.findOne(userDTO.getId());
+            CorporateUser user = corporateUserRepo.findById(userDTO.getId()).get();
             List<Account> accounts = user.getCorporate().getAccounts();
 
             logger.debug("Corporate accounts: {}",accounts);
@@ -1240,7 +1240,7 @@ public class CorporateUserServiceImpl implements CorporateUserService {
     @Override
     public List<AccountPermissionDTO> getAccountPermissions(Long userId) {
 
-        CorporateUser corporateUser = corporateUserRepo.findOne(userId);
+        CorporateUser corporateUser = corporateUserRepo.findById(userId).get();
         Corporate corporate = corporateUser.getCorporate();
         List<Account> accounts = corporate.getAccounts();
 

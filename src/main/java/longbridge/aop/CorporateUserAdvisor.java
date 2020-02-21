@@ -72,7 +72,7 @@ public class CorporateUserAdvisor {
     @After("isVerification() && verified() && args(verificationDto)")
     public void postCorporateUserActivation(JoinPoint p, VerificationDTO verificationDto) throws IOException {
 
-        Verification verification  = verificationRepo.findOne(verificationDto.getId());
+        Verification verification  = verificationRepo.findById(verificationDto.getId()).get();
         if(verification.getOperation().equals("UPDATE_CORP_USER_STATUS")){
 
             logger.info("Executing post UPDATE_CORP_USER_STATUS operation");

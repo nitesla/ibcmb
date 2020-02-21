@@ -59,7 +59,7 @@ public class FaqsServiceImpl implements FaqsService {
 
     @Override
     public FaqsDTO getFaq(Long id) {
-        Faqs faqs = this.faqsRepo.findOne(id);
+        Faqs faqs = this.faqsRepo.findById(id).get();
         return convertEntityToDTO(faqs);
     }
 
@@ -105,7 +105,7 @@ public class FaqsServiceImpl implements FaqsService {
     @Verifiable(operation = "DELETE_FAQ", description = "Deleting FAQs")
     public String deleteFaq(Long id) throws InternetBankingException {
         try{
-            Faqs faqs = faqsRepo.findOne(id);
+            Faqs faqs = faqsRepo.findById(id).get();
             faqsRepo.delete(faqs);
             logger.info("Notification {} has been deleted",id.toString());
             return messageSource.getMessage("faq.delete.success",null,locale);

@@ -19,7 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 public interface AdminUserRepo extends CommonRepo<AdminUser, Long>{
     AdminUser findFirstByUserName(String s);
 
-    AdminUser findById(Long id);
+//    AdminUser findById(Long id);
     AdminUser findFirstByUserNameIgnoreCase(String s);
     AdminUser findFirstByEmailIgnoreCase(String email);
     AdminUser findById(long id);

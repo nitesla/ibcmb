@@ -61,14 +61,14 @@ public class TransactionServiceImpl implements TransactionService {
 
     @Override
     public TransactionFeeDTO getTransactionFee(Long id) {
-        TransactionFee transactionFee = transactionFeeRepo.findOne(id);
+        TransactionFee transactionFee = transactionFeeRepo.findById(id).get();
         return convertEntityToDTO(transactionFee);
     }
 
     @Override
     public String updateTransactionFee(TransactionFeeDTO transactionFeeDTO) throws InternetBankingException {
         try {
-            TransactionFee transactionFee = transactionFeeRepo.findOne(transactionFeeDTO.getId());
+            TransactionFee transactionFee = transactionFeeRepo.findById(transactionFeeDTO.getId()).get();
             transactionFee.setVersion(transactionFeeDTO.getVersion());
             transactionFee.setFixed(transactionFeeDTO.getFixed());
             transactionFee.setPercentage(transactionFeeDTO.getPercentage());
@@ -87,7 +87,7 @@ public class TransactionServiceImpl implements TransactionService {
     @Override
     public String deleteTransactionFee(Long id) throws InternetBankingException {
         try {
-            transactionFeeRepo.delete(id);
+            transactionFeeRepo.deleteById(id);
             logger.info("Transaction fee deleted");
             return messageSource.getMessage("fee.delete.success", null, locale);
         }

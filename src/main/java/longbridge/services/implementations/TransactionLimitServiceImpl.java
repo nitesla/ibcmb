@@ -93,14 +93,14 @@ public class TransactionLimitServiceImpl implements TransactionLimitService {
 
     @Override
     public GlobalLimitDTO getCorporateGlobalLimit(Long id) {
-        GlobalLimit globalLimit = globalLimitRepo.findOne(id);
+        GlobalLimit globalLimit = globalLimitRepo.findById(id).get();
         return convertGlobalLimitEntityToDTO(globalLimit);
     }
 
 
     @Override
     public GlobalLimitDTO getRetailGlobalLimit(Long id) {
-        GlobalLimit globalLimit = globalLimitRepo.findOne(id);
+        GlobalLimit globalLimit = globalLimitRepo.findById(id).get();
         return convertGlobalLimitEntityToDTO(globalLimit);
     }
 
@@ -123,13 +123,13 @@ public class TransactionLimitServiceImpl implements TransactionLimitService {
 
     @Override
     public ClassLimitDTO getRetailClassLimit(Long id) {
-        ClassLimit classLimit = classLimitRepo.findOne(id);
+        ClassLimit classLimit = classLimitRepo.findById(id).get();
         return convertClassLimitEntityToDTO(classLimit);
     }
 
     @Override
     public ClassLimitDTO getCorporateClassLimit(Long id) {
-        ClassLimit classLimit = classLimitRepo.findOne(id);
+        ClassLimit classLimit = classLimitRepo.findById(id).get();
         return convertClassLimitEntityToDTO(classLimit);
     }
 
@@ -182,13 +182,13 @@ public class TransactionLimitServiceImpl implements TransactionLimitService {
 
     @Override
     public AccountLimitDTO getRetailAccountLimit(Long id) {
-        AccountLimit accountLimit = accountLimitRepo.findOne(id);
+        AccountLimit accountLimit = accountLimitRepo.findById(id).get();
         return convertAccountLimitEntityToDTO(accountLimit);
     }
 
     @Override
     public AccountLimitDTO getCorporateAccountLimit(Long id) {
-        AccountLimit accountLimit = accountLimitRepo.findOne(id);
+        AccountLimit accountLimit = accountLimitRepo.findById(id).get();
         return convertAccountLimitEntityToDTO(accountLimit);
     }
 
@@ -242,7 +242,7 @@ public class TransactionLimitServiceImpl implements TransactionLimitService {
     @Verifiable(operation = "DELETE_TRANS_LIMIT", description = "Deleting a Coporate Account Limit")
     public String deleteCorporateAccountLimit(Long id) throws InternetBankingException {
         try {
-            AccountLimit limit = accountLimitRepo.findOne(id);
+            AccountLimit limit = accountLimitRepo.findById(id).get();
             accountLimitRepo.delete(limit);
             logger.info("Deleted account limit with Id {}", id);
             return messageSource.getMessage("limit.delete.success", null, locale);
@@ -259,7 +259,7 @@ public class TransactionLimitServiceImpl implements TransactionLimitService {
     @Verifiable(operation = "DELETE_TRANS_LIMIT", description = "Deleting a Coporate Class Limit")
     public String deleteCorporateClassLimit(Long id) throws InternetBankingException {
         try {
-            ClassLimit classLimit = classLimitRepo.findOne(id);
+            ClassLimit classLimit = classLimitRepo.findById(id).get();
             classLimitRepo.delete(classLimit);
             logger.info("Deleted class limit with Id {}", id);
             return messageSource.getMessage("limit.delete.success", null, locale);
@@ -276,7 +276,7 @@ public class TransactionLimitServiceImpl implements TransactionLimitService {
     @Verifiable(operation = "DELETE_TRANS_LIMIT", description = "Deleting a Corporate Global Limit")
     public String deleteCorporateGlobalLimit(Long id) throws InternetBankingException {
         try {
-            GlobalLimit globalLimit = globalLimitRepo.findOne(id);
+            GlobalLimit globalLimit = globalLimitRepo.findById(id).get();
             globalLimitRepo.delete(globalLimit);
             logger.info("Deleted global limit with Id {}", id);
             return messageSource.getMessage("limit.delete.success", null, locale);
@@ -293,7 +293,7 @@ public class TransactionLimitServiceImpl implements TransactionLimitService {
     @Verifiable(operation = "DELETE_TRANS_LIMIT", description = "Deleting a  Retail Account Limit")
     public String deleteRetailAccountLimit(Long id) throws InternetBankingException {
         try {
-            AccountLimit accountLimit = accountLimitRepo.findOne(id);
+            AccountLimit accountLimit = accountLimitRepo.findById(id).get();
             accountLimitRepo.delete(accountLimit);
             logger.info("Deleted account limit with Id {}", id);
             return messageSource.getMessage("limit.delete.success", null, locale);
@@ -310,7 +310,7 @@ public class TransactionLimitServiceImpl implements TransactionLimitService {
     @Verifiable(operation = "DELETE_TRANS_LIMIT", description = "Deleting a Retail Class Limit")
     public String deleteRetailClassLimit(Long id) throws InternetBankingException {
         try {
-            ClassLimit classLimit = classLimitRepo.findOne(id);
+            ClassLimit classLimit = classLimitRepo.findById(id).get();
             classLimitRepo.delete(classLimit);
             logger.info("Deleted class limit with Id {}", id);
             return messageSource.getMessage("limit.delete.success", null, locale);
@@ -327,7 +327,7 @@ public class TransactionLimitServiceImpl implements TransactionLimitService {
     @Verifiable(operation = "DELETE_TRANS_LIMIT", description = "Deleting a Retail Global Limit")
     public String deleteRetailGlobalLimit(Long id) throws InternetBankingException {
         try {
-            GlobalLimit globalLimit = globalLimitRepo.findOne(id);
+            GlobalLimit globalLimit = globalLimitRepo.findById(id).get();
             globalLimitRepo.delete(globalLimit);
             logger.info("Deleted global limit with Id {}", id);
             return messageSource.getMessage("limit.delete.success", null, locale);

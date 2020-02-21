@@ -393,14 +393,14 @@ public class CorpCustomDutyServiceImpl implements CorpCustomDutyService {
 
     @Override
     public CorpTransferAuth getAuthorizations(CorpPaymentRequest paymentRequest) {
-        CorpPaymentRequest corpPaymentRequest = corpPaymentRequestRepo.findOne(paymentRequest.getId());
+        CorpPaymentRequest corpPaymentRequest = corpPaymentRequestRepo.findById(paymentRequest.getId()).get();
         return corpPaymentRequest.getTransferAuth();
     }
 
     @Override
     public String addAuthorization(CorpTransReqEntry transReqEntry, Principal principal) {
         CorporateUser corporateUser = getCurrentUser();
-        CorpPaymentRequest corpPaymentRequest = corpPaymentRequestRepo.findOne(transReqEntry.getTranReqId());
+        CorpPaymentRequest corpPaymentRequest = corpPaymentRequestRepo.findById(transReqEntry.getTranReqId()).get();
 
 
 

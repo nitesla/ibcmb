@@ -104,7 +104,7 @@ public class AccountConfigServiceImpl implements AccountConfigService {
 
         validateNoAccountDuplication(accountRestrictionDTO);
         try {
-            AccountRestriction accountRestriction = accountRestrictionRepo.findOne(accountRestrictionDTO.getId());
+            AccountRestriction accountRestriction = accountRestrictionRepo.findById(accountRestrictionDTO.getId()).get();
             entityManager.detach(accountRestriction);
             accountRestriction.setVersion(accountRestrictionDTO.getVersion());
             accountRestriction.setRestrictionType(accountRestrictionDTO.getRestrictionType());
@@ -123,13 +123,13 @@ public class AccountConfigServiceImpl implements AccountConfigService {
 
     @Override
     public AccountRestrictionDTO getAccountRestriction(Long id) {
-        AccountRestriction accountRestriction = accountRestrictionRepo.findOne(id);
+        AccountRestriction accountRestriction = accountRestrictionRepo.findById(id).get();
         return convertAccountRestrictionEntityToDTO(accountRestriction);
     }
 
     @Override
     public AccountClassRestrictionDTO getAccountClassRestriction(Long id) {
-        AccountClassRestriction accountClassRestriction = accountClassRestrictionRepo.findOne(id);
+        AccountClassRestriction accountClassRestriction = accountClassRestrictionRepo.findById(id).get();
         return convertAccountClassRestrictionEntityToDTO(accountClassRestriction);
     }
 
@@ -138,7 +138,7 @@ public class AccountConfigServiceImpl implements AccountConfigService {
     @Verifiable(operation = "DELETE_ACCT_RESTRICT", description = "Deleting Account Restriction")
     public String deleteAccountRestriction(Long id) throws InternetBankingException {
         try {
-            AccountRestriction accountRestriction = accountRestrictionRepo.findOne(id);
+            AccountRestriction accountRestriction = accountRestrictionRepo.findById(id).get();
             accountRestrictionRepo.delete(accountRestriction);
             return messageSource.getMessage("account.restrict.delete.success", null, LocaleContextHolder.getLocale());
 
@@ -173,7 +173,7 @@ public class AccountConfigServiceImpl implements AccountConfigService {
 
         validateNoAccountClassDuplication(accountClassRestrictionDTO);
         try {
-            AccountClassRestriction accountClassRestriction = accountClassRestrictionRepo.findOne(accountClassRestrictionDTO.getId());
+            AccountClassRestriction accountClassRestriction = accountClassRestrictionRepo.findById(accountClassRestrictionDTO.getId()).get();
             entityManager.detach(accountClassRestriction);
             accountClassRestriction.setVersion(accountClassRestrictionDTO.getVersion());
             accountClassRestriction.setAccountClass(accountClassRestrictionDTO.getAccountClass());
@@ -194,11 +194,11 @@ public class AccountConfigServiceImpl implements AccountConfigService {
     @Override
     public String deleteAccountClassRestriction(Long id) throws InternetBankingException {
         try {
-            AccountClassRestriction accountClassRestriction = accountClassRestrictionRepo.findOne(id);
+            AccountClassRestriction accountClassRestriction = accountClassRestrictionRepo.findById(id).get();
             entityManager.detach(accountClassRestriction);
             accountClassRestriction.setDeletedOn(new Date());
             accountClassRestrictionRepo.save(accountClassRestriction);
-            accountClassRestrictionRepo.delete(id);
+            accountClassRestrictionRepo.deleteById(id);
             return messageSource.getMessage("class.restrict.delete.success", null, locale);
 
         } catch (Exception e) {

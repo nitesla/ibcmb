@@ -48,7 +48,7 @@ public class SecurityQuestionServiceImpl implements SecurityQuestionService {
 
     @Override
     public SecurityQuestions getSecQuestion(Long id) {
-        return secQuestionRepo.findOne(id);
+        return secQuestionRepo.findById(id).get();
     }
 
     @Override
@@ -107,7 +107,7 @@ public class SecurityQuestionServiceImpl implements SecurityQuestionService {
     @Verifiable(operation="DELETE_SQ",description="Deleting Security Question")
     public String deleteSecQuestion(Long id) {
         try{
-            SecurityQuestions securityQuestions = secQuestionRepo.findOne(id);
+            SecurityQuestions securityQuestions = secQuestionRepo.findById(id).get();
             this.secQuestionRepo.delete(securityQuestions);
             logger.info("Security Question {} deleted", securityQuestions);
             return messageSource.getMessage("secQues.delete.success", null, locale);

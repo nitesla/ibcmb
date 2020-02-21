@@ -81,12 +81,12 @@ public class MessageServiceImpl implements MessageService {
     @Override
     @Transactional
     public MailBox getMailBox(Long id) {
-        return mailBoxRepo.findOne(id);
+        return mailBoxRepo.findById(id).get();
     }
 
     @Override
     public MessageDTO getMessage(Long id) {
-        return convertEntityToDTO(this.messageRepo.findOne(id));
+        return convertEntityToDTO(this.messageRepo.findById(id).get());
     }
 
     @Override
@@ -178,7 +178,7 @@ public class MessageServiceImpl implements MessageService {
     @Override
     public String deleteReceivedMessage(Long id)throws InternetBankingException {
         try {
-            this.messageRepo.delete(id);
+            this.messageRepo.deleteById(id);
             return messageSource.getMessage("message.delete.success", null, locale);
         }
         catch (Exception e){
@@ -280,7 +280,8 @@ public class MessageServiceImpl implements MessageService {
     @Override
     public String purge(Date fromDate, Date toDate) {
         Iterable<Message> messages = getMessage(fromDate, toDate);
-        this.messageRepo.delete(messages);
+        messages.forEach(i->{ this.messageRepo.deleteById(i.getId());
+        });
         return messageSource.getMessage("message.purge.success",null,locale);
     }
 

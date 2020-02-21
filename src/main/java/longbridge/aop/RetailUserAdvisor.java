@@ -79,12 +79,12 @@ public class RetailUserAdvisor {
     @After("isVerification() && verified() && args(verificationDto)")
     public void postRetailUserActivation(JoinPoint p, VerificationDTO verificationDto) throws IOException {
 
-        Verification verification  = verificationRepo.findOne(verificationDto.getId());
+        Verification verification  = verificationRepo.findById(verificationDto.getId()).get();
         if(verification.getOperation().equals("UPDATE_RETAIL_STATUS")){
 
             logger.info("Executing post UPDATE_RETAIL_STATUS operation");
 
-            RetailUser user = retailUserRepo.findOne(verification.getEntityId());
+            RetailUser user = retailUserRepo.findById(verification.getEntityId()).get();
             entityManager.detach(user);
             ObjectMapper objectMapper = new ObjectMapper();
             RetailUser retailUser = objectMapper.readValue(verification.getOriginalObject(),RetailUser.class);

@@ -187,7 +187,7 @@ public class CorpTransferServiceImpl implements CorpTransferService {
         logger.trace("Transfer Details {} by {}", corpTransRequestNew.toString(),corpTransRequestNew.getUserReferenceNumber());
 
         if (corpTransRequestNew != null) {
-            CorpTransRequest corpTransRequest1=corpTransferRequestRepo.findOne(corpTransRequest.getId());
+            CorpTransRequest corpTransRequest1=corpTransferRequestRepo.findById(corpTransRequest.getId()).get();
             entityManager.detach(corpTransRequest1);
             corpTransRequest1.setReferenceNumber(corpTransRequestNew.getReferenceNumber());
             corpTransRequest1.setNarration(corpTransRequestNew.getNarration());
@@ -231,7 +231,7 @@ public class CorpTransferServiceImpl implements CorpTransferService {
 
     @Override
     public CorpTransRequest getTransfer(Long id) {
-        return corpTransferRequestRepo.findById(id);
+        return corpTransferRequestRepo.findById(id).get();
     }
 
 
@@ -289,7 +289,7 @@ public class CorpTransferServiceImpl implements CorpTransferService {
         );
         if (limitExceeded) throw new InternetBankingTransferException(TransferExceptions.LIMIT_EXCEEDED.toString());
 
-       Corporate corporate = corporateRepo.findOne(getCurrentUser().getCorporate().getId());
+       Corporate corporate = corporateRepo.findById(getCurrentUser().getCorporate().getId()).get();
         boolean acctPresent = StreamSupport.stream(accountService.getAccountsForDebit(corporate.getAccounts()).spliterator(), false)
                 .anyMatch(i -> i.getAccountNumber().equalsIgnoreCase(dto.getCustomerAccountNumber()));
 
@@ -373,10 +373,10 @@ public class CorpTransferServiceImpl implements CorpTransferService {
         corpTransRequest.setStatusDescription(transferRequestDTO.getStatusDescription());
         corpTransRequest.setAmount(transferRequestDTO.getAmount());
         corpTransRequest.setUserReferenceNumber(transferRequestDTO.getUserReferenceNumber());
-        Corporate corporate = corporateRepo.findOne(Long.parseLong(transferRequestDTO.getCorporateId()));
+        Corporate corporate = corporateRepo.findById(Long.parseLong(transferRequestDTO.getCorporateId())).get();
         corpTransRequest.setCorporate(corporate);
         if (transferRequestDTO.getTransAuthId() != null) {
-            CorpTransferAuth transferAuth = transferAuthRepo.findOne(Long.parseLong(transferRequestDTO.getTransAuthId()));
+            CorpTransferAuth transferAuth = transferAuthRepo.findById(Long.parseLong(transferRequestDTO.getTransAuthId())).get();
             corpTransRequest.setTransferAuth(transferAuth);
         }
         return corpTransRequest;
@@ -434,7 +434,7 @@ public class CorpTransferServiceImpl implements CorpTransferService {
 
     @Override
     public CorpTransferAuth getAuthorizations(CorpTransRequest transRequest) {
-        CorpTransRequest corpTransRequest = corpTransferRequestRepo.findOne(transRequest.getId());
+        CorpTransRequest corpTransRequest = corpTransferRequestRepo.findById(transRequest.getId()).get();
         return corpTransRequest.getTransferAuth();
 
     }
@@ -461,7 +461,7 @@ public class CorpTransferServiceImpl implements CorpTransferService {
     @Override
     public String addAuthorization(CorpTransReqEntry transReqEntry) {
         CorporateUser corporateUser = getCurrentUser();
-        CorpTransRequest corpTransRequest = corpTransferRequestRepo.findOne(transReqEntry.getTranReqId());
+        CorpTransRequest corpTransRequest = corpTransferRequestRepo.findById(transReqEntry.getTranReqId()).get();
         CorpTransRule transferRule = corporateService.getApplicableTransferRule(corpTransRequest);
         List<CorporateRole> roles = getExistingRoles(transferRule.getRoles());
         CorporateRole userRole = null;

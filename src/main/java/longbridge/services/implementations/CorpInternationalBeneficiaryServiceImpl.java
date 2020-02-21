@@ -52,7 +52,7 @@ public class CorpInternationalBeneficiaryServiceImpl implements CorpInternationa
 
     @Override
     public String deleteCorpInternationalBeneficiary(Long beneficiaryId) throws InternetBankingException {
-        corpInternationalBeneficiaryRepo.delete(beneficiaryId);
+        corpInternationalBeneficiaryRepo.deleteById(beneficiaryId);
         logger.info("Deleted beneficiary with Id {}", beneficiaryId);
         return messageSource.getMessage("beneficiary.delete.success",null,locale);
 
@@ -60,7 +60,7 @@ public class CorpInternationalBeneficiaryServiceImpl implements CorpInternationa
 
     @Override
     public CorpInterBen getCorpInternationalBeneficiary(Long id) {
-        return corpInternationalBeneficiaryRepo.findOne(id);
+        return corpInternationalBeneficiaryRepo.findById(id).get();
     }
 
     @Override

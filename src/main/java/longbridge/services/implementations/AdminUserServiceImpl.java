@@ -95,7 +95,7 @@ public class AdminUserServiceImpl implements AdminUserService {
 
     @Override
     public AdminUser getUser(Long id) {
-        return this.adminUserRepo.findOne(id);
+        return this.adminUserRepo.findById(id).get();
     }
 
     @Override
@@ -105,7 +105,7 @@ public class AdminUserServiceImpl implements AdminUserService {
 
     @Override
     public AdminUserDTO getAdminUser(Long userId) {
-        AdminUser adminUser = adminUserRepo.findOne(userId);
+        AdminUser adminUser = adminUserRepo.findById(userId).get();
         return convertEntityToDTO(adminUser);
     }
 
@@ -146,7 +146,7 @@ public class AdminUserServiceImpl implements AdminUserService {
             adminUser.setPhoneNumber(user.getPhoneNumber());
             adminUser.setStatus("A");
             adminUser.setCreatedOnDate(new Date());
-            Role role = roleRepo.findOne(Long.parseLong(user.getRoleId()));
+            Role role = roleRepo.findById(Long.parseLong(user.getRoleId())).get();
             adminUser.setRole(role);
             AdminUser newUser = adminUserRepo.save(adminUser);
             createUserOnEntrustAndSendCredentials(newUser);
@@ -220,7 +220,7 @@ public class AdminUserServiceImpl implements AdminUserService {
     @Verifiable(operation = "UPDATE_ADMIN_STATUS", description = "Change Admin Activation Status")
     public String changeActivationStatus(Long userId) throws InternetBankingException {
         try {
-            AdminUser user = adminUserRepo.findOne(userId);
+            AdminUser user = adminUserRepo.findById(userId).get();
             entityManager.detach(user);
             String oldStatus = user.getStatus();
             String newStatus = "A".equals(oldStatus) ? "I" : "A";
@@ -291,7 +291,7 @@ public class AdminUserServiceImpl implements AdminUserService {
     @Verifiable(operation = "DELETE_ADMIN_USER", description = "Deleting an Admin User")
     public String deleteUser(Long id) throws InternetBankingException {
         try {
-            AdminUser user = adminUserRepo.findOne(id);
+            AdminUser user = adminUserRepo.findById(id).get();
             adminUserRepo.delete(user);
             SettingDTO setting = configService.getSettingByName("ENABLE_ENTRUST_DELETION");
             if (setting != null && setting.isEnabled()) {
@@ -316,7 +316,7 @@ public class AdminUserServiceImpl implements AdminUserService {
     @Verifiable(operation = "UPDATE_ADMIN_USER", description = "Updating an Admin User")
     public String updateUser(AdminUserDTO user) throws InternetBankingException {
 
-        AdminUser adminUser = adminUserRepo.findById(user.getId());
+        AdminUser adminUser = adminUserRepo.findById(user.getId()).get();
 
         if ("I".equals(adminUser.getStatus())) {
             throw new InternetBankingException(messageSource.getMessage("user.deactivated", null, locale));
@@ -330,7 +330,7 @@ public class AdminUserServiceImpl implements AdminUserService {
             }
         }
 
-        adminUser = adminUserRepo.findById(user.getId());
+        adminUser = adminUserRepo.findById(user.getId()).get();
 
         try {
             entityManager.detach(adminUser);
@@ -341,7 +341,7 @@ public class AdminUserServiceImpl implements AdminUserService {
             adminUser.setUserName(user.getUserName());
             adminUser.setEmail(user.getEmail());
             adminUser.setPhoneNumber(user.getPhoneNumber());
-            Role role = roleRepo.findOne(Long.parseLong(user.getRoleId()));
+            Role role = roleRepo.findById(Long.parseLong(user.getRoleId())).get();
             adminUser.setRole(role);
             adminUserRepo.save(adminUser);
             logger.info("Admin user {} updated", adminUser.getUserName());

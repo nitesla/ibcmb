@@ -95,7 +95,7 @@ public class RequestServiceImpl implements RequestService {
     public String addRequest(ServiceRequestDTO request) throws InternetBankingException {
         try {
             ServiceRequest serviceRequest = convertDTOToEntity(request);
-            serviceRequest.setUser(retailUserRepo.findOne(request.getUserId()));
+            serviceRequest.setUser(retailUserRepo.findById(request.getUserId()).get());
             String name = getFullName(serviceRequest);
             ServiceReqConfigDTO config = reqConfigService.getServiceReqConfig(request.getServiceReqConfigId());
 
@@ -133,7 +133,7 @@ public class RequestServiceImpl implements RequestService {
     public String addCorpRequest(ServiceRequestDTO request) throws InternetBankingException {
         try {
             ServiceRequest serviceRequest = convertDTOToEntity(request);
-            Corporate corporate = corporateRepo.findOne(request.getCorpId());
+            Corporate corporate = corporateRepo.findById(request.getCorpId()).get();
             serviceRequest.setCorporate(corporate);
             String name = corporate.getName();
             ServiceReqConfigDTO config = reqConfigService.getServiceReqConfig(serviceRequest.getServiceReqConfigId());
@@ -169,7 +169,7 @@ public class RequestServiceImpl implements RequestService {
 
     @Override
     public ServiceRequestDTO getRequest(Long id) {
-        ServiceRequest serviceRequest = serviceRequestRepo.findOne(id);
+        ServiceRequest serviceRequest = serviceRequestRepo.findById(id).get();
         return convertEntityToDTO(serviceRequest);
     }
 
@@ -197,13 +197,13 @@ public class RequestServiceImpl implements RequestService {
     @Override
     @Transactional
     public Iterable<RequestHistory> getRequestHistories(ServiceRequest request) {
-        return serviceRequestRepo.findOne(request.getId()).getRequestHistories();
+        return serviceRequestRepo.findById(request.getId()).get().getRequestHistories();
     }
 
     @Override
     @Transactional
     public Iterable<RequestHistoryDTO> getRequestHistories(Long serviceRequestId) {
-        Iterable<RequestHistory> requestHistories = serviceRequestRepo.findOne(serviceRequestId).getRequestHistories();
+        Iterable<RequestHistory> requestHistories = serviceRequestRepo.findById(serviceRequestId).get().getRequestHistories();
         return convertRequestHistoryEntitiesToDTOs(requestHistories);
     }
 
@@ -230,11 +230,11 @@ public class RequestServiceImpl implements RequestService {
         List<ServiceRequestDTO> requestsForOpsUser = new ArrayList<ServiceRequestDTO>();
         List<UserGroup> opsUserGroups = opsUser.getGroups();
         for (ServiceRequestDTO request : dtOs) {
-            SRConfig reqConfig = reqConfigRepo.findOne(request.getServiceReqConfigId());
+            SRConfig reqConfig = reqConfigRepo.findById(request.getServiceReqConfigId()).get();
             if(reqConfig!=null) {
                 for (UserGroup group : opsUserGroups) {
                     if (group != null) {
-                        if (group.equals(userGroupRepo.findOne(reqConfig.getGroupId()))) {
+                        if (group.equals(userGroupRepo.findById(reqConfig.getGroupId()).get())) {
                             requestsForOpsUser.add(request);
                         }
                     }
@@ -309,7 +309,7 @@ public class RequestServiceImpl implements RequestService {
 
     private RequestHistory convertRequestHistoryDTOToEntity(RequestHistoryDTO requestHistoryDTO) {
         RequestHistory requestHistory = new RequestHistory();
-        requestHistory.setServiceRequest(serviceRequestRepo.findOne(Long.parseLong(requestHistoryDTO.getServiceRequestId())));
+        requestHistory.setServiceRequest(serviceRequestRepo.findById(Long.parseLong(requestHistoryDTO.getServiceRequestId())).get());
         requestHistory.setComments(requestHistoryDTO.getComments());
         requestHistory.setStatus(requestHistoryDTO.getStatus());
         requestHistory.setCreatedBy(operationsUserService.getUserByName(requestHistoryDTO.getCreatedBy()));

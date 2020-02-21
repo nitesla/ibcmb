@@ -87,7 +87,7 @@ public class ServiceReqConfigServiceImpl implements ServiceReqConfigService {
 
 	@Override
 	public ServiceReqConfigDTO getServiceReqConfig(Long id) {
-		SRConfig SRConfig = serviceReqConfigRepo.findOne(id);
+		SRConfig SRConfig = serviceReqConfigRepo.findById(id).get();
 		modelMapper = new ModelMapper();
 		return modelMapper.map(SRConfig, ServiceReqConfigDTO.class);
 	}
@@ -116,7 +116,7 @@ public class ServiceReqConfigServiceImpl implements ServiceReqConfigService {
 	@Verifiable(operation="UPDATE_SERV_REQ_CONFIG",description="Updating a Service Request Configuration")
 	public String updateServiceReqConfig(ServiceReqConfigDTO serviceReqConfigDTO) throws InternetBankingException {
 		try {
-			SRConfig SRConfig = serviceReqConfigRepo.findOne(serviceReqConfigDTO.getId());
+			SRConfig SRConfig = serviceReqConfigRepo.findById(serviceReqConfigDTO.getId()).get();
 			ModelMapper mapper = new ModelMapper();
 			List<ServiceReqFormField> fields = new ArrayList<ServiceReqFormField>();
 
@@ -128,7 +128,7 @@ public class ServiceReqConfigServiceImpl implements ServiceReqConfigService {
 					onefield = new ServiceReqFormField();
 					onefield.setSRConfig(SRConfig);
 				} else {
-					onefield = serviceReqFormFieldRepo.findOne(f.getId());
+					onefield = serviceReqFormFieldRepo.findById(f.getId()).get();
 					entityManager.detach(onefield);
 
 				}
@@ -164,7 +164,7 @@ public class ServiceReqConfigServiceImpl implements ServiceReqConfigService {
 	@Verifiable(operation="DELETE_SERV_REQ_CONFIG",description="Deleting a Service Request Configuration")
 	public String delServiceReqConfig(Long id) throws InternetBankingException {
 		try {
-			SRConfig srConfig = serviceReqConfigRepo.findOne(id);
+			SRConfig srConfig = serviceReqConfigRepo.findById(id).get();
 			SRConfig config = new SRConfig();
 			modelMapper.map(srConfig,config);
 			serviceReqConfigRepo.delete(config);
@@ -198,13 +198,13 @@ public class ServiceReqConfigServiceImpl implements ServiceReqConfigService {
 
 	@Override
 	public ServiceReqFormFieldDTO getServiceReqFormField(Long id) {
-		ServiceReqFormField serviceReqFormField = serviceReqFormFieldRepo.findOne(id);
+		ServiceReqFormField serviceReqFormField = serviceReqFormFieldRepo.findById(id).get();
 		return convertFormFieldEntityToDTO(serviceReqFormField);
 	}
 
 	@Override
 	public Iterable<ServiceReqFormFieldDTO> getServiceReqFormFields(Long serviceReqConfigId) {
-		Iterable<ServiceReqFormField> serviceReqFormFieldList = serviceReqConfigRepo.findOne(serviceReqConfigId)
+		Iterable<ServiceReqFormField> serviceReqFormFieldList = serviceReqConfigRepo.findById(serviceReqConfigId).get()
 				.getFormFields();
 		return convertFormFieldEntitiesToDTOs(serviceReqFormFieldList);
 	}
@@ -232,7 +232,7 @@ public class ServiceReqConfigServiceImpl implements ServiceReqConfigService {
 	@Override
 	public String delServiceReqFormField(Long id) throws InternetBankingException {
 		try{
-		serviceReqFormFieldRepo.delete(id);
+		serviceReqFormFieldRepo.deleteById(id);
 		logger.info("Deleted service request form fields with Id {}",id);
 		return  messageSource.getMessage("req.config.delete.success",null,locale);
 

@@ -363,7 +363,7 @@ public class TransferUtils {
             case CORPORATE: {
                 CorporateUser user = (CorporateUser) currentUser;
                 Account acct = accountRepo.findFirstByAccountNumber(account);
-                Corporate corporate = corporateRepo.findOne(user.getCorporate().getId());
+                Corporate corporate = corporateRepo.findById(user.getCorporate().getId()).get();
                 boolean valid = corporate.getAccounts().contains(acct);			if (!valid) {
                     logger.warn("User " + user.toString() + "trying to access other accounts");
                     throw new InternetBankingException("Access Denied");

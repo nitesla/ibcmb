@@ -94,7 +94,7 @@ public class UserGroupServiceImpl implements UserGroupService {
     @Verifiable(operation="DELETE_USER_GRP",description="Deleting a Group")
     public String deleteGroup(Long id) throws InternetBankingException{
         try {
-           UserGroup group = userGroupRepo.findOne(id);
+           UserGroup group = userGroupRepo.findById(id).get();
            UserGroup userGroup = new UserGroup();
            userGroup.setId(group.getId());
            userGroup.setVersion(group.getVersion());
@@ -127,7 +127,7 @@ public class UserGroupServiceImpl implements UserGroupService {
 
     @Override
     public UserGroupDTO getGroup(Long id) {
-        UserGroup userGroup = userGroupRepo.findOne(id);
+        UserGroup userGroup = userGroupRepo.findById(id).get();
         return convertEntityToDTO(userGroup);
     }
 
@@ -160,7 +160,7 @@ public class UserGroupServiceImpl implements UserGroupService {
         OperationsUser operationsUser;
 
         for(OperationsUserDTO operationsUserDTO: operationsUserDTOs){
-            operationsUser = operationsUserRepo.findOne(operationsUserDTO.getId());
+            operationsUser = operationsUserRepo.findById(operationsUserDTO.getId()).get();
             operationsUserList.add(operationsUser);
         }
 
@@ -189,7 +189,7 @@ public class UserGroupServiceImpl implements UserGroupService {
     }
     @Override
     public List<ContactDTO> getContacts(Long groupId){
-        UserGroup userGroup = userGroupRepo.findOne(groupId);
+        UserGroup userGroup = userGroupRepo.findById(groupId).get();
         List<OperationsUser> internalUsers = userGroup.getUsers();
         List<Contact> externalUsers= userGroup.getContacts();
         List<ContactDTO> allUsers = new ArrayList<ContactDTO>();

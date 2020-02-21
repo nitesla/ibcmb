@@ -115,7 +115,7 @@ public class CorpUserVerificationServiceImpl implements CorpUserVerificationServ
 
     @Override
     public String changeStatusFromCorporateAdmin(Long id) throws InternetBankingException {
-        CorporateUser corporateUser = corporateUserRepo.findOne(id);
+        CorporateUser corporateUser = corporateUserRepo.findById(id).get();
 
         if ("I".equals(corporateUser.getCorporate().getStatus())) {
             throw new InternetBankingException(messageSource.getMessage("corporate.deactivated", null, locale));
@@ -163,12 +163,12 @@ public class CorpUserVerificationServiceImpl implements CorpUserVerificationServ
             }
 
             if(userDTO.getRoleId() != null){
-                Role role = roleRepo.findOne(Long.parseLong(userDTO.getRoleId()));
+                Role role = roleRepo.findById(Long.parseLong(userDTO.getRoleId())).get();
                 userDTO.setRole(role.getName());
             }
 
             if(userDTO.getCorporateId() != null){
-                Corporate corporate = corporateRepo.findOne(Long.parseLong(userDTO.getCorporateId()));
+                Corporate corporate = corporateRepo.findById(Long.parseLong(userDTO.getCorporateId())).get();
                 userDTO.setCorporateName(corporate.getName());
             }
 
@@ -285,12 +285,12 @@ public class CorpUserVerificationServiceImpl implements CorpUserVerificationServ
             }
 
             if(userDTO.getRoleId() != null){
-                Role role = roleRepo.findOne(Long.parseLong(userDTO.getRoleId()));
+                Role role = roleRepo.findById(Long.parseLong(userDTO.getRoleId())).get();
                 userDTO.setRole(role.getName());
             }
 
             if(userDTO.getCorporateId() != null){
-                Corporate corporate = corporateRepo.findOne(Long.parseLong(userDTO.getCorporateId()));
+                Corporate corporate = corporateRepo.findById(Long.parseLong(userDTO.getCorporateId())).get();
                 userDTO.setCorporateName(corporate.getName());
             }
 
@@ -381,7 +381,7 @@ public class CorpUserVerificationServiceImpl implements CorpUserVerificationServ
     @Transactional
     public String decline(CorpUserVerificationDTO dto) throws VerificationException {
 
-        CorpUserVerification corpUserVerification = corpUserVerificationRepo.findOne(dto.getId());
+        CorpUserVerification corpUserVerification = corpUserVerificationRepo.findById(dto.getId()).get();
         String verifiedBy = getCurrentUserName();
 
         if(verifiedBy.equals(corpUserVerification.getInitiatedBy())){
@@ -431,7 +431,7 @@ public class CorpUserVerificationServiceImpl implements CorpUserVerificationServ
     public String verify(CorpUserVerificationDTO dto) throws VerificationException {
 
         logger.info(">>>>>>" + dto);
-        CorpUserVerification corpUserVerification = corpUserVerificationRepo.findOne(dto.getId());
+        CorpUserVerification corpUserVerification = corpUserVerificationRepo.findById(dto.getId()).get();
         String verifiedBy = getCurrentUserName();
         if(verifiedBy.equals(corpUserVerification.getInitiatedBy())){
             throw new VerificationException("You cannot verify what you initiated");
@@ -508,7 +508,7 @@ public class CorpUserVerificationServiceImpl implements CorpUserVerificationServ
 
     @Override
     public CorpUserVerificationDTO getVerification(Long id) {
-        return convertEntityToDTO(corpUserVerificationRepo.findOne(id));
+        return convertEntityToDTO(corpUserVerificationRepo.findById(id).get());
     }
 
 
@@ -589,13 +589,13 @@ public class CorpUserVerificationServiceImpl implements CorpUserVerificationServ
 
     private void postCorporateUserActivation(CorpUserVerificationDTO corpUserVerificationDTO) throws IOException {
 
-        CorpUserVerification corpUserVerification  =corpUserVerificationRepo.findOne(corpUserVerificationDTO.getId());
+        CorpUserVerification corpUserVerification  =corpUserVerificationRepo.findById(corpUserVerificationDTO.getId()).get();
         logger.info(">>>>>>>>>>" + corpUserVerification.getOperation());
         if(corpUserVerification.getOperation().equals("UPDATE_CORP_USER_STATUS")){
 
             logger.info("Inside Advisor for Post Corporate user activation...");
 
-            CorporateUser user = corporateUserRepo.findOne(corpUserVerification.getEntityId());
+            CorporateUser user = corporateUserRepo.findById(corpUserVerification.getEntityId()).get();
             entityManager.detach(user);
             ObjectMapper objectMapper = new ObjectMapper();
             CorporateUserDTO corpUserDTO = objectMapper.readValue(corpUserVerification.getOriginalObject(),CorporateUserDTO.class);

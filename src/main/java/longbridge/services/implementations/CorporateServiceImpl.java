@@ -193,7 +193,7 @@ public class CorporateServiceImpl implements CorporateService {
             if ("SOLE".equals(corporateRequestDTO.getCorporateType())) {
                 role = getSoleCorporateRole();
             } else {
-                role = roleRepo.findOne(Long.parseLong(user.getRoleId()));
+                role = roleRepo.findById(Long.parseLong(user.getRoleId())).get();
             }
             corporateUser.setRole(role);
             corporateUser.setCorpUserType(getUserType(user.getUserType()));
@@ -386,7 +386,7 @@ public class CorporateServiceImpl implements CorporateService {
     @Override
     @Transactional
     public void addAccounts(CorporateRequestDTO requestDTO) {
-        Corporate corporate = corporateRepo.findOne(requestDTO.getId());
+        Corporate corporate = corporateRepo.findById(requestDTO.getId()).get();
         List<Account> newAccounts = accountService.addAccounts(requestDTO.getAccounts().stream().collect(Collectors.toList()));
         List<Account> existingAccounts = corporate.getAccounts();
         existingAccounts.addAll(newAccounts);
@@ -468,7 +468,7 @@ public class CorporateServiceImpl implements CorporateService {
     @Override
     public String deleteCorporate(Long id) throws InternetBankingException {
         try {
-            corporateRepo.delete(id);
+            corporateRepo.deleteById(id);
             return messageSource.getMessage("corporate.delete.success", null, locale);
         } catch (Exception e) {
             throw new InternetBankingException(messageSource.getMessage("corporate.delete.failure", null, locale));
@@ -503,7 +503,7 @@ public class CorporateServiceImpl implements CorporateService {
 //    @Verifiable(operation = "UPDATE_CORPORATE", description = "Updating Corporate Entity")
     public String updateCorporate(CorporateDTO corporateDTO) throws InternetBankingException {
         try {
-            Corporate corporate = corporateRepo.findOne(corporateDTO.getId());
+            Corporate corporate = corporateRepo.findById(corporateDTO.getId()).get();
             entityManager.detach(corporate);
             corporate.setVersion(corporateDTO.getVersion());
             corporate.setEmail(corporateDTO.getEmail());
@@ -519,13 +519,13 @@ public class CorporateServiceImpl implements CorporateService {
 
     @Override
     public CorporateDTO getCorporate(Long id) {
-        Corporate corporate = corporateRepo.findOne(id);
+        Corporate corporate = corporateRepo.findById(id).get();
         return convertEntityToDTO(corporate);
     }
 
     @Override
     public Corporate getCorp(Long id) {
-        Corporate corporate = corporateRepo.findOne(id);
+        Corporate corporate = corporateRepo.findById(id).get();
         return corporate;
     }
 
@@ -571,7 +571,7 @@ public class CorporateServiceImpl implements CorporateService {
     @Verifiable(operation = "UPDATE_CORPORATE_STATUS", description = "Change Corporate Activation Status")
     public String changeActivationStatus(Long id) throws InternetBankingException {
         try {
-            Corporate corporate = corporateRepo.findOne(id);
+            Corporate corporate = corporateRepo.findById(id).get();
             entityManager.detach(corporate);
             String oldStatus = corporate.getStatus();
             String newStatus = "A".equals(oldStatus) ? "I" : "A";
@@ -608,7 +608,7 @@ public class CorporateServiceImpl implements CorporateService {
 
     @Override
     public Page<AccountDTO> getAccounts(Long corpId, Pageable pageDetails) {
-        Corporate corporate = corporateRepo.findOne(corpId);
+        Corporate corporate = corporateRepo.findById(corpId).get();
         Page<AccountDTO> page = accountService.getAccounts(corporate.getCustomerId(), pageDetails);
         List<AccountDTO> dtOs = page.getContent();
         long t = page.getTotalElements();
@@ -618,7 +618,7 @@ public class CorporateServiceImpl implements CorporateService {
 
     @Override
     public List<Account> getAccounts(Long corpId) {
-        Corporate corporate = corporateRepo.findOne(corpId);
+        Corporate corporate = corporateRepo.findById(corpId).get();
         return corporate.getAccounts();
     }
 
@@ -650,7 +650,7 @@ public class CorporateServiceImpl implements CorporateService {
 
     @Override
     public CorpTransferRuleDTO getCorporateRule(Long id) {
-        CorpTransRule transferRule = corpTransferRuleRepo.findOne(id);
+        CorpTransRule transferRule = corpTransferRuleRepo.findById(id).get();
         return convertTransferRuleEntityToDTO(transferRule);
     }
 
@@ -684,7 +684,7 @@ public class CorporateServiceImpl implements CorporateService {
 
     @Override
     public Page<CorporateRoleDTO> getRoles(Long corpId, Pageable pageable) {
-        Corporate corporate = corporateRepo.findOne(corpId);
+        Corporate corporate = corporateRepo.findById(corpId).get();
         Page<CorporateRole> page = corporateRoleRepo.findByCorporate(corporate, pageable);
         List<CorporateRoleDTO> dtOs = convertCorporateRoleEntitiesToDTOs(page.getContent());
         long t = page.getTotalElements();
@@ -713,10 +713,10 @@ public class CorporateServiceImpl implements CorporateService {
 
     public void deleteAccount(CorporateRequestDTO requestDTO) {
 
-        Corporate corporate = corporateRepo.findOne(requestDTO.getId());
+        Corporate corporate = corporateRepo.findById(requestDTO.getId()).get();
         List<Account> existingAccounts = corporate.getAccounts();
         for (AccountDTO accountDTO : requestDTO.getAccounts()) {
-            Account account = accountRepo.findOne(accountDTO.getId());
+            Account account = accountRepo.findById(accountDTO.getId()).get();
             existingAccounts.remove(account);
             accountRepo.delete(account);
         }
@@ -727,7 +727,7 @@ public class CorporateServiceImpl implements CorporateService {
     @Override
     @Transactional
     public List<CorpTransferRuleDTO> getCorporateRules(Long corpId) {
-        Corporate corporate = corporateRepo.findOne(corpId);
+        Corporate corporate = corporateRepo.findById(corpId).get();
         List<CorpTransRule> transferRules = corpTransferRuleRepo.findByCorporate(corporate);
         Collections.sort(transferRules, new TransferRuleComparator());
         return convertTransferRuleEntitiesToDTOs(transferRules);
@@ -737,7 +737,7 @@ public class CorporateServiceImpl implements CorporateService {
     @Override
     @Transactional
     public Page<CorpTransferRuleDTO> getCorporateRules(Long corpId, Pageable pageable) {
-        Corporate corporate = corporateRepo.findOne(corpId);
+        Corporate corporate = corporateRepo.findById(corpId).get();
         Page<CorpTransRule> transferRules = corpTransferRuleRepo.findByCorporate(corporate, pageable);
         List<CorpTransRule> transRuleList = transferRules.getContent();
         List<CorpTransferRuleDTO> transferRuleDTOs = convertTransferRuleEntitiesToDTOs(transRuleList);
@@ -750,7 +750,7 @@ public class CorporateServiceImpl implements CorporateService {
     @Verifiable(operation = "DELETE_CORPORATE_RULE", description = "Delete Corporate Transfer Rule")
     public String deleteCorporateRule(Long id) throws InternetBankingException {
         try {
-            CorpTransRule transferRule = corpTransferRuleRepo.findOne(id);
+            CorpTransRule transferRule = corpTransferRuleRepo.findById(id).get();
             corpTransferRuleRepo.delete(transferRule);
             logger.info("Updated transfer rule  with Id {}", id);
             return messageSource.getMessage("rule.delete.success", null, locale);
@@ -778,13 +778,13 @@ public class CorporateServiceImpl implements CorporateService {
         }
 
         try {
-            Corporate corporate = corporateRepo.findOne(NumberUtils.toLong(roleDTO.getCorporateId()));
+            Corporate corporate = corporateRepo.findById(NumberUtils.toLong(roleDTO.getCorporateId())).get();
             CorporateRole role = convertCorporateRoleDTOToEntity(roleDTO);
             role.setCorporate(corporate);
 
             HashSet<CorporateUser> corpUsers = new HashSet<>();
             for (CorporateUserDTO user : roleDTO.getUsers()) {
-                CorporateUser corporateUser = corporateUserRepo.findOne(user.getId());
+                CorporateUser corporateUser = corporateUserRepo.findById(user.getId()).get();
                 corporateUser.setCorpUserType(CorpUserType.AUTHORIZER);
                 corpUsers.add(corporateUser);
             }
@@ -817,7 +817,7 @@ public class CorporateServiceImpl implements CorporateService {
         }
 
         try {
-            CorporateRole role = corporateRoleRepo.findOne(roleDTO.getId());
+            CorporateRole role = corporateRoleRepo.findById(roleDTO.getId()).get();
             Set<CorporateUser> originalUsers = new HashSet<>();
             role.getUsers().forEach(user -> originalUsers.add(user));
             entityManager.detach(role);
@@ -829,7 +829,7 @@ public class CorporateServiceImpl implements CorporateService {
             Set<CorporateUser> updatedUsers = new HashSet<>();
 
             for (CorporateUserDTO user : roleDTO.getUsers()) {
-                CorporateUser corporateUser = corporateUserRepo.findOne(user.getId());
+                CorporateUser corporateUser = corporateUserRepo.findById(user.getId()).get();
                 entityManager.detach(corporateUser);
                 corporateUser.setCorpUserType(CorpUserType.AUTHORIZER);
                 corporateUser.setAdmin(false);
@@ -854,7 +854,7 @@ public class CorporateServiceImpl implements CorporateService {
     @Transactional
     public void updateCorporateRole(CorporateRole updatedRole) throws InternetBankingException {
         try {
-            CorporateRole originalRole = corporateRoleRepo.findOne(updatedRole.getId());
+            CorporateRole originalRole = corporateRoleRepo.findById(updatedRole.getId()).get();
             Set<CorporateUser> originalUsers = new HashSet<>();
             originalRole.getUsers().forEach(user -> originalUsers.add(user));
             corporateRoleRepo.save(updatedRole);
@@ -885,7 +885,7 @@ public class CorporateServiceImpl implements CorporateService {
 
     @Override
     public CorporateRoleDTO getCorporateRole(Long id) {
-        CorporateRole corporateRole = corporateRoleRepo.findOne(id);
+        CorporateRole corporateRole = corporateRoleRepo.findById(id).get();
         CorporateRoleDTO roleDTO = convertCorporateRoleEntityToDTO(corporateRole);
         return roleDTO;
 
@@ -893,7 +893,7 @@ public class CorporateServiceImpl implements CorporateService {
 
     @Override
     public Set<CorporateRoleDTO> getCorporateRoles(Long corporateId) {
-        Corporate corporate = corporateRepo.findOne(corporateId);
+        Corporate corporate = corporateRepo.findById(corporateId).get();
         Set<CorporateRole> corporateRoles = corporate.getCorporateRoles();
         return convertCorporateRoleEntitiesToDTOs(corporateRoles);
     }
@@ -902,7 +902,7 @@ public class CorporateServiceImpl implements CorporateService {
     @Verifiable(operation = "DELETE_CORPORATE_ROLE", description = "Deleting a Corporate Role")
     public String deleteCorporateRole(Long id) throws InternetBankingException {
 
-        CorporateRole role = corporateRoleRepo.findOne(id);
+        CorporateRole role = corporateRoleRepo.findById(id).get();
         if (!role.getUsers().isEmpty()) {
             throw new InternetBankingException(messageSource.getMessage("role.with.users", null, locale));
         }
@@ -922,7 +922,7 @@ public class CorporateServiceImpl implements CorporateService {
     @Override
     @Transactional
     public List<CorporateRoleDTO> getRoles(Long corpId) {
-        Corporate corporate = corporateRepo.findOne(corpId);
+        Corporate corporate = corporateRepo.findById(corpId).get();
         List<CorporateRole> corporateRoles = corporateRoleRepo.findByCorporate(corporate);
         sortRolesByRank(corporateRoles);
         List<CorporateRoleDTO> roles = convertCorporateRoleEntitiesToDTOs(corporateRoles);
@@ -967,7 +967,7 @@ public class CorporateServiceImpl implements CorporateService {
         corporateRole.setVersion(roleDTO.getVersion());
         corporateRole.setName(roleDTO.getName());
         corporateRole.setRank(roleDTO.getRank());
-        corporateRole.setCorporate(corporateRepo.findOne(NumberUtils.toLong(roleDTO.getCorporateId())));
+        corporateRole.setCorporate(corporateRepo.findById(NumberUtils.toLong(roleDTO.getCorporateId())).get());
         Set<CorporateUserDTO> userDTOs = roleDTO.getUsers();
         Set<CorporateUser> users = new HashSet<CorporateUser>();
         for (CorporateUserDTO user : userDTOs) {
@@ -1056,11 +1056,11 @@ public class CorporateServiceImpl implements CorporateService {
         corpTransRule.setCurrency(transferRuleDTO.getCurrency());
         corpTransRule.setAnyCanAuthorize(transferRuleDTO.isAnyCanAuthorize());
         corpTransRule.setRank(transferRuleDTO.isRank());
-        corpTransRule.setCorporate(corporateRepo.findOne(Long.parseLong(transferRuleDTO.getCorporateId())));
+        corpTransRule.setCorporate(corporateRepo.findById(Long.parseLong(transferRuleDTO.getCorporateId())).get());
 
         List<CorporateRole> roleList = new ArrayList<CorporateRole>();
         for (CorporateRoleDTO roleDTO : transferRuleDTO.getRoles()) {
-            roleList.add(corporateRoleRepo.findOne((roleDTO.getId())));
+            roleList.add(corporateRoleRepo.findById((roleDTO.getId())).get());
         }
         corpTransRule.setRoles(roleList);
         return corpTransRule;
