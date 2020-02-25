@@ -361,7 +361,7 @@ public class AdminUserServiceImpl implements AdminUserService {
     public String resetPassword(Long userId) throws PasswordException {
 
 
-        AdminUser user = adminUserRepo.findOne(userId);
+        AdminUser user = adminUserRepo.findById(userId).get();
         if ("I".equals(user.getStatus())) {
             throw new InternetBankingException(messageSource.getMessage("users.deactivated", null, locale));
         }
@@ -422,7 +422,7 @@ public class AdminUserServiceImpl implements AdminUserService {
         }
 
         try {
-            AdminUser adminUser = adminUserRepo.findOne(user.getId());
+            AdminUser adminUser = adminUserRepo.findById(user.getId()).get();
             adminUser.setPassword(this.passwordEncoder.encode(changePassword.getNewPassword()));
             adminUser.setExpiryDate(passwordPolicyService.getPasswordExpiryDate());
             passwordPolicyService.saveAdminPassword(user);
@@ -448,7 +448,7 @@ public class AdminUserServiceImpl implements AdminUserService {
         }
 
         try {
-            AdminUser adminUser = adminUserRepo.findOne(user.getId());
+            AdminUser adminUser = adminUserRepo.findById(user.getId()).get();
             adminUser.setPassword(passwordEncoder.encode(changePassword.getNewPassword()));
             adminUser.setExpiryDate(passwordPolicyService.getPasswordExpiryDate());
             passwordPolicyService.saveAdminPassword(user);

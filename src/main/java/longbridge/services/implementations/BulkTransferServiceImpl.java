@@ -171,7 +171,7 @@ public class BulkTransferServiceImpl implements BulkTransferService {
 
     @Override
     public CorpTransferAuth getAuthorizations(BulkTransfer transRequest) {
-        BulkTransfer bulkTransfer = bulkTransferRepo.findOne(transRequest.getId());
+        BulkTransfer bulkTransfer = bulkTransferRepo.findById(transRequest.getId()).get();
         return bulkTransfer.getTransferAuth();
     }
 
@@ -225,7 +225,7 @@ public class BulkTransferServiceImpl implements BulkTransferService {
     public String addAuthorization(CorpTransReqEntry transReqEntry) {
 
         CorporateUser corporateUser = getCurrentUser();
-        BulkTransfer bulkTransfer = bulkTransferRepo.findOne(transReqEntry.getTranReqId());
+        BulkTransfer bulkTransfer = bulkTransferRepo.findById(transReqEntry.getTranReqId()).get();
         CorpTransRule transferRule = corporateService.getApplicableTransferRule(bulkTransfer);
         List<CorporateRole> roles = getExistingRoles(transferRule.getRoles());
         CorporateRole userRole = null;
@@ -361,7 +361,7 @@ public class BulkTransferServiceImpl implements BulkTransferService {
     @Override
     public List<CreditRequestDTO> getCreditRequests(Long bulkTransferId) {
 
-        BulkTransfer bulkTransfer = bulkTransferRepo.findOne(bulkTransferId);
+        BulkTransfer bulkTransfer = bulkTransferRepo.findById(bulkTransferId).get();
         List<CreditRequest> creditRequests = bulkTransfer.getCrRequestList();
         List<CreditRequestDTO> dtOs = convertEntToDTOs(creditRequests);
         return dtOs;
@@ -380,7 +380,7 @@ public class BulkTransferServiceImpl implements BulkTransferService {
     @Override
     public CreditRequestDTO getCreditRequest(Long id) {
 
-        CreditRequest creditRequest = creditRequestRepo.findOne(id);
+        CreditRequest creditRequest = creditRequestRepo.findById(id).get();
         CreditRequestDTO creditRequestDTO = convertEntityToDTO(creditRequest);
         return creditRequestDTO;
     }

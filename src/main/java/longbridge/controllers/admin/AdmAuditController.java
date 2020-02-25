@@ -21,17 +21,18 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
 import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
-import org.springframework.data.jpa.datatables.repository.DataTablesUtils;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-
 import longbridge.models.AuditConfig;
 import longbridge.services.AuditConfigService;
 import org.springframework.web.context.request.WebRequest;
+import longbridge.utils.DataTablesUtils;
+
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;

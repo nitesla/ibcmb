@@ -150,14 +150,14 @@ public class FinancialInstitutionServiceImpl implements FinancialInstitutionServ
 
     @Override
     public FinancialInstitutionDTO getFinancialInstitution(Long id) {
-        return convertEntityToDTO(financialInstitutionRepo.findOne(id));
+        return convertEntityToDTO(financialInstitutionRepo.findById(id).get());
     }
 
     @Override
     @Verifiable(operation="DELETE_FIN_INST",description="Deleting a Financial Institution")
     public String deleteFinancialInstitution(Long id) throws InternetBankingException {
       try {
-          FinancialInstitution finInst = financialInstitutionRepo.findOne(id);
+          FinancialInstitution finInst = financialInstitutionRepo.findById(id).get();
           financialInstitutionRepo.delete(finInst);
           logger.info("Financial institution  with Id {} deleted ", id.toString());
           return messageSource.getMessage("institution.delete.success", null, locale);

@@ -95,7 +95,7 @@ Logger logger = LoggerFactory.getLogger(AuditRepoImpl.class);
         try {
             TypedQuery<ModifiedEntityTypeEntity> query = em.createQuery(sql,ModifiedEntityTypeEntity.class);
             Long count = RevisedEntitiesUtil.fetchModifiedEntity(auditSearchDTO);
-            query.setFirstResult(pageable.getOffset());
+            query.setFirstResult((int)pageable.getOffset());
             query.setMaxResults(pageable.getPageSize());
 
             List<ModifiedEntityTypeEntity> entityTypeEntities = query.getResultList();

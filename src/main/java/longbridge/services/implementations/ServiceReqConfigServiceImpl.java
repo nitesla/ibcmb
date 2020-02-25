@@ -106,7 +106,8 @@ public class ServiceReqConfigServiceImpl implements ServiceReqConfigService {
 
 	@Override
 	public Iterable<ServiceReqConfigDTO> gerServiceReqConfigsPage(Integer pageNum, Integer pageSize) {
-		PageRequest pageRequest = new PageRequest(pageNum, pageSize);
+//		PageRequest pageRequest = new PageRequest(pageNum, pageSize);
+		PageRequest pageRequest = PageRequest.of(pageNum, pageSize);
 		Iterable<SRConfig> serviceReqConfigs = serviceReqConfigRepo.findAll(pageRequest);
 		return convertEntitiesToDTOs(serviceReqConfigs);
 	}

@@ -155,7 +155,7 @@ public class TransferServiceImpl implements TransferService {
 
     @Override
     public TransRequest getTransfer(Long id) {
-        return transferRequestRepo.findById(id);
+        return transferRequestRepo.findById(id).get();
     }
 
     @Override

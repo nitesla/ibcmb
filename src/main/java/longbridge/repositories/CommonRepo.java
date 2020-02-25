@@ -17,5 +17,8 @@ import java.util.Date;
 public interface CommonRepo<T, ID extends Serializable> extends JpaRepository<T, ID>
 {
 	Page<T> findUsingPattern(String pattern, Pageable details);
+	void delete(ID id);
+	void delete(Iterable<? extends T> entities);
 
-}
+
+	}

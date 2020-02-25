@@ -1187,7 +1187,7 @@ public class CorporateUserServiceImpl implements CorporateUserService {
                     userAccountRestrictionRepo.save(accountRestriction);
                 }
             }
-            userAccountRestrictionRepo.save(accountRestrictions);
+//            userAccountRestrictionRepo.save(accountRestrictions);
             return messageSource.getMessage("accountpermission.update.success", null, locale);
         } catch (Exception e) {
             logger.error("Failed to update user account permissions", e);

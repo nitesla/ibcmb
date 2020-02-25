@@ -146,7 +146,7 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public AccountDTO getAccount(Long accId) {
-        AccountDTO account = convertEntityToDTO(accountRepo.findById(accId));
+        AccountDTO account = convertEntityToDTO(accountRepo.findById(accId).get());
         //TODO fetch account Balance and account type
         return account;
     }
@@ -267,7 +267,7 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public void deleteAccount(Long id) {
-            accountRepo.delete(id);
+            accountRepo.deleteById(id);
     }
 
 
@@ -538,7 +538,7 @@ public class AccountServiceImpl implements AccountService {
     			Account acct = accountRepo.findFirstByAccountNumber(account);
     			logger.debug("Account returned: {}",acct);
     			if(acct==null)break;
-                Corporate corporate = corporateRepo.findOne(user.getCorporate().getId());
+                Corporate corporate = corporateRepo.findById(user.getCorporate().getId()).get();
     			boolean valid = corporate.getAccounts().contains(acct);
     			if(!valid) {
     				logger.warn("User " + user.toString() + "trying to access other accounts");

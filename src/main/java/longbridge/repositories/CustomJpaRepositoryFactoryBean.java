@@ -33,14 +33,14 @@ public class CustomJpaRepositoryFactoryBean<T extends JpaRepository<S, ID>, S, I
             this.entityManager = entityManager;
         }
 
-        @Override
+        /*@Override
         @SuppressWarnings("unchecked")
         protected <T, ID extends Serializable> SimpleJpaRepository<?, ?> getTargetRepository(RepositoryInformation information, EntityManager entityManager) {
             //final JpaEntityInformation<?, Serializable> entityInformation = this.getEntityInformation();
 
             return new CommonRepoImpl(information.getDomainType(), entityManager);
         }
-
+*/
         @Override
         protected Class<?> getRepositoryBaseClass(RepositoryMetadata metadata) {
             return CommonRepoImpl.class;

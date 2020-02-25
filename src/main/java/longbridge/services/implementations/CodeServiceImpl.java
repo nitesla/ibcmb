@@ -55,7 +55,7 @@ public class CodeServiceImpl implements CodeService {
     @Verifiable(operation = "DELETE_CODE", description = "Deleting a Code")
     public String deleteCode(Long codeId) throws InternetBankingException {
         try {
-            Code code = codeRepo.findOne(codeId);
+            Code code = codeRepo.findById(codeId).get();
             codeRepo.delete(code);
             logger.info("Code {} has been deleted", codeId.toString());
             return messageSource.getMessage("code.delete.success", null, locale);
@@ -70,13 +70,13 @@ public class CodeServiceImpl implements CodeService {
 
     @Override
     public CodeDTO getCode(Long id) {
-        Code code = this.codeRepo.findOne(id);
+        Code code = this.codeRepo.findById(id).get();
         return convertEntityToDTO(code);
     }
 
     @Override
     public Code getCodeById(Long id) {
-        Code code = this.codeRepo.findOne(id);
+        Code code = this.codeRepo.findById(id).get();
         return code;
     }
 

@@ -6,6 +6,7 @@ import longbridge.models.AbstractEntity;
 import longbridge.services.VerificationService;
 import org.hibernate.Criteria;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -51,7 +52,7 @@ public class CommonRepoImpl<T extends AbstractEntity, ID extends Serializable> e
     @Transactional
     public void delete(ID id)
     {
-        T t = findOne(id);
+        T t = findById(id).get();
         t.setDelFlag("Y");
         t.setDeletedOn(new Date());
 
@@ -102,7 +103,7 @@ public class CommonRepoImpl<T extends AbstractEntity, ID extends Serializable> e
     public void deleteAllInBatch() {
 //        super.deleteAllInBatch();
     }
-    
+
     @Override
 	public Page<T> findUsingPattern(String pattern, Pageable details)
     {
@@ -139,10 +140,10 @@ public class CommonRepoImpl<T extends AbstractEntity, ID extends Serializable> e
 			baseQuery = q.select(c);
 			countQuery = qc.select(cb.count(qc.from(entityInformation.getJavaType())));
             }
-		
+
 		TypedQuery<T> query = em.createQuery(baseQuery);
 		Long count = em.createQuery(countQuery).getSingleResult();
-		query.setFirstResult(details.getOffset());
+		query.setFirstResult(Math.toIntExact(details.getOffset()));
 		query.setMaxResults(details.getPageSize());
 		List<T> list = query.getResultList();
 		return new PageImpl<T>(list, details, count);

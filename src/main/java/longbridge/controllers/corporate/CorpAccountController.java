@@ -42,7 +42,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import org.springframework.web.servlet.view.jasperreports.JasperReportsPdfView;
+import longbridge.utils.JasperReport.JasperReportsPdfView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -235,7 +235,7 @@ public class CorpAccountController {
     public String getTransactionHistory(@PathVariable Long id, Model model, Principal principal, HttpServletRequest request) {
         CorporateUser corporateUser = corporateUserService.getUserByName(principal.getName());
 
-        Account account = accountRepo.findOne(id);
+        Account account = accountRepo.findById(id).get();
         String LAST_TEN_TRANSACTION = "10";
         List<AccountDTO> accountList = accountService.getAccountsAndBalances(corporateUser.getCorporate().getAccounts());
         request.getSession().setAttribute("tranAccountNo", account.getAccountNumber());

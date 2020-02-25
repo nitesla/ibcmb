@@ -367,7 +367,7 @@ public class CorpCustomDutyServiceImpl implements CorpCustomDutyService {
 
     @Override
     public CorpPaymentRequest getPayment(Long id) {
-        return corpPaymentRequestRepo.findById(id);
+        return corpPaymentRequestRepo.findById(id).get();
     }
 
     @Override
