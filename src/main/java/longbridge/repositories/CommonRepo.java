@@ -7,8 +7,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.repository.NoRepositoryBean;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
-import java.util.Date;
 
 /**
  * Created by Fortune on 4/5/2017.
@@ -16,9 +14,13 @@ import java.util.Date;
 @NoRepositoryBean
 public interface CommonRepo<T, ID extends Serializable> extends JpaRepository<T, ID>
 {
-	Page<T> findUsingPattern(String pattern, Pageable details);
-	void delete(ID id);
-	void delete(Iterable<? extends T> entities);
+    void safeDelete(T entity);
+
+    Page<T> findUsingPattern(String pattern, Pageable details);
+    void delete(ID id);
+    T findOneById(ID id);
+    void delete(T entity);
 
 
-	}
+
+}

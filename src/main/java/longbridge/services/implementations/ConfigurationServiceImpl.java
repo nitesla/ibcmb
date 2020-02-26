@@ -81,7 +81,7 @@ public class ConfigurationServiceImpl implements ConfigurationService {
 		return convertEntitiesToDTOs(all);
 	}
 
-	
+
 	@Override
 	public Page<SettingDTO> getSettings(Pageable pageDetails) {
 		Page<Setting> page = settingRepo.findAll(pageDetails);
@@ -101,7 +101,7 @@ public class ConfigurationServiceImpl implements ConfigurationService {
 		return allDto;
 	}
 
-	
+
 	@Transactional
 	@Override
 	@Verifiable(operation="UPDATE_SETTING",description="Update Settings")
