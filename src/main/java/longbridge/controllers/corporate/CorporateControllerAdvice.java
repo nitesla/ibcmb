@@ -116,6 +116,7 @@ public class CorporateControllerAdvice {
 
         String name = firstName + ' ' + lastName;
         model.addAttribute("name", name);
+        model.addAttribute("feedStatus",corporateUser.getFeedBackStatus());
 
         List<SRConfig> requestList = reqConfigService.getServiceReqConfs();
         model.addAttribute("serviceRequests", requestList);

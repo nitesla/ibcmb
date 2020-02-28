@@ -38,6 +38,7 @@ public class CorporateUser extends User implements PrettySerializer{
 	private Corporate corporate;
 	private String tempPassword;
 	private String resetSecurityQuestion;
+	private String feedBackStatus;
 
 	public String getIsFirstTimeLogon() {
         return isFirstTimeLogon;
@@ -92,6 +93,14 @@ public class CorporateUser extends User implements PrettySerializer{
 	public void setTempPassword(String tempPassword) {
 		this.tempPassword = tempPassword;
 	}
+
+	public String getFeedBackStatus() {
+		return feedBackStatus;
+	}
+	public void setFeedBackStatus(String feedBackStatus) {
+		this.feedBackStatus = feedBackStatus;
+	}
+
 
 
 	@Override

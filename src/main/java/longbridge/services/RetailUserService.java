@@ -174,9 +174,13 @@ public interface RetailUserService {
     @PreAuthorize("hasAuthority('UPDATE_RETAIL_USER')")
     void setSecurityQuestion(Long userId);
 
-//    Page<RetailUserDTO> findUsers(RetailUserDTO user, Pageable pageDetails);
 
+    Page<RetailUserDTO> findUsers(RetailUserDTO user, Pageable pageDetails);
     MobileRetailUserDTO convertEntitiesToDTO(RetailUser retailUser);
+
+
+    @PreAuthorize("hasAuthority('UPDATE_RETAIL_USER')")
+    String changeFeedBackStatus(RetailUserDTO retailUser);
 
 
 }

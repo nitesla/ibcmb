@@ -2,8 +2,7 @@ package longbridge.controllers.corporate;
 
 import longbridge.api.AccountDetails;
 import longbridge.api.PaginationDetails;
-import longbridge.dtos.AccountDTO;
-import longbridge.dtos.SettingDTO;
+import longbridge.dtos.*;
 import longbridge.exception.InternetBankingException;
 import longbridge.forms.CustomizeAccount;
 import longbridge.models.Account;
@@ -86,6 +85,12 @@ public class CorpAccountController {
 
     @Autowired
     private ApplicationContext appContext;
+
+    @Autowired
+    private GreetingService greetingService;
+
+    @Autowired
+    ServiceReqConfigService serviceReqConfigService;
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -707,5 +712,33 @@ public class CorpAccountController {
         return objectMap;
 
     }
+
+    @GetMapping("/greetings/current")
+    @ResponseBody
+    public List<GreetingDTO> getTodayGreetings() {
+
+        List<GreetingDTO> specialGreetings=null;
+        try{
+            specialGreetings = greetingService.getCurrentGreetingsForUser();
+        }catch(Exception e){
+            logger.info("special Greetings error {}",e.getMessage());
+        }
+        logger.info("specialGreetings {}",specialGreetings);
+        return specialGreetings;
+    }
+
+    @GetMapping("/new")
+    public String createNewAccount(Model model){
+
+        Iterable<CodeDTO> accountType = codeService.getCodesByType("ACCOUNT_CLASS");
+        ServiceReqConfigDTO serviceReqConfig = serviceReqConfigService.getServiceReqConfigRequestName("CREATE-ACCOUNT");
+        model.addAttribute("requestConfig", serviceReqConfig);
+        model.addAttribute("accountType", accountType);
+        model.addAttribute("TandC", messageSource.getMessage("account.new.terms.conditions",null,locale));
+
+        return "corp/account/createNewAccount";
+    }
+
+
 
 }

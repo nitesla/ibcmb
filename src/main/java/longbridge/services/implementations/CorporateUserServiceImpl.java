@@ -1294,6 +1294,43 @@ public class CorporateUserServiceImpl implements CorporateUserService {
         return false;
     }
 
+    @Override
+    public String changeFeedBackStatus(CorporateUser user) throws InternetBankingException{
+
+        try {
+            if (getUser(user.getId()) == null) {
+                logger.error("USER DOES NOT EXIST");
+                return null;
+            }
+            corporateUserRepo.updateFeedBackStatus(user.getFeedBackStatus(), user.getId());
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error("FEEDBACK STATUS ERROR OCCURRED {}", e.getMessage());
+        }
+        return "Feedback status change not successful";
+    }
+
+    @Override
+    public Page<CorporateUserDTO> getUsers(CorporateDTO user, Pageable pageDetails) {
+        logger.info("Corp user: {} {} ",user.getName(),user.getCorporateId() );
+        Page<CorporateUser> page = corporateUserRepo.findCorporateUser(user.getCorporateId().toLowerCase(),
+                user.getName().toLowerCase(), pageDetails);
+        logger.info("query result count is: {} ",page.getTotalElements());
+        if(page.getContent().size()>0){
+            logger.info("my corp id is: {}",page.getContent().get(0).getCorporate().getCorporateId());
+        }
+
+        List<CorporateUserDTO> dtOs =new ArrayList<>();
+        for (CorporateUser corporateUser : page.getContent()) {
+            CorporateUserDTO corporateUserDTO = convertEntityToDTO(corporateUser);
+            logger.info("have got record for username  : {} ",corporateUserDTO.getCorporateName());
+            dtOs.add(corporateUserDTO);
+        }
+        long t = page.getTotalElements();
+        Page<CorporateUserDTO> pageImpl = new PageImpl<CorporateUserDTO>(dtOs, pageDetails, t);
+        return pageImpl;
+    }
 
     private CorporateUser getCurrentUser() {
         CustomUserPrincipal principal = (CustomUserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();

@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{ret-layout}">
+
+<body onload="javascript:var bread = [['Home', '/retail/dashboard'],['Liquidate Fixed deposit']];currentBar('Fixed Deposits');breadCrumb(bread)">
+
+<div layout:fragment="content">
+    <div class="col-md-12 col-sm-12 ">
+        <button type="button" class="btn btn-default btn-sm" id="fixCalculate">Calculator</button>
+        <a th:href="@{/retail/fixdeposit/new}" class="pull-right extra-link btn btn-default">Initiate Fixed Deposit</a>
+        <a th:href="@{/retail/fixdeposit/liquidate/acctNum/refNo/amount}" disabled="disabled" class="pull-right extra-link btn btn-default bt-select bt-liquidate">Liquidate</a>
+        <a th:href="@{/retail/fixdeposit/addfund/acctNum/refNo}" disabled="disabled" class="pull-right extra-link btn btn-default bt-select bt-add-fund">Add Fund</a>
+
+        <!-- <select class="form-control full-width coronation-form-control hide-content-only" id="view">
+            <option value="account">Overview</option>
+        </select> -->
+    </div>
+
+    <div class="col-xs-12 ">
+        <div class=" no-mt  alert no-bd">
+            <div class="no-pad-lef table-responsive bg-white alert" style="padding:0px !important">
+                <table class="table table-hover no-pad-lef" id="fixDepositDetials">
+                    <caption style="font-size: large">Fixed Deposit Accounts</caption>
+                    <thead class='thead'>
+                    <!--<tr>-->
+
+                    <th>Booking Ref. No</th>
+                    <th>Deposit Number</th>
+                    <th>Deposit Type</th>
+                    <th>Deposit status</th>
+                    <th>Value Date</th>
+                    <th>Maturity Date</th>
+                    <th>Booking Date</th>
+                    <th>Initial Deposit </th>
+                    <th>Interest Rate</th>
+
+                    <th>Tenor (days)</th>
+                    <th>Maturity Amount</th>
+                    <!--</tr>-->
+                    </thead>
+
+                    <!--<div th:if="${not #lists.isEmpty(fixedDeposits)}" class="no-pad-lef table-responsive bg-white alert" style="padding:0px !important">-->
+                    <tbody>
+                    </tbody>
+                    <!--</div>-->
+
+                </table>
+
+
+
+            </div>
+            <div class=" modal fade"  id="myModal" role="dialog">
+                <div class="modal-dialog fixDepositModal">
+
+                    <!-- Modal content-->
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                            <h4>Fixed Deposit Calculator</h4>
+
+                        </div>
+                        <div class="modal-body">
+
+                            <form role="form">
+                                <div class="form-group">
+                                    <label for="calAmount">Deposit Amount</label>
+                                    <input type="text" class="form-control fixDepositCal" id="calAmount" placeholder="Enter amount">
+                                </div>
+                                <div class="form-group">
+                                    <label for="calTenor"> Tenor(Days)</label>
+                                    <input type="text" class="form-control fixDepositCal" id="calTenor" placeholder="Enter tenor">
+                                </div>
+                                <div class="form-group">
+                                    <label for="calRate"> Rate</label>
+                                    <input type="text" class="form-control fixDepositCal" id="calRate" placeholder="Enter rate">
+                                </div>
+                                <div class="form-group">
+                                    <label for="calRate"> <b>Maturity Amount</b></label>
+                                    <input type="text" class="form-control fixDepositCal" id="fixOutcome">
+                                </div>
+                                <!--<a class="btn btn-default btn-success btn-block" id="calculate"> Calculate</a>-->
+                            </form>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+<th:block layout:fragment="scripts">
+    <script th:src="@{~/bank/vendors/sweetalert/sweetalert.min.js}"></script>
+    <script th:src="@{~/customer/js/dataTables.bootstrap.js}"></script>
+    <script th:src="@{~/customer/js/dataTables.select.js}"></script>
+
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+
+            $(document).ready(function () {
+                var table = $('#fixDepositDetials').DataTable({
+                    "pagingType" : "input",
+                    "searching": false,
+                    select: true,
+                    "paging": true,
+                    "processing": false,
+                    "serverSide" : false,
+                    "ordering" : false,
+                    "dom": 'T<"clear">frtlp',
+                    "ajax" : "/retail/fixdeposit/details",
+                    "lengthMenu" : [ [ 5,10, 20, 30, -1],	[ 5,10, 20, 30, "All" ] ],
+                    "columns": [
+                        {"data" : "bookRefNo"},
+                        {"data" : "accountNumber"} ,
+                        {"data" : "depositType"} ,
+                        {"data" : "despositStatus"},
+                        {"data" : "valueDate"},
+                        {"data" : "maturityDate"},
+                        {"data" : "bookingDate"},
+                        {"data" : "initialDepositAmount"},
+                        {"data" : "rate"},
+                        {"data" : "tenor"},
+                        {"data" : "maturityAmount"}
+                    ]
+//                    ,"columnDefs" : [ {
+//                        "targets" : 2,
+//                        "data" : "initiatedDate",
+//                        "render" : function(data, type,full, meta) {
+//                            if (type === 'display') {
+//                                if(data == null)
+//                                    return data;
+//                                var dtStart = new Date(parseInt(data));
+//                                var dtStartWrapper = moment(dtStart);
+//                                return dtStartWrapper.format('LLLL');
+//                            }
+//                            return data;
+//                        }
+//                    },{
+//                        "targets" : 0,
+//                        "data" : "entityClassName",
+//                        "render" : function(data, type,full, meta) {
+//                            if(type ==='display')
+//                            {
+//                                data= data.substring((data.lastIndexOf(".")+1),(data.length));
+//
+//                            }
+//
+//                            return data;
+//                        }
+//                    }]
+
+                });
+                table.on('select', function() {
+                    if (table.rows({
+                            selected : true
+                        }).indexes().length === 0) {
+                        $('.bt-select').attr("disabled", true);
+                    } else {
+                        $('.bt-select').removeAttr("disabled");
+                    }
+
+
+                });
+
+                table.on('deselect', function() {
+                    if (table.rows({
+                            selected : true
+                        }).indexes().length === 0) {
+                        $('.bt-select').attr("disabled", true);
+                    } else {
+                        $('.bt-select').removeAttr("disabled");
+                    }
+                });
+                var refId;
+                var debitAcctNo;
+                var initialAmount;
+                $("#fixDepositDetials").on("click", "tr", function()
+                {
+                    var table =  $('#fixDepositDetials').DataTable();
+                    refId = $(this).children(":nth-child(1)").text();
+                    debitAcctNo = $(this).children(":nth-child(2)").text();
+                    initialAmount = $(this).children(":nth-child(8)").text();
+                    console.log("the is "+refId+" and account number "+debitAcctNo);
+                });
+            $("#fixCalculate").click(function(){
+                $("#myModal").modal();
+            });
+//            $('#submit').trigger('click');
+            $("#calculate").click(function(){
+                calculate()
+            });
+            $('#calAmount').on('keyup', function() {
+                calculate();
+            });
+            $('#calTenor').on('keyup', function() {
+                calculate();
+            });
+            $('#calRate').on('keyup', function() {
+                calculate();
+            });
+                $("a.bt-liquidate").on("click", function(e) {
+                    e.preventDefault();
+                    var link = $(e.currentTarget);
+                    if($(link).attr("disabled")){
+                        return;
+                    }
+
+                    var ooo = link.attr("href").replace("acctNum/refNo/amount",debitAcctNo+"/"+refId+"/"+initialAmount);
+
+//                    window.location.assign(ooo);
+                    warnBeforeRedirect(ooo);
+                } );
+                $("a.bt-add-fund").on("click", function(e) {
+                    e.preventDefault();
+                    var link = $(e.currentTarget);
+                    if($(link).attr("disabled")){
+                        return;
+                    }
+
+                    var ooo = link.attr("href").replace("acctNum/refNo",debitAcctNo+"/"+refId);
+                    window.location.assign(ooo);
+                } );
+        });
+
+        function calculate() {
+            var calAmount= $('#calAmount').val();
+            var calTenor= $('#calTenor').val();
+            var calRate= $('#calRate').val();
+            var fixOutcome;
+            if(calAmount !='' && calTenor !='' && calRate !='') {
+                fixOutcome = ((calAmount * calRate * (calTenor / 365)) / 100);
+                console.log("interest " + fixOutcome);
+                fixOutcome = parseFloat(fixOutcome) + parseFloat(calAmount);
+                console.log("maturity amount " + fixOutcome);
+                $('#fixOutcome').val(parseFloat(fixOutcome).toFixed(2));
+            }
+        }
+        function warnBeforeRedirect(ooo) {
+            swal({
+                title: "Are you sure?",
+                text: "Penalty is attached to liquidating your account before maturity date",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#DD6B55",
+                confirmButtonText: "Proceed",
+                closeOnConfirm: false
+            }, function() {
+                // Redirect the user
+                window.location.assign(ooo);
+            });
+        }
+        /*]]>*/
+    </script>
+
+    <script>
+        //datepicker
+        $( function() {
+            $( "#datepicker" ).datepicker(
+                { dateformat : 'dd/mm/yy'}
+            );
+        } );
+    </script>
+</th:block>
+
+</body>
+</html>

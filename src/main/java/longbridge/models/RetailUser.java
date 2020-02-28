@@ -37,6 +37,7 @@ public class RetailUser extends User implements PrettySerializer{
 	private String customerId;
 	private Date birthDate;
 	private String resetSecurityQuestion;
+	private String feedBackStatus;
 
 	@OneToMany
 	@JsonIgnore
@@ -108,6 +109,13 @@ public class RetailUser extends User implements PrettySerializer{
 
 	public void setBeneficiaries(Collection<LocalBeneficiary> beneficiaries) {
 		this.beneficiaries = beneficiaries;
+	}
+	public String getFeedBackStatus() {
+		return feedBackStatus;
+	}
+
+	public void setFeedBackStatus(String feedBackStatus) {
+		this.feedBackStatus = feedBackStatus;
 	}
 
 	@Override @JsonIgnore

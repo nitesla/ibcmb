@@ -2,6 +2,7 @@ package longbridge.services.implementations;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import longbridge.api.*;
+import longbridge.dtos.FixedDepositDTO;
 import longbridge.dtos.SettingDTO;
 import longbridge.exception.InternetBankingException;
 import longbridge.exception.InternetBankingTransferException;
@@ -14,10 +15,7 @@ import longbridge.security.userdetails.CustomUserPrincipal;
 import longbridge.services.ConfigurationService;
 import longbridge.services.IntegrationService;
 import longbridge.services.MailService;
-import longbridge.utils.EncryptionUtil;
-import longbridge.utils.ResultType;
-import longbridge.utils.StatusCode;
-import longbridge.utils.TransferType;
+import longbridge.utils.*;
 import longbridge.utils.statement.AccountStatement;
 import longbridge.utils.statement.TransactionHistory;
 import org.slf4j.Logger;
@@ -1025,5 +1023,118 @@ public class IntegrationServiceImpl implements IntegrationService {
 			logger.error("Error getting status", e);
 		}
 		return transferDetails;
+	}
+
+	@Override
+	public String estinameDepositRate(String amount,String tenor, String acctNum) {
+
+		Rate response = null;
+		String uri = URI+"/deposit/rate";
+		Map<String, String> params = new HashMap<>();
+		params.put("initialDepositAmount", amount);
+		params.put("accountNumber", acctNum);
+		params.put("tenor", tenor);
+
+		try {
+			response = template.postForObject(uri, params, Rate.class);
+
+			logger.info("the reponse {}",response.getFeeValue());
+			return response.getFeeValue();
+		} catch (Exception e) {
+			logger.error("Error occurred getting rate", e);
+		}
+
+		return "";
+
+	}
+
+	@Override
+	public Response liquidateFixDeposit(FixedDepositDTO fixedDepositDTO) {
+		Response response =  null;
+		String uri = URI + "/liquidate";
+		Map<String, String> params = new HashMap<>();
+		params.put("debitAccountNumber", fixedDepositDTO.getAccountNumber());
+		params.put("liquidateType", fixedDepositDTO.getLiquidateType());
+		params.put("amount", fixedDepositDTO.getInitialDepositAmount());
+		logger.info("Starting Transfer with Params: {}", params.toString());
+
+		try {
+			validate(fixedDepositDTO.getAccountNumber());
+			response = template.postForObject(uri, params, Response.class);
+
+			return response;
+
+		} catch (HttpStatusCodeException e) {
+			logger.error("HTTP Error occurred", e);
+		} catch (Exception e) {
+			logger.error("Error occurred making transfer", e);
+		}
+		return response;
+	}
+	@Override
+	public Response addFundToDeposit(FixedDepositDTO fixedDepositDTO) {
+		Response response =  null;
+		String uri = URI + "/addfund";
+		Map<String, String> params = new HashMap<>();
+		params.put("debitAccountNumber", fixedDepositDTO.getAccountNumber());
+		params.put("amount", fixedDepositDTO.getInitialDepositAmount());
+		logger.info("Starting Transfer with Params: {}", params.toString());
+
+		try {
+			validate(fixedDepositDTO.getAccountNumber());
+			response = template.postForObject(uri, params, Response.class);
+
+			return response;
+
+		} catch (HttpStatusCodeException e) {
+			logger.error("HTTP Error occurred", e);
+		} catch (Exception e) {
+			logger.error("Error occurred making transfer", e);
+		}
+		return response;
+	}
+
+	@Override
+	public Response bookFixDeposit(FixedDepositDTO fixedDepositDTO) {
+		Response response =  null;
+		String uri = URI + "/fixdeposit/book";
+		Map<String, String> params = new HashMap<>();
+		params.put("accountNumber", fixedDepositDTO.getAccountNumber());
+		params.put("depositType", fixedDepositDTO.getDepositType());
+		params.put("initialDepositAmount", fixedDepositDTO.getInitialDepositAmount());
+		params.put("tenor", fixedDepositDTO.getTenor());
+		params.put("rate", fixedDepositDTO.getRate());
+		logger.info("Starting Transfer with Params: {}", params.toString());
+		try {
+			validate(fixedDepositDTO.getAccountNumber());
+			response = template.postForObject(uri, params, Response.class);
+
+			return response;
+
+		} catch (HttpStatusCodeException e) {
+			logger.error("HTTP Error occurred", e);
+		} catch (Exception e) {
+			logger.error("Error occurred making transfer", e);
+		}
+		return response;
+	}
+
+	@Override
+	public FixedDepositDTO getFixedDepositDetails(String accountNumber){
+
+		FixedDepositDTO fixedDeposit = new FixedDepositDTO();
+		String uri = URI+"/deposit/{accountNumber}";
+		Map<String,String> params = new HashMap<>();
+		params.put("accountNumber",accountNumber);
+
+		try{
+			fixedDeposit = template.getForObject(uri, FixedDepositDTO.class,params);
+			return fixedDeposit;
+		}
+		catch (Exception e){
+			logger.error("Error getting fixed deposit details",e);
+		}
+		return fixedDeposit;
+
 	}
 }

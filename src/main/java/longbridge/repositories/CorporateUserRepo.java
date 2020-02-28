@@ -7,9 +7,11 @@ import longbridge.models.Role;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import javax.transaction.Transactional;
 import java.util.List;
 
 /**
@@ -45,6 +47,15 @@ public interface CorporateUserRepo extends JpaRepository<CorporateUser, Long> {
     CorporateUser findByRole(CorporateRole role );
     @Query("select u from CorporateRole cr inner join cr.users u inner join u.corporate c where c=:corp")
     List<CorporateUser> findUsersInRole2(@Param("corp") Corporate corporate);
-  
+
+    @Transactional
+    @Modifying(clearAutomatically=true)
+    @Query(value="update corporate_user set feed_back_status=?1 where id=?2",nativeQuery=true)
+    void updateFeedBackStatus(String status,Long id);
+
+    @Query("select c from CorporateUser c where lower(c.corporate.corporateId) like %:corporateId% and lower(c.corporate.name) like %:name% ")
+    Page<CorporateUser> findCorporateUser(@Param("corporateId")String corporateId,@Param("name") String name,Pageable pageable);
+
+
 
 }

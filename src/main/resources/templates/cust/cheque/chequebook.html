@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{ret-layout}">
+
+<body onload="javascript:var bread = [['Home', '/retail/dashboard'],['Cheque']];currentBar('Cheque Book Request');breadCrumb(bread)">
+
+<div layout:fragment="content">
+    <div class="col-md-5 col-sm-5 ">
+
+        <select class="form-control full-width coronation-form-control hide-content-only" id="view">
+            <option value="account">Overview</option>
+        </select>
+    </div>
+    <div class="col-xs-12 ml-15 no-pad-left no-pad-right">
+        <!--<div class="col-xs-11 no-pad-lef no-mt alert no-bd">-->
+        <div class="col-md-6 col-sm-6 no-pad-left">
+            <form method="post" th:action="@{/retail/requests}"  th:object="${requestDTO}" id="reqForm">
+                <input class="form-control" type="hidden" id="requestName" name="requestName"
+                       th:value="${requestConfig.requestName}"/>
+                <input type="hidden" name="serviceReqConfigId" th:value="${requestConfig.id}"/>
+                <!--<input type="hidden" name="urlPart" value="cheque/chequebook"/>-->
+                <div class="form-group">
+                    <label>Number of leaves</label>
+                    <span class="req"></span>
+                    <select th:name="Leaves" class="form-control full-width" id="leaves" required="required" >
+                        <option value="" >Select number of leaves</option>
+                        <option th:each="leave : ${leaves}" th:value="${leave.description}"
+                                th:text="${leave.description}"></option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Account Number</label>
+                    <span class="req"></span>
+                    <select th:name="AccountNumber"
+                            class="form-control full-width"
+                            required="required" id="accountNumber">
+                        <option value="">Select cheque book account number</option>
+
+                        <option th:each="s: ${accounts}" th:value="${s.accountNumber}"
+                                th:text="${s.accountNumber}"></option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Pick up Branch</label>
+                    <span class="req"></span>
+                    <select id="branch" th:name="Pick-Up-Branch"
+                            class="form-control full-width"
+                            required="required"  >
+                        <option value="">Select pick up branch</option>
+                        <option th:each="branch: ${branches}" th:value="${branch.description}"
+                                th:text="${branch.description}"></option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Account to be charged</label>
+                    <span class="req"></span>
+                    <select id="acctNumber" th:name="AccountNumber"
+                            class="form-control full-width"
+                            required="required" onchange="checkBalance();">
+                        <option value="">Select Account for charge</option>
+
+                        <option th:each="s: ${accounts}" th:value="${s.accountNumber}"
+                                th:text="${s.accountNumber}"></option>
+                    </select>
+                </div>
+                <input type="hidden" name="charge" id="chrg">
+                <span id="balanceError" style="color:red"></span>
+                <div class="form-group">
+                    <button class="btn btn-link required-step pull-left" id="submit" type="submit">Submit
+                    </button>
+
+                    <a th:href="@{/retail/cheque/chequebook}" class="btn btn-link pull-left"
+                       style="margin-top: 2%">Cancel</a>
+                </div>
+
+                <!--th:onfocus="'javascript:getBranch('+${branch.extraInfo}+');'"-->
+            </form>
+        </div>
+        <div class="col-xs- col-sm-5 wel no-pad-left no-pad-right ">
+
+            <div class="related-box">
+                <h3 class="related-bar">Related Information</h3>
+
+                <p class="related-info coronation-blue" id="charge"><b></b></p>
+
+                <!--<input type="availBal" name="availBal"/>-->
+                <p class="related-info coronation-blue" id="location"><b></b></p>
+
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+<th:block layout:fragment="scripts">
+    <script th:inline="javascript">
+        var amountInwords = '';
+        $('#reqForm').submit(function (event) {
+            var arrays = [];
+
+
+            var form = $('#reqForm').serializeArray();
+            var formData = JSON.stringify(form);
+            $('#requestName').val(formData);
+            $('#submitform').submit();
+
+        });
+        $('#amount').keyup(function () {
+//                console.log("test");
+            convertToWords();
+        });
+
+
+        function convertToWords() {
+            var amount = $('#amount').val();
+            console.log("the amount " + amount);
+            if (amount != '') {
+                convertAmountToWords(amount);
+
+            }
+
+        }
+
+        function convertAmountToWords(amount) {
+            $.ajax({
+                "url": "/util/convertAmountToWords",
+                "type": "POST",
+                "data": {
+                    amount: amount
+                },
+                success: function (result) {
+                    console.log("the result " + result);
+                    $('#amountInWords').val(result);
+
+                },
+                error: function (err) {
+                    console.log("can't fetch because " + err)
+                }
+
+            })
+        }
+
+        $(document).ready(function () {
+            $("input").prop('required', true);
+            $("#comment").prop('required', false);
+//            $('#submit').trigger('click');
+
+        });
+
+
+
+
+        var branches = [[${branches}]];
+
+            $("#branch").on('change', function() {
+                var selectedBranch = $("#branch").val();
+                $.each(branches, function (key, value) {
+                    if (selectedBranch === value.description) {
+                        $("#location").text(value.extraInfo);
+                    }
+                })
+            })
+
+            var leaves = [[${leaves}]];
+            $("#leaves").on('change', function() {
+                var selectedLeave = $("#leaves").val();
+                $.each(leaves, function (key, value) {
+                    if (selectedLeave === value.description) {
+                        //charge = value.code;
+                        $("#charge").text("Charge is " + value.code);
+                        $("#chrg").val(value.code);
+                    }
+                    if(selectedLeave===""){ $("#chrg").val("");
+                    }
+                })
+            })
+
+
+
+        function checkBalance() {
+            var accountNumber = $("#acctNumber").val();
+            var balanceMessage = "";
+            var charge=$("#chrg").val();
+
+            console.log(accountNumber + charge);
+            if (charge !== "" && accountNumber !== "") {
+                console.log(accountNumber + charge);
+                $.ajax({
+                    "url": "/retail/cheque/balance/check",
+                    "type": "POST",
+                    "data": {
+                        charge: charge,
+                        accountNumber: accountNumber,
+                    }, success: function (result) {
+                        balanceMessage = result;
+                        $("#balanceError").text(balanceMessage);
+                        if (balanceMessage !== "") {
+                            $("#submit").prop("disabled", true);
+                        } else $("#submit").prop("disabled", false);
+
+                    },
+                });
+            }
+        }
+    </script>
+</th:block>
+
+</body>
+</html>

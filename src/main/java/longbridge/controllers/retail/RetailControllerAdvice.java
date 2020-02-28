@@ -18,6 +18,8 @@ import java.security.Principal;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Map;
+import java.util.HashMap;
 import java.util.Objects;
 import java.util.stream.StreamSupport;
 
@@ -52,15 +54,18 @@ public class RetailControllerAdvice {
         this.notificationsService = notificationsService;
     }
 
+
     @ModelAttribute
     public String globalAttributes(Model model, Principal principal) {
         String greeting = "";
+
 
         if (principal == null) {
             return "redirect:/login/retail";
         }
 
         RetailUser user = retailUserService.getUserByName(principal.getName());
+
         String bvn = "";
         String lastLogin = "";
         if (user != null) {
@@ -94,20 +99,55 @@ public class RetailControllerAdvice {
 
             String name = firstName + ' ' + lastName;
             model.addAttribute("name", name);
+            model.addAttribute("feedStatus",user.getFeedBackStatus());
 
             List<SRConfig> requestList = reqConfigService.getServiceReqConfs();
-            model.addAttribute("serviceRequests", requestList);
+            Map<String,List<SRConfig>> conditionalRequests = new HashMap<>();
+            List<SRConfig> filteredRequests = new ArrayList<>();
+            List<SRConfig> chequeRequests = new ArrayList<>();
+            List<SRConfig> settingRequests = new ArrayList<>();
+            List<SRConfig> accountRequests = new ArrayList<>();
+////            List<SRConfig> filteredRequests = requestList.stream().filter(request -> !("LOAN").equals(request.getRequestType()) && !("FIXED_DEPOSIT").equals(request.getRequestType())).collect(Collectors.toList());
+            for (SRConfig request : requestList) {
+                if (!("LOAN").equalsIgnoreCase(request.getRequestType().trim()) &&
+                        !("FIXED-DEPOSIT").equalsIgnoreCase(request.getRequestType().trim())&&
+                        !("CHEQUE-REQUEST").equalsIgnoreCase(request.getRequestType().trim())&&
+                        !("STOP-CHEQUE").equalsIgnoreCase(request.getRequestType().trim())&&
+                        !("CREATE-ACCOUNT").equalsIgnoreCase(request.getRequestType().trim())&&
+                        !("TREASURY-BILL").equalsIgnoreCase(request.getRequestType().trim()) &&
+                        !("CONFIRM-CHEQUE").equalsIgnoreCase(request.getRequestType().trim())&&
+                        !("DRAFT-REQUEST").equalsIgnoreCase(request.getRequestType().trim()) &&
+                        !("LINK-BVN").equalsIgnoreCase(request.getRequestType().trim())) {
+
+                    if (("CHEQUE").equalsIgnoreCase(request.getRequestType().trim())) {
+                        chequeRequests.add(request);
+                    }else if (("SETTING").equalsIgnoreCase(request.getRequestType().trim())) {
+                        settingRequests.add(request);
+                    }
+                    else if (("ACCOUNT").equalsIgnoreCase(request.getRequestType().trim())) {
+                        accountRequests.add(request);
+                    }
+                    else {
+                        filteredRequests.add(request);
+                    }
+                }
+            }
+            model.addAttribute("serviceRequests", filteredRequests);
+            model.addAttribute("chequeRequests", chequeRequests);
+            model.addAttribute("settingRequests", settingRequests);
+            model.addAttribute("accountRequests", accountRequests);
 
 
             int numOfUnreadMessages = messageService.getNumOfUnreadMessages(user);
             if (numOfUnreadMessages > 0) {
                 model.addAttribute("numOfUnreadMessages", numOfUnreadMessages);
             }
+
+
         }
 
         return "";
     }
-
 
     @ModelAttribute
     public String getCustomerAccounts(Model model, Principal principal) {

@@ -10,6 +10,7 @@ import longbridge.forms.CustChangePassword;
 import longbridge.forms.CustResetPassword;
 import longbridge.models.Code;
 import longbridge.models.CorporateUser;
+import longbridge.models.FeedBackStatus;
 import longbridge.services.*;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -386,5 +387,29 @@ public class CorpSettingController {
     public String linkBVN(){
         return "abc";
     }
+
+    @GetMapping("/settings/customerfeedback")
+    public String setFeedBackPage(@ModelAttribute("feedBackStatus") FeedBackStatus feedBackStatus, Model model, Principal principal) {
+        CorporateUser user = corporateUserService.getUserByName(principal.getName());
+        Iterable<CodeDTO> feedBackCodes = codeService.getCodesByType("FEEDBACK_STATUS");
+        logger.info("feedbackstatus {}",user.getFeedBackStatus());
+        model.addAttribute("presentStatus",user.getFeedBackStatus());
+        model.addAttribute("status", feedBackCodes);
+        return "corp/settings/customer-feedback-corp";
+    }
+    @PostMapping("/settings/customerfeedback")
+    public String ChangeFeedBackStatus(@ModelAttribute("feedBackStatus") FeedBackStatus feedBackStatus, Principal principal, Model model, RedirectAttributes redirectAttributes) throws Exception {
+
+        CorporateUser user = corporateUserService.getUserByName(principal.getName());
+        user.setFeedBackStatus(feedBackStatus.getCode());
+        corporateUserService.changeFeedBackStatus(user);
+        String message = messageSource.getMessage("feedback.status", null, locale);
+        redirectAttributes.addFlashAttribute("message", message);
+        Iterable<CodeDTO> feedBackCodes = codeService.getCodesByType("FEEDBACK_STATUS");
+        logger.info("the codes are {}",feedBackCodes);
+        model.addAttribute("status", feedBackCodes);
+        return "redirect:/corporate/settings/customerfeedback";
+    }
+
 
 }

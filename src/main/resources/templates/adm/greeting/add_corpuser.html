@@ -1,0 +1,178 @@
+<head th:replace="layout :: site-head">
+</head>
+<div class="row">
+    <div class="col-md-12 col-sm-12 col-xs-12">
+
+        <div class="x_content">
+            <form method="post"  class="form-horizontal"
+                  id="user-search" th:object="${corporateDTO}">
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        <fieldset >
+
+
+                            <div th:replace="layout::form-validation"></div>
+
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label">Corporate Id</label>
+
+                                <div class="col-sm-4">
+                                    <input type="text" class="form-control" th:field="*{corporateId}"/>
+                                </div>
+
+                                <label class="col-sm-2 control-label">Corporate Name</label>
+
+                                <div class="col-sm-4">
+                                    <input type="text" class="form-control" th:field="*{name}"/>
+                                </div>
+
+
+                            </div>
+
+                            <!--<div class="form-group">-->
+                                <!--<label class="col-sm-2 control-label">User Name</label>-->
+
+                                <!--<div class="col-sm-4">-->
+                                    <!--<input type="text" class="form-control" th:field="*{firstName}"/>-->
+                                <!--</div>-->
+
+                            <!--</div>-->
+
+
+                            <div class="form-group">
+                                <div class="col-sm-4 col-sm-offset-2">
+                                    <button class="btn " id='btn-search' type="submit">Search</button>
+                                </div>
+                            </div>
+
+
+                        </fieldset>
+
+                        <fieldset>
+                            <legend>Corporate Users</legend>
+                            <div class="form-group">
+                                <div class="col-md-12 col-sm-6 col-xs-12">
+                                    <table class="table table-striped table-bordered table-hover bt-select"  width="100%" id="corp">
+                                        <thead>
+                                        <tr>
+                                            <th>Username</th>
+                                            <th>First Name</th>
+                                            <th>Last Name</th>
+                                            <th>Corporate Name</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+
+
+                                        </tbody>
+                                        <tfoot>
+                                        <tr>
+
+                                            <th>Username</th>
+                                            <th>First Name</th>
+                                            <th>Last Name</th>
+                                            <th>Corporate Name</th>
+                                        </tr>
+                                        </tfoot>
+                                    </table>
+                                </div>
+                            </div>
+                        </fieldset>
+                    </div>
+
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    $(document).ready(function() {
+        var table = $('#corp').DataTable({
+            dataType:"json",
+            select:true,
+            responsive: true,
+            "lengthMenu" : [ [ 5, 10, 20,40],	[ 5, 10, 20,40] ],
+            "pagingType" : "simple_numbers",
+            "searching": false,
+            "deferLoading" : 0,
+            "paging": true,
+            "serverSide" : true,
+            "ajax" : {
+                url :"/admin/greetings/find/corpusers",
+                "type" : "GET",
+                "data" : function(d) {
+                    var x = $("#user-search").serializeArray();
+                    console.log(x);
+                    $.each(	x,function(i,field) {
+                        d[field.name] = field.value;
+                        console.log(d[field.name]+" = "+field.value);
+                    });
+                },
+
+            },
+            "dom": 'T<"clear">frtlp',
+            "columns": [
+
+                { "data": "userName" },
+                { "data": "firstName" },
+                { "data": "lastName" },
+                { "data":"corporateName"},
+            ],
+
+        });
+        $('.addCorporate').prop("disabled", true);
+
+
+        table.on('deselect', function() {
+            if (table.rows({
+                selected : true
+            }).indexes().length === 0) {
+                $('.addCorporate').prop("disabled", true);
+            } else {
+                $('.addCorporate').prop("disabled",false);
+            }
+        });
+
+        var corporateUser='';
+        table.on('select',function() {
+            if (table.rows({
+                selected : true
+            }).indexes().length === 0) {
+                $('.addCorporate').prop("disabled", true);
+            } else {
+                $('.addCorporate').prop("disabled",false);
+              //  console.log(table.rows({selected:true}).data()[0]);
+
+
+                /*corporateUser = table.rows().data()[0].userName;
+                console.log(corporateUser);*/
+            }
+
+        });
+
+        $(".addCorporate").on("click",function(){
+            $(".closemodal").trigger('click');
+
+        });
+
+        $("#btn-search").on("click", function(e) {
+            e.preventDefault();
+            var link = $(e.target);
+           var table = $('#corp').DataTable();
+            table.ajax.reload(null, false);
+            $('.addCorporate').prop("disabled", true);
+        });
+
+        $(".selectAll").on("click",function(e){
+            table.rows().select();
+        })
+
+    });
+
+
+
+
+    /*]]>*/
+    //# sourceURL=add-op.js
+</script>

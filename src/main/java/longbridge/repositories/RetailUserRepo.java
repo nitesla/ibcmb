@@ -32,4 +32,16 @@ public interface RetailUserRepo extends CommonRepo<RetailUser, Long> {
     @Query("update RetailUser  u set u.lastLoginDate = current_timestamp() , u.lockedUntilDate = NULL, u.noOfLoginAttempts = 0, u.status='A' where u.userName = :name")
     void updateUserAfterLogin(@Param("name") String userName);
 
+    @Query("select c from RetailUser c where lower(c.userName) like %:userName%  and lower(c.lastName) like %:lastName% " +
+            " and lower(c.firstName) like %:firstName%  and lower(c.email) like %:email%  ")
+    Page<RetailUser> findAllUsers(@Param("userName") String userName,
+                                  @Param("lastName") String lastName,
+                                  @Param("firstName") String firstName,
+                                  @Param("email") String email,
+                                  Pageable pageable);
+
+    @Modifying(clearAutomatically=true)
+    @Query(value="update retail_user set feed_back_status=?1 where id=?2",nativeQuery=true)
+    public void updateFeedBackStatus(String status,Long id);
+
 }

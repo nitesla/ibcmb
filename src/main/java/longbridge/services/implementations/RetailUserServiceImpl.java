@@ -829,7 +829,8 @@ public class RetailUserServiceImpl implements RetailUserService {
     }
 */
 
-   /* @Override
+
+    @Override
     public String changeFeedBackStatus(RetailUserDTO user) throws InternetBankingException{
 
         try {
@@ -845,5 +846,23 @@ public class RetailUserServiceImpl implements RetailUserService {
             logger.error("FEEDBACK STATUS ERROR OCCURRED {}", e.getMessage());
         }
         return "Feedback status change not successful";
-    }*/
+    }
+
+    @Override
+    public Page<RetailUserDTO> findUsers(RetailUserDTO user, Pageable pageDetails) {
+        RetailUser retailUser = modelMapper.map(user,RetailUser.class);
+        logger.info("Retail user: " + retailUser.toString());
+        Page<RetailUser> page = retailUserRepo.findAllUsers(retailUser.getUserName().toLowerCase(),
+                retailUser.getLastName().toLowerCase(),retailUser.getFirstName().toLowerCase(),
+                retailUser.getEmail().toLowerCase(), pageDetails);
+        logger.info("retailusers {}",page.getTotalElements());
+        List<RetailUserDTO> dtOs =new ArrayList<>();
+        for (RetailUser retailUser1 : page) {
+            RetailUserDTO retailDTO = modelMapper.map(retailUser1,RetailUserDTO.class);
+            dtOs.add(retailDTO);
+        }
+        long t = page.getTotalElements();
+        Page<RetailUserDTO> pageImpl = new PageImpl<RetailUserDTO>(dtOs, pageDetails, t);
+        return pageImpl;
+    }
 }

@@ -578,6 +578,10 @@ public class AccountServiceImpl implements AccountService {
                 .collect(Collectors.toList());
     }
 
-
+    @Override
+    public List<Account> getAccountByCifIdAndSchemeType(String cifId, String schemeType) throws InternetBankingException {
+        List<Account> accounts = accountRepo.findByCustomerIdAndSchemeType(cifId, schemeType);
+        return accounts;
+    }
 
 }

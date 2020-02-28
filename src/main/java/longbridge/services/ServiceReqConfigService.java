@@ -52,4 +52,7 @@ public interface ServiceReqConfigService{
 
     String delServiceReqFormField(Long id) throws InternetBankingException;
 
-}
+    ServiceReqConfigDTO getServiceReqConfigRequestName(String requestName);
+
+
+    }

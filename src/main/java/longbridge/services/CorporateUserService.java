@@ -2,6 +2,7 @@ package longbridge.services;
 
 import longbridge.dtos.AccountPermissionDTO;
 import longbridge.dtos.CorpCorporateUserDTO;
+import longbridge.dtos.CorporateDTO;
 import longbridge.dtos.CorporateUserDTO;
 import longbridge.exception.InternetBankingException;
 import longbridge.exception.PasswordException;
@@ -177,6 +178,8 @@ public interface CorporateUserService{
 
     List<AccountPermissionDTO> getAccountPermissions(Long userId);
 
+    String changeFeedBackStatus(CorporateUser corporateUser);
+    Page<CorporateUserDTO> getUsers(CorporateDTO user, Pageable pageDetails);
 
 //    String addUserFromCorporateAdmin(CorporateUserDTO user) throws InternetBankingException;
 //

@@ -156,4 +156,6 @@ public interface AccountService {
 
     void validateAccount(String accountNumber) throws InternetBankingException;
 
+    List<Account> getAccountByCifIdAndSchemeType(String cifId, String schemeType) throws InternetBankingException;
+
    }

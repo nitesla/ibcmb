@@ -10,4 +10,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface UserGroupRepo extends CommonRepo<UserGroup, Long> {
+    UserGroup findByNameIgnoreCase(String groupName);
+
 }

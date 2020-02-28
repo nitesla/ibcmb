@@ -213,4 +213,30 @@ public class UserGroupServiceImpl implements UserGroupService {
         }
         return allUsers;
     }
+
+    @Override
+    public List<ContactDTO> getContacts(UserGroup userGroup){
+        List<OperationsUser> internalUsers = userGroup.getUsers();
+        List<Contact> externalUsers= userGroup.getContacts();
+        List<ContactDTO> allUsers = new ArrayList<ContactDTO>();
+        for(OperationsUser opsUser: internalUsers){
+            ContactDTO contactDTO = new ContactDTO();
+            contactDTO.setFirstName(opsUser.getFirstName());
+            contactDTO.setLastName(opsUser.getLastName());
+            contactDTO.setEmail(opsUser.getEmail());
+            contactDTO.setDt_RowId(opsUser.getId());
+            contactDTO.setExternal(false);
+            allUsers.add(contactDTO);
+        }
+        for(Contact extUser: externalUsers){
+            ContactDTO contactDTO = new ContactDTO();
+            contactDTO.setFirstName(extUser.getFirstName());
+            contactDTO.setLastName(extUser.getLastName());
+            contactDTO.setEmail(extUser.getEmail());
+            contactDTO.setDt_RowId(extUser.getId());
+            contactDTO.setExternal(true);
+            allUsers.add(contactDTO);
+        }
+        return allUsers;
+    }
 }

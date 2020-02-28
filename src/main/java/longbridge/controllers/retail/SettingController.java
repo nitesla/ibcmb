@@ -9,10 +9,7 @@ import longbridge.exception.*;
 import longbridge.forms.AlertPref;
 import longbridge.forms.CustChangePassword;
 import longbridge.forms.CustResetPassword;
-import longbridge.models.Code;
-import longbridge.models.Email;
-import longbridge.models.FinancialInstitutionType;
-import longbridge.models.RetailUser;
+import longbridge.models.*;
 import longbridge.services.*;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -25,10 +22,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -77,6 +71,14 @@ public class SettingController {
 
     @Autowired
     private SecurityService securityService;
+
+    @Autowired
+    ServiceRequestController serviceRequestController;
+
+    @Autowired
+    ServiceReqConfigService serviceReqConfigService;
+
+
 
     private final Locale locale = LocaleContextHolder.getLocale();
 
@@ -438,5 +440,43 @@ public class SettingController {
     public String fAQ() {
         return "cust/faq";
     }
+
+    @GetMapping("/settings/request/{reqId}")
+    public String reDirectRequest(@PathVariable Long reqId, Model model, Principal principal){
+        logger.info("routing setting request {}",reqId);
+        return serviceRequestController.makeRequest(reqId,model,principal);
+//        return "redirect:/retail/requests/"+id;
+
+    }
+
+    @GetMapping("/settings/customerfeedback")
+    public String getFeedBackPage(@ModelAttribute("feedBackStatus") FeedBackStatus feedBackStatus,Model model,Principal principal) {
+        RetailUserDTO user = retailUserService.getUserDTOByName(principal.getName());
+        Iterable<CodeDTO> feedBackCodes = codeService.getCodesByType("FEEDBACK_STATUS");
+        model.addAttribute("presentStatus",user.getFeedBackStatus());
+        model.addAttribute("status", feedBackCodes);
+        return "cust/settings/customer-feedback";
+    }
+    @PostMapping("/settings/customerfeedback")
+    public String ChangeFeedBackStatus(@ModelAttribute("feedBackStatus") FeedBackStatus feedBackStatus, Principal principal, Model model, RedirectAttributes redirectAttributes) throws Exception {
+
+        RetailUserDTO user = retailUserService.getUserDTOByName(principal.getName());
+        user.setFeedBackStatus(feedBackStatus.getCode());
+        retailUserService.changeFeedBackStatus(user);
+        String message = messageSource.getMessage("feedback.status", null, locale);
+        redirectAttributes.addFlashAttribute("message", message);
+        Iterable<CodeDTO> feedBackCodes = codeService.getCodesByType("FEEDBACK_STATUS");
+        model.addAttribute("status", feedBackCodes);
+        return "redirect:/retail/settings/customerfeedback";
+    }
+
+    @GetMapping("/link/bvn")
+    public String retailLinkBvn(Model model) {
+        model.addAttribute("localBanks", financialInstitutionService.getFinancialInstitutionsByType(FinancialInstitutionType.LOCAL));
+        model.addAttribute("requestConfig", serviceReqConfigService.getServiceReqConfigRequestName("LINK-BVN"));
+        return "cust/bvn/linkbvn";
+    }
+
+
 
 }

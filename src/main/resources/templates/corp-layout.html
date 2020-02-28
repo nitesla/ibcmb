@@ -81,11 +81,43 @@
                                         <span class="date2 lorem">&nbsp; &nbsp;Login History:&nbsp;</span>&nbsp;
                                         <span class="lorem" th:text="*{lastLogin}"></span>
                                     </h6>
+                                    <div class="nav_menu" style="display:none">
+                                        <!--<nav>-->
+                                        <ul class="nav navbar-nav navbar-left">
+
+                                            <li role="presentation" class="dropdown">
+                                                <a href="javascript:;" class="dropdown-toggle info-number" data-toggle="dropdown" aria-expanded="false">
+                                                    <span class="cnt"></span>
+                                                    <i class="fa fa-envelope-o "></i>
+                                                </a>
+                                                <ul style="width:450px;word-break: break-word" id="menu1" class="dropdown-menu  msg_list bg-danger alert no-mt advert no-bd-rad" role="menu" >
+
+                                                                        <span class="specialGreeting"  >
+                                                                        </span>
+                                                </ul>
+                                            </li>
+                                        </ul>
+                                        <!-- </nav>-->
+                                    </div>
+                                    <!--</div>-->
+                                    <!-- /top navigation -->
                                 </div>
                             </div>
                         </div>
                     </div>
 
+                    <div class="modal fade greetingImageModal " >
+                        <div class="modal-dialog" style="width:750px;height:250px" >
+                            <!-- Modal content-->
+                            <div class="modal-content no-bd-rad content ">
+                                <div class="imageVal" style="width:750px;height:250px">
+                                </div>
+                                <div class="modal-footer no-bd-top">
+                                    <button type="button" class="btn btn-link" data-dismiss="modal">Close</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
                     <div class="col-xs-12 col-sm-3  no-pad-right ">
                         <a href="/corporate/dashboard" class="">
@@ -160,24 +192,40 @@
                                         <li ><a  th:href="@{/corporate/custom}" th:text="#{menu.bill.custom}">Custom Duty</a></li>
                                     </ul>
                                 </li>
-                                <li sec:authorize="hasAuthority('MANAGE_INVESTMENT')"><a href="#" class="menu-link" th:text="#{menu.investment}">Investment</a></li>
-                                <!--<li class="dropdown" th:classappend="${#httpServletRequest.getRequestURI().startsWith('/corporate/requests') ? 'active':''}" sec:authorize="hasAuthority('MANAGE_SERV_REQ')">-->
-                                    <!--<a href="#" class="dropdown-toggle menu-link" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" th:text="#{menu.servreq}"> Service Requests </a>-->
-                                    <!--<ul class="dropdown-menu">-->
-                                        <!--<li sec:authorize="hasAuthority('TRACK_SERV_REQ')"><a th:href="@{/corporate/requests/track}" th:text="#{menu.servreq.track}">Track Requests</a></li>-->
-                                        <!--<p th:each="requests : ${serviceRequests}">-->
-                                            <!--<li sec:authorize="hasAuthority('MAKE_SERV_REQ')">-->
-                                                <!--<a th:href="@{/corporate/requests/} + ${requests.id}" th:text="${requests.requestName}"></a>-->
-                                            <!--</li>-->
-                                        <!--</p>-->
-                                    <!--</ul>-->
-                                <!--</li>-->
+                                <li class="dropdown" th:classappend="${#httpServletRequest.getRequestURI().startsWith('/corporate/fixdeposit') ? 'active':''}" sec:authorize="hasAuthority('MANAGE_INVESTMENT')">
+                                    <a href="#" class="dropdown-toggle menu-link" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" th:text="#{menu.investment}">Investment</a>
+                                    <ul class="dropdown-menu">
+                                        <li><a th:href="@{/corporate/fixdeposit/view}" th:text="#{menu.investment.fixdeposit}">Fix Deposit</a></li>
+                                        <li><a th:href="@{/corporate/treasurybill/view}" th:text="#{menu.investment.treasurybill}">Treasury Bills</a></li>
+                                    </ul>
+                                </li>
+                                <li class="dropdown" th:classappend="${#httpServletRequest.getRequestURI().startsWith('/corporate/cheque') ? 'active':''}" sec:authorize="hasAuthority('MANAGE_SERV_REQ')">
+                                    <a href="#" class="dropdown-toggle menu-link" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" th:text="#{menu.cheqreq}"> Cheque
+                                    </a>
+                                    <ul class="dropdown-menu">
+                                        <li sec:authorize="hasAuthority('REQUEST-CHEQUE')"><a th:href="@{/corporate/cheque/chequebook}" th:text="#{menu.cheque.request}">Request Cheque</a></li>
+                                        <li sec:authorize="hasAuthority('STOP-CHEQUE')"><a th:href="@{/corporate/cheque/stop}" th:text="#{menu.cheque.stop}">Stop</a></li>
+                                        <li sec:authorize="hasAuthority('CONFIRM-CHEQUE')"><a th:href="@{/corporate/cheque/confirm}" th:text="#{menu.cheque.confirm}">Confirm</a></li>
+                                        <li sec:authorize="hasAuthority('DRAFT-REQUEST')"><a th:href="@{/corporate/cheque/draft}" th:text="#{menu.cheque.draft}">Draft request</a></li>
+
+                                    </ul>
+                                    <!-- <ul class="dropdown-menu">
+                                         &lt;!&ndash;<li role="separator" class="divider"></li>&ndash;&gt;
+                                         <p th:each="requests : ${chequeRequests}">
+                                         <li sec:authorize="hasAuthority('MAKE_SERV_REQ')">
+                                             <a th:href="@{/corporate/cheque/} + ${requests.id}" th:text="${requests.requestName}"></a>
+                                         </li>
+                                         </p>
+                                     </ul>-->
+                                </li>
 
                                 <li class="dropdown" th:classappend="${#httpServletRequest.getRequestURI().startsWith('/corporate/settings') ? 'active':''}" sec:authorize="hasAuthority('CORP_USER_SETTINGS')">
                                     <a href="#" class="dropdown-toggle menu-link" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" th:text="#{menu.settings}"> Settings </a>
                                     <ul class="dropdown-menu">
                                         <li sec:authorize="hasAuthority('SET_ALERT_PREFERENCE')"><a th:href="@{/corporate/settings/alert_preference}" th:text="#{menu.settings.alert}">Alert Preference</a></li>
                                         <li sec:authorize="hasAuthority('CORP_CHANGE_PASSWORD')"><a th:href="@{/corporate/settings/change_password}" th:text="#{menu.settings.password}">Change Password</a></li>
+                                        <li sec:authorize="hasAuthority('FEEDBACK_STATUS')"><a th:href="@{/corporate/settings/customerfeedback}" th:text="#{menu.settings.feedback}">
+                                            Feedback Status</a></li>
                                     </ul>
                                 </li>
                                 <li class="dropdown active-more">
@@ -343,8 +391,13 @@
 
 
 
-    <script th:src="@{~/customer/js/jquery-1.11.1.js}"></script>
+    <!--<script th:src="@{~/customer/js/jquery-1.11.1.js}"></script>-->
+     <script
+             src="https://code.jquery.com/jquery-2.2.4.js"
+             integrity="sha256-iT6Q9iMJYuQiMWNd9lDyBUStIq/8PuOW33aOqmvFpqI="
+             crossorigin="anonymous"></script>
     <script th:src="@{~/customer/js/jquery-ui.js}"></script>
+     <script  th:src="@{~/customer/js/greeting.js}"> </script>
     <script th:src="@{~/customer/js/jquery.dataTables.js}"></script>
     <script th:src="@{~/customer/js/dataTables.input.js}"></script>
     <!--<script th:src="@{~/customer/js/date/js/bootstrap-datepicker.js}"></script>-->
@@ -362,22 +415,39 @@
      <script th:src="@{~/customer/js/session.js}"></script>
 
 
+     <li hidden="hidden" id="feedStatus"  th:text="${feedStatus}"></li>
+     <div th:if="${message}">
+         <div hidden="hidden">
+             <div th:if="${transRequest}">
+                 <li th:text="${transRequest.referenceNumber}" class="transactionRef"></li>
+                 <li th:text="${transRequest.transferType}" class="transactionType"></li>
 
-    <div th:if="${message}">
-        <div hidden="hidden">
-            <ul class="actionMessage">
-                <li th:each="msg : ${message}" th:text="${msg}">Message</li>
-            </ul>
-        </div>
-    </div>
+             </div>
+         </div>
+         <div hidden="hidden">
+             <div th:if="${refNumber}">
+                 <li th:text="${refNumber}" class="transactionRef"></li>
+             </div>
+             <div th:if="${transferType}">
+                 <li th:text="${transferType}" class="transactionType"></li>
+             </div>
+         </div>
 
-    <div th:if="${failure}">
-        <div hidden="hidden">
-            <ul class="actionError">
-                <li th:each="msg : ${failure}" th:text="${msg}" id="error">Message</li>
-            </ul>
-        </div>
-    </div>
+         <div hidden="hidden">
+             <ul class="actionMessage">
+                 <li th:each="msg : ${message}" th:text="${msg}">Message</li>
+             </ul>
+         </div>
+     </div>
+
+
+     <div th:if="${failure}">
+         <div hidden="hidden">
+             <ul class="actionError">
+                 <li th:each="msg : ${failure}" th:text="${msg}" id="error">Message</li>
+             </ul>
+         </div>
+     </div>
 
     <div id="myModalError" class="modal fade " role="dialog">
         <div class="modal-dialog">
@@ -405,40 +475,56 @@
     </div>
 
 
-    <div id="myModalSuccess" class="modal fade " role="dialog">
-        <div class="modal-dialog">
+     <div id="myModalSuccess" class="modal fade " role="dialog">
+         <div class="modal-dialog">
 
-            <!-- Modal content-->
+             <!-- Modal content-->
 
-            <div class="modal-content no-bd-rad content ">
+             <div class="modal-content no-bd-rad content ">
 
-                <div class="modal-body">
+                 <div class="modal-body">
 
+                     <p id="successMess" class="mess text-primary">Put something here iff need be.</p>
+                     <div id="feedBackForm" class="form-group mess text-primary" style="display:none">
+                         <span>Kindly rate this service</span><br/>
+                         <span class="fa fa-star" id="1" style="color:#D3D3D3"></span>
+                         <span class="fa fa-star " id="2" style="color:#D3D3D3"></span>
+                         <span class="fa fa-star " id="3" style="color:#D3D3D3"></span>
+                         <span class="fa fa-star" id="4" style="color:#D3D3D3"></span>
+                         <span class="fa fa-star "id="5" style="color:#D3D3D3"></span><br/><br/>
+                         <label class="col-sm-2 control-label">Additional comments </label>
+                         <input type="text" name="rating" id="rating"  />
+                         <input type="text" name="transType" id="transType" />
+                         <textarea id="comment" class="form-control"  style="width:60%;height:50%" ></textarea>
 
-                    <p id="successMess" class="mess text-primary">Put something here iff need be.</p>
-
-
-                </div>
-
-
-                <div class="modal-footer no-bd-top">
-                    <button type="button" class="btn btn-link" data-dismiss="modal">OK</button>
-                </div>
-
-            </div>
-
-        </div>
-    </div>
-
+                     </div>
 
 
+                     <div class="modal-footer no-bd-top">
+                         <button type="button" class="btn btn-link" data-dismiss="modal">OK</button>
+                     </div>
 
-    <!-- CORE JQUERY SCRIPTS -->
+                 </div>
+
+             </div>
+         </div>
+     </div>
+
+
+
+
+     <!-- CORE JQUERY SCRIPTS -->
     <script th:inline='javascript'>
         /*<![CDATA[*/
 
         $(document).ready(function ()
         {
+            getCorporateGreetings();
+            greetingUtility();
+
+            if(window.location.href.indexOf("corporate/dashboard") > -1) {
+                $("#menu1").dropdown('toggle');
+            }
             $(".useloader").click(function(){
                 showSpinner();
 //            alert("The paragraph was clicked.");
@@ -450,6 +536,44 @@
                 autoclose: true,
                 todayBtn: true,
                 todayHighlight: true});
+            var rating=0
+
+            $(".fa-star").on("mouseover",function(){
+                $(".fa-star").css('color','#D3D3D3')
+                rating= $(this).attr("id");
+                for(var i=rating;i>0;i--)
+                    $('#'+i).css('color','yellow')
+            });
+            $("#myModalSuccess").on("hidden.bs.modal",function(e){
+                //var url=$(location).attr("href");
+                var userType="CORPORATE";
+
+                var transType=$(".transactionType").text();
+                if(transType===0){
+                    var transType=[[${transferType}]]
+                }
+                var comment=$("#comment").val();
+                var transactionRef=$(".transactionRef").text();
+                var feedback=[[${feedStatus}]]
+
+                var feedBackDTO={ "ratings": rating, "transactionType": transType,"comments":comment,
+                    "userType":userType,"transactionRef":transactionRef};
+                $.ajax({
+                    dataType: 'json',
+                    url: "/feedback/save",
+                    data:feedBackDTO,
+                    type: "POST",
+                    success: function () {
+                    },
+                    error: function () {
+
+                    }
+                });
+
+            })
+
+
+            
 
         })
 

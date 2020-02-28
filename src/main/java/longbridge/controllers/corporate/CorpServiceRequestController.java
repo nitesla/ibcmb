@@ -170,7 +170,7 @@ public class CorpServiceRequestController {
             }
 
         }
-        return "redirect:/corporate/requests//track";
+        return "redirect:/corporate/requests/track";
     }
 
     @GetMapping("/{reqId}")

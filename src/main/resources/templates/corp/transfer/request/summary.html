@@ -120,6 +120,8 @@
                 <div>
                     <input type="hidden" name="tranReqId" th:value="${corpTransRequest.id}"/>
                     <input type="hidden" th:field="*{tranLocation}" name="tranLocation"  id="tranLocation"/>
+                    <input type="hidden" name="tranReqRef" th:value="${corpTransRequest.referenceNumber}"/>
+                    <input type="hidden" name="tranReqType" th:value="${corpTransRequest.transferType}"/>
 
                 </div>
                 <div>

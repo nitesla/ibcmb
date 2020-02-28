@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import longbridge.config.audits.RevisedEntitiesUtil;
 import longbridge.dtos.AuditSearchDTO;
+import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
 import org.json.simple.JSONObject;
 import org.slf4j.Logger;
@@ -406,5 +407,14 @@ public class StringUtil {
             return repeat+visibleAcct;
         }
         return "";
+    }
+
+    public static String sanitizeString(String str){
+
+        String sanitizedString=str;
+        sanitizedString=StringEscapeUtils.escapeHtml(sanitizedString);
+        sanitizedString=StringEscapeUtils.escapeJavaScript(sanitizedString);
+        sanitizedString= StringEscapeUtils.escapeSql(sanitizedString);
+        return sanitizedString;
     }
 }

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{corp-layout}">
+
+<body onload="javascript:var bread = [['Home', '/retail/dashboard'],['feedback status']];currentBar('feedback status');breadCrumb(bread)">
+
+<div layout:fragment="content">
+    <div class="col-md-5 col-sm-5 ">
+
+        <select class="form-control full-width coronation-form-control hide-content-only" id="view">
+            <option value="account">Overview</option>
+        </select>
+    </div>
+
+    <div class="col-xs-12 ml-15 no-pad-left no-pad-right " >
+        <div class="col-xs-11 no-pad-lef no-mt alert no-bd">
+            <div class="">
+                <div class="col-md-6 col-sm-6">
+                    <form method="post"  th:action="@{/corporate/settings/customerfeedback}" th:object="${feedBackStatus}">
+                        <div class="form-group">
+                            <label>Change Feedback Status</label>
+                            <select  class="form-control" name="code" id="code">
+                                <option id="presentStatus" th:value="${presentStatus}" >Select..</option>
+                                <option class="options" th:each="stat : ${status}"
+                                        th:value="${stat.code}" th:text="${stat.description}" th:selected="${stat.code}==${presentStatus}" ></option>
+                            </select><span class='req-inner'></span>
+                        </div>
+
+                        <button type="submit" class="btn btn-link required-step">Submit</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+<th:block layout:fragment="scripts">
+
+</th:block>
+
+</body>
+</html>

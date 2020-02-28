@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{ret-layout}">
+
+<body onload="javascript:var bread = [['Home', '/retail/dashboard'],['ConfirmCheque']];currentBar('Cheque Confirmation');breadCrumb(bread)">
+
+<div layout:fragment="content">
+    <div class="col-md-5 col-sm-5 ">
+
+        <select class="form-control full-width coronation-form-control hide-content-only" id="view">
+            <option value="account">Overview</option>
+        </select>
+    </div>
+    <div class="col-xs-12 ml-15 no-pad-left no-pad-right">
+
+        <form method="post" th:action="@{/retail/requests}"  th:object="${requestDTO}" id="reqForm">
+            <div class="col-md-5 col-sm-5 no-pad-left">
+                <input class="form-control" type="hidden" id="requestName" name="requestName"
+                       th:value="${requestConfig.requestName}"/>
+                <input type="hidden" name="serviceReqConfigId" th:value="${requestConfig.id}"/>
+                <input type="hidden" name="Charge" th:value="${charge}" id="chrg">
+
+                <!--<input type="hidden" name="urlPart" value="cheque/chequebook"/>-->
+                <div class="form-group">
+                    <label>Amount</label>
+                    <span class="req"></span>
+                    <input type="number" min="0" th:name="Amount" id="amount" th:value="${amount}"
+                           class="form-control" required/>
+                </div>
+
+                <div class="form-group">
+                    <label>Amount in words</label>
+                    <span class="req"></span>
+                    <input type="text"  th:name="AmountInWords" id="amountInWords" th:value="${amountInWords}" readonly
+                           class="form-control"/>
+                </div>
+
+
+                <div class="form-group">
+                    <label>Cheque Number</label>
+                    <span class="req"></span>
+                    <input type="text"  th:name="ChequeNumber" id="chequeNumber" th:value="${chequeNumber}" required
+                           class="form-control"/>
+                </div>
+
+
+            <!--</div>-->
+
+
+
+            <!--<div class="col-md-5 col-sm-5 no-pad-left">-->
+
+                <div class="form-group">
+                    <label>Beneficiary</label>
+                    <span class="req"></span>
+                    <input type="text"  th:name="Beneficiary"  th:value="${beneficiary}"
+                           class="form-control" required/>
+                </div>
+
+                <div class="form-group">
+                    <label>Date on Cheque</label>
+                    <span class="req"></span>
+                    <input type="text" data-date-format="dd-mm-yyyy" class="form-control datepicker"  name="ChequeDate" placeholder="Date on cheque"  required/>
+                </div>
+
+
+
+
+                <div class="form-group">
+                    <button class="btn btn-link required-step pull-left" id="submit" type="submit">Submit
+                    </button>
+
+                    <a th:href="@{/retail/cheque/confirm}" class="btn btn-link pull-left"
+                       style="margin-top: 2%">Cancel</a>
+                </div>
+
+
+            </div>
+        </form>
+
+    </div>
+</div>
+
+
+<th:block layout:fragment="scripts">
+    <script th:inline="javascript">
+        $('#reqForm').submit(function (event) {
+            var arrays = [];
+
+
+            var form = $('#reqForm').serializeArray();
+            var formData = JSON.stringify(form);
+            $('#requestName').val(formData);
+            $('#submitform').submit();
+
+        });
+        $('#amount').keyup(function () {
+            console.log("test");
+            convertToWords();
+        });
+
+
+        function convertToWords() {
+            var amount = $('#amount').val();
+            console.log("the amount " + amount);
+            if (amount != '') {
+                convertAmountToWords(amount);
+
+            }
+
+        }
+
+        function convertAmountToWords(amount) {
+            $.ajax({
+                "url": "/util/convertAmountToWords",
+                "type": "POST",
+                "data": {
+                    amount: amount
+                },
+                success: function (result) {
+                    console.log("the result " + result);
+                    $('#amountInWords').val(result);
+
+                },
+                error: function (err) {
+                    console.log("can't fetch because " + err)
+                }
+
+            })
+        }
+
+    </script>
+</th:block>
+
+</body>
+</html>

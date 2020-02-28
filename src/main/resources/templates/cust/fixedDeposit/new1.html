@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{ret-layout}">
+
+<body onload="javascript:var bread = [['Home', '/retail/dashboard'],['Fixed Deposit']];currentBar('Book Fixed Deposit');breadCrumb(bread)">
+
+<div layout:fragment="content">
+    <div class="col-md-5 col-sm-5 ">
+
+        <select class="form-control full-width coronation-form-control hide-content-only" id="view">
+            <option value="account">Overview</option>
+        </select>
+    </div>
+
+    <div class="col-xs-12 ml-15 no-pad-left no-pad-right">
+        <div class="col-xs-11 no-pad-lef no-mt alert no-bd">
+
+                    <!--<h6 class="sub_header coronation-blue text-bold" th:text="${requestConfig.requestName}"></h6>-->
+            <form method="post" th:action="@{/retail/requests}" th:object="${requestDTO}" id="reqForm">
+                <input class="form-control" type="hidden" id="requestName" name="requestName"
+                       th:value="${requestConfig.requestName}"/>
+                <input type="hidden" name="serviceReqConfigId" th:value="${requestConfig.id}"/>
+                <div class="col-md-6 col-sm-6 no-pad-left">
+                    <div class="">
+                        <div class="form-group">
+                            <label>Account to be Debited</label>
+                            <span class="req"></span>
+                            <select id="acctNumber" th:name="AccountNumber"
+                                    class="form-control full-width"
+                                    required="required">
+                                <option th:each="s: ${accounts}" th:value="${s.accountNumber}"
+                                        th:text="${s.accountNumber}"></option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Deposit Type</label>
+                            <span class="req"></span>
+                            <select th:name="DepositType" id="depositTypes" th:id="${depositType}"
+                                    class="form-control full-width">
+                                <option th:each="depositType : ${depositTypes}"
+                                        th:value="${depositType.code}"
+                                        th:text="${depositType.description}"></option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Comment</label>
+                            <textarea th:name="Comment" id="comment" required
+                                      class="form-control"> </textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <button class="btn btn-link required-step pull-left" id="submit" type="submit">Submit
+                            </button>
+
+                            <a th:href="@{/retail/fixdeposit/view}" class="btn btn-link pull-left"
+                               style="margin-top: 2%">Cancel</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6 col-sm-6 no-pad-left">
+                    <div class="">
+                        <div class="form-group">
+                            <label>Amount to invest(NGN)</label>
+                            <span class="req"></span>
+                            <!--<input type="number"  th:field="*{initialDepositAmount}" onkeyup="getRate()" id="amount" required class="form-control"/>-->
+                            <input type="number" step="0.01" th:name="Amount" id="amount" onblur="getRate()" required
+                                   class="form-control"/>
+                        </div>
+                        <span id="balanceError" style="color:red"></span>
+
+                        <div class="form-group">
+                            <label>Tenor</label>
+                            <span class="req"></span>
+                            <select th:name="Tenor" id="tenor" class="form-control full-width" onblur="getRate()">
+                                <option th:each="tenor : ${tenors}" th:value="${tenor.code}"
+                                        th:text="${tenor.description}"></option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Rate</label>
+                            <input type="text" th:name="Rate" id="rate"  required class="form-control" readonly/>
+
+                        </div>
+                        <div class="">
+
+                            <span style="display: none" class="related-info coronation-blue" id="notice" th:text="${notice}"><b></b></span>
+
+
+                        </div>
+
+
+                    </div></div>
+            </form>
+
+
+        </div>
+    </div>
+
+</div>
+
+
+<th:block layout:fragment="scripts">
+    <script>
+
+        $('#reqForm').submit(function (event) {
+            var arrays = [];
+
+
+            var form = $('#reqForm').serializeArray();
+            var formData = JSON.stringify(form);
+            $('#requestName').val(formData);
+            $('#submitform').submit();
+
+        });
+
+
+        $(document).ready(function () {
+             $("input").prop('required', true);
+            $("#comment").prop('required', false);
+//            $('#submit').trigger('click');
+
+        });
+
+        function getRate() {
+            var amount = $('#amount').val();
+            var tenor = $('#tenor').val();
+            var accountNumber=$("#acctNumber").val();
+
+            var balanceMessage="";
+            if (amount != '' && tenor != '' && accountNumber!=="") {
+                $.ajax({
+                    "url": "/retail/fixdeposit/balance/check",
+                    "type": "POST",
+                    "data": {
+                        amount: amount,
+                        accountNumber: accountNumber,
+                    }, success: function (result) {
+                        balanceMessage = result;
+                       $("#balanceError").text(balanceMessage);
+                        if(balanceMessage!==""){
+                            $("#submit").prop("disabled",true);
+                        }else   $("#submit").prop("disabled",false);
+
+                    },
+                });
+                if (balanceMessage === "") {
+                    $.ajax({
+                        "url": "/retail/fixdeposit/rate",
+                        "type": "POST",
+                        "data": {
+                            amount: amount,
+                            tenor: tenor,
+                        }, success: function (result) {
+                            if (result != "") {
+                                $('#rate').val(result + "%");
+                                $('#notice').show();
+                            }
+                            if (result === null) {
+                                $('#rate').val("Rate not available");
+                                $('#notice').hide();
+
+                            }
+                        },
+                        error: function (dd) {
+                            console.log("error");
+                            $('#rate').val("Rate not available");
+                            // bootbox.alert("<div style='text-align: center'>Service not available</div>");
+                            //  return false;
+                        }
+
+                    });
+                } else {
+                    $('#rate').val("");
+                }
+            }
+        }
+
+
+
+
+    </script>
+</th:block>
+
+</body>
+</html>

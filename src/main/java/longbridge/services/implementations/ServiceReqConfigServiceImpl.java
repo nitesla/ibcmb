@@ -311,6 +311,16 @@ public class ServiceReqConfigServiceImpl implements ServiceReqConfigService {
 		return serviceReqFormFieldDTOList;
 	}
 
-
+	@Override
+	public ServiceReqConfigDTO getServiceReqConfigRequestName(String requestName) {
+		SRConfig srconfig = serviceReqConfigRepo.findByRequestName(requestName);
+		if(srconfig != null) {
+			logger.info("the service requestName is{}",srconfig.getFormFields());
+			modelMapper = new ModelMapper();
+			return modelMapper.map(srconfig, ServiceReqConfigDTO.class);
+		}else {
+			return new ServiceReqConfigDTO();
+		}
+	}
 
 }

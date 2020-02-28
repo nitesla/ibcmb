@@ -2,8 +2,10 @@ package longbridge.services;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import longbridge.api.*;
+import longbridge.dtos.FixedDepositDTO;
 import longbridge.exception.InternetBankingTransferException;
 import longbridge.models.*;
+import longbridge.utils.Response;
 import longbridge.utils.statement.AccountStatement;
 import longbridge.utils.statement.TransactionHistory;
 import org.springframework.scheduling.annotation.Async;
@@ -148,4 +150,11 @@ public interface IntegrationService {
     TransRequest makeCustomDutyPayment(TransRequest transRequest);
 
     TransferDetails antiFraudStatusCheck(String transactionType,String referenceNo);
+    String estinameDepositRate(String amount,String tenor, String acctNum);
+    FixedDepositDTO getFixedDepositDetails(String accountNumber);
+    Response liquidateFixDeposit(FixedDepositDTO fixedDepositDTO);
+    Response addFundToDeposit(FixedDepositDTO fixedDepositDTO);
+    Response bookFixDeposit(FixedDepositDTO fixedDepositDTO);
+
+
 }

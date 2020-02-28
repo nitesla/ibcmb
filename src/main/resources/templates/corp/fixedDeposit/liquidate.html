@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{corp-layout}">
+
+<body onload="javascript:var bread = [['Home', '/corporate/dashboard'],['Liquidate Fixed Deposit']];currentBar('Liquidate Fixed Deposit');breadCrumb(bread)">
+
+<div layout:fragment="content">
+    <div class="col-md-12 col-sm-12 ">
+
+    </div>
+
+    <div class="col-xs-12 " >
+        <div class=" no-mt  alert no-bd">
+
+            <form method="post" th:action="@{/corporate/requests}"
+                  th:object="${requestDTO}" id="reqForm">
+
+                <input class="form-control" type="hidden" id="requestName" name="requestName"
+                       th:value="${requestConfig.requestName}"/>
+                <input type="hidden" name="serviceReqConfigId" th:value="${requestConfig.id}"/>
+                <div class="col-md-6 col-sm-6 no-pad-left">
+                    <div class="">
+                        <div class="form-group">
+                            <label>Type of Liquidation</label>
+                            <span class="req"></span>
+                            <select th:name="Liquidation-Type" id="liquidateType" class="form-control full-width">
+                                <option value="Full">Full Liquidation</option>
+                                <option value="Part">Part Liquidation</option>
+                            </select>
+                        </div>
+                        <div class="form-group" id="initialDepositAmount" style="display: none">
+                            <label>Amount</label>
+                            <span class="req"></span>
+                            <input type="hidden"  th:name="Fixed-Deposit-Amount" th:value="${initialAmount}" id="initialAmount" />
+                            <input type="text"  th:name="Liquidation-Amount"  required class="form-control" id="liquidationAmount"/>
+                            <input type="hidden"  th:name="Booking-Ref-Number" th:value="${refNo}"/>
+                            <input type="hidden"  th:name="Deposit-Number" th:value="${depositNo}" />
+                        </div>
+                        <span id="amountError" style="color:red"></span>
+
+
+                        <button class="btn btn-link required-step" type="submit" id="submit">Submit</button>                            <!--<button id="neq" type="button" class="btn btn-link" onclick="getAccountName();">Name-->
+                        <!--Enquiry-->
+                        <!--</button>-->
+                        <a th:href="@{/corporate/fixdeposit/view}" class="btn btn-link">Cancel</a>
+                    </div>
+                </div>
+            </form>
+
+
+        </div>
+    </div>
+</div>
+
+</div>
+
+
+<th:block layout:fragment="scripts">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootbox.js/4.4.0/bootbox.min.js"></script>
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        var table = $('#mytab').DataTable({
+            responsive: true,
+            "lengthMenu" : [ [ 5, 10, 20], [ 5, 10, 20 ] ],
+            "pagingType" : "input",
+            "searching": false,
+            "dom": 'T<"clear">frtlp'
+        });
+        $(document).ready(function () {
+            $("input").prop('required', false);
+
+            $('#initialDepositAmount').hide();
+        });
+        $('#liquidateType').change(function (e) {
+            e.preventDefault();
+            if($(this).val() =="Part"){
+                $("input").prop('required', true);
+                $('#initialDepositAmount').show();
+            }else {
+                $('#initialDepositAmount').hide();
+                $("input").prop('required', false);
+            }
+
+        })
+        $("#liquidationAmount").on("keyup",function(){
+            if(parseInt($("#liquidationAmount").val())>parseInt($("#initialAmount").val())){
+                $("#amountError").text("Liquidation amount cannot be greater than Initial Deposit amount");
+                $("#submit").prop("disabled",true);
+            }else {
+                $("#amountError").text("");
+                $("#submit").prop("disabled",false);
+
+            }
+
+        })
+
+        $('#reqForm').submit(function (event) {
+            var form="";
+            var arrays = [];
+
+            if($('#liquidateType').val()==="Full")
+                $("#liquidationAmount").val($("#initialAmount").val());
+
+            form = $('#reqForm').serializeArray();
+            var formData = JSON.stringify(form);
+            $('#requestName').val(formData);
+            $('#submitform').submit();
+
+        });
+
+
+
+
+        /*]]>*/
+    </script>
+
+    <script>
+        //datepicker
+        $( function() {
+            $( "#datepicker" ).datepicker(
+                { dateformat : 'dd/mm/yy'}
+            );
+        } );
+    </script>
+</th:block>
+
+</body>
+</html>

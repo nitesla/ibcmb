@@ -40,6 +40,7 @@ public class RetailUserDTO {
     private String captionSec;
     private Role role;
     private Code alertPreference;
+    private String feedBackStatus;
 
     public Long getId() {
         return id;
@@ -235,24 +236,42 @@ public class RetailUserDTO {
         this.phoneNumber = phoneNumber;
     }
 
+    public String getFeedBackStatus() {
+        return feedBackStatus;
+    }
+
+    public void setFeedBackStatus(String feedBackStatus) {
+        this.feedBackStatus = feedBackStatus;
+    }
+
     @Override
     public String toString() {
         return "RetailUserDTO{" +
                 "id=" + id +
                 ", userName='" + userName + '\'' +
+                ", entrustId='" + entrustId + '\'' +
                 ", customerId='" + customerId + '\'' +
                 ", version='" + version + '\'' +
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
                 ", email='" + email + '\'' +
+                ", phoneNumber='" + phoneNumber + '\'' +
                 ", birthDate=" + birthDate +
                 ", password='" + password + '\'' +
                 ", status='" + status + '\'' +
-                ", createdOnDate=" + createdOnDate +
+                ", bvn='" + bvn + '\'' +
+                ", createdOnDate='" + createdOnDate + '\'' +
                 ", expiryDate=" + expiryDate +
                 ", lockedUntilDate=" + lockedUntilDate +
-                ", lastLoginDate=" + lastLoginDate +
+                ", lastLoginDate='" + lastLoginDate + '\'' +
                 ", noOfLoginAttempts=" + noOfLoginAttempts +
+                ", securityQuestion=" + securityQuestion +
+                ", securityAnswer=" + securityAnswer +
+                ", phishingSec='" + phishingSec + '\'' +
+                ", captionSec='" + captionSec + '\'' +
+                ", role=" + role +
+                ", alertPreference=" + alertPreference +
+                ", feedBackStatus='" + feedBackStatus + '\'' +
                 '}';
     }
 }

@@ -39,6 +39,7 @@ public interface AccountRepo extends CommonRepo<Account,Long> {
 
     List<Account> findByCustomerId(String customerId);
     List<Account> findByCustomerIdAndSchemeTypeIn(String customerId ,List<String> schmTypes);
+    List<Account> findByCustomerIdAndSchemeType(String customerId ,String schmTypes);
     List<Account> findByCustomerIdAndSchemeTypeInIgnoreCase(String customerId ,List<String> schmTypes);
     List<Account> findByCustomerIdAndCurrencyCodeIgnoreCase(String customerId,String currency);
     List<Account>  findByCustomerIdAndHiddenFlagIgnoreCase(String s1,String s2);

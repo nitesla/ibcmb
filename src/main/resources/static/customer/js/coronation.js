@@ -9,11 +9,20 @@ function initnotices() {
 
     $('.actionMessage li').each(function (index, value) {
         var tt = $(this).text();
+        var transType=$(".transactionType").text();
+        var feedStatus=$("#feedStatus").text();
+        console.log("feedstatus"+feedStatus);
+        var ref=$(".transactionRef").text();
+        console.log(transType.length+transType+feedStatus);
+        if((typeof transType!=="undefined") &&(transType.length>1) && (feedStatus==="EN")){
+            $("#feedBackForm").show();
+        }
         $('#myModalSuccess').modal('show');
         var err = document.getElementById('successMess');
         err.textContent = tt;
         //var notify = $.notify({message:tt}, { allow_dismiss: true ,type: 'success'});
     });
+
 
     $('.actionError li').each(function (index, value) {
         var tt = $(this).text();

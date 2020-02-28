@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{ret-layout}">
+
+<body onload="javascript:var bread = [['Home', '/retail/dashboard'],['Treasury Bills']];currentBar('Treasury Bill');breadCrumb(bread)">
+
+<div layout:fragment="content">
+    <div class="col-md-5 col-sm-5 ">
+
+        <select class="form-control full-width coronation-form-control hide-content-only" id="view">
+            <option value="account">Overview</option>
+        </select>
+    </div>
+
+    <div class="col-xs-12 ml-15 no-pad-left no-pad-right">
+        <div class="col-xs-11 no-pad-lef no-mt alert no-bd">
+
+                    <!--<h6 class="sub_header coronation-blue text-bold" th:text="${requestConfig.requestName}"></h6>-->
+            <form method="post" th:action="@{/retail/requests}" th:object="${requestDTO}" id="reqForm">
+                <input class="form-control" type="hidden" id="requestName" name="requestName"
+                       th:value="${requestConfig.requestName}"/>
+                <input type="hidden" name="serviceReqConfigId" th:value="${requestConfig.id}"/>
+                <div class="col-md-6 col-sm-6 no-pad-left">
+                    <div class="">
+
+                        <div class="form-group">
+                            <label>Market Type</label>
+                            <span class="req"></span>
+                            <select th:name="Market-Type" id="marketType"
+                                    class="form-control full-width">
+                                <option value="">Select Market Type</option>
+                                <option th:each="market : ${markets}"
+                                        th:value="${market.code}"
+                                        th:text="${market.description}"></option>
+                            </select>
+                        </div>
+
+                        <div class="form-group" id="primary" style="display: none">
+                            <label>Tenor</label>
+                            <span class="req"></span>
+                            <select th:name="Primary-Market-Tenor" id="pTenor" class="form-control full-width" >
+                                <option value=""> Select Tenor </option>
+                                <option th:each="p : ${primary}" th:value="${p.tenor +','+ p.value}"
+                                        th:text="${p.tenor}+' '+days"></option>
+                            </select>
+                        </div>
+                        <!--th:onchange="'javascript:getRate('+${p.value}+');'"-->
+                        <div class="form-group" style="display: none" id="secondary">
+                            <label>Tenor</label>
+                            <span class="req"></span>
+                            <select th:name="Secondary-Market-Tenor" id="sTenor" class="form-control full-width">
+                                <option value=""> Select Tenor </option>
+                                <option th:each="s : ${secondary}" th:value="${s.tenor+','+ s.value}"
+                                        th:text="${s.tenor}+' '+days" ></option>
+                            </select>
+                        </div>
+
+
+                        <div class="form-group">
+                            <label>Amount to invest(NGN)</label>
+                            <span class="req"></span>
+                            <input type="number" step="0.01" th:name="Amount" id="amount" min="10000" max="9999999999"required
+                                   class="form-control" onchange="checkBalance();"/>
+                        </div>
+                        <span id="amountError" style="color:red"></span>
+
+
+
+                        <div class="form-group">
+                            <label>Account to be Debited</label>
+                            <span class="req"></span>
+                            <select id="acctNumber" th:name="AccountNumber"
+                                    class="form-control full-width"
+                                    required="required" onchange="checkBalance();">
+                                <option th:each="s: ${accounts}" th:value="${s.accountNumber}"
+                                        th:text="${s.accountNumber}"></option>
+                            </select>
+                        </div>
+                        <span id="balanceError" style="color:red"></span>
+
+
+                        <div class="form-group">
+                            <button class="btn btn-link required-step pull-left" id="submit" type="submit">Submit
+                            </button>
+
+                            <a th:href="@{/retail/treasurybill/view}" class="btn btn-link pull-left"
+                               style="margin-top: 2%">Cancel</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6 col-sm-6 no-pad-left">
+                    <div class="">
+
+
+                        <div class="form-group" id="pRateDiv" style="display:none">
+                            <label>Rate</label>
+
+                            <select class="form-control full-width" required="required" id="primaryRate">
+                                <option value="supplyRate">Supply rate</option>
+                                <option value="bankRate" >Use bank rate</option>
+                            </select>
+
+
+                            <input type="text" th:name="Supplied-Rate" id="supplyRate" step="0.01" required class="form-control" placeholder="Enter rate"/>
+
+                            <input type="text" th:name="Bank-Rate" id="bankRate" style="display: none" required class="form-control"  readonly/>
+
+                        </div>
+
+                        <div class="form-group" id="sRateDiv" style="display:none">
+                            <label>Rate</label>
+                            <input type="text" th:name="Secondary-Market-Rate" id="sRate"  required class="form-control"  readonly/>
+
+                        </div>
+                        <div class="">
+
+                            <span style="display: none" class="related-info coronation-blue" id="notice" th:text="${notice}"><b></b></span>
+
+
+                        </div>
+
+
+                    </div></div>
+            </form>
+
+
+        </div>
+    </div>
+
+</div>
+
+
+<th:block layout:fragment="scripts">
+    <script>
+
+        $('#reqForm').submit(function (event) {
+            console.log("yes");
+            var arrays = [];
+            var form = $('#reqForm').serializeArray();
+            form[3].value= $('#pTenor').val().split(',')[0];
+            form[4].value= $('#sTenor').val().split(',')[0];
+            var formData = JSON.stringify(form);
+            $('#requestName').val(formData);
+            $('#submitform').submit();
+
+        });
+
+
+        $("#marketType").on('change', function () {
+            if ($("#marketType").val() === "PRIMARY") {
+                $('#secondary').hide();
+                $('#sRateDiv').hide();
+                $('#primary').show();
+                // $('#rate').val($('#pTenor').val().split(',')[1]);
+            } else {
+                $("#primary").hide();
+                $('#secondary').show();
+                $('#pRateDiv').hide();
+                $('#supplyRate').val("N/A");
+                $('#bankRate').val("N/A");
+
+
+            }
+        });
+
+        $("#secondary").on('change',function () {
+            $('#sRate').val($('#sTenor').val().split(',')[1]+'%');
+            $('#sRateDiv').show();
+        })
+
+        $("#primary").on('change',function () {
+            $('#bankRate').val($('#pTenor').val().split(',')[1]+'%');
+            $('#pRateDiv').show();
+
+
+        })
+
+        $("#primaryRate").on('change',function () {
+           if($("#primaryRate").val()==="bankRate"){
+               $("#bankRate").show();
+               $("#supplyRate").hide();
+               $("#supplyRate").val("");
+               $('#supplyRate').val("N/A");
+
+           }else{
+               $("#supplyRate").show();
+               $("#bankRate").hide();
+               $('#supplyRate').val("");
+
+
+           }
+        })
+
+
+        $("#amount").on('change',function () {
+            if($('#amount').val()%1000!==0){
+                $("#amountError").text("Amount should be in multiples of 1000");
+                $("#submit").prop("disabled",true);
+
+            }else{
+                $("#amountError").text("");
+                $('#submit').prop('disabled',false);
+
+            }
+
+        });
+
+        function checkBalance() {
+            var accountNumber = $("#acctNumber").val();
+            var balanceMessage = "";
+            var amount=$("#amount").val();
+
+            console.log(accountNumber + amount);
+            if (amount !== "" && accountNumber !== ""&& amount<1000000000) {
+                console.log(accountNumber + amount);
+                $.ajax({
+                    "url": "/retail/treasurybill/balance/check",
+                    "type": "POST",
+                    "data": {
+                        amount: amount,
+                        accountNumber: accountNumber,
+                    }, success: function (result) {
+                        balanceMessage = result;
+                        $("#balanceError").text(balanceMessage);
+                        if (balanceMessage !== "") {
+                            $("#submit").prop("disabled", true);
+                        } else $("#submit").prop("disabled", false);
+
+                    },
+                });
+            }
+        }
+
+
+
+    </script>
+</th:block>
+
+</body>
+</html>

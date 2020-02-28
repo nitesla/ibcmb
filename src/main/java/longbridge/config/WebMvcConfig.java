@@ -189,11 +189,6 @@ public class WebMvcConfig implements WebMvcConfigurer {
         return interceptor;
     }
 
-    @Bean
-    public ModelMapper modelMapper() {
-        ModelMapper modelMapper = new ModelMapper();
-        return modelMapper;
-    }
 
 
 //

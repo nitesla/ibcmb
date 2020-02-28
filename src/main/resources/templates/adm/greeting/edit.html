@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="layout :: site-head">
+</head>
+
+<body class="nav-md">
+<div class="container body">
+    <div class="main_container">
+        <div class="col-md-3 left_col">
+            <div class="left_col scroll-view">
+
+                <div th:replace="layout :: admin-menu"></div>
+                <div th:replace="layout :: menu-footer-adm"></div>
+
+            </div>
+        </div>
+        <div th:replace="layout :: top-nav"></div>
+
+        <!-- page content -->
+        <div class="right_col" role="main">
+            <div class="">
+                <div class="page-title">
+                    <div class="title_left">
+                        <h3>Greetings Management </h3>
+                    </div>
+
+                </div>
+
+                <div class="clearfix"></div>
+
+                <div class="row">
+                    <div class="col-md-12 col-sm-12 col-xs-12">
+                        <div class="x_panel">
+
+                            <div class="x_content">
+                                <div class="ibox-content">
+                                    <div class="x_title">
+                                        <ul class="nav navbar-right panel_toolbox">
+
+                                        </ul>
+                                        <div class="clearfix"></div>
+                                    </div>
+                                    <form method="post" class="form-horizontal" enctype="multipart/form-data" th:action="@{/admin/greetings/update}" th:object="${greetingDTO}">
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label">Event Name</label>
+
+                                            <div class="col-sm-4">
+                                                <input type="hidden" class="form-control" th:field="*{id}" />
+                                                <input type="hidden"  name="version" class="form-control" th:field="*{version}" />
+                                                <input type="text" id="eventName" name="eventName" class="form-control" th:field="*{eventName}" readonly/>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label">Type <span class="required"></span></label>
+                                            <div class="col-sm-4">
+                                                <select class="form-control" th:field="*{type}" id="gtype">
+                                                    <option value="" >Select..</option>
+                                                    <option  value="GNL">General</option>
+                                                    <option value="PNL">Personal</option>
+                                                </select>
+                                            </div>
+                                        </div>
+
+
+                                        <div id="personal"  style="display:none">
+                                            <div class="form-group">
+                                                <label class="col-sm-2 control-label">User</label>
+
+                                                <div class="col-sm-4">
+                                                    <input type="hidden" id="indi" class="form-control"  />
+                                                    <input type="text" id="indi2" class="form-control" th:field="*{userId}" readonly="true" />
+                                                    <input type="hidden" class="userType"  th:field="*{userType}"  />
+                                                </div>
+
+                                                <div class="btn-group" id="retailUserBtn" style="">
+
+                                                    <button style="border-radius: 2px" id="displayBtn" type="button" class="btn btn-primary usertype " >User Type</button>
+                                                    <button  class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                                                        <span class="caret"></span>
+                                                        <!--<span class="sr-only">Toggle Dropdown</span>-->
+                                                    </button>
+                                                    <ul class="dropdown-menu" role="menu" style="">
+                                                        <li><a class="btn-find" >Retail </a>
+                                                        </li>
+                                                        <li><a class="btn-find-corpuser" >Corporate </a>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+
+                                        </div>
+
+
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label">Message</label>
+
+                                            <div class="col-sm-4">
+                                                <textarea name="message" id="message" class="form-control"  th:field="*{message}" required="required"></textarea>
+                                                <span id="messageError" style="display:none;color:red"></span>
+                                            </div>
+                                            <div class="btn-group">
+
+                                                <select id="parameter" class="form-control" >
+                                                    <option value="">Select Parameter</option>
+                                                    <option class="acct" value="${AccountName}">Account Name</option>
+                                                    <option class="acct" value="${AccountNumber}">Account Number</option>
+                                                    <option value="${BirthDate}">Birth Date</option>
+                                                    <option value="${CurrentDate}">Current Date</option>
+                                                    <option value="${Firstname}">Firstname</option>
+                                                    <option value="${Lastname}">Lastname</option>
+                                                </select>
+
+                                            </div>
+
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label">Is Event Date Recurring?</label>
+
+                                            <div class="col-sm-4">
+                                                <label class="col-sm-2 control-label">Yes
+                                                    <input type="radio" name="recurringDate"  th:field="*{recurringDate}"value="true" /></label>
+                                                <label class="col-sm-2 control-label">No
+                                                    <input type="radio" name="recurringDate"  th:field="*{recurringDate}" value="false"/></label>
+                                            </div>
+
+                                        </div>
+
+                                        <div id="eventDate" >
+                                        <div class="form-group" >
+                                            <label class="col-sm-2 control-label">Event Date</label>
+                                            <div class="col-sm-4">
+                                                <input type="date" id="execute"  class="form-control" th:field="*{executedOn}" />
+                                            </div>
+                                        </div>
+
+                                            <div  class="form-group">
+                                                <label class="col-sm-2 control-label">Duration</label>
+                                                <div class="col-sm-4">
+                                                    <input type="number" value="" class="form-control" min="0" oninput="validity.valid||(value='');"
+                                                           th:field="*{duration}"id="duration" placeholder="Enter number of days">
+                                                    <input type="hidden" id="expire" class="form-control" th:field="*{expiredOn}" required="required" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div  class="form-group">
+                                            <label class="col-sm-2 control-label">Upload image</label>
+                                            <div class="col-sm-4">
+                                                <input type="hidden"  name="imageLink" th:field="*{imageLink}" id="imageLink" >
+                                                <input type="file" id="greetingImage" name="greetingImage" class="form-control" />
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <div class="col-sm-4 col-sm-offset-2">
+                                                <button class="btn btn-white" type="reset" id="cancel">Cancel</button>
+                                                <button class="btn btn-primary" type="submit">Save</button>
+                                            </div>
+                                        </div>
+                                        <div th:replace="layout::form-validation"></div>
+
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- /page content -->
+
+        <!-- footer content -->
+        <footer th:replace="layout :: footer">
+        </footer>
+        <!-- /footer content -->
+    </div>
+</div>
+<script th:src="@{~/bank/vendors/datatables.net/js/jquery.dataTables.js}"></script>
+<script th:src="@{~/bank/js/dataTables.select.js}"></script>
+<script th:src="@{~/bank/js/dataTables.bootstrap.js}"></script>
+<script th:src="@{~/bank/js/jquery.spring-friendly.min.js}"></script>
+<script th:src="@{~/bank/js/momentMin.js}"></script>
+<script th:src="@{~/bank/vendors/emodal/eModal.js}"></script>
+<script  th:src="@{~/customer/js/greeting.js}"></script>
+
+<script>
+    greetingUtility();
+    $(".acct").css({"display":"none"});
+
+    if($("#eventName").val()==="ACCOUNT_ANNIVERSARY"){
+        $(".acct").css({"display":"block"});
+    }
+
+
+    if($("#userType").val()!==""){
+    $(".usertype").text($(".userType").val());
+    }
+    $("#gtype").on('change', function () {
+        if ($("#gtype").val() === "PNL") {
+            $('#personal').show();
+            $("#indi").val($("#indi2").val());
+        } else {
+            $("#personal").hide();
+            $("#indi2").val("");
+        }
+    });
+
+    if($("#gtype").val()==="PNL"){
+        $("#personal").show();
+        $("#indi").val($("#indi2").val());
+
+    }
+
+   document.getElementById("cancel").onclick = function () {
+        location.href = "/admin/greetings";
+    }
+</script>
+</body>
+</html>

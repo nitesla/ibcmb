@@ -286,7 +286,6 @@ public class CorpTransferController {
             String corporateId = "" + corporateUserService.getUserByName(principal.getName()).getCorporate().getId();
             corpTransferRequestDTO.setCorporateId(corporateId);
             Object object = transferService.addTransferRequest(corpTransferRequestDTO);
-
             if(object instanceof CorpTransferRequestDTO){
 
                 corpTransferRequestDTO = (CorpTransferRequestDTO)object;
@@ -297,7 +296,11 @@ public class CorpTransferController {
             }
 
             else if (object instanceof String){
+                model.addAttribute("transRequest", corpTransferRequestDTO);
                 redirectAttributes.addFlashAttribute("message", object);
+                redirectAttributes.addFlashAttribute("refNumber", corpTransferRequestDTO.getReferenceNumber());
+                redirectAttributes.addFlashAttribute("transferType", corpTransferRequestDTO.getTransferType());
+
                 return "redirect:/corporate/transfer/requests";
 
             }
@@ -404,10 +407,12 @@ public class CorpTransferController {
 
 
     @PostMapping("/authorize")
-    public String addAuthorization(@ModelAttribute("corpTransReqEntry") CorpTransReqEntry corpTransReqEntry,@RequestParam("token") String tokenCode, RedirectAttributes redirectAttributes, Principal principal) {
+    public String addAuthorization(WebRequest webRequest,@ModelAttribute("corpTransReqEntry") CorpTransReqEntry corpTransReqEntry,@RequestParam("token") String tokenCode, RedirectAttributes redirectAttributes, Principal principal) {
 
         corpTransReqEntry.setChannel("web");
         CorporateUser user = corporateUserService.getUserByName(principal.getName());
+        String refNumber=webRequest.getParameter("tranReqRef");
+        String transferType=webRequest.getParameter("tranReqType");
 
         SettingDTO setting = configService.getSettingByName("ENABLE_CORPORATE_2FA");
 
@@ -437,6 +442,9 @@ public class CorpTransferController {
             String message = corpTransferService.addAuthorization(corpTransReqEntry);
             logger.info("corpmessage {}",message);
             redirectAttributes.addFlashAttribute("message", message);
+            redirectAttributes.addFlashAttribute("refNumber", refNumber);
+            redirectAttributes.addFlashAttribute("transferType", transferType);
+
 
         } catch (TransferAuthorizationException te) {
             logger.error("Failed to authorize transfer", te);

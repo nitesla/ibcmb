@@ -3,6 +3,7 @@ package longbridge.services;
 import longbridge.dtos.ContactDTO;
 import longbridge.dtos.UserGroupDTO;
 import longbridge.exception.InternetBankingException;
+import longbridge.models.UserGroup;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -37,4 +38,5 @@ public interface UserGroupService {
     @PreAuthorize("hasAuthority('GET_USER_GRP')")
     List<ContactDTO> getContacts(Long groupId);
 
+    List<ContactDTO> getContacts(UserGroup userGroup);
 }
