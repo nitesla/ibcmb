@@ -55,6 +55,9 @@ public class CronJobServiceImpl implements CronJobService {
     private TransferRequestRepo transferRequestRepo;
 
     @Autowired
+    private AdminUserRepo adminUserRepo;
+
+    @Autowired
     public CronJobServiceImpl(IntegrationService integrationService){
     this.integrationService=integrationService;
     }
@@ -416,5 +419,15 @@ public class CronJobServiceImpl implements CronJobService {
 
     }
 
+    @Override
+    @Scheduled(cron="${auto.admin.deactivation}")
+    public void executeAutoAdminDeactivation(){
+        SettingDTO setting = configService.getSettingByName("ADMIN_DEACTIVATION");
+        if(setting != null && setting.isEnabled()) {
+            adminUserRepo.updateUserStatus(Double.parseDouble(setting.getValue()));
+            logger.info("Inactive AdminUsers deactivated");
+        }else
+            adminUserRepo.updateUserStatus(60.0);
+    }
 
 }

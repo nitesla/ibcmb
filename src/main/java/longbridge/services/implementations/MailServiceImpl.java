@@ -38,6 +38,22 @@ public class MailServiceImpl implements MailService {
         this.mailSender = mailSender;
     }
 
+    @Override
+    public void send(String recipient, String subject, String message, boolean isHTML) throws MailException {
+        MimeMessagePreparator messagePreparator = (MimeMessage mimeMessage) -> {
+            MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage);
+            messageHelper.setFrom(sender);
+            messageHelper.setTo(recipient);
+            messageHelper.setSubject(subject);
+            messageHelper.setText(message, isHTML);
+        };
+
+        logger.info("Trying to send mail to  {}", recipient);
+
+        mailSender.send(messagePreparator);
+        logger.info("Email successfully sent to {} with subject '{}'", recipient, subject);
+    }
+
 
     @Override
     public void send(String recipient, String subject, String message) throws MailException {

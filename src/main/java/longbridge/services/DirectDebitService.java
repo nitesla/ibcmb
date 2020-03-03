@@ -1,12 +1,16 @@
 package longbridge.services;
 
 import longbridge.dtos.DirectDebitDTO;
+import longbridge.dtos.PaymentDTO;
 import longbridge.exception.TransferException;
-import longbridge.models.DirectDebit;
-import longbridge.models.RetailUser;
+import longbridge.models.*;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public interface DirectDebitService {
@@ -17,12 +21,14 @@ public interface DirectDebitService {
 	 * @return A message detailing the success or failure
 	 */
 	String addDirectDebit(RetailUser user, DirectDebitDTO directDebitDTO);
+
+	String addCorpDirectDebit(CorporateUser user, DirectDebitDTO directDebitDTO);
 	
 	/** Deletes the specified directDebit for the current user
 	 * 
 	 * @param directDebitId the direct debit id
 	 */
-	void deleteDirectDebit(Long directDebitId);
+	String deleteDirectDebit(Long directDebitId);
 	
 	/** Returns the {@link DirectDebit} specified by directDebitId
 	 * 
@@ -35,7 +41,9 @@ public interface DirectDebitService {
 	 * 
 	 * @param directDebit the directDebit
 	 */
-	void performDirectDebit(DirectDebit directDebit) throws TransferException;
+	//void performDirectDebit(DirectDebit directDebit) throws TransferException;
+
+	 void performDirectDebitPayment(Payment payment);
 
 	/** This fetches all the direct debits that are due to be 
 	 * performed today.
@@ -43,12 +51,35 @@ public interface DirectDebitService {
 	 * performed today
 	 */
 	List<DirectDebit> getDueDirectDebits();
+
+	List<Payment> getDuePayments();
 	
 	/** This fetches all the direct debits for the specified user
 	 * 
 	 * @param user the user containing the direct debits
 	 * @return a {@link List} of {@code DirectDebit}s that are owned by the user
 	 */
-	List<DirectDebit> getUserDirectDebits(RetailUser user);
+	Page<DirectDebitDTO> getCorpUserDirectDebitDTOS(CorporateUser user, Pageable pageable);
+
+	//List<CorpDirectDebit> getCorpUserDirectDebits(CorporateUser corporateUser);
+
+	//List<CorpDirectDebit> getByCOrporate(Long cordId);
+
+
+	Page<DirectDebitDTO> getUserDirectDebitDTOs(RetailUser user, Pageable pageable);
+
+	void generatePaymentsForDirectDebit(DirectDebit directDebit);
+
+	String modifyPayment(PaymentDTO paymentDTO);
+
+	String deletePayment(Long id);
+
+	DirectDebit getPaymentsDirectDebit(Long paymentId);
+
+	Collection<Payment> debitsPayments(DirectDebit directDebit);
+
+	Collection<PaymentDTO>  getPayments(DirectDebit directDebit);
+
+
 	
 }

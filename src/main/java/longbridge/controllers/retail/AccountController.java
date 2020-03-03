@@ -732,7 +732,6 @@ public class AccountController {
 		List<GreetingDTO> specialGreetings=null;
 		try{
 			specialGreetings = greetingService.getCurrentGreetingsForUser();
-			logger.info("greetings"+specialGreetings.size());
 
 		}catch(Exception e){
 			logger.info("special Greetings error {}",e);

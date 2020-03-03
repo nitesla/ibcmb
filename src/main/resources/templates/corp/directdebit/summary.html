@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+`<html xmlns:th="http://www.thymeleaf.org"
+       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{corp-layout}">
+
+<body onload="javascript:var bread = [['Home', '/corporate/dashboard'],['Standing order Management']];currentBar('Standing Order Summary');breadCrumb(bread)">
+
+<div layout:fragment="content">
+    <div class="col-md-5 col-sm-5 ">
+        <!--<a th:href="@{/retail/transfer/local/new}" class="pull-right extra-link btn btn-default">New Beneficiary</a>-->
+
+        <!-- <select class="form-control full-width coronation-form-control hide-content-only" id="view">
+            <option value="account">Overview</option>
+        </select> -->
+    </div>
+
+    <div class="col-xs-12 ml-15  no-pad-right" >
+        <div class="col-xs-12 no-pad-lef alert no-bd">
+            <div class="col-sm-offset-3  col-sm-6">
+                <!--<div class="row form-spacing">-->
+                <div class="">
+
+
+
+                    <table class="table table-hover center ">
+                        <tr class="top-row">
+
+                            <th>Source account</th>
+                            <td th:text="${directDebit.debitAccount}"></td>
+
+                        </tr>
+                        <tr>
+
+                            <th>Amount</th>
+                            <td th:text="${directDebit.amount}"></td>
+
+                        </tr>
+                        <tr>
+
+                            <th>Naration</th>
+                            <td th:text="${directDebit.narration}"></td>
+
+                        </tr>
+                        <tr>
+
+                            <th>Start Date</th>
+                            <td th:text="${directDebit.start}"></td>
+
+                        </tr><tr>
+
+                        <th>End date</th>
+                        <td th:text="${directDebit.end}"></td>
+
+                    </tr><tr>
+                        <th>Interval</th>
+                        <td th:text="${directDebit.intervalDays}"></td>
+
+                    </tr>
+                    </table>
+
+                    <form id="local" method="post" th:action="@{/corporate/directdebit}" th:object="${directDebit}">
+                        <input type="hidden" th:field="*{debitAccount}"/>
+                        <input type="hidden" th:field="*{amount}"/>
+                        <input type="hidden" th:field="*{narration}"/>
+                        <input type="hidden" th:field="*{start}"/>
+                        <input type="hidden" th:field="*{end}"/>
+                        <input type="hidden" th:field="*{intervalDays}"/>
+                        <input type="hidden" th:field="*{corpLocalBeneficiary}"/>
+                        <div class="form-group">
+                            <div class="form-group">
+                                <button type="submit" class="btn btn-link required-step useloader">Proceed</button>
+                                <button id="cancel"  class='btn btn-link less-required'>Cancel</button>
+                                <!--<button type='button' class='btn btn-link less-required'>Modify</button>-->
+                            </div>
+
+
+                        </div>
+
+                    </form>
+
+
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+</div>
+
+
+
+<th:block layout:fragment="scripts">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootbox.js/4.4.0/bootbox.min.js"></script>
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+
+
+
+
+        /*]]>*/
+    </script>
+
+    <script>
+        $("#cancel").on('click',function(e){
+            e.preventDefault();
+            location.href="/corporate/directdebit/index";
+        });
+
+        //datepicker
+    </script>
+</th:block>
+
+</body>
+</html>

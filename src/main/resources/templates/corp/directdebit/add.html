@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{corp-layout}">
+
+<body onload="javascript:var bread = [['Home', '/corporate/dashboard'],['Standing order Management', '/corporate/directdebit'],['add standing order ']];currentBar('Add new standing order');breadCrumb(bread)">
+
+<div layout:fragment="content">
+    <div class="col-md-5 col-sm-5 ">
+
+        <select class="form-control full-width coronation-form-control hide-content-only" id="view">
+            <option value="account">Overview</option>
+        </select>
+    </div>
+
+    <div class="col-xs-12" >
+        <div class=" no-pad-lef no-mt alert no-bd">
+            <div class="">
+                <div class="col-md-6 col-sm-6 no-pad-left">
+
+                    <form id="local" method="post" th:action="@{/corporate/directdebit/summary}" th:object="${directDebit}">
+                        <input type="hidden" th:value="local" class="form-control"/>
+                        <div class="form-group">
+                            <label>Beneficiary</label>
+                            <select name="corpLocalBeneficiary" class="form-control">
+                                <option th:each="beneficiary : ${beneficiaries}" th:value="${beneficiary.id}" th:text="${beneficiary.accountName}"></option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Source Account</label>
+                            <select name="debitAccount" class="form-control" id="accountNumber">
+                                <option th:each="account : ${accounts}" th:value="${account.accountNumber}" th:text="${account.accountNumber}"></option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Transaction Amount</label>
+                            <input th:field="*{amount}" required class="form-control" min=0 placeholder="Amount" id="amount"/>
+                            <p class="errors close" data-dismiss="alert" aria-label="close" th:if="${#fields.hasErrors('amount')}" th:errors="*{amount}">&times;</p>
+                            <span id="limitError" style="color:red;display: none"></span>
+                        </div>
+                        <div class="form-group">
+                            <label>Frequency</label>
+                            <select name="intervalDays" required="required" class="form-control">
+                                <option value="">Select frequency </option>
+                                <option th:value="${duration.code}" th:each="duration:${durations}" th:text="${duration.description}" ></option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Narration</label>
+                            <input th:field="*{narration}" name="narration" class="form-control" placeholder="Narration"/>
+                        </div>
+                        <div class="form-group">
+                            <label>Duration</label>
+                            <div class="input-daterange input-group" id="date-range">
+                                <input type="text" th:field="*{start}" data-date-format="dd-mm-yyyy" class="form-control datepicker" id="start" name="fromDate" placeholder="Start date" required="required" />
+                                <span class="input-group-addon no-border no-bd" style="bacground:transparent !important">to</span>
+                                <input type="text" th:field="*{end}"  data-date-format="dd-mm-yyyy" class="form-control datepicker" name="toDate" id="end" placeholder="End date" required="required" onchange="endDateError1()" />
+
+                                <!--<span id="emptyDateError"   class="error">Start and end date is mandatory</span>-->
+                            </div>
+                            <span id="endDateError1" style="color:red"></span>
+                        </div>
+                        <div hidden="hidden">
+                            <li th:text="${benefBank}" id="beneficiaryBank"></li>
+                        </div>
+                        <button class="btn btn-link required-step" id="save">Save</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+<th:block layout:fragment="scripts">
+
+    <script>
+        $('#benType').on('change', function () {
+            if ($(this).val() === "foreign") {
+                $("#foreign").show();
+                $("#local").hide();
+                $("#intrabank").hide();
+            }
+            else if ($(this).val() === "local") {
+                $("#local").show();
+                $("#foreign").hide();
+                $("#intrabank").hide();
+            } else if ($(this).val() === "intrabank") {
+                $("#local").hide();
+                $("#foreign").hide();
+                $("#intrabank").show();
+            }
+        });
+
+        function endDateError1(){
+            var startDate=$("#start").datepicker("getDate");
+            var endDate=$("#end").datepicker("getDate");
+            if(endDate < startDate){
+                $("#endDateError1").text("End date should not be less than Start date")
+                $("#save").attr("disabled",true);
+            }else{
+                $("#endDateError1").text("")
+                $("#save").attr("disabled",false);
+            }
+        }
+
+        $('#amount').on('blur',function(){
+            var type=$("#beneficiaryBank").text();
+            if(type==="999001"|| type==="060001"){type="CORONATION_BANK_TRANSFER"}
+            else type="INTER_BANK_TRANSFER";
+            var accountNumber=$("#accountNumber").val();
+            var transferAmount=$("#amount").val();
+            var dto={transferType:type,customerAccountNumber:accountNumber,amount:transferAmount,remarks:"CORPORATE"}
+
+            $.ajax({
+                url:"/corporate/directdebit/limit",
+                type:"GET",
+                data:dto,
+                success:function(message){
+                    $("#limitError").text(message);
+                    if(message!==""){
+                        $("#save").attr("disabled",true)
+                    }else  $("#save").attr("disabled",false);
+
+                }
+
+            });
+            $('#limitError').show();
+        })
+
+
+
+    </script>
+    <script th:inline="javascript">
+
+    </script>
+</th:block>
+
+</body>
+</html>

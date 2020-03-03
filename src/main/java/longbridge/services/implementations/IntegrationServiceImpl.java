@@ -531,6 +531,140 @@ public class IntegrationServiceImpl implements IntegrationService {
 	}
 
 	@Override
+	public TransRequest makeBackgroundTransfer(TransRequest transRequest) throws InternetBankingTransferException{
+		TransferType type = transRequest.getTransferType();
+
+		Account account = accountRepo.findFirstByAccountNumber(transRequest.getCustomerAccountNumber());
+
+		switch (type) {
+			case CORONATION_BANK_TRANSFER:
+
+			{
+				transRequest.setTransferType(TransferType.CORONATION_BANK_TRANSFER);
+				TransferDetails response;
+				String uri = URI + "/transfer/local";
+				Map<String, String> params = new HashMap<>();
+				params.put("debitAccountNumber", transRequest.getCustomerAccountNumber());
+				params.put("debitAccountName", account.getAccountName());
+				params.put("creditAccountNumber", transRequest.getBeneficiaryAccountNumber());
+				params.put("creditAccountName", transRequest.getBeneficiaryAccountName());
+				params.put("tranAmount", transRequest.getAmount().toString());
+				params.put("remarks", transRequest.getRemarks());
+				logger.info("Starting Transfer with Params: {}", params.toString());
+
+				try {
+					response = template.postForObject(uri, params, TransferDetails.class);
+					transRequest.setStatus(response.getResponseCode());
+					transRequest.setStatusDescription(response.getResponseDescription());
+					transRequest.setReferenceNumber(response.getUniqueReferenceCode());
+					transRequest.setNarration(response.getNarration());
+					return transRequest;
+
+				} catch (HttpStatusCodeException e) {
+					logger.error("HTTP Error occurred", e);
+					transRequest.setStatus(e.getStatusCode().toString());
+					transRequest.setStatusDescription(e.getStatusCode().getReasonPhrase());
+					return transRequest;
+				} catch (Exception e) {
+					logger.error("Error occurred making transfer", e);
+					transRequest.setStatus(StatusCode.FAILED.toString());
+					transRequest.setStatusDescription(messageSource.getMessage("status.code.failed", null, locale));
+					return transRequest;
+				}
+
+			}
+			case INTER_BANK_TRANSFER: {
+				transRequest.setTransferType(TransferType.INTER_BANK_TRANSFER);
+				TransferDetails response;
+				String uri = URI + "/transfer/nip";
+				Map<String, String> params = new HashMap<>();
+				params.put("debitAccountNumber", transRequest.getCustomerAccountNumber());
+				params.put("debitAccountName", account.getAccountName());
+				params.put("creditAccountNumber", transRequest.getBeneficiaryAccountNumber());
+				params.put("creditAccountName", transRequest.getBeneficiaryAccountName());
+				params.put("tranAmount", transRequest.getAmount().toString());
+				params.put("destinationInstitutionCode", transRequest.getFinancialInstitution().getInstitutionCode());
+				params.put("tranType", "NIP");
+				params.put("remarks", transRequest.getRemarks());
+
+				logger.info("params for transfer {}", params.toString());
+				try {
+					response = template.postForObject(uri, params, TransferDetails.class);
+					logger.info("response for transfer {}", response.toString());
+					transRequest.setReferenceNumber(response.getUniqueReferenceCode());
+					transRequest.setNarration(response.getNarration());
+					transRequest.setStatus(response.getResponseCode());
+					transRequest.setStatusDescription(response.getResponseDescription());
+
+					return transRequest;
+				} catch (HttpStatusCodeException e) {
+
+					logger.error("HTTP Error occurred", e);
+					transRequest.setStatus(e.getStatusCode().toString());
+					transRequest.setStatusDescription(e.getStatusCode().getReasonPhrase());
+					return transRequest;
+
+				} catch (Exception e) {
+					logger.error("Error occurred making transfer", e);
+					transRequest.setStatus(StatusCode.FAILED.toString());
+					transRequest.setStatusDescription(messageSource.getMessage("status.code.failed", null, locale));
+					return transRequest;
+				}
+
+			}
+			case INTERNATIONAL_TRANSFER: {
+
+			}
+
+			case OWN_ACCOUNT_TRANSFER: {
+				transRequest.setTransferType(TransferType.OWN_ACCOUNT_TRANSFER);
+				TransferDetails response;
+				String uri = URI + "/transfer/local";
+				Map<String, String> params = new HashMap<>();
+				params.put("debitAccountNumber", transRequest.getCustomerAccountNumber());
+				params.put("debitAccountName", account.getAccountName());
+				params.put("creditAccountNumber", transRequest.getBeneficiaryAccountNumber());
+				params.put("creditAccountName", transRequest.getBeneficiaryAccountName());
+				params.put("tranAmount", transRequest.getAmount().toString());
+				params.put("remarks", transRequest.getRemarks());
+				logger.info("params for transfer {}", params.toString());
+				try {
+					response = template.postForObject(uri, params, TransferDetails.class);
+					transRequest.setNarration(response.getNarration());
+					transRequest.setReferenceNumber(response.getUniqueReferenceCode());
+					transRequest.setStatus(response.getResponseCode());
+					transRequest.setStatusDescription(response.getResponseDescription());
+					return transRequest;
+
+				} catch (HttpStatusCodeException e) {
+
+					logger.error("HTTP Error occurred", e);
+					transRequest.setStatus(e.getStatusCode().toString());
+					transRequest.setStatusDescription(e.getStatusCode().getReasonPhrase());
+					return transRequest;
+
+				} catch (Exception e) {
+					logger.error("Error occurred making transfer", e);
+					transRequest.setStatus(StatusCode.FAILED.toString());
+					transRequest.setStatusDescription(messageSource.getMessage("status.code.failed", null, locale));
+					return transRequest;
+				}
+
+			}
+
+			case RTGS: {
+				TransRequest request = sendRTGSTransferRequest(transRequest);
+
+				return request;
+			}
+		}
+		logger.trace("request did not match any type");
+		transRequest.setStatus(ResultType.ERROR.toString());
+		return transRequest;
+	}
+
+
+	@Override
 	public TransferDetails makeNapsTransfer(Naps naps) throws InternetBankingTransferException {
 		String uri = URI + "/transfer/naps";
 		try {
@@ -785,6 +919,35 @@ public class IntegrationServiceImpl implements IntegrationService {
 			return new Rate("", "0", "");
 		}
 
+	}
+
+	private TransRequest sendRTGSTransferRequest(TransRequest transRequest) {
+
+		try {
+
+			Account account = accountRepo.findFirstByAccountNumber(transRequest.getCustomerAccountNumber());
+
+			Context context = new Context();
+			context.setVariable("transRequest", transRequest);
+			context.setVariable("customerName",account.getAccountName());
+
+			String mail = templateEngine.process("mail/rtgstransfer", context);
+			SettingDTO setting = configService.getSettingByName("CUSTOMER_CARE_EMAIL");
+			if (setting != null && setting.isEnabled()) {
+				String recipient = setting.getValue();
+				String subject = messageSource.getMessage("rtgs.transfer.subject",null,locale);
+				mailService.send(recipient, subject, mail, true);
+				transRequest.setReferenceNumber(NumberUtils.generateReferenceNumber(15));
+				transRequest.setStatus("000");
+				transRequest.setStatusDescription(messageSource.getMessage("transfer.successful",null,locale));
+			}
+		} catch (Exception e) {
+			logger.error("Exception occurred {}", e);
+			transRequest.setStatus("96");
+			transRequest.setStatusDescription("TRANSACTION FAILED");
+		}
+
+		return transRequest;
 	}
 
 	public TransRequest sendTransfer(TransRequest transRequest) {

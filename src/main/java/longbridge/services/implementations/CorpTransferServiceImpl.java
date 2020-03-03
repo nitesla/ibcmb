@@ -46,6 +46,7 @@ public class CorpTransferServiceImpl implements CorpTransferService {
     private TransactionLimitServiceImpl limitService;
     private AccountService accountService;
     private ConfigurationService configService;
+    private DirectDebitService directDebitService;
     private Logger logger = LoggerFactory.getLogger(this.getClass());
     private Locale locale = LocaleContextHolder.getLocale();
 
@@ -76,7 +77,6 @@ public class CorpTransferServiceImpl implements CorpTransferService {
     private TransferErrorService transferErrorService;
 
 
-
     @Autowired
     IpAddressUtils ipAddressUtils;
 
@@ -86,13 +86,14 @@ public class CorpTransferServiceImpl implements CorpTransferService {
     private SessionUtil sessionUtil;
 
     @Autowired
-    public CorpTransferServiceImpl(CorpTransferRequestRepo corpTransferRequestRepo, IntegrationService integrationService, TransactionLimitServiceImpl limitService, AccountService accountService, ConfigurationService configService,SessionUtil sessionUtil) {
+    public CorpTransferServiceImpl(CorpTransferRequestRepo corpTransferRequestRepo, IntegrationService integrationService, TransactionLimitServiceImpl limitService, AccountService accountService, ConfigurationService configService, DirectDebitService directDebitService, SessionUtil sessionUtil) {
         this.corpTransferRequestRepo = corpTransferRequestRepo;
         this.integrationService = integrationService;
         this.limitService = limitService;
         this.accountService = accountService;
         this.configService = configService;
-        this.sessionUtil=sessionUtil;
+        this.sessionUtil = sessionUtil;
+        this.directDebitService = directDebitService;
     }
 
 
@@ -100,10 +101,10 @@ public class CorpTransferServiceImpl implements CorpTransferService {
     public Object addTransferRequest(CorpTransferRequestDTO transferRequestDTO) throws InternetBankingException {
 
         CorpTransRequest transferRequest = convertDTOToEntity(transferRequestDTO);
-        String userRefereneceNumber = "CORP_"+getCurrentUser().getId().toString();
+        String userRefereneceNumber = "CORP_" + getCurrentUser().getId().toString();
         transferRequest.setUserReferenceNumber(userRefereneceNumber);
         transferRequestDTO.setUserReferenceNumber(userRefereneceNumber);
-        String sessId=sessionUtil.generateSessionId();
+        String sessId = sessionUtil.generateSessionId();
         transferRequest.setReferenceNumber(sessId);
         transferRequestDTO.setReferenceNumber(sessId);
 
@@ -111,7 +112,7 @@ public class CorpTransferServiceImpl implements CorpTransferService {
         if ("SOLE".equals(transferRequest.getCorporate().getCorporateType())) {
             CorpTransferRequestDTO requestDTO = makeTransfer(transferRequestDTO);
             if ("00".equals(requestDTO.getStatus()) || "000".equals(requestDTO.getStatus())) { // Transfer successful
-                logger.debug("returning payment Request Sent for sole:{}",transferRequest.getCorporate().getCorporateType());
+                logger.debug("returning payment Request Sent for sole:{}", transferRequest.getCorporate().getCorporateType());
                 return requestDTO;
             } else {
                 throw new InternetBankingTransferException(requestDTO.getStatusDescription());
@@ -148,46 +149,46 @@ public class CorpTransferServiceImpl implements CorpTransferService {
 
     private CorpTransferRequestDTO makeTransfer(CorpTransferRequestDTO corpTransferRequestDTO) throws InternetBankingTransferException {
         validateTransfer(corpTransferRequestDTO);
-        logger.trace("Initiating {} transfer to {} by {}", corpTransferRequestDTO.getTransferType(), corpTransferRequestDTO.getBeneficiaryAccountName(),corpTransferRequestDTO.getUserReferenceNumber());
+        logger.trace("Initiating {} transfer to {} by {}", corpTransferRequestDTO.getTransferType(), corpTransferRequestDTO.getBeneficiaryAccountName(), corpTransferRequestDTO.getUserReferenceNumber());
         CorpTransRequest corpTransRequest = persistTransfer(corpTransferRequestDTO);
-        logger.info("the corporate transfer request {}",corpTransRequest);
+        logger.info("the corporate transfer request {}", corpTransRequest);
 
-            CustomUserPrincipal user = (CustomUserPrincipal) SecurityContextHolder.getContext().getAuthentication()
-                    .getPrincipal();
+        CustomUserPrincipal user = (CustomUserPrincipal) SecurityContextHolder.getContext().getAuthentication()
+                .getPrincipal();
 
-            String sessionkey = ((WebAuthenticationDetails) SecurityContextHolder.getContext().getAuthentication().getDetails())
-                    .getSessionId();
+        String sessionkey = ((WebAuthenticationDetails) SecurityContextHolder.getContext().getAuthentication().getDetails())
+                .getSessionId();
 
-            AntiFraudData antiFraudData = new AntiFraudData();
-            antiFraudData.setIp(ipAddressUtils.getClientIP2());
-            antiFraudData.setCountryCode("");
-            antiFraudData.setSfactorAuthIndicator(user.getSfactorAuthIndicator());
-            antiFraudData.setHeaderUserAgent(httpServletRequest.getHeader("User-Agent"));
-            antiFraudData.setHeaderProxyAuthorization(httpServletRequest.getHeader("Proxy-Authorization"));
+        AntiFraudData antiFraudData = new AntiFraudData();
+        antiFraudData.setIp(ipAddressUtils.getClientIP2());
+        antiFraudData.setCountryCode("");
+        antiFraudData.setSfactorAuthIndicator(user.getSfactorAuthIndicator());
+        antiFraudData.setHeaderUserAgent(httpServletRequest.getHeader("User-Agent"));
+        antiFraudData.setHeaderProxyAuthorization(httpServletRequest.getHeader("Proxy-Authorization"));
+        if (antiFraudData.getHeaderProxyAuthorization() == null) {
+            antiFraudData.setHeaderProxyAuthorization(httpServletRequest.getHeader("Proxy-Authenticate"));
             if (antiFraudData.getHeaderProxyAuthorization() == null) {
-                antiFraudData.setHeaderProxyAuthorization(httpServletRequest.getHeader("Proxy-Authenticate"));
-                if (antiFraudData.getHeaderProxyAuthorization() == null) {
-                    antiFraudData.setHeaderProxyAuthorization("");
-                }
+                antiFraudData.setHeaderProxyAuthorization("");
             }
+        }
 
-            antiFraudData.setLoginName(user.getUsername());
-            antiFraudData.setDeviceNumber("");
-            antiFraudData.setSessionkey(sessionkey);
-            antiFraudData.setTranLocation("");
-            antiFraudData.setChannel("INTERNET");
-            corpTransRequest.setChannel("INTERNET");
+        antiFraudData.setLoginName(user.getUsername());
+        antiFraudData.setDeviceNumber("");
+        antiFraudData.setSessionkey(sessionkey);
+        antiFraudData.setTranLocation("");
+        antiFraudData.setChannel("INTERNET");
+        corpTransRequest.setChannel("INTERNET");
 
-            corpTransRequest.setAntiFraudData(antiFraudData);
+        corpTransRequest.setAntiFraudData(antiFraudData);
 
 
 //        corpTransRequest.getAntiFraudData().setChannel(corpTransRequest.getChannel());
 
         CorpTransRequest corpTransRequestNew = (CorpTransRequest) integrationService.makeTransfer(corpTransRequest);//name change by GB
-        logger.trace("Transfer Details {} by {}", corpTransRequestNew.toString(),corpTransRequestNew.getUserReferenceNumber());
+        logger.trace("Transfer Details {} by {}", corpTransRequestNew.toString(), corpTransRequestNew.getUserReferenceNumber());
 
         if (corpTransRequestNew != null) {
-            CorpTransRequest corpTransRequest1=corpTransferRequestRepo.findById(corpTransRequest.getId()).get();
+            CorpTransRequest corpTransRequest1 = corpTransferRequestRepo.findById(corpTransRequest.getId()).get();
             entityManager.detach(corpTransRequest1);
             corpTransRequest1.setReferenceNumber(corpTransRequestNew.getReferenceNumber());
             corpTransRequest1.setNarration(corpTransRequestNew.getNarration());
@@ -202,27 +203,27 @@ public class CorpTransferServiceImpl implements CorpTransferService {
             }
             throw new InternetBankingTransferException(TransferExceptions.ERROR.toString());
         }
-        throw new InternetBankingTransferException(messageSource.getMessage("transfer.failed",null,locale));
+        throw new InternetBankingTransferException(messageSource.getMessage("transfer.failed", null, locale));
     }
 
     @Override
     public Page<CorpTransRequest> getCompletedTransfers(Pageable pageDetails) {
         CorporateUser corporateUser = getCurrentUser();
         Corporate corporate = corporateUser.getCorporate();
-        logger.info("corporate:{}",corporate);
+        logger.info("corporate:{}", corporate);
 //        Page<CorpTransRequest> page = corpTransferRequestRepo.findByCorporateAndStatusInAndTranDateNotNullOrderByTranDateDesc(corporate, Arrays.asList("00", "000"), pageDetails);
-        Page<CorpTransRequest> page = corpTransferRequestRepo.findByCorporateAndStatusNotAndTranDateNotNullOrderByTranDateDesc(corporate, Arrays.asList("Pending"),pageDetails);
-        logger.info("Page<CorpTransRequest> count:{}",pageDetails.getPageSize());
+        Page<CorpTransRequest> page = corpTransferRequestRepo.findByCorporateAndStatusNotAndTranDateNotNullOrderByTranDateDesc(corporate, Arrays.asList("Pending"), pageDetails);
+        logger.info("Page<CorpTransRequest> count:{}", pageDetails.getPageSize());
         List<CorpTransRequest> corpTransRequests = page.getContent().stream()
-                .filter(transRequest -> !accountConfigService.isAccountRestrictedForViewFromUser(accountService.getAccountByAccountNumber(transRequest.getCustomerAccountNumber()).getId(),corporateUser.getId())).collect(Collectors.toList());
-        return new PageImpl<CorpTransRequest>(corpTransRequests,pageDetails,page.getTotalElements());
+                .filter(transRequest -> !accountConfigService.isAccountRestrictedForViewFromUser(accountService.getAccountByAccountNumber(transRequest.getCustomerAccountNumber()).getId(), corporateUser.getId())).collect(Collectors.toList());
+        return new PageImpl<CorpTransRequest>(corpTransRequests, pageDetails, page.getTotalElements());
     }
 
     @Override
     public Page<CorpTransRequest> getCompletedTransfers(String pattern, Pageable pageDetails) {
         CorporateUser corporateUser = getCurrentUser();
         Corporate corporate = corporateUser.getCorporate();
-        Page<CorpTransRequest> page = corpTransferRequestRepo.findUsingPattern(corporate,pattern, pageDetails);
+        Page<CorpTransRequest> page = corpTransferRequestRepo.findUsingPattern(corporate, pattern, pageDetails);
 //        List<AdminUserDTO> dtOs = convertEntitiesToDTOs(page.getContent());
 //        long t = page.getTotalElements();
 //        Page<AdminUserDTO> pageImpl = new PageImpl<AdminUserDTO>(dtOs, pageDetails, t);
@@ -289,7 +290,7 @@ public class CorpTransferServiceImpl implements CorpTransferService {
         );
         if (limitExceeded) throw new InternetBankingTransferException(TransferExceptions.LIMIT_EXCEEDED.toString());
 
-       Corporate corporate = corporateRepo.findById(getCurrentUser().getCorporate().getId()).get();
+        Corporate corporate = corporateRepo.findById(getCurrentUser().getCorporate().getId()).get();
         boolean acctPresent = StreamSupport.stream(accountService.getAccountsForDebit(corporate.getAccounts()).spliterator(), false)
                 .anyMatch(i -> i.getAccountNumber().equalsIgnoreCase(dto.getCustomerAccountNumber()));
 
@@ -319,8 +320,8 @@ public class CorpTransferServiceImpl implements CorpTransferService {
 //        Page<CorpTransRequest> page = corpTransferRequestRepo.findByCorporateOrderByStatusAscTranDateDesc(corporate, pageDetails);//GB
         Page<CorpTransRequest> page = corpTransferRequestRepo.findByCorporateOrderByTranDateDesc(corporate, pageDetails);//GB
         List<CorpTransRequest> corpTransRequests = page.getContent().stream()
-                .filter(transRequest -> !accountConfigService.isAccountRestrictedForViewFromUser(accountService.getAccountByAccountNumber(transRequest.getCustomerAccountNumber()).getId(),corporateUser.getId())).collect(Collectors.toList());
-        return new PageImpl<CorpTransRequest>(corpTransRequests,pageDetails,page.getTotalElements());
+                .filter(transRequest -> !accountConfigService.isAccountRestrictedForViewFromUser(accountService.getAccountByAccountNumber(transRequest.getCustomerAccountNumber()).getId(), corporateUser.getId())).collect(Collectors.toList());
+        return new PageImpl<CorpTransRequest>(corpTransRequests, pageDetails, page.getTotalElements());
 
     }
 
@@ -379,6 +380,8 @@ public class CorpTransferServiceImpl implements CorpTransferService {
             CorpTransferAuth transferAuth = transferAuthRepo.findById(Long.parseLong(transferRequestDTO.getTransAuthId())).get();
             corpTransRequest.setTransferAuth(transferAuth);
         }
+        corpTransRequest.setCorpDirectDebit(null);
+
         return corpTransRequest;
     }
 
@@ -443,7 +446,7 @@ public class CorpTransferServiceImpl implements CorpTransferService {
     public boolean userCanAuthorize(TransRequest transRequest) {
         CorporateUser corporateUser = getCurrentUser();
         CorpTransRule transferRule = corporateService.getApplicableTransferRule(transRequest);
-        CorpTransRequest transferRequest = (CorpTransRequest)transRequest;
+        CorpTransRequest transferRequest = (CorpTransRequest) transRequest;
 
         if (transferRule != null) {
             List<CorporateRole> roles = getExistingRoles(transferRule.getRoles());
@@ -455,7 +458,6 @@ public class CorpTransferServiceImpl implements CorpTransferService {
         }
         return false;
     }
-
 
 
     @Override
@@ -486,7 +488,7 @@ public class CorpTransferServiceImpl implements CorpTransferService {
             throw new TransferAuthorizationException(messageSource.getMessage("transfer.auth.exist", null, locale));
         }
 
-        if(TransferAuthorizationStatus.DECLINED.equals(transReqEntry.getAuthStatus())){
+        if (TransferAuthorizationStatus.DECLINED.equals(transReqEntry.getAuthStatus())) {
             transReqEntry.setEntryDate(new Date());
             transReqEntry.setRole(userRole);
             transReqEntry.setUser(corporateUser);
@@ -509,34 +511,49 @@ public class CorpTransferServiceImpl implements CorpTransferService {
                 transReqEntry.setUser(corporateUser);
 
                 if (isAuthorizationComplete(corpTransRequest)) {
+                    if (corpTransRequest.getCorpDirectDebit() == null) {
+                        CorpTransferRequestDTO corpTransferRequestDTO = convertEntityToDTO(corpTransRequest);
+                        corpTransferRequestDTO.setChannel(transReqEntry.getChannel());
+                        corpTransferRequestDTO.setTranLocation(transReqEntry.getTranLocation());
 
-                    CorpTransferRequestDTO corpTransferRequestDTO=convertEntityToDTO(corpTransRequest);
-                    corpTransferRequestDTO.setChannel(transReqEntry.getChannel());
-                    corpTransferRequestDTO.setTranLocation(transReqEntry.getTranLocation());
+                        CorpTransferRequestDTO requestDTO = makeTransfer(corpTransferRequestDTO);
 
-                    CorpTransferRequestDTO requestDTO = makeTransfer(corpTransferRequestDTO);
+                        if ("00".equals(requestDTO.getStatus()) || "000".equals(requestDTO.getStatus())) {//successful transaction
 
-                    if ("00".equals(requestDTO.getStatus()) || "000".equals(requestDTO.getStatus())) {//successful transaction
+                            transferAuth.setStatus("C");
+                            transferAuth.setLastEntry(new Date());
+                            transferAuth.getAuths().add(transReqEntry);// the entry is added to the list of other entries
+                            transferAuthRepo.save(transferAuth);
+                            return requestDTO.getStatusDescription();
 
+                        }
+                        if ("34".equals(requestDTO.getStatus())) {
+                            requestDTO.setStatusDescription(messageSource.getMessage(transferErrorService.getMessage(requestDTO.getStatus()), null, locale));
+                            return requestDTO.getStatusDescription();
+
+                        }
+                        if ("09".equals(requestDTO.getStatus())) {
+                            requestDTO.setStatusDescription(messageSource.getMessage(transferErrorService.getMessage(requestDTO.getStatus()), null, locale));
+                            return requestDTO.getStatusDescription();
+
+                        } else {//failed transaction
+                            return messageSource.getMessage(transferErrorService.getMessage(requestDTO.getStatus()), null, locale);//GB
+
+//                        throw new InternetBankingTransferException(String.format(messageSource.getMessage("transfer.auth.failure.reason", null, locale), requestDTO.getStatusDescription()));
+                        }
+                    } else {
+                        logger.info("transfer request is a standing order , about to generate payments for standing order ");
+                        CorpDirectDebit corpDirectDebit = corpTransRequest.getCorpDirectDebit();
+                        directDebitService.generatePaymentsForDirectDebit(corpDirectDebit);
                         transferAuth.setStatus("C");
                         transferAuth.setLastEntry(new Date());
                         transferAuth.getAuths().add(transReqEntry);// the entry is added to the list of other entries
                         transferAuthRepo.save(transferAuth);
-                        return requestDTO.getStatusDescription();
+                        corpTransRequest.setStatus("000");
+                        corpTransRequest.setStatusDescription("Standing order successfull");
+                        corpTransferRequestRepo.save(corpTransRequest);
+                        return messageSource.getMessage("directdebit.add.success", null, locale);
 
-                    } if ("34".equals(requestDTO.getStatus())){
-                        requestDTO.setStatusDescription(messageSource.getMessage(transferErrorService.getMessage(requestDTO.getStatus()), null, locale));
-                        return requestDTO.getStatusDescription();
-
-                    }
-                    if ("09".equals(requestDTO.getStatus())){
-                        requestDTO.setStatusDescription(messageSource.getMessage(transferErrorService.getMessage(requestDTO.getStatus()), null, locale));
-                        return requestDTO.getStatusDescription();
-
-                    } else {//failed transaction
-                       return messageSource.getMessage(transferErrorService.getMessage(requestDTO.getStatus()),null,locale);//GB
-
-//                        throw new InternetBankingTransferException(String.format(messageSource.getMessage("transfer.auth.failure.reason", null, locale), requestDTO.getStatusDescription()));
                     }
                 }
                 transferAuth.getAuths().add(transReqEntry);// the entry is added, as authorizations are not yet completed
@@ -559,16 +576,32 @@ public class CorpTransferServiceImpl implements CorpTransferService {
                     transferAuth.setStatus("C"); //completed
                     transferAuth.setLastEntry(new Date());
                     transferAuthRepo.save(transferAuth);
-                    CorpTransferRequestDTO corpTransferRequestDTO=convertEntityToDTO(corpTransRequest);
-                    corpTransferRequestDTO.setTranLocation(transReqEntry.getTranLocation());
-                    corpTransferRequestDTO.setChannel(transReqEntry.getChannel());
+                    if(corpTransRequest.getCorpDirectDebit() == null ) {
+                        logger.info("transfer request not a standing order !");
+                        CorpTransferRequestDTO corpTransferRequestDTO = convertEntityToDTO(corpTransRequest);
+                        corpTransferRequestDTO.setTranLocation(transReqEntry.getTranLocation());
+                        corpTransferRequestDTO.setChannel(transReqEntry.getChannel());
 
-                    CorpTransferRequestDTO requestDTO = makeTransfer(corpTransferRequestDTO);
+                        CorpTransferRequestDTO requestDTO = makeTransfer(corpTransferRequestDTO);
 //                    CorpTransferRequestDTO requestDTO = makeTransfer(convertEntityToDTO(corpTransRequest));
-                    if ("00".equals(requestDTO.getStatus()) || "000".equals(requestDTO.getStatus())) { //successful transaction
-                        return requestDTO.getStatusDescription();
-                    } else {
-                        throw new InternetBankingTransferException(requestDTO.getStatusDescription());
+                        if ("00".equals(requestDTO.getStatus()) || "000".equals(requestDTO.getStatus())) { //successful transaction
+                            return requestDTO.getStatusDescription();
+                        } else {
+                            throw new InternetBankingTransferException(requestDTO.getStatusDescription());
+                        }
+                    }else{
+                        logger.info("transfer request is a standing order , about to generate payments for standing order ");
+                        CorpDirectDebit corpDirectDebit = corpTransRequest.getCorpDirectDebit() ;
+                        directDebitService.generatePaymentsForDirectDebit(corpDirectDebit);
+                        transferAuth.setStatus("C");
+                        transferAuth.setLastEntry(new Date());
+                        transferAuth.getAuths().add(transReqEntry);// the entry is added to the list of other entries
+                        transferAuthRepo.save(transferAuth);
+                        corpTransRequest.setStatus("000");
+                        corpTransRequest.setStatusDescription("Standing order successfull");
+                        corpTransferRequestRepo.save(corpTransRequest);
+                        return messageSource.getMessage("directdebit.add.success", null, locale);
+
                     }
                 }
                 return messageSource.getMessage("transfer.auth.success", null, locale);
@@ -645,5 +678,16 @@ public class CorpTransferServiceImpl implements CorpTransferService {
 
     }
 
+    @Override
+    public boolean validateDirectDebitAccountBalance(CorpTransferRequestDTO dto) throws InternetBankingTransferException {
 
+        BigDecimal balance = integrationService.getAvailableBalance(dto.getCustomerAccountNumber());
+        if (balance != null) {
+            if (!(balance.compareTo(dto.getAmount()) == 0 || (balance.compareTo(dto.getAmount()) == 1))) {
+                logger.info("Account Balance is insufficient for this transfer {}", dto.getCustomerAccountNumber());
+                return false;
+            }
+        }
+        return true;
+    }
 }

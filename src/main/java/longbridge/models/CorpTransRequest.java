@@ -30,6 +30,11 @@ public class CorpTransRequest extends TransRequest {
     @JsonIgnore
     private  CorpTransferAuth transferAuth;
 
+    @ManyToOne
+    @JsonIgnore
+    private CorpDirectDebit corpDirectDebit;
+
+
     public Corporate getCorporate() {
         return corporate;
     }
@@ -44,6 +49,14 @@ public class CorpTransRequest extends TransRequest {
 
     public void setTransferAuth(CorpTransferAuth transferAuth) {
         this.transferAuth = transferAuth;
+    }
+
+    public CorpDirectDebit getCorpDirectDebit() {
+        return corpDirectDebit;
+    }
+
+    public void setCorpDirectDebit(CorpDirectDebit corpDirectDebit) {
+        this.corpDirectDebit = corpDirectDebit;
     }
     @Override
     @JsonIgnore

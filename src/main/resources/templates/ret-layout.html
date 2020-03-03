@@ -204,7 +204,7 @@
                                         Officer</a></li>
                                     <li sec:authorize="hasAuthority('ACCOUNT_STATEMENT')"><a
                                             th:href="@{/retail/account/viewstatement}">Account Statement</a></li>
-                                    <li sec:authorize="hasAuthority('CREATE_ACCOUNT')"><a th:href="@{'#'}"
+                                    <li sec:authorize="hasAuthority('CREATE_ACCOUNT')"><a th:href="@{/retail/account/new}"
                                                                                           th:text="#{menu.account.create}">Create
                                         New Account</a></li>
                                 </ul>

@@ -36,6 +36,7 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.firewall.HttpFirewall;
 //import org.springframework.security.web.firewall.StrictHttpFirewall;
+import org.springframework.security.web.firewall.StrictHttpFirewall;
 import org.springframework.security.web.session.HttpSessionEventPublisher;
 
 import java.util.Arrays;
@@ -319,19 +320,18 @@ public class SecurityConfig {
             // disable page caching
             http.headers().cacheControl();
         }
-       /* @Bean
+        @Bean
         public HttpFirewall allowUrlEncodedSlashHttpFirewall() {
             StrictHttpFirewall firewall = new StrictHttpFirewall();
             firewall.setAllowUrlEncodedSlash(true);
             firewall.setAllowSemicolon(true);
             return firewall;
-        }*/
-      /*  @Override
+        }
+        @Override
         public void configure(WebSecurity web) throws Exception {
             new SecurityConfig().customConfig(web);
             web.httpFirewall(allowUrlEncodedSlashHttpFirewall());
         }
-*/
 
 
 

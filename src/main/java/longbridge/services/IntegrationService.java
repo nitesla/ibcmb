@@ -156,5 +156,7 @@ public interface IntegrationService {
     Response addFundToDeposit(FixedDepositDTO fixedDepositDTO);
     Response bookFixDeposit(FixedDepositDTO fixedDepositDTO);
 
+    TransRequest makeBackgroundTransfer(TransRequest transRequest) throws InternetBankingTransferException;
+
 
 }

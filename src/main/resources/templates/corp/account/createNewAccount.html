@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{corp-layout}">
+
+<body onload="javascript:var bread = [['Home', '/corporate/dashboard'],['newAccount']];currentBar('Create New Account');breadCrumb(bread)">
+
+<div layout:fragment="content">
+    <div class="col-md-5 col-sm-5 ">
+
+        <select class="form-control full-width coronation-form-control hide-content-only" id="view">
+            <option value="account">Overview</option>
+        </select>
+    </div>
+    <div class="col-xs-12 ml-15 no-pad-left no-pad-right">
+
+        <form method="post" th:action="@{/corporate/requests}" th:object="${requestDTO}" id="reqForm">
+            <div class="col-md-5 col-sm-5 no-pad-left">
+                <input class="form-control" type="hidden" id="requestName" name="requestName"
+                       th:value="${requestConfig.requestName}"/>
+                <input type="hidden" name="serviceReqConfigId" th:value="${requestConfig.id}"/>
+
+                <div class="form-group">
+                    <label>Account Type</label>
+                    <span class="req"></span>
+                    <select th:name="AccountType"
+                            class="form-control full-width"
+                            required="required">
+                        <option value="">Select Account Type</option>
+
+                        <option th:each="s: ${accountType}" th:value="${s.code}"
+                                th:text="${s.description}"></option>
+                    </select>
+                </div>
+
+
+                <div class="form-group">
+                    <label>Reason For New Account</label>
+                    <span class="req"></span>
+
+                    <textarea th:name="Reason"  class="form-control" id="reason"> </textarea>
+                </div>
+
+                <div class="form-group">
+                    <label style="font-weight: bold; " id="checkBox">
+                        <input  type="checkbox" id="check" name="TermsAndConditions" /><span th:text="${TandC}" >I agree to T and C</span>
+                    </label>
+                </div>
+
+
+            <div class="form-group">
+                <button class="btn btn-link required-step pull-left" id="submit" type="submit">Submit
+                </button>
+
+                <!--<a th:href="@{/retail/cheque/stop}" class="btn btn-link pull-left"
+                   style="margin-top: 2%">Cancel</a>-->
+            </div>
+            </div>
+        </form>
+
+    </div>
+</div>
+
+
+<th:block layout:fragment="scripts">
+    <script th:inline="javascript">
+        $(document).ready(function() {
+            $('#reqForm').submit(function (event) {
+                var arrays = [];
+
+                var form = $('#reqForm').serializeArray();
+                var formData = JSON.stringify(form);
+                $('#requestName').val(formData);
+                $('#submitform').submit();
+
+            });
+            $('#submit').prop('disabled', true);
+
+            $("#check").on('click',function(){
+               if($(this).is(":checked")) {
+                   $('#submit').prop('disabled', false);
+               }else {
+                   $('#submit').prop('disabled', true);
+               }
+
+            })
+
+
+        });
+
+
+    </script>
+</th:block>
+
+</body>
+</html>

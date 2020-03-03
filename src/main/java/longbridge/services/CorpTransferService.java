@@ -43,4 +43,6 @@ public interface CorpTransferService {
     String addAuthorization(CorpTransReqEntry transReqEntry);
 
     boolean userCanAuthorize(TransRequest transRequest);
+
+    boolean validateDirectDebitAccountBalance(CorpTransferRequestDTO dto);
 }

@@ -408,6 +408,59 @@ public class TransferServiceImpl implements TransferService {
         }
         return transRequest;
     }
-    
+
+    @Override
+    public boolean validateDirectDebitTransfer(TransferRequestDTO dto) throws InternetBankingTransferException {
+
+        if (dto.getBeneficiaryAccountNumber().equalsIgnoreCase(dto.getCustomerAccountNumber())) {
+            logger.info("beneficiary account {}",dto.getBeneficiaryAccountNumber());
+            logger.info("source account {}",dto.getCustomerAccountNumber());
+            logger.info("Source and Beneficiary Accounts are Same");
+            return false;
+        }
+
+        boolean limitExceeded = limitService.isAboveInternetBankingLimit(
+                dto.getTransferType(),
+                UserType.RETAIL,
+                dto.getCustomerAccountNumber(),
+                dto.getAmount()
+
+        );
+        if (limitExceeded){
+            logger.info("Internet Banking limit exceeded");
+            return false;
+        }
+
+        String cif = accountService.getAccountByAccountNumber(dto.getCustomerAccountNumber()).getCustomerId();
+        boolean acctPresent = StreamSupport.stream(accountService.getAccountsForDebit(cif).spliterator(), false)
+                .anyMatch(i -> i.getAccountNumber().equalsIgnoreCase(dto.getCustomerAccountNumber()));
+
+
+        if (!acctPresent) {
+            logger.info("Account is flagged for NO-DEBIT {} ",dto.getCustomerAccountNumber());
+            return false;
+        }
+
+        BigDecimal balance = integrationService.getAvailableBalance(dto.getCustomerAccountNumber());
+        if (balance != null) {
+            if (!(balance.compareTo(dto.getAmount()) == 0 || (balance.compareTo(dto.getAmount()) == 1))) {
+                logger.info("Account Balance is insufficient for this transfer {}",dto.getCustomerAccountNumber());
+                return false;
+            }
+        }
+        return true;
+    }
+
+    @Override
+    public TransRequest makeBackgroundTransfer(TransferRequestDTO transferRequestDTO, DirectDebit directDebit) {
+        logger.info("Initiating a Background Transfer", transferRequestDTO);
+        TransRequest transRequest = integrationService.makeBackgroundTransfer(convertDTOToEntity(transferRequestDTO));
+        logger.trace("Transfer Details: {} ", transRequest);
+        if(directDebit.getCorporate()!=null)
+            transRequest.setUserReferenceNumber("CORP_" + directDebit.getCorporateUser().getId());
+        else transRequest.setUserReferenceNumber("RET_" + directDebit.getRetailUser().getId());
+        transferRequestRepo.save(transRequest);
+        return transRequest;
+    }
 
 }

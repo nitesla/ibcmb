@@ -89,10 +89,9 @@
                             if (type === 'display') {
                                 if (data == null)
                                     return data;
-                                var dtStart = new Date(parseInt(data));
+                                return moment(new Date(data)).format("DD-MM-YYYY h:mm:ss a");
 
-                                var dtStartWrapper = moment(dtStart);
-                                return dtStartWrapper.format('MMM Do YYYY, h:mm:ss a');
+
                             }
                             return data;
                         }

@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{corp-layout}">
+
+<body onload="javascript:var bread = [['Home', '/corporate/dashboard'],['Standing order Management', '/corporate/directdebit'],['Beneficiaries']];currentBar('Beneficiaries');breadCrumb(bread)">
+<div layout:fragment="content">
+    <div class="col-xs-12 no-pad-left no-pad-right">
+        <div class="col-xs-12 ">
+            <h5 class="page_header  col-sm-5 no-pad-left"> Pick beneficiary to create standing order for</h5>
+            <a th:href="@{/corporate/directdebit/ben/new}" class="pull-right extra-link btn btn-default ">New Beneficiary</a>
+        </div>
+
+        <div class="col-sm-5 col-xs-12 ">
+                <select class="form-control full-width coronation-form-contro invisible" name="beneficiaries">
+                    <option value="Overveiw">Beneficiaries</option>
+                </select>
+        </div>
+     
+    </div>
+   
+
+    <div class="col-xs-12" >
+        <div class="no-mt no-pad-lef alert no-bd">
+          
+               <div class="table-responsive">
+                           <form method="post" >
+                                <table class="table">
+                                    <thead>
+                                    <tr>
+                                        <th>Beneficiary name</th>
+                                        <th>Preferred name</th>
+                                        <th>Bank</th>
+                                        <th>Account number</th>
+                                         <th></th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+
+
+                                    <tr th:each="loc : ${localBen}">
+                                        <td   th:text="${loc.preferredName}"></td>
+                                        <td th:text="${loc.accountName}"></td>
+                                        <td th:text="${loc.beneficiaryBank}"></td>
+                                        <td th:text="${loc.accountNumber}"></td>
+
+                                        <td>
+                                           <a th:href="@{'/corporate/directdebit/' + ${loc.id} +'/new'}">create standing order</a>
+                                        </td>
+                                    </tr>
+
+                                    </tbody>
+                                </table>
+                                <br/>
+                                <input  type="hidden" th:value="${transferRequest}"/>
+                                
+                                <!-- <button type="submit" class="btn btn-default" style="float: right">Add beneficiary</button>
+                            --> </form>
+
+               </div>
+                           
+        </div>
+    </div>
+
+</div>
+
+
+<th:block layout:fragment="scripts">
+    <script>
+    //datepicker
+
+    $( function() {
+        $( "#datepicker" ).datepicker(
+                { dateformat : 'dd/mm/yy'}
+        );
+    } );
+</script>
+</th:block>
+
+</body>
+</html>

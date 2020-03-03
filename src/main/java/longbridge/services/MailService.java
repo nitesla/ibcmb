@@ -11,6 +11,9 @@ import org.thymeleaf.context.Context;
 public interface MailService {
 
     @PreAuthorize("hasAuthority('SEND_EMAIL')")
+    void send(String recipient, String subject, String message, boolean isHTML) throws MailException;
+
+    @PreAuthorize("hasAuthority('SEND_EMAIL')")
     void send(String recipient, String subject, String message) throws MailException;
 
 

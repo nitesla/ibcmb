@@ -1,10 +1,12 @@
 package longbridge.dtos;
 
+import longbridge.models.CorpLocalBeneficiary;
 import longbridge.models.LocalBeneficiary;
 import longbridge.models.RetailUser;
 
 import java.math.BigDecimal;
 import java.util.Date;
+
 
 public class DirectDebitDTO {
 
@@ -17,6 +19,15 @@ public class DirectDebitDTO {
     private Date dateCreated;
     private RetailUser retailUser;
     private String narration;
+    private String start;
+    private String end;
+    private Date startDate;
+    private Date endDate;
+    private CorpLocalBeneficiary corpLocalBeneficiary;
+
+
+
+
 
 
     public Long getId() {
@@ -90,4 +101,64 @@ public class DirectDebitDTO {
 	public void setNarration(String narration) {
 		this.narration = narration;
 	}
+
+    public String getStart() {
+        return start;
+    }
+
+    public void setStart(String start) {
+        this.start = start;
+    }
+
+    public String getEnd() {
+        return end;
+    }
+
+    public void setEnd(String end) {
+        this.end = end;
+    }
+
+    public CorpLocalBeneficiary getCorpLocalBeneficiary() {
+        return corpLocalBeneficiary;
+    }
+
+    public void setCorpLocalBeneficiary(CorpLocalBeneficiary corpLocalBeneficiary) {
+        this.corpLocalBeneficiary = corpLocalBeneficiary;
+    }
+
+    public Date getStartDate() {
+        return startDate;
+    }
+
+    public void setStartDate(Date startDate) {
+        this.startDate = startDate;
+    }
+
+    public Date getEndDate() {
+        return endDate;
+    }
+
+    public void setEndDate(Date endDate) {
+        this.endDate = endDate;
+    }
+
+
+
+    @Override
+    public String toString() {
+        return "DirectDebitDTO{" +
+                "id=" + id +
+                ", beneficiary=" + beneficiary +
+                ", debitAccount='" + debitAccount + '\'' +
+                ", amount=" + amount +
+                ", intervalDays=" + intervalDays +
+                ", nextDebitDate=" + nextDebitDate +
+                ", dateCreated=" + dateCreated +
+                ", retailUser=" + retailUser +
+                ", narration='" + narration + '\'' +
+                ", start='" + start + '\'' +
+                ", end='" + end + '\'' +
+                ", corpLocalBeneficiary=" + corpLocalBeneficiary +
+                '}';
+    }
 }

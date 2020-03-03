@@ -3,6 +3,7 @@ package longbridge.services;
 import longbridge.dtos.TransferRequestDTO;
 import longbridge.exception.InternetBankingTransferException;
 import longbridge.exception.TransferException;
+import longbridge.models.DirectDebit;
 import longbridge.models.TransRequest;
 import longbridge.models.User;
 import org.springframework.data.domain.Page;
@@ -48,6 +49,7 @@ public interface TransferService {
     List<TransRequest> getLastTenTransactionsForAccount(String s);
 
     TransRequest updateTransferStatus(TransferRequestDTO transferRequestDTO);
-
+    boolean validateDirectDebitTransfer(TransferRequestDTO dto);
+    TransRequest makeBackgroundTransfer(TransferRequestDTO transferRequest, DirectDebit directDebit);
 
 }

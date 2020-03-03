@@ -1,10 +1,10 @@
 package longbridge.models;
 
 import java.math.BigDecimal;
+import java.util.Collection;
 import java.util.Date;
 
-import javax.persistence.Entity;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
 
 import org.hibernate.annotations.Where;
 import org.hibernate.envers.Audited;
@@ -24,15 +24,56 @@ public class DirectDebit extends AbstractEntity {
 	private RetailUser retailUser;
 	@ManyToOne
     private LocalBeneficiary beneficiary;
-    private String debitAccount;
-    private BigDecimal amount;
-    private int intervalDays;
-    private Date nextDebitDate;
-    private Date dateCreated;
-    private String narration;
+    protected String debitAccount;
+    protected BigDecimal amount;
+    protected int intervalDays;
+    protected Date nextDebitDate;
+    protected Date dateCreated;
+    protected Date startDate;
+    protected Date endDate;
+    protected String narration;
+    @OneToMany(mappedBy = "directDebit", cascade = CascadeType.ALL)
+    protected Collection<Payment> payments;
+
+	@ManyToOne
+	CorporateUser corporateUser;
+
+	Long corporate ;
+
+	@ManyToOne
+	CorpLocalBeneficiary corpLocalBeneficiary;
+
+	public Long getCorporate() {
+		return corporate;
+	}
+
+	public void setCorporate(Long corporate) {
+		this.corporate = corporate;
+	}
+
+	public CorporateUser getCorporateUser() {
+		return corporateUser;
+	}
+
+	public void setCorporateUser(CorporateUser corporateUser) {
+		this.corporateUser = corporateUser;
+	}
+
+	public CorpLocalBeneficiary getCorpLocalBeneficiary() {
+		return corpLocalBeneficiary;
+	}
+
+	public void setCorpLocalBeneficiary(CorpLocalBeneficiary corpLocalBeneficiary) {
+		this.corpLocalBeneficiary = corpLocalBeneficiary;
+	}
 
 
-    public RetailUser getRetailUser(){
+
+
+
+
+
+	public RetailUser getRetailUser(){
     	return retailUser;
     }
     
@@ -103,10 +144,48 @@ public class DirectDebit extends AbstractEntity {
 		this.dateCreated = dateCreated;
 	}
 
+	public Date getStartDate() {
+		return startDate;
+	}
+
+	public void setStartDate(Date startDate) {
+		this.startDate = startDate;
+	}
+
+	public Date getEndDate() {
+		return endDate;
+	}
+
+	public void setEndDate(Date endDate) {
+		this.endDate = endDate;
+	}
 
 	public void proceedToNextDebitDate(){
 		LocalDate previous = LocalDate.fromDateFields(getDateCreated());
 		setNextDebitDate(previous.plusDays(getIntervalDays()).toDate());
 	}
-    
+
+	public Collection<Payment> getPayments() {
+		return payments;
+	}
+
+	public void setPayments(Collection<Payment> payments) {
+		this.payments = payments;
+	}
+
+	@Override
+	public String toString() {
+		return "DirectDebit{" +
+				"retailUser=" + retailUser +
+				", beneficiary=" + beneficiary +
+				", debitAccount='" + debitAccount + '\'' +
+				", amount=" + amount +
+				", intervalDays=" + intervalDays +
+				", nextDebitDate=" + nextDebitDate +
+				", dateCreated=" + dateCreated +
+				", startDate=" + startDate +
+				", endDate=" + endDate +
+				", narration='" + narration + '\'' +
+				'}';
+	}
 }
