@@ -2,7 +2,9 @@ package longbridge.services.bulkTransfers;
 
 import longbridge.models.BulkTransfer;
 import longbridge.models.Corporate;
+import longbridge.models.CreditRequest;
 import longbridge.repositories.BulkTransferRepo;
+import longbridge.repositories.CreditRequestRepo;
 import longbridge.utils.StatusCode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,6 +17,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
+import java.util.List;
 
 @Component
 public class BulkTransferStatusNotificationListener extends JobExecutionListenerSupport {
@@ -24,6 +27,10 @@ public class BulkTransferStatusNotificationListener extends JobExecutionListener
     private BulkTransferRepo bulkTransferRepo;
     @Value("${naps.cutoff.time}")
     private  String cutoffTime;
+
+    @Autowired
+    private CreditRequestRepo creditRequestRepo;
+
 
     @Override
     public void beforeJob(JobExecution jobExecution) {
@@ -51,6 +58,14 @@ public class BulkTransferStatusNotificationListener extends JobExecutionListener
                     bulkTransfer.setStatus(StatusCode.COMPLETED.toString());
                     bulkTransfer.setStatusDescription("Completed");
                     bulkTransferRepo.save(bulkTransfer);
+
+                    List<CreditRequest> creditRequests = creditRequestRepo.findByBulkTransfer_Id(bulkTransfer.getId());
+                    creditRequests.stream().forEach(i -> {
+                        if(i.getStatus().equalsIgnoreCase("PROCESSING")) {
+                            i.setStatus("FAILED");
+                            creditRequestRepo.save(i);
+                        }
+                    });
                     log.info("Completed Status Update for Bulk Transfer Batch ID {} with status {}", batchId, BatchStatus.COMPLETED.toString());
 
                 }

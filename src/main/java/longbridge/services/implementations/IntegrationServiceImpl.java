@@ -357,7 +357,7 @@ public class IntegrationServiceImpl implements IntegrationService {
 
 	@Override
 	public TransRequest makeTransfer(TransRequest transRequest) throws InternetBankingTransferException {
-//		logger.info("chanto {}",transRequest);
+
 		TransferType type = transRequest.getTransferType();
 		Account account = accountRepo.findFirstByAccountNumber(transRequest.getCustomerAccountNumber());
 		validate(account);

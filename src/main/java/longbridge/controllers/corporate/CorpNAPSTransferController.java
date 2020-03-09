@@ -56,6 +56,7 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.jasperreports.JasperReportsPdfView;
 
+import javax.persistence.EntityNotFoundException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -343,23 +344,7 @@ public class CorpNAPSTransferController {
                     return "/corp/transfer/bulktransfer/upload";
                 }
             }
-            //File Account numbers validation
-           /* for(Row row:datatypeSheet){
-                row.createCell(5);
-                if(row.getRowNum()!=0) {
-                    NEnquiryDetails details = integrationService.doNameEnquiry(row.getCell(4).toString(), row.getCell(0).toString());
-                    if(details.getAccountName()!=null && !details.getAccountName().equals("")) {
-                        row.getCell(5).setCellValue(details.getAccountName());
-                        logger.info("NameEnquiry" + row.getCell(5));
-                    }else {
-                        row.getCell(5).setCellValue(messageSource.getMessage("nameEnquiry.failed", null, locale));
-                        logger.info("NameEnquiry" + row.getCell(5));
-                    }
 
-                }else{
-                    row.getCell(5).setCellValue("Account Name");
-                }
-            }*/
             httpSession.setAttribute("accountList", accountList);
             httpSession.setAttribute("workbook", workbook);
             httpSession.setAttribute("fileExtension", extension);
@@ -391,14 +376,22 @@ public class CorpNAPSTransferController {
             for(Row row:datatypeSheet){
                 row.createCell(5);
                 if(row.getRowNum()!=0) {
-                    NEnquiryDetails details = integrationService.doNameEnquiry(row.getCell(4).toString(), row.getCell(0).toString());
-                    if(details.getAccountName()!=null && !details.getAccountName().equals("")) {
-                        row.getCell(5).setCellValue(details.getAccountName());
-                        logger.info("NameEnquiry" + row.getCell(5));
-                    }else {
+                    String institutionCode;
+                    try {
+                        institutionCode = financialInstitutionService.getFinancialInstitutionByBankCode(row.getCell(4).toString()).getInstitutionCode();
+                        NEnquiryDetails details = integrationService.doNameEnquiry(institutionCode, row.getCell(0).toString());
+                        if(details.getAccountName()!=null && !details.getAccountName().equals("")) {
+                            row.getCell(5).setCellValue(details.getAccountName());
+                            logger.info("NameEnquiry" + row.getCell(5));
+                        }else {
+                            row.getCell(5).setCellValue(messageSource.getMessage("nameEnquiry.failed", null, locale));
+                            logger.info("NameEnquiry" + row.getCell(5));
+                        }
+                    }catch(NullPointerException ex){
                         row.getCell(5).setCellValue(messageSource.getMessage("nameEnquiry.failed", null, locale));
-                        logger.info("NameEnquiry" + row.getCell(5));
+                        logger.info("Bank code not found");
                     }
+
 
                 }else{
                     row.getCell(5).setCellValue("Account Name");
