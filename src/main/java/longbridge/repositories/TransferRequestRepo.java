@@ -19,6 +19,7 @@ public interface TransferRequestRepo extends CommonRepo<TransRequest, Long> {
     Page<TransRequest> findByUserReferenceNumberAndStatusInAndTranDateNotNullOrderByTranDateDesc(String rn, List<String> status, Pageable pageable);
     Page<TransRequest> findByUserReferenceNumberAndTranDateNotNullOrderByTranDateDesc(String rn, Pageable pageable);//by GB
     TransRequest findByReferenceNumberAndStatus(String referenceNumber,String status);
+    TransRequest findByReferenceNumber(String referenceNumber);
     List<TransRequest> findByStatus(String status);
     @Query("select r from TransRequest r where r.userReferenceNumber=:userReference and (upper(r.remarks) like %:search% or r.amount like %:search% or upper(r.beneficiaryAccountName) like %:search% or upper(r.tranDate) like %:search%)")
     Page<TransRequest> findUsingPattern(@Param("userReference") String userReference,@Param("search") String search, Pageable pageable);

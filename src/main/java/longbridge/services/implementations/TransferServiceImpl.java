@@ -5,6 +5,7 @@ import longbridge.api.NEnquiryDetails;
 import longbridge.dtos.SettingDTO;
 import longbridge.dtos.TransferRequestDTO;
 import longbridge.exception.InternetBankingTransferException;
+import longbridge.exception.TransferErrorService;
 import longbridge.exception.TransferExceptions;
 import longbridge.models.*;
 import longbridge.repositories.RetailUserRepo;
@@ -58,6 +59,9 @@ public class TransferServiceImpl implements TransferService {
     private Locale locale = LocaleContextHolder.getLocale();
     private Logger logger = LoggerFactory.getLogger(this.getClass());
     private SessionUtil sessionUtil;
+    @Autowired
+    private TransferErrorService transferErrorService;
+
 
 
     @Autowired
@@ -393,13 +397,16 @@ public class TransferServiceImpl implements TransferService {
     public TransRequest updateTransferStatus(TransferRequestDTO transferRequestDTO) throws InternetBankingTransferException {
         TransRequest transRequest=null;
         try {
+            logger.info("referenceNumber "+transferRequestDTO.getReferenceNumber());
+            logger.info("status "+transferRequestDTO.getStatus());
+            transRequest=transferRequestRepo.findByReferenceNumber(transferRequestDTO.getReferenceNumber());
+            logger.info("Transrequest amount "+transRequest.getAmount());
 
-          transRequest=transferRequestRepo.findByReferenceNumberAndStatus(transferRequestDTO.getReferenceNumber(),"34");
-          transRequest.setStatus(transferRequestDTO.getStatus());
-          transRequest.setStatusDescription(transferRequestDTO.getStatusDescription());
+            transRequest.setStatus(transferRequestDTO.getStatus());
+             transRequest.setStatusDescription(transferErrorService.getMessage(transferRequestDTO.getStatus()));
 
             transRequest = transferRequestRepo.save(transRequest);
-            logger.info("updated");
+            logger.info("TransRequest has been updated with code"+transferRequestDTO.getStatus());
 
             return transRequest;
 
