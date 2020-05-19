@@ -1,7 +1,5 @@
 package longbridge.dtos;
 
-import jdk.nashorn.internal.runtime.Version;
-
 /**
  * Created by Fortune on 5/3/2017.
  */
