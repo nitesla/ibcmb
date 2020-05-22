@@ -483,7 +483,14 @@
                     </execution>
                 </executions>
             </plugin>
-
+            <plugin>
+                <artifactId>maven-war-plugin</artifactId>
+                <version>3.2.3</version>
+                <configuration>
+                    <packagingExcludes>
+                        WEB-INF/classes/static/customer/plugins/gentelella-master/**</packagingExcludes>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
 </project>
