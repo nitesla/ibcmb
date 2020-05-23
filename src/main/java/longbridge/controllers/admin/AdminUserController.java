@@ -356,4 +356,42 @@ public class AdminUserController {
         return "transfersettings";
     }
 
+    @ResponseBody
+    @PostMapping("/submitTransferLimitForCoronationAccounts")
+    public String submitTransferLimitDetailsForCoronationAccounts(@RequestParam("accountNumber") String accountNumber,
+                                                                  @RequestParam("accountClass") String accountClass,
+                                                                  @RequestParam("limit") String limit,
+                                                                  @RequestParam("frequency") String frequency,
+                                                                  @RequestParam("bankUserType") String bankUserType,
+                                                                  @RequestParam("bankChoice") String bankChoice){
+        logger.info("accountNumber = " + accountNumber);
+        logger.info("accountClass = " + accountClass);
+        logger.info("limit = " + limit);
+        logger.info("frequency = " + frequency);
+        logger.info("bank user-type " + bankUserType);
+        logger.info("bankchoice " + bankChoice);
+        return "success";
+    }
+
+
+    @ResponseBody
+    @PostMapping("/submitTransferLimitForOtherBankAccounts")
+    public String submitTransferLimitForOtherBanks(@RequestParam("accountNumber") String accountNumber,
+                                                   @RequestParam("accountClass") String accountClass,
+                                                   @RequestParam("limit") String limit,
+                                                   @RequestParam("frequency") String frequency,
+                                                   @RequestParam("bankUserType") String bankUserType,
+                                                   @RequestParam("bankChoice") String bankChoice,
+                                                   @RequestParam("transferPlatform") String transferPlatform){
+        logger.info("accountNumber = " + accountNumber);
+        logger.info("accountClass = " + accountClass);
+        logger.info("limit = " + limit);
+        logger.info("frequency = " + frequency);
+        logger.info("bank user-type " + bankUserType);
+        logger.info("bankchoice " + bankChoice);
+        logger.info("transferPlatform " + transferPlatform);
+
+        return "success";
+    }
+
 }
