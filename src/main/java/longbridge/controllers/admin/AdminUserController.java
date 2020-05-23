@@ -351,4 +351,9 @@ public class AdminUserController {
     }
 
 
+    @GetMapping("/transfersettings")
+    public String adminSetTransferSettings(){
+        return "transfersettings";
+    }
+
 }
