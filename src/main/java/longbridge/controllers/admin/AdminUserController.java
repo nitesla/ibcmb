@@ -368,8 +368,8 @@ public class AdminUserController {
         logger.info("accountClass = " + accountClass);
         logger.info("limit = " + limit);
         logger.info("frequency = " + frequency);
-        logger.info("bank user-type " + bankUserType);
-        logger.info("bankchoice " + bankChoice);
+        logger.info("bank user-type = " + bankUserType);
+        logger.info("bankchoice = " + bankChoice);
         return "success";
     }
 
@@ -387,11 +387,47 @@ public class AdminUserController {
         logger.info("accountClass = " + accountClass);
         logger.info("limit = " + limit);
         logger.info("frequency = " + frequency);
-        logger.info("bank user-type " + bankUserType);
-        logger.info("bankchoice " + bankChoice);
-        logger.info("transferPlatform " + transferPlatform);
+        logger.info("bank user-type = " + bankUserType);
+        logger.info("bankchoice = " + bankChoice);
+        logger.info("transferPlatform = " + transferPlatform);
 
         return "success";
+    }
+
+    @ResponseBody
+    @PostMapping("/submitTransferFeePercentage")
+    public String submitTransferFeePercentage(@RequestParam("percentage") String percentage,
+                                              @RequestParam("transferMethod") String transferMethod,
+                                              @RequestParam("feeType") String feeType){
+        logger.info("percentage = " + percentage);
+        logger.info("transfer method = " + transferMethod);
+        logger.info("fee type = " + feeType);
+    return "success";
+    }
+
+    @ResponseBody
+    @PostMapping("/submitTransferFeeFixedAmount")
+    public String submitTransferFeeFixedAmount(@RequestParam("fixedRate") String fixedRate,
+                                               @RequestParam("transferMethod") String transferMethod,
+                                               @RequestParam("feeType") String feeType){
+        logger.info("fixedRate = " + fixedRate);
+        logger.info("transfer method = " + transferMethod);
+        logger.info("fee type = " + feeType);
+        return "success";
+    }
+
+    @ResponseBody
+    @PostMapping("/submitTransferAdjustments")
+    public String submitTransferAdjustments(@RequestParam("fixedRate") String fixedRate,
+                                            @RequestParam("transferMethod") String transferMethod,
+                                            @RequestParam("feeType") String feeType,
+                                            @RequestParam("percentage") String percentage){
+        logger.info("fixedRate = " + fixedRate);
+        logger.info("transfer method = " + transferMethod);
+        logger.info("fee type = " + feeType);
+        logger.info("percentage " + percentage);
+        return "success";
+
     }
 
 }

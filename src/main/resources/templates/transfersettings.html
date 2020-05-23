@@ -206,16 +206,16 @@
                                             <label>Percentage</label>
                                             <input name="percentage" type="number" id="radioPercentage" class="form-control">
                                                 <br>
-                                                <button type="submit" class="btn btn-success adjustTransferFee">Submit</button>
+                                                <button type="button" class="btn btn-success adjustTransferFee">Submit</button>
                                             </form>
                                         </div>
 
                                         <div id="fixedRateSelection" style="display: none" class="form-group">
                                             <form>
-                                            <label>Fixed-Rate</label>
+                                            <label>Fixed-Amount</label>
                                             <input name="percentage" type="number" id="fixedRate" class="form-control">
                                                 <br>
-                                            <button type="submit" class="btn btn-success adjustTransferFee">Submit</button>
+                                            <button type="button" class="btn btn-success adjustTransferFee">Submit</button>
                                             </form>
                                         </div>
 
@@ -224,10 +224,10 @@
                                             <label>Percentage</label>
                                             <input name="percentage" type="number" id="bothSelection1" class="form-control">
                                             <br/>
-                                            <label>Fixed-Rate</label>
+                                            <label>Fixed-Amount</label>
                                             <input name="percentage" type="number" id="bothSelection2" class="form-control">
                                                 <br>
-                                                <button type="submit" class="btn btn-success adjustTransferFee">Submit</button>
+                                                <button type="button" class="btn btn-success adjustTransferFee">Submit</button>
                                             </form>
                                         </div>
                                         </div>
@@ -488,12 +488,84 @@
             return error;
         }
 
+        function validateSelectionOfBothFixedAndPercentageInput(percentage,fixedrate){
+            var error = false;
+            if (percentage == ''){
+                showNotification("Please supply percentage","danger")
+                error = true;
+            }
+            if(fixedrate == ''){
+                showNotification("Please supply fixed amount", "danger")
+                error = true;
+            }
+            return error;
+        }
+
 
 
 
         $(".adjustTransferFee").on("click", function (){
             var transferMethod = $("#transferDropdown").val();
-            console.log(transferMethod);
+            var radioSelect = $("input[name='optradio']:checked"). val();
+            if (radioSelect == 'transferPercentage'){
+                var percentage = $("#radioPercentage").val();
+                if(percentage != ''){
+                $.ajax({
+                    type: "POST",
+                    url: "/admin/users/submitTransferFeePercentage",
+                    data: {transferMethod:transferMethod, feeType:radioSelect, percentage:percentage}, // parameters
+                    success :
+                        function(response) {
+                            showNotification("Percentage fee successfully adjusted", "success");
+                            setTimeout(function () {
+                                location.reload();
+                            },2000)
+                        }
+                })
+                } else{
+                    showNotification("Please supply percentage","danger")
+                }
+            }else if (radioSelect == 'transferFixedrate'){
+                var fixedRate = $("#fixedRate").val();
+                if (fixedRate != ''){
+                    $.ajax({
+                        type: "POST",
+                        url: "/admin/users/submitTransferFeeFixedAmount",
+                        data: {transferMethod:transferMethod, feeType:radioSelect, fixedRate:fixedRate}, // parameters
+                        success :
+                            function(response) {
+                                showNotification("Fixed amount successfully adjusted", "success");
+                                setTimeout(function () {
+                                    location.reload();
+                                },2000)
+                            }
+                    })
+                }else {
+                    showNotification("Please supply fixed amount","danger")
+                }
+
+            }else if (radioSelect == 'selectboth'){
+
+                var percentage = $("#bothSelection1").val();
+                var fixedRate = $("#bothSelection2").val();
+                if(validateSelectionOfBothFixedAndPercentageInput(percentage,fixedRate) == false){
+                    $.ajax({
+                        type: "POST",
+                        url: "/admin/users/submitTransferAdjustments",
+                        data: { transferMethod:transferMethod, feeType:radioSelect, fixedRate:fixedRate, percentage:percentage  }, // parameters
+                        success :
+                            function(response) {
+                                showNotification("Transfer fee Adjusted successfully", "success");
+                                setTimeout(function () {
+                                    location.reload();
+                                },2000)
+                            }
+                    })
+                }
+
+
+            }
+
         })
 
     </script>
