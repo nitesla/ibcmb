@@ -91,7 +91,7 @@ public class SecurityServiceImpl implements SecurityService {
 
     @Override
     public boolean validateSecurityQuestion(RetailUser retailUser, String securityQuestion, String securityAnswer) {
-        // TODO implement this through entrust
+
         return true;
     }
 
