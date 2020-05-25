@@ -3,18 +3,23 @@ package longbridge.controllers.retail;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import longbridge.api.NEnquiryDetails;
 import longbridge.dtos.BulkTransferDTO;
 import longbridge.dtos.CreditRequestDTO;
+import longbridge.dtos.SettingDTO;
+import longbridge.exception.InternetBankingSecurityException;
 import longbridge.models.*;
-import longbridge.services.AccountService;
-import longbridge.services.BulkTransferService;
-import longbridge.services.CorporateUserService;
-import longbridge.services.RetailUserService;
+import longbridge.services.*;
+import longbridge.services.bulkTransfers.TransferStatusJobLauncher;
+import longbridge.utils.TransferType;
+import longbridge.utils.TransferUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,13 +63,28 @@ public class NAPSTransferController {
 
     private AccountService accountService;
     private RetailUserService retailUserService;
-    private BulkTransferService bulkTransferService;
+    private BulkRetailTransferService bulkRetailTransferService;
+    private FinancialInstitutionService financialInstitutionService;
+    @Autowired
+    IntegrationService integrationService;
+    @Autowired
+    private TransferStatusJobLauncher transferStatusJobLauncher;
+    @Autowired
+    private TransferUtils transferUtils;
+    @Autowired
+    private ConfigurationService configService;
+    @Autowired
+    private SecurityService securityService;
+
+
+
 
     @Autowired
-    public NAPSTransferController(AccountService accountService, RetailUserService retailUserService, BulkTransferService bulkTransferService) {
+    public NAPSTransferController(AccountService accountService, RetailUserService retailUserService, BulkRetailTransferService bulkRetailTransferService,FinancialInstitutionService financialInstitutionService) {
         this.accountService = accountService;
         this.retailUserService = retailUserService;
-        this.bulkTransferService = bulkTransferService;
+        this.bulkRetailTransferService = bulkRetailTransferService;
+        this.financialInstitutionService=financialInstitutionService;
     }
 
     Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -74,25 +94,25 @@ public class NAPSTransferController {
 
     @GetMapping("/bulk")
     public String getBulkTransfers(Model model) {
-        return "/retail/transfer/bulktransfer/list";
+        return "/cust/transfer/bulktransfer/list";
     }
 
     @GetMapping("/{id}/view")
     public String getBulkTransferCreditRequests(@PathVariable Long id, Model model) {
-        BulkTransfer bulkTransfer = bulkTransferService.getBulkTransferRequest(id);
+        BulkTransfer bulkTransfer = bulkRetailTransferService.getBulkTransferRequest(id);
         model.addAttribute("bulkTransfer",bulkTransfer);
-        return "/retail/transfer/bulktransfer/crlistview";
+        return "/cust/transfer/bulktransfer/crlistview";
     }
 
     @GetMapping("/upload")
     public String getUploadBulkTransferFile(Model model) {
 
-        return "/retail/transfer/bulktransfer/upload";
+        return "/cust/transfer/bulktransfer/upload";
     }
 
     @GetMapping("/add")
     public String addBulkTransfer(Model model) {
-        return "/retail/transfer/bulktransfer/add";
+        return "/cust/transfer/bulktransfer/add";
     }
     /*
         * Download a file from
@@ -134,78 +154,167 @@ public class NAPSTransferController {
 
 
     @PostMapping("/bulk/upload")
-    public String uploadBulkTransfeFile(@RequestParam("transferFile") MultipartFile file, Principal principal, RedirectAttributes redirectAttributes, Model model, Locale locale, HttpSession httpSession) throws IOException {
+    public String uploadBulkTransferFile(@RequestParam("transferFile") MultipartFile file, Principal principal, RedirectAttributes redirectAttributes, Model model, Locale locale, HttpSession httpSession) throws IOException {
 
         if (principal == null || principal.getName() == null) {
             return "redirect:/login/corporate";
         }
         RetailUser user = retailUserService.getUserByName(principal.getName());
+        List<String> accountList = new ArrayList<>();
         if (user != null) {
-
-            List<String> accountList = new ArrayList<>();
 
             Iterable<Account> accountNumbers = accountService.getAccountsForDebit(user.getCustomerId());
 
             StreamSupport.stream(accountNumbers.spliterator(), false)
                     .filter(Objects::nonNull)
                     .forEach(i -> accountList.add(i.getAccountNumber()));
-            System.out.println(accountList);
             model.addAttribute("accounts", accountList);
         }
 
         if (file.isEmpty()) {
-            System.out.println("i got here");
-            model.addAttribute("failure", messageSource.getMessage("file.required", null, locale));
-            return "/retail/transfer/bulktransfer/add";
+            model.addAttribute("failure", messageSource.getMessage("file.require", null, locale));
+            return "/corp/transfer/bulktransfer/upload";
         }
 
-        // Get the file and save it
+
+        // Get the file, perform some validations and save it in a session
         try {
             byte[] bytes = file.getBytes();
             InputStream inputStream = file.getInputStream();
-            httpSession.setAttribute("inputStream" , inputStream);
-            redirectAttributes.addFlashAttribute("message", messageSource.getMessage("file.upload.success", null, locale));
+            String filename = file.getOriginalFilename();
+            String extension = filename.substring(filename.lastIndexOf(".") + 1, filename.length());
+            // File type validation
+            Workbook workbook;
+            if (extension.equalsIgnoreCase("xls")) {
 
+                workbook = new HSSFWorkbook(inputStream);
+
+            } else if (extension.equalsIgnoreCase("xlsx")) {
+                workbook = new XSSFWorkbook(inputStream);
+            } else {
+
+                model.addAttribute("failure", messageSource.getMessage("file.format.failure", null, locale));
+                return "/corp/transfer/bulktransfer/upload";
+            }
+
+            // File content validation using number of header cells
+            Sheet datatypeSheet = workbook.getSheetAt(0);
+            Iterator<Row> iterator = datatypeSheet.iterator();
+            if (iterator.hasNext()) {
+                Row headerRow = iterator.next();
+                if (headerRow.getLastCellNum() > 5) {
+                    model.addAttribute("failure", messageSource.getMessage("file.content.failure", null, locale));
+                    return "/corp/transfer/bulktransfer/upload";
+                }
+            }
+
+            httpSession.setAttribute("accountList", accountList);
+            httpSession.setAttribute("workbook", workbook);
+            httpSession.setAttribute("fileExtension", extension);
+            redirectAttributes.addFlashAttribute("message", messageSource.getMessage("file.upload.success", null, locale));
         } catch (IOException e) {
             logger.error("Error uploading file", e);
+
             redirectAttributes.addFlashAttribute("failure", messageSource.getMessage("file.upload.failure", null, locale));
+            return "redirect:/corporate/transfer/upload";
         }
 
-        return "/retail/transfer/bulktransfer/add";
+        return "/cust/transfer/bulktransfer/add";
     }
+
 
 
     @GetMapping("/all")
     @ResponseBody
-    public DataTablesOutput<CreditRequestDTO> getCreditRequests(HttpSession session , Model model) throws IOException {
+    public DataTablesOutput<CreditRequestDTO> getCreditRequests(HttpSession session, Model model,Locale locale) throws IOException {
         Workbook workbook = (Workbook) session.getAttribute("workbook");
-        String fileExtension = (String)session.getAttribute("fileExtension");
+        String fileExtension = (String) session.getAttribute("fileExtension");
+        model.addAttribute("accountList", session.getAttribute("accountList"));
+
         List<CreditRequestDTO> crLists = new ArrayList<>();
         try {
+            System.out.println(workbook);
+
             Sheet datatypeSheet = workbook.getSheetAt(0);
+
+            for(Row row:datatypeSheet){
+                row.createCell(5);
+                if(row.getRowNum()!=0) {
+                    NEnquiryDetails details = integrationService.doNameEnquiry(row.getCell(4).toString(), row.getCell(0).toString());
+                    if(details.getAccountName()!=null && !details.getAccountName().equals("")) {
+                        row.getCell(5).setCellValue(details.getAccountName());
+                        logger.info("NameEnquiry" + row.getCell(5));
+                    }else {
+                        row.getCell(5).setCellValue(messageSource.getMessage("nameEnquiry.failed", null, locale));
+                        logger.info("NameEnquiry" + row.getCell(5));
+                    }
+
+                }else{
+                    row.getCell(5).setCellValue("Account Name");
+                }
+            }
+
             Iterator<Row> iterator = datatypeSheet.iterator();
+
             if (iterator.hasNext()) iterator.next();
+
+
+
             while (iterator.hasNext()) {
                 Row currentRow = iterator.next();
+                //Iterator<Cell> cellIter ator = currentRow.iterator();
                 ArrayList cellData = new ArrayList();
-                for (int i = 0; i < currentRow.getLastCellNum(); i++){
+                for (int i = 0; i < 6; i++) {
                     Cell currentCell = currentRow.getCell(i);
                     System.out.println(currentCell);
                     if (currentCell == null || currentCell.getCellType() == Cell.CELL_TYPE_BLANK || currentCell.toString().isEmpty() || currentCell.toString() == null) {
-                        cellData.add("ERROR HERE");
+                        cellData.add("ERROR: Empty cell");
                     } else {
                         cellData.add(currentCell);
                     }
+
+
                 }
 
                 int rowIndex = currentRow.getRowNum();
                 CreditRequestDTO creditRequest = new CreditRequestDTO();
                 Long id = Long.valueOf(rowIndex);
                 creditRequest.setId(id);
-                creditRequest.setAccountNumber(cellData.get(0).toString());
+
+                if (!(NumberUtils.isDigits(cellData.get(0).toString())) && !(cellData.get(0).toString().contains("ERROR"))) {
+                    creditRequest.setAccountNumber("ERROR: Not a number");
+                } else {
+                    creditRequest.setAccountNumber(cellData.get(0).toString());
+                }
+
                 creditRequest.setAccountName(cellData.get(1).toString());
-                creditRequest.setAmount(new BigDecimal( cellData.get(2).toString()));
+
+                if (!(NumberUtils.isNumber(cellData.get(2).toString())) && !(cellData.get(2).toString().contains("ERROR"))) {
+                    creditRequest.setAmount(new BigDecimal(-1));
+                } else {
+                    creditRequest.setAmount(new BigDecimal( cellData.get(2).toString()));
+                }
+
                 creditRequest.setNarration(cellData.get(3).toString());
+                creditRequest.setAccountNameEnquiry(cellData.get(5).toString());
+
+
+
+                if (!(NumberUtils.isDigits(cellData.get(4).toString())) && !(cellData.get(4).toString().contains("ERROR"))) {
+                    creditRequest.setSortCode("ERROR: Not a Number");
+                } else if (cellData.get(4).toString().contains("ERROR")) {
+                    creditRequest.setSortCode("ERROR: Not a Number");
+                } else {
+                    String bankCode = cellData.get(4).toString();
+                    FinancialInstitution financialInstitution = financialInstitutionService.getFinancialInstitutionByBankCode(bankCode);
+                    if (financialInstitution != null) {
+                        String sortCode = financialInstitution.getSortCode();
+                        creditRequest.setSortCode(sortCode);
+                        creditRequest.setBeneficiaryBank(financialInstitution.getInstitutionName());
+                    } else {
+                        creditRequest.setSortCode("ERROR: Invalid Bank Code");
+                    }
+                }
                 crLists.add(creditRequest);
 
             }
@@ -214,32 +323,61 @@ public class NAPSTransferController {
         } catch (IllegalArgumentException e) {
             logger.error("Error uploading file", e);
         }
-        System.out.println(crLists);
         DataTablesOutput<CreditRequestDTO> dto = new DataTablesOutput<>();
         dto.setData(crLists);
         dto.setRecordsFiltered(crLists.size());
         dto.setRecordsTotal(crLists.size());
 
-        if (session.getAttribute("inputstream") != null) {
-            session.removeAttribute("inputstream");
-        }
+//        if (session.getAttribute("inputstream") != null) {
+//            session.removeAttribute("inputstream");
+//        }
 
         return dto;
 
 
     }
 
-
     @PostMapping("/save")
-    public String saveTransfer(WebRequest request, RedirectAttributes redirectAttributes, Model model, Locale locale, Principal principal, HttpServletRequest httpServletRequest){
+    public String saveTransfer(WebRequest request,HttpSession session, RedirectAttributes redirectAttributes, Model model, Locale locale, Principal principal, HttpServletRequest httpServletRequest){
 
         try {
 
             if (principal == null || principal.getName() == null) {
-                return "redirect:/login/corporate";
+                return "redirect:/login/retail";
             }
-//            CorporateUser user = corporateUserService.getUserByName(principal.getName());
-//            Corporate corporate = user.getCorporate();
+
+            transferUtils.validateTransferCriteria();
+
+            String tokenCode = request.getParameter("token");
+            List<String> accountList ;
+            accountList = (List<String>) session.getAttribute("accountList");
+            RetailUser user=retailUserService.getUserByName(principal.getName());
+
+            SettingDTO setting = configService.getSettingByName("ENABLE_CORPORATE_2FA");
+
+            if (setting != null && setting.isEnabled()) {
+
+                if (tokenCode != null && !tokenCode.isEmpty()) {
+
+                    try {
+                        boolean result = securityService.performTokenValidation(user.getEntrustId(), user.getEntrustGroup(), tokenCode);
+                        if (!result) {
+                            model.addAttribute("accounts", accountList);
+                            model.addAttribute("failure", messageSource.getMessage("token.auth.failure", null, locale));
+                            return "corp/transfer/bulktransfer/add";
+                        }
+                    } catch (InternetBankingSecurityException ibe) {
+                        logger.error("Error authenticating token {} ", ibe);
+                        model.addAttribute("accounts", accountList);
+                        model.addAttribute("failure", messageSource.getMessage("token.auth.failure", null, locale));
+                        return "corp/transfer/bulktransfer/add";
+                    }
+                } else {
+                    model.addAttribute("accounts", accountList);
+                    model.addAttribute("failure", "Token code is required");
+                    return "corp/transfer/bulktransfer/add";
+                }
+            }
 
             DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
             Date date = new Date();
@@ -251,24 +389,44 @@ public class NAPSTransferController {
             List<CreditRequest> requestList = mapper.readValue(requests, new TypeReference<List<CreditRequest>>() {
             });
 
-            System.out.println(requestList);
+            logger.info("Transfer List {}",requestList);
 
+            BigDecimal totalTransferAmount = new BigDecimal("0.00");
             BulkTransfer bulkTransfer = new BulkTransfer();
             bulkTransfer.setCustomerAccountNumber(debitAccount);
-            bulkTransfer.setCrRequestList(requestList);
-            //bulkTransfer.setCorporate(corporate);
+            bulkTransfer.setRetailUser(user);
             bulkTransfer.setTranDate(date);
+
+            requestList.forEach(i -> {
+                String refNumber;
+                do{refNumber = transferUtils.generateReferenceNumber(12);}
+                while (bulkRetailTransferService.creditRequestRefNumberExists(refNumber));
+                i.setReferenceNumber(refNumber);
+            });
+            bulkTransfer.setCrRequestList(requestList);
+
+            String refCode;
+            do {refCode = transferUtils.generateReferenceNumber(10);}
+            while (bulkRetailTransferService.refCodeExists(refCode));
+            bulkTransfer.setReferenceNumber(refCode);
+            bulkTransfer.setRefCode(refCode);
+
             for(CreditRequest creditRequest : requestList){
+                totalTransferAmount = totalTransferAmount.add(creditRequest.getAmount());
                 creditRequest.setBulkTransfer(bulkTransfer);
                 creditRequest.setStatus("S");
             }
-            String message = bulkTransferService.makeBulkTransferRequest(bulkTransfer);
+            bulkRetailTransferService.transactionAboveLimit(totalTransferAmount,debitAccount);
+            bulkTransfer.setAmount(totalTransferAmount);
+            bulkTransfer.setTransferType(TransferType.NAPS);
+
+            String message = bulkRetailTransferService.makeBulkTransferRequest(bulkTransfer);
             redirectAttributes.addFlashAttribute("message", message);
-            return "redirect:/corporate/transfer/bulk";
+            return "redirect:/retail/transfer/bulk";
         } catch (Exception ibe) {
             logger.error("Error creating transfer", ibe);
             model.addAttribute("failure", messageSource.getMessage("bulk.transfer.failure", null, locale));
-            return "/corp/transfer/bulktransfer/add";
+            return "/cust/transfer/bulktransfer/add";
         }
     }
 
@@ -280,7 +438,7 @@ public class NAPSTransferController {
 //        CorporateUser user = corporateUserService.getUserByName(principal.getName());
 //        Corporate corporate = user.getCorporate();
 //        Pageable pageable = DataTablesUtils.getPageable(input);
-//        Page<BulkTransferDTO> transfers = bulkTransferService.getBulkTransferRequests(corporate, pageable);
+//        Page<BulkTransferDTO> transfers = BulkRetailTransferService.getBulkTransferRequests(corporate, pageable);
 //        DataTablesOutput<BulkTransferDTO> out = new DataTablesOutput<BulkTransferDTO>();
 //        out.setDraw(input.getDraw());
 //        out.setData(transfers.getContent());
@@ -288,12 +446,25 @@ public class NAPSTransferController {
 //        out.setRecordsTotal(transfers.getTotalElements());
 //        return out;
 //    }
+@GetMapping(path = "/alltransfers")
+public
+@ResponseBody
+DataTablesOutput<BulkTransferDTO> getAllTransfers(DataTablesInput input, Principal principal) {
 
+    Pageable pageable = DataTablesUtils.getPageable(input);
+    Page<BulkTransferDTO> transfers = bulkRetailTransferService.getBulkTransferRequests(pageable);
+    DataTablesOutput<BulkTransferDTO> out = new DataTablesOutput<BulkTransferDTO>();
+    out.setDraw(input.getDraw());
+    out.setData(transfers.getContent());
+    out.setRecordsFiltered(transfers.getTotalElements());
+    out.setRecordsTotal(transfers.getTotalElements());
+    return out;
+}
 
     @GetMapping(path = "/{bulkTransfer}/allcreditrequests")
     public @ResponseBody DataTablesOutput<CreditRequestDTO> getAllTransfers(DataTablesInput input,@PathVariable BulkTransfer bulkTransfer) {
         Pageable pageable = DataTablesUtils.getPageable(input);
-        Page<CreditRequestDTO> creditRequests = bulkTransferService.getCreditRequests(bulkTransfer,pageable);
+        Page<CreditRequestDTO> creditRequests = bulkRetailTransferService.getCreditRequests(bulkTransfer,pageable);
         DataTablesOutput<CreditRequestDTO> output = new DataTablesOutput<>();
         output.setDraw(input.getDraw());
         output.setData(creditRequests.getContent());

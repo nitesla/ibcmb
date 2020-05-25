@@ -36,7 +36,7 @@
     <weaver options="-warn:none -Xlint:ignore">
     </weaver>
 
-    <weaver options="-showWeaveInfo">
+        <weaver options="-showWeaveInfo">
         <!-- Weave types that are within the org.apache.shiro.sample package
              and all sub-packages. This limits the scope of the weaver and
              reduces the overhead -->
