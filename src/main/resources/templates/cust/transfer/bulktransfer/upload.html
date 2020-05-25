@@ -1,8 +1,9 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head th:replace="corp_layout :: site-head">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{ret-layout}">
+<link th:href="@{~/bank/vendors/sweetalert/sweetalert.css}" rel="stylesheet"/>
+<body onload="javascript:var bread = [['Home', '/retail/dashboard'],['Bulk transfer','/retail/transfer/bulk'],['upload','']];currentBar('upload bulk transfer');breadCrumb(bread)">
 
-</head>
 
 <style>
     .hstyle{
@@ -19,66 +20,105 @@
     }
 </style>
 
-<body>
-<header th:replace="corp_layout ::corp-header">
-</header>
 
-<section class="content-wrapper">
-    <div class="container">
-        <div class="row">
-            <div class="col-md-4 col-sm-4">
-                <h5 class="page_header">Upload Bulk Transfer File</h5>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-8 content-bg">
-                <div class="row form-spacing">
-                    <div>
-                        <p>To make a bulk transfer, You are required to download a pre-formatted file and fill
-                            in the details of the beneficiaries... <a th:href="@{/corporate/transfer/bulk/download}">Download File</a></p>
-                    </div>
+<div layout:fragment="content">
+    <div class="col-md-5 col-sm-5 ">
 
-                    <br/>
+        <select class="form-control full-width coronation-form-control hide-content-only" id="view">
+            <option value="account">Overview</option>
+        </select>
+    </div>
 
-                    <!--<p>Upload the completed file through the link below</p>-->
-                    <hr width="100%" size="1" />
-                    <h6 class="hstyle"><span>Upload the completed Bulk Transfer file through the link below</span></h6>
+    <div class="col-xs-12" >
+        <div class="no-pad-lef  no-mt no-bd  alert">
+            <div class="">
+                <div class="col-md-6 coronation-blue">
+                    <h3 style="font-size:17px">Upload Bulk Transfer File</h3>
+                    <p class="" style="font-size:13px;line-height:20px;margin-top:20px">To make a bulk transfer, You are required to download a formatted file and fill
+                        in the details of the beneficiaries...
+                    </p>
 
 
-                    <div class="col-md-6 col-sm-6">
-                        <form method="post" th:action="@{/corporate/transfer/bulk/upload}" enctype="multipart/form-data">
+
+                    <p style="margin-top:20px;">
+                        <a class='btn btn-default' th:href="@{/retail/transfer/bulk/download}">Download File</a>
+
+                        <a style="margin-left" class="btn btn-default" th:href="@{/retail/transfer/bankcodes}" target="_blank">View Bank Codes</a>
+                    </p>
 
 
-                            <div class="form-group">
-                                <!--<label>Bulk Transfer file</label>-->
-                                <input  type="file" name="transferFile"/>
-                                <br/>
-                                <!--<input  type="submit" value="Upload"/>-->
-                                <button class="btn btn-link" type="submit">Upload</button>
+                </div>
+                <div class="col-xs-12 no-pad-left">
 
+                </div>
+
+
+
+                <!--<p>Upload the completed file through the link below</p>-->
+                <!-- <hr width="100%" size="1" /> -->
+                <div class="col-md-6 coronation-blue" style="margin-top:60px;">
+                    <h6 class="hstyle"  style="font-size:13px;line-height:20px;margin-top:20px"><span>Upload the completed Bulk Transfer file through the link below</span></h6>
+                    <form style="margin-top:20px" method="post" th:action="@{/retail/transfer/bulk/upload}" enctype="multipart/form-data">
+
+
+                        <div class="form-group" >
+                            <!--<label>Bulk Transfer file</label>-->
+                            <input onchange="change()" id='input-file' style="width: 0.1px;height: 0.1px;opacity: 0;overflow: hidden;position: absolute;z-index: -1;"  type="file" name="transferFile"/>
+
+                            <div style="width:150px;display:inline">
+                                <label id="label-input"   for="input-file" class="btn btn-default " style="display:inline !important;padding:8px !important;background:grey !important"><i class="fa fa-upload" aria-hidden="true" style="color:white"></i> Choose File</label>
                             </div>
 
-                        </form>
-                    </div>
+                            <!--<input  type="submit" value="Upload"/>-->
+                            <button  class="btn btn-link required-step" type="submit">Upload</button>
+                            <div id="input-msg">
+                                No File Chosen.
+                            </div>
+                        </div>
+
+                    </form>
                 </div>
-            </div>
-            <div th:replace="corp_layout :: corp-sidebar" class="col-md-3 sidebar">
+
             </div>
         </div>
+
     </div>
-</section>
+
+</div>
 
 
-<!-- CONTENT-WRAPPER SECTION END-->
-<footer th:replace="corp_layout ::corp-footer">
-</footer>
-<script>
-    //datepicker
-    $( function() {
-        $( "#datepicker" ).datepicker(
-            { dateformat : 'dd/mm/yy'}
-        );
-    } );
-</script>
+<th:block layout:fragment="scripts">
+    <script th:src="@{~/bank/vendors/sweetalert/sweetalert.min.js}"></script>
+    <script th:src="@{~/bank/vendors/bootstrap-dialog/js/bootstrap-dialog.js}"></script>
+    <script th:src="@{~/bank/js/jquery.spring-friendly.min.js}"></script>
+
+
+    <script>
+        //datepicker
+        $( function() {
+            $( "#datepicker" ).datepicker(
+                { dateformat : 'dd/mm/yy'}
+            );
+        } );
+
+
+        function change()
+        {
+            if($('#input-file').val() == '')
+            {
+                var x = "<i class='fa fa-upload' aria-hidden='true' style='color:white'></i> Choose File";
+                $('#input-msg').text('No File Chosen.');
+                $('#label-input').html(x);
+            }
+            else {
+                $('#input-msg').text($('#input-file').val());
+                $('#label-input').text('One File Chosen');
+            }
+
+
+        }
+    </script>
+</th:block>
+
 </body>
 </html>

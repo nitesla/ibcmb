@@ -1,15 +1,8 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head th:replace="corp_layout :: site-head">
-
-    <link rel="stylesheet" type="text/css" href="css/jquery.dataTables.css"/>
-    <link rel="stylesheet" type="text/css" href="css/select.bootstrap.css"/>
-    <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css"/>
-    <link rel="stylesheet" type="text/css" href="css/dataTables.bootstrap.css"/>
-</head>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{ret-layout}">
 
 <style>
-    .hstyle{
+    .hstyle {
         width: 100%;
         text-align: center;
         border-bottom: 1px solid #000;
@@ -18,150 +11,313 @@
     }
 
     .hstyle span {
-        background:#fff;
-        padding:0 10px;
+        background: #fff;
+        padding: 0 10px;
     }
-    table.dataTable tbody > tr.selected{
+
+    table.dataTable tbody>tr.selected {
         color: black;
         background-color: #d7bdb3;
     }
+
 </style>
 
-<body>
-<header th:replace="corp_layout ::corp-header">
-</header>
+<body onload="javascript:var bread = [['Home', '/retail/dashboard'],['Bulk transfer','/retail/transfer/bulk'],['add','']];currentBar('Bulk transfer');breadCrumb(bread)">
 
-<section class="content-wrapper">
-    <div class="container">
-        <div class="row">
-            <div class="col-md-4 col-sm-4">
-                <h5 class="page_header"> Bulk Transfer </h5>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-12 content-bg">
-                <form method="post" th:action="@{/corporate/transfer/save}" id="" class="form-horizontal">
-                <div class="row spacing">
-                    <div>
-                        <p>To make a bulk transfer, Enter the request fields below</p>
-                    </div>
+<div layout:fragment="content">
+    <div class="col-md-5 col-sm-5 ">
 
-                    <br/>
-                    <div class="form-group col-md-6">
-                        <label>Source account</label>
+        <select class="form-control full-width coronation-form-control hide-content-only" id="view">
+            <option value="account">Overview</option>
+        </select>
+    </div>
 
-
-                        <span id="scurency"></span>
-                        <select name="debitAccount" class="form-control" id="debitAccount">
-                            <!--<option value=""> select an account</option>-->
-                            <option th:each="s: ${accounts}" th:value="${s}" th:text="${s}"></option>
-                        </select>
-                        <input type="hidden" name="requests"/>
-                    </div></div>
-
-
-                    <!--<div class="col-md-6 col-sm-6 col-xs-12">-->
-                        <!--<button type="submit" id="button_add" class="btn-xs btn-success btn">Add Field</button>-->
-                        <!--<button type="submit" id="button_del" class="btn-xs btn-warning btn">Remove</button>-->
-                    <!--</div>-->
-                    <br/>
+    <div class="col-xs-12">
+        <div class=" no-mt no-bd  alert">
+            <div>
+                <form method="post" th:action="@{/retail/transfer/save}" id="" class="form-horizontal">
+                    <div class="">
+                        <div>
+                            <p>To make a bulk transfer, Select source account and enter token from your device</p>
+                        </div>
 
                         <br/>
-                        <table id="mytab" class="table table-striped table-bordered table-hover" cellspacing="0"  >
-                            <thead>
+                        <div class="form-group col-md-6">
+                            <label>Source account</label>
 
-                                <th>Serial</th>
-                                <th>Ref</th>
-                                <th>Account Number</th>
-                                <th>Sort Code</th>
-                                <th>Beneficiary Name</th>
-                                <th>Amount (N)</th>
-                                <th>Narration</th>
-                            </thead>
-                            <tbody>
-                            <!--<tr th:each="tr : ${transferRequests}">-->
-                                <!--<td th:text="${tr.serial}"></td>-->
-                                <!--<td th:text="${tr.refCode}"></td>-->
-                                <!--<td th:text="${tr.accountNumber}"></td>-->
-                                <!--<td th:text="${tr.sortCode}"></td>-->
-                                <!--<td th:text="$preferredNameName}"></td>-->
-                                <!--<td th:text="${tr.amount}"></td>-->
-                                <!--<td th:text="${tr.narration}"></td>-->
-                            <!--</tr>-->
-                            </tbody>
-                        </table>
+
+                            <span id="scurency"></span>
+                            <select name="debitAccount" class="form-control" id="debitAccount">
+                                <!--<option value=""> select an account</option>-->
+                                <option th:each="s: ${accounts}" th:value="${s}" th:text="${s}"></option>
+                            </select>
+                            <input type="hidden" name="requests" />
+                        </div>
+                        <div class='col-sm-5 col-xs-12'>
+
+                            <div class="related-box-bulk">
+                                <h3 class="related-bar">Related Information</h3>
+
+                                <!--<input type="availBal" name="availBal"/>-->
+
+                                <p class="related-info coronation-blue" id="limit"><b></b></p>                                <!--<p id=mylimit" style="display: none; padding: 5%">Limit: <span th:if="${rtgs}!=null"-->
+                                <!--th:text="${rtgs}"></span>-->
+                                </p>
+
+                            </div>
+
+                            <!--<div class="col-md-4 col-sm-4">-->
+
+                            <!--<p id="rtgs" style="display: none; padding: 5%">Fee applicable: <span th:text="'N'+${rtgs.feeValue}"></span></p>-->
+                            <!--</div>-->
+
+                        </div>
+                    </div>
 
                     <br/>
-                    <button class="btn btn-link" type="submit" id="button_submit">Submit</button>
-                </form>
+
+                    <div class="col-xs-12 no-pad-right no-pad-left table-responsive">
+                        <table id="mytab" class="table table-bordered  table-hover" cellspacing="0">
+                            <thead>
+                            <th>Account Number</th>
+                            <th>Beneficiary Name</th>
+                            <th>Account Name</th>
+                            <th>Amount (N)</th>
+                            <th>Narration</th>
+                            <th >Bank Name</th>
+                            <th >Bank Code</th>
+                            </thead>
+                            <tbody>
+
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <br/>
+
+                    <div class="form-group col-md-6">
+                        <div id="tokendiv">
+                            <label>Token </label>
+                            <input type="text" name="token" placeholder="Enter token code" class="form-control"/>
+                        </div>
+
+                        <br/>
+                        <div class="form-group col-md-6">
+                            <button class="btn btn-link required-step" type="submit" id="button_submit">Submit</button>
+                            <button class="btn btn-link less-required" onclick='redirect()' type="button">Back</button>
+                        </div>
+
+
                     </div>
 
 
+                    <!--<a class="btn btn-link" th:href="@{/corporate/transfer/bulk}">Back</a>-->
+                    <!--<button class="btn btn-link" type="submit" id="button_submit">Submit</button>-->
 
-            <!--<div th:replace="corp_layout :: corp-sidebar" class="col-md-3 sidebar">-->
-            <!--</div>-->
+                </form>
             </div>
+
         </div>
+    </div>
 
-</section>
+</div>
 
 
-<!-- CONTENT-WRAPPER SECTION END-->
-<footer th:replace="corp_layout ::corp-footer">
-</footer>
-<script th:inline="javascript">
-    /*<![CDATA[*/
-    $(document).ready(function() {
-        var table = $('#mytab').DataTable({
-            select:true,
-            "lengthMenu" : [ [ 5, 10, 20],	[ 5, 10, 20 ] ],
-            "pagingType" : "input",
-            "searching": false,
-            "paging": true,
-            "serverSide" : false,
-            "ajax": "/corporate/transfer/all",
-            "dom": 'T<"clear">frtlp',
-            "columns": [
-                { "data": "serial" },
-                { "data": "refCode" },
-                { "data": "accountNumber" },
-                { "data": "sortCode" },
-                { "data": "preferredName" },
-                { "data": "amount" },
-                { "data": "narration" }
-            ],"columnDefs" : [
-                {
-                    "targets" : 5,
-                    "data" : "amount",
-                    "render" : function(data, type,full, meta) {
-                        if (type === 'display') {
-                            if(data == null)
-                                return data;
-                            var twoPlacedFloat = parseFloat(data).toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,');
-                            return twoPlacedFloat;
+<th:block layout:fragment="scripts">
+
+    <script th:src="@{~/bank/vendors/sweetalert/sweetalert.min.js}"></script>
+
+
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+
+        function redirect()
+        {
+            window.location.href = '/retail/transfer/upload';
+        }
+
+        var errorCount = 0;
+        $(document).ready(function() {
+            getLimit();
+            var table = $('#mytab').DataTable({
+                select: true,
+                "lengthMenu": [
+                    [5, 10, 20],
+                    [5, 10, 20]
+                ],
+                "pagingType": "input",
+                "searching": false,
+                "paging": true,
+                "serverSide": false,
+                "ajax": "/retail/transfer/all",
+                "dom": 'T<"clear">frtlp',
+                "columns": [{
+                    "data": "accountNumber"
+                }, {
+                    "data": "accountName"
+                }, {
+                    "data": "accountNameEnquiry"
+                },{
+                    "data": "amount"
+                }, {
+                    "data": "narration"
+                },{
+                    "data": "beneficiaryBank"
+                }, {
+                    "data": "sortCode"
+                }],
+                "columnDefs": [
+                    {
+                        "targets": 0,
+                        "render": function(data, type, full, meta) {
+                            if (data.includes("ERROR")) {
+                                errorCount = errorCount + 1;
+                                return '<input type="text" style="background:transparent;color: red" value="' + data + '"  readonly/>';
+
+                            }
+                            if (errorCount > 0) {
+                                document.getElementById('tokendiv').style.display = 'none';
+                            }
+                            // return '<input type="text" style="background:transparent" value="' + data + '" readonly />';
+                            return '<span>'+ data +'</span>';
+
                         }
-                        return data;
+                    }, {
+                        "targets": 1,
+                        "render": function(data, type, full, meta) {
+                            if (data.includes("ERROR")) {
+                                errorCount = errorCount + 1;
+                                return '<input type="text" style="background:transparent;color: red" value="' + data + '"  readonly/>';
+
+                            }
+                            if (errorCount > 0) {
+                                document.getElementById('tokendiv').style.display = 'none';
+                            }
+                            // return '<input type="text" style="background:transparent" value="' + data + '" readonly />';
+                            return '<span>'+ data +'</span>';
+
+
+                        }
+                    }, {
+                        "targets": 4,
+                        "render": function(data, type, full, meta) {
+                            if (data.includes("ERROR")) {
+                                errorCount = errorCount + 1;
+                                return '<input type="text" style="background:transparent;color: red" value="' + data + '"  readonly/>';
+
+                            }
+                            if (errorCount > 0) {
+                                document.getElementById('tokendiv').style.display = 'none';
+                            }
+                            // return '<input type="text" style="background:transparent" value="' + data + '" readonly />';
+                            return '<span>'+ data +'</span>';
+
+                        }
+                    }, {
+                        "targets": 6,
+                        "render": function(data, type, full, meta) {
+                            if (data.includes("ERROR")) {
+                                errorCount = errorCount + 1;
+                                return '<input type="text" style="background:transparent;color: red" value="' + data + '"  readonly/>';
+
+                            }
+                            if (errorCount > 0) {
+                                document.getElementById('tokendiv').style.display = 'none';
+                            }
+                            // return '<input type="text" style="background:transparent;" value="' + data + '" readonly />';
+                            return '<span>'+ data +'</span>';
+
+                        }
+                    },
+                    {
+                        "targets" : 3,
+                        "data" : "amount",
+                        "render" : function(data, type,full, meta) {
+                            if (type === 'display') {
+                                if(data == null) {
+                                    return data;
+                                }else if (data ===-1) {
+                                    errorCount = errorCount + 1;
+                                    return '<input type="text" style="background:transparent;color: red" value="ERROR: Invalid amount"  readonly/>';
+
+                                }
+                                var twoPlacedFloat = parseFloat(data).toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,');
+
+                                return twoPlacedFloat;
+//                                return "**" + parseInt(data) + "**";
+
+                            }
+                            return data;
+                        }
+                    }]
+            });
+
+
+
+
+
+
+        });
+        $('#debitAccount').change(function () {
+            console.log("dropdown change");
+            getLimit()
+        })
+        function getLimit() {
+
+            var accountNumber = $('#debitAccount').val();
+            console.log("the account number " + accountNumber);
+            if (accountNumber != null && accountNumber != '') {
+                $.ajax({
+                    url: "/retail/transfer/limit/" + accountNumber + "/NAPS",
+                    type: 'GET',
+                    async: false,
+                    success: function (jd) {
+                        var message = jd.message;
+                        var success = jd.success;
+                        console.log(message);
+                        console.log(success);
+                        if (success == false || message=='₦NAN' ) {
+                            document.getElementById("limit").textContent = "Could not get limit from server, please try again.";
+
+                        } else {
+//                    $('input[name=availBal]').val(bal);
+                            var bal = numberWithCommas(message);
+                            $('#limit').html("Limit: " + bal);
+
+                        }
                     }
-                }
-            ] });
+                })
+            }
+        }
 
 
+        $('#button_submit').click(function(e) {
+            e.preventDefault();
 
-    });
+            bulkTab = $('#mytab').DataTable();
+
+            if (errorCount > 0) {
+
+                var message = "Unable to submit.. Uploaded file has columns with null or incorrect values (See columns highlighted in RED).. " +
+                    "Kindly reupload corrected file";
+                document.getElementById("successMess").innerHTML = message;
+                $('#myModalSuccess').modal('show');
+
+            } else {
+                data = JSON.stringify(bulkTab.data().toArray());
+                $("input[name='requests']").val(data);
+                $('form').submit();
+            }
+
+        });
+
+        //});
 
 
-    $('#button_submit').click(function(e) {
-        e.preventDefault()
-        bulkTab = $('#mytab').DataTable();
-        data = JSON.stringify(bulkTab.data().toArray());
-        $("input[name='requests']").val(data);
-        $('form').submit();
-    });
+        /*]]>*/
+    </script>
+</th:block>
 
-    //});
-
-
-    /*]]>*/
-</script>
 </body>
+
 </html>
