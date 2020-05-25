@@ -49,6 +49,10 @@ public class RetailUser extends User implements PrettySerializer{
 
 	private String tempPassword;
 
+	@OneToMany(mappedBy = "retailUser")
+	@JsonIgnore
+	private List<BulkTransfer> transfers;
+
 
 
 	public String getBvn() {
@@ -123,6 +127,13 @@ public class RetailUser extends User implements PrettySerializer{
 		return Arrays.asList("customerId","userName", "firstName","lastName");
 	}
 
+	public List<BulkTransfer> getTransfers() {
+		return transfers;
+	}
+
+	public void setTransfers(List<BulkTransfer> transfers) {
+		this.transfers = transfers;
+	}
 
 	@Override
 	@JsonIgnore

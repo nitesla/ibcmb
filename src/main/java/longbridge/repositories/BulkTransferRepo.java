@@ -2,6 +2,7 @@ package longbridge.repositories;
 
 import longbridge.models.BulkTransfer;
 import longbridge.models.Corporate;
+import longbridge.models.RetailUser;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
@@ -15,6 +16,9 @@ import java.util.List;
 public interface BulkTransferRepo extends CommonRepo<BulkTransfer, Long>{
 
     Page<BulkTransfer> findByCorporateOrderByTranDateDesc(Corporate corporate, Pageable details);
+    Page<BulkTransfer> findByRetailUserOrderByTranDateDesc(RetailUser retailUser, Pageable details);
+
+
 
     Page<BulkTransfer> findByCorporateOrderByStatusAscTranDateDesc(Corporate corporate, Pageable details);
 
