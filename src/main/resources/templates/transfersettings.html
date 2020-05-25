@@ -19,12 +19,6 @@
             <!-- page content -->
             <div class="right_col" role="main">
                 <div class="">
-                    <!--<div class="page-title">-->
-                    <!--<div class="title_left">-->
-                    <!--<h3>Create Admin User</h3>-->
-                    <!--</div>-->
-
-                    <!--</div>-->
 
                     <div class="clearfix"></div>
 
@@ -70,8 +64,6 @@
                                         </div>
 
 
-
-
                                         <br>
                                         <div class="col-lg-6 col-xl-3" id="withinCoronationBank" style="display: none">
                                             <div class="form-group">
@@ -107,8 +99,6 @@
                                                 <button class="btn btn-success transferLimitBtn">Save</button>
                                             </div>
                                         </div>
-
-
 
 
                                             <div class="form-group" style="display: none" id="userChooseOtherBanks">
@@ -159,9 +149,6 @@
                                             </div>
                                         </div>
 
-
-
-
        <!--------------------------------------------------  ADJUST TRANSFER FEES  ---------------------------------------------------------- ---------------------------------------           -->
 
                                        <div id="selectTransferPlatform" style="display: none">
@@ -178,20 +165,15 @@
                                        </div>
 
 
-
-
-
-
-
                                         <br/>
                                         <div>
                                         <div class="container" style="display: none" id="selectAdjustmentType">
 
                                                 <label class="radio-inline">
-                                                    <input type="radio" name="optradio" value="transferPercentage">Percentage
+                                                    <input type="radio" name="optradio" value="transferPercentage">Percentage-amount
                                                 </label>
                                                 <label class="radio-inline">
-                                                    <input type="radio" name="optradio" value="transferFixedrate">Fixed-Rate
+                                                    <input type="radio" name="optradio" value="transferFixedrate">Fixed-amount
                                                 </label>
                                                 <label class="radio-inline">
                                                     <input type="radio" name="optradio" value="selectboth">Both
@@ -203,7 +185,7 @@
                                         <div class="col-lg-6 col-xl-3" id="textInputForFeeAdjustment">
                                         <div id="radioSelection" style="display: none" class="form-group">
                                             <form>
-                                            <label>Percentage</label>
+                                            <label>Percentage-amount</label>
                                             <input name="percentage" type="number" id="radioPercentage" class="form-control">
                                                 <br>
                                                 <button type="button" class="btn btn-success adjustTransferFee">Submit</button>
@@ -212,7 +194,7 @@
 
                                         <div id="fixedRateSelection" style="display: none" class="form-group">
                                             <form>
-                                            <label>Fixed-Amount</label>
+                                            <label>Fixed-amount</label>
                                             <input name="percentage" type="number" id="fixedRate" class="form-control">
                                                 <br>
                                             <button type="button" class="btn btn-success adjustTransferFee">Submit</button>
@@ -221,22 +203,16 @@
 
                                         <div id="bothSelection" style="display: none" class="form-group">
                                             <form>
-                                            <label>Percentage</label>
+                                            <label>Percentage-amount</label>
                                             <input name="percentage" type="number" id="bothSelection1" class="form-control">
                                             <br/>
-                                            <label>Fixed-Amount</label>
+                                            <label>Fixed-amount</label>
                                             <input name="percentage" type="number" id="bothSelection2" class="form-control">
                                                 <br>
                                                 <button type="button" class="btn btn-success adjustTransferFee">Submit</button>
                                             </form>
                                         </div>
                                         </div>
-
-
-
-
-
-
 
 
                                     </div>
@@ -387,8 +363,6 @@
 
         })
 
-
-
     $(".transferLimitBtn").on("click", function (){
         var bankUserType = $("#selectBankUser").val();
         var radioSelect = $("input[name='bankradio']:checked"). val();
@@ -491,7 +465,7 @@
         function validateSelectionOfBothFixedAndPercentageInput(percentage,fixedrate){
             var error = false;
             if (percentage == ''){
-                showNotification("Please supply percentage","danger")
+                showNotification("Please supply percentage amount","danger")
                 error = true;
             }
             if(fixedrate == ''){
@@ -500,9 +474,6 @@
             }
             return error;
         }
-
-
-
 
         $(".adjustTransferFee").on("click", function (){
             var transferMethod = $("#transferDropdown").val();
@@ -523,7 +494,7 @@
                         }
                 })
                 } else{
-                    showNotification("Please supply percentage","danger")
+                    showNotification("Please supply percentage amount","danger")
                 }
             }else if (radioSelect == 'transferFixedrate'){
                 var fixedRate = $("#fixedRate").val();
