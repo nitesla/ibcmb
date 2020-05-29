@@ -1,11 +1,15 @@
 package longbridge.services.implementations;
 
 import longbridge.dtos.InternationalBeneficiaryDTO;
+import longbridge.exception.DuplicateObjectException;
 import longbridge.exception.InternetBankingException;
 import longbridge.models.InternationalBeneficiary;
+import longbridge.models.LocalBeneficiary;
 import longbridge.models.RetailUser;
 import longbridge.models.User;
 import longbridge.repositories.InternationalBeneficiaryRepo;
+import longbridge.security.userdetails.CustomUserPrincipal;
+import longbridge.services.ConfigurationService;
 import longbridge.services.InternationalBeneficiaryService;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
@@ -13,6 +17,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -22,13 +29,18 @@ import java.util.Locale;
 @Service
 public class InternationalBeneficiaryServiceImpl implements InternationalBeneficiaryService {
 
+
     @Autowired
-    ModelMapper modelMapper;
+    private ModelMapper modelMapper;
     @Autowired
-    MessageSource messageSource;
-    Locale locale = LocaleContextHolder.getLocale();
+    private MessageSource messageSource;
     private Logger logger = LoggerFactory.getLogger(this.getClass());
     private InternationalBeneficiaryRepo internationalBeneficiaryRepo;
+    private Locale locale = LocaleContextHolder.getLocale();
+
+
+    public InternationalBeneficiaryServiceImpl() {
+    }
 
     @Autowired
     public InternationalBeneficiaryServiceImpl(InternationalBeneficiaryRepo internationalBeneficiaryRepo) {
@@ -36,25 +48,31 @@ public class InternationalBeneficiaryServiceImpl implements InternationalBenefic
     }
 
     @Override
-    public String addInternationalBeneficiary(RetailUser user, InternationalBeneficiaryDTO beneficiary) throws InternetBankingException {
+    public String addInternationalBeneficiary(InternationalBeneficiaryDTO beneficiary) throws InternetBankingException {
         try {
             InternationalBeneficiary internationalBeneficiary = convertDTOToEntity(beneficiary);
-            internationalBeneficiary.setUser(user);
+            internationalBeneficiary.setUser(getCurrentUser());
+            validateBeneficiary(internationalBeneficiary,getCurrentUser());
             this.internationalBeneficiaryRepo.save(internationalBeneficiary);
-            logger.info("International beneficiary {} has been added for user {}", internationalBeneficiary.toString(), user.getUserName());
+            logger.info("International beneficiary {} has been added for user {}", internationalBeneficiary.toString(), getCurrentUser().getUserName());
             return messageSource.getMessage("beneficiary.add.success", null, locale);
-        } catch (Exception e) {
-            if (e.getMessage().equalsIgnoreCase("beneficiary.exist"))
-                throw new InternetBankingException(messageSource.getMessage("beneficiary.exist", null, locale), e);
 
+
+        }
+        catch(DuplicateObjectException doe){
+            throw doe;
+        }
+        catch (Exception e) {
             throw new InternetBankingException(messageSource.getMessage("beneficiary.add.failure", null, locale), e);
         }
     }
 
+
+
     @Override
     public String deleteInternationalBeneficiary(Long beneficiaryId) throws InternetBankingException {
         try {
-            internationalBeneficiaryRepo.deleteById(beneficiaryId);
+            internationalBeneficiaryRepo.delete(beneficiaryId);
             logger.info("Deleted beneficiary with Id{}", beneficiaryId);
             return messageSource.getMessage("beneficiary.delete.success", null, locale);
         } catch (Exception e) {
@@ -65,13 +83,13 @@ public class InternationalBeneficiaryServiceImpl implements InternationalBenefic
     }
 
     @Override
-    public InternationalBeneficiary getInternationalBeneficiary(Long id) {
-        return internationalBeneficiaryRepo.findById(id).get();
+    public InternationalBeneficiaryDTO getInternationalBeneficiary(Long id) {
+        return convertEntityToDTO(internationalBeneficiaryRepo.findOneById(id));
     }
 
     @Override
-    public Iterable<InternationalBeneficiary> getInternationalBeneficiaries(RetailUser user) {
-        return internationalBeneficiaryRepo.findByUser(user);
+    public Iterable<InternationalBeneficiary> getInternationalBeneficiaries() {
+        return internationalBeneficiaryRepo.findByUser(getCurrentUser());
     }
 
     @Override
@@ -95,7 +113,7 @@ public class InternationalBeneficiaryServiceImpl implements InternationalBenefic
         internationalBeneficiaryDTO.setBeneficiaryAddress(internationalBeneficiary.getBeneficiaryAddress());
         internationalBeneficiaryDTO.setIntermediaryBankAcctNo(internationalBeneficiary.getIntermediaryBankAcctNo());
         internationalBeneficiaryDTO.setIntermediaryBankName(internationalBeneficiary.getIntermediaryBankName());
-        return modelMapper.map(internationalBeneficiary, InternationalBeneficiaryDTO.class);
+        return internationalBeneficiaryDTO;
     }
 
     @Override
@@ -104,9 +122,25 @@ public class InternationalBeneficiaryServiceImpl implements InternationalBenefic
     }
 
 
+
+
     public void validateBeneficiary(InternationalBeneficiary internationalBeneficiary, User user) {
         if (internationalBeneficiaryRepo.findByUser_IdAndAccountNumber(user.getId(), internationalBeneficiary.getAccountNumber()) != null)
-            throw new InternetBankingException("beneficiary.exist");
+            throw new DuplicateObjectException(messageSource.getMessage("beneficiary.exist",null,locale));
+
+    }
+
+
+    private RetailUser getCurrentUser(){
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (!(authentication instanceof AnonymousAuthenticationToken)) {
+            CustomUserPrincipal userPrincipal =(CustomUserPrincipal) authentication.getPrincipal();
+            return (RetailUser)userPrincipal.getUser();
+        }
+
+        return (null) ;
+
 
     }
 

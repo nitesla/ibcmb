@@ -36,7 +36,7 @@
                 <tr>
 
                     <th>Beneficiary Bank</th>
-                    <td th:text="${corpTransRequest.financialInstitution.institutionName}"></td>
+                    <td th:text="${corpTransRequest.beneficiaryBank}"></td>
 
                 </tr>
                 <tr>
@@ -169,7 +169,7 @@
                 "columns": [
                     {"data": "transferType"},
                     {"data": "beneficiaryAccountName"},
-                    {"data": "financialInstitution.institutionName"},
+                    {"data": "beneficiaryBank"},
                     {"data": "amount"}
                 ]
             });

@@ -43,8 +43,10 @@ public interface TransferService {
     void validateTransfer(TransferRequestDTO transferRequestDTO) throws InternetBankingTransferException;
 
     Page<TransRequest> getCompletedTransfers(Pageable pageDetails);
+    Page<TransferRequestDTO> getCompletedTransfer(Pageable pageDetails);
 
     Page<TransRequest> getCompletedTransfers(String pattern, Pageable pageDetails);
+    Page<TransferRequestDTO> getCompletedTransfer(String pattern, Pageable pageDetails);
 
     List<TransRequest> getLastTenTransactionsForAccount(String s);
 

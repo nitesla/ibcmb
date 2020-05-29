@@ -1,16 +1,15 @@
 package longbridge.repositories;
 
-import longbridge.models.CorpInterBen;
+import longbridge.models.CorpInterBeneficiary;
 import longbridge.models.Corporate;
-import longbridge.models.CorporateUser;
+import org.springframework.stereotype.Repository;
 
 /**
  * Created by SYLVESTER on 5/22/2017.
  */
-public interface CorpInternationalBeneficiaryRepo extends CommonRepo<CorpInterBen,Long>{
+@Repository
+public interface CorpInternationalBeneficiaryRepo extends CommonRepo<CorpInterBeneficiary,Long>{
 
-    Iterable<CorpInterBen> findByCorporate(Corporate corporate);
-
-
+    Iterable<CorpInterBeneficiary> findByCorporate(Corporate corporate);
 }
 

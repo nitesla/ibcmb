@@ -4,6 +4,7 @@ import longbridge.dtos.FinancialInstitutionDTO;
 import longbridge.dtos.InternationalBeneficiaryDTO;
 import longbridge.dtos.LocalBeneficiaryDTO;
 import longbridge.dtos.SettingDTO;
+import longbridge.exception.DuplicateObjectException;
 import longbridge.exception.InternetBankingException;
 import longbridge.exception.InternetBankingSecurityException;
 import longbridge.models.*;
@@ -96,7 +97,8 @@ public class BeneficiaryController {
         model.addAttribute("localBen",
                 localBeneficiaries);
 
-        Iterable<InternationalBeneficiary> intBeneficiary = internationalBeneficiaryService.getInternationalBeneficiaries(retailUser);
+//        Iterable<InternationalBeneficiary> intBeneficiary = internationalBeneficiaryService.getInternationalBeneficiaries(retailUser);
+        Iterable<InternationalBeneficiary> intBeneficiary = internationalBeneficiaryService.getInternationalBeneficiaries();
         for (InternationalBeneficiary intBenef : intBeneficiary) {
             intBenef.setBeneficiaryBank(intBenef.getBeneficiaryBank());
         }
@@ -200,7 +202,7 @@ public class BeneficiaryController {
     }
 
 
-    @PostMapping("/foreign")
+    /*@PostMapping("/foreign")
     public String createForeignBeneficiary(@ModelAttribute("internationalBeneficiaryDTO") @Valid InternationalBeneficiaryDTO internationalBeneficiaryDTO, BindingResult result, Model model, RedirectAttributes redirectAttributes, Principal principal) {
         if (result.hasErrors()) {
 
@@ -219,7 +221,51 @@ public class BeneficiaryController {
         }
         return "redirect:/retail/beneficiary";
     }
+*/
 
+    @ModelAttribute
+    public void showCurrencyCodes(Model model){
+        model.addAttribute("currencyCodes", codeService.getCodesByType("CURRENCY"));
+    }
+
+
+    @GetMapping("/international/new")
+    public String addInternationalBeneficiary(Model model) {
+        model.addAttribute("internationalBeneficiaryDTO", new InternationalBeneficiaryDTO());
+
+        return "cust/beneficiary/international/add";
+    }
+
+    @GetMapping("/international")
+    public String getInternationalBeneficiaries(Model model, Principal principal) {
+        Iterable<InternationalBeneficiary> beneficiaries = internationalBeneficiaryService.getInternationalBeneficiaries();
+        model.addAttribute("internationalBeneficiaries", beneficiaries);
+
+        return "cust/beneficiary/international/view";
+    }
+
+    @PostMapping("/international")
+    public String createInternationalBeneficiary(@ModelAttribute("internationalBeneficiaryDTO") @Valid InternationalBeneficiaryDTO internationalBeneficiaryDTO, BindingResult result, Model model, RedirectAttributes redirectAttributes, Principal principal) {
+        if (result.hasErrors()) {
+            model.addAttribute("internationalBeneficiaryDTO", internationalBeneficiaryDTO);
+            return "cust/beneficiary/add";
+        }
+
+        try {
+            String message = internationalBeneficiaryService.addInternationalBeneficiary(internationalBeneficiaryDTO);
+            redirectAttributes.addFlashAttribute("message", message);
+        }
+        catch (DuplicateObjectException doe){
+            logger.error("International Beneficiary Error", doe);
+            redirectAttributes.addFlashAttribute("failure", doe.getMessage());
+
+        }
+        catch (InternetBankingException e) {
+            logger.error("International Beneficiary Error", e);
+            redirectAttributes.addFlashAttribute("failure", e.getMessage());
+        }
+        return "redirect:/retail/beneficiary/international";
+    }
 
     @GetMapping("/{beneficiaryId}")
     public Beneficiary getBeneficiary(@PathVariable Long beneficiaryId, Model model) {

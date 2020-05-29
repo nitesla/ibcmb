@@ -11,12 +11,11 @@ import java.util.List;
 public interface InternationalBeneficiaryService {
 	   /**
      * Adds a new beneficiary of a transfer
-     * @param user the customer
      * @param  beneficiary  the beneficiary
      */
 
 	   @PreAuthorize("hasAuthority('ADD_BENEFICIARY')")
-       String addInternationalBeneficiary(RetailUser user, InternationalBeneficiaryDTO beneficiary) throws InternetBankingException;
+       String addInternationalBeneficiary(InternationalBeneficiaryDTO beneficiary) throws InternetBankingException;
 
     /**
      * Deletes a beneficiary
@@ -31,19 +30,19 @@ public interface InternationalBeneficiaryService {
      * @return the specified beneficiary
      */
     @PreAuthorize("hasAuthority('GET_BENEFICIARIES')")
-    InternationalBeneficiary getInternationalBeneficiary(Long id);
+    InternationalBeneficiaryDTO getInternationalBeneficiary(Long id);
 
     /**
      * Returns a list of the customer's beneficiaries
-     * @param user the customer
      * @return a list of the beneficiaries
      */
     @PreAuthorize("hasAuthority('GET_BENEFICIARIES')")
-    Iterable<InternationalBeneficiary> getInternationalBeneficiaries(RetailUser user);
+    Iterable<InternationalBeneficiary> getInternationalBeneficiaries();
 
     List<InternationalBeneficiaryDTO> convertEntitiesToDTOs(Iterable<InternationalBeneficiary> internationalBeneficiaries);
 
     InternationalBeneficiaryDTO convertEntityToDTO(InternationalBeneficiary internationalBeneficiary);
 
     InternationalBeneficiary convertDTOToEntity(InternationalBeneficiaryDTO internationalBeneficiaryDTO);
+
 }

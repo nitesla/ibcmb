@@ -416,4 +416,22 @@ public class RoleServiceImpl implements RoleService {
         Page<PermissionDTO> pageImpl = new PageImpl<PermissionDTO>(dtOs, pageDetails, t);
         return pageImpl;
     }
+
+    @Override
+    public List<PermissionDTO> findPermisionsByCategory(String category){
+        List<Permission> permissions = permissionRepo.findByCategory(category);
+        List<PermissionDTO> permissionDTOS =  new ArrayList<>();
+        if(permissions.size() >0) {
+            permissions.forEach(permission -> permissionDTOS.add(convertEntityToDTO(permission)));
+        }
+        logger.info("permissionDTOS size {}",permissionDTOS.size());
+        return permissionDTOS;
+    }
+    @Override
+    public Permission findPermisionsByCode(String code){
+        logger.info("pcode {}",code);
+        Permission permissions = permissionRepo.findByCode(code);
+        logger.info("permissionDTOS size {}",permissions);
+        return permissions;
+    }
 }

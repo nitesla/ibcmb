@@ -130,7 +130,7 @@ public class InterBankTransferController {
         if ("NIP".equalsIgnoreCase(type)) {
 
             request.getSession().setAttribute("NIP", "NIP");
-            requestDTO.setTransferType(TransferType.INTER_BANK_TRANSFER);
+            requestDTO.setTransferType(TransferType.NIP);
 
             model.addAttribute("transferRequest", requestDTO);
             return page + "pageiA";

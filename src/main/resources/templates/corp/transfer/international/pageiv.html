@@ -5,7 +5,7 @@
 </head>
 <body>
 <div class="container">
-    <header th:replace="corp_layout :: corp-header">
+    <header th:replace="corp-layout :: header">
     </header>
 
 <section class="content-wrapper">
@@ -55,7 +55,7 @@
                     </table>
 
 
-                    <form method="post" th:action="@{/retail/transfer/local}" th:object="${transRequest}">
+                    <form method="post" th:action="@{/corporate/transfer/international}" th:object="${transRequest}">
 
                         <input type="hidden" th:field="*{customerAccountNumber}"/>
                         <input type="hidden" th:field="*{beneficiaryAccountNumber}"/>
@@ -68,7 +68,7 @@
                             <br/>
                             <div class="form-group">
                                 <button type="submit" class="btn btn-default useloader">Proceed</button>
-                                <a th:href="@{/retail/transfer/local}" >Cancel</a>
+                                <a class="useloader" th:href="@{/corporate/transfer/international}" >Cancel</a>
                             </div>
 
 
@@ -78,7 +78,7 @@
                 </div>
             </div>
             <div class="col-md-3 pull-right">
-                <div th:replace="corp_layout :: corp-sidebar" class="" >
+                <div th:replace="cust_layout :: sidebar" class="" >
                 </div>
             </div>
         </div>
@@ -87,7 +87,7 @@
 
 
 <!-- CONTENT-WRAPPER SECTION END-->
-<footer th:replace="corp_layout ::corp-footer">
+<footer th:replace="cust_layout ::footer">
 </footer>
 </div>
 </body>

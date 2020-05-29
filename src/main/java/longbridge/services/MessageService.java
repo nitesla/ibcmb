@@ -4,6 +4,7 @@ import longbridge.dtos.CorporateDTO;
 import longbridge.dtos.MessageDTO;
 import longbridge.exception.InternetBankingException;
 import longbridge.models.*;
+import longbridge.utils.MessageCategory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -21,14 +22,14 @@ import java.util.List;
  */
 public interface MessageService {
 
-//    @PreAuthorize("hasAuthority('SEND_EMAIL')")
+    //    @PreAuthorize("hasAuthority('SEND_EMAIL')")
     Iterable<MessageDTO> getMessages();
 
     /**
      * Returns a mailbox of the given id
      * @param id the id
      * @return the mailbox
-         */
+     */
     MailBox getMailBox(Long id);
 
     /**
@@ -52,6 +53,7 @@ public interface MessageService {
      * @param message the message object
      */
     String addMessage(User sender, MessageDTO message) throws InternetBankingException;
+    String addMessage(User sender, MessageDTO message,String category) throws InternetBankingException;
 
     /**
      * Returns a list of messages of the specified user
@@ -67,14 +69,14 @@ public interface MessageService {
      * @return a list of messages
      */
 
-    
+
 
     /**
      * Returns a list of messages on the given date
      * @param date the date on the messages
      * @return a list of messages
      */
-   Iterable<Message> getMessages(User user, Date date);
+    Iterable<Message> getMessages(User user, Date date);
 
 
 
@@ -99,13 +101,16 @@ public interface MessageService {
      * @return a list of messages
      */
     List<MessageDTO> getSentMessages(User user);
+    List<MessageDTO> getMessagesByTag(User user, MessageCategory category);
+    Page<MessageDTO> getPagedMessagesByTag(User user,Pageable pageable, MessageCategory category);
+    Long countMessagesByTag(User user, MessageCategory category);
 
     /**
      * Returns a page list of maessages recieved
      * @param pageable the pagination
      * @return returns a list of messages
      */
-     Page<MessageDTO> getReceivedMessages(String recipient, UserType recipientTye, Pageable pageable);
+    Page<MessageDTO> getReceivedMessages(String recipient, UserType recipientTye, Pageable pageable);
 
     Page<MessageDTO> getReceivedMessages(String recipient, UserType recipientTye, java.awt.print.Pageable pageable);
 
@@ -179,6 +184,7 @@ public interface MessageService {
     void sendEmail(MessageDTO messageDTO) throws InternetBankingException;
 
     Page<Message> getMessages(User user, java.awt.print.Pageable pageDetails);
+    Page<MessageDTO> getMessages(User user, Pageable pageDetails);
 
     Page<Message> getMessages(User user, Date date, java.awt.print.Pageable pageDetails);
 

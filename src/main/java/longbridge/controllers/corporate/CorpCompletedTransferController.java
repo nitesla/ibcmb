@@ -1,5 +1,6 @@
 package longbridge.controllers.corporate;
 
+import longbridge.dtos.CorpTransferRequestDTO;
 import longbridge.models.CorpTransRequest;
 import longbridge.models.Corporate;
 import longbridge.models.CorporateUser;
@@ -73,15 +74,15 @@ public class CorpCompletedTransferController {
 
     @GetMapping("/history/all")
     public @ResponseBody
-    DataTablesOutput<CorpTransRequest> getTransfersCompleted(DataTablesInput input,@RequestParam("csearch") String search){
+    DataTablesOutput<CorpTransferRequestDTO> getTransfersCompleted(DataTablesInput input, @RequestParam("csearch") String search){
 
         Pageable pageable = DataTablesUtils.getPageable(input);
 
-        Page<CorpTransRequest> transferRequests;
+        Page<CorpTransferRequestDTO> transferRequests;
         if (StringUtils.isNoneBlank(search)) {
-            transferRequests = corpTransferService.getCompletedTransfers(search.toUpperCase(), pageable);
-        }else transferRequests = corpTransferService.getCompletedTransfers(pageable);
-        DataTablesOutput<CorpTransRequest> out = new DataTablesOutput<CorpTransRequest>();
+            transferRequests = corpTransferService.getCompletedTransfer(search.toUpperCase(), pageable);
+        }else transferRequests = corpTransferService.getCompletedTransfer(pageable);
+        DataTablesOutput<CorpTransferRequestDTO> out = new DataTablesOutput<CorpTransferRequestDTO>();
         out.setDraw(input.getDraw());
         out.setData(transferRequests.getContent());
         out.setRecordsFiltered(transferRequests.getTotalElements());

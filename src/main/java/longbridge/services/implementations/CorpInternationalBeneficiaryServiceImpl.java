@@ -2,18 +2,25 @@ package longbridge.services.implementations;
 
 import longbridge.dtos.CorpInternationalBeneficiaryDTO;
 import longbridge.exception.InternetBankingException;
-import longbridge.models.CorpInterBen;
-import longbridge.models.CorporateUser;
+import longbridge.models.*;
 import longbridge.repositories.CorpInternationalBeneficiaryRepo;
+import longbridge.repositories.CorporateRepo;
+import longbridge.security.userdetails.CustomUserPrincipal;
 import longbridge.services.CorpInternationalBeneficiaryService;
-import longbridge.utils.Verifiable;
+import longbridge.services.IntegrationService;
+import longbridge.services.MailService;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.thymeleaf.context.Context;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,54 +31,104 @@ import java.util.Locale;
  */
 @Service
 public class CorpInternationalBeneficiaryServiceImpl implements CorpInternationalBeneficiaryService {
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
+
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private CorpInternationalBeneficiaryRepo corpInternationalBeneficiaryRepo;
 
     @Autowired
-    ModelMapper modelMapper;
+    private ModelMapper modelMapper;
 
     @Autowired
-    MessageSource messageSource;
-
-    Locale locale = LocaleContextHolder.getLocale();
+    private MessageSource messageSource;
 
     @Autowired
-    public CorpInternationalBeneficiaryServiceImpl(CorpInternationalBeneficiaryRepo corpInternationalBeneficiaryRepo){
-        this.corpInternationalBeneficiaryRepo=corpInternationalBeneficiaryRepo;
+    private MailService mailService;
+
+    @Autowired
+    private IntegrationService integrationService;
+
+    private  final Locale locale = LocaleContextHolder.getLocale();
+
+    public CorpInternationalBeneficiaryServiceImpl(CorpInternationalBeneficiaryRepo corpInternationalBeneficiaryRepo) {
+        this.corpInternationalBeneficiaryRepo = corpInternationalBeneficiaryRepo;
     }
 
     @Override
-    public String addCorpInternationalBeneficiary(CorporateUser user, CorpInternationalBeneficiaryDTO beneficiary) throws InternetBankingException {
-        CorpInterBen corpInterBen = convertDTOToEntity(beneficiary);
-        corpInterBen.setCorporate(user.getCorporate());
-        this.corpInternationalBeneficiaryRepo.save(corpInterBen);
-        logger.info("CorpInternational beneficiary {} has been added for user {}", corpInterBen.toString(),user.getUserName());
+    public String addCorpInternationalBeneficiary(CorpInternationalBeneficiaryDTO beneficiary) throws InternetBankingException {
+        CorpInterBeneficiary corpInterBeneficiary = convertDTOToEntity(beneficiary);
+        corpInterBeneficiary.setCorporate(getCurrentUser().getCorporate());
+        this.corpInternationalBeneficiaryRepo.save(corpInterBeneficiary);
+        sendAlert(getCurrentUser(),beneficiary.getAccountName());
+        logger.info("CorpInternational beneficiary has been added for corporate {}", getCurrentUser().getCorporate().getName());
         return messageSource.getMessage("beneficiary.add.success",null,locale);
     }
 
     @Override
     public String deleteCorpInternationalBeneficiary(Long beneficiaryId) throws InternetBankingException {
-        corpInternationalBeneficiaryRepo.deleteById(beneficiaryId);
+        corpInternationalBeneficiaryRepo.delete(beneficiaryId);
         logger.info("Deleted beneficiary with Id {}", beneficiaryId);
         return messageSource.getMessage("beneficiary.delete.success",null,locale);
 
     }
 
-    @Override
-    public CorpInterBen getCorpInternationalBeneficiary(Long id) {
-        return corpInternationalBeneficiaryRepo.findById(id).get();
+    @Async
+    private  void sendAlert(User user , String beneficiary) {
+        try {
+            if (true) {
+                String preference = user.getAlertPreference().getCode();
+                String customerName = user.getFirstName()+" "+user.getLastName();
+                String smsMessage = String.format(messageSource.getMessage("beneficiary.alert.message", null, locale),customerName,beneficiary);
+
+                String alertSubject = String.format(messageSource.getMessage("beneficiary.alert.subject", null, locale));
+                if ("SMS".equalsIgnoreCase(preference)) {
+                    integrationService.sendSMS(smsMessage,user.getPhoneNumber(),  alertSubject);
+
+                } else if ("EMAIL".equalsIgnoreCase(preference)) {
+                    sendMail(user,alertSubject,beneficiary);
+
+                } else if ("BOTH".equalsIgnoreCase(preference)) {
+
+                    integrationService.sendSMS(smsMessage,user.getPhoneNumber(),  alertSubject);
+                    sendMail(user,alertSubject,beneficiary);
+                }
+
+            }
+        } catch (Exception e) {
+            logger.error("Error occurred", e);
+        }
+
+    }
+
+    private void sendMail(User user, String subject, String beneficiary){
+
+        String fullName = user.getFirstName()+" "+user.getLastName();
+        Context context = new Context();
+        context.setVariable("fullName",fullName);
+        context.setVariable("beneficiaryName",beneficiary);
+
+        Email email = new Email.Builder().setRecipient(user.getEmail())
+                .setSubject(subject)
+                .setTemplate("mail/beneficiary.html")
+                .build();
+        mailService.sendMail(email,context);
+
     }
 
     @Override
-    public Iterable<CorpInterBen> getCorpInternationalBeneficiaries(CorporateUser user) {
-        return corpInternationalBeneficiaryRepo.findByCorporate(user.getCorporate());
+    public CorpInternationalBeneficiaryDTO getCorpInternationalBeneficiary(Long id) {
+        return convertEntityToDTO(corpInternationalBeneficiaryRepo.findOneById(id));
     }
 
     @Override
-    public List<CorpInternationalBeneficiaryDTO> convertEntitiesToDTOs(Iterable<CorpInterBen> corpInternationalBeneficiaries) {
+    public Iterable<CorpInterBeneficiary> getCorpInternationalBeneficiaries() {
+        return corpInternationalBeneficiaryRepo.findByCorporate(getCurrentUser().getCorporate());
+    }
+
+    @Override
+    public List<CorpInternationalBeneficiaryDTO> convertEntitiesToDTOs(Iterable<CorpInterBeneficiary> corpInternationalBeneficiaries) {
         List<CorpInternationalBeneficiaryDTO> corpInternationalBeneficiaryDTOList = new ArrayList<>();
-        for(CorpInterBen internationalBeneficiary: corpInternationalBeneficiaries){
+        for(CorpInterBeneficiary internationalBeneficiary: corpInternationalBeneficiaries){
             CorpInternationalBeneficiaryDTO benDTO = convertEntityToDTO(internationalBeneficiary);
             corpInternationalBeneficiaryDTOList.add(benDTO);
         }
@@ -79,21 +136,34 @@ public class CorpInternationalBeneficiaryServiceImpl implements CorpInternationa
     }
 
     @Override
-    public CorpInternationalBeneficiaryDTO convertEntityToDTO(CorpInterBen corpInterBen) {
+    public CorpInternationalBeneficiaryDTO convertEntityToDTO(CorpInterBeneficiary corpInterBeneficiary) {
         CorpInternationalBeneficiaryDTO corpInternationalBeneficiaryDTO = new CorpInternationalBeneficiaryDTO();
-        corpInternationalBeneficiaryDTO.setAccountName(corpInterBen.getAccountName());
-        corpInternationalBeneficiaryDTO.setAccountNumber(corpInterBen.getAccountNumber());
-        corpInternationalBeneficiaryDTO.setBeneficiaryBank(corpInterBen.getBeneficiaryBank());
-        corpInternationalBeneficiaryDTO.setSwiftCode(corpInterBen.getSwiftCode());
-        corpInternationalBeneficiaryDTO.setSortCode(corpInterBen.getSortCode());
-        corpInternationalBeneficiaryDTO.setBeneficiaryAddress(corpInterBen.getBeneficiaryAddress());
-        corpInternationalBeneficiaryDTO.setIntermediaryBankAccountNumber(corpInterBen.getIntermediaryBankAcctNo());
-        corpInternationalBeneficiaryDTO.setIntermediaryBankName(corpInterBen.getIntermediaryBankName());
-        return  modelMapper.map(corpInterBen,CorpInternationalBeneficiaryDTO.class);
+        corpInternationalBeneficiaryDTO.setAccountName(corpInterBeneficiary.getAccountName());
+        corpInternationalBeneficiaryDTO.setAccountNumber(corpInterBeneficiary.getAccountNumber());
+        corpInternationalBeneficiaryDTO.setBeneficiaryBank(corpInterBeneficiary.getBeneficiaryBank());
+        corpInternationalBeneficiaryDTO.setSwiftCode(corpInterBeneficiary.getSwiftCode());
+        corpInternationalBeneficiaryDTO.setSortCode(corpInterBeneficiary.getSortCode());
+        corpInternationalBeneficiaryDTO.setBeneficiaryAddress(corpInterBeneficiary.getBeneficiaryAddress());
+        corpInternationalBeneficiaryDTO.setIntermediaryBankAcctNo(corpInterBeneficiary.getIntermediaryBankAcctNo());
+        corpInternationalBeneficiaryDTO.setIntermediaryBankName(corpInterBeneficiary.getIntermediaryBankName());
+        return  modelMapper.map(corpInterBeneficiary,CorpInternationalBeneficiaryDTO.class);
     }
 
     @Override
-    public CorpInterBen convertDTOToEntity(CorpInternationalBeneficiaryDTO internationalBeneficiaryDTO) {
-        return  modelMapper.map(internationalBeneficiaryDTO,CorpInterBen.class);
+    public CorpInterBeneficiary convertDTOToEntity(CorpInternationalBeneficiaryDTO internationalBeneficiaryDTO) {
+        return  modelMapper.map(internationalBeneficiaryDTO,CorpInterBeneficiary.class);
+    }
+
+    private CorporateUser getCurrentUser(){
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (!(authentication instanceof AnonymousAuthenticationToken)) {
+            CustomUserPrincipal userPrincipal =(CustomUserPrincipal) authentication.getPrincipal();
+            return (CorporateUser)userPrincipal.getUser();
+        }
+
+        return null ;
+
+
     }
 }
