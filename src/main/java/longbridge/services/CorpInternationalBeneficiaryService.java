@@ -2,8 +2,7 @@ package longbridge.services;
 
 import longbridge.dtos.CorpInternationalBeneficiaryDTO;
 import longbridge.exception.InternetBankingException;
-import longbridge.models.CorpInterBen;
-import longbridge.models.CorporateUser;
+import longbridge.models.CorpInterBeneficiary;
 import org.springframework.security.access.prepost.PreAuthorize;
 
 import java.util.List;
@@ -14,11 +13,10 @@ import java.util.List;
 public interface CorpInternationalBeneficiaryService {
     /**
      * Adds a new beneficiary of a transfer
-     * @param user the corporate user
      * @param  beneficiary  the beneficiary
      */
     @PreAuthorize("hasAuthority('ADD_BENEFICIARY')")
-    String addCorpInternationalBeneficiary(CorporateUser user, CorpInternationalBeneficiaryDTO beneficiary) throws InternetBankingException;
+    String addCorpInternationalBeneficiary(CorpInternationalBeneficiaryDTO beneficiary) throws InternetBankingException;
 
     /**
      * Deletes a beneficiary
@@ -33,23 +31,22 @@ public interface CorpInternationalBeneficiaryService {
      * @return the specified beneficiary
      */
     @PreAuthorize("hasAuthority('GET_BENEFICIARIES')")
-    CorpInterBen getCorpInternationalBeneficiary(Long id);
+    CorpInternationalBeneficiaryDTO getCorpInternationalBeneficiary(Long id);
 
     /**
      * Returns a list of the corporate's beneficiaries
-     * @param user the corporate user
      * @return a list of the beneficiaries
      */
     @PreAuthorize("hasAuthority('GET_BENEFICIARIES')")
-    Iterable<CorpInterBen> getCorpInternationalBeneficiaries(CorporateUser user);
+    Iterable<CorpInterBeneficiary> getCorpInternationalBeneficiaries();
 
     @PreAuthorize("hasAuthority('GET_BENEFICIARIES')")
-    List<CorpInternationalBeneficiaryDTO> convertEntitiesToDTOs(Iterable<CorpInterBen> internationalBeneficiaries);
+    List<CorpInternationalBeneficiaryDTO> convertEntitiesToDTOs(Iterable<CorpInterBeneficiary> internationalBeneficiaries);
 
     @PreAuthorize("hasAuthority('GET_BENEFICIARIES')")
-    CorpInternationalBeneficiaryDTO convertEntityToDTO(CorpInterBen internationalBeneficiary);
+    CorpInternationalBeneficiaryDTO convertEntityToDTO(CorpInterBeneficiary internationalBeneficiary);
 
     @PreAuthorize("hasAuthority('GET_BENEFICIARIES')")
-    CorpInterBen convertDTOToEntity(CorpInternationalBeneficiaryDTO internationalBeneficiaryDTO);
+    CorpInterBeneficiary convertDTOToEntity(CorpInternationalBeneficiaryDTO internationalBeneficiaryDTO);
 
 }

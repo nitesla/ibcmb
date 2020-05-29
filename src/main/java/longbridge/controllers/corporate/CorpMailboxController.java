@@ -7,15 +7,22 @@ import longbridge.services.CorporateUserService;
 import longbridge.services.MessageService;
 import longbridge.services.OperationsUserService;
 import longbridge.services.RetailUserService;
+import longbridge.utils.DataTablesUtils;
+import longbridge.utils.MessageCategory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
+import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
@@ -46,16 +53,117 @@ public class CorpMailboxController {
     public String getInbox(Model model, Principal principal) {
         CorporateUser corporateUser = corporateUserService.getUserByName(principal.getName());
         List<MessageDTO> receivedMessages = messageService.getReceivedMessages(corporateUser);
+
+//        Iterable<MessageDTO> receivedMessages = messageService.getReceivedMessages(corporateUser);
+        Long noOfDraft = messageService.countMessagesByTag(corporateUser, MessageCategory.DRAFT);
+        Long noOfSent = messageService.countMessagesByTag(corporateUser,MessageCategory.SENT);
+        model.addAttribute("noOfSent","Sent ("+noOfSent+")");
+        model.addAttribute("noOfInbox","Inbox ("+((List<MessageDTO>) receivedMessages).size()+")");
+        model.addAttribute("noOfDraft", "Drafts ("+noOfDraft+")");
+        model.addAttribute("receivedMessages", receivedMessages);
         model.addAttribute("receivedMessages", receivedMessages);
         return "corp/mailbox/inbox";
+    }
+
+    @GetMapping("/receivedmails/list")
+    @ResponseBody
+    public DataTablesOutput<MessageDTO> getReceivedMails(DataTablesInput input, Principal principal) {
+        Pageable pageable = DataTablesUtils.getPageable(input);
+        CorporateUser corporateUser = corporateUserService.getUserByName(principal.getName());
+
+        Page<MessageDTO> messages=messageService.getMessages(corporateUser,pageable);
+        DataTablesOutput<MessageDTO> out = new DataTablesOutput<>();
+        out.setDraw(input.getDraw());
+        out.setData(messages.getContent());
+        out.setRecordsFiltered(messages.getTotalElements());
+        out.setRecordsTotal(messages.getTotalElements());
+        return out;
+    }
+
+    @GetMapping("/inbox/{id}/message")
+    public String viewReceivedMessage(@PathVariable Long id, Model model,Principal principal) {
+        CorporateUser corporateUser = corporateUserService.getUserByName(principal.getName());
+
+        Iterable<MessageDTO> receivedMessages = messageService.getReceivedMessages(corporateUser);
+        Long noOfDraft = messageService.countMessagesByTag(corporateUser,MessageCategory.DRAFT);
+        Long noOfSent = messageService.countMessagesByTag(corporateUser,MessageCategory.SENT);
+        model.addAttribute("noOfSent","Sent ("+noOfSent+")");
+        model.addAttribute("noOfInbox","Inbox ("+((List<MessageDTO>) receivedMessages).size()+")");
+        model.addAttribute("noOfDraft", "Drafts ("+noOfDraft+")");
+        model.addAttribute("receivedMessages", receivedMessages);
+
+        messageService.setStatus(id, "Read");
+        MessageDTO message = messageService.getMessage(id);
+        model.addAttribute("messageDTO", message);
+        return "corp/mailbox/recievedmessage";
     }
 
     @GetMapping("/sentmail")
     public String getOutbox(Model model, Principal principal) {
         CorporateUser corporateUser = corporateUserService.getUserByName(principal.getName());
-        List<MessageDTO> sentMessages = messageService.getSentMessages(corporateUser);
+//        List<MessageDTO> sentMessages = messageService.getSentMessages(corporateUser);
+
+        List<MessageDTO> sentMessages = messageService.getMessagesByTag(corporateUser, MessageCategory.SENT);
+        Iterable<MessageDTO> receivedMessages = messageService.getReceivedMessages(corporateUser);
+
+        Long noOfDraft = messageService.countMessagesByTag(corporateUser,MessageCategory.DRAFT);
+        model.addAttribute("noOfSent","Sent ("+sentMessages.size()+")");
+        model.addAttribute("noOfInbox","Inbox ("+((List<MessageDTO>) receivedMessages).size()+")");
+        model.addAttribute("noOfDraft", "Drafts ("+noOfDraft+")");
+        model.addAttribute("sentMessages", sentMessages);
+
         model.addAttribute("sentMessages", sentMessages);
         return "corp/mailbox/sentmail";
+    }
+
+    @GetMapping("/sentmails/list")
+    @ResponseBody
+    public DataTablesOutput<MessageDTO> getSentMails(DataTablesInput input, Principal principal) {
+        logger.info("the username  {}",principal.getName());
+        Pageable pageable = DataTablesUtils.getPageable(input);
+        Page<MessageDTO> messages = null;
+        CorporateUser corporateUser = corporateUserService.getUserByName(principal.getName());
+
+//        List<MessageDTO> sentMessages = messageService.getMessagesByTag(retailUser, MessageCategory.SENT);
+
+        messages = messageService.getPagedMessagesByTag(corporateUser,pageable, MessageCategory.SENT);
+        DataTablesOutput<MessageDTO> out = new DataTablesOutput<>();
+        out.setDraw(input.getDraw());
+        out.setData(messages.getContent());
+        out.setRecordsFiltered(messages.getTotalElements());
+        out.setRecordsTotal(messages.getTotalElements());
+        return out;
+    }
+
+    @GetMapping("/draft")
+    public String getDraft(Model model, Principal principal) {
+        CorporateUser corporateUser = corporateUserService.getUserByName(principal.getName());
+        List<MessageDTO> draftMessages = messageService.getMessagesByTag(corporateUser,MessageCategory.DRAFT);
+        Iterable<MessageDTO> receivedMessages = messageService.getReceivedMessages(corporateUser);
+
+        Long noOfSent = messageService.countMessagesByTag(corporateUser,MessageCategory.SENT);
+        model.addAttribute("noOfInbox","("+((List<MessageDTO>) receivedMessages).size()+")");
+        model.addAttribute("noOfSent","("+noOfSent+")");
+        model.addAttribute("noOfDraft","("+draftMessages.size()+")");
+        model.addAttribute("draftMessages", draftMessages);
+        return "corp/mailbox/draft";
+    }
+    @GetMapping("/draftmails/list")
+    @ResponseBody
+    public DataTablesOutput<MessageDTO> getDraftMails(DataTablesInput input, Principal principal) {
+        logger.info("the username  {}",principal.getName());
+        Pageable pageable = DataTablesUtils.getPageable(input);
+        Page<MessageDTO> messages = null;
+        CorporateUser corporateUser = corporateUserService.getUserByName(principal.getName());
+
+
+        messages = messageService.getPagedMessagesByTag(corporateUser,pageable, MessageCategory.DRAFT);
+        DataTablesOutput<MessageDTO> out = new DataTablesOutput<>();
+        out.setDraw(input.getDraw());
+        out.setData(messages.getContent());
+        out.setRecordsFiltered(messages.getTotalElements());
+        out.setRecordsTotal(messages.getTotalElements());
+        return out;
     }
 
     @GetMapping("/{id}/reply")
@@ -92,16 +200,18 @@ public class CorpMailboxController {
     }
 
     @PostMapping
-    public String createMessage(@ModelAttribute("messageDTO") @Valid MessageDTO messageDTO, BindingResult bindingResult, RedirectAttributes redirectAttributes, Principal principal, Model model, Locale locale) {
+    public String createMessage(@ModelAttribute("messageDTO") @Valid MessageDTO messageDTO, BindingResult bindingResult, RedirectAttributes redirectAttributes, Principal principal, Model model, Locale locale, WebRequest webRequest) {
         if (messageDTO.getSubject() == null || messageDTO.getBody() == null) {
             model.addAttribute("failure", messageSource.getMessage("form.fields.required", null, locale));
             return "corp/mailbox/compose";
         }
+        String category = webRequest.getParameter("category");
+        logger.debug("the category {}",category);
 
         CorporateUser corporateUser = corporateUserService.getUserByName(principal.getName());
 
         try {
-            messageService.addMessage(corporateUser, messageDTO);
+            messageService.addMessage(corporateUser, messageDTO,category);
             redirectAttributes.addFlashAttribute("message", "Message sent successfully");
             return "redirect:/corporate/mailbox/sentmail";
         } catch (InternetBankingException ibe) {
@@ -112,19 +222,24 @@ public class CorpMailboxController {
         }
     }
 
-    @GetMapping("/inbox/{id}/message")
-    public String viewReceivedMessage(@PathVariable Long id, Model model) {
-        messageService.setStatus(id, "Read");
-        MessageDTO message = messageService.getMessage(id);
-        model.addAttribute("messageDTO", message);
-        return "corp/mailbox/recievedmessage";
-    }
+
 
     @GetMapping("/sent/{id}/message")
-    public String viewSentMessage(@PathVariable Long id, Model model) {
+    public String viewSentMessage(@PathVariable Long id, Model model,Principal principal) {
         MessageDTO message = messageService.getMessage(id);
         model.addAttribute("messageDTO", message);
-        return "corp/mailbox/sentmessage";
+//        return "corp/mailbox/sentmessage";
+        CorporateUser corporateUser = corporateUserService.getUserByName(principal.getName());
+
+        Iterable<MessageDTO> receivedMessages = messageService.getReceivedMessages(corporateUser);
+        Long noOfDraft = messageService.countMessagesByTag(corporateUser,MessageCategory.DRAFT);
+        Long noOfSent = messageService.countMessagesByTag(corporateUser,MessageCategory.SENT);
+        model.addAttribute("noOfSent","Sent ("+noOfSent+")");
+        model.addAttribute("noOfInbox","Inbox ("+((List<MessageDTO>) receivedMessages).size()+")");
+        model.addAttribute("noOfDraft", "Drafts ("+noOfDraft+")");
+        model.addAttribute("receivedMessages", receivedMessages);
+
+        return "corp/mailbox/compose";
     }
 
     @GetMapping("/inbox/message/{id}/delete")

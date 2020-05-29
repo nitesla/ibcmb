@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="layout :: site-head">
+</head>
+
+
+
+<body class="nav-md">
+<div class="container body">
+    <div class="main_container">
+        <div class="col-md-3 left_col">
+            <div class="left_col scroll-view">
+
+                <div th:replace="layout :: admin-menu"></div>
+                <div th:replace="layout :: menu-footer-adm"></div>
+
+            </div>
+        </div>
+        <div th:replace="layout :: top-nav"></div>
+
+        <!-- page content -->
+        <div class="right_col" role="main">
+            <div class="">
+                <div class="page-title">
+                    <div class="title_left">
+                        <h3>Add Report</h3>
+                    </div>
+
+                </div>
+
+                <div class="clearfix"></div>
+
+                <div class="row">
+                    <div class="col-md-12 col-sm-12 col-xs-12">
+                        <div class="x_panel">
+                            <div class="x_title">
+                                <ul class="nav navbar-left panel_toolbox">
+                                    <li >
+                                        <div class="col-lg-4">
+                                            <div class="title-action">
+                                                <!--<a  class="btn btn-primary btn-sm bt-select bt-link-act" href="/admin/codes/index/edit" disabled="disabled" ><i class="fa fa-pencil"></i> Edit</a>-->
+                                            </div>
+                                        </div>
+                                    </li>
+                                    <li >
+                                        <div class="col-lg-4">
+                                            <div class="title-action">
+                                                <!--<a id="delete-btn" class="btn btn-danger btn-sm bt-select" href="/admin/codes/index/delete" disabled="disabled" ><i class="fa fa-trash"></i> Delete</a>-->
+                                            </div>
+                                        </div>
+                                    </li>
+
+                                </ul>
+                                <ul class="nav navbar-right panel_toolbox">
+
+
+                                    <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                                    </li>
+
+                                </ul>
+                                <div class="clearfix"></div>
+                            </div>
+                            <div class="x_content">
+                                <fieldset>
+                                    <div class="form-group">
+                                        <div class="col-md-12 col-sm-6 col-xs-12">
+
+                                            <form style="margin-top:20px" method="post" th:action="@{/admin/report/add}" enctype="multipart/form-data">
+                                                <div class="form-group">
+                                                    <div class="col-md-12">
+                                                        <label class="col-sm-2 control-label">Report name</label>
+                                                        <div class="col-sm-6">
+                                                            <input type="text" required name="reportName" class="form-control"/>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group" style="padding: 2%">
+
+                                                </div>
+                                                <div class="form-group">
+                                                    <div class="col-md-12">
+                                                        <label class="col-sm-2 control-label">Add permission</label>
+                                                        <div class="col-sm-6">
+                                                            <select th:name="permissionCode" th:id="permission" class="form-control">
+                                                                <option>--No Permission--</option>
+                                                                <option th:each="permissionDTO : ${permissionDTOS}" th:text="${permissionDTO.description+' ('+permissionDTO.userType+')'}" th:value="${permissionDTO.code}"></option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <div class="col-md-12">
+
+                                                    <h6 class="hstyle"  style="font-size:13px;line-height:20px;margin-top:10px"><span style="padding-left: 1%">Upload jrxml file through the link below</span></h6>
+                                                    </div>
+                                                    </div>
+                                                <div class="form-group">
+                                                    <!--<label>Bulk Transfer file</label>-->
+
+                                                    <div class="col-md-12">
+                                                        <div style="padding-left: 1%">
+                                                            <div class="pull-left">
+                                                                <input onchange="change()" id='input-file' style="width: 0.1px;height: 0.1px;opacity: 0;overflow: hidden;position: absolute;z-index: -1;"  type="file" name="transferFile"/>
+
+                                                                <div style="width:150px;display:inline">
+                                                                    <label id="label-input"   for="input-file" class="btn btn-default " style="display:inline !important;padding:8px !important;background:grey !important"><i class="fa fa-upload" aria-hidden="true" style="color:white"></i> Choose File</label>
+                                                                </div>
+                                                            </div>
+
+                                                            <!--<input  type="submit" value="Upload"/>-->
+                                                            <div class="col-md-7">
+                                                                <div style="padding-right: 8%">
+                                                                    <div class="pull-right">
+                                                                        <button  class="btn btn-primary required-step" type="submit">Upload</button>
+                                                                    </div>
+                                                                    <div class="pull-right">
+                                                                        <a class="btn btn-white" href="/admin/report/view" id="cancel">Cancel</a>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <div style="padding-left: 2%">
+                                                            <div id="input-msg">
+                                                                No File Chosen.
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </fieldset>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+        <!-- footer content -->
+        <footer th:replace="layout :: footer">
+        </footer>
+        <!-- /footer content -->
+    </div>
+</div>
+
+
+<script th:src="@{~/bank/vendors/datatables.net/js/jquery.dataTables.js}"></script>
+<script th:src="@{~/bank/js/dataTables.select.js}"></script>
+<script th:src="@{~/bank/js/dataTables.bootstrap.js}"></script>
+<script th:src="@{~/bank/js/jquery.spring-friendly.min.js}"></script>
+
+<!-- Page-Level Scripts -->
+<script class="init" th:inline="javascript">
+    /*<![CDATA[*/
+    /*]]>*/
+
+    $(document).ready(
+
+        function () {
+
+
+        });
+    function change()
+    {
+        if($('#input-file').val() == '')
+        {
+            var x = "<i class='fa fa-upload' aria-hidden='true' style='color:white'></i> Choose File";
+            $('#input-msg').text('No File Chosen.');
+            $('#label-input').html(x);
+        }
+        else {
+            console.log("test "+$('#input-file').val());
+            $('#input-msg').text($('#input-file').val());
+            $('#label-input').text('One File Chosen');
+        }
+
+
+    }
+</script>
+
+
+
+</body>
+</html>

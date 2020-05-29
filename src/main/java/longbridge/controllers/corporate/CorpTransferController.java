@@ -121,6 +121,7 @@ public class CorpTransferController {
                     return "redirect:/corporate/transfer/interbank";
                 }
                 case INTERNATIONAL_TRANSFER: {
+                    return "redirect:/corporate/transfer/international";
 
                 }
                 case NAPS: {
@@ -264,7 +265,9 @@ public class CorpTransferController {
                 }
                 request.getSession().removeAttribute("auth-needed");
             }
-
+            if (transferRequestDTO.getTransferType().equals(TransferType.INTERNATIONAL_TRANSFER)) {
+                return "redirect:/corporate/transfer/international/process";
+            }
 
             if (request.getSession().getAttribute("add") != null) {
                 //checkbox  checked
@@ -352,13 +355,12 @@ public class CorpTransferController {
 
     @GetMapping("/{id}/authorizations")
     public String getAuthorizations(@PathVariable Long id, ModelMap modelMap) {
-
         CorpTransRequest corpTransRequest = corpTransferService.getTransfer(id);
         CorpTransferAuth corpTransferAuth = corpTransferService.getAuthorizations(corpTransRequest);
         CorpTransRule corpTransRule = corporateService.getApplicableTransferRule(corpTransRequest);
         boolean userCanAuthorize = corpTransferService.userCanAuthorize(corpTransRequest);
         modelMap.addAttribute("authorizationMap", corpTransferAuth)
-                .addAttribute("corpTransRequest", corpTransRequest)
+                .addAttribute("corpTransRequest", corpTransferService.entityToDTO(corpTransRequest))
                 .addAttribute("corpTransReqEntry", new CorpTransReqEntry())
                 .addAttribute("corpTransRule", corpTransRule)
                 .addAttribute("userCanAuthorize", userCanAuthorize);
@@ -394,10 +396,10 @@ public class CorpTransferController {
     @GetMapping("/requests/all")
     public
     @ResponseBody
-    DataTablesOutput<CorpTransRequest> getTransferRequests(DataTablesInput input) {
+    DataTablesOutput<CorpTransferRequestDTO> getTransferRequests(DataTablesInput input) {
         Pageable pageable = DataTablesUtils.getPageable(input);
-        Page<CorpTransRequest> requests = corpTransferService.getTransferRequests(pageable);
-        DataTablesOutput<CorpTransRequest> out = new DataTablesOutput<CorpTransRequest>();
+        Page<CorpTransferRequestDTO> requests = corpTransferService.getTransferRequest(pageable);
+        DataTablesOutput<CorpTransferRequestDTO> out = new DataTablesOutput<CorpTransferRequestDTO>();
         out.setDraw(input.getDraw());
         out.setData(requests.getContent());
         out.setRecordsFiltered(requests.getTotalElements());

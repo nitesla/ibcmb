@@ -1,79 +1,161 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head th:replace="cust_layout :: site-head">
 
-</head>
-<body>
-<header th:replace="cust_layout :: header">
-</header>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{corp-layout}">
 
-<section class="content-wrapper">
-    <div class="container conts">
-        <div class="wrapper wrapper-content">
-            <div class="container">
-                <div class="row">
-                    <div class="col-lg-3">
-                        <div class="ibox float-e-margins">
-                            <div class="ibox-content mailbox-content">
-                                <div class="margin-bottoms"></div>
-                                <div class="file-manager">
-                                    <a class="btn btn-block btn-primary compose-mail" th:href="@{/corporate/mailbox/compose}">Compose Mail</a>
-                                    <div class="margin-bottoms"></div>
-                                    <ul class="folder-list">
-                                        <li><a th:href="@{/corporate/mailbox/inbox}"> <i class="fa fa-inbox "></i> Inbox </a></li>
-                                        <li><a th:href="@{/corporate/mailbox/sentmail}"> <i class="fa fa-sign-out"></i> Sent Mail</a></li>
-                                        <!--<li><a th:href="@{/corporate/mailbox/draft}"> <i class="fa fa-file-text-o"></i> Drafts </a></li>-->
-                                    </ul>
-                                </div>
-                            </div>
+
+<body onload="javascript:var bread = [['Home', '/corporate/dashboard'],['Mail box', '/corporate/mailbox']];currentBar('Mail Center');breadCrumb(bread)">
+
+<div layout:fragment="content">
+    <div class="input-group col-lg-4 pull-right">
+        <input type="text" class="form-control" id="pattern" placeholder="Search for..."/> <span
+            class="input-group-btn">
+                    <button class="btn btn-default search-icon" type="submit"><i class="fa fa-search icon-search"></i></button>
+    </span>
+    </div>
+    <div class="col-xs-12 ">
+        <div class=" no-mt  alert no-bd">
+
+
+            <div class='row'>
+
+                <div class="col-md-12 bg-coronation content-mail" >
+                    <aside class="col-md-3 alert  mail-links-box">
+                        <div class="">
+                            <ul class='mail-links'>
+                                <a th:href="@{/corporate/mailbox/compose}"><li class='bg-white coronation-blue' style="border-bottom:0px !important;font-size:13px;font-weight:bolder">Compose Message
+                                </li></a>
+                                <a th:href="@{/corporate/mailbox/inbox}"><li ><span th:text="${noOfInbox}"></span> <i class=' pull-right fa fa-angle-right' style="font-size:20px"></i></li></a>
+                                <a th:href="@{/corporate/mailbox/sentmail}"><li class='mail-active'><span th:text="${noOfSent}"></span><i class='pull-right fa fa-angle-right' style="font-size:20px"></i></li></a>
+                                <a th:href="@{/corporate/mailbox/draft}"><li > <span th:text="${noOfDraft}"></span> <i class=' pull-right fa fa-angle-right' style="font-size:20px"></i></li></a>
+
+                            </ul>
                         </div>
-                    </div>
-                    <div class="col-lg-9 animated fadeInRight">
-                        <div class="contain">
-                            <div class="margin-bottom"></div>
-                            <div class="mail-box-header">
-                                <div class="pull-right tooltip-demo fas">
-                                    <a th:href="@{/corporate/mailbox/{id}/reply(id=${messageDTO.id})}" class="btn-success btn-sm" data-toggle="tooltip" data-placement="top" title="Reply"><i class="fa fa-reply"></i> Reply</a>
-                                    <a th:href="@{/corporate/mailbox/inbox/message/{id}/delete(id=${messageDTO.id})}" class="btn-default btn-sm" data-toggle="tooltip" data-placement="top" title="Delete"><i class="fa fa-trash-o"></i>&nbsp;</a>
-                                </div>
-
-                                <h3 class="in-box">
-                                    <span >From: </span><span class="in-box" th:text="${messageDTO.sender}"></span>
-                                </h3>
-                                <br/>
-                                <h4 class="in-box">
-                                    <span >To: </span><span class="in-box" th:text="${messageDTO.recipient}"></span>
-                                </h4>
-                                <br/>
-
-                                <br/>
-                                <div class="mail-tools tooltip-demo m-t-md">
-                                    <h4 class="in-box">
-                                        <span>Subject: </span><span th:text="${messageDTO.subject}">Aldrsions of Lorem Ipsum.</span>
-                                    </h4>
-                                    <h5>
-                                        <span class="pull-right font-noraml" th:text="${messageDTO.createdOn}">02 FEB 2017</span>
-                                    </h5>
-                                    <br/>  <br/><br/>
-
-
-                                </div>
-                            </div>
-                            <div class="mail-box">
-                                <p th:text="${messageDTO.body}"></p>
-                            </div>
+                    </aside>
+                    <article class="col-md-9 article">
+                        <div class="alert alert-bottom bg-coronation-blue">
+                            <p style="color:white">Received Messages</p>
                         </div>
-                    </div>
 
+
+                        <div class='alert no-bd'>
+                            <h3 class="in-bo sent-info">
+                                <span >From: </span><span class="in-box" th:text="${messageDTO.sender}"></span>
+                            </h3>
+
+
+                            <h4 class="in-bo sent-info">
+                                <span >To: </span><span class="in-box" th:text="${messageDTO.recipient}"></span>
+                                <span class="pull-right font-noraml" th:text="${messageDTO.createdOn}">02 FEB 2017</span>
+
+                            </h4>
+
+
+                            <h4 class="in-bo sent-info">
+                                <span>Subject: </span><span class="in-box" th:text="${messageDTO.subject}">Aldrsions of Lorem Ipsum.</span>
+                                <a th:href="@{/corporate/mailbox/{id}/reply(id=${messageDTO.id})}" class="btn btn-link pull-right" data-toggle="tooltip" data-placement="top" title="Reply"><i class="fa fa-reply"></i> Reply</a>
+
+                                <a  th:href="@{/corporate/mailbox/sent/message/{id}/delete(id=${messageDTO.id})}" class="btn btn-link pull-right" data-toggle="tooltip" data-placement="top" title="Delete">
+                                    <i class="fa fa-trash-o"></i>&nbsp;
+                                </a>
+
+                            </h4>
+
+
+
+                        </div>
+
+                        <div class='bg-white sm-box'>
+
+                            <h3><p th:text="${messageDTO.body}">
+                            </p></h3>
+                        </div>
+
+
+
+
+
+
+
+                    </article>
                 </div>
             </div>
         </div>
+
     </div>
 
-</section>
 
-<!-- CONTENT-WRAPPER SECTION END-->
-<footer th:replace="cust_layout ::footer">
-</footer>
+</div>
+
+
+<th:block layout:fragment="scripts">
+
+    <!-- Page-Level Scripts -->
+
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+
+        /*]]>*/
+    </script>
+
+    <script>
+        /*<![CDATA[*/
+
+        /*]]>*/
+    </script>
+    <script th:src="@{~/bank/vendors/sweetalert/sweetalert.min.js}"></script>
+    <script th:src="@{~/bank/js/jquery.spring-friendly.min.js}"></script>
+    <script th:src="@{~/bank/vendors/bootstrap-dialog/js/bootstrap-dialog.js}"></script>
+
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+
+        $(document).ready(function () {
+            var url = "/corporate/mailbox/sentmails/list";
+            var table = $('#mail-table').DataTable({
+                select: true,
+                responsive : false,
+                "lengthMenu" : [ [ 5, 10 ], [ 5, 10 ] ],
+                "pagingType" : "input",
+                "searching" : false,
+                "paging" : true,
+                "serverSide" : true,
+                "ajax" : url,
+                "dom" : 'T<"clear">frtlp',
+                "columns" : [
+                    { "data": "sender" },
+                    { "data": "subject" },
+                    { "data": "createdOn" }
+                    ,
+                    { "data": "id" }
+
+                ]
+                ,
+                "columnDefs" : [ {
+                    "targets" : 3,
+                    "data" : "enabled",
+                    "render" : function(data, type,full, meta) {
+                        if (type === 'display') {
+                            return "<a href=/corporate/mailbox/sent/"+data+"/message>View</a>";
+                        }else {
+
+                        }
+                        return data;
+                    }
+
+                } ]
+            });
+        });
+
+        /*]]>*/
+    </script>
+
+
+
+
+
+</th:block>
+
+
 </body>
+
 </html>

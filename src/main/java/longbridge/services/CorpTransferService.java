@@ -22,6 +22,8 @@ public interface CorpTransferService {
     @PreAuthorize("hasAuthority('GET_TRANSFER')")
     CorpTransRequest getTransfer(Long id);
 
+    CorpTransferRequestDTO entityToDTO(CorpTransRequest corpTransRequest);
+
     @PreAuthorize("hasAuthority('MAKE_TRANSFER')")
     CorpTransferRequestDTO saveTransfer(CorpTransferRequestDTO corpTransferRequestDTO) throws TransferException;
 
@@ -31,14 +33,17 @@ public interface CorpTransferService {
     Object addTransferRequest(CorpTransferRequestDTO corpTransferRequestDTO) throws InternetBankingException;
 
     Page<CorpTransRequest> getTransferRequests(Pageable pageDetails);
+    Page<CorpTransferRequestDTO> getTransferRequest(Pageable pageDetails);
 
     int countPendingRequest();
 
     CorpTransferAuth getAuthorizations(CorpTransRequest transRequest);
 
     Page<CorpTransRequest> getCompletedTransfers(Pageable pageDetails);
+    Page<CorpTransferRequestDTO> getCompletedTransfer(Pageable pageDetails);
 
     Page<CorpTransRequest> getCompletedTransfers(String pattern,Pageable pageDetails);
+    Page<CorpTransferRequestDTO> getCompletedTransfer(String pattern,Pageable pageDetails);
 
     String addAuthorization(CorpTransReqEntry transReqEntry);
 

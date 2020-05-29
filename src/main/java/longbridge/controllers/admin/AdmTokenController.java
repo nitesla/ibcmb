@@ -158,6 +158,7 @@ public class AdmTokenController {
                 List<String> serialNos = Arrays.asList(StringUtils.split(serialNums, ","));
                 model.addAttribute("serials", serialNos);
                 TokenForm tokenForm = new TokenForm();
+                tokenForm.setUserType(userType);
                 tokenForm.setUsername(username);
                 model.addAttribute("token", tokenForm);
             } else {
@@ -188,12 +189,21 @@ public class AdmTokenController {
             String group = getUserGroup(username, tokenForm.getUserType());
             String entrustId = getEntrustId(username, tokenForm.getUserType());
 
-            boolean result = securityService.activateToken(entrustId, group, tokenForm.getSerialNumber());
-            if (result) {
+            boolean result = false;
+            if(!entrustId.equalsIgnoreCase("")&& !group.equalsIgnoreCase("")) {
+
+                result = securityService.activateToken(entrustId, group, tokenForm.getSerialNumber());
+
+            }else{
+                redirectAttributes.addFlashAttribute("failure", messageSource.getMessage("token.activate.failure", null, locale));
+                return "redirect:/admin/token/deactivate";
+            }
+            if(result){
                 redirectAttributes.addFlashAttribute("message",
                         messageSource.getMessage("token.activate.success", null, locale));
-                return "redirect:/admin/token/activate2";
+                return "redirect:/admin/token/activate/username";
             }
+
         } catch (InternetBankingSecurityException ibe) {
             logger.error("Error activating token", ibe);
         }
@@ -265,6 +275,7 @@ public class AdmTokenController {
                 model.addAttribute("serials", serialNos);
                 TokenForm tokenForm = new TokenForm();
                 tokenForm.setUsername(username);
+                tokenForm.setUserType(userType);
                 model.addAttribute("token", tokenForm);
             } else {
                 redirectAttributes.addFlashAttribute("failure",
@@ -283,7 +294,7 @@ public class AdmTokenController {
     @GetMapping("/deactivate")
     public String deactivateToken(Model model) {
         model.addAttribute("token", new TokenForm());
-        return "/adm/token/deactivate";
+        return "/adm/token/deactivate1";
 
     }
 
@@ -299,19 +310,27 @@ public class AdmTokenController {
             String username = tokenForm.getUsername();
             String group = getUserGroup(username, tokenForm.getUserType());
             String entrustId = getEntrustId(username, tokenForm.getUserType());
+            boolean result=false;
+            if(!entrustId.equalsIgnoreCase("")&& !group.equalsIgnoreCase("")) {
 
-            boolean result = securityService.deActivateToken(entrustId, group, tokenForm.getSerialNumber());
+             result = securityService.deActivateToken(entrustId, group, tokenForm.getSerialNumber());
+            }else{
+                redirectAttributes.addFlashAttribute("failure", messageSource.getMessage("token.deactivate.failure", null, locale));
+                return "redirect:/admin/token/deactivate";
+            }
             if (result) {
                 redirectAttributes.addFlashAttribute("message",
                         messageSource.getMessage("token.deactivate.success", null, locale));
-                return "redirect:/admin/token/deactivate2";
+                return "redirect:/admin/token/deactivate";
+
+
             }
         } catch (InternetBankingSecurityException ibe) {
             logger.error("Error deactivating token", ibe);
         }
         bindingResult.addError(
                 new ObjectError("invalid", messageSource.getMessage("token.deactivate.failure", null, locale)));
-        return "/adm/token/deactivate2";
+        return "/adm/token/deactivate/username";
     }
 
     @GetMapping("/unlock")
@@ -338,8 +357,13 @@ public class AdmTokenController {
             String username = tokenForm.getUsername();
             String group = getUserGroup(username, tokenForm.getUserType());
             String entrustId = getEntrustId(username, tokenForm.getUserType());
-
-            boolean result = securityService.unLockUser(entrustId, group);
+            boolean result=false;
+            if(!entrustId.equalsIgnoreCase("")&& !group.equalsIgnoreCase("")) {
+                 result = securityService.unLockUser(entrustId, group);
+            }else {
+                redirectAttributes.addFlashAttribute("failure", messageSource.getMessage("token.unlock.failure", null, locale));
+                return "redirect:/admin/token/unlock";
+            }
             if (result) {
                 tokenUtils.resetTokenAttemptsForUser(tokenForm.getUserType(), username);
                 redirectAttributes.addFlashAttribute("message",

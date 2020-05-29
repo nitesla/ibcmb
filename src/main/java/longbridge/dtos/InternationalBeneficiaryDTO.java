@@ -12,7 +12,6 @@ import java.io.Serializable;
 public class InternationalBeneficiaryDTO implements Serializable{
 
     private Long id;
-    @NotEmpty(message = "Please enter a Beneficiary Name")
     private String accountName;
     @NotEmpty(message = "Please enter an Account Number")
     private String accountNumber;
@@ -28,6 +27,7 @@ public class InternationalBeneficiaryDTO implements Serializable{
     private String preferredName;
 
     private String currencyCode;
+    private String chargeFrom;
 
     public Long getId() {
         return id;
@@ -114,5 +114,13 @@ public class InternationalBeneficiaryDTO implements Serializable{
 
     public void setPreferredName(String preferredName) {
         this.preferredName = preferredName;
+    }
+
+    public String getChargeFrom() {
+        return chargeFrom;
+    }
+
+    public void setChargeFrom(String chargeFrom) {
+        this.chargeFrom = chargeFrom;
     }
 }
