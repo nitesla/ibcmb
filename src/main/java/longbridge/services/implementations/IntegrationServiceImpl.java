@@ -3,6 +3,7 @@ package longbridge.services.implementations;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import longbridge.api.*;
 import longbridge.dtos.FixedDepositDTO;
+import longbridge.dtos.LoanDTO;
 import longbridge.dtos.SettingDTO;
 import longbridge.exception.InternetBankingException;
 import longbridge.exception.InternetBankingTransferException;
@@ -1330,5 +1331,25 @@ public class IntegrationServiceImpl implements IntegrationService {
 
 		return transRequest;
 	}
+
+	public LoanDTO getLoanDetails(String accountNumber){
+//		this.accountNumber = accountNumber;
+
+		LoanDTO loan = new LoanDTO();
+		String uri = URI+"/loan/{accountNumber}";
+		Map<String,String> params = new HashMap<>();
+		params.put("accountNumber",accountNumber);
+
+		try{
+			loan = template.getForObject(uri,LoanDTO.class,params);
+			return loan;
+		}
+		catch (Exception e){
+			logger.error("Error getting loan details",e);
+		}
+		return loan;
+
+	}
+
 
 }

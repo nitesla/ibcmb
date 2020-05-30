@@ -1,10 +1,7 @@
 package longbridge.controllers.retail;
 
 import longbridge.api.ExchangeRate;
-import longbridge.dtos.AccountDTO;
-import longbridge.dtos.CodeDTO;
-import longbridge.dtos.RetailUserDTO;
-import longbridge.dtos.SettingDTO;
+import longbridge.dtos.*;
 import longbridge.exception.*;
 import longbridge.forms.AlertPref;
 import longbridge.forms.CustChangePassword;
@@ -95,7 +92,7 @@ public class SettingController {
         List<AccountDTO> accountList = accountService.getAccountsAndBalances(retailUser.getCustomerId());
         logger.debug("Retrieved {} account balance(s) for user {}", accountList.size(), retailUser.getUserName());
         SettingDTO dto = configService.getSettingByName("TRANSACTIONAL_ACCOUNTS");
-        if (dto != null && dto.isEnabled()) {
+       /* if (dto != null && dto.isEnabled()) {
             String[] list = StringUtils.split(dto.getValue(), ",");
             accountList = accountList
                     .stream()
@@ -110,8 +107,31 @@ public class SettingController {
                                 i.setAccountType(code.getDescription());
                             }
                         }
-                );
+                );*/
+        List<LoanDTO> loans = new ArrayList<>();
+        if (dto != null && dto.isEnabled()) {
+            String[] transactionalAccounts = StringUtils.split(dto.getValue(), ",");
+            accountList = accountList.stream()
+                    .filter(Objects::nonNull)
+                    .map(i -> {
 
+                                if ("LOAN".equalsIgnoreCase(i.getAccountType())) {
+                                    LoanDTO loan = integrationService.getLoanDetails(i.getAccountNumber());
+                                    loans.add(loan);
+                                }
+                                return i;
+                            }
+                    ).filter(i -> ArrayUtils.contains(transactionalAccounts, i.getAccountType()))
+                    .map(i -> {
+                        Code code = codeService.getByTypeAndCode("ACCOUNT_CLASS", i.getAccountType());
+                        if (code != null && code.getDescription() != null) {
+                            i.setAccountType(code.getDescription());
+                        }
+                        return i;
+                    })
+                    .collect(Collectors.toList());
+        }
+        model.addAttribute("loans", loans);
         model.addAttribute("accountList", accountList);
 
         boolean expired = passwordPolicyService.displayPasswordExpiryDate(retailUser.getExpiryDate());
