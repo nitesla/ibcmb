@@ -29,8 +29,9 @@
 
     </aspects>
 
-    <weaver options="-Xlintfile:META-INF/Xlint.properties" />
-
+    <weaver options="-XnoInline -Xlintfile:META-INF/Xlint.properties">
+        <include within="longbridge..*"/>
+    </weaver>
 
     <!--<weaver options="-verbose ">-->
     <weaver options="-warn:none -Xlint:ignore">
