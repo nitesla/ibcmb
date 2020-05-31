@@ -59,7 +59,7 @@
 
                         <h4 class="in-bo sent-info">
                                         <span>Subject: </span><span class="in-box" th:text="${messageDTO.subject}">Aldrsions of Lorem Ipsum.</span>
-                        
+                                        <a th:href="@{/retail/mailbox/{id}/forward(id=${messageDTO.id})}" class="btn btn-link pull-right" data-toggle="tooltip" data-placement="top" title="Reply"><i class="fa fa-arrow-right m-r-5"></i> Forward</a>
                                         <a  th:href="@{/retail/mailbox/sent/message/{id}/delete(id=${messageDTO.id})}" class="btn btn-link pull-right" data-toggle="tooltip" data-placement="top" title="Delete">
                                         <i class="fa fa-trash-o"></i>&nbsp;
                                     </a>

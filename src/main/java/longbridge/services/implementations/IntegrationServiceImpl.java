@@ -3,6 +3,7 @@ package longbridge.services.implementations;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import longbridge.api.*;
 import longbridge.dtos.FixedDepositDTO;
+import longbridge.dtos.LoanDTO;
 import longbridge.dtos.SettingDTO;
 import longbridge.exception.InternetBankingException;
 import longbridge.exception.InternetBankingTransferException;
@@ -467,7 +468,8 @@ public class IntegrationServiceImpl implements IntegrationService {
 
 			}
 			case INTERNATIONAL_TRANSFER: {
-
+				TransRequest request = sendInternationalTransferRequest(transRequest);
+				return request;
 			}
 
 			case OWN_ACCOUNT_TRANSFER: {
@@ -1300,4 +1302,54 @@ public class IntegrationServiceImpl implements IntegrationService {
 		return fixedDeposit;
 
 	}
+	public TransRequest sendInternationalTransferRequest(TransRequest transRequest) {
+
+		try {
+
+			Account account = accountRepo.findFirstByAccountNumber(transRequest.getCustomerAccountNumber());
+
+			Context context = new Context();
+			context.setVariable("transRequest", transRequest);
+			context.setVariable("customerName",account.getAccountName());
+
+
+			String mail = templateEngine.process("mail/internationaltransfer", context);
+			SettingDTO setting = configService.getSettingByName("CUSTOMER_CARE_EMAIL");
+			if (setting != null && setting.isEnabled()) {
+				String recipient = setting.getValue();
+				String subject = messageSource.getMessage("international.transfer.subject",null,locale);
+				mailService.send(recipient, subject, mail, true);
+				transRequest.setReferenceNumber(NumberUtils.generateReferenceNumber(15));
+				transRequest.setStatus("000");
+				transRequest.setStatusDescription(messageSource.getMessage("transfer.successful",null,locale));
+			}
+		} catch (Exception e) {
+			logger.error("Exception occurred {}", e);
+			transRequest.setStatus("96");
+			transRequest.setStatusDescription("TRANSACTION FAILED");
+		}
+
+		return transRequest;
+	}
+
+	public LoanDTO getLoanDetails(String accountNumber){
+//		this.accountNumber = accountNumber;
+
+		LoanDTO loan = new LoanDTO();
+		String uri = URI+"/loan/{accountNumber}";
+		Map<String,String> params = new HashMap<>();
+		params.put("accountNumber",accountNumber);
+
+		try{
+			loan = template.getForObject(uri,LoanDTO.class,params);
+			return loan;
+		}
+		catch (Exception e){
+			logger.error("Error getting loan details",e);
+		}
+		return loan;
+
+	}
+
+
 }

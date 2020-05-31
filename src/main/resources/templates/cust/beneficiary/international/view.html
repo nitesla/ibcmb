@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{ret-layout}">
+
+<body onload="javascript:var bread = [['Home', '/retail/dashboard'],['Beneficiary Management', '/retail/beneficiary/international'],['beneficiary list']];currentBar('Beneficiary list');breadCrumb(bread)">
+
+<div layout:fragment="content">
+    <div id="myModal" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+            <!-- Modal content-->
+            <div class="modal-content no-bd-rad tokenBox" id="tokenmodal">
+                <form id="myForm" name="myForm" th:action="@{/retail/beneficiary/authenticate}" method="POST" >
+                    <input type="hidden" id="myID" name="id"/>
+                <div class="modal-body no-bd-rad">
+                    <h3 class="tokenHeader"><span class='text-danger'>Delete Beneficiary</span>, <span th:text="*{username}" style="text-transform: capitalize">Tolu</span></h3>
+                    <div class="margin-bottom">
+                        <p style="margin-bottom:20px">Enter token to confirm beneficiary delete</p>
+                        <div id="username_div" class="form-group">
+                                <input  type="text" id="token" required name="token" class='my-select tokenInput' placeholder="Token Code" autocomplete="off"/>
+                        </div>
+                        <!--<div id='errorMess' class=" text-danger "></div>-->
+                        <!--<div id='successMess' class=" text-success "></div>-->
+                    </div>
+                    <div >
+                        <p>Click YES to confirm and NO to abort.</p>
+                    </div>
+
+                </div>
+                <div class="modal-footer no-bd-top ">
+                    <input type='submit' class="btn btn-link token-btn required-step" value='YES'/>
+                    <input type='submit' class="btn btn-link less-required token-btn" id="submitNo" data-dismiss="modal" value='NO'/>
+                </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-12 col-sm-12 ">
+                 <a th:href="@{/retail/beneficiary/international/new}" class="pull-right extra-link btn btn-default">New Beneficiary</a>
+
+        <select class="form-control full-width coronation-form-control hide-content-only" id="view">
+            <option value="account">Overview</option>
+        </select>
+    </div>
+
+    <div class="col-xs-12 " >
+        <div class="no-pad-left no-mt  alert no-bd">
+           
+                        <div class="col-md-12 col-sm-12 no-pad-left no-pad-right  table-responsive">
+                        <table class="table" id="mytab">
+                            <thead class='thead'>
+                                <th >Name</th>
+                                <th class="text-cente">Account Number</th>
+                                <th class="text-cente">Bank</th>
+                                <th class="text-cente">Delete</th>
+                            </thead>
+                            <tbody>
+                                <tr th:each="interBen : ${internationalBeneficiaries}">
+                                    <td th:text="${interBen.accountName}"></td>
+                                    <td th:text="${interBen.accountNumber}"></td>
+                                    <td th:text="${interBen.beneficiaryBank}"></td>
+                                    <td><a th:id="${interBen.id}" onclick="validateIntDelete(this.id)"><i class="fa fa-trash"></i></a></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        </div>
+                        <!--<h4 class="sub_header">International Beneficiaries</h4>-->
+                        <!--<div class="bg-white">-->
+                        <!--<table class="table">-->
+                           <!--<thead class='thead'>-->
+                               <!--<th >Name</th>-->
+                                <!--<th class="text-cente">Account Number</th>-->
+                                <!--<th class="text-cente">Bank</th>-->
+                                <!--<th class="text-cente">Delete</th>-->
+                            <!--</thead>-->
+                            <!--<tbody>-->
+                                <!--<tr th:each="int : ${intBen}">-->
+                                    <!--<td th:text="${int.accountName}"></td>-->
+                                    <!--<td th:text="${int.accountNumber}"></td>-->
+                                    <!--<td th:text="${int.beneficiaryBank}"></td>-->
+                                    <!--<td ><a th:id="${int.id}" onclick="validateIntDelete(this.id)"><i class="fa fa-trash"></i></a></td>-->
+                                <!--</tr>-->
+                            <!--</tbody>-->
+                        <!--</table>-->
+                        <!--</div>-->
+             
+        </div>
+    </div>
+
+</div>
+
+
+<th:block layout:fragment="scripts">
+   <script th:src="@{~/bank/vendors/sweetalert/sweetalert.min.js}"></script>
+<script th:src="@{~/bank/js/jquery.spring-friendly.min.js}"></script>
+    <script th:src="@{~/customer/js/jquery.dataTables.js}"></script>
+    <script th:src="@{~/customer/js/dataTables.input.js}"></script>
+<script th:src="@{~/bank/vendors/bootstrap-dialog/js/bootstrap-dialog.js}"></script>
+
+
+<!-- Page-Level Scripts -->
+
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        var table = $('#mytab').DataTable({
+            responsive: true,
+            "lengthMenu" : [ [ 5, 10, 20], [ 5, 10, 20 ] ],
+            "pagingType" : "input",
+            "searching": false,
+            "dom": 'T<"clear">frtlp',
+            "language": {
+                "emptyTable": "No beneficiary to view"
+            }
+        });
+        /*]]>*/
+    </script>
+
+<script>
+    /*<![CDATA[*/
+
+    function validateDel(id) {
+        $("#myModal").modal('show');
+        $('#myID').val(id);
+        $(document).ready(function() {
+            $("#submitNo").click(function() {
+                $('#token','#myForm').val("");
+            });
+        });
+    }
+
+
+    function validateIntDelete(id) {
+        var ooo = "/retail/beneficiary/"+id+ "/int/delete";
+        //goto url
+        warnBeforeRedirect(ooo);
+    }
+
+    function warnBeforeRedirect(id) {
+        $("#myModal").modal('show');
+        $('.del').on('click', function(){
+            window.location.assign(ooo);
+        });
+
+    }
+
+
+    /*]]>*/
+</script>
+
+</th:block>
+
+
+
+
+</body>
+</html>

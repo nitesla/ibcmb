@@ -2,6 +2,7 @@ package longbridge.services.implementations;
 
 import longbridge.api.AccountDetails;
 import longbridge.api.NEnquiryDetails;
+import longbridge.dtos.InternationalTransferRequestDTO;
 import longbridge.dtos.SettingDTO;
 import longbridge.dtos.TransferRequestDTO;
 import longbridge.exception.InternetBankingTransferException;
@@ -86,8 +87,9 @@ public class TransferServiceImpl implements TransferService {
         validateTransfer(transferRequestDTO);
         logger.info("Initiating {} Transfer to {}", transferRequestDTO.getTransferType(), transferRequestDTO.getBeneficiaryAccountName());
         logger.info("Initiating Transfer to {}", transferRequestDTO);
-
+        System.out.println("received request"+transferRequestDTO);
         TransRequest transRequest1 = convertDTOToEntity(transferRequestDTO);
+        System.out.println("after request"+transRequest1);
 
         if(null==transferRequestDTO.getChannel()) {
             transRequest1.setChannel("MOBILE");
@@ -130,7 +132,11 @@ public class TransferServiceImpl implements TransferService {
         }
 
         transRequest1.getAntiFraudData().setChannel(transRequest1.getChannel());
-      TransRequest  transRequest2 = persistTransfer(convertEntityToDTO(transRequest1));
+        System.out.println("received request after antifraud"+transRequest1);
+
+        TransRequest  transRequest2 = persistTransfer(convertEntityToDTO(transRequest1));
+        System.out.println("before integration request after antifraud"+transRequest2);
+
         TransRequest transRequest = integrationService.makeTransfer(transRequest2);
 
         logger.trace("Transfer Details: ", transRequest);
@@ -270,6 +276,19 @@ public class TransferServiceImpl implements TransferService {
     }
 
     @Override
+    public Page<TransferRequestDTO> getCompletedTransfer(Pageable pageDetails) {
+        logger.debug("Retrieving completed transfers");
+        RetailUser user = getCurrentUser();
+//        Page<TransRequest> page = transferRequestRepo.findByUserReferenceNumberAndStatusInAndTranDateNotNullOrderByTranDateDesc("RET_" + user.getId(), Arrays.asList("00","000"), pageDetails);
+        Page<TransRequest> page = transferRequestRepo.findByUserReferenceNumberAndTranDateNotNullOrderByTranDateDesc("RET_" + user.getId(), pageDetails);
+        logger.info("Completed transfers content" + page.getContent());
+        List<TransferRequestDTO> dtOs = convertEntitiesToDTOs(page.getContent());
+        long t = page.getTotalElements();
+        Page<TransferRequestDTO> pageImpl = new PageImpl<TransferRequestDTO>(dtOs, pageDetails, t);
+        return pageImpl;
+    }
+
+    @Override
     public Page<TransRequest> getCompletedTransfers(String pattern, Pageable pageDetails) {
         logger.info("Retrieving completed transfers");
         RetailUser user = getCurrentUser();
@@ -279,6 +298,20 @@ public class TransferServiceImpl implements TransferService {
         return page;
     }
 
+    @Override
+    public Page<TransferRequestDTO> getCompletedTransfer(String pattern, Pageable pageDetails) {
+        logger.info("Retrieving completed transfers");
+//        Page<TransRequest> page = transferRequestRepo.findUsingPattern(pattern, pageDetails);
+        RetailUser user = getCurrentUser();
+
+        Page<TransRequest> page = transferRequestRepo.findUsingPattern("RET_" + user.getId(),pattern, pageDetails);
+
+        List<TransferRequestDTO> dtOs = convertEntitiesToDTOs(page.getContent());
+        logger.trace("Completed transfers", dtOs);
+        long t = page.getTotalElements();
+        Page<TransferRequestDTO> pageImpl = new PageImpl<TransferRequestDTO>(dtOs, pageDetails, t);
+        return pageImpl;
+    }
     @Override
     public List<TransRequest> getLastTenTransactionsForAccount(String s) {
         return transferRequestRepo.findTop10ByCustomerAccountNumberOrderByTranDateDesc(s);
@@ -300,7 +333,10 @@ public class TransferServiceImpl implements TransferService {
 
     public TransferRequestDTO convertEntityToDTO(TransRequest transRequest) {
        // return modelMapper.map(transRequest, TransferRequestDTO.class);
-        TransferRequestDTO dto= modelMapper.map(transRequest, TransferRequestDTO.class);
+        TransferRequestDTO dto=null;
+        if(transRequest.getTransferType().equals(TransferType.INTERNATIONAL_TRANSFER)){
+            dto= modelMapper.map(transRequest, InternationalTransferRequestDTO.class);
+        }else dto= modelMapper.map(transRequest, TransferRequestDTO.class);
         dto.setStatus(transRequest.getStatus());
         dto.setDeviceNumber(transRequest.getAntiFraudData().getDeviceNumber());
         dto.setCountryCode(transRequest.getAntiFraudData().getCountryCode());
@@ -312,13 +348,27 @@ public class TransferServiceImpl implements TransferService {
         dto.setSfactorAuthIndicator(transRequest.getAntiFraudData().getSfactorAuthIndicator());
         dto.setChannel(transRequest.getChannel());
         dto.setTranLocation(transRequest.getAntiFraudData().getTranLocation());
+        if(transRequest.getFinancialInstitution()!=null)
+            dto.setBeneficiaryBank(transRequest.getFinancialInstitution().getInstitutionName());
         return dto;
     }
-
+    public TransferRequestDTO convertEntityToDTO2(TransRequest transRequest){
+        if(transRequest.getTransferType().equals(TransferType.INTERNATIONAL_TRANSFER)){
+            return modelMapper.map(transRequest, InternationalTransferRequestDTO.class);
+        }
+        TransferRequestDTO transferRequestDTO = modelMapper.map(transRequest, TransferRequestDTO.class);
+        if(transRequest.getFinancialInstitution()!=null)
+            transferRequestDTO.setBeneficiaryBank(transRequest.getFinancialInstitution().getInstitutionName());
+        return transferRequestDTO;
+    }
 
     public TransRequest convertDTOToEntity(TransferRequestDTO transferRequestDTO) {
-//        return modelMapper.map(transferRequestDTO, TransRequest.class);
-        TransRequest transRequest= modelMapper.map(transferRequestDTO, TransRequest.class);
+        TransRequest transRequest=null;
+        if(transferRequestDTO.getTransferType().equals(TransferType.INTERNATIONAL_TRANSFER)){
+             transRequest=modelMapper.map(transferRequestDTO, InternationalTransfer.class);
+        }else transRequest= modelMapper.map(transferRequestDTO, TransRequest.class);
+
+
         AntiFraudData antiFraudData=new AntiFraudData();
         antiFraudData.setIp(transferRequestDTO.getIp());
         antiFraudData.setCountryCode(transferRequestDTO.getCountryCode());
@@ -338,11 +388,13 @@ public class TransferServiceImpl implements TransferService {
     public List<TransferRequestDTO> convertEntitiesToDTOs(Iterable<TransRequest> transferRequests) {
         List<TransferRequestDTO> transferRequestDTOList = new ArrayList<>();
         for (TransRequest transRequest : transferRequests) {
-            TransferRequestDTO transferRequestDTO = convertEntityToDTO(transRequest);
+            TransferRequestDTO transferRequestDTO = convertEntityToDTO2(transRequest);
             transferRequestDTOList.add(transferRequestDTO);
         }
         return transferRequestDTOList;
     }
+
+
 
     private void validateAccounts(TransferRequestDTO dto) throws InternetBankingTransferException {
 

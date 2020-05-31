@@ -9,6 +9,7 @@ import longbridge.repositories.MailBoxRepo;
 import longbridge.repositories.MessageRepo;
 import longbridge.services.*;
 import longbridge.utils.DateFormatter;
+import longbridge.utils.MessageCategory;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,12 +21,11 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class MessageServiceImpl implements MessageService {
@@ -41,6 +41,8 @@ public class MessageServiceImpl implements MessageService {
     private UserGroupService userGroupService;
     @Autowired
     private MailService mailService;
+    @Autowired
+    private EntityManager entityManager;
 
     private Locale locale = LocaleContextHolder.getLocale();
 
@@ -81,12 +83,12 @@ public class MessageServiceImpl implements MessageService {
     @Override
     @Transactional
     public MailBox getMailBox(Long id) {
-        return mailBoxRepo.findById(id).get();
+        return mailBoxRepo.findOneById(id);
     }
 
     @Override
     public MessageDTO getMessage(Long id) {
-        return convertEntityToDTO(this.messageRepo.findById(id).get());
+        return convertEntityToDTO(this.messageRepo.findOneById(id));
     }
 
     @Override
@@ -109,11 +111,66 @@ public class MessageServiceImpl implements MessageService {
             message.setSender(sender.getUserName());
             message.setDateCreated(new Date());
             message.setStatus("Unread");
+            message.setTag(MessageCategory.SENT.toString());
             MailBox senderMailBox = mailBoxRepo.findByUserIdAndUserType(sender.getId(), sender.getUserType());
             if (senderMailBox == null) {
                 senderMailBox = new MailBox(sender.getId(), sender.getUserType());
             }
             message.setMailBox(senderMailBox);
+            senderMailBox.getMessages().add(message);
+            mailBoxRepo.save(senderMailBox);
+            return messageSource.getMessage("message.add.success", null, locale);
+
+        }
+        catch (Exception e){
+            throw new InternetBankingException(messageSource.getMessage("message.add.failure",null,locale),e);
+        }
+    }
+    @Override
+    @Transactional
+    public String addMessage(User sender, MessageDTO messageDTO, String category) {
+        String recipient=null;
+        try {
+            if (sender instanceof RetailUser||sender instanceof CorporateUser) {
+                SettingDTO setting = configurationService.getSettingByName("CUSTOMER_CARE_EMAIL");
+                if (setting != null && setting.isEnabled()) {
+                    logger.info("the recipient {} ",setting.getValue());
+                    messageDTO.setRecipient(setting.getValue());
+                    recipient=setting.getValue().split("@")[0];
+                    Message message = convertDTOToEntity(messageDTO);
+                    message.setDateCreated(new Date());
+                    sendEmail(messageDTO);
+                }
+
+            }
+            String initialMessageTag=messageDTO.getTag();
+            Message message = convertDTOToEntity(messageDTO);
+            message.setSender(sender.getUserName());
+            message.setRecipient(recipient);
+            message.setRecipientType(UserType.OPERATIONS);
+            message.setDateCreated(new Date());
+
+            if(category.equalsIgnoreCase("S")) {
+                message.setTag(MessageCategory.SENT.toString());
+            }else {
+                message.setTag(MessageCategory.DRAFT.toString());
+            }
+            MailBox senderMailBox = mailBoxRepo.findByUserIdAndUserType(sender.getId(), sender.getUserType());
+            if (senderMailBox == null) {
+                senderMailBox = new MailBox(sender.getId(), sender.getUserType());
+            }
+            message.setMailBox(senderMailBox);
+            List<Message> messages=senderMailBox.getMessages();
+            if(initialMessageTag.equalsIgnoreCase("DRAFT")){
+                for(Message message1:messages){
+                    if(messageDTO.getId().equals(message1.getId())){
+                        message1.setTag(MessageCategory.DRAFT_SENT.toString());
+                    }
+                }
+            }
+
+            message.setId(null);
+                senderMailBox.setMessages(messages);
             senderMailBox.getMessages().add(message);
             mailBoxRepo.save(senderMailBox);
             return messageSource.getMessage("message.add.success", null, locale);
@@ -178,7 +235,7 @@ public class MessageServiceImpl implements MessageService {
     @Override
     public String deleteReceivedMessage(Long id)throws InternetBankingException {
         try {
-            this.messageRepo.deleteById(id);
+            this.messageRepo.delete(id);
             return messageSource.getMessage("message.delete.success", null, locale);
         }
         catch (Exception e){
@@ -203,7 +260,7 @@ public class MessageServiceImpl implements MessageService {
             stringBuilder.append(" " + msg + "\n\n");
             String message = stringBuilder.toString();
 
-            mailService.send(email, "CUSTOMER SUPPORT REQUEST", message);
+            mailService.send(email, "CUSTOMER SUPPORT REQUEST", message,false);
             return messageSource.getMessage("contactus.send.success", null, locale);
         }catch (Exception e){
             throw new InternetBankingException(messageSource.getMessage("contactus.send.failure", null, locale),e);
@@ -222,7 +279,7 @@ public class MessageServiceImpl implements MessageService {
             stringBuilder.append(" " + msg + "\n\n");
             String message = stringBuilder.toString();
 
-            mailService.send(email, "CUSTOMER SUPPORT REQUEST", message);
+            mailService.send(email, "CUSTOMER SUPPORT REQUEST", message,false);
             return messageSource.getMessage("contactus.send.success", null, locale);
         }catch (Exception e){
             throw new InternetBankingException(messageSource.getMessage("contactus.send.failure", null, locale),e);
@@ -233,20 +290,49 @@ public class MessageServiceImpl implements MessageService {
     @Override
     @Transactional
     public List<MessageDTO> getSentMessages(User user) {
-        MailBox mailBox = mailBoxRepo.findByUserIdAndUserType(user.getId(), user.getUserType());
+        List<Message>  messages = messageRepo.findMessageByUserAndTag(user.getId(), user.getUserType(),MessageCategory.SENT.toString());
+        logger.info("the message {}",messages);
         List<MessageDTO> sentMessages = new ArrayList<MessageDTO>();
-        if (mailBox == null) {
+        if (messages == null) {
             return sentMessages;
         }
-        sentMessages = convertEntitiesToDTOs(mailBox.getMessages());
+        sentMessages = convertEntitiesToDTOs(messages);
+//        return reverse(sentMessages);
+        return sentMessages.stream().sorted(Comparator.comparing(MessageDTO::getCreatedOn).reversed()).collect(Collectors.toList());
+    }
+    @Override
+    @Transactional
+    public List<MessageDTO> getMessagesByTag(User user, MessageCategory messageCategory) {
+        List<Message>  messages = messageRepo.findMessageByUserAndTag(user.getId(), user.getUserType(),messageCategory.toString());
+        logger.info("the {} messages are {}",messageCategory,messages.size());
+        List<MessageDTO> sentMessages = new ArrayList<MessageDTO>();
+        if (messages == null) {
+            return sentMessages;
+        }
+        sentMessages = convertEntitiesToDTOs(messages);
         return reverse(sentMessages);
+    }
+    @Override
+    public Page<MessageDTO> getPagedMessagesByTag(User user,Pageable pageable, MessageCategory messageCategory) {
+        Page<Message>  messages = messageRepo.findPagedMessageByUserAndTag(user.getId(), user.getUserType(),messageCategory.toString(),pageable);
+
+        List<MessageDTO> dtOs = convertEntitiesToDTOs(messages.getContent());
+        long t = messages.getTotalElements();
+        Page<MessageDTO> pageImpl = new PageImpl<MessageDTO>(dtOs, pageable, t);
+        return pageImpl;
+    }
+    @Override
+    @Transactional
+    public Long countMessagesByTag(User user, MessageCategory messageCategory) {
+        Long  messagesCount = messageRepo.countMessageByUserAndTag(user.getId(), user.getUserType(),messageCategory.toString());
+        return messagesCount;
     }
 
 
 
     @Override
     public Page<MessageDTO> getReceivedMessages(String recipient, UserType recipientTye, Pageable pageable) {
-        Page<Message> page = messageRepo.findByRecipientAndRecipientTypeOrderByIdDesc(recipient, recipientTye,pageable);
+        Page<Message> page = messageRepo.findByRecipientIgnoreCaseAndRecipientTypeOrderByIdDesc(recipient, recipientTye,pageable);
         List<MessageDTO> dtOs = convertEntitiesToDTOs(page.getContent());
         long t = page.getTotalElements();
         Page<MessageDTO> pageImpl = new PageImpl<MessageDTO>(dtOs, pageable, t);
@@ -262,7 +348,7 @@ public class MessageServiceImpl implements MessageService {
     @Override
     @Transactional
     public List<MessageDTO> getReceivedMessages(User user) {
-        List<Message> receivedMessages = messageRepo.findByRecipientAndRecipientTypeOrderByIdDesc(user.getUserName(),user.getUserType());
+        List<Message> receivedMessages = messageRepo.findByRecipientIgnoreCaseAndRecipientTypeAndTagOrderByIdDesc(user.getUserName(),user.getUserType(),MessageCategory.SENT.toString());
         return convertEntitiesToDTOs(receivedMessages);
     }
 
@@ -280,8 +366,7 @@ public class MessageServiceImpl implements MessageService {
     @Override
     public String purge(Date fromDate, Date toDate) {
         Iterable<Message> messages = getMessage(fromDate, toDate);
-        messages.forEach(i->{ this.messageRepo.deleteById(i.getId());
-        });
+        this.messageRepo.deleteInBatch(messages);
         return messageSource.getMessage("message.purge.success",null,locale);
     }
 
@@ -303,6 +388,16 @@ public class MessageServiceImpl implements MessageService {
     @Override
     public Page<Message> getMessages(User user, java.awt.print.Pageable pageDetails) {
         throw new UnsupportedOperationException("Not yet implemented");
+    }
+
+    @Override
+    public Page<MessageDTO> getMessages(User user, Pageable pageDetails) {
+        Page<Message> messages = messageRepo.findByRecipientIgnoreCaseAndRecipientTypeOrderByIdDesc(user.getUserName(),user.getUserType(),pageDetails);
+
+        List<MessageDTO> dtOs = convertEntitiesToDTOs(messages.getContent());
+        long t = messages.getTotalElements();
+        Page<MessageDTO> pageImpl = new PageImpl<MessageDTO>(dtOs, pageDetails, t);
+        return pageImpl;
     }
 
     @Override
@@ -347,6 +442,6 @@ public class MessageServiceImpl implements MessageService {
             MessageDTO messageDTO = convertEntityToDTO(message);
             messageDTOList.add(messageDTO);
         }
-        return messageDTOList;
+        return messageDTOList.stream().sorted(Comparator.comparing(MessageDTO::getDateCreated).reversed()).collect(Collectors.toList());
     }
 }

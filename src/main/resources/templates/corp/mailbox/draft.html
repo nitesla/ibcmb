@@ -1,10 +1,136 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{corp-layout}">
+
+
+<body onload="javascript:var bread = [['Home', '/corporate/dashboard'],['Mail box', '/corporate/mailbox']];currentBar('Mail Center');breadCrumb(bread)">
+
+<div layout:fragment="content">
+    <div class="input-group col-lg-4 pull-right">
+        <input type="text" class="form-control" id="pattern" placeholder="Search for..."/> <span
+            class="input-group-btn">
+                    <button class="btn btn-default search-icon" type="submit"><i class="fa fa-search icon-search"></i></button>
+    </span>
+    </div>
+    <div class="col-xs-12 ">
+        <div class=" no-mt  alert no-bd">
+
+
+            <div class='row'>
+
+                <div class="col-md-12 bg-coronation content-mail" >
+                    <aside class="col-md-3 alert  mail-links-box">
+                        <div class="">
+                            <ul class='mail-links'>
+                                <a th:href="@{/corporate/mailbox/compose}"><li class='bg-white coronation-blue' style="border-bottom:0px !important;font-size:13px;font-weight:bolder">Compose Message
+                                </li></a>
+                                <a th:href="@{/corporate/mailbox/inbox}"><li >Inbox <span th:text="${noOfInbox}">(1)</span> <i class=' pull-right fa fa-angle-right' style="font-size:20px"></i></li></a>
+                                <a th:href="@{/corporate/mailbox/sentmail}"><li class='mail-active'>Sent <span th:text="${noOfSent}">(1)</span><i class='pull-right fa fa-angle-right' style="font-size:20px"></i></li></a>
+                                <a th:href="@{/corporate/mailbox/draft}"><li > Drafts <span th:text="${noOfDraft}">(1)</span> <i class=' pull-right fa fa-angle-right' style="font-size:20px"></i></li></a>
+
+                            </ul>
+                        </div>
+                    </aside>
+                    <article class="col-md-9 article">
+                        <div class="alert alert-bottom bg-coronation-blue">
+                            <p style="color:white">Draft Messages</p>
+                        </div>
+
+                        <table class="table table-hover table-mail" id="mail-table">
+                            <thead>
+                            <th>Sender</th>
+                            <th>Subject</th>
+                            <th>Created On</th>
+                            <th></th>
+                            </thead>
+                            <tbody>
+                            <!--<tr th:each="message: ${sentMessages}" class="unread">-->
+                            <!--<td class="mail-ontact" th:text="${message.sender}"></td>-->
+                            <!--<td class="mail-subject"><a th:href="@{/retail/mailbox/sent/{id}/message(id=${message.id})}" th:text="${message.subject}">Placeholder text</a></td>-->
+                            <!--<td class="text-right mail-date" th:text="${message.createdOn}">6.10 AM</td>-->
+                            <!--</tr>-->
+
+                            </tbody>
+                        </table>
+                    </article>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+
+</div>
+
+
+<th:block layout:fragment="scripts">
+
+    <!-- Page-Level Scripts -->
+
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+
+        /*]]>*/
+    </script>
+
+    <script>
+        /*<![CDATA[*/
+
+        /*]]>*/
+    </script>
+    <script th:src="@{~/bank/vendors/sweetalert/sweetalert.min.js}"></script>
+    <script th:src="@{~/bank/js/jquery.spring-friendly.min.js}"></script>
+    <script th:src="@{~/bank/vendors/bootstrap-dialog/js/bootstrap-dialog.js}"></script>
+
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        $(document).ready(function () {
+            var url = "/corporate/mailbox/draftmails/list";
+            var table = $('#mail-table').DataTable({
+                select: true,
+                responsive : false,
+                "lengthMenu" : [ [ 5, 10 ], [ 5, 10 ] ],
+                "pagingType" : "input",
+                "searching" : false,
+                "paging" : true,
+                "serverSide" : true,
+                "ajax" : url,
+                "dom" : 'T<"clear">frtlp',
+                "columns" : [
+                    { "data": "sender" },
+                    { "data": "subject" },
+                    { "data": "createdOn" }
+                    ,
+                    { "data": "id" }
+
+                ]
+                ,
+                "columnDefs" : [ {
+                    "targets" : 3,
+                    "data" : "enabled",
+                    "render" : function(data, type,full, meta) {
+                        if (type === 'display') {
+                            return "<a href=/corporate/mailbox/sent/"+data+"/message>View</a>";
+                        }else {
+
+                        }
+                        return data;
+                    }
+
+                } ]
+            });
+        });
+
+        /*]]>*/
+    </script>
+
+
+
+
+
+</th:block>
+
 
 </body>
+
 </html>

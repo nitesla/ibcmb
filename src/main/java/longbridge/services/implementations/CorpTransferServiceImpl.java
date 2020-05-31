@@ -2,6 +2,7 @@ package longbridge.services.implementations;
 
 import longbridge.api.AccountDetails;
 import longbridge.api.NEnquiryDetails;
+import longbridge.dtos.CorpInternationalTransferRequestDTO;
 import longbridge.dtos.CorpTransferRequestDTO;
 import longbridge.dtos.SettingDTO;
 import longbridge.exception.*;
@@ -15,6 +16,7 @@ import longbridge.utils.StatusCode;
 import longbridge.utils.TransferAuthorizationStatus;
 import longbridge.utils.TransferType;
 import org.apache.commons.lang3.math.NumberUtils;
+import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,6 +51,8 @@ public class CorpTransferServiceImpl implements CorpTransferService {
     private DirectDebitService directDebitService;
     private Logger logger = LoggerFactory.getLogger(this.getClass());
     private Locale locale = LocaleContextHolder.getLocale();
+    @Autowired
+    private ModelMapper modelMapper;
 
     @Autowired
     private AccountConfigService accountConfigService;
@@ -220,6 +224,18 @@ public class CorpTransferServiceImpl implements CorpTransferService {
     }
 
     @Override
+    public Page<CorpTransferRequestDTO> getCompletedTransfer(Pageable pageDetails) {
+        CorporateUser corporateUser = getCurrentUser();
+        Corporate corporate = corporateUser.getCorporate();
+        Page<CorpTransRequest> page = corpTransferRequestRepo.findByCorporateAndStatusNotAndTranDateNotNullOrderByTranDateDesc(corporate, Arrays.asList("Pending"), pageDetails);
+
+        List<CorpTransferRequestDTO> corpTransferRequestDTOs = convertEntitiesToDTOs(page.getContent());
+        long t = page.getTotalElements();
+        Page<CorpTransferRequestDTO> pageImpl = new PageImpl<>(corpTransferRequestDTOs, pageDetails, t);
+        return pageImpl;
+    }
+
+    @Override
     public Page<CorpTransRequest> getCompletedTransfers(String pattern, Pageable pageDetails) {
         CorporateUser corporateUser = getCurrentUser();
         Corporate corporate = corporateUser.getCorporate();
@@ -231,8 +247,24 @@ public class CorpTransferServiceImpl implements CorpTransferService {
     }
 
     @Override
+    public Page<CorpTransferRequestDTO> getCompletedTransfer(String pattern, Pageable pageDetails) {
+        CorporateUser corporateUser = getCurrentUser();
+        Corporate corporate = corporateUser.getCorporate();
+        Page<CorpTransRequest> page = corpTransferRequestRepo.findUsingPattern(corporate, pattern, pageDetails);
+        List<CorpTransferRequestDTO> dtOs = convertEntitiesToDTOs(page.getContent());
+        long t = page.getTotalElements();
+        Page<CorpTransferRequestDTO> pageImpl = new PageImpl<CorpTransferRequestDTO>(dtOs, pageDetails, t);
+        return pageImpl;
+    }
+
+
+    @Override
     public CorpTransRequest getTransfer(Long id) {
         return corpTransferRequestRepo.findById(id).get();
+    }
+    @Override
+    public CorpTransferRequestDTO entityToDTO(CorpTransRequest corpTransRequest){
+      return convertEntityToDTO(corpTransRequest);
     }
 
 
@@ -321,9 +353,23 @@ public class CorpTransferServiceImpl implements CorpTransferService {
         Page<CorpTransRequest> page = corpTransferRequestRepo.findByCorporateOrderByTranDateDesc(corporate, pageDetails);//GB
         List<CorpTransRequest> corpTransRequests = page.getContent().stream()
                 .filter(transRequest -> !accountConfigService.isAccountRestrictedForViewFromUser(accountService.getAccountByAccountNumber(transRequest.getCustomerAccountNumber()).getId(), corporateUser.getId())).collect(Collectors.toList());
+
         return new PageImpl<CorpTransRequest>(corpTransRequests, pageDetails, page.getTotalElements());
 
     }
+    @Override
+    public Page<CorpTransferRequestDTO> getTransferRequest(Pageable pageDetails) {
+        CorporateUser corporateUser = getCurrentUser();
+        Corporate corporate = corporateUser.getCorporate();
+        Page<CorpTransRequest> page = corpTransferRequestRepo.findByCorporateOrderByTranDateDesc(corporate, pageDetails);//GB
+
+        List<CorpTransRequest> corpTransRequests = page.getContent().stream()
+                .filter(transRequest -> !accountConfigService.isAccountRestrictedForViewFromUser(accountService.getAccountByAccountNumber(transRequest.getCustomerAccountNumber()).getId(),corporateUser.getId())).collect(Collectors.toList());
+        return new PageImpl<CorpTransferRequestDTO>(convertEntitiesToDTOs(corpTransRequests),pageDetails,page.getTotalElements());
+
+    }
+
+
 
     @Override
     public int countPendingRequest() {
@@ -332,9 +378,10 @@ public class CorpTransferServiceImpl implements CorpTransferService {
         return corpTransferRequestRepo.countByCorporateAndStatus(corporate, StatusCode.PENDING.toString());
     }
 
-    public CorpTransferRequestDTO convertEntityToDTO(CorpTransRequest corpTransRequest) {
+   /* public CorpTransferRequestDTO convertEntityToDTO(CorpTransRequest corpTransRequest) {
         CorpTransferRequestDTO transferRequestDTO = new CorpTransferRequestDTO();
         transferRequestDTO.setId(corpTransRequest.getId());
+
         transferRequestDTO.setVersion(corpTransRequest.getVersion());
         transferRequestDTO.setCustomerAccountNumber(corpTransRequest.getCustomerAccountNumber());
         transferRequestDTO.setTransferType(corpTransRequest.getTransferType());
@@ -355,10 +402,49 @@ public class CorpTransferServiceImpl implements CorpTransferService {
             transferRequestDTO.setTransAuthId(corpTransRequest.getTransferAuth().getId().toString());
         }
         return transferRequestDTO;
+    }*/
+
+    private CorpTransferRequestDTO convertEntityToDTO(CorpTransRequest corpTransRequest) {
+        CorpTransferRequestDTO transferRequestDTO = new CorpTransferRequestDTO();
+        transferRequestDTO.setId(corpTransRequest.getId());
+        transferRequestDTO.setVersion(corpTransRequest.getVersion());
+        transferRequestDTO.setCustomerAccountNumber(corpTransRequest.getCustomerAccountNumber());
+        transferRequestDTO.setTransferType(corpTransRequest.getTransferType());
+        transferRequestDTO.setFinancialInstitution(corpTransRequest.getFinancialInstitution());
+        transferRequestDTO.setBeneficiaryBank(corpTransRequest.getFinancialInstitution()!=null?corpTransRequest.getFinancialInstitution().getInstitutionName():"");
+        transferRequestDTO.setBeneficiaryAccountNumber(corpTransRequest.getBeneficiaryAccountNumber());
+        transferRequestDTO.setBeneficiaryAccountName(corpTransRequest.getBeneficiaryAccountName());
+        transferRequestDTO.setRemarks(corpTransRequest.getRemarks());
+        transferRequestDTO.setStatus(corpTransRequest.getStatus());
+        transferRequestDTO.setReferenceNumber(corpTransRequest.getReferenceNumber());
+        transferRequestDTO.setUserReferenceNumber(corpTransRequest.getUserReferenceNumber());
+        transferRequestDTO.setNarration(corpTransRequest.getNarration());
+        transferRequestDTO.setStatusDescription(corpTransRequest.getStatusDescription());
+        transferRequestDTO.setAmount(corpTransRequest.getAmount());
+        transferRequestDTO.setTranDate(corpTransRequest.getTranDate());
+        transferRequestDTO.setCorporateId(corpTransRequest.getCorporate().getId().toString());
+        if (corpTransRequest.getTransferAuth() != null) {
+            transferRequestDTO.setTransAuthId(corpTransRequest.getTransferAuth().getId().toString());
+        }
+
+        if(corpTransRequest instanceof CorpInternationalTransfer){
+            CorpInternationalTransferRequestDTO internationalTransfer = modelMapper.map(transferRequestDTO,CorpInternationalTransferRequestDTO.class);
+            CorpInternationalTransfer corpInternationalTransfer = (CorpInternationalTransfer)corpTransRequest;
+            internationalTransfer.setBeneficiaryBank(corpInternationalTransfer.getBeneficiaryBank());
+            internationalTransfer.setSwiftCode(corpInternationalTransfer.getSwiftCode());
+            internationalTransfer.setSortCode(corpInternationalTransfer.getSortCode());
+            internationalTransfer.setBeneficiaryAddress(corpInternationalTransfer.getBeneficiaryAddress());
+            internationalTransfer.setIntermediaryBankAcctNo(corpInternationalTransfer.getIntermediaryBankAcctNo());
+            internationalTransfer.setIntermediaryBankName(corpInternationalTransfer.getIntermediaryBankName());
+            internationalTransfer.setCurrencyCode(corpInternationalTransfer.getCurrencyCode());
+            internationalTransfer.setChargeFrom(corpInternationalTransfer.getChargeFrom());
+            return internationalTransfer;
+        }
+        return transferRequestDTO;
+
     }
 
-
-    public CorpTransRequest convertDTOToEntity(CorpTransferRequestDTO transferRequestDTO) {
+    /*public CorpTransRequest convertDTOToEntity(CorpTransferRequestDTO transferRequestDTO) {
         CorpTransRequest corpTransRequest = new CorpTransRequest();
         corpTransRequest.setId(transferRequestDTO.getId());
         corpTransRequest.setVersion(transferRequestDTO.getVersion());
@@ -383,8 +469,51 @@ public class CorpTransferServiceImpl implements CorpTransferService {
         corpTransRequest.setCorpDirectDebit(null);
 
         return corpTransRequest;
-    }
+    }*/
 
+    private CorpTransRequest convertDTOToEntity(CorpTransferRequestDTO transferRequestDTO) {
+        CorpTransRequest corpTransRequest = new CorpTransRequest();
+        corpTransRequest.setId(transferRequestDTO.getId());
+        corpTransRequest.setVersion(transferRequestDTO.getVersion());
+        corpTransRequest.setCustomerAccountNumber(transferRequestDTO.getCustomerAccountNumber());
+        corpTransRequest.setTransferType(transferRequestDTO.getTransferType());
+        corpTransRequest.setFinancialInstitution(transferRequestDTO.getFinancialInstitution());
+        corpTransRequest.setBeneficiaryAccountNumber(transferRequestDTO.getBeneficiaryAccountNumber());
+        corpTransRequest.setBeneficiaryAccountName(transferRequestDTO.getBeneficiaryAccountName());
+        corpTransRequest.setRemarks(transferRequestDTO.getRemarks());
+        corpTransRequest.setStatus(transferRequestDTO.getStatus());
+        corpTransRequest.setReferenceNumber(transferRequestDTO.getReferenceNumber());
+        corpTransRequest.setUserReferenceNumber(transferRequestDTO.getUserReferenceNumber());
+        corpTransRequest.setNarration(transferRequestDTO.getNarration());
+        corpTransRequest.setStatusDescription(transferRequestDTO.getStatusDescription());
+        corpTransRequest.setAmount(transferRequestDTO.getAmount());
+        corpTransRequest.setUserReferenceNumber(transferRequestDTO.getUserReferenceNumber());
+
+        Corporate corporate = corporateRepo.findOneById(Long.parseLong(transferRequestDTO.getCorporateId()));
+        corpTransRequest.setCorporate(corporate);
+        if (transferRequestDTO.getTransAuthId() != null) {
+            CorpTransferAuth transferAuth = transferAuthRepo.findById(Long.parseLong(transferRequestDTO.getTransAuthId())).get();
+            corpTransRequest.setTransferAuth(transferAuth);
+        }
+        corpTransRequest.setCorpDirectDebit(null);
+
+        if(transferRequestDTO instanceof CorpInternationalTransferRequestDTO){
+            CorpInternationalTransfer internationalTransfer = modelMapper.map(corpTransRequest,CorpInternationalTransfer.class);
+            CorpInternationalTransferRequestDTO internationalTransferRequestDTO = (CorpInternationalTransferRequestDTO)transferRequestDTO;
+            internationalTransfer.setBeneficiaryBank(internationalTransferRequestDTO.getBeneficiaryBank());
+            internationalTransfer.setSwiftCode(internationalTransferRequestDTO.getSwiftCode());
+            internationalTransfer.setSortCode(internationalTransferRequestDTO.getSortCode());
+            internationalTransfer.setBeneficiaryAddress(internationalTransferRequestDTO.getBeneficiaryAddress());
+            internationalTransfer.setIntermediaryBankAcctNo(internationalTransferRequestDTO.getIntermediaryBankAcctNo());
+            internationalTransfer.setIntermediaryBankName(internationalTransferRequestDTO.getIntermediaryBankName());
+            internationalTransfer.setCurrencyCode(internationalTransferRequestDTO.getCurrencyCode());
+            internationalTransfer.setChargeFrom(internationalTransferRequestDTO.getChargeFrom());
+            internationalTransfer.setReferenceNumber(internationalTransferRequestDTO.getReferenceNumber());
+            return internationalTransfer;
+        }
+
+        return corpTransRequest;
+    }
     public List<CorpTransferRequestDTO> convertEntitiesToDTOs(Iterable<CorpTransRequest> corpTransferRequests) {
         List<CorpTransferRequestDTO> transferRequestDTOList = new ArrayList<>();
         for (CorpTransRequest transRequest : corpTransferRequests) {

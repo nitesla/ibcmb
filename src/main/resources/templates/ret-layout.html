@@ -328,6 +328,8 @@
                                     <li sec:authorize="hasAuthority('MANAGE_BEN')"><a th:href="@{/retail/beneficiary}"
                                                                                       th:text="#{menu.beneficiary}">Beneficiaries</a>
                                     </li>
+                                    <li sec:authorize="hasAuthority('MANAGE_BEN')"><a th:href="@{/retail/beneficiary/international}" th:text="#{menu.beneficiary.international}">Beneficiaries</a></li>
+
                                     <li sec:authorize="hasAuthority('RET_MAILBOX')"><a
                                             th:href="@{/retail/mailbox/inbox}" th:text="#{menu.mail}"> Mailbox</a></li>
                                 </ul>

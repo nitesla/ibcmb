@@ -2,63 +2,71 @@
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{corp-layout}">
 
-<body onload="javascript:var bread = [['Home', '/corporate/dashboard'],['inter bank transfer','/corporate/transfer/interbank'],['add beneficiary']];currentBar('inter bank transfer');breadCrumb(bread)">
+<body onload="currentBar('Inter bank beneficiaries')">
 
 <div layout:fragment="content">
-    <div class="col-md-5 col-sm-5 ">
+    <div class="col-xs-12 no-pad-left no-pad-right">
+        <div class="col-xs-12 ">
+            <h5 class="page_header  col-sm-5 no-pad-left"> Transfers to other banks through RTGS</h5>
+            <a th:href="@{/corporate/transfer/interbank/new}" class="pull-right extra-link btn btn-default ">New Beneficiary</a>
+        </div>
 
-        <select class="form-control full-width coronation-form-control hide-content-only" id="view">
-            <option value="account">Overview</option>
-        </select>
+        <div class="col-sm-5 col-xs-12 ">
+            <select class="form-control full-width coronation-form-contro invisible" name="beneficiaries">
+                <option value="Overveiw">Beneficiaries</option>
+            </select>
+        </div>
+
     </div>
 
-    <div class="col-xs-12" >
-        <div class="no-pad-lef table-responsive no-mt no-bd  alert">
-           <div class=" table-responsive">
-                            <h6 class="page_header">Beneficiaries</h6>
-                            <form method="post" >
-                                <table class="table">
-                                    <thead>
-                                    <tr>
-                                        <th>Beneficiary name</th>
-                                        <th>Preferred name</th>
-                                        <th>Bank</th>
-                                        <th>Account number</th>
-                                        <th>Account number</th>
 
-                                    </tr>
-                                    </thead>
-                                    <tbody>
+    <div class="col-xs-12 " >
+        <div class="no-pad-lef no-mt alert no-bd">
+            <form method="post " >
+                <div class="table-responsive">
+                    <table class="table" id="mytab">
+                        <thead>
+                        <tr>
+                            <th>Beneficiary name</th>
+                            <th>Preferred name</th>
+                            <th>Bank</th>
+                            <th>Account number</th>
+                            <th>&nbsp;</th>
 
-
-                                    <tr th:each="loc : ${localBen}">
-                                        <td   th:text="${loc.accountName}"></td>
-                                        <td th:text="${loc.preferredName}"></td>
-                                        <td th:text="${loc.beneficiaryBank}"></td>
-                                        <td th:text="${loc.accountNumber}"></td>
-
-                                        <td>
-                                            <li class="dropdown" style="list-style: none">
-                                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" style="font-size:20px;" aria-haspopup="true"><i class=" fa fa-angle-right"></i></a>
-                                                <ul class="dropdown-menu">
+                        </tr>
+                        </thead>
+                        <tbody>
 
 
-                                                    <li><a th:href="@{'/corporate/transfer/interbank/' + ${loc.id} }">make a transfer</a>
-                                                    </li>
-                                                </ul>
-                                            </li>
-                                        </td>
-                                    </tr>
+                        <tr th:each="loc : ${localBen}">
+                            <td   th:text="${loc.accountName}"></td>
+                            <td th:text="${loc.preferredName}"></td>
+                            <td th:text="${loc.beneficiaryBank}"></td>
+                            <td th:text="${loc.accountNumber}"></td>
 
-                                    </tbody>
-                                </table>
-                                <br/>
-                                <input  type="hidden" th:value="${transferRequest}"/>
-                                <a th:href="@{/corporate/transfer/interbank/new}" class="btn">New Beneficiary</a>
+                            <td>
+                                <!--<li class="dropdown" style="list-style: none">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" style="font-size:20px;" aria-haspopup="true"><i class=" fa fa-angle-right"></i></a>
+                                <ul class="dropdown-menu">-->
 
-                                <!-- <button type="submit" class="btn btn-default" style="float: right">Add beneficiary</button>
-                            --> </form>
-                        </div>
+
+                                <a style='padding-top:0px !important;padding-bottom:0px !important' class="btn btn-link required-step" th:href="@{'/corporate/transfer/interbank/' + ${loc.id} }">make a transfer</a>
+
+                                <!--</ul>
+                                </li>-->
+                            </td>
+                        </tr>
+
+                        </tbody>
+                    </table>
+
+                </div>
+                <br/>
+                <input  type="hidden" th:value="${transferRequest}"/>
+                <!-- <a th:href="@{/corporate/transfer/interbank/new}" class="btn btn-link required-step">New Beneficiary</a> -->
+
+                <!-- <button type="submit" class="btn btn-default" style="float: right">Add beneficiary</button>
+            --> </form>
         </div>
     </div>
 
@@ -66,7 +74,23 @@
 
 
 <th:block layout:fragment="scripts">
-     <script>
+
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        var table = $('#mytab').DataTable({
+            responsive: true,
+            "lengthMenu" : [ [ 5, 10, 20], [ 5, 10, 20 ] ],
+            "pagingType" : "input",
+            "searching": false,
+            "dom": 'T<"clear">frtlp',
+            "language": {
+                "emptyTable": "No beneficiary added"
+            }
+        });
+        /*]]>*/
+    </script>
+
+    <script>
         //datepicker
         $( function() {
             $( "#datepicker" ).datepicker(
@@ -74,7 +98,6 @@
             );
         } );
     </script>
-</div>
 </th:block>
 
 </body>

@@ -1,42 +1,37 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head th:replace="cust_layout :: site-head">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{ret-layout}">
 
-</head>
-<body>
-<div class="container">
-    <header th:replace="cust_layout :: header">
-    </header>
+<body onload="javascript:var bread = [['Home', '/retail/dashboard'],['CMB transfer']];currentBar('Mail Center');breadCrumb(bread)">
 
-<section class="wrapper content-wrapper">
-    <form class="col-sm-4" role="search">
-            <label for="" class='message-label'>Message Center</label>
-            <div class="input-group add-on">
-                <input class="form-control" placeholder="Search" name="srch-term" id="srch-term" type="text"/>
-                <div class="input-group-btn  bg-white">
-                    <button class="btn btn-default search-icon" type="submit"><i class="fa fa-search icon-search"></i></button>
-                </div>
-            </div>
-        </form>
-         <p class="col-xs-12 invisible">
-                    Fields marked <span style="color:red">*</span> are compulsory
-            </p>
+<div layout:fragment="content">
+    <!--<form class="col-sm-4" role="search">-->
+        <!--<label for="" class='message-label'>Message Center</label>-->
+        <!--<div class="input-group add-on">-->
+            <!--<input class="form-control" placeholder="Search" name="srch-term" id="srch-term" type="text"/>-->
+            <!--<div class="input-group-btn  bg-white">-->
+                <!--<button class="btn btn-default search-icon" type="submit"><i class="fa fa-search icon-search"></i></button>-->
+            <!--</div>-->
+        <!--</div>-->
+    <!--</form>-->
+    <!--<p class="col-xs-12 invisible">-->
+        <!--Fields marked <span style="color:red">*</span> are compulsory-->
+    <!--</p>-->
 
-        <div class="row">
+    <div class="col-xs-12 ">
+        <div class=" no-mt  alert no-bd">
+            <!--<aside class="col-md-3 alert  mail-links-box">-->
+                <!--<div class="">-->
+                    <!--<ul class='mail-links'>-->
+                        <!--<a th:href="@{/retail/mailbox/compose}"><li class='bg-white coronation-blue' style="border-bottom:0px !important;font-size:13px;font-weight:bolder">Compose Message-->
+                        <!--</li></a>-->
+                        <!--<a th:href="@{/retail/mailbox/inbox}"><li >Inbox (1) <i class=' pull-right fa fa-angle-right' style="font-size:20px"></i></li></a>-->
+                        <!--<a th:href="@{/retail/mailbox/sentmail}"><li class=''>Sent (1)<i class='pull-right fa fa-angle-right' style="font-size:20px"></i></li></a>-->
+                        <!--<a th:href="@{/retail/mailbox/draft}"><li > Drafts (1) <i class=' pull-right fa fa-angle-right' style="font-size:20px"></i></li></a>-->
 
-            <div class="col-md-9 bg-coronation content-mail"  >
-                <aside class="col-md-3 alert  mail-links-box">
-                    <div class="">
-                         <ul class='mail-links'>
-                           <a th:href="@{/retail/mailbox/compose}"><li class='bg-white coronation-blue' style="border-bottom:0px !important;font-size:13px;font-weight:bolder">Compose Message
-                            </li></a>
-                            <a th:href="@{/retail/mailbox/inbox}"><li >Inbox (1) <i class=' pull-right fa fa-angle-right' style="font-size:20px"></i></li></a>
-                            <a th:href="@{/retail/mailbox/sentmail}"><li class=''>Sent (1)<i class='pull-right fa fa-angle-right' style="font-size:20px"></i></li></a>
-                            <a th:href="@{/retail/mailbox/draft}"><li > Drafts (1) <i class=' pull-right fa fa-angle-right' style="font-size:20px"></i></li></a>
-
-                        </ul>
-                    </div>
-                </aside>
+                    <!--</ul>-->
+                <!--</div>-->
+            <!--</aside>-->
                 <article class="col-md-9 article">  
                     <div class="alert alert-bottom bg-coronation-blue">
                         <p style="color:white">Compose Message</p>
@@ -44,13 +39,15 @@
 
                    <form method="post" th:action="@{/retail/mailbox}" th:object="${messageDTO}">
                        
-
-                       <div class='form-group compose '>
+                    <div class='form-group compose'>
                            <div class="col-md-2">
                                 <label class='mail-label'>Subject: </label>
                            </div>
                            <div class="col-md-10">
                                <input type ='text' class='form-control no-bd' th:field="*{subject}" />
+                            <input type ='hidden' class='form-control no-bd' id="category" value="S" name="category" />
+                            <input type ='hidden' class='form-control no-bd' th:field="*{tag}" />
+                            <input type ='hidden' class='form-control no-bd' th:field="*{id}" />
                            </div>
                        </div>
 
@@ -65,23 +62,47 @@
                        </div>
 
                        <div class='pull-right' style="margin:20px;">
-                           <button class="btn btn-link">Save as draft</button>
-                            <button class="btn btn-link" type='submit'>Send</button>
+                        <button class="btn btn-link" id="draft">Save</button>
+                        <button class="btn btn-link" id="compose" type='submit'>Send</button>
                        </div>
                    </form>
                 </article>
             </div>
-             <div class="col-md-3  pull-right">
-                            <div th:replace="cust_layout :: sidebar" class="" >
                             </div>
+
             </div>
-        </div>
-</section>
 
 
-<!-- CONTENT-WRAPPER SECTION END-->
-<footer th:replace="cust_layout ::footer">
-</footer>
-</div>
+<th:block layout:fragment="scripts">
+    <script th:src="@{~/bank/vendors/sweetalert/sweetalert.min.js}"></script>
+    <script th:src="@{~/customer/js/dataTables.bootstrap.js}"></script>
+    <script th:src="@{~/customer/js/dataTables.select.js}"></script>
+
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+
+        $(document).ready(function () {
+
+            $("#draft").on("click", function(e) {
+                e.preventDefault();
+                console.log("draft");
+                $("#category").val("D");
+                $('#compose').trigger("click");
+            } );
+        });
+
+        /*]]>*/
+    </script>
+
+    <script>
+        //datepicker
+        $( function() {
+            $( "#datepicker" ).datepicker(
+                { dateformat : 'dd/mm/yy'}
+            );
+        } );
+    </script>
+</th:block>
+
 </body>
 </html>

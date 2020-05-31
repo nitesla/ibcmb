@@ -21,6 +21,14 @@
     <link th:href="@{~/bank/css/bootstrap-switch.min.css}" rel="stylesheet"/>
     <link th:href="@{~/bank/vendors/switchery/switchery.css}" rel="stylesheet" type="text/css"/>
     <link th:href="@{~/bank/vendors/bootstrap-dialog/css/bootstrap-dialog.css}" rel="stylesheet" type="text/css"/>
+    <style>
+        .mail_ht{
+            height:400px;
+            overflow-y: scroll;
+        }
+
+    </style>
+
 </head>
 
 
@@ -71,7 +79,7 @@
             <div class="x_content">
                                 <div class="row">
 
-                                    <div class="col-sm-3 mail_list_column">
+                                    <div class="col-sm-3 mail_list_column mail_ht">
                                         <div class="panel panel-default">
                                             <div class="panel-body">
                                         <a href="/ops/mailbox/newcompose" class="btn btn-sm btn-primary outline-btn btn-block m-b-10">Compose</a>
@@ -134,7 +142,7 @@
                                                                     <div class="message-options">
                                                                         <!--<a th:href="@{/ops/mailbox/{id}/reply(id=${messageDTO.id})}" class="btn btn-link"><i class="fa fa-reply m-r-5"></i>Reply</a>-->
                                                         <a th:href="@{/ops/mailbox/{id}/forward(id=${messageDTO.id})}" class="btn btn-link"><i class="fa fa-arrow-right m-r-5"></i>Forward</a>
-                                                        <a th:href="@{/ops/mailbox/outbox/{id}/delete(id=${messageDTO.id})}" class="btn btn-link"><i class="fa fa-trash-o m-r-5"></i>Delete</a>
+                                                        <!--<a th:href="@{/ops/mailbox/outbox/{id}/delete(id=${messageDTO.id})}" class="btn btn-link"><i class="fa fa-trash-o m-r-5"></i>Delete</a>-->
 
                                                                     </div>
                                                                 </div>
