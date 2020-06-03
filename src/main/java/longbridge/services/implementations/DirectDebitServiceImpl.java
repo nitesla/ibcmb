@@ -174,6 +174,7 @@ public class DirectDebitServiceImpl implements DirectDebitService {
 
 	}
 
+
 	@Override
 	public DirectDebit getDirectDebit(Long directDebitId) {
 		return directDebitRepo.getOne(directDebitId);
@@ -216,6 +217,7 @@ public class DirectDebitServiceImpl implements DirectDebitService {
 				logger.info("Failed Direct Debit transfer id {}", payment.getDirectDebit().getId());
 			}
 
+
 		} else if (directDebit.getCorporate() != null) {
 
 			CorpDirectDebit corpDirectDebit = corpDirectDebitRepo.findOneById(directDebit.getId());
@@ -257,6 +259,7 @@ public class DirectDebitServiceImpl implements DirectDebitService {
 			}
 		}
 	}
+
 
 
 	private DirectDebit convertDTOToEntity(DirectDebitDTO directDebitDTO) {

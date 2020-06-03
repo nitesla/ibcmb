@@ -30,10 +30,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.thymeleaf.context.Context;
 
 import javax.servlet.http.HttpSession;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 
 import static longbridge.utils.StringUtil.compareAnswers;
 
@@ -482,6 +479,154 @@ public @ResponseBody String getSecAns(WebRequest webRequest, HttpSession session
         }catch (InternetBankingException e){
             logger.error("ERROR AUTHENTICATING USER >>>>> ",e);
             return e.getMessage();
+        }
+    }
+    @GetMapping("/rest/corporate/username/{username}")
+    public
+    @ResponseBody
+    String usernameCheck(@PathVariable String username) {
+        CorporateUser user = corporateUserService.getUserByName(username);
+        logger.info("USER RETURNED{}", user);
+        if (user == null) {
+            return "false";
+        }
+        return user.getUserName();
+    }
+    @GetMapping("/rest/corp/getSecQues/{username}")
+    public
+    @ResponseBody
+    String getSecQues(@PathVariable String username) {
+        String secQuestion = "";
+        logger.debug("Username in Controller : " + username);
+
+        CorporateUser user = corporateUserService.getUserByName(username);
+        if (user != null) {
+            logger.info("USER NAME {}", user.getUserName());
+            try {
+                Map<String, List<String>> qa = securityService.getUserQA(user.getEntrustId(), user.getEntrustGroup());
+                logger.info("QQQAAAA {}", qa);
+                //List<String> sec = null;
+                if (qa != null && !qa.isEmpty()) {
+                    List<String> question = qa.get("questions");
+                    secQuestion = question.stream().filter(Objects::nonNull).findFirst().orElse("");
+
+                }
+            } catch (Exception e) {
+                logger.info(e.getMessage());
+                secQuestion = "";
+            }
+
+        } else {
+            secQuestion = "";
+        }
+
+        return secQuestion;
+    }
+
+    @GetMapping("/rest/corporate/secAnswer/{answer}/{username}")
+    public
+    @ResponseBody
+    String getSecAns(@PathVariable String answer, @PathVariable String username) {
+
+        //confirm security question is correct
+        String secAnswer = "";
+        try {
+            CorporateUser user = corporateUserService.getUserByName(username);
+            Map<String, List<String>> qa = securityService.getUserQA(user.getEntrustId(), user.getEntrustGroup());
+            //List<String> sec = null;
+            if (qa != null) {
+                List<String> question = qa.get("answers");
+                secAnswer = question.stream().filter(Objects::nonNull).findFirst().orElse("");
+
+                if (!secAnswer.equalsIgnoreCase(answer)) {
+                    return "";
+                } else {
+                    return "true";
+                }
+
+            } else {
+                return "";
+            }
+
+        } catch (Exception e) {
+            logger.info(e.getMessage());
+            return "";
+        }
+        //return (String) session.getAttribute("username");
+    }
+
+    @GetMapping("/rest/corporate/getTokenSerials/{username}")
+    public
+    @ResponseBody
+    String[] getTokenSerials(@PathVariable String username) {
+        String no[] = new String[0];
+        logger.info("Username in Controller : " + username);
+
+        CorporateUser user = corporateUserService.getUserByName(username);
+        if (user != null) {
+            logger.info("USER NAME {}", user.getUserName());
+            try {
+                String sn = securityService.getTokenSerials(user.getEntrustId(), user.getEntrustGroup());
+                logger.info("SERIALS {}", sn);
+                //List<String> sec = null;
+                if (sn != null && !sn.isEmpty()) {
+                    String myList[] = sn.trim().split(",");
+
+                    logger.info("SERIALS {}", myList);
+                    return myList;
+                } else {
+                    return no;
+                }
+
+            } catch (Exception e) {
+                logger.info(e.getMessage());
+            }
+
+        } else {
+            return no;
+        }
+
+        return no;
+    }
+
+    @GetMapping("/reporttokencorp")
+    public String showReportToken(Model model) {
+        return "corp/reporttokencorp";
+    }
+
+    @PostMapping("/reporttokencorp")
+    public
+    @ResponseBody
+    String reportToken(WebRequest webRequest) {
+        Iterator<String> iterator = webRequest.getParameterNames();
+
+        while (iterator.hasNext()) {
+            logger.info(iterator.next());
+        }
+
+        String username = webRequest.getParameter("username");
+        String token = webRequest.getParameter("token");
+        try {
+
+            if ("".equals(username) || username == null) {
+                logger.error("No username found");
+                return "false";
+            }
+            if ("".equals(token) || token == null) {
+                logger.error("No token selected");
+                return "false";
+            }
+
+            CorporateUser user = corporateUserService.getUserByName(username);
+            Boolean res = securityService.deActivateToken(user.getEntrustId(), user.getEntrustGroup(), token);
+            if (res) {
+                return "true";
+            } else {
+                return "false";
+            }
+
+        } catch (Exception e) {
+            return "false";
         }
     }
 }
