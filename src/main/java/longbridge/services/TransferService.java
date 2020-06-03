@@ -9,7 +9,9 @@ import longbridge.models.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
+import longbridge.utils.TransferType;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -53,5 +55,9 @@ public interface TransferService {
     TransRequest updateTransferStatus(TransferRequestDTO transferRequestDTO);
     boolean validateDirectDebitTransfer(TransferRequestDTO dto);
     TransRequest makeBackgroundTransfer(TransferRequestDTO transferRequest, DirectDebit directDebit);
+
+    @PreAuthorize("hasAuthority('VIEW_TRANSACTIONS')")
+    Page<TransferRequestDTO> getTransferReviews(TransferType transfertype, String accountNumber, Date startDate, Date endDate, Pageable pageDetails);
+
 
 }

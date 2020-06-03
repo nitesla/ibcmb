@@ -188,6 +188,7 @@
                 </ul>
 
             </li>
+            <li sec:authorize="hasAuthority('MAINTAIN_RATE')"><a href="/ops/rate/"><i class="fa fa-tasks"></i>Rate Maintenance </a></li>
 
             <li sec:authorize="hasAuthority('MAILBOX')"><a><i class="fa fa-inbox"></i> Mailbox<span class="fa fa-chevron-down"></span></a>
                 <ul class="nav child_menu">
@@ -203,6 +204,11 @@
                     <li><a href="/ops/verifications/operations"> Pending  <button class="badge bg-orange"  th:text="${verificationNumber}"></button> </a></li>
                     <li><a href="/ops/verifications/pendingops">My Requests <button class="badge bg-orange bt-select" disabled="disabled" th:text="${totalPending}" >count</button></a></li>
 
+                </ul>
+            </li>
+            <li sec:authorize="hasAuthority('GENERATE_REPORT')"><a><i class="fa fa-table"></i>Reports <span class="fa fa-chevron-down"></span></a>
+                <ul class="nav child_menu">
+                    <li><a href="/ops/report/generate/index">Generate Report</a></li>
                 </ul>
             </li>
         </ul>

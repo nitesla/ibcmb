@@ -33,10 +33,7 @@ import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 import java.util.stream.StreamSupport;
 
 import static longbridge.utils.TransferType.INTER_BANK_TRANSFER;
@@ -513,6 +510,21 @@ public class TransferServiceImpl implements TransferService {
         else transRequest.setUserReferenceNumber("RET_" + directDebit.getRetailUser().getId());
         transferRequestRepo.save(transRequest);
         return transRequest;
+    }
+
+    @Override
+    public Page<TransferRequestDTO> getTransferReviews(TransferType transfertype, String accountNumber, Date startDate, Date endDate, Pageable pageDetails){
+        Page<TransRequest> page;
+        if(transfertype==null){
+            page=transferRequestRepo.findByReviewParamsForAllTransTypes(accountNumber, startDate, endDate, pageDetails);
+        }else {
+            page = transferRequestRepo.findByReviewParams(transfertype, accountNumber, startDate, endDate, pageDetails);
+        }
+        List<TransferRequestDTO> dtOs = convertEntitiesToDTOs(page.getContent());
+        logger.trace("transfers", dtOs);
+        long t = page.getTotalElements();
+        Page<TransferRequestDTO> pageImpl = new PageImpl<>(dtOs, pageDetails, t);
+        return pageImpl;
     }
 
 }
