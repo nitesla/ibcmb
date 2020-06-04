@@ -1351,5 +1351,57 @@ public class IntegrationServiceImpl implements IntegrationService {
 
 	}
 
+	@Override
+	public String updateTransferLimit(TransferSetLimit tsl){
+		String methodResponse = "success";
+		Response response = null;
+		TransferSetLimit tslDto = new TransferSetLimit();
+		String uri = URI+"/service/updateLimit";
+		Map<String,String> params = new HashMap<>();
+		params.put("channel", tsl.getChannel());
+		params.put("description", tsl.getDescription());
+		params.put("customerType", tsl.getCustomerType());
+		params.put("delFlag", tsl.getDelFlag());
+		params.put("lowerLimit", tsl.getLowerLimit());
+		params.put("upperLimit", tsl.getUpperLimit());
+		params.put("id", tsl.getId().toString());
+		logger.info("Api Params = " + params);
+		try{
+			response = template.postForObject(uri, params, Response.class);
+
+		} catch(Exception e){
+			logger.info("Error processing request");
+			methodResponse = "fail";
+		}
+		return methodResponse;
+	}
+
+
+	@Override
+	public String updateCharge(TransferFeeAdjustment tfaDTO){
+		String methodResponse = "success";
+		Response response =  null;
+		TransferFeeAdjustment tfa = new TransferFeeAdjustment();
+		String uri = URI+"/service/updateCharge";
+		Map<String,String> params = new HashMap<>();
+		params.put("feeRange", tfaDTO.getFeeRange());
+		params.put("feeDescription", tfaDTO.getFeeDescription());
+		params.put("fixedAmount", tfaDTO.getFixedAmount());
+		params.put("fixedAmountValue", tfaDTO.getFixedAmountValue());
+		params.put("rate", tfaDTO.getRate());
+		params.put("rateValue", tfaDTO.getRateValue());
+		params.put("delFlag",tfa.getDelFlag());
+		params.put("transactionChannel", tfaDTO.getTransactionChannel());
+		params.put("id", tfaDTO.getId().toString());
+		logger.info("Api Params = " + params);
+		try {
+			response = template.postForObject(uri, params, Response.class);
+
+		} catch (Exception e){
+			logger.info("Error processing request");
+			methodResponse = "fail";
+		}
+		return methodResponse;
+	}
 
 }
