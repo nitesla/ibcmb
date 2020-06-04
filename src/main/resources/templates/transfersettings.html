@@ -1,273 +1,300 @@
-    <!DOCTYPE html>
-    <html xmlns:th="http://www.thymeleaf.org">
-    <head th:replace="layout :: site-head">
-    </head>
+        <!DOCTYPE html>
+        <html xmlns:th="http://www.thymeleaf.org">
+        <head th:replace="layout :: site-head">
+        </head>
 
-    <body class="nav-md">
-    <div class="container body">
-        <div class="main_container">
-            <div class="col-md-3 left_col">
-                <div class="left_col scroll-view">
+        <body class="nav-md">
+        <div class="container body">
+            <div class="main_container">
+                <div class="col-md-3 left_col">
+                    <div class="left_col scroll-view">
 
-                    <div th:replace="layout :: admin-menu"></div>
-                    <div th:replace="layout :: menu-footer-adm"></div>
+                        <div th:replace="layout :: admin-menu"></div>
+                        <div th:replace="layout :: menu-footer-adm"></div>
 
+                    </div>
                 </div>
-            </div>
-            <div th:replace="layout :: top-nav"></div>
+                <div th:replace="layout :: top-nav"></div>
 
-            <!-- page content -->
-            <div class="right_col" role="main">
-                <div class="">
+                <!-- page content -->
+                <div class="right_col" role="main">
+                    <div class="">
 
-                    <div class="clearfix"></div>
+                        <div class="clearfix"></div>
 
-                    <div class="row">
-                        <div class="col-md-12 col-sm-12 col-xs-12">
-                            <div class="x_panel">
-                                <div class="x_title">
-                                    <h2>Transfer Settings</h2>
+                        <div class="row">
+                            <div class="col-md-12 col-sm-12 col-xs-12">
+                                <div class="x_panel">
+                                    <div class="x_title">
+                                        <h2>Transfer Settings</h2>
 
-                                    <div class="clearfix"></div>
-                                </div>
-
+                                        <div class="clearfix"></div>
+                                    </div>
 
 
-                                <div class="x_content">
-                                    <div class="ibox-content">
 
-                                        <div>
-                                            <button class="btn btn-info" onclick="myFunction()">Adjust transfer fees</button>
-                                            <button class="btn btn-info" onclick="setLimitFunction()">Set transfer limit</button>
-                                        </div>
-    <!-- ------------------------------------------------------- SET TRANSFER LIMIT --------------------------------------------------------------------------------------- -->
+                                    <div class="x_content">
+                                        <div class="ibox-content">
 
-                                            <div id="selectLimitForBankUser" style="display: none">
-                                                <br>
-                                                <label>Select user</label>
-                                                <select class="form-control" id="selectBankUser">
-                                                    <option>-- Select --</option>
-                                                    <option>Retail </option>
-                                                    <option>Corporate </option>
-
-                                                </select>
-                                            </div>
-                                                <br>
-                                        <div class="container" style="display: none" id="selectBankType">
-
-                                            <label class="radio-inline">
-                                                <input type="radio" name="bankradio" value="cmbank">Coronation merchant bank
-                                            </label>
-                                            <label class="radio-inline">
-                                                <input type="radio" name="bankradio" value="obank">Other banks
-                                            </label>
-                                        </div>
-
-
-                                        <br>
-                                        <div class="col-lg-6 col-xl-3" id="withinCoronationBank" style="display: none">
-                                            <div class="form-group">
-                                                <label>Account number</label>
-                                                <input name="accountnumber" type="number" class="form-control" placeholder="Optional" id="accountnumberid">
-                                            </div>
-                                            <div class="form-group">
-                                                <label>Account class</label>
-                                                <select class="form-control" id="accountclassid">
-                                                    <option>-- Select --</option>
-                                                    <option>Current (CAA)</option>
-                                                    <option>Current (ODA)</option>
-                                                    <option>Loan accounts</option>
-                                                    <option>Savings</option>
-                                                </select>
-                                            </div>
-                                            <div class="form-group">
-                                                <label>Set limit</label>
-                                                <input name="limit" type="number" class="form-control" id="setlimitid">
-                                            </div>
-                                            <div class="form-group">
-                                                <label>Frequency</label>
-                                                <select class="form-control" id="setfrequencyid">
-                                                    <option>Daily</option>
-                                                    <option>Weekly</option>
-                                                    <option>Monthly</option>
-                                                    <option>Quarterly</option>
-                                                    <option>Bi-Annually</option>
-                                                    <option>Annually</option>
-                                                </select>
-                                            </div>
                                             <div>
-                                                <button class="btn btn-success transferLimitBtn">Save</button>
+                                                <button class="btn btn-info" onclick="myFunction()">Adjust transfer fees</button>
+                                                <button class="btn btn-info" onclick="setLimitFunction()">Set transfer limit</button>
                                             </div>
-                                        </div>
+        <!-- ------------------------------------------------------- SET TRANSFER LIMIT --------------------------------------------------------------------------------------- -->
+
+                                                <div id="selectLimitForBankUser" style="display: none">
+                                                    <br>
+                                                    <label>Select user</label>
+                                                    <select class="form-control" id="selectBankUser">
+                                                        <option>-- Select --</option>
+                                                        <option>Retail </option>
+                                                        <option>Corporate </option>
+
+                                                    </select>
+                                                </div>
+                                                    <br>
+<!--                                            <div class="container" style="display: none" id="selectBankType">-->
+
+<!--&lt;!&ndash;                                                <label class="radio-inline">&ndash;&gt;-->
+<!--&lt;!&ndash;                                                    <input type="radio" name="bankradio" value="cmbank">Coronation merchant bank&ndash;&gt;-->
+<!--&lt;!&ndash;                                                </label>&ndash;&gt;-->
+<!--                                                <label class="radio-inline">-->
+<!--                                                    <input type="radio" name="bankradio" value="obank">Select transaction channel-->
+<!--                                                </label>-->
+<!--                                            </div>-->
 
 
-                                            <div class="form-group" style="display: none" id="userChooseOtherBanks">
-                                                <label>Select Platform</label>
-                                                <select class="form-control" id="selectPlatform">
-                                                    <option>-- Select --</option>
-                                                    <option>Nibss Instant Payment</option>
-                                                    <option>Real Time Gross Settlement</option>
-                                                    <option>Nibss Automated Payment Services</option>
-                                                </select>
+                                            <br>
+<!--                                            <div class="col-lg-6 col-xl-3" id="withinCoronationBank" style="display: none">-->
+<!--                                                <div class="form-group">-->
+<!--                                                    <label>Description</label>-->
+<!--                                                    <textarea name="accountnumber" type="text" class="form-control"  id="accountnumberid"></textarea>-->
+<!--                                                </div>-->
+<!--                                                <div class="form-group">-->
+<!--                                                    <label>Set lower limit</label>-->
+<!--                                                    <input class="form-control" id="accountclassid" type="number" required>-->
+<!--                                                </div>-->
+<!--                                                <div class="form-group">-->
+<!--                                                    <label>Set upper limit</label>-->
+<!--                                                    <input name="limit" type="number" class="form-control" id="setlimitid" required>-->
+<!--                                                </div>-->
+<!--                                                <div>-->
+<!--                                                    <button class="btn btn-success transferLimitBtn">Save</button>-->
+<!--                                                </div>-->
+<!--                                            </div>-->
+
+
+                                                <div class="form-group" style="display: none" id="userChooseOtherBanks">
+                                                    <label>Select Platform</label>
+                                                    <select class="form-control" id="selectPlatform">
+                                                        <option value="-- Select --">-- Select --</option>
+                                                        <option th:each="message : ${transferchannels}" th:value="${message.description }"th:text="${message.description }"></option>
+
+                                                    </select>
+                                                </div>
+
+                                            <div class="col-lg-6 col-xl-3" id="withinOtherBanks" style="display: none">
+                                                <div class="form-group">
+                                                    <label>Description</label>
+                                                    <textarea name="accountnumber" type="text" class="form-control"  id="obankaccountnumberid"></textarea>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label>Set Lower Limit</label>
+                                                    <input class="form-control" id="obankaccountnumberclass" type="number"  required>
+
+
+                                                </div>
+                                                <div class="form-group">
+                                                    <label>Set Upper Limit</label>
+                                                    <input name="limit" type="number" class="form-control" id="obanksetlimit" required>
+                                                </div>
+                                                <div>
+                                                    <button class="btn btn-success transferLimitBtn">Save</button>
+                                                </div>
                                             </div>
 
-                                        <div class="col-lg-6 col-xl-3" id="withinOtherBanks" style="display: none">
-                                            <div class="form-group">
-                                                <label>Account number</label>
-                                                <input name="accountnumber" type="number" class="form-control" placeholder="Optional" id="obankaccountnumberid">
-                                            </div>
-                                            <div class="form-group">
-                                                <label>Account class</label>
-                                                <select class="form-control" id="obankaccountnumberclass">
-                                                    <option>-- Select --</option>
-                                                    <option>Current</option>
-                                                    <option>Fixed deposit</option>
-                                                    <option>Savings</option>
-                                                    <option>Domiciliary</option>
-                                                    <option>Corporate</option>
-                                                    <option>Joint</option>
+           <!--------------------------------------------------  ADJUST TRANSFER FEES  ---------------------------------------------------------- ---------------------------------------           -->
 
-                                                </select>
-                                            </div>
-                                            <div class="form-group">
-                                                <label>Set limit</label>
-                                                <input name="limit" type="number" class="form-control" id="obanksetlimit">
-                                            </div>
-                                            <div class="form-group">
-                                                <label>Frequency</label>
-                                                <select class="form-control" id="obanksetfrequency">
-                                                    <option>Daily</option>
-                                                    <option>Weekly</option>
-                                                    <option>Monthly</option>
-                                                    <option>Quarterly</option>
-                                                    <option>Bi-Annually</option>
-                                                    <option>Annually</option>
-                                                </select>
-                                            </div>
-                                            <div>
-                                                <button class="btn btn-success transferLimitBtn">Save</button>
-                                            </div>
-                                        </div>
-
-       <!--------------------------------------------------  ADJUST TRANSFER FEES  ---------------------------------------------------------- ---------------------------------------           -->
-
-                                       <div id="selectTransferPlatform" style="display: none">
-                                           <label>Select transfer method</label>
-                                         <select class="form-control" id="transferDropdown">
-                                             <option>-- Select --</option>
-                                             <option>Nibss Instant Payment</option>
-                                             <option>Real Time Gross Settlement</option>
-                                             <option>Nibss Automated Payment Services</option>
-                                             <option>International</option>
-                                             <option>Transfer Via Remmittance</option>
-                                             <option>Bill Payments</option>
-                                         </select>
-                                       </div>
+                                           <div id="selectTransferPlatform" style="display: none">
+                                               <label>Select transfer method</label>
+                                             <select class="form-control" id="transferDropdown">
+                                                 <option>-- Select --</option>
+                                                 <option>Nibss Instant Payment</option>
+                                                 <option>Real Time Gross Settlement</option>
+                                                 <option>Nibss Automated Payment Services</option>
+                                                 <option>International</option>
+                                                 <option>Transfer Via Remmittance</option>
+                                                 <option>Bill Payments</option>
+                                             </select>
+                                           </div>
 
 
-                                        <br/>
-                                        <div>
-                                        <div class="container" style="display: none" id="selectAdjustmentType">
-
-                                                <label class="radio-inline">
-                                                    <input type="radio" name="optradio" value="transferPercentage">Percentage-amount
-                                                </label>
-                                                <label class="radio-inline">
-                                                    <input type="radio" name="optradio" value="transferFixedrate">Fixed-amount
-                                                </label>
-                                                <label class="radio-inline">
-                                                    <input type="radio" name="optradio" value="selectboth">Both
-                                                </label>
-
-                                        </div>
-                                        </div>
-                                        <br/>
-                                        <div class="col-lg-6 col-xl-3" id="textInputForFeeAdjustment">
-                                        <div id="radioSelection" style="display: none" class="form-group">
-                                            <form>
-                                            <label>Percentage-amount</label>
-                                            <input name="percentage" type="number" id="radioPercentage" class="form-control">
-                                                <br>
-                                                <button type="button" class="btn btn-success adjustTransferFee">Submit</button>
-                                            </form>
-                                        </div>
-
-                                        <div id="fixedRateSelection" style="display: none" class="form-group">
-                                            <form>
-                                            <label>Fixed-amount</label>
-                                            <input name="percentage" type="number" id="fixedRate" class="form-control">
-                                                <br>
-                                            <button type="button" class="btn btn-success adjustTransferFee">Submit</button>
-                                            </form>
-                                        </div>
-
-                                        <div id="bothSelection" style="display: none" class="form-group">
-                                            <form>
-                                            <label>Percentage-amount</label>
-                                            <input name="percentage" type="number" id="bothSelection1" class="form-control">
                                             <br/>
-                                            <label>Fixed-amount</label>
-                                            <input name="percentage" type="number" id="bothSelection2" class="form-control">
-                                                <br>
-                                                <button type="button" class="btn btn-success adjustTransferFee">Submit</button>
-                                            </form>
-                                        </div>
-                                        </div>
+                                            <div>
+<!--                                            <div class="container" style="display: none" id="selectAdjustmentType">-->
+
+<!--                                                    <label class="radio-inline">-->
+<!--                                                        <input type="radio" name="optradio" value="transferPercentage">Fee Range-->
+<!--                                                    </label>-->
+<!--                                                    <label class="radio-inline">-->
+<!--                                                        <input type="radio" name="optradio" value="transferFixedAmount">Fixed Amount-->
+<!--                                                    </label>-->
+<!--                                                    <label class="radio-inline">-->
+<!--                                                        <input type="radio" name="optradio" value="selectboth">Both-->
+<!--                                                    </label>-->
+
+<!--                                            </div>-->
+                                            </div>
+                                            <br/>
+                                            <div class="col-lg-6 col-xl-3" id="textInputForFeeAdjustment">
+<!--                                            <div id="radioSelection" style="display: none" class="form-group">-->
+<!--                                                <form>-->
+<!--                                                <div>-->
+<!--                                                <label>Fee Range</label>-->
+<!--                                                <input name="percentage" type="number" id="radioPercentage" class="form-control" required>-->
+<!--                                                </div>-->
+<!--                                                    <br>-->
+<!--                                                <div>-->
+<!--                                                    <label>Fee Description</label>-->
+<!--                                                    <textarea name="feeDescription" type="text" id="feeDescriptionId" class="form-control" required></textarea>-->
+<!--                                                </div>-->
+<!--                                                    <br>-->
+<!--                                                <div>-->
+<!--                                                    <label>Fixed Amount Value</label>-->
+<!--                                                    <input name="fixedAmountValue" type="number" id="fixedAmountValueId" class="form-control" required>-->
+<!--                                                </div>-->
+<!--                                                    <br>-->
+<!--                                                <div>-->
+<!--                                                    <label>Rate</label>-->
+<!--                                                    <input name="rate" type="number" id="rateId" class="form-control" required>-->
+<!--                                                </div>-->
+<!--                                                    <br>-->
+<!--                                                <div>-->
+<!--                                                    <label>Rate Value</label>-->
+<!--                                                    <input name="rateValue" type="text" id="rateValueId" class="form-control" required>-->
+<!--                                                </div>-->
+<!--                                                    <br>-->
+<!--                                                    <button type="button" class="btn btn-success adjustTransferFee">Submit</button>-->
+<!--                                            </form>-->
+<!--                                            </div>-->
 
 
+
+
+
+
+<!--                                            <div id="fixedRateSelection" style="display: none" class="form-group">-->
+<!--                                                <form>-->
+<!--                                                    <div>-->
+<!--                                                <label>Fixed Amount</label>-->
+<!--                                                <input name="fixedAmount" type="number" id="fixedRate" class="form-control" required>-->
+<!--                                                    </div>-->
+<!--                                                    <br>-->
+<!--                                                    <div>-->
+<!--                                                        <label>Fee Description</label>-->
+<!--                                                        <textarea name="fixedAmount" type="number" id="feeDescriptionId2" class="form-control" required></textarea>-->
+<!--                                                    </div>-->
+<!--                                                    <br>-->
+<!--                                                    <div>-->
+<!--                                                        <label>Fixed Amount Value</label>-->
+<!--                                                        <input name="fixedAmount" type="number" id="fixedAmountValueId2" class="form-control" required>-->
+<!--                                                    </div>-->
+<!--                                                    <br>-->
+<!--                                                    <div>-->
+<!--                                                        <label>Rate</label>-->
+<!--                                                        <input name="fixedAmount" type="number" id="rateId2" class="form-control" required>-->
+<!--                                                    </div>-->
+<!--                                                    <br>-->
+<!--                                                    <div>-->
+<!--                                                        <label>Rate Value</label>-->
+<!--                                                        <input name="fixedAmount" type="number" id="rateValueId2" class="form-control" required>-->
+<!--                                                    </div>-->
+<!--                                                    <br>-->
+<!--                                                <button type="button" class="btn btn-success adjustTransferFee">Submit</button>-->
+<!--                                                </form>-->
+<!--                                            </div>-->
+
+
+
+
+
+
+
+
+                                            <div id="bothSelection" style="display: none" class="form-group">
+                                                <form>
+                                                    <div>
+                                                <label>Fee Range</label>
+                                                <input name="percentage" type="number" id="bothSelection1" class="form-control" required>
+                                                    </div>
+                                                <br/>
+                                                    <div>
+                                                <label>Fixed Amount</label>
+                                                <input name="percentage" type="number" id="bothSelection2" class="form-control" required>
+                                                    </div>
+                                                    <br>
+                                                    <div>
+                                                        <label>Fee Description</label>
+                                                        <textarea name="percentage" type="number" id="feeDescriptionIdBoth" class="form-control" required></textarea>
+                                                    </div>
+                                                    <br>
+                                                    <div>
+                                                        <label>Fixed Amount Value</label>
+                                                        <input name="percentage" type="number" id="fixedAmountValueIdBoth" class="form-control" required>
+                                                    </div>
+                                                    <br>
+                                                    <div>
+                                                        <label>Rate</label>
+                                                        <input name="percentage" type="number" id="rateIdBoth" class="form-control" required>
+                                                    </div>
+                                                    <br>
+                                                    <div>
+                                                        <label>Rate Value</label>
+                                                        <input name="percentage" type="number" id="rateValueIdBoth" class="form-control" required>
+                                                    </div>
+                                                    <br>
+                                                    <button type="button" class="btn btn-success adjustTransferFee">Submit</button>
+                                                </form>
+                                            </div>
+                                            </div>
+
+
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
+                <!-- /page content -->
+
+                <!-- footer content -->
+                <footer th:replace="layout :: footer">
+                </footer>
+                <!-- /footer content -->
             </div>
-            <!-- /page content -->
-
-            <!-- footer content -->
-            <footer th:replace="layout :: footer">
-            </footer>
-            <!-- /footer content -->
         </div>
-    </div>
 
-    <script>
-        $('#selectBankUser').on('change',function () {
-            var bankUser =  $(this).val()
-            var otherBankUser = $(this).val()
-            if(bankUser == "-- Select --"){
-                $('#selectBankType').css('display','none');
-                $('#withinCoronationBank').css('display','none');
-                $('#userChooseOtherBanks').css('display','none');
-                $('#withinOtherBanks').css('display','none');
-            }
-            else
-            if (bankUser == otherBankUser){
-                $('#selectBankType').css('display','block');
-            }
+        <script>
+            $('#selectBankUser').on('change',function () {
+                var bankUser =  $(this).val()
+                var otherBankUser = $(this).val()
+                if(bankUser == "-- Select --"){
+                    $('#selectBankType').css('display','none');
+                    $('#withinCoronationBank').css('display','none');
+                    $('#userChooseOtherBanks').css('display','none');
+                    $('#withinOtherBanks').css('display','none');
+                }
+                else
+                if (bankUser == otherBankUser){
+                    $('#userChooseOtherBanks').css('display','block');
+                }
 
-        })
+            })
 
-        function setLimitFunction() {
-            $('#selectLimitForBankUser').css('display','block');
-            $('#selectTransferPlatform').css('display','none');
-            $('#selectAdjustmentType').css('display','none');
-            $('#radioSelection').css('display','none');
-            $('#fixedRateSelection').css('display','none');
-            $('#bothSelection').css('display','none');
-            $('#selectBankType').css('display','none');
-            $('#withinCoronationBank').css('display','none');
-            $('#userChooseOtherBanks').css('display','none');
-            $('#withinOtherBanks').css('display','none');
-
-        }
-
-        $('#transferDropdown').on('change',function () {
-            var transferOption =  $(this).val()
-            console.log(transferOption);
-            var selectedValue = $(this).val()
-
-            if(transferOption == "-- Select --"){
+            function setLimitFunction() {
+                $('#selectLimitForBankUser').css('display','block');
+                $('#selectTransferPlatform').css('display','none');
                 $('#selectAdjustmentType').css('display','none');
                 $('#radioSelection').css('display','none');
                 $('#fixedRateSelection').css('display','none');
@@ -275,270 +302,270 @@
                 $('#selectBankType').css('display','none');
                 $('#withinCoronationBank').css('display','none');
                 $('#userChooseOtherBanks').css('display','none');
-            }
-
-           else if (transferOption == selectedValue){
-                $('#selectAdjustmentType').css('display','block');
-                $('#radioSelection').css('display','none');
-                $('#fixedRateSelection').css('display','none');
-                $('#bothSelection').css('display','none');
-                $('#selectBankType').css('display','none');
-                $('#withinCoronationBank').css('display','none');
-                $('#userChooseOtherBanks').css('display','none');
-            }
-        })
-
-        function myFunction(){
-            $('#selectTransferPlatform').css('display','block');
-            $('#selectAdjustmentType').css('display','none');
-            $('#radioSelection').css('display','none');
-            $('#fixedRateSelection').css('display','none');
-            $('#bothSelection').css('display','none');
-            $('#selectLimitForBankUser').css('display','none');
-            $('#selectBankType').css('display','none');
-            $('#withinCoronationBank').css('display','none');
-            $('#userChooseOtherBanks').css('display','none');
-            $('#withinOtherBanks').css('display','none');
-        }
-
-
-        $("input[name='optradio']").on('change',function () {
-          var transferOption =  $(this).val()
-            if(transferOption == "transferPercentage"){
-                $('#radioSelection').css('display','block');
-                $('#fixedRateSelection').css('display','none');
-                $('#bothSelection').css('display','none');
-                $('#selectBankType').css('display','none');
-                $('#withinCoronationBank').css('display','none');
-                $('#userChooseOtherBanks').css('display','none');
-            }
-            if(transferOption == "transferFixedrate"){
-                $('#radioSelection').css('display','none');
-                $('#fixedRateSelection').css('display','block');
-                $('#bothSelection').css('display','none');
-                $('#selectBankType').css('display','none');
-                $('#withinCoronationBank').css('display','none');
-                $('#userChooseOtherBanks').css('display','none');
-            }
-
-            if(transferOption == "selectboth"){
-                $('#radioSelection').css('display','none');
-                $('#fixedRateSelection').css('display','none');
-                $('#bothSelection').css('display','block');
-                $('#selectBankType').css('display','none');
-                $('#withinCoronationBank').css('display','none');
-                $('#userChooseOtherBanks').css('display','none');
-            }
-
-        })
-
-        $("input[name='bankradio']").on('change',function () {
-            var selectedBankRadio =  $(this).val()
-            console.log(selectedBankRadio);
-            if (selectedBankRadio == 'cmbank'){
-                $('#withinCoronationBank').css('display','block');
-
-            }else {
-                $('#withinCoronationBank').css('display','none');
                 $('#withinOtherBanks').css('display','none');
+
             }
 
-            if (selectedBankRadio == 'obank'){
-                $('#userChooseOtherBanks').css('display','block');
-            }else {
-                $('#userChooseOtherBanks').css('display','none');
-                $('#withinOtherBanks').css('display','none');
-            }
+            $('#transferDropdown').on('change',function () {
+                var transferOption =  $(this).val()
+                console.log(transferOption);
+                var selectedValue = $(this).val()
 
-        })
+                if(transferOption == "-- Select --"){
+                    $('#selectAdjustmentType').css('display','none');
+                    $('#radioSelection').css('display','none');
+                    $('#fixedRateSelection').css('display','none');
+                    $('#bothSelection').css('display','none');
+                    $('#selectBankType').css('display','none');
+                    $('#withinCoronationBank').css('display','none');
+                    $('#userChooseOtherBanks').css('display','none');
+                }
 
-        $('#selectPlatform').on('change',function () {
-            var selectedPlatform =  $(this).val()
-            if (selectedPlatform == "-- Select --"){
-                $('#withinOtherBanks').css('display','none');
-            } else{
-                $('#withinOtherBanks').css('display','block');
-            }
-
-
-        })
-
-    $(".transferLimitBtn").on("click", function (){
-        var bankUserType = $("#selectBankUser").val();
-        var radioSelect = $("input[name='bankradio']:checked"). val();
-        if (radioSelect == "cmbank") {
-            var acctNum = $("#accountnumberid").val();
-            var acctclass = $("#accountclassid").val();
-            var setAcctLimit = $("#setlimitid").val();
-            var frequency = $("#setfrequencyid").val();
-            if(validateFieldsForTransferLimitOfCoronationAccounts(acctclass,setAcctLimit,frequency) == false){
-
-
-            $.ajax({
-                type: "POST",
-                url: "/admin/users/submitTransferLimitForCoronationAccounts",
-                data: { bankUserType:bankUserType, bankChoice:"Coronation merchant bank", accountNumber: acctNum, accountClass: acctclass, limit: setAcctLimit, frequency:frequency }, // parameters
-                success :
-                    function(response) {
-                        showNotification("Transfer limit successfully set", "success");
-                        setTimeout(function () {
-                            location.reload();
-                        },2000)
-                    }
+               else if (transferOption == selectedValue){
+                    $('#selectAdjustmentType').css('display','none');
+                    $('#radioSelection').css('display','none');
+                    $('#fixedRateSelection').css('display','none');
+                    $('#bothSelection').css('display','block');
+                    $('#selectBankType').css('display','none');
+                    $('#withinCoronationBank').css('display','none');
+                    $('#userChooseOtherBanks').css('display','none');
+                }
             })
+
+            function myFunction(){
+                $('#selectTransferPlatform').css('display','block');
+                $('#selectAdjustmentType').css('display','none');
+                $('#radioSelection').css('display','none');
+                $('#fixedRateSelection').css('display','none');
+                $('#bothSelection').css('display','none');
+                $('#selectLimitForBankUser').css('display','none');
+                $('#selectBankType').css('display','none');
+                $('#withinCoronationBank').css('display','none');
+                $('#userChooseOtherBanks').css('display','none');
+                $('#withinOtherBanks').css('display','none');
             }
 
-        } else if(radioSelect == "obank"){
 
-            var transferPlatform = $("#selectPlatform").val();
-            var obankAcctNum = $("#obankaccountnumberid").val();
-            var obankAcctclass = $("#obankaccountnumberclass").val();
-            var obankSetAcctLimit = $("#obanksetlimit").val();
-            var obankFrequency = $("#obanksetfrequency").val();
+            $("input[name='optradio']").on('change',function () {
+              var transferOption =  $(this).val()
+                if(transferOption == "transferPercentage"){
+                    $('#radioSelection').css('display','block');
+                    $('#fixedRateSelection').css('display','none');
+                    $('#bothSelection').css('display','none');
+                    $('#selectBankType').css('display','none');
+                    $('#withinCoronationBank').css('display','none');
+                    $('#userChooseOtherBanks').css('display','none');
+                }
+                if(transferOption == "transferFixedAmount"){
+                    $('#radioSelection').css('display','none');
+                    $('#fixedRateSelection').css('display','block');
+                    $('#bothSelection').css('display','none');
+                    $('#selectBankType').css('display','none');
+                    $('#withinCoronationBank').css('display','none');
+                    $('#userChooseOtherBanks').css('display','none');
+                }
 
-            if (validateFieldForTransferOfOtherBanksLimit(obankAcctclass,obankSetAcctLimit,obankFrequency) == false){
+                if(transferOption == "selectboth"){
+                    $('#radioSelection').css('display','none');
+                    $('#fixedRateSelection').css('display','none');
+                    $('#bothSelection').css('display','block');
+                    $('#selectBankType').css('display','none');
+                    $('#withinCoronationBank').css('display','none');
+                    $('#userChooseOtherBanks').css('display','none');
+                }
 
-
-            $.ajax({
-                type: "POST",
-                url: "/admin/users/submitTransferLimitForOtherBankAccounts",
-                data: { bankUserType:bankUserType, transferPlatform:transferPlatform, bankChoice:"Other banks", accountNumber: obankAcctNum, accountClass: obankAcctclass, limit: obankSetAcctLimit, frequency:obankFrequency }, // parameters
-                success :
-                    function(response) {
-                        showNotification("Transfer limit successfully set", "success");
-                        setTimeout(function () {
-                            location.reload();
-                        },2000)
-                    }
             })
-            }
-        }
 
-    })
+            $("input[name='bankradio']").on('change',function () {
+                var selectedBankRadio =  $(this).val()
+                console.log(selectedBankRadio);
+                if (selectedBankRadio == 'cmbank'){
+                    $('#withinCoronationBank').css('display','block');
 
-        function showNotification(message , type){
-        $.notify({
-            // options
-            message: message
-        },{
-            // settings
-            type: type
-        });
-        }
+                }else {
+                    $('#withinCoronationBank').css('display','none');
+                    $('#withinOtherBanks').css('display','none');
+                }
+
+                if (selectedBankRadio == 'obank'){
+                    $('#userChooseOtherBanks').css('display','block');
+                }else {
+                    $('#userChooseOtherBanks').css('display','none');
+                    $('#withinOtherBanks').css('display','none');
+                }
+
+            })
+
+            $('#selectPlatform').on('change',function () {
+                var selectedPlatform =  $(this).val()
+                if (selectedPlatform == "-- Select --"){
+                    $('#withinOtherBanks').css('display','none');
+                } else{
+                    $('#withinOtherBanks').css('display','block');
+                }
 
 
-        function validateFieldsForTransferLimitOfCoronationAccounts(acctclass,setAcctLimit,frequency) {
-            var error = false;
-            if (acctclass == '-- Select --'){
-                showNotification("Please supply Account class", "danger")
-                error = true;
-            }
-            if (setAcctLimit == ''){
-                showNotification("Please supply Global limit", "danger")
-                error = true;
-            }
-            if (frequency == ''){
-                showNotification("Please supply frequency", "danger")
-                error = true;
-            }
+            })
 
-            return error;
-        }
+        $(".transferLimitBtn").on("click", function (){
+            var bankUserType = $("#selectBankUser").val();
+            var radioSelect = $("input[name='bankradio']:checked"). val();
+            // if (radioSelect == "cmbank") {
+            //     var acctNum = $("#accountnumberid").val();
+            //     var acctclass = $("#accountclassid").val();
+            //     var setAcctLimit = $("#setlimitid").val();
+            //     // var frequency = $("#setfrequencyid").val();
+            //     if(validateAllFields(acctclass == "" || setAcctLimit == "" || acctNum == "") == false){
+            //
+            //
+            //     $.ajax({
+            //         type: "POST",
+            //         url: "/admin/transfersettings/submitTransferLimitForCoronationAccounts",
+            //         data: { customerType:bankUserType, description: acctNum, lowerLimit: acctclass, upperLimit: setAcctLimit}, // parameters
+            //         success :
+            //             function(response) {
+            //                 showNotification("Transfer limit successfully set", "success");
+            //                 setTimeout(function () {
+            //                     location.reload();
+            //                 },2000)
+            //             }
+            //     })
+            //     }
+            //
+            // } else
+            //     if(radioSelect == "obank"){
 
-        function validateFieldForTransferOfOtherBanksLimit(obankAcctclass,obankSetAcctLimit,obankFrequency) {
-            var error = false;
-            if(obankAcctclass == '-- Select --'){
-                showNotification("Please supply Account class", "danger")
-                error = true;
-            }
-            if (obankSetAcctLimit == ''){
-                showNotification("Please supply Global limit", "danger")
-                error = true;
-            }
-            if(obankFrequency == ''){
-                showNotification("Please supply frequency", "danger")
-                error = true;
-            }
-            return error;
-        }
+                var transferPlatform = $("#selectPlatform").val();
+                var obankAcctNum = $("#obankaccountnumberid").val();
+                var obankAcctclass = $("#obankaccountnumberclass").val();
+                var obankSetAcctLimit = $("#obanksetlimit").val();
+                // var obankFrequency = $("#obanksetfrequency").val();
 
-        function validateSelectionOfBothFixedAndPercentageInput(percentage,fixedrate){
-            var error = false;
-            if (percentage == ''){
-                showNotification("Please supply percentage amount","danger")
-                error = true;
-            }
-            if(fixedrate == ''){
-                showNotification("Please supply fixed amount", "danger")
-                error = true;
-            }
-            return error;
-        }
+                if (validateAllFields(obankAcctclass == "" || obankSetAcctLimit == "" || obankAcctNum == "") == false){
 
-        $(".adjustTransferFee").on("click", function (){
-            var transferMethod = $("#transferDropdown").val();
-            var radioSelect = $("input[name='optradio']:checked"). val();
-            if (radioSelect == 'transferPercentage'){
-                var percentage = $("#radioPercentage").val();
-                if(percentage != ''){
+
                 $.ajax({
                     type: "POST",
-                    url: "/admin/users/submitTransferFeePercentage",
-                    data: {transferMethod:transferMethod, feeType:radioSelect, percentage:percentage}, // parameters
+                    url: "/admin/transfersettings/submitTransferLimitForAllTransactionChannels",
+                    data: { customerType:bankUserType, channel:transferPlatform,  description: obankAcctNum, lowerLimit: obankAcctclass, upperLimit: obankSetAcctLimit }, // parameters
                     success :
                         function(response) {
-                            showNotification("Percentage fee successfully adjusted", "success");
+                        console.log(response);
+                            showNotification(response, "success");
                             setTimeout(function () {
                                 location.reload();
                             },2000)
-                        }
+                        },
+                    error:
+                    function (response) {
+                        console.log(response.responseText);
+                        showNotification(response.responseText, "danger");
+                    }
+
                 })
-                } else{
-                    showNotification("Please supply percentage amount","danger")
                 }
-            }else if (radioSelect == 'transferFixedrate'){
-                var fixedRate = $("#fixedRate").val();
-                if (fixedRate != ''){
-                    $.ajax({
-                        type: "POST",
-                        url: "/admin/users/submitTransferFeeFixedAmount",
-                        data: {transferMethod:transferMethod, feeType:radioSelect, fixedRate:fixedRate}, // parameters
-                        success :
-                            function(response) {
-                                showNotification("Fixed amount successfully adjusted", "success");
-                                setTimeout(function () {
-                                    location.reload();
-                                },2000)
-                            }
-                    })
-                }else {
-                    showNotification("Please supply fixed amount","danger")
-                }
-
-            }else if (radioSelect == 'selectboth'){
-
-                var percentage = $("#bothSelection1").val();
-                var fixedRate = $("#bothSelection2").val();
-                if(validateSelectionOfBothFixedAndPercentageInput(percentage,fixedRate) == false){
-                    $.ajax({
-                        type: "POST",
-                        url: "/admin/users/submitTransferAdjustments",
-                        data: { transferMethod:transferMethod, feeType:radioSelect, fixedRate:fixedRate, percentage:percentage  }, // parameters
-                        success :
-                            function(response) {
-                                showNotification("Transfer fee Adjusted successfully", "success");
-                                setTimeout(function () {
-                                    location.reload();
-                                },2000)
-                            }
-                    })
-                }
-
-
-            }
+            // }
 
         })
 
-    </script>
-    </body>
-    </html>
+            function showNotification(message , type){
+            $.notify({
+                // options
+                message: message
+            },{
+                // settings
+                type: type
+            });
+            }
+
+
+
+            function validateAllFields(error){
+                if (error == true){
+                    showNotification("All fields required","danger")
+                    error = true;
+                }
+
+                return error;
+            }
+
+            $(".adjustTransferFee").on("click", function (){
+                var transferMethod = $("#transferDropdown").val();
+                // var radioSelect = $("input[name='optradio']:checked"). val();
+                // if (radioSelect == 'transferPercentage'){
+                //     var feeRange = $("#radioPercentage").val();
+                //     var feeDescription = $("#feeDescriptionId").val();
+                //     var fixedAmountValue = $("#fixedAmountValueId").val();
+                //     var rate = $("#rateId").val();
+                //     var rateValue = $("#rateValueId").val();
+                //     var fixedAmount = "N/A";
+                //     if(validateAllFields(feeRange == "" || feeDescription == "" || fixedAmountValue == "" || rate == "" || rateValue == "" || fixedAmount == "") == false){
+                //     $.ajax({
+                //         type: "POST",
+                //         url: "/admin/transfersettings/submitTransferFeePercentage",
+                //         data: {transactionChannel:transferMethod, feeType:radioSelect, feeRange:feeRange, feeDescription:feeDescription, fixedAmountValue:fixedAmountValue,
+                //             rate:rate, rateValue:rateValue}, // parameters
+                //         success :
+                //             function(response) {
+                //                 showNotification("Fee adjustment sent for verification", "success");
+                //                 setTimeout(function () {
+                //                     location.reload();
+                //                 },2000)
+                //             }
+                //     })
+                //     }
+                // }else if (radioSelect == 'transferFixedAmount'){
+                //     var fixedAmount = $("#fixedRate").val();
+                //     var feeDescription = $("#feeDescriptionId2").val();
+                //     var fixedAmountValue = $("#fixedAmountValueId2").val();
+                //     var rate = $("#rateId2").val();
+                //     var rateValue = $("#rateValueId2").val();
+                //     var feeRange = "N/A";
+                //     if (validateAllFields(feeRange == "" || feeDescription == "" || fixedAmountValue == "" || rate == "" || rateValue == "" || fixedAmount == "") == false){
+                //         $.ajax({
+                //             type: "POST",
+                //             url: "/admin/transfersettings/submitTransferFeeFixedAmount",
+                //             data: {transactionChannel:transferMethod, feeType:radioSelect, fixedAmount:fixedAmount, feeDescription:feeDescription, fixedAmountValue:fixedAmountValue,
+                //             rate:rate, rateValue:rateValue}, // parameters
+                //             success :
+                //                 function(response) {
+                //                     showNotification("Fee adjustment sent for verification", "success");
+                //                     setTimeout(function () {
+                //                         location.reload();
+                //                     },2000)
+                //                 }
+                //         })
+                //     }
+                //
+                // }else if (radioSelect == 'selectboth'){
+
+                    var feeRange = $("#bothSelection1").val();
+                    var fixedAmount = $("#bothSelection2").val();
+                    var feeDescription = $("#feeDescriptionIdBoth").val();
+                    var fixedAmountValue = $("#fixedAmountValueIdBoth").val();
+                    var rate = $("#rateIdBoth").val();
+                    var rateValue = $("#rateValueIdBoth").val();
+                    if(validateAllFields(feeRange == "" || feeDescription == "" || fixedAmountValue == "" || rate == "" || rateValue == "" || fixedAmount == "") == false){
+                        $.ajax({
+                            type: "POST",
+                            url: "/admin/transfersettings/submitTransferAdjustments",
+                            data: { transactionChannel:transferMethod, fixedAmount:fixedAmount, feeRange:feeRange, feeDescription:feeDescription,
+                                fixedAmountValue:fixedAmountValue, rate:rate, rateValue:rateValue}, // parameters
+                            success :
+                                function(response) {
+                                    showNotification(response, "success");
+                                    setTimeout(function () {
+                                        location.reload();
+                                    },2000)
+                                }
+                        })
+                    }
+
+
+                // }
+
+            })
+
+        </script>
+        </body>
+        </html>

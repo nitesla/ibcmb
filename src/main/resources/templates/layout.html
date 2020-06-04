@@ -60,6 +60,7 @@
                     <li><a href="/admin/checker">Maker Checker</a></li>
                     <!--<li><a href="/admin/secquestions/">Security Questions</a></li>-->
                     <!--<li><a href="/admin/phishing/">Phishing Image</a></li>-->
+                    <li><a th:href="@{/admin/transfersettings/transfersettings}"> Transfer Settings</a></li>
                     <li><a href="/admin/job">Batch Job</a></li>
                     <li><a href="/admin/greetings">Greetings</a></li>
 
@@ -265,7 +266,7 @@
                     <ul class="dropdown-menu dropdown-usermenu pull-right">
                         <!--<li><a href="javascript:;"> Profile</a></li>-->
                         <li><a th:href="@{/admin/users/password}"> Change Password</a></li>
-                        <li><a th:href="@{/admin/users/transfersettings}"> Transfer</a></li>
+
                     </ul>
                 </li>
                 <li sec:authorize="hasAuthority('VIEW_ADMIN_VERIFICATIONS')">
