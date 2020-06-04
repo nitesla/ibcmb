@@ -27,7 +27,8 @@ public abstract class AbstractEntity implements Serializable{
 	 */
 	private static final long serialVersionUID = -2361696892354119780L;
 
-	@javax.persistence.Id
+
+    @javax.persistence.Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     Long id;
 

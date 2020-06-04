@@ -423,6 +423,7 @@ public class CorpTransferServiceImpl implements CorpTransferService {
         transferRequestDTO.setAmount(corpTransRequest.getAmount());
         transferRequestDTO.setTranDate(corpTransRequest.getTranDate());
         transferRequestDTO.setCorporateId(corpTransRequest.getCorporate().getId().toString());
+        transferRequestDTO.setCurrencyCode(corpTransRequest.getCurrencyCode());
         if (corpTransRequest.getTransferAuth() != null) {
             transferRequestDTO.setTransAuthId(corpTransRequest.getTransferAuth().getId().toString());
         }
@@ -488,6 +489,7 @@ public class CorpTransferServiceImpl implements CorpTransferService {
         corpTransRequest.setStatusDescription(transferRequestDTO.getStatusDescription());
         corpTransRequest.setAmount(transferRequestDTO.getAmount());
         corpTransRequest.setUserReferenceNumber(transferRequestDTO.getUserReferenceNumber());
+        corpTransRequest.setCurrencyCode(transferRequestDTO.getCurrencyCode());
 
         Corporate corporate = corporateRepo.findOneById(Long.parseLong(transferRequestDTO.getCorporateId()));
         corpTransRequest.setCorporate(corporate);

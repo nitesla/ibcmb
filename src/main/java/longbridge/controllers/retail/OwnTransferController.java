@@ -111,6 +111,8 @@ public class OwnTransferController {
                 return page + "pagei";
             }
             request.setTransferType(TransferType.OWN_ACCOUNT_TRANSFER);
+            String currency=accountService.getAccountByAccountNumber(request.getCustomerAccountNumber()).getCurrencyCode();
+            request.setCurrencyCode(currency);
             transferService.validateTransfer(request);
             model.addAttribute("transferRequest", request);
             servletRequest.getSession().setAttribute("transferRequest", request);

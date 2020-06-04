@@ -43,6 +43,8 @@ public class TransferRequestDTO implements Serializable {
 
     private String sessionId;
 
+    private String currencyCode;
+
     private BigDecimal amount;
     private String statusDescription;
     private String charge;
@@ -332,6 +334,14 @@ public class TransferRequestDTO implements Serializable {
 
     public void setChannel(String channel) {
         this.channel = channel;
+    }
+
+    public String getCurrencyCode() {
+        return currencyCode;
+    }
+
+    public void setCurrencyCode(String currencyCode) {
+        this.currencyCode = currencyCode;
     }
 
     @Override
