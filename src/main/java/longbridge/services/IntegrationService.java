@@ -159,5 +159,7 @@ public interface IntegrationService {
 
     TransRequest makeBackgroundTransfer(TransRequest transRequest) throws InternetBankingTransferException;
     LoanDTO getLoanDetails(String accountNumber);
+    String updateTransferLimit(TransferSetLimit tsl);
+    String updateCharge(TransferFeeAdjustment tfaDTO);
 
 }

@@ -42,6 +42,7 @@ public class Code extends AbstractEntity implements PrettySerializer{
 	 * 
 	 */
 	private static final long serialVersionUID = -5786181085941056612L;
+
 	private String code;
     private String type;
     private String description;

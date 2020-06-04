@@ -27,7 +27,7 @@
                                                 <div class="form-group">
                                                     <label class="my-label">Source account</label>
 
-                                                        <span id="scurency"></span>
+                                                        <!--<span id="scurency"></span>-->
                                                     <div>
 
                                                         <span class="alert no-bd-rad my-border bg-white hide-content-only" id="sourceCurrency">CCY</span>
@@ -41,12 +41,12 @@
                                                 <div class="form-group">
                                                     <label class="my-label">Destination account</label>
 
-                                                    <span id="dcurency"></span>
+                                                    <!--<span id="dcurency"></span>-->
                                                     <div>
                                                     <span class="alert no-bd-rad my-border bg-white hide-content-only" id="destCurrency">NGN</span>
                                                     <select name="beneficiaryAccountNumber" class="form-control" id="destination"
-                                                            th:field="*{beneficiaryAccountNumber}"  onchange="getDestCurrency();"  required="required">
-
+                                                            th:field="*{beneficiaryAccountNumber}"  required="required">
+                                                        <!--onchange="getDestCurrency();"-->
                                                         <!--<option th:if="${transferRequest.beneficiaryAccountNumber!=null}" th:value="*{beneficiaryAccountNumber}" th:text="*{beneficiaryAccountNumber}" th:selected="${true}"></option>-->
 
 
@@ -133,7 +133,6 @@
   $("#destination").prop("selectedIndex", -1);
         getBalance();
         getSourceCurrency();
-        // ipLookUp();
 
 
 
@@ -155,7 +154,7 @@ function getBeneficiaryAccts() {
                 console.log("details output " + data.length);
                 if (data != null) {
                     //$('input[name=username]').val(result);
-//                    $('#destination').empty();
+                   $('#destination').empty();
                    var benAcc =  "";
                     for (var i = 0; i < data.length; i++) {
 
@@ -189,7 +188,7 @@ function getBeneficiaryAccts() {
     $('#source').change(function () {
         getBeneficiaryAccts();
         $("#destination").prop("selectedIndex", -1);
-        $('#destCurrency').text('')
+        // $('#destCurrency').text('')
     });
 
 
@@ -255,7 +254,11 @@ function getBeneficiaryAccts() {
 
                     $('#sourceCurrency').text(cur);
                    document.getElementById('sourceCurrency').style.visibility = 'visible';
-                    
+
+                    $('#destCurrency').text(cur);
+                    document.getElementById('destCurrency').style.visibility = 'visible';
+
+
 
                 }
             }
@@ -263,7 +266,7 @@ function getBeneficiaryAccts() {
     }
 
 ///
-    function getDestCurrency(){
+    /*function getDestCurrency(){
         var accountNumber = $('#destination').val();
         $.ajax({
             url: "/retail/transfer/"+accountNumber+"/currency",
@@ -284,7 +287,7 @@ function getBeneficiaryAccts() {
             }
         })
     }
-
+*/
 
 
 

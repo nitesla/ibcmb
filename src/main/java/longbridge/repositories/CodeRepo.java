@@ -6,6 +6,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 
+import java.util.List;
+
 /**
  * Created by Wunmi on 30/03/2017.
  */
@@ -18,6 +20,8 @@ public interface CodeRepo extends CommonRepo<Code, Long>{
     Iterable<String> findAllTypes();
     @Query("select distinct c.type from Code c")
     Page<String> findAllTypes(Pageable pageable);
+
+    List<Code> findAllByType(String type);
     
     
     

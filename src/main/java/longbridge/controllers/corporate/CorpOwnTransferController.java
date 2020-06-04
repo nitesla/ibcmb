@@ -98,6 +98,8 @@ public class CorpOwnTransferController {
                 return page + "pagei";
             }
             request.setTransferType(TransferType.OWN_ACCOUNT_TRANSFER);
+            String currency=accountService.getAccountByAccountNumber(request.getCustomerAccountNumber()).getCurrencyCode();
+            request.setCurrencyCode(currency);
             corpTransferService.validateTransfer(request);
             model.addAttribute("corpTransferRequest", request);
             servletRequest.getSession().setAttribute("corpTransferRequest", request);

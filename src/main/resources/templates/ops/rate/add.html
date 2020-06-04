@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="layout :: site-head">
+</head>
+<body class="nav-md">
+<div class="container body">
+    <div class="main_container">
+        <div class="col-md-3 left_col">
+            <div class="left_col scroll-view">
+
+                <div th:replace="layout :: ops-menu"></div>
+                <div th:replace="layout :: menu-footer-ops"></div>
+
+            </div>
+        </div>
+        <div th:replace="layout :: ops-top-nav"></div>
+
+        <!-- page content -->
+        <div class="right_col" role="main">
+            <div class="">
+                <div class="page-title">
+                    <div class="title_left">
+                        <h3>Rate Maintenance</h3>
+                    </div>
+
+                </div>
+
+
+
+                <div class="clearfix"></div>
+
+                <div class="row">
+                    <div class="col-md-12 col-sm-12 col-xs-12">
+                        <div class="x_panel">
+
+                            <div class="x_content">
+                                <div class="ibox-content">
+                                    <div class="x_title">
+                                        <ul class="nav navbar-right panel_toolbox">
+
+                                        </ul>
+                                        <div class="clearfix"></div>
+                                    </div>
+                                    <form method="post" class="form-horizontal" th:action="@{/ops/rate/add}" th:object="${investmentRateDTO}">
+
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label">Type</label>
+
+                                            <div class="col-sm-4">
+                                                <input type="text" id="investmentName" name="investmentName" class="form-control" th:field="*{investmentName}"/>
+                                            </div>
+
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label">Tenor</label>
+
+                                            <div class="col-sm-4">
+                                                <input type="number" id="tenor" name="tenor" min="0" class="form-control" th:field="*{tenor}" />
+                                            </div>
+
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label">Value</label>
+
+                                            <div class="col-sm-4">
+                                                <input type="text" id="value" name="value" step="0.001" min="0" class="form-control" th:field="*{value}" />
+                                            </div>
+                                        </div>
+
+
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label">Minimum Amount</label>
+
+                                            <div class="col-sm-4">
+                                                <input type="number" id="minAmount" name="minAmount" class="form-control" min="0" th:field="*{minAmount}" />
+                                            </div>
+
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label">Maximum Amount</label>
+
+                                            <div class="col-sm-4">
+                                                <input type="number" id="maxAmount" name="maxAmount" class="form-control" min="0" th:field="*{maxAmount}" />
+
+                                            </div>
+
+                                        </div>
+
+
+                                        <div class="form-group">
+                                            <div class="col-sm-4 col-sm-offset-2">
+                                                <button class="btn btn-white" type="reset" id="cancel">Cancel</button>
+                                                <button class="btn btn-primary" type="submit">Submit</button>
+                                            </div>
+                                        </div>
+                                        <div th:replace="layout :: form-validation"></div>
+
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- /page content -->
+
+        <!-- footer content -->
+        <footer th:replace="layout :: footer">
+        </footer>
+        <!-- /footer content -->
+    </div>
+</div>
+<script>
+
+
+    document.getElementById("cancel").onclick = function () {
+        location.href = "/ops/rate";}
+</script>
+</body>
+</html>

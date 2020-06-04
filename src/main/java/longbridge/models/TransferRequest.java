@@ -24,6 +24,8 @@ public class TransferRequest implements Serializable{
     private String userReferenceNumber;
     private BigDecimal amount;
     private String charge;
+    private String currencyCode;
+
     private AntiFraudData antiFraudData;
     private String statusDescription;
 
@@ -182,6 +184,14 @@ public class TransferRequest implements Serializable{
 
     public void setUniqueReferenceCode(String uniqueReferenceCode) {
         this.uniqueReferenceCode = uniqueReferenceCode;
+    }
+
+    public String getCurrencyCode() {
+        return currencyCode;
+    }
+
+    public void setCurrencyCode(String currencyCode) {
+        this.currencyCode = currencyCode;
     }
 
     @Override
