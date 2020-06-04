@@ -40,6 +40,7 @@
                                 <div class="ibox-content">
                                     <form method="post" class="form-horizontal" th:action="@{/admin/token/deactivate/}" th:object="${token}">
                                         <div class="form-group">
+                                            <input type="hidden" name="userType" th:field="*{userType}">
                                             <label class="col-sm-2 control-label">Username</label>
 
                                             <div class="col-sm-4">

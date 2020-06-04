@@ -112,7 +112,7 @@ public class CorpInterBankTransferController {
 
             request.getSession().setAttribute("NIP", "NIP");
 
-            requestDTO.setTransferType(TransferType.INTER_BANK_TRANSFER);
+            requestDTO.setTransferType(TransferType.NIP);
 
             model.addAttribute("corpTransferRequest", requestDTO);
             return page + "pageiA";

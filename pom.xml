@@ -326,6 +326,15 @@
             <version>6.4.0</version>
         </dependency>
 
+        <!-- https://mvnrepository.com/artifact/net.sf.jasperreports/jasperreports-fonts -->
+        <dependency>
+            <groupId>net.sf.jasperreports</groupId>
+            <artifactId>jasperreports-fonts</artifactId>
+            <version>6.12.2</version>
+        </dependency>
+
+
+
         <dependency>
             <groupId>com.itextpdf</groupId>
             <artifactId>itextpdf</artifactId>
@@ -484,7 +493,14 @@
                     </execution>
                 </executions>
             </plugin>
-
+            <plugin>
+                <artifactId>maven-war-plugin</artifactId>
+                <version>3.2.3</version>
+                <configuration>
+                    <packagingExcludes>
+                        WEB-INF/classes/static/customer/plugins/gentelella-master/**</packagingExcludes>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
 </project>

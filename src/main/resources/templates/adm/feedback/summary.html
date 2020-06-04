@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="layout :: site-head">
+
+</head>
+
+<body class="nav-md">
+<div class="container body">
+    <div class="main_container">
+        <div class="col-md-3 left_col">
+            <div class="left_col scroll-view">
+
+                <div th:replace="layout :: admin-menu"></div>
+                <div th:replace="layout :: menu-footer-adm"></div>
+
+            </div>
+        </div>
+        <div th:replace="layout :: top-nav"></div>
+
+        <!-- page content -->
+        <div class="right_col" role="main">
+            <div class="">
+                <div class="page-title">
+                    <div class="title_left">
+                        <h3>Feedback Summary</h3>
+                    </div>
+
+                </div>
+
+                <div class="clearfix"></div>
+
+                <div class="row">
+                    <div class=" col-md-12  col-xs-12 col-sm-12">
+                        <div class="x_panel">
+
+                            <div class="ibox-content" >
+
+                                <form method="post" class="form-horizontal" th:action="@{/admin/feedback/enquire}">
+                                    <div class="form-group">
+                                        <label class="col-sm-5 control-label">Select Period</label>
+                                        <div class="col-sm-3">
+                                            <select id="period" name="period" class="form-control" required="required">
+                                                <option value="">Select Period</option>
+                                                <option value="cMonth">Current Month</option>
+                                                <option value="oneMonth">Last One Month</option>
+                                                <option value="threeMonths" >Last Three Months</option>
+                                                <option value="fix">Fix Date Range</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="range" style="display:none">
+                                    <div class="form-group">
+                                            <label class="col-sm-5 control-label" >Start date</label>
+                                            <div class="col-sm-3">
+                                                <input type="date" id="start" class="form-control" name="start"   />
+                                            </div>
+                                        </div>
+
+                                    <div class="form-group">
+                                            <label class="col-sm-5 control-label" >End date</label>
+                                            <div class="col-sm-3">
+                                                <input type="date" id="end" class="form-control" name="end"   />
+                                            </div>
+                                        </div>
+                                </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-5 control-label" ></label>
+                                        <div class="col-sm-3">
+                                            <button id="submit" class="btn btn-primary" type="submit" >View</button>
+                                        </div>
+                                    </div>
+                                </form>
+
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
+                <div style="text-align: center"> <h4 th:text="${searchTitle}" id="searchTitle" ></h4></div>
+                <div class="x_content">
+
+                    <table class="table table-striped table-bordered table-hover" >
+                        <thead>
+                        <tr>
+                            <th >TRANSACTION TYPE</th>
+                            <th>CORPORATE </th>
+                            <th>RETAIL </th>
+                            <th>ALL</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="transSummary :${summary}">
+                            <td th:text="${transSummary.tranType}"></td>
+                            <td ><span th:if="${transSummary.corporateRating!=0}"class="averageStar">
+                                <span class="fa fa-star sta" data-value="1" style="color:#D3D3D3"></span>
+                                <span class="fa fa-star sta" data-value="2" style="color:#D3D3D3"></span>
+                                <span class="fa fa-star sta" data-value="3" style="color:#D3D3D3"></span>
+                                <span class="fa fa-star sta" data-value="4" style="color:#D3D3D3"></span>
+                                <span class="fa fa-star sta" data-value="5" style="color:#D3D3D3"></span>&nbsp;
+                                <span class="rate" th:text="${transSummary.corporateRating}" ></span>&nbsp;
+                                <span>( out of <span th:text="${transSummary.corporateRatingReviews}"></span></span>&nbsp;
+                                     <span th:if="${transSummary.corporateRatingReviews >1}"> reviews)</span>
+                                    <span th:if="${transSummary.corporateRatingReviews ==1}"> review )</span>
+                                </span>
+                                <span th:if="${transSummary.corporateRating==0}">No rating</span>
+
+                            </td>
+                            <td ><span th:if="${transSummary.retailRating!=0}"class="averageStar">
+                                <span class="fa fa-star sta" data-value="1" style="color:#D3D3D3"></span>
+                                <span class="fa fa-star sta" data-value="2" style="color:#D3D3D3"></span>
+                                <span class="fa fa-star sta" data-value="3" style="color:#D3D3D3"></span>
+                                <span class="fa fa-star sta" data-value="4" style="color:#D3D3D3"></span>
+                                <span class="fa fa-star sta" data-value="5" style="color:#D3D3D3"></span>&nbsp;
+                                <span class="rate" th:text="${transSummary.retailRating}" >0.0</span>&nbsp;
+                                <span>( out of <span th:text="${transSummary.retailRatingReviews}"></span></span>&nbsp;
+                                    <span th:if="${transSummary.retailRatingReviews >1}"> reviews)</span>
+                                    <span th:if="${transSummary.retailRatingReviews ==1}"> review )</span>
+                                </span>
+                                <span th:if="${transSummary.retailRating==0}">No rating</span>
+                            </td>
+
+                            <td >
+                            <span th:if="${transSummary.bothRating!=0}" class="averageStar">
+                                <span class="fa fa-star sta" data-value="1" style="color:#D3D3D3"></span>
+                                <span class="fa fa-star sta" data-value="2" style="color:#D3D3D3"></span>
+                                <span class="fa fa-star sta" data-value="3" style="color:#D3D3D3"></span>
+                                <span class="fa fa-star sta" data-value="4" style="color:#D3D3D3"></span>
+                                <span class="fa fa-star sta" data-value="5" style="color:#D3D3D3"></span>&nbsp;
+                                <span class="rate" th:text="${transSummary.bothRating}" ></span>&nbsp;
+                                <span>( out of <span th:text="${transSummary.bothRatingReviews}"></span></span>&nbsp;
+                                    <span th:if="${transSummary.bothRatingReviews >1}"> reviews)</span>
+                                    <span th:if="${transSummary.bothRatingReviews ==1}"> review )</span>
+                            </span>
+
+                                <span th:if="${transSummary.bothRating==0}">No rating</span>
+                            </td>
+                        </tr>
+                        </tbody>
+                        </table>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+
+    <footer th:replace="layout :: footer">
+    </footer>
+    <!-- /footer content -->
+</div>
+
+
+
+<script th:src="@{~/bank/vendors/datatables.net/js/jquery.dataTables.js}"></script>
+<script th:src="@{~/bank/js/dataTables.select.js}"></script>
+<script th:src="@{~/bank/js/dataTables.bootstrap.js}"></script>
+<script th:src="@{~/bank/js/jquery.spring-friendly.min.js}"></script>
+<script th:src="@{~/bank/js/momentMin.js}"></script>
+<script th:src="@{~/bank/vendors/emodal/eModal.js}"></script>
+<script th:src="@{~/customer/js/greeting.js}"></script>
+
+<script th:inline="javascript">
+    $(document).ready(function() {
+        $('#period').on('change', function () {
+            if ($('#period').val() === 'fix') {
+                $(".range").show();
+                $("#start").attr("required",true);
+                $("#end").attr("required",true);
+            } else{
+                $(".range").hide();
+            }
+        })
+
+        $(".averageStar").each(function(a){
+            var rate=parseInt($(this).text());
+            $(this).children('span.sta').each(function(e){
+                if($(this).data('value')<=rate)
+                    $(this).css('color','yellow');
+            })
+        })
+
+    })
+
+</script>
+
+</body>
+</html>

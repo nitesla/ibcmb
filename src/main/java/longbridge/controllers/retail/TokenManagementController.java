@@ -108,6 +108,7 @@ public class TokenManagementController {
 
     @GetMapping("/sync")
     public String syncToken(Principal principal, Model model){
+
         try {
             RetailUser user = retailUserService.getUserByName(principal.getName());
             String serials = securityService.getTokenSerials(user.getEntrustId(), user.getEntrustGroup());
@@ -120,7 +121,7 @@ public class TokenManagementController {
             }
         }
         catch (InternetBankingSecurityException ibe){
-            logger.error("Failed to load corporate user {} token serials", principal.getName(),ibe);
+            logger.error("Failed to load retail user {} token serials", principal.getName(),ibe);
             model.addAttribute("failure", ibe.getMessage());
         }
 
@@ -129,13 +130,22 @@ public class TokenManagementController {
 
     @PostMapping("/sync")
     public String synchroniseToken(@ModelAttribute("tokenSync") @Valid CustSyncTokenForm custSyncTokenForm, BindingResult result, Principal principal, RedirectAttributes redirectAttributes){
+
         if (result.hasErrors()){
+
             return "cust/token/sync";
         }
 
         try{
             RetailUser retailUser = retailUserService.getUserByName(principal.getName());
             boolean res = securityService.synchronizeToken(retailUser.getEntrustId(), retailUser.getEntrustGroup(), custSyncTokenForm.getSerialNo(), custSyncTokenForm.getTokenCode1(), custSyncTokenForm.getTokenCode2());
+            if (res) {
+
+                redirectAttributes.addFlashAttribute("message", messageSource.getMessage("token.sync.success", null, locale));
+            }else{
+
+                redirectAttributes.addFlashAttribute("failure", messageSource.getMessage("token.sync.failure", null, locale));
+            }
             if (res){
                 redirectAttributes.addFlashAttribute("message", messageSource.getMessage("token.sync.success", null, locale));
                 return "redirect:/retail/token/sync";

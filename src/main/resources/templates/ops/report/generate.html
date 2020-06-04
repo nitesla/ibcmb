@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="layout :: site-head">
+</head>
+
+<body class="nav-md">
+<div class="container body">
+    <div class="main_container">
+        <div class="col-md-3 left_col">
+            <div class="left_col scroll-view">
+
+                <div th:replace="layout :: ops-menu"></div>
+                <div th:replace="layout :: menu-footer-ops"></div>
+
+            </div>
+        </div>
+        <div th:replace="layout :: ops-top-nav"></div>
+
+        <!-- page content -->
+        <div class="right_col" role="main">
+            <div class="">
+                <div class="page-title">
+                    <div class="title_left">
+                        <h3>Generate Report</h3>
+                    </div>
+
+                </div>
+
+                <div class="clearfix"></div>
+
+                <div class="row">
+                    <div class="col-md-12 col-sm-12 col-xs-12">
+                        <div class="x_panel">
+                            <div class="x_title">
+                                <h2></h2>
+
+                                <div class="clearfix"></div>
+                            </div>
+
+                            <div class="x_content">
+                                <div class="ibox-content">
+                                    <fieldset>
+                                        <div class="form-group">
+                                            <div class="col-md-12 col-sm-6 col-xs-12">
+
+                                                <form style="margin-top:20px" method="post" th:action="@{/ops/report/generate}" target="_blank">
+                                                    <input type="text"  th:value="${reportDTO.reportName}" style="display:none" required th:name="reportName" class="form-control"/>
+
+                                                    <div class="form-group">
+                                                        <div class="col-md-12">
+                                                            <label class="col-sm-4 control-label">Report Name</label>
+                                                            <div class="col-sm-6">
+                                                                <input type="text"  th:value="${reportDTO.reportName}" disabled required class="form-control"/>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div style="padding-bottom: 3%">
+                                                        <input type="text"  th:value="${reportDTO.id}" style="display: none" name="id" required class="form-control"/>
+
+                                                    </div>
+                                                    <br/>
+                                                    <div class="form-group">
+                                                        <div class="col-md-12" th:each="parName,ind : ${reportDTO.reportParameters}">
+                                                            <!--<div style="padding: 1%">-->
+                                                            <label class="col-sm-4 control-label" th:if="${parName.parameterName != null and parName.parameterName != 'logo'}" th:text="${parName.parameterDesc}">Report Field</label>
+                                                            <div class="col-sm-6" th:if="${parName.parameterName != null && parName.parameterName != 'logo'}">
+
+                                                                <div th:if="${parName.datatype=='java.lang.String'}">
+                                                                    <div th:if="${ parName.parameterName != 'bank_name'}">
+                                                                        <input type="text" required="required" th:name="${parName.parameterName}" class="form-control"/>
+                                                                    </div>
+
+                                                                    <!--<div th:if="${parName.parameterName == 'user_status'}">-->
+                                                                    <!--<select th:name="${parName.parameterName}" class="form-control">-->
+                                                                    <!--<option value="A">Active</option>-->
+                                                                    <!--<option value="L">Locked</option>-->
+                                                                    <!--<option value="I">Inactive</option>-->
+                                                                    <!--</select>-->
+                                                                    <!--</div>-->
+
+                                                                    <div th:if="${parName.parameterName == 'bank_name'}">
+                                                                        <select th:name="${parName.parameterName}" class="form-control">
+                                                                            <option th:each="financialInstitution : ${financialInstitutions}" th:text="${financialInstitution.institutionName}" th:value="${financialInstitution.institutionName}"></option>
+                                                                        </select>
+                                                                    </div>
+                                                                    <!--<div th:if="${parName.parameterName == 'request_status'}">-->
+                                                                    <!--<select th:name="${parName.parameterName}" class="form-control">-->
+                                                                    <!--<option th:each="status : ${statuses}" th:value="${status.code}"-->
+                                                                    <!--th:text="${status.description}"></option>-->
+                                                                    <!--</select>-->
+                                                                    <!--</div>-->
+                                                                </div>
+                                                                <div th:if="${parName.datatype == 'CODE'}">
+                                                                    <select th:name="${parName.parameterName}" class="form-control">
+                                                                        <option th:each="repCode : ${parName.codeValues}" th:value="${repCode.code}"
+                                                                                th:text="${repCode.description}"></option>
+                                                                    </select>
+                                                                </div>
+                                                                <div th:switch="${parName.datatype}">
+                                                                    <p th:case="'java.util.Date'">
+                                                                        <input class="form-control datepicker" type="text" th:name="${parName.parameterName}" required="required"/>
+                                                                    </p>
+                                                                    <p th:case="'java.sql.Date'">
+                                                                        <input class="form-control datepicker" type="text" th:name="${parName.parameterName}" required="required"/>
+                                                                    </p>
+                                                                    <p th:case="*">
+                                                                    <p th:if="${parName.datatype == 'java.lang.Double' or parName.datatype == 'java.lang.Float' or parName.datatype == 'java.lang.Integer' or parName.datatype == 'java.lang.Long' or parName.datatype == 'java.math.BigDecimal'}">
+                                                                        <input type="number"  th:name="${parName.parameterName}" required="required" class="form-control"/>
+                                                                    </p>
+                                                                    <p th:if="${parName.datatype != 'java.lang.Double' and parName.datatype != 'java.lang.Float' and parName.datatype != 'java.lang.Integer' and parName.datatype != 'java.lang.Long' and parName.datatype != 'java.math.BigDecimal'and parName.datatype != 'java.lang.String' and parName.datatype != 'java.util.Date' and parName.datatype != 'java.sql.Date' and parName.datatype != 'CODE'}">
+                                                                        <input type="text"  th:name="${parName.parameterName}" required="required" class="form-control"/>
+                                                                    </p>
+
+                                                                    </p>
+                                                                </div>
+
+                                                            </div>
+                                                        </div>
+                                                        <!--</div>-->
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <div class="col-md-12">
+                                                            <div class="radio col-md-4" style="padding-left: 1%">
+                                                                <label><input type="radio" name="reportType" checked value="excel">Excel</label>
+                                                                <label><input type="radio" name="reportType" value="pdf">PDF</label>
+
+                                                            </div>
+                                                            <div class="col-md-6">
+                                                                <div class="pull-right">
+                                                                    <button  class="btn btn-primary required-step" type="submit">Generate</button>
+                                                                </div>
+                                                                <div class="pull-right">
+                                                                    <a class="btn btn-white" href="/ops/report/generate/index" id="cancel">Cancel</a>
+                                                                </div>
+
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group" style="padding: 2%">
+
+                                                    </div>
+                                                    <div class="form-group">
+
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </fieldset>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- /page content -->
+
+        <!-- footer content -->
+        <footer th:replace="layout :: footer">
+        </footer>
+        <!-- /footer content -->
+    </div>
+</div>
+<script th:inline="javascript">
+    $(document).ready(
+
+        function () {
+
+
+        });
+    $( function() {
+        $( ".datepicker" ).datepicker(
+            {
+
+                autoclose: true,
+                todayBtn: true,
+                todayHighlight: true,
+                dateformat : 'dd-mon-yyyy'
+            }
+        );
+    } );
+
+</script>
+
+</body>
+</html>

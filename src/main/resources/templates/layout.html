@@ -90,16 +90,17 @@
                     <li><a href="/admin/notification">System Notifications</a></li>
                 </ul>
             </li>
-            <!--<li sec:authorize="hasAuthority('TOKEN_MANAGEMENT')"><a><i class="fa fa-key"></i> Token Management <span class="fa fa-chevron-down"></span></a>-->
-                <!--<ul class="nav child_menu">-->
-                    <!--<li><a href="/admin/token/assign">Assign Token</a></li>-->
-                    <!--<li><a href="/admin/token/activate/username">Activate Token</a></li>-->
-                    <!--<li><a href="/admin/token/assign/activate">Assign and Activate</a></li>-->
-                    <!--<li><a href="/admin/token/deactivate/username">Deactivate Token</a></li>-->
-                    <!--<li><a href="/admin/token/synchronize">Synchronize Token</a></li>-->
-                    <!--<li><a href="/admin/token/unlock">Unlock Token</a></li>-->
-                <!--</ul>-->
-            <!--</li>-->
+            <li sec:authorize="hasAuthority('TOKEN_MANAGEMENT')"><a><i class="fa fa-key"></i> Token Management <span class="fa fa-chevron-down"></span></a>
+                <ul class="nav child_menu">
+                    <li><a href="/admin/token/assign">Assign Token</a></li>
+                    <li><a href="/admin/token/activate/username">Activate Token</a></li>
+                    <li><a href="/admin/token/assign/activate">Assign and Activate</a></li>
+                    <li><a href="/admin/token/deactivate/username">Deactivate Token</a></li>
+                    <li><a href="/admin/token/synchronize">Synchronize Token</a></li>
+                    <li><a href="/admin/token/unlock">Unlock Token</a></li>
+                </ul>
+            </li>
+
             <li sec:authorize="hasAuthority('VIEW_AUDIT')"><a><i class="fa fa-history"></i>Audit<span class="fa fa-chevron-down"></span></a>
                 <ul class="nav child_menu">
                     <li sec:authorize="hasAuthority('AUDIT_CONFIG')"><a href="/admin/audit">Configuration</a></li>
@@ -118,6 +119,8 @@
                 </ul>
 
             </li>
+            <li sec:authorize="hasAuthority('GENERATE_REPORT')"><a href="/admin/report/generate/index"><i class="fa fa-table"></i>Generate Report</a></li>
+            <li sec:authorize="hasAuthority('FEEDBACK_SUMMARY')"><a href="/admin/feedback/enquire"><i class="fa fa-table"></i>Feedback Summary</a></li>
 
         </ul>
     </div>
@@ -186,14 +189,15 @@
                 </ul>
 
             </li>
+            <li sec:authorize="hasAuthority('MAINTAIN_RATE')"><a href="/ops/rate/"><i class="fa fa-tasks"></i>Rate Maintenance </a></li>
 
-            <!--<li sec:authorize="hasAuthority('MAILBOX')"><a><i class="fa fa-inbox"></i> Mailbox<span class="fa fa-chevron-down"></span></a>-->
-                <!--<ul class="nav child_menu">-->
-                    <!--<li sec:authorize="hasAuthority('MAILBOX_INBOX')"><a href="/ops/mailbox/newinbox/">Inbox</a></li>-->
-                    <!--<li sec:authorize="hasAuthority('MAILBOX_SENT')"><a href="/ops/mailbox/outbox/">Sent</a></li>-->
+            <li sec:authorize="hasAuthority('MAILBOX')"><a><i class="fa fa-inbox"></i> Mailbox<span class="fa fa-chevron-down"></span></a>
+                <ul class="nav child_menu">
+                    <li sec:authorize="hasAuthority('MAILBOX_INBOX')"><a href="/ops/mailbox/newinbox/">Inbox</a></li>
+                    <li sec:authorize="hasAuthority('MAILBOX_SENT')"><a href="/ops/mailbox/outbox/">Sent</a></li>
 
-                <!--</ul>-->
-            <!--</li>-->
+                </ul>
+            </li>
 
             <li sec:authorize="hasAuthority('VIEW_OPS_VERIFICATIONS')"><a><i class="fa fa-check"></i> Verifications <span class="fa fa-chevron-down"></span></a>
                 <ul class="nav child_menu">
@@ -201,6 +205,11 @@
                     <li><a href="/ops/verifications/operations"> Pending  <button class="badge bg-orange"  th:text="${verificationNumber}"></button> </a></li>
                     <li><a href="/ops/verifications/pendingops">My Requests <button class="badge bg-orange bt-select" disabled="disabled" th:text="${totalPending}" >count</button></a></li>
 
+                </ul>
+            </li>
+            <li sec:authorize="hasAuthority('GENERATE_REPORT')"><a><i class="fa fa-table"></i>Reports <span class="fa fa-chevron-down"></span></a>
+                <ul class="nav child_menu">
+                    <li><a href="/ops/report/generate/index">Generate Report</a></li>
                 </ul>
             </li>
         </ul>

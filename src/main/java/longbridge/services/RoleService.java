@@ -117,4 +117,8 @@ public interface RoleService {
 
  List<RoleDTO> getRolesByUserType(UserType userType);
 
+    List<PermissionDTO> findPermisionsByCategory(String category);
+    Permission findPermisionsByCode(String code);
+
+
 }

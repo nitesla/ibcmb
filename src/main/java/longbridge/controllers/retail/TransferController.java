@@ -111,6 +111,7 @@ public class TransferController {
                     return "redirect:/retail/transfer/interbank";
                 }
                 case INTERNATIONAL_TRANSFER: {
+                    return "redirect:/retail/transfer/international";
 
                 }
                 case NAPS: {
@@ -250,8 +251,9 @@ public class TransferController {
 
 
                 request.getSession().removeAttribute("auth-needed");
-
-
+            }
+            if(TransferType.INTERNATIONAL_TRANSFER.equals(transferRequestDTO.getTransferType())){
+                return "redirect:/retail/transfer/international/process";
             }
 
 

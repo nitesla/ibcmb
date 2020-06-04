@@ -1,9 +1,6 @@
 package longbridge.controllers.corporate;
 
-import longbridge.dtos.AccountDTO;
-import longbridge.dtos.CodeDTO;
-import longbridge.dtos.CorporateDTO;
-import longbridge.dtos.SettingDTO;
+import longbridge.dtos.*;
 import longbridge.exception.*;
 import longbridge.forms.AlertPref;
 import longbridge.forms.CustChangePassword;
@@ -73,6 +70,10 @@ public class CorpSettingController {
     @Autowired
     private MessageSource messageSource;
 
+    @Autowired
+    private IntegrationService integrationService;
+
+
     @RequestMapping("/dashboard")
     public String getCorporateDashboard(Model model, Principal principal) {
         CorporateUser corporateUser = corporateUserService.getUserByName(principal.getName());
@@ -84,7 +85,7 @@ public class CorpSettingController {
         List<AccountDTO> accountList = accountService.getAccountsAndBalances(corporateUser.getCorporate().getAccounts());
 
         SettingDTO dto = configService.getSettingByName("TRANSACTIONAL_ACCOUNTS");
-        if (dto!=null && dto.isEnabled()){
+       /* if (dto!=null && dto.isEnabled()){
             String []list= StringUtils.split(dto.getValue(),",");
             accountList=  accountList
                     .stream()
@@ -101,10 +102,33 @@ public class CorpSettingController {
                                 i.setAccountType(code.getDescription());
                             }
                         }
-                );
+                );*/
+        List<LoanDTO> loans = new ArrayList<>();
+        if (dto != null && dto.isEnabled()) {
+            String[] transactionalAccounts = StringUtils.split(dto.getValue(), ",");
+            accountList = accountList.stream()
+                    .filter(Objects::nonNull)
+                    .map(i -> {
 
+                                if ("LOAN".equalsIgnoreCase(i.getAccountType())) {
+                                    LoanDTO loan = integrationService.getLoanDetails(i.getAccountNumber());
+                                    loans.add(loan);
+                                }
+                                return i;
+                            }
+                    ).filter(i -> ArrayUtils.contains(transactionalAccounts, i.getAccountType()))
+                    .map(i -> {
+                        Code code = codeService.getByTypeAndCode("ACCOUNT_CLASS", i.getAccountType());
+                        if (code != null && code.getDescription() != null) {
+                            i.setAccountType(code.getDescription());
+                        }
+                        return i;
+                    })
+                    .collect(Collectors.toList());
+        }
 
-        model.addAttribute("accountList", accountList);
+            model.addAttribute("loans", loans);
+            model.addAttribute("accountList", accountList);
 
         boolean exp = passwordPolicyService.displayPasswordExpiryDate(corporateUser.getExpiryDate());
         logger.info("EXPIRY RESULT {} ", exp);

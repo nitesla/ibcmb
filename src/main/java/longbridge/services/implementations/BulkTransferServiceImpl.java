@@ -300,11 +300,11 @@ public class BulkTransferServiceImpl implements BulkTransferService {
         Page<BulkTransfer> page = bulkTransferRepo.findByCorporateOrderByTranDateDesc(corporate, details);//GB
 
         List<BulkTransferDTO> dtOs = convertEntitiesToDTOs(page.getContent());
-        List<BulkTransferDTO> bulkTransferRequests = dtOs.stream()
+        /*List<BulkTransferDTO> bulkTransferRequests = dtOs.stream()
                 .filter(transRequest -> !accountConfigService.isAccountRestrictedForViewFromUser(accountService.getAccountByAccountNumber(transRequest.getCustomerAccountNumber()).getId(),corporateUser.getId())).collect(Collectors.toList());
-
+*/
         long t = page.getTotalElements();
-        Page<BulkTransferDTO> pageImpl = new PageImpl<BulkTransferDTO>(bulkTransferRequests, details, t);
+        Page<BulkTransferDTO> pageImpl = new PageImpl<BulkTransferDTO>(dtOs, details, t);
         return pageImpl;
     }
 

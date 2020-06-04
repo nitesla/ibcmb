@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="layout :: site-head">
+</head>
+
+<body class="nav-md">
+<div class="container body">
+    <div class="main_container">
+        <div class="col-md-3 left_col">
+            <div class="left_col scroll-view">
+
+                <div th:replace="layout :: admin-menu"></div>
+                <div th:replace="layout :: menu-footer-adm"></div>
+
+            </div>
+        </div>
+        <div th:replace="layout :: top-nav"></div>
+
+        <!-- page content -->
+        <div class="right_col" role="main">
+            <div class="">
+                <div class="page-title">
+                    <div class="title_left">
+                        <h3>Report Settings</h3>
+                    </div>
+
+                </div>
+
+                <div class="clearfix"></div>
+
+                <div class="row">
+                    <div class="col-md-12 col-sm-12 col-xs-12">
+                        <div class="x_panel">
+                            <div class="x_title">
+                                <ul class="nav navbar-left panel_toolbox">
+                                    <div class="btn-group">
+                                        <button type="button" class="btn btn-primary  btn-sm bt-select" data-toggle="dropdown" disabled="disabled">Edit</button>
+                                        <button type="button" class="btn btn-primary  btn-sm dropdown-toggle bt-select" disabled="disabled" data-toggle="dropdown">
+                                            <span class="caret bt-select"></span>
+                                        </button>
+                                        <ul class="dropdown-menu" role="menu">
+                                            <li><a href="/admin/report/index/edit"  class="bt-link-report"> <strong>Report Details</strong> </a></li>
+                                            <li><a href="/admin/report/index/edit/file"  class="bt-link-report-file"> <strong>Report Details and file</strong> </a></li>
+                                        </ul>
+                                    </div>
+                                    <li >
+                                        <div class="col-lg-4">
+                                            <div class="title-action">
+                                                <a id="delete-btn" class="btn btn-danger btn-sm bt-select" href="/admin/report/index/delete" disabled="disabled" ><i class="fa fa-trash"></i> Delete</a>
+                                            </div>
+                                        </div>
+                                    </li>
+                                    <li >
+                                        <div class="col-lg-4">
+                                            <div class="title-action">
+                                                <a href="/admin/report/add" class="btn btn-sm btn-primary"><i class="fa fa-plus"></i> Add</a>
+                                            </div>
+                                        </div>
+                                    </li>
+                                </ul>
+                                <ul class="nav navbar-right panel_toolbox">
+
+
+                                    <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                                    </li>
+
+                                </ul>
+                                <ul class="nav navbar-right panel_toolbox col-lg-4 pull-right">
+
+                                    <li class="pull-right" >
+                                        <div class="input-group col-lg-12">
+                                            <input type="text" class="form-control" id="pattern" placeholder="Search for..."/> <span
+                                                class="input-group-btn">
+										<button class="btn btn-success" id="search" type="button">Go!</button>
+									</span>
+                                        </div>
+                                    </li>
+
+
+                                </ul>
+
+
+                                <div class="clearfix"></div>
+                            </div>
+                            <div class="x_content">
+
+                                <table class="table table-striped table-bordered table-hover" id="reports">
+                                    <thead>
+                                    <tr>
+                                        <th>Report Name</th>
+                                        <th>Date Created</th>
+                                        <th>Created By</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+
+
+                                    </tbody>
+                                </table>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+        <!-- footer content -->
+        <footer th:replace="layout :: footer">
+        </footer>
+        <!-- /footer content -->
+    </div>
+</div>
+
+
+<script th:src="@{~/bank/vendors/datatables.net/js/jquery.dataTables.js}"></script>
+<script th:src="@{~/bank/js/dataTables.select.js}"></script>
+<script th:src="@{~/bank/js/dataTables.bootstrap.js}"></script>
+<script th:src="@{~/bank/js/jquery.spring-friendly.min.js}"></script>
+<script th:src="@{~/bank/js/momentMin.js}"></script>
+
+<!-- Page-Level Scripts -->
+<script>
+    /*<![CDATA[*/
+    $(document).ready(function() {
+        var table = $('#reports').DataTable({
+            select:true,
+            responsive: true,
+            "lengthMenu" : [ [ 10, 20, 30, -1],	[ 10, 20, 30, "All" ] ],
+            "pagingType" : "simple_numbers",
+            "searching": false,
+            "paging": true,
+            "processing" : true,
+            "serverSide" : true,
+            rowId: 'id',
+            "ajax" : {
+                url : "/admin/report/view/data",
+                "type" : "GET",
+                "data" : function(d) {
+                    d.csearch = $('#pattern').val();
+                }
+            },
+            "dom": 'T<"clear">frtlp',
+            "columns": [
+//                { "data": "id",
+//                    "visible" : false
+//                },
+                { "data": "reportName" },
+                { "data": "createdOn" },
+                { "data": "createdBy" }
+            ] ,"columnDefs" : [ {
+                "targets" : 1,
+                "data" : "createdOn",
+                "render" : function(data, type,full, meta) {
+                    if (type === 'display') {
+                        if(data == null)
+                            return data;
+                        var dtStart = new Date(data);
+                        var dtStartWrapper = moment(dtStart);
+                        return dtStartWrapper.format('LLLL');
+                    }
+                    return data;
+                }
+            }]
+        });
+
+        table.on('select', function() {
+            if (table.rows({
+                    selected : true
+                }).indexes().length === 0) {
+                $('.bt-select').attr("disabled", true);
+            } else {
+                $('.bt-select').removeAttr("disabled");
+            }
+
+        });
+
+        table.on('deselect', function() {
+            if (table.rows({
+                    selected : true
+                }).indexes().length === 0) {
+                $('.bt-select').attr("disabled", true);
+            } else {
+                $('.bt-select').removeAttr("disabled");
+            }
+        });
+
+    });
+
+    $("#search").on("click", function(e) {
+        e.preventDefault();
+        dt = $('#reports').DataTable();
+        dt.ajax.reload(null, true);
+
+    });
+    var id;
+    $("#reports").on("click", "tr", function()
+    {
+        var table =  $('#reports').DataTable();
+//        var id = $(this).children(":first").text();
+        id=table.row(this).id();
+        console.log("id "+id);
+//        var refDetials = $("a.bt-link-report").attr("href").replace("index",id);
+//        window.location.assign(refDetials);
+    });
+    $("a.bt-link-report").on("click", function(e) {
+        e.preventDefault();
+        var link = $(e.currentTarget);
+        if($(link).attr("disabled")){
+            return;
+        }
+        console.log("id "+id);
+        var refDetials = $("a.bt-link-report").attr("href").replace("index",id);
+        window.location.assign(refDetials);
+
+    } );
+    $("a.bt-link-report-file").on("click", function(e) {
+        e.preventDefault();
+        var link = $(e.currentTarget);
+        if($(link).attr("disabled")){
+            return;
+        }
+        console.log("id "+id);
+        var refDetials = $("a.bt-link-report-file").attr("href").replace("index",id);
+        window.location.assign(refDetials);
+
+    } );
+
+
+    $("#delete-btn").on("click", function(e) {
+        e.preventDefault();
+        var link = $(e.currentTarget);
+        if($(link).attr("disabled")){
+            return;
+        }
+        var dt = $('#reports').DataTable();
+        var id = $(dt.row({
+            selected: true
+        }).node()).attr("id");
+        //window.location.href = link.attr("formaction") + '?id=' + id;
+        //replace {id} with id
+        var ooo = link.attr("href").replace("index",id);
+
+        //goto url
+        warnBeforeRedirect(ooo);
+    });
+
+
+    function warnBeforeRedirect(ooo) {
+        swal({
+            title: "Are you sure?",
+            text: "Are you sure that you want to delete this report?",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#DD6B55",
+            confirmButtonText: "Yes, delete it!",
+            closeOnConfirm: false
+        }, function() {
+            // Redirect the user
+            window.location.assign(ooo);
+        });
+    }
+    /*]]>*/
+</script>
+
+
+
+</body>
+</html>

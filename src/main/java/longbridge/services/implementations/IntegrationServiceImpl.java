@@ -3,8 +3,8 @@ package longbridge.services.implementations;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import longbridge.api.*;
 import longbridge.dtos.FixedDepositDTO;
+import longbridge.dtos.LoanDTO;
 import longbridge.dtos.SettingDTO;
-import longbridge.dtos.TransferFeeAdjustmentDTO;
 import longbridge.exception.InternetBankingException;
 import longbridge.exception.InternetBankingTransferException;
 import longbridge.exception.TransferErrorService;
@@ -51,10 +51,6 @@ public class IntegrationServiceImpl implements IntegrationService {
 
 	@Value("${ebank.service.uri}")
 	private String URI;
-
-	@Value("${cmb.service.uri}")
-	private String cmbServiceUri;
-
 	@Value("${CMB.ALERT.URL}")
 	private String cmbAlert;
 
@@ -123,8 +119,6 @@ public class IntegrationServiceImpl implements IntegrationService {
 			return new ArrayList<>();
 		}
 	}
-
-
 
 	@Override
 	public List<ExchangeRate> getExchangeRate() {
@@ -474,7 +468,8 @@ public class IntegrationServiceImpl implements IntegrationService {
 
 			}
 			case INTERNATIONAL_TRANSFER: {
-
+				TransRequest request = sendInternationalTransferRequest(transRequest);
+				return request;
 			}
 
 			case OWN_ACCOUNT_TRANSFER: {
@@ -1307,64 +1302,54 @@ public class IntegrationServiceImpl implements IntegrationService {
 		return fixedDeposit;
 
 	}
+	public TransRequest sendInternationalTransferRequest(TransRequest transRequest) {
 
-	@Override
-	public String updateCharge(TransferFeeAdjustment tfaDTO){
-	    String methodResponse = "success";
-		Response response =  null;
-		TransferFeeAdjustment tfa = new TransferFeeAdjustment();
-		String uri = cmbServiceUri+"/service/updateCharge";
-		Map<String,String> params = new HashMap<>();
-		params.put("feeRange", tfaDTO.getFeeRange());
-		params.put("feeDescription", tfaDTO.getFeeDescription());
-		params.put("fixedAmount", tfaDTO.getFixedAmount());
-		params.put("fixedAmountValue", tfaDTO.getFixedAmountValue());
-		params.put("rate", tfaDTO.getRate());
-		params.put("rateValue", tfaDTO.getRateValue());
-		params.put("delFlag",tfa.getDelFlag());
-		params.put("transactionChannel", tfaDTO.getTransactionChannel());
-		params.put("id", tfaDTO.getId().toString());
-		logger.info("Api Params = " + params);
 		try {
-			response = template.postForObject(uri, params, Response.class);
 
-		} catch (Exception e){
-			logger.info("Error processing request");
-            methodResponse = "fail";
+			Account account = accountRepo.findFirstByAccountNumber(transRequest.getCustomerAccountNumber());
+
+			Context context = new Context();
+			context.setVariable("transRequest", transRequest);
+			context.setVariable("customerName",account.getAccountName());
+
+
+			String mail = templateEngine.process("mail/internationaltransfer", context);
+			SettingDTO setting = configService.getSettingByName("CUSTOMER_CARE_EMAIL");
+			if (setting != null && setting.isEnabled()) {
+				String recipient = setting.getValue();
+				String subject = messageSource.getMessage("international.transfer.subject",null,locale);
+				mailService.send(recipient, subject, mail, true);
+				transRequest.setReferenceNumber(NumberUtils.generateReferenceNumber(15));
+				transRequest.setStatus("000");
+				transRequest.setStatusDescription(messageSource.getMessage("transfer.successful",null,locale));
+			}
+		} catch (Exception e) {
+			logger.error("Exception occurred {}", e);
+			transRequest.setStatus("96");
+			transRequest.setStatusDescription("TRANSACTION FAILED");
 		}
-		return methodResponse;
+
+		return transRequest;
 	}
 
+	public LoanDTO getLoanDetails(String accountNumber){
+//		this.accountNumber = accountNumber;
 
-	@Override
-	public String updateTransferLimit(TransferSetLimit tsl){
-		String methodResponse = "success";
-		Response response = null;
-		TransferSetLimit tslDto = new TransferSetLimit();
-		String uri = cmbServiceUri+"/service/updateLimit";
+		LoanDTO loan = new LoanDTO();
+		String uri = URI+"/loan/{accountNumber}";
 		Map<String,String> params = new HashMap<>();
-		params.put("channel", tsl.getChannel());
-		params.put("description", tsl.getDescription());
-		params.put("customerType", tsl.getCustomerType());
-		params.put("delFlag", tsl.getDelFlag());
-		params.put("lowerLimit", tsl.getLowerLimit());
-		params.put("upperLimit", tsl.getUpperLimit());
-		params.put("id", tsl.getId().toString());
-		logger.info("Api Params = " + params);
+		params.put("accountNumber",accountNumber);
+
 		try{
-			response = template.postForObject(uri, params, Response.class);
-
-		} catch(Exception e){
-			logger.info("Error processing request");
-            methodResponse = "fail";
+			loan = template.getForObject(uri,LoanDTO.class,params);
+			return loan;
 		}
-			return methodResponse;
+		catch (Exception e){
+			logger.error("Error getting loan details",e);
+		}
+		return loan;
+
 	}
-
-
-
-
-
 
 
 }

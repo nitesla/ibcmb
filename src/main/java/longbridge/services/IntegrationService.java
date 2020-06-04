@@ -3,7 +3,7 @@ package longbridge.services;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import longbridge.api.*;
 import longbridge.dtos.FixedDepositDTO;
-import longbridge.dtos.TransferFeeAdjustmentDTO;
+import longbridge.dtos.LoanDTO;
 import longbridge.exception.InternetBankingTransferException;
 import longbridge.models.*;
 import longbridge.utils.Response;
@@ -158,8 +158,6 @@ public interface IntegrationService {
     Response bookFixDeposit(FixedDepositDTO fixedDepositDTO);
 
     TransRequest makeBackgroundTransfer(TransRequest transRequest) throws InternetBankingTransferException;
-    String updateCharge(TransferFeeAdjustment tfaDTO);
-    String updateTransferLimit(TransferSetLimit tsl);
-
+    LoanDTO getLoanDetails(String accountNumber);
 
 }

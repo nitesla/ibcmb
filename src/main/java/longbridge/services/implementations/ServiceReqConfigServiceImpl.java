@@ -246,6 +246,7 @@ public class ServiceReqConfigServiceImpl implements ServiceReqConfigService {
 	@Override
 	public Page<ServiceReqConfigDTO> getServiceReqConfigs(Pageable pageDetails) {
 		Page<SRConfig> page = serviceReqConfigRepo.findAll(pageDetails);
+		System.out.println("srrrr"+page.getContent());
 		List<ServiceReqConfigDTO> dtOs = convertEntitiesToDTOs(page.getContent());
 		long t = page.getTotalElements();
 		Page<ServiceReqConfigDTO> pageImpl = new PageImpl<ServiceReqConfigDTO>(dtOs, pageDetails, t);
@@ -267,7 +268,7 @@ public class ServiceReqConfigServiceImpl implements ServiceReqConfigService {
 			}
 		};
 		modelMapper = new ModelMapper();
-		modelMapper.addMappings(mapperConfig);
+//		modelMapper.addMappings(mapperConfig);
 		return modelMapper.map(SRConfig, ServiceReqConfigDTO.class);
 	}
 

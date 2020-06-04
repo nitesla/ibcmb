@@ -1,10 +1,14 @@
 package longbridge.repositories;
 
+import longbridge.config.audits.ModifiedEntityTypeEntity;
 import longbridge.models.MailBox;
 import longbridge.models.Message;
+import longbridge.models.User;
 import longbridge.models.UserType;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.Date;
@@ -23,7 +27,10 @@ public interface MessageRepo extends CommonRepo<Message, Long> {
 
     List<Message> findByRecipientAndRecipientTypeOrderByIdDesc(String recipient, UserType recipientTye);
 
-    Page<Message> findByRecipientAndRecipientTypeOrderByIdDesc(String recipient, UserType recipientTye, Pageable pageable);
+    List<Message> findByRecipientIgnoreCaseAndRecipientTypeAndTagOrderByIdDesc(String recipient, UserType recipientTye,String tag);
+
+
+    Page<Message> findByRecipientIgnoreCaseAndRecipientTypeOrderByIdDesc(String recipient, UserType recipientTye, Pageable pageable);
 
 
     Iterable<Message> findByMailBox(MailBox mailBox);
@@ -36,5 +43,14 @@ public interface MessageRepo extends CommonRepo<Message, Long> {
     Iterable<Message> findByMailBoxAndDateCreatedBetween(MailBox mailBox, Date startDate, Date endDate);
 
     Iterable<Message> findByDateCreatedBetween(Date startDate, Date endDate);
+    @Query("select r from Message r where r.mailBox.userId =:userId and r.mailBox.userType =:userType and r.tag = :tag")
+    List<Message> findMessageByUserAndTag(@Param("userId") Long userId,@Param("userType") UserType userType, @Param("tag") String category);
+
+    @Query("select r from Message r where r.mailBox.userId =:userId and r.mailBox.userType =:userType and r.tag = :tag")
+    Page<Message> findPagedMessageByUserAndTag(@Param("userId") Long userId,@Param("userType") UserType userType, @Param("tag") String category,Pageable pageable);
+
+    @Query("select count(r.id) from Message r where r.mailBox.userId =:userId and r.mailBox.userType =:userType and r.tag = :tag")
+    Long countMessageByUserAndTag(@Param("userId") Long userId,@Param("userType") UserType userType, @Param("tag") String category);
+
 
 }

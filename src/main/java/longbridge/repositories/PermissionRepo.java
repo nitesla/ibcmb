@@ -19,6 +19,9 @@ public interface PermissionRepo extends CommonRepo<Permission, Long> {
     Iterable<Permission> findByIdNotIn(Long[] permissions);
 
     Iterable<Permission> findByUserType(String type);
+    List<Permission> findByCategory(String category);
+    Permission findByCode(String code);
+
 
 
 //    @Query( "select v from permission v where v.initiatedBy != :initiated and v.operation in :permissionlist")

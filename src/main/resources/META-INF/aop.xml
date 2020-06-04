@@ -27,10 +27,15 @@
         <aspect name="longbridge.aop.CorporateUserAdvisor"/>
         <aspect name="longbridge.aop.CorporateAdvisor"/>
 
-
-
-
     </aspects>
+
+    <weaver options="-XnoInline -Xlintfile:META-INF/Xlint.properties">
+        <include within="longbridge..*"/>
+    </weaver>
+
+    <!--<weaver options="-verbose ">-->
+    <weaver options="-warn:none -Xlint:ignore">
+    </weaver>
 
     <weaver options="-showWeaveInfo">
         <!-- Weave types that are within the org.apache.shiro.sample package

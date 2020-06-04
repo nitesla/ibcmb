@@ -117,7 +117,8 @@ public class RetailControllerAdvice {
                         !("TREASURY-BILL").equalsIgnoreCase(request.getRequestType().trim()) &&
                         !("CONFIRM-CHEQUE").equalsIgnoreCase(request.getRequestType().trim())&&
                         !("DRAFT-REQUEST").equalsIgnoreCase(request.getRequestType().trim()) &&
-                        !("LINK-BVN").equalsIgnoreCase(request.getRequestType().trim())) {
+                        !("LINK-BVN").equalsIgnoreCase(request.getRequestName().trim())&&
+                        !("BVN").equalsIgnoreCase(request.getRequestName().trim())) {
 
                     if (("CHEQUE").equalsIgnoreCase(request.getRequestType().trim())) {
                         chequeRequests.add(request);

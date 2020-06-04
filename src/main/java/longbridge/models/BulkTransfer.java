@@ -33,6 +33,9 @@ public class BulkTransfer extends TransRequest {
     @ManyToOne
     private Corporate corporate;
 
+    @ManyToOne
+    private RetailUser retailUser;
+
     @Transient
     private String tranLocation;
 
@@ -85,6 +88,14 @@ public class BulkTransfer extends TransRequest {
 
     public void setTranLocation(String tranLocation) {
         this.tranLocation = tranLocation;
+    }
+
+    public RetailUser getRetailUser() {
+        return retailUser;
+    }
+
+    public void setRetailUser(RetailUser retailUser) {
+        this.retailUser = retailUser;
     }
 
     public BulkTransfer(String reference, String status, List<CreditRequest> creditRequestList, Corporate corporate) {

@@ -71,17 +71,17 @@ CompletedTransferController {
 
     @GetMapping("/history/all")
     public @ResponseBody
-    DataTablesOutput<TransRequest> getTransfersCompleted(DataTablesInput input,@RequestParam("csearch") String search){
+    DataTablesOutput<TransferRequestDTO> getTransfersCompleted(DataTablesInput input,@RequestParam("csearch") String search){
 
         Pageable pageable = DataTablesUtils.getPageable(input);
 
-        Page<TransRequest> transferRequests;
+        Page<TransferRequestDTO> transferRequests;
 
         if (StringUtils.isNoneBlank(search)) {
 
-            transferRequests = transferService.getCompletedTransfers(search.toUpperCase(), pageable);
-        }else transferRequests = transferService.getCompletedTransfers(pageable);
-        DataTablesOutput<TransRequest> out = new DataTablesOutput<TransRequest>();
+            transferRequests = transferService.getCompletedTransfer(search.toUpperCase(), pageable);
+        }else transferRequests = transferService.getCompletedTransfer(pageable);
+        DataTablesOutput<TransferRequestDTO> out = new DataTablesOutput<TransferRequestDTO>();
         out.setDraw(input.getDraw());
         out.setData(transferRequests.getContent());
         out.setRecordsFiltered(transferRequests.getTotalElements());

@@ -119,7 +119,36 @@ public class CorporateControllerAdvice {
         model.addAttribute("feedStatus",corporateUser.getFeedBackStatus());
 
         List<SRConfig> requestList = reqConfigService.getServiceReqConfs();
-        model.addAttribute("serviceRequests", requestList);
+        List<SRConfig> filteredRequests = new ArrayList<>();
+        List<SRConfig> chequeRequests = new ArrayList<>();
+        List<SRConfig> settingRequests = new ArrayList<>();
+//            List<SRConfig> filteredRequests = requestList.stream().filter(request -> !("LOAN").equals(request.getRequestType()) && !("FIXED_DEPOSIT").equals(request.getRequestType())).collect(Collectors.toList());
+        for (SRConfig request : requestList) {
+            if (!("LOAN").equalsIgnoreCase(request.getRequestType().trim()) && !("FIXED-DEPOSIT").equalsIgnoreCase(request.getRequestType().trim())&&
+                    !("CHEQUE-REQUEST").equalsIgnoreCase(request.getRequestType().trim())&&
+                    !("STOP-CHEQUE").equalsIgnoreCase(request.getRequestType().trim())&&
+                    !("CREATE-ACCOUNT").equalsIgnoreCase(request.getRequestType().trim())&&
+                    !("TREASURY-BILL").equalsIgnoreCase(request.getRequestType().trim())&&
+                    !("CONFIRM-CHEQUE").equalsIgnoreCase(request.getRequestType().trim())&&
+                    !("DRAFT-REQUEST").equalsIgnoreCase(request.getRequestType().trim())&&
+                    !("LINK-BVN").equalsIgnoreCase(request.getRequestType().trim())) {
+
+                if (("CHEQUE").equalsIgnoreCase(request.getRequestType().trim())) {
+                    chequeRequests.add(request);
+                }else if (("SETTING").equalsIgnoreCase(request.getRequestType().trim())) {
+                    settingRequests.add(request);
+                } else {
+                    filteredRequests.add(request);
+                }
+            }
+        }
+        model.addAttribute("serviceRequests", filteredRequests);
+        model.addAttribute("chequeRequests", chequeRequests);
+        model.addAttribute("settingRequests", settingRequests);
+
+
+//        List<SRConfig> requestList = reqConfigService.getServiceReqConfs();
+//        model.addAttribute("serviceRequests", requestList);
 
         int numOfUnreadMessages = messageService.getNumOfUnreadMessages(corporateUser);
         if (numOfUnreadMessages > 0) {

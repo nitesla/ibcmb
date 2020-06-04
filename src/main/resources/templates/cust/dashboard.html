@@ -15,6 +15,7 @@
     <div class="col-xs-12 " >
         <div class="no-pad-lef table-responsive bg-white alert" style="padding:0px !important">
             <table class="table table-hover no-pad-lef" id="users">
+                <caption style="font-size: large">Transactional Accounts</caption>
                 <thead class='thead'>
                 <!--<tr>-->
 
@@ -47,9 +48,44 @@
 
                     </td>
                 </tr>
+
                 </tbody>
             </table>
         </div>
+
+        <div th:if="${not #lists.isEmpty(loans)}" class="no-pad-lef table-responsive bg-white alert" style="padding:0px !important">
+            <table class="table table-hover no-pad-lef" id="users" c>
+                <caption style="font-size: large">Loan Accounts</caption>
+                <thead class='thead'>
+                <!--<tr>-->
+
+                <th class="text-cente">Account Number</th>
+                <th class="text-cente">Start Date</th>
+                <th class="text-cente">Amount</th>
+                <th class="text-cente">Rate (%)</th>
+                <th class="text-cente">Tenor (mths)</th>
+                <th class="text-cente">Maturity Date</th>
+                <th class="text-cente">&nbsp;</th>
+                <!--</tr>-->
+                </thead>
+                <tbody>
+                <tr th:each="list : ${loans}" class="tt">
+                    <td th:align="cente" th:text="${list.accountNumber}"></td>
+                    <td th:align="cente" th:text="${list.startDate}"></td>
+                    <td th:align="cente" th:text="${list.amount}" class="bal"></td>
+                    <td th:align="cente" th:text="${list.interestRate}" ></td>
+                    <td th:align="cente" th:text="${list.tenor}"></td>
+                    <td th:align="cente" th:text="${list.maturityDate}" ></td>
+
+                    <td th:align="center" >
+
+
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
     </div>
 
 </div>
