@@ -430,6 +430,7 @@
     </dependencies>
 
     <build>
+        <finalName>ibcmb</finalName>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>

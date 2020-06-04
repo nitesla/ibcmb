@@ -42,6 +42,8 @@ public class TransRequest extends AbstractEntity implements PrettySerializer {
     private String statusDescription;
     private BigDecimal amount;
     private String charge;
+    private String currencyCode;
+
 
     @OneToOne(cascade = CascadeType.ALL)
     @Transient
@@ -202,6 +204,14 @@ public class TransRequest extends AbstractEntity implements PrettySerializer {
     }
 
 
+    public String getCurrencyCode() {
+        return currencyCode;
+    }
+
+    public void setCurrencyCode(String currencyCode) {
+        this.currencyCode = currencyCode;
+    }
+
     @Override
     public String toString() {
         return "TransRequest{" +
@@ -219,6 +229,7 @@ public class TransRequest extends AbstractEntity implements PrettySerializer {
                 ", statusDescription='" + statusDescription + '\'' +
                 ", amount=" + amount +
                 ", charge='" + charge + '\'' +
+                ", currencyCode='" + currencyCode + '\'' +
                 ", antiFraudData=" + antiFraudData +
                 ", channel='" + channel + '\'' +
                 '}';
@@ -263,6 +274,7 @@ public class TransRequest extends AbstractEntity implements PrettySerializer {
                 gen.writeStringField("userReferenceNumber", value.userReferenceNumber);
                 gen.writeStringField("narration", value.narration);
                 gen.writeStringField("statusDescription", value.statusDescription);
+                gen.writeStringField("currencyCode", value.currencyCode);
                 if(value.amount != null){
                     gen.writeStringField("amount", value.amount.toString());
                 }else {
