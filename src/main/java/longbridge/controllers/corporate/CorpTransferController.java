@@ -9,10 +9,9 @@ import longbridge.models.*;
 import longbridge.repositories.CorpTransferRequestRepo;
 import longbridge.repositories.CorporateRepo;
 import longbridge.services.*;
-import longbridge.utils.DateFormatter;
-import longbridge.utils.StringUtil;
-import longbridge.utils.TransferType;
-import longbridge.utils.TransferUtils;
+import longbridge.utils.*;
+import longbridge.utils.JasperReport.ReportHelper;
+import net.sf.jasperreports.engine.*;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -22,11 +21,11 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
 import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
-import longbridge.utils.DataTablesUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
@@ -35,15 +34,17 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-//import org.springframework.web.servlet.view.jasperreports.JasperReportsPdfView;
-import longbridge.utils.JasperReport.JasperReportsPdfView;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.io.InputStream;
 import java.security.Principal;
 import java.text.DecimalFormat;
 import java.util.*;
 import java.util.stream.StreamSupport;
+
+//import org.springframework.web.servlet.view.jasperreports.JasperReportsPdfView;
 
 /**
  * Created by Fortune on 5/22/2017.
@@ -53,11 +54,10 @@ import java.util.stream.StreamSupport;
 @RequestMapping("/corporate/transfer")
 public class CorpTransferController {
 
-    @Value("${jrxmlImage.path}")
-    private String imagePath;
-
     @Autowired
     CorpTransferRequestRepo transferRequestRepo;
+    @Value("${jrxmlImage.path}")
+    private String imagePath;
     private CorporateService corporateService;
     private CorporateRepo corporateRepo;
     private CorporateUserService corporateUserService;
@@ -112,9 +112,7 @@ public class CorpTransferController {
             request.getSession().removeAttribute("corpTransferRequest");
             TransferType tranType = dto.getTransferType();
             switch (tranType) {
-                case CORONATION_BANK_TRANSFER:
-
-                {
+                case CORONATION_BANK_TRANSFER: {
                     return "redirect:/corporate/transfer/local";
                 }
                 case INTER_BANK_TRANSFER: {
@@ -158,14 +156,14 @@ public class CorpTransferController {
                     .filter(Objects::nonNull)
                     .filter(i -> !i.getAccountNumber().equalsIgnoreCase(accountId))
                     .filter(l -> l.getCurrencyCode().equalsIgnoreCase(accountService.getAccountByAccountNumber(accountId).getCurrencyCode()))
-                    .filter(i->{
-                        if (dto != null && dto.isEnabled()){
-                            String[]   list = StringUtils.split(dto.getValue(), ",");
-                            return  ArrayUtils.contains(list, i.getSchemeType());
+                    .filter(i -> {
+                        if (dto != null && dto.isEnabled()) {
+                            String[] list = StringUtils.split(dto.getValue(), ",");
+                            return ArrayUtils.contains(list, i.getSchemeType());
 
                         }
                         return false;
-                    } )
+                    })
                     .forEach(i -> accountList.add(i.getAccountNumber()))
             ;
 
@@ -209,11 +207,10 @@ public class CorpTransferController {
 
         try {
             Account account = accountService.getAccountByAccountNumber(accountId);
-            if(account !=null) {
+            if (account != null) {
                 return account.getCurrencyCode();
             }
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             logger.error("Error getting currency", e);
         }
         return "";
@@ -289,16 +286,14 @@ public class CorpTransferController {
             String corporateId = "" + corporateUserService.getUserByName(principal.getName()).getCorporate().getId();
             corpTransferRequestDTO.setCorporateId(corporateId);
             Object object = transferService.addTransferRequest(corpTransferRequestDTO);
-            if(object instanceof CorpTransferRequestDTO){
+            if (object instanceof CorpTransferRequestDTO) {
 
-                corpTransferRequestDTO = (CorpTransferRequestDTO)object;
+                corpTransferRequestDTO = (CorpTransferRequestDTO) object;
 
                 logger.info("Transfer Request processed", corpTransferRequestDTO);
                 model.addAttribute("transRequest", corpTransferRequestDTO);
                 model.addAttribute("message", corpTransferRequestDTO.getStatusDescription());
-            }
-
-            else if (object instanceof String){
+            } else if (object instanceof String) {
                 model.addAttribute("transRequest", corpTransferRequestDTO);
                 redirectAttributes.addFlashAttribute("message", object);
                 redirectAttributes.addFlashAttribute("refNumber", corpTransferRequestDTO.getReferenceNumber());
@@ -309,7 +304,6 @@ public class CorpTransferController {
             }
 
             return "corp/transfer/transferdetails";
-
 
 
         } catch (TransferAuthorizationException ae) {
@@ -327,13 +321,11 @@ public class CorpTransferController {
             String errorMessage = e.getMessage();
             redirectAttributes.addFlashAttribute("failure", errorMessage);
             return index(request);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             logger.error("Error initiating a transfer ", e);
-            redirectAttributes.addFlashAttribute("failure", messageSource.getMessage("transfer.error",null,locale));
+            redirectAttributes.addFlashAttribute("failure", messageSource.getMessage("transfer.error", null, locale));
             return index(request);
-        }
-        finally {
+        } finally {
             if (request.getSession().getAttribute("Lbeneficiary") != null)
                 request.getSession().removeAttribute("Lbeneficiary");
         }
@@ -409,16 +401,16 @@ public class CorpTransferController {
 
 
     @PostMapping("/authorize")
-    public String addAuthorization(WebRequest webRequest,@ModelAttribute("corpTransReqEntry") CorpTransReqEntry corpTransReqEntry,@RequestParam("token") String tokenCode, RedirectAttributes redirectAttributes, Principal principal) {
+    public String addAuthorization(WebRequest webRequest, @ModelAttribute("corpTransReqEntry") CorpTransReqEntry corpTransReqEntry, @RequestParam("token") String tokenCode, RedirectAttributes redirectAttributes, Principal principal) {
 
         corpTransReqEntry.setChannel("web");
         CorporateUser user = corporateUserService.getUserByName(principal.getName());
-        String refNumber=webRequest.getParameter("tranReqRef");
-        String transferType=webRequest.getParameter("tranReqType");
+        String refNumber = webRequest.getParameter("tranReqRef");
+        String transferType = webRequest.getParameter("tranReqType");
 
         SettingDTO setting = configService.getSettingByName("ENABLE_CORPORATE_2FA");
 
-        if(setting!=null&&setting.isEnabled()) {
+        if (setting != null && setting.isEnabled()) {
             if (tokenCode != null && !tokenCode.isEmpty()) {
                 try {
                     boolean result = securityService.performTokenValidation(user.getEntrustId(), user.getEntrustGroup(), tokenCode);
@@ -442,7 +434,7 @@ public class CorpTransferController {
 
         try {
             String message = corpTransferService.addAuthorization(corpTransReqEntry);
-            logger.info("corpmessage {}",message);
+            logger.info("corpmessage {}", message);
             redirectAttributes.addFlashAttribute("message", message);
             redirectAttributes.addFlashAttribute("refNumber", refNumber);
             redirectAttributes.addFlashAttribute("transferType", transferType);
@@ -471,40 +463,35 @@ public class CorpTransferController {
 
         try {
             return transferUtils.getBalance(accountNumber);
-        }
-        catch (Exception e){
-            logger.error("Error getting balance",e);
+        } catch (Exception e) {
+            logger.error("Error getting balance", e);
         }
         return "";
     }
 
     @RequestMapping(value = "/limit/{accountNumber}/{channel}", method = RequestMethod.GET, produces = "application/json")
     @ResponseBody
-    public String getLimit(@PathVariable String accountNumber,@PathVariable String channel) throws Exception {
+    public String getLimit(@PathVariable String accountNumber, @PathVariable String channel) throws Exception {
 
         try {
-            return transferUtils.getLimit(accountNumber,channel);
-        }
-        catch (Exception e){
-            logger.error("Error getting limit",e);
+            return transferUtils.getLimit(accountNumber, channel);
+        } catch (Exception e) {
+            logger.error("Error getting limit", e);
         }
         return "";
     }
 
     //The receipt for multi corporate user
     @RequestMapping(path = "{id}/receipt", method = RequestMethod.GET)
-    public ModelAndView report(@PathVariable Long id, HttpServletRequest servletRequest, Principal principal) throws
+    public void report(@PathVariable Long id, HttpServletRequest servletRequest, HttpServletResponse response, Principal principal) throws
             Exception {
         //servletRequest.getSession().setAttribute("newId",id);
-        try {
+
             CorporateUser corporateUser = corporateUserService.getUserByName(principal.getName());
             Corporate corporate = corporateUser.getCorporate();
             TransRequest transRequest = transferService.getTransfer(id);
 
             logger.info("Trans Request for customer");
-            JasperReportsPdfView view = new JasperReportsPdfView();
-            view.setUrl("classpath:jasperreports/rpt_tran-hist.jrxml");
-            view.setApplicationContext(appContext);
 
             Map<String, Object> modelMap = new HashMap<>();
             double amount = Double.parseDouble(transRequest.getAmount().toString());
@@ -514,9 +501,9 @@ public class CorpTransferController {
             modelMap.put("amount", formatter.format(amount));
             modelMap.put("customer", corporate.getName());
             modelMap.put("customerAcctNumber", StringUtil.maskAccountNumber(transRequest.getCustomerAccountNumber()));
-            if(transRequest.getRemarks() != null) {
+            if (transRequest.getRemarks() != null) {
                 modelMap.put("remarks", transRequest.getRemarks());
-            }else{
+            } else {
                 modelMap.put("remarks", "");
             }
             modelMap.put("beneficiary", transRequest.getBeneficiaryAccountName());
@@ -526,22 +513,19 @@ public class CorpTransferController {
             modelMap.put("tranDate", DateFormatter.format(transRequest.getTranDate()));
             modelMap.put("date", DateFormatter.format(new Date()));
 
+        JasperReport jasperReport = ReportHelper.getJasperReport("rpt_tran-hist");
 
-            ModelAndView modelAndView = new ModelAndView(view, modelMap);
-            return modelAndView;
-        } catch (InternetBankingException e) {
-            logger.info(" RECEIPT DOWNLOAD {} ", e.getMessage());
-            ModelAndView modelAndView = new ModelAndView("redirect:/corporate/transfer/history");
-            modelAndView.addObject("failure", messageSource.getMessage("receipt.download.failed", null, locale));
-            //redirectAttributes.addFlashAttribute("failure", messageSource.getMessage("receipt.download.failed", null, locale));
-            return modelAndView;
+            response.setContentType("application/x-download");
+            response.setHeader("Content-Disposition", String.format("attachment; filename=\"rpt_tran-hist.pdf\""));
 
-        }
+            JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, modelMap);
+            JasperExportManager.exportReportToPdfStream(jasperPrint, response.getOutputStream());
+
     }
 
 
     @GetMapping("/auth")
-    public String authenticate(HttpServletRequest httpServletRequest, Model model) throws Exception {
+    public String authenticate(HttpServletRequest httpServletRequest, HttpServletResponse response, Model model) throws Exception {
         CorpTransferRequestDTO dto = (CorpTransferRequestDTO) httpServletRequest.getSession().getAttribute("corpTransferRequest");
         if (dto != null) model.addAttribute("corpTransferRequest", dto);
         return "corp/transfer/transferauth";
@@ -549,13 +533,10 @@ public class CorpTransferController {
 
     //Receipt for sole corporate user
     @RequestMapping(path = "/receipt", method = RequestMethod.GET)
-    public ModelAndView getreport(@ModelAttribute("corpTransferRequest") @Valid CorpTransferRequestDTO
-                                          corpTransferRequestDTO, Model model, HttpServletRequest servletRequest, Principal principal) throws
+    public void getreport(@ModelAttribute("corpTransferRequest") @Valid CorpTransferRequestDTO
+                                          corpTransferRequestDTO, Model model, HttpServletResponse response, Principal principal) throws
             Exception {
         CorporateUser corporateUser = corporateUserService.getUserByName(principal.getName());
-        JasperReportsPdfView view = new JasperReportsPdfView();
-        view.setUrl("classpath:jasperreports/rpt_receipt.jrxml");
-        view.setApplicationContext(appContext);
         Map<String, Object> modelMap = new HashMap<>();
         modelMap.put("datasource", new ArrayList<>());
         modelMap.put("amount", corpTransferRequestDTO.getAmount());
@@ -572,8 +553,13 @@ public class CorpTransferController {
         modelMap.put("tranDate", DateFormatter.format(new Date()));
         modelMap.put("statusDescription", corpTransferRequestDTO.getStatusDescription());
 
-        ModelAndView modelAndView = new ModelAndView(view, modelMap);
-        return modelAndView;
+        JasperReport jasperReport = ReportHelper.getJasperReport("rpt_receipt");
+
+        response.setContentType("application/x-download");
+        response.setHeader("Content-Disposition", String.format("attachment; filename=\"receipt.pdf\""));
+
+        JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, modelMap);
+        JasperExportManager.exportReportToPdfStream(jasperPrint, response.getOutputStream());
 
     }
 

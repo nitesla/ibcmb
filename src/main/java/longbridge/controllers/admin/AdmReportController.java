@@ -16,6 +16,7 @@ import net.sf.jasperreports.engine.*;
 import net.sf.jasperreports.engine.design.JasperDesign;
 import net.sf.jasperreports.engine.export.JRPdfExporter;
 import net.sf.jasperreports.engine.export.ooxml.JRXlsxExporter;
+import net.sf.jasperreports.engine.type.WhenNoDataTypeEnum;
 import net.sf.jasperreports.engine.xml.JRXmlLoader;
 import net.sf.jasperreports.export.SimpleExporterInput;
 import net.sf.jasperreports.export.SimpleOutputStreamExporterOutput;
@@ -410,7 +411,7 @@ public class AdmReportController {
                 InputStream stream = new ByteArrayInputStream(reportDTO.getJrxmlFile());
                 JasperDesign design = JRXmlLoader.load(stream);
                 JasperReport jasperReport = JasperCompileManager.compileReport(design);
-
+                jasperReport.setWhenNoDataType(WhenNoDataTypeEnum.ALL_SECTIONS_NO_DETAIL);
                 JasperPrint print = JasperFillManager.fillReport(jasperReport, modelMap,dataSource.getConnection());
                 if(reportType.equalsIgnoreCase("excel")) {
                     JRXlsxExporter exporter = new JRXlsxExporter();
@@ -429,19 +430,12 @@ public class AdmReportController {
                     responseOutputStream.flush();
                 }else {
                     if(reportDTO.getJrxmlFile() != null) {
-                        JRPdfExporter pdfExporter = new JRPdfExporter();
-                        pdfExporter.setExporterInput(new SimpleExporterInput(print));
-                        ByteArrayOutputStream pdfReportStream = new ByteArrayOutputStream();
-                        pdfExporter.setExporterOutput(new SimpleOutputStreamExporterOutput(pdfReportStream));
-                        pdfExporter.exportReport();
                         response.setContentType("application/pdf");
-                        response.setHeader("Content-Length", String.valueOf(pdfReportStream.size()));
+//                        response.setHeader("Content-Length", String.valueOf(pdfReportStream.size()));
                         response.addHeader("Content-Disposition", String.format("attachment; filename=\"" + reportDTO.getReportName() + ".pdf\""));
-                        OutputStream responseOutputStream = response.getOutputStream();
-                        responseOutputStream.write(pdfReportStream.toByteArray());
-                        responseOutputStream.close();
-                        pdfReportStream.close();
-                        responseOutputStream.flush();
+
+                        JasperExportManager.exportReportToPdfStream(print, response.getOutputStream());
+
                     }
                 }
 

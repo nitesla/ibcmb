@@ -9,14 +9,9 @@ import longbridge.exception.*;
 import longbridge.models.*;
 import longbridge.services.*;
 import longbridge.services.bulkTransfers.TransferStatusJobLauncher;
-import longbridge.utils.DateFormatter;
-import longbridge.utils.StringUtil;
-import longbridge.utils.TransferType;
-import longbridge.utils.TransferUtils;
-import net.sf.jasperreports.engine.JRDataSource;
-import net.sf.jasperreports.engine.JasperFillManager;
-import net.sf.jasperreports.engine.JasperPrint;
-import net.sf.jasperreports.engine.JasperReport;
+import longbridge.utils.*;
+import longbridge.utils.JasperReport.ReportHelper;
+import net.sf.jasperreports.engine.*;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import net.sf.jasperreports.engine.export.ooxml.JRXlsxExporter;
 import net.sf.jasperreports.engine.util.JRLoader;
@@ -39,11 +34,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.MessageSource;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
 import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
-import longbridge.utils.DataTablesUtils;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -52,9 +47,7 @@ import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import longbridge.utils.JasperReport.JasperReportsPdfView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -77,11 +70,13 @@ import java.util.stream.StreamSupport;
 @RequestMapping("/corporate/transfer")
 public class CorpNAPSTransferController {
 
+    private static final String FILENAME = "Copy-of-NEFT-ECOB-ABC-old-mutual.xls";
+    Logger logger = LoggerFactory.getLogger(this.getClass());
+    @Autowired
+    IntegrationService integrationService;
     //private static final String SERVER_FILE_PATH = "C:\\ibanking\\files\\Copy-of-NEFT-ECOB-ABC-old-mutual.xls";
     @Value("${napsfile.path}")
     private String SERVER_FILE_PATH;
-    private static final String FILENAME = "Copy-of-NEFT-ECOB-ABC-old-mutual.xls";
-    Logger logger = LoggerFactory.getLogger(this.getClass());
     @Autowired
     private MessageSource messageSource;
     private AccountService accountService;
@@ -99,9 +94,6 @@ public class CorpNAPSTransferController {
     private TransferUtils transferUtils;
     @Autowired
     private ApplicationContext appContext;
-    @Autowired
-    IntegrationService integrationService;
-
     @Value("${jrxmlImage.path}")
     private String imagePath;
     @Value("${jrxmlBulkExcelFile.path}")
@@ -228,7 +220,7 @@ public class CorpNAPSTransferController {
 
 
         try {
-            logger.debug("corpTransferReqEntry:{}",corpTransReqEntry);
+            logger.debug("corpTransferReqEntry:{}", corpTransReqEntry);
             String message = bulkTransferService.addAuthorization(corpTransReqEntry);
             redirectAttributes.addFlashAttribute("message", message);
 
@@ -377,10 +369,10 @@ public class CorpNAPSTransferController {
 
     @GetMapping("/all")
     @ResponseBody
-    public DataTablesOutput<CreditRequestDTO> getCreditRequests(HttpSession session, Model model,Locale locale) throws IOException {
+    public DataTablesOutput<CreditRequestDTO> getCreditRequests(HttpSession session, Model model, Locale locale) throws IOException {
         Workbook workbook = (Workbook) session.getAttribute("workbook");
         String fileExtension = (String) session.getAttribute("fileExtension");
-       model.addAttribute("accountList", session.getAttribute("accountList"));
+        model.addAttribute("accountList", session.getAttribute("accountList"));
 
         List<CreditRequestDTO> crLists = new ArrayList<>();
         try {
@@ -388,19 +380,19 @@ public class CorpNAPSTransferController {
 
             Sheet datatypeSheet = workbook.getSheetAt(0);
 
-            for(Row row:datatypeSheet){
+            for (Row row : datatypeSheet) {
                 row.createCell(5);
-                if(row.getRowNum()!=0) {
+                if (row.getRowNum() != 0) {
                     NEnquiryDetails details = integrationService.doNameEnquiry(row.getCell(4).toString(), row.getCell(0).toString());
-                    if(details.getAccountName()!=null && !details.getAccountName().equals("")) {
+                    if (details.getAccountName() != null && !details.getAccountName().equals("")) {
                         row.getCell(5).setCellValue(details.getAccountName());
                         logger.info("NameEnquiry" + row.getCell(5));
-                    }else {
+                    } else {
                         row.getCell(5).setCellValue(messageSource.getMessage("nameEnquiry.failed", null, locale));
                         logger.info("NameEnquiry" + row.getCell(5));
                     }
 
-                }else{
+                } else {
                     row.getCell(5).setCellValue("Account Name");
                 }
             }
@@ -408,7 +400,6 @@ public class CorpNAPSTransferController {
             Iterator<Row> iterator = datatypeSheet.iterator();
 
             if (iterator.hasNext()) iterator.next();
-
 
 
             while (iterator.hasNext()) {
@@ -443,12 +434,11 @@ public class CorpNAPSTransferController {
                 if (!(NumberUtils.isNumber(cellData.get(2).toString())) && !(cellData.get(2).toString().contains("ERROR"))) {
                     creditRequest.setAmount(new BigDecimal(-1));
                 } else {
-                    creditRequest.setAmount(new BigDecimal( cellData.get(2).toString()));
+                    creditRequest.setAmount(new BigDecimal(cellData.get(2).toString()));
                 }
 
                 creditRequest.setNarration(cellData.get(3).toString());
                 creditRequest.setAccountNameEnquiry(cellData.get(5).toString());
-
 
 
                 if (!(NumberUtils.isDigits(cellData.get(4).toString())) && !(cellData.get(4).toString().contains("ERROR"))) {
@@ -550,14 +540,18 @@ public class CorpNAPSTransferController {
 
             requestList.forEach(i -> {
                 String refNumber;
-                do{refNumber = transferUtils.generateReferenceNumber(12);}
+                do {
+                    refNumber = transferUtils.generateReferenceNumber(12);
+                }
                 while (bulkTransferService.creditRequestRefNumberExists(refNumber));
                 i.setReferenceNumber(refNumber);
             });
             bulkTransfer.setCrRequestList(requestList);
 
             String refCode;
-            do {refCode = transferUtils.generateReferenceNumber(10);}
+            do {
+                refCode = transferUtils.generateReferenceNumber(10);
+            }
             while (bulkTransferService.refCodeExists(refCode));
             bulkTransfer.setReferenceNumber(refCode);
             bulkTransfer.setRefCode(refCode);
@@ -568,7 +562,7 @@ public class CorpNAPSTransferController {
                 creditRequest.setBulkTransfer(bulkTransfer);
                 creditRequest.setStatus("PENDING");
             }
-            bulkTransferService.transactionAboveLimit(totalTransferAmount,debitAccount);
+            bulkTransferService.transactionAboveLimit(totalTransferAmount, debitAccount);
             bulkTransfer.setAmount(totalTransferAmount);
             bulkTransfer.setTransferType(TransferType.NAPS);
             String message = "";
@@ -637,146 +631,131 @@ public class CorpNAPSTransferController {
     List<BulkStatusDTO> getStatus(@PathVariable BulkTransfer bulkTransfer) {
 
         List<BulkStatusDTO> bulkStatus = bulkTransferService.getStatus(bulkTransfer);
-        System.out.println(bulkStatus+"bulkStatus");
+        System.out.println(bulkStatus + "bulkStatus");
         return bulkStatus;
     }
 
 
     @GetMapping("/bulk/receipt/{id}")
-    public ModelAndView getBulkTransferReceipt(@PathVariable Long id, Model model, Principal principal, HttpServletRequest request, RedirectAttributes redirectAttributes, Locale locale) {
-        try {
-            CorporateUser corporateUser = corporateUserService.getUserByName(principal.getName());
+    public void getBulkTransferReceipt(@PathVariable Long id, Model model, Principal principal, HttpServletRequest request, HttpServletResponse response, RedirectAttributes redirectAttributes, Locale locale) throws Exception {
 
-            Corporate corporate = corporateUser.getCorporate();
-            CreditRequestDTO creditRequest = bulkTransferService.getCreditRequest(id);
+        CorporateUser corporateUser = corporateUserService.getUserByName(principal.getName());
 
-            JasperReportsPdfView view = new JasperReportsPdfView();
-            view.setUrl("classpath:jasperreports/credit_request_receipt.jrxml");
-            view.setApplicationContext(appContext);
-
-            Map<String, Object> modelMap = new HashMap<>();
-            double amount = Double.parseDouble(creditRequest.getAmount().toString());
-            DecimalFormat formatter = new DecimalFormat("#,###.00");
-            modelMap.put("datasource", new ArrayList<>());
-            modelMap.put("imagePath", imagePath);
-            modelMap.put("amount", formatter.format(amount));
-            modelMap.put("customer",corporate.getName());
-            modelMap.put("customerAcctNumber", StringUtil.maskAccountNumber(creditRequest.getCustomerAccountNumber()));
-            if(creditRequest.getNarration() != null) {
-                modelMap.put("remarks", creditRequest.getNarration());
-            }else {
-                modelMap.put("remarks", "");
-            }
-            modelMap.put("beneficiary", creditRequest.getAccountName());
-            modelMap.put("beneficiaryAcctNumber", creditRequest.getAccountNumber());
-            modelMap.put("beneficiaryBank", creditRequest.getBeneficiaryBank());
-            modelMap.put("refNUm", creditRequest.getReferenceNumber());
-            modelMap.put("tranDate", DateFormatter.format(creditRequest.getTranDate()));
-            modelMap.put("status",creditRequest.getStatus());
-            modelMap.put("date", DateFormatter.format(new Date()));
+        Corporate corporate = corporateUser.getCorporate();
+        CreditRequestDTO creditRequest = bulkTransferService.getCreditRequest(id);
 
 
-            ModelAndView modelAndView=new ModelAndView(view, modelMap);
-            return modelAndView;
-        }catch (Exception e){
-            logger.info(" RECEIPT DOWNLOAD {} ", e.getMessage());
-            ModelAndView modelAndView =  new ModelAndView("redirect:/corporate/transfer/bulk");
-            modelAndView.addObject("failure", messageSource.getMessage("receipt.download.failed", null, locale));
-            return modelAndView;
+        Map<String, Object> modelMap = new HashMap<>();
+        double amount = Double.parseDouble(creditRequest.getAmount().toString());
+        DecimalFormat formatter = new DecimalFormat("#,###.00");
+        modelMap.put("datasource", new ArrayList<>());
+        modelMap.put("imagePath", imagePath);
+        modelMap.put("amount", formatter.format(amount));
+        modelMap.put("customer", corporate.getName());
+        modelMap.put("customerAcctNumber", StringUtil.maskAccountNumber(creditRequest.getCustomerAccountNumber()));
+        if (creditRequest.getNarration() != null) {
+            modelMap.put("remarks", creditRequest.getNarration());
+        } else {
+            modelMap.put("remarks", "");
         }
+        modelMap.put("beneficiary", creditRequest.getAccountName());
+        modelMap.put("beneficiaryAcctNumber", creditRequest.getAccountNumber());
+        modelMap.put("beneficiaryBank", creditRequest.getBeneficiaryBank());
+        modelMap.put("refNUm", creditRequest.getReferenceNumber());
+        modelMap.put("tranDate", DateFormatter.format(creditRequest.getTranDate()));
+        modelMap.put("status", creditRequest.getStatus());
+        modelMap.put("date", DateFormatter.format(new Date()));
 
+       JasperReport jasperReport = ReportHelper.getJasperReport("credit_request_receipt");
+
+        response.setContentType("application/x-download");
+        response.setHeader("Content-Disposition", String.format("attachment; filename=\"reciept.pdf\""));
+
+        JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, modelMap);
+        JasperExportManager.exportReportToPdfStream(jasperPrint, response.getOutputStream());
     }
 
 
     @GetMapping("/bulk/{id}/pdf")
-    public ModelAndView downloadBulkTransferPDFReport(@PathVariable Long id, ModelMap modelMap, Principal principal, RedirectAttributes redirectAttributes, Locale locale) {
+    public void downloadBulkTransferPDFReport(@PathVariable Long id, ModelMap modelMap, Principal principal, HttpServletResponse response, Locale locale) throws Exception {
 
         SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy");
-        try {
-
-            BulkTransfer bulkTransferRequest = bulkTransferService.getBulkTransferRequest(id);
-            List<CreditRequestDTO> creditRequests = bulkTransferService.getCreditRequests(id);
 
 
-            modelMap.put("datasource", creditRequests);
-            modelMap.put("format", "pdf");
+        BulkTransfer bulkTransferRequest = bulkTransferService.getBulkTransferRequest(id);
+        List<CreditRequestDTO> creditRequests = bulkTransferService.getCreditRequests(id);
 
-            Date today = new Date();
-            modelMap.put("today", today);
-            modelMap.put("imagePath", imagePath);
-            modelMap.put("customerAccountNumber", bulkTransferRequest.getCustomerAccountNumber());
-            Account account = accountService.getAccountByAccountNumber(bulkTransferRequest.getCustomerAccountNumber());
-            modelMap.put("customerAccountName", account.getAccountName());
-            ModelAndView modelAndView = new ModelAndView("rpt_bulk_transfer", modelMap);
-            return modelAndView;
-        }  catch (Exception e) {
-            logger.info(" STATEMENT DOWNLOAD {} ", e.getMessage());
 
-        }
-        ModelAndView modelAndView = new ModelAndView("redirect:/corporate/transfer/bulk");
-        redirectAttributes.addFlashAttribute("failure", "Failed to download report");
-        return modelAndView;
+        modelMap.put("datasource", creditRequests);
+        modelMap.put("format", "pdf");
+
+        Date today = new Date();
+        modelMap.put("today", today);
+        modelMap.put("imagePath", imagePath);
+        modelMap.put("customerAccountNumber", bulkTransferRequest.getCustomerAccountNumber());
+        Account account = accountService.getAccountByAccountNumber(bulkTransferRequest.getCustomerAccountNumber());
+        modelMap.put("customerAccountName", account.getAccountName());
+
+
+        JasperReport jasperReport = ReportHelper.getJasperReport("rpt_bulk_transfer");
+
+        response.setContentType("application/x-download");
+        response.setHeader("Content-Disposition", String.format("attachment; filename=\"bulk_transfer.pdf\""));
+
+        JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, modelMap, new JRBeanCollectionDataSource(creditRequests));
+        JasperExportManager.exportReportToPdfStream(jasperPrint, response.getOutputStream());
+
     }
 
     @GetMapping("/bulk/{id}/excel")
-    public ModelAndView downloadBulkTransferExcelReport(@PathVariable Long id, ModelMap modelMap, Principal principal, RedirectAttributes redirectAttributes, Locale locale, HttpServletResponse response) {
+    public void downloadBulkTransferExcelReport(@PathVariable Long id, ModelMap modelMap, Principal principal, RedirectAttributes redirectAttributes, Locale locale, HttpServletResponse response) throws Exception {
 
 
         SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy");
 
-        try {
 
-            BulkTransfer bulkTransferRequest = bulkTransferService.getBulkTransferRequest(id);
-            List<CreditRequestDTO> creditRequests = bulkTransferService.getCreditRequests(id);
+        BulkTransfer bulkTransferRequest = bulkTransferService.getBulkTransferRequest(id);
+        List<CreditRequestDTO> creditRequests = bulkTransferService.getCreditRequests(id);
 
-            logger.debug("Credit requests: {}",creditRequests);
+        logger.debug("Credit requests: {}", creditRequests);
 
-            modelMap.put("datasource", creditRequests);
-            modelMap.put("format", "pdf");
+        modelMap.put("datasource", creditRequests);
+        modelMap.put("format", "pdf");
 
-            Date today = new Date();
-            modelMap.put("today", today);
-            modelMap.put("imagePath", imagePath);
-            modelMap.put("customerAccountNumber", bulkTransferRequest.getCustomerAccountNumber());
-            Account account = accountService.getAccountByAccountNumber(bulkTransferRequest.getCustomerAccountNumber());
-            modelMap.put("customerAccountName", account.getAccountName());
+        Date today = new Date();
+        modelMap.put("today", today);
+        modelMap.put("imagePath", imagePath);
+        modelMap.put("customerAccountNumber", bulkTransferRequest.getCustomerAccountNumber());
+        Account account = accountService.getAccountByAccountNumber(bulkTransferRequest.getCustomerAccountNumber());
+        modelMap.put("customerAccountName", account.getAccountName());
 
-            File file =  new File(jrxmlBulkExcelFile);
+        File file = new File(jrxmlBulkExcelFile);
 
-            JRDataSource dataSource = new JRBeanCollectionDataSource(creditRequests);
-            JasperReport jasperReport = (JasperReport) JRLoader.loadObject(file);
-            JasperPrint print = JasperFillManager.fillReport(jasperReport,modelMap,dataSource);
-            JRXlsxExporter exporter = new JRXlsxExporter();
-            exporter.setExporterInput(new SimpleExporterInput(print));
-            ByteArrayOutputStream pdfReportStream = new ByteArrayOutputStream();
-            exporter.setExporterOutput(new SimpleOutputStreamExporterOutput(pdfReportStream));
+        JRDataSource dataSource = new JRBeanCollectionDataSource(creditRequests);
+        JasperReport jasperReport = (JasperReport) JRLoader.loadObject(file);
+        JasperPrint print = JasperFillManager.fillReport(jasperReport, modelMap, dataSource);
+        JRXlsxExporter exporter = new JRXlsxExporter();
+        exporter.setExporterInput(new SimpleExporterInput(print));
+        ByteArrayOutputStream pdfReportStream = new ByteArrayOutputStream();
+        exporter.setExporterOutput(new SimpleOutputStreamExporterOutput(pdfReportStream));
 
-            exporter.exportReport();
-            response.setHeader("Content-Length", String.valueOf(pdfReportStream.size()));
-            response.setContentType("application/vnd.ms-excel");
-            response.addHeader("Content-Disposition", String.format("inline; filename=\"" + "Bulk_transfer_report.xlsx" + "\""));
-            OutputStream responseOutputStream = response.getOutputStream();
-            responseOutputStream.write(pdfReportStream.toByteArray());
+        exporter.exportReport();
+        response.setHeader("Content-Length", String.valueOf(pdfReportStream.size()));
+        response.setContentType("application/vnd.ms-excel");
+        response.addHeader("Content-Disposition", String.format("inline; filename=\"" + "Bulk_transfer_report.xlsx" + "\""));
+        OutputStream responseOutputStream = response.getOutputStream();
+        responseOutputStream.write(pdfReportStream.toByteArray());
 
-            responseOutputStream.close();
-            pdfReportStream.close();
-            responseOutputStream.flush();
+        responseOutputStream.close();
+        pdfReportStream.close();
+        responseOutputStream.flush();
 
-            ModelAndView modelAndView = new ModelAndView("redirect:/corporate/transfer/bulk", modelMap);
-            return modelAndView;
-        }  catch (Exception e) {
-            logger.info(" STATEMENT DOWNLOAD {} ", e.getMessage());
-
-        }
-        ModelAndView modelAndView = new ModelAndView("redirect:/corporate/transfer/bulk");
-        redirectAttributes.addFlashAttribute("failure", "Failed to download report");
-        return modelAndView;
     }
 
 
     @GetMapping("/refresh/naps")
     @ResponseBody
-    public void refreshNapsStatus(Principal principal)  throws JobParametersInvalidException, JobExecutionAlreadyRunningException, JobRestartException, JobInstanceAlreadyCompleteException {
+    public void refreshNapsStatus(Principal principal) throws JobParametersInvalidException, JobExecutionAlreadyRunningException, JobRestartException, JobInstanceAlreadyCompleteException {
         CorporateUser corporateUser = corporateUserService.getUserByName(principal.getName());
 
         Corporate corporate = corporateUser.getCorporate();
@@ -789,13 +768,12 @@ public class CorpNAPSTransferController {
     }
 
     @Scheduled(cron = "${naps.status.check.rate}")
-    public void startUpdateTransferStatusJob()throws JobParametersInvalidException, JobExecutionAlreadyRunningException, JobRestartException, JobInstanceAlreadyCompleteException{
+    public void startUpdateTransferStatusJob() throws JobParametersInvalidException, JobExecutionAlreadyRunningException, JobRestartException, JobInstanceAlreadyCompleteException {
         List<BulkTransfer> transferList = bulkTransferService.getByStatus();
-        logger.info("transList {}",transferList);
-       transferStatusJobLauncher.updateTransferStatusJob(transferList);
-       logger.info("NAPS cron update done");
+        logger.info("transList {}", transferList);
+        transferStatusJobLauncher.updateTransferStatusJob(transferList);
+        logger.info("NAPS cron update done");
     }
-
 
 
 }
