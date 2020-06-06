@@ -1,6 +1,7 @@
 package longbridge.utils.statement;
 
 
+import java.io.Serializable;
 import java.util.Date;
 
 /**
@@ -8,7 +9,7 @@ import java.util.Date;
  */
 
 
-public class TransactionDetails {
+public class TransactionDetails implements Serializable {
     private String currencyCode;
     private String postDate;
     private String valueDate;

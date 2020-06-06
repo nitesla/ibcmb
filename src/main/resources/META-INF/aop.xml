@@ -29,15 +29,7 @@
 
     </aspects>
 
-    <weaver options="-XnoInline -Xlintfile:META-INF/Xlint.properties">
-        <include within="longbridge..*"/>
-    </weaver>
-
-    <!--<weaver options="-verbose ">-->
-    <weaver options="-warn:none -Xlint:ignore">
-    </weaver>
-
-    <weaver options="-showWeaveInfo">
+    <weaver options="-showWeaveInfo -warn:none -Xlint:ignore -XnoInline -Xlintfile:META-INF/Xlint.properties ">
         <!-- Weave types that are within the org.apache.shiro.sample package
              and all sub-packages. This limits the scope of the weaver and
              reduces the overhead -->

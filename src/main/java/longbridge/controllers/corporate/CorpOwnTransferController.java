@@ -6,7 +6,10 @@ import longbridge.exception.InternetBankingTransferException;
 import longbridge.exception.TransferErrorService;
 import longbridge.models.Account;
 import longbridge.models.CorporateUser;
-import longbridge.services.*;
+import longbridge.services.AccountService;
+import longbridge.services.CorpTransferService;
+import longbridge.services.CorporateUserService;
+import longbridge.services.FinancialInstitutionService;
 import longbridge.utils.TransferType;
 import longbridge.utils.TransferUtils;
 import longbridge.validator.transfer.TransferValidator;
@@ -16,18 +19,23 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import longbridge.utils.JasperReport.JasperReportsPdfView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.security.Principal;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+import java.util.Objects;
 import java.util.stream.StreamSupport;
 
 /**
+ *
  */
 @Controller
 @RequestMapping("/corporate/transfer/ownaccount")
@@ -58,11 +66,11 @@ public class CorpOwnTransferController {
         this.validator = validator;
         this.financialInstitutionService = financialInstitutionService;
         this.appContext = appContext;
-        this.transferUtils=transferUtils;
+        this.transferUtils = transferUtils;
     }
 
     @GetMapping("")
-    public String index(Model model, HttpServletRequest request,RedirectAttributes redirectAttributes) throws Exception {
+    public String index(Model model, HttpServletRequest request, RedirectAttributes redirectAttributes) throws Exception {
         if (request.getSession().getAttribute("auth-needed") != null)
             request.getSession().removeAttribute("auth-needed");
         try {
@@ -72,8 +80,7 @@ public class CorpOwnTransferController {
                     .setFinancialInstitution(financialInstitutionService.getFinancialInstitutionByCode("bankCode"));
             model.addAttribute("corpTransferRequest", corptransferRequestDTO);
             return (page + "pagei");
-        }
-        catch (InternetBankingTransferException e) {
+        } catch (InternetBankingTransferException e) {
             String errorMessage = errorService.getMessage(e);
             redirectAttributes.addFlashAttribute("failure", errorMessage);
 
@@ -98,7 +105,7 @@ public class CorpOwnTransferController {
                 return page + "pagei";
             }
             request.setTransferType(TransferType.OWN_ACCOUNT_TRANSFER);
-            String currency=accountService.getAccountByAccountNumber(request.getCustomerAccountNumber()).getCurrencyCode();
+            String currency = accountService.getAccountByAccountNumber(request.getCustomerAccountNumber()).getCurrencyCode();
             request.setCurrencyCode(currency);
             corpTransferService.validateTransfer(request);
             model.addAttribute("corpTransferRequest", request);
@@ -106,9 +113,7 @@ public class CorpOwnTransferController {
 
             return page + "pageii";
 
-        } catch (InternetBankingTransferException exception)
-
-        {
+        } catch (InternetBankingTransferException exception) {
             exception.printStackTrace();
             String errorMessage = errorService.getMessage(exception);
             model.addAttribute("failure", errorMessage);
@@ -116,19 +121,6 @@ public class CorpOwnTransferController {
 
         }
 
-    }
-
-    @RequestMapping(path = "{id}/receipt", method = RequestMethod.GET)
-    public ModelAndView report(@PathVariable Long id) {
-
-        JasperReportsPdfView view = new JasperReportsPdfView();
-        view.setUrl("classpath:pdf/");
-        view.setApplicationContext(appContext);
-
-        Map<String, Object> params = new HashMap<>();
-        params.put("datasource", corpTransferService.getTransfer(id));
-
-        return new ModelAndView(view, params);
     }
 
 
