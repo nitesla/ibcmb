@@ -3,7 +3,6 @@ package longbridge.services;
 import longbridge.dtos.InternationalBeneficiaryDTO;
 import longbridge.exception.InternetBankingException;
 import longbridge.models.InternationalBeneficiary;
-import longbridge.models.RetailUser;
 import org.springframework.security.access.prepost.PreAuthorize;
 
 import java.util.List;

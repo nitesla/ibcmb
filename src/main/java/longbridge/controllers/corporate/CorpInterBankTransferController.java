@@ -1,6 +1,8 @@
 package longbridge.controllers.corporate;
 
-import longbridge.dtos.*;
+import longbridge.dtos.CorpLocalBeneficiaryDTO;
+import longbridge.dtos.CorpTransferRequestDTO;
+import longbridge.dtos.FinancialInstitutionDTO;
 import longbridge.exception.InternetBankingTransferException;
 import longbridge.exception.TransferErrorService;
 import longbridge.models.*;

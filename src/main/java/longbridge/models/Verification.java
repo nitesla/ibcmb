@@ -1,13 +1,11 @@
 package longbridge.models;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import longbridge.utils.VerificationStatus;
 import org.hibernate.annotations.Where;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import javax.persistence.*;
-
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;

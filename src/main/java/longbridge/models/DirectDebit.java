@@ -1,14 +1,16 @@
 package longbridge.models;
 
-import java.math.BigDecimal;
-import java.util.Collection;
-import java.util.Date;
-
-import javax.persistence.*;
-
 import org.hibernate.annotations.Where;
 import org.hibernate.envers.Audited;
 import org.joda.time.LocalDate;
+
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import java.math.BigDecimal;
+import java.util.Collection;
+import java.util.Date;
 
 /** A DirectDebit stores information for recurring payments to a specified
  * beneficiary from a user's account.

@@ -9,6 +9,7 @@ import longbridge.utils.PrettySerializer;
 import org.hibernate.annotations.Check;
 import org.hibernate.annotations.Where;
 import org.hibernate.envers.Audited;
+
 import javax.persistence.Entity;
 import java.io.IOException;
 import java.util.Date;
@@ -151,7 +152,7 @@ public class Greeting extends AbstractEntity implements PrettySerializer {
             {
                 gen.writeStartObject();
                 gen.writeStringField("Event Name",value.eventName);
-                if(value.type=="GNL") gen.writeStringField("Type","General");
+                if("GNL".equals(value.type)) gen.writeStringField("Type","General");
                 else gen.writeStringField("Type","Personal");
                 gen.writeStringField("Message",value.message);
                 gen.writeStringField("Type of User",value.userType);
@@ -183,7 +184,7 @@ public class Greeting extends AbstractEntity implements PrettySerializer {
                     gen.writeStringField("id", "");
                 }
                 gen.writeStringField("Event Name",value.eventName);
-                if(value.type=="GNL") gen.writeStringField("Type","General");
+                if("GNL".equals(value.type)) gen.writeStringField("Type","General");
                 else gen.writeStringField("Type","Personal");
                 gen.writeStringField("Message",value.message);
                 gen.writeStringField("Type of User",value.userType);

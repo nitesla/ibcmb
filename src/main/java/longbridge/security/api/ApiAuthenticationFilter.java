@@ -1,9 +1,6 @@
 package longbridge.security.api;
 
 import longbridge.apiLayer.data.ResponseData;
-import longbridge.models.RetailUser;
-import longbridge.repositories.CorporateUserRepo;
-import longbridge.repositories.RetailUserRepo;
 import longbridge.security.corpuser.CorporateUserDetailsService;
 import longbridge.security.retailuser.RetailUserDetailsService;
 import org.apache.commons.logging.Log;
@@ -14,7 +11,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import javax.servlet.FilterChain;
@@ -22,7 +18,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.io.PrintWriter;
 
 public class ApiAuthenticationFilter extends OncePerRequestFilter {
 

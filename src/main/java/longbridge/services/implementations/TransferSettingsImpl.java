@@ -57,7 +57,7 @@ public class TransferSettingsImpl implements TransferSettingsService {
             tfa.setDelFlag("N");
             transferAdjustFeeRepository.save(tfa);
             String apiService = integrationService.updateCharge(tfa);
-            if (apiService == "fail"){
+            if ("fail".equals(apiService)){
                 throw new RuntimeException("Error processing request");
             }
             return messageSource.getMessage("transfer.adjustment.success", null, locale);
@@ -85,7 +85,7 @@ public class TransferSettingsImpl implements TransferSettingsService {
             tsl.setDelFlag("N");
             transferSetLimitRepository.save(tsl);
             String apiService = integrationService.updateTransferLimit(tsl);
-            if (apiService == "fail"){
+            if ("fail".equals(apiService)){
                 throw new RuntimeException("Error processing request");
             }
             return messageSource.getMessage("transfer.limit.success", null, locale);

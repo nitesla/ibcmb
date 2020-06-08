@@ -2,8 +2,8 @@ package longbridge.dtos;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import longbridge.models.UserType;
-import org.hibernate.validator.constraints.NotEmpty;
 
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 

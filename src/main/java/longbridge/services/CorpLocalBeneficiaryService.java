@@ -2,8 +2,6 @@ package longbridge.services;
 
 import longbridge.dtos.CorpLocalBeneficiaryDTO;
 import longbridge.models.CorpLocalBeneficiary;
-import longbridge.models.Corporate;
-import longbridge.models.CorporateUser;
 import org.springframework.security.access.prepost.PreAuthorize;
 
 import java.util.List;

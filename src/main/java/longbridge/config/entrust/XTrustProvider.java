@@ -1,19 +1,12 @@
 package longbridge.config.entrust;
 
 
-
-import java.security.AccessController;
-import java.security.InvalidAlgorithmParameterException;
-import java.security.KeyStore;
-import java.security.KeyStoreException;
-import java.security.PrivilegedAction;
-import java.security.Security;
-import java.security.cert.X509Certificate;
-
 import javax.net.ssl.ManagerFactoryParameters;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.TrustManagerFactorySpi;
 import javax.net.ssl.X509TrustManager;
+import java.security.*;
+import java.security.cert.X509Certificate;
 
 
 public final class XTrustProvider extends java.security.Provider {

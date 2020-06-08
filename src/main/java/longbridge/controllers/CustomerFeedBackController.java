@@ -1,29 +1,17 @@
 package longbridge.controllers;
 
 import longbridge.dtos.CustomerFeedBackDTO;
-import longbridge.models.CustomerFeedBack;
-import longbridge.models.RetailUser;
-import longbridge.models.User;
 import longbridge.services.CustomerFeedBackService;
 import longbridge.services.RetailUserService;
-import longbridge.utils.DateFormatter;
 import longbridge.utils.StringUtil;
-import longbridge.utils.TransferType;
-import longbridge.utils.UserType;
-import org.apache.commons.lang.StringEscapeUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.MessageSource;
-import org.springframework.context.i18n.LocaleContext;
-import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Controller;
-
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
-import java.security.Principal;
-import java.util.*;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 
 @Controller

@@ -5,7 +5,6 @@ import longbridge.dtos.TransferRequestDTO;
 import longbridge.services.TransferService;
 import longbridge.utils.DataTablesUtils;
 import longbridge.utils.TransferType;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

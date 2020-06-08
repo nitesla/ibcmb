@@ -1,15 +1,12 @@
 package longbridge.services.implementations;
 
 import longbridge.dtos.ContactDTO;
-import longbridge.exception.InternetBankingException;
 import longbridge.exception.MessageException;
 import longbridge.models.Email;
 import longbridge.models.Message;
 import longbridge.repositories.MessageRepo;
 import longbridge.repositories.OperationsUserRepo;
-import longbridge.repositories.UserGroupRepo;
 import longbridge.services.MailService;
-import longbridge.services.OperationsUserService;
 import longbridge.services.UserGroupMessageService;
 import longbridge.services.UserGroupService;
 import org.slf4j.Logger;

@@ -3,7 +3,6 @@ package longbridge.dtos.apidtos;
 import longbridge.utils.statement.TransactionDetails;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 public class MobileAccountStatementDTO {

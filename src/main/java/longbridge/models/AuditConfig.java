@@ -2,16 +2,10 @@ package longbridge.models;
 
 import org.hibernate.annotations.Where;
 
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonMappingException;
-
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Created by ayoade_farooq@yahoo.com on 4/18/2017.

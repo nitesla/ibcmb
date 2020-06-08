@@ -1,7 +1,5 @@
 package longbridge.services;
 
-import longbridge.models.User;
-
 /**
  * Created by ayoade_farooq@yahoo.com on 8/30/2017.
  */

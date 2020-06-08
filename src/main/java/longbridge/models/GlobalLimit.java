@@ -9,13 +9,9 @@ import longbridge.utils.PrettySerializer;
 import org.hibernate.annotations.Where;
 import org.hibernate.envers.Audited;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.Table;
-import javax.persistence.UniqueConstraint;
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.util.Date;
 
 /**
  * Created by Fortune on 4/25/2017.

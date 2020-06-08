@@ -2,9 +2,7 @@ package longbridge.repositories;
 
 import longbridge.models.CorpLimit;
 import longbridge.models.Corporate;
-import org.springframework.data.jpa.repository.JpaRepository;
 
-import java.util.Iterator;
 import java.util.List;
 
 /**

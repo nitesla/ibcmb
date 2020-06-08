@@ -1,25 +1,19 @@
 package longbridge.controllers.admin;
 
 import longbridge.dtos.CodeDTO;
-import longbridge.dtos.VerificationDTO;
-import longbridge.models.AdminUser;
 import longbridge.models.Verification;
 import longbridge.services.AdminUserService;
 import longbridge.services.VerificationService;
+import longbridge.utils.DataTablesUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
 import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
-import longbridge.utils.DataTablesUtils;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
-import java.security.Principal;
-import java.util.List;
 
 /**
  * Created by chiomarose on 19/06/2017.

@@ -33,7 +33,10 @@ import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Locale;
 import java.util.stream.StreamSupport;
 
 import static longbridge.utils.TransferType.INTER_BANK_TRANSFER;
@@ -219,7 +222,7 @@ public class TransferServiceImpl implements TransferService {
         BigDecimal balance = integrationService.getAvailableBalance(transferRequest.getCustomerAccountNumber());
         if (balance != null) {
 
-            if (!(balance.compareTo(transferRequest.getAmount()) == 0 || (balance.compareTo(transferRequest.getAmount()) == 1))) {
+            if (!(balance.compareTo(transferRequest.getAmount()) == 0 || (balance.compareTo(transferRequest.getAmount()) > 0))) {
                 throw new InternetBankingTransferException(TransferExceptions.BALANCE.toString());
             }
         }
@@ -492,7 +495,7 @@ public class TransferServiceImpl implements TransferService {
 
         BigDecimal balance = integrationService.getAvailableBalance(dto.getCustomerAccountNumber());
         if (balance != null) {
-            if (!(balance.compareTo(dto.getAmount()) == 0 || (balance.compareTo(dto.getAmount()) == 1))) {
+            if (!(balance.compareTo(dto.getAmount()) == 0 || (balance.compareTo(dto.getAmount()) > 0))) {
                 logger.info("Account Balance is insufficient for this transfer {}",dto.getCustomerAccountNumber());
                 return false;
             }

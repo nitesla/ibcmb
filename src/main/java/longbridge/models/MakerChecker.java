@@ -1,12 +1,10 @@
 package longbridge.models;
 
 import org.hibernate.annotations.Where;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Arrays;
-import java.util.List;
 
 import javax.persistence.Entity;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Created by chiomarose on 15/06/2017.

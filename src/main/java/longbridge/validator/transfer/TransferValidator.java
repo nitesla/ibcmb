@@ -5,7 +5,6 @@ package longbridge.validator.transfer;
  */
 
 import longbridge.dtos.TransferRequestDTO;
-import longbridge.models.Account;
 import longbridge.services.AccountService;
 import longbridge.services.IntegrationService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,11 +12,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
 import org.springframework.validation.Validator;
-
-
-import java.math.BigDecimal;
-import java.util.Map;
-import java.util.stream.StreamSupport;
 
 @Component
 public class TransferValidator implements Validator {

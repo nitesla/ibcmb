@@ -300,7 +300,7 @@ public class CorpTransferServiceImpl implements CorpTransferService {
 
         BigDecimal balance = integrationService.getAvailableBalance(corpTransferRequest.getCustomerAccountNumber());
         if (balance != null) {
-            if (!(balance.compareTo(corpTransferRequest.getAmount()) == 0 || (balance.compareTo(corpTransferRequest.getAmount()) == 1))) {
+            if (!(balance.compareTo(corpTransferRequest.getAmount()) == 0 || (balance.compareTo(corpTransferRequest.getAmount()) > 0))) {
                 throw new InternetBankingTransferException(TransferExceptions.BALANCE.toString());
             }
         }
@@ -814,7 +814,7 @@ public class CorpTransferServiceImpl implements CorpTransferService {
 
         BigDecimal balance = integrationService.getAvailableBalance(dto.getCustomerAccountNumber());
         if (balance != null) {
-            if (!(balance.compareTo(dto.getAmount()) == 0 || (balance.compareTo(dto.getAmount()) == 1))) {
+            if (!(balance.compareTo(dto.getAmount()) == 0 || (balance.compareTo(dto.getAmount()) > 0))) {
                 logger.info("Account Balance is insufficient for this transfer {}", dto.getCustomerAccountNumber());
                 return false;
             }

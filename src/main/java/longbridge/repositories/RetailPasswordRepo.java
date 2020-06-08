@@ -1,7 +1,6 @@
 package longbridge.repositories;
 
 import longbridge.models.RetailPassword;
-import longbridge.models.RetailUser;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;

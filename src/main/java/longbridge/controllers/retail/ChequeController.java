@@ -1,7 +1,6 @@
 package longbridge.controllers.retail;
 
 import longbridge.dtos.CodeDTO;
-import longbridge.dtos.FixedDepositDTO;
 import longbridge.dtos.ServiceReqConfigDTO;
 import longbridge.dtos.SettingDTO;
 import longbridge.services.ChequeService;
@@ -14,10 +13,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.context.request.WebRequest;
 
-import java.security.Principal;
 import java.util.Locale;
 
 /**

@@ -1,6 +1,5 @@
 package longbridge.services;
 
-import longbridge.dtos.MakerCheckerDTO;
 import longbridge.exception.InternetBankingException;
 import longbridge.models.MakerChecker;
 import org.springframework.data.domain.Page;

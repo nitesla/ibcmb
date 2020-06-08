@@ -1,6 +1,5 @@
 package longbridge.repositories;
 
-import longbridge.dtos.CorpTransferRequestDTO;
 import longbridge.models.CorpTransRequest;
 import longbridge.models.Corporate;
 import org.springframework.data.domain.Page;

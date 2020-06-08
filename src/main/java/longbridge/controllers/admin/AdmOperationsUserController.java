@@ -4,15 +4,11 @@ import longbridge.dtos.OperationsUserDTO;
 import longbridge.dtos.RoleDTO;
 import longbridge.exception.*;
 import longbridge.models.OperationsUser;
-import longbridge.models.Verification;
-import longbridge.repositories.OperationsUserRepo;
-import longbridge.repositories.VerificationRepo;
 import longbridge.services.OperationsUserService;
 import longbridge.services.PasswordPolicyService;
 import longbridge.services.RoleService;
 import longbridge.services.VerificationService;
-import longbridge.utils.VerificationStatus;
-
+import longbridge.utils.DataTablesUtils;
 import longbridge.validator.EmailValidator;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -23,9 +19,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
 import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
-import longbridge.utils.DataTablesUtils;
-
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;

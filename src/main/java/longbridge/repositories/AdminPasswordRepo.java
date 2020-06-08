@@ -1,8 +1,6 @@
 package longbridge.repositories;
 
 import longbridge.models.AdminPassword;
-import longbridge.models.AdminUser;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;

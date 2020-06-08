@@ -1,7 +1,5 @@
 package longbridge.repositories;
 
-import longbridge.models.AdminUser;
-import longbridge.models.OperationsUser;
 import longbridge.models.OpsPassword;
 import org.springframework.stereotype.Repository;
 
