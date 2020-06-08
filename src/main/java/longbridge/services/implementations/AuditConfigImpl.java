@@ -5,10 +5,11 @@ import longbridge.config.audits.CustomRevisionEntity;
 import longbridge.config.audits.ModifiedEntityTypeEntity;
 import longbridge.config.audits.RevisedEntitiesUtil;
 import longbridge.dtos.AuditDTO;
-//import longbridge.dtos.RevisionInfo;
 import longbridge.dtos.AuditSearchDTO;
 import longbridge.exception.InternetBankingException;
-import longbridge.models.*;
+import longbridge.models.AbstractEntity;
+import longbridge.models.AuditConfig;
+import longbridge.models.Code;
 import longbridge.repositories.AuditConfigRepo;
 import longbridge.repositories.AuditRepoImpl;
 import longbridge.repositories.CustomRevisionEntityRepo;
@@ -41,8 +42,8 @@ import java.util.*;
 
 import static longbridge.config.audits.RevisedEntitiesUtil.getSearchedModifiedEntity;
 import static longbridge.utils.StringUtil.convertFieldToTitle;
-import static longbridge.utils.StringUtil.convertToJSON;
-import static longbridge.utils.StringUtil.searchModifiedEntityTypeEntity;
+
+//import longbridge.dtos.RevisionInfo;
 
 /**
  * Created by ayoade_farooq@yahoo.com on 4/19/2017.

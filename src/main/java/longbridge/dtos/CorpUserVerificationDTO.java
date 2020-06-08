@@ -3,8 +3,8 @@ package longbridge.dtos;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import longbridge.models.Verification;
 import longbridge.utils.VerificationStatus;
-import org.hibernate.validator.constraints.NotEmpty;
 
+import javax.validation.constraints.NotEmpty;
 import java.util.Date;
 
 /**

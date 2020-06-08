@@ -1,7 +1,6 @@
 package longbridge.security.adminuser;
 
 import longbridge.forms.ChangeDefaultPassword;
-import longbridge.forms.ChangePassword;
 import longbridge.models.User;
 import longbridge.models.UserType;
 import longbridge.security.userdetails.CustomUserPrincipal;
@@ -11,8 +10,6 @@ import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
-import org.springframework.web.servlet.DispatcherServlet;
-import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.ModelAndViewDefiningException;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;

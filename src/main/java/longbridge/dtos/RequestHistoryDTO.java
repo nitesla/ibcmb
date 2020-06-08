@@ -1,8 +1,5 @@
 package longbridge.dtos;
 
-import longbridge.models.OperationsUser;
-
-import java.util.Date;
 /**
  * Created by Fortune on 4/5/2017.
  */

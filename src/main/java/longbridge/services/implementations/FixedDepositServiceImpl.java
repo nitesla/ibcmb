@@ -4,13 +4,10 @@ import longbridge.dtos.ContactDTO;
 import longbridge.dtos.FixedDepositDTO;
 import longbridge.exception.InternetBankingException;
 import longbridge.models.*;
-import longbridge.repositories.InvestmentRateRepo;
 import longbridge.repositories.UserGroupRepo;
 import longbridge.security.userdetails.CustomUserPrincipal;
 import longbridge.services.*;
-import longbridge.utils.DateFormatter;
 import longbridge.utils.FIxedDepositActions;
-import longbridge.utils.NameValue;
 import longbridge.utils.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,11 +19,13 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.context.request.WebRequest;
 import org.thymeleaf.context.Context;
 
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+import java.util.Optional;
 
 /**
  * Created by mac on 08/03/2018.
@@ -130,7 +129,7 @@ public class FixedDepositServiceImpl implements FixedDepositService {
         BigDecimal deposit = new BigDecimal(fixedDepositDTO.getInitialDepositAmount());
         int comparator = availableBalance.compareTo(deposit);
         logger.info("the comparator {}",comparator);
-        if(comparator == 1){
+        if(comparator > 0){
             return true;
         }
         return false;

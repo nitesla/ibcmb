@@ -1,9 +1,8 @@
 package longbridge.models;
 
 
-import java.util.Date;
-import javax.persistence.Entity;
 import java.math.BigDecimal;
+import java.util.Date;
 
 /**
  * Created by Chigozirim Torti on 27/03/2017.

@@ -1,6 +1,5 @@
 package longbridge.security.opsuser;
 
-import longbridge.models.AdminUser;
 import longbridge.models.OperationsUser;
 import longbridge.repositories.OperationsUserRepo;
 import longbridge.security.AuthenticationErrorService;

@@ -1,4 +1,5 @@
 package longbridge.utils;
+
 import longbridge.apiLayer.models.ApiResponse;
 import longbridge.apiLayer.models.ApiUser;
 import longbridge.exception.InternetBankingException;
@@ -9,7 +10,6 @@ import longbridge.repositories.RetailUserRepo;
 import longbridge.security.CustomerInternetBankingPassWordEncoder;
 import longbridge.security.SessionUtils;
 import longbridge.security.api.JwtTokenUtil;
-import longbridge.security.api.TokenAuthenticationService;
 import longbridge.services.MailService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,11 +18,11 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
-import org.springframework.mobile.device.Device;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;

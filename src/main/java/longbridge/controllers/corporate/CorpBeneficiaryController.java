@@ -6,6 +6,7 @@ import longbridge.exception.InternetBankingException;
 import longbridge.exception.InternetBankingSecurityException;
 import longbridge.models.*;
 import longbridge.services.*;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -185,7 +186,7 @@ public class CorpBeneficiaryController {
         String beneficiaryId = webRequest.getParameter("id");
         Long benefit = Long.parseLong(beneficiaryId);
         logger.info("this is the benID {}", benefit);
-        if (token != "" && beneficiaryId != "") {
+        if (StringUtils.isNotBlank(token)  && StringUtils.isNotBlank(beneficiaryId )) {
             try {
                 CorporateUser corporateUser = corporateUserService.getUserByName(principal.getName());
                 boolean result = securityService.performTokenValidation(corporateUser.getEntrustId(), corporateUser.getEntrustGroup(), token);

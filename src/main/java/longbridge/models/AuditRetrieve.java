@@ -4,7 +4,6 @@ import org.apache.poi.ss.formula.functions.T;
 import org.hibernate.envers.AuditReader;
 import org.hibernate.envers.AuditReaderFactory;
 import org.hibernate.envers.query.AuditQuery;
-import org.hibernate.envers.query.criteria.internal.IdentifierEqAuditExpression;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

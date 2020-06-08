@@ -1,18 +1,15 @@
 package longbridge.aop;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.querydsl.core.types.Template;
 import longbridge.dtos.VerificationDTO;
-import longbridge.models.*;
-import longbridge.repositories.AdminUserRepo;
-import longbridge.repositories.OperationsUserRepo;
+import longbridge.models.RetailUser;
+import longbridge.models.Verification;
 import longbridge.repositories.RetailUserRepo;
 import longbridge.repositories.VerificationRepo;
-import longbridge.services.*;
+import longbridge.services.PasswordPolicyService;
+import longbridge.services.RetailUserService;
 import org.aspectj.lang.JoinPoint;
-import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.After;
-import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.slf4j.Logger;
@@ -22,7 +19,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.persistence.EntityManager;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.Date;
 
 /**

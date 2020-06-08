@@ -1,9 +1,5 @@
 package longbridge.repositories;
 
-import longbridge.config.audits.CustomRevisionEntity;
-import longbridge.config.audits.ModifiedEntityTypeEntity;
-import longbridge.dtos.ReportDTO;
-import longbridge.models.CronJobExpression;
 import longbridge.models.Permission;
 import longbridge.models.Report;
 import org.springframework.data.domain.Page;
@@ -24,10 +20,10 @@ public interface ReportRepo extends CommonRepo<Report,Long> {
     Report findReportById(Long id);
     @Query("select r from Report r  where r.permission in (:permissionList)")
     List<Report> findbyPermission(@Param("permissionList") Collection<Permission> permissions);
-    @Query("select r from Report r  where r.permission in (:permissionList) or r.permission = null")
+    @Query("select r from Report r  where r.permission in (:permissionList) or r.permission is null")
     Page<Report> findbyPermission(@Param("permissionList") Collection<Permission> permissions, Pageable pageable);
 
-    @Query("select r from Report r  where (r.permission in (:permissionList) or r.permission = null) and upper(r.reportName) like %:search%")
+    @Query("select r from Report r  where (r.permission in (:permissionList) or r.permission is null) and upper(r.reportName) like %:search%")
     Page<Report> findbyReportBySearch(@Param("permissionList") Collection<Permission> permissions, Pageable pageable, @Param("search") String search);
 
 

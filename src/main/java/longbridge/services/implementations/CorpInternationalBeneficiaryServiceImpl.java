@@ -2,9 +2,11 @@ package longbridge.services.implementations;
 
 import longbridge.dtos.CorpInternationalBeneficiaryDTO;
 import longbridge.exception.InternetBankingException;
-import longbridge.models.*;
+import longbridge.models.CorpInterBeneficiary;
+import longbridge.models.CorporateUser;
+import longbridge.models.Email;
+import longbridge.models.User;
 import longbridge.repositories.CorpInternationalBeneficiaryRepo;
-import longbridge.repositories.CorporateRepo;
 import longbridge.security.userdetails.CustomUserPrincipal;
 import longbridge.services.CorpInternationalBeneficiaryService;
 import longbridge.services.IntegrationService;

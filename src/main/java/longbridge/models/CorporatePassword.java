@@ -1,7 +1,6 @@
 package longbridge.models;
 
 import org.hibernate.annotations.Where;
-import org.hibernate.envers.Audited;
 
 import javax.persistence.Entity;
 

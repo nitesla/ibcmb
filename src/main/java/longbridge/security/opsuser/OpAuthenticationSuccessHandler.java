@@ -3,7 +3,6 @@ package longbridge.security.opsuser;
 import longbridge.dtos.SettingDTO;
 import longbridge.models.OperationsUser;
 import longbridge.models.UserType;
-import longbridge.repositories.AdminUserRepo;
 import longbridge.repositories.OperationsUserRepo;
 import longbridge.security.FailedLoginService;
 import longbridge.security.SessionUtils;
@@ -19,7 +18,6 @@ import org.springframework.security.web.DefaultRedirectStrategy;
 import org.springframework.security.web.RedirectStrategy;
 import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
-import org.springframework.ui.Model;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;

@@ -6,11 +6,6 @@ import longbridge.exception.VerificationInterruptedException;
 import longbridge.models.Setting;
 import longbridge.repositories.SettingRepo;
 import longbridge.services.ConfigurationService;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-
 import longbridge.utils.Verifiable;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +18,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
 
 /**
  * Created by Fortune on 4/13/2017.

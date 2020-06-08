@@ -6,10 +6,10 @@ import longbridge.exception.TransferException;
 import longbridge.models.DirectDebit;
 import longbridge.models.TransRequest;
 import longbridge.models.User;
+import longbridge.utils.TransferType;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
-import longbridge.utils.TransferType;
 
 import java.util.Date;
 import java.util.List;

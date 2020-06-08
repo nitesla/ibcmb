@@ -1,14 +1,10 @@
 package longbridge.services;
 
-import longbridge.dtos.AccountDTO;
 import longbridge.dtos.GreetingDTO;
-import longbridge.exception.InternetBankingException;
-import longbridge.models.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
 
-import java.text.ParseException;
 import java.util.List;
 
 public interface GreetingService {

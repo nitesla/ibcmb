@@ -3,13 +3,15 @@ package longbridge.apiLayer;
 import io.swagger.annotations.Api;
 import longbridge.api.CustomerDetails;
 import longbridge.apiLayer.data.ResponseData;
-import longbridge.dtos.*;
-import longbridge.dtos.apidtos.MobileRegSecQuestionDTO;
+import longbridge.dtos.AccountDTO;
+import longbridge.dtos.RetailUserDTO;
+import longbridge.dtos.UserRegDTO;
 import longbridge.exception.InternetBankingException;
 import longbridge.exception.InternetBankingSecurityException;
 import longbridge.models.RetailUser;
 import longbridge.services.*;
 import longbridge.utils.ImageUtil;
+import org.apache.commons.lang3.StringUtils;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -67,11 +69,11 @@ public class MobileUserRegController {
         logger.debug("BirthDate : " + birthDate);
         String customerId ="";
 
-        if(birthDate == ""|| birthDate==null){
+        if(StringUtils.isBlank(birthDate)){
             birthDate = "19-20-1970";
             userRegDTO.setDob(birthDate);//added by GB
         }
-        if(email == ""){
+        if(StringUtils.isBlank(email)){
             email = "ib@coronationmb.com";
         }
 
@@ -232,10 +234,10 @@ public class MobileUserRegController {
     String customerId;
     String phising;
 
-    if (birthDate == "") {
+    if (StringUtils.isBlank(birthDate)) {
         birthDate = "19-20-1970";
     }
-    if (email == "") {
+    if (StringUtils.isBlank(email)) {
         email = "ib@coronationmb.com";
     }
 

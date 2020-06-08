@@ -1,6 +1,5 @@
 package longbridge.utils;
 
-import longbridge.config.audits.RevisedEntitiesUtil;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -9,7 +8,6 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.MonthDay;
 import java.util.Calendar;
 import java.util.Date;

@@ -3,13 +3,7 @@ package longbridge.models;
 import org.hibernate.annotations.Where;
 import org.hibernate.envers.Audited;
 
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonMappingException;
-
-import java.io.IOException;
-
-import javax.persistence.*;
+import javax.persistence.Entity;
 
 /**
  * Created by Wunmi on 27/03/2017.

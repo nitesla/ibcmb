@@ -10,6 +10,7 @@ import longbridge.services.*;
 import longbridge.utils.DataTablesUtils;
 import longbridge.utils.TransferType;
 import longbridge.utils.TransferUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -365,7 +366,7 @@ public class CorpDirectDebitController {
         logger.info("this is the ben tokeeen {}", token);
         Long directDebitId = Long.parseLong(webRequest.getParameter("id"));
         logger.info("this is the debit {}", directDebitId);
-        if (token != "" && directDebitId != 0) {
+        if (StringUtils.isNotBlank(token) && directDebitId != 0) {
             try {
                 CorporateUser corporateUser = corporateUserService.getUserByName(principal.getName());
                 boolean result = securityService.performTokenValidation(corporateUser.getEntrustId(), corporateUser.getEntrustGroup(), token);
@@ -402,7 +403,7 @@ public class CorpDirectDebitController {
         Long paymentID = Long.parseLong(webRequest.getParameter("id"));
         logger.info("this is the payment to be deleted  {}", paymentID);
 
-        if (token != "" && paymentID != 0) {
+        if (StringUtils.isNotBlank(token) && paymentID != 0) {
             DirectDebit directDebit = directDebitService.getPaymentsDirectDebit(paymentID);
             try {
                 CorporateUser corporateUser = corporateUserService.getUserByName(principal.getName());

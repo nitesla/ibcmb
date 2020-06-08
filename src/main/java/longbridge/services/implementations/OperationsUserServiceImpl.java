@@ -5,7 +5,9 @@ import longbridge.dtos.SettingDTO;
 import longbridge.exception.*;
 import longbridge.forms.ChangeDefaultPassword;
 import longbridge.forms.ChangePassword;
-import longbridge.models.*;
+import longbridge.models.Email;
+import longbridge.models.OperationsUser;
+import longbridge.models.Role;
 import longbridge.repositories.OperationsUserRepo;
 import longbridge.repositories.RoleRepo;
 import longbridge.services.*;
@@ -21,14 +23,16 @@ import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.*;
 import org.springframework.mail.MailException;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.context.Context;
 
 import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Locale;
 
 /**
  * Created by ayoade_farooq@yahoo.com on 3/29/2017.
