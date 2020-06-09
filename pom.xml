@@ -196,6 +196,13 @@
             <artifactId>modelmapper-spring</artifactId>
             <version>0.7.5</version>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/org.jacoco/org.jacoco.core -->
+        <dependency>
+            <groupId>org.jacoco</groupId>
+            <artifactId>org.jacoco.core</artifactId>
+            <version>0.8.5</version>
+        </dependency>
+
         <!--<dependency>-->
         <!--<groupId>org.hibernate</groupId>-->
         <!--<artifactId>hibernate-validator</artifactId>-->
