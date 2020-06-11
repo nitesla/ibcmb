@@ -51,7 +51,7 @@ public class AdmCodeController {
 		return "adm/code/add";
 	}
 
-	@PostMapping
+	@PostMapping()
     public String createCode(@ModelAttribute("codeDTO") @Valid CodeDTO codeDTO, BindingResult result, Principal principal, RedirectAttributes redirectAttributes, Locale locale){
         if(result.hasErrors()){
             result.addError(new ObjectError("invalid",messageSource.getMessage("form.fields.required",null,locale)));
@@ -135,7 +135,7 @@ public class AdmCodeController {
 	
 	@GetMapping(path = "/alltype")
 	public @ResponseBody DataTablesOutput<CodeDTO> getAllCodesOfType(@RequestParam(name="codeType") String codeType,DataTablesInput input) {
-
+		System.out.println(codeType);
 		Pageable pageable = DataTablesUtils.getPageable(input);
 		Page<CodeDTO> codes = codeService.getCodesByType(codeType, pageable);
 		DataTablesOutput<CodeDTO> out = new DataTablesOutput<CodeDTO>();

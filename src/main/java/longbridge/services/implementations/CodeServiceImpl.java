@@ -4,8 +4,11 @@ import longbridge.dtos.CodeDTO;
 import longbridge.dtos.CodeTypeDTO;
 import longbridge.exception.InternetBankingException;
 import longbridge.exception.VerificationInterruptedException;
+import longbridge.models.AccountCoverage;
 import longbridge.models.Code;
+import longbridge.repositories.AccountCoverageRepo;
 import longbridge.repositories.CodeRepo;
+import longbridge.services.AccountCoverageService;
 import longbridge.services.CodeService;
 import longbridge.utils.Verifiable;
 import org.modelmapper.ModelMapper;
@@ -33,6 +36,8 @@ public class CodeServiceImpl implements CodeService {
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private CodeRepo codeRepo;
+    private AccountCoverageService accountCoverage;
+
 
     private ModelMapper modelMapper;
 
@@ -135,6 +140,7 @@ public class CodeServiceImpl implements CodeService {
     @Override
     public Page<CodeDTO> getCodesByType(String codeType, Pageable pageDetails) {
         // TODO Auto-generated method stub
+
         Page<Code> page = codeRepo.findByType(codeType, pageDetails);
         List<CodeDTO> dtOs = convertEntitiesToDTOs(page);
         long t = page.getTotalElements();
@@ -159,6 +165,12 @@ public class CodeServiceImpl implements CodeService {
     public String addCode(CodeDTO codeDTO) throws InternetBankingException {
         try {
             Code code = convertDTOToEntity(codeDTO);
+
+            if(code.getType().equals("ACCOUNT_COVERAGE")){
+                System.out.println(code+"code");
+                accountCoverage.addCoverage(code);
+
+            }
             codeRepo.save(code);
             logger.info("Added new code {} of type {}", code.getDescription(), code.getType());
             return messageSource.getMessage("code.add.success", null, locale);
