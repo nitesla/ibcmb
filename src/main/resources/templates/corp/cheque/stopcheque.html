@@ -2,6 +2,10 @@
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{corp-layout}">
 
+<head th:fragment="site-head">
+    <link rel="stylesheet" type="text/css" th:href="@{~/customer/css/jquery-ui.css}"/>
+</head>
+
 <body onload="javascript:var bread = [['Home', '/corporate/dashboard'],['StopCheque']];currentBar('Stop Cheque Request');breadCrumb(bread)">
 
 <div layout:fragment="content">
@@ -73,7 +77,7 @@
                 <div class="form-group">
                     <label>Date on Cheque</label>
                     <span class="req"></span>
-                    <input type="text" data-date-format="dd-mm-yyyy" class="form-control datepicker"  name="ChequeDate" placeholder="Date on cheque" required />
+                    <input type="text" data-date-format="dd-mm-yyyy" class="form-control"  name="ChequeDate" id="datepicker" placeholder="Date on cheque" required />
                 </div>
 
 
@@ -109,6 +113,8 @@
 
 
 <th:block layout:fragment="scripts">
+    <script th:src="@{~/customer/js/jquery-1.11.1.js}"></script>
+    <script th:src="@{~/customer/js/jquery-ui.js}"></script>
     <script th:inline="javascript">
         var amountInwords = '';
         $('#reqForm').submit(function (event) {
@@ -154,6 +160,12 @@
 
             })
         }
+
+        $(document).ready(function () {
+            $("#datepicker").datepicker({
+                minDate: -180
+            });
+        })
 
         /*  $(document).ready(function () {
               $("input").prop('required', true);
