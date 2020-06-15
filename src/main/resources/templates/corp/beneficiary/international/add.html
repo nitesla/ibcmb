@@ -19,14 +19,14 @@
                         <div class="">
 
 
-                            <form id="foreign" method="post" th:action="@{/corporate/beneficiary/international}"
+                            <form id="foreign" method="post" th:action="@{/corporate/beneficiary/international/summary}"
                                   th:object="${internationalBeneficiaryDTO}">
                                 <input type="hidden" th:value="foreign" class="form-control"/>
                                 <div class="form-group">
                                     <label>Beneficiary Bank</label>
                                     <span class="req"></span><input type="text" class="form-control"
                                                                     placeholder="Beneficiary Bank"
-                                                                    th:field="*{beneficiaryBank}"/>
+                                                                    th:field="*{beneficiaryBank}" required="required"/>
                                 </div>
                                 <div class="form-group">
 
@@ -49,6 +49,13 @@
                                 </div>
 
                                 <div class="form-group">
+                                    <label>Beneficiary Preferred Name</label>
+                                    <input type="text" class="form-control" name="preferredName"
+                                                                    placeholder="Beneficiary Preferred Name"
+                                                                    th:field="*{preferredName}" />
+                                </div>
+
+                                <div class="form-group">
                                     <label>Beneficiary Account Number</label>
                                     <span class="req"></span>
                                     <input min="0" type="number" class="form-control" name="accountNumber"
@@ -68,7 +75,7 @@
                                 </div>
                                 <div class="form-group">
                                     <label>Beneficiary Address</label>
-                                    <span class="req"></span><textarea name="beneficiaryAddress" class="form-control full-width"
+                                    <textarea name="beneficiaryAddress" class="form-control full-width"
                                                                        th:field="*{beneficiaryAddress}"  placeholder="Beneficiary Address"></textarea>
                                 </div>
                                 <div class="form-group">

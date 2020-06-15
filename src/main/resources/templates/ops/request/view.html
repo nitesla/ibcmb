@@ -1,6 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org"
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<html xmlns:th="http://www.thymeleaf.org">
 <head th:replace="layout :: site-head">
 </head>
 
@@ -113,11 +112,9 @@
 <script th:src="@{~/bank/js/jquery.spring-friendly.min.js}"></script>
 
 <!-- Page-Level Scripts -->
-<th:block layout:fragment="scripts">
-<script th:inline="javascript">
+<script>
     /*<![CDATA[*/
     $(document).ready(function() {
-      var url = "/ops/requests/all";
       var table = $('#request').DataTable({
             select:true,
             responsive: true,
@@ -126,7 +123,7 @@
             "searching": false,
             "paging": true,
             "serverSide" : true,
-            "ajax": url,
+            "ajax": "/ops/requests/all",
             "dom": 'T<"clear">frtlp',
             "columns": [
                 { "data": "requestName" },
@@ -180,7 +177,6 @@
     /*]]>*/
 </script>
 
-</th:block>
 
 </body>
 </html>
