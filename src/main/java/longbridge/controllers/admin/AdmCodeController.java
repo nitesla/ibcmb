@@ -3,6 +3,9 @@ package longbridge.controllers.admin;
 import longbridge.dtos.CodeDTO;
 import longbridge.dtos.CodeTypeDTO;
 import longbridge.exception.InternetBankingException;
+import longbridge.models.AccountCoverage;
+import longbridge.repositories.AccountCoverageRepo;
+import longbridge.services.AccountCoverageService;
 import longbridge.services.AdminUserService;
 import longbridge.services.CodeService;
 import longbridge.utils.DataTablesUtils;
@@ -36,12 +39,17 @@ public class AdmCodeController {
 	private Logger logger = LoggerFactory.getLogger(this.getClass());
 	@Autowired
 	private CodeService codeService;
-
+	@Autowired
+	AccountCoverageRepo accountCoverageRepo;
+	@Autowired
+	AccountCoverageService coverageService;
 	@Autowired
 	ModelMapper modelMapper;
 
 	@Autowired
 	MessageSource messageSource;
+
+	private  String accountCoverage = "ACCOUNT_COVERAGE";
 
 	@Autowired
 	private AdminUserService adminUserService;
@@ -60,8 +68,16 @@ public class AdmCodeController {
 
 
         try {
+			if(codeDTO.getType().equals("ACCOUNT_COVERAGE"))
+			{
+			String message  =coverageService.addCoverage(codeDTO);
+			redirectAttributes.addFlashAttribute("message", message);
+			}
+			else{
 			String message = codeService.addCode(codeDTO);
 			redirectAttributes.addFlashAttribute("message", message);
+			}
+
 			return "redirect:/admin/codes/alltypes";
 		}
 		catch (InternetBankingException ibe){
@@ -183,9 +199,24 @@ public class AdmCodeController {
 
 	@GetMapping("/{codeId}/delete")
 	public String deleteCode(@PathVariable Long codeId, RedirectAttributes redirectAttributes) {
+		String codeType = codeService.getCodeById(codeId).getType();
+		String code = codeService.getCodeById(codeId).getCode();
+		Long coverageId = accountCoverageRepo.getAccountCoverageByCode(code).getId();
+
 		try {
-			String message = codeService.deleteCode(codeId);
-			redirectAttributes.addFlashAttribute("message", message);
+
+			if(codeType.equals(accountCoverage))
+			{
+				String message = coverageService.deleteCoverage(coverageId);
+			    codeService.deleteCode(codeId);
+				redirectAttributes.addFlashAttribute("message", message);
+			}else {
+				String message = codeService.deleteCode(codeId);
+				redirectAttributes.addFlashAttribute("message", message);
+			}
+
+
+
 		}
 		catch (InternetBankingException ibe){
 			logger.error("Error deleting Code",ibe);
