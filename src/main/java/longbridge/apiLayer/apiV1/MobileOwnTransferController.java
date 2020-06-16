@@ -8,7 +8,6 @@ import longbridge.dtos.SettingDTO;
 import longbridge.dtos.TransferRequestDTO;
 import longbridge.exception.*;
 import longbridge.models.Account;
-import longbridge.models.FinancialInstitution;
 import longbridge.models.RetailUser;
 import longbridge.services.*;
 import longbridge.utils.TransferType;
