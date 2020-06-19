@@ -10,7 +10,6 @@ import longbridge.exception.InternetBankingSecurityException;
 import longbridge.exception.InternetBankingTransferException;
 import longbridge.models.Account;
 import longbridge.models.CorporateUser;
-import longbridge.models.RetailUser;
 import longbridge.services.*;
 import longbridge.utils.TransferType;
 import longbridge.utils.TransferUtils;

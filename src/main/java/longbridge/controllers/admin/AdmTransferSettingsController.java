@@ -3,12 +3,6 @@ package longbridge.controllers.admin;
 import longbridge.dtos.TransferFeeAdjustmentDTO;
 import longbridge.dtos.TransferSetLimitDTO;
 import longbridge.models.Code;
-
-import longbridge.models.TransferFeeAdjustment;
-import longbridge.models.TransferSetLimit;
-import longbridge.repositories.CodeRepo;
-
-
 import longbridge.repositories.CodeRepo;
 
 import longbridge.services.TransferSettingsService;

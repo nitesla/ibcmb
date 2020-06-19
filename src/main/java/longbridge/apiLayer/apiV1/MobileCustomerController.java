@@ -4,29 +4,27 @@ package longbridge.apiLayer.apiV1;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import longbridge.apiLayer.data.ResponseData;
-import longbridge.dtos.RetailUserDTO;
-import longbridge.dtos.UserRetrievalDTO;
 import longbridge.dtos.apidtos.MobileCorporateUserDTO;
 import longbridge.dtos.apidtos.MobileRetailUserDTO;
 import longbridge.exception.InternetBankingException;
-import longbridge.models.CorpLocalBeneficiary;
 import longbridge.models.CorporateUser;
 import longbridge.models.RetailUser;
-import longbridge.services.*;
+import longbridge.services.CorporateUserService;
+import longbridge.services.RetailUserService;
+import longbridge.services.SecurityService;
+import longbridge.services.UserRetrievalService;
 import longbridge.utils.Converters;
-import org.modelmapper.Converter;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.security.Principal;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
 
 @RestController
 @Api(value = "Customer Info", description = "Customer Information", tags = {"Customer Info"})
