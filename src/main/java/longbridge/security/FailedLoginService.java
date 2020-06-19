@@ -2,7 +2,10 @@ package longbridge.security;
 
 import longbridge.dtos.SettingDTO;
 import longbridge.models.*;
-import longbridge.repositories.*;
+import longbridge.repositories.AdminUserRepo;
+import longbridge.repositories.CorporateUserRepo;
+import longbridge.repositories.OperationsUserRepo;
+import longbridge.repositories.RetailUserRepo;
 import longbridge.services.ConfigurationService;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;

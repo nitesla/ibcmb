@@ -1,9 +1,5 @@
 package longbridge.dtos.apidtos;
 
-import org.hibernate.validator.constraints.NotEmpty;
-
-import java.io.Serializable;
-
 public class MobileCorpLocalBeneficiaryDTO{
 
     private Long id;

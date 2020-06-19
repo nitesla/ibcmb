@@ -2,7 +2,6 @@ package longbridge.repositories;
 
 import longbridge.models.CorpLocalBeneficiary;
 import longbridge.models.Corporate;
-import longbridge.models.CorporateUser;
 
 /**
  * Created by SYLVESTER on 5/19/2017.

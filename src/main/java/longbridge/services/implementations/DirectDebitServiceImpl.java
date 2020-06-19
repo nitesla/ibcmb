@@ -5,7 +5,6 @@ import longbridge.dtos.DirectDebitDTO;
 import longbridge.dtos.PaymentDTO;
 import longbridge.dtos.TransferRequestDTO;
 import longbridge.exception.InternetBankingException;
-import longbridge.exception.TransferException;
 import longbridge.exception.TransferRuleException;
 import longbridge.models.*;
 import longbridge.repositories.CorpDirectDebitRepo;
@@ -32,7 +31,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -238,7 +236,7 @@ public class DirectDebitServiceImpl implements DirectDebitService {
 			}
 			BigDecimal balance = integrationService.getAvailableBalance(transferRequest.getCustomerAccountNumber());
 			if (balance != null) {
-				if (!(balance.compareTo(transferRequest.getAmount()) == 0 || (balance.compareTo(transferRequest.getAmount()) == 1))) {
+				if (!(balance.compareTo(transferRequest.getAmount()) == 0 || (balance.compareTo(transferRequest.getAmount()) > 0))) {
 					logger.info("Account Balance is insufficient for this transfer {}", transferRequest.getCustomerAccountNumber());
 					logger.info("Failed Direct Debit transfer,id {},", payment.getDirectDebit().getId());
 				} else {

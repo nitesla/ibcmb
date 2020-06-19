@@ -6,12 +6,10 @@ import longbridge.dtos.CodeDTO;
 import longbridge.dtos.RequestHistoryDTO;
 import longbridge.dtos.ServiceRequestDTO;
 import longbridge.models.OperationsUser;
-import longbridge.repositories.RetailUserRepo;
 import longbridge.services.CodeService;
 import longbridge.services.OperationsUserService;
 import longbridge.services.RequestService;
-import longbridge.services.RetailUserService;
-
+import longbridge.utils.DataTablesUtils;
 import longbridge.utils.NameValue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,7 +18,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
 import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
-import longbridge.utils.DataTablesUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -62,9 +59,11 @@ public class OpsServiceRequestController {
     public
     @ResponseBody
     DataTablesOutput<ServiceRequestDTO> getRequests(DataTablesInput input,Principal principal) {
+        logger.info("DEBUGGING!!");
         OperationsUser opsUser = opsUserService.getUserByName(principal.getName());
         Pageable pageable = DataTablesUtils.getPageable(input);
         Page<ServiceRequestDTO> serviceRequests = requestService.getRequests(opsUser,pageable);
+        logger.info("DEBUGGING-2!! {}",  serviceRequests.get().findFirst());
         DataTablesOutput<ServiceRequestDTO> out = new DataTablesOutput<ServiceRequestDTO>();
         out.setDraw(input.getDraw());
         out.setData(serviceRequests.getContent());

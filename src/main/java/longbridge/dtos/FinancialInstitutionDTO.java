@@ -2,9 +2,8 @@ package longbridge.dtos;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import longbridge.models.FinancialInstitutionType;
-import org.hibernate.validator.constraints.NotEmpty;
 
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.NotEmpty;
 
 /**
  * Created by Wunmi Sowunmi on 24/04/2017.

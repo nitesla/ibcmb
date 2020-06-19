@@ -5,12 +5,8 @@ import longbridge.models.UserType;
 import longbridge.security.CustomerInternetBankingPassWordEncoder;
 import longbridge.security.adminuser.AdminAuthenticationSuccessHandler;
 import longbridge.security.api.ApiAuthenticationFilter;
-import longbridge.security.api.JWTAuthenticationFilter;
-import longbridge.security.api.JWTLoginFilter;
-import longbridge.security.corpuser.CorperateAuthenticationFilter;
 import longbridge.services.ConfigurationService;
 import org.apache.commons.lang3.StringUtils;
-import org.hibernate.type.descriptor.java.DataHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,16 +14,13 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.session.SessionRegistry;
-import org.springframework.security.core.session.SessionRegistryImpl;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -35,12 +28,13 @@ import org.springframework.security.web.authentication.AuthenticationFailureHand
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.firewall.HttpFirewall;
-//import org.springframework.security.web.firewall.StrictHttpFirewall;
 import org.springframework.security.web.firewall.StrictHttpFirewall;
 import org.springframework.security.web.session.HttpSessionEventPublisher;
 
 import java.util.Arrays;
 import java.util.Objects;
+
+//import org.springframework.security.web.firewall.StrictHttpFirewall;
 
 /**
  * Created by ayoade_farooq@yahoo.com on 4/10/2017.

@@ -37,9 +37,7 @@ import javax.persistence.EntityManager;
 import java.util.*;
 
 import static longbridge.dtos.AccountPermissionDTO.Permission.VIEW_ONLY;
-import static longbridge.models.UserAccountRestriction.RestrictionType.NONE;
-import static longbridge.models.UserAccountRestriction.RestrictionType.TRANSACTION;
-import static longbridge.models.UserAccountRestriction.RestrictionType.VIEW;
+import static longbridge.models.UserAccountRestriction.RestrictionType.*;
 
 /**
  * Created by Fortune on 4/4/2017.

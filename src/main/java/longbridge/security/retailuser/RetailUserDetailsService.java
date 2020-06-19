@@ -1,8 +1,9 @@
 package longbridge.security.retailuser;
 
 
-import longbridge.models.*;
-import longbridge.repositories.*;
+import longbridge.models.RetailUser;
+import longbridge.models.UserType;
+import longbridge.repositories.RetailUserRepo;
 import longbridge.security.CustomBruteForceService;
 import longbridge.security.FailedLoginService;
 import longbridge.security.IpAddressUtils;

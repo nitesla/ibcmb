@@ -1,6 +1,8 @@
 package longbridge.controllers.corporate;
 
-import longbridge.dtos.*;
+import longbridge.dtos.CorpLocalBeneficiaryDTO;
+import longbridge.dtos.CorpTransferRequestDTO;
+import longbridge.dtos.FinancialInstitutionDTO;
 import longbridge.exception.InternetBankingTransferException;
 import longbridge.exception.TransferErrorService;
 import longbridge.models.*;
@@ -19,6 +21,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.math.BigDecimal;
 import java.security.Principal;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -76,8 +79,9 @@ public class CorpInterBankTransferController {
     }
 
 
-    @PostMapping(value = "/index")
 
+
+    @PostMapping(value = "/index")
     public String startTransfer(HttpServletRequest request, Model model, Principal principal) {
 
         if(principal == null){
@@ -107,7 +111,7 @@ public class CorpInterBankTransferController {
 
         CorpTransferRequestDTO requestDTO = new CorpTransferRequestDTO();
         String type = request.getParameter("tranType");
-
+//        request.getSession().setAttribute("type",type);
         if ("NIP".equalsIgnoreCase(type)) {
 
             request.getSession().setAttribute("NIP", "NIP");
@@ -181,6 +185,21 @@ public class CorpInterBankTransferController {
 
     @PostMapping("/summary")
     public String transferSummary(@ModelAttribute("corpTransferRequest") @Valid CorpTransferRequestDTO corpTransferRequestDTO, BindingResult result, Model model, HttpServletRequest request) throws Exception {
+        String transferType = (String) request.getSession().getAttribute("NIP");
+        System.out.println("TRANSFERTYPE ========== " + transferType);
+
+
+        String userAmountLimit = transferUtils.getLimitForAuthorization(corpTransferRequestDTO.getCustomerAccountNumber(), transferType);
+        BigDecimal amountLimit = new BigDecimal(userAmountLimit);
+        BigDecimal userAmount = corpTransferRequestDTO.getAmount();
+        int a = amountLimit.intValue();
+        int b = userAmount.intValue();
+        if (b > a){
+            String errorMessage = "You can not transfer more than account limit";
+            model.addAttribute("errorMessage", errorMessage);
+            return page + "pageii";
+        }
+
         model.addAttribute("corpTransferRequest", corpTransferRequestDTO);
         String benName = (String) request.getSession().getAttribute("benName");
         String charge = "NAN";
@@ -278,10 +297,13 @@ public class CorpInterBankTransferController {
 
 
         if (request.getSession().getAttribute("Lbeneficiary") != null) {
+            System.out.println("DEBUGGING!!!!!");
             CorpLocalBeneficiaryDTO dto = (CorpLocalBeneficiaryDTO) request.getSession().getAttribute("Lbeneficiary");
             String benName = dto.getPreferredName()!=null?dto.getPreferredName():dto.getAccountName();
             model.addAttribute("benName", benName);
-            transferRequestDTO.setFinancialInstitution(financialInstitutionService.getFinancialInstitutionByName(dto.getBeneficiaryBank()));
+            System.out.println("FINANCIAL INSTITUTION ===================================== " + dto.getBeneficiaryBank());
+            System.out.println("DEBUGGING INSTITUTION ============================ " + financialInstitutionService.getFinancialInstitutionByCode(dto.getBeneficiaryBank()));
+            transferRequestDTO.setFinancialInstitution(financialInstitutionService.getFinancialInstitutionByCode(dto.getBeneficiaryBank()));
         }
         model.addAttribute("corpTransferRequest", transferRequestDTO);
 

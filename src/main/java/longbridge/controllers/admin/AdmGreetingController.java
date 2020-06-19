@@ -6,7 +6,11 @@ import longbridge.dtos.CorporateUserDTO;
 import longbridge.dtos.GreetingDTO;
 import longbridge.dtos.RetailUserDTO;
 import longbridge.exception.InternetBankingException;
-import longbridge.services.*;
+import longbridge.services.CodeService;
+import longbridge.services.CorporateUserService;
+import longbridge.services.GreetingService;
+import longbridge.services.RetailUserService;
+import longbridge.utils.DataTablesUtils;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,7 +21,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
 import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
-import longbridge.utils.DataTablesUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -25,6 +28,7 @@ import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
 import javax.validation.Valid;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -57,7 +61,7 @@ public class AdmGreetingController  {
     CorporateUserService corporateUserService;
 
     @Value("greetingImage.path")
-    private static String GREETING_IMAGE_FOLDER;
+    private String GREETING_IMAGE_FOLDER;
     
     private static String INVALID="invalid";
 

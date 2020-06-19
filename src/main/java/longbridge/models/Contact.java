@@ -1,9 +1,9 @@
 package longbridge.models;
 
+import org.hibernate.envers.Audited;
+
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
-
-import org.hibernate.envers.Audited;
 
 @Entity
 @Audited(withModifiedFlag=true)

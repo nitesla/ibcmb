@@ -1,6 +1,5 @@
 package longbridge.security.corpuser;
 
-import longbridge.dtos.SettingDTO;
 import longbridge.models.CorporateUser;
 import longbridge.repositories.CorporateUserRepo;
 import longbridge.security.FailedLoginService;

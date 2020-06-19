@@ -1,7 +1,5 @@
 package longbridge.api.omnichannel.dto;
 
-import javax.validation.constraints.NotNull;
-
 /**
  * Created by Fortune on 12/18/2017.
  */

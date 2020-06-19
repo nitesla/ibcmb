@@ -1,10 +1,7 @@
 package longbridge.aop;
 
-import java.util.Date;
-
-import javax.persistence.EntityManager;
-
 import com.fasterxml.jackson.databind.JsonSerializer;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import longbridge.exception.InternetBankingException;
 import longbridge.exception.VerificationInterruptedException;
@@ -14,7 +11,6 @@ import longbridge.models.Verification;
 import longbridge.repositories.VerificationRepo;
 import longbridge.security.userdetails.CustomUserPrincipal;
 import longbridge.services.MakerCheckerService;
-import longbridge.services.VerificationService;
 import longbridge.utils.PrettySerializer;
 import longbridge.utils.Verifiable;
 import longbridge.utils.VerificationStatus;
@@ -25,8 +21,10 @@ import org.aspectj.lang.annotation.Pointcut;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.security.core.context.SecurityContextHolder;
+
+import javax.persistence.EntityManager;
+import java.util.Date;
 
 @Aspect
 public class MakerCheckerAdvisor {
@@ -79,7 +77,7 @@ public class MakerCheckerAdvisor {
     public void isSaving2() {
     }
 
-    @Around("isSaving() && inServiceLayer() && isInVerifiable2(verifier) && args(entity)")
+    @Around(value = "isSaving() && inServiceLayer() && isInVerifiable2(verifier) && args(entity)", argNames = "pjp,entity,verifier")
     public Object proceed1(ProceedingJoinPoint pjp, AbstractEntity entity, Verifiable verifier) throws Throwable {
         log.debug("Executing Maker Checker for saving entity");
         entityManager.detach(entity);
@@ -162,7 +160,7 @@ public class MakerCheckerAdvisor {
     }
 
 
-    @Around("isDeleting() && inServiceLayer() && isInVerifiable2(verifier) && args(entity)")
+    @Around(value = "isDeleting() && inServiceLayer() && isInVerifiable2(verifier) && args(entity)", argNames = "pjp,entity,verifier")
     public Object proceed2(ProceedingJoinPoint pjp, AbstractEntity entity, Verifiable verifier) throws Throwable {
         log.debug("Executing Maker Checker for deleting entity");
         entityManager.detach(entity);

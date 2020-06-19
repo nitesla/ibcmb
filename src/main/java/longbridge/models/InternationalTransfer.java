@@ -2,10 +2,9 @@ package longbridge.models;
 
 import org.hibernate.annotations.Where;
 import org.hibernate.envers.Audited;
+
 import javax.persistence.Entity;
 import javax.persistence.Lob;
-import java.math.BigDecimal;
-import java.util.Date;
 
 
 

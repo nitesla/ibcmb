@@ -1,11 +1,8 @@
 package longbridge.repositories;
 
-import longbridge.models.*;
-import org.apache.tomcat.jni.Local;
-import org.springframework.data.jpa.repository.JpaRepository;
+import longbridge.models.InternationalBeneficiary;
+import longbridge.models.RetailUser;
 import org.springframework.stereotype.Repository;
-
-import java.io.Serializable;
 
 /**
  * Created by Wunmi on 27/03/2017.

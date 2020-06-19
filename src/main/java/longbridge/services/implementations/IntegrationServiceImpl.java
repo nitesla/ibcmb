@@ -51,6 +51,8 @@ public class IntegrationServiceImpl implements IntegrationService {
 
 	@Value("${ebank.service.uri}")
 	private String URI;
+
+
 	@Value("${CMB.ALERT.URL}")
 	private String cmbAlert;
 
@@ -170,6 +172,7 @@ public class IntegrationServiceImpl implements IntegrationService {
 												 String numOfTxn) {
 		validate(accountNo);
 		AccountStatement statement = new AccountStatement();
+
 		try {
 
 
@@ -414,15 +417,17 @@ public class IntegrationServiceImpl implements IntegrationService {
 			case INTER_BANK_TRANSFER: {
 				transRequest.setTransferType(TransferType.INTER_BANK_TRANSFER);
 //				TransferDetails response;
-				TransferRequestNip response;
+				TransferRequestNip response = new TransferRequestNip();
 				String uri = URI + "/transfer/nip";
 
 				TransferRequestNip params=new TransferRequestNip();
 				params.setOriginatorAccountNumber(transRequest.getCustomerAccountNumber());
+				logger.info("DEBUGGING 1 = " + transRequest.getCustomerAccountNumber());
 				params.setOriginatorAccountName( account.getAccountName());
 				params.setBeneficiaryAccountNumber(transRequest.getBeneficiaryAccountNumber());
 				params.setBeneficiaryAccountName(transRequest.getBeneficiaryAccountName());
 				params.setAmount(transRequest.getAmount().toString());
+				logger.info("DEBUGGING 2 = " + transRequest.getAmount().toString());
 				params.setDestinationInstitutionCode(transRequest.getFinancialInstitution().getInstitutionCode());
 				params.setTranType("NIP");
 				params.setRemarks(transRequest.getRemarks());
@@ -432,11 +437,14 @@ public class IntegrationServiceImpl implements IntegrationService {
 				try {
 					logger.info("Initiating Inter Bank Transfer");
 					logger.debug("Transfer Params: {}", params.toString());
-
   					response = template.postForObject(uri, params, TransferRequestNip.class);
+  					logger.info("RESPONSE ===================== " + response);
 					transRequest.setReferenceNumber(response.getUniqueReferenceCode());
+					logger.info("REFERENCE NUMBER ======= " + response.getUniqueReferenceCode());
 					transRequest.setStatus(response.getResponseCode());
+					logger.info("RESPONSE CODE ================ " + response.getResponseCode());
 					transRequest.setStatusDescription(response.getResponseDescription());
+					logger.info("RESPONSE DESCRIPTION ============== " + response.getResponseDescription());
 					transRequest.setNarration(response.getNarration());
 					params.getAntiFraudData().setTranRequestId(transRequest.getId());
 
@@ -485,6 +493,7 @@ public class IntegrationServiceImpl implements IntegrationService {
 				params.setCreditAccountName(transRequest.getBeneficiaryAccountName());
 				params.setTranAmount(transRequest.getAmount().toString());
 				params.setRemarks(transRequest.getRemarks());
+				params.setCurrencyCode(transRequest.getCurrencyCode());
 				params.setAntiFraudData(transRequest.getAntiFraudData());
 
 
@@ -537,7 +546,6 @@ public class IntegrationServiceImpl implements IntegrationService {
 		TransferType type = transRequest.getTransferType();
 
 		Account account = accountRepo.findFirstByAccountNumber(transRequest.getCustomerAccountNumber());
-
 		switch (type) {
 			case CORONATION_BANK_TRANSFER:
 
@@ -591,6 +599,7 @@ public class IntegrationServiceImpl implements IntegrationService {
 
 				logger.info("params for transfer {}", params.toString());
 				try {
+
 					response = template.postForObject(uri, params, TransferDetails.class);
 					logger.info("response for transfer {}", response.toString());
 					transRequest.setReferenceNumber(response.getUniqueReferenceCode());
@@ -926,7 +935,6 @@ public class IntegrationServiceImpl implements IntegrationService {
 	private TransRequest sendRTGSTransferRequest(TransRequest transRequest) {
 
 		try {
-
 			Account account = accountRepo.findFirstByAccountNumber(transRequest.getCustomerAccountNumber());
 
 			Context context = new Context();
@@ -942,6 +950,7 @@ public class IntegrationServiceImpl implements IntegrationService {
 				transRequest.setReferenceNumber(NumberUtils.generateReferenceNumber(15));
 				transRequest.setStatus("000");
 				transRequest.setStatusDescription(messageSource.getMessage("transfer.successful",null,locale));
+
 			}
 		} catch (Exception e) {
 			logger.error("Exception occurred {}", e);
@@ -962,13 +971,14 @@ public class IntegrationServiceImpl implements IntegrationService {
 
 			String mail = templateEngine.process("/cust/transfer/mailtemplate", scontext);
 			SettingDTO setting = configService.getSettingByName("BACK_OFFICE_EMAIL");
+			logger.info("SETTINGS == " + setting);
 			if ((setting.isEnabled())) {
 				recipient = setting.getValue();
 			}
 
-			mailService.send(recipient, transRequest.getTransferType().toString(), mail);
+//			mailService.send(recipient, transRequest.getTransferType().toString(), mail);
 			transRequest.setStatus("000");
-			transRequest.setStatus("Approved or completed successfully");
+//			transRequest.setStatus("Approved or completed successfully");
 		} catch (Exception e) {
 
 			logger.error("Exception occurred {}", e);

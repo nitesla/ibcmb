@@ -1,7 +1,6 @@
 package longbridge.dtos;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import longbridge.utils.PrettySerializer;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;

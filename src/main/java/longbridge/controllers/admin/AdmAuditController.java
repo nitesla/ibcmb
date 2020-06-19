@@ -1,19 +1,13 @@
 package longbridge.controllers.admin;
 
-import longbridge.config.audits.CustomRevisionEntity;
 import longbridge.config.audits.ModifiedEntityTypeEntity;
 import longbridge.config.audits.RevisedEntitiesUtil;
-import longbridge.dtos.*;
-//import longbridge.dtos.RevisionInfo;
-import longbridge.models.AuditRetrieve;
-import longbridge.models.User;
-import longbridge.models.Verification;
-import longbridge.security.userdetails.CustomUserPrincipal;
-import longbridge.utils.StringUtil;
+import longbridge.dtos.AuditDTO;
+import longbridge.dtos.AuditSearchDTO;
+import longbridge.models.AuditConfig;
+import longbridge.services.AuditConfigService;
+import longbridge.utils.DataTablesUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.poi.ss.formula.functions.T;
-import org.apache.poi.ss.formula.functions.Value;
-import org.codehaus.jettison.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,27 +15,19 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
 import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import longbridge.models.AuditConfig;
-import longbridge.services.AuditConfigService;
 import org.springframework.web.context.request.WebRequest;
-import longbridge.utils.DataTablesUtils;
 
-
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Field;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import static java.lang.Integer.parseInt;
-import static longbridge.utils.StringUtil.convertFieldToTitle;
+
+//import longbridge.dtos.RevisionInfo;
 
 
 /**
@@ -68,7 +54,7 @@ public class AdmAuditController {
     @GetMapping(path = "/all")
     public @ResponseBody DataTablesOutput<AuditConfig> getAllCodes(DataTablesInput input,@RequestParam("csearch") String search){
         Pageable pageable = DataTablesUtils.getPageable(input);
-        Page<AuditConfig> auditConf = null;
+        Page<AuditConfig> auditConf;
         if (StringUtils.isNoneBlank(search)) {
             auditConf = auditCfgService.findEntities(search,pageable);
         }else{

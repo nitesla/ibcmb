@@ -1,15 +1,7 @@
 package longbridge.controllers.admin;
 
-import longbridge.models.User;
-import longbridge.models.UserType;
-import longbridge.security.userdetails.CustomUserPrincipal;
-import longbridge.services.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import longbridge.services.VerificationService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.AnonymousAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ModelAttribute;

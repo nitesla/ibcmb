@@ -1,11 +1,8 @@
 package longbridge.dtos;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.hibernate.validator.constraints.NotEmpty;
 
-import javax.validation.constraints.Digits;
-import javax.validation.constraints.Min;
-import java.util.Date;
+import javax.validation.constraints.NotEmpty;
 
 /**
  * Created by Fortune on 4/25/2017.

@@ -1,10 +1,7 @@
 package longbridge.repositories;
 
-import longbridge.models.CorporateRole;
 import longbridge.models.Corporate;
-
-import java.util.Set;
-
+import longbridge.models.CorporateRole;
 import longbridge.models.CorporateUser;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

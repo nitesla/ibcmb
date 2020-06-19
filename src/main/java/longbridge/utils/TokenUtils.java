@@ -5,7 +5,6 @@ import longbridge.models.RetailUser;
 import longbridge.services.CorporateUserService;
 import longbridge.services.RetailUserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 /**

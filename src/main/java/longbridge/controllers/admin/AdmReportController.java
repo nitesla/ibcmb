@@ -11,17 +11,17 @@ import longbridge.services.CodeService;
 import longbridge.services.MakerCheckerService;
 import longbridge.services.ReportService;
 import longbridge.services.RoleService;
+import longbridge.utils.DataTablesUtils;
 import longbridge.utils.ReportUtils;
 import net.sf.jasperreports.engine.*;
 import net.sf.jasperreports.engine.design.JasperDesign;
-import net.sf.jasperreports.engine.export.JRPdfExporter;
 import net.sf.jasperreports.engine.export.ooxml.JRXlsxExporter;
+import net.sf.jasperreports.engine.type.WhenNoDataTypeEnum;
 import net.sf.jasperreports.engine.xml.JRXmlLoader;
 import net.sf.jasperreports.export.SimpleExporterInput;
 import net.sf.jasperreports.export.SimpleOutputStreamExporterOutput;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
@@ -30,7 +30,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
 import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
-import longbridge.utils.DataTablesUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.FileCopyUtils;
@@ -410,7 +409,7 @@ public class AdmReportController {
                 InputStream stream = new ByteArrayInputStream(reportDTO.getJrxmlFile());
                 JasperDesign design = JRXmlLoader.load(stream);
                 JasperReport jasperReport = JasperCompileManager.compileReport(design);
-
+                jasperReport.setWhenNoDataType(WhenNoDataTypeEnum.ALL_SECTIONS_NO_DETAIL);
                 JasperPrint print = JasperFillManager.fillReport(jasperReport, modelMap,dataSource.getConnection());
                 if(reportType.equalsIgnoreCase("excel")) {
                     JRXlsxExporter exporter = new JRXlsxExporter();
@@ -429,19 +428,12 @@ public class AdmReportController {
                     responseOutputStream.flush();
                 }else {
                     if(reportDTO.getJrxmlFile() != null) {
-                        JRPdfExporter pdfExporter = new JRPdfExporter();
-                        pdfExporter.setExporterInput(new SimpleExporterInput(print));
-                        ByteArrayOutputStream pdfReportStream = new ByteArrayOutputStream();
-                        pdfExporter.setExporterOutput(new SimpleOutputStreamExporterOutput(pdfReportStream));
-                        pdfExporter.exportReport();
                         response.setContentType("application/pdf");
-                        response.setHeader("Content-Length", String.valueOf(pdfReportStream.size()));
+//                        response.setHeader("Content-Length", String.valueOf(pdfReportStream.size()));
                         response.addHeader("Content-Disposition", String.format("attachment; filename=\"" + reportDTO.getReportName() + ".pdf\""));
-                        OutputStream responseOutputStream = response.getOutputStream();
-                        responseOutputStream.write(pdfReportStream.toByteArray());
-                        responseOutputStream.close();
-                        pdfReportStream.close();
-                        responseOutputStream.flush();
+
+                        JasperExportManager.exportReportToPdfStream(print, response.getOutputStream());
+
                     }
                 }
 

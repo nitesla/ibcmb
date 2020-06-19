@@ -2,8 +2,6 @@ package longbridge.repositories;
 
 import longbridge.config.audits.CustomRevisionEntity;
 import longbridge.config.audits.ModifiedEntityTypeEntity;
-import longbridge.models.Corporate;
-import longbridge.models.CorporateUser;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

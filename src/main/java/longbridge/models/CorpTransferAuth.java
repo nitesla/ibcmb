@@ -1,6 +1,5 @@
 package longbridge.models;
 
-import longbridge.utils.TransferAuthorizationStatus;
 import org.hibernate.annotations.Where;
 import org.hibernate.envers.Audited;
 

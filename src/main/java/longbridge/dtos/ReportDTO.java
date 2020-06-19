@@ -1,6 +1,5 @@
 package longbridge.dtos;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import longbridge.models.Permission;
 
 import java.util.Date;

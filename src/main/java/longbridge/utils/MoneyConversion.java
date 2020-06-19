@@ -1,9 +1,6 @@
 package longbridge.utils;
 
-import longbridge.models.Code;
-import longbridge.repositories.CodeRepo;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.StringTokenizer;
 

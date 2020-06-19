@@ -1,15 +1,13 @@
 package longbridge.services;
 
+import longbridge.dtos.OperationsUserDTO;
 import longbridge.exception.InternetBankingException;
 import longbridge.exception.PasswordException;
 import longbridge.forms.ChangeDefaultPassword;
 import longbridge.forms.ChangePassword;
-import longbridge.models.User;
+import longbridge.models.OperationsUser;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-
-import longbridge.dtos.OperationsUserDTO;
-import longbridge.models.OperationsUser;
 import org.springframework.security.access.prepost.PreAuthorize;
 
 /**

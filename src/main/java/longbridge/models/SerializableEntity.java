@@ -1,10 +1,10 @@
 package longbridge.models;
 
-import java.io.IOException;
-
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
+
+import java.io.IOException;
 
 /** Any class implementing this interface shall provide methods to 
  * convert the {@code object} into JSON data as well as to 

@@ -3,9 +3,8 @@ package longbridge.dtos;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import longbridge.models.Code;
 import longbridge.models.UserType;
-import org.hibernate.validator.constraints.Email;
-import org.hibernate.validator.constraints.NotEmpty;
 
+import javax.validation.constraints.NotEmpty;
 import java.util.Date;
 
 /**

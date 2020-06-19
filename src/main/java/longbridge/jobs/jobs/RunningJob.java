@@ -3,17 +3,25 @@ package longbridge.jobs;
 import longbridge.config.SpringContext;
 import longbridge.exception.InternetBankingException;
 import longbridge.services.CronJobService;
+//<<<<<<< HEAD:src/main/java/longbridge/jobs/jobs/RunningJob.java
 import longbridge.services.implementations.CronJobServiceImpl;
+//=======
+//>>>>>>> 598cd74a9ed9e8e9986fe283f260980c47418ef5:src/main/java/longbridge/jobs/RunningJob.java
 import org.quartz.DisallowConcurrentExecution;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
+//<<<<<<< HEAD:src/main/java/longbridge/jobs/jobs/RunningJob.java
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.*;
 
 import java.awt.*;
 import java.io.File;
+//=======
+import org.springframework.context.ApplicationContext;
+
+//>>>>>>> 598cd74a9ed9e8e9986fe283f260980c47418ef5:src/main/java/longbridge/jobs/RunningJob.java
 import java.io.IOException;
 
 /**

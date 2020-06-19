@@ -2,15 +2,16 @@ package longbridge.services;
 
 import longbridge.dtos.DirectDebitDTO;
 import longbridge.dtos.PaymentDTO;
-import longbridge.exception.TransferException;
-import longbridge.models.*;
+import longbridge.models.CorporateUser;
+import longbridge.models.DirectDebit;
+import longbridge.models.Payment;
+import longbridge.models.RetailUser;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public interface DirectDebitService {

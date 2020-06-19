@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<fontFamilies>
+
+	<fontFamily name="Comic Sans">
+		<normal>fonts/comic/comici.ttf</normal>
+		<pdfEncoding>Identity-H</pdfEncoding>
+		<pdfEmbedded>true</pdfEmbedded>
+		<exportFonts>
+			<export key="net.sf.jasperreports.html">'Comic Sans'</export>
+		</exportFonts>
+		<!--
+		<locales>
+			<locale>en_US</locale>
+			<locale>de_DE</locale>
+		</locales>
+		-->
+	</fontFamily>
+
+
+	<!--
+		Mapping Java logical fonts, for the sake of HTML export only.
+	-->
+	
+
+
+</fontFamilies>

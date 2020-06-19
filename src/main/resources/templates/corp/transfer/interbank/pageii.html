@@ -37,7 +37,7 @@
                                th:name="${corpTransferRequest.beneficiaryAccountName}" th:value="${corpTransferRequest.beneficiaryAccountName}" disabled/>
                         <input type="text" class="form-control ben-bg coronation-blue" th:if="${benName}!= ''"
                                th:name="${benName}"  th:value="${benName}" disabled/>
-                        <a href='/corporate/transfer/interbank' class="btn btn-link required-step"
+                        <a th:href="@{/corporate/transfer/interbank/new}" class="btn btn-link required-step"
                            style='font-size:11px;text-decoration:underline'>Change <span
                                 class='hidden-xs'>Beneficiary</span></a>
                         <p class="errors" th:if="${#fields.hasErrors('amount')}" th:errors="*{amount}">&times;</p>
@@ -68,6 +68,8 @@
                     <input type="hidden" th:field="*{transferType}"/>
 
                     <div class="form-group">
+                        <div class="form-group" style="text-align: center;">
+                        <p th:text="${errorMessage}" style="color: red;"></p></div>
                         <label class="my-label">Amount</label>
                         <span class="alert no-bd-rad my-border bg-white">NGN</span>
 
@@ -98,7 +100,7 @@
 
                     <!--<input type="availBal" name="availBal"/>-->
                     <p class="related-info coronation-blue" id="availBal"><b></b></p>
-                    <p class="related-info coronation-blue" id="limit"><b></b></p>
+                    <p class="related-info coronation-blue" id="limit" name="amountlimit"><b></b></p>
                     <p  class="related-info coronation-blue" id="fee"><b></b></p>
 
 
@@ -185,7 +187,7 @@
                 success: function (currency) {
                     cur = '' + String(currency);
                     if (cur == "") {
-                        document.getElementById("sourceCurrency").textContent = "NAN";
+                        document.getElementById("sourceCurrency").textContent = "NGN";
                         // $("#myspan").show();
                     } else {
 //                    $('input[name=availBal]').val(bal);

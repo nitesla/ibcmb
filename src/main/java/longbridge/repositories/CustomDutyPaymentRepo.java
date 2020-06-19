@@ -1,6 +1,5 @@
 package longbridge.repositories;
 
-import longbridge.models.CorpPaymentRequest;
 import longbridge.models.CustomDutyPayment;
 import org.springframework.stereotype.Repository;
 

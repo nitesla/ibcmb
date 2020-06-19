@@ -35,20 +35,24 @@
                             </select>
                         </div>
 
+
+
+
                         <div class="form-group" id="primary" style="display: none">
                             <label>Tenor</label>
                             <span class="req"></span>
-                            <select th:name="Primary-Market-Tenor" id="pTenor" class="form-control full-width" required>
+                            <select th:name="Primary-Market-Tenor" id="pTenor" class="form-control full-width">
                                 <option value=""> Select Tenor </option>
                                 <option th:each="p : ${primary}" th:value="${p.tenor +','+ p.value}"
                                         th:text="${p.tenor}+' '+days"></option>
                             </select>
                         </div>
-                        <!--th:onchange="'javascript:getRate('+${p.value}+');'"-->
+
+
                         <div class="form-group" style="display: none" id="secondary">
                             <label>Tenor</label>
                             <span class="req"></span>
-                            <select th:name="Secondary-Market-Tenor" id="sTenor" class="form-control full-width" required>
+                            <select th:name="Secondary-Market-Tenor" id="sTenor" class="form-control full-width">
                                 <option value=""> Select Tenor </option>
                                 <option th:each="s : ${secondary}" th:value="${s.tenor+','+ s.value}"
                                         th:text="${s.tenor}+' '+days" ></option>
@@ -149,11 +153,13 @@
 
         $("#marketType").on('change', function () {
             if ($("#marketType").val() === "PRIMARY") {
+                $("#sTenor").val("");
                 $('#secondary').hide();
                 $('#sRateDiv').hide();
                 $('#primary').show();
                 // $('#rate').val($('#pTenor').val().split(',')[1]);
             } else {
+                $("#pTenor").val("");
                 $("#primary").hide();
                 $('#secondary').show();
                 $('#pRateDiv').hide();

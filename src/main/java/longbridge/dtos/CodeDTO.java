@@ -1,10 +1,8 @@
 package longbridge.dtos;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import longbridge.models.AbstractEntity;
-import org.hibernate.validator.constraints.NotEmpty;
 
-import javax.persistence.Entity;
+import javax.validation.constraints.NotEmpty;
 
 /**
  * Created by Fortune on 4/5/2017.

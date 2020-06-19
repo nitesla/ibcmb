@@ -13,9 +13,14 @@ import longbridge.models.RetailUser;
 import longbridge.models.TransRequest;
 import longbridge.services.*;
 import longbridge.utils.DateFormatter;
+import longbridge.utils.JasperReport.ReportHelper;
 import longbridge.utils.StringUtil;
 import longbridge.utils.TransferType;
 import longbridge.utils.TransferUtils;
+import net.sf.jasperreports.engine.JasperExportManager;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.JasperReport;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -30,11 +35,10 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.LocaleResolver;
-import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import longbridge.utils.JasperReport.JasperReportsPdfView;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.security.Principal;
 import java.text.DecimalFormat;
 import java.util.*;
@@ -61,7 +65,6 @@ public class TransferController {
     private TransferUtils transferUtils;
     @Autowired
     private ConfigurationService configService;
-
 
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -102,9 +105,7 @@ public class TransferController {
             request.getSession().removeAttribute("transferRequest");
             TransferType tranType = dto.getTransferType();
             switch (tranType) {
-                case CORONATION_BANK_TRANSFER:
-
-                {
+                case CORONATION_BANK_TRANSFER: {
                     return "redirect:/retail/transfer/local";
                 }
                 case INTER_BANK_TRANSFER: {
@@ -252,7 +253,7 @@ public class TransferController {
 
                 request.getSession().removeAttribute("auth-needed");
             }
-            if(TransferType.INTERNATIONAL_TRANSFER.equals(transferRequestDTO.getTransferType())){
+            if (TransferType.INTERNATIONAL_TRANSFER.equals(transferRequestDTO.getTransferType())) {
                 return "redirect:/retail/transfer/international/process";
             }
 
@@ -263,12 +264,12 @@ public class TransferController {
                     LocalBeneficiaryDTO l = (LocalBeneficiaryDTO) request.getSession().getAttribute("Lbeneficiary");
                     RetailUser user = retailUserService.getUserByName(principal.getName());
                     try {
-                        localBeneficiaryService.addLocalBeneficiary( l);
+                        localBeneficiaryService.addLocalBeneficiary(l);
                         request.getSession().removeAttribute("Lbeneficiary");
                         request.getSession().removeAttribute("add");
                         // model.addAttribute("beneficiary", l);
                     } catch (InternetBankingException de) {
-                        logger.error("Error adding beneficiary",de);
+                        logger.error("Error adding beneficiary", de);
 
                     }
                 }
@@ -277,29 +278,29 @@ public class TransferController {
 
             transferRequestDTO = transferService.makeTransfer(transferRequestDTO);
             model.addAttribute("transRequest", transferRequestDTO);
-            logger.info("Transfer status {}",transferRequestDTO.getStatus());
-            if(transferRequestDTO.getStatus().equalsIgnoreCase("00")||transferRequestDTO.getStatus().equalsIgnoreCase("000")) {
+            logger.info("Transfer status {}", transferRequestDTO.getStatus());
+            if (transferRequestDTO.getStatus().equalsIgnoreCase("00") || transferRequestDTO.getStatus().equalsIgnoreCase("000")) {
                 model.addAttribute("message", messages.getMessage(transferErrorService.getMessage(transferRequestDTO.getStatus()), null, locale));
-                logger.info("Transfer status1 {}",transferRequestDTO.getStatus());
+                logger.info("Transfer status1 {}", transferRequestDTO.getStatus());
 
                 return "cust/transfer/transferdetails";
 
             }
-            if(transferRequestDTO.getStatus().equalsIgnoreCase("34")) {
+            if (transferRequestDTO.getStatus().equalsIgnoreCase("34")) {
 //                model.addAttribute("failure", messages.getMessage("transaction.pending", null, locale));
                 model.addAttribute("failure", messages.getMessage(transferErrorService.getMessage(transferRequestDTO.getStatus()), null, locale));
-                logger.info("Transfer status..antifraud {}",transferRequestDTO.getStatus());
+                logger.info("Transfer status..antifraud {}", transferRequestDTO.getStatus());
 
                 return "cust/transfer/pendingtransferdetails";
 
             }
-            if(transferRequestDTO.getStatus().equalsIgnoreCase("09")) {
+            if (transferRequestDTO.getStatus().equalsIgnoreCase("09")) {
                 model.addAttribute("failure", messages.getMessage(transferErrorService.getMessage(transferRequestDTO.getStatus()), null, locale));
-                logger.info("Transfer status..pending {}",transferRequestDTO.getStatus());
+                logger.info("Transfer status..pending {}", transferRequestDTO.getStatus());
                 return "cust/transfer/pendingtransferdetails";
 
-            }else{
-                logger.info("Transfer status..others {}",transferRequestDTO.getStatus());
+            } else {
+                logger.info("Transfer status..others {}", transferRequestDTO.getStatus());
                 redirectAttributes.addFlashAttribute("failure", transferErrorService.getMessage(transferRequestDTO.getStatus()));//GB
                 return index(request);
             }
@@ -311,7 +312,7 @@ public class TransferController {
             if (request.getSession().getAttribute("Lbeneficiary") != null)
                 request.getSession().removeAttribute("Lbeneficiary");
 //            redirectAttributes.addFlashAttribute("failure", messages.getMessage("transfer.failed", null, locale));
-            redirectAttributes.addFlashAttribute("failure",transferErrorService.getMessage(transferRequestDTO.getStatus()) );
+            redirectAttributes.addFlashAttribute("failure", transferErrorService.getMessage(transferRequestDTO.getStatus()));
             return index(request);
 
         } catch (Exception e) {
@@ -376,15 +377,11 @@ public class TransferController {
     }
 
     @RequestMapping(path = "{id}/receipt", method = RequestMethod.GET)
-    public ModelAndView report(@PathVariable Long id, HttpServletRequest servletRequest, Principal principal) {
+    public void report(@PathVariable Long id, HttpServletRequest servletRequest, HttpServletResponse response, Principal principal) throws Exception {
 
-        try {
             RetailUser retailUser = retailUserService.getUserByName(principal.getName());
             TransRequest transRequest = transferService.getTransfer(id);
 
-            JasperReportsPdfView view = new JasperReportsPdfView();
-            view.setUrl("classpath:jasperreports/rpt_tran-hist.jrxml");
-            view.setApplicationContext(appContext);
 
             Map<String, Object> modelMap = new HashMap<>();
             double amount = Double.parseDouble(transRequest.getAmount().toString());
@@ -406,16 +403,15 @@ public class TransferController {
             modelMap.put("tranDate", DateFormatter.format(transRequest.getTranDate()));
             modelMap.put("date", DateFormatter.format(new Date()));
 
+            JasperReport jasperReport = ReportHelper.getJasperReport("rpt_tran-hist");
 
-            ModelAndView modelAndView = new ModelAndView(view, modelMap);
-            return modelAndView;
-        } catch (Exception e) {
-            logger.info(" RECEIPT DOWNLOAD {} ", e.getMessage());
-            ModelAndView modelAndView = new ModelAndView("redirect:/retail/transfer/history");
-            modelAndView.addObject("failure", messageSource.getMessage("receipt.download.failed", null, locale));
-            //redirectAttributes.addFlashAttribute("failure", messageSource.getMessage("receipt.download.failed", null, locale));
-            return modelAndView;
-        }
+            response.setContentType("application/x-download");
+            response.setHeader("Content-Disposition", String.format("attachment; filename=\"rpt_tran-hist.pdf\""));
+
+            JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, modelMap);
+            JasperExportManager.exportReportToPdfStream(jasperPrint, response.getOutputStream());
+
+
     }
 
     @RequestMapping(value = "/back", method = RequestMethod.POST)

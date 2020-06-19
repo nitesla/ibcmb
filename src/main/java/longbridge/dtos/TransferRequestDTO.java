@@ -1,7 +1,7 @@
 package longbridge.dtos;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import longbridge.models.*;
+import longbridge.models.FinancialInstitution;
 import longbridge.utils.TransferType;
 
 import java.io.Serializable;
@@ -42,6 +42,8 @@ public class TransferRequestDTO implements Serializable {
     private String narration;
 
     private String sessionId;
+
+    private String currencyCode;
 
     private BigDecimal amount;
     private String statusDescription;
@@ -332,6 +334,14 @@ public class TransferRequestDTO implements Serializable {
 
     public void setChannel(String channel) {
         this.channel = channel;
+    }
+
+    public String getCurrencyCode() {
+        return currencyCode;
+    }
+
+    public void setCurrencyCode(String currencyCode) {
+        this.currencyCode = currencyCode;
     }
 
     @Override

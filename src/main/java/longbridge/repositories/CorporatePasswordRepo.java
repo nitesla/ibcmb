@@ -1,6 +1,6 @@
 package longbridge.repositories;
 
-import longbridge.models.*;
+import longbridge.models.CorporatePassword;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;

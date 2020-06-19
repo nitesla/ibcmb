@@ -5,6 +5,7 @@ import longbridge.api.Rate;
 import longbridge.exception.InternetBankingException;
 import longbridge.exception.InternetBankingTransferException;
 import longbridge.exception.TransferExceptions;
+import longbridge.models.UserType;
 import longbridge.models.*;
 import longbridge.repositories.AccountRepo;
 import longbridge.repositories.CorpLocalBeneficiaryRepo;
@@ -94,12 +95,12 @@ public class TransferUtils {
     public String doIntraBankkNameLookup(String acctNo) {
         if (getCurrentUser() != null && !acctNo.isEmpty()) {
             User user = getCurrentUser();
-            if (user.getUserType().equals(UserType.RETAIL)) {
+            if (user.getUserType().equals(longbridge.models.UserType.RETAIL)) {
                 LocalBeneficiary localBeneficiary = localBeneficiaryRepo.findByUser_IdAndAccountNumber(user.getId(), acctNo);
                 if (localBeneficiary != null) {
                     return createMessage("A beneficary with these details already exists", false);
                 }
-            } else if (user.getUserType().equals(UserType.CORPORATE)) {
+            } else if (user.getUserType().equals(longbridge.models.UserType.CORPORATE)) {
                 CorporateUser corporateUser = (CorporateUser) user;
                 boolean exists = corpLocalBeneficiaryRepo.existsByCorporate_IdAndAccountNumber(corporateUser.getCorporate().getId(), acctNo);
                 if (exists) {
@@ -178,6 +179,17 @@ public class TransferUtils {
                 return createMessage(getCurrency(accountNumber) + "" + limit, true);
         }
         
+        return "";
+    }
+
+    public String getLimitForAuthorization(String accountNumber, String channel) {
+        validate(accountNumber);
+        if (getCurrentUser() != null) {
+            String limit = integrationService.getDailyAccountLimit(accountNumber, channel);
+            if (limit != null && !limit.isEmpty())
+                return limit;
+        }
+
         return "";
     }
     

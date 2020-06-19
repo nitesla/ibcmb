@@ -8,8 +8,8 @@ import com.fasterxml.jackson.databind.SerializerProvider;
 import longbridge.models.Code;
 import longbridge.models.CorpUserType;
 import longbridge.utils.PrettySerializer;
-import org.hibernate.validator.constraints.NotEmpty;
 
+import javax.validation.constraints.NotEmpty;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;

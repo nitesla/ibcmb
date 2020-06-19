@@ -300,7 +300,7 @@ public class CorpTransferServiceImpl implements CorpTransferService {
 
         BigDecimal balance = integrationService.getAvailableBalance(corpTransferRequest.getCustomerAccountNumber());
         if (balance != null) {
-            if (!(balance.compareTo(corpTransferRequest.getAmount()) == 0 || (balance.compareTo(corpTransferRequest.getAmount()) == 1))) {
+            if (!(balance.compareTo(corpTransferRequest.getAmount()) == 0 || (balance.compareTo(corpTransferRequest.getAmount()) > 0))) {
                 throw new InternetBankingTransferException(TransferExceptions.BALANCE.toString());
             }
         }
@@ -423,6 +423,7 @@ public class CorpTransferServiceImpl implements CorpTransferService {
         transferRequestDTO.setAmount(corpTransRequest.getAmount());
         transferRequestDTO.setTranDate(corpTransRequest.getTranDate());
         transferRequestDTO.setCorporateId(corpTransRequest.getCorporate().getId().toString());
+        transferRequestDTO.setCurrencyCode(corpTransRequest.getCurrencyCode());
         if (corpTransRequest.getTransferAuth() != null) {
             transferRequestDTO.setTransAuthId(corpTransRequest.getTransferAuth().getId().toString());
         }
@@ -488,6 +489,7 @@ public class CorpTransferServiceImpl implements CorpTransferService {
         corpTransRequest.setStatusDescription(transferRequestDTO.getStatusDescription());
         corpTransRequest.setAmount(transferRequestDTO.getAmount());
         corpTransRequest.setUserReferenceNumber(transferRequestDTO.getUserReferenceNumber());
+        corpTransRequest.setCurrencyCode(transferRequestDTO.getCurrencyCode());
 
         Corporate corporate = corporateRepo.findOneById(Long.parseLong(transferRequestDTO.getCorporateId()));
         corpTransRequest.setCorporate(corporate);
@@ -812,7 +814,7 @@ public class CorpTransferServiceImpl implements CorpTransferService {
 
         BigDecimal balance = integrationService.getAvailableBalance(dto.getCustomerAccountNumber());
         if (balance != null) {
-            if (!(balance.compareTo(dto.getAmount()) == 0 || (balance.compareTo(dto.getAmount()) == 1))) {
+            if (!(balance.compareTo(dto.getAmount()) == 0 || (balance.compareTo(dto.getAmount()) > 0))) {
                 logger.info("Account Balance is insufficient for this transfer {}", dto.getCustomerAccountNumber());
                 return false;
             }

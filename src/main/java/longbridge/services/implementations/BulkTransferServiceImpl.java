@@ -1,6 +1,5 @@
 package longbridge.services.implementations;
 
-import longbridge.api.CustomerDetails;
 import longbridge.dtos.BulkStatusDTO;
 import longbridge.dtos.BulkTransferDTO;
 import longbridge.dtos.CreditRequestDTO;
@@ -15,10 +14,8 @@ import longbridge.security.IpAddressUtils;
 import longbridge.security.userdetails.CustomUserPrincipal;
 import longbridge.services.*;
 import longbridge.services.bulkTransfers.BulkTransferJobLauncher;
-import longbridge.services.bulkTransfers.TransferDTO;
 import longbridge.utils.StatusCode;
 import longbridge.utils.TransferAuthorizationStatus;
-import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,13 +28,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetails;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestTemplate;
 
 import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * Created by Longbridge on 14/06/2017.

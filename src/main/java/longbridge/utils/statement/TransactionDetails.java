@@ -1,14 +1,14 @@
 package longbridge.utils.statement;
 
 
-import java.util.Date;
+import java.io.Serializable;
 
 /**
  * Created by ayoade_farooq@yahoo.com on 6/15/2017.
  */
 
 
-public class TransactionDetails {
+public class TransactionDetails implements Serializable {
     private String currencyCode;
     private String postDate;
     private String valueDate;

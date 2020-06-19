@@ -2,7 +2,6 @@ package longbridge.repositories;
 
 import longbridge.models.LocalBeneficiary;
 import longbridge.models.RetailUser;
-import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 

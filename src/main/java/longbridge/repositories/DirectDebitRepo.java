@@ -1,16 +1,15 @@
 package longbridge.repositories;
 
 
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
-
+import longbridge.models.DirectDebit;
+import longbridge.models.RetailUser;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
-import longbridge.models.DirectDebit;
-import longbridge.models.RetailUser;
+import java.util.Date;
+import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface DirectDebitRepo extends CommonRepo<DirectDebit,Long> {

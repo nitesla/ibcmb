@@ -1,6 +1,5 @@
 package longbridge.security.retailuser;
 
-import longbridge.dtos.SettingDTO;
 import longbridge.models.RetailUser;
 import longbridge.repositories.RetailUserRepo;
 import longbridge.security.SessionUtils;

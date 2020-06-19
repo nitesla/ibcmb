@@ -23,7 +23,7 @@ public class TreasurybillServiceImpl implements TreasurybillService {
         BigDecimal deposit = new BigDecimal(amount);
         int comparator = availableBalance.compareTo(deposit);
         logger.info("the comparator {}", comparator);
-        if (comparator == 1) {
+        if (comparator > 0) {
             return true;
         }
 
