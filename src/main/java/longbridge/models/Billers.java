@@ -9,33 +9,43 @@ import longbridge.utils.PrettySerializer;
 import org.hibernate.annotations.Where;
 import org.hibernate.envers.Audited;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.OneToMany;
+import javax.annotation.Nullable;
+import javax.persistence.*;
 import java.io.IOException;
 import java.util.List;
 
 
 
 @Entity
+@Table (name = "BILLER")
 @Audited(withModifiedFlag=true)
 @Where(clause ="del_Flag='N'" )
-public class Billers extends AbstractEntity implements PrettySerializer{
+public class Biller extends AbstractEntity implements PrettySerializer{
 
 	
-	
+	@Column (name = "CATEGORY_ID")
 	private Long categoryId;
+    @Column (name = "CATEGORY_NAME")
     private String categoryName;
+    @Column (name = "CATEGORY_DESCRIPTION")
     private String categoryDescription;
+    @Column (name = "BILLER_ID")
     private Long billerId;
+    @Column (name = "BILLER_NAME")
     private String billerName;
+    @Column (name = "CUSTOMER_FIELD1")
     private String customerField1;
+    @Column (name = "CUSTOMER_FIELD2")
     private String customerField2;
+    @Column (name = "CURRENCY_SYMBOL")
     private String currencySymbol;
+    @Column (name = "LOGO_URL")
+    @Nullable
     private String logoUrl;
-    private boolean enabled;
+    @Column (name = "enabled")
+    private Integer enabled;
 
-    @OneToMany( mappedBy = "billers", cascade = CascadeType.ALL, orphanRemoval=true )
+    @OneToMany( mappedBy = "biller", cascade = CascadeType.ALL, orphanRemoval=true )
     private List<PaymentItem> paymentItems;
 
 
@@ -111,11 +121,11 @@ public class Billers extends AbstractEntity implements PrettySerializer{
 		this.logoUrl = logoUrl;
 	}
 
-	public boolean isEnabled() {
+	public Integer isEnabled() {
 		return enabled;
 	}
 
-	public void setEnabled(boolean enabled) {
+	public void setEnabled(Integer enabled) {
 		this.enabled = enabled;
 	}
 
@@ -129,7 +139,7 @@ public class Billers extends AbstractEntity implements PrettySerializer{
 
 	@Override
 	public String toString() {
-		return "Billers{" +
+		return "Biller{" +
 				"categoryId=" + categoryId +
 				", categoryName='" + categoryName + '\'' +
 				", categoryDescription='" + categoryDescription + '\'' +
@@ -146,7 +156,7 @@ public class Billers extends AbstractEntity implements PrettySerializer{
 
 
 	@Override @JsonIgnore
-	public JsonSerializer<Billers> getSerializer() {
+	public JsonSerializer<Biller> getSerializer() {
 		return new JsonSerializer<Billers>() {
 			@Override
 			public void serialize(Billers value, JsonGenerator gen, SerializerProvider serializers)
@@ -163,7 +173,7 @@ public class Billers extends AbstractEntity implements PrettySerializer{
 	}
 
 	@Override @JsonIgnore
-	public JsonSerializer<Billers> getAuditSerializer() {
+	public JsonSerializer<Biller> getAuditSerializer() {
 		return new JsonSerializer<Billers>() {
 			@Override
 			public void serialize(Billers value, JsonGenerator gen, SerializerProvider serializers)

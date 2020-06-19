@@ -4,27 +4,38 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.Where;
 import org.hibernate.envers.Audited;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 
 @Entity
+@Table (name = "PAYMENT_ITEM")
 @Audited(withModifiedFlag=true)
 @Where(clause ="del_Flag='N'" )
 public class PaymentItem extends AbstractEntity {
-	
-	
+
+	@Column(name = "PAYMENT_ITEM_ID")
 	private Long paymentItemId;
+	@Column(name = "PAYMENT_ITEM_NAME")
 	private Long paymentItemName;
+	@Column(name = "AMOUNT")
 	private Double amount;
+	@Column(name = "CODE")
 	private Long code;
+	@Column(name = "CURRENCY_CODE")
 	private Long currencyCode;
+	@Column(name = "ITEM_CURRENCY_SYMBOL")
 	private String itemCurrencySymbol;
+	@Column(name = "PAYMENT_CODE")
 	private Long paymentCode;
-	private boolean isAmountFixed;
-	private boolean readonly;
+	@Column(name = "IS_AMOUNT_FIXED")
+	private Integer isAmountFixed;
+	@Column(name = "READONLY")
+	private Integer readonly;
 	
 	@ManyToOne @JsonIgnore
-	private Billers billers;
+	private Biller biller;
 
 	public Long getPaymentItemId() {
 		return paymentItemId;
@@ -82,28 +93,28 @@ public class PaymentItem extends AbstractEntity {
 		this.paymentCode = paymentCode;
 	}
 
-	public boolean isAmountFixed() {
+	public Integer getIsAmountFixed() {
 		return isAmountFixed;
 	}
 
-	public void setAmountFixed(boolean amountFixed) {
-		isAmountFixed = amountFixed;
+	public void setIsAmountFixed(Integer isAmountFixed) {
+		this.isAmountFixed = isAmountFixed;
 	}
 
-	public boolean isReadonly() {
+	public Integer getReadonly() {
 		return readonly;
 	}
 
-	public void setReadonly(boolean readonly) {
+	public void setReadonly(Integer readonly) {
 		this.readonly = readonly;
 	}
 
-	public Billers getBillers() {
-		return billers;
+	public Biller getBiller() {
+		return biller;
 	}
 
-	public void setBillers(Billers billers) {
-		this.billers = billers;
+	public void setBiller(Biller biller) {
+		this.biller = biller;
 	}
 
 	@Override
@@ -118,7 +129,7 @@ public class PaymentItem extends AbstractEntity {
 				", paymentCode=" + paymentCode +
 				", isAmountFixed=" + isAmountFixed +
 				", readonly=" + readonly +
-				", billers=" + billers +
+				", billers=" + biller +
 				'}';
 	}
 
