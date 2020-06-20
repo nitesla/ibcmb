@@ -2,14 +2,8 @@ package longbridge.controllers.retail;
 
 import longbridge.dtos.BillPaymentDTO;
 import longbridge.exception.InternetBankingException;
-import longbridge.models.Account;
-import longbridge.models.Merchant;
-import longbridge.models.Product;
-import longbridge.models.RetailUser;
-import longbridge.services.AccountService;
-import longbridge.services.MerchantService;
-import longbridge.services.PaymentService;
-import longbridge.services.RetailUserService;
+import longbridge.models.*;
+import longbridge.services.*;
 import longbridge.utils.DataTablesUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,23 +25,21 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.StreamSupport;
 
-/**
- * Created by Fortune on 7/6/2018.
- */
+
 
 @Controller
 @RequestMapping("/retail/payment")
 public class PaymentController {
 
-    private final MerchantService merchantService;
+    private final BillerService billerService;
     private final RetailUserService retailUserService;
     private final AccountService accountService;
     private final PaymentService paymentService;
     private final static Logger logger = LoggerFactory.getLogger(PaymentController.class);
 
     @Autowired
-    public PaymentController(MerchantService merchantService, RetailUserService retailUserService, AccountService accountService, PaymentService paymentService) {
-        this.merchantService = merchantService;
+    public PaymentController(BillerService billerService, RetailUserService retailUserService, AccountService accountService, PaymentService paymentService) {
+        this.billerService = billerService;
         this.retailUserService = retailUserService;
         this.accountService = accountService;
         this.paymentService = paymentService;
@@ -57,8 +49,8 @@ public class PaymentController {
     public String getPaymentPage(Model model, Principal principal){
 
         RetailUser retailUser = retailUserService.getUserByName(principal.getName());
-        Iterable<String> merchantCategories = merchantService.getMerchantCategories();
-        model.addAttribute("merchantCategories",merchantCategories);
+        Iterable<String> billerCategories = billerService.getBillerCategories();
+        model.addAttribute("billerCategories",billerCategories);
         BillPaymentDTO paymentDTO = new BillPaymentDTO();
         paymentDTO.setPhoneNumber(retailUser.getPhoneNumber());
         paymentDTO.setEmailAddress(retailUser.getEmail());
@@ -87,38 +79,38 @@ public class PaymentController {
 
     @ResponseBody
     @GetMapping("/{category}/merchants")
-    public List<Merchant> getMerchants(@PathVariable String category){
+    public List<Biller> getBillers(@PathVariable String category){
 
-        List<Merchant> merchantsByCategory = merchantService.getMerchantsByCategory(category);
-        return merchantsByCategory;
+        List<Biller> billersByCategory = billerService.getBillersByCategory(category);
+        return billersByCategory;
     }
 
 
     @ResponseBody
     @GetMapping("/product/{productId}")
-    public Product getProduct(@PathVariable Long productId){
+    public PaymentItem getPaymentItem(@PathVariable Long paymentItemId){
 
-        Product product = merchantService.getProduct(productId);
-        return product;
+        PaymentItem paymentItem = billerService.getPaymentItem(paymentItemId);
+        return paymentItem;
     }
 
 
     @ResponseBody
     @GetMapping("/{merchantId}/products")
-    public List<Product> getMerchantProducts(@PathVariable String merchantId){
+    public List<PaymentItem> getBillerPaymentItems(@PathVariable String billerId){
 
-        Merchant merchant = merchantService.getMerchant(Long.parseLong(merchantId));
-        List<Product> products = merchant.getProducts();
-        return products;
+        Biller biller = billerService.getBiller(Long.parseLong(billerId));
+        List<PaymentItem> paymentItems = biller.getPaymentItems();
+        return paymentItems;
     }
 
-    @ResponseBody
-    @GetMapping("/{merchantId}/referencename")
-    public String getOwnerReferenceName(@PathVariable String merchantId){
-
-        Merchant merchant = merchantService.getMerchant(Long.parseLong(merchantId));
-        return merchant.getOwnerReferenceName();
-    }
+//    @ResponseBody
+//    @GetMapping("/{merchantId}/referencename")
+//    public String getOwnerReferenceName(@PathVariable String billerId){
+//
+//        Biller biller = billerService.getBiller(Long.parseLong(billerId));
+//        return biller.getOwnerReferenceName();
+//    }
 
     @GetMapping("/completed")
     public String getCompletedPayments(){

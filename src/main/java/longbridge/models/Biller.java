@@ -20,33 +20,33 @@ import java.util.List;
 @Table (name = "BILLER")
 @Audited(withModifiedFlag=true)
 @Where(clause ="del_Flag='N'" )
-public class Biller extends AbstractEntity implements PrettySerializer{
+public class Biller extends AbstractEntity {
+//	public class Biller extends AbstractEntity implements PrettySerializer{
 
-	
-	@Column (name = "CATEGORY_ID")
+	@Column(name = "CATEGORY_ID")
 	private Long categoryId;
-    @Column (name = "CATEGORY_NAME")
-    private String categoryName;
-    @Column (name = "CATEGORY_DESCRIPTION")
-    private String categoryDescription;
-    @Column (name = "BILLER_ID")
-    private Long billerId;
-    @Column (name = "BILLER_NAME")
-    private String billerName;
-    @Column (name = "CUSTOMER_FIELD1")
-    private String customerField1;
-    @Column (name = "CUSTOMER_FIELD2")
-    private String customerField2;
-    @Column (name = "CURRENCY_SYMBOL")
-    private String currencySymbol;
-    @Column (name = "LOGO_URL")
-    @Nullable
-    private String logoUrl;
-    @Column (name = "enabled")
-    private Integer enabled;
+	@Column(name = "CATEGORY_NAME")
+	private String categoryName;
+	@Column(name = "CATEGORY_DESCRIPTION")
+	private String categoryDescription;
+	@Column(name = "BILLER_ID")
+	private Long billerId;
+	@Column(name = "BILLER_NAME")
+	private String billerName;
+	@Column(name = "CUSTOMER_FIELD1")
+	private String customerField1;
+	@Column(name = "CUSTOMER_FIELD2")
+	private String customerField2;
+	@Column(name = "CURRENCY_SYMBOL")
+	private String currencySymbol;
+	@Column(name = "LOGO_URL")
+	@Nullable
+	private String logoUrl;
+	@Column(name = "enabled")
+	private Integer enabled;
 
-    @OneToMany( mappedBy = "biller", cascade = CascadeType.ALL, orphanRemoval=true )
-    private List<PaymentItem> paymentItems;
+	@OneToMany(mappedBy = "biller", cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<PaymentItem> paymentItems;
 
 
 	public Long getCategoryId() {
@@ -153,32 +153,33 @@ public class Biller extends AbstractEntity implements PrettySerializer{
 				", paymentItems=" + paymentItems +
 				'}';
 	}
+}
 
 
-	@Override @JsonIgnore
-	public JsonSerializer<Biller> getSerializer() {
-		return new JsonSerializer<Billers>() {
-			@Override
-			public void serialize(Billers value, JsonGenerator gen, SerializerProvider serializers)
-					throws IOException, JsonProcessingException
-			{
+//	@Override @JsonIgnore
+//	public JsonSerializer<Biller> getSerializer() {
+//		return new JsonSerializer<Biller>() {
+//			@Override
+//			public void serialize(Biller value, JsonGenerator gen, SerializerProvider serializers)
+//					throws IOException, JsonProcessingException
+//			{
 //				gen.writeStartObject();
 //				gen.writeStringField("Name",value.name);
 //				gen.writeStringField("Category",value.category);
 //				gen.writeStringField("Owner Reference Name",value.ownerReferenceName);
 //				gen.writeBooleanField("Enabled",value.enabled);
 //				gen.writeEndObject();
-			}
-		};
-	}
+//			}
+//		};
+//	}
 
-	@Override @JsonIgnore
-	public JsonSerializer<Biller> getAuditSerializer() {
-		return new JsonSerializer<Billers>() {
-			@Override
-			public void serialize(Billers value, JsonGenerator gen, SerializerProvider serializers)
-					throws IOException, JsonProcessingException
-			{
+//	@Override @JsonIgnore
+//	public JsonSerializer<Biller> getAuditSerializer() {
+//		return new JsonSerializer<Billers>() {
+//			@Override
+//			public void serialize(Billers value, JsonGenerator gen, SerializerProvider serializers)
+//					throws IOException, JsonProcessingException
+//			{
 //				gen.writeStartObject();
 //				if(value.id != null) {
 //					gen.writeStringField("id", value.id.toString());
@@ -190,8 +191,8 @@ public class Biller extends AbstractEntity implements PrettySerializer{
 //				gen.writeStringField("ownerReferenceName",value.ownerReferenceName);
 //				gen.writeBooleanField("enabled",value.enabled);
 //				gen.writeEndObject();
-			}
-		};
-	}
+//			}
+//		};
+//	}
 
-	}
+
