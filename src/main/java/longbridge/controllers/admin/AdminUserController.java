@@ -45,7 +45,7 @@ import static org.springframework.data.repository.init.ResourceReader.Type.JSON;
  */
 @Controller
 @RequestMapping("/admin/users")
-public class AdminUserController {
+public class  AdminUserController {
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 

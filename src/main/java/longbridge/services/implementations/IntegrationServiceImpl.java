@@ -2,6 +2,8 @@ package longbridge.services.implementations;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import longbridge.api.*;
+import longbridge.billerresponse.Biller;
+import longbridge.dtos.BillerDTO;
 import longbridge.dtos.FixedDepositDTO;
 import longbridge.dtos.LoanDTO;
 import longbridge.dtos.SettingDTO;
@@ -1412,6 +1414,25 @@ public class IntegrationServiceImpl implements IntegrationService {
 			methodResponse = "fail";
 		}
 		return methodResponse;
+	}
+
+	@Override
+	public List<BillerDTO> getBillers(){
+		String appId = "001b5";
+		String hash = "$234@789";
+		List<BillerDTO> billers = new ArrayList<>();
+		String uri = URI+"/api/quickteller/biller";
+		Map<String,String> params = new HashMap<>();
+		params.put("appid",appId);
+		params.put("hash",hash);
+		try {
+			Biller biller = template.postForObject(uri,params, Biller.class);
+			billers = biller.getBillers();
+			return billers;
+		} catch (Exception e){
+			logger.info("Error processing request");
+		}
+			return billers;
 	}
 
 }

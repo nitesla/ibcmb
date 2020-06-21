@@ -9,9 +9,7 @@ import longbridge.utils.PrettySerializer;
 import org.hibernate.annotations.Where;
 import org.hibernate.envers.Audited;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.OneToMany;
+import javax.persistence.*;
 import java.io.IOException;
 import java.util.List;
 
@@ -20,20 +18,34 @@ import java.util.List;
 @Entity
 @Audited(withModifiedFlag=true)
 @Where(clause ="del_Flag='N'" )
+@Table(name = "BILLERS")
 public class Billers extends AbstractEntity implements PrettySerializer{
 
-	
-	
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+	private long id;
+	@Column(name = "categoryid")
 	private Long categoryId;
+    @Column(name = "categoryname")
     private String categoryName;
+    @Column(name = "categorydescription")
     private String categoryDescription;
+    @Column(name = "billerid")
     private Long billerId;
+    @Column(name = "billername")
     private String billerName;
+    @Column(name = "customerfield1")
     private String customerField1;
+    @Column(name = "customerfield2")
     private String customerField2;
+    @Column(name = "currencySymbol")
     private String currencySymbol;
+    @Column(name = "logoUrl")
     private String logoUrl;
+    @Column(name = "enabled")
     private boolean enabled;
+    @Column(name="deletevalue")
+	private String deleteValue;
 
     @OneToMany( mappedBy = "billers", cascade = CascadeType.ALL, orphanRemoval=true )
     private List<PaymentItem> paymentItems;
@@ -125,6 +137,14 @@ public class Billers extends AbstractEntity implements PrettySerializer{
 
 	public void setPaymentItems(List<PaymentItem> paymentItems) {
 		this.paymentItems = paymentItems;
+	}
+
+	public String getDeleteValue() {
+		return deleteValue;
+	}
+
+	public void setDeleteValue(String deleteValue) {
+		this.deleteValue = deleteValue;
 	}
 
 	@Override
