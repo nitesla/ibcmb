@@ -15,14 +15,14 @@ import java.util.List;
 @Repository
 public interface BillerRepo extends CommonRepo<Biller, Long>{
 
-    List<Biller> findByCategory(String category);
+    List<Biller> findByCategory(String categoryName);
 
-    List<Biller> findByCategoryAndEnabled(String category, boolean enabled);
+    List<Biller> findByCategoryAndEnabled(String categoryName, boolean enabled);
 
-    Page<Biller> findByCategory(String category, Pageable pageable);
+    Page<Biller> findByCategory(String categoryName, Pageable pageable);
     
     @Query(
-  		  value = "select distinct category from Biller",
+  		  value = "select distinct categoryName from Biller",
   		  nativeQuery = true)
     List<String> findAllCategories();
     

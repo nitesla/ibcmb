@@ -20,8 +20,8 @@ import java.util.List;
 @Table (name = "BILLER")
 @Audited(withModifiedFlag=true)
 @Where(clause ="del_Flag='N'" )
-public class Biller extends AbstractEntity {
-//	public class Biller extends AbstractEntity implements PrettySerializer{
+
+public class Biller extends AbstractEntity implements PrettySerializer{
 
 	@Column(name = "CATEGORY_ID")
 	private Long categoryId;
@@ -43,7 +43,7 @@ public class Biller extends AbstractEntity {
 	@Nullable
 	private String logoUrl;
 	@Column(name = "enabled")
-	private Integer enabled;
+	private boolean enabled;
 
 	@OneToMany(mappedBy = "biller", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<PaymentItem> paymentItems;
@@ -121,11 +121,11 @@ public class Biller extends AbstractEntity {
 		this.logoUrl = logoUrl;
 	}
 
-	public Integer isEnabled() {
+	public boolean isEnabled() {
 		return enabled;
 	}
 
-	public void setEnabled(Integer enabled) {
+	public void setEnabled(boolean enabled) {
 		this.enabled = enabled;
 	}
 
@@ -153,46 +153,61 @@ public class Biller extends AbstractEntity {
 				", paymentItems=" + paymentItems +
 				'}';
 	}
+
+
+	@Override @JsonIgnore
+	public JsonSerializer<Biller> getSerializer() {
+		return new JsonSerializer<Biller>() {
+			@Override
+			public void serialize(Biller value, JsonGenerator gen, SerializerProvider serializers)
+					throws IOException, JsonProcessingException
+			{
+				gen.writeStartObject();
+				gen.writeNumberField("Category Id",value.categoryId);
+				gen.writeStringField("Category Name",value.categoryName);
+				gen.writeStringField("Category Description",value.categoryDescription);
+				gen.writeNumberField("Biller Id",value.billerId);
+				gen.writeStringField("Biller Name",value.billerName);
+				gen.writeStringField("Customer Field 1",value.customerField1);
+				gen.writeStringField("Customer Field 2",value.customerField2);
+				gen.writeStringField("Currency Symbol",value.currencySymbol);
+				gen.writeStringField("Logo URL",value.logoUrl);
+				gen.writeBooleanField("Enabled",value.enabled);
+				gen.writeEndObject();
+			}
+		};
+	}
+
+	@Override @JsonIgnore
+	public JsonSerializer<Biller> getAuditSerializer() {
+		return new JsonSerializer<Biller>() {
+			@Override
+			public void serialize(Biller value, JsonGenerator gen, SerializerProvider serializers)
+					throws IOException, JsonProcessingException
+			{
+				gen.writeStartObject();
+				if(value.id != null) {
+					gen.writeStringField("id", value.id.toString());
+				}else {
+					gen.writeStringField("id", "");
+				}
+				gen.writeEndObject();
+				gen.writeNumberField("Category Id",value.categoryId);
+				gen.writeStringField("Category Name",value.categoryName);
+				gen.writeStringField("Category Description",value.categoryDescription);
+				gen.writeNumberField("Biller Id",value.billerId);
+				gen.writeStringField("Biller Name",value.billerName);
+				gen.writeStringField("Customer Field 1",value.customerField1);
+				gen.writeStringField("Customer Field 2",value.customerField2);
+				gen.writeStringField("Currency Symbol",value.currencySymbol);
+				gen.writeStringField("Logo URL",value.logoUrl);
+				gen.writeBooleanField("Enabled",value.enabled);
+				gen.writeEndObject();
+			}
+		};
+	}
+
 }
 
-
-//	@Override @JsonIgnore
-//	public JsonSerializer<Biller> getSerializer() {
-//		return new JsonSerializer<Biller>() {
-//			@Override
-//			public void serialize(Biller value, JsonGenerator gen, SerializerProvider serializers)
-//					throws IOException, JsonProcessingException
-//			{
-//				gen.writeStartObject();
-//				gen.writeStringField("Name",value.name);
-//				gen.writeStringField("Category",value.category);
-//				gen.writeStringField("Owner Reference Name",value.ownerReferenceName);
-//				gen.writeBooleanField("Enabled",value.enabled);
-//				gen.writeEndObject();
-//			}
-//		};
-//	}
-
-//	@Override @JsonIgnore
-//	public JsonSerializer<Biller> getAuditSerializer() {
-//		return new JsonSerializer<Billers>() {
-//			@Override
-//			public void serialize(Billers value, JsonGenerator gen, SerializerProvider serializers)
-//					throws IOException, JsonProcessingException
-//			{
-//				gen.writeStartObject();
-//				if(value.id != null) {
-//					gen.writeStringField("id", value.id.toString());
-//				}else {
-//					gen.writeStringField("id", "");
-//				}
-//				gen.writeStringField("name",value.name);
-//				gen.writeStringField("category",value.category);
-//				gen.writeStringField("ownerReferenceName",value.ownerReferenceName);
-//				gen.writeBooleanField("enabled",value.enabled);
-//				gen.writeEndObject();
-//			}
-//		};
-//	}
 
 

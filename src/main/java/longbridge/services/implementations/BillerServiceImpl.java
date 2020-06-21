@@ -96,8 +96,8 @@ public class BillerServiceImpl implements BillerService {
 	}
 
 	@Override
-	public List<Biller> getBillersByCategory(String category) {
-		return billerRepo.findByCategoryAndEnabled(category,true);
+	public List<Biller> getBillersByCategory(String categoryName) {
+		return billerRepo.findByCategoryAndEnabled(categoryName,true);
 	}
 
 	@Override
@@ -122,8 +122,8 @@ public class BillerServiceImpl implements BillerService {
 
 
 	@Override
-	public Page<Biller> getBillersByCategory(String category, Pageable pageDetails) {
-		return billerRepo.findByCategory(category, pageDetails);
+	public Page<Biller> getBillersByCategory(String categoryName, Pageable pageDetails) {
+		return billerRepo.findByCategory(categoryName, pageDetails);
 	}
 
 	@Override
@@ -131,8 +131,8 @@ public class BillerServiceImpl implements BillerService {
 		List<String> categories = billerRepo.findAllCategories();
 		
 		ArrayList<CategoryDTO> lst = new ArrayList<>();
-		for(String category : categories) {
-			lst.add(new CategoryDTO(category));
+		for(String categoryName : categories) {
+			lst.add(new CategoryDTO(categoryName));
 		}
 		PageImpl<CategoryDTO> page = new PageImpl<CategoryDTO>(lst);
 		return page;

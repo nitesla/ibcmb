@@ -1,9 +1,8 @@
 package longbridge.repositories;
 
-import longbridge.models.Product;
+import longbridge.models.PaymentItem;
 
-
-public interface PaymentItemRepo extends CommonRepo<Product, Long>{
+public interface PaymentItemRepo extends CommonRepo<PaymentItem, Long>{
 
 
 }
