@@ -1,12 +1,10 @@
 package longbridge.models;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.Where;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Entity
@@ -34,8 +32,8 @@ public class PaymentItem extends AbstractEntity {
 	@Column(name = "READONLY")
 	private Integer readonly;
 	
-	@ManyToOne @JsonIgnore
-	private Biller biller;
+//	@ManyToOne @JsonIgnore
+//	private Billers biller;
 
 	public Long getPaymentItemId() {
 		return paymentItemId;
@@ -109,13 +107,13 @@ public class PaymentItem extends AbstractEntity {
 		this.readonly = readonly;
 	}
 
-	public Biller getBiller() {
-		return biller;
-	}
-
-	public void setBiller(Biller biller) {
-		this.biller = biller;
-	}
+//	public Billers getBiller() {
+//		return biller;
+//	}
+//
+//	public void setBiller(Billers biller) {
+//		this.biller = biller;
+//	}
 
 	@Override
 	public String toString() {
@@ -129,7 +127,7 @@ public class PaymentItem extends AbstractEntity {
 				", paymentCode=" + paymentCode +
 				", isAmountFixed=" + isAmountFixed +
 				", readonly=" + readonly +
-				", billers=" + biller +
+//				", billers=" + biller +
 				'}';
 	}
 

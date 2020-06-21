@@ -2,10 +2,8 @@ package longbridge.services;
 
 import longbridge.dtos.CategoryDTO;
 import longbridge.exception.InternetBankingException;
-import longbridge.models.Biller;
-import longbridge.models.Merchant;
+import longbridge.models.Billers;
 import longbridge.models.PaymentItem;
-import longbridge.models.Product;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -13,29 +11,36 @@ import java.util.List;
 
 
 public interface BillerService {
+    public String updateBillersTable();
+//    public List<Billers> getAllBillerList();
+//    public Page<BillerDTO> getBillers(Pageable pageable);
+//    List<BillerDTO> convertEntitiesToDTOs(Iterable<Billers> verifications);
+//    public BillerDTO convertEntityToDTO(Billers verification);
 
-	String addBiller(Biller biller) throws InternetBankingException;
+
+	String addBiller(Billers biller) throws InternetBankingException;
 
 	String deleteBiller(Long id) throws InternetBankingException;
 
-	Biller getBiller(Long id);
+	Billers getBiller(Long id);
 
-	List<Biller> getBillersByCategory(String category);
+	List<Billers> getBillersByCategory(String category);
 
-	String updateBiller(Biller biller) throws InternetBankingException;
+	String updateBiller(Billers biller) throws InternetBankingException;
 
-	Page<Biller> getBillersByCategory(String category, Pageable pageDetails);
+	Page<Billers> getBillersByCategory(String category, Pageable pageDetails);
 
 	Page<CategoryDTO> getBillerCategories(Pageable pageDetails);
 
 	Iterable<String> getBillerCategories();
 
-	Page<Biller> getBillers(Pageable pageDetails);
+	Page<Billers> getBillers(Pageable pageDetails);
 
-	Iterable<Biller> getBillers();
+	Iterable<Billers> getBillers();
 
 	PaymentItem getPaymentItem(Long id);
-	
-	void updateBillerStatus(Biller biller);
+
+	void updateBillerStatus(Billers biller);
+
 
 }
