@@ -52,6 +52,20 @@ public class AdmPaymentsController {
         return billerRepo.findAll();
     }
 
+    @ResponseBody
+    @PostMapping("/disableBiller")
+    public String disableBiller(BillerDTO billerDTO){
+        logger.info("disabling biller");
+    return billerService.disableBillerService(billerDTO);
+    }
+
+    @ResponseBody
+    @PostMapping("/enableBiller")
+    public String enableBiller(BillerDTO billerDTO){
+        logger.info("enabling biller");
+        return billerService.enableBillerService(billerDTO);
+    }
+
 
 
 }

@@ -165,7 +165,17 @@
                 function(response) {
                     console.log(response);
                     $('#billers').DataTable({
+                        responsive: true,
                         "data":response,
+                        "paging": true,
+                        "processing" : true,
+                        "dom": 'T<"clear">frtlp',
+                        "drawCallback": function( settings ) {
+                            var elems = Array.prototype.slice.call(document.querySelectorAll('.js-switch'));
+                            elems.forEach(function(html) {
+                                var switchery = new Switchery(html, { size: 'small' ,color: '#2A3F54'});
+                            });
+                        },
                         "columns": [
                                      {"data":"categoryName"},
                                      { "data": "billerName" },
@@ -177,9 +187,9 @@
                             "render" : function(data, type,full, meta) {
                                 if (type === 'display') {
                                     if (data == true) {
-                                        return "<input type='checkbox' data-pk='"+full.id+"' data-version='"+full.version+"' data-description='"+full.description+"' data-userType='"+full.userType+"' data-switchery='true' class='js-switch' checked value='"+full.operation+"' />";
+                                        return "<input type='checkbox' data-pk='"+full.billerId+"' data-name='"+full.billerName+"' data-category='"+full.categoryName+"'  data-switchery='true' class='js-switch' checked data-value='"+full.enabled+"'/>";
                                     } else if (data == false) {
-                                        return "<input type='checkbox' data-pk='"+full.id+"' data-version='"+full.version+"'  data-description='"+full.description+"' data-userType='"+full.userType+"' data-switchery='true' class='js-switch' value='"+full.operation+"' />";
+                                        return "<input type='checkbox' data-pk='"+full.billerId+"' data-name='"+full.billerName+"' data-category='"+full.categoryName+"'   data-switchery='true' class='js-switch'  data-value='"+full.enabled+"'/>";
                                     }
                                 }
                                 return data;
@@ -200,45 +210,33 @@
 
 
 
-    // $(document).ready(function() {
-    //     var table = $('#billers').DataTable({
-    //         select:true,
-    //         responsive: true,
-    //         "lengthMenu" : [ [ 5, 10, 20],	[ 5, 10, 20 ] ],
-    //         "pagingType" : "simple_numbers",
-    //         "searching": false,
-    //         "paging": true,
-    //         "serverSide" : true,
-    //         "ajax": "/admin/payments/all",
-    //         "dom": 'T<"clear">frtlp',
-    //         "columns": [
-    //             {"data":"categoryname"},
-    //             { "data": "categorydescription" },
-    //             { "data": "enabled" }
-    //         ] });
-    //
-    //     table.on('select', function() {
-    //         if (table.rows({
-    //             selected : true
-    //         }).indexes().length === 0) {
-    //             $('.bt-select').attr("disabled", true);
-    //         } else {
-    //             $('.bt-select').removeAttr("disabled");
-    //         }
-    //
-    //     });
-    //
-    //     table.on('deselect', function() {
-    //         if (table.rows({
-    //             selected : true
-    //         }).indexes().length === 0) {
-    //             $('.bt-select').attr("disabled", true);
-    //         } else {
-    //             $('.bt-select').removeAttr("disabled");
-    //         }
-    //     });
-    //
-    // });
+    $(document).on("change","input[type=checkbox]", function(e) {
+        var cb = $(e.currentTarget);
+        var op = cb.val();
+        var id = cb.attr("data-pk");
+        var name = cb.attr("data-name");
+        var category = cb.attr("data-category");
+        var value = cb.attr("data-value");
+        if (value == "true"){
+            $.ajax({
+                type: "POST",
+                url: "/admin/payments/disableBiller",
+                data: {billername:name, categoryname:category} // parameters
+
+            })
+        } else{
+            $.ajax({
+                type: "POST",
+                url: "/admin/payments/enableBiller",
+                data: {billername:name, categoryname:category} // parameters
+
+            })
+
+        }
+
+
+
+    });
 
 
 </script>

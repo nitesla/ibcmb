@@ -17,6 +17,9 @@ import java.util.List;
 
 public interface BillerService {
     public String updateBillersTable();
+
+	public String disableBillerService(BillerDTO billerDTO);
+	public String enableBillerService(BillerDTO billerDTO);
 //    public List<Billers> getAllBillerList();
 //    public Page<BillerDTO> getBillers(Pageable pageable);
 //    List<BillerDTO> convertEntitiesToDTOs(Iterable<Billers> verifications);

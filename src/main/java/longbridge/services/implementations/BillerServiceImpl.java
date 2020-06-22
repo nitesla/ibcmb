@@ -68,6 +68,7 @@ public class BillerServiceImpl implements BillerService {
     public String updateBillersTable(){
        int u =  billerRepo.deleteAllByDeleteValue("Y");
         List<BillerDTO> billerDto = integrationService.getBillers();
+		logger.info("UPDATING BILLERS!!");
         for (int i = 0; i < billerDto.size(); i++){
             Billers billers = new Billers();
             billers.setBillerName(billerDto.get(i).getBillername());
@@ -80,9 +81,29 @@ public class BillerServiceImpl implements BillerService {
             billers.setCustomerField2(billerDto.get(i).getCustomerfield2());
             billers.setLogoUrl(billerDto.get(i).getLogoUrl());
             billers.setDeleteValue("Y");
+            billers.setEnabled(true);
             billerRepo.save(billers);
         }
         return "Successfully updated";
+    }
+
+    @Override
+    public String disableBillerService(BillerDTO billerDTO){
+        int disableBiller = billerRepo.disableBiller(billerDTO.getBillername(),billerDTO.getCategoryname());
+        if (disableBiller < 0){
+            throw new RuntimeException("Error disabling biller, Please try again!");
+        }
+        return "Biller successfully disabled";
+    }
+
+    @Override
+    public String enableBillerService(BillerDTO billerDTO){
+        int enableBillers = billerRepo.enableBiller(billerDTO.getBillername(),billerDTO.getCategoryname());
+		logger.info("enabling biller service");
+        if (enableBillers < 0){
+            throw new RuntimeException("Error disabling biller, Please try again!");
+        }
+        return "Biller successfully enabled";
     }
 
 
@@ -224,10 +245,12 @@ public class BillerServiceImpl implements BillerService {
 		return paymentItemRepo.findOneById(id);
 	}
 
+
 	@Override
 	public Iterable<String> getBillerCategories() {
 		return  billerRepo.findAllCategories();
 	}
+
 
 	@Override @Transactional
 	public void updateBillerStatus(Billers biller) {

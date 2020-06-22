@@ -41,6 +41,16 @@ public interface BillerRepo extends CommonRepo<Billers, Long>{
     @Modifying
     @Query("update Billers m set m.enabled = :enabled  where m.id= :id")
     void setEnabledFlag(@Param("id") Long id, @Param("enabled") boolean enabled);
+
+    @Transactional
+    @Modifying
+    @Query("update Billers b set b.enabled = false where b.billerName = :billerName and b.categoryName = :categoryName")
+    int disableBiller(@Param("billerName") String billerName, @Param("categoryName") String categoryName);
+
+    @Transactional
+    @Modifying
+    @Query("update Billers b set b.enabled = true where b.billerName = :billerName and b.categoryName = :categoryName")
+    int enableBiller(@Param("billerName") String billerName, @Param("categoryName") String categoryName);
     
 //
     
