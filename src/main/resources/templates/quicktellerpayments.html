@@ -63,10 +63,8 @@
 
 <!--                                    <li class="pull-right" >-->
 <!--                                        <div class="input-group col-lg-12">-->
-<!--                                            <select type="text" class="form-control" id="pattern">-->
-<!--                                            <option>&#45;&#45; Choose Category &#45;&#45;</option>-->
-<!--                                            </select>-->
-<!--                                            <span class="input-group-btn">-->
+<!--                                            <input type="text" class="form-control" id="pattern" placeholder="Search for..."/> <span-->
+<!--                                                class="input-group-btn">-->
 <!--										<button class="btn btn-success" id="search" type="button">Go!</button>-->
 <!--									</span>-->
 <!--                                        </div>-->
@@ -122,6 +120,12 @@
 
 <script>
 
+    // $("#pattern").keyup(function(event){
+    //     if(event.keyCode == 13){
+    //         $("#search").click();
+    //     }
+    // });
+
 
     function showNotification(message , type){
         $.notify({
@@ -158,6 +162,7 @@
 
 
 
+
         $.ajax({
             type: "GET",
             url: "/admin/payments/all",
@@ -170,12 +175,6 @@
                         "paging": true,
                         "processing" : true,
                         "dom": 'T<"clear">frtlp',
-                        "drawCallback": function( settings ) {
-                            var elems = Array.prototype.slice.call(document.querySelectorAll('.js-switch'));
-                            elems.forEach(function(html) {
-                                var switchery = new Switchery(html, { size: 'small' ,color: '#2A3F54'});
-                            });
-                        },
                         "columns": [
                                      {"data":"categoryName"},
                                      { "data": "billerName" },
@@ -196,7 +195,10 @@
                             }
                         }]
                     })
-
+                     var elems = Array.prototype.slice.call(document.querySelectorAll('.js-switch'));
+                    elems.forEach(function(html) {
+                        var switchery = new Switchery(html, { size: 'small' ,color: '#2A3F54'});
+                    });
                 },
             error:
                 function (response) {
@@ -206,6 +208,11 @@
 
         })
 
+    // $("#search").on("click", function(e) {
+    //     e.preventDefault();
+    //     dt = $('#billers').DataTable();
+    //
+    // });
 
 
 
