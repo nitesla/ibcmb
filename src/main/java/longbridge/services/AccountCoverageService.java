@@ -15,7 +15,7 @@ public interface AccountCoverageService {
    String addCoverage(CodeDTO codeDTO)throws InternetBankingException;
    String enableCoverage(String coverageJson) throws InternetBankingException, IOException;
    String deleteCoverage(Long coverageId) throws InternetBankingException;
-   List<AccountCoverage> enabledCoverageList();
+   List<String> enabledCoverageList();
    Iterable<AccountCoverageDTO> getAllCoverage();
    Long getCoverageId(String coverageCode);
    Long getCodeId(String code);

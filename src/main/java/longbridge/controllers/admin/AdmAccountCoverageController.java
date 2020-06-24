@@ -6,6 +6,7 @@ import longbridge.dtos.CodeDTO;
 import longbridge.exception.InternetBankingException;
 import longbridge.services.AccountCoverageService;
 import longbridge.services.CodeService;
+import longbridge.services.IntegrationService;
 import longbridge.utils.DataTablesUtils;
 import org.apache.commons.collections.IteratorUtils;
 import org.slf4j.Logger;
@@ -37,6 +38,8 @@ import java.util.stream.StreamSupport;
 @RequestMapping("/admin/accountcoverage")
 public class AdmAccountCoverageController {
     private Logger logger = LoggerFactory.getLogger(this.getClass());
+    @Autowired
+    private IntegrationService integrationService;
 
     @Autowired
     private AccountCoverageService coverageService;
@@ -46,6 +49,7 @@ public class AdmAccountCoverageController {
 
     @Autowired
     MessageSource messageSource;
+
     private final String  coverageCode = "ACCOUNT_COVERAGE";
 
 
@@ -57,8 +61,8 @@ public class AdmAccountCoverageController {
     }
 
     @GetMapping(path = "/all")
-    public @ResponseBody
-    DataTablesOutput<AccountCoverageDTO> getAllCoverage(DataTablesInput input){
+    @ResponseBody
+    public DataTablesOutput<AccountCoverageDTO> getAllCoverage(DataTablesInput input){
         Pageable pageable = DataTablesUtils.getPageable(input);
         Iterable<CodeDTO> codes  = codeService.getCodesByType(coverageCode);
         Iterable<AccountCoverageDTO> coverages = coverageService.getAllCoverage();
@@ -77,6 +81,7 @@ public class AdmAccountCoverageController {
         out.setRecordsTotal(coverageDTOPage.getTotalElements());
         return out;
     }
+
     @PostMapping("/update")
     @ResponseBody
     public ResponseEntity<HttpStatus> enableCoverage(@RequestBody String coverageJson) throws IOException {

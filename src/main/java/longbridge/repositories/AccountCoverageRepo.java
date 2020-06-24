@@ -20,8 +20,11 @@ public interface AccountCoverageRepo extends CommonRepo<AccountCoverage, Long> {
     @Query("select case when count (c.code)>0 then true else false end from AccountCoverage c where lower(c.code) like lower(:code) and c.delFlag='N'")
     boolean codeExist(@Param("code") String code);
 
-    @Query("select distinct c from AccountCoverage c where c.isEnabled = true and c.delFlag='N' ")
-    List<AccountCoverage> getEnabledCoverage();
+    @Query("select distinct c.code from AccountCoverage c where c.isEnabled = true and c.delFlag='N' ")
+    List<String> getEnabledCoverage();
+
+    @Query("select case when count (c.isEnabled)>0 then true else false end from AccountCoverage c where c.isEnabled = true and c.delFlag='N'")
+    boolean enabledCoverageExist();
 
 
     AccountCoverage getAccountCoverageByCode(String code);

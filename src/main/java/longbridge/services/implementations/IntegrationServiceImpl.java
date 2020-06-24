@@ -1,30 +1,35 @@
 package longbridge.services.implementations;
 
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import longbridge.api.*;
-import longbridge.dtos.FixedDepositDTO;
-import longbridge.dtos.LoanDTO;
-import longbridge.dtos.SettingDTO;
+import longbridge.dtos.*;
 import longbridge.exception.InternetBankingException;
 import longbridge.exception.InternetBankingTransferException;
 import longbridge.exception.TransferErrorService;
 import longbridge.models.*;
+import longbridge.repositories.AccountCoverageRepo;
 import longbridge.repositories.AccountRepo;
 import longbridge.repositories.AntiFraudRepo;
 import longbridge.repositories.CorporateRepo;
 import longbridge.security.userdetails.CustomUserPrincipal;
+import longbridge.services.AccountCoverageService;
 import longbridge.services.ConfigurationService;
 import longbridge.services.IntegrationService;
 import longbridge.services.MailService;
 import longbridge.utils.*;
 import longbridge.utils.statement.AccountStatement;
 import longbridge.utils.statement.TransactionHistory;
+import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -84,11 +89,13 @@ public class IntegrationServiceImpl implements IntegrationService {
 	private AccountRepo accountRepo;
 	private CorporateRepo corporateRepo;
 	private AntiFraudRepo antiFraudRepo;
+	private AccountCoverageService coverageService;
+	private AccountCoverageRepo coverageRepo;
 
 	@Autowired
 	public IntegrationServiceImpl(RestTemplate template, MailService mailService, TemplateEngine templateEngine,
 								  ConfigurationService configService, TransferErrorService errorService, MessageSource messageSource,
-								  AccountRepo accountRepo, CorporateRepo corporateRepo, AntiFraudRepo antiFraudRepo) {
+								  AccountRepo accountRepo, CorporateRepo corporateRepo, AntiFraudRepo antiFraudRepo,AccountCoverageService coverageService,AccountCoverageRepo coverageRepo) {
 		this.template = template;
 		this.mailService = mailService;
 		this.templateEngine = templateEngine;
@@ -98,7 +105,10 @@ public class IntegrationServiceImpl implements IntegrationService {
 		this.accountRepo = accountRepo;
 		this.corporateRepo = corporateRepo;
 		this.antiFraudRepo=antiFraudRepo;
-	}
+		this.coverageService =coverageService;
+		this.coverageRepo = coverageRepo;
+
+			}
 
 	@Override
 	public List<AccountInfo> fetchAccounts(String cifid) {
@@ -1404,5 +1414,61 @@ public class IntegrationServiceImpl implements IntegrationService {
 		}
 		return methodResponse;
 	}
+
+    @Override
+	public  List<CoverageDetailsDTO>  getCoverageDetails(String coverageName,String customerNumber){
+		    List<CoverageDetailsDTO> coverageDetailsDTOList = new ArrayList<>();
+			String uri = URI+"/coverage/{coverageName}/{customerNumber}";
+		    Map<String,String> params = new HashMap<>();
+			params.put("coverageName",coverageName);
+			params.put("customerNumber",customerNumber);
+		   ObjectMapper mapper= new ObjectMapper();
+
+
+			try{
+
+				ResponseEntity<Object> response = template.getForEntity(uri, Object.class,params);
+				Object responseBody = response.getBody();
+				if (responseBody instanceof List<?> ){
+					System.out.println(responseBody);
+					JsonNode[] jsonNode = mapper.convertValue(responseBody,JsonNode[].class);
+					for (JsonNode resp:jsonNode) {
+						CoverageDetailsDTO coverageDetailsDTO = new CoverageDetailsDTO();
+						coverageDetailsDTO.setDetails(resp);
+						coverageDetailsDTO.setCustomerNumber(customerNumber);
+						coverageDetailsDTO.setCoverageName(coverageName);
+						coverageDetailsDTOList.add(coverageDetailsDTO);
+				}
+				}
+				else if(responseBody instanceof LinkedHashMap){
+					 System.out.println(responseBody);
+					 JsonNode jsonNode = mapper.convertValue(responseBody,JsonNode.class);
+					 CoverageDetailsDTO coverageDetailsDTO = new CoverageDetailsDTO();
+					 coverageDetailsDTO.setDetails(jsonNode);
+					 coverageDetailsDTO.setCustomerNumber(customerNumber);
+					 coverageDetailsDTO.setCoverageName(coverageName);
+					 coverageDetailsDTOList.add(coverageDetailsDTO);
+				}
+
+			} catch (Exception e){
+				logger.error("Error getting coverage details",e);
+			}
+
+		return coverageDetailsDTOList;
+	}
+
+	@Override
+	public JSONObject getAllCoverageDetails(String customerNumber){
+		JSONObject allcoverage = new JSONObject();
+		if (coverageRepo.enabledCoverageExist()){
+			List<String> coverageList =coverageService.enabledCoverageList();
+			for (String coverage:coverageList ) {
+				allcoverage.put(coverage,getCoverageDetails(coverage,customerNumber));
+
+			}
+		}
+		return allcoverage;
+	}
+
 
 }

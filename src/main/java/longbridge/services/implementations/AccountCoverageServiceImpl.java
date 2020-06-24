@@ -126,7 +126,7 @@ public class AccountCoverageServiceImpl implements AccountCoverageService {
     }
 
     @Override
-    public List<AccountCoverage> enabledCoverageList(){
+    public List<String> enabledCoverageList(){
         return accountCoverageRepo.getEnabledCoverage();
     }
 
