@@ -1415,60 +1415,60 @@ public class IntegrationServiceImpl implements IntegrationService {
 		return methodResponse;
 	}
 
-    @Override
-	public  List<CoverageDetailsDTO>  getCoverageDetails(String coverageName,String customerNumber){
-		    List<CoverageDetailsDTO> coverageDetailsDTOList = new ArrayList<>();
-			String uri = URI+"/coverage/{coverageName}/{customerNumber}";
-		    Map<String,String> params = new HashMap<>();
-			params.put("coverageName",coverageName);
-			params.put("customerNumber",customerNumber);
-		   ObjectMapper mapper= new ObjectMapper();
-
-
-			try{
-
-				ResponseEntity<Object> response = template.getForEntity(uri, Object.class,params);
-				Object responseBody = response.getBody();
-				if (responseBody instanceof List<?> ){
-					System.out.println(responseBody);
-					JsonNode[] jsonNode = mapper.convertValue(responseBody,JsonNode[].class);
-					for (JsonNode resp:jsonNode) {
-						CoverageDetailsDTO coverageDetailsDTO = new CoverageDetailsDTO();
-						coverageDetailsDTO.setDetails(resp);
-						coverageDetailsDTO.setCustomerNumber(customerNumber);
-						coverageDetailsDTO.setCoverageName(coverageName);
-						coverageDetailsDTOList.add(coverageDetailsDTO);
-				}
-				}
-				else if(responseBody instanceof LinkedHashMap){
-					 System.out.println(responseBody);
-					 JsonNode jsonNode = mapper.convertValue(responseBody,JsonNode.class);
-					 CoverageDetailsDTO coverageDetailsDTO = new CoverageDetailsDTO();
-					 coverageDetailsDTO.setDetails(jsonNode);
-					 coverageDetailsDTO.setCustomerNumber(customerNumber);
-					 coverageDetailsDTO.setCoverageName(coverageName);
-					 coverageDetailsDTOList.add(coverageDetailsDTO);
-				}
-
-			} catch (Exception e){
-				logger.error("Error getting coverage details",e);
-			}
-
-		return coverageDetailsDTOList;
-	}
-
-	@Override
-	public JSONObject getAllCoverageDetails(String customerNumber){
-		JSONObject allcoverage = new JSONObject();
-		if (coverageRepo.enabledCoverageExist()){
-			List<String> coverageList =coverageService.enabledCoverageList();
-			for (String coverage:coverageList ) {
-				allcoverage.put(coverage,getCoverageDetails(coverage,customerNumber));
-
-			}
-		}
-		return allcoverage;
-	}
+//    @Override
+//	public  List<CoverageDetailsDTO>  getCoverageDetails(String coverageName,String customerNumber){
+//		    List<CoverageDetailsDTO> coverageDetailsDTOList = new ArrayList<>();
+//			String uri = URI+"/coverage/{coverageName}/{customerNumber}";
+//		    Map<String,String> params = new HashMap<>();
+//			params.put("coverageName",coverageName);
+//			params.put("customerNumber",customerNumber);
+//		   ObjectMapper mapper= new ObjectMapper();
+//
+//
+//			try{
+//
+//				ResponseEntity<Object> response = template.getForEntity(uri, Object.class,params);
+//				Object responseBody = response.getBody();
+//				if (responseBody instanceof List<?> ){
+//					System.out.println(responseBody);
+//					JsonNode[] jsonNode = mapper.convertValue(responseBody,JsonNode[].class);
+//					for (JsonNode resp:jsonNode) {
+//						CoverageDetailsDTO coverageDetailsDTO = new CoverageDetailsDTO();
+//						coverageDetailsDTO.setDetails(resp);
+//						coverageDetailsDTO.setCustomerNumber(customerNumber);
+//						coverageDetailsDTO.setCoverageName(coverageName);
+//						coverageDetailsDTOList.add(coverageDetailsDTO);
+//				}
+//				}
+//				else if(responseBody instanceof LinkedHashMap){
+//					 System.out.println(responseBody);
+//					 JsonNode jsonNode = mapper.convertValue(responseBody,JsonNode.class);
+//					 CoverageDetailsDTO coverageDetailsDTO = new CoverageDetailsDTO();
+//					 coverageDetailsDTO.setDetails(jsonNode);
+//					 coverageDetailsDTO.setCustomerNumber(customerNumber);
+//					 coverageDetailsDTO.setCoverageName(coverageName);
+//					 coverageDetailsDTOList.add(coverageDetailsDTO);
+//				}
+//
+//			} catch (Exception e){
+//				logger.error("Error getting coverage details",e);
+//			}
+//
+//		return coverageDetailsDTOList;
+//	}
+//
+//	@Override
+//	public JSONObject getAllCoverageDetails(String customerNumber){
+//		JSONObject allcoverage = new JSONObject();
+//		if (coverageRepo.enabledCoverageExist()){
+//			List<String> coverageList =coverageService.enabledCoverageList();
+//			for (String coverage:coverageList ) {
+//				allcoverage.put(coverage,getCoverageDetails(coverage,customerNumber));
+//
+//			}
+//		}
+//		return allcoverage;
+//	}
 
 
 }

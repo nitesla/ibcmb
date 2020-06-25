@@ -42,7 +42,7 @@ public class Code extends AbstractEntity implements PrettySerializer{
     private String description;
     private String extraInfo;
 
-	@OneToOne(mappedBy = "codeEntity",cascade = CascadeType.ALL)
+	@OneToOne(mappedBy = "code")
 	private AccountCoverage accountCoverage;
 
     public String getCode() {

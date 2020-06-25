@@ -5,14 +5,18 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import longbridge.dtos.AccountCoverageDTO;
 import longbridge.dtos.CodeDTO;
+import longbridge.dtos.CorporateDTO;
 import longbridge.exception.InternetBankingException;
 import longbridge.exception.VerificationInterruptedException;
 import longbridge.models.AccountCoverage;
 import longbridge.models.Code;
+import longbridge.models.Corporate;
 import longbridge.repositories.AccountCoverageRepo;
 import longbridge.repositories.CodeRepo;
+import longbridge.repositories.CorporateRepo;
 import longbridge.services.AccountCoverageService;
 import longbridge.services.CodeService;
+import longbridge.services.CorporateService;
 import longbridge.utils.Verifiable;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
@@ -36,6 +40,9 @@ public class AccountCoverageServiceImpl implements AccountCoverageService {
     private AccountCoverageRepo accountCoverageRepo;
     @Autowired
     private CodeRepo codeRepo;
+
+    @Autowired
+    private CorporateService corporateService;
 
     @Autowired
     private AccountCoverageService coverageService;
@@ -62,17 +69,21 @@ public class AccountCoverageServiceImpl implements AccountCoverageService {
 
 
     @Override
-    public String addCoverage(CodeDTO codeDTO) throws InternetBankingException {
-        String codeName = codeDTO.getCode();
+    public String addCoverage(Long corpId,Long codeId) throws InternetBankingException {
+        CorporateDTO corporate = corporateService.getCorporate(corpId);
+        Code code =  codeService.getCodeById(codeId);
+
          try {
 
-             Boolean value = accountCoverageRepo.codeExist(codeName);
+             Boolean value = accountCoverageRepo.coverageExist(corpId,codeId);
                 if (!value){
                     AccountCoverage coverage =  new AccountCoverage();
-                    coverage.setCode(codeName);
                     coverage.setEnabled(false);
-                    coverage.setCodeEntity(convertDTOToEntity(codeDTO));
+                    coverage.setCode(code);
+                    coverage.setCorporate(modelMapper.map(corporate,Corporate.class));
+                    System.out.println(coverage);
                     accountCoverageRepo.save(coverage);
+                    System.out.println("Save");
                     logger.info("New Coverage {} added", coverage.getCode());
                     return messageSource.getMessage("Coverage.add.success", null, locale);
                 }
@@ -88,98 +99,111 @@ public class AccountCoverageServiceImpl implements AccountCoverageService {
 
     }
 
-
-
     @Override
-    public String  enableCoverage( String coverageJson) throws InternetBankingException, IOException {
-            AccountCoverage accountCoverage = parseJson(coverageJson);
-            String code = accountCoverage.getCode();
-        try {
-            accountCoverageRepo. enableCoverage(code,accountCoverage.isEnabled());
-            logger.info("Coverage {}  enable",code);
-            return messageSource.getMessage("Coverage. enable.success", null, locale);
-        } catch (VerificationInterruptedException e) {
-            return e.getMessage();
-        } catch (Exception e) {
-            throw new InternetBankingException(messageSource.getMessage("Coverage. enable.failure", null, locale), e);
+    public List<CodeDTO> getCoverage() {
+        Iterable<Code> codes = this.codeRepo.findByType(accountCoverage);
+        List<CodeDTO> coverageList = new ArrayList<>();
+        for (Code code : codes) {
+            CodeDTO codeDTO =  modelMapper.map(code, CodeDTO.class);
+            coverageList.add(codeDTO);
         }
-    }
-
-    @Override
-    @Transactional
-    @Verifiable(operation = "DELETE_COVERAGE", description = "Deleting a Coverage")
-    public String deleteCoverage(Long coverageId) throws InternetBankingException {
-        AccountCoverage coverage = accountCoverageRepo.findById(coverageId).get();
-
-        try {
-             accountCoverageRepo.delete(coverage);
-
-           logger.info("Coverage {} has been deleted", coverage.toString());
-            return messageSource.getMessage("accountCoverage.delete.success", null, locale);
-        } catch (VerificationInterruptedException e) {
-            return e.getMessage();
-        } catch (InternetBankingException e) {
-            throw e;
-        } catch (Exception e) {
-            throw new InternetBankingException(messageSource.getMessage("accountCoverage.delete.failure", null, locale), e);
-        }
-    }
-
-    @Override
-    public List<String> enabledCoverageList(){
-        return accountCoverageRepo.getEnabledCoverage();
-    }
-
-    @Override
-    public Iterable<AccountCoverageDTO> getAllCoverage() {
-            Iterable<AccountCoverage> coverages = accountCoverageRepo.findAll();
-            return convertEntitiesToDTOs(coverages);
-        }
-    @Override
-    public Long getCoverageId(String coverageCode){
-        return accountCoverageRepo.getAccountCoverageByCode(coverageCode).getId();
-
-
-    }
-    @Override
-    public Long getCodeId(String coverageCode)
-    {
-        
-        return accountCoverageRepo.getAccountCoverageByCode(coverageCode).getCodeEntity().getId();
+        return coverageList;
 
     }
 
-    public AccountCoverage convertDTOToEntity(AccountCoverageDTO accountCoverageDTO) {
-        return modelMapper.map(accountCoverageDTO, AccountCoverage.class);
-    }
-    public Code convertDTOToEntity(CodeDTO codeDTO) {
-        return modelMapper.map(codeDTO, Code.class);
-    }
+    //
+//    @Override
+//    public String  enableCoverage( String coverageJson) throws InternetBankingException, IOException {
+//            AccountCoverage accountCoverage = parseJson(coverageJson);
+//            String code = accountCoverage.getCode();
+//        try {
+//            accountCoverageRepo. enableCoverage(code,accountCoverage.isEnabled());
+//            logger.info("Coverage {}  enable",code);
+//            return messageSource.getMessage("Coverage. enable.success", null, locale);
+//        } catch (VerificationInterruptedException e) {
+//            return e.getMessage();
+//        } catch (Exception e) {
+//            throw new InternetBankingException(messageSource.getMessage("Coverage. enable.failure", null, locale), e);
+//        }
+//    }
+//
+//    @Override
+//    @Transactional
+//    @Verifiable(operation = "DELETE_COVERAGE", description = "Deleting a Coverage")
+//    public String deleteCoverage(Long coverageId) throws InternetBankingException {
+//        AccountCoverage coverage = accountCoverageRepo.findById(coverageId).get();
+//
+//        try {
+//             accountCoverageRepo.delete(coverage);
+//
+//           logger.info("Coverage {} has been deleted", coverage.toString());
+//            return messageSource.getMessage("accountCoverage.delete.success", null, locale);
+//        } catch (VerificationInterruptedException e) {
+//            return e.getMessage();
+//        } catch (InternetBankingException e) {
+//            throw e;
+//        } catch (Exception e) {
+//            throw new InternetBankingException(messageSource.getMessage("accountCoverage.delete.failure", null, locale), e);
+//        }
+//    }
+//
+//    @Override
+//    public List<String> enabledCoverageList(){
+//        return accountCoverageRepo.getEnabledCoverage();
+//    }
+//
+//    @Override
+//    public Iterable<AccountCoverageDTO> getAllCoverage() {
+//            Iterable<AccountCoverage> coverages = accountCoverageRepo.findAll();
+//            return convertEntitiesToDTOs(coverages);
+//        }
+//    @Override
+//    public Long getCoverageId(String coverageCode){
+//        return accountCoverageRepo.getAccountCoverageByCode(coverageCode).getId();
+//
+//
+//    }
+//    @Override
+//    public Long getCodeId(String coverageCode)
+//    {
+//
+//        return accountCoverageRepo.getAccountCoverageByCode(coverageCode).getCodeEntity().getId();
+//
+//    }
+//
+//    public AccountCoverage convertDTOToEntity(AccountCoverageDTO accountCoverageDTO) {
+//        return modelMapper.map(accountCoverageDTO, AccountCoverage.class);
+//    }
+//    public Code convertDTOToEntity(CodeDTO codeDTO) {
+//        return modelMapper.map(codeDTO, Code.class);
+//    }
+//
+//
+//    public AccountCoverageDTO convertEntityToDTO(AccountCoverage coverage) {
+//        return modelMapper.map(coverage, AccountCoverageDTO.class);
+//    }
+//
+//
+//    public List<AccountCoverageDTO> convertEntitiesToDTOs(Iterable<AccountCoverage> coverages) {
+//        List<AccountCoverageDTO> coverageDTOList = new ArrayList<>();
+//        for (AccountCoverage coverage : coverages) {
+//            AccountCoverageDTO accountCoverageDTO = convertEntityToDTO(coverage);
+//            coverageDTOList.add(accountCoverageDTO);
+//        }
+//        return coverageDTOList;
+//    }
+//
+//    private AccountCoverage parseJson(String coverageJson ) throws JsonParseException, IOException {
+//        ObjectMapper mapper = new ObjectMapper();
+//        JsonNode coverageObj = mapper.readTree(coverageJson);
+//        AccountCoverage accountCoverage = new AccountCoverage();
+//        accountCoverage.setCode(coverageObj.get("code").toString().replaceAll("[\"']",""));
+//        accountCoverage.setEnabled(coverageObj.get("isEnabled").asBoolean());
+//        return accountCoverage;
+//
+//    }
 
 
-    public AccountCoverageDTO convertEntityToDTO(AccountCoverage coverage) {
-        return modelMapper.map(coverage, AccountCoverageDTO.class);
-    }
-
-
-    public List<AccountCoverageDTO> convertEntitiesToDTOs(Iterable<AccountCoverage> coverages) {
-        List<AccountCoverageDTO> coverageDTOList = new ArrayList<>();
-        for (AccountCoverage coverage : coverages) {
-            AccountCoverageDTO accountCoverageDTO = convertEntityToDTO(coverage);
-            coverageDTOList.add(accountCoverageDTO);
-        }
-        return coverageDTOList;
-    }
-
-    private AccountCoverage parseJson(String coverageJson ) throws JsonParseException, IOException {
-        ObjectMapper mapper = new ObjectMapper();
-        JsonNode coverageObj = mapper.readTree(coverageJson);
-        AccountCoverage accountCoverage = new AccountCoverage();
-        accountCoverage.setCode(coverageObj.get("code").toString().replaceAll("[\"']",""));
-        accountCoverage.setEnabled(coverageObj.get("isEnabled").asBoolean());
-        return accountCoverage;
-
-    }
 
 
 }

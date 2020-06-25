@@ -1,12 +1,11 @@
 package longbridge.models;
 
 
-import longbridge.utils.CoverageMapConverter;
+
 import org.hibernate.annotations.Where;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
-import java.util.Map;
 import java.util.Objects;
 
 @Entity
@@ -16,30 +15,19 @@ import java.util.Objects;
 public class AccountCoverage extends AbstractEntity  {
 
 
-    private String code;
+
     private boolean isEnabled;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "code_id",referencedColumnName = "id")
-    private Code codeEntity;
+    @ManyToOne
+    private Corporate corporate;
 
-    //    private String type;
-//    private String description;
-//
-//
-//    @Convert(converter = CoverageMapConverter.class)
-//    private Map<String,Object> coverageDetails;
+    @OneToOne()
+    @JoinColumn(name = "code_id",referencedColumnName = "id")
+    private Code code;
+
 
 
     public AccountCoverage() {
-    }
-
-    public String getCode() {
-        return code;
-    }
-
-    public void setCode(String code) {
-        this.code = code;
     }
 
     public boolean isEnabled() {
@@ -50,12 +38,20 @@ public class AccountCoverage extends AbstractEntity  {
         isEnabled = enabled;
     }
 
-    public Code getCodeEntity() {
-        return codeEntity;
+    public Corporate getCorporate() {
+        return corporate;
     }
 
-    public void setCodeEntity(Code codeEntity) {
-        this.codeEntity = codeEntity;
+    public void setCorporate(Corporate corporate) {
+        this.corporate = corporate;
+    }
+
+    public Code getCode() {
+        return code;
+    }
+
+    public void setCode(Code code) {
+        this.code = code;
     }
 
     @Override
@@ -65,21 +61,21 @@ public class AccountCoverage extends AbstractEntity  {
         if (!super.equals(o)) return false;
         AccountCoverage that = (AccountCoverage) o;
         return isEnabled == that.isEnabled &&
-                Objects.equals(code, that.code) &&
-                Objects.equals(codeEntity, that.codeEntity);
+                Objects.equals(corporate, that.corporate) &&
+                Objects.equals(code, that.code);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), code, isEnabled, codeEntity);
+        return Objects.hash(super.hashCode(), isEnabled, corporate, code);
     }
 
     @Override
     public String toString() {
         return "AccountCoverage{" +
-                "code='" + code + '\'' +
-                ", isEnabled=" + isEnabled +
-                ", codeEntity=" + codeEntity +
+                "isEnabled=" + isEnabled +
+                ", corporate=" + corporate +
+                ", code=" + code +
                 '}';
     }
 }

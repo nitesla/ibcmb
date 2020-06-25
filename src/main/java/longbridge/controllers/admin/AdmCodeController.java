@@ -68,15 +68,10 @@ public class AdmCodeController {
 
 
         try {
-			if(codeDTO.getType().equals("ACCOUNT_COVERAGE"))
-			{
-			String message  =coverageService.addCoverage(codeDTO);
-			redirectAttributes.addFlashAttribute("message", message);
-			}
-			else{
+
 			String message = codeService.addCode(codeDTO);
 			redirectAttributes.addFlashAttribute("message", message);
-			}
+
 
 			return "redirect:/admin/codes/alltypes";
 		}
@@ -207,9 +202,9 @@ public class AdmCodeController {
 
 			if(codeType.equals(accountCoverage))
 			{
-				String message = coverageService.deleteCoverage(coverageId);
+//				String message = coverageService.deleteCoverage(coverageId);
 			    codeService.deleteCode(codeId);
-				redirectAttributes.addFlashAttribute("message", message);
+				redirectAttributes.addFlashAttribute("message", "message");
 			}else {
 				String message = codeService.deleteCode(codeId);
 				redirectAttributes.addFlashAttribute("message", message);

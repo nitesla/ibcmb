@@ -17,8 +17,8 @@ public interface AccountCoverageRepo extends CommonRepo<AccountCoverage, Long> {
     @Query("update AccountCoverage a set a.isEnabled = :isEnabled where a.code = :code")
     void  enableCoverage(@Param("code") String code,@Param("isEnabled") boolean isEnabled);
 
-    @Query("select case when count (c.code)>0 then true else false end from AccountCoverage c where lower(c.code) like lower(:code) and c.delFlag='N'")
-    boolean codeExist(@Param("code") String code);
+    @Query("select case when count (c)>0 then true else false end from AccountCoverage c where c.code.id=:codeId and c.corporate.id=:corpId")
+    boolean coverageExist(@Param("corpId") Long corpId,@Param("codeId") Long codeId);
 
     @Query("select distinct c.code from AccountCoverage c where c.isEnabled = true and c.delFlag='N' ")
     List<String> getEnabledCoverage();

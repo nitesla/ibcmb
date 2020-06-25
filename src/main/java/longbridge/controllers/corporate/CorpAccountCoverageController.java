@@ -31,23 +31,23 @@ public class CorpAccountCoverageController {
     @Autowired
     MessageSource messageSource;
 
-
-    @GetMapping
-    public String listcoverage(Model model) {
-        List<String> coverageList =coverageService.enabledCoverageList();
-        if(!(integrationService.getAllCoverageDetails("12345").isEmpty())){
-        model.addAttribute("coverageList",coverageList);}
-
-        System.out.println(integrationService.getAllCoverageDetails("12345"));
-        return "corp/coverage/index";
-    }
-
-    @GetMapping(path = "/all")
-    @ResponseBody
-    public JSONObject getAllCoverage(){
-
-       return integrationService.getAllCoverageDetails("12345");
-    }
+//
+//    @GetMapping
+//    public String listcoverage(Model model) {
+//        List<String> coverageList =coverageService.enabledCoverageList();
+//        if(!(integrationService.getAllCoverageDetails("12345").isEmpty())){
+//        model.addAttribute("coverageList",coverageList);}
+//
+//        System.out.println(integrationService.getAllCoverageDetails("12345"));
+//        return "corp/coverage/index";
+//    }
+//
+//    @GetMapping(path = "/all")
+//    @ResponseBody
+//    public JSONObject getAllCoverage(){
+//
+//       return integrationService.getAllCoverageDetails("12345");
+//    }
 
 
 

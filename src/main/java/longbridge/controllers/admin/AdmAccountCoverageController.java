@@ -60,89 +60,89 @@ public class AdmAccountCoverageController {
         return "adm/accountcoverage/view";
     }
 
-    @GetMapping(path = "/all")
-    @ResponseBody
-    public DataTablesOutput<AccountCoverageDTO> getAllCoverage(DataTablesInput input){
-        Pageable pageable = DataTablesUtils.getPageable(input);
-        Iterable<CodeDTO> codes  = codeService.getCodesByType(coverageCode);
-        Iterable<AccountCoverageDTO> coverages = coverageService.getAllCoverage();
-        StreamSupport.stream(codes.spliterator(),false).forEach(h->{for (AccountCoverageDTO c:coverages) {
-
-            if (h.getCode().equals(c.getCode())){
-                c.setDescription(h.getDescription());
-            }
-           }});
-        List<AccountCoverageDTO> list = IteratorUtils.toList(coverages.iterator());
-        Page<AccountCoverageDTO> coverageDTOPage = new PageImpl<AccountCoverageDTO>(list,pageable,list.size());
-        DataTablesOutput<AccountCoverageDTO> out = new DataTablesOutput<AccountCoverageDTO>();
-        out.setDraw(input.getDraw());
-        out.setData(coverageDTOPage.getContent());
-        out.setRecordsFiltered(coverageDTOPage.getTotalElements());
-        out.setRecordsTotal(coverageDTOPage.getTotalElements());
-        return out;
-    }
-
-    @PostMapping("/update")
-    @ResponseBody
-    public ResponseEntity<HttpStatus> enableCoverage(@RequestBody String coverageJson) throws IOException {
-       coverageService. enableCoverage(coverageJson);
-       return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-
-    }
-    @GetMapping("/new")
-    public String addCoverage(){
-
-        return "adm/accountcoverage/add";
-    }
-
-    @PostMapping("/new")
-    public String createCoverage(@ModelAttribute("accountCoverageDTO") @Valid AccountCoverageDTO accountCoverageDTO, BindingResult result, Principal principal, RedirectAttributes redirectAttributes, Locale locale){
-        if(result.hasErrors()){
-            result.addError(new ObjectError("invalid",messageSource.getMessage("form.fields.required",null,locale)));
-            return "adm/accountcoverage/add";
-        }
-
-
-        try {
-
-            CodeDTO codeDTO = new CodeDTO();
-            codeDTO.setType(coverageCode);
-            codeDTO.setCode(accountCoverageDTO.getCode());
-            codeDTO.setDescription(accountCoverageDTO.getDescription());
-            String message = coverageService.addCoverage(codeDTO);
-            redirectAttributes.addFlashAttribute("message", message);
-            return "redirect:/admin/accountcoverage";
-        }
-        catch (InternetBankingException ibe){
-            result.addError(new ObjectError("error",ibe.getMessage()));
-            logger.error("Error creating code",ibe);
-            return "adm/accountcoverage/add";
-        }
-    }
-    @GetMapping("/edit")
-    public String editCoverage(){
-        return "adm/accountcoverage/edit";
-    }
-
-    @GetMapping("/{code}/delete")
-    public String deleteCoverage(@PathVariable String code, RedirectAttributes redirectAttributes){
-        Long coverageId = coverageService.getCoverageId(code);
-        Long codeId = coverageService.getCodeId(code);
-
-        try {
-            String message = coverageService.deleteCoverage(coverageId);
-            codeService.deleteCode(codeId);
-            redirectAttributes.addFlashAttribute("message", message);
-        }
-        catch (InternetBankingException ibe){
-            logger.error("Error deleting Coverage",ibe);
-            redirectAttributes.addFlashAttribute("failure", ibe.getMessage());
-
-        }
-
-        return "redirect:/admin/accountcoverage";
-
-    }
-
+//    @GetMapping(path = "/all")
+//    @ResponseBody
+//    public DataTablesOutput<AccountCoverageDTO> getAllCoverage(DataTablesInput input){
+//        Pageable pageable = DataTablesUtils.getPageable(input);
+//        Iterable<CodeDTO> codes  = codeService.getCodesByType(coverageCode);
+//        Iterable<AccountCoverageDTO> coverages = coverageService.getAllCoverage();
+//        StreamSupport.stream(codes.spliterator(),false).forEach(h->{for (AccountCoverageDTO c:coverages) {
+//
+//            if (h.getCode().equals(c.getCode())){
+//                c.setDescription(h.getDescription());
+//            }
+//           }});
+//        List<AccountCoverageDTO> list = IteratorUtils.toList(coverages.iterator());
+//        Page<AccountCoverageDTO> coverageDTOPage = new PageImpl<AccountCoverageDTO>(list,pageable,list.size());
+//        DataTablesOutput<AccountCoverageDTO> out = new DataTablesOutput<AccountCoverageDTO>();
+//        out.setDraw(input.getDraw());
+//        out.setData(coverageDTOPage.getContent());
+//        out.setRecordsFiltered(coverageDTOPage.getTotalElements());
+//        out.setRecordsTotal(coverageDTOPage.getTotalElements());
+//        return out;
+//    }
+//
+//    @PostMapping("/update")
+//    @ResponseBody
+//    public ResponseEntity<HttpStatus> enableCoverage(@RequestBody String coverageJson) throws IOException {
+//       coverageService. enableCoverage(coverageJson);
+//       return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+//
+//    }
+//    @GetMapping("/new")
+//    public String addCoverage(){
+//
+//        return "adm/accountcoverage/add";
+//    }
+//
+//    @PostMapping("/new")
+//    public String createCoverage(@ModelAttribute("accountCoverageDTO") @Valid AccountCoverageDTO accountCoverageDTO, BindingResult result, Principal principal, RedirectAttributes redirectAttributes, Locale locale){
+//        if(result.hasErrors()){
+//            result.addError(new ObjectError("invalid",messageSource.getMessage("form.fields.required",null,locale)));
+//            return "adm/accountcoverage/add";
+//        }
+//
+//
+//        try {
+//
+//            CodeDTO codeDTO = new CodeDTO();
+//            codeDTO.setType(coverageCode);
+//            codeDTO.setCode(accountCoverageDTO.getCode());
+//            codeDTO.setDescription(accountCoverageDTO.getDescription());
+//            String message = coverageService.addCoverage(codeDTO);
+//            redirectAttributes.addFlashAttribute("message", message);
+//            return "redirect:/admin/accountcoverage";
+//        }
+//        catch (InternetBankingException ibe){
+//            result.addError(new ObjectError("error",ibe.getMessage()));
+//            logger.error("Error creating code",ibe);
+//            return "adm/accountcoverage/add";
+//        }
+//    }
+//    @GetMapping("/edit")
+//    public String editCoverage(){
+//        return "adm/accountcoverage/edit";
+//    }
+//
+//    @GetMapping("/{code}/delete")
+//    public String deleteCoverage(@PathVariable String code, RedirectAttributes redirectAttributes){
+////        Long coverageId = coverageService.getCoverageId(code);
+////        Long codeId = coverageService.getCodeId(code);
+//
+//        try {
+////            String message = coverageService.deleteCoverage(coverageId);
+////            codeService.deleteCode(codeId);
+//            redirectAttributes.addFlashAttribute("message", "message");
+//        }
+//        catch (InternetBankingException ibe){
+//            logger.error("Error deleting Coverage",ibe);
+//            redirectAttributes.addFlashAttribute("failure", ibe.getMessage());
+//
+//        }
+//
+//        return "redirect:/admin/accountcoverage";
+//
+//    }
+//
 
 }
