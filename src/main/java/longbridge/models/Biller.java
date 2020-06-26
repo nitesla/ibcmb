@@ -11,15 +11,13 @@ import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
 import java.io.IOException;
-import java.util.List;
-
 
 
 @Entity
 @Audited(withModifiedFlag=true)
 @Where(clause ="del_Flag='N'" )
-@Table(name = "BILLERS")
-public class Billers extends AbstractEntity implements PrettySerializer{
+@Table(name = "BILLER")
+public class Biller extends AbstractEntity{
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -44,12 +42,20 @@ public class Billers extends AbstractEntity implements PrettySerializer{
     private String logoUrl;
     @Column(name = "enabled")
     private boolean enabled;
-    @Column(name="deletevalue")
-    private String deleteValue;
+
 
 //    @OneToMany( mappedBy = "billers", cascade = CascadeType.ALL, orphanRemoval=true )
 //    private List<PaymentItem> paymentItems;
 
+
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
 
     public Long getCategoryId() {
         return categoryId;
@@ -139,18 +145,12 @@ public class Billers extends AbstractEntity implements PrettySerializer{
 //        this.paymentItems = paymentItems;
 //    }
 
-    public String getDeleteValue() {
-        return deleteValue;
-    }
-
-    public void setDeleteValue(String deleteValue) {
-        this.deleteValue = deleteValue;
-    }
 
     @Override
     public String toString() {
-        return "Billers{" +
-                "categoryId=" + categoryId +
+        return "Biller{" +
+                "id=" + id +
+                ", categoryId=" + categoryId +
                 ", categoryName='" + categoryName + '\'' +
                 ", categoryDescription='" + categoryDescription + '\'' +
                 ", billerId=" + billerId +
@@ -160,48 +160,6 @@ public class Billers extends AbstractEntity implements PrettySerializer{
                 ", currencySymbol='" + currencySymbol + '\'' +
                 ", logoUrl='" + logoUrl + '\'' +
                 ", enabled=" + enabled +
-//                ", paymentItems=" + paymentItems +
                 '}';
     }
-
-
-    @Override @JsonIgnore
-    public JsonSerializer<Billers> getSerializer() {
-        return new JsonSerializer<Billers>() {
-            @Override
-            public void serialize(Billers value, JsonGenerator gen, SerializerProvider serializers)
-                    throws IOException, JsonProcessingException
-            {
-//				gen.writeStartObject();
-//				gen.writeStringField("Name",value.name);
-//				gen.writeStringField("Category",value.category);
-//				gen.writeStringField("Owner Reference Name",value.ownerReferenceName);
-//				gen.writeBooleanField("Enabled",value.enabled);
-//				gen.writeEndObject();
-            }
-        };
-    }
-
-    @Override @JsonIgnore
-    public JsonSerializer<Billers> getAuditSerializer() {
-        return new JsonSerializer<Billers>() {
-            @Override
-            public void serialize(Billers value, JsonGenerator gen, SerializerProvider serializers)
-                    throws IOException, JsonProcessingException
-            {
-//				gen.writeStartObject();
-//				if(value.id != null) {
-//					gen.writeStringField("id", value.id.toString());
-//				}else {
-//					gen.writeStringField("id", "");
-//				}
-//				gen.writeStringField("name",value.name);
-//				gen.writeStringField("category",value.category);
-//				gen.writeStringField("ownerReferenceName",value.ownerReferenceName);
-//				gen.writeBooleanField("enabled",value.enabled);
-//				gen.writeEndObject();
-            }
-        };
-    }
-
 }

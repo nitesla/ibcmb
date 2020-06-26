@@ -5,7 +5,7 @@ import longbridge.dtos.BillerDTO;
 
 import java.util.List;
 
-public class Biller {
+public class BillerResponse {
 
     private List<BillerDTO> billers = null;
 

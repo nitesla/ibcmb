@@ -1,14 +1,12 @@
 package longbridge.services;
 
 import longbridge.dtos.BillerDTO;
-import longbridge.models.Billers;
+import longbridge.dtos.PaymentItemDTO;
+import longbridge.models.Biller;
 
 import longbridge.dtos.CategoryDTO;
 import longbridge.exception.InternetBankingException;
-import longbridge.models.Billers;
-import longbridge.models.Merchant;
 import longbridge.models.PaymentItem;
-import longbridge.models.Product;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -16,39 +14,43 @@ import java.util.List;
 
 
 public interface BillerService {
-    public String updateBillersTable();
+     void updateBillers();
 
-	public String disableBillerService(BillerDTO billerDTO);
-	public String enableBillerService(BillerDTO billerDTO);
-//    public List<Billers> getAllBillerList();
-//    public Page<BillerDTO> getBillers(Pageable pageable);
-//    List<BillerDTO> convertEntitiesToDTOs(Iterable<Billers> verifications);
-//    public BillerDTO convertEntityToDTO(Billers verification);
+	 void disableBiller(Long id);
+	 void enableBiller(Long id);
 
+	Page<Biller> findEntities(String pattern, Pageable pageDetails);
 
-	String addBiller(Billers biller) throws InternetBankingException;
+	Page<Biller> getEntities(Pageable pageDetails);
 
-	String deleteBiller(Long id) throws InternetBankingException;
+	void authorizePaymentItems(Long id, Boolean value);
 
-	Billers getBiller(Long id);
+     List<PaymentItem> getPaymentItemForBiller(Long billerid, Long id);
 
-	List<Billers> getBillersByCategory(String category);
+//	Biller addBiller(BillerDTO billerDto) throws InternetBankingException;
 
-	String updateBiller(Billers biller) throws InternetBankingException;
-
-	Page<Billers> getBillersByCategory(String category, Pageable pageDetails);
-
-	Page<CategoryDTO> getBillerCategories(Pageable pageDetails);
-
-	Iterable<String> getBillerCategories();
-
-	Page<Billers> getBillers(Pageable pageDetails);
-
-	Iterable<Billers> getBillers();
-
-	PaymentItem getPaymentItem(Long id);
-
-	void updateBillerStatus(Billers biller);
+//	String deleteBiller(Long id) throws InternetBankingException;
+//
+	Biller getBiller(Long id);
+//
+//	Page<Biller> getBillers(Pageable pageDetails);
+//
+//	Page<Biller> getBillers(String search, Pageable pageDetails);
+//
+//	Page<Biller> getBillersByCategory(String category, Pageable pageDetails);
+//
+//	Page<Biller> getBillersByCategory(String search, String category, Pageable pageDetails);
+//
+//
+//	Biller updateBiller(BillerDTO biller) throws InternetBankingException;
+//
+//	Page<CategoryDTO> getBillerCategories(Pageable pageDetails);
+//
+//	Page<CategoryDTO> getBillerCategories(String search, Pageable pageDetails);
+//
+//	PaymentItem getPaymentItem(Long id);
+//
+//	void updateBillerStatus(Biller biller);
 
 
 }

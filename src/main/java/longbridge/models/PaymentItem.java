@@ -1,12 +1,10 @@
 package longbridge.models;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.Where;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Entity
@@ -18,7 +16,7 @@ public class PaymentItem extends AbstractEntity {
 	@Column(name = "PAYMENT_ITEM_ID")
 	private Long paymentItemId;
 	@Column(name = "PAYMENT_ITEM_NAME")
-	private Long paymentItemName;
+	private String paymentItemName;
 	@Column(name = "AMOUNT")
 	private Double amount;
 	@Column(name = "CODE")
@@ -30,12 +28,14 @@ public class PaymentItem extends AbstractEntity {
 	@Column(name = "PAYMENT_CODE")
 	private Long paymentCode;
 	@Column(name = "IS_AMOUNT_FIXED")
-	private Integer isAmountFixed;
+	private Boolean isAmountFixed;
 	@Column(name = "READONLY")
 	private Integer readonly;
+	@Column(name = "enabled")
+	private boolean enabled;
 	
 //	@ManyToOne @JsonIgnore
-//	private Billers biller;
+	private Long billerId;
 
 	public Long getPaymentItemId() {
 		return paymentItemId;
@@ -45,11 +45,11 @@ public class PaymentItem extends AbstractEntity {
 		this.paymentItemId = paymentItemId;
 	}
 
-	public Long getPaymentItemName() {
+	public String getPaymentItemName() {
 		return paymentItemName;
 	}
 
-	public void setPaymentItemName(Long paymentItemName) {
+	public void setPaymentItemName(String paymentItemName) {
 		this.paymentItemName = paymentItemName;
 	}
 
@@ -93,11 +93,11 @@ public class PaymentItem extends AbstractEntity {
 		this.paymentCode = paymentCode;
 	}
 
-	public Integer getIsAmountFixed() {
+	public Boolean getIsAmountFixed() {
 		return isAmountFixed;
 	}
 
-	public void setIsAmountFixed(Integer isAmountFixed) {
+	public void setIsAmountFixed(Boolean isAmountFixed) {
 		this.isAmountFixed = isAmountFixed;
 	}
 
@@ -109,13 +109,22 @@ public class PaymentItem extends AbstractEntity {
 		this.readonly = readonly;
 	}
 
-//	public Billers getBiller() {
-//		return biller;
-//	}
-//
-//	public void setBiller(Billers biller) {
-//		this.biller = biller;
-//	}
+
+	public Long getBillerId() {
+		return billerId;
+	}
+
+	public void setBillerId(Long billerId) {
+		this.billerId = billerId;
+	}
+
+	public boolean isEnabled() {
+		return enabled;
+	}
+
+	public void setEnabled(boolean enabled) {
+		this.enabled = enabled;
+	}
 
 	@Override
 	public String toString() {
@@ -129,9 +138,7 @@ public class PaymentItem extends AbstractEntity {
 				", paymentCode=" + paymentCode +
 				", isAmountFixed=" + isAmountFixed +
 				", readonly=" + readonly +
-//				", billers=" + biller +
+				", billerId=" + billerId +
 				'}';
 	}
-
-
 }

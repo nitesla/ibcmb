@@ -5,6 +5,7 @@ import longbridge.api.*;
 import longbridge.dtos.BillerDTO;
 import longbridge.dtos.FixedDepositDTO;
 import longbridge.dtos.LoanDTO;
+import longbridge.dtos.PaymentItemDTO;
 import longbridge.exception.InternetBankingTransferException;
 import longbridge.models.*;
 import longbridge.utils.Response;
@@ -163,6 +164,8 @@ public interface IntegrationService {
     String updateTransferLimit(TransferSetLimit tsl);
     String updateCharge(TransferFeeAdjustment tfaDTO);
 
-    public List<BillerDTO> getBillers();
+    List<BillerDTO> getBillers();
+
+   List<PaymentItemDTO> getPaymentItems(Long billerId);
 
 }

@@ -1,13 +1,9 @@
 package longbridge.repositories;
 
 
-import longbridge.billerresponse.Biller;
-import longbridge.models.Billers;
+import longbridge.models.Biller;
 import org.springframework.data.domain.Page;
 
-import longbridge.models.Billers;
-import longbridge.models.Merchant;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -19,19 +15,17 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 @Repository
-public interface BillerRepo extends CommonRepo<Billers, Long>{
+public interface BillerRepo extends CommonRepo<Biller, Long>{
 
+    Biller findByBillerId(Long billerId);
 
-    @Transactional
-    @Modifying
-    @Query("delete from Billers b where b.deleteValue = :deleteValue ")
-    int deleteAllByDeleteValue(@Param("deleteValue") String deleteValue);
+    List<Biller> findByBillerIdNotIn(List<Long> billerIds);
 
-    List<Billers> findByCategoryName(String category);
+    List<Biller> findByCategoryName(String category);
 
-    List<Billers> findByCategoryNameAndEnabled(String category, boolean enabled);
+    List<Biller> findByCategoryNameAndEnabled(String category, boolean enabled);
 
-    Page<Billers> findByCategoryName(String categoryName, Pageable pageable);
+    Page<Biller> findByCategoryName(String categoryName, Pageable pageable);
     
     @Query(
   		  value = "select distinct category from Biller",
@@ -39,18 +33,18 @@ public interface BillerRepo extends CommonRepo<Billers, Long>{
     List<String> findAllCategories();
     
     @Modifying
-    @Query("update Billers m set m.enabled = :enabled  where m.id= :id")
+    @Query("update Biller m set m.enabled = :enabled  where m.id= :id")
     void setEnabledFlag(@Param("id") Long id, @Param("enabled") boolean enabled);
 
     @Transactional
     @Modifying
-    @Query("update Billers b set b.enabled = false where b.billerName = :billerName and b.categoryName = :categoryName")
-    int disableBiller(@Param("billerName") String billerName, @Param("categoryName") String categoryName);
+    @Query("update Biller b set b.enabled = false where b.id = :id")
+    int disableBiller(@Param("id") Long id);
 
     @Transactional
     @Modifying
-    @Query("update Billers b set b.enabled = true where b.billerName = :billerName and b.categoryName = :categoryName")
-    int enableBiller(@Param("billerName") String billerName, @Param("categoryName") String categoryName);
+    @Query("update Biller b set b.enabled = true where b.id = :id")
+    int enableBiller(@Param("id") Long id);
     
 //
     
