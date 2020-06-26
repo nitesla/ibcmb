@@ -26,7 +26,7 @@
                             <label>Market Type</label>
                             <span class="req"></span>
                             <select th:name="Market-Type" id="marketType"
-                                    class="form-control full-width">
+                                    class="form-control full-width" required>
                                 <option value="">Select Market Type</option>
                                 <option th:each="market : ${markets}"
                                         th:value="${market.code}"
@@ -34,16 +34,20 @@
                             </select>
                         </div>
 
+
+
+
                         <div class="form-group" id="primary" style="display: none">
                             <label>Tenor</label>
                             <span class="req"></span>
-                            <select th:name="Primary-Market-Tenor" id="pTenor" class="form-control full-width" >
+                            <select th:name="Primary-Market-Tenor" id="pTenor" class="form-control full-width">
                                 <option value=""> Select Tenor </option>
                                 <option th:each="p : ${primary}" th:value="${p.tenor +','+ p.value}"
                                         th:text="${p.tenor}+' '+days"></option>
                             </select>
                         </div>
-                        <!--th:onchange="'javascript:getRate('+${p.value}+');'"-->
+
+
                         <div class="form-group" style="display: none" id="secondary">
                             <label>Tenor</label>
                             <span class="req"></span>
@@ -82,7 +86,7 @@
                             <button class="btn btn-link required-step pull-left" id="submit" type="submit">Submit
                             </button>
 
-                            <a th:href="@{/retail/treasurybill/view}" class="btn btn-link pull-left"
+                            <a th:href="@{/corporate/treasurybill/view}" class="btn btn-link pull-left"
                                style="margin-top: 2%">Cancel</a>
                         </div>
                     </div>
@@ -148,15 +152,17 @@
 
         $("#marketType").on('change', function () {
             if ($("#marketType").val() === "PRIMARY") {
+                $("#sTenor").val("");
                 $('#secondary').hide();
                 $('#sRateDiv').hide();
                 $('#primary').show();
                 // $('#rate').val($('#pTenor').val().split(',')[1]);
             } else {
+                $("#pTenor").val("");
                 $("#primary").hide();
                 $('#secondary').show();
                 $('#pRateDiv').hide();
-                $('#supplyRate').val("N/A");
+                $('#supplyRate').val("Enter Rate");
                 $('#bankRate').val("N/A");
 
 

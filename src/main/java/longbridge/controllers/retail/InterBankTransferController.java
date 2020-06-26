@@ -1,5 +1,6 @@
 package longbridge.controllers.retail;
 
+import com.rabbitmq.client.AMQP;
 import longbridge.dtos.FinancialInstitutionDTO;
 import longbridge.dtos.LocalBeneficiaryDTO;
 import longbridge.dtos.TransferRequestDTO;
@@ -26,6 +27,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.math.BigDecimal;
 import java.security.Principal;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -94,6 +96,7 @@ public class InterBankTransferController {
     }
 
 
+
     @PostMapping(value = "/index")
 
     public String startTransfer(HttpServletRequest request, Model model, Principal principal) {
@@ -125,7 +128,6 @@ public class InterBankTransferController {
 
         TransferRequestDTO requestDTO = new TransferRequestDTO();
         String type = request.getParameter("tranType");
-
 
         if ("NIP".equalsIgnoreCase(type)) {
 
@@ -183,6 +185,18 @@ public class InterBankTransferController {
 
     @PostMapping("/summary")
     public String transferSummary(@ModelAttribute("transferRequest") @Valid TransferRequestDTO transferRequestDTO, BindingResult result, Model model, HttpServletRequest request) throws Exception {
+
+        String userAmountLimit = transferUtils.getLimitForAuthorization(transferRequestDTO.getCustomerAccountNumber(), transferRequestDTO.getChannel());
+        BigDecimal amountLimit = new BigDecimal(userAmountLimit);
+        BigDecimal userAmount = transferRequestDTO.getAmount();
+        int a = amountLimit.intValue();
+        int b = userAmount.intValue();
+        if (b > a){
+            String errorMessage = "You can not transfer more than account limit";
+            model.addAttribute("errorMessage", errorMessage);
+             return page + "pageii";
+        }
+
         model.addAttribute("transferRequest", transferRequestDTO);
         String charge = "NAN";
         String benName = (String) request.getSession().getAttribute("benName");
@@ -266,10 +280,7 @@ public class InterBankTransferController {
 
         } else {
             transferRequestDTO.setTransferType(TransferType.INTER_BANK_TRANSFER);
-
         }
-
-
         model.addAttribute("transferRequest", transferRequestDTO);
         if (request.getSession().getAttribute("Lbeneficiary") != null) {
             LocalBeneficiaryDTO dto = (LocalBeneficiaryDTO) request.getSession().getAttribute("Lbeneficiary");

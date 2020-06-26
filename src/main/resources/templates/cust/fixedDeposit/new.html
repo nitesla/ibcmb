@@ -62,7 +62,7 @@
                             <label>Amount to invest(NGN)</label>
                             <span class="req"></span>
                             <!--<input type="number"  th:field="*{initialDepositAmount}" onkeyup="getRate()" id="amount" required class="form-control"/>-->
-                            <input type="number" step="0.01" th:name="${initialDepositAmount}" id="amount" required
+                            <input type="number" step="0.01" th:name="${initialDepositAmount}" id="amount" min="1000" max="9999999999" required
                                    class="form-control"/>
                         </div>
                         <div class="form-group">

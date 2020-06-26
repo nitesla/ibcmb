@@ -6,6 +6,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import longbridge.api.*;
 import longbridge.dtos.*;
+import longbridge.billerresponse.BillerResponse;
+import longbridge.billerresponse.PaymentItemResponse;
+import longbridge.dtos.*;
 import longbridge.exception.InternetBankingException;
 import longbridge.exception.InternetBankingTransferException;
 import longbridge.exception.TransferErrorService;
@@ -424,7 +427,7 @@ public class IntegrationServiceImpl implements IntegrationService {
 			case INTER_BANK_TRANSFER: {
 				transRequest.setTransferType(TransferType.INTER_BANK_TRANSFER);
 //				TransferDetails response;
-				TransferRequestNip response;
+				TransferRequestNip response = new TransferRequestNip();
 				String uri = URI + "/transfer/nip";
 
 				TransferRequestNip params=new TransferRequestNip();
@@ -1079,8 +1082,7 @@ public class IntegrationServiceImpl implements IntegrationService {
 			request.put("LastAuthorizer",userName);
 			request.put("InitiatedBy",corpPaymentRequest.getCustomDutyPayment().getInitiatedBy());
 			request.put("PaymentRef",corpPaymentRequest.getReferenceNumber());
-//			request.put("CustomerAccountNo",accessBeneficiaryAcct);
-			request.put("CustomerAccountNo",corpPaymentRequest.getCustomerAccountNumber());
+			request.put("CustomerAccountNo",accessBeneficiaryAcct);
 			logger.debug("Fetching data from coronation rest service via the url: {}", CustomDutyUrl);
 			logger.debug("Fetching data from coronation rest service via the url: {}", CustomDutyUrl+"/customduty/payassessment");
 			logger.debug("paymentNotificationRequest: {}", request);
@@ -1088,7 +1090,7 @@ public class IntegrationServiceImpl implements IntegrationService {
 			logger.debug("payment notification Response: {}", response);
 			logger.info("payment ref {}",corpPaymentRequest.getReferenceNumber());
 			logger.info("InitiatedBy {}",corpPaymentRequest.getCustomDutyPayment().getInitiatedBy());
-			logger.info("CustomerAccountNo {}",corpPaymentRequest.getCustomerAccountNumber());
+			logger.info("CustomerAccountNo {}",accessBeneficiaryAcct);
 			logger.info("LastAuthorizer {}",userName);
 
 			logger.debug("payment notification params: {}", appId + corpPaymentRequest.getReferenceNumber() + corpPaymentRequest.getAmount().setScale(2,BigDecimal.ROUND_HALF_UP) + secretKey);
@@ -1415,6 +1417,47 @@ public class IntegrationServiceImpl implements IntegrationService {
 			methodResponse = "fail";
 		}
 		return methodResponse;
+	}
+
+	@Override
+	public List<BillerDTO> getBillers(){
+		String appId = "001b5";
+		String hash = "$234@789";
+		List<BillerDTO> billers = new ArrayList<>();
+		String uri = URI+"/api/quickteller/biller";
+		Map<String,String> params = new HashMap<>();
+		params.put("appid",appId);
+		params.put("hash",hash);
+		try {
+			BillerResponse billerResponse = template.postForObject(uri,params, BillerResponse.class);
+			billers = billerResponse.getBillers();
+			return billers;
+		} catch (Exception e){
+			logger.info("Error processing request");
+		}
+			return billers;
+	}
+
+
+	@Override
+	public List<PaymentItemDTO> getPaymentItems(Long billerId){
+		String appId = "001b5";
+		String hash = "$234@789";
+		String id = Long.toString(billerId);
+		List<PaymentItemDTO> items = new ArrayList<>();
+		String uri = URI+"/api/quickteller/billerpaymentitem";
+		Map<String,String> params = new HashMap<>();
+		params.put("appid",appId);
+		params.put("billerid", id);
+		params.put("hash",hash);
+		try {
+			PaymentItemResponse paymentItemResponse = template.postForObject(uri,params, PaymentItemResponse.class);
+			items = paymentItemResponse.getPaymentitems();
+			return items;
+		} catch (Exception e){
+			logger.info("Error processing request");
+		}
+		return items;
 	}
 
 //    @Override

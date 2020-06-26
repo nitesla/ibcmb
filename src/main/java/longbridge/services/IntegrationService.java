@@ -3,8 +3,10 @@ package longbridge.services;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import longbridge.api.*;
 import longbridge.dtos.CoverageDetailsDTO;
+import longbridge.dtos.BillerDTO;
 import longbridge.dtos.FixedDepositDTO;
 import longbridge.dtos.LoanDTO;
+import longbridge.dtos.PaymentItemDTO;
 import longbridge.exception.InternetBankingTransferException;
 import longbridge.models.*;
 import longbridge.utils.Response;
@@ -166,5 +168,9 @@ public interface IntegrationService {
 //    List<CoverageDetailsDTO> getCoverageDetails(String coverageName, String customerNumber);
 //    JSONObject getAllCoverageDetails(String customerNumber);
 
+
+    List<BillerDTO> getBillers();
+
+   List<PaymentItemDTO> getPaymentItems(Long billerId);
 
 }
