@@ -1,32 +1,28 @@
 package longbridge.services.implementations;
 
-import longbridge.config.SpringContext;
 import longbridge.dtos.ReportDTO;
 import longbridge.dtos.ReportParameterDTO;
-import longbridge.dtos.SettingDTO;
 import longbridge.exception.InternetBankingException;
 import longbridge.exception.VerificationInterruptedException;
-import longbridge.models.*;
+import longbridge.models.FinancialInstitution;
+import longbridge.models.Permission;
+import longbridge.models.Report;
+import longbridge.models.User;
 import longbridge.repositories.FinancialInstitutionRepo;
 import longbridge.repositories.ReportRepo;
-import longbridge.repositories.TransferCodeRepo;
 import longbridge.security.userdetails.CustomUserPrincipal;
 import longbridge.services.*;
-import longbridge.utils.DateUtil;
 import longbridge.utils.ReportUtils;
 import longbridge.utils.Verifiable;
-import net.sf.jasperreports.engine.*;
-import net.sf.jasperreports.engine.design.JasperDesign;
-import net.sf.jasperreports.engine.export.JRXlsExporter;
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JRParameter;
+import net.sf.jasperreports.engine.JasperCompileManager;
+import net.sf.jasperreports.engine.JasperReport;
 import net.sf.jasperreports.engine.util.JRLoader;
-import net.sf.jasperreports.engine.xml.JRXmlLoader;
-import net.sf.jasperreports.export.SimpleExporterInput;
-import net.sf.jasperreports.export.SimpleOutputStreamExporterOutput;
 import org.apache.commons.lang.StringUtils;
 import org.modelmapper.ModelMapper;
-import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
-import org.springframework.beans.BeansException;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
@@ -39,15 +35,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.ModelAndView;
-import org.thymeleaf.context.Context;
 
-import javax.sql.DataSource;
-import javax.transaction.Transactional;
 import java.io.*;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.*;
 
 /**

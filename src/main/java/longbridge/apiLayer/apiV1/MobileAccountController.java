@@ -20,7 +20,6 @@ import longbridge.services.RetailUserService;
 import longbridge.utils.TransferUtils;
 import longbridge.utils.statement.AccountStatement;
 import longbridge.utils.statement.TransactionHistory;
-import org.aspectj.apache.bcel.generic.FieldOrMethod;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,7 +32,10 @@ import java.math.BigDecimal;
 import java.security.Principal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping(value = "/api/v1/account")

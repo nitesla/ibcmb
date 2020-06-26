@@ -1,10 +1,10 @@
 package longbridge.repositories;
 
 import longbridge.models.Code;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
@@ -20,7 +20,9 @@ public interface CodeRepo extends CommonRepo<Code, Long>{
     Iterable<String> findAllTypes();
     @Query("select distinct c.type from Code c")
     Page<String> findAllTypes(Pageable pageable);
-
+    @Query("select distinct c from Code c where c.code=:code")
+    Code getCode(@Param("code") String code);
+    Code getCodeById(Long id);
     List<Code> findAllByType(String type);
     
     

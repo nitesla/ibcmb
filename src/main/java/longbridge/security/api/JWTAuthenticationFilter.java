@@ -3,10 +3,11 @@ package longbridge.security.api;
 /**
  * Created by mac on 26/09/2018.
  */
-import longbridge.apiLayer.models.ApiUser;
+
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.GenericFilterBean;
-import org.springframework.security.core.Authentication;
+
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;

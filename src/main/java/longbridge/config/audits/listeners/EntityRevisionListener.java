@@ -2,7 +2,6 @@ package longbridge.config.audits.listeners;
 
 import longbridge.config.audits.CustomRevisionEntity;
 import longbridge.security.userdetails.CustomUserPrincipal;
-
 import org.hibernate.envers.EntityTrackingRevisionListener;
 import org.hibernate.envers.RevisionType;
 import org.springframework.security.core.Authentication;

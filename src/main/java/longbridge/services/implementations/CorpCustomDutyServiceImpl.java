@@ -1,7 +1,10 @@
 package longbridge.services.implementations;
 
 import longbridge.dtos.SettingDTO;
-import longbridge.exception.*;
+import longbridge.exception.InternetBankingException;
+import longbridge.exception.InternetBankingTransferException;
+import longbridge.exception.TransferAuthorizationException;
+import longbridge.exception.TransferRuleException;
 import longbridge.models.*;
 import longbridge.repositories.*;
 import longbridge.security.userdetails.CustomUserPrincipal;
@@ -189,7 +192,7 @@ public class CorpCustomDutyServiceImpl implements CorpCustomDutyService {
         logger.info("Checking limit for {}", assessmentDetail.getAccount());
         String limit =integrationService.getDailyAccountLimit(assessmentDetail.getAccount(), "INTRABANK");
         logger.info("limit:{}", limit);
-        if (new BigDecimal(assessmentDetail.getResponseInfo().getTotalAmount()).compareTo(new BigDecimal(limit)) == 1) {
+        if (new BigDecimal(assessmentDetail.getResponseInfo().getTotalAmount()).compareTo(new BigDecimal(limit)) > 0) {
             throw new InternetBankingException(messageSource.getMessage("transfer.limit", null, null));
         }
 

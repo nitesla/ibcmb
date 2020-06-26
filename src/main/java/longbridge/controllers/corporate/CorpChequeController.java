@@ -1,6 +1,5 @@
 package longbridge.controllers.corporate;
 
-import longbridge.controllers.retail.ServiceRequestController;
 import longbridge.dtos.CodeDTO;
 import longbridge.dtos.ServiceReqConfigDTO;
 import longbridge.dtos.SettingDTO;

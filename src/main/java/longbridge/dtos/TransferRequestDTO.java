@@ -1,7 +1,7 @@
 package longbridge.dtos;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import longbridge.models.*;
+import longbridge.models.FinancialInstitution;
 import longbridge.utils.TransferType;
 
 import java.io.Serializable;

@@ -7,6 +7,7 @@ import longbridge.repositories.LocalBeneficiaryRepo;
 import longbridge.services.*;
 import longbridge.utils.DataTablesUtils;
 import longbridge.utils.TransferType;
+import org.apache.commons.lang3.StringUtils;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,7 +15,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
 import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
@@ -28,11 +28,9 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
-import java.math.BigDecimal;
 import java.security.Principal;
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 /**
@@ -376,7 +374,7 @@ public class DirectDebitController {
         logger.info("this is the ben tokeeen {}", token);
         Long directDebitId = Long.parseLong(webRequest.getParameter("id"));
         logger.info("this is the debit {}", directDebitId);
-        if (token != "" && directDebitId != 0) {
+        if (StringUtils.isNotBlank(token) && directDebitId != 0) {
             try {
                 RetailUser retailUser = retailUserService.getUserByName(principal.getName());
                 boolean result = securityService.performTokenValidation(retailUser.getEntrustId(), retailUser.getEntrustGroup(), token);
@@ -417,7 +415,7 @@ public class DirectDebitController {
         Long paymentID = Long.parseLong(webRequest.getParameter("id"));
         logger.info("this is the payment to be deleted  {}", paymentID);
 
-        if (token != "" && paymentID != 0) {
+        if (StringUtils.isNotBlank(token) && paymentID != 0) {
             DirectDebit directDebit = directDebitService.getPaymentsDirectDebit(paymentID);
             try {
                 RetailUser retailUser = retailUserService.getUserByName(principal.getName());

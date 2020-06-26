@@ -4,12 +4,10 @@ package longbridge.repositories;
 import longbridge.models.AbstractEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.support.JpaEntityInformation;
-import org.springframework.data.jpa.repository.support.JpaEntityInformationSupport;
 import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
@@ -166,7 +164,7 @@ public class CommonRepoImpl<T extends AbstractEntity, ID extends Serializable> e
         CriteriaQuery<T> baseQuery = null;
         CriteriaQuery<Long> qc = cb.createQuery(Long.class);
         CriteriaQuery<Long> countQuery = null;
-        System.out.println("the predicates "+predicates);
+        logger.debug("the predicates "+ Arrays.toString(predicates));
         if(predicates.length > 0)
         {
             Predicate or = cb.or (predicates);

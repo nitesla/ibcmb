@@ -1,11 +1,6 @@
 package longbridge.dtos;
 
-import longbridge.models.AbstractEntity;
-import longbridge.models.CorporateRole;
-import org.hibernate.envers.Audited;
-import org.hibernate.validator.constraints.NotEmpty;
-
-import javax.persistence.Entity;
+import javax.validation.constraints.NotEmpty;
 
 public class CorpTransRoleDTO {
 

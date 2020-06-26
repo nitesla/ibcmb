@@ -2,7 +2,6 @@ package longbridge.repositories;
 
 import longbridge.models.MailBox;
 import longbridge.models.UserType;
-import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 /**

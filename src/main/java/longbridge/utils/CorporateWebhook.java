@@ -3,7 +3,6 @@ package longbridge.utils;
 
 import longbridge.apiLayer.models.WebhookResponse;
 import longbridge.models.CorporateUser;
-import longbridge.models.RetailUser;
 import org.apache.http.HttpEntity;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.entity.UrlEncodedFormEntity;

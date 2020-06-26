@@ -1,8 +1,7 @@
 package longbridge.dtos;
 
+import javax.validation.constraints.NotEmpty;
 import java.io.Serializable;
-
-import org.hibernate.validator.constraints.NotEmpty;
 
 /**
  * Created by SYLVESTER on 5/19/2017.

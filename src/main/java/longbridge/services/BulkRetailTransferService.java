@@ -4,7 +4,9 @@ import longbridge.dtos.BulkStatusDTO;
 import longbridge.dtos.BulkTransferDTO;
 import longbridge.dtos.CreditRequestDTO;
 import longbridge.exception.InternetBankingException;
-import longbridge.models.*;
+import longbridge.models.BulkTransfer;
+import longbridge.models.Corporate;
+import longbridge.models.CreditRequest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 

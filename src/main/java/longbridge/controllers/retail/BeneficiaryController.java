@@ -9,6 +9,7 @@ import longbridge.exception.InternetBankingException;
 import longbridge.exception.InternetBankingSecurityException;
 import longbridge.models.*;
 import longbridge.services.*;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -112,9 +113,6 @@ public class BeneficiaryController {
         model.addAttribute("internationalBeneficiaryDTO", new InternationalBeneficiaryDTO());
         model.addAttribute("foreignCurrencyCodes", codeService.getCodesByType("CURRENCY"));
         List<FinancialInstitutionDTO> financialInstitutionDTOS = financialInstitutionService.getFinancialInstitutionsByType(FinancialInstitutionType.LOCAL);
-        financialInstitutionDTOS
-                .stream()
-                .sorted(Comparator.comparing(FinancialInstitutionDTO::getInstitutionName));
         model.addAttribute("localBanks", financialInstitutionDTOS);
         return "cust/beneficiary/add";
     }
@@ -174,7 +172,7 @@ public class BeneficiaryController {
         String beneficiaryId = webRequest.getParameter("id");
         Long benefit = Long.parseLong(beneficiaryId);
         logger.info("this is the benID {}", benefit);
-        if (token != "" && beneficiaryId != "") {
+        if (StringUtils.isNotBlank(token) && StringUtils.isNotBlank(beneficiaryId )) {
             try {
                 RetailUser retailUser = retailUserService.getUserByName(principal.getName());
                 boolean result = securityService.performTokenValidation(retailUser.getEntrustId(), retailUser.getEntrustGroup(), token);

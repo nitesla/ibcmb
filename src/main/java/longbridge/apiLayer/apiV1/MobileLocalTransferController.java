@@ -4,11 +4,17 @@ package longbridge.apiLayer.apiV1;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import longbridge.apiLayer.data.ResponseData;
-import longbridge.dtos.*;
+import longbridge.dtos.FinancialInstitutionDTO;
+import longbridge.dtos.LocalBeneficiaryDTO;
+import longbridge.dtos.SettingDTO;
+import longbridge.dtos.TransferRequestDTO;
 import longbridge.dtos.apidtos.MobileAccountDTO;
 import longbridge.dtos.apidtos.MobileRetailBeneficiaryDTO;
 import longbridge.exception.*;
-import longbridge.models.*;
+import longbridge.models.Account;
+import longbridge.models.FinancialInstitutionType;
+import longbridge.models.LocalBeneficiary;
+import longbridge.models.RetailUser;
 import longbridge.services.*;
 import longbridge.utils.TransferType;
 import longbridge.utils.TransferUtils;
@@ -23,16 +29,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.math.BigDecimal;
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
-
-import static org.codehaus.groovy.tools.shell.util.Logger.io;
 
 @RestController
 @Api(value = "Retail Local Transfer", description = "Intra Bank Transfer / CMB Transfer", tags = {"Retail Local Transfer"})

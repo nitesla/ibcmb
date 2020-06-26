@@ -32,7 +32,7 @@ import java.math.BigDecimal;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static longbridge.models.UserAccountRestriction.*;
+import static longbridge.models.UserAccountRestriction.RestrictionType;
 
 /**
  * Created by Fortune on 4/5/2017.

@@ -1,16 +1,14 @@
 package longbridge.config.audits;
 
-import java.util.stream.Collectors;
-
-import javax.persistence.EntityManager;
-
+import longbridge.models.AuditConfig;
+import longbridge.repositories.AuditConfigRepo;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import longbridge.models.AuditConfig;
-import longbridge.repositories.AuditConfigRepo;
+import javax.persistence.EntityManager;
+import java.util.stream.Collectors;
 
 @Component
 public class AuditConfigInitializer implements InitializingBean {

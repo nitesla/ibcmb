@@ -1,10 +1,10 @@
 package longbridge.config.audits;
 
-import longbridge.models.AbstractEntity;
-
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 import java.io.Serializable;
-
-import javax.persistence.*;
 
 /**
  * Created by ayoade_farooq@yahoo.com on 4/7/2017.

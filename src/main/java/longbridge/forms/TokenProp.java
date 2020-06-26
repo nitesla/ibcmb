@@ -1,6 +1,6 @@
 package longbridge.forms;
 
-import org.hibernate.validator.constraints.NotEmpty;
+import javax.validation.constraints.NotEmpty;
 
 /**
  * Created by Showboy on 28/05/2017.

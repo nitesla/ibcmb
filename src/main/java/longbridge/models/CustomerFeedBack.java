@@ -1,6 +1,5 @@
 package longbridge.models;
 
-import longbridge.models.AbstractEntity;
 import org.hibernate.annotations.Where;
 import org.hibernate.envers.Audited;
 

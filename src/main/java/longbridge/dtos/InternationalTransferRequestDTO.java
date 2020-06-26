@@ -1,7 +1,5 @@
 package longbridge.dtos;
 
-import java.math.BigDecimal;
-
 /**
  * Created by Fortune on 2/8/2018.
  */

@@ -1,11 +1,5 @@
 package longbridge.dtos;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.JsonSerializer;
-import longbridge.utils.PrettySerializer;
-import org.hibernate.annotations.Where;
-import org.hibernate.envers.Audited;
-import javax.persistence.Entity;
 import java.util.Date;
 
 

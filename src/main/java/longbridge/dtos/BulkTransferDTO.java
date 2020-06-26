@@ -3,8 +3,8 @@ package longbridge.dtos;
 /**
  * Created by Longbridge on 14/06/2017.
  */
+
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonSetter;
 
 import java.util.Date;
 

@@ -1,10 +1,9 @@
 package longbridge.models;
 
-import com.fasterxml.jackson.annotation.*;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import org.codehaus.jackson.annotate.*;
 import org.hibernate.annotations.Where;
 import org.hibernate.envers.Audited;
+
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 

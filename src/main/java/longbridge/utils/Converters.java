@@ -5,9 +5,7 @@ import longbridge.dtos.apidtos.MobileRetailUserDTO;
 import longbridge.models.RetailUser;
 import org.modelmapper.Converter;
 import org.modelmapper.ModelMapper;
-import org.modelmapper.PropertyMap;
 import org.modelmapper.spi.MappingContext;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service

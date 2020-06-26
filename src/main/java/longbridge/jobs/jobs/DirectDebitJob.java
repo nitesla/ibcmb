@@ -1,24 +1,19 @@
 package longbridge.jobs;
 
-import java.io.IOException;
-import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
-
 import longbridge.models.Payment;
 import longbridge.services.CronJobService;
-import org.joda.time.LocalDate;
+import longbridge.services.DirectDebitService;
 import org.quartz.*;
 import org.quartz.impl.StdSchedulerFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import longbridge.services.DirectDebitService;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Component;
+
+import java.util.Collection;
 
 
 @Component

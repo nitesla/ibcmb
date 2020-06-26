@@ -4,14 +4,13 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import longbridge.apiLayer.data.ResponseData;
-import longbridge.dtos.LocalBeneficiaryDTO;
-import longbridge.dtos.TransferRequestDTO;
-import longbridge.exception.*;
-import longbridge.forms.CustomizeAccount;
-import longbridge.models.*;
+import longbridge.exception.InternetBankingException;
+import longbridge.exception.InternetBankingTransferException;
+import longbridge.exception.TransferErrorService;
+import longbridge.exception.TransferExceptions;
+import longbridge.models.RetailUser;
 import longbridge.security.userdetails.CustomUserPrincipal;
 import longbridge.services.*;
-import longbridge.utils.TransferType;
 import longbridge.utils.TransferUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,7 +25,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
-import java.security.Principal;
 import java.util.Locale;
 
 

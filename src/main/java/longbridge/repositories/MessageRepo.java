@@ -1,9 +1,7 @@
 package longbridge.repositories;
 
-import longbridge.config.audits.ModifiedEntityTypeEntity;
 import longbridge.models.MailBox;
 import longbridge.models.Message;
-import longbridge.models.User;
 import longbridge.models.UserType;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

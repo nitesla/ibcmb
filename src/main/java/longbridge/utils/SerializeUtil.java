@@ -1,13 +1,7 @@
 package longbridge.utils;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonSerializer;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.module.SimpleModule;
 import longbridge.models.AbstractEntity;
 import org.json.simple.JSONObject;
-
-import static longbridge.utils.StringUtil.convertToJSON;
 
 /**
  * Created by Longbridge on 10/12/2017.

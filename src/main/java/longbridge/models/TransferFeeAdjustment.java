@@ -11,7 +11,6 @@ import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
 import java.io.IOException;
-import java.util.Objects;
 @Entity
 @Table(name = "Transfer_Fee_Adjustment")
 @Audited(withModifiedFlag=true)

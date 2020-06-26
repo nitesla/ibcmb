@@ -5,7 +5,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 
 import java.io.File;
-import java.io.FileInputStream;
 
 public class ImageUtil {
 

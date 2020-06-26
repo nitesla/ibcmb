@@ -2,14 +2,11 @@ package longbridge.config;
 
 import longbridge.dtos.SettingDTO;
 import longbridge.dtos.TransferRequestDTO;
-import longbridge.forms.ChangeDefaultPassword;
 import longbridge.services.ConfigurationService;
-import longbridge.services.PasswordPolicyService;
 import longbridge.utils.TransferType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.ModelAndViewDefiningException;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 import javax.servlet.http.HttpServletRequest;
