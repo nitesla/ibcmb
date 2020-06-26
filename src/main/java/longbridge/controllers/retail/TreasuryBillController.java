@@ -67,6 +67,7 @@ public class TreasuryBillController {
     public String newTreasuryBill(Model model, Locale locale) {
 
         Iterable<CodeDTO> marketType = codeService.getCodesByType("MARKET-TYPE");
+        Iterable<CodeDTO> tenors = codeService.getCodesByType("TENOR");
         Iterable<InvestmentRate> primaryRates = investmentRateService.getInvestmentRateByInvestmentName("TREASURY-BILLS-PRIMARY");
         Iterable<InvestmentRate> secondaryRates = investmentRateService.getInvestmentRateByInvestmentName("TREASURY-BILLS-SECONDARY");
         ServiceReqConfigDTO serviceReqConfig = serviceReqConfigService.getServiceReqConfigRequestName("TREASURY-BILL");
@@ -74,6 +75,7 @@ public class TreasuryBillController {
         model.addAttribute("primary",primaryRates);
         model.addAttribute("secondary",secondaryRates);
         model.addAttribute("markets",marketType);
+        model.addAttribute("tenors",tenors);
         model.addAttribute("requestConfig", serviceReqConfig);
         model.addAttribute("requestDTO", new ServiceRequestDTO());
         return "cust/treasurybills/new";

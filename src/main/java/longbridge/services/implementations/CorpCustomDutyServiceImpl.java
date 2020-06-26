@@ -49,8 +49,8 @@ public class CorpCustomDutyServiceImpl implements CorpCustomDutyService {
     @Value("${custom.secretKey}")
     private String secretKey;
 
-    @Value("${custom.beneficiaryAcct}")
-    private String beneficiaryAcct;
+//    @Value("${custom.beneficiaryAcct}")
+//    private String beneficiaryAcct;
 
     private IntegrationService integrationService;
     private AccountService accountService;
@@ -249,7 +249,7 @@ public class CorpCustomDutyServiceImpl implements CorpCustomDutyService {
                         accountService.getAccountByAccountNumber(customDutyPayment.getAccount()).getAccountName());
                 request.setTransferType(TransferType.CUSTOM_DUTY);
                 request.setCorporate(corporate);
-                request.setBeneficiaryAccountNumber(beneficiaryAcct);
+//                request.setBeneficiaryAccountNumber(beneficiaryAcct);
                 accountService.validateAccount(request.getCustomerAccountNumber());
                 CorpTransferAuth transferAuth = new CorpTransferAuth();
                 if(isSole){
@@ -413,7 +413,6 @@ public class CorpCustomDutyServiceImpl implements CorpCustomDutyService {
         CorpTransRule transferRule = corporateService.getApplicableTransferRule(corpPaymentRequest);
         List<CorporateRole> roles = getExistingRoles(transferRule.getRoles());
         CorporateRole userRole = null;
-
         for (CorporateRole corporateRole : roles) {
             if (corpRoleRepo.countInRole(corporateRole, corporateUser) > 0) {
                 userRole = corporateRole;
@@ -446,16 +445,18 @@ public class CorpCustomDutyServiceImpl implements CorpCustomDutyService {
                 transferAuth.setStatus("C");
                 transferAuth.setLastEntry(new Date());
                 transferAuthRepo.save(transferAuth);
-                corpPaymentRequest = makeLocalTransferForCustomDuty(corpPaymentRequest);
-                logger.info("the payment status {}",corpPaymentRequest);
-                if ((corpPaymentRequest.getStatus().equals("00") || corpPaymentRequest.getStatus().equals("000"))) {
+
+//                corpPaymentRequest = makeLocalTransferForCustomDuty(corpPaymentRequest);
+
+//                logger.info("the payment status {}",corpPaymentRequest);
+//                if ((corpPaymentRequest.getStatus().equals("00") || corpPaymentRequest.getStatus().equals("000"))) {
                     corpPaymentRequest.setStatusDescription("Authorisation Completed");
                     corpPaymentRequestRepo.save(corpPaymentRequest);
                     return makeCustomDutyPayment(corpPaymentRequest,principal);
-                }
-                corpPaymentRequest.getCustomDutyPayment().setMessage(CustomDutyCode.getCustomDutyCodeByCode("-1"));
-                corpPaymentRequestRepo.save(corpPaymentRequest);
-                throw new InternetBankingException(messageSource.getMessage(corpPaymentRequest.getStatusDescription(), null, null));
+//                }
+//                corpPaymentRequest.getCustomDutyPayment().setMessage(CustomDutyCode.getCustomDutyCodeByCode("-1"));
+//                corpPaymentRequestRepo.save(corpPaymentRequest);
+//                throw new InternetBankingException(messageSource.getMessage(corpPaymentRequest.getStatusDescription(), null, null));
             }
          return messageSource.getMessage("payment.auth.success",null,locale);
         } catch (InternetBankingTransferException transferException) {
