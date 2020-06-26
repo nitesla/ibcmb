@@ -192,9 +192,7 @@
             return;
         }
         var dt = $('#settings').DataTable();
-        var id = $(dt.row({
-            selected: true
-        }).node()).attr("id");
+        var id = $(dt.row({selected: true}).node()).attr("id");
         //window.location.href = link.attr("formaction") + '?id=' + id;
         //replace {id} with id
         var ooo = link.attr("href").replace("index",id);
