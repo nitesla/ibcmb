@@ -30,7 +30,7 @@ nbdist/
 .nb-gradle/
 
 ##Application logs
-.log
+*.log
 logs/
 application.log
 .DS_Store
