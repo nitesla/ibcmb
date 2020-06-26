@@ -13,6 +13,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.LongStream;
 
 @Repository
 public interface BillerRepo extends CommonRepo<Biller, Long>{
@@ -45,7 +46,12 @@ public interface BillerRepo extends CommonRepo<Biller, Long>{
     @Modifying
     @Query("update Biller b set b.enabled = true where b.id = :id")
     int enableBiller(@Param("id") Long id);
-    
+
+    @Modifying
+    @Query("update Biller b set b.delFlag = 'Y' where b.id not in (:billers) ")
+    void removeObsolete(@Param("billers") List<Long> validBillers);
+
+
 //
     
 

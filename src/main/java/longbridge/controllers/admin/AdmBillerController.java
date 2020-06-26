@@ -1,6 +1,5 @@
 package longbridge.controllers.admin;
 
-import longbridge.dtos.PaymentItemDTO;
 import longbridge.models.Biller;
 import longbridge.models.PaymentItem;
 import longbridge.repositories.BillerRepo;
@@ -19,7 +18,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 import java.util.List;
 
 @Controller
@@ -109,7 +107,7 @@ public class AdmBillerController {
     public void enableOrDisablePaymentItem(Long id,Boolean value){
         logger.info("value = {}",value);
         logger.info("id = " + id);
-        billerService.authorizePaymentItems(id,value);
+        billerService.enablePaymentItems(id,value);
     }
 
 

@@ -18,14 +18,9 @@ public interface PaymentItemRepo extends CommonRepo<PaymentItem, Long>{
 
     List<PaymentItem> findByPaymentItemIdNotIn(List<Long> paymentItemId);
 
-    @Transactional
-    @Modifying
-    @Query("update PaymentItem b set b.enabled = false where b.id = :id")
-    int disablePaymentItem(@Param("id") Long id);
 
-    @Transactional
     @Modifying
-    @Query("update PaymentItem b set b.enabled = true where b.id = :id")
-    int enablePaymentItem(@Param("id") Long id);
+    @Query("update PaymentItem item set item.enabled = :status where item.id = :id")
+    void enablePaymentItem(@Param("id") Long id, boolean status);
 
 }

@@ -2,153 +2,105 @@ package longbridge.services.implementations;
 
 
 import longbridge.dtos.BillerDTO;
+import longbridge.dtos.CategoryDTO;
 import longbridge.dtos.PaymentItemDTO;
+import longbridge.exception.InternetBankingException;
 import longbridge.models.Biller;
+import longbridge.models.PaymentItem;
 import longbridge.repositories.BillerRepo;
+import longbridge.repositories.PaymentItemRepo;
 import longbridge.services.BillerService;
 import longbridge.services.IntegrationService;
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.NotImplementedException;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
-
-import longbridge.dtos.CategoryDTO;
-import longbridge.exception.InternetBankingException;
-import longbridge.exception.VerificationInterruptedException;
-import longbridge.models.PaymentItem;
-import longbridge.repositories.PaymentItemRepo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
-
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import org.springframework.transaction.annotation.Transactional;
-
 import java.util.Locale;
 import java.util.stream.Collectors;
 
 import static org.apache.commons.lang3.StringUtils.defaultString;
-import static org.apache.commons.lang3.StringUtils.difference;
 
 
 @Service
+@Transactional
 public class BillerServiceImpl implements BillerService {
 
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
     @Autowired
     private IntegrationService integrationService;
-
     @Autowired
     private BillerRepo billerRepo;
-
     @Autowired
     private ModelMapper modelMapper;
-
-
-	@Autowired
-	private PaymentItemRepo paymentItemRepo;
-
-	@Autowired
-	private MessageSource messageSource;
-
-	private Locale locale = LocaleContextHolder.getLocale();
-
-	private final Logger logger = LoggerFactory.getLogger(this.getClass());
-
+    @Autowired
+    private PaymentItemRepo paymentItemRepo;
+    @Autowired
+    private MessageSource messageSource;
+    private Locale locale = LocaleContextHolder.getLocale();
 
     @Override
-    public void updateBillers(){
-        List<BillerDTO> billerDto = integrationService.getBillers();
-		logger.info("UPDATING BILLERS!!");
-		List<Biller> updatedBillers = compareAndUpdateBillers(billerDto);
-        List<Biller> obsoleteBillers = billerRepo.findByBillerIdNotIn(updatedBillers.stream().map(biller -> biller.getBillerId()).collect(Collectors.toList()));
-        obsoleteBillers.forEach(biller -> {
-            biller.setDelFlag("Y");
-            billerRepo.save(biller);
-        });
+    public void updateBillers() {
+        logger.info("UPDATING BILLERS!!");
+        List<BillerDTO> billerDTOList = integrationService.getBillers();
+        List<Biller> updatedBillers = compareAndUpdateBillers(billerDTOList);
+        billerRepo.removeObsolete(updatedBillers.stream().map(Biller::getId).collect(Collectors.toList()));
+
+
     }
 
-    private List<Biller> compareAndUpdateBillers(List<BillerDTO> updatedBillers){
+    private List<Biller> compareAndUpdateBillers(List<BillerDTO> updatedBillers) {
         List<Biller> billers = new ArrayList<>();
-                updatedBillers.forEach(updatedBiller -> {
-                    Biller existingBiller = billerRepo.findByBillerId(updatedBiller.getBillerid());
-                    if (existingBiller == null) {
-                        Biller biller = new Biller();
-                        biller.setBillerName(updatedBiller.getBillername());
-                        biller.setBillerId(updatedBiller.getBillerid());
-                        biller.setCategoryName(updatedBiller.getCategoryname());
-                        biller.setCategoryDescription(updatedBiller.getCategorydescription());
-                        biller.setCategoryId(updatedBiller.getCategoryid());
-                        biller.setCurrencySymbol(updatedBiller.getCurrencySymbol());
-                        biller.setCustomerField1(updatedBiller.getCustomerfield1());
-                        biller.setCustomerField2(updatedBiller.getCustomerfield2());
-                        biller.setLogoUrl(updatedBiller.getLogoUrl());
-                        billerRepo.save(biller);
-                        billers.add(biller);
-                    } else {
-                        if (!defaultString(existingBiller.getBillerName()).trim().equals(defaultString(updatedBiller.getBillername()).trim())) {
-                            existingBiller.setBillerName(updatedBiller.getBillername());
-                        }
-                        if (!defaultString(existingBiller.getCategoryName()).trim().equals(defaultString(updatedBiller.getCategoryname()).trim())) {
-                            existingBiller.setCategoryName(updatedBiller.getCategoryname());
-                        }
-                        if (!defaultString(existingBiller.getCategoryDescription()).trim().equals(defaultString(updatedBiller.getCategorydescription()).trim())) {
-                            existingBiller.setCategoryDescription(updatedBiller.getCategorydescription());
-                        }
-                        if (!defaultString(existingBiller.getCurrencySymbol()).trim().equals(defaultString(updatedBiller.getCurrencySymbol()).trim())) {
-                            existingBiller.setCurrencySymbol(updatedBiller.getCurrencySymbol());
-                        }
-                        if (!defaultString(existingBiller.getLogoUrl()).trim().equals(defaultString(updatedBiller.getLogoUrl()).trim())) {
-                            existingBiller.setLogoUrl(updatedBiller.getLogoUrl());
-                        }
-                        if (!defaultString(existingBiller.getCustomerField1()).trim().equals(defaultString(updatedBiller.getCustomerfield1()).trim())) {
-                            existingBiller.setCustomerField1(updatedBiller.getCustomerfield1());
-                        }
-                        if (!defaultString(existingBiller.getCustomerField2()).trim().equals(defaultString(updatedBiller.getCustomerfield2()).trim())) {
-                            existingBiller.setCustomerField2(updatedBiller.getCustomerfield2());
-                        }
-                        billers.add(existingBiller);
-                        billerRepo.save(existingBiller);
-                    }
-                });
-        return billers;
+        updatedBillers.forEach(updatedBiller -> {
+            Biller storedBiller = billerRepo.findByBillerId(updatedBiller.getBillerid());
+            if (storedBiller == null) {
+                Biller biller = createBiller(updatedBiller);
+                biller.setEnabled(true);
+                billers.add(biller);
+            } else {
+                Biller biller = createBiller(updatedBiller);
+                biller.setEnabled(storedBiller.isEnabled());
+                biller.setId(storedBiller.getId());
+                billers.add(biller);
+            }
+        });
+        return billerRepo.saveAll(billers);
+    }
+
+    private Biller createBiller(BillerDTO dto) {
+        return modelMapper.map(dto, Biller.class);
     }
 
     @Override
-    public void authorizePaymentItems(Long id, Boolean value){
-        logger.info("value "+value);
-        if (value == true){
-            int disableItem = paymentItemRepo.disablePaymentItem(id);
-            logger.info("item disabled!!!");
-        } else if (value == false){
-            int enableItem = paymentItemRepo.enablePaymentItem(id);
-            logger.info("item enabled!!!!");
-        }
-
+    public void enablePaymentItems(Long id, Boolean value) {
+        paymentItemRepo.enablePaymentItem(id, value);
+        logger.info("Item with id=[{}] is enabled = {}", id, value);
     }
 
 
     @Override
-    public void disableBiller(Long id){
+    public void disableBiller(Long id) {
         int disableBiller = billerRepo.disableBiller(id);
-        if (disableBiller < 0){
+        if (disableBiller < 0) {
             throw new RuntimeException("Error disabling biller, Please try again!");
         }
 
     }
 
     @Override
-    public void enableBiller(Long id){
+    public void enableBiller(Long id) {
         int enableBillers = billerRepo.enableBiller(id);
-		logger.info("enabling biller service");
-        if (enableBillers < 0){
+        logger.info("enabling biller service");
+        if (enableBillers < 0) {
             throw new RuntimeException("Error disabling biller, Please try again!");
         }
     }
@@ -156,15 +108,13 @@ public class BillerServiceImpl implements BillerService {
 
     @Override
     public Page<Biller> findEntities(String pattern, Pageable pageDetails) {
-        return billerRepo.findUsingPattern(pattern,pageDetails);
+        return billerRepo.findUsingPattern(pattern, pageDetails);
     }
 
     @Override
-    public Page<Biller> getEntities(Pageable pageDetails)
-    {
+    public Page<Biller> getEntities(Pageable pageDetails) {
         return billerRepo.findAll(pageDetails);
     }
-
 
 
     @Override
@@ -172,29 +122,92 @@ public class BillerServiceImpl implements BillerService {
         return billerRepo.findOneById(id);
     }
 
+    @Override
+    public Page<Biller> getBillers(Pageable pageDetails) {
+        return null;
+    }
 
-    	@Override
-        public List<PaymentItem> getPaymentItemForBiller(Long billerid,Long id) {
+    @Override
+    public Page<Biller> getBillers(String search, Pageable pageDetails) {
+        throw new NotImplementedException("Not yet done");
+    }
+
+    @Override
+    public Page<Biller> getBillersByCategory(String category, Pageable pageDetails) {
+        return null;
+    }
+
+    @Override
+    public Page<Biller> getBillersByCategory(String search, String category, Pageable pageDetails) {
+        return null;
+    }
+
+    @Override
+    public Biller updateBiller(BillerDTO biller) throws InternetBankingException {
+        return null;
+    }
+
+    @Override
+    public Page<CategoryDTO> getBillerCategories(Pageable pageDetails) {
+        return null;
+    }
+
+    @Override
+    public Page<CategoryDTO> getBillerCategories(String search, Pageable pageDetails) {
+        return null;
+    }
+
+    @Override
+    public PaymentItem getPaymentItem(Long id) {
+        return null;
+    }
+
+    @Override
+    public void updateBillerStatus(Biller biller) {
+
+    }
+
+
+    @Override
+    public List<PaymentItem> getPaymentItemsForBiller(Long id) {
         Biller biller = billerRepo.findOneById(id);
-            Long billerId = biller.getBillerId();
-            List<PaymentItemDTO> getBillerPaymentItems = integrationService.getPaymentItems(billerId);
-            logger.info("Updating payment items");
-            List<PaymentItem> updatedPaymentItems = compareAndUpdatePaymentItemTable(getBillerPaymentItems);
-            List<PaymentItem> obsoleteItems = paymentItemRepo.findByPaymentItemIdNotIn(updatedPaymentItems.stream()
-                    .map(updatedPaymentItem -> updatedPaymentItem.getPaymentItemId()).collect(Collectors.toList()));
-            obsoleteItems.forEach(paymentItem -> {
-                    paymentItem.setDelFlag("Y");
-                paymentItemRepo.save(paymentItem);
-            });
-            return updatedPaymentItems;
-	}
+        List<PaymentItemDTO> getBillerPaymentItems = integrationService.getPaymentItems(biller.getBillerId());
+        logger.info("Updating payment items");
+        List<PaymentItem> updatedPaymentItems = compareAndUpdatePaymentItemTable(getBillerPaymentItems);
+        List<PaymentItem> obsoleteItems = paymentItemRepo.findByPaymentItemIdNotIn(updatedPaymentItems.stream()
+                .map(updatedPaymentItem -> updatedPaymentItem.getPaymentItemId()).collect(Collectors.toList()));
+        obsoleteItems.forEach(paymentItem -> {
+            paymentItem.setDelFlag("Y");
+            paymentItemRepo.save(paymentItem);
+        });
+        return updatedPaymentItems;
+    }
+
+    @Override
+    public void RefreshBiller(Long id) {
+
+        Biller biller = billerRepo.findOneById(id);
+        // fetch biller from quickteller
+        // fetch payment items
+    }
 
 
-	public List<PaymentItem> compareAndUpdatePaymentItemTable(List<PaymentItemDTO> paymentItems){
+    @Override
+    public Biller addBiller(BillerDTO billerDto) throws InternetBankingException {
+        return null;
+    }
+
+    @Override
+    public String deleteBiller(Long id) throws InternetBankingException {
+        return null;
+    }
+
+
+    public List<PaymentItem> compareAndUpdatePaymentItemTable(List<PaymentItemDTO> paymentItems) {
         List<PaymentItem> items = new ArrayList<>();
         paymentItems.forEach(paymentItem -> {
             PaymentItem getItem = paymentItemRepo.findByPaymentItemId(paymentItem.getPaymentitemid());
-            if (getItem == null){
+            if (getItem == null) {
                 PaymentItem newPaymentItem = new PaymentItem();
                 newPaymentItem.setBillerId(paymentItem.getBillerid());
                 newPaymentItem.setAmount(paymentItem.getAmount());
@@ -215,22 +228,22 @@ public class BillerServiceImpl implements BillerService {
                 if (!defaultString(getItem.getItemCurrencySymbol()).trim().equals(defaultString(paymentItem.getItemCurrencySymbol()).trim())) {
                     getItem.setItemCurrencySymbol(paymentItem.getItemCurrencySymbol());
                 }
-                if (!getItem.getPaymentCode().equals(paymentItem.getPaymentCode())){
+                if (!getItem.getPaymentCode().equals(paymentItem.getPaymentCode())) {
                     getItem.setPaymentCode(paymentItem.getPaymentCode());
                 }
-                if (!getItem.getCode().equals(paymentItem.getCode())){
+                if (!getItem.getCode().equals(paymentItem.getCode())) {
                     getItem.setCode(paymentItem.getCode());
                 }
-                if (!getItem.getAmount().equals(paymentItem.getAmount())){
+                if (!getItem.getAmount().equals(paymentItem.getAmount())) {
                     getItem.setAmount(paymentItem.getAmount());
                 }
-                if (!getItem.getIsAmountFixed().equals(paymentItem.getIsAmountFixed())){
+                if (!getItem.getIsAmountFixed().equals(paymentItem.getIsAmountFixed())) {
                     getItem.setIsAmountFixed(paymentItem.getIsAmountFixed());
                 }
-                if (!getItem.getPaymentItemId().equals(paymentItem.getPaymentitemid())){
+                if (!getItem.getPaymentItemId().equals(paymentItem.getPaymentitemid())) {
                     getItem.setPaymentItemId(paymentItem.getPaymentitemid());
                 }
-                if (!getItem.getCurrencyCode().equals(paymentItem.getCurrencyCode())){
+                if (!getItem.getCurrencyCode().equals(paymentItem.getCurrencyCode())) {
                     getItem.setCurrencyCode(paymentItem.getCurrencyCode());
                 }
                 items.add(getItem);
@@ -316,7 +329,6 @@ public class BillerServiceImpl implements BillerService {
 //	}
 
 
-
 //	@Override
 //	public List<Biller> getBillersByCategory(String category) {
 //		return billerRepo.findByCategoryNameAndEnabled(category,true);
@@ -340,7 +352,6 @@ public class BillerServiceImpl implements BillerService {
 //		}
 //
 //	}
-
 
 
 //	@Override
@@ -383,7 +394,6 @@ public class BillerServiceImpl implements BillerService {
 //	public void updateBillerStatus(Biller biller) {
 //		billerRepo.setEnabledFlag(biller.getId(), biller.isEnabled());
 //	}
-
 
 
 }
