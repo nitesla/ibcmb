@@ -2,6 +2,10 @@
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{ret-layout}">
 
+<head th:fragment="site-head">
+    <link rel="stylesheet" type="text/css" th:href="@{~/customer/css/jquery-ui.css}"/>
+</head>
+
 <body onload="javascript:var bread = [['Home', '/retail/dashboard'],['StopCheque']];currentBar('Stop Cheque Request');breadCrumb(bread)">
 
 <div layout:fragment="content">
@@ -16,8 +20,8 @@
         <div class="col-xs-10 col-sm-10 wel no-pad-left no-pad-right ">
                 <h3 class="related-bar">
 
-                <span class="related-info coronation-blue"  th:text="${chargeMessage}"></span>
-                <span class="related-info coronation-blue" th:text="${charge}"></span>
+                <span class="related-info coronation-blue"  th:text="${chargeMessage + charge} "></span>
+<!--                <span class="related-info coronation-blue" th:text="${charge}"></span>-->
                 </h3>
         </div>
         <form method="post" th:action="@{/retail/requests}"  th:object="${requestDTO}" id="reqForm">
@@ -52,8 +56,9 @@
 
                 <div class="form-group">
                     <label>Reason For Request</label>
-                    <textarea th:name="Reason"  required
-                              class="form-control"> </textarea>
+                    <span class="req"></span>
+                    <textarea th:name="Reason"
+                              class="form-control" required="required"> </textarea>
                 </div>
 
         </div>
@@ -72,7 +77,7 @@
             <div class="form-group">
                     <label>Date on Cheque</label>
                     <span class="req"></span>
-                <input type="text" data-date-format="dd-mm-yyyy" class="form-control datepicker"  name="ChequeDate" placeholder="Date on cheque" required />
+                <input type="text" data-date-format="dd-mm-yyyy"  class="form-control"  name="ChequeDate"  id="datepicker"  placeholder="Date on cheque" required />
                 </div>
 
 
@@ -108,6 +113,8 @@
 
 
 <th:block layout:fragment="scripts">
+    <script th:src="@{~/customer/js/jquery-1.11.1.js}"></script>
+    <script th:src="@{~/customer/js/jquery-ui.js}"></script>
     <script th:inline="javascript">
         $('#reqForm').submit(function (event) {
             var arrays = [];
@@ -154,8 +161,11 @@
             })
         }
 
-
-
+        $(document).ready(function () {
+            $("#datepicker").datepicker({
+                minDate: -180
+            });
+        })
 
 
         function checkBalance() {
