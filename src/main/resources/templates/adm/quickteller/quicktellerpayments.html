@@ -47,7 +47,7 @@
                                     <li >
                                         <div class="col-lg-4">
                                             <div class="title-action">
-                                                <a id="checkBiller"  class="btn btn-primary btn-sm bt-select bt-link-act" href="/admin/billers/index/edit" disabled="disabled" ><i class="fa fa-pencil"></i> Edit</a>
+                                                <a id="checkBiller"  class="btn btn-primary btn-sm bt-select bt-link-act" href="/admin/billers/index/edit" disabled="disabled" ><i class="fa fa-pencil"></i> View Billers</a>
                                             </div>
                                         </div>
                                     </li>
@@ -81,7 +81,7 @@
                                 <table class="table table-striped table-bordered table-hover" id="biller">
                                     <thead>
                                     <tr>
-                                        <th>Category</th>
+                                        <th>CATEGORY</th>
                                         <th>Enabled</th>
                                     </tr>
                                     </thead>
@@ -189,9 +189,9 @@
                 "render" : function(data, type,full, meta) {
                     if (type === 'display') {
                         if (data == true) {
-                            return "<input type='checkbox' data-id='"+full.id+"'  data-pk='"+full.billerId+"' data-name='"+full.billerName+"' data-category='"+full.categoryName+"'  data-switchery='true' class='js-switch' checked data-value='"+full.enabled+"'/>";
+                            return "<input type='checkbox' data-id='"+full.id+"'  data-pk='"+full.categoryid+"' data-name='"+full.categoryName+"'   data-switchery='true' class='js-switch' checked data-value='"+full.enabled+"'/>";
                             } else if (data == false) {
-                              return "<input type='checkbox' data-id='"+full.id+"' data-pk='"+full.billerId+"' data-name='"+full.billerName+"' data-category='"+full.categoryName+"'   data-switchery='true' class='js-switch'  data-value='"+full.enabled+"'/>";
+                              return "<input type='checkbox' data-id='"+full.id+"' data-pk='"+full.categoryid+"' data-name='"+full.categoryName+"'   data-switchery='true' class='js-switch'  data-value='"+full.enabled+"'/>";
                             }
                     }
                     return data;

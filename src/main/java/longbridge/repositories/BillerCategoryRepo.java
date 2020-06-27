@@ -13,7 +13,7 @@ import java.util.List;
 public interface BillerCategoryRepo  extends CommonRepo<BillerCategory, Long>{
 
 
-    BillerCategory findByCategoryId(Long categoryId);
+    BillerCategory findByCategoryName(String categoryName);
 
 
 

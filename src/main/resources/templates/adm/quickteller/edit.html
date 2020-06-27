@@ -40,7 +40,7 @@
                                     <div class="col-md-12 col-sm-12 col-xs-12">
                                         <div class="x_panel">
                                             <div class="x_title">
-                                                <h2>Biller Details</h2>
+                                                <h2>Payment Items</h2>
 
                                                 <div class="clearfix"></div>
                                             </div>
@@ -55,19 +55,19 @@
 
 <!--                                                                    </div>-->
 <!--                                                                </div>-->
-                                                            <form th:object="${biller}">
-                                                                <div class="form-group col-lg-6">
-                                                                    <label>Biller-Name</label>
-                                                                    <input class="form-control" type="text" th:field="*{billerName}"/>
-                                                                </div>
+<!--                                                            <form th:object="${biller}">-->
+<!--                                                                <div class="form-group col-lg-6">-->
+<!--                                                                    <label>Biller-Name</label>-->
+<!--                                                                    <input class="form-control" type="text" th:field="*{billerName}"/>-->
+<!--                                                                </div>-->
 
 
-                                                                <div class="form-group col-lg-6">
-                                                                    <label>Category</label>
-                                                                    <input class="form-control" type="text" th:field="*{categoryName}"/>
-                                                                </div>
+<!--                                                                <div class="form-group col-lg-6">-->
+<!--                                                                    <label>Category</label>-->
+<!--                                                                    <input class="form-control" type="text" th:field="*{categoryName}"/>-->
+<!--                                                                </div>-->
 
-                                                            </form>
+<!--                                                            </form>-->
 
 
 
@@ -75,15 +75,15 @@
 
 
                                                                     <div class="x_content">
-                                                                        <legend>Product-Items</legend>
 
                                                                         <table class="table table-striped table-bordered table-hover" id="myDataTable">
                                                                             <thead>
                                                                             <tr>
 
-                                                                                <th>Product-item</th>
+                                                                                <th>Item</th>
                                                                                 <th>Amount</th>
-                                                                                <th>Enable</th>
+                                                                                <th>Enabled</th>
+
 
                                                                             </tr>
                                                                             </thead>

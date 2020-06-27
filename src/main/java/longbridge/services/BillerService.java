@@ -5,6 +5,7 @@ import longbridge.dtos.BillerDTO;
 import longbridge.dtos.CategoryDTO;
 import longbridge.exception.InternetBankingException;
 import longbridge.models.Biller;
+import longbridge.models.BillerCategory;
 import longbridge.models.PaymentItem;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -18,6 +19,10 @@ public interface BillerService {
     void disableBiller(Long id);
 
     void enableBiller(Long id);
+
+    void refreshCategories();
+
+    public void updatePaymentItems(Long id);
 
     Page<Biller> findEntities(String pattern, Pageable pageDetails);
 
@@ -41,12 +46,12 @@ public interface BillerService {
 
     Page<Biller> getBillersByCategory(String category, Pageable pageDetails);
 
-    Page<Biller> getBillersByCategory(String search, String category, Pageable pageDetails);
+    Page<Biller> getBillerByCategory(String search, String category, Pageable pageDetails);
 
 
     Biller updateBiller(BillerDTO biller) throws InternetBankingException;
 
-    Page<BillerCategoryDTO> getBillerCategories(Pageable pageDetails);
+    Page<BillerCategory> getBillerCategories(Pageable pageDetails);
 
     Page<CategoryDTO> getBillerCategories(String search, Pageable pageDetails);
 
