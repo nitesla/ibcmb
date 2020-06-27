@@ -1,7 +1,7 @@
 package longbridge.controllers.admin;
 
-import longbridge.models.Billers;
-import longbridge.repositories.BillerRepo;
+import longbridge.models.Biller;
+import longbridge.repositories.BillersRepo;
 import longbridge.services.BillerService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,7 +22,7 @@ public class AdmPaymentsController {
     private BillerService billerService;
 
     @Autowired
-    private BillerRepo billerRepo;
+    private BillersRepo billerRepo;
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -42,7 +42,7 @@ public class AdmPaymentsController {
     @GetMapping(path = "/all")
     public
     @ResponseBody
-    List<Billers> getAllBillers() {
+    List<Biller> getAllBillers() {
         return billerRepo.findAll();
     }
 

@@ -243,7 +243,7 @@
                             <li class="dropdown" th:classappend="${#httpServletRequest.getRequestURI().startsWith('/retail/payment') ? 'active':''}" sec:authorize="hasAuthority('MANAGE_BILL_PAYMENT')">
                                 <a class="dropdown-toggle menu-link" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"  href="#" th:text="#{menu.bill}">Bills & Payments</a>
                                 <ul class="dropdown-menu">
-                                    <li><a th:href="@{/retail/payment/cable}" th:text="#{menu.bill.payment}">Bill Payment</a></li>
+                                    <li><a th:href="@{/retail/payment/new}" th:text="#{menu.bill.payment}">Bill Payment</a></li>
                                     <li><a th:href="@{/retail/payment/completed}" th:text="#{menu.bill.completed}">Completed Payment</a></li>
 
                                 </ul>

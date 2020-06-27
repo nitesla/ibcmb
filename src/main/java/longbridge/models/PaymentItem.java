@@ -13,27 +13,62 @@ import javax.persistence.Table;
 @Where(clause ="del_Flag='N'" )
 public class PaymentItem extends AbstractEntity {
 
+	@Column(name = "CATEGORY_ID")
+	private Long categoryId;
+	@Column(name = "BILLER_ID")
+	private Long billerId;
+	@Column(name = "IS_AMOUNT_FIXED")
+	private Integer isAmountFixed;
 	@Column(name = "PAYMENT_ITEM_ID")
 	private Long paymentItemId;
 	@Column(name = "PAYMENT_ITEM_NAME")
-	private Long paymentItemName;
+	private String paymentItemName;
 	@Column(name = "AMOUNT")
 	private Double amount;
 	@Column(name = "CODE")
 	private Long code;
 	@Column(name = "CURRENCY_CODE")
 	private Long currencyCode;
+	@Column(name = "CURRENCY_SYMBOL")
+	private String currencySymbol;
 	@Column(name = "ITEM_CURRENCY_SYMBOL")
 	private String itemCurrencySymbol;
+	@Column(name = "SORT_ORDER")
+	private Long sortOrder;
+	@Column(name = "PICTURE_ID")
+	private Long pictureId;
 	@Column(name = "PAYMENT_CODE")
 	private Long paymentCode;
-	@Column(name = "IS_AMOUNT_FIXED")
-	private Integer isAmountFixed;
 	@Column(name = "READONLY")
 	private Integer readonly;
 	
-//	@ManyToOne @JsonIgnore
-//	private Billers biller;
+//	@ManyToOne
+//	@JsonIgnore
+//	private Biller biller;
+
+	public Long getCategoryId() {
+		return categoryId;
+	}
+
+	public void setCategoryId(Long categoryId) {
+		this.categoryId = categoryId;
+	}
+
+	public Long getBillerId() {
+		return billerId;
+	}
+
+	public void setBillerId(Long billerId) {
+		this.billerId = billerId;
+	}
+
+	public Integer getIsAmountFixed() {
+		return isAmountFixed;
+	}
+
+	public void setIsAmountFixed(Integer isAmountFixed) {
+		this.isAmountFixed = isAmountFixed;
+	}
 
 	public Long getPaymentItemId() {
 		return paymentItemId;
@@ -43,11 +78,11 @@ public class PaymentItem extends AbstractEntity {
 		this.paymentItemId = paymentItemId;
 	}
 
-	public Long getPaymentItemName() {
+	public String getPaymentItemName() {
 		return paymentItemName;
 	}
 
-	public void setPaymentItemName(Long paymentItemName) {
+	public void setPaymentItemName(String paymentItemName) {
 		this.paymentItemName = paymentItemName;
 	}
 
@@ -75,12 +110,36 @@ public class PaymentItem extends AbstractEntity {
 		this.currencyCode = currencyCode;
 	}
 
+	public String getCurrencySymbol() {
+		return currencySymbol;
+	}
+
+	public void setCurrencySymbol(String currencySymbol) {
+		this.currencySymbol = currencySymbol;
+	}
+
 	public String getItemCurrencySymbol() {
 		return itemCurrencySymbol;
 	}
 
 	public void setItemCurrencySymbol(String itemCurrencySymbol) {
 		this.itemCurrencySymbol = itemCurrencySymbol;
+	}
+
+	public Long getSortOrder() {
+		return sortOrder;
+	}
+
+	public void setSortOrder(Long sortOrder) {
+		this.sortOrder = sortOrder;
+	}
+
+	public Long getPictureId() {
+		return pictureId;
+	}
+
+	public void setPictureId(Long pictureId) {
+		this.pictureId = pictureId;
 	}
 
 	public Long getPaymentCode() {
@@ -91,14 +150,6 @@ public class PaymentItem extends AbstractEntity {
 		this.paymentCode = paymentCode;
 	}
 
-	public Integer getIsAmountFixed() {
-		return isAmountFixed;
-	}
-
-	public void setIsAmountFixed(Integer isAmountFixed) {
-		this.isAmountFixed = isAmountFixed;
-	}
-
 	public Integer getReadonly() {
 		return readonly;
 	}
@@ -107,27 +158,33 @@ public class PaymentItem extends AbstractEntity {
 		this.readonly = readonly;
 	}
 
-//	public Billers getBiller() {
+
+//	public Biller getBiller() {
 //		return biller;
 //	}
 //
-//	public void setBiller(Billers biller) {
+//	public void setBiller(Biller biller) {
 //		this.biller = biller;
 //	}
+
 
 	@Override
 	public String toString() {
 		return "PaymentItem{" +
-				"paymentItemId=" + paymentItemId +
-				", paymentItemName=" + paymentItemName +
+				"categoryId=" + categoryId +
+				", billerId=" + billerId +
+				", isAmountFixed=" + isAmountFixed +
+				", paymentItemId=" + paymentItemId +
+				", paymentItemName='" + paymentItemName + '\'' +
 				", amount=" + amount +
 				", code=" + code +
 				", currencyCode=" + currencyCode +
+				", currencySymbol='" + currencySymbol + '\'' +
 				", itemCurrencySymbol='" + itemCurrencySymbol + '\'' +
+				", sortOrder=" + sortOrder +
+				", pictureId=" + pictureId +
 				", paymentCode=" + paymentCode +
-				", isAmountFixed=" + isAmountFixed +
 				", readonly=" + readonly +
-//				", billers=" + biller +
 				'}';
 	}
 

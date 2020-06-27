@@ -1,15 +1,15 @@
-package longbridge.controllers.retail;
+package longbridge.controllers.corporate;
 
 import longbridge.dtos.BillPaymentDTO;
 import longbridge.exception.InternetBankingException;
 import longbridge.models.Account;
 import longbridge.models.Biller;
+import longbridge.models.CorporateUser;
 import longbridge.models.PaymentItem;
-import longbridge.models.RetailUser;
 import longbridge.services.AccountService;
 import longbridge.services.BillerService;
+import longbridge.services.CorporateUserService;
 import longbridge.services.PaymentService;
-import longbridge.services.RetailUserService;
 import longbridge.utils.DataTablesUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,21 +32,20 @@ import java.util.Objects;
 import java.util.stream.StreamSupport;
 
 
-
 @Controller
-@RequestMapping("/retail/payment")
-public class PaymentController {
+@RequestMapping("/corporate/payment")
+public class CorpPaymentController {
 
     private final BillerService billerService;
-    private final RetailUserService retailUserService;
+    private final CorporateUserService corporateUserService;
     private final AccountService accountService;
     private final PaymentService paymentService;
-    private final static Logger logger = LoggerFactory.getLogger(PaymentController.class);
+    private final static Logger logger = LoggerFactory.getLogger(CorpPaymentController.class);
 
     @Autowired
-    public PaymentController(BillerService billerService, RetailUserService retailUserService, AccountService accountService, PaymentService paymentService) {
+    public CorpPaymentController(BillerService billerService, CorporateUserService corporateUserService, AccountService accountService, PaymentService paymentService) {
         this.billerService = billerService;
-        this.retailUserService = retailUserService;
+        this.corporateUserService = corporateUserService;
         this.accountService = accountService;
         this.paymentService = paymentService;
     }
@@ -54,33 +53,33 @@ public class PaymentController {
     @RequestMapping(value = "/new", method = {RequestMethod.GET, RequestMethod.POST})
     public String getPaymentPage(Model model, Principal principal){
 
-        RetailUser retailUser = retailUserService.getUserByName(principal.getName());
+        CorporateUser corporateUser = corporateUserService.getUserByName(principal.getName());
         List<Biller> billerCategories = billerService.getBillersCategories();
         model.addAttribute("billerCategories",billerCategories);
         BillPaymentDTO paymentDTO = new BillPaymentDTO();
-        paymentDTO.setPhoneNumber(retailUser.getPhoneNumber());
-        paymentDTO.setEmailAddress(retailUser.getEmail());
+        paymentDTO.setPhoneNumber(corporateUser.getPhoneNumber());
+        paymentDTO.setEmailAddress(corporateUser.getEmail());
         model.addAttribute("paymentDTO", paymentDTO);
-        return "cust/payment/new";
+        return "corp/payment/new";
     }
 
     @PostMapping("/new")
     public String addBillPayment(@ModelAttribute("paymentDTO") @Valid BillPaymentDTO paymentDTO, BindingResult result, RedirectAttributes redirectAttributes){
 
         if(result.hasErrors()){
-            return "cust/payment/new";
+            return "corp/payment/new";
         }
 
         try {
             String message = paymentService.addBillPayment(paymentDTO);
             redirectAttributes.addFlashAttribute("message", message);
-            return "redirect:/retail/payment/completed";
+            return "redirect:/corporate/payment/completed";
         }
         catch (InternetBankingException e){
             logger.error(e.getMessage());
             redirectAttributes.addFlashAttribute("failure", e.getMessage());
         }
-        return "redirect:/retail/payment/new";
+        return "redirect:/corporate/payment/new";
     }
 
     @ResponseBody
@@ -129,7 +128,7 @@ public class PaymentController {
     @GetMapping("/completed")
     public String getCompletedPayments(){
 
-        return "cust/payment/completed";
+        return "corp/payment/completed";
     }
 
     @GetMapping("/completed/all")
@@ -138,7 +137,7 @@ public class PaymentController {
 
         Pageable pageable = DataTablesUtils.getPageable(input);
 
-        Page<BillPaymentDTO> transferRequests = paymentService.getBillPayments(pageable);
+        Page<BillPaymentDTO> transferRequests = paymentService.getCorpPayments(pageable);
 
         DataTablesOutput<BillPaymentDTO> out = new DataTablesOutput<BillPaymentDTO>();
         out.setDraw(input.getDraw());
@@ -155,11 +154,11 @@ public class PaymentController {
     @ModelAttribute
     public void getNairaSourceAccount(Model model, Principal principal) {
 
-        RetailUser user = retailUserService.getUserByName(principal.getName());
+        CorporateUser user = corporateUserService.getUserByName(principal.getName());
         if (user != null) {
             List<Account> accountList = new ArrayList<>();
 
-            Iterable<Account> accounts = accountService.getAccountsForDebit(user.getCustomerId());
+            Iterable<Account> accounts = accountService.getAccountsForDebit(user.getCorporate().getAccounts());
 
             StreamSupport.stream(accounts.spliterator(), false)
                     .filter(Objects::nonNull)

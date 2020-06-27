@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{ret-layout}">
+
+<body onload="javascript:var bread = [['Home', '/retail/dashboard'],['Completed Payments']];currentBar('completed payments');breadCrumb(bread)">
+
+<div layout:fragment="content">
+    <div class="col-md-5 col-sm-5">
+
+        <select class="form-control full-width coronation-form-contro invisible" id="view">
+            <option value="account">Overview</option>
+        </select>
+    </div>
+
+    <div class="col-xs-12 table-responsive" >
+
+        <table id="ct">
+            <thead class="top-row">
+            <td>Date</td>
+            <td>Amount</td>
+            <td>Biller</td>
+            <td>Payment Item</td>
+            <td>Status</td>
+            <td></td>
+            </thead>
+            <tbody>
+
+            </tbody>
+
+        </table>
+    </div>
+
+</div>
+
+
+<th:block layout:fragment="scripts">
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        $(document).ready(function() {
+            var url = "/retail/payment/completed/all";
+            var table = $('#ct').DataTable({
+                responsive: true,
+                "lengthMenu": [ [5, 10], [5, 10] ],
+                "pagingType": "input",
+                "searching": false,
+                "paging": true,
+                "serverSide": true,
+                "ajax": url,
+                "dom": 'T<"clear">frtlp',
+                "columns": [
+                    {"data": "createdOn"},
+                    {"data": "amount"},
+                    {"data": "billerName"},
+                    {"data": "paymentItemName"},
+                    {"data": "status"}
+                ],
+                "columnDefs" : [
+                    {
+                        "targets" : 0,
+                        "data" : "tranDate",
+                        "render" : function(data, type,full, meta) {
+                            if (type === 'display') {
+                                if (data == null)
+                                    return data;
+                                var dtStart = new Date(data);
+
+                                var dtStartWrapper = moment(dtStart);
+                                return dtStartWrapper.format('MMM Do YYYY, h:mm:ss a');
+                            }
+                            return data;
+                        }
+                    },{
+                        "targets" : 1,
+                        "data" : "amount",
+                        "render" : function(data, type,full, meta) {
+                            if (type === 'display') {
+                                if(data == null)
+                                    return data;
+                                var twoPlacedFloat = parseFloat(data).toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,');
+                                return twoPlacedFloat;
+                            }
+                            return data;
+                        }
+                    }]
+
+//            $("#search").on("click", function(e) {
+//                e.preventDefault();
+//                dt = $('#ct').DataTable();
+//                dt.ajax.reload(null, true);
+// &#8358;
+//
+//            });
+
+//            $('.dataTables_empty').html('No data available');
+
+            });
+        });
+
+        /*]]>*/
+    </script>
+</th:block>
+
+</body>
+</html>
