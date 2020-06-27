@@ -1,5 +1,6 @@
 package longbridge.services;
 
+import longbridge.dtos.BillerCategoryDTO;
 import longbridge.dtos.BillerDTO;
 import longbridge.dtos.CategoryDTO;
 import longbridge.exception.InternetBankingException;
@@ -45,7 +46,7 @@ public interface BillerService {
 
     Biller updateBiller(BillerDTO biller) throws InternetBankingException;
 
-    Page<CategoryDTO> getBillerCategories(Pageable pageDetails);
+    Page<BillerCategoryDTO> getBillerCategories(Pageable pageDetails);
 
     Page<CategoryDTO> getBillerCategories(String search, Pageable pageDetails);
 

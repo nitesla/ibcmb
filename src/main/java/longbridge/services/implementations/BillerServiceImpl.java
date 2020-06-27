@@ -1,8 +1,9 @@
 package longbridge.services.implementations;
 
 
-import longbridge.dtos.BillerDTO;
+import longbridge.dtos.BillerCategoryDTO;
 import longbridge.dtos.CategoryDTO;
+import longbridge.dtos.BillerDTO;
 import longbridge.dtos.PaymentItemDTO;
 import longbridge.exception.InternetBankingException;
 import longbridge.models.Biller;
@@ -54,9 +55,9 @@ public class BillerServiceImpl implements BillerService {
         List<BillerDTO> billerDTOList = integrationService.getBillers();
         List<Biller> updatedBillers = compareAndUpdateBillers(billerDTOList);
         billerRepo.removeObsolete(updatedBillers.stream().map(Biller::getId).collect(Collectors.toList()));
-
-
     }
+
+
 
     private List<Biller> compareAndUpdateBillers(List<BillerDTO> updatedBillers) {
         List<Biller> billers = new ArrayList<>();
@@ -77,7 +78,18 @@ public class BillerServiceImpl implements BillerService {
     }
 
     private Biller createBiller(BillerDTO dto) {
-        return modelMapper.map(dto, Biller.class);
+        Biller biller = new Biller();
+        biller.setBillerName(dto.getBillername());
+        biller.setBillerId(dto.getBillerid());
+        biller.setCategoryName(dto.getCategoryname());
+        biller.setCategoryDescription(dto.getCategorydescription());
+        biller.setCategoryId(dto.getCategoryid());
+        biller.setCurrencySymbol(dto.getCurrencySymbol());
+        biller.setCustomerField1(dto.getCustomerfield1());
+        biller.setCustomerField2(dto.getCustomerfield2());
+        biller.setLogoUrl(dto.getLogoUrl());
+        billerRepo.save(biller);
+        return biller;
     }
 
     @Override
@@ -148,8 +160,9 @@ public class BillerServiceImpl implements BillerService {
     }
 
     @Override
-    public Page<CategoryDTO> getBillerCategories(Pageable pageDetails) {
-        return null;
+    public Page<BillerCategoryDTO> getBillerCategories(Pageable pageDetails) {
+       Page<BillerCategoryDTO> getBillerCategories = (Page<BillerCategoryDTO>) integrationService.getBillerCategories();
+       return getBillerCategories;
     }
 
     @Override

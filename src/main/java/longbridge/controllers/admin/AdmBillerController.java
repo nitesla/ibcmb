@@ -34,6 +34,7 @@ public class AdmBillerController {
 
     @GetMapping
     public String indexPage(){
+
         return "adm/quickteller/quicktellerpayments";
     }
 
@@ -47,6 +48,7 @@ public class AdmBillerController {
 
 
 
+
     @GetMapping(path = "/all")
     public @ResponseBody
     DataTablesOutput<Biller> getAllCategoriesAndDescription(DataTablesInput input, @RequestParam("csearch") String search){
@@ -57,7 +59,7 @@ public class AdmBillerController {
             biller = billerService.findEntities(search,pageable);
             logger.info("biller details {}", biller.getNumberOfElements());
         }else{
-            biller = billerService.getEntities(pageable);
+            billerService.getBillerCategories(pageable);
         }
         DataTablesOutput<Biller> out = new DataTablesOutput<Biller>();
         out.setDraw(input.getDraw());
@@ -82,7 +84,7 @@ public class AdmBillerController {
     @GetMapping("/{id}/edit")
     public String editBillerCategory(@PathVariable Long id, Model model, HttpServletRequest request) {
         Biller getBillerDetails = billerService.getBiller(id);
-        List<PaymentItem> paymentItems = billerService.getPaymentItemForBiller(getBillerDetails.getBillerId(),id);
+        List<PaymentItem> paymentItems = billerService.getPaymentItemsForBiller(id);
         request.getSession().setAttribute("billeritems",paymentItems);
         model.addAttribute("biller",getBillerDetails);
         return "adm/quickteller/edit";

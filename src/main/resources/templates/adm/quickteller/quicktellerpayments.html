@@ -55,18 +55,13 @@
                                 </ul>
                                 <ul class="nav navbar-right panel_toolbox">
 
-                                    <!-- <li>
-                                         <div class="col-lg-8">
-                                             <h2>Admin Management</h2>
-                                         </div>
-                                     </li>-->
-
 
 
                                     <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
                                     </li>
 
                                 </ul>
+
                                 <ul class="nav navbar-right panel_toolbox col-lg-4 pull-right">
 
                                     <li class="pull-right" >
@@ -88,7 +83,6 @@
                                     <tr>
 
                                         <th>Category</th>
-                                        <th>Biller</th>
                                         <th>Enabled</th>
                                     </tr>
                                     </thead>
@@ -99,9 +93,6 @@
                                     <tfoot>
                                     <tr>
 
-                                        <th>Category</th>
-                                        <th>Biller</th>
-                                        <th>Enabled</th>
                                     </tr>
                                     </tfoot>
                                 </table>
@@ -190,12 +181,11 @@
             },
             "columns": [
                 {"data":"categoryName"},
-                { "data": "billerName" },
                 { "data": "enabled" }
             ] ,
 
             "columnDefs" : [ {
-                "targets" : 2,
+                "targets" : 1,
                 "data" : "enabled",
                 "render" : function(data, type,full, meta) {
                     if (type === 'display') {
