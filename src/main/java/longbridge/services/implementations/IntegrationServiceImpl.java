@@ -2,11 +2,10 @@ package longbridge.services.implementations;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import longbridge.api.*;
-import longbridge.billerresponse.Biller;
-import longbridge.dtos.BillerDTO;
-import longbridge.dtos.FixedDepositDTO;
-import longbridge.dtos.LoanDTO;
-import longbridge.dtos.SettingDTO;
+import longbridge.billerresponse.BillerCategoryResponse;
+import longbridge.billerresponse.BillerResponse;
+import longbridge.billerresponse.PaymentItemResponse;
+import longbridge.dtos.*;
 import longbridge.exception.InternetBankingException;
 import longbridge.exception.InternetBankingTransferException;
 import longbridge.exception.TransferErrorService;
@@ -1418,21 +1417,56 @@ public class IntegrationServiceImpl implements IntegrationService {
 
 	@Override
 	public List<BillerDTO> getBillers(){
-		String appId = "001b5";
-		String hash = "$234@789";
 		List<BillerDTO> billers = new ArrayList<>();
 		String uri = URI+"/api/quickteller/biller";
 		Map<String,String> params = new HashMap<>();
 		params.put("appid",appId);
-		params.put("hash",hash);
+		params.put("hash",secretKey);
 		try {
-			Biller biller = template.postForObject(uri,params, Biller.class);
-			billers = biller.getBillers();
+			BillerResponse billerResponse = template.postForObject(uri,params, BillerResponse.class);
+			billers = billerResponse.getBillers();
 			return billers;
 		} catch (Exception e){
 			logger.info("Error processing request");
 		}
 			return billers;
+	}
+
+
+	@Override
+	public List<PaymentItemDTO> getPaymentItems(Long billerId){
+		String id = Long.toString(billerId);
+		List<PaymentItemDTO> items = new ArrayList<>();
+		String uri = URI+"/api/quickteller/billerpaymentitem";
+		Map<String,String> params = new HashMap<>();
+		params.put("appid",appId);
+		params.put("billerid", id);
+		params.put("hash",secretKey);
+		try {
+			PaymentItemResponse paymentItemResponse = template.postForObject(uri,params, PaymentItemResponse.class);
+			items = paymentItemResponse.getPaymentitems();
+			return items;
+		} catch (Exception e){
+			logger.info("Error processing request");
+		}
+		return items;
+	}
+
+	@Override
+	public List<BillerCategoryDTO> getBillerCategories(){
+		List<BillerCategoryDTO> items = new ArrayList<>();
+		String uri = URI+"/api/quickteller/billercategory";
+		Map<String,String> params = new HashMap<>();
+		params.put("appid",appId);
+		params.put("hash",secretKey);
+		try {
+			BillerCategoryResponse billerCategoryResponse = template.postForObject(uri,params, BillerCategoryResponse.class);
+			items = billerCategoryResponse.getCategorys();
+			return items;
+		} catch (Exception e){
+			logger.info("Error processing request");
+		}
+		return items;
 	}
 
 }

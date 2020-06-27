@@ -1,23 +1,16 @@
 package longbridge.models;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonSerializer;
-import com.fasterxml.jackson.databind.SerializerProvider;
-import longbridge.utils.PrettySerializer;
 import org.hibernate.annotations.Where;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
-import java.io.IOException;
 
 
 @Entity
 @Audited(withModifiedFlag=true)
 @Where(clause ="del_Flag='N'" )
 @Table(name = "BILLER")
-public class Biller extends AbstractEntity implements PrettySerializer{
+public class Biller extends AbstractEntity{
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -42,12 +35,20 @@ public class Biller extends AbstractEntity implements PrettySerializer{
     private String logoUrl;
     @Column(name = "enabled")
     private boolean enabled;
-    @Column(name="deletevalue")
-    private String deleteValue;
+
 
 //    @OneToMany( mappedBy = "billers", cascade = CascadeType.ALL, orphanRemoval=true )
 //    private List<PaymentItem> paymentItems;
 
+
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
 
     public Long getCategoryId() {
         return categoryId;
@@ -137,18 +138,12 @@ public class Biller extends AbstractEntity implements PrettySerializer{
 //        this.paymentItems = paymentItems;
 //    }
 
-    public String getDeleteValue() {
-        return deleteValue;
-    }
-
-    public void setDeleteValue(String deleteValue) {
-        this.deleteValue = deleteValue;
-    }
 
     @Override
     public String toString() {
         return "Biller{" +
-                "categoryId=" + categoryId +
+                "id=" + id +
+                ", categoryId=" + categoryId +
                 ", categoryName='" + categoryName + '\'' +
                 ", categoryDescription='" + categoryDescription + '\'' +
                 ", billerId=" + billerId +
@@ -158,48 +153,6 @@ public class Biller extends AbstractEntity implements PrettySerializer{
                 ", currencySymbol='" + currencySymbol + '\'' +
                 ", logoUrl='" + logoUrl + '\'' +
                 ", enabled=" + enabled +
-//                ", paymentItems=" + paymentItems +
                 '}';
     }
-
-
-    @Override @JsonIgnore
-    public JsonSerializer<Biller> getSerializer() {
-        return new JsonSerializer<Biller>() {
-            @Override
-            public void serialize(Biller value, JsonGenerator gen, SerializerProvider serializers)
-                    throws IOException, JsonProcessingException
-            {
-//				gen.writeStartObject();
-//				gen.writeStringField("Name",value.name);
-//				gen.writeStringField("Category",value.category);
-//				gen.writeStringField("Owner Reference Name",value.ownerReferenceName);
-//				gen.writeBooleanField("Enabled",value.enabled);
-//				gen.writeEndObject();
-            }
-        };
-    }
-
-    @Override @JsonIgnore
-    public JsonSerializer<Biller> getAuditSerializer() {
-        return new JsonSerializer<Biller>() {
-            @Override
-            public void serialize(Biller value, JsonGenerator gen, SerializerProvider serializers)
-                    throws IOException, JsonProcessingException
-            {
-//				gen.writeStartObject();
-//				if(value.id != null) {
-//					gen.writeStringField("id", value.id.toString());
-//				}else {
-//					gen.writeStringField("id", "");
-//				}
-//				gen.writeStringField("name",value.name);
-//				gen.writeStringField("category",value.category);
-//				gen.writeStringField("ownerReferenceName",value.ownerReferenceName);
-//				gen.writeBooleanField("enabled",value.enabled);
-//				gen.writeEndObject();
-            }
-        };
-    }
-
 }
