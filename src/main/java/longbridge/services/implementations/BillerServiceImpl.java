@@ -7,7 +7,9 @@ import longbridge.dtos.CategoryDTO;
 import longbridge.dtos.PaymentItemDTO;
 import longbridge.exception.InternetBankingException;
 import longbridge.models.Biller;
+import longbridge.models.BillerCategory;
 import longbridge.models.PaymentItem;
+import longbridge.repositories.BillerCategoryRepo;
 import longbridge.repositories.BillerRepo;
 import longbridge.repositories.PaymentItemRepo;
 import longbridge.services.BillerService;
@@ -45,6 +47,8 @@ public class BillerServiceImpl implements BillerService {
     private ModelMapper modelMapper;
     @Autowired
     private PaymentItemRepo paymentItemRepo;
+    @Autowired
+    private BillerCategoryRepo billerCategoryRepo;
     @Autowired
     private MessageSource messageSource;
     private Locale locale = LocaleContextHolder.getLocale();
@@ -159,10 +163,51 @@ public class BillerServiceImpl implements BillerService {
         return null;
     }
 
+    private BillerCategory createBillerCategory(BillerCategoryDTO billerCategory){
+        BillerCategory category = new BillerCategory();
+        category.setCategoryName(billerCategory.getCategoryName());
+        category.setCategoryDescription(billerCategory.getCategoryDescription());
+        category.setCategoryId(billerCategory.getCategoryId());
+        billerCategoryRepo.save(category);
+        return category;
+    }
+
+
+    private List<BillerCategory> compareAndUpdateCategories(List<BillerCategoryDTO> updatedCategories){
+        List<BillerCategory> billerCategory = new ArrayList<>();
+        updatedCategories.forEach(updatedCategory -> {
+            BillerCategory storedCategory = billerCategoryRepo.findByCategoryId(updatedCategory.getCategoryId());
+            if (storedCategory == null) {
+                BillerCategory category = createBillerCategory(updatedCategory);
+                category.setEnabled(true);
+                billerCategory.add(category);
+            } else {
+                BillerCategory category = createBillerCategory(updatedCategory);
+                category.setEnabled(storedCategory.isEnabled());
+                category.setId(storedCategory.getId());
+                billerCategory.add(category);
+            }
+        });
+            return billerCategoryRepo.saveAll(billerCategory);
+    }
+    
+    
+    private void refreshCategories(){
+        logger.info("UPDATING CATEGORIES!!");
+        List<BillerCategoryDTO> getBillerCategories = integrationService.getBillerCategories();
+        List<BillerCategory> updatedCategories = compareAndUpdateCategories(getBillerCategories);
+        billerCategoryRepo.removeObsolete(updatedCategories.stream().map(BillerCategory::getCategoryId).collect(Collectors.toList()));
+    }
+
+ 
+    
     @Override
     public Page<BillerCategoryDTO> getBillerCategories(Pageable pageDetails) {
-       Page<BillerCategoryDTO> getBillerCategories = (Page<BillerCategoryDTO>) integrationService.getBillerCategories();
-       return getBillerCategories;
+        refreshCategories();
+        Page<BillerCategory> all = billerCategoryRepo.findAll(pageDetails);
+//     logger.info("{}",getCategories);
+        Page<BillerCategoryDTO> biller = null;
+       return biller;
     }
 
     @Override

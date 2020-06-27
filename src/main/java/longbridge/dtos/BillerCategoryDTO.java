@@ -2,15 +2,15 @@ package longbridge.dtos;
 
 public class BillerCategoryDTO {
 
-    private String categoryId;
+    private Long categoryId;
     private String categoryName;
     private String categoryDescription;
 
-    public String getCategoryId() {
+    public Long getCategoryId() {
         return categoryId;
     }
 
-    public void setCategoryId(String categoryId) {
+    public void setCategoryId(Long categoryId) {
         this.categoryId = categoryId;
     }
 
