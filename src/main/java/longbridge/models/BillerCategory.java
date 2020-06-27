@@ -3,27 +3,32 @@ package longbridge.models;
 import org.hibernate.annotations.Where;
 import org.hibernate.envers.Audited;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Entity
 @Audited(withModifiedFlag=true)
 @Where(clause ="del_Flag='N'" )
-public class BillerCategory {
+@Table(name = "BILLERCATEGORY")
+public class BillerCategory extends AbstractEntity{
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long id;
 
     @Column(name = "categoryid")
-    private String categoryId;
+    private Long categoryId;
     @Column(name = "categoryname")
     private String categoryName;
     @Column(name = "categorydescription")
     private String categoryDescription;
+    @Column(name = "enabled")
+    private Boolean enabled;
 
-    public String getCategoryId() {
+    public Long getCategoryId() {
         return categoryId;
     }
 
-    public void setCategoryId(String categoryId) {
+    public void setCategoryId(Long categoryId) {
         this.categoryId = categoryId;
     }
 
@@ -43,12 +48,24 @@ public class BillerCategory {
         this.categoryDescription = categoryDescription;
     }
 
+    public Boolean getEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(Boolean enabled) {
+        this.enabled = enabled;
+    }
+
+    public boolean isEnabled() {
+        return enabled;
+    }
     @Override
     public String toString() {
         return "BillerCategory{" +
                 "categoryId='" + categoryId + '\'' +
                 ", categoryName='" + categoryName + '\'' +
                 ", categoryDescription='" + categoryDescription + '\'' +
+                ", enabled=" + enabled +
                 '}';
     }
 }
