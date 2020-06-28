@@ -94,7 +94,11 @@
 
                                                                                 <th>Item</th>
                                                                                 <th>Amount</th>
+                                                                                <th>Payment-code</th>
+                                                                                <th>Fixed-Amount Value</th>
+                                                                                <th>Read-only</th>
                                                                                 <th>Enabled</th>
+
 
 
                                                                             </tr>
@@ -189,14 +193,17 @@
                     "columns": [
                                  {"data":"paymentItemName"},
                                  { "data": "amount" },
-                                 { "data": "enabled" }
+                                 { "data": "paymentCode" },
+                                  { "data": "isAmountFixed" },
+                                     { "data": "readonly" },
+                                 { "data": "enabled" },
+
                              ],
                     "columnDefs" : [ {
-                        "targets" : 2,
+                        "targets" : 5,
                         "data" : "enabled",
                         "render" : function(data, type,full, meta) {
                             if (type === 'display') {
-                                console.log(full);
                                 if (data == true) {
                                     return "<input type='checkbox' data-id='"+full.id+"'  data-pk='"+full.billerId+"' data-name='"+full.paymentItemName+"' data-category='"+full.paymentItemId+"'  data-switchery='true' class='js-switch' checked data-value='"+full.enabled+"'/>";
                                 } else if (data == false) {
@@ -205,7 +212,23 @@
                             }
                             return data;
                         }
-                    }]
+                    },
+                        {
+                            "targets" : 4,
+                            "data" : "readonly",
+                            "render" : function(data, type,full, meta) {
+                                if (type === 'display') {
+                                    if (data == true) {
+                                        return "<input type='checkbox' class='readonlyvalue' name='amount' data-id='"+full.id+"'  data-pk='"+full.billerId+"' data-name='"+full.paymentItemName+"' data-category='"+full.paymentItemId+"'  data-switchery='true'  checked data-value='"+full.readonly+"'/>";
+                                    } else if (data == false) {
+                                        return "<input type='checkbox' class='readonlyvalue' name='amount' data-id='"+full.id+"' data-pk='"+full.billerId+"' data-name='"+full.paymentItemName+"' data-category='"+full.paymentItemId+"'   data-switchery='true'   data-value='"+full.readonly+"'/>";
+                                    }
+                                }
+                                return data;
+                            }
+                        }
+                    ]
+
                 })
                  var elems = Array.prototype.slice.call(document.querySelectorAll('.js-switch'));
                 elems.forEach(function(html) {
@@ -221,6 +244,23 @@
     })
 
 
+    $(document).on("change","input[name=amount]",function (e) {
+        var cb = $(e.currentTarget);
+        var op = cb.val();
+        var dataId = cb.attr("data-id");
+        var value = cb.attr("data-value");
+        console.log(value);
+
+        $.ajax({
+            type: "POST",
+            url: "/admin/billers/assignreadonly",
+            data: {id: dataId, value: value} // parameters
+
+        });
+
+    })
+
+
 
     $(document).on("change","input[type=checkbox]", function(e) {
         var cb = $(e.currentTarget);
@@ -231,10 +271,9 @@
         var category = cb.attr("data-category");
         var value = cb.attr("data-value");
 
-
             $.ajax({
                 type: "POST",
-                url: "/admin/billers/authorizepaymentitem",
+                url: "/admin/billers/enableordisablepaymentitem",
                 data: {id: dataId, value: value} // parameters
 
             });
@@ -244,6 +283,7 @@
 
     
     function updateItems() {
+
 
         $.ajax({
             type: "POST",

@@ -53,8 +53,20 @@ public class BillerServiceImpl implements BillerService {
     private MessageSource messageSource;
     private Locale locale = LocaleContextHolder.getLocale();
 
+
+
+
     @Override
-    public void updateBillers() {
+    public void RefreshBiller() {
+        // fetch biller from quickteller
+        updateBillers();
+        // fetch categories from quickteller
+        refreshCategories();
+    }
+
+
+
+    private void updateBillers() {
         logger.info("UPDATING BILLERS!!");
         List<BillerDTO> billerDTOList = integrationService.getBillers();
         List<Biller> updatedBillers = compareAndUpdateBillers(billerDTOList);
@@ -92,6 +104,10 @@ public class BillerServiceImpl implements BillerService {
         biller.setCustomerField1(dto.getCustomerfield1());
         biller.setCustomerField2(dto.getCustomerfield2());
         biller.setLogoUrl(dto.getLogoUrl());
+        biller.setSupportemail(dto.getSupportemail());
+        biller.setShortname(dto.getShortName());
+        biller.setPaydirectInstitutionId(dto.getPaydirectInstitutionId());
+        biller.setPaydirectProductId(dto.getPaydirectProductId());
         billerRepo.save(biller);
         return biller;
     }
@@ -113,20 +129,44 @@ public class BillerServiceImpl implements BillerService {
 
 
     @Override
-    public void disableBiller(Long id) {
-        int disableBiller = billerRepo.disableBiller(id);
-        if (disableBiller < 0) {
-            throw new RuntimeException("Error disabling biller, Please try again!");
+    public void readOnlyAmount(Long id, Boolean value){
+        if (value == false){
+            Boolean newValue = true;
+            paymentItemRepo.readOnly(id, newValue);
+            logger.info("Item with id=[{}] set read-only = {}", id, newValue);
+        }else{
+            Boolean newValue = false;
+            paymentItemRepo.readOnly(id, newValue);
+            logger.info("Item with id=[{}] set read-only = {}", id, newValue);
+        }
+
+    }
+
+
+    @Override
+    public void enableOrDisableCategory(Long id,Boolean value) {
+        if (value == false){
+            Boolean newValue = true;
+            billerCategoryRepo.enableOrDisableCategory(id, newValue);
+            logger.info("Item with id=[{}] is enabled = {}", id, newValue);
+        }else{
+            Boolean newValue = false;
+            billerCategoryRepo.enableOrDisableCategory(id, newValue);
+            logger.info("Item with id=[{}] is enabled = {}", id, newValue);
         }
 
     }
 
     @Override
-    public void enableBiller(Long id) {
-        int enableBillers = billerRepo.enableBiller(id);
-        logger.info("enabling biller service");
-        if (enableBillers < 0) {
-            throw new RuntimeException("Error disabling biller, Please try again!");
+    public void enableOrDisableBiller(Long id,Boolean value) {
+        if (value == false){
+            Boolean newValue = true;
+            billerRepo.enableOrDisableBiller(id, newValue);
+            logger.info("Item with id=[{}] is enabled = {}", id, newValue);
+        }else{
+            Boolean newValue = false;
+            billerRepo.enableOrDisableBiller(id, newValue);
+            logger.info("Item with id=[{}] is enabled = {}", id, newValue);
         }
     }
 
@@ -202,8 +242,8 @@ public class BillerServiceImpl implements BillerService {
             return billerCategoryRepo.saveAll(billerCategory);
     }
     
-    @Override
-    public void refreshCategories(){
+
+    private void refreshCategories(){
         logger.info("UPDATING CATEGORIES!!");
         List<BillerCategoryDTO> getBillerCategories = integrationService.getBillerCategories();
         List<BillerCategory> updatedCategories = compareAndUpdateCategories(getBillerCategories);
@@ -234,8 +274,8 @@ public class BillerServiceImpl implements BillerService {
 
     }
 
-    @Override
-    public void updatePaymentItems(Long billerId){
+
+    private void updatePaymentItems(Long billerId){
         logger.info("UPDATING PAYMENT ITEMS!!");
         List<PaymentItemDTO> getBillerPaymentItems = integrationService.getPaymentItems(billerId);
         List<PaymentItem> updatedPaymentItems = compareAndUpdatePaymentItems(getBillerPaymentItems);
@@ -243,9 +283,8 @@ public class BillerServiceImpl implements BillerService {
     }
 
     @Override
-    public void refreshPaymentItems(Long id){
-        Biller biller = billerRepo.findOneById(id);
-        updatePaymentItems(biller.getBillerId());
+    public void refreshPaymentItems(Long billerId){
+        updatePaymentItems(billerId);
     }
 
 
@@ -257,14 +296,7 @@ public class BillerServiceImpl implements BillerService {
         return paymentItemList;
     }
 
-    @Override
-    public void RefreshBiller(Long id) {
 
-        Biller biller = billerRepo.findOneById(id);
-        // fetch biller from quickteller
-        updateBillers();
-        // fetch payment items
-    }
 
 
     @Override
@@ -288,6 +320,7 @@ public class BillerServiceImpl implements BillerService {
         newPaymentItem.setItemCurrencySymbol(paymentItemDTO.getItemCurrencySymbol());
         newPaymentItem.setPaymentCode(paymentItemDTO.getPaymentCode());
         newPaymentItem.setPaymentItemName(paymentItemDTO.getPaymentitemname());
+        newPaymentItem.setReadonly(false);
         paymentItemRepo.save(newPaymentItem);
         return newPaymentItem;
     }
@@ -304,6 +337,7 @@ public class BillerServiceImpl implements BillerService {
             } else {
                 PaymentItem newPaymentItem = createPaymentitem(paymentItem);
                 newPaymentItem.setEnabled(getStoredItem.isEnabled());
+                newPaymentItem.setReadonly(getStoredItem.getReadonly());
                 items.add(newPaymentItem);
 
             }

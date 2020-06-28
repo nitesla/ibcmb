@@ -47,7 +47,7 @@
                                     <li >
                                         <div class="col-lg-4">
                                             <div class="title-action">
-                                                <a id="checkBiller"  class="btn btn-primary btn-sm bt-select bt-link-act" href="/admin/billers/index/edit" disabled="disabled" ><i class="fa fa-pencil"></i> View Billers</a>
+                                                <a id="checkBiller"  class="btn btn-primary btn-sm bt-select bt-link-act" href="/admin/billers/index/biller" disabled="disabled" ><i class="fa fa-pencil"></i> View Billers</a>
                                             </div>
                                         </div>
                                     </li>
@@ -246,22 +246,14 @@
         var name = cb.attr("data-name");
         var category = cb.attr("data-category");
         var value = cb.attr("data-value");
-        if (value == "true"){
-            $.ajax({
-                type: "POST",
-                url: "/admin/billers/disablebiller",
-                data: {id:dataId} // parameters
 
-            })
-        } else{
             $.ajax({
                 type: "POST",
-                url: "/admin/billers/enablebiller",
-                data: {id:dataId} // parameters
+                url: "/admin/billers/enableordisablecategory",
+                data: {id:dataId,value:value} // parameters
 
             })
 
-        }
 
     });
 
@@ -291,10 +283,8 @@
         }
         var dt = $('#biller').DataTable();
         var id = dt.row({selected: true}).data().id;
-        // console.log(allDate);
         // var id = $(dt.row({selected: true}).node()).attr("id");
         console.log(id);
-        // alert("WE GOT HERE");
         //window.location.href = link.attr("formaction") + '?id=' + id;
         //replace {id} with id
         var ooo = link.attr("href").replace("index",id);

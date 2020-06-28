@@ -30,7 +30,7 @@ public class PaymentItem extends AbstractEntity {
 	@Column(name = "IS_AMOUNT_FIXED")
 	private Boolean isAmountFixed;
 	@Column(name = "READONLY")
-	private Integer readonly;
+	private Boolean readonly;
 	@Column(name = "enabled")
 	private boolean enabled;
 	
@@ -101,11 +101,11 @@ public class PaymentItem extends AbstractEntity {
 		this.isAmountFixed = isAmountFixed;
 	}
 
-	public Integer getReadonly() {
+	public Boolean getReadonly() {
 		return readonly;
 	}
 
-	public void setReadonly(Integer readonly) {
+	public void setReadonly(Boolean readonly) {
 		this.readonly = readonly;
 	}
 

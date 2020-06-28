@@ -87,6 +87,11 @@
                                                             <tr>
 
                                                                 <th>BILLER</th>
+                                                                <th>Short-name</th>
+                                                                <th>Support-email</th>
+                                                                <th>Product-id(Paydirect)</th>
+                                                                <th>Institution-id(Paydirect)</th>
+                                                                <th>Currency</th>
                                                                 <th>Enable</th>
 
                                                             </tr>
@@ -180,11 +185,16 @@
             },
             "columns": [
                 {"data":"billerName"},
+                {"data":"shortname"},
+                {"data":"supportemail"},
+                {"data":"paydirectProductId"},
+                {"data":"paydirectInstitutionId"},
+                {"data":"currencySymbol"},
                 { "data": "enabled" }
             ] ,
 
             "columnDefs" : [ {
-                "targets" : 1,
+                "targets" : 6,
                 "data" : "enabled",
                 "render" : function(data, type,full, meta) {
                     if (type === 'display') {
@@ -237,7 +247,7 @@
 
         $.ajax({
             type: "POST",
-            url: "/admin/billers/authorizepaymentitem",
+            url: "/admin/billers/enableordisablebiller",
             data: {id: dataId, value: value} // parameters
 
         });

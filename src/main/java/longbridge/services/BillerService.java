@@ -14,17 +14,13 @@ import java.util.List;
 
 
 public interface BillerService {
-    void updateBillers();
 
-    void disableBiller(Long id);
+    void enableOrDisableCategory(Long id,Boolean value);
 
-    void enableBiller(Long id);
-
-    void refreshCategories();
+    void enableOrDisableBiller(Long id,Boolean value);
 
     void refreshPaymentItems(Long id);
 
-    public void updatePaymentItems(Long id);
 
     Page<Biller> findEntities(String pattern, Pageable pageDetails);
 
@@ -34,7 +30,9 @@ public interface BillerService {
 
     List<PaymentItem> getPaymentItemsForBiller(Long id);
 
-    void RefreshBiller(Long id);
+    void RefreshBiller();
+
+    void readOnlyAmount(Long id, Boolean value);
 
     Biller addBiller(BillerDTO billerDto) throws InternetBankingException;
 

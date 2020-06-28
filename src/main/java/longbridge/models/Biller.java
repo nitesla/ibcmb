@@ -42,10 +42,19 @@ public class Biller extends AbstractEntity{
     private String logoUrl;
     @Column(name = "enabled")
     private boolean enabled;
+    @Column(name = "supportemail")
+    private String supportemail;
+    @Column(name = "shortname")
+    private String shortname;
+    @Column(name = "paydirectproductid")
+    private String paydirectProductId;
+    @Column(name = "paydirectinstitutionid")
+    private String paydirectInstitutionId;
 
 
 //    @OneToMany( mappedBy = "billers", cascade = CascadeType.ALL, orphanRemoval=true )
 //    private List<PaymentItem> paymentItems;
+
 
 
 
@@ -137,7 +146,39 @@ public class Biller extends AbstractEntity{
         this.enabled = enabled;
     }
 
-//    public List<PaymentItem> getPaymentItems() {
+    public String getSupportemail() {
+        return supportemail;
+    }
+
+    public void setSupportemail(String supportemail) {
+        this.supportemail = supportemail;
+    }
+
+    public String getShortname() {
+        return shortname;
+    }
+
+    public void setShortname(String shortname) {
+        this.shortname = shortname;
+    }
+
+    public String getPaydirectProductId() {
+        return paydirectProductId;
+    }
+
+    public void setPaydirectProductId(String paydirectProductId) {
+        this.paydirectProductId = paydirectProductId;
+    }
+
+    public String getPaydirectInstitutionId() {
+        return paydirectInstitutionId;
+    }
+
+    public void setPaydirectInstitutionId(String paydirectInstitutionId) {
+        this.paydirectInstitutionId = paydirectInstitutionId;
+    }
+
+    //    public List<PaymentItem> getPaymentItems() {
 //        return paymentItems;
 //    }
 //
@@ -160,6 +201,10 @@ public class Biller extends AbstractEntity{
                 ", currencySymbol='" + currencySymbol + '\'' +
                 ", logoUrl='" + logoUrl + '\'' +
                 ", enabled=" + enabled +
+                ", supportemail='" + supportemail + '\'' +
+                ", shortname='" + shortname + '\'' +
+                ", paydirectProductId='" + paydirectProductId + '\'' +
+                ", paydirectInstitutionId='" + paydirectInstitutionId + '\'' +
                 '}';
     }
 }

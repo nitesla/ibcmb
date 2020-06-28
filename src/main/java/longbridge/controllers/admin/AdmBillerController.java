@@ -40,7 +40,6 @@ public class AdmBillerController {
 
     @GetMapping
     public String indexPage(){
-
         return "adm/quickteller/quicktellerpayments";
     }
 
@@ -48,8 +47,7 @@ public class AdmBillerController {
     @PostMapping
     @ResponseBody
     public String updateBillers(){
-        billerService.updateBillers();
-        billerService.refreshCategories();
+        billerService.RefreshBiller();
         return "Successfully updated";
     }
 
@@ -71,6 +69,11 @@ public class AdmBillerController {
     }
 
 
+    @ResponseBody
+    @PostMapping("/assignreadonly")
+    public void assignReadOnlyValue(Long id,Boolean value){
+        billerService.readOnlyAmount(id,value);
+    }
 
 
     @ResponseBody
@@ -109,42 +112,35 @@ public class AdmBillerController {
     @ResponseBody
     @PostMapping("/updatepaymentitems")
     public String updatePaymentItems(HttpServletRequest request){
-        logger.info("DEBUGGING1");
         Long billerId = (Long) request.getSession().getAttribute("billerId");
-        billerService.updatePaymentItems(billerId);
+        billerService.refreshPaymentItems(billerId);
         return "Successfully Updated";
     }
 
 
-    @GetMapping("/{id}/edit")
+    @GetMapping("/{id}/biller")
     public String editBillerCategory(@PathVariable Long id, Model model, HttpServletRequest request) {
         BillerCategory getCategoryId = billerCategoryRepo.findOneById(id);
        String categoryName = getCategoryId.getCategoryName();
        request.getSession().setAttribute("categoryname", categoryName);
-//        Biller getBillerDetails = billerService.getBiller(id);
-//        model.addAttribute("biller",getBillerDetails);
         return "adm/quickteller/billers";
     }
 
     @ResponseBody
-    @PostMapping("/disablebiller")
-    public void disable(Long id){
-        logger.info("disabling biller");
-    billerService.disableBiller(id);
+    @PostMapping("/enableordisablecategory")
+    public void disableOrEnableCategory(Long id, Boolean value){
+    billerService.enableOrDisableCategory(id,value);
     }
 
     @ResponseBody
-    @PostMapping("/enablebiller")
-    public void enable(Long id){
-        logger.info("enabling biller");
-        billerService.enableBiller(id);
+    @PostMapping("/enableordisablebiller")
+    public void enableOrDisableBiller(Long id, Boolean value){
+        billerService.enableOrDisableBiller(id,value);
     }
 
     @ResponseBody
-    @PostMapping("/authorizepaymentitem")
+    @PostMapping("/enableordisablepaymentitem")
     public void enableOrDisablePaymentItem(Long id,Boolean value){
-        logger.info("value = {}",value);
-        logger.info("id = " + id);
         billerService.enablePaymentItems(id,value);
     }
 
