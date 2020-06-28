@@ -99,9 +99,20 @@ public class AdmBillerController {
     @GetMapping("/{id}/getpaymentitems")
     public String getPaymentItemForBiller(@PathVariable Long id, Model model,HttpServletRequest request){
         Biller biller = billerRepo.findOneById(id);
+        Long billerId = biller.getBillerId();
+        request.getSession().setAttribute("billerId" , billerId);
         List<PaymentItem> paymentItems = billerService.getPaymentItemsForBiller(id);
         request.getSession().setAttribute("billeritems",paymentItems);
         return "adm/quickteller/edit";
+    }
+
+    @ResponseBody
+    @PostMapping("/updatepaymentitems")
+    public String updatePaymentItems(HttpServletRequest request){
+        logger.info("DEBUGGING1");
+        Long billerId = (Long) request.getSession().getAttribute("billerId");
+        billerService.updatePaymentItems(billerId);
+        return "Successfully Updated";
     }
 
 

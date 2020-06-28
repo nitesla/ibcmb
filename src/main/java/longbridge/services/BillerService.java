@@ -22,6 +22,8 @@ public interface BillerService {
 
     void refreshCategories();
 
+    void refreshPaymentItems(Long id);
+
     public void updatePaymentItems(Long id);
 
     Page<Biller> findEntities(String pattern, Pageable pageDetails);

@@ -98,8 +98,17 @@ public class BillerServiceImpl implements BillerService {
 
     @Override
     public void enablePaymentItems(Long id, Boolean value) {
-        paymentItemRepo.enablePaymentItem(id, value);
-        logger.info("Item with id=[{}] is enabled = {}", id, value);
+        if (value == false){
+            Boolean newValue = true;
+            paymentItemRepo.enablePaymentItem(id, newValue);
+            logger.info("Item with id=[{}] is enabled = {}", id, newValue);
+        }else{
+            Boolean newValue = false;
+            paymentItemRepo.enablePaymentItem(id, newValue);
+            logger.info("Item with id=[{}] is enabled = {}", id, newValue);
+        }
+
+
     }
 
 
@@ -233,12 +242,17 @@ public class BillerServiceImpl implements BillerService {
         paymentItemRepo.removeObsolete(updatedPaymentItems.stream().map(PaymentItem::getId).collect(Collectors.toList()));
     }
 
+    @Override
+    public void refreshPaymentItems(Long id){
+        Biller biller = billerRepo.findOneById(id);
+        updatePaymentItems(biller.getBillerId());
+    }
+
 
     @Override
     public List<PaymentItem> getPaymentItemsForBiller(Long id) {
         Biller biller = billerRepo.findOneById(id);
         logger.info("ID IS {}" , biller.getBillerId());
-        updatePaymentItems(biller.getBillerId());
         List<PaymentItem> paymentItemList = paymentItemRepo.findByBillerId(biller.getBillerId());
         return paymentItemList;
     }
@@ -248,6 +262,7 @@ public class BillerServiceImpl implements BillerService {
 
         Biller biller = billerRepo.findOneById(id);
         // fetch biller from quickteller
+        updateBillers();
         // fetch payment items
     }
 

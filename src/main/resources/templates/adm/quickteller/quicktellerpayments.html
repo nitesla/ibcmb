@@ -82,6 +82,7 @@
                                     <thead>
                                     <tr>
                                         <th>CATEGORY</th>
+                                        <th>Description</th>
                                         <th>Enabled</th>
                                     </tr>
                                     </thead>
@@ -180,11 +181,12 @@
             },
             "columns": [
                 {"data":"categoryName"},
+                {"data":"categoryDescription"},
                 { "data": "enabled" }
             ] ,
 
             "columnDefs" : [ {
-                "targets" : 1,
+                "targets" : 2,
                 "data" : "enabled",
                 "render" : function(data, type,full, meta) {
                     if (type === 'display') {

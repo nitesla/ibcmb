@@ -69,7 +69,19 @@
 
 <!--                                                            </form>-->
 
+                                                <ul class="nav navbar-left panel_toolbox">
 
+                                                    <li >
+                                                        <div class="col-lg-4">
+                                                            <div class="title-action">
+                                                                <button  class="btn btn-sm btn-primary" type="button" onclick="updateItems()"><i class="fa fa-plus"></i> Update Items</button>
+                                                            </div>
+                                                        </div>
+                                                    </li>
+
+                                                
+
+                                                </ul>
 
                                                                 <div class="row">
 
@@ -151,6 +163,16 @@
 <script>
 
 
+    function showNotification(message , type){
+        $.notify({
+            // options
+            message: message
+        },{
+            // settings
+            type: type
+        });
+    }
+
 
     $.ajax({
         type: "GET",
@@ -220,6 +242,30 @@
 
         });
 
+    
+    function updateItems() {
+
+        $.ajax({
+            type: "POST",
+            url: "/admin/billers/updatepaymentitems",
+            data: { }, // parameters
+            success :
+                function(response) {
+                    console.log(response);
+                    showNotification(response, "success");
+                    setTimeout(function () {
+                        location.reload();
+                    },2000)
+                },
+            error:
+                function (response) {
+                    console.log(response.responseText);
+                    showNotification(response.responseText, "danger");
+                }
+
+        })
+        
+    }
 
 
 </script>
