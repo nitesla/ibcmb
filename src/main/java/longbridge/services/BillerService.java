@@ -53,7 +53,7 @@ public interface BillerService {
 
     Page<BillerCategory> getBillerCategories(Pageable pageDetails);
 
-    Page<CategoryDTO> getBillerCategories(String search, Pageable pageDetails);
+    Page<BillerCategory> getBillerCategories(String search, Pageable pageDetails);
 
     PaymentItem getPaymentItem(Long id);
 

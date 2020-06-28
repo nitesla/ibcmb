@@ -260,8 +260,8 @@ public class BillerServiceImpl implements BillerService {
     }
 
     @Override
-    public Page<CategoryDTO> getBillerCategories(String search, Pageable pageDetails) {
-        return null;
+    public Page<BillerCategory> getBillerCategories(String search, Pageable pageDetails) {
+        return billerCategoryRepo.findUsingPattern(search,pageDetails);
     }
 
     @Override

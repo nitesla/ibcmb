@@ -57,9 +57,14 @@ public class AdmBillerController {
     @GetMapping(path = "/all")
     public @ResponseBody
     DataTablesOutput<BillerCategory> getAllCategoriesAndDescription(DataTablesInput input, @RequestParam("csearch") String search){
+        logger.info("SEARCH = " + search);
         Pageable pageable = DataTablesUtils.getPageable(input);
-        Page<BillerCategory>  billerCategory = billerService.getBillerCategories(pageable);
-
+        Page<BillerCategory> billerCategory = null;
+        if (StringUtils.isNoneBlank(search)) {
+            billerCategory = billerService.getBillerCategories(search,pageable);
+        }else {
+            billerCategory = billerService.getBillerCategories(pageable);
+        }
         DataTablesOutput<BillerCategory> out = new DataTablesOutput<BillerCategory>();
         out.setDraw(input.getDraw());
         out.setData(billerCategory.getContent());
