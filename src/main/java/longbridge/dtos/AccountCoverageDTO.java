@@ -6,8 +6,10 @@ public class AccountCoverageDTO {
     private Long id;
     private String code;
     private String description;
-    private boolean isEnabled;
-    private JSONObject details;
+    private boolean enabled;
+    private Long corpId;
+    private Long codeId;
+
 
     public Long getId() {
         return id;
@@ -34,20 +36,31 @@ public class AccountCoverageDTO {
     }
 
     public boolean isEnabled() {
-        return isEnabled;
+        return enabled;
     }
 
     public void setEnabled(boolean enabled) {
-        isEnabled = enabled;
+        this.enabled = enabled;
     }
 
-    public JSONObject getDetails() {
-        return details;
+
+    public Long getCorpId() {
+        return corpId;
     }
 
-    public void setDetails(JSONObject details) {
-        this.details = details;
+    public void setCorpId(Long corpId) {
+        this.corpId = corpId;
     }
+
+    public Long getCodeId() {
+        return codeId;
+    }
+
+    public void setCodeId(Long codeId) {
+        this.codeId = codeId;
+    }
+
+
 
     @Override
     public String toString() {
@@ -55,8 +68,10 @@ public class AccountCoverageDTO {
                 "id=" + id +
                 ", code='" + code + '\'' +
                 ", description='" + description + '\'' +
-                ", isEnabled=" + isEnabled +
-                ", details=" + details +
-                '}';
+                ", enabled=" + enabled +
+                ", corpId=" + corpId +
+                ", codeId=" + codeId +
+                 '}';
     }
+
 }

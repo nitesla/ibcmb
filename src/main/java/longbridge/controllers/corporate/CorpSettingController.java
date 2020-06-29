@@ -129,8 +129,8 @@ public class CorpSettingController {
 
             model.addAttribute("loans", loans);
             model.addAttribute("accountList", accountList);
-
-        boolean exp = passwordPolicyService.displayPasswordExpiryDate(corporateUser.getExpiryDate());
+            model.addAttribute("corpId",corporateUser.getCorporate().getId());
+            boolean exp = passwordPolicyService.displayPasswordExpiryDate(corporateUser.getExpiryDate());
         logger.info("EXPIRY RESULT {} ", exp);
         if (exp){
             model.addAttribute("message", messageSource.getMessage("password.reset.notice", null, locale));

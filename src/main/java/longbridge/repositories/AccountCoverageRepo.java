@@ -14,19 +14,21 @@ import java.util.List;
 public interface AccountCoverageRepo extends CommonRepo<AccountCoverage, Long> {
 
     @Modifying
-    @Query("update AccountCoverage a set a.isEnabled = :isEnabled where a.code = :code")
-    void  enableCoverage(@Param("code") String code,@Param("isEnabled") boolean isEnabled);
+    @Query("update AccountCoverage c set c.enabled = :enabled where c.corporate.id = :corpId and c.code.id=:codeId")
+    void  enableCoverage(@Param("corpId") Long corpId,@Param("codeId") Long codeId,@Param("enabled") Boolean enabled);
 
     @Query("select case when count (c)>0 then true else false end from AccountCoverage c where c.code.id=:codeId and c.corporate.id=:corpId")
-    boolean coverageExist(@Param("corpId") Long corpId,@Param("codeId") Long codeId);
+    Boolean coverageExist(@Param("corpId") Long corpId,@Param("codeId") Long codeId);
 
-    @Query("select distinct c.code from AccountCoverage c where c.isEnabled = true and c.delFlag='N' ")
-    List<String> getEnabledCoverage();
+    @Query("select distinct c from AccountCoverage c where c.code.id=:codeId and c.corporate.id=:corpId")
+    AccountCoverage getAccountCoverageByCodeAndCorporate(@Param("corpId") Long corpId,@Param("codeId") Long codeId);
 
-    @Query("select case when count (c.isEnabled)>0 then true else false end from AccountCoverage c where c.isEnabled = true and c.delFlag='N'")
-    boolean enabledCoverageExist();
+    @Query("select case when count (c)>0 then true else false end from AccountCoverage c where  c.corporate.id=:corpId and c.enabled=true")
+    Boolean enabledCoverageExist(@Param("corpId") Long corpId);
+
+    @Query("select distinct c from AccountCoverage c where c.corporate.id =:corpId and c.enabled=true")
+    List<AccountCoverage> getEnabledAccountCoverageByCorporate(@Param("corpId") Long corpId);
 
 
-    AccountCoverage getAccountCoverageByCode(String code);
 
 }

@@ -1,10 +1,9 @@
 package longbridge.controllers.operations;
 
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import longbridge.dtos.AccountCoverageDTO;
-import longbridge.dtos.CodeDTO;
+import longbridge.dtos.UpdateCoverageDTO;
+import longbridge.repositories.AccountCoverageRepo;
 import longbridge.services.AccountCoverageService;
 import longbridge.services.CodeService;
 import longbridge.utils.DataTablesUtils;
@@ -13,12 +12,13 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
 import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.context.request.WebRequest;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import javax.servlet.http.HttpSession;
+
+
 import java.io.IOException;
 
 @Controller
@@ -26,42 +26,33 @@ import java.io.IOException;
 public class OpsCoverageController {
 
 
-    @Autowired
-    private CodeService codeService;
+
     @Autowired
     private AccountCoverageService coverageService;
-    private final String  coverageCode = "ACCOUNT_COVERAGE";
 
-    @GetMapping()
-    public String listCoverages(DataTablesInput input)
-    {
-        System.out.println(coverageCode);
-        return "/ops/corporate/view";
-    }
 
-    @GetMapping(path = "/all")
-    public @ResponseBody DataTablesOutput<CodeDTO> getAllCoverage(DataTablesInput input) {
 
+
+    @GetMapping(path = "/{corpId}/all")
+    public @ResponseBody DataTablesOutput<AccountCoverageDTO> getAllCoverage(@PathVariable Long corpId,DataTablesInput input) {
         Pageable pageable = DataTablesUtils.getPageable(input);
-        Page<CodeDTO> codes = codeService.getCodesByType(coverageCode, pageable);
-        DataTablesOutput<CodeDTO> out = new DataTablesOutput<CodeDTO>();
+        Page<AccountCoverageDTO> coverage = coverageService.getAllCoverageForCorporate(corpId,pageable);
+        DataTablesOutput<AccountCoverageDTO> out = new DataTablesOutput<AccountCoverageDTO>();
         out.setDraw(input.getDraw());
-        out.setData(codes.getContent());
-        out.setRecordsFiltered(codes.getTotalElements());
-        out.setRecordsTotal(codes.getTotalElements());
+        out.setData(coverage.getContent());
+        out.setRecordsFiltered(coverage.getTotalElements());
+        out.setRecordsTotal(coverage.getTotalElements());
         return out;
     }
 
-    @PostMapping(path = "/new")
+
+
+    @PostMapping("/update")
     @ResponseBody
-    public String createCoverage(@RequestBody String coverageData) throws IOException {
-        System.out.println(coverageData);
-        ObjectMapper mapper = new ObjectMapper();
-        JsonNode coverage = mapper.readTree(coverageData);
-        Long codeId = coverage.get("codeId").asLong();
-        Long corpId = coverage.get("corpId").asLong();
-        coverageService.addCoverage(corpId,codeId);
-        return "work";
+    public ResponseEntity<HttpStatus> enableCoverage(@RequestBody UpdateCoverageDTO updateCoverageDTO) throws IOException {
+        coverageService.enableCoverage(updateCoverageDTO);
+       return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+
     }
 }
 

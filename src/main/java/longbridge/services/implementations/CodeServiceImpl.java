@@ -4,11 +4,8 @@ import longbridge.dtos.CodeDTO;
 import longbridge.dtos.CodeTypeDTO;
 import longbridge.exception.InternetBankingException;
 import longbridge.exception.VerificationInterruptedException;
-import longbridge.models.AccountCoverage;
 import longbridge.models.Code;
-import longbridge.repositories.AccountCoverageRepo;
 import longbridge.repositories.CodeRepo;
-import longbridge.services.AccountCoverageService;
 import longbridge.services.CodeService;
 import longbridge.utils.Verifiable;
 import org.modelmapper.ModelMapper;
@@ -37,11 +34,7 @@ public class CodeServiceImpl implements CodeService {
 
     private CodeRepo codeRepo;
 
-    @Autowired
-    private AccountCoverageService accountCoverage;
-
-
-    private ModelMapper modelMapper;
+      private ModelMapper modelMapper;
 
     private Locale locale = LocaleContextHolder.getLocale();
 

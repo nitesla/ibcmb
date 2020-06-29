@@ -16,13 +16,12 @@ public class AccountCoverage extends AbstractEntity  {
 
 
 
-    private boolean isEnabled;
+    private boolean enabled;
 
     @ManyToOne
     private Corporate corporate;
 
-    @OneToOne()
-    @JoinColumn(name = "code_id",referencedColumnName = "id")
+    @ManyToOne
     private Code code;
 
 
@@ -31,11 +30,11 @@ public class AccountCoverage extends AbstractEntity  {
     }
 
     public boolean isEnabled() {
-        return isEnabled;
+        return enabled;
     }
 
     public void setEnabled(boolean enabled) {
-        isEnabled = enabled;
+        this.enabled = enabled;
     }
 
     public Corporate getCorporate() {
@@ -60,20 +59,20 @@ public class AccountCoverage extends AbstractEntity  {
         if (!(o instanceof AccountCoverage)) return false;
         if (!super.equals(o)) return false;
         AccountCoverage that = (AccountCoverage) o;
-        return isEnabled == that.isEnabled &&
+        return enabled == that.enabled &&
                 Objects.equals(corporate, that.corporate) &&
                 Objects.equals(code, that.code);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), isEnabled, corporate, code);
+        return Objects.hash(super.hashCode(), enabled, corporate, code);
     }
 
     @Override
     public String toString() {
         return "AccountCoverage{" +
-                "isEnabled=" + isEnabled +
+                "enabled=" + enabled +
                 ", corporate=" + corporate +
                 ", code=" + code +
                 '}';

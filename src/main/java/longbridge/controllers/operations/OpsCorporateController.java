@@ -183,10 +183,7 @@ public class OpsCorporateController {
     @GetMapping("/{reqId}/view")
     public String viewCorporate(@PathVariable Long reqId, Model model) {
         CorporateDTO corporate = corporateService.getCorporate(reqId);
-        List<CodeDTO> coverageList = coverageService.getCoverage();
-        System.out.println(coverageList);
         model.addAttribute("corporate", corporate);
-        model.addAttribute("coverageList",coverageList);
         return "/ops/corporate/viewdetails";
     }
 
