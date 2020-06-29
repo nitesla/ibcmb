@@ -24,6 +24,15 @@ public class BillerCategory extends AbstractEntity{
     @Column(name = "enabled")
     private Boolean enabled;
 
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
     public Long getCategoryId() {
         return categoryId;
     }
@@ -59,10 +68,12 @@ public class BillerCategory extends AbstractEntity{
     public boolean isEnabled() {
         return enabled;
     }
+
     @Override
     public String toString() {
         return "BillerCategory{" +
-                "categoryId='" + categoryId + '\'' +
+                "id=" + id +
+                ", categoryId=" + categoryId +
                 ", categoryName='" + categoryName + '\'' +
                 ", categoryDescription='" + categoryDescription + '\'' +
                 ", enabled=" + enabled +

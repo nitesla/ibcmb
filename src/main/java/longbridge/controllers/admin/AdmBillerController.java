@@ -1,7 +1,10 @@
 package longbridge.controllers.admin;
 
+import longbridge.dtos.BillerCategoryDTO;
 import longbridge.models.Biller;
+import longbridge.models.BillerCategory;
 import longbridge.models.PaymentItem;
+import longbridge.repositories.BillerCategoryRepo;
 import longbridge.repositories.BillerRepo;
 import longbridge.services.BillerService;
 import longbridge.utils.DataTablesUtils;
@@ -30,11 +33,13 @@ public class AdmBillerController {
     @Autowired
     private BillerRepo billerRepo;
 
+    @Autowired
+    private BillerCategoryRepo billerCategoryRepo;
+
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @GetMapping
     public String indexPage(){
-
         return "adm/quickteller/quicktellerpayments";
     }
 
@@ -42,7 +47,7 @@ public class AdmBillerController {
     @PostMapping
     @ResponseBody
     public String updateBillers(){
-        billerService.updateBillers();
+        billerService.RefreshBiller();
         return "Successfully updated";
     }
 
@@ -51,24 +56,29 @@ public class AdmBillerController {
 
     @GetMapping(path = "/all")
     public @ResponseBody
-    DataTablesOutput<Biller> getAllCategoriesAndDescription(DataTablesInput input, @RequestParam("csearch") String search){
+    DataTablesOutput<BillerCategory> getAllCategoriesAndDescription(DataTablesInput input, @RequestParam("csearch") String search){
+        logger.info("SEARCH = " + search);
         Pageable pageable = DataTablesUtils.getPageable(input);
-        Page<Biller> biller = null;
+        Page<BillerCategory> billerCategory = null;
         if (StringUtils.isNoneBlank(search)) {
-            logger.info("GOT TO THE SEARCH SERVICE {}",search);
-            biller = billerService.findEntities(search,pageable);
-            logger.info("biller details {}", biller.getNumberOfElements());
-        }else{
-            billerService.getBillerCategories(pageable);
+            billerCategory = billerService.getBillerCategories(search,pageable);
+        }else {
+            billerCategory = billerService.getBillerCategories(pageable);
         }
-        DataTablesOutput<Biller> out = new DataTablesOutput<Biller>();
+        DataTablesOutput<BillerCategory> out = new DataTablesOutput<BillerCategory>();
         out.setDraw(input.getDraw());
-        out.setData(biller.getContent());
-        out.setRecordsFiltered(biller.getTotalElements());
-        out.setRecordsTotal(biller.getTotalElements());
+        out.setData(billerCategory.getContent());
+        out.setRecordsFiltered(billerCategory.getTotalElements());
+        out.setRecordsTotal(billerCategory.getTotalElements());
         return out;
     }
 
+
+    @ResponseBody
+    @PostMapping("/assignreadonly")
+    public void assignReadOnlyValue(Long id,Boolean value){
+        billerService.readOnlyAmount(id,value);
+    }
 
 
     @ResponseBody
@@ -79,36 +89,63 @@ public class AdmBillerController {
     }
 
 
+    @PostMapping(path = "/categorybillers") public @ResponseBody
+    DataTablesOutput<Biller> getAllBillersPerCategory(DataTablesInput input, @RequestParam("csearch") String search, HttpServletRequest request){
+        logger.info("I JUST GOT HERE");
+        Pageable pageable = DataTablesUtils.getPageable(input);
+        String categoryname = (String) request.getSession().getAttribute("categoryname");
+        Page<Biller>  billers = billerService.getBillersByCategory(categoryname,pageable);
 
+        DataTablesOutput<Biller> out = new DataTablesOutput<Biller>();
+        out.setDraw(input.getDraw());
+        out.setData(billers.getContent());
+        out.setRecordsFiltered(billers.getTotalElements());
+        out.setRecordsTotal(billers.getTotalElements());
+        return out;
+    }
 
-    @GetMapping("/{id}/edit")
-    public String editBillerCategory(@PathVariable Long id, Model model, HttpServletRequest request) {
-        Biller getBillerDetails = billerService.getBiller(id);
+    @GetMapping("/{id}/getpaymentitems")
+    public String getPaymentItemForBiller(@PathVariable Long id, Model model,HttpServletRequest request){
+        Biller biller = billerRepo.findOneById(id);
+        Long billerId = biller.getBillerId();
+        request.getSession().setAttribute("billerId" , billerId);
         List<PaymentItem> paymentItems = billerService.getPaymentItemsForBiller(id);
         request.getSession().setAttribute("billeritems",paymentItems);
-        model.addAttribute("biller",getBillerDetails);
         return "adm/quickteller/edit";
     }
 
     @ResponseBody
-    @PostMapping("/disablebiller")
-    public void disable(Long id){
-        logger.info("disabling biller");
-    billerService.disableBiller(id);
+    @PostMapping("/updatepaymentitems")
+    public String updatePaymentItems(HttpServletRequest request){
+        Long billerId = (Long) request.getSession().getAttribute("billerId");
+        billerService.refreshPaymentItems(billerId);
+        return "Successfully Updated";
+    }
+
+
+    @GetMapping("/{id}/biller")
+    public String editBillerCategory(@PathVariable Long id, Model model, HttpServletRequest request) {
+        BillerCategory getCategoryId = billerCategoryRepo.findOneById(id);
+       String categoryName = getCategoryId.getCategoryName();
+       request.getSession().setAttribute("categoryname", categoryName);
+        return "adm/quickteller/billers";
     }
 
     @ResponseBody
-    @PostMapping("/enablebiller")
-    public void enable(Long id){
-        logger.info("enabling biller");
-        billerService.enableBiller(id);
+    @PostMapping("/enableordisablecategory")
+    public void disableOrEnableCategory(Long id, Boolean value){
+    billerService.enableOrDisableCategory(id,value);
     }
 
     @ResponseBody
-    @PostMapping("/authorizepaymentitem")
+    @PostMapping("/enableordisablebiller")
+    public void enableOrDisableBiller(Long id, Boolean value){
+        billerService.enableOrDisableBiller(id,value);
+    }
+
+    @ResponseBody
+    @PostMapping("/enableordisablepaymentitem")
     public void enableOrDisablePaymentItem(Long id,Boolean value){
-        logger.info("value = {}",value);
-        logger.info("id = " + id);
         billerService.enablePaymentItems(id,value);
     }
 
