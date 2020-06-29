@@ -4,7 +4,7 @@ import longbridge.dtos.BillPaymentDTO;
 import longbridge.exception.InternetBankingException;
 import longbridge.models.*;
 import longbridge.repositories.BillPaymentRepo;
-import longbridge.repositories.BillersRepo;
+import longbridge.repositories.BillerRepo;
 import longbridge.repositories.PaymentItemRepo;
 import longbridge.security.userdetails.CustomUserPrincipal;
 import longbridge.services.PaymentService;
@@ -33,13 +33,13 @@ public class PaymentServiceImpl implements PaymentService {
 
     private final BillPaymentRepo billPaymentRepo;
     private final MessageSource messageSource;
-    private final BillersRepo billersRepo;
+    private final BillerRepo billersRepo;
     private final PaymentItemRepo paymentItemRepo;
     private final static Logger logger = LoggerFactory.getLogger(PaymentServiceImpl.class);
     private final Locale locale = LocaleContextHolder.getLocale();
 
     @Autowired
-    public PaymentServiceImpl(BillPaymentRepo billPaymentRepo, MessageSource messageSource, BillersRepo billersRepo, PaymentItemRepo paymentItemRepo) {
+    public PaymentServiceImpl(BillPaymentRepo billPaymentRepo, MessageSource messageSource, BillerRepo billersRepo, PaymentItemRepo paymentItemRepo) {
         this.billPaymentRepo = billPaymentRepo;
         this.messageSource = messageSource;
         this.billersRepo = billersRepo;
