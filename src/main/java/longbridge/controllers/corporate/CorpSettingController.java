@@ -12,6 +12,7 @@ import longbridge.models.FeedBackStatus;
 import longbridge.services.*;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -131,14 +132,14 @@ public class CorpSettingController {
                     })
                     .collect(Collectors.toList());
         }
-        List<AccountCoverage> enabledCoverageList = new ArrayList<>();
+        JSONObject enabledCoverageList = new JSONObject();
         if (coverageService.enabledCoverageExist(corpId)){
-            enabledCoverageList = coverageService.getEnabledCoverageForCorporate(corpId);
-            logger.info("check1",coverageService.getEnabledCoverageForCorporate(corpId));
+            enabledCoverageList = coverageService.getAllEnabledCoverageDetailsForCorporate(corpId);
+
 
 
         }
-            logger.info("check",coverageService.getEnabledCoverageForCorporate(corpId));
+            logger.info("check",coverageService.getEnabledCoverageForCorporate(corpId).toArray());
 
             model.addAttribute("loans", loans);
             model.addAttribute("accountList", accountList);

@@ -165,7 +165,7 @@ public interface IntegrationService {
     String updateCharge(TransferFeeAdjustment tfaDTO);
     CoverageDetailsDTO getCoverageDetailsForCorporate(String coverageName ,String customerId);
     List<CoverageDetailsDTO> getCoverageDetailsListForCorporate(String coverageName ,String customerId);
-    JSONObject getAllEnabledCoverageDetailsForCorporate(Long corpId);
+    JSONObject getAllEnabledCoverageDetailsForCorporateFromEndPoint(Long corpId);
     List<CoverageDetailsDTO>  getCoverageDetails(String coverageName,String customerNumber);
 
 

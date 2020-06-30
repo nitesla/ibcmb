@@ -8,8 +8,10 @@ import longbridge.api.*;
 import longbridge.dtos.*;
 import longbridge.exception.InternetBankingException;
 import longbridge.exception.InternetBankingTransferException;
+import longbridge.exception.RestTemplateResponseException;
 import longbridge.exception.TransferErrorService;
 import longbridge.models.*;
+import longbridge.repositories.AccountCoverageRepo;
 import longbridge.repositories.AccountRepo;
 import longbridge.repositories.AntiFraudRepo;
 import longbridge.repositories.CorporateRepo;
@@ -87,12 +89,13 @@ public class IntegrationServiceImpl implements IntegrationService {
 	private AntiFraudRepo antiFraudRepo;
 	private CodeService codeService;
 	private AccountCoverageService coverageService;
+	private AccountCoverageRepo coverageRepo;
 
 
 	@Autowired
 	public IntegrationServiceImpl(RestTemplate template, MailService mailService, TemplateEngine templateEngine,
 								  ConfigurationService configService, TransferErrorService errorService, MessageSource messageSource,
-								  AccountRepo accountRepo, CorporateRepo corporateRepo, AntiFraudRepo antiFraudRepo,CodeService codeService,AccountCoverageService coverageService) {
+								  AccountRepo accountRepo, CorporateRepo corporateRepo, AntiFraudRepo antiFraudRepo,CodeService codeService,AccountCoverageRepo coverageRepo) {
 		this.template = template;
 		this.mailService = mailService;
 		this.templateEngine = templateEngine;
@@ -103,7 +106,7 @@ public class IntegrationServiceImpl implements IntegrationService {
 		this.corporateRepo = corporateRepo;
 		this.antiFraudRepo=antiFraudRepo;
 		this.codeService =codeService;
-		this.coverageService =coverageService;
+		this.coverageRepo = coverageRepo;
 
 
 
@@ -1468,6 +1471,8 @@ public class IntegrationServiceImpl implements IntegrationService {
 		ObjectMapper mapper= new ObjectMapper();
 		try{
 			ResponseEntity<Object> response = template.getForEntity(uri, Object.class,params);
+			
+			template.setErrorHandler(new RestTemplateResponseException());
 			Object responseBody = response.getBody();
 			if (responseBody instanceof List<?> ){
 				JsonNode[] jsonNode = mapper.convertValue(responseBody,JsonNode[].class);
@@ -1498,12 +1503,12 @@ public class IntegrationServiceImpl implements IntegrationService {
 
 
 	@Override
-	public JSONObject getAllEnabledCoverageDetailsForCorporate(Long corpId) {
-	    String customerId = coverageService.getCustomerNumber(corpId);
+	public JSONObject getAllEnabledCoverageDetailsForCorporateFromEndPoint(Long corpId) {
+	    String customerId = corporateRepo.findById(corpId).get().getCustomerId();
 		JSONObject allcoverage = new JSONObject();
 
-		if (coverageService.enabledCoverageExist(corpId)){
-			List<AccountCoverage> enabledCoverageList =coverageService.getEnabledCoverageForCorporate(corpId);
+		if (coverageRepo.enabledCoverageExist(corpId)){
+			List<AccountCoverage> enabledCoverageList =coverageRepo.getEnabledAccountCoverageByCorporate(corpId);
 
 			for (AccountCoverage enabledCoverage:enabledCoverageList ) {
 				allcoverage.put(enabledCoverage.getCode().getCode(),getCoverageDetails(enabledCoverage.getCode().getCode(),customerId));

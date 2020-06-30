@@ -59,7 +59,7 @@
             <th:block th:each="coverage : ${coverageList}">
                 <div class="item">
 
-                    <div class="no-pad-lef table-responsive no-mt bg-white alert" th:id="${coverage.code.code}">
+                    <div class="no-pad-lef table-responsive no-mt bg-white alert" th:id="${coverage.key}">
                         <div class="d-flex justify-content-center" id="loading">
                             <i class="fa fa-spinner fa-spin fa-3x fa-fw" style="font-size:10em; position: relative;
                            height: 100px;
@@ -146,6 +146,7 @@
                     var keys = Object.keys(response);
                     for (var element of keys) {
                         var coverage = response[element];
+                        console.log(coverage);
                         var header = Object.keys(coverage[0].details);
                         var table = document.createElement('table');
                         table.setAttribute('id',element+'table');

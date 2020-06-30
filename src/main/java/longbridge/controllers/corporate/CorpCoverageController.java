@@ -24,7 +24,7 @@ public class CorpCoverageController {
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
-    private IntegrationService integrationService;
+    private AccountCoverageService coverageService;
 
     @Autowired
     MessageSource messageSource;
@@ -35,7 +35,7 @@ public class CorpCoverageController {
     @GetMapping(path = "/{corpId}")
     @ResponseBody
     public JSONObject getEnabledCoverageForCorporate(@PathVariable Long corpId){
-        return integrationService.getAllEnabledCoverageDetailsForCorporate(corpId);
+        return coverageService.getAllEnabledCoverageDetailsForCorporate(corpId);
     }
 
 

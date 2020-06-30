@@ -15,6 +15,8 @@ import longbridge.repositories.CorporateRepo;
 import longbridge.services.AccountCoverageService;
 import longbridge.services.CodeService;
 import longbridge.services.CorporateService;
+import longbridge.services.IntegrationService;
+import org.json.simple.JSONObject;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,6 +46,8 @@ public class AccountCoverageServiceImpl implements AccountCoverageService {
     private CorporateRepo corporateRepo;
     @Autowired
     private MessageSource messageSource;
+    @Autowired
+    private IntegrationService integrationService;
     private Logger logger = LoggerFactory.getLogger(this.getClass());
     private Locale locale = LocaleContextHolder.getLocale();
     private ModelMapper modelMapper;
@@ -140,6 +144,12 @@ public class AccountCoverageServiceImpl implements AccountCoverageService {
     @Override
     public Page<AccountCoverageDTO> getAllCoverageForRetail(Long retId, Pageable pageDetails) {
         return null;
+    }
+
+    @Override
+    public JSONObject getAllEnabledCoverageDetailsForCorporate(Long corpId) {
+        logger.info("response",integrationService.getAllEnabledCoverageDetailsForCorporateFromEndPoint(corpId));
+        return integrationService.getAllEnabledCoverageDetailsForCorporateFromEndPoint(corpId);
     }
 }
 

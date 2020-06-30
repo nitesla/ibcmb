@@ -5,6 +5,7 @@ import longbridge.dtos.AccountCoverageDTO;
 import longbridge.dtos.UpdateCoverageDTO;
 import longbridge.exception.InternetBankingException;
 import longbridge.models.AccountCoverage;
+import org.json.simple.JSONObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -23,6 +24,7 @@ public interface AccountCoverageService {
    Boolean enabledCoverageExist(Long corpId);
    String getCustomerNumber(Long corpId);
    Page<AccountCoverageDTO> getAllCoverageForRetail(Long retId,Pageable pageDetails);
+   JSONObject getAllEnabledCoverageDetailsForCorporate(Long corpId);
 
 
 
