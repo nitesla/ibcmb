@@ -4,6 +4,8 @@ import org.hibernate.annotations.Where;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
+import java.util.Arrays;
+import java.util.List;
 
 @Entity
 @Audited(withModifiedFlag=true)
@@ -78,5 +80,10 @@ public class BillerCategory extends AbstractEntity{
                 ", categoryDescription='" + categoryDescription + '\'' +
                 ", enabled=" + enabled +
                 '}';
+    }
+
+    @Override
+    public List<String> getDefaultSearchFields() {
+        return Arrays.asList("categoryName","categoryDescription");
     }
 }

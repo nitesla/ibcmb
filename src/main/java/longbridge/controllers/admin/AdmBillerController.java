@@ -128,6 +128,7 @@ public class AdmBillerController {
         BillerCategory getCategoryId = billerCategoryRepo.findOneById(id);
        String categoryName = getCategoryId.getCategoryName();
        request.getSession().setAttribute("categoryname", categoryName);
+       model.addAttribute("categoryname",categoryName);
         return "adm/quickteller/billers";
     }
 

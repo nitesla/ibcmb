@@ -45,7 +45,7 @@ public interface BillerRepo extends CommonRepo<Biller, Long>{
     @Transactional
     @Modifying
     @Query("update Biller b set b.enabled = :status where b.id = :id")
-    void enableOrDisableBiller(@Param("id") Long id, Boolean status);
+    void enableOrDisableBiller(@Param("id") Long id,@Param("status") Boolean status);
 
 
 //
