@@ -33,8 +33,8 @@ public class OpsCoverageController {
 
 
 
-    @GetMapping(path = "/{corpId}/all")
-    public @ResponseBody DataTablesOutput<AccountCoverageDTO> getAllCoverage(@PathVariable Long corpId,DataTablesInput input) {
+    @GetMapping(path = "/corporate/{corpId}/all")
+    public @ResponseBody DataTablesOutput<AccountCoverageDTO> getAllCoverageForCorporate(@PathVariable Long corpId,DataTablesInput input) {
         Pageable pageable = DataTablesUtils.getPageable(input);
         Page<AccountCoverageDTO> coverage = coverageService.getAllCoverageForCorporate(corpId,pageable);
         DataTablesOutput<AccountCoverageDTO> out = new DataTablesOutput<AccountCoverageDTO>();
@@ -47,12 +47,17 @@ public class OpsCoverageController {
 
 
 
-    @PostMapping("/update")
+    @PostMapping("/corporate/update")
     @ResponseBody
-    public ResponseEntity<HttpStatus> enableCoverage(@RequestBody UpdateCoverageDTO updateCoverageDTO) throws IOException {
-        coverageService.enableCoverage(updateCoverageDTO);
+    public ResponseEntity<HttpStatus> enableCoverageForCorporate(@RequestBody UpdateCoverageDTO updateCoverageDTO) throws IOException {
+        coverageService.enableCoverageForCorporate(updateCoverageDTO);
        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 
+    }
+
+    @GetMapping(path = "/retail/{retId}/all")
+    public @ResponseBody DataTablesOutput<AccountCoverageDTO> getAllCoverageForRetail(@PathVariable Long retId,DataTablesInput input){
+        return null;
     }
 }
 

@@ -50,12 +50,27 @@
                 </tbody>
             </table>
         </div>
-        <div th:if="${not #lists.isEmpty(coverageList)}">
 
-            <th:block th:each="item : ${coverageList}">
+
+
+        <div th:unless="${#lists.isEmpty(coverageList)}">
+
+
+            <th:block th:each="coverage : ${coverageList}">
                 <div class="item">
 
-                    <div class="no-pad-lef table-responsive no-mt bg-white alert" th:id="${item}">
+                    <div class="no-pad-lef table-responsive no-mt bg-white alert" th:id="${coverage.code.code}">
+                        <div class="d-flex justify-content-center" id="loading">
+                            <i class="fa fa-spinner fa-spin fa-3x fa-fw" style="font-size:10em; position: relative;
+                           height: 100px;
+                           width: 100px;
+                           top: 50%;
+                           left: 50%;
+                           margin-left: -50px;
+                           margin-top: 40px;
+                           background-size: 100%;" ></i>
+                            <span class="sr-only">Loading...</span>
+                        </div>
 
                     </div>
                 </div>
@@ -63,224 +78,7 @@
 
         </div>
 
-<!--        <div th:if="${not #lists.isEmpty(fixedDeposits)}" class="no-pad-lef table-responsive bg-white alert" style="padding:0px !important">-->
-<!--            <table class="table table-hover no-pad-lef" id="users" c>-->
-<!--                <caption style="font-size: large">Fixed Deposit Accounts</caption>-->
-<!--                <thead class='thead'>-->
-<!--                &lt;!&ndash;<tr>&ndash;&gt;-->
 
-<!--                <th class="text-cente">Account Number</th>-->
-<!--                <th class="text-cente">Booking Date</th>-->
-<!--                <th class="text-cente">Deposit Amount </th>-->
-<!--                <th class="text-cente">Rate (%)</th>-->
-<!--                <th class="text-cente">Tenor (days)</th>-->
-<!--                <th class="text-cente">Maturity Date</th>-->
-<!--                <th class="text-cente">Maturity Amount</th>-->
-<!--                <th class="text-cente">&nbsp;</th>-->
-<!--                &lt;!&ndash;</tr>&ndash;&gt;-->
-<!--                </thead>-->
-<!--                <tbody>-->
-<!--                <tr th:each="list : ${fixedDeposits}" class="tt">-->
-<!--                    <td th:align="cente" th:text="${list.accountNumber}"></td>-->
-<!--                    <td th:align="cente" th:text="${list.bookingDate}"></td>-->
-<!--                    <td th:align="cente" th:text="${list.initialDepositAmount}" class="bal"></td>-->
-<!--                    <td th:align="cente" th:text="${list.rate}"></td>-->
-<!--                    <td th:align="cente" th:text="${list.tenor}"></td>-->
-<!--                    <td th:align="cente" th:text="${list.maturityDate}" ></td>-->
-<!--                    <td th:align="cente" th:text="${list.maturityAmount}" class="bal"></td>-->
-
-<!--                    <td th:align="center" >-->
-
-
-<!--                    </td>-->
-<!--                </tr>-->
-<!--                </tbody>-->
-<!--            </table>-->
-<!--        </div>-->
-<!--        <div th:if="${not #lists.isEmpty(loans)}" class="no-pad-lef table-responsive bg-white alert" style="padding:0px !important">-->
-<!--            <table class="table table-hover no-pad-lef" id="users" c>-->
-<!--                <caption style="font-size: large">Loan Accounts</caption>-->
-<!--                <thead class='thead'>-->
-<!--                &lt;!&ndash;<tr>&ndash;&gt;-->
-
-
-<!--                <th class="text-cente">Account Number</th>-->
-<!--                <th class="text-cente">Start Date</th>-->
-<!--                <th class="text-cente">Amount</th>-->
-<!--                <th class="text-cente">Rate (%)</th>-->
-<!--                <th class="text-cente">Tenor (mths)</th>-->
-<!--                <th class="text-cente">Maturity Date</th>-->
-<!--                <th class="text-cente">&nbsp;</th>-->
-<!--                &lt;!&ndash;</tr>&ndash;&gt;-->
-<!--                </thead>-->
-<!--                <tbody>-->
-<!--                <tr th:each="list : ${loans}" class="tt">-->
-<!--                    <td th:align="cente" th:text="${list.accountNumber}"></td>-->
-<!--                    <td th:align="cente" th:text="${list.startDate}"></td>-->
-<!--                    <td th:align="cente" th:text="${list.amount}" class="bal"></td>-->
-<!--                    <td th:align="cente" th:text="${list.interestRate}" ></td>-->
-<!--                    <td th:align="cente" th:text="${list.tenor}"></td>-->
-<!--                    <td th:align="cente" th:text="${list.maturityDate}" ></td>-->
-
-<!--                    <td th:align="center" >-->
-
-
-<!--                    </td>-->
-<!--                </tr>-->
-<!--                </tbody>-->
-<!--            </table>-->
-<!--        </div>-->
-
-<!--        <div th:if="${not #lists.isEmpty(treasuryBills)}" class="no-pad-lef table-responsive bg-white alert" style="padding:0px !important">-->
-<!--            <table class="table table-hover no-pad-lef" id="users" c>-->
-<!--                <caption style="font-size: large">Treasury Bills</caption>-->
-<!--                <thead class='thead'>-->
-<!--                &lt;!&ndash;<tr>&ndash;&gt;-->
-
-<!--                <th class="text-cente">Start Date</th>-->
-<!--                <th class="text-cente">Face Value</th>-->
-<!--                <th class="text-cente">Carrying Value</th>-->
-<!--                <th class="text-cente">Rate (%)</th>-->
-<!--                <th class="text-cente">Maturity Date</th>-->
-<!--                <th class="text-cente">&nbsp;</th>-->
-<!--                &lt;!&ndash;</tr>&ndash;&gt;-->
-<!--                </thead>-->
-<!--                <tbody>-->
-<!--                <tr th:each="list : ${treasuryBills}" class="tt">-->
-<!--                    <td th:align="cente" th:text="${list.startDate}"></td>-->
-<!--                    <td th:align="cente" th:text="${list.faceValue}" class="bal"></td>-->
-<!--                    <td th:align="cente" th:text="${list.carryingValue}" class="bal"></td>-->
-<!--                    <td th:align="cente" th:text="${list.rate}" ></td>-->
-<!--                    <td th:align="cente" th:text="${list.maturityDate}" ></td>-->
-
-<!--                    <td th:align="center" >-->
-
-
-<!--                    </td>-->
-<!--                </tr>-->
-<!--                </tbody>-->
-<!--            </table>-->
-<!--        </div>-->
-
-<!--        <div th:if="${not #lists.isEmpty(bonds)}" class="no-pad-lef table-responsive bg-white alert" style="padding:0px !important">-->
-<!--            <table class="table table-hover no-pad-lef" id="users" c>-->
-<!--                <caption style="font-size: large">Bonds</caption>-->
-<!--                <thead class='thead'>-->
-<!--                &lt;!&ndash;<tr>&ndash;&gt;-->
-
-<!--                <th class="text-cente">Booking Date</th>-->
-<!--                <th class="text-cente">Face Value</th>-->
-<!--                <th class="text-cente">Carrying Value</th>-->
-<!--                <th class="text-cente">Coupon Value</th>-->
-<!--                <th class="text-cente">Rate (%)</th>-->
-<!--                <th class="text-cente">Next Coupon Payment</th>-->
-<!--                <th class="text-cente">&nbsp;</th>-->
-<!--                &lt;!&ndash;</tr>&ndash;&gt;-->
-<!--                </thead>-->
-<!--                <tbody>-->
-<!--                <tr th:each="list : ${bonds}" class="tt">-->
-<!--                    <td th:align="cente" th:text="${list.bookingDate}"></td>-->
-<!--                    <td th:align="cente" th:text="${list.faceValue}" class="bal"></td>-->
-<!--                    <td th:align="cente" th:text="${list.carryingValue}" class="bal"></td>-->
-<!--                    <td th:align="cente" th:text="${list.couponValue}" class="bal"></td>-->
-<!--                    <td th:align="cente" th:text="${list.rate}" ></td>-->
-<!--                    <td th:align="cente" th:text="${list.nextCouponPaymentDate}" ></td>-->
-
-<!--                    <td th:align="center" >-->
-
-
-<!--                    </td>-->
-<!--                </tr>-->
-<!--                </tbody>-->
-<!--            </table>-->
-<!--        </div>-->
-
-
-<!--        <div th:if="${not #lists.isEmpty(equities)}" class="no-pad-lef table-responsive bg-white alert" style="padding:0px !important">-->
-<!--            <table class="table table-hover no-pad-lef" id="users" c>-->
-<!--                <caption style="font-size: large">Equities</caption>-->
-<!--                <thead class='thead'>-->
-<!--                &lt;!&ndash;<tr>&ndash;&gt;-->
-
-<!--                <th class="text-cente">Name</th>-->
-<!--                <th class="text-cente">Average Unit Cost</th>-->
-<!--                <th class="text-cente">Number of Unit</th>-->
-<!--                <th class="text-cente">Total Cost</th>-->
-<!--                <th class="text-cente">&nbsp;</th>-->
-<!--                &lt;!&ndash;</tr>&ndash;&gt;-->
-<!--                </thead>-->
-<!--                <tbody>-->
-<!--                <tr th:each="list : ${equities}" class="tt">-->
-<!--                    <td th:align="cente" th:text="${list.equityName}"></td>-->
-<!--                    <td th:align="cente" th:text="${list.averageUnitCost}" class="bal"></td>-->
-<!--                    <td th:align="cente" th:text="${list.numOfUnit}"></td>-->
-<!--                    <td th:align="cente" th:text="${list.totalCost}" class="bal"></td>-->
-
-<!--                    <td th:align="center" >-->
-
-<!--                    </td>-->
-<!--                </tr>-->
-<!--                </tbody>-->
-<!--            </table>-->
-<!--        </div>-->
-
-<!--        <div th:if="${not #lists.isEmpty(cards)}" class="no-pad-lef table-responsive bg-white alert" style="padding:0px !important">-->
-<!--            <table class="table table-hover no-pad-lef" id="users" >-->
-<!--                <caption style="font-size: large">Cards</caption>-->
-<!--                <thead class='thead'>-->
-<!--                &lt;!&ndash;<tr>&ndash;&gt;-->
-
-<!--                <th class="text-cente">Name</th>-->
-<!--                <th class="text-cente">Type</th>-->
-<!--                <th class="text-cente">Number</th>-->
-<!--                <th class="text-cente">Expiry Date</th>-->
-<!--                <th class="text-cente">Balance</th>-->
-<!--                <th class="text-cente">&nbsp;</th>-->
-<!--                &lt;!&ndash;</tr>&ndash;&gt;-->
-<!--                </thead>-->
-<!--                <tbody>-->
-<!--                <tr th:each="list : ${cards}" class="tt">-->
-<!--                    <td th:align="cente" th:text="${list.cardName}"></td>-->
-<!--                    <td th:align="cente" th:text="${list.cardType}"></td>-->
-<!--                    <td th:align="cente" th:text="${list.cardNumber}"></td>-->
-<!--                    <td th:align="cente" th:text="${list.expiryDate}"></td>-->
-<!--                    <td th:align="cente" th:text="${list.balance}" class="bal"></td>-->
-
-<!--                    <td th:align="center" >-->
-
-
-<!--                    </td>-->
-<!--                </tr>-->
-<!--                </tbody>-->
-<!--            </table>-->
-<!--        </div>-->
-
-
-<!--        <div th:if="${not #lists.isEmpty(virtualWallets)}" class="no-pad-lef table-responsive bg-white alert" style="padding:0px !important">-->
-<!--            <table class="table table-hover no-pad-lef" id="users" c>-->
-<!--                <caption style="font-size: large">Virtual Wallets</caption>-->
-<!--                <thead class='thead'>-->
-<!--                &lt;!&ndash;<tr>&ndash;&gt;-->
-
-<!--                <th class="text-cente">Platform</th>-->
-<!--                <th class="text-cente">Balance</th>-->
-
-<!--                <th class="text-cente">&nbsp;</th>-->
-<!--                &lt;!&ndash;</tr>&ndash;&gt;-->
-<!--                </thead>-->
-<!--                <tbody>-->
-<!--                <tr th:each="list : ${virtualWallets}" class="tt">-->
-<!--                    <td th:align="cente" th:text="${list.platformName}"></td>-->
-<!--                    <td th:align="cente" th:text="${list.balance}" class="bal"></td>-->
-
-<!--                    <td th:align="center" >-->
-
-
-<!--                    </td>-->
-<!--                </tr>-->
-<!--                </tbody>-->
-<!--            </table>-->
-<!--        </div>-->
     </div>
 
 </div>
@@ -333,45 +131,53 @@
         /*<![CDATA[*/
         $(document).ready(function () {
             var corpId = [[${corpId}]];
+
+            $(document).ajaxStart(function () {
+                $("#loading").show();
+                console.log("Show");
+            }).ajaxStop(function () {
+                $("#loading").hide();
+                console.log("Hide");
+            });
             $.ajax({
                 url: "/corporate/accountcoverage/"+corpId,
                 type: 'GET',
                 success: function (response) {
-                    let keys = Object.keys(response);
-                    for (let element of keys) {
-                        let coverage = response[element];
-                        let header = Object.keys(coverage[0].details);
-                        let table = document.createElement('table');
+                    var keys = Object.keys(response);
+                    for (var element of keys) {
+                        var coverage = response[element];
+                        var header = Object.keys(coverage[0].details);
+                        var table = document.createElement('table');
                         table.setAttribute('id',element+'table');
                         table.setAttribute('class','table table-hover');
 
-                        let tableCaptionElement = document.createElement('caption');
+                        var tableCaptionElement = document.createElement('caption');
                         tableCaptionElement.setAttribute('id',element+'caption');
                         tableCaptionElement.setAttribute("style", "margin-top: 3.5em;");
 
-                        let tableCaptionNode = document.createTextNode(element);
+                        var tableCaptionNode = document.createTextNode(element.toUpperCase());
                         tableCaptionElement.appendChild(tableCaptionNode);
 
-                        let tableHeader = document.createElement('thead');
+                        var tableHeader = document.createElement('thead');
                         tableHeader.setAttribute('class','thead');
 
-                        let datatableColumns =[];
-                        for(let i=0;i<header.length;i++){
-                            let th = document.createElement('th');
-                            let node = document.createTextNode(header[i][0].toUpperCase()+header[i].slice(1));
+                        var datatableColumns =[];
+                        for(var i=0;i<header.length;i++){
+                            var th = document.createElement('th');
+                            var node = document.createTextNode(header[i][0].toUpperCase()+header[i].slice(1));
                             th.appendChild(node);
                             tableHeader.appendChild(th);
                             datatableColumns.push({"data":header[i]});
 
                         }
-                        let tbody = document.createElement('tbody')
-                        for (let i = 0; i < coverage.length; i++) {
-                            let tr = document.createElement('tr');
-                            let row = Object.keys(coverage[i].details);
-                            for (let coverageElement of row) {
-                                let td = document.createElement('td');
+                        var tbody = document.createElement('tbody')
+                        for (var i = 0; i < coverage.length; i++) {
+                            var tr = document.createElement('tr');
+                            var row = Object.keys(coverage[i].details);
+                            for (var coverageElement of row) {
+                                var td = document.createElement('td');
                                 tr.appendChild(td);
-                                let textNode = document.createTextNode(coverage[i].details[coverageElement]);
+                                var textNode = document.createTextNode(coverage[i].details[coverageElement]);
                                 td.appendChild(textNode);
                             }
                             tbody.appendChild(tr);
@@ -383,7 +189,7 @@
                         document.getElementById(element).appendChild(table);
 
 
-                        let datatable = $("#"+element+'table').DataTable({
+                        var datatable = $("#"+element+'table').DataTable({
                             responsive: true,
                             "lengthMenu": [ [5, 10, 20], [5, 10, 20] ],
                             "pagingType": "full_numbers",
@@ -395,11 +201,7 @@
 
                         });
 
-
-
-
-
-                    }
+                   }
 
 
                 },

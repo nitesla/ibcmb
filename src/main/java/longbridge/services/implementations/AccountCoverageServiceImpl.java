@@ -89,15 +89,17 @@ public class AccountCoverageServiceImpl implements AccountCoverageService {
     }
 
     @Override
-    public String  enableCoverage(UpdateCoverageDTO updateCoverageDTO) throws InternetBankingException, IOException {
+    public String  enableCoverageForCorporate(UpdateCoverageDTO updateCoverageDTO) throws InternetBankingException {
          Long codeId = updateCoverageDTO.getCodeId();
          Long corpId = updateCoverageDTO.getCorpId();
          Boolean enabled =updateCoverageDTO.getEnabled();
         try {
             if(coverageRepo.coverageExist(corpId,codeId)){
+                logger.info("Coverage Exist");
             coverageRepo.enableCoverage(corpId,codeId,enabled);
             }else {
-               addCoverage(corpId,codeId);
+                logger.info("adding Coverage");
+               addCoverageForCorporate(corpId,codeId);
             }
             logger.info("Coverage  enable");
             return messageSource.getMessage("Coverage. enable.success", null, locale);
@@ -109,7 +111,7 @@ public class AccountCoverageServiceImpl implements AccountCoverageService {
     }
     @Override
     @Transactional
-    public void addCoverage(Long corpId,Long codeId) {
+    public void addCoverageForCorporate(Long corpId,Long codeId) {
         Corporate corporate = corporateRepo.findById(corpId).get();
         Code code =  codeService.getCodeById(codeId);
         AccountCoverage coverage =  new AccountCoverage();
@@ -133,6 +135,11 @@ public class AccountCoverageServiceImpl implements AccountCoverageService {
     @Override
     public String getCustomerNumber(Long corpId) {
         return corporateRepo.findById(corpId).get().getCustomerId();
+    }
+
+    @Override
+    public Page<AccountCoverageDTO> getAllCoverageForRetail(Long retId, Pageable pageDetails) {
+        return null;
     }
 }
 

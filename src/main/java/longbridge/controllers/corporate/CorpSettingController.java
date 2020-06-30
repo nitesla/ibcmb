@@ -5,6 +5,7 @@ import longbridge.exception.*;
 import longbridge.forms.AlertPref;
 import longbridge.forms.CustChangePassword;
 import longbridge.forms.CustResetPassword;
+import longbridge.models.AccountCoverage;
 import longbridge.models.Code;
 import longbridge.models.CorporateUser;
 import longbridge.models.FeedBackStatus;
@@ -73,10 +74,14 @@ public class CorpSettingController {
     @Autowired
     private IntegrationService integrationService;
 
+    @Autowired
+    AccountCoverageService coverageService;
+
 
     @RequestMapping("/dashboard")
     public String getCorporateDashboard(Model model, Principal principal) {
         CorporateUser corporateUser = corporateUserService.getUserByName(principal.getName());
+        Long corpId = corporateUser.getCorporate().getId();
 
         if (corporateUser==null) {
             return "redirect:/login/corporate";
@@ -126,10 +131,19 @@ public class CorpSettingController {
                     })
                     .collect(Collectors.toList());
         }
+        List<AccountCoverage> enabledCoverageList = new ArrayList<>();
+        if (coverageService.enabledCoverageExist(corpId)){
+            enabledCoverageList = coverageService.getEnabledCoverageForCorporate(corpId);
+            logger.info("check1",coverageService.getEnabledCoverageForCorporate(corpId));
+
+
+        }
+            logger.info("check",coverageService.getEnabledCoverageForCorporate(corpId));
 
             model.addAttribute("loans", loans);
             model.addAttribute("accountList", accountList);
-            model.addAttribute("corpId",corporateUser.getCorporate().getId());
+            model.addAttribute("corpId",corpId);
+            model.addAttribute("coverageList",enabledCoverageList);
             boolean exp = passwordPolicyService.displayPasswordExpiryDate(corporateUser.getExpiryDate());
         logger.info("EXPIRY RESULT {} ", exp);
         if (exp){

@@ -31,6 +31,8 @@ nbdist/
 
 ##Application logs
 .log
+velocity.log
+velocity.log.1
 logs/
 application.log
 .DS_Store

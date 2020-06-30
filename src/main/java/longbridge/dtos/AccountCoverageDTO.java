@@ -1,6 +1,6 @@
 package longbridge.dtos;
 
-import org.json.simple.JSONObject;
+
 
 public class AccountCoverageDTO {
     private Long id;
@@ -9,6 +9,7 @@ public class AccountCoverageDTO {
     private boolean enabled;
     private Long corpId;
     private Long codeId;
+    private Long retId;
 
 
     public Long getId() {
@@ -60,7 +61,13 @@ public class AccountCoverageDTO {
         this.codeId = codeId;
     }
 
+    public Long getRetId() {
+        return retId;
+    }
 
+    public void setRetId(Long retId) {
+        this.retId = retId;
+    }
 
     @Override
     public String toString() {
@@ -71,7 +78,8 @@ public class AccountCoverageDTO {
                 ", enabled=" + enabled +
                 ", corpId=" + corpId +
                 ", codeId=" + codeId +
-                 '}';
+                ", retId=" + retId +
+                '}';
     }
 
 }

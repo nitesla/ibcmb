@@ -1099,7 +1099,7 @@
             "processing" : true,
             "serverSide" : true,
             "ajax" : {
-                url : "/ops/accountcoverage/"+corpId+"/all",
+                url : "/ops/accountcoverage/corporate/"+corpId+"/all",
                 "type" : "GET",
                 "data" : function(d) {
                     d.csearch = $('#pattern').val();
@@ -1140,7 +1140,7 @@
             });
     $(document).on("change","input[type=checkbox]", function(e) {
         var corpId = [[${corporate.getId()}]];
-        var updateUrl = "/ops/accountcoverage/update";
+        var updateUrl = "/ops/accountcoverage/corporate/update";
         var cb = $(e.currentTarget);
         var codeId = cb.val();
         var enabled;

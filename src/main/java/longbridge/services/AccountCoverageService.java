@@ -17,11 +17,12 @@ public interface AccountCoverageService {
 
 
    Page<AccountCoverageDTO> getAllCoverageForCorporate(Long corpId, Pageable pageDetails);
-   String enableCoverage(UpdateCoverageDTO updateCoverageDTO) throws InternetBankingException, IOException;
-   void addCoverage(Long corpId,Long codeId);
+   String enableCoverageForCorporate(UpdateCoverageDTO updateCoverageDTO) throws InternetBankingException;
+   void addCoverageForCorporate(Long corpId,Long codeId);
    List<AccountCoverage> getEnabledCoverageForCorporate(Long corpId);
    Boolean enabledCoverageExist(Long corpId);
    String getCustomerNumber(Long corpId);
+   Page<AccountCoverageDTO> getAllCoverageForRetail(Long retId,Pageable pageDetails);
 
 
 
