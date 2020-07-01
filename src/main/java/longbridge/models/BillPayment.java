@@ -18,8 +18,8 @@ public class BillPayment extends AbstractEntity {
 
     private Long userId;
     private BigDecimal amount;
-    private Long productId;
-    private Long merchantId;
+    private Long paymentItemId;
+    private Long billerId;
     private String customerIdentifier;
     private String customerAccountNumber;
     private String phoneNumber;
@@ -36,20 +36,20 @@ public class BillPayment extends AbstractEntity {
         this.amount = amount;
     }
 
-    public Long getProductId() {
-        return productId;
+    public Long getPaymentItemId() {
+        return paymentItemId;
     }
 
-    public void setProductId(Long productId) {
-        this.productId = productId;
+    public void setPaymentItemId(Long paymentItemId) {
+        this.paymentItemId = paymentItemId;
     }
 
-    public Long getMerchantId() {
-        return merchantId;
+    public Long getBillerId() {
+        return billerId;
     }
 
-    public void setMerchantId(Long merchantId) {
-        this.merchantId = merchantId;
+    public void setBillerId(Long billerId) {
+        this.billerId = billerId;
     }
 
     public String getCustomerIdentifier() {

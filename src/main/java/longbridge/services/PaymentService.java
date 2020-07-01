@@ -20,4 +20,6 @@ public interface PaymentService {
 
 
     Page<BillPaymentDTO> getBillPayments(Pageable pageable);
+
+    Page<BillPaymentDTO> getCorpPayments(Pageable pageable);
 }

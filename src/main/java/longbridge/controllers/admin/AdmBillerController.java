@@ -1,6 +1,5 @@
 package longbridge.controllers.admin;
 
-import longbridge.dtos.BillerCategoryDTO;
 import longbridge.models.Biller;
 import longbridge.models.BillerCategory;
 import longbridge.models.PaymentItem;

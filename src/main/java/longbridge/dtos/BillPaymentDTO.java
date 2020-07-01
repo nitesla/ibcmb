@@ -3,21 +3,19 @@ package longbridge.dtos;
 import javax.validation.constraints.NotEmpty;
 import java.util.Date;
 
-/**
- * Created by mac on 22/02/2018.
- */
+
 public class BillPaymentDTO {
 
     private Long id;
     @NotEmpty(message = "Amount is required")
     private String amount;
-    private String category;
-    @NotEmpty(message = "Product is required")
-    private String productId;
-    private String productName;
-    @NotEmpty(message = "Merchant is required")
-    private String merchantId;
-    private String merchantName;
+    private String categoryName;
+    @NotEmpty(message = "Payment Item is required")
+    private String paymentItemId;
+    private String paymentItemName;
+    @NotEmpty(message = "Biller is required")
+    private String billerId;
+    private String billerName;
     @NotEmpty(message = "Customer Identifier is required")
     private String customerIdentifier;
     private String customerAccountNumber;
@@ -27,6 +25,10 @@ public class BillPaymentDTO {
     private String emailAddress;
     private String status ;
     private Date createdOn;
+    private String terminalId;
+    private Long PaymentCode;
+    private String CustomerId;
+    private String requestReference ;
 
 
     public Long getId() {
@@ -37,7 +39,6 @@ public class BillPaymentDTO {
         this.id = id;
     }
 
-
     public String getAmount() {
         return amount;
     }
@@ -46,46 +47,44 @@ public class BillPaymentDTO {
         this.amount = amount;
     }
 
-
-    public String getCategory() {
-        return category;
+    public String getCategoryName() {
+        return categoryName;
     }
 
-    public void setCategory(String category) {
-        this.category = category;
+    public void setCategoryName(String categoryName) {
+        this.categoryName = categoryName;
     }
 
-    public String getProductId() {
-        return productId;
+    public String getPaymentItemId() {
+        return paymentItemId;
     }
 
-    public void setProductId(String productId) {
-        this.productId = productId;
+    public void setPaymentItemId(String paymentItemId) {
+        this.paymentItemId = paymentItemId;
     }
 
-    public String getMerchantId() {
-        return merchantId;
+    public String getPaymentItemName() {
+        return paymentItemName;
     }
 
-    public void setMerchantId(String merchantId) {
-        this.merchantId = merchantId;
+    public void setPaymentItemName(String paymentItemName) {
+        this.paymentItemName = paymentItemName;
     }
 
-
-    public String getCustomerAccountNumber() {
-        return customerAccountNumber;
+    public String getBillerId() {
+        return billerId;
     }
 
-    public void setCustomerAccountNumber(String customerAccountNumber) {
-        this.customerAccountNumber = customerAccountNumber;
+    public void setBillerId(String billerId) {
+        this.billerId = billerId;
     }
 
-    public String getStatus() {
-        return status;
+    public String getBillerName() {
+        return billerName;
     }
 
-    public void setStatus(String status) {
-        this.status = status;
+    public void setBillerName(String billerName) {
+        this.billerName = billerName;
     }
 
     public String getCustomerIdentifier() {
@@ -94,6 +93,14 @@ public class BillPaymentDTO {
 
     public void setCustomerIdentifier(String customerIdentifier) {
         this.customerIdentifier = customerIdentifier;
+    }
+
+    public String getCustomerAccountNumber() {
+        return customerAccountNumber;
+    }
+
+    public void setCustomerAccountNumber(String customerAccountNumber) {
+        this.customerAccountNumber = customerAccountNumber;
     }
 
     public String getPhoneNumber() {
@@ -112,20 +119,12 @@ public class BillPaymentDTO {
         this.emailAddress = emailAddress;
     }
 
-    public String getProductName() {
-        return productName;
+    public String getStatus() {
+        return status;
     }
 
-    public void setProductName(String productName) {
-        this.productName = productName;
-    }
-
-    public String getMerchantName() {
-        return merchantName;
-    }
-
-    public void setMerchantName(String merchantName) {
-        this.merchantName = merchantName;
+    public void setStatus(String status) {
+        this.status = status;
     }
 
     public Date getCreatedOn() {
@@ -136,19 +135,59 @@ public class BillPaymentDTO {
         this.createdOn = createdOn;
     }
 
+    public String getTerminalId() {
+        return terminalId;
+    }
+
+    public void setTerminalId(String terminalId) {
+        this.terminalId = terminalId;
+    }
+
+    public Long getPaymentCode() {
+        return PaymentCode;
+    }
+
+    public void setPaymentCode(Long paymentCode) {
+        PaymentCode = paymentCode;
+    }
+
+    public String getCustomerId() {
+        return CustomerId;
+    }
+
+    public void setCustomerId(String customerId) {
+        CustomerId = customerId;
+    }
+
+    public String getRequestReference() {
+        return requestReference;
+    }
+
+    public void setRequestReference(String requestReference) {
+        this.requestReference = requestReference;
+    }
+
+
     @Override
     public String toString() {
-        return "PaymentDTO{" +
+        return "BillPaymentDTO{" +
                 "id=" + id +
                 ", amount='" + amount + '\'' +
-                ", category='" + category + '\'' +
-                ", productId='" + productId + '\'' +
-                ", merchantId='" + merchantId + '\'' +
+                ", categoryName='" + categoryName + '\'' +
+                ", paymentItemId='" + paymentItemId + '\'' +
+                ", paymentItemName='" + paymentItemName + '\'' +
+                ", billerId='" + billerId + '\'' +
+                ", billerName='" + billerName + '\'' +
                 ", customerIdentifier='" + customerIdentifier + '\'' +
                 ", customerAccountNumber='" + customerAccountNumber + '\'' +
                 ", phoneNumber='" + phoneNumber + '\'' +
                 ", emailAddress='" + emailAddress + '\'' +
                 ", status='" + status + '\'' +
+                ", createdOn=" + createdOn +
+                ", terminalId='" + terminalId + '\'' +
+                ", PaymentCode=" + PaymentCode +
+                ", CustomerId='" + CustomerId + '\'' +
+                ", requestReference='" + requestReference + '\'' +
                 '}';
     }
 }

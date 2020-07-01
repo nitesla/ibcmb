@@ -25,6 +25,10 @@ public class PaymentItem extends AbstractEntity {
 	private Long currencyCode;
 	@Column(name = "ITEM_CURRENCY_SYMBOL")
 	private String itemCurrencySymbol;
+	@Column(name = "SORT_ORDER")
+	private Long sortOrder;
+	@Column(name = "PICTURE_ID")
+	private Long pictureId;
 	@Column(name = "PAYMENT_CODE")
 	private Long paymentCode;
 	@Column(name = "IS_AMOUNT_FIXED")
@@ -33,7 +37,7 @@ public class PaymentItem extends AbstractEntity {
 	private Boolean readonly;
 	@Column(name = "enabled")
 	private boolean enabled;
-	
+
 //	@ManyToOne @JsonIgnore
 	private Long billerId;
 
@@ -83,6 +87,22 @@ public class PaymentItem extends AbstractEntity {
 
 	public void setItemCurrencySymbol(String itemCurrencySymbol) {
 		this.itemCurrencySymbol = itemCurrencySymbol;
+	}
+
+	public Long getSortOrder() {
+		return sortOrder;
+	}
+
+	public void setSortOrder(Long sortOrder) {
+		this.sortOrder = sortOrder;
+	}
+
+	public Long getPictureId() {
+		return pictureId;
+	}
+
+	public void setPictureId(Long pictureId) {
+		this.pictureId = pictureId;
 	}
 
 	public Long getPaymentCode() {
@@ -135,6 +155,8 @@ public class PaymentItem extends AbstractEntity {
 				", code=" + code +
 				", currencyCode=" + currencyCode +
 				", itemCurrencySymbol='" + itemCurrencySymbol + '\'' +
+				", sortOrder=" + sortOrder +
+				", pictureId=" + pictureId +
 				", paymentCode=" + paymentCode +
 				", isAmountFixed=" + isAmountFixed +
 				", readonly=" + readonly +

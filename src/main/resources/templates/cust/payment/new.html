@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{ret-layout}">
+
+<body onload="javascript:var bread = [['Home', '/retail/dashboard'],['Bill Payment']];currentBar('Bill Payment');breadCrumb(bread)">
+
+
+<div layout:fragment="content">
+    <div class="col-md-5 col-sm-5 ml-15 hide-content-onl">
+
+        <select class="form-control full-width coronation-form-control hide-content-only" id="view">
+            <option value="account">Overview</option>
+        </select>
+    </div>
+
+    <div class="col-xs-12 no-pad-left " >
+        <div class="no-mt no-pad-lef alert no-bd">
+            <div class="">
+                <div class="form-spacin col-md-7 col-sm-7 no-pad-right">
+
+                    <form id="local" method="post" th:action="@{/retail/payment/new}"
+                          th:object="${paymentDTO}">
+
+
+                        <div class="form-group">
+                            <label>Debit Account</label>
+
+                            <!--<span class="alert no-bd-rad my-border bg-white" id="sourceCurrency">CCY</span>-->
+
+                            <select name="source" class="form-control" id="source"
+                                    th:field="*{customerAccountNumber}" onchange="getBalance();getDestCurrency();">
+                                <option th:each="s: ${accountList}" th:value="${s.accountNumber}" th:text="${s.accountNumber}" th:selected="${s.primaryFlag=='Y'}"></option>
+
+
+                            </select>
+                            <!--<p th:if="${#fields.hasErrors('customerAccountNumber')}" th:errors="*{customerAccountNumber}"-->
+                            <!--class="errors"></p>-->
+                        </div>
+
+                        <div class="form-group">
+                            <label>Category</label>
+                            <select class="form-control" id="categories" name="categories" onchange="fetchBillers()" required="required">
+                                <option value=""> Select Category </option>
+                                <option th:each="category : ${billerCategories}" th:value="${category.categoryName}" th:text="${category.categoryName}"></option>
+                            </select><span class='req-inner'></span>
+
+                        </div>
+
+                        <div class="form-group">
+                            <label>Biller</label>
+                            <select  class="form-control" th:field="*{billerId}" id="billerId" name="billerId" onchange="fetchPaymentItems()" required="required" >
+                            </select><span class='req-inner'></span>
+<!--                            <input type="hidden" id="referenceName"/>-->
+                        </div>
+
+
+                        <div class="form-group">
+                            <label>Payment Item</label>
+                            <select class="form-control" th:field="*{paymentItemId}" id="paymentItemId" name="paymentItemId" onchange="fetchPaymentItemDetails()" required="required">
+                            </select><span class='req-inner'></span>
+
+                        </div>
+
+
+<!--                        <div id="ownerReferenceNumberDiv" class="form-group" style="display: none">-->
+<!--                            <label id="ownerReferenceNumber">Owner Reference Number</label>-->
+<!--                            <input type="text" class="form-control" th:field="*{customerIdentifier}"-->
+<!--                                   required="required"/>-->
+<!--                        </div>-->
+
+                        <div class="form-group">
+                            <label >Price</label>
+                            <input type="text" class="form-control" th:field="*{amount}"
+                                   required="required" readonly/>
+                        </div>
+
+
+                        <div class="form-group">
+                            <label >Phone Number</label>
+                            <input type="text" class="form-control" th:field="*{phoneNumber}"
+                                   required="required"/>
+                        </div>
+                        <div class="form-group">
+                            <label >Email Address</label>
+                            <input type="text" class="form-control" th:field="*{emailAddress}"
+                                   required="required"/>
+                        </div>
+
+                        <button  class="btn btn-link required-step" >Submit</button>
+                    </form>
+
+                </div>
+
+                <div class="col-xs-12 col-sm-5  wel ">
+                    <!--<p class="related" style="padding-top: 5%">Related Information</p>-->
+                    <div  class="related-box">
+                        <h3 class="related-bar">Related Information</h3>
+
+                        <!--<input type="availBal" name="availBal"/>-->
+                        <p class="related-info coronation-blue" id="availBal"><b></b></p>
+                        <!--<p  class="related-info coronation-blue" id="limit"><b></b></p>-->
+
+                    </div>
+                </div>
+
+
+
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+
+
+<th:block layout:fragment="scripts">
+    <script th:inline="javascript">
+    /*<![CDATA[*/
+    $(document).ready(function () {
+
+        getBalance();
+        fetchBillers();
+        fetchPaymentItems();
+        //
+        // var category = $("#categories").val();
+        // fetchBillers(category)
+
+        // $("#categories").change(function () {
+        //
+        //     var category = $("#categories").val();
+        //     fetchBillers(category)
+        //
+        // });
+
+
+        // $("#billerId").change(function () {
+        //
+        //     var biller = $("#billerId").val();
+        //     fetchPaymentItems(biller)
+        //
+        // });
+
+        // $("#paymentItemId").change(function () {
+        //
+        //     var paymentItem = $("#paymentItemId").val();
+        //     fetchPaymentItemDetails(paymentItem)
+        //
+        // });
+    });
+
+
+    function getBalance(){
+
+        var accountNumber = $('#source').val();
+        $.ajax({
+            url: "/retail/transfer/balance/"+accountNumber,
+            type: 'GET',
+            async: false,
+            success:function(jd){
+                var message = jd.message;
+                var success =  jd.success;
+                console.log(message);
+                console.log(success);
+                if (success==false){
+                    document.getElementById("myspan").textContent="Could not get balance from server, please try again.";
+                    $("#myspan").show();
+                }else{
+//                    $('input[name=availBal]').val(bal);
+
+                    var  bal=numberWithCommas(message);
+                    $('#availBal').html("Available Balance: "+bal);
+
+                }
+            }
+        })
+    }
+
+
+    function fetchBillers(){
+
+        var category = $("#categories").val();
+        console.log("Category", category)
+
+        $.ajax ({
+            type: 'POST',
+            url: "/retail/payment/biller",
+            data: {categoryName: category},
+            // async: false,
+            // cache: false,
+            // url: "/retail/payment/" + category+"/biller",
+            success: function (biller , status, xhr) {
+
+
+                if(biller.length==0){
+
+                }
+//                $(".loader").hide();
+
+                $('#billerId').empty();
+                $('#billerId').append("<option value=''>-Select-</option>");
+                $('#paymentItem').empty();
+
+                console.log("Biller ---------->>>", biller)
+
+                for(var i=0;i<biller.length;i++){
+                    console.log("Biller is "+biller[i].billerName)
+
+                    if(biller[i].billerName === undefined){
+                        break;
+                    }
+
+                    var biller =  "<option value='"+biller[i].billerId+"'>"+biller[i].billerName+"</option>"
+                    console.log("Var Biller is" +biller)
+
+                    $('#billerId').append(biller)
+                }
+            },
+            error: function (xhr, status, err) {
+                console.log("error occurred fetching Billers");
+                console.log("response: "+xhr.responseText);
+                console.log("status: "+xhr.status);
+
+//                $(".loader").hide();
+                return;
+
+            }
+        });
+
+    }
+
+r
+    function fetchPaymentItems(){
+
+        var biller = $("#billerId").val();
+        console.log("Biller selected is ---->>>>>", biller)
+
+
+        $.ajax({
+            type: 'POST',
+            url: "/retail/payment/paymentItem",
+            data: {billerId: biller},
+            success: function (paymentItem, status, xhr) {
+
+                if(paymentItem.length==0){
+
+                }
+//                $(".loader").hide();
+
+                $('#paymentItemId').empty();
+                $('#paymentItemId').append("<option value=''>-Select-</option>");
+
+                console.log("PaymentItem 1st ---------->>>", paymentItem)
+
+                for(var i=0;i<paymentItem.length;i++){
+                    console.log("PaymentItem is "+paymentItem[i].paymentItemName)
+
+                    if(paymentItem[i].paymentItemName === undefined){
+                        break;
+                    }
+
+                    var paymentItem =  "<option value='"+paymentItem[i].paymentItemId+"'>"+paymentItem[i].paymentItemName+"</option>"
+
+                    console.log("Var Biller is", paymentItem)
+                    $('#paymentItemId').append(paymentItem)
+                }
+
+
+            },
+            error: function (xhr, status, err) {
+                console.log("error occurred fetching payment Items");
+                console.log("response: "+xhr.responseText);
+                console.log("status: "+xhr.status);
+
+//                $(".loader").hide();
+                return;
+
+            }
+        });
+
+        // UpdateOwnerReferenceName(biller);
+
+    }
+
+
+    function fetchPaymentItemDetails(){
+
+        var paymentItemId = $("#paymentItemId").val();
+        console.log("paymentItem detail is ---->>>>>", paymentItemId)
+
+
+        $.ajax({
+            url: "/retail/payment/paymentItem/" + paymentItemId+"",
+            success: function (paymentItem, status, xhr) {
+
+
+
+                console.log("PaymentItem name is "+paymentItem.paymentItemName);
+                console.log("PaymentItem price is "+paymentItem.amount);
+                console.log("PaymentItem read-only status is "+paymentItem.readonly);
+
+//                $(".loader").hide();
+
+                $('#amount').val(paymentItem.amount);
+
+                if(paymentItem.readonly==false){
+                    $('#amount').removeAttr("readonly")
+                }
+                else {
+                    $('#amount').attr("readonly","readonly")
+
+                }
+
+
+            },
+            error: function (xhr, status, err) {
+                console.log("error occurred fetching accounts");
+                console.log("response: "+xhr.responseText);
+                console.log("status: "+xhr.status);
+
+//                $(".loader").hide();
+                return;
+
+            }
+        });
+
+    }
+
+
+    // function UpdateOwnerReferenceName(billerId){
+    //
+    //
+    //     $.ajax({
+    //         url: "/retail/payment/"+ billerId+"/referencename",
+    //         success: function (referenceName, status, xhr) {
+    //
+    //             console.log("Owner reference name is "+referenceName);
+    //
+    //             $("#ownerReferenceNumber").text(referenceName);
+    //             $("#customerIdentifier").prop('placeholder','Enter your '+referenceName);
+    //             $("#ownerReferenceNumberDiv").show();
+    //
+    //         },
+    //         error: function (xhr, status, err) {
+    //             console.log("error occurred get owner reference name");
+    //             console.log("response: "+xhr.responseText);
+    //             console.log("status: "+xhr.status);
+    //             return;
+    //
+    //         }
+    //     });
+    //
+    // }
+
+
+    /*]]>*/
+</script>
+</th:block>
+
+</body>
+</html>
+
+

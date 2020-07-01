@@ -1,12 +1,12 @@
 package longbridge.repositories;
 
 import longbridge.models.PaymentItem;
-import longbridge.models.Product;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
+
 
 import java.util.List;
 
@@ -19,6 +19,7 @@ public interface PaymentItemRepo extends CommonRepo<PaymentItem, Long>{
 
     List<PaymentItem> findByPaymentItemIdNotIn(List<Long> paymentItemId);
 
+    List<PaymentItem> findByPaymentItemId(String billers);
 
     @Transactional
     @Modifying
@@ -31,6 +32,8 @@ public interface PaymentItemRepo extends CommonRepo<PaymentItem, Long>{
     void removeObsolete(@Param("id") List<Long> collect);
 
     List<PaymentItem> findByBillerId(Long billerId);
+
+    List<PaymentItem> findByBillerIdAndEnabled(Long billerId, boolean enabled);
 
     @Transactional
     @Modifying

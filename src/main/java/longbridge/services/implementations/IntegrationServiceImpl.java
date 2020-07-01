@@ -1432,6 +1432,29 @@ public class IntegrationServiceImpl implements IntegrationService {
 			return billers;
 	}
 
+//	@Override
+//	public List<BillPaymentDTO> billPayment(){
+//		List<BillPaymentDTO> payment = new ArrayList<>();
+//		String uri = URI+"/api/quickteller/billpaymentadvice";
+//		Map<String,String> params = new HashMap<>();
+//		params.put("appid",appId);
+//		params.put("hash",secretKey);
+//		params.put("TerminalId",appId);
+//		params.put("PaymentCode",secretKey);
+//		params.put("CustomerId",appId);
+//		params.put("CustomerMobile",secretKey);
+//		params.put("Amount",appId);
+//		params.put("requestReference",secretKey);
+//		try {
+//			PaymentResponse paymentResponse = template.postForObject(uri,params, PaymentResponse.class);
+//			payment = paymentResponse.billPayment();
+//			return payment;
+//		} catch (Exception e){
+//			logger.info("Error processing request");
+//		}
+//		return payment;
+//	}
+
 
 	@Override
 	public List<PaymentItemDTO> getPaymentItems(Long billerId){
