@@ -1,8 +1,6 @@
 package longbridge.services;
 
-import longbridge.dtos.BillerCategoryDTO;
 import longbridge.dtos.BillerDTO;
-import longbridge.dtos.CategoryDTO;
 import longbridge.exception.InternetBankingException;
 import longbridge.models.Biller;
 import longbridge.models.BillerCategory;
@@ -55,7 +53,7 @@ public interface BillerService {
 
     Page<BillerCategory> getBillerCategories(String search, Pageable pageDetails);
 
-    PaymentItem getPaymentItem(Long id);
+    List<PaymentItem> getPaymentItems(Long id);
 
     void updateBillerStatus(Biller biller);
 
@@ -65,7 +63,7 @@ public interface BillerService {
 
     Iterable<Biller> getBillers();
 
-    List<PaymentItem> getPaymentItem(String billers);
+    PaymentItem getPaymentItem(Long id);
 
 
 

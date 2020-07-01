@@ -25,6 +25,10 @@ public class BillPaymentDTO {
     private String emailAddress;
     private String status ;
     private Date createdOn;
+    private String terminalId;
+    private Long PaymentCode;
+    private String CustomerId;
+    private String requestReference ;
 
 
     public Long getId() {
@@ -131,6 +135,39 @@ public class BillPaymentDTO {
         this.createdOn = createdOn;
     }
 
+    public String getTerminalId() {
+        return terminalId;
+    }
+
+    public void setTerminalId(String terminalId) {
+        this.terminalId = terminalId;
+    }
+
+    public Long getPaymentCode() {
+        return PaymentCode;
+    }
+
+    public void setPaymentCode(Long paymentCode) {
+        PaymentCode = paymentCode;
+    }
+
+    public String getCustomerId() {
+        return CustomerId;
+    }
+
+    public void setCustomerId(String customerId) {
+        CustomerId = customerId;
+    }
+
+    public String getRequestReference() {
+        return requestReference;
+    }
+
+    public void setRequestReference(String requestReference) {
+        this.requestReference = requestReference;
+    }
+
+
     @Override
     public String toString() {
         return "BillPaymentDTO{" +
@@ -147,6 +184,10 @@ public class BillPaymentDTO {
                 ", emailAddress='" + emailAddress + '\'' +
                 ", status='" + status + '\'' +
                 ", createdOn=" + createdOn +
+                ", terminalId='" + terminalId + '\'' +
+                ", PaymentCode=" + PaymentCode +
+                ", CustomerId='" + CustomerId + '\'' +
+                ", requestReference='" + requestReference + '\'' +
                 '}';
     }
 }

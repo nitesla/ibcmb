@@ -6,6 +6,7 @@ import longbridge.models.Account;
 import longbridge.models.Biller;
 import longbridge.models.PaymentItem;
 import longbridge.models.RetailUser;
+import longbridge.repositories.BillerRepo;
 import longbridge.services.AccountService;
 import longbridge.services.BillerService;
 import longbridge.services.PaymentService;
@@ -41,6 +42,8 @@ public class PaymentController {
     private final RetailUserService retailUserService;
     private final AccountService accountService;
     private final PaymentService paymentService;
+    @Autowired
+    private BillerRepo billerRepo;
     private final static Logger logger = LoggerFactory.getLogger(PaymentController.class);
 
     @Autowired
@@ -101,11 +104,28 @@ public class PaymentController {
     @RequestMapping(value = "/paymentItem", method = {RequestMethod.GET, RequestMethod.POST})
     public List<PaymentItem> getPaymentItem(PaymentItem paymentItem){
 
-        logger.info("Payment Item Id is {}", paymentItem.getPaymentItemId());
+////        Biller biller = billerRepo.findOneById(paymentItem.getBillerId());
+//        Long billerId = biller.getBillerId();
+        logger.info("{}", paymentItem.getBillerId());
         logger.info("Debugging");
 
-        List<PaymentItem> paymentItems = billerService.getPaymentItem(paymentItem.getPaymentItemName());
+        List<PaymentItem> paymentItems = billerService.getPaymentItems(paymentItem.getBillerId());
+        logger.info("payment item =========== {}", paymentItems);
         return paymentItems;
+    }
+
+
+    @ResponseBody
+    @GetMapping("/paymentItem/{paymentItemId}")
+    public PaymentItem getPaymentItem(@PathVariable Long paymentItemId){
+
+        logger.info("{}", paymentItemId);
+        logger.info("Debugging");
+
+        PaymentItem paymentItem = billerService.getPaymentItem(paymentItemId);
+
+        logger.info("paymentItem details are {}", paymentItem);
+        return paymentItem;
     }
 
 

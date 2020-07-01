@@ -56,7 +56,7 @@
 
                         <div class="form-group">
                             <label>Payment Item</label>
-                            <select class="form-control" th:field="*{paymentItemId}" id="paymentItemId" required="required">
+                            <select class="form-control" th:field="*{paymentItemId}" id="paymentItemId" name="paymentItemId" onchange="fetchPaymentItemDetails()" required="required">
                             </select><span class='req-inner'></span>
 
                         </div>
@@ -201,12 +201,7 @@
                 $('#billerId').append("<option value=''>-Select-</option>");
                 $('#paymentItem').empty();
 
-                console.log("Biller ---------->>>" +biller)
-
-                // for(var i=0; i<biller.length;i++){
-                //     console.log("Biller --" +biller[i].billerName)
-                // }
-
+                console.log("Biller ---------->>>", biller)
 
                 for(var i=0;i<biller.length;i++){
                     console.log("Biller is "+biller[i].billerName)
@@ -240,10 +235,6 @@ r
         var biller = $("#billerId").val();
         console.log("Biller selected is ---->>>>>", biller)
 
-        if(biller==""){
-            $('#paymentItemId').empty();
-            return;
-        }
 
         $.ajax({
             type: 'POST',
@@ -259,15 +250,18 @@ r
                 $('#paymentItemId').empty();
                 $('#paymentItemId').append("<option value=''>-Select-</option>");
 
-                for(var i=0;i<paymentItems.length;i++){
+                console.log("PaymentItem 1st ---------->>>", paymentItem)
+
+                for(var i=0;i<paymentItem.length;i++){
                     console.log("PaymentItem is "+paymentItem[i].paymentItemName)
 
-                    // if(paymentItems[i].paymentItemName === undefined){
-                    //     break;
-                    // }
+                    if(paymentItem[i].paymentItemName === undefined){
+                        break;
+                    }
 
                     var paymentItem =  "<option value='"+paymentItem[i].paymentItemId+"'>"+paymentItem[i].paymentItemName+"</option>"
 
+                    console.log("Var Biller is", paymentItem)
                     $('#paymentItemId').append(paymentItem)
                 }
 
@@ -284,18 +278,16 @@ r
             }
         });
 
-        UpdateOwnerReferenceName(biller);
+        // UpdateOwnerReferenceName(biller);
 
     }
 
 
-    function fetchPaymentItemDetails(paymentItemId){
+    function fetchPaymentItemDetails(){
 
+        var paymentItemId = $("#paymentItemId").val();
+        console.log("paymentItem detail is ---->>>>>", paymentItemId)
 
-        if(paymentItemId==""){
-            $('#amount').val("");
-            return;
-        }
 
         $.ajax({
             url: "/retail/payment/paymentItem/" + paymentItemId+"",
@@ -303,13 +295,13 @@ r
 
 
 
-                console.log("PaymentItem name is "+paymentItem.name);
-                console.log("PaymentItem price is "+paymentItem.price);
+                console.log("PaymentItem name is "+paymentItem.paymentItemName);
+                console.log("PaymentItem price is "+paymentItem.amount);
                 console.log("PaymentItem read-only status is "+paymentItem.readonly);
 
 //                $(".loader").hide();
 
-                $('#amount').val(paymentItem.price);
+                $('#amount').val(paymentItem.amount);
 
                 if(paymentItem.readonly==false){
                     $('#amount').removeAttr("readonly")
@@ -335,30 +327,30 @@ r
     }
 
 
-    function UpdateOwnerReferenceName(billerId){
-
-
-        $.ajax({
-            url: "/retail/payment/"+ billerId+"/referencename",
-            success: function (referenceName, status, xhr) {
-
-                console.log("Owner reference name is "+referenceName);
-
-                $("#ownerReferenceNumber").text(referenceName);
-                $("#customerIdentifier").prop('placeholder','Enter your '+referenceName);
-                $("#ownerReferenceNumberDiv").show();
-
-            },
-            error: function (xhr, status, err) {
-                console.log("error occurred get owner reference name");
-                console.log("response: "+xhr.responseText);
-                console.log("status: "+xhr.status);
-                return;
-
-            }
-        });
-
-    }
+    // function UpdateOwnerReferenceName(billerId){
+    //
+    //
+    //     $.ajax({
+    //         url: "/retail/payment/"+ billerId+"/referencename",
+    //         success: function (referenceName, status, xhr) {
+    //
+    //             console.log("Owner reference name is "+referenceName);
+    //
+    //             $("#ownerReferenceNumber").text(referenceName);
+    //             $("#customerIdentifier").prop('placeholder','Enter your '+referenceName);
+    //             $("#ownerReferenceNumberDiv").show();
+    //
+    //         },
+    //         error: function (xhr, status, err) {
+    //             console.log("error occurred get owner reference name");
+    //             console.log("response: "+xhr.responseText);
+    //             console.log("status: "+xhr.status);
+    //             return;
+    //
+    //         }
+    //     });
+    //
+    // }
 
 
     /*]]>*/

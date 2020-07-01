@@ -31,6 +31,8 @@ public interface PaymentItemRepo extends CommonRepo<PaymentItem, Long>{
 
     List<PaymentItem> findByBillerId(Long billerId);
 
+    List<PaymentItem> findByBillerIdAndEnabled(Long billerId, boolean enabled);
+
     @Modifying
     @Query("update PaymentItem p set p.readonly = :status where p.id = :id")
     void readOnly(@Param("id") Long id, Boolean status);

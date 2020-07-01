@@ -100,10 +100,10 @@ public class CorpPaymentController {
     @RequestMapping(value = "/paymentItem", method = {RequestMethod.GET, RequestMethod.POST})
     public List<PaymentItem> getPaymentItem(PaymentItem paymentItem){
 
-        logger.info("Payment Item Id is {}", paymentItem.getPaymentItemId());
+        logger.info("Payment Item Id is {}", paymentItem.getBillerId());
         logger.info("Debugging");
 
-        List<PaymentItem> paymentItems = billerService.getPaymentItem(paymentItem.getPaymentItemName());
+        List<PaymentItem> paymentItems = billerService.getPaymentItems(paymentItem.getBillerId());
         return paymentItems;
     }
 
