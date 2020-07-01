@@ -1,6 +1,5 @@
 package longbridge.controllers.admin;
 
-import longbridge.dtos.BillerCategoryDTO;
 import longbridge.models.Biller;
 import longbridge.models.BillerCategory;
 import longbridge.models.PaymentItem;
@@ -128,6 +127,7 @@ public class AdmBillerController {
         BillerCategory getCategoryId = billerCategoryRepo.findOneById(id);
        String categoryName = getCategoryId.getCategoryName();
        request.getSession().setAttribute("categoryname", categoryName);
+       model.addAttribute("categoryname",categoryName);
         return "adm/quickteller/billers";
     }
 

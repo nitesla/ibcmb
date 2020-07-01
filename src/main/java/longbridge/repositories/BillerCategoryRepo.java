@@ -24,5 +24,5 @@ public interface BillerCategoryRepo  extends CommonRepo<BillerCategory, Long>{
     @Transactional
     @Modifying
     @Query("update BillerCategory item set item.enabled = :status where item.id = :id")
-    void enableOrDisableCategory(@Param("id") Long id, Boolean status);
+    void enableOrDisableCategory(@Param("id") Long id, @Param("status") Boolean status);
 }

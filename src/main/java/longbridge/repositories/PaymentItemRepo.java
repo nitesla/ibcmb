@@ -22,7 +22,7 @@ public interface PaymentItemRepo extends CommonRepo<PaymentItem, Long>{
     @Transactional
     @Modifying
     @Query("update PaymentItem item set item.enabled = :status where item.id = :id")
-    void enablePaymentItem(@Param("id") Long id, boolean status);
+    void enablePaymentItem(@Param("id") Long id, @Param("status") Boolean status);
 
 
     @Modifying
@@ -35,5 +35,5 @@ public interface PaymentItemRepo extends CommonRepo<PaymentItem, Long>{
 
     @Modifying
     @Query("update PaymentItem p set p.readonly = :status where p.id = :id")
-    void readOnly(@Param("id") Long id, Boolean status);
+    void readOnly(@Param("id") Long id,@Param("status") Boolean status);
 }
