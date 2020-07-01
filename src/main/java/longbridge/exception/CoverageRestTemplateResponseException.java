@@ -1,18 +1,20 @@
 package longbridge.exception;
 
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.web.client.ResponseErrorHandler;
 
 import java.io.IOException;
 
-public class RestTemplateResponseException implements ResponseErrorHandler {
+public class CoverageRestTemplateResponseException implements ResponseErrorHandler {
+
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
     @Override
     public boolean hasError(ClientHttpResponse response) throws IOException {
-        return (
-                response.getStatusCode().series() ==HttpStatus.Series.CLIENT_ERROR
-                        || response.getStatusCode().series() ==HttpStatus.Series.SERVER_ERROR);
+        return true;
     }
 
     @Override
@@ -21,7 +23,8 @@ public class RestTemplateResponseException implements ResponseErrorHandler {
          if (response.getStatusCode().series() == HttpStatus.Series.CLIENT_ERROR) {
 
             if (response.getStatusCode() == HttpStatus.NOT_FOUND) {
-                throw new InternetBankingException("Resources Not Available, check if customer have the resources requested for");
+
+                logger.info("Requested resources not available confirm");
             }
 
     }

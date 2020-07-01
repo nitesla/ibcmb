@@ -53,28 +53,8 @@
 
 
 
-        <div th:unless="${#lists.isEmpty(coverageList)}">
+        <div id="coverage-div">
 
-
-            <th:block th:each="coverage : ${coverageList}">
-                <div class="item">
-
-                    <div class="no-pad-lef table-responsive no-mt bg-white alert" th:id="${coverage.key}">
-                        <div class="d-flex justify-content-center" id="loading">
-                            <i class="fa fa-spinner fa-spin fa-3x fa-fw" style="font-size:10em; position: relative;
-                           height: 100px;
-                           width: 100px;
-                           top: 50%;
-                           left: 50%;
-                           margin-left: -50px;
-                           margin-top: 40px;
-                           background-size: 100%;" ></i>
-                            <span class="sr-only">Loading...</span>
-                        </div>
-
-                    </div>
-                </div>
-            </th:block>
 
         </div>
 
@@ -132,75 +112,92 @@
         $(document).ready(function () {
             var corpId = [[${corpId}]];
 
-            $(document).ajaxStart(function () {
-                $("#loading").show();
-                console.log("Show");
-            }).ajaxStop(function () {
-                $("#loading").hide();
-                console.log("Hide");
-            });
+            // $(document).ajaxStart(function () {
+            //     $("#loading").show();
+            //     console.log("Show");
+            // }).ajaxStop(function () {
+            //     $("#loading").hide();
+            //     console.log("Hide");
+            // });
             $.ajax({
                 url: "/corporate/accountcoverage/"+corpId,
                 type: 'GET',
                 success: function (response) {
+                    console.log(response);
                     var keys = Object.keys(response);
                     for (var element of keys) {
                         var coverage = response[element];
-                        console.log(coverage);
-                        var header = Object.keys(coverage[0].details);
-                        var table = document.createElement('table');
-                        table.setAttribute('id',element+'table');
-                        table.setAttribute('class','table table-hover');
 
-                        var tableCaptionElement = document.createElement('caption');
-                        tableCaptionElement.setAttribute('id',element+'caption');
-                        tableCaptionElement.setAttribute("style", "margin-top: 3.5em;");
 
-                        var tableCaptionNode = document.createTextNode(element.toUpperCase());
-                        tableCaptionElement.appendChild(tableCaptionNode);
+                        if (!(Object.keys(coverage[0].details).length === 0 && coverage[0].details.constructor === Object)){
+                            var container = document.createElement('div');
+                            container.setAttribute('id',element+'div');
+                            container.setAttribute('class','no-pad-lef table-responsive no-mt bg-white alert');
+                            var header = Object.keys(coverage[0].details);
+                            var table = document.createElement('table');
+                            table.setAttribute('id',element+'table');
+                            table.setAttribute('class','table table-hover');
 
-                        var tableHeader = document.createElement('thead');
-                        tableHeader.setAttribute('class','thead');
+                            var tableCaptionElement = document.createElement('caption');
+                            tableCaptionElement.setAttribute('id',element+'caption');
+                            tableCaptionElement.setAttribute("style", "margin-top: 1em;");
 
-                        var datatableColumns =[];
-                        for(var i=0;i<header.length;i++){
-                            var th = document.createElement('th');
-                            var node = document.createTextNode(header[i][0].toUpperCase()+header[i].slice(1));
-                            th.appendChild(node);
-                            tableHeader.appendChild(th);
-                            datatableColumns.push({"data":header[i]});
+                            var tableCaptionNode = document.createTextNode(element.toUpperCase());
+                            tableCaptionElement.appendChild(tableCaptionNode);
 
-                        }
-                        var tbody = document.createElement('tbody')
-                        for (var i = 0; i < coverage.length; i++) {
-                            var tr = document.createElement('tr');
-                            var row = Object.keys(coverage[i].details);
-                            for (var coverageElement of row) {
-                                var td = document.createElement('td');
-                                tr.appendChild(td);
-                                var textNode = document.createTextNode(coverage[i].details[coverageElement]);
-                                td.appendChild(textNode);
+                            var tableHeader = document.createElement('thead');
+                            tableHeader.setAttribute('class','thead');
+
+                            var datatableColumns =[];
+                            for(var i=0;i<header.length;i++){
+                                var th = document.createElement('th');
+                                var node = document.createTextNode(header[i][0].toUpperCase()+header[i].slice(1));
+                                th.appendChild(node);
+                                tableHeader.appendChild(th);
+                                datatableColumns.push({"data":header[i]});
+
                             }
-                            tbody.appendChild(tr);
+                            var tbody = document.createElement('tbody')
+                            for (var i = 0; i < coverage.length; i++) {
+                                var tr = document.createElement('tr');
+                                var row = Object.keys(coverage[i].details);
+                                for (var coverageElement of row) {
+                                    var td = document.createElement('td');
+                                    tr.appendChild(td);
+                                    var textNode = document.createTextNode(coverage[i].details[coverageElement]);
+                                    td.appendChild(textNode);
+                                }
+                                tbody.appendChild(tr);
+
+                            }
+                            table.appendChild(tableCaptionElement);
+                            table.appendChild(tableHeader);
+                            table.appendChild(tbody);
+                            container.appendChild(table);
+                            document.getElementById('coverage-div').appendChild(container);
+
+
+                            var datatable = $("#"+element+'table').DataTable({
+                                responsive: true,
+                                "lengthMenu": [ [5, 10, 20], [5, 10, 20] ],
+                                "pagingType": "full_numbers",
+                                "searching": false,
+                                "paging": true,
+                                "dom": 'T<"clear">frtlp',
+                                "columns":datatableColumns,
+
+
+                            });
+                        } else {
+                            console.log("details empty !");
+                            console.log(coverage[0].details);
+
+
+
 
                         }
-                        table.appendChild(tableCaptionElement);
-                        table.appendChild(tableHeader);
-                        table.appendChild(tbody);
-                        document.getElementById(element).appendChild(table);
 
 
-                        var datatable = $("#"+element+'table').DataTable({
-                            responsive: true,
-                            "lengthMenu": [ [5, 10, 20], [5, 10, 20] ],
-                            "pagingType": "full_numbers",
-                            "searching": false,
-                            "paging": true,
-                            "dom": 'T<"clear">frtlp',
-                            "columns":datatableColumns,
-
-
-                        });
 
                    }
 

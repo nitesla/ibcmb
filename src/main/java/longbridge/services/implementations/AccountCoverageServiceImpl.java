@@ -10,11 +10,9 @@ import longbridge.models.AccountCoverage;
 import longbridge.models.Code;
 import longbridge.models.Corporate;
 import longbridge.repositories.AccountCoverageRepo;
-import longbridge.repositories.CodeRepo;
 import longbridge.repositories.CorporateRepo;
 import longbridge.services.AccountCoverageService;
 import longbridge.services.CodeService;
-import longbridge.services.CorporateService;
 import longbridge.services.IntegrationService;
 import org.json.simple.JSONObject;
 import org.modelmapper.ModelMapper;
@@ -29,7 +27,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -52,7 +49,6 @@ public class AccountCoverageServiceImpl implements AccountCoverageService {
     private Locale locale = LocaleContextHolder.getLocale();
     private ModelMapper modelMapper;
     private  final String accountCoverage = "ACCOUNT_COVERAGE";
-
 
 
     @Autowired
@@ -148,7 +144,6 @@ public class AccountCoverageServiceImpl implements AccountCoverageService {
 
     @Override
     public JSONObject getAllEnabledCoverageDetailsForCorporate(Long corpId) {
-        logger.info("response",integrationService.getAllEnabledCoverageDetailsForCorporateFromEndPoint(corpId));
         return integrationService.getAllEnabledCoverageDetailsForCorporateFromEndPoint(corpId);
     }
 }

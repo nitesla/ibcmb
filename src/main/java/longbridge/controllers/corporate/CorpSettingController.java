@@ -132,19 +132,10 @@ public class CorpSettingController {
                     })
                     .collect(Collectors.toList());
         }
-        JSONObject enabledCoverageList = new JSONObject();
-        if (coverageService.enabledCoverageExist(corpId)){
-            enabledCoverageList = coverageService.getAllEnabledCoverageDetailsForCorporate(corpId);
-
-
-
-        }
-            logger.info("check",coverageService.getEnabledCoverageForCorporate(corpId).toArray());
 
             model.addAttribute("loans", loans);
             model.addAttribute("accountList", accountList);
             model.addAttribute("corpId",corpId);
-            model.addAttribute("coverageList",enabledCoverageList);
             boolean exp = passwordPolicyService.displayPasswordExpiryDate(corporateUser.getExpiryDate());
         logger.info("EXPIRY RESULT {} ", exp);
         if (exp){

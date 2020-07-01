@@ -5,10 +5,11 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import longbridge.api.*;
+import longbridge.config.CoverageSession;
 import longbridge.dtos.*;
+import longbridge.exception.CoverageRestTemplateResponseException;
 import longbridge.exception.InternetBankingException;
 import longbridge.exception.InternetBankingTransferException;
-import longbridge.exception.RestTemplateResponseException;
 import longbridge.exception.TransferErrorService;
 import longbridge.models.*;
 import longbridge.repositories.AccountCoverageRepo;
@@ -36,6 +37,7 @@ import org.springframework.web.client.RestTemplate;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
+import javax.annotation.Resource;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -51,6 +53,9 @@ public class IntegrationServiceImpl implements IntegrationService {
 
 	private Logger logger = LoggerFactory.getLogger(getClass());
 	private Locale locale = LocaleContextHolder.getLocale();
+
+	@Resource(name = "sessionScopedBean")
+	CoverageSession sessionScopedBean;
 
 	@Value("${ebank.service.uri}")
 	private String URI;
@@ -1445,6 +1450,7 @@ public class IntegrationServiceImpl implements IntegrationService {
 		params.put("customerId",customerId);
 		CoverageDetailsDTO coverageDetailsDTO = new CoverageDetailsDTO();
 		try{
+
 			ResponseEntity<JsonNode[]> response = template.getForEntity(uri, JsonNode[].class,params);
 			for (JsonNode resp:response.getBody()) {
 				coverageDetailsDTO.setDetails(resp);
@@ -1470,9 +1476,8 @@ public class IntegrationServiceImpl implements IntegrationService {
 		params.put("customerId",customerId);
 		ObjectMapper mapper= new ObjectMapper();
 		try{
+			template.setErrorHandler(new CoverageRestTemplateResponseException());
 			ResponseEntity<Object> response = template.getForEntity(uri, Object.class,params);
-			
-			template.setErrorHandler(new RestTemplateResponseException());
 			Object responseBody = response.getBody();
 			if (responseBody instanceof List<?> ){
 				JsonNode[] jsonNode = mapper.convertValue(responseBody,JsonNode[].class);
@@ -1487,17 +1492,22 @@ public class IntegrationServiceImpl implements IntegrationService {
 			else if(responseBody instanceof LinkedHashMap){
 				JsonNode jsonNode = mapper.convertValue(responseBody,JsonNode.class);
 				CoverageDetailsDTO coverageDetailsDTO = new CoverageDetailsDTO();
-				coverageDetailsDTO.setDetails(jsonNode);
+			    if(!jsonNode.has("status")){
+
+					coverageDetailsDTO.setDetails(jsonNode);
+
+				}else {
+					coverageDetailsDTO.setDetails(mapper.createObjectNode());
+					}
 				coverageDetailsDTO.setCustomerId(customerId);
 				coverageDetailsDTO.setCoverageName(coverageName);
 				coverageDetailsDTOList.add(coverageDetailsDTO);
 			}
-
+		sessionScopedBean.setCoverage(coverageDetailsDTOList);
 		} catch (Exception e){
 			logger.error("Error getting coverage details",e);
 		}
-
-		return coverageDetailsDTOList;
+		return sessionScopedBean.getCoverage();
 	}
 
 
@@ -1511,11 +1521,10 @@ public class IntegrationServiceImpl implements IntegrationService {
 			List<AccountCoverage> enabledCoverageList =coverageRepo.getEnabledAccountCoverageByCorporate(corpId);
 
 			for (AccountCoverage enabledCoverage:enabledCoverageList ) {
-				allcoverage.put(enabledCoverage.getCode().getCode(),getCoverageDetails(enabledCoverage.getCode().getCode(),customerId));
+					allcoverage.put(enabledCoverage.getCode().getCode(),getCoverageDetails(enabledCoverage.getCode().getCode(),customerId));
 
 			}
-			}
-
+		}
 		return allcoverage;
 	}
 
