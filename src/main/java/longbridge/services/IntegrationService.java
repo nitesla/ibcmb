@@ -165,14 +165,11 @@ public interface IntegrationService {
     LoanDTO getLoanDetails(String accountNumber);
     String updateTransferLimit(TransferSetLimit tsl);
     String updateCharge(TransferFeeAdjustment tfaDTO);
-    CoverageDetailsDTO getCoverageDetailsForCorporate(String coverageName ,String customerId);
-    List<CoverageDetailsDTO> getCoverageDetailsListForCorporate(String coverageName ,String customerId);
     JSONObject getAllEnabledCoverageDetailsForCorporateFromEndPoint(Long corpId);
     List<CoverageDetailsDTO>  getCoverageDetails(String coverageName,String customerNumber);
 
-
     List<BillerDTO> getBillers();
 
-   List<PaymentItemDTO> getPaymentItems(Long billerId);
+    List<PaymentItemDTO> getPaymentItems(Long billerId);
 
 }
