@@ -102,6 +102,7 @@ public class SecurityServiceImpl implements SecurityService {
         try {
             StringWriter writer = new StringWriter();
             this.t = this.ve.getTemplate("entrust/performTokenAuth.vm");
+//            this.t = this.ve.getTemplate("entrust/performUpdateEntrustUserRequest.vm");
             this.context.put("appCode", appCode);
             this.context.put("appDesc", appDesc);
             this.context.put("appGroup", group);

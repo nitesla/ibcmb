@@ -65,8 +65,6 @@
                     <li><a href="/admin/job">Batch Job</a></li>
                     <li><a href="/admin/greetings">Greetings</a></li>
 
-
-
                     <li><a href="/admin/report/view">Reports</a></li>
                 </ul>
             </li>
@@ -75,6 +73,7 @@
                     <li sec:authorize="hasAuthority('FIN_INST')"><a href="/admin/finst">Financial Institutions</a></li>
                     <li sec:authorize="hasAuthority('CONTACT_GRP')"><a href="/admin/groups/">Contact Groups</a></li>
                     <li sec:authorize="hasAuthority('SERVICE_REQ')"><a href="/admin/srconfig">Service Requests</a></li>
+                    <li><a th:href="@{/admin/billers}"> Payments</a></li>
                     <!--<li sec:authorize="hasAuthority('LIMIT_CORPORATE_GLOBAL')" class="sub_menu"><a href="/admin/limits/corporate/global">Corporate Global Limit</a></li>-->
                     <!--<li sec:authorize="hasAuthority('LIMIT_RETAIL_GLOBAL')" class="sub_menu"><a href="/admin/limits/retail/global">Retail Global Limit</a></li>-->
                 </ul>
@@ -278,11 +277,11 @@
                     <ul class="dropdown-menu dropdown-usermenu pull-right">
                         <!--<li><a href="javascript:;"> Profile</a></li>-->
                         <li><a th:href="@{/admin/users/password}"> Change Password</a></li>
-<<<<<<< src/main/resources/templates/layout.html
+<!--<<<<<<< src/main/resources/templates/layout.html-->
 
-=======
+<!--=======-->
                         <li><a th:href="@{/admin/users/transfersettings}"> Transfer</a></li>
->>>>>>> src/main/resources/templates/layout.html
+<!--&gt;>>>>>> src/main/resources/templates/layout.html-->
                     </ul>
                 </li>
                 <li sec:authorize="hasAuthority('VIEW_ADMIN_VERIFICATIONS')">

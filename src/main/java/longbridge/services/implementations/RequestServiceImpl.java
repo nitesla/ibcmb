@@ -181,6 +181,7 @@ public class RequestServiceImpl implements RequestService {
     @Override
     public Iterable<ServiceRequestDTO> getRequests(RetailUser user) {
         Iterable<ServiceRequest> requests = serviceRequestRepo.findByUser(user);
+        logger.info("DEBUG SERVICE LAYER {}", requests);
         return convertEntitiesToDTOs(requests);
     }
 
@@ -239,7 +240,9 @@ public class RequestServiceImpl implements RequestService {
             if(reqConfig!=null) {
                 for (UserGroup group : opsUserGroups) {
                     if (group != null) {
+                        logger.info("USER GROUP {}", group.equals(userGroupRepo.findById(reqConfig.getGroupId()).get()));
                         if (group.equals(userGroupRepo.findById(reqConfig.getGroupId()).get())) {
+
                             requestsForOpsUser.add(request);
                         }
                     }

@@ -32,7 +32,7 @@
                                 <span class="alert no-bd-rad my-border bg-white invisible">NGN</span>
                                 <input type="text" class="form-control ben-bg coronation-blue"  th:if="${benName}==''"  th:name= "${transferRequest.beneficiaryAccountName}"  th:value= "${transferRequest.beneficiaryAccountName}" disabled />
                                 <input type="text" class="form-control ben-bg coronation-blue" th:if="${benName}!=''"  th:name= "${benName}" th:value= "${benName}" disabled />
-                                <a href='/retail/transfer/interbank' class="btn btn-link required-step" style='font-size:11px;text-decoration:underline'>Change <span class='hidden-xs'>Beneficiary</span></a>
+                                <a th:href="@{/retail/transfer/interbank/new}"  class="btn btn-link required-step" style='font-size:11px;text-decoration:underline'>Change <span class='hidden-xs'>Beneficiary</span></a>
                                 <p class="errors" th:if="${#fields.hasErrors('amount')}" th:errors="*{amount}">&times;</p>
                         </div>
 
@@ -41,7 +41,7 @@
 
 
                                 <span id="scurency"></span>
-                                <span class="alert no-bd-rad my-border bg-white" id="sourceCurrency">CCY</span>
+                                <span class="alert no-bd-rad my-border bg-white hide-content-only" id="sourceCurrency">CCY</span>
 
                                 <select name="source" class="form-control" id="source"
                                         th:field="*{customerAccountNumber}" onchange="getBalance();getDestCurrency();">
@@ -61,8 +61,10 @@
                             <input type="hidden" name="channel" value="web"/>
 
                             <div class="form-group">
-                                <label class="my-label">Amount</label>
-                                <span class="alert no-bd-rad my-border bg-white hide-content-only">NGN</span>
+                                <div class="form-group" style="text-align: center;">
+                                <p th:text="${errorMessage}" style="color: red;"></p></div>
+                                <label class="my-label">Amount </label>
+                                <span class="alert no-bd-rad my-border bg-white">NGN</span>
 
                                 <input type="number" name="amount" step="any" placeholder="Enter an amount"
                                        th:field="*{amount}" class="form-control amount"/><span class='req-inner' id="amount"></span>
@@ -130,6 +132,7 @@
                     var message = jd.message;
                     var success =  jd.success;
                     console.log(message);
+                    console.log("DEBUGGING ONE!!!");
                     console.log(success);
                     if (success==false){
                         document.getElementById("myspan").textContent="Could not get balance from server, please try again.";
@@ -146,6 +149,19 @@
             })
         }
 
+            function checkUserLimit() {
+                var userAmount = $("#amount").val();
+                console.log(userAmount);
+
+                var userLimit = $("#limit").val();
+                console.log(userLimit);
+                if (userAmount < userLimit){
+                    alert("YOU CANNOT TRANSFER ABOVE YOUR LIMIT");
+                }else {
+                    alert("SECOND STATEMENT")
+                }
+                alert("STOP");
+            }
 
 
         function getLimit(){
@@ -159,12 +175,13 @@
                     var message = jd.message;
                     var success =  jd.success;
                     console.log(message);
+                    console.log("DEBUGGING TWO!!!");
                     console.log(success);
                     if (success==false){
                         document.getElementById("mylimit").textContent="Could not get limit from server, please try again.";
                         $("#mylimit").show();
                     }else{
-                        var  bal= numberWithCommas(message);
+                        var bal= numberWithCommas(message);
                         $('#limit').html("Limit: "+bal);
 
                     }
@@ -183,7 +200,7 @@
                 success:function(currency){
                     cur = ''+String(currency);
                     if(cur == "" ){
-                        document.getElementById("sourceCurrency").textContent="NAN";
+                        document.getElementById("sourceCurrency").textContent="NGN";
                         // $("#myspan").show();
                     }else{
 //                    $('input[name=availBal]').val(bal);

@@ -56,6 +56,7 @@ public class TransferErrorService {
 
     }
     public String getMessage(String errorCode){
+        logger.info("ERROR CODE {} " , errorCode);
        String error="";
         try {
             TransferCodeTransalator codeTransalator = transferCodeRepo.findFirstByResponseCode(errorCode);

@@ -9,14 +9,14 @@
         <div class="modal-dialog">
             <!-- Modal content-->
             <div class="modal-content no-bd-rad tokenBox" id="tokenmodal">
-                <form id="myForm" name="myForm" th:action="@{/corporate/beneficiary/authenticate}" method="POST" >
+                <form id="myForm" name="myForm" th:action="@{/corporate/beneficiary/international/authenticate}" method="POST" >
                     <input type="hidden" id="myID" name="id"/>
                 <div class="modal-body no-bd-rad">
                     <h3 class="tokenHeader"><span class='text-danger'>Delete Beneficiary</span>, <span th:text="*{username}" style="text-transform: capitalize">Tolu</span></h3>
                     <div class="margin-bottom">
                         <p style="margin-bottom:20px">Enter token to confirm beneficiary delete</p>
                         <div id="username_div" class="form-group">
-                                <input  type="text" id="token" required name="token" class='my-select tokenInput' placeholder="Token Code" autocomplete="off"/>
+                                <input  type="text" id="token" required name="token" class='form-control tokenInput' placeholder="Token Code" autocomplete="off"/>
                         </div>
                         <!--<div id='errorMess' class=" text-danger "></div>-->
                         <!--<div id='successMess' class=" text-success "></div>-->

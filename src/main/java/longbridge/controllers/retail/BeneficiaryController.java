@@ -199,6 +199,40 @@ public class BeneficiaryController {
         }
     }
 
+    @PostMapping("/international/authenticate")
+    public String delLocBenTokenInt(WebRequest webRequest, Principal principal, RedirectAttributes redirectAttributes) {
+        String token = webRequest.getParameter("token");
+        logger.info("this is the ben tokeeen {}", token);
+        String beneficiaryId = webRequest.getParameter("id");
+        Long benefit = Long.parseLong(beneficiaryId);
+        logger.info("this is the benID {}", benefit);
+        if (StringUtils.isNotBlank(token) && StringUtils.isNotBlank(beneficiaryId )) {
+            try {
+                RetailUser retailUser = retailUserService.getUserByName(principal.getName());
+                boolean result = securityService.performTokenValidation(retailUser.getEntrustId(), retailUser.getEntrustGroup(), token);
+                if (result) {
+                    try {
+                        String message = internationalBeneficiaryService.deleteInternationalBeneficiary(benefit);
+                        redirectAttributes.addFlashAttribute("message", message);
+                    } catch (InternetBankingException e) {
+                        logger.error("Beneficiary Error", e);
+                        redirectAttributes.addFlashAttribute("failure", e.getMessage());
+                    }
+                    return "redirect:/retail/beneficiary/international";
+                } else {
+                    redirectAttributes.addFlashAttribute("failure", "Token Authentication Failed");
+                    return "redirect:/retail/beneficiary/international";
+                }
+            } catch (InternetBankingException e) {
+                logger.error("International Beneficiary Error", e);
+                redirectAttributes.addFlashAttribute("failure", e.getMessage());
+                return "redirect:/retail/beneficiary/international";
+            }
+        } else {
+            return "redirect:/retail/beneficiary/international";
+        }
+    }
+
 
     /*@PostMapping("/foreign")
     public String createForeignBeneficiary(@ModelAttribute("internationalBeneficiaryDTO") @Valid InternationalBeneficiaryDTO internationalBeneficiaryDTO, BindingResult result, Model model, RedirectAttributes redirectAttributes, Principal principal) {
@@ -243,10 +277,35 @@ public class BeneficiaryController {
     }
 
     @PostMapping("/international")
-    public String createInternationalBeneficiary(@ModelAttribute("internationalBeneficiaryDTO") @Valid InternationalBeneficiaryDTO internationalBeneficiaryDTO, BindingResult result, Model model, RedirectAttributes redirectAttributes, Principal principal) {
-        if (result.hasErrors()) {
-            model.addAttribute("internationalBeneficiaryDTO", internationalBeneficiaryDTO);
-            return "cust/beneficiary/add";
+    public String createInternationalBeneficiary(@ModelAttribute("internationalBeneficiaryDTO") @Valid InternationalBeneficiaryDTO internationalBeneficiaryDTO, BindingResult result, Model model, RedirectAttributes redirectAttributes, Principal principal, HttpServletRequest request, Locale locale) {
+//        if (result.hasErrors()) {
+//            model.addAttribute("internationalBeneficiaryDTO", internationalBeneficiaryDTO);
+//            return "cust/beneficiary/add";
+//        }
+
+        SettingDTO setting = configService.getSettingByName("ENABLE_CORPORATE_2FA");
+        RetailUser user = retailUserService.getUserByName(principal.getName());
+
+        if (
+            /* service to check if token is enabled comes in here  */
+                (setting != null && setting.isEnabled())
+        ) {
+            try {
+                String token = request.getParameter("token");
+
+                securityService.performTokenValidation(user.getEntrustId(), user.getEntrustGroup(), token);
+            } catch (InternetBankingSecurityException ibse) {
+
+                if (
+                    /* service to check if token is enabled comes in here  */
+
+                        (setting != null && setting.isEnabled())
+                )
+                    model.addAttribute("auth", "auth");
+                model.addAttribute("failure", ibse.getMessage());
+                model.addAttribute("beneficiary", internationalBeneficiaryDTO);
+                return "cust/beneficiary/international/internationalSummary";
+            }
         }
 
         try {
@@ -353,6 +412,42 @@ public class BeneficiaryController {
 
         }
         return "cust/beneficiary/localSummary";
+    }
+
+    @PostMapping("/international/summary")
+    public String createInternationalBeneficiary(@Valid InternationalBeneficiaryDTO internationalBeneficiaryDTO, BindingResult result, Model model, Principal principal) {
+        if (result.hasErrors()) {
+            model.addAttribute("internationalBeneficiaryDTO", new InternationalBeneficiaryDTO());
+            return "cust/beneficiary/international/add";
+        }
+
+        try {
+            RetailUser retailUser = retailUserService.getUserByName(principal.getName());
+            boolean exist = internationalBeneficiaryService.doesBeneficiaryExist(retailUser, internationalBeneficiaryDTO);
+            if (exist) {
+                //model.addAttribute("localBeneficiaryDTO", localBeneficiaryDTO);
+                model.addAttribute("internationalBeneficiaryDTO", new InternationalBeneficiaryDTO());
+                model.addAttribute("failure", messageSource.getMessage("beneficiary.add.exist", null, locale));
+                return "cust/beneficiary/international/add";
+            }
+
+
+//            model.addAttribute("bank", financialInstitutionService.getFinancialInstitutionByCode(internationalBeneficiaryDTO.getBeneficiaryBank()).getInstitutionName());
+            model.addAttribute("beneficiary", internationalBeneficiaryDTO);
+            SettingDTO setting = configService.getSettingByName("ENABLE_RETAIL_2FA");
+
+
+            if (/* service to check if token is enabled comes in here  */
+
+                    (setting != null && setting.isEnabled())
+            )
+                model.addAttribute("auth", "auth");
+
+        } catch (InternetBankingException e) {
+
+
+        }
+        return "cust/beneficiary/international/internationalSummary";
     }
 
 }
