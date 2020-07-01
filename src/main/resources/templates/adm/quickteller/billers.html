@@ -52,15 +52,31 @@
                                                 <div class="col-md-6 col-sm-6 col-xs-12">
 
 
-                                                        <li >
+
                                                             <div class="col-lg-4">
                                                                 <div class="title-action">
                                                                     <a id="checkBiller"  class="btn btn-primary btn-sm bt-select bt-link-act" href="/admin/billers/index/getpaymentitems" disabled="disabled" ><i class="fa fa-pencil"></i> View Items</a>
                                                                 </div>
                                                             </div>
-                                                        </li>
+
+                                                    <fieldset>
+
+                                                        <div class="form-group">
+
+                                                            <div>
+                                                                <label>Category</label>
+                                                                <input class="form-control col-md-7 col-xs-12" name="codeType" th:value="${categoryname.categoryName}" disabled="disabled"/>
+                                                            </div>
+                                                        </div>
+                                                    </fieldset>
 
                                                 </div>
+
+
+
+
+
+
 
 
 
@@ -91,6 +107,7 @@
                                                                 <th>Support-email</th>
                                                                 <th>Product-id (Paydirect)</th>
                                                                 <th>Institution-id (Paydirect)</th>
+                                                                <th>Surcharge</th>
                                                                 <th>Currency</th>
                                                                 <th>Enable</th>
 
@@ -125,6 +142,11 @@
                                     </div>
 
 
+                                    <div class="col-lg-4">
+                                        <div class="title-action">
+                                            <a id=""  class="btn btn-primary" href="/admin/billers" ><i class="fa fa-angle-left"></i> Back</a>
+                                        </div>
+                                    </div>
 
                                 </div>
 
@@ -136,6 +158,9 @@
 
                 <div class="clearfix"></div>
             </div>
+
+
+
 
         </div>
     </div>
@@ -189,12 +214,13 @@
                 {"data":"supportemail"},
                 {"data":"paydirectProductId"},
                 {"data":"paydirectInstitutionId"},
+                {"data":"surcharge"},
                 {"data":"currencySymbol"},
                 { "data": "enabled" }
             ] ,
 
             "columnDefs" : [ {
-                "targets" : 6,
+                "targets" : 7,
                 "data" : "enabled",
                 "render" : function(data, type,full, meta) {
                     if (type === 'display') {

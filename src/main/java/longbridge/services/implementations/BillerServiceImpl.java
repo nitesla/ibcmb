@@ -108,6 +108,7 @@ public class BillerServiceImpl implements BillerService {
         biller.setShortname(dto.getShortName());
         biller.setPaydirectInstitutionId(dto.getPaydirectInstitutionId());
         biller.setPaydirectProductId(dto.getPaydirectProductId());
+        biller.setSurcharge(dto.getSurcharge());
         billerRepo.save(biller);
         return biller;
     }
@@ -130,6 +131,7 @@ public class BillerServiceImpl implements BillerService {
 
     @Override
     public void readOnlyAmount(Long id, Boolean value){
+        logger.info("readonly value = {}",value);
         if (value == false){
             Boolean newValue = true;
             paymentItemRepo.readOnly(id, newValue);
@@ -291,7 +293,6 @@ public class BillerServiceImpl implements BillerService {
     @Override
     public List<PaymentItem> getPaymentItemsForBiller(Long id) {
         Biller biller = billerRepo.findOneById(id);
-        logger.info("ID IS {}" , biller.getBillerId());
         List<PaymentItem> paymentItemList = paymentItemRepo.findByBillerId(biller.getBillerId());
         return paymentItemList;
     }
@@ -320,7 +321,7 @@ public class BillerServiceImpl implements BillerService {
         newPaymentItem.setItemCurrencySymbol(paymentItemDTO.getItemCurrencySymbol());
         newPaymentItem.setPaymentCode(paymentItemDTO.getPaymentCode());
         newPaymentItem.setPaymentItemName(paymentItemDTO.getPaymentitemname());
-        newPaymentItem.setReadonly(false);
+        newPaymentItem.setReadonly(paymentItemDTO.getIsAmountFixed());
         paymentItemRepo.save(newPaymentItem);
         return newPaymentItem;
     }

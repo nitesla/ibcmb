@@ -16,7 +16,7 @@ public class BillerDTO {
     private String paydirectInstitutionId;
     private String narration;
     private String shortName;
-    private String surcharge;
+    private Long surcharge;
     private String currencyCode;
     private String quickTellerSiteUrlName;
     private String amountType;
@@ -122,11 +122,11 @@ public class BillerDTO {
         this.shortName = shortName;
     }
 
-    public String getSurcharge() {
+    public Long getSurcharge() {
         return surcharge;
     }
 
-    public void setSurcharge(String surcharge) {
+    public void setSurcharge(Long surcharge) {
         this.surcharge = surcharge;
     }
 

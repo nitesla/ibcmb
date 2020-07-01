@@ -79,10 +79,36 @@
                                                         </div>
                                                     </li>
 
-                                                
 
                                                 </ul>
 
+                                                <br/>
+                                                <br/>
+                                                <br/>
+                                                <fieldset>
+                                                    <div class="form-group">
+
+                                                        <div class="col-md-4 col-sm-6 col-xs-12">
+                                                            <label>Biller</label>
+                                                            <input class="form-control col-md-7 col-xs-12" name="codeType" th:value="${biller.billerName}" disabled="disabled"/>
+                                                        </div>
+                                                    </div>
+
+                                                </fieldset>
+                                                <br/>
+                                                <fieldset>
+
+                                                    <div class="form-group">
+
+                                                        <div class="col-md-4 col-sm-6 col-xs-12">
+                                                            <label>Support-email</label>
+                                                            <input class="form-control col-md-7 col-xs-12" name="codeType" th:value="${biller.supportemail}" disabled="disabled"/>
+                                                        </div>
+                                                    </div>
+                                                </fieldset>
+
+                                            <br/>
+                                                <br/>
                                                                 <div class="row">
 
 
@@ -95,7 +121,6 @@
                                                                                 <th>Item</th>
                                                                                 <th>Amount</th>
                                                                                 <th>Payment-code</th>
-                                                                                <th>Fixed-Amount Value</th>
                                                                                 <th>Read-only</th>
                                                                                 <th>Enabled</th>
 
@@ -131,9 +156,16 @@
 
                                                         </div>
 
+                                    <input type="hidden" th:value="${rowid}"  id="getbillerrowid">
+                                    <div class="col-lg-4">
+                                        <div class="title-action">
+                                            <a id=""  class="btn btn-primary btn-sm bt-select bt-link-act" href="/admin/billers/index/backtobillers" ><i class="fa fa-angle-left"></i> Back</a>
+                                        </div>
+                                    </div>
 
 
                                                     </div>
+
 
 
                                             </div>
@@ -194,34 +226,34 @@
                                  {"data":"paymentItemName"},
                                  { "data": "amount" },
                                  { "data": "paymentCode" },
-                                  { "data": "isAmountFixed" },
-                                     { "data": "readonly" },
+                                  { "data": "readonly" },
                                  { "data": "enabled" },
 
                              ],
                     "columnDefs" : [ {
-                        "targets" : 5,
+                        "targets" : 4,
                         "data" : "enabled",
                         "render" : function(data, type,full, meta) {
                             if (type === 'display') {
                                 if (data == true) {
-                                    return "<input type='checkbox' data-id='"+full.id+"'  data-pk='"+full.billerId+"' data-name='"+full.paymentItemName+"' data-category='"+full.paymentItemId+"'  data-switchery='true' class='js-switch' checked data-value='"+full.enabled+"'/>";
+                                    return "<input type='checkbox' name='enabledValue' data-id='"+full.id+"'  data-pk='"+full.billerId+"' data-name='"+full.paymentItemName+"' data-category='"+full.paymentItemId+"'  data-switchery='true' class='js-switch' checked data-value='"+full.enabled+"'/>";
                                 } else if (data == false) {
-                                    return "<input type='checkbox' data-id='"+full.id+"' data-pk='"+full.billerId+"' data-name='"+full.paymentItemName+"' data-category='"+full.paymentItemId+"'   data-switchery='true' class='js-switch'  data-value='"+full.enabled+"'/>";
+                                    return "<input type='checkbox' name='enabledValue' data-id='"+full.id+"' data-pk='"+full.billerId+"' data-name='"+full.paymentItemName+"' data-category='"+full.paymentItemId+"'   data-switchery='true' class='js-switch'  data-value='"+full.enabled+"'/>";
                                 }
                             }
                             return data;
                         }
                     },
                         {
-                            "targets" : 4,
+                            "targets" : 3,
                             "data" : "readonly",
                             "render" : function(data, type,full, meta) {
+                                console.log(full);
                                 if (type === 'display') {
                                     if (data == true) {
-                                        return "<input type='checkbox' class='readonlyvalue' name='amount' data-id='"+full.id+"'  data-pk='"+full.billerId+"' data-name='"+full.paymentItemName+"' data-category='"+full.paymentItemId+"'  data-switchery='true'  checked data-value='"+full.readonly+"'/>";
+                                        return "<input type='checkbox' class='readonlyvalue' name='readonly' data-id='"+full.id+"'  data-pk='"+full.billerId+"' data-name='"+full.paymentItemName+"' data-category='"+full.paymentItemId+"'  data-switchery='true'  checked data-value='"+full.readonly+"'/>";
                                     } else if (data == false) {
-                                        return "<input type='checkbox' class='readonlyvalue' name='amount' data-id='"+full.id+"' data-pk='"+full.billerId+"' data-name='"+full.paymentItemName+"' data-category='"+full.paymentItemId+"'   data-switchery='true'   data-value='"+full.readonly+"'/>";
+                                        return "<input type='checkbox' class='readonlyvalue' name='readonly' data-id='"+full.id+"' data-pk='"+full.billerId+"' data-name='"+full.paymentItemName+"' data-category='"+full.paymentItemId+"'   data-switchery='true'   data-value='"+full.readonly+"'/>";
                                     }
                                 }
                                 return data;
@@ -244,7 +276,7 @@
     })
 
 
-    $(document).on("change","input[name=amount]",function (e) {
+    $(document).on("change","input[name=readonly]",function (e) {
         var cb = $(e.currentTarget);
         var op = cb.val();
         var dataId = cb.attr("data-id");
@@ -258,11 +290,11 @@
 
         });
 
-    })
+    });
 
 
 
-    $(document).on("change","input[type=checkbox]", function(e) {
+    $(document).on("change","input[name=enabledValue]", function(e) {
         var cb = $(e.currentTarget);
         var op = cb.val();
         var dataId = cb.attr("data-id");
@@ -306,6 +338,20 @@
         })
         
     }
+
+
+    $("a.bt-link-act").on("click", function(e) {
+        e.preventDefault();
+        var link = $(e.currentTarget);
+        if($(link).attr("disabled")){
+            return;
+        }
+
+        var id = $("#getbillerrowid").val();
+        console.log(id);
+        var ooo = link.attr("href").replace("index",id);
+        window.location.assign(ooo);
+    });
 
 
 </script>

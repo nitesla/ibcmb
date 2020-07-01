@@ -50,6 +50,8 @@ public class Biller extends AbstractEntity{
     private String paydirectProductId;
     @Column(name = "paydirectinstitutionid")
     private String paydirectInstitutionId;
+    @Column(name = "surcharge")
+    private Long surcharge;
 
 
 //    @OneToMany( mappedBy = "billers", cascade = CascadeType.ALL, orphanRemoval=true )
@@ -176,6 +178,14 @@ public class Biller extends AbstractEntity{
 
     public void setPaydirectInstitutionId(String paydirectInstitutionId) {
         this.paydirectInstitutionId = paydirectInstitutionId;
+    }
+
+    public Long getSurcharge() {
+        return surcharge;
+    }
+
+    public void setSurcharge(Long surcharge) {
+        this.surcharge = surcharge;
     }
 
     //    public List<PaymentItem> getPaymentItems() {
