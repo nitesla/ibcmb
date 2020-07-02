@@ -489,7 +489,7 @@ public class MainController {
                 redirectAttributes.addFlashAttribute("failure", "Failed to send message");
             }
         }
-        return "redirect:/#contact_us";
+        return "redirect:/retail/dashboard";
     }
 
     private void clearSession() {

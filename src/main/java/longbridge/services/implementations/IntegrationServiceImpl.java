@@ -1319,7 +1319,11 @@ public class IntegrationServiceImpl implements IntegrationService {
 			if (setting != null && setting.isEnabled()) {
 				String recipient = setting.getValue();
 				String subject = messageSource.getMessage("international.transfer.subject",null,locale);
-				mailService.send(recipient, subject, mail, true);
+
+				/* Pls uncomment this when you're deploying
+				* and check the application cnfiguration if mail config has been set
+				*/
+//				mailService.send(recipient, subject, mail, true);
 				transRequest.setReferenceNumber(NumberUtils.generateReferenceNumber(15));
 				transRequest.setStatus("000");
 				transRequest.setStatusDescription(messageSource.getMessage("transfer.successful",null,locale));
