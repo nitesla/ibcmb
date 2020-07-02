@@ -27,7 +27,7 @@
                             <label>Market Type</label>
                             <span class="req"></span>
                             <select th:name="Market-Type" id="marketType"
-                                    class="form-control full-width">
+                                    class="form-control full-width" required>
                                 <option value="">Select Market Type</option>
                                 <option th:each="market : ${markets}"
                                         th:value="${market.code}"
@@ -38,7 +38,7 @@
                         <div class="form-group" id="primary" style="display: none">
                             <label>Tenor</label>
                             <span class="req"></span>
-                            <select th:name="Primary-Market-Tenor" id="pTenor" class="form-control full-width" >
+                            <select th:name="Primary-Market-Tenor" id="pTenor" class="form-control full-width">
                                 <option value=""> Select Tenor </option>
                                 <option th:each="p : ${primary}" th:value="${p.tenor +','+ p.value}"
                                         th:text="${p.tenor}+' '+days"></option>
@@ -96,7 +96,7 @@
                         <div class="form-group" id="pRateDiv" style="display:none">
                             <label>Rate</label>
 
-                            <select class="form-control full-width" required="required" id="primaryRate">
+                            <select class="form-control full-width" id="primaryRate">
                                 <option value="supplyRate">Supply rate</option>
                                 <option value="bankRate" >Use bank rate</option>
                             </select>
@@ -157,7 +157,7 @@
                 $("#primary").hide();
                 $('#secondary').show();
                 $('#pRateDiv').hide();
-                $('#supplyRate').val("N/A");
+                $('#supplyRate').val("Enter Rate");
                 $('#bankRate').val("N/A");
 
 

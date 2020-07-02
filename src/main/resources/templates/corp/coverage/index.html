@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{corp-layout}">
+<link th:href="@{~/bank/vendors/sweetalert/sweetalert.css}" rel="stylesheet"/>
+<body onload="javascript:var bread = [['Home', '/corporate/dashboard'],['account coverage','']];currentBar('account coverage');breadCrumb(bread)">
+
+<div layout:fragment="content">
+    <div class="col-md-5 col-sm-5 ">
+
+        <select class="form-control full-width coronation-form-control hide-content-only" id="view">
+            <option value="account">Overview</option>
+        </select>
+    </div>
+
+    <div class="col-xs-12 " >
+        <div class=" no-pad-lef  no-mt no-bd  alert">
+            <div class="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
+                <div class="btn-group" role="group" aria-label="First group">
+
+
+                </div>
+            </div>
+            <br/>
+            <div class="d-flex justify-content-center" id="loading">
+                <i class="fa fa-spinner fa-spin fa-3x fa-fw" style="font-size:10em; position: relative;
+                           height: 100px;
+                           width: 100px;
+                           top: 50%;
+                           left: 50%;
+                           margin-left: -50px;
+                           margin-top: 40px;
+                           background-size: 100%;" ></i>
+                <span class="sr-only">Loading...</span>
+            </div>
+            <div th:unless="${#lists.isEmpty(coverageList)}">
+            <div class="slider">
+                <div id="myCarousel" class="carousel slide" data-ride="carousel">
+<!--                    <span th:unless="${#lists.isEmpty(coverageList)}">-->
+
+                        <!-- Indicators -->
+<!--                        <ol class="carousel-indicators hidden-xs">-->
+<!--                            <th:block th:each="list,num : ${coverageList}">-->
+<!--                            <li data-target="#myCarousel" th:attr="data-slide-to=${num.index}" th:text="${list}"></li>-->
+<!--                            </th:block>-->
+<!--                       </ol>-->
+
+                            <!-- Wrapper for slides -->
+                        <div class="carousel-inner">
+
+                                <th:block th:each="item : ${coverageList}">
+                                    <div class="item">
+                                        <div class="sliding" >
+<!--                                            <p th:text="${item}"></p>-->
+                                             <div class="no-pad-lef table-responsive no-mt bg-white alert" th:id="${item}">
+                                             </div>
+                                        </div>
+                                    </div>
+                                </th:block>
+                        </div>
+
+                        <!-- Left and right controls -->
+
+                <a class="left carousel-control" style="height: 3em;width: 5em;padding-bottom:2em;background-image: linear-gradient(to right, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0) 100%)" href="#myCarousel" data-slide="prev">
+                    <span class="fa fa-angle-left" style="font-size:40px;margin-left:-80px;margin-top:20px">
+
+                    </span>
+                    <span class="sr-only">Previous</span>
+                </a>
+                <a class="right carousel-control" style="height: 3em;width: 5em;padding-bottom:2em;background-image: linear-gradient(to right, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0) 100%)" href="#myCarousel" data-slide="next">
+                    <span class="fa fa-angle-right" style="font-size:40px;margin-top:20px;margin-right:-70px"></span>
+                    <span class="sr-only">Next</span>
+                </a>
+
+                    </div>
+
+
+
+                </div>
+            </div>
+
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+<th:block layout:fragment="scripts">
+
+    <script th:src="@{~/customer/js/dataTables.select.js}"></script>
+    <script th:src="@{~/bank/vendors/sweetalert/sweetalert.min.js}"></script>
+    <script th:src="@{~/bank/vendors/bootstrap-dialog/js/bootstrap-dialog.js}"></script>
+
+
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        $(document).ready(function () {
+            $(document).ajaxStart(function () {
+                $("#loading").show();
+                console.log("Show");
+            }).ajaxStop(function () {
+                $("#loading").hide();
+                console.log("Hide");
+            });
+            $.ajax({
+                url: '/corporate/accountcoverage/all',
+                type: 'GET',
+                 success: function (response) {
+                     let keys = Object.keys(response);
+                     for (let element of keys) {
+                       let coverage = response[element];
+                       let header = Object.keys(coverage[0].details);
+                       let table = document.createElement('table');
+                        table.setAttribute('id',element+'table');
+                        table.setAttribute('class','table table-hover');
+
+                        let tableCaptionElement = document.createElement('caption');
+                        tableCaptionElement.setAttribute('id',element+'caption');
+                        tableCaptionElement.setAttribute("style", "margin-top: 3.5em;");
+
+                        let tableCaptionNode = document.createTextNode(element);
+                        tableCaptionElement.appendChild(tableCaptionNode);
+
+                        let tableHeader = document.createElement('thead');
+                        tableHeader.setAttribute('class','thead');
+
+                        let datatableColumns =[];
+                        for(let i=0;i<header.length;i++){
+                            let th = document.createElement('th');
+                            let node = document.createTextNode(header[i][0].toUpperCase()+header[i].slice(1));
+                            th.appendChild(node);
+                            tableHeader.appendChild(th);
+                            datatableColumns.push({"data":header[i]});
+
+                        }
+                        let tbody = document.createElement('tbody')
+                        for (let i = 0; i < coverage.length; i++) {
+                             let tr = document.createElement('tr');
+                             let row = Object.keys(coverage[i].details);
+                            for (let coverageElement of row) {
+                                let td = document.createElement('td');
+                                tr.appendChild(td);
+                                let textNode = document.createTextNode(coverage[i].details[coverageElement]);
+                                td.appendChild(textNode);
+                            }
+                            tbody.appendChild(tr);
+
+                        }
+                         table.appendChild(tableCaptionElement);
+                         table.appendChild(tableHeader);
+                         table.appendChild(tbody);
+                         document.getElementById(element).appendChild(table);
+
+
+                         let datatable = $("#"+element+'table').DataTable({
+                             responsive: true,
+                             "lengthMenu": [ [5, 10, 20], [5, 10, 20] ],
+                             "pagingType": "full_numbers",
+                             "searching": false,
+                             "paging": true,
+                             "dom": 'T<"clear">frtlp',
+                             "columns":datatableColumns,
+
+
+                         });
+
+
+
+
+
+                     }
+
+
+                 },
+                error:function (response) {
+                    console.log("Message");
+                }
+            });
+
+            $('#myCarousel').find('.item').first().addClass('active');
+        });
+
+
+
+
+
+
+        /*]]>*/
+    </script>
+</th:block>
+
+</body>
+</html>

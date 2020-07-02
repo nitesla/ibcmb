@@ -172,7 +172,7 @@
         var dt = $('#codes').DataTable();
         var id = $(dt.row({
             selected: true
-        }).node()).attr("id");
+        }).node()).attr("id")
         var ooo = link.attr("href").replace("index",id);
         window.location.assign(ooo);
 
@@ -186,7 +186,7 @@
         }
         var dt = $('#codes').DataTable();
         var id = $(dt.row({
-            selected: true
+            selected: trueF
         }).node()).attr("id");
         //window.location.href = link.attr("formaction") + '?id=' + id;
         //replace {id} with id

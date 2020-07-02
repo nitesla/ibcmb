@@ -36,7 +36,7 @@ import java.util.Locale;
  */
 @Controller
 @RequestMapping("/admin/users")
-public class AdminUserController {
+public class  AdminUserController {
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 

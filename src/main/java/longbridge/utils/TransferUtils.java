@@ -181,6 +181,17 @@ public class TransferUtils {
         
         return "";
     }
+
+    public String getLimitForAuthorization(String accountNumber, String channel) {
+        validate(accountNumber);
+        if (getCurrentUser() != null) {
+            String limit = integrationService.getDailyAccountLimit(accountNumber, channel);
+            if (limit != null && !limit.isEmpty())
+                return limit;
+        }
+
+        return "";
+    }
     
     
     private User getCurrentUser() {
