@@ -7,7 +7,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import longbridge.api.*;
 import longbridge.billerresponse.BillerResponse;
 import longbridge.billerresponse.PaymentItemResponse;
-import longbridge.config.CoverageSession;
+import longbridge.config.CoverageInfo;
 import longbridge.dtos.*;
 import longbridge.exception.CoverageRestTemplateResponseException;
 import longbridge.exception.InternetBankingException;
@@ -59,8 +59,7 @@ public class IntegrationServiceImpl implements IntegrationService {
 	private Logger logger = LoggerFactory.getLogger(getClass());
 	private Locale locale = LocaleContextHolder.getLocale();
 
-	@Resource(name = "sessionScopedBean")
-	CoverageSession sessionScopedBean;
+
 
 	@Value("${ebank.service.uri}")
 	private String URI;
@@ -1460,11 +1459,11 @@ public class IntegrationServiceImpl implements IntegrationService {
 				coverageDetailsDTO.setCoverageName(coverageName);
 				coverageDetailsDTOList.add(coverageDetailsDTO);
 			}
-			sessionScopedBean.setCoverage(coverageDetailsDTOList);
+
 		} catch (Exception e){
 			logger.error("Error getting coverage details",e);
 		}
-		return sessionScopedBean.getCoverage();
+		return coverageDetailsDTOList;
 	}
 
 
@@ -1474,7 +1473,7 @@ public class IntegrationServiceImpl implements IntegrationService {
 		String customerId = corporateRepo.findById(corpId).get().getCustomerId();
 		JSONObject allcoverage = new JSONObject();
 
-		if (coverageRepo.enabledCoverageExist(corpId)){
+		if (coverageRepo.enabledCoverageExistForCorporate(corpId)){
 			List<AccountCoverage> enabledCoverageList =coverageRepo.getEnabledAccountCoverageByCorporate(corpId);
 
 			for (AccountCoverage enabledCoverage:enabledCoverageList ) {

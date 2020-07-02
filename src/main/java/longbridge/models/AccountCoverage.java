@@ -15,7 +15,6 @@ import java.util.Objects;
 public class AccountCoverage extends AbstractEntity  {
 
 
-
     private boolean enabled;
 
     @ManyToOne
@@ -24,6 +23,8 @@ public class AccountCoverage extends AbstractEntity  {
     @ManyToOne
     private Code code;
 
+    @ManyToOne
+    private RetailUser retailUser;
 
 
     public AccountCoverage() {
@@ -53,6 +54,14 @@ public class AccountCoverage extends AbstractEntity  {
         this.code = code;
     }
 
+    public RetailUser getRetailUser() {
+        return retailUser;
+    }
+
+    public void setRetailUser(RetailUser retailUser) {
+        this.retailUser = retailUser;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -61,12 +70,13 @@ public class AccountCoverage extends AbstractEntity  {
         AccountCoverage that = (AccountCoverage) o;
         return enabled == that.enabled &&
                 Objects.equals(corporate, that.corporate) &&
-                Objects.equals(code, that.code);
+                Objects.equals(code, that.code) &&
+                Objects.equals(retailUser, that.retailUser);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), enabled, corporate, code);
+        return Objects.hash(super.hashCode(), enabled, corporate, code, retailUser);
     }
 
     @Override
@@ -75,6 +85,7 @@ public class AccountCoverage extends AbstractEntity  {
                 "enabled=" + enabled +
                 ", corporate=" + corporate +
                 ", code=" + code +
+                ", retailUser=" + retailUser +
                 '}';
     }
 }

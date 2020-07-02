@@ -66,24 +66,21 @@ public class AccountCoverageServiceImpl implements AccountCoverageService {
       List<AccountCoverageDTO> coverageDTOList = new ArrayList<>();
         codeDTOList.stream().forEach(h -> {
             AccountCoverageDTO coverageDTO = new AccountCoverageDTO();
-            if(coverageRepo.coverageExist(corpId,h.getId())){
+            if(coverageRepo.coverageExistForCorporate(corpId,h.getId())){
                AccountCoverage coverage = coverageRepo.getAccountCoverageByCodeAndCorporate(corpId,h.getId());
                coverageDTO.setEnabled(coverage.isEnabled());
                coverageDTO.setCode(coverage.getCode().getCode());
                coverageDTO.setDescription(coverage.getCode().getDescription());
-               coverageDTO.setCodeId(h.getId());
-                coverageDTO.setCorpId(corpId);
-               coverageDTOList.add(coverageDTO);
-               }
+            }
             else{
                 coverageDTO.setEnabled(false);
                 coverageDTO.setCode(h.getCode());
                 coverageDTO.setDescription(h.getDescription());
-                coverageDTO.setCodeId(h.getId());
-                coverageDTO.setCorpId(corpId);
-                coverageDTOList.add(coverageDTO);
             }
-            });
+            coverageDTO.setCodeId(h.getId());
+            coverageDTO.setCorpId(corpId);
+            coverageDTOList.add(coverageDTO);
+        });
       Page<AccountCoverageDTO> page = new PageImpl<AccountCoverageDTO>(coverageDTOList,pageDetails,coverageDTOList.size());
       return page;
     }
@@ -94,9 +91,9 @@ public class AccountCoverageServiceImpl implements AccountCoverageService {
          Long corpId = updateCoverageDTO.getCorpId();
          Boolean enabled =updateCoverageDTO.getEnabled();
         try {
-            if(coverageRepo.coverageExist(corpId,codeId)){
+            if(coverageRepo.coverageExistForCorporate(corpId,codeId)){
                 logger.info("Coverage Exist");
-            coverageRepo.enableCoverage(corpId,codeId,enabled);
+            coverageRepo.enableCoverageForCorporate(corpId,codeId,enabled);
             }else {
                 logger.info("adding Coverage");
                addCoverageForCorporate(corpId,codeId);
@@ -128,23 +125,53 @@ public class AccountCoverageServiceImpl implements AccountCoverageService {
     }
 
     @Override
-    public Boolean enabledCoverageExist(Long corpId) {
-        return coverageRepo.enabledCoverageExist(corpId);
+    public JSONObject getAllEnabledCoverageDetailsForCorporate(Long corpId) {
+        return integrationService.getAllEnabledCoverageDetailsForCorporateFromEndPoint(corpId);
     }
 
-    @Override
-    public String getCustomerNumber(Long corpId) {
-        return corporateRepo.findById(corpId).get().getCustomerId();
-    }
+//    @Override
+//    public Page<AccountCoverageDTO> getAllCoverageForRetailUser(Long retId, Pageable pageDetails) {
+//        List<CodeDTO> codeDTOList = codeService.getCodesByType(accountCoverage);
+//        List<AccountCoverageDTO> coverageDTOList = new ArrayList<>();
+//        codeDTOList.stream().forEach(h -> {
+//            AccountCoverageDTO coverageDTO = new AccountCoverageDTO();
+//            if(coverageRepo.coverageExistForRetailUser(retId,h.getId())){
+//                AccountCoverage coverage = coverageRepo.getAccountCoverageByCodeAndRetailUser(retId,h.getId());
+//                coverageDTO.setEnabled(coverage.isEnabled());
+//                coverageDTO.setCode(coverage.getCode().getCode());
+//                coverageDTO.setDescription(coverage.getCode().getDescription());
+//            }
+//            else{
+//                coverageDTO.setEnabled(false);
+//                coverageDTO.setCode(h.getCode());
+//                coverageDTO.setDescription(h.getDescription());
+//            }
+//            coverageDTO.setCodeId(h.getId());
+//            coverageDTO.setRetId(retId);
+//            coverageDTOList.add(coverageDTO);
+//        });
+//        Page<AccountCoverageDTO> page = new PageImpl<AccountCoverageDTO>(coverageDTOList,pageDetails,coverageDTOList.size());
+//        return page;
+//    }
 
     @Override
-    public Page<AccountCoverageDTO> getAllCoverageForRetail(Long retId, Pageable pageDetails) {
+    public String enableCoverageForRetailUser(UpdateCoverageDTO updateCoverageDTO) throws InternetBankingException {
         return null;
     }
 
     @Override
-    public JSONObject getAllEnabledCoverageDetailsForCorporate(Long corpId) {
-        return integrationService.getAllEnabledCoverageDetailsForCorporateFromEndPoint(corpId);
+    public void addCoverageForRetailUser(Long retId, Long codeId) {
+
+    }
+
+    @Override
+    public List<AccountCoverage> getEnabledCoverageForRetailUser(Long retId) {
+        return null;
+    }
+
+    @Override
+    public JSONObject getAllEnabledCoverageDetailsForRetailUser(Long retId) {
+        return null;
     }
 }
 

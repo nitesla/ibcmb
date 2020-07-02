@@ -80,11 +80,7 @@ public class UtilityConfig {
         return source;
     }
 
-    @Bean
-    @SessionScope
-    public CoverageSession sessionScopedBean(){
-        return new CoverageSession();
-    }
+
 
 
 }

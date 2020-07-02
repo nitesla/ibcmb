@@ -112,13 +112,7 @@
         $(document).ready(function () {
             var corpId = [[${corpId}]];
 
-            // $(document).ajaxStart(function () {
-            //     $("#loading").show();
-            //     console.log("Show");
-            // }).ajaxStop(function () {
-            //     $("#loading").hide();
-            //     console.log("Hide");
-            // });
+
             $.ajax({
                 url: "/corporate/accountcoverage/"+corpId,
                 type: 'GET',

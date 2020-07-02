@@ -20,13 +20,15 @@ public interface AccountCoverageService {
    String enableCoverageForCorporate(UpdateCoverageDTO updateCoverageDTO) throws InternetBankingException;
    void addCoverageForCorporate(Long corpId,Long codeId);
    List<AccountCoverage> getEnabledCoverageForCorporate(Long corpId);
-   Boolean enabledCoverageExist(Long corpId);
-   String getCustomerNumber(Long corpId);
-   Page<AccountCoverageDTO> getAllCoverageForRetail(Long retId,Pageable pageDetails);
    JSONObject getAllEnabledCoverageDetailsForCorporate(Long corpId);
+   Page<AccountCoverageDTO> getAllCoverageForRetailUser(Long retId, Pageable pageDetails);
+   String enableCoverageForRetailUser(UpdateCoverageDTO updateCoverageDTO) throws InternetBankingException;
+   void addCoverageForRetailUser(Long retId,Long codeId);
+   List<AccountCoverage> getEnabledCoverageForRetailUser(Long retId);
+   JSONObject getAllEnabledCoverageDetailsForRetailUser(Long retId);
 
 
 
 
 
-    }
+}
