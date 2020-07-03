@@ -5,6 +5,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.client.ClientHttpResponse;
+import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.ResponseErrorHandler;
 
 import java.io.IOException;
@@ -13,7 +14,7 @@ public class CoverageRestTemplateResponseException implements ResponseErrorHandl
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
     @Override
-    public boolean hasError(ClientHttpResponse response) throws IOException {
+    public boolean hasError(ClientHttpResponse response) throws IOException,ResourceAccessException {
         return true;
     }
 

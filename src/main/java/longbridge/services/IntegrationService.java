@@ -1,5 +1,6 @@
 package longbridge.services;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import longbridge.api.*;
 import longbridge.dtos.CoverageDetailsDTO;
@@ -165,8 +166,8 @@ public interface IntegrationService {
     LoanDTO getLoanDetails(String accountNumber);
     String updateTransferLimit(TransferSetLimit tsl);
     String updateCharge(TransferFeeAdjustment tfaDTO);
-    JSONObject getAllEnabledCoverageDetailsForCorporateFromEndPoint(Long corpId);
-    List<CoverageDetailsDTO>  getCoverageDetails(String coverageName,String customerNumber);
+    List<CoverageDetailsDTO> getAllEnabledCoverageDetailsForCorporateFromEndPoint(Long corpId);
+    CoverageDetailsDTO getCoverageDetails(String coverageName, String customerNumber);
 
     List<BillerDTO> getBillers();
 

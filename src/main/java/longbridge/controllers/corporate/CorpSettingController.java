@@ -1,5 +1,6 @@
 package longbridge.controllers.corporate;
 
+import longbridge.config.CoverageInfo;
 import longbridge.dtos.*;
 import longbridge.exception.*;
 import longbridge.forms.AlertPref;
@@ -29,6 +30,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.security.Principal;
@@ -77,6 +79,9 @@ public class CorpSettingController {
 
     @Autowired
     AccountCoverageService coverageService;
+
+    @Resource(name = "sessionScopedBean")
+    CoverageInfo sessionScopedBean;
 
 
     @RequestMapping("/dashboard")
@@ -136,12 +141,13 @@ public class CorpSettingController {
             model.addAttribute("loans", loans);
             model.addAttribute("accountList", accountList);
             model.addAttribute("corpId",corpId);
+
             boolean exp = passwordPolicyService.displayPasswordExpiryDate(corporateUser.getExpiryDate());
         logger.info("EXPIRY RESULT {} ", exp);
         if (exp){
             model.addAttribute("message", messageSource.getMessage("password.reset.notice", null, locale));
         }
-
+        sessionScopedBean.setCoverage(integrationService.getAllEnabledCoverageDetailsForCorporateFromEndPoint(corpId));
         return "corp/dashboard";
     }
 

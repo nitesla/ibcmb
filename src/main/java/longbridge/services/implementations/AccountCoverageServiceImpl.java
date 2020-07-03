@@ -3,6 +3,7 @@ package longbridge.services.implementations;
 
 import longbridge.dtos.AccountCoverageDTO;
 import longbridge.dtos.CodeDTO;
+import longbridge.dtos.CoverageDetailsDTO;
 import longbridge.dtos.UpdateCoverageDTO;
 import longbridge.exception.InternetBankingException;
 import longbridge.exception.VerificationInterruptedException;
@@ -125,34 +126,34 @@ public class AccountCoverageServiceImpl implements AccountCoverageService {
     }
 
     @Override
-    public JSONObject getAllEnabledCoverageDetailsForCorporate(Long corpId) {
+    public List<CoverageDetailsDTO> getAllEnabledCoverageDetailsForCorporate(Long corpId) {
         return integrationService.getAllEnabledCoverageDetailsForCorporateFromEndPoint(corpId);
     }
 
-//    @Override
-//    public Page<AccountCoverageDTO> getAllCoverageForRetailUser(Long retId, Pageable pageDetails) {
-//        List<CodeDTO> codeDTOList = codeService.getCodesByType(accountCoverage);
-//        List<AccountCoverageDTO> coverageDTOList = new ArrayList<>();
-//        codeDTOList.stream().forEach(h -> {
-//            AccountCoverageDTO coverageDTO = new AccountCoverageDTO();
-//            if(coverageRepo.coverageExistForRetailUser(retId,h.getId())){
-//                AccountCoverage coverage = coverageRepo.getAccountCoverageByCodeAndRetailUser(retId,h.getId());
-//                coverageDTO.setEnabled(coverage.isEnabled());
-//                coverageDTO.setCode(coverage.getCode().getCode());
-//                coverageDTO.setDescription(coverage.getCode().getDescription());
-//            }
-//            else{
-//                coverageDTO.setEnabled(false);
-//                coverageDTO.setCode(h.getCode());
-//                coverageDTO.setDescription(h.getDescription());
-//            }
-//            coverageDTO.setCodeId(h.getId());
-//            coverageDTO.setRetId(retId);
-//            coverageDTOList.add(coverageDTO);
-//        });
-//        Page<AccountCoverageDTO> page = new PageImpl<AccountCoverageDTO>(coverageDTOList,pageDetails,coverageDTOList.size());
-//        return page;
-//    }
+    @Override
+    public Page<AccountCoverageDTO> getAllCoverageForRetailUser(Long retId, Pageable pageDetails) {
+        List<CodeDTO> codeDTOList = codeService.getCodesByType(accountCoverage);
+        List<AccountCoverageDTO> coverageDTOList = new ArrayList<>();
+        codeDTOList.stream().forEach(h -> {
+            AccountCoverageDTO coverageDTO = new AccountCoverageDTO();
+            if(coverageRepo.coverageExistForRetailUser(retId,h.getId())){
+                AccountCoverage coverage = coverageRepo.getAccountCoverageByCodeAndRetailUser(retId,h.getId());
+                coverageDTO.setEnabled(coverage.isEnabled());
+                coverageDTO.setCode(coverage.getCode().getCode());
+                coverageDTO.setDescription(coverage.getCode().getDescription());
+            }
+            else{
+                coverageDTO.setEnabled(false);
+                coverageDTO.setCode(h.getCode());
+                coverageDTO.setDescription(h.getDescription());
+            }
+            coverageDTO.setCodeId(h.getId());
+            coverageDTO.setRetId(retId);
+            coverageDTOList.add(coverageDTO);
+        });
+        Page<AccountCoverageDTO> page = new PageImpl<AccountCoverageDTO>(coverageDTOList,pageDetails,coverageDTOList.size());
+        return page;
+    }
 
     @Override
     public String enableCoverageForRetailUser(UpdateCoverageDTO updateCoverageDTO) throws InternetBankingException {
