@@ -1,6 +1,7 @@
 package longbridge.controllers.retail;
 
 import longbridge.api.ExchangeRate;
+import longbridge.config.CoverageInfo;
 import longbridge.dtos.*;
 import longbridge.exception.*;
 import longbridge.forms.AlertPref;
@@ -23,6 +24,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.security.Principal;
@@ -78,7 +80,8 @@ public class SettingController {
     @Autowired
     ServiceReqConfigService serviceReqConfigService;
 
-
+    @Resource(name = "sessionScopedBean")
+    CoverageInfo sessionScopedBean;
 
     private final Locale locale = LocaleContextHolder.getLocale();
 
@@ -86,6 +89,7 @@ public class SettingController {
     @RequestMapping("/dashboard")
     public String getRetailDashboard(Model model, Principal principal, HttpServletRequest request) {
         RetailUser retailUser = retailUserService.getUserByName(principal.getName());
+        Long retId = retailUser.getId();
 
         if (retailUser == null) {
             return "redirect:/login/retail";
@@ -136,12 +140,13 @@ public class SettingController {
         }
         model.addAttribute("loans", loans);
         model.addAttribute("accountList", accountList);
+        model.addAttribute("retId",retId);
 
         boolean expired = passwordPolicyService.displayPasswordExpiryDate(retailUser.getExpiryDate());
         if (expired) {
             model.addAttribute("message", messageSource.getMessage("password.reset.notice", null, locale));
         }
-
+        sessionScopedBean.setCoverage(integrationService.getAllEnabledCoverageDetailsForRetailFromEndPoint(retId));
         logger.debug("Redirecting user {} to dashboard", retailUser.getUserName());
         return "cust/dashboard";
     }

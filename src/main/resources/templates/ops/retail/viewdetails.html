@@ -319,5 +319,112 @@
     /*]]>*/
 </script>
 
+<!---Account Coverage Management Page-Level Scripts-->
+<script th:inline="javascript">
+    /*<![CDATA[*/
+
+    $(document).ready(function() {
+
+        var retId = [[${retId}]];
+        console.log(retId);
+        var table = $('#coverage').DataTable({
+            select:true,
+            responsive: true,
+            "lengthMenu" : [ [ 10, 20, 30,-1],	[ 10, 20, 30,"All" ] ],
+            "pagingType" : "simple_numbers",
+            "searching": false,
+            "paging": true,
+            "processing" : true,
+            "serverSide" : true,
+            "ajax" : {
+                url : "/ops/accountcoverage/retail/"+retId+"/all",
+                "type" : "GET",
+                "data" : function(d) {
+                    d.csearch = $('#pattern').val();
+                },
+
+            },
+            "dom": 'T<"clear">frtlp',
+            "drawCallback": function( settings ) {
+                var elems = Array.prototype.slice.call(document.querySelectorAll('.js-switch'));
+                elems.forEach(function(html) {
+                    var switchery = new Switchery(html, { size: 'small' ,color: '#1ABB9C'});
+                });
+            },
+            "columns": [
+                { "data": "code" },
+                { "data": "description" },
+                { "data": "enabled" }
+
+            ] ,
+            "columnDefs" : [ {
+                "targets" : 2,
+                "data" : "enabled",
+                "render" : function(data, type,full, meta) {
+
+
+                    if (type === 'display') {
+                        if (data == true) {
+                            return "<input type='checkbox' data-pk='"+full.id+"' data-version='"+full.version+"' data-code='"+full.code+"' data-description='"+full.description+"' data-type='"+full.type+"' data-switchery='true' class='js-switch' checked value='"+full.codeId+"' />";
+                        } else if (data == false) {
+                            return "<input type='checkbox' data-pk='"+full.id+"' data-version='"+full.version+"' data-code='"+full.code+"' data-description='"+full.description+"' data-type='"+full.type+"' data-switchery='true' class='js-switch' value='"+full.codeId+"' />";
+                        }
+                    }
+                    return data;
+                }
+            }]
+        });
+
+    });
+    $(document).on("change","input[type=checkbox]", function(e) {
+        var retId = [[${retId}]];
+        var updateUrl = "/ops/accountcoverage/retail/update";
+        var cb = $(e.currentTarget);
+        var codeId = cb.val();
+        var enabled;
+        if(cb.is(':checked')){
+            enabled = true;
+        }else{
+            enabled = false;
+        }
+
+        var objectData =
+            {
+                codeId : codeId,
+                retId:retId,
+                enabled : enabled
+            };
+        var objectDataString = JSON.stringify(objectData);
+        $.ajax({
+            type : "POST",
+            contentType : "application/json",
+            url : updateUrl,
+            data: objectDataString,
+            dataType : 'json',
+            timeout : 100000,
+            success : function(data) {
+                console.log("SUCCESS: ", data);
+                var tab = $('#coverage').DataTable();
+                /* tab.ajax.reload(); */
+                tab.draw(false);
+            },
+            error : function(e) {
+                console.log("ERROR: ", e);
+            },
+            done : function(e) {
+                console.log("DONE");
+            }
+        });
+
+        //goto url
+    });
+
+
+
+
+
+    /*]]>*/
+</script>
+
 </body>
 </html>

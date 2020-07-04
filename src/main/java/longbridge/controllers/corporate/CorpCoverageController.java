@@ -36,7 +36,6 @@ public class CorpCoverageController {
     @GetMapping(path = "/{corpId}")
     @ResponseBody
     public List<CoverageDetailsDTO> getEnabledCoverageForCorporate(@PathVariable Long corpId){
-//       return coverageService.getAllEnabledCoverageDetailsForCorporate(corpId);
         coverageService.getAllEnabledCoverageDetailsForCorporate(corpId);
         return sessionScopedBean.getCoverage();
     }

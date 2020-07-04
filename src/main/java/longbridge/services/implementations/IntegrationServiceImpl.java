@@ -14,10 +14,7 @@ import longbridge.exception.InternetBankingException;
 import longbridge.exception.InternetBankingTransferException;
 import longbridge.exception.TransferErrorService;
 import longbridge.models.*;
-import longbridge.repositories.AccountCoverageRepo;
-import longbridge.repositories.AccountRepo;
-import longbridge.repositories.AntiFraudRepo;
-import longbridge.repositories.CorporateRepo;
+import longbridge.repositories.*;
 import longbridge.security.userdetails.CustomUserPrincipal;
 import longbridge.services.AccountCoverageService;
 import longbridge.services.ConfigurationService;
@@ -98,11 +95,12 @@ public class IntegrationServiceImpl implements IntegrationService {
 	private AntiFraudRepo antiFraudRepo;
 	private AccountCoverageService coverageService;
 	private AccountCoverageRepo coverageRepo;
+	private RetailUserRepo retailUserRepo;
 
 	@Autowired
 	public IntegrationServiceImpl(RestTemplate template, MailService mailService, TemplateEngine templateEngine,
 								  ConfigurationService configService, TransferErrorService errorService, MessageSource messageSource,
-								  AccountRepo accountRepo, CorporateRepo corporateRepo, AntiFraudRepo antiFraudRepo,AccountCoverageRepo coverageRepo) {
+								  AccountRepo accountRepo, CorporateRepo corporateRepo, AntiFraudRepo antiFraudRepo,AccountCoverageRepo coverageRepo,RetailUserRepo retailUserRepo) {
 		this.template = template;
 		this.mailService = mailService;
 		this.templateEngine = templateEngine;
@@ -114,8 +112,8 @@ public class IntegrationServiceImpl implements IntegrationService {
 		this.antiFraudRepo=antiFraudRepo;
 		this.coverageService =coverageService;
 		this.coverageRepo = coverageRepo;
-
-			}
+		this.retailUserRepo =retailUserRepo;
+	}
 
 	@Override
 	public List<AccountInfo> fetchAccounts(String cifid) {
@@ -1445,40 +1443,11 @@ public class IntegrationServiceImpl implements IntegrationService {
 			coverageDetailsDTO.setCustomerId(customerId);
 			coverageDetailsDTO.setCoverageName(coverageName);
 
-
-//			if (responseBody instanceof List<?> ){
-//				System.out.println("Lis");
-//				JsonNode[] jsonNode = mapper.convertValue(responseBody,JsonNode[].class);
-//				for (JsonNode resp:jsonNode) {
-//					CoverageDetailsDTO coverageDetailsDTO = new CoverageDetailsDTO();
-//					coverageDetailsDTO.setDetails(resp);
-//					coverageDetailsDTO.setCustomerId(customerId);
-//					coverageDetailsDTO.setCoverageName(coverageName);
-//					coverageDetailsDTOList.add(coverageDetailsDTO);
-//				}
-//			}
-//			else
-//				if(responseBody instanceof LinkedHashMap){
-//				System.out.println("Hash");
-//				JsonNode jsonNode = mapper.convertValue(responseBody,JsonNode.class);
-//				CoverageDetailsDTO coverageDetailsDTO = new CoverageDetailsDTO();
-//				if(!jsonNode.has("status")){
-//
-//					coverageDetailsDTO.setDetails(jsonNode);
-//
-//				}else {
-//					coverageDetailsDTO.setDetails(mapper.createObjectNode());
-//				}
-//				coverageDetailsDTO.setCustomerId(customerId);
-//				coverageDetailsDTO.setCoverageName(coverageName);
-//				coverageDetailsDTOList.add(coverageDetailsDTO);
-//			}
 			} catch (Exception e){
 			logger.error("Error getting coverage details",e);
 		}
 		return coverageDetailsDTO;
 	}
-
 
 
 	@Override
@@ -1493,7 +1462,20 @@ public class IntegrationServiceImpl implements IntegrationService {
 
 			}
 		}
-		System.out.println(coverageDetailsDTOList);
+		return coverageDetailsDTOList;
+	}
+
+	@Override
+	public List<CoverageDetailsDTO> getAllEnabledCoverageDetailsForRetailFromEndPoint(Long retId) {
+		String customerId = retailUserRepo.findById(retId).get().getCustomerId();
+		List<CoverageDetailsDTO> coverageDetailsDTOList = new ArrayList<>();
+		if (coverageRepo.enabledCoverageExistForRetailUser(retId)){
+			List<AccountCoverage> enabledCoverageList =coverageRepo.getEnabledAccountCoverageByRetailUser(retId);
+			for (AccountCoverage enabledCoverage:enabledCoverageList ) {
+				coverageDetailsDTOList.add(getCoverageDetails(enabledCoverage.getCode().getCode(),customerId));
+
+			}
+		}
 		return coverageDetailsDTOList;
 	}
 

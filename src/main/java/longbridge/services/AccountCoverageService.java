@@ -26,7 +26,7 @@ public interface AccountCoverageService {
    String enableCoverageForRetailUser(UpdateCoverageDTO updateCoverageDTO) throws InternetBankingException;
    void addCoverageForRetailUser(Long retId,Long codeId);
    List<AccountCoverage> getEnabledCoverageForRetailUser(Long retId);
-   JSONObject getAllEnabledCoverageDetailsForRetailUser(Long retId);
+   List<CoverageDetailsDTO> getAllEnabledCoverageDetailsForRetailUser(Long retId);
 
 
 

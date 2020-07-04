@@ -76,6 +76,7 @@ public class OpsRetailUserController {
     public String viewUserDetails(@PathVariable Long userId, Model model) {
         RetailUserDTO retailUser = retailUserService.getUser(userId);
         model.addAttribute("retailUser", retailUser);
+        model.addAttribute("retId",userId);
         return "/ops/retail/viewdetails";
     }
 

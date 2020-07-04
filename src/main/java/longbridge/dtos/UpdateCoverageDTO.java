@@ -4,6 +4,7 @@ public class UpdateCoverageDTO {
 
     private Long codeId;
     private Long corpId;
+    private Long retId;
     private Boolean enabled;
 
     public Long getCodeId() {
@@ -22,6 +23,14 @@ public class UpdateCoverageDTO {
         this.corpId = corpId;
     }
 
+    public Long getRetId() {
+        return retId;
+    }
+
+    public void setRetId(Long retId) {
+        this.retId = retId;
+    }
+
     public Boolean getEnabled() {
         return enabled;
     }
@@ -35,6 +44,7 @@ public class UpdateCoverageDTO {
         return "UpdateCoverageDTO{" +
                 "codeId=" + codeId +
                 ", corpId=" + corpId +
+                ", retId=" + retId +
                 ", enabled=" + enabled +
                 '}';
     }

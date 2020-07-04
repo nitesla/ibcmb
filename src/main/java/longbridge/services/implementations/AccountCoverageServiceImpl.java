@@ -10,8 +10,10 @@ import longbridge.exception.VerificationInterruptedException;
 import longbridge.models.AccountCoverage;
 import longbridge.models.Code;
 import longbridge.models.Corporate;
+import longbridge.models.RetailUser;
 import longbridge.repositories.AccountCoverageRepo;
 import longbridge.repositories.CorporateRepo;
+import longbridge.repositories.RetailUserRepo;
 import longbridge.services.AccountCoverageService;
 import longbridge.services.CodeService;
 import longbridge.services.IntegrationService;
@@ -42,6 +44,8 @@ public class AccountCoverageServiceImpl implements AccountCoverageService {
     private CodeService codeService;
     @Autowired
     private CorporateRepo corporateRepo;
+    @Autowired
+    private RetailUserRepo retailUserRepo;
     @Autowired
     private MessageSource messageSource;
     @Autowired
@@ -157,11 +161,36 @@ public class AccountCoverageServiceImpl implements AccountCoverageService {
 
     @Override
     public String enableCoverageForRetailUser(UpdateCoverageDTO updateCoverageDTO) throws InternetBankingException {
-        return null;
+        Long codeId = updateCoverageDTO.getCodeId();
+        Long retId = updateCoverageDTO.getRetId();
+        Boolean enabled =updateCoverageDTO.getEnabled();
+        try {
+            if(coverageRepo.coverageExistForRetailUser(retId,codeId)){
+                logger.info("Coverage Exist");
+                coverageRepo.enableCoverageForRetailUser(retId,codeId,enabled);
+            }else {
+                logger.info("adding Coverage");
+                addCoverageForRetailUser(retId,codeId);
+            }
+            logger.info("Coverage  enable");
+            return messageSource.getMessage("Coverage. enable.success", null, locale);
+        } catch (VerificationInterruptedException e) {
+            return e.getMessage();
+        } catch (Exception e) {
+            throw new InternetBankingException(messageSource.getMessage("Coverage. enable.failure", null, locale), e);
+        }
     }
 
     @Override
+    @Transactional
     public void addCoverageForRetailUser(Long retId, Long codeId) {
+        RetailUser retailUser = retailUserRepo.findById(retId).get();
+        Code code =  codeService.getCodeById(codeId);
+        AccountCoverage coverage =  new AccountCoverage();
+        coverage.setEnabled(false);
+        coverage.setCode(code);
+        coverage.setRetailUser(retailUser);
+        coverageRepo.save(coverage);
 
     }
 
@@ -171,8 +200,8 @@ public class AccountCoverageServiceImpl implements AccountCoverageService {
     }
 
     @Override
-    public JSONObject getAllEnabledCoverageDetailsForRetailUser(Long retId) {
-        return null;
+    public List<CoverageDetailsDTO> getAllEnabledCoverageDetailsForRetailUser(Long retId) {
+        return integrationService.getAllEnabledCoverageDetailsForRetailFromEndPoint(retId);
     }
 }
 
