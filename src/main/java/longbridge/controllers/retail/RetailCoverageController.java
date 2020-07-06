@@ -3,7 +3,6 @@ package longbridge.controllers.retail;
 import longbridge.config.CoverageInfo;
 import longbridge.dtos.CoverageDetailsDTO;
 import longbridge.services.AccountCoverageService;
-import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +28,7 @@ public class RetailCoverageController {
     @Autowired
     MessageSource messageSource;
 
-    @Resource(name = "sessionScopedBean")
+    @Resource(name = "accountCoverage")
     CoverageInfo sessionScopedBean;
 
 

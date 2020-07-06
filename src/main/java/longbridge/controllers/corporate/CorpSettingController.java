@@ -6,14 +6,12 @@ import longbridge.exception.*;
 import longbridge.forms.AlertPref;
 import longbridge.forms.CustChangePassword;
 import longbridge.forms.CustResetPassword;
-import longbridge.models.AccountCoverage;
 import longbridge.models.Code;
 import longbridge.models.CorporateUser;
 import longbridge.models.FeedBackStatus;
 import longbridge.services.*;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -80,7 +78,7 @@ public class CorpSettingController {
     @Autowired
     AccountCoverageService coverageService;
 
-    @Resource(name = "sessionScopedBean")
+    @Resource(name = "accountCoverage")
     CoverageInfo sessionScopedBean;
 
 

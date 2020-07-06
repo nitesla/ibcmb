@@ -16,6 +16,7 @@ public class AccountCoverage extends AbstractEntity  {
 
 
     private boolean enabled;
+    private String customerId;
 
     @ManyToOne
     private Corporate corporate;
@@ -27,6 +28,8 @@ public class AccountCoverage extends AbstractEntity  {
     private RetailUser retailUser;
 
 
+
+
     public AccountCoverage() {
     }
 
@@ -36,6 +39,15 @@ public class AccountCoverage extends AbstractEntity  {
 
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
+    }
+
+    public String getCustomerId() {
+
+        return customerId;
+    }
+
+    public void setCustomerId(String customerId) {
+        this.customerId = customerId;
     }
 
     public Corporate getCorporate() {

@@ -115,11 +115,13 @@ public class AccountCoverageServiceImpl implements AccountCoverageService {
     @Transactional
     public void addCoverageForCorporate(Long corpId,Long codeId) {
         Corporate corporate = corporateRepo.findById(corpId).get();
+        String customerId = corporate.getCustomerId();
         Code code =  codeService.getCodeById(codeId);
         AccountCoverage coverage =  new AccountCoverage();
         coverage.setEnabled(false);
         coverage.setCode(code);
         coverage.setCorporate(corporate);
+        coverage.setCustomerId(customerId);
         coverageRepo.save(coverage);
        }
 
@@ -202,6 +204,21 @@ public class AccountCoverageServiceImpl implements AccountCoverageService {
     @Override
     public List<CoverageDetailsDTO> getAllEnabledCoverageDetailsForRetailUser(Long retId) {
         return integrationService.getAllEnabledCoverageDetailsForRetailFromEndPoint(retId);
+    }
+
+    @Override
+    public List<CoverageDetailsDTO> getAllEnabledCoverageDetailsForCustomer(String customerId) {
+        List<CoverageDetailsDTO> coverageDetailsDTOList = new ArrayList<>();
+
+        if (coverageRepo.enabledCoverageExistForCustomer(customerId)){
+            List<AccountCoverage> enabledCoverageList =coverageRepo.getEnabledAccountCoverageByCustomerId(customerId);
+
+            for (AccountCoverage enabledCoverage:enabledCoverageList ) {
+                coverageDetailsDTOList.add(integrationService.getCoverageDetails(enabledCoverage.getCode().getCode(),customerId));
+
+            }
+        }
+        return coverageDetailsDTOList;
     }
 }
 

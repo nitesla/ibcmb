@@ -80,7 +80,7 @@ public class SettingController {
     @Autowired
     ServiceReqConfigService serviceReqConfigService;
 
-    @Resource(name = "sessionScopedBean")
+    @Resource(name = "accountCoverage")
     CoverageInfo sessionScopedBean;
 
     private final Locale locale = LocaleContextHolder.getLocale();

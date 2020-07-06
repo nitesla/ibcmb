@@ -27,6 +27,7 @@ public interface AccountCoverageService {
    void addCoverageForRetailUser(Long retId,Long codeId);
    List<AccountCoverage> getEnabledCoverageForRetailUser(Long retId);
    List<CoverageDetailsDTO> getAllEnabledCoverageDetailsForRetailUser(Long retId);
+   List<CoverageDetailsDTO> getAllEnabledCoverageDetailsForCustomer(String customerId);
 
 
 

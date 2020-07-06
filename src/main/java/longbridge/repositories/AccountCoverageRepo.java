@@ -26,6 +26,12 @@ public interface AccountCoverageRepo extends CommonRepo<AccountCoverage, Long> {
     @Query("select case when count (c)>0 then true else false end from AccountCoverage c where  c.corporate.id=:corpId and c.enabled=true")
     Boolean enabledCoverageExistForCorporate(@Param("corpId") Long corpId);
 
+    @Query("select case when count (c)>0 then true else false end from AccountCoverage c where  c.customerId=:customerId and c.enabled=true")
+    Boolean enabledCoverageExistForCustomer(@Param("customerId") String customerId);
+
+    @Query("select distinct c from AccountCoverage c where c.customerId =:customerId and c.enabled=true")
+    List<AccountCoverage> getEnabledAccountCoverageByCustomerId(@Param("customerId") String customerId);
+
     @Query("select distinct c from AccountCoverage c where c.corporate.id =:corpId and c.enabled=true")
     List<AccountCoverage> getEnabledAccountCoverageByCorporate(@Param("corpId") Long corpId);
 

@@ -5,7 +5,6 @@ package longbridge.controllers.corporate;
 import longbridge.config.CoverageInfo;
 import longbridge.dtos.CoverageDetailsDTO;
 import longbridge.services.AccountCoverageService;
-import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,15 +28,15 @@ public class CorpCoverageController {
     @Autowired
     MessageSource messageSource;
 
-    @Resource(name = "sessionScopedBean")
-    CoverageInfo sessionScopedBean;
+    @Resource(name = "accountCoverage")
+    private CoverageInfo coverageInfo;
 
 
     @GetMapping(path = "/{corpId}")
     @ResponseBody
     public List<CoverageDetailsDTO> getEnabledCoverageForCorporate(@PathVariable Long corpId){
         coverageService.getAllEnabledCoverageDetailsForCorporate(corpId);
-        return sessionScopedBean.getCoverage();
+        return coverageInfo.getCoverage();
     }
 
 
