@@ -45,6 +45,10 @@ public class Biller extends AbstractEntity{
     private String paydirectInstitutionId;
     @Column(name = "surcharge")
     private Long surcharge;
+    @Column(name = "currencycode")
+    private Long currencyCode;
+    @Column(name = "narration")
+    private String narration;
 
 
 //    @OneToMany( mappedBy = "billers", cascade = CascadeType.ALL, orphanRemoval=true )
@@ -181,6 +185,22 @@ public class Biller extends AbstractEntity{
         this.surcharge = surcharge;
     }
 
+    public Long getCurrencyCode() {
+        return currencyCode;
+    }
+
+    public void setCurrencyCode(Long currencyCode) {
+        this.currencyCode = currencyCode;
+    }
+
+    public String getNarration() {
+        return narration;
+    }
+
+    public void setNarration(String narration) {
+        this.narration = narration;
+    }
+
     //    public List<PaymentItem> getPaymentItems() {
 //        return paymentItems;
 //    }
@@ -208,6 +228,9 @@ public class Biller extends AbstractEntity{
                 ", shortname='" + shortname + '\'' +
                 ", paydirectProductId='" + paydirectProductId + '\'' +
                 ", paydirectInstitutionId='" + paydirectInstitutionId + '\'' +
+                ", surcharge=" + surcharge +
+                ", currencyCode=" + currencyCode +
+                ", narration='" + narration + '\'' +
                 '}';
     }
 }

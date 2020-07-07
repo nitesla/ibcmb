@@ -45,7 +45,9 @@ public interface BillerRepo extends CommonRepo<Biller, Long>{
     void enableOrDisableBiller(@Param("id") Long id,@Param("status") Boolean status);
 
 
-//
+    Page<Biller> findByBillerNameContainsIgnoreCaseAndCategoryName(String search,String categoryName,Pageable pageable);
+
+
     
 
 }

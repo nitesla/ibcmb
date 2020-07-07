@@ -123,6 +123,8 @@ public class MailboxController {
         model.addAttribute("draftMessages", draftMessages);
         return "cust/mailbox/draft";
     }
+
+
     @GetMapping("/draftmails/list")
     @ResponseBody
     public DataTablesOutput<MessageDTO> getDraftMails(DataTablesInput input, Principal principal) {
@@ -167,25 +169,48 @@ public class MailboxController {
     @GetMapping("/compose")
     public String addMessage(Model model, Principal principal) {
         RetailUser retailUser = retailUserService.getUserByName(principal.getName());
+        Iterable<MessageDTO> receivedMessages = messageService.getReceivedMessages(retailUser);
+        Long noOfDraft = messageService.countMessagesByTag(retailUser,MessageCategory.DRAFT);
+        Long noOfSent = messageService.countMessagesByTag(retailUser,MessageCategory.SENT);
         MessageDTO message = new MessageDTO();
         message.setSender(retailUser.getUserName());
+        model.addAttribute("noOfSent","Sent ("+noOfSent+")");
+        model.addAttribute("noOfInbox","Inbox ("+((List<MessageDTO>) receivedMessages).size()+")");
+        model.addAttribute("noOfDraft", "Drafts ("+noOfDraft+")");
+        model.addAttribute("receivedMessages", receivedMessages);
         model.addAttribute("messageDTO", message);
         return "cust/mailbox/compose";
     }
 
     @PostMapping
     public String createMessage(@ModelAttribute("messageDTO") MessageDTO messageDTO, BindingResult bindingResult, Model model, RedirectAttributes redirectAttributes, Principal principal, Locale locale, WebRequest webRequest) {
-        if (messageDTO.getSubject() == null || messageDTO.getBody() == null) {
+        if (messageDTO.getSubject().isEmpty() || messageDTO.getBody().isEmpty()) {
             model.addAttribute("failure", messageSource.getMessage("form.fields.required", null, locale));
+            RetailUser retailUser = retailUserService.getUserByName(principal.getName());
+            Iterable<MessageDTO> receivedMessages = messageService.getReceivedMessages(retailUser);
+            Long noOfDraft = messageService.countMessagesByTag(retailUser,MessageCategory.DRAFT);
+            Long noOfSent = messageService.countMessagesByTag(retailUser,MessageCategory.SENT);
+            MessageDTO message = new MessageDTO();
+            message.setSender(retailUser.getUserName());
+            model.addAttribute("noOfSent","Sent ("+noOfSent+")");
+            model.addAttribute("noOfInbox","Inbox ("+((List<MessageDTO>) receivedMessages).size()+")");
+            model.addAttribute("noOfDraft", "Drafts ("+noOfDraft+")");
+            model.addAttribute("receivedMessages", receivedMessages);
+            model.addAttribute("messageDTO", message);
             return "cust/mailbox/compose";
         }
         String category = webRequest.getParameter("category");
         logger.debug("the category {}",category);
+        logger.info("CATEGORY == {}", category);
         RetailUser retailUser = retailUserService.getUserByName(principal.getName());
 
         try {
             String message = messageService.addMessage(retailUser, messageDTO,category);
-            redirectAttributes.addFlashAttribute("message", message);
+            if (category.equals("D")){
+                redirectAttributes.addFlashAttribute("message", "Message saved to drafts successfully");
+            } else {
+                redirectAttributes.addFlashAttribute("message", message);
+            }
             return "redirect:/retail/mailbox/sentmail";
         } catch (InternetBankingException ibe) {
             logger.error("Error sending message", ibe);

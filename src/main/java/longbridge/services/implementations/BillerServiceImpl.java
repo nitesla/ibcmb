@@ -54,11 +54,16 @@ public class BillerServiceImpl implements BillerService {
 
 
     @Override
-    public void RefreshBiller() {
+    public void RefreshAll() {
         // fetch biller from quickteller
         updateBillers();
         // fetch categories from quickteller
         refreshCategories();
+    }
+
+    @Override
+    public void refreshBiller(){
+        updateBillers();
     }
 
 
@@ -106,6 +111,8 @@ public class BillerServiceImpl implements BillerService {
         biller.setPaydirectInstitutionId(dto.getPaydirectInstitutionId());
         biller.setPaydirectProductId(dto.getPaydirectProductId());
         biller.setSurcharge(dto.getSurcharge());
+        biller.setCurrencyCode(dto.getCurrencyCode());
+        biller.setNarration(dto.getNarration());
         billerRepo.save(biller);
         return biller;
     }
@@ -367,5 +374,10 @@ public class BillerServiceImpl implements BillerService {
     }
 
 
+    @Override
+    public Page<Biller> findSearch(String categoryname, String search, Pageable pageable){
+        Page<Biller> searchDetails = billerRepo.findByBillerNameContainsIgnoreCaseAndCategoryName(search,categoryname,pageable);
+        return  searchDetails;
+    }
 
 }

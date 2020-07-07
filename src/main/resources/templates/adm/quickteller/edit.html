@@ -40,7 +40,7 @@
                                     <div class="col-md-12 col-sm-12 col-xs-12">
                                         <div class="x_panel">
                                             <div class="x_title">
-                                                <h2>Payment Items</h2>
+                                                <h2 th:text="${biller.billerName}"></h2>
 
                                                 <div class="clearfix"></div>
                                             </div>
@@ -74,7 +74,7 @@
                                                     <li >
                                                         <div class="col-lg-4">
                                                             <div class="title-action">
-                                                                <button  class="btn btn-sm btn-primary" type="button" onclick="updateItems()"><i class="fa fa-plus"></i> Update Items</button>
+                                                                <button  class="btn btn-sm btn-primary" type="button" onclick="updateItems()"><i class="fa fa-plus"></i> Refresh biller</button>
                                                             </div>
                                                         </div>
                                                     </li>
@@ -83,29 +83,88 @@
                                                 </ul>
 
                                                 <br/>
-                                                <br/>
-                                                <br/>
-                                                <fieldset>
-                                                    <div class="form-group">
 
-                                                        <div class="col-md-4 col-sm-6 col-xs-12">
-                                                            <label>Biller</label>
-                                                            <input class="form-control col-md-7 col-xs-12" name="codeType" th:value="${biller.billerName}" disabled="disabled"/>
+<!--                                                <fieldset>-->
+<!--                                                    <div class="form-group">-->
+
+<!--                                                        <div class="col-md-4 col-sm-6 col-xs-12">-->
+<!--                                                            <label>Biller</label>-->
+<!--                                                            <input class="form-control col-md-7 col-xs-12" name="codeType" th:value="${biller.billerName}" disabled="disabled"/>-->
+<!--                                                        </div>-->
+<!--                                                    </div>-->
+
+<!--                                                </fieldset>-->
+                                                <br/>
+                                                <br/>
+                                                <form method="post" class="form-horizontal">
+
+                                                    <div class="form-group">
+                                                        <label class="col-sm-2 control-label">Category</label>
+
+                                                        <div class="col-sm-6">
+                                                            <input type="text" class="form-control" th:field="*{biller.categoryName}"/>
+                                                            <!--<p th:if="${#fields.hasErrors('*')}" th:errors="*{lastName}">Last Name Error</p>-->
+
                                                         </div>
+
                                                     </div>
 
-                                                </fieldset>
-                                                <br/>
-                                                <fieldset>
 
                                                     <div class="form-group">
+                                                        <label class="col-sm-2 control-label">Support-Email</label>
 
-                                                        <div class="col-md-4 col-sm-6 col-xs-12">
-                                                            <label>Support-email</label>
-                                                            <input class="form-control col-md-7 col-xs-12" name="codeType" th:value="${biller.supportemail}" disabled="disabled"/>
+                                                        <div class="col-sm-6">
+                                                            <input type="text" class="form-control" th:field="*{biller.supportemail}" readonly="readonly"/>
                                                         </div>
+
+
                                                     </div>
-                                                </fieldset>
+
+
+                                                    <div class="form-group">
+                                                        <label class="col-sm-2 control-label">Short-Name</label>
+
+                                                        <div class="col-sm-6">
+                                                            <input type="text" class="form-control" th:field="*{biller.shortname}"/>
+                                                        </div>
+
+                                                    </div>
+
+                                                    <div class="form-group">
+                                                        <label class="col-sm-2 control-label">Product-Id (PayDirect)</label>
+
+                                                        <div class="col-sm-6">
+                                                            <input type="text" class="form-control" th:field="*{biller.paydirectProductId}"/>
+                                                        </div>
+
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label class="col-sm-2 control-label">Institution-Id (PayDirect)</label>
+
+                                                        <div class="col-sm-6">
+                                                            <input type="text" class="form-control" th:field="*{biller.paydirectInstitutionId}"/>
+                                                        </div>
+
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label class="col-sm-2 control-label">Currency-Code</label>
+
+                                                        <div class="col-sm-6">
+                                                            <input type="text" class="form-control" th:field="*{biller.currencyCode}"/>
+                                                        </div>
+
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label class="col-sm-2 control-label">Narration</label>
+
+                                                        <div class="col-sm-6">
+                                                            <textarea type="text" class="form-control" th:field="*{biller.narration}"/>
+                                                        </div>
+
+                                                    </div>
+
+
+                                                </form>
 
                                             <br/>
                                                 <br/>
@@ -121,7 +180,7 @@
                                                                                 <th>Item</th>
                                                                                 <th>Amount</th>
                                                                                 <th>Payment-code</th>
-                                                                                <th>Read-only</th>
+                                                                                <th>Amount-Fixed</th>
                                                                                 <th>Enabled</th>
 
 
@@ -157,9 +216,9 @@
                                                         </div>
 
                                     <input type="hidden" th:value="${rowid}"  id="getbillerrowid">
-                                    <div class="col-lg-4">
-                                        <div class="title-action">
-                                            <a id=""  class="btn btn-primary btn-sm bt-select bt-link-act" href="/admin/billers/index/backtobillers" ><i class="fa fa-angle-left"></i> Back</a>
+                                    <div>
+                                        <div class="title-action" style="text-align: right;">
+                                            <a  class="btn btn-dark btn-sm bt-select bt-link-act" href="/admin/billers/index/backtobillers" ><i class="fa fa-angle-left"></i> Back</a>
                                         </div>
                                     </div>
 
@@ -226,7 +285,7 @@
                                  {"data":"paymentItemName"},
                                  { "data": "amount" },
                                  { "data": "paymentCode" },
-                                  { "data": "readonly" },
+                                  { "data": "isAmountFixed" },
                                  { "data": "enabled" },
 
                              ],
@@ -246,14 +305,13 @@
                     },
                         {
                             "targets" : 3,
-                            "data" : "readonly",
+                            "data" : "isAmountFixed",
                             "render" : function(data, type,full, meta) {
-                                console.log(full);
                                 if (type === 'display') {
                                     if (data == true) {
-                                        return "<input type='checkbox' class='readonlyvalue' name='readonly' data-id='"+full.id+"'  data-pk='"+full.billerId+"' data-name='"+full.paymentItemName+"' data-category='"+full.paymentItemId+"'  data-switchery='true'  checked data-value='"+full.readonly+"'/>";
+                                        return "<div  class='badge' > true</div>";
                                     } else if (data == false) {
-                                        return "<input type='checkbox' class='readonlyvalue' name='readonly' data-id='"+full.id+"' data-pk='"+full.billerId+"' data-name='"+full.paymentItemName+"' data-category='"+full.paymentItemId+"'   data-switchery='true'   data-value='"+full.readonly+"'/>";
+                                        return "<div  class='customizebadge' > false</div>";
                                     }
                                 }
                                 return data;

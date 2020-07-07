@@ -17,7 +17,7 @@ public class BillerDTO {
     private String narration;
     private String shortName;
     private Long surcharge;
-    private String currencyCode;
+    private Long currencyCode;
     private String quickTellerSiteUrlName;
     private String amountType;
     private String currencySymbol;
@@ -130,11 +130,11 @@ public class BillerDTO {
         this.surcharge = surcharge;
     }
 
-    public String getCurrencyCode() {
+    public Long getCurrencyCode() {
         return currencyCode;
     }
 
-    public void setCurrencyCode(String currencyCode) {
+    public void setCurrencyCode(Long currencyCode) {
         this.currencyCode = currencyCode;
     }
 

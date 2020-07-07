@@ -46,10 +46,17 @@ public class AdmBillerController {
     @PostMapping
     @ResponseBody
     public String updateBillers(){
-        billerService.RefreshBiller();
+        billerService.RefreshAll();
         return "Successfully updated";
     }
 
+
+    @PostMapping("/updateBillersInCategory")
+    @ResponseBody
+    public String updateBillersInCategory(){
+        billerService.refreshBiller();
+        return "Billers Successfully updated";
+    }
 
 
 
@@ -90,12 +97,18 @@ public class AdmBillerController {
     }
 
 
+
     @PostMapping(path = "/categorybillers") public @ResponseBody
     DataTablesOutput<Biller> getAllBillersPerCategory(DataTablesInput input, @RequestParam("csearch") String search, HttpServletRequest request){
         logger.info("I JUST GOT HERE");
+        Page<Biller>  billers = null;
         Pageable pageable = DataTablesUtils.getPageable(input);
         String categoryname = (String) request.getSession().getAttribute("categoryname");
-        Page<Biller>  billers = billerService.getBillersByCategory(categoryname,pageable);
+        if (StringUtils.isNoneBlank(search)) {
+            billers = billerService.findSearch(categoryname,search,pageable);
+        }else {
+            billers = billerService.getBillersByCategory(categoryname,pageable);
+        }
 
         DataTablesOutput<Biller> out = new DataTablesOutput<Biller>();
         out.setDraw(input.getDraw());
