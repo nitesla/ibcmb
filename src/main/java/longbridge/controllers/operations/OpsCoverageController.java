@@ -55,6 +55,7 @@ public class OpsCoverageController {
 
     }
 
+
     @GetMapping(path = "/retail/{retId}/all")
     public @ResponseBody DataTablesOutput<AccountCoverageDTO> getAllCoverageForRetail(@PathVariable Long retId,DataTablesInput input){
         Pageable pageable = DataTablesUtils.getPageable(input);

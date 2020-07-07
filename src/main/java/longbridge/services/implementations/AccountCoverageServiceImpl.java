@@ -71,8 +71,8 @@ public class AccountCoverageServiceImpl implements AccountCoverageService {
       List<AccountCoverageDTO> coverageDTOList = new ArrayList<>();
         codeDTOList.stream().forEach(h -> {
             AccountCoverageDTO coverageDTO = new AccountCoverageDTO();
-            if(coverageRepo.coverageExistForCorporate(corpId,h.getId())){
-               AccountCoverage coverage = coverageRepo.getAccountCoverageByCodeAndCorporate(corpId,h.getId());
+            AccountCoverage coverage = coverageRepo.getAccountCoverageByCodeAndCorporate(corpId,h.getId());
+            if(coverage!=null){
                coverageDTO.setEnabled(coverage.isEnabled());
                coverageDTO.setCode(coverage.getCode().getCode());
                coverageDTO.setDescription(coverage.getCode().getDescription());
