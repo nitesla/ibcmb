@@ -166,8 +166,6 @@ public interface IntegrationService {
     LoanDTO getLoanDetails(String accountNumber);
     String updateTransferLimit(TransferSetLimit tsl);
     String updateCharge(TransferFeeAdjustment tfaDTO);
-    List<CoverageDetailsDTO> getAllEnabledCoverageDetailsForCorporateFromEndPoint(Long corpId);
-    List<CoverageDetailsDTO> getAllEnabledCoverageDetailsForRetailFromEndPoint(Long retId);
     CoverageDetailsDTO getCoverageDetails(String coverageName, String customerNumber);
 
     List<BillerDTO> getBillers();

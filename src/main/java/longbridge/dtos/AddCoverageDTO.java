@@ -2,20 +2,10 @@ package longbridge.dtos;
 
 import longbridge.models.EntityId;
 
-public class UpdateCoverageDTO {
+public class AddCoverageDTO {
 
     private EntityId id;
     private String code;
-    private Boolean enabled;
-
-
-    public Boolean getEnabled() {
-        return enabled;
-    }
-
-    public void setEnabled(Boolean enabled) {
-        this.enabled = enabled;
-    }
 
     public EntityId getId() {
         return id;

@@ -11,24 +11,17 @@ import java.util.Objects;
 @Entity
 @Audited(withModifiedFlag=true)
 @Where(clause ="del_Flag='N'" )
-@Table(name = "account_coverage")
+@Table(name = "account_coverage", uniqueConstraints =
+@UniqueConstraint(columnNames = {"eid", "type", "code"}))
 public class AccountCoverage extends AbstractEntity  {
 
 
     private boolean enabled;
     private String customerId;
 
-    @ManyToOne
-    private Corporate corporate;
+    private EntityId entityId;
 
-    @ManyToOne
-    private Code code;
-
-    @ManyToOne
-    private RetailUser retailUser;
-
-
-
+    private String code;
 
     public AccountCoverage() {
     }
@@ -42,7 +35,6 @@ public class AccountCoverage extends AbstractEntity  {
     }
 
     public String getCustomerId() {
-
         return customerId;
     }
 
@@ -50,54 +42,19 @@ public class AccountCoverage extends AbstractEntity  {
         this.customerId = customerId;
     }
 
-    public Corporate getCorporate() {
-        return corporate;
+    public EntityId getEntityId() {
+        return entityId;
     }
 
-    public void setCorporate(Corporate corporate) {
-        this.corporate = corporate;
+    public void setEntityId(EntityId entityId) {
+        this.entityId = entityId;
     }
 
-    public Code getCode() {
+    public String getCode() {
         return code;
     }
 
-    public void setCode(Code code) {
+    public void setCode(String code) {
         this.code = code;
-    }
-
-    public RetailUser getRetailUser() {
-        return retailUser;
-    }
-
-    public void setRetailUser(RetailUser retailUser) {
-        this.retailUser = retailUser;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof AccountCoverage)) return false;
-        if (!super.equals(o)) return false;
-        AccountCoverage that = (AccountCoverage) o;
-        return enabled == that.enabled &&
-                Objects.equals(corporate, that.corporate) &&
-                Objects.equals(code, that.code) &&
-                Objects.equals(retailUser, that.retailUser);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(super.hashCode(), enabled, corporate, code, retailUser);
-    }
-
-    @Override
-    public String toString() {
-        return "AccountCoverage{" +
-                "enabled=" + enabled +
-                ", corporate=" + corporate +
-                ", code=" + code +
-                ", retailUser=" + retailUser +
-                '}';
     }
 }

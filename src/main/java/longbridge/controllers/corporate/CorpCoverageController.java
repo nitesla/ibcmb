@@ -23,6 +23,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.context.annotation.SessionScope;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -42,7 +43,7 @@ public class CorpCoverageController {
     @Autowired
     MessageSource messageSource;
 
-    @Resource(name = "accountCoverage")
+    @Autowired
     private CoverageInfo coverageInfo;
 
 

@@ -93,7 +93,6 @@ public class IntegrationServiceImpl implements IntegrationService {
 	private AccountRepo accountRepo;
 	private CorporateRepo corporateRepo;
 	private AntiFraudRepo antiFraudRepo;
-	private AccountCoverageService coverageService;
 	private AccountCoverageRepo coverageRepo;
 	private RetailUserRepo retailUserRepo;
 
@@ -110,7 +109,6 @@ public class IntegrationServiceImpl implements IntegrationService {
 		this.accountRepo = accountRepo;
 		this.corporateRepo = corporateRepo;
 		this.antiFraudRepo=antiFraudRepo;
-		this.coverageService =coverageService;
 		this.coverageRepo = coverageRepo;
 		this.retailUserRepo =retailUserRepo;
 	}
@@ -1450,34 +1448,7 @@ public class IntegrationServiceImpl implements IntegrationService {
 	}
 
 
-	@Override
-	public List<CoverageDetailsDTO> getAllEnabledCoverageDetailsForCorporateFromEndPoint(Long corpId) {
-		String customerId = corporateRepo.findById(corpId).get().getCustomerId();
-		List<CoverageDetailsDTO> coverageDetailsDTOList = new ArrayList<>();
-		if (coverageRepo.enabledCoverageExistForCorporate(corpId)){
-			List<AccountCoverage> enabledCoverageList =coverageRepo.getEnabledAccountCoverageByCorporate(corpId);
 
-			for (AccountCoverage enabledCoverage:enabledCoverageList ) {
-				coverageDetailsDTOList.add(getCoverageDetails(enabledCoverage.getCode().getCode(),customerId));
-
-			}
-		}
-		return coverageDetailsDTOList;
-	}
-
-	@Override
-	public List<CoverageDetailsDTO> getAllEnabledCoverageDetailsForRetailFromEndPoint(Long retId) {
-		String customerId = retailUserRepo.findById(retId).get().getCustomerId();
-		List<CoverageDetailsDTO> coverageDetailsDTOList = new ArrayList<>();
-		if (coverageRepo.enabledCoverageExistForRetailUser(retId)){
-			List<AccountCoverage> enabledCoverageList =coverageRepo.getEnabledAccountCoverageByRetailUser(retId);
-			for (AccountCoverage enabledCoverage:enabledCoverageList ) {
-				coverageDetailsDTOList.add(getCoverageDetails(enabledCoverage.getCode().getCode(),customerId));
-
-			}
-		}
-		return coverageDetailsDTOList;
-	}
 
 	@Override
 	public List<BillerDTO> getBillers(){
