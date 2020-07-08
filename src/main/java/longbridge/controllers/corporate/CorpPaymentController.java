@@ -71,7 +71,7 @@ public class CorpPaymentController {
         }
 
         try {
-            String message = paymentService.addBillPayment(paymentDTO);
+            BillPaymentDTO message = paymentService.addBillPayment(paymentDTO);
             redirectAttributes.addFlashAttribute("message", message);
             return "redirect:/corporate/payment/completed";
         }

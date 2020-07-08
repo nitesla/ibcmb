@@ -18,8 +18,8 @@
             <div class="">
                 <div class="form-spacin col-md-7 col-sm-7 no-pad-right">
 
-                    <form id="local" method="post" th:action="@{/retail/payment/new}"
-                          th:object="${paymentDTO}">
+                    <form id="local" method="post" th:action="@{/retail/payment/summary}"
+                          th:object="${billPaymentDTO}">
 
 
                         <div class="form-group">
@@ -39,7 +39,7 @@
 
                         <div class="form-group">
                             <label>Category</label>
-                            <select class="form-control" id="categories" name="categories" onchange="fetchBillers()" required="required">
+                            <select class="form-control" th:field="*{categoryName}" id="categories" name="categories" onchange="fetchBillers()" required="required">
                                 <option value=""> Select Category </option>
                                 <option th:each="category : ${billerCategories}" th:value="${category.categoryName}" th:text="${category.categoryName}"></option>
                             </select><span class='req-inner'></span>
@@ -86,7 +86,13 @@
                                    required="required"/>
                         </div>
 
-                        <button  class="btn btn-link required-step" >Submit</button>
+                        <div class="form-group" id="check">
+                            <label style="font-weight: bold; color: black;margin-left:10px !important">
+                                <input  type="checkbox" id="add" name="add"/><span class='addNew'>Save Payment</span>
+                            </label>
+                        </div>
+
+                        <button id="localsave" class="btn btn-link required-step" >Next</button>
                     </form>
 
                 </div>

@@ -5,6 +5,7 @@ import longbridge.api.*;
 import longbridge.billerresponse.BillerCategoryResponse;
 import longbridge.billerresponse.BillerResponse;
 import longbridge.billerresponse.PaymentItemResponse;
+import longbridge.billerresponse.PaymentResponse;
 import longbridge.dtos.*;
 import longbridge.exception.InternetBankingException;
 import longbridge.exception.InternetBankingTransferException;
@@ -1432,28 +1433,35 @@ public class IntegrationServiceImpl implements IntegrationService {
 			return billers;
 	}
 
-//	@Override
-//	public List<BillPaymentDTO> billPayment(){
-//		List<BillPaymentDTO> payment = new ArrayList<>();
-//		String uri = URI+"/api/quickteller/billpaymentadvice";
-//		Map<String,String> params = new HashMap<>();
-//		params.put("appid",appId);
-//		params.put("hash",secretKey);
-//		params.put("TerminalId",appId);
-//		params.put("PaymentCode",secretKey);
-//		params.put("CustomerId",appId);
-//		params.put("CustomerMobile",secretKey);
-//		params.put("Amount",appId);
-//		params.put("requestReference",secretKey);
-//		try {
-//			PaymentResponse paymentResponse = template.postForObject(uri,params, PaymentResponse.class);
-//			payment = paymentResponse.billPayment();
-//			return payment;
-//		} catch (Exception e){
-//			logger.info("Error processing request");
-//		}
-//		return payment;
-//	}
+	@Override
+	public BillPayment billPayment(BillPayment billPayment){
+		PaymentResponse payment;
+		String uri = URI+"/api/quickteller/billpaymentadvice";
+		Map<String,String> params = new HashMap<>();
+		params.put("appid",appId);
+		params.put("hash",EncryptionUtil.getSHA512(
+				appId + billPayment.getPaymentCode() + billPayment.getAmount() + secretKey, null));
+
+		params.put("TerminalId",billPayment.getTerminalId());
+		params.put("PaymentCode",billPayment.getPaymentCode().toString());
+		params.put("CustomerId",billPayment.getCustomerId());
+		params.put("CustomerMobile",billPayment.getPhoneNumber());
+		params.put("CustomerEmail", billPayment.getEmailAddress());
+		params.put("Amount", billPayment.getAmount().toPlainString());
+		params.put("requestReference",billPayment.getRequestReference());
+		try {
+		payment	 = template.postForObject(uri,params, PaymentResponse.class);
+			billPayment.setStatus(payment.getResponseCodeGrouping());
+			billPayment.setResponseDescription (payment.getResponseDescription());
+			billPayment.setResponseCode(payment.getResponseCode());
+			billPayment.setTransactionRef(payment.getTransactionRef());
+			billPayment.setApprovedAmount(payment.getApprovedAmount());
+			return billPayment;
+		} catch (Exception e){
+			logger.info("Error processing request");
+		}
+		return billPayment;
+	}
 
 
 	@Override

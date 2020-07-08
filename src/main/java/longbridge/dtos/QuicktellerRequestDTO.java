@@ -1,31 +1,61 @@
 package longbridge.dtos;
 
-import javax.validation.constraints.NotEmpty;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+import java.io.Serializable;
 import java.util.Date;
 
+/**
+ * Created by Fortune on 4/5/2017.
+ */
 
-public class BillPaymentDTO {
+public class QuicktellerRequestDTO implements Serializable {
 
+
+    @JsonProperty("DT_RowId")
     private Long id;
-    @NotEmpty(message = "Amount is required")
     private String amount;
     private String categoryName;
-    @NotEmpty(message = "Payment Item is required")
     private String paymentItemId;
     private String paymentItemName;
-    @NotEmpty(message = "Biller is required")
     private String billerId;
     private String billerName;
     private String customerAccountNumber;
     private String phoneNumber;
     private String emailAddress;
     private String status ;
-    private Date createdOn;
+    private Date createdOn = new Date();
     private String terminalId;
-    private Long paymentCode;
-    private String customerId;
+    private Long PaymentCode;
+    private String CustomerId;
     private String requestReference;
     private String token;
+    private String sessionId;
+
+
+    public QuicktellerRequestDTO() {
+    }
+
+    public QuicktellerRequestDTO(Long id, String amount, String categoryName, String paymentItemId, String paymentItemName, String billerId, String billerName, String customerAccountNumber, String phoneNumber, String emailAddress, String status, Date createdOn, String terminalId, Long paymentCode, String customerId, String requestReference, String token, String sessionId) {
+        this.id = id;
+        this.amount = amount;
+        this.categoryName = categoryName;
+        this.paymentItemId = paymentItemId;
+        this.paymentItemName = paymentItemName;
+        this.billerId = billerId;
+        this.billerName = billerName;
+        this.customerAccountNumber = customerAccountNumber;
+        this.phoneNumber = phoneNumber;
+        this.emailAddress = emailAddress;
+        this.status = status;
+        this.createdOn = createdOn;
+        this.terminalId = terminalId;
+        PaymentCode = paymentCode;
+        CustomerId = customerId;
+        this.requestReference = requestReference;
+        this.token = token;
+        this.sessionId = sessionId;
+    }
 
 
     public Long getId() {
@@ -133,19 +163,19 @@ public class BillPaymentDTO {
     }
 
     public Long getPaymentCode() {
-        return paymentCode;
+        return PaymentCode;
     }
 
     public void setPaymentCode(Long paymentCode) {
-        this.paymentCode = paymentCode;
+        PaymentCode = paymentCode;
     }
 
     public String getCustomerId() {
-        return customerId;
+        return CustomerId;
     }
 
     public void setCustomerId(String customerId) {
-        this.customerId = customerId;
+        CustomerId = customerId;
     }
 
     public String getRequestReference() {
@@ -162,5 +192,37 @@ public class BillPaymentDTO {
 
     public void setToken(String token) {
         this.token = token;
+    }
+
+    public String getSessionId() {
+        return sessionId;
+    }
+
+    public void setSessionId(String sessionId) {
+        this.sessionId = sessionId;
+    }
+
+    @Override
+    public String toString() {
+        return "QuicktellerRequestDTO{" +
+                "id=" + id +
+                ", amount='" + amount + '\'' +
+                ", categoryName='" + categoryName + '\'' +
+                ", paymentItemId='" + paymentItemId + '\'' +
+                ", paymentItemName='" + paymentItemName + '\'' +
+                ", billerId='" + billerId + '\'' +
+                ", billerName='" + billerName + '\'' +
+                ", customerAccountNumber='" + customerAccountNumber + '\'' +
+                ", phoneNumber='" + phoneNumber + '\'' +
+                ", emailAddress='" + emailAddress + '\'' +
+                ", status='" + status + '\'' +
+                ", createdOn=" + createdOn +
+                ", terminalId='" + terminalId + '\'' +
+                ", PaymentCode=" + PaymentCode +
+                ", CustomerId='" + CustomerId + '\'' +
+                ", requestReference='" + requestReference + '\'' +
+                ", token='" + token + '\'' +
+                ", sessionId='" + sessionId + '\'' +
+                '}';
     }
 }

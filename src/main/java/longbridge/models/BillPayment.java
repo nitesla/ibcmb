@@ -20,13 +20,67 @@ public class BillPayment extends AbstractEntity {
     private BigDecimal amount;
     private Long paymentItemId;
     private Long billerId;
-    private String customerIdentifier;
     private String customerAccountNumber;
+    private String paymentItemName;
     private String phoneNumber;
     private String emailAddress;
+    private String billerName;
     private String status ;
     private final Date createdOn = new Date();
+    private String terminalId;
+    private Long paymentCode;
+    private String customerId;
+    private String requestReference;
 
+    private String responseCode;
+
+    private String responseCodeGrouping;
+
+    private String approvedAmount;
+
+    private String rechargePin;
+
+    private String transactionRef;
+
+    private String responseDescription;
+
+    private String miscData;
+
+
+    public BillPayment() {
+    }
+
+    public BillPayment(Long userId, BigDecimal amount, Long paymentItemId, Long billerId, String customerAccountNumber, String paymentItemName, String phoneNumber, String emailAddress, String billerName, String status, String terminalId, Long paymentCode, String customerId, String requestReference, String responseCode, String responseCodeGrouping, String approvedAmount, String rechargePin, String transactionRef, String responseDescription, String miscData) {
+        this.userId = userId;
+        this.amount = amount;
+        this.paymentItemId = paymentItemId;
+        this.billerId = billerId;
+        this.customerAccountNumber = customerAccountNumber;
+        this.paymentItemName = paymentItemName;
+        this.phoneNumber = phoneNumber;
+        this.emailAddress = emailAddress;
+        this.billerName = billerName;
+        this.status = status;
+        this.terminalId = terminalId;
+        this.paymentCode = paymentCode;
+        this.customerId = customerId;
+        this.requestReference = requestReference;
+        this.responseCode = responseCode;
+        this.responseCodeGrouping = responseCodeGrouping;
+        this.approvedAmount = approvedAmount;
+        this.rechargePin = rechargePin;
+        this.transactionRef = transactionRef;
+        this.responseDescription = responseDescription;
+        this.miscData = miscData;
+    }
+
+    public Long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Long userId) {
+        this.userId = userId;
+    }
 
     public BigDecimal getAmount() {
         return amount;
@@ -50,14 +104,6 @@ public class BillPayment extends AbstractEntity {
 
     public void setBillerId(Long billerId) {
         this.billerId = billerId;
-    }
-
-    public String getCustomerIdentifier() {
-        return customerIdentifier;
-    }
-
-    public void setCustomerIdentifier(String customerIdentifier) {
-        this.customerIdentifier = customerIdentifier;
     }
 
     public String getCustomerAccountNumber() {
@@ -96,11 +142,135 @@ public class BillPayment extends AbstractEntity {
         return createdOn;
     }
 
-    public Long getUserId() {
-        return userId;
+    public String getTerminalId() {
+        return terminalId;
     }
 
-    public void setUserId(Long userId) {
-        this.userId = userId;
+    public void setTerminalId(String terminalId) {
+        this.terminalId = terminalId;
+    }
+
+    public Long getPaymentCode() {
+        return paymentCode;
+    }
+
+    public void setPaymentCode(Long paymentCode) {
+        this.paymentCode = paymentCode;
+    }
+
+    public String getCustomerId() {
+        return customerId;
+    }
+
+    public void setCustomerId(String customerId) {
+        this.customerId = customerId;
+    }
+
+    public String getRequestReference() {
+        return requestReference;
+    }
+
+    public void setRequestReference(String requestReference) {
+        this.requestReference = requestReference;
+    }
+
+    public String getResponseCode() {
+        return responseCode;
+    }
+
+    public void setResponseCode(String responseCode) {
+        this.responseCode = responseCode;
+    }
+
+    public String getResponseCodeGrouping() {
+        return responseCodeGrouping;
+    }
+
+    public void setResponseCodeGrouping(String responseCodeGrouping) {
+        this.responseCodeGrouping = responseCodeGrouping;
+    }
+
+    public String getApprovedAmount() {
+        return approvedAmount;
+    }
+
+    public void setApprovedAmount(String approvedAmount) {
+        this.approvedAmount = approvedAmount;
+    }
+
+    public String getRechargePin() {
+        return rechargePin;
+    }
+
+    public void setRechargePin(String rechargePin) {
+        this.rechargePin = rechargePin;
+    }
+
+    public String getTransactionRef() {
+        return transactionRef;
+    }
+
+    public void setTransactionRef(String transactionRef) {
+        this.transactionRef = transactionRef;
+    }
+
+    public String getResponseDescription() {
+        return responseDescription;
+    }
+
+    public void setResponseDescription(String responseDescription) {
+        this.responseDescription = responseDescription;
+    }
+
+    public String getMiscData() {
+        return miscData;
+    }
+
+    public void setMiscData(String miscData) {
+        this.miscData = miscData;
+    }
+
+    public String getPaymentItemName() {
+        return paymentItemName;
+    }
+
+    public void setPaymentItemName(String paymentItemName) {
+        this.paymentItemName = paymentItemName;
+    }
+
+    public String getBillerName() {
+        return billerName;
+    }
+
+    public void setBillerName(String billerName) {
+        this.billerName = billerName;
+    }
+
+    @Override
+    public String toString() {
+        return "BillPayment{" +
+                "userId=" + userId +
+                ", amount=" + amount +
+                ", paymentItemId=" + paymentItemId +
+                ", billerId=" + billerId +
+                ", customerAccountNumber='" + customerAccountNumber + '\'' +
+                ", paymentItemName='" + paymentItemName + '\'' +
+                ", phoneNumber='" + phoneNumber + '\'' +
+                ", emailAddress='" + emailAddress + '\'' +
+                ", billerName='" + billerName + '\'' +
+                ", status='" + status + '\'' +
+                ", createdOn=" + createdOn +
+                ", terminalId='" + terminalId + '\'' +
+                ", paymentCode=" + paymentCode +
+                ", customerId='" + customerId + '\'' +
+                ", requestReference='" + requestReference + '\'' +
+                ", responseCode='" + responseCode + '\'' +
+                ", responseCodeGrouping='" + responseCodeGrouping + '\'' +
+                ", approvedAmount='" + approvedAmount + '\'' +
+                ", rechargePin='" + rechargePin + '\'' +
+                ", transactionRef='" + transactionRef + '\'' +
+                ", responseDescription='" + responseDescription + '\'' +
+                ", miscData='" + miscData + '\'' +
+                '}';
     }
 }

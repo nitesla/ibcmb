@@ -11,7 +11,7 @@ public interface PaymentService {
 
 
 
-    String addBillPayment(BillPaymentDTO paymentDTO);
+    BillPaymentDTO addBillPayment(BillPaymentDTO paymentDTO);
 
 
     String updatePaymentStatus(String status);
