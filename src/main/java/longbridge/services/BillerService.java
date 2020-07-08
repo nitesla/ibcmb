@@ -28,7 +28,8 @@ public interface BillerService {
 
     List<PaymentItem> getPaymentItemsForBiller(Long id);
 
-    void RefreshBiller();
+    void refreshBiller();
+    void RefreshAll();
 
     void readOnlyAmount(Long id, Boolean value);
 
@@ -66,5 +67,5 @@ public interface BillerService {
     PaymentItem getPaymentItem(Long id);
 
 
-
+    Page<Biller> findSearch(String categoryname, String search, Pageable pageable);
 }

@@ -4,11 +4,12 @@ import longbridge.models.PaymentItem;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.transaction.Transactional;
 import java.util.List;
 
-
+@Repository
 public interface PaymentItemRepo extends CommonRepo<PaymentItem, Long>{
 
     List<PaymentItem> getAllByBillerId(Long billerId);
@@ -33,6 +34,7 @@ public interface PaymentItemRepo extends CommonRepo<PaymentItem, Long>{
 
     List<PaymentItem> findByBillerIdAndEnabled(Long billerId, boolean enabled);
 
+    @Transactional
     @Modifying
     @Query("update PaymentItem p set p.readonly = :status where p.id = :id")
     void readOnly(@Param("id") Long id,@Param("status") Boolean status);

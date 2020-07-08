@@ -54,11 +54,16 @@ public class BillerServiceImpl implements BillerService {
 
 
     @Override
-    public void RefreshBiller() {
+    public void RefreshAll() {
         // fetch biller from quickteller
         updateBillers();
         // fetch categories from quickteller
         refreshCategories();
+    }
+
+    @Override
+    public void refreshBiller(){
+        updateBillers();
     }
 
 
@@ -105,6 +110,9 @@ public class BillerServiceImpl implements BillerService {
         biller.setShortname(dto.getShortName());
         biller.setPaydirectInstitutionId(dto.getPaydirectInstitutionId());
         biller.setPaydirectProductId(dto.getPaydirectProductId());
+        biller.setSurcharge(dto.getSurcharge());
+        biller.setCurrencyCode(dto.getCurrencyCode());
+        biller.setNarration(dto.getNarration());
         billerRepo.save(biller);
         return biller;
     }
@@ -127,6 +135,7 @@ public class BillerServiceImpl implements BillerService {
 
     @Override
     public void readOnlyAmount(Long id, Boolean value){
+        logger.info("readonly value = {}",value);
         if (value == false){
             Boolean newValue = true;
             paymentItemRepo.readOnly(id, newValue);
@@ -294,7 +303,6 @@ public class BillerServiceImpl implements BillerService {
     @Override
     public List<PaymentItem> getPaymentItemsForBiller(Long id) {
         Biller biller = billerRepo.findOneById(id);
-        logger.info("ID IS {}" , biller.getBillerId());
         List<PaymentItem> paymentItemList = paymentItemRepo.findByBillerId(biller.getBillerId());
         return paymentItemList;
     }
@@ -323,7 +331,7 @@ public class BillerServiceImpl implements BillerService {
         newPaymentItem.setItemCurrencySymbol(paymentItemDTO.getItemCurrencySymbol());
         newPaymentItem.setPaymentCode(paymentItemDTO.getPaymentCode());
         newPaymentItem.setPaymentItemName(paymentItemDTO.getPaymentitemname());
-        newPaymentItem.setReadonly(false);
+        newPaymentItem.setReadonly(paymentItemDTO.getIsAmountFixed());
         paymentItemRepo.save(newPaymentItem);
         return newPaymentItem;
     }
@@ -366,5 +374,10 @@ public class BillerServiceImpl implements BillerService {
     }
 
 
+    @Override
+    public Page<Biller> findSearch(String categoryname, String search, Pageable pageable){
+        Page<Biller> searchDetails = billerRepo.findByBillerNameContainsIgnoreCaseAndCategoryName(search,categoryname,pageable);
+        return  searchDetails;
+    }
 
 }

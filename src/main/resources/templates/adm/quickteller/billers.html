@@ -40,7 +40,7 @@
                                     <div class="col-md-12 col-sm-12 col-xs-12">
                                         <div class="x_panel">
                                             <div class="x_title">
-                                                <h2>Biller Details</h2>
+                                                <h2 th:text="${categoryname.categoryName}"></h2>
 
                                                 <div class="clearfix"></div>
                                             </div>
@@ -51,16 +51,37 @@
 
                                                 <div class="col-md-6 col-sm-6 col-xs-12">
 
+                                                    <div class="col-lg-4">
+                                                            <div class="title-action">
+                                                                <button  class="btn btn-sm btn-primary" type="button" onclick="updateBillersInCategory()"><i class="fa fa-plus"></i> Refresh billers</button>
+                                                            </div>
+                                                    </div>
 
-                                                        <li >
+
                                                             <div class="col-lg-4">
                                                                 <div class="title-action">
-                                                                    <a id="checkBiller"  class="btn btn-primary btn-sm bt-select bt-link-act" href="/admin/billers/index/getpaymentitems" disabled="disabled" ><i class="fa fa-pencil"></i> View Items</a>
+                                                                    <a id="checkBiller"  class="btn btn-primary btn-sm bt-select bt-link-act" href="/admin/billers/index/getpaymentitems" disabled="disabled" ><i class="fa fa-pencil"></i> View biller</a>
                                                                 </div>
                                                             </div>
-                                                        </li>
+
+<!--                                                    <fieldset>-->
+
+<!--                                                        <div class="form-group">-->
+
+<!--                                                            <div>-->
+<!--                                                                <label>Category</label>-->
+<!--                                                                <input class="form-control col-md-7 col-xs-12" name="codeType" th:value="${categoryname.categoryName}" disabled="disabled"/>-->
+<!--                                                            </div>-->
+<!--                                                        </div>-->
+<!--                                                    </fieldset>-->
 
                                                 </div>
+
+
+
+
+
+
 
 
 
@@ -68,7 +89,7 @@
 
                                                     <li class="pull-right" >
                                                         <div class="input-group col-lg-12">
-                                                            <input type="text" class="form-control" id="pattern" placeholder="Search for..."/> <span
+                                                            <input type="text" class="form-control" id="pattern" placeholder="Search for biller..."/> <span
                                                                 class="input-group-btn">
 										<button class="btn btn-success" id="search" type="button">Go!</button>
 									</span>
@@ -91,6 +112,7 @@
                                                                 <th>Support-email</th>
                                                                 <th>Product-id (Paydirect)</th>
                                                                 <th>Institution-id (Paydirect)</th>
+                                                                <th>Surcharge</th>
                                                                 <th>Currency</th>
                                                                 <th>Enable</th>
 
@@ -125,6 +147,11 @@
                                     </div>
 
 
+                                    <div>
+                                        <div class="title-action" style="text-align: right;">
+                                            <a id=""  class="btn btn-dark" href="/admin/billers" ><i class="fa fa-angle-left"></i> Back</a>
+                                        </div>
+                                    </div>
 
                                 </div>
 
@@ -136,6 +163,9 @@
 
                 <div class="clearfix"></div>
             </div>
+
+
+
 
         </div>
     </div>
@@ -158,6 +188,43 @@
 
 
 <script>
+
+
+    function showNotification(message , type){
+        $.notify({
+            // options
+            message: message
+        },{
+            // settings
+            type: type
+        });
+    }
+
+
+
+
+    function updateBillersInCategory() {
+        $.ajax({
+            type: "POST",
+            url: "/admin/billers/updateBillersInCategory",
+            data: { }, // parameters
+            success :
+                function(response) {
+                    console.log(response);
+                    showNotification(response, "success");
+                    setTimeout(function () {
+                        location.reload();
+                    },2000)
+                },
+            error:
+                function (response) {
+                    console.log(response.responseText);
+                    showNotification(response.responseText, "danger");
+                }
+
+        })
+
+    }
 
     $(document).ready(function() {
         var table = $('#myDataTable').DataTable({
@@ -189,12 +256,13 @@
                 {"data":"supportemail"},
                 {"data":"paydirectProductId"},
                 {"data":"paydirectInstitutionId"},
+                {"data":"surcharge"},
                 {"data":"currencySymbol"},
                 { "data": "enabled" }
             ] ,
 
             "columnDefs" : [ {
-                "targets" : 6,
+                "targets" : 7,
                 "data" : "enabled",
                 "render" : function(data, type,full, meta) {
                     if (type === 'display') {
@@ -271,6 +339,16 @@
         //replace {id} with id
         var ooo = link.attr("href").replace("index",id);
         window.location.assign(ooo);
+    });
+
+
+
+
+    $("#search").on("click", function(e) {
+        e.preventDefault();
+        dt = $('#myDataTable').DataTable();
+        dt.ajax.reload(null, true);
+
     });
 </script>
 
