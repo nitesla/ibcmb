@@ -18,8 +18,6 @@ import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.authentication.AnonymousAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
@@ -54,61 +52,103 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
     @Override
-    public BillPaymentDTO addBillPayment(BillPaymentDTO paymentDTO) {
+    public String addBillPayment(BillPaymentDTO paymentDTO) {
 
         logger.debug("Adding bill payment {} for user [{}]",paymentDTO, getCurrentUser().getUserName());
 
         try {
-//
-            BillPayment payment1 = convertPaymentDTOToEntity(paymentDTO);
-            payment1 = persistPayment(convertPaymentEntityToDTO(payment1));
+            String terminalId = "1234";
 
-            BillPayment billPayment = integrationService.billPayment(payment1);
+            logger.info("Print   333---->{}", paymentDTO.getCustomerAccountNumber());
+            BillPayment payment1 = convertPaymentDTOToEntity(paymentDTO);
+            BillPayment billPayment = integrationService.billPayment(payment1, terminalId);
 
             billPayment = billPaymentRepo.save(billPayment);
 //            billPaymentRepo.save(payment1);
             logger.info("Added payment {}",billPayment);
 
-            if (billPayment.getStatus() != null) {
-                if (billPayment.getStatus().equalsIgnoreCase("000") || billPayment.getStatus().equalsIgnoreCase("00"))
-                    return convertPaymentEntityToDTO(billPayment);
-
-
-            }
         }
         catch (Exception e){
             logger.error(e.getMessage(),e);
-            throw new InternetBankingException(messageSource.getMessage("payment.add.failure",null,locale));
+            throw new InternetBankingException(messageSource.getMessage("Payment Failure",null,locale));
         }
 
-//        return messageSource.getMessage("payment.add.success",null,locale);
-
-        throw new InternetBankingException();
+        return messageSource.getMessage("Payment Successful",null,locale);
 
     }
 
     @Override
-    public String updatePaymentStatus(String status) {
-        return null;
+    public String addCorpBillPayment(BillPaymentDTO paymentDTO) {
+
+        logger.debug("Adding bill payment {} for user [{}]",paymentDTO, getCurrentCorpUser().getUserName());
+
+        try {
+            String terminalId = "1234";
+
+            logger.info("Print   333---->{}", paymentDTO.getCustomerAccountNumber());
+            BillPayment payment1 = convertCorpPaymentDTOToEntity(paymentDTO);
+            BillPayment billPayment = integrationService.billPayment(payment1, terminalId);
+
+            billPayment = billPaymentRepo.save(billPayment);
+//            billPaymentRepo.save(payment1);
+            logger.info("Added payment {}",billPayment);
+
+        }
+        catch (Exception e){
+            logger.error(e.getMessage(),e);
+            throw new InternetBankingException(messageSource.getMessage("Payment Failure",null,locale));
+        }
+
+        return messageSource.getMessage("Payment Successful",null,locale);
+
     }
 
+
     @Override
-    public Page<BillPaymentDTO> getBillPayments(Pageable pageable) {
+    public Page<BillPaymentDTO> getBillPayments(Pageable pageDetails) {
 
         logger.debug("Retrieving completed payments");
-        Page<BillPayment> page = billPaymentRepo.findByUserId(getCurrentUser().getId(),pageable);
+        RetailUser user = getCurrentUser();
+        Page<BillPayment> page = billPaymentRepo.findByRequestReferenceAndCreatedOnNotNullOrderByCreatedOnDesc("RET_" + user.getId(), pageDetails);
         List<BillPaymentDTO> dtOs = convertPaymentEntitiesToDTOs(page.getContent());
         long t = page.getTotalElements();
-        Page<BillPaymentDTO> pageImpl = new PageImpl<BillPaymentDTO>(dtOs, pageable, t);
+        Page<BillPaymentDTO> pageImpl = new PageImpl<BillPaymentDTO>(dtOs, pageDetails, t);
         return pageImpl;
 
     }
 
     @Override
-    public Page<BillPaymentDTO> getCorpPayments(Pageable pageable) {
+    public Page<BillPaymentDTO> getCorpPayments(Pageable pageDetails) {
 
         logger.debug("Retrieving completed payments");
-        Page<BillPayment> page = billPaymentRepo.findByUserId(getCurrentCorpUser().getId(),pageable);
+        CorporateUser user = getCurrentCorpUser();
+        Page<BillPayment> page = billPaymentRepo.findByRequestReferenceAndCreatedOnNotNullOrderByCreatedOnDesc("REF_" + user.getId(), pageDetails);
+        List<BillPaymentDTO> dtOs = convertPaymentEntitiesToDTOs(page.getContent());
+        long t = page.getTotalElements();
+        Page<BillPaymentDTO> pageImpl = new PageImpl<BillPaymentDTO>(dtOs, pageDetails, t);
+        return pageImpl;
+
+    }
+
+    @Override
+    public Page<BillPaymentDTO> getBillPayments(String pattern, Pageable pageDetails) {
+
+        logger.debug("Retrieving completed payments");
+        RetailUser user = getCurrentUser();
+        Page<BillPayment> page = billPaymentRepo.findUsingPattern("RET_" + user.getId(),pattern, pageDetails);
+        List<BillPaymentDTO> dtOs = convertPaymentEntitiesToDTOs(page.getContent());
+        long t = page.getTotalElements();
+        Page<BillPaymentDTO> pageImpl = new PageImpl<BillPaymentDTO>(dtOs, pageDetails, t);
+        return pageImpl;
+
+    }
+
+    @Override
+    public Page<BillPaymentDTO> getCorpPayments(String pattern, Pageable pageable) {
+
+        logger.debug("Retrieving completed CORP payments");
+        CorporateUser user = getCurrentCorpUser();
+        Page<BillPayment> page = billPaymentRepo.findUsingPattern("REF_" + user.getId(),pageable);
         List<BillPaymentDTO> dtOs = convertPaymentEntitiesToDTOs(page.getContent());
         long t = page.getTotalElements();
         Page<BillPaymentDTO> pageImpl = new PageImpl<BillPaymentDTO>(dtOs, pageable, t);
@@ -122,15 +162,38 @@ public class PaymentServiceImpl implements PaymentService {
         logger.debug("Converting Bill payment DTO to entity");
 
         BillPayment payment = new BillPayment();
+        logger.info("Print   333---->{}", paymentDTO.getCustomerAccountNumber());
+        payment.setCustomerAccountNumber(paymentDTO.getCustomerAccountNumber());
         payment.setPaymentItemId(Long.parseLong(paymentDTO.getPaymentItemId()));
         payment.setBillerId(Long.parseLong(paymentDTO.getBillerId()));
         payment.setCustomerAccountNumber(paymentDTO.getCustomerAccountNumber());
         payment.setAmount(new BigDecimal(paymentDTO.getAmount()));
         payment.setPhoneNumber(paymentDTO.getPhoneNumber());
         payment.setEmailAddress(paymentDTO.getEmailAddress());
-        payment.setCustomerId(paymentDTO.getCustomerId());
-        payment.setUserId(getCurrentUser().getId());
-        payment.setStatus("SUBMITTED");
+        payment.setCustomerId(getCurrentUser().getId().toString());
+        payment.setPaymentCode(paymentDTO.getPaymentCode());
+//        CustomUserPrincipal principal = (CustomUserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+//        RetailUser user = (RetailUser) principal.getUser();
+        payment.setRequestReference("RET_" + getCurrentUser().getId());
+        return payment;
+    }
+
+    private BillPayment convertCorpPaymentDTOToEntity(BillPaymentDTO paymentDTO){
+
+        logger.debug("Converting Bill payment DTO to entity");
+
+        BillPayment payment = new BillPayment();
+        logger.info("Print   333---->{}", paymentDTO.getCustomerAccountNumber());
+        payment.setCustomerAccountNumber(paymentDTO.getCustomerAccountNumber());
+        payment.setPaymentItemId(Long.parseLong(paymentDTO.getPaymentItemId()));
+        payment.setBillerId(Long.parseLong(paymentDTO.getBillerId()));
+        payment.setCustomerAccountNumber(paymentDTO.getCustomerAccountNumber());
+        payment.setAmount(new BigDecimal(paymentDTO.getAmount()));
+        payment.setPhoneNumber(paymentDTO.getPhoneNumber());
+        payment.setEmailAddress(paymentDTO.getEmailAddress());
+        payment.setCustomerId(getCurrentCorpUser().getId().toString());
+        payment.setPaymentCode(paymentDTO.getPaymentCode());
+        payment.setRequestReference("REF_" + getCurrentCorpUser().getId());
         return payment;
     }
 
@@ -139,11 +202,12 @@ public class PaymentServiceImpl implements PaymentService {
         BillPaymentDTO paymentDTO = new BillPaymentDTO();
         Biller biller = billersRepo.findByBillerId(payment.getBillerId());
         PaymentItem paymentItem = paymentItemRepo.findByPaymentItemId(payment.getPaymentItemId());
-        paymentDTO.setBillerId(biller.getBillerId().toString());
-        paymentDTO.setPaymentItemId(paymentItem.getPaymentItemId().toString());
+
         paymentDTO.setAmount(payment.getAmount().toString());
         paymentDTO.setStatus(payment.getStatus());
         paymentDTO.setCreatedOn(payment.getCreatedOn());
+        paymentDTO.setTransactionRef(payment.getTransactionRef());
+        paymentDTO.setResponseDescription(payment.getResponseDescription());
         return paymentDTO;
     }
 
@@ -155,26 +219,6 @@ public class PaymentServiceImpl implements PaymentService {
         }
         return billPaymentDTOs;
     }
-
-    private BillPayment persistPayment(BillPaymentDTO billPaymentDTO) throws InternetBankingException {
-        BillPayment billPayment = convertPaymentDTOToEntity(billPaymentDTO);
-        try {
-
-            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-            if (!(authentication instanceof AnonymousAuthenticationToken)) {
-                String currentUserName = authentication.getName();
-                RetailUser user = retailUserRepo.findFirstByUserNameIgnoreCase(currentUserName);
-                billPayment.setRequestReference("RET_" + user.getId());
-            }
-            billPayment = billPaymentRepo.save(billPayment);
-            return billPayment;
-
-        } catch (Exception e) {
-            logger.error("Exception occurred saving transfer request", e);
-        }
-        return billPayment;
-    }
-
 
     private RetailUser getCurrentUser() {
         CustomUserPrincipal principal = (CustomUserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();

@@ -21,7 +21,6 @@
                     <form id="local" method="post" th:action="@{/retail/payment/summary}"
                           th:object="${billPaymentDTO}">
 
-
                         <div class="form-group">
                             <label>Debit Account</label>
 
@@ -86,11 +85,11 @@
                                    required="required"/>
                         </div>
 
-                        <div class="form-group" id="check">
-                            <label style="font-weight: bold; color: black;margin-left:10px !important">
-                                <input  type="checkbox" id="add" name="add"/><span class='addNew'>Save Payment</span>
-                            </label>
-                        </div>
+<!--                        <div class="form-group" id="check">-->
+<!--                            <label style="font-weight: bold; color: black;margin-left:10px !important">-->
+<!--                                <input  type="checkbox" id="add" name="add"/><span class='addNew'>Save Payment</span>-->
+<!--                            </label>-->
+<!--                        </div>-->
 
                         <button id="localsave" class="btn btn-link required-step" >Next</button>
                     </form>
@@ -209,7 +208,7 @@
 
                 console.log("Biller ---------->>>", biller)
 
-                for(var i=0;i<biller.length;i++){
+                for(var i=0;i<=biller.length;i++){
                     console.log("Biller is "+biller[i].billerName)
 
                     if(biller[i].billerName === undefined){
@@ -258,7 +257,7 @@ r
 
                 console.log("PaymentItem 1st ---------->>>", paymentItem)
 
-                for(var i=0;i<paymentItem.length;i++){
+                for(var i=0;i<=paymentItem.length;i++){
                     console.log("PaymentItem is "+paymentItem[i].paymentItemName)
 
                     if(paymentItem[i].paymentItemName === undefined){

@@ -280,6 +280,11 @@ public class BillerServiceImpl implements BillerService {
         return paymentItemRepo.findByPaymentItemId(id);
     }
 
+    @Override
+    public Biller getBillerName(Long id) {
+        return billerRepo.findByBillerId(id);
+    }
+
 
     @Override
     public void updateBillerStatus(Biller biller) {

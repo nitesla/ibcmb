@@ -26,6 +26,8 @@ public class BillPaymentDTO {
     private String customerId;
     private String requestReference;
     private String token;
+    private String responseDescription;
+    private String transactionRef;
 
 
     public Long getId() {
@@ -162,5 +164,21 @@ public class BillPaymentDTO {
 
     public void setToken(String token) {
         this.token = token;
+    }
+
+    public String getResponseDescription() {
+        return responseDescription;
+    }
+
+    public void setResponseDescription(String responseDescription) {
+        this.responseDescription = responseDescription;
+    }
+
+    public String getTransactionRef() {
+        return transactionRef;
+    }
+
+    public void setTransactionRef(String transactionRef) {
+        this.transactionRef = transactionRef;
     }
 }

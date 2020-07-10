@@ -18,8 +18,8 @@
             <div class="">
                 <div class="form-spacin col-md-7 col-sm-7 no-pad-right">
 
-                    <form id="local" method="post" th:action="@{/corporate/payment/new}"
-                          th:object="${paymentDTO}">
+                    <form id="local" method="post" th:action="@{/corporate/payment/summary}"
+                          th:object="${billPaymentDTO}">
 
 
                         <div class="form-group">
@@ -39,7 +39,7 @@
 
                         <div class="form-group">
                             <label>Category</label>
-                            <select class="form-control" id="categories" name="categories" onchange="fetchBillers()" required="required">
+                            <select class="form-control" th:field="*{categoryName}" id="categories" name="categories" onchange="fetchBillers()" required="required">
                                 <option value=""> Select Category </option>
                                 <option th:each="category : ${billerCategories}" th:value="${category.categoryName}" th:text="${category.categoryName}"></option>
                             </select><span class='req-inner'></span>
@@ -56,7 +56,7 @@
 
                         <div class="form-group">
                             <label>Payment Item</label>
-                            <select class="form-control" th:field="*{paymentItemId}" id="paymentItemId" required="required">
+                            <select class="form-control" th:field="*{paymentItemId}" id="paymentItemId" onchange="fetchPaymentItemDetails()" required="required">
                             </select><span class='req-inner'></span>
 
                         </div>
@@ -86,7 +86,7 @@
                                    required="required"/>
                         </div>
 
-                        <button  class="btn btn-link required-step" >Submit</button>
+                        <button  class="btn btn-link required-step" >Next</button>
                     </form>
 
                 </div>
@@ -208,7 +208,7 @@
                 // }
 
 
-                for(var i=0;i<biller.length;i++){
+                for(var i=0;i<=biller.length;i++){
                     console.log("Biller is "+biller[i].billerName)
 
                     if(biller[i].billerName === undefined){
@@ -259,12 +259,12 @@
                 $('#paymentItemId').empty();
                 $('#paymentItemId').append("<option value=''>-Select-</option>");
 
-                for(var i=0;i<paymentItems.length;i++){
+                for(var i=0;i<=paymentItem.length;i++){
                     console.log("PaymentItem is "+paymentItem[i].paymentItemName)
 
-                    // if(paymentItems[i].paymentItemName === undefined){
-                    //     break;
-                    // }
+                    if(paymentItem[i].paymentItemName === undefined){
+                        break;
+                    }
 
                     var paymentItem =  "<option value='"+paymentItem[i].paymentItemId+"'>"+paymentItem[i].paymentItemName+"</option>"
 
@@ -291,6 +291,8 @@
 
     function fetchPaymentItemDetails(paymentItemId){
 
+        var paymentItemId = $("#paymentItemId").val();
+        console.log("paymentItem detail is ---->>>>>", paymentItemId)
 
         if(paymentItemId==""){
             $('#amount').val("");
@@ -309,7 +311,7 @@
 
 //                $(".loader").hide();
 
-                $('#amount').val(paymentItem.price);
+                $('#amount').val(paymentItem.amount);
 
                 if(paymentItem.readonly==false){
                     $('#amount').removeAttr("readonly")

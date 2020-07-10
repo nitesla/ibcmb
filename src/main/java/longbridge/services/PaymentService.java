@@ -9,17 +9,15 @@ import org.springframework.data.domain.Pageable;
  */
 public interface PaymentService {
 
+    String addBillPayment(BillPaymentDTO paymentDTO);
 
-
-    BillPaymentDTO addBillPayment(BillPaymentDTO paymentDTO);
-
-
-    String updatePaymentStatus(String status);
-
-
-
+    String addCorpBillPayment(BillPaymentDTO paymentDTO);
 
     Page<BillPaymentDTO> getBillPayments(Pageable pageable);
 
+    Page<BillPaymentDTO> getBillPayments(String pattern, Pageable pageDetails);
+
     Page<BillPaymentDTO> getCorpPayments(Pageable pageable);
+
+    Page<BillPaymentDTO> getCorpPayments(String pattern, Pageable pageDetails);
 }

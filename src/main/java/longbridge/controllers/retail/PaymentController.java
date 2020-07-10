@@ -11,6 +11,7 @@ import longbridge.models.RetailUser;
 import longbridge.repositories.BillerRepo;
 import longbridge.services.*;
 import longbridge.utils.DataTablesUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -77,11 +78,12 @@ public class PaymentController {
 
 
     @PostMapping("/summary")
-    public String paymentSummary(@ModelAttribute("billPaymentDTO") @Valid BillPaymentDTO billPaymentDTO, BindingResult result, Model model, HttpServletRequest servletRequest) {
+    public String paymentSummary(@ModelAttribute("billPaymentDTO") @Valid BillPaymentDTO billPaymentDTO, BindingResult result, Model model, HttpServletRequest servletRequest, PaymentItem paymentItemCode, Biller billerName, PaymentItem paymentItemName) {
         model.addAttribute("billPaymentDTO", billPaymentDTO);
 //        if (servletRequest.getSession().getAttribute("add") != null)
 //            servletRequest.getSession().removeAttribute("add");
         logger.info("content-->>>>> {}", billPaymentDTO);
+        logger.info("Print---->{}", billPaymentDTO.getCustomerAccountNumber());
 
         billPaymentDTO.setCustomerAccountNumber(billPaymentDTO.getCustomerAccountNumber());
         billPaymentDTO.setCategoryName(billPaymentDTO.getCategoryName());
@@ -90,6 +92,15 @@ public class PaymentController {
         billPaymentDTO.setAmount(billPaymentDTO.getAmount());
         billPaymentDTO.setPhoneNumber(billPaymentDTO.getPhoneNumber());
         billPaymentDTO.setEmailAddress(billPaymentDTO.getEmailAddress());
+        paymentItemCode = billerService.getPaymentItem(Long.parseLong(billPaymentDTO.getPaymentItemId()));
+        billPaymentDTO.setPaymentCode(paymentItemCode.getPaymentCode());
+        logger.info("Payment Code is ------>>>>{}", paymentItemCode.getPaymentCode());
+        billerName = billerService.getBillerName(Long.parseLong(billPaymentDTO.getBillerId()));
+        billPaymentDTO.setBillerName(billerName.getBillerName());
+        logger.info("Billlllerrrrr Name---->{}", billerName.getBillerName());
+        paymentItemName = billerService.getPaymentItem(Long.parseLong(billPaymentDTO.getPaymentItemId()));
+        billPaymentDTO.setPaymentItemName(paymentItemName.getPaymentItemName());
+        logger.info("Payment Nameeee is ------>>>>{}", paymentItemName.getPaymentItemName());
         model.addAttribute("billPaymentDTO", billPaymentDTO);
 
         servletRequest.getSession().setAttribute("billPaymentDTO", billPaymentDTO);
@@ -114,10 +125,11 @@ public class PaymentController {
     }
 
     @PostMapping("/process")
-    public String billpayment(@ModelAttribute("billPaymentDTO") @Valid BillPaymentDTO billPaymentDTO,Model model, RedirectAttributes redirectAttributes, Locale locale, HttpServletRequest request, Principal principal) throws Exception {
-//        BillPaymentDTO billPaymentDTO = (BillPaymentDTO) request.getSession().getAttribute("billPaymentDTO");
+    public String billPayment(Model model, RedirectAttributes redirectAttributes, Locale locale, HttpServletRequest request, Principal principal) throws Exception {
+        BillPaymentDTO billPaymentDTO = (BillPaymentDTO) request.getSession().getAttribute("billPaymentDTO");
         model.addAttribute("billPaymentDTO", billPaymentDTO);
         logger.info("hereeeeeeeeeeee {}", billPaymentDTO);
+        logger.info("Print   222---->{}", billPaymentDTO.getCustomerAccountNumber());
         try {
 
             if (request.getSession().getAttribute("auth-needed") != null) {
@@ -144,17 +156,18 @@ public class PaymentController {
             }
 
 
-            billPaymentDTO = paymentService.addBillPayment(billPaymentDTO);
+            String message = paymentService.addBillPayment(billPaymentDTO);
             model.addAttribute("billPaymentDTO", billPaymentDTO);
-            model.addAttribute("message", messages.getMessage("payment.success", null, locale));
-            return "cust/transfer/transferdetails";
+            redirectAttributes.addFlashAttribute("message", message);
+            return "redirect:/retail/payment/completed";
 
 
         }catch (InternetBankingException e){
             logger.error(e.getMessage());
             redirectAttributes.addFlashAttribute("failure", e.getMessage());
+            return "redirect:/retail/payment/new";
         }
-        return "redirect:/retail/payment/new";
+
 
 
     }
@@ -257,17 +270,21 @@ public class PaymentController {
 
     @GetMapping("/completed/all")
     public @ResponseBody
-    DataTablesOutput<BillPaymentDTO> getTransfersCompleted(DataTablesInput input){
+    DataTablesOutput<BillPaymentDTO> getTransfersCompleted(DataTablesInput input, @RequestParam("csearch") String search){
 
         Pageable pageable = DataTablesUtils.getPageable(input);
 
-        Page<BillPaymentDTO> transferRequests = paymentService.getBillPayments(pageable);
+        Page<BillPaymentDTO> paymentRequests;
 
+        if (StringUtils.isNoneBlank(search)) {
+
+            paymentRequests = paymentService.getBillPayments(search.toUpperCase(), pageable);
+        } else paymentRequests =  paymentService.getBillPayments(pageable);
         DataTablesOutput<BillPaymentDTO> out = new DataTablesOutput<BillPaymentDTO>();
         out.setDraw(input.getDraw());
-        out.setData(transferRequests.getContent());
-        out.setRecordsFiltered(transferRequests.getTotalElements());
-        out.setRecordsTotal(transferRequests.getTotalElements());
+        out.setData(paymentRequests.getContent());
+        out.setRecordsFiltered(paymentRequests.getTotalElements());
+        out.setRecordsTotal(paymentRequests.getTotalElements());
 
         return out;
     }

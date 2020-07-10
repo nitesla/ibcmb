@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{ret-layout}">
 
-<body onload="javascript:var bread = [['Home', '/retail/dashboard'],['Bill Payment']];currentBar('Bill Payment Summary');breadCrumb(bread)">
+<body onload="javascript:var bread = [['Home', '/corporate/dashboard'],['Bill Payment']];currentBar('Bill Payment Summary');breadCrumb(bread)">
 
 <div layout:fragment="content">
     <div class="col-md-5 col-sm-5 ">
@@ -82,7 +82,7 @@
 <!--                    </form>-->
 
 
-                    <form method="post" th:action="@{/retail/payment/process}" th:object="${billPaymentDTO}">
+                    <form method="post" th:action="@{/corporate/payment/process}" th:object="${billPaymentDTO}">
                         <input type="hidden" th:field="*{customerAccountNumber}"/>
                         <input type="hidden" th:field="*{categoryName}"/>
                         <input type="hidden" th:field="*{billerName}"/>
@@ -145,7 +145,7 @@
         //     $("#form_edit").submit();
         // }
         function cancel(){
-            window.location.href="/retail/payment/new";
+            window.location.href="/corporate/payment/new";
         }
 
     </script>

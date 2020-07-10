@@ -16,7 +16,6 @@ import java.util.Date;
 @Where(clause ="del_flag='N'")
 public class BillPayment extends AbstractEntity {
 
-    private Long userId;
     private BigDecimal amount;
     private Long paymentItemId;
     private Long billerId;
@@ -31,27 +30,20 @@ public class BillPayment extends AbstractEntity {
     private Long paymentCode;
     private String customerId;
     private String requestReference;
-
     private String responseCode;
-
     private String responseCodeGrouping;
-
     private String approvedAmount;
-
     private String rechargePin;
-
     private String transactionRef;
-
     private String responseDescription;
-
     private String miscData;
+    private String categoryName;
 
 
     public BillPayment() {
     }
 
-    public BillPayment(Long userId, BigDecimal amount, Long paymentItemId, Long billerId, String customerAccountNumber, String paymentItemName, String phoneNumber, String emailAddress, String billerName, String status, String terminalId, Long paymentCode, String customerId, String requestReference, String responseCode, String responseCodeGrouping, String approvedAmount, String rechargePin, String transactionRef, String responseDescription, String miscData) {
-        this.userId = userId;
+    public BillPayment(BigDecimal amount, Long paymentItemId, Long billerId, String customerAccountNumber, String paymentItemName, String phoneNumber, String emailAddress, String billerName, String status, String terminalId, Long paymentCode, String customerId, String requestReference, String responseCode, String responseCodeGrouping, String approvedAmount, String rechargePin, String transactionRef, String responseDescription, String miscData, String categoryName) {
         this.amount = amount;
         this.paymentItemId = paymentItemId;
         this.billerId = billerId;
@@ -72,14 +64,7 @@ public class BillPayment extends AbstractEntity {
         this.transactionRef = transactionRef;
         this.responseDescription = responseDescription;
         this.miscData = miscData;
-    }
-
-    public Long getUserId() {
-        return userId;
-    }
-
-    public void setUserId(Long userId) {
-        this.userId = userId;
+        this.categoryName = categoryName;
     }
 
     public BigDecimal getAmount() {
@@ -246,11 +231,18 @@ public class BillPayment extends AbstractEntity {
         this.billerName = billerName;
     }
 
+    public String getCategoryName() {
+        return categoryName;
+    }
+
+    public void setCategoryName(String categoryName) {
+        this.categoryName = categoryName;
+    }
+
     @Override
     public String toString() {
         return "BillPayment{" +
-                "userId=" + userId +
-                ", amount=" + amount +
+                "amount=" + amount +
                 ", paymentItemId=" + paymentItemId +
                 ", billerId=" + billerId +
                 ", customerAccountNumber='" + customerAccountNumber + '\'' +
@@ -271,6 +263,7 @@ public class BillPayment extends AbstractEntity {
                 ", transactionRef='" + transactionRef + '\'' +
                 ", responseDescription='" + responseDescription + '\'' +
                 ", miscData='" + miscData + '\'' +
+                ", categoryName='" + categoryName + '\'' +
                 '}';
     }
 }
