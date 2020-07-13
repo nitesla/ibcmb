@@ -5,7 +5,6 @@ import java.util.Date;
 
 
 public class BillPaymentDTO {
-
     private Long id;
     @NotEmpty(message = "Amount is required")
     private String amount;
@@ -28,6 +27,7 @@ public class BillPaymentDTO {
     private String token;
     private String responseDescription;
     private String transactionRef;
+    private boolean authenticate;
 
 
     public Long getId() {
@@ -180,5 +180,13 @@ public class BillPaymentDTO {
 
     public void setTransactionRef(String transactionRef) {
         this.transactionRef = transactionRef;
+    }
+
+    public boolean isAuthenticate() {
+        return authenticate;
+    }
+
+    public void setAuthenticate(boolean authenticate) {
+        this.authenticate = authenticate;
     }
 }

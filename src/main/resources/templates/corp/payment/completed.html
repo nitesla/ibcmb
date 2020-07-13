@@ -34,7 +34,7 @@
             <td>Transaction Reference</td>
             <td>Payment Description</td>
             <td>Status</td>
-            <td id="make new payment"></td>
+            <td></td>
             <td></td>
             </thead>
             <tbody>
@@ -107,10 +107,10 @@
                         }
                     },
                     {
-                        "targets" : 6,
+                        "targets" : 5,
                         "data" : "id",
                         "render" : function(data, type,row, meta) {
-                            return '<a href="'+ data +'/downloadreceipt" target="_blank">make new payment</a>';
+                            return '<a href="/corporate/payment/'+data+'">make payment</a>';
                         }
                     }]
 
@@ -125,6 +125,13 @@
 //            $('.dataTables_empty').html('No data available');
 
             });
+        });
+
+        $("#search").on("click", function(e) {
+            e.preventDefault();
+            dt = $('#ct').DataTable();
+            dt.ajax.reload(null, true);
+
         });
 
         /*]]>*/

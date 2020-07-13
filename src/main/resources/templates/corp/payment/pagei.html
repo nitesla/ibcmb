@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{ret-layout}">
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{corp-layout}">
 
-<body onload="javascript:var bread = [['Home', '/retail/dashboard'],['Bill Payment']];currentBar('Bill Payment');breadCrumb(bread)">
+<body onload="javascript:var bread = [['Home', '/corporate/dashboard'],['Bill Payment']];currentBar('Bill Payment');breadCrumb(bread)">
 
 
 <div layout:fragment="content">
@@ -18,8 +18,10 @@
             <div class="">
                 <div class="form-spacin col-md-7 col-sm-7 no-pad-right">
 
-                    <form id="local" method="post" th:action="@{/retail/payment/summary}"
+                    <form id="local" method="post" th:action="@{/corporate/payment/preview}"
                           th:object="${billPaymentDTO}">
+
+
 
                         <div class="form-group">
                             <label>Debit Account</label>
@@ -36,14 +38,32 @@
                             <!--class="errors"></p>-->
                         </div>
 
+
                         <div class="form-group">
                             <label>Category</label>
-                            <select class="form-control" th:field="*{categoryName}" id="categories" name="categories" onchange="fetchBillers()" required="required">
-                                <option value=""> Select Category </option>
-                                <option th:each="category : ${billerCategories}" th:value="${category.categoryName}" th:text="${category.categoryName}"></option>
-                            </select><span class='req-inner'></span>
-
+                                                        <select class="form-control" th:field="*{categoryName}" id="categories" name="categories" onchange="fetchBillers()" required="required">
+                                                            <option value=""> Select Category </option>
+                                                            <option th:each="category : ${billerCategories}" th:value="${category.categoryName}" th:text="${category.categoryName}"></option>
+                                                        </select><span class='req-inner'></span>
                         </div>
+
+<!--                        <div class="form-group">-->
+<!--                            <label>Category</label>-->
+<!--                            <input type="text" class="form-control" th:field="*{categoryName}"-->
+<!--                                   required="required" readonly/>-->
+<!--                        </div>-->
+
+                        <div class="form-group">
+                            <input type="hidden" class="form-control" th:field="*{paymentCode}"
+                                   required="required" readonly/>
+                        </div>
+
+<!--                        <div class="form-group">-->
+<!--                            <label>Biller</label>-->
+<!--                            <select  class="form-control" th:field="*{billerId}" id="billerId" name="billerId" onchange="fetchPaymentItems()" required="required" >-->
+<!--                            </select><span class='req-inner'></span>-->
+<!--                            &lt;!&ndash;                            <input type="hidden" id="referenceName"/>&ndash;&gt;-->
+<!--                        </div>-->
 
                         <div class="form-group">
                             <label>Biller</label>
@@ -52,57 +72,60 @@
                         </div>
 
 
+<!--                        <div class="form-group">-->
+<!--                            <label>Payment Item</label>-->
+<!--                            <select class="form-control" th:field="*{paymentItemId}" id="paymentItemId" name="paymentItemId" onchange="fetchPaymentItemDetails()" required="required">-->
+<!--                            </select><span class='req-inner'></span>-->
+
+<!--                        </div>-->
+
                         <div class="form-group">
                             <label>Payment Item</label>
                             <select class="form-control" th:field="*{paymentItemId}" id="paymentItemId" name="paymentItemId" onchange="fetchPaymentItemDetails()" required="required">
                             </select><span class='req-inner'></span>
-
                         </div>
 
 
-<!--                        <div id="ownerReferenceNumberDiv" class="form-group" style="display: none">-->
-<!--                            <label id="ownerReferenceNumber">Owner Reference Number</label>-->
-<!--                            <input type="text" class="form-control" th:field="*{customerIdentifier}"-->
-<!--                                   required="required"/>-->
-<!--                        </div>-->
+                        <!--                        <div id="ownerReferenceNumberDiv" class="form-group" style="display: none">-->
+                        <!--                            <label id="ownerReferenceNumber">Owner Reference Number</label>-->
+                        <!--                            <input type="text" class="form-control" th:field="*{customerIdentifier}"-->
+                        <!--                                   required="required"/>-->
+                        <!--                        </div>-->
 
                         <div class="form-group">
                             <label >Price</label>
                             <input type="text" class="form-control" th:field="*{amount}"
-                                   required="required"/>
+                                   required="required" readonly/>
                         </div>
 
 
                         <div class="form-group">
                             <label >Phone Number</label>
                             <input type="text" class="form-control" th:field="*{phoneNumber}"
-                                   required="required"/>
+                                   required="required" readonly/>
                         </div>
                         <div class="form-group">
                             <label >Email Address</label>
                             <input type="text" class="form-control" th:field="*{emailAddress}"
-                                   required="required"/>
+                                   required="required" readonly/>
                         </div>
 
-<!--                        <div class="form-group" id="check">-->
-<!--                            <label style="font-weight: bold; color: black;margin-left:10px !important">-->
-<!--                                <input  type="checkbox" id="add" name="add"/><span class='addNew'>Save Payment</span>-->
-<!--                            </label>-->
-<!--                        </div>-->
+                        <!--                        <div class="form-group" id="check">-->
+                        <!--                            <label style="font-weight: bold; color: black;margin-left:10px !important">-->
+                        <!--                                <input  type="checkbox" id="add" name="add"/><span class='addNew'>Save Payment</span>-->
+                        <!--                            </label>-->
+                        <!--                        </div>-->
 
                         <button id="localsave" class="btn btn-link required-step" >Next</button>
+                        <button type="button" class="btn btn-link less-required my-buttons" onclick="cancel();">Make New Payment</button>
                     </form>
 
                 </div>
 
                 <div class="col-xs-12 col-sm-5  wel ">
-                    <!--<p class="related" style="padding-top: 5%">Related Information</p>-->
                     <div  class="related-box">
                         <h3 class="related-bar">Related Information</h3>
-
-                        <!--<input type="availBal" name="availBal"/>-->
                         <p class="related-info coronation-blue" id="availBal"><b></b></p>
-                        <!--<p  class="related-info coronation-blue" id="limit"><b></b></p>-->
 
                     </div>
                 </div>
@@ -122,43 +145,21 @@
     <script th:inline="javascript">
     /*<![CDATA[*/
     $(document).ready(function () {
-
         getBalance();
         fetchBillers();
         fetchPaymentItems();
-        //
-        // var category = $("#categories").val();
-        // fetchBillers(category)
-
-        // $("#categories").change(function () {
-        //
-        //     var category = $("#categories").val();
-        //     fetchBillers(category)
-        //
-        // });
-
-
-        // $("#billerId").change(function () {
-        //
-        //     var biller = $("#billerId").val();
-        //     fetchPaymentItems(biller)
-        //
-        // });
-
-        // $("#paymentItemId").change(function () {
-        //
-        //     var paymentItem = $("#paymentItemId").val();
-        //     fetchPaymentItemDetails(paymentItem)
-        //
-        // });
     });
+
+    function cancel(){
+        window.location.href="/corporate/payment/new";
+    }
 
 
     function getBalance(){
 
         var accountNumber = $('#source').val();
         $.ajax({
-            url: "/retail/transfer/balance/"+accountNumber,
+            url: "/corporate/transfer/balance/"+accountNumber,
             type: 'GET',
             async: false,
             success:function(jd){
@@ -180,7 +181,6 @@
         })
     }
 
-
     function fetchBillers(){
 
         var category = $("#categories").val();
@@ -188,11 +188,11 @@
 
         $.ajax ({
             type: 'POST',
-            url: "/retail/payment/biller",
+            url: "/corporate/payment/biller",
             data: {categoryName: category},
             // async: false,
             // cache: false,
-            // url: "/retail/payment/" + category+"/biller",
+            // url: "/corporate/payment/" + category+"/biller",
             success: function (biller , status, xhr) {
 
 
@@ -205,7 +205,12 @@
                 $('#billerId').append("<option value=''>-Select-</option>");
                 $('#paymentItem').empty();
 
-                console.log("Biller ---------->>>", biller)
+                console.log("Biller ---------->>>" +biller)
+
+                // for(var i=0; i<biller.length;i++){
+                //     console.log("Biller --" +biller[i].billerName)
+                // }
+
 
                 for(var i=0;i<=biller.length;i++){
                     console.log("Biller is "+biller[i].billerName)
@@ -233,16 +238,20 @@
 
     }
 
-r
+    r
     function fetchPaymentItems(){
 
         var biller = $("#billerId").val();
         console.log("Biller selected is ---->>>>>", biller)
 
+        if(biller==""){
+            $('#paymentItemId').empty();
+            return;
+        }
 
         $.ajax({
             type: 'POST',
-            url: "/retail/payment/paymentItem",
+            url: "/corporate/payment/paymentItem",
             data: {billerId: biller},
             success: function (paymentItem, status, xhr) {
 
@@ -254,8 +263,6 @@ r
                 $('#paymentItemId').empty();
                 $('#paymentItemId').append("<option value=''>-Select-</option>");
 
-                console.log("PaymentItem 1st ---------->>>", paymentItem)
-
                 for(var i=0;i<=paymentItem.length;i++){
                     console.log("PaymentItem is "+paymentItem[i].paymentItemName)
 
@@ -265,7 +272,6 @@ r
 
                     var paymentItem =  "<option value='"+paymentItem[i].paymentItemId+"'>"+paymentItem[i].paymentItemName+"</option>"
 
-                    console.log("Var Biller is", paymentItem)
                     $('#paymentItemId').append(paymentItem)
                 }
 
@@ -282,25 +288,27 @@ r
             }
         });
 
-        // UpdateOwnerReferenceName(biller);
-
     }
 
 
-    function fetchPaymentItemDetails(){
+    function fetchPaymentItemDetails(paymentItemId){
 
         var paymentItemId = $("#paymentItemId").val();
         console.log("paymentItem detail is ---->>>>>", paymentItemId)
 
+        if(paymentItemId==""){
+            $('#amount').val("");
+            return;
+        }
 
         $.ajax({
-            url: "/retail/payment/paymentItem/" + paymentItemId+"",
+            url: "/corporate/payment/paymentItem/" + paymentItemId+"",
             success: function (paymentItem, status, xhr) {
 
 
 
-                console.log("PaymentItem name is "+paymentItem.paymentItemName);
-                console.log("PaymentItem price is "+paymentItem.amount);
+                console.log("PaymentItem name is "+paymentItem.name);
+                console.log("PaymentItem price is "+paymentItem.price);
                 console.log("PaymentItem read-only status is "+paymentItem.readonly);
 
 //                $(".loader").hide();

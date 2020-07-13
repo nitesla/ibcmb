@@ -4,6 +4,8 @@ import org.hibernate.annotations.Where;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import java.math.BigDecimal;
 import java.util.Date;
 
@@ -16,6 +18,9 @@ import java.util.Date;
 @Where(clause ="del_flag='N'")
 public class BillPayment extends AbstractEntity {
 
+    @javax.persistence.Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long id;
     private BigDecimal amount;
     private Long paymentItemId;
     private Long billerId;
@@ -25,7 +30,7 @@ public class BillPayment extends AbstractEntity {
     private String emailAddress;
     private String billerName;
     private String status ;
-    private final Date createdOn = new Date();
+    private  Date createdOn = new Date();
     private String terminalId;
     private Long paymentCode;
     private String customerId;
@@ -43,7 +48,8 @@ public class BillPayment extends AbstractEntity {
     public BillPayment() {
     }
 
-    public BillPayment(BigDecimal amount, Long paymentItemId, Long billerId, String customerAccountNumber, String paymentItemName, String phoneNumber, String emailAddress, String billerName, String status, String terminalId, Long paymentCode, String customerId, String requestReference, String responseCode, String responseCodeGrouping, String approvedAmount, String rechargePin, String transactionRef, String responseDescription, String miscData, String categoryName) {
+    public BillPayment(Long id, BigDecimal amount, Long paymentItemId, Long billerId, String customerAccountNumber, String paymentItemName, String phoneNumber, String emailAddress, String billerName, String status, Date createdOn, String terminalId, Long paymentCode, String customerId, String requestReference, String responseCode, String responseCodeGrouping, String approvedAmount, String rechargePin, String transactionRef, String responseDescription, String miscData, String categoryName) {
+        this.id = id;
         this.amount = amount;
         this.paymentItemId = paymentItemId;
         this.billerId = billerId;
@@ -53,6 +59,7 @@ public class BillPayment extends AbstractEntity {
         this.emailAddress = emailAddress;
         this.billerName = billerName;
         this.status = status;
+        this.createdOn = createdOn;
         this.terminalId = terminalId;
         this.paymentCode = paymentCode;
         this.customerId = customerId;
@@ -65,6 +72,16 @@ public class BillPayment extends AbstractEntity {
         this.responseDescription = responseDescription;
         this.miscData = miscData;
         this.categoryName = categoryName;
+    }
+
+    @Override
+    public Long getId() {
+        return id;
+    }
+
+    @Override
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public BigDecimal getAmount() {
@@ -126,6 +143,8 @@ public class BillPayment extends AbstractEntity {
     public Date getCreatedOn() {
         return createdOn;
     }
+
+    public void setCreatedOn(Date createdOn) {this.createdOn = createdOn;}
 
     public String getTerminalId() {
         return terminalId;
@@ -242,7 +261,8 @@ public class BillPayment extends AbstractEntity {
     @Override
     public String toString() {
         return "BillPayment{" +
-                "amount=" + amount +
+                "id=" + id +
+                ", amount=" + amount +
                 ", paymentItemId=" + paymentItemId +
                 ", billerId=" + billerId +
                 ", customerAccountNumber='" + customerAccountNumber + '\'' +

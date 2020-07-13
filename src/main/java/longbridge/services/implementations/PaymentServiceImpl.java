@@ -58,11 +58,9 @@ public class PaymentServiceImpl implements PaymentService {
 
         try {
             String terminalId = "1234";
-
             logger.info("Print   333---->{}", paymentDTO.getCustomerAccountNumber());
             BillPayment payment1 = convertPaymentDTOToEntity(paymentDTO);
             BillPayment billPayment = integrationService.billPayment(payment1, terminalId);
-
             billPayment = billPaymentRepo.save(billPayment);
 //            billPaymentRepo.save(payment1);
             logger.info("Added payment {}",billPayment);
@@ -84,15 +82,11 @@ public class PaymentServiceImpl implements PaymentService {
 
         try {
             String terminalId = "1234";
-
-            logger.info("Print   333---->{}", paymentDTO.getCustomerAccountNumber());
             BillPayment payment1 = convertCorpPaymentDTOToEntity(paymentDTO);
             BillPayment billPayment = integrationService.billPayment(payment1, terminalId);
 
             billPayment = billPaymentRepo.save(billPayment);
-//            billPaymentRepo.save(payment1);
             logger.info("Added payment {}",billPayment);
-
         }
         catch (Exception e){
             logger.error(e.getMessage(),e);
@@ -101,6 +95,12 @@ public class PaymentServiceImpl implements PaymentService {
 
         return messageSource.getMessage("Payment Successful",null,locale);
 
+    }
+
+
+    @Override
+    public BillPayment getBillPayment(Long id){
+        return billPaymentRepo.findById(id).get();
     }
 
 
@@ -122,7 +122,7 @@ public class PaymentServiceImpl implements PaymentService {
 
         logger.debug("Retrieving completed payments");
         CorporateUser user = getCurrentCorpUser();
-        Page<BillPayment> page = billPaymentRepo.findByRequestReferenceAndCreatedOnNotNullOrderByCreatedOnDesc("REF_" + user.getId(), pageDetails);
+        Page<BillPayment> page = billPaymentRepo.findByRequestReferenceAndCreatedOnNotNullOrderByCreatedOnDesc("COP_" + user.getId(), pageDetails);
         List<BillPaymentDTO> dtOs = convertPaymentEntitiesToDTOs(page.getContent());
         long t = page.getTotalElements();
         Page<BillPaymentDTO> pageImpl = new PageImpl<BillPaymentDTO>(dtOs, pageDetails, t);
@@ -148,7 +148,7 @@ public class PaymentServiceImpl implements PaymentService {
 
         logger.debug("Retrieving completed CORP payments");
         CorporateUser user = getCurrentCorpUser();
-        Page<BillPayment> page = billPaymentRepo.findUsingPattern("REF_" + user.getId(),pageable);
+        Page<BillPayment> page = billPaymentRepo.findUsingPattern("COP_" + user.getId(),pattern, pageable);
         List<BillPaymentDTO> dtOs = convertPaymentEntitiesToDTOs(page.getContent());
         long t = page.getTotalElements();
         Page<BillPaymentDTO> pageImpl = new PageImpl<BillPaymentDTO>(dtOs, pageable, t);
@@ -162,18 +162,17 @@ public class PaymentServiceImpl implements PaymentService {
         logger.debug("Converting Bill payment DTO to entity");
 
         BillPayment payment = new BillPayment();
-        logger.info("Print   333---->{}", paymentDTO.getCustomerAccountNumber());
         payment.setCustomerAccountNumber(paymentDTO.getCustomerAccountNumber());
-        payment.setPaymentItemId(Long.parseLong(paymentDTO.getPaymentItemId()));
-        payment.setBillerId(Long.parseLong(paymentDTO.getBillerId()));
-        payment.setCustomerAccountNumber(paymentDTO.getCustomerAccountNumber());
+//        payment.setPaymentItemId(Long.parseLong(paymentDTO.getPaymentItemId()));
+//        payment.setBillerId(Long.parseLong(paymentDTO.getBillerId()));
         payment.setAmount(new BigDecimal(paymentDTO.getAmount()));
         payment.setPhoneNumber(paymentDTO.getPhoneNumber());
         payment.setEmailAddress(paymentDTO.getEmailAddress());
         payment.setCustomerId(getCurrentUser().getId().toString());
         payment.setPaymentCode(paymentDTO.getPaymentCode());
-//        CustomUserPrincipal principal = (CustomUserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-//        RetailUser user = (RetailUser) principal.getUser();
+        payment.setPaymentItemName(paymentDTO.getPaymentItemName());
+        payment.setBillerName(paymentDTO.getBillerName());
+        payment.setCategoryName(paymentDTO.getCategoryName());
         payment.setRequestReference("RET_" + getCurrentUser().getId());
         return payment;
     }
@@ -185,15 +184,17 @@ public class PaymentServiceImpl implements PaymentService {
         BillPayment payment = new BillPayment();
         logger.info("Print   333---->{}", paymentDTO.getCustomerAccountNumber());
         payment.setCustomerAccountNumber(paymentDTO.getCustomerAccountNumber());
-        payment.setPaymentItemId(Long.parseLong(paymentDTO.getPaymentItemId()));
-        payment.setBillerId(Long.parseLong(paymentDTO.getBillerId()));
-        payment.setCustomerAccountNumber(paymentDTO.getCustomerAccountNumber());
+//        payment.setPaymentItemId(Long.parseLong(paymentDTO.getPaymentItemId()));
+//        payment.setBillerId(Long.parseLong(paymentDTO.getBillerId()));
         payment.setAmount(new BigDecimal(paymentDTO.getAmount()));
         payment.setPhoneNumber(paymentDTO.getPhoneNumber());
         payment.setEmailAddress(paymentDTO.getEmailAddress());
         payment.setCustomerId(getCurrentCorpUser().getId().toString());
         payment.setPaymentCode(paymentDTO.getPaymentCode());
-        payment.setRequestReference("REF_" + getCurrentCorpUser().getId());
+        payment.setPaymentItemName(paymentDTO.getPaymentItemName());
+        payment.setBillerName(paymentDTO.getBillerName());
+        payment.setCategoryName(paymentDTO.getCategoryName());
+        payment.setRequestReference("COP_" + getCurrentCorpUser().getId());
         return payment;
     }
 
@@ -208,6 +209,7 @@ public class PaymentServiceImpl implements PaymentService {
         paymentDTO.setCreatedOn(payment.getCreatedOn());
         paymentDTO.setTransactionRef(payment.getTransactionRef());
         paymentDTO.setResponseDescription(payment.getResponseDescription());
+        paymentDTO.setId(payment.getId());
         return paymentDTO;
     }
 
