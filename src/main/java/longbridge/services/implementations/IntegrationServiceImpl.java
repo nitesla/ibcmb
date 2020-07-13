@@ -1077,7 +1077,7 @@ public class IntegrationServiceImpl implements IntegrationService {
 			request.put("LastAuthorizer",userName);
 			request.put("InitiatedBy",corpPaymentRequest.getCustomDutyPayment().getInitiatedBy());
 			request.put("PaymentRef",corpPaymentRequest.getReferenceNumber());
-			request.put("CustomerAccountNo",accessBeneficiaryAcct);
+			request.put("CustomerAccountNo",corpPaymentRequest.getCustomerAccountNumber());
 			logger.debug("Fetching data from coronation rest service via the url: {}", CustomDutyUrl);
 			logger.debug("Fetching data from coronation rest service via the url: {}", CustomDutyUrl+"/customduty/payassessment");
 			logger.debug("paymentNotificationRequest: {}", request);
@@ -1085,7 +1085,7 @@ public class IntegrationServiceImpl implements IntegrationService {
 			logger.debug("payment notification Response: {}", response);
 			logger.info("payment ref {}",corpPaymentRequest.getReferenceNumber());
 			logger.info("InitiatedBy {}",corpPaymentRequest.getCustomDutyPayment().getInitiatedBy());
-			logger.info("CustomerAccountNo {}",accessBeneficiaryAcct);
+			logger.info("CustomerAccountNo {}",corpPaymentRequest.getCustomerAccountNumber());
 			logger.info("LastAuthorizer {}",userName);
 
 			logger.debug("payment notification params: {}", appId + corpPaymentRequest.getReferenceNumber() + corpPaymentRequest.getAmount().setScale(2,BigDecimal.ROUND_HALF_UP) + secretKey);

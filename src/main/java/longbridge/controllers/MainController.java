@@ -492,6 +492,34 @@ public class MainController {
         return "redirect:/retail/dashboard";
     }
 
+    @PostMapping("/request/corp/callback")
+    public String requestCorpCallback(WebRequest webRequest, Model model, RedirectAttributes redirectAttributes) {
+        String name = webRequest.getParameter("name");
+        String phone = webRequest.getParameter("phone");
+        if (phone == null) {
+            model.addAttribute("failure", "Field is required");
+            return "index";
+        }
+        SettingDTO setting = configurationService.getSettingByName("CUSTOMER_CARE_EMAIL");
+        logger.info("SETTING RETRIEVED");
+        if (setting != null && setting.isEnabled()) {
+            try {
+                Email mail = new Email.Builder()
+                        .setRecipient(setting.getValue())
+                        .setSubject("Call back Request from " + name)
+                        .setBody("Preferred phone number for call back is " + phone)
+                        .build();
+                mailService.send(mail);
+                redirectAttributes.addFlashAttribute("message", "Message sent successfully");
+
+            } catch (Exception ex) {
+                logger.error("Failed to send Email", ex);
+                redirectAttributes.addFlashAttribute("failure", "Failed to send message");
+            }
+        }
+        return "redirect:/corporate/dashboard";
+    }
+
     private void clearSession() {
         try {
             ServletRequestAttributes attr = (ServletRequestAttributes)
