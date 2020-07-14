@@ -48,6 +48,5 @@ public interface BillerRepo extends CommonRepo<Biller, Long>{
     Page<Biller> findByBillerNameContainsIgnoreCaseAndCategoryName(String search,String categoryName,Pageable pageable);
 
 
-    
-
+    List<Biller> findAllByEnabledAndCategoryName(boolean enabled, String categoryname);
 }

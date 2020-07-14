@@ -347,7 +347,7 @@ public class MessageServiceImpl implements MessageService {
     @Override
     @Transactional
     public List<MessageDTO> getReceivedMessages(User user) {
-        List<Message> receivedMessages = messageRepo.findByRecipientIgnoreCaseAndRecipientTypeAndTagOrderByIdDesc(user.getUserName(),user.getUserType(),MessageCategory.SENT.toString());
+        List<Message> receivedMessages = messageRepo.findByRecipientIgnoreCaseAndRecipientTypeAndTagOrderByDateCreatedDesc(user.getUserName(),user.getUserType(),MessageCategory.SENT.toString());
         return convertEntitiesToDTOs(receivedMessages);
     }
 
