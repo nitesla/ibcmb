@@ -3,7 +3,6 @@ package longbridge.controllers.admin;
 import longbridge.dtos.CodeDTO;
 import longbridge.dtos.CodeTypeDTO;
 import longbridge.exception.InternetBankingException;
-import longbridge.models.AccountCoverage;
 import longbridge.repositories.AccountCoverageRepo;
 import longbridge.services.AccountCoverageService;
 import longbridge.services.AdminUserService;

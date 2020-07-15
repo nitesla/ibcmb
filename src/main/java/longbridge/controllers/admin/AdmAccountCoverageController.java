@@ -1,38 +1,17 @@
 package longbridge.controllers.admin;
 
 
-import longbridge.dtos.AccountCoverageDTO;
-import longbridge.dtos.CodeDTO;
-import longbridge.exception.InternetBankingException;
 import longbridge.services.AccountCoverageService;
 import longbridge.services.CodeService;
 import longbridge.services.IntegrationService;
-import longbridge.utils.DataTablesUtils;
-import org.apache.commons.collections.IteratorUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
-import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.ObjectError;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
-
-import javax.validation.Valid;
-import java.io.IOException;
-import java.security.Principal;
-import java.util.List;
-import java.util.Locale;
-import java.util.stream.StreamSupport;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
 @RequestMapping("/admin/accountcoverage")

@@ -131,6 +131,38 @@
 
             </header>
 
+            <div id="myCod" class="modal fade" role="dialog">
+                <div class="modal-dialog">
+                    <!-- Modal content-->
+                    <div class="modal-content no-bd-rad ">
+                        <div class="modal-body">
+                            <h1 style="font-size: 20px" class="text-center">Request Callback</h1>
+                            <br/>
+                            <form method="post" action="/request/corp/callback" class="form-horizontal">
+                                <div class="row">
+                                    <div class="col-sm-3 control-label"><label>Full Name:</label></div>
+                                    <div class="col-sm-9 form-group">
+                                        <input type="text" class="form-control" name="name" required="required" />
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-3 control-label"><label>Preferred Phone Number:</label></div>
+                                    <div class="col-sm-9 form-group">
+                                        <input type="number" class="form-control" name="phone" required="required" />
+                                    </div>
+                                </div>
+                                <div class="row text-center">
+                                    <button class="btn btn-link ">Make Request</button>
+                                </div>
+                            </form>
+                        </div>
+                        <!--<div class="modal-footer">-->
+                        <!--<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>-->
+                        <!--</div>-->
+                    </div>
+                </div>
+            </div>
+
 
             <nav class="navbar navbar-default" style="margin: 0px !important;">
                 <div class="">
@@ -249,6 +281,23 @@
                                         <li sec:authorize="hasAuthority('CORP_MAILBOX')"><a th:href="@{/corporate/mailbox/inbox}" th:text="#{menu.mail}"> Mailbox</a></li>
                                         <li th:if="${isUserAdmin}"><a th:href="@{/corporate/users}"><span th:text="#{menu.usermanagement}">User Management</span> <span th:if="${corpPendingVerification}" class="btn-xs badge bg-orange" th:text="${corpPendingVerification}"></a></li>
                                         <li th:if="${isAuthorizer}"><a th:href="@{/corporate/users}"><span th:text="#{menu.usermanagement}">User Management</span> <span th:if="${corpPendingVerification}" class="btn-xs badge bg-orange" th:text="${corpPendingVerification}"></a></li>
+                                    </ul>
+                                </li>
+
+                                <li class="dropdown  active-more">
+                                    <a href="#" class="dropdown-toggle menu-link" data-toggle="dropdown" role="button"
+                                       aria-haspopup="true" aria-expanded="false">Support
+
+                                    </a>
+                                    <ul class="dropdown-menu">
+
+                                        <li> T +234 01-2797640 </li>
+                                        <li> T +234 01-2797641 </li>
+                                        <li> T +234 01-2797642 </li>
+                                        <li> T +234 01-2797643 </li>
+
+                                        <li class="icontext pull-right " data-toggle="modal" data-target="#myCod"><button class="btn btn-link coronation-blue">Call back</button></li>
+
                                     </ul>
                                 </li>
 
@@ -538,7 +587,7 @@
                 $("#menu1").dropdown('toggle');
             }
             $(".useloader").click(function(){
-                showSpinner();
+                // showSpinner();
 //            alert("The paragraph was clicked.");
             });
             showPop('.errors');

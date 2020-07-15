@@ -2,7 +2,6 @@ package longbridge.services;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import longbridge.api.*;
-import longbridge.dtos.CoverageDetailsDTO;
 import longbridge.dtos.BillerDTO;
 import longbridge.dtos.FixedDepositDTO;
 import longbridge.dtos.LoanDTO;
@@ -12,7 +11,6 @@ import longbridge.models.*;
 import longbridge.utils.Response;
 import longbridge.utils.statement.AccountStatement;
 import longbridge.utils.statement.TransactionHistory;
-import org.json.simple.JSONObject;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.access.prepost.PreAuthorize;
 
