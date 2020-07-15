@@ -1,9 +1,5 @@
 package longbridge.services.implementations;
 
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import longbridge.dtos.AccountCoverageDTO;
 import longbridge.dtos.CodeDTO;
 import longbridge.dtos.CorporateDTO;
 import longbridge.exception.InternetBankingException;
@@ -13,11 +9,9 @@ import longbridge.models.Code;
 import longbridge.models.Corporate;
 import longbridge.repositories.AccountCoverageRepo;
 import longbridge.repositories.CodeRepo;
-import longbridge.repositories.CorporateRepo;
 import longbridge.services.AccountCoverageService;
 import longbridge.services.CodeService;
 import longbridge.services.CorporateService;
-import longbridge.utils.Verifiable;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,9 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;

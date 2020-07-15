@@ -1,11 +1,8 @@
 package longbridge.services.implementations;
 
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import longbridge.api.*;
-import longbridge.dtos.*;
 import longbridge.billerresponse.BillerResponse;
 import longbridge.billerresponse.PaymentItemResponse;
 import longbridge.dtos.*;
@@ -25,14 +22,12 @@ import longbridge.services.MailService;
 import longbridge.utils.*;
 import longbridge.utils.statement.AccountStatement;
 import longbridge.utils.statement.TransactionHistory;
-import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
-import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -1082,7 +1077,7 @@ public class IntegrationServiceImpl implements IntegrationService {
 			request.put("LastAuthorizer",userName);
 			request.put("InitiatedBy",corpPaymentRequest.getCustomDutyPayment().getInitiatedBy());
 			request.put("PaymentRef",corpPaymentRequest.getReferenceNumber());
-			request.put("CustomerAccountNo",accessBeneficiaryAcct);
+			request.put("CustomerAccountNo",corpPaymentRequest.getCustomerAccountNumber());
 			logger.debug("Fetching data from coronation rest service via the url: {}", CustomDutyUrl);
 			logger.debug("Fetching data from coronation rest service via the url: {}", CustomDutyUrl+"/customduty/payassessment");
 			logger.debug("paymentNotificationRequest: {}", request);
@@ -1090,7 +1085,7 @@ public class IntegrationServiceImpl implements IntegrationService {
 			logger.debug("payment notification Response: {}", response);
 			logger.info("payment ref {}",corpPaymentRequest.getReferenceNumber());
 			logger.info("InitiatedBy {}",corpPaymentRequest.getCustomDutyPayment().getInitiatedBy());
-			logger.info("CustomerAccountNo {}",accessBeneficiaryAcct);
+			logger.info("CustomerAccountNo {}",corpPaymentRequest.getCustomerAccountNumber());
 			logger.info("LastAuthorizer {}",userName);
 
 			logger.debug("payment notification params: {}", appId + corpPaymentRequest.getReferenceNumber() + corpPaymentRequest.getAmount().setScale(2,BigDecimal.ROUND_HALF_UP) + secretKey);
@@ -1333,7 +1328,11 @@ public class IntegrationServiceImpl implements IntegrationService {
 			if (setting != null && setting.isEnabled()) {
 				String recipient = setting.getValue();
 				String subject = messageSource.getMessage("international.transfer.subject",null,locale);
-				mailService.send(recipient, subject, mail, true);
+
+				/* Pls uncomment this when you're deploying
+				* and check the application cnfiguration if mail config has been set
+				*/
+//				mailService.send(recipient, subject, mail, true);
 				transRequest.setReferenceNumber(NumberUtils.generateReferenceNumber(15));
 				transRequest.setStatus("000");
 				transRequest.setStatusDescription(messageSource.getMessage("transfer.successful",null,locale));

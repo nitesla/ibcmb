@@ -67,10 +67,13 @@ public class CorpInternationalBeneficiaryServiceImpl implements CorpInternationa
 
     @Override
     public String deleteCorpInternationalBeneficiary(Long beneficiaryId) throws InternetBankingException {
-        corpInternationalBeneficiaryRepo.delete(beneficiaryId);
-        logger.info("Deleted beneficiary with Id {}", beneficiaryId);
-        return messageSource.getMessage("beneficiary.delete.success",null,locale);
-
+        try {
+            corpInternationalBeneficiaryRepo.delete(beneficiaryId);
+            logger.info("Deleted beneficiary with Id {}", beneficiaryId);
+            return messageSource.getMessage("beneficiary.delete.success",null,locale);
+        } catch (Exception e) {
+            throw new InternetBankingException(messageSource.getMessage("beneficiary.delete.failure", null, locale), e);
+        }
     }
 
     @Async

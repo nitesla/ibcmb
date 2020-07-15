@@ -3,7 +3,6 @@ package longbridge.controllers.operations;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import longbridge.dtos.AccountCoverageDTO;
 import longbridge.dtos.CodeDTO;
 import longbridge.services.AccountCoverageService;
 import longbridge.services.CodeService;
@@ -15,10 +14,7 @@ import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
 import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.context.request.WebRequest;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
 @Controller

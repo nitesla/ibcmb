@@ -1,12 +1,9 @@
 package longbridge.services;
 
 
-import longbridge.dtos.AccountCoverageDTO;
 import longbridge.dtos.CodeDTO;
 import longbridge.exception.InternetBankingException;
-import longbridge.models.AccountCoverage;
 
-import java.io.IOException;
 import java.util.List;
 
 
