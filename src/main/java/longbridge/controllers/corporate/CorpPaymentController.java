@@ -54,7 +54,7 @@ public class CorpPaymentController {
     public String getPaymentPage(Model model, Principal principal){
 
         CorporateUser corporateUser = corporateUserService.getUserByName(principal.getName());
-        List<Biller> billerCategories = billerService.getBillersCategories();
+        List<BillerCategory> billerCategories = billerService.getCategory();
         model.addAttribute("billerCategories",billerCategories);
         BillPaymentDTO paymentDTO = new BillPaymentDTO();
         paymentDTO.setPhoneNumber(corporateUser.getPhoneNumber());

@@ -60,7 +60,7 @@ public class PaymentController {
     public String getPaymentPage(Model model, Principal principal){
 
         RetailUser retailUser = retailUserService.getUserByName(principal.getName());
-        List<Biller> billerCategories = billerService.getBillersCategories();
+        List<BillerCategory> billerCategories = billerService.getCategory();
         model.addAttribute("billerCategories",billerCategories);
         BillPaymentDTO billPaymentDTO = new BillPaymentDTO();
         billPaymentDTO.setPhoneNumber(retailUser.getPhoneNumber());

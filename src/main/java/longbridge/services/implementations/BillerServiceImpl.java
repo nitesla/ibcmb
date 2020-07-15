@@ -378,6 +378,11 @@ public class BillerServiceImpl implements BillerService {
         return  billerRepo.findAll();
     }
 
+    @Override
+    public List <BillerCategory> getCategory() {
+        return billerCategoryRepo.findAll();
+    }
+
 
     @Override
     public Page<Biller> findSearch(String categoryname, String search, Pageable pageable){
