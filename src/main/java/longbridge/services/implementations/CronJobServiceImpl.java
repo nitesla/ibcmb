@@ -14,6 +14,8 @@ import longbridge.services.CronJobService;
 import longbridge.services.IntegrationService;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
+import org.apache.commons.lang3.time.DateUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -426,11 +428,11 @@ public class CronJobServiceImpl implements CronJobService {
     @Scheduled(cron="${auto.admin.deactivation}")
     public void executeAutoAdminDeactivation(){
         SettingDTO setting = configService.getSettingByName("ADMIN_DEACTIVATION");
+        int dormantDays = 60;
         if(setting != null && setting.isEnabled()) {
-            adminUserRepo.updateUserStatus(Double.parseDouble(setting.getValue()));
-            logger.info("Inactive AdminUsers deactivated");
-        }else
-            adminUserRepo.updateUserStatus(60.0);
+            dormantDays = NumberUtils.toInt(setting.getValue(), dormantDays);
+        }
+        Date date = DateUtils.addDays(new Date(), -1 * dormantDays);
+        adminUserRepo.updateUserStatus(date);
     }
-
 }

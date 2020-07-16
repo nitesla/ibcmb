@@ -11,7 +11,7 @@ import java.util.Objects;
 @Entity
 @Audited(withModifiedFlag=true)
 @Where(clause ="del_Flag='N'" )
-@Table(name = "account_coverage")
+@Table(name = "acct_crv")
 public class AccountCoverage extends AbstractEntity  {
 
 
