@@ -31,6 +31,7 @@
                         <tr>
                             <th>Beneficiary name</th>
                             <th>Account number</th>
+                            <th>Preferred Name</th>
                             <th>Swift Code</th>
                             <th>Bank</th>
                             <th>&nbsp;</th>
@@ -43,6 +44,7 @@
                         <tr th:each="ben : ${internationalBeneficiaries}">
                             <td th:text="${ben.accountName}"></td>
                             <td th:text="${ben.accountNumber}"></td>
+                            <td th:text="${ben.preferredName}"></td>
                             <td th:text="${ben.swiftCode}"></td>
                             <td th:text="${ben.beneficiaryBank}"></td>
 

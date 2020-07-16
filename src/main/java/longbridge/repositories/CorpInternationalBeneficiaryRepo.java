@@ -11,5 +11,6 @@ import org.springframework.stereotype.Repository;
 public interface CorpInternationalBeneficiaryRepo extends CommonRepo<CorpInterBeneficiary,Long>{
 
     Iterable<CorpInterBeneficiary> findByCorporate(Corporate corporate);
+    CorpInterBeneficiary findByCorporate_IdAndAccountNumber(Long id, String acctNo);
 }
 

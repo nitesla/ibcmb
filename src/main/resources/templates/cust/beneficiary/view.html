@@ -16,7 +16,7 @@
                     <div class="margin-bottom">
                         <p style="margin-bottom:20px">Enter token to confirm beneficiary delete</p>
                         <div id="username_div" class="form-group">
-                                <input  type="text" id="token" required name="token" class='my-select tokenInput' placeholder="Token Code" autocomplete="off"/>
+                                <input  type="text" id="token" required name="token" class='form-control tokenInput' placeholder="Token Code" autocomplete="off"/>
                         </div>
                         <!--<div id='errorMess' class=" text-danger "></div>-->
                         <!--<div id='successMess' class=" text-success "></div>-->
@@ -50,6 +50,7 @@
                         <table class="table" id="mytab">
                             <thead class='thead'>
                                 <th >Name</th>
+                                <th class="text-cente">Preferred Name</th>
                                 <th class="text-cente">Account Number</th>
                                 <th class="text-cente">Bank</th>
                                 <th class="text-cente">Delete</th>
@@ -57,6 +58,7 @@
                             <tbody>
                                 <tr th:each="loc : ${localBen}">
                                     <td th:text="${loc.accountName}"></td>
+                                    <td th:text="${loc.preferredName}"></td>
                                     <td th:text="${loc.accountNumber}"></td>
                                     <td th:text="${loc.beneficiaryBank}"></td>
                                     <td><a th:id="${loc.id}" onclick="validateDel(this.id)"><i class="fa fa-trash"></i></a></td>

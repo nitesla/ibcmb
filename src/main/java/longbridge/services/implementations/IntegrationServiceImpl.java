@@ -1,18 +1,21 @@
 package longbridge.services.implementations;
 
+
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import longbridge.api.*;
-import longbridge.dtos.FixedDepositDTO;
-import longbridge.dtos.LoanDTO;
-import longbridge.dtos.SettingDTO;
+import longbridge.billerresponse.BillerResponse;
+import longbridge.billerresponse.PaymentItemResponse;
+import longbridge.dtos.*;
 import longbridge.exception.InternetBankingException;
 import longbridge.exception.InternetBankingTransferException;
 import longbridge.exception.TransferErrorService;
 import longbridge.models.*;
+import longbridge.repositories.AccountCoverageRepo;
 import longbridge.repositories.AccountRepo;
 import longbridge.repositories.AntiFraudRepo;
 import longbridge.repositories.CorporateRepo;
 import longbridge.security.userdetails.CustomUserPrincipal;
+import longbridge.services.AccountCoverageService;
 import longbridge.services.ConfigurationService;
 import longbridge.services.IntegrationService;
 import longbridge.services.MailService;
@@ -69,8 +72,8 @@ public class IntegrationServiceImpl implements IntegrationService {
 	@Value("${customDuty.baseUrl}")
 	private String CustomDutyUrl;
 
-	@Value("${custom.access.beneficiaryAcct}")
-	private String accessBeneficiaryAcct;
+//	@Value("${custom.access.beneficiaryAcct}")
+//	private String accessBeneficiaryAcct;
 
 	@Value("${antifraud.status.check}")
 	private String antiFraudStatusCheckUrl;
@@ -84,11 +87,13 @@ public class IntegrationServiceImpl implements IntegrationService {
 	private AccountRepo accountRepo;
 	private CorporateRepo corporateRepo;
 	private AntiFraudRepo antiFraudRepo;
+	private AccountCoverageService coverageService;
+	private AccountCoverageRepo coverageRepo;
 
 	@Autowired
 	public IntegrationServiceImpl(RestTemplate template, MailService mailService, TemplateEngine templateEngine,
 								  ConfigurationService configService, TransferErrorService errorService, MessageSource messageSource,
-								  AccountRepo accountRepo, CorporateRepo corporateRepo, AntiFraudRepo antiFraudRepo) {
+								  AccountRepo accountRepo, CorporateRepo corporateRepo, AntiFraudRepo antiFraudRepo,AccountCoverageService coverageService,AccountCoverageRepo coverageRepo) {
 		this.template = template;
 		this.mailService = mailService;
 		this.templateEngine = templateEngine;
@@ -98,7 +103,10 @@ public class IntegrationServiceImpl implements IntegrationService {
 		this.accountRepo = accountRepo;
 		this.corporateRepo = corporateRepo;
 		this.antiFraudRepo=antiFraudRepo;
-	}
+		this.coverageService =coverageService;
+		this.coverageRepo = coverageRepo;
+
+			}
 
 	@Override
 	public List<AccountInfo> fetchAccounts(String cifid) {
@@ -414,7 +422,7 @@ public class IntegrationServiceImpl implements IntegrationService {
 			case INTER_BANK_TRANSFER: {
 				transRequest.setTransferType(TransferType.INTER_BANK_TRANSFER);
 //				TransferDetails response;
-				TransferRequestNip response;
+				TransferRequestNip response = new TransferRequestNip();
 				String uri = URI + "/transfer/nip";
 
 				TransferRequestNip params=new TransferRequestNip();
@@ -1069,7 +1077,7 @@ public class IntegrationServiceImpl implements IntegrationService {
 			request.put("LastAuthorizer",userName);
 			request.put("InitiatedBy",corpPaymentRequest.getCustomDutyPayment().getInitiatedBy());
 			request.put("PaymentRef",corpPaymentRequest.getReferenceNumber());
-			request.put("CustomerAccountNo",accessBeneficiaryAcct);
+			request.put("CustomerAccountNo",corpPaymentRequest.getCustomerAccountNumber());
 			logger.debug("Fetching data from coronation rest service via the url: {}", CustomDutyUrl);
 			logger.debug("Fetching data from coronation rest service via the url: {}", CustomDutyUrl+"/customduty/payassessment");
 			logger.debug("paymentNotificationRequest: {}", request);
@@ -1077,7 +1085,7 @@ public class IntegrationServiceImpl implements IntegrationService {
 			logger.debug("payment notification Response: {}", response);
 			logger.info("payment ref {}",corpPaymentRequest.getReferenceNumber());
 			logger.info("InitiatedBy {}",corpPaymentRequest.getCustomDutyPayment().getInitiatedBy());
-			logger.info("CustomerAccountNo {}",accessBeneficiaryAcct);
+			logger.info("CustomerAccountNo {}",corpPaymentRequest.getCustomerAccountNumber());
 			logger.info("LastAuthorizer {}",userName);
 
 			logger.debug("payment notification params: {}", appId + corpPaymentRequest.getReferenceNumber() + corpPaymentRequest.getAmount().setScale(2,BigDecimal.ROUND_HALF_UP) + secretKey);
@@ -1105,7 +1113,8 @@ public class IntegrationServiceImpl implements IntegrationService {
 			request.put("LastAuthorizer",userName);
 			request.put("InitiatedBy",corpPaymentRequest.getCustomDutyPayment().getInitiatedBy());
 			request.put("PaymentRef",corpPaymentRequest.getReferenceNumber());
-			request.put("CustomerAccountNo",accessBeneficiaryAcct);
+//			request.put("CustomerAccountNo",accessBeneficiaryAcct);
+			request.put("CustomerAccountNo",corpPaymentRequest.getCustomerAccountNumber());
 			logger.debug("Fetching data from coronation rest service via the url: {}", CustomDutyUrl);
 			logger.debug("Fetching data from coronation rest service via the url: {}", CustomDutyUrl+"/customduty/payassessment");
 			logger.debug("paymentNotificationRequest: {}", request);
@@ -1319,7 +1328,11 @@ public class IntegrationServiceImpl implements IntegrationService {
 			if (setting != null && setting.isEnabled()) {
 				String recipient = setting.getValue();
 				String subject = messageSource.getMessage("international.transfer.subject",null,locale);
-				mailService.send(recipient, subject, mail, true);
+
+				/* Pls uncomment this when you're deploying
+				* and check the application cnfiguration if mail config has been set
+				*/
+//				mailService.send(recipient, subject, mail, true);
 				transRequest.setReferenceNumber(NumberUtils.generateReferenceNumber(15));
 				transRequest.setStatus("000");
 				transRequest.setStatusDescription(messageSource.getMessage("transfer.successful",null,locale));
@@ -1404,5 +1417,102 @@ public class IntegrationServiceImpl implements IntegrationService {
 		}
 		return methodResponse;
 	}
+
+	@Override
+	public List<BillerDTO> getBillers(){
+		String appId = "001b5";
+		String hash = "$234@789";
+		List<BillerDTO> billers = new ArrayList<>();
+		String uri = URI+"/api/quickteller/biller";
+		Map<String,String> params = new HashMap<>();
+		params.put("appid",appId);
+		params.put("hash",hash);
+		try {
+			BillerResponse billerResponse = template.postForObject(uri,params, BillerResponse.class);
+			billers = billerResponse.getBillers();
+			return billers;
+		} catch (Exception e){
+			logger.info("Error processing request");
+		}
+			return billers;
+	}
+
+
+	@Override
+	public List<PaymentItemDTO> getPaymentItems(Long billerId){
+		String appId = "001b5";
+		String hash = "$234@789";
+		String id = Long.toString(billerId);
+		List<PaymentItemDTO> items = new ArrayList<>();
+		String uri = URI+"/api/quickteller/billerpaymentitem";
+		Map<String,String> params = new HashMap<>();
+		params.put("appid",appId);
+		params.put("billerid", id);
+		params.put("hash",hash);
+		try {
+			PaymentItemResponse paymentItemResponse = template.postForObject(uri,params, PaymentItemResponse.class);
+			items = paymentItemResponse.getPaymentitems();
+			return items;
+		} catch (Exception e){
+			logger.info("Error processing request");
+		}
+		return items;
+	}
+
+//    @Override
+//	public  List<CoverageDetailsDTO>  getCoverageDetails(String coverageName,String customerNumber){
+//		    List<CoverageDetailsDTO> coverageDetailsDTOList = new ArrayList<>();
+//			String uri = URI+"/coverage/{coverageName}/{customerNumber}";
+//		    Map<String,String> params = new HashMap<>();
+//			params.put("coverageName",coverageName);
+//			params.put("customerNumber",customerNumber);
+//		   ObjectMapper mapper= new ObjectMapper();
+//
+//
+//			try{
+//
+//				ResponseEntity<Object> response = template.getForEntity(uri, Object.class,params);
+//				Object responseBody = response.getBody();
+//				if (responseBody instanceof List<?> ){
+//					System.out.println(responseBody);
+//					JsonNode[] jsonNode = mapper.convertValue(responseBody,JsonNode[].class);
+//					for (JsonNode resp:jsonNode) {
+//						CoverageDetailsDTO coverageDetailsDTO = new CoverageDetailsDTO();
+//						coverageDetailsDTO.setDetails(resp);
+//						coverageDetailsDTO.setCustomerNumber(customerNumber);
+//						coverageDetailsDTO.setCoverageName(coverageName);
+//						coverageDetailsDTOList.add(coverageDetailsDTO);
+//				}
+//				}
+//				else if(responseBody instanceof LinkedHashMap){
+//					 System.out.println(responseBody);
+//					 JsonNode jsonNode = mapper.convertValue(responseBody,JsonNode.class);
+//					 CoverageDetailsDTO coverageDetailsDTO = new CoverageDetailsDTO();
+//					 coverageDetailsDTO.setDetails(jsonNode);
+//					 coverageDetailsDTO.setCustomerNumber(customerNumber);
+//					 coverageDetailsDTO.setCoverageName(coverageName);
+//					 coverageDetailsDTOList.add(coverageDetailsDTO);
+//				}
+//
+//			} catch (Exception e){
+//				logger.error("Error getting coverage details",e);
+//			}
+//
+//		return coverageDetailsDTOList;
+//	}
+//
+//	@Override
+//	public JSONObject getAllCoverageDetails(String customerNumber){
+//		JSONObject allcoverage = new JSONObject();
+//		if (coverageRepo.enabledCoverageExist()){
+//			List<String> coverageList =coverageService.enabledCoverageList();
+//			for (String coverage:coverageList ) {
+//				allcoverage.put(coverage,getCoverageDetails(coverage,customerNumber));
+//
+//			}
+//		}
+//		return allcoverage;
+//	}
+
 
 }

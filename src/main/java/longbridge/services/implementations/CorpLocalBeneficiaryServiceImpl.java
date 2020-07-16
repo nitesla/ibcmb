@@ -89,10 +89,13 @@ public class CorpLocalBeneficiaryServiceImpl implements CorpLocalBeneficiaryServ
 
     @Override
     public String deleteCorpLocalBeneficiary(Long beneficiaryId) {
-        this.corpLocalBeneficiaryRepo.deleteById(beneficiaryId);
-        logger.info("Beneficiary with Id {} deleted", beneficiaryId);
-        return messageSource.getMessage("beneficiary.delete.success",null,locale);
-
+        try {
+            this.corpLocalBeneficiaryRepo.deleteById(beneficiaryId);
+            logger.info("Beneficiary with Id {} deleted", beneficiaryId);
+            return messageSource.getMessage("beneficiary.delete.success",null,locale);
+        } catch (Exception e) {
+            throw new InternetBankingException(messageSource.getMessage("beneficiary.delete.failure", null, locale), e);
+        }
     }
 
     @Override

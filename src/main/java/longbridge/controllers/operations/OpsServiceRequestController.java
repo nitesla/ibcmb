@@ -59,9 +59,11 @@ public class OpsServiceRequestController {
     public
     @ResponseBody
     DataTablesOutput<ServiceRequestDTO> getRequests(DataTablesInput input,Principal principal) {
+        logger.info("DEBUGGING!!");
         OperationsUser opsUser = opsUserService.getUserByName(principal.getName());
         Pageable pageable = DataTablesUtils.getPageable(input);
         Page<ServiceRequestDTO> serviceRequests = requestService.getRequests(opsUser,pageable);
+        logger.info("DEBUGGING-2!! {}",  serviceRequests.get().findFirst());
         DataTablesOutput<ServiceRequestDTO> out = new DataTablesOutput<ServiceRequestDTO>();
         out.setDraw(input.getDraw());
         out.setData(serviceRequests.getContent());

@@ -1,7 +1,6 @@
 package longbridge.controllers.corporate;
 
 import longbridge.dtos.*;
-import longbridge.exception.DuplicateObjectException;
 import longbridge.exception.InternetBankingException;
 import longbridge.exception.InternetBankingSecurityException;
 import longbridge.models.*;
@@ -149,23 +148,52 @@ public class CorpBeneficiaryController {
     }
 
     @PostMapping("/international")
-    public String createInternationalBeneficiary(@ModelAttribute("corpInternationalBeneficiary") @Valid CorpInternationalBeneficiaryDTO corpInternationalBeneficiaryDTO,RedirectAttributes redirectAttributes, Principal principal, BindingResult result, Model model) {
+    public String createInternationalBeneficiary(@ModelAttribute("internationalBeneficiaryDTO")@Valid CorpInternationalBeneficiaryDTO internationalBeneficiaryDTO,RedirectAttributes redirectAttributes, Principal principal, BindingResult result, Model model, HttpServletRequest request, Locale locale) {
 
-        if (result.hasErrors()) {
-            return "corp/beneficiary/international/add";
+        SettingDTO setting = configService.getSettingByName("ENABLE_CORPORATE_2FA");
+        CorporateUser user = corporateUserService.getUserByName(principal.getName());
+
+        if (
+                /* service to check if token is enabled comes in here  */
+                (setting != null && setting.isEnabled())
+        ) {
+            try {
+                String token = request.getParameter("token");
+
+                securityService.performTokenValidation(user.getEntrustId(), user.getEntrustGroup(), token);
+            } catch (InternetBankingSecurityException ibse) {
+
+                if (
+                        /* service to check if token is enabled comes in here  */
+
+                        (setting != null && setting.isEnabled())
+                )
+                    model.addAttribute("auth", "auth");
+                model.addAttribute("failure", ibse.getMessage());
+                model.addAttribute("beneficiary", internationalBeneficiaryDTO);
+                return "corp/beneficiary/international/internationalSummary";
+            }
         }
+
         try {
-            String message = corpInternationalBeneficiaryService.addCorpInternationalBeneficiary(corpInternationalBeneficiaryDTO);
+            String message = corpInternationalBeneficiaryService.addCorpInternationalBeneficiary(internationalBeneficiaryDTO);
             redirectAttributes.addFlashAttribute("message", message);
         }
-        catch (DuplicateObjectException doe){
-            logger.error("Corp International Beneficiary Error", doe);
-            redirectAttributes.addFlashAttribute("failure", doe.getMessage());
-
-        }
+//        catch (DuplicateObjectException doe){
+//            logger.error("Corp International Beneficiary Error", doe);
+//            redirectAttributes.addFlashAttribute("failure", doe.getMessage());
+//
+//        }
+//        catch (InternetBankingException e) {
+//            logger.error("Corp International Beneficiary Error", e);
+//            redirectAttributes.addFlashAttribute("failure", e.getMessage());
+//        }
         catch (InternetBankingException e) {
-            logger.error("Corp International Beneficiary Error", e);
-            redirectAttributes.addFlashAttribute("failure", e.getMessage());
+            try {
+                redirectAttributes.addFlashAttribute("failure", messages.getMessage(e.getMessage(), null, locale));
+            } catch (Exception ex) {
+                redirectAttributes.addFlashAttribute("failure", messages.getMessage("beneficiary.add.failure", null, locale));
+            }
         }
 
         return "redirect:/corporate/beneficiary/international";
@@ -214,6 +242,42 @@ public class CorpBeneficiaryController {
         }
     }
 
+    @PostMapping("/international/authenticate")
+    public String delLocBenTokenInt(WebRequest webRequest, Principal principal, RedirectAttributes redirectAttributes) {
+        String token = webRequest.getParameter("token");
+        logger.info("this is the ben tokeeen {}", token);
+        String beneficiaryId = webRequest.getParameter("id");
+        logger.info("kkk {}", beneficiaryId);
+        Long benefit = Long.parseLong(beneficiaryId);
+        logger.info("this is the benID {}", benefit);
+        if (StringUtils.isNotBlank(token)  && StringUtils.isNotBlank(beneficiaryId )) {
+            try {
+                CorporateUser corporateUser = corporateUserService.getUserByName(principal.getName());
+                boolean result = securityService.performTokenValidation(corporateUser.getEntrustId(), corporateUser.getEntrustGroup(), token);
+                if (result) {
+                    try {
+                        String message = corpInternationalBeneficiaryService.deleteCorpInternationalBeneficiary(benefit);
+                        redirectAttributes.addFlashAttribute("message", message);
+                        return "redirect:/corporate/beneficiary/international";
+                    } catch (InternetBankingException e) {
+                        logger.error("International Beneficiary Error", e);
+                        redirectAttributes.addFlashAttribute("failure", e.getMessage());
+                    }
+                    return "redirect:/corporate/beneficiary/international";
+                } else {
+                    redirectAttributes.addFlashAttribute("failure", "Token Authentication Failed");
+                    return "redirect:/corporate/beneficiary/international";
+                }
+            } catch (InternetBankingException e) {
+                logger.error("International Beneficiary Error", e);
+                redirectAttributes.addFlashAttribute("failure", e.getMessage());
+                return "redirect:/corporate/beneficiary/international";
+            }
+        } else {
+            return "redirect:/corporate/beneficiary/international";
+        }
+    }
+
 
 //    @GetMapping
 //    public Iterable<Beneficiary> getLocalBeneficiaries(Model model){
@@ -224,18 +288,29 @@ public class CorpBeneficiaryController {
 
     @GetMapping("/{beneficiaryId}/loc/delete")
 
-    public String deleteLocBeneficiary(@PathVariable Long beneficiaryId, Model model) {
-        corpLocalBeneficiaryService.deleteCorpLocalBeneficiary(beneficiaryId);
-        model.addAttribute("success", "Beneficiary deleted successfully");
-
+    public String deleteLocBeneficiary(@PathVariable Long beneficiaryId, Model model, RedirectAttributes redirectAttributes) {
+        try {
+        String message = corpLocalBeneficiaryService.deleteCorpLocalBeneficiary(beneficiaryId);
+        redirectAttributes.addFlashAttribute("message", message);
+        } catch (InternetBankingException e) {
+            logger.error("Beneficiary Error", e);
+            redirectAttributes.addFlashAttribute("failure", e.getMessage());
+        }
         return "redirect:/corporate/beneficiary";
     }
 
     @GetMapping("/{beneficiaryId}/int/delete")
 
-    public String deleteIncBeneficiary(@PathVariable Long beneficiaryId, Model model) {
-        corpInternationalBeneficiaryService.deleteCorpInternationalBeneficiary(beneficiaryId);
-        model.addAttribute("success", "Beneficiary deleted successfully");
+    public String deleteIncBeneficiary(@PathVariable Long beneficiaryId, Model model, RedirectAttributes redirectAttributes) {
+        try {
+        String message = corpInternationalBeneficiaryService.deleteCorpInternationalBeneficiary(beneficiaryId);
+
+            redirectAttributes.addFlashAttribute("message", message);
+        } catch (InternetBankingException e) {
+            logger.error("International Beneficiary Error", e);
+            redirectAttributes.addFlashAttribute("failure", e.getMessage());
+        }
+//        model.addAttribute("success", "Beneficiary deleted successfully");
         return "redirect:/corporate/beneficiary";
     }
 
@@ -269,6 +344,35 @@ public class CorpBeneficiaryController {
 
         }
         return "corp/beneficiary/localSummary";
+    }
+
+    @PostMapping("/international/summary")
+    public String createInternationalBeneficiary(@Valid InternationalBeneficiaryDTO internationalBeneficiaryDTO, BindingResult result, Model model) {
+        if (result.hasErrors()) {
+            System.out.println(result);
+
+            logger.info("I'm here 1, {}", internationalBeneficiaryDTO);
+            model.addAttribute("internationalBeneficiaryDTO", new InternationalBeneficiaryDTO());
+            return "corp/beneficiary/international/add";
+        }
+
+        try {
+
+            model.addAttribute("beneficiary", internationalBeneficiaryDTO);
+            SettingDTO setting = configService.getSettingByName("ENABLE_CORPORATE_2FA");
+
+
+            if (/* service to check if token is enabled comes in here  */
+
+                    (setting != null && setting.isEnabled())
+            )
+                model.addAttribute("auth", "auth");
+
+        } catch (InternetBankingException e) {
+
+
+        }
+        return "corp/beneficiary/international/internationalSummary";
     }
 
 
