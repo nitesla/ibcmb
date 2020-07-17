@@ -54,6 +54,8 @@ public interface BillerService {
 
     Page<BillerCategory> getBillerCategories(String search, Pageable pageDetails);
 
+    List <BillerCategory> getCategory();
+
     List<PaymentItem> getPaymentItems(Long id);
 
     void updateBillerStatus(Biller biller);
