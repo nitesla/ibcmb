@@ -1,21 +1,23 @@
 package longbridge.controllers.corporate;
 
+import longbridge.dtos.BillPaymentDTO;
 import longbridge.dtos.BillerDTO;
 import longbridge.models.Biller;
 import longbridge.models.BillerCategory;
+import longbridge.models.PaymentItem;
 import longbridge.repositories.BillerCategoryRepo;
 import longbridge.repositories.BillerRepo;
+import longbridge.repositories.PaymentItemRepo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 import java.security.Principal;
 import java.util.List;
 
@@ -31,6 +33,9 @@ public class CorpBillPaymentController {
     @Autowired
     private BillerCategoryRepo billerCategoryRepo;
 
+    @Autowired
+    private PaymentItemRepo paymentItemRepo;
+
     @GetMapping
     public String getRecurringBillPaymentPage() {
         return "corp/billpayment/pagei";
@@ -44,14 +49,30 @@ public class CorpBillPaymentController {
         return "corp/billpayment/addbeneficiary";
     }
 
+    @ResponseBody
     @PostMapping("/getBiller")
-    public String beneficiaryBiller(String category, HttpServletRequest request, Model model){
+    public List<Biller> beneficiaryBiller(String category, HttpServletRequest request, Model model){
         boolean enabled = true;
         logger.info("BILLER DTO {} " , category);
         List<Biller> biller = billerRepo.findAllByEnabledAndCategoryName(enabled,category);
-        model.addAttribute("biller", biller);
-        return "corp/billpayment/addbeneficiary";
+        return biller;
     }
 
+    @ResponseBody
+    @PostMapping("/getpaymentitems")
+    public List<PaymentItem> getPaymentItems(Long billerId){
+        logger.info("billerId {} " , billerId);
+        boolean enabled = true;
+        List<PaymentItem> items =  paymentItemRepo.findAllByEnabledAndBillerId(enabled, billerId);
+        logger.info("items {} " , items);
+        return items;
+
+    }
+
+    @PostMapping("/addnewbeneficiary")
+    public String addNewBeneficiary(@ModelAttribute("billPaymentDTO") @Valid BillPaymentDTO billPaymentDTO){
+        logger.info("DETAILS {} " , billPaymentDTO);
+        return "SUCCESSFULL";
+    }
 
 }

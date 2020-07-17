@@ -19,57 +19,45 @@
                 <div class="form-spacin col-md-7 col-sm-7 no-pad-right">
 
                     <div>
-                        <a  class="btn btn-link required-step" th:href="@{/corporate/billpayment}">Back</a>
+                        <a  class="btn btn-link required-step" th:href="@{/corporate/billpayment}" >Back</a>
                     </div>
                     <br/>
-                    <form id="local" method="post" >
+                    <form id="local" method="post" th:action="@{/corporate/billpayment/addnewbeneficiary}" th:object="${billPaymentDTO}">
 
                         <div class="form-group">
-                            <label>Biller</label>
-                            <select class="form-control" id="category" name="category" required="required">
+                            <label>Category</label>
+                            <select class="form-control" id="category" name="category" required="required" th:field="*{categoryName}">
                                 <option value="-- Select --">-- Select Category --</option>
                                 <option th:each="message : ${categorys}" th:value="${message.categoryName }"th:text="${message.categoryName }"></option>
                             </select><span class='req-inner'></span>
                         </div>
 
                         <div class="form-group">
-                            <label>Service Provided</label>
-                            <select class="form-control" id="items" name="categories" required="required">
-                                <option value="-- Select --">-- Select Biller --</option>
-                                <option th:each="message : ${biller}" th:value="${message.billerName }"th:text="${message.billerName }"></option>
-                            </select><span class='req-inner'></span>
+                                <label>Biller</label>
+                                <select  class="form-control" id="billerName" name="billerName" required="required" th:field="*{billerName}">
+                                </select><span class='req-inner'></span>
                         </div>
 
                         <div id="beneficiaryForm" style="display: none">
 
 
-                        <div class="form-group">
-                            <label>Reference Numner</label>
-                            <input type="number" class="form-control"
-                                   required="required"/><span class='req-inner'></span>
-                        </div>
-
                             <div class="form-group">
-                                <label>Amount-Fixed</label>
-                                <select class="form-control" id="" name="categories" required="required">
-                                    <option value=""> None </option>
-                                    <option value="true"> True</option>
-                                    <option value="false"> False</option>
+                                <label>Service/Payment-Item</label>
+                                <select  class="form-control" id="paymentitem" name="paymentitem" required="required" th:field="*{paymentItemName}">
                                 </select><span class='req-inner'></span>
                             </div>
 
+
+
                         <div class="form-group">
-                            <label >Transaction-Amount</label>
-                            <input type="number" class="form-control"
+                            <label>Payment-Code</label>
+                            <input type="number" class="form-control" name="referenceNumber" th:field="*{paymentCode}"
                                    required="required"/><span class='req-inner'></span>
                         </div>
 
-
-
-
                         </div>
                         <div>
-                            <a type="button" class="btn btn-default btn-sm" id="fixCalculate" >Submit</a>
+                            <a type="submit" class="btn btn-default btn-sm" id="fixCalculate" >Submit</a>
                         </div>
 
 
@@ -105,12 +93,61 @@
 <th:block layout:fragment="scripts">
     <script>
 
-        $('#items').on('change',function () {
+
+        function getBalance(){
+
+            var accountNumber = $('#source').val();
+            $.ajax({
+                url: "/corporate/transfer/balance/"+accountNumber,
+                type: 'GET',
+                async: false,
+                success:function(jd){
+                    var message = jd.message;
+                    var success =  jd.success;
+                    console.log(message);
+                    console.log(success);
+                    if (success==false){
+                        document.getElementById("myspan").textContent="Could not get balance from server, please try again.";
+                        $("#myspan").show();
+                    }else{
+//                    $('input[name=availBal]').val(bal);
+
+                        var  bal=numberWithCommas(message);
+                        $('#availBal').html("Available Balance: "+bal);
+
+                    }
+                }
+            })
+        }
+
+
+        $('#billerName').on('change',function () {
             $('#beneficiaryForm').css('display','block');
-            var items = $('#items').val();
+            var items = $('#billerName').val();
             if (items === ""){
                 $('#beneficiaryForm').css('display','none');
             }
+        })
+
+
+        $('#billerName').on('change',function () {
+            var billerId = $('#billerName').val();
+            $.ajax({
+                type: "POST",
+                url: "/corporate/billpayment/getpaymentitems",
+                data: { billerId:billerId}, // parameters
+                success: function (items , status, xhr) {
+                    console.log(JSON.stringify(items));
+                    console.log(items.length);
+                    if(items.length==0){
+
+                    }
+                    $('#paymentitem').empty();
+                    $('#paymentitem').append("<option value=''>-Select-</option>");
+                    console.log("Biller ---------->>>" +items)
+                    items.forEach(b => $('#paymentitem').append("<option value='"+b.paymentItemName+"'>"+b.paymentItemName+"</option>"));
+                }
+            })
         })
 
 
@@ -120,8 +157,17 @@
                 type: "POST",
                 url: "/corporate/billpayment/getBiller",
                 data: { category:category}, // parameters
+                success: function (biller , status, xhr) {
+                    console.log(JSON.stringify(biller));
+                    console.log(biller.length);
+                    if(biller.length==0){
 
-
+                    }
+                    $('#billerName').empty();
+                    $('#billerName').append("<option value=''>-Select-</option>");
+                    console.log("Biller ---------->>>" +biller)
+                    biller.forEach(b => $('#billerName').append("<option value='"+b.billerId+"'>"+b.billerName+"</option>"));
+                }
             })
         })
 

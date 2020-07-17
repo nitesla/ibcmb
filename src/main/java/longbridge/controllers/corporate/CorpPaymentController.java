@@ -2,15 +2,11 @@ package longbridge.controllers.corporate;
 
 import longbridge.dtos.BillPaymentDTO;
 import longbridge.exception.InternetBankingException;
-import longbridge.models.Account;
-import longbridge.models.Biller;
-import longbridge.models.CorporateUser;
-import longbridge.models.PaymentItem;
-import longbridge.services.AccountService;
-import longbridge.services.BillerService;
-import longbridge.services.CorporateUserService;
-import longbridge.services.PaymentService;
+import longbridge.exception.InternetBankingSecurityException;
+import longbridge.models.*;
+import longbridge.services.*;
 import longbridge.utils.DataTablesUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,10 +20,12 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 import java.util.stream.StreamSupport;
 
@@ -40,6 +38,8 @@ public class CorpPaymentController {
     private final CorporateUserService corporateUserService;
     private final AccountService accountService;
     private final PaymentService paymentService;
+    private final String page = "corp/payment/";
+    private SecurityService securityService;
     private final static Logger logger = LoggerFactory.getLogger(CorpPaymentController.class);
 
     @Autowired
@@ -59,39 +59,112 @@ public class CorpPaymentController {
         BillPaymentDTO paymentDTO = new BillPaymentDTO();
         paymentDTO.setPhoneNumber(corporateUser.getPhoneNumber());
         paymentDTO.setEmailAddress(corporateUser.getEmail());
-        model.addAttribute("paymentDTO", paymentDTO);
+        model.addAttribute("billPaymentDTO", paymentDTO);
         return "corp/payment/new";
     }
 
-    @PostMapping("/new")
-    public String addBillPayment(@ModelAttribute("paymentDTO") @Valid BillPaymentDTO paymentDTO, BindingResult result, RedirectAttributes redirectAttributes){
+    @RequestMapping(value = "/{id}", method = {RequestMethod.GET, RequestMethod.POST})
+    public String savePayment(@PathVariable Long id, Model model, HttpServletRequest request, Locale locale, RedirectAttributes attributes) {
+        BillPayment billPayment = paymentService.getBillPayment(id);
+        List<Biller> billerCategories = billerService.getBillersCategories();
+        model.addAttribute("billerCategories", billPayment);
+        BillPaymentDTO billPaymentDTO = new BillPaymentDTO();
+        billPaymentDTO.setPhoneNumber(billPayment.getPhoneNumber());
+        billPaymentDTO.setEmailAddress(billPayment.getEmailAddress());
+        billPaymentDTO.setPaymentCode(billPayment.getPaymentCode());
+        model.addAttribute("billPaymentDTO", billPaymentDTO);
+        request.getSession().setAttribute("billPaymentDTO", billPaymentDTO);
+        return page + "pagei";
+    }
 
-        if(result.hasErrors()){
-            return "corp/payment/new";
+    @PostMapping("/summary")
+    public String paymentSummary(@ModelAttribute("billPaymentDTO") @Valid BillPaymentDTO billPaymentDTO, BindingResult result, Model model, HttpServletRequest servletRequest, PaymentItem paymentItemCode, Biller billerName, PaymentItem paymentItemName) {
+        model.addAttribute("billPaymentDTO", billPaymentDTO);
+        billPaymentDTO.setCustomerAccountNumber(billPaymentDTO.getCustomerAccountNumber());
+        billPaymentDTO.setCategoryName(billPaymentDTO.getCategoryName());
+        billPaymentDTO.setBillerId(billPaymentDTO.getBillerId());
+        billPaymentDTO.setPaymentItemId(billPaymentDTO.getPaymentItemId());
+        billPaymentDTO.setAmount(billPaymentDTO.getAmount());
+        billPaymentDTO.setPhoneNumber(billPaymentDTO.getPhoneNumber());
+        billPaymentDTO.setEmailAddress(billPaymentDTO.getEmailAddress());
+        paymentItemCode = billerService.getPaymentItem(Long.parseLong(billPaymentDTO.getPaymentItemId()));
+        billPaymentDTO.setPaymentCode(paymentItemCode.getPaymentCode());
+        billerName = billerService.getBillerName(Long.parseLong(billPaymentDTO.getBillerId()));
+        billPaymentDTO.setBillerName(billerName.getBillerName());
+        paymentItemName = billerService.getPaymentItem(Long.parseLong(billPaymentDTO.getPaymentItemId()));
+        billPaymentDTO.setPaymentItemName(paymentItemName.getPaymentItemName());
+        model.addAttribute("billPaymentDTO", billPaymentDTO);
+        servletRequest.getSession().setAttribute("billPaymentDTO", billPaymentDTO);
+        return page + "summary";
+    }
+
+    @PostMapping("/preview")
+    public String paymentPreview(@ModelAttribute("billPaymentDTO") @Valid BillPaymentDTO billPaymentDTO, BindingResult result, Model model, HttpServletRequest servletRequest, PaymentItem paymentItemCode, Biller billerName, PaymentItem paymentItemName) {
+        model.addAttribute("billPaymentDTO", billPaymentDTO);
+        billPaymentDTO.setCustomerAccountNumber(billPaymentDTO.getCustomerAccountNumber());
+        billPaymentDTO.setCategoryName(billPaymentDTO.getCategoryName());
+        billPaymentDTO.setBillerId(billPaymentDTO.getBillerId());
+        billPaymentDTO.setPaymentItemId(billPaymentDTO.getPaymentItemId());
+        billPaymentDTO.setAmount(billPaymentDTO.getAmount());
+        billPaymentDTO.setPhoneNumber(billPaymentDTO.getPhoneNumber());
+        billPaymentDTO.setEmailAddress(billPaymentDTO.getEmailAddress());
+        billPaymentDTO.setPaymentCode(billPaymentDTO.getPaymentCode());
+        billerName = billerService.getBillerName(Long.parseLong(billPaymentDTO.getBillerId()));
+        billPaymentDTO.setBillerName(billerName.getBillerName());
+        paymentItemName = billerService.getPaymentItem(Long.parseLong(billPaymentDTO.getPaymentItemId()));
+        billPaymentDTO.setPaymentItemName(paymentItemName.getPaymentItemName());
+        model.addAttribute("billPaymentDTO", billPaymentDTO);
+        servletRequest.getSession().setAttribute("billPaymentDTO", billPaymentDTO);
+        return page + "summary";
+    }
+
+    @PostMapping("/edit")
+    public String editPayment(@ModelAttribute("billPaymentDTO") BillPaymentDTO billPaymentDTO, Model model, HttpServletRequest request) {
+        model.addAttribute("billPaymentDTO", billPaymentDTO);
+        if (request.getSession().getAttribute("billPaymentDTO") != null) {
+            BillPaymentDTO dto = (BillPaymentDTO) request.getSession().getAttribute("billPaymentDTO");
+            model.addAttribute("billPaymentDTO", dto);
         }
+        return page + "new";
+    }
 
+    @PostMapping("/process")
+    public String billPayment(Model model, RedirectAttributes redirectAttributes, Locale locale, HttpServletRequest request, Principal principal){
+        BillPaymentDTO billPaymentDTO = (BillPaymentDTO) request.getSession().getAttribute("billPaymentDTO");
+        model.addAttribute("billPaymentDTO", billPaymentDTO);
         try {
-            String message = paymentService.addBillPayment(paymentDTO);
+            if (request.getSession().getAttribute("auth-needed") != null) {
+                String token = request.getParameter("token");
+                logger.info("gbemiiiiiiiiiii {}", token);
+                if (token == null || token.isEmpty()) {
+                    model.addAttribute("failure", "Token is required");
+                    return "/corp/payment/summary";
+                }
+                try {
+                    CorporateUser corporateUser = corporateUserService.getUserByName(principal.getName());
+                    securityService.performTokenValidation(corporateUser.getEntrustId(), corporateUser.getEntrustGroup(), token);
+                } catch (InternetBankingSecurityException ibse) {
+                    ibse.printStackTrace();
+                    model.addAttribute("failure", ibse.getMessage());
+                    return "/corp/payment/summary";
+                }
+                request.getSession().removeAttribute("auth-needed");
+            }
+            String message = paymentService.addCorpBillPayment(billPaymentDTO);
+            model.addAttribute("billPaymentDTO", billPaymentDTO);
             redirectAttributes.addFlashAttribute("message", message);
             return "redirect:/corporate/payment/completed";
-        }
-        catch (InternetBankingException e){
+        }catch (InternetBankingException e){
             logger.error(e.getMessage());
             redirectAttributes.addFlashAttribute("failure", e.getMessage());
+            return "redirect:/corporate/payment/new";
         }
-        return "redirect:/corporate/payment/new";
     }
 
     @ResponseBody
     @RequestMapping(value = "/biller", method = {RequestMethod.GET, RequestMethod.POST})
-
     public List<Biller> getBillers(Biller biller){
-
-        logger.info("{}", biller.getCategoryName());
-        logger.info("Debugging");
-
         List<Biller> billerByCategory = billerService.getBillersByCategory(biller.getCategoryName());
-        logger.info("biller category =========== {}", billerByCategory);
         return billerByCategory;
     }
 
@@ -99,32 +172,16 @@ public class CorpPaymentController {
     @ResponseBody
     @RequestMapping(value = "/paymentItem", method = {RequestMethod.GET, RequestMethod.POST})
     public List<PaymentItem> getPaymentItem(PaymentItem paymentItem){
-
-        logger.info("Payment Item Id is {}", paymentItem.getBillerId());
-        logger.info("Debugging");
-
         List<PaymentItem> paymentItems = billerService.getPaymentItems(paymentItem.getBillerId());
         return paymentItems;
     }
 
-
-//    @ResponseBody
-//    @GetMapping("/{billerId}/paymentItems")
-//    public List<PaymentItem> getBillerPaymentItems(@PathVariable String billerId){
-//
-//        Biller biller = billerService.getBiller(Long.parseLong(billerId));
-//        List<PaymentItem> paymentItems = biller.getPaymentItem();
-//        return paymentItems;
-//    }
-
-//    @ResponseBody
-//    @GetMapping("/{billerId}/referencename")
-//    public String getOwnerReferenceName(@PathVariable String billerId){
-//
-//        Biller biller = billerService.getBiller(Long.parseLong(billerId));
-//        return biller.getOwnerReferenceName();
-//    }
-
+    @ResponseBody
+    @GetMapping("/paymentItem/{paymentItemId}")
+    public PaymentItem getPaymentItem(@PathVariable Long paymentItemId){
+        PaymentItem paymentItem = billerService.getPaymentItem(paymentItemId);
+        return paymentItem;
+    }
     @GetMapping("/completed")
     public String getCompletedPayments(){
 
@@ -133,17 +190,22 @@ public class CorpPaymentController {
 
     @GetMapping("/completed/all")
     public @ResponseBody
-    DataTablesOutput<BillPaymentDTO> getTransfersCompleted(DataTablesInput input){
+    DataTablesOutput<BillPaymentDTO> getTransfersCompleted(DataTablesInput input, @RequestParam("csearch") String search){
 
         Pageable pageable = DataTablesUtils.getPageable(input);
 
-        Page<BillPaymentDTO> transferRequests = paymentService.getCorpPayments(pageable);
+        Page<BillPaymentDTO> corpPaymentRequests;
+
+        if (StringUtils.isNoneBlank(search)) {
+
+            corpPaymentRequests = paymentService.getCorpPayments(search.toUpperCase(), pageable);
+        } else corpPaymentRequests =  paymentService.getCorpPayments(pageable);
 
         DataTablesOutput<BillPaymentDTO> out = new DataTablesOutput<BillPaymentDTO>();
         out.setDraw(input.getDraw());
-        out.setData(transferRequests.getContent());
-        out.setRecordsFiltered(transferRequests.getTotalElements());
-        out.setRecordsTotal(transferRequests.getTotalElements());
+        out.setData(corpPaymentRequests.getContent());
+        out.setRecordsFiltered(corpPaymentRequests.getTotalElements());
+        out.setRecordsTotal(corpPaymentRequests.getTotalElements());
 
         return out;
     }

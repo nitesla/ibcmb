@@ -18,8 +18,9 @@
             <div class="">
                 <div class="form-spacin col-md-7 col-sm-7 no-pad-right">
 
-                    <form id="local" method="post" th:action="@{/corporate/payment/summary}"
+                    <form id="local" method="post" th:action="@{/corporate/payment/preview}"
                           th:object="${billPaymentDTO}">
+
 
 
                         <div class="form-group">
@@ -28,35 +29,60 @@
                             <!--<span class="alert no-bd-rad my-border bg-white" id="sourceCurrency">CCY</span>-->
 
                             <select name="source" class="form-control" id="source"
-                                    th:field="*{customerAccountNumber}" onchange="getBalance();getDestCurrency()">
+                                    th:field="*{customerAccountNumber}" onchange="getBalance();getDestCurrency();">
                                 <option th:each="s: ${accountList}" th:value="${s.accountNumber}" th:text="${s.accountNumber}" th:selected="${s.primaryFlag=='Y'}"></option>
+
+
                             </select>
                             <!--<p th:if="${#fields.hasErrors('customerAccountNumber')}" th:errors="*{customerAccountNumber}"-->
                             <!--class="errors"></p>-->
                         </div>
 
+
                         <div class="form-group">
                             <label>Category</label>
-                            <select class="form-control" th:field="*{categoryName}" id="categories" name="categories" onchange="fetchBillers()" required="required">
-                                <option value=""> Select Category </option>
-                                <option th:each="category : ${billerCategories}" th:value="${category.categoryName}" th:text="${category.categoryName}"></option>
-                            </select><span class='req-inner'></span>
-
+                                                        <select class="form-control" th:field="*{categoryName}" id="categories" name="categories" onchange="fetchBillers()" required="required">
+                                                            <option value=""> Select Category </option>
+                                                            <option th:each="category : ${billerCategories}" th:value="${category.categoryName}" th:text="${category.categoryName}"></option>
+                                                        </select><span class='req-inner'></span>
                         </div>
+
+<!--                        <div class="form-group">-->
+<!--                            <label>Category</label>-->
+<!--                            <input type="text" class="form-control" th:field="*{categoryName}"-->
+<!--                                   required="required" readonly/>-->
+<!--                        </div>-->
+
+                        <div class="form-group">
+                            <input type="hidden" class="form-control" th:field="*{paymentCode}"
+                                   required="required" readonly/>
+                        </div>
+
+<!--                        <div class="form-group">-->
+<!--                            <label>Biller</label>-->
+<!--                            <select  class="form-control" th:field="*{billerId}" id="billerId" name="billerId" onchange="fetchPaymentItems()" required="required" >-->
+<!--                            </select><span class='req-inner'></span>-->
+<!--                            &lt;!&ndash;                            <input type="hidden" id="referenceName"/>&ndash;&gt;-->
+<!--                        </div>-->
 
                         <div class="form-group">
                             <label>Biller</label>
                             <select  class="form-control" th:field="*{billerId}" id="billerId" name="billerId" onchange="fetchPaymentItems()" required="required" >
                             </select><span class='req-inner'></span>
-                            <!--                            <input type="hidden" id="referenceName"/>-->
                         </div>
 
 
+<!--                        <div class="form-group">-->
+<!--                            <label>Payment Item</label>-->
+<!--                            <select class="form-control" th:field="*{paymentItemId}" id="paymentItemId" name="paymentItemId" onchange="fetchPaymentItemDetails()" required="required">-->
+<!--                            </select><span class='req-inner'></span>-->
+
+<!--                        </div>-->
+
                         <div class="form-group">
                             <label>Payment Item</label>
-                            <select class="form-control" th:field="*{paymentItemId}" id="paymentItemId" onchange="fetchPaymentItemDetails()" required="required">
+                            <select class="form-control" th:field="*{paymentItemId}" id="paymentItemId" name="paymentItemId" onchange="fetchPaymentItemDetails()" required="required">
                             </select><span class='req-inner'></span>
-
                         </div>
 
 
@@ -76,27 +102,30 @@
                         <div class="form-group">
                             <label >Phone Number</label>
                             <input type="text" class="form-control" th:field="*{phoneNumber}"
-                                   required="required"/>
+                                   required="required" readonly/>
                         </div>
                         <div class="form-group">
                             <label >Email Address</label>
                             <input type="text" class="form-control" th:field="*{emailAddress}"
-                                   required="required"/>
+                                   required="required" readonly/>
                         </div>
 
-                        <button  class="btn btn-link required-step" >Next</button>
+                        <!--                        <div class="form-group" id="check">-->
+                        <!--                            <label style="font-weight: bold; color: black;margin-left:10px !important">-->
+                        <!--                                <input  type="checkbox" id="add" name="add"/><span class='addNew'>Save Payment</span>-->
+                        <!--                            </label>-->
+                        <!--                        </div>-->
+
+                        <button id="localsave" class="btn btn-link required-step" >Next</button>
+                        <button type="button" class="btn btn-link less-required my-buttons" onclick="cancel();">Make New Payment</button>
                     </form>
 
                 </div>
 
                 <div class="col-xs-12 col-sm-5  wel ">
-                    <!--<p class="related" style="padding-top: 5%">Related Information</p>-->
                     <div  class="related-box">
                         <h3 class="related-bar">Related Information</h3>
-
-                        <!--<input type="availBal" name="availBal"/>-->
                         <p class="related-info coronation-blue" id="availBal"><b></b></p>
-                        <!--<p  class="related-info coronation-blue" id="limit"><b></b></p>-->
 
                     </div>
                 </div>
@@ -116,36 +145,14 @@
     <script th:inline="javascript">
     /*<![CDATA[*/
     $(document).ready(function () {
-
         getBalance();
         fetchBillers();
         fetchPaymentItems();
-        //
-        // var category = $("#categories").val();
-        // fetchBillers(category)
-
-        // $("#categories").change(function () {
-        //
-        //     var category = $("#categories").val();
-        //     fetchBillers(category)
-        //
-        // });
-
-
-        // $("#billerId").change(function () {
-        //
-        //     var biller = $("#billerId").val();
-        //     fetchPaymentItems(biller)
-        //
-        // });
-
-        // $("#paymentItemId").change(function () {
-        //
-        //     var paymentItem = $("#paymentItemId").val();
-        //     fetchPaymentItemDetails(paymentItem)
-        //
-        // });
     });
+
+    function cancel(){
+        window.location.href="/corporate/payment/new";
+    }
 
 
     function getBalance(){
@@ -174,7 +181,6 @@
         })
     }
 
-
     function fetchBillers(){
 
         var category = $("#categories").val();
@@ -190,10 +196,6 @@
             success: function (biller , status, xhr) {
 
 
-
-
-                console.log(JSON.stringify(biller));
-                console.log(biller.length);
                 if(biller.length==0){
 
                 }
@@ -209,20 +211,19 @@
                 //     console.log("Biller --" +biller[i].billerName)
                 // }
 
-                biller.forEach(b => $('#billerId').append("<option value='"+b.billerId+"'>"+b.billerName+"</option>"));
 
-                // for(var i=0;i<=biller.length;i++){
-                //     console.log("Biller is "+biller[i].billerName)
+                for(var i=0;i<=biller.length;i++){
+                    console.log("Biller is "+biller[i].billerName)
 
-                    // if(biller[i].billerName === undefined){
-                    //     break;
-                    // }
-                    //
-                    // var biller =  "<option value='"+biller[i].billerId+"'>"+biller[i].billerName+"</option>"
-                    // console.log("Var Biller is" +biller)
+                    if(biller[i].billerName === undefined){
+                        break;
+                    }
 
+                    var biller =  "<option value='"+biller[i].billerId+"'>"+biller[i].billerName+"</option>"
+                    console.log("Var Biller is" +biller)
 
-                // }
+                    $('#billerId').append(biller)
+                }
             },
             error: function (xhr, status, err) {
                 console.log("error occurred fetching Billers");
@@ -330,32 +331,6 @@
                 console.log("status: "+xhr.status);
 
 //                $(".loader").hide();
-                return;
-
-            }
-        });
-
-    }
-
-
-    function UpdateOwnerReferenceName(billerId){
-
-
-        $.ajax({
-            url: "/corporate/payment/"+ billerId+"/referencename",
-            success: function (referenceName, status, xhr) {
-
-                console.log("Owner reference name is "+referenceName);
-
-                $("#ownerReferenceNumber").text(referenceName);
-                $("#customerIdentifier").prop('placeholder','Enter your '+referenceName);
-                $("#ownerReferenceNumberDiv").show();
-
-            },
-            error: function (xhr, status, err) {
-                console.log("error occurred get owner reference name");
-                console.log("response: "+xhr.responseText);
-                console.log("status: "+xhr.status);
                 return;
 
             }

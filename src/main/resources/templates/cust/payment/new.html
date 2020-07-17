@@ -18,9 +18,8 @@
             <div class="">
                 <div class="form-spacin col-md-7 col-sm-7 no-pad-right">
 
-                    <form id="local" method="post" th:action="@{/retail/payment/new}"
-                          th:object="${paymentDTO}">
-
+                    <form id="local" method="post" th:action="@{/retail/payment/summary}"
+                          th:object="${billPaymentDTO}">
 
                         <div class="form-group">
                             <label>Debit Account</label>
@@ -39,7 +38,7 @@
 
                         <div class="form-group">
                             <label>Category</label>
-                            <select class="form-control" id="categories" name="categories" onchange="fetchBillers()" required="required">
+                            <select class="form-control" th:field="*{categoryName}" id="categories" name="categories" onchange="fetchBillers()" required="required">
                                 <option value=""> Select Category </option>
                                 <option th:each="category : ${billerCategories}" th:value="${category.categoryName}" th:text="${category.categoryName}"></option>
                             </select><span class='req-inner'></span>
@@ -50,7 +49,6 @@
                             <label>Biller</label>
                             <select  class="form-control" th:field="*{billerId}" id="billerId" name="billerId" onchange="fetchPaymentItems()" required="required" >
                             </select><span class='req-inner'></span>
-<!--                            <input type="hidden" id="referenceName"/>-->
                         </div>
 
 
@@ -71,7 +69,7 @@
                         <div class="form-group">
                             <label >Price</label>
                             <input type="text" class="form-control" th:field="*{amount}"
-                                   required="required" readonly/>
+                                   required="required"/>
                         </div>
 
 
@@ -86,7 +84,13 @@
                                    required="required"/>
                         </div>
 
-                        <button  class="btn btn-link required-step" >Submit</button>
+<!--                        <div class="form-group" id="check">-->
+<!--                            <label style="font-weight: bold; color: black;margin-left:10px !important">-->
+<!--                                <input  type="checkbox" id="add" name="add"/><span class='addNew'>Save Payment</span>-->
+<!--                            </label>-->
+<!--                        </div>-->
+
+                        <button id="localsave" class="btn btn-link required-step" >Next</button>
                     </form>
 
                 </div>
@@ -203,7 +207,7 @@
 
                 console.log("Biller ---------->>>", biller)
 
-                for(var i=0;i<biller.length;i++){
+                for(var i=0;i<=biller.length;i++){
                     console.log("Biller is "+biller[i].billerName)
 
                     if(biller[i].billerName === undefined){
@@ -252,7 +256,7 @@ r
 
                 console.log("PaymentItem 1st ---------->>>", paymentItem)
 
-                for(var i=0;i<paymentItem.length;i++){
+                for(var i=0;i<=paymentItem.length;i++){
                     console.log("PaymentItem is "+paymentItem[i].paymentItemName)
 
                     if(paymentItem[i].paymentItemName === undefined){
@@ -325,32 +329,6 @@ r
         });
 
     }
-
-
-    // function UpdateOwnerReferenceName(billerId){
-    //
-    //
-    //     $.ajax({
-    //         url: "/retail/payment/"+ billerId+"/referencename",
-    //         success: function (referenceName, status, xhr) {
-    //
-    //             console.log("Owner reference name is "+referenceName);
-    //
-    //             $("#ownerReferenceNumber").text(referenceName);
-    //             $("#customerIdentifier").prop('placeholder','Enter your '+referenceName);
-    //             $("#ownerReferenceNumberDiv").show();
-    //
-    //         },
-    //         error: function (xhr, status, err) {
-    //             console.log("error occurred get owner reference name");
-    //             console.log("response: "+xhr.responseText);
-    //             console.log("status: "+xhr.status);
-    //             return;
-    //
-    //         }
-    //     });
-    //
-    // }
 
 
     /*]]>*/

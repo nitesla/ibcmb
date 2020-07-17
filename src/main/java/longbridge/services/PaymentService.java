@@ -1,6 +1,7 @@
 package longbridge.services;
 
 import longbridge.dtos.BillPaymentDTO;
+import longbridge.models.BillPayment;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -9,17 +10,17 @@ import org.springframework.data.domain.Pageable;
  */
 public interface PaymentService {
 
-
-
     String addBillPayment(BillPaymentDTO paymentDTO);
 
+    String addCorpBillPayment(BillPaymentDTO paymentDTO);
 
-    String updatePaymentStatus(String status);
-
-
-
+    BillPayment getBillPayment(Long Id);
 
     Page<BillPaymentDTO> getBillPayments(Pageable pageable);
 
+    Page<BillPaymentDTO> getBillPayments(String pattern, Pageable pageDetails);
+
     Page<BillPaymentDTO> getCorpPayments(Pageable pageable);
+
+    Page<BillPaymentDTO> getCorpPayments(String pattern, Pageable pageDetails);
 }

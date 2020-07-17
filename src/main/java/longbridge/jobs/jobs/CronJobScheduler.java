@@ -1,5 +1,5 @@
 
-package longbridge.jobs;
+package longbridge.jobs.jobs;
 
 import longbridge.config.SpringContext;
 import longbridge.services.CronJobService;
@@ -15,14 +15,14 @@ import org.springframework.stereotype.Service;
 public class CronJobScheduler {
     public static void startJobs() {
         JobKey OneTimeKey = new JobKey("OneTime", "ibtest");
-        JobDetail OneTimeJobs = JobBuilder.newJob(RunningJob.class)
+        JobDetail OneTimeJobs = JobBuilder.newJob(longbridge.jobs.RunningJob.class)
                 .withIdentity(OneTimeKey).build();
 
         JobKey FiveMinsKey = new JobKey("FiveMins", "bcons");
-        JobDetail FiveMinsJobs = JobBuilder.newJob(FiveMins.class)
+        JobDetail FiveMinsJobs = JobBuilder.newJob(longbridge.jobs.FiveMins.class)
                                 .withIdentity(FiveMinsKey).build();
         JobKey TwentyFourHoursKey = new JobKey("TwentyFourHours", "bcons");
-        JobDetail TwentyFourHoursJobs = JobBuilder.newJob(TwentyFourHours.class)
+        JobDetail TwentyFourHoursJobs = JobBuilder.newJob(longbridge.jobs.TwentyFourHours.class)
                 .withIdentity(TwentyFourHoursKey).build();
         /**
          * JOB Triggers
