@@ -1,6 +1,8 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head th:replace="corp_layout :: site-head">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{ret-layout}">
+
+<head>
 
     <link rel="stylesheet" type="text/css" href="css/jquery.dataTables.css"/>
     <link rel="stylesheet" type="text/css" href="css/select.bootstrap.css"/>
@@ -27,23 +29,24 @@
     }
 </style>
 
-<body>
-<header th:replace="corp_layout ::corp-header">
-</header>
 
-<section class="content-wrapper">
-    <div class="container">
-        <div class="row">
-            <div class="col-md-4 col-sm-4">
-                <h5 class="page_header"> Bulk Transfer Details</h5>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-12 content-bg">
+<body onload="javascript:var bread = [['Home', '/retail/dashboard'],['Bulk transfer','/retail/transfer/bulk'],['bul transfer','']];currentBar('bulk transfer');breadCrumb(bread)">
+
+
+<div layout:fragment="content">
+    <div class="col-md-5 col-sm-5 ">
+
+        <select class="form-control full-width coronation-form-control hide-content-only" id="view">
+            <option value="account">Overview</option>
+        </select>
+    </div>
+
+        <div class="col-xs-12 " >
+            <div class="no-pad-lef  no-mt no-bd  alert">
                 <form method="post" id="" class="form-horizontal">
                     <div class="row spacing">
                         <div>
-                            <p>Request Date: <span th:text="${bulkTransfer.requestDate}"></span></p>
+                            <p>Request Date: <span th:text="${bulkTransfer.tranDate}"></span></p>
 
                         </div>
 
@@ -52,7 +55,7 @@
                         <br/>
                         <div class="form-group col-md-6">
                             <label>Source account</label>
-                            <input type="text" class="form-control" th:field="*{bulkTransfer.debitAccount}" readonly/>
+                            <input type="text" class="form-control" th:field="*{bulkTransfer.customerAccountNumber}" readonly/>
                             </div>
 
 
@@ -88,24 +91,24 @@
                     </table>
 
                     <br/>
-                    <a class="btn btn-link" th:href="@{/corporate/transfer/bulk}">Back</a>
+                    <a class="btn btn-link" th:href="@{/retail/transfer/bulk}">Back</a>
                     </div>
                 </form>
             </div>
 
-
+        </div>
 
             <!--<div th:replace="corp_layout :: corp-sidebar" class="col-md-3 sidebar">-->
             <!--</div>-->
-        </div>
-    </div>
 
-</section>
+</div>
+<th:block layout:fragment="scripts">
+        <script th:src="@{~/bank/vendors/sweetalert/sweetalert.min.js}"></script>
+        <script th:src="@{~/bank/vendors/bootstrap-dialog/js/bootstrap-dialog.js}"></script>
+        <script th:src="@{~/bank/js/jquery.spring-friendly.min.js}"></script>
+        <script th:src="@{~/customer/js/raphael-min.js}"></script>
+        <script th:src="@{~/customer/js/morris.min.js}"></script>
 
-
-<!-- CONTENT-WRAPPER SECTION END-->
-<footer th:replace="corp_layout ::corp-footer">
-</footer>
 <script th:inline="javascript">
     //<![CDATA[
 
@@ -118,14 +121,14 @@
             "searching": false,
             "paging": true,
             "serverSide" : false,
-            "ajax": "/corporate/transfer/" +id+ "/allcreditrequests",
+            "ajax": "/retail/transfer/" +id+ "/allcreditrequests",
             "dom": 'T<"clear">frtlp',
             "columns": [
-                { "data": "serial" },
-                { "data": "refCode" },
+                { "data": "DT_RowId" },
+                { "data": "referenceNumber" },
                 { "data": "accountNumber" },
                 { "data": "sortCode" },
-                { "data": "preferredName" },
+                { "data": "accountName" },
                 { "data": "amount" },
                 { "data": "narration" },
                 { "data": "status" }
@@ -163,5 +166,6 @@
 
 
 </script>
+    </th:block>
 </body>
 </html>
