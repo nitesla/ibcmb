@@ -27,6 +27,8 @@ public interface MessageRepo extends CommonRepo<Message, Long> {
 
     List<Message> findByRecipientIgnoreCaseAndRecipientTypeAndTagOrderByIdDesc(String recipient, UserType recipientTye,String tag);
 
+    List<Message> findByRecipientIgnoreCaseAndRecipientTypeAndTagOrderByDateCreatedDesc(String recipient, UserType recipientTye,String tag);
+
 
     Page<Message> findByRecipientIgnoreCaseAndRecipientTypeOrderByIdDesc(String recipient, UserType recipientTye, Pageable pageable);
 

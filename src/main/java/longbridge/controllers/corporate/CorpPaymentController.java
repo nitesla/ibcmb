@@ -163,7 +163,6 @@ public class CorpPaymentController {
 
     @ResponseBody
     @RequestMapping(value = "/biller", method = {RequestMethod.GET, RequestMethod.POST})
-
     public List<Biller> getBillers(Biller biller){
         List<Biller> billerByCategory = billerService.getBillersByCategory(biller.getCategoryName());
         return billerByCategory;

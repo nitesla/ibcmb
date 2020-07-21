@@ -41,7 +41,7 @@
                         <div class="form-group" id="primary" style="display: none">
                             <label>Tenor</label>
                             <span class="req"></span>
-                            <select th:name="Primary-Market-Tenor" id="pTenor" class="form-control full-width">
+                            <select th:name="Primary-Market-Tenor" id="pTenor" class="form-control full-width" required>
                                 <option value=""> Select Tenor </option>
                                 <option th:each="p : ${primary}" th:value="${p.tenor +','+ p.value}"
                                         th:text="${p.tenor}+' '+days"></option>
@@ -105,7 +105,6 @@
                                 <option value="bankRate" >Use bank rate</option>
                             </select>
 
-
                             <input type="text" th:name="Supplied-Rate" id="supplyRate" step="0.01" required class="form-control" placeholder="Enter rate"/>
 
                             <input type="text" th:name="Bank-Rate" id="bankRate" style="display: none" required class="form-control"  readonly/>
@@ -153,7 +152,7 @@
 
         $("#marketType").on('change', function () {
             if ($("#marketType").val() === "PRIMARY") {
-                $("#sTenor").val("");
+                $("#sTenor").val("N/A");
                 $('#secondary').hide();
                 $('#sRateDiv').hide();
                 $('#primary').show();
@@ -176,8 +175,10 @@
         })
 
         $("#primary").on('change',function () {
+            $('#bankRate').hide();
             $('#bankRate').val($('#pTenor').val().split(',')[1]+'%');
             $('#pRateDiv').show();
+
 
 
         })
