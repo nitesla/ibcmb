@@ -1,6 +1,5 @@
 package longbridge.controllers.retail;
 
-import com.rabbitmq.client.AMQP;
 import longbridge.dtos.FinancialInstitutionDTO;
 import longbridge.dtos.LocalBeneficiaryDTO;
 import longbridge.dtos.TransferRequestDTO;

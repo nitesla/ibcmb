@@ -150,7 +150,7 @@ public class AdmRoleController {
             result.addError(new ObjectError("invalid", messageSource.getMessage("form.fields.required", null, locale)));
             return "adm/role/add";
         }
-        logger.info("Role {}", roleDTO.toString());
+        logger.info("Role {}", roleDTO);
         List<PermissionDTO> permissionList = new ArrayList<>();
 
         String[] permissions = request.getParameterValues("permissionsList");

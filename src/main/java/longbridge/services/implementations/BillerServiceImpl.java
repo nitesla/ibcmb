@@ -4,39 +4,27 @@ package longbridge.services.implementations;
 import longbridge.dtos.BillerDTO;
 import longbridge.dtos.PaymentItemDTO;
 import longbridge.models.Biller;
+import longbridge.models.PaymentItem;
 import longbridge.repositories.BillerRepo;
+import longbridge.repositories.PaymentItemRepo;
 import longbridge.services.BillerService;
 import longbridge.services.IntegrationService;
-import org.apache.commons.lang3.StringUtils;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
-
-import longbridge.dtos.CategoryDTO;
-import longbridge.exception.InternetBankingException;
-import longbridge.exception.VerificationInterruptedException;
-import longbridge.models.PaymentItem;
-import longbridge.repositories.PaymentItemRepo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
-
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-
 import java.util.ArrayList;
 import java.util.List;
-
-import org.springframework.transaction.annotation.Transactional;
-
 import java.util.Locale;
 import java.util.stream.Collectors;
 
 import static org.apache.commons.lang3.StringUtils.defaultString;
-import static org.apache.commons.lang3.StringUtils.difference;
 
 
 @Service

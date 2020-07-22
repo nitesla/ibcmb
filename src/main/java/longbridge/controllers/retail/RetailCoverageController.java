@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.Resource;
 import java.util.List;
+import java.util.Set;
 
 
 @Controller
@@ -22,22 +23,19 @@ import java.util.List;
 public class RetailCoverageController {
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    @Autowired
-    private AccountCoverageService coverageService;
 
     @Autowired
     MessageSource messageSource;
 
-    @Resource(name = "accountCoverage")
-    CoverageInfo sessionScopedBean;
 
+
+    @Resource(name = "sessionCoverage")
+    private Set<CoverageDetailsDTO> coverageDetails;
 
     @GetMapping(path = "/{retId}")
     @ResponseBody
-    public List<CoverageDetailsDTO> getEnabledCoverageForCorporate(@PathVariable Long retId){
-        coverageService.getAllEnabledCoverageDetailsForRetailUser(retId);
-        System.out.println(coverageService.getAllEnabledCoverageDetailsForRetailUser(retId));
-        return sessionScopedBean.getCoverage();
+    public Set<CoverageDetailsDTO> getCoverageForCorporate(@PathVariable Long  retId){
+          return coverageDetails;
     }
 
 

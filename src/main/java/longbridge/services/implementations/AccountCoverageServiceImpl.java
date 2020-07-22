@@ -69,6 +69,8 @@ public class AccountCoverageServiceImpl implements AccountCoverageAdministration
         Optional<AccountCoverage> firstByEntityIdAndCode = coverageRepo.findFirstByEntityIdAndCode(updateCoverageDTO.getId(), updateCoverageDTO.getCode());
         AccountCoverage accountCoverage = firstByEntityIdAndCode.orElse(createNew(updateCoverageDTO.getId()));
         accountCoverage.setEnabled(updateCoverageDTO.getEnabled());
+        accountCoverage.setCode(updateCoverageDTO.getCode());
+        accountCoverage.setEntityId(updateCoverageDTO.getId());
         coverageRepo.save(accountCoverage);
     }
 
@@ -90,15 +92,3 @@ public class AccountCoverageServiceImpl implements AccountCoverageAdministration
         return coverageRepo.findFirstByEntityIdAndCode(id, code).orElseThrow(EntityNotFoundException::new);
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-

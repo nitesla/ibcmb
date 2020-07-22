@@ -51,8 +51,87 @@
             </table>
         </div>
 
+        <div th:if="${not #lists.isEmpty(loans)}" class="no-pad-lef table-responsive bg-white alert" style="padding:0px !important">
+            <div class="x_title">
+                <ul class="nav navbar-left">
+                    <li >
+                        <div class="col-lg-4 ">
+                            <div class="title-action">
+                                <button class="btn btn-app btn-sm " style="margin-right: 20em !important;" th:id="mail" ><i class="fa fa-envelope"></i> Mail Details </button>
+                            </div>
+                        </div>
+                    </li>
+                    <li >
+                        <div class="col-lg-4 ">
+                            <div class="title-action">
+                                <form action="#" id="pdf" method="post"th:action="@{/corporate/loan/download/pdf}" th:object="${loanObject}">
+                                    <div th:each="loan, item:*{loanList} ">
+                                        <input type="hidden" th:field="*{loanList[__${item.index}__].accountId}" />
+                                        <input type="hidden" th:field="*{loanList[__${item.index}__].accountNumber}" />
+                                        <input type="hidden" th:field="*{loanList[__${item.index}__].startDate}" />
+                                        <input type="hidden" th:field="*{loanList[__${item.index}__].amount}" />
+                                        <input type="hidden" th:field="*{loanList[__${item.index}__].interestRate}" />
+                                        <input type="hidden" th:field="*{loanList[__${item.index}__].tenor}" />
+                                        <input type="hidden" th:field="*{loanList[__${item.index}__].maturityDate}" />
+                                    </div>
+                                    <button class="btn btn-app btn-sm " style="margin-right: 20em !important;" type="submit" ><i class="fa fa-file-pdf-o"></i> Download pdf</button>
+                                </form>
+                            </div>
+                        </div>
+                    </li>
+
+                    <li >
+                        <div class="col-lg-4 ">
+                            <div class="title-action">
+                                <form action="#" id="excel" method="post"th:action="@{/corporate/loan/download/excel}" th:object="${loanObject}">
+                                    <div th:each="loan, item:*{loanList} ">
+                                        <input type="hidden" th:field="*{loanList[__${item.index}__].accountId}" />
+                                        <input type="hidden" th:field="*{loanList[__${item.index}__].accountNumber}" />
+                                        <input type="hidden" th:field="*{loanList[__${item.index}__].startDate}" />
+                                        <input type="hidden" th:field="*{loanList[__${item.index}__].amount}" />
+                                        <input type="hidden" th:field="*{loanList[__${item.index}__].interestRate}" />
+                                        <input type="hidden" th:field="*{loanList[__${item.index}__].tenor}" />
+                                        <input type="hidden" th:field="*{loanList[__${item.index}__].maturityDate}" />
+                                    </div>
+                                    <button class="btn btn-app btn-sm loan_button "style="margin-right: 20em !important;" type="submit" ><i class="fa fa-file-excel-o"></i> Download Excel</button>
+                                </form>
+                            </div>
+                        </div>
+                    </li>
 
 
+                </ul>
+            </div>
+            <div class="x_content">
+            <table class="table table-hover no-pad-lef" id="loans" >
+                <caption style="font-size: large">Loan Accounts</caption>
+                <thead class='thead'>
+                <!--<tr>-->
+
+                <th class="text-cente">Account Number</th>
+                <th class="text-cente">Start Date</th>
+                <th class="text-cente">Amount</th>
+                <th class="text-cente">Rate (%)</th>
+                <th class="text-cente">Tenor (mths)</th>
+                <th class="text-cente">Maturity Date</th>
+                <!--</tr>-->
+                </thead>
+                <tbody>
+                <tr th:each="list : ${loans}" class="tt">
+                    <td th:align="cente" th:text="${list.accountNumber}"></td>
+                    <td th:align="cente" th:text="${list.startDate}"></td>
+                    <td th:align="cente" th:text="${list.amount}" class="bal"></td>
+                    <td th:align="cente" th:text="${list.interestRate}" ></td>
+                    <td th:align="cente" th:text="${list.tenor}"></td>
+                    <td th:align="cente" th:text="${list.maturityDate}" ></td>
+
+                </tr>
+                </tbody>
+            </table>
+
+        </div>
+
+        </div>
         <div id="coverage-div">
 
 
@@ -66,7 +145,10 @@
 
 <th:block layout:fragment="scripts">
 
-    <script>
+    <link rel="stylesheet" type="text/css" th:href="@{~/bank/vendors/datatables.net/datatables.net-buttons/css/buttons.dataTables.min.css}"/>
+
+
+       <script>
 
         $(document).ready(function () {
 //            $('.tt').each(function () {
@@ -106,6 +188,36 @@
             }
 
         }
+    </script>
+    <script th:inline="javascript">
+        $("#mail" ).click(function() {
+            var loan = [[${loans}]];
+            var objectDataString = JSON.stringify(loan);
+            console.log(objectDataString)
+            var url ="/corporate/loan/email";
+            $.ajax({
+                type : "POST",
+                contentType : "application/json",
+                url : url,
+                data: objectDataString,
+                dataType : 'json',
+                timeout : 100000,
+                success : function(e) {
+                console.log("Success");
+                },
+                error : function() {
+                    console.log("ERROR");
+                },
+                done : function() {
+                    console.log("DONE");
+                }
+            });
+        })
+
+
+        $('#loan').DataTable( {
+
+        } );
     </script>
     <script th:inline="javascript">
         /*<![CDATA[*/

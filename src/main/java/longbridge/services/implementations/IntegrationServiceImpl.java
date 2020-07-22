@@ -7,7 +7,6 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import longbridge.api.*;
 import longbridge.billerresponse.BillerResponse;
 import longbridge.billerresponse.PaymentItemResponse;
-import longbridge.config.CoverageInfo;
 import longbridge.dtos.*;
 import longbridge.exception.CoverageRestTemplateResponseException;
 import longbridge.exception.InternetBankingException;
@@ -16,14 +15,12 @@ import longbridge.exception.TransferErrorService;
 import longbridge.models.*;
 import longbridge.repositories.*;
 import longbridge.security.userdetails.CustomUserPrincipal;
-import longbridge.services.AccountCoverageService;
 import longbridge.services.ConfigurationService;
 import longbridge.services.IntegrationService;
 import longbridge.services.MailService;
 import longbridge.utils.*;
 import longbridge.utils.statement.AccountStatement;
 import longbridge.utils.statement.TransactionHistory;
-import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,11 +33,16 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponents;
+import org.springframework.web.util.UriComponentsBuilder;
+import org.springframework.web.util.UriTemplate;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
-import javax.annotation.Resource;
+import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
+import java.net.URI;
+import java.net.URLDecoder;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
@@ -1082,7 +1084,7 @@ public class IntegrationServiceImpl implements IntegrationService {
 			request.put("LastAuthorizer",userName);
 			request.put("InitiatedBy",corpPaymentRequest.getCustomDutyPayment().getInitiatedBy());
 			request.put("PaymentRef",corpPaymentRequest.getReferenceNumber());
-			request.put("CustomerAccountNo",accessBeneficiaryAcct);
+			request.put("CustomerAccountNo",corpPaymentRequest.getCustomerAccountNumber());
 			logger.debug("Fetching data from coronation rest service via the url: {}", CustomDutyUrl);
 			logger.debug("Fetching data from coronation rest service via the url: {}", CustomDutyUrl+"/customduty/payassessment");
 			logger.debug("paymentNotificationRequest: {}", request);
@@ -1090,7 +1092,7 @@ public class IntegrationServiceImpl implements IntegrationService {
 			logger.debug("payment notification Response: {}", response);
 			logger.info("payment ref {}",corpPaymentRequest.getReferenceNumber());
 			logger.info("InitiatedBy {}",corpPaymentRequest.getCustomDutyPayment().getInitiatedBy());
-			logger.info("CustomerAccountNo {}",accessBeneficiaryAcct);
+			logger.info("CustomerAccountNo {}",corpPaymentRequest.getCustomerAccountNumber());
 			logger.info("LastAuthorizer {}",userName);
 
 			logger.debug("payment notification params: {}", appId + corpPaymentRequest.getReferenceNumber() + corpPaymentRequest.getAmount().setScale(2,BigDecimal.ROUND_HALF_UP) + secretKey);
@@ -1332,7 +1334,11 @@ public class IntegrationServiceImpl implements IntegrationService {
 			if (setting != null && setting.isEnabled()) {
 				String recipient = setting.getValue();
 				String subject = messageSource.getMessage("international.transfer.subject",null,locale);
-				mailService.send(recipient, subject, mail, true);
+
+				/* Pls uncomment this when you're deploying
+				* and check the application cnfiguration if mail config has been set
+				*/
+//				mailService.send(recipient, subject, mail, true);
 				transRequest.setReferenceNumber(NumberUtils.generateReferenceNumber(15));
 				transRequest.setStatus("000");
 				transRequest.setStatusDescription(messageSource.getMessage("transfer.successful",null,locale));
@@ -1420,15 +1426,14 @@ public class IntegrationServiceImpl implements IntegrationService {
 
 
 	@Override
-	public  CoverageDetailsDTO  getCoverageDetails(String coverageName,String customerId){
+	public  CoverageDetailsDTO  getCoverageDetails(String coverageName, Set<String> customerIds){
 		CoverageDetailsDTO coverageDetailsDTO = new CoverageDetailsDTO();
-		String uri = URI+"/{coverageName}/{customerId}";
-		Map<String,String> params = new HashMap<>();
+		String uri = URI+"/{coverageName}/{customerIds}";
+		Map<String,Object> params = new HashMap<>();
 		params.put("coverageName",coverageName.toLowerCase());
-		params.put("customerId",customerId);
-		ObjectMapper mapper= new ObjectMapper();
-//		JsonNode responseBody = mapper.createObjectNode();
-		try{
+		params.put("customerIds",customerIds.stream().map(s->s.replaceAll("(\r\n|\r|\n)","")).map(Objects::toString).collect(Collectors.joining(",")));
+	    ObjectMapper mapper= new ObjectMapper();
+		try {
 			template.setErrorHandler(new CoverageRestTemplateResponseException());
 			ResponseEntity<JsonNode> response = template.getForEntity(uri, JsonNode.class,params);
 			JsonNode responseBody = response.getBody();
@@ -1438,10 +1443,12 @@ public class IntegrationServiceImpl implements IntegrationService {
 			else {
 				coverageDetailsDTO.setDetails(mapper.createObjectNode());
 			}
-			coverageDetailsDTO.setCustomerId(customerId);
+			coverageDetailsDTO.setCustomerIds(customerIds);
 			coverageDetailsDTO.setCoverageName(coverageName);
 
-			} catch (Exception e){
+			}
+
+		catch (Exception e){
 			logger.error("Error getting coverage details",e);
 		}
 		return coverageDetailsDTO;

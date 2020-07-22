@@ -44,11 +44,11 @@
                             <span class="alert no-bd-rad my-border bg-white" id="sourceCurrency">CCY</span>
 
                             <select name="source" class="form-control" id="source"
-                                    th:field="*{customerAccountNumber}" onchange="getBalance();getDestCurrency();">
-                                <option th:each="s: ${accountList}" th:value="${s.accountNumber}" th:text="${s.accountNumber}" th:selected="${s.primaryFlag=='Y'}"></option>
+                                    th:field="*{customerAccountNumber}" onchange="getBalance();getSourceCurrency();">
+                                <option th:each="s: ${accounts}" th:value="${s.accountNumber}" th:text="${s.accountNumber}" th:selected="${s.primaryFlag=='Y'}"></option>
 
 
-                            </select>
+                            </select><span class='req-inner'></span>
                             <p th:if="${#fields.hasErrors('customerAccountNumber')}" th:errors="*{customerAccountNumber}"
                                class="errors"></p>
                         </div>
@@ -62,12 +62,13 @@
 
                         <div class="form-group">
                             <label class="my-label">Amount</label>
-                            <span class="alert no-bd-rad my-border bg-white hide-content-only">NGN</span>
+                            <div>
+                                <span class="alert no-bd-rad my-border bg-white hide-content-only">NGN</span>
 
-                            <input type="number" name="amount" step="any" placeholder="Enter an amount"
-                                   th:field="*{amount}" class="form-control amount"/><span class='req-inner'></span>
-                            <!--<span class="alert no-bd-rad my-border bg-white hide-content-only">NGN</span>-->
-
+                                <input type="number" name="amount" min="1" step="any" placeholder="Enter an amount"
+                                   th:field="*{amount}" class="form-control"/><span class='req-inner'></span>
+                                <!--<span class="alert no-bd-rad my-border bg-white hide-content-only">NGN</span>-->
+                                </div>
                             <span style="color:red;" th:if="${#fields.hasErrors('amount')}" th:errors="*{amount}"
                                class="errors"></span>
                         </div>
@@ -148,7 +149,7 @@
         //        }
         $(document).ready(function(){
             getBalance();
-            getDestCurrency();
+            getSourceCurrency();
 
         })
 
@@ -206,6 +207,32 @@
             })
         }
 
+
+        function getSourceCurrency(){
+            var accountNumber = $('#source').val();
+            $.ajax({
+                url: "/corporate/transfer/"+accountNumber+"/currency",
+                type: 'GET',
+                async: false,
+                success:function(currency){
+                    cur = ''+String(currency);
+                    if(cur == "" ){
+                        document.getElementById("sourceCurrency").textContent="Could not get currency from server, please try again.";
+                        // $("#myspan").show();
+                    }else{
+//                    $('input[name=availBal]').val(bal);
+
+                        $('#sourceCurrency').text(cur);
+                        document.getElementById('sourceCurrency').style.visibility = 'visible';
+
+                    }
+                },
+                error: function (xhr, status, err) {
+
+                }
+
+            })
+        }
 
 
         function getDestCurrency(){

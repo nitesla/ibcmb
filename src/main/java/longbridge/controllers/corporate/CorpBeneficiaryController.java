@@ -1,7 +1,6 @@
 package longbridge.controllers.corporate;
 
 import longbridge.dtos.*;
-import longbridge.exception.DuplicateObjectException;
 import longbridge.exception.InternetBankingException;
 import longbridge.exception.InternetBankingSecurityException;
 import longbridge.models.*;
@@ -289,18 +288,29 @@ public class CorpBeneficiaryController {
 
     @GetMapping("/{beneficiaryId}/loc/delete")
 
-    public String deleteLocBeneficiary(@PathVariable Long beneficiaryId, Model model) {
-        corpLocalBeneficiaryService.deleteCorpLocalBeneficiary(beneficiaryId);
-        model.addAttribute("success", "Beneficiary deleted successfully");
-
+    public String deleteLocBeneficiary(@PathVariable Long beneficiaryId, Model model, RedirectAttributes redirectAttributes) {
+        try {
+        String message = corpLocalBeneficiaryService.deleteCorpLocalBeneficiary(beneficiaryId);
+        redirectAttributes.addFlashAttribute("message", message);
+        } catch (InternetBankingException e) {
+            logger.error("Beneficiary Error", e);
+            redirectAttributes.addFlashAttribute("failure", e.getMessage());
+        }
         return "redirect:/corporate/beneficiary";
     }
 
     @GetMapping("/{beneficiaryId}/int/delete")
 
-    public String deleteIncBeneficiary(@PathVariable Long beneficiaryId, Model model) {
-        corpInternationalBeneficiaryService.deleteCorpInternationalBeneficiary(beneficiaryId);
-        model.addAttribute("success", "Beneficiary deleted successfully");
+    public String deleteIncBeneficiary(@PathVariable Long beneficiaryId, Model model, RedirectAttributes redirectAttributes) {
+        try {
+        String message = corpInternationalBeneficiaryService.deleteCorpInternationalBeneficiary(beneficiaryId);
+
+            redirectAttributes.addFlashAttribute("message", message);
+        } catch (InternetBankingException e) {
+            logger.error("International Beneficiary Error", e);
+            redirectAttributes.addFlashAttribute("failure", e.getMessage());
+        }
+//        model.addAttribute("success", "Beneficiary deleted successfully");
         return "redirect:/corporate/beneficiary";
     }
 

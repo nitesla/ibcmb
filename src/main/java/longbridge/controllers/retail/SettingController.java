@@ -80,9 +80,6 @@ public class SettingController {
     @Autowired
     ServiceReqConfigService serviceReqConfigService;
 
-    @Resource(name = "accountCoverage")
-    CoverageInfo sessionScopedBean;
-
     private final Locale locale = LocaleContextHolder.getLocale();
 
 
@@ -99,7 +96,7 @@ public class SettingController {
         List<AccountDTO> accountList = accountService.getAccountsAndBalances(retailUser.getCustomerId());
         logger.debug("Retrieved {} account balance(s) for user {}", accountList.size(), retailUser.getUserName());
         SettingDTO dto = configService.getSettingByName("TRANSACTIONAL_ACCOUNTS");
-       /* if (dto != null && dto.isEnabled()) {
+        /* if (dto != null && dto.isEnabled()) {
             String[] list = StringUtils.split(dto.getValue(), ",");
             accountList = accountList
                     .stream()
@@ -122,10 +119,10 @@ public class SettingController {
                     .filter(Objects::nonNull)
                     .map(i -> {
 
-                                if ("LOAN".equalsIgnoreCase(i.getAccountType())) {
-                                    LoanDTO loan = integrationService.getLoanDetails(i.getAccountNumber());
-                                    loans.add(loan);
-                                }
+                        if ("LAA".equalsIgnoreCase(i.getAccountType())) {
+                            LoanDTO loan = integrationService.getLoanDetails(i.getAccountNumber());
+                            loans.add(loan);
+                        }
                                 return i;
                             }
                     ).filter(i -> ArrayUtils.contains(transactionalAccounts, i.getAccountType()))
@@ -146,7 +143,7 @@ public class SettingController {
         if (expired) {
             model.addAttribute("message", messageSource.getMessage("password.reset.notice", null, locale));
         }
-        sessionScopedBean.setCoverage(integrationService.getAllEnabledCoverageDetailsForRetailFromEndPoint(retId));
+
         logger.debug("Redirecting user {} to dashboard", retailUser.getUserName());
         return "cust/dashboard";
     }

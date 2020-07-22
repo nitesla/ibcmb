@@ -75,21 +75,17 @@ public class CorpSettingController {
     @Autowired
     private IntegrationService integrationService;
 
-    @Autowired
-    AccountCoverageService coverageService;
 
-    @Resource(name = "accountCoverage")
-    CoverageInfo sessionScopedBean;
+    private AccountCoverageService coverageService;
 
 
     @RequestMapping("/dashboard")
     public String getCorporateDashboard(Model model, Principal principal) {
         CorporateUser corporateUser = corporateUserService.getUserByName(principal.getName());
-        Long corpId = corporateUser.getCorporate().getId();
-
         if (corporateUser==null) {
             return "redirect:/login/corporate";
         }
+        Long corpId = corporateUser.getCorporate().getId();
 
         List<AccountDTO> accountList = accountService.getAccountsAndBalances(corporateUser.getCorporate().getAccounts());
 
@@ -119,7 +115,7 @@ public class CorpSettingController {
                     .filter(Objects::nonNull)
                     .map(i -> {
 
-                                if ("LOAN".equalsIgnoreCase(i.getAccountType())) {
+                                if ("CLA".equalsIgnoreCase(i.getAccountType())) {
                                     LoanDTO loan = integrationService.getLoanDetails(i.getAccountNumber());
                                     loans.add(loan);
                                 }
@@ -135,17 +131,17 @@ public class CorpSettingController {
                     })
                     .collect(Collectors.toList());
         }
-
+            LoanDetailsDTO loanDetailsDTO = new LoanDetailsDTO();
+            loanDetailsDTO.setLoanList(loans);
             model.addAttribute("loans", loans);
+            model.addAttribute("loanObject",loanDetailsDTO);
             model.addAttribute("accountList", accountList);
             model.addAttribute("corpId",corpId);
-
             boolean exp = passwordPolicyService.displayPasswordExpiryDate(corporateUser.getExpiryDate());
         logger.info("EXPIRY RESULT {} ", exp);
         if (exp){
             model.addAttribute("message", messageSource.getMessage("password.reset.notice", null, locale));
         }
-        sessionScopedBean.setCoverage(integrationService.getAllEnabledCoverageDetailsForCorporateFromEndPoint(corpId));
         return "corp/dashboard";
     }
 

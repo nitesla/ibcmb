@@ -267,7 +267,7 @@ public class CorpInternationalTransferController {
         }
 
 
-        return page + "pageiA";
+        return page + "pageii";
     }
 
 

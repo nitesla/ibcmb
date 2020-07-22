@@ -147,7 +147,9 @@ public class TransferController {
         try {
             List<String> accountList = new ArrayList<>();
             Iterable<Account> accounts = accountService.getAccountsForCredit(accountService.getAccountByAccountNumber(accountId).getCustomerId());
+            logger.info("Accountttt {}", accounts);
             SettingDTO dto = configService.getSettingByName("TRANSACTIONAL_ACCOUNTS");
+            logger.info("DTO {}", dto);
 
 
             StreamSupport.stream(accounts.spliterator(), true)
@@ -156,14 +158,14 @@ public class TransferController {
                     .filter(l -> l.getCurrencyCode().equalsIgnoreCase(accountService.getAccountByAccountNumber(accountId).getCurrencyCode()))
                     .filter(i -> {
                         if (dto != null && dto.isEnabled()) {
+                            logger.info("Here {}", dto.getValue());
                             String[] list = StringUtils.split(dto.getValue(), ",");
                             return ArrayUtils.contains(list, i.getSchemeType());
 
                         }
                         return false;
                     })
-                    .forEach(i -> accountList.add(i.getAccountNumber()))
-            ;
+                    .forEach(i -> accountList.add(i.getAccountNumber()));
 
 
             logger.info("ACCOUNT LIST {}", StreamSupport.stream(accounts.spliterator(), true).count());
@@ -172,9 +174,10 @@ public class TransferController {
 
         } catch (Exception e) {
             logger.error("transfer error {}", e);
+            return null;
         }
 
-        return null;
+//        return null;
     }
 
 

@@ -3,17 +3,12 @@ package longbridge.services;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import longbridge.api.*;
-import longbridge.dtos.CoverageDetailsDTO;
-import longbridge.dtos.BillerDTO;
-import longbridge.dtos.FixedDepositDTO;
-import longbridge.dtos.LoanDTO;
-import longbridge.dtos.PaymentItemDTO;
+import longbridge.dtos.*;
 import longbridge.exception.InternetBankingTransferException;
 import longbridge.models.*;
 import longbridge.utils.Response;
 import longbridge.utils.statement.AccountStatement;
 import longbridge.utils.statement.TransactionHistory;
-import org.json.simple.JSONObject;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.access.prepost.PreAuthorize;
 
@@ -21,6 +16,7 @@ import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 
 /**
@@ -166,7 +162,7 @@ public interface IntegrationService {
     LoanDTO getLoanDetails(String accountNumber);
     String updateTransferLimit(TransferSetLimit tsl);
     String updateCharge(TransferFeeAdjustment tfaDTO);
-    CoverageDetailsDTO getCoverageDetails(String coverageName, String customerNumber);
+    CoverageDetailsDTO getCoverageDetails(String coverageName, Set<String> customerIds);
 
     List<BillerDTO> getBillers();
 

@@ -575,7 +575,6 @@ public class CorpAccountController {
         exporter.setExporterInput(new SimpleExporterInput(print));
         ByteArrayOutputStream pdfReportStream = new ByteArrayOutputStream();
         exporter.setExporterOutput(new SimpleOutputStreamExporterOutput(pdfReportStream));
-
         exporter.exportReport();
         response.setHeader("Content-Length", String.valueOf(pdfReportStream.size()));
         response.setContentType("application/vnd.ms-excel");

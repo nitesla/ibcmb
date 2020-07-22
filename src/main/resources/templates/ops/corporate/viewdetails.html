@@ -1104,7 +1104,7 @@
                 "data" : function(d) {
                     d.csearch = $('#pattern').val();
                 },
-t
+
             },
             "dom": 'T<"clear">frtlp',
             "drawCallback": function( settings ) {
@@ -1123,13 +1123,13 @@ t
                 "targets" : 2,
                 "data" : "enabled",
                 "render" : function(data, type,full, meta) {
-
+                    console.log(full)
 
                     if (type === 'display') {
                         if (data == true) {
-                            return "<input type='checkbox' data-pk='"+full.id+"' data-version='"+full.version+"' data-code='"+full.code+"' data-description='"+full.description+"' data-type='"+full.type+"' data-switchery='true' class='js-switch' checked value='"+full.codeId+"' />";
+                            return "<input type='checkbox' data-pk='"+full.id+"' data-version='"+full.version+"' data-code='"+full.code+"' data-description='"+full.description+"' data-type='"+full.type+"' data-switchery='true' class='js-switch' checked value='"+full.code+"' />";
                         } else if (data == false) {
-                            return "<input type='checkbox' data-pk='"+full.id+"' data-version='"+full.version+"' data-code='"+full.code+"' data-description='"+full.description+"' data-type='"+full.type+"' data-switchery='true' class='js-switch' value='"+full.codeId+"' />";
+                            return "<input type='checkbox' data-pk='"+full.id+"' data-version='"+full.version+"' data-code='"+full.code+"' data-description='"+full.description+"' data-type='"+full.type+"' data-switchery='true' class='js-switch' value='"+full.code+"' />";
                         }
                     }
                     return data;
@@ -1140,9 +1140,10 @@ t
             });
     $(document).on("change","input[type=checkbox]", function(e) {
         var corpId = [[${corporate.getId()}]];
+        var userType = [[${userType}]]
         var updateUrl = "/ops/accountcoverage/corporate/update";
         var cb = $(e.currentTarget);
-        var codeId = cb.val();
+        var code = cb.val();
         var enabled;
         if(cb.is(':checked')){
             enabled = true;
@@ -1152,11 +1153,12 @@ t
 
         var objectData =
             {
-               codeId : codeId,
-               corpId:corpId,
+               id:{eid:corpId,type:userType},
+               code : code,
                enabled : enabled
             };
         var objectDataString = JSON.stringify(objectData);
+        console.log(objectDataString)
         $.ajax({
             type : "POST",
             contentType : "application/json",

@@ -6,6 +6,7 @@ import longbridge.exception.PasswordException;
 import longbridge.forms.ChangePassword;
 import longbridge.models.Account;
 import longbridge.models.RetailUser;
+import longbridge.models.UserType;
 import longbridge.security.FailedLoginService;
 import longbridge.services.AccountService;
 import longbridge.services.RetailUserService;
@@ -77,6 +78,7 @@ public class OpsRetailUserController {
         RetailUserDTO retailUser = retailUserService.getUser(userId);
         model.addAttribute("retailUser", retailUser);
         model.addAttribute("retId",userId);
+        model.addAttribute("userType", UserType.RETAIL);
         return "/ops/retail/viewdetails";
     }
 

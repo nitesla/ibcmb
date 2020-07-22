@@ -9,6 +9,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.Date;
+
 
 /**
  * Created by Wunmi on 27/03/2017.
@@ -31,7 +33,7 @@ public interface AdminUserRepo extends CommonRepo<AdminUser, Long>{
 	Integer countByRole(Role role);
 
     @Modifying(clearAutomatically = true)
-    @Query("update AdminUser u set u.status='I' where (TRUNC( current_timestamp ) - TRUNC( u.lastLoginDate ) ) > :noOfExpiryDays")
-    void updateUserStatus(@Param("noOfExpiryDays") double noOfExpiryDays);
+    @Query("update AdminUser u set u.status='I' where ((u.lastLoginDate is not null and u.lastLoginDate <  :cutOffDate) or (u.lastLoginDate is null and u.createdOnDate <  :cutOffDate) ) and u.status = 'A' ")
+    void updateUserStatus(@Param("cutOffDate") Date cutOffDate);
 
 }

@@ -378,6 +378,7 @@
     });
     $(document).on("change","input[type=checkbox]", function(e) {
         var retId = [[${retId}]];
+        var userType = [[${userType}]];
         var updateUrl = "/ops/accountcoverage/retail/update";
         var cb = $(e.currentTarget);
         var codeId = cb.val();
@@ -390,8 +391,8 @@
 
         var objectData =
             {
-                codeId : codeId,
-                retId:retId,
+                id:{eid:retId,type:userType},
+                code : code,
                 enabled : enabled
             };
         var objectDataString = JSON.stringify(objectData);

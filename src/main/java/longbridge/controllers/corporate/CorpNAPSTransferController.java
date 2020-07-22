@@ -69,7 +69,7 @@ import java.util.stream.StreamSupport;
 @RequestMapping("/corporate/transfer")
 public class CorpNAPSTransferController {
 
-    private static final String FILENAME = "Copy-of-NEFT-ECOB-ABC-old-mutual.xls";
+    private static final String FILENAME = "bulk_transfer_upload_file.xls";
     Logger logger = LoggerFactory.getLogger(this.getClass());
     @Autowired
     IntegrationService integrationService;
@@ -261,7 +261,9 @@ public class CorpNAPSTransferController {
     @GetMapping("/bulk/download")
     public String downloadFile(HttpServletResponse response, Model model, Locale locale) throws IOException {
         File file = null;
-        file = new File(SERVER_FILE_PATH);
+//        file = new File(SERVER_FILE_PATH);
+        ClassLoader classloader = Thread.currentThread().getContextClassLoader();
+        file = new File(classloader.getResource(FILENAME).getFile());
         if (!file.exists()) {
             model.addAttribute("failure", messageSource.getMessage("file.not.found", null, locale));
             return "/corp/transfer/bulktransfer/upload";
