@@ -135,7 +135,10 @@ public class SettingController {
                     })
                     .collect(Collectors.toList());
         }
+        LoanDetailsDTO loanDetailsDTO = new LoanDetailsDTO();
+        loanDetailsDTO.setLoanList(loans);
         model.addAttribute("loans", loans);
+        model.addAttribute("loanObject",loanDetailsDTO);
         model.addAttribute("accountList", accountList);
         model.addAttribute("retId",retId);
 

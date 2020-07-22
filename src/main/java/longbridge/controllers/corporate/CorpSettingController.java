@@ -115,7 +115,7 @@ public class CorpSettingController {
                     .filter(Objects::nonNull)
                     .map(i -> {
 
-                                if ("CLA".equalsIgnoreCase(i.getAccountType())) {
+                                if ("LAA".equalsIgnoreCase(i.getAccountType())) {
                                     LoanDTO loan = integrationService.getLoanDetails(i.getAccountNumber());
                                     loans.add(loan);
                                 }
