@@ -5,7 +5,6 @@ import longbridge.dtos.LoanDetailsDTO;
 import longbridge.exception.MessageException;
 import longbridge.services.IntegrationService;
 import longbridge.services.LoanDetailsService;
-import longbridge.utils.FileTypeUtil;
 import longbridge.utils.JasperReport.ReportHelper;
 import net.sf.jasperreports.engine.JasperExportManager;
 import net.sf.jasperreports.engine.JasperFillManager;
