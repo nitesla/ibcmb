@@ -16,7 +16,8 @@
         <div class="col-xs-11 no-pad-lef no-mt alert no-bd">
 
                     <!--<h6 class="sub_header coronation-blue text-bold" th:text="${requestConfig.requestName}"></h6>-->
-            <form method="post" th:action="@{/retail/requests}" th:object="${requestDTO}" id="reqForm">
+
+            <form method="post" th:action="@{/retail/requests}" th:object="${requestDTO}" id="reqForm" name="marketForm">
                 <input class="form-control" type="hidden" id="requestName" name="requestName"
                        th:value="${requestConfig.requestName}"/>
                 <input type="hidden" name="serviceReqConfigId" th:value="${requestConfig.id}"/>
@@ -38,8 +39,8 @@
                         <div class="form-group" id="primary" style="display: none">
                             <label>Tenor</label>
                             <span class="req"></span>
-                            <select th:name="Primary-Market-Tenor" id="pTenor" class="form-control full-width">
-                                <option value=""> Select Tenor </option>
+                            <select th:name="Primary-Market-Tenor" id="pTenor" class="form-control full-width" required>
+                                <option value="null"> Select Tenor </option>
                                 <option th:each="p : ${primary}" th:value="${p.tenor +','+ p.value}"
                                         th:text="${p.tenor}+' '+days"></option>
                             </select>
@@ -48,8 +49,8 @@
                         <div class="form-group" style="display: none" id="secondary">
                             <label>Tenor</label>
                             <span class="req"></span>
-                            <select th:name="Secondary-Market-Tenor" id="sTenor" class="form-control full-width">
-                                <option value=""> Select Tenor </option>
+                            <select th:name="Secondary-Market-Tenor" id="sTenor" class="form-control full-width" required>
+                                <option value="null"> Select Tenor </option>
                                 <option th:each="s : ${secondary}" th:value="${s.tenor+','+ s.value}"
                                         th:text="${s.tenor}+' '+days" ></option>
                             </select>
@@ -93,31 +94,28 @@
                     <div class="">
 
 
+                        <span class="req" style="display: none" id="reqRate"></span>
                         <div class="form-group" id="pRateDiv" style="display:none">
                             <label>Rate</label>
 
-                            <select class="form-control full-width" id="primaryRate">
+                            <select class="form-control full-width" id="primaryRate" required>
                                 <option value="supplyRate">Supply rate</option>
                                 <option value="bankRate" >Use bank rate</option>
                             </select>
 
 
-                            <input type="text" th:name="Supplied-Rate" id="supplyRate" step="0.01" required class="form-control" placeholder="Enter rate"/>
+                            <input type="text" th:name="Supplied-Rate" id="supplyRate" step="0.01"  class="form-control" placeholder="Enter rate"/>
 
                             <input type="text" th:name="Bank-Rate" id="bankRate" style="display: none" required class="form-control"  readonly/>
-
                         </div>
 
                         <div class="form-group" id="sRateDiv" style="display:none">
                             <label>Rate</label>
                             <input type="text" th:name="Secondary-Market-Rate" id="sRate"  required class="form-control"  readonly/>
-
                         </div>
+
                         <div class="">
-
                             <span style="display: none" class="related-info coronation-blue" id="notice" th:text="${notice}"><b></b></span>
-
-
                         </div>
 
 
@@ -136,42 +134,75 @@
 
         $('#reqForm').submit(function (event) {
             console.log("yes");
+
             var arrays = [];
             var form = $('#reqForm').serializeArray();
             form[3].value= $('#pTenor').val().split(',')[0];
+            console.log(form[3].value);
             form[4].value= $('#sTenor').val().split(',')[0];
+            console.log(form[4].value);
             var formData = JSON.stringify(form);
             $('#requestName').val(formData);
             $('#submitform').submit();
 
+
         });
 
+        // $("#marketType").on('change', function(){
+        //     if($("#marketType").val()==="PRIMARY"){
+        //         $("#market").append(
+        //         '<label>Tenor</label>'+
+        //             '<span class="req"></span>'+
+        //                 '<select th:name="Primary-Market-Tenor" id="pTenor" class="form-control full-width" required>'+
+        //             '<option value=""> Select Tenor </option>'+
+        //             '<option th:each="p : ${primary}" th:value="Job" th:utext="${p.tenor}"></option>'+
+        //             // 'th:text="${p.tenor} '+days+'"></option> '+
+        //             // 'th:text="${p.tenor}+" "+days"></option>'+
+        //         '</select>'
+        //     )
+        //     }
+        //     else if($("#marketType").val()==="SECONDARY"){
+        //         $("#market").append(
+        //             '<label>Tenor</label>'+
+        //             '<span class="req"></span>'+
+        //             '<select th:name="Primary-Market-Tenor" id="pTenor" class="form-control full-width" required>'+
+        //             '<option value=""> Secondary Tenor </option>'+
+        //             // '<option th:each="p : ${primary}" th:value="${p.tenor +','+ p.value}"'+
+        //             // 'th:text="${p.tenor} '+days+'"></option> '+
+        //             '</select>'
+        //         )
+        //     }
+        // })
 
         $("#marketType").on('change', function () {
             if ($("#marketType").val() === "PRIMARY") {
                 $('#secondary').hide();
+                $("#sTenor").val("");
                 $('#sRateDiv').hide();
                 $('#primary').show();
                 // $('#rate').val($('#pTenor').val().split(',')[1]);
             } else {
                 $("#primary").hide();
+                $("#pTenor").val("");
                 $('#secondary').show();
                 $('#pRateDiv').hide();
-                $('#supplyRate').val("Enter Rate");
+                $('#supplyRate').val("");
                 $('#bankRate').val("N/A");
-
 
             }
         });
 
+
         $("#secondary").on('change',function () {
             $('#sRate').val($('#sTenor').val().split(',')[1]+'%');
             $('#sRateDiv').show();
+            $('#reqRate').show();
         })
 
         $("#primary").on('change',function () {
             $('#bankRate').val($('#pTenor').val().split(',')[1]+'%');
             $('#pRateDiv').show();
+            $('#reqRate').show();
 
 
         })
@@ -231,6 +262,8 @@
                 });
             }
         }
+
+
 
 
 

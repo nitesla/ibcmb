@@ -97,6 +97,7 @@
                     <div class="">
 
 
+                        <span class="req" style="display: none" id="reqRate"></span>
                         <div class="form-group" id="pRateDiv" style="display:none">
                             <label>Rate</label>
 
@@ -172,12 +173,14 @@
         $("#secondary").on('change',function () {
             $('#sRate').val($('#sTenor').val().split(',')[1]+'%');
             $('#sRateDiv').show();
+            $('#reqRate').show();
         })
 
         $("#primary").on('change',function () {
             $('#bankRate').hide();
             $('#bankRate').val($('#pTenor').val().split(',')[1]+'%');
             $('#pRateDiv').show();
+            $('#reqRate').show();
 
 
 

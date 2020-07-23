@@ -81,7 +81,7 @@ public class CorpInterBankTransferController {
 
 
 
-    @PostMapping(value = "/index")
+    @RequestMapping(value = "/index", method = {RequestMethod.POST, RequestMethod.GET})
     public String startTransfer(HttpServletRequest request, Model model, Principal principal) {
 
         if(principal == null){
@@ -186,9 +186,8 @@ public class CorpInterBankTransferController {
     @PostMapping("/summary")
     public String transferSummary(@ModelAttribute("corpTransferRequest") @Valid CorpTransferRequestDTO corpTransferRequestDTO, BindingResult result, Model model, HttpServletRequest request) throws Exception {
         String transferType = (String) request.getSession().getAttribute("NIP");
-        System.out.println("TRANSFERTYPE ========== " + transferType);
 
-
+        String benName = (String) request.getSession().getAttribute("benName");
         String userAmountLimit = transferUtils.getLimitForAuthorization(corpTransferRequestDTO.getCustomerAccountNumber(), transferType);
         BigDecimal amountLimit = new BigDecimal(userAmountLimit);
         BigDecimal userAmount = corpTransferRequestDTO.getAmount();
@@ -197,11 +196,13 @@ public class CorpInterBankTransferController {
         if (b > a){
             String errorMessage = "You can not transfer more than account limit";
             model.addAttribute("errorMessage", errorMessage);
+            model.addAttribute("corpTransferRequest", corpTransferRequestDTO);
+            model.addAttribute("benName", benName);
             return page + "pageii";
         }
 
         model.addAttribute("corpTransferRequest", corpTransferRequestDTO);
-        String benName = (String) request.getSession().getAttribute("benName");
+
         String charge = "NAN";
 
         model.addAttribute("benName", benName);
