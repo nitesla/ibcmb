@@ -32,7 +32,7 @@
 
                                                         <span class="alert no-bd-rad my-border bg-white hide-content-only" id="sourceCurrency">CCY</span>
                                                         <select name="source" class="form-control" id="source"
-                                                                th:field="*{customerAccountNumber}" onchange="getBalance();getSourceCurrency()" >
+                                                                th:field="*{customerAccountNumber}" onchange="getBalance();getSourceCurrency();" >
                                                             <option th:each="s: ${accounts}" th:value="${s.accountNumber}" th:text="${s.accountNumber}" th:selected="${s.primaryFlag=='Y'}"></option>
                                                         </select><span class='req-inner'></span>
                                                     </div>
@@ -45,9 +45,9 @@
                                                     <div>
                                                     <span class="alert no-bd-rad my-border bg-white hide-content-only" id="destCurrency">NGN</span>
                                                     <select name="beneficiaryAccountNumber" class="form-control" id="destination"
-                                                            th:field="*{beneficiaryAccountNumber}"  required="required">
-                                                        <!--onchange="getDestCurrency();"-->
-                                                        <!--<option th:if="${transferRequest.beneficiaryAccountNumber!=null}" th:value="*{beneficiaryAccountNumber}" th:text="*{beneficiaryAccountNumber}" th:selected="${true}"></option>-->
+                                                            th:field="*{beneficiaryAccountNumber}" onchange="getDestCurrency();" required="required">
+                                                        onchange="getDestCurrency();"
+                                                        <option th:if="${transferRequest.beneficiaryAccountNumber!=null}" th:value="*{beneficiaryAccountNumber}" th:text="*{beneficiaryAccountNumber}" th:selected="${true}"></option>
 
 
                                                     </select><span class='req-inner'></span>
@@ -166,7 +166,6 @@ function getBeneficiaryAccts() {
                         if(data[i]==beneficiaryAcc){
                             benAcc = data[i];
                         }
-
                     }
 
                     if(benAcc!="") {

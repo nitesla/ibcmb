@@ -106,7 +106,7 @@ public class AdmGreetingController  {
             return addGreetingPage;
 
         }
-        else if(greetingImage.getSize()>10000000){
+        else if(greetingImage.getSize()>(1000000000)){
             result.addError(new ObjectError("INVALID",messageSource.getMessage("form.fields.image.size",null,locale)));
             return addGreetingPage;
         }
@@ -118,11 +118,18 @@ public class AdmGreetingController  {
         }else {
 
             try {
+                logger.info("Here");
+
                 byte[] bytes = greetingImage.getBytes();
-                Path path = Paths.get(GREETING_IMAGE_FOLDER + greetingImage.getOriginalFilename());
-                String mimeType = Files.probeContentType(path);
-                if((mimeType.equals("image/png"))||(mimeType.equals("image/jpg"))){
-                    Files.write(path, bytes);
+//                    Path path = Paths.get(GREETING_IMAGE_FOLDER + greetingImage.getOriginalFilename());
+                String path = greetingImage.getOriginalFilename();
+                logger.info("Here {}", path);
+//                String mimeType = Files.probeContentType(path);
+                String mimeType = path.substring(path.lastIndexOf(".") + 1);
+
+                logger.info("here2 {}", mimeType);
+                if((mimeType.equalsIgnoreCase("png"))||(mimeType.equals("jpg"))) {
+//                    Files.write(path, bytes)
                     String addStatus = greetingService.addGreeting(greetingDTO);
                     redirectAttributes.addFlashAttribute("message", addStatus);
                     return "redirect:/admin/greetings/";

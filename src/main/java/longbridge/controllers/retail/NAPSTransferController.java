@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import longbridge.api.NEnquiryDetails;
 import longbridge.dtos.BulkTransferDTO;
 import longbridge.dtos.CreditRequestDTO;
+import longbridge.dtos.FinancialInstitutionDTO;
 import longbridge.dtos.SettingDTO;
 import longbridge.exception.InternetBankingSecurityException;
 import longbridge.models.*;
@@ -120,7 +121,27 @@ public class NAPSTransferController {
         *   Added by Bimpe Ayoola
      */
     //private static final String SERVER_FILE_PATH="C:\\ibanking\\files\\Copy-of-NEFT-ECOB-ABC-old-mutual.xls\\";
-    private static final String FILENAME = "Copy-of-NEFT-ECOB-ABC-old-mutual.xls";
+    private static final String FILENAME = "bulk_transfer_upload_file.xls";
+
+    @GetMapping("/bankcodes")
+    public String veiwSortCodes(Model model) {
+        return "/bankcodes";
+    }
+
+    @GetMapping(path = "/allbankcodes")
+    public
+    @ResponseBody
+    DataTablesOutput<FinancialInstitutionDTO> getAllFis(DataTablesInput input) {
+
+        Pageable pageable = DataTablesUtils.getPageable(input);
+        Page<FinancialInstitutionDTO> fis = financialInstitutionService.getFinancialInstitutionsWithSortCode(pageable);
+        DataTablesOutput<FinancialInstitutionDTO> out = new DataTablesOutput<FinancialInstitutionDTO>();
+        out.setDraw(input.getDraw());
+        out.setData(fis.getContent());
+        out.setRecordsFiltered(fis.getTotalElements());
+        out.setRecordsTotal(fis.getTotalElements());
+        return out;
+    }
 
     @GetMapping("/bulk/download")
     public void downloadFile(HttpServletResponse response) throws IOException {
@@ -173,42 +194,49 @@ public class NAPSTransferController {
 
         if (file.isEmpty()) {
             model.addAttribute("failure", messageSource.getMessage("file.require", null, locale));
-            return "/corp/transfer/bulktransfer/upload";
+            return "/cust/transfer/bulktransfer/upload";
         }
 
 
         // Get the file, perform some validations and save it in a session
         try {
             byte[] bytes = file.getBytes();
+            logger.info("here one");
             InputStream inputStream = file.getInputStream();
             String filename = file.getOriginalFilename();
-            String extension = filename.substring(filename.lastIndexOf(".") + 1, filename.length());
+            logger.info("here two {}", filename);
+            String extension = filename.substring(filename.lastIndexOf(".") + 1);
+            logger.info("here three {}", extension);
             // File type validation
             Workbook workbook;
             if (extension.equalsIgnoreCase("xls")) {
 
                 workbook = new HSSFWorkbook(inputStream);
+                logger.info("here two four");
 
             } else if (extension.equalsIgnoreCase("xlsx")) {
                 workbook = new XSSFWorkbook(inputStream);
+                logger.info("here two five");
             } else {
 
                 model.addAttribute("failure", messageSource.getMessage("file.format.failure", null, locale));
-                return "/corp/transfer/bulktransfer/upload";
+                return "/cust/transfer/bulktransfer/upload";
             }
 
             // File content validation using number of header cells
             Sheet datatypeSheet = workbook.getSheetAt(0);
+            logger.info("here two six", datatypeSheet);
             Iterator<Row> iterator = datatypeSheet.iterator();
             if (iterator.hasNext()) {
                 Row headerRow = iterator.next();
                 if (headerRow.getLastCellNum() > 5) {
                     model.addAttribute("failure", messageSource.getMessage("file.content.failure", null, locale));
-                    return "/corp/transfer/bulktransfer/upload";
+                    return "/cust/transfer/bulktransfer/upload";
                 }
             }
 
             httpSession.setAttribute("accountList", accountList);
+            logger.info("here two seven");
             httpSession.setAttribute("workbook", workbook);
             httpSession.setAttribute("fileExtension", extension);
             redirectAttributes.addFlashAttribute("message", messageSource.getMessage("file.upload.success", null, locale));
@@ -216,7 +244,7 @@ public class NAPSTransferController {
             logger.error("Error uploading file", e);
 
             redirectAttributes.addFlashAttribute("failure", messageSource.getMessage("file.upload.failure", null, locale));
-            return "redirect:/corporate/transfer/upload";
+            return "redirect:/retail/transfer/upload";
         }
 
         return "/cust/transfer/bulktransfer/add";
@@ -364,18 +392,18 @@ public class NAPSTransferController {
                         if (!result) {
                             model.addAttribute("accounts", accountList);
                             model.addAttribute("failure", messageSource.getMessage("token.auth.failure", null, locale));
-                            return "corp/transfer/bulktransfer/add";
+                            return "cust/transfer/bulktransfer/add";
                         }
                     } catch (InternetBankingSecurityException ibe) {
                         logger.error("Error authenticating token {} ", ibe);
                         model.addAttribute("accounts", accountList);
                         model.addAttribute("failure", messageSource.getMessage("token.auth.failure", null, locale));
-                        return "corp/transfer/bulktransfer/add";
+                        return "cust/transfer/bulktransfer/add";
                     }
                 } else {
                     model.addAttribute("accounts", accountList);
                     model.addAttribute("failure", "Token code is required");
-                    return "corp/transfer/bulktransfer/add";
+                    return "cust/transfer/bulktransfer/add";
                 }
             }
 

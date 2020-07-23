@@ -29,7 +29,7 @@
 
                                     <div class="form-group">
                                         <label >Account Number</label>
-                                        <input onblur="getAccountName()" type="text" class="form-control"  th:field="*{accountNumber}"
+                                        <input onblur="getAccountName()" type="number" class="form-control" name="accountNumber" th:field="*{accountNumber}"
                                             id="acct_num" placeholder="Account Number" required="required"/><span class='req-inner'></span>
                                         <p class="errors" th:if="${#fields.hasErrors('accountNumber')}" th:errors="*{accountNumber}">&times;</p>
                                         <p class="acctError" style="display:none;">invalid account number or Bank details</p>
@@ -48,11 +48,11 @@
                                         <input type="text" class="form-control" name="preferredName"
                                             placeholder="Beneficiary Alias" th:field="*{preferredName}"/>
                                     </div>
-                                    <div class="form-group" style="display: none" id="check">
-                                        <label style="font-weight: bold; color: black;margin-left:10px !important">
-                                            <input  type="checkbox" id="add" name="add"/><span class='addNew'>Add Beneficiary</span>
-                                        </label>
-                                    </div>
+<!--                                    <div class="form-group" style="display: none" id="check">-->
+<!--                                        <input type="checkbox" id="add" name="add"/>-->
+<!--                                        <label for='add' style="font-weight: bold; color: black;display:inline !important"> <span class="addNew">Add-->
+<!--                                Beneficiary</span></label>-->
+<!--                                    </div>-->
                                     <button id="localsave" style="display: none;" class="btn btn-link required-step" >Next</button>
                                     <!--<button id="neq" type="button" class="btn btn-link required-step" onclick="getAccountName();">Name Enquiry</button>-->
                                 </form>
