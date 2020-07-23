@@ -285,14 +285,6 @@ public class CorpTransferServiceImpl implements CorpTransferService {
     public CorpTransRequest persistTransfer(CorpTransferRequestDTO corpTransferRequestDTO) throws InternetBankingTransferException {
         CorpTransRequest transRequest = convertDTOToEntity(corpTransferRequestDTO);
         return corpTransferRequestRepo.save(transRequest);
-//        try {
-//
-////            result = convertEntityToDTO(corpTransferRequestRepo.save(transRequest));
-//
-//        } catch (Exception e) {
-//            logger.error("Exception occurred saving transfer request", e);
-//        }
-//        return transRequest;
     }
 
 
@@ -378,31 +370,7 @@ public class CorpTransferServiceImpl implements CorpTransferService {
         return corpTransferRequestRepo.countByCorporateAndStatus(corporate, StatusCode.PENDING.toString());
     }
 
-   /* public CorpTransferRequestDTO convertEntityToDTO(CorpTransRequest corpTransRequest) {
-        CorpTransferRequestDTO transferRequestDTO = new CorpTransferRequestDTO();
-        transferRequestDTO.setId(corpTransRequest.getId());
 
-        transferRequestDTO.setVersion(corpTransRequest.getVersion());
-        transferRequestDTO.setCustomerAccountNumber(corpTransRequest.getCustomerAccountNumber());
-        transferRequestDTO.setTransferType(corpTransRequest.getTransferType());
-        transferRequestDTO.setFinancialInstitution(corpTransRequest.getFinancialInstitution());
-        transferRequestDTO.setBeneficiaryAccountNumber(corpTransRequest.getBeneficiaryAccountNumber());
-        transferRequestDTO.setBeneficiaryAccountName(corpTransRequest.getBeneficiaryAccountName());
-        transferRequestDTO.setRemarks(corpTransRequest.getRemarks());
-        transferRequestDTO.setStatus(corpTransRequest.getStatus());
-        transferRequestDTO.setReferenceNumber(corpTransRequest.getReferenceNumber());
-        transferRequestDTO.setUserReferenceNumber(corpTransRequest.getUserReferenceNumber());
-        transferRequestDTO.setNarration(corpTransRequest.getNarration());
-        transferRequestDTO.setStatusDescription(corpTransRequest.getStatusDescription());
-        transferRequestDTO.setAmount(corpTransRequest.getAmount());
-        transferRequestDTO.setTranDate(corpTransRequest.getTranDate());
-        transferRequestDTO.setCorporateId(corpTransRequest.getCorporate().getId().toString());
-
-        if (corpTransRequest.getTransferAuth() != null) {
-            transferRequestDTO.setTransAuthId(corpTransRequest.getTransferAuth().getId().toString());
-        }
-        return transferRequestDTO;
-    }*/
 
     private CorpTransferRequestDTO convertEntityToDTO(CorpTransRequest corpTransRequest) {
         CorpTransferRequestDTO transferRequestDTO = new CorpTransferRequestDTO();
