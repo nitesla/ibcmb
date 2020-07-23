@@ -15,7 +15,6 @@ jacoco-0.7.9
 .project
 .settings
 .springBeans
-pom.xml
 
 ### IntelliJ IDEA ###
 .idea
@@ -37,3 +36,4 @@ application.log
 .DS_Store
 application-local.properties
 *.jpage
+pom.xml

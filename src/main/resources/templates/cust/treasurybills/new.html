@@ -107,7 +107,7 @@
                                 <option value="bankRate" >Use bank rate</option>
                             </select>
 
-
+                            <span id="error-suppliedRate"></span>
                             <input type="text" th:name="Supplied-Rate" id="supplyRate" step="0.01"  class="form-control" placeholder="Enter rate"/>
 
                             <input type="text" th:name="Bank-Rate" id="bankRate" style="display: none" required class="form-control"  readonly/>
@@ -164,6 +164,13 @@
                     return false;
                 }
 
+            }
+
+            if($("#primaryRate").val()==="supplyRate"){
+                if($("#supplyRate").val() === ""){
+                    document.getElementById('error-suppliedRate').innerHTML = " <span class='text-danger'> Please Enter Value for Rate </span>";
+                    return false;
+                }
             }
         }
 

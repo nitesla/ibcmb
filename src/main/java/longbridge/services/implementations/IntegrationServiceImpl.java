@@ -1,5 +1,6 @@
 package longbridge.services.implementations;
 
+
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import longbridge.api.*;
 import longbridge.billerresponse.BillerCategoryResponse;
@@ -11,10 +12,12 @@ import longbridge.exception.InternetBankingException;
 import longbridge.exception.InternetBankingTransferException;
 import longbridge.exception.TransferErrorService;
 import longbridge.models.*;
+import longbridge.repositories.AccountCoverageRepo;
 import longbridge.repositories.AccountRepo;
 import longbridge.repositories.AntiFraudRepo;
 import longbridge.repositories.CorporateRepo;
 import longbridge.security.userdetails.CustomUserPrincipal;
+import longbridge.services.AccountCoverageService;
 import longbridge.services.ConfigurationService;
 import longbridge.services.IntegrationService;
 import longbridge.services.MailService;
@@ -53,8 +56,6 @@ public class IntegrationServiceImpl implements IntegrationService {
 
 	@Value("${ebank.service.uri}")
 	private String URI;
-
-
 	@Value("${CMB.ALERT.URL}")
 	private String cmbAlert;
 
@@ -88,11 +89,13 @@ public class IntegrationServiceImpl implements IntegrationService {
 	private AccountRepo accountRepo;
 	private CorporateRepo corporateRepo;
 	private AntiFraudRepo antiFraudRepo;
+	private AccountCoverageService coverageService;
+	private AccountCoverageRepo coverageRepo;
 
 	@Autowired
 	public IntegrationServiceImpl(RestTemplate template, MailService mailService, TemplateEngine templateEngine,
 								  ConfigurationService configService, TransferErrorService errorService, MessageSource messageSource,
-								  AccountRepo accountRepo, CorporateRepo corporateRepo, AntiFraudRepo antiFraudRepo) {
+								  AccountRepo accountRepo, CorporateRepo corporateRepo, AntiFraudRepo antiFraudRepo,AccountCoverageService coverageService,AccountCoverageRepo coverageRepo) {
 		this.template = template;
 		this.mailService = mailService;
 		this.templateEngine = templateEngine;
@@ -102,7 +105,10 @@ public class IntegrationServiceImpl implements IntegrationService {
 		this.accountRepo = accountRepo;
 		this.corporateRepo = corporateRepo;
 		this.antiFraudRepo=antiFraudRepo;
-	}
+		this.coverageService =coverageService;
+		this.coverageRepo = coverageRepo;
+
+			}
 
 	@Override
 	public List<AccountInfo> fetchAccounts(String cifid) {
@@ -174,7 +180,6 @@ public class IntegrationServiceImpl implements IntegrationService {
 												 String numOfTxn) {
 		validate(accountNo);
 		AccountStatement statement = new AccountStatement();
-
 		try {
 
 
@@ -424,12 +429,10 @@ public class IntegrationServiceImpl implements IntegrationService {
 
 				TransferRequestNip params=new TransferRequestNip();
 				params.setOriginatorAccountNumber(transRequest.getCustomerAccountNumber());
-				logger.info("DEBUGGING 1 = " + transRequest.getCustomerAccountNumber());
 				params.setOriginatorAccountName( account.getAccountName());
 				params.setBeneficiaryAccountNumber(transRequest.getBeneficiaryAccountNumber());
 				params.setBeneficiaryAccountName(transRequest.getBeneficiaryAccountName());
 				params.setAmount(transRequest.getAmount().toString());
-				logger.info("DEBUGGING 2 = " + transRequest.getAmount().toString());
 				params.setDestinationInstitutionCode(transRequest.getFinancialInstitution().getInstitutionCode());
 				params.setTranType("NIP");
 				params.setRemarks(transRequest.getRemarks());
@@ -440,13 +443,9 @@ public class IntegrationServiceImpl implements IntegrationService {
 					logger.info("Initiating Inter Bank Transfer");
 					logger.debug("Transfer Params: {}", params.toString());
   					response = template.postForObject(uri, params, TransferRequestNip.class);
-  					logger.info("RESPONSE ===================== " + response);
 					transRequest.setReferenceNumber(response.getUniqueReferenceCode());
-					logger.info("REFERENCE NUMBER ======= " + response.getUniqueReferenceCode());
 					transRequest.setStatus(response.getResponseCode());
-					logger.info("RESPONSE CODE ================ " + response.getResponseCode());
 					transRequest.setStatusDescription(response.getResponseDescription());
-					logger.info("RESPONSE DESCRIPTION ============== " + response.getResponseDescription());
 					transRequest.setNarration(response.getNarration());
 					params.getAntiFraudData().setTranRequestId(transRequest.getId());
 
@@ -601,7 +600,6 @@ public class IntegrationServiceImpl implements IntegrationService {
 
 				logger.info("params for transfer {}", params.toString());
 				try {
-
 					response = template.postForObject(uri, params, TransferDetails.class);
 					logger.info("response for transfer {}", response.toString());
 					transRequest.setReferenceNumber(response.getUniqueReferenceCode());
@@ -937,6 +935,7 @@ public class IntegrationServiceImpl implements IntegrationService {
 	private TransRequest sendRTGSTransferRequest(TransRequest transRequest) {
 
 		try {
+
 			Account account = accountRepo.findFirstByAccountNumber(transRequest.getCustomerAccountNumber());
 
 			Context context = new Context();
@@ -973,14 +972,13 @@ public class IntegrationServiceImpl implements IntegrationService {
 
 			String mail = templateEngine.process("/cust/transfer/mailtemplate", scontext);
 			SettingDTO setting = configService.getSettingByName("BACK_OFFICE_EMAIL");
-			logger.info("SETTINGS == " + setting);
 			if ((setting.isEnabled())) {
 				recipient = setting.getValue();
 			}
 
-//			mailService.send(recipient, transRequest.getTransferType().toString(), mail);
+			mailService.send(recipient, transRequest.getTransferType().toString(), mail);
 			transRequest.setStatus("000");
-//			transRequest.setStatus("Approved or completed successfully");
+			transRequest.setStatus("Approved or completed successfully");
 		} catch (Exception e) {
 
 			logger.error("Exception occurred {}", e);
@@ -1080,7 +1078,7 @@ public class IntegrationServiceImpl implements IntegrationService {
 			request.put("LastAuthorizer",userName);
 			request.put("InitiatedBy",corpPaymentRequest.getCustomDutyPayment().getInitiatedBy());
 			request.put("PaymentRef",corpPaymentRequest.getReferenceNumber());
-			request.put("CustomerAccountNo",accessBeneficiaryAcct);
+			request.put("CustomerAccountNo",corpPaymentRequest.getCustomerAccountNumber());
 			logger.debug("Fetching data from coronation rest service via the url: {}", CustomDutyUrl);
 			logger.debug("Fetching data from coronation rest service via the url: {}", CustomDutyUrl+"/customduty/payassessment");
 			logger.debug("paymentNotificationRequest: {}", request);
@@ -1088,7 +1086,7 @@ public class IntegrationServiceImpl implements IntegrationService {
 			logger.debug("payment notification Response: {}", response);
 			logger.info("payment ref {}",corpPaymentRequest.getReferenceNumber());
 			logger.info("InitiatedBy {}",corpPaymentRequest.getCustomDutyPayment().getInitiatedBy());
-			logger.info("CustomerAccountNo {}",accessBeneficiaryAcct);
+			logger.info("CustomerAccountNo {}",corpPaymentRequest.getCustomerAccountNumber());
 			logger.info("LastAuthorizer {}",userName);
 
 			logger.debug("payment notification params: {}", appId + corpPaymentRequest.getReferenceNumber() + corpPaymentRequest.getAmount().setScale(2,BigDecimal.ROUND_HALF_UP) + secretKey);
@@ -1116,7 +1114,8 @@ public class IntegrationServiceImpl implements IntegrationService {
 			request.put("LastAuthorizer",userName);
 			request.put("InitiatedBy",corpPaymentRequest.getCustomDutyPayment().getInitiatedBy());
 			request.put("PaymentRef",corpPaymentRequest.getReferenceNumber());
-			request.put("CustomerAccountNo",accessBeneficiaryAcct);
+//			request.put("CustomerAccountNo",accessBeneficiaryAcct);
+			request.put("CustomerAccountNo",corpPaymentRequest.getCustomerAccountNumber());
 			logger.debug("Fetching data from coronation rest service via the url: {}", CustomDutyUrl);
 			logger.debug("Fetching data from coronation rest service via the url: {}", CustomDutyUrl+"/customduty/payassessment");
 			logger.debug("paymentNotificationRequest: {}", request);

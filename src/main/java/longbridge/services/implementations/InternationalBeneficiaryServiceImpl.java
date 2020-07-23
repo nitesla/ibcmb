@@ -91,6 +91,12 @@ public class InternationalBeneficiaryServiceImpl implements InternationalBenefic
     }
 
     @Override
+    public boolean doesBeneficiaryExist(RetailUser user, InternationalBeneficiaryDTO internationalBeneficiaryDTO) {
+        InternationalBeneficiary internationalBeneficiary = internationalBeneficiaryRepo.findByUser_IdAndAccountNumber(user.getId(), internationalBeneficiaryDTO.getAccountNumber());
+        return internationalBeneficiary!=null;
+    }
+
+    @Override
     public List<InternationalBeneficiaryDTO> convertEntitiesToDTOs(Iterable<InternationalBeneficiary> internationalBeneficiaries) {
         List<InternationalBeneficiaryDTO> internationalBeneficiaryDTOList = new ArrayList<>();
         for (InternationalBeneficiary internationalBeneficiary : internationalBeneficiaries) {

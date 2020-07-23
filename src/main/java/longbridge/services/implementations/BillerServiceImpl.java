@@ -247,7 +247,7 @@ public class BillerServiceImpl implements BillerService {
         });
             return billerCategoryRepo.saveAll(billerCategory);
     }
-    
+
 
     private void refreshCategories(){
         logger.info("UPDATING CATEGORIES!!");

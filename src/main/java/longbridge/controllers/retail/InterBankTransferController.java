@@ -129,6 +129,7 @@ public class InterBankTransferController {
         TransferRequestDTO requestDTO = new TransferRequestDTO();
         String type = request.getParameter("tranType");
 
+
         if ("NIP".equalsIgnoreCase(type)) {
 
             request.getSession().setAttribute("NIP", "NIP");

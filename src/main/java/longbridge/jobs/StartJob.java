@@ -1,7 +1,7 @@
 package longbridge.jobs;
 
 import longbridge.config.SpringContext;
-import longbridge.jobs.jobs.CronJobScheduler;
+import longbridge.jobs.CronJobScheduler;
 import longbridge.services.CronJobService;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.ApplicationContext;

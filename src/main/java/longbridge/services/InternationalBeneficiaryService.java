@@ -3,6 +3,7 @@ package longbridge.services;
 import longbridge.dtos.InternationalBeneficiaryDTO;
 import longbridge.exception.InternetBankingException;
 import longbridge.models.InternationalBeneficiary;
+import longbridge.models.RetailUser;
 import org.springframework.security.access.prepost.PreAuthorize;
 
 import java.util.List;
@@ -37,6 +38,9 @@ public interface InternationalBeneficiaryService {
      */
     @PreAuthorize("hasAuthority('GET_BENEFICIARIES')")
     Iterable<InternationalBeneficiary> getInternationalBeneficiaries();
+
+    boolean doesBeneficiaryExist(RetailUser user, InternationalBeneficiaryDTO internationalBeneficiaryDTO);
+
 
     List<InternationalBeneficiaryDTO> convertEntitiesToDTOs(Iterable<InternationalBeneficiary> internationalBeneficiaries);
 
