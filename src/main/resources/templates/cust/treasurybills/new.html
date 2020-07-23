@@ -17,7 +17,7 @@
 
                     <!--<h6 class="sub_header coronation-blue text-bold" th:text="${requestConfig.requestName}"></h6>-->
 
-            <form method="post" th:action="@{/retail/requests}" th:object="${requestDTO}" id="reqForm" name="marketForm">
+            <form method="post" th:action="@{/retail/requests}" th:object="${requestDTO}" id="reqForm" name="marketForm" onsubmit="return validateTreasureBill()">
                 <input class="form-control" type="hidden" id="requestName" name="requestName"
                        th:value="${requestConfig.requestName}"/>
                 <input type="hidden" name="serviceReqConfigId" th:value="${requestConfig.id}"/>
@@ -39,21 +39,25 @@
                         <div class="form-group" id="primary" style="display: none">
                             <label>Tenor</label>
                             <span class="req"></span>
-                            <select th:name="Primary-Market-Tenor" id="pTenor" class="form-control full-width" required>
-                                <option value="null"> Select Tenor </option>
+                            <select th:name="Primary-Market-Tenor" id="pTenor" class="form-control full-width">
+                                <option value=""> Select Tenor </option>
                                 <option th:each="p : ${primary}" th:value="${p.tenor +','+ p.value}"
                                         th:text="${p.tenor}+' '+days"></option>
                             </select>
+                            <br>
+                            <span id="error-ptenor"></span>
                         </div>
                         <!--th:onchange="'javascript:getRate('+${p.value}+');'"-->
                         <div class="form-group" style="display: none" id="secondary">
                             <label>Tenor</label>
                             <span class="req"></span>
-                            <select th:name="Secondary-Market-Tenor" id="sTenor" class="form-control full-width" required>
-                                <option value="null"> Select Tenor </option>
+                            <select th:name="Secondary-Market-Tenor" id="sTenor" class="form-control full-width">
+                                <option value=""> Select Tenor </option>
                                 <option th:each="s : ${secondary}" th:value="${s.tenor+','+ s.value}"
                                         th:text="${s.tenor}+' '+days" ></option>
                             </select>
+                            <br>
+                            <span id="error-stenor"></span>
                         </div>
 
 
@@ -148,45 +152,35 @@
 
         });
 
-        // $("#marketType").on('change', function(){
-        //     if($("#marketType").val()==="PRIMARY"){
-        //         $("#market").append(
-        //         '<label>Tenor</label>'+
-        //             '<span class="req"></span>'+
-        //                 '<select th:name="Primary-Market-Tenor" id="pTenor" class="form-control full-width" required>'+
-        //             '<option value=""> Select Tenor </option>'+
-        //             '<option th:each="p : ${primary}" th:value="Job" th:utext="${p.tenor}"></option>'+
-        //             // 'th:text="${p.tenor} '+days+'"></option> '+
-        //             // 'th:text="${p.tenor}+" "+days"></option>'+
-        //         '</select>'
-        //     )
-        //     }
-        //     else if($("#marketType").val()==="SECONDARY"){
-        //         $("#market").append(
-        //             '<label>Tenor</label>'+
-        //             '<span class="req"></span>'+
-        //             '<select th:name="Primary-Market-Tenor" id="pTenor" class="form-control full-width" required>'+
-        //             '<option value=""> Secondary Tenor </option>'+
-        //             // '<option th:each="p : ${primary}" th:value="${p.tenor +','+ p.value}"'+
-        //             // 'th:text="${p.tenor} '+days+'"></option> '+
-        //             '</select>'
-        //         )
-        //     }
-        // })
+        function validateTreasureBill(){
+            if ($("#marketType").val() === "PRIMARY") {
+                if ($("#pTenor").val() === "") {
+                    document.getElementById('error-ptenor').innerHTML = "<span class='text-danger'> Please Enter Value for Tenor</span>";
+                    return false;
+                }
+            } else {
+                if ($("#sTenor").val() === "") {
+                    document.getElementById('error-stenor').innerHTML = " <span class='text-danger'> Please Enter Value for Tenor </span>";
+                    return false;
+                }
+
+            }
+        }
+
 
         $("#marketType").on('change', function () {
             if ($("#marketType").val() === "PRIMARY") {
                 $('#secondary').hide();
-                $("#sTenor").val("");
                 $('#sRateDiv').hide();
                 $('#primary').show();
+                $("#sTenor").val("");
                 // $('#rate').val($('#pTenor').val().split(',')[1]);
             } else {
                 $("#primary").hide();
-                $("#pTenor").val("");
                 $('#secondary').show();
                 $('#pRateDiv').hide();
                 $('#supplyRate').val("");
+                $("#pTenor").val("");
                 $('#bankRate').val("N/A");
 
             }
