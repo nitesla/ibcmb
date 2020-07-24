@@ -1,5 +1,5 @@
 
-package longbridge.jobs;
+package longbridge.jobs.jobs;
 
 import longbridge.config.SpringContext;
 import longbridge.services.CronJobService;
