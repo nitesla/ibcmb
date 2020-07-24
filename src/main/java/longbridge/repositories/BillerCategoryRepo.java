@@ -1,7 +1,6 @@
 package longbridge.repositories;
 
 import longbridge.models.BillerCategory;
-import org.springframework.data.domain.Page;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -25,5 +24,7 @@ public interface BillerCategoryRepo  extends CommonRepo<BillerCategory, Long>{
     @Transactional
     @Modifying
     @Query("update BillerCategory item set item.enabled = :status where item.id = :id")
-    void enableOrDisableCategory(@Param("id") Long id, Boolean status);
+    void enableOrDisableCategory(@Param("id") Long id, @Param("status") Boolean status);
+
+    List<BillerCategory> findAllByEnabled(boolean enabled);
 }

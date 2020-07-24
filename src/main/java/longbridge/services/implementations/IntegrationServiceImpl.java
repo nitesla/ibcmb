@@ -5,6 +5,7 @@ import longbridge.api.*;
 import longbridge.billerresponse.BillerCategoryResponse;
 import longbridge.billerresponse.BillerResponse;
 import longbridge.billerresponse.PaymentItemResponse;
+import longbridge.billerresponse.PaymentResponse;
 import longbridge.dtos.*;
 import longbridge.exception.InternetBankingException;
 import longbridge.exception.InternetBankingTransferException;
@@ -1430,6 +1431,47 @@ public class IntegrationServiceImpl implements IntegrationService {
 			logger.info("Error processing request");
 		}
 			return billers;
+	}
+
+	@Override
+	public BillPayment billPayment(BillPayment billPayment, String terminalId){
+		PaymentResponse payment;
+		String uri = URI + "/api/quickteller/billpaymentadvice";
+		Map<String,String> params = new HashMap<>();
+		params.put("terminalId",terminalId);
+		params.put("amount", billPayment.getAmount().toPlainString());
+		params.put("appid",appId);
+		params.put("customerAccount", billPayment.getCustomerAccountNumber());
+		params.put("customerEmail", billPayment.getEmailAddress());
+		params.put("customerId",billPayment.getCustomerId());
+		params.put("customerMobile",billPayment.getPhoneNumber());
+		params.put("hash",EncryptionUtil.getSHA512(
+				appId + billPayment.getPaymentCode() + billPayment.getAmount().setScale(2,BigDecimal.ROUND_HALF_UP) + secretKey, null));
+		params.put("paymentCode",billPayment.getPaymentCode().toString());
+		params.put("requestReference",billPayment.getRequestReference());
+		try {
+		payment	 = template.postForObject(uri,params, PaymentResponse.class);
+			logger.info("response for payment {}", payment.toString());
+			billPayment.setStatus(payment.getResponseCodeGrouping());
+			billPayment.setResponseCodeGrouping(payment.getResponseCodeGrouping());
+			billPayment.setResponseDescription (payment.getResponseDescription());
+			billPayment.setResponseCode(payment.getResponseCode());
+			billPayment.setTransactionRef(payment.getTransactionRef());
+			billPayment.setApprovedAmount(payment.getApprovedAmount());
+			return billPayment;
+		} catch (HttpStatusCodeException e) {
+			logger.error("HTTP Error occurred", e);
+			billPayment.setStatus(e.getStatusCode().toString());
+			billPayment.setResponseDescription(e.getStatusCode().getReasonPhrase());
+			return billPayment;
+
+		} catch (Exception e) {
+			logger.error("Error processing Bill Payment", e);
+			billPayment.setStatus("Failed");
+			billPayment.setResponseDescription("Payment Failed");
+			return billPayment;
+		}
+
 	}
 
 

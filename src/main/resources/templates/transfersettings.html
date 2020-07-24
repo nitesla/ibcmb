@@ -441,7 +441,7 @@
                 var obankSetAcctLimit = $("#obanksetlimit").val();
                 // var obankFrequency = $("#obanksetfrequency").val();
 
-                if (validateAllFields(obankAcctclass == "" || obankSetAcctLimit == "" || obankAcctNum == "") == false){
+                if (validateFields(obankAcctclass,obankSetAcctLimit, obankAcctNum) == false){
 
 
                 $.ajax({
@@ -480,9 +480,50 @@
 
 
 
-            function validateAllFields(error){
-                if (error == true){
-                    showNotification("All fields required","danger")
+            function validateFields(obankAcctclass,obankSetAcctLimit, obankAcctNum){
+                var error = false;
+                if (obankAcctclass == ""){
+                    showNotification("Please supply Lower Limit","danger")
+                    error = true;
+                }else
+                if (obankSetAcctLimit == ""){
+                    showNotification("Please supply Upper Limit","danger")
+                    error = true;
+                }else
+                if (obankAcctNum == ""){
+                    showNotification("Please provide a description","danger")
+                    error = true;
+                }
+
+                return error;
+            }
+
+
+
+            function validateAllFields(feeRange, feeDescription, fixedAmountValue, rate, rateValue, fixedAmount){
+                var error = false;
+                if (feeRange == ""){
+                    showNotification("Please supply fee-range value","danger")
+                    error = true;
+                }else
+                if (feeDescription == ""){
+                    showNotification("Please supply description","danger")
+                    error = true;
+                }else
+                if (fixedAmountValue == ""){
+                    showNotification("Please supply fixed-amount value","danger")
+                    error = true;
+                }else
+                if (rate == ""){
+                    showNotification("Rate is required","danger")
+                    error = true;
+                }else
+                if (rateValue == ""){
+                    showNotification("Rate value is required","danger")
+                    error = true;
+                }else
+                if (fixedAmount == ""){
+                    showNotification("Please supply a fixed-amount","danger")
                     error = true;
                 }
 
@@ -545,7 +586,8 @@
                     var fixedAmountValue = $("#fixedAmountValueIdBoth").val();
                     var rate = $("#rateIdBoth").val();
                     var rateValue = $("#rateValueIdBoth").val();
-                    if(validateAllFields(feeRange == "" || feeDescription == "" || fixedAmountValue == "" || rate == "" || rateValue == "" || fixedAmount == "") == false){
+                    if(validateAllFields(feeRange,feeDescription,fixedAmountValue,rate,rateValue,fixedAmount) == false){
+                        console.log("DEBUGGING!!!")
                         $.ajax({
                             type: "POST",
                             url: "/admin/transfersettings/submitTransferAdjustments",

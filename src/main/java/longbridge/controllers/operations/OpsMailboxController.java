@@ -89,13 +89,10 @@ public class OpsMailboxController {
             MessageDTO message = new MessageDTO();
              message.setSender(principal.getName());
             model.addAttribute("messageDTO", message);
-
-
         model.addAttribute("receivedMessages", receivedMessages);
-
-
         return "ops/mailbox/newcompose";
     }
+
 
     @PostMapping("/newcompose")
     public String createMessages(@ModelAttribute("messageDTO") @Valid MessageDTO messageDTO, BindingResult bindingResult, RedirectAttributes redirectAttributes, Principal principal){
@@ -115,32 +112,27 @@ public class OpsMailboxController {
                 recipient = retailUserService.getUserByName(messageDTO.getRecipient());
                 break;
         }
-
-        if(recipient==null){
+        if(recipient == null){
             bindingResult.addError(new ObjectError("Invalid", "Invalid recipient username"));
             return "ops/mailbox/newcompose";
         }
-
         OperationsUser opsUser = operationsUserService.getUserByName(principal.getName());
         messageService.addMessage(opsUser,messageDTO);
         redirectAttributes.addFlashAttribute("message","Message sent successfully");
         return "redirect:/ops/mailbox/outbox";
     }
 
+
     @GetMapping("/viewmail")
     public String getViewMail(Model model,Principal principal) {
         OperationsUser opsUser = operationsUserService.getUserByName(principal.getName());
         List<MessageDTO> receivedMessages = messageService.getReceivedMessages(opsUser);
-
         if (!receivedMessages.isEmpty()) {
             MessageDTO message = receivedMessages.get(0);
             model.addAttribute("messageDTO", message);
             messageService.setStatus(message.getId(),"Read");
-
         }
         model.addAttribute("receivedMessages", receivedMessages);
-
-
         return "ops/mailbox/viewmail";
     }
 

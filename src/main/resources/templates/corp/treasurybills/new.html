@@ -41,7 +41,7 @@
                         <div class="form-group" id="primary" style="display: none">
                             <label>Tenor</label>
                             <span class="req"></span>
-                            <select th:name="Primary-Market-Tenor" id="pTenor" class="form-control full-width">
+                            <select th:name="Primary-Market-Tenor" id="pTenor" class="form-control full-width" required>
                                 <option value=""> Select Tenor </option>
                                 <option th:each="p : ${primary}" th:value="${p.tenor +','+ p.value}"
                                         th:text="${p.tenor}+' '+days"></option>
@@ -97,6 +97,7 @@
                     <div class="">
 
 
+                        <span class="req" style="display: none" id="reqRate"></span>
                         <div class="form-group" id="pRateDiv" style="display:none">
                             <label>Rate</label>
 
@@ -104,7 +105,6 @@
                                 <option value="supplyRate">Supply rate</option>
                                 <option value="bankRate" >Use bank rate</option>
                             </select>
-
 
                             <input type="text" th:name="Supplied-Rate" id="supplyRate" step="0.01" required class="form-control" placeholder="Enter rate"/>
 
@@ -153,7 +153,7 @@
 
         $("#marketType").on('change', function () {
             if ($("#marketType").val() === "PRIMARY") {
-                $("#sTenor").val("");
+                $("#sTenor").val("N/A");
                 $('#secondary').hide();
                 $('#sRateDiv').hide();
                 $('#primary').show();
@@ -163,7 +163,7 @@
                 $("#primary").hide();
                 $('#secondary').show();
                 $('#pRateDiv').hide();
-                $('#supplyRate').val("Enter Rate");
+                $('#supplyRate').val("");
                 $('#bankRate').val("N/A");
 
 
@@ -173,11 +173,15 @@
         $("#secondary").on('change',function () {
             $('#sRate').val($('#sTenor').val().split(',')[1]+'%');
             $('#sRateDiv').show();
+            $('#reqRate').show();
         })
 
         $("#primary").on('change',function () {
+            $('#bankRate').hide();
             $('#bankRate').val($('#pTenor').val().split(',')[1]+'%');
             $('#pRateDiv').show();
+            $('#reqRate').show();
+
 
 
         })

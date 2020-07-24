@@ -2,7 +2,6 @@ package longbridge.billerresponse;
 
 import longbridge.dtos.BillerCategoryDTO;
 
-
 import java.util.List;
 
 public class BillerCategoryResponse {

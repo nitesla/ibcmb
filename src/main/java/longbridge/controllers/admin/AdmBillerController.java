@@ -1,6 +1,5 @@
 package longbridge.controllers.admin;
 
-import longbridge.dtos.BillerCategoryDTO;
 import longbridge.models.Biller;
 import longbridge.models.BillerCategory;
 import longbridge.models.PaymentItem;
@@ -47,10 +46,17 @@ public class AdmBillerController {
     @PostMapping
     @ResponseBody
     public String updateBillers(){
-        billerService.RefreshBiller();
+        billerService.RefreshAll();
         return "Successfully updated";
     }
 
+
+    @PostMapping("/updateBillersInCategory")
+    @ResponseBody
+    public String updateBillersInCategory(){
+        billerService.refreshBiller();
+        return "Billers Successfully updated";
+    }
 
 
 
@@ -76,7 +82,9 @@ public class AdmBillerController {
 
     @ResponseBody
     @PostMapping("/assignreadonly")
-    public void assignReadOnlyValue(Long id,Boolean value){
+    public void assignReadOnlyValue(Long id,Boolean value)
+    {
+        logger.info("value = {}", value);
         billerService.readOnlyAmount(id,value);
     }
 
@@ -89,12 +97,18 @@ public class AdmBillerController {
     }
 
 
+
     @PostMapping(path = "/categorybillers") public @ResponseBody
     DataTablesOutput<Biller> getAllBillersPerCategory(DataTablesInput input, @RequestParam("csearch") String search, HttpServletRequest request){
         logger.info("I JUST GOT HERE");
+        Page<Biller>  billers = null;
         Pageable pageable = DataTablesUtils.getPageable(input);
         String categoryname = (String) request.getSession().getAttribute("categoryname");
-        Page<Biller>  billers = billerService.getBillersByCategory(categoryname,pageable);
+        if (StringUtils.isNoneBlank(search)) {
+            billers = billerService.findSearch(categoryname,search,pageable);
+        }else {
+            billers = billerService.getBillersByCategory(categoryname,pageable);
+        }
 
         DataTablesOutput<Biller> out = new DataTablesOutput<Biller>();
         out.setDraw(input.getDraw());
@@ -111,6 +125,8 @@ public class AdmBillerController {
         request.getSession().setAttribute("billerId" , billerId);
         List<PaymentItem> paymentItems = billerService.getPaymentItemsForBiller(id);
         request.getSession().setAttribute("billeritems",paymentItems);
+        model.addAttribute("rowid",id);
+        model.addAttribute("biller", biller);
         return "adm/quickteller/edit";
     }
 
@@ -126,9 +142,23 @@ public class AdmBillerController {
     @GetMapping("/{id}/biller")
     public String editBillerCategory(@PathVariable Long id, Model model, HttpServletRequest request) {
         BillerCategory getCategoryId = billerCategoryRepo.findOneById(id);
+        request.getSession().setAttribute("billerRowId", id);
        String categoryName = getCategoryId.getCategoryName();
        request.getSession().setAttribute("categoryname", categoryName);
+       model.addAttribute("categoryname",getCategoryId);
         return "adm/quickteller/billers";
+    }
+
+    @GetMapping("/{id}/backtobillers")
+    public String backButtonToBillerPage(@PathVariable Long id, Model model, HttpServletRequest request){
+        Long billerTableId = (Long) request.getSession().getAttribute("billerRowId");
+        logger.info("BILLER ID == " + billerTableId);
+        BillerCategory getCategoryId = billerCategoryRepo.findOneById(billerTableId);
+        String categoryName = getCategoryId.getCategoryName();
+        request.getSession().setAttribute("categoryname", categoryName);
+        model.addAttribute("categoryname",getCategoryId);
+        return "adm/quickteller/billers";
+
     }
 
     @ResponseBody

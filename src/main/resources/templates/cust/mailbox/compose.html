@@ -20,18 +20,19 @@
 
     <div class="col-xs-12 ">
         <div class=" no-mt  alert no-bd">
-            <!--<aside class="col-md-3 alert  mail-links-box">-->
-                <!--<div class="">-->
-                    <!--<ul class='mail-links'>-->
-                        <!--<a th:href="@{/retail/mailbox/compose}"><li class='bg-white coronation-blue' style="border-bottom:0px !important;font-size:13px;font-weight:bolder">Compose Message-->
-                        <!--</li></a>-->
-                        <!--<a th:href="@{/retail/mailbox/inbox}"><li >Inbox (1) <i class=' pull-right fa fa-angle-right' style="font-size:20px"></i></li></a>-->
-                        <!--<a th:href="@{/retail/mailbox/sentmail}"><li class=''>Sent (1)<i class='pull-right fa fa-angle-right' style="font-size:20px"></i></li></a>-->
-                        <!--<a th:href="@{/retail/mailbox/draft}"><li > Drafts (1) <i class=' pull-right fa fa-angle-right' style="font-size:20px"></i></li></a>-->
+            <aside class="col-md-3 alert  mail-links-box">
+                <div class="">
+                    <ul class='mail-links'>
+                        <a th:href="@{/retail/mailbox/compose}"><li class='bg-white coronation-blue' style="border-bottom:0px !important;font-size:13px;font-weight:bolder">Compose Message
+                        </li></a>
+                        <a th:href="@{/retail/mailbox/inbox}"><li ><span th:text="${noOfInbox}"></span> <i class=' pull-right fa fa-angle-right' style="font-size:20px"></i></li></a>
+                        <a th:href="@{/retail/mailbox/sentmail}"><li class='mail-active'><span th:text="${noOfSent}"></span><i class='pull-right fa fa-angle-right' style="font-size:20px"></i></li></a>
+                        <a th:href="@{/retail/mailbox/draft}"><li > <span th:text="${noOfDraft}"></span> <i class=' pull-right fa fa-angle-right' style="font-size:20px"></i></li></a>
 
-                    <!--</ul>-->
-                <!--</div>-->
-            <!--</aside>-->
+                    </ul>
+                </div>
+            </aside>
+
                 <article class="col-md-9 article">  
                     <div class="alert alert-bottom bg-coronation-blue">
                         <p style="color:white">Compose Message</p>

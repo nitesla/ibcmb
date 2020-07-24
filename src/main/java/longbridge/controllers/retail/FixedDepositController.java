@@ -59,6 +59,8 @@ public class FixedDepositController {
     public String viewFixedDeposits() {
         return "cust/fixedDeposit/view";
     }
+
+
     @GetMapping("/details")
     @ResponseBody
     public DataTablesOutput<FixedDepositDTO> getStatementDataByState(DataTablesInput input, Principal principal) {

@@ -192,7 +192,15 @@ public class CorpMailboxController {
     @GetMapping("/compose")
     public String addMessage(Model model, Principal principal) {
         CorporateUser corporateUser = corporateUserService.getUserByName(principal.getName());
+        List<MessageDTO> receivedMessages = messageService.getReceivedMessages(corporateUser);
         MessageDTO message = new MessageDTO();
+        Long noOfDraft = messageService.countMessagesByTag(corporateUser, MessageCategory.DRAFT);
+        Long noOfSent = messageService.countMessagesByTag(corporateUser,MessageCategory.SENT);
+        model.addAttribute("noOfSent","Sent ("+noOfSent+")");
+        model.addAttribute("noOfInbox","Inbox ("+((List<MessageDTO>) receivedMessages).size()+")");
+        model.addAttribute("noOfDraft", "Drafts ("+noOfDraft+")");
+        model.addAttribute("receivedMessages", receivedMessages);
+        model.addAttribute("receivedMessages", receivedMessages);
         message.setSender(corporateUser.getUserName());
         model.addAttribute("messageDTO", message);
         return "corp/mailbox/compose";
@@ -200,8 +208,20 @@ public class CorpMailboxController {
 
     @PostMapping
     public String createMessage(@ModelAttribute("messageDTO") @Valid MessageDTO messageDTO, BindingResult bindingResult, RedirectAttributes redirectAttributes, Principal principal, Model model, Locale locale, WebRequest webRequest) {
-        if (messageDTO.getSubject() == null || messageDTO.getBody() == null) {
+        if (messageDTO.getSubject().isEmpty() || messageDTO.getBody().isEmpty()) {
             model.addAttribute("failure", messageSource.getMessage("form.fields.required", null, locale));
+            CorporateUser corporateUser = corporateUserService.getUserByName(principal.getName());
+            List<MessageDTO> receivedMessages = messageService.getReceivedMessages(corporateUser);
+            MessageDTO message = new MessageDTO();
+            Long noOfDraft = messageService.countMessagesByTag(corporateUser, MessageCategory.DRAFT);
+            Long noOfSent = messageService.countMessagesByTag(corporateUser,MessageCategory.SENT);
+            model.addAttribute("noOfSent","Sent ("+noOfSent+")");
+            model.addAttribute("noOfInbox","Inbox ("+((List<MessageDTO>) receivedMessages).size()+")");
+            model.addAttribute("noOfDraft", "Drafts ("+noOfDraft+")");
+            model.addAttribute("receivedMessages", receivedMessages);
+            model.addAttribute("receivedMessages", receivedMessages);
+            message.setSender(corporateUser.getUserName());
+            model.addAttribute("messageDTO", message);
             return "corp/mailbox/compose";
         }
         String category = webRequest.getParameter("category");
@@ -211,7 +231,11 @@ public class CorpMailboxController {
 
         try {
             messageService.addMessage(corporateUser, messageDTO,category);
-            redirectAttributes.addFlashAttribute("message", "Message sent successfully");
+            if (category.equals("D")){
+                redirectAttributes.addFlashAttribute("message", "Message saved to drafts successfully");
+            } else {
+                redirectAttributes.addFlashAttribute("message", "Message sent successfully");
+            }
             return "redirect:/corporate/mailbox/sentmail";
         } catch (InternetBankingException ibe) {
             logger.error("Error sending message", ibe);
