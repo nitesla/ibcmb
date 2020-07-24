@@ -33,7 +33,7 @@
                         </div>
                         <div class="form-group">
                             <label>Transaction Amount</label>
-                            <input th:field="*{amount}" required class="form-control" min=0 placeholder="Amount" id="amount"/>
+                            <input th:field="*{amount}" required class="form-control" type="number" min=1 placeholder="Amount" id="amount"/>
                             <p class="errors close" data-dismiss="alert" aria-label="close" th:if="${#fields.hasErrors('amount')}" th:errors="*{amount}">&times;</p>
                             <span id="limitError" style="color:red;display: none"></span>
                         </div>
@@ -52,7 +52,7 @@
                         <div class="form-group">
                             <label>Duration</label>
                             <div class="input-daterange input-group" id="date-range">
-                                <input type="text" th:field="*{start}" data-date-format="dd-mm-yyyy" class="form-control datepicker" id="start" name="fromDate" placeholder="Start date" required="required" />
+                                <input type="text" th:field="*{start}" data-date-format="dd-mm-yyyy" class="form-control datepicker" id="start" name="fromDate" placeholder="Start date" required="required" onchange="startDateError()"/>
                                 <span class="input-group-addon no-border no-bd" style="bacground:transparent !important">to</span>
                                 <input type="text" th:field="*{end}"  data-date-format="dd-mm-yyyy" class="form-control datepicker" name="toDate" id="end" placeholder="End date" required="required" onchange="endDateError1()" />
 
@@ -98,6 +98,18 @@
             var endDate=$("#end").datepicker("getDate");
             if(endDate < startDate){
                 $("#endDateError1").text("End date should not be less than Start date")
+                $("#save").attr("disabled",true);
+            }else{
+                $("#endDateError1").text("")
+                $("#save").attr("disabled",false);
+            }
+        }
+
+        function startDateError(){
+            var startDate=$("#start").datepicker("getDate");
+            var currentDate = new Date();
+            if(startDate < currentDate){
+                $("#endDateError1").text("Start date should not be less than current date")
                 $("#save").attr("disabled",true);
             }else{
                 $("#endDateError1").text("")
