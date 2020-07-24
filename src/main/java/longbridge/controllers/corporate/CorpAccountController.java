@@ -586,9 +586,7 @@ public class CorpAccountController {
         responseOutputStream.close();
         pdfReportStream.close();
         responseOutputStream.flush();
-
-//
-
+        //
     }
 
     @GetMapping("/viewstatement/corp/display/data/next")

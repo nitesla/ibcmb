@@ -3,8 +3,10 @@ package longbridge.services.implementations;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import longbridge.api.*;
+import longbridge.billerresponse.BillerCategoryResponse;
 import longbridge.billerresponse.BillerResponse;
 import longbridge.billerresponse.PaymentItemResponse;
+import longbridge.billerresponse.PaymentResponse;
 import longbridge.dtos.*;
 import longbridge.exception.InternetBankingException;
 import longbridge.exception.InternetBankingTransferException;
@@ -72,8 +74,8 @@ public class IntegrationServiceImpl implements IntegrationService {
 	@Value("${customDuty.baseUrl}")
 	private String CustomDutyUrl;
 
-//	@Value("${custom.access.beneficiaryAcct}")
-//	private String accessBeneficiaryAcct;
+	@Value("${custom.access.beneficiaryAcct}")
+	private String accessBeneficiaryAcct;
 
 	@Value("${antifraud.status.check}")
 	private String antiFraudStatusCheckUrl;
@@ -440,7 +442,6 @@ public class IntegrationServiceImpl implements IntegrationService {
 				try {
 					logger.info("Initiating Inter Bank Transfer");
 					logger.debug("Transfer Params: {}", params.toString());
-
   					response = template.postForObject(uri, params, TransferRequestNip.class);
 					transRequest.setReferenceNumber(response.getUniqueReferenceCode());
 					transRequest.setStatus(response.getResponseCode());
@@ -546,7 +547,6 @@ public class IntegrationServiceImpl implements IntegrationService {
 		TransferType type = transRequest.getTransferType();
 
 		Account account = accountRepo.findFirstByAccountNumber(transRequest.getCustomerAccountNumber());
-
 		switch (type) {
 			case CORONATION_BANK_TRANSFER:
 
@@ -951,6 +951,7 @@ public class IntegrationServiceImpl implements IntegrationService {
 				transRequest.setReferenceNumber(NumberUtils.generateReferenceNumber(15));
 				transRequest.setStatus("000");
 				transRequest.setStatusDescription(messageSource.getMessage("transfer.successful",null,locale));
+
 			}
 		} catch (Exception e) {
 			logger.error("Exception occurred {}", e);
@@ -1328,11 +1329,7 @@ public class IntegrationServiceImpl implements IntegrationService {
 			if (setting != null && setting.isEnabled()) {
 				String recipient = setting.getValue();
 				String subject = messageSource.getMessage("international.transfer.subject",null,locale);
-
-				/* Pls uncomment this when you're deploying
-				* and check the application cnfiguration if mail config has been set
-				*/
-//				mailService.send(recipient, subject, mail, true);
+				mailService.send(recipient, subject, mail, true);
 				transRequest.setReferenceNumber(NumberUtils.generateReferenceNumber(15));
 				transRequest.setStatus("000");
 				transRequest.setStatusDescription(messageSource.getMessage("transfer.successful",null,locale));
@@ -1420,13 +1417,11 @@ public class IntegrationServiceImpl implements IntegrationService {
 
 	@Override
 	public List<BillerDTO> getBillers(){
-		String appId = "001b5";
-		String hash = "$234@789";
 		List<BillerDTO> billers = new ArrayList<>();
 		String uri = URI+"/api/quickteller/biller";
 		Map<String,String> params = new HashMap<>();
 		params.put("appid",appId);
-		params.put("hash",hash);
+		params.put("hash",secretKey);
 		try {
 			BillerResponse billerResponse = template.postForObject(uri,params, BillerResponse.class);
 			billers = billerResponse.getBillers();
@@ -1437,18 +1432,57 @@ public class IntegrationServiceImpl implements IntegrationService {
 			return billers;
 	}
 
+	@Override
+	public BillPayment billPayment(BillPayment billPayment, String terminalId){
+		PaymentResponse payment;
+		String uri = URI + "/api/quickteller/billpaymentadvice";
+		Map<String,String> params = new HashMap<>();
+		params.put("terminalId",terminalId);
+		params.put("amount", billPayment.getAmount().toPlainString());
+		params.put("appid",appId);
+		params.put("customerAccount", billPayment.getCustomerAccountNumber());
+		params.put("customerEmail", billPayment.getEmailAddress());
+		params.put("customerId",billPayment.getCustomerId());
+		params.put("customerMobile",billPayment.getPhoneNumber());
+		params.put("hash",EncryptionUtil.getSHA512(
+				appId + billPayment.getPaymentCode() + billPayment.getAmount().setScale(2,BigDecimal.ROUND_HALF_UP) + secretKey, null));
+		params.put("paymentCode",billPayment.getPaymentCode().toString());
+		params.put("requestReference",billPayment.getRequestReference());
+		try {
+		payment	 = template.postForObject(uri,params, PaymentResponse.class);
+			logger.info("response for payment {}", payment.toString());
+			billPayment.setStatus(payment.getResponseCodeGrouping());
+			billPayment.setResponseCodeGrouping(payment.getResponseCodeGrouping());
+			billPayment.setResponseDescription (payment.getResponseDescription());
+			billPayment.setResponseCode(payment.getResponseCode());
+			billPayment.setTransactionRef(payment.getTransactionRef());
+			billPayment.setApprovedAmount(payment.getApprovedAmount());
+			return billPayment;
+		} catch (HttpStatusCodeException e) {
+			logger.error("HTTP Error occurred", e);
+			billPayment.setStatus(e.getStatusCode().toString());
+			billPayment.setResponseDescription(e.getStatusCode().getReasonPhrase());
+			return billPayment;
+
+		} catch (Exception e) {
+			logger.error("Error processing Bill Payment", e);
+			billPayment.setStatus("Failed");
+			billPayment.setResponseDescription("Payment Failed");
+			return billPayment;
+		}
+
+	}
+
 
 	@Override
 	public List<PaymentItemDTO> getPaymentItems(Long billerId){
-		String appId = "001b5";
-		String hash = "$234@789";
 		String id = Long.toString(billerId);
 		List<PaymentItemDTO> items = new ArrayList<>();
 		String uri = URI+"/api/quickteller/billerpaymentitem";
 		Map<String,String> params = new HashMap<>();
 		params.put("appid",appId);
 		params.put("billerid", id);
-		params.put("hash",hash);
+		params.put("hash",secretKey);
 		try {
 			PaymentItemResponse paymentItemResponse = template.postForObject(uri,params, PaymentItemResponse.class);
 			items = paymentItemResponse.getPaymentitems();
@@ -1459,60 +1493,21 @@ public class IntegrationServiceImpl implements IntegrationService {
 		return items;
 	}
 
-//    @Override
-//	public  List<CoverageDetailsDTO>  getCoverageDetails(String coverageName,String customerNumber){
-//		    List<CoverageDetailsDTO> coverageDetailsDTOList = new ArrayList<>();
-//			String uri = URI+"/coverage/{coverageName}/{customerNumber}";
-//		    Map<String,String> params = new HashMap<>();
-//			params.put("coverageName",coverageName);
-//			params.put("customerNumber",customerNumber);
-//		   ObjectMapper mapper= new ObjectMapper();
-//
-//
-//			try{
-//
-//				ResponseEntity<Object> response = template.getForEntity(uri, Object.class,params);
-//				Object responseBody = response.getBody();
-//				if (responseBody instanceof List<?> ){
-//					System.out.println(responseBody);
-//					JsonNode[] jsonNode = mapper.convertValue(responseBody,JsonNode[].class);
-//					for (JsonNode resp:jsonNode) {
-//						CoverageDetailsDTO coverageDetailsDTO = new CoverageDetailsDTO();
-//						coverageDetailsDTO.setDetails(resp);
-//						coverageDetailsDTO.setCustomerNumber(customerNumber);
-//						coverageDetailsDTO.setCoverageName(coverageName);
-//						coverageDetailsDTOList.add(coverageDetailsDTO);
-//				}
-//				}
-//				else if(responseBody instanceof LinkedHashMap){
-//					 System.out.println(responseBody);
-//					 JsonNode jsonNode = mapper.convertValue(responseBody,JsonNode.class);
-//					 CoverageDetailsDTO coverageDetailsDTO = new CoverageDetailsDTO();
-//					 coverageDetailsDTO.setDetails(jsonNode);
-//					 coverageDetailsDTO.setCustomerNumber(customerNumber);
-//					 coverageDetailsDTO.setCoverageName(coverageName);
-//					 coverageDetailsDTOList.add(coverageDetailsDTO);
-//				}
-//
-//			} catch (Exception e){
-//				logger.error("Error getting coverage details",e);
-//			}
-//
-//		return coverageDetailsDTOList;
-//	}
-//
-//	@Override
-//	public JSONObject getAllCoverageDetails(String customerNumber){
-//		JSONObject allcoverage = new JSONObject();
-//		if (coverageRepo.enabledCoverageExist()){
-//			List<String> coverageList =coverageService.enabledCoverageList();
-//			for (String coverage:coverageList ) {
-//				allcoverage.put(coverage,getCoverageDetails(coverage,customerNumber));
-//
-//			}
-//		}
-//		return allcoverage;
-//	}
-
+	@Override
+	public List<BillerCategoryDTO> getBillerCategories(){
+		List<BillerCategoryDTO> items = new ArrayList<>();
+		String uri = URI+"/api/quickteller/billercategory";
+		Map<String,String> params = new HashMap<>();
+		params.put("appid",appId);
+		params.put("hash",secretKey);
+		try {
+			BillerCategoryResponse billerCategoryResponse = template.postForObject(uri,params, BillerCategoryResponse.class);
+			items = billerCategoryResponse.getCategorys();
+			return items;
+		} catch (Exception e){
+			logger.info("Error processing request");
+		}
+		return items;
+	}
 
 }
