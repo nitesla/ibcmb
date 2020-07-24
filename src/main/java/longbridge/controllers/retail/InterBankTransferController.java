@@ -1,5 +1,6 @@
 package longbridge.controllers.retail;
 
+import com.rabbitmq.client.AMQP;
 import longbridge.dtos.FinancialInstitutionDTO;
 import longbridge.dtos.LocalBeneficiaryDTO;
 import longbridge.dtos.TransferRequestDTO;
@@ -96,7 +97,7 @@ public class InterBankTransferController {
 
 
 
-    @PostMapping(value = "/index")
+    @RequestMapping(value = "/index", method = {RequestMethod.GET, RequestMethod.POST})
 
     public String startTransfer(HttpServletRequest request, Model model, Principal principal) {
         if(principal == null){
@@ -127,6 +128,7 @@ public class InterBankTransferController {
 
         TransferRequestDTO requestDTO = new TransferRequestDTO();
         String type = request.getParameter("tranType");
+
 
         if ("NIP".equalsIgnoreCase(type)) {
 
@@ -182,9 +184,10 @@ public class InterBankTransferController {
     }
 
 
-    @PostMapping("/summary")
+    @RequestMapping(value = "/summary", method = {RequestMethod.POST , RequestMethod.GET})
     public String transferSummary(@ModelAttribute("transferRequest") @Valid TransferRequestDTO transferRequestDTO, BindingResult result, Model model, HttpServletRequest request) throws Exception {
 
+        String newbenName = (String) request.getSession().getAttribute("beneficiaryName");
         String userAmountLimit = transferUtils.getLimitForAuthorization(transferRequestDTO.getCustomerAccountNumber(), transferRequestDTO.getChannel());
         BigDecimal amountLimit = new BigDecimal(userAmountLimit);
         BigDecimal userAmount = transferRequestDTO.getAmount();
@@ -193,13 +196,15 @@ public class InterBankTransferController {
         if (b > a){
             String errorMessage = "You can not transfer more than account limit";
             model.addAttribute("errorMessage", errorMessage);
+            model.addAttribute("benName", newbenName);
+            model.addAttribute("transferRequest", transferRequestDTO);
              return page + "pageii";
         }
 
         model.addAttribute("transferRequest", transferRequestDTO);
         String charge = "NAN";
-        String benName = (String) request.getSession().getAttribute("benName");
 
+        String benName = (String) request.getSession().getAttribute("benName");
 
         model.addAttribute("benName", benName);
 
@@ -250,6 +255,7 @@ public class InterBankTransferController {
         model.addAttribute("transferRequest", requestDTO);
         model.addAttribute("beneficiary", localBeneficiaryService.convertEntityToDTO(beneficiary));
         String benName = beneficiary.getPreferredName()!=null?beneficiary.getPreferredName():beneficiary.getAccountName();
+        request.getSession().setAttribute("beneficiaryName", benName);
         model.addAttribute("benName", benName);
         request.getSession().setAttribute("Lbeneficiary", localBeneficiaryService.convertEntityToDTO(beneficiary));
         return page + "pageii";
