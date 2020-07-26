@@ -11,71 +11,50 @@ import java.util.Objects;
 @Entity
 @Audited(withModifiedFlag=true)
 @Where(clause ="del_Flag='N'" )
-@Table(name = "acct_crv")
+@Table(name = "account_coverage", uniqueConstraints =
+@UniqueConstraint(columnNames = {"eid", "type", "code"}))
 public class AccountCoverage extends AbstractEntity  {
 
 
+    private boolean enabled;
+    private String customerId;
 
-    private boolean isEnabled;
+    private EntityId entityId;
 
-    @ManyToOne
-    private Corporate corporate;
-
-    @OneToOne()
-    @JoinColumn(name = "code_id",referencedColumnName = "id")
-    private Code code;
-
-
+    private String code;
 
     public AccountCoverage() {
     }
 
     public boolean isEnabled() {
-        return isEnabled;
+        return enabled;
     }
 
     public void setEnabled(boolean enabled) {
-        isEnabled = enabled;
+        this.enabled = enabled;
     }
 
-    public Corporate getCorporate() {
-        return corporate;
+    public String getCustomerId() {
+        return customerId;
     }
 
-    public void setCorporate(Corporate corporate) {
-        this.corporate = corporate;
+    public void setCustomerId(String customerId) {
+        this.customerId = customerId;
     }
 
-    public Code getCode() {
+    public EntityId getEntityId() {
+        return entityId;
+    }
+
+    public void setEntityId(EntityId entityId) {
+        this.entityId = entityId;
+    }
+
+    public String getCode() {
         return code;
     }
 
-    public void setCode(Code code) {
+    public void setCode(String code) {
         this.code = code;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof AccountCoverage)) return false;
-        if (!super.equals(o)) return false;
-        AccountCoverage that = (AccountCoverage) o;
-        return isEnabled == that.isEnabled &&
-                Objects.equals(corporate, that.corporate) &&
-                Objects.equals(code, that.code);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(super.hashCode(), isEnabled, corporate, code);
-    }
-
-    @Override
-    public String toString() {
-        return "AccountCoverage{" +
-                "isEnabled=" + isEnabled +
-                ", corporate=" + corporate +
-                ", code=" + code +
-                '}';
     }
 }
