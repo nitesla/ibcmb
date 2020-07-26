@@ -60,11 +60,11 @@ public class LoanDetailsServiceImpl implements LoanDetailsService {
     @Value("${jrxmlFile.path.loan.pdf}")
     private String jrxmlPathPdf;
 
-    @Value("${jrxmlFile.path.loan.excel}")
-    private String jrxmlPathExcel;
+//    @Value("${jrxmlFile.path.loan.excel}")
+//    private String jrxmlPathExcel;
 
-    @Value("${jrxmlFile.path.loan.csv}")
-    private String jrxmlPathCsv;
+//    @Value("${jrxmlFile.path.loan.csv}")
+//    private String jrxmlPathCsv;
 
 
 

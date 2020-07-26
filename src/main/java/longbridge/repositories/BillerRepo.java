@@ -50,4 +50,5 @@ public interface BillerRepo extends CommonRepo<Biller, Long>{
 
 
     List<Biller> findAllByEnabledAndCategoryName(boolean enabled, String categoryname);
+
 }
