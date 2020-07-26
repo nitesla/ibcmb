@@ -1,201 +1,94 @@
 package longbridge.services.implementations;
 
-import longbridge.dtos.CodeDTO;
-import longbridge.dtos.CorporateDTO;
+
+import longbridge.dtos.AccountCoverageDTO;
+import longbridge.dtos.AddCoverageDTO;
+import longbridge.dtos.UpdateCoverageDTO;
 import longbridge.exception.InternetBankingException;
-import longbridge.exception.VerificationInterruptedException;
 import longbridge.models.AccountCoverage;
-import longbridge.models.Code;
-import longbridge.models.Corporate;
+import longbridge.models.EntityId;
 import longbridge.repositories.AccountCoverageRepo;
-import longbridge.repositories.CodeRepo;
-import longbridge.services.AccountCoverageService;
+import longbridge.repositories.CorporateRepo;
+import longbridge.repositories.RetailUserRepo;
+import longbridge.services.AccountCoverageAdministrationService;
 import longbridge.services.CodeService;
-import longbridge.services.CorporateService;
+import longbridge.services.IntegrationService;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
+import javax.persistence.EntityNotFoundException;
 import java.util.Locale;
+import java.util.Optional;
 
 @Service
-public class AccountCoverageServiceImpl implements AccountCoverageService {
+public class AccountCoverageServiceImpl implements AccountCoverageAdministrationService {
 
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
-    @Autowired
-    private AccountCoverageRepo accountCoverageRepo;
-    @Autowired
-    private CodeRepo codeRepo;
 
+    private final String accountCoverage = "ACCOUNT_COVERAGE";
     @Autowired
-    private CorporateService corporateService;
-
-    @Autowired
-    private AccountCoverageService coverageService;
-    @Autowired
-    private CodeService codeService;
-
-    private Locale locale = LocaleContextHolder.getLocale();
-
+    private AccountCoverageRepo coverageRepo;
     @Autowired
     private MessageSource messageSource;
-
+    @Autowired
+    private IntegrationService integrationService;
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
+    private Locale locale = LocaleContextHolder.getLocale();
     private ModelMapper modelMapper;
-
-    private  String accountCoverage = "ACCOUNT_COVERAGE";
-
 
 
     @Autowired
     public AccountCoverageServiceImpl(AccountCoverageRepo accountCoverageRepository, ModelMapper modelMapper) {
-        accountCoverageRepo = accountCoverageRepository;
+        coverageRepo = accountCoverageRepository;
         this.modelMapper = modelMapper;
     }
 
 
+    private AccountCoverageDTO createDto(AccountCoverage coverage) {
+        AccountCoverageDTO dto = new AccountCoverageDTO();
+        dto.setCode(coverage.getCode());
+        dto.setEnabled(coverage.isEnabled());
+        return dto;
+    }
+
 
     @Override
-    public String addCoverage(Long corpId,Long codeId) throws InternetBankingException {
-        CorporateDTO corporate = corporateService.getCorporate(corpId);
-        Code code =  codeService.getCodeById(codeId);
-
-         try {
-
-             Boolean value = accountCoverageRepo.coverageExist(corpId,codeId);
-                if (!value){
-                    AccountCoverage coverage =  new AccountCoverage();
-                    coverage.setEnabled(false);
-                    coverage.setCode(code);
-                    coverage.setCorporate(modelMapper.map(corporate,Corporate.class));
-                    System.out.println(coverage);
-                    accountCoverageRepo.save(coverage);
-                    System.out.println("Save");
-                    logger.info("New Coverage {} added", coverage.getCode());
-                    return messageSource.getMessage("Coverage.add.success", null, locale);
-                }
-                else
-                {
-                    return messageSource.getMessage("Coverage.already.exist",null ,locale);
-                }
-        } catch (VerificationInterruptedException e) {
-            return e.getMessage();
-        } catch (Exception e) {
-            throw new InternetBankingException(messageSource.getMessage("Coverage.add.failure", null, locale), e);
-        }
-
+    public Page<AccountCoverageDTO> getAllCoverage(EntityId id, Pageable pageDetails) {
+        Page<AccountCoverage> coverageList = coverageRepo.findByEntityId(id, pageDetails);
+        return coverageList.map(this::createDto);
     }
 
     @Override
-    public List<CodeDTO> getCoverage() {
-        Iterable<Code> codes = this.codeRepo.findByType(accountCoverage);
-        List<CodeDTO> coverageList = new ArrayList<>();
-        for (Code code : codes) {
-            CodeDTO codeDTO =  modelMapper.map(code, CodeDTO.class);
-            coverageList.add(codeDTO);
-        }
-        return coverageList;
-
+    public void updateCoverage(UpdateCoverageDTO updateCoverageDTO) throws InternetBankingException {
+        Optional<AccountCoverage> firstByEntityIdAndCode = coverageRepo.findFirstByEntityIdAndCode(updateCoverageDTO.getId(), updateCoverageDTO.getCode());
+        AccountCoverage accountCoverage = firstByEntityIdAndCode.orElse(createNew(updateCoverageDTO.getId()));
+        accountCoverage.setEnabled(updateCoverageDTO.getEnabled());
+        accountCoverage.setCode(updateCoverageDTO.getCode());
+        accountCoverage.setEntityId(updateCoverageDTO.getId());
+        coverageRepo.save(accountCoverage);
     }
 
-    //
-//    @Override
-//    public String  enableCoverage( String coverageJson) throws InternetBankingException, IOException {
-//            AccountCoverage accountCoverage = parseJson(coverageJson);
-//            String code = accountCoverage.getCode();
-//        try {
-//            accountCoverageRepo. enableCoverage(code,accountCoverage.isEnabled());
-//            logger.info("Coverage {}  enable",code);
-//            return messageSource.getMessage("Coverage. enable.success", null, locale);
-//        } catch (VerificationInterruptedException e) {
-//            return e.getMessage();
-//        } catch (Exception e) {
-//            throw new InternetBankingException(messageSource.getMessage("Coverage. enable.failure", null, locale), e);
-//        }
-//    }
-//
-//    @Override
-//    @Transactional
-//    @Verifiable(operation = "DELETE_COVERAGE", description = "Deleting a Coverage")
-//    public String deleteCoverage(Long coverageId) throws InternetBankingException {
-//        AccountCoverage coverage = accountCoverageRepo.findById(coverageId).get();
-//
-//        try {
-//             accountCoverageRepo.delete(coverage);
-//
-//           logger.info("Coverage {} has been deleted", coverage.toString());
-//            return messageSource.getMessage("accountCoverage.delete.success", null, locale);
-//        } catch (VerificationInterruptedException e) {
-//            return e.getMessage();
-//        } catch (InternetBankingException e) {
-//            throw e;
-//        } catch (Exception e) {
-//            throw new InternetBankingException(messageSource.getMessage("accountCoverage.delete.failure", null, locale), e);
-//        }
-//    }
-//
-//    @Override
-//    public List<String> enabledCoverageList(){
-//        return accountCoverageRepo.getEnabledCoverage();
-//    }
-//
-//    @Override
-//    public Iterable<AccountCoverageDTO> getAllCoverage() {
-//            Iterable<AccountCoverage> coverages = accountCoverageRepo.findAll();
-//            return convertEntitiesToDTOs(coverages);
-//        }
-//    @Override
-//    public Long getCoverageId(String coverageCode){
-//        return accountCoverageRepo.getAccountCoverageByCode(coverageCode).getId();
-//
-//
-//    }
-//    @Override
-//    public Long getCodeId(String coverageCode)
-//    {
-//
-//        return accountCoverageRepo.getAccountCoverageByCode(coverageCode).getCodeEntity().getId();
-//
-//    }
-//
-//    public AccountCoverage convertDTOToEntity(AccountCoverageDTO accountCoverageDTO) {
-//        return modelMapper.map(accountCoverageDTO, AccountCoverage.class);
-//    }
-//    public Code convertDTOToEntity(CodeDTO codeDTO) {
-//        return modelMapper.map(codeDTO, Code.class);
-//    }
-//
-//
-//    public AccountCoverageDTO convertEntityToDTO(AccountCoverage coverage) {
-//        return modelMapper.map(coverage, AccountCoverageDTO.class);
-//    }
-//
-//
-//    public List<AccountCoverageDTO> convertEntitiesToDTOs(Iterable<AccountCoverage> coverages) {
-//        List<AccountCoverageDTO> coverageDTOList = new ArrayList<>();
-//        for (AccountCoverage coverage : coverages) {
-//            AccountCoverageDTO accountCoverageDTO = convertEntityToDTO(coverage);
-//            coverageDTOList.add(accountCoverageDTO);
-//        }
-//        return coverageDTOList;
-//    }
-//
-//    private AccountCoverage parseJson(String coverageJson ) throws JsonParseException, IOException {
-//        ObjectMapper mapper = new ObjectMapper();
-//        JsonNode coverageObj = mapper.readTree(coverageJson);
-//        AccountCoverage accountCoverage = new AccountCoverage();
-//        accountCoverage.setCode(coverageObj.get("code").toString().replaceAll("[\"']",""));
-//        accountCoverage.setEnabled(coverageObj.get("isEnabled").asBoolean());
-//        return accountCoverage;
-//
-//    }
+    private AccountCoverage createNew(EntityId id) {
+        AccountCoverage accountCoverage = new AccountCoverage();
+        accountCoverage.setEntityId(id);
+        return accountCoverage;
+    }
 
+    @Override
+    public void addCoverage(AddCoverageDTO addCoverageDTO) {
+        AccountCoverage accountCoverage = createNew(addCoverageDTO.getId());
+        accountCoverage.setEnabled(true);
+        coverageRepo.save(accountCoverage);
+    }
 
-
-
+    @Override
+    public AccountCoverage getCoverage(EntityId id, String code) {
+        return coverageRepo.findFirstByEntityIdAndCode(id, code).orElseThrow(EntityNotFoundException::new);
+    }
 }
