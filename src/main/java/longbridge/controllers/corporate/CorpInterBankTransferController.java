@@ -81,7 +81,7 @@ public class CorpInterBankTransferController {
 
 
 
-    @PostMapping(value = "/index")
+    @RequestMapping(value = "/index", method = {RequestMethod.POST, RequestMethod.GET})
     public String startTransfer(HttpServletRequest request, Model model, Principal principal) {
 
         if(principal == null){
@@ -111,7 +111,7 @@ public class CorpInterBankTransferController {
 
         CorpTransferRequestDTO requestDTO = new CorpTransferRequestDTO();
         String type = request.getParameter("tranType");
-//        request.getSession().setAttribute("type",type);
+
         if ("NIP".equalsIgnoreCase(type)) {
 
             request.getSession().setAttribute("NIP", "NIP");
@@ -186,9 +186,8 @@ public class CorpInterBankTransferController {
     @PostMapping("/summary")
     public String transferSummary(@ModelAttribute("corpTransferRequest") @Valid CorpTransferRequestDTO corpTransferRequestDTO, BindingResult result, Model model, HttpServletRequest request) throws Exception {
         String transferType = (String) request.getSession().getAttribute("NIP");
-        System.out.println("TRANSFERTYPE ========== " + transferType);
 
-
+        String newBenName = (String) request.getSession().getAttribute("benName");
         String userAmountLimit = transferUtils.getLimitForAuthorization(corpTransferRequestDTO.getCustomerAccountNumber(), transferType);
         BigDecimal amountLimit = new BigDecimal(userAmountLimit);
         BigDecimal userAmount = corpTransferRequestDTO.getAmount();
@@ -197,6 +196,8 @@ public class CorpInterBankTransferController {
         if (b > a){
             String errorMessage = "You can not transfer more than account limit";
             model.addAttribute("errorMessage", errorMessage);
+            model.addAttribute("corpTransferRequest", corpTransferRequestDTO);
+            model.addAttribute("benName", newBenName);
             return page + "pageii";
         }
 
@@ -297,13 +298,10 @@ public class CorpInterBankTransferController {
 
 
         if (request.getSession().getAttribute("Lbeneficiary") != null) {
-            System.out.println("DEBUGGING!!!!!");
             CorpLocalBeneficiaryDTO dto = (CorpLocalBeneficiaryDTO) request.getSession().getAttribute("Lbeneficiary");
             String benName = dto.getPreferredName()!=null?dto.getPreferredName():dto.getAccountName();
             model.addAttribute("benName", benName);
-            System.out.println("FINANCIAL INSTITUTION ===================================== " + dto.getBeneficiaryBank());
-            System.out.println("DEBUGGING INSTITUTION ============================ " + financialInstitutionService.getFinancialInstitutionByCode(dto.getBeneficiaryBank()));
-            transferRequestDTO.setFinancialInstitution(financialInstitutionService.getFinancialInstitutionByCode(dto.getBeneficiaryBank()));
+            transferRequestDTO.setFinancialInstitution(financialInstitutionService.getFinancialInstitutionByName(dto.getBeneficiaryBank()));
         }
         model.addAttribute("corpTransferRequest", transferRequestDTO);
 

@@ -575,6 +575,7 @@ public class CorpAccountController {
         exporter.setExporterInput(new SimpleExporterInput(print));
         ByteArrayOutputStream pdfReportStream = new ByteArrayOutputStream();
         exporter.setExporterOutput(new SimpleOutputStreamExporterOutput(pdfReportStream));
+
         exporter.exportReport();
         response.setHeader("Content-Length", String.valueOf(pdfReportStream.size()));
         response.setContentType("application/vnd.ms-excel");
@@ -585,9 +586,7 @@ public class CorpAccountController {
         responseOutputStream.close();
         pdfReportStream.close();
         responseOutputStream.flush();
-
 //
-
     }
 
     @GetMapping("/viewstatement/corp/display/data/next")
