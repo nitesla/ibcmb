@@ -438,24 +438,16 @@
                                                 <div class="col-md-12 col-sm-12 col-xs-12">
                                                     <div class="x_panel">
                                                         <div class="x_title">
-                                                            <fieldset>
-                                                                <div class="form-group">
-                                                                    <label class="control-label col-md-2 col-sm-2 col-xs-12">Coverage Type</label>
-                                                                    <div class="col-md-4 col-sm-6 col-xs-12">
-                                                                        <select class="form-control col-md-7 col-xs-12" th:field="*{coverageList}" th:id="coverageList">
-                                                                            <option th:each="coverage:${coverageList}" th:value="${coverage.getId()}" th:text="${coverage.getCode()}" th:selected="${coverage.getId()}"></option>
-                                                                        </select>
-                                                                    </div>
-                                                                    <button class="btn btn-sm btn-primary bt-link-add"th:id="add-coverage"><i class="fa fa-plus"></i> Add</button>
-                                                                  </div>
-                                                            </fieldset>
-
-
 
                                                         <div class="clearfix"></div>
                                                         </div>
                                                         <div class="x_content">
-                                                            <table class="table table-striped table-bordered table-hover" id="coverage">
+                                                            <div class="wrapper wrapper-content animated fadeInRight">
+                                                                <div class="row">
+                                                                    <div class="col-lg-12">
+                                                                        <div class="ibox float-e-margins">
+
+                                                                 <table class="table table-striped table-bordered table-hover" width="100%" id="coverage">
                                                                 <thead>
                                                                 <tr>
                                                                     <th>Coverage</th>
@@ -475,7 +467,10 @@
                                                                 </tr>
                                                                 </tfoot>
                                                             </table>
-
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
 
 
                                                         </div>
@@ -522,7 +517,7 @@
             "searching" : false,
             "paging" : true,
             "serverSide" : true,
-            "ajax" : url,
+            "ajax" :url,
             "dom" : 'T<"clear">frtlp',
             "columns" : [
                 { "data" : "userName" },
@@ -1092,6 +1087,8 @@
     /*<![CDATA[*/
 
     $(document).ready(function() {
+
+        var corpId = [[${corporate.getId()}]];
         var table = $('#coverage').DataTable({
             select:true,
             responsive: true,
@@ -1102,11 +1099,12 @@
             "processing" : true,
             "serverSide" : true,
             "ajax" : {
-                url : "/ops/accountcoverage/all",
+                url : "/ops/accountcoverage/corporate/"+corpId+"/all",
                 "type" : "GET",
                 "data" : function(d) {
                     d.csearch = $('#pattern').val();
-                }
+                },
+
             },
             "dom": 'T<"clear">frtlp',
             "drawCallback": function( settings ) {
@@ -1125,12 +1123,13 @@
                 "targets" : 2,
                 "data" : "enabled",
                 "render" : function(data, type,full, meta) {
+                    console.log(full)
 
                     if (type === 'display') {
                         if (data == true) {
-                            return "<input type='checkbox' data-pk='"+full.code+"' data-version='"+full.version+"' data-description='"+full.description+"' data-type='"+full.type+"' data-switchery='true' class='js-switch' checked value='"+full.code+"' />";
+                            return "<input type='checkbox' data-pk='"+full.id+"' data-version='"+full.version+"' data-code='"+full.code+"' data-description='"+full.description+"' data-type='"+full.type+"' data-switchery='true' class='js-switch' checked value='"+full.code+"' />";
                         } else if (data == false) {
-                            return "<input type='checkbox' data-pk='"+full.code+"' data-version='"+full.version+"'  data-description='"+full.description+"' data-type='"+full.type+"' data-switchery='true' class='js-switch' value='"+full.code+"' />";
+                            return "<input type='checkbox' data-pk='"+full.id+"' data-version='"+full.version+"' data-code='"+full.code+"' data-description='"+full.description+"' data-type='"+full.type+"' data-switchery='true' class='js-switch' value='"+full.code+"' />";
                         }
                     }
                     return data;
@@ -1138,78 +1137,28 @@
             }]
         });
 
-
-        table.on('select', function() {
-            if (table.rows({
-                selected : true
-            }).indexes().length === 0) {
-                $('.bt-select').attr("disabled", true);
-            } else {
-                $('.bt-select').removeAttr("disabled");
-            }
-
-        });
-
-        table.on('deselect', function() {
-            if (table.rows({
-                selected : true
-            }).indexes().length === 0) {
-                $('.bt-select').attr("disabled", true);
-            } else {
-                $('.bt-select').removeAttr("disabled");
-            }
-        });
-
-        $("#delete-btn").on("click", function(e) {
-            e.preventDefault();
-            var link = $(e.currentTarget);
-            if($(link).attr("disabled")){
-                return;
-            }
-            var dt = $('#coverage').DataTable();
-            var code =  table.row({
-                selected: true
-            }).data().code;
-            var url = link.attr("href").replace("code",code);
-            warnBeforeRedirect(url);
-
-        } );
-        function warnBeforeRedirect(url) {
-            swal({
-                title: "Are you sure?",
-                text: "Are you sure that you want to delete this coverage?",
-                type: "warning",
-                showCancelButton: true,
-                confirmButtonColor: "#dd6b55",
-                confirmButtonText: "Yes, delete coverage!",
-                closeOnConfirm: false
-            }, function() {
-                // Redirect the user
-                window.location.assign(url);
             });
-        }
-
-
-    });
     $(document).on("change","input[type=checkbox]", function(e) {
-        var updateUrl = "/admin/accountcoverage/update";
+        var corpId = [[${corporate.getId()}]];
+        var userType = [[${userType}]]
+        var updateUrl = "/ops/accountcoverage/corporate/update";
         var cb = $(e.currentTarget);
         var code = cb.val();
-
-        var isEnabled  ;
+        var enabled;
         if(cb.is(':checked')){
-            isEnabled = true;
+            enabled = true;
         }else{
-            isEnabled = false;
+            enabled = false;
         }
 
         var objectData =
             {
-                code : code,
-                isEnabled : isEnabled
-
+               id:{eid:corpId,type:userType},
+               code : code,
+               enabled : enabled
             };
         var objectDataString = JSON.stringify(objectData);
+        console.log(objectDataString)
         $.ajax({
             type : "POST",
             contentType : "application/json",
@@ -1236,27 +1185,7 @@
 
 
 
-    $("#add-coverage").click(function () {
-        var corpId = [[${corporate.getId()}]];
-        var codeId = $("#coverageList").find(":selected").val();
-        var coverageData = JSON.stringify({codeId :codeId,corpId:corpId});
-        $.ajax({
-            type : "POST",
-            contentType : "application/json",
-            url: "/ops/accountcoverage/new",
-            data: coverageData,
-            dataType : 'json',
-            timeout : 100000,
-            success: function (response) {
-                console.log("Success")
-            },
-            error: function (response) {
-                console.log(response);
 
-        },
-
-        })
-    });
 
     /*]]>*/
 </script>

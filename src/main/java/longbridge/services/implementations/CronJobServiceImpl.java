@@ -8,14 +8,9 @@ import longbridge.dtos.SettingDTO;
 import longbridge.exception.InternetBankingException;
 import longbridge.models.*;
 import longbridge.repositories.*;
-import longbridge.services.AccountService;
-import longbridge.services.ConfigurationService;
-import longbridge.services.CronJobService;
-import longbridge.services.IntegrationService;
+import longbridge.services.*;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.math.NumberUtils;
-import org.apache.commons.lang3.time.DateUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,6 +50,9 @@ public class CronJobServiceImpl implements CronJobService {
     private AccountService accountService;
     @Autowired
     private TransferRequestRepo transferRequestRepo;
+
+    @Autowired
+    private BillerService billerService;
 
     @Autowired
     private AdminUserRepo adminUserRepo;
@@ -314,7 +312,6 @@ public class CronJobServiceImpl implements CronJobService {
         }
         return cronJobExpression.getCronExpression();
     }
-
     @Override
     public String getCurrentJobDesc(String category) throws InternetBankingException {
         CronJobExpression cronJobExpression = cronJobExpressionRepo.findLastByFlagAndCategory("Y",category);
@@ -425,14 +422,11 @@ public class CronJobServiceImpl implements CronJobService {
     }
 
     @Override
-    @Scheduled(cron="${auto.admin.deactivation}")
-    public void executeAutoAdminDeactivation(){
-        SettingDTO setting = configService.getSettingByName("ADMIN_DEACTIVATION");
-        int dormantDays = 60;
-        if(setting != null && setting.isEnabled()) {
-            dormantDays = NumberUtils.toInt(setting.getValue(), dormantDays);
-        }
-        Date date = DateUtils.addDays(new Date(), -1 * dormantDays);
-        adminUserRepo.updateUserStatus(date);
+    @Scheduled(cron = "${auto.biller.refresh}")
+    public void refreshPaymentBillers() {
+        billerService.RefreshAll();
+
     }
+
+
 }

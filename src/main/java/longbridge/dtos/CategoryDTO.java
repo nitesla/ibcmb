@@ -2,21 +2,21 @@ package longbridge.dtos;
 
 public class CategoryDTO {
 
-	public CategoryDTO() {
-	}
-	
-	public CategoryDTO(String value) {
-		this.value = value;
-	}
+    public CategoryDTO() {
+    }
 
-	public String getValue() {
-		return value;
-	}
+    public CategoryDTO(String value) {
+        this.value = value;
+    }
 
-	public void setValue(String value) {
-		this.value = value;
-	}
+    public String getValue() {
+        return value;
+    }
 
-	private String value;
-	
+    public void setValue(String value) {
+        this.value = value;
+    }
+
+    private String value;
+
 }

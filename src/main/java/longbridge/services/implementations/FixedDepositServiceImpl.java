@@ -83,6 +83,7 @@ public class FixedDepositServiceImpl implements FixedDepositService {
 //                    deposit.forEach(j->fixedDepositDTOS.add(j));
                 List<Account> accounts = accountService.getAccountByCifIdAndSchemeType(cifId, "FIXED DEPOSIT");
                 logger.info("the size of the accounts {}",accounts.size());
+            logger.info("the size of the accounts {}",accounts);
                 accounts.forEach(i->{
 //                    List<FixedDepositDTO> deposit = integrationService.getFixedDepositDetailsForAccount(i.getAccountNumber());
 //                    deposit.forEach(j->fixedDepositDTOS.add(j));
