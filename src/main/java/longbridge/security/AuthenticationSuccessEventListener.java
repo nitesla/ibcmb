@@ -1,5 +1,7 @@
 package longbridge.security;
 
+
+import longbridge.config.CoverageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
 import org.springframework.security.authentication.event.AuthenticationSuccessEvent;
@@ -16,7 +18,10 @@ public class AuthenticationSuccessEventListener implements ApplicationListener<A
     public void onApplicationEvent(final AuthenticationSuccessEvent e) {
         final WebAuthenticationDetails auth = (WebAuthenticationDetails) e.getAuthentication().getDetails();
         if (auth != null) {
-            loginAttemptService.loginSucceeded(auth.getRemoteAddress());
+           loginAttemptService.loginSucceeded(auth.getRemoteAddress());
+
+
+
         }
     }
 

@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{ret-layout}">
+
+<body onload="javascript:var bread = [['Home', '/retail/dashboard'],['Completed Payments']];currentBar('completed payments');breadCrumb(bread)">
+
+<div layout:fragment="content">
+    <div class="col-md-5 col-sm-5">
+
+        <select class="form-control full-width coronation-form-contro invisible" id="view">
+            <option value="account">Overview</option>
+        </select>
+    </div>
+
+    <div class="col-xs-12 table-responsive" >
+
+        <ul class="nav navbar-right panel_toolbox col-lg-4 pull-right">
+
+            <li class="pull-right"style="margin-right: -5%" >
+                <div class="input-group col-lg-12">
+                    <input type="text" class="form-control pull-right" style="width:67%;height:10%;" id="pattern" placeholder="Search..." /><span
+                        class="input-group-btn" >
+                    <button style="width:80%;height: 30px;"class="btn btn-search" id="search" type="button">Go!</button>
+									</span>
+                </div>
+            </li>
+
+        </ul>
+
+        <table id="ct">
+            <thead class="top-row">
+            <td>Date</td>
+            <td>Amount</td>
+            <td>Transaction Reference</td>
+            <td>Payment Description</td>
+            <td>Status</td>
+            <td></td>
+            <td></td>
+            </thead>
+            <tbody>
+
+
+            </tbody>
+
+        </table>
+    </div>
+
+</div>
+
+
+<th:block layout:fragment="scripts">
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        $(document).ready(function() {
+            var url = "/retail/payment/completed/all";
+            var table = $('#ct').DataTable({
+                responsive: true,
+                "lengthMenu": [ [5, 10], [5, 10] ],
+                "pagingType": "input",
+                "searching": false,
+                "paging": true,
+                "language":{
+                    processing:'<i class="fa fa-spinner fa-spin fa-3x fa-fw"><span class="sr-only">Loading...</span>'
+                },
+                "serverSide": true,
+                "ajax" : {
+                    url : url,
+                    "type" : "GET",
+                    "data" : function(d) {
+                        d.csearch = $('#pattern').val();
+                    }
+                },
+                "dom": 'T<"clear">frtlp',
+                "columns": [
+                    {"data": "createdOn"},
+                    {"data": "amount"},
+                    {"data": "transactionRef"},
+                    {"data": "responseDescription"},
+                    {"data": "status"},
+                    {"data": "id"}
+                ],
+                "columnDefs" : [
+                    {
+                        "targets" : 0,
+                        "data" : "createdOn",
+                        "render" : function(data, type,full, meta) {
+                            if (type === 'display') {
+                                if (data == null)
+                                    return data;
+                                var dtStart = new Date(data);
+
+                                var dtStartWrapper = moment(dtStart);
+                                return dtStartWrapper.format('MMM Do YYYY, h:mm:ss a');
+                            }
+                            return data;
+                        }
+                    },{
+                        "targets" : 1,
+                        "data" : "amount",
+                        "render" : function(data, type,full, meta) {
+                            if (type === 'display') {
+                                if(data == null)
+                                    return data;
+                                var twoPlacedFloat = parseFloat(data).toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,');
+                                return twoPlacedFloat;
+                            }
+                            return data;
+                        }
+                    },
+                    {
+                        "targets" : 5,
+                        "data" : "id",
+                        "render" : function(data, type,row, meta) {
+                            return '<a href="/retail/payment/'+data+'">make payment</a>';
+                        }
+                    }]
+
+
+
+//            $('.dataTables_empty').html('No data available');
+
+            });
+        });
+
+        $("#search").on("click", function(e) {
+            e.preventDefault();
+            dt = $('#ct').DataTable();
+            dt.ajax.reload(null, true);
+
+        });
+
+        /*]]>*/
+    </script>
+</th:block>
+
+</body>
+</html>
