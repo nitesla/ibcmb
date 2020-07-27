@@ -16,10 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class CorpAccountCoverageController {
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
-    @Autowired
-    private IntegrationService integrationService;
-    @Autowired
-    private AccountCoverageService coverageService;
+
 
     @Autowired
     MessageSource messageSource;

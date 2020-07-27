@@ -1,11 +1,16 @@
 package longbridge.services.implementations;
 
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import longbridge.api.*;
+import longbridge.billerresponse.BillerCategoryResponse;
 import longbridge.billerresponse.BillerResponse;
 import longbridge.billerresponse.PaymentItemResponse;
+import longbridge.billerresponse.PaymentResponse;
 import longbridge.dtos.*;
+import longbridge.exception.CoverageRestTemplateResponseException;
 import longbridge.exception.InternetBankingException;
 import longbridge.exception.InternetBankingTransferException;
 import longbridge.exception.TransferErrorService;
@@ -28,6 +33,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -87,13 +93,12 @@ public class IntegrationServiceImpl implements IntegrationService {
 	private AccountRepo accountRepo;
 	private CorporateRepo corporateRepo;
 	private AntiFraudRepo antiFraudRepo;
-	private AccountCoverageService coverageService;
 	private AccountCoverageRepo coverageRepo;
 
 	@Autowired
 	public IntegrationServiceImpl(RestTemplate template, MailService mailService, TemplateEngine templateEngine,
 								  ConfigurationService configService, TransferErrorService errorService, MessageSource messageSource,
-								  AccountRepo accountRepo, CorporateRepo corporateRepo, AntiFraudRepo antiFraudRepo,AccountCoverageService coverageService,AccountCoverageRepo coverageRepo) {
+								  AccountRepo accountRepo, CorporateRepo corporateRepo, AntiFraudRepo antiFraudRepo,AccountCoverageRepo coverageRepo) {
 		this.template = template;
 		this.mailService = mailService;
 		this.templateEngine = templateEngine;
@@ -103,7 +108,6 @@ public class IntegrationServiceImpl implements IntegrationService {
 		this.accountRepo = accountRepo;
 		this.corporateRepo = corporateRepo;
 		this.antiFraudRepo=antiFraudRepo;
-		this.coverageService =coverageService;
 		this.coverageRepo = coverageRepo;
 
 			}
@@ -440,7 +444,6 @@ public class IntegrationServiceImpl implements IntegrationService {
 				try {
 					logger.info("Initiating Inter Bank Transfer");
 					logger.debug("Transfer Params: {}", params.toString());
-
   					response = template.postForObject(uri, params, TransferRequestNip.class);
 					transRequest.setReferenceNumber(response.getUniqueReferenceCode());
 					transRequest.setStatus(response.getResponseCode());
@@ -546,7 +549,6 @@ public class IntegrationServiceImpl implements IntegrationService {
 		TransferType type = transRequest.getTransferType();
 
 		Account account = accountRepo.findFirstByAccountNumber(transRequest.getCustomerAccountNumber());
-
 		switch (type) {
 			case CORONATION_BANK_TRANSFER:
 
@@ -1437,18 +1439,56 @@ public class IntegrationServiceImpl implements IntegrationService {
 			return billers;
 	}
 
+	@Override
+	public BillPayment billPayment(BillPayment billPayment, String terminalId){
+		PaymentResponse payment;
+		String uri = URI + "/api/quickteller/billpaymentadvice";
+		Map<String,String> params = new HashMap<>();
+		params.put("terminalId",terminalId);
+		params.put("amount", billPayment.getAmount().toPlainString());
+		params.put("appid",appId);
+		params.put("customerAccount", billPayment.getCustomerAccountNumber());
+		params.put("customerEmail", billPayment.getEmailAddress());
+		params.put("customerId",billPayment.getCustomerId());
+		params.put("customerMobile",billPayment.getPhoneNumber());
+		params.put("hash",EncryptionUtil.getSHA512(
+				appId + billPayment.getPaymentCode() + billPayment.getAmount().setScale(2,BigDecimal.ROUND_HALF_UP) + secretKey, null));
+		params.put("paymentCode",billPayment.getPaymentCode().toString());
+		params.put("requestReference",billPayment.getRequestReference());
+		try {
+			payment	 = template.postForObject(uri,params, PaymentResponse.class);
+			logger.info("response for payment {}", payment.toString());
+			billPayment.setStatus(payment.getResponseCodeGrouping());
+			billPayment.setResponseCodeGrouping(payment.getResponseCodeGrouping());
+			billPayment.setResponseDescription (payment.getResponseDescription());
+			billPayment.setResponseCode(payment.getResponseCode());
+			billPayment.setTransactionRef(payment.getTransactionRef());
+			billPayment.setApprovedAmount(payment.getApprovedAmount());
+			return billPayment;
+		} catch (HttpStatusCodeException e) {
+			logger.error("HTTP Error occurred", e);
+			billPayment.setStatus(e.getStatusCode().toString());
+			billPayment.setResponseDescription(e.getStatusCode().getReasonPhrase());
+			return billPayment;
+
+		} catch (Exception e) {
+			logger.error("Error processing Bill Payment", e);
+			billPayment.setStatus("Failed");
+			billPayment.setResponseDescription("Payment Failed");
+			return billPayment;
+		}
+
+	}
 
 	@Override
 	public List<PaymentItemDTO> getPaymentItems(Long billerId){
-		String appId = "001b5";
-		String hash = "$234@789";
 		String id = Long.toString(billerId);
 		List<PaymentItemDTO> items = new ArrayList<>();
 		String uri = URI+"/api/quickteller/billerpaymentitem";
 		Map<String,String> params = new HashMap<>();
 		params.put("appid",appId);
 		params.put("billerid", id);
-		params.put("hash",hash);
+		params.put("hash",secretKey);
 		try {
 			PaymentItemResponse paymentItemResponse = template.postForObject(uri,params, PaymentItemResponse.class);
 			items = paymentItemResponse.getPaymentitems();
@@ -1459,60 +1499,53 @@ public class IntegrationServiceImpl implements IntegrationService {
 		return items;
 	}
 
-//    @Override
-//	public  List<CoverageDetailsDTO>  getCoverageDetails(String coverageName,String customerNumber){
-//		    List<CoverageDetailsDTO> coverageDetailsDTOList = new ArrayList<>();
-//			String uri = URI+"/coverage/{coverageName}/{customerNumber}";
-//		    Map<String,String> params = new HashMap<>();
-//			params.put("coverageName",coverageName);
-//			params.put("customerNumber",customerNumber);
-//		   ObjectMapper mapper= new ObjectMapper();
-//
-//
-//			try{
-//
-//				ResponseEntity<Object> response = template.getForEntity(uri, Object.class,params);
-//				Object responseBody = response.getBody();
-//				if (responseBody instanceof List<?> ){
-//					System.out.println(responseBody);
-//					JsonNode[] jsonNode = mapper.convertValue(responseBody,JsonNode[].class);
-//					for (JsonNode resp:jsonNode) {
-//						CoverageDetailsDTO coverageDetailsDTO = new CoverageDetailsDTO();
-//						coverageDetailsDTO.setDetails(resp);
-//						coverageDetailsDTO.setCustomerNumber(customerNumber);
-//						coverageDetailsDTO.setCoverageName(coverageName);
-//						coverageDetailsDTOList.add(coverageDetailsDTO);
-//				}
-//				}
-//				else if(responseBody instanceof LinkedHashMap){
-//					 System.out.println(responseBody);
-//					 JsonNode jsonNode = mapper.convertValue(responseBody,JsonNode.class);
-//					 CoverageDetailsDTO coverageDetailsDTO = new CoverageDetailsDTO();
-//					 coverageDetailsDTO.setDetails(jsonNode);
-//					 coverageDetailsDTO.setCustomerNumber(customerNumber);
-//					 coverageDetailsDTO.setCoverageName(coverageName);
-//					 coverageDetailsDTOList.add(coverageDetailsDTO);
-//				}
-//
-//			} catch (Exception e){
-//				logger.error("Error getting coverage details",e);
-//			}
-//
-//		return coverageDetailsDTOList;
-//	}
-//
-//	@Override
-//	public JSONObject getAllCoverageDetails(String customerNumber){
-//		JSONObject allcoverage = new JSONObject();
-//		if (coverageRepo.enabledCoverageExist()){
-//			List<String> coverageList =coverageService.enabledCoverageList();
-//			for (String coverage:coverageList ) {
-//				allcoverage.put(coverage,getCoverageDetails(coverage,customerNumber));
-//
-//			}
-//		}
-//		return allcoverage;
-//	}
+	@Override
+	public List<BillerCategoryDTO> getBillerCategories(){
+		List<BillerCategoryDTO> items = new ArrayList<>();
+		String uri = URI+"/api/quickteller/billercategory";
+		Map<String,String> params = new HashMap<>();
+		params.put("appid",appId);
+		params.put("hash",secretKey);
+		try {
+			BillerCategoryResponse billerCategoryResponse = template.postForObject(uri,params, BillerCategoryResponse.class);
+			items = billerCategoryResponse.getCategorys();
+			return items;
+		} catch (Exception e){
+			logger.info("Error processing request");
+		}
+		return items;
+	}
+
+	@Override
+	public  CoverageDetailsDTO  getCoverageDetails(String coverageName, Set<String> customerIds){
+		CoverageDetailsDTO coverageDetailsDTO = new CoverageDetailsDTO();
+		String uri = URI+"/{coverageName}/{customerIds}";
+		Map<String,Object> params = new HashMap<>();
+		params.put("coverageName",coverageName.toLowerCase());
+		params.put("customerIds",customerIds.stream().map(s->s.replaceAll("(\r\n|\r|\n)","")).map(Objects::toString).collect(Collectors.joining(",")));
+		ObjectMapper mapper= new ObjectMapper();
+		try {
+			template.setErrorHandler(new CoverageRestTemplateResponseException());
+			ResponseEntity<JsonNode> response = template.getForEntity(uri, JsonNode.class,params);
+			JsonNode responseBody = response.getBody();
+			if(!responseBody.has("status")){
+				coverageDetailsDTO.setDetails(responseBody);
+			}
+			else {
+				coverageDetailsDTO.setDetails(mapper.createObjectNode());
+			}
+			coverageDetailsDTO.setCustomerIds(customerIds);
+			coverageDetailsDTO.setCoverageName(coverageName);
+
+		}
+
+		catch (Exception e){
+			logger.error("Error getting coverage details",e);
+		}
+		return coverageDetailsDTO;
+	}
+
+
 
 
 }

@@ -53,6 +53,9 @@ public class RetailUser extends User implements PrettySerializer{
 	@JsonIgnore
 	private List<BulkTransfer> transfers;
 
+	@OneToMany
+	@JsonIgnore
+	private List<AccountCoverage> accountCoverages;
 
 
 	public String getBvn() {
@@ -133,6 +136,14 @@ public class RetailUser extends User implements PrettySerializer{
 
 	public void setTransfers(List<BulkTransfer> transfers) {
 		this.transfers = transfers;
+	}
+
+	public List<AccountCoverage> getAccountCoverages() {
+		return accountCoverages;
+	}
+
+	public void setAccountCoverages(List<AccountCoverage> accountCoverages) {
+		this.accountCoverages = accountCoverages;
 	}
 
 	@Override

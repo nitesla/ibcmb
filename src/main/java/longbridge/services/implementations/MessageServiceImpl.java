@@ -289,8 +289,8 @@ public class MessageServiceImpl implements MessageService {
     @Override
     @Transactional
     public List<MessageDTO> getSentMessages(User user) {
-        List<Message>  messages = messageRepo.findMessageByUserAndTag(user.getId(), user.getUserType(),MessageCategory.SENT.toString());
-        logger.info("the message {}",messages);
+        List<Message>  messages = messageRepo.findMessageByUserAndTagOrderByDateCreated(user.getId(), user.getUserType(),MessageCategory.SENT.toString());
+        logger.info("the message ================================================================================ {}",messages);
         List<MessageDTO> sentMessages = new ArrayList<MessageDTO>();
         if (messages == null) {
             return sentMessages;
@@ -302,7 +302,7 @@ public class MessageServiceImpl implements MessageService {
     @Override
     @Transactional
     public List<MessageDTO> getMessagesByTag(User user, MessageCategory messageCategory) {
-        List<Message>  messages = messageRepo.findMessageByUserAndTag(user.getId(), user.getUserType(),messageCategory.toString());
+        List<Message>  messages = messageRepo.findMessageByUserAndTagOrderByDateCreated(user.getId(), user.getUserType(),messageCategory.toString());
         logger.info("the {} messages are {}",messageCategory,messages.size());
         List<MessageDTO> sentMessages = new ArrayList<MessageDTO>();
         if (messages == null) {
@@ -347,7 +347,7 @@ public class MessageServiceImpl implements MessageService {
     @Override
     @Transactional
     public List<MessageDTO> getReceivedMessages(User user) {
-        List<Message> receivedMessages = messageRepo.findByRecipientIgnoreCaseAndRecipientTypeAndTagOrderByIdDesc(user.getUserName(),user.getUserType(),MessageCategory.SENT.toString());
+        List<Message> receivedMessages = messageRepo.findByRecipientIgnoreCaseAndRecipientTypeAndTagOrderByDateCreatedDesc(user.getUserName(),user.getUserType(),MessageCategory.SENT.toString());
         return convertEntitiesToDTOs(receivedMessages);
     }
 
