@@ -15,6 +15,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -41,21 +42,23 @@ import java.util.Objects;
  */
 
 @Configuration
-@EnableWebSecurity
-//@EnableGlobalMethodSecurity(prePostEnabled = true)
+@EnableWebSecurity(debug = false)
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig {
 
+
+    @Autowired
+    public HttpSessionEventPublisher httpSessionEventPublisher;
 
     public void customConfig(WebSecurity web) throws Exception {
         web.ignoring().antMatchers("/resources *", "/static *", "/css ", "/js *", "/images *", "/customer");
     }
-    @Autowired
-    public HttpSessionEventPublisher httpSessionEventPublisher;
-
 
     @Configuration
     @Order(1)
     public static class AdminUserConfigurationAdapter extends WebSecurityConfigurerAdapter {
+        @Autowired
+        SessionRegistry sessionRegistry;
         @Autowired
         @Qualifier("adminUserDetails")
         private UserDetailsService adminDetails;
@@ -74,9 +77,6 @@ public class SecurityConfig {
             super();
         }
 
-        @Autowired
-        SessionRegistry sessionRegistry;
-
         @Override
         protected void configure(AuthenticationManagerBuilder auth) throws Exception {
             auth.userDetailsService(adminDetails).passwordEncoder(passwordEncoder);
@@ -87,7 +87,7 @@ public class SecurityConfig {
 
 
             boolean ipRestricted = false;
-            StringBuilder ipRange = new StringBuilder("hasIpAddress('::1') or hasIpAddress('127.0.0.1')");
+            StringBuilder ipRange = new StringBuilder("hasIpAddress('::1') or hasIpAddress('127.0.0.1') ");
             //Takes a specific IP address or a range using
             //the IP/Netmask (e.g. 192.168.1.0/24 or 202.24.0.0/14).
             SettingDTO dto = configService.getSettingByName("ADMIN_IP_WHITELIST");
@@ -107,7 +107,6 @@ public class SecurityConfig {
                 }
 
 
-
                 logger.info("IP address whitelist {}", ipRange.toString());
             }
 
@@ -118,7 +117,9 @@ public class SecurityConfig {
                     .and().antMatcher("/admin/**").authorizeRequests()
                     .and().authorizeRequests().anyRequest().
                     //access("hasAuthority('" + UserType.ADMIN.toString() + "')").and()
-                            access("hasAuthority('" + UserType.ADMIN.toString() + "') and " + ipRange.toString()).and()
+                            access("hasAuthority('" + UserType.ADMIN.toString() + "') and "
+                            + (ipRestricted ? ipRange.toString() : " true"))
+                    .and()
 
                     .formLogin().loginPage("/login/admin").loginProcessingUrl("/admin/login")
                     .failureUrl("/login/admin?error=login_error").defaultSuccessUrl("/admin/dashboard")
@@ -136,7 +137,6 @@ public class SecurityConfig {
                     .logout().logoutUrl("/admin/logout").logoutSuccessUrl("/login/admin").deleteCookies("JSESSIONID")
                     .invalidateHttpSession(true)
                     .and().exceptionHandling().and().csrf().disable();
-
 
             // disable page caching
             http.headers().cacheControl();
@@ -219,7 +219,8 @@ public class SecurityConfig {
                     // .hasAuthority(UserType.OPERATIONS.toString())
                     .fullyAuthenticated().anyRequest()
 //                    .access("hasAuthority('" + UserType.OPERATIONS.toString() + "')").and()
-                    .access("hasAuthority('" + UserType.OPERATIONS.toString() + "') and " + ipRange.toString()).and()
+                    .access("hasAuthority('" + UserType.OPERATIONS.toString() + "') and "
+                            + (ipRestricted ? ipRange.toString() : " true ")).and()
                     // log in
                     .formLogin().loginPage("/login/ops").loginProcessingUrl("/ops/login").failureUrl("/login/ops?error=true").defaultSuccessUrl("/ops/dashboard")
                     .successHandler(opAuthenticationSuccessHandler)
@@ -314,6 +315,7 @@ public class SecurityConfig {
             // disable page caching
             http.headers().cacheControl();
         }
+
         @Bean
         public HttpFirewall allowUrlEncodedSlashHttpFirewall() {
             StrictHttpFirewall firewall = new StrictHttpFirewall();
@@ -321,12 +323,12 @@ public class SecurityConfig {
             firewall.setAllowSemicolon(true);
             return firewall;
         }
+
         @Override
         public void configure(WebSecurity web) throws Exception {
             new SecurityConfig().customConfig(web);
             web.httpFirewall(allowUrlEncodedSlashHttpFirewall());
         }
-
 
 
     }
@@ -341,7 +343,7 @@ public class SecurityConfig {
         BCryptPasswordEncoder bCryptPasswordEncoder;
         @Autowired
         @Qualifier("corporateAuthenticationSuccessHandler")
-        AuthenticationSuccessHandler    corpAuthenticationSuccessHandler;
+        AuthenticationSuccessHandler corpAuthenticationSuccessHandler;
         @Autowired
         @Qualifier("corporateAuthenticationFailureHandler")
         AuthenticationFailureHandler corpAuthenticationFailureHandler;
@@ -433,10 +435,10 @@ public class SecurityConfig {
         public ApiAuthenticationFilter apiAuthenticationTokenFilter() throws Exception {
             return new ApiAuthenticationFilter();
         }
+
         //
         @Override
-        protected void configure(AuthenticationManagerBuilder auth) throws Exception
-        {
+        protected void configure(AuthenticationManagerBuilder auth) throws Exception {
             auth.userDetailsService(apiUser).passwordEncoder(bCryptPasswordEncoder);
         }
 
@@ -457,7 +459,6 @@ public class SecurityConfig {
 
             // disable page caching
         }
-
 
 
     }
