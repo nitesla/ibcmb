@@ -4,6 +4,7 @@
 
 <body onload="javascript:var bread = 'home';currentBar('dashboard');breadCrumb(bread)">
 
+
 <div layout:fragment="content">
     <div class="col-md-5 col-sm-5">
 
@@ -54,39 +55,95 @@
         </div>
 
         <div th:if="${not #lists.isEmpty(loans)}" class="no-pad-lef table-responsive bg-white alert" style="padding:0px !important">
-            <table class="table table-hover no-pad-lef" id="users" c>
-                <caption style="font-size: large">Loan Accounts</caption>
-                <thead class='thead'>
-                <!--<tr>-->
+            <div class="x_title">
+                <ul class="nav navbar-left">
+                    <li >
+                        <div class="col-lg-4 ">
+                            <div class="title-action">
+                                <button class="btn btn-app btn-sm " style="margin-right: 20em !important;" th:id="mail" ><i class="fa fa-envelope"></i> Mail Details </button>
+                            </div>
+                        </div>
+                    </li>
+                    <li >
+                        <div class="col-lg-4 ">
+                            <div class="title-action">
+                                <form action="#" id="pdf" method="post"th:action="@{/retail/loan/download/pdf}" th:object="${loanObject}">
+                                    <div th:each="loan, item:*{loanList} ">
+                                        <input type="hidden" th:field="*{loanList[__${item.index}__].accountId}" />
+                                        <input type="hidden" th:field="*{loanList[__${item.index}__].accountNumber}" />
+                                        <input type="hidden" th:field="*{loanList[__${item.index}__].startDate}" />
+                                        <input type="hidden" th:field="*{loanList[__${item.index}__].amount}" />
+                                        <input type="hidden" th:field="*{loanList[__${item.index}__].interestRate}" />
+                                        <input type="hidden" th:field="*{loanList[__${item.index}__].tenor}" />
+                                        <input type="hidden" th:field="*{loanList[__${item.index}__].maturityDate}" />
+                                    </div>
+                                    <button class="btn btn-app btn-sm " style="margin-right: 20em !important;" type="submit" ><i class="fa fa-file-pdf-o"></i> Download pdf</button>
+                                </form>
+                            </div>
+                        </div>
+                    </li>
 
-                <th class="text-cente">Account Number</th>
-                <th class="text-cente">Start Date</th>
-                <th class="text-cente">Amount</th>
-                <th class="text-cente">Rate (%)</th>
-                <th class="text-cente">Tenor (mths)</th>
-                <th class="text-cente">Maturity Date</th>
-                <th class="text-cente">&nbsp;</th>
-                <!--</tr>-->
-                </thead>
-                <tbody>
-                <tr th:each="list : ${loans}" class="tt">
-                    <td th:align="cente" th:text="${list.accountNumber}"></td>
-                    <td th:align="cente" th:text="${list.startDate}"></td>
-                    <td th:align="cente" th:text="${list.amount}" class="bal"></td>
-                    <td th:align="cente" th:text="${list.interestRate}" ></td>
-                    <td th:align="cente" th:text="${list.tenor}"></td>
-                    <td th:align="cente" th:text="${list.maturityDate}" ></td>
+                    <li >
+                        <div class="col-lg-4 ">
+                            <div class="title-action">
+                                <form action="#" id="excel" method="post"th:action="@{/retail/loan/download/excel}" th:object="${loanObject}">
+                                    <div th:each="loan, item:*{loanList} ">
+                                        <input type="hidden" th:field="*{loanList[__${item.index}__].accountId}" />
+                                        <input type="hidden" th:field="*{loanList[__${item.index}__].accountNumber}" />
+                                        <input type="hidden" th:field="*{loanList[__${item.index}__].startDate}" />
+                                        <input type="hidden" th:field="*{loanList[__${item.index}__].amount}" />
+                                        <input type="hidden" th:field="*{loanList[__${item.index}__].interestRate}" />
+                                        <input type="hidden" th:field="*{loanList[__${item.index}__].tenor}" />
+                                        <input type="hidden" th:field="*{loanList[__${item.index}__].maturityDate}" />
+                                    </div>
+                                    <button class="btn btn-app btn-sm loan_button "style="margin-right: 20em !important;" type="submit" ><i class="fa fa-file-excel-o"></i> Download Excel</button>
+                                </form>
+                            </div>
+                        </div>
+                    </li>
 
-                    <td th:align="center" >
+
+                </ul>
+            </div>
+            <div class="x_content">
+                <table class="table table-hover no-pad-lef" id="loans" >
+                    <caption style="font-size: large">Loan Accounts</caption>
+                    <thead class='thead'>
+                    <!--<tr>-->
+
+                    <th class="text-cente">Account Number</th>
+                    <th class="text-cente">Start Date</th>
+                    <th class="text-cente">Amount</th>
+                    <th class="text-cente">Rate (%)</th>
+                    <th class="text-cente">Tenor (mths)</th>
+                    <th class="text-cente">Maturity Date</th>
+                    <!--</tr>-->
+                    </thead>
+                    <tbody>
+                    <tr th:each="list : ${loans}" class="tt">
+                        <td th:align="cente" th:text="${list.accountNumber}"></td>
+                        <td th:align="cente" th:text="${list.startDate}"></td>
+                        <td th:align="cente" th:text="${list.amount}" class="bal"></td>
+                        <td th:align="cente" th:text="${list.interestRate}" ></td>
+                        <td th:align="cente" th:text="${list.tenor}"></td>
+                        <td th:align="cente" th:text="${list.maturityDate}" ></td>
+
+                    </tr>
+                    </tbody>
+                </table>
+
+            </div>
+
+        </div>
+
+        <div id="coverage-div">
 
 
-                    </td>
-                </tr>
-                </tbody>
-            </table>
         </div>
 
     </div>
+
+
 
 </div>
 
@@ -126,6 +183,159 @@
     }
 
     </script>
+
+
+    <script th:inline="javascript">
+        $("#mail" ).click(function() {
+            var loan = [[${loans}]];
+            var objectDataString = JSON.stringify(loan);
+            console.log(objectDataString)
+            var url ="/retail/loan/email";
+            $.ajax({
+                type : "POST",
+                contentType : "application/json",
+                url : url,
+                data: objectDataString,
+                dataType : 'json',
+                timeout : 100000,
+                success : function(e) {
+                    console.log("Success");
+                },
+                error : function() {
+                    console.log("ERROR");
+                },
+                done : function() {
+                    console.log("DONE");
+                }
+            });
+        })
+
+        $('#loan').DataTable( {
+            dom: 'Bfrtip',
+            buttons: [
+                'csv', 'excel', 'pdf'
+            ]
+        } );
+    </script>
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        $(document).ready(function () {
+            var retId = [[${retId}]];
+
+            $.ajax({
+                url: "/retail/accountcoverage/"+retId,
+                type: 'GET',
+                success: function (coverageData) {
+                    for (let n = 0; n < coverageData.length; n++) {
+                        var coverageDetails = coverageData[n].details;
+
+                        if(!(jQuery.isEmptyObject(coverageDetails)))
+                        {
+                            var coverageName = Object.keys(coverageDetails)[0];
+                            var container = document.createElement('div');
+                            container.setAttribute('id',coverageName+'div');
+                            container.setAttribute('class','no-pad-lef table-responsive no-mt bg-white alert');
+
+                            var table = document.createElement('table');
+                            table.setAttribute('id',coverageName+'table');
+                            table.setAttribute('class','table table-hover');
+
+                            var tableCaptionElement = document.createElement('caption');
+                            tableCaptionElement.setAttribute('id',coverageName+'caption');
+                            tableCaptionElement.setAttribute("style", "margin-top: 1em;");
+
+                            var tableCaptionNode = document.createTextNode(coverageName.toUpperCase());
+                            tableCaptionElement.appendChild(tableCaptionNode);
+
+                            var tableHeader = document.createElement('thead');
+                            tableHeader.setAttribute('class','thead');
+
+                            var tbody = document.createElement('tbody')
+                            var tbodyDetails = coverageDetails[coverageName];
+
+                            if(Array.isArray(tbodyDetails)){
+                                var datatableColumns =[];
+                                var header = Object.keys(tbodyDetails[0]);
+                                console.log(header);
+                                for(var i=0;i<header.length;i++){
+                                    var th = document.createElement('th');
+                                    var node = document.createTextNode(header[i][0].toUpperCase()+header[i].slice(1));
+                                    th.appendChild(node);
+                                    tableHeader.appendChild(th);
+                                    datatableColumns.push({"data":header[i]});
+
+                                }
+                                for (var i = 0; i < tbodyDetails.length; i++) {
+                                    var tr = document.createElement('tr');
+                                    var row = Object.keys(tbodyDetails[i]);
+                                    for (var coverageElement of row) {
+                                        var td = document.createElement('td');
+                                        tr.appendChild(td);
+                                        var textNode = document.createTextNode(tbodyDetails[i][coverageElement]);
+                                        td.appendChild(textNode);
+                                    }
+                                    tbody.appendChild(tr);
+                                }
+                            }
+                            else {
+                                var datatableColumns =[];
+                                var header = Object.keys(tbodyDetails);
+                                console.log(header);
+                                for(var i=0;i<header.length;i++){
+                                    var th = document.createElement('th');
+                                    var node = document.createTextNode(header[i][0].toUpperCase()+header[i].slice(1));
+                                    th.appendChild(node);
+                                    tableHeader.appendChild(th);
+                                    datatableColumns.push({"data":header[i]});
+                                }
+                                var tr = document.createElement('tr');
+                                var row = Object.keys(tbodyDetails);
+                                for (var coverageElement of row) {
+                                    var td = document.createElement('td');
+                                    tr.appendChild(td);
+                                    var textNode = document.createTextNode(tbodyDetails[coverageElement]);
+                                    td.appendChild(textNode);
+                                }
+                                tbody.appendChild(tr);
+                            }
+                            table.appendChild(tableCaptionElement);
+                            table.appendChild(tableHeader);
+                            table.appendChild(tbody);
+                            container.appendChild(table);
+                            document.getElementById('coverage-div').appendChild(container);
+                        }
+
+                        var datatable = $("#"+coverageName+'table').DataTable({
+                            responsive: true,
+                            "lengthMenu": [ [5, 10, 20], [5, 10, 20] ],
+                            "pagingType": "full_numbers",
+                            "searching": false,
+                            "paging": true,
+                            "dom": 'T<"clear">frtlp',
+                            "columns":datatableColumns,
+
+                        });
+
+                    };
+
+
+                },
+                error:function (response) {
+                    console.log(response)
+                }
+            });
+
+
+        });
+
+
+
+
+
+
+        /*]]>*/
+    </script>
+
 </th:block>
 
 </body>

@@ -40,7 +40,7 @@
                                     <div class="col-md-12 col-sm-12 col-xs-12">
                                         <div class="x_panel">
                                             <div class="x_title">
-                                                <h2>Biller Details</h2>
+                                                <h2 th:text="${biller.billerName}"></h2>
 
                                                 <div class="clearfix"></div>
                                             </div>
@@ -55,35 +55,135 @@
 
 <!--                                                                    </div>-->
 <!--                                                                </div>-->
-                                                            <form th:object="${biller}">
-                                                                <div class="form-group col-lg-6">
-                                                                    <label>Biller-Name</label>
-                                                                    <input class="form-control" type="text" th:field="*{billerName}"/>
-                                                                </div>
+<!--                                                            <form th:object="${biller}">-->
+<!--                                                                <div class="form-group col-lg-6">-->
+<!--                                                                    <label>Biller-Name</label>-->
+<!--                                                                    <input class="form-control" type="text" th:field="*{billerName}"/>-->
+<!--                                                                </div>-->
 
 
-                                                                <div class="form-group col-lg-6">
-                                                                    <label>Category</label>
-                                                                    <input class="form-control" type="text" th:field="*{categoryName}"/>
-                                                                </div>
+<!--                                                                <div class="form-group col-lg-6">-->
+<!--                                                                    <label>Category</label>-->
+<!--                                                                    <input class="form-control" type="text" th:field="*{categoryName}"/>-->
+<!--                                                                </div>-->
 
-                                                            </form>
+<!--                                                            </form>-->
+
+                                                <ul class="nav navbar-left panel_toolbox">
+
+                                                    <li >
+                                                        <div class="col-lg-4">
+                                                            <div class="title-action">
+                                                                <button  class="btn btn-sm btn-primary" type="button" onclick="updateItems()"><i class="fa fa-plus"></i> Refresh biller</button>
+                                                            </div>
+                                                        </div>
+                                                    </li>
 
 
+                                                </ul>
 
+                                                <br/>
+
+<!--                                                <fieldset>-->
+<!--                                                    <div class="form-group">-->
+
+<!--                                                        <div class="col-md-4 col-sm-6 col-xs-12">-->
+<!--                                                            <label>Biller</label>-->
+<!--                                                            <input class="form-control col-md-7 col-xs-12" name="codeType" th:value="${biller.billerName}" disabled="disabled"/>-->
+<!--                                                        </div>-->
+<!--                                                    </div>-->
+
+<!--                                                </fieldset>-->
+                                                <br/>
+                                                <br/>
+                                                <form method="post" class="form-horizontal">
+
+                                                    <div class="form-group">
+                                                        <label class="col-sm-2 control-label">Category</label>
+
+                                                        <div class="col-sm-6">
+                                                            <input type="text" class="form-control" th:field="*{biller.categoryName}"/>
+                                                            <!--<p th:if="${#fields.hasErrors('*')}" th:errors="*{lastName}">Last Name Error</p>-->
+
+                                                        </div>
+
+                                                    </div>
+
+
+                                                    <div class="form-group">
+                                                        <label class="col-sm-2 control-label">Support-Email</label>
+
+                                                        <div class="col-sm-6">
+                                                            <input type="text" class="form-control" th:field="*{biller.supportemail}" readonly="readonly"/>
+                                                        </div>
+
+
+                                                    </div>
+
+
+                                                    <div class="form-group">
+                                                        <label class="col-sm-2 control-label">Short-Name</label>
+
+                                                        <div class="col-sm-6">
+                                                            <input type="text" class="form-control" th:field="*{biller.shortname}"/>
+                                                        </div>
+
+                                                    </div>
+
+                                                    <div class="form-group">
+                                                        <label class="col-sm-2 control-label">Product-Id (PayDirect)</label>
+
+                                                        <div class="col-sm-6">
+                                                            <input type="text" class="form-control" th:field="*{biller.paydirectProductId}"/>
+                                                        </div>
+
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label class="col-sm-2 control-label">Institution-Id (PayDirect)</label>
+
+                                                        <div class="col-sm-6">
+                                                            <input type="text" class="form-control" th:field="*{biller.paydirectInstitutionId}"/>
+                                                        </div>
+
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label class="col-sm-2 control-label">Currency-Code</label>
+
+                                                        <div class="col-sm-6">
+                                                            <input type="text" class="form-control" th:field="*{biller.currencyCode}"/>
+                                                        </div>
+
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label class="col-sm-2 control-label">Narration</label>
+
+                                                        <div class="col-sm-6">
+                                                            <textarea type="text" class="form-control" th:field="*{biller.narration}"/>
+                                                        </div>
+
+                                                    </div>
+
+
+                                                </form>
+
+                                            <br/>
+                                                <br/>
                                                                 <div class="row">
 
 
                                                                     <div class="x_content">
-                                                                        <legend>Product-Items</legend>
 
                                                                         <table class="table table-striped table-bordered table-hover" id="myDataTable">
                                                                             <thead>
                                                                             <tr>
 
-                                                                                <th>Product-item</th>
+                                                                                <th>Item</th>
                                                                                 <th>Amount</th>
-                                                                                <th>Enable</th>
+                                                                                <th>Payment-code</th>
+                                                                                <th>Amount-Fixed</th>
+                                                                                <th>Enabled</th>
+
+
 
                                                                             </tr>
                                                                             </thead>
@@ -115,9 +215,16 @@
 
                                                         </div>
 
+                                    <input type="hidden" th:value="${rowid}"  id="getbillerrowid">
+                                    <div>
+                                        <div class="title-action" style="text-align: right;">
+                                            <a  class="btn btn-dark btn-sm bt-select bt-link-act" href="/admin/billers/index/backtobillers" ><i class="fa fa-angle-left"></i> Back</a>
+                                        </div>
+                                    </div>
 
 
                                                     </div>
+
 
 
                                             </div>
@@ -151,6 +258,16 @@
 <script>
 
 
+    function showNotification(message , type){
+        $.notify({
+            // options
+            message: message
+        },{
+            // settings
+            type: type
+        });
+    }
+
 
     $.ajax({
         type: "GET",
@@ -167,23 +284,41 @@
                     "columns": [
                                  {"data":"paymentItemName"},
                                  { "data": "amount" },
-                                 { "data": "enabled" }
+                                 { "data": "paymentCode" },
+                                  { "data": "isAmountFixed" },
+                                 { "data": "enabled" },
+
                              ],
                     "columnDefs" : [ {
-                        "targets" : 2,
+                        "targets" : 4,
                         "data" : "enabled",
                         "render" : function(data, type,full, meta) {
                             if (type === 'display') {
-                                console.log(full);
                                 if (data == true) {
-                                    return "<input type='checkbox' data-id='"+full.id+"'  data-pk='"+full.billerId+"' data-name='"+full.paymentItemName+"' data-category='"+full.paymentItemId+"'  data-switchery='true' class='js-switch' checked data-value='"+full.enabled+"'/>";
+                                    return "<input type='checkbox' name='enabledValue' data-id='"+full.id+"'  data-pk='"+full.billerId+"' data-name='"+full.paymentItemName+"' data-category='"+full.paymentItemId+"'  data-switchery='true' class='js-switch' checked data-value='"+full.enabled+"'/>";
                                 } else if (data == false) {
-                                    return "<input type='checkbox' data-id='"+full.id+"' data-pk='"+full.billerId+"' data-name='"+full.paymentItemName+"' data-category='"+full.paymentItemId+"'   data-switchery='true' class='js-switch'  data-value='"+full.enabled+"'/>";
+                                    return "<input type='checkbox' name='enabledValue' data-id='"+full.id+"' data-pk='"+full.billerId+"' data-name='"+full.paymentItemName+"' data-category='"+full.paymentItemId+"'   data-switchery='true' class='js-switch'  data-value='"+full.enabled+"'/>";
                                 }
                             }
                             return data;
                         }
-                    }]
+                    },
+                        {
+                            "targets" : 3,
+                            "data" : "isAmountFixed",
+                            "render" : function(data, type,full, meta) {
+                                if (type === 'display') {
+                                    if (data == true) {
+                                        return "<div  class='badge' > true</div>";
+                                    } else if (data == false) {
+                                        return "<div  class='customizebadge' > false</div>";
+                                    }
+                                }
+                                return data;
+                            }
+                        }
+                    ]
+
                 })
                  var elems = Array.prototype.slice.call(document.querySelectorAll('.js-switch'));
                 elems.forEach(function(html) {
@@ -199,8 +334,25 @@
     })
 
 
+    $(document).on("change","input[name=readonly]",function (e) {
+        var cb = $(e.currentTarget);
+        var op = cb.val();
+        var dataId = cb.attr("data-id");
+        var value = cb.attr("data-value");
+        console.log(value);
 
-    $(document).on("change","input[type=checkbox]", function(e) {
+        $.ajax({
+            type: "POST",
+            url: "/admin/billers/assignreadonly",
+            data: {id: dataId, value: value} // parameters
+
+        });
+
+    });
+
+
+
+    $(document).on("change","input[name=enabledValue]", function(e) {
         var cb = $(e.currentTarget);
         var op = cb.val();
         var dataId = cb.attr("data-id");
@@ -209,10 +361,9 @@
         var category = cb.attr("data-category");
         var value = cb.attr("data-value");
 
-
             $.ajax({
                 type: "POST",
-                url: "/admin/billers/authorizepaymentitem",
+                url: "/admin/billers/enableordisablepaymentitem",
                 data: {id: dataId, value: value} // parameters
 
             });
@@ -220,6 +371,45 @@
 
         });
 
+    
+    function updateItems() {
+
+
+        $.ajax({
+            type: "POST",
+            url: "/admin/billers/updatepaymentitems",
+            data: { }, // parameters
+            success :
+                function(response) {
+                    console.log(response);
+                    showNotification(response, "success");
+                    setTimeout(function () {
+                        location.reload();
+                    },2000)
+                },
+            error:
+                function (response) {
+                    console.log(response.responseText);
+                    showNotification(response.responseText, "danger");
+                }
+
+        })
+        
+    }
+
+
+    $("a.bt-link-act").on("click", function(e) {
+        e.preventDefault();
+        var link = $(e.currentTarget);
+        if($(link).attr("disabled")){
+            return;
+        }
+
+        var id = $("#getbillerrowid").val();
+        console.log(id);
+        var ooo = link.attr("href").replace("index",id);
+        window.location.assign(ooo);
+    });
 
 
 </script>
