@@ -2,6 +2,7 @@ package longbridge.config;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.CommonAnnotationBeanPostProcessor;
 import org.springframework.context.annotation.Configuration;
@@ -22,6 +23,7 @@ import java.util.Locale;
  * Created by mac on 20/09/2018.
  */
 @Configuration
+@EnableCaching
 public class UtilityConfig {
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -34,7 +36,7 @@ public class UtilityConfig {
         return new CommonAnnotationBeanPostProcessor();
     }
 
-    @Bean()
+    @Bean
     public ModelMapper modelMapper() {
         return new ModelMapper();
     }
