@@ -128,9 +128,8 @@ public class BillerServiceImpl implements BillerService {
             paymentItemRepo.enablePaymentItem(id, newValue);
             logger.info("Item with id=[{}] is enabled = {}", id, newValue);
         }
-
-
     }
+
 
 
     @Override
@@ -272,7 +271,7 @@ public class BillerServiceImpl implements BillerService {
 
     @Override
     public List<PaymentItem> getPaymentItems(Long id) {
-        return paymentItemRepo.findByBillerIdAndEnabled(id, true);
+        return paymentItemRepo.findAllByEnabledAndBillerId(true, id);
     }
 
     @Override
@@ -303,6 +302,13 @@ public class BillerServiceImpl implements BillerService {
     public void refreshPaymentItems(Long billerId){
         updatePaymentItems(billerId);
     }
+
+
+//    public List<Biller> getAllBillerId(){
+//        List<Biller> getAllBillerId = billerRepo.getAllBillerId();
+//        logger.info("All Biller Id's {}", getAllBillerId);
+//        return getAllBillerId;
+//    }
 
 
     @Override
@@ -363,7 +369,7 @@ public class BillerServiceImpl implements BillerService {
 
     @Override
     public List<Biller> getBillersByCategory(String category) {
-        return billerRepo.findByCategoryNameAndEnabled(category, true);
+        return billerRepo.findAllByEnabledAndCategoryName(true, category);
     }
 
     @Override

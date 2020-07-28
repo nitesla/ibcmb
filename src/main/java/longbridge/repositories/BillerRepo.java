@@ -17,12 +17,6 @@ public interface BillerRepo extends CommonRepo<Biller, Long>{
 
     Biller findByBillerId(Long billerId);
 
-    List<Biller> findByBillerIdNotIn(List<Long> billerIds);
-
-    List<Biller> findByCategoryName(String category);
-
-    List<Biller> findByCategoryNameAndEnabled(String category, boolean enabled);
-
     Page<Biller> findByCategoryName(String categoryName, Pageable pageable);
 
 
@@ -50,4 +44,5 @@ public interface BillerRepo extends CommonRepo<Biller, Long>{
 
 
     List<Biller> findAllByEnabledAndCategoryName(boolean enabled, String categoryname);
+
 }

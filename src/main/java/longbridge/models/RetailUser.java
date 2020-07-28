@@ -27,183 +27,186 @@ import java.util.List;
 
 
 @Entity
-@Audited(withModifiedFlag=true)
-@AuditOverride(forClass=User.class)
-@Where(clause ="del_Flag='N'" )
-@Table(uniqueConstraints=@UniqueConstraint(columnNames={"userName"}))
-public class RetailUser extends User implements PrettySerializer{
+@Audited(withModifiedFlag = true)
+@AuditOverride(forClass = User.class)
+@Where(clause = "del_Flag='N'")
+@Table(uniqueConstraints = @UniqueConstraint(columnNames = {"userName"}))
+public class RetailUser extends User implements PrettySerializer {
 
-	private String bvn;
-	private String customerId;
-	private Date birthDate;
-	private String resetSecurityQuestion;
-	private String feedBackStatus;
+    private String bvn;
+    private String customerId;
+    private Date birthDate;
+    private String resetSecurityQuestion;
+    private String feedBackStatus;
 
-	@OneToMany
-	@JsonIgnore
-	private Collection<RetailCustLimit> rtlCustLmt;
+    @OneToMany
+    @JsonIgnore
+    private Collection<RetailCustLimit> rtlCustLmt;
 
-	@OneToMany(mappedBy= "user")
-	@JsonIgnore
+    @OneToMany(mappedBy = "user")
+    @JsonIgnore
     private Collection<LocalBeneficiary> beneficiaries;
 
-	private String tempPassword;
+    private String tempPassword;
 
-	@OneToMany(mappedBy = "retailUser")
-	@JsonIgnore
-	private List<BulkTransfer> transfers;
+    @OneToMany(mappedBy = "retailUser")
+    @JsonIgnore
+    private List<BulkTransfer> transfers;
 
-	@OneToMany
-	@JsonIgnore
-	private List<AccountCoverage> accountCoverages;
+    @OneToMany
+    @JsonIgnore
+    private List<AccountCoverage> coverages;
 
 
-	public String getBvn() {
-		return bvn;
-	}
+    public RetailUser() {
+        this.userType = (UserType.RETAIL);
+    }
 
-	public void setBvn(String bvn) {
-		this.bvn = bvn;
-	}
+    public String getBvn() {
+        return bvn;
+    }
 
-	public RetailUser(){
-		this.userType = (UserType.RETAIL);
-	}
+    public void setBvn(String bvn) {
+        this.bvn = bvn;
+    }
 
-	public String getCustomerId() {
-		return customerId;
-	}
+    public String getCustomerId() {
+        return customerId;
+    }
 
-	public void setCustomerId(String customerId) {
-		this.customerId = customerId;
-	}
+    public void setCustomerId(String customerId) {
+        this.customerId = customerId;
+    }
 
-	public Date getBirthDate() {
-		return birthDate;
-	}
+    public Date getBirthDate() {
+        return birthDate;
+    }
 
-	public void setBirthDate(Date birthDate) {
-		this.birthDate = birthDate;
-	}
+    public void setBirthDate(Date birthDate) {
+        this.birthDate = birthDate;
+    }
 
-	public String getResetSecurityQuestion() {
-		return resetSecurityQuestion;
-	}
+    public String getResetSecurityQuestion() {
+        return resetSecurityQuestion;
+    }
 
-	public void setResetSecurityQuestion(String resetSecurityQuestion) {
-		this.resetSecurityQuestion = resetSecurityQuestion;
-	}
+    public void setResetSecurityQuestion(String resetSecurityQuestion) {
+        this.resetSecurityQuestion = resetSecurityQuestion;
+    }
 
-	public String getTempPassword() {
-		return tempPassword;
-	}
+    public String getTempPassword() {
+        return tempPassword;
+    }
 
-	public void setTempPassword(String tempPassword) {
-		this.tempPassword = tempPassword;
-	}
+    public void setTempPassword(String tempPassword) {
+        this.tempPassword = tempPassword;
+    }
 
-	public Collection<RetailCustLimit> getRtlCustLmt() {
-		return rtlCustLmt;
-	}
+    public Collection<RetailCustLimit> getRtlCustLmt() {
+        return rtlCustLmt;
+    }
 
-	public void setRtlCustLmt(Collection<RetailCustLimit> rtlCustLmt) {
-		this.rtlCustLmt = rtlCustLmt;
-	}
+    public void setRtlCustLmt(Collection<RetailCustLimit> rtlCustLmt) {
+        this.rtlCustLmt = rtlCustLmt;
+    }
 
-	public Collection<LocalBeneficiary> getBeneficiaries() {
-		return beneficiaries;
-	}
+    public Collection<LocalBeneficiary> getBeneficiaries() {
+        return beneficiaries;
+    }
 
-	public void setBeneficiaries(Collection<LocalBeneficiary> beneficiaries) {
-		this.beneficiaries = beneficiaries;
-	}
-	public String getFeedBackStatus() {
-		return feedBackStatus;
-	}
+    public void setBeneficiaries(Collection<LocalBeneficiary> beneficiaries) {
+        this.beneficiaries = beneficiaries;
+    }
 
-	public void setFeedBackStatus(String feedBackStatus) {
-		this.feedBackStatus = feedBackStatus;
-	}
+    public String getFeedBackStatus() {
+        return feedBackStatus;
+    }
 
-	@Override @JsonIgnore
-	public List<String> getDefaultSearchFields() {
-		return Arrays.asList("customerId","userName", "firstName","lastName");
-	}
+    public void setFeedBackStatus(String feedBackStatus) {
+        this.feedBackStatus = feedBackStatus;
+    }
 
-	public List<BulkTransfer> getTransfers() {
-		return transfers;
-	}
+    @Override
+    @JsonIgnore
+    public List<String> getDefaultSearchFields() {
+        return Arrays.asList("customerId", "userName", "firstName", "lastName");
+    }
 
-	public void setTransfers(List<BulkTransfer> transfers) {
-		this.transfers = transfers;
-	}
+    public List<BulkTransfer> getTransfers() {
+        return transfers;
+    }
 
-	public List<AccountCoverage> getAccountCoverages() {
-		return accountCoverages;
-	}
+    public void setTransfers(List<BulkTransfer> transfers) {
+        this.transfers = transfers;
+    }
 
-	public void setAccountCoverages(List<AccountCoverage> accountCoverages) {
-		this.accountCoverages = accountCoverages;
-	}
+    public List<AccountCoverage> getCoverages() {
+        return coverages;
+    }
 
-	@Override
-	@JsonIgnore
-	public JsonSerializer<User> getSerializer() {
-		return new JsonSerializer<User>() {
-			@Override
-			public void serialize(User value, JsonGenerator gen, SerializerProvider serializers)
-					throws IOException, JsonProcessingException {
+    public void setCoverages(List<AccountCoverage> accountCoverages) {
+        this.coverages = accountCoverages;
+    }
 
-				gen.writeStartObject();
-				gen.writeStringField("Username", value.userName);
-				gen.writeStringField("First Name", value.firstName);
-				gen.writeStringField("Last Name", value.lastName);
-				gen.writeStringField("Email", value.email);
-				gen.writeStringField("Phone", value.phoneNumber);
-				String status =null;
-				if ("A".equals(value.status))
-					status = "Active";
-				else if ("I".equals(value.status))
-					status = "Inactive";
-				else if ("L".equals(value.status))
-					status = "Locked";
-				gen.writeStringField("Status", status);
-				gen.writeStringField("Role", value.role.getName());
-				gen.writeEndObject();
-			}
-		};
-	}
-	@Override
-	@JsonIgnore
-	public JsonSerializer<User> getAuditSerializer() {
-		return new JsonSerializer<User>() {
-			@Override
-			public void serialize(User value, JsonGenerator gen, SerializerProvider serializers)
-					throws IOException, JsonProcessingException {
+    @Override
+    @JsonIgnore
+    public JsonSerializer<User> getSerializer() {
+        return new JsonSerializer<User>() {
+            @Override
+            public void serialize(User value, JsonGenerator gen, SerializerProvider serializers)
+                    throws IOException, JsonProcessingException {
 
-				gen.writeStartObject();
-				if(value.id != null) {
-					gen.writeStringField("id", value.id.toString());
-				}else {
-					gen.writeStringField("id", "");
-				}
-				gen.writeStringField("userName", value.firstName);
-				gen.writeStringField("firstName", value.firstName);
-				gen.writeStringField("lastName", value.lastName);
-				gen.writeStringField("email", value.email);
-				gen.writeStringField("phoneNumber", value.phoneNumber);
-				String status =null;
-				if ("A".equals(value.status))
-					status = "Active";
-				else if ("I".equals(value.status))
-					status = "Inactive";
-				else if ("L".equals(value.status))
-					status = "Locked";
-				gen.writeStringField("status", status);
-				gen.writeStringField("role", value.role.getName());
-				gen.writeEndObject();
-			}
-		};
-	}
+                gen.writeStartObject();
+                gen.writeStringField("Username", value.userName);
+                gen.writeStringField("First Name", value.firstName);
+                gen.writeStringField("Last Name", value.lastName);
+                gen.writeStringField("Email", value.email);
+                gen.writeStringField("Phone", value.phoneNumber);
+                String status = null;
+                if ("A".equals(value.status))
+                    status = "Active";
+                else if ("I".equals(value.status))
+                    status = "Inactive";
+                else if ("L".equals(value.status))
+                    status = "Locked";
+                gen.writeStringField("Status", status);
+                gen.writeStringField("Role", value.role.getName());
+                gen.writeEndObject();
+            }
+        };
+    }
+
+    @Override
+    @JsonIgnore
+    public JsonSerializer<User> getAuditSerializer() {
+        return new JsonSerializer<User>() {
+            @Override
+            public void serialize(User value, JsonGenerator gen, SerializerProvider serializers)
+                    throws IOException, JsonProcessingException {
+
+                gen.writeStartObject();
+                if (value.id != null) {
+                    gen.writeStringField("id", value.id.toString());
+                } else {
+                    gen.writeStringField("id", "");
+                }
+                gen.writeStringField("userName", value.firstName);
+                gen.writeStringField("firstName", value.firstName);
+                gen.writeStringField("lastName", value.lastName);
+                gen.writeStringField("email", value.email);
+                gen.writeStringField("phoneNumber", value.phoneNumber);
+                String status = null;
+                if ("A".equals(value.status))
+                    status = "Active";
+                else if ("I".equals(value.status))
+                    status = "Inactive";
+                else if ("L".equals(value.status))
+                    status = "Locked";
+                gen.writeStringField("status", status);
+                gen.writeStringField("role", value.role.getName());
+                gen.writeEndObject();
+            }
+        };
+    }
 
 }
