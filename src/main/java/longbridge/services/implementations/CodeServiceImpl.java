@@ -6,6 +6,7 @@ import longbridge.exception.InternetBankingException;
 import longbridge.exception.VerificationInterruptedException;
 import longbridge.models.Code;
 import longbridge.repositories.CodeRepo;
+import longbridge.services.AccountCoverageService;
 import longbridge.services.CodeService;
 import longbridge.utils.Verifiable;
 import org.modelmapper.ModelMapper;
@@ -33,6 +34,10 @@ public class CodeServiceImpl implements CodeService {
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private CodeRepo codeRepo;
+
+    @Autowired
+    private AccountCoverageService accountCoverage;
+
 
     private ModelMapper modelMapper;
 
@@ -135,6 +140,7 @@ public class CodeServiceImpl implements CodeService {
     @Override
     public Page<CodeDTO> getCodesByType(String codeType, Pageable pageDetails) {
         // TODO Auto-generated method stub
+
         Page<Code> page = codeRepo.findByType(codeType, pageDetails);
         List<CodeDTO> dtOs = convertEntitiesToDTOs(page);
         long t = page.getTotalElements();
@@ -162,6 +168,7 @@ public class CodeServiceImpl implements CodeService {
             codeRepo.save(code);
             logger.info("Added new code {} of type {}", code.getDescription(), code.getType());
             return messageSource.getMessage("code.add.success", null, locale);
+
         } catch (VerificationInterruptedException e) {
             return e.getMessage();
         } catch (Exception e) {

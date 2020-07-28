@@ -490,7 +490,7 @@ public class TransactionLimitServiceImpl implements TransactionLimitService {
                     return true;
                 }
             }
-        } else if (transferType.equals(TransferType.CORONATION_BANK_TRANSFER.NAPS)) {
+        } else if (transferType.equals(TransferType.NAPS)) {
 
             GlobalLimit globalLimit = globalLimitRepo.findByChannel("NAPS");
             ClassLimit classLimit = classLimitRepo.findByCustomerTypeAndAccountClassAndChannel(customerType.name(), accountClass, "NAPS");

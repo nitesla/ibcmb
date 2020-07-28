@@ -31,7 +31,7 @@ public interface AdminUserRepo extends CommonRepo<AdminUser, Long>{
 	Integer countByRole(Role role);
 
     @Modifying(clearAutomatically = true)
-    @Query("update AdminUser u set u.status='I' where (TRUNC( current_timestamp ) - TRUNC( u.lastLoginDate ) ) > :noOfExpiryDays")
-    void updateUserStatus(@Param("noOfExpiryDays") double noOfExpiryDays);
+    @Query("update AdminUser u set u.status='I' where ((u.lastLoginDate is not null and u.lastLoginDate <  :cutOffDate) or (u.lastLoginDate is null and u.createdOnDate <  :cutOffDate) ) and u.status = 'A' ")
+    void updateUserStatus(@Param("cutOffDate") double cutOffDate);
 
 }

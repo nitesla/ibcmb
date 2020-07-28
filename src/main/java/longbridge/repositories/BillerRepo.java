@@ -19,6 +19,7 @@ public interface BillerRepo extends CommonRepo<Biller, Long>{
 
     Page<Biller> findByCategoryName(String categoryName, Pageable pageable);
 
+
     @Query(
   		  value = "select distinct category from Biller",
   		  nativeQuery = true)

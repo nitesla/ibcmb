@@ -8,10 +8,7 @@ import longbridge.dtos.SettingDTO;
 import longbridge.exception.InternetBankingException;
 import longbridge.models.*;
 import longbridge.repositories.*;
-import longbridge.services.AccountService;
-import longbridge.services.ConfigurationService;
-import longbridge.services.CronJobService;
-import longbridge.services.IntegrationService;
+import longbridge.services.*;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -53,6 +50,9 @@ public class CronJobServiceImpl implements CronJobService {
     private AccountService accountService;
     @Autowired
     private TransferRequestRepo transferRequestRepo;
+
+    @Autowired
+    private BillerService billerService;
 
     @Autowired
     private AdminUserRepo adminUserRepo;
@@ -429,5 +429,12 @@ public class CronJobServiceImpl implements CronJobService {
         }else
             adminUserRepo.updateUserStatus(60.0);
     }
+
+
+//    @Scheduled(cron = "${auto.biller.refresh}")
+//    public void refreshPaymentBillers() {
+//        billerService.RefreshAll();
+//    }
+
 
 }

@@ -59,12 +59,26 @@ public class Corporate extends AbstractEntity implements PrettySerializer{
     @JsonIgnore
     private List<CorpTransRule> corpTransRules;
 
+    @OneToMany
+    @JsonIgnore
+    private List<AccountCoverage> accountCoverages;
+
+
 
     @ManyToMany
     @JoinTable(name = "corporate_account", joinColumns =
     @JoinColumn(name = "corporate_id", referencedColumnName = "id"), inverseJoinColumns =
     @JoinColumn(name = "account_id", referencedColumnName = "id") )
     private List<Account> accounts;
+
+    public List<AccountCoverage> getAccountCoverages() {
+        return accountCoverages;
+    }
+
+    public void setAccountCoverages(List<AccountCoverage> accountCoverages) {
+        this.accountCoverages = accountCoverages;
+    }
+
 
     public List<Account> getAccounts() {
         return accounts;

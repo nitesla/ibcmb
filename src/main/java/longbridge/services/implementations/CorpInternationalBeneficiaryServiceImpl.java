@@ -1,11 +1,9 @@
 package longbridge.services.implementations;
 
 import longbridge.dtos.CorpInternationalBeneficiaryDTO;
+import longbridge.exception.DuplicateObjectException;
 import longbridge.exception.InternetBankingException;
-import longbridge.models.CorpInterBeneficiary;
-import longbridge.models.CorporateUser;
-import longbridge.models.Email;
-import longbridge.models.User;
+import longbridge.models.*;
 import longbridge.repositories.CorpInternationalBeneficiaryRepo;
 import longbridge.security.userdetails.CustomUserPrincipal;
 import longbridge.services.CorpInternationalBeneficiaryService;
@@ -60,6 +58,7 @@ public class CorpInternationalBeneficiaryServiceImpl implements CorpInternationa
     public String addCorpInternationalBeneficiary(CorpInternationalBeneficiaryDTO beneficiary) throws InternetBankingException {
         CorpInterBeneficiary corpInterBeneficiary = convertDTOToEntity(beneficiary);
         corpInterBeneficiary.setCorporate(getCurrentUser().getCorporate());
+        validateBeneficiary(corpInterBeneficiary,getCurrentUser().getCorporate());
         this.corpInternationalBeneficiaryRepo.save(corpInterBeneficiary);
         sendAlert(getCurrentUser(),beneficiary.getAccountName());
         logger.info("CorpInternational beneficiary has been added for corporate {}", getCurrentUser().getCorporate().getName());
@@ -68,10 +67,13 @@ public class CorpInternationalBeneficiaryServiceImpl implements CorpInternationa
 
     @Override
     public String deleteCorpInternationalBeneficiary(Long beneficiaryId) throws InternetBankingException {
-        corpInternationalBeneficiaryRepo.delete(beneficiaryId);
-        logger.info("Deleted beneficiary with Id {}", beneficiaryId);
-        return messageSource.getMessage("beneficiary.delete.success",null,locale);
-
+        try {
+            corpInternationalBeneficiaryRepo.delete(beneficiaryId);
+            logger.info("Deleted beneficiary with Id {}", beneficiaryId);
+            return messageSource.getMessage("beneficiary.delete.success",null,locale);
+        } catch (Exception e) {
+            throw new InternetBankingException(messageSource.getMessage("beneficiary.delete.failure", null, locale), e);
+        }
     }
 
     @Async
@@ -154,6 +156,12 @@ public class CorpInternationalBeneficiaryServiceImpl implements CorpInternationa
     @Override
     public CorpInterBeneficiary convertDTOToEntity(CorpInternationalBeneficiaryDTO internationalBeneficiaryDTO) {
         return  modelMapper.map(internationalBeneficiaryDTO,CorpInterBeneficiary.class);
+    }
+
+    public void validateBeneficiary(CorpInterBeneficiary corpInterBeneficiary, Corporate corporate) {
+        if (corpInternationalBeneficiaryRepo.findByCorporate_IdAndAccountNumber(corporate.getId(), corpInterBeneficiary.getAccountNumber()) != null)
+            throw new DuplicateObjectException(messageSource.getMessage("beneficiary.exist",null,locale));
+
     }
 
     private CorporateUser getCurrentUser(){

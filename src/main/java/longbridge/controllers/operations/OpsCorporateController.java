@@ -57,6 +57,9 @@ public class OpsCorporateController {
     private MessageSource messageSource;
 
     @Autowired
+    private AccountCoverageService coverageService;
+
+    @Autowired
     private CodeService codeService;
 
     @Autowired
@@ -78,6 +81,9 @@ public class OpsCorporateController {
     private VerificationService verificationService;
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
+
+    private final String  coverageCode = "ACCOUNT_COVERAGE";
+
 
 
     @ModelAttribute
@@ -177,7 +183,10 @@ public class OpsCorporateController {
     @GetMapping("/{reqId}/view")
     public String viewCorporate(@PathVariable Long reqId, Model model) {
         CorporateDTO corporate = corporateService.getCorporate(reqId);
+        List<CodeDTO> coverageList = coverageService.getCoverage();
+        System.out.println(coverageList);
         model.addAttribute("corporate", corporate);
+        model.addAttribute("coverageList",coverageList);
         return "/ops/corporate/viewdetails";
     }
 

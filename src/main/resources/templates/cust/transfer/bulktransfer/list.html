@@ -37,7 +37,7 @@
                             <a type="button" th:href="@{/retail/transfer/upload}" class="btn btn-default bt-link-act">New Transfer</a>
                             <!--<a  type="button" class="btn bt-select btn-default bt-link-act" th:href="@{/corporate/transfer/index/view}" disabled="disabled" > View Details</a>-->
                         </div>
-                        <button id="refresh" class="btn btn-default bt-link-act">Refresh</button>
+<!--                        <button id="refresh" class="btn btn-default bt-link-act">Refresh</button>-->
 
                     </div>
                 </div>
@@ -123,7 +123,7 @@
                     "targets": 4,
                     "data": "DT_RowId",
                     "render": function(data, type, full, meta) {
-                        return '<a href="/corporate/transfer/' + data + '/view" class="dt-body-center" style="text-align:center; margin:0 auto;">View</a>';
+                        return '<a href="/retail/transfer/' + data + '/view" class="dt-body-center" style="text-align:center; margin:0 auto;">View</a>';
                     }
                 },
                     {
@@ -215,16 +215,16 @@
             });
         }
 
-        $("#refresh").on('click',function() {
-            $.ajax({
-                "url": "/corporate/transfer/refresh/naps",
-                "type": "GET",
-                success: function (result) {
-                    console.log("result" + result);
-                }
-
-            });
-        });
+        // $("#refresh").on('click',function() {
+        //     $.ajax({
+        //         "url": "/corporate/transfer/refresh/naps",
+        //         "type": "GET",
+        //         success: function (result) {
+        //             console.log("result" + result);
+        //         }
+        //
+        //     });
+        // });
 
 
 
