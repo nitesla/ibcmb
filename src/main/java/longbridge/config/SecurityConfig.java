@@ -195,7 +195,7 @@ public class SecurityConfig {
             //the IP/Netmask (e.g. 192.168.1.0/24 or 202.24.0.0/14).
             SettingDTO dto = configService.getSettingByName("ADMIN_IP_WHITELIST");
             if (dto != null && dto.isEnabled()) {
-
+                ipRestricted = true;
                 String temp = dto.getValue();
                 try {
                     String[] whitelisted = temp.split(",");
