@@ -28,7 +28,7 @@
                             <!--<span class="alert no-bd-rad my-border bg-white" id="sourceCurrency">CCY</span>-->
 
                             <select name="source" class="form-control" id="source"
-                                    th:field="*{customerAccountNumber}" onchange="getBalance();getDestCurrency()">
+                                    th:field="*{customerAccountNumber}" onchange="getBalance();">
                                 <option th:each="s: ${accountList}" th:value="${s.accountNumber}" th:text="${s.accountNumber}" th:selected="${s.primaryFlag=='Y'}"></option>
                             </select>
                             <!--<p th:if="${#fields.hasErrors('customerAccountNumber')}" th:errors="*{customerAccountNumber}"-->
@@ -54,7 +54,7 @@
 
                         <div class="form-group">
                             <label>Payment Item</label>
-                            <select class="form-control" th:field="*{paymentItemId}" id="paymentItemId" onchange="fetchPaymentItemDetails()" required="required">
+                            <select class="form-control" th:field="*{paymentItemId}" id="paymentItemId" name="paymentItemId" onchange="fetchPaymentItemDetails()" required="required">
                             </select><span class='req-inner'></span>
 
                         </div>
@@ -120,31 +120,7 @@
         getBalance();
         fetchBillers();
         fetchPaymentItems();
-        //
-        // var category = $("#categories").val();
-        // fetchBillers(category)
 
-        // $("#categories").change(function () {
-        //
-        //     var category = $("#categories").val();
-        //     fetchBillers(category)
-        //
-        // });
-
-
-        // $("#billerId").change(function () {
-        //
-        //     var biller = $("#billerId").val();
-        //     fetchPaymentItems(biller)
-        //
-        // });
-
-        // $("#paymentItemId").change(function () {
-        //
-        //     var paymentItem = $("#paymentItemId").val();
-        //     fetchPaymentItemDetails(paymentItem)
-        //
-        // });
     });
 
 
@@ -184,133 +160,55 @@
             type: 'POST',
             url: "/corporate/payment/biller",
             data: {categoryName: category},
-            // async: false,
-            // cache: false,
-            // url: "/corporate/payment/" + category+"/biller",
             success: function (biller , status, xhr) {
-
-
-
-
                 console.log(JSON.stringify(biller));
                 console.log(biller.length);
                 if(biller.length==0){
 
                 }
-//                $(".loader").hide();
-
                 $('#billerId').empty();
                 $('#billerId').append("<option value=''>-Select-</option>");
-                $('#paymentItem').empty();
-
                 console.log("Biller ---------->>>" +biller)
-
-                // for(var i=0; i<biller.length;i++){
-                //     console.log("Biller --" +biller[i].billerName)
-                // }
-
                 biller.forEach(b => $('#billerId').append("<option value='"+b.billerId+"'>"+b.billerName+"</option>"));
 
-                // for(var i=0;i<=biller.length;i++){
-                //     console.log("Biller is "+biller[i].billerName)
-
-                    // if(biller[i].billerName === undefined){
-                    //     break;
-                    // }
-                    //
-                    // var biller =  "<option value='"+biller[i].billerId+"'>"+biller[i].billerName+"</option>"
-                    // console.log("Var Biller is" +biller)
-
-
-                // }
-            },
-            error: function (xhr, status, err) {
-                console.log("error occurred fetching Billers");
-                console.log("response: "+xhr.responseText);
-                console.log("status: "+xhr.status);
-
-//                $(".loader").hide();
-                return;
-
             }
-        });
+        })
 
     }
 
-    r
     function fetchPaymentItems(){
 
         var biller = $("#billerId").val();
         console.log("Biller selected is ---->>>>>", biller)
-
-        if(biller==""){
-            $('#paymentItemId').empty();
-            return;
-        }
-
         $.ajax({
             type: 'POST',
             url: "/corporate/payment/paymentItem",
             data: {billerId: biller},
-            success: function (paymentItem, status, xhr) {
-
-                if(paymentItem.length==0){
+            success: function (items , status, xhr) {
+                console.log(JSON.stringify(items));
+                console.log(items.length);
+                if(items.length==0){
 
                 }
-//                $(".loader").hide();
-
                 $('#paymentItemId').empty();
                 $('#paymentItemId').append("<option value=''>-Select-</option>");
-
-                for(var i=0;i<=paymentItem.length;i++){
-                    console.log("PaymentItem is "+paymentItem[i].paymentItemName)
-
-                    if(paymentItem[i].paymentItemName === undefined){
-                        break;
-                    }
-
-                    var paymentItem =  "<option value='"+paymentItem[i].paymentItemId+"'>"+paymentItem[i].paymentItemName+"</option>"
-
-                    $('#paymentItemId').append(paymentItem)
-                }
-
-
-            },
-            error: function (xhr, status, err) {
-                console.log("error occurred fetching payment Items");
-                console.log("response: "+xhr.responseText);
-                console.log("status: "+xhr.status);
-
-//                $(".loader").hide();
-                return;
-
+                console.log("Biller ---------->>>" +items)
+                items.forEach(b => $('#paymentItemId').append("<option value='"+b.paymentItemId+"'>"+b.paymentItemName+"</option>"));
             }
-        });
-
+        })
     }
 
 
-    function fetchPaymentItemDetails(paymentItemId){
+    function fetchPaymentItemDetails(){
 
         var paymentItemId = $("#paymentItemId").val();
         console.log("paymentItem detail is ---->>>>>", paymentItemId)
-
-        if(paymentItemId==""){
-            $('#amount').val("");
-            return;
-        }
-
         $.ajax({
             url: "/corporate/payment/paymentItem/" + paymentItemId+"",
             success: function (paymentItem, status, xhr) {
-
-
-
-                console.log("PaymentItem name is "+paymentItem.name);
-                console.log("PaymentItem price is "+paymentItem.price);
+                console.log("PaymentItem name is "+paymentItem.paymentItemName);
+                console.log("PaymentItem price is "+paymentItem.amount);
                 console.log("PaymentItem read-only status is "+paymentItem.readonly);
-
-//                $(".loader").hide();
 
                 $('#amount').val(paymentItem.amount);
 
@@ -321,42 +219,6 @@
                     $('#amount').attr("readonly","readonly")
 
                 }
-
-
-            },
-            error: function (xhr, status, err) {
-                console.log("error occurred fetching accounts");
-                console.log("response: "+xhr.responseText);
-                console.log("status: "+xhr.status);
-
-//                $(".loader").hide();
-                return;
-
-            }
-        });
-
-    }
-
-
-    function UpdateOwnerReferenceName(billerId){
-
-
-        $.ajax({
-            url: "/corporate/payment/"+ billerId+"/referencename",
-            success: function (referenceName, status, xhr) {
-
-                console.log("Owner reference name is "+referenceName);
-
-                $("#ownerReferenceNumber").text(referenceName);
-                $("#customerIdentifier").prop('placeholder','Enter your '+referenceName);
-                $("#ownerReferenceNumberDiv").show();
-
-            },
-            error: function (xhr, status, err) {
-                console.log("error occurred get owner reference name");
-                console.log("response: "+xhr.responseText);
-                console.log("status: "+xhr.status);
-                return;
 
             }
         });
