@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{corp-layout}">
+<head>
+    <link th:href="@{~/bank/css/bootstrap-switch.min.css}" rel="stylesheet"/>
+    <link th:href="@{~/bank/vendors/switchery/switchery.css}" rel="stylesheet" type="text/css"/>
+</head>
+
+<body onload="javascript:var bread = [['Home', '/corporate/dashboard'],['account coverage','']];currentBar('account coverage');breadCrumb(bread)">
+
+<div layout:fragment="content">
+    <div class="col-md-5 col-sm-5 ">
+
+        <select class="form-control full-width coronation-form-control hide-content-only" id="view">
+            <option value="account">Overview</option>
+        </select>
+    </div>
+
+    <div class="col-xs-12 " >
+        <div class=" no-pad-lef table-responsive bg-white alert">
+            <table class="table table-hover no-pad-lef" id="coverage">
+                <caption style="font-size: large">Account Coverage Management</caption>
+
+                <thead class='thead'>
+
+                <tr>
+                    <th>Coverage</th>
+                    <th>Description</th>
+                    <th>Enabled</th>
+                </tr>
+                </thead>
+                <tbody>
+
+
+                </tbody>
+                <tfoot>
+                <tr>
+                    <th>Coverage</th>
+                    <th>Description</th>
+                    <th>Enabled</th>
+                </tr>
+                </tfoot>
+            </table>
+        </div>
+
+    </div>
+</div>
+
+
+
+
+
+<th:block layout:fragment="scripts">
+    <script th:src="@{~/bank/vendors/switchery/switchery.min.js}"></script>
+    <script th:inline="javascript">
+        $(document).ready(function() {
+            var corpId = [[${corpId}]];
+            var table = $('#coverage').DataTable({
+                select:true,
+                responsive: true,
+                "lengthMenu" : [ [ 10, 20, 30,-1],	[ 10, 20, 30,"All" ] ],
+                "pagingType" : "simple_numbers",
+                "searching": false,
+                "paging": true,
+                "processing" : true,
+                "serverSide" : true,
+                "ajax" : {
+                    url : "/corporate/accountcoverage/admin/"+corpId+"/all",
+                    "type" : "GET",
+                    "data" : function(d) {
+                        d.csearch = $('#pattern').val();
+                    },
+
+                },
+                "dom": 'T<"clear">frtlp',
+                "drawCallback": function( settings ) {
+                    var elems = Array.prototype.slice.call(document.querySelectorAll('.js-switch'));
+                    elems.forEach(function(html) {
+                        var switchery = new Switchery(html, { size: 'small' ,color: '#1ABB9C'});
+                    });
+                },
+                "columns": [
+                    { "data": "code" },
+                    { "data": "description" },
+                    { "data": "enabled" }
+
+                ] ,
+                "columnDefs" : [ {
+                    "targets" : 2,
+                    "data" : "enabled",
+                    "render" : function(data, type,full, meta) {
+
+
+                        if (type === 'display') {
+                            if (data == true) {
+                                return "<input type='checkbox' data-pk='"+full.id+"' data-version='"+full.version+"' data-code='"+full.code+"' data-description='"+full.description+"' data-type='"+full.type+"' data-switchery='true' class='js-switch' checked value='"+full.codeId+"' />";
+                            } else if (data == false) {
+                                return "<input type='checkbox' data-pk='"+full.id+"' data-version='"+full.version+"' data-code='"+full.code+"' data-description='"+full.description+"' data-type='"+full.type+"' data-switchery='true' class='js-switch' value='"+full.codeId+"' />";
+                            }
+                        }
+                        return data;
+                    }
+                }]
+            });
+
+        });
+        $(document).on("change","input[type=checkbox]", function(e) {
+            var corpId = [[${corpId}]];
+            var updateUrl = "/corporate/accountcoverage/admin/update";
+            var cb = $(e.currentTarget);
+            var codeId = cb.val();
+            var enabled;
+            if(cb.is(':checked')){
+                enabled = true;
+            }else{
+                enabled = false;
+            }
+
+            var objectData =
+                {
+                    codeId : codeId,
+                    corpId:corpId,
+                    enabled : enabled
+                };
+            var objectDataString = JSON.stringify(objectData);
+            $.ajax({
+                type : "POST",
+                contentType : "application/json",
+                url : updateUrl,
+                data: objectDataString,
+                dataType : 'json',
+                timeout : 100000,
+                success : function(data) {
+                    console.log("SUCCESS: ", data);
+                    var tab = $('#coverage').DataTable();
+                    /* tab.ajax.reload(); */
+                    tab.draw(false);
+                },
+                error : function(e) {
+                    console.log("ERROR: ", e);
+                },
+                done : function(e) {
+                    console.log("DONE");
+                }
+            });
+
+            //goto url
+        });
+
+
+
+
+
+    </script>
+</th:block>
+
+</body>
+</html>

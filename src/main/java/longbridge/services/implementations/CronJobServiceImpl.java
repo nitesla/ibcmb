@@ -307,7 +307,9 @@ public class CronJobServiceImpl implements CronJobService {
     @Override
     public String getCurrentExpression(String category) throws InternetBankingException {
         CronJobExpression cronJobExpression = cronJobExpressionRepo.findLastByFlagAndCategory("Y",category);
-
+        if(cronJobExpression == null){
+            return "0 0 0 ? * * *";
+        }
         return cronJobExpression.getCronExpression();
     }
     @Override
@@ -420,21 +422,11 @@ public class CronJobServiceImpl implements CronJobService {
     }
 
     @Override
-    @Scheduled(cron="${auto.admin.deactivation}")
-    public void executeAutoAdminDeactivation(){
-        SettingDTO setting = configService.getSettingByName("ADMIN_DEACTIVATION");
-        if(setting != null && setting.isEnabled()) {
-            adminUserRepo.updateUserStatus(Double.parseDouble(setting.getValue()));
-            logger.info("Inactive AdminUsers deactivated");
-        }else
-            adminUserRepo.updateUserStatus(60.0);
+    @Scheduled(cron = "${auto.biller.refresh}")
+    public void refreshPaymentBillers() {
+        billerService.RefreshAll();
+
     }
-
-
-//    @Scheduled(cron = "${auto.biller.refresh}")
-//    public void refreshPaymentBillers() {
-//        billerService.RefreshAll();
-//    }
 
 
 }

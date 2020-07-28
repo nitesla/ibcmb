@@ -3,8 +3,6 @@ package longbridge.controllers.admin;
 import longbridge.dtos.CodeDTO;
 import longbridge.dtos.CodeTypeDTO;
 import longbridge.exception.InternetBankingException;
-import longbridge.repositories.AccountCoverageRepo;
-import longbridge.services.AccountCoverageService;
 import longbridge.services.AdminUserService;
 import longbridge.services.CodeService;
 import longbridge.utils.DataTablesUtils;
@@ -38,17 +36,12 @@ public class AdmCodeController {
 	private Logger logger = LoggerFactory.getLogger(this.getClass());
 	@Autowired
 	private CodeService codeService;
-	@Autowired
-	AccountCoverageRepo accountCoverageRepo;
-	@Autowired
-	AccountCoverageService coverageService;
+
 	@Autowired
 	ModelMapper modelMapper;
 
 	@Autowired
 	MessageSource messageSource;
-
-	private  String accountCoverage = "ACCOUNT_COVERAGE";
 
 	@Autowired
 	private AdminUserService adminUserService;
@@ -59,14 +52,14 @@ public class AdmCodeController {
 	}
 
 	@PostMapping()
-    public String createCode(@ModelAttribute("codeDTO") @Valid CodeDTO codeDTO, BindingResult result, Principal principal, RedirectAttributes redirectAttributes, Locale locale){
-        if(result.hasErrors()){
-            result.addError(new ObjectError("invalid",messageSource.getMessage("form.fields.required",null,locale)));
-            return "adm/code/add";
-        }
+	public String createCode(@ModelAttribute("codeDTO") @Valid CodeDTO codeDTO, BindingResult result, Principal principal, RedirectAttributes redirectAttributes, Locale locale){
+		if(result.hasErrors()){
+			result.addError(new ObjectError("invalid",messageSource.getMessage("form.fields.required",null,locale)));
+			return "adm/code/add";
+		}
 
 
-        try {
+		try {
 
 			String message = codeService.addCode(codeDTO);
 			redirectAttributes.addFlashAttribute("message", message);
@@ -75,11 +68,11 @@ public class AdmCodeController {
 			return "redirect:/admin/codes/alltypes";
 		}
 		catch (InternetBankingException ibe){
-        	result.addError(new ObjectError("error",ibe.getMessage()));
-        	logger.error("Error creating code",ibe);
+			result.addError(new ObjectError("error",ibe.getMessage()));
+			logger.error("Error creating code",ibe);
 			return "adm/code/add";
 		}
-    }
+	}
 
 
 
@@ -94,19 +87,19 @@ public class AdmCodeController {
 	public String getCodes() {
 		return "adm/code/view";
 	}
-	
+
 	@GetMapping("/alltypes")
 	public String getCodeTypes() {
 		return "adm/code/type-view";
 	}
-	
+
 	@GetMapping("/type/{type}/edit")
 	public String getCodeType(@PathVariable String type, Model model) {
 		model.addAttribute("codeType", type);
 		return "adm/code/type-code-view";
 	}
 
-	
+
 	@GetMapping("/type/{type}/new")
 	public String addCode(@PathVariable String type, Model model) {
 		CodeDTO code = new CodeDTO();
@@ -115,8 +108,8 @@ public class AdmCodeController {
 		model.addAttribute("codeDTO", code);
 		return addCode(code);
 	}
-	
-	
+
+
 	@GetMapping(path = "/type")
 	public @ResponseBody DataTablesOutput<CodeTypeDTO> getAllCodeTypes(DataTablesInput input) {
 
@@ -142,7 +135,7 @@ public class AdmCodeController {
 		out.setRecordsTotal(codes.getTotalElements());
 		return out;
 	}
-	
+
 	@GetMapping(path = "/alltype")
 	public @ResponseBody DataTablesOutput<CodeDTO> getAllCodesOfType(@RequestParam(name="codeType") String codeType,DataTablesInput input) {
 		System.out.println(codeType);
@@ -193,25 +186,12 @@ public class AdmCodeController {
 
 	@GetMapping("/{codeId}/delete")
 	public String deleteCode(@PathVariable Long codeId, RedirectAttributes redirectAttributes) {
-		String codeType = codeService.getCodeById(codeId).getType();
-		String code = codeService.getCodeById(codeId).getCode();
-		Long coverageId = accountCoverageRepo.getAccountCoverageByCode(code).getId();
 
 		try {
-
-			if(codeType.equals(accountCoverage))
-			{
-//				String message = coverageService.deleteCoverage(coverageId);
-			    codeService.deleteCode(codeId);
-				redirectAttributes.addFlashAttribute("message", "message");
-			}else {
-				String message = codeService.deleteCode(codeId);
-				redirectAttributes.addFlashAttribute("message", message);
-			}
-
-
-
+			String message = codeService.deleteCode(codeId);
+			redirectAttributes.addFlashAttribute("message", message);
 		}
+
 		catch (InternetBankingException ibe){
 			logger.error("Error deleting Code",ibe);
 			redirectAttributes.addFlashAttribute("failure", ibe.getMessage());

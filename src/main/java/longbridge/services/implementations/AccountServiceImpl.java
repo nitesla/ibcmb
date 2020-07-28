@@ -427,7 +427,6 @@ public class AccountServiceImpl implements AccountService {
     }
     @Override
     public List<AccountDTO> getAccountsAndBalances(String customerId) {
-
         List<AccountDTO> accountsForDebitAndCredit = getAccountsAndBalances(this.getCustomerAccounts(customerId));
         return accountsForDebitAndCredit;
     }
@@ -455,6 +454,8 @@ public class AccountServiceImpl implements AccountService {
 
                     i.setAccountBalance(availbalance);
                     i.setLedgerBalance(ledBalance);
+                    i.setAccountType(i.getSchemeType());
+                    logger.info("Acc",i.getAccountType());
                     accountsForDebitAndCredit.add(i);
 
 

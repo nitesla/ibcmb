@@ -24,8 +24,7 @@ public class OpsCoverageController {
 
     @Autowired
     private CodeService codeService;
-    @Autowired
-    private AccountCoverageService coverageService;
+
     private final String  coverageCode = "ACCOUNT_COVERAGE";
 
     @GetMapping()
@@ -48,17 +47,7 @@ public class OpsCoverageController {
         return out;
     }
 
-    @PostMapping(path = "/new")
-    @ResponseBody
-    public String createCoverage(@RequestBody String coverageData) throws IOException {
-        System.out.println(coverageData);
-        ObjectMapper mapper = new ObjectMapper();
-        JsonNode coverage = mapper.readTree(coverageData);
-        Long codeId = coverage.get("codeId").asLong();
-        Long corpId = coverage.get("corpId").asLong();
-        coverageService.addCoverage(corpId,codeId);
-        return "work";
-    }
+
 }
 
 
