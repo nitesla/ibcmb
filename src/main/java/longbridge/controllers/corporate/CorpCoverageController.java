@@ -5,6 +5,7 @@ package longbridge.controllers.corporate;
 import longbridge.config.CoverageInfo;
 import longbridge.dtos.AccountCoverageDTO;
 import longbridge.dtos.CoverageDetailsDTO;
+import longbridge.dtos.UpdateCoverageDTO;
 import longbridge.models.CorporateUser;
 import longbridge.models.EntityId;
 import longbridge.models.User;
@@ -23,6 +24,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
 import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -87,11 +90,12 @@ public class CorpCoverageController {
     }
 
 
-    @GetMapping(path = "/admin/update")
-    public String updateCoverageForCorporateAdmin(){
-        return "corp/account/coverage";
-    }
+    @PostMapping(path = "/admin/update")
+    public ResponseEntity<HttpStatus> updateCoverage(@RequestBody UpdateCoverageDTO updateCoverageDTO) {
+        administrationService.updateCoverage(updateCoverageDTO);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 
+    }
 
 }
 

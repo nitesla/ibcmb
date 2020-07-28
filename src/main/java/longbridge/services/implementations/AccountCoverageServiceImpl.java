@@ -1,18 +1,16 @@
 package longbridge.services.implementations;
 
 
-import longbridge.dtos.AccountCoverageDTO;
-import longbridge.dtos.AddCoverageDTO;
-import longbridge.dtos.UpdateCoverageDTO;
+import longbridge.dtos.*;
 import longbridge.exception.InternetBankingException;
 import longbridge.models.AccountCoverage;
+import longbridge.models.Corporate;
 import longbridge.models.EntityId;
+import longbridge.models.UserType;
 import longbridge.repositories.AccountCoverageRepo;
 import longbridge.repositories.CorporateRepo;
 import longbridge.repositories.RetailUserRepo;
-import longbridge.services.AccountCoverageAdministrationService;
-import longbridge.services.CodeService;
-import longbridge.services.IntegrationService;
+import longbridge.services.*;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,8 +22,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
-import java.util.Locale;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class AccountCoverageServiceImpl implements AccountCoverageAdministrationService {
@@ -34,6 +31,12 @@ public class AccountCoverageServiceImpl implements AccountCoverageAdministration
     private final String accountCoverage = "ACCOUNT_COVERAGE";
     @Autowired
     private AccountCoverageRepo coverageRepo;
+    @Autowired
+    private CodeService codeService;
+    @Autowired
+    private CorporateService corporateService;
+    @Autowired
+    private RetailUserService retailUserService;
     @Autowired
     private MessageSource messageSource;
     @Autowired
@@ -91,4 +94,19 @@ public class AccountCoverageServiceImpl implements AccountCoverageAdministration
     public AccountCoverage getCoverage(EntityId id, String code) {
         return coverageRepo.findFirstByEntityIdAndCode(id, code).orElseThrow(EntityNotFoundException::new);
     }
+
+
+
+    @Override
+    public void addCoverageForNewEntity(EntityId entityId) {
+        List<CodeDTO> coverageCodes = codeService.getCodesByType(accountCoverage);
+        AddCoverageDTO addCoverageDTO = new AddCoverageDTO();
+        for (CodeDTO codes:coverageCodes) {
+            addCoverageDTO.setCode(codes.getCode());
+            addCoverageDTO.setId(entityId);
+            addCoverage(addCoverageDTO);
+        }
+    }
+
+
 }

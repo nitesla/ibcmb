@@ -1,10 +1,7 @@
 package longbridge.services;
 
 
-import longbridge.dtos.AccountCoverageDTO;
-import longbridge.dtos.AddCoverageDTO;
-import longbridge.dtos.CoverageDetailsDTO;
-import longbridge.dtos.UpdateCoverageDTO;
+import longbridge.dtos.*;
 import longbridge.exception.InternetBankingException;
 import longbridge.models.AccountCoverage;
 import longbridge.models.EntityId;
@@ -23,5 +20,7 @@ public interface AccountCoverageAdministrationService {
    void updateCoverage(UpdateCoverageDTO updateCoverageDTO) throws InternetBankingException;
    void addCoverage(AddCoverageDTO addCoverageDTO);
    AccountCoverage getCoverage(EntityId id, String code);
+   void addCoverageForNewEntity(EntityId entityId);
+
 
 }
