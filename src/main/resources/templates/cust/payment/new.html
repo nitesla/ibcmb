@@ -126,31 +126,7 @@
         getBalance();
         fetchBillers();
         fetchPaymentItems();
-        //
-        // var category = $("#categories").val();
-        // fetchBillers(category)
 
-        // $("#categories").change(function () {
-        //
-        //     var category = $("#categories").val();
-        //     fetchBillers(category)
-        //
-        // });
-
-
-        // $("#billerId").change(function () {
-        //
-        //     var biller = $("#billerId").val();
-        //     fetchPaymentItems(biller)
-        //
-        // });
-
-        // $("#paymentItemId").change(function () {
-        //
-        //     var paymentItem = $("#paymentItemId").val();
-        //     fetchPaymentItemDetails(paymentItem)
-        //
-        // });
     });
 
 
@@ -190,100 +166,44 @@
             type: 'POST',
             url: "/retail/payment/biller",
             data: {categoryName: category},
-            // async: false,
-            // cache: false,
-            // url: "/retail/payment/" + category+"/biller",
             success: function (biller , status, xhr) {
-
-
+                console.log(JSON.stringify(biller));
+                console.log(biller.length);
                 if(biller.length==0){
 
                 }
-//                $(".loader").hide();
-
                 $('#billerId').empty();
                 $('#billerId').append("<option value=''>-Select-</option>");
-                $('#paymentItem').empty();
-
-                console.log("Biller ---------->>>", biller)
-
-                for(var i=0;i<=biller.length;i++){
-                    console.log("Biller is "+biller[i].billerName)
-
-                    if(biller[i].billerName === undefined){
-                        break;
-                    }
-
-                    var biller =  "<option value='"+biller[i].billerId+"'>"+biller[i].billerName+"</option>"
-                    console.log("Var Biller is" +biller)
-
-                    $('#billerId').append(biller)
-                }
-            },
-            error: function (xhr, status, err) {
-                console.log("error occurred fetching Billers");
-                console.log("response: "+xhr.responseText);
-                console.log("status: "+xhr.status);
-
-//                $(".loader").hide();
-                return;
+                $('#paymentItemId').empty();
+                console.log("Biller ---------->>>" +biller)
+                biller.forEach(b => $('#billerId').append("<option value='"+b.billerId+"'>"+b.billerName+"</option>"));
 
             }
-        });
+        })
 
     }
 
-r
+
     function fetchPaymentItems(){
 
         var biller = $("#billerId").val();
         console.log("Biller selected is ---->>>>>", biller)
-
-
         $.ajax({
             type: 'POST',
             url: "/retail/payment/paymentItem",
             data: {billerId: biller},
-            success: function (paymentItem, status, xhr) {
-
-                if(paymentItem.length==0){
+            success: function (items , status, xhr) {
+                console.log(JSON.stringify(items));
+                console.log(items.length);
+                if(items.length==0){
 
                 }
-//                $(".loader").hide();
-
                 $('#paymentItemId').empty();
                 $('#paymentItemId').append("<option value=''>-Select-</option>");
-
-                console.log("PaymentItem 1st ---------->>>", paymentItem)
-
-                for(var i=0;i<=paymentItem.length;i++){
-                    console.log("PaymentItem is "+paymentItem[i].paymentItemName)
-
-                    if(paymentItem[i].paymentItemName === undefined){
-                        break;
-                    }
-
-                    var paymentItem =  "<option value='"+paymentItem[i].paymentItemId+"'>"+paymentItem[i].paymentItemName+"</option>"
-
-                    console.log("Var Biller is", paymentItem)
-                    $('#paymentItemId').append(paymentItem)
-                }
-
-
-            },
-            error: function (xhr, status, err) {
-                console.log("error occurred fetching payment Items");
-                console.log("response: "+xhr.responseText);
-                console.log("status: "+xhr.status);
-
-//                $(".loader").hide();
-                return;
-
+                console.log("Biller ---------->>>" +items)
+                items.forEach(b => $('#paymentItemId').append("<option value='"+b.paymentItemId+"'>"+b.paymentItemName+"</option>"));
             }
-        });
-
-        // UpdateOwnerReferenceName(biller);
-
+        })
     }
 
 
@@ -291,19 +211,12 @@ r
 
         var paymentItemId = $("#paymentItemId").val();
         console.log("paymentItem detail is ---->>>>>", paymentItemId)
-
-
         $.ajax({
             url: "/retail/payment/paymentItem/" + paymentItemId+"",
             success: function (paymentItem, status, xhr) {
-
-
-
                 console.log("PaymentItem name is "+paymentItem.paymentItemName);
                 console.log("PaymentItem price is "+paymentItem.amount);
                 console.log("PaymentItem read-only status is "+paymentItem.readonly);
-
-//                $(".loader").hide();
 
                 $('#amount').val(paymentItem.amount);
 
@@ -314,16 +227,6 @@ r
                     $('#amount').attr("readonly","readonly")
 
                 }
-
-
-            },
-            error: function (xhr, status, err) {
-                console.log("error occurred fetching accounts");
-                console.log("response: "+xhr.responseText);
-                console.log("status: "+xhr.status);
-
-//                $(".loader").hide();
-                return;
 
             }
         });
