@@ -149,6 +149,12 @@
         </dependency>
 
 
+<!--        <dependency>-->
+<!--        <groupId>com.oracle</groupId>-->
+<!--        <artifactId>ojdbc7</artifactId>-->
+<!--        <version>12.1.0</version>-->
+<!--        </dependency>-->
+<!--         https://mvnrepository.com/artifact/com.microsoft.sqlserver/mssql-jdbc-->
         <dependency>
         <groupId>com.oracle</groupId>
         <artifactId>ojdbc7</artifactId>
@@ -181,11 +187,11 @@
         </dependency>
 
         <!-- hot swapping, disable cache for template, enable live reload -->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-devtools</artifactId>
-            <optional>true</optional>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>org.springframework.boot</groupId>-->
+<!--            <artifactId>spring-boot-devtools</artifactId>-->
+<!--            <optional>true</optional>-->
+<!--        </dependency>-->
 
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
@@ -196,13 +202,6 @@
             <artifactId>modelmapper-spring</artifactId>
             <version>0.7.5</version>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/org.jacoco/org.jacoco.core -->
-        <dependency>
-            <groupId>org.jacoco</groupId>
-            <artifactId>org.jacoco.core</artifactId>
-            <version>0.8.5</version>
-        </dependency>
-
         <!--<dependency>-->
         <!--<groupId>org.hibernate</groupId>-->
         <!--<artifactId>hibernate-validator</artifactId>-->

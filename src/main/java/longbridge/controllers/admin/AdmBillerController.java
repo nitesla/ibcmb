@@ -4,7 +4,6 @@ import longbridge.models.Biller;
 import longbridge.models.BillerCategory;
 import longbridge.models.PaymentItem;
 import longbridge.repositories.BillerCategoryRepo;
-import longbridge.models.PaymentItem;
 import longbridge.repositories.BillerRepo;
 import longbridge.services.BillerService;
 import longbridge.services.implementations.BillerServiceImpl;

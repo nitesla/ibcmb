@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{corp-layout}">
+
+<body onload="javascript:var bread = [['Home', '/corporate/dashboard'],['Recurring Payment Management', '/corporate/recurringpayment'],['Recurring Bill Payment']];currentBar('Set-up Recurring Bill Payment');breadCrumb(bread)">
+
+
+<div layout:fragment="content">
+    <div class="col-md-5 col-sm-5 ml-15 hide-content-onl">
+
+        <select class="form-control full-width coronation-form-control hide-content-only" id="view">
+            <option value="account">Overview</option>
+        </select>
+    </div>
+
+    <div class="col-xs-12" >
+        <div class="no-mt no-pad-lef alert no-bd">
+            <div class="">
+                <div class="col-md-6 col-sm-6 no-pad-left">
+
+<!--                    <div>-->
+<!--                        <a  class="btn btn-link required-step" th:href="@{/corporate/billpayment}" >Back</a>-->
+<!--                    </div>-->
+<!--                    <br/>-->
+                    <form id="local" method="post" th:action="@{/corporate/recurringpayment/addnewbeneficiary}" th:object="${billPaymentDTO}">
+
+                        <div class="form-group">
+                            <label>Category</label>
+                            <select class="form-control" id="category" name="category" required="required" th:field="*{categoryName}">
+                                <option value="-- Select --">-- Select Category --</option>
+                                <option th:each="message : ${categorys}" th:value="${message.categoryName }"th:text="${message.categoryName }"></option>
+                            </select><span class='req-inner'></span>
+                        </div>
+
+                        <div class="form-group">
+                                <label>Biller</label>
+                                <select  class="form-control" id="billerName" name="billerName" required="required" th:field="*{billerName}">
+                                </select><span class='req-inner'></span>
+                        </div>
+
+                        <div id="beneficiaryForm" style="display: none">
+
+
+                            <div class="form-group">
+                                <label>Service/Payment-Item</label>
+                                <select  class="form-control" id="paymentitem" name="paymentitem" required="required" th:field="*{paymentItemName}">
+                                </select><span class='req-inner'></span>
+                            </div>
+
+
+
+                        <div class="form-group">
+                            <label>Payment-Code</label>
+                            <input type="number" class="form-control" name="referenceNumber" th:field="*{paymentCode}"
+                                   required="required"/><span class='req-inner'></span>
+                        </div>
+
+                        </div>
+                        <div>
+                            <a type="submit" class="btn btn-default btn-sm" id="fixCalculate" >Submit</a>
+                        </div>
+
+
+
+
+                    </form>
+
+                </div>
+
+                <div class="col-xs-12 col-sm-5  wel ">
+                    <!--<p class="related" style="padding-top: 5%">Related Information</p>-->
+                    <div  class="related-box">
+                        <h3 class="related-bar">Related Information</h3>
+
+                        <!--<input type="availBal" name="availBal"/>-->
+                        <p class="related-info coronation-blue" id="availBal"><b></b></p>
+                        <!--<p  class="related-info coronation-blue" id="limit"><b></b></p>-->
+
+                    </div>
+                </div>
+
+
+
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+
+
+<th:block layout:fragment="scripts">
+    <script>
+
+
+        function getBalance(){
+
+            var accountNumber = $('#source').val();
+            $.ajax({
+                url: "/corporate/transfer/balance/"+accountNumber,
+                type: 'GET',
+                async: false,
+                success:function(jd){
+                    var message = jd.message;
+                    var success =  jd.success;
+                    console.log(message);
+                    console.log(success);
+                    if (success==false){
+                        document.getElementById("myspan").textContent="Could not get balance from server, please try again.";
+                        $("#myspan").show();
+                    }else{
+//                    $('input[name=availBal]').val(bal);
+
+                        var  bal=numberWithCommas(message);
+                        $('#availBal').html("Available Balance: "+bal);
+
+                    }
+                }
+            })
+        }
+
+
+        $('#billerName').on('change',function () {
+            $('#beneficiaryForm').css('display','block');
+            var items = $('#billerName').val();
+            if (items === ""){
+                $('#beneficiaryForm').css('display','none');
+            }
+        })
+
+
+        $('#billerName').on('change',function () {
+            var billerId = $('#billerName').val();
+            $.ajax({
+                type: "POST",
+                url: "/corporate/billpayment/getpaymentitems",
+                data: { billerId:billerId}, // parameters
+                success: function (items , status, xhr) {
+                    console.log(JSON.stringify(items));
+                    console.log(items.length);
+                    if(items.length==0){
+
+                    }
+                    $('#paymentitem').empty();
+                    $('#paymentitem').append("<option value=''>-Select-</option>");
+                    console.log("Biller ---------->>>" +items)
+                    items.forEach(b => $('#paymentitem').append("<option value='"+b.paymentItemName+"'>"+b.paymentItemName+"</option>"));
+                }
+            })
+        })
+
+
+        $('#category').on('change',function () {
+            var category = $('#category').val();
+            $.ajax({
+                type: "POST",
+                url: "/corporate/billpayment/getBiller",
+                data: { category:category}, // parameters
+                success: function (biller , status, xhr) {
+                    console.log(JSON.stringify(biller));
+                    console.log(biller.length);
+                    if(biller.length==0){
+
+                    }
+                    $('#billerName').empty();
+                    $('#billerName').append("<option value=''>-Select-</option>");
+                    console.log("Biller ---------->>>" +biller)
+                    biller.forEach(b => $('#billerName').append("<option value='"+b.billerId+"'>"+b.billerName+"</option>"));
+                }
+            })
+        })
+
+
+    </script>
+
+</th:block>
+
+</body>
+</html>
+
+
