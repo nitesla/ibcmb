@@ -289,7 +289,7 @@ public class MessageServiceImpl implements MessageService {
     @Override
     @Transactional
     public List<MessageDTO> getSentMessages(User user) {
-        List<Message>  messages = messageRepo.findMessageByUserAndTagOrderByDateCreated(user.getId(), user.getUserType(),MessageCategory.SENT.toString());
+        List<Message>  messages = messageRepo.findMessageByUserAndTagOrderByDateCreatedDesc(user.getId(), user.getUserType(),MessageCategory.SENT.toString());
         logger.info("the message ================================================================================ {}",messages);
         List<MessageDTO> sentMessages = new ArrayList<MessageDTO>();
         if (messages == null) {
@@ -302,7 +302,7 @@ public class MessageServiceImpl implements MessageService {
     @Override
     @Transactional
     public List<MessageDTO> getMessagesByTag(User user, MessageCategory messageCategory) {
-        List<Message>  messages = messageRepo.findMessageByUserAndTagOrderByDateCreated(user.getId(), user.getUserType(),messageCategory.toString());
+        List<Message>  messages = messageRepo.findMessageByUserAndTagOrderByDateCreatedDesc(user.getId(), user.getUserType(),messageCategory.toString());
         logger.info("the {} messages are {}",messageCategory,messages.size());
         List<MessageDTO> sentMessages = new ArrayList<MessageDTO>();
         if (messages == null) {
