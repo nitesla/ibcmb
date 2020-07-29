@@ -33,4 +33,5 @@ public interface PaymentItemRepo extends CommonRepo<PaymentItem, Long>{
 
     List<PaymentItem> findAllByEnabledAndBillerId(Boolean enabled, Long billerId);
 
+    List<PaymentItem> findAllByEnabledAndBillerId(boolean enabled, Long billerId);
 }
