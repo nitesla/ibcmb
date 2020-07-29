@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{corp-layout}">
 
-<body onload="javascript:var bread = [['Home', '/corporate/billpayment'],['Recurring Bill Payment']];currentBar('Set-up Recurring Bill Payment');breadCrumb(bread)">
+<body onload="javascript:var bread = [['Home', '/corporate/dashboard'],['Recurring Payment Management', '/corporate/recurringpayment'],['Recurring Bill Payment']];currentBar('Set-up Recurring Bill Payment');breadCrumb(bread)">
 
 
 <div layout:fragment="content">
@@ -13,16 +13,16 @@
         </select>
     </div>
 
-    <div class="col-xs-12 no-pad-left " >
+    <div class="col-xs-12" >
         <div class="no-mt no-pad-lef alert no-bd">
             <div class="">
-                <div class="form-spacin col-md-7 col-sm-7 no-pad-right">
+                <div class="col-md-6 col-sm-6 no-pad-left">
 
-                    <div>
-                        <a  class="btn btn-link required-step" th:href="@{/corporate/billpayment}" >Back</a>
-                    </div>
-                    <br/>
-                    <form id="local" method="post" th:action="@{/corporate/billpayment/addnewbeneficiary}" th:object="${billPaymentDTO}">
+<!--                    <div>-->
+<!--                        <a  class="btn btn-link required-step" th:href="@{/corporate/billpayment}" >Back</a>-->
+<!--                    </div>-->
+<!--                    <br/>-->
+                    <form id="local" method="post" th:action="@{/corporate/recurringpayment/addnewbeneficiary}" th:object="${billPaymentDTO}">
 
                         <div class="form-group">
                             <label>Category</label>

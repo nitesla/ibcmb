@@ -12,13 +12,7 @@ import java.util.List;
 @Repository
 public interface PaymentItemRepo extends CommonRepo<PaymentItem, Long>{
 
-    List<PaymentItem> getAllByBillerId(Long billerId);
-
     PaymentItem findByPaymentItemId(Long paymentItemId);
-
-    List<PaymentItem> findByPaymentItemIdNotIn(List<Long> paymentItemId);
-
-    List<PaymentItem> findByPaymentItemId(String billers);
 
     @Transactional
     @Modifying
@@ -32,12 +26,11 @@ public interface PaymentItemRepo extends CommonRepo<PaymentItem, Long>{
 
     List<PaymentItem> findByBillerId(Long billerId);
 
-    List<PaymentItem> findByBillerIdAndEnabled(Long billerId, boolean enabled);
-
     @Transactional
     @Modifying
     @Query("update PaymentItem p set p.readonly = :status where p.id = :id")
     void readOnly(@Param("id") Long id,@Param("status") Boolean status);
 
-    List<PaymentItem> findAllByEnabledAndBillerId(boolean enabled, Long billerId);
+    List<PaymentItem> findAllByEnabledAndBillerId(Boolean enabled, Long billerId);
+
 }
