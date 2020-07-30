@@ -65,6 +65,15 @@ public class IntegrationServiceImpl implements IntegrationService {
 	@Value("${custom.duty.remark")
 	private String paymentRemark;
 
+	@Value("${get.billers.quickteller}")
+	private String quicktellerBillers;
+
+	@Value("${get.categories.quickteller}")
+	private String quicktellerCategories;
+
+	@Value("${get.paymentitem.quickteller}")
+	private String quicktellerPaymentItems;
+
 	@Value("${custom.appId}")
 	private String appId;
 
@@ -1131,6 +1140,9 @@ public class IntegrationServiceImpl implements IntegrationService {
 		}
 		return null;
 	}
+
+
+
 	@Override
 	public CustomTransactionStatus paymentStatus(CorpPaymentRequest corpPaymentRequest){
 		try {
@@ -1247,6 +1259,8 @@ public class IntegrationServiceImpl implements IntegrationService {
 		}
 		return response;
 	}
+
+
 	@Override
 	public Response addFundToDeposit(FixedDepositDTO fixedDepositDTO) {
 		Response response =  null;
@@ -1421,13 +1435,11 @@ public class IntegrationServiceImpl implements IntegrationService {
 
 	@Override
 	public List<BillerDTO> getBillers(){
-		String appId = "001b5";
-		String hash = "$234@789";
 		List<BillerDTO> billers = new ArrayList<>();
-		String uri = URI+"/api/quickteller/biller";
+		String uri = URI+quicktellerBillers;
 		Map<String,String> params = new HashMap<>();
 		params.put("appid",appId);
-		params.put("hash",hash);
+		params.put("hash",secretKey);
 		try {
 			BillerResponse billerResponse = template.postForObject(uri,params, BillerResponse.class);
 			billers = billerResponse.getBillers();
@@ -1483,7 +1495,7 @@ public class IntegrationServiceImpl implements IntegrationService {
 	public List<PaymentItemDTO> getPaymentItems(Long billerId){
 		String id = Long.toString(billerId);
 		List<PaymentItemDTO> items = new ArrayList<>();
-		String uri = URI+"/api/quickteller/billerpaymentitem";
+		String uri = URI+quicktellerPaymentItems;
 		Map<String,String> params = new HashMap<>();
 		params.put("appid",appId);
 		params.put("billerid", id);
@@ -1501,7 +1513,7 @@ public class IntegrationServiceImpl implements IntegrationService {
 	@Override
 	public List<BillerCategoryDTO> getBillerCategories(){
 		List<BillerCategoryDTO> items = new ArrayList<>();
-		String uri = URI+"/api/quickteller/billercategory";
+		String uri = URI+quicktellerCategories;
 		Map<String,String> params = new HashMap<>();
 		params.put("appid",appId);
 		params.put("hash",secretKey);
