@@ -61,7 +61,7 @@ public class Corporate extends AbstractEntity implements PrettySerializer{
 
     @OneToMany
     @JsonIgnore
-    private List<AccountCoverage> coverages;
+    private List<Coverage> coverages;
 
 
 
@@ -71,12 +71,12 @@ public class Corporate extends AbstractEntity implements PrettySerializer{
     @JoinColumn(name = "account_id", referencedColumnName = "id") )
     private List<Account> accounts;
 
-    public List<AccountCoverage> getCoverages() {
+    public List<Coverage> getCoverages() {
         return coverages;
     }
 
-    public void setCoverages(List<AccountCoverage> accountCoverages) {
-        this.coverages = accountCoverages;
+    public void setCoverages(List<Coverage> coverages) {
+        this.coverages = coverages;
     }
 
 

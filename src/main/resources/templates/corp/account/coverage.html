@@ -65,7 +65,7 @@
                 "processing" : true,
                 "serverSide" : true,
                 "ajax" : {
-                    url : "/corporate/accountcoverage/admin/"+corpId+"/all",
+                    url : "/corporate/coverage/admin/"+corpId+"/all",
                     "type" : "GET",
                     "data" : function(d) {
                         d.csearch = $('#pattern').val();
@@ -106,7 +106,7 @@
         });
         $(document).on("change","input[type=checkbox]", function(e) {
             var corpId = [[${corpId}]];
-            var updateUrl = "/corporate/accountcoverage/admin/update";
+            var updateUrl = "/corporate/coverage/admin/update";
             var cb = $(e.currentTarget);
             var codeId = cb.val();
             var enabled;

@@ -42,6 +42,8 @@ public interface CronJobService {
     void addNewAccount() throws InternetBankingException;
     void executeAutoAdminDeactivation();
     public void refreshPaymentBillers();
+    void addCoverageForNewEntity();
+    void addCoverageForNewCodes();
 
 
 }

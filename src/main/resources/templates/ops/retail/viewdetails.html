@@ -337,7 +337,7 @@
             "processing" : true,
             "serverSide" : true,
             "ajax" : {
-                url : "/ops/accountcoverage/retail/"+retId+"/all",
+                url : "/ops/coverage/retail/"+retId+"/all",
                 "type" : "GET",
                 "data" : function(d) {
                     d.csearch = $('#pattern').val();
@@ -379,7 +379,7 @@
     $(document).on("change","input[type=checkbox]", function(e) {
         var retId = [[${retId}]];
         var userType = [[${userType}]];
-        var updateUrl = "/ops/accountcoverage/retail/update";
+        var updateUrl = "/ops/coverage/retail/update";
         var cb = $(e.currentTarget);
         var codeId = cb.val();
         var enabled;

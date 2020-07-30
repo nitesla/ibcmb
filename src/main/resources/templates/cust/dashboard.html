@@ -223,7 +223,7 @@
             var retId = [[${retId}]];
 
             $.ajax({
-                url: "/retail/accountcoverage/"+retId,
+                url: "/retail/coverage/"+retId,
                 type: 'GET',
                 success: function (coverageData) {
                     for (let n = 0; n < coverageData.length; n++) {

@@ -225,7 +225,7 @@
             var corpId = [[${corpId}]];
 
             $.ajax({
-                url: "/corporate/accountcoverage/"+corpId,
+                url: "/corporate/coverage/"+corpId,
                 type: 'GET',
                 success: function (coverageData) {
                     for (let n = 0; n < coverageData.length; n++) {

@@ -45,7 +45,7 @@ public class Code extends AbstractEntity implements PrettySerializer{
 
 	@OneToMany
 	@JsonIgnore
-	private List<AccountCoverage> accountCoverage;
+	private List<Coverage> coverage;
 
     public String getCode() {
         return code;
@@ -80,12 +80,12 @@ public class Code extends AbstractEntity implements PrettySerializer{
 		this.extraInfo = extraInfo;
 	}
 
-	public List<AccountCoverage> getAccountCoverage() {
-		return accountCoverage;
+	public List<Coverage> getCoverage() {
+		return coverage;
 	}
 
-	public void setAccountCoverage(List<AccountCoverage> accountCoverage) {
-		this.accountCoverage = accountCoverage;
+	public void setCoverage(List<Coverage> coverage) {
+		this.coverage = coverage;
 	}
 
 	@Override

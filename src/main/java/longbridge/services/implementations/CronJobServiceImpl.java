@@ -55,6 +55,9 @@ public class CronJobServiceImpl implements CronJobService {
     private BillerService billerService;
 
     @Autowired
+    private CoverageAdministrationService coverageService;
+
+    @Autowired
     private AdminUserRepo adminUserRepo;
 
     @Autowired
@@ -441,5 +444,15 @@ public class CronJobServiceImpl implements CronJobService {
 
     }
 
+    @Override
+    @Scheduled(cron ="${coverage.update}")
+    public void addCoverageForNewEntity() {
+        coverageService.addCoverageForNewEntity();
+    }
 
+    @Override
+    @Scheduled(cron = "${coverage.update}")
+    public void addCoverageForNewCodes() {
+        coverageService.addCoverageForNewCodes();
+    }
 }
