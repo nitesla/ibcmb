@@ -2,8 +2,7 @@ package longbridge.controllers.corporate;
 
 
 
-import longbridge.config.CoverageInfo;
-import longbridge.dtos.AccountCoverageDTO;
+import longbridge.dtos.CoverageDTO;
 import longbridge.dtos.CoverageDetailsDTO;
 import longbridge.dtos.UpdateCoverageDTO;
 import longbridge.models.CorporateUser;
@@ -11,14 +10,13 @@ import longbridge.models.EntityId;
 import longbridge.models.User;
 import longbridge.models.UserType;
 import longbridge.security.userdetails.CustomUserPrincipal;
-import longbridge.services.AccountCoverageAdministrationService;
-import longbridge.services.AccountCoverageService;
+import longbridge.services.CoverageAdministrationService;
+import longbridge.services.CoverageService;
 import longbridge.services.CorporateUserService;
 import longbridge.utils.DataTablesUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.MessageSource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -30,19 +28,17 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.context.annotation.SessionScope;
 
 import javax.annotation.Resource;
-import java.util.List;
 import java.util.Set;
 
 
 @Controller
-@RequestMapping("/corporate/accountcoverage")
+@RequestMapping("/corporate/coverage")
 public class CorpCoverageController {
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
-    private AccountCoverageService coverageService;
+    private CoverageService coverageService;
     @Autowired
     private CorporateUserService corporateUserService;
 
@@ -54,7 +50,7 @@ public class CorpCoverageController {
     private Set<CoverageDetailsDTO> coverageDetails;
 
     @Autowired
-    AccountCoverageAdministrationService administrationService;
+    CoverageAdministrationService administrationService;
 
     @GetMapping(path = "/{corpId}")
     @ResponseBody
@@ -75,13 +71,13 @@ public class CorpCoverageController {
     }
 
     @GetMapping(path = "/admin/{corpId}/all")
-    public @ResponseBody DataTablesOutput<AccountCoverageDTO> getAllCoverageForCorporate(@PathVariable Long corpId, DataTablesInput input) {
+    public @ResponseBody DataTablesOutput<CoverageDTO> getAllCoverageForCorporate(@PathVariable Long corpId, DataTablesInput input) {
         EntityId entityId = new EntityId();
         entityId.setEid(corpId);
         entityId.setType(UserType.CORPORATE);
         Pageable pageable = DataTablesUtils.getPageable(input);
-        Page<AccountCoverageDTO> coverage = administrationService.getAllCoverage(entityId,pageable);
-        DataTablesOutput<AccountCoverageDTO> out = new DataTablesOutput<AccountCoverageDTO>();
+        Page<CoverageDTO> coverage = administrationService.getAllCoverage(entityId,pageable);
+        DataTablesOutput<CoverageDTO> out = new DataTablesOutput<CoverageDTO>();
         out.setDraw(input.getDraw());
         out.setData(coverage.getContent());
         out.setRecordsFiltered(coverage.getTotalElements());

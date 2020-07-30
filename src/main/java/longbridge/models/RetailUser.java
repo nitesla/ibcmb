@@ -10,10 +10,7 @@ import org.hibernate.annotations.Where;
 import org.hibernate.envers.AuditOverride;
 import org.hibernate.envers.Audited;
 
-import javax.persistence.Entity;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
-import javax.persistence.UniqueConstraint;
+import javax.persistence.*;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collection;
@@ -55,7 +52,7 @@ public class RetailUser extends User implements PrettySerializer {
 
     @OneToMany
     @JsonIgnore
-    private List<AccountCoverage> coverages;
+    private List<Coverage> coverages;
 
 
     public RetailUser() {
@@ -140,12 +137,12 @@ public class RetailUser extends User implements PrettySerializer {
         this.transfers = transfers;
     }
 
-    public List<AccountCoverage> getCoverages() {
+    public List<Coverage> getCoverages() {
         return coverages;
     }
 
-    public void setCoverages(List<AccountCoverage> accountCoverages) {
-        this.coverages = accountCoverages;
+    public void setCoverages(List<Coverage> coverages) {
+        this.coverages = coverages;
     }
 
     @Override
