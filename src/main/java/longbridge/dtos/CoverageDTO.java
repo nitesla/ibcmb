@@ -2,7 +2,7 @@ package longbridge.dtos;
 
 
 
-public class AccountCoverageDTO {
+public class CoverageDTO {
     private Long id;
     private String code;
     private String description;
@@ -71,7 +71,7 @@ public class AccountCoverageDTO {
 
     @Override
     public String toString() {
-        return "AccountCoverageDTO{" +
+        return "CoverageDTO{" +
                 "id=" + id +
                 ", code='" + code + '\'' +
                 ", description='" + description + '\'' +

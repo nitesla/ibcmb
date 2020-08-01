@@ -15,12 +15,11 @@ import longbridge.exception.InternetBankingException;
 import longbridge.exception.InternetBankingTransferException;
 import longbridge.exception.TransferErrorService;
 import longbridge.models.*;
-import longbridge.repositories.AccountCoverageRepo;
+import longbridge.repositories.CoverageRepo;
 import longbridge.repositories.AccountRepo;
 import longbridge.repositories.AntiFraudRepo;
 import longbridge.repositories.CorporateRepo;
 import longbridge.security.userdetails.CustomUserPrincipal;
-import longbridge.services.AccountCoverageService;
 import longbridge.services.ConfigurationService;
 import longbridge.services.IntegrationService;
 import longbridge.services.MailService;
@@ -66,6 +65,15 @@ public class IntegrationServiceImpl implements IntegrationService {
 	@Value("${custom.duty.remark")
 	private String paymentRemark;
 
+	@Value("${get.billers.quickteller}")
+	private String quicktellerBillers;
+
+	@Value("${get.categories.quickteller}")
+	private String quicktellerCategories;
+
+	@Value("${get.paymentitem.quickteller}")
+	private String quicktellerPaymentItems;
+
 	@Value("${custom.appId}")
 	private String appId;
 
@@ -93,12 +101,12 @@ public class IntegrationServiceImpl implements IntegrationService {
 	private AccountRepo accountRepo;
 	private CorporateRepo corporateRepo;
 	private AntiFraudRepo antiFraudRepo;
-	private AccountCoverageRepo coverageRepo;
+	private CoverageRepo coverageRepo;
 
 	@Autowired
 	public IntegrationServiceImpl(RestTemplate template, MailService mailService, TemplateEngine templateEngine,
-								  ConfigurationService configService, TransferErrorService errorService, MessageSource messageSource,
-								  AccountRepo accountRepo, CorporateRepo corporateRepo, AntiFraudRepo antiFraudRepo,AccountCoverageRepo coverageRepo) {
+                                  ConfigurationService configService, TransferErrorService errorService, MessageSource messageSource,
+                                  AccountRepo accountRepo, CorporateRepo corporateRepo, AntiFraudRepo antiFraudRepo, CoverageRepo coverageRepo) {
 		this.template = template;
 		this.mailService = mailService;
 		this.templateEngine = templateEngine;
@@ -1132,6 +1140,9 @@ public class IntegrationServiceImpl implements IntegrationService {
 		}
 		return null;
 	}
+
+
+
 	@Override
 	public CustomTransactionStatus paymentStatus(CorpPaymentRequest corpPaymentRequest){
 		try {
@@ -1248,6 +1259,8 @@ public class IntegrationServiceImpl implements IntegrationService {
 		}
 		return response;
 	}
+
+
 	@Override
 	public Response addFundToDeposit(FixedDepositDTO fixedDepositDTO) {
 		Response response =  null;
@@ -1422,13 +1435,11 @@ public class IntegrationServiceImpl implements IntegrationService {
 
 	@Override
 	public List<BillerDTO> getBillers(){
-		String appId = "001b5";
-		String hash = "$234@789";
 		List<BillerDTO> billers = new ArrayList<>();
-		String uri = URI+"/api/quickteller/biller";
+		String uri = URI+quicktellerBillers;
 		Map<String,String> params = new HashMap<>();
 		params.put("appid",appId);
-		params.put("hash",hash);
+		params.put("hash",secretKey);
 		try {
 			BillerResponse billerResponse = template.postForObject(uri,params, BillerResponse.class);
 			billers = billerResponse.getBillers();
@@ -1484,7 +1495,7 @@ public class IntegrationServiceImpl implements IntegrationService {
 	public List<PaymentItemDTO> getPaymentItems(Long billerId){
 		String id = Long.toString(billerId);
 		List<PaymentItemDTO> items = new ArrayList<>();
-		String uri = URI+"/api/quickteller/billerpaymentitem";
+		String uri = URI+quicktellerPaymentItems;
 		Map<String,String> params = new HashMap<>();
 		params.put("appid",appId);
 		params.put("billerid", id);
@@ -1502,7 +1513,7 @@ public class IntegrationServiceImpl implements IntegrationService {
 	@Override
 	public List<BillerCategoryDTO> getBillerCategories(){
 		List<BillerCategoryDTO> items = new ArrayList<>();
-		String uri = URI+"/api/quickteller/billercategory";
+		String uri = URI+quicktellerCategories;
 		Map<String,String> params = new HashMap<>();
 		params.put("appid",appId);
 		params.put("hash",secretKey);

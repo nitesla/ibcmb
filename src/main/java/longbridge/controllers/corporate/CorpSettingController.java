@@ -1,6 +1,5 @@
 package longbridge.controllers.corporate;
 
-import longbridge.config.CoverageInfo;
 import longbridge.dtos.*;
 import longbridge.exception.*;
 import longbridge.forms.AlertPref;
@@ -28,7 +27,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.security.Principal;
@@ -76,7 +74,7 @@ public class CorpSettingController {
     private IntegrationService integrationService;
 
 
-    private AccountCoverageService coverageService;
+    private CoverageService coverageService;
 
 
     @RequestMapping("/dashboard")

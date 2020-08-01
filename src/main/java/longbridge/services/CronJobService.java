@@ -40,8 +40,10 @@ public interface CronJobService {
     boolean startCronJob() throws InternetBankingException;
     boolean stopJob() throws InternetBankingException;
     void addNewAccount() throws InternetBankingException;
-//    void executeAutoAdminDeactivation();
+    void executeAutoAdminDeactivation();
     public void refreshPaymentBillers();
+    void addCoverageForNewEntity();
+    void addCoverageForNewCodes();
 
 
 }

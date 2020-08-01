@@ -44,7 +44,7 @@ public interface MessageRepo extends CommonRepo<Message, Long> {
 
     Iterable<Message> findByDateCreatedBetween(Date startDate, Date endDate);
     @Query("select r from Message r where r.mailBox.userId =:userId and r.mailBox.userType =:userType and r.tag = :tag")
-    List<Message> findMessageByUserAndTagOrderByDateCreated(@Param("userId") Long userId,@Param("userType") UserType userType, @Param("tag") String category);
+    List<Message> findMessageByUserAndTagOrderByDateCreatedDesc(@Param("userId") Long userId,@Param("userType") UserType userType, @Param("tag") String category);
 
     @Query("select r from Message r where r.mailBox.userId =:userId and r.mailBox.userType =:userType and r.tag = :tag")
     Page<Message> findPagedMessageByUserAndTag(@Param("userId") Long userId,@Param("userType") UserType userType, @Param("tag") String category,Pageable pageable);
