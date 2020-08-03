@@ -1,15 +1,15 @@
 package longbridge.config;
 
 
-import longbridge.dtos.AccountCoverageDTO;
+import longbridge.dtos.CoverageDTO;
 import longbridge.dtos.CoverageDetailsDTO;
 import longbridge.models.EntityId;
 import longbridge.models.RetailUser;
 import longbridge.models.User;
 import longbridge.models.UserType;
 import longbridge.security.userdetails.CustomUserPrincipal;
-import longbridge.services.AccountCoverageAdministrationService;
 import longbridge.services.CorporateService;
+import longbridge.services.CoverageAdministrationService;
 import longbridge.services.IntegrationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -29,7 +29,7 @@ import java.util.Set;
 @SessionScope
 public class CoverageInfo {
     @Autowired
-    private AccountCoverageAdministrationService accountCvAdminService;
+    private CoverageAdministrationService coverageAdminService;
 
     private Set<CoverageDetailsDTO> coverage;
 
@@ -60,9 +60,9 @@ public class CoverageInfo {
             System.out.println(cifs);
 
         }
-        Page<AccountCoverageDTO> allCoverage = accountCvAdminService.getAllCoverage(entityId, Pageable.unpaged());
+        Page<CoverageDTO> allCoverage = coverageAdminService.getAllCoverage(entityId, Pageable.unpaged());
         coverage = new HashSet<>();
-        for (AccountCoverageDTO dto : allCoverage) {
+        for (CoverageDTO dto : allCoverage) {
             if (dto.isEnabled()) {
             CoverageDetailsDTO coverageDetails = integrationService.getCoverageDetails(dto.getCode(), cifs);
             coverage.add(coverageDetails);

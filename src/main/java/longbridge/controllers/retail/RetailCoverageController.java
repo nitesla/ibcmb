@@ -1,8 +1,6 @@
 package longbridge.controllers.retail;
 
-import longbridge.config.CoverageInfo;
 import longbridge.dtos.CoverageDetailsDTO;
-import longbridge.services.AccountCoverageService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,12 +12,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.Resource;
-import java.util.List;
 import java.util.Set;
 
 
 @Controller
-@RequestMapping("/retail/accountcoverage")
+@RequestMapping("/retail/coverage")
 public class RetailCoverageController {
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 

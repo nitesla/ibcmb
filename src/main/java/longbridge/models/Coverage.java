@@ -1,19 +1,19 @@
 package longbridge.models;
 
 
-
 import org.hibernate.annotations.Where;
 import org.hibernate.envers.Audited;
 
-import javax.persistence.*;
-import java.util.Objects;
+import javax.persistence.Entity;
+import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 
 @Entity
 @Audited(withModifiedFlag=true)
 @Where(clause ="del_Flag='N'" )
-@Table(name = "account_coverage", uniqueConstraints =
+@Table(name = "coverage", uniqueConstraints =
 @UniqueConstraint(columnNames = {"eid", "type", "code"}))
-public class AccountCoverage extends AbstractEntity  {
+public class Coverage extends AbstractEntity  {
 
 
     private boolean enabled;
@@ -23,7 +23,7 @@ public class AccountCoverage extends AbstractEntity  {
 
     private String code;
 
-    public AccountCoverage() {
+    public Coverage() {
     }
 
     public boolean isEnabled() {

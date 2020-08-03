@@ -55,7 +55,7 @@ public class RetailUser extends User implements PrettySerializer {
 
     @OneToMany
     @JsonIgnore
-    private List<AccountCoverage> coverages;
+    private List<Coverage> coverages;
 
 
     public RetailUser() {
@@ -140,12 +140,12 @@ public class RetailUser extends User implements PrettySerializer {
         this.transfers = transfers;
     }
 
-    public List<AccountCoverage> getCoverages() {
+    public List<Coverage> getCoverages() {
         return coverages;
     }
 
-    public void setCoverages(List<AccountCoverage> accountCoverages) {
-        this.coverages = accountCoverages;
+    public void setCoverages(List<Coverage> coverages) {
+        this.coverages = coverages;
     }
 
     @Override
