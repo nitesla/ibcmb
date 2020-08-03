@@ -23,6 +23,4 @@ public interface MailService {
 
     void sendMail(Email email, Context context) throws MailException;
 
-
-
     }

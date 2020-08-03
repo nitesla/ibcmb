@@ -1,16 +1,13 @@
 package longbridge.dtos;
 
+import org.json.simple.JSONObject;
 
-
-public class CoverageDTO {
+public class AccountCoverageDTO {
     private Long id;
     private String code;
     private String description;
-    private boolean enabled;
-    private Long corpId;
-    private Long codeId;
-    private Long retId;
-
+    private boolean isEnabled;
+    private JSONObject details;
 
     public Long getId() {
         return id;
@@ -37,49 +34,29 @@ public class CoverageDTO {
     }
 
     public boolean isEnabled() {
-        return enabled;
+        return isEnabled;
     }
 
     public void setEnabled(boolean enabled) {
-        this.enabled = enabled;
+        isEnabled = enabled;
     }
 
-
-    public Long getCorpId() {
-        return corpId;
+    public JSONObject getDetails() {
+        return details;
     }
 
-    public void setCorpId(Long corpId) {
-        this.corpId = corpId;
-    }
-
-    public Long getCodeId() {
-        return codeId;
-    }
-
-    public void setCodeId(Long codeId) {
-        this.codeId = codeId;
-    }
-
-    public Long getRetId() {
-        return retId;
-    }
-
-    public void setRetId(Long retId) {
-        this.retId = retId;
+    public void setDetails(JSONObject details) {
+        this.details = details;
     }
 
     @Override
     public String toString() {
-        return "CoverageDTO{" +
+        return "AccountCoverageDTO{" +
                 "id=" + id +
                 ", code='" + code + '\'' +
                 ", description='" + description + '\'' +
-                ", enabled=" + enabled +
-                ", corpId=" + corpId +
-                ", codeId=" + codeId +
-                ", retId=" + retId +
+                ", isEnabled=" + isEnabled +
+                ", details=" + details +
                 '}';
     }
-
 }

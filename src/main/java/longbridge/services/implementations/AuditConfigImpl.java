@@ -28,7 +28,6 @@ import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -79,11 +78,11 @@ public class AuditConfigImpl implements AuditConfigService {
 	}
 
 	@Override
-	@CacheEvict(value = "audit-config", key = "#result.entityName")
 	@Verifiable(operation="AUDIT_CONFIG",description="Configuring Audit")
-	public AuditConfig saveAuditConfig(AuditConfig cfg) throws InternetBankingException
+	public boolean saveAuditConfig(AuditConfig cfg) throws InternetBankingException
 	{
-		return configRepo.save(cfg);
+		configRepo.save(cfg);
+		return true;
 	}
 
 	@Override
@@ -96,6 +95,13 @@ public class AuditConfigImpl implements AuditConfigService {
 	}
 
 
+	@Override
+	public Page<ModifiedEntityTypeEntity> audit(String pattern, Pageable pageDetails)
+	{
+//		Page<ModifiedEntityTypeEntity> page = modifiedEntityTypeEntityRepo.findUsingPattern(pattern, pageDetails);
+		//Page<ModifiedEntityTypeEntity> pageImpl = new PageImpl<AdminUserDTO>(dtOs,pageDetails,t);
+		return null;
+	}
 
 	@Override
 	public Page<ModifiedEntityTypeEntity> getRevisionEntities(String pattern, Pageable pageDetails)

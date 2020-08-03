@@ -10,8 +10,6 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Set;
-
 
 /**
  * Created by Fortune on 4/5/2017.
@@ -45,7 +43,4 @@ public interface RetailUserRepo extends CommonRepo<RetailUser, Long> {
     @Query(value="update retail_user set feed_back_status=?1 where id=?2",nativeQuery=true)
     public void updateFeedBackStatus(String status,Long id);
 
-
-    @Query("select id from RetailUser ")
-    Set<Long> getAllRetailUserId();
 }

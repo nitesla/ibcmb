@@ -7,7 +7,6 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
-import java.util.Set;
 
 /**
  * Created by Wunmi on 30/03/2017.
@@ -25,8 +24,6 @@ public interface CodeRepo extends CommonRepo<Code, Long>{
     Code getCode(@Param("code") String code);
     Code getCodeById(Long id);
     List<Code> findAllByType(String type);
-    @Query("select distinct c.code from Code c where c.type=:type")
-    Set<String> getCodeByType(@Param("type") String type);
     
     
     

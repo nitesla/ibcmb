@@ -2,7 +2,6 @@ package longbridge.config;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.CommonAnnotationBeanPostProcessor;
 import org.springframework.context.annotation.Configuration;
@@ -11,7 +10,6 @@ import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.context.annotation.SessionScope;
 import org.springframework.web.context.request.RequestContextListener;
 import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.i18n.CookieLocaleResolver;
@@ -23,7 +21,6 @@ import java.util.Locale;
  * Created by mac on 20/09/2018.
  */
 @Configuration
-@EnableCaching
 public class UtilityConfig {
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -36,7 +33,7 @@ public class UtilityConfig {
         return new CommonAnnotationBeanPostProcessor();
     }
 
-    @Bean
+    @Bean()
     public ModelMapper modelMapper() {
         return new ModelMapper();
     }
@@ -81,8 +78,5 @@ public class UtilityConfig {
         source.setUseCodeAsDefaultMessage(true);
         return source;
     }
-
-
-
 
 }

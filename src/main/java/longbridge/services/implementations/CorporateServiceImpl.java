@@ -172,7 +172,6 @@ public class CorporateServiceImpl implements CorporateService {
         List<Account> accounts = accountService.addAccounts(corporateRequestDTO.getAccounts().stream().collect(Collectors.toList()));
         corporate.setAccounts(accounts);
 
-
         Corporate newCorporate = corporateRepo.save(corporate);
 
 

@@ -107,9 +107,9 @@ public class FailedLoginService {
     }
 
     public boolean isLocked(final User user) {
+
             boolean isLocked = user.getStatus().equalsIgnoreCase("L");
             return isLocked && !isLockOutDurationExpired(user);
-
 
     }
 

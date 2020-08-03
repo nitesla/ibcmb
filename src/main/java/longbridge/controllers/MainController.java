@@ -10,7 +10,6 @@ import longbridge.models.Email;
 import longbridge.models.RetailUser;
 import longbridge.services.*;
 import longbridge.utils.CookieUtil;
-import org.apache.commons.lang3.math.NumberUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +25,6 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import javax.annotation.PostConstruct;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -63,27 +61,15 @@ public class MainController {
     private FaqsService faqsService;
     @Autowired
     private LoggedUserService loggedUserService;
-    private Integer sessionTimeout = 5 * 60 ;
 
-    @PostConstruct
-    void computeSessionTimeout(){
-        SettingDTO settingDTO = configurationService.getSettingByName("SESSION_TIMEOUT");
-        if(settingDTO != null && settingDTO.isEnabled()){
-            String ts = settingDTO.getValue();
-            try {
-                sessionTimeout = NumberUtils.createInteger(ts) * 60;
-            }catch (Exception e){
-                logger.info("Cannot read SESSION_TIMEOUT, Using deafault");
-            }
-        }
-    }
 
     @RequestMapping(value = {"/", "/home"})
     public String getHomePage(HttpSession session, HttpServletResponse response) {
 
         session.invalidate();
         SecurityContextHolder.clearContext();
-	   Cookie cookie = new Cookie ( "time_out_time",sessionTimeout.toString());
+	   Integer val = (Integer.parseInt (  configurationService.getSettingByName ( "SESSION_TIMEOUT" ).getValue () )) * 60;
+	   Cookie cookie = new Cookie ( "time_out_time",val.toString ());
 	   cookie.setMaxAge ( 10000 );
 	   response.addCookie ( cookie );
         return "index";
@@ -95,8 +81,9 @@ public class MainController {
         if (request.isPresent()) request.get().getSession().invalidate();
         //clearSession();
         SecurityContextHolder.clearContext();
+        Integer val = (Integer.parseInt (  configurationService.getSettingByName ( "SESSION_TIMEOUT" ).getValue () )) * 60;
         Cookie cookie = CookieUtil.getCookie(requests);
-        cookie.setValue("" + sessionTimeout);
+        cookie.setValue(val.toString ());
         cookie.setPath("/");
         response.addCookie(cookie);
         return new ModelAndView("retpage1", "error", error);
@@ -105,8 +92,9 @@ public class MainController {
     @RequestMapping(value = "/login/corporate", method = RequestMethod.GET)
     public ModelAndView getCorpLoginPage(@RequestParam Optional<String> error, @RequestParam Optional<HttpServletRequest> request,HttpServletResponse response,HttpServletRequest requests) {
 //        SecurityContextHolder.clearContext();
+        Integer val = (Integer.parseInt (  configurationService.getSettingByName ( "SESSION_TIMEOUT" ).getValue () )) * 60;
         Cookie cookie = CookieUtil.getCookie(requests);
-        cookie.setValue(sessionTimeout.toString());
+        cookie.setValue(val.toString ());
         cookie.setPath("/");
         response.addCookie(cookie);
 
@@ -118,8 +106,9 @@ public class MainController {
 
     @GetMapping(value = "/login/admin")
     public ModelAndView adminLogin( HttpServletResponse response,HttpServletRequest requests) {
+        Integer val = (Integer.parseInt (  configurationService.getSettingByName ( "SESSION_TIMEOUT" ).getValue () )) * 60;
         Cookie cookie = CookieUtil.getCookie(requests);
-        cookie.setValue(sessionTimeout.toString());
+        cookie.setValue(val.toString ());
         cookie.setPath("/");
         response.addCookie(cookie);
         ModelAndView modelAndView = new ModelAndView();
@@ -130,8 +119,9 @@ public class MainController {
 
     @GetMapping(value = "/login/ops")
     public ModelAndView opsLogin(HttpServletResponse response,HttpServletRequest requests) {
+        Integer val = (Integer.parseInt (  configurationService.getSettingByName ( "SESSION_TIMEOUT" ).getValue () )) * 60;
         Cookie cookie = CookieUtil.getCookie(requests);
-        cookie.setValue(sessionTimeout.toString());
+        cookie.setValue(val.toString ());
         cookie.setPath("/");
         response.addCookie(cookie);
         ModelAndView modelAndView = new ModelAndView();

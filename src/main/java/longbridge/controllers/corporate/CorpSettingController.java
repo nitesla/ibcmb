@@ -74,16 +74,13 @@ public class CorpSettingController {
     private IntegrationService integrationService;
 
 
-    private CoverageService coverageService;
-
-
     @RequestMapping("/dashboard")
     public String getCorporateDashboard(Model model, Principal principal) {
         CorporateUser corporateUser = corporateUserService.getUserByName(principal.getName());
+
         if (corporateUser==null) {
             return "redirect:/login/corporate";
         }
-        Long corpId = corporateUser.getCorporate().getId();
 
         List<AccountDTO> accountList = accountService.getAccountsAndBalances(corporateUser.getCorporate().getAccounts());
 
@@ -113,7 +110,7 @@ public class CorpSettingController {
                     .filter(Objects::nonNull)
                     .map(i -> {
 
-                                if ("LAA".equalsIgnoreCase(i.getAccountType())) {
+                                if ("LOAN".equalsIgnoreCase(i.getAccountType())) {
                                     LoanDTO loan = integrationService.getLoanDetails(i.getAccountNumber());
                                     loans.add(loan);
                                 }
@@ -129,17 +126,16 @@ public class CorpSettingController {
                     })
                     .collect(Collectors.toList());
         }
-            LoanDetailsDTO loanDetailsDTO = new LoanDetailsDTO();
-            loanDetailsDTO.setLoanList(loans);
+
             model.addAttribute("loans", loans);
-            model.addAttribute("loanObject",loanDetailsDTO);
             model.addAttribute("accountList", accountList);
-            model.addAttribute("corpId",corpId);
-            boolean exp = passwordPolicyService.displayPasswordExpiryDate(corporateUser.getExpiryDate());
+
+        boolean exp = passwordPolicyService.displayPasswordExpiryDate(corporateUser.getExpiryDate());
         logger.info("EXPIRY RESULT {} ", exp);
         if (exp){
             model.addAttribute("message", messageSource.getMessage("password.reset.notice", null, locale));
         }
+
         return "corp/dashboard";
     }
 

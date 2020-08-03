@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <configuration debug="true" scan="true" scanPeriod="30 seconds">
-    <property name="LOG_PATH" value="${APP_BASE}/logs/ibanking" />
+    <property name="LOG_PATH" value="${CATALINA_BASE}/logs/ibanking" />
     <property name="LOG_ARCHIVE" value="${LOG_PATH}/archive" />
     <timestamp key="timestamp" datePattern="yyyy-MM-dd'T'HHmm"/>
 
@@ -11,11 +11,11 @@
     </appender>
 
     <appender name="File" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>${APP_BASE}/logs/application-${timestamp}.log</file>
+        <file>${CATALINA_HOME}/logs/application-${timestamp}.log</file>
 
         <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
             <!-- rollover daily -->
-            <fileNamePattern>${APP_BASE}/logs/archive/application-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <fileNamePattern>${CATALINA_HOME}/logs/archive/application-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
             <!-- each file should be at most 10MB, keep 90 days worth of history, but at most 2GB -->
             <maxFileSize>10MB</maxFileSize>
             <maxHistory>90</maxHistory>

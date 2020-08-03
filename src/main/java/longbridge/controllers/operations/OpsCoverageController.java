@@ -1,47 +1,46 @@
 package longbridge.controllers.operations;
 
 
-import longbridge.dtos.CoverageDTO;
-import longbridge.dtos.UpdateCoverageDTO;
-import longbridge.models.EntityId;
-import longbridge.models.UserType;
-import longbridge.services.CoverageAdministrationService;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import longbridge.dtos.CodeDTO;
+import longbridge.services.AccountCoverageService;
+import longbridge.services.CodeService;
 import longbridge.utils.DataTablesUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
 import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
+
 @Controller
-@RequestMapping("/ops/coverage")
+@RequestMapping("/ops/accountcoverage")
 public class OpsCoverageController {
 
 
     @Autowired
-    private CoverageAdministrationService coverageService;
-
+    private CodeService codeService;
+    @Autowired
+    private AccountCoverageService coverageService;
     private final String  coverageCode = "ACCOUNT_COVERAGE";
 
     @GetMapping()
     public String listCoverages(DataTablesInput input)
     {
-
+        System.out.println(coverageCode);
         return "/ops/corporate/view";
     }
 
-    @GetMapping(path = "/corporate/{corpId}/all")
-    public @ResponseBody DataTablesOutput<CoverageDTO> getAllCoverageCorporate(DataTablesInput input, @PathVariable Long corpId) {
-        EntityId entityId = new EntityId();
-        entityId.setEid(corpId);
-        entityId.setType(UserType.CORPORATE);
+    @GetMapping(path = "/all")
+    public @ResponseBody DataTablesOutput<CodeDTO> getAllCoverage(DataTablesInput input) {
+
         Pageable pageable = DataTablesUtils.getPageable(input);
-        Page<CoverageDTO> codes = coverageService.getAllCoverage(entityId,pageable);
-        DataTablesOutput<CoverageDTO> out = new DataTablesOutput<>();
+        Page<CodeDTO> codes = codeService.getCodesByType(coverageCode, pageable);
+        DataTablesOutput<CodeDTO> out = new DataTablesOutput<CodeDTO>();
         out.setDraw(input.getDraw());
         out.setData(codes.getContent());
         out.setRecordsFiltered(codes.getTotalElements());
@@ -49,37 +48,17 @@ public class OpsCoverageController {
         return out;
     }
 
-    @PostMapping(path = "/corporate/update")
-    public ResponseEntity<HttpStatus> updateCoverageCorporate(@RequestBody UpdateCoverageDTO updateCoverageDTO) {
-        coverageService.updateCoverage(updateCoverageDTO);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-
+    @PostMapping(path = "/new")
+    @ResponseBody
+    public String createCoverage(@RequestBody String coverageData) throws IOException {
+        System.out.println(coverageData);
+        ObjectMapper mapper = new ObjectMapper();
+        JsonNode coverage = mapper.readTree(coverageData);
+        Long codeId = coverage.get("codeId").asLong();
+        Long corpId = coverage.get("corpId").asLong();
+        coverageService.addCoverage(corpId,codeId);
+        return "work";
     }
-
-    @GetMapping(path = "/retail/{retId}/all")
-    public @ResponseBody DataTablesOutput<CoverageDTO> getAllCoverageRetail(DataTablesInput input, @PathVariable Long retId) {
-        EntityId entityId = new EntityId();
-        entityId.setEid(retId);
-        entityId.setType(UserType.RETAIL);
-        Pageable pageable = DataTablesUtils.getPageable(input);
-        Page<CoverageDTO> codes = coverageService.getAllCoverage(entityId,pageable);
-        DataTablesOutput<CoverageDTO> out = new DataTablesOutput<>();
-        out.setDraw(input.getDraw());
-        out.setData(codes.getContent());
-        out.setRecordsFiltered(codes.getTotalElements());
-        out.setRecordsTotal(codes.getTotalElements());
-        return out;
-    }
-
-    @PostMapping(path = "/retail/update")
-    public ResponseEntity<HttpStatus> updateCoverageRetail(@RequestBody UpdateCoverageDTO updateCoverageDTO) {
-        coverageService.updateCoverage(updateCoverageDTO);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-
-    }
-
-
-
 }
 
 

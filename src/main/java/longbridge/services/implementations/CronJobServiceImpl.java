@@ -55,9 +55,6 @@ public class CronJobServiceImpl implements CronJobService {
     private BillerService billerService;
 
     @Autowired
-    private CoverageAdministrationService coverageService;
-
-    @Autowired
     private AdminUserRepo adminUserRepo;
 
     @Autowired
@@ -310,9 +307,7 @@ public class CronJobServiceImpl implements CronJobService {
     @Override
     public String getCurrentExpression(String category) throws InternetBankingException {
         CronJobExpression cronJobExpression = cronJobExpressionRepo.findLastByFlagAndCategory("Y",category);
-        if(cronJobExpression == null){
-            return "0 0 0 ? * * *";
-        }
+
         return cronJobExpression.getCronExpression();
     }
     @Override
@@ -436,23 +431,10 @@ public class CronJobServiceImpl implements CronJobService {
     }
 
 
-    @Override
-    @Scheduled(cron = "${auto.biller.refresh}")
-    public void refreshPaymentBillers() {
-        logger.info("Refreshing billers");
-        billerService.RefreshAll();
+//    @Scheduled(cron = "${auto.biller.refresh}")
+//    public void refreshPaymentBillers() {
+//        billerService.RefreshAll();
+//    }
 
-    }
 
-    @Override
-    @Scheduled(cron ="${coverage.update}")
-    public void addCoverageForNewEntity() {
-        coverageService.addCoverageForNewEntity();
-    }
-
-    @Override
-    @Scheduled(cron = "${coverage.update}")
-    public void addCoverageForNewCodes() {
-        coverageService.addCoverageForNewCodes();
-    }
 }

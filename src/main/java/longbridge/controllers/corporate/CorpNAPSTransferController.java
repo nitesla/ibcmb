@@ -19,7 +19,10 @@ import net.sf.jasperreports.export.SimpleExporterInput;
 import net.sf.jasperreports.export.SimpleOutputStreamExporterOutput;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -407,7 +410,7 @@ public class CorpNAPSTransferController {
                 for (int i = 0; i < 6; i++) {
                     Cell currentCell = currentRow.getCell(i);
                     System.out.println(currentCell);
-                    if (currentCell == null || currentCell.getCellType() == CellType.BLANK || currentCell.toString().isEmpty() || currentCell.toString() == null) {
+                    if (currentCell == null || currentCell.getCellType() == Cell.CELL_TYPE_BLANK || currentCell.toString().isEmpty() || currentCell.toString() == null) {
                         cellData.add("ERROR: Empty cell");
                     } else {
                         cellData.add(currentCell);

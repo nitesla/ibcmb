@@ -55,16 +55,14 @@ public class RetailUserDetailsService implements UserDetailsService {
         }
         RetailUser user = retailUserRepo.findFirstByUserNameIgnoreCase(s);
 
-        if (user != null && failedLoginService.isLocked(user)) {
-            throw new RuntimeException("User " + user.getUserName() + " is locked");
-        }
+
+        if (user != null && failedLoginService.isLocked(user)) throw new RuntimeException("User "+ user.getUserName()+" is locked");
+
 
         try {
             if (user != null && user.getUserType() == UserType.RETAIL && user.getRole().getUserType().equals(UserType.RETAIL)) {
                 CustomUserPrincipal userPrincipal = new CustomUserPrincipal(user);
                 userPrincipal.setIpAddress(ip);
-                logger.info("PRINCIPAL == {} ", userPrincipal.toString());
-                logger.info("PRINCIPAL == {} ", userPrincipal.getUser());
                 return userPrincipal;
             }
             throw new UsernameNotFoundException(s);

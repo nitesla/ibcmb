@@ -135,11 +135,11 @@ public class CorpRecurringPaymentController {
             if (session.getAttribute("authenticated") != null) {
 
                 try {
-//                    String message = recurringPaymentService.addCorpRecurringPayment(corporateUser, recurringPaymentDTO);
+                    String message = recurringPaymentService.addCorpRecurringPayment(corporateUser, recurringPaymentDTO);
                     model.addAttribute("success", "Direct Debit added successfully");
                     session.removeAttribute("authenticated");
                     session.removeAttribute("requestDTO");
-//                    redirectAttributes.addFlashAttribute("message", message);
+                    redirectAttributes.addFlashAttribute("message", message);
                 } catch (InternetBankingException e) {
                     logger.error("Direct debit Error", e);
                     redirectAttributes.addFlashAttribute("failure", e.getMessage());

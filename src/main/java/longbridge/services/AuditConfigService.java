@@ -23,7 +23,7 @@ public interface AuditConfigService
 	Iterable<AuditConfig> getAllEntities();
 
 	@PreAuthorize("hasAuthority('UPDATE_AUDIT_CONFIG')")
-	AuditConfig saveAuditConfig(AuditConfig cfg) throws InternetBankingException;
+	boolean saveAuditConfig(AuditConfig cfg) throws InternetBankingException;
 
 	@PreAuthorize("hasAuthority('GET_AUDIT_TABLES')")
 	Page<AuditConfig> getEntities(Pageable pageDetails);
@@ -39,8 +39,11 @@ public interface AuditConfigService
 	List<T> revisedEntity(String entityName);
 	Page<T> revisedEntityDetails(String entityName, String revisionNo, Pageable pageable);
 
+	Page<ModifiedEntityTypeEntity> getRevisionEntities(Pageable pageable);
+
 	Page<ModifiedEntityTypeEntity> getRevisionEntities(String pattern, Pageable pageDetails);
 
+	Page<ModifiedEntityTypeEntity> audit(String pattern, Pageable pageDetails);
 
 	Page<ModifiedEntityTypeEntity> getRevisedEntitiesDetails(Integer id, Pageable pageable);
 	Page<ModifiedEntityTypeEntity> getRevisedDetailsForEntity(Integer id, String classname, Pageable pageable);
