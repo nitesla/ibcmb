@@ -15,6 +15,7 @@ import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 
 /**
@@ -161,9 +162,10 @@ public interface IntegrationService {
     String updateTransferLimit(TransferSetLimit tsl);
     String updateCharge(TransferFeeAdjustment tfaDTO);
     List<BillerDTO> getBillers();
-    BillPayment billPayment(BillPayment billPayment);
-    RecurringPayment recurringPayment(RecurringPayment recurringPayment);
-   List<PaymentItemDTO> getPaymentItems(Long billerId);
+    List<PaymentItemDTO> getPaymentItems(Long billerId);
+    BillPayment billPayment(BillPayment billPayment, String terminal);
     List<BillerCategoryDTO> getBillerCategories();
+    CoverageDetailsDTO getCoverageDetails(String coverageName, Set<String> customerIds);
+
 
 }

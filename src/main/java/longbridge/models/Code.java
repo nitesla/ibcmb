@@ -9,11 +9,9 @@ import longbridge.utils.PrettySerializer;
 import org.hibernate.annotations.Where;
 import org.hibernate.envers.Audited;
 
-import javax.persistence.Entity;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
-import javax.persistence.UniqueConstraint;
+import javax.persistence.*;
 import java.io.IOException;
+import java.util.List;
 
 /**
  * The {@code Code} class model represents unique data that can be used for system configurations.
@@ -45,8 +43,9 @@ public class Code extends AbstractEntity implements PrettySerializer{
     private String description;
     private String extraInfo;
 
-	@OneToOne(mappedBy = "code")
-	private AccountCoverage accountCoverage;
+	@OneToMany
+	@JsonIgnore
+	private List<Coverage> coverage;
 
     public String getCode() {
         return code;
@@ -81,12 +80,12 @@ public class Code extends AbstractEntity implements PrettySerializer{
 		this.extraInfo = extraInfo;
 	}
 
-	public AccountCoverage getAccountCoverage() {
-		return accountCoverage;
+	public List<Coverage> getCoverage() {
+		return coverage;
 	}
 
-	public void setAccountCoverage(AccountCoverage accountCoverage) {
-		this.accountCoverage = accountCoverage;
+	public void setCoverage(List<Coverage> coverage) {
+		this.coverage = coverage;
 	}
 
 	@Override

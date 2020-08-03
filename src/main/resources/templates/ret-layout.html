@@ -273,16 +273,8 @@
                                         Log</a></li>
                                 </ul>
                             </li>
-                            <li class="dropdown" th:classappend="${#httpServletRequest.getRequestURI().startsWith('/retail/payment') ? 'active':''}" sec:authorize="hasAuthority('MANAGE_BILL_PAYMENT')">
-                                <a class="dropdown-toggle menu-link" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"  href="#" th:text="#{menu.bill}">Bills & Payments</a>
-                                <ul class="dropdown-menu">
-                                    <li><a th:href="@{/retail/payment/new}" th:text="#{menu.bill.payment}">Bill Payment</a></li>
-                                    <li><a th:href="@{/retail/payment/completed}" th:text="#{menu.bill.completed}">Completed Payment</a></li>
-                                    <li ><a  th:href="@{/retail/recurringpayment}" >Recurring Payments</a></li>
-
-
-                                </ul>
-                            </li>
+                            <li sec:authorize="hasAuthority('MANAGE_BILL_PAYMENT')"><a class="menu-link" href="#" th:text="#{menu.bill}">Bill
+                                Payments</a></li>
                             <li class="dropdown" th:classappend="${#httpServletRequest.getRequestURI().startsWith('/retail/fixdeposit') ? 'active':''}" sec:authorize="hasAuthority('MANAGE_INVESTMENT')">
                                 <a href="#" class="dropdown-toggle menu-link" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" th:text="#{menu.investment}">Investment</a>
                                 <ul class="dropdown-menu">
