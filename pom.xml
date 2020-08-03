@@ -64,6 +64,11 @@
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-envers</artifactId>
         </dependency>
+<!--        <dependency>-->
+<!--            <groupId>org.apache.logging.log4j</groupId>-->
+<!--            <artifactId>log4j-api</artifactId>-->
+<!--            <version>2.13.3</version>-->
+<!--        </dependency>-->
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
@@ -605,6 +610,14 @@
                     <apiToken>d81651a0-df7f-432f-aeab-e49acc43a6ae</apiToken>
                     <failOnSeverity>medium</failOnSeverity>
                     <org></org>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>9</source>
+                    <target>9</target>
                 </configuration>
             </plugin>
         </plugins>
