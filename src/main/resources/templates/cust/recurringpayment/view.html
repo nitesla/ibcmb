@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{ret-layout}">
 
-<body onload="javascript:var bread = [['Home', '/retail/dashboard'],['Standing order Management', '/retail/recurringpayment'],['standing orders']];currentBar('Standing orders');breadCrumb(bread)">
+<body onload="javascript:var bread = [['Home', '/retail/dashboard'],['Recurring Bill Payment']];currentBar('Recurring Payments');breadCrumb(bread)">
 
 <div layout:fragment="content">
     <div id="myModal" class="modal fade" role="dialog">
@@ -12,7 +12,7 @@
                 <form id="myForm" name="myForm" th:action="@{/retail/recurringpayment/authenticate}" method="POST" >
                     <input type="hidden" id="myID" name="id"/>
                     <div class="modal-body no-bd-rad">
-                        <h3 class="tokenHeader"><span class='text-danger'>Delete Standing order</span>, <span th:text="*{username}" style="text-transform: capitalize">Tolu</span></h3>
+                        <h3 class="tokenHeader"><span class='text-danger'>Delete Recurring Payment</span>, <span th:text="*{username}" style="text-transform: capitalize">Tolu</span></h3>
                         <div class="margin-bottom">
                             <p style="margin-bottom:20px">Enter token to confirm standing order delete</p>
                             <div id="username_div">
@@ -50,9 +50,9 @@
                 <table class="table table-bordered table-hover" id="mytab">
                     <thead>
                     <tr>
-                    <th>Beneficiary Name</th>
-                    <th>Beneficiary Account</th>
-                    <th>Beneficiary Bank</th>
+                    <th>Category</th>
+                    <th>Biller</th>
+                    <th>Payment Item</th>
                     <th>Source Account</th>
                     <th>Amount</th>
                     <th>Start Date</th>
@@ -108,10 +108,10 @@
                 },
                 "dom": 'T<"clear">frtlp',
                 columns: [
-                    {"data": "beneficiary.accountName"},
-                    {"data": "beneficiary.accountNumber"},
-                    {"data": "beneficiary.beneficiaryBank"},
-                    {"data": "debitAccount"},
+                    {"data": "categoryName"},
+                    {"data": "billerName"},
+                    {"data": "paymentItemName"},
+                    {"data": "customerAccountNumber"},
                     {"data": "amount"},
                     {"data": "startDate"},
                     {"data": "endDate"},
