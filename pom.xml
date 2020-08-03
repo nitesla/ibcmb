@@ -608,7 +608,7 @@
                 </executions>
                 <configuration>
                     <apiToken>d81651a0-df7f-432f-aeab-e49acc43a6ae</apiToken>
-                    <failOnSeverity>medium</failOnSeverity>
+                    <failOnSeverity>false</failOnSeverity>
                     <org></org>
                 </configuration>
             </plugin>

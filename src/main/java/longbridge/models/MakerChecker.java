@@ -5,6 +5,7 @@ import org.hibernate.annotations.Where;
 import javax.persistence.Entity;
 import java.util.Arrays;
 import java.util.List;
+import java.util.StringJoiner;
 
 /**
  * Created by chiomarose on 15/06/2017.
@@ -48,16 +49,13 @@ public class MakerChecker extends AbstractEntity {
 	public List<String> getDefaultSearchFields() {
 		return Arrays.asList("operation","description");
 	}
-    
+
     @Override
     public String toString() {
-        return "MakerChecker{" +
-                "enabled='" + enabled + '\'' +
-                ", operation='" + operation + '\'' +
-                ", description='" +  + '\'' +
-                '}';
+        return new StringJoiner(", ", MakerChecker.class.getSimpleName() + "[", "]")
+                .add("enabled='" + enabled + "'")
+                .add("operation='" + operation + "'")
+                .add("description='" + description + "'")
+                .toString();
     }
-
-
-
 }

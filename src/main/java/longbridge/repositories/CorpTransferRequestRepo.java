@@ -18,22 +18,17 @@ public interface CorpTransferRequestRepo extends CommonRepo<CorpTransRequest,Lon
 
     Page<CorpTransRequest> findByCorporate(Corporate corporate, Pageable pageable);
 
-    Page<CorpTransRequest> findByCorporateAndStatusOrderByTranDateDesc(Corporate corporate, String status, Pageable pageable);
 
     Page<CorpTransRequest> findByCorporateOrderByTranDateDesc(Corporate corporate, Pageable pageable);
 
-    Page<CorpTransRequest> findByCorporateOrderByStatusAscTranDateDesc(Corporate corporate, Pageable pageable);
-
-    Page<CorpTransRequest> findByCorporateOrderByStatusDesc(Corporate corporate,  Pageable pageable);
 
     int countByCorporateAndStatus(Corporate corporate, String status);
 
     boolean existsByCorporate_IdAndCustomerAccountNumberAndStatus(Long corpId,String accNumber, String status);
 
-//    Page<CorpTransRequest> findByCorporateAndStatusInAndTranDateNotNullOrderByTranDateDesc(Corporate corporate, List<String> status, Pageable pageable);
-    Page<CorpTransRequest> findByCorporateAndStatusNotAndTranDateNotNullOrderByTranDateDesc(Corporate corporate,List<String> status, Pageable pageable);
-
-    Page<CorpTransRequest> findByCorporateAndStatusDescription(Corporate corporate, String sd, Pageable pageable);
+    @Query("select ctr from CorpTransRequest ctr where ctr.corporate = :corporate and ctr.status='Pending' and ctr.tranDate is not null " +
+            " order by ctr.tranDate desc ")
+    Page<CorpTransRequest> findPendingRequests(Corporate corporate, Pageable pageable);
 
     CorpTransRequest findById(long id);
 
