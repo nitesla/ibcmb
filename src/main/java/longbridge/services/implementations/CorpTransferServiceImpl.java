@@ -216,7 +216,7 @@ public class CorpTransferServiceImpl implements CorpTransferService {
         Corporate corporate = corporateUser.getCorporate();
         logger.info("corporate:{}", corporate);
 //        Page<CorpTransRequest> page = corpTransferRequestRepo.findByCorporateAndStatusInAndTranDateNotNullOrderByTranDateDesc(corporate, Arrays.asList("00", "000"), pageDetails);
-        Page<CorpTransRequest> page = corpTransferRequestRepo.findByCorporateAndStatusNotAndTranDateNotNullOrderByTranDateDesc(corporate, Arrays.asList("Pending"), pageDetails);
+        Page<CorpTransRequest> page = corpTransferRequestRepo.findPendingRequests(corporate, pageDetails);
         logger.info("Page<CorpTransRequest> count:{}", pageDetails.getPageSize());
         List<CorpTransRequest> corpTransRequests = page.getContent().stream()
                 .filter(transRequest -> !accountConfigService.isAccountRestrictedForViewFromUser(accountService.getAccountByAccountNumber(transRequest.getCustomerAccountNumber()).getId(), corporateUser.getId())).collect(Collectors.toList());
@@ -227,7 +227,7 @@ public class CorpTransferServiceImpl implements CorpTransferService {
     public Page<CorpTransferRequestDTO> getCompletedTransfer(Pageable pageDetails) {
         CorporateUser corporateUser = getCurrentUser();
         Corporate corporate = corporateUser.getCorporate();
-        Page<CorpTransRequest> page = corpTransferRequestRepo.findByCorporateAndStatusNotAndTranDateNotNullOrderByTranDateDesc(corporate, Arrays.asList("Pending"), pageDetails);
+        Page<CorpTransRequest> page = corpTransferRequestRepo.findPendingRequests(corporate, pageDetails);
 
         List<CorpTransferRequestDTO> corpTransferRequestDTOs = convertEntitiesToDTOs(page.getContent());
         long t = page.getTotalElements();

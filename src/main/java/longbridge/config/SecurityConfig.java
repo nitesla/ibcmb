@@ -110,16 +110,19 @@ public class SecurityConfig {
                 logger.info("IP address whitelist {}", ipRange.toString());
             }
 
+//            .authorizeRequests()
+//                    .antMatchers("/reset")
+//                    .access("hasAuthority('T(com.longbridge.bconsole.usermngt.accessctrl.Roles).ROLE_RESET')")
+//                    .antMatchers("/**")
+//                    .authenticated().and().addFilterAfter(traceFilter(), UsernamePasswordAuthenticationFilter.class)
+//                    .formLogin().permitAll().loginPage("/login")
+//                    .failureUrl("/login?error=true")
 
-            http.antMatcher("/admin/**").authorizeRequests()
-                    .anyRequest().fullyAuthenticated()
-                    .and().antMatcher("/**").authorizeRequests()
-                    .and().antMatcher("/admin/**").authorizeRequests()
-                    .and().authorizeRequests().anyRequest().
+            http.authorizeRequests().antMatchers("/admin/**")
                     //access("hasAuthority('" + UserType.ADMIN.toString() + "')").and()
-                            access("hasAuthority('" + UserType.ADMIN.toString() + "') and "
+                            .access("hasAuthority('" + UserType.ADMIN.toString() + "') and "
                             + (ipRestricted ? ipRange.toString() : " true"))
-                    .and()
+                    .mvcMatchers("/admin/**").fullyAuthenticated().and()
 
                     .formLogin().loginPage("/login/admin").loginProcessingUrl("/admin/login")
                     .failureUrl("/login/admin?error=login_error").defaultSuccessUrl("/admin/dashboard")
@@ -211,18 +214,17 @@ public class SecurityConfig {
 
                 logger.info("IP address whitelist " + ipRange.toString());
             }
-            http.antMatcher("/ops/**")
-                    .authorizeRequests().anyRequest()
 
 
-                    //.authenticated()
-                    // .hasAuthority(UserType.OPERATIONS.toString())
-                    .fullyAuthenticated().anyRequest()
-//                    .access("hasAuthority('" + UserType.OPERATIONS.toString() + "')").and()
+            http.authorizeRequests().antMatchers("/ops/**")
+                    //access("hasAuthority('" + UserType.ADMIN.toString() + "')").and()
                     .access("hasAuthority('" + UserType.OPERATIONS.toString() + "') and "
-                            + (ipRestricted ? ipRange.toString() : " true ")).and()
-                    // log in
-                    .formLogin().loginPage("/login/ops").loginProcessingUrl("/ops/login").failureUrl("/login/ops?error=true").defaultSuccessUrl("/ops/dashboard")
+                            + (ipRestricted ? ipRange.toString() : " true"))
+                    .mvcMatchers("/ops/**").fullyAuthenticated().and()
+
+                    .formLogin().loginPage("/login/ops").loginProcessingUrl("/ops/login")
+                    .failureUrl("/login/ops?error=login_error").defaultSuccessUrl("/ops/dashboard")
+
                     .successHandler(opAuthenticationSuccessHandler)
                     .failureHandler(opAuthenticationFailureHandler)
 
@@ -365,14 +367,13 @@ public class SecurityConfig {
 
 //            http.addFilterBefore(customFilter(), UsernamePasswordAuthenticationFilter.class);
 
-            http
-                    .antMatcher("/corporate/**").authorizeRequests()
-                    .anyRequest()
+            http.authorizeRequests().antMatchers("/corporate/**")
+                    //access("hasAuthority('" + UserType.ADMIN.toString() + "')").and()
+                    .access("hasAuthority('" + UserType.CORPORATE.toString() + "') ")
+                    .mvcMatchers("/corporate/**").fullyAuthenticated().and()
 
-                    // .authenticated()
-                    .hasAuthority(UserType.CORPORATE.toString())
-                    .anyRequest().fullyAuthenticated()
-                    .anyRequest().authenticated()
+                    .formLogin().loginPage("/login/corporate").loginProcessingUrl("/corporate/login")
+                    .failureUrl("/login/corporate?error=login_error").defaultSuccessUrl("/corporate/dashboard")
 
                     // log in
                     .and().formLogin().loginPage("/login/corporate").loginProcessingUrl("/corporate/login")
