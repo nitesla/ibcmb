@@ -10,7 +10,9 @@ import longbridge.dtos.*;
 import longbridge.exception.*;
 import longbridge.models.Account;
 import longbridge.models.Corporate;
+import longbridge.models.User;
 import longbridge.models.UserType;
+import longbridge.security.userdetails.CustomUserPrincipal;
 import longbridge.services.*;
 import longbridge.utils.DataTablesUtils;
 import longbridge.utils.NameValue;
@@ -24,6 +26,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
 import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -57,9 +60,6 @@ public class OpsCorporateController {
     private MessageSource messageSource;
 
     @Autowired
-    private AccountCoverageService coverageService;
-
-    @Autowired
     private CodeService codeService;
 
     @Autowired
@@ -81,9 +81,6 @@ public class OpsCorporateController {
     private VerificationService verificationService;
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
-
-    private final String  coverageCode = "ACCOUNT_COVERAGE";
-
 
 
     @ModelAttribute
@@ -183,10 +180,8 @@ public class OpsCorporateController {
     @GetMapping("/{reqId}/view")
     public String viewCorporate(@PathVariable Long reqId, Model model) {
         CorporateDTO corporate = corporateService.getCorporate(reqId);
-        List<CodeDTO> coverageList = coverageService.getCoverage();
-        System.out.println(coverageList);
+        model.addAttribute("userType",UserType.CORPORATE);
         model.addAttribute("corporate", corporate);
-        model.addAttribute("coverageList",coverageList);
         return "/ops/corporate/viewdetails";
     }
 

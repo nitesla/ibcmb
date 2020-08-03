@@ -1,6 +1,7 @@
 package longbridge.controllers.retail;
 
 import longbridge.api.ExchangeRate;
+import longbridge.config.CoverageInfo;
 import longbridge.dtos.*;
 import longbridge.exception.*;
 import longbridge.forms.AlertPref;
@@ -23,6 +24,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.security.Principal;
@@ -78,14 +80,13 @@ public class SettingController {
     @Autowired
     ServiceReqConfigService serviceReqConfigService;
 
-
-
     private final Locale locale = LocaleContextHolder.getLocale();
 
 
     @RequestMapping("/dashboard")
     public String getRetailDashboard(Model model, Principal principal, HttpServletRequest request) {
         RetailUser retailUser = retailUserService.getUserByName(principal.getName());
+        Long retId = retailUser.getId();
 
         if (retailUser == null) {
             return "redirect:/login/retail";
@@ -95,7 +96,7 @@ public class SettingController {
         List<AccountDTO> accountList = accountService.getAccountsAndBalances(retailUser.getCustomerId());
         logger.debug("Retrieved {} account balance(s) for user {}", accountList.size(), retailUser.getUserName());
         SettingDTO dto = configService.getSettingByName("TRANSACTIONAL_ACCOUNTS");
-       /* if (dto != null && dto.isEnabled()) {
+        /* if (dto != null && dto.isEnabled()) {
             String[] list = StringUtils.split(dto.getValue(), ",");
             accountList = accountList
                     .stream()
@@ -118,10 +119,10 @@ public class SettingController {
                     .filter(Objects::nonNull)
                     .map(i -> {
 
-                                if ("LOAN".equalsIgnoreCase(i.getAccountType())) {
-                                    LoanDTO loan = integrationService.getLoanDetails(i.getAccountNumber());
-                                    loans.add(loan);
-                                }
+                        if ("LAA".equalsIgnoreCase(i.getAccountType())) {
+                            LoanDTO loan = integrationService.getLoanDetails(i.getAccountNumber());
+                            loans.add(loan);
+                        }
                                 return i;
                             }
                     ).filter(i -> ArrayUtils.contains(transactionalAccounts, i.getAccountType()))
@@ -134,8 +135,12 @@ public class SettingController {
                     })
                     .collect(Collectors.toList());
         }
+        LoanDetailsDTO loanDetailsDTO = new LoanDetailsDTO();
+        loanDetailsDTO.setLoanList(loans);
         model.addAttribute("loans", loans);
+        model.addAttribute("loanObject",loanDetailsDTO);
         model.addAttribute("accountList", accountList);
+        model.addAttribute("retId",retId);
 
         boolean expired = passwordPolicyService.displayPasswordExpiryDate(retailUser.getExpiryDate());
         if (expired) {

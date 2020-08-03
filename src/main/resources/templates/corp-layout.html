@@ -217,15 +217,15 @@
                                         <li sec:authorize="hasAuthority('MANAGE_TRANSFERS')"><a th:href="@{/corporate/transfer/history}" th:text="#{menu.transfer.log}">Transfer Log</a></li>
                                     </ul>
                                 </li>
-                                <li class="dropdown" th:classappend="${#httpServletRequest.getRequestURI().startsWith('/corporate/payment') ? 'active':''}" sec:authorize="hasAuthority('MANAGE_BILL_PAYMENT')">
-<!--                                <li class="dropdown" th:classappend="${#httpServletRequest.getRequestURI().startsWith('/corporate/payment') ? 'active':''}" >-->
+<!--                                <li class="dropdown" th:classappend="${#httpServletRequest.getRequestURI().startsWith('/corporate/payment') ? 'active':''}" sec:authorize="hasAuthority('MANAGE_CORPORATE_PAYMENT')">-->
+                                <li class="dropdown" th:classappend="${#httpServletRequest.getRequestURI().startsWith('/corporate/payment') ? 'active':''}" >
                                     <a class="dropdown-toggle menu-link" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" href="#"  th:text="#{menu.bill}">Bill Payments</a>
                                     <ul class="dropdown-menu">
                                         <li><a th:href="@{/corporate/payment/new}" th:text="#{menu.bill.payment}">Bill Payment</a></li>
                                         <li><a th:href="@{/corporate/payment/completed}" th:text="#{menu.bill.completed}">Completed Payment</a></li>
 
 <!--                                        <li ><a sec:authorize="hasAuthority('CUSTOM_DUTY')" href="#" th:text="#{menu.bill}">Bill Payments</a></li>-->
-                                        <li ><a  th:href="@{/corporate/recurringpayment/add}" >Recurring Payments</a></li>
+<!--                                        <li ><a  th:href="@{/corporate/recurringpayment/add}" >Recurring Payments</a></li>-->
                                         <li ><a  th:href="@{/corporate/custom}" th:text="#{menu.bill.custom}">Custom Duty</a></li>
                                     </ul>
                                 </li>
