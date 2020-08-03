@@ -57,10 +57,8 @@ public class PaymentServiceImpl implements PaymentService {
         logger.debug("Adding bill payment {} for user [{}]",paymentDTO, getCurrentUser().getUserName());
 
         try {
-            String terminalId = "1234";
-            logger.info("Print   333---->{}", paymentDTO.getCustomerAccountNumber());
             BillPayment payment1 = convertPaymentDTOToEntity(paymentDTO);
-            BillPayment billPayment = integrationService.billPayment(payment1, terminalId);
+            BillPayment billPayment = integrationService.billPayment(payment1);
             billPayment = billPaymentRepo.save(billPayment);
 //            billPaymentRepo.save(payment1);
             logger.info("Added payment {}",billPayment);
@@ -81,9 +79,8 @@ public class PaymentServiceImpl implements PaymentService {
         logger.debug("Adding bill payment {} for user [{}]",paymentDTO, getCurrentCorpUser().getUserName());
 
         try {
-            String terminalId = "1234";
             BillPayment payment1 = convertCorpPaymentDTOToEntity(paymentDTO);
-            BillPayment billPayment = integrationService.billPayment(payment1, terminalId);
+            BillPayment billPayment = integrationService.billPayment(payment1);
 
             billPayment = billPaymentRepo.save(billPayment);
             logger.info("Added payment {}",billPayment);

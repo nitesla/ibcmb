@@ -80,6 +80,9 @@ public class IntegrationServiceImpl implements IntegrationService {
 	@Value("${antifraud.status.check}")
 	private String antiFraudStatusCheckUrl;
 
+	@Value("${bill.payment.terminal}")
+	private String terminalId;
+
 	private RestTemplate template;
 	private MailService mailService;
 	private TemplateEngine templateEngine;
@@ -1433,7 +1436,7 @@ public class IntegrationServiceImpl implements IntegrationService {
 	}
 
 	@Override
-	public BillPayment billPayment(BillPayment billPayment, String terminalId){
+	public BillPayment billPayment(BillPayment billPayment){
 		PaymentResponse payment;
 		String uri = URI + "/api/quickteller/billpaymentadvice";
 		Map<String,String> params = new HashMap<>();
@@ -1473,6 +1476,46 @@ public class IntegrationServiceImpl implements IntegrationService {
 
 	}
 
+	@Override
+	public RecurringPayment recurringPayment(RecurringPayment recurringPayment){
+		PaymentResponse payment;
+		String uri = URI + "/api/quickteller/billpaymentadvice";
+		Map<String,String> params = new HashMap<>();
+		params.put("terminalId",terminalId);
+		params.put("amount", recurringPayment.getAmount().toPlainString());
+		params.put("appid",appId);
+		params.put("customerAccount", recurringPayment.getCustomerAccountNumber());
+		params.put("customerEmail", recurringPayment.getEmailAddress());
+		params.put("customerId",recurringPayment.getCustomerId());
+		params.put("customerMobile",recurringPayment.getPhoneNumber());
+		params.put("hash",EncryptionUtil.getSHA512(
+				appId + recurringPayment.getPaymentCode() + recurringPayment.getAmount().setScale(2,BigDecimal.ROUND_HALF_UP) + secretKey, null));
+		params.put("paymentCode",recurringPayment.getPaymentCode().toString());
+		params.put("requestReference",recurringPayment.getRequestReference());
+		try {
+			payment	 = template.postForObject(uri,params, PaymentResponse.class);
+			logger.info("response for payment {}", payment.toString());
+			recurringPayment.setStatus(payment.getResponseCodeGrouping());
+			recurringPayment.setResponseCodeGrouping(payment.getResponseCodeGrouping());
+			recurringPayment.setResponseDescription (payment.getResponseDescription());
+			recurringPayment.setResponseCode(payment.getResponseCode());
+			recurringPayment.setTransactionRef(payment.getTransactionRef());
+			recurringPayment.setApprovedAmount(payment.getApprovedAmount());
+			return recurringPayment;
+		} catch (HttpStatusCodeException e) {
+			logger.error("HTTP Error occurred", e);
+			recurringPayment.setStatus(e.getStatusCode().toString());
+			recurringPayment.setResponseDescription(e.getStatusCode().getReasonPhrase());
+			return recurringPayment;
+
+		} catch (Exception e) {
+			logger.error("Error processing Bill Payment", e);
+			recurringPayment.setStatus("Failed");
+			recurringPayment.setResponseDescription("Payment Failed");
+			return recurringPayment;
+		}
+
+	}
 
 	@Override
 	public List<PaymentItemDTO> getPaymentItems(Long billerId){

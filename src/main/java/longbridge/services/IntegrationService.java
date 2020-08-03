@@ -161,7 +161,8 @@ public interface IntegrationService {
     String updateTransferLimit(TransferSetLimit tsl);
     String updateCharge(TransferFeeAdjustment tfaDTO);
     List<BillerDTO> getBillers();
-    BillPayment billPayment(BillPayment billPayment, String terminal);
+    BillPayment billPayment(BillPayment billPayment);
+    RecurringPayment recurringPayment(RecurringPayment recurringPayment);
    List<PaymentItemDTO> getPaymentItems(Long billerId);
     List<BillerCategoryDTO> getBillerCategories();
 

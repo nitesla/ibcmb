@@ -1,4 +1,4 @@
-package longbridge.controllers.corporate;
+package longbridge.controllers.retail;
 
 import longbridge.dtos.BillPaymentDTO;
 import longbridge.dtos.RecurringPaymentDTO;
@@ -9,10 +9,15 @@ import longbridge.repositories.BillerCategoryRepo;
 import longbridge.repositories.BillerRepo;
 import longbridge.repositories.PaymentItemRepo;
 import longbridge.services.*;
+import longbridge.utils.DataTablesUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
+import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -30,10 +35,10 @@ import java.util.Objects;
 import java.util.stream.StreamSupport;
 
 @Controller
-@RequestMapping("/corporate/recurringpayment")
-public class CorpRecurringPaymentController {
+@RequestMapping("/retail/recurringpayment")
+public class RecurringPaymentController {
 
-    private static final Logger logger = LoggerFactory.getLogger(CorpRecurringPaymentController.class);
+    private static final Logger logger = LoggerFactory.getLogger(RecurringPaymentController.class);
 
     @Autowired
     private BillerRepo billerRepo;
@@ -60,33 +65,38 @@ public class CorpRecurringPaymentController {
 
     private final BillerService billerService;
 
-    private final CorporateUserService corporateUserService;
+    private final RetailUserService retailUserService;
 
     @Autowired
-    public CorpRecurringPaymentController(BillerService billerService, CorporateUserService corporateUserService, AccountService accountService) {
+    public RecurringPaymentController(BillerService billerService, RetailUserService retailUserService, AccountService accountService) {
         this.billerService = billerService;
-        this.corporateUserService = corporateUserService;
+        this.retailUserService = retailUserService;
         this.accountService = accountService;
+    }
+
+    @GetMapping()
+    public String getRecurringPaymentForUser(){
+        return "cust/recurringpaymment/view";
     }
 
     @RequestMapping(value = "/add", method = {RequestMethod.GET, RequestMethod.POST})
     public String getRecurringBillPaymentPage(Model model, Principal principal) {
-        CorporateUser corporateUser = corporateUserService.getUserByName(principal.getName());
+        RetailUser retailUser = retailUserService.getUserByName(principal.getName());
 
         List<BillerCategory> billerCategories = billerService.getCategory();
         model.addAttribute("billerCategories",billerCategories);
         RecurringPaymentDTO recurringPaymentDTO = new RecurringPaymentDTO();
-        recurringPaymentDTO.setPhoneNumber(corporateUser.getPhoneNumber());
-        recurringPaymentDTO.setEmailAddress(corporateUser.getEmail());
+        recurringPaymentDTO.setPhoneNumber(retailUser.getPhoneNumber());
+        recurringPaymentDTO.setEmailAddress(retailUser.getEmail());
         model.addAttribute("recurringpayment", recurringPaymentDTO);
         model.addAttribute("durations",codeService.getCodesByType("STANDING_ORDER_FREQ"));
-        return "corp/recurringpayment/pagei";
+        return "cust/recurringpayment/pagei";
     }
 
     @PostMapping("/summary")
     public String getRecurringPaymentSummary(@ModelAttribute("recurringpayment") @Valid RecurringPaymentDTO recurringPaymentDTO, BindingResult result, Model model, HttpServletRequest servletRequest, PaymentItem paymentItemCode, Biller billerName, PaymentItem paymentItemName){
         if(result.hasErrors()){
-            return "corp/recurringpayment/pagei";
+            return "cust/recurringpayment/pagei";
         }
         model.addAttribute("recurringPaymentDTO",recurringPaymentDTO);
         paymentItemCode = billerService.getPaymentItem(Long.parseLong(recurringPaymentDTO.getPaymentItemId()));
@@ -97,13 +107,13 @@ public class CorpRecurringPaymentController {
         recurringPaymentDTO.setPaymentItemName(paymentItemName.getPaymentItemName());
         model.addAttribute("billPaymentDTO", recurringPaymentDTO);
         servletRequest.getSession().setAttribute("recurringPaymentDTO", recurringPaymentDTO);
-        return "corp/recurringpayment/summary";
+        return "cust/recurringpayment/summary";
     }
 
     @PostMapping
     public String createRecurringPayment(@ModelAttribute("recurringPaymentDTO") @Valid RecurringPaymentDTO recurringPaymentDTO, Principal principal, BindingResult result, Model model, HttpSession session) {
         if (result.hasErrors()) {
-            return "corp/recurringpayment/pagei";
+            return "cust/recurringpayment/pagei";
         }
 
         logger.info("direct debit request  {}", recurringPaymentDTO);
@@ -114,8 +124,8 @@ public class CorpRecurringPaymentController {
             session.removeAttribute("requestDTO");
             session.removeAttribute("redirectURL");
             session.setAttribute("requestDTO", recurringPaymentDTO);
-            session.setAttribute("redirectURL", "/corporate/recurringpayment/process");
-            return "redirect:/corporate/token/authenticate";
+            session.setAttribute("redirectURL", "/retail/recurringpayment/process");
+            return "redirect:/retail/token/authenticate";
         }
 
         return "redirect:/recurringpayment/summary";
@@ -125,7 +135,7 @@ public class CorpRecurringPaymentController {
     public String processRequest(Principal principal, HttpSession session, RedirectAttributes redirectAttributes, Model model, Locale locale) {
 
 
-        CorporateUser corporateUser = corporateUserService.getUserByName(principal.getName());
+        RetailUser retailUser = retailUserService.getUserByName(principal.getName());
 
         if (session.getAttribute("requestDTO") != null) {
             RecurringPaymentDTO recurringPaymentDTO = (RecurringPaymentDTO) session.getAttribute("requestDTO");
@@ -135,8 +145,8 @@ public class CorpRecurringPaymentController {
             if (session.getAttribute("authenticated") != null) {
 
                 try {
-                    String message = recurringPaymentService.addCorpRecurringPayment(corporateUser, recurringPaymentDTO);
-                    model.addAttribute("success", "Direct Debit added successfully");
+                    String message = recurringPaymentService.addRecurringPayment(retailUser, recurringPaymentDTO);
+                    model.addAttribute("success", "Recurring Payment added successfully");
                     session.removeAttribute("authenticated");
                     session.removeAttribute("requestDTO");
                     redirectAttributes.addFlashAttribute("message", message);
@@ -160,7 +170,7 @@ public class CorpRecurringPaymentController {
         boolean enabled = true;
         List<BillerCategory> categorys = billerCategoryRepo.findAllByEnabled(enabled);
         model.addAttribute("categorys",categorys);
-        return "corp/billpayment/addbeneficiary";
+        return "cust/billpayment/addbeneficiary";
     }
 
     @ResponseBody
@@ -189,14 +199,29 @@ public class CorpRecurringPaymentController {
         return "SUCCESSFULL";
     }
 
+    @GetMapping("/all")
+    @ResponseBody
+    public DataTablesOutput<RecurringPaymentDTO> getRecurringPayments(DataTablesInput input, Principal principal) {
+        Pageable pageable = DataTablesUtils.getPageable(input);
+        RetailUser retailUser = retailUserService.getUserByName(principal.getName());
+        Page<RecurringPaymentDTO> page = recurringPaymentService.getUserRecurringPaymentDTOs(retailUser,pageable);
+
+        DataTablesOutput<RecurringPaymentDTO> out = new DataTablesOutput<>();
+        out.setDraw(input.getDraw());
+        out.setData(page.getContent());
+        out.setRecordsFiltered(page.getTotalElements());
+        out.setRecordsTotal(page.getTotalElements());
+        return out;
+    }
+
     @ModelAttribute
     public void getNairaSourceAccount(Model model, Principal principal) {
 
-        CorporateUser user = corporateUserService.getUserByName(principal.getName());
+        RetailUser user = retailUserService.getUserByName(principal.getName());
         if (user != null) {
             List<Account> accountList = new ArrayList<>();
 
-            Iterable<Account> accounts = accountService.getAccountsForDebit(user.getCorporate().getAccounts());
+            Iterable<Account> accounts = accountService.getAccountsForDebit(user.getCustomerId());
 
             StreamSupport.stream(accounts.spliterator(), false)
                     .filter(Objects::nonNull)
