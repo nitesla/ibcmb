@@ -68,7 +68,6 @@ public class CommonRepoImpl<T extends AbstractEntity, ID extends Serializable> e
     @Override
     @Transactional
     public void delete(T entity) {
-
         entity.setDelFlag("Y");
         entity.setDeletedOn(new Date());
         super.save(entity);
