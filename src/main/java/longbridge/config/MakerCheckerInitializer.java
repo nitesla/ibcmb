@@ -3,6 +3,10 @@ package longbridge.config;
 import longbridge.models.MakerChecker;
 import longbridge.repositories.MakerCheckerRepo;
 import longbridge.utils.Verifiable;
+import org.apache.commons.lang3.AnnotationUtils;
+import org.hibernate.envers.Audited;
+import org.reflections.Reflections;
+import org.reflections.scanners.MethodAnnotationsScanner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
@@ -16,6 +20,8 @@ import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * Created by chiomarose on 19/06/2017.
@@ -29,12 +35,6 @@ public class MakerCheckerInitializer implements InitializingBean {
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    private ClassPathScanningCandidateComponentProvider createComponentScanner() {
-        ClassPathScanningCandidateComponentProvider provider
-                = new ClassPathScanningCandidateComponentProvider(true);
-        return provider;
-    }
-
 
     @Override
     public void afterPropertiesSet() throws Exception {
@@ -42,16 +42,12 @@ public class MakerCheckerInitializer implements InitializingBean {
     }
 
 
-
     private void pathScan() {
-        String pkg = "longbridge.services.implementations";
+        String pkg = "longbridge.services";
 
-        ClassPathScanningCandidateComponentProvider provider = new ClassPathScanningCandidateComponentProvider(false);
-        provider.addIncludeFilter(new AnnotationTypeFilter(Verifiable.class, false));
-
-        provider.findCandidateComponents(pkg).stream().map(BeanDefinition::getBeanClassName)
-                .map(this::getMethod).flatMap(Collection::stream).filter(m -> m.isAnnotationPresent(Verifiable.class))
-                .map(this::create).forEach(this::checkAndCreate);
+        Set<Method> methodsAnnotatedWith = new Reflections(pkg, new MethodAnnotationsScanner()).getMethodsAnnotatedWith(Verifiable.class);
+        methodsAnnotatedWith.stream().map(this::create).
+        peek(a -> System.out.println("@@@---" + a)).forEach(this::checkAndCreate);
     }
 
     private void checkAndCreate(MakerChecker makerChecker) {
@@ -62,16 +58,7 @@ public class MakerCheckerInitializer implements InitializingBean {
     }
 
 
-    private Collection<Method> getMethod(String className) {
 
-        try {
-            Method[] declaredMethods = Class.forName(className).getDeclaredMethods();
-            return List.of(declaredMethods);
-        } catch (Exception e) {
-            logger.warn("Skipping {} ,with {}", className, e.getMessage());
-        }
-        return Collections.emptySet();
-    }
 
     private MakerChecker create(Method method) {
         Verifiable annotation = method.getAnnotation(Verifiable.class);
