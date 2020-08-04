@@ -1,14 +1,20 @@
 package longbridge.services.implementations;
 
 
-import longbridge.dtos.*;
+import longbridge.dtos.AddCoverageDTO;
+import longbridge.dtos.CoverageDTO;
+import longbridge.dtos.UpdateCoverageDTO;
 import longbridge.exception.InternetBankingException;
-import longbridge.models.*;
+import longbridge.models.Coverage;
+import longbridge.models.EntityId;
+import longbridge.models.UserType;
 import longbridge.repositories.CodeRepo;
 import longbridge.repositories.CorporateRepo;
 import longbridge.repositories.CoverageRepo;
 import longbridge.repositories.RetailUserRepo;
-import longbridge.services.*;
+import longbridge.services.CoverageAdministrationService;
+import longbridge.services.IntegrationService;
+import longbridge.services.RetailUserService;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,7 +26,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
-import java.util.*;
+import java.util.Locale;
+import java.util.Optional;
+import java.util.Set;
 
 @Service
 public class CoverageServiceImpl implements CoverageAdministrationService {
