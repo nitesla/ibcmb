@@ -1,7 +1,6 @@
 package longbridge.controllers.corporate;
 
 
-
 import longbridge.dtos.CoverageDTO;
 import longbridge.dtos.CoverageDetailsDTO;
 import longbridge.dtos.UpdateCoverageDTO;
@@ -10,9 +9,9 @@ import longbridge.models.EntityId;
 import longbridge.models.User;
 import longbridge.models.UserType;
 import longbridge.security.userdetails.CustomUserPrincipal;
+import longbridge.services.CorporateUserService;
 import longbridge.services.CoverageAdministrationService;
 import longbridge.services.CoverageService;
-import longbridge.services.CorporateUserService;
 import longbridge.utils.DataTablesUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
