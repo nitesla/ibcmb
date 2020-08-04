@@ -20,6 +20,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.annotation.web.configurers.ExpressionUrlAuthorizationConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -35,11 +36,7 @@ import org.springframework.security.web.session.HttpSessionEventPublisher;
 import java.util.Arrays;
 import java.util.Objects;
 
-//import org.springframework.security.web.firewall.StrictHttpFirewall;
 
-/**
- * Created by ayoade_farooq@yahoo.com on 4/10/2017.
- */
 
 @Configuration
 @EnableWebSecurity(debug = false)
@@ -110,20 +107,13 @@ public class SecurityConfig {
                 logger.info("IP address whitelist {}", ipRange.toString());
             }
 
-//            .authorizeRequests()
-//                    .antMatchers("/reset")
-//                    .access("hasAuthority('T(com.longbridge.bconsole.usermngt.accessctrl.Roles).ROLE_RESET')")
-//                    .antMatchers("/**")
-//                    .authenticated().and().addFilterAfter(traceFilter(), UsernamePasswordAuthenticationFilter.class)
-//                    .formLogin().permitAll().loginPage("/login")
-//                    .failureUrl("/login?error=true")
 
-            http.authorizeRequests().antMatchers("/admin/**")
-                    //access("hasAuthority('" + UserType.ADMIN.toString() + "')").and()
-                            .access("hasAuthority('" + UserType.ADMIN.toString() + "') and "
+                    http
+                    .antMatcher("/admin/**").authorizeRequests()
+                    .and().authorizeRequests().anyRequest().
+                            access("hasAuthority('" + UserType.ADMIN.toString() + "') and "
                             + (ipRestricted ? ipRange.toString() : " true"))
-                    .mvcMatchers("/admin/**").fullyAuthenticated().and()
-
+                    .and()
                     .formLogin().loginPage("/login/admin").loginProcessingUrl("/admin/login")
                     .failureUrl("/login/admin?error=login_error").defaultSuccessUrl("/admin/dashboard")
                     .successHandler(adminAuthenticationSuccessHandler).failureHandler(adminAuthenticationFailureHandler)
@@ -145,12 +135,6 @@ public class SecurityConfig {
             http.headers().cacheControl();
         }
 
-//        @Override
-//        public void configure(WebSecurity web) throws Exception {
-//            new SecurityConfig().customConfig(web);
-//
-//
-//        }
 
     }
 
@@ -214,17 +198,13 @@ public class SecurityConfig {
 
                 logger.info("IP address whitelist " + ipRange.toString());
             }
+            http.antMatcher("/ops/**")
+                    .authorizeRequests().anyRequest()
 
-
-            http.authorizeRequests().antMatchers("/ops/**")
-                    //access("hasAuthority('" + UserType.ADMIN.toString() + "')").and()
                     .access("hasAuthority('" + UserType.OPERATIONS.toString() + "') and "
-                            + (ipRestricted ? ipRange.toString() : " true"))
-                    .mvcMatchers("/ops/**").fullyAuthenticated().and()
-
-                    .formLogin().loginPage("/login/ops").loginProcessingUrl("/ops/login")
-                    .failureUrl("/login/ops?error=login_error").defaultSuccessUrl("/ops/dashboard")
-
+                            + (ipRestricted ? ipRange.toString() : " true ")).and()
+                    // log in
+                    .formLogin().loginPage("/login/ops").loginProcessingUrl("/ops/login").failureUrl("/login/ops?error=true").defaultSuccessUrl("/ops/dashboard")
                     .successHandler(opAuthenticationSuccessHandler)
                     .failureHandler(opAuthenticationFailureHandler)
 
@@ -288,8 +268,6 @@ public class SecurityConfig {
             http
                     .antMatcher("/retail/**").authorizeRequests()
                     .anyRequest()
-                    // .authenticated()
-                    // .hasAuthority(UserType.RETAIL.toString())
                     .fullyAuthenticated()
                     // log in
                     .and().formLogin().loginPage("/login/retail").loginProcessingUrl("/retail/login")
@@ -367,13 +345,15 @@ public class SecurityConfig {
 
 //            http.addFilterBefore(customFilter(), UsernamePasswordAuthenticationFilter.class);
 
-            http.authorizeRequests().antMatchers("/corporate/**")
-                    //access("hasAuthority('" + UserType.ADMIN.toString() + "')").and()
-                    .access("hasAuthority('" + UserType.CORPORATE.toString() + "') ")
-                    .mvcMatchers("/corporate/**").fullyAuthenticated().and()
+            ExpressionUrlAuthorizationConfigurer<HttpSecurity>.AuthorizedUrl authorizedUrl = http
+                    .antMatcher("/corporate/**")
+                    .authorizeRequests()
+                    .anyRequest();
+            authorizedUrl.fullyAuthenticated();
 
-                    .formLogin().loginPage("/login/corporate").loginProcessingUrl("/corporate/login")
-                    .failureUrl("/login/corporate?error=login_error").defaultSuccessUrl("/corporate/dashboard")
+            // .authenticated()
+                    authorizedUrl.hasAuthority(UserType.CORPORATE.toString())
+                    .and().authorizeRequests()
 
                     // log in
                     .and().formLogin().loginPage("/login/corporate").loginProcessingUrl("/corporate/login")
@@ -463,28 +443,5 @@ public class SecurityConfig {
 
 
     }
-
-//    @Configuration
-//    @Order(5)
-//    public static class ApiUserConfiguration extends WebSecurityConfigurerAdapter {
-//
-//        @Override
-//        protected void configure(HttpSecurity http) throws Exception {
-//            http.csrf().disable().authorizeRequests()
-//                    .antMatchers("/api/v1/**").permitAll()
-//                    .antMatchers(HttpMethod.POST, "/api/user/signin").permitAll()
-////                    .antMatchers("/api/v1/**").permitAll()
-//                    .anyRequest().authenticated()
-//                    .and()
-//                    // We filter the api/login requests
-//                    .addFilterBefore(new JWTLoginFilter("api/user/signin", authenticationManager()),
-//                            UsernamePasswordAuthenticationFilter.class)
-//                    // And filter other requests to check the presence of JWT in header
-//                    .addFilterBefore(new JWTAuthenticationFilter(),
-//                            UsernamePasswordAuthenticationFilter.class);
-//        }
-//
-//    }
-
 
 }
