@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{ret-layout}">
+
+<body onload="javascript:var bread = [['Home', '/retail/dashboard'],['Recurring Bill Payment']];currentBar('Set-up Recurring Bill Payment');breadCrumb(bread)">
+<!--<body onload="javascript:var bread = [['Home', '/retail/dashboard'],['Recurring Payment Management', '/retail/recurringpayment'],['Recurring Bill Payment']];currentBar('Set-up Recurring Bill Payment');breadCrumb(bread)">-->
+
+
+<div layout:fragment="content">
+    <div class="col-md-5 col-sm-5 ">
+
+        <select class="form-control full-width coronation-form-control hide-content-only" id="view">
+            <option value="account">Overview</option>
+        </select>
+    </div>
+
+    <div class="col-xs-12" >
+        <div class="no-mt no-pad-lef alert no-bd">
+            <div class="">
+                <div class="col-md-6 col-sm-6 no-pad-left">
+
+                    <!--                    <div>-->
+                    <!--                    <a type="button" class="btn btn-default btn-sm" id="fixCalculate" th:href="@{/retail/billpayment/addbeneficiary}">Add-Beneficiary</a>-->
+                    <!--                    </div>-->
+                    <!--                    <br/>-->
+                    <form id="local" method="post" th:action="@{/retail/recurringpayment/summary}" th:object="${recurringpayment}">
+
+                        <div class="form-group">
+                            <label>Source Account</label>
+                            <select name="source" class="form-control" id="source"
+                                    th:field="*{customerAccountNumber}" onchange="getBalance();">
+                                <option th:each="s: ${accountList}" th:value="${s.accountNumber}" th:text="${s.accountNumber}" th:selected="${s.primaryFlag=='Y'}"></option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Category</label>
+                            <select class="form-control" th:field="*{categoryName}" id="categories" name="categories" onchange="fetchBillers()" required="required">
+                                <option value=""> Select Category </option>
+                                <option th:each="category : ${billerCategories}" th:value="${category.categoryName}" th:text="${category.categoryName}"></option>
+                            </select><span class='req-inner'></span>
+
+                        </div>
+
+                        <div class="form-group">
+                            <label>Biller</label>
+                            <select  class="form-control" th:field="*{billerId}" id="billerId" name="billerId" onchange="fetchPaymentItems()" required="required" >
+                            </select><span class='req-inner'></span>
+                            <!--                            <input type="hidden" id="referenceName"/>-->
+                        </div>
+
+                        <div class="form-group">
+                            <label>Payment Item</label>
+                            <select class="form-control" th:field="*{paymentItemId}" id="paymentItemId" name="paymentItemId" onchange="fetchPaymentItemDetails()" required="required">
+                            </select><span class='req-inner'></span>
+
+                        </div>
+
+                        <div class="form-group">
+                            <label>Frequency</label>
+                            <!--                            <select class="form-control" id="frequency" name="categories" onchange="fetchBillers()" required="required">-->
+                            <!--                                <option value=""> Select Frequency </option>-->
+                            <!--                                <option value="daily"> Daily </option>-->
+                            <!--                                <option value="weekly"> Weekly </option>-->
+                            <!--                                <option value="fortnightly"> Fort-Nightly </option>-->
+                            <!--                                <option value="monthly"> Monthly </option>-->
+                            <!--                                <option value="quarterly"> Quarterly </option>-->
+                            <!--                                <option value="bi-annually"> Bi-annually </option>-->
+                            <!--                                <option value="annually"> Annually </option>-->
+                            <!--                            </select>-->
+
+                            <select name="intervalDays" required="required" class="form-control">
+                                <option value="">Select frequency </option>
+                                <option th:value="${duration.code}" th:each="duration:${durations}" th:text="${duration.description}" ></option>
+                            </select>
+                            <span class='req-inner'></span>-->
+
+                        </div>
+
+                        <!--                        <div class="form-group">-->
+                        <!--                            <label >Source-Account</label>-->
+                        <!--                            <input type="number" class="form-control"-->
+                        <!--                                   required="required"/><span class='req-inner'></span>-->
+                        <!--                        </div>-->
+
+                        <div class="form-group">
+                            <label >Transaction Amount</label>
+                            <input type="text" class="form-control" th:field="*{amount}"
+                                   required="required" readonly/>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Narration</label>
+                            <input th:field="*{narration}" name="narration" class="form-control" placeholder="Narration" required/>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Duration</label>
+                            <div class="input-daterange input-group" id="date-range">
+                                <input type="text" th:field="*{start}" data-date-format="dd-mm-yyyy" class="form-control datepicker" id="start" name="fromDate" placeholder="Start date" required="required" onchange="startDateError()" />
+                                <span class="input-group-addon no-border no-bd" style="bacground:transparent !important">to</span>
+                                <input type="text" th:field="*{end}"  data-date-format="dd-mm-yyyy" class="form-control datepicker" name="toDate" id="end" placeholder="End date" required="required" onchange="endDateError1()" />
+
+                                <!--<span id="emptyDateError"   class="error">Start and end date is mandatory</span>-->
+                            </div>
+                            <span id="endDateError1" style="color:red"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label >Phone Number</label>
+                            <input type="text" class="form-control" th:field="*{phoneNumber}"
+                                   required="required"/>
+                        </div>
+                        <div class="form-group">
+                            <label >Email Address</label>
+                            <input type="text" class="form-control" th:field="*{emailAddress}"
+                                   required="required"/>
+                        </div>
+
+                        <button  class="btn btn-link required-step" >Proceed</button>
+
+
+
+                    </form>
+
+                </div>
+
+                <div class="col-xs-12 col-sm-5  wel ">
+                    <!--<p class="related" style="padding-top: 5%">Related Information</p>-->
+                    <div  class="related-box">
+                        <h3 class="related-bar">Related Information</h3>
+
+                        <!--<input type="availBal" name="availBal"/>-->
+                        <p class="related-info coronation-blue" id="availBal"><b></b></p>
+                        <!--<p  class="related-info coronation-blue" id="limit"><b></b></p>-->
+
+                    </div>
+                </div>
+
+
+
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+
+
+<th:block layout:fragment="scripts">
+    <script th:inline="javascript">
+
+        $(document).ready(function () {
+
+            getBalance();
+            fetchBillers();
+            fetchPaymentItems();
+
+        });
+
+
+        function getBalance(){
+
+            var accountNumber = $('#source').val();
+            $.ajax({
+                url: "/retail/transfer/balance/"+accountNumber,
+                type: 'GET',
+                async: false,
+                success:function(jd){
+                    var message = jd.message;
+                    var success =  jd.success;
+                    console.log(message);
+                    console.log(success);
+                    if (success==false){
+                        document.getElementById("myspan").textContent="Could not get balance from server, please try again.";
+                        $("#myspan").show();
+                    }else{
+//                    $('input[name=availBal]').val(bal);
+
+                        var  bal=numberWithCommas(message);
+                        $('#availBal').html("Available Balance: "+bal);
+
+                    }
+                }
+            })
+        }
+
+        function fetchBillers(){
+
+            var category = $("#categories").val();
+            console.log("Category", category)
+
+            $.ajax ({
+                type: 'POST',
+                url: "/retail/payment/biller",
+                data: {categoryName: category},
+                success: function (biller , status, xhr) {
+                    console.log(JSON.stringify(biller));
+                    console.log(biller.length);
+                    if(biller.length==0){
+
+                    }
+                    $('#billerId').empty();
+                    $('#billerId').append("<option value=''>-Select-</option>");
+                    console.log("Biller ---------->>>" +biller)
+                    biller.forEach(b => $('#billerId').append("<option value='"+b.billerId+"'>"+b.billerName+"</option>"));
+                }
+            })
+        }
+
+        function fetchPaymentItems(){
+
+            var biller = $("#billerId").val();
+            console.log("Biller selected is ---->>>>>", biller)
+            $.ajax({
+                type: 'POST',
+                url: "/retail/payment/paymentItem",
+                data: {billerId: biller},
+                success: function (items , status, xhr) {
+                    console.log(JSON.stringify(items));
+                    console.log(items.length);
+                    if(items.length==0){
+
+                    }
+                    $('#paymentItemId').empty();
+                    $('#paymentItemId').append("<option value=''>-Select-</option>");
+                    console.log("Biller ---------->>>" +items)
+                    items.forEach(b => $('#paymentItemId').append("<option value='"+b.paymentItemId+"'>"+b.paymentItemName+"</option>"));
+                }
+            })
+        }
+
+        function fetchPaymentItemDetails(){
+
+            var paymentItemId = $("#paymentItemId").val();
+            console.log("paymentItem detail is ---->>>>>", paymentItemId)
+            $.ajax({
+                url: "/retail/payment/paymentItem/" + paymentItemId+"",
+                success: function (paymentItem, status, xhr) {
+                    console.log("PaymentItem name is "+paymentItem.paymentItemName);
+                    console.log("PaymentItem price is "+paymentItem.amount);
+                    console.log("PaymentItem read-only status is "+paymentItem.readonly);
+
+                    $('#amount').val(paymentItem.amount);
+
+                    if(paymentItem.readonly==false){
+                        $('#amount').removeAttr("readonly")
+                    }
+                    else {
+                        $('#amount').attr("readonly","readonly")
+
+                    }
+
+                }
+            });
+
+        }
+
+        function endDateError1(){
+            var startDate=$("#start").datepicker("getDate");
+            var endDate=$("#end").datepicker("getDate");
+            if(endDate < startDate){
+                $("#endDateError1").text("End date should not be less than Start date")
+                $("#save").attr("disabled",true);
+            }else{
+                $("#endDateError1").text("")
+                $("#save").attr("disabled",false);
+            }
+        }
+
+        function startDateError(){
+            var startDate=$("#start").datepicker("getDate");
+            var currentDate = new Date();
+            if(startDate < currentDate){
+                $("#endDateError").text("Start date should not be less than current date")
+                $("#save").attr("disabled",true);
+            }else{
+                $("#endDateError").text("")
+                $("#save").attr("disabled",false);
+            }
+        }
+
+    </script>
+
+</th:block>
+
+</body>
+</html>

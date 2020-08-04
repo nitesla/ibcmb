@@ -1,7 +1,9 @@
 package longbridge.services;
 
 
-import longbridge.dtos.*;
+import longbridge.dtos.AddCoverageDTO;
+import longbridge.dtos.CoverageDTO;
+import longbridge.dtos.UpdateCoverageDTO;
 import longbridge.exception.InternetBankingException;
 import longbridge.models.Coverage;
 import longbridge.models.EntityId;
