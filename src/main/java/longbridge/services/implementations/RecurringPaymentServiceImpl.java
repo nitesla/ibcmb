@@ -1,9 +1,15 @@
 package longbridge.services.implementations;
 
 import longbridge.dtos.RecurringPaymentDTO;
-import longbridge.models.CorpRecurringPayment;
-import longbridge.repositories.*;
+import longbridge.exception.InternetBankingException;
+import longbridge.models.*;
+import longbridge.repositories.CorpRecurringPaymentRepo;
+import longbridge.repositories.CorpTransferRequestRepo;
+import longbridge.repositories.PaymentRepo;
+import longbridge.repositories.RecurringPaymentRepo;
 import longbridge.services.*;
+import longbridge.utils.DateUtil;
+import org.joda.time.LocalDate;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,10 +17,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Locale;
+import java.util.*;
 
 @Service
 @Transactional
@@ -24,19 +33,16 @@ public class RecurringPaymentServiceImpl implements RecurringPaymentService {
 
 	@Autowired
 	private ModelMapper modelMapper;
-	
-	@Autowired
-	private DirectDebitRepo directDebitRepo;
-
-	@Autowired
-	private CorpDirectDebitRepo corpDirectDebitRepo;
 
 	@Autowired
 	private CorpRecurringPaymentRepo corpRecurringPaymentRepo;
 
 	@Autowired
+	private RecurringPaymentRepo recurringPaymentRepo;
+
+	@Autowired
 	private PaymentRepo paymentRepo;
-	
+
 	@Autowired
 	private TransferService transferService;
 
@@ -61,42 +67,41 @@ public class RecurringPaymentServiceImpl implements RecurringPaymentService {
 	private String bankCode;
 
 
-//	@Override
-//	public String addDirectDebit(RetailUser user, DirectDebitDTO directDebitDTO) {
-//
-//		try{
-//			logger.info("direct debit setup {}", directDebitDTO.toString());
-//		LocalDate now = LocalDate.now();
-//		DirectDebit directDebit = convertDTOToEntity(directDebitDTO);
-//		directDebit.setDebitAccount(directDebit.getDebitAccount());
-//		directDebit.setDateCreated(now.toDate());
-//		directDebit.setRetailUser(user);
-//		directDebit.setStartDate(DateUtil.convertStringToDate(directDebitDTO.getStart()));
-//		directDebit.setEndDate(DateUtil.convertStringToDate(directDebitDTO.getEnd()));
-//		directDebit.setNextDebitDate(now.plusDays(directDebit.getIntervalDays()).toDate());
-//
-//		generatePaymentsForDirectDebit(directDebitRepo.save(directDebit));
-//		return messageSource.getMessage("directdebit.add.success", null, locale);
-//	     }catch (Exception e) {
-//			e.printStackTrace();
-//			throw new InternetBankingException(e.getMessage(),e);
-//		}
-//	}
+	@Override
+	public String addRecurringPayment(RetailUser user, RecurringPaymentDTO recurringPaymentDTO) {
 
-//    @Override
-//    public String addCorpRecurringPayment(CorporateUser user, RecurringPaymentDTO recurringPaymentDTO) {
-//        try{
-//            logger.info("Recurring Payment setup {}", recurringPaymentDTO.toString());
-//            LocalDate now = LocalDate.now();
-//            CorpRecurringPayment recurringPayment = convertDToToEntityCorp(recurringPaymentDTO);
-//			recurringPayment.setDateCreated(now.toDate());
-//			recurringPayment.setCorporateUser(user);
-//			recurringPayment.setStartDate(DateUtil.convertStringToDate(recurringPaymentDTO.getStart()));
-//			recurringPayment.setEndDate(DateUtil.convertStringToDate(recurringPaymentDTO.getEnd()));
-//			recurringPayment.setNextDebitDate(now.plusDays(recurringPayment.getIntervalDays()).toDate());
-//			recurringPayment.setCorporate(user.getCorporate().getId());
-//			if ("SOLE".equals(user.getCorporate().getCorporateType())) {
-//				generatePaymentsForRecurringPayment(corpRecurringPaymentRepo.save(recurringPayment));
+		try{
+			logger.info("Recurring Payment setup {}", recurringPaymentDTO.toString());
+			LocalDate now = LocalDate.now();
+			RecurringPayment recurringPayment = convertDToToEntityCorp(recurringPaymentDTO);
+			recurringPayment.setDateCreated(now.toDate());
+			recurringPayment.setRetailUser(user);
+			recurringPayment.setStartDate(DateUtil.convertStringToDate(recurringPaymentDTO.getStart()));
+			recurringPayment.setEndDate(DateUtil.convertStringToDate(recurringPaymentDTO.getEnd()));
+			recurringPayment.setNextDebitDate(now.plusDays(recurringPayment.getIntervalDays()).toDate());
+
+			generatePaymentsForRecurringPayment(recurringPaymentRepo.save(recurringPayment));
+			return messageSource.getMessage("directdebit.add.success", null, locale);
+		}catch (Exception e) {
+			e.printStackTrace();
+			throw new InternetBankingException(e.getMessage(),e);
+		}
+	}
+
+	@Override
+	public String addCorpRecurringPayment(CorporateUser user, RecurringPaymentDTO recurringPaymentDTO) {
+		try{
+			logger.info("Recurring Payment setup {}", recurringPaymentDTO.toString());
+			LocalDate now = LocalDate.now();
+			CorpRecurringPayment recurringPayment = convertDToToEntityCorp(recurringPaymentDTO);
+			recurringPayment.setDateCreated(now.toDate());
+			recurringPayment.setCorporateUser(user);
+			recurringPayment.setStartDate(DateUtil.convertStringToDate(recurringPaymentDTO.getStart()));
+			recurringPayment.setEndDate(DateUtil.convertStringToDate(recurringPaymentDTO.getEnd()));
+			recurringPayment.setNextDebitDate(now.plusDays(recurringPayment.getIntervalDays()).toDate());
+			recurringPayment.setCorporate(user.getCorporate().getId());
+			if ("SOLE".equals(user.getCorporate().getCorporateType())) {
+				generatePaymentsForRecurringPayment(corpRecurringPaymentRepo.save(recurringPayment));
 //			}else{
 //				logger.info("seems corporate is multi .... about to send request for authorization");
 //
@@ -137,13 +142,13 @@ public class RecurringPaymentServiceImpl implements RecurringPaymentService {
 //				logger.info("Transfer request saved for authorization");
 //				return  "standing order has gone for authorization";
 //
-//			}
-//            return messageSource.getMessage("directdebit.add.success", null, locale);
-//        }catch (Exception e) {
-//            e.printStackTrace();
-//            throw new InternetBankingException(e.getMessage(),e);
-//        }
-//    }
+			}
+			return messageSource.getMessage("directdebit.add.success", null, locale);
+		}catch (Exception e) {
+			e.printStackTrace();
+			throw new InternetBankingException(e.getMessage(),e);
+		}
+	}
 
 //    @Override
 //	public String deleteDirectDebit(Long directDebitId) {
@@ -254,8 +259,8 @@ public class RecurringPaymentServiceImpl implements RecurringPaymentService {
 //	}
 
 	private CorpRecurringPayment convertDToToEntityCorp(RecurringPaymentDTO recurringPaymentDTO){
-        return modelMapper.map(recurringPaymentDTO, CorpRecurringPayment.class);
-    }
+		return modelMapper.map(recurringPaymentDTO, CorpRecurringPayment.class);
+	}
 
 //	@Override
 //	public List<DirectDebit> getDueDirectDebits() {
@@ -273,17 +278,17 @@ public class RecurringPaymentServiceImpl implements RecurringPaymentService {
 		return directDebitRepo.findByRetailUser(user,pageable);
 	}
 */
-//	@Override
-//	public Page<DirectDebitDTO> getUserDirectDebitDTOs(RetailUser user, Pageable pageable) {
-//		Page<DirectDebit> directDebits=directDebitRepo.findByRetailUser(user,pageable);
-//		List<DirectDebitDTO> directDebitDTOS = new ArrayList<>();
-//		for (DirectDebit directDebit : directDebits) {
-//			DirectDebitDTO directDebitDTO = modelMapper.map(directDebit, DirectDebitDTO.class);
-//			directDebitDTOS.add(directDebitDTO);
-//		}
-//		long t = directDebits.getTotalElements();
-//		return new PageImpl<>(directDebitDTOS, pageable, t);
-//	}
+	@Override
+	public Page<RecurringPaymentDTO> getUserRecurringPaymentDTOs(RetailUser user, Pageable pageable) {
+		Page<RecurringPayment> recurringPayments=recurringPaymentRepo.findByRetailUser(user,pageable);
+		List<RecurringPaymentDTO> recurringPaymentDTOS = new ArrayList<>();
+		for (RecurringPayment recurringPayment : recurringPayments) {
+			RecurringPaymentDTO directDebitDTO = modelMapper.map(recurringPayment, RecurringPaymentDTO.class);
+			recurringPaymentDTOS.add(directDebitDTO);
+		}
+		long t = recurringPayments.getTotalElements();
+		return new PageImpl<>(recurringPaymentDTOS, pageable, t);
+	}
 
 //	@Override
 //	public Page<DirectDebitDTO> getCorpUserDirectDebitDTOS(CorporateUser corporateUser, Pageable pageable){
@@ -310,40 +315,41 @@ public class RecurringPaymentServiceImpl implements RecurringPaymentService {
 */
 
 
-//	public void generatePaymentsForRecurringPayment(RecurringPayment recurringPayment) {
-//		logger.info("about to generate payments for recurring payment {}",recurringPayment.toString());
-//		boolean checker = true ;
-//
-//		Collection<PaymentStat> recurringPayments = new ArrayList<>();
-//		Date startDate = recurringPayment.getStartDate() ;
-//		Date endDate = recurringPayment.getEndDate();
-//		Date nextDebit = startDate ;
-//        PaymentStat firstpay =  new PaymentStat();
-//        firstpay.setDebitDate(startDate);
-//        firstpay.setRecurringPayment(recurringPayment);
-//		recurringPayments.add(firstpay);
-//		logger.info("end date is {} ", endDate);
-//		while (checker){
-//             logger.info("next date is currently........{}",nextDebit);
-//			nextDebit = DateUtil.addDaysToDate(nextDebit , recurringPayment.getIntervalDays());
-//			logger.info("checking date ......{}", nextDebit);
-//
-//			if(DateUtil.isBeforeDay(nextDebit , endDate)){
-//
-//				PaymentStat payment =  new PaymentStat();
-//				payment.setDebitDate(nextDebit);
-//				payment.setRecurringPayment(recurringPayment);
-//				recurringPayments.add(payment);
-//			}else {
-//				logger.info("date now out of bound ! {}",nextDebit);
-//				checker = false ;
-//			}
-//
-//
-//		}
-//		recurringPayment.setPayments(recurringPayments);
-//		RecurringPaymentRepo.save(recurringPayment);
-//	}
+	public void generatePaymentsForRecurringPayment(RecurringPayment recurringPayment) {
+		logger.info("about to generate payments for recurring payment {}",recurringPayment.toString());
+		boolean checker = true ;
+
+		Collection<PaymentStat> recurringPayments = new ArrayList<>();
+		Date startDate = recurringPayment.getStartDate() ;
+		Date endDate = recurringPayment.getEndDate();
+		Date nextDebit = startDate ;
+		PaymentStat firstpay =  new PaymentStat();
+		firstpay.setDebitDate(startDate);
+		firstpay.setRecurringPayment(recurringPayment);
+		recurringPayments.add(firstpay);
+		logger.info("end date is {} ", endDate);
+		while (checker){
+			logger.info("next date is currently........{}",nextDebit);
+			nextDebit = DateUtil.addDaysToDate(nextDebit , recurringPayment.getIntervalDays());
+			logger.info("checking date ......{}", nextDebit);
+
+			if(DateUtil.isBeforeDay(nextDebit , endDate)){
+
+				PaymentStat payment =  new PaymentStat();
+				recurringPayment = integrationService.recurringPayment(recurringPayment);
+				payment.setDebitDate(nextDebit);
+				payment.setRecurringPayment(recurringPayment);
+				recurringPayments.add(payment);
+			}else {
+				logger.info("date now out of bound ! {}",nextDebit);
+				checker = false ;
+			}
+
+
+		}
+		recurringPayment.setPayments(recurringPayments);
+		recurringPaymentRepo.save(recurringPayment);
+	}
 
 //	@Override
 //	public String modifyPayment(PaymentDTO paymentDTO) {

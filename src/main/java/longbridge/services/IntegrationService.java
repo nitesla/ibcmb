@@ -163,7 +163,8 @@ public interface IntegrationService {
     String updateCharge(TransferFeeAdjustment tfaDTO);
     List<BillerDTO> getBillers();
     List<PaymentItemDTO> getPaymentItems(Long billerId);
-    BillPayment billPayment(BillPayment billPayment, String terminal);
+    BillPayment billPayment(BillPayment billPayment);
+    RecurringPayment recurringPayment(RecurringPayment recurringPayment);
     List<BillerCategoryDTO> getBillerCategories();
     CoverageDetailsDTO getCoverageDetails(String coverageName, Set<String> customerIds);
 

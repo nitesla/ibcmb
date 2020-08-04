@@ -20,14 +20,14 @@ public class RecurringPayment extends AbstractEntity {
 
 	@ManyToOne
 	private RetailUser retailUser;
-    protected String customerAccountNumber;
-    protected BigDecimal amount;
-    protected int intervalDays;
-    protected Date nextDebitDate;
-    protected Date dateCreated;
-    protected Date startDate;
-    protected Date endDate;
-    protected String narration;
+	protected String customerAccountNumber;
+	protected BigDecimal amount;
+	protected int intervalDays;
+	protected Date nextDebitDate;
+	protected Date dateCreated;
+	protected Date startDate;
+	protected Date endDate;
+	protected String narration;
 	protected String categoryName;
 	protected String paymentItemId;
 	protected String paymentItemName;
@@ -40,13 +40,17 @@ public class RecurringPayment extends AbstractEntity {
 	protected String terminalId;
 	protected Long paymentCode;
 	protected String customerId;
+	protected String responseCode;
+	protected String responseCodeGrouping;
+	protected String approvedAmount;
+	protected String rechargePin;
 	protected String requestReference;
 	protected String token;
 	protected String responseDescription;
 	protected String transactionRef;
 	protected boolean authenticate;
-    @OneToMany(mappedBy = "recurringPayment", cascade = CascadeType.ALL)
-    protected Collection<PaymentStat> payments;
+	@OneToMany(mappedBy = "recurringPayment", cascade = CascadeType.ALL)
+	protected Collection<PaymentStat> payments;
 
 	@ManyToOne
 	CorporateUser corporateUser;
@@ -290,6 +294,38 @@ public class RecurringPayment extends AbstractEntity {
 		setNextDebitDate(previous.plusDays(getIntervalDays()).toDate());
 	}
 
+	public String getResponseCode() {
+		return responseCode;
+	}
+
+	public void setResponseCode(String responseCode) {
+		this.responseCode = responseCode;
+	}
+
+	public String getResponseCodeGrouping() {
+		return responseCodeGrouping;
+	}
+
+	public void setResponseCodeGrouping(String responseCodeGrouping) {
+		this.responseCodeGrouping = responseCodeGrouping;
+	}
+
+	public String getApprovedAmount() {
+		return approvedAmount;
+	}
+
+	public void setApprovedAmount(String approvedAmount) {
+		this.approvedAmount = approvedAmount;
+	}
+
+	public String getRechargePin() {
+		return rechargePin;
+	}
+
+	public void setRechargePin(String rechargePin) {
+		this.rechargePin = rechargePin;
+	}
+
 	@Override
 	public String toString() {
 		return "RecurringPayment{" +
@@ -314,6 +350,10 @@ public class RecurringPayment extends AbstractEntity {
 				", terminalId='" + terminalId + '\'' +
 				", paymentCode=" + paymentCode +
 				", customerId='" + customerId + '\'' +
+				", responseCode='" + responseCode + '\'' +
+				", responseCodeGrouping='" + responseCodeGrouping + '\'' +
+				", approvedAmount='" + approvedAmount + '\'' +
+				", rechargePin='" + rechargePin + '\'' +
 				", requestReference='" + requestReference + '\'' +
 				", token='" + token + '\'' +
 				", responseDescription='" + responseDescription + '\'' +
