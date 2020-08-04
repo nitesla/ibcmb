@@ -30,503 +30,538 @@
 </head>
 
 <body class="LTR Safari Chrome Safari44 Chrome44 JAJP SmallDevice ContentBody">
-     <!--[if lte IE 9]>
-        <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
-    <![endif]-->
+<!--[if lte IE 9]>
+<p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+<![endif]-->
 
-    <div class='spinner-box'><span id="rtstatementspinner"  hidden="true" class="spinnerLoader" ><i class="fa fa-spinner fa-pulse fa-5x fa-fw spinnerClass" aria-hidden="true" ></i><p class=' text-bold spinner-tag'>Processing... Please Wait</p></span>
-    </div>        
-
-
+<div class='spinner-box'><span id="rtstatementspinner"  hidden="true" class="spinnerLoader" ><i class="fa fa-spinner fa-pulse fa-5x fa-fw spinnerClass" aria-hidden="true" ></i><p class=' text-bold spinner-tag'>Processing... Please Wait</p></span>
+</div>
 
 
-    <div class="container" style="">
 
-        <div>
-            <header class="heade ">
-                <div class="row">
-                    <div class="top-bar mobile-top-bar col-xs-12">
-                        <ul class="top-link">
-                            <li><a href="/corporate/contact"> Contact Us</a>&nbsp;</li>
-                            <li><a href="https://www.coronationmb.com/" target="_blank"> Coronation merchant bank</a>&nbsp;</li>
-                            <li><a target="_blank" th:href="@{/faqs}">Help</a>&nbsp;</li>
-                        </ul>
-                    </div>
+
+<div class="container" style="">
+
+    <div>
+        <header class="heade ">
+            <div class="row">
+                <div class="top-bar mobile-top-bar col-xs-12">
+                    <ul class="top-link">
+                        <li><a href="/corporate/contact"> Contact Us</a>&nbsp;</li>
+                        <li><a href="https://www.coronationmb.com/" target="_blank"> Coronation merchant bank</a>&nbsp;</li>
+                        <li><a target="_blank" th:href="@{/faqs}">Help</a>&nbsp;</li>
+                    </ul>
                 </div>
-                <div class='row header-bar'>
-                    <div class="col-xs-12 col-sm-9 no-pad-left  hidden-xs ">
-                        <div class="bvn-tab col-md-5 col-sm-5 ">
-                            <div class="header_inf bv">
-                                <p th:text="${compName}">Your RC Number</p>
-                                <h5 th:text="'RC N0: ' + ${RcNo}"></h5>
+            </div>
+            <div class='row header-bar'>
+                <div class="col-xs-12 col-sm-9 no-pad-left  hidden-xs ">
+                    <div class="bvn-tab col-md-5 col-sm-5 ">
+                        <div class="header_inf bv">
+                            <p th:text="${compName}">Your RC Number</p>
+                            <h5 th:text="'RC N0: ' + ${RcNo}"></h5>
 
-                            </div>
                         </div>
-                        <div class="col-sm-7 col-md-7 user-info">
-                            <div class="">
-                                <h5>
-                                    <span class='greeting' th:text="*{greeting}"></span>
-                                    <br class="break" />
-                                    <b class="greeting-user" th:text="*{name}"></b> &nbsp;
-                                    <!--<a th:href="@{/corporate/mailbox/inbox}"><i class="fa fa-envelope" style="color:#003056"></i>-->
-                                    <!--<span th:if="${numOfUnreadMessages}" class="badge bg-green" th:text="${numOfUnreadMessages}">count</span>-->
+                    </div>
+                    <div class="col-sm-7 col-md-7 user-info">
+                        <div class="">
+                            <h5>
+                                <span class='greeting' th:text="*{greeting}"></span>
+                                <br class="break" />
+                                <b class="greeting-user" th:text="*{name}"></b> &nbsp;
+                                <!--<a th:href="@{/corporate/mailbox/inbox}"><i class="fa fa-envelope" style="color:#003056"></i>-->
+                                <!--<span th:if="${numOfUnreadMessages}" class="badge bg-green" th:text="${numOfUnreadMessages}">count</span>-->
 
-                                    <!--</a>-->
-                                </h5>
+                                <!--</a>-->
+                            </h5>
 
-                                <div class="hide-faq">
-                                    <h6>
-                                        <a target="_blank" th:href="@{/faqs}">FAQS &nbsp; &nbsp;
+                            <div class="hide-faq">
+                                <h6>
+                                    <a target="_blank" th:href="@{/faqs}">FAQS &nbsp; &nbsp;
                                         <i class="fa fa-question-circle"></i></a>
-                                        <span class="date2 lorem">&nbsp; &nbsp;Login History:&nbsp;</span>&nbsp;
-                                        <span class="lorem" th:text="*{lastLogin}"></span>
-                                    </h6>
-                                    <div class="nav_menu" style="display:none">
-                                        <!--<nav>-->
-                                        <ul class="nav navbar-nav navbar-left">
+                                    <span class="date2 lorem">&nbsp; &nbsp;Login History:&nbsp;</span>&nbsp;
+                                    <span class="lorem" th:text="*{lastLogin}"></span>
+                                </h6>
+                                <div class="nav_menu" style="display:none">
+                                    <!--<nav>-->
+                                    <ul class="nav navbar-nav navbar-left">
 
-                                            <li role="presentation" class="dropdown">
-                                                <a href="javascript:;" class="dropdown-toggle info-number" data-toggle="dropdown" aria-expanded="false">
-                                                    <span class="cnt"></span>
-                                                    <i class="fa fa-envelope-o "></i>
-                                                </a>
-                                                <ul style="width:450px;word-break: break-word" id="menu1" class="dropdown-menu  msg_list bg-danger alert no-mt advert no-bd-rad" role="menu" >
+                                        <li role="presentation" class="dropdown">
+                                            <a href="javascript:;" class="dropdown-toggle info-number" data-toggle="dropdown" aria-expanded="false">
+                                                <span class="cnt"></span>
+                                                <i class="fa fa-envelope-o "></i>
+                                            </a>
+                                            <ul style="width:450px;word-break: break-word" id="menu1" class="dropdown-menu  msg_list bg-danger alert no-mt advert no-bd-rad" role="menu" >
 
                                                                         <span class="specialGreeting"  >
                                                                         </span>
-                                                </ul>
-                                            </li>
-                                        </ul>
-                                        <!-- </nav>-->
-                                    </div>
-                                    <!--</div>-->
-                                    <!-- /top navigation -->
+                                            </ul>
+                                        </li>
+                                    </ul>
+                                    <!-- </nav>-->
                                 </div>
+                                <!--</div>-->
+                                <!-- /top navigation -->
                             </div>
                         </div>
                     </div>
+                </div>
 
-                    <div class="modal fade greetingImageModal " >
-                        <div class="modal-dialog" style="width:750px;height:250px" >
-                            <!-- Modal content-->
-                            <div class="modal-content no-bd-rad content ">
-                                <div class="imageVal" style="width:750px;height:250px">
-                                </div>
-                                <div class="modal-footer no-bd-top">
-                                    <button type="button" class="btn btn-link" data-dismiss="modal">Close</button>
-                                </div>
+                <div class="modal fade greetingImageModal " >
+                    <div class="modal-dialog" style="width:750px;height:250px" >
+                        <!-- Modal content-->
+                        <div class="modal-content no-bd-rad content ">
+                            <div class="imageVal" style="width:750px;height:250px">
+                            </div>
+                            <div class="modal-footer no-bd-top">
+                                <button type="button" class="btn btn-link" data-dismiss="modal">Close</button>
                             </div>
                         </div>
                     </div>
-
-                    <div class="col-xs-12 col-sm-3  no-pad-right ">
-                        <a href="/corporate/dashboard" class="">
-                            <img class='img img-responsive pull-right' style="display:block;margin:0px auto;height:70px" th:src="@{~/customer/img/cmb_logo.png}" alt="Coronation Merchant Bank" />
-                        </a>
-                    </div>
-
-
-
                 </div>
 
-            </header>
-
-            <div id="myCod" class="modal fade" role="dialog">
-                <div class="modal-dialog">
-                    <!-- Modal content-->
-                    <div class="modal-content no-bd-rad ">
-                        <div class="modal-body">
-                            <h1 style="font-size: 20px" class="text-center">Request Callback</h1>
-                            <br/>
-                            <form method="post" action="/request/corp/callback" class="form-horizontal">
-                                <div class="row">
-                                    <div class="col-sm-3 control-label"><label>Full Name:</label></div>
-                                    <div class="col-sm-9 form-group">
-                                        <input type="text" class="form-control" name="name" required="required" />
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-sm-3 control-label"><label>Preferred Phone Number:</label></div>
-                                    <div class="col-sm-9 form-group">
-                                        <input type="number" class="form-control" name="phone" required="required" />
-                                    </div>
-                                </div>
-                                <div class="row text-center">
-                                    <button class="btn btn-link ">Make Request</button>
-                                </div>
-                            </form>
-                        </div>
-                        <!--<div class="modal-footer">-->
-                        <!--<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>-->
-                        <!--</div>-->
-                    </div>
+                <div class="col-xs-12 col-sm-3  no-pad-right ">
+                    <a href="/corporate/dashboard" class="">
+                        <img class='img img-responsive pull-right' style="display:block;margin:0px auto;height:70px" th:src="@{~/customer/img/cmb_logo.png}" alt="Coronation Merchant Bank" />
+                    </a>
                 </div>
+
+
+
             </div>
 
+        </header>
 
-            <nav class="navbar navbar-default" style="margin: 0px !important;">
-                <div class="">
+        <div id="myCod" class="modal fade" role="dialog">
+            <div class="modal-dialog">
+                <!-- Modal content-->
+                <div class="modal-content no-bd-rad ">
+                    <div class="modal-body">
+                        <h1 style="font-size: 20px" class="text-center">Request Callback</h1>
+                        <br/>
+                        <form method="post" action="/request/corp/callback" class="form-horizontal">
+                            <div class="row">
+                                <div class="col-sm-3 control-label"><label>Full Name:</label></div>
+                                <div class="col-sm-9 form-group">
+                                    <input type="text" class="form-control" name="name" required="required" />
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-3 control-label"><label>Preferred Phone Number:</label></div>
+                                <div class="col-sm-9 form-group">
+                                    <input type="number" class="form-control" name="phone" required="required" />
+                                </div>
+                            </div>
+                            <div class="row text-center">
+                                <button class="btn btn-link ">Make Request</button>
+                            </div>
+                        </form>
+                    </div>
+                    <!--<div class="modal-footer">-->
+                    <!--<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>-->
+                    <!--</div>-->
+                </div>
+            </div>
+        </div>
 
 
-                    <div class="navbar-header navbar-left ">
-                        <button type="button " class=" navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse-1" aria-expanded="false">
+        <nav class="navbar navbar-default" style="margin: 0px !important;">
+            <div class="">
+
+
+                <div class="navbar-header navbar-left ">
+                    <button type="button " class=" navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse-1" aria-expanded="false">
                         <span class="sr-only" >MENU</span>
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                     </button>
-                        <a class="navbar-brand" href="#" data-toggle="collapse" data-target="#navbar-collapse-1">Menu</a>
+                    <a class="navbar-brand" href="#" data-toggle="collapse" data-target="#navbar-collapse-1">Menu</a>
 
-                        <ul class="nav navbar-nav pull-right visible-xs">
-                            <li><a th:href="@{/corporate/logout}"> Log out
+                    <ul class="nav navbar-nav pull-right visible-xs">
+                        <li><a th:href="@{/corporate/logout}"> Log out
                             <!--<span class="fa-stack fa-lg no-bd-rad">-->
                             <!--<i class="fa fa-square fa-stack-1x fa-lg no-bd-rad"></i>-->
                             <i class="fa fa-power-off fa-inverse no-bd-rad power" style="font-size:12px;color:white !important"></i>
                             <!--</span>-->
                         </a>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="">
+
+                    <div class="collapse navbar-collapse no-pad-left" id="navbar-collapse-1">
+                        <ul class="nav navbar-nav ">
+                            <li th:classappend="${#httpServletRequest.getRequestURI().startsWith('/corporate/dashboard') ? 'active':''}"><a class="menu-link" th:href="@{/corporate/dashboard}">Dashboard</a></li>
+                            <li class="dropdown" th:classappend="${#httpServletRequest.getRequestURI().startsWith('/corporate/account') ? 'active':''}" sec:authorize="hasAuthority('MANAGE_ACCOUNT')">
+                                <a href="#" class="dropdown-toggle menu-link" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" th:text="#{menu.account}"> My Accounts</a>
+                                <ul class="dropdown-menu">
+                                    <li sec:authorize="hasAuthority('CUSTOMIZE_ACCOUNT')"><a th:href="@{/corporate/account/customize}" th:text="#{menu.account.customize}">Customise Accounts</a></li>
+                                    <li sec:authorize="hasAuthority('ACCOUNT_SETTINGS')"><a th:href="@{/corporate/account/settings}" th:text="#{menu.account.settings}">Account Settings</a></li>
+                                    <li sec:authorize="hasAuthority('ACCOUNT_OFFICER')"><a th:href="@{/corporate/account/officer}" th:text="#{menu.account.officer}">Account Officer</a></li>
+                                    <li sec:authorize="hasAuthority('ACCOUNT_STATEMENT')"><a th:href="@{/corporate/account/viewstatement}">Account Statement</a></li>
+                                    <li sec:authorize="hasAuthority('CREATE_ACCOUNT')"><a th:href="@{/corporate/account/new}" th:text="#{menu.account.create}">Create New Acoount</a></li>
+                                </ul>
                             </li>
+                            <li class="dropdown" th:classappend="${#httpServletRequest.getRequestURI().startsWith('/corporate/transfer') ? 'active':''}" sec:authorize="hasAuthority('MANAGE_TRANSFERS')">
+                                <a href="#" class="dropdown-toggle menu-link" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><span th:text="#{menu.transfer}">Transfers</span> <span th:if="${pending}" class="btn-xs badge" th:text="${pending}">0</span></a>
+                                <ul class="dropdown-menu">
+                                    <li sec:authorize="hasAuthority('OWN_ACCOUNT_TRANSFER')"><a th:href="@{/corporate/transfer/ownaccount}" th:text="#{menu.transfer.own}">Own account transfers </a></li>
+                                    <li sec:authorize="hasAuthority('CMB_CMB_TRANSFER')"><a th:href="@{/corporate/transfer/local}" th:text="#{menu.transfer.cmb}">Transfer to Coronation account </a></li>
+                                    <li sec:authorize="hasAuthority('INTERBANK_TRANSFER')"><a th:href="@{/corporate/transfer/interbank}" th:text="#{menu.transfer.other}">Transfer to other banks</a></li>
+                                    <li sec:authorize="hasAuthority('INTERNATIONAL_TRANSFER')"><a th:href="@{/corporate/transfer/international}" th:text="#{menu.transfer.int}">International transfer</a></li>
+                                    <li sec:authorize="hasAuthority('BULK_TRANSFER')"><a th:href="@{/corporate/transfer/bulk}"><span th:text="#{menu.transfer.bulk}">Bulk transfer</span> <span th:if="${pendingBulk}" class="btn-xs badge bg-orange" th:text="${pendingBulk}">0</span></a></li>
+                                    <li sec:authorize="hasAuthority('CORP_TRANSACTION_LIMIT')"><a th:href="@{/corporate/transfer/settransferlimit}" th:text="#{menu.transfer.limit}">Set transfer limit</a></li>
+                                    <li sec:authorize="hasAuthority('STANDING_ORDER')"><a th:href="@{/corporate/directdebit}" th:text="#{menu.transfer.order}">Standing order</a></li>
+                                    <li th:if="${corporateType=='MULTI'}"><a th:href="@{/corporate/transfer/requests}"><span th:text="#{menu.transfer.request}">Transaction Requests</span> <span th:if="${pendingRequests}" class="btn-xs badge bg-orange" th:text="${pendingRequests}">0</span></a></li>
+                                    <li sec:authorize="hasAuthority('MANAGE_TRANSFERS')"><a th:href="@{/corporate/transfer/history}" th:text="#{menu.transfer.log}">Transfer Log</a></li>
+                                </ul>
+                            </li>
+                            <li class="dropdown" th:classappend="${#httpServletRequest.getRequestURI().startsWith('/corporate/payment') ? 'active':''}" sec:authorize="hasAuthority('MANAGE_BILL_PAYMENT')">
+                                <!--                                <li class="dropdown" th:classappend="${#httpServletRequest.getRequestURI().startsWith('/corporate/payment') ? 'active':''}" >-->
+                                <a class="dropdown-toggle menu-link" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" href="#"  th:text="#{menu.bill}">Bill Payments</a>
+                                <ul class="dropdown-menu">
+                                    <li><a th:href="@{/corporate/payment/new}" th:text="#{menu.bill.payment}">Bill Payment</a></li>
+                                    <li><a th:href="@{/corporate/payment/completed}" th:text="#{menu.bill.completed}">Completed Payment</a></li>
+
+                                    <!--                                        <li ><a sec:authorize="hasAuthority('CUSTOM_DUTY')" href="#" th:text="#{menu.bill}">Bill Payments</a></li>-->
+                                    <li ><a  th:href="@{/corporate/recurringpayment/add}" >Recurring Payments</a></li>
+                                    <li ><a  th:href="@{/corporate/custom}" th:text="#{menu.bill.custom}">Custom Duty</a></li>
+                                </ul>
+                            </li>
+                            <li class="dropdown" th:classappend="${#httpServletRequest.getRequestURI().startsWith('/corporate/fixdeposit') ? 'active':''}">
+                                <a href="#" class="dropdown-toggle menu-link" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" th:text="#{menu.investment}">Investment</a>
+                                <ul class="dropdown-menu">
+                                    <li><a th:href="@{/corporate/fixdeposit/view}" th:text="#{menu.investment.fixdeposit}">Fix Deposit</a></li>
+                                    <li><a th:href="@{/corporate/treasurybill/view}" th:text="#{menu.investment.treasurybill}">Treasury Bills</a></li>
+                                </ul>
+                            </li>
+                            <li class="dropdown" th:classappend="${#httpServletRequest.getRequestURI().startsWith('/corporate/requests') ? 'active':''}" sec:authorize="hasAuthority('MANAGE_SERV_REQ')">
+                                <a href="#" class="dropdown-toggle menu-link" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" th:text="#{menu.servreq}"> Service Requests </a>
+                                <ul class="dropdown-menu">
+                                    <li sec:authorize="hasAuthority('TRACK_SERV_REQ')"><a th:href="@{/corporate/requests/track}" th:text="#{menu.servreq.track}">Track Requests</a></li>
+                                    <p th:each="requests : ${serviceRequests}">
+                                    <li sec:authorize="hasAuthority('MAKE_SERV_REQ')">
+                                        <a th:href="@{/corporate/requests/} + ${requests.id}" th:text="${requests.requestName}"></a>
+                                    </li>
+                                    </p>
+                                </ul>
+                            </li>
+                            <li class="dropdown" th:classappend="${#httpServletRequest.getRequestURI().startsWith('/corporate/cheque') ? 'active':''}" sec:authorize="hasAuthority('MANAGE_SERV_REQ')">
+                                <a href="#" class="dropdown-toggle menu-link" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" th:text="#{menu.cheqreq}"> Cheque
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <li sec:authorize="hasAuthority('REQUEST-CHEQUE')"><a th:href="@{/corporate/cheque/chequebook}" th:text="#{menu.cheque.request}">Request Cheque</a></li>
+                                    <li sec:authorize="hasAuthority('STOP-CHEQUE')"><a th:href="@{/corporate/cheque/stop}" th:text="#{menu.cheque.stop}">Stop</a></li>
+                                    <li sec:authorize="hasAuthority('CONFIRM-CHEQUE')"><a th:href="@{/corporate/cheque/confirm}" th:text="#{menu.cheque.confirm}">Confirm</a></li>
+                                    <li sec:authorize="hasAuthority('DRAFT-REQUEST')"><a th:href="@{/corporate/cheque/draft}" th:text="#{menu.cheque.draft}">Draft request</a></li>
+
+                                </ul>
+                                <!-- <ul class="dropdown-menu">
+                                     &lt;!&ndash;<li role="separator" class="divider"></li>&ndash;&gt;
+                                     <p th:each="requests : ${chequeRequests}">
+                                     <li sec:authorize="hasAuthority('MAKE_SERV_REQ')">
+                                         <a th:href="@{/corporate/cheque/} + ${requests.id}" th:text="${requests.requestName}"></a>
+                                     </li>
+                                     </p>
+                                 </ul>-->
+                            </li>
+
+                            <li class="dropdown" th:classappend="${#httpServletRequest.getRequestURI().startsWith('/corporate/settings') ? 'active':''}" sec:authorize="hasAuthority('CORP_USER_SETTINGS')">
+                                <a href="#" class="dropdown-toggle menu-link" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" th:text="#{menu.settings}"> Settings </a>
+                                <ul class="dropdown-menu">
+                                    <li sec:authorize="hasAuthority('SET_ALERT_PREFERENCE')"><a th:href="@{/corporate/settings/alert_preference}" th:text="#{menu.settings.alert}">Alert Preference</a></li>
+                                    <li sec:authorize="hasAuthority('CORP_CHANGE_PASSWORD')"><a th:href="@{/corporate/settings/change_password}" th:text="#{menu.settings.password}">Change Password</a></li>
+                                    <li sec:authorize="hasAuthority('FEEDBACK_STATUS')"><a th:href="@{/corporate/settings/customerfeedback}" th:text="#{menu.settings.feedback}">
+                                        Feedback Status</a></li>
+                                </ul>
+                            </li>
+                            <li class="dropdown active-more">
+                                <a href="#" class="dropdown-toggle menu-link" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"> More </a>
+                                <ul class="dropdown-menu">
+                                    <li sec:authorize="hasAuthority('CORP_SYNC_TOKEN')"><a th:href="@{/corporate/token/sync}" th:text="#{menu.token.sync}">Synchronize Token</a></li>
+                                    <li sec:authorize="hasAuthority('CORP_LOST_TOKEN')"><a th:href="@{/corporate/token/lost}" th:text="#{menu.token.report}">Report Lost Token</a></li>
+                                    <li sec:authorize="hasAuthority('MANAGE_BEN')"><a th:href="@{/corporate/beneficiary}" th:text="#{menu.beneficiary}">Beneficiaries</a></li>
+                                    <li sec:authorize="hasAuthority('MANAGE_BEN')"><a th:href="@{/corporate/beneficiary/international}" th:text="#{menu.beneficiary.international}">Beneficiaries</a></li>
+                                    <li sec:authorize="hasAuthority('CORP_MAILBOX')"><a th:href="@{/corporate/mailbox/inbox}" th:text="#{menu.mail}"> Mailbox</a></li>
+                                    <li th:if="${isUserAdmin}"><a th:href="@{/corporate/users}"><span th:text="#{menu.usermanagement}">User Management</span> <span th:if="${corpPendingVerification}" class="btn-xs badge bg-orange" th:text="${corpPendingVerification}"></a></li>
+                                    <li th:if="${isAuthorizer}"><a th:href="@{/corporate/users}"><span th:text="#{menu.usermanagement}">User Management</span> <span th:if="${corpPendingVerification}" class="btn-xs badge bg-orange" th:text="${corpPendingVerification}"></a></li>
+                                </ul>
+                            </li>
+
+                            <!--                                <li class="dropdown  active-more">-->
+                            <!--                                    <a href="#" class="dropdown-toggle menu-link" data-toggle="dropdown" role="button"-->
+                            <!--                                       aria-haspopup="true" aria-expanded="false">Support-->
+
+                            <!--                                    </a>-->
+                            <!--                                    <ul class="dropdown-menu">-->
+
+                            <!--                                        <li> T +234 01-2797640 </li>-->
+                            <!--                                        <li> T +234 01-2797641 </li>-->
+                            <!--                                        <li> T +234 01-2797642 </li>-->
+                            <!--                                        <li> T +234 01-2797643 </li>-->
+
+                            <!--                                        <li class="icontext pull-right " data-toggle="modal" data-target="#myCod"><button class="btn btn-link coronation-blue">Call back</button></li>-->
+
+                            <!--                                    </ul>-->
+                            <!--                                </li>-->
+
+
                         </ul>
-                    </div>
 
-                    <div class="">
-
-                        <div class="collapse navbar-collapse no-pad-left" id="navbar-collapse-1">
-                            <ul class="nav navbar-nav ">
-                                <li th:classappend="${#httpServletRequest.getRequestURI().startsWith('/corporate/dashboard') ? 'active':''}"><a class="menu-link" th:href="@{/corporate/dashboard}">Dashboard</a></li>
-                                <li class="dropdown" th:classappend="${#httpServletRequest.getRequestURI().startsWith('/corporate/account') ? 'active':''}" sec:authorize="hasAuthority('MANAGE_ACCOUNT')">
-                                    <a href="#" class="dropdown-toggle menu-link" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" th:text="#{menu.account}"> My Accounts</a>
-                                    <ul class="dropdown-menu">
-                                        <li sec:authorize="hasAuthority('CUSTOMIZE_ACCOUNT')"><a th:href="@{/corporate/account/customize}" th:text="#{menu.account.customize}">Customise Accounts</a></li>
-                                        <li sec:authorize="hasAuthority('ACCOUNT_SETTINGS')"><a th:href="@{/corporate/account/settings}" th:text="#{menu.account.settings}">Account Settings</a></li>
-                                        <li sec:authorize="hasAuthority('ACCOUNT_OFFICER')"><a th:href="@{/corporate/account/officer}" th:text="#{menu.account.officer}">Account Officer</a></li>
-                                        <li sec:authorize="hasAuthority('ACCOUNT_STATEMENT')"><a th:href="@{/corporate/account/viewstatement}">Account Statement</a></li>
-                                        <li sec:authorize="hasAuthority('CREATE_ACCOUNT')"><a th:href="@{/corporate/account/new}" th:text="#{menu.account.create}">Create New Acoount</a></li>
-                                    </ul>
-                                </li>
-                                <li class="dropdown" th:classappend="${#httpServletRequest.getRequestURI().startsWith('/corporate/transfer') ? 'active':''}" sec:authorize="hasAuthority('MANAGE_TRANSFERS')">
-                                    <a href="#" class="dropdown-toggle menu-link" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><span th:text="#{menu.transfer}">Transfers</span> <span th:if="${pending}" class="btn-xs badge" th:text="${pending}">0</span></a>
-                                    <ul class="dropdown-menu">
-                                        <li sec:authorize="hasAuthority('OWN_ACCOUNT_TRANSFER')"><a th:href="@{/corporate/transfer/ownaccount}" th:text="#{menu.transfer.own}">Own account transfers </a></li>
-                                        <li sec:authorize="hasAuthority('CMB_CMB_TRANSFER')"><a th:href="@{/corporate/transfer/local}" th:text="#{menu.transfer.cmb}">Transfer to Coronation account </a></li>
-                                        <li sec:authorize="hasAuthority('INTERBANK_TRANSFER')"><a th:href="@{/corporate/transfer/interbank}" th:text="#{menu.transfer.other}">Transfer to other banks</a></li>
-                                        <li sec:authorize="hasAuthority('INTERNATIONAL_TRANSFER')"><a th:href="@{/corporate/transfer/international}" th:text="#{menu.transfer.int}">International transfer</a></li>
-                                        <li sec:authorize="hasAuthority('BULK_TRANSFER')"><a th:href="@{/corporate/transfer/bulk}"><span th:text="#{menu.transfer.bulk}">Bulk transfer</span> <span th:if="${pendingBulk}" class="btn-xs badge bg-orange" th:text="${pendingBulk}">0</span></a></li>
-                                        <li sec:authorize="hasAuthority('CORP_TRANSACTION_LIMIT')"><a th:href="@{/corporate/transfer/settransferlimit}" th:text="#{menu.transfer.limit}">Set transfer limit</a></li>
-                                        <li sec:authorize="hasAuthority('STANDING_ORDER')"><a th:href="@{/corporate/directdebit}" th:text="#{menu.transfer.order}">Standing order</a></li>
-                                        <li th:if="${corporateType=='MULTI'}"><a th:href="@{/corporate/transfer/requests}"><span th:text="#{menu.transfer.request}">Transaction Requests</span> <span th:if="${pendingRequests}" class="btn-xs badge bg-orange" th:text="${pendingRequests}">0</span></a></li>
-                                        <li sec:authorize="hasAuthority('MANAGE_TRANSFERS')"><a th:href="@{/corporate/transfer/history}" th:text="#{menu.transfer.log}">Transfer Log</a></li>
-                                    </ul>
-                                </li>
-<!--                                <li class="dropdown" th:classappend="${#httpServletRequest.getRequestURI().startsWith('/corporate/payment') ? 'active':''}" sec:authorize="hasAuthority('MANAGE_CORPORATE_PAYMENT')">-->
-                                <li class="dropdown" th:classappend="${#httpServletRequest.getRequestURI().startsWith('/corporate/payment') ? 'active':''}" >
-                                    <a class="dropdown-toggle menu-link" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" href="#"  th:text="#{menu.bill}">Bill Payments</a>
-                                    <ul class="dropdown-menu">
-                                        <li><a th:href="@{/corporate/payment/new}" th:text="#{menu.bill.payment}">Bill Payment</a></li>
-                                        <li><a th:href="@{/corporate/payment/completed}" th:text="#{menu.bill.completed}">Completed Payment</a></li>
-
-<!--                                        <li ><a sec:authorize="hasAuthority('CUSTOM_DUTY')" href="#" th:text="#{menu.bill}">Bill Payments</a></li>-->
-<!--                                        <li ><a  th:href="@{/corporate/recurringpayment/add}" >Recurring Payments</a></li>-->
-                                        <li ><a  th:href="@{/corporate/custom}" th:text="#{menu.bill.custom}">Custom Duty</a></li>
-                                    </ul>
-                                </li>
-                                <li class="dropdown" th:classappend="${#httpServletRequest.getRequestURI().startsWith('/corporate/fixdeposit') ? 'active':''}">
-                                    <a href="#" class="dropdown-toggle menu-link" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" th:text="#{menu.investment}">Investment</a>
-                                    <ul class="dropdown-menu">
-                                        <li><a th:href="@{/corporate/fixdeposit/view}" th:text="#{menu.investment.fixdeposit}">Fix Deposit</a></li>
-                                        <li><a th:href="@{/corporate/treasurybill/view}" th:text="#{menu.investment.treasurybill}">Treasury Bills</a></li>
-                                    </ul>
-                                </li>
-                                <li class="dropdown" th:classappend="${#httpServletRequest.getRequestURI().startsWith('/corporate/requests') ? 'active':''}" sec:authorize="hasAuthority('MANAGE_SERV_REQ')">
-                                    <a href="#" class="dropdown-toggle menu-link" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" th:text="#{menu.servreq}"> Service Requests </a>
-                                    <ul class="dropdown-menu">
-                                        <li sec:authorize="hasAuthority('TRACK_SERV_REQ')"><a th:href="@{/corporate/requests/track}" th:text="#{menu.servreq.track}">Track Requests</a></li>
-                                        <p th:each="requests : ${serviceRequests}">
-                                        <li sec:authorize="hasAuthority('MAKE_SERV_REQ')">
-                                            <a th:href="@{/corporate/requests/} + ${requests.id}" th:text="${requests.requestName}"></a>
-                                        </li>
-                                        </p>
-                                    </ul>
-                                </li>
-                                <li class="dropdown" th:classappend="${#httpServletRequest.getRequestURI().startsWith('/corporate/cheque') ? 'active':''}" sec:authorize="hasAuthority('MANAGE_SERV_REQ')">
-                                    <a href="#" class="dropdown-toggle menu-link" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" th:text="#{menu.cheqreq}"> Cheque
-                                    </a>
-                                    <ul class="dropdown-menu">
-                                        <li sec:authorize="hasAuthority('REQUEST-CHEQUE')"><a th:href="@{/corporate/cheque/chequebook}" th:text="#{menu.cheque.request}">Request Cheque</a></li>
-                                        <li sec:authorize="hasAuthority('STOP-CHEQUE')"><a th:href="@{/corporate/cheque/stop}" th:text="#{menu.cheque.stop}">Stop</a></li>
-                                        <li sec:authorize="hasAuthority('CONFIRM-CHEQUE')"><a th:href="@{/corporate/cheque/confirm}" th:text="#{menu.cheque.confirm}">Confirm</a></li>
-                                        <li sec:authorize="hasAuthority('DRAFT-REQUEST')"><a th:href="@{/corporate/cheque/draft}" th:text="#{menu.cheque.draft}">Draft request</a></li>
-
-                                    </ul>
-                                    <!-- <ul class="dropdown-menu">
-                                         &lt;!&ndash;<li role="separator" class="divider"></li>&ndash;&gt;
-                                         <p th:each="requests : ${chequeRequests}">
-                                         <li sec:authorize="hasAuthority('MAKE_SERV_REQ')">
-                                             <a th:href="@{/corporate/cheque/} + ${requests.id}" th:text="${requests.requestName}"></a>
-                                         </li>
-                                         </p>
-                                     </ul>-->
-                                </li>
-
-                                <li class="dropdown" th:classappend="${#httpServletRequest.getRequestURI().startsWith('/corporate/settings') ? 'active':''}" sec:authorize="hasAuthority('CORP_USER_SETTINGS')">
-                                    <a href="#" class="dropdown-toggle menu-link" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" th:text="#{menu.settings}"> Settings </a>
-                                    <ul class="dropdown-menu">
-                                        <li sec:authorize="hasAuthority('SET_ALERT_PREFERENCE')"><a th:href="@{/corporate/settings/alert_preference}" th:text="#{menu.settings.alert}">Alert Preference</a></li>
-                                        <li sec:authorize="hasAuthority('CORP_CHANGE_PASSWORD')"><a th:href="@{/corporate/settings/change_password}" th:text="#{menu.settings.password}">Change Password</a></li>
-                                        <li sec:authorize="hasAuthority('FEEDBACK_STATUS')"><a th:href="@{/corporate/settings/customerfeedback}" th:text="#{menu.settings.feedback}">
-                                            Feedback Status</a></li>
-                                    </ul>
-                                </li>
-                                <li class="dropdown active-more">
-                                    <a href="#" class="dropdown-toggle menu-link" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"> More </a>
-                                    <ul class="dropdown-menu">
-                                        <li sec:authorize="hasAuthority('CORP_SYNC_TOKEN')"><a th:href="@{/corporate/token/sync}" th:text="#{menu.token.sync}">Synchronize Token</a></li>
-                                        <li sec:authorize="hasAuthority('CORP_LOST_TOKEN')"><a th:href="@{/corporate/token/lost}" th:text="#{menu.token.report}">Report Lost Token</a></li>
-                                        <li sec:authorize="hasAuthority('MANAGE_BEN')"><a th:href="@{/corporate/beneficiary}" th:text="#{menu.beneficiary}">Beneficiaries</a></li>
-                                        <li sec:authorize="hasAuthority('MANAGE_BEN')"><a th:href="@{/corporate/beneficiary/international}" th:text="#{menu.beneficiary.international}">Beneficiaries</a></li>
-                                        <li sec:authorize="hasAuthority('CORP_MAILBOX')"><a th:href="@{/corporate/mailbox/inbox}" th:text="#{menu.mail}"> Mailbox</a></li>
-                                        <li th:if="${isUserAdmin}"><a th:href="@{/corporate/users}"><span th:text="#{menu.usermanagement}">User Management</span> <span th:if="${corpPendingVerification}" class="btn-xs badge bg-orange" th:text="${corpPendingVerification}"></a></li>
-                                        <li th:if="${isAuthorizer}"><a th:href="@{/corporate/users}"><span th:text="#{menu.usermanagement}">User Management</span> <span th:if="${corpPendingVerification}" class="btn-xs badge bg-orange" th:text="${corpPendingVerification}"></a></li>
-                                    </ul>
-                                </li>
-
-<!--                                <li class="dropdown  active-more">-->
-<!--                                    <a href="#" class="dropdown-toggle menu-link" data-toggle="dropdown" role="button"-->
-<!--                                       aria-haspopup="true" aria-expanded="false">Support-->
-
-<!--                                    </a>-->
-<!--                                    <ul class="dropdown-menu">-->
-
-<!--                                        <li> T +234 01-2797640 </li>-->
-<!--                                        <li> T +234 01-2797641 </li>-->
-<!--                                        <li> T +234 01-2797642 </li>-->
-<!--                                        <li> T +234 01-2797643 </li>-->
-
-<!--                                        <li class="icontext pull-right " data-toggle="modal" data-target="#myCod"><button class="btn btn-link coronation-blue">Call back</button></li>-->
-
-<!--                                    </ul>-->
-<!--                                </li>-->
-
-
-                            </ul>
-
-                            <ul class="nav navbar-nav pull-right hidden-xs">
-                                <li><a th:href="@{/corporate/logout}"> Log out
+                        <ul class="nav navbar-nav pull-right hidden-xs">
+                            <li><a th:href="@{/corporate/logout}"> Log out
                                 <!--<span class="fa-stack fa-lg no-bd-rad">-->
                                 <!--<i class="fa fa-square fa-stack-1x fa-lg no-bd-rad"></i>-->
                                 <i class="fa fa-power-off fa-inverse no-bd-rad power" style="font-size:12px;color:white"></i>
                                 <!--</span>-->
                             </a>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </nav>
-
-
-
-            <!--<div class=' alert alert-info text-white  no-bd-rad' style="margin:1px 15px 1px 1px!important;background-color:#003056;color:white;"><marquee class='marquee'>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</marquee></div>-->
-
-            <div class="info-bar " id='bread-crumb'>
-                &nbsp;&nbsp;
-            </div>
-        </div>
-
-
-        <section class="content-wrapper">
-            <div class="row">
-
-                <div class="col-xs-12  col-md-9  no-ml no-pad-left no-pad-right">
-                    <div class="">
-                        <div class="current-bar   col-md-12 no-ml no-pad-left alert no-mb no-bd-rad " style="">
-                            <div class="">
-                                <strong id="bar">&nbsp;</strong>
-                            </div>
-                        </div>
-                        <div class="col-xs-12 col-md-12 no-pad-right no-ml no-pad-left bg-danger alert no-mb no-mt no-bd-rad current-body">
-                            <div layout:fragment="content">
-
-                            </div>
-
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-xs-12   col-md-3  no-bd alert no-bd-rad left-side">
-                    <div class=" ">
-                        <div class="sideba" style=" adding-top:20px;">
-
-
-                            <div class="bg-danger alert no-mt advert no-bd-rad ">
-                                <h1 style="margin-bottom:10px">Our Promise</h1>
-                                <p>Local expertise: world-class solutions. A commitment to the long-term inspires us to look after our clients’ best interests, harness the potential of our people and shape the financial future of our continent.
-                                    <br/>
-                                    To learn more about what we do, click <a href="https://www.coronationmb.com/what-we-do/introduction" target="_blank"> here </a>
-
-                                </p>
-                            </div>
-
-
-                            <!--date-->
-                            <div class=" hidden-xs hidden-sm bg-dan">
-
-                                <div class="no-bd no-bd-rad   time" style=" margin-to: 6px !important;margin-bottom:0px !important;border-top:2px solid #ebdfdb !important;border-bottom:2px solid #ebdfdb !important;">
-                                    <span class=" ">
-                <i class="fa fa-calendar-plus-o datepicker cal-icon " data-provide="datepicker" onclick="show()" style="font-size:20px;background:transparent !important;border:0px !important"></i>
-            </span>
-                                    <span class="  ">
-                <span class="time-icon" id="day" style="font-size:13px;"></span><span>,</span>
-                                    <span class="text-bold time-icon" id="cal_date" style="font-size:14px;color:#003056 !important;"></span>
-                                    </span>
-                                    <script>
-                                        setInterval(
-                                            function() {
-
-
-                                                var timer = moment().format('LTS'); //timer in hours,minutes and seconds
-                                                var day = moment().format('dddd'); // get the current day
-                                                var cur_date = moment().format("D MMMM");
-
-
-                                                var time_holder = document.getElementById('time'); // get where to insert the timer
-                                                var day_holder = document.getElementById('day'); // get where to insert the current day
-                                                var cur_date_holder = document.getElementById('cal_date'); // get where to insert the current date
-
-                                                time_holder.innerHTML = timer;
-                                                day_holder.innerHTML = day;
-                                                cur_date_holder.innerHTML = cur_date;
-                                                //   var time_function = moment().format('Do MMMM YYYY, h:mm:ss a');
-                                                //   var holder = document.getElementById('time_');
-                                                //   holder.innerHTML = time_function;
-                                            },
-                                            1000);
-                                    </script>
-
-
-                                </div>
-                                <!--<div  id="calendar" style="display: block; margin: 0px auto;" class=" calendar hidden-xs hidden-sm "></div>-->
-                            </div>
-
-                            <!--time-->
-                            <div class="">
-                                <div class="time hidden-xs hidden-sm no-bd no-bd-rad " style="border-bottom:2px solid #ebdfdb !important;">
-                                    <span class=" ">
-                <i class="fa fa-clock-o datepicker cal-icon " data-provide="datepicker" onclick="show()" style="font-size:20px;background:transparent !important;border:0px !important;"></i>
-            </span>
-                                    <span id="time" class="text-bold no-bd" style="font-size:14px;padding-left:10px;color:#003056 !important;"></span>
-                                </div>
-                            </div>
-
-
-
-                            <!--image placeholdder-->
-                            <div class="sidebar-b hidden-xs hidden-sm bg-succes" style="max-height:300px;margin-top:10px;">
-                                <img style="max-height:250px" class="center img-responsive" alt="Coronation Merchant Bank" src="/customer/img/asset.jpg" />
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-        </section>
-
-        <!-- CONTENT-WRAPPER SECTION END-->
-        <footer style="    border-bottom: 2px solid #ebecef;padding-top:10px;" >
-
-            <div class="">
-                <div class="">
-                    <div class="col-sm-6 col-xs-12 footer-mobile no-pad-left no-pad-right">
-                        <ul class="footer-links ">
-                            <li><a href="/policy" target="_blank">Privacy policy</a></li>
-                            <!--<li><a href="#" target="_blank">Disclaimer</a></li>-->
-                            <li><a href="/terms" target="_blank">Terms &amp; Conditions</a></li>
+                            </li>
                         </ul>
-
                     </div>
-                    <div class="col-sm-6  col-xs-12  footer-links footer-mobile  no-pad-left no-pad-right">
-                        <p class=' '> &copy; 2017 - Coronation Merchant Bank.<span class="hidden-xs"> All rights reserved</span></p>
-                        <p class="visible-xs">All rights reserved</p>
-
-                    </div>
-
                 </div>
             </div>
-        </footer>
+        </nav>
+
+
+
+        <!--<div class=' alert alert-info text-white  no-bd-rad' style="margin:1px 15px 1px 1px!important;background-color:#003056;color:white;"><marquee class='marquee'>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</marquee></div>-->
+
+        <div class="info-bar " id='bread-crumb'>
+            &nbsp;&nbsp;
+        </div>
     </div>
 
 
+    <section class="content-wrapper">
+        <div class="row">
+
+            <div class="col-xs-12  col-md-9  no-ml no-pad-left no-pad-right">
+                <div class="">
+                    <div class="current-bar   col-md-12 no-ml no-pad-left alert no-mb no-bd-rad " style="">
+                        <div class="">
+                            <strong id="bar">&nbsp;</strong>
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-md-12 no-pad-right no-ml no-pad-left bg-danger alert no-mb no-mt no-bd-rad current-body">
+                        <div layout:fragment="content">
+
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-xs-12   col-md-3  no-bd alert no-bd-rad left-side">
+                <div class=" ">
+                    <div class="sideba" style=" adding-top:20px;">
 
 
-    <!--<script th:src="@{~/customer/js/jquery-1.11.1.js}"></script>-->
-     <script
-             src="https://code.jquery.com/jquery-2.2.4.js"
-             integrity="sha256-iT6Q9iMJYuQiMWNd9lDyBUStIq/8PuOW33aOqmvFpqI="
-             crossorigin="anonymous"></script>
-    <script th:src="@{~/customer/js/jquery-ui.js}"></script>
-     <script  th:src="@{~/customer/js/greeting.js}"> </script>
-    <script th:src="@{~/customer/js/jquery.dataTables.js}"></script>
-    <script th:src="@{~/customer/js/dataTables.input.js}"></script>
-    <!--<script th:src="@{~/customer/js/date/js/bootstrap-datepicker.js}"></script>-->
-    <script th:src="@{~/customer/js/momentMin.js}"></script>
-    <script th:src="@{~/customer/js/jquery.spring-friendly.min.js}"></script>
-    <script th:src="@{~/customer/plugins/bootstrap-notify/bootstrap-notify.js}"></script>
-    <script th:src="@{~/customer/plugins/bootstrap-daterangepicker/daterangepicker.js}"></script>
-    <script th:src="@{~/customer/js/coronation.js}"></script>
-    <script th:src="@{~/customer/js/errors.js}"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/js/bootstrap-datepicker.min.js"></script>
+                        <div class="bg-danger alert no-mt advert no-bd-rad ">
+                            <h1 style="margin-bottom:10px">Our Promise</h1>
+                            <p>Local expertise: world-class solutions. A commitment to the long-term inspires us to look after our clients’ best interests, harness the potential of our people and shape the financial future of our continent.
+                                <br/>
+                                To learn more about what we do, click <a href="https://www.coronationmb.com/what-we-do/introduction" target="_blank"> here </a>
 
-    <!-- BOOTSTRAP SCRIPTS  -->
-    <script th:src="@{~/customer/js/bootstrap.js}"></script>
-    <script th:src="@{~/customer/js/bootstrap-session-timeout.js}"></script>
-     <script th:src="@{~/customer/js/session.js}"></script>
+                            </p>
+                        </div>
 
 
-     <li hidden="hidden" id="feedStatus"  th:text="${feedStatus}"></li>
-     <div th:if="${message}">
-         <div hidden="hidden">
-             <div th:if="${transRequest}">
-                 <li th:text="${transRequest.referenceNumber}" class="transactionRef"></li>
-                 <li th:text="${transRequest.transferType}" class="transactionType"></li>
+                        <!--date-->
+                        <div class=" hidden-xs hidden-sm bg-dan">
 
-             </div>
-         </div>
-         <div hidden="hidden">
-             <div th:if="${refNumber}">
-                 <li th:text="${refNumber}" class="transactionRef"></li>
-             </div>
-             <div th:if="${transferType}">
-                 <li th:text="${transferType}" class="transactionType"></li>
-             </div>
-         </div>
-
-         <div hidden="hidden">
-             <ul class="actionMessage">
-                 <li th:each="msg : ${message}" th:text="${msg}">Message</li>
-             </ul>
-         </div>
-     </div>
+                            <div class="no-bd no-bd-rad   time" style=" margin-to: 6px !important;margin-bottom:0px !important;border-top:2px solid #ebdfdb !important;border-bottom:2px solid #ebdfdb !important;">
+                                    <span class=" ">
+                <i class="fa fa-calendar-plus-o datepicker cal-icon " data-provide="datepicker" onclick="show()" style="font-size:20px;background:transparent !important;border:0px !important"></i>
+            </span>
+                                <span class="  ">
+                <span class="time-icon" id="day" style="font-size:13px;"></span><span>,</span>
+                                    <span class="text-bold time-icon" id="cal_date" style="font-size:14px;color:#003056 !important;"></span>
+                                    </span>
+                                <script>
+                                    setInterval(
+                                        function() {
 
 
-     <div th:if="${failure}">
-         <div hidden="hidden">
-             <ul class="actionError">
-                 <li th:each="msg : ${failure}" th:text="${msg}" id="error">Message</li>
-             </ul>
-         </div>
-     </div>
-
-    <div id="myModalError" class="modal fade " role="dialog">
-        <div class="modal-dialog">
-
-            <!-- Modal content-->
-
-            <div class="modal-content no-bd-rad content ">
-
-                <div class="modal-body">
+                                            var timer = moment().format('LTS'); //timer in hours,minutes and seconds
+                                            var day = moment().format('dddd'); // get the current day
+                                            var cur_date = moment().format("D MMMM");
 
 
-                    <p id="errorMess" class="mess text-danger">Put something here iff need be.</p>
+                                            var time_holder = document.getElementById('time'); // get where to insert the timer
+                                            var day_holder = document.getElementById('day'); // get where to insert the current day
+                                            var cur_date_holder = document.getElementById('cal_date'); // get where to insert the current date
 
+                                            time_holder.innerHTML = timer;
+                                            day_holder.innerHTML = day;
+                                            cur_date_holder.innerHTML = cur_date;
+                                            //   var time_function = moment().format('Do MMMM YYYY, h:mm:ss a');
+                                            //   var holder = document.getElementById('time_');
+                                            //   holder.innerHTML = time_function;
+                                        },
+                                        1000);
+                                </script>
+
+
+                            </div>
+                            <!--<div  id="calendar" style="display: block; margin: 0px auto;" class=" calendar hidden-xs hidden-sm "></div>-->
+                        </div>
+
+                        <!--time-->
+                        <div class="">
+                            <div class="time hidden-xs hidden-sm no-bd no-bd-rad " style="border-bottom:2px solid #ebdfdb !important;">
+                                    <span class=" ">
+                <i class="fa fa-clock-o datepicker cal-icon " data-provide="datepicker" onclick="show()" style="font-size:20px;background:transparent !important;border:0px !important;"></i>
+            </span>
+                                <span id="time" class="text-bold no-bd" style="font-size:14px;padding-left:10px;color:#003056 !important;"></span>
+                            </div>
+                        </div>
+
+
+
+                        <!--image placeholdder-->
+                        <div class="sidebar-b hidden-xs hidden-sm bg-succes" style="max-height:300px;margin-top:10px;">
+                            <img style="max-height:250px" class="center img-responsive" alt="Coronation Merchant Bank" src="/customer/img/asset.jpg" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- CONTENT-WRAPPER SECTION END-->
+    <footer style="    border-bottom: 2px solid #ebecef;padding-top:10px;" >
+
+        <div class="">
+            <div class="">
+                <div class="col-sm-6 col-xs-12 footer-mobile no-pad-left no-pad-right">
+                    <ul class="footer-links ">
+                        <li><a href="/policy" target="_blank">Privacy policy</a></li>
+                        <!--<li><a href="#" target="_blank">Disclaimer</a></li>-->
+                        <li><a href="/terms" target="_blank">Terms &amp; Conditions</a></li>
+                    </ul>
+
+                </div>
+                <div class="col-sm-6  col-xs-12  footer-links footer-mobile  no-pad-left no-pad-right">
+                    <p class=' '> &copy; 2017 - Coronation Merchant Bank.<span class="hidden-xs"> All rights reserved</span></p>
+                    <p class="visible-xs">All rights reserved</p>
+
+                </div>
+
+            </div>
+        </div>
+    </footer>
+</div>
+
+
+
+
+<!--<script th:src="@{~/customer/js/jquery-1.11.1.js}"></script>-->
+<script
+        src="https://code.jquery.com/jquery-2.2.4.js"
+        integrity="sha256-iT6Q9iMJYuQiMWNd9lDyBUStIq/8PuOW33aOqmvFpqI="
+        crossorigin="anonymous"></script>
+<script th:src="@{~/customer/js/jquery-ui.js}"></script>
+<script  th:src="@{~/customer/js/greeting.js}"> </script>
+<script th:src="@{~/customer/js/jquery.dataTables.js}"></script>
+<script th:src="@{~/customer/js/dataTables.input.js}"></script>
+<!--<script th:src="@{~/customer/js/date/js/bootstrap-datepicker.js}"></script>-->
+<script th:src="@{~/customer/js/momentMin.js}"></script>
+<script th:src="@{~/customer/js/jquery.spring-friendly.min.js}"></script>
+<script th:src="@{~/customer/plugins/bootstrap-notify/bootstrap-notify.js}"></script>
+<script th:src="@{~/customer/plugins/bootstrap-daterangepicker/daterangepicker.js}"></script>
+<script th:src="@{~/customer/js/coronation.js}"></script>
+<script th:src="@{~/customer/js/errors.js}"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/js/bootstrap-datepicker.min.js"></script>
+
+<!-- BOOTSTRAP SCRIPTS  -->
+<script th:src="@{~/customer/js/bootstrap.js}"></script>
+<script th:src="@{~/customer/js/bootstrap-session-timeout.js}"></script>
+<script th:src="@{~/customer/js/session.js}"></script>
+
+
+<li hidden="hidden" id="feedStatus"  th:text="${feedStatus}"></li>
+<div th:if="${message}">
+    <div hidden="hidden">
+        <div th:if="${transRequest}">
+            <li th:text="${transRequest.referenceNumber}" class="transactionRef"></li>
+            <li th:text="${transRequest.transferType}" class="transactionType"></li>
+
+        </div>
+    </div>
+    <div hidden="hidden">
+        <div th:if="${refNumber}">
+            <li th:text="${refNumber}" class="transactionRef"></li>
+        </div>
+        <div th:if="${transferType}">
+            <li th:text="${transferType}" class="transactionType"></li>
+        </div>
+    </div>
+
+    <div hidden="hidden">
+        <ul class="actionMessage">
+            <li th:each="msg : ${message}" th:text="${msg}">Message</li>
+        </ul>
+    </div>
+</div>
+
+
+<div th:if="${failure}">
+    <div hidden="hidden">
+        <ul class="actionError">
+            <li th:each="msg : ${failure}" th:text="${msg}" id="error">Message</li>
+        </ul>
+    </div>
+</div>
+
+<div id="myModalError" class="modal fade " role="dialog">
+    <div class="modal-dialog">
+
+        <!-- Modal content-->
+
+        <div class="modal-content no-bd-rad content ">
+
+            <div class="modal-body">
+
+
+                <p id="errorMess" class="mess text-danger">Put something here iff need be.</p>
+
+
+            </div>
+
+
+            <div class="modal-footer no-bd-top">
+                <button type="button" class="btn btn-link" data-dismiss="modal">OK</button>
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+
+<div id="myModalSuccess" class="modal fade " role="dialog">
+    <div class="modal-dialog">
+
+        <!-- Modal content-->
+
+        <div class="modal-content no-bd-rad content ">
+
+            <div class="modal-body">
+
+                <p id="successMess" class="mess text-primary">Put something here iff need be.</p>
+                <div id="feedBackForm" class="form-group mess text-primary" style="display:none">
+                    <span>Kindly rate this service</span><br/>
+                    <span class="fa fa-star" id="1" style="color:#D3D3D3"></span>
+                    <span class="fa fa-star " id="2" style="color:#D3D3D3"></span>
+                    <span class="fa fa-star " id="3" style="color:#D3D3D3"></span>
+                    <span class="fa fa-star" id="4" style="color:#D3D3D3"></span>
+                    <span class="fa fa-star "id="5" style="color:#D3D3D3"></span><br/><br/>
+                    <label class="col-sm-2 control-label">Additional comments </label>
+                    <input type="text" name="rating" id="rating"  />
+                    <input type="text" name="transType" id="transType" />
+                    <textarea id="comment" class="form-control"  style="width:60%;height:50%" ></textarea>
 
                 </div>
 
@@ -539,132 +574,97 @@
 
         </div>
     </div>
-
-
-     <div id="myModalSuccess" class="modal fade " role="dialog">
-         <div class="modal-dialog">
-
-             <!-- Modal content-->
-
-             <div class="modal-content no-bd-rad content ">
-
-                 <div class="modal-body">
-
-                     <p id="successMess" class="mess text-primary">Put something here iff need be.</p>
-                     <div id="feedBackForm" class="form-group mess text-primary" style="display:none">
-                         <span>Kindly rate this service</span><br/>
-                         <span class="fa fa-star" id="1" style="color:#D3D3D3"></span>
-                         <span class="fa fa-star " id="2" style="color:#D3D3D3"></span>
-                         <span class="fa fa-star " id="3" style="color:#D3D3D3"></span>
-                         <span class="fa fa-star" id="4" style="color:#D3D3D3"></span>
-                         <span class="fa fa-star "id="5" style="color:#D3D3D3"></span><br/><br/>
-                         <label class="col-sm-2 control-label">Additional comments </label>
-                         <input type="text" name="rating" id="rating"  />
-                         <input type="text" name="transType" id="transType" />
-                         <textarea id="comment" class="form-control"  style="width:60%;height:50%" ></textarea>
-
-                     </div>
-
-
-                     <div class="modal-footer no-bd-top">
-                         <button type="button" class="btn btn-link" data-dismiss="modal">OK</button>
-                     </div>
-
-                 </div>
-
-             </div>
-         </div>
-     </div>
+</div>
 
 
 
 
-     <!-- CORE JQUERY SCRIPTS -->
-    <script th:inline='javascript'>
-        /*<![CDATA[*/
+<!-- CORE JQUERY SCRIPTS -->
+<script th:inline='javascript'>
+    /*<![CDATA[*/
 
-        $(document).ready(function ()
-        {
-            getCorporateGreetings();
-            greetingUtility();
+    $(document).ready(function ()
+    {
+        getCorporateGreetings();
+        greetingUtility();
 
-            if(window.location.href.indexOf("corporate/dashboard") > -1) {
-                $("#menu1").dropdown('toggle');
-            }
-            $(".useloader").click(function(){
-                // showSpinner();
+        if(window.location.href.indexOf("corporate/dashboard") > -1) {
+            $("#menu1").dropdown('toggle');
+        }
+        $(".useloader").click(function(){
+            // showSpinner();
 //            alert("The paragraph was clicked.");
-            });
-            showPop('.errors');
+        });
+        showPop('.errors');
 
-            $('[data-toggle="tooltip"]').tooltip();
-            $('.datepicker').datepicker({
-                autoclose: true,
-                todayBtn: true,
-                todayHighlight: true});
-            var rating=0
+        $('[data-toggle="tooltip"]').tooltip();
+        $('.datepicker').datepicker({
+            autoclose: true,
+            todayBtn: true,
+            todayHighlight: true});
+        var rating=0
 
-            $(".fa-star").on("mouseover",function(){
-                $(".fa-star").css('color','#D3D3D3')
-                rating= $(this).attr("id");
-                for(var i=rating;i>0;i--)
-                    $('#'+i).css('color','yellow')
-            });
-            $("#myModalSuccess").on("hidden.bs.modal",function(e){
-                //var url=$(location).attr("href");
-                var userType="CORPORATE";
+        $(".fa-star").on("mouseover",function(){
+            $(".fa-star").css('color','#D3D3D3')
+            rating= $(this).attr("id");
+            for(var i=rating;i>0;i--)
+                $('#'+i).css('color','yellow')
+        });
+        $("#myModalSuccess").on("hidden.bs.modal",function(e){
+            //var url=$(location).attr("href");
+            var userType="CORPORATE";
 
-                var transType=$(".transactionType").text();
-                if(transType===0){
-                    var transType=[[${transferType}]]
+            var transType=$(".transactionType").text();
+            if(transType===0){
+                var transType=[[${transferType}]]
+            }
+            var comment=$("#comment").val();
+            var transactionRef=$(".transactionRef").text();
+            var feedback=[[${feedStatus}]]
+
+            var feedBackDTO={ "ratings": rating, "transactionType": transType,"comments":comment,
+                "userType":userType,"transactionRef":transactionRef};
+            $.ajax({
+                dataType: 'json',
+                url: "/feedback/save",
+                data:feedBackDTO,
+                type: "POST",
+                success: function () {
+                },
+                error: function () {
+
                 }
-                var comment=$("#comment").val();
-                var transactionRef=$(".transactionRef").text();
-                var feedback=[[${feedStatus}]]
-
-                var feedBackDTO={ "ratings": rating, "transactionType": transType,"comments":comment,
-                    "userType":userType,"transactionRef":transactionRef};
-                $.ajax({
-                    dataType: 'json',
-                    url: "/feedback/save",
-                    data:feedBackDTO,
-                    type: "POST",
-                    success: function () {
-                    },
-                    error: function () {
-
-                    }
-                });
-
-            })
-
-
-            
+            });
 
         })
 
-        /*]]>*/
-    </script>
 
 
-    <script th:inline='javascript'>
-        /*<![CDATA[*/
-        $.sessionTimeout({
-            keepAliveUrl: '',
-            logoutUrl: '/corporate/logout',
-            redirUrl: '/corporate/logout',
-            warnAfter: [[${timeOut}]],
-            redirAfter: 15000,
-            countdownBar: true
-        });
-        /*]]>*/
-    </script>
 
-    </footer>
-    </div>
+    })
 
-    <th:block layout:fragment="scripts">
-    </th:block>
+    /*]]>*/
+</script>
+
+
+<script th:inline='javascript'>
+    /*<![CDATA[*/
+    $.sessionTimeout({
+        keepAliveUrl: '',
+        logoutUrl: '/corporate/logout',
+        redirUrl: '/corporate/logout',
+        warnAfter: [[${timeOut}]],
+        redirAfter: 15000,
+        countdownBar: true
+    });
+    /*]]>*/
+</script>
+
+</footer>
+</div>
+
+<th:block layout:fragment="scripts">
+</th:block>
 
 </body>
 
