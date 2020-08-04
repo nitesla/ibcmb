@@ -6,7 +6,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>longbridge</groupId>
     <artifactId>ibcmb</artifactId>
-    <!--<version></version>-->
+
     <packaging>war</packaging>
     <name>ibcmb</name>
     <description>internet banking application</description>
@@ -64,16 +64,19 @@
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-envers</artifactId>
         </dependency>
+
 <!--        <dependency>-->
 <!--            <groupId>org.apache.logging.log4j</groupId>-->
-<!--            <artifactId>log4j-api</artifactId>-->
+<!--            <artifactId>log4j-core</artifactId>-->
 <!--            <version>2.13.3</version>-->
 <!--        </dependency>-->
+
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
             <version>3.4</version>
         </dependency>
+
         <dependency>
             <groupId>commons-codec</groupId>
             <artifactId>commons-codec</artifactId>
@@ -84,19 +87,23 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-security</artifactId>
         </dependency>
+
         <dependency>
             <groupId>org.thymeleaf.extras</groupId>
             <artifactId>thymeleaf-extras-springsecurity5</artifactId>
             <version>3.0.4.RELEASE</version>
         </dependency>
+
         <dependency>
             <groupId>org.thymeleaf.extras</groupId>
             <artifactId>thymeleaf-extras-java8time</artifactId>
         </dependency>
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-thymeleaf</artifactId>
         </dependency>
+
         <dependency>
             <groupId>nz.net.ultraq.thymeleaf</groupId>
             <artifactId>thymeleaf-layout-dialect</artifactId>
@@ -159,6 +166,7 @@
             <artifactId>ojdbc10</artifactId>
             <version>19.3.0.0</version>
         </dependency>
+
 <!--         https://mvnrepository.com/artifact/com.microsoft.sqlserver/mssql-jdbc-->
 
         <dependency>
@@ -166,17 +174,21 @@
             <artifactId>spring-security-test</artifactId>
             <scope>test</scope>
         </dependency>
+
         <!-- https://mvnrepository.com/artifact/org.owasp.esapi/esapi -->
+
         <dependency>
             <groupId>org.owasp.esapi</groupId>
             <artifactId>esapi</artifactId>
             <version>2.2.0.0</version>
         </dependency>
+
+
         <dependency>
-            <groupId>log4j</groupId>
-            <artifactId>log4j</artifactId>
-            <version>1.2.17</version>
-        </dependency>
+        <groupId>log4j</groupId>
+        <artifactId>log4j</artifactId>
+        <version>1.2.17</version>
+    </dependency>
 
 
         <dependency>
