@@ -32,10 +32,10 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.security.web.firewall.HttpFirewall;
 import org.springframework.security.web.firewall.StrictHttpFirewall;
 import org.springframework.security.web.session.HttpSessionEventPublisher;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 import java.util.Arrays;
 import java.util.Objects;
-
 
 
 @Configuration
@@ -48,7 +48,7 @@ public class SecurityConfig {
     public HttpSessionEventPublisher httpSessionEventPublisher;
 
     public void customConfig(WebSecurity web) throws Exception {
-        web.ignoring().antMatchers("/resources *", "/static *", "/css ", "/js *", "/images *", "/customer");
+        web.ignoring().antMatchers("/bank/**", "/resources/**", "/static/**", "/css/** ", "/js/**", "/images/**", "/customer/**");
     }
 
     @Configuration
@@ -108,28 +108,27 @@ public class SecurityConfig {
             }
 
 
-                    http
-                    .antMatcher("/admin/**").authorizeRequests()
-                    .and().authorizeRequests().anyRequest().
-                            access("hasAuthority('" + UserType.ADMIN.toString() + "') and "
-                            + (ipRestricted ? ipRange.toString() : " true"))
+            http.authorizeRequests()
+                    .antMatchers("/assets/**", "/bank/**", "/customer/**")
+                    .permitAll()
+                    .antMatchers("/admin/new-pword", "/admin/users/password/new").permitAll()
                     .and()
-                    .formLogin().loginPage("/login/admin").loginProcessingUrl("/admin/login")
-                    .failureUrl("/login/admin?error=login_error").defaultSuccessUrl("/admin/dashboard")
-                    .successHandler(adminAuthenticationSuccessHandler).failureHandler(adminAuthenticationFailureHandler)
+                    .antMatcher("/admin/**").authorizeRequests()
+                    .anyRequest().access("hasAuthority('" + UserType.ADMIN.toString() + "') and  " + (ipRestricted ? ipRange.toString() : "hasIpAddress('::1') or hasIpAddress('127.0.0.1') or hasIpAddress('0.0.0.0/0') "))
+                    .and()
+                    .formLogin()
+                    .failureHandler(adminAuthenticationFailureHandler)
+                    .loginPage("/admin/login").permitAll().successHandler(adminAuthenticationSuccessHandler).and().logout()
+                    .permitAll().logoutUrl("/admin/logout")
+                    .logoutSuccessUrl("/login/admin")
                     .and()
                     .sessionManagement()
                     .invalidSessionUrl("/login/admin")
                     .maximumSessions(1)
                     .expiredUrl("/login/admin?expired=true")
-                    .sessionRegistry(sessionRegistry).and()
+                    .sessionRegistry(sessionRegistry);
+            http.csrf().disable();
 
-                    .sessionFixation().migrateSession().sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
-
-                    .and()
-                    .logout().logoutUrl("/admin/logout").logoutSuccessUrl("/login/admin").deleteCookies("JSESSIONID")
-                    .invalidateHttpSession(true)
-                    .and().exceptionHandling().and().csrf().disable();
 
             // disable page caching
             http.headers().cacheControl();
@@ -198,33 +197,28 @@ public class SecurityConfig {
 
                 logger.info("IP address whitelist " + ipRange.toString());
             }
-            http.antMatcher("/ops/**")
-                    .authorizeRequests().anyRequest()
 
-                    .access("hasAuthority('" + UserType.OPERATIONS.toString() + "') and "
-                            + (ipRestricted ? ipRange.toString() : " true ")).and()
-                    // log in
-                    .formLogin().loginPage("/login/ops").loginProcessingUrl("/ops/login").failureUrl("/login/ops?error=true").defaultSuccessUrl("/ops/dashboard")
-                    .successHandler(opAuthenticationSuccessHandler)
+
+            http.authorizeRequests()
+                    .antMatchers("/assets/**", "/bank/**", "/customer/**")
+                    .permitAll()
+                    .antMatchers("/ops/new-pword", "/ops/users/password/new").permitAll()
+                    .and()
+                    .antMatcher("/ops/**").authorizeRequests()
+                    .anyRequest().access("hasAuthority('" + UserType.OPERATIONS.toString() + "') and  " + (ipRestricted ? ipRange.toString() : "hasIpAddress('::1') or hasIpAddress('127.0.0.1') or hasIpAddress('0.0.0.0/0') "))
+                    .and()
+                    .formLogin()
                     .failureHandler(opAuthenticationFailureHandler)
-
+                    .loginPage("/ops/login").permitAll().successHandler(opAuthenticationSuccessHandler).and().logout()
+                    .permitAll().logoutUrl("/ops/logout")
+                    .logoutSuccessUrl("/ops/login")
                     .and()
                     .sessionManagement()
-
                     .invalidSessionUrl("/login/ops")
                     .maximumSessions(1)
                     .expiredUrl("/login/ops?expired=true")
-                    .sessionRegistry(sessionRegistry).and()
-
-                    .sessionFixation().migrateSession()
-                    .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
-
-
-                    .and()
-                    // logout
-                    .logout().logoutUrl("/ops/logout")
-                    .logoutSuccessUrl("/login/ops").deleteCookies("JSESSIONID")
-                    .invalidateHttpSession(true).and().exceptionHandling().and().csrf().disable();
+                    .sessionRegistry(sessionRegistry);
+            http.csrf().disable();
             // disable page caching
             http.headers().cacheControl();
         }
@@ -352,7 +346,7 @@ public class SecurityConfig {
             authorizedUrl.fullyAuthenticated();
 
             // .authenticated()
-                    authorizedUrl.hasAuthority(UserType.CORPORATE.toString())
+            authorizedUrl.hasAuthority(UserType.CORPORATE.toString())
                     .and().authorizeRequests()
 
                     // log in
