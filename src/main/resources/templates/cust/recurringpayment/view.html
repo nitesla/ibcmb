@@ -14,7 +14,7 @@
                     <div class="modal-body no-bd-rad">
                         <h3 class="tokenHeader"><span class='text-danger'>Delete Recurring Payment</span>, <span th:text="*{username}" style="text-transform: capitalize">Tolu</span></h3>
                         <div class="margin-bottom">
-                            <p style="margin-bottom:20px">Enter token to confirm standing order delete</p>
+                            <p style="margin-bottom:20px">Enter token to confirm recurring payment delete</p>
                             <div id="username_div">
                                 <input style="width: 100%!important;"  type="text" id="token" required name="token" class='form-control tokenInput' placeholder="Token Code" autocomplete="off"/>
                             </div>
@@ -59,7 +59,7 @@
                         <th>End Date</th>
                         <th>Freq.(days)</th>
                         <th>Payments</th>
-                        <th></th>
+                        <th> </th>
                     </tr>
                     </thead>
                     <tbody>
@@ -153,7 +153,7 @@
                     }
                 ],
                 "language": {
-                    "emptyTable": "No Standing order to view"
+                    "emptyTable": "No Recurring Payment to view"
                 }
             });
             /*]]>*/
@@ -175,13 +175,13 @@
 
 
 
-        function warnBeforeRedirect(id) {
-            $("#myModal").modal('show');
-            $('.del').on('click', function(){
-                window.location.assign(ooo);
-            });
-
-        }
+        // function warnBeforeRedirect(id) {
+        //     $("#myModal").modal('show');
+        //     $('.del').on('click', function(){
+        //         window.location.assign(ooo);
+        //     });
+        //
+        // }
 
 
         /*]]>*/

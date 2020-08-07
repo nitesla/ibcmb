@@ -378,7 +378,7 @@ public class NAPSTransferController {
             accountList = (List<String>) session.getAttribute("accountList");
             RetailUser user=retailUserService.getUserByName(principal.getName());
 
-            SettingDTO setting = configService.getSettingByName("ENABLE_CORPORATE_2FA");
+            SettingDTO setting = configService.getSettingByName("ENABLE_RETAIL_2FA");
 
             if (setting != null && setting.isEnabled()) {
 
@@ -424,14 +424,18 @@ public class NAPSTransferController {
 
             requestList.forEach(i -> {
                 String refNumber;
-                do{refNumber = transferUtils.generateReferenceNumber(12);}
+                do{
+                    refNumber = transferUtils.generateReferenceNumber(12);
+                }
                 while (bulkRetailTransferService.creditRequestRefNumberExists(refNumber));
                 i.setReferenceNumber(refNumber);
             });
             bulkTransfer.setCrRequestList(requestList);
 
             String refCode;
-            do {refCode = transferUtils.generateReferenceNumber(10);}
+            do {
+                refCode = transferUtils.generateReferenceNumber(10);
+            }
             while (bulkRetailTransferService.refCodeExists(refCode));
             bulkTransfer.setReferenceNumber(refCode);
             bulkTransfer.setRefCode(refCode);
