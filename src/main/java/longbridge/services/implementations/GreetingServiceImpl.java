@@ -135,6 +135,7 @@ public class GreetingServiceImpl implements GreetingService {
     public String deleteGreeting(Long id) {
         try {
             Greeting greeting = greetingRepo.findOneById(id);
+            logger.info(String.valueOf(greeting));
             greetingRepo.delete(greeting);
             return messageSource.getMessage("greeting.delete.success", null, locale);
         } catch (VerificationInterruptedException e) {

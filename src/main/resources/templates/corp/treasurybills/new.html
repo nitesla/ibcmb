@@ -152,22 +152,24 @@
             if ($("#marketType").val() === "PRIMARY") {
                 if ($("#pTenor").val() === "") {
                     document.getElementById('error-ptenor').innerHTML = "<span class='text-danger'> Please Enter Value for Tenor</span>";
+                    console.log("FALSE FOR PTENOR");
                     return false;
                 }
+                if($("#supplyRate").val() === "") {
+                    document.getElementById('error-suppliedRate').innerHTML = " <span class='text-danger'> Please Enter Value for Rate </span>";
+                    console.log("FALSE FOR SUPPLY-RATE")
+                    return false;
+                }
+
             } else {
+
                 if ($("#sTenor").val() === "") {
                     document.getElementById('error-stenor').innerHTML = " <span class='text-danger'> Please Enter Value for Tenor </span>";
+                    console.log("FALSE FOR STENOR");
                     return false;
                 }
 
             }
-                if($("#primaryRate").val()==="supplyRate"){
-                   if($("#supplyRate").val() === ""){
-                       document.getElementById('error-suppliedRate').innerHTML = " <span class='text-danger'> Please Enter Value for Rate </span>";
-                       return false;
-                   }
-                }
-
         }
 
 

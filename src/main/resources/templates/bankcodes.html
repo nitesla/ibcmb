@@ -2,7 +2,7 @@
 
 
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:sec="http://www.w3.org/1999/xhtml">
+<html xmlns:th="http://www.thymeleaf.org">
 
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
@@ -283,10 +283,10 @@
         $(document).ready(function() {
             var table = $('#codes').DataTable({
                 select:true,
-                responsive: true,
+                responsive: false,
                 "lengthMenu" : [ [ 10, 20, 30, -1],  [ 10, 20, 30, "All" ] ],
                 "pagingType" : "simple_numbers",
-                "searching": true,
+                "searching": false,
                 "paging": true,
                 "serverSide" : true,
                 "ajax": {

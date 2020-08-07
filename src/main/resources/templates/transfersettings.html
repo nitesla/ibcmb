@@ -225,32 +225,32 @@
                                                 <form>
                                                     <div>
                                                 <label>Fee Range</label>
-                                                <input name="percentage" type="number" id="bothSelection1" class="form-control" required>
+                                                <input name="feeRng" type="text" id="bothSelection1" class="form-control" pattern="^[0-9 ]+$" required>
                                                     </div>
                                                 <br/>
                                                     <div>
                                                 <label>Fixed Amount</label>
-                                                <input name="percentage" type="number" id="bothSelection2" class="form-control" required>
+                                                <input name="fixedAmt" type="number" id="bothSelection2" class="form-control" required>
                                                     </div>
                                                     <br>
                                                     <div>
                                                         <label>Fee Description</label>
-                                                        <textarea name="percentage" type="number" id="feeDescriptionIdBoth" class="form-control" required></textarea>
+                                                        <textarea name="feeDescrip" type="text" id="feeDescriptionIdBoth" class="form-control" required></textarea>
                                                     </div>
                                                     <br>
                                                     <div>
                                                         <label>Fixed Amount Value</label>
-                                                        <input name="percentage" type="number" id="fixedAmountValueIdBoth" class="form-control" required>
+                                                        <input name="fixedAmtVal" type="number" id="fixedAmountValueIdBoth" class="form-control" required>
                                                     </div>
                                                     <br>
                                                     <div>
                                                         <label>Rate</label>
-                                                        <input name="percentage" type="number" id="rateIdBoth" class="form-control" required>
+                                                        <input name="rt" type="text" id="rateIdBoth" class="form-control" required>
                                                     </div>
                                                     <br>
                                                     <div>
                                                         <label>Rate Value</label>
-                                                        <input name="percentage" type="number" id="rateValueIdBoth" class="form-control" required>
+                                                        <input name="rtVal" type="number" id="rateValueIdBoth" class="form-control" required>
                                                     </div>
                                                     <br>
                                                     <button type="button" class="btn btn-success adjustTransferFee">Submit</button>
@@ -607,6 +607,8 @@
                 // }
 
             })
+
+
 
         </script>
         </body>
