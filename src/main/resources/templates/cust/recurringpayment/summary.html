@@ -52,6 +52,9 @@
                             <td th:text="${#numbers.formatDecimal(recurringPaymentDTO.amount, 1, 'COMMA', 2, 'POINT')}"></td>
 
                         </tr>
+
+                            <td th:hidden="${recurringPaymentDTO.paymentCode}"></td>
+
                         <tr>
 
                             <th>Naration</th>
@@ -101,6 +104,7 @@
                         <input type="hidden" th:field="*{intervalDays}"/>
                         <input type="hidden" th:field="*{phoneNumber}"/>
                         <input type="hidden" th:field="*{emailAddress}"/>
+                        <input type="hidden" th:field="*{paymentCode}"/>
                         <div class="form-group">
                             <div class="form-group">
                                 <button type="submit" class="btn btn-link required-step useloader">Proceed</button>

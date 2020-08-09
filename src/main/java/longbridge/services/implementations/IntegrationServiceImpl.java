@@ -1500,7 +1500,7 @@ public class IntegrationServiceImpl implements IntegrationService {
 	@Override
 	public RecurringPayment recurringPayment(RecurringPayment recurringPayment){
 		PaymentResponse payment;
-		String uri = URI + "/api/quickteller/billpaymentadvice";
+		String uri = URI+quicktellerBillpaymentAdvice;
 		Map<String,String> params = new HashMap<>();
 		params.put("terminalId",terminalId);
 		params.put("amount", recurringPayment.getAmount().toPlainString());
@@ -1509,6 +1509,8 @@ public class IntegrationServiceImpl implements IntegrationService {
 		params.put("customerEmail", recurringPayment.getEmailAddress());
 		params.put("customerId",recurringPayment.getCustomerId());
 		params.put("customerMobile",recurringPayment.getPhoneNumber());
+		params.put("paymentCode",recurringPayment.getPaymentCode().toString());
+		logger.info("Payment code", recurringPayment.getPaymentCode().toString());
 		params.put("hash",EncryptionUtil.getSHA512(
 				appId + recurringPayment.getPaymentCode() + recurringPayment.getAmount().setScale(2,BigDecimal.ROUND_HALF_UP) + secretKey, null));
 		params.put("paymentCode",recurringPayment.getPaymentCode().toString());
