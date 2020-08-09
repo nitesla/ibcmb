@@ -76,12 +76,13 @@ public class RecurringPaymentServiceImpl implements RecurringPaymentService {
 			RecurringPayment recurringPayment = convertDToToEntityCorp(recurringPaymentDTO);
 			recurringPayment.setDateCreated(now.toDate());
 			recurringPayment.setRetailUser(user);
+			recurringPayment.setPaymentCode(recurringPaymentDTO.getPaymentCode());
 			recurringPayment.setStartDate(DateUtil.convertStringToDate(recurringPaymentDTO.getStart()));
 			recurringPayment.setEndDate(DateUtil.convertStringToDate(recurringPaymentDTO.getEnd()));
 			recurringPayment.setNextDebitDate(now.plusDays(recurringPayment.getIntervalDays()).toDate());
 
 			generatePaymentsForRecurringPayment(recurringPaymentRepo.save(recurringPayment));
-			return messageSource.getMessage("directdebit.add.success", null, locale);
+			return messageSource.getMessage("recurringpayment.add.success", null, locale);
 		}catch (Exception e) {
 			e.printStackTrace();
 			throw new InternetBankingException(e.getMessage(),e);
