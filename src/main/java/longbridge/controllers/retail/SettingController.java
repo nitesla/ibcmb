@@ -94,6 +94,7 @@ public class SettingController {
 
         logger.debug("Getting user {} accounts and balances", retailUser.getUserName());
         List<AccountDTO> accountList = accountService.getAccountsAndBalances(retailUser.getCustomerId());
+
         logger.debug("Retrieved {} account balance(s) for user {}", accountList.size(), retailUser.getUserName());
         SettingDTO dto = configService.getSettingByName("TRANSACTIONAL_ACCOUNTS");
         /* if (dto != null && dto.isEnabled()) {
