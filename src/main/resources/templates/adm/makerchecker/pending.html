@@ -137,21 +137,25 @@
                 { "data": "verifiedOn", "defaultContent": "<i>Not Verified</i>" },
                 { "data": "status" }
 
-            ] ,"columnDefs" : [ {
+            ] ,"columnDefs" : [
+                {
                 "targets" : 2,
                 "data" : "initiatedOn",
                 "render" : function(data, type,full, meta) {
+                    console.log("DATA IS " +  data);
                     if (type === 'display') {
-                    	if(data == null)
-                    		return data;
+                    	if(data == null) {
+                            return data;
+                        }
                     	var dtStart = new Date(parseInt(data));
-                     	var dtStartWrapper = moment(dtStart);
-                     	//return dtStartWrapper.format('DD/MM/YYYY HH:mm');
+                     	var dtStartWrapper = moment(data);
                      	return dtStartWrapper.format('LLLL');
+                     	// return dtStartWrapper.format('LLLL');
                     }
                     return data;
                 }
-            } ,{
+            } ,
+                {
                 "targets" : 4,
                 "data" : "verifiedOn",
                 "render" : function(data, type,full, meta) {
