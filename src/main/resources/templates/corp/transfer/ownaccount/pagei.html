@@ -30,9 +30,8 @@
                             <div>
 
                                 <span class="alert no-bd-rad my-border bg-white" id="sourceCurrency">CCY</span>
-                                <select name="source" class="form-control" id="source" onchange="getBalance();getSourceCurrency()">
-
-                                    <!--<option value=""> select an account</option>-->
+                                <select name="source" class="form-control" id="source"
+                                        th:field="*{customerAccountNumber}" onchange="getBalance();getSourceCurrency()">
                                     <option th:each="s: ${accounts}" th:value="${s.accountNumber}" th:text="${s.accountNumber}" th:selected="${s.primaryFlag=='Y'}"></option>
                                 </select><span class='req-inner'></span>
                             </div>
