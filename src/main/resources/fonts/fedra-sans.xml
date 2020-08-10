@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<fontFamilies>
+
+	<fontFamily name="Fedra Sans">
+		<normal>fonts/fedra-sans/fedra-sans-std-normal.ttf</normal>
+		<bold>fonts/fedra-sans/fedra-sans-std-medium.ttf</bold>
+                <italic>fonts/fedra-sans/fedra-sans-std-normal-italic.ttf</italic>
+		<boldItalic>fonts/fedra-sans/fedra-sans-std-bold-italic.ttf</boldItalic>
+		<pdfEncoding>Identity-H</pdfEncoding>
+		<pdfEmbedded>true</pdfEmbedded>
+		<exportFonts>
+			<export key="net.sf.jasperreports.html">'Fedra Sans', Arial, Helvetica, sans-serif</export>
+		</exportFonts>
+		<!--
+		<locales>
+			<locale>en_US</locale>
+			<locale>de_DE</locale>
+		</locales>
+		-->
+	</fontFamily>
+
+
+	<!--
+		Mapping Java logical fonts, for the sake of HTML export only.
+	-->
+</fontFamilies>

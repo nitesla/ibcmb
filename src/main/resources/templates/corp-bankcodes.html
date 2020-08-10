@@ -1,0 +1,363 @@
+
+
+
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <link rel="stylesheet" type="text/css" th:href="@{~/customer/css/jquery-ui.css}" />
+    <!--<link rel="stylesheet" type="text/css" th:href="@{~/customer/css/date/css/bootstrap-datepicker.css}"/>-->
+    <!--<link rel="stylesheet" type="text/css" th:href="@{~/customer/css/date/css/bootstrap-datepicker.standalone.css}"/>-->
+
+
+    <link rel="stylesheet" type="text/css" th:href="@{~/customer/css/bootstrap.css}" />
+
+    <link rel="stylesheet" type="text/css" th:href="@{~/customer/css/select.bootstrap.css}" />
+    <link rel="stylesheet" type="text/css" th:href="@{~/customer/font-awesome/font-awesome.min.css}" />
+    <link rel="stylesheet" type="text/css" th:href="@{~/customer/plugins/bootstrap-daterangepicker/daterangepicker.css}" />
+    <link rel="stylesheet" type="text/css" th:href="@{~/customer/plugins/datatables/css/jquery.dataTables.min.css}" />
+    <link rel="stylesheet" type="text/css" th:href="@{~/customer/plugins/datatables/css/dataTables.bootstrap.css}" />
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.7.0/css/bootstrap-datepicker.min.css" />
+    <link rel="shortcut icon" th:href="@{~/customer/img/favicon.ico}" type="image/x-icon">
+    <link rel="stylesheet" type="text/css" th:href="@{~/customer/css/custom.css}" />
+    <link rel="stylesheet" type="text/css" th:href="@{~/customer/css/media.css}" />
+    <link rel="icon" th:href="@{~/customer/img/favico.ico}" type="image/x-icon">
+
+    <title>Coronation Merchant Bank</title>
+
+</head>
+
+<body>
+
+
+
+    <div class="container" style="">
+
+        <div>
+            <header class="heade ">
+                <div class="row">
+                    <div class="top-bar mobile-top-bar col-xs-12">
+                        <ul class="top-link">
+
+                            <li><a href="https://www.coronationmb.com/" target="_blank"> Coronation merchant bank</a>&nbsp;</li>
+                            <li><a target="_blank" th:href="@{/#}">E-Banking</a>&nbsp;</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class='row header-bar'>
+                    <div class="col-xs-12 col-sm-9 no-pad-left  hidden-xs invisible ">
+                        <div class="bvn-tab col-md-5 col-sm-5 ">
+                            <div class="header_inf bv">
+                                <p th:text="${compName}">Your RC Number</p>
+                                <h5 th:text="'RC N0: ' + ${RcNo}"></h5>
+
+                            </div>
+                        </div>
+                        <div class="col-sm-7 col-md-7 user-info">
+                            <div class="">
+                                <h5>
+                                    <span class='greeting' th:text="*{greeting}"></span>
+                                    <br class="break" />
+                                    <b class="greeting-user" th:text="*{name}"></b> &nbsp;
+                                    <!--<a th:href="@{/corporate/mailbox/inbox}"><i class="fa fa-envelope" style="color:#003056"></i>-->
+                                    <!--<span th:if="${numOfUnreadMessages}" class="badge bg-green" th:text="${numOfUnreadMessages}">count</span>-->
+
+                                    <!--</a>-->
+                                </h5>
+
+                                <div class="hide-faq">
+                                    <h6>
+                                        <a target="_blank" th:href="@{/faqs}">FAQS &nbsp; &nbsp;
+                                        <i class="fa fa-question-circle"></i></a>
+                                        <span class="date2 lorem">&nbsp; &nbsp;Login History:&nbsp;</span>&nbsp;
+                                        <span class="lorem" th:text="*{lastLogin}"></span>
+                                    </h6>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="col-xs-12 col-sm-3  no-pad-right ">
+                        <a href="/corporate/dashboard" class="">
+                            <img class='img img-responsive pull-right' style="display:block;margin:0px auto;height:70px" th:src="@{~/customer/img/cmb_logo.png}" alt="Coronation Merchant Bank" />
+                        </a>
+                    </div>
+
+
+
+                </div>
+
+            </header>
+
+
+
+
+            <!--<div class=' alert alert-info text-white  no-bd-rad' style="margin:1px 15px 1px 1px!important;background-color:#003056;color:white;"><marquee class='marquee'>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</marquee></div>-->
+
+            <div class="info-bar " id='bread-crumb' style="background:#003056;color:white">
+               <h3 style="font-size:16px;font-weight:bold;padding-left:30px">Bank Codes</h3>
+            </div>
+        </div>
+
+
+        <section class="content-wrapper" style="margin-top:6px">
+            <div class="row">
+
+                <div class="col-xs-12  col-md-9  no-ml no-pad-left no-pad-right" >
+                    <div class="">
+
+                        <div class="col-xs-12 alert no-bd-rad current-body" style="max-height:500px;height:500px">
+                            <div class="col-md-4 col-md-offset-2" style="margin-top:40px">
+                                    <p style="font-size:17px">Bank Codes For Bulk Transfer</p>
+                                    <p class="coronation-blue" style="margin-top:30px;">The bank codes below have been
+                                            provided to help you with your bulk
+                                            transfer transaction. </p>
+                            </div>
+
+                            <div class="col-md-6" style="margin-top:40px">
+                                    <!-- <label>Sort By</label>
+                                    <select class='form-control ' style='margin-bottom:20px'>
+                                        <option>A-Z</option>
+                                    </select> -->
+                                    <div class="table-responsive" >
+                                            <table  class="table table-striped table-bordered table-hover" id="codes">
+                                                    <thead>
+                                                    <tr style='background:rgb(154, 106, 79);color:white;border-bottom:3px solid grey !important'>
+                                                        <th>Bank Name</th>
+                                                        <th>Bank Code</th>
+                                                    </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                    <!--<tr th:each="fin : ${financialInstitution}">-->
+                                                        <!--<td th:text="${fin.institutionName}"></td>-->
+                                                        <!--<td th:text="${fin.sortCode}"></td>-->
+                                                    </tbody>
+                                            </table>
+                                    </div>
+
+
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-xs-12   col-md-3  no-bd alert no-bd-rad left-side">
+                    <div class=" ">
+                        <div class="sideba" style=" adding-top:20px;">
+
+
+                            <div class="bg-danger alert no-mt advert no-bd-rad ">
+                                <h1 style="margin-bottom:10px">Our Promise</h1>
+                                <p>Local expertise: world-class solutions. A commitment to the long-term inspires us to look after our clients’ best interests, harness the potential of our people and shape the financial future of our continent.
+                                    <br/>
+                                    To learn more about what we do, click <a href="https://www.coronationmb.com/what-we-do/introduction" target="_blank"> here </a>
+
+                                </p>
+                            </div>
+                            <!--date-->
+                            <div class=" hidden-xs hidden-sm bg-dan">
+
+                                <div class="no-bd no-bd-rad   time" style=" margin-to: 6px !important;margin-bottom:0px !important;border-top:2px solid #ebdfdb !important;border-bottom:2px solid #ebdfdb !important;">
+                                    <span class=" ">
+                <i class="fa fa-calendar-plus-o datepicker cal-icon " data-provide="datepicker" onclick="show()" style="font-size:20px;background:transparent !important;border:0px !important"></i>
+            </span>
+                                    <span class="  ">
+                <span class="time-icon" id="day" style="font-size:13px;"></span><span>,</span>
+                                    <span class="text-bold time-icon" id="cal_date" style="font-size:14px;color:#003056 !important;"></span>
+                                    </span>
+                                    <script>
+                                        setInterval(
+                                            function() {
+
+
+                                                var timer = moment().format('LTS'); //timer in hours,minutes and seconds
+                                                var day = moment().format('dddd'); // get the current day
+                                                var cur_date = moment().format("D MMMM");
+
+
+                                                var time_holder = document.getElementById('time'); // get where to insert the timer
+                                                var day_holder = document.getElementById('day'); // get where to insert the current day
+                                                var cur_date_holder = document.getElementById('cal_date'); // get where to insert the current date
+
+                                                time_holder.innerHTML = timer;
+                                                day_holder.innerHTML = day;
+                                                cur_date_holder.innerHTML = cur_date;
+                                                //   var time_function = moment().format('Do MMMM YYYY, h:mm:ss a');
+                                                //   var holder = document.getElementById('time_');
+                                                //   holder.innerHTML = time_function;
+                                            },
+                                            1000);
+                                    </script>
+
+
+                                </div>
+                                <!--<div  id="calendar" style="display: block; margin: 0px auto;" class=" calendar hidden-xs hidden-sm "></div>-->
+                            </div>
+
+                            <!--time-->
+                            <div class="">
+                                <div class="time hidden-xs hidden-sm no-bd no-bd-rad " style="border-bottom:2px solid #ebdfdb !important;">
+                                    <span class=" ">
+                <i class="fa fa-clock-o datepicker cal-icon " data-provide="datepicker" onclick="show()" style="font-size:20px;background:transparent !important;border:0px !important;"></i>
+            </span>
+                                    <span id="time" class="text-bold no-bd" style="font-size:14px;padding-left:10px;color:#003056 !important;"></span>
+                                </div>
+                            </div>
+
+
+
+                            <!--image placeholdder-->
+                            <div class="sidebar-b hidden-xs hidden-sm bg-succes" style="max-height:300px;margin-top:10px;">
+                                <img style="max-height:250px" class="center img-responsive" alt="Coronation Merchant Bank" src="/customer/img/asset.jpg" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- CONTENT-WRAPPER SECTION END-->
+        <footer>
+            <div class="">
+                <div class="">
+                    <div class="col-sm-6 col-xs-12 footer-mobile no-pad-left no-pad-right">
+                        <ul class="footer-links ">
+                            <li><a href="#" target="_blank">Privacy policy</a></li>
+                            <!--<li><a href="#" target="_blank">Disclaimer</a></li>-->
+                            <li><a href="#" target="_blank">Terms &amp; Conditions</a></li>
+                        </ul>
+
+                    </div>
+                    <div class="col-sm-6  col-xs-12  footer-mobile  no-pad-left no-pad-right">
+                        <p class=' '> &copy; 2017 - Coronation Merchant Bank.<span class="hidden-xs"> All rights reserved</span></p>
+                        <p class="visible-xs">All rights reserved</p>
+
+                    </div>
+
+                </div>
+            </div>
+        </footer>
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+    <!-- CORE JQUERY SCRIPTS -->
+
+
+
+
+
+    <script th:src="@{~/customer/js/jquery-1.11.1.js}"></script>
+    <script th:src="@{~/customer/js/jquery-ui.js}"></script>
+    <!--<script th:src="@{~/customer/js/date/js/bootstrap-datepicker.js}"></script>-->
+    <script th:src="@{~/customer/js/momentMin.js}"></script>
+    <script th:src="@{~/customer/js/jquery.spring-friendly.min.js}"></script>
+    <script th:src="@{~/customer/js/coronation.js}"></script>
+    <script th:src="@{~/customer/js/jquery.dataTables.js}"></script>
+
+
+    <!-- BOOTSTRAP SCRIPTS  -->
+    <script th:src="@{~/customer/js/bootstrap.js}"></script>
+    <script th:src="@{~/customer/js/bootstrap-session-timeout.js}"></script>
+    
+    
+    <!-- Page-Level Scripts -->
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        $(document).ready(function() {
+            var table = $('#codes').DataTable({
+                select:true,
+                responsive: false,
+                "lengthMenu" : [ [ 10, 20, 30, -1],  [ 10, 20, 30, "All" ] ],
+                "pagingType" : "simple_numbers",
+                "searching": false,
+                "paging": true,
+                "serverSide" : true,
+                "ajax": {
+                    url: "/corporate/transfer/allbankcodes",
+                    "type": "GET"
+                },
+                "dom": 'T<"clear">frtlp',
+                "columns": [
+                    { "data": "institutionName" },
+                    { "data": "sortCode" }
+                ] });
+
+            table.on('select', function() {
+                if (table.rows({
+                        selected : true
+                    }).indexes().length === 0) {
+                    $('.bt-select').attr("disabled", true);
+                } else {
+                    $('.bt-select').removeAttr("disabled");
+                }
+    
+            });
+    
+            table.on('deselect', function() {
+                if (table.rows({
+                        selected : true
+                    }).indexes().length === 0) {
+                    $('.bt-select').attr("disabled", true);
+                } else {
+                    $('.bt-select').removeAttr("disabled");
+                }
+            });
+    
+        });
+    
+    
+        /*]]>*/
+    </script>
+</body>
+
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

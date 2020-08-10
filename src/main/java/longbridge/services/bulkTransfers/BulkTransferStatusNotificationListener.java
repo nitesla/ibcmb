@@ -2,6 +2,7 @@ package longbridge.services.bulkTransfers;
 
 import longbridge.models.BulkTransfer;
 import longbridge.models.Corporate;
+import longbridge.models.RetailUser;
 import longbridge.repositories.BulkTransferRepo;
 import longbridge.utils.StatusCode;
 import org.slf4j.Logger;
@@ -83,7 +84,8 @@ public class BulkTransferStatusNotificationListener extends JobExecutionListener
 
         Date submittedDate;
         Corporate corporate = bulkTransfer.getCorporate();
-        if("SOLE".equalsIgnoreCase(corporate.getCorporateType())){
+        RetailUser retailUser = bulkTransfer.getRetailUser();
+        if("SOLE".equalsIgnoreCase(corporate.getCorporateType()) || "RET".equalsIgnoreCase(retailUser.getUserType().toString()) ){
             submittedDate =  bulkTransfer.getTranDate();
         }
         else {
