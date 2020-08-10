@@ -32,5 +32,6 @@ public interface BulkTransferRepo extends CommonRepo<BulkTransfer, Long>{
 
     int countByCorporateAndStatus(Corporate corporate, String status);
     List<BulkTransfer> findByCorporate(Corporate corporate);
+    List<BulkTransfer> findByRetailUser(RetailUser retailUser);
 
 }
