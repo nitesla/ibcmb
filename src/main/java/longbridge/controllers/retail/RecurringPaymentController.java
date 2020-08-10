@@ -1,6 +1,5 @@
 package longbridge.controllers.retail;
 
-import longbridge.dtos.BillPaymentDTO;
 import longbridge.dtos.RecurringPaymentDTO;
 import longbridge.dtos.SettingDTO;
 import longbridge.exception.InternetBankingException;
@@ -101,8 +100,8 @@ public class RecurringPaymentController {
             return "cust/recurringpayment/pagei";
         }
         model.addAttribute("recurringPaymentDTO",recurringPaymentDTO);
-        paymentItemCode = billerService.getPaymentItem(Long.parseLong(recurringPaymentDTO.getPaymentItemId()));
-        recurringPaymentDTO.setPaymentCode(paymentItemCode.getPaymentCode());
+//        paymentItemCode = billerService.getPaymentItem(Long.parseLong(recurringPaymentDTO.getPaymentItemId()));
+//        recurringPaymentDTO.setPaymentCode(paymentItemCode.getPaymentCode());
         billerName = billerService.getBillerName(Long.parseLong(recurringPaymentDTO.getBillerId()));
         recurringPaymentDTO.setBillerName(billerName.getBillerName());
         paymentItemName = billerService.getPaymentItem(Long.parseLong(recurringPaymentDTO.getPaymentItemId()));
@@ -202,40 +201,6 @@ public class RecurringPaymentController {
             redirectAttributes.addFlashAttribute("failure", "Kindly provide token to delete ! ");
             return "redirect:/retail/recurringpayment";
         }
-    }
-
-    @GetMapping("/addbeneficiary")
-    public String addBeneficiary(Model model, HttpServletRequest request){
-        boolean enabled = true;
-        List<BillerCategory> categorys = billerCategoryRepo.findAllByEnabled(enabled);
-        model.addAttribute("categorys",categorys);
-        return "cust/billpayment/addbeneficiary";
-    }
-
-    @ResponseBody
-    @PostMapping("/getBiller")
-    public List<Biller> beneficiaryBiller(String category, HttpServletRequest request, Model model){
-        boolean enabled = true;
-        logger.info("BILLER DTO {} " , category);
-        List<Biller> biller = billerRepo.findAllByEnabledAndCategoryName(enabled,category);
-        return biller;
-    }
-
-    @ResponseBody
-    @PostMapping("/getpaymentitems")
-    public List<PaymentItem> getPaymentItems(Long billerId){
-        logger.info("billerId {} " , billerId);
-        boolean enabled = true;
-        List<PaymentItem> items =  paymentItemRepo.findAllByEnabledAndBillerId(enabled, billerId);
-        logger.info("items {} " , items);
-        return items;
-
-    }
-
-    @PostMapping("/addnewbeneficiary")
-    public String addNewBeneficiary(@ModelAttribute("billPaymentDTO") @Valid BillPaymentDTO billPaymentDTO){
-        logger.info("DETAILS {} " , billPaymentDTO);
-        return "SUCCESSFULL";
     }
 
     @GetMapping("/all")

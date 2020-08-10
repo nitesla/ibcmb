@@ -84,9 +84,13 @@
                         <!--                        </div>-->
 
                         <div class="form-group">
-                            <label >Transaction Amount</label>
+                            <label >Amount</label>
                             <input type="text" class="form-control" th:field="*{amount}"
                                    required="required" readonly/>
+                        </div>
+
+                        <div class="form-group">
+                            <input type="hidden" class="form-control" th:field="*{paymentCode}"/>
                         </div>
 
                         <div class="form-group">
@@ -240,9 +244,11 @@
                 success: function (paymentItem, status, xhr) {
                     console.log("PaymentItem name is "+paymentItem.paymentItemName);
                     console.log("PaymentItem price is "+paymentItem.amount);
+                    console.log("PaymentItem code is "+paymentItem.paymentCode);
                     console.log("PaymentItem read-only status is "+paymentItem.readonly);
 
                     $('#amount').val(paymentItem.amount);
+                    $('#paymentCode').val(paymentItem.paymentCode);
 
                     if(paymentItem.readonly==false){
                         $('#amount').removeAttr("readonly")
