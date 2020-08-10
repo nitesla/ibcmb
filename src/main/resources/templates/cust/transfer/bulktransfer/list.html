@@ -37,7 +37,7 @@
                             <a type="button" th:href="@{/retail/transfer/upload}" class="btn btn-default bt-link-act">New Transfer</a>
                             <!--<a  type="button" class="btn bt-select btn-default bt-link-act" th:href="@{/corporate/transfer/index/view}" disabled="disabled" > View Details</a>-->
                         </div>
-<!--                        <button id="refresh" class="btn btn-default bt-link-act">Refresh</button>-->
+                        <button id="refresh" class="btn btn-default bt-link-act">Refresh</button>
 
                     </div>
                 </div>
@@ -215,16 +215,16 @@
             });
         }
 
-        // $("#refresh").on('click',function() {
-        //     $.ajax({
-        //         "url": "/corporate/transfer/refresh/naps",
-        //         "type": "GET",
-        //         success: function (result) {
-        //             console.log("result" + result);
-        //         }
-        //
-        //     });
-        // });
+        $("#refresh").on('click',function() {
+            $.ajax({
+                "url": "/retail/transfer/refresh/naps",
+                "type": "GET",
+                success: function (result) {
+                    console.log("result" + result);
+                }
+
+            });
+        });
 
 
 
