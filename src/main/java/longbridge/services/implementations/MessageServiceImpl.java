@@ -290,7 +290,7 @@ public class MessageServiceImpl implements MessageService {
     @Transactional
     public List<MessageDTO> getSentMessages(User user) {
         List<Message>  messages = messageRepo.findMessageByUserAndTagOrderByDateCreatedDesc(user.getId(), user.getUserType(),MessageCategory.SENT.toString());
-        logger.info("the message ================================================================================ {}",messages);
+        logger.info("the message ================================================================================ " + messages);
         List<MessageDTO> sentMessages = new ArrayList<MessageDTO>();
         if (messages == null) {
             return sentMessages;
