@@ -4,6 +4,7 @@
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
+	<parameter name="logo" class="java.io.InputStream"/>
 	<parameter name="accountId" class="java.lang.String"/>
 	<parameter name="accountNumber" class="java.lang.String"/>
 	<parameter name="startDate" class="java.lang.String"/>
@@ -11,7 +12,6 @@
 	<parameter name="amount" class="java.lang.String"/>
 	<parameter name="interestRate" class="java.lang.String"/>
 	<parameter name="maturityDate" class="java.lang.String"/>
-	<parameter name="logotwo" class="java.lang.String"/>
 	<background>
 		<band splitType="Stretch"/>
 	</background>
@@ -20,21 +20,21 @@
 			<textField pattern="dd MMMMM yyyy">
 				<reportElement x="0" y="0" width="100" height="14" uuid="a1a62202-e5d1-4ce7-8942-62b6c9ea7bd5"/>
 				<textElement>
-					<font fontName="Arial"/>
+					<font fontName="Fedra Sans"/>
 				</textElement>
 				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="426" y="0" width="129" height="54" uuid="e96d97d8-35e5-4e73-b1b3-d7b1f5ab746a"/>
+				<textFieldExpression><![CDATA[""+$P{logo}]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement x="0" y="91" width="148" height="29" forecolor="#003057" uuid="c0d9c7f0-03e0-40e7-a8b6-cdac1bc8ffc1"/>
 				<textElement verticalAlignment="Middle">
-					<font fontName="Arial" size="18"/>
+					<font size="18"/>
 				</textElement>
 				<text><![CDATA[IB Loan Details]]></text>
 			</staticText>
-			<image>
-				<reportElement x="417" y="0" width="138" height="74" uuid="79bb8e80-a279-4fe3-a87d-065420a84d37"/>
-				<imageExpression><![CDATA[$P{logotwo}]]></imageExpression>
-			</image>
 		</band>
 	</title>
 	<pageHeader>
@@ -48,14 +48,14 @@
 			<staticText>
 				<reportElement x="3" y="0" width="73" height="22" forecolor="#FFFFFF" uuid="d613e16f-c49a-45ed-8e18-4e6a2860fca3"/>
 				<textElement verticalAlignment="Middle">
-					<font fontName="Arial" isBold="true"/>
+					<font fontName="Fedra Sans" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Account ID]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="79" y="0" width="72" height="22" forecolor="#FFFFFF" uuid="b26fa6c9-365a-4e97-ad7f-26ac95364b01"/>
 				<textElement verticalAlignment="Middle">
-					<font fontName="Arial" isBold="true"/>
+					<font fontName="Fedra Sans" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Account Number]]></text>
 			</staticText>
@@ -68,7 +68,7 @@
 			<staticText>
 				<reportElement x="246" y="0" width="64" height="22" forecolor="#FFFFFF" uuid="08a9f0a0-14a0-4959-8a24-2acae141f718"/>
 				<textElement verticalAlignment="Middle">
-					<font fontName="Arial" isBold="true"/>
+					<font fontName="Fedra Sans" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Start Date]]></text>
 			</staticText>
@@ -81,14 +81,14 @@
 			<staticText>
 				<reportElement x="313" y="0" width="83" height="22" forecolor="#FFFFFF" uuid="15751c0b-93d6-4f21-a561-71dcfecda416"/>
 				<textElement verticalAlignment="Middle">
-					<font fontName="Arial" isBold="true"/>
+					<font fontName="Fedra Sans" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Tenor]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="399" y="0" width="80" height="22" forecolor="#FFFFFF" uuid="b98ba3b1-3be3-483b-a9cd-6f04cf04b5b6"/>
 				<textElement verticalAlignment="Middle">
-					<font fontName="Arial" isBold="true"/>
+					<font fontName="Fedra Sans" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Amount]]></text>
 			</staticText>
@@ -98,14 +98,14 @@
 			<staticText>
 				<reportElement x="154" y="0" width="89" height="22" forecolor="#FFFFFF" uuid="0ab66f63-5a70-4234-9b2c-717e8711ea75"/>
 				<textElement verticalAlignment="Middle">
-					<font fontName="Arial" size="10" isBold="true"/>
+					<font fontName="Fedra Sans" size="10" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Interest Rate ]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="482" y="0" width="73" height="22" forecolor="#FFFFFF" uuid="d98c8452-edc0-4998-a937-25a581c3184d"/>
 				<textElement verticalAlignment="Middle">
-					<font fontName="Arial" isBold="true"/>
+					<font fontName="Fedra Sans" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Maturity Date]]></text>
 			</staticText>
@@ -137,49 +137,49 @@
 			<textField>
 				<reportElement x="5" y="0" width="71" height="20" uuid="fa7500cd-7f38-4685-90f4-2d052a78cce1"/>
 				<textElement verticalAlignment="Middle">
-					<font fontName="Arial" size="8"/>
+					<font fontName="Fedra Sans" size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{accountId}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="78" y="0" width="73" height="20" uuid="2ca28e59-bb63-492e-9f0b-1556b8556338"/>
 				<textElement verticalAlignment="Middle">
-					<font fontName="Arial" size="8"/>
+					<font fontName="Fedra Sans" size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{accountNumber}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="154" y="0" width="89" height="20" uuid="f6298d7f-2b09-4966-9c5d-f8b3bb168e07"/>
 				<textElement verticalAlignment="Middle">
-					<font fontName="Arial" size="8"/>
+					<font fontName="Fedra Sans" size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{startDate}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="246" y="0" width="64" height="20" uuid="6dfd5361-bae9-413b-aab3-ee4a92597452"/>
 				<textElement verticalAlignment="Middle">
-					<font fontName="Arial" size="8"/>
+					<font fontName="Fedra Sans" size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{tenor}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="313" y="0" width="83" height="20" uuid="e07749f1-23dd-42de-b181-825428b89bb8"/>
 				<textElement verticalAlignment="Middle">
-					<font fontName="Arial" size="8"/>
+					<font fontName="Fedra Sans" size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{amount}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="399" y="0" width="80" height="20" uuid="54209154-b222-4326-9506-da94900638fd"/>
 				<textElement verticalAlignment="Middle">
-					<font fontName="Arial" size="8"/>
+					<font fontName="Fedra Sans" size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{interestRate}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="482" y="0" width="73" height="20" uuid="2bcb12ad-e61a-4a85-969a-f62bed180888"/>
 				<textElement verticalAlignment="Middle">
-					<font fontName="Arial" size="8"/>
+					<font fontName="Fedra Sans" size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{maturityDate}]]></textFieldExpression>
 			</textField>

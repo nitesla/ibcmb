@@ -79,7 +79,10 @@ public class GreetingServiceImpl implements GreetingService {
                 if ((null != greetingRepo.findFirstByEventName(greetingDTO.getEventName()))) {
                     return messageSource.getMessage("greeting.add.exist", null, locale);
                 }
-            } catch (Exception e) {
+
+            }catch (VerificationInterruptedException e) {
+                return e.getMessage();
+            }catch (Exception e) {
                 logger.info("greeting does not exist");
             }
             Greeting greeting = modelMapper.map(greetingDTO, Greeting.class);

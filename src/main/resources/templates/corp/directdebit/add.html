@@ -28,6 +28,7 @@
                         <div class="form-group">
                             <label>Source Account</label>
                             <select name="debitAccount" class="form-control" id="accountNumber">
+
                                 <option th:each="account : ${accounts}" th:value="${account.accountNumber}" th:text="${account.accountNumber}"></option>
                             </select>
                         </div>
@@ -130,6 +131,7 @@
                 type:"GET",
                 data:dto,
                 success:function(message){
+                    console.log(message)
                     $("#limitError").text(message);
                     if(message!==""){
                         $("#save").attr("disabled",true)
