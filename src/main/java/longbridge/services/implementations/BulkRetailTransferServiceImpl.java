@@ -405,4 +405,10 @@ public class BulkRetailTransferServiceImpl implements BulkRetailTransferService 
         return retailUser;
     }
 
+    public List<BulkTransfer> getBulkTransferRequestsForRetail(RetailUser retailUser) {
+        List<BulkTransfer> bulkTransfers = bulkTransferRepo.findByRetailUser(retailUser);
+        return bulkTransfers;
+
+
+    }
 }

@@ -236,7 +236,7 @@ public class CorpNAPSTransferController {
 
     @GetMapping("/bankcodes")
     public String veiwSortCodes(Model model) {
-        return "/bankcodes";
+        return "/corp-bankcodes";
     }
 
     @GetMapping(path = "/allbankcodes")

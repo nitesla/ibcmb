@@ -1,6 +1,5 @@
 package longbridge.controllers.retail;
 
-import longbridge.dtos.BillPaymentDTO;
 import longbridge.dtos.RecurringPaymentDTO;
 import longbridge.dtos.SettingDTO;
 import longbridge.exception.InternetBankingException;
@@ -10,6 +9,7 @@ import longbridge.repositories.BillerRepo;
 import longbridge.repositories.PaymentItemRepo;
 import longbridge.services.*;
 import longbridge.utils.DataTablesUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +22,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
@@ -62,21 +63,21 @@ public class RecurringPaymentController {
     ConfigurationService configurationService;
 
     private final AccountService accountService;
-
+    private SecurityService securityService;
     private final BillerService billerService;
-
     private final RetailUserService retailUserService;
 
     @Autowired
-    public RecurringPaymentController(BillerService billerService, RetailUserService retailUserService, AccountService accountService) {
+    public RecurringPaymentController(BillerService billerService, RetailUserService retailUserService, SecurityService securityService, AccountService accountService) {
         this.billerService = billerService;
         this.retailUserService = retailUserService;
+        this.securityService = securityService;
         this.accountService = accountService;
     }
 
     @GetMapping()
     public String getRecurringPaymentForUser(){
-        return "cust/recurringpaymment/view";
+        return "cust/recurringpayment/view";
     }
 
     @RequestMapping(value = "/add", method = {RequestMethod.GET, RequestMethod.POST})
@@ -99,8 +100,8 @@ public class RecurringPaymentController {
             return "cust/recurringpayment/pagei";
         }
         model.addAttribute("recurringPaymentDTO",recurringPaymentDTO);
-        paymentItemCode = billerService.getPaymentItem(Long.parseLong(recurringPaymentDTO.getPaymentItemId()));
-        recurringPaymentDTO.setPaymentCode(paymentItemCode.getPaymentCode());
+//        paymentItemCode = billerService.getPaymentItem(Long.parseLong(recurringPaymentDTO.getPaymentItemId()));
+//        recurringPaymentDTO.setPaymentCode(paymentItemCode.getPaymentCode());
         billerName = billerService.getBillerName(Long.parseLong(recurringPaymentDTO.getBillerId()));
         recurringPaymentDTO.setBillerName(billerName.getBillerName());
         paymentItemName = billerService.getPaymentItem(Long.parseLong(recurringPaymentDTO.getPaymentItemId()));
@@ -116,9 +117,9 @@ public class RecurringPaymentController {
             return "cust/recurringpayment/pagei";
         }
 
-        logger.info("direct debit request  {}", recurringPaymentDTO);
+        logger.info("recurring payment request  {}", recurringPaymentDTO);
         logger.info("auth {}", session.getAttribute("authenticated"));
-        SettingDTO setting = configurationService.getSettingByName("ENABLE_CORPORATE_2FA");
+        SettingDTO setting = configurationService.getSettingByName("ENABLE_RETAIL_2FA");
         logger.info("setg {}",setting);
         if (setting != null && setting.isEnabled()) {
             session.removeAttribute("requestDTO");
@@ -165,38 +166,41 @@ public class RecurringPaymentController {
         return "redirect:/recurringpayment/pagei";
     }
 
-    @GetMapping("/addbeneficiary")
-    public String addBeneficiary(Model model, HttpServletRequest request){
-        boolean enabled = true;
-        List<BillerCategory> categorys = billerCategoryRepo.findAllByEnabled(enabled);
-        model.addAttribute("categorys",categorys);
-        return "cust/billpayment/addbeneficiary";
-    }
+    @PostMapping("/authenticate")
+    public String deleteRecurringPaymentWithToken(WebRequest webRequest, Principal principal, RedirectAttributes redirectAttributes) {
+        String token = webRequest.getParameter("token");
+        logger.info("this is the token {}", token);
+        Long recurringPaymentId = Long.parseLong(webRequest.getParameter("id"));
+        logger.info("this is the id {}", recurringPaymentId);
+        if (StringUtils.isNotBlank(token) && recurringPaymentId != 0) {
+            try {
+                RetailUser retailUser = retailUserService.getUserByName(principal.getName());
+                boolean result = securityService.performTokenValidation(retailUser.getEntrustId(), retailUser.getEntrustGroup(), token);
+                if (result) {
+                    try {
+                        String message = recurringPaymentService.deleteRecurringPayment(recurringPaymentId);
+                        recurringPaymentService.recurringPayments(recurringPaymentService.getRecurringPayment(recurringPaymentId)).
+                                stream().filter(Objects::nonNull).forEach(i->recurringPaymentService.deletePayment(i.getId()));
 
-    @ResponseBody
-    @PostMapping("/getBiller")
-    public List<Biller> beneficiaryBiller(String category, HttpServletRequest request, Model model){
-        boolean enabled = true;
-        logger.info("BILLER DTO {} " , category);
-        List<Biller> biller = billerRepo.findAllByEnabledAndCategoryName(enabled,category);
-        return biller;
-    }
-
-    @ResponseBody
-    @PostMapping("/getpaymentitems")
-    public List<PaymentItem> getPaymentItems(Long billerId){
-        logger.info("billerId {} " , billerId);
-        boolean enabled = true;
-        List<PaymentItem> items =  paymentItemRepo.findAllByEnabledAndBillerId(enabled, billerId);
-        logger.info("items {} " , items);
-        return items;
-
-    }
-
-    @PostMapping("/addnewbeneficiary")
-    public String addNewBeneficiary(@ModelAttribute("billPaymentDTO") @Valid BillPaymentDTO billPaymentDTO){
-        logger.info("DETAILS {} " , billPaymentDTO);
-        return "SUCCESSFULL";
+                        redirectAttributes.addFlashAttribute("message", message);
+                    } catch (InternetBankingException e) {
+                        logger.error("Recurring Payment Error", e);
+                        redirectAttributes.addFlashAttribute("failure", e.getMessage());
+                    }
+                    return "redirect:/retail/recurringpayment";
+                } else {
+                    redirectAttributes.addFlashAttribute("failure", "Token Authentication Failed");
+                    return "redirect:/retail/recurringpayment";
+                }
+            } catch (InternetBankingException e) {
+                logger.error("Recurring Payment Error", e);
+                redirectAttributes.addFlashAttribute("failure", e.getMessage());
+                return "redirect:/retail/recurringpayment";
+            }
+        } else {
+            redirectAttributes.addFlashAttribute("failure", "Kindly provide token to delete ! ");
+            return "redirect:/retail/recurringpayment";
+        }
     }
 
     @GetMapping("/all")

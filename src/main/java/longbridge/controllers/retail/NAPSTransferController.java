@@ -21,12 +21,17 @@ import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.batch.core.JobParametersInvalidException;
+import org.springframework.batch.core.repository.JobExecutionAlreadyRunningException;
+import org.springframework.batch.core.repository.JobInstanceAlreadyCompleteException;
+import org.springframework.batch.core.repository.JobRestartException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
 import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.FileCopyUtils;
@@ -378,7 +383,7 @@ public class NAPSTransferController {
             accountList = (List<String>) session.getAttribute("accountList");
             RetailUser user=retailUserService.getUserByName(principal.getName());
 
-            SettingDTO setting = configService.getSettingByName("ENABLE_CORPORATE_2FA");
+            SettingDTO setting = configService.getSettingByName("ENABLE_RETAIL_2FA");
 
             if (setting != null && setting.isEnabled()) {
 
@@ -424,14 +429,18 @@ public class NAPSTransferController {
 
             requestList.forEach(i -> {
                 String refNumber;
-                do{refNumber = transferUtils.generateReferenceNumber(12);}
+                do{
+                    refNumber = transferUtils.generateReferenceNumber(12);
+                }
                 while (bulkRetailTransferService.creditRequestRefNumberExists(refNumber));
                 i.setReferenceNumber(refNumber);
             });
             bulkTransfer.setCrRequestList(requestList);
 
             String refCode;
-            do {refCode = transferUtils.generateReferenceNumber(10);}
+            do {
+                refCode = transferUtils.generateReferenceNumber(10);
+            }
             while (bulkRetailTransferService.refCodeExists(refCode));
             bulkTransfer.setReferenceNumber(refCode);
             bulkTransfer.setRefCode(refCode);
@@ -496,6 +505,28 @@ DataTablesOutput<BulkTransferDTO> getAllTransfers(DataTablesInput input, Princip
         output.setRecordsFiltered(creditRequests.getTotalElements());
         output.setRecordsTotal(creditRequests.getTotalElements());
         return output;
+    }
+
+    @GetMapping("/refresh/naps")
+    @ResponseBody
+    public void refreshNapsStatus(Principal principal) throws JobParametersInvalidException, JobExecutionAlreadyRunningException, JobRestartException, JobInstanceAlreadyCompleteException {
+
+        RetailUser user = retailUserService.getUserByName(principal.getName());
+
+
+        List<BulkTransfer> bulkTransferRequest = bulkRetailTransferService.getBulkTransferRequestsForRetail(user);
+
+        transferStatusJobLauncher.updateTransferStatusJob(bulkTransferRequest);
+        logger.info("NAPS refresh update done");
+
+    }
+
+    @Scheduled(cron = "${naps.status.check.rate}")
+    public void startUpdateTransferStatusJob() throws JobParametersInvalidException, JobExecutionAlreadyRunningException, JobRestartException, JobInstanceAlreadyCompleteException {
+        List<BulkTransfer> transferList = bulkRetailTransferService.getByStatus();
+        logger.info("transList {}", transferList);
+        transferStatusJobLauncher.updateTransferStatusJob(transferList);
+        logger.info("NAPS cron update done");
     }
 
 

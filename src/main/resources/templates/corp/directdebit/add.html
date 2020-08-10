@@ -28,7 +28,6 @@
                         <div class="form-group">
                             <label>Source Account</label>
                             <select name="debitAccount" class="form-control" id="accountNumber">
-
                                 <option th:each="account : ${accounts}" th:value="${account.accountNumber}" th:text="${account.accountNumber}"></option>
                             </select>
                         </div>
@@ -59,7 +58,7 @@
 
                                 <!--<span id="emptyDateError"   class="error">Start and end date is mandatory</span>-->
                             </div>
-                            <span id="endDateError1" style="color:red"></span>
+                            <span id="dateError" style="color:red"></span>
                         </div>
                         <div hidden="hidden">
                             <li th:text="${benefBank}" id="beneficiaryBank"></li>
@@ -98,22 +97,31 @@
             var startDate=$("#start").datepicker("getDate");
             var endDate=$("#end").datepicker("getDate");
             if(endDate < startDate){
-                $("#endDateError1").text("End date should not be less than Start date")
+                $("#dateError").text("End date should not be less than Start date")
                 $("#save").attr("disabled",true);
             }else{
-                $("#endDateError1").text("")
+                $("#dateError").text("")
                 $("#save").attr("disabled",false);
             }
         }
 
         function startDateError(){
             var startDate=$("#start").datepicker("getDate");
+            var endDate=$("#end").datepicker("getDate");
             var currentDate = new Date();
             if(startDate < currentDate){
-                $("#endDateError1").text("Start date should not be less than current date")
+                $("#dateError").text("Start date should not be less than current date")
                 $("#save").attr("disabled",true);
             }else{
-                $("#endDateError1").text("")
+                $("#dateError").text("")
+                $("#save").attr("disabled",false);
+            }
+
+            if (startDate > endDate){
+                $("#dateError").text("Start Date should not be greater than end date")
+                $("#save").attr("disabled",true);
+            }else{
+                $("#dateError").text("")
                 $("#save").attr("disabled",false);
             }
         }
@@ -131,7 +139,6 @@
                 type:"GET",
                 data:dto,
                 success:function(message){
-                    console.log(message)
                     $("#limitError").text(message);
                     if(message!==""){
                         $("#save").attr("disabled",true)

@@ -5,7 +5,7 @@ import longbridge.exception.InternetBankingException;
 import longbridge.models.*;
 import longbridge.repositories.CorpRecurringPaymentRepo;
 import longbridge.repositories.CorpTransferRequestRepo;
-import longbridge.repositories.PaymentRepo;
+import longbridge.repositories.PaymentStatRepo;
 import longbridge.repositories.RecurringPaymentRepo;
 import longbridge.services.*;
 import longbridge.utils.DateUtil;
@@ -41,7 +41,7 @@ public class RecurringPaymentServiceImpl implements RecurringPaymentService {
 	private RecurringPaymentRepo recurringPaymentRepo;
 
 	@Autowired
-	private PaymentRepo paymentRepo;
+	private PaymentStatRepo paymentStatRepo;
 
 	@Autowired
 	private TransferService transferService;
@@ -76,12 +76,13 @@ public class RecurringPaymentServiceImpl implements RecurringPaymentService {
 			RecurringPayment recurringPayment = convertDToToEntityCorp(recurringPaymentDTO);
 			recurringPayment.setDateCreated(now.toDate());
 			recurringPayment.setRetailUser(user);
+			recurringPayment.setPaymentCode(recurringPaymentDTO.getPaymentCode());
 			recurringPayment.setStartDate(DateUtil.convertStringToDate(recurringPaymentDTO.getStart()));
 			recurringPayment.setEndDate(DateUtil.convertStringToDate(recurringPaymentDTO.getEnd()));
 			recurringPayment.setNextDebitDate(now.plusDays(recurringPayment.getIntervalDays()).toDate());
 
 			generatePaymentsForRecurringPayment(recurringPaymentRepo.save(recurringPayment));
-			return messageSource.getMessage("directdebit.add.success", null, locale);
+			return messageSource.getMessage("recurringpayment.add.success", null, locale);
 		}catch (Exception e) {
 			e.printStackTrace();
 			throw new InternetBankingException(e.getMessage(),e);
@@ -150,25 +151,43 @@ public class RecurringPaymentServiceImpl implements RecurringPaymentService {
 		}
 	}
 
-//    @Override
-//	public String deleteDirectDebit(Long directDebitId) {
-//		DirectDebit directDebit = getDirectDebit(directDebitId);
-//		try{
-//			directDebitRepo.delete(directDebit);
-//			logger.info("Successfully deleted DirectDebit");
-//			return messageSource.getMessage("directdebit.delete.success", null, locale);
-//		}catch(Exception e){
-//			logger.error("Error", e);
-//			throw new InternetBankingException(messageSource.getMessage("directdebit.delete.failure", null, locale), e);
-//		}
-//
-//	}
+    @Override
+	public String deleteRecurringPayment(Long recurringPaymentId) {
+		RecurringPayment recurringPayment = getRecurringPayment(recurringPaymentId);
+		try{
+			recurringPaymentRepo.delete(recurringPayment);
+			logger.info("Successfully deleted Recurring Payment");
+			return messageSource.getMessage("recurringpayment.delete.success", null, locale);
+		}catch(Exception e){
+			logger.error("Error", e);
+			throw new InternetBankingException(messageSource.getMessage("recurringpayment.delete.failure", null, locale), e);
+		}
+
+	}
 
 
-//	@Override
-//	public DirectDebit getDirectDebit(Long directDebitId) {
-//		return directDebitRepo.getOne(directDebitId);
-//	}
+	@Override
+	public RecurringPayment getRecurringPayment(Long recurringPaymentId) {
+		return recurringPaymentRepo.getOne(recurringPaymentId);
+	}
+
+	@Override
+	public Collection<PaymentStat> recurringPayments(RecurringPayment recurringPayment) {
+		return paymentStatRepo.findByRecurringPayment(recurringPayment);
+	}
+
+	@Override
+	public String deletePayment(Long id) {
+		PaymentStat paymentStat =  paymentStatRepo.getOne(id);
+		try{
+			paymentStatRepo.delete(paymentStat);
+			logger.info("Successfully deleted Payment");
+			return messageSource.getMessage("recurringpayment.delete.success", null, locale);
+		}catch(Exception e){
+			logger.error("Error", e);
+			throw new InternetBankingException(messageSource.getMessage("recurringpayment.delete.failure", null, locale), e);
+		}
+	}
 
 
 //	@Override
@@ -356,29 +375,6 @@ public class RecurringPaymentServiceImpl implements RecurringPaymentService {
 //		return null;
 //	}
 
-//	@Override
-//	public String deletePayment(Long id) {
-//		Payment payment =  paymentRepo.getOne(id);
-//		try{
-//			paymentRepo.delete(payment);
-//			logger.info("Successfully deleted Payment");
-//			return messageSource.getMessage("directdebit.delete.success", null, locale);
-//		}catch(Exception e){
-//			logger.error("Error", e);
-//			throw new InternetBankingException(messageSource.getMessage("directdebit.delete.failure", null, locale), e);
-//		}
-//	}
-
-//	@Override
-//	public DirectDebit getPaymentsDirectDebit(Long paymentId) {
-//		Payment payment =  paymentRepo.getOne(paymentId);
-//		return payment.getDirectDebit();
-//	}
-
-//	@Override
-//	public Collection<Payment> debitsPayments(DirectDebit directDebit) {
-//		return paymentRepo.findByDirectDebit(directDebit);
-//	}
 
 //    @Override
 //	public Collection<PaymentDTO>  getPayments(DirectDebit directDebit){

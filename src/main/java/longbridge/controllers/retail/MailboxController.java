@@ -142,6 +142,8 @@ public class MailboxController {
         out.setRecordsTotal(messages.getTotalElements());
         return out;
     }
+
+
     @GetMapping("/{id}/reply")
     public String replyMessage(@PathVariable Long id, Model model, Principal principal) {
         RetailUser retailUser = retailUserService.getUserByName(principal.getName());
@@ -166,6 +168,7 @@ public class MailboxController {
         return "cust/mailbox/compose";
     }
 
+
     @GetMapping("/compose")
     public String addMessage(Model model, Principal principal) {
         RetailUser retailUser = retailUserService.getUserByName(principal.getName());
@@ -181,6 +184,7 @@ public class MailboxController {
         model.addAttribute("messageDTO", message);
         return "cust/mailbox/compose";
     }
+
 
     @PostMapping
     public String createMessage(@ModelAttribute("messageDTO") MessageDTO messageDTO, BindingResult bindingResult, Model model, RedirectAttributes redirectAttributes, Principal principal, Locale locale, WebRequest webRequest) {
@@ -275,8 +279,8 @@ public class MailboxController {
         RetailUser retailUser = retailUserService.getUserByName(principal.getName());
         Iterable<MessageDTO> messages = messageService.getMessages(retailUser);
         return messages;
-
     }
+
 
     @GetMapping("/inbox/all")
     @ResponseBody
@@ -286,14 +290,15 @@ public class MailboxController {
         return receivedMessages;
     }
 
+
     @GetMapping("/sent/all")
     @ResponseBody
     public Iterable<MessageDTO> getSentMessages(Principal principal) {
         RetailUser retailUser = retailUserService.getUserByName(principal.getName());
         Iterable<MessageDTO> sentMessages = messageService.getSentMessages(retailUser);
         return sentMessages;
-
     }
+
 
     @GetMapping("/message")
     public String getMessage(Model model, Principal principal) {
