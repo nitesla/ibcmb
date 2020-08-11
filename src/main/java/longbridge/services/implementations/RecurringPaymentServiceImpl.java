@@ -1,13 +1,18 @@
 package longbridge.services.implementations;
 
+import longbridge.dtos.CorpQuicktellerRequestDTO;
+import longbridge.dtos.PaymentStatDTO;
+import longbridge.dtos.QuicktellerRequestDTO;
 import longbridge.dtos.RecurringPaymentDTO;
 import longbridge.exception.InternetBankingException;
+import longbridge.exception.InternetBankingTransferException;
 import longbridge.models.*;
 import longbridge.repositories.CorpRecurringPaymentRepo;
-import longbridge.repositories.CorpTransferRequestRepo;
 import longbridge.repositories.PaymentStatRepo;
 import longbridge.repositories.RecurringPaymentRepo;
-import longbridge.services.*;
+import longbridge.services.AccountService;
+import longbridge.services.IntegrationService;
+import longbridge.services.RecurringPaymentService;
 import longbridge.utils.DateUtil;
 import org.joda.time.LocalDate;
 import org.modelmapper.ModelMapper;
@@ -23,7 +28,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.*;
+import java.util.stream.StreamSupport;
 
 @Service
 @Transactional
@@ -44,19 +51,13 @@ public class RecurringPaymentServiceImpl implements RecurringPaymentService {
 	private PaymentStatRepo paymentStatRepo;
 
 	@Autowired
-	private TransferService transferService;
+	private RecurringPaymentService recurringPaymentService;
 
 	@Autowired
 	private IntegrationService integrationService;
 
 	@Autowired
-	private FinancialInstitutionService financialInstitutionService;
-
-	@Autowired
-	private CorpTransferRequestRepo corpTransferRequestRepo ;
-
-	@Autowired
-	private CorporateService corporateService ;
+	private AccountService accountService;
 
 	@Autowired
 	private MessageSource messageSource;
@@ -73,15 +74,19 @@ public class RecurringPaymentServiceImpl implements RecurringPaymentService {
 		try{
 			logger.info("Recurring Payment setup {}", recurringPaymentDTO.toString());
 			LocalDate now = LocalDate.now();
-			RecurringPayment recurringPayment = convertDToToEntityCorp(recurringPaymentDTO);
+			RecurringPayment recurringPayment = convertDToToEntity(recurringPaymentDTO);
 			recurringPayment.setDateCreated(now.toDate());
 			recurringPayment.setRetailUser(user);
+			recurringPayment.setRequestReference("RET_" + user.getId());
+			recurringPayment.setCustomerId(user.getId().toString());
 			recurringPayment.setPaymentCode(recurringPaymentDTO.getPaymentCode());
 			recurringPayment.setStartDate(DateUtil.convertStringToDate(recurringPaymentDTO.getStart()));
 			recurringPayment.setEndDate(DateUtil.convertStringToDate(recurringPaymentDTO.getEnd()));
 			recurringPayment.setNextDebitDate(now.plusDays(recurringPayment.getIntervalDays()).toDate());
 
 			generatePaymentsForRecurringPayment(recurringPaymentRepo.save(recurringPayment));
+			RecurringPayment recurringPayment1 = integrationService.recurringPayment(recurringPayment);
+			recurringPaymentRepo.save(recurringPayment1);
 			return messageSource.getMessage("recurringpayment.add.success", null, locale);
 		}catch (Exception e) {
 			e.printStackTrace();
@@ -97,11 +102,14 @@ public class RecurringPaymentServiceImpl implements RecurringPaymentService {
 			CorpRecurringPayment recurringPayment = convertDToToEntityCorp(recurringPaymentDTO);
 			recurringPayment.setDateCreated(now.toDate());
 			recurringPayment.setCorporateUser(user);
+			recurringPayment.setRequestReference("COP_" + user.getCorporate().getId());
+			recurringPayment.setCustomerId(user.getCorporate().getId().toString());
 			recurringPayment.setStartDate(DateUtil.convertStringToDate(recurringPaymentDTO.getStart()));
 			recurringPayment.setEndDate(DateUtil.convertStringToDate(recurringPaymentDTO.getEnd()));
 			recurringPayment.setNextDebitDate(now.plusDays(recurringPayment.getIntervalDays()).toDate());
 			recurringPayment.setCorporate(user.getCorporate().getId());
 			if ("SOLE".equals(user.getCorporate().getCorporateType())) {
+//				CorpRecurringPayment recurringPayment1 = integrationService.recurringPayment(recurringPayment);
 				generatePaymentsForRecurringPayment(corpRecurringPaymentRepo.save(recurringPayment));
 //			}else{
 //				logger.info("seems corporate is multi .... about to send request for authorization");
@@ -189,114 +197,162 @@ public class RecurringPaymentServiceImpl implements RecurringPaymentService {
 		}
 	}
 
+    @Override
+    public Collection<PaymentStatDTO>  getPayments(RecurringPayment recurringPayment){
+        Collection<PaymentStat> payments = paymentStatRepo.findByRecurringPayment(recurringPayment);
+        Collection<PaymentStatDTO> result = new ArrayList<>();
+        payments.forEach( p -> {
+            PaymentStatDTO paymentDTO = new PaymentStatDTO();
+            paymentDTO.setId(p.getId());
+            paymentDTO.setAmount(recurringPayment.getAmount().toString());
+            paymentDTO.setDate(p.getDebitDate().toString());
+            paymentDTO.setStatus(p.getPaymentStatus().toString());
+            paymentDTO.setPaymentItem(( recurringPayment.getPaymentItemName()));
+            result.add(paymentDTO);
+        });
+        return  result ;
+    }
 
-//	@Override
-//	public void performDirectDebitPayment(Payment payment)  {
-//		DirectDebit directDebit = payment.getDirectDebit();
-//
-//		if (directDebit.getCorporate() == null) {
-//			TransferRequestDTO transferRequest = new TransferRequestDTO();
-//			transferRequest.setAmount(directDebit.getAmount());
-//			transferRequest.setCustomerAccountNumber(directDebit.getDebitAccount());
-//			transferRequest.setNarration("Direct Debit:" + directDebit.getNarration());
-//			transferRequest.setRemarks(directDebit.getNarration());
-//			transferRequest.setBeneficiaryAccountName(directDebit.getBeneficiary().getAccountName());
-//			transferRequest.setBeneficiaryAccountNumber(directDebit.getBeneficiary().getAccountNumber());
-//			FinancialInstitution financialInstitution = financialInstitutionService.getFinancialInstitutionByCode(directDebit.getBeneficiary().getBeneficiaryBank());
-//			transferRequest.setFinancialInstitution(financialInstitution);
-//
-//			if (directDebit.getBeneficiary().getBeneficiaryBank().equals(bankCode)) {
-//				transferRequest.setTransferType(TransferType.CORONATION_BANK_TRANSFER);
-//			} else {
-//				transferRequest.setTransferType(TransferType.INTER_BANK_TRANSFER);
-//			}
-//			if (transferService.validateDirectDebitTransfer(transferRequest)) {
-//				TransRequest transRequest = transferService.makeBackgroundTransfer(transferRequest, directDebit);
-//				directDebit.proceedToNextDebitDate();
-//				if (transRequest.getStatus().equals("000") || transRequest.getStatus().equals("00")) {
-//					payment.setPaymentStatus(Payment.PaymentStatus.COMPLETED);
-//					paymentRepo.save(payment);
-//					logger.info("Complete Execution of direct debits for today: {} ", LocalDate.now());
-//				} else {
-//					payment.setPaymentStatus(Payment.PaymentStatus.PENDING);
-//					paymentRepo.save(payment);
-//				}
-//				directDebitRepo.save(directDebit);
-//			} else {
-//				logger.info("Failed Direct Debit transfer id {}", payment.getDirectDebit().getId());
-//			}
-//
-//
-//		} else if (directDebit.getCorporate() != null) {
-//
-//			CorpDirectDebit corpDirectDebit = corpDirectDebitRepo.findOneById(directDebit.getId());
-//			CorpTransferRequestDTO transferRequest = new CorpTransferRequestDTO();
-//			transferRequest.setAmount(directDebit.getAmount());
-//			transferRequest.setCustomerAccountNumber(directDebit.getDebitAccount());
-//			transferRequest.setNarration("Direct Debit:" + directDebit.getNarration());
-//			transferRequest.setRemarks(directDebit.getNarration());
-//
-//			transferRequest.setBeneficiaryAccountName(corpDirectDebit.getCorpLocalBeneficiary().getAccountName());
-//			transferRequest.setBeneficiaryAccountNumber(corpDirectDebit.getCorpLocalBeneficiary().getAccountNumber());
-//			FinancialInstitution financialInstitution = financialInstitutionService.getFinancialInstitutionByCode(corpDirectDebit.getCorpLocalBeneficiary().getBeneficiaryBank());
-//			transferRequest.setFinancialInstitution(financialInstitution);
-//			if (corpDirectDebit.getCorpLocalBeneficiary().getBeneficiaryBank().equals(bankCode)) {
-//				transferRequest.setTransferType(TransferType.CORONATION_BANK_TRANSFER);
-//			} else {
-//				transferRequest.setTransferType(TransferType.INTER_BANK_TRANSFER);
-//			}
-//			BigDecimal balance = integrationService.getAvailableBalance(transferRequest.getCustomerAccountNumber());
-//			if (balance != null) {
-//				if (!(balance.compareTo(transferRequest.getAmount()) == 0 || (balance.compareTo(transferRequest.getAmount()) > 0))) {
-//					logger.info("Account Balance is insufficient for this transfer {}", transferRequest.getCustomerAccountNumber());
-//					logger.info("Failed Direct Debit transfer,id {},", payment.getDirectDebit().getId());
-//				} else {
-//
-//
-//					TransRequest transRequest = transferService.makeBackgroundTransfer(transferRequest, directDebit);
-//					directDebit.proceedToNextDebitDate();
-//					if (transRequest.getStatus().equals("000") || transRequest.getStatus().equals("00")) {
-//						payment.setPaymentStatus(Payment.PaymentStatus.COMPLETED);
-//						paymentRepo.save(payment);
-//						logger.info("Complete Execution of direct debits for today: {} ", LocalDate.now());
-//					} else {
-//						payment.setPaymentStatus(Payment.PaymentStatus.PENDING);
-//						paymentRepo.save(payment);
-//					}
-//					directDebitRepo.save(directDebit);
-//				}
-//			}
-//		}
-//	}
+    @Override
+    public RecurringPayment getPaymentsRecurringPayment(Long paymentId) {
+        PaymentStat payment =  paymentStatRepo.getOne(paymentId);
+        return payment.getRecurringPayment();
+    }
 
 
+	@Override
+	public void performRecurringPayment(PaymentStat paymentStat)  {
+		RecurringPayment recurringPayment = paymentStat.getRecurringPayment();
 
-//	private DirectDebit convertDTOToEntity(DirectDebitDTO directDebitDTO) {
-//		DirectDebit directDebit = new DirectDebit();
-//		directDebit.setId(directDebitDTO.getId());
-//		return modelMapper.map(directDebitDTO, DirectDebit.class);
-//	}
+		if (recurringPayment.getCorporate() == null) {
+			QuicktellerRequestDTO quicktellerRequestDTO = new QuicktellerRequestDTO();
+			quicktellerRequestDTO.setAmount(recurringPayment.getAmount());
+			quicktellerRequestDTO.setCustomerAccountNumber(recurringPayment.getCustomerAccountNumber());
+			quicktellerRequestDTO.setEmailAddress(recurringPayment.getEmailAddress());
+			quicktellerRequestDTO.setCustomerId(recurringPayment.getCustomerId());
+			quicktellerRequestDTO.setPhoneNumber(recurringPayment.getPhoneNumber());
+			quicktellerRequestDTO.setPaymentCode((recurringPayment.getPaymentCode()));
+			quicktellerRequestDTO.setRequestReference(recurringPayment.getRequestReference());
+			quicktellerRequestDTO.setNarration("Recurring Payment:" + recurringPayment.getNarration());
+			quicktellerRequestDTO.setRemarks(recurringPayment.getNarration());
+
+			if (recurringPaymentService.validateRecurringPayment(quicktellerRequestDTO)) {
+				RecurringPayment recurringPayment1 = recurringPaymentService.makeBackgroundTransfer(quicktellerRequestDTO, recurringPayment);
+				recurringPayment.proceedToNextDebitDate();
+				if (recurringPayment1.getStatus().equals("SUCCESSFUL")) {
+					paymentStat.setPaymentStatus(PaymentStat.PaymentStatus.COMPLETED);
+					paymentStatRepo.save(paymentStat);
+					logger.info("Complete Execution of Recurring Payment for today: {} ", LocalDate.now());
+				} else {
+					paymentStat.setPaymentStatus(PaymentStat.PaymentStatus.PENDING);
+					paymentStatRepo.save(paymentStat);
+				}
+				recurringPaymentRepo.save(recurringPayment);
+			} else {
+				logger.info("Failed Recurring Payment id {}", paymentStat.getRecurringPayment().getId());
+			}
+
+
+		} else if (recurringPayment.getCorporate() != null) {
+
+			CorpRecurringPayment corpRecurringPayment = corpRecurringPaymentRepo.findOneById(recurringPayment.getId());
+			CorpQuicktellerRequestDTO corpQuicktellerRequestDTO = new CorpQuicktellerRequestDTO();
+
+			corpQuicktellerRequestDTO.setAmount(corpRecurringPayment.getAmount());
+			corpQuicktellerRequestDTO.setCustomerAccountNumber(corpRecurringPayment.getCustomerAccountNumber());
+			corpQuicktellerRequestDTO.setEmailAddress(corpRecurringPayment.getEmailAddress());
+			corpQuicktellerRequestDTO.setCustomerId(corpRecurringPayment.getCustomerId());
+			corpQuicktellerRequestDTO.setPhoneNumber(corpRecurringPayment.getPhoneNumber());
+			corpQuicktellerRequestDTO.setPaymentCode((corpRecurringPayment.getPaymentCode()));
+			corpQuicktellerRequestDTO.setRequestReference(corpRecurringPayment.getRequestReference());
+			corpQuicktellerRequestDTO.setNarration("Recurring Payment:" + corpRecurringPayment.getNarration());
+			corpQuicktellerRequestDTO.setRemarks(corpRecurringPayment.getNarration());
+
+			BigDecimal balance = integrationService.getAvailableBalance(corpQuicktellerRequestDTO.getCustomerAccountNumber());
+			if (balance != null) {
+				if (!(balance.compareTo(corpQuicktellerRequestDTO.getAmount()) == 0 || (balance.compareTo(corpQuicktellerRequestDTO.getAmount()) > 0))) {
+					logger.info("Account Balance is insufficient for this transfer {}", corpQuicktellerRequestDTO.getCustomerAccountNumber());
+					logger.info("Failed Recurring Payment transfer,id {},", paymentStat.getRecurringPayment().getId());
+				} else {
+
+
+					RecurringPayment recurringPayment1 = recurringPaymentService.makeBackgroundTransfer(corpQuicktellerRequestDTO, recurringPayment);
+					recurringPayment.proceedToNextDebitDate();
+					if (recurringPayment1.getStatus().equals("SUCCESSFUL")) {
+						paymentStat.setPaymentStatus(PaymentStat.PaymentStatus.COMPLETED);
+						paymentStatRepo.save(paymentStat);
+						logger.info("Complete Execution of Recurring Payment for today: {} ", LocalDate.now());
+					} else {
+						paymentStat.setPaymentStatus(PaymentStat.PaymentStatus.PENDING);
+						paymentStatRepo.save(paymentStat);
+					}
+					recurringPaymentRepo.save(recurringPayment);
+				}
+			}
+		}
+	}
+
+	@Override
+	public boolean validateRecurringPayment(QuicktellerRequestDTO dto) throws InternetBankingTransferException {
+
+
+
+		String cif = accountService.getAccountByAccountNumber(dto.getCustomerAccountNumber()).getCustomerId();
+		boolean acctPresent = StreamSupport.stream(accountService.getAccountsForDebit(cif).spliterator(), false)
+				.anyMatch(i -> i.getAccountNumber().equalsIgnoreCase(dto.getCustomerAccountNumber()));
+
+
+		if (!acctPresent) {
+			logger.info("Account is flagged for NO-DEBIT {} ",dto.getCustomerAccountNumber());
+			return false;
+		}
+
+		BigDecimal balance = integrationService.getAvailableBalance(dto.getCustomerAccountNumber());
+		if (balance != null) {
+			if (!(balance.compareTo(dto.getAmount()) == 0 || (balance.compareTo(dto.getAmount()) > 0))) {
+				logger.info("Account Balance is insufficient for this transfer {}",dto.getCustomerAccountNumber());
+				return false;
+			}
+		}
+		return true;
+	}
+
+	public RecurringPayment makeBackgroundTransfer(QuicktellerRequestDTO quicktellerRequestDTO, RecurringPayment recurringPayment) {
+		logger.info("Initiating a Background Bill Payment", quicktellerRequestDTO);
+		RecurringPayment recurringPayment1 = integrationService.recurringPayment(convertDToToEntityCorp(quicktellerRequestDTO));
+		logger.trace("Recurring Payment Details: {} ", recurringPayment1);
+		recurringPaymentRepo.save(recurringPayment1);
+		return recurringPayment1;
+	}
+
+
+
+	private RecurringPayment convertDToToEntity(RecurringPaymentDTO recurringPaymentDTO) {
+		RecurringPayment recurringPayment = new RecurringPayment();
+		recurringPayment.setId(recurringPaymentDTO.getId());
+		return modelMapper.map(recurringPaymentDTO, RecurringPayment.class);
+	}
 
 	private CorpRecurringPayment convertDToToEntityCorp(RecurringPaymentDTO recurringPaymentDTO){
 		return modelMapper.map(recurringPaymentDTO, CorpRecurringPayment.class);
 	}
 
-//	@Override
-//	public List<DirectDebit> getDueDirectDebits() {
-//		return directDebitRepo.findByNextDebitDateBetween(DateUtil.getStartOfDay(new Date()), DateUtil.getEndOfDay(new Date()));
-//	}
-
-//	@Override
-//	public List<Payment> getDuePayments(){
-//	 return paymentRepo.findByDebitDateBetween(DateUtil.getStartOfDay(new Date()), DateUtil.getEndOfDay(new Date()));
-//
-//	}
-
-	/*@Override
-	public Page<DirectDebit> getUserDirectDebits(RetailUser user, Pageable pageable) {
-		return directDebitRepo.findByRetailUser(user,pageable);
+	private CorpRecurringPayment convertDToToEntityCorp(QuicktellerRequestDTO quicktellerRequestDTO){
+		return modelMapper.map(quicktellerRequestDTO, CorpRecurringPayment.class);
 	}
-*/
+
+	@Override
+	public List<RecurringPayment> getDueRecurringPayment() {
+		return recurringPaymentRepo.findByNextDebitDateBetween(DateUtil.getStartOfDay(new Date()), DateUtil.getEndOfDay(new Date()));
+	}
+
+	@Override
+	public List<PaymentStat> getDuePayments(){
+	 return paymentStatRepo.findByDebitDateBetween(DateUtil.getStartOfDay(new Date()), DateUtil.getEndOfDay(new Date()));
+
+	}
+
+
 	@Override
 	public Page<RecurringPaymentDTO> getUserRecurringPaymentDTOs(RetailUser user, Pageable pageable) {
 		Page<RecurringPayment> recurringPayments=recurringPaymentRepo.findByRetailUser(user,pageable);
@@ -322,16 +378,7 @@ public class RecurringPaymentServiceImpl implements RecurringPaymentService {
 //
 //	}
 
-	/*@Override
-    public List<CorpDirectDebit> getCorpUserDirectDebits(CorporateUser corporateUser) {
-        return corpDirectDebitRepo.findByCorporate(corporateUser.getCorporate().getId());
-    }
-*/
-	/*@Override
-	public List<CorpDirectDebit> getByCOrporate(Long cordId) {
-		return corpDirectDebitRepo.findByCorporate(cordId);
-	}
-*/
+
 
 
 	public void generatePaymentsForRecurringPayment(RecurringPayment recurringPayment) {
@@ -355,7 +402,6 @@ public class RecurringPaymentServiceImpl implements RecurringPaymentService {
 			if(DateUtil.isBeforeDay(nextDebit , endDate)){
 
 				PaymentStat payment =  new PaymentStat();
-				recurringPayment = integrationService.recurringPayment(recurringPayment);
 				payment.setDebitDate(nextDebit);
 				payment.setRecurringPayment(recurringPayment);
 				recurringPayments.add(payment);
@@ -369,111 +415,5 @@ public class RecurringPaymentServiceImpl implements RecurringPaymentService {
 		recurringPayment.setPayments(recurringPayments);
 		recurringPaymentRepo.save(recurringPayment);
 	}
-
-//	@Override
-//	public String modifyPayment(PaymentDTO paymentDTO) {
-//		return null;
-//	}
-
-
-//    @Override
-//	public Collection<PaymentDTO>  getPayments(DirectDebit directDebit){
-//        Collection<Payment> payments = paymentRepo.findByDirectDebit(directDebit);
-//        Collection<PaymentDTO> result = new ArrayList<>();
-//        payments.forEach( p -> {
-//            PaymentDTO paymentDTO = new PaymentDTO();
-//            paymentDTO.setId(p.getId());
-//            paymentDTO.setAmount(directDebit.getAmount().toString());
-//            paymentDTO.setDate(p.getDebitDate().toString());
-//            paymentDTO.setStatus(p.getPaymentStatus().toString());
-//            result.add(paymentDTO) ;
-//            if( directDebit instanceof CorpDirectDebit){
-//                CorpDirectDebit corpDirectDebit = (CorpDirectDebit) directDebit ;
-//                paymentDTO.setBeneficiary(corpDirectDebit.getCorpLocalBeneficiary().getAccountName());
-//            }else{
-//                paymentDTO.setBeneficiary(directDebit.getBeneficiary().getAccountName());
-//            }
-//        });
-//	    return  result ;
-//    }
-
-    /*private List<DirectDebitDTO> convertEntitiesToDirectDebitsDTOs(List<DirectDebit> directDebits){
-		return directDebits.stream().map(i-> modelMapper.map(i,DirectDebitDTO.class)).collect(Collectors.toList());
-	}
-    */
-
-	/*private TransferRequestDTO convertDirectDebitToTransferRequestDTO(DirectDebitDTO directDebit) throws TransferException {
-		TransferRequestDTO transferRequest = new TransferRequestDTO();
-		transferRequest.setAmount(directDebit.getAmount());
-		transferRequest.setBeneficiaryAccountName(directDebit.getBeneficiary().getAccountName());
-		transferRequest.setBeneficiaryAccountNumber(directDebit.getBeneficiary().getAccountNumber());
-		transferRequest.setCustomerAccountNumber(directDebit.getDebitAccount());
-		FinancialInstitution financialInstitution = financialInstitutionService.getFinancialInstitutionByCode(directDebit.getBeneficiary().getBeneficiaryBank());
-		transferRequest.setFinancialInstitution(financialInstitution);
-		transferRequest.setNarration("Direct Debit:" + directDebit.getNarration());
-//		transferRequest.setReferenceNumber(referenceNumber);
-		transferRequest.setRemarks(directDebit.getNarration());
-		if(directDebit.getBeneficiary().getBeneficiaryBank().equals(bankCode)){
-			transferRequest.setTransferType(TransferType.CORONATION_BANK_TRANSFER);
-		}else{
-			transferRequest.setTransferType(TransferType.INTER_BANK_TRANSFER);
-		}
-		return transferRequest;
-	}
-*/
-
-
-	/*public CorpTransferRequestDTO convertCorpTransEntityToDTO(CorpTransRequest corpTransRequest) {
-		CorpTransferRequestDTO transferRequestDTO = new CorpTransferRequestDTO();
-		transferRequestDTO.setId(corpTransRequest.getId());
-		transferRequestDTO.setVersion(corpTransRequest.getVersion());
-		transferRequestDTO.setCustomerAccountNumber(corpTransRequest.getCustomerAccountNumber());
-		transferRequestDTO.setTransferType(corpTransRequest.getTransferType());
-		transferRequestDTO.setFinancialInstitution(corpTransRequest.getFinancialInstitution());
-		transferRequestDTO.setBeneficiaryAccountNumber(corpTransRequest.getBeneficiaryAccountNumber());
-		transferRequestDTO.setBeneficiaryAccountName(corpTransRequest.getBeneficiaryAccountName());
-		transferRequestDTO.setRemarks(corpTransRequest.getRemarks());
-		transferRequestDTO.setStatus(corpTransRequest.getStatus());
-		transferRequestDTO.setReferenceNumber(corpTransRequest.getReferenceNumber());
-		transferRequestDTO.setNarration(corpTransRequest.getNarration());
-		transferRequestDTO.setStatusDescription(corpTransRequest.getStatusDescription());
-		transferRequestDTO.setAmount(corpTransRequest.getAmount());
-		transferRequestDTO.setTranDate(corpTransRequest.getTranDate());
-		transferRequestDTO.setCorporateId(corpTransRequest.getCorporate().getId().toString());
-		if (corpTransRequest.getTransferAuth() != null) {
-			transferRequestDTO.setTransAuthId(corpTransRequest.getTransferAuth().getId().toString());
-		}
-		return transferRequestDTO;
-	}
-*/
-	/*private DirectDebitDTO convertEntityToDTO(DirectDebit directDebit) {
-		return modelMapper.map(directDebit, DirectDebitDTO.class);
-	}*/
-
-/*@Override
-	public void performDirectDebit(DirectDebit directDebit) throws TransferException {
-		TransferRequestDTO transferRequest = new TransferRequestDTO();
-		transferRequest.setAmount(directDebit.getAmount());
-		transferRequest.setBeneficiaryAccountName(directDebit.getBeneficiary().getAccountName());
-		transferRequest.setBeneficiaryAccountNumber(directDebit.getBeneficiary().getAccountNumber());
-		transferRequest.setCustomerAccountNumber(directDebit.getDebitAccount());
-		FinancialInstitution financialInstitution = financialInstitutionService.getFinancialInstitutionByCode(directDebit.getBeneficiary().getBeneficiaryBank());
-		transferRequest.setFinancialInstitution(financialInstitution);
-		transferRequest.setNarration("Direct Debit:" + directDebit.getNarration());
-//		transferRequest.setReferenceNumber(referenceNumber);
-		transferRequest.setRemarks(directDebit.getNarration());
-
-		//TODO use the correct bank code of coronation merchant bank
-		if(directDebit.getBeneficiary().getBeneficiaryBank().equals("CORONAION")){
-			transferRequest.setTransferType(TransferType.CORONATION_BANK_TRANSFER);
-		}else{
-			transferRequest.setTransferType(TransferType.INTER_BANK_TRANSFER);
-		}
-		transferService.makeBackgroundTransfer(transferRequest,directDebit);
-		directDebit.proceedToNextDebitDate();
-		directDebitRepo.save(directDebit);
-	}
-*/
-
 
 }

@@ -1,7 +1,6 @@
 package longbridge.controllers.retail;
 
 import longbridge.api.ExchangeRate;
-import longbridge.config.CoverageInfo;
 import longbridge.dtos.*;
 import longbridge.exception.*;
 import longbridge.forms.AlertPref;
@@ -24,7 +23,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.security.Principal;
