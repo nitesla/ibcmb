@@ -85,8 +85,6 @@ public class RecurringPaymentServiceImpl implements RecurringPaymentService {
 			recurringPayment.setNextDebitDate(now.plusDays(recurringPayment.getIntervalDays()).toDate());
 
 			generatePaymentsForRecurringPayment(recurringPaymentRepo.save(recurringPayment));
-			RecurringPayment recurringPayment1 = integrationService.recurringPayment(recurringPayment);
-			recurringPaymentRepo.save(recurringPayment1);
 			return messageSource.getMessage("recurringpayment.add.success", null, locale);
 		}catch (Exception e) {
 			e.printStackTrace();
