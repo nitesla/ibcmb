@@ -7,6 +7,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
+import java.util.Date;
+import java.util.List;
+
 @Repository
 public interface RecurringPaymentRepo extends CommonRepo<RecurringPayment,Long> {
 
@@ -14,7 +17,7 @@ public interface RecurringPaymentRepo extends CommonRepo<RecurringPayment,Long> 
 
 	Page<RecurringPayment> findByRetailUser(RetailUser user, Pageable pageable);
 
-//	List<RecurringPayment> findByNextDebitDateBetween(Date start, Date end);
+	List<RecurringPayment> findByNextDebitDateBetween(Date start, Date end);
 
     Page<RecurringPayment> findByCorporate(Long corporate, Pageable pageable);
 //    Optional<List<RecurringPayment>> findByBeneficiaryId(Long id);

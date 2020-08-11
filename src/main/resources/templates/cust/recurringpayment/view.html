@@ -9,7 +9,7 @@
         <div class="modal-dialog">
             <!-- Modal content-->
             <div class="modal-content no-bd-rad tokenBox" id="tokenmodal">
-                <form id="myForm" name="myForm" th:action="@{/retail/recurringpayment/authenticate}" method="POST" >
+                <form id="myForm" name="myForm" th:action="@{/retail/recurringpayment/delete}" method="POST" >
                     <input type="hidden" id="myID" name="id"/>
                     <div class="modal-body no-bd-rad">
                         <h3 class="tokenHeader"><span class='text-danger'>Delete Recurring Payment</span>, <span th:text="*{username}" style="text-transform: capitalize">Tolu</span></h3>
