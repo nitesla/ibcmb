@@ -106,9 +106,9 @@ public class RecurringPaymentServiceImpl implements RecurringPaymentService {
 			recurringPayment.setEndDate(DateUtil.convertStringToDate(recurringPaymentDTO.getEnd()));
 			recurringPayment.setNextDebitDate(now.plusDays(recurringPayment.getIntervalDays()).toDate());
 			recurringPayment.setCorporate(user.getCorporate().getId());
-			if ("SOLE".equals(user.getCorporate().getCorporateType())) {
-//				CorpRecurringPayment recurringPayment1 = integrationService.recurringPayment(recurringPayment);
-				generatePaymentsForRecurringPayment(corpRecurringPaymentRepo.save(recurringPayment));
+            generatePaymentsForRecurringPayment(corpRecurringPaymentRepo.save(recurringPayment));
+//			if ("SOLE".equals(user.getCorporate().getCorporateType())) {
+//				generatePaymentsForRecurringPayment(corpRecurringPaymentRepo.save(recurringPayment));
 //			}else{
 //				logger.info("seems corporate is multi .... about to send request for authorization");
 //
@@ -149,7 +149,7 @@ public class RecurringPaymentServiceImpl implements RecurringPaymentService {
 //				logger.info("Transfer request saved for authorization");
 //				return  "standing order has gone for authorization";
 //
-			}
+//			}
 			return messageSource.getMessage("directdebit.add.success", null, locale);
 		}catch (Exception e) {
 			e.printStackTrace();
@@ -363,18 +363,18 @@ public class RecurringPaymentServiceImpl implements RecurringPaymentService {
 		return new PageImpl<>(recurringPaymentDTOS, pageable, t);
 	}
 
-//	@Override
-//	public Page<DirectDebitDTO> getCorpUserDirectDebitDTOS(CorporateUser corporateUser, Pageable pageable){
-//		Page<DirectDebit> directDebits=directDebitRepo.findByCorporate(corporateUser.getCorporate().getId(),pageable);
-//		List<DirectDebitDTO> directDebitDTOS = new ArrayList<>();
-//		for (DirectDebit directDebit : directDebits) {
-//			DirectDebitDTO directDebitDTO = modelMapper.map(directDebit, DirectDebitDTO.class);
-//			directDebitDTOS.add(directDebitDTO);
-//		}
-//		long t = directDebits.getTotalElements();
-//		return new PageImpl<>(directDebitDTOS, pageable, t);
-//
-//	}
+	@Override
+	public Page<RecurringPaymentDTO> getCorpUserRecurringPaymentDTOS(CorporateUser corporateUser, Pageable pageable){
+		Page<RecurringPayment> recurringPayments=recurringPaymentRepo.findByCorporate(corporateUser.getCorporate().getId(),pageable);
+		List<RecurringPaymentDTO> recurringPaymentDTOS = new ArrayList<>();
+		for (RecurringPayment recurringPayment : recurringPayments) {
+            RecurringPaymentDTO recurringPaymentDTO = modelMapper.map(recurringPayment, RecurringPaymentDTO.class);
+            recurringPaymentDTOS.add(recurringPaymentDTO);
+		}
+		long t = recurringPayments.getTotalElements();
+		return new PageImpl<>(recurringPaymentDTOS, pageable, t);
+
+	}
 
 
 
