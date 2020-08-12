@@ -344,6 +344,10 @@ public class CorpTransferController {
 
     }
 
+//    @GetMapping("/test/authorizations")
+//    public String getAuthorizationPage(){
+//        return "corp/transfer/request/Test";
+//    }
 
     @GetMapping("/{id}/authorizations")
     public String getAuthorizations(@PathVariable Long id, ModelMap modelMap) {

@@ -7,6 +7,7 @@ import longbridge.exception.InternetBankingException;
 import longbridge.models.BulkTransfer;
 import longbridge.models.Corporate;
 import longbridge.models.CreditRequest;
+import longbridge.models.RetailUser;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -39,4 +40,7 @@ public interface BulkRetailTransferService {
     boolean transactionAboveLimit(BigDecimal totalCreditAmount, String debitAcccount) throws InternetBankingException;
 
     List<BulkTransfer>getByStatus();
+
+    List<BulkTransfer> getBulkTransferRequestsForRetail(RetailUser retail);
+
 }
