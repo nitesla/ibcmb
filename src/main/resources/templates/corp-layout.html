@@ -223,9 +223,7 @@
                                 <ul class="dropdown-menu">
                                     <li><a th:href="@{/corporate/payment/new}" th:text="#{menu.bill.payment}">Bill Payment</a></li>
                                     <li><a th:href="@{/corporate/payment/completed}" th:text="#{menu.bill.completed}">Completed Payment</a></li>
-
-                                    <!--                                        <li ><a sec:authorize="hasAuthority('CUSTOM_DUTY')" href="#" th:text="#{menu.bill}">Bill Payments</a></li>-->
-                                    <li ><a  th:href="@{/corporate/recurringpayment/add}" th:text="#{menu.bill.recurring}">Recurring Payment</a></li>
+                                    <li ><a  th:href="@{/corporate/recurringpayment}" th:text="#{menu.bill.recurring}">Recurring Payment</a></li>
                                     <li ><a  th:href="@{/corporate/custom}" th:text="#{menu.bill.custom}">Custom Duty</a></li>
                                 </ul>
                             </li>

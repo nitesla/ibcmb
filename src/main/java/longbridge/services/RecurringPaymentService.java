@@ -24,6 +24,8 @@ public interface RecurringPaymentService {
 
     Page<RecurringPaymentDTO> getUserRecurringPaymentDTOs(RetailUser user, Pageable pageable);
 
+    Page<RecurringPaymentDTO> getCorpUserRecurringPaymentDTOS(CorporateUser user, Pageable pageable);
+
     String deleteRecurringPayment(Long recurringPaymentId);
 
     RecurringPayment getRecurringPayment(Long recurringPaymentId);
