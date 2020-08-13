@@ -5,9 +5,6 @@ import longbridge.dtos.RecurringPaymentDTO;
 import longbridge.dtos.SettingDTO;
 import longbridge.exception.InternetBankingException;
 import longbridge.models.*;
-import longbridge.repositories.BillerCategoryRepo;
-import longbridge.repositories.BillerRepo;
-import longbridge.repositories.PaymentItemRepo;
 import longbridge.services.*;
 import longbridge.utils.DataTablesUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -40,19 +37,10 @@ public class RecurringPaymentController {
     private static final Logger logger = LoggerFactory.getLogger(RecurringPaymentController.class);
 
     @Autowired
-    private BillerRepo billerRepo;
-
-    @Autowired
     private MessageSource messageSource;
 
     @Autowired
     private RecurringPaymentService recurringPaymentService;
-
-    @Autowired
-    private BillerCategoryRepo billerCategoryRepo;
-
-    @Autowired
-    private PaymentItemRepo paymentItemRepo;
 
     @Autowired
     private CodeService codeService;
@@ -98,8 +86,6 @@ public class RecurringPaymentController {
             return "cust/recurringpayment/pagei";
         }
         model.addAttribute("recurringPaymentDTO",recurringPaymentDTO);
-//        paymentItemCode = billerService.getPaymentItem(Long.parseLong(recurringPaymentDTO.getPaymentItemId()));
-//        recurringPaymentDTO.setPaymentCode(paymentItemCode.getPaymentCode());
         billerName = billerService.getBillerName(Long.parseLong(recurringPaymentDTO.getBillerId()));
         recurringPaymentDTO.setBillerName(billerName.getBillerName());
         paymentItemName = billerService.getPaymentItem(Long.parseLong(recurringPaymentDTO.getPaymentItemId()));
