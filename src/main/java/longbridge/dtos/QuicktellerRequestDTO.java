@@ -3,6 +3,7 @@ package longbridge.dtos;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Date;
 
 /**
@@ -14,7 +15,7 @@ public class QuicktellerRequestDTO implements Serializable {
 
     @JsonProperty("DT_RowId")
     private Long id;
-    private String amount;
+    private int version;
     private String categoryName;
     private String paymentItemId;
     private String paymentItemName;
@@ -26,19 +27,34 @@ public class QuicktellerRequestDTO implements Serializable {
     private String status ;
     private Date createdOn = new Date();
     private String terminalId;
-    private Long PaymentCode;
-    private String CustomerId;
     private String requestReference;
     private String token;
     private String sessionId;
+    private String remarks;
+    private Date tranDate = new Date();
+    private BigDecimal amount;
+    private int intervalDays;
+    private Date nextDebitDate;
+    private Date dateCreated;
+    private Date startDate;
+    private Date endDate;
+    private String narration;
+    private Long paymentCode;
+    private String customerId;
+    private String responseCode;
+    private String responseCodeGrouping;
+    private String approvedAmount;
+    private String rechargePin;
+    private String responseDescription;
+    private String transactionRef;
 
 
     public QuicktellerRequestDTO() {
     }
 
-    public QuicktellerRequestDTO(Long id, String amount, String categoryName, String paymentItemId, String paymentItemName, String billerId, String billerName, String customerAccountNumber, String phoneNumber, String emailAddress, String status, Date createdOn, String terminalId, Long paymentCode, String customerId, String requestReference, String token, String sessionId) {
+    public QuicktellerRequestDTO(Long id, int version, String categoryName, String paymentItemId, String paymentItemName, String billerId, String billerName, String customerAccountNumber, String phoneNumber, String emailAddress, String status, Date createdOn, String terminalId, String requestReference, String token, String sessionId, String remarks, Date tranDate, BigDecimal amount, int intervalDays, Date nextDebitDate, Date dateCreated, Date startDate, Date endDate, String narration, Long paymentCode, String customerId, String responseCode, String responseCodeGrouping, String approvedAmount, String rechargePin, String responseDescription, String transactionRef) {
         this.id = id;
-        this.amount = amount;
+        this.version = version;
         this.categoryName = categoryName;
         this.paymentItemId = paymentItemId;
         this.paymentItemName = paymentItemName;
@@ -50,13 +66,27 @@ public class QuicktellerRequestDTO implements Serializable {
         this.status = status;
         this.createdOn = createdOn;
         this.terminalId = terminalId;
-        PaymentCode = paymentCode;
-        CustomerId = customerId;
         this.requestReference = requestReference;
         this.token = token;
         this.sessionId = sessionId;
+        this.remarks = remarks;
+        this.tranDate = tranDate;
+        this.amount = amount;
+        this.intervalDays = intervalDays;
+        this.nextDebitDate = nextDebitDate;
+        this.dateCreated = dateCreated;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.narration = narration;
+        this.paymentCode = paymentCode;
+        this.customerId = customerId;
+        this.responseCode = responseCode;
+        this.responseCodeGrouping = responseCodeGrouping;
+        this.approvedAmount = approvedAmount;
+        this.rechargePin = rechargePin;
+        this.responseDescription = responseDescription;
+        this.transactionRef = transactionRef;
     }
-
 
     public Long getId() {
         return id;
@@ -66,12 +96,12 @@ public class QuicktellerRequestDTO implements Serializable {
         this.id = id;
     }
 
-    public String getAmount() {
-        return amount;
+    public int getVersion() {
+        return version;
     }
 
-    public void setAmount(String amount) {
-        this.amount = amount;
+    public void setVersion(int version) {
+        this.version = version;
     }
 
     public String getCategoryName() {
@@ -162,22 +192,6 @@ public class QuicktellerRequestDTO implements Serializable {
         this.terminalId = terminalId;
     }
 
-    public Long getPaymentCode() {
-        return PaymentCode;
-    }
-
-    public void setPaymentCode(Long paymentCode) {
-        PaymentCode = paymentCode;
-    }
-
-    public String getCustomerId() {
-        return CustomerId;
-    }
-
-    public void setCustomerId(String customerId) {
-        CustomerId = customerId;
-    }
-
     public String getRequestReference() {
         return requestReference;
     }
@@ -202,11 +216,148 @@ public class QuicktellerRequestDTO implements Serializable {
         this.sessionId = sessionId;
     }
 
+    public String getRemarks() {
+        return remarks;
+    }
+
+    public void setRemarks(String remarks) {
+        this.remarks = remarks;
+    }
+
+    public Date getTranDate() {
+        return tranDate;
+    }
+
+    public void setTranDate(Date tranDate) {
+        this.tranDate = tranDate;
+    }
+
+    public BigDecimal getAmount() {
+        return amount;
+    }
+
+    public void setAmount(BigDecimal amount) {
+        this.amount = amount;
+    }
+
+    public int getIntervalDays() {
+        return intervalDays;
+    }
+
+    public void setIntervalDays(int intervalDays) {
+        this.intervalDays = intervalDays;
+    }
+
+    public Date getNextDebitDate() {
+        return nextDebitDate;
+    }
+
+    public void setNextDebitDate(Date nextDebitDate) {
+        this.nextDebitDate = nextDebitDate;
+    }
+
+    public Date getDateCreated() {
+        return dateCreated;
+    }
+
+    public void setDateCreated(Date dateCreated) {
+        this.dateCreated = dateCreated;
+    }
+
+    public Date getStartDate() {
+        return startDate;
+    }
+
+    public void setStartDate(Date startDate) {
+        this.startDate = startDate;
+    }
+
+    public Date getEndDate() {
+        return endDate;
+    }
+
+    public void setEndDate(Date endDate) {
+        this.endDate = endDate;
+    }
+
+    public String getNarration() {
+        return narration;
+    }
+
+    public void setNarration(String narration) {
+        this.narration = narration;
+    }
+
+    public Long getPaymentCode() {
+        return paymentCode;
+    }
+
+    public void setPaymentCode(Long paymentCode) {
+        this.paymentCode = paymentCode;
+    }
+
+    public String getCustomerId() {
+        return customerId;
+    }
+
+    public void setCustomerId(String customerId) {
+        this.customerId = customerId;
+    }
+
+    public String getResponseCode() {
+        return responseCode;
+    }
+
+    public void setResponseCode(String responseCode) {
+        this.responseCode = responseCode;
+    }
+
+    public String getResponseCodeGrouping() {
+        return responseCodeGrouping;
+    }
+
+    public void setResponseCodeGrouping(String responseCodeGrouping) {
+        this.responseCodeGrouping = responseCodeGrouping;
+    }
+
+    public String getApprovedAmount() {
+        return approvedAmount;
+    }
+
+    public void setApprovedAmount(String approvedAmount) {
+        this.approvedAmount = approvedAmount;
+    }
+
+    public String getRechargePin() {
+        return rechargePin;
+    }
+
+    public void setRechargePin(String rechargePin) {
+        this.rechargePin = rechargePin;
+    }
+
+    public String getResponseDescription() {
+        return responseDescription;
+    }
+
+    public void setResponseDescription(String responseDescription) {
+        this.responseDescription = responseDescription;
+    }
+
+    public String getTransactionRef() {
+        return transactionRef;
+    }
+
+    public void setTransactionRef(String transactionRef) {
+        this.transactionRef = transactionRef;
+    }
+
+
     @Override
     public String toString() {
         return "QuicktellerRequestDTO{" +
                 "id=" + id +
-                ", amount='" + amount + '\'' +
+                ", version=" + version +
                 ", categoryName='" + categoryName + '\'' +
                 ", paymentItemId='" + paymentItemId + '\'' +
                 ", paymentItemName='" + paymentItemName + '\'' +
@@ -218,11 +369,26 @@ public class QuicktellerRequestDTO implements Serializable {
                 ", status='" + status + '\'' +
                 ", createdOn=" + createdOn +
                 ", terminalId='" + terminalId + '\'' +
-                ", PaymentCode=" + PaymentCode +
-                ", CustomerId='" + CustomerId + '\'' +
                 ", requestReference='" + requestReference + '\'' +
                 ", token='" + token + '\'' +
                 ", sessionId='" + sessionId + '\'' +
+                ", remarks='" + remarks + '\'' +
+                ", tranDate=" + tranDate +
+                ", amount=" + amount +
+                ", intervalDays=" + intervalDays +
+                ", nextDebitDate=" + nextDebitDate +
+                ", dateCreated=" + dateCreated +
+                ", startDate=" + startDate +
+                ", endDate=" + endDate +
+                ", narration='" + narration + '\'' +
+                ", paymentCode=" + paymentCode +
+                ", customerId='" + customerId + '\'' +
+                ", responseCode='" + responseCode + '\'' +
+                ", responseCodeGrouping='" + responseCodeGrouping + '\'' +
+                ", approvedAmount='" + approvedAmount + '\'' +
+                ", rechargePin='" + rechargePin + '\'' +
+                ", responseDescription='" + responseDescription + '\'' +
+                ", transactionRef='" + transactionRef + '\'' +
                 '}';
     }
 }
