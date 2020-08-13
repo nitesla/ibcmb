@@ -52,6 +52,9 @@
                             <td th:text="${#numbers.formatDecimal(recurringPaymentDTO.amount, 1, 'COMMA', 2, 'POINT')}"></td>
 
                         </tr>
+
+                            <td th:hidden="${recurringPaymentDTO.paymentCode}"></td>
+
                         <tr>
 
                             <th>Naration</th>
