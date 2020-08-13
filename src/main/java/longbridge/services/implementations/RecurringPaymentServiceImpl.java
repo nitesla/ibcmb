@@ -83,7 +83,6 @@ public class RecurringPaymentServiceImpl implements RecurringPaymentService {
 			recurringPayment.setStartDate(DateUtil.convertStringToDate(recurringPaymentDTO.getStart()));
 			recurringPayment.setEndDate(DateUtil.convertStringToDate(recurringPaymentDTO.getEnd()));
 			recurringPayment.setNextDebitDate(now.plusDays(recurringPayment.getIntervalDays()).toDate());
-
 			generatePaymentsForRecurringPayment(recurringPaymentRepo.save(recurringPayment));
 			return messageSource.getMessage("recurringpayment.add.success", null, locale);
 		}catch (Exception e) {
@@ -107,50 +106,7 @@ public class RecurringPaymentServiceImpl implements RecurringPaymentService {
 			recurringPayment.setNextDebitDate(now.plusDays(recurringPayment.getIntervalDays()).toDate());
 			recurringPayment.setCorporate(user.getCorporate().getId());
             generatePaymentsForRecurringPayment(corpRecurringPaymentRepo.save(recurringPayment));
-//			if ("SOLE".equals(user.getCorporate().getCorporateType())) {
-//				generatePaymentsForRecurringPayment(corpRecurringPaymentRepo.save(recurringPayment));
-//			}else{
-//				logger.info("seems corporate is multi .... about to send request for authorization");
-//
-//				CorpRecurringPayment savedPayment = corpRecurringPaymentRepo.save(recurringPayment) ;
-//				CorpTransRequest transferRequest  = new CorpTransRequest();
-//				transferRequest.setUserReferenceNumber("CORP_"+user.getId().toString());
-//				transferRequest.setBeneficiaryAccountName(savedDebit.getCorpLocalBeneficiary().getAccountName());
-//				transferRequest.setBeneficiaryAccountNumber(savedDebit.getCorpLocalBeneficiary().getAccountNumber());
-//				FinancialInstitution financialInstitution = financialInstitutionService.getFinancialInstitutionByCode(savedDebit.getCorpLocalBeneficiary().getBeneficiaryBank());
-//				transferRequest.setFinancialInstitution(financialInstitution);
-//				transferRequest.setAmount(savedDebit.getAmount());
-//				transferRequest.setCustomerAccountNumber(savedDebit.getDebitAccount());
-//
-//				transferRequest.setNarration("Direct Debit:" + savedDebit.getNarration());
-//				transferRequest.setRemarks(savedDebit.getNarration());
-//
-//
-//				logger.info("beneficary bank is  {}", savedDebit.toString());
-//
-//				if(savedDebit.getCorpLocalBeneficiary().getBeneficiaryBank().equals(bankCode)){
-//					transferRequest.setTransferType(TransferType.CORONATION_BANK_TRANSFER);
-//				}else{
-//					transferRequest.setTransferType(TransferType.INTER_BANK_TRANSFER);
-//				}
-//				transferRequest.setStatus(StatusCode.PENDING.toString());
-//				transferRequest.setStatusDescription("Pending Authorization");
-//				transferRequest.setCorpDirectDebit(savedDebit);
-//				transferRequest.setCorporate(user.getCorporate());
-//
-//				CorpTransferAuth transferAuth = new CorpTransferAuth();
-//				transferAuth.setStatus("P");
-//				transferRequest.setTransferAuth(transferAuth);
-//
-//				if (corporateService.getApplicableTransferRule(transferRequest) == null) {
-//					throw new TransferRuleException(messageSource.getMessage("rule.unapplicable", null, locale));
-//				}
-//				CorpTransRequest corpTransRequest = corpTransferRequestRepo.save(transferRequest);
-//				logger.info("Transfer request saved for authorization");
-//				return  "standing order has gone for authorization";
-//
-//			}
-			return messageSource.getMessage("directdebit.add.success", null, locale);
+			return messageSource.getMessage("recurringpayment.add.success", null, locale);
 		}catch (Exception e) {
 			e.printStackTrace();
 			throw new InternetBankingException(e.getMessage(),e);
