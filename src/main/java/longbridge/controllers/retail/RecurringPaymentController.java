@@ -1,12 +1,10 @@
 package longbridge.controllers.retail;
 
+import longbridge.dtos.PaymentStatDTO;
 import longbridge.dtos.RecurringPaymentDTO;
 import longbridge.dtos.SettingDTO;
 import longbridge.exception.InternetBankingException;
 import longbridge.models.*;
-import longbridge.repositories.BillerCategoryRepo;
-import longbridge.repositories.BillerRepo;
-import longbridge.repositories.PaymentItemRepo;
 import longbridge.services.*;
 import longbridge.utils.DataTablesUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -29,10 +27,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.security.Principal;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.StreamSupport;
 
 @Controller
@@ -42,19 +37,10 @@ public class RecurringPaymentController {
     private static final Logger logger = LoggerFactory.getLogger(RecurringPaymentController.class);
 
     @Autowired
-    private BillerRepo billerRepo;
-
-    @Autowired
     private MessageSource messageSource;
 
     @Autowired
     private RecurringPaymentService recurringPaymentService;
-
-    @Autowired
-    private BillerCategoryRepo billerCategoryRepo;
-
-    @Autowired
-    private PaymentItemRepo paymentItemRepo;
 
     @Autowired
     private CodeService codeService;
@@ -100,8 +86,6 @@ public class RecurringPaymentController {
             return "cust/recurringpayment/pagei";
         }
         model.addAttribute("recurringPaymentDTO",recurringPaymentDTO);
-//        paymentItemCode = billerService.getPaymentItem(Long.parseLong(recurringPaymentDTO.getPaymentItemId()));
-//        recurringPaymentDTO.setPaymentCode(paymentItemCode.getPaymentCode());
         billerName = billerService.getBillerName(Long.parseLong(recurringPaymentDTO.getBillerId()));
         recurringPaymentDTO.setBillerName(billerName.getBillerName());
         paymentItemName = billerService.getPaymentItem(Long.parseLong(recurringPaymentDTO.getPaymentItemId()));
@@ -154,19 +138,19 @@ public class RecurringPaymentController {
                 } catch (InternetBankingException e) {
                     logger.error("Direct debit Error", e);
                     redirectAttributes.addFlashAttribute("failure", e.getMessage());
-                    return "redirect:/recurringpayment/pagei";
+                    return "redirect:/retail/recurringpayment";
                 } catch (Exception e) {
                     logger.error("Direct debit Error", e);
                     redirectAttributes.addFlashAttribute("failure", messageSource.getMessage("req.add.failure", null, locale));
-                    return "redirect:/recurringpayment/pagei";
+                    return "redirect:/retail/recurringpayment";
                 }
             }
 
         }
-        return "redirect:/recurringpayment/pagei";
+        return "redirect:/retail/recurringpayment";
     }
 
-    @PostMapping("/authenticate")
+    @PostMapping("/delete")
     public String deleteRecurringPaymentWithToken(WebRequest webRequest, Principal principal, RedirectAttributes redirectAttributes) {
         String token = webRequest.getParameter("token");
         logger.info("this is the token {}", token);
@@ -196,6 +180,41 @@ public class RecurringPaymentController {
                 logger.error("Recurring Payment Error", e);
                 redirectAttributes.addFlashAttribute("failure", e.getMessage());
                 return "redirect:/retail/recurringpayment";
+            }
+        } else {
+            redirectAttributes.addFlashAttribute("failure", "Kindly provide token to delete ! ");
+            return "redirect:/retail/recurringpayment";
+        }
+    }
+
+    @PostMapping("/payment")
+    public String deletePayment(WebRequest webRequest, Principal principal, RedirectAttributes redirectAttributes) {
+        String token = webRequest.getParameter("token");
+        logger.info("this is the token {}", token);
+        Long paymentId = Long.parseLong(webRequest.getParameter("id"));
+        logger.info("this is the id {}", paymentId);
+        if (StringUtils.isNotBlank(token) && paymentId != 0) {
+            RecurringPayment recurringPayment = recurringPaymentService.getPaymentsRecurringPayment(paymentId);
+            try {
+                RetailUser retailUser = retailUserService.getUserByName(principal.getName());
+                boolean result = securityService.performTokenValidation(retailUser.getEntrustId(), retailUser.getEntrustGroup(), token);
+                if (result) {
+                    try {
+                        String message = recurringPaymentService.deletePayment(paymentId);
+                        redirectAttributes.addFlashAttribute("message", message);
+                    } catch (InternetBankingException e) {
+                        logger.error("Recurring Payment Error", e);
+                        redirectAttributes.addFlashAttribute("failure", e.getMessage());
+                    }
+                    return "redirect:/retail/recurringpayment/payments/" + recurringPayment.getId();
+                } else {
+                    redirectAttributes.addFlashAttribute("failure", "Token Authentication Failed");
+                    return "redirect:/retail/recurringpayment/payments/" + recurringPayment.getId();
+                }
+            } catch (InternetBankingException e) {
+                logger.error("Recurring Payment Error", e);
+                redirectAttributes.addFlashAttribute("failure", e.getMessage());
+                return "redirect:/retail/recurringpayment/payments/" + recurringPayment.getId();
             }
         } else {
             redirectAttributes.addFlashAttribute("failure", "Kindly provide token to delete ! ");
@@ -236,6 +255,14 @@ public class RecurringPaymentController {
 
         }
 
+    }
+
+    @GetMapping("/payments/{id}")
+    public String getPayments(Model model, @PathVariable Long id) {
+        RecurringPayment recurringPayment = recurringPaymentService.getRecurringPayment(id);
+        Collection<PaymentStatDTO> payments = recurringPaymentService.getPayments(recurringPayment);
+        model.addAttribute("payments", payments);
+        return "cust/recurringpayment/payments";
     }
 
 }

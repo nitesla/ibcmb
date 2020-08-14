@@ -1,6 +1,8 @@
 package longbridge.services;
 
 
+import longbridge.dtos.PaymentStatDTO;
+import longbridge.dtos.QuicktellerRequestDTO;
 import longbridge.dtos.RecurringPaymentDTO;
 import longbridge.models.CorporateUser;
 import longbridge.models.PaymentStat;
@@ -11,6 +13,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
+import java.util.List;
 
 @Service
 public interface RecurringPaymentService {
@@ -21,6 +24,8 @@ public interface RecurringPaymentService {
 
     Page<RecurringPaymentDTO> getUserRecurringPaymentDTOs(RetailUser user, Pageable pageable);
 
+    Page<RecurringPaymentDTO> getCorpUserRecurringPaymentDTOS(CorporateUser user, Pageable pageable);
+
     String deleteRecurringPayment(Long recurringPaymentId);
 
     RecurringPayment getRecurringPayment(Long recurringPaymentId);
@@ -28,4 +33,18 @@ public interface RecurringPaymentService {
     Collection<PaymentStat> recurringPayments(RecurringPayment recurringPayment);
 
     String deletePayment(Long id);
+
+    Collection<PaymentStatDTO>  getPayments(RecurringPayment recurringPayment);
+
+    RecurringPayment getPaymentsRecurringPayment(Long paymentId);
+
+    List<PaymentStat> getDuePayments();
+
+    void performRecurringPayment(PaymentStat paymentStat);
+
+    boolean validateRecurringPayment(QuicktellerRequestDTO dto);
+
+    List<RecurringPayment> getDueRecurringPayment();
+
+    RecurringPayment makeBackgroundTransfer(QuicktellerRequestDTO quicktellerRequestDTO, RecurringPayment recurringPayment);
 }
