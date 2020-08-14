@@ -72,6 +72,9 @@
                                    required="required" readonly/>
                         </div>
 
+                        <div class="form-group">
+                            <input type="hidden" class="form-control" th:field="*{paymentCode}"/>
+                        </div>
 
                         <div class="form-group">
                             <label >Phone Number</label>
@@ -211,6 +214,7 @@
                 console.log("PaymentItem read-only status is "+paymentItem.readonly);
 
                 $('#amount').val(paymentItem.amount);
+                $('#paymentCode').val(paymentItem.paymentCode);
 
                 if(paymentItem.readonly==false){
                     $('#amount').removeAttr("readonly")

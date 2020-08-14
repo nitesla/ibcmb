@@ -1,10 +1,9 @@
 package longbridge.controllers.retail;
 
 import longbridge.dtos.BillPaymentDTO;
+import longbridge.dtos.SettingDTO;
 import longbridge.exception.InternetBankingException;
-import longbridge.exception.InternetBankingSecurityException;
 import longbridge.models.*;
-import longbridge.repositories.BillerRepo;
 import longbridge.services.*;
 import longbridge.utils.DataTablesUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -23,6 +22,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.security.Principal;
 import java.util.ArrayList;
@@ -45,7 +45,9 @@ public class PaymentController {
     private final String page = "cust/payment/";
     private SecurityService securityService;
     @Autowired
-    private BillerRepo billerRepo;
+    ConfigurationService configurationService;
+    @Autowired
+    private MessageSource messageSource;
     private final static Logger logger = LoggerFactory.getLogger(PaymentController.class);
 
     @Autowired
@@ -86,41 +88,11 @@ public class PaymentController {
     @PostMapping("/summary")
     public String paymentSummary(@ModelAttribute("billPaymentDTO") @Valid BillPaymentDTO billPaymentDTO, BindingResult result, Model model, HttpServletRequest servletRequest, PaymentItem paymentItemCode, Biller billerName, PaymentItem paymentItemName) {
         model.addAttribute("billPaymentDTO", billPaymentDTO);
-        billPaymentDTO.setCustomerAccountNumber(billPaymentDTO.getCustomerAccountNumber());
-        billPaymentDTO.setCategoryName(billPaymentDTO.getCategoryName());
-        billPaymentDTO.setBillerId(billPaymentDTO.getBillerId());
-        billPaymentDTO.setPaymentItemId(billPaymentDTO.getPaymentItemId());
-        billPaymentDTO.setAmount(billPaymentDTO.getAmount());
-        billPaymentDTO.setPhoneNumber(billPaymentDTO.getPhoneNumber());
-        billPaymentDTO.setEmailAddress(billPaymentDTO.getEmailAddress());
-        paymentItemCode = billerService.getPaymentItem(Long.parseLong(billPaymentDTO.getPaymentItemId()));
-        billPaymentDTO.setPaymentCode(paymentItemCode.getPaymentCode());
         billerName = billerService.getBillerName(Long.parseLong(billPaymentDTO.getBillerId()));
         billPaymentDTO.setBillerName(billerName.getBillerName());
         paymentItemName = billerService.getPaymentItem(Long.parseLong(billPaymentDTO.getPaymentItemId()));
         billPaymentDTO.setPaymentItemName(paymentItemName.getPaymentItemName());
         model.addAttribute("billPaymentDTO", billPaymentDTO);
-        servletRequest.getSession().setAttribute("billPaymentDTO", billPaymentDTO);
-        return page + "summary";
-    }
-
-    @PostMapping("/preview")
-    public String paymentPreview(@ModelAttribute("billPaymentDTO") @Valid BillPaymentDTO billPaymentDTO, BindingResult result, Model model, HttpServletRequest servletRequest, PaymentItem paymentItemCode, Biller billerName, PaymentItem paymentItemName) {
-        model.addAttribute("billPaymentDTO", billPaymentDTO);
-        billPaymentDTO.setCustomerAccountNumber(billPaymentDTO.getCustomerAccountNumber());
-        billPaymentDTO.setCategoryName(billPaymentDTO.getCategoryName());
-        billPaymentDTO.setBillerId(billPaymentDTO.getBillerId());
-        billPaymentDTO.setPaymentItemId(billPaymentDTO.getPaymentItemId());
-        billPaymentDTO.setAmount(billPaymentDTO.getAmount());
-        billPaymentDTO.setPhoneNumber(billPaymentDTO.getPhoneNumber());
-        billPaymentDTO.setEmailAddress(billPaymentDTO.getEmailAddress());
-        billPaymentDTO.setPaymentCode(billPaymentDTO.getPaymentCode());
-        billerName = billerService.getBillerName(Long.parseLong(billPaymentDTO.getBillerId()));
-        billPaymentDTO.setBillerName(billerName.getBillerName());
-        paymentItemName = billerService.getPaymentItem(Long.parseLong(billPaymentDTO.getPaymentItemId()));
-        billPaymentDTO.setPaymentItemName(paymentItemName.getPaymentItemName());
-        model.addAttribute("billPaymentDTO", billPaymentDTO);
-
         servletRequest.getSession().setAttribute("billPaymentDTO", billPaymentDTO);
         return page + "summary";
     }
@@ -139,43 +111,59 @@ public class PaymentController {
         return page + "new";
     }
 
-    @PostMapping("/process")
-    public String billPayment(Model model, RedirectAttributes redirectAttributes, Locale locale, HttpServletRequest request, Principal principal) throws Exception {
-        BillPaymentDTO billPaymentDTO = (BillPaymentDTO) request.getSession().getAttribute("billPaymentDTO");
-        model.addAttribute("billPaymentDTO", billPaymentDTO);
-        try {
-            if (request.getSession().getAttribute("auth-needed") != null) {
-                String token = request.getParameter("token");
-                if (token == null || token.isEmpty()) {
-                    model.addAttribute("failure", "Token is required");
-                    return "/cust/payment/summary";
-                }
-                try {
-                    RetailUser retailUser = retailUserService.getUserByName(principal.getName());
-                    boolean result =securityService.performTokenValidation(retailUser.getEntrustId(), retailUser.getEntrustGroup(), token);
-
-                    if (!result){
-                        redirectAttributes.addFlashAttribute("failure", "Token Authentication Failed");
-                        return "redirect:/retail/payment/summary";
-                    }
-                } catch (InternetBankingSecurityException ibse) {
-                    ibse.printStackTrace();
-                    model.addAttribute("failure", ibse.getMessage());
-                    return "/cust/payment/summary";
-                }
-
-                request.getSession().removeAttribute("auth-needed");
-            }
-            String message = paymentService.addBillPayment(billPaymentDTO);
-            model.addAttribute("billPaymentDTO", billPaymentDTO);
-            redirectAttributes.addFlashAttribute("message", message);
-            return "redirect:/retail/payment/completed";
-
-        }catch (InternetBankingException e){
-            logger.error(e.getMessage());
-            redirectAttributes.addFlashAttribute("failure", e.getMessage());
-            return "redirect:/retail/payment/new";
+    @PostMapping
+    public String createBillPayment(@ModelAttribute("billPaymentDTO") @Valid BillPaymentDTO billPaymentDTO, Principal principal, BindingResult result, Model model, HttpSession session) {
+        if (result.hasErrors()) {
+            return "cust/payment/new";
         }
+
+        logger.info("Bill payment request  {}", billPaymentDTO);
+        logger.info("auth {}", session.getAttribute("authenticated"));
+        SettingDTO setting = configurationService.getSettingByName("ENABLE_RETAIL_2FA");
+        logger.info("setg {}",setting);
+        if (setting != null && setting.isEnabled()) {
+            session.removeAttribute("requestDTO");
+            session.removeAttribute("redirectURL");
+            session.setAttribute("requestDTO", billPaymentDTO);
+            session.setAttribute("redirectURL", "/retail/payment/process");
+            return "redirect:/retail/token/authenticate";
+        }
+
+        return "redirect:/retail/payment/summary";
+    }
+
+    @GetMapping("/process")
+    public String billPayment(Principal principal, HttpSession session, RedirectAttributes redirectAttributes, Model model, Locale locale) {
+        RetailUser retailUser = retailUserService.getUserByName(principal.getName());
+
+        if (session.getAttribute("requestDTO") != null) {
+            BillPaymentDTO billPaymentDTO = (BillPaymentDTO) session.getAttribute("requestDTO");
+
+            logger.info("Bill Payment is {} ",billPaymentDTO.toString());
+
+            if (session.getAttribute("authenticated") != null) {
+
+                try {
+                    String message = paymentService.addBillPayment(billPaymentDTO);
+                    model.addAttribute("success", "Bill Payment added successfully");
+                    session.removeAttribute("authenticated");
+                    session.removeAttribute("requestDTO");
+                    redirectAttributes.addFlashAttribute("message", message);
+                    return "redirect:/retail/payment/completed";
+                } catch (InternetBankingException e) {
+                    logger.error("Bill Payment Error", e);
+                    redirectAttributes.addFlashAttribute("failure", e.getMessage());
+                    return "redirect:/retail/payment/new";
+                } catch (Exception e) {
+                    logger.error("Bill Payment Error", e);
+                    redirectAttributes.addFlashAttribute("failure", messageSource.getMessage("req.add.failure", null, locale));
+                    return "redirect:/retail/payment/new";
+                }
+            }
+
+        }
+        return "redirect:/retail/payment/completed";
+
     }
 
     @ResponseBody
