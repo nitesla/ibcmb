@@ -113,7 +113,7 @@ public class RecurringPaymentController {
             return "redirect:/retail/token/authenticate";
         }
 
-        return "redirect:/recurringpayment/summary";
+        return "redirect:/retail/recurringpayment/summary";
     }
 
     @GetMapping("/process")
@@ -136,11 +136,11 @@ public class RecurringPaymentController {
                     session.removeAttribute("requestDTO");
                     redirectAttributes.addFlashAttribute("message", message);
                 } catch (InternetBankingException e) {
-                    logger.error("Direct debit Error", e);
+                    logger.error("Recurring Payment Error", e);
                     redirectAttributes.addFlashAttribute("failure", e.getMessage());
                     return "redirect:/retail/recurringpayment";
                 } catch (Exception e) {
-                    logger.error("Direct debit Error", e);
+                    logger.error("Recurring Payment Error", e);
                     redirectAttributes.addFlashAttribute("failure", messageSource.getMessage("req.add.failure", null, locale));
                     return "redirect:/retail/recurringpayment";
                 }

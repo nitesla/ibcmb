@@ -54,6 +54,9 @@
                             <td th:text="${#numbers.formatDecimal(billPaymentDTO.amount, 1, 'COMMA', 2, 'POINT')}"></td>
 
                         </tr>
+
+                        <td th:hidden="${billPaymentDTO.paymentCode}"></td>
+
                         <tr>
 
                             <th>Phone Number</th>
@@ -82,7 +85,7 @@
 <!--                    </form>-->
 
 
-                    <form method="post" th:action="@{/retail/payment/process}" th:object="${billPaymentDTO}">
+                    <form method="post" th:action="@{/retail/payment}" th:object="${billPaymentDTO}">
                         <input type="hidden" th:field="*{customerAccountNumber}"/>
                         <input type="hidden" th:field="*{categoryName}"/>
                         <input type="hidden" th:field="*{billerName}"/>
@@ -90,20 +93,13 @@
                         <input type="hidden" th:field="*{amount}"/>
                         <input type="hidden" th:field="*{phoneNumber}"/>
                         <input type="hidden" th:field="*{emailAddress}"/>
-
+                        <input type="hidden" th:field="*{paymentCode}"/>
                         <input type="hidden" th:field="*{id}"/>
                         <div class="form-group">
-                            <br/>
-                            <label>Token *</label>
-                            <input type="text" name="token" id="token" placeholder="" class="form-control full-width" required="required"/>
-                            <br/>
-
-                                <div class="form-group col-xs-12 no-pad-left">
                                     <!--<input value="Modify" style="cursor: pointer;" type="button" onclick="history.go(-1);" />-->
                                     <button type="submit" class="btn btn-link required-step my-buttons useloader">Submit</button>
                                      <button type="button" class="btn btn-link less-required my-buttons" onclick="cancel();">Cancel</button>
 <!--                                <button type='button' class='btn btn-link less-required my-buttons' onclick="edit();">Modify</button>-->
-                                 </div>
                         </div>
                     </form>
 

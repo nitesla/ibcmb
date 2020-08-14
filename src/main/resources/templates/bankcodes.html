@@ -120,12 +120,28 @@
                                             transfer transaction. </p>
                             </div>
 
+
+
                             <div class="col-md-6" style="margin-top:40px">
+
                                     <!-- <label>Sort By</label>
                                     <select class='form-control ' style='margin-bottom:20px'>
                                         <option>A-Z</option>
                                     </select> -->
                                     <div class="table-responsive" >
+                                        <ul class="input-group pull-right">
+
+                                            <li class="pull-right"style="margin-right: -5%" >
+                                                <div class="input-group col-lg-12">
+                                                    <input type="text" class="form-control pull-right" style="width:67%;height:10%;" id="pattern" placeholder="Search..." />
+                                                    <span
+                                                        class="input-group-btn" >
+                                                     <button style="width:100%;height: 30px;"class="btn btn-search" id="search" type="button">Go!</button>
+									                </span>
+                                                </div>
+                                            </li>
+
+                                        </ul>
                                             <table  class="table table-striped table-bordered table-hover" id="codes">
                                                     <thead>
                                                     <tr style='background:rgb(154, 106, 79);color:white;border-bottom:3px solid grey !important'>
@@ -281,6 +297,7 @@
     <script th:inline="javascript">
         /*<![CDATA[*/
         $(document).ready(function() {
+            var url = "/retail/transfer/allbankcodes";
             var table = $('#codes').DataTable({
                 select:true,
                 responsive: false,
@@ -290,8 +307,11 @@
                 "paging": true,
                 "serverSide" : true,
                 "ajax": {
-                    url: "/retail/transfer/allbankcodes",
-                    "type": "GET"
+                    url: url,
+                    "type": "GET",
+                    "data" : function(d) {
+                        d.csearch = $('#pattern').val();
+                    }
                 },
                 "dom": 'T<"clear">frtlp',
                 "columns": [
@@ -320,6 +340,13 @@
                 }
             });
     
+        });
+
+        $("#search").on("click", function(e) {
+            e.preventDefault();
+            dt = $('#codes').DataTable();
+            dt.ajax.reload(null, true);
+
         });
     
     
