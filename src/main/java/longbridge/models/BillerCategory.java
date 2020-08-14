@@ -86,4 +86,6 @@ public class BillerCategory extends AbstractEntity{
     public List<String> getDefaultSearchFields() {
         return Arrays.asList("categoryName","categoryDescription");
     }
+
+
 }

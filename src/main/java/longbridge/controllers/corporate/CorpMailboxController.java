@@ -122,9 +122,7 @@ public class CorpMailboxController {
         Pageable pageable = DataTablesUtils.getPageable(input);
         Page<MessageDTO> messages = null;
         CorporateUser corporateUser = corporateUserService.getUserByName(principal.getName());
-
 //        List<MessageDTO> sentMessages = messageService.getMessagesByTag(retailUser, MessageCategory.SENT);
-
         messages = messageService.getPagedMessagesByTag(corporateUser,pageable, MessageCategory.SENT);
         DataTablesOutput<MessageDTO> out = new DataTablesOutput<>();
         out.setDraw(input.getDraw());
