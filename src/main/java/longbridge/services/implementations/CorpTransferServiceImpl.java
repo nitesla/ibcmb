@@ -260,8 +260,12 @@ public class CorpTransferServiceImpl implements CorpTransferService {
 
     @Override
     public CorpTransRequest getTransfer(Long id) {
+        logger.info("transfer authorization details ================================== {} " , corpTransferRequestRepo.findById(id));
         return corpTransferRequestRepo.findById(id).get();
     }
+
+
+
     @Override
     public CorpTransferRequestDTO entityToDTO(CorpTransRequest corpTransRequest){
       return convertEntityToDTO(corpTransRequest);

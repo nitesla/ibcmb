@@ -142,12 +142,12 @@
                 "targets" : 2,
                 "data" : "initiatedOn",
                 "render" : function(data, type,full, meta) {
+                    console.log("DATA IS " +  data);
                     if (type === 'display') {
                         if(data == null)
                             return data;
                         var dtStart = new Date(parseInt(data));
-                        var dtStartWrapper = moment(dtStart);
-                        //return dtStartWrapper.format('DD/MM/YYYY HH:mm');
+                        var dtStartWrapper = moment(data);
                         return dtStartWrapper.format('LLLL');
                     }
                     return data;

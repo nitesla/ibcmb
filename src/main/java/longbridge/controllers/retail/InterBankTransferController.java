@@ -102,11 +102,11 @@ public class InterBankTransferController {
         if(principal == null){
             return "redirect:/retail/logout";
         }
+
         RetailUser retailUser = retailUserService.getUserByName(principal.getName());
 
         List<LocalBeneficiary> beneficiaries = StreamSupport.stream(localBeneficiaryService.getLocalBeneficiaries().spliterator(), false)
-                .filter(i -> !i.getBeneficiaryBank().equalsIgnoreCase(financialInstitutionService.getFinancialInstitutionByCode(bankCode).getInstitutionCode()))
-                .collect(Collectors.toList());
+                .filter(i -> !i.getBeneficiaryBank().equalsIgnoreCase(financialInstitutionService.getFinancialInstitutionByCode(bankCode).getInstitutionCode())).collect(Collectors.toList());
 
         beneficiaries
                 .stream()
