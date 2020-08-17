@@ -32,6 +32,8 @@
                                 <span class="alert no-bd-rad my-border bg-white" id="sourceCurrency">CCY</span>
                                 <select name="source" class="form-control" id="source"
                                         th:field="*{customerAccountNumber}" onchange="getBalance();getSourceCurrency()">
+
+                                    <!--<option value=""> select an account</option>-->
                                     <option th:each="s: ${accounts}" th:value="${s.accountNumber}" th:text="${s.accountNumber}" th:selected="${s.primaryFlag=='Y'}"></option>
                                 </select><span class='req-inner'></span>
                             </div>
@@ -40,15 +42,11 @@
                         <div class="form-group">
                             <label class="my-label">Destination account</label>
 
-                            <!--<span id="dcurency"></span>-->
+                            <span id="dcurency"></span>
                             <div>
                                 <span class="alert no-bd-rad my-border bg-white" id="destCurrency">CCY</span>
-                                <select name="beneficiaryAccountNumber" class="form-control" id="destination"
-                                        th:field="*{beneficiaryAccountNumber}" onchange="getDestCurrency();" required="required">
-                                    onchange="getDestCurrency();"
-                                    <option th:value="*{beneficiaryAccountNumber}" th:text="*{beneficiaryAccountNumber}" th:selected="${true}"></option>
-
-
+                                <select name="destination" class="form-control" id="destination" th:field="*{beneficiaryAccountNumber}"  onchange="getDestCurrency();"
+                                        required="required">
 
                                     <!--<option th:each="s: ${destAccounts}" th:value="${s}" th:text="${s}"></option>-->
 
@@ -122,24 +120,25 @@
     <script th:inline="javascript">
         /*<![CDATA[*/
 
-        var beneficiaryAcc = [[${corpTransferRequest.beneficiaryAccountNumber}]];
-
-        console.log("Beneficiary Acc Number = "+beneficiaryAcc);
         $(document).ready(function(){
-            getBeneficiaryAccts();
 
+            getBeneficiaryAccts();
 //       document.getElementById("source").selectedIndex = -1;
-              document.getElementById("destination").selectedIndex = -1;
+            document.getElementById("destination").selectedIndex = -1;
 
 //        sortSelect('#source', 'text', 'asc');
 
-  $("#source").prop("selectedIndex", -1);
+//  $("#source").prop("selectedIndex", -1);
             $("#destination").prop("selectedIndex", -1);
             getBalance();
             getSourceCurrency();
 
         })
+        $('#source').change(function () {
+            getBeneficiaryAccts();
+            $("#destination").prop("selectedIndex", -1);
 
+        });
         function getBeneficiaryAccts() {
             var acctId = $('#source').val();
             if(acctId != '') {
@@ -156,19 +155,11 @@
                         if (data != null) {
                             //$('input[name=username]').val(result);
                             $('#destination').empty();
-                            var benAcc =  "";
                             for (var i = 0; i < data.length; i++) {
                                 $('#destination')
                                     .append($("<option></option>")
                                         .attr("value", data[i])
                                         .text(data[i]));
-                                if(data[i]==beneficiaryAcc){
-                                    benAcc = data[i];
-                                }
-                            }
-
-                            if(benAcc!="") {
-                                $("#destination").val(benAcc).change();
                             }
 
                         } else {
@@ -182,32 +173,6 @@
                 });
             }
         }
-        $('#source').change(function () {
-            getBeneficiaryAccts();
-              $("#destination").prop("selectedIndex", -1);
-
-        });
-
-        var sortSelect = function (select, attr, order) {
-            if(attr === 'text'){
-                if(order === 'asc'){
-                    $(select).html($(select).children('option').sort(function (x, y) {
-                        return $(x).text().toUpperCase() < $(y).text().toUpperCase() ? -1 : 1;
-                    }));
-                    $(select).get(0).selectedIndex = 0;
-                    //e.preventDefault();
-                }// end asc
-                if(order === 'desc'){
-                    $(select).html($(select).children('option').sort(function (y, x) {
-                        return $(x).text().toUpperCase() < $(y).text().toUpperCase() ? -1 : 1;
-                    }));
-                    $(select).get(0).selectedIndex = 0;
-                    // e.preventDefault();
-                }// end desc
-            }
-
-        };
-
 
 
 
@@ -266,31 +231,31 @@
         }
 
         ///
-//         function getDestCurrency(){
-//             var accountNumber = $('#destination').val();
-//             $.ajax({
-//                 url: "/corporate/transfer/"+accountNumber+"/currency",
-//                 type: 'GET',
-//                 async: false,
-//                 success:function(currency){
-//                     cur = ''+String(currency);
-//                     if(cur == "" ){
-//                         document.getElementById("destCurrency").textContent="NAN";
-//                         // $("#myspan").show();
-//                     }else{
-// //                    $('input[name=availBal]').val(bal);
-//
-//                         $('#destCurrency').text(cur);
-//                         document.getElementById('destCurrency').style.visibility = 'visible';
-//
-//                     }
-//                 },
-//                 error: function (xhr, status, err) {
-//
-//                 }
-//             })
-//         }
-//
+        function getDestCurrency(){
+            var accountNumber = $('#destination').val();
+            $.ajax({
+                url: "/corporate/transfer/"+accountNumber+"/currency",
+                type: 'GET',
+                async: false,
+                success:function(currency){
+                    cur = ''+String(currency);
+                    if(cur == "" ){
+                        document.getElementById("destCurrency").textContent="NAN";
+                        // $("#myspan").show();
+                    }else{
+//                    $('input[name=availBal]').val(bal);
+
+                        $('#destCurrency').text(cur);
+                        document.getElementById('destCurrency').style.visibility = 'visible';
+
+                    }
+                },
+                error: function (xhr, status, err) {
+
+                }
+            })
+        }
+
 
         /*]]>*/
 
