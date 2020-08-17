@@ -47,12 +47,14 @@ public class QuicktellerRequestDTO implements Serializable {
     private String rechargePin;
     private String responseDescription;
     private String transactionRef;
+    private String statusDescription;
+
 
 
     public QuicktellerRequestDTO() {
     }
 
-    public QuicktellerRequestDTO(Long id, int version, String categoryName, String paymentItemId, String paymentItemName, String billerId, String billerName, String customerAccountNumber, String phoneNumber, String emailAddress, String status, Date createdOn, String terminalId, String requestReference, String token, String sessionId, String remarks, Date tranDate, BigDecimal amount, int intervalDays, Date nextDebitDate, Date dateCreated, Date startDate, Date endDate, String narration, Long paymentCode, String customerId, String responseCode, String responseCodeGrouping, String approvedAmount, String rechargePin, String responseDescription, String transactionRef) {
+    public QuicktellerRequestDTO(Long id, int version, String categoryName, String paymentItemId, String paymentItemName, String billerId, String billerName, String customerAccountNumber, String phoneNumber, String emailAddress, String status, Date createdOn, String terminalId, String requestReference, String token, String sessionId, String remarks, Date tranDate, BigDecimal amount, int intervalDays, Date nextDebitDate, Date dateCreated, Date startDate, Date endDate, String narration, Long paymentCode, String customerId, String responseCode, String responseCodeGrouping, String approvedAmount, String rechargePin, String responseDescription, String transactionRef, String statusDescription) {
         this.id = id;
         this.version = version;
         this.categoryName = categoryName;
@@ -86,6 +88,7 @@ public class QuicktellerRequestDTO implements Serializable {
         this.rechargePin = rechargePin;
         this.responseDescription = responseDescription;
         this.transactionRef = transactionRef;
+        this.statusDescription = statusDescription;
     }
 
     public Long getId() {
@@ -352,6 +355,13 @@ public class QuicktellerRequestDTO implements Serializable {
         this.transactionRef = transactionRef;
     }
 
+    public String getStatusDescription() {
+        return statusDescription;
+    }
+
+    public void setStatusDescription(String statusDescription) {
+        this.statusDescription = statusDescription;
+    }
 
     @Override
     public String toString() {
@@ -389,6 +399,7 @@ public class QuicktellerRequestDTO implements Serializable {
                 ", rechargePin='" + rechargePin + '\'' +
                 ", responseDescription='" + responseDescription + '\'' +
                 ", transactionRef='" + transactionRef + '\'' +
+                ", statusDescription='" + statusDescription + '\'' +
                 '}';
     }
 }
