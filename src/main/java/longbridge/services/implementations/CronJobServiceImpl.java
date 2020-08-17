@@ -443,7 +443,7 @@ public class CronJobServiceImpl implements CronJobService {
     @Override
     @Scheduled(cron = "${auto.biller.refresh}")
     public void refreshPaymentBillers() {
-        logger.info("Refreshing billers");
+        logger.info("Refreshing quickteller billers & categories");
         billerService.RefreshAll();
 
     }
