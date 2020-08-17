@@ -4,8 +4,6 @@ import longbridge.models.FinancialInstitution;
 import longbridge.models.FinancialInstitutionType;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -27,6 +25,6 @@ public interface FinancialInstitutionRepo extends CommonRepo<FinancialInstitutio
     List<FinancialInstitution> findByInstitutionTypeAndInstitutionCodeIgnoreCaseNot(FinancialInstitutionType institutionType ,String institutionCode);
   FinancialInstitution findByInstitutionCodeAndInstitutionType(String code, FinancialInstitutionType type);
 
-    @Query("select r from FinancialInstitution r where (r.institutionName like %:search% and r.sortCode is not null) or r.sortCode like %:search% order by r.institutionName desc")
-    Page<FinancialInstitution> findUsingPattern(@Param("search") String search, Pageable pageable);
+//    @Query("select r from FinancialInstitution r where (r.institutionName like %:search% and r.sortCode is not null) or r.sortCode like %:search% order by r.institutionName desc")
+//    Page<FinancialInstitution> findUsingPattern(@Param("search") String search, Pageable pageable);
 }
