@@ -17,6 +17,7 @@ import net.sf.jasperreports.engine.export.ooxml.JRXlsxExporter;
 import net.sf.jasperreports.engine.util.JRLoader;
 import net.sf.jasperreports.export.SimpleExporterInput;
 import net.sf.jasperreports.export.SimpleOutputStreamExporterOutput;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.*;
@@ -242,10 +243,15 @@ public class CorpNAPSTransferController {
     @GetMapping(path = "/allbankcodes")
     public
     @ResponseBody
-    DataTablesOutput<FinancialInstitutionDTO> getAllFis(DataTablesInput input) {
+    DataTablesOutput<FinancialInstitutionDTO> getAllFis(DataTablesInput input, @RequestParam("csearch") String search) {
 
         Pageable pageable = DataTablesUtils.getPageable(input);
-        Page<FinancialInstitutionDTO> fis = financialInstitutionService.getFinancialInstitutionsWithSortCode(pageable);
+        Page<FinancialInstitutionDTO> fis = null;
+        if (StringUtils.isNoneBlank(search)) {
+            fis = financialInstitutionService.getFinancialInstitutionsWithSortCode(search,pageable);
+        }else {
+            fis = financialInstitutionService.getFinancialInstitutionsWithSortCode(pageable);
+        }
         DataTablesOutput<FinancialInstitutionDTO> out = new DataTablesOutput<FinancialInstitutionDTO>();
         out.setDraw(input.getDraw());
         out.setData(fis.getContent());

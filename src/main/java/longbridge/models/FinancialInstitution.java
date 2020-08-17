@@ -81,7 +81,7 @@ public class FinancialInstitution extends AbstractEntity implements PrettySerial
 
     @Override
    	public List<String> getDefaultSearchFields() {
-   		return Arrays.asList("institutionCode", "institutionName");
+   		return Arrays.asList("institutionCode","institutionName","sortCode");
    	}
 
 

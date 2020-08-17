@@ -59,7 +59,19 @@ public class BillerServiceImpl implements BillerService {
         updateBillers();
         // fetch categories from quickteller
         refreshCategories();
+        // fetch payment items from quickteller
+        autoUpdatePaymentItems();
     }
+
+
+    private void autoUpdatePaymentItems(){
+        List<Long> getBillerIds = billerRepo.getAllBillerId();
+        getBillerIds.forEach(getBillerId -> {
+            logger.info("Updating payment item for biller with ID {}", getBillerId);
+            updatePaymentItems(getBillerId);
+        });
+    }
+
 
     @Override
     public void refreshBiller(){
@@ -69,7 +81,7 @@ public class BillerServiceImpl implements BillerService {
 
 
     private void updateBillers() {
-        logger.info("UPDATING BILLERS!!");
+        logger.info("updating billers!!");
         List<BillerDTO> billerDTOList = integrationService.getBillers();
         List<Biller> updatedBillers = compareAndUpdateBillers(billerDTOList);
         billerRepo.removeObsolete(updatedBillers.stream().map(Biller::getId).collect(Collectors.toList()));
@@ -249,7 +261,7 @@ public class BillerServiceImpl implements BillerService {
 
 
     private void refreshCategories(){
-        logger.info("UPDATING CATEGORIES!!");
+        logger.info("updating categories!!");
         List<BillerCategoryDTO> getBillerCategories = integrationService.getBillerCategories();
         List<BillerCategory> updatedCategories = compareAndUpdateCategories(getBillerCategories);
         billerCategoryRepo.removeObsolete(updatedCategories.stream().map(BillerCategory::getId).collect(Collectors.toList()));
@@ -291,11 +303,12 @@ public class BillerServiceImpl implements BillerService {
     }
 
 
-    private void updatePaymentItems(Long billerId){
-        logger.info("UPDATING PAYMENT ITEMS!!");
+    private Boolean updatePaymentItems(Long billerId){
+        logger.info("updating payment items!!");
         List<PaymentItemDTO> getBillerPaymentItems = integrationService.getPaymentItems(billerId);
         List<PaymentItem> updatedPaymentItems = compareAndUpdatePaymentItems(getBillerPaymentItems);
         paymentItemRepo.removeObsolete(updatedPaymentItems.stream().map(PaymentItem::getId).collect(Collectors.toList()));
+        return true;
     }
 
     @Override

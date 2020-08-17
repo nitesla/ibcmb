@@ -25,4 +25,6 @@ public interface FinancialInstitutionRepo extends CommonRepo<FinancialInstitutio
     List<FinancialInstitution> findByInstitutionTypeAndInstitutionCodeIgnoreCaseNot(FinancialInstitutionType institutionType ,String institutionCode);
   FinancialInstitution findByInstitutionCodeAndInstitutionType(String code, FinancialInstitutionType type);
 
+//    @Query("select r from FinancialInstitution r where (r.institutionName like %:search% and r.sortCode is not null) or r.sortCode like %:search% order by r.institutionName desc")
+//    Page<FinancialInstitution> findUsingPattern(@Param("search") String search, Pageable pageable);
 }
