@@ -585,4 +585,13 @@ public class AccountServiceImpl implements AccountService {
         return accounts;
     }
 
+    @Override
+    public Page<Account> getLoanAccounts(List<String> accountNumbers, Pageable pageable) {
+        return accountRepo.getLoanAccounts(accountNumbers,pageable);
+    }
+
+    @Override
+    public List<Account> getLoanAccounts(List<String> accountNumbers) {
+        return accountRepo.getLoanAccounts(accountNumbers);
+    }
 }
