@@ -1509,7 +1509,6 @@ public class IntegrationServiceImpl implements IntegrationService {
 		params.put("customerEmail", recurringPayment.getEmailAddress());
 		params.put("customerId",recurringPayment.getCustomerId());
 		params.put("customerMobile",recurringPayment.getPhoneNumber());
-		params.put("paymentCode",recurringPayment.getPaymentCode().toString());
 		logger.info("Payment code", recurringPayment.getPaymentCode().toString());
 		params.put("hash",EncryptionUtil.getSHA512(
 				appId + recurringPayment.getPaymentCode() + recurringPayment.getAmount().setScale(2,BigDecimal.ROUND_HALF_UP) + secretKey, null));

@@ -1,15 +1,15 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{ret-layout}">
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{corp-layout}">
 
-<body onload="javascript:var bread = [['Home', '/retail/dashboard'],['Recurring Bill Payment']];currentBar('Recurring Payments');breadCrumb(bread)">
+<body onload="javascript:var bread = [['Home', '/corporate/dashboard'],['Recurring Bill Payment']];currentBar('Recurring Payments');breadCrumb(bread)">
 
 <div layout:fragment="content">
     <div id="myModal" class="modal fade" role="dialog">
         <div class="modal-dialog">
             <!-- Modal content-->
             <div class="modal-content no-bd-rad tokenBox" id="tokenmodal">
-                <form id="myForm" name="myForm" th:action="@{/retail/recurringpayment/delete}" method="POST" >
+                <form id="myForm" name="myForm" th:action="@{/corporate/recurringpayment/delete}" method="POST" >
                     <input type="hidden" id="myID" name="id"/>
                     <div class="modal-body no-bd-rad">
                         <h3 class="tokenHeader"><span class='text-danger'>Delete Recurring Payment</span>, <span th:text="*{username}" style="text-transform: capitalize">Tolu</span></h3>
@@ -36,7 +36,7 @@
     </div>
 
     <div class="col-md-12 col-sm-12 ">
-        <a th:href="@{/retail/recurringpayment/add}" class="pull-right extra-link btn btn-default">New Recurring Payment</a>
+        <a th:href="@{/corporate/recurringpayment/add}" class="pull-right extra-link btn btn-default">New Recurring Payment</a>
 
         <select class="form-control full-width coronation-form-control hide-content-only" id="view">
             <option value="account">Overview</option>
@@ -103,7 +103,7 @@
                 //"processing": true,
                 "serverSide": true,
                 "ajax": {
-                    url: "/retail/recurringpayment/all",
+                    url: "/corporate/recurringpayment/all",
                     "type" : "GET",
                 },
                 "dom": 'T<"clear">frtlp',
@@ -141,7 +141,7 @@
                         "targets":8,
                         "data":"id",
                         "render":function(data){
-                            return '<a href="/retail/recurringpayment/payments/' + data+'">View payments</a>';
+                            return '<a href="/corporate/recurringpayment/payments/' + data+'">View payments</a>';
                         }
                     },
                     {

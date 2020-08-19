@@ -77,6 +77,7 @@ public class MailServiceImpl implements MailService {
     @Override
     @Async
     public void send(Email email) throws MailException {
+        logger.info("WE GOT HERE!!!!!!!!");
         MimeMessagePreparator messagePreparator = mimeMessage -> {
             MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage);
             messageHelper.setFrom(sender);

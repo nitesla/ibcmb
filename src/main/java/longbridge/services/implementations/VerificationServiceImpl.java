@@ -449,6 +449,8 @@ public class VerificationServiceImpl implements VerificationService {
     public Page<Verification> getVerificationsForUser(Pageable pageable) {
         User doneBy = getCurrentUser();
         List<String> permissions = getPermissionCodes(doneBy.getRole());
+        logger.info("UserType =========== {} " , doneBy.getUserType());
+        logger.info("PERMISSIONS =========== {} " , permissions);
         Page<Verification> verifications = verificationRepo.findVerificationForUsers(doneBy.getUserName(), doneBy.getUserType(), permissions, pageable);
         return verifications;
 

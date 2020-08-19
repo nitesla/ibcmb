@@ -43,11 +43,12 @@ public interface MessageRepo extends CommonRepo<Message, Long> {
     Iterable<Message> findByMailBoxAndDateCreatedBetween(MailBox mailBox, Date startDate, Date endDate);
 
     Iterable<Message> findByDateCreatedBetween(Date startDate, Date endDate);
-    @Query("select r from Message r where r.mailBox.userId =:userId and r.mailBox.userType =:userType and r.tag = :tag")
+
+    @Query("select r from Message r where r.mailBox.userId =:userId and r.mailBox.userType =:userType and r.tag = :tag order by r.dateCreated")
     List<Message> findMessageByUserAndTagOrderByDateCreatedDesc(@Param("userId") Long userId,@Param("userType") UserType userType, @Param("tag") String category);
 
-    @Query("select r from Message r where r.mailBox.userId =:userId and r.mailBox.userType =:userType and r.tag = :tag")
-    Page<Message> findPagedMessageByUserAndTag(@Param("userId") Long userId,@Param("userType") UserType userType, @Param("tag") String category,Pageable pageable);
+    @Query("select r from Message r where r.mailBox.userId =:userId and r.mailBox.userType =:userType and r.tag = :tag order by r.dateCreated desc")
+    Page<Message> findPagedMessageByUserAndTag(@Param("userId") Long userId,@Param("userType") UserType userType, @Param("tag") String category, Pageable pageable);
 
     @Query("select count(r.id) from Message r where r.mailBox.userId =:userId and r.mailBox.userType =:userType and r.tag = :tag")
     Long countMessageByUserAndTag(@Param("userId") Long userId,@Param("userType") UserType userType, @Param("tag") String category);

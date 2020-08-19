@@ -79,6 +79,7 @@ public class CorpOwnTransferController {
             corptransferRequestDTO
                     .setFinancialInstitution(financialInstitutionService.getFinancialInstitutionByCode("bankCode"));
             model.addAttribute("corpTransferRequest", corptransferRequestDTO);
+
             return (page + "pagei");
         } catch (InternetBankingTransferException e) {
             String errorMessage = errorService.getMessage(e);

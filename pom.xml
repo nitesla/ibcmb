@@ -148,12 +148,19 @@
             <version>8.0.18</version>
         </dependency>
 
-
         <dependency>
             <groupId>com.oracle.ojdbc</groupId>
             <artifactId>ojdbc10</artifactId>
             <version>19.3.0.0</version>
         </dependency>
+
+
+
+<!--        <dependency>-->
+<!--            <groupId>com.oracle.ojdbc</groupId>-->
+<!--            <artifactId>ojdbc10</artifactId>-->
+<!--            <version>19.3.0.0</version>-->
+<!--        </dependency>-->
 <!--         https://mvnrepository.com/artifact/com.microsoft.sqlserver/mssql-jdbc-->
 
         <dependency>
@@ -605,6 +612,14 @@
                     <apiToken>d81651a0-df7f-432f-aeab-e49acc43a6ae</apiToken>
                     <failOnSeverity>false</failOnSeverity>
                     <org></org>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>11</source>
+                    <target>11</target>
                 </configuration>
             </plugin>
         </plugins>
