@@ -52,6 +52,10 @@ public interface AccountRepo extends CommonRepo<Account,Long> {
 //    @Query("select count(a) > 0 from Account a inner join corporate c where c.corporate_id=:corp and a.id=:acct")
 //    boolean accountInCorp(@Param("corp") Corporate corporate, @Param("acct") Account account);
 //
+    @Query("select a from Account a where a.accountNumber in :accountNumbers")
+    Page<Account> getLoanAccounts(@Param("accountNumbers")List<String> accountNumbers,Pageable pageable);
 
+    @Query("select a from Account a where a.accountNumber in :accountNumbers")
+    List<Account> getLoanAccounts(@Param("accountNumbers")List<String> accountNumbers);
 
 }
