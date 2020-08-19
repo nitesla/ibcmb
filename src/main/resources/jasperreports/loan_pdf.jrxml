@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="UserAuditTrails" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="0dfb22d2-4c92-40af-9e97-ee628edcec61">
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="LoanDetail" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="0dfb22d2-4c92-40af-9e97-ee628edcec61">
 	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
-	<parameter name="logo" class="java.io.InputStream"/>
 	<parameter name="accountId" class="java.lang.String"/>
 	<parameter name="accountNumber" class="java.lang.String"/>
 	<parameter name="startDate" class="java.lang.String"/>
@@ -12,6 +11,7 @@
 	<parameter name="amount" class="java.lang.String"/>
 	<parameter name="interestRate" class="java.lang.String"/>
 	<parameter name="maturityDate" class="java.lang.String"/>
+	<parameter name="logotwo" class="java.lang.String"/>
 	<background>
 		<band splitType="Stretch"/>
 	</background>
@@ -20,92 +20,92 @@
 			<textField pattern="dd MMMMM yyyy">
 				<reportElement x="0" y="0" width="100" height="14" uuid="a1a62202-e5d1-4ce7-8942-62b6c9ea7bd5"/>
 				<textElement>
-					<font fontName="Fedra Sans"/>
+					<font fontName="Fedra Sans Std Normal"/>
 				</textElement>
 				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="426" y="0" width="129" height="54" uuid="e96d97d8-35e5-4e73-b1b3-d7b1f5ab746a"/>
-				<textFieldExpression><![CDATA[""+$P{logo}]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement x="0" y="91" width="148" height="29" forecolor="#003057" uuid="c0d9c7f0-03e0-40e7-a8b6-cdac1bc8ffc1"/>
 				<textElement verticalAlignment="Middle">
-					<font size="18"/>
+					<font fontName="Fedra Sans Std Medium" size="18"/>
 				</textElement>
 				<text><![CDATA[IB Loan Details]]></text>
 			</staticText>
+			<image>
+				<reportElement key="image" x="417" y="0" width="138" height="74" uuid="79bb8e80-a279-4fe3-a87d-065420a84d37"/>
+				<imageExpression><![CDATA[$P{logotwo}]]></imageExpression>
+			</image>
 		</band>
 	</title>
 	<pageHeader>
-		<band height="22" splitType="Stretch">
+		<band height="32" splitType="Stretch">
 			<rectangle>
 				<reportElement mode="Opaque" x="0" y="0" width="76" height="22" backcolor="#003057" uuid="f196ae34-feb3-4d0c-9030-921afd90319e"/>
-			</rectangle>
-			<rectangle>
-				<reportElement x="76" y="0" width="75" height="22" backcolor="#003057" uuid="be075ec3-50bc-4fac-be67-4548fe1e694d"/>
 			</rectangle>
 			<staticText>
 				<reportElement x="3" y="0" width="73" height="22" forecolor="#FFFFFF" uuid="d613e16f-c49a-45ed-8e18-4e6a2860fca3"/>
 				<textElement verticalAlignment="Middle">
-					<font fontName="Fedra Sans" isBold="true"/>
+					<font fontName="Fedra Sans Std Normal" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Account ID]]></text>
 			</staticText>
+			<rectangle>
+				<reportElement x="76" y="0" width="100" height="22" backcolor="#003057" uuid="be075ec3-50bc-4fac-be67-4548fe1e694d"/>
+			</rectangle>
 			<staticText>
-				<reportElement x="79" y="0" width="72" height="22" forecolor="#FFFFFF" uuid="b26fa6c9-365a-4e97-ad7f-26ac95364b01"/>
+				<reportElement x="79" y="0" width="97" height="22" forecolor="#FFFFFF" uuid="b26fa6c9-365a-4e97-ad7f-26ac95364b01"/>
 				<textElement verticalAlignment="Middle">
-					<font fontName="Fedra Sans" isBold="true"/>
+					<font fontName="Fedra Sans Std Normal" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Account Number]]></text>
 			</staticText>
 			<rectangle>
-				<reportElement x="151" y="0" width="92" height="22" backcolor="#003057" uuid="8cf29033-c3e3-424e-a24c-abfc29b5d7c6"/>
-			</rectangle>
-			<rectangle>
-				<reportElement x="243" y="0" width="67" height="22" backcolor="#003057" uuid="1bf6ed64-fff1-4fb7-ab5a-a87861b8a016"/>
+				<reportElement x="176" y="0" width="70" height="22" backcolor="#003057" uuid="8cf29033-c3e3-424e-a24c-abfc29b5d7c6"/>
 			</rectangle>
 			<staticText>
-				<reportElement x="246" y="0" width="64" height="22" forecolor="#FFFFFF" uuid="08a9f0a0-14a0-4959-8a24-2acae141f718"/>
+				<reportElement x="179" y="0" width="67" height="22" forecolor="#FFFFFF" uuid="08a9f0a0-14a0-4959-8a24-2acae141f718"/>
 				<textElement verticalAlignment="Middle">
-					<font fontName="Fedra Sans" isBold="true"/>
+					<font fontName="Fedra Sans Std Normal" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Start Date]]></text>
 			</staticText>
 			<rectangle>
-				<reportElement x="310" y="0" width="86" height="22" backcolor="#003057" uuid="878ee8ee-6207-491d-880e-16b9b70b4a14"/>
-			</rectangle>
-			<rectangle>
-				<reportElement x="396" y="0" width="83" height="22" backcolor="#003057" uuid="60bdf6cb-3541-4404-9dae-256cf8895c5b"/>
+				<reportElement x="246" y="0" width="70" height="22" backcolor="#003057" uuid="1bf6ed64-fff1-4fb7-ab5a-a87861b8a016"/>
 			</rectangle>
 			<staticText>
-				<reportElement x="313" y="0" width="83" height="22" forecolor="#FFFFFF" uuid="15751c0b-93d6-4f21-a561-71dcfecda416"/>
+				<reportElement x="249" y="0" width="67" height="22" forecolor="#FFFFFF" uuid="15751c0b-93d6-4f21-a561-71dcfecda416"/>
 				<textElement verticalAlignment="Middle">
-					<font fontName="Fedra Sans" isBold="true"/>
+					<font fontName="Fedra Sans Std Normal" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Tenor]]></text>
 			</staticText>
+			<rectangle>
+				<reportElement x="316" y="0" width="100" height="22" backcolor="#003057" uuid="beae59a3-5ce7-4ba1-8511-e8d4a031759b"/>
+			</rectangle>
 			<staticText>
-				<reportElement x="399" y="0" width="80" height="22" forecolor="#FFFFFF" uuid="b98ba3b1-3be3-483b-a9cd-6f04cf04b5b6"/>
+				<reportElement x="319" y="0" width="97" height="22" forecolor="#FFFFFF" uuid="b98ba3b1-3be3-483b-a9cd-6f04cf04b5b6"/>
 				<textElement verticalAlignment="Middle">
-					<font fontName="Fedra Sans" isBold="true"/>
+					<font fontName="Fedra Sans Std Normal" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Amount]]></text>
 			</staticText>
 			<rectangle>
-				<reportElement x="479" y="0" width="76" height="22" backcolor="#003057" uuid="beae59a3-5ce7-4ba1-8511-e8d4a031759b"/>
+				<reportElement x="416" y="0" width="70" height="22" backcolor="#003057" uuid="beae59a3-5ce7-4ba1-8511-e8d4a031759b"/>
 			</rectangle>
 			<staticText>
-				<reportElement x="154" y="0" width="89" height="22" forecolor="#FFFFFF" uuid="0ab66f63-5a70-4234-9b2c-717e8711ea75"/>
+				<reportElement x="419" y="0" width="67" height="22" forecolor="#FFFFFF" uuid="0ab66f63-5a70-4234-9b2c-717e8711ea75"/>
 				<textElement verticalAlignment="Middle">
-					<font fontName="Fedra Sans" size="10" isBold="true"/>
+					<font fontName="Fedra Sans Std Normal" size="10" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Interest Rate ]]></text>
 			</staticText>
+			<rectangle>
+				<reportElement x="486" y="0" width="80" height="22" backcolor="#003057" uuid="8cf29033-c3e3-424e-a24c-abfc29b5d7c6"/>
+			</rectangle>
 			<staticText>
-				<reportElement x="482" y="0" width="73" height="22" forecolor="#FFFFFF" uuid="d98c8452-edc0-4998-a937-25a581c3184d"/>
+				<reportElement x="489" y="0" width="77" height="22" forecolor="#FFFFFF" uuid="08a9f0a0-14a0-4959-8a24-2acae141f718"/>
 				<textElement verticalAlignment="Middle">
-					<font fontName="Fedra Sans" isBold="true"/>
+					<font fontName="Fedra Sans Std Normal" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Maturity Date]]></text>
 			</staticText>
@@ -116,70 +116,70 @@
 			<rectangle>
 				<reportElement x="0" y="0" width="76" height="20" uuid="1d8b4f53-4838-49d8-bcfd-0630c17aed17"/>
 			</rectangle>
-			<rectangle>
-				<reportElement x="76" y="0" width="75" height="20" uuid="777090af-69d8-4767-b7bb-7f9c6f130f61"/>
-			</rectangle>
-			<rectangle>
-				<reportElement x="151" y="0" width="92" height="20" uuid="f750c011-303d-4476-82c9-9ee5788804c6"/>
-			</rectangle>
-			<rectangle>
-				<reportElement x="243" y="0" width="67" height="20" uuid="59027048-2500-4ab8-99cb-bdf4b688e298"/>
-			</rectangle>
-			<rectangle>
-				<reportElement x="310" y="0" width="86" height="20" uuid="b2a04f98-4f98-46d5-b318-4ce04f555312"/>
-			</rectangle>
-			<rectangle>
-				<reportElement x="396" y="0" width="83" height="20" uuid="d11296ca-bc65-4590-a3cb-431976401dde"/>
-			</rectangle>
-			<rectangle>
-				<reportElement x="479" y="0" width="76" height="20" uuid="13db02cf-1bbe-4e7b-a9d8-5357215e3870"/>
-			</rectangle>
 			<textField>
-				<reportElement x="5" y="0" width="71" height="20" uuid="fa7500cd-7f38-4685-90f4-2d052a78cce1"/>
+				<reportElement x="5" y="0" width="73" height="20" uuid="fa7500cd-7f38-4685-90f4-2d052a78cce1"/>
 				<textElement verticalAlignment="Middle">
-					<font fontName="Fedra Sans" size="8"/>
+					<font fontName="Fedra Sans Std Normal" size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{accountId}]]></textFieldExpression>
 			</textField>
+			<rectangle>
+				<reportElement x="76" y="0" width="100" height="20" uuid="777090af-69d8-4767-b7bb-7f9c6f130f61"/>
+			</rectangle>
 			<textField>
-				<reportElement x="78" y="0" width="73" height="20" uuid="2ca28e59-bb63-492e-9f0b-1556b8556338"/>
+				<reportElement x="81" y="0" width="97" height="20" uuid="2ca28e59-bb63-492e-9f0b-1556b8556338"/>
 				<textElement verticalAlignment="Middle">
-					<font fontName="Fedra Sans" size="8"/>
+					<font fontName="Fedra Sans Std Normal" size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{accountNumber}]]></textFieldExpression>
 			</textField>
+			<rectangle>
+				<reportElement x="176" y="0" width="70" height="20" uuid="f750c011-303d-4476-82c9-9ee5788804c6"/>
+			</rectangle>
 			<textField>
-				<reportElement x="154" y="0" width="89" height="20" uuid="f6298d7f-2b09-4966-9c5d-f8b3bb168e07"/>
+				<reportElement x="181" y="0" width="67" height="20" uuid="f6298d7f-2b09-4966-9c5d-f8b3bb168e07"/>
 				<textElement verticalAlignment="Middle">
-					<font fontName="Fedra Sans" size="8"/>
+					<font fontName="Fedra Sans Std Normal" size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{startDate}]]></textFieldExpression>
 			</textField>
+			<rectangle>
+				<reportElement x="246" y="0" width="70" height="20" uuid="59027048-2500-4ab8-99cb-bdf4b688e298"/>
+			</rectangle>
 			<textField>
-				<reportElement x="246" y="0" width="64" height="20" uuid="6dfd5361-bae9-413b-aab3-ee4a92597452"/>
+				<reportElement x="251" y="0" width="67" height="20" uuid="6dfd5361-bae9-413b-aab3-ee4a92597452"/>
 				<textElement verticalAlignment="Middle">
-					<font fontName="Fedra Sans" size="8"/>
+					<font fontName="Fedra Sans Std Normal" size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{tenor}]]></textFieldExpression>
 			</textField>
+			<rectangle>
+				<reportElement x="316" y="0" width="100" height="20" uuid="b2a04f98-4f98-46d5-b318-4ce04f555312"/>
+			</rectangle>
 			<textField>
-				<reportElement x="313" y="0" width="83" height="20" uuid="e07749f1-23dd-42de-b181-825428b89bb8"/>
+				<reportElement x="321" y="0" width="97" height="20" uuid="e07749f1-23dd-42de-b181-825428b89bb8"/>
 				<textElement verticalAlignment="Middle">
-					<font fontName="Fedra Sans" size="8"/>
+					<font fontName="Fedra Sans Std Normal" size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{amount}]]></textFieldExpression>
 			</textField>
+			<rectangle>
+				<reportElement x="416" y="0" width="70" height="20" uuid="d11296ca-bc65-4590-a3cb-431976401dde"/>
+			</rectangle>
 			<textField>
-				<reportElement x="399" y="0" width="80" height="20" uuid="54209154-b222-4326-9506-da94900638fd"/>
+				<reportElement x="421" y="0" width="67" height="20" uuid="54209154-b222-4326-9506-da94900638fd"/>
 				<textElement verticalAlignment="Middle">
-					<font fontName="Fedra Sans" size="8"/>
+					<font fontName="Fedra Sans Std Normal" size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{interestRate}]]></textFieldExpression>
 			</textField>
+			<rectangle>
+				<reportElement x="486" y="0" width="80" height="20" uuid="13db02cf-1bbe-4e7b-a9d8-5357215e3870"/>
+			</rectangle>
 			<textField>
-				<reportElement x="482" y="0" width="73" height="20" uuid="2bcb12ad-e61a-4a85-969a-f62bed180888"/>
+				<reportElement x="491" y="0" width="77" height="20" uuid="2bcb12ad-e61a-4a85-969a-f62bed180888"/>
 				<textElement verticalAlignment="Middle">
-					<font fontName="Fedra Sans" size="8"/>
+					<font fontName="Fedra Sans Std Normal" size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{maturityDate}]]></textFieldExpression>
 			</textField>

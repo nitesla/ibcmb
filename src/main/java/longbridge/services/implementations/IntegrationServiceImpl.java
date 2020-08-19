@@ -1368,22 +1368,22 @@ public class IntegrationServiceImpl implements IntegrationService {
 	}
 
 	public LoanDTO getLoanDetails(String accountNumber){
-//		this.accountNumber = accountNumber;
 
-		LoanDTO loan = new LoanDTO();
-		String uri = URI+"/loan/{accountNumber}";
-		Map<String,String> params = new HashMap<>();
-		params.put("accountNumber",accountNumber);
+	     	LoanDTO loan = new LoanDTO();
+			String uri = URI+"/loan/{accountNumber}";
+			Map<String,String> params = new HashMap<>();
+			params.put("accountNumber",accountNumber);
 
-		try{
-			loan = template.getForObject(uri,LoanDTO.class,params);
-			return loan;
-		}
+			try{
+				loan = template.getForObject(uri,LoanDTO.class,params);
+
+				return loan;
+			}
 		catch (Exception e){
 			logger.error("Error getting loan details",e);
 		}
-		return loan;
 
+		return loan;
 	}
 
 	@Override
