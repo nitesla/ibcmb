@@ -8,6 +8,7 @@ import longbridge.forms.CustChangePassword;
 import longbridge.forms.CustResetPassword;
 import longbridge.models.*;
 import longbridge.services.*;
+import longbridge.utils.DataTablesUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -15,6 +16,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
+import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -111,7 +117,8 @@ public class SettingController {
                             }
                         }
                 );*/
-        List<LoanDTO> loans = new ArrayList<>();
+
+        List<String> loansAccountList = new ArrayList<>();
         if (dto != null && dto.isEnabled()) {
             String[] transactionalAccounts = StringUtils.split(dto.getValue(), ",");
             accountList = accountList.stream()
@@ -119,8 +126,8 @@ public class SettingController {
                     .map(i -> {
 
                         if ("LAA".equalsIgnoreCase(i.getAccountType())) {
-                            LoanDTO loan = integrationService.getLoanDetails(i.getAccountNumber());
-                            loans.add(loan);
+                            loansAccountList.add(i.getAccountNumber());
+
                         }
                                 return i;
                             }
@@ -134,12 +141,10 @@ public class SettingController {
                     })
                     .collect(Collectors.toList());
         }
-        LoanDetailsDTO loanDetailsDTO = new LoanDetailsDTO();
-        loanDetailsDTO.setLoanList(loans);
-        model.addAttribute("loans", loans);
-        model.addAttribute("loanObject",loanDetailsDTO);
+        List<Account> loanAccounts = accountService.getLoanAccounts(loansAccountList);
         model.addAttribute("accountList", accountList);
         model.addAttribute("retId",retId);
+        model.addAttribute("loanAccounts",loanAccounts);
 
         boolean expired = passwordPolicyService.displayPasswordExpiryDate(retailUser.getExpiryDate());
         if (expired) {
@@ -149,6 +154,34 @@ public class SettingController {
         logger.debug("Redirecting user {} to dashboard", retailUser.getUserName());
         return "cust/dashboard";
     }
+
+    @GetMapping(path = "/dashboard/loans")
+    public @ResponseBody
+    DataTablesOutput<Account> getLoanAccount(DataTablesInput input) {
+        Principal principal = SecurityContextHolder.getContext().getAuthentication();
+        RetailUser retailUser = retailUserService.getUserByName(principal.getName());
+        List<String> loansAccountList = new ArrayList<>();
+        List<AccountDTO> accountList = accountService.getAccountsAndBalances(retailUser.getCustomerId());
+
+        SettingDTO dto = configService.getSettingByName("TRANSACTIONAL_ACCOUNTS");
+        if (dto != null && dto.isEnabled()) {
+            for (AccountDTO acc:accountList) {
+                if ("LAA".equalsIgnoreCase(acc.getAccountType())) {
+                    loansAccountList.add(acc.getAccountNumber());
+                }
+            }
+        }
+
+        Pageable pageable = DataTablesUtils.getPageable(input);
+        Page<Account> loanAccounts = accountService.getLoanAccounts(loansAccountList,pageable);
+        DataTablesOutput<Account> out = new DataTablesOutput<Account>();
+        out.setDraw(input.getDraw());
+        out.setData(loanAccounts.getContent());
+        out.setRecordsFiltered(loanAccounts.getTotalElements());
+        out.setRecordsTotal(loanAccounts.getTotalElements());
+        return out;
+    }
+
 
 
     @GetMapping("/error")
