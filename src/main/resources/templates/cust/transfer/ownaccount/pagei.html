@@ -31,6 +31,7 @@
                                                     <div>
 
                                                         <span class="alert no-bd-rad my-border bg-white hide-content-only" id="sourceCurrency">CCY</span>
+
                                                         <select name="source" class="form-control" id="source"
                                                                 th:field="*{customerAccountNumber}" onchange="getBalance();getSourceCurrency();" >
                                                             <option th:each="s: ${accounts}" th:value="${s.accountNumber}" th:text="${s.accountNumber}" th:selected="${s.primaryFlag=='Y'}"></option>
@@ -89,6 +90,7 @@
                                                     <button class="btn btn-link less-required" type="reset" onclick="cancel();">Cancel</button>
 
                                                 </div>
+
 
                                         </form>
                                     </div>
