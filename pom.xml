@@ -148,12 +148,19 @@
             <version>8.0.18</version>
         </dependency>
 
-
         <dependency>
             <groupId>com.oracle.ojdbc</groupId>
             <artifactId>ojdbc10</artifactId>
             <version>19.3.0.0</version>
         </dependency>
+
+
+
+<!--        <dependency>-->
+<!--            <groupId>com.oracle.ojdbc</groupId>-->
+<!--            <artifactId>ojdbc10</artifactId>-->
+<!--            <version>19.3.0.0</version>-->
+<!--        </dependency>-->
 <!--         https://mvnrepository.com/artifact/com.microsoft.sqlserver/mssql-jdbc-->
 
         <dependency>
