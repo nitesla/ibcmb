@@ -1,8 +1,7 @@
 package longbridge.services.implementations;
 
-import com.sun.mail.util.MailConnectException;
+
 import longbridge.dtos.LoanDTO;
-import longbridge.exception.InternetBankingException;
 import longbridge.services.IntegrationService;
 import longbridge.services.LoanDetailsService;
 import longbridge.utils.JasperReport.ReportHelper;
@@ -50,15 +49,6 @@ public class LoanDetailsServiceImpl implements LoanDetailsService {
     @Value("${jrxmlImage.path}")
     private String imagePath;
 
-    @Value("${jrxmlFile.path.loan.pdf}")
-    private String jrxmlPathPdf;
-
-//    @Value("${jrxmlFile.path.loan.excel}")
-//    private String jrxmlPathExcel;
-
-//    @Value("${jrxmlFile.path.loan.csv}")
-//    private String jrxmlPathCsv;
-
 
 
     @Autowired
@@ -84,36 +74,6 @@ public class LoanDetailsServiceImpl implements LoanDetailsService {
             messageHelper.addAttachment("loan_report.pdf", mailAttachmentPdf(loan));
         };
         mailSender.send(messagePreparator);
-//        messageSource.getMessage("mail.send.wait", null, locale);
-//        logger.info("Trying to send mail to {}", recipient);
-//        try {
-//        mailSender.send(messagePreparator);
-//        logger.info("Email successfully sent to {} with subject {}", recipient,messageSource.getMessage("loan.subject", null, locale));
-//         return messageSource.getMessage("mail.send.success", null, locale);
-//        }
-//
-//        catch (MailAuthenticationException mae) {
-//            return messageSource.getMessage("mail.connect.failure", null, locale);
-//        }
-//
-//        catch (MailSendException mse) {
-//            logger.error("Failed to send mail to {}", recipient, mse);
-//            Exception[] exceptions=mse.getMessageExceptions();
-//            mse.getFailedMessages();
-//            for (Exception e:exceptions) {
-//                if (e instanceof UnknownHostException){
-//                System.out.println(e+"mooooos");
-//                    logger.error("Mail Server Down Contac It department", e);
-//             }
-//            }
-//            return messageSource.getMessage("mail.send.failure", null, locale);
-//
-//
-//        }
-//
-//        catch (MailException me) {
-//           return messageSource.getMessage("mail.send.failure", null, locale);
-//        }
 
     }
 
