@@ -67,7 +67,7 @@ public class CorpLoanController {
             redirectAttributes.addFlashAttribute("message",  messageSource.getMessage("mail.send.failure", null, locale));
         }
 
-        return "redirect:/corp/dashboard";
+        return "redirect:/corporate/dashboard";
 
     }
 
