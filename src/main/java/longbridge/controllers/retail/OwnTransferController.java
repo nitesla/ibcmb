@@ -85,7 +85,6 @@ public class OwnTransferController {
             TransferRequestDTO requestDTO = new TransferRequestDTO();
             requestDTO.setFinancialInstitution(financialInstitutionService.getFinancialInstitutionByCode(bankCode));
             model.addAttribute("transferRequest", requestDTO);
-
             return (page + "pagei");
         } catch (InternetBankingTransferException e) {
             String errorMessage = errorService.getMessage(e);

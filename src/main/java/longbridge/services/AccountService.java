@@ -158,4 +158,7 @@ public interface AccountService {
 
     List<Account> getAccountByCifIdAndSchemeType(String cifId, String schemeType) throws InternetBankingException;
 
+    Page<Account> getLoanAccounts(List<String> accountNumbers,Pageable pageable);
+    List<Account> getLoanAccounts(List<String> accountNumbers);
+
    }

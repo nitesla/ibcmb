@@ -144,7 +144,7 @@
                             return data;
                         var dtStart = new Date(parseInt(data));
 
-                        var dtStartWrapper = moment(dtStart);
+                        var dtStartWrapper = moment(data);
                         return dtStartWrapper.format('LLLL');
                     }
                     return data;
@@ -158,7 +158,7 @@
                         if (data == null)
                             return data;
                         var dtStart = new Date(parseInt(data));
-                        var dtStartWrapper = moment(dtStart);
+                        var dtStartWrapper = moment(data);
                         return dtStartWrapper.format('LLLL');
                     }
                     return data;

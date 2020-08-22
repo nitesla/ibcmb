@@ -5,10 +5,12 @@ import longbridge.exception.*;
 import longbridge.forms.AlertPref;
 import longbridge.forms.CustChangePassword;
 import longbridge.forms.CustResetPassword;
+import longbridge.models.Account;
 import longbridge.models.Code;
 import longbridge.models.CorporateUser;
 import longbridge.models.FeedBackStatus;
 import longbridge.services.*;
+import longbridge.utils.DataTablesUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -16,14 +18,16 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
+import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -108,6 +112,7 @@ public class CorpSettingController {
                         }
                 );*/
         List<LoanDTO> loans = new ArrayList<>();
+        List<String> loansAccountList = new ArrayList<>();
         if (dto != null && dto.isEnabled()) {
             String[] transactionalAccounts = StringUtils.split(dto.getValue(), ",");
             accountList = accountList.stream()
@@ -115,8 +120,9 @@ public class CorpSettingController {
                     .map(i -> {
 
                                 if ("LAA".equalsIgnoreCase(i.getAccountType())) {
-                                    LoanDTO loan = integrationService.getLoanDetails(i.getAccountNumber());
-                                    loans.add(loan);
+                                    loansAccountList.add(i.getAccountNumber());
+//                                    LoanDTO loan = integrationService.getLoanDetails(i.getAccountNumber());
+//                                    loans.add(loan);
                                 }
                                 return i;
                             }
@@ -130,12 +136,10 @@ public class CorpSettingController {
                     })
                     .collect(Collectors.toList());
         }
-            LoanDetailsDTO loanDetailsDTO = new LoanDetailsDTO();
-            loanDetailsDTO.setLoanList(loans);
-            model.addAttribute("loans", loans);
-            model.addAttribute("loanObject",loanDetailsDTO);
+            List<Account> loanAccounts = accountService.getLoanAccounts(loansAccountList);
             model.addAttribute("accountList", accountList);
             model.addAttribute("corpId",corpId);
+            model.addAttribute("loanAccounts",loanAccounts);
             boolean exp = passwordPolicyService.displayPasswordExpiryDate(corporateUser.getExpiryDate());
         logger.info("EXPIRY RESULT {} ", exp);
         if (exp){
@@ -144,6 +148,32 @@ public class CorpSettingController {
         return "corp/dashboard";
     }
 
+    @GetMapping(path = "/dashboard/loans")
+    public @ResponseBody DataTablesOutput<Account> getLoanAccount(DataTablesInput input) {
+        Principal principal = SecurityContextHolder.getContext().getAuthentication();
+        CorporateUser corporateUser = corporateUserService.getUserByName(principal.getName());
+        List<String> loansAccountList = new ArrayList<>();
+        List<AccountDTO> accountList = accountService.getAccountsAndBalances(corporateUser.getCorporate().getAccounts());
+
+        SettingDTO dto = configService.getSettingByName("TRANSACTIONAL_ACCOUNTS");
+        if (dto != null && dto.isEnabled()) {
+            for (AccountDTO acc:accountList) {
+                if ("LAA".equalsIgnoreCase(acc.getAccountType())) {
+                    loansAccountList.add(acc.getAccountNumber());
+                }
+            }
+        }
+        System.out.println(loansAccountList);
+
+        Pageable pageable = DataTablesUtils.getPageable(input);
+        Page<Account> loanAccounts = accountService.getLoanAccounts(loansAccountList,pageable);
+        DataTablesOutput<Account> out = new DataTablesOutput<Account>();
+        out.setDraw(input.getDraw());
+        out.setData(loanAccounts.getContent());
+        out.setRecordsFiltered(loanAccounts.getTotalElements());
+        out.setRecordsTotal(loanAccounts.getTotalElements());
+        return out;
+    }
 
 
     @GetMapping("/error")

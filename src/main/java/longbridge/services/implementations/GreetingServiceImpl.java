@@ -79,15 +79,18 @@ public class GreetingServiceImpl implements GreetingService {
                 if ((null != greetingRepo.findFirstByEventName(greetingDTO.getEventName()))) {
                     return messageSource.getMessage("greeting.add.exist", null, locale);
                 }
-
+                else{
+                Greeting greeting = modelMapper.map(greetingDTO, Greeting.class);
+                greetingRepo.save(greeting);
+                return messageSource.getMessage("greeting.add.success", null, locale);
+                }
             }catch (VerificationInterruptedException e) {
                 return e.getMessage();
             }catch (Exception e) {
-                logger.info("greeting does not exist");
+                logger.info("greeting add failure ");
+                throw new InternetBankingException(messageSource.getMessage("greeting.add.failure",null,locale),e);
             }
-            Greeting greeting = modelMapper.map(greetingDTO, Greeting.class);
-            greetingRepo.save(greeting);
-            return messageSource.getMessage("greeting.add.success", null, locale);
+
 
     }
     /**

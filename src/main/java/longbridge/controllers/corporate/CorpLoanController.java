@@ -2,7 +2,6 @@ package longbridge.controllers.corporate;
 
 
 import longbridge.dtos.LoanDTO;
-import longbridge.dtos.LoanDetailsDTO;
 import longbridge.security.userdetails.CustomUserPrincipal;
 import longbridge.services.LoanDetailsService;
 import longbridge.utils.JasperReport.ReportHelper;
@@ -18,28 +17,22 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpHeaders;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mail.MailException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.ObjectError;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-
-import javax.servlet.ServletOutputStream;
-import javax.servlet.WriteListener;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.io.OutputStream;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Controller
 @RequestMapping("/corporate/loan")
@@ -47,31 +40,43 @@ public class CorpLoanController {
 
     @Autowired
     private LoanDetailsService loanDetailsService;
+    @Autowired
+    private MessageSource messageSource;
+    private Locale locale = LocaleContextHolder.getLocale();
+
 
     private Logger logger= LoggerFactory.getLogger(this.getClass());
     @Value("${jrxmlImage.path}")
     private String imagePath;
 
-    @PostMapping("/email")
-    @ResponseBody
-    public String sendLoanDetailsinMail(@RequestBody List<LoanDTO> loans, RedirectAttributes redirectAttributes) throws IOException {
+    @GetMapping("/email/{accountNumber}")
+    public String sendLoanDetailsinMail(@PathVariable String accountNumber, RedirectAttributes redirectAttributes) {
        CustomUserPrincipal principal = (CustomUserPrincipal) SecurityContextHolder.getContext().getAuthentication()
                 .getPrincipal();
         String recipient = principal.getUser().getEmail();
         String name = principal.getUser().getFirstName();
-        LoanDetailsDTO detailsDTO = new LoanDetailsDTO();
-        detailsDTO.setLoanList(loans);
-        String message = loanDetailsService.sendLoanDetails(recipient,name,detailsDTO);
-        redirectAttributes.addFlashAttribute("message", message);
-        return "redirect:/corp/dashboard";
+
+        try {
+            loanDetailsService.sendLoanDetails(recipient,name, accountNumber);
+            logger.info("Email successfully sent to {} with subject {}", recipient,messageSource.getMessage("loan.subject", null, locale));
+            redirectAttributes.addFlashAttribute("message", messageSource.getMessage("mail.send.success", null, locale));
+        }
+        catch (MailException exception){
+            logger.info("Trying to send mail to {}", exception);
+            redirectAttributes.addFlashAttribute("message",  messageSource.getMessage("mail.send.failure", null, locale));
+        }
+
+        return "redirect:/corporate/dashboard";
 
     }
 
-    @PostMapping("/download/pdf")
-    public ResponseEntity<HttpStatus> downloadLoanPdf(@ModelAttribute("loanObject") LoanDetailsDTO loans,HttpServletResponse response) throws Exception {
+    @GetMapping("/pdf/{accountNumber}")
+    public ResponseEntity<HttpStatus> downloadLoanPdf(@PathVariable String accountNumber,HttpServletResponse response) throws Exception {
+        LoanDTO loan = loanDetailsService.getLoanDetails(accountNumber);
+
 
         Map<String, Object> modelMap = new HashMap<>();
-        for (LoanDTO loan:loans.getLoanList()) {
+
             modelMap.put("accountId",loan.getAccountId());
             modelMap.put("accountNumber",loan.getAccountNumber());
             modelMap.put("startDate",loan.getStartDate());
@@ -80,35 +85,36 @@ public class CorpLoanController {
             modelMap.put("interestRate",loan.getInterestRate());
             modelMap.put("maturityDate",loan.getMaturityDate());
             modelMap.put("logotwo", imagePath);
-        }
-
+        List<LoanDTO> loanDTOList = new ArrayList<>();
+        loanDTOList.add(loan);
         response.setContentType("application/x-download");
         response.setHeader("Content-disposition", String.format("attachment; filename=\"loan_report.pdf\""));
         OutputStream outputStream = response.getOutputStream();
         JasperReport jasperReport = ReportHelper.getJasperReport("loan_pdf");
-        JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, modelMap, new JRBeanCollectionDataSource(loans.getLoanList()));
+        JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, modelMap, new JRBeanCollectionDataSource(loanDTOList));
         JasperExportManager.exportReportToPdfStream(jasperPrint,response.getOutputStream());
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 
     }
 
-    @PostMapping("/download/excel")
-    public ResponseEntity<HttpStatus> downloadLoanExcel(@ModelAttribute("loanObject") LoanDetailsDTO loans,HttpServletResponse response) throws Exception {
+    @GetMapping("/excel/{accountNumber}")
+    public ResponseEntity<HttpStatus> downloadLoanExcel(@PathVariable String accountNumber,HttpServletResponse response) throws Exception {
+        LoanDTO loan = loanDetailsService.getLoanDetails(accountNumber);
 
         Map<String, Object> modelMap = new HashMap<>();
-        for (LoanDTO loan:loans.getLoanList()) {
-            modelMap.put("accountId",loan.getAccountId());
-            modelMap.put("accountNumber",loan.getAccountNumber());
-            modelMap.put("startDate",loan.getStartDate());
-            modelMap.put("tenor",loan.getTenor());
-            modelMap.put( "amount",loan.getAmount());
-            modelMap.put("interestRate",loan.getInterestRate());
-            modelMap.put("maturityDate",loan.getMaturityDate());
-            modelMap.put("logotwo", imagePath);
-        }
 
-        JasperReport jasperReport = ReportHelper.getJasperReport("loan_pdf");
-        JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, modelMap, new JRBeanCollectionDataSource(loans.getLoanList()));
+        modelMap.put("accountId",loan.getAccountId());
+        modelMap.put("accountNumber",loan.getAccountNumber());
+        modelMap.put("startDate",loan.getStartDate());
+        modelMap.put("tenor",loan.getTenor());
+        modelMap.put( "amount",loan.getAmount());
+        modelMap.put("interestRate",loan.getInterestRate());
+        modelMap.put("maturityDate",loan.getMaturityDate());
+        modelMap.put("logotwo", imagePath);
+        List<LoanDTO> loanDTOList = new ArrayList<>();
+        loanDTOList.add(loan);
+        JasperReport jasperReport = ReportHelper.getJasperReport("loan_excel");
+        JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, modelMap, new JRBeanCollectionDataSource(loanDTOList));
         JRXlsxExporter exporter = new JRXlsxExporter();
         exporter.setExporterInput(new SimpleExporterInput(jasperPrint));
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -126,5 +132,6 @@ public class CorpLoanController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 
     }
+
 
 }
