@@ -157,9 +157,25 @@
                     "data" : "accountNumber",
                     "render" : function(data, type,full, meta) {
 
-                        return'<a href="/retail/loan/pdf/' + data + '"><i class="fa fa-2x fa-file-pdf-o"></i></a><a href="/retail/loan/excel/' + data + '"><i class="fa fa-2x fa-file-excel-o"></i></a><a href="/retail/loan/email/' + data + '" onclick="return theFunction();"><i class="fa fa-2x fa-envelope-o"></i></a>';
+                        return'<a href="/retail/loan/pdf/' + data + '"><i class="fa fa-file-pdf-o"></i>' + download + '</a>';
                     }
-                }]
+                },
+                    {
+                        "targets" : 4,
+                        "data" : "accountNumber",
+                        "render" : function(data, type,full, meta) {
+
+                            return'<a href="/retail/loan/excel/' + data + '"><i class="fa fa-file-excel-o"></i>' + download + '</a>';
+                        }
+                    },
+                    {
+                        "targets" : 5,
+                        "data" : "accountNumber",
+                        "render" : function(data, type,full, meta) {
+
+                            return'<a href="/retail/loan/email/' + data + '"><i class="fa fa-envelope-o"></i>' + download + '</a>';
+                        }
+                    }]
 
 
 
@@ -172,16 +188,7 @@
 
         /*]]>*/
     </script>
-    <script th:inline="javascript">
-        $(document).ready(function () {
-            $("#mailModal").hide();
-            function theFunction(){
-                console.log("oo")
-                alert("mmmm")
-               $("#mailModal").show();
-            }
-        });
-    </script>
+
     <script th:inline="javascript">
         /*<![CDATA[*/
         $(document).ready(function () {
