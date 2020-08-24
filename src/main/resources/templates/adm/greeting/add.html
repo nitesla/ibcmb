@@ -142,7 +142,7 @@
                                            <div class="col-sm-4">
                                                <input type="number" placeholder="Enter number of days" class="form-control" oninput="validity.valid||(value='');"
                                                       th:field="*{duration}" id="duration">
-
+                                               <span style="padding-left: 1%">Duration is in days</span>
                                                <input type="hidden" id="expire" class="form-control" th:field="*{expiredOn}"  />
                                            </div>
                                         </div>
@@ -220,7 +220,7 @@
 
         $("#expire").val(everyday);
         $("#execute").val(everyday);
-        $("#duration").attr("placeholder", "Enter number of days");
+        $("#duration").val(1);
         $("#yesButton").click(function () {
             $("#eventDate").show();
         });
