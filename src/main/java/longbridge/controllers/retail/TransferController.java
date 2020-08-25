@@ -401,8 +401,10 @@ public class TransferController {
             }
             modelMap.put("beneficiary", transRequest.getBeneficiaryAccountName());
             modelMap.put("beneficiaryAcctNumber", transRequest.getBeneficiaryAccountNumber());
-            modelMap.put("beneficiaryBank", transRequest.getFinancialInstitution().getInstitutionName());
+//            modelMap.put("beneficiaryBank", transRequest.getFinancialInstitution().getInstitutionName());
+            modelMap.put("beneficiaryBank", transRequest.getBeneficiaryBank());
             modelMap.put("refNUm", transRequest.getReferenceNumber());
+            modelMap.put("statusDescription", transRequest.getStatusDescription());
             modelMap.put("tranDate", DateFormatter.format(transRequest.getTranDate()));
             modelMap.put("date", DateFormatter.format(new Date()));
 
