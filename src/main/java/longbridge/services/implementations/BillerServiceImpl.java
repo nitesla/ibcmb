@@ -59,7 +59,7 @@ public class BillerServiceImpl implements BillerService {
         updateBillers();
         // fetch categories from quickteller
         refreshCategories();
-        // fetch payment items from quickteller
+        // fetch payment items for each biller from quickteller
         autoUpdatePaymentItems();
     }
 

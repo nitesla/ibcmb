@@ -140,33 +140,7 @@
 
         }
     </script>
-    <script th:inline="javascript">
-        // $("#mail" ).click(function() {
-        //     var loan = [[${loans}]];
-        //     var objectDataString = JSON.stringify(loan);
-        //     console.log(objectDataString)
-        //     var url ="/corporate/loan/email";
-        //     $.ajax({
-        //         type : "POST",
-        //         contentType : "application/json",
-        //         url : url,
-        //         data: objectDataString,
-        //         dataType : 'json',
-        //         timeout : 100000,
-        //         success : function(e) {
-        //         console.log("Success");
-        //         },
-        //         error : function() {
-        //             console.log("ERROR");
-        //         },
-        //         done : function() {
-        //             console.log("DONE");
-        //         }
-        //     });
-        // })
 
-
-    </script>
     <script th:inline="javascript">
         /*<![CDATA[*/
         $(document).ready(function () {
@@ -191,7 +165,7 @@
                     "data" : "accountNumber",
                     "render" : function(data, type,full, meta) {
 
-                       return'<a href="/corporate/loan/pdf/' + data + '"><i class="fa fa-file-pdf-o"></i>' + data + '</a>';
+                       return'<a href="/corporate/loan/pdf/' + data + '"><i class="fa fa-file-pdf-o"></i>' + download + '</a>';
                     }
                 },
                     {
@@ -199,7 +173,7 @@
                         "data" : "accountNumber",
                         "render" : function(data, type,full, meta) {
 
-                            return'<a href="/corporate/loan/excel/' + data + '"><i class="fa fa-file-excel-o"></i>' + data + '</a>';
+                            return'<a href="/corporate/loan/excel/' + data + '"><i class="fa fa-file-excel-o"></i>' + download + '</a>';
                         }
                     },
                     {
@@ -207,7 +181,7 @@
                         "data" : "accountNumber",
                         "render" : function(data, type,full, meta) {
 
-                            return'<a href="/corporate/loan/email/' + data + '"><i class="fa fa-envelope-o"></i>' + data + '</a>';
+                            return'<a href="/corporate/loan/email/' + data + '"><i class="fa fa-envelope-o"></i>' + download + '</a>';
                         }
                     }]
 

@@ -138,6 +138,7 @@
                                                 <div class="col-sm-4">
                                                     <input type="number" value="" class="form-control" min="0" oninput="validity.valid||(value='');"
                                                            th:field="*{duration}"id="duration" placeholder="Enter number of days">
+                                                    <span style="padding-left: 1%">Duration is in days</span>
                                                     <input type="hidden" id="expire" class="form-control" th:field="*{expiredOn}" required="required" />
                                                 </div>
                                             </div>
@@ -147,6 +148,7 @@
                                             <div class="col-sm-4">
                                                 <input type="hidden"  name="imageLink" th:field="*{imageLink}" id="imageLink" >
                                                 <input type="file" id="greetingImage" name="greetingImage" class="form-control" />
+                                                <span style="padding-left: 1%">Image should be in jpg or png format </span>
                                             </div>
                                         </div>
 
