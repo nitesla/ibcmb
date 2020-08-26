@@ -145,6 +145,7 @@ public class SettingController {
         model.addAttribute("accountList", accountList);
         model.addAttribute("retId",retId);
         model.addAttribute("loanAccounts",loanAccounts);
+        model.addAttribute("mailLoanDTO",new MailLoanDTO());
 
         boolean expired = passwordPolicyService.displayPasswordExpiryDate(retailUser.getExpiryDate());
         if (expired) {

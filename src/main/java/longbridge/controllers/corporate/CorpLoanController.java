@@ -3,6 +3,7 @@ package longbridge.controllers.corporate;
 
 import com.sun.mail.util.MailConnectException;
 import longbridge.dtos.LoanDTO;
+import longbridge.dtos.MailLoanDTO;
 import longbridge.security.userdetails.CustomUserPrincipal;
 import longbridge.services.LoanDetailsService;
 import longbridge.utils.JasperReport.ReportHelper;
@@ -50,16 +51,14 @@ public class CorpLoanController {
     @Value("${jrxmlImage.path}")
     private String imagePath;
 
-    @GetMapping("/email/{accountNumber}")
-    public String sendLoanDetailsinMail(@PathVariable String accountNumber, RedirectAttributes redirectAttributes) {
-       CustomUserPrincipal principal = (CustomUserPrincipal) SecurityContextHolder.getContext().getAuthentication()
-                .getPrincipal();
-        String recipient = principal.getUser().getEmail();
-        String name = principal.getUser().getFirstName();
+    @PostMapping("/email")
+    public String sendLoanDetailsinMail(MailLoanDTO mailLoanDTO, RedirectAttributes redirectAttributes) {
+        String recipientEmail = mailLoanDTO.getRecipientEmail();
+        String recipientName = mailLoanDTO.getRecipientName();;
 
         try {
-            loanDetailsService.sendLoanDetails(recipient,name, accountNumber);
-            logger.info("Email successfully sent to {} with subject {}", recipient,messageSource.getMessage("loan.subject", null, locale));
+            loanDetailsService.sendLoanDetails(recipientEmail, recipientName, mailLoanDTO.getAccountNumber());
+            logger.info("Email successfully sent to {} with subject {}", recipientEmail,messageSource.getMessage("loan.subject", null, locale));
             redirectAttributes.addFlashAttribute("message", messageSource.getMessage("mail.send.success", null, locale));
         }
         catch (MailException exception){
