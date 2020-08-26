@@ -141,6 +141,7 @@ public class CorpSettingController {
             model.addAttribute("accountList", accountList);
             model.addAttribute("corpId",corpId);
             model.addAttribute("loanAccounts",loanAccounts);
+            model.addAttribute("mailLoanDTO",new MailLoanDTO());
             boolean exp = passwordPolicyService.displayPasswordExpiryDate(corporateUser.getExpiryDate());
         logger.info("EXPIRY RESULT {} ", exp);
         if (exp){
