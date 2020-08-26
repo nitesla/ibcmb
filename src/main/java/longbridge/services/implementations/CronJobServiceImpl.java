@@ -445,7 +445,6 @@ public class CronJobServiceImpl implements CronJobService {
     public void refreshPaymentBillers() {
         logger.info("Refreshing quickteller billers & categories");
         billerService.RefreshAll();
-
     }
 
     @Override

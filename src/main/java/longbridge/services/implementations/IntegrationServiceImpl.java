@@ -62,6 +62,9 @@ public class IntegrationServiceImpl implements IntegrationService {
 	@Value("${CMB.ALERT.URL}")
 	private String cmbAlert;
 
+	@Value("${quickteller.service.uri}")
+	private String QUICKTELLER_URI;
+
 	@Value("${custom.duty.remark")
 	private String paymentRemark;
 
@@ -125,6 +128,7 @@ public class IntegrationServiceImpl implements IntegrationService {
 		this.coverageRepo = coverageRepo;
 
 			}
+
 
 	@Override
 	public List<AccountInfo> fetchAccounts(String cifid) {
@@ -1442,16 +1446,20 @@ public class IntegrationServiceImpl implements IntegrationService {
 	@Override
 	public List<BillerDTO> getBillers(){
 		List<BillerDTO> billers = new ArrayList<>();
-		String uri = URI+quicktellerBillers;
+		String hashedCode = EncryptionUtil.getSHA512(appId+secretKey, null);
+		logger.info("skey {}", hashedCode);
+		String uri =QUICKTELLER_URI+quicktellerBillers;
 		Map<String,String> params = new HashMap<>();
 		params.put("appid",appId);
-		params.put("hash",secretKey);
+		params.put("hash",hashedCode);
 		try {
 			BillerResponse billerResponse = template.postForObject(uri,params, BillerResponse.class);
 			billers = billerResponse.getBillers();
 			return billers;
 		} catch (Exception e){
 			logger.info("Error processing request");
+			logger.info("message === {} " , e.getMessage());
+
 		}
 			return billers;
 	}
@@ -1459,7 +1467,7 @@ public class IntegrationServiceImpl implements IntegrationService {
 	@Override
 	public BillPayment billPayment(BillPayment billPayment){
 		PaymentResponse payment;
-		String uri = URI+quicktellerBillpaymentAdvice;
+		String uri = QUICKTELLER_URI+quicktellerBillpaymentAdvice;
 		Map<String,String> params = new HashMap<>();
 		params.put("terminalId",terminalId);
 		params.put("amount", billPayment.getAmount().toPlainString());
@@ -1500,7 +1508,7 @@ public class IntegrationServiceImpl implements IntegrationService {
 	@Override
 	public RecurringPayment recurringPayment(RecurringPayment recurringPayment){
 		PaymentResponse payment;
-		String uri = URI+quicktellerBillpaymentAdvice;
+		String uri = QUICKTELLER_URI+quicktellerBillpaymentAdvice;
 		Map<String,String> params = new HashMap<>();
 		params.put("terminalId",terminalId);
 		params.put("amount", recurringPayment.getAmount().toPlainString());
@@ -1543,11 +1551,11 @@ public class IntegrationServiceImpl implements IntegrationService {
 	public List<PaymentItemDTO> getPaymentItems(Long billerId){
 		String id = Long.toString(billerId);
 		List<PaymentItemDTO> items = new ArrayList<>();
-		String uri = URI+quicktellerPaymentItems;
+		String uri = QUICKTELLER_URI+quicktellerPaymentItems;
 		Map<String,String> params = new HashMap<>();
 		params.put("appid",appId);
 		params.put("billerid", id);
-		params.put("hash",secretKey);
+		params.put("hash",EncryptionUtil.getSHA512(appId+id+secretKey, null));
 		try {
 			PaymentItemResponse paymentItemResponse = template.postForObject(uri,params, PaymentItemResponse.class);
 			items = paymentItemResponse.getPaymentitems();
@@ -1561,16 +1569,17 @@ public class IntegrationServiceImpl implements IntegrationService {
 	@Override
 	public List<BillerCategoryDTO> getBillerCategories(){
 		List<BillerCategoryDTO> items = new ArrayList<>();
-		String uri = URI+quicktellerCategories;
+		String uri = QUICKTELLER_URI+quicktellerCategories;
 		Map<String,String> params = new HashMap<>();
 		params.put("appid",appId);
-		params.put("hash",secretKey);
+		params.put("hash",EncryptionUtil.getSHA512(appId+secretKey, null));
 		try {
 			BillerCategoryResponse billerCategoryResponse = template.postForObject(uri,params, BillerCategoryResponse.class);
 			items = billerCategoryResponse.getCategorys();
 			return items;
 		} catch (Exception e){
 			logger.info("Error processing request");
+			logger.info("message === {} " , e.getMessage());
 		}
 		return items;
 	}

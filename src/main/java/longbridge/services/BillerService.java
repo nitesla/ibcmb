@@ -17,8 +17,9 @@ public interface BillerService {
 
     void enableOrDisableBiller(Long id,Boolean value);
 
-    void refreshPaymentItems(Long id);
+    String refreshPaymentItems(Long id);
 
+//    public void runJobForBillers();
 
     Page<Biller> findEntities(String pattern, Pageable pageDetails);
 
