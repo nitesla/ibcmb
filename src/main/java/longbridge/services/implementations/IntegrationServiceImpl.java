@@ -1447,7 +1447,8 @@ public class IntegrationServiceImpl implements IntegrationService {
 	public List<BillerDTO> getBillers(){
 		List<BillerDTO> billers = new ArrayList<>();
 		String hashedCode = EncryptionUtil.getSHA512(appId+secretKey, null);
-		String uri = QUICKTELLER_URI+quicktellerBillers;
+		logger.info("skey {}", hashedCode);
+		String uri =QUICKTELLER_URI+quicktellerBillers;
 		Map<String,String> params = new HashMap<>();
 		params.put("appid",appId);
 		params.put("hash",hashedCode);
@@ -1561,7 +1562,6 @@ public class IntegrationServiceImpl implements IntegrationService {
 			return items;
 		} catch (Exception e){
 			logger.info("Error processing request");
-
 		}
 		return items;
 	}

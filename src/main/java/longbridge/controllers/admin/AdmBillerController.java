@@ -135,8 +135,8 @@ public class AdmBillerController {
     @PostMapping("/updatepaymentitems")
     public String updatePaymentItems(HttpServletRequest request){
         Long billerId = (Long) request.getSession().getAttribute("billerId");
-        billerService.refreshPaymentItems(billerId);
-        return "Successfully Updated";
+        String response = billerService.refreshPaymentItems(billerId);
+        return response;
     }
 
 
