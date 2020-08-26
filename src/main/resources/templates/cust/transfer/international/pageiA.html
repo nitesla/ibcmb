@@ -44,6 +44,12 @@
                     </div>
 
                     <div class="form-group">
+                        <label>Beneficiary Preferred Name </label>
+                        <span class="req"></span><input type="text" class="form-control" name="preferredName"
+                                                        placeholder="Beneficiary Alias" th:field="*{preferredName}" required="required"/>
+                    </div>
+
+                    <div class="form-group">
                         <label>Beneficiary Account Number</label>
                         <span class="req"></span>
                         <input min="0" type="number" class="form-control" name="accountNumber"
