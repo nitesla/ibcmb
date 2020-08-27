@@ -26,7 +26,6 @@ import javax.activation.DataSource;
 import javax.mail.internet.MimeMessage;
 import javax.mail.util.ByteArrayDataSource;
 import java.io.ByteArrayOutputStream;
-import java.net.UnknownHostException;
 import java.util.*;
 
 @Service

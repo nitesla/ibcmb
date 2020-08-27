@@ -246,6 +246,7 @@ public class InternationalTransferController {
         if (request.getSession().getAttribute("internationalBeneficiary") != null) {
             InternationalBeneficiaryDTO dto = (InternationalBeneficiaryDTO) request.getSession().getAttribute("internationalBeneficiary");
             model.addAttribute("internationalBeneficiaryDTO", dto);
+            model.addAttribute("benName", dto.getAccountName());
         }
 
 
