@@ -1385,9 +1385,10 @@ public class IntegrationServiceImpl implements IntegrationService {
 			}
 		catch (Exception e){
 			logger.error("Error getting loan details",e);
+			return null;
 		}
 
-		return loan;
+
 	}
 
 	@Override
