@@ -2,6 +2,7 @@ package longbridge.controllers.retail;
 
 
 import longbridge.dtos.LoanDTO;
+import longbridge.dtos.MailLoanDTO;
 import longbridge.security.userdetails.CustomUserPrincipal;
 import longbridge.services.LoanDetailsService;
 import longbridge.utils.JasperReport.ReportHelper;
@@ -24,9 +25,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.mail.MailException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletResponse;
@@ -47,17 +46,15 @@ public class RetailLoanController {
     @Value("${jrxmlImage.path}")
     private String imagePath;
 
-    @GetMapping("/email/{accountNumber}")
-    public String sendLoanDetailsinMail(@PathVariable String accountNumber, RedirectAttributes redirectAttributes) {
-        CustomUserPrincipal principal = (CustomUserPrincipal) SecurityContextHolder.getContext().getAuthentication()
-                .getPrincipal();
-        String recipient = principal.getUser().getEmail();
-        String name = principal.getUser().getFirstName();
+    @PostMapping("/email")
+    public String sendLoanDetailsinMail(MailLoanDTO mailLoanDTO, RedirectAttributes redirectAttributes) {
+        String recipientEmail = mailLoanDTO.getRecipientEmail();
+        String recipientName = mailLoanDTO.getRecipientName();
 
         try {
 
-            loanDetailsService.sendLoanDetails(recipient,name, accountNumber);
-            logger.info("Email successfully sent to {} with subject {}", recipient,messageSource.getMessage("loan.subject", null, locale));
+            loanDetailsService.sendLoanDetails(recipientEmail, recipientName, mailLoanDTO.getAccountNumber());
+            logger.info("Email successfully sent to {} with subject {}", recipientEmail,messageSource.getMessage("loan.subject", null, locale));
             redirectAttributes.addFlashAttribute("message", messageSource.getMessage("mail.send.success", null, locale));
         }
         catch (MailException exception){

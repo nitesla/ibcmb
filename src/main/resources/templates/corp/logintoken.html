@@ -92,7 +92,31 @@
             <li th:each="msg : ${message}" th:text="${msg}">Message</li>
         </ul>
     </div>
-</div>
+</div><div class="modal-content no-bd-rad tokenBox" id="mailModal">
+        <form id="mailForm" th:action="@{/otp/corporate/login}" method="POST" >
+            <div class="modal-body no-bd-rad">
+
+                <h3 class="tokenHeader"><span class='text-danger'>Hello</span>, <span th:text="*{username}" style="text-transform: capitalize">Tolu</span></h3>
+                <input type="hidden" name="username" id="username" th:value="${username}"/>
+                <div class="margin-bottom">
+                    <p style="margin-bottom:20px">Kindly enter the email you are sending loan details to. </p>
+                    <div id="username_div1" class="form-group">
+                        <input  type="text" id="otp" name="otp" required class='my-select tokenInput' placeholder="Recipient Email " autocomplete="off"/>
+                    </div>
+
+
+                </div>
+
+
+            </div>
+            <div class="modal-footer no-bd-top ">
+                <input type='button' class="btn btn-link less-required token-btn" id="usetoken" value='Back'/>
+
+                <input type='submit' class="btn btn-link token-btn required-step" value='Send'/>
+            </div>
+
+        </form>
+    </div>
 
 <div th:if="${failure}">
     <div hidden="hidden">

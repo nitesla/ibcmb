@@ -6,7 +6,6 @@ import longbridge.models.PaymentItem;
 import longbridge.repositories.BillerCategoryRepo;
 import longbridge.repositories.BillerRepo;
 import longbridge.services.BillerService;
-import longbridge.services.implementations.BillerServiceImpl;
 import longbridge.utils.DataTablesUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -135,8 +134,8 @@ public class AdmBillerController {
     @PostMapping("/updatepaymentitems")
     public String updatePaymentItems(HttpServletRequest request){
         Long billerId = (Long) request.getSession().getAttribute("billerId");
-        billerService.refreshPaymentItems(billerId);
-        return "Successfully Updated";
+        String response = billerService.refreshPaymentItems(billerId);
+        return response;
     }
 
 

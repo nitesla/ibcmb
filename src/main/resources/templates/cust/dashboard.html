@@ -62,7 +62,10 @@
                     <th>Account Name</th>
                     <th>Account Number</th>
                     <th>Account Currency</th>
-                    <th>Loan Details</th>
+                    <th>Pdf</th>
+                    <th>Excel</th>
+                    <th>Email</th>
+
 
 
 
@@ -75,8 +78,9 @@
                     <th>Account Name</th>
                     <th>Account Number</th>
                     <th>Account Currency</th>
-                    <th>Loan Details</th>
-
+                    <th>Pdf</th>
+                    <th>Excel</th>
+                    <th>Email</th>
                 </tr>
                 </tfoot>
             </table>
@@ -89,8 +93,38 @@
         </div>
 
     </div>
+    <div id="mailModal" class="modal" >
+    <div class="modal-dialog">
+    <div class="modal-content no-bd-rad tokenBox" >
+        <form id="mailForm" action="#" th:action="@{/retail/loan/email}" method="post" th:object="${mailLoanDTO}">
+            <div class="modal-body no-bd-rad">
+
+                <h3 class="tokenHeader"><span class='text-danger'>Hello</span>, </h3>
+                <div class="margin-bottom">
+                    <p style="margin-bottom:20px">Kindly enter recipient name and mail you are sending loan details to. </p>
+                    <div id="username_div1" class="form-group">
+
+                        <input  type="hidden" required class='my-select5 tokenInput' id="accNum" name="accountNumber" th:field="*{accountNumber}"  />
+                        <input  type="text" name="recipientName" required class='my-select5 tokenInput' placeholder="Recipient Name " th:field="*{recipientName}" />
+
+                        <input  type="email" name="recipientEmail" required class='my-select5 tokenInput' placeholder="Recipient Email " th:field="*{recipientEmail}" />
+                    </div>
+                    <p style="margin-bottom:20px; color:#9F614B;" id="wait"><b>Sending Email....... </b></p>
 
 
+                </div>
+
+
+            </div>
+            <div class="modal-footer no-bd-top ">
+                <input type='button' class="btn btn-link less-required token-btn" id="cancelButton" value='Back'/>
+                <input type='submit' class="btn btn-link token-btn required-step" id="sendButton" value='Send'/>
+            </div>
+
+        </form>
+    </div>
+    </div>
+    </div>
 
 </div>
 
@@ -157,9 +191,25 @@
                     "data" : "accountNumber",
                     "render" : function(data, type,full, meta) {
 
-                        return'<a href="/retail/loan/pdf/' + data + '"><i class="fa fa-2x fa-file-pdf-o"></i></a><a href="/retail/loan/excel/' + data + '"><i class="fa fa-2x fa-file-excel-o"></i></a><a href="/retail/loan/email/' + data + '" onclick="return theFunction();"><i class="fa fa-2x fa-envelope-o"></i></a>';
+                        return'<a   href="/retail/loan/pdf/' + data + '"><i class="fa fa-file-pdf-o"></i> download </a>';
                     }
-                }]
+                },
+                    {
+                        "targets" : 4,
+                        "data" : "accountNumber",
+                        "render" : function(data, type,full, meta) {
+
+                            return'<a href="/retail/loan/excel/' + data + '" ><i class="fa fa-file-excel-o"></i> download</a>';
+                        }
+                    },
+                    {
+                        "targets" : 5,
+                        "data" : "accountNumber",
+                        "render" : function(data, type,full, meta) {
+
+                            return'<a  onclick="mailLoan(\'' + data + '\')" ><i class="fa fa-envelope-o"></i> Send</a>';
+                        }
+                    }]
 
 
 
@@ -175,12 +225,25 @@
     <script th:inline="javascript">
         $(document).ready(function () {
             $("#mailModal").hide();
-            function theFunction(){
-                console.log("oo")
-                alert("mmmm")
-               $("#mailModal").show();
-            }
+            $("#wait").hide();
+
+            });
+        function mailLoan(data) {
+           $("#mailModal").show( function(){
+               $(".modal-body #accNum").val( data );
+              console.log(data);
+
+                         });
+
+        }
+
+
+        $("#cancelButton").click(function() {
+            $("#mailModal").hide();
         });
+        $("#sendButton").click(function () {
+            $("#wait").show();
+            });
     </script>
     <script th:inline="javascript">
         /*<![CDATA[*/

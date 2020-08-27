@@ -59,9 +59,21 @@ public class BillerServiceImpl implements BillerService {
         updateBillers();
         // fetch categories from quickteller
         refreshCategories();
-        // fetch payment items from quickteller
+        // fetch payment items for each biller from quickteller
         autoUpdatePaymentItems();
     }
+
+
+
+//    @Override
+//    public void runJobForBillers(){
+//        // fetch biller from quickteller
+//        updateBillers();
+//        // fetch categories from quickteller
+//        refreshCategories();
+//        // fetch payment items for each biller from quickteller
+//        autoUpdatePaymentItems();
+//    }
 
 
     private void autoUpdatePaymentItems(){
@@ -307,13 +319,14 @@ public class BillerServiceImpl implements BillerService {
         logger.info("updating payment items!!");
         List<PaymentItemDTO> getBillerPaymentItems = integrationService.getPaymentItems(billerId);
         List<PaymentItem> updatedPaymentItems = compareAndUpdatePaymentItems(getBillerPaymentItems);
-        paymentItemRepo.removeObsolete(updatedPaymentItems.stream().map(PaymentItem::getId).collect(Collectors.toList()));
+        paymentItemRepo.removeObsolete(updatedPaymentItems.stream().map(PaymentItem::getId).collect(Collectors.toList()), billerId);
         return true;
     }
 
     @Override
-    public void refreshPaymentItems(Long billerId){
-        updatePaymentItems(billerId);
+    public String refreshPaymentItems(Long billerId){
+       updatePaymentItems(billerId);
+        return "Successfully updated";
     }
 
 
@@ -363,8 +376,9 @@ public class BillerServiceImpl implements BillerService {
 
     private List<PaymentItem> compareAndUpdatePaymentItems(List<PaymentItemDTO> paymentItems) {
         List<PaymentItem> items = new ArrayList<>();
+        try {
         paymentItems.forEach(paymentItem -> {
-            PaymentItem getStoredItem = paymentItemRepo.findByPaymentItemId(paymentItem.getPaymentitemid());
+                PaymentItem getStoredItem = paymentItemRepo.findByPaymentItemId(paymentItem.getPaymentitemid());
             if (getStoredItem == null) {
                 PaymentItem newPaymentItem = createPaymentitem(paymentItem);
                 newPaymentItem.setEnabled(true);
@@ -377,6 +391,7 @@ public class BillerServiceImpl implements BillerService {
 
             }
         });
+        } catch (Exception e){}
         return paymentItemRepo.saveAll(items);
     }
 
