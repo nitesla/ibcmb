@@ -34,6 +34,7 @@ public class TransRequest extends AbstractEntity implements PrettySerializer {
     private FinancialInstitution financialInstitution;
     private String beneficiaryAccountNumber;
     private String beneficiaryAccountName;
+    private String beneficiaryBank;
     private String remarks;
     private String status;
     private String referenceNumber;
@@ -56,13 +57,14 @@ public class TransRequest extends AbstractEntity implements PrettySerializer {
     }
 
 
-    public TransRequest(String customerAccountNumber, TransferType transferType, Date tranDate, FinancialInstitution financialInstitution, String beneficiaryAccountNumber, String beneficiaryAccountName, String remarks, String status, String referenceNumber, String userReferenceNumber, String narration, String statusDescription, BigDecimal amount,String channel) {
+    public TransRequest(String customerAccountNumber, TransferType transferType, Date tranDate, FinancialInstitution financialInstitution, String beneficiaryAccountNumber, String beneficiaryAccountName, String beneficiaryBank, String remarks, String status, String referenceNumber, String userReferenceNumber, String narration, String statusDescription, BigDecimal amount,String channel) {
         this.customerAccountNumber = customerAccountNumber;
         this.transferType = transferType;
         this.tranDate = tranDate;
         this.financialInstitution = financialInstitution;
         this.beneficiaryAccountNumber = beneficiaryAccountNumber;
         this.beneficiaryAccountName = beneficiaryAccountName;
+        this.beneficiaryBank = beneficiaryBank;
         this.remarks = remarks;
         this.status = status;
         this.referenceNumber = referenceNumber;
@@ -128,6 +130,14 @@ public class TransRequest extends AbstractEntity implements PrettySerializer {
 
     public void setBeneficiaryAccountName(String beneficiaryAccountName) {
         this.beneficiaryAccountName = beneficiaryAccountName;
+    }
+
+    public String getBeneficiaryBank() {
+        return beneficiaryBank;
+    }
+
+    public void setBeneficiaryBank(String beneficiaryBank) {
+        this.beneficiaryBank = beneficiaryBank;
     }
 
     public String getRemarks() {
@@ -221,6 +231,7 @@ public class TransRequest extends AbstractEntity implements PrettySerializer {
                 ", financialInstitution=" + financialInstitution +
                 ", beneficiaryAccountNumber='" + beneficiaryAccountNumber + '\'' +
                 ", beneficiaryAccountName='" + beneficiaryAccountName + '\'' +
+                ", beneficiaryBank='" + beneficiaryBank + '\'' +
                 ", remarks='" + remarks + '\'' +
                 ", status='" + status + '\'' +
                 ", referenceNumber='" + referenceNumber + '\'' +
@@ -268,6 +279,7 @@ public class TransRequest extends AbstractEntity implements PrettySerializer {
                 }
                 gen.writeStringField("beneficiaryAccountNumber", value.beneficiaryAccountNumber);
                 gen.writeStringField("beneficiaryAccountName", value.beneficiaryAccountName);
+                gen.writeStringField("beneficiaryBank", value.beneficiaryBank);
                 gen.writeStringField("remarks", value.remarks);
                 gen.writeStringField("status", value.status);
                 gen.writeStringField("referenceNumber", value.referenceNumber);
