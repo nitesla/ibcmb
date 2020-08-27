@@ -1,10 +1,8 @@
 package longbridge.controllers.corporate;
 
 
-import com.sun.mail.util.MailConnectException;
 import longbridge.dtos.LoanDTO;
 import longbridge.dtos.MailLoanDTO;
-import longbridge.security.userdetails.CustomUserPrincipal;
 import longbridge.services.LoanDetailsService;
 import longbridge.utils.JasperReport.ReportHelper;
 import net.sf.jasperreports.engine.JasperExportManager;
@@ -24,16 +22,15 @@ import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mail.MailException;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
-import java.net.UnknownHostException;
 import java.util.*;
 
 @Controller

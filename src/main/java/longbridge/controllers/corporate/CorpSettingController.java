@@ -9,7 +9,6 @@ import longbridge.models.Account;
 import longbridge.models.Code;
 import longbridge.models.CorporateUser;
 import longbridge.models.FeedBackStatus;
-import longbridge.security.userdetails.CustomUserPrincipal;
 import longbridge.services.*;
 import longbridge.utils.DataTablesUtils;
 import org.apache.commons.lang3.ArrayUtils;
