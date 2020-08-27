@@ -248,6 +248,7 @@ public class CorpTransferServiceImpl implements CorpTransferService {
 
     @Override
     public Page<CorpTransferRequestDTO> getCompletedTransfer(String pattern, Pageable pageDetails) {
+        logger.info("Retrieving completed transfers");
         CorporateUser corporateUser = getCurrentUser();
         Corporate corporate = corporateUser.getCorporate();
         Page<CorpTransRequest> page = corpTransferRequestRepo.findUsingPattern(corporate, pattern, pageDetails);

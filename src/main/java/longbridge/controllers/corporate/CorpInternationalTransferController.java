@@ -257,13 +257,14 @@ public class CorpInternationalTransferController {
     }
 
     @PostMapping("/edit")
-    public String editTransfer(@ModelAttribute("transferRequest") TransferRequestDTO transferRequestDTO, Model model, HttpServletRequest request) {
+    public String editTransfer(@ModelAttribute("corpTransferRequest") TransferRequestDTO transferRequestDTO, Model model, HttpServletRequest request) {
 
 
         model.addAttribute("transferRequest", transferRequestDTO);
         if (request.getSession().getAttribute("internationalBeneficiary") != null) {
             InternationalBeneficiaryDTO dto = (InternationalBeneficiaryDTO) request.getSession().getAttribute("internationalBeneficiary");
-            model.addAttribute("internationalBeneficiary", dto);
+            model.addAttribute("internationalBeneficiaryDTO", dto);
+            model.addAttribute("benName", dto.getAccountName());
         }
 
 
