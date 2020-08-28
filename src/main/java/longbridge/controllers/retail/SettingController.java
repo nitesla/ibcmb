@@ -1,10 +1,7 @@
 package longbridge.controllers.retail;
 
 import longbridge.api.ExchangeRate;
-import longbridge.dtos.AccountDTO;
-import longbridge.dtos.CodeDTO;
-import longbridge.dtos.RetailUserDTO;
-import longbridge.dtos.SettingDTO;
+import longbridge.dtos.*;
 import longbridge.exception.*;
 import longbridge.forms.AlertPref;
 import longbridge.forms.CustChangePassword;
