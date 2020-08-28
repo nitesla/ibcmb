@@ -9,7 +9,6 @@ import longbridge.models.Account;
 import longbridge.models.Code;
 import longbridge.models.CorporateUser;
 import longbridge.models.FeedBackStatus;
-import longbridge.security.userdetails.CustomUserPrincipal;
 import longbridge.services.*;
 import longbridge.utils.DataTablesUtils;
 import org.apache.commons.lang3.ArrayUtils;
@@ -141,6 +140,7 @@ public class CorpSettingController {
             model.addAttribute("accountList", accountList);
             model.addAttribute("corpId",corpId);
             model.addAttribute("loanAccounts",loanAccounts);
+            model.addAttribute("mailLoanDTO",new MailLoanDTO());
             boolean exp = passwordPolicyService.displayPasswordExpiryDate(corporateUser.getExpiryDate());
         logger.info("EXPIRY RESULT {} ", exp);
         if (exp){

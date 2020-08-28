@@ -21,8 +21,8 @@ public interface PaymentItemRepo extends CommonRepo<PaymentItem, Long>{
 
 
     @Modifying
-    @Query("update PaymentItem b set b.delFlag = 'Y' where b.id not in (:id) ")
-    void removeObsolete(@Param("id") List<Long> collect);
+    @Query("update PaymentItem b set b.delFlag = 'Y' where b.id not in (:id) and b.billerId = :billerid")
+    void removeObsolete(@Param("id") List<Long> collect, @Param("billerid") Long billerid);
 
     List<PaymentItem> findByBillerId(Long billerId);
 

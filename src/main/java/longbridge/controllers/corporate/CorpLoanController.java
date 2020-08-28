@@ -1,9 +1,9 @@
 package longbridge.controllers.corporate;
 
 
-import com.sun.mail.util.MailConnectException;
+
 import longbridge.dtos.LoanDTO;
-import longbridge.security.userdetails.CustomUserPrincipal;
+import longbridge.dtos.MailLoanDTO;
 import longbridge.services.LoanDetailsService;
 import longbridge.utils.JasperReport.ReportHelper;
 import net.sf.jasperreports.engine.JasperExportManager;
@@ -20,19 +20,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.mail.MailException;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
-
 import javax.servlet.http.HttpServletResponse;
 import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
-import java.net.UnknownHostException;
 import java.util.*;
 
 @Controller
@@ -50,16 +47,14 @@ public class CorpLoanController {
     @Value("${jrxmlImage.path}")
     private String imagePath;
 
-    @GetMapping("/email/{accountNumber}")
-    public String sendLoanDetailsinMail(@PathVariable String accountNumber, RedirectAttributes redirectAttributes) {
-       CustomUserPrincipal principal = (CustomUserPrincipal) SecurityContextHolder.getContext().getAuthentication()
-                .getPrincipal();
-        String recipient = principal.getUser().getEmail();
-        String name = principal.getUser().getFirstName();
+    @PostMapping("/email")
+    public String sendLoanDetailsinMail(MailLoanDTO mailLoanDTO, RedirectAttributes redirectAttributes) {
+        String recipientEmail = mailLoanDTO.getRecipientEmail();
+        String recipientName = mailLoanDTO.getRecipientName();;
 
         try {
-            loanDetailsService.sendLoanDetails(recipient,name, accountNumber);
-            logger.info("Email successfully sent to {} with subject {}", recipient,messageSource.getMessage("loan.subject", null, locale));
+            loanDetailsService.sendLoanDetails(recipientEmail, recipientName, mailLoanDTO.getAccountNumber());
+            logger.info("Email successfully sent to {} with subject {}", recipientEmail,messageSource.getMessage("loan.subject", null, locale));
             redirectAttributes.addFlashAttribute("message", messageSource.getMessage("mail.send.success", null, locale));
         }
         catch (MailException exception){
@@ -72,10 +67,10 @@ public class CorpLoanController {
     }
 
     @GetMapping("/pdf/{accountNumber}")
-    public ResponseEntity<HttpStatus> downloadLoanPdf(@PathVariable String accountNumber,HttpServletResponse response) throws Exception {
+    public String downloadLoanPdf(@PathVariable String accountNumber,HttpServletResponse response,RedirectAttributes redirectAttributes) throws Exception {
         LoanDTO loan = loanDetailsService.getLoanDetails(accountNumber);
-
-
+        String success =null;
+        if(loan!=null){
         Map<String, Object> modelMap = new HashMap<>();
 
             modelMap.put("accountId",loan.getAccountId());
@@ -94,14 +89,23 @@ public class CorpLoanController {
         JasperReport jasperReport = ReportHelper.getJasperReport("loan_pdf");
         JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, modelMap, new JRBeanCollectionDataSource(loanDTOList));
         JasperExportManager.exportReportToPdfStream(jasperPrint,response.getOutputStream());
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-
+        success ="success";
     }
+        else if(loan==null){
+        redirectAttributes.addFlashAttribute("message", messageSource.getMessage("Loan Detail not available , Please contact the bank ", null, locale));
+        success = "redirect:/corporate/dashboard";
+    }
+        System.out.println(success);
+     return success;
+}
+
+
 
     @GetMapping("/excel/{accountNumber}")
-    public ResponseEntity<HttpStatus> downloadLoanExcel(@PathVariable String accountNumber,HttpServletResponse response) throws Exception {
+    public String downloadLoanExcel(@PathVariable String accountNumber,HttpServletResponse response,RedirectAttributes redirectAttributes ) throws Exception {
         LoanDTO loan = loanDetailsService.getLoanDetails(accountNumber);
-
+        String success =null;
+        if(loan!=null){
         Map<String, Object> modelMap = new HashMap<>();
 
         modelMap.put("accountId",loan.getAccountId());
@@ -128,11 +132,15 @@ public class CorpLoanController {
         outputStream.write(baos.toByteArray());
         outputStream.close();
         baos.close();
-        outputStream.flush();
-
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-
+        success ="success";
     }
+        else if(loan==null){
+        redirectAttributes.addFlashAttribute("message", messageSource.getMessage("Loan Detail not available , Please contact the bank ", null, locale));
+        success = "redirect:/corporate/dashboard";
+    }
+        System.out.println(success);
+        return success;
+}
 
 
 }
