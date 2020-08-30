@@ -109,7 +109,7 @@
                      let keys = Object.keys(response);
                      for (let element of keys) {
                        let coverage = response[element];
-                       let header = Object.keys(coverage[0].details);
+                       let header = Object.keys(coverage[0].coverageDetails);
                        let table = document.createElement('table');
                         table.setAttribute('id',element+'table');
                         table.setAttribute('class','table table-hover');
@@ -136,11 +136,11 @@
                         let tbody = document.createElement('tbody')
                         for (let i = 0; i < coverage.length; i++) {
                              let tr = document.createElement('tr');
-                             let row = Object.keys(coverage[i].details);
+                             let row = Object.keys(coverage[i].coverageDetails);
                             for (let coverageElement of row) {
                                 let td = document.createElement('td');
                                 tr.appendChild(td);
-                                let textNode = document.createTextNode(coverage[i].details[coverageElement]);
+                                let textNode = document.createTextNode(coverage[i].coverageDetails[coverageElement]);
                                 td.appendChild(textNode);
                             }
                             tbody.appendChild(tr);

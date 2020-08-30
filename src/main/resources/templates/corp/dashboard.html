@@ -263,7 +263,7 @@
                 type: 'GET',
                 success: function (coverageData) {
                     for (let n = 0; n < coverageData.length; n++) {
-                       var coverageDetails = coverageData[n].details;
+                       var coverageDetails = coverageData[n].coverageDetails;
 
                        if(!(jQuery.isEmptyObject(coverageDetails)))
                           {
