@@ -1589,22 +1589,13 @@ public class IntegrationServiceImpl implements IntegrationService {
 	public  CoverageDetailsDTO  getCoverageDetails(String coverageName, Set<String> customerIds){
 		CoverageDetailsDTO coverageDetailsDTO = new CoverageDetailsDTO();
 		String uri = URI+"/{coverageName}/{customerIds}";
+		System.out.println(coverageName);
 		Map<String,Object> params = new HashMap<>();
 		params.put("coverageName",coverageName.toLowerCase());
 		params.put("customerIds",customerIds.stream().map(s->s.replaceAll("(\r\n|\r|\n)","")).map(Objects::toString).collect(Collectors.joining(",")));
 		ObjectMapper mapper= new ObjectMapper();
 		try {
-			template.setErrorHandler(new CoverageRestTemplateResponseException());
-			ResponseEntity<JsonNode> response = template.getForEntity(uri, JsonNode.class,params);
-			JsonNode responseBody = response.getBody();
-			if(!responseBody.has("status")){
-				coverageDetailsDTO.setDetails(responseBody);
-			}
-			else {
-				coverageDetailsDTO.setDetails(mapper.createObjectNode());
-			}
-			coverageDetailsDTO.setCustomerIds(customerIds);
-			coverageDetailsDTO.setCoverageName(coverageName);
+			coverageDetailsDTO = template.getForObject(uri,CoverageDetailsDTO.class,params);
 
 		}
 

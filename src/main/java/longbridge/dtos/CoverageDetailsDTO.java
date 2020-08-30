@@ -8,7 +8,8 @@ public class CoverageDetailsDTO {
 
     private Set<String> customerIds;
     private String coverageName;
-    private JsonNode details;
+    private JsonNode coverageDetails;
+
 
     public CoverageDetailsDTO() {
     }
@@ -29,12 +30,12 @@ public class CoverageDetailsDTO {
         this.coverageName = coverageName;
     }
 
-    public JsonNode getDetails() {
-        return details;
+    public JsonNode getCoverageDetails() {
+        return coverageDetails;
     }
 
-    public void setDetails(JsonNode details) {
-        this.details = details;
+    public void setCoverageDetails(JsonNode coverageDetails) {
+        this.coverageDetails = coverageDetails;
     }
 
     @Override
@@ -42,7 +43,7 @@ public class CoverageDetailsDTO {
         return "CoverageDetailsDTO{" +
                 "customerId='" + customerIds + '\'' +
                 ", coverageName='" + coverageName + '\'' +
-                ", details=" + details +
+                ", coverageDetails=" + coverageDetails +
                 '}';
     }
 }
