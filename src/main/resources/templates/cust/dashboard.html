@@ -256,10 +256,11 @@
                 success: function (coverageData) {
                     for (let n = 0; n < coverageData.length; n++) {
                         var coverageDetails = coverageData[n].coverageDetails;
+                        var coverageName = coverageData[n].coverageName;
 
                         if(!(jQuery.isEmptyObject(coverageDetails)))
                         {
-                            var coverageName = Object.keys(coverageDetails)[0];
+
                             var container = document.createElement('div');
                             container.setAttribute('id',coverageName+'div');
                             container.setAttribute('class','no-pad-lef table-responsive no-mt bg-white alert');
@@ -279,12 +280,13 @@
                             tableHeader.setAttribute('class','thead');
 
                             var tbody = document.createElement('tbody')
-                            var tbodyDetails = coverageDetails[coverageName];
+
+                            var tbodyDetails = coverageDetails;
 
                             if(Array.isArray(tbodyDetails)){
                                 var datatableColumns =[];
                                 var header = Object.keys(tbodyDetails[0]);
-                                console.log(header);
+
                                 for(var i=0;i<header.length;i++){
                                     var th = document.createElement('th');
                                     var node = document.createTextNode(header[i][0].toUpperCase()+header[i].slice(1));
@@ -308,7 +310,7 @@
                             else {
                                 var datatableColumns =[];
                                 var header = Object.keys(tbodyDetails);
-                                console.log(header);
+
                                 for(var i=0;i<header.length;i++){
                                     var th = document.createElement('th');
                                     var node = document.createTextNode(header[i][0].toUpperCase()+header[i].slice(1));
