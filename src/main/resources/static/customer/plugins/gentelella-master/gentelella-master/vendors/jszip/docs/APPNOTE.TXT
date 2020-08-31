@@ -327,7 +327,7 @@ V. General Format of a .ZIP file
         implemented in version 6.2 as part of the Strong Encryption 
         Specification defines Version 2 of this record structure. 
         Refer to the section describing the Strong Encryption 
-        Specification for details on the version 2 format for 
+        Specification for details on the version 2 format for
         this record.
 
         Special purpose data may reside in the zip64 extensible data
@@ -690,7 +690,7 @@ V. General Format of a .ZIP file
           will not be the actual file name.  A masking value consisting 
           of a unique hexadecimal value will be stored.  This value will 
           be sequentially incremented for each file in the archive. See
-          the section on the Strong Encryption Specification for details 
+          the section on the Strong Encryption Specification for details
           on retrieving the encrypted file name. 
 
       extra field: (Variable)

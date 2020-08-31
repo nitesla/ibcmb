@@ -1,7 +1,6 @@
 package longbridge.services.implementations;
 
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import longbridge.api.*;
@@ -10,7 +9,6 @@ import longbridge.billerresponse.BillerResponse;
 import longbridge.billerresponse.PaymentItemResponse;
 import longbridge.billerresponse.PaymentResponse;
 import longbridge.dtos.*;
-import longbridge.exception.CoverageRestTemplateResponseException;
 import longbridge.exception.InternetBankingException;
 import longbridge.exception.InternetBankingTransferException;
 import longbridge.exception.TransferErrorService;
@@ -32,7 +30,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
-import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -1589,22 +1586,13 @@ public class IntegrationServiceImpl implements IntegrationService {
 	public  CoverageDetailsDTO  getCoverageDetails(String coverageName, Set<String> customerIds){
 		CoverageDetailsDTO coverageDetailsDTO = new CoverageDetailsDTO();
 		String uri = URI+"/{coverageName}/{customerIds}";
+		System.out.println(coverageName);
 		Map<String,Object> params = new HashMap<>();
 		params.put("coverageName",coverageName.toLowerCase());
 		params.put("customerIds",customerIds.stream().map(s->s.replaceAll("(\r\n|\r|\n)","")).map(Objects::toString).collect(Collectors.joining(",")));
 		ObjectMapper mapper= new ObjectMapper();
 		try {
-			template.setErrorHandler(new CoverageRestTemplateResponseException());
-			ResponseEntity<JsonNode> response = template.getForEntity(uri, JsonNode.class,params);
-			JsonNode responseBody = response.getBody();
-			if(!responseBody.has("status")){
-				coverageDetailsDTO.setDetails(responseBody);
-			}
-			else {
-				coverageDetailsDTO.setDetails(mapper.createObjectNode());
-			}
-			coverageDetailsDTO.setCustomerIds(customerIds);
-			coverageDetailsDTO.setCoverageName(coverageName);
+			coverageDetailsDTO = template.getForObject(uri,CoverageDetailsDTO.class,params);
 
 		}
 
