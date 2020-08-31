@@ -264,10 +264,11 @@
                 success: function (coverageData) {
                     for (let n = 0; n < coverageData.length; n++) {
                        var coverageDetails = coverageData[n].coverageDetails;
+                        var coverageName = coverageData[n].coverageName;
 
                        if(!(jQuery.isEmptyObject(coverageDetails)))
                           {
-                               var coverageName = Object.keys(coverageDetails)[0];
+                              
                                var container = document.createElement('div');
                                container.setAttribute('id',coverageName+'div');
                                container.setAttribute('class','no-pad-lef table-responsive no-mt bg-white alert');
@@ -287,7 +288,8 @@
                                tableHeader.setAttribute('class','thead');
 
                               var tbody = document.createElement('tbody')
-                              var tbodyDetails = coverageDetails[coverageName];
+                              var tbodyDetails = coverageDetails;
+                              console.log(tbodyDetails);
 
                               if(Array.isArray(tbodyDetails)){
                                   var datatableColumns =[];
