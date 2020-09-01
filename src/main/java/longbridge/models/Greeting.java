@@ -1,6 +1,8 @@
 package longbridge.models;
 
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonSerializer;
@@ -19,6 +21,8 @@ import java.util.Date;
 @Audited(withModifiedFlag=true)
 @Where(clause ="del_flag='N'")
 @Check(constraints = "duration >= 0")
+
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Greeting extends AbstractEntity implements PrettySerializer {
 
     private String eventName;
@@ -129,6 +133,8 @@ public class Greeting extends AbstractEntity implements PrettySerializer {
     public void setUserType(String userType) {
         this.userType = userType;
     }
+
+
 
     @Override
     public String toString(){
