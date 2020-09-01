@@ -67,9 +67,10 @@ public class RetailLoanController {
     }
 
     @GetMapping("/pdf/{accountNumber}")
-    public ResponseEntity<HttpStatus> downloadLoanPdf(@PathVariable String accountNumber, HttpServletResponse response) throws Exception {
+    public String downloadLoanPdf(@PathVariable String accountNumber, HttpServletResponse response ,RedirectAttributes redirectAttributes) throws Exception {
         LoanDTO loan = loanDetailsService.getLoanDetails(accountNumber);
-        System.out.println(loan);
+        String success =null;
+        if(loan!=null){
         Map<String, Object> modelMap = new HashMap<>();
 
             modelMap.put("accountId",loan.getAccountId());
@@ -89,13 +90,20 @@ public class RetailLoanController {
         JasperReport jasperReport = ReportHelper.getJasperReport("loan_pdf");
         JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, modelMap, new JRBeanCollectionDataSource(loanDTOList));
         JasperExportManager.exportReportToPdfStream(jasperPrint,response.getOutputStream());
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-
+        success ="success";
+        }else if(loan==null){
+            redirectAttributes.addFlashAttribute("message", messageSource.getMessage("Loan Detail not available , Please contact the bank ", null, locale));
+            success = "redirect:/retail/dashboard";
+        }
+        System.out.println(success);
+     return success;
     }
 
     @GetMapping("/excel/{accountNumber}")
-    public ResponseEntity<HttpStatus> downloadLoanExcel(@PathVariable String accountNumber,HttpServletResponse response) throws Exception {
+    public String downloadLoanExcel(@PathVariable String accountNumber,HttpServletResponse response,RedirectAttributes redirectAttributes ) throws Exception {
         LoanDTO loan = loanDetailsService.getLoanDetails(accountNumber);
+        String success =null;
+        if(loan!=null){
         Map<String, Object> modelMap = new HashMap<>();
 
             modelMap.put("accountId",loan.getAccountId());
@@ -124,8 +132,14 @@ public class RetailLoanController {
         outputStream.close();
         baos.close();
         outputStream.flush();
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-
+        success ="success";
+    }
+        else if(loan==null){
+        redirectAttributes.addFlashAttribute("message", messageSource.getMessage("Loan Detail not available , Please contact the bank ", null, locale));
+        success = "redirect:/retail/dashboard";
+    }
+        System.out.println(success);
+     return success;
     }
 
 
