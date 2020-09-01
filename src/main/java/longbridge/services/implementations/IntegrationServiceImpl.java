@@ -1,16 +1,14 @@
 package longbridge.services.implementations;
 
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import longbridge.api.*;
-import longbridge.billerresponse.BillerCategoryResponse;
-import longbridge.billerresponse.BillerResponse;
-import longbridge.billerresponse.PaymentItemResponse;
-import longbridge.billerresponse.PaymentResponse;
+import longbridge.response.BillerCategoryResponse;
+import longbridge.response.BillerResponse;
+import longbridge.response.PaymentItemResponse;
+import longbridge.response.PaymentResponse;
 import longbridge.dtos.*;
-import longbridge.exception.CoverageRestTemplateResponseException;
 import longbridge.exception.InternetBankingException;
 import longbridge.exception.InternetBankingTransferException;
 import longbridge.exception.TransferErrorService;
@@ -32,7 +30,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
-import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
