@@ -4,10 +4,10 @@ package longbridge.services.implementations;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import longbridge.api.*;
-import longbridge.billerresponse.BillerCategoryResponse;
-import longbridge.billerresponse.BillerResponse;
-import longbridge.billerresponse.PaymentItemResponse;
-import longbridge.billerresponse.PaymentResponse;
+import longbridge.response.BillerCategoryResponse;
+import longbridge.response.BillerResponse;
+import longbridge.response.PaymentItemResponse;
+import longbridge.response.PaymentResponse;
 import longbridge.dtos.*;
 import longbridge.exception.InternetBankingException;
 import longbridge.exception.InternetBankingTransferException;
@@ -64,6 +64,9 @@ public class IntegrationServiceImpl implements IntegrationService {
 
 	@Value("${custom.duty.remark")
 	private String paymentRemark;
+
+	@Value("${limit.charge.uri")
+	private String limitChargeUrl;
 
 	@Value("${get.billers.quickteller}")
 	private String quicktellerBillers;
@@ -1393,7 +1396,7 @@ public class IntegrationServiceImpl implements IntegrationService {
 		String methodResponse = "success";
 		Response response = null;
 		TransferSetLimit tslDto = new TransferSetLimit();
-		String uri = URI+"/service/updateLimit";
+		String uri = limitChargeUrl+"/service/updateLimit";
 		Map<String,String> params = new HashMap<>();
 		params.put("channel", tsl.getChannel());
 		params.put("description", tsl.getDescription());
@@ -1405,9 +1408,10 @@ public class IntegrationServiceImpl implements IntegrationService {
 		logger.info("Api Params = " + params);
 		try{
 			response = template.postForObject(uri, params, Response.class);
-
+            logger.info("response {} ", response);
 		} catch(Exception e){
 			logger.info("Error processing request");
+			logger.info(e.getMessage());
 			methodResponse = "fail";
 		}
 		return methodResponse;
@@ -1419,7 +1423,7 @@ public class IntegrationServiceImpl implements IntegrationService {
 		String methodResponse = "success";
 		Response response =  null;
 		TransferFeeAdjustment tfa = new TransferFeeAdjustment();
-		String uri = URI+"/service/updateCharge";
+		String uri = limitChargeUrl+"/service/updateCharge";
 		Map<String,String> params = new HashMap<>();
 		params.put("feeRange", tfaDTO.getFeeRange());
 		params.put("feeDescription", tfaDTO.getFeeDescription());

@@ -92,7 +92,6 @@ public class TransferController {
         this.securityService = securityService;
         this.appContext = appContext;
         this.transferUtils = transferUtils;
-
     }
 
 
