@@ -1,5 +1,5 @@
 
-package longbridge.billerresponse;
+package longbridge.response;
 
 import longbridge.dtos.BillerDTO;
 

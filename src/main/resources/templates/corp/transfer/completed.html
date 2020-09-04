@@ -43,15 +43,15 @@
                     <tbody>
 
                     </tbody>
-                    <tfoot>
-                        <td>Date</td>
-                        <td>Amount</td>
-                        <td>Beneficiary</td>
-                        <td>Beneficiary Bank</td>
-                        <td>Remarks</td>
-                        <td>Status</td>
-                        <td></td>
-                    </tfoot>
+                    <!--<tfoot>-->
+                        <!--<td>Date</td>-->
+                        <!--<td>Amount</td>-->
+                        <!--<td>Beneficiary</td>-->
+                        <!--<td>Beneficiary Bank</td>-->
+                        <!--<td>Remarks</td>-->
+                        <!--<td>Status</td>-->
+                        <!--<td></td>-->
+                    <!--</tfoot>-->
                 </table>
             </div>
 
@@ -87,9 +87,10 @@
                         }
                     },
                     "dom": 'T<"clear">frtlp',
-                    "columns": [{
-                        "data": "tranDate"
-                    }, {
+                    "columns": [
+                        {"data": "tranDate"},
+
+                        {
                         "data": "amount"
                     }, {
                         "data": "beneficiaryAccountName"

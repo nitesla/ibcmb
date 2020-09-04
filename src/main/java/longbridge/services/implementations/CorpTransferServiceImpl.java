@@ -228,7 +228,6 @@ public class CorpTransferServiceImpl implements CorpTransferService {
         CorporateUser corporateUser = getCurrentUser();
         Corporate corporate = corporateUser.getCorporate();
         Page<CorpTransRequest> page = corpTransferRequestRepo.findPendingRequests(corporate, pageDetails);
-
         List<CorpTransferRequestDTO> corpTransferRequestDTOs = convertEntitiesToDTOs(page.getContent());
         long t = page.getTotalElements();
         Page<CorpTransferRequestDTO> pageImpl = new PageImpl<>(corpTransferRequestDTOs, pageDetails, t);
