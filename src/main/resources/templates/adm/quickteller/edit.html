@@ -102,7 +102,7 @@
                                                         <label class="col-sm-2 control-label">Category</label>
 
                                                         <div class="col-sm-6">
-                                                            <input type="text" class="form-control" th:field="*{biller.categoryName}"/>
+                                                            <input type="text" class="form-control" th:field="*{biller.categoryName}" readonly="readonly"/>
                                                             <!--<p th:if="${#fields.hasErrors('*')}" th:errors="*{lastName}">Last Name Error</p>-->
 
                                                         </div>
@@ -125,7 +125,7 @@
                                                         <label class="col-sm-2 control-label">Short-Name</label>
 
                                                         <div class="col-sm-6">
-                                                            <input type="text" class="form-control" th:field="*{biller.shortname}"/>
+                                                            <input type="text" class="form-control" th:field="*{biller.shortname}" readonly="readonly"/>
                                                         </div>
 
                                                     </div>
@@ -134,7 +134,7 @@
                                                         <label class="col-sm-2 control-label">Product-Id (PayDirect)</label>
 
                                                         <div class="col-sm-6">
-                                                            <input type="text" class="form-control" th:field="*{biller.paydirectProductId}"/>
+                                                            <input type="text" class="form-control" th:field="*{biller.paydirectProductId}" readonly="readonly"/>
                                                         </div>
 
                                                     </div>
@@ -142,7 +142,7 @@
                                                         <label class="col-sm-2 control-label">Institution-Id (PayDirect)</label>
 
                                                         <div class="col-sm-6">
-                                                            <input type="text" class="form-control" th:field="*{biller.paydirectInstitutionId}"/>
+                                                            <input type="text" class="form-control" th:field="*{biller.paydirectInstitutionId}" readonly="readonly"/>
                                                         </div>
 
                                                     </div>
@@ -150,7 +150,7 @@
                                                         <label class="col-sm-2 control-label">Currency-Code</label>
 
                                                         <div class="col-sm-6">
-                                                            <input type="text" class="form-control" th:field="*{biller.currencyCode}"/>
+                                                            <input type="text" class="form-control" th:field="*{biller.currencyCode}" readonly="readonly"/>
                                                         </div>
 
                                                     </div>
@@ -158,7 +158,7 @@
                                                         <label class="col-sm-2 control-label">Narration</label>
 
                                                         <div class="col-sm-6">
-                                                            <textarea type="text" class="form-control" th:field="*{biller.narration}"/>
+                                                            <textarea type="text" class="form-control" th:field="*{biller.narration}" readonly="readonly"/>
                                                         </div>
 
                                                     </div>

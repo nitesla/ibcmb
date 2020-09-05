@@ -71,8 +71,5 @@ public interface BillerService {
 
     Biller getBillerName(Long id);
 
-
-
-
     Page<Biller> findSearch(String categoryname, String search, Pageable pageable);
 }
