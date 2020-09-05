@@ -414,7 +414,7 @@ public class BillerServiceImpl implements BillerService {
 
     @Override
     public List <BillerCategory> getCategory() {
-        return billerCategoryRepo.findAll();
+        return billerCategoryRepo.findAllByEnabled(true);
     }
 
 
