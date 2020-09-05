@@ -68,8 +68,11 @@
 
                         <div class="form-group">
                             <label >Price</label>
-                            <input type="text" class="form-control" th:field="*{amount}"
-                                   required="required" readonly/>
+<!--                            <input type="text" class="form-control" th:field="*{amount}"-->
+<!--                                   required="required" readonly/>-->
+                            <input id="amount" th:field="*{amount}" required="required" type="number" min=1 class="form-control"  placeholder="Amount" readonly/>
+                            <p class="errors close" data-dismiss="alert" aria-label="close" th:if="${#fields.hasErrors('amount')}" th:errors="*{amount}">&times;</p>
+                            <span class='req-inner'></span>
                         </div>
 
                         <div class="form-group">
