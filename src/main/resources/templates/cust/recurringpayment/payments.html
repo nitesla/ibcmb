@@ -12,9 +12,9 @@
                 <form id="myForm" name="myForm" th:action="@{/retail/recurringpayment/payment}" method="POST" >
                     <input type="hidden" id="myID" name="id"/>
                     <div class="modal-body no-bd-rad">
-                        <h3 class="tokenHeader"><span class='text-danger'>Delete Recuriing Payment</span>, <span th:text="*{username}" style="text-transform: capitalize">Tolu</span></h3>
+                        <h3 class="tokenHeader"><span class='text-danger'>Delete Recurring Payment</span>, <span th:text="*{username}" style="text-transform: capitalize">Tolu</span></h3>
                         <div class="margin-bottom">
-                            <p style="margin-bottom:20px">Enter token to confirm standing order delete</p>
+                            <p style="margin-bottom:20px">Enter token to confirm recurring payment delete</p>
                             <div id="username_div" class="form-group">
                                 <input  type="text" id="token" style="width: 100%!important;"  required name="token" class='my-select tokenInput' placeholder="Token Code" autocomplete="off"/>
                             </div>
