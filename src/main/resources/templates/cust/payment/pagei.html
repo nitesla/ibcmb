@@ -18,7 +18,7 @@
             <div class="">
                 <div class="form-spacin col-md-7 col-sm-7 no-pad-right">
 
-                    <form id="local" method="post" th:action="@{/retail/payment/summary}"
+                    <form id="local" method="post" th:action="@{/retail/payment/highlight}"
                           th:object="${billPaymentDTO}">
 
 
@@ -34,66 +34,68 @@
 
 
                             </select>
-                            <!--<p th:if="${#fields.hasErrors('customerAccountNumber')}" th:errors="*{customerAccountNumber}"-->
-                            <!--class="errors"></p>-->
                         </div>
 
-
-                        <div class="form-group">
-                            <label>Category</label>
-                                                        <select class="form-control" th:field="*{categoryName}" id="categories" name="categories" onchange="fetchBillers()" required="required">
-                                                            <option value=""> Select Category </option>
-                                                            <option th:each="category : ${billerCategories}" th:value="${category.categoryName}" th:text="${category.categoryName}"></option>
-                                                        </select><span class='req-inner'></span>
-                        </div>
 
 <!--                        <div class="form-group">-->
 <!--                            <label>Category</label>-->
-<!--                            <select class="form-control" th:field="*{categoryName}"  id="categories" name="categories" onchange="fetchBillers()" required="required">-->
-<!--                            <option th:each="s: ${payment}" th:value="${s.categoryName}" th:text="${s.categoryName}" th:selected="${s.primaryFlag=='Y'}"></option>-->
-<!--                            </select>-->
+<!--                                                        <select class="form-control" th:field="*{categoryName}" id="categories" name="categories" onchange="fetchBillers()" required="required">-->
+<!--                                                            <option value=""> Select Category </option>-->
+<!--                                                            <option th:each="category : ${billerCategories}" th:value="${category.categoryName}" th:text="${category.categoryName}"></option>-->
+<!--                                                        </select><span class='req-inner'></span>-->
 <!--                        </div>-->
+                        <div class="form-group">
+                            <label>Category</label>
+<!--                            <input type="text" class="form-control ben-bg coronation-blue"  th:each="category : ${billerCategories}" th:name="${category.categoryName}" th:value="${category.categoryName}" disabled />-->
+                            <input type="text" class="form-control" id="categories" th:field="*{categoryName}"
+                                   required="required" readonly/>
+
+                        </div>
+
 
                         <div class="form-group">
                             <input type="hidden" class="form-control" th:field="*{paymentCode}"
                                    required="required" readonly/>
                         </div>
 
-                        <div class="form-group">
-                            <label>Biller</label>
-                            <select  class="form-control" th:field="*{billerId}" id="billerId" name="billerId" onchange="fetchPaymentItems()" required="required" >
-                            </select><span class='req-inner'></span>
-                        </div>
-
 <!--                        <div class="form-group">-->
 <!--                            <label>Biller</label>-->
-<!--                            <input type="text" class="form-control" th:field="*{billerName}"-->
-<!--                                   required="required" readonly/>-->
-<!--                            -->
+<!--                            <select  class="form-control" th:field="*{billerId}" id="billerId" name="billerId" onchange="fetchPaymentItems()" required="required" >-->
+<!--                            </select><span class='req-inner'></span>-->
 <!--                        </div>-->
 
-
                         <div class="form-group">
-                            <label>Payment Item</label>
-                            <select class="form-control" th:field="*{paymentItemId}" id="paymentItemId" name="paymentItemId" onchange="fetchPaymentItemDetails()" required="required">
-                            </select><span class='req-inner'></span>
+                            <label>Biller</label>
+<!--                            <input type="text" class="form-control ben-bg coronation-blue"  th:each="category : ${billerCategories}" th:name="${category.billerName}" th:value="${category.billerName}" disabled />-->
+                            <input type="text" class="form-control" id="billerId" th:field="*{billerName}"
+                                   required="required" readonly/>
+
                         </div>
+
+
 
 <!--                        <div class="form-group">-->
 <!--                            <label>Payment Item</label>-->
-<!--                            <input type="text" class="form-control" th:field="*{paymentItemName}"-->
-<!--                                   required="required" readonly/>-->
-
+<!--                            <select class="form-control" th:field="*{paymentItemId}" id="paymentItemId" name="paymentItemId" onchange="fetchPaymentItemDetails()" required="required">-->
+<!--                            </select><span class='req-inner'></span>-->
 <!--                        </div>-->
+
+                        <div class="form-group">
+                            <label>Payment Item</label>
+<!--                            <input type="text" class="form-control ben-bg coronation-blue"  th:each="category : ${billerCategories}" th:name="${category.paymentItemName}" th:value="${category.paymentItemName}" disabled />-->
+                            <input type="text" class="form-control" th:field="*{paymentItemName}" id="paymentItemName"
+                                   required="required" readonly/>
+
+                        </div>
+
+
+
 
 
                         <div class="form-group">
                             <label >Price</label>
-<!--                            <input type="text" class="form-control" th:field="*{amount}"-->
-<!--                                   required="required"/>-->
-                            <input id="amount" th:field="*{amount}" required="required" type="number" min=1 class="form-control"  placeholder="Amount" readonly/>
+                            <input id="amount" th:field="*{amount}" required="required" type="number" min=1 class="form-control"  placeholder="Amount" />
                             <p class="errors close" data-dismiss="alert" aria-label="close" th:if="${#fields.hasErrors('amount')}" th:errors="*{amount}">&times;</p>
-                            <span class='req-inner'></span>
                         </div>
 
 
@@ -138,8 +140,9 @@
     /*<![CDATA[*/
     $(document).ready(function () {
         getBalance();
-        fetchBillers();
-        fetchPaymentItems();
+        // fetchBillers();
+        // fetchPaymentItems();
+        // fetchPaymentItemDetails()
     });
 
     function cancel(){
@@ -173,7 +176,7 @@
         })
     }
 
-    function fetchBillers(){
+    /*function fetchBillers(){
 
         var category = $("#categories").val();
         console.log("Category", category)
@@ -188,18 +191,18 @@
                 if(biller.length==0){
 
                 }
-                $('#billerId').empty();
-                $('#billerId').append("<option value=''>-Select-</option>");
-                $('#paymentItemId').empty();
+                // $('#billerId').empty();
+                // $('#billerId').append("<option value=''>-Select-</option>");
+                // $('#paymentItemId').empty();
                 console.log("Biller ---------->>>" +biller)
-                biller.forEach(b => $('#billerId').append("<option value='"+b.billerId+"'>"+b.billerName+"</option>"));
+                // biller.forEach(b => $('#billerId').append("<option value='"+b.billerId+"'>"+b.billerName+"</option>"));
 
             }
         })
 
-    }
+    }*/
 
-    function fetchPaymentItems(){
+    /*function fetchPaymentItems(){
 
         var biller = $("#billerId").val();
         console.log("Biller selected is ---->>>>>", biller)
@@ -213,21 +216,22 @@
                 if(items.length==0){
 
                 }
-                $('#paymentItemId').empty();
-                $('#paymentItemId').append("<option value=''>-Select-</option>");
-                console.log("Biller ---------->>>" +items)
-                items.forEach(b => $('#paymentItemId').append("<option value='"+b.paymentItemId+"'>"+b.paymentItemName+"</option>"));
+                // $('#paymentItemId').empty();
+                // $('#paymentItemId').append("<option value=''>-Select-</option>");
+                // console.log("Biller ---------->>>" +items)
+                // items.forEach(b => $('#paymentItemId').append("<option value='"+b.paymentItemId+"'>"+b.paymentItemName+"</option>"));
             }
         })
-    }
+    }*/
 
 
-    function fetchPaymentItemDetails(){
+    /*function fetchPaymentItemDetails(){
 
-        var paymentItemId = $("#paymentItemId").val();
-        console.log("paymentItem detail is ---->>>>>", paymentItemId)
+        var paymentItemName = $("#paymentItemName").val();
+        console.log("paymentItem detail is ---->>>>>", paymentItemName)
         $.ajax({
-            url: "/retail/payment/paymentItem/" + paymentItemId+"",
+            // url: "/retail/payment/paymentItem/" + paymentItemName+"",
+            url: "/retail/payment/paymentItemName",
             success: function (paymentItem, status, xhr) {
                 console.log("PaymentItem name is "+paymentItem.paymentItemName);
                 console.log("PaymentItem price is "+paymentItem.amount);
@@ -246,7 +250,7 @@
             }
         });
 
-    }
+    }*/
 
 
     /*]]>*/

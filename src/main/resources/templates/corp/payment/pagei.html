@@ -18,7 +18,7 @@
             <div class="">
                 <div class="form-spacin col-md-7 col-sm-7 no-pad-right">
 
-                    <form id="local" method="post" th:action="@{/corporate/payment/summary}"
+                    <form id="local" method="post" th:action="@{/corporate/payment/highlight}"
                           th:object="${billPaymentDTO}">
 
 
@@ -34,24 +34,25 @@
 
 
                             </select>
-                            <!--<p th:if="${#fields.hasErrors('customerAccountNumber')}" th:errors="*{customerAccountNumber}"-->
-                            <!--class="errors"></p>-->
                         </div>
 
-
-                        <div class="form-group">
-                            <label>Category</label>
-                                                        <select class="form-control" th:field="*{categoryName}" id="categories" name="categories" onchange="fetchBillers()" required="required">
-                                                            <option value=""> Select Category </option>
-                                                            <option th:each="category : ${billerCategories}" th:value="${category.categoryName}" th:text="${category.categoryName}"></option>
-                                                        </select><span class='req-inner'></span>
-                        </div>
 
 <!--                        <div class="form-group">-->
 <!--                            <label>Category</label>-->
-<!--                            <input type="text" class="form-control" th:field="*{categoryName}"-->
-<!--                                   required="required" readonly/>-->
+<!--                                                        <select class="form-control" th:field="*{categoryName}" id="categories" name="categories" onchange="fetchBillers()" required="required">-->
+<!--                                                            <option value=""> Select Category </option>-->
+<!--                                                            <option th:each="category : ${billerCategories}" th:value="${category.categoryName}" th:text="${category.categoryName}"></option>-->
+<!--                                                        </select><span class='req-inner'></span>-->
 <!--                        </div>-->
+
+                        <div class="form-group">
+                            <label>Category</label>
+                            <!--                            <input type="text" class="form-control ben-bg coronation-blue"  th:each="category : ${billerCategories}" th:name="${category.categoryName}" th:value="${category.categoryName}" disabled />-->
+                            <input type="text" class="form-control" id="categories" th:field="*{categoryName}"
+                                   required="required" readonly/>
+
+                        </div>
+
 
                         <div class="form-group">
                             <input type="hidden" class="form-control" th:field="*{paymentCode}"
@@ -62,43 +63,38 @@
 <!--                            <label>Biller</label>-->
 <!--                            <select  class="form-control" th:field="*{billerId}" id="billerId" name="billerId" onchange="fetchPaymentItems()" required="required" >-->
 <!--                            </select><span class='req-inner'></span>-->
-<!--                            &lt;!&ndash;                            <input type="hidden" id="referenceName"/>&ndash;&gt;-->
 <!--                        </div>-->
 
                         <div class="form-group">
                             <label>Biller</label>
-                            <select  class="form-control" th:field="*{billerId}" id="billerId" name="billerId" onchange="fetchPaymentItems()" required="required" >
-                            </select><span class='req-inner'></span>
+                            <!--                            <input type="text" class="form-control ben-bg coronation-blue"  th:each="category : ${billerCategories}" th:name="${category.billerName}" th:value="${category.billerName}" disabled />-->
+                            <input type="text" class="form-control" id="billerId" th:field="*{billerName}"
+                                   required="required" readonly/>
+
                         </div>
+
 
 
 <!--                        <div class="form-group">-->
 <!--                            <label>Payment Item</label>-->
 <!--                            <select class="form-control" th:field="*{paymentItemId}" id="paymentItemId" name="paymentItemId" onchange="fetchPaymentItemDetails()" required="required">-->
 <!--                            </select><span class='req-inner'></span>-->
-
 <!--                        </div>-->
 
                         <div class="form-group">
                             <label>Payment Item</label>
-                            <select class="form-control" th:field="*{paymentItemId}" id="paymentItemId" name="paymentItemId" onchange="fetchPaymentItemDetails()" required="required">
-                            </select><span class='req-inner'></span>
+                            <!--                            <input type="text" class="form-control ben-bg coronation-blue"  th:each="category : ${billerCategories}" th:name="${category.paymentItemName}" th:value="${category.paymentItemName}" disabled />-->
+                            <input type="text" class="form-control" th:field="*{paymentItemName}" id="paymentItemName"
+                                   required="required" readonly/>
+
                         </div>
 
 
-                        <!--                        <div id="ownerReferenceNumberDiv" class="form-group" style="display: none">-->
-                        <!--                            <label id="ownerReferenceNumber">Owner Reference Number</label>-->
-                        <!--                            <input type="text" class="form-control" th:field="*{customerIdentifier}"-->
-                        <!--                                   required="required"/>-->
-                        <!--                        </div>-->
 
                         <div class="form-group">
                             <label >Price</label>
-<!--                            <input type="text" class="form-control" th:field="*{amount}"-->
-<!--                                   required="required" readonly/>-->
-                            <input id="amount" th:field="*{amount}" required="required" type="number" min=1 class="form-control"  placeholder="Amount" readonly/>
+                            <input id="amount" th:field="*{amount}" required="required" type="number" min=1 class="form-control"  placeholder="Amount" />
                             <p class="errors close" data-dismiss="alert" aria-label="close" th:if="${#fields.hasErrors('amount')}" th:errors="*{amount}">&times;</p>
-                            <span class='req-inner'></span>
                         </div>
 
 
@@ -112,12 +108,6 @@
                             <input type="text" class="form-control" th:field="*{emailAddress}"
                                    required="required" readonly/>
                         </div>
-
-                        <!--                        <div class="form-group" id="check">-->
-                        <!--                            <label style="font-weight: bold; color: black;margin-left:10px !important">-->
-                        <!--                                <input  type="checkbox" id="add" name="add"/><span class='addNew'>Save Payment</span>-->
-                        <!--                            </label>-->
-                        <!--                        </div>-->
 
                         <button id="localsave" class="btn btn-link required-step" >Next</button>
                         <button type="button" class="btn btn-link less-required my-buttons" onclick="cancel();">Make New Payment</button>
@@ -149,8 +139,8 @@
     /*<![CDATA[*/
     $(document).ready(function () {
         getBalance();
-        fetchBillers();
-        fetchPaymentItems();
+        // fetchBillers();
+        // fetchPaymentItems();
     });
 
     function cancel(){
@@ -184,7 +174,7 @@
         })
     }
 
-    function fetchBillers(){
+    /*function fetchBillers(){
 
         var category = $("#categories").val();
         console.log("Category", category)
@@ -208,9 +198,9 @@
             }
         })
 
-    }
+    }*/
 
-    function fetchPaymentItems(){
+    /*function fetchPaymentItems(){
 
         var biller = $("#billerId").val();
         console.log("Biller selected is ---->>>>>", biller)
@@ -230,9 +220,9 @@
                 items.forEach(b => $('#paymentItemId').append("<option value='"+b.paymentItemId+"'>"+b.paymentItemName+"</option>"));
             }
         })
-    }
+    }*/
 
-    function fetchPaymentItemDetails(){
+    /*function fetchPaymentItemDetails(){
 
         var paymentItemId = $("#paymentItemId").val();
         console.log("paymentItem detail is ---->>>>>", paymentItemId)
@@ -256,7 +246,7 @@
             }
         });
 
-    }
+    }*/
 
 
 

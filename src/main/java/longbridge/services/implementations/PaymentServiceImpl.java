@@ -63,6 +63,11 @@ public class PaymentServiceImpl implements PaymentService {
             billPayment = billPaymentRepo.save(billPayment);
 //            billPaymentRepo.save(payment1);
             logger.info("Added payment {}",billPayment);
+            if(billPayment.getStatus().equalsIgnoreCase("SUCCESSFUL")){
+                return messageSource.getMessage("Payment Successful",null,locale);
+            }else {
+                return messageSource.getMessage("Payment Failed",null,locale);
+            }
 
         }
         catch (Exception e){
@@ -70,7 +75,6 @@ public class PaymentServiceImpl implements PaymentService {
             throw new InternetBankingException(messageSource.getMessage("Payment Failure",null,locale));
         }
 
-        return messageSource.getMessage("Payment Successful",null,locale);
 
     }
 
@@ -85,13 +89,16 @@ public class PaymentServiceImpl implements PaymentService {
 
             billPayment = billPaymentRepo.save(billPayment);
             logger.info("Added payment {}",billPayment);
+            if(billPayment.getStatus().equalsIgnoreCase("SUCCESSFUL")){
+                return messageSource.getMessage("Payment Successful",null,locale);
+            }else {
+                return messageSource.getMessage("Payment Failed",null,locale);
+            }
         }
         catch (Exception e){
             logger.error(e.getMessage(),e);
             throw new InternetBankingException(messageSource.getMessage("Payment Failure",null,locale));
         }
-
-        return messageSource.getMessage("Payment Successful",null,locale);
 
     }
 
@@ -207,6 +214,9 @@ public class PaymentServiceImpl implements PaymentService {
         paymentDTO.setCreatedOn(payment.getCreatedOn());
         paymentDTO.setTransactionRef(payment.getTransactionRef());
         paymentDTO.setResponseDescription(payment.getResponseDescription());
+        paymentDTO.setCategoryName(payment.getCategoryName());
+        paymentDTO.setBillerName(payment.getBillerName());
+        paymentDTO.setPaymentItemName(payment.getPaymentItemName());
         paymentDTO.setId(payment.getId());
         return paymentDTO;
     }
