@@ -115,19 +115,22 @@ public class CorpInterBankTransferController {
         if ("NIP".equalsIgnoreCase(type)) {
 
             request.getSession().setAttribute("NIP", "NIP");
-
             requestDTO.setTransferType(TransferType.NIP);
 
-            model.addAttribute("corpTransferRequest", requestDTO);
+            model.addAttribute("transferRequest", requestDTO);
             return page + "pageiA";
-        } else {
+        } else if ("RTGS".equalsIgnoreCase(type)){
             request.getSession().setAttribute("NIP", "RTGS");
-
             requestDTO.setTransferType(TransferType.RTGS);
 
-            model.addAttribute("corpTransferRequest", requestDTO);
+            model.addAttribute("transferRequest", requestDTO);
             return page + "pageiAb";
-        }
+        } else if ("NEFT".equalsIgnoreCase(type))
+            request.getSession().setAttribute("NIP", "NEFT");
+        requestDTO.setTransferType(TransferType.NEFT);
+
+        model.addAttribute("transferRequest", requestDTO);
+        return page + "pageiAc";
 
 
     }
