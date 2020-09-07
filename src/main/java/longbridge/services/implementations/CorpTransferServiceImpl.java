@@ -216,19 +216,19 @@ public class CorpTransferServiceImpl implements CorpTransferService {
         Corporate corporate = corporateUser.getCorporate();
         logger.info("corporate:{}", corporate);
 //        Page<CorpTransRequest> page = corpTransferRequestRepo.findByCorporateAndStatusInAndTranDateNotNullOrderByTranDateDesc(corporate, Arrays.asList("00", "000"), pageDetails);
-        Page<CorpTransRequest> page = corpTransferRequestRepo.findPendingRequests(corporate, pageDetails);
+        Page<CorpTransRequest> page = corpTransferRequestRepo.findByUserReferenceNumberAndTranDateNotNullOrderByTranDateDesc("CORP_" + corporateUser.getId(), pageDetails);
         logger.info("Page<CorpTransRequest> count:{}", pageDetails.getPageSize());
-        List<CorpTransRequest> corpTransRequests = page.getContent().stream()
-                .filter(transRequest -> !accountConfigService.isAccountRestrictedForViewFromUser(accountService.getAccountByAccountNumber(transRequest.getCustomerAccountNumber()).getId(), corporateUser.getId())).collect(Collectors.toList());
-        return new PageImpl<CorpTransRequest>(corpTransRequests, pageDetails, page.getTotalElements());
+//        List<CorpTransRequest> corpTransRequests = page.getContent().stream()
+//                .filter(transRequest -> !accountConfigService.isAccountRestrictedForViewFromUser(accountService.getAccountByAccountNumber(transRequest.getCustomerAccountNumber()).getId(), corporateUser.getId())).collect(Collectors.toList());
+//        return new PageImpl<CorpTransRequest>(corpTransRequests, pageDetails, page.getTotalElements());
+        return page;
     }
 
     @Override
     public Page<CorpTransferRequestDTO> getCompletedTransfer(Pageable pageDetails) {
         CorporateUser corporateUser = getCurrentUser();
         Corporate corporate = corporateUser.getCorporate();
-        Page<CorpTransRequest> page = corpTransferRequestRepo.findPendingRequests(corporate, pageDetails);
-
+        Page<CorpTransRequest> page = corpTransferRequestRepo.findByUserReferenceNumberAndTranDateNotNullOrderByTranDateDesc("CORP_" + corporateUser.getId(), pageDetails);
         List<CorpTransferRequestDTO> corpTransferRequestDTOs = convertEntitiesToDTOs(page.getContent());
         long t = page.getTotalElements();
         Page<CorpTransferRequestDTO> pageImpl = new PageImpl<>(corpTransferRequestDTOs, pageDetails, t);

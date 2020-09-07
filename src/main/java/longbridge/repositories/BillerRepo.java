@@ -46,6 +46,6 @@ public interface BillerRepo extends CommonRepo<Biller, Long>{
     List<Biller> findAllByEnabledAndCategoryName(boolean enabled, String categoryname);
 
 
-    @Query("select b.billerId from Biller b")
+    @Query("select b.billerId from Biller b where b.delFlag = 'N'")
     List<Long> getAllBillerId();
 }

@@ -304,6 +304,10 @@ public class BillerServiceImpl implements BillerService {
     }
 
     @Override
+    public PaymentItem getPaymentItemAmount(String name) {
+        return paymentItemRepo.findByPaymentItemName(name);
+    }
+    @Override
     public Biller getBillerName(Long id) {
         return billerRepo.findByBillerId(id);
     }
@@ -414,7 +418,7 @@ public class BillerServiceImpl implements BillerService {
 
     @Override
     public List <BillerCategory> getCategory() {
-        return billerCategoryRepo.findAll();
+        return billerCategoryRepo.findAllByEnabled(true);
     }
 
 

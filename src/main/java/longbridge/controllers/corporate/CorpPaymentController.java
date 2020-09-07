@@ -72,12 +72,17 @@ public class CorpPaymentController {
     @RequestMapping(value = "/{id}", method = {RequestMethod.GET, RequestMethod.POST})
     public String savePayment(@PathVariable Long id, Model model, HttpServletRequest request, Locale locale, RedirectAttributes attributes) {
         BillPayment billPayment = paymentService.getBillPayment(id);
+        PaymentItem paymentItem = billerService.getPaymentItemAmount(billPayment.getPaymentItemName());
         List<Biller> billerCategories = billerService.getBillersCategories();
         model.addAttribute("billerCategories", billPayment);
         BillPaymentDTO billPaymentDTO = new BillPaymentDTO();
         billPaymentDTO.setPhoneNumber(billPayment.getPhoneNumber());
         billPaymentDTO.setEmailAddress(billPayment.getEmailAddress());
         billPaymentDTO.setPaymentCode(billPayment.getPaymentCode());
+        billPaymentDTO.setCategoryName(billPayment.getCategoryName());
+        billPaymentDTO.setBillerName(billPayment.getBillerName());
+        billPaymentDTO.setPaymentItemName(billPayment.getPaymentItemName());
+        billPaymentDTO.setAmount(paymentItem.getAmount().toString());
         model.addAttribute("billPaymentDTO", billPaymentDTO);
         request.getSession().setAttribute("billPaymentDTO", billPaymentDTO);
         return page + "pagei";
@@ -90,6 +95,13 @@ public class CorpPaymentController {
         billPaymentDTO.setBillerName(billerName.getBillerName());
         paymentItemName = billerService.getPaymentItem(Long.parseLong(billPaymentDTO.getPaymentItemId()));
         billPaymentDTO.setPaymentItemName(paymentItemName.getPaymentItemName());
+        model.addAttribute("billPaymentDTO", billPaymentDTO);
+        servletRequest.getSession().setAttribute("billPaymentDTO", billPaymentDTO);
+        return page + "summary";
+    }
+
+    @PostMapping("/highlight")
+    public String savedPaymentSummary(@ModelAttribute("billPaymentDTO") @Valid BillPaymentDTO billPaymentDTO, BindingResult result, Model model, HttpServletRequest servletRequest, PaymentItem paymentItemCode, Biller billerName, PaymentItem paymentItemName) {
         model.addAttribute("billPaymentDTO", billPaymentDTO);
         servletRequest.getSession().setAttribute("billPaymentDTO", billPaymentDTO);
         return page + "summary";

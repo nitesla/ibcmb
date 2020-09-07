@@ -31,8 +31,9 @@
             <thead class="top-row">
             <td>Date</td>
             <td>Amount</td>
-            <td>Transaction Reference</td>
-            <td>Payment Description</td>
+            <td>Category</td>
+            <td>Biller</td>
+            <td>Payment Item</td>
             <td>Status</td>
             <td></td>
             <td></td>
@@ -74,8 +75,9 @@
                 "columns": [
                     {"data": "createdOn"},
                     {"data": "amount"},
-                    {"data": "transactionRef"},
-                    {"data": "responseDescription"},
+                    {"data": "categoryName"},
+                    {"data": "billerName"},
+                    {"data": "paymentItemName"},
                     {"data": "status"},
                     {"data": "id"}
                 ],
@@ -108,7 +110,7 @@
                         }
                     },
                     {
-                        "targets" : 5,
+                        "targets" : 6,
                         "data" : "id",
                         "render" : function(data, type,row, meta) {
                             return '<a href="/retail/payment/'+data+'">make payment</a>';
