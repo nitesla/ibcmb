@@ -81,6 +81,7 @@ public class GreetingServiceImpl implements GreetingService {
                 }
                 else{
                 Greeting greeting = modelMapper.map(greetingDTO, Greeting.class);
+                greeting.setCreatedBy(getCurrentUser().getFirstName()+" "+getCurrentUser().getLastName());
                 greetingRepo.save(greeting);
                 return messageSource.getMessage("greeting.add.success", null, locale);
                 }
@@ -140,7 +141,7 @@ public class GreetingServiceImpl implements GreetingService {
     @Verifiable(operation = "DELETE_GREETING", description = "Delete Greeting")
     public String deleteGreeting(Long id) {
         try {
-            Greeting greeting = greetingRepo.findOneById(id);
+            Greeting greeting = greetingRepo.findById(id).get();
             greetingRepo.delete(greeting);
             logger.info(String.valueOf(greeting));
             return messageSource.getMessage("greeting.delete.success", null, locale);
