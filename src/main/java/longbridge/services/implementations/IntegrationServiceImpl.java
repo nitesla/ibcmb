@@ -556,11 +556,24 @@ public class IntegrationServiceImpl implements IntegrationService {
 
 				return request;
 			}
+			case NEFT: {
+				TransRequest neftTransferRequest = sendNeftTransfer(transRequest);
+				return neftTransferRequest;
+			}
 		}
 		logger.trace("request did not match any type");
 		transRequest.setStatus(ResultType.ERROR.toString());
 		return transRequest;
 	}
+
+
+
+	private TransRequest sendNeftTransfer(TransRequest transRequest) {
+		return null;
+	}
+
+
+
 
 	@Override
 	public TransRequest makeBackgroundTransfer(TransRequest transRequest) throws InternetBankingTransferException{
