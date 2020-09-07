@@ -22,7 +22,6 @@ import java.util.Date;
 @Where(clause ="del_flag='N'")
 @Check(constraints = "duration >= 0")
 
-@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Greeting extends AbstractEntity implements PrettySerializer {
 
     private String eventName;
@@ -134,19 +133,22 @@ public class Greeting extends AbstractEntity implements PrettySerializer {
         this.userType = userType;
     }
 
-
-
     @Override
-    public String toString(){
-        return "Event Name :"+ eventName+
-                " message :"+ message+
-                " createdOn :"+ createdOn+
-                " executedOn :"+ executedOn+
-                " expiredOn :"+ expiredOn+
-                " createdBy :" +createdBy+
-                "constantDate :" + recurringDate+
-               "imageLink :"+ imageLink+
-                "duration"+ duration;
+    public String toString() {
+        return "Greeting{" +
+                "eventName='" + eventName + '\'' +
+                ", type='" + type + '\'' +
+                ", message='" + message + '\'' +
+                ", createdOn=" + createdOn +
+                ", executedOn=" + executedOn +
+                ", expiredOn=" + expiredOn +
+                ", createdBy='" + createdBy + '\'' +
+                ", recurringDate=" + recurringDate +
+                ", userId='" + userId + '\'' +
+                ", duration=" + duration +
+                ", imageLink='" + imageLink + '\'' +
+                ", userType='" + userType + '\'' +
+                '}';
     }
 
     @Override @JsonIgnore
@@ -161,14 +163,18 @@ public class Greeting extends AbstractEntity implements PrettySerializer {
                 if("GNL".equals(value.type)) gen.writeStringField("Type","General");
                 else gen.writeStringField("Type","Personal");
                 gen.writeStringField("Message",value.message);
-                gen.writeStringField("Type of User",value.userType);
+                gen.writeStringField("Creation Date",value.createdOn.toString());
                 gen.writeStringField("Execution Date",value.executedOn.toString());
-                gen.writeStringField("Number of Days",value.duration.toString());
-                gen.writeStringField("Image Name",value.imageLink);
+                gen.writeStringField("Expiration Date",value.expiredOn.toString());
+                gen.writeStringField("Creator",value.createdBy);
                 String recurring="";
                 if(value.recurringDate)recurring="Yes";
                 else recurring="No";
                 gen.writeStringField("Is Event Recurring?",recurring);
+                gen.writeStringField("User Id",value.userId);
+                gen.writeStringField("Number of Days",value.duration.toString());
+                gen.writeStringField("Image Name",value.imageLink);
+                gen.writeStringField("Type of User",value.userType);
                 gen.writeEndObject();
             }
         };
