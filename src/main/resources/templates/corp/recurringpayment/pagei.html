@@ -121,7 +121,7 @@
                                    required="required"/>
                         </div>
 
-                        <button  class="btn btn-link required-step" >Proceed</button>
+                        <button  class="btn btn-link required-step" id="save">Proceed</button>
 
 
 
@@ -276,10 +276,36 @@
         function startDateError(){
             var startDate=$("#start").datepicker("getDate");
             var endDate=$("#end").datepicker("getDate");
+
             var currentDate = new Date();
-            if(startDate < currentDate){
+            var dd = currentDate.getDate();
+            var mm = currentDate.getMonth()+1;
+            var yyyy = currentDate.getFullYear();
+            if(dd<10)
+            {
+                dd='0'+dd;
+            }
+            if(mm<10)
+            {
+                mm='0'+mm;
+            }
+
+            // currentDate = dd+'-'+mm+'-'+yyyy;
+            var date = new Date(dd+'-'+mm+'-'+yyyy);
+            var dateTimeFormat = new Intl.DateTimeFormat('en', { day: '2-digit', month: '2-digit', year: 'numeric' });
+            const [{ value: month },,{ value: day },,{ value: year }] = dateTimeFormat.formatToParts(date);
+
+            currentDate = (`${day}-${month}-${year }`);
+            // console.log(currentDate);
+            console.log(currentDate);
+            console.log(new Date(currentDate));
+            console.log(new Date(startDate));
+            console.log(startDate);
+
+            if(startDate < (new Date(currentDate))){
                 $("#dateError").text("Start date should not be less than current date")
                 $("#save").attr("disabled",true);
+                return false;
             }else{
                 $("#dateError").text("")
                 $("#save").attr("disabled",false);
