@@ -3,9 +3,10 @@ package longbridge.models;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
+import java.util.Date;
 
 @Entity
-@Audited(withModifiedFlag=true)
 public class NeftTransfer {
 
 
@@ -14,54 +15,56 @@ public class NeftTransfer {
     private Long Id;
 
 
-    @Column(name = "itemsequenceno")
+    @Column(name = "itemsequenceno", nullable = true)
     private String ItemSequenceNo;
-    @Column(name = "serialno")
+    @Column(name = "serialno", nullable = true)
     private String SerialNo;
-    @Column(name = "sortcode")
+    @Column(name = "sortcode", nullable = true)
     private String SortCode;
-    @Column(name = "accountno")
+    @Column(name = "accountno", nullable = true)
     private String AccountNo;
-    @Column(name = "trancode")
+    @Column(name = "trancode", nullable = true)
     private String TranCode;
-    @Column(name = "amount")
-    private float Amount;
-    @Column(name = "currency")
+    @Column(name = "amount", nullable = true)
+    private BigDecimal Amount;
+    @Column(name = "currency", nullable = true)
     private String Currency;
-    @Column(name = "bnkfstdepdt")
-    private String BankOfFirstDepositDate;
-    @Column(name = "bnkfstdepsortcd")
+    @Column(name = "bankoffirstdepositdate", nullable = true)
+    private Date BankOfFirstDepositDate;
+    @Column(name = "bankoffirstdepositsortcode", nullable = true)
     private String BankOfFirstDepositSortCode;
-    @Column(name = "presentmentdate")
-    private String PresentmentDate;
-    @Column(name = "payername")
+    @Column(name = "presentmentdate", nullable = true)
+    private Date PresentmentDate;
+    @Column(name = "payername", nullable = true)
     private String PayerName;
-    @Column(name = "beneficiary")
+    @Column(name = "beneficiary", nullable = true)
     private String Beneficiary;
-    @Column(name = "beneficiaryacctno")
+    @Column(name = "beneficiaryacctno", nullable = true)
     private String BeneficiaryAccountNo;
-    @Column(name = "bvnbeneficiary")
+    @Column(name = "bvnbeneficiary", nullable = true)
     private String BVNBeneficiary;
-    @Column(name = "bvnpayer")
+    @Column(name = "bvnpayer", nullable = true)
     private String BVNPayer;
-    @Column(name = "collectiontype")
+    @Column(name = "collectiontype", nullable = true)
     private String CollectionType;
-    @Column(name = "instrumenttype")
+    @Column(name = "instrumenttype", nullable = true)
     private String InstrumentType;
-    @Column(name = "narration")
+    @Column(name = "narration", nullable = true)
     private String Narration;
-    @Column(name = "prsntingbksrtcd")
+    @Column(name = "presentingbanksortcode", nullable = true)
     private String PresentingBankSortCode;
-    @Column(name = "specialclearing")
+    @Column(name = "specialclearing", nullable = true)
     private boolean SpecialClearing;
-    @Column(name = "instrumentdate")
-    private String InstrumentDate;
-    @Column(name = "micrepairind")
+    @Column(name = "instrumentdate", nullable = true)
+    private Date InstrumentDate;
+    @Column(name = "micrepairind", nullable = true)
     private String MICRRepairInd;
-    @Column(name = "settlementtime")
-    private String SettlementTime;
-    @Column(name = "cycleno")
+    @Column(name = "settlementtime", nullable = true)
+    private Date SettlementTime;
+    @Column(name = "cycleno", nullable = true)
     private String CycleNo;
+
+
 
 
     // Getter Methods
@@ -95,7 +98,7 @@ public class NeftTransfer {
         return TranCode;
     }
 
-    public float getAmount() {
+    public BigDecimal getAmount() {
         return Amount;
     }
 
@@ -103,7 +106,7 @@ public class NeftTransfer {
         return Currency;
     }
 
-    public String getBankOfFirstDepositDate() {
+    public Date getBankOfFirstDepositDate() {
         return BankOfFirstDepositDate;
     }
 
@@ -111,7 +114,7 @@ public class NeftTransfer {
         return BankOfFirstDepositSortCode;
     }
 
-    public String getPresentmentDate() {
+    public Date getPresentmentDate() {
         return PresentmentDate;
     }
 
@@ -155,7 +158,7 @@ public class NeftTransfer {
         return SpecialClearing;
     }
 
-    public String getInstrumentDate() {
+    public Date getInstrumentDate() {
         return InstrumentDate;
     }
 
@@ -163,7 +166,7 @@ public class NeftTransfer {
         return MICRRepairInd;
     }
 
-    public String getSettlementTime() {
+    public Date getSettlementTime() {
         return SettlementTime;
     }
 
@@ -193,7 +196,7 @@ public class NeftTransfer {
         this.TranCode = TranCode;
     }
 
-    public void setAmount(float Amount) {
+    public void setAmount(BigDecimal Amount) {
         this.Amount = Amount;
     }
 
@@ -201,7 +204,7 @@ public class NeftTransfer {
         this.Currency = Currency;
     }
 
-    public void setBankOfFirstDepositDate(String BankOfFirstDepositDate) {
+    public void setBankOfFirstDepositDate(Date BankOfFirstDepositDate) {
         this.BankOfFirstDepositDate = BankOfFirstDepositDate;
     }
 
@@ -209,7 +212,7 @@ public class NeftTransfer {
         this.BankOfFirstDepositSortCode = BankOfFirstDepositSortCode;
     }
 
-    public void setPresentmentDate(String PresentmentDate) {
+    public void setPresentmentDate(Date PresentmentDate) {
         this.PresentmentDate = PresentmentDate;
     }
 
@@ -253,7 +256,7 @@ public class NeftTransfer {
         this.SpecialClearing = SpecialClearing;
     }
 
-    public void setInstrumentDate(String InstrumentDate) {
+    public void setInstrumentDate(Date InstrumentDate) {
         this.InstrumentDate = InstrumentDate;
     }
 
@@ -261,7 +264,7 @@ public class NeftTransfer {
         this.MICRRepairInd = MICRRepairInd;
     }
 
-    public void setSettlementTime(String SettlementTime) {
+    public void setSettlementTime(Date SettlementTime) {
         this.SettlementTime = SettlementTime;
     }
 

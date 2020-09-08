@@ -3,11 +3,13 @@ package longbridge.services.implementations;
 import longbridge.api.AccountDetails;
 import longbridge.api.NEnquiryDetails;
 import longbridge.dtos.InternationalTransferRequestDTO;
+import longbridge.dtos.NeftTransferDTO;
 import longbridge.dtos.SettingDTO;
 import longbridge.dtos.TransferRequestDTO;
 import longbridge.exception.InternetBankingTransferException;
 import longbridge.exception.TransferExceptions;
 import longbridge.models.*;
+import longbridge.repositories.NeftTransferRepo;
 import longbridge.repositories.RetailUserRepo;
 import longbridge.repositories.TransferRequestRepo;
 import longbridge.security.IpAddressUtils;
@@ -68,8 +70,11 @@ public class TransferServiceImpl implements TransferService {
     HttpServletRequest httpServletRequest;
 
     @Autowired
+    private NeftTransferRepo neftTransferRepo;
+
+    @Autowired
     public TransferServiceImpl(TransferRequestRepo transferRequestRepo, IntegrationService integrationService, TransactionLimitServiceImpl limitService, ModelMapper modelMapper, AccountService accountService, FinancialInstitutionService financialInstitutionService, ConfigurationService configurationService
-            , RetailUserRepo retailUserRepo, MessageSource messages,SessionUtil sessionUtil) {
+            , RetailUserRepo retailUserRepo, MessageSource messages, SessionUtil sessionUtil) {
         this.transferRequestRepo = transferRequestRepo;
         this.integrationService = integrationService;
         this.limitService = limitService;
@@ -80,11 +85,30 @@ public class TransferServiceImpl implements TransferService {
         this.retailUserRepo = retailUserRepo;
         this.messages = messages;
         this.sessionUtil=sessionUtil;
+
     }
 
 
+    private NeftTransfer pfDataItemStore(TransferRequestDTO neftTransferDTO){
+        NeftTransfer neftTransfer = new NeftTransfer();
+        neftTransfer.setAccountNo(neftTransferDTO.getCustomerAccountNumber());
+        neftTransfer.setBeneficiaryAccountNo(neftTransferDTO.getBeneficiaryAccountNumber());
+        neftTransfer.setBeneficiary(neftTransferDTO.getBeneficiaryAccountName());
+        neftTransfer.setAmount(neftTransferDTO.getAmount());
+        neftTransfer.setCurrency(neftTransferDTO.getCurrencyCode());
+        neftTransfer.setNarration(neftTransferDTO.getNarration());
+        neftTransfer.setSpecialClearing(true);
+        neftTransferRepo.save(neftTransfer);
+        return neftTransfer;
+    }
+
     public TransferRequestDTO makeTransfer(TransferRequestDTO transferRequestDTO) throws InternetBankingTransferException {
         validateTransfer(transferRequestDTO);
+        if (transferRequestDTO.getTransferType() == TransferType.NEFT){
+            logger.info("transferType from service layer is {}", transferRequestDTO.getTransferType());
+             pfDataItemStore(transferRequestDTO);
+                return new TransferRequestDTO();
+        }
         logger.info("Initiating {} Transfer to {}", transferRequestDTO.getTransferType(), transferRequestDTO.getBeneficiaryAccountName());
         logger.info("Initiating Transfer to {}", transferRequestDTO);
         System.out.println("received request"+transferRequestDTO);
