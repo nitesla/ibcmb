@@ -35,6 +35,7 @@ import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -73,6 +74,9 @@ public class TransferServiceImpl implements TransferService {
     private NeftTransferRepo neftTransferRepo;
 
     @Autowired
+    private RetailUserService retailUserService;
+
+    @Autowired
     public TransferServiceImpl(TransferRequestRepo transferRequestRepo, IntegrationService integrationService, TransactionLimitServiceImpl limitService, ModelMapper modelMapper, AccountService accountService, FinancialInstitutionService financialInstitutionService, ConfigurationService configurationService
             , RetailUserRepo retailUserRepo, MessageSource messages, SessionUtil sessionUtil) {
         this.transferRequestRepo = transferRequestRepo;
@@ -90,6 +94,7 @@ public class TransferServiceImpl implements TransferService {
 
 
     private NeftTransfer pfDataItemStore(TransferRequestDTO neftTransferDTO){
+        logger.info("LOGIN NAME ============================================== {} " , neftTransferDTO.getLoginName());
         NeftTransfer neftTransfer = new NeftTransfer();
         neftTransfer.setAccountNo(neftTransferDTO.getCustomerAccountNumber());
         neftTransfer.setBeneficiaryAccountNo(neftTransferDTO.getBeneficiaryAccountNumber());
@@ -98,6 +103,21 @@ public class TransferServiceImpl implements TransferService {
         neftTransfer.setCurrency(neftTransferDTO.getCurrencyCode());
         neftTransfer.setNarration(neftTransferDTO.getNarration());
         neftTransfer.setSpecialClearing(true);
+        neftTransfer.setBVNBeneficiary("");
+//        neftTransfer.setBankOfFirstDepositDate();
+        neftTransfer.setBankOfFirstDepositSortCode("");
+        neftTransfer.setCollectionType("");
+        neftTransfer.setBVNPayer("");
+        neftTransfer.getInstrumentDate();
+        neftTransfer.setInstrumentType("");
+        neftTransfer.setMICRRepairInd("");
+        neftTransfer.setCycleNo("");
+        neftTransfer.setNarration(neftTransferDTO.getRemarks());
+        neftTransfer.setPresentingBankSortCode("");
+//        neftTransfer.setPresentmentDate();
+//        neftTransfer.setSettlementTime();
+        neftTransfer.setSortCode("");
+        neftTransfer.setTranCode("");
         neftTransferRepo.save(neftTransfer);
         return neftTransfer;
     }
@@ -107,7 +127,8 @@ public class TransferServiceImpl implements TransferService {
         if (transferRequestDTO.getTransferType() == TransferType.NEFT){
             logger.info("transferType from service layer is {}", transferRequestDTO.getTransferType());
              pfDataItemStore(transferRequestDTO);
-                return new TransferRequestDTO();
+                transferRequestDTO.setStatus("00");
+                return transferRequestDTO;
         }
         logger.info("Initiating {} Transfer to {}", transferRequestDTO.getTransferType(), transferRequestDTO.getBeneficiaryAccountName());
         logger.info("Initiating Transfer to {}", transferRequestDTO);
