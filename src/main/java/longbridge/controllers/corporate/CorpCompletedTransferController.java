@@ -106,7 +106,8 @@ public class CorpCompletedTransferController {
         modelMap.put("datasource", new ArrayList<>());
         modelMap.put("imagePath", imagePath);
         modelMap.put("amount", formatter.format(amount));
-        modelMap.put("customer", corporate.getName());
+//        modelMap.put("customer", corporate.getName());
+        modelMap.put("customer", corporateUser.getFirstName() +" " +corporateUser.getLastName());
         modelMap.put("customerAcctNumber", StringUtil.maskAccountNumber(transRequest.getCustomerAccountNumber()));
         if (transRequest.getRemarks() != null) {
             modelMap.put("remarks", transRequest.getRemarks());

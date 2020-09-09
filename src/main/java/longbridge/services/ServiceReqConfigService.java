@@ -35,6 +35,7 @@ public interface ServiceReqConfigService{
     @PreAuthorize("hasAuthority('UPDATE_SERV_REQ_CONFIG')")
     String updateServiceReqConfig(ServiceReqConfigDTO serviceReqConfig) throws InternetBankingException;
 
+
     @PreAuthorize("hasAuthority('DELETE_SERV_REQ_CONFIG')")
     String delServiceReqConfig(Long id) throws InternetBankingException;
 

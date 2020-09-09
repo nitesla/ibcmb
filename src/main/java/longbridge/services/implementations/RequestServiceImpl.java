@@ -11,6 +11,7 @@ import longbridge.repositories.*;
 import longbridge.services.*;
 import longbridge.utils.DateFormatter;
 import longbridge.utils.NameValue;
+import longbridge.utils.Verifiable;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,10 +24,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 
 /**
  * Created by Fortune on 4/7/2017.
@@ -200,6 +198,8 @@ public class RequestServiceImpl implements RequestService {
         }
     }
 
+
+
     @Override
     @Transactional
     public Iterable<RequestHistory> getRequestHistories(ServiceRequest request) {
@@ -212,6 +212,28 @@ public class RequestServiceImpl implements RequestService {
         Iterable<RequestHistory> requestHistories = serviceRequestRepo.findById(serviceRequestId).get().getRequestHistories();
         return convertRequestHistoryEntitiesToDTOs(requestHistories);
     }
+
+//    @Override
+//    @Transactional
+//    public Iterable<RequestHistory> getRequestHistories(ServiceRequest request) {
+//        Optional<ServiceRequest> reqOpt = serviceRequestRepo.findById(request.getId());
+////        if(!reqOpt.isPresent()) throw new InternetBankingException(NO_REQUEST_FOR_ID +request.getId());
+//        return reqOpt.get().getRequestHistories();
+//    }
+//
+//    @Override
+//    @Transactional
+//    public Iterable<RequestHistoryDTO> getRequestHistories(Long serviceRequestId) {
+//        Optional<ServiceRequest> reqOpt = serviceRequestRepo.findById(serviceRequestId);
+////        if(!reqOpt.isPresent()) throw new InternetBankingException(NO_REQUEST_FOR_ID +serviceRequestId);
+//        return convertRequestHistoryEntitiesToDTOs(reqOpt.get().getRequestHistories());
+//    }
+
+
+
+
+
+
 
     public Page<ServiceRequestDTO> getRequests(RetailUser user, Pageable pageDetails) {
         Page<ServiceRequest> page = serviceRequestRepo.findAllByUserOrderByDateRequestedDesc(user, pageDetails);
@@ -230,29 +252,53 @@ public class RequestServiceImpl implements RequestService {
         return pageImpl;
     }
 
+//    public Page<ServiceRequestDTO> getRequests(OperationsUser opsUser, Pageable pageDetails) {
+//        Page<ServiceRequest> page = serviceRequestRepo.findAllByOrderByDateRequestedDesc(pageDetails);
+//        List<ServiceRequestDTO> dtOs = convertEntitiesToDTOs(page.getContent());
+//        List<ServiceRequestDTO> requestsForOpsUser = new ArrayList<ServiceRequestDTO>();
+//        List<UserGroup> opsUserGroups = opsUser.getGroups();
+//        for (ServiceRequestDTO request : dtOs) {
+//            SRConfig reqConfig = reqConfigRepo.findById(request.getServiceReqConfigId()).get();
+//            if(reqConfig!=null) {
+//                for (UserGroup group : opsUserGroups) {
+//                    if (group != null) {
+//                        logger.info("USER GROUP {}", group.equals(userGroupRepo.findById(reqConfig.getGroupId()).get()));
+//                        if (group.equals(userGroupRepo.findById(reqConfig.getGroupId()).get())) {
+//
+//                            requestsForOpsUser.add(request);
+//                        }
+//                    }
+//                }
+//            }
+//        }
+//        long t = page.getTotalElements();
+//        Page<ServiceRequestDTO> pageImpl = new PageImpl<>(requestsForOpsUser, pageDetails, t);
+//        return pageImpl;
+//    }
+
+
     public Page<ServiceRequestDTO> getRequests(OperationsUser opsUser, Pageable pageDetails) {
         Page<ServiceRequest> page = serviceRequestRepo.findAllByOrderByDateRequestedDesc(pageDetails);
-        List<ServiceRequestDTO> dtOs = convertEntitiesToDTOs(page.getContent());
-        List<ServiceRequestDTO> requestsForOpsUser = new ArrayList<ServiceRequestDTO>();
-        List<UserGroup> opsUserGroups = opsUser.getGroups();
-        for (ServiceRequestDTO request : dtOs) {
-            SRConfig reqConfig = reqConfigRepo.findById(request.getServiceReqConfigId()).get();
-            if(reqConfig!=null) {
-                for (UserGroup group : opsUserGroups) {
-                    if (group != null) {
-                        logger.info("USER GROUP {}", group.equals(userGroupRepo.findById(reqConfig.getGroupId()).get()));
-                        if (group.equals(userGroupRepo.findById(reqConfig.getGroupId()).get())) {
 
-                            requestsForOpsUser.add(request);
-                        }
-                    }
-                }
+//        opsUser =  operationsUserService.getUser(opsUser.getId());
+
+        List<ServiceRequestDTO> dtOs = convertEntitiesToDTOs(page.getContent());
+        List<ServiceRequestDTO> requestsForOpsUser = new ArrayList<>();
+        List<UserGroup> opsUserGroups = opsUser.getGroups();
+
+        for (ServiceRequestDTO request : dtOs) {
+
+            Optional<SRConfig> reqOpt = reqConfigRepo.findById(request.getServiceReqConfigId());
+            if(reqOpt.isPresent()) {
+                SRConfig reqConfig = reqOpt.get();
+                requestsForOpsUser.add(request);
             }
         }
+
         long t = page.getTotalElements();
-        Page<ServiceRequestDTO> pageImpl = new PageImpl<>(requestsForOpsUser, pageDetails, t);
-        return pageImpl;
+        return new PageImpl<>(requestsForOpsUser, pageDetails, t);
     }
+
 
 
     @Override
@@ -332,5 +378,17 @@ public class RequestServiceImpl implements RequestService {
             requestHistoryList.add(requestDTO);
         }
         return requestHistoryList;
+    }
+
+
+    @Override
+    public int getNumOfRequestsForApproval(OperationsUser opsUser) {
+        List<ServiceRequest>serviceRequests=serviceRequestRepo.findPendingRequestForStatus("S");
+        if(serviceRequests==null)
+            throw new InternetBankingException("Unable to fetch  number of pending approvals at the moment ");
+        for(UserGroup userGroup:opsUser.getGroups()){
+            serviceRequests.removeAll(serviceRequestRepo.findPendingRequestForStatusAndGroupId("S",userGroup.getId()));
+        }
+        return serviceRequests.size();
     }
 }
