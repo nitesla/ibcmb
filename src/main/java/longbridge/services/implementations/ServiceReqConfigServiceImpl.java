@@ -25,10 +25,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 
 /**
  * Created by Wunmi on 08/04/2017.
@@ -85,12 +82,21 @@ public class ServiceReqConfigServiceImpl implements ServiceReqConfigService {
 		}
 	}
 
-	@Override
-	public ServiceReqConfigDTO getServiceReqConfig(Long id) {
-		SRConfig SRConfig = serviceReqConfigRepo.findById(id).get();
-		modelMapper = new ModelMapper();
-		return modelMapper.map(SRConfig, ServiceReqConfigDTO.class);
-	}
+//	@Override
+//	public ServiceReqConfigDTO getServiceReqConfig(Long id) {
+//		SRConfig SRConfig = serviceReqConfigRepo.findById(id).get();
+//		modelMapper = new ModelMapper();
+//		return modelMapper.map(SRConfig, ServiceReqConfigDTO.class);
+//	}
+
+    @Override
+    public ServiceReqConfigDTO getServiceReqConfig(Long id) {
+        logger.info("Passed id {}", id);
+        Optional<SRConfig> sRConfig = serviceReqConfigRepo.findById(id);
+        if(!sRConfig.isPresent()) throw new InternetBankingException("No service request for id: "+id);
+        modelMapper = new ModelMapper();
+        return modelMapper.map(sRConfig.get(), ServiceReqConfigDTO.class);
+    }
 
 	@Override
 	public List<ServiceReqConfigDTO> getServiceReqConfigs() {
@@ -121,6 +127,8 @@ public class ServiceReqConfigServiceImpl implements ServiceReqConfigService {
 			ModelMapper mapper = new ModelMapper();
 			List<ServiceReqFormField> fields = new ArrayList<ServiceReqFormField>();
 
+
+
 			for (ServiceReqFormFieldDTO f : serviceReqConfigDTO.getFormFields()) {
 				ServiceReqFormField onefield = null;
 				if (f.getFieldName() == null)
@@ -128,6 +136,7 @@ public class ServiceReqConfigServiceImpl implements ServiceReqConfigService {
 				if (f.getId() == null) {
 					onefield = new ServiceReqFormField();
 					onefield.setSRConfig(SRConfig);
+
 				} else {
 					onefield = serviceReqFormFieldRepo.findById(f.getId()).get();
 					entityManager.detach(onefield);
@@ -137,6 +146,7 @@ public class ServiceReqConfigServiceImpl implements ServiceReqConfigService {
 				fields.add(onefield);
 
 			}
+
 			entityManager.detach(SRConfig);
 			SRConfig.setId(serviceReqConfigDTO.getId());
 			SRConfig.setVersion(serviceReqConfigDTO.getVersion());
@@ -323,5 +333,9 @@ public class ServiceReqConfigServiceImpl implements ServiceReqConfigService {
 			return new ServiceReqConfigDTO();
 		}
 	}
+
+
+
+
 
 }
