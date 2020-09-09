@@ -158,7 +158,6 @@ public class AdmBillerController {
         request.getSession().setAttribute("categoryname", categoryName);
         model.addAttribute("categoryname",getCategoryId);
         return "adm/quickteller/billers";
-
     }
 
     @ResponseBody

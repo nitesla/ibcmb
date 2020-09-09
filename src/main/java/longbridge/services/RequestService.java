@@ -71,10 +71,6 @@ public interface RequestService {
     @PreAuthorize("hasAuthority('REQUEST_HISTORY')")
     Iterable<RequestHistoryDTO>getRequestHistories(Long requestId);
 
-    @PreAuthorize("hasAuthority('REQUEST_HISTORY')")
-    int getNumOfRequestsForApproval(OperationsUser opsUser);
-
-
 
 
 

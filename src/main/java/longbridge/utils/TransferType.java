@@ -17,7 +17,9 @@ public enum TransferType {
     NIP("NIP Transfer"),
     NAPS("NAPS Transfer"),
     RTGS("RTGS Transfer"),
+    NEFT("NEFT Transfer"),
     CUSTOM_DUTY("Custom Duty Payment");
+
 
 
     private String description;

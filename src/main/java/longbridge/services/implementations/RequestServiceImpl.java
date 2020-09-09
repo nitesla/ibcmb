@@ -213,27 +213,6 @@ public class RequestServiceImpl implements RequestService {
         return convertRequestHistoryEntitiesToDTOs(requestHistories);
     }
 
-//    @Override
-//    @Transactional
-//    public Iterable<RequestHistory> getRequestHistories(ServiceRequest request) {
-//        Optional<ServiceRequest> reqOpt = serviceRequestRepo.findById(request.getId());
-////        if(!reqOpt.isPresent()) throw new InternetBankingException(NO_REQUEST_FOR_ID +request.getId());
-//        return reqOpt.get().getRequestHistories();
-//    }
-//
-//    @Override
-//    @Transactional
-//    public Iterable<RequestHistoryDTO> getRequestHistories(Long serviceRequestId) {
-//        Optional<ServiceRequest> reqOpt = serviceRequestRepo.findById(serviceRequestId);
-////        if(!reqOpt.isPresent()) throw new InternetBankingException(NO_REQUEST_FOR_ID +serviceRequestId);
-//        return convertRequestHistoryEntitiesToDTOs(reqOpt.get().getRequestHistories());
-//    }
-
-
-
-
-
-
 
     public Page<ServiceRequestDTO> getRequests(RetailUser user, Pageable pageDetails) {
         Page<ServiceRequest> page = serviceRequestRepo.findAllByUserOrderByDateRequestedDesc(user, pageDetails);
@@ -381,14 +360,5 @@ public class RequestServiceImpl implements RequestService {
     }
 
 
-    @Override
-    public int getNumOfRequestsForApproval(OperationsUser opsUser) {
-        List<ServiceRequest>serviceRequests=serviceRequestRepo.findPendingRequestForStatus("S");
-        if(serviceRequests==null)
-            throw new InternetBankingException("Unable to fetch  number of pending approvals at the moment ");
-        for(UserGroup userGroup:opsUser.getGroups()){
-            serviceRequests.removeAll(serviceRequestRepo.findPendingRequestForStatusAndGroupId("S",userGroup.getId()));
-        }
-        return serviceRequests.size();
-    }
+
 }

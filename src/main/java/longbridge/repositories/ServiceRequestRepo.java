@@ -35,15 +35,5 @@ public interface ServiceRequestRepo extends CommonRepo<ServiceRequest, Long> {
     Integer countRequestForStatus(@Param("status") String status,@Param("grId")Long grId);
 
 
-    @Query("select s from ServiceRequest s, SRConfig sc, UserGroup ug "
-            + "where s.serviceReqConfigId = sc.id and sc.groupId = ug.id and"
-            + " s.requestStatus=:status")
-    List<ServiceRequest>findPendingRequestForStatus( @Param("status")String status);
-
-    @Query("select s from ServiceRequest s, SRConfig sc, UserGroup ug "
-            + "where s.serviceReqConfigId = sc.id and sc.groupId = ug.id and"
-            + " s.requestStatus=:status and ug.id=:grId")
-    List<ServiceRequest> findPendingRequestForStatusAndGroupId(@Param("status") String status,@Param("grId")Long grId);
-
 
 }

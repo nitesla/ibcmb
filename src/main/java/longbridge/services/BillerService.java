@@ -69,10 +69,9 @@ public interface BillerService {
 
     PaymentItem getPaymentItem(Long id);
 
+    PaymentItem getPaymentItemAmount(String name);
+
     Biller getBillerName(Long id);
-
-
-
 
     Page<Biller> findSearch(String categoryname, String search, Pageable pageable);
 }
