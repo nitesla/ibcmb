@@ -35,5 +35,4 @@ public interface ServiceRequestRepo extends CommonRepo<ServiceRequest, Long> {
     Integer countRequestForStatus(@Param("status") String status,@Param("grId")Long grId);
 
 
-
 }

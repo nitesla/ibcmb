@@ -127,8 +127,6 @@ public class ServiceReqConfigServiceImpl implements ServiceReqConfigService {
 			ModelMapper mapper = new ModelMapper();
 			List<ServiceReqFormField> fields = new ArrayList<ServiceReqFormField>();
 
-
-
 			for (ServiceReqFormFieldDTO f : serviceReqConfigDTO.getFormFields()) {
 				ServiceReqFormField onefield = null;
 				if (f.getFieldName() == null)
@@ -140,7 +138,6 @@ public class ServiceReqConfigServiceImpl implements ServiceReqConfigService {
 				} else {
 					onefield = serviceReqFormFieldRepo.findById(f.getId()).get();
 					entityManager.detach(onefield);
-
 				}
 				mapper.map(f, onefield);
 				fields.add(onefield);

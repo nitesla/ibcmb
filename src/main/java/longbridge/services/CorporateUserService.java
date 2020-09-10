@@ -181,6 +181,7 @@ public interface CorporateUserService{
     String changeFeedBackStatus(CorporateUser corporateUser);
     Page<CorporateUserDTO> getUsers(CorporateDTO user, Pageable pageDetails);
 
+
 //    String addUserFromCorporateAdmin(CorporateUserDTO user) throws InternetBankingException;
 //
 //    String updateUserFromCorporateAdmin(CorporateUserDTO user) throws InternetBankingException;
