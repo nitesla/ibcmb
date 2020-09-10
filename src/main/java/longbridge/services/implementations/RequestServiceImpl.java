@@ -362,14 +362,5 @@ public class RequestServiceImpl implements RequestService {
         }
         return requestHistoryList;
     }
-    private User getCurrentUser() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (!(authentication instanceof AnonymousAuthenticationToken)) {
-            CustomUserPrincipal currentUser = (CustomUserPrincipal) authentication.getPrincipal();
-            return currentUser.getUser();
-        }
-
-        return null;
-    }
 
 }
