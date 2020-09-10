@@ -140,7 +140,6 @@ public class ServiceReqConfigServiceImpl implements ServiceReqConfigService {
 				} else {
 					onefield = serviceReqFormFieldRepo.findById(f.getId()).get();
 					entityManager.detach(onefield);
-
 				}
 				mapper.map(f, onefield);
 				fields.add(onefield);

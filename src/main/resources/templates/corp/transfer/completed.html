@@ -30,8 +30,8 @@
                 </ul>
 
 
-                <table id="ct" class=" table table-condensed">
-                    <thead>
+                <table id="ct">
+                    <thead  class=" top-row" >
                         <td>Date</td>
                         <td>Amount</td>
                         <td>Beneficiary</td>
@@ -67,17 +67,14 @@
                 var url = "/corporate/transfer/history/all";
                 var table = $('#ct').DataTable({
                     responsive: true,
-                    "lengthMenu": [
-                        [5, 10],
-                        [5, 10]
-                    ],
+                    "lengthMenu": [ [5, 10], [5, 10] ],
                     "pagingType": "input",
                     "searching": false,
+                    "paging": true,
                     "processing":true,
                     "language":{
                         processing:'<i class="fa fa-spinner fa-spin fa-3x fa-fw"><span class="sr-only">Loading...</span>'
                     },
-                    "paging": true,
                     "serverSide": true,
                     "ajax" : {
                         url : url,
@@ -95,15 +92,14 @@
                     }, {
                         "data": "beneficiaryAccountName"
                     }, {
-                        // "data": "financialInstitution.institutionName"
                         "data": "beneficiaryBank"
                     }, {
                         "data": "remarks"
                     }, {
-                        "data": "status"
+                        "data": "statusDescription"
                     }, {
                         "data": "DT_RowId"
-                    }, ],
+                    } ],
                     "columnDefs": [{
                         "targets": 0,
                         "data": "tranDate",
@@ -129,22 +125,7 @@
                             return data;
                         }
                     },
-                        {
-                            "targets" : 5,
-                            "data" : "status",
-                            "render" : function(data, type,full, meta) {
-                                if (type === 'display') {
-                                    if(data == '00'||data == '000')
-                                        return "Transaction Successful";
-                                    if(data=="09"||data=="34"){
-                                        return "Pending";
-                                    }
-                                    else return "Failed";
 
-                                }
-                                return data;
-                            }
-                        },
                         {
                         "targets": 6,
                         "data": "DT_RowId",
