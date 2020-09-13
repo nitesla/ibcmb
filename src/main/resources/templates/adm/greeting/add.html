@@ -120,6 +120,7 @@
                                            </div>
 
                                        </div>
+
                                        <div class="form-group">
                                            <label class="col-sm-2 control-label">Fix Event Date</label>
                                            <div class="col-sm-4">
@@ -129,14 +130,14 @@
                                                    <input type="radio"    id="noButton"/></label>
                                            </div>
                                        </div>
-
-                                       <div id="eventDate" style="display:none">
                                        <div class="form-group" >
-                                            <label class="col-sm-2 control-label">Execution date</label>
-                                                <div class="col-sm-4">
-                                                    <input type="date" id="execute" class="form-control"   th:field="*{executedOn}" required="required" />
-                                                </div>
-                                        </div>
+                                           <label class="col-sm-2 control-label">Execution date</label>
+                                           <div class="col-sm-4">
+                                               <input type="date" id="execute" class="form-control" th:field="*{executedOn}" required="required" />
+                                           </div>
+                                       </div>
+                                       <div id="eventDate" style="display:none">
+
                                        <div  class="form-group">
                                            <label class="col-sm-2 control-label">Duration</label>
                                            <div class="col-sm-4">
@@ -216,6 +217,8 @@
         var day = ("01");
         var month = ("01");
         var everyday = "2000" + "-" + (month) + "-" + (day);
+        // var everyday = new Date();
+        moment([2010, 0, 31]).add(1, 'da');
 
 
         $("#expire").val(everyday);

@@ -1,12 +1,11 @@
 package longbridge.controllers.corporate;
 
+import longbridge.dtos.AccountDTO;
 import longbridge.dtos.CodeDTO;
 import longbridge.dtos.ServiceReqConfigDTO;
 import longbridge.dtos.SettingDTO;
-import longbridge.services.ChequeService;
-import longbridge.services.CodeService;
-import longbridge.services.ConfigurationService;
-import longbridge.services.ServiceReqConfigService;
+import longbridge.models.CorporateUser;
+import longbridge.services.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.WebRequest;
 
 import java.security.Principal;
+import java.util.List;
 import java.util.Locale;
 
 @Controller
@@ -42,16 +42,16 @@ public class CorpChequeController {
 
     @GetMapping("/chequebook")
     public String requestChequeBook(Principal principal, Model model) {
-
-        Iterable<CodeDTO> chequebooks = codeService.getCodesByType("CHEQUEBOOK");
-        Iterable<CodeDTO> pickUpBranch = codeService.getCodesByType("CMB_BRANCH");
+        List<CodeDTO> chequebooks = codeService.getCodesByType("CHEQUEBOOK");
+        List<CodeDTO> pickUpBranch = codeService.getCodesByType("CMB_BRANCH");
         ServiceReqConfigDTO serviceReqConfig = serviceReqConfigService.getServiceReqConfigRequestName("CHEQUE-REQUEST");
         model.addAttribute("requestConfig", serviceReqConfig);
-
         model.addAttribute("leaves", chequebooks);
         model.addAttribute("branches", pickUpBranch);
         return "corp/cheque/chequebook";
     }
+
+
 
     @PostMapping("/balance/check")
     @ResponseBody

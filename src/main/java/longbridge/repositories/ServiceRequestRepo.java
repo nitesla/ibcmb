@@ -33,5 +33,5 @@ public interface ServiceRequestRepo extends CommonRepo<ServiceRequest, Long> {
     		+ "where s.serviceReqConfigId = sc.id and sc.groupId = ug.id and"
     		+ " s.requestStatus=:status and ug.id=:grId")
     Integer countRequestForStatus(@Param("status") String status,@Param("grId")Long grId);
-    
+
 }
