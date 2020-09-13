@@ -1623,14 +1623,14 @@ public class IntegrationServiceImpl implements IntegrationService {
 
 	@Override
     public NeftResponse submitNeftTransfer() {
-		NeftResponse response = null;
+		NeftResponse response = new NeftResponse();
 		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZZZZ");
         List<NeftTransfer> getUnsettledNeftList = neftTransferRepo.getAllUnsettledList();
         logger.info("getUnsettledList == {}", getUnsettledNeftList);
         String ItemCount = String.valueOf(getUnsettledNeftList.size());
 		Date date = new Date();
 		String newdate = dateFormat.format(date);
-		String uri = URI+" ";
+		String uri = URI+"/api/neftOutWard/Submit";
 		Map<String,Object> params = new HashMap<>();
 		params.put("appid",appId);
 		params.put("MsgID","5");
@@ -1646,17 +1646,20 @@ public class IntegrationServiceImpl implements IntegrationService {
 				})
 				.collect(Collectors.toList());
 		params.put("PFItemDataStores", neftTransfers);
+
 		logger.info("PARAMS ============ {}", params);
 		try{
-			 response = template.postForObject(uri,params, NeftResponse.class);
-			 getUnsettledNeftList.forEach(neftTransfer -> {
-				 updateNeftSettlement(newdate, neftTransfer);
-				 neftTransferRepo.save(neftTransfer);
-			 });
-
-			return response;
+			if (!getUnsettledNeftList.isEmpty()){
+				response = template.postForObject(uri,params, NeftResponse.class);
+				getUnsettledNeftList.forEach(neftTransfer -> {
+					updateNeftSettlement(newdate, neftTransfer);
+					neftTransferRepo.save(neftTransfer);
+				});
+			}else {
+				logger.info("No pending requests");
+			}
 		}catch (Exception e){
-			logger.info("Error processing request");
+			logger.info("Error processing request ", e);
 		}
 		return response;
     }
