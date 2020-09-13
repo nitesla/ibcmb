@@ -28,6 +28,9 @@ public interface OperationsUserService{
     @PreAuthorize("hasAuthority('GET_OPS_USER')")
     OperationsUserDTO getUser(Long id);
 
+//    @PreAuthorize("hasAuthority('GET_OPS_USER')")
+//    OperationsUser getUser(Long id);
+
     /**Checks that the provided username is valid for use as any username already
      * existing will not be valid for another user
      * @param username the username
