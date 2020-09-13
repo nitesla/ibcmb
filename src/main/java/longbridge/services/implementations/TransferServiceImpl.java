@@ -94,7 +94,6 @@ public class TransferServiceImpl implements TransferService {
 
 
     private NeftTransfer pfDataItemStore(TransferRequestDTO neftTransferDTO){
-        logger.info("LOGIN NAME ============================================== {} " , neftTransferDTO.getLoginName());
         NeftTransfer neftTransfer = new NeftTransfer();
         neftTransfer.setAccountNo(neftTransferDTO.getCustomerAccountNumber());
         neftTransfer.setBeneficiaryAccountNo(neftTransferDTO.getBeneficiaryAccountNumber());
@@ -104,23 +103,23 @@ public class TransferServiceImpl implements TransferService {
         neftTransfer.setNarration(neftTransferDTO.getNarration());
         neftTransfer.setSpecialClearing(true);
         neftTransfer.setBVNBeneficiary("");
-//        neftTransfer.setBankOfFirstDepositDate();
         neftTransfer.setBankOfFirstDepositSortCode("");
         neftTransfer.setCollectionType("");
         neftTransfer.setBVNPayer("");
-        neftTransfer.getInstrumentDate();
         neftTransfer.setInstrumentType("");
         neftTransfer.setMICRRepairInd("");
         neftTransfer.setCycleNo("");
         neftTransfer.setNarration(neftTransferDTO.getRemarks());
         neftTransfer.setPresentingBankSortCode("");
-//        neftTransfer.setPresentmentDate();
-//        neftTransfer.setSettlementTime();
         neftTransfer.setSortCode("");
         neftTransfer.setTranCode("");
         neftTransferRepo.save(neftTransfer);
         return neftTransfer;
     }
+
+
+
+
 
     public TransferRequestDTO makeTransfer(TransferRequestDTO transferRequestDTO) throws InternetBankingTransferException {
         validateTransfer(transferRequestDTO);

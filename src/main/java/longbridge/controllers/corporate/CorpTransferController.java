@@ -395,6 +395,7 @@ public class CorpTransferController {
     DataTablesOutput<CorpTransferRequestDTO> getTransferRequests(DataTablesInput input) {
         Pageable pageable = DataTablesUtils.getPageable(input);
         Page<CorpTransferRequestDTO> requests = corpTransferService.getTransferRequest(pageable);
+        logger.info("REQUESTS ============================ {}", requests);
         DataTablesOutput<CorpTransferRequestDTO> out = new DataTablesOutput<CorpTransferRequestDTO>();
         out.setDraw(input.getDraw());
         out.setData(requests.getContent());

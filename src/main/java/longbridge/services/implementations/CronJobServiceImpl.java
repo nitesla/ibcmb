@@ -458,4 +458,10 @@ public class CronJobServiceImpl implements CronJobService {
     public void addCoverageForNewCodes() {
         coverageService.addCoverageForNewCodes();
     }
+
+    @Override
+    @Scheduled(cron = "${neft.settlement.time}")
+    public void neftSettlement(){
+        integrationService.submitNeftTransfer();
+    }
 }

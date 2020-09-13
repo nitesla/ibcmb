@@ -5,6 +5,7 @@ import longbridge.api.NEnquiryDetails;
 import longbridge.dtos.CorpInternationalTransferRequestDTO;
 import longbridge.dtos.CorpTransferRequestDTO;
 import longbridge.dtos.SettingDTO;
+import longbridge.dtos.TransferRequestDTO;
 import longbridge.exception.*;
 import longbridge.models.*;
 import longbridge.repositories.*;
@@ -43,6 +44,7 @@ import java.util.stream.StreamSupport;
 @Service
 public class CorpTransferServiceImpl implements CorpTransferService {
 
+    private NeftTransferRepo neftTransferRepo;
     private CorpTransferRequestRepo corpTransferRequestRepo;
     private IntegrationService integrationService;
     private TransactionLimitServiceImpl limitService;
@@ -90,7 +92,9 @@ public class CorpTransferServiceImpl implements CorpTransferService {
     private SessionUtil sessionUtil;
 
     @Autowired
-    public CorpTransferServiceImpl(CorpTransferRequestRepo corpTransferRequestRepo, IntegrationService integrationService, TransactionLimitServiceImpl limitService, AccountService accountService, ConfigurationService configService, DirectDebitService directDebitService, SessionUtil sessionUtil) {
+    public CorpTransferServiceImpl(CorpTransferRequestRepo corpTransferRequestRepo, IntegrationService integrationService, TransactionLimitServiceImpl limitService,
+                                   AccountService accountService, ConfigurationService configService,
+                                   DirectDebitService directDebitService, SessionUtil sessionUtil,NeftTransferRepo neftTransferRepo) {
         this.corpTransferRequestRepo = corpTransferRequestRepo;
         this.integrationService = integrationService;
         this.limitService = limitService;
@@ -98,11 +102,41 @@ public class CorpTransferServiceImpl implements CorpTransferService {
         this.configService = configService;
         this.sessionUtil = sessionUtil;
         this.directDebitService = directDebitService;
+        this.neftTransferRepo = neftTransferRepo;
+    }
+
+
+    private NeftTransfer pfDataItemStore(TransferRequestDTO neftTransferDTO){
+        NeftTransfer neftTransfer = new NeftTransfer();
+        neftTransfer.setAccountNo(neftTransferDTO.getCustomerAccountNumber());
+        neftTransfer.setBeneficiaryAccountNo(neftTransferDTO.getBeneficiaryAccountNumber());
+        neftTransfer.setBeneficiary(neftTransferDTO.getBeneficiaryAccountName());
+        neftTransfer.setAmount(neftTransferDTO.getAmount());
+        neftTransfer.setCurrency(neftTransferDTO.getCurrencyCode());
+        neftTransfer.setNarration(neftTransferDTO.getNarration());
+        neftTransfer.setSpecialClearing(true);
+        neftTransfer.setBVNBeneficiary("");
+        neftTransfer.setBankOfFirstDepositSortCode("");
+        neftTransfer.setCollectionType("");
+        neftTransfer.setBVNPayer("");
+        neftTransfer.setInstrumentType("");
+        neftTransfer.setMICRRepairInd("");
+        neftTransfer.setCycleNo("");
+        neftTransfer.setNarration(neftTransferDTO.getRemarks());
+        neftTransfer.setPresentingBankSortCode("");
+        neftTransfer.setSortCode("");
+        neftTransfer.setTranCode("");
+        neftTransferRepo.save(neftTransfer);
+        return neftTransfer;
     }
 
 
     @Override
     public Object addTransferRequest(CorpTransferRequestDTO transferRequestDTO) throws InternetBankingException {
+        logger.info("TRANSFER TYPE {}", transferRequestDTO.getTransferType());
+        if (transferRequestDTO.getTransferType() == TransferType.NEFT){
+            pfDataItemStore(transferRequestDTO);
+        }
 
         CorpTransRequest transferRequest = convertDTOToEntity(transferRequestDTO);
         String userRefereneceNumber = "CORP_" + getCurrentUser().getId().toString();
@@ -130,6 +164,9 @@ public class CorpTransferServiceImpl implements CorpTransferService {
         try {
             transferRequest.setStatus(StatusCode.PENDING.toString());
             transferRequest.setStatusDescription("Pending Authorization");
+            if (transferRequestDTO.getTransferType() == TransferType.NEFT){
+                transferRequest.setStatusDescription("Processing");
+            }
             CorpTransferAuth transferAuth = new CorpTransferAuth();
             transferAuth.setStatus("P");
             transferRequest.setTransferAuth(transferAuth);

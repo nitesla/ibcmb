@@ -30,11 +30,11 @@ public class NeftTransfer {
     @Column(name = "currency", nullable = true)
     private String Currency;
     @Column(name = "bankoffirstdepositdate", nullable = true)
-    private Date BankOfFirstDepositDate;
+    private String BankOfFirstDepositDate;
     @Column(name = "bankoffirstdepositsortcode", nullable = true)
     private String BankOfFirstDepositSortCode;
     @Column(name = "presentmentdate", nullable = true)
-    private Date PresentmentDate;
+    private String PresentmentDate;
     @Column(name = "payername", nullable = true)
     private String PayerName;
     @Column(name = "beneficiary", nullable = true)
@@ -56,11 +56,11 @@ public class NeftTransfer {
     @Column(name = "specialclearing", nullable = true)
     private boolean SpecialClearing;
     @Column(name = "instrumentdate", nullable = true)
-    private Date InstrumentDate;
+    private String InstrumentDate;
     @Column(name = "micrepairind", nullable = true)
     private String MICRRepairInd;
     @Column(name = "settlementtime", nullable = true)
-    private Date SettlementTime;
+    private String SettlementTime;
     @Column(name = "cycleno", nullable = true)
     private String CycleNo;
 
@@ -106,7 +106,7 @@ public class NeftTransfer {
         return Currency;
     }
 
-    public Date getBankOfFirstDepositDate() {
+    public String getBankOfFirstDepositDate() {
         return BankOfFirstDepositDate;
     }
 
@@ -114,7 +114,7 @@ public class NeftTransfer {
         return BankOfFirstDepositSortCode;
     }
 
-    public Date getPresentmentDate() {
+    public String getPresentmentDate() {
         return PresentmentDate;
     }
 
@@ -158,7 +158,7 @@ public class NeftTransfer {
         return SpecialClearing;
     }
 
-    public Date getInstrumentDate() {
+    public String getInstrumentDate() {
         return InstrumentDate;
     }
 
@@ -166,7 +166,7 @@ public class NeftTransfer {
         return MICRRepairInd;
     }
 
-    public Date getSettlementTime() {
+    public String getSettlementTime() {
         return SettlementTime;
     }
 
@@ -204,7 +204,7 @@ public class NeftTransfer {
         this.Currency = Currency;
     }
 
-    public void setBankOfFirstDepositDate(Date BankOfFirstDepositDate) {
+    public void setBankOfFirstDepositDate(String BankOfFirstDepositDate) {
         this.BankOfFirstDepositDate = BankOfFirstDepositDate;
     }
 
@@ -212,7 +212,7 @@ public class NeftTransfer {
         this.BankOfFirstDepositSortCode = BankOfFirstDepositSortCode;
     }
 
-    public void setPresentmentDate(Date PresentmentDate) {
+    public void setPresentmentDate(String PresentmentDate) {
         this.PresentmentDate = PresentmentDate;
     }
 
@@ -256,7 +256,7 @@ public class NeftTransfer {
         this.SpecialClearing = SpecialClearing;
     }
 
-    public void setInstrumentDate(Date InstrumentDate) {
+    public void setInstrumentDate(String InstrumentDate) {
         this.InstrumentDate = InstrumentDate;
     }
 
@@ -264,7 +264,7 @@ public class NeftTransfer {
         this.MICRRepairInd = MICRRepairInd;
     }
 
-    public void setSettlementTime(Date SettlementTime) {
+    public void setSettlementTime(String SettlementTime) {
         this.SettlementTime = SettlementTime;
     }
 

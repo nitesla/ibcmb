@@ -44,6 +44,7 @@ public interface CronJobService {
     public void refreshPaymentBillers();
     void addCoverageForNewEntity();
     void addCoverageForNewCodes();
+    void neftSettlement();
 
 
 }

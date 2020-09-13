@@ -4,6 +4,7 @@ import longbridge.dtos.TransferRequestDTO;
 import longbridge.exception.InternetBankingTransferException;
 import longbridge.exception.TransferException;
 import longbridge.models.DirectDebit;
+import longbridge.models.NeftTransfer;
 import longbridge.models.TransRequest;
 import longbridge.models.User;
 import longbridge.utils.TransferType;
@@ -58,6 +59,7 @@ public interface TransferService {
 
     @PreAuthorize("hasAuthority('VIEW_TRANSACTIONS')")
     Page<TransferRequestDTO> getTransferReviews(TransferType transfertype, String accountNumber, Date startDate, Date endDate, Pageable pageDetails);
+
 
 
 }
