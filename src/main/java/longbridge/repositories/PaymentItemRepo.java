@@ -14,7 +14,7 @@ public interface PaymentItemRepo extends CommonRepo<PaymentItem, Long>{
 
     PaymentItem findByPaymentItemId(Long paymentItemId);
 
-    PaymentItem findByPaymentItemName(String name);
+    PaymentItem findByPaymentCode(Long paymentCode);
 
     @Transactional
     @Modifying

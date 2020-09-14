@@ -23,14 +23,14 @@
 
 
                         <div class="form-group">
-                            <label>Debit Account</label>
+                            <label>Source Account</label>
 
                             <!--<span class="alert no-bd-rad my-border bg-white" id="sourceCurrency">CCY</span>-->
 
                             <select name="source" class="form-control" id="source"
-                                    th:field="*{customerAccountNumber}" onchange="getBalance();">
+                                    th:field="*{customerAccountNumber}" onchange="getBalance();" required="required">
                                 <option th:each="s: ${accountList}" th:value="${s.accountNumber}" th:text="${s.accountNumber}" th:selected="${s.primaryFlag=='Y'}"></option>
-                            </select>
+                            </select><span class='req-inner'></span>
                             <!--<p th:if="${#fields.hasErrors('customerAccountNumber')}" th:errors="*{customerAccountNumber}"-->
                             <!--class="errors"></p>-->
                         </div>
@@ -70,7 +70,7 @@
                             <label >Price</label>
 <!--                            <input type="text" class="form-control" th:field="*{amount}"-->
 <!--                                   required="required" readonly/>-->
-                            <input id="amount" th:field="*{amount}" required="required" type="number" min=1 class="form-control"  placeholder="Amount" readonly/>
+                            <input id="amount" th:field="*{amount}" required="required" type="number" min=0 class="form-control"  placeholder="Amount" readonly/>
                             <p class="errors close" data-dismiss="alert" aria-label="close" th:if="${#fields.hasErrors('amount')}" th:errors="*{amount}">&times;</p>
                             <span class='req-inner'></span>
                         </div>
@@ -82,12 +82,12 @@
                         <div class="form-group">
                             <label >Phone Number</label>
                             <input type="text" class="form-control" th:field="*{phoneNumber}"
-                                   required="required"/>
+                                   required="required" readonly/>
                         </div>
                         <div class="form-group">
                             <label >Email Address</label>
                             <input type="text" class="form-control" th:field="*{emailAddress}"
-                                   required="required"/>
+                                   required="required" readonly/>
                         </div>
 
                         <button  class="btn btn-link required-step" >Next</button>
@@ -199,7 +199,7 @@
                 $('#paymentItemId').empty();
                 $('#paymentItemId').append("<option value=''>-Select-</option>");
                 console.log("Biller ---------->>>" +items)
-                items.forEach(b => $('#paymentItemId').append("<option value='"+b.paymentItemId+"'>"+b.paymentItemName+"</option>"));
+                items.forEach(b => $('#paymentItemId').append("<option value='"+b.paymentCode+"'>"+b.paymentItemName+"</option>"));
             }
         })
     }
@@ -219,13 +219,14 @@
                 $('#amount').val(paymentItem.amount);
                 $('#paymentCode').val(paymentItem.paymentCode);
 
-                if(paymentItem.readonly==false){
+                if(paymentItem.readonly==false || paymentItem.isAmountFixed==false){
                     $('#amount').removeAttr("readonly")
                 }
                 else {
                     $('#amount').attr("readonly","readonly")
 
                 }
+
 
             }
         });

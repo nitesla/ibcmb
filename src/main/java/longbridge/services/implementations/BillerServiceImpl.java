@@ -300,13 +300,9 @@ public class BillerServiceImpl implements BillerService {
 
     @Override
     public PaymentItem getPaymentItem(Long id) {
-        return paymentItemRepo.findByPaymentItemId(id);
+        return paymentItemRepo.findByPaymentCode(id);
     }
 
-    @Override
-    public PaymentItem getPaymentItemAmount(String name) {
-        return paymentItemRepo.findByPaymentItemName(name);
-    }
     @Override
     public Biller getBillerName(Long id) {
         return billerRepo.findByBillerId(id);
