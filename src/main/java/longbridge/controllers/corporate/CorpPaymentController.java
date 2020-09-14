@@ -72,7 +72,7 @@ public class CorpPaymentController {
     @RequestMapping(value = "/{id}", method = {RequestMethod.GET, RequestMethod.POST})
     public String savePayment(@PathVariable Long id, Model model, HttpServletRequest request, Locale locale, RedirectAttributes attributes) {
         BillPayment billPayment = paymentService.getBillPayment(id);
-        PaymentItem paymentItem = billerService.getPaymentItemAmount(billPayment.getPaymentItemName());
+//        PaymentItem paymentItem = billerService.getPaymentItemAmount(billPayment.getPaymentItemName());
         List<Biller> billerCategories = billerService.getBillersCategories();
         model.addAttribute("billerCategories", billPayment);
         BillPaymentDTO billPaymentDTO = new BillPaymentDTO();
@@ -82,7 +82,7 @@ public class CorpPaymentController {
         billPaymentDTO.setCategoryName(billPayment.getCategoryName());
         billPaymentDTO.setBillerName(billPayment.getBillerName());
         billPaymentDTO.setPaymentItemName(billPayment.getPaymentItemName());
-        billPaymentDTO.setAmount(paymentItem.getAmount().toString());
+        billPaymentDTO.setAmount(billPayment.getAmount().toString());
         model.addAttribute("billPaymentDTO", billPaymentDTO);
         request.getSession().setAttribute("billPaymentDTO", billPaymentDTO);
         return page + "pagei";
