@@ -232,7 +232,7 @@
                     $('#paymentItemId').empty();
                     $('#paymentItemId').append("<option value=''>-Select-</option>");
                     console.log("Biller ---------->>>" +items)
-                    items.forEach(b => $('#paymentItemId').append("<option value='"+b.paymentItemId+"'>"+b.paymentItemName+"</option>"));
+                    items.forEach(b => $('#paymentItemId').append("<option value='"+b.paymentCode+"'>"+b.paymentItemName+"</option>"));
                 }
             })
         }
