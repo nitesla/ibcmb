@@ -64,6 +64,7 @@
         <script th:inline="javascript">
             /*<![CDATA[*/
             $(document).ready(function() {
+                var returnedData = null;
                 var url = "/corporate/transfer/history/all";
                 var table = $('#ct').DataTable({
                     responsive: true,
@@ -96,7 +97,7 @@
                     }, {
                         "data": "remarks"
                     }, {
-                        "data": "statusDescription"
+                        "data": "status"
                     }, {
                         "data": "DT_RowId"
                     } ],
@@ -125,12 +126,33 @@
                             return data;
                         }
                     },
+                        {
+                            "targets" : 5,
+                            "data" : "status",
+                            "render" : function(data, type,full, meta) {
+                                returnedData = data;
+                                if (type === 'display') {
+                                    if(data == '00'||data == '000')
+                                        return "Transaction Successful";
+                                    if(data=="09"||data=="34" || data=="Pending"){
+                                        return "Transaction Successful";
+                                    }
+                                    else
+                                        return "Failed";
 
+                                }
+                                return data;
+                            }
+                        },
                         {
                         "targets": 6,
                         "data": "DT_RowId",
                         "render": function(data, type, full, meta) {
-                            return '<a href="' + data + '/downloadreceipt" target="_blank">Receipt</a>';
+                                if (returnedData == '00' || returnedData == '000') {
+                                    return '<a href="' + data + '/downloadreceipt" target="_blank">Receipt</a>';
+                                }
+                                else return returnedData;
+
                         }
                     }]
                 });
