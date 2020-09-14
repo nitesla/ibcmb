@@ -310,10 +310,9 @@ public class CorpInterBankTransferController {
             transferRequestDTO.setFinancialInstitution(financialInstitutionService.getFinancialInstitutionByName(dto.getBeneficiaryBank()));
         }
         model.addAttribute("corpTransferRequest", transferRequestDTO);
-
-
         return page + "pageii";
     }
+
 
     @ModelAttribute
     public void setNairaSourceAccount(Model model, Principal principal) {
