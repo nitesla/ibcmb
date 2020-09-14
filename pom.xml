@@ -49,7 +49,7 @@
         <!--<start-class>longbridge.InternetbankingApplication</start-class>-->
         <guava.version>29.0-jre</guava.version>
         <javax.servlet-api.version>3.1.0</javax.servlet-api.version>
-        <aspectj.version>1.9.4</aspectj.version>
+        <aspectj.version>1.9.6</aspectj.version>
     </properties>
     <dependencies>
         <dependency>
@@ -464,18 +464,18 @@
                 <artifactId>aspectj-maven-plugin</artifactId>
                 <!--                <version>1.11</version>-->
                 <groupId>com.nickwongdev</groupId>
-                <version>1.12.1</version>
+                <version>1.12.6</version>
                 <dependencies>
                     <dependency>
                         <groupId>com.nickwongdev</groupId>
                         <artifactId>aspectj-maven-plugin</artifactId>
-                        <version>1.12.1</version>
+                        <version>1.12.6</version>
                     </dependency>
 
                         <dependency>
                             <groupId>org.aspectj</groupId>
                             <artifactId>aspectjtools</artifactId>
-                            <version>1.9.4</version>
+                            <version>${aspectj.version}</version>
                         </dependency>
                         <dependency>
                             <groupId>org.ow2.asm</groupId>
