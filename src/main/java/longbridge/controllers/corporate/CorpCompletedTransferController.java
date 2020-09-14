@@ -121,7 +121,14 @@ public class CorpCompletedTransferController {
             modelMap.put("refNUm", transRequest.getReferenceNumber());
             modelMap.put("tranDate", DateFormatter.format(transRequest.getTranDate()));
             modelMap.put("date", DateFormatter.format(new Date()));
-            modelMap.put("status", transRequest.getStatusDescription());
+//            modelMap.put("status", transRequest.getStatusDescription());
+
+            if ("00".equals(transRequest.getStatus()) || "000".equals(transRequest.getStatus()))
+                modelMap.put("statusDescription", "Transaction Successful");
+            else if ("09".equals(transRequest.getStatus()) || "34".equals(transRequest.getStatus()))
+                modelMap.put("statusDescription", "Pending");
+            else modelMap.put("statusDescription", "Failed");
+
             JasperReport jasperReport = ReportHelper.getJasperReport("rpt_tran-hist");
 
             response.setContentType("application/x-download");
