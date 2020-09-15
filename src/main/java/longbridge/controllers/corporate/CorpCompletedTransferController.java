@@ -30,6 +30,7 @@ import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
@@ -92,47 +93,59 @@ public class CorpCompletedTransferController {
     }
 
     @RequestMapping(path = "{id}/downloadreceipt", method = RequestMethod.GET)
-    public void getTransPDF(@PathVariable Long id, Model model, Principal principal, HttpServletRequest request, HttpServletResponse response, RedirectAttributes redirectAttributes) throws Exception {
+    public ModelAndView getTransPDF(@PathVariable Long id, Model model, Principal principal, HttpServletRequest request, HttpServletResponse response, RedirectAttributes redirectAttributes) throws Exception {
+        try {
+            CorporateUser corporateUser = corporateUserService.getUserByName(principal.getName());
 
-        CorporateUser corporateUser = corporateUserService.getUserByName(principal.getName());
-
-        Corporate corporate = corporateUser.getCorporate();
-        TransRequest transRequest = transferService.getTransfer(id);
+            Corporate corporate = corporateUser.getCorporate();
+            TransRequest transRequest = transferService.getTransfer(id);
 
 
-        Map<String, Object> modelMap = new HashMap<>();
-        double amount = Double.parseDouble(transRequest.getAmount().toString());
-        DecimalFormat formatter = new DecimalFormat("#,###.00");
-        modelMap.put("datasource", new ArrayList<>());
-        modelMap.put("imagePath", imagePath);
-        modelMap.put("amount", formatter.format(amount));
-        modelMap.put("customer", corporate.getName());
-        modelMap.put("customerAcctNumber", StringUtil.maskAccountNumber(transRequest.getCustomerAccountNumber()));
-        if (transRequest.getRemarks() != null) {
-            modelMap.put("remarks", transRequest.getRemarks());
-        } else {
-            modelMap.put("remarks", "");
+            Map<String, Object> modelMap = new HashMap<>();
+            double amount = Double.parseDouble(transRequest.getAmount().toString());
+            DecimalFormat formatter = new DecimalFormat("#,###.00");
+            modelMap.put("datasource", new ArrayList<>());
+            modelMap.put("imagePath", imagePath);
+            modelMap.put("amount", formatter.format(amount));
+//        modelMap.put("customer", corporate.getName());
+            modelMap.put("customer", corporateUser.getFirstName() + " " + corporateUser.getLastName());
+            modelMap.put("customerAcctNumber", StringUtil.maskAccountNumber(transRequest.getCustomerAccountNumber()));
+            if (transRequest.getRemarks() != null) {
+                modelMap.put("remarks", transRequest.getRemarks());
+            } else {
+                modelMap.put("remarks", "");
+            }
+            modelMap.put("beneficiary", transRequest.getBeneficiaryAccountName());
+            modelMap.put("beneficiaryAcctNumber", transRequest.getBeneficiaryAccountNumber());
+            modelMap.put("beneficiaryBank", transRequest.getFinancialInstitution().getInstitutionName());
+            modelMap.put("refNUm", transRequest.getReferenceNumber());
+            modelMap.put("tranDate", DateFormatter.format(transRequest.getTranDate()));
+            modelMap.put("date", DateFormatter.format(new Date()));
+//            modelMap.put("status", transRequest.getStatusDescription());
+
+            if ("00".equals(transRequest.getStatus()) || "000".equals(transRequest.getStatus()))
+                modelMap.put("statusDescription", "Transaction Successful");
+            else if ("09".equals(transRequest.getStatus()) || "34".equals(transRequest.getStatus()))
+                modelMap.put("statusDescription", "Pending");
+            else modelMap.put("statusDescription", "Failed");
+
+            JasperReport jasperReport = ReportHelper.getJasperReport("rpt_tran-hist");
+
+            response.setContentType("application/x-download");
+            response.setHeader("Content-Disposition", String.format("attachment; filename=\"tran-hist.pdf\""));
+
+            JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, modelMap);
+            JasperExportManager.exportReportToPdfStream(jasperPrint, response.getOutputStream());
+        } catch (Exception e) {
+            logger.info(" RECEIPT DOWNLOAD {} ", e.getMessage());
+
         }
-        modelMap.put("beneficiary", transRequest.getBeneficiaryAccountName());
-        modelMap.put("beneficiaryAcctNumber", transRequest.getBeneficiaryAccountNumber());
-        modelMap.put("beneficiaryBank", transRequest.getFinancialInstitution().getInstitutionName());
-        modelMap.put("refNUm", transRequest.getReferenceNumber());
-        modelMap.put("tranDate", DateFormatter.format(transRequest.getTranDate()));
-        modelMap.put("date", DateFormatter.format(new Date()));
-        if ("00".equals(transRequest.getStatus()) || "000".equals(transRequest.getStatus()))
-            modelMap.put("statusDescription", "Transaction Successful");
-        else if ("09".equals(transRequest.getStatus()) || "34".equals(transRequest.getStatus()))
-            modelMap.put("statusDescription", "Pending");
-        else modelMap.put("statusDescription", "Failed");
-
-        JasperReport jasperReport = ReportHelper.getJasperReport("rpt_tran-hist");
-
-        response.setContentType("application/x-download");
-        response.setHeader("Content-Disposition", String.format("attachment; filename=\"tran-hist.pdf\""));
-
-        JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, modelMap);
-        JasperExportManager.exportReportToPdfStream(jasperPrint, response.getOutputStream());
+        ModelAndView modelAndView=new ModelAndView("redirect:/corp/dashboard");
+        modelAndView.addObject("failure", messageSource.getMessage("receipt.download.failed", null, locale));
+        return modelAndView;
 
 
     }
 }
+
+
