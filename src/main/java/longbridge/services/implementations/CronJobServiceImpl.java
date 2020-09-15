@@ -460,8 +460,26 @@ public class CronJobServiceImpl implements CronJobService {
     }
 
     @Override
-    @Scheduled(cron = "${neft.settlement.time}")
-    public void neftSettlement(){
+    @Scheduled(cron = "${neft.settlement.firstwindow}")
+    public void neftSettlementFirstWindow(){
+        integrationService.submitNeftTransfer();
+    }
+
+    @Override
+    @Scheduled(cron = "${neft.settlement.secondwindow}")
+    public void neftSettlementSecondWindow() {
+        integrationService.submitNeftTransfer();
+    }
+
+    @Override
+    @Scheduled(cron = "${neft.settlement.thirdwindow}")
+    public void neftSettlementThirdWindow() {
+        integrationService.submitNeftTransfer();
+    }
+
+    @Override
+    @Scheduled(cron = "${neft.settlement.fourthwindow}")
+    public void neftSettlementFourthWindow() {
         integrationService.submitNeftTransfer();
     }
 }

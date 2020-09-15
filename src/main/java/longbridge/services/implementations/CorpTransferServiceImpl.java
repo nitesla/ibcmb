@@ -106,7 +106,7 @@ public class CorpTransferServiceImpl implements CorpTransferService {
     }
 
 
-    private NeftTransfer pfDataItemStore(TransferRequestDTO neftTransferDTO){
+    private NeftTransfer pfDataItemStore(CorpTransRequest neftTransferDTO){
         NeftTransfer neftTransfer = new NeftTransfer();
         neftTransfer.setAccountNo(neftTransferDTO.getCustomerAccountNumber());
         neftTransfer.setBeneficiaryAccountNo(neftTransferDTO.getBeneficiaryAccountNumber());
@@ -122,6 +122,7 @@ public class CorpTransferServiceImpl implements CorpTransferService {
         neftTransfer.setInstrumentType("");
         neftTransfer.setMICRRepairInd("");
         neftTransfer.setCycleNo("");
+        neftTransfer.setSettlementTime("not settled");
         neftTransfer.setNarration(neftTransferDTO.getRemarks());
         neftTransfer.setPresentingBankSortCode("");
         neftTransfer.setSortCode("");
@@ -134,9 +135,7 @@ public class CorpTransferServiceImpl implements CorpTransferService {
     @Override
     public Object addTransferRequest(CorpTransferRequestDTO transferRequestDTO) throws InternetBankingException {
         logger.info("TRANSFER TYPE {}", transferRequestDTO.getTransferType());
-        if (transferRequestDTO.getTransferType() == TransferType.NEFT){
-            pfDataItemStore(transferRequestDTO);
-        }
+
 
         CorpTransRequest transferRequest = convertDTOToEntity(transferRequestDTO);
         String userRefereneceNumber = "CORP_" + getCurrentUser().getId().toString();
@@ -164,9 +163,6 @@ public class CorpTransferServiceImpl implements CorpTransferService {
         try {
             transferRequest.setStatus(StatusCode.PENDING.toString());
             transferRequest.setStatusDescription("Pending Authorization");
-            if (transferRequestDTO.getTransferType() == TransferType.NEFT){
-                transferRequest.setStatusDescription("Processing");
-            }
             CorpTransferAuth transferAuth = new CorpTransferAuth();
             transferAuth.setStatus("P");
             transferRequest.setTransferAuth(transferAuth);
@@ -225,10 +221,17 @@ public class CorpTransferServiceImpl implements CorpTransferService {
 
 //        corpTransRequest.getAntiFraudData().setChannel(corpTransRequest.getChannel());
 
+
+
+        if (corpTransferRequestDTO.getTransferType() == TransferType.NEFT){
+             pfDataItemStore(corpTransRequest);
+            return getCorpTransferRequestDTO(corpTransRequest);
+        }
+
         CorpTransRequest corpTransRequestNew = (CorpTransRequest) integrationService.makeTransfer(corpTransRequest);//name change by GB
         logger.trace("Transfer Details {} by {}", corpTransRequestNew.toString(), corpTransRequestNew.getUserReferenceNumber());
 
-        if (corpTransRequestNew != null) {
+        if (corpTransRequestNew != null ) {
             CorpTransRequest corpTransRequest1 = corpTransferRequestRepo.findById(corpTransRequest.getId()).get();
             entityManager.detach(corpTransRequest1);
             corpTransRequest1.setReferenceNumber(corpTransRequestNew.getReferenceNumber());
@@ -245,6 +248,24 @@ public class CorpTransferServiceImpl implements CorpTransferService {
             throw new InternetBankingTransferException(TransferExceptions.ERROR.toString());
         }
         throw new InternetBankingTransferException(messageSource.getMessage("transfer.failed", null, locale));
+    }
+
+    private CorpTransferRequestDTO getCorpTransferRequestDTO(CorpTransRequest corpTransRequest) {
+        CorpTransferRequestDTO corpTransferRequestDTO;
+        CorpTransRequest corpTransRequest1 = corpTransferRequestRepo.findById(corpTransRequest.getId()).get();
+        entityManager.detach(corpTransRequest1);
+        corpTransRequest1.setReferenceNumber(corpTransRequest.getReferenceNumber());
+        corpTransRequest1.setNarration(corpTransRequest.getNarration());
+        corpTransRequest1.setStatus("00");
+        corpTransRequest1.setStatusDescription("Transaction Authorized");
+
+        corpTransferRequestRepo.save(corpTransRequest1);
+        corpTransferRequestDTO = convertEntityToDTO(corpTransRequest1);
+
+        if (corpTransRequest1.getStatus() != null) {
+            return corpTransferRequestDTO;
+        }
+        throw new InternetBankingTransferException(TransferExceptions.ERROR.toString());
     }
 
     @Override
@@ -658,6 +679,8 @@ public class CorpTransferServiceImpl implements CorpTransferService {
                         corpTransferRequestDTO.setTranLocation(transReqEntry.getTranLocation());
 
                         CorpTransferRequestDTO requestDTO = makeTransfer(corpTransferRequestDTO);
+                        logger.info("maketransfer details {}", requestDTO);
+                        logger.info("status  {}", requestDTO.getStatus());
 
                         if ("00".equals(requestDTO.getStatus()) || "000".equals(requestDTO.getStatus())) {//successful transaction
 

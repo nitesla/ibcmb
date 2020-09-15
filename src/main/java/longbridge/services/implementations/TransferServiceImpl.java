@@ -108,6 +108,7 @@ public class TransferServiceImpl implements TransferService {
         neftTransfer.setBVNPayer("");
         neftTransfer.setInstrumentType("");
         neftTransfer.setMICRRepairInd("");
+        neftTransfer.setSettlementTime("not settled");
         neftTransfer.setCycleNo("");
         neftTransfer.setNarration(neftTransferDTO.getRemarks());
         neftTransfer.setPresentingBankSortCode("");
@@ -121,14 +122,14 @@ public class TransferServiceImpl implements TransferService {
 
 
 
+    @Override
     public TransferRequestDTO makeTransfer(TransferRequestDTO transferRequestDTO) throws InternetBankingTransferException {
         validateTransfer(transferRequestDTO);
         if (transferRequestDTO.getTransferType() == TransferType.NEFT){
             logger.info("transferType from service layer is {}", transferRequestDTO.getTransferType());
              pfDataItemStore(transferRequestDTO);
-                transferRequestDTO.setStatus("00");
-                return transferRequestDTO;
         }
+        
         logger.info("Initiating {} Transfer to {}", transferRequestDTO.getTransferType(), transferRequestDTO.getBeneficiaryAccountName());
         logger.info("Initiating Transfer to {}", transferRequestDTO);
         System.out.println("received request"+transferRequestDTO);
@@ -181,14 +182,19 @@ public class TransferServiceImpl implements TransferService {
         TransRequest  transRequest2 = persistTransfer(convertEntityToDTO(transRequest1));
         System.out.println("before integration request after antifraud"+transRequest2);
 
-        TransRequest transRequest = integrationService.makeTransfer(transRequest2);
+        TransRequest transRequest = null;
 
-        logger.trace("Transfer Details: ", transRequest);
-
-        if (transRequest != null) {
+       if (transferRequestDTO.getTransferType() != TransferType.NEFT) {
+           transRequest = integrationService.makeTransfer(transRequest2);
+       }
+            logger.trace("Transfer Details: ", transRequest);
+        
+        if (transRequest == null) {
 
             logger.info("uniqueid {}",transRequest);
-            transRequest = transferRequestRepo.save(transRequest);
+            transRequest2.setStatus("00");
+            transRequest = transferRequestRepo.save(transRequest2);
+
             return convertEntityToDTO(transRequest);
 
 

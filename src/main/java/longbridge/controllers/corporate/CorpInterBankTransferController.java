@@ -239,7 +239,6 @@ public class CorpInterBankTransferController {
             } else if (type.equalsIgnoreCase("NEFT")){
                 logger.info("Processing transfer using NEFT");
                 charge = integrationService.getFee("NEFT",String.valueOf(corpTransferRequestDTO.getAmount())).getFeeValue();
-                logger.info("charge for NEFT IS {} " , charge);
                 corpTransferRequestDTO.setTransferType(TransferType.NEFT);
             }
 //            request.getSession().removeAttribute("NIP");
