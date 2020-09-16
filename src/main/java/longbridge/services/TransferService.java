@@ -60,4 +60,5 @@ public interface TransferService {
     Page<TransferRequestDTO> getTransferReviews(TransferType transfertype, String accountNumber, Date startDate, Date endDate, Pageable pageDetails);
 
 
+
 }

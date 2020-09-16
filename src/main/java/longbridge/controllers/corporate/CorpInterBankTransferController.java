@@ -10,6 +10,8 @@ import longbridge.services.*;
 import longbridge.utils.TransferType;
 import longbridge.utils.TransferUtils;
 import longbridge.validator.transfer.TransferValidator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
@@ -46,6 +48,8 @@ public class CorpInterBankTransferController {
     private String page = "corp/transfer/interbank/";
     @Value("${bank.code}")
     private String bankCode;
+
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
     public CorpInterBankTransferController(CorporateUserService corporateUserService, CorpTransferService corpTransferService, MessageSource messages, CorpLocalBeneficiaryService corpLocalBeneficiaryService, FinancialInstitutionService financialInstitutionService, TransferValidator validator, CorporateService corporateService, IntegrationService integrationService, AccountService accountService, TransferUtils transferUtils, TransferErrorService transferErrorService) {
@@ -113,26 +117,20 @@ public class CorpInterBankTransferController {
         String type = request.getParameter("tranType");
 
         if ("NIP".equalsIgnoreCase(type)) {
-
             request.getSession().setAttribute("NIP", "NIP");
             requestDTO.setTransferType(TransferType.NIP);
-
             model.addAttribute("transferRequest", requestDTO);
             return page + "pageiA";
         } else if ("RTGS".equalsIgnoreCase(type)){
             request.getSession().setAttribute("NIP", "RTGS");
             requestDTO.setTransferType(TransferType.RTGS);
-
             model.addAttribute("transferRequest", requestDTO);
             return page + "pageiAb";
         } else if ("NEFT".equalsIgnoreCase(type))
             request.getSession().setAttribute("NIP", "NEFT");
         requestDTO.setTransferType(TransferType.NEFT);
-
         model.addAttribute("transferRequest", requestDTO);
         return page + "pageiAc";
-
-
     }
 
 
@@ -233,11 +231,15 @@ public class CorpInterBankTransferController {
                 corpTransferRequestDTO.setTransferType(TransferType.RTGS);
                 charge = integrationService.getFee("RTGS",String.valueOf(corpTransferRequestDTO.getAmount())).getFeeValue();
 
-            } else {
+            } else if (type.equalsIgnoreCase("NIP")){
 
                 charge = integrationService.getFee("NIP",String.valueOf(corpTransferRequestDTO.getAmount())).getFeeValue();
 
                 corpTransferRequestDTO.setTransferType(TransferType.INTER_BANK_TRANSFER);
+            } else if (type.equalsIgnoreCase("NEFT")){
+                logger.info("Processing transfer using NEFT");
+                charge = integrationService.getFee("NEFT",String.valueOf(corpTransferRequestDTO.getAmount())).getFeeValue();
+                corpTransferRequestDTO.setTransferType(TransferType.NEFT);
             }
 //            request.getSession().removeAttribute("NIP");
 
@@ -307,10 +309,9 @@ public class CorpInterBankTransferController {
             transferRequestDTO.setFinancialInstitution(financialInstitutionService.getFinancialInstitutionByName(dto.getBeneficiaryBank()));
         }
         model.addAttribute("corpTransferRequest", transferRequestDTO);
-
-
         return page + "pageii";
     }
+
 
     @ModelAttribute
     public void setNairaSourceAccount(Model model, Principal principal) {
