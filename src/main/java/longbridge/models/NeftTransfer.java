@@ -1,10 +1,7 @@
 package longbridge.models;
 
-import org.hibernate.envers.Audited;
-
 import javax.persistence.*;
 import java.math.BigDecimal;
-import java.util.Date;
 
 @Entity
 public class NeftTransfer {

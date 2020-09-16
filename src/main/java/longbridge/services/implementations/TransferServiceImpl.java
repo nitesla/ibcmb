@@ -3,7 +3,6 @@ package longbridge.services.implementations;
 import longbridge.api.AccountDetails;
 import longbridge.api.NEnquiryDetails;
 import longbridge.dtos.InternationalTransferRequestDTO;
-import longbridge.dtos.NeftTransferDTO;
 import longbridge.dtos.SettingDTO;
 import longbridge.dtos.TransferRequestDTO;
 import longbridge.exception.InternetBankingTransferException;
@@ -35,7 +34,6 @@ import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
-import java.security.Principal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
