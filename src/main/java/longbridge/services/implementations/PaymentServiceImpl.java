@@ -63,7 +63,8 @@ public class PaymentServiceImpl implements PaymentService {
             billPayment = billPaymentRepo.save(billPayment);
 //            billPaymentRepo.save(payment1);
             logger.info("Added payment {}",billPayment);
-            if(billPayment.getStatus().equalsIgnoreCase("SUCCESSFUL")){
+            if(billPayment.getStatus().equalsIgnoreCase("SUCCESSFUL") || billPayment.getStatus()== null){
+               // billPayment.setStatus("SUCCESSFUL");
                 return messageSource.getMessage("Payment Successful",null,locale);
             }else {
                 return messageSource.getMessage("Payment Failed",null,locale);
@@ -89,7 +90,8 @@ public class PaymentServiceImpl implements PaymentService {
 
             billPayment = billPaymentRepo.save(billPayment);
             logger.info("Added payment {}",billPayment);
-            if(billPayment.getStatus().equalsIgnoreCase("SUCCESSFUL")){
+            if(billPayment.getStatus().equalsIgnoreCase("SUCCESSFUL") || billPayment.getStatus() == null){
+               // billPayment.setStatus("SUCCESSFUL");
                 return messageSource.getMessage("Payment Successful",null,locale);
             }else {
                 return messageSource.getMessage("Payment Failed",null,locale);
