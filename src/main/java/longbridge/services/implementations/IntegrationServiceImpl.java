@@ -1486,6 +1486,7 @@ public class IntegrationServiceImpl implements IntegrationService {
 		String uri = QUICKTELLER_URI+quicktellerBillpaymentAdvice;
 		Map<String,String> params = new HashMap<>();
 		params.put("terminalId",terminalId);
+		logger.info("Terminal ID is", terminalId);
 		params.put("amount", billPayment.getAmount().toPlainString());
 		params.put("appid",appId);
 		params.put("customerAccount", billPayment.getCustomerAccountNumber());
@@ -1527,6 +1528,7 @@ public class IntegrationServiceImpl implements IntegrationService {
 		String uri = QUICKTELLER_URI+quicktellerBillpaymentAdvice;
 		Map<String,String> params = new HashMap<>();
 		params.put("terminalId",terminalId);
+		logger.info("Terminal ID is", terminalId);
 		params.put("amount", recurringPayment.getAmount().toPlainString());
 		params.put("appid",appId);
 		params.put("customerAccount", recurringPayment.getCustomerAccountNumber());
