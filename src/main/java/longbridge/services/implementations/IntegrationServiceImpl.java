@@ -4,19 +4,13 @@ package longbridge.services.implementations;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import longbridge.api.*;
-import longbridge.response.BillerCategoryResponse;
-import longbridge.response.BillerResponse;
-import longbridge.response.PaymentItemResponse;
-import longbridge.response.PaymentResponse;
 import longbridge.dtos.*;
 import longbridge.exception.InternetBankingException;
 import longbridge.exception.InternetBankingTransferException;
 import longbridge.exception.TransferErrorService;
 import longbridge.models.*;
-import longbridge.repositories.AccountRepo;
-import longbridge.repositories.AntiFraudRepo;
-import longbridge.repositories.CorporateRepo;
-import longbridge.repositories.CoverageRepo;
+import longbridge.repositories.*;
+import longbridge.response.*;
 import longbridge.security.userdetails.CustomUserPrincipal;
 import longbridge.services.ConfigurationService;
 import longbridge.services.IntegrationService;
@@ -95,6 +89,9 @@ public class IntegrationServiceImpl implements IntegrationService {
 	@Value("${customDuty.baseUrl}")
 	private String CustomDutyUrl;
 
+	@Value("${bankcode}")
+	private String bankcode;
+
 //	@Value("${custom.access.beneficiaryAcct}")
 //	private String accessBeneficiaryAcct;
 
@@ -111,11 +108,14 @@ public class IntegrationServiceImpl implements IntegrationService {
 	private CorporateRepo corporateRepo;
 	private AntiFraudRepo antiFraudRepo;
 	private CoverageRepo coverageRepo;
+	private NeftTransferRepo neftTransferRepo;
+
 
 	@Autowired
 	public IntegrationServiceImpl(RestTemplate template, MailService mailService, TemplateEngine templateEngine,
                                   ConfigurationService configService, TransferErrorService errorService, MessageSource messageSource,
-                                  AccountRepo accountRepo, CorporateRepo corporateRepo, AntiFraudRepo antiFraudRepo, CoverageRepo coverageRepo) {
+                                  AccountRepo accountRepo, CorporateRepo corporateRepo, AntiFraudRepo antiFraudRepo, CoverageRepo coverageRepo,
+								  NeftTransferRepo neftTransferRepo) {
 		this.template = template;
 		this.mailService = mailService;
 		this.templateEngine = templateEngine;
@@ -126,8 +126,8 @@ public class IntegrationServiceImpl implements IntegrationService {
 		this.corporateRepo = corporateRepo;
 		this.antiFraudRepo=antiFraudRepo;
 		this.coverageRepo = coverageRepo;
-
-			}
+		this.neftTransferRepo = neftTransferRepo;
+	}
 
 
 	@Override
@@ -162,6 +162,8 @@ public class IntegrationServiceImpl implements IntegrationService {
 		}
 	}
 
+
+
 	@Override
 	public AccountStatement getAccountStatements(String accountNo, Date fromDate, Date toDate, String tranType,
 												 String numOfTxn, PaginationDetails paginationDetails) {
@@ -194,6 +196,8 @@ public class IntegrationServiceImpl implements IntegrationService {
 
 		return statement;
 	}
+
+
 
 	@Override
 	public AccountStatement getAccountStatements(String accountNo, Date fromDate, Date toDate, String tranType,
@@ -228,6 +232,9 @@ public class IntegrationServiceImpl implements IntegrationService {
 		return statement;
 	}
 
+
+
+
 	@Override
 	public AccountStatement getFullAccountStatement(String accountNo, Date fromDate, Date toDate, String tranType) {
 		AccountStatement statement = new AccountStatement();
@@ -260,6 +267,7 @@ public class IntegrationServiceImpl implements IntegrationService {
 
 		return statement;
 	}
+
 
 	@Override
 	public AccountStatement getTransactionHistory(String accountNo, Date fromDate, Date toDate, String tranType) {
@@ -556,11 +564,17 @@ public class IntegrationServiceImpl implements IntegrationService {
 
 				return request;
 			}
+//			case NEFT: {
+//				TransRequest neftTransferRequest = sendNeftTransfer(transRequest);
+//				return neftTransferRequest;
+//			}
 		}
 		logger.trace("request did not match any type");
 		transRequest.setStatus(ResultType.ERROR.toString());
 		return transRequest;
 	}
+
+
 
 	@Override
 	public TransRequest makeBackgroundTransfer(TransRequest transRequest) throws InternetBankingTransferException{
@@ -1472,6 +1486,7 @@ public class IntegrationServiceImpl implements IntegrationService {
 		String uri = QUICKTELLER_URI+quicktellerBillpaymentAdvice;
 		Map<String,String> params = new HashMap<>();
 		params.put("terminalId",terminalId);
+		logger.info("Terminal ID is", terminalId);
 		params.put("amount", billPayment.getAmount().toPlainString());
 		params.put("appid",appId);
 		params.put("customerAccount", billPayment.getCustomerAccountNumber());
@@ -1513,6 +1528,7 @@ public class IntegrationServiceImpl implements IntegrationService {
 		String uri = QUICKTELLER_URI+quicktellerBillpaymentAdvice;
 		Map<String,String> params = new HashMap<>();
 		params.put("terminalId",terminalId);
+		logger.info("Terminal ID is", terminalId);
 		params.put("amount", recurringPayment.getAmount().toPlainString());
 		params.put("appid",appId);
 		params.put("customerAccount", recurringPayment.getCustomerAccountNumber());
@@ -1597,9 +1613,7 @@ public class IntegrationServiceImpl implements IntegrationService {
 		ObjectMapper mapper= new ObjectMapper();
 		try {
 			coverageDetailsDTO = template.getForObject(uri,CoverageDetailsDTO.class,params);
-
 		}
-
 		catch (Exception e){
 			logger.error("Error getting coverage details",e);
 		}
@@ -1607,6 +1621,55 @@ public class IntegrationServiceImpl implements IntegrationService {
 	}
 
 
+	@Override
+    public NeftResponse submitNeftTransfer() {
+		NeftResponse response = new NeftResponse();
+		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZZZZ");
+        List<NeftTransfer> getUnsettledNeftList = neftTransferRepo.getAllUnsettledList();
+        logger.info("getUnsettledList == {}", getUnsettledNeftList);
+        String ItemCount = String.valueOf(getUnsettledNeftList.size());
+		Date date = new Date();
+		String newdate = dateFormat.format(date);
+		String uri = URI+"/api/neftOutWard/Submit";
+		Map<String,Object> params = new HashMap<>();
+		params.put("appid",appId);
+		params.put("MsgID","5");
+		params.put("TotalValue", "2.0");
+		params.put("BankCode",bankcode);
+		params.put("ItemCount", ItemCount);
+		params.put("Date", newdate);
+		params.put("SettlementTimeF", newdate);
+		List<NeftTransfer> neftTransfers = getUnsettledNeftList.stream()
+				.map(neftTransfer -> {
+					updateNeftSettlement(newdate, neftTransfer);
+					return neftTransfer;
+				})
+				.collect(Collectors.toList());
+		params.put("PFItemDataStores", neftTransfers);
+
+		logger.info("PARAMS ============ {}", params);
+		try{
+			if (!getUnsettledNeftList.isEmpty()){
+				response = template.postForObject(uri,params, NeftResponse.class);
+				getUnsettledNeftList.forEach(neftTransfer -> {
+					updateNeftSettlement(newdate, neftTransfer);
+					neftTransferRepo.save(neftTransfer);
+				});
+			}else {
+				logger.info("No pending requests");
+			}
+		}catch (Exception e){
+			logger.info("Error processing request ", e);
+		}
+		return response;
+    }
+
+	private void updateNeftSettlement(String newdate, NeftTransfer neftTransfer) {
+		neftTransfer.setSettlementTime(newdate);
+		neftTransfer.setPresentmentDate(newdate);
+		neftTransfer.setInstrumentDate(newdate);
+		neftTransfer.setBankOfFirstDepositDate(newdate);
+	}
 
 
 }

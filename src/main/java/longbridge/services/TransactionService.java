@@ -2,6 +2,7 @@ package longbridge.services;
 
 import longbridge.dtos.TransactionFeeDTO;
 import longbridge.exception.InternetBankingException;
+import longbridge.models.NeftTransfer;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -52,7 +53,7 @@ public interface TransactionService {
     Page<TransactionFeeDTO> getTransactionFees(Pageable pageable);
 
 
-
+     Page<NeftTransfer> getNeftUnsettledTransactions(Pageable pageable);
 
 
 }

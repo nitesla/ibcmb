@@ -29,6 +29,7 @@ public interface RetailUserRepo extends CommonRepo<RetailUser, Long> {
     RetailUser findFirstByEmailIgnoreCase(String email);
     RetailUser findFirstByCustomerId(String customerId);
 
+
     @Modifying
     @Query("update RetailUser  u set u.lastLoginDate = current_timestamp() , u.lockedUntilDate = NULL, u.noOfLoginAttempts = 0, u.status='A' where u.userName = :name")
     void updateUserAfterLogin(@Param("name") String userName);
@@ -48,4 +49,7 @@ public interface RetailUserRepo extends CommonRepo<RetailUser, Long> {
 
     @Query("select id from RetailUser ")
     Set<Long> getAllRetailUserId();
+
+//    @Query("select r.bvn from RetailUser r where r.userName = :username")
+//    String payerBvn(@Param("username") String username);
 }

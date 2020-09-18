@@ -5,6 +5,7 @@ import longbridge.api.*;
 import longbridge.dtos.*;
 import longbridge.exception.InternetBankingTransferException;
 import longbridge.models.*;
+import longbridge.response.NeftResponse;
 import longbridge.utils.Response;
 import longbridge.utils.statement.AccountStatement;
 import longbridge.utils.statement.TransactionHistory;
@@ -167,6 +168,5 @@ public interface IntegrationService {
     RecurringPayment recurringPayment(RecurringPayment recurringPayment);
     List<BillerCategoryDTO> getBillerCategories();
     CoverageDetailsDTO getCoverageDetails(String coverageName, Set<String> customerIds);
-
-
+    NeftResponse submitNeftTransfer();
 }

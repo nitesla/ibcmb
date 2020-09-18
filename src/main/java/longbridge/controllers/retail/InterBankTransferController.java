@@ -227,9 +227,13 @@ public class InterBankTransferController {
                 transferRequestDTO.setCharge(charge);
 
 
-            } else {
+            } else if ("NIP".equalsIgnoreCase(type)) {
                 transferRequestDTO.setTransferType(TransferType.INTER_BANK_TRANSFER);
                 charge = transferUtils.getFee("NIP",String.valueOf(transferRequestDTO.getAmount()));
+                transferRequestDTO.setCharge(charge);
+            } else if("NEFT".equalsIgnoreCase(type)){
+                transferRequestDTO.setTransferType(TransferType.NEFT);
+                charge = transferUtils.getFee("NEFT",String.valueOf(transferRequestDTO.getAmount()));
                 transferRequestDTO.setCharge(charge);
             }
             // request.getSession().removeAttribute("NIP");
