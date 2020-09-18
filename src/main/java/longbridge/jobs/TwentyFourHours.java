@@ -28,9 +28,7 @@ public class TwentyFourHours implements Job {
             cronJobService.addNewAccount();
             cronJobService.updateRunningJob();
             System.out.println("twenty four hours");
-        } catch (InternetBankingException e) {
-            e.printStackTrace();
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

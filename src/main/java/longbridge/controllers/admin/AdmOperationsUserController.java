@@ -36,7 +36,7 @@ import java.util.Locale;
 @RequestMapping("admin/operations/users")
 public class AdmOperationsUserController {
 
-    private Logger logger= LoggerFactory.getLogger(this.getClass());
+    private final Logger logger= LoggerFactory.getLogger(this.getClass());
     @Autowired
     private  OperationsUserService operationsUserService;
 
@@ -126,15 +126,9 @@ public class AdmOperationsUserController {
             result.addError(new ObjectError("error", doe.getMessage()));
             logger.error("Error creating operation user {}", operationsUser.getUserName(), doe);
             return "adm/operation/add";
-        }
-        catch (InternetBankingSecurityException se) {
+        } catch (InternetBankingException se) {
             result.addError(new ObjectError("error", se.getMessage()));
             logger.error("Error creating operation user", se);
-            return "adm/operation/add";
-        }
-        catch (InternetBankingException ibe) {
-            result.addError(new ObjectError("error", ibe.getMessage()));
-            logger.error("Error creating operation user", ibe);
             return "adm/operation/add";
         }
     }
@@ -164,7 +158,7 @@ public class AdmOperationsUserController {
 		}else{
 			operationsUsers = operationsUserService.getUsers(pageable);
 		}
-        DataTablesOutput<OperationsUserDTO> out = new DataTablesOutput<OperationsUserDTO>();
+        DataTablesOutput<OperationsUserDTO> out = new DataTablesOutput<>();
         out.setDraw(input.getDraw());
         out.setData(operationsUsers.getContent());
         out.setRecordsFiltered(operationsUsers.getTotalElements());

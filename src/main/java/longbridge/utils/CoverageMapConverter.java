@@ -11,7 +11,7 @@ import java.util.Map;
 
 public class CoverageMapConverter implements AttributeConverter<Map<String, Object>, String> {
 
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private static ObjectMapper mapper;
 

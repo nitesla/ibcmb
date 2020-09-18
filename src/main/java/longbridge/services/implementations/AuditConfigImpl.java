@@ -54,7 +54,7 @@ public class AuditConfigImpl implements AuditConfigService {
 
 	private static final String PACKAGE_NAME = "longbridge.models.";
 
-	private Logger logger = LoggerFactory.getLogger(this.getClass());
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 
 	@Autowired
@@ -106,16 +106,14 @@ public class AuditConfigImpl implements AuditConfigService {
 
 	public Page<ModifiedEntityTypeEntity> getRevisionEntities(Pageable pageable)
 	{
-		Page<ModifiedEntityTypeEntity> modifiedEntityTypeEntities=modifiedEntityTypeEntityRepo.findAll(pageable);
 
 
-		return modifiedEntityTypeEntities;
+        return modifiedEntityTypeEntityRepo.findAll(pageable);
 	}
 	public Page<ModifiedEntityTypeEntity> getRevisionEntitiesByDate(Pageable pageable)
 	{
 
-		Page<ModifiedEntityTypeEntity> modifiedEntityTypeEntities=modifiedEntityTypeEntityRepo.findAllEnityByRevision(pageable);
-		return modifiedEntityTypeEntities;
+        return modifiedEntityTypeEntityRepo.findAllEnityByRevision(pageable);
 	}
 	@Override
 	public Page<T>  revisedEntityDetails(String entityName,String revisionNo,Pageable pageable){
@@ -135,11 +133,7 @@ public class AuditConfigImpl implements AuditConfigService {
 			List<T> classes = query.getResultList();
 
 		}
-		catch (ClassNotFoundException e)
-		{
-			e.printStackTrace();
-		}
-		catch (NumberFormatException e)
+		catch (ClassNotFoundException | NumberFormatException e)
 		{
 			e.printStackTrace();
 		}
@@ -159,9 +153,7 @@ public class AuditConfigImpl implements AuditConfigService {
 
 		CustomRevisionEntity revisionEntity = customRevisionEntityRepo.findUniqueCustomEnity(id);
 
-		Page<ModifiedEntityTypeEntity> modifiedEntityTypeEntities=modifiedEntityTypeEntityRepo.findEnityByRevision(revisionEntity,pageable);
-
-		return modifiedEntityTypeEntities;
+        return modifiedEntityTypeEntityRepo.findEnityByRevision(revisionEntity,pageable);
 
 	}
 	public Page<ModifiedEntityTypeEntity> getRevisedDetailsForEntity(Integer id,String classname,Pageable pageable)
@@ -170,8 +162,7 @@ public class AuditConfigImpl implements AuditConfigService {
 		List<Integer> revIds = RevisedEntitiesUtil.revisedEntityDetails(classname,id);
 		List<CustomRevisionEntity> revisionEntity = customRevisionEntityRepo.findCustomEnityDetails(revIds);
 		classname = PACKAGE_NAME+classname;
-		Page<ModifiedEntityTypeEntity> modifiedEntityTypeEntities=modifiedEntityTypeEntityRepo.findEnityByRevisions(revisionEntity,pageable,classname);
-		return modifiedEntityTypeEntities;
+        return modifiedEntityTypeEntityRepo.findEnityByRevisions(revisionEntity,pageable,classname);
 
 	}
 
@@ -180,9 +171,7 @@ public class AuditConfigImpl implements AuditConfigService {
 		String firstHeader = StringUtils.substringBetween(details,"{","'");
 		headerDetails.add(firstHeader);
 		String[] midItems = StringUtils.substringsBetween(details,", ","=");
-		for (String midItem:midItems) {
-			headerDetails.add(midItem);
-		}
+		headerDetails.addAll(Arrays.asList(midItems));
 		String lastHeader= StringUtils.substringBetween(details,"{","'");
 		headerDetails.add(lastHeader);
 		return null;
@@ -200,8 +189,7 @@ public class AuditConfigImpl implements AuditConfigService {
 	@Override
 	public AuditConfig getAuditEntity(Long id)
 	{
-		AuditConfig auditConfig = this.configRepo.findById(id).get();
-		return auditConfig;
+        return this.configRepo.findById(id).get();
 	}
 
 	@Override
@@ -226,11 +214,8 @@ public class AuditConfigImpl implements AuditConfigService {
 //			getEachDetails(String.valueOf(revisionList));
 
 		}
-		catch (ClassNotFoundException e)
+		catch (ClassNotFoundException | NumberFormatException e)
 		{
-			e.printStackTrace();
-		}
-		catch (NumberFormatException e){
 			e.printStackTrace();
 		}
 
@@ -274,17 +259,13 @@ public class AuditConfigImpl implements AuditConfigService {
 			logger.info("this is the revision list {} element is {}",allEnityByRevisionByClass.getTotalPages(),allEnityByRevisionByClass.getTotalElements());
 //			Page<T> tPage = (Page<T>) compositeAudits;
 
-		}
-		catch (ClassNotFoundException e){
+		} catch (NumberFormatException e){
 			e.printStackTrace();
-		}
-		catch (NumberFormatException e){
-			e.printStackTrace();
-		}catch (Exception e){
+		} catch (Exception e){
 			e.printStackTrace();
 		}
 
-		return new PageImpl<AuditDTO>(compositeAudits, pageable, allEnityByRevisionByClass.getTotalElements());
+		return new PageImpl<>(compositeAudits, pageable, allEnityByRevisionByClass.getTotalElements());
 	}
 	public Page<AuditDTO> revisedEntityByQuery(String entityName,Pageable pageable){
 		List<AuditDTO> compositeAudits = new ArrayList<>();
@@ -302,8 +283,8 @@ public class AuditConfigImpl implements AuditConfigService {
 				AuditDTO auditDTO = new AuditDTO();
 				Map<String, Object> entityDetials = null;
 					entityDetials = RevisedEntitiesUtil.getEntityDetailsById(entityName, entity.getRevision().getId());
-				JSONObject jsonObject = new JSONObject();;
-				jsonObject.putAll(entityDetials);
+				JSONObject jsonObject = new JSONObject();
+                jsonObject.putAll(entityDetials);
 				if(entityName.contains("Beneficiary")){
 					Map<String, Object> currentEntityDetails = RevisedEntitiesUtil.getCurrentEntityDetails(entityName, (BigDecimal) jsonObject.get("ID"));
 					jsonObject.clear();
@@ -314,19 +295,13 @@ public class AuditConfigImpl implements AuditConfigService {
 				auditDTO.setModifiedEntities(entity);
 				compositeAudits.add(auditDTO);
 			}
-		}
-		catch (ClassNotFoundException e){
+		} catch (NumberFormatException | InvalidDataAccessApiUsageException e){
 			e.printStackTrace();
-		}
-		catch (NumberFormatException e){
-			e.printStackTrace();
-		}catch (InvalidDataAccessApiUsageException e){
-			e.printStackTrace();
-		}catch (Exception e){
+		} catch (Exception e){
 			e.printStackTrace();
 		}
 		logger.info("this is the revision list {} element is {}",allEnityByRevisionByClass.getTotalPages(),allEnityByRevisionByClass.getTotalElements());
-		return new PageImpl<AuditDTO>(compositeAudits, pageable, allEnityByRevisionByClass.getTotalElements());
+		return new PageImpl<>(compositeAudits, pageable, allEnityByRevisionByClass.getTotalElements());
 	}
 
 
@@ -374,8 +349,8 @@ public class AuditConfigImpl implements AuditConfigService {
 			for (ModifiedEntityTypeEntity entity: allEnityByRevisionByClass) {
 			AuditDTO auditDTO = new AuditDTO();
 			Map<String, Object> entityDetials = RevisedEntitiesUtil.getEntityDetailsById(entityName, entity.getRevision().getId());
-			JSONObject jsonObject = new JSONObject();;
-			jsonObject.putAll(entityDetials);
+			JSONObject jsonObject = new JSONObject();
+                jsonObject.putAll(entityDetials);
 				if(entityName.contains("Beneficiary")){
 					Map<String, Object> currentEntityDetails = RevisedEntitiesUtil.getCurrentEntityDetails(entityName, (BigDecimal) jsonObject.get("ID"));
 					jsonObject.clear();
@@ -386,17 +361,13 @@ public class AuditConfigImpl implements AuditConfigService {
 			compositeAudits.add(auditDTO);
 		}
 			logger.info("this is the revision list {} element is {}",allEnityByRevisionByClass.getTotalPages(),allEnityByRevisionByClass.getTotalElements());
-		}
-		catch (ClassNotFoundException e){
+		} catch (NumberFormatException e){
 			e.printStackTrace();
-		}
-		catch (NumberFormatException e){
-			e.printStackTrace();
-		}catch (Exception e){
+		} catch (Exception e){
 			e.printStackTrace();
 		}
 
-		return new PageImpl<AuditDTO>(compositeAudits, pageable, allEnityByRevisionByClass.getTotalElements());
+		return new PageImpl<>(compositeAudits, pageable, allEnityByRevisionByClass.getTotalElements());
 	}
 
 	@Override
@@ -463,12 +434,11 @@ public class AuditConfigImpl implements AuditConfigService {
 	@Override
 	public Page<ModifiedEntityTypeEntity> searchModifiedEntity(AuditSearchDTO auditSearchDTO, Pageable pageable){
 		List<ModifiedEntityTypeEntity> searchedModifiedEntity = getSearchedModifiedEntity(auditSearchDTO);
-		long searchSize = Long.valueOf(searchedModifiedEntity.size());
-		return new PageImpl<ModifiedEntityTypeEntity>(searchedModifiedEntity, pageable, searchSize);
+		long searchSize = (long) searchedModifiedEntity.size();
+		return new PageImpl<>(searchedModifiedEntity, pageable, searchSize);
 	}
 	@Override
 	public Page<ModifiedEntityTypeEntity> searchMod(Pageable pageable, AuditSearchDTO auditSearchDTO){
-		Page<ModifiedEntityTypeEntity> modifiedEntityTypeEntities = auditRepo.findModifiedEntityBySearch(pageable,auditSearchDTO);
-	return modifiedEntityTypeEntities;
+        return auditRepo.findModifiedEntityBySearch(pageable,auditSearchDTO);
 	}
 }

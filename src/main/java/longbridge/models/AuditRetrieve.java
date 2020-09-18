@@ -24,9 +24,8 @@ public class AuditRetrieve
 
         AuditReader auditReader = AuditReaderFactory.get(entityManager);
         AuditQuery query = auditReader.createQuery().forRevisionsOfEntity(className, false, true);
-        List<T> audit = query.getResultList();
 
-        return audit;
+        return (List<T>) query.getResultList();
     }
 
 

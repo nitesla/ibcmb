@@ -5,9 +5,9 @@ package longbridge.config.audits;
  */
 public class EntityWithRevision <T> {
 
-    private CustomRevisionEntity revision;
+    private final CustomRevisionEntity revision;
 
-    private T entity;
+    private final T entity;
 
     public EntityWithRevision(CustomRevisionEntity revision, T entity)
     {

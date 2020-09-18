@@ -266,8 +266,7 @@ public class OpsMailboxController {
     @ResponseBody
     public Iterable<MessageDTO> getAllMessages(Principal principal) {
         OperationsUser opsUser = operationsUserService.getUserByName(principal.getName());
-        Iterable<MessageDTO> messages = messageService.getMessages(opsUser);
-        return messages;
+        return messageService.getMessages(opsUser);
 
     }
 
@@ -278,7 +277,7 @@ public class OpsMailboxController {
         Pageable pageable = DataTablesUtils.getPageable(input);
         OperationsUser opsUser = operationsUserService.getUserByName(principal.getName());
         Page<MessageDTO> sentMessages = messageService.getReceivedMessages(opsUser.getUserName(),opsUser.getUserType(),pageable);
-        DataTablesOutput<MessageDTO> out = new DataTablesOutput<MessageDTO>();
+        DataTablesOutput<MessageDTO> out = new DataTablesOutput<>();
         out.setDraw(input.getDraw());
         out.setData(sentMessages.getContent());
         out.setRecordsFiltered(sentMessages.getTotalElements());
@@ -290,16 +289,14 @@ public class OpsMailboxController {
     @ResponseBody
     public Iterable<MessageDTO> getReceivedMessages(Principal principal) {
         OperationsUser opsUser = operationsUserService.getUserByName(principal.getName());
-        Iterable<MessageDTO> receivedMessages = messageService.getReceivedMessages(opsUser);
-        return receivedMessages;
+        return messageService.getReceivedMessages(opsUser);
     }
 
     @GetMapping("/sent/all")
     @ResponseBody
     public Iterable<MessageDTO> getSentMessages(Principal principal) {
         OperationsUser opsUser = operationsUserService.getUserByName(principal.getName());
-        Iterable<MessageDTO> sentMessages = messageService.getSentMessages(opsUser);
-        return sentMessages;
+        return messageService.getSentMessages(opsUser);
 
     }
 }

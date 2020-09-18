@@ -47,7 +47,7 @@ public class OpsUserAdvisor {
     private VerificationRepo verificationRepo;
 
 
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 
     @Pointcut("within( longbridge.services.implementations.VerificationServiceImpl)")

@@ -17,7 +17,7 @@ import org.springframework.context.ApplicationContext;
 public class CustomPostInsertListener extends EnversPostInsertEventListenerImpl {
 
 
-    private transient Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final transient Logger logger = LoggerFactory.getLogger(this.getClass());
 
     public CustomPostInsertListener(EnversService enversService) {
         super(enversService);

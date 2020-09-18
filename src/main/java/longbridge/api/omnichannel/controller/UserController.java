@@ -29,7 +29,7 @@ public class UserController {
     @Autowired
     private RetailUserService retailUserService;
 
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @PostMapping(value = "/customer/info", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> getCustomerInfo(@RequestBody RetailUserCredentials retailUserCredentials) {

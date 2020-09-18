@@ -36,7 +36,7 @@ import java.util.*;
 @Transactional
 public class DirectDebitServiceImpl implements DirectDebitService {
 
-	private Logger logger = LoggerFactory.getLogger(this.getClass());
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	@Autowired
 	private ModelMapper modelMapper;
@@ -68,7 +68,7 @@ public class DirectDebitServiceImpl implements DirectDebitService {
 	@Autowired
 	private MessageSource messageSource;
 
-	private Locale locale = LocaleContextHolder.getLocale();
+	private final Locale locale = LocaleContextHolder.getLocale();
 
 	@Value("${bank.code}")
 	private String bankCode;

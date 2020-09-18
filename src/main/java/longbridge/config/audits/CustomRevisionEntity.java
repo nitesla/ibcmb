@@ -49,7 +49,7 @@ public class CustomRevisionEntity extends DefaultRevisionEntity implements Seria
 
 
 	@OneToMany(mappedBy="revision", cascade={CascadeType.PERSIST, CascadeType.REMOVE})
-    private Set<ModifiedEntityTypeEntity> modifiedEntityTypes = new HashSet<ModifiedEntityTypeEntity>();
+    private Set<ModifiedEntityTypeEntity> modifiedEntityTypes = new HashSet<>();
 
     public void addModifiedEntityType(String entityClassName)
     {

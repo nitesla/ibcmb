@@ -12,7 +12,7 @@ import java.io.IOException;
 
 public class CoverageRestTemplateResponseException implements ResponseErrorHandler {
 
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
     @Override
     public boolean hasError(ClientHttpResponse response) throws IOException,ResourceAccessException {
         return true;

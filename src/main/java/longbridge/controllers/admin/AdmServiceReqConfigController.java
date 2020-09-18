@@ -46,7 +46,7 @@ public class AdmServiceReqConfigController {
     MessageSource messageSource;
 
 
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 
     @ModelAttribute
@@ -97,7 +97,7 @@ public class AdmServiceReqConfigController {
 
         Pageable pageable = DataTablesUtils.getPageable(input);
         Page<ServiceReqConfigDTO> serviceReqConfigs = serviceReqConfigService.getServiceReqConfigs(pageable);
-        DataTablesOutput<ServiceReqConfigDTO> out = new DataTablesOutput<ServiceReqConfigDTO>();
+        DataTablesOutput<ServiceReqConfigDTO> out = new DataTablesOutput<>();
         out.setDraw(input.getDraw());
         out.setData(serviceReqConfigs.getContent());
         out.setRecordsFiltered(serviceReqConfigs.getTotalElements());
@@ -132,7 +132,7 @@ public class AdmServiceReqConfigController {
         }
     }
 
-    @GetMapping("/{userId}")
+    @GetMapping("/{reqId}")
     public String getRequest(@PathVariable Long reqId, Model model) {
         ServiceReqConfigDTO serviceReq = serviceReqConfigService.getServiceReqConfig(reqId);
         model.addAttribute("requestDetails", serviceReq);

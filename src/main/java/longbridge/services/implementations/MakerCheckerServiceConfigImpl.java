@@ -32,13 +32,13 @@ public class MakerCheckerServiceConfigImpl implements MakerCheckerServiceConfig 
     @Autowired
     private MessageSource messageSource;
 
-    private Locale locale = LocaleContextHolder.getLocale();
+    private final Locale locale = LocaleContextHolder.getLocale();
 
 
 
-    private ModelMapper modelMapper = new ModelMapper();
+    private final ModelMapper modelMapper = new ModelMapper();
 
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 
     public String configureMakerChecker(MakerChecker makerChecker) throws InternetBankingException

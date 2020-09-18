@@ -49,11 +49,11 @@ public class CorpCustomDutyController {
     @Value("${bank.code}")
     private String bankCode;
 
-    private CorporateUserService corporateUserService;
-    private TransferErrorService transferErrorService;
-    private CorporateService corporateService;
-    private TransferUtils transferUtils;
-    private SecurityService securityService;
+    private final CorporateUserService corporateUserService;
+    private final TransferErrorService transferErrorService;
+    private final CorporateService corporateService;
+    private final TransferUtils transferUtils;
+    private final SecurityService securityService;
     @Autowired
     private ConfigurationService configService;
     @Autowired
@@ -95,8 +95,8 @@ public class CorpCustomDutyController {
         model.addAttribute("paymentNotificationRequest",new CustomPaymentNotificationRequest());
         model.addAttribute("assessmentDetail",new CustomAssessmentDetail());
         model.addAttribute("corpTransReqEntry", new CorpTransReqEntry());
-        model.addAttribute("taxDetails", new String());
-        model.addAttribute("customsCode", new String());
+        model.addAttribute("taxDetails", "");
+        model.addAttribute("customsCode", "");
         return "corp/custom/custompayment";
     }
 
@@ -155,11 +155,7 @@ public class CorpCustomDutyController {
             } else {
                 return "redirect:/corporate/custom";
             }
-        } catch (InternetBankingTransferException exception )
-        {
-            redirectAttributes.addFlashAttribute("failure",messageSource.getMessage(exception.getMessage(),null,locale));
-
-        } catch (InternetBankingException exception)
+        } catch (InternetBankingException exception )
         {
             redirectAttributes.addFlashAttribute("failure",messageSource.getMessage(exception.getMessage(),null,locale));
 

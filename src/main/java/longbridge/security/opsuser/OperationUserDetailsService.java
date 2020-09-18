@@ -29,9 +29,8 @@ public class OperationUserDetailsService implements UserDetailsService {
 
     private CustomBruteForceService bruteForceService;
     private IpAddressUtils addressUtils;
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private FailedLoginService failedLoginService;
-    private SessionUtils sessionUtils;
 
     @Autowired
     public void setOperationsUserRepo(OperationsUserRepo operationsUserRepo) {
@@ -55,7 +54,6 @@ public class OperationUserDetailsService implements UserDetailsService {
 
     @Autowired
     public void setSessionUtils(SessionUtils sessionUtils) {
-        this.sessionUtils = sessionUtils;
     }
 
     @Override

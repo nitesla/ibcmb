@@ -28,8 +28,7 @@ public class AuditSearchDTO {
     public AuditSearchDTO(String id,String entityClassName,String fromDate,String endDate,String ipAddress,String lastChangeBy,String username){
 
         if(!StringUtils.isEmpty(username)){
-            String extractedId = RevisedEntitiesUtil.getUserDetailsByUserName(entityClassName,username);
-            this.id = extractedId;
+            this.id = RevisedEntitiesUtil.getUserDetailsByUserName(entityClassName,username);
         }else {
             this.id = id;
         }

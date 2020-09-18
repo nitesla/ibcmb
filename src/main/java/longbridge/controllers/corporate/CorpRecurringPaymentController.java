@@ -65,7 +65,7 @@ public class CorpRecurringPaymentController {
     ConfigurationService configurationService;
 
     private final AccountService accountService;
-    private SecurityService securityService;
+    private final SecurityService securityService;
     private final BillerService billerService;
     private final CorporateUserService corporateUserService;
 
@@ -97,14 +97,14 @@ public class CorpRecurringPaymentController {
     }
 
     @PostMapping("/summary")
-    public String getRecurringPaymentSummary(@ModelAttribute("recurringpayment") @Valid RecurringPaymentDTO recurringPaymentDTO, BindingResult result, Model model, HttpServletRequest servletRequest, PaymentItem paymentItemCode, Biller billerName, PaymentItem paymentItemName){
+    public String getRecurringPaymentSummary(@ModelAttribute("recurringpayment") @Valid RecurringPaymentDTO recurringPaymentDTO, BindingResult result, Model model, HttpServletRequest servletRequest){
         if(result.hasErrors()){
             return "corp/recurringpayment/pagei";
         }
         model.addAttribute("recurringPaymentDTO",recurringPaymentDTO);
-        billerName = billerService.getBillerName(Long.parseLong(recurringPaymentDTO.getBillerId()));
+        Biller billerName = billerService.getBillerName(Long.parseLong(recurringPaymentDTO.getBillerId()));
         recurringPaymentDTO.setBillerName(billerName.getBillerName());
-        paymentItemName = billerService.getPaymentItem(Long.parseLong(recurringPaymentDTO.getPaymentItemId()));
+        PaymentItem paymentItemName = billerService.getPaymentItem(Long.parseLong(recurringPaymentDTO.getPaymentItemId()));
         recurringPaymentDTO.setPaymentItemName(paymentItemName.getPaymentItemName());
         model.addAttribute("billPaymentDTO", recurringPaymentDTO);
         servletRequest.getSession().setAttribute("recurringPaymentDTO", recurringPaymentDTO);
@@ -187,11 +187,10 @@ public class CorpRecurringPaymentController {
                         logger.error("Recurring Payment Error", e);
                         redirectAttributes.addFlashAttribute("failure", e.getMessage());
                     }
-                    return "redirect:/corporate/recurringpayment";
                 } else {
                     redirectAttributes.addFlashAttribute("failure", "Token Authentication Failed");
-                    return "redirect:/corporate/recurringpayment";
                 }
+                return "redirect:/corporate/recurringpayment";
             } catch (InternetBankingException e) {
                 logger.error("Recurring Payment Error", e);
                 redirectAttributes.addFlashAttribute("failure", e.getMessage());
@@ -222,11 +221,10 @@ public class CorpRecurringPaymentController {
                         logger.error("Recurring Payment Error", e);
                         redirectAttributes.addFlashAttribute("failure", e.getMessage());
                     }
-                    return "redirect:/corporate/recurringpayment/payments/" + recurringPayment.getId();
                 } else {
                     redirectAttributes.addFlashAttribute("failure", "Token Authentication Failed");
-                    return "redirect:/corporate/recurringpayment/payments/" + recurringPayment.getId();
                 }
+                return "redirect:/corporate/recurringpayment/payments/" + recurringPayment.getId();
             } catch (InternetBankingException e) {
                 logger.error("Recurring Payment Error", e);
                 redirectAttributes.addFlashAttribute("failure", e.getMessage());
@@ -265,7 +263,7 @@ public class CorpRecurringPaymentController {
             StreamSupport.stream(accounts.spliterator(), false)
                     .filter(Objects::nonNull)
                     .filter(i -> "NGN".equalsIgnoreCase(i.getCurrencyCode()))
-                    .forEach(i -> accountList.add(i));
+                    .forEach(accountList::add);
             model.addAttribute("accountList", accountList);
 
 

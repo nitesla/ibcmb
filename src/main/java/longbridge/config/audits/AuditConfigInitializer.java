@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
+import javax.persistence.metamodel.EntityType;
 import java.util.stream.Collectors;
 
 @Component
@@ -27,7 +28,7 @@ public class AuditConfigInitializer implements InitializingBean {
         {
             entityManager.getEntityManagerFactory().getMetamodel().getEntities().stream()
                     .filter(i -> !i.getName().endsWith("AUD")).filter(i -> !i.getName().endsWith("Entity"))
-                    .filter(i -> !i.getName().equalsIgnoreCase("AuditConfig")).map(i -> i.getName())
+                    .filter(i -> !i.getName().equalsIgnoreCase("AuditConfig")).map(EntityType::getName)
                     .collect(Collectors.toList()).forEach(e -> {
                 if (!configRepo.existsByEntityName(e))
                 {

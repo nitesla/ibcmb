@@ -33,7 +33,7 @@ import java.util.Locale;
 @RequestMapping("/admin/merchants")
 public class AdmMerchantController {
 
-	private Logger logger = LoggerFactory.getLogger(this.getClass());
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 	@Autowired
 	private MerchantService merchantService;
 
@@ -91,8 +91,7 @@ public class AdmMerchantController {
 	@ResponseBody
 	public ResponseEntity<HttpStatus> updateMerchant(@RequestBody Merchant merchant ) {
 		merchantService.updateMerchantStatus(merchant);
-		ResponseEntity<HttpStatus> resp = new ResponseEntity<>(HttpStatus.NO_CONTENT);
-		return resp;
+		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 	}
 
 	@GetMapping("/category/{category}/edit")
@@ -114,7 +113,7 @@ public class AdmMerchantController {
 	public @ResponseBody DataTablesOutput<CategoryDTO> getAllMerchantCategories(DataTablesInput input) {
 		Pageable pageable = DataTablesUtils.getPageable(input);
 		Page<CategoryDTO> categories = merchantService.getMerchantCategories(pageable);
-		DataTablesOutput<CategoryDTO> out = new DataTablesOutput<CategoryDTO>();
+		DataTablesOutput<CategoryDTO> out = new DataTablesOutput<>();
 		out.setDraw(input.getDraw());
 		out.setData(categories.getContent());
 		out.setRecordsFiltered(categories.getTotalElements());
@@ -140,7 +139,7 @@ public class AdmMerchantController {
 
 		Pageable pageable = DataTablesUtils.getPageable(input);
 		Page<Merchant> merchants = merchantService.getMerchantsByCategory(category, pageable);
-		DataTablesOutput<Merchant> out = new DataTablesOutput<Merchant>();
+		DataTablesOutput<Merchant> out = new DataTablesOutput<>();
 		out.setDraw(input.getDraw());
 		out.setData(merchants.getContent());
 		out.setRecordsFiltered(merchants.getTotalElements());

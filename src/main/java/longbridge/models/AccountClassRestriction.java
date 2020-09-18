@@ -64,34 +64,32 @@ public class AccountClassRestriction extends AbstractEntity implements PrettySer
 
     @Override @JsonIgnore
     public JsonSerializer<AccountClassRestriction> getSerializer() {
-        return new JsonSerializer<AccountClassRestriction>() {
+        return new JsonSerializer<>() {
             @Override
             public void serialize(AccountClassRestriction value, JsonGenerator gen, SerializerProvider serializers)
-                    throws IOException, JsonProcessingException
-            {
+                    throws IOException {
                 gen.writeStartObject();
-                gen.writeStringField("Account Class",value.accountClass);
-                gen.writeStringField("Restriction Type",value.restrictionType);
+                gen.writeStringField("Account Class", value.accountClass);
+                gen.writeStringField("Restriction Type", value.restrictionType);
                 gen.writeEndObject();
             }
         };
     }
     @Override @JsonIgnore
     public JsonSerializer<AccountClassRestriction> getAuditSerializer() {
-        return new JsonSerializer<AccountClassRestriction>() {
+        return new JsonSerializer<>() {
             @Override
             public void serialize(AccountClassRestriction value, JsonGenerator gen, SerializerProvider serializers)
-                    throws IOException, JsonProcessingException
-            {
+                    throws IOException {
                 gen.writeStartObject();
-                if(value.id != null) {
+                if (value.id != null) {
                     gen.writeStringField("id", value.id.toString());
-                }else {
+                } else {
                     gen.writeStringField("id", "");
                 }
-                gen.writeStringField("accountClass",value.accountClass);
-                gen.writeStringField("restrictionType",value.restrictionType);
-                gen.writeStringField("dateCreated",value.dateCreated.toString());
+                gen.writeStringField("accountClass", value.accountClass);
+                gen.writeStringField("restrictionType", value.restrictionType);
+                gen.writeStringField("dateCreated", value.dateCreated.toString());
                 gen.writeEndObject();
             }
         };

@@ -24,14 +24,14 @@ import java.util.Locale;
 @Service
 public class PhishingImageServiceImpl implements PhishingImageService{
 
-    private Logger logger= LoggerFactory.getLogger(this.getClass());
+    private final Logger logger= LoggerFactory.getLogger(this.getClass());
     @Autowired
     private PhishingImageRepo phishingImageRepo;
 
     @Autowired
     MessageSource messageSource;
 
-    private Locale locale = LocaleContextHolder.getLocale();
+    private final Locale locale = LocaleContextHolder.getLocale();
 
     @Override
     public String saveImage(PhishingImage phishingImage) {
@@ -47,8 +47,7 @@ public class PhishingImageServiceImpl implements PhishingImageService{
 
     @Override
     public List<PhishingImage> getRandomPhishingImages() {
-        List<PhishingImage> phishingImages = phishingImageRepo.findImagePath();
-        return phishingImages;
+        return phishingImageRepo.findImagePath();
     }
 
 
@@ -57,8 +56,7 @@ public class PhishingImageServiceImpl implements PhishingImageService{
         Page<PhishingImage> page = phishingImageRepo.findAll(pageDetails);
         List<PhishingImageDTO> dtOs = convertEntToDTOs(page.getContent());
         long t = page.getTotalElements();
-        Page<PhishingImageDTO> pageImpl = new PageImpl<PhishingImageDTO>(dtOs, pageDetails, t);
-        return pageImpl;
+        return new PageImpl<PhishingImageDTO>(dtOs, pageDetails, t);
     }
 
     public List<PhishingImageDTO> convertEntToDTOs(Iterable<PhishingImage> phishingImages) {

@@ -27,9 +27,6 @@ public class FinancialTransaction implements PrettySerializer{
     private Date valueDate;
     private Date postDate;
 
-private SimpleDateFormat format=new SimpleDateFormat("DD/MM/YYYY");
-
-
 
     public FinancialTransaction(String tranBreak)
     {
@@ -40,8 +37,9 @@ private SimpleDateFormat format=new SimpleDateFormat("DD/MM/YYYY");
         this.currencyCode=tranToken[2].trim();
         this.currentBalance=new BigDecimal(tranToken[3].trim().replaceAll(" ", ""));
         try {
-            this.postDate=format.parse(tranToken[4].trim());
-            this.valueDate=format.parse(tranToken[7].trim());
+            SimpleDateFormat format = new SimpleDateFormat("DD/MM/YYYY");
+            this.postDate= format.parse(tranToken[4].trim());
+            this.valueDate= format.parse(tranToken[7].trim());
         } catch (ParseException e) {
             this.postDate= new Date();
             this.valueDate= new Date();
@@ -134,17 +132,15 @@ private SimpleDateFormat format=new SimpleDateFormat("DD/MM/YYYY");
     @Override @JsonIgnore
     public JsonSerializer<FinancialTransaction> getSerializer()
     {
-        return new JsonSerializer<FinancialTransaction>()
-        {
+        return new JsonSerializer<>() {
             @Override
             public void serialize(FinancialTransaction value, JsonGenerator gen, SerializerProvider serializers)
-                    throws IOException, JsonProcessingException
-            {
+                    throws IOException {
                 gen.writeStartObject();
-                gen.writeStringField("Transaction Particulars",value.transactionParticulars);
-                gen.writeStringField("Amount",value.amount.toString());
-                gen.writeStringField("Current Balance",value.currentBalance.toString());
-                gen.writeStringField("Tran Type",value.tranType);
+                gen.writeStringField("Transaction Particulars", value.transactionParticulars);
+                gen.writeStringField("Amount", value.amount.toString());
+                gen.writeStringField("Current Balance", value.currentBalance.toString());
+                gen.writeStringField("Tran Type", value.tranType);
                 gen.writeEndObject();
             }
         };
@@ -152,21 +148,19 @@ private SimpleDateFormat format=new SimpleDateFormat("DD/MM/YYYY");
     @Override @JsonIgnore
     public JsonSerializer<FinancialTransaction> getAuditSerializer()
     {
-        return new JsonSerializer<FinancialTransaction>()
-        {
+        return new JsonSerializer<>() {
             @Override
             public void serialize(FinancialTransaction value, JsonGenerator gen, SerializerProvider serializers)
-                    throws IOException, JsonProcessingException
-            {
+                    throws IOException {
                 gen.writeStartObject();
-                gen.writeStringField("transactionParticulars",value.transactionParticulars);
-                gen.writeStringField("Amount",value.amount.toString());
-                gen.writeStringField("currencyCode",value.currencyCode);
-                gen.writeStringField("currentBalance",value.currentBalance.toString());
-                gen.writeStringField("tranType",value.tranType);
-                gen.writeStringField("accountId",value.accountId);
-                gen.writeStringField("valueDate",value.valueDate.toString());
-                gen.writeStringField("postDate",value.postDate.toString());
+                gen.writeStringField("transactionParticulars", value.transactionParticulars);
+                gen.writeStringField("Amount", value.amount.toString());
+                gen.writeStringField("currencyCode", value.currencyCode);
+                gen.writeStringField("currentBalance", value.currentBalance.toString());
+                gen.writeStringField("tranType", value.tranType);
+                gen.writeStringField("accountId", value.accountId);
+                gen.writeStringField("valueDate", value.valueDate.toString());
+                gen.writeStringField("postDate", value.postDate.toString());
                 gen.writeEndObject();
             }
         };

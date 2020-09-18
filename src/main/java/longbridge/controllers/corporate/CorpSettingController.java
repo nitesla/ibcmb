@@ -44,8 +44,8 @@ import java.util.stream.Collectors;
 @RequestMapping("/corporate")
 public class CorpSettingController {
 
-    private Logger logger= LoggerFactory.getLogger(this.getClass());
-    private Locale locale = LocaleContextHolder.getLocale();
+    private final Logger logger= LoggerFactory.getLogger(this.getClass());
+    private final Locale locale = LocaleContextHolder.getLocale();
 
     @Autowired
     private CodeService codeService;
@@ -117,22 +117,20 @@ public class CorpSettingController {
             String[] transactionalAccounts = StringUtils.split(dto.getValue(), ",");
             accountList = accountList.stream()
                     .filter(Objects::nonNull)
-                    .map(i -> {
+                    .peek(i -> {
 
                                 if ("LAA".equalsIgnoreCase(i.getAccountType())) {
                                     loansAccountList.add(i.getAccountNumber());
 //                                    LoanDTO loan = integrationService.getLoanDetails(i.getAccountNumber());
 //                                    loans.add(loan);
                                 }
-                                return i;
                             }
                     ).filter(i -> ArrayUtils.contains(transactionalAccounts, i.getAccountType()))
-                    .map(i -> {
+                    .peek(i -> {
                         Code code = codeService.getByTypeAndCode("ACCOUNT_CLASS", i.getAccountType());
                         if (code != null && code.getDescription() != null) {
                             i.setAccountType(code.getDescription());
                         }
-                        return i;
                     })
                     .collect(Collectors.toList());
         }
@@ -168,7 +166,7 @@ public class CorpSettingController {
 
         Pageable pageable = DataTablesUtils.getPageable(input);
         Page<Account> loanAccounts = accountService.getLoanAccounts(loansAccountList,pageable);
-        DataTablesOutput<Account> out = new DataTablesOutput<Account>();
+        DataTablesOutput<Account> out = new DataTablesOutput<>();
         out.setDraw(input.getDraw());
         out.setData(loanAccounts.getContent());
         out.setRecordsFiltered(loanAccounts.getTotalElements());
@@ -373,13 +371,8 @@ public class CorpSettingController {
                 securityService.setUserQA(user.getUserName(),user.getEntrustGroup(),secQuestions,securityAnswers);
                 corporateUserService.setSecurityQuestion(user.getId());
                 return "redirect:/corporate/token";
-            }
-            catch (InternetBankingSecurityException e){
+            } catch (InternetBankingException e){
                 redirectAttributes.addFlashAttribute("failure",e.getMessage());
-                return "redirect:/corporate/reset/securityquestion";
-            }
-            catch (InternetBankingException ibe){
-                redirectAttributes.addFlashAttribute("failure",ibe.getMessage());
                 return "redirect:/corporate/reset/securityquestion";
             }
         }

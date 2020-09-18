@@ -32,7 +32,7 @@ import java.util.Locale;
 @RequestMapping("/admin/finst")
 public class AdmFinancialInstitutionController {
 
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
     @Autowired
     private FinancialInstitutionService financialInstitutionService;
 
@@ -56,7 +56,7 @@ public class AdmFinancialInstitutionController {
 		}else{
 			fis = financialInstitutionService.getFinancialInstitutions(pageable);
 		}
-        DataTablesOutput<FinancialInstitutionDTO> out = new DataTablesOutput<FinancialInstitutionDTO>();
+        DataTablesOutput<FinancialInstitutionDTO> out = new DataTablesOutput<>();
         out.setDraw(input.getDraw());
         out.setData(fis.getContent());
         out.setRecordsFiltered(fis.getTotalElements());

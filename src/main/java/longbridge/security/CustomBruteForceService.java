@@ -15,18 +15,18 @@ public class CustomBruteForceService
 {
     @Value("${app.brute.max}")
     private  int MAX_ATTEMPT ;
-    private LoadingCache<String, Integer> attemptsCache;
+    private final LoadingCache<String, Integer> attemptsCache;
 
     public CustomBruteForceService() {
         super();
         attemptsCache = CacheBuilder.newBuilder().expireAfterWrite(5, TimeUnit.MINUTES)
                // .removalListener()
-                .build(new CacheLoader<String, Integer>() {
-            @Override
-            public Integer load(final String key) {
-                return 0;
-            }
-        });
+                .build(new CacheLoader<>() {
+                    @Override
+                    public Integer load(final String key) {
+                        return 0;
+                    }
+                });
     }
 
     //

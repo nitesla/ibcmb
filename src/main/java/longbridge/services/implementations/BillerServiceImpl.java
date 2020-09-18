@@ -143,7 +143,7 @@ public class BillerServiceImpl implements BillerService {
 
     @Override
     public void enablePaymentItems(Long id, Boolean value) {
-        if (value == false){
+        if (!value){
             Boolean newValue = true;
             paymentItemRepo.enablePaymentItem(id, newValue);
             logger.info("Item with id=[{}] is enabled = {}", id, newValue);
@@ -159,7 +159,7 @@ public class BillerServiceImpl implements BillerService {
     @Override
     public void readOnlyAmount(Long id, Boolean value){
         logger.info("readonly value = {}",value);
-        if (value == false){
+        if (!value){
             Boolean newValue = true;
             paymentItemRepo.readOnly(id, newValue);
             logger.info("Item with id=[{}] set read-only = {}", id, newValue);
@@ -174,7 +174,7 @@ public class BillerServiceImpl implements BillerService {
 
     @Override
     public void enableOrDisableCategory(Long id,Boolean value) {
-        if (value == false){
+        if (!value){
             Boolean newValue = true;
             billerCategoryRepo.enableOrDisableCategory(id, newValue);
             logger.info("Item with id=[{}] is enabled = {}", id, newValue);
@@ -188,7 +188,7 @@ public class BillerServiceImpl implements BillerService {
 
     @Override
     public void enableOrDisableBiller(Long id,Boolean value) {
-        if (value == false){
+        if (!value){
             Boolean newValue = true;
             billerRepo.enableOrDisableBiller(id, newValue);
             logger.info("Item with id=[{}] is enabled = {}", id, newValue);
@@ -228,8 +228,7 @@ public class BillerServiceImpl implements BillerService {
 
     @Override
     public Page<Biller> getBillersByCategory(String category, Pageable pageDetails) {
-        Page<Biller> categoryName = billerRepo.findByCategoryName(category, pageDetails);
-        return categoryName;
+        return billerRepo.findByCategoryName(category, pageDetails);
     }
 
     @Override
@@ -340,8 +339,7 @@ public class BillerServiceImpl implements BillerService {
     @Override
     public List<PaymentItem> getPaymentItemsForBiller(Long id) {
         Biller biller = billerRepo.findOneById(id);
-        List<PaymentItem> paymentItemList = paymentItemRepo.findByBillerId(biller.getBillerId());
-        return paymentItemList;
+        return paymentItemRepo.findByBillerId(biller.getBillerId());
     }
 
 
@@ -420,8 +418,7 @@ public class BillerServiceImpl implements BillerService {
 
     @Override
     public Page<Biller> findSearch(String categoryname, String search, Pageable pageable){
-        Page<Biller> searchDetails = billerRepo.findByBillerNameContainsIgnoreCaseAndCategoryName(search,categoryname,pageable);
-        return  searchDetails;
+        return billerRepo.findByBillerNameContainsIgnoreCaseAndCategoryName(search,categoryname,pageable);
     }
 
 }

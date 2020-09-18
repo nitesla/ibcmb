@@ -46,7 +46,7 @@ public class UserGroupServiceImpl implements UserGroupService {
     @Autowired
     private MessageSource messageSource;
 
-    private Locale locale = LocaleContextHolder.getLocale();
+    private final Locale locale = LocaleContextHolder.getLocale();
 
 
     @Override
@@ -117,8 +117,7 @@ public class UserGroupServiceImpl implements UserGroupService {
         Page<UserGroup> page = userGroupRepo.findAll(pageDetails);
         List<UserGroupDTO> dtOs = convertEntitiesToDTOs(page.getContent());
         long t = page.getTotalElements();
-        Page<UserGroupDTO> pageImpl = new PageImpl<UserGroupDTO>(dtOs, pageDetails, t);
-        return pageImpl;
+        return new PageImpl<UserGroupDTO>(dtOs, pageDetails, t);
     }
 
 
@@ -137,7 +136,7 @@ public class UserGroupServiceImpl implements UserGroupService {
 
 
     private List<UserGroupDTO> convertEntitiesToDTOs(Iterable<UserGroup> userGroups){
-        List<UserGroupDTO> userGroupDTOs = new ArrayList<UserGroupDTO>();
+        List<UserGroupDTO> userGroupDTOs = new ArrayList<>();
         for(UserGroup userGroup: userGroups){
             userGroupDTOs.add(convertEntityToDTO(userGroup));
         }
@@ -146,8 +145,8 @@ public class UserGroupServiceImpl implements UserGroupService {
 
 
     private UserGroup convertDTOToEntity(UserGroupDTO userGroupDTO){
-        List<OperationsUser> operationsUserList = new ArrayList<OperationsUser>();
-        List<Contact> contactList =  new ArrayList<Contact>();
+        List<OperationsUser> operationsUserList = new ArrayList<>();
+        List<Contact> contactList = new ArrayList<>();
 
         List<OperationsUserDTO> operationsUserDTOs = userGroupDTO.getUsers();
         List<ContactDTO> contactDTOs = userGroupDTO.getContacts();
@@ -189,7 +188,7 @@ public class UserGroupServiceImpl implements UserGroupService {
         UserGroup userGroup = userGroupRepo.findById(groupId).get();
         List<OperationsUser> internalUsers = userGroup.getUsers();
         List<Contact> externalUsers= userGroup.getContacts();
-        List<ContactDTO> allUsers = new ArrayList<ContactDTO>();
+        List<ContactDTO> allUsers = new ArrayList<>();
         for(OperationsUser opsUser: internalUsers){
             ContactDTO contactDTO = new ContactDTO();
             contactDTO.setFirstName(opsUser.getFirstName());
@@ -215,7 +214,7 @@ public class UserGroupServiceImpl implements UserGroupService {
     public List<ContactDTO> getContacts(UserGroup userGroup){
         List<OperationsUser> internalUsers = userGroup.getUsers();
         List<Contact> externalUsers= userGroup.getContacts();
-        List<ContactDTO> allUsers = new ArrayList<ContactDTO>();
+        List<ContactDTO> allUsers = new ArrayList<>();
         for(OperationsUser opsUser: internalUsers){
             ContactDTO contactDTO = new ContactDTO();
             contactDTO.setFirstName(opsUser.getFirstName());

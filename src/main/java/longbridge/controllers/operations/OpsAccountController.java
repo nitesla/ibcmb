@@ -103,7 +103,7 @@ public class OpsAccountController {
     MessageSource messageSource;
 
 
-    Logger logger = LoggerFactory.getLogger(this.getClass());
+    final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @ModelAttribute
     public void init(Model model) {
@@ -229,13 +229,9 @@ public class OpsAccountController {
            String message =  accountConfigService.addAccountClassRestriction(accountClassRestrictionDTO);
             redirectAttributes.addFlashAttribute("message", message);
             return "redirect:/ops/accounts/restriction/class";
-        } catch (DuplicateObjectException exc) {
+        } catch (InternetBankingException exc) {
             logger.error("Could not create account class restriction", exc);
             bindingResult.addError(new ObjectError("exception", exc.getMessage()));
-            return "ops/account/restriction/class/add";
-        } catch (InternetBankingException e) {
-            logger.error("Could not create account class restriction", e);
-            bindingResult.addError(new ObjectError("exception", e.getMessage()));
             return "ops/account/restriction/class/add";
         }
 
@@ -259,17 +255,10 @@ public class OpsAccountController {
            String message =  accountConfigService.updateAccountClassRestriction(accountClassRestrictionDTO);
             redirectAttributes.addFlashAttribute("message", message);
             return "redirect:/ops/accounts/restriction/class";
-        }
-        catch (DuplicateObjectException exc) {
+        } catch (InternetBankingException exc) {
             logger.error("Could not update account class restriction", exc);
             bindingResult.addError(new ObjectError("exception", exc.getMessage()));
             return "ops/account/restriction/class/edit";
-        }
-        catch (InternetBankingException e) {
-            logger.error("Could not update account class restriction", e);
-            bindingResult.addError(new ObjectError("exception", e.getMessage()));
-            return "ops/account/restriction/class/edit";
-
         }
 
     }
@@ -285,7 +274,7 @@ public class OpsAccountController {
     DataTablesOutput<AccountClassRestrictionDTO> getAccountClassRestrictions(DataTablesInput input) {
         Pageable pageable = DataTablesUtils.getPageable(input);
         Page<AccountClassRestrictionDTO> accountClassRestrictions = accountConfigService.getAccountClassRestrictions(pageable);
-        DataTablesOutput<AccountClassRestrictionDTO> out = new DataTablesOutput<AccountClassRestrictionDTO>();
+        DataTablesOutput<AccountClassRestrictionDTO> out = new DataTablesOutput<>();
         out.setDraw(input.getDraw());
         out.setData(accountClassRestrictions.getContent());
         out.setRecordsFiltered(accountClassRestrictions.getTotalElements());

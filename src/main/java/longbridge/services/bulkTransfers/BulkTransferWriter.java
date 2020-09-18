@@ -46,8 +46,7 @@ public class BulkTransferWriter implements ItemWriter<TransferDTO> {
         }
         items.forEach(i -> LOGGER.debug("Received the information of a transaction: {}", i));
 
-        List<TransferDTO> dtos = new ArrayList<>();
-        dtos.addAll(items);
+        List<TransferDTO> dtos = new ArrayList<>(items);
 
         BulkTransfer bulkTransfer = bulkTransferRepo.findFirstByRefCode(batchId);
         TransferDetails response = submitTransferRequests(dtos);
@@ -61,7 +60,7 @@ public class BulkTransferWriter implements ItemWriter<TransferDTO> {
             bulkTransfer.setStatus(StatusCode.FAILED.toString());
             bulkTransfer.setStatusDescription("Failed");
             List<CreditRequest> creditRequests = creditRequestRepo.findByBulkTransfer_Id(bulkTransfer.getId());
-            creditRequests.stream().forEach(i -> {i.setStatus("FAILED"); creditRequestRepo.save(i);});
+            creditRequests.forEach(i -> {i.setStatus("FAILED"); creditRequestRepo.save(i);});
 
         }
         bulkTransferRepo.save(bulkTransfer);

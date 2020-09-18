@@ -36,7 +36,7 @@ import java.util.stream.StreamSupport;
 @Transactional
 public class RecurringPaymentServiceImpl implements RecurringPaymentService {
 
-	private Logger logger = LoggerFactory.getLogger(this.getClass());
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	@Autowired
 	private ModelMapper modelMapper;
@@ -62,7 +62,7 @@ public class RecurringPaymentServiceImpl implements RecurringPaymentService {
 	@Autowired
 	private MessageSource messageSource;
 
-	private Locale locale = LocaleContextHolder.getLocale();
+	private final Locale locale = LocaleContextHolder.getLocale();
 
 	@Value("${bank.code}")
 	private String bankCode;
@@ -252,7 +252,7 @@ public class RecurringPaymentServiceImpl implements RecurringPaymentService {
 
 
 		String cif = accountService.getAccountByAccountNumber(dto.getCustomerAccountNumber()).getCustomerId();
-		boolean acctPresent = StreamSupport.stream(accountService.getAccountsForDebit(cif).spliterator(), false)
+		boolean acctPresent = accountService.getAccountsForDebit(cif).stream()
 				.anyMatch(i -> i.getAccountNumber().equalsIgnoreCase(dto.getCustomerAccountNumber()));
 
 

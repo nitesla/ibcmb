@@ -42,7 +42,7 @@ public class OpsCorporateUserController {
     @Autowired
     private RoleService roleService;
 
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
     private MessageSource messageSource;
@@ -208,12 +208,9 @@ public class OpsCorporateUserController {
         try {
             String message = corporateUserService.resetPassword(id);
             redirectAttributes.addFlashAttribute("message", message);
-        } catch (PasswordException pe) {
+        } catch (InternetBankingException pe) {
             redirectAttributes.addFlashAttribute("failure", pe.getMessage());
             logger.error("Error resetting password for corporate user", pe);
-        } catch (InternetBankingException ibe) {
-            redirectAttributes.addFlashAttribute("failure", ibe.getMessage());
-            logger.error("Error resetting password for corporate user", ibe);
         }
         return "redirect:/ops/corporates/" + corpId + "/view";
     }

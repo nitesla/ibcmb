@@ -3,7 +3,6 @@ package longbridge.controllers.retail;
 
 import longbridge.dtos.LoanDTO;
 import longbridge.dtos.MailLoanDTO;
-import longbridge.security.userdetails.CustomUserPrincipal;
 import longbridge.services.LoanDetailsService;
 import longbridge.utils.JasperReport.ReportHelper;
 import net.sf.jasperreports.engine.JasperExportManager;
@@ -20,10 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.mail.MailException;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -40,9 +36,9 @@ public class RetailLoanController {
     private LoanDetailsService loanDetailsService;
     @Autowired
     private MessageSource messageSource;
-    private Locale locale = LocaleContextHolder.getLocale();
+    private final Locale locale = LocaleContextHolder.getLocale();
 
-    private Logger logger= LoggerFactory.getLogger(this.getClass());
+    private final Logger logger= LoggerFactory.getLogger(this.getClass());
     @Value("${jrxmlImage.path}")
     private String imagePath;
 
@@ -85,7 +81,7 @@ public class RetailLoanController {
         List<LoanDTO> loanDTOList = new ArrayList<>();
         loanDTOList.add(loan);
         response.setContentType("application/x-download");
-        response.setHeader("Content-disposition", String.format("attachment; filename=\"loan_report.pdf\""));
+        response.setHeader("Content-disposition", "attachment; filename=\"loan_report.pdf\"");
         OutputStream outputStream = response.getOutputStream();
         JasperReport jasperReport = ReportHelper.getJasperReport("loan_pdf");
         JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, modelMap, new JRBeanCollectionDataSource(loanDTOList));
@@ -126,7 +122,7 @@ public class RetailLoanController {
         exporter.exportReport();
         response.setHeader("Content-Length", String.valueOf(baos.size()));
         response.setContentType("application/vnd.ms-excel");
-        response.addHeader("Content-disposition", String.format("attachment; filename=\"loan_report.xlsx\""));
+        response.addHeader("Content-disposition", "attachment; filename=\"loan_report.xlsx\"");
         OutputStream outputStream = response.getOutputStream();
         outputStream.write(baos.toByteArray());
         outputStream.close();

@@ -120,18 +120,17 @@ public class AccountLimit extends  AbstractEntity implements PrettySerializer{
 
     @Override @JsonIgnore
     public JsonSerializer<AccountLimit> getSerializer() {
-        return new JsonSerializer<AccountLimit>() {
+        return new JsonSerializer<>() {
             @Override
             public void serialize(AccountLimit value, JsonGenerator gen, SerializerProvider serializers)
-                    throws IOException, JsonProcessingException
-            {
+                    throws IOException {
                 gen.writeStartObject();
-                gen.writeStringField("Account Number",value.accountNumber);
-                gen.writeStringField("Channel",value.channel);
-                gen.writeNumberField("Maximum Limit",value.maxLimit);
-                gen.writeStringField("Currency",value.currency);
-                gen.writeStringField("Frequency",value.frequency);
-                gen.writeStringField("Description",value.description);
+                gen.writeStringField("Account Number", value.accountNumber);
+                gen.writeStringField("Channel", value.channel);
+                gen.writeNumberField("Maximum Limit", value.maxLimit);
+                gen.writeStringField("Currency", value.currency);
+                gen.writeStringField("Frequency", value.frequency);
+                gen.writeStringField("Description", value.description);
 
                 gen.writeEndObject();
             }
@@ -139,18 +138,17 @@ public class AccountLimit extends  AbstractEntity implements PrettySerializer{
     }
     @Override @JsonIgnore
     public JsonSerializer<AccountLimit> getAuditSerializer() {
-        return new JsonSerializer<AccountLimit>() {
+        return new JsonSerializer<>() {
             @Override
             public void serialize(AccountLimit value, JsonGenerator gen, SerializerProvider serializers)
-                    throws IOException, JsonProcessingException
-            {
+                    throws IOException {
                 gen.writeStartObject();
-                gen.writeStringField("accountNumber",value.accountNumber);
-                gen.writeStringField("channel",value.channel);
-                gen.writeNumberField("maximumLimit",value.maxLimit);
-                gen.writeStringField("currency",value.currency);
-                gen.writeStringField("frequency",value.frequency);
-                gen.writeStringField("description",value.description);
+                gen.writeStringField("accountNumber", value.accountNumber);
+                gen.writeStringField("channel", value.channel);
+                gen.writeNumberField("maximumLimit", value.maxLimit);
+                gen.writeStringField("currency", value.currency);
+                gen.writeStringField("frequency", value.frequency);
+                gen.writeStringField("description", value.description);
 
                 gen.writeEndObject();
             }

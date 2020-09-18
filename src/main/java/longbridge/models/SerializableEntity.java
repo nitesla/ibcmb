@@ -16,6 +16,6 @@ import java.io.IOException;
 public interface SerializableEntity<T> {
 	String serialize() throws JsonProcessingException;
 	
-	void deserialize(String data) throws JsonParseException, JsonMappingException, IOException;
+	void deserialize(String data) throws IOException;
 	
 }

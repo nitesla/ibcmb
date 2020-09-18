@@ -75,25 +75,24 @@ public class SRConfig extends AbstractEntity implements PrettySerializer{
     @Override
     @JsonIgnore
     public JsonSerializer<SRConfig> getSerializer() {
-        return new JsonSerializer<SRConfig>() {
+        return new JsonSerializer<>() {
             @Override
             public void serialize(SRConfig value, JsonGenerator gen, SerializerProvider serializers)
-                    throws IOException, JsonProcessingException
-            {
+                    throws IOException {
                 gen.writeStartObject();
-                gen.writeStringField("Service Request Name",value.requestName);
-                gen.writeStringField("Request Type",value.requestType);
-                gen.writeBooleanField("Authentication",value.authenticate);
+                gen.writeStringField("Service Request Name", value.requestName);
+                gen.writeStringField("Request Type", value.requestType);
+                gen.writeBooleanField("Authentication", value.authenticate);
                 gen.writeObjectFieldStart("Form Fields");
 
-                Integer count =0;
-                for(ServiceReqFormField reqFormField: formFields){
+                Integer count = 0;
+                for (ServiceReqFormField reqFormField : formFields) {
 
                     gen.writeObjectFieldStart((++count).toString());
-                    gen.writeStringField("Field Name",reqFormField.getFieldName());
-                    gen.writeStringField("Field Type",reqFormField.getFieldType());
-                    gen.writeStringField("Field Label",reqFormField.getFieldLabel());
-                    gen.writeStringField("Field Data",reqFormField.getTypeData());
+                    gen.writeStringField("Field Name", reqFormField.getFieldName());
+                    gen.writeStringField("Field Type", reqFormField.getFieldType());
+                    gen.writeStringField("Field Label", reqFormField.getFieldLabel());
+                    gen.writeStringField("Field Data", reqFormField.getTypeData());
                     gen.writeEndObject();
                 }
                 gen.writeEndObject();
@@ -103,30 +102,29 @@ public class SRConfig extends AbstractEntity implements PrettySerializer{
     @Override
     @JsonIgnore
     public JsonSerializer<SRConfig> getAuditSerializer() {
-        return new JsonSerializer<SRConfig>() {
+        return new JsonSerializer<>() {
             @Override
             public void serialize(SRConfig value, JsonGenerator gen, SerializerProvider serializers)
-                    throws IOException, JsonProcessingException
-            {
+                    throws IOException {
                 gen.writeStartObject();
-                if(value.id != null) {
+                if (value.id != null) {
                     gen.writeStringField("id", value.id.toString());
-                }else {
+                } else {
                     gen.writeStringField("id", "");
                 }
-                gen.writeStringField("serviceRequestName",value.requestName);
-                gen.writeStringField("requestType",value.requestType);
-                gen.writeBooleanField("authentication",value.authenticate);
+                gen.writeStringField("serviceRequestName", value.requestName);
+                gen.writeStringField("requestType", value.requestType);
+                gen.writeBooleanField("authentication", value.authenticate);
                 gen.writeObjectFieldStart("Form Fields");
 
-                Integer count =0;
-                for(ServiceReqFormField reqFormField: formFields){
+                Integer count = 0;
+                for (ServiceReqFormField reqFormField : formFields) {
 
                     gen.writeObjectFieldStart((++count).toString());
-                    gen.writeStringField("fieldName",reqFormField.getFieldName());
-                    gen.writeStringField("fieldType",reqFormField.getFieldType());
-                    gen.writeStringField("fieldLabel",reqFormField.getFieldLabel());
-                    gen.writeStringField("fieldData",reqFormField.getTypeData());
+                    gen.writeStringField("fieldName", reqFormField.getFieldName());
+                    gen.writeStringField("fieldType", reqFormField.getFieldType());
+                    gen.writeStringField("fieldLabel", reqFormField.getFieldLabel());
+                    gen.writeStringField("fieldData", reqFormField.getTypeData());
                     gen.writeEndObject();
                 }
                 gen.writeEndObject();

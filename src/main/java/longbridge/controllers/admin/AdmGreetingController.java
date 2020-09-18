@@ -40,7 +40,7 @@ import java.util.Locale;
 @RequestMapping("/admin/greetings")
 public class AdmGreetingController  {
 
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
     private GreetingService greetingService;
@@ -65,10 +65,10 @@ public class AdmGreetingController  {
     
     private static String INVALID="invalid";
 
-    String addGreetingPage = "adm/greeting/add";
+    final String addGreetingPage = "adm/greeting/add";
 
-    String editGreetingPage = "adm/greeting/edit";
-    String greetingViewPage = "redirect:/admin/greetings";
+    final String editGreetingPage = "adm/greeting/edit";
+    final String greetingViewPage = "redirect:/admin/greetings";
 
     @GetMapping()
     public String listGreetings()

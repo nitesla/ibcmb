@@ -38,20 +38,18 @@ import java.util.stream.StreamSupport;
 @Controller
 @RequestMapping(value = "/retail/transfer/interbank")
 public class InterBankTransferController {
-    private RetailUserService retailUserService;
-    private TransferService transferService;
-    private MessageSource messages;
-    private TransferUtils transferUtils;
-    private LocalBeneficiaryService localBeneficiaryService;
-    private FinancialInstitutionService financialInstitutionService;
-    private TransferValidator validator;
-    private IntegrationService integrationService;
-    private AccountService accountService;
-    private String page = "cust/transfer/interbank/";
+    private final RetailUserService retailUserService;
+    private final MessageSource messages;
+    private final TransferUtils transferUtils;
+    private final LocalBeneficiaryService localBeneficiaryService;
+    private final FinancialInstitutionService financialInstitutionService;
+    private final TransferValidator validator;
+    private final AccountService accountService;
+    private final String page = "cust/transfer/interbank/";
     @Value("${bank.code}")
     private String bankCode;
-    private TransferErrorService transferErrorService;
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final TransferErrorService transferErrorService;
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 /*
     @Value("${geolocation.url}")
@@ -66,12 +64,10 @@ public class InterBankTransferController {
             , IntegrationService integrationService, TransferUtils transferUtils, TransferErrorService transferErrorService
     ) {
         this.retailUserService = retailUserService;
-        this.transferService = transferService;
         this.messages = messages;
         this.localBeneficiaryService = localBeneficiaryService;
         this.financialInstitutionService = financialInstitutionService;
         this.validator = validator;
-        this.integrationService = integrationService;
         this.accountService = accountService;
         this.transferUtils = transferUtils;
         this.transferErrorService = transferErrorService;
@@ -320,7 +316,7 @@ public class InterBankTransferController {
             StreamSupport.stream(accounts.spliterator(), false)
                     .filter(Objects::nonNull)
                     .filter(i -> "NGN".equalsIgnoreCase(i.getCurrencyCode()))
-                    .forEach(i -> accountList.add(i));
+                    .forEach(accountList::add);
             model.addAttribute("accountList", accountList);
 
 

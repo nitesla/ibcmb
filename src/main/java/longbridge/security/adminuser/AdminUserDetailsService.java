@@ -26,21 +26,19 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class AdminUserDetailsService implements UserDetailsService {
 
-    private AdminUserRepo adminUserRepo;
-    private CustomBruteForceService bruteForceService;
-    private IpAddressUtils addressUtils;
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
-    private FailedLoginService failedLoginService;
-     private SessionUtils sessionUtils;
+    private final AdminUserRepo adminUserRepo;
+    private final CustomBruteForceService bruteForceService;
+    private final IpAddressUtils addressUtils;
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final FailedLoginService failedLoginService;
 
     @Autowired
     public AdminUserDetailsService(AdminUserRepo adminUserRepo, CustomBruteForceService bruteForceService, IpAddressUtils addressUtils
-            , FailedLoginService failedLoginService,SessionUtils sessionUtils) {
+            , FailedLoginService failedLoginService) {
         this.adminUserRepo = adminUserRepo;
         this.addressUtils = addressUtils;
         this.bruteForceService = bruteForceService;
         this.failedLoginService = failedLoginService;
-        this.sessionUtils=sessionUtils;
     }
 
     @Override

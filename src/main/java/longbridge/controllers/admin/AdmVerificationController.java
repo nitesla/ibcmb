@@ -32,7 +32,7 @@ import java.util.Locale;
 @Controller
 @RequestMapping("/admin/verifications")
 public class AdmVerificationController {
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
     @Autowired
     private VerificationService verificationService;
     @Autowired
@@ -58,13 +58,9 @@ public class AdmVerificationController {
         try {
             verificationService.verify(id);
             redirectAttributes.addFlashAttribute("message", "Operation approved successfully");
-        } catch (VerificationException ve) {
+        } catch (InternetBankingException ve) {
             logger.error("Error verifying the operation", ve);
             redirectAttributes.addFlashAttribute("failure", ve.getMessage());
-        } catch (InternetBankingException ibe) {
-            logger.error("Error verifying the operation", ibe);
-            redirectAttributes.addFlashAttribute("failure", ibe.getMessage());
-
         }
         return "redirect:/admin/verifications/operations";
     }
@@ -78,13 +74,9 @@ public class AdmVerificationController {
         try {
             String message = verificationService.cancel(verification);
             redirectAttributes.addFlashAttribute("message", message);
-        } catch (VerificationException ve) {
+        } catch (InternetBankingException ve) {
             logger.error("Error canceling operation", ve);
             redirectAttributes.addFlashAttribute("failure", ve.getMessage());
-        } catch (InternetBankingException ibe) {
-            logger.error("Error canceling operation", ibe);
-            redirectAttributes.addFlashAttribute("failure", ibe.getMessage());
-
         }
         return "redirect:/admin/verifications/pendingops";
     }
@@ -111,12 +103,9 @@ public class AdmVerificationController {
                 redirectAttributes.addFlashAttribute("message", "Operation declined successfully");
 
             }
-        } catch (VerificationException ve) {
+        } catch (InternetBankingException ve) {
             logger.error("Error verifying the operation", ve);
             redirectAttributes.addFlashAttribute("failure", ve.getMessage());
-        } catch (InternetBankingException ibe) {
-            logger.error("Error verifying the operation", ibe);
-            redirectAttributes.addFlashAttribute("failure", ibe.getMessage());
         }
         return "redirect:/admin/verifications/operations";
     }
@@ -128,7 +117,7 @@ public class AdmVerificationController {
     DataTablesOutput<VerificationDTO> getAllPending(DataTablesInput input) {
         Pageable pageable = DataTablesUtils.getPageable(input);
         Page<VerificationDTO> page = verificationService.getPendingForUser(pageable);
-        DataTablesOutput<VerificationDTO> out = new DataTablesOutput<VerificationDTO>();
+        DataTablesOutput<VerificationDTO> out = new DataTablesOutput<>();
         out.setDraw(input.getDraw());
         out.setData(page.getContent());
         out.setRecordsFiltered(page.getTotalElements());
@@ -142,7 +131,7 @@ public class AdmVerificationController {
     DataTablesOutput<Verification> getAllVerification(DataTablesInput input) {
         Pageable pageable = DataTablesUtils.getPageable(input);
         Page<Verification> page = verificationService.getVerificationsForUser(pageable);
-        DataTablesOutput<Verification> out = new DataTablesOutput<Verification>();
+        DataTablesOutput<Verification> out = new DataTablesOutput<>();
         out.setDraw(input.getDraw());
         out.setData(page.getContent());
         out.setRecordsFiltered(page.getTotalElements());
@@ -165,7 +154,7 @@ public class AdmVerificationController {
     DataTablesOutput<VerificationDTO> getPendingOperation(@PathVariable String operation, DataTablesInput input) {
         Pageable pageable = DataTablesUtils.getPageable(input);
         Page<VerificationDTO> page = verificationService.getPendingOperations(operation, pageable);
-        DataTablesOutput<VerificationDTO> out = new DataTablesOutput<VerificationDTO>();
+        DataTablesOutput<VerificationDTO> out = new DataTablesOutput<>();
         out.setDraw(input.getDraw());
         out.setData(page.getContent());
         out.setRecordsFiltered(page.getTotalElements());
@@ -185,7 +174,7 @@ public class AdmVerificationController {
     DataTablesOutput<VerificationDTO> getVerifiedOperations(DataTablesInput input) {
         Pageable pageable = DataTablesUtils.getPageable(input);
         Page<VerificationDTO> page = verificationService.getVerifiedOperations(pageable);
-        DataTablesOutput<VerificationDTO> out = new DataTablesOutput<VerificationDTO>();
+        DataTablesOutput<VerificationDTO> out = new DataTablesOutput<>();
         out.setDraw(input.getDraw());
         out.setData(page.getContent());
         out.setRecordsFiltered(page.getTotalElements());

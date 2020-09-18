@@ -79,10 +79,10 @@ public class CorpAccountController {
     private ApplicationContext appContext;
     @Autowired
     private GreetingService greetingService;
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private Long customizeAccountId;
-    private Locale locale = LocaleContextHolder.getLocale();
+    private final Locale locale = LocaleContextHolder.getLocale();
     @Value("${jrxmlImage.path}")
     private String imagePath;
     @Value("${jrxmlFile.path}")
@@ -276,7 +276,7 @@ public class CorpAccountController {
         }
 
         response.setContentType("application/x-download");
-        response.setHeader("Content-Disposition", String.format("attachment; filename=\"rpt_tran-hist.pdf\""));
+        response.setHeader("Content-Disposition", "attachment; filename=\"rpt_tran-hist.pdf\"");
 
         JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, modelMap, new JRBeanCollectionDataSource(transRequestList));
         JasperExportManager.exportReportToPdfStream(jasperPrint, response.getOutputStream());
@@ -324,7 +324,7 @@ public class CorpAccountController {
     public
     @ResponseBody
     DataTablesOutput<TransactionDetails> getStatementData(@PathVariable String acct, DataTablesInput input) {
-        DataTablesOutput<TransactionDetails> out = new DataTablesOutput<TransactionDetails>();
+        DataTablesOutput<TransactionDetails> out = new DataTablesOutput<>();
         try {
             Date date = new Date();
             Date daysAgo = new DateTime(date).minusDays(300).toDate();
@@ -364,7 +364,7 @@ public class CorpAccountController {
         String tranType = webRequest.getParameter("tranType");
         Date from = null;
         Date to = null;
-        DataTablesOutput<TransactionDetails> out = new DataTablesOutput<TransactionDetails>();
+        DataTablesOutput<TransactionDetails> out = new DataTablesOutput<>();
         SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy");
         try {
             from = format.parse(fromDate);
@@ -420,7 +420,7 @@ public class CorpAccountController {
                                       String fromDate, String toDate, String tranType, Principal principal, RedirectAttributes redirectAttributes, HttpServletResponse response) throws Exception {
         Date from = null;
         Date to = null;
-        DataTablesOutput<TransactionDetails> out = new DataTablesOutput<TransactionDetails>();
+        DataTablesOutput<TransactionDetails> out = new DataTablesOutput<>();
         SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy");
 
         from = format.parse(fromDate);
@@ -487,7 +487,7 @@ public class CorpAccountController {
         JasperReport jasperReport = ReportHelper.getJasperReport("rpt_account-statement");
 
         response.setContentType("application/x-download");
-        response.setHeader("Content-Disposition", String.format("attachment; filename=\"account-statement.pdf\""));
+        response.setHeader("Content-Disposition", "attachment; filename=\"account-statement.pdf\"");
 
         JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, modelMap, new JRBeanCollectionDataSource(list));
         JasperExportManager.exportReportToPdfStream(jasperPrint, response.getOutputStream());
@@ -498,7 +498,7 @@ public class CorpAccountController {
                                        String fromDate, String toDate, String tranType, HttpServletResponse response, RedirectAttributes redirectAttributes) throws Exception {
         Date from = null;
         Date to = null;
-        DataTablesOutput<TransactionDetails> out = new DataTablesOutput<TransactionDetails>();
+        DataTablesOutput<TransactionDetails> out = new DataTablesOutput<>();
         SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy");
         from = format.parse(fromDate);
         to = format.parse(toDate);
@@ -579,7 +579,7 @@ public class CorpAccountController {
         exporter.exportReport();
         response.setHeader("Content-Length", String.valueOf(pdfReportStream.size()));
         response.setContentType("application/vnd.ms-excel");
-        response.addHeader("Content-Disposition", String.format("inline; filename=\"" + "Account_Statement.xlsx" + "\""));
+        response.addHeader("Content-Disposition", "inline; filename=\"" + "Account_Statement.xlsx" + "\"");
         OutputStream responseOutputStream = response.getOutputStream();
         responseOutputStream.write(pdfReportStream.toByteArray());
 
@@ -604,7 +604,7 @@ public class CorpAccountController {
         List<TransactionDetails> list = null;
         Date from = null;
         Date to = null;
-        DataTablesOutput<TransactionDetails> out = new DataTablesOutput<TransactionDetails>();
+        DataTablesOutput<TransactionDetails> out = new DataTablesOutput<>();
         SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy");
         try {
             from = format.parse(fromDate);

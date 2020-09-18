@@ -30,8 +30,8 @@ import java.util.Map;
 
 @Service
 public class UserRetrievalServiceImpl implements UserRetrievalService {
-    Logger logger = LoggerFactory.getLogger(this.getClass());
-    private Locale locale = LocaleContextHolder.getLocale();
+    final Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final Locale locale = LocaleContextHolder.getLocale();
 
     @Autowired
     AccountService accountService;
