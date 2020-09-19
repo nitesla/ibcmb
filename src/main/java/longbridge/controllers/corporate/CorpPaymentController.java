@@ -41,7 +41,6 @@ public class CorpPaymentController {
     private final AccountService accountService;
     private final PaymentService paymentService;
     private final String page = "corp/payment/";
-    private SecurityService securityService;
     @Autowired
     ConfigurationService configurationService;
     @Autowired
@@ -89,11 +88,11 @@ public class CorpPaymentController {
     }
 
     @PostMapping("/summary")
-    public String paymentSummary(@ModelAttribute("billPaymentDTO") @Valid BillPaymentDTO billPaymentDTO, BindingResult result, Model model, HttpServletRequest servletRequest, PaymentItem paymentItemCode, Biller billerName, PaymentItem paymentItemName) {
+    public String paymentSummary(@ModelAttribute("billPaymentDTO") @Valid BillPaymentDTO billPaymentDTO, BindingResult result, Model model, HttpServletRequest servletRequest) {
         model.addAttribute("billPaymentDTO", billPaymentDTO);
-        billerName = billerService.getBillerName(Long.parseLong(billPaymentDTO.getBillerId()));
+        Biller billerName = billerService.getBillerName(Long.parseLong(billPaymentDTO.getBillerId()));
         billPaymentDTO.setBillerName(billerName.getBillerName());
-        paymentItemName = billerService.getPaymentItem(Long.parseLong(billPaymentDTO.getPaymentItemId()));
+        PaymentItem paymentItemName = billerService.getPaymentItem(Long.parseLong(billPaymentDTO.getPaymentItemId()));
         billPaymentDTO.setPaymentItemName(paymentItemName.getPaymentItemName());
         model.addAttribute("billPaymentDTO", billPaymentDTO);
         servletRequest.getSession().setAttribute("billPaymentDTO", billPaymentDTO);
@@ -175,23 +174,20 @@ public class CorpPaymentController {
     @ResponseBody
     @RequestMapping(value = "/biller", method = {RequestMethod.GET, RequestMethod.POST})
     public List<Biller> getBillers(Biller biller){
-        List<Biller> billerByCategory = billerService.getBillersByCategory(biller.getCategoryName());
-        return billerByCategory;
+        return billerService.getBillersByCategory(biller.getCategoryName());
     }
 
 
     @ResponseBody
     @RequestMapping(value = "/paymentItem", method = {RequestMethod.GET, RequestMethod.POST})
     public List<PaymentItem> getPaymentItem(PaymentItem paymentItem){
-        List<PaymentItem> paymentItems = billerService.getPaymentItems(paymentItem.getBillerId());
-        return paymentItems;
+        return billerService.getPaymentItems(paymentItem.getBillerId());
     }
 
     @ResponseBody
     @GetMapping("/paymentItem/{paymentItemId}")
     public PaymentItem getPaymentItem(@PathVariable Long paymentItemId){
-        PaymentItem paymentItem = billerService.getPaymentItem(paymentItemId);
-        return paymentItem;
+        return billerService.getPaymentItem(paymentItemId);
     }
     @GetMapping("/completed")
     public String getCompletedPayments(){
@@ -212,7 +208,7 @@ public class CorpPaymentController {
             corpPaymentRequests = paymentService.getCorpPayments(search.toUpperCase(), pageable);
         } else corpPaymentRequests =  paymentService.getCorpPayments(pageable);
 
-        DataTablesOutput<BillPaymentDTO> out = new DataTablesOutput<BillPaymentDTO>();
+        DataTablesOutput<BillPaymentDTO> out = new DataTablesOutput<>();
         out.setDraw(input.getDraw());
         out.setData(corpPaymentRequests.getContent());
         out.setRecordsFiltered(corpPaymentRequests.getTotalElements());
@@ -236,7 +232,7 @@ public class CorpPaymentController {
             StreamSupport.stream(accounts.spliterator(), false)
                     .filter(Objects::nonNull)
                     .filter(i -> "NGN".equalsIgnoreCase(i.getCurrencyCode()))
-                    .forEach(i -> accountList.add(i));
+                    .forEach(accountList::add);
             model.addAttribute("accountList", accountList);
 
 

@@ -8,7 +8,7 @@ public enum PaymentType {
     CUSTOM_DUTY("Custom Duty"),
     UTILITY("Utility");
 
-    private String description;
+    private final String description;
 
     PaymentType(String description){
         this.description = description;

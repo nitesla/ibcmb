@@ -46,7 +46,7 @@ public class CorpMailboxController {
     private RetailUserService retailUserService;
     @Autowired
     private MessageSource messageSource;
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @GetMapping("/inbox")
     public String getInbox(Model model, Principal principal) {
@@ -57,7 +57,7 @@ public class CorpMailboxController {
         Long noOfDraft = messageService.countMessagesByTag(corporateUser, MessageCategory.DRAFT);
         Long noOfSent = messageService.countMessagesByTag(corporateUser,MessageCategory.SENT);
         model.addAttribute("noOfSent","Sent ("+noOfSent+")");
-        model.addAttribute("noOfInbox","Inbox ("+((List<MessageDTO>) receivedMessages).size()+")");
+        model.addAttribute("noOfInbox","Inbox ("+ receivedMessages.size()+")");
         model.addAttribute("noOfDraft", "Drafts ("+noOfDraft+")");
         model.addAttribute("receivedMessages", receivedMessages);
         model.addAttribute("receivedMessages", receivedMessages);
@@ -195,9 +195,8 @@ public class CorpMailboxController {
         Long noOfDraft = messageService.countMessagesByTag(corporateUser, MessageCategory.DRAFT);
         Long noOfSent = messageService.countMessagesByTag(corporateUser,MessageCategory.SENT);
         model.addAttribute("noOfSent","Sent ("+noOfSent+")");
-        model.addAttribute("noOfInbox","Inbox ("+((List<MessageDTO>) receivedMessages).size()+")");
+        model.addAttribute("noOfInbox","Inbox ("+ receivedMessages.size()+")");
         model.addAttribute("noOfDraft", "Drafts ("+noOfDraft+")");
-        model.addAttribute("receivedMessages", receivedMessages);
         model.addAttribute("receivedMessages", receivedMessages);
         message.setSender(corporateUser.getUserName());
         model.addAttribute("messageDTO", message);
@@ -214,7 +213,7 @@ public class CorpMailboxController {
             Long noOfDraft = messageService.countMessagesByTag(corporateUser, MessageCategory.DRAFT);
             Long noOfSent = messageService.countMessagesByTag(corporateUser,MessageCategory.SENT);
             model.addAttribute("noOfSent","Sent ("+noOfSent+")");
-            model.addAttribute("noOfInbox","Inbox ("+((List<MessageDTO>) receivedMessages).size()+")");
+            model.addAttribute("noOfInbox","Inbox ("+ receivedMessages.size()+")");
             model.addAttribute("noOfDraft", "Drafts ("+noOfDraft+")");
             model.addAttribute("receivedMessages", receivedMessages);
             model.addAttribute("receivedMessages", receivedMessages);
@@ -291,8 +290,7 @@ public class CorpMailboxController {
     @ResponseBody
     public Iterable<MessageDTO> getAllMessages(Principal principal) {
         CorporateUser corporateUser = corporateUserService.getUserByName(principal.getName());
-        Iterable<MessageDTO> messages = messageService.getMessages(corporateUser);
-        return messages;
+        return messageService.getMessages(corporateUser);
 
     }
 
@@ -300,16 +298,14 @@ public class CorpMailboxController {
     @ResponseBody
     public Iterable<MessageDTO> getReceivedMessages(Principal principal) {
         CorporateUser corporateUser = corporateUserService.getUserByName(principal.getName());
-        Iterable<MessageDTO> receivedMessages = messageService.getReceivedMessages(corporateUser);
-        return receivedMessages;
+        return messageService.getReceivedMessages(corporateUser);
     }
 
     @GetMapping("/sent/all")
     @ResponseBody
     public Iterable<MessageDTO> getSentMessages(Principal principal) {
         CorporateUser corporateUser = corporateUserService.getUserByName(principal.getName());
-        Iterable<MessageDTO> sentMessages = messageService.getSentMessages(corporateUser);
-        return sentMessages;
+        return messageService.getSentMessages(corporateUser);
 
     }
 

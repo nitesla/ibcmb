@@ -12,10 +12,7 @@ public enum CorpUserType {
     INITIATOR("INIT"),
     AUTHORIZER("AUTH");
 
-    private String description;
-
     CorpUserType(String description){
-        this.description = description;
     }
 
     public static List<CorpUserType> getUseryTypes(){

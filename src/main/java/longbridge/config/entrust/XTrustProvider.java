@@ -21,13 +21,11 @@ public final class XTrustProvider extends java.security.Provider {
     public XTrustProvider() {
         super(NAME, VERSION, INFO);
 
-        AccessController.doPrivileged(new PrivilegedAction() {
-            public Object run() {
-                put("TrustManagerFactory."
-                        + TrustManagerFactoryImpl.getAlgorithm(),
-                        TrustManagerFactoryImpl.class.getName());
-                return null;
-            }
+        AccessController.doPrivileged((PrivilegedAction) () -> {
+            put("TrustManagerFactory."
+                    + TrustManagerFactoryImpl.getAlgorithm(),
+                    TrustManagerFactoryImpl.class.getName());
+            return null;
         });
     }
 

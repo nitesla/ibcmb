@@ -67,10 +67,10 @@ public class OperationsUser extends User implements Person,PrettySerializer {
 	@Override
 	@JsonIgnore
 	public JsonSerializer<User> getSerializer() {
-		return new JsonSerializer<User>() {
+		return new JsonSerializer<>() {
 			@Override
 			public void serialize(User value, JsonGenerator gen, SerializerProvider serializers)
-					throws IOException, JsonProcessingException {
+					throws IOException {
 
 				gen.writeStartObject();
 				gen.writeStringField("Username", value.userName);
@@ -78,7 +78,7 @@ public class OperationsUser extends User implements Person,PrettySerializer {
 				gen.writeStringField("Last Name", value.lastName);
 				gen.writeStringField("Email", value.email);
 				gen.writeStringField("Phone", value.phoneNumber);
-				String status =null;
+				String status = null;
 				if ("A".equals(value.status))
 					status = "Active";
 				else if ("I".equals(value.status))
@@ -96,15 +96,15 @@ public class OperationsUser extends User implements Person,PrettySerializer {
 	@Override
 	@JsonIgnore
 	public JsonSerializer<User> getAuditSerializer() {
-		return new JsonSerializer<User>() {
+		return new JsonSerializer<>() {
 			@Override
 			public void serialize(User value, JsonGenerator gen, SerializerProvider serializers)
-					throws IOException, JsonProcessingException {
+					throws IOException {
 
 				gen.writeStartObject();
-				if(value.id != null) {
+				if (value.id != null) {
 					gen.writeStringField("id", value.id.toString());
-				}else {
+				} else {
 					gen.writeStringField("id", "");
 				}
 				gen.writeStringField("username", value.userName);
@@ -112,7 +112,7 @@ public class OperationsUser extends User implements Person,PrettySerializer {
 				gen.writeStringField("lastName", value.lastName);
 				gen.writeStringField("email", value.email);
 				gen.writeStringField("phone", value.phoneNumber);
-				String status =null;
+				String status = null;
 				if ("A".equals(value.status))
 					status = "Active";
 				else if ("I".equals(value.status))

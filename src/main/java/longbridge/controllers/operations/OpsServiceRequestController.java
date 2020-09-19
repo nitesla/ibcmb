@@ -47,7 +47,7 @@ public class OpsServiceRequestController {
     @Autowired
     private RequestService requestService;
 
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 
     @GetMapping
@@ -64,7 +64,7 @@ public class OpsServiceRequestController {
         Pageable pageable = DataTablesUtils.getPageable(input);
         Page<ServiceRequestDTO> serviceRequests = requestService.getRequests(opsUser,pageable);
         logger.info("DEBUGGING-2!! {}",  serviceRequests.get().findFirst());
-        DataTablesOutput<ServiceRequestDTO> out = new DataTablesOutput<ServiceRequestDTO>();
+        DataTablesOutput<ServiceRequestDTO> out = new DataTablesOutput<>();
         out.setDraw(input.getDraw());
         out.setData(serviceRequests.getContent());
         out.setRecordsFiltered(serviceRequests.getTotalElements());
@@ -80,7 +80,7 @@ public class OpsServiceRequestController {
         ObjectMapper objectMapper = new ObjectMapper();
         List<NameValue> requestBody = null;
         try {
-            requestBody = objectMapper.readValue(requestDTO.getBody(), new TypeReference<List<NameValue>>() {
+            requestBody = objectMapper.readValue(requestDTO.getBody(), new TypeReference<>() {
             });
         } catch (Exception e) {
         }

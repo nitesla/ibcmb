@@ -43,7 +43,7 @@ import java.util.Locale;
 @Service
 public class AdminUserServiceImpl implements AdminUserService {
 
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private AdminUserRepo adminUserRepo;
     private BCryptPasswordEncoder passwordEncoder;
 
@@ -74,7 +74,7 @@ public class AdminUserServiceImpl implements AdminUserService {
     @Value("${host.url}")
     private String hostUrl;
 
-    private Locale locale = LocaleContextHolder.getLocale();
+    private final Locale locale = LocaleContextHolder.getLocale();
 
 
     @Autowired
@@ -494,8 +494,7 @@ public class AdminUserServiceImpl implements AdminUserService {
         Page<AdminUser> page = adminUserRepo.findAll(pageDetails);
         List<AdminUserDTO> dtOs = convertEntitiesToDTOs(page.getContent());
         long t = page.getTotalElements();
-        Page<AdminUserDTO> pageImpl = new PageImpl<AdminUserDTO>(dtOs, pageDetails, t);
-        return pageImpl;
+        return new PageImpl<AdminUserDTO>(dtOs, pageDetails, t);
     }
 
     @Override
@@ -503,8 +502,7 @@ public class AdminUserServiceImpl implements AdminUserService {
         Page<AdminUser> page = adminUserRepo.findUsingPattern(pattern, pageDetails);
         List<AdminUserDTO> dtOs = convertEntitiesToDTOs(page.getContent());
         long t = page.getTotalElements();
-        Page<AdminUserDTO> pageImpl = new PageImpl<AdminUserDTO>(dtOs, pageDetails, t);
-        return pageImpl;
+        return new PageImpl<AdminUserDTO>(dtOs, pageDetails, t);
     }
 
     @Override

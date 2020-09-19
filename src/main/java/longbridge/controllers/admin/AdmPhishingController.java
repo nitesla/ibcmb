@@ -35,7 +35,7 @@ public class AdmPhishingController {
     @Value("${phishing.image.folder}")
     private String folder;
 
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
     private PhishingImageService phishingImageService;
@@ -92,7 +92,7 @@ public class AdmPhishingController {
     DataTablesOutput<PhishingImageDTO> getAllPhishingImages(DataTablesInput input) {
         Pageable pageable = DataTablesUtils.getPageable(input);
         Page<PhishingImageDTO> sq = phishingImageService.getAllPhishingImages(pageable);
-        DataTablesOutput<PhishingImageDTO> out = new DataTablesOutput<PhishingImageDTO>();
+        DataTablesOutput<PhishingImageDTO> out = new DataTablesOutput<>();
         out.setDraw(input.getDraw());
         out.setData(sq.getContent());
         out.setRecordsFiltered(sq.getTotalElements());

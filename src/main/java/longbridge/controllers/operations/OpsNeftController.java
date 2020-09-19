@@ -52,7 +52,7 @@ public class OpsNeftController {
         Pageable pageable = DataTablesUtils.getPageable(input);
         Page<NeftTransfer> neftTransfers = null;
         neftTransfers = transactionService.getNeftUnsettledTransactions(pageable);
-        DataTablesOutput<NeftTransfer> out = new DataTablesOutput<NeftTransfer>();
+        DataTablesOutput<NeftTransfer> out = new DataTablesOutput<>();
         out.setDraw(input.getDraw());
         out.setData(neftTransfers.getContent());
         out.setRecordsFiltered(neftTransfers.getTotalElements());

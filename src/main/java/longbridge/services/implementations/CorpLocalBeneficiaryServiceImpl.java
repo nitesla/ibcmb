@@ -33,9 +33,8 @@ import java.util.Locale;
 @Service
 public class CorpLocalBeneficiaryServiceImpl implements CorpLocalBeneficiaryService {
 
-    private CorpLocalBeneficiaryRepo corpLocalBeneficiaryRepo;
-    private CorporateRepo corporateRepo;
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final CorpLocalBeneficiaryRepo corpLocalBeneficiaryRepo;
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 
     @Autowired
@@ -50,12 +49,11 @@ public class CorpLocalBeneficiaryServiceImpl implements CorpLocalBeneficiaryServ
     @Autowired
     private MailService mailService;
 
-    private Locale locale = LocaleContextHolder.getLocale();
+    private final Locale locale = LocaleContextHolder.getLocale();
 
     @Autowired
     public CorpLocalBeneficiaryServiceImpl(CorpLocalBeneficiaryRepo corpLocalBeneficiaryRepo,CorporateRepo corporateRepo) {
         this.corpLocalBeneficiaryRepo = corpLocalBeneficiaryRepo;
-        this.corporateRepo=corporateRepo;
     }
 
 
@@ -119,7 +117,7 @@ public class CorpLocalBeneficiaryServiceImpl implements CorpLocalBeneficiaryServ
                 String customerName = user.getFirstName()+" "+user.getLastName();
                 String smsMessage = String.format(messageSource.getMessage("beneficiary.alert.message", null, locale),customerName,beneficiary);
 
-                String alertSubject = String.format(messageSource.getMessage("beneficiary.alert.subject", null, locale));
+                String alertSubject = messageSource.getMessage("beneficiary.alert.subject", null, locale);
                 if ("SMS".equalsIgnoreCase(preference)) {
                     integrationService.sendSMS(smsMessage,user.getPhoneNumber(),  alertSubject);
 

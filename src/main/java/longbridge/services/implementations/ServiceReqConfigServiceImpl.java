@@ -33,12 +33,12 @@ import java.util.*;
 @Service
 public class ServiceReqConfigServiceImpl implements ServiceReqConfigService {
 
-    private ServiceReqConfigRepo serviceReqConfigRepo;
-    private ServiceReqFormFieldRepo serviceReqFormFieldRepo;
+    private final ServiceReqConfigRepo serviceReqConfigRepo;
+    private final ServiceReqFormFieldRepo serviceReqFormFieldRepo;
 	private ModelMapper modelMapper;
 
-	private Logger logger = LoggerFactory.getLogger(this.getClass());
-	private Locale locale = LocaleContextHolder.getLocale();
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
+	private final Locale locale = LocaleContextHolder.getLocale();
 
 	@Autowired
 	private MessageSource messageSource;
@@ -106,8 +106,7 @@ public class ServiceReqConfigServiceImpl implements ServiceReqConfigService {
 
 	@Override
 	public List<SRConfig> getServiceReqConfs() {
-		List<SRConfig> SRConfigs = serviceReqConfigRepo.findAll();
-		return SRConfigs;
+        return serviceReqConfigRepo.findAll();
 	}
 
 	@Override
@@ -125,7 +124,7 @@ public class ServiceReqConfigServiceImpl implements ServiceReqConfigService {
 		try {
 			SRConfig SRConfig = serviceReqConfigRepo.findById(serviceReqConfigDTO.getId()).get();
 			ModelMapper mapper = new ModelMapper();
-			List<ServiceReqFormField> fields = new ArrayList<ServiceReqFormField>();
+			List<ServiceReqFormField> fields = new ArrayList<>();
 
 
 
@@ -258,19 +257,18 @@ public class ServiceReqConfigServiceImpl implements ServiceReqConfigService {
 		System.out.println("srrrr"+page.getContent());
 		List<ServiceReqConfigDTO> dtOs = convertEntitiesToDTOs(page.getContent());
 		long t = page.getTotalElements();
-		Page<ServiceReqConfigDTO> pageImpl = new PageImpl<ServiceReqConfigDTO>(dtOs, pageDetails, t);
-		return pageImpl;
+        return new PageImpl<ServiceReqConfigDTO>(dtOs, pageDetails, t);
 	}
 
 	@Override
 	public Page<ServiceReqFormFieldDTO> getServiceReqFormFields(Pageable pageDetails) {
 		Page<ServiceReqFormField> page = serviceReqFormFieldRepo.findAll(pageDetails);
 		List<ServiceReqFormFieldDTO> dtOs = convertFormFieldEntitiesToDTOs(page.getContent());
-		return new PageImpl<ServiceReqFormFieldDTO>(dtOs, pageDetails, page.getTotalElements());
+		return new PageImpl<>(dtOs, pageDetails, page.getTotalElements());
 	}
 
 	private ServiceReqConfigDTO convertEntityToDTO(SRConfig SRConfig) {
-		PropertyMap<SRConfig, ServiceReqConfigDTO> mapperConfig = new PropertyMap<SRConfig, ServiceReqConfigDTO>() {
+		PropertyMap<SRConfig, ServiceReqConfigDTO> mapperConfig = new PropertyMap<>() {
 			@Override
 			protected void configure() {
 				skip().setFormFields(null);

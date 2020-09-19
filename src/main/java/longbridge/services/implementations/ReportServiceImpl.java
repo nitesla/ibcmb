@@ -44,7 +44,7 @@ import java.util.*;
  */
 @Service
 public class ReportServiceImpl implements ReportService {
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
     @Value("${report.path}")
     private String REPORT_PATH;
     @Value("${report.temp.path}")
@@ -67,7 +67,7 @@ public class ReportServiceImpl implements ReportService {
     private MakerCheckerService makerCheckerService;
     @Autowired
     MailService mailService;
-    private Locale locale = LocaleContextHolder.getLocale();
+    private final Locale locale = LocaleContextHolder.getLocale();
     @Value("${jrxmlImage.path}")
     private String imagePath;
     @Autowired
@@ -270,7 +270,6 @@ public class ReportServiceImpl implements ReportService {
                 FileOutputStream fos = new FileOutputStream(fileName)) {
             byte[] bytes = file.getBytes();
             fos.write(bytes);
-            fos.close();
         }catch (FileNotFoundException e){
             logger.info("file not found {}", e);
         }catch (IOException e) {
@@ -285,7 +284,7 @@ public class ReportServiceImpl implements ReportService {
         reportUtils.deleteReportIfExist(true,reportName);
         try (
                 FileOutputStream fos = new FileOutputStream(fileName)) {
-            byte[] bytes = file.getBytes();return bytes;
+            return file.getBytes();
 //            fos.write(bytes);
 //            fos.close();
         }catch (FileNotFoundException e){
@@ -302,7 +301,6 @@ public class ReportServiceImpl implements ReportService {
                 FileOutputStream fos = new FileOutputStream(fileName)) {
             byte[] bytes = file.getBytes();
             fos.write(bytes);
-            fos.close();
         }catch (FileNotFoundException e){
             logger.info("file not found {}", e);
         }catch (IOException e) {
@@ -316,11 +314,9 @@ public class ReportServiceImpl implements ReportService {
         if(fileName!=null && !StringUtils.isEmpty(fileName)){
             int lastIndexOfDot = fileName.lastIndexOf('.');
             if(lastIndexOfDot != -1) {
-                String fileExtension = fileName.substring(lastIndexOfDot, fileName.length());
+                String fileExtension = fileName.substring(lastIndexOfDot);
                 logger.info("the file extension {}", fileExtension);
-                if (StringUtils.equals(fileExtension, ".jrxml")) {
-                    return true;
-                }
+                return StringUtils.equals(fileExtension, ".jrxml");
             }
         }
         return false;
@@ -395,7 +391,7 @@ public class ReportServiceImpl implements ReportService {
         logger.trace("the number of report {}",t);
         reports.forEach(report->reportDTOS.add(convertEntitytoDTO(report)));
         logger.info("the dto {}",reportDTOS.size());
-        return new PageImpl<ReportDTO>(reportDTOS, pageDetails, t);
+        return new PageImpl<>(reportDTOS, pageDetails, t);
     }
     @Override
     public Page<ReportDTO> searchReportsForuser(Pageable pageDetails, String search) {
@@ -411,7 +407,7 @@ public class ReportServiceImpl implements ReportService {
         logger.trace("the number of report {}",t);
         reports.forEach(report->reportDTOS.add(convertEntitytoDTO(report)));
         logger.info("the dto {}",reportDTOS.size());
-        return new PageImpl<ReportDTO>(reportDTOS, pageDetails, t);
+        return new PageImpl<>(reportDTOS, pageDetails, t);
     }
     @Override
     public Page<ReportDTO> getReports(Pageable pageDetails) {
@@ -421,7 +417,7 @@ public class ReportServiceImpl implements ReportService {
         logger.info("the number of report {}",t);
         reports.forEach(report->reportDTOS.add(convertEntitytoDTO(report)));
         logger.info("the dto size {}",reportDTOS.size());
-        return new PageImpl<ReportDTO>(reportDTOS, pageDetails, t);
+        return new PageImpl<>(reportDTOS, pageDetails, t);
     }
     @Override
     public Page<ReportDTO> findReports(String search, Pageable pageDetails) {
@@ -431,17 +427,14 @@ public class ReportServiceImpl implements ReportService {
         logger.info("the number of report  search {}",t);
         reports.forEach(report->reportDTOS.add(convertEntitytoDTO(report)));
         logger.info("the search dto size {}",reportDTOS.size());
-        return new PageImpl<ReportDTO>(reportDTOS, pageDetails, t);
+        return new PageImpl<>(reportDTOS, pageDetails, t);
     }
 
 
     @Override
     public boolean reportAlreadyExist(String reportName) throws InternetBankingException {
         Report report = reportRepo.findByReportNameIgnoreCase(reportName);
-        if(report != null)
-            return true;
-        else
-            return false;
+        return report != null;
     }
 
     @Override
@@ -461,8 +454,7 @@ public class ReportServiceImpl implements ReportService {
         if(user != null) {
             logger.info("check Permissions of {}",user.getUserName());
             Collection<Permission> permissions = user.getRole().getPermissions();
-            boolean validUser = permissions.contains(reportDTO.getPermission());
-            return validUser;
+            return permissions.contains(reportDTO.getPermission());
 //            reports.forEach(report->reportDTOS.add(convertEntitytoDTO(report)));
         }
         return false;
@@ -483,11 +475,9 @@ public class ReportServiceImpl implements ReportService {
             reportRepo.save(report);
             logger.info("the report to be saved {}",report);
             return messageSource.getMessage("report.update.success", null, locale);
-        }catch (VerificationInterruptedException e){
+        }catch (VerificationInterruptedException | InternetBankingException e){
             return e.getMessage();
-        }catch (InternetBankingException e){
-            return e.getMessage();
-        }catch (Exception e) {
+        } catch (Exception e) {
             throw new InternetBankingException(messageSource.getMessage("report.update.failure", null, locale), e);
         }
 
@@ -505,11 +495,9 @@ public class ReportServiceImpl implements ReportService {
                 reportUtils.deleteReportIfExist(false, report.getSysFileName());
             }
             return messageSource.getMessage("report.delete.success", null, locale);
-        }catch (VerificationInterruptedException e){
+        }catch (VerificationInterruptedException | InternetBankingException e){
             return e.getMessage();
-        }catch (InternetBankingException e){
-            return e.getMessage();
-        }catch (Exception e) {
+        } catch (Exception e) {
             throw new InternetBankingException(messageSource.getMessage("report.delete.failure", null, locale), e);
         }
 

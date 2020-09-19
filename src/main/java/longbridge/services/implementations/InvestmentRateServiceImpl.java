@@ -37,9 +37,9 @@ public class InvestmentRateServiceImpl implements InvestmentRateService {
     private InvestmentRateRepo investmentRateRepo;
 
 
-    private Locale locale = LocaleContextHolder.getLocale();
+    private final Locale locale = LocaleContextHolder.getLocale();
 
-    Logger logger= LoggerFactory.getLogger(this.getClass());
+    final Logger logger= LoggerFactory.getLogger(this.getClass());
 
    public List<String> getDistinctInvestments(){
        return rateRepo.findDistinctFirstByInvestmentName();
@@ -59,8 +59,7 @@ public class InvestmentRateServiceImpl implements InvestmentRateService {
    }
 
    public Page<InvestmentRate> getAllRatesByInvestmentName(String investmentName, Pageable pageable){
-       Page<InvestmentRate> investmentRates=rateRepo.findAllByInvestmentName(investmentName,pageable);
-       return investmentRates;
+       return rateRepo.findAllByInvestmentName(investmentName,pageable);
    }
 
     public InvestmentRateDTO getInvestmentRate(Long rateId){

@@ -39,9 +39,9 @@ import static longbridge.utils.StringUtil.compareAnswers;
  */
 @Controller
 public class RetrieveCorpCredentialController {
-    private Locale locale = LocaleContextHolder.getLocale();
+    private final Locale locale = LocaleContextHolder.getLocale();
 
-    private Logger logger= LoggerFactory.getLogger(this.getClass());
+    private final Logger logger= LoggerFactory.getLogger(this.getClass());
 
     @Autowired
     private CorporateUserService corporateUserService;
@@ -280,13 +280,10 @@ public @ResponseBody String getSecAns(WebRequest webRequest, HttpSession session
             logger.info("password {}",message);
             redirectAttributes.addAttribute("success", message);
             return "true";
-        }catch (PasswordPolicyViolationException e){
+        } catch (PasswordMismatchException e){
             e.printStackTrace();
             return e.getMessage();
-        }catch (PasswordMismatchException e){
-            e.printStackTrace();
-            return e.getMessage();
-        }catch (PasswordException e){
+        } catch (PasswordException e){
             e.printStackTrace();
             return e.getMessage();
         }
@@ -427,12 +424,10 @@ public @ResponseBody String getSecAns(WebRequest webRequest, HttpSession session
             else {
                 secQuestion = "";
             }
-        }catch (ArrayIndexOutOfBoundsException e) {
-            e.printStackTrace();
-        }catch (InternetBankingSecurityException e){
+        } catch (InternetBankingSecurityException e){
             e.printStackTrace();
 //            logger.info("security question exception {}",e.getMessage());
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return question;
@@ -456,7 +451,6 @@ public @ResponseBody String getSecAns(WebRequest webRequest, HttpSession session
                     if (compareAnswers(answers, answer).equalsIgnoreCase("true")) {
                         return "true";
                     }
-                    ;
                 }
             }
             //return (String) session.getAttribute("username");
@@ -559,7 +553,7 @@ public @ResponseBody String getSecAns(WebRequest webRequest, HttpSession session
     public
     @ResponseBody
     String[] getTokenSerials(@PathVariable String username) {
-        String no[] = new String[0];
+        String[] no = new String[0];
         logger.info("Username in Controller : " + username);
 
         CorporateUser user = corporateUserService.getUserByName(username);
@@ -570,7 +564,7 @@ public @ResponseBody String getSecAns(WebRequest webRequest, HttpSession session
                 logger.info("SERIALS {}", sn);
                 //List<String> sec = null;
                 if (sn != null && !sn.isEmpty()) {
-                    String myList[] = sn.trim().split(",");
+                    String[] myList = sn.trim().split(",");
 
                     logger.info("SERIALS {}", myList);
                     return myList;

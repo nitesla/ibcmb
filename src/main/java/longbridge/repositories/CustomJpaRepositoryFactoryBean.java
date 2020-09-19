@@ -24,11 +24,8 @@ public class CustomJpaRepositoryFactoryBean<T extends JpaRepository<S, ID>, S, I
 
     private static class CustomJpaRepositoryFactory<T, ID extends Serializable> extends JpaRepositoryFactory {
 
-        private final EntityManager entityManager;
-
         public CustomJpaRepositoryFactory(EntityManager entityManager) {
             super(entityManager);
-            this.entityManager = entityManager;
         }
 
         /*@Override

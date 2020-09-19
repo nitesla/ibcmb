@@ -31,7 +31,7 @@ import java.util.Locale;
 @RequestMapping("/admin/faq")
 public class AdmFaqController {
 
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
     @Autowired
     private ModelMapper modelMapper;
 
@@ -53,7 +53,7 @@ public class AdmFaqController {
 
         Pageable pageable = DataTablesUtils.getPageable(input);
         Page<FaqsDTO> sq = faqsService.getFaqs(pageable);
-        DataTablesOutput<FaqsDTO> out = new DataTablesOutput<FaqsDTO>();
+        DataTablesOutput<FaqsDTO> out = new DataTablesOutput<>();
         out.setDraw(input.getDraw());
         out.setData(sq.getContent());
         out.setRecordsFiltered(sq.getTotalElements());

@@ -21,7 +21,7 @@ import java.util.*;
  * Created by Longbridge on 7/19/2017.
  */
 public class StringUtil {
-    static Logger logger = LoggerFactory.getLogger(StringUtil.class);
+    static final Logger logger = LoggerFactory.getLogger(StringUtil.class);
     private static final String PACKAGE_NAME = "longbridge.models.";
     public static List<String> splitByComma(String word){
         return Arrays.asList(word.split(","));
@@ -98,7 +98,7 @@ public class StringUtil {
     }
 
     public static String extractedFieldName(String genericFieldName){
-        return genericFieldName.substring(genericFieldName.lastIndexOf('.') + 1, genericFieldName.length());
+        return genericFieldName.substring(genericFieldName.lastIndexOf('.') + 1);
     }
     public static JSONObject convertToJSON(String json)  {
         JSONObject jsonObject = new JSONObject();

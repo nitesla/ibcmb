@@ -12,7 +12,7 @@ import org.springframework.context.ApplicationContext;
 
 public class CustomPostUpdateListener extends EnversPostUpdateEventListenerImpl {
 
-    private transient Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final transient Logger logger = LoggerFactory.getLogger(this.getClass());
 
     public CustomPostUpdateListener(EnversService enversService) {
         super(enversService);

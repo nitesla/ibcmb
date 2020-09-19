@@ -46,7 +46,7 @@ import java.util.*;
 public class CorpUserVerificationServiceImpl implements CorpUserVerificationService {
 
     private static final String PACKAGE_NAME = "longbridge.models.";
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
     @Autowired
     private CorpUserVerificationRepo corpUserVerificationRepo;
     @Autowired
@@ -90,7 +90,7 @@ public class CorpUserVerificationServiceImpl implements CorpUserVerificationServ
     @Value("${host.url}")
     private String hostUrl;
 
-    private Locale locale = LocaleContextHolder.getLocale();
+    private final Locale locale = LocaleContextHolder.getLocale();
 
 
 
@@ -419,11 +419,7 @@ public class CorpUserVerificationServiceImpl implements CorpUserVerificationServ
 
         Verification pendingVerification = verificationRepo.findFirstByEntityNameAndEntityIdAndStatus(entityName,
                 entityId, VerificationStatus.PENDING);
-        if (pendingVerification != null) {
-            return true;
-        }
-
-        return false;
+        return pendingVerification != null;
     }
 
     @Override
@@ -514,8 +510,7 @@ public class CorpUserVerificationServiceImpl implements CorpUserVerificationServ
 
     @Override
     public CorpUserVerificationDTO convertEntityToDTO(CorpUserVerification corpUserVerification) {
-        CorpUserVerificationDTO corpUserVerificationDTO = modelMapper.map(corpUserVerification, CorpUserVerificationDTO.class);
-        return corpUserVerificationDTO;
+        return modelMapper.map(corpUserVerification, CorpUserVerificationDTO.class);
     }
 
     @Override
@@ -532,8 +527,7 @@ public class CorpUserVerificationServiceImpl implements CorpUserVerificationServ
     public int getTotalNumberPending() {
         CustomUserPrincipal principal = (CustomUserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         CorporateUser doneBy = (CorporateUser) principal.getUser();
-        int totalNumberPending = corpUserVerificationRepo.countByCorpIdAndStatus(doneBy.getCorporate().getId(), VerificationStatus.PENDING);
-        return totalNumberPending;
+        return corpUserVerificationRepo.countByCorpIdAndStatus(doneBy.getCorporate().getId(), VerificationStatus.PENDING);
     }
 
 
@@ -559,8 +553,7 @@ public class CorpUserVerificationServiceImpl implements CorpUserVerificationServ
         Page<CorpUserVerification> page = corpUserVerificationRepo.findAll(pageable);
         List<CorpUserVerificationDTO> dtOs = convertEntitiesToDTOs(page.getContent());
         long t =page.getTotalElements();
-        Page<CorpUserVerificationDTO> pageImpl = new PageImpl<CorpUserVerificationDTO>(dtOs,pageable,t);
-        return pageImpl;
+        return new PageImpl<CorpUserVerificationDTO>(dtOs,pageable,t);
     }
 
     @Override
@@ -568,8 +561,7 @@ public class CorpUserVerificationServiceImpl implements CorpUserVerificationServ
         Page<CorpUserVerification> page = corpUserVerificationRepo.findByCorpIdOrderByStatusDesc(corpId, pageable);
         List<CorpUserVerificationDTO> dtOs = convertEntitiesToDTOs(page.getContent());
         long t =page.getTotalElements();
-        Page<CorpUserVerificationDTO> pageImpl = new PageImpl<CorpUserVerificationDTO>(dtOs,pageable,t);
-        return pageImpl;
+        return new PageImpl<CorpUserVerificationDTO>(dtOs,pageable,t);
     }
 
     public List<String> getPermissionCodes(Role role) {

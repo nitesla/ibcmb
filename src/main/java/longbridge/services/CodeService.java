@@ -56,7 +56,7 @@ public interface CodeService {
 	List<CodeDTO> getCodesByType(String codeType);
 
 	@PreAuthorize("hasAuthority('UPDATE_CODE')")
-	public String updateCode(CodeDTO codeDTO) throws InternetBankingException;
+	String updateCode(CodeDTO codeDTO) throws InternetBankingException;
 
 	@PreAuthorize("hasAuthority('GET_CODES')")
     Page<CodeDTO> getCodesByType(String codeType, Pageable pageDetails);
@@ -65,7 +65,7 @@ public interface CodeService {
     Page<CodeTypeDTO> getCodeTypes(Pageable pageDetails);
 
 	@PreAuthorize("hasAuthority('GET_CODES')")
-	public Code getByTypeAndCode(String type, String code);
+	Code getByTypeAndCode(String type, String code);
 
 	@PreAuthorize("hasAuthority('GET_CODES')")
 	Page<CodeDTO> getCodes(Pageable pageDetails);

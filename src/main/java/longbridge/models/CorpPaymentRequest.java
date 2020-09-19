@@ -79,26 +79,26 @@ public class CorpPaymentRequest extends TransRequest implements PrettySerializer
     @Override
     @JsonIgnore
     public JsonSerializer<TransRequest> getAuditSerializer() {
-        return new JsonSerializer<TransRequest>() {
+        return new JsonSerializer<>() {
             @Override
             public void serialize(TransRequest value, JsonGenerator gen, SerializerProvider serializers)
-                    throws IOException, JsonProcessingException {
+                    throws IOException {
 
                 gen.writeStartObject();
-                if(value.id != null) {
+                if (value.id != null) {
                     gen.writeStringField("id", value.id.toString());
-                }else {
+                } else {
                     gen.writeStringField("id", "");
                 }
                 gen.writeStringField("customerAccountNumber", value.getCustomerAccountNumber());
-                if(value.getTransferType() !=null) {
+                if (value.getTransferType() != null) {
                     gen.writeStringField("transferType", value.getTransferType().toString());
-                }else {
+                } else {
                     gen.writeStringField("transferType", "");
                 }
-                if(value.getTranDate() !=null) {
+                if (value.getTranDate() != null) {
                     gen.writeStringField("tranDate", value.getTranDate().toString());
-                }else {
+                } else {
                     gen.writeStringField("tranDate", "");
                 }
                 gen.writeStringField("beneficiaryAccountNumber", value.getBeneficiaryAccountNumber());
@@ -109,14 +109,14 @@ public class CorpPaymentRequest extends TransRequest implements PrettySerializer
                 gen.writeStringField("userReferenceNumber", value.getUserReferenceNumber());
                 gen.writeStringField("narration", value.getNarration());
                 gen.writeStringField("statusDescription", value.getStatusDescription());
-                if(value.getAmount() != null){
+                if (value.getAmount() != null) {
                     gen.writeStringField("amount", value.getAmount().toString());
-                }else {
+                } else {
                     gen.writeStringField("amount", "");
                 }
-                if(value.getCharge() != null){
-                    gen.writeStringField("charge", value.getCharge().toString());
-                }else {
+                if (value.getCharge() != null) {
+                    gen.writeStringField("charge", value.getCharge());
+                } else {
                     gen.writeStringField("charge", "");
                 }
 
@@ -127,14 +127,13 @@ public class CorpPaymentRequest extends TransRequest implements PrettySerializer
 
     @Override @JsonIgnore
     public JsonSerializer<CorpPaymentRequest> getSerializer() {
-        return new JsonSerializer<CorpPaymentRequest>() {
+        return new JsonSerializer<>() {
             @Override
             public void serialize(CorpPaymentRequest value, JsonGenerator gen, SerializerProvider serializers)
-                    throws IOException, JsonProcessingException
-            {
+                    throws IOException {
                 gen.writeStartObject();
-                gen.writeStringField("Custom Ref",value.refCode);
-                gen.writeStringField("Status",value.status);
+                gen.writeStringField("Custom Ref", value.refCode);
+                gen.writeStringField("Status", value.status);
                 gen.writeEndObject();
             }
         };

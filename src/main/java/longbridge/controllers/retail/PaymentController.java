@@ -91,11 +91,11 @@ public class PaymentController {
     }
 
     @PostMapping("/summary")
-    public String paymentSummary(@ModelAttribute("billPaymentDTO") @Valid BillPaymentDTO billPaymentDTO, BindingResult result, Model model, HttpServletRequest servletRequest, PaymentItem paymentItemCode, Biller billerName, PaymentItem paymentItemName) {
+    public String paymentSummary(@ModelAttribute("billPaymentDTO") @Valid BillPaymentDTO billPaymentDTO, BindingResult result, Model model, HttpServletRequest servletRequest, PaymentItem paymentItemCode) {
         model.addAttribute("billPaymentDTO", billPaymentDTO);
-        billerName = billerService.getBillerName(Long.parseLong(billPaymentDTO.getBillerId()));
+        Biller billerName = billerService.getBillerName(Long.parseLong(billPaymentDTO.getBillerId()));
         billPaymentDTO.setBillerName(billerName.getBillerName());
-        paymentItemName = billerService.getPaymentItem(Long.parseLong(billPaymentDTO.getPaymentItemId()));
+        PaymentItem paymentItemName = billerService.getPaymentItem(Long.parseLong(billPaymentDTO.getPaymentItemId()));
         billPaymentDTO.setPaymentItemName(paymentItemName.getPaymentItemName());
         model.addAttribute("billPaymentDTO", billPaymentDTO);
         servletRequest.getSession().setAttribute("billPaymentDTO", billPaymentDTO);
@@ -182,16 +182,14 @@ public class PaymentController {
     @RequestMapping(value = "/biller", method = {RequestMethod.GET, RequestMethod.POST})
 
     public List<Biller> getBillers(Biller biller){
-        List<Biller> billerByCategory = billerService.getBillersByCategory(biller.getCategoryName());
-        return billerByCategory;
+        return billerService.getBillersByCategory(biller.getCategoryName());
     }
 
 
     @ResponseBody
     @RequestMapping(value = "/paymentItem", method = {RequestMethod.GET, RequestMethod.POST})
     public List<PaymentItem> getPaymentItem(PaymentItem paymentItem){
-        List<PaymentItem> paymentItems = billerService.getPaymentItems(paymentItem.getBillerId());
-        return paymentItems;
+        return billerService.getPaymentItems(paymentItem.getBillerId());
     }
 
 
@@ -223,7 +221,7 @@ public class PaymentController {
 
             paymentRequests = paymentService.getBillPayments(search.toUpperCase(), pageable);
         } else paymentRequests =  paymentService.getBillPayments(pageable);
-        DataTablesOutput<BillPaymentDTO> out = new DataTablesOutput<BillPaymentDTO>();
+        DataTablesOutput<BillPaymentDTO> out = new DataTablesOutput<>();
         out.setDraw(input.getDraw());
         out.setData(paymentRequests.getContent());
         out.setRecordsFiltered(paymentRequests.getTotalElements());
@@ -245,7 +243,7 @@ public class PaymentController {
             StreamSupport.stream(accounts.spliterator(), false)
                     .filter(Objects::nonNull)
                     .filter(i -> "NGN".equalsIgnoreCase(i.getCurrencyCode()))
-                    .forEach(i -> accountList.add(i));
+                    .forEach(accountList::add);
             model.addAttribute("accountList", accountList);
 
 

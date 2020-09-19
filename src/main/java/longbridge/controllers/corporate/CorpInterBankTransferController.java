@@ -34,32 +34,28 @@ import java.util.stream.StreamSupport;
 public class CorpInterBankTransferController {
 
 
-    private CorporateUserService corporateUserService;
-    private CorpTransferService corpTransferService;
-    private MessageSource messages;
-    private CorpLocalBeneficiaryService corpLocalBeneficiaryService;
-    private FinancialInstitutionService financialInstitutionService;
-    private TransferValidator validator;
-    private CorporateService corporateService;
-    private IntegrationService integrationService;
-    private AccountService accountService;
-    private TransferUtils transferUtils;
-    private TransferErrorService transferErrorService;
-    private String page = "corp/transfer/interbank/";
+    private final CorporateUserService corporateUserService;
+    private final MessageSource messages;
+    private final CorpLocalBeneficiaryService corpLocalBeneficiaryService;
+    private final FinancialInstitutionService financialInstitutionService;
+    private final TransferValidator validator;
+    private final IntegrationService integrationService;
+    private final AccountService accountService;
+    private final TransferUtils transferUtils;
+    private final TransferErrorService transferErrorService;
+    private final String page = "corp/transfer/interbank/";
     @Value("${bank.code}")
     private String bankCode;
 
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
     public CorpInterBankTransferController(CorporateUserService corporateUserService, CorpTransferService corpTransferService, MessageSource messages, CorpLocalBeneficiaryService corpLocalBeneficiaryService, FinancialInstitutionService financialInstitutionService, TransferValidator validator, CorporateService corporateService, IntegrationService integrationService, AccountService accountService, TransferUtils transferUtils, TransferErrorService transferErrorService) {
         this.corporateUserService = corporateUserService;
-        this.corpTransferService = corpTransferService;
         this.messages = messages;
         this.corpLocalBeneficiaryService = corpLocalBeneficiaryService;
         this.financialInstitutionService = financialInstitutionService;
         this.validator = validator;
-        this.corporateService = corporateService;
         this.integrationService = integrationService;
         this.accountService = accountService;
         this.transferUtils = transferUtils;
@@ -326,7 +322,7 @@ public class CorpInterBankTransferController {
                     .filter(Objects::nonNull)
                     .filter(i -> "NGN".equalsIgnoreCase(i.getCurrencyCode()))
 
-                    .forEach(i -> accountList.add(i));
+                    .forEach(accountList::add);
 
 
             model.addAttribute("accountList", accountList);

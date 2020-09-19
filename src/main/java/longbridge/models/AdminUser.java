@@ -54,10 +54,10 @@ public class AdminUser extends User implements PrettySerializer{
 	@Override
 	@JsonIgnore
 	public JsonSerializer<User> getSerializer() {
-		return new JsonSerializer<User>() {
+		return new JsonSerializer<>() {
 			@Override
 			public void serialize(User value, JsonGenerator gen, SerializerProvider serializers)
-					throws IOException, JsonProcessingException {
+					throws IOException {
 
 				gen.writeStartObject();
 				gen.writeStringField("Username", value.userName);
@@ -65,7 +65,7 @@ public class AdminUser extends User implements PrettySerializer{
 				gen.writeStringField("Last Name", value.lastName);
 				gen.writeStringField("Email", value.email);
 				gen.writeStringField("Phone", value.phoneNumber);
-				String status =null;
+				String status = null;
 				if ("A".equals(value.status))
 					status = "Active";
 				else if ("I".equals(value.status))
@@ -81,15 +81,15 @@ public class AdminUser extends User implements PrettySerializer{
 	@Override
 	@JsonIgnore
 	public JsonSerializer<AdminUser> getAuditSerializer() {
-		return new JsonSerializer<AdminUser>() {
+		return new JsonSerializer<>() {
 			@Override
 			public void serialize(AdminUser value, JsonGenerator gen, SerializerProvider serializers)
-					throws IOException, JsonProcessingException {
+					throws IOException {
 
 				gen.writeStartObject();
-				if(value.id != null) {
+				if (value.id != null) {
 					gen.writeStringField("id", value.id.toString());
-				}else {
+				} else {
 					gen.writeStringField("id", "");
 				}
 				gen.writeStringField("authenticateMethod", value.authenticateMethod);
@@ -98,12 +98,12 @@ public class AdminUser extends User implements PrettySerializer{
 				gen.writeStringField("lastName", value.lastName);
 				gen.writeStringField("email", value.email);
 				gen.writeStringField("phoneNumber", value.phoneNumber);
-				if(value.role.getId() != null) {
+				if (value.role.getId() != null) {
 					gen.writeStringField("role", value.role.getId().toString());
-				}else {
+				} else {
 					gen.writeStringField("role", "");
 				}
-				String status =null;
+				String status = null;
 				if ("A".equals(value.status))
 					status = "Active";
 				else if ("I".equals(value.status))

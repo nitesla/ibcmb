@@ -43,9 +43,9 @@ import static longbridge.utils.StringUtil.compareAnswers;
  */
 @Controller
 public class RetrieveCredentialController {
-    private Locale locale = LocaleContextHolder.getLocale();
+    private final Locale locale = LocaleContextHolder.getLocale();
 
-    private Logger logger= LoggerFactory.getLogger(this.getClass());
+    private final Logger logger= LoggerFactory.getLogger(this.getClass());
 
     @Autowired
     private RetailUserService retailUserService;
@@ -77,7 +77,7 @@ public class RetrieveCredentialController {
         ResetPasswordForm resetPasswordForm = new ResetPasswordForm();
         resetPasswordForm.step = "1";
         resetPasswordForm.username = (String) session.getAttribute("username");
-        if ((String) session.getAttribute("username") == null){
+        if (session.getAttribute("username") == null){
             return "redirect:/login/retail";
         }
 
@@ -167,14 +167,11 @@ public class RetrieveCredentialController {
             String message = retailUserService.resetPassword(retailUser,custResetPassword);
             redirectAttributes.addAttribute("success", message);
             return "true";
-        }catch (PasswordPolicyViolationException e){
+        } catch (PasswordMismatchException e){
             return e.getMessage();
-        }catch (PasswordMismatchException e){
+        } catch (PasswordException e){
             return e.getMessage();
-        }catch (PasswordException e){
-            return e.getMessage();
-        }
-        catch (Exception ex){
+        } catch (Exception ex){
             logger.error("Error resetting password",ex);
             return "Unexpected error occurred";
         }
@@ -242,7 +239,7 @@ public class RetrieveCredentialController {
                 logger.debug("compared answer {}", compareAnswers(answers,answer));
                 if(compareAnswers(answers,answer).equalsIgnoreCase("true")){
                     return "true";
-                };
+                }
             }
             //return (String) session.getAttribute("username");
         }catch (Exception e){

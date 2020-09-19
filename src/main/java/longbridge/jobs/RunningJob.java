@@ -33,9 +33,7 @@ public class RunningJob implements Job {
             cronJobService.updateRetailUserDetails();
 //            cronJobService.updateCorporateUserDetails();
             cronJobService.updateRunningJob();
-        } catch (InternetBankingException e) {
-            e.printStackTrace();
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -45,7 +43,7 @@ public class RunningJob implements Job {
             Process ps = Runtime.getRuntime().exec(new String[]{"java","-jar","A.jar"});
             ps.waitFor();
             java.io.InputStream is = ps.getInputStream();
-            byte b[]=new byte[is.available()];
+            byte[] b =new byte[is.available()];
             is.read(b,0,b.length);
             System.out.println(new String(b));
         } catch (InterruptedException e) {

@@ -8,7 +8,7 @@ import java.util.Date;
  */
 public class DateFormatter {
 
-    static SimpleDateFormat dateFormatter = new SimpleDateFormat("dd-MM-yyyy hh:mm a");
+    static final SimpleDateFormat dateFormatter = new SimpleDateFormat("dd-MM-yyyy hh:mm a");
 
     public static String format(Date date){
         return dateFormatter.format(date);
@@ -19,11 +19,7 @@ public class DateFormatter {
         long diffSeconds = difference / 1000 % 60;
         double secondToMinute = (((double) difference / (60 * 1000)));
 //        long diffMinutes = difference / (60 * 1000) % 60;
-        if(secondToMinute <= 5){
-            return true;
-        }
-
-        return false;
+        return secondToMinute <= 5;
     }
 
 }

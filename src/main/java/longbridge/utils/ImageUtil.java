@@ -14,13 +14,13 @@ public class ImageUtil {
 
     public static String phisingImage (String imagePath, String phisingImageName){
 
-        Logger logger = LoggerFactory.getLogger(new ImageUtil().getClass());
+        Logger logger = LoggerFactory.getLogger(ImageUtil.class);
 
         File image = new File(imagePath, phisingImageName);
         Long length = image.length();
         // length <= Integer.MAX_VALUE;
         //TODO: check file is not bigger than max int
-        byte buffer[] = new byte[length.intValue()];
+        byte[] buffer = new byte[length.intValue()];
 
 
         try {

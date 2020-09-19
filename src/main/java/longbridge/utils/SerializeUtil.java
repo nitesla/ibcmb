@@ -8,8 +8,7 @@ import org.json.simple.JSONObject;
  */
 public class SerializeUtil {
     public static JSONObject getPrettySerialJSON(AbstractEntity abstractEntity){
-        JSONObject jsonObject = null;
-//        try {
+        //        try {
 //            ObjectMapper prettyMapper = new ObjectMapper();
 //            JsonSerializer<Object> serializer = ((PrettySerializer) (abstractEntity)).getAuditSerializer();
 //            SimpleModule module = new SimpleModule();
@@ -21,7 +20,7 @@ public class SerializeUtil {
 //        } catch (JsonProcessingException e) {
 //            e.printStackTrace();
 //        }
-        return jsonObject;
+        return null;
     }
 }
 

@@ -12,53 +12,53 @@ public class NeftTransfer {
     private Long Id;
 
 
-    @Column(name = "itemsequenceno", nullable = true)
+    @Column(name = "itemsequenceno")
     private String ItemSequenceNo;
-    @Column(name = "serialno", nullable = true)
+    @Column(name = "serialno")
     private String SerialNo;
-    @Column(name = "sortcode", nullable = true)
+    @Column(name = "sortcode")
     private String SortCode;
-    @Column(name = "accountno", nullable = true)
+    @Column(name = "accountno")
     private String AccountNo;
-    @Column(name = "trancode", nullable = true)
+    @Column(name = "trancode")
     private String TranCode;
-    @Column(name = "amount", nullable = true)
+    @Column(name = "amount")
     private BigDecimal Amount;
-    @Column(name = "currency", nullable = true)
+    @Column(name = "currency")
     private String Currency;
-    @Column(name = "bankoffirstdepositdate", nullable = true)
+    @Column(name = "bankoffirstdepositdate")
     private String BankOfFirstDepositDate;
-    @Column(name = "bankoffirstdepositsortcode", nullable = true)
+    @Column(name = "bankoffirstdepositsortcode")
     private String BankOfFirstDepositSortCode;
-    @Column(name = "presentmentdate", nullable = true)
+    @Column(name = "presentmentdate")
     private String PresentmentDate;
-    @Column(name = "payername", nullable = true)
+    @Column(name = "payername")
     private String PayerName;
-    @Column(name = "beneficiary", nullable = true)
+    @Column(name = "beneficiary")
     private String Beneficiary;
-    @Column(name = "beneficiaryacctno", nullable = true)
+    @Column(name = "beneficiaryacctno")
     private String BeneficiaryAccountNo;
-    @Column(name = "bvnbeneficiary", nullable = true)
+    @Column(name = "bvnbeneficiary")
     private String BVNBeneficiary;
-    @Column(name = "bvnpayer", nullable = true)
+    @Column(name = "bvnpayer")
     private String BVNPayer;
-    @Column(name = "collectiontype", nullable = true)
+    @Column(name = "collectiontype")
     private String CollectionType;
-    @Column(name = "instrumenttype", nullable = true)
+    @Column(name = "instrumenttype")
     private String InstrumentType;
-    @Column(name = "narration", nullable = true)
+    @Column(name = "narration")
     private String Narration;
-    @Column(name = "presentingbanksortcode", nullable = true)
+    @Column(name = "presentingbanksortcode")
     private String PresentingBankSortCode;
-    @Column(name = "specialclearing", nullable = true)
+    @Column(name = "specialclearing")
     private boolean SpecialClearing;
-    @Column(name = "instrumentdate", nullable = true)
+    @Column(name = "instrumentdate")
     private String InstrumentDate;
-    @Column(name = "micrepairind", nullable = true)
+    @Column(name = "micrepairind")
     private String MICRRepairInd;
-    @Column(name = "settlementtime", nullable = true)
+    @Column(name = "settlementtime")
     private String SettlementTime;
-    @Column(name = "cycleno", nullable = true)
+    @Column(name = "cycleno")
     private String CycleNo;
 
 

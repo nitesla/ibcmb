@@ -46,20 +46,12 @@ public class PasswordValidator {
     @Autowired
     private MessageSource messageSource;
 
-    private Locale locale = LocaleContextHolder.getLocale();
+    private final Locale locale = LocaleContextHolder.getLocale();
 
 
-    private Pattern digitPattern = Pattern.compile("[0-9]");
+    private final Pattern digitPattern = Pattern.compile("[0-9]");
     private Pattern letterPattern = Pattern.compile("[a-zA-Z]");
     private Pattern specialCharsPattern;
-
-
-    private SettingDTO numOfPasswordDigits;
-    private SettingDTO minLengthOfPassword;
-    private SettingDTO maxLengthOfPassword;
-    private SettingDTO noSpecialChar;
-    private SettingDTO specialChars;
-    private SettingDTO numOfChangesBeforeReuse;
 
 
     private int numOfDigits = 0;
@@ -68,20 +60,15 @@ public class PasswordValidator {
     private int maxLength = 255;
     private String specialCharacters = "!@#\\$%\\^)(&";
     private int numOfChanges = 0;
-    private StringBuilder errorMessage;
-    private String message = "";
-
-
-
 
 
     private void initializeSettings() {
-        numOfPasswordDigits = configService.getSettingByName("PASSWORD_NUM_DIGITS");
-        noSpecialChar = configService.getSettingByName("PASSWORD_NUM_SPECIAL_CHARS");
-        minLengthOfPassword = configService.getSettingByName("PASSWORD_MIN_LENGTH");
-        maxLengthOfPassword = configService.getSettingByName("PASSWORD_MAX_LENGTH");
-        specialChars = configService.getSettingByName("PASSWORD_SPECIAL_CHARS");
-        numOfChangesBeforeReuse = configService.getSettingByName("PASSWORD_REUSE");
+        SettingDTO numOfPasswordDigits = configService.getSettingByName("PASSWORD_NUM_DIGITS");
+        SettingDTO noSpecialChar = configService.getSettingByName("PASSWORD_NUM_SPECIAL_CHARS");
+        SettingDTO minLengthOfPassword = configService.getSettingByName("PASSWORD_MIN_LENGTH");
+        SettingDTO maxLengthOfPassword = configService.getSettingByName("PASSWORD_MAX_LENGTH");
+        SettingDTO specialChars = configService.getSettingByName("PASSWORD_SPECIAL_CHARS");
+        SettingDTO numOfChangesBeforeReuse = configService.getSettingByName("PASSWORD_REUSE");
 
 
         if (numOfPasswordDigits != null && numOfPasswordDigits.isEnabled()) {
@@ -112,7 +99,7 @@ public class PasswordValidator {
 
         initializeSettings();
 
-        errorMessage = new StringBuilder();
+        StringBuilder errorMessage = new StringBuilder();
 
         Matcher digitMatcher = digitPattern.matcher(password);
         boolean digitOK = false;
@@ -137,6 +124,7 @@ public class PasswordValidator {
 
         boolean noOK = password.length() >= minLength && password.length() <= maxLength;
 
+        String message = "";
         if (!digitOK) {
             message = String.format(messageSource.getMessage("pass.num.digit",null,locale),
                     numOfDigits);

@@ -30,9 +30,9 @@ import java.util.Objects;
 @Service
 @Transactional
 public class CronJobServiceImpl implements CronJobService {
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 //    @Autowired
-    private IntegrationService integrationService;
+    private final IntegrationService integrationService;
     @Autowired
     private AccountRepo accountRepo;
     @Autowired

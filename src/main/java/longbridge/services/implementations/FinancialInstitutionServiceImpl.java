@@ -30,9 +30,9 @@ import java.util.Locale;
 @Service
 public class FinancialInstitutionServiceImpl implements FinancialInstitutionService {
 
-    private FinancialInstitutionRepo financialInstitutionRepo;
+    private final FinancialInstitutionRepo financialInstitutionRepo;
 
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
     private ModelMapper modelMapper;
@@ -40,7 +40,7 @@ public class FinancialInstitutionServiceImpl implements FinancialInstitutionServ
     @Autowired
     private MessageSource messageSource;
 
-    private Locale locale = LocaleContextHolder.getLocale();
+    private final Locale locale = LocaleContextHolder.getLocale();
 
     @Autowired
     public FinancialInstitutionServiceImpl(FinancialInstitutionRepo financialInstitutionRepo) {
@@ -179,8 +179,7 @@ public class FinancialInstitutionServiceImpl implements FinancialInstitutionServ
         List<FinancialInstitutionDTO> dtOs = convertEntitiesToDTOs(page.getContent());
         long t = page.getTotalElements();
 
-        Page<FinancialInstitutionDTO> pageImpl = new PageImpl<FinancialInstitutionDTO>(dtOs, pageDetails, t);
-        return pageImpl;
+        return new PageImpl<FinancialInstitutionDTO>(dtOs, pageDetails, t);
     }
 
 
@@ -190,8 +189,7 @@ public class FinancialInstitutionServiceImpl implements FinancialInstitutionServ
         List<FinancialInstitutionDTO> dtOs = convertEntitiesToDTOs(page.getContent());
         long t = page.getTotalElements();
 
-        Page<FinancialInstitutionDTO> pageImpl = new PageImpl<FinancialInstitutionDTO>(dtOs, pageDetails, t);
-        return pageImpl;
+        return new PageImpl<FinancialInstitutionDTO>(dtOs, pageDetails, t);
     }
 
     @Override
@@ -200,8 +198,7 @@ public class FinancialInstitutionServiceImpl implements FinancialInstitutionServ
         List<FinancialInstitutionDTO> dtOs = convertEntitiesToDTOs(page.getContent());
         long t = page.getTotalElements();
 
-        Page<FinancialInstitutionDTO> pageImpl = new PageImpl<FinancialInstitutionDTO>(dtOs, pageDetails, t);
-        return pageImpl;
+        return new PageImpl<FinancialInstitutionDTO>(dtOs, pageDetails, t);
     }
 
     @Override
@@ -226,8 +223,7 @@ public class FinancialInstitutionServiceImpl implements FinancialInstitutionServ
 	        long t = page.getTotalElements();
 
 	        // return  new PageImpl<ServiceReqConfigDTO>(dtOs,pageDetails,page.getTotalElements());
-	        Page<FinancialInstitutionDTO> pageImpl = new PageImpl<FinancialInstitutionDTO>(dtOs, pageDetails, t);
-	        return pageImpl;
+        return new PageImpl<FinancialInstitutionDTO>(dtOs, pageDetails, t);
 	}
     @Override
     public void updateFinancialInstitutions() {

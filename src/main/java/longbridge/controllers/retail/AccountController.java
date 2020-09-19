@@ -64,7 +64,7 @@ public class AccountController {
 
     @Autowired
     ServiceReqConfigService serviceReqConfigService;
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
     @Autowired
     private AccountService accountService;
     @Autowired
@@ -81,7 +81,7 @@ public class AccountController {
     private JavaMailSender mailSender;
     @Autowired
     private GreetingService greetingService;
-    private Locale locale = LocaleContextHolder.getLocale();
+    private final Locale locale = LocaleContextHolder.getLocale();
 
     private Long customizeAccountId;
 
@@ -287,7 +287,7 @@ public class AccountController {
         JasperReport jasperReport = ReportHelper.getJasperReport("rpt_tran-hist");
 
         response.setContentType("application/x-download");
-        response.setHeader("Content-Disposition", String.format("attachment; filename=\"rpt_tran-hist.pdf\""));
+        response.setHeader("Content-Disposition", "attachment; filename=\"rpt_tran-hist.pdf\"");
 
         JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, modelMap, new JRBeanCollectionDataSource(transRequestList));
         JasperExportManager.exportReportToPdfStream(jasperPrint, response.getOutputStream());
@@ -350,7 +350,7 @@ public class AccountController {
         List<TransactionDetails> list = null;
         Date from;
         Date to;
-        DataTablesOutput<TransactionDetails> out = new DataTablesOutput<TransactionDetails>();
+        DataTablesOutput<TransactionDetails> out = new DataTablesOutput<>();
         SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy");
         SimpleDateFormat format2 = new SimpleDateFormat("dd-MMM-yyyy");
         try {
@@ -405,7 +405,7 @@ public class AccountController {
         List<TransactionDetails> list;
         Date from;
         Date to;
-        DataTablesOutput<TransactionDetails> out = new DataTablesOutput<TransactionDetails>();
+        DataTablesOutput<TransactionDetails> out = new DataTablesOutput<>();
         SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy");
         try {
             from = format.parse(fromDate);
@@ -492,7 +492,7 @@ public class AccountController {
                                       String fromDate, String toDate, String tranType, RedirectAttributes redirectAttributes, HttpServletResponse response) throws Exception {
         Date from;
         Date to;
-        DataTablesOutput<TransactionDetails> out = new DataTablesOutput<TransactionDetails>();
+        DataTablesOutput<TransactionDetails> out = new DataTablesOutput<>();
         SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy");
 
         logger.info("from date {} to date {} type {}", fromDate, toDate, tranType);
@@ -566,7 +566,7 @@ public class AccountController {
         JasperReport jasperReport = ReportHelper.getJasperReport("rpt_account-statement");
 
         response.setContentType("application/x-download");
-        response.setHeader("Content-Disposition", String.format("attachment; filename=\"rpt_account-statement.pdf\""));
+        response.setHeader("Content-Disposition", "attachment; filename=\"rpt_account-statement.pdf\"");
 
         JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, modelMap, new JRBeanCollectionDataSource(list));
         JasperExportManager.exportReportToPdfStream(jasperPrint, response.getOutputStream());
@@ -579,7 +579,7 @@ public class AccountController {
                                        String fromDate, String toDate, String tranType, HttpServletResponse response, RedirectAttributes redirectAttributes) throws Exception {
         Date from;
         Date to;
-        DataTablesOutput<TransactionDetails> out = new DataTablesOutput<TransactionDetails>();
+        DataTablesOutput<TransactionDetails> out = new DataTablesOutput<>();
         SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy");
         from = format.parse(fromDate);
         to = format.parse(toDate);
@@ -663,8 +663,8 @@ public class AccountController {
         exporter.exportReport();
         response.setHeader("Content-Length", String.valueOf(pdfReportStream.size()));
         response.setContentType("application/vnd.ms-excel");
-        response.addHeader("Content-Disposition", String.format("inline; filename=\"" + "Account_" +
-                "Statement.xlsx" + "\""));
+        response.addHeader("Content-Disposition", "inline; filename=\"" + "Account_" +
+                "Statement.xlsx" + "\"");
         OutputStream responseOutputStream = response.getOutputStream();
         responseOutputStream.write(pdfReportStream.toByteArray());
         responseOutputStream.flush();

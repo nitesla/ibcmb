@@ -96,39 +96,37 @@ public class Permission extends AbstractEntity  implements PrettySerializer{
 
     @Override @JsonIgnore
     public JsonSerializer<Permission> getSerializer() {
-        return new JsonSerializer<Permission>() {
+        return new JsonSerializer<>() {
             @Override
-            public void serialize(Permission value,JsonGenerator gen,SerializerProvider serializers)
-                    throws IOException, JsonProcessingException
-            {
+            public void serialize(Permission value, JsonGenerator gen, SerializerProvider serializers)
+                    throws IOException {
                 gen.writeStartObject();
-                gen.writeStringField("Name",value.name);
-                gen.writeStringField("Code",value.code);
-                gen.writeStringField("Description",value.description);
-                gen.writeStringField("User Type",value.userType);
+                gen.writeStringField("Name", value.name);
+                gen.writeStringField("Code", value.code);
+                gen.writeStringField("Description", value.description);
+                gen.writeStringField("User Type", value.userType);
                 gen.writeEndObject();
             }
         };
     }
     @Override @JsonIgnore
     public JsonSerializer<Permission> getAuditSerializer() {
-        return new JsonSerializer<Permission>() {
+        return new JsonSerializer<>() {
             @Override
-            public void serialize(Permission value,JsonGenerator gen,SerializerProvider serializers)
-                    throws IOException, JsonProcessingException
-            {
+            public void serialize(Permission value, JsonGenerator gen, SerializerProvider serializers)
+                    throws IOException {
                 gen.writeStartObject();
-                gen.writeStringField("id",value.id.toString());
-                if(value.id != null) {
+                gen.writeStringField("id", value.id.toString());
+                if (value.id != null) {
                     gen.writeStringField("id", value.id.toString());
-                }else {
+                } else {
                     gen.writeStringField("id", "");
                 }
-                gen.writeStringField("name",value.name);
-                gen.writeStringField("code",value.code);
-                gen.writeStringField("category",value.category);
-                gen.writeStringField("description",value.description);
-                gen.writeStringField("userType",value.userType);
+                gen.writeStringField("name", value.name);
+                gen.writeStringField("code", value.code);
+                gen.writeStringField("category", value.category);
+                gen.writeStringField("description", value.description);
+                gen.writeStringField("userType", value.userType);
                 gen.writeEndObject();
             }
         };

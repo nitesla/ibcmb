@@ -42,7 +42,7 @@ public class TokenAuthController {
     @Autowired
     private CorporateUserService corporateUserService;
 
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @PostMapping("/otp/authenticate")
     public String authenticate(HttpServletRequest request, RedirectAttributes redirectAttributes, Locale locale, Principal principal) {
@@ -66,10 +66,8 @@ public class TokenAuthController {
                 request.getSession().setAttribute("result", "Y");
                 return "redirect:" + redirectUrl;
             }
-        } catch (InternetBankingSecurityException ibe) {
+        } catch (Exception ibe) {
             logger.error("Error authenticating token",ibe);
-        }catch (Exception e){
-            logger.error("Error authenticating token",e);
         }
         redirectAttributes.addFlashAttribute("failure", messageSource.getMessage("token.auth.failure", null, locale));
         return "redirect:" + otpUrl;
@@ -90,8 +88,7 @@ public class TokenAuthController {
             try {
                 RetailUser user = retailUserService.getUserByName(username);
 //                logger.info("the user is {}",user);
-                if (securityService.sendOtp(user.getEntrustId(), user.getEntrustGroup())) sendOtp = true;
-                else sendOtp = false;
+                sendOtp = securityService.sendOtp(user.getEntrustId(), user.getEntrustGroup());
 //                logger.info("otp sent {}",sendOtp);
                 if (sendOtp) {
                     stringBuilder.append("success");
@@ -137,8 +134,7 @@ public class TokenAuthController {
             boolean sendOtp;
             try {
                 CorporateUser user = corporateUserService.getUserByName(username);
-                if (securityService.sendOtp(user.getEntrustId(), user.getEntrustGroup())) sendOtp = true;
-                else sendOtp = false;
+                sendOtp = securityService.sendOtp(user.getEntrustId(), user.getEntrustGroup());
                 logger.info("otp sent {}", sendOtp);
                 if (sendOtp) {
                     stringBuilder.append("success");

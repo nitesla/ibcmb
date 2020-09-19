@@ -16,7 +16,7 @@ import java.util.Date;
  * Created by Longbridge on 10/26/2017.
  */
 public class DateUtil {
-    static Logger logger = LoggerFactory.getLogger(DateUtil.class);
+    static final Logger logger = LoggerFactory.getLogger(DateUtil.class);
 
     public static long convertDateToLong(String date){
         long milliseconds = 0;

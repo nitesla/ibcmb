@@ -10,8 +10,7 @@ public class NumberUtils {
             throw new IllegalArgumentException(numOfDigits + ": Number must be equal or greater than 1");
         }
         long random = (long) Math.floor(Math.random() * 9 * (long)Math.pow(10,numOfDigits-1)) + (long)Math.pow(10,numOfDigits-1);
-        String refCode = Long.toString(random);
-        return refCode;
+        return Long.toString(random);
     }
 
 }

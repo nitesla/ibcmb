@@ -35,7 +35,7 @@ public class AdmPermissionController {
     @Autowired
     private MessageSource messageSource;
 
-    Logger logger = LoggerFactory.getLogger(this.getClass());
+    final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @GetMapping("/new")
     public String addPermission(Model model) {
@@ -84,7 +84,7 @@ public class AdmPermissionController {
 		}else{
 			permissions = roleService.getPermissions(pageable);
 		}
-        DataTablesOutput<PermissionDTO> out = new DataTablesOutput<PermissionDTO>();
+        DataTablesOutput<PermissionDTO> out = new DataTablesOutput<>();
         out.setDraw(input.getDraw());
         out.setData(permissions.getContent());
         out.setRecordsFiltered(permissions.getTotalElements());

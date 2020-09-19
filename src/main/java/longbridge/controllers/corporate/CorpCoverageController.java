@@ -76,7 +76,7 @@ public class CorpCoverageController {
         entityId.setType(UserType.CORPORATE);
         Pageable pageable = DataTablesUtils.getPageable(input);
         Page<CoverageDTO> coverage = administrationService.getAllCoverage(entityId,pageable);
-        DataTablesOutput<CoverageDTO> out = new DataTablesOutput<CoverageDTO>();
+        DataTablesOutput<CoverageDTO> out = new DataTablesOutput<>();
         out.setDraw(input.getDraw());
         out.setData(coverage.getContent());
         out.setRecordsFiltered(coverage.getTotalElements());

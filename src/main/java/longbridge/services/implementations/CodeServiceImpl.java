@@ -30,13 +30,13 @@ import java.util.Locale;
 @Service
 public class CodeServiceImpl implements CodeService {
 
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    private CodeRepo codeRepo;
+    private final CodeRepo codeRepo;
 
-      private ModelMapper modelMapper;
+      private final ModelMapper modelMapper;
 
-    private Locale locale = LocaleContextHolder.getLocale();
+    private final Locale locale = LocaleContextHolder.getLocale();
 
     @Autowired
     private MessageSource messageSource;
@@ -74,8 +74,7 @@ public class CodeServiceImpl implements CodeService {
 
     @Override
     public Code getCodeById(Long id) {
-        Code code = this.codeRepo.findById(id).get();
-        return code;
+        return this.codeRepo.findById(id).get();
     }
 
     @Override
@@ -139,8 +138,7 @@ public class CodeServiceImpl implements CodeService {
         Page<Code> page = codeRepo.findByType(codeType, pageDetails);
         List<CodeDTO> dtOs = convertEntitiesToDTOs(page);
         long t = page.getTotalElements();
-        Page<CodeDTO> pageImpl = new PageImpl<CodeDTO>(dtOs, pageDetails, t);
-        return pageImpl;
+        return new PageImpl<CodeDTO>(dtOs, pageDetails, t);
     }
 
     @Override
@@ -150,8 +148,7 @@ public class CodeServiceImpl implements CodeService {
         long t = page.getTotalElements();
 
         // return  new PageImpl<ServiceReqConfigDTO>(dtOs,pageDetails,page.getTotalElements());
-        Page<CodeDTO> pageImpl = new PageImpl<CodeDTO>(dtOs, pageDetails, t);
-        return pageImpl;
+        return new PageImpl<CodeDTO>(dtOs, pageDetails, t);
     }
 
 
@@ -183,11 +180,11 @@ public class CodeServiceImpl implements CodeService {
 
         Page<String> allTypes = codeRepo.findAllTypes(pageDetails);
         long t = allTypes.getTotalElements();
-        List<CodeTypeDTO> list = new ArrayList<CodeTypeDTO>();
+        List<CodeTypeDTO> list = new ArrayList<>();
         for (String s : allTypes) {
             list.add(new CodeTypeDTO(s));
         }
-        return new PageImpl<CodeTypeDTO>(list, pageDetails, t);
+        return new PageImpl<>(list, pageDetails, t);
 
     }
 }

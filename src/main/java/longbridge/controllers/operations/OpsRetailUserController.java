@@ -54,7 +54,7 @@ public class OpsRetailUserController {
     @Autowired
     private VerificationService verificationService;
 
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 
     @PostMapping
@@ -91,7 +91,7 @@ public class OpsRetailUserController {
         RetailUserDTO retailUser = retailUserService.getUser(userId);
 
         List<Account> accounts = accountService.getAccountsForDebit(retailUser.getCustomerId());
-        DataTablesOutput<Account> out = new DataTablesOutput<Account>();
+        DataTablesOutput<Account> out = new DataTablesOutput<>();
         out.setDraw(input.getDraw());
         out.setData(accounts);
         out.setRecordsFiltered(accounts.size());
@@ -116,7 +116,7 @@ public class OpsRetailUserController {
         } else {
             retailUsers = retailUserService.getUsers(pageable);
         }
-        DataTablesOutput<RetailUserDTO> out = new DataTablesOutput<RetailUserDTO>();
+        DataTablesOutput<RetailUserDTO> out = new DataTablesOutput<>();
         out.setDraw(input.getDraw());
         out.setData(retailUsers.getContent());
         out.setRecordsFiltered(retailUsers.getTotalElements());
@@ -129,9 +129,7 @@ public class OpsRetailUserController {
     @ResponseBody
     Iterable<RetailUserDTO> getRetailUsers() {
 
-        Iterable<RetailUserDTO> retailUsers = retailUserService.getUsers();
-
-        return retailUsers;
+        return retailUserService.getUsers();
     }
 
     @GetMapping("/{userId}")

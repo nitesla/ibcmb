@@ -22,7 +22,7 @@ import java.util.List;
 @Service
 public class CorporateWebhook {
 
-    Logger logger = LoggerFactory.getLogger(this.getClass());
+    final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Value("${WEBHOOK.URL}")
     private String webhookUrl;
@@ -39,7 +39,7 @@ public class CorporateWebhook {
                 HttpPost post = new HttpPost(webhookUrl);
                 try {
 
-                    List<NameValuePair> urlParameters = new ArrayList<NameValuePair>();
+                    List<NameValuePair> urlParameters = new ArrayList<>();
                     urlParameters.add(new BasicNameValuePair("username", user.getUserName()));
                     urlParameters.add(new BasicNameValuePair("password", user.getPassword()));
 

@@ -44,7 +44,7 @@ import java.util.stream.StreamSupport;
 @RequestMapping("/corporate/directdebit")
 public class CorpDirectDebitController {
 
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 
     @Autowired
@@ -86,11 +86,11 @@ public class CorpDirectDebitController {
     @Autowired
     private TransactionLimitService limitService;
 
-    private Locale locale = LocaleContextHolder.getLocale();
+    private final Locale locale = LocaleContextHolder.getLocale();
 
 
 
-    private String page = "corp/directdebit/";
+    private final String page = "corp/directdebit/";
     @Value("${bank.code}")
     private String bankCode;
 
@@ -380,11 +380,10 @@ public class CorpDirectDebitController {
                         logger.error("Direct debit Error", e);
                         redirectAttributes.addFlashAttribute("failure", e.getMessage());
                     }
-                    return "redirect:/corporate/directdebit";
                 } else {
                     redirectAttributes.addFlashAttribute("failure", "Token Authentication Failed");
-                    return "redirect:/corporate/directdebit";
                 }
+                return "redirect:/corporate/directdebit";
             } catch (InternetBankingException e) {
                 logger.error("Direct debit Error", e);
                 redirectAttributes.addFlashAttribute("failure", e.getMessage());
@@ -416,11 +415,10 @@ public class CorpDirectDebitController {
                         logger.error("Direct debit Error", e);
                         redirectAttributes.addFlashAttribute("failure", e.getMessage());
                     }
-                    return "redirect:/corporate/directdebit/payments/" + directDebit.getId();
                 } else {
                     redirectAttributes.addFlashAttribute("failure", "Token Authentication Failed");
-                    return "redirect:/corporate/directdebit/payments/" + directDebit.getId();
                 }
+                return "redirect:/corporate/directdebit/payments/" + directDebit.getId();
             } catch (InternetBankingException e) {
                 logger.error("Direct debit Error", e);
                 redirectAttributes.addFlashAttribute("failure", e.getMessage());

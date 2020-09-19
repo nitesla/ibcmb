@@ -3,19 +3,16 @@ package longbridge.apiLayer.models;
 public enum WebhookResponseCode {
 
 //    SUCCESSFUL ("0"),
-    SUCCESSFUL ("0"){
+    SUCCESSFUL (){
         @Override
     public String toString(){
             return "SUCCESSFUL";
         }
 
 },
-    CUSTOMER_DOES_NOT_EXIST ("0");
+    CUSTOMER_DOES_NOT_EXIST ();
 
-    private String code;
-
-    WebhookResponseCode(String code) {
-        this.code= code;
+    WebhookResponseCode() {
     }
 
 //    public String toString() {

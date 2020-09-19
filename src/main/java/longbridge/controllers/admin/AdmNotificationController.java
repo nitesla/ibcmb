@@ -31,7 +31,7 @@ import java.util.Locale;
 @RequestMapping("/admin/notification")
 public class AdmNotificationController {
 
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
     @Autowired
     ModelMapper modelMapper;
 
@@ -53,7 +53,7 @@ public class AdmNotificationController {
 
         Pageable pageable = DataTablesUtils.getPageable(input);
         Page<NotificationsDTO> sq = notificationsService.getNotifications(pageable);
-        DataTablesOutput<NotificationsDTO> out = new DataTablesOutput<NotificationsDTO>();
+        DataTablesOutput<NotificationsDTO> out = new DataTablesOutput<>();
         out.setDraw(input.getDraw());
         out.setData(sq.getContent());
         out.setRecordsFiltered(sq.getTotalElements());

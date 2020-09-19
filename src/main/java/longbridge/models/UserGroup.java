@@ -88,36 +88,35 @@ public class UserGroup extends AbstractEntity implements PrettySerializer{
     @JsonIgnore
     public JsonSerializer<UserGroup> getSerializer()
     {
-        return new JsonSerializer<UserGroup>() {
+        return new JsonSerializer<>() {
 
             @Override
             public void serialize(UserGroup value, JsonGenerator gen, SerializerProvider arg2)
-                    throws IOException, JsonProcessingException {
+                    throws IOException {
                 gen.writeStartObject();
                 gen.writeStringField("Group Name", value.name);
 //                gen.writeStringField("Description",value.description);
 
 
-
                 gen.writeObjectFieldStart("Internal Users");
                 Integer count = 0;
-                for(OperationsUser user : value.users){
+                for (OperationsUser user : value.users) {
                     gen.writeObjectFieldStart((++count).toString());
                     //gen.writeStartObject();
-                    gen.writeStringField("First Name",user.firstName);
-                    gen.writeStringField("Last Name",user.lastName);
-                    gen.writeStringField("Email",user.email);
+                    gen.writeStringField("First Name", user.firstName);
+                    gen.writeStringField("Last Name", user.lastName);
+                    gen.writeStringField("Email", user.email);
                     gen.writeEndObject();
                 }
                 gen.writeEndObject();
 
                 gen.writeObjectFieldStart("External Users");
-                for(Contact contact : value.contacts){
+                for (Contact contact : value.contacts) {
                     gen.writeObjectFieldStart((++count).toString());
                     //gen.writeStartObject();
-                    gen.writeStringField("First Name",contact.firstName);
-                    gen.writeStringField("Last Name",contact.lastName);
-                    gen.writeStringField("Email",contact.email);
+                    gen.writeStringField("First Name", contact.firstName);
+                    gen.writeStringField("Last Name", contact.lastName);
+                    gen.writeStringField("Email", contact.email);
                     gen.writeEndObject();
                 }
                 gen.writeEndObject();
@@ -130,41 +129,40 @@ public class UserGroup extends AbstractEntity implements PrettySerializer{
     @JsonIgnore
     public JsonSerializer<UserGroup> getAuditSerializer()
     {
-        return new JsonSerializer<UserGroup>() {
+        return new JsonSerializer<>() {
 
             @Override
             public void serialize(UserGroup value, JsonGenerator gen, SerializerProvider arg2)
-                    throws IOException, JsonProcessingException {
+                    throws IOException {
                 gen.writeStartObject();
-                if(value.id != null) {
+                if (value.id != null) {
                     gen.writeStringField("id", value.id.toString());
-                }else {
+                } else {
                     gen.writeStringField("id", "");
                 }
                 gen.writeStringField("groupName", value.name);
 //                gen.writeStringField("Description",value.description);
 
 
-
                 gen.writeObjectFieldStart("internalUsers");
                 Integer count = 0;
-                for(OperationsUser user : value.users){
+                for (OperationsUser user : value.users) {
                     gen.writeObjectFieldStart((++count).toString());
                     //gen.writeStartObject();
-                    gen.writeStringField("firstName",user.firstName);
-                    gen.writeStringField("lastName",user.lastName);
-                    gen.writeStringField("email",user.email);
+                    gen.writeStringField("firstName", user.firstName);
+                    gen.writeStringField("lastName", user.lastName);
+                    gen.writeStringField("email", user.email);
                     gen.writeEndObject();
                 }
                 gen.writeEndObject();
 
                 gen.writeObjectFieldStart("externalUsers");
-                for(Contact contact : value.contacts){
+                for (Contact contact : value.contacts) {
                     gen.writeObjectFieldStart((++count).toString());
                     //gen.writeStartObject();
-                    gen.writeStringField("firstName",contact.firstName);
-                    gen.writeStringField("lastName",contact.lastName);
-                    gen.writeStringField("email",contact.email);
+                    gen.writeStringField("firstName", contact.firstName);
+                    gen.writeStringField("lastName", contact.lastName);
+                    gen.writeStringField("email", contact.email);
                     gen.writeEndObject();
                 }
                 gen.writeEndObject();

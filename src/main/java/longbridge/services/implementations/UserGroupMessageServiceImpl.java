@@ -30,13 +30,13 @@ import java.util.Locale;
 @Service
 public class UserGroupMessageServiceImpl implements UserGroupMessageService {
 
-    private MailService mailService;
-    private MessageRepo messageRepo;
-    private UserGroupService userGroupService;
-    private OperationsUserRepo opsUserRepo;
-    private MessageSource messageSource;
-    private Locale locale = LocaleContextHolder.getLocale();
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final MailService mailService;
+    private final MessageRepo messageRepo;
+    private final UserGroupService userGroupService;
+    private final OperationsUserRepo opsUserRepo;
+    private final MessageSource messageSource;
+    private final Locale locale = LocaleContextHolder.getLocale();
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
     public UserGroupMessageServiceImpl(MailService mailService, MessageRepo messageRepo, UserGroupService userGroupService, OperationsUserRepo opsUserRepo, MessageSource messageSource) {

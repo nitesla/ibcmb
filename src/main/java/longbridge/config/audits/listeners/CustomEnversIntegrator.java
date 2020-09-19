@@ -28,9 +28,9 @@ public class CustomEnversIntegrator extends EnversIntegrator {
             throw new HibernateException("Expecting EnversService to have been initialized prior to call to EnversIntegrator#integrate");
         }
         if(enversService.getEntitiesConfigurations().hasAuditedEntities()) {
-           listenerRegistry.appendListeners( EventType.POST_UPDATE, new PostUpdateEventListener[]{new CustomPostUpdateListener(enversService)});
+           listenerRegistry.appendListeners( EventType.POST_UPDATE, new CustomPostUpdateListener(enversService));
 			listenerRegistry.appendListeners(EventType.POST_INSERT,
-					new PostInsertEventListener[] { new CustomPostInsertListener(enversService)});
+                    new CustomPostInsertListener(enversService));
            // listenerRegistry.appendListeners( EventType.POST_DELETE, new PostDeleteListenerLog( enversService ) );
         }
     }

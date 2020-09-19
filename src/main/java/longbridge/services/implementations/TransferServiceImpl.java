@@ -48,18 +48,17 @@ import static longbridge.utils.TransferType.INTER_BANK_TRANSFER;
 
 @Service
 public class TransferServiceImpl implements TransferService {
-    private RetailUserRepo retailUserRepo;
-    private TransferRequestRepo transferRequestRepo;
-    private IntegrationService integrationService;
-    private TransactionLimitServiceImpl limitService;
-    private ModelMapper modelMapper;
-    private AccountService accountService;
-    private FinancialInstitutionService financialInstitutionService;
-    private ConfigurationService configService;
-    private MessageSource messages;
-    private Locale locale = LocaleContextHolder.getLocale();
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
-    private SessionUtil sessionUtil;
+    private final RetailUserRepo retailUserRepo;
+    private final TransferRequestRepo transferRequestRepo;
+    private final IntegrationService integrationService;
+    private final TransactionLimitServiceImpl limitService;
+    private final ModelMapper modelMapper;
+    private final AccountService accountService;
+    private final ConfigurationService configService;
+    private final MessageSource messages;
+    private final Locale locale = LocaleContextHolder.getLocale();
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final SessionUtil sessionUtil;
 
 
     @Autowired
@@ -82,7 +81,6 @@ public class TransferServiceImpl implements TransferService {
         this.limitService = limitService;
         this.modelMapper = modelMapper;
         this.accountService = accountService;
-        this.financialInstitutionService = financialInstitutionService;
         this.configService = configurationService;
         this.retailUserRepo = retailUserRepo;
         this.messages = messages;
@@ -300,7 +298,7 @@ public class TransferServiceImpl implements TransferService {
         if (limitExceeded) throw new InternetBankingTransferException(TransferExceptions.LIMIT_EXCEEDED.toString());
 
         String cif = accountService.getAccountByAccountNumber(dto.getCustomerAccountNumber()).getCustomerId();
-        boolean acctPresent = StreamSupport.stream(accountService.getAccountsForDebit(cif).spliterator(), false)
+        boolean acctPresent = accountService.getAccountsForDebit(cif).stream()
                 .anyMatch(i -> i.getAccountNumber().equalsIgnoreCase(dto.getCustomerAccountNumber()));
 
 
@@ -332,8 +330,7 @@ public class TransferServiceImpl implements TransferService {
         logger.info("Completed transfers content" + page.getContent());
         List<TransferRequestDTO> dtOs = convertEntitiesToDTOs(page.getContent());
         long t = page.getTotalElements();
-        Page<TransferRequestDTO> pageImpl = new PageImpl<TransferRequestDTO>(dtOs, pageDetails, t);
-        return pageImpl;
+        return new PageImpl<TransferRequestDTO>(dtOs, pageDetails, t);
     }
 
     @Override
@@ -341,9 +338,7 @@ public class TransferServiceImpl implements TransferService {
         logger.info("Retrieving completed transfers");
         RetailUser user = getCurrentUser();
 
-        Page<TransRequest> page = transferRequestRepo.findUsingPattern("RET_" + user.getId(),pattern, pageDetails);
-
-        return page;
+        return transferRequestRepo.findUsingPattern("RET_" + user.getId(),pattern, pageDetails);
     }
 
     @Override
@@ -357,8 +352,7 @@ public class TransferServiceImpl implements TransferService {
         List<TransferRequestDTO> dtOs = convertEntitiesToDTOs(page.getContent());
         logger.trace("Completed transfers", dtOs);
         long t = page.getTotalElements();
-        Page<TransferRequestDTO> pageImpl = new PageImpl<TransferRequestDTO>(dtOs, pageDetails, t);
-        return pageImpl;
+        return new PageImpl<TransferRequestDTO>(dtOs, pageDetails, t);
     }
     @Override
     public List<TransRequest> getLastTenTransactionsForAccount(String s) {
@@ -485,8 +479,7 @@ public class TransferServiceImpl implements TransferService {
 
     private RetailUser getCurrentUser() {
         CustomUserPrincipal principal = (CustomUserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        RetailUser retailUser = (RetailUser) principal.getUser();
-        return retailUser;
+        return (RetailUser) principal.getUser();
     }
 
     @Override
@@ -532,7 +525,7 @@ public class TransferServiceImpl implements TransferService {
         }
 
         String cif = accountService.getAccountByAccountNumber(dto.getCustomerAccountNumber()).getCustomerId();
-        boolean acctPresent = StreamSupport.stream(accountService.getAccountsForDebit(cif).spliterator(), false)
+        boolean acctPresent = accountService.getAccountsForDebit(cif).stream()
                 .anyMatch(i -> i.getAccountNumber().equalsIgnoreCase(dto.getCustomerAccountNumber()));
 
 
@@ -574,8 +567,7 @@ public class TransferServiceImpl implements TransferService {
         List<TransferRequestDTO> dtOs = convertEntitiesToDTOs(page.getContent());
         logger.trace("transfers", dtOs);
         long t = page.getTotalElements();
-        Page<TransferRequestDTO> pageImpl = new PageImpl<>(dtOs, pageDetails, t);
-        return pageImpl;
+        return new PageImpl<>(dtOs, pageDetails, t);
     }
 
 }

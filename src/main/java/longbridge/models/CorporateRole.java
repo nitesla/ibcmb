@@ -33,7 +33,7 @@ public class CorporateRole extends AbstractEntity implements PrettySerializer{
     @OneToMany(cascade={CascadeType.ALL})
     @JoinTable(name="corp_role_user")
     @JoinColumn(name="user_id")
-    private Set<CorporateUser> users = new HashSet<CorporateUser>();
+    private Set<CorporateUser> users = new HashSet<>();
 
 
     public String getName() {
@@ -80,62 +80,62 @@ public class CorporateRole extends AbstractEntity implements PrettySerializer{
 	@Override
     @JsonIgnore
 	public JsonSerializer<CorporateRole> getSerializer() {
-		return new JsonSerializer<CorporateRole>() {
+		return new JsonSerializer<>() {
 
-			@Override
-			public void serialize(CorporateRole value, JsonGenerator gen, SerializerProvider arg2)
-					throws IOException, JsonProcessingException {
-				  gen.writeStartObject();
-	                gen.writeStringField("Name", value.name);
-	                gen.writeNumberField("Rank",value.rank);
-	                gen.writeStringField("Corporate", value.corporate.getName());
-	                // gen.writeArrayFieldStart("permissions");
-	                gen.writeObjectFieldStart("Members");
-	                for(CorporateUser user : value.users){
-	                    gen.writeObjectFieldStart(user.getId().toString());
-	                    //gen.writeStartObject();
-                        gen.writeStringField("Username",user.userName);
-                        gen.writeStringField("First Name",user.firstName);
-	                    gen.writeStringField("Last Name",user.lastName);
-	                    gen.writeEndObject();
-	                }
-	                gen.writeEndObject();
-	                //gen.writeEndArray();
-	                gen.writeEndObject();
-			}
-		};
+            @Override
+            public void serialize(CorporateRole value, JsonGenerator gen, SerializerProvider arg2)
+                    throws IOException {
+                gen.writeStartObject();
+                gen.writeStringField("Name", value.name);
+                gen.writeNumberField("Rank", value.rank);
+                gen.writeStringField("Corporate", value.corporate.getName());
+                // gen.writeArrayFieldStart("permissions");
+                gen.writeObjectFieldStart("Members");
+                for (CorporateUser user : value.users) {
+                    gen.writeObjectFieldStart(user.getId().toString());
+                    //gen.writeStartObject();
+                    gen.writeStringField("Username", user.userName);
+                    gen.writeStringField("First Name", user.firstName);
+                    gen.writeStringField("Last Name", user.lastName);
+                    gen.writeEndObject();
+                }
+                gen.writeEndObject();
+                //gen.writeEndArray();
+                gen.writeEndObject();
+            }
+        };
 	}
     @Override
     @JsonIgnore
 	public JsonSerializer<CorporateRole> getAuditSerializer() {
-		return new JsonSerializer<CorporateRole>() {
+		return new JsonSerializer<>() {
 
-			@Override
-			public void serialize(CorporateRole value, JsonGenerator gen, SerializerProvider arg2)
-					throws IOException, JsonProcessingException {
-				  gen.writeStartObject();
-                if(value.id != null) {
+            @Override
+            public void serialize(CorporateRole value, JsonGenerator gen, SerializerProvider arg2)
+                    throws IOException {
+                gen.writeStartObject();
+                if (value.id != null) {
                     gen.writeStringField("id", value.id.toString());
-                }else {
+                } else {
                     gen.writeStringField("id", "");
                 }
-	                gen.writeStringField("name", value.name);
-	                gen.writeNumberField("rank",value.rank);
+                gen.writeStringField("name", value.name);
+                gen.writeNumberField("rank", value.rank);
 //	                gen.writeStringField("Corporate", value.corporate.getName());
-	                // gen.writeArrayFieldStart("permissions");
-	                gen.writeObjectFieldStart("members");
-	                for(CorporateUser user : value.users){
-	                    gen.writeObjectFieldStart(user.getId().toString());
-	                    //gen.writeStartObject();
-                        gen.writeStringField("username",user.userName);
-                        gen.writeStringField("firstName",user.firstName);
-	                    gen.writeStringField("lastName",user.lastName);
-	                    gen.writeEndObject();
-	                }
-	                gen.writeEndObject();
-	                //gen.writeEndArray();
-	                gen.writeEndObject();
-			}
-		};
+                // gen.writeArrayFieldStart("permissions");
+                gen.writeObjectFieldStart("members");
+                for (CorporateUser user : value.users) {
+                    gen.writeObjectFieldStart(user.getId().toString());
+                    //gen.writeStartObject();
+                    gen.writeStringField("username", user.userName);
+                    gen.writeStringField("firstName", user.firstName);
+                    gen.writeStringField("lastName", user.lastName);
+                    gen.writeEndObject();
+                }
+                gen.writeEndObject();
+                //gen.writeEndArray();
+                gen.writeEndObject();
+            }
+        };
 	}
 }
